@@ -26,7 +26,6 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\SortingExpression;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * The Faceting ParameterProvider is responsible to build the solr query parameters
@@ -232,16 +231,17 @@ class Faceting implements ParameterBuilder
     /**
      * Reads the facet sorting configuration and applies it to the queryParameters.
      *
+     * @param array $facetParameters
      * @return array
      */
     protected function applySorting(array $facetParameters)
     {
         $sortingExpression = new SortingExpression();
         $globalSortingExpression = $sortingExpression->getForFacet($this->sorting);
+
         if (!empty($globalSortingExpression)) {
             $facetParameters['facet.sort'] = $globalSortingExpression;
         }
-
 
         return $facetParameters;
     }

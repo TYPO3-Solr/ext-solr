@@ -40,6 +40,11 @@ abstract class AbstractFacetItem
     protected $selected = false;
 
     /**
+     * @var array
+     */
+    protected $metrics = [];
+
+    /**
      * @var AbstractFacet
      */
     protected $facet;
@@ -49,13 +54,15 @@ abstract class AbstractFacetItem
      * @param string $label
      * @param int $documentCount
      * @param bool $selected
+     * @param array $metrics
      */
-    public function __construct(AbstractFacet $facet, $label = '', $documentCount = 0, $selected = false)
+    public function __construct(AbstractFacet $facet, $label = '', $documentCount = 0, $selected = false, $metrics = [])
     {
         $this->facet = $facet;
         $this->label = $label;
         $this->documentCount = $documentCount;
         $this->selected = $selected;
+        $this->metrics = $metrics;
     }
 
     /**
@@ -88,6 +95,14 @@ abstract class AbstractFacetItem
     public function getSelected()
     {
         return $this->selected;
+    }
+
+    /**
+     * @return array
+     */
+    public function getMetrics()
+    {
+        return $this->metrics;
     }
 
     /**

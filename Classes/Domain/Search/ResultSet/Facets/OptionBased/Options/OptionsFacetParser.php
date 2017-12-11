@@ -33,9 +33,9 @@ class OptionsFacetParser extends AbstractFacetParser
         $response = $resultSet->getResponse();
         $fieldName = $facetConfiguration['field'];
         $label = $this->getPlainLabelOrApplyCObject($facetConfiguration);
-        $optionsFromSolrResponse = isset($response->facet_counts->facet_fields->{$fieldName}) ? get_object_vars($response->facet_counts->facet_fields->{$fieldName}) : [];
+        $optionsFromSolrResponse = $this->getOptionsFromSolrResponse($facetName, $response);
+        $metricsFromSolrResponse = $this->getMetricsFromSolrResponse($facetName, $response);
         $optionsFromRequest = $this->getActiveFacetValuesFromRequest($resultSet, $facetName);
-
         $hasOptionsInResponse = !empty($optionsFromSolrResponse);
         $hasSelectedOptionsInRequest = count($optionsFromRequest) > 0;
         $hasNoOptionsToShow = !$hasOptionsInResponse && !$hasSelectedOptionsInRequest;
@@ -67,7 +67,7 @@ class OptionsFacetParser extends AbstractFacetParser
 
             $isOptionsActive = in_array($optionsValue, $optionsFromRequest);
             $label = $this->getLabelFromRenderingInstructions($optionsValue, $count, $facetName, $facetConfiguration);
-            $facet->addOption(new Option($facet, $label, $optionsValue, $count, $isOptionsActive));
+            $facet->addOption(new Option($facet, $label, $optionsValue, $count, $isOptionsActive, $metricsFromSolrResponse[$optionsValue]));
         }
 
         // after all options have been created we apply a manualSortOrder if configured
@@ -77,5 +77,52 @@ class OptionsFacetParser extends AbstractFacetParser
         $this->applyReverseOrder($facet, $facetConfiguration);
 
         return $facet;
+    }
+
+    /**
+     * @param string $facetName
+     * @param \Apache_Solr_Response $response
+     * @return array
+     */
+    protected function getOptionsFromSolrResponse($facetName, \Apache_Solr_Response $response)
+    {
+        $optionsFromSolrResponse = [];
+        if (!isset($response->facets->{$facetName})) {
+            return $optionsFromSolrResponse;
+        }
+
+        foreach ($response->facets->{$facetName}->buckets as $bucket) {
+            $optionValue = $bucket->val;
+            $optionCount = $bucket->count;
+            $optionsFromSolrResponse[$optionValue] = $optionCount;
+        }
+
+        return $optionsFromSolrResponse;
+    }
+
+    /**
+     * @param string $facetName
+     * @param \Apache_Solr_Response $response
+     * @return array
+     */
+    protected function getMetricsFromSolrResponse($facetName, \Apache_Solr_Response $response)
+    {
+        $metricsFromSolrResponse = [];
+
+        if (!isset($response->facets->{$facetName}->buckets)) {
+            return [];
+        }
+
+        foreach ($response->facets->{$facetName}->buckets as $bucket) {
+            $bucketVariables = get_object_vars($bucket);
+            foreach ($bucketVariables as $key => $value) {
+                if (strpos($key, 'metrics_') === 0) {
+                    $metricsKey = str_replace('metrics_', '', $key);
+                    $metricsFromSolrResponse[$bucket->val][$metricsKey] = $value;
+                }
+            }
+        }
+
+        return $metricsFromSolrResponse;
     }
 }

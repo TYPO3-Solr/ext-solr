@@ -839,7 +839,7 @@ faceting.facetLimit
 :Since: 6.0
 :Default: 100
 
-    Number of options of a facet returned from solr.
+Number of options of a facet returned from solr.
 
 
 faceting.singleFacetMode
@@ -972,6 +972,49 @@ Defines a comma separated list of options that are excluded (The value needs to 
 
 Important: This setting only makes sence for option based facets (option, query, hierarchy)
 
+
+faceting.facets.[facetName].facetLimit
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+:Type: Integer
+:TS Path: plugin.tx_solr.search.faceting.facets.[facetName].facetLimit
+:Since: 8.0
+:Default: -1
+
+Hard limit of options returned by solr.
+
+**Note**: This is only available for options facets.
+
+faceting.facets.[facetName].metrics
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+:Type: Array
+:TS Path: plugin.tx_solr.search.faceting.facets.[facetName].metrics
+:Since: 8.0
+:Default: empty
+
+Metrics can be use to collect and enhance facet options with statistical data of the facetted documents. They can
+be used to render useful information in the context of an facet option.
+
+Example:
+
+.. code-block:: typoscript
+
+    plugin.tx_solr.search.faceting.facets {
+      category {
+        field = field
+        label = Category
+        metrics {
+            downloads = sum(downloads_intS)
+        }
+      }
+    }
+
+
+The example above will make the metric "downloads" available for all category options. In this case it will be the sum of all downloads
+of this category item. In the frontend you can render this metric with "<facetoptions.>.metrics.downloads" and use it for example to show it instead of the normal option count.
+
+
 faceting.facets.[facetName].partialName
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -1020,6 +1063,8 @@ faceting.facets.[facetName].sortBy
 Sets how a single facet's options are sorted, by default they are sorted by number of results, highest on top.
 Facet options can also be sorted alphabetically by setting the option to alpha.
 
+Note: Since 8.0 sortBy for option facets can also be a function applied on the faceted documents (e.g. avg(price_floatS)).
+
 faceting.facets.[facetName].manualSortOrder
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -1054,6 +1099,21 @@ Using `faceting.facets.[facetName].manualSortOrder = Travel, Health` will result
     + Economy (185)
     + Culture (179)
     + Automobile (99)
+
+faceting.facets.[facetName].minimumCount
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+:Type: Integer
+:TS Path: plugin.tx_solr.search.faceting.facets.[facetName].minumumCount
+:Since: 8.0
+:Default: 1
+
+Set's the minimumCount for a single facet. This can be usefull e.g. to set the minimumCount of a single facet to 0,
+to have the options available even when there is result available.
+
+**Note**: This setting is only available for facets that are using the json faceting API of solr. By now this
+is only available for the options facets.
+
 
 faceting.facets.[facetName].reverseOrder
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

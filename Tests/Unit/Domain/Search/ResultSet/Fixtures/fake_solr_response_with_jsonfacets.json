@@ -1,0 +1,27 @@
+{
+  "responseHeader": {
+    "status": 0,
+    "QTime": 2,
+    "params": {
+      "q": "*:*",
+      "json.facet": "{\n   type:{\n     type : terms,\n     field : type,\n     mincount : 2\n   }\n }\n",
+      "rows": "0"
+    }
+  },
+  "response": {
+    "numFound": 19,
+    "start": 0,
+    "docs": []
+  },
+  "facets": {
+    "count": 19,
+    "type": {
+      "buckets": [
+        {
+          "val": "tx_myext_domain_model_mytype",
+          "count": 19
+        }
+      ]
+    }
+  }
+}
