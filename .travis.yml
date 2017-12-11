@@ -26,14 +26,14 @@ env:
   matrix:
     - TYPO3_VERSION="^8.7"
     - TYPO3_VERSION="8.x-dev"
-    - TYPO3_VERSION="9.x-dev"
+    - TYPO3_VERSION="9.x-dev as 8.7.999"
 
 matrix:
   fast_finish: true
   allow_failures:
-    - env: TYPO3_VERSION="9.x-dev"
+    - env: TYPO3_VERSION="9.x-dev as 8.7.999"
       php: 7.0
-    - env: TYPO3_VERSION="9.x-dev"
+    - env: TYPO3_VERSION="9.x-dev as 8.7.999"
       php: 7.1
 
 before_install:
