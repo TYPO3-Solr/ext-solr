@@ -42,6 +42,9 @@ if (TYPO3_MODE == 'BE') {
         ]
     );
 
+    //@todo can be changed to a simple assignment when TYPO3 8 compatibility is dropped
+    $treeComponentId =  ApacheSolrForTypo3\Solr\Util::getIsTYPO3VersionBelow9() ? 'typo3-pagetree' : 'TYPO3/CMS/Backend/PageTree/PageTreeElement';
+
     \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
         'ApacheSolrForTypo3.' . $_EXTKEY,
         'searchbackend',
@@ -54,7 +57,7 @@ if (TYPO3_MODE == 'BE') {
             'access' => 'user,group',
             'icon' => 'EXT:solr/Resources/Public/Images/Icons/ModuleInfo.svg',
             'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang_mod_info.xlf',
-            'navigationComponentId' => 'typo3-pagetree'
+            'navigationComponentId' => $treeComponentId
         ]
     );
 
@@ -70,7 +73,7 @@ if (TYPO3_MODE == 'BE') {
             'access' => 'user,group',
             'icon' => 'EXT:solr/Resources/Public/Images/Icons/ModuleCoreOptimization.svg',
             'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang_mod_coreoptimize.xlf',
-            'navigationComponentId' => 'typo3-pagetree'
+            'navigationComponentId' => $treeComponentId
         ]
     );
 
@@ -86,7 +89,7 @@ if (TYPO3_MODE == 'BE') {
             'access' => 'user,group',
             'icon' => 'EXT:solr/Resources/Public/Images/Icons/ModuleIndexQueue.svg',
             'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang_mod_indexqueue.xlf',
-            'navigationComponentId' => 'typo3-pagetree'
+            'navigationComponentId' => $treeComponentId
         ]
     );
 
@@ -102,7 +105,7 @@ if (TYPO3_MODE == 'BE') {
             'access' => 'user,group',
             'icon' => 'EXT:solr/Resources/Public/Images/Icons/ModuleIndexAdministration.svg',
             'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang_mod_indexadmin.xlf',
-            'navigationComponentId' => 'typo3-pagetree'
+            'navigationComponentId' => $treeComponentId
         ]
     );
 

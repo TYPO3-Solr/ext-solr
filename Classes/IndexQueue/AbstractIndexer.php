@@ -279,7 +279,7 @@ abstract class AbstractIndexer
         }
 
         foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['detectSerializedValue'] as $classReference) {
-            $serializedValueDetector = GeneralUtility::getUserObj($classReference);
+            $serializedValueDetector = GeneralUtility::makeInstance($classReference);
             if (!$serializedValueDetector instanceof SerializedValueDetector) {
                 $message = get_class($serializedValueDetector) . ' must implement interface ' . SerializedValueDetector::class;
                 throw new \UnexpectedValueException($message, 1404471741);

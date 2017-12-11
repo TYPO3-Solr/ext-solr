@@ -40,15 +40,24 @@ class GroupItemPaginateViewHelper extends AbstractWidgetViewHelper
      */
     protected $controller;
 
+
     /**
-     * @param SearchResultSet $resultSet
-     * @param GroupItem $groupItem The groupItem that should be paginated
-     * @param string $as
-     * @param array $configuration
+     * Initializes the arguments
+     */
+    public function initializeArguments()
+    {
+        parent::initializeArguments();
+        $this->registerArgument('resultSet', SearchResultSet::class, 'resultSet', true);
+        $this->registerArgument('groupItem', GroupItem::class, 'groupItem', true);
+        $this->registerArgument('as', 'string', 'as', false, 'documents');
+        $this->registerArgument('configuration', 'array', 'configuration', false, ['insertAbove' => true, 'insertBelow' => true, 'maximumNumberOfLinks' => 10, 'templatePath' => '']);
+    }
+
+    /**
      * @return \TYPO3\CMS\Extbase\Mvc\ResponseInterface
      * @throws \TYPO3\CMS\Fluid\Core\Widget\Exception\MissingControllerException
      */
-    public function render(SearchResultSet $resultSet, GroupItem $groupItem, $as = 'documents', array $configuration = ['insertAbove' => true, 'insertBelow' => true, 'maximumNumberOfLinks' => 10, 'templatePath' => ''])
+    public function render()
     {
         return $this->initiateSubRequest();
     }

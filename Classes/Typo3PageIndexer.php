@@ -267,7 +267,7 @@ class Typo3PageIndexer
         }
 
         foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPagePostProcessPageDocument'] as $classReference) {
-            $postProcessor = GeneralUtility::getUserObj($classReference);
+            $postProcessor = GeneralUtility::makeInstance($classReference);
             if (!$postProcessor instanceof PageDocumentPostProcessor) {
                 throw new \UnexpectedValueException(get_class($pageDocument) . ' must implement interface ' . PageDocumentPostProcessor::class, 1397739154);
             }
@@ -333,7 +333,7 @@ class Typo3PageIndexer
 
         $indexConfigurationName = $this->getIndexConfigurationNameForCurrentPage();
         foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageSubstitutePageDocument'] as $classReference) {
-            $substituteIndexer = GeneralUtility::getUserObj($classReference);
+            $substituteIndexer = GeneralUtility::makeInstance($classReference);
 
             if (!$substituteIndexer instanceof SubstitutePageIndexer) {
                 $message = get_class($substituteIndexer) . ' must implement interface ' . SubstitutePageIndexer::class;
@@ -382,7 +382,7 @@ class Typo3PageIndexer
         }
 
         foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageAddDocuments'] as $classReference) {
-            $additionalIndexer = GeneralUtility::getUserObj($classReference);
+            $additionalIndexer = GeneralUtility::makeInstance($classReference);
 
             if (!$additionalIndexer instanceof AdditionalPageIndexer) {
                 $message = get_class($additionalIndexer) . ' must implement interface ' . AdditionalPageIndexer::class;

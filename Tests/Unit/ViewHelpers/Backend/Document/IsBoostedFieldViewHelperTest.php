@@ -26,7 +26,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\ViewHelpers\Backend\Document;
 
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use ApacheSolrForTypo3\Solr\ViewHelpers\Backend\Document\IsBoostedFieldViewHelper;
-
+use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 
 /**
  * Testcase for the IsBoostedFieldViewHelper
@@ -62,15 +62,16 @@ class IsBoostedFieldViewHelperTest extends UnitTest
      */
     public function viewHelperRendersThenChildIfGivenFieldIsBoosted()
     {
-        $this->viewHelper->setArguments([
+        $arguments = [
             'document' => $this->apacheSolrDocument,
-            'fieldName' => 'boostedField'
-        ]);
-        $this->viewHelper->initializeArguments();
+            'fieldName' => 'boostedField',
+            '__thenClosure' => function() { return 'thenResult'; },
+            '__elseClosures' => [function() { return 'elseResult'; }]
+        ];
 
-        $this->viewHelper->expects($this->at(0))->method('renderThenChild')->will($this->returnValue('then'));
-        $actualResult = $this->viewHelper->render();
-        $this->assertEquals('then', $actualResult);
+        $renderingContextMock = $this->getDumbMock(RenderingContextInterface::class);
+        $result = IsBoostedFieldViewHelper::renderStatic($arguments, function(){}, $renderingContextMock);
+        $this->assertSame('thenResult', $result, 'thenClosure was not rendered');
     }
 
     /**
@@ -78,15 +79,16 @@ class IsBoostedFieldViewHelperTest extends UnitTest
      */
     public function viewHelperRendersElseChildIfNonStringTypeIsGiven()
     {
-        $this->viewHelper->setArguments([
+        $arguments = [
             'document' => $this->apacheSolrDocument,
-            'fieldName' => 'unboostedField'
-        ]);
-        $this->viewHelper->initializeArguments();
+            'fieldName' => 'unboostedField',
+            '__thenClosure' => function() { return 'thenResult'; },
+            '__elseClosures' => [function() { return 'elseResult'; }]
+        ];
 
-        $this->viewHelper->expects($this->at(0))->method('renderElseChild')->will($this->returnValue('else'));
-        $actualResult = $this->viewHelper->render();
-        $this->assertEquals('else', $actualResult);
+        $renderingContextMock = $this->getDumbMock(RenderingContextInterface::class);
+        $result = IsBoostedFieldViewHelper::renderStatic($arguments, function(){}, $renderingContextMock);
+        $this->assertSame('elseResult', $result, 'elseResult was not rendered');
     }
 
 }

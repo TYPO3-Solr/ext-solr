@@ -93,7 +93,7 @@ class RecordMonitor extends AbstractDataHandlerListener
         $this->mountPageUpdater = is_null($mountPageUpdater) ? GeneralUtility::makeInstance(MountPagesUpdater::class) : $mountPageUpdater;
         $this->tcaService = is_null($TCAService) ? GeneralUtility::makeInstance(TCAService::class) : $TCAService;
         $this->rootPageResolver = is_null($rootPageResolver) ? GeneralUtility::makeInstance(RootPageResolver::class) : $rootPageResolver;
-        $this->pagesRepository = isset($pagesRepository) ? $pagesRepository: GeneralUtility::makeInstance(PagesRepository::class);
+        $this->pagesRepository = isset($pagesRepository) ? $pagesRepository : GeneralUtility::makeInstance(PagesRepository::class);
     }
 
     /**
@@ -337,7 +337,8 @@ class RecordMonitor extends AbstractDataHandlerListener
         // Clear existing index queue items to prevent mount point duplicates.
         // This needs to be done before the overlay handling, because handling an overlay record should
         // not trigger a deletion.
-        if ($recordTable === 'pages') {
+        $isTranslation = !empty($record['sys_language_uid']) && $record['sys_language_uid'] !== 0;
+        if ($recordTable === 'pages' && !$isTranslation) {
             $this->indexQueue->deleteItem('pages', $recordUid);
         }
 
@@ -346,6 +347,8 @@ class RecordMonitor extends AbstractDataHandlerListener
         if ($isLocalizedRecord) {
             // if it's a localization overlay, update the original record instead
             $recordUid = $record[$GLOBALS['TCA'][$recordTable]['ctrl']['transOrigPointerField']];
+
+            //@todo This can be dropped when TYPO3 8 compatibility is dropped
             if ($recordTable === 'pages_language_overlay') {
                 $recordTable = 'pages';
             }
@@ -430,6 +433,10 @@ class RecordMonitor extends AbstractDataHandlerListener
      */
     protected function getRecordPageId($status, $recordTable, $recordUid, $originalUid, array $fields, DataHandler $tceMain)
     {
+        if ($recordTable === 'pages' && isset($fields['l10n_parent'])) {
+            return $fields['l10n_parent'];
+        }
+
         if ($status === 'update' && !isset($fields['pid'])) {
             $recordPageId = $this->getValidatedPid($tceMain, $recordTable, $recordUid);
             if (($recordTable === 'pages') && ($this->rootPageResolver->getIsRootPageId($recordUid))) {

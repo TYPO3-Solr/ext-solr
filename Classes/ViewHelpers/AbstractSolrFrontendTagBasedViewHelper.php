@@ -38,7 +38,7 @@ abstract class AbstractSolrFrontendTagBasedViewHelper extends AbstractSolrTagBas
      */
     protected function getTypoScriptConfiguration()
     {
-        return $this->controllerContext->getTypoScriptConfiguration();
+        return $this->getControllerContext()->getTypoScriptConfiguration();
     }
 
     /**
@@ -46,6 +46,27 @@ abstract class AbstractSolrFrontendTagBasedViewHelper extends AbstractSolrTagBas
      */
     protected function getSearchResultSet()
     {
-        return $this->controllerContext->getSearchResultSet();
+        return $this->getControllerContext()->getSearchResultSet();
+    }
+
+    /**
+     * @todo The fallback on $this->controllerContext is only needed for TYPO3 8 backwards compatibility and can be dropped when TYPO3 8 is not supported anymore
+     * @return SolrControllerContext
+     * @throws \InvalidArgumentException
+     */
+    protected function getControllerContext()
+    {
+        $controllerContext = null;
+        if (!is_null($this->controllerContext)) {
+            $controllerContext = $this->controllerContext;
+        } elseif (method_exists($this->renderingContext, 'getControllerContext')) {
+            $controllerContext = $this->renderingContext->getControllerContext();
+        }
+
+        if (!$controllerContext instanceof SolrControllerContext) {
+            throw new \InvalidArgumentException('No valid SolrControllerContext found', 1512998673);
+        }
+
+        return $controllerContext;
     }
 }

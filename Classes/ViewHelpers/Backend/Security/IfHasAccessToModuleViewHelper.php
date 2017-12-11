@@ -26,7 +26,7 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers\Backend\Security;
 
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractConditionViewHelper;
+use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractConditionViewHelper;
 
 /**
  * This view helper implements an ifHasAccessToModule/else condition for BE users/groups.

@@ -72,7 +72,8 @@ abstract class AbstractPaginateWidgetController extends AbstractWidgetController
      * @return void
      */
     public function initializeAction() {
-        ArrayUtility::mergeRecursiveWithOverrule($this->configuration, $this->widgetConfiguration['configuration'], false);
+        $configuration = is_array($this->widgetConfiguration['configuration']) ? $this->widgetConfiguration['configuration'] : [];
+        ArrayUtility::mergeRecursiveWithOverrule($this->configuration, $configuration, false);
         $this->maximumNumberOfLinks = (int)$this->configuration['maximumNumberOfLinks'];
         if (!empty($this->configuration['templatePath'])) {
             $this->templatePath = \TYPO3\CMS\Core\Utility\GeneralUtility::getFileAbsFileName($this->configuration['templatePath']);
@@ -125,7 +126,7 @@ abstract class AbstractPaginateWidgetController extends AbstractWidgetController
         }
 
         // calculate starting count for <ol> (items per page multiplied by (number of pages -1) and adding +1)
-        $pagination['resultCountStart'] = (($this->getItemsPerPage() * ($this->currentPage-1))+1);
+        $pagination['resultCountStart'] = (($this->getItemsPerPage() * ($this->currentPage - 1)) + 1);
         return $pagination;
     }
 

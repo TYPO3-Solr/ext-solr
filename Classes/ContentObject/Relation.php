@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr\ContentObject;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Util;
 use Doctrine\DBAL\Driver\Statement;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
@@ -127,8 +128,10 @@ class Relation
             $parentContentObject->currentRecord);
 
         $localTableNameOrg = $localTableName;
+
         // pages has a special overlay table constriction
-        if ($GLOBALS['TSFE']->sys_language_uid > 0 && $localTableName === 'pages') {
+        // @todo this check can be removed when TYPO3 8 support is dropped since pages translations are in pages then as well
+        if ($GLOBALS['TSFE']->sys_language_uid > 0 && $localTableName === 'pages' && Util::getIsTYPO3VersionBelow9()) {
             $localTableName = 'pages_language_overlay';
         }
 

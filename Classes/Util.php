@@ -469,6 +469,24 @@ class Util
     }
 
     /**
+     * @todo This method is just added for pages_language_overlay compatibility checks and will be removed when TYPO8 support is dropped
+     * @return boolean
+     */
+    public static function getIsTYPO3VersionBelow9()
+    {
+        return (bool)version_compare(TYPO3_branch, '9.0', '<');
+    }
+
+    /**
+     * @todo This method is just added for pages_language_overlay compatibility checks and will be removed when TYPO8 support is dropped
+     * @return string
+     */
+    public static function getPageOverlayTableName()
+    {
+        return self::getIsTYPO3VersionBelow9() ? 'pages_language_overlay' : 'pages';
+    }
+
+    /**
      * This function can be used to check if one of the strings in needles is
      * contained in the haystack.
      *

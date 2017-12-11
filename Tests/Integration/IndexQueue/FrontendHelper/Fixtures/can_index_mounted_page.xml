@@ -139,7 +139,6 @@ There is following scenario:
             <mount_pid_ol>1</mount_pid_ol>
             <title>Mount Point</title>
             <TSconfig/>
-            <urltype>1</urltype>
             <content_from_pid>0</content_from_pid>
             <tsconfig_includes/>
         </pages>
