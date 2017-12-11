@@ -34,11 +34,6 @@ class LastSearchesRepository extends AbstractRepository
     protected $table = 'tx_solr_last_searches';
 
     /**
-     * @var \TYPO3\CMS\Core\Database\DatabaseConnection
-     */
-    protected $database;
-
-    /**
      * Finds the last searched keywords from the database
      *
      * @param int $limit
