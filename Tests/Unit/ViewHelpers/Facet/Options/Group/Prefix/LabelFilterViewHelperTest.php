@@ -72,4 +72,34 @@ class LabelFilterViewHelperTest extends UnitTest
         $this->assertSame(1, $optionCollection->getCount());
         $this->assertSame('Polar Blue', $optionCollection->getByPosition(0)->getLabel(), 'Filtered option has unexpected label');
     }
+
+    /**
+     * @test
+     */
+    public function canMakeOnlyExpectedFacetsAvailableInStaticContextWithMultiByteCharacters()
+    {
+        $facet = $this->getDumbMock(OptionsFacet::class);
+
+        $ben = new Option($facet, 'Ben', 'ben', 14);
+        $ole = new Option($facet, 'Øle', 'ole', 12);
+
+        $optionCollection = new OptionCollection();
+        $optionCollection->add($ben);
+        $optionCollection->add($ole);
+
+        $variableContainer = $this->getMockBuilder(TemplateVariableContainer::class)->setMethods(['remove'])->getMock();
+        $renderingContextMock = $this->getDumbMock(RenderingContextInterface::class);
+        $renderingContextMock->expects($this->any())->method('getVariableProvider')->will($this->returnValue($variableContainer));
+
+        $testArguments['options'] = $optionCollection;
+        $testArguments['prefix'] = 'ø';
+
+        LabelFilterViewHelper::renderStatic($testArguments, function () {}, $renderingContextMock);
+        $this->assertTrue($variableContainer->exists('filteredOptions'), 'Expected that filteredOptions has been set');
+
+        /** @var  $optionCollection OptionCollection */
+        $optionCollection = $variableContainer->get('filteredOptions');
+        $this->assertSame(1, $optionCollection->getCount());
+        $this->assertSame('Øle', $optionCollection->getByPosition(0)->getLabel(), 'Filtered option has unexpected label');
+    }
 }
