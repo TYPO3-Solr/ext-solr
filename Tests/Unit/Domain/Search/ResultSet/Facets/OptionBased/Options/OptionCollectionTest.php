@@ -110,4 +110,23 @@ class OptionCollectionTest extends UnitTest
         $optionsStartingWithR = $facet->getOptions()->getByLowercaseLabelPrefix('r');
         $this->assertCount(3, $optionsStartingWithR, 'Unexpected amount of options starting with r');
     }
+
+    /**
+     * @test
+     */
+    public function canGetByLowercaseLabelPrefixWithMultiByteCharacter()
+    {
+        $searchResultSetMock = $this->getDumbMock(SearchResultSet::class);
+        $facet = new OptionsFacet($searchResultSetMock, 'authors', 'authors_s');
+
+        $ben = new Option($facet, 'Ben', 'ben', 14);
+        $ole = new Option($facet, 'Øle', 'ole', 12);
+
+        $facet->addOption($ben);
+        $facet->addOption($ole);
+
+        $optionsStartingWithO = $facet->getOptions()->getByLowercaseLabelPrefix('ø');
+        $this->assertCount(1, $optionsStartingWithO, 'Unexpected amount of options starting with ø');
+    }
 }
+

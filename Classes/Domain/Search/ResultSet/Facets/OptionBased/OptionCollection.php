@@ -40,7 +40,7 @@ class OptionCollection extends AbstractFacetItemCollection
     public function getLowercaseLabelPrefixes($length = 1)
     {
         $prefixes = $this->getLabelPrefixes($length);
-        return array_map('strtolower', $prefixes);
+        return array_map('mb_strtolower', $prefixes);
     }
 
     /**
@@ -51,8 +51,8 @@ class OptionCollection extends AbstractFacetItemCollection
     {
         return $this->getFilteredCopy(function(Option $option) use ($filteredPrefix)
         {
-            $filteredPrefixLength = strlen($filteredPrefix);
-            $currentPrefix = substr(strtolower($option->getLabel()),0, $filteredPrefixLength);
+            $filteredPrefixLength = mb_strlen($filteredPrefix);
+            $currentPrefix = mb_substr(mb_strtolower($option->getLabel()), 0, $filteredPrefixLength);
 
             return $currentPrefix === $filteredPrefix;
         });
@@ -67,7 +67,7 @@ class OptionCollection extends AbstractFacetItemCollection
         $prefixes = [];
         foreach ($this->data as $option) {
             /** @var $option Option */
-            $prefix = substr($option->getLabel(), 0, $length);
+            $prefix = mb_substr($option->getLabel(), 0, $length);
             $prefixes[$prefix] = $prefix;
         }
 
