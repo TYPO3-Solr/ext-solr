@@ -52,6 +52,10 @@ class PathToHierarchyTest extends UnitTest
             ['0-sport/', '1-sport/cricket/']);
         $this->assertEquals($this->processor->process(['sport/skateboarding']),
             ['0-sport/', '1-sport/skateboarding/']);
+
+        $this->assertEquals($this->processor->process(['sport/skateboarding \/ snowboarding']),
+            ['0-sport/', '1-sport/skateboarding \/ snowboarding/']);
+
         $this->assertEquals($this->processor->process(['sport/skateboarding/street']),
             [
                 '0-sport/',

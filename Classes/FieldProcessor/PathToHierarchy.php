@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr\FieldProcessor;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Hierarchy\HierarchyTool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -62,14 +63,16 @@ class PathToHierarchy implements FieldProcessor
     protected function buildSolrHierarchyFromPath($path)
     {
         $hierarchy = [];
+        $path = HierarchyTool::substituteSlashes($path);
 
         $treeParts = GeneralUtility::trimExplode('/', $path, true);
         $currentTreeParts = [];
 
         foreach ($treeParts as $i => $part) {
             $currentTreeParts[] = $part;
-
-            $hierarchy[] = $i . '-' . implode('/', $currentTreeParts) . '/';
+            $hierarchyString = $i . '-' . implode('/', $currentTreeParts) . '/';
+            $hierarchyString = HierarchyTool::unSubstituteSlashes($hierarchyString);
+            $hierarchy[] = $hierarchyString;
         }
 
         return $hierarchy;

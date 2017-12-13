@@ -39,7 +39,7 @@ class SolrWriteServiceTest extends IntegrationTest
 {
 
     /**
-     * @var SolrService
+     * @var SolrWriteService
      */
     protected $solrWriteService;
 

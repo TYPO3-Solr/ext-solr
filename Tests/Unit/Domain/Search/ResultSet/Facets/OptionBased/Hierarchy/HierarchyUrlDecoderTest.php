@@ -60,6 +60,17 @@ class HierarchyUrlEncoderTest extends UnitTest
     /**
      * @test
      */
+    public function canParseHierarchy3LevelQueryAndEscapedSlashes()
+    {
+        $expected = '"2-sport/skateboarding\\\\/snowboarding/street/"';
+        $actual = $this->parser->decode('/sport/skateboarding\/snowboarding/street/');
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    /**
+     * @test
+     */
     public function canParseHierarchy2LevelQuery()
     {
         $expected = '"1-sport/skateboarding/"';
