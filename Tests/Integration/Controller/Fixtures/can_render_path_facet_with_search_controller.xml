@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataset>
+
+    <sys_registry>
+        <uid>4711</uid>
+        <entry_namespace>tx_solr</entry_namespace>
+        <entry_key>servers</entry_key>
+        <entry_value>a:1:{s:3:"1|0";a:9:{s:13:"connectionKey";s:3:"1|0";s:13:"rootPageTitle";s:15:"Congratulations";s:11:"rootPageUid";s:1:"1";s:10:"solrScheme";s:4:"http";s:8:"solrHost";s:9:"localhost";s:8:"solrPort";s:4:"8999";s:8:"solrPath";s:14:"/solr/core_en/";s:8:"language";i:0;s:5:"label";s:74:"Congratulations (pid: 1, language: default) - localhost:8999/solr/core_en/";}}</entry_value>
+    </sys_registry>
+
+    <sys_template>
+        <uid>1</uid>
+        <pid>1</pid>
+        <root>1</root>
+        <clear>3</clear>
+        <config>
+            <![CDATA[
+                config.disableAllHeaderCode = 1
+                config.tx_extbase {
+                	mvc {
+
+                	}
+
+                    features {
+                        requireCHashArgumentForActionArguments = 0
+                        useRawDocuments = 1
+                    }
+                }
+
+                page = PAGE
+                page.typeNum = 0
+                page.bodyTag = <body>
+
+                # very simple rendering
+                page.10 = CONTENT
+                page.10 {
+                    table = tt_content
+                    select.orderBy = sorting
+                    select.where = colPos=0
+                    renderObj = COA
+                    renderObj {
+                        10 = TEXT
+                        10.field = bodytext
+                    }
+                }
+
+                page.10.wrap = <!--TYPO3SEARCH_begin--><html><body>|</body></html><!--TYPO3SEARCH_end-->
+
+                plugin.tx_solr {
+
+                    enabled = 1
+
+                    enableDebugMode = 0
+
+                    general {
+                        dateFormat.date = d.m.Y H:i
+                        baseWrap {
+                            value = <div class="baseWrap">|</div>
+                        }
+                    }
+
+                    solr {
+                        scheme = http
+                        host   = localhost
+                        port   = 8999
+                        path   = /solr/core_en/
+                    }
+
+                    index {
+                        additionalFields {
+
+                        }
+
+                        // assigns processing instructions to Solr fields during indexing, Solr field = processing instruction
+                        fieldProcessingInstructions {
+                            changed = timestampToIsoDate
+                            created = timestampToIsoDate
+                            endtime = timestampToUtcIsoDate
+                            categoryPaths_stringM = pathToHierarchy
+                        }
+
+                        queue {
+
+                            // mapping tableName.fields.SolrFieldName => TableFieldName (+ cObj processing)
+
+                            pages = 1
+                            pages {
+                                initialization = ApacheSolrForTypo3\Solr\IndexQueue\Initializer\Page
+
+                                // allowed page types (doktype) when indexing records from table "pages"
+                                allowedPageTypes = 1,7,4
+
+                                indexingPriority = 0
+
+                                indexer = ApacheSolrForTypo3\Solr\IndexQueue\PageIndexer
+                                indexer {
+                                    // add options for the indexer here
+                                }
+
+                                // Only index standard pages and mount points that are not overlayed.
+                                additionalWhereClause = (doktype = 1 OR doktype=4 OR (doktype=7 AND mount_pid_ol=0)) AND no_search = 0
+
+                                //exclude some html parts inside TYPO3SEARCH markers by classname (comma list)
+                                excludeContentByClass = typo3-search-exclude
+
+                                fields {
+                                    categoryPaths_stringM = SOLR_MULTIVALUE
+                                    categoryPaths_stringM {
+                                        stdWrap.cObject = USER
+                                        stdWrap.cObject.userFunc = ApacheSolrForTypo3\Solr\Tests\Integration\Controller\CategoryPathProvider->getPaths
+                                        separator=,
+                                    }
+                                }
+                            }
+
+                        }
+                    }
+
+                    search {
+                        // fields that are allowed to contain html and should be skipped during escaping after retrieval from Solr
+                        // by default all fields expect url get escaped, you might need to add other url fields here as well because of &
+                        // characters in the url.
+                        trustedFields = url
+
+                        targetPage = {$plugin.tx_solr.search.targetPage}
+
+                        initializeWithEmptyQuery = 0
+                        showResultsOfInitialEmptyQuery = 0
+
+                        initializeWithQuery =
+                        showResultsOfInitialQuery = 0
+                        keepExistingParametersForNewSearches = 1
+
+                        results {
+                            resultsHighlighting = 1
+                            resultsHighlighting {
+                                 // can be used to increase the highlighting performance requires the field is termVectors=on,
+                                 // termPositions=on and termOffsets=on which is set for content. NOTE: fragmentSize needs to be larger
+                                 // then 18
+                                useFastVectorHighlighter = 0
+                                highlightFields = content
+                                fragmentSize = 20
+                                fragmentSeparator = [...]
+
+                                wrap = <span class="results-highlight">|</span>
+                            }
+                            siteHighlighting = 0
+
+                            resultsPerPage = 5
+                            resultsPerPageSwitchOptions = 5, 10, 25, 50
+
+
+                            showDocumentScoreAnalysis = 1
+                        }
+
+                        faceting = 1
+                        faceting {
+                            minimumCount = 1
+                            sortBy = count
+                            limit = 10
+                            singleFacetMode = 0
+                            showEmptyFacets = 0
+                            keepAllFacetsOnSelection = 0
+
+                            facetLinkUrlParameters = &foo=bar
+
+                            facets {
+                               categoryPaths {
+                                  field = categoryPaths_stringM
+                                  label = Path
+                                  type = hierarchy
+                               }
+                            }
+
+                            showAllLink.wrap = <li>|</li>
+                        }
+                    }
+                }
+            ]]>
+        </config>
+        <sorting>100</sorting>
+        <static_file_mode>0</static_file_mode>
+    </sys_template>
+    <pages>
+        <uid>1</uid>
+        <is_siteroot>1</is_siteroot>
+        <doktype>1</doktype>
+        <title>Products</title>
+    </pages>
+    <pages>
+        <uid>2</uid>
+        <pid>1</pid>
+        <is_siteroot>0</is_siteroot>
+        <doktype>1</doktype>
+        <title>Shoes and Socks</title>
+        <subtitle>Men</subtitle>
+    </pages>
+    <pages>
+        <uid>3</uid>
+        <pid>1</pid>
+        <is_siteroot>0</is_siteroot>
+        <doktype>1</doktype>
+        <title>Sweatshirts and Jeans</title>
+        <subtitle>Men</subtitle>
+    </pages>
+
+    <tt_content>
+        <uid>1</uid>
+        <pid>2</pid>
+        <CType>text</CType>
+        <bodytext>Our awesome new shoes and socks products prices starting at 10 euro</bodytext>
+        <colPos>0</colPos>
+    </tt_content>
+
+    <tt_content>
+        <uid>2</uid>
+        <pid>3</pid>
+        <CType>text</CType>
+        <bodytext>Our awesome men jeans products prices starting at 50 euro</bodytext>
+        <colPos>0</colPos>
+    </tt_content>
+</dataset>

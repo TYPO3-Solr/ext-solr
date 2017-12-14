@@ -50,12 +50,15 @@ class HierarchyUrlDecoder implements FacetUrlDecoderInterface
      */
     public function decode($hierarchy, array $configuration = [])
     {
-        $hierarchy = substr($hierarchy, 1);
-        $hierarchy = rtrim($hierarchy, '/');
-        $hierarchyItems = explode(self::DELIMITER, $hierarchy);
+        $escapedHierarchy = HierarchyTool::substituteSlashes($hierarchy);
 
-        $hierarchyFilter = '"' . (count($hierarchyItems) - 1) . '-' . $hierarchy . '/"';
+        $escapedHierarchy = substr($escapedHierarchy, 1);
+        $escapedHierarchy = rtrim($escapedHierarchy, '/');
+        $hierarchyItems = explode(self::DELIMITER, $escapedHierarchy);
+        $filterContent = (count($hierarchyItems) - 1) . '-' . $escapedHierarchy . '/';
 
-        return $hierarchyFilter;
+        $filterContent = HierarchyTool::unSubstituteSlashes($filterContent);
+
+        return '"' . str_replace("\\", "\\\\", $filterContent) . '"';
     }
 }

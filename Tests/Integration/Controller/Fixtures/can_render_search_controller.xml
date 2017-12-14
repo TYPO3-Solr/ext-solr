@@ -78,6 +78,7 @@
                             endtime = timestampToUtcIsoDate
                             rootline = pageUidToHierarchy
                             pageHierarchy_stringM = pathToHierarchy
+                            category_stringM = categoryUidToHierarchy
                         }
 
                         queue {
@@ -106,7 +107,14 @@
 
                                 fields {
                                     sortSubTitle_stringS = subtitle
-                                }
+
+                                    category_stringM = SOLR_RELATION
+                                    category_stringM {
+                                        localField = categories
+                                        foreignLabelField = uid
+                                        multiValue = 1
+                                    }
+                                 }
                             }
 
                         }
@@ -297,7 +305,6 @@
                                         3 < .2
                                     }
                                 }
-
 
                                 pid {
                                     label = Uid Range
