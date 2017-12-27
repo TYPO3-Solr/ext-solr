@@ -198,7 +198,7 @@ class Relation
                 $contentObject = GeneralUtility::makeInstance(ContentObjectRenderer::class);
                 $contentObject->start($record, $foreignTableName);
 
-                return $this->getRelatedItems($contentObject);
+                $relatedItems = array_merge($relatedItems,$this->getRelatedItems($contentObject));
             } else {
                 if ($GLOBALS['TSFE']->sys_language_uid > 0) {
                     $record = $this->getTranslationOverlay($foreignTableName, $record);
