@@ -49,4 +49,4 @@ allowSelfSignedCertificates
 :Since: 6.1
 :Default: 0
 
-Can be used to allow self signed certificates - when using the SSL protocol.
+Can be used to allow invalid (e.g. self signed) certificates - when using the SSL protocol.
