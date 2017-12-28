@@ -10,7 +10,7 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper;
  *  This script is part of the TYPO3 project. The TYPO3 project is
  *  free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
+ *  the Free Software Foundation; either version 3 of the License, or
  *  (at your option) any later version.
  *
  *  The GNU General Public License can be found at
@@ -81,7 +81,7 @@ class PageFieldMappingIndexer implements SubstitutePageIndexer
         $substitutePageDocument = clone $pageDocument;
 
 
-        $mappedFields = $this->getMappedFields();
+        $mappedFields = $this->getMappedFields($pageDocument);
         foreach ($mappedFields as $fieldName => $fieldValue) {
             if (isset($substitutePageDocument->{$fieldName})) {
                 // reset = overwrite, especially important to not make fields
@@ -102,9 +102,10 @@ class PageFieldMappingIndexer implements SubstitutePageIndexer
      * Gets the mapped fields as an array mapping field names to values.
      *
      * @throws InvalidFieldNameException
+     * @param \Apache_Solr_Document $pageDocument The original page document.
      * @return array An array mapping field names to their values.
      */
-    protected function getMappedFields()
+    protected function getMappedFields(\Apache_Solr_Document $pageDocument)
     {
         $fields = [];
 
@@ -117,7 +118,7 @@ class PageFieldMappingIndexer implements SubstitutePageIndexer
                     1435441863
                 );
             }
-            $fields[$mappedFieldName] = $this->resolveFieldValue($mappedFieldName);
+            $fields[$mappedFieldName] = $this->resolveFieldValue($mappedFieldName, $pageDocument);
         }
 
         return $fields;
@@ -132,13 +133,15 @@ class PageFieldMappingIndexer implements SubstitutePageIndexer
      * @param string $solrFieldName The Solr field name to resolve the value from the item's record
      * @return string The resolved string value to be indexed
      */
-    protected function resolveFieldValue($solrFieldName)
+    protected function resolveFieldValue($solrFieldName, \Apache_Solr_Document $pageDocument)
     {
         $pageRecord = $GLOBALS['TSFE']->page;
 
         $pageIndexingConfiguration = $this->configuration->getIndexQueueFieldsConfigurationByConfigurationName($this->pageIndexingConfigurationName);
 
         if (isset($pageIndexingConfiguration[$solrFieldName . '.'])) {
+            $pageRecord = AbstractIndexer::addVirtualContentFieldToRecord($pageDocument, $pageRecord);
+
             // configuration found => need to resolve a cObj
             $contentObject = GeneralUtility::makeInstance(ContentObjectRenderer::class);
             $contentObject->start($pageRecord, 'pages');

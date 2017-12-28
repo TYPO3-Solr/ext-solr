@@ -10,7 +10,7 @@ namespace ApacheSolrForTypo3\Solr\Task;
  *  This script is part of the TYPO3 project. The TYPO3 project is
  *  free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
+ *  the Free Software Foundation; either version 3 of the License, or
  *  (at your option) any later version.
  *
  *  The GNU General Public License can be found at
@@ -25,6 +25,7 @@ namespace ApacheSolrForTypo3\Solr\Task;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Domain\Index\IndexService;
+use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\System\Environment\CliEnvironment;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Scheduler\ProgressProviderInterface;
@@ -65,7 +66,8 @@ class IndexQueueWorkerTask extends AbstractSolrTask implements ProgressProviderI
             $cliEnvironment->initialize($this->getWebRoot());
         }
 
-        $indexService = $this->getInitializedIndexService();
+        $site = $this->getSite();
+        $indexService = $this->getInitializedIndexService($site);
         $indexService->indexItems($this->documentsToIndexLimit);
 
         if (TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_CLI) {
@@ -121,10 +123,16 @@ class IndexQueueWorkerTask extends AbstractSolrTask implements ProgressProviderI
      */
     public function getAdditionalInformation()
     {
-        $message = 'Site: ' . $this->getSite()->getLabel();
+        $site = $this->getSite();
+
+        if (is_null($site)) {
+            return 'Invalid site configuration for scheduler please re-create the task!';
+        }
+
+        $message = 'Site: ' . $site->getLabel();
 
         /** @var $indexService \ApacheSolrForTypo3\Solr\Domain\Index\IndexService */
-        $indexService = $this->getInitializedIndexService();
+        $indexService = $this->getInitializedIndexService($site);
         $failedItemsCount = $indexService->getFailCount();
 
         if ($failedItemsCount) {
@@ -143,8 +151,13 @@ class IndexQueueWorkerTask extends AbstractSolrTask implements ProgressProviderI
      */
     public function getProgress()
     {
+        $site = $this->getSite();
+        if (is_null($site)) {
+            return 0.0;
+        }
+
         /** @var $indexService \ApacheSolrForTypo3\Solr\Domain\Index\IndexService */
-        $indexService = $this->getInitializedIndexService();
+        $indexService = $this->getInitializedIndexService($site);
 
         return $indexService->getProgress();
     }
@@ -184,11 +197,13 @@ class IndexQueueWorkerTask extends AbstractSolrTask implements ProgressProviderI
     /**
      * Returns the initialize IndexService instance.
      *
+     * @param Site $site
      * @return IndexService
+     * @internal param $Site
      */
-    protected function getInitializedIndexService()
+    protected function getInitializedIndexService(Site $site)
     {
-        $indexService = GeneralUtility::makeInstance(IndexService::class, $this->getSite());
+        $indexService = GeneralUtility::makeInstance(IndexService::class, $site);
         $indexService->setContextTask($this);
         return $indexService;
     }

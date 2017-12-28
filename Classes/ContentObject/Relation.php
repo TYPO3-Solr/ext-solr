@@ -10,7 +10,7 @@ namespace ApacheSolrForTypo3\Solr\ContentObject;
  *  This script is part of the TYPO3 project. The TYPO3 project is
  *  free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
+ *  the Free Software Foundation; either version 3 of the License, or
  *  (at your option) any later version.
  *
  *  The GNU General Public License can be found at
@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr\ContentObject;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Util;
 use Doctrine\DBAL\Driver\Statement;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
@@ -127,8 +128,10 @@ class Relation
             $parentContentObject->currentRecord);
 
         $localTableNameOrg = $localTableName;
+
         // pages has a special overlay table constriction
-        if ($GLOBALS['TSFE']->sys_language_uid > 0 && $localTableName === 'pages') {
+        // @todo this check can be removed when TYPO3 8 support is dropped since pages translations are in pages then as well
+        if ($GLOBALS['TSFE']->sys_language_uid > 0 && $localTableName === 'pages' && Util::getIsTYPO3VersionBelow9()) {
             $localTableName = 'pages_language_overlay';
         }
 

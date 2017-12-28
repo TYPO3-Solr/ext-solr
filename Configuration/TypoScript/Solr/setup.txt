@@ -101,13 +101,74 @@ plugin.tx_solr {
 			boostQuery =
 
 			// see http://lucene.apache.org/solr/guide/7_0/the-dismax-query-parser.html#the-tie-tie-breaker-parameter
-			tieParameter = 
+			tieParameter =
 
 			filter {
 
 			}
 
 			sortBy =
+
+			// https://www.hathitrust.org/blogs/large-scale-search/slow-queries-and-common-words-part-2
+			// http://blog.thedigitalgroup.com/vijaym/understanding-phrasequery-and-slop-in-solr/
+			// https://solr.pl/en/2010/07/14/solr-and-phrasequery-phrase-bonus-in-query-stage/
+
+			// see https://lucene.apache.org/solr/guide/7_0/the-dismax-query-parser.html#TheDisMaxQueryParser-Thepf_PhraseFields_Parameter
+			// EXT:Solr configures Schemas from Apache Solr to use content field with boost of 2.0 per default.
+			// By enabling of phrase search, Apache Solr will build a phrase queries for a list of defined fields(phrase.fields) and boost the documents containing the terms in defined proximity(phrase.slop).
+			// phrase.querySlop
+			phrase = 0
+			phrase {
+				// Note: Those are field for implicit phrase searching. On explicit "phrase searching" Apache Solr uses queryFields("qf" parameter)
+				fields = content^10.0, title^10.0, tagsH1^10.0, tagsH2H3^10.0, tagsH4H5H6^10.0, tagsInline^10.0, description^10.0, abstract^10.0, subtitle^10.0, navtitle^10.0
+				// The number of words between words in query phrase is the slop-value.
+				// e.g. on query phrase "Hello World"
+				// @ slop = 0 will math "Hello World" but not "Hello wonderful World"
+				// @ slop = 1 will math "Hello World" and/or "Hello wonderful World"
+				// Note: this value is for implicit phrase searching(without double quotes)
+				slop = 0
+				
+				// The concept of query slop is similar to phrase.slop but it applies to the explicit phrase queries from the user and to match documents instead of boosting.
+				// Also if the user uses double quotes in the search term, then
+				// the query slop value is used and
+				// the result contains only the documents with those phrase.
+				// see https://lucene.apache.org/solr/guide/7_0/the-extended-dismax-query-parser.html http://lucene.472066.n3.nabble.com/Query-slop-vs-phrase-slop-td1637041.html
+				// Note: this value is for explicit "phrase searching"(with double quotes)
+				querySlop = 0
+			}
+
+			// bigram phrase functionality is similar to the Ngram filters, difference is that
+			//     filters strip down the words to chars(char combinations)
+			//     bigraming phrases strip down the sentence to the two-word combinations(phrases)
+			// e.g. "bigraming phrases strip down the sentence to phrases" generates following
+			// "bigraming phrases"
+			//           "phrases strip"
+			//                   "strip down"
+			//                         "down the"
+			//                              "the sentence"
+			//                                   "sentence to"
+			//                                            "to phrases"
+			// Note: The triplets phrases will be stripped down to two two-word phrases
+			bigramPhrase = 0
+			bigramPhrase {
+				fields = content^10.0, title^10.0, tagsH1^10.0, tagsH2H3^10.0, tagsH4H5H6^10.0, tagsInline^10.0, description^10.0, abstract^10.0, subtitle^10.0, navtitle^10.0
+				slop = 0
+			}
+
+			// Please see bigram phrases. Difference to bi is tri, which means building of triplets phrases.
+			// e.g. "trigraming phrases strip down the sentence to triplets phrases" generates following triplets
+			// "trigraming phrases strip"
+			//            "phrases strip down"
+			//                    "strip down the"
+			//                          "down the sentence"
+			//                               "the sentence to"
+			//                                   "sentence to triplets"
+			//                                            "to triplets phrases"
+			trigramPhrase = 0
+			trigramPhrase {
+				fields = content^10.0, title^10.0, tagsH1^10.0, tagsH2H3^10.0, tagsH4H5H6^10.0, tagsInline^10.0, description^10.0, abstract^10.0, subtitle^10.0, navtitle^10.0
+				slop = 0
+			}
 		}
 
 		results {
@@ -249,13 +310,16 @@ plugin.tx_solr {
 		pluginNamespace = tx_solr
 
 		templateRootPaths {
-			0 = {$plugin.tx_solr.templateRootPath}
+			0 = EXT:solr/Resources/Private/Templates/
+			10 = {$plugin.tx_solr.view.templateRootPath}
 		}
 		partialRootPaths {
-			0 = {$plugin.tx_solr.partialRootPath}
+			0 = EXT:solr/Resources/Private/Partials/
+			10 = {$plugin.tx_solr.view.partialRootPath}
 		}
 		layoutRootPaths {
-			0 = {$plugin.tx_solr.layoutRootPath}
+			0 = EXT:solr/Resources/Private/Layouts/
+			10 = {$plugin.tx_solr.view.layoutRootPath}
 		}
 
         // By convention the templates is loaded from EXT:solr/Resources/Private/Templates/Frontend/Search/(ActionName).html

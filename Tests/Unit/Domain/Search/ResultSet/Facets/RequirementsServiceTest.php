@@ -67,7 +67,7 @@ class RequirementsServiceTest extends UnitTest
         $resultSet = new SearchResultSet();
         $colorConfig = [];
         $colorFacet = new OptionsFacet($resultSet, 'mycolor', 'colors_stringM', 'Colors', $colorConfig);
-        $redOption = new Option($colorFacet, 'Red', 'red');
+        $redOption = new Option($colorFacet, 'Red', 'red', 42, true);
         $colorFacet->addOption($redOption);
         $colorFacet->setIsUsed(true);
 
@@ -113,6 +113,34 @@ class RequirementsServiceTest extends UnitTest
         $resultSet->addFacet($categoryFacet);
         $service = new RequirementsService();
         $this->assertFalse($service->getAllRequirementsMet($categoryFacet), 'Requirement should not be met because the facet has not the require value');
+    }
+
+    /**
+     * @test
+     */
+    public function getAllRequirementsMetIsReturnsFalseIfRequiredFacetValueIsNotSelected()
+    {
+        $resultSet = new SearchResultSet();
+        $colorConfig = [];
+        $colorFacet = new OptionsFacet($resultSet, 'mycolor', 'colors_stringM', 'Colors', $colorConfig);
+        $redOption = new Option($colorFacet, 'Red', 'red', 0, false);
+        $colorFacet->addOption($redOption);
+        $colorFacet->setIsUsed(true);
+
+        $resultSet->addFacet($colorFacet);
+
+        $categoryConfig = [
+            'requirements.' => [
+                'matchesColor' => [
+                    'facet' => 'mycolor',
+                    'values' => 'red,blue,green'
+                ]
+            ]
+        ];
+        $categoryFacet = new OptionsFacet($resultSet, 'mycategory', 'category_stringM', 'Category', $categoryConfig);
+        $resultSet->addFacet($categoryFacet);
+        $service = new RequirementsService();
+        $this->assertFalse($service->getAllRequirementsMet($categoryFacet), 'Requirement should not be met because the required option is not selected');
     }
 
     /**

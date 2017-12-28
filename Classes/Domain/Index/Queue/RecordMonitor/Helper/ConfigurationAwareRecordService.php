@@ -11,7 +11,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper;
  *  This script is part of the TYPO3 project. The TYPO3 project is
  *  free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
+ *  the Free Software Foundation; either version 3 of the License, or
  *  (at your option) any later version.
  *
  *  The GNU General Public License can be found at
@@ -27,6 +27,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper;
 
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -158,6 +159,8 @@ class ConfigurationAwareRecordService
         $tableToIndex = $solrConfiguration->getIndexQueueTableNameOrFallbackToConfigurationName($indexingConfigurationName);
 
         $isMatchingTable = ($tableToIndex === $recordTable);
+
+        //@todo this case can be removed when TYPO3 8 compatibility is dropped
         $isPagesPassedAndOverlayRequested = $tableToIndex === 'pages' && $recordTable === 'pages_language_overlay';
 
         if ($isMatchingTable || $isPagesPassedAndOverlayRequested) {
@@ -177,8 +180,16 @@ class ConfigurationAwareRecordService
      */
     protected function getPageOverlayRecordIfParentIsAccessible($recordUid, $parentWhereClause)
     {
-        $overlayRecord = (array)BackendUtility::getRecord('pages_language_overlay', $recordUid, '*');
-        $pageRecord = (array)BackendUtility::getRecord('pages', $overlayRecord['pid'], '*', $parentWhereClause);
+        //@todo getting parent id from pages_language_overlay can be dropped when compatibility for TYPO3 8 is dropped
+        if (Util::getIsTYPO3VersionBelow9()) {
+            $overlayRecord = (array)BackendUtility::getRecord('pages_language_overlay', $recordUid, '*');
+            $overlayParentId = $overlayRecord['pid'];
+        } else {
+            $overlayRecord = (array)BackendUtility::getRecord('pages', $recordUid, '*');
+            $overlayParentId = $overlayRecord['l10n_parent'];
+        }
+
+        $pageRecord = (array)BackendUtility::getRecord('pages', $overlayParentId, '*', $parentWhereClause);
 
         if (empty($pageRecord)) {
             return [];

@@ -1,76 +1,92 @@
 {
   "responseHeader": {
     "status": 0,
-    "QTime": 11,
+    "QTime": 13,
     "params": {
-      "spellcheck": "true",
-      "facet": "true",
-      "enableElevation": "false",
-      "hl.tag.post": "</em>",
-      "spellcheck.maxCollationTries": "5",
-      "q.alt": "*:*",
-      "hl": "true",
-      "echoParams": "all",
-      "debugQuery": "true",
-      "fl": "*,score",
-      "bf": "recip(ms(NOW,filter_dateS),3.16e-11,1,1)^20.0",
-      "facet.field": [
-        "type_stringS",
-        "category_stringM"
-      ],
-      "fq": [
-        "siteHash:\"73f9dbeae83ff400a97eedfb88e33a5a9d9f58fe\"",
-        "{!typo3access}-2,0,1"
-      ],
-      "hl.fragsize": "100",
-      "facet.mincount": "1",
-      "qf": "content^10.0 title^12.0 category_textM^2.0",
-      "hl.tag.pre": "<em class=\"match\">",
-      "hl.fl": "content",
-      "json.nl": "map",
-      "spellcheck.collate": "true",
-      "wt": "json",
-      "rows": "10",
-      "hl.useFastVectorHighlighter": "true",
-      "start": "0",
-      "facet.sort": "count",
-      "q": "",
-      "hl.requireFieldMatch": "true",
-      "mm": "2<-35%",
-      "indent": "true",
-      "spellcheck.extendedResults": "false",
-      "hl.mergeContiguous": "true",
-      "f.content.hl.maxAlternateFieldLength": "200",
-      "spellcheck.onlyMorePopular": "false",
-      "defType": "edismax",
-      "pf": "content^2.0",
       "df": "content",
-      "hl.snippets": "3",
-      "f.content.hl.alternateField": "content",
+      "ps": "15",
       "spellcheck.dictionary": [
         "default",
         "wordbreak"
       ],
+      "hl": "true",
+      "echoParams": "all",
+      "indent": "true",
+      "fl": "*,score",
+      "hl.requireFieldMatch": "true",
+      "hl.fragsize": "200",
+      "fq": [
+        "{!collapse field=variantId}",
+        "siteHash:\"31c20e448477ffc7544f4d1d0b17ea48c06a3a48\"",
+        "{!typo3access}-1,0"
+      ],
+      "spellcheck.maxCollationTries": "1",
+      "hl.simple.pre": "<span class=\"results-highlight\">",
+      "hl.useFastVectorHighlighter": "true",
+      "defType": "edismax",
+      "hl.mergeContiguous": "true",
+      "expand.rows": "10",
+      "qf": "content^40.0 title^5.0 keywords^2.0 tagsH1^5.0 tagsH2H3^3.0 tagsH4H5H6^2.0 tagsInline description^4.0 abstract subtitle navtitle author",
+      "hl.fl": "content",
+      "wt": "json",
+      "f.content.hl.alternateField": "content",
+      "hl.tag.pre": "<span class=\"results-highlight\">",
+      "mm": "2<-35%",
+      "json.nl": "map",
+      "start": "0",
+      "hl.tag.post": "</span>",
+      "rows": "0",
+      "f.content.hl.maxAlternateFieldLength": "200",
+      "spellcheck.extendedResults": "false",
+      "hl.snippets": "3",
+      "facet.limit": "100",
+      "json.facet": "{\"type\":{\"type\":\"terms\",\"field\":\"type_stringS\",\"limit\":100,\"mincount\":1,\"domain\":{\"excludeTags\":\"type_stringS,category_stringM\"}},\"category_stringM\":{\"type\":\"terms\",\"field\":\"category_stringM\",\"limit\":100,\"mincount\":1,\"domain\":{\"excludeTags\":\"type_stringS,category_stringM\"}}}",
+      "q": "*",
+      "expand": "true",
+      "enableElevation": "false",
+      "hl.simple.post": "</span>",
+      "spellcheck": "true",
+      "pf": "content^2.0",
+      "spellcheck.onlyMorePopular": "false",
+      "facet.mincount": "1",
       "spellcheck.count": "1",
-      "ps": "15"
+      "facet": "true",
+      "debugQuery": "false",
+      "facet.sort": "count",
+      "spellcheck.collate": "true"
     }
   },
   "response": {
-    "numFound": 10,
+    "numFound": 14,
     "start": 0,
-    "maxScore": 1.0868415
+    "maxScore": 1.0,
+    "docs": []
   },
   "facet_counts": {
     "facet_queries": {},
-    "facet_fields": {
-      "type_stringS": {
-        "page": 9,
-        "event": 1
-      },
-      "category_stringM": {}
-    },
-    "facet_dates": {},
+    "facet_fields": {},
     "facet_ranges": {},
-    "facet_intervals": {}
-  }
+    "facet_intervals": {},
+    "facet_heatmaps": {}
+  },
+  "facets": {
+    "count": 10,
+    "type": {
+      "buckets": [
+        {
+          "val": "page",
+          "count": 9
+        },
+        {
+          "val": "event",
+          "count": 1
+        }
+      ]
+    },
+    "category_stringM": {
+      "buckets": []
+    }
+  },
+  "highlighting": {},
+  "expanded": {}
 }

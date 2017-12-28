@@ -12,7 +12,7 @@ namespace ApacheSolrForTypo3\Solr\Task;
  *  This script is part of the TYPO3 project. The TYPO3 project is
  *  free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
+ *  the Free Software Foundation; either version 3 of the License, or
  *  (at your option) any later version.
  *
  *  The GNU General Public License can be found at
@@ -87,14 +87,14 @@ class ReIndexTask extends AbstractSolrTask
 
         foreach ($solrServers as $solrServer) {
             $deleteQuery = 'type:(' . implode(' OR ', $typesToCleanUp) . ')' . ' AND siteHash:' . $this->getSite()->getSiteHash();
-            $solrServer->deleteByQuery($deleteQuery);
+            $solrServer->getWriteService()->deleteByQuery($deleteQuery);
 
             if (!$enableCommitsSetting) {
                 # Do not commit
                 continue;
             }
 
-            $response = $solrServer->commit(false, false, false);
+            $response = $solrServer->getWriteService()->commit(false, false, false);
             if ($response->getHttpStatus() != 200) {
                 $cleanUpResult = false;
                 break;
@@ -134,12 +134,12 @@ class ReIndexTask extends AbstractSolrTask
      */
     public function getAdditionalInformation()
     {
-        $information = '';
-
-        if ($this->getSite()) {
-            $information = 'Site: ' . $this->getSite()->getLabel();
+        $site = $this->getSite();
+        if (is_null($site)) {
+            return 'Invalid site configuration for scheduler please re-create the task!';
         }
 
+        $information = 'Site: ' . $this->getSite()->getLabel();
         if (!empty($this->indexingConfigurationsToReIndex)) {
             $information .= ', Indexing Configurations: ' . implode(', ',
                     $this->indexingConfigurationsToReIndex);

@@ -10,7 +10,7 @@ namespace ApacheSolrForTypo3\Solr\Report;
  *  This script is part of the TYPO3 project. The TYPO3 project is
  *  free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
+ *  the Free Software Foundation; either version 3 of the License, or
  *  (at your option) any later version.
  *
  *  The GNU General Public License can be found at
@@ -25,7 +25,7 @@ namespace ApacheSolrForTypo3\Solr\Report;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\ConnectionManager;
-use ApacheSolrForTypo3\Solr\SolrService;
+use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Reports\Status;
 
@@ -63,18 +63,19 @@ class SchemaStatus extends AbstractSolrStatus
         $solrConnections = GeneralUtility::makeInstance(ConnectionManager::class)->getAllConnections();
 
         foreach ($solrConnections as $solrConnection) {
-            /** @var $solrConnection SolrService */
-            if (!$solrConnection->ping()) {
-                $url = $solrConnection->__toString();
+            $adminService = $solrConnection->getAdminService();
+            /** @var $solrConnection SolrConnection */
+            if (!$adminService->ping()) {
+                $url = $adminService->__toString();
                 $pingFailedMsg = 'Could not ping solr server, can not check version ' . (string)$url;
                 $status = GeneralUtility::makeInstance(Status::class, 'Apache Solr Version', 'Not accessible', $pingFailedMsg, Status::ERROR);
                 $reports[] = $status;
                 continue;
             }
 
-            $isWrongSchema = $solrConnection->getSchema()->getName() != self::RECOMMENDED_SCHEMA_VERSION;
+            $isWrongSchema = $adminService->getSchema()->getName() != self::RECOMMENDED_SCHEMA_VERSION;
             if ($isWrongSchema) {
-                $variables = ['solr' => $solrConnection, 'recommendedVersion' => self::RECOMMENDED_SCHEMA_VERSION];
+                $variables = ['solr' => $adminService, 'recommendedVersion' => self::RECOMMENDED_SCHEMA_VERSION];
                 $report = $this->getRenderedReport('SchemaStatus.html', $variables);
                 $status = GeneralUtility::makeInstance(Status::class, 'Schema Version', 'Unsupported Schema', $report, Status::WARNING);
                 $reports[] = $status;

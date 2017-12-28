@@ -28,4 +28,11 @@ class OptionsPackage extends AbstractFacetPackage {
     public function getParserClassName() {
         return (string)OptionsFacetParser::class;
     }
+
+    /**
+     * @return string
+     */
+    public function getQueryBuilderClassName() {
+        return (string)OptionsFacetQueryBuilder::class;
+    }
 }

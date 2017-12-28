@@ -10,7 +10,7 @@ namespace ApacheSolrForTypo3\Solr;
  *  This script is part of the TYPO3 project. The TYPO3 project is
  *  free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
+ *  the Free Software Foundation; either version 3 of the License, or
  *  (at your option) any later version.
  *
  *  The GNU General Public License can be found at
@@ -466,6 +466,24 @@ class Util
         }
 
         return $absRefPrefix;
+    }
+
+    /**
+     * @todo This method is just added for pages_language_overlay compatibility checks and will be removed when TYPO8 support is dropped
+     * @return boolean
+     */
+    public static function getIsTYPO3VersionBelow9()
+    {
+        return (bool)version_compare(TYPO3_branch, '9.0', '<');
+    }
+
+    /**
+     * @todo This method is just added for pages_language_overlay compatibility checks and will be removed when TYPO8 support is dropped
+     * @return string
+     */
+    public static function getPageOverlayTableName()
+    {
+        return self::getIsTYPO3VersionBelow9() ? 'pages_language_overlay' : 'pages';
     }
 
     /**

@@ -10,7 +10,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
  *  This script is part of the TYPO3 project. The TYPO3 project is
  *  free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
+ *  the Free Software Foundation; either version 3 of the License, or
  *  (at your option) any later version.
  *
  *  The GNU General Public License can be found at
@@ -26,7 +26,6 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\SortingExpression;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * The Faceting ParameterProvider is responsible to build the solr query parameters
@@ -232,16 +231,17 @@ class Faceting implements ParameterBuilder
     /**
      * Reads the facet sorting configuration and applies it to the queryParameters.
      *
+     * @param array $facetParameters
      * @return array
      */
     protected function applySorting(array $facetParameters)
     {
         $sortingExpression = new SortingExpression();
         $globalSortingExpression = $sortingExpression->getForFacet($this->sorting);
+
         if (!empty($globalSortingExpression)) {
             $facetParameters['facet.sort'] = $globalSortingExpression;
         }
-
 
         return $facetParameters;
     }

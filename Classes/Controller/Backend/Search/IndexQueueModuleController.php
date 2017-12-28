@@ -10,7 +10,7 @@ namespace ApacheSolrForTypo3\Solr\Controller\Backend\Search;
  *  This script is part of the TYPO3 project. The TYPO3 project is
  *  free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
+ *  the Free Software Foundation; either version 3 of the License, or
  *  (at your option) any later version.
  *
  *  The GNU General Public License can be found at
@@ -68,6 +68,14 @@ class IndexQueueModuleController extends AbstractModuleController
     {
         parent::initializeAction();
         $this->indexQueue = GeneralUtility::makeInstance(Queue::class);
+    }
+
+    /**
+     * @param Queue $indexQueue
+     */
+    public function setIndexQueue(Queue $indexQueue)
+    {
+        $this->indexQueue = $indexQueue;
     }
 
     /**
@@ -201,11 +209,31 @@ class IndexQueueModuleController extends AbstractModuleController
             $severity = FlashMessage::ERROR;
         }
 
-        $this->addFlashMessage(
-            LocalizationUtility::translate($label, 'Solr'),
-            LocalizationUtility::translate('solr.backend.index_queue_module.flashmessage.title', 'Solr'),
-            $severity
-        );
+        $this->addIndexQueueFlashMessage($label, $severity);
+
+        $this->redirect('index');
+    }
+
+    /**
+     * ReQueues a single item in the indexQueue.
+     *
+     * @param string $type
+     * @param int $uid
+     *
+     * @return void
+     */
+    public function requeueDocumentAction(string $type, int $uid)
+    {
+        $label = 'solr.backend.index_queue_module.flashmessage.error.single_item_not_requeued';
+        $severity = FlashMessage::ERROR;
+
+        $updateCount = $this->indexQueue->updateItem($type, $uid, time());
+        if ($updateCount > 0) {
+            $label = 'solr.backend.index_queue_module.flashmessage.success.single_item_was_requeued';
+            $severity = FlashMessage::OK;
+        }
+
+        $this->addIndexQueueFlashMessage($label, $severity);
 
         $this->redirect('index');
     }
@@ -222,12 +250,7 @@ class IndexQueueModuleController extends AbstractModuleController
             // add a flash message and quit
             $label = 'solr.backend.index_queue_module.flashmessage.error.no_queue_item_for_queue_error';
             $severity = FlashMessage::ERROR;
-            $this->addFlashMessage(
-                LocalizationUtility::translate($label, 'Solr'),
-                LocalizationUtility::translate('solr.backend.index_queue_module.flashmessage.title',
-                    'Solr'),
-                $severity
-            );
+            $this->addIndexQueueFlashMessage($label, $severity);
 
             return;
         }
@@ -260,5 +283,16 @@ class IndexQueueModuleController extends AbstractModuleController
         );
 
         $this->redirect('index');
+    }
+
+    /**
+     * Adds a flash message for the index queue module.
+     *
+     * @param string $label
+     * @param int $severity
+     */
+    protected function addIndexQueueFlashMessage($label, $severity)
+    {
+        $this->addFlashMessage(LocalizationUtility::translate($label, 'Solr'), LocalizationUtility::translate('solr.backend.index_queue_module.flashmessage.title', 'Solr'), $severity);
     }
 }

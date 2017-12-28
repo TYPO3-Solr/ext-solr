@@ -10,7 +10,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration;
  *  This script is part of the TYPO3 project. The TYPO3 project is
  *  free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
+ *  the Free Software Foundation; either version 3 of the License, or
  *  (at your option) any later version.
  *
  *  The GNU General Public License can be found at
@@ -27,6 +27,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration;
 use ApacheSolrForTypo3\Solr\Access\Rootline;
 use ApacheSolrForTypo3\Solr\Typo3PageIndexer;
 
+use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Core\Bootstrap;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
@@ -91,7 +92,7 @@ abstract class IntegrationTest extends FunctionalTestCase
      */
     protected function importDataSetFromFixture($fixtureName)
     {
-        $this->importDataSet($this->getFixtureRootPath() . $fixtureName);
+        $this->importDataSet($this->getFixturePathByName($fixtureName));
     }
 
     /**
@@ -112,6 +113,20 @@ abstract class IntegrationTest extends FunctionalTestCase
      */
     protected function getFixturePathByName($fixtureName)
     {
+        if(!Util::getIsTYPO3VersionBelow9())
+        {
+            $overlayPostFix = '.v9';
+            $dotInFileName = strrpos($fixtureName,'.');
+            $fileName = substr($fixtureName, 0, $dotInFileName);
+            $fileExtension = substr($fixtureName, $dotInFileName);
+            $overlayName = $fileName.$overlayPostFix.$fileExtension;
+
+
+            if(file_exists($this->getFixtureRootPath() . $overlayName)) {
+                return $this->getFixtureRootPath() . $overlayName;
+            }
+        }
+
         return $this->getFixtureRootPath() . $fixtureName;
     }
 
@@ -135,23 +150,10 @@ abstract class IntegrationTest extends FunctionalTestCase
         $dumpContent = str_replace(["\r", "\n"], '', $dumpContent);
         $queries = GeneralUtility::trimExplode(';', $dumpContent, true);
 
-        $connection = $this->getDatabaseConnectionBC();
+        $connection = $this->getDatabaseConnection();
         foreach ($queries as $query) {
             $connection->exec($query);
         }
-    }
-
-    /**
-     * @todo: remove this method after increasing to nimut/testing-framework v 2.0
-     *        and use getDatabaseConnection() instead of this
-     *
-     * @return \TYPO3\CMS\Core\Database\Connection
-     */
-    protected function getDatabaseConnectionBC()
-    {
-        /* @var ConnectionPool $connectionPool */
-        $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
-        return $connectionPool->getConnectionByName($connectionPool->getConnectionNames()[0]);
     }
 
     /**
@@ -163,31 +165,58 @@ abstract class IntegrationTest extends FunctionalTestCase
     {
         // create fake extension database table and TCA
         $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        /** @var $schemaMigrationService SqlSchemaMigrationService */
-        $schemaMigrationService = $objectManager->get(SqlSchemaMigrationService::class);
-        /** @var  $expectedSchemaService SqlExpectedSchemaService */
-        $expectedSchemaService = $objectManager->get(SqlExpectedSchemaService::class);
 
-        $expectedSchemaString = $expectedSchemaService->getTablesDefinitionString(true);
-        $statements = $schemaMigrationService->getStatementArray($expectedSchemaString, true);
-        list($_, $insertCount) = $schemaMigrationService->getCreateTables($statements, true);
 
-        $fieldDefinitionsFile = $schemaMigrationService->getFieldDefinitions_fileContent($this->getFixtureContentByName($fixtureName));
-        $fieldDefinitionsDatabase = $schemaMigrationService->getFieldDefinitions_database();
-        $difference = $schemaMigrationService->getDatabaseExtra($fieldDefinitionsFile, $fieldDefinitionsDatabase);
-        $updateStatements = $schemaMigrationService->getUpdateSuggestions($difference);
+        if(!class_exists('TYPO3\\CMS\\Core\\Database\\Schema\\SchemaMigrator')) {
+            // @todo this can be removed when we drop 8 LTS support
+            // @deprecated
+            /** @var $schemaMigrationService SqlSchemaMigrationService */
+            $schemaMigrationService = $objectManager->get(SqlSchemaMigrationService::class);
 
-        $schemaMigrationService->performUpdateQueries($updateStatements['add'], $updateStatements['add']);
-        $schemaMigrationService->performUpdateQueries($updateStatements['change'], $updateStatements['change']);
-        $schemaMigrationService->performUpdateQueries($updateStatements['create_table'], $updateStatements['create_table']);
+            /** @var  $expectedSchemaService SqlExpectedSchemaService */
+            $expectedSchemaService = $objectManager->get(SqlExpectedSchemaService::class);
 
-        $connection = $this->getDatabaseConnectionBC();
-        foreach ($insertCount as $table => $count) {
-            $insertStatements = $schemaMigrationService->getTableInsertStatements($statements, $table);
-            foreach ($insertStatements as $insertQuery) {
-                $insertQuery = rtrim($insertQuery, ';');
-                $connection->exec($insertQuery);
+            $expectedSchemaString = $expectedSchemaService->getTablesDefinitionString(true);
+            $statements = $schemaMigrationService->getStatementArray($expectedSchemaString, true);
+            list($_, $insertCount) = $schemaMigrationService->getCreateTables($statements, true);
+
+            $fieldDefinitionsFile = $schemaMigrationService->getFieldDefinitions_fileContent($this->getFixtureContentByName($fixtureName));
+            $fieldDefinitionsDatabase = $schemaMigrationService->getFieldDefinitions_database();
+            $difference = $schemaMigrationService->getDatabaseExtra($fieldDefinitionsFile, $fieldDefinitionsDatabase);
+            $updateStatements = $schemaMigrationService->getUpdateSuggestions($difference);
+
+            $schemaMigrationService->performUpdateQueries($updateStatements['add'], $updateStatements['add']);
+            $schemaMigrationService->performUpdateQueries($updateStatements['change'], $updateStatements['change']);
+            $schemaMigrationService->performUpdateQueries($updateStatements['create_table'], $updateStatements['create_table']);
+
+            $connection = $this->getDatabaseConnection();
+            foreach ($insertCount as $table => $count) {
+                $insertStatements = $schemaMigrationService->getTableInsertStatements($statements, $table);
+                foreach ($insertStatements as $insertQuery) {
+                    $insertQuery = rtrim($insertQuery, ';');
+                    $connection->exec($insertQuery);
+                }
             }
+        } else {
+            $schemaMigrationService = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Database\\Schema\\SchemaMigrator');
+            $sqlReader = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Database\\Schema\\SqlReader');
+            $sqlCode = $this->getFixtureContentByName($fixtureName);
+
+            $createTableStatements = $sqlReader->getCreateTableStatementArray($sqlCode);
+
+            $updateResult = $schemaMigrationService->install($createTableStatements);
+            $failedStatements = array_filter($updateResult);
+            $result = array();
+            foreach ($failedStatements as $query => $error) {
+                $result[] = 'Query "' . $query . '" returned "' . $error . '"';
+            }
+
+            if (!empty($result)) {
+                throw new \RuntimeException(implode("\n", $result), 1505058450);
+            }
+
+            $insertStatements = $sqlReader->getInsertStatementArray($sqlCode);
+            $schemaMigrationService->importStaticData($insertStatements);
         }
     }
 
@@ -207,9 +236,18 @@ abstract class IntegrationTest extends FunctionalTestCase
      */
     protected function skipInVersionBelow($version)
     {
-        if (version_compare(TYPO3_branch, $version, '<')) {
+        if ($this->getIsTYPO3VersionBelow($version)) {
             $this->markTestSkipped('This test requires TYPO3 ' . $version . ' or greater.');
         }
+    }
+
+    /**
+     * @param string $version
+     * @return mixed
+     */
+    protected function getIsTYPO3VersionBelow($version)
+    {
+        return version_compare(TYPO3_branch, $version, '<');
     }
 
     /**
@@ -224,6 +262,7 @@ abstract class IntegrationTest extends FunctionalTestCase
 
         EidUtility::initLanguage();
 
+        $TSFE->id = $id;
         $TSFE->initFEuser();
         $TSFE->set_no_cache();
         $TSFE->checkAlternativeIdMethods();
@@ -368,7 +407,7 @@ abstract class IntegrationTest extends FunctionalTestCase
         $GLOBALS['TSFE'] = $fakeTSFE;
         $this->simulateFrontedUserGroups($feUserGroupArray);
 
-        PageGenerator::pagegenInit();
+        $fakeTSFE->preparePageContentGeneration();
         PageGenerator::renderContent();
         return $fakeTSFE;
     }

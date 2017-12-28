@@ -3,33 +3,45 @@
 	  xmlns:s="http://typo3.org/ns/ApacheSolrForTypo3/Solr/ViewHelpers">
 
 <f:section name="Sorting">
-	<div id="tx-solr-sorting" class="secondaryContentSection">
-		<h3><s:translate key="sorting_sortBy">Sorting</s:translate></h3>
-		<ul>
+	<div id="tx-solr-sorting" class="secondaryContentSection dropdown">
+		<button class="btn btn-default dropdown-toggle" type="button" id="sortDropDown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+			<span class=" glyphicon glyphicon-sort"></span>
+			<s:translate key="sorting_sortBy">Sorting</s:translate>
+			<span class="caret"></span>
+		</button>
+		<ul class="dropdown-menu" aria-labelledby="sortDropDown">
 			<f:for each="{resultSet.sortings}" as="sorting">
-				<li>
-					<f:if condition="{sorting.isResetOption}">
-						<f:then>
+
+				<f:if condition="{sorting.isResetOption}">
+					<f:then>
+						<li>
 							<a href="{s:uri.sorting.removeSorting()}" class="solr-ajaxified">{sorting.label}</a>
-						</f:then>
+						</li>
+					</f:then>
 
-						<f:else>
-							<f:if condition="{sorting.selected}">
-								<f:then>
-									<f:if condition="{sorting.isAscDirection}">
-										<f:then><img width="8" height="8" alt="sort ascending" src="{f:uri.resource(extensionName: 'solr', path: 'Images/IndicatorUp.png')}"></f:then>
-										<f:else><img width="8" height="8" alt="sort ascending" src="{f:uri.resource(extensionName: 'solr', path: 'Images/IndicatorDown.png')}"></f:else>
-									</f:if>
+					<f:else>
+						<f:if condition="{sorting.selected}">
+							<f:then>
+								<li class="active">
+									<a href="{s:uri.sorting.setSorting(sortingName: sorting.name, sortingDirection: sorting.oppositeDirection)}" class="solr-ajaxified">
+										<f:if condition="{sorting.isAscDirection}">
+											<f:then><span class=" glyphicon glyphicon-arrow-up pull-right"></span></f:then>
+											<f:else><span class=" glyphicon glyphicon-arrow-down pull-right"></span></f:else>
+										</f:if>
+										<span>{sorting.label}</span>
 
-									<a href="{s:uri.sorting.setSorting(sortingName: sorting.name, sortingDirection: sorting.oppositeDirection)}" class="solr-ajaxified">[{sorting.label}]</a>
-								</f:then>
-								<f:else>
+									</a>
+								</li>
+							</f:then>
+							<f:else>
+								<li>
 									<a href="{s:uri.sorting.setSorting(sortingName: sorting.name, sortingDirection: sorting.direction)}" class="solr-ajaxified">{sorting.label}</a>
-								</f:else>
-							</f:if>
-						</f:else>
-					</f:if>
-				</li>
+								</li>
+							</f:else>
+						</f:if>
+					</f:else>
+			</f:if>
+
 			</f:for>
 		</ul>
 	</div>

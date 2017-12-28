@@ -10,7 +10,7 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
  *  This script is part of the TYPO3 project. The TYPO3 project is
  *  free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
+ *  the Free Software Foundation; either version 3 of the License, or
  *  (at your option) any later version.
  *
  *  The GNU General Public License can be found at
@@ -159,7 +159,7 @@ class Queue
 
         if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessIndexQueueInitialization'])) {
             foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessIndexQueueInitialization'] as $classReference) {
-                $indexQueueInitializationPostProcessor = GeneralUtility::getUserObj($classReference);
+                $indexQueueInitializationPostProcessor = GeneralUtility::makeInstance($classReference);
 
                 if ($indexQueueInitializationPostProcessor instanceof InitializationPostProcessor) {
                     $indexQueueInitializationPostProcessor->postProcessIndexQueueInitialization(
@@ -221,9 +221,27 @@ class Queue
      * @param string $itemType The item's type, usually a table name.
      * @param string $itemUid The item's uid, usually an integer uid, could be a different value for non-database-record types.
      * @param int $forcedChangeTime The change time for the item if set, otherwise value from getItemChangedTime() is used.
+     * @return int Number of updated/created items
      */
     public function updateItem($itemType, $itemUid, $forcedChangeTime = 0)
     {
+        $updateCount = $this->updateOrAddItemForAllRelatedRootPages($itemType, $itemUid, $forcedChangeTime);
+        $updateCount = $this->postProcessIndexQueueUpdateItem($itemType, $itemUid, $updateCount, $forcedChangeTime);
+
+        return $updateCount;
+    }
+
+    /**
+     * Updates or add's the item for all relevant root pages.
+     *
+     * @param string $itemType The item's type, usually a table name.
+     * @param string $itemUid The item's uid, usually an integer uid, could be a different value for non-database-record types.
+     * @param int $forcedChangeTime The change time for the item if set, otherwise value from getItemChangedTime() is used.
+     * @return int
+     */
+    protected function updateOrAddItemForAllRelatedRootPages($itemType, $itemUid, $forcedChangeTime): int
+    {
+        $updateCount = 0;
         $rootPageIds = $this->rootPageResolver->getResponsibleRootPageIds($itemType, $itemUid);
         foreach ($rootPageIds as $rootPageId) {
             $skipInvalidRootPage = $rootPageId === 0;
@@ -237,12 +255,48 @@ class Queue
             if ($itemInQueueForRootPage) {
                 // update changed time if that item is in the queue already
                 $changedTime = ($forcedChangeTime > 0) ? $forcedChangeTime : $this->getItemChangedTime($itemType, $itemUid);
-                $this->queueItemRepository->updateExistingItemByItemTypeAndItemUidAndRootPageId($itemType, $itemUid, $rootPageId, $changedTime, $indexingConfiguration);
+                $updatedRows = $this->queueItemRepository->updateExistingItemByItemTypeAndItemUidAndRootPageId($itemType, $itemUid, $rootPageId, $changedTime, $indexingConfiguration);
             } else {
                 // add the item since it's not in the queue yet
-                $this->addNewItem($itemType, $itemUid, $indexingConfiguration, $rootPageId);
+                $updatedRows = $this->addNewItem($itemType, $itemUid, $indexingConfiguration, $rootPageId);
             }
+
+            $updateCount += $updatedRows;
         }
+
+        return $updateCount;
+    }
+
+    /**
+     * Executes the updateItem post processing hook.
+     *
+     * @param string $itemType
+     * @param int $itemUid
+     * @param int $updateCount
+     * @param int $forcedChangeTime
+     * @return int
+     */
+    protected function postProcessIndexQueueUpdateItem($itemType, $itemUid, $updateCount, $forcedChangeTime = 0)
+    {
+        if (!is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessIndexQueueUpdateItem'])) {
+            return $updateCount;
+        }
+
+        foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessIndexQueueUpdateItem'] as $classReference) {
+            $updateHandler = $this->getHookImplementation($classReference);
+            $updateCount = $updateHandler->postProcessIndexQueueUpdateItem($itemType, $itemUid, $updateCount, $forcedChangeTime);
+        }
+
+        return $updateCount;
+    }
+
+    /**
+     * @param string $classReference
+     * @return object
+     */
+    protected function getHookImplementation($classReference)
+    {
+        return GeneralUtility::makeInstance($classReference);
     }
 
     /**
@@ -277,7 +331,7 @@ class Queue
      * @param string $indexingConfiguration The item's indexing configuration to use.
      *      Optional, overwrites existing / determined configuration.
      * @param $rootPageId
-     * @return void
+     * @return int
      */
     private function addNewItem($itemType, $itemUid, $indexingConfiguration, $rootPageId)
     {
@@ -289,12 +343,12 @@ class Queue
         $record = $this->getRecordCached($itemType, $itemUid, $additionalRecordFields);
 
         if (empty($record) || ($itemType === 'pages' && !Util::isAllowedPageType($record, $indexingConfiguration))) {
-            return;
+            return 0;
         }
 
         $changedTime = $this->getItemChangedTime($itemType, $itemUid);
 
-        $this->queueItemRepository->add($itemType, $itemUid, $rootPageId, $changedTime, $indexingConfiguration);
+        return $this->queueItemRepository->add($itemType, $itemUid, $rootPageId, $changedTime, $indexingConfiguration);
     }
 
     /**

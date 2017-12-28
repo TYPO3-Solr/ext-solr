@@ -10,7 +10,7 @@ namespace ApacheSolrForTypo3\Solr\Controller\Backend\Search;
  *  This script is part of the TYPO3 project. The TYPO3 project is
  *  free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
+ *  the Free Software Foundation; either version 3 of the License, or
  *  (at your option) any later version.
  *
  *  The GNU General Public License can be found at
@@ -27,11 +27,14 @@ namespace ApacheSolrForTypo3\Solr\Controller\Backend\Search;
 use ApacheSolrForTypo3\Solr\Api;
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\Domain\Search\Statistics\StatisticsRepository;
+use ApacheSolrForTypo3\Solr\Domain\Search\ApacheSolrDocument\Repository;
 use ApacheSolrForTypo3\Solr\System\Validator\Path;
 use TYPO3\CMS\Backend\Template\ModuleTemplate;
+use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Registry;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Mvc\Exception\StopActionException;
 use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
 
 /**
@@ -45,12 +48,19 @@ class InfoModuleController extends AbstractModuleController
     protected $solrConnectionManager;
 
     /**
+     * @var Repository
+     */
+    protected $apacheSolrDocumentRepository;
+
+    /**
      * Initializes the controller before invoking an action method.
      */
     protected function initializeAction()
     {
         parent::initializeAction();
         $this->solrConnectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
+        $this->apacheSolrDocumentRepository = GeneralUtility::makeInstance(Repository::class);
+
     }
     /**
      * Set up the doc header properly here
@@ -83,6 +93,20 @@ class InfoModuleController extends AbstractModuleController
         $this->collectConnectionInfos();
         $this->collectStatistics();
         $this->collectIndexFieldsInfo();
+        $this->collectIndexInspectorInfo();
+    }
+
+    /**
+     * @param string $type
+     * @param int $uid
+     * @param int $pageId
+     * @param int $languageUid
+     * @return void
+     */
+    public function documentsDetailsAction(string $type, int $uid, int $pageId, int $languageUid)
+    {
+        $documents = $this->apacheSolrDocumentRepository->findByTypeAndPidAndUidAndLanguageId($type, $uid, $pageId, $languageUid);
+        $this->view->assign('documents', $documents);
     }
 
     /**
@@ -107,16 +131,17 @@ class InfoModuleController extends AbstractModuleController
         }
 
         foreach ($connections as $connection) {
-            $coreUrl = $connection->getScheme() . '://' . $connection->getHost() . ':' . $connection->getPort() . $connection->getPath();
+            $coreAdmin = $connection->getAdminService();
+            $coreUrl = $coreAdmin->getScheme() . '://' . $coreAdmin->getHost() . ':' . $coreAdmin->getPort() . $coreAdmin->getPath();
 
-            if ($connection->ping()) {
+            if ($coreAdmin->ping()) {
                 $connectedHosts[] = $coreUrl;
             } else {
                 $missingHosts[] = $coreUrl;
             }
 
-            if (!$path->isValidSolrPath($connection->getPath())) {
-                $invalidPaths[] = $connection->getPath();
+            if (!$path->isValidSolrPath($coreAdmin->getPath())) {
+                $invalidPaths[] = $coreAdmin->getPath();
             }
         }
 
@@ -180,11 +205,13 @@ class InfoModuleController extends AbstractModuleController
 
         $solrCoreConnections = $this->solrConnectionManager->getConnectionsBySite($this->selectedSite);
         foreach ($solrCoreConnections as $solrCoreConnection) {
+            $coreAdmin = $solrCoreConnection->getAdminService();
+
             $indexFieldsInfo = [
-                'corePath' => $solrCoreConnection->getPath()
+                'corePath' => $coreAdmin->getPath()
             ];
-            if ($solrCoreConnection->ping()) {
-                $lukeData = $solrCoreConnection->getLukeMetaData();
+            if ($coreAdmin->ping()) {
+                $lukeData = $coreAdmin->getLukeMetaData();
 
                 /* @var Registry $registry */
                 $registry = GeneralUtility::makeInstance(Registry::class);
@@ -197,7 +224,7 @@ class InfoModuleController extends AbstractModuleController
                     $limitNote = 'Nothing indexed';
                     // below limit, so we can get more data
                     // Note: we use 2 since 1 fails on Ubuntu Hardy.
-                    $lukeData = $solrCoreConnection->getLukeMetaData(2);
+                    $lukeData = $coreAdmin->getLukeMetaData(2);
                 }
 
                 $fields = $this->getFields($lukeData, $limitNote);
@@ -211,13 +238,41 @@ class InfoModuleController extends AbstractModuleController
 
                 $this->addFlashMessage(
                     '',
-                    'Unable to contact Apache Solr server: ' . $this->selectedSite->getLabel() . ' ' . $solrCoreConnection->getPath(),
+                    'Unable to contact Apache Solr server: ' . $this->selectedSite->getLabel() . ' ' . $coreAdmin->getPath(),
                     FlashMessage::ERROR
                 );
             }
-            $indexFieldsInfoByCorePaths[$solrCoreConnection->getPath()] = $indexFieldsInfo;
+            $indexFieldsInfoByCorePaths[$coreAdmin->getPath()] = $indexFieldsInfo;
         }
         $this->view->assign('indexFieldsInfoByCorePaths', $indexFieldsInfoByCorePaths);
+    }
+
+    /**
+     * Retrieves the information for the index inspector.
+     *
+     * @return void
+     */
+    protected function collectIndexInspectorInfo()
+    {
+        $solrCoreConnections = $this->solrConnectionManager->getConnectionsBySite($this->selectedSite);
+        $documentsByCoreAndType = [];
+        foreach ($solrCoreConnections as $languageId => $solrCoreConnection) {
+            $coreAdmin = $solrCoreConnection->getAdminService();
+            $documents = $this->apacheSolrDocumentRepository->findByPageIdAndByLanguageId($this->requestedPageUID, $languageId);
+
+            $documentsByType = [];
+            foreach ($documents as $document) {
+                $documentsByType[$document->type][] = $document;
+            }
+
+            $documentsByCoreAndType[$languageId]['core'] = $coreAdmin;
+            $documentsByCoreAndType[$languageId]['documents'] = $documentsByType;
+        }
+
+        $this->view->assignMultiple([
+            'pageId' => $this->requestedPageUID,
+            'indexInspectorDocumentsByLanguageAndType' => $documentsByCoreAndType
+        ]);
     }
 
     /**

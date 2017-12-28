@@ -10,7 +10,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Task;
  *  This script is part of the TYPO3 project. The TYPO3 project is
  *  free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
+ *  the Free Software Foundation; either version 3 of the License, or
  *  (at your option) any later version.
  *
  *  The GNU General Public License can be found at
@@ -28,7 +28,7 @@ use ApacheSolrForTypo3\Solr\Task\IndexQueueWorkerTask;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 
 /**
- * Testcase for IndexQueueWorkerTaskTest
+ * Testcase for IndexQueueWorkerTask
  *
  * @author Timo Hund <timo.hund@dkd.de>
  */
@@ -56,5 +56,21 @@ class IndexQueueWorkerTaskTest extends UnitTest
             // can we use a marker?
         $indexQueuerWorker->setForcedWebRoot('###PATH_site###../test/');
         $this->assertSame(PATH_site . '../test/', $indexQueuerWorker->getWebRoot(), 'Could not use a marker in forced webroot');
+    }
+
+    /**
+     * @test
+     */
+    public function canGetErrorMessageInAdditionalInformationWhenSiteNotAvailable()
+    {
+            /** @var $indexQueuerWorker IndexQueueWorkerTask */
+        $indexQueuerWorker = $this->getMockBuilder(IndexQueueWorkerTask::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getSite'])
+            ->getMock();
+
+        $mesage = $indexQueuerWorker->getAdditionalInformation();
+        $expectedMessage = 'Invalid site configuration for scheduler please re-create the task!';
+        $this->assertSame($expectedMessage, $mesage, 'Expect to get error message of non existing site');
     }
 }

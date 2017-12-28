@@ -4,17 +4,23 @@
 
 <f:section name="Form">
 
-<div class="tx-solr-search-form">
+	<div class="tx-solr-search-form">
+		<s:searchForm id="tx-solr-search-form-pi-results" additionalFilters="{additionalFilters}" suggestHeader="{s:translate(key:'suggest_header',default:'Top Results')}">
+			<div class="input-group">
+				<input type="hidden" name="L" value="{languageUid}" />
+				<input type="hidden" name="id" value="{pageUid}" />
 
-	<s:searchForm id="tx-solr-search-form-pi-results" additionalFilters="{additionalFilters}" suggestHeader="{s:translate(key:'suggest_header',default:'Top Results')}">
-		<input type="hidden" name="L" value="{languageUid}" />
-		<input type="hidden" name="id" value="{pageUid}" />
-		<input type="text" class="tx-solr-q js-solr-q tx-solr-suggest" name="{pluginNamespace}[q]" value="{q}" />
-		<input type="submit" class="tx-solr-submit" value="{s:translate(key:'submit',default:'Search')}" />
-
-	</s:searchForm>
-
-	<s:debug.query />
-</div>
+				<input type="text" class="tx-solr-q js-solr-q tx-solr-suggest form-control" name="{pluginNamespace}[q]" value="{q}" />
+				<span class="input-group-btn">
+					<button class="btn btn-default tx-solr-submit" type="submit">
+						<span class=" glyphicon glyphicon-search"></span>
+						<span>
+							<s:translate key="submit">Search</s:translate>
+						</span>
+					</button>
+				</span>
+			</div>
+		</s:searchForm>
+	</div>
 
 </f:section>

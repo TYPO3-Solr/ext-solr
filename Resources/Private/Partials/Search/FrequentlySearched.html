@@ -6,17 +6,24 @@
 
 <s:widget.frequentlySearched>
 	<f:if condition="{frequentSearches}">
-		<div id="tx-solr-frequent-searches" class="secondaryContentSection">
-			<div class="csc-header">
-				<h3 class="csc-firstHeader"><s:translate key="frequentSearches">Frequently searched</s:translate></h3>
+		<div id="tx-solr-frequent-searches" class="secondaryContentSection panel">
+			<div class="panel-heading">
+				<h3 class="panel-title">
+					<span class="glyphicon glyphicon-fire"></span>
+					<a data-toggle="collapse" data-parent="#accordion" href="#frequendSearches"><s:translate key="frequentSearches">Frequently searched</s:translate></a>
+				</h3>
 			</div>
-			<ul>
-				<f:for each="{frequentSearches}" as="searchedForInfo">
-					<li class="{searchedForInfo.class}">
-						<a href="{s:uri.search.startNewSearch(queryString: searchedForInfo.q)}" class="solr-ajaxified">{searchedForInfo.q}</a>
-					</li>
-				</f:for>
-			</ul>
+			<div class="list-group panel-collapse collapse" id="frequendSearches">
+				<div class="panel-body">
+					<ul>
+						<f:for each="{frequentSearches}" as="searchedForInfo">
+							<li class="{searchedForInfo.class}">
+								<a href="{s:uri.search.startNewSearch(queryString: searchedForInfo.q)}" class="solr-ajaxified">{searchedForInfo.q}</a>
+							</li>
+						</f:for>
+					</ul>
+				</div>
+			</div>
 		</div>
 
 	</f:if>

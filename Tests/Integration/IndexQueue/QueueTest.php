@@ -10,7 +10,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\IndexQueue;
  *  This script is part of the TYPO3 project. The TYPO3 project is
  *  free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
+ *  the Free Software Foundation; either version 3 of the License, or
  *  (at your option) any later version.
  *
  *  The GNU General Public License can be found at
@@ -107,10 +107,12 @@ class QueueTest extends IntegrationTest
         $this->importDataSetFromFixture('adding_the_same_item_twice_will_only_produce_one_queue_item.xml');
         $this->assertEmptyQueue();
 
-        $this->indexQueue->updateItem('pages', 1);
+        $updateCount = $this->indexQueue->updateItem('pages', 1);
+        $this->assertSame(1, $updateCount);
         $this->assertItemsInQueue(1);
 
-        $this->indexQueue->updateItem('pages', 1);
+        $updateCount = $this->indexQueue->updateItem('pages', 1);
+        $this->assertSame(0, $updateCount);
         $this->assertItemsInQueue(1);
     }
 
@@ -154,7 +156,8 @@ class QueueTest extends IntegrationTest
         $this->assertEmptyQueue();
 
             // record does not exist in fixture
-        $this->indexQueue->updateItem('pages', 22);
+        $updateCount = $this->indexQueue->updateItem('pages', 22);
+        $this->assertSame(0, $updateCount, 'Expected that no record was updated');
 
             // queue should still be empty
         $this->assertEmptyQueue();

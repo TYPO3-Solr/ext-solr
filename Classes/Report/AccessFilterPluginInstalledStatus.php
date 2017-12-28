@@ -10,7 +10,7 @@ namespace ApacheSolrForTypo3\Solr\Report;
  *  This script is part of the TYPO3 project. The TYPO3 project is
  *  free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
+ *  the Free Software Foundation; either version 3 of the License, or
  *  (at your option) any later version.
  *
  *  The GNU General Public License can be found at
@@ -25,7 +25,7 @@ namespace ApacheSolrForTypo3\Solr\Report;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\ConnectionManager;
-use ApacheSolrForTypo3\Solr\SolrService;
+use ApacheSolrForTypo3\Solr\System\Solr\Service\SolrAdminService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Reports\Status;
 
@@ -66,9 +66,11 @@ class AccessFilterPluginInstalledStatus extends AbstractSolrStatus
         $solrConnections = GeneralUtility::makeInstance(ConnectionManager::class)->getAllConnections();
 
         foreach ($solrConnections as $solrConnection) {
-            if ($solrConnection->ping()) {
-                $installationStatus = $this->checkPluginInstallationStatus($solrConnection);
-                $versionStatus = $this->checkPluginVersion($solrConnection);
+            $adminService = $solrConnection->getAdminService();
+
+            if ($adminService->ping()) {
+                $installationStatus = $this->checkPluginInstallationStatus($adminService);
+                $versionStatus = $this->checkPluginVersion($adminService);
 
                 if (!is_null($installationStatus)) {
                     $reports[] = $installationStatus;
@@ -86,16 +88,16 @@ class AccessFilterPluginInstalledStatus extends AbstractSolrStatus
     /**
      * Checks whether the Solr plugin is installed.
      *
-     * @param \ApacheSolrForTypo3\Solr\SolrService $solrConnection
+     * @param SolrAdminService $adminService
      * @return null|\TYPO3\CMS\Reports\Status
      */
-    protected function checkPluginInstallationStatus(SolrService $solrConnection)
+    protected function checkPluginInstallationStatus(SolrAdminService $adminService)
     {
-        if ($this->isPluginInstalled($solrConnection)) {
+        if ($this->isPluginInstalled($adminService)) {
             return null;
         }
 
-        $variables = ['solr' => $solrConnection, 'recommendedVersion' => self::RECOMMENDED_PLUGIN_VERSION];
+        $variables = ['solr' => $adminService, 'recommendedVersion' => self::RECOMMENDED_PLUGIN_VERSION];
 
         $report = $this->getRenderedReport('AccessFilterPluginInstalledStatusNotInstalled.html', $variables);
         return GeneralUtility::makeInstance(Status::class, 'Access Filter Plugin', 'Not Installed', $report, Status::WARNING);
@@ -104,17 +106,17 @@ class AccessFilterPluginInstalledStatus extends AbstractSolrStatus
     /**
      * Checks whether the Solr plugin version is up to date.
      *
-     * @param \ApacheSolrForTypo3\Solr\SolrService $solrConnection
+     * @param SolrAdminService $adminService
      * @return null|\TYPO3\CMS\Reports\Status
      */
-    protected function checkPluginVersion(SolrService $solrConnection)
+    protected function checkPluginVersion(SolrAdminService $adminService)
     {
-        if (!($this->isPluginInstalled($solrConnection) && $this->isPluginOutdated($solrConnection))) {
+        if (!($this->isPluginInstalled($adminService) && $this->isPluginOutdated($adminService))) {
             return null;
         }
 
-        $version = $this->getInstalledPluginVersion($solrConnection);
-        $variables = ['solr' => $solrConnection, 'installedVersion' => $version, 'recommendedVersion' => self::RECOMMENDED_PLUGIN_VERSION];
+        $version = $this->getInstalledPluginVersion($adminService);
+        $variables = ['solr' => $adminService, 'installedVersion' => $version, 'recommendedVersion' => self::RECOMMENDED_PLUGIN_VERSION];
         $report = $this->getRenderedReport('AccessFilterPluginInstalledStatusIsOutDated.html', $variables);
 
         return GeneralUtility::makeInstance(Status::class, 'Access Filter Plugin', 'Outdated', $report, Status::WARNING);
@@ -124,14 +126,14 @@ class AccessFilterPluginInstalledStatus extends AbstractSolrStatus
      * Checks whether the Access Filter Query Parser Plugin is installed for
      * the given Solr server instance.
      *
-     * @param SolrService $solrConnection Solr connection to check for the plugin.
+     * @param SolrAdminService $adminService
      * @return bool True if the plugin is installed, FALSE otherwise.
      */
-    protected function isPluginInstalled(SolrService $solrConnection)
+    protected function isPluginInstalled(SolrAdminService $adminService)
     {
         $accessFilterQueryParserPluginInstalled = false;
 
-        $pluginsInformation = $solrConnection->getPluginsInformation();
+        $pluginsInformation = $adminService->getPluginsInformation();
 
         if (isset($pluginsInformation->plugins->OTHER->{self::PLUGIN_CLASS_NAME})) {
             $accessFilterQueryParserPluginInstalled = true;
@@ -143,12 +145,12 @@ class AccessFilterPluginInstalledStatus extends AbstractSolrStatus
     /**
      * Checks whether the installed plugin is current.
      *
-     * @param SolrService $solrConnection Solr connection to check for the plugin.
+     * @param SolrAdminService $adminService
      * @return bool True if the plugin is outdated, FALSE if it meets the current version recommendation.
      */
-    protected function isPluginOutdated(SolrService $solrConnection)
+    protected function isPluginOutdated(SolrAdminService $adminService)
     {
-        $pluginVersion = $this->getInstalledPluginVersion($solrConnection);
+        $pluginVersion = $this->getInstalledPluginVersion($adminService);
         $pluginVersionOutdated = version_compare($pluginVersion, self::RECOMMENDED_PLUGIN_VERSION, '<');
 
         return $pluginVersionOutdated;
@@ -157,12 +159,12 @@ class AccessFilterPluginInstalledStatus extends AbstractSolrStatus
     /**
      * Gets the version of the installed plugin.
      *
-     * @param SolrService $solrConnection Solr connection to check for the plugin.
+     * @param SolrAdminService $adminService
      * @return string The installed plugin's version number.
      */
-    public function getInstalledPluginVersion(SolrService $solrConnection)
+    public function getInstalledPluginVersion(SolrAdminService $adminService)
     {
-        $pluginsInformation = $solrConnection->getPluginsInformation();
+        $pluginsInformation = $adminService->getPluginsInformation();
         $rawVersion = $pluginsInformation->plugins->OTHER->{self::PLUGIN_CLASS_NAME}->version;
 
         $explodedRawVersion = explode('-', $rawVersion);

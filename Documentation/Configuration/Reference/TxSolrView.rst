@@ -41,21 +41,21 @@ If you want to use FLUID fallbacks you can just configure the template name, oth
 
 The templates that you configure in availableTemplate can be used in the flexform by the editor to select a template for the concrete plugin instance.
 
-templateFiles.result
+templateFiles.results
 --------------------
 
 :Type: String
-:TS Path: plugin.tx_solr.view.templateFiles.result
+:TS Path: plugin.tx_solr.view.templateFiles.results
 :Since: 7.0 (Replaces previous setting plugin.tx_solr.templateFiles.result)
 :Default: Results
 
     By convention the "Results" template from you configured FLUID template path will be used As alternative you can configure a different template name here (e.g. MyResults or a full path to an entry template here).
 
-templateFiles.result.availableTemplates
+templateFiles.results.availableTemplates
 ---------------------------------------
 
 :Type: Array
-:TS Path: plugin.tx_solr.view.templateFiles.result.availableTemplates
+:TS Path: plugin.tx_solr.view.templateFiles.results.availableTemplates
 :Since: 7.0
 :Default: none
 

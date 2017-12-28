@@ -282,6 +282,14 @@ Example:
         badKeywords.data = GP:q
     }
 
+Note: When you want to filter for something with whitespaces you might need to quote the filter term.
+
+.. code-block:: typoscript
+
+    plugin.tx_solr.search.query.filter {
+        johnsDoesPages = author:"John Doe"
+    }
+
 
 query.filter.__pageSections
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -310,6 +318,137 @@ Example:
 
     plugin.tx_solr.search.query.sortBy = title asc
 
+query.phrase
+~~~~~~~~~~~~
+
+:Type: Boolean
+:TS Path: plugin.tx_solr.search.query.phrase
+:Since: 8.0
+:Default: 0
+:See: "pf", "ps", "qs" https://lucene.apache.org/solr/guide/6_6/the-dismax-query-parser.html#TheDisMaxQueryParser-Thepf_PhraseFields_Parameter
+
+This parameter enables the phrase search feature from Apache Solr. Setting is to "0" (default) does not change behaviour from Apache Solr if user searches for two and more words.
+Enabling phrase search feature influences the document set and/or the scores of documents.
+
+query.phrase.fields
+~~~~~~~~~~~~~~~~~~~
+
+:Type: String
+:TS Path: plugin.tx_solr.search.query.phrase.fields
+:Since: 8.0
+:Default: content^10.0, title^10.0, tagsH1^10.0, tagsH2H3^10.0, tagsH4H5H6^10.0, tagsInline^10.0, description^10.0, abstract^10.0, subtitle^10.0, navtitle^10.0
+:See: "pf" parameter https://lucene.apache.org/solr/guide/6_6/the-dismax-query-parser.html#TheDisMaxQueryParser-Thepf_PhraseFields_Parameter
+
+This parameter defines what fields should be used to search in the given phrase. Matched documents will be boosted according to fields boost value.
+Fields are defined as a comma separated list and same way as queryFields.
+
+Note: The value of this setting has NO influence on explicit phrase search.
+
+query.phrase.slop
+~~~~~~~~~~~~~~~~~
+
+:Type: Integer
+:TS Path: plugin.tx_solr.search.query.phrase.slop
+:Since: 8.0
+:Default: 0
+:See: "ps" parameter https://lucene.apache.org/solr/guide/6_6/the-dismax-query-parser.html#TheDisMaxQueryParser-Theps_PhraseSlop_Parameter
+
+This parameter defines the "phrase slop" value, which represents the number of positions one word needs to be moved in relation to another word in order to match a phrase specified in a query.
+
+Note: The value of this setting has NO influence on explicit phrase search.
+
+query.phrase.querySlop
+~~~~~~~~~~~~~~~~~
+
+:Type: Integer
+:TS Path: plugin.tx_solr.search.query.phrase.querySlop
+:Since: 8.0
+:Default: 0
+:See: "qs" parameter https://lucene.apache.org/solr/guide/6_6/the-dismax-query-parser.html#TheDisMaxQueryParser-Theqs_QueryPhraseSlop_Parameter
+
+This parameter defines the "phrase slop" value, which represents the number of positions one word needs to be moved in relation to another word in order to match a phrase specified in a explicit phrase search query.
+Note: On explicit("double quoted" phrase) phrase search Apache Solr searches in "qf" queryFields
+
+Note: The value of this setting has no influence on implicit phrase search.
+      On explicit phrase search the Solr searches in qf (plugin.tx_solr.search.query.queryFields) defined fields.
+
+query.bigramPhrase
+~~~~~~~~~~~~~~~~~~
+
+:Type: Boolean
+:TS Path: plugin.tx_solr.search.query.bigramPhrase
+:Since: 8.0
+:Default: 0
+:See: "pf2", "ps2" https://lucene.apache.org/solr/guide/6_6/the-extended-dismax-query-parser.html#TheExtendedDisMaxQueryParser-Thepf2Parameter
+
+This parameter enables the bigram phrase search feature from Apache Solr. Setting is to "0" (default) does not change behaviour from Apache Solr if user searches for three and more words.
+Enabling bigram phrase search feature influences the scores of documents with phrase occurrences.
+
+query.bigramPhrase.fields
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+:Type: String
+:TS Path: plugin.tx_solr.search.query.bigramPhrase.fields
+:Since: 8.0
+:Default: content^10.0, title^10.0, tagsH1^10.0, tagsH2H3^10.0, tagsH4H5H6^10.0, tagsInline^10.0, description^10.0, abstract^10.0, subtitle^10.0, navtitle^10.0
+:See: "pf2" parameter https://lucene.apache.org/solr/guide/6_6/the-extended-dismax-query-parser.html#TheExtendedDisMaxQueryParser-Thepf2Parameter
+
+This parameter defines what fields should be used to search in the given sentence(three+ words). Matched documents will be boosted according to fields boost value.
+Fields are defined as a comma separated list and same way as queryFields.
+
+Note: The value of this setting has NO influence on explicit phrase search.
+
+query.bigramPhrase.slop
+~~~~~~~~~~~~~~~~~~~~~~~
+
+:Type: Integer
+:TS Path: plugin.tx_solr.search.query.bigramPhrase.slop
+:Since: 8.0
+:Default: 0
+:See: "ps2" parameter https://lucene.apache.org/solr/guide/6_6/the-extended-dismax-query-parser.html#TheExtendedDisMaxQueryParser-Theps2Parameter
+
+This parameter defines the "bigram phrase slop" value, which represents the number of positions one word needs to be moved in relation to another word in order to match a phrase specified in a query.
+
+Note: The value of this setting has NO influence on explicit phrase search.
+
+query.trigramPhrase
+~~~~~~~~~~~~~~~~~~
+
+:Type: Boolean
+:TS Path: plugin.tx_solr.search.query.trigramPhrase
+:Since: 8.0
+:Default: 0
+:See: "pf3", "ps3" https://lucene.apache.org/solr/guide/6_6/the-extended-dismax-query-parser.html#TheExtendedDisMaxQueryParser-Thepf3Parameter
+
+This parameter enables the phrase search feature from Apache Solr. Setting is to "0" (default) does not change behaviour from Apache Solr if user searches for two and more words.
+Enabling phrase search feature influences the scores of documents with phrase occurrences.
+
+query.trigramPhrase.fields
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+:Type: String
+:TS Path: plugin.tx_solr.search.query.trigramPhrase.fields
+:Since: 8.0
+:Default: content^10.0, title^10.0, tagsH1^10.0, tagsH2H3^10.0, tagsH4H5H6^10.0, tagsInline^10.0, description^10.0, abstract^10.0, subtitle^10.0, navtitle^10.0
+:See: "pf3" parameter https://lucene.apache.org/solr/guide/6_6/the-extended-dismax-query-parser.html#TheExtendedDisMaxQueryParser-Thepf3Parameter
+
+This parameter defines what fields should be used to search in the given phrase. Matched documents will be boosted according to fields boost value.
+Fields are defined as a comma separated list and same way as queryFields.
+
+Note: The value of this setting has NO influence on explicit phrase search.
+
+query.trigramPhrase.slop
+~~~~~~~~~~~~~~~~~~~~~~~
+
+:Type: Integer
+:TS Path: plugin.tx_solr.search.query.trigramPhrase.slop
+:Since: 8.0
+:Default: 0
+:See: "ps3" parameter https://lucene.apache.org/solr/guide/6_6/the-extended-dismax-query-parser.html#TheExtendedDisMaxQueryParser-Theps3Parameter
+
+This parameter defines the "trigram phrase slop" value, which represents the number of positions one word needs to be moved in relation to another word in order to match a phrase specified in a query.
+
+Note: The value of this setting has NO influence on explicit phrase search.
 
 results
 -------
@@ -339,8 +478,6 @@ A comma-separated list of fields to highlight.
 
 Note: The highlighting in solr (based on FastVectorHighlighter requires a field datatype with **termVectors=on**, **termPositions=on** and **termOffsets=on** which is the case for the content field).
 If you add other fields here, make sure that you are using a datatype where this is configured.
-
-
 
 results.resultsHighlighting.fragmentSize
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -702,7 +839,7 @@ faceting.facetLimit
 :Since: 6.0
 :Default: 100
 
-    Number of options of a facet returned from solr.
+Number of options of a facet returned from solr.
 
 
 faceting.singleFacetMode
@@ -835,6 +972,61 @@ Defines a comma separated list of options that are excluded (The value needs to 
 
 Important: This setting only makes sence for option based facets (option, query, hierarchy)
 
+
+faceting.facets.[facetName].facetLimit
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+:Type: Integer
+:TS Path: plugin.tx_solr.search.faceting.facets.[facetName].facetLimit
+:Since: 8.0
+:Default: -1
+
+Hard limit of options returned by solr.
+
+**Note**: This is only available for options facets.
+
+faceting.facets.[facetName].metrics
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+:Type: Array
+:TS Path: plugin.tx_solr.search.faceting.facets.[facetName].metrics
+:Since: 8.0
+:Default: empty
+
+Metrics can be use to collect and enhance facet options with statistical data of the facetted documents. They can
+be used to render useful information in the context of an facet option.
+
+Example:
+
+.. code-block:: typoscript
+
+    plugin.tx_solr.search.faceting.facets {
+      category {
+        field = field
+        label = Category
+        metrics {
+            downloads = sum(downloads_intS)
+        }
+      }
+    }
+
+
+The example above will make the metric "downloads" available for all category options. In this case it will be the sum of all downloads
+of this category item. In the frontend you can render this metric with "<facetoptions.>.metrics.downloads" and use it for example to show it instead of the normal option count.
+
+
+faceting.facets.[facetName].partialName
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+:Type: String
+:TS Path: plugin.tx_solr.search.faceting.facets.[facetName].partialName
+:Since: 7.0
+:Required: no
+
+By convention a facet is rendered by it's default partial that is located in "Resources/Private/Partials/Facets/<Type>.html".
+
+If you want to render a single facet with another, none conventional partial, your can configure it with "partialName = MyFacetPartial".
+
 faceting.facets.[facetName].keepAllOptionsOnSelection
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -847,19 +1039,6 @@ faceting.facets.[facetName].keepAllOptionsOnSelection
 Normally, when clicking any option link of a facet this would result in only that one option being displayed afterwards. By setting this option to one, you can prevent this. All options will still be displayed.
 
 This is useful if you want to allow the user to select more than one option from a single facet.
-
-faceting.facets.[facetName].singleOptionMode
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-:Type: Boolean
-:TS Path: plugin.tx_solr.search.faceting.facets.[facetName].singleOptionMode
-:Since: 1.3, 2.0
-:Default: 0
-:Options: 0, 1
-
-When enabled together with keepAllOptionsOnSelection a user can select one option of the facet only at a time. Selecting a different option than the currently selected option results in the new option to replace the old one. The behavior thus is similar to a select box or a set of radio buttons.
-
-This option can not be used together with selectingSelectedFacetOptionRemovesFilter as it overrides its behavior.
 
 faceting.facets.[facetName].operator
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -883,6 +1062,8 @@ faceting.facets.[facetName].sortBy
 
 Sets how a single facet's options are sorted, by default they are sorted by number of results, highest on top.
 Facet options can also be sorted alphabetically by setting the option to alpha.
+
+Note: Since 8.0 sortBy for option facets can also be a function applied on the faceted documents (e.g. avg(price_floatS)).
 
 faceting.facets.[facetName].manualSortOrder
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -918,6 +1099,21 @@ Using `faceting.facets.[facetName].manualSortOrder = Travel, Health` will result
     + Economy (185)
     + Culture (179)
     + Automobile (99)
+
+faceting.facets.[facetName].minimumCount
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+:Type: Integer
+:TS Path: plugin.tx_solr.search.faceting.facets.[facetName].minumumCount
+:Since: 8.0
+:Default: 1
+
+Set's the minimumCount for a single facet. This can be usefull e.g. to set the minimumCount of a single facet to 0,
+to have the options available even when there is result available.
+
+**Note**: This setting is only available for facets that are using the json faceting API of solr. By now this
+is only available for the options facets.
+
 
 faceting.facets.[facetName].reverseOrder
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

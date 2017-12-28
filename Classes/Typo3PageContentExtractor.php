@@ -10,7 +10,7 @@ namespace ApacheSolrForTypo3\Solr;
  *  This script is part of the TYPO3 project. The TYPO3 project is
  *  free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
+ *  the Free Software Foundation; either version 3 of the License, or
  *  (at your option) any later version.
  *
  *  The GNU General Public License can be found at
@@ -135,8 +135,10 @@ class Typo3PageContentExtractor extends HtmlContentExtractor
         // clean content
         $content = self::cleanContent($content);
         $content = html_entity_decode($content, ENT_QUOTES, 'UTF-8');
-        $content = strip_tags($content); // after entity decoding we might have tags again
+        $content = static::stripTags($content); // after entity decoding we might have tags again
+
         $content = trim($content);
+        $content = preg_replace('!\s+!', ' ', $content); // reduce multiple spaces to one space
 
         return $content;
     }

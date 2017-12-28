@@ -10,7 +10,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\IndexQueue\FrontendHelper;
  *  This script is part of the TYPO3 project. The TYPO3 project is
  *  free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
+ *  the Free Software Foundation; either version 3 of the License, or
  *  (at your option) any later version.
  *
  *  The GNU General Public License can be found at
@@ -29,6 +29,7 @@ use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageIndexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerResponse;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
+use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\TimeTracker\TimeTracker;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
@@ -106,9 +107,12 @@ class PageIndexerTest extends IntegrationTest
         $GLOBALS['TCA']['pages']['columns']['page_relations'] = $additionalPageTca['columns']['page_relations'];
         $GLOBALS['TCA']['pages']['columns']['relations'] = $additionalPageTca['columns']['relations'];
 
-        $additionalPageLanguageOverlayTca = include($this->getFixturePathByName('fake_extension3_pages_language_overlay_tca.php'));
-        $GLOBALS['TCA']['pages_language_overlay']['columns']['page_relations'] = $additionalPageLanguageOverlayTca['columns']['page_relations'];
-        $GLOBALS['TCA']['pages_language_overlay']['columns']['relations'] = $additionalPageLanguageOverlayTca['columns']['relations'];
+        //@todo when TYPO3 8 support is dropped, pages and the translation overlay can use the same tca configuration
+        if (Util::getIsTYPO3VersionBelow9()) {
+            $additionalPageLanguageOverlayTca = include($this->getFixturePathByName('fake_extension3_pages_language_overlay_tca.php'));
+            $GLOBALS['TCA']['pages_language_overlay']['columns']['page_relations'] = $additionalPageLanguageOverlayTca['columns']['page_relations'];
+            $GLOBALS['TCA']['pages_language_overlay']['columns']['relations'] = $additionalPageLanguageOverlayTca['columns']['relations'];
+        }
 
         $this->importDataSetFromFixture('can_index_page_with_relation_to_page.xml');
 

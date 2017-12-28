@@ -10,7 +10,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit;
  *  This script is part of the TYPO3 project. The TYPO3 project is
  *  free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
+ *  the Free Software Foundation; either version 3 of the License, or
  *  (at your option) any later version.
  *
  *  The GNU General Public License can be found at
@@ -108,5 +108,50 @@ class Typo3PageContentExtractorTest extends UnitTest
 
         $this->assertContains('100€', $actualResult);
         $this->assertNotContains('Remove me', $actualResult);
+    }
+
+    public function canGetIndexableContentDataProvider() {
+        return [
+            'can extract simple text' => [
+                'content' => '<p>Hello solr for TYPO3</p>',
+                'expectedResult' => 'Hello solr for TYPO3'
+            ],
+            'can extract umlauts' => [
+                'content' => '<p>Heute ist ein sch&ouml;ner tag</p>',
+                'expectedResult' => 'Heute ist ein schöner tag'
+            ],
+            'can extract subtag content' => [
+                'content' => '<p>Heute ist ein <strong>sch&ouml;ner</strong> tag</p>',
+                'expectedResult' => 'Heute ist ein schöner tag'
+            ],
+            'removes inline styles' => [
+                'content' => '<style> body { background-color: linen; }</style><p>Heute ist ein <strong>sch&ouml;ner</strong> tag</p>',
+                'expectedResult' => 'Heute ist ein schöner tag'
+            ],
+            'removes a line break' => [
+                'content' => '<p>If <b>the value</b> is <br/> please contact me</p>',
+                'expectedResult' => 'If the value is please contact me'
+            ],
+            'keep less then character' => [
+                'content' => '<p>If <b>the value</b> is &lt;50 please contact me</p>',
+                'expectedResult' => 'If the value is <50 please contact me'
+            ]
+        ];
+    }
+
+    /**
+     *
+     * @dataProvider canGetIndexableContentDataProvider
+     * @test
+     */
+    public function canGetIndexableContent($content, $expectedResult)
+    {
+        $content = '<!-- TYPO3SEARCH_begin -->' . $content . '<!-- TYPO3SEARCH_end -->';
+
+        $contentExtractor = GeneralUtility::makeInstance(Typo3PageContentExtractor::class, $content);
+        $contentExtractor->setConfiguration($this->typoScripConfigurationMock);
+
+        $actualResult = $contentExtractor->getIndexableContent();
+        $this->assertContains($expectedResult, $actualResult);
     }
 }

@@ -4,7 +4,7 @@
 
 <f:section name="Document">
 
-	<li class="results-entry{f:if(condition:document.isElevated, then: ' results-elevated')}"
+	<div class="list-group-item search-result results-entry{f:if(condition:document.isElevated, then: ' results-elevated')}"
 			data-document-score="{document.score}"
 			data-document-id="{document.id}"
 			data-document-url="{document.url}"
@@ -13,13 +13,17 @@
 			<div class="results-elevated-label"><s:translate key="sponsored"/></div>
 		</f:if>
 
-		<h5 class="results-topic"><a href="{s:uri.result.addSearchWordList(url:document.url, searchWords:resultSet.usedQuery.keywords)}">{document.title}</a></h5>
+		<div class="row">
+			<div class="col-md-10">
+				<h3 class="results-topic"><a href="{s:uri.result.addSearchWordList(url:document.url, searchWords:resultSet.usedQuery.keywords)}">{document.title}</a></h3>
+			</div>
+			<div class="col-md-2">
+				<f:render partial="Result/RelevanceBar" section="RelevanceBar" arguments="{resultSet:resultSet, document:document}" />
+			</div>
+		</div>
 
 		<div class="results-teaser">
-			<f:render partial="Result/RelevanceBar" section="RelevanceBar" arguments="{resultSet:resultSet, document:document}" />
-
 			<p class="result-content">{s:document.highlightResult(resultSet:resultSet, document:document, fieldName:'content')}</p>
-
 			<f:if condition="{document.type} == 'tx_solr_file'">
 				<p>
 					<s:translate key="file_mimetype" />: {document.fileMimeType}<br />
@@ -39,6 +43,6 @@
 			</f:if>
 			<s:debug.documentScoreAnalyzer document="{document}" />
 		</div>
-	</li>
+	</div>
 
 </f:section>

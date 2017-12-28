@@ -10,7 +10,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Plugin\Results;
  *  This script is part of the TYPO3 project. The TYPO3 project is
  *  free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
+ *  the Free Software Foundation; either version 3 of the License, or
  *  (at your option) any later version.
  *
  *  The GNU General Public License can be found at
@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Plugin\Results;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageFieldMappingIndexer;
 use ApacheSolrForTypo3\Solr\Typo3PageIndexer;
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
@@ -69,6 +70,9 @@ class SearchControllerTest extends IntegrationTest
         $this->searchController = $this->objectManager->get(SearchController::class);
         $this->searchRequest = $this->getPreparedRequest();
         $this->searchResponse = $this->getPreparedResponse();
+
+        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageSubstitutePageDocument']['ApacheSolrForTypo3\\Solr\\IndexQueue\\FrontendHelper\\PageFieldMappingIndexer'] = PageFieldMappingIndexer::class;
+
     }
 
     /**
@@ -217,7 +221,7 @@ class SearchControllerTest extends IntegrationTest
         $resultPage1 = $this->searchResponse->getContent();
 
         $this->assertContains('fluidfacet', $resultPage1, 'Could not find fluidfacet class that indicates the facet was rendered with fluid');
-        $this->assertContains('pages</a> <span class="facet-result-count">', $resultPage1, 'Could not find facet option for pages');
+        $this->assertContains('pages</a> <span class="facet-result-count badge">', $resultPage1, 'Could not find facet option for pages');
     }
 
     /**
@@ -281,6 +285,7 @@ class SearchControllerTest extends IntegrationTest
      */
     public function canDoAnInitialSearchWithoutResults()
     {
+
         $this->importDataSetFromFixture('can_render_search_controller.xml');
         $GLOBALS['TSFE'] = $this->getConfiguredTSFE([], 1);
 
@@ -458,15 +463,15 @@ class SearchControllerTest extends IntegrationTest
         $this->searchController->processRequest($this->searchRequest, $this->searchResponse);
         $resultPage1 = $this->searchResponse->getContent();
 
-        $subtitleMenPosition = strpos($resultPage1, '>men</a> <span class="facet-result-count">(1)</span>');
-        $subtitleWomanPosition =  strpos($resultPage1, '>woman</a> <span class="facet-result-count">(3)</span>');
+        $subtitleMenPosition = strpos($resultPage1, '>men</a> <span class="facet-result-count badge">1</span>');
+        $subtitleWomanPosition =  strpos($resultPage1, '>woman</a> <span class="facet-result-count badge">3</span>');
 
         $this->assertGreaterThan(0, $subtitleMenPosition);
         $this->assertGreaterThan(0, $subtitleWomanPosition);
         $this->assertGreaterThan($subtitleMenPosition, $subtitleWomanPosition);
 
         $this->assertContains('fluidfacet', $resultPage1, 'Could not find fluidfacet class that indicates the facet was rendered with fluid');
-        $this->assertContains('pages</a> <span class="facet-result-count">', $resultPage1, 'Could not find facet option for pages');
+        $this->assertContains('pages</a> <span class="facet-result-count badge">', $resultPage1, 'Could not find facet option for pages');
     }
 
     /**
@@ -490,15 +495,15 @@ class SearchControllerTest extends IntegrationTest
         $this->searchController->processRequest($this->searchRequest, $this->searchResponse);
         $resultPage1 = $this->searchResponse->getContent();
 
-        $subtitleMenPosition = strpos($resultPage1, '>men</a> <span class="facet-result-count">(1)</span>');
-        $subtitleWomanPosition =  strpos($resultPage1, '>woman</a> <span class="facet-result-count">(3)</span>');
+        $subtitleMenPosition = strpos($resultPage1, '>men</a> <span class="facet-result-count badge">1</span>');
+        $subtitleWomanPosition =  strpos($resultPage1, '>woman</a> <span class="facet-result-count badge">3</span>');
 
         $this->assertGreaterThan(0, $subtitleMenPosition);
         $this->assertGreaterThan(0, $subtitleWomanPosition);
         $this->assertGreaterThan($subtitleWomanPosition, $subtitleMenPosition);
 
         $this->assertContains('fluidfacet', $resultPage1, 'Could not find fluidfacet class that indicates the facet was rendered with fluid');
-        $this->assertContains('pages</a> <span class="facet-result-count">', $resultPage1, 'Could not find facet option for pages');
+        $this->assertContains('pages</a> <span class="facet-result-count badge">', $resultPage1, 'Could not find facet option for pages');
     }
 
     /**
@@ -522,6 +527,83 @@ class SearchControllerTest extends IntegrationTest
         $this->assertContains('Small (1 &amp; 2)', $resultPage1, 'Response did not contain expected small option of query facet');
         $this->assertContains('Medium (2 to 5)', $resultPage1, 'Response did not contain expected medium option of query facet');
         $this->assertContains('Large (5 to *)', $resultPage1, 'Response did not contain expected large option of query facet');
+    }
+
+    /**
+     * @test
+     */
+    public function canRenderHierarchicalFacet()
+    {
+        $this->importDataSetFromFixture('can_render_search_controller.xml');
+        $GLOBALS['TSFE'] = $this->getConfiguredTSFE([], 1);
+
+        $this->indexPages([1, 2, 3, 4, 5, 6, 7, 8]);
+
+        //not in the content but we expect to get shoes suggested
+        $_GET['q'] = '*';
+
+        // since we overwrite the configuration in the testcase from outside we want to avoid that it will be resetted
+        $this->searchController->setResetConfigurationBeforeInitialize(false);
+        $this->searchController->processRequest($this->searchRequest, $this->searchResponse);
+        $resultPage1 = $this->searchResponse->getContent();
+
+        $this->assertContains('Found 8 results', $resultPage1, 'Assert to find 8 results without faceting');
+        $this->assertContains('facet-type-hierarchy', $resultPage1, 'Did not render hierarchy facet in the response');
+        $this->assertContains('data-facet-item-value="/1/2/"', $resultPage1, 'Hierarchy facet item did not contain expected data item');
+        $this->assertContains('tx_solr%5Bq%5D=%2A&amp;tx_solr%5Bfilter%5D%5B0%5D=pageHierarchy%3A%2F1%2F2%2F', $resultPage1, 'Result page did not contain hierarchical facet link');
+    }
+
+    /**
+     * @test
+     */
+    public function canFacetOnHierarchicalFacetItem()
+    {
+        $this->importDataSetFromFixture('can_render_search_controller.xml');
+        $GLOBALS['TSFE'] = $this->getConfiguredTSFE([], 1);
+
+        $this->indexPages([1, 2, 3, 4, 5, 6, 7, 8]);
+
+        //not in the content but we expect to get shoes suggested
+        $_GET['q'] = '*';
+
+        $this->searchRequest->setArgument('filter', ['pageHierarchy:/1/2/']);
+
+        // since we overwrite the configuration in the testcase from outside we want to avoid that it will be resetted
+        $this->searchController->setResetConfigurationBeforeInitialize(false);
+        $this->searchController->processRequest($this->searchRequest, $this->searchResponse);
+        $resultPage1 = $this->searchResponse->getContent();
+
+        $this->assertContains('Found 1 result', $resultPage1, 'Assert to only find one result after faceting');
+        $this->assertContains('facet-type-hierarchy', $resultPage1, 'Did not render hierarchy facet in the response');
+        $this->assertContains('data-facet-item-value="/1/2/"', $resultPage1, 'Hierarchy facet item did not contain expected data item');
+        $this->assertContains('tx_solr%5Bq%5D=%2A&amp;tx_solr%5Bfilter%5D%5B0%5D=pageHierarchy%3A%2F1%2F2%2F', $resultPage1, 'Result page did not contain hierarchical facet link');
+    }
+
+    /**
+     * @test
+     */
+    public function canFacetOnHierarchicalTextCategory()
+    {
+        $this->importDataSetFromFixture('can_render_path_facet_with_search_controller.xml');
+        $GLOBALS['TSFE'] = $this->getConfiguredTSFE([], 1);
+
+        $this->indexPages([1, 2, 3]);
+
+        // we should have 3 documents in solr
+        $solrContent = file_get_contents('http://localhost:8999/solr/core_en/select?q=*:*');
+        $this->assertContains('"numFound":3', $solrContent, 'Could not index document into solr');
+
+        // but when we facet on the categoryPaths:/Men/Shoes \/ Socks/ we should only have one result since the others
+        // do not have the category assigned
+        $_GET['q'] = '*';
+        $this->searchRequest->setArgument('filter', ['categoryPaths:/Men/Shoes \/ Socks/']);
+
+        // since we overwrite the configuration in the testcase from outside we want to avoid that it will be resetted
+        $this->searchController->setResetConfigurationBeforeInitialize(false);
+        $this->searchController->processRequest($this->searchRequest, $this->searchResponse);
+        $resultPage1 = $this->searchResponse->getContent();
+
+        $this->assertContains('Found 1 result', $resultPage1, 'Assert to only find one result after faceting');
     }
 
     /**
@@ -554,15 +636,15 @@ class SearchControllerTest extends IntegrationTest
         $this->searchController->processRequest($this->searchRequest, $this->searchResponse);
         $resultPage1 = $this->searchResponse->getContent();
 
-        $subtitleMenPosition = strpos($resultPage1, '>men</a> <span class="facet-result-count">(1)</span>');
-        $subtitleWomanPosition =  strpos($resultPage1, '>woman</a> <span class="facet-result-count">(3)</span>');
+        $subtitleMenPosition = strpos($resultPage1, '>men</a> <span class="facet-result-count badge">1</span>');
+        $subtitleWomanPosition =  strpos($resultPage1, '>woman</a> <span class="facet-result-count badge">3</span>');
 
         $this->assertGreaterThan(0, $subtitleMenPosition);
         $this->assertGreaterThan(0, $subtitleWomanPosition);
         $this->assertGreaterThan($subtitleMenPosition, $subtitleWomanPosition);
 
         $this->assertContains('fluidfacet', $resultPage1, 'Could not find fluidfacet class that indicates the facet was rendered with fluid');
-        $this->assertContains('pages</a> <span class="facet-result-count">', $resultPage1, 'Could not find facet option for pages');
+        $this->assertContains('pages</a> <span class="facet-result-count badge">', $resultPage1, 'Could not find facet option for pages');
     }
 
 
@@ -792,6 +874,35 @@ class SearchControllerTest extends IntegrationTest
     /**
      * @test
      */
+    public function canRenderASecondFacetOnTheTypeField()
+    {
+        $this->importDataSetFromFixture('can_render_search_controller.xml');
+        $GLOBALS['TSFE'] = $this->getConfiguredTSFE([], 1);
+
+        $this->indexPages([1, 2, 3, 4, 5, 6, 7, 8]);
+
+        $overwriteConfiguration = [];
+        $overwriteConfiguration['search.']['faceting.']['facets.']['myType.'] = [
+            'label' => 'My Type',
+            'field' => 'type',
+        ];
+
+        /** @var $configurationManager ConfigurationManager */
+        $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
+        $configurationManager->getTypoScriptConfiguration()->mergeSolrConfiguration($overwriteConfiguration);
+        $this->searchController->setResetConfigurationBeforeInitialize(false);
+
+        //not in the content but we expect to get shoes suggested
+        $_GET['q'] = '*';
+        $this->searchController->processRequest($this->searchRequest, $this->searchResponse);
+        $this->assertContains('id="facetmyType"', $this->searchResponse->getContent());
+        $this->assertContains('id="facettype"', $this->searchResponse->getContent());
+
+    }
+
+    /**
+     * @test
+     */
     public function formActionIsRenderingTheForm()
     {
         $this->importDataSetFromFixture('can_render_search_controller.xml');
@@ -980,7 +1091,7 @@ class SearchControllerTest extends IntegrationTest
             $fakeTSFE = $this->getConfiguredTSFE([], $importPageId);
             $GLOBALS['TSFE'] = $fakeTSFE;
             $fakeTSFE->newCObj();
-            PageGenerator::pagegenInit();
+            $fakeTSFE->preparePageContentGeneration();
             PageGenerator::renderContent();
             /** @var $pageIndexer \ApacheSolrForTypo3\Solr\Typo3PageIndexer */
             $pageIndexer = GeneralUtility::makeInstance(Typo3PageIndexer::class, $fakeTSFE);

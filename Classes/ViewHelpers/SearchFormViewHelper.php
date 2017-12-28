@@ -70,40 +70,42 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
         $this->registerTagAttribute('onreset', 'string', 'JavaScript: On reset of the form');
         $this->registerTagAttribute('onsubmit', 'string', 'JavaScript: On submit of the form');
         $this->registerUniversalTagAttributes();
+
+        $this->registerArgument('pageUid', 'integer', 'When not set current page is used', false);
+        $this->registerArgument('additionalFilters', 'array', 'Additional filters', false);
+        $this->registerArgument('additionalParams', 'array', 'Query parameters to be attached to the resulting URI', false, []);
+        $this->registerArgument('pageType', 'integer', 'Type of the target page. See typolink.parameter', false, 0);
+
+        $this->registerArgument('noCache', 'boolean', 'Set this to disable caching for the target page. You should not need this.', false, false);
+        $this->registerArgument('noCacheHash', 'boolean', 'Set this to supress the cHash query parameter created by TypoLink. You should not need this.', false, false);
+        $this->registerArgument('section', 'string', 'The anchor to be added to the action URI (only active if $actionUri is not set)', false, '');
+        $this->registerArgument('absolute', 'boolean', 'If set, the URI of the rendered link is absolute', false, false);
+        $this->registerArgument('addQueryString', 'boolean', 'If set, the current query parameters will be kept in the URI', false, false);
+        $this->registerArgument('argumentsToBeExcludedFromQueryString', 'array', 'arguments to be removed from the URI. Only active if $addQueryString = TRUE', false, []);
+        $this->registerArgument('addQueryStringMethod', 'string', 'Set which parameters will be kept. Only active if $addQueryString = TRUE', false);
+        $this->registerArgument('addSuggestUrl', 'boolean', 'Indicates if suggestUrl should be rendered or not', false, true);
+        $this->registerArgument('suggestHeader', 'string', 'The header for the top results', false, 'Top Results');
     }
 
     /**
      * Render search form tag
      *
-     * @param int|NULL $pageUid When not set current page is used
-     * @param array|NULL $additionalFilters Additional filters
-     * @param array $additionalParams query parameters to be attached to the resulting URI
-     * @param integer $pageType type of the target page. See typolink.parameter
-     * @param boolean $noCache set this to disable caching for the target page. You should not need this.
-     * @param boolean $noCacheHash set this to supress the cHash query parameter created by TypoLink. You should not need this.
-     * @param string $section The anchor to be added to the action URI (only active if $actionUri is not set)
-     * @param boolean $absolute If set, the URI of the rendered link is absolute
-     * @param boolean $addQueryString If set, the current query parameters will be kept in the URI
-     * @param array $argumentsToBeExcludedFromQueryString arguments to be removed from the URI. Only active if $addQueryString = TRUE
-     * @param string $addQueryStringMethod Set which parameters will be kept. Only active if $addQueryString = TRUE
-     * @param bool $addSuggestUrl
-     * @param string $suggestHeader The header for the top results
      * @return string
      */
-    public function render($pageUid = null, $additionalFilters = null, array $additionalParams = [], $noCache = false, $pageType = 0, $noCacheHash = false, $section = '', $absolute = false, $addQueryString = false, array $argumentsToBeExcludedFromQueryString = [], $addQueryStringMethod = null, $addSuggestUrl = true, $suggestHeader = 'Top Results')
+    public function render()
     {
+        $pageUid = $this->arguments['pageUid'];
         if ($pageUid === null && !empty($this->getTypoScriptConfiguration()->getSearchTargetPage())) {
             $pageUid = $this->getTypoScriptConfiguration()->getSearchTargetPage();
         }
 
-        $uriBuilder = $this->controllerContext->getUriBuilder();
-        $uri = $uriBuilder->reset()->setTargetPageUid($pageUid)->setTargetPageType($pageType)->setNoCache($noCache)->setUseCacheHash(!$noCacheHash)->setArguments($additionalParams)->setCreateAbsoluteUri($absolute)->setAddQueryString($addQueryString)->setArgumentsToBeExcludedFromQueryString($argumentsToBeExcludedFromQueryString)->setAddQueryStringMethod($addQueryStringMethod)->setSection($section)->build();
+        $uri = $this->buildUriFromArguments();
 
         $this->tag->addAttribute('action', trim($uri));
-        if ($addSuggestUrl) {
-            $this->tag->addAttribute('data-suggest', $this->getSuggestEidUrl($additionalFilters, $pageUid));
+        if ($this->arguments['addSuggestUrl']) {
+            $this->tag->addAttribute('data-suggest', $this->getSuggestEidUrl($this->arguments['additionalFilters'], $pageUid));
         }
-        $this->tag->addAttribute('data-suggest-header', htmlspecialchars($suggestHeader));
+        $this->tag->addAttribute('data-suggest-header', htmlspecialchars($this->arguments['suggestHeader']));
         $this->tag->addAttribute('accept-charset', $this->frontendController->metaCharset);
 
         // Get search term
@@ -157,5 +159,15 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
         }
 
         return $suggestUrl;
+    }
+
+    /**
+     * @return string
+     */
+    protected function buildUriFromArguments(): string
+    {
+        $uriBuilder = $this->getControllerContext()->getUriBuilder();
+        $uri = $uriBuilder->reset()->setTargetPageUid($this->arguments['pageUid'])->setTargetPageType($this->arguments['pageType'])->setNoCache($this->arguments['noCache'])->setUseCacheHash(!$this->arguments['noCacheHash'])->setArguments($this->arguments['additionalParams'])->setCreateAbsoluteUri($this->arguments['absolute'])->setAddQueryString($this->arguments['addQueryString'])->setArgumentsToBeExcludedFromQueryString($this->arguments['argumentsToBeExcludedFromQueryString'])->setAddQueryStringMethod($this->arguments['addQueryStringMethod'])->setSection($this->arguments['section'])->build();
+        return $uri;
     }
 }

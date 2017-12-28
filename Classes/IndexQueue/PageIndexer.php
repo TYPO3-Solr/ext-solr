@@ -10,7 +10,7 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
  *  This script is part of the TYPO3 project. The TYPO3 project is
  *  free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
+ *  the Free Software Foundation; either version 3 of the License, or
  *  (at your option) any later version.
  *
  *  The GNU General Public License can be found at
@@ -106,7 +106,7 @@ class PageIndexer extends Indexer
      * for translations of a page.
      *
      * @param Item $item An index queue item
-     * @return array An array of ApacheSolrForTypo3\Solr\SolrService connections, the array's keys are the sys_language_uid of the language of the connection
+     * @return array An array of ApacheSolrForTypo3\Solr\System\Solr\SolrConnection connections, the array's keys are the sys_language_uid of the language of the connection
      */
     protected function getSolrConnectionsByItem(Item $item)
     {
@@ -288,7 +288,7 @@ class PageIndexer extends Indexer
         }
 
         if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueuePageIndexer']['dataUrlModifier']) {
-            $dataUrlModifier = GeneralUtility::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueuePageIndexer']['dataUrlModifier']);
+            $dataUrlModifier = GeneralUtility::makeInstance($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueuePageIndexer']['dataUrlModifier']);
 
             if ($dataUrlModifier instanceof PageIndexerDataUrlModifier) {
                 $dataUrl = $dataUrlModifier->modifyDataUrl($dataUrl, [
@@ -384,10 +384,9 @@ class PageIndexer extends Indexer
         }
 
         if (!$indexActionResult['pageIndexed']) {
-            throw new \RuntimeException(
-                'Failed indexing page Index Queue item ' . $item->getIndexQueueUid(),
-                1331837081
-            );
+            $message = 'Failed indexing page Index Queue item: ' . $item->getIndexQueueUid() . ' url: ' . $indexRequestUrl;
+
+            throw new \RuntimeException($message, 1331837081);
         }
 
         return $response;

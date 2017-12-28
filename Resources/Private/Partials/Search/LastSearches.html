@@ -7,17 +7,24 @@
 <s:widget.lastSearches>
 	<f:if condition="{lastSearches}">
 
-		<div id="tx-solr-lastsearches" class="secondaryContentSection">
-			<div class="csc-header">
-				<h3 class="csc-firstHeader"><s:translate key="lastSearches">Last searches</s:translate></h3>
+		<div id="tx-solr-lastsearches" class="secondaryContentSection panel">
+			<div class="panel-heading">
+				<h3 class="panel-title">
+					<span class="glyphicon glyphicon-time"></span>
+					<a data-toggle="collapse" data-parent="#accordion" href="#lastSearches">
+						<s:translate key="lastSearches">Last searches</s:translate>
+					</a>
+				</h3>
 			</div>
-			<ul>
-				<f:for each="{lastSearches}" as="searchedFor">
-					<li>
-						<a href="{s:uri.search.startNewSearch(queryString: searchedFor)}" class="solr-ajaxified">{searchedFor}</a>
-					</li>
-				</f:for>
-			</ul>
+			<div class="list-group panel-collapse collapse" id="lastSearches">
+				<div class="panel-body">
+					<f:for each="{lastSearches}" as="searchedFor">
+						<li class="list-group-item">
+							<a href="{s:uri.search.startNewSearch(queryString: searchedFor)}" class="solr-ajaxified">{searchedFor}</a>
+						</li>
+					</f:for>
+				</div>
+			</div>
 		</div>
 
 	</f:if>

@@ -10,7 +10,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\LastSearches;
  *  This script is part of the TYPO3 project. The TYPO3 project is
  *  free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
+ *  the Free Software Foundation; either version 3 of the License, or
  *  (at your option) any later version.
  *
  *  The GNU General Public License can be found at
@@ -32,11 +32,6 @@ class LastSearchesRepository extends AbstractRepository
      * @var string
      */
     protected $table = 'tx_solr_last_searches';
-
-    /**
-     * @var \TYPO3\CMS\Core\Database\DatabaseConnection
-     */
-    protected $database;
 
     /**
      * Finds the last searched keywords from the database

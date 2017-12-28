@@ -10,7 +10,7 @@ namespace ApacheSolrForTypo3\Solr\Test\System\Service;
  *  This script is part of the TYPO3 project. The TYPO3 project is
  *  free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
+ *  the Free Software Foundation; either version 3 of the License, or
  *  (at your option) any later version.
  *
  *  The GNU General Public License can be found at
@@ -36,17 +36,30 @@ use TYPO3\CMS\Extbase\Service\TypoScriptService;
  */
 class ConfigurationServiceTest extends UnitTest
 {
+
     /**
+     * @return array
+     */
+    public function overrideFilterDataProvider()
+    {
+        return [
+            'simpleInteger' => ['id', 4711, 'id:"4711"'],
+            'escapedString' => ['id', 'foo"bar', 'id:"foo\"bar"']
+        ];
+    }
+
+    /**
+     * @dataProvider overrideFilterDataProvider
      * @test
      */
-    public function canOverrideConfigurationWithFlexFormSettings()
+    public function canOverrideConfigurationWithFlexFormSettings($filterField, $filterValue, $expectedFilterString)
     {
         $fakeFlexFormArrayData = [
             'search' =>
                 [
                     'query' => [
                         'filter' => [
-                            ['field' => ['field' => 'id', 'value' => 4711]]
+                            ['field' => ['field' => $filterField, 'value' => $filterValue]]
                         ]
                     ]
                 ]
@@ -65,6 +78,6 @@ class ConfigurationServiceTest extends UnitTest
         $configurationService->overrideConfigurationWithFlexFormSettings('foobar', $typoScriptConfiguration);
 
             // the filter should be overwritten by the flexform
-        $this->assertEquals(['id:4711'], $typoScriptConfiguration->getSearchQueryFilterConfiguration());
+        $this->assertEquals([$expectedFilterString], $typoScriptConfiguration->getSearchQueryFilterConfiguration());
     }
 }

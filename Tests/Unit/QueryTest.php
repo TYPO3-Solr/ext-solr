@@ -10,7 +10,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit;
  *  This script is part of the TYPO3 project. The TYPO3 project is
  *  free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
+ *  the Free Software Foundation; either version 3 of the License, or
  *  (at your option) any later version.
  *
  *  The GNU General Public License can be found at
@@ -25,8 +25,11 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\Helper\EscapeService;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\BigramPhraseFields;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\PhraseFields;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\QueryFields;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\ReturnFields;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\TrigramPhraseFields;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteHashService;
 use ApacheSolrForTypo3\Solr\Query;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
@@ -1113,6 +1116,121 @@ class QueryTest extends UnitTest
 
         $parameters = $query->getQueryParameters();
         $this->assertSame('content^10.0 title^9.0', $parameters['qf'], 'qf parameter not set in QueryParameters');
+    }
+
+    /**
+     * @test
+     */
+    public function canSetPhraseFieldsFromString()
+    {
+        $query = $this->getInitializedTestQuery('foo bar');
+        $query->setPhraseFields(PhraseFields::fromString('content^100.0, title^10.0'));
+        $phraseFields = $query->getPhraseFields()->toString();
+
+        // the , delimiter is removed
+        $this->assertSame('content^100.0 title^10.0', $phraseFields, 'Can not set and get phrase fields');
+    }
+
+    /**
+     * @test
+     */
+    public function canSetPhraseFields()
+    {
+        $query = $this->getInitializedTestQuery('foo bar');
+        $this->assertSame('', $query->getPhraseFields()->toString(), 'Phrase Fields must be empty by default');
+
+        $query->getPhraseFields()->add('content', 10);
+        $query->getPhraseFields()->add('title', 11);
+
+        $this->assertSame('content^10.0 title^11.0', $query->getPhraseFields()->toString());
+
+        // overwrite the boost of title
+        $query->getPhraseFields()->add('title', 9);
+        $this->assertSame('content^10.0 title^9.0', $query->getPhraseFields()->toString());
+    }
+
+    /**
+     * @test
+     */
+    public function phraseFieldsAreNotSetInUrlQueryIfPhraseSearchIsDisabled()
+    {
+        $query = $this->getInitializedTestQuery('foo bar');
+        $query->getPhraseFields()->add('content', 10);
+        $query->getPhraseFields()->add('title', 11);
+        $parameters = $query->getQueryParameters();
+        $this->assertNull($parameters['pf'], 'pf parameter must be empty(not set) if phrase search is disabled');
+    }
+
+    /**
+     * @test
+     */
+    public function phraseFieldsAreSetInUrlQueryIfPhraseSearchIsEnabled()
+    {
+        $fakeConfigurationArray = [];
+        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['query.']['phrase'] = 1;
+        $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
+        $query = $this->getInitializedTestQuery('foo bar', $fakeConfiguration);
+
+        $query->getPhraseFields()->add('content', 10);
+        $query->getPhraseFields()->add('title', 11);
+        $parameters = $query->getQueryParameters();
+        $this->assertSame('content^10.0 title^11.0', $parameters['pf'], 'pf parameters must be set if phrase search is enabled');
+    }
+
+    /**
+     * @test
+     */
+    public function bigramPhraseFieldsAreNotSetInUrlQueryIfBigramPhraseSearchIsDisabled()
+    {
+        $query = $this->getInitializedTestQuery('foo bar baz');
+        $query->getBigramPhraseFields()->add('content', 10);
+        $query->getBigramPhraseFields()->add('title', 11);
+        $parameters = $query->getQueryParameters();
+        $this->assertNull($parameters['pf2'], 'pf2 parameter must be empty(not set) if phrase search is disabled');
+    }
+
+    /**
+     * @test
+     */
+    public function bigramPhraseFieldsAreSetInUrlQueryIfBigramPhraseSearchIsEnabled()
+    {
+        $fakeConfigurationArray = [];
+        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['query.']['bigramPhrase'] = 1;
+        $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
+        $query = $this->getInitializedTestQuery('foo bar', $fakeConfiguration);
+
+        $query->getBigramPhraseFields()->add('content', 10);
+        $query->getBigramPhraseFields()->add('title', 11);
+        $parameters = $query->getQueryParameters();
+        $this->assertSame('content^10.0 title^11.0', $parameters['pf2'], 'pf2 parameters must be set if bigram phrase search is enabled');
+    }
+
+    /**
+     * @test
+     */
+    public function trigramPhraseFieldsAreNotSetInUrlQueryIfTrigramPhraseSearchIsDisabled()
+    {
+        $query = $this->getInitializedTestQuery('foo bar baz foobar barbaz');
+        $query->getTrigramPhraseFields()->add('content', 10);
+        $query->getTrigramPhraseFields()->add('title', 11);
+        $parameters = $query->getQueryParameters();
+        $this->assertNull($parameters['pf3'], 'pf3 parameter must be empty(not set) if phrase search is disabled');
+    }
+
+    /**
+     * @test
+     */
+    public function trigramPhraseFieldsAreSetInUrlQueryIfTrigramPhraseSearchIsEnabled()
+    {
+        $fakeConfigurationArray = [];
+        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['query.']['trigramPhrase'] = 1;
+        $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
+        $query = $this->getInitializedTestQuery('foo bar', $fakeConfiguration);
+
+        $query->getTrigramPhraseFields()->add('content', 10);
+        $query->getTrigramPhraseFields()->add('title', 11);
+        $parameters = $query->getQueryParameters();
+        $this->assertSame('content^10.0 title^11.0', $parameters['pf3'], 'pf3 parameters must be set if trigram phrase search is enabled');
     }
 
     /**

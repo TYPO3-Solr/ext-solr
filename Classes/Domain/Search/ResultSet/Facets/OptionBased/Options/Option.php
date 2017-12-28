@@ -13,6 +13,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Opt
  *
  * The TYPO3 project - inspiring people to share!
 */
+
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\AbstractOptionFacetItem;
 
 /**
@@ -30,9 +31,10 @@ class Option extends AbstractOptionFacetItem
      * @param string $value
      * @param int $documentCount
      * @param bool $selected
+     * @param array $metrics
      */
-    public function __construct(OptionsFacet $facet, $label = '', $value = '', $documentCount = 0, $selected = false)
+    public function __construct(OptionsFacet $facet, $label = '', $value = '', $documentCount = 0, $selected = false, $metrics = [])
     {
-        parent::__construct($facet, $label, $value, $documentCount, $selected);
+        parent::__construct($facet, $label, $value, $documentCount, $selected, $metrics);
     }
 }

@@ -10,7 +10,7 @@ namespace ApacheSolrForTypo3\Solr\Controller\Backend\Search;
  *  This script is part of the TYPO3 project. The TYPO3 project is
  *  free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
+ *  the Free Software Foundation; either version 3 of the License, or
  *  (at your option) any later version.
  *
  *  The GNU General Public License can be found at
@@ -27,7 +27,7 @@ namespace ApacheSolrForTypo3\Solr\Controller\Backend\Search;
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\Site;
-use ApacheSolrForTypo3\Solr\SolrService as SolrCoreConnection;
+use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection as SolrCoreConnection;
 use ApacheSolrForTypo3\Solr\System\Mvc\Backend\Component\Exception\InvalidViewObjectNameException;
 use ApacheSolrForTypo3\Solr\System\Mvc\Backend\Service\ModuleDataStorageService;
 use TYPO3\CMS\Backend\Template\Components\Menu\Menu;
@@ -61,6 +61,14 @@ abstract class AbstractModuleController extends ActionController
      * @var int
      */
     protected $selectedPageUID;
+
+    /**
+     * Holds the requested page UID because the selected page uid,
+     * might be overwritten by the automatic site selection.
+     *
+     * @var int
+     */
+    protected $requestedPageUID;
 
     /**
      * @var Site
@@ -100,6 +108,8 @@ abstract class AbstractModuleController extends ActionController
         if ($this->request->hasArgument('id')) {
             $this->selectedPageUID = (int)$this->request->getArgument('id');
         }
+
+        $this->requestedPageUID = $this->selectedPageUID;
 
         /* @var SiteRepository $siteRepository */
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
@@ -199,17 +209,18 @@ abstract class AbstractModuleController extends ActionController
         $this->initializeSelectedSolrCoreConnection();
         $cores = $this->solrConnectionManager->getConnectionsBySite($site);
         foreach ($cores as $core) {
+            $coreAdmin = $core->getAdminService();
             $menuItem = $this->coreSelectorMenu->makeMenuItem();
-            $menuItem->setTitle($core->getPath());
+            $menuItem->setTitle($coreAdmin->getPath());
             $uri = $this->uriBuilder->reset()->uriFor('switchCore',
                 [
-                    'corePath' => $core->getPath(),
+                    'corePath' => $coreAdmin->getPath(),
                     'uriToRedirectTo' => $uriToRedirectTo
                 ]
             );
             $menuItem->setHref($uri);
 
-            if ($core->getPath() == $this->selectedSolrCoreConnection->getPath()) {
+            if ($coreAdmin->getPath() == $this->selectedSolrCoreConnection->getAdminService()->getPath()) {
                 $menuItem->setActive(true);
             }
             $this->coreSelectorMenu->addMenuItem($menuItem);
@@ -253,13 +264,13 @@ abstract class AbstractModuleController extends ActionController
             return;
         }
         foreach ($solrCoreConnections as $solrCoreConnection) {
-            if ($solrCoreConnection->getPath() == $currentSolrCorePath) {
+            if ($solrCoreConnection->getAdminService()->getPath() == $currentSolrCorePath) {
                 $this->selectedSolrCoreConnection = $solrCoreConnection;
             }
         }
         if (!$this->selectedSolrCoreConnection instanceof SolrCoreConnection && count($solrCoreConnections) > 0) {
             $this->initializeFirstAvailableSolrCoreConnection($solrCoreConnections, $moduleData);
-            $message = LocalizationUtility::translate('coreselector_switched_to_default_core', 'solr', [$currentSolrCorePath, $this->selectedSite->getLabel(), $this->selectedSolrCoreConnection->getPath()]);
+            $message = LocalizationUtility::translate('coreselector_switched_to_default_core', 'solr', [$currentSolrCorePath, $this->selectedSite->getLabel(), $this->selectedSolrCoreConnection->getAdminService()->getPath()]);
             $this->addFlashMessage($message, '', AbstractMessage::NOTICE);
         }
     }
@@ -273,7 +284,7 @@ abstract class AbstractModuleController extends ActionController
             return;
         }
         $this->selectedSolrCoreConnection = $solrCoreConnections[0];
-        $moduleData->setCore($this->selectedSolrCoreConnection->getPath());
+        $moduleData->setCore($this->selectedSolrCoreConnection->getAdminService()->getPath());
         $this->moduleDataStorageService->persistModuleData($moduleData);
     }
 }

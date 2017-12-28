@@ -10,7 +10,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Hie
  *  This script is part of the TYPO3 project. The TYPO3 project is
  *  free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
+ *  the Free Software Foundation; either version 3 of the License, or
  *  (at your option) any later version.
  *
  *  The GNU General Public License can be found at
@@ -50,12 +50,15 @@ class HierarchyUrlDecoder implements FacetUrlDecoderInterface
      */
     public function decode($hierarchy, array $configuration = [])
     {
-        $hierarchy = substr($hierarchy, 1);
-        $hierarchy = rtrim($hierarchy, '/');
-        $hierarchyItems = explode(self::DELIMITER, $hierarchy);
+        $escapedHierarchy = HierarchyTool::substituteSlashes($hierarchy);
 
-        $hierarchyFilter = '"' . (count($hierarchyItems) - 1) . '-' . $hierarchy . '/"';
+        $escapedHierarchy = substr($escapedHierarchy, 1);
+        $escapedHierarchy = rtrim($escapedHierarchy, '/');
+        $hierarchyItems = explode(self::DELIMITER, $escapedHierarchy);
+        $filterContent = (count($hierarchyItems) - 1) . '-' . $escapedHierarchy . '/';
 
-        return $hierarchyFilter;
+        $filterContent = HierarchyTool::unSubstituteSlashes($filterContent);
+
+        return '"' . str_replace("\\", "\\\\", $filterContent) . '"';
     }
 }

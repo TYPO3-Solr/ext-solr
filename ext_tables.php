@@ -42,29 +42,23 @@ if (TYPO3_MODE == 'BE') {
         ]
     );
 
+    //@todo can be changed to a simple assignment when TYPO3 8 compatibility is dropped
+    $treeComponentId =  ApacheSolrForTypo3\Solr\Util::getIsTYPO3VersionBelow9() ? 'typo3-pagetree' : 'TYPO3/CMS/Backend/PageTree/PageTreeElement';
+
     \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
         'ApacheSolrForTypo3.' . $_EXTKEY,
         'searchbackend',
         'Info',
         '',
         [
-            'Backend\\Search\\InfoModule' => 'index, switchSite, switchCore',
-            'Backend\\Web\\Info\\ApacheSolrDocument' => 'index'
+            'Backend\\Search\\InfoModule' => 'index, switchSite, switchCore, documentsDetails',
         ],
         [
             'access' => 'user,group',
             'icon' => 'EXT:solr/Resources/Public/Images/Icons/ModuleInfo.svg',
             'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang_mod_info.xlf',
-            'navigationComponentId' => 'typo3-pagetree'
+            'navigationComponentId' => $treeComponentId
         ]
-    );
-
-    // Index Inspector is hidden under Web->Info->Index Inspector
-    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::insertModuleFunction(
-        'web_info',
-        \ApacheSolrForTypo3\Solr\Controller\Backend\Web\Info\IndexInspectorController::class,
-        null,
-        'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:module_indexinspector'
     );
 
     \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
@@ -79,7 +73,7 @@ if (TYPO3_MODE == 'BE') {
             'access' => 'user,group',
             'icon' => 'EXT:solr/Resources/Public/Images/Icons/ModuleCoreOptimization.svg',
             'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang_mod_coreoptimize.xlf',
-            'navigationComponentId' => 'typo3-pagetree'
+            'navigationComponentId' => $treeComponentId
         ]
     );
 
@@ -89,13 +83,13 @@ if (TYPO3_MODE == 'BE') {
         'IndexQueue',
         '',
         [
-            'Backend\\Search\\IndexQueueModule' => 'index, initializeIndexQueue, resetLogErrors, showError, doIndexingRun, switchSite'
+            'Backend\\Search\\IndexQueueModule' => 'index, initializeIndexQueue, requeueDocument, resetLogErrors, showError, doIndexingRun, switchSite'
         ],
         [
             'access' => 'user,group',
             'icon' => 'EXT:solr/Resources/Public/Images/Icons/ModuleIndexQueue.svg',
             'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang_mod_indexqueue.xlf',
-            'navigationComponentId' => 'typo3-pagetree'
+            'navigationComponentId' => $treeComponentId
         ]
     );
 
@@ -111,7 +105,7 @@ if (TYPO3_MODE == 'BE') {
             'access' => 'user,group',
             'icon' => 'EXT:solr/Resources/Public/Images/Icons/ModuleIndexAdministration.svg',
             'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang_mod_indexadmin.xlf',
-            'navigationComponentId' => 'typo3-pagetree'
+            'navigationComponentId' => $treeComponentId
         ]
     );
 

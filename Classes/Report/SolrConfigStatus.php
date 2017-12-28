@@ -10,7 +10,7 @@ namespace ApacheSolrForTypo3\Solr\Report;
  *  This script is part of the TYPO3 project. The TYPO3 project is
  *  free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
+ *  the Free Software Foundation; either version 3 of the License, or
  *  (at your option) any later version.
  *
  *  The GNU General Public License can be found at
@@ -62,8 +62,10 @@ class SolrConfigStatus extends AbstractSolrStatus
         $solrConnections = GeneralUtility::makeInstance(ConnectionManager::class)->getAllConnections();
 
         foreach ($solrConnections as $solrConnection) {
-            if ($solrConnection->ping() && $solrConnection->getSolrconfigName() != self::RECOMMENDED_SOLRCONFIG_VERSION) {
-                $variables = ['solr' => $solrConnection, 'recommendedVersion' => self::RECOMMENDED_SOLRCONFIG_VERSION];
+            $adminService = $solrConnection->getAdminService();
+
+            if ($adminService->ping() && $adminService->getSolrconfigName() != self::RECOMMENDED_SOLRCONFIG_VERSION) {
+                $variables = ['solr' => $adminService, 'recommendedVersion' => self::RECOMMENDED_SOLRCONFIG_VERSION];
                 $report = $this->getRenderedReport('SolrConfigStatus.html', $variables);
                 $status = GeneralUtility::makeInstance(Status::class, 'Solrconfig Version', 'Unsupported solrconfig.xml', $report, Status::WARNING);
 

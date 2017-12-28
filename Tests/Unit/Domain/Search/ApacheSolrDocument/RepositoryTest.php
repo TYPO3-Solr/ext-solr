@@ -10,7 +10,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ApacheSolrDocument;
  *  This script is part of the TYPO3 project. The TYPO3 project is
  *  free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
+ *  the Free Software Foundation; either version 3 of the License, or
  *  (at your option) any later version.
  *
  *  The GNU General Public License can be found at
@@ -26,6 +26,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ApacheSolrDocument;
 
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\Domain\Search\ApacheSolrDocument\Repository;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\Parser\DocumentEscapeService;
 use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
 use ApacheSolrForTypo3\Solr\Query;
@@ -132,11 +133,13 @@ class RepositoryTest extends UnitTest
         $search->expects($this->any())->method('search')->willReturn($fakeResponse);
         $documentEscapeServiceMock->expects($this->any())->method('applyHtmlSpecialCharsOnAllFields')->willReturn($expectedApacheSolrDocumentCollection);
 
+        $queryBuilderMock = $this->getDumbMock(QueryBuilder::class);
+
         /* @var $apacheSolrDocumentRepository Repository */
-        $apacheSolrDocumentRepository = $this->getAccessibleMock(Repository::class, ['getQueryForPage', 'getSearch']);
+        $apacheSolrDocumentRepository = $this->getAccessibleMock(Repository::class, ['getQueryForPage', 'getSearch'],[null, null, $queryBuilderMock]);
         $apacheSolrDocumentRepository->expects($this->once())->method('getSearch')->willReturn($search);
         $queryMock = $this->getDumbMock(Query::class);
-        $apacheSolrDocumentRepository->expects($this->any())->method('getQueryForPage')->willReturn($queryMock);
+        $queryBuilderMock->expects($this->any())->method('buildPageQuery')->willReturn($queryMock);
         $actualApacheSolrDocumentCollection = $apacheSolrDocumentRepository->findByPageIdAndByLanguageId(777, 0);
 
         $this->assertSame($testDocuments, $actualApacheSolrDocumentCollection);

@@ -139,6 +139,12 @@ $TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_content.php']['cObjTypeAndClas
     \ApacheSolrForTypo3\Solr\ContentObject\Relation::class
 ];
 
+$TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_content.php']['cObjTypeAndClass'][ApacheSolrForTypo3\Solr\ContentObject\Classification::CONTENT_OBJECT_NAME] = [
+    ApacheSolrForTypo3\Solr\ContentObject\Classification::CONTENT_OBJECT_NAME,
+    \ApacheSolrForTypo3\Solr\ContentObject\Classification::class
+];
+
+
 # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
 // Register cache for frequent searches

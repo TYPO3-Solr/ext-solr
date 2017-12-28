@@ -10,7 +10,7 @@ namespace ApacheSolrForTypo3\Solr\Task;
  *  This script is part of the TYPO3 project. The TYPO3 project is
  *  free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
+ *  the Free Software Foundation; either version 3 of the License, or
  *  (at your option) any later version.
  *
  *  The GNU General Public License can be found at
@@ -26,6 +26,7 @@ namespace ApacheSolrForTypo3\Solr\Task;
 
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\Site;
+use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
 
@@ -74,9 +75,15 @@ abstract class AbstractSolrTask extends AbstractTask {
         if (!is_null($this->site)) {
             return $this->site;
         }
+
+        try {
             /** @var $siteRepository SiteRepository */
-        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
-        $this->site = $siteRepository->getSiteByRootPageId($this->rootPageId);
+            $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
+            $this->site = $siteRepository->getSiteByRootPageId($this->rootPageId);
+        } catch (\InvalidArgumentException $e) {
+            $logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
+            $logger->log(SolrLogManager::ERROR, 'Scheduler task tried to get invalid site');
+        }
 
         return $this->site;
     }

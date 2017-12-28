@@ -10,7 +10,7 @@ namespace ApacheSolrForTypo3\Solr\Test\Domain\Search\ResultSet;
  *  This script is part of the TYPO3 project. The TYPO3 project is
  *  free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
+ *  the Free Software Foundation; either version 3 of the License, or
  *  (at your option) any later version.
  *
  *  The GNU General Public License can be found at
@@ -113,6 +113,41 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
 
         // after the reconstitution they should be 1 facet present
         $this->assertCount(1, $searchResultSet->getFacets());
+    }
+
+
+    /**
+     * @test
+     */
+    public function canReconstituteJsonFacetModelFromResponse()
+    {
+        $searchResultSet = $this->initializeSearchResultSetFromFakeResponse('fake_solr_response_with_jsonfacets.json');
+
+        // before the reconstitution of the domain object from the response we expect that no facets
+        // are present
+        $this->assertEquals([], $searchResultSet->getFacets()->getArrayCopy());
+
+        $facetConfiguration = [
+            'showEmptyFacets' => 1,
+            'facets.' => [
+                'type.' => [
+                    'label' => 'My Type',
+                    'field' => 'type'
+                ]
+            ]
+        ];
+
+        $configuration = $this->getConfigurationArrayFromFacetConfigurationArray($facetConfiguration);
+        $processor = $this->getConfiguredReconstitutionProcessor($configuration, $searchResultSet);
+        $processor->process($searchResultSet);
+
+        // after the reconstitution they should be 1 facet present
+        $this->assertCount(1, $searchResultSet->getFacets());
+
+        /** @var $optionFacet OptionsFacet */
+        $optionFacet = $searchResultSet->getFacets()->getByPosition(0);
+        $this->assertSame('tx_myext_domain_model_mytype', $optionFacet->getOptions()->getByPosition(0)->getValue(), 'Custom type facet not found');
+        $this->assertSame(19, $optionFacet->getOptions()->getByPosition(0)->getDocumentCount(), 'Custom type facet count not correct');
     }
 
     /**

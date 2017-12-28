@@ -129,7 +129,12 @@ class ConfigurationService
 
         foreach ($filters as $filter) {
             $filter = $filter['field'];
-            $filterConfiguration[] = $filter['field'] . ':' . $filter['value'];
+
+            $fieldName = $filter['field'];
+            $fieldValue = $filter['value'];
+            $quotedFieldValue = '"' . str_replace('"', '\"', $fieldValue) . '"';
+
+            $filterConfiguration[] =  $fieldName . ':' . $quotedFieldValue;
         }
         return $filterConfiguration;
     }

@@ -10,7 +10,7 @@ namespace ApacheSolrForTypo3\Solr;
  *  This script is part of the TYPO3 project. The TYPO3 project is
  *  free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
+ *  the Free Software Foundation; either version 3 of the License, or
  *  (at your option) any later version.
  *
  *  The GNU General Public License can be found at
@@ -29,6 +29,7 @@ use ApacheSolrForTypo3\Solr\Search\FacetsModifier;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrCommunicationException;
+use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -43,7 +44,7 @@ class Search
     /**
      * An instance of the Solr service
      *
-     * @var SolrService
+     * @var SolrConnection
      */
     protected $solr = null;
 
@@ -83,9 +84,9 @@ class Search
     /**
      * Constructor
      *
-     * @param SolrService $solrConnection The Solr connection to use for searching
+     * @param SolrConnection $solrConnection The Solr connection to use for searching
      */
-    public function __construct(SolrService $solrConnection = null)
+    public function __construct(SolrConnection $solrConnection = null)
     {
         $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
 
@@ -103,7 +104,7 @@ class Search
     /**
      * Gets the Solr connection used by this search.
      *
-     * @return SolrService Solr connection
+     * @return SolrConnection Solr connection
      */
     public function getSolrConnection()
     {
@@ -117,9 +118,9 @@ class Search
      * be able to switch between multiple cores/connections during
      * one request
      *
-     * @param SolrService $solrConnection
+     * @param SolrConnection $solrConnection
      */
-    public function setSolrConnection(SolrService $solrConnection)
+    public function setSolrConnection(SolrConnection $solrConnection)
     {
         $this->solr = $solrConnection;
     }
@@ -135,6 +136,7 @@ class Search
      * @param int $offset Result offset for pagination.
      * @param int $limit Maximum number of results to return. If set to NULL, this value is taken from the query object.
      * @return \Apache_Solr_Response Solr response
+     * @throws \Exception
      */
     public function search(Query $query, $offset = 0, $limit = 10)
     {
@@ -145,7 +147,7 @@ class Search
         }
 
         try {
-            $response = $this->solr->search(
+            $response = $this->solr->getReadService()->search(
                 $query->getQueryString(),
                 $offset,
                 $limit,
@@ -199,7 +201,7 @@ class Search
         $solrAvailable = false;
 
         try {
-            if (!$this->solr->ping(2, $useCache)) {
+            if (!$this->solr->getReadService()->ping(2, $useCache)) {
                 throw new \Exception('Solr Server not responding.', 1237475791);
             }
 
@@ -315,10 +317,15 @@ class Search
     /**
      * Gets all facets with their fields, options, and counts.
      *
+     * @deprecated Since 8.0.0 will be removed in 9.0.0. This method is deprecated. Use SearchResultSet::getFacets instead.
+     * The parsing of facets count's is now done in the parser of the corresponding facet type
+     * @see \ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\
+     *
      * @return array
      */
     public function getFacetCounts()
     {
+        GeneralUtility::logDeprecatedFunction();
         static $facetCountsModified = false;
         static $facetCounts = null;
 
@@ -329,7 +336,7 @@ class Search
                 $facetCounts = $unmodifiedFacetCounts;
 
                 foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyFacets'] as $classReference) {
-                    $facetsModifier = GeneralUtility::getUserObj($classReference);
+                    $facetsModifier = GeneralUtility::makeInstance($classReference);
 
                     if ($facetsModifier instanceof FacetsModifier) {
                         $facetCounts = $facetsModifier->modifyFacets($facetCounts);
@@ -349,8 +356,17 @@ class Search
         return $facetCounts;
     }
 
+    /**
+     * @deprecated Since 8.0.0 will be removed in 9.0.0. This method is deprecated. Use SearchResultSet::getFacets instead.
+     * The parsing of the "options" is now done in the facet parser of the OptionsFacets
+     * @see \ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\OptionsFacetParser
+     *
+     * @param $facetField
+     * @return array|null
+     */
     public function getFacetFieldOptions($facetField)
     {
+        GeneralUtility::logDeprecatedFunction();
         $facetOptions = null;
 
         if (property_exists($this->getFacetCounts()->facet_fields,
@@ -361,8 +377,17 @@ class Search
         return $facetOptions;
     }
 
+    /**
+     * @deprecated Since 8.0.0 will be removed in 9.0.0. This method is deprecated. Use SearchResultSet::getFacets instead.
+     * The parsing of the "query options" is now done in the facet parser of the QueryFacets
+     * @see \ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\QueryGroup\QueryGroupFacetParser
+     *
+     * @param string $facetField
+     * @return array
+     */
     public function getFacetQueryOptions($facetField)
     {
+        GeneralUtility::logDeprecatedFunction();
         $options = [];
 
         $facetQueries = get_object_vars($this->getFacetCounts()->facet_queries);
@@ -383,8 +408,17 @@ class Search
         return $options;
     }
 
+    /**
+     * @deprecated Since 8.0.0 will be removed in 9.0.0. This method is deprecated. Use SearchResultSet::getFacets instead.
+     * The parsing of the range options is now done in the facet parser of the RangeFacets
+     * @see \ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\AbstractRangeFacetParser
+     *
+     * @param string $rangeFacetField
+     * @return array
+     */
     public function getFacetRangeOptions($rangeFacetField)
     {
+        GeneralUtility::logDeprecatedFunction();
         return get_object_vars($this->getFacetCounts()->facet_ranges->$rangeFacetField);
     }
 
@@ -424,8 +458,15 @@ class Search
         return $highlightedContent;
     }
 
+    /**
+     * @deprecated Since 8.0.0 will be removed in 9.0.0. This method is deprecated. Use SearchResultSet::getSpellcheckingSuggestions
+     * and the domain model instead
+     * @return array|bool
+     */
     public function getSpellcheckingSuggestions()
     {
+        GeneralUtility::logDeprecatedFunction();
+
         $spellcheckingSuggestions = false;
 
         $suggestions = (array)$this->response->spellcheck->suggestions;

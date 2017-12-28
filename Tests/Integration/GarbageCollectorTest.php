@@ -10,7 +10,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration;
  *  This script is part of the TYPO3 project. The TYPO3 project is
  *  free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
+ *  the Free Software Foundation; either version 3 of the License, or
  *  (at your option) any later version.
  *
  *  The GNU General Public License can be found at
@@ -135,8 +135,8 @@ class GarbageCollectorTest extends IntegrationTest
         $this->assertIndexQueryContainsItemAmount(3);
 
         // simulate the database change and build a faked changeset
-        $connection = $this->getDatabaseConnectionBC();
-        $connection->exec('UPDATE pages SET hidden=1 WHERE uid=1');
+        $connection = $this->getDatabaseConnection();
+        $connection->updateArray('pages', ['uid' => 1], ['hidden' => 1]);
 
         $changeSet = ['hidden' => 1];
 
@@ -167,8 +167,8 @@ class GarbageCollectorTest extends IntegrationTest
         $this->assertIndexQueryContainsItemAmount(4);
 
         // simulate the database change and build a faked changeset
-        $connection = $this->getDatabaseConnectionBC();
-        $connection->exec('UPDATE pages SET hidden=1 WHERE uid=1');
+        $connection = $this->getDatabaseConnection();
+        $connection->updateArray('pages', ['uid' => 1], ['hidden' => 1]);
         $changeSet = ['hidden' => 1];
 
         $dataHandler = $this->dataHandler;
