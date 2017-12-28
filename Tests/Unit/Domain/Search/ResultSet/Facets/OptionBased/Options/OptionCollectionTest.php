@@ -128,5 +128,36 @@ class OptionCollectionTest extends UnitTest
         $optionsStartingWithO = $facet->getOptions()->getByLowercaseLabelPrefix('ø');
         $this->assertCount(1, $optionsStartingWithO, 'Unexpected amount of options starting with ø');
     }
+
+    /**
+     * @test
+     */
+    public function canGetByValueAfterManualSorting()
+    {
+        $searchResultSetMock = $this->getDumbMock(SearchResultSet::class);
+        $facet = new OptionsFacet($searchResultSetMock, 'colors', 'colors_s');
+
+        $red = new Option($facet, 'Rubin Red', 'red', 9);
+        $blue = new Option($facet, 'Polar Blue', 'blue', 12);
+        $yellow = new Option($facet, 'Lemon Yellow', 'yellow', 3);
+
+        $facet->addOption($red);
+        $facet->addOption($blue);
+        $facet->addOption($yellow);
+
+        $this->assertSame($yellow, $facet->getOptions()->getByValue('yellow'), 'Can not get option by value');
+        $this->assertSame($blue, $facet->getOptions()->getByValue('blue'), 'Can not get option by value');
+        $this->assertSame($red, $facet->getOptions()->getByValue('red'), 'Can not get option by value');
+
+        $sortedOptions = $facet->getOptions()->getManualSortedCopy(['yellow', 'blue']);
+
+        $this->assertSame($yellow, $sortedOptions->getByValue('yellow'), 'Can not get option by value');
+        $this->assertSame($blue, $sortedOptions->getByValue('blue'), 'Can not get option by value');
+        $this->assertSame($red, $sortedOptions->getByValue('red'), 'Can not get option by value');
+
+        $this->assertSame($yellow, $sortedOptions->getByPosition(0), 'First sorted item was not yellow');
+        $this->assertSame($blue, $sortedOptions->getByPosition(1), 'First sorted item was not blue');
+        $this->assertSame($red, $sortedOptions->getByPosition(2), 'First sorted item was not blue');
+    }
 }
 
