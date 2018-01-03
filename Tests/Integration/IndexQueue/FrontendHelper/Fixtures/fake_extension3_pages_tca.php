@@ -26,6 +26,7 @@ return [
             'label' => 'Used as relation to',
             'config' => [
                 'type' => 'group',
+                'default' => '',
                 'allowed' => '*',
                 'internal_type' => 'db',
                 'MM' => 'tx_fakeextension3_pages_mm',

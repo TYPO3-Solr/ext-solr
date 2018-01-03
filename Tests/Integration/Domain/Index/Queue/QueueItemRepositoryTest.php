@@ -1,0 +1,62 @@
+<?php
+namespace ApacheSolrForTypo3\Solr\Tests\Integration\Domain\Index;
+
+/***************************************************************
+ *  Copyright notice
+ *
+ *  (c) 2017 Timo Hund <timo.hund@dkd.de>
+ *  All rights reserved
+ *
+ *  This script is part of the TYPO3 project. The TYPO3 project is
+ *  free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  The GNU General Public License can be found at
+ *  http://www.gnu.org/copyleft/gpl.html.
+ *
+ *  This script is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  This copyright notice MUST APPEAR in all copies of the script!
+ ***************************************************************/
+
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\QueueItemRepository;
+use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
+/**
+ * Testcase for the QueueItemRepository
+ *
+ * @author Timo Hund <timo.hund@dkd.de>
+ */
+class QueueItemRepositoryTest extends IntegrationTest
+{
+
+    /**
+     * @test
+     */
+    public function canUpdateHasIndexingPropertiesFlagByItemUid()
+    {
+        $this->importDataSetFromFixture('update_has_indexing_properties_flag.xml');
+
+        $queueItemRepository = GeneralUtility::makeInstance(QueueItemRepository::class);
+
+        $queueItem = $queueItemRepository->findItemByUid(4711);
+        $this->assertFalse($queueItem->hasIndexingProperties());
+
+        $queueItemRepository->updateHasIndexingPropertiesFlagByItemUid(4711, true);
+
+        $queueItem = $queueItemRepository->findItemByUid(4711);
+        $this->assertTrue($queueItem->hasIndexingProperties());
+
+        $queueItemRepository->updateHasIndexingPropertiesFlagByItemUid(4711, false);
+
+        $queueItem = $queueItemRepository->findItemByUid(4711);
+        $this->assertFalse($queueItem->hasIndexingProperties());
+    }
+
+}
