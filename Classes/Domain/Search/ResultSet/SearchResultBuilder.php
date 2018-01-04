@@ -41,6 +41,6 @@ class SearchResultBuilder extends \ApacheSolrForTypo3\Solr\Domain\Search\ResultS
      */
     public function __contruct()
     {
-        GeneralUtility::logDeprecatedFunction();
+        trigger_error('Call deprecated method SearchResultBuilder::__construct, deprecated since 8.0.0 will be removed in 9.0.0', E_USER_DEPRECATED);
     }
 }

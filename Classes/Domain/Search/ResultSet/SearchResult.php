@@ -44,7 +44,7 @@ class SearchResult extends \ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Resu
      */
     public function __construct(\Apache_Solr_Document $document, $throwExceptions = false)
     {
-        GeneralUtility::logDeprecatedFunction();
+        trigger_error('Call deprecated method SearchResult::__construct, deprecated since 8.0.0 will be removed in 9.0.0', E_USER_DEPRECATED);
         parent::__construct($document, $throwExceptions);
     }
 }
