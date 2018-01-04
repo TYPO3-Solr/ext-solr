@@ -218,7 +218,7 @@ class PageIndexerRequest
     public function getHeaders()
     {
         $headers = $this->header;
-        $headers[] = TYPO3_user_agent;
+        $headers[] = $this->getUserAgent();
         $itemId = $this->indexQueueItem->getIndexQueueUid();
         $pageId = $this->indexQueueItem->getRecordPageId();
 
@@ -242,6 +242,14 @@ class PageIndexerRequest
         }
 
         return $headers;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getUserAgent()
+    {
+        return $GLOBALS['TYPO3_CONF_VARS']['HTTP']['headers']['User-Agent'] ?? 'TYPO3';
     }
 
     /**
