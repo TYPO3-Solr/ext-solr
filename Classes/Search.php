@@ -274,7 +274,7 @@ class Search
      */
     public function getResultDocumentsRaw()
     {
-        GeneralUtility::logDeprecatedFunction();
+        trigger_error('Call deprecated method Search::getResultDocumentsRaw, deprecated since 8.0.0 will be removed in 9.0.0', E_USER_DEPRECATED);
         return $this->getResponseBody()->docs;
     }
 
@@ -288,7 +288,7 @@ class Search
      */
     public function getResultDocumentsEscaped()
     {
-        GeneralUtility::logDeprecatedFunction();
+        trigger_error('Call deprecated method Search::getResultDocumentsEscaped, deprecated since 8.0.0 will be removed in 9.0.0', E_USER_DEPRECATED);
         /** @var $escapeService DocumentEscapeService */
         $escapeService = GeneralUtility::makeInstance(DocumentEscapeService::class, $this->configuration);
         return $escapeService->applyHtmlSpecialCharsOnAllFields($this->getResponseBody()->docs);
@@ -325,7 +325,7 @@ class Search
      */
     public function getFacetCounts()
     {
-        GeneralUtility::logDeprecatedFunction();
+        trigger_error('Call deprecated method Search::getFacetCounts, deprecated since 8.0.0 will be removed in 9.0.0', E_USER_DEPRECATED);
         static $facetCountsModified = false;
         static $facetCounts = null;
 
@@ -366,7 +366,7 @@ class Search
      */
     public function getFacetFieldOptions($facetField)
     {
-        GeneralUtility::logDeprecatedFunction();
+        trigger_error('Call deprecated method Search::getFacetFieldOptions, deprecated since 8.0.0 will be removed in 9.0.0', E_USER_DEPRECATED);
         $facetOptions = null;
 
         if (property_exists($this->getFacetCounts()->facet_fields,
@@ -387,7 +387,8 @@ class Search
      */
     public function getFacetQueryOptions($facetField)
     {
-        GeneralUtility::logDeprecatedFunction();
+        trigger_error('Call deprecated method Search::getFacetQueryOptions, deprecated since 8.0.0 will be removed in 9.0.0', E_USER_DEPRECATED);
+
         $options = [];
 
         $facetQueries = get_object_vars($this->getFacetCounts()->facet_queries);
@@ -418,7 +419,7 @@ class Search
      */
     public function getFacetRangeOptions($rangeFacetField)
     {
-        GeneralUtility::logDeprecatedFunction();
+        trigger_error('Call deprecated method Search::getFacetRangeOptions, deprecated since 8.0.0 will be removed in 9.0.0', E_USER_DEPRECATED);
         return get_object_vars($this->getFacetCounts()->facet_ranges->$rangeFacetField);
     }
 
@@ -465,7 +466,7 @@ class Search
      */
     public function getSpellcheckingSuggestions()
     {
-        GeneralUtility::logDeprecatedFunction();
+        trigger_error('Call deprecated method Search::getSpellcheckingSuggestions, deprecated since 8.0.0 will be removed in 9.0.0', E_USER_DEPRECATED);
 
         $spellcheckingSuggestions = false;
 
