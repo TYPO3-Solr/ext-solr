@@ -65,10 +65,13 @@ class LastSearchesRepository extends AbstractRepository
         $queryBuilder = $this->getQueryBuilder();
         return $queryBuilder
             ->select('keywords')
+            ->addSelectLiteral(
+                $queryBuilder->expr()->max('tstamp','maxtstamp')
+            )
             ->from($this->table)
             // There is no support for DISTINCT, a ->groupBy() has to be used instead.
             ->groupBy('keywords')
-            ->orderBy('tstamp', 'DESC')
+            ->orderBy('maxtstamp', 'DESC')
             ->setMaxResults($limit)->execute()->fetchAll();
     }
 

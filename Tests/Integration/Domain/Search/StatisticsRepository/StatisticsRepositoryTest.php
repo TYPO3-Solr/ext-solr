@@ -128,7 +128,7 @@ class StatisticsRepositoryTest extends IntegrationTest
             'time_preparation' => 2,
             'time_processing' => 27,
             'feuser_id' => 0,
-            'cookie' => '0ad2582d058e2843c9bc3b2273309248s',
+            'cookie' => '0ad2582d058e2843c9bc3b2273309248',
             'ip' => '192.168.144.1',
             'page' => 0,
             'keywords' => 'inserted record',

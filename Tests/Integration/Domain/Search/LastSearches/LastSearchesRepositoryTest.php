@@ -77,4 +77,17 @@ class LastSearchesRepositoryTest extends IntegrationTest
         $actual = $this->lastSearchesRepository->findAllKeywords();
         $this->assertSame(['5', '4', '3', '2', '1'], $actual);
     }
+
+    /**
+     * @test
+     */
+    public function lastUpdatedRowIsOnFirstPosition()
+    {
+        $this->importDataSetFromFixture('can_find_and_add_last_searches.xml');
+
+        $this->lastSearchesRepository->add('1', 5);
+
+        $actual = $this->lastSearchesRepository->findAllKeywords();
+        $this->assertSame(['1', '4', '3', '2'], $actual);
+    }
 }

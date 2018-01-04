@@ -37,7 +37,7 @@ DROP TABLE IF EXISTS tx_fakeextension_domain_model_related_mm;
 CREATE TABLE tx_fakeextension_domain_model_related_mm (
    uid_local int(11) unsigned DEFAULT '0' NOT NULL,
    uid_foreign int(11) unsigned DEFAULT '0' NOT NULL,
-   tablenames varchar(90) NOT NULL,
+   tablenames varchar(90) DEFAULT '' NOT NULL,
    sorting int(11) unsigned DEFAULT '0' NOT NULL,
    KEY uid_local (uid_local),
    KEY uid_foreign (uid_foreign)
@@ -48,8 +48,8 @@ DROP TABLE IF EXISTS tx_fakeextension_domain_model_related_pages_mm;
 CREATE TABLE tx_fakeextension_domain_model_related_pages_mm (
    uid_local int(11) unsigned DEFAULT '0' NOT NULL,
    uid_foreign int(11) unsigned DEFAULT '0' NOT NULL,
-   tablenames varchar(90) NOT NULL,
-   fieldname varchar(90) NOT NULL,
+   tablenames varchar(90) DEFAULT '' NOT NULL,
+   fieldname varchar(90) DEFAULT '' NOT NULL,
    sorting int(11) unsigned DEFAULT '0' NOT NULL,
    KEY uid_local (uid_local),
    KEY uid_foreign (uid_foreign)
