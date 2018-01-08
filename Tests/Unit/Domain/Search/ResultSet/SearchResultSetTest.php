@@ -27,11 +27,11 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet;
 use Apache_Solr_Response;
 use Apache_Solr_HttpTransport_Response;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\Helper\EscapeService;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResult;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSetService;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteHashService;
-use ApacheSolrForTypo3\Solr\Query;
 use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\Search\SpellcheckingComponent;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
@@ -290,7 +290,7 @@ class SearchResultSetTest extends UnitTest
             $this->returnCallback(
                 function(Query $query, $offset) use($expextedQueryString, $expectedOffset, $fakeResponse) {
 
-                    $this->assertSame($expextedQueryString, $query->getKeywords(), "Search was not triggered with an expected queryString");
+                    $this->assertSame($expextedQueryString, $query->getQueryStringContainer()->getKeywords() , "Search was not triggered with an expected queryString");
                     $this->assertSame($expectedOffset, $offset);
                     return $fakeResponse;
                 }

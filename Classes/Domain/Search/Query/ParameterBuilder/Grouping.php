@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 
 /**
@@ -32,13 +33,8 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
  *
  * @package ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder
  */
-class Grouping implements ParameterBuilder
+class Grouping extends AbstractDeactivatableParameterBuilder implements ParameterBuilder
 {
-
-    /**
-     * @var boolean
-     */
-    protected $isEnabled = false;
 
     /**
      * @var array
@@ -68,8 +64,6 @@ class Grouping implements ParameterBuilder
     /**
      * Grouping constructor.
      *
-     * private constructor should only be created with the from* methods
-     *
      * @param bool $isEnabled
      * @param array $fields
      * @param array $sortings
@@ -77,7 +71,7 @@ class Grouping implements ParameterBuilder
      * @param int $numberOfGroups
      * @param int $resultsPerGroup
      */
-    private function __construct($isEnabled, array $fields = [], array $sortings = [], array $queries = [], $numberOfGroups = 5, $resultsPerGroup = 1)
+    public function __construct($isEnabled, array $fields = [], array $sortings = [], array $queries = [], $numberOfGroups = 5, $resultsPerGroup = 1)
     {
         $this->isEnabled = $isEnabled;
         $this->fields = $fields;
@@ -88,12 +82,15 @@ class Grouping implements ParameterBuilder
     }
 
     /**
-     * @return array
+     * @param Query $query
+     * @return Query
      */
-    public function build()
+    public function build(Query $query): Query
     {
         if (!$this->isEnabled) {
-            return [];
+            $query->getQueryParametersContainer()->removeMany(['group', 'group.format', 'group.ngroups', 'group.limit', 'group.query', 'group.sort', 'group.field']);
+
+            return $query;
         }
         $groupingParameter = [];
         $groupingParameter ['group'] = 'true';
@@ -116,23 +113,8 @@ class Grouping implements ParameterBuilder
             $groupingParameter['group.field'] = $this->fields;
         }
 
-        return $groupingParameter;
-    }
-
-    /**
-     * @return boolean
-     */
-    public function getIsEnabled()
-    {
-        return $this->isEnabled;
-    }
-
-    /**
-     * @param boolean $isEnabled
-     */
-    public function setIsEnabled($isEnabled)
-    {
-        $this->isEnabled = $isEnabled;
+        $query->getQueryParametersContainer()->merge($groupingParameter);
+        return $query;
     }
 
     /**
@@ -271,5 +253,13 @@ class Grouping implements ParameterBuilder
         }
 
         return new Grouping($isEnabled, $fields, $sortings, $queries, $numberOfGroups, $resultsPerGroup);
+    }
+
+    /**
+     * @return Grouping
+     */
+    public static function getEmpty()
+    {
+        return new Grouping(false);
     }
 }

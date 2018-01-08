@@ -24,11 +24,13 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Query\Modifier;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\FacetQueryBuilderRegistry;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\FacetRegistry;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\FacetUrlDecoderRegistry;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
-use ApacheSolrForTypo3\Solr\Query;
+use ApacheSolrForTypo3\Solr\Query\Modifier\Elevation;
 use ApacheSolrForTypo3\Solr\Query\Modifier\Faceting;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
@@ -48,19 +50,13 @@ class ElevationTest extends UnitTest
      */
     public function canModifiyQuery()
     {
-        $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
-        $configurationMock->expects($this->once())->method('getSearchElevation')->willReturn(false);
-        $configurationMock->expects($this->once())->method('getSearchElevationForceElevation')->willReturn(false);
-        $configurationMock->expects($this->once())->method('getSearchElevationMarkElevatedResults')->willReturn(false);
-
-        $requestMock = $this->getDumbMock(SearchRequest::class);
-        $requestMock->expects($this->once())->method('getContextTypoScriptConfiguration')->willReturn($configurationMock);
-
         $query = $this->getDumbMock(Query::class);
-        $query->expects($this->once())->method('setQueryElevation')->with(false, false, false);
 
-        $modifier = new Query\Modifier\Elevation();
-        $modifier->setSearchRequest($requestMock);
+        $queryBuilderMock = $this->getDumbMock(QueryBuilder::class);
+        $queryBuilderMock->expects($this->once())->method('startFrom')->willReturn($queryBuilderMock);
+        $queryBuilderMock->expects($this->once())->method('useElevationFromTypoScript')->willReturn($queryBuilderMock);
+
+        $modifier = new Elevation($queryBuilderMock);
         $modifier->modifyQuery($query);
     }
 }

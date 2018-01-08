@@ -30,7 +30,7 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrCommunicationException;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
-use TYPO3\CMS\Core\SingletonInterface;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query as NewQuery;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -51,7 +51,7 @@ class Search
     /**
      * The search query
      *
-     * @var Query
+     * @var NewQuery
      */
     protected $query = null;
 
@@ -138,17 +138,17 @@ class Search
      * @return \Apache_Solr_Response Solr response
      * @throws \Exception
      */
-    public function search(Query $query, $offset = 0, $limit = 10)
+    public function search(NewQuery $query, $offset = 0, $limit = 10)
     {
         $this->query = $query;
 
         if (empty($limit)) {
-            $limit = $query->getResultsPerPage();
+            $limit = $query->getRows();
         }
 
         try {
             $response = $this->solr->getReadService()->search(
-                $query->getQueryString(),
+                (string)$query->getQueryStringContainer()->getQueryString(),
                 $offset,
                 $limit,
                 $query->getQueryParameters()
@@ -159,7 +159,7 @@ class Search
                     SolrLogManager::INFO,
                     'Querying Solr, getting result',
                     [
-                        'query string' => $query->getQueryString(),
+                        'query string' => $query->getQueryStringContainer()->getQueryString(),
                         'query parameters' => $query->getQueryParameters(),
                         'response' => json_decode($response->getRawResponse(),
                             true)
@@ -234,7 +234,7 @@ class Search
     /**
      * Gets the query object.
      *
-     * @return Query Query
+     * @return NewQuery Query
      */
     public function getQuery()
     {

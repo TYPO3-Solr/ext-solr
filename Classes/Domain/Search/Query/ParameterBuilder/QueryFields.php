@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -42,11 +43,9 @@ class QueryFields implements ParameterBuilder
     /**
      * QueryFields constructor.
      *
-     * private constructor should only be created with the from* methods
-     *
      * @param array $queryFields
      */
-    private function __construct(array $queryFields)
+    public function __construct(array $queryFields)
     {
         $this->queryFields = $queryFields;
     }
@@ -61,13 +60,20 @@ class QueryFields implements ParameterBuilder
     }
 
     /**
-     * @return array
+     * @param Query $query
+     * @return Query
      */
-    public function build()
+    public function build(Query $query): Query
     {
         $string = $this->toString();
         // return empty array on empty string
-        return trim($string) === '' ? [] : ['qf' => $string];
+
+        if (trim($string) === '') {
+            return $query;
+        }
+
+        $query->getQueryParametersContainer()->set('qf', $string);
+        return $query;
     }
 
     /**

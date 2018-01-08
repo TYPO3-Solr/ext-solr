@@ -24,9 +24,9 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Statistics;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSetProcessor;
-use ApacheSolrForTypo3\Solr\Query;
 use ApacheSolrForTypo3\Solr\HtmlContentExtractor;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
@@ -106,7 +106,7 @@ class StatisticsWriterProcessor implements SearchResultSetProcessor
      */
     protected function getProcessedKeywords(Query $query, $lowerCaseQuery = false)
     {
-        $keywords = $query->getKeywords();
+        $keywords = $query->getQueryStringContainer()->getKeywords();
         $keywords = $this->sanitizeString($keywords);
         if ($lowerCaseQuery) {
             $keywords = mb_strtolower($keywords);

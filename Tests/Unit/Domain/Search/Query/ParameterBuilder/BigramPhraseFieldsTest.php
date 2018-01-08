@@ -1,10 +1,10 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Query\Modifier;
+namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\Query\ParameterBuilder;
 
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2009-2015 Ingo Renner <ingo@typo3.org>
+ *  (c) 2017 Timo Hund <timo.hund@dkd.de>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -15,9 +15,6 @@ namespace ApacheSolrForTypo3\Solr\Query\Modifier;
  *
  *  The GNU General Public License can be found at
  *  http://www.gnu.org/copyleft/gpl.html.
- *  A copy is found in the textfile GPL.txt and important notices to the license
- *  from the author is found in LICENSE.txt distributed with these scripts.
- *
  *
  *  This script is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -27,22 +24,28 @@ namespace ApacheSolrForTypo3\Solr\Query\Modifier;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\BigramPhraseFields;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
-
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 
 /**
- * QueryModifier interface, allows to modify search queries
- *
- * @author Ingo Renner <ingo@typo3.org>
+ * @author Timo Hund <timo.hund@dkd.de>
  */
-interface Modifier
+class BigramPhraseFieldsTest extends UnitTest
 {
-
     /**
-     * Modifies the given query and returns the modified query as result
-     *
-     * @param Query $query The query to modify
-     * @return Query The modified query
+     * @test
      */
-    public function modifyQuery(Query $query);
+    public function buildFromEmptyStringCreatesEmptyArrayOnBuild()
+    {
+        $bigramPhraseFields = BigramPhraseFields::fromString('');
+
+        $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
+        $query = new Query('foo', $configurationMock);
+
+        $bigramPhraseFields->build($query);
+
+        $this->assertEmpty($query->getQueryParameters()['pf2'], 'Build on Phrase field does not create empty array when calling build');
+    }
 }

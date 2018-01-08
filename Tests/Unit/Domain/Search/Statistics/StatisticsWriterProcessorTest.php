@@ -24,11 +24,12 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\Statistics;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\Helper\QueryStringContainer;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Domain\Search\Statistics\StatisticsRepository;
 use ApacheSolrForTypo3\Solr\Domain\Search\Statistics\StatisticsWriterProcessor;
-use ApacheSolrForTypo3\Solr\Query;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use PHPUnit_Framework_MockObject_MockObject;
@@ -90,7 +91,10 @@ class StatisticsWriterProcessorTest extends UnitTest
         $this->processor->expects($this->once())->method('getTime')->will($this->returnValue($fakeTime));
         $this->typoScriptConfigurationMock->expects($this->once())->method('getStatisticsAnonymizeIP')->will($this->returnValue(0));
         $this->searchRequestMock->expects($this->once())->method('getContextTypoScriptConfiguration')->will($this->returnValue($this->typoScriptConfigurationMock));
-        $this->queryMock->expects($this->once())->method('getKeywords')->will($this->returnValue('my search'));
+
+        $queryStringsMock = $this->getDumbMock(QueryStringContainer::class);
+        $queryStringsMock->expects($this->once())->method('getKeywords')->willReturn('my search');
+        $this->queryMock->expects($this->once())->method('getQueryStringContainer')->willReturn($queryStringsMock);
 
         $resultSetMock = $this->getDumbMock(SearchResultSet::class);
         $resultSetMock->expects($this->once())->method('getUsedQuery')->will($this->returnValue($this->queryMock));

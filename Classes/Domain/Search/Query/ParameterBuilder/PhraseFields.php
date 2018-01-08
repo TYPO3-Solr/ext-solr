@@ -23,6 +23,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 
 /**
  * The PhraseFields class
@@ -46,5 +47,19 @@ class PhraseFields extends AbstractFieldList
     public static function fromString(string $fieldListString, string $delimiter = ',') : PhraseFields
     {
         return self::initializeFromString($fieldListString, $delimiter);
+    }
+
+    /**
+     * @param TypoScriptConfiguration $solrConfiguration
+     * @return BigramPhraseFields
+     */
+    public static function fromTypoScriptConfiguration(TypoScriptConfiguration $solrConfiguration)
+    {
+        $isEnabled = $solrConfiguration->getPhraseSearchIsEnabled();
+        if (!$isEnabled) {
+            return new PhraseFields(false);
+        }
+
+        return self::fromString((string)$solrConfiguration->getSearchQueryPhraseFields());
     }
 }

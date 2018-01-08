@@ -24,9 +24,9 @@ namespace ApacheSolrForTypo3\Solr\Search;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequestAware;
-use ApacheSolrForTypo3\Solr\Query;
 use ApacheSolrForTypo3\Solr\Sorting;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 

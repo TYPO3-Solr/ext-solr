@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -40,13 +41,6 @@ class Filters implements ParameterBuilder
      * @var array
      */
     protected $filters = [];
-
-    /**
-     * Filters constructor.
-     *
-     * private constructor should only be created with the from* methods
-     */
-    private function __construct() {}
 
     /**
      * Removes a filter on a field
@@ -132,11 +126,13 @@ class Filters implements ParameterBuilder
     }
 
     /**
-     * @return array
+     * @param Query $query
+     * @return Query
      */
-    public function build()
+    public function build(Query $query): Query
     {
-        return ['fq' => array_values($this->filters)];
+        $query->getQueryParametersContainer()->set('fq', array_values($this->filters));
+        return $query;
     }
 
     /**
@@ -144,6 +140,14 @@ class Filters implements ParameterBuilder
      * @return Filters
      */
     public static function fromTypoScriptConfiguration(TypoScriptConfiguration $solrConfiguration)
+    {
+        return new Filters();
+    }
+
+    /**
+     * @return Filters
+     */
+    public static function getEmpty()
     {
         return new Filters();
     }

@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\SortingExpression;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 
@@ -33,12 +34,8 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
  *
  * @package ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder
  */
-class Faceting implements ParameterBuilder
+class Faceting extends AbstractDeactivatableParameterBuilder implements ParameterBuilder
 {
-    /**
-     * @var bool
-     */
-    protected $isEnabled = false;
 
     /**
      * @var string
@@ -68,8 +65,6 @@ class Faceting implements ParameterBuilder
     /**
      * Faceting constructor.
      *
-     * private constructor should only be created with the from* methods
-     *
      * @param bool $isEnabled
      * @param string $sorting
      * @param int $minCount
@@ -77,7 +72,7 @@ class Faceting implements ParameterBuilder
      * @param array $fields
      * @param array $additionalParameters
      */
-    private function __construct($isEnabled, $sorting = '', $minCount = 1, $limit = 10, $fields = [], $additionalParameters = [])
+    public function __construct($isEnabled, $sorting = '', $minCount = 1, $limit = 10, $fields = [], $additionalParameters = [])
     {
         $this->isEnabled = $isEnabled;
         $this->sorting = $sorting;
@@ -85,22 +80,6 @@ class Faceting implements ParameterBuilder
         $this->limit = $limit;
         $this->fields = $fields;
         $this->additionalParameters = $additionalParameters;
-    }
-
-    /**
-     * @return boolean
-     */
-    public function getIsEnabled()
-    {
-        return $this->isEnabled;
-    }
-
-    /**
-     * @param boolean $isEnabled
-     */
-    public function setIsEnabled($isEnabled)
-    {
-        $this->isEnabled = $isEnabled;
     }
 
     /**
@@ -200,12 +179,16 @@ class Faceting implements ParameterBuilder
     }
 
     /**
-     * @return array
+     * @param Query $query
+     * @return Query
      */
-    public function build()
+    public function build(Query $query): Query
     {
         if (!$this->isEnabled) {
-            return [];
+            $query->getQueryParametersContainer()->removeMany(['facet', 'json.facet']);
+            $query->getQueryParametersContainer()->removeByPrefix('facet.');
+            $query->getQueryParametersContainer()->removeByPrefix('f.');
+            return $query;
         }
 
         $facetParameters = [];
@@ -224,8 +207,9 @@ class Faceting implements ParameterBuilder
         }
 
         $facetParameters = $this->applySorting($facetParameters);
+        $query->getQueryParametersContainer()->merge($facetParameters);
 
-        return $facetParameters;
+        return $query;
     }
 
     /**
@@ -264,4 +248,11 @@ class Faceting implements ParameterBuilder
         return new Faceting($isEnabled, $sorting, $minCount, $limit);
     }
 
+    /**
+     * @return Faceting
+     */
+    public static function getEmpty()
+    {
+        return new Faceting(false);
+    }
 }

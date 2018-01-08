@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -43,11 +44,9 @@ class ReturnFields implements ParameterBuilder
     /**
      * FieldList constructor.
      *
-     * private constructor should only be created with the from* methods
-     *
      * @param array $fieldList
      */
-    private function __construct(array $fieldList)
+    public function __construct(array $fieldList)
     {
         $this->fieldList = $fieldList;
     }
@@ -82,11 +81,13 @@ class ReturnFields implements ParameterBuilder
     }
 
     /**
-     * @return array
+     * @param Query $query
+     * @return Query
      */
-    public function build()
+    public function build(Query $query): Query
     {
-        return ['fl' => $this->toString()];
+        $query->getQueryParametersContainer()->set('fl', $this->toString());
+        return $query;
     }
 
     /**

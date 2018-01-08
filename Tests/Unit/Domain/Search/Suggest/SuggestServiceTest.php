@@ -25,14 +25,15 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\Helper\QueryStringContainer;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\SuggestQuery;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResult;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResultCollection;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSetService;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Domain\Search\Suggest\SuggestService;
-use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
@@ -68,6 +69,11 @@ class SuggestServiceTest extends UnitTest
     protected $queryBuilderMock;
 
     /**
+     * @var SuggestQuery
+     */
+    protected $suggestQueryMock;
+
+    /**
      * @return void
      */
     public function setUp()
@@ -77,6 +83,9 @@ class SuggestServiceTest extends UnitTest
         $this->configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
         $this->queryBuilderMock = $this->getDumbMock(QueryBuilder::class);
 
+        $this->suggestQueryMock = $this->getDumbMock(SuggestQuery::class);
+        $this->queryBuilderMock->expects($this->once())->method('buildSuggestQuery')->willReturn($this->suggestQueryMock);
+
         $this->suggestService = $this->getMockBuilder(SuggestService::class)
             ->setMethods(['getSolrSuggestions'])
             ->setConstructorArgs([$this->tsfeMock, $this->searchResultSetServiceMock, $this->configurationMock, $this->queryBuilderMock])
@@ -84,15 +93,25 @@ class SuggestServiceTest extends UnitTest
     }
 
     /**
+     * @param string $queryString
+     */
+    protected function assertSuggestQueryWithQueryStringCreated($queryString)
+    {
+        $this->suggestQueryMock->expects($this->any())->method('getQueryStringContainer')->willReturn(new QueryStringContainer($queryString));
+    }
+
+    /**
      * @test
      */
     public function canGetSuggestionsWithoutTopResults()
     {
+        // the query string is used as prefix but no real query string is passed.
+        $this->assertSuggestQueryWithQueryStringCreated('');
+        $fakeRequest = $this->getFakedSearchRequest('ty');
+
         $this->configurationMock->expects($this->once())->method('getSuggestShowTopResults')->will($this->returnValue(false));
 
         $this->assertNoSearchWillBeTriggered();
-        $fakeRequest = $this->getDumbMock(SearchRequest::class);
-        $fakeRequest->expects($this->atLeastOnce())->method('getRawUserQuery')->will($this->returnValue('ty'));
 
         $this->suggestService->expects($this->once())->method('getSolrSuggestions')->will($this->returnValue([
             'type',
@@ -119,8 +138,7 @@ class SuggestServiceTest extends UnitTest
         $this->configurationMock->expects($this->never())->method('getSuggestShowTopResults');
         $this->assertNoSearchWillBeTriggered();
 
-        $fakeRequest = $this->getDumbMock(SearchRequest::class);
-        $fakeRequest->expects($this->atLeastOnce())->method('getRawUserQuery')->will($this->returnValue('ty'));
+        $fakeRequest = $this->getFakedSearchRequest('ty');
 
         $this->suggestService->expects($this->once())->method('getSolrSuggestions')->will($this->returnValue([]));
         $suggestions = $this->suggestService->getSuggestions($fakeRequest, '');
@@ -137,8 +155,8 @@ class SuggestServiceTest extends UnitTest
         $this->configurationMock->expects($this->once())->method('getSuggestShowTopResults')->will($this->returnValue(true));
         $this->configurationMock->expects($this->once())->method('getSuggestNumberOfTopResults')->will($this->returnValue(2));
 
-        $fakeRequest = $this->getDumbMock(SearchRequest::class);
-        $fakeRequest->expects($this->atLeastOnce())->method('getRawUserQuery')->will($this->returnValue('type'));
+        $this->assertSuggestQueryWithQueryStringCreated('');
+        $fakeRequest = $this->getFakedSearchRequest('type');
         $fakeRequest->expects($this->any())->method('getCopyForSubRequest')->will($this->returnValue($fakeRequest));
 
         $this->suggestService->expects($this->once())->method('getSolrSuggestions')->will($this->returnValue([
@@ -156,6 +174,7 @@ class SuggestServiceTest extends UnitTest
 
         $fakeTopResults->expects($this->once())->method('getSearchResults')->will($this->returnValue($fakeResultDocuments));
         $this->searchResultSetServiceMock->expects($this->once())->method('search')->will($this->returnValue($fakeTopResults));
+
 
         $suggestions = $this->suggestService->getSuggestions($fakeRequest, '');
 
@@ -190,5 +209,15 @@ class SuggestServiceTest extends UnitTest
     protected function assertNoSearchWillBeTriggered()
     {
         $this->searchResultSetServiceMock->expects($this->never())->method('search');
+    }
+
+    /**
+     * @return \PHPUnit_Framework_MockObject_MockObject
+     */
+    protected function getFakedSearchRequest($queryString)
+    {
+        $fakeRequest = $this->getDumbMock(SearchRequest::class);
+        $fakeRequest->expects($this->atLeastOnce())->method('getRawUserQuery')->will($this->returnValue($queryString));
+        return $fakeRequest;
     }
 }

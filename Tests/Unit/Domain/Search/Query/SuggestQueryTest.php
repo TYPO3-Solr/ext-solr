@@ -1,5 +1,5 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Tests\Unit;
+namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\Query;
 
 /***************************************************************
  *  Copyright notice
@@ -25,10 +25,11 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\Helper\EscapeService;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\SuggestQuery;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteHashService;
-use ApacheSolrForTypo3\Solr\SuggestQuery;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
+use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 
 /**
  * Tests the ApacheSolrForTypo3\Solr\SuggestQuery class
@@ -48,12 +49,19 @@ class SuggestQueryTest extends UnitTest
         ];
 
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
-        $siteHashServiceMock = $this->getDumbMock(SiteHashService::class);
-        $escapeServiceMock = $this->getDumbMock(EscapeService::class);
-        $solrLogManagerMock = $this->getDumbMock(SolrLogManager::class);
+        $suggestQuery = new SuggestQuery('typ', $fakeConfiguration);
+        $this->assertFalse($suggestQuery->getFieldCollapsing()->getIsEnabled(), 'Collapsing should never be active for a suggest query, even when active');
+    }
 
-        $suggestQuery = new SuggestQuery('typ', $fakeConfiguration, $siteHashServiceMock, $escapeServiceMock, $solrLogManagerMock);
-
-        $this->assertFalse($suggestQuery->getIsCollapsing(), 'Collapsing should never be active for a suggest query, even when active');
+    /**
+     * @test
+     */
+    public function testSuggestQueryUsesFilterList()
+    {
+        $fakeConfiguration = new TypoScriptConfiguration([]);
+        $suggestQuery = new SuggestQuery('typ', $fakeConfiguration);
+        $suggestQuery->getFilters()->add('+type:pages');
+        $queryParameters = $suggestQuery->getQueryParameters();
+        $this->assertSame('+type:pages', $queryParameters['fq'][0], 'Filter was not added to the suggest query parameters');
     }
 }

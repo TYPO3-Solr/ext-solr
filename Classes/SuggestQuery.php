@@ -23,88 +23,27 @@ namespace ApacheSolrForTypo3\Solr;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\Helper\EscapeService;
-use ApacheSolrForTypo3\Solr\Domain\Site\SiteHashService;
+
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\SuggestQuery as NewSuggestQuery;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
-use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 
 /**
  * A query specialized to get search suggestions
  *
+ * @deprecated since 8.0.0 will be removed in 9.0.0
  * @author Ingo Renner <ingo@typo3.org>
  */
-class SuggestQuery extends Query
+class SuggestQuery extends NewSuggestQuery
 {
     /**
-     * @var array
-     */
-    protected $configuration;
-
-    /**
-     * @var string
-     */
-    protected $prefix;
-
-    /**
-     * SuggestQuery constructor.
+     * Query constructor.
      *
      * @param string $keywords
      * @param TypoScriptConfiguration $solrConfiguration
-     * @param SiteHashService $siteHashService
-     * @param EscapeService $escapeService
-     * @param SolrLogManager $solrLogManager
      */
-    public function __construct($keywords, $solrConfiguration = null, SiteHashService $siteHashService = null, EscapeService $escapeService = null, SolrLogManager $solrLogManager = null)
+    public function __construct($keywords, $solrConfiguration = null)
     {
-        $keywords = (string)$keywords;
-        if ($solrConfiguration == null) {
-            $solrConfiguration = Util::getSolrConfiguration();
-        }
-
-        parent::__construct('', $solrConfiguration, $siteHashService, $escapeService, $solrLogManager);
-
-        $this->configuration = $solrConfiguration->getObjectByPathOrDefault('plugin.tx_solr.suggest.', []);
-
-        if (!empty($this->configuration['treatMultipleTermsAsSingleTerm'])) {
-            $this->prefix = $this->escapeService->escape($keywords);
-        } else {
-            $matches = [];
-            preg_match('/^(:?(.* |))([^ ]+)$/', $keywords, $matches);
-            $fullKeywords = trim($matches[2]);
-            $partialKeyword = trim($matches[3]);
-
-            $this->setKeywords($fullKeywords);
-            $this->prefix = $this->escapeService->escape($partialKeyword);
-        }
-
-        $this->setAlternativeQuery('*:*');
-    }
-
-    /**
-     * @return void
-     */
-    protected function initializeQuery()
-    {
-        $this->initializeFilters();
-    }
-
-    /**
-     * Returns the query parameters that should be used.
-     *
-     * @return array
-     */
-    public function getQueryParameters()
-    {
-        $suggestParameters = [
-            'facet' => 'on',
-            'facet.prefix' => $this->prefix,
-            'facet.field' => $this->configuration['suggestField'],
-            'facet.limit' => $this->configuration['numberOfSuggestions'],
-            'facet.mincount' => '1',
-            'fq' => $this->filters,
-            'fl' => $this->configuration['suggestField']
-        ];
-
-        return array_merge($suggestParameters, $this->queryParameters);
+        trigger_error('ApacheSolrForTypo3\Solr\SuggestQuery is deprecated please create a SuggestQuery using the QueryBuilder now. deprecated since 8.0.0 will be removed in 9.0.0', E_USER_DEPRECATED);
+        parent::__construct($keywords, $solrConfiguration);
     }
 }

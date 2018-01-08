@@ -25,8 +25,10 @@ namespace ApacheSolrForTypo3\Solr\Search;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Highlighting;
-use ApacheSolrForTypo3\Solr\Query;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use ApacheSolrForTypo3\Solr\Util;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Highlighting search component
@@ -44,15 +46,25 @@ class HighlightingComponent extends AbstractComponent implements QueryAware
     protected $query;
 
     /**
+     * @var QueryBuilder
+     */
+    protected $queryBuilder;
+
+    /**
+     * AccessComponent constructor.
+     * @param QueryBuilder|null
+     */
+    public function __construct(QueryBuilder $queryBuilder = null)
+    {
+        $this->queryBuilder = $queryBuilder ?? GeneralUtility::makeInstance(QueryBuilder::class);
+    }
+
+    /**
      * Initializes the search component.
      */
     public function initializeSearchComponent()
     {
-        $solrConfiguration = Util::getSolrConfiguration();
-
-        if ($solrConfiguration->getSearchResultsHighlighting()) {
-            $this->query->setHighlighting(Highlighting::fromTypoScriptConfiguration($solrConfiguration));
-        }
+        $this->query = $this->queryBuilder->startFrom($this->query)->useHighlightingFromTypoScript()->getQuery();
     }
 
     /**

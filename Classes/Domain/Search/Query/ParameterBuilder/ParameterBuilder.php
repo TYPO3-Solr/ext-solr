@@ -25,6 +25,8 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
+
 /**
  * The implementation of ParameterBuilder is responsible to build an array with
  * the query parameter that are needed for solr
@@ -36,7 +38,8 @@ interface ParameterBuilder {
 
 
     /**
-     * @return array
+     * @param Query $query
+     * @return Query
      */
-    public function build();
+    public function build(Query $query): Query;
 }
