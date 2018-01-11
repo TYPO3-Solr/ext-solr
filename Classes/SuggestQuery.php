@@ -101,10 +101,10 @@ class SuggestQuery extends Query
             'facet.field' => $this->configuration['suggestField'],
             'facet.limit' => $this->configuration['numberOfSuggestions'],
             'facet.mincount' => '1',
-            'fq' => $this->filters,
             'fl' => $this->configuration['suggestField']
         ];
 
+        $suggestParameters = array_merge($suggestParameters, $this->filters->build());
         return array_merge($suggestParameters, $this->queryParameters);
     }
 }
