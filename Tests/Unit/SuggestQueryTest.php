@@ -56,4 +56,17 @@ class SuggestQueryTest extends UnitTest
 
         $this->assertFalse($suggestQuery->getIsCollapsing(), 'Collapsing should never be active for a suggest query, even when active');
     }
+
+    /**
+     * @test
+     */
+    public function testSuggestQueryUsesFilterList()
+    {
+        $fakeConfiguration = new TypoScriptConfiguration([]);
+        $suggestQuery = new SuggestQuery('typ', $fakeConfiguration);
+        $suggestQuery->getFilters()->add('+type:pages');
+        $queryParameters = $suggestQuery->getQueryParameters();
+
+        $this->assertSame(['+type:pages'], $queryParameters['fq'], 'Filter was not added to the suggest query parameters');
+    }
 }
