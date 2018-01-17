@@ -556,3 +556,21 @@ This can be done with the combination of several settings:
 
 The example above changes the minimumCount to 0, the default value i 1. Setting it to zero allows to have options without any results.
 The setting "keepAllFacetsOnSelection" let all facets remain and with keepAllOptionsOnSelection the options in the type facet remain.
+
+**How can i add a searchbox on every page?**
+
+In most projects you want to add a searchbox on every content page. To support this, the default EXT:solr typoscript template provides the typoscript template path "plugin.tx_solr_PiSearch_Search" that contains a configured typoscript code to render the searchbox. When you want to add that to your project in the most cases you would need to refer to a search result page.
+The following example shows how you can build a typoscript lib object that configures the target page for this plugin instance:
+
+::
+
+    lib.searchbox < plugin.tx_solr_PiSearch_Search
+    lib.searchbox.search.targetPage = 4711
+
+Afterwards you could render the typoscript path "lib.searchbox" with several ways in TYPO3, e.g. with a FLUID ViewHelper:
+
+::
+
+    <f:cObject typoscriptObjectPath="lib.searchbox" />
+
+By adding the snippet to a generic tempate you could render the searchbox on every page.
