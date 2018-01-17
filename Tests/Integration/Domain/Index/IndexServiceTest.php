@@ -97,11 +97,13 @@ class IndexServiceTest extends IntegrationTest
             ]
         ];
     }
+
     /**
-     *
      * @dataProvider canResolveAbsRefPrefixDataProvider
      * @param string $absRefPrefix
      * @param string $expectedUrl
+     * @throws \ApacheSolrForTypo3\Solr\System\Environment\WebRootAllReadyDefinedException
+     * @throws \TYPO3\CMS\Core\Tests\Exception
      * @test
      */
     public function canResolveAbsRefPrefix($absRefPrefix, $expectedUrl)

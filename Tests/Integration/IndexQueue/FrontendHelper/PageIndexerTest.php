@@ -25,15 +25,19 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\IndexQueue\FrontendHelper;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\AdditionalFieldsIndexer;
+use ApacheSolrForTypo3\Solr\IndexQueue\Exception\DocumentPreparationException;
 use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageIndexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerResponse;
+use ApacheSolrForTypo3\Solr\System\Mvc\Frontend\Controller\OverriddenTypoScriptFrontendController;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use ApacheSolrForTypo3\Solr\Util;
+use TYPO3\CMS\Core\Error\Http\PageNotFoundException;
+use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\TimeTracker\TimeTracker;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
-use TYPO3\CMS\Frontend\Page\PageRepository;
+use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * Testcase to check if we can index page documents using the PageIndexer
@@ -313,6 +317,52 @@ class PageIndexerTest extends IntegrationTest
     }
 
     /**
+     * This Test should tests, that TYPO3 CMS on FE does not die if page is not available.
+     * If something goes wrong the exception must be thrown instead of dieing, to make marking the items as failed possible.
+     *
+     * @test
+     */
+    public function phpProcessDoesNotDieIfPageIsNotAvailable() {
+        $this->applyXClassOverriddenTypoScriptFrontendController();
+        $this->applyUsingErrorControllerForCMS9andAbove();
+        $this->registerShutdownFunctionToPrintExplanationOf404HandlingOnCMSIfDieIsCalled();
+
+        if(Util::getIsTYPO3VersionBelow9()) {
+            $this->expectException(DocumentPreparationException::class);
+        } else {
+            $this->expectException(PageNotFoundException::class);
+        }
+
+        $this->importDataSetFromFixture('does_not_die_if_page_not_available.xml');
+        define('EXT_SOLR_INDEXING_CONTEXT', true);
+        $this->executePageIndexer(null, null, null, null, null, null, null, null, 3, ['sys_language_mode' => 'strict']);
+    }
+
+    /**
+     * Registers shutdown function to print proper information about TYPO3 CMS behaviour on unavailable pages.
+     */
+    protected function registerShutdownFunctionToPrintExplanationOf404HandlingOnCMSIfDieIsCalled()
+    {
+        register_shutdown_function(function() {
+            // prompt only after phpProcessDoesNotDieIfPageIsNotAvailable() test case
+            if ($this->getName() !== 'phpProcessDoesNotDieIfPageIsNotAvailable') {
+                return;
+            }
+
+            // don't show HTML or other stuff from CMS in output
+            ob_clean();
+
+            $message = PHP_EOL . PHP_EOL . PHP_EOL .
+                'Note: This test case kills whole PHPUnit process on failing, which is expected behaviour, because TYPO3 CMS uses die() function in cases if page or record is not available.';
+            $message .= PHP_EOL . PHP_EOL . 'TYPO3 CMS API for registering shutdown callbacks for handling of unavailable pages is changed.' . PHP_EOL .
+                'TypoScriptFrontendController::pageUnavailableAndExit() is not called anymore.' . PHP_EOL .
+                'Please refer to the TYPO3 CMS documentation and use new API for this functionality.';
+
+            printf(PHP_EOL . PHP_EOL . "\033[01;31m%s\033[0m", $message);
+        });
+    }
+
+    /**
      * @param array $typo3ConfVars
      * @param int $pageId
      * @param int $type
@@ -322,20 +372,22 @@ class PageIndexerTest extends IntegrationTest
      * @param string $MP
      * @param string $RDCT
      * @param int $languageId
+     * @throws \TYPO3\CMS\Core\Error\Http\ServiceUnavailableException
      */
-    protected function executePageIndexer($typo3ConfVars = [], $pageId = 1, $type = 0, $no_cache = '', $cHash = '', $_2 = null, $MP = '', $RDCT = '', $languageId = 0)
+    protected function executePageIndexer($typo3ConfVars = [], $pageId = 1, $type = 0, $no_cache = '', $cHash = '', $_2 = null, $MP = '', $RDCT = '', $languageId = 0, $additionalConfigs = [])
     {
         GeneralUtility::_GETset($languageId, 'L');
         $GLOBALS['TT'] = $this->getMockBuilder(TimeTracker::class)->disableOriginalConstructor()->getMock();
 
         $config = [
-            'config' => [
+            'config' => array_merge([
                 'index_enable' => 1,
                 'sys_language_uid' => $languageId
-            ]
+            ], $additionalConfigs)
         ];
 
         unset($GLOBALS['TSFE']);
+
         $TSFE = $this->getConfiguredTSFE($typo3ConfVars, $pageId, $type, $no_cache, $cHash, $_2, $MP, $RDCT, $config);
         $TSFE->cObj = GeneralUtility::makeInstance(ContentObjectRenderer::class);
         $GLOBALS['TSFE'] = $TSFE;
@@ -343,6 +395,7 @@ class PageIndexerTest extends IntegrationTest
         /** @var $request \ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest */
         $request = GeneralUtility::makeInstance(PageIndexerRequest::class);
         $request->setParameter('item', 4711);
+
         /** @var $request \ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerResponse */
         $response = GeneralUtility::makeInstance(PageIndexerResponse::class);
 
@@ -351,5 +404,26 @@ class PageIndexerTest extends IntegrationTest
         $pageIndexer->activate();
         $pageIndexer->processRequest($request, $response);
         $pageIndexer->hook_indexContent($TSFE);
+    }
+
+    /**
+     * Simulates loading in ext_localconf.php loaded XClass for TSFE.
+     */
+    private function applyXClassOverriddenTypoScriptFrontendController()
+    {
+        $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'][TypoScriptFrontendController::class] = array(
+            'className' => OverriddenTypoScriptFrontendController::class
+        );
+    }
+
+    /**
+     * Applies in CMS 9.2 introduced error handling.
+     */
+    private function applyUsingErrorControllerForCMS9andAbove()
+    {
+        if(Util::getIsTYPO3VersionBelow9()) {
+            return;
+        }
+        $GLOBALS['TYPO3_REQUEST'] = new ServerRequest();
     }
 }

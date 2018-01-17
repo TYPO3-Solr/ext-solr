@@ -27,7 +27,6 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
 use ApacheSolrForTypo3\Solr\Access\Rootline;
 use ApacheSolrForTypo3\Solr\Access\RootlineElement;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
-use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
