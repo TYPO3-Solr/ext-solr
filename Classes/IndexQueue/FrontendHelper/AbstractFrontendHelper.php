@@ -27,8 +27,8 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper;
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerResponse;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
+use ApacheSolrForTypo3\Solr\System\Mvc\Frontend\Controller\OverriddenTypoScriptFrontendController;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * Index Queue page indexer frontend helper base class implementing common
@@ -77,7 +77,7 @@ abstract class AbstractFrontendHelper implements FrontendHelper
      * Disables caching for page generation to get reliable results.
      *
      * @param array $parameters Parameters from frontend
-     * @param TypoScriptFrontendController $parentObject TSFE object
+     * @param OverriddenTypoScriptFrontendController $parentObject TSFE object
      */
     public function disableCaching(
         /** @noinspection PhpUnusedParameterInspection */

@@ -29,6 +29,7 @@ use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
+use ApacheSolrForTypo3\Solr\System\Mvc\Frontend\Controller\OverriddenTypoScriptFrontendController;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use ApacheSolrForTypo3\Solr\Typo3PageIndexer;
 use ApacheSolrForTypo3\Solr\Util;
@@ -36,7 +37,6 @@ use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * Index Queue Page Indexer frontend helper to ask the frontend page indexer to
@@ -57,7 +57,7 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
     /**
      * the page currently being indexed.
      *
-     * @var TypoScriptFrontendController
+     * @var OverriddenTypoScriptFrontendController
      */
     protected $page;
 
@@ -259,9 +259,9 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
      * Handles the indexing of the page content during post processing of a
      * generated page.
      *
-     * @param TypoScriptFrontendController $page TypoScript frontend
+     * @param OverriddenTypoScriptFrontendController $page TypoScript frontend
      */
-    public function hook_indexContent(TypoScriptFrontendController $page)
+    public function hook_indexContent(OverriddenTypoScriptFrontendController $page)
     {
         $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
 

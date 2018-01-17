@@ -87,6 +87,7 @@ class IndexService
         $this->indexQueue = is_null($queue) ? GeneralUtility::makeInstance(Queue::class) : $queue;
         $this->signalSlotDispatcher = is_null($dispatcher) ? GeneralUtility::makeInstance(Dispatcher::class) : $dispatcher;
         $this->logger = is_null($solrLogManager) ? GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__) : $solrLogManager;
+        define('EXT_SOLR_INDEXING_CONTEXT', true);
     }
 
     /**

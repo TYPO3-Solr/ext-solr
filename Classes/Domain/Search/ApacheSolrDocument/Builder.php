@@ -29,10 +29,10 @@ use ApacheSolrForTypo3\Solr\Access\Rootline;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\Domain\Variants\IdBuilder;
 use ApacheSolrForTypo3\Solr\Site;
+use ApacheSolrForTypo3\Solr\System\Mvc\Frontend\Controller\OverriddenTypoScriptFrontendController;
 use ApacheSolrForTypo3\Solr\Typo3PageContentExtractor;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * Builder class to build an ApacheSolrDocument
@@ -60,13 +60,13 @@ class Builder
     /**
      * This method can be used to build an Apache_Solr_Document from a TYPO3 page.
      *
-     * @param TypoScriptFrontendController $page
+     * @param OverriddenTypoScriptFrontendController $page
      * @param string $url
      * @param Rootline $pageAccessRootline
      * @param string $mountPointParameter
      * @return Apache_Solr_Document|object
      */
-    public function fromPage(TypoScriptFrontendController $page, $url, Rootline $pageAccessRootline, $mountPointParameter): \Apache_Solr_Document
+    public function fromPage(OverriddenTypoScriptFrontendController $page, $url, Rootline $pageAccessRootline, $mountPointParameter): \Apache_Solr_Document
     {
         /* @var $document \Apache_Solr_Document */
         $document = GeneralUtility::makeInstance(Apache_Solr_Document::class);
@@ -174,12 +174,12 @@ class Builder
     }
 
     /**
-     * @param TypoScriptFrontendController  $page
+     * @param OverriddenTypoScriptFrontendController  $page
      * @param string $accessGroups
      * @param string $mountPointParameter
      * @return string
      */
-    protected function getPageDocumentId(TypoScriptFrontendController $page, string $accessGroups, string $mountPointParameter): string
+    protected function getPageDocumentId(OverriddenTypoScriptFrontendController $page, string $accessGroups, string $mountPointParameter): string
     {
         return Util::getPageDocumentId($page->id, $page->type, $page->sys_language_uid, $accessGroups, $mountPointParameter);
     }

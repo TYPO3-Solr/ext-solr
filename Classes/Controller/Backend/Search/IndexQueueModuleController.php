@@ -262,6 +262,8 @@ class IndexQueueModuleController extends AbstractModuleController
     /**
      * Indexes a few documents with the index service.
      * @return void
+     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
+     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
      */
     public function doIndexingRunAction()
     {

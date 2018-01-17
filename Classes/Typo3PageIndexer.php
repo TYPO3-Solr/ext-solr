@@ -27,15 +27,14 @@ namespace ApacheSolrForTypo3\Solr;
 use Apache_Solr_Document;
 use ApacheSolrForTypo3\Solr\Access\Rootline;
 use ApacheSolrForTypo3\Solr\Domain\Search\ApacheSolrDocument\Builder;
-use ApacheSolrForTypo3\Solr\Domain\Variants\IdBuilder;
 use ApacheSolrForTypo3\Solr\FieldProcessor\Service;
 use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageFieldMappingIndexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
+use ApacheSolrForTypo3\Solr\System\Mvc\Frontend\Controller\OverriddenTypoScriptFrontendController;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * Page Indexer to index TYPO3 pages used by the Index Queue.
@@ -74,7 +73,7 @@ class Typo3PageIndexer
     /**
      * Frontend page object (TSFE).
      *
-     * @var TypoScriptFrontendController
+     * @var OverriddenTypoScriptFrontendController
      */
     protected $page = null;
     /**
@@ -120,9 +119,9 @@ class Typo3PageIndexer
     /**
      * Constructor
      *
-     * @param TypoScriptFrontendController $page The page to index
+     * @param OverriddenTypoScriptFrontendController $page The page to index
      */
-    public function __construct(TypoScriptFrontendController $page)
+    public function __construct(OverriddenTypoScriptFrontendController $page)
     {
         $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
 

@@ -26,9 +26,9 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\FrequentSearches;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Statistics\StatisticsRepository;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use ApacheSolrForTypo3\Solr\System\Mvc\Frontend\Controller\OverriddenTypoScriptFrontendController;
 use TYPO3\CMS\Core\Cache\Frontend\AbstractFrontend;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * The FrequentSearchesService is used to retrieve the frequent searches from the database or cache.
@@ -47,7 +47,7 @@ class FrequentSearchesService
     protected $cache;
 
     /**
-     * @var TypoScriptFrontendController
+     * @var OverriddenTypoScriptFrontendController
      */
     protected $tsfe;
 
@@ -64,10 +64,10 @@ class FrequentSearchesService
     /**
      * @param TypoScriptConfiguration $typoscriptConfiguration
      * @param AbstractFrontend $cache
-     * @param TypoScriptFrontendController $tsfe
+     * @param OverriddenTypoScriptFrontendController $tsfe
      * @param StatisticsRepository $statisticsRepository
      */
-    public function __construct(TypoScriptConfiguration $typoscriptConfiguration, AbstractFrontend $cache, TypoScriptFrontendController $tsfe, StatisticsRepository $statisticsRepository = null)
+    public function __construct(TypoScriptConfiguration $typoscriptConfiguration, AbstractFrontend $cache, OverriddenTypoScriptFrontendController $tsfe, StatisticsRepository $statisticsRepository = null)
     {
         $this->configuration = $typoscriptConfiguration;
         $this->cache = $cache;

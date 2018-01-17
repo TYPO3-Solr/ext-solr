@@ -25,6 +25,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\ContentObject;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\ContentObject\Classification;
+use ApacheSolrForTypo3\Solr\System\Mvc\Frontend\Controller\OverriddenTypoScriptFrontendController;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
@@ -77,7 +78,7 @@ class ClassificationTest extends UnitTest
             Classification::class
         ];
 
-        $GLOBALS['TSFE'] = $this->getDumbMock(TypoScriptFrontendController::class);
+        $GLOBALS['TSFE'] = $this->getDumbMock(OverriddenTypoScriptFrontendController::class);
 
         $this->contentObject = $this->getMockBuilder(ContentObjectRenderer::class)
             ->setMethods(['getResourceFactory', 'getEnvironmentVariable'])

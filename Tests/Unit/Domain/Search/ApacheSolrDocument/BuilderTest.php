@@ -28,6 +28,7 @@ use ApacheSolrForTypo3\Solr\Access\Rootline;
 use ApacheSolrForTypo3\Solr\Domain\Search\ApacheSolrDocument\Builder;
 use ApacheSolrForTypo3\Solr\Domain\Variants\IdBuilder;
 use ApacheSolrForTypo3\Solr\Site;
+use ApacheSolrForTypo3\Solr\System\Mvc\Frontend\Controller\OverriddenTypoScriptFrontendController;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use ApacheSolrForTypo3\Solr\Typo3PageContentExtractor;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
@@ -79,7 +80,7 @@ class BuilderTest extends UnitTest
      */
     public function canBuildApacheSolrDocumentFromEmptyPage()
     {
-        $fakePage = $this->getDumbMock(TypoScriptFrontendController::class);
+        $fakePage = $this->getDumbMock(OverriddenTypoScriptFrontendController::class);
         $fakeRootLine = $this->getDumbMock(Rootline::class);
         $fakeRootLine->expects($this->once())->method('getGroups')->will($this->returnValue([1]));
 
@@ -99,7 +100,7 @@ class BuilderTest extends UnitTest
      */
     public function canSetKeywordsForApacheSolrDocument()
     {
-        $fakePage = $this->getDumbMock(TypoScriptFrontendController::class);
+        $fakePage = $this->getDumbMock(OverriddenTypoScriptFrontendController::class);
         $fakeRootLine = $this->getDumbMock(Rootline::class);
         $fakeRootLine->expects($this->once())->method('getGroups')->will($this->returnValue([1]));
 
@@ -118,7 +119,7 @@ class BuilderTest extends UnitTest
      */
     public function canSetEndtimeForApacheSolrDocument()
     {
-        $fakePage = $this->getDumbMock(TypoScriptFrontendController::class);
+        $fakePage = $this->getDumbMock(OverriddenTypoScriptFrontendController::class);
         $fakeRootLine = $this->getDumbMock(Rootline::class);
         $fakeRootLine->expects($this->once())->method('getGroups')->will($this->returnValue([1]));
 
@@ -137,7 +138,7 @@ class BuilderTest extends UnitTest
      */
     public function canSetTagFieldsForApacheSolrDocument()
     {
-        $fakePage = $this->getDumbMock(TypoScriptFrontendController::class);
+        $fakePage = $this->getDumbMock(OverriddenTypoScriptFrontendController::class);
         $fakeRootLine = $this->getDumbMock(Rootline::class);
         $fakeRootLine->expects($this->once())->method('getGroups')->will($this->returnValue([1]));
 

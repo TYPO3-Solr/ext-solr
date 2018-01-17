@@ -25,6 +25,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Access\Rootline;
+use ApacheSolrForTypo3\Solr\System\Mvc\Frontend\Controller\OverriddenTypoScriptFrontendController;
 use ApacheSolrForTypo3\Solr\Typo3PageIndexer;
 
 use ApacheSolrForTypo3\Solr\Util;
@@ -34,7 +35,6 @@ use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 use TYPO3\CMS\Core\TimeTracker\TimeTracker;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use TYPO3\CMS\Frontend\Page\PageGenerator;
 use TYPO3\CMS\Frontend\Utility\EidUtility;
 use TYPO3\CMS\Install\Service\SqlExpectedSchemaService;
@@ -243,12 +243,13 @@ abstract class IntegrationTest extends FunctionalTestCase
     }
 
     /**
-     * @return \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController
+     * @return OverriddenTypoScriptFrontendController
+     * @throws \TYPO3\CMS\Core\Error\Http\ServiceUnavailableException
      */
     protected function getConfiguredTSFE($TYPO3_CONF_VARS = [], $id = 1, $type = 0, $no_cache = '', $cHash = '', $_2 = null, $MP = '', $RDCT = '', $config = [])
     {
-        /** @var $TSFE \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController */
-        $TSFE = GeneralUtility::makeInstance(TypoScriptFrontendController::class,
+        /** @var $TSFE OverriddenTypoScriptFrontendController */
+        $TSFE = GeneralUtility::makeInstance(OverriddenTypoScriptFrontendController::class,
             $TYPO3_CONF_VARS, $id, $type, $no_cache, $cHash, $_2, $MP, $RDCT);
 
 
@@ -387,7 +388,8 @@ abstract class IntegrationTest extends FunctionalTestCase
     /**
      * @param integer $pageId
      * @param array $feUserGroupArray
-     * @return TypoScriptFrontendController
+     * @return OverriddenTypoScriptFrontendController
+     * @throws \TYPO3\CMS\Core\Error\Http\ServiceUnavailableException
      */
     protected function fakeTSFE($pageId, $feUserGroupArray = [0])
     {

@@ -28,8 +28,8 @@ use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSetProcessor;
 use ApacheSolrForTypo3\Solr\HtmlContentExtractor;
+use ApacheSolrForTypo3\Solr\System\Mvc\Frontend\Controller\OverriddenTypoScriptFrontendController;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * Writes statistics after searches have been conducted.
@@ -165,7 +165,7 @@ class StatisticsWriterProcessor implements SearchResultSetProcessor
     }
 
     /**
-     * @return TypoScriptFrontendController
+     * @return OverriddenTypoScriptFrontendController
      */
     protected function getTSFE()
     {

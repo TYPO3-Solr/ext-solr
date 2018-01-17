@@ -27,10 +27,10 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\ContentObject;
 
 
 use ApacheSolrForTypo3\Solr\ContentObject\Relation;
+use ApacheSolrForTypo3\Solr\System\Mvc\Frontend\Controller\OverriddenTypoScriptFrontendController;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use TYPO3\CMS\Frontend\Page\PageRepository;
 
 /**
@@ -48,7 +48,7 @@ class RelationTest extends IntegrationTest
     public function canFallbackToPagesTableIfPagesLanguageOverlayTCAHasNoDefinitionForLocalColumn($fixtureName)
     {
         $this->importDataSetFromFixture($fixtureName);
-        $GLOBALS['TSFE'] = $this->getMockBuilder(TypoScriptFrontendController::class)->disableOriginalConstructor()->getMock();
+        $GLOBALS['TSFE'] = $this->getMockBuilder(OverriddenTypoScriptFrontendController::class)->disableOriginalConstructor()->getMock();
         $GLOBALS['TSFE']->sys_page = GeneralUtility::makeInstance(PageRepository::class);
         /* @var ContentObjectRenderer $contentObjectRenderer */
         $contentObjectRendererMock = $this->getMockBuilder(ContentObjectRenderer::class)->setConstructorArgs([$GLOBALS['TSFE']])->getMock();

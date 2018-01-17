@@ -25,11 +25,11 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
+use ApacheSolrForTypo3\Solr\System\Mvc\Frontend\Controller\OverriddenTypoScriptFrontendController;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectPostInitHookInterface;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use TYPO3\CMS\Frontend\Page\PageRepository;
 use TYPO3\CMS\Frontend\Page\PageRepositoryGetPageHookInterface;
 use TYPO3\CMS\Frontend\Page\PageRepositoryGetPageOverlayHookInterface;
@@ -96,7 +96,7 @@ class UserGroupDetector extends AbstractFrontendHelper implements
      * Will be called by the hook in the TypoScriptFrontendController in the checkEnableFields() method.
      *
      * @param array $parameters
-     * @param TypoScriptFrontendController $tsfe
+     * @param OverriddenTypoScriptFrontendController $tsfe
      * @see \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController::checkEnableFields()
      */
     public function checkEnableFields(
@@ -112,7 +112,7 @@ class UserGroupDetector extends AbstractFrontendHelper implements
      * restrictions apply during page rendering.
      *
      * @param array $parameters Parameters from frontend
-     * @param TypoScriptFrontendController $parentObject TSFE object
+     * @param OverriddenTypoScriptFrontendController $parentObject TSFE object
      */
     public function deactivateTcaFrontendGroupEnableFields(
         /** @noinspection PhpUnusedParameterInspection */

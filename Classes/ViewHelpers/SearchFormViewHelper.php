@@ -14,7 +14,7 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers;
  * The TYPO3 project - inspiring people to share!
  */
 
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
+use ApacheSolrForTypo3\Solr\System\Mvc\Frontend\Controller\OverriddenTypoScriptFrontendController;
 
 
 /**
@@ -33,7 +33,7 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
     protected $tagName = 'form';
 
     /**
-     * @var TypoScriptFrontendController
+     * @var OverriddenTypoScriptFrontendController
      */
     protected $frontendController;
 

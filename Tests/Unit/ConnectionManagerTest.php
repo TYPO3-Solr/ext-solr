@@ -29,6 +29,7 @@ use ApacheSolrForTypo3\Solr\SolrService;
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
+use ApacheSolrForTypo3\Solr\System\Mvc\Frontend\Controller\OverriddenTypoScriptFrontendController;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
 use ApacheSolrForTypo3\Solr\System\Records\SystemLanguage\SystemLanguageRepository;
 use ApacheSolrForTypo3\Solr\System\Solr\Parser\SchemaParser;
@@ -76,7 +77,7 @@ class ConnectionManagerTest extends UnitTest
      */
     public function setUp()
     {
-        $TSFE = $this->getDumbMock(TypoScriptFrontendController::class);
+        $TSFE = $this->getDumbMock(OverriddenTypoScriptFrontendController::class);
         $GLOBALS['TSFE'] = $TSFE;
 
         /** @var $GLOBALS ['TSFE']->tmpl  \TYPO3\CMS\Core\TypoScript\TemplateService */

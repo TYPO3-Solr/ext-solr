@@ -35,8 +35,8 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSetService;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use ApacheSolrForTypo3\Solr\System\Mvc\Frontend\Controller\OverriddenTypoScriptFrontendController;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * Class SuggestService
@@ -48,7 +48,7 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 class SuggestService {
 
     /**
-     * @var TypoScriptFrontendController
+     * @var OverriddenTypoScriptFrontendController
      */
     protected $tsfe;
 
@@ -69,11 +69,11 @@ class SuggestService {
 
     /**
      * SuggestService constructor.
-     * @param TypoScriptFrontendController $tsfe
+     * @param OverriddenTypoScriptFrontendController $tsfe
      * @param SearchResultSetService $searchResultSetService
      * @param QueryBuilder|null $queryBuilder
      */
-    public function __construct(TypoScriptFrontendController $tsfe, SearchResultSetService $searchResultSetService, TypoScriptConfiguration $typoScriptConfiguration, QueryBuilder $queryBuilder = null)
+    public function __construct(OverriddenTypoScriptFrontendController $tsfe, SearchResultSetService $searchResultSetService, TypoScriptConfiguration $typoScriptConfiguration, QueryBuilder $queryBuilder = null)
     {
         $this->tsfe = $tsfe;
         $this->searchService = $searchResultSetService;

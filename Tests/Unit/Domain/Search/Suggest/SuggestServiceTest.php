@@ -35,8 +35,8 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSetService;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Domain\Search\Suggest\SuggestService;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use ApacheSolrForTypo3\Solr\System\Mvc\Frontend\Controller\OverriddenTypoScriptFrontendController;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * @author Timo Hund <timo.hund@dkd.de>
@@ -49,7 +49,7 @@ class SuggestServiceTest extends UnitTest
     protected $suggestService;
 
     /**
-     * @var TypoScriptFrontendController
+     * @var OverriddenTypoScriptFrontendController
      */
     protected $tsfeMock;
 
@@ -78,7 +78,7 @@ class SuggestServiceTest extends UnitTest
      */
     public function setUp()
     {
-        $this->tsfeMock = $this->getDumbMock(TypoScriptFrontendController::class);
+        $this->tsfeMock = $this->getDumbMock(OverriddenTypoScriptFrontendController::class);
         $this->searchResultSetServiceMock = $this->getDumbMock(SearchResultSetService::class);
         $this->configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
         $this->queryBuilderMock = $this->getDumbMock(QueryBuilder::class);
