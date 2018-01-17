@@ -313,6 +313,24 @@ class SearchRequestTest extends UnitTest
     /**
      * @test
      */
+    public function canResetAllGroupItemPages()
+    {
+        $query = 'tx_solr%5Bq%5D=typo3';
+        $request = $this->getSearchRequestFromQueryString($query);
+        $request->setGroupItemPage('typeGroup', 'pages', 2);
+        $request->setGroupItemPage('colorGroup', 'colors', 4);
+
+        $requestArguments = $request->getAsArray();
+        $this->assertCount(2, $requestArguments['tx_solr']['groupPage'], 'Expected to have two group pages registered');
+
+        $request->removeAllGroupItemPages();
+        $requestArguments = $request->getAsArray();
+        $this->assertNull($requestArguments['tx_solr']['groupPage'], 'Expected to have two group pages registered');
+    }
+
+    /**
+     * @test
+     */
     public function twoDifferentRequestsHaveADifferentId()
     {
         $newSearchRequest = new SearchRequest();

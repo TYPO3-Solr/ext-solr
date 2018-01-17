@@ -198,4 +198,28 @@ class SearchUriBuilderTest extends UnitTest
         $this->extBaseUriBuilderMock->expects($this->once())->method('setUseCacheHash')->with(false)->will($this->returnValue($this->extBaseUriBuilderMock));
         $this->searchUrlBuilder->getRemoveFacetUri($previousRequest, 'type');
     }
+
+    /**
+     * When a page for a group was set, this should be resetted when a facet is selected.
+     *
+     * @test
+     */
+    public function addFacetUriRemovesPreviousGroupPage()
+    {
+        $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
+        $configurationMock->expects($this->any())->method('getSearchPluginNamespace')->will($this->returnValue('tx_solr'));
+
+        $previousRequest =  new SearchRequest([
+                'tx_solr' => [
+                    'groupPage' => [
+                        'typeGroup' => [
+                            'pages' => 4
+                        ]
+                    ]
+                ]
+            ],
+            0, 0, $configurationMock);
+        $uri = $this->searchUrlBuilder->getAddFacetValueUri($previousRequest, 'type', 'pages');
+        $this->assertSame('tx_solr[filter][0]=type:pages', urldecode($uri), 'Unexpected uri generated');
+    }
 }
