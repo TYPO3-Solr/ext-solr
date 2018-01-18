@@ -24,20 +24,15 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Query\Modifier;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\Helper\EscapeService;
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\FacetQueryBuilderRegistry;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\FacetRegistry;
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\FacetUrlDecoderRegistry;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
-use ApacheSolrForTypo3\Solr\Domain\Site\SiteHashService;
-use ApacheSolrForTypo3\Solr\Query;
 use ApacheSolrForTypo3\Solr\Query\Modifier\Faceting;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
-use TYPO3\CMS\Fluid\Core\Parser\Interceptor\Escape;
 
 /**
  * Tests the ApacheSolrForTypo3\Solr\Query\Modifier\Faceting class
@@ -62,12 +57,12 @@ class FacetingTest extends UnitTest
         $facetRegistry = new FacetRegistry();
         $facetRegistry->injectObjectManager($fakeObjectManager);
 
-        $siteHashServiceMock = $this->getDumbMock(SiteHashService::class);
-        $escapeServiceMock = $this->getDumbMock(EscapeService::class);
         $solrLogManagerMock = $this->getDumbMock(SolrLogManager::class);
 
-        /** @var $query \ApacheSolrForTypo3\Solr\Query */
-        $query = new Query('test', $fakeConfiguration, $siteHashServiceMock, $escapeServiceMock, $solrLogManagerMock);
+        /** @var $query \ApacheSolrForTypo3\Solr\Domain\Search\Query\Query */
+        $queryBuilder = new QueryBuilder($fakeConfiguration, $solrLogManagerMock);
+        $query = $queryBuilder->buildSearchQuery('test');
+
         /** @var $facetModifier \ApacheSolrForTypo3\Solr\Query\Modifier\Faceting */
         $facetModifier = GeneralUtility::makeInstance(Faceting::class, $facetRegistry);
         $facetModifier->setSearchRequest($fakeSearchRequest);

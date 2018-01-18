@@ -1,10 +1,10 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Query\Modifier;
+namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
 
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2009-2015 Ingo Renner <ingo@typo3.org>
+ *  (c) 2017 <timo.hund@dkd.de>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -25,24 +25,45 @@ namespace ApacheSolrForTypo3\Solr\Query\Modifier;
  ***************************************************************/
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 
+
 /**
- * Enables tracking of detailed statistics
+ * The Debug ParameterProvider is responsible to build the solr query parameters
+ * that are needed for the debugging.
  *
- * @author Ingo Renner <ingo@typo3.org>
+ * @package ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder
  */
-class Statistics implements Modifier
+class Debug extends AbstractDeactivatableParameterBuilder implements ParameterBuilder
 {
+    /**
+     * Debug constructor.
+     *
+     * @param bool $isEnabled
+     */
+    public function __construct($isEnabled)
+    {
+        $this->isEnabled = $isEnabled;
+    }
 
     /**
-     * Enables the query's debug mode to get more detailed information.
-     *
-     * @param Query $query The query to modify
-     * @return Query The modified query with enabled debugging mode
+     * @param Query $query
+     * @return Query
      */
-    public function modifyQuery(Query $query)
+    public function build(Query $query): Query
     {
-        $query->setDebugMode(true);
+        if (!$this->isEnabled) {
+            $query->getQueryParametersContainer()->removeMany(['debugQuery', 'echoParams']);
+            return $query;
+        }
 
+        $query->getQueryParametersContainer()->merge(['debugQuery' => 'true', 'echoParams' => 'all']);
         return $query;
+    }
+
+    /**
+     * @return Debug
+     */
+    public static function getEmpty()
+    {
+        return new Debug(false);
     }
 }

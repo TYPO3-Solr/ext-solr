@@ -24,30 +24,30 @@ namespace ApacheSolrForTypo3\Solr\Query\Modifier;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
-use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequestAware;
-use ApacheSolrForTypo3\Solr\Plugin\Search\Search;
-use ApacheSolrForTypo3\Solr\Query;
-use ApacheSolrForTypo3\Solr\Util;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Enables query elevation
  *
  * @author Ingo Renner <ingo@typo3.org>
  */
-class Elevation implements Modifier, SearchRequestAware
+class Elevation implements Modifier
 {
 
     /**
-     * @var SearchRequest
+     * @var QueryBuilder
      */
-    protected $searchRequest;
+    protected $queryBuilder;
 
     /**
-     * @param SearchRequest $searchRequest
+     * Elevation constructor.
+     * @param QueryBuilder|null $builder
      */
-    public function setSearchRequest(SearchRequest $searchRequest) {
-        $this->searchRequest = $searchRequest;
+    public function __construct(QueryBuilder $builder = null)
+    {
+        $this->queryBuilder = $builder ?? GeneralUtility::makeInstance(QueryBuilder::class);
     }
 
     /**
@@ -58,13 +58,7 @@ class Elevation implements Modifier, SearchRequestAware
      */
     public function modifyQuery(Query $query)
     {
-        $configuration = $this->searchRequest->getContextTypoScriptConfiguration();
-        $query->setQueryElevation(
-            $configuration->getSearchElevation(),
-            $configuration->getSearchElevationForceElevation(),
-            $configuration->getSearchElevationMarkElevatedResults()
-        );
-
+        $query = $this->queryBuilder->startFrom($query)->useElevationFromTypoScript()->getQuery();
         return $query;
     }
 }

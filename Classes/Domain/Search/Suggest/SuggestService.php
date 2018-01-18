@@ -27,14 +27,13 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Suggest;
 
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\SuggestQuery;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResult;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResultCollection;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSetService;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
-use ApacheSolrForTypo3\Solr\Domain\Site\SiteHashService;
 use ApacheSolrForTypo3\Solr\Search;
-use ApacheSolrForTypo3\Solr\SuggestQuery;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
@@ -103,7 +102,7 @@ class SuggestService {
 
         $maxSuggestions = $this->typoScriptConfiguration->getSuggestNumberOfSuggestions();
         $showTopResults = $this->typoScriptConfiguration->getSuggestShowTopResults();
-        $suggestions    = $this->getSuggestionArray($suggestQuery->getKeywords(), $solrSuggestions, $maxSuggestions);
+        $suggestions    = $this->getSuggestionArray($suggestQuery, $solrSuggestions, $maxSuggestions);
 
         if (!$showTopResults) {
             return $this->getResultArray($searchRequest, $suggestions, [], false);
@@ -177,13 +176,14 @@ class SuggestService {
     /**
      * Extracts the suggestions from solr as array.
      *
-     * @param string $queryString
+     * @param SuggestQuery $suggestQuery
      * @param array $solrSuggestions
      * @param integer $maxSuggestions
      * @return array
      */
-    protected function getSuggestionArray($queryString, $solrSuggestions, $maxSuggestions) : array
+    protected function getSuggestionArray(SuggestQuery $suggestQuery, $solrSuggestions, $maxSuggestions) : array
     {
+        $queryString = $suggestQuery->getQueryStringContainer()->getKeywords();
         $suggestionCount = 0;
         $suggestions = [];
         foreach ($solrSuggestions as $string => $count) {

@@ -1,10 +1,10 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Tests\Unit;
+namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\Query;
 
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2010-2015 Ingo Renner <ingo@typo3.org>
+ *  (c) 2017 Timo Hund <timo.hund@dkd.de>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -24,33 +24,299 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\Helper\EscapeService;
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\BigramPhraseFields;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Operator;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\PhraseFields;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\QueryFields;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\ReturnFields;
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\TrigramPhraseFields;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteHashService;
-use ApacheSolrForTypo3\Solr\Query;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
+use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Tests the ApacheSolrForTypo3\Solr\Query class
- *
- * @author Ingo Renner <ingo@typo3.org>
+ * @author Timo Hund <timo.hund@dkd.de>
  */
-class QueryTest extends UnitTest
+class QueryBuilderTest extends UnitTest
 {
+
+    /**
+     * @var TypoScriptConfiguration
+     */
+    protected $configurationMock;
+
+    /**
+     * @var SolrLogManager
+     */
+    protected $loggerMock;
+
+    /**
+     * @var
+     */
+    protected $siteHashServiceMock;
+
+    /**
+     * @var QueryBuilder
+     */
+    protected $builder;
+
+    public function setUp()
+    {
+        $this->configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
+        $this->loggerMock = $this->getDumbMock(SolrLogManager::class);
+        $this->siteHashServiceMock = $this->getDumbMock(SiteHashService::class);
+        $this->builder = new QueryBuilder($this->configurationMock, $this->loggerMock, $this->siteHashServiceMock);
+    }
+
+    /**
+     * @param string $queryString
+     * @param TypoScriptConfiguration|null $fakeConfiguration
+     * @return Query
+     */
+    protected function getInitializedTestSearchQuery(string $queryString = '', TypoScriptConfiguration $fakeConfiguration = null): Query
+    {
+        $builder = new QueryBuilder($fakeConfiguration, $this->loggerMock);
+        return $builder->buildSearchQuery($queryString);
+    }
+
+    /**
+     * @test
+     */
+    public function buildSearchQueryPassesQueryString()
+    {
+        $query = $this->builder->buildSearchQuery('one');
+        $this->assertSame('one', (string)$query, 'Query has unexpected value, when casted to string');
+    }
+
+    /**
+     * @test
+     */
+    public function buildSearchQueryPassesDefaultPerPage()
+    {
+        $query = $this->builder->buildSearchQuery('one');
+        $this->assertSame(10, $query->getRows(), 'Query was not created with default perPage value');
+        $this->assertSame(10, $query->getPagination()->getResultsPerPage(), 'Query was not created with default perPage value');
+
+    }
+
+    /**
+     * @test
+     */
+    public function buildSearchQueryPassesCustomPerPage()
+    {
+        $query = $this->builder->buildSearchQuery('one', 22);
+        $this->assertSame(22, $query->getRows(), 'Query was not created with default perPage value');
+        $this->assertSame(22, $query->getPagination()->getResultsPerPage(), 'Query was not created with default perPage value');
+    }
+
+    /**
+     * @test
+     */
+    public function buildSearchQueryInitializesQueryFieldsFromConfiguration()
+    {
+        $this->configurationMock->expects($this->once())->method('getSearchQueryQueryFields')->willReturn('title^10, content^123');
+        $query = $this->builder->buildSearchQuery('foo');
+        $this->assertSame('title^10.0 content^123.0', $query->getQueryFields()->toString(), 'The queryFields have not been initialized as expected');
+    }
+
+    /**
+     * @test
+     */
+    public function buildSearchQueryInitializesTrigramPhraseFields()
+    {
+        $this->configurationMock->expects($this->once())->method('getTrigramPhraseSearchIsEnabled')->willReturn(true);
+
+        $this->configurationMock->expects($this->once())->method('getSearchQueryTrigramPhraseFields')->willReturn('content^10.0, title^10.0');
+        $query = $this->builder->buildSearchQuery('trigram');
+        $this->assertSame('content^10.0 title^10.0', $query->getTrigramPhraseFields()->toString(), 'The trigramPhraseFields have not been initialized as expected');
+    }
+
+    /**
+     * @test
+     */
+    public function buildSearchIsSettingWildCardQueryOnInitializeWithEmptyQuery()
+    {
+        $this->configurationMock->expects($this->once())->method('getSearchInitializeWithEmptyQuery')->willReturn(true);
+        $query = $this->builder->buildSearchQuery('initializeWithEmpty');
+        $this->assertSame('*:*', $query->getAlternativeQuery(), 'The alterativeQuery has not been initialized as expected');
+    }
+
+    /**
+     * @test
+     */
+    public function buildSearchIsSettingWildCardQueryOnInitializeWithAllowEmptyQuery()
+    {
+        $this->configurationMock->expects($this->once())->method('getSearchQueryAllowEmptyQuery')->willReturn(true);
+        $query = $this->builder->buildSearchQuery('initializeWithEmpty');
+        $this->assertSame('*:*', $query->getAlternativeQuery(), 'The alterativeQuery has not been initialized as expected');
+    }
+
+    /**
+     * @test
+     */
+    public function buildSearchIsSettingQuerystringForConfiguredInitialQuery()
+    {
+        $this->configurationMock->expects($this->exactly(2))->method('getSearchInitializeWithQuery')->willReturn('myinitialsearch');
+        $query = $this->builder->buildSearchQuery('initializeWithEmpty');
+        $this->assertSame('myinitialsearch', $query->getAlternativeQuery(), 'The alterativeQuery has not been initialized from a configured initial query');
+    }
+
+    /**
+     * @test
+     */
+    public function buildSearchIsSettingConfiguredAdditionalFilters()
+    {
+        $this->configurationMock->expects($this->any())->method('getSearchQueryFilterConfiguration')->willReturn(['noPage' => '-type:pages']);
+        $query = $this->builder->buildSearchQuery('applies configured filters');
+
+        $filterValues = $query->getFilters()->getValues();
+        $this->assertCount(1, $filterValues, 'Unpexcted amount of filters for query');
+        $this->assertSame('-type:pages', $filterValues[0], 'First filter has unexpected value');
+    }
+
+    /**
+     * @test
+     */
+    public function buildSearchIsSettingNoAlternativeQueryByDefault()
+    {
+        $query = $this->builder->buildSearchQuery('initializeWithEmpty');
+        $this->assertNull($query->getAlternativeQuery(), 'The alterativeQuery is not null when nothing was set');
+    }
+
+    /**
+     * @test
+     */
+    public function canEnableHighlighting()
+    {
+        /** @var $query \ApacheSolrForTypo3\Solr\Domain\Search\Query\Query */
+        $query = $this->getInitializedTestSearchQuery();
+        $query->getHighlighting()->setIsEnabled(true);
+        $queryParameters = $query->getQueryParameters();
+        $this->assertSame('true', $queryParameters['hl'], 'Enable highlighting did not set the "hl" query parameter');
+        $this->assertSame(200, $queryParameters['hl.fragsize'], 'hl.fragsize was not set to the default value of 200');
+    }
+
+    /**
+     * @test
+     */
+    public function canDisableHighlighting()
+    {
+        /** @var $query \ApacheSolrForTypo3\Solr\Domain\Search\Query\Query */
+        $query = $this->getInitializedTestSearchQuery();
+        $query->getHighlighting()->setIsEnabled(true);
+
+        $queryParameters = $query->getQueryParameters();
+
+        $this->assertSame('true', $queryParameters['hl'], 'Enable highlighting did not set the "hl" query parameter');
+
+        $query->getHighlighting()->setIsEnabled(false);
+        $queryParameters = $query->getQueryParameters();
+        $this->assertNull($queryParameters['hl'], 'Could not disable highlighting');
+    }
+
+    /**
+     * @test
+     */
+    public function canSetHighlightingFieldList()
+    {
+        $fakeConfigurationArray = [];
+        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['results.']['resultsHighlighting'] = 1;
+        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['results.']['resultsHighlighting.']['highlightFields'] = 'title';
+        $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
+
+        $query = $this->getInitializedTestSearchQuery('test', $fakeConfiguration);
+        $query->getHighlighting()->setIsEnabled(true);
+        $queryParameters = $query->getQueryParameters();
+        $this->assertSame('true', $queryParameters['hl'], 'Enable highlighting did not set the "hl" query parameter');
+        $this->assertSame('title', $queryParameters['hl.fl'], 'Can set highlighting field list');
+    }
+
+    /**
+     * @test
+     */
+    public function canPassCustomWrapForHighlighting()
+    {
+        $fakeConfigurationArray = [];
+        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['results.']['resultsHighlighting'] = 1;
+        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['results.']['resultsHighlighting.']['wrap'] = '[A]|[B]';
+        $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
+
+        $query = $this->getInitializedTestSearchQuery('test', $fakeConfiguration);
+        $query->getHighlighting()->setIsEnabled(true);
+
+        $queryParameters = $query->getQueryParameters();
+        $this->assertSame('[A]', $queryParameters['hl.tag.pre'], 'Can set highlighting hl.tag.pre');
+        $this->assertSame('[B]', $queryParameters['hl.tag.post'], 'Can set highlighting hl.tag.post');
+        $this->assertSame('[A]', $queryParameters['hl.simple.pre'], 'Can set highlighting hl.tag.pre');
+        $this->assertSame('[B]', $queryParameters['hl.simple.post'], 'Can set highlighting hl.tag.post');
+    }
+
+    /**
+     * @test
+     */
+    public function simplePreAndPostIsUsedWhenFastVectorHighlighterCouldNotBeUsed()
+    {
+        $fakeConfigurationArray = [];
+        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['results.']['resultsHighlighting'] = 1;
+        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['results.']['resultsHighlighting.']['wrap'] = '[A]|[B]';
+        $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
+
+        $query = $this->getInitializedTestSearchQuery('test', $fakeConfiguration);
+
+        // fragSize 10 is to small for FastVectorHighlighter
+        $query->getHighlighting()->setIsEnabled(true);
+        $query->getHighlighting()->setFragmentSize(17);
+
+        $queryParameters = $query->getQueryParameters();
+        $this->assertSame('[A]', $queryParameters['hl.simple.pre'], 'Can set highlighting field list');
+        $this->assertSame('[B]', $queryParameters['hl.simple.post'], 'Can set highlighting field list');
+        $this->assertEmpty($queryParameters['hl.tag.pre'], 'When the highlighting fragment size is to small hl.tag.pre should not be used because FastVectoreHighlighter will not be used');
+        $this->assertEmpty($queryParameters['hl.tag.post'], 'When the highlighting fragment size is to small hl.tag.post should not be used because FastVectoreHighlighter will not be used');
+    }
+
+    /**
+     * @test
+     */
+    public function canUseFastVectorHighlighting()
+    {
+        $fakeConfigurationArray = [];
+        $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
+
+        $query = $this->getInitializedTestSearchQuery('test', $fakeConfiguration);
+        $query->getHighlighting()->setIsEnabled(true);
+        $query->getHighlighting()->setFragmentSize(200);
+        $queryParameters = $query->getQueryParameters();
+
+        $this->assertSame('true', $queryParameters['hl'], 'Enable highlighting did not set the "hl" query parameter');
+        $this->assertSame('true', $queryParameters['hl.useFastVectorHighlighter'], 'Enable highlighting did not set the "hl.useFastVectorHighlighter" query parameter');
+    }
+
+    /**
+     * @test
+     */
+    public function fastVectorHighlighterIsDisabledWhenFragSizeIsLessThen18()
+    {
+        $fakeConfigurationArray = [];
+        $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
+
+        $query = $this->getInitializedTestSearchQuery('test', $fakeConfiguration);
+        $query->getHighlighting()->setIsEnabled(true);
+        $query->getHighlighting()->setFragmentSize(0);
+        $queryParameters = $query->getQueryParameters();
+
+        $this->assertSame('true', $queryParameters['hl'], 'Enable highlighting did not set the "hl" query parameter');
+        $this->assertNull($queryParameters['hl.useFastVectorHighlighter'], 'FastVectorHighlighter was disabled but still requested');
+    }
 
     /**
      * @test
      */
     public function canSetQueryString()
     {
-        $query = $this->getInitializedTestQuery('i like solr');
-        $this->assertSame('i like solr', $query->getQueryString(), 'Can not set and get query string');
+        $query = $this->getInitializedTestSearchQuery('i like solr');
+        $this->assertSame('i like solr', $query->getQueryStringContainer()->getQueryString(), 'Can not set and get query string');
     }
 
     /**
@@ -58,10 +324,10 @@ class QueryTest extends UnitTest
      */
     public function queryStringCanBeOverwrittenWhenUseQueryStringWasSet()
     {
-        $query = $this->getInitializedTestQuery('i like solr');
-        $query->useRawQueryString(true);
-        $query->setQueryString('i like SOLR!');
-        $this->assertSame('i like SOLR!', $query->getQueryString(), 'Can not set and get query string');
+        $query = $this->getInitializedTestSearchQuery('i like solr');
+        $query->getQueryStringContainer()->useRawQueryString(true);
+        $query->getQueryStringContainer()->setQueryString('i like SOLR!');
+        $this->assertSame('i like SOLR!', $query->getQueryStringContainer()->getQueryString(), 'Can not set and get query string');
     }
 
     /**
@@ -69,10 +335,10 @@ class QueryTest extends UnitTest
      */
     public function queryStringCanNotBeOverwrittenWhenUseQueryStringWasSetToFalse()
     {
-        $query = $this->getInitializedTestQuery('i like solr');
-        $query->useRawQueryString(false);
-        $query->setQueryString('i like SOLR!');
-        $this->assertSame('i like solr', $query->getQueryString(), 'Can not set and get query string');
+        $query = $this->getInitializedTestSearchQuery('i like solr');
+        $query->getQueryStringContainer()->useRawQueryString(false);
+        $query->getQueryStringContainer()->setQueryString('i like SOLR!');
+        $this->assertSame('i like solr', $query->getQueryStringContainer()->getQueryString(), 'Can not set and get query string');
     }
 
     /**
@@ -80,10 +346,10 @@ class QueryTest extends UnitTest
      */
     public function canSetPage()
     {
-        $query = $this->getInitializedTestQuery('i like solr');
-        $query->setPage(10);
+        $query = $this->getInitializedTestSearchQuery('i like solr');
+        $query->getPagination()->setPage(10);
 
-        $this->assertSame(10, $query->getPage(), 'Can not set and get page');
+        $this->assertSame(10, $query->getPagination()->getPage(), 'Can not set and get page');
     }
 
     /**
@@ -91,7 +357,7 @@ class QueryTest extends UnitTest
      */
     public function noFiltersAreSetAfterInitialization()
     {
-        $query = $this->getInitializedTestQuery();
+        $query = $this->getInitializedTestSearchQuery();
         $filters = $query->getFilters()->getValues();
 
 
@@ -107,8 +373,9 @@ class QueryTest extends UnitTest
      */
     public function addsCorrectAccessFilterForAnonymousUser()
     {
-        $query = $this->getInitializedTestQuery();
-        $query->setUserAccessGroups([-1, 0]);
+        $query = $this->getInitializedTestSearchQuery();
+        $queryBuilder = new QueryBuilder($this->configurationMock, $this->loggerMock);
+        $queryBuilder->startFrom($query)->useUserAccessGroups([-1, 0]);
         $filters = $query->getFilters()->getValues();
 
         $this->assertContains(
@@ -123,8 +390,9 @@ class QueryTest extends UnitTest
      */
     public function grantsAccessToGroupZeroIfNoGroupsProvided()
     {
-        $query = $this->getInitializedTestQuery();
-        $query->setUserAccessGroups([]);
+        $query = $this->getInitializedTestSearchQuery();
+        $queryBuilder = new QueryBuilder($this->configurationMock, $this->loggerMock);
+        $queryBuilder->startFrom($query)->useUserAccessGroups([]);
         $filters = $query->getFilters()->getValues();
 
         $this->assertContains(
@@ -139,8 +407,10 @@ class QueryTest extends UnitTest
      */
     public function grantsAccessToGroupZeroIfZeroNotProvided()
     {
-        $query = $this->getInitializedTestQuery();
-        $query->setUserAccessGroups([5]);
+        $query = $this->getInitializedTestSearchQuery();
+
+        $queryBuilder = new QueryBuilder($this->configurationMock, $this->loggerMock);
+        $queryBuilder->startFrom($query)->useUserAccessGroups([5]);
         $filters = $query->getFilters()->getValues();
 
         $this->assertContains(
@@ -155,8 +425,10 @@ class QueryTest extends UnitTest
      */
     public function filtersDuplicateAccessGroups()
     {
-        $query = $this->getInitializedTestQuery();
-        $query->setUserAccessGroups([1, 1]);
+        $query = $this->getInitializedTestSearchQuery();
+
+        $queryBuilder = new QueryBuilder($this->configurationMock, $this->loggerMock);
+        $queryBuilder->startFrom($query)->useUserAccessGroups([1, 1]);
         $filters = $query->getFilters()->getValues();
 
         $this->assertContains(
@@ -171,9 +443,10 @@ class QueryTest extends UnitTest
      */
     public function allowsOnlyOneAccessFilter()
     {
-        $query = $this->getInitializedTestQuery();
-        $query->setUserAccessGroups([1]);
-        $query->setUserAccessGroups([2]);
+        $query = $this->getInitializedTestSearchQuery();
+        $queryBuilder = new QueryBuilder($this->configurationMock, $this->loggerMock);
+        $queryBuilder->startFrom($query)->useUserAccessGroups([1])->useUserAccessGroups([2]);
+
         $filters = $query->getFilters()->getValues();
 
         $this->assertSame(
@@ -195,7 +468,7 @@ class QueryTest extends UnitTest
      */
     public function groupingIsNotActiveAfterInitialization()
     {
-        $query = $this->getInitializedTestQuery();
+        $query = $this->getInitializedTestSearchQuery();
 
         $queryParameters = $query->getQueryParameters();
         foreach ($queryParameters as $queryParameter => $value) {
@@ -211,7 +484,7 @@ class QueryTest extends UnitTest
      */
     public function settingGroupingTrueActivatesGrouping()
     {
-        $query = $this->getInitializedTestQuery();
+        $query = $this->getInitializedTestSearchQuery();
         $query->getGrouping()->setIsEnabled(true);
 
         $queryParameters = $query->getQueryParameters();
@@ -250,7 +523,7 @@ class QueryTest extends UnitTest
      */
     public function canSetNumberOfGroups()
     {
-        $query = $this->getInitializedTestQuery('test');
+        $query = $this->getInitializedTestSearchQuery('test');
         $query->getGrouping()->setNumberOfGroups(2);
         $this->assertSame(2, $query->getGrouping()->getNumberOfGroups(), 'Could not set and get number of groups');
     }
@@ -260,7 +533,7 @@ class QueryTest extends UnitTest
      */
     public function canAddGroupField()
     {
-        $query = $this->getInitializedTestQuery('test');
+        $query = $this->getInitializedTestSearchQuery('test');
         $this->assertSame([], $query->getGrouping()->getFields(), 'Unexpected default state of groupFields');
         $query->getGrouping()->addField('category_s');
         $this->assertSame(['category_s'], $query->getGrouping()->getFields(), 'groupFields has unexpected state after adding a group field');
@@ -271,7 +544,7 @@ class QueryTest extends UnitTest
      */
     public function canGetGroupSorting()
     {
-        $query = $this->getInitializedTestQuery('test');
+        $query = $this->getInitializedTestSearchQuery('test');
         $this->assertSame([], $query->getGrouping()->getSortings(), 'By default getGroupSortings should return an empty array');
 
         $query->getGrouping()->addSorting('price_f');
@@ -285,7 +558,7 @@ class QueryTest extends UnitTest
      */
     public function canSetNumberOfResultsByGroup()
     {
-        $query = $this->getInitializedTestQuery('group test');
+        $query = $this->getInitializedTestSearchQuery('group test');
         $initialValue = $query->getGrouping()->getResultsPerGroup();
         $this->assertSame(1, $initialValue);
 
@@ -298,138 +571,11 @@ class QueryTest extends UnitTest
      */
     public function canAddGroupQuery()
     {
-        $query = $this->getInitializedTestQuery('group test');
+        $query = $this->getInitializedTestSearchQuery('group test');
         $initialGroupQueries = $query->getGrouping()->getQueries();
         $this->assertSame([], $initialGroupQueries, 'Group queries should be an empty array at the beginning');
         $query->getGrouping()->addQuery('price:[* TO 500]');
         $this->assertSame(['price:[* TO 500]'], $query->getGrouping()->getQueries(), 'Could not retrieve group queries after adding one');
-    }
-
-    // highlighting
-    /**
-     * @test
-     */
-    public function canEnableHighlighting()
-    {
-        /** @var $query \ApacheSolrForTypo3\Solr\Query */
-        $query = $this->getInitializedTestQuery();
-        $query->getHighlighting()->setIsEnabled(true);
-        $queryParameters = $query->getQueryParameters();
-
-        $this->assertSame('true', $queryParameters['hl'], 'Enable highlighting did not set the "hl" query parameter');
-        $this->assertSame(200, $queryParameters['hl.fragsize'], 'hl.fragsize was not set to the default value of 200');
-    }
-
-    /**
-     * @test
-     */
-    public function canDisableHighlighting()
-    {
-        /** @var $query \ApacheSolrForTypo3\Solr\Query */
-        $query = $this->getInitializedTestQuery();
-        $query->getHighlighting()->setIsEnabled(true);
-
-        $queryParameters = $query->getQueryParameters();
-        $this->assertSame('true', $queryParameters['hl'], 'Enable highlighting did not set the "hl" query parameter');
-
-        $query->getHighlighting()->setIsEnabled(false);
-        $queryParameters = $query->getQueryParameters();
-        $this->assertNull($queryParameters['hl'], 'Could not disable highlighting');
-    }
-
-    /**
-     * @test
-     */
-    public function canSetHighlightingFieldList()
-    {
-        $fakeConfigurationArray = [];
-        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['results.']['resultsHighlighting'] = 1;
-        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['results.']['resultsHighlighting.']['highlightFields'] = 'title';
-        $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
-
-        $query = $this->getInitializedTestQuery('test', $fakeConfiguration);
-        $query->getHighlighting()->setIsEnabled(true);
-        $queryParameters = $query->getQueryParameters();
-        $this->assertSame('true', $queryParameters['hl'], 'Enable highlighting did not set the "hl" query parameter');
-        $this->assertSame('title', $queryParameters['hl.fl'], 'Can set highlighting field list');
-    }
-
-    /**
-     * @test
-     */
-    public function canPassCustomWrapForHighlighting()
-    {
-        $fakeConfigurationArray = [];
-        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['results.']['resultsHighlighting'] = 1;
-        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['results.']['resultsHighlighting.']['wrap'] = '[A]|[B]';
-        $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
-
-        $query = $this->getInitializedTestQuery('test', $fakeConfiguration);
-        $query->getHighlighting()->setIsEnabled(true);
-
-        $queryParameters = $query->getQueryParameters();
-
-        $this->assertSame('[A]', $queryParameters['hl.tag.pre'], 'Can set highlighting hl.tag.pre');
-        $this->assertSame('[B]', $queryParameters['hl.tag.post'], 'Can set highlighting hl.tag.post');
-        $this->assertSame('[A]', $queryParameters['hl.simple.pre'], 'Can set highlighting hl.tag.pre');
-        $this->assertSame('[B]', $queryParameters['hl.simple.post'], 'Can set highlighting hl.tag.post');
-    }
-
-    /**
-     * @test
-     */
-    public function simplePreAndPostIsUsedWhenFastVectorHighlighterCouldNotBeUsed()
-    {
-        $fakeConfigurationArray = [];
-        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['results.']['resultsHighlighting'] = 1;
-        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['results.']['resultsHighlighting.']['wrap'] = '[A]|[B]';
-        $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
-
-        $query = $this->getInitializedTestQuery('test', $fakeConfiguration);
-
-        // fragSize 10 is to small for FastVectorHighlighter
-        $query->getHighlighting()->setIsEnabled(true);
-        $query->getHighlighting()->setFragmentSize(17);
-
-        $queryParameters = $query->getQueryParameters();
-        $this->assertSame('[A]', $queryParameters['hl.simple.pre'], 'Can set highlighting field list');
-        $this->assertSame('[B]', $queryParameters['hl.simple.post'], 'Can set highlighting field list');
-        $this->assertEmpty($queryParameters['hl.tag.pre'], 'When the highlighting fragment size is to small hl.tag.pre should not be used because FastVectoreHighlighter will not be used');
-        $this->assertEmpty($queryParameters['hl.tag.post'], 'When the highlighting fragment size is to small hl.tag.post should not be used because FastVectoreHighlighter will not be used');
-    }
-
-    /**
-     * @test
-     */
-    public function canUseFastVectorHighlighting()
-    {
-        $fakeConfigurationArray = [];
-        $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
-
-        $query = $this->getInitializedTestQuery('test', $fakeConfiguration);
-        $query->getHighlighting()->setIsEnabled(true);
-        $query->getHighlighting()->setFragmentSize(200);
-        $queryParameters = $query->getQueryParameters();
-
-        $this->assertSame('true', $queryParameters['hl'], 'Enable highlighting did not set the "hl" query parameter');
-        $this->assertSame('true', $queryParameters['hl.useFastVectorHighlighter'], 'Enable highlighting did not set the "hl.useFastVectorHighlighter" query parameter');
-    }
-
-    /**
-     * @test
-     */
-    public function fastVectorHighlighterIsDisabledWhenFragSizeIsLessThen18()
-    {
-        $fakeConfigurationArray = [];
-        $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
-
-        $query = $this->getInitializedTestQuery('test', $fakeConfiguration);
-        $query->getHighlighting()->setIsEnabled(true);
-        $query->getHighlighting()->setFragmentSize(0);
-        $queryParameters = $query->getQueryParameters();
-
-        $this->assertSame('true', $queryParameters['hl'], 'Enable highlighting did not set the "hl" query parameter');
-        $this->assertNull($queryParameters['hl.useFastVectorHighlighter'], 'FastVectorHighlighter was disabled but still requested');
     }
 
     /**
@@ -442,7 +588,7 @@ class QueryTest extends UnitTest
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['query.']['queryFields'] = $input;
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
 
-        $query = $this->getInitializedTestQuery('test', $fakeConfiguration);
+        $query = $this->getInitializedTestSearchQuery('test', $fakeConfiguration);
         $output = $query->getQueryFields()->toString();
         $expectedOutput = 'content^10.0 title^5.0';
 
@@ -457,7 +603,7 @@ class QueryTest extends UnitTest
         $fakeConfigurationArray = [];
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
 
-        $query = $this->getInitializedTestQuery('test', $fakeConfiguration);
+        $query = $this->getInitializedTestSearchQuery('test', $fakeConfiguration);
         $output = $query->getQueryFields()->toString();
         $expectedOutput = '';
 
@@ -469,7 +615,7 @@ class QueryTest extends UnitTest
      */
     public function canSetMinimumMatch()
     {
-        $query = $this->getInitializedTestQuery();
+        $query = $this->getInitializedTestSearchQuery();
         $this->assertNull($query->getQueryParameter('mm'));
 
         // can we set a value?
@@ -486,7 +632,7 @@ class QueryTest extends UnitTest
      */
     public function canSetBoostFunction()
     {
-        $query = $this->getInitializedTestQuery();
+        $query = $this->getInitializedTestSearchQuery();
         $this->assertNull($query->getQueryParameter('bf'));
 
         $testBoostFunction = 'recip(ms(NOW,created),3.16e-11,1,1)';
@@ -502,7 +648,7 @@ class QueryTest extends UnitTest
      */
     public function canSetBoostQuery()
     {
-        $query = $this->getInitializedTestQuery();
+        $query = $this->getInitializedTestSearchQuery();
         $this->assertNull($query->getQueryParameter('bq'));
 
         $testBoostQuery = '(type:tt_news)^10';
@@ -523,7 +669,7 @@ class QueryTest extends UnitTest
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['query.']['returnFields'] = $input;
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
 
-        $query = $this->getInitializedTestQuery('test', $fakeConfiguration);
+        $query = $this->getInitializedTestSearchQuery('test', $fakeConfiguration);
 
         $output = $query->getReturnFields()->getValues();
         $expectedOutput = ['abstract', 'price'];
@@ -539,7 +685,7 @@ class QueryTest extends UnitTest
         $fakeConfigurationArray = [];
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
 
-        $query = $this->getInitializedTestQuery('test', $fakeConfiguration);
+        $query = $this->getInitializedTestSearchQuery('test', $fakeConfiguration);
         $output = $query->getReturnFields()->getValues();
         $expectedOutput = ['*', 'score'];
 
@@ -554,7 +700,7 @@ class QueryTest extends UnitTest
         $fakeConfigurationArray = [];
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
 
-        $query = $this->getInitializedTestQuery('test', $fakeConfiguration);
+        $query = $this->getInitializedTestSearchQuery('test', $fakeConfiguration);
 
         $expectedOutput = ['*', 'score'];
         $this->assertSame($query->getReturnFields()->getValues(), $expectedOutput, 'Did not parse returnsFields as expected');
@@ -575,7 +721,7 @@ class QueryTest extends UnitTest
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
 
         $initialReturnFieldList = ['title','content','url'];
-        $query = $this->getInitializedTestQuery('test', $fakeConfiguration);
+        $query = $this->getInitializedTestSearchQuery('test', $fakeConfiguration);
         $query->setReturnFields(ReturnFields::fromArray($initialReturnFieldList));
         $query->getReturnFields()->remove('content');
 
@@ -586,36 +732,10 @@ class QueryTest extends UnitTest
     /**
      * @test
      */
-    public function canSetTargetPageFromConfiguration()
-    {
-        $input = 4711;
-        $fakeConfigurationArray = [];
-        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['targetPage'] = $input;
-        $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
-
-        $query = $this->getInitializedTestQuery('test', $fakeConfiguration);
-        $this->assertEquals($input, $query->getLinkTargetPageId());
-    }
-
-    /**
-     * @test
-     */
-    public function canFallbackToTSFEIdWhenNoTargetPageConfigured()
-    {
-        $fakeConfigurationArray = [];
-        $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray, 8000);
-
-        $query = $this->getInitializedTestQuery('test', $fakeConfiguration);
-        $this->assertEquals(8000, $query->getLinkTargetPageId());
-    }
-
-    /**
-     * @test
-     */
     public function canEnableFaceting()
     {
-        /** @var $query \ApacheSolrForTypo3\Solr\Query */
-        $query = $this->getInitializedTestQuery();
+        /** @var $query \ApacheSolrForTypo3\Solr\Domain\Search\Query\Query */
+        $query = $this->getInitializedTestSearchQuery();
         $query->getFaceting()->setIsEnabled(true);
         $queryParameters = $query->getQueryParameters();
 
@@ -627,7 +747,7 @@ class QueryTest extends UnitTest
      */
     public function canDisableFaceting()
     {
-        $query = $this->getInitializedTestQuery();
+        $query = $this->getInitializedTestSearchQuery();
 
         $query->getFaceting()->setIsEnabled(true);
         $query->getFaceting()->addAdditionalParameter('f.title.facet.sort', 'lex');
@@ -648,7 +768,7 @@ class QueryTest extends UnitTest
     {
         $fakeConfiguration = new TypoScriptConfiguration([]);
 
-        $query = $this->getInitializedTestQuery('test', $fakeConfiguration);
+        $query = $this->getInitializedTestSearchQuery('test', $fakeConfiguration);
         $facetFields = $query->getQueryParameter('facet.field');
         $this->assertNull($facetFields, 'facet.field query parameter was expected to be null after init.');
 
@@ -667,7 +787,7 @@ class QueryTest extends UnitTest
     public function canSetFacetFields()
     {
         $fakeConfiguration = new TypoScriptConfiguration([]);
-        $query = $this->getInitializedTestQuery('test', $fakeConfiguration);
+        $query = $this->getInitializedTestSearchQuery('test', $fakeConfiguration);
 
         $fakeFields = ['lastname_s', 'role_s'];
 
@@ -689,7 +809,7 @@ class QueryTest extends UnitTest
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting.']['minimumCount'] = $input;
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
 
-        $query = $this->getInitializedTestQuery('test', $fakeConfiguration);
+        $query = $this->getInitializedTestSearchQuery('test', $fakeConfiguration);
         $query->getFaceting()->setIsEnabled(true);
         $queryParameters = $query->getQueryParameters();
 
@@ -707,7 +827,7 @@ class QueryTest extends UnitTest
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting.']['sortBy'] = $input;
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
 
-        $query = $this->getInitializedTestQuery('test', $fakeConfiguration);
+        $query = $this->getInitializedTestSearchQuery('test', $fakeConfiguration);
         $query->getFaceting()->setIsEnabled(true);
         $queryParameters = $query->getQueryParameters();
 
@@ -719,15 +839,15 @@ class QueryTest extends UnitTest
      */
     public function canSetSpellChecking()
     {
-        /** @var $query \ApacheSolrForTypo3\Solr\Query */
-        $query = $this->getInitializedTestQuery();
-        $query->setSpellchecking(true);
+        /** @var $query \ApacheSolrForTypo3\Solr\Domain\Search\Query\Query */
+        $query = $this->getInitializedTestSearchQuery();
+        $query->getSpellchecking()->setIsEnabled(true);
         $queryParameters = $query->getQueryParameters();
 
         $this->assertSame('true', $queryParameters['spellcheck'], 'Enable spellchecking did not set the "spellcheck" query parameter');
 
         // can we unset it again?
-        $query->setSpellchecking(false);
+        $query->getSpellchecking()->setIsEnabled(false);
         $queryParameters = $query->getQueryParameters();
         $this->assertNull($queryParameters['spellcheck'], 'Disable spellchecking did not unset the "spellcheck" query parameter');
         $this->assertNull($queryParameters['spellcheck.maxCollationTries'], 'spellcheck.maxCollationTries was not unsetted');
@@ -738,9 +858,15 @@ class QueryTest extends UnitTest
      */
     public function noSiteHashFilterIsSetWhenWildcardIsPassed()
     {
-        /** @var $query \ApacheSolrForTypo3\Solr\Query */
-        $query = $this->getInitializedTestQuery();
-        $query->setSiteHashFilter('*');
+        /** @var $query \ApacheSolrForTypo3\Solr\Domain\Search\Query\Query */
+        $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
+        $configurationMock->expects($this->once())->method('getObjectByPathOrDefault')->willReturn(['allowedSites' => '*']);
+        $this->siteHashServiceMock->expects($this->once())->method('getAllowedSitesForPageIdAndAllowedSitesConfiguration')->willReturn('*');
+
+        $builder = new QueryBuilder($configurationMock, $this->loggerMock, $this->siteHashServiceMock);
+        $query = $builder->buildSearchQuery('');
+
+        $query = $builder->startFrom($query)->useSiteHashFromTypoScript(4711)->getQuery();
         $filters = $query->getFilters()->getValues();
         $this->assertEmpty($filters, 'The filters should be empty when a wildcard sitehash was passed');
     }
@@ -750,15 +876,23 @@ class QueryTest extends UnitTest
      */
     public function filterIsAddedWhenAllowedSiteIsPassed()
     {
-        /** @var $query \ApacheSolrForTypo3\Solr\Query */
-        $query = $this->getInitializedTestQuery();
-        $query->setSiteHashFilter('solrtest.local');
+        /** @var $query \ApacheSolrForTypo3\Solr\Domain\Search\Query\Query */
+        $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
+        $configurationMock->expects($this->once())->method('getObjectByPathOrDefault')->willReturn(['allowedSites' => 'site1.local']);
+
+        $this->siteHashServiceMock->expects($this->once())->method('getAllowedSitesForPageIdAndAllowedSitesConfiguration')->willReturn('site1.local');
+        $this->siteHashServiceMock->expects($this->once())->method('getSiteHashForDomain')->willReturn('dsada43242342342');
+
+        $builder = new QueryBuilder($configurationMock, $this->loggerMock, $this->siteHashServiceMock);
+        $query = $builder->buildSearchQuery('');
+
+        $query = $builder->startFrom($query)->useSiteHashFromTypoScript(4711)->getQuery();
+
         $filters = $query->getFilters()->getValues();
 
         $this->assertCount(1, $filters, 'We expected that one filter was added');
-
-        $firstFilter= $filters[0];
-        $this->assertContains('siteHash:', $firstFilter, 'The filter was expected to start with siteHash*');
+        $siteHashFilter = $filters['siteHash'];
+        $this->assertEquals('siteHash:"dsada43242342342"', $siteHashFilter, 'Unexpected siteHashFilter was added to the query');
     }
 
     /**
@@ -768,11 +902,15 @@ class QueryTest extends UnitTest
     {
         $input = 9;
         $fakeConfigurationArray = [];
+        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['spellchecking'] = 1;
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['spellchecking.']['numberOfSuggestionsToTry'] = $input;
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
 
-        $query = $this->getInitializedTestQuery('test', $fakeConfiguration);
-        $query->setSpellchecking(true);
+        $query = $this->getInitializedTestSearchQuery('test', $fakeConfiguration);
+
+        $builder = new QueryBuilder($fakeConfiguration, $this->loggerMock, $this->siteHashServiceMock);
+        $builder->startFrom($query)->useSpellcheckingFromTypoScript();
+
         $queryParameters = $query->getQueryParameters();
 
         $this->assertSame($input, $queryParameters['spellcheck.maxCollationTries'], 'Could not set spellcheck.maxCollationTries as expected');
@@ -790,11 +928,50 @@ class QueryTest extends UnitTest
         ];
 
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
-        $query = $this->getInitializedTestQuery('test', $fakeConfiguration);
+        $query = $this->getInitializedTestSearchQuery('test', $fakeConfiguration);
 
-        $configuredField = $query->getVariantField();
-        $this->assertTrue($query->getIsCollapsing(), 'Collapsing was enabled but not indicated to be enabled');
+        $configuredField = $query->getFieldCollapsing()->getCollapseFieldName();
+        $this->assertTrue($query->getFieldCollapsing()->getIsEnabled(), 'Collapsing was enabled but not indicated to be enabled');
         $this->assertSame('myField', $configuredField, 'Did not use the configured collapseField');
+    }
+
+    /**
+     * @test
+     */
+    public function canUseConfiguredVariantsExpandAndRowCount()
+    {
+        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['variants'] = 1;
+        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['variants.'] = [
+            'variantField' => 'variants',
+            'expand' => true,
+            'limit' => 10
+        ];
+
+        $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
+        $query = $this->getInitializedTestSearchQuery('test', $fakeConfiguration);
+
+        $arguments = $query->getQueryParameters();
+
+        $this->assertSame('true', $arguments['expand'], 'Expand argument of query was not set to true with configured expand');
+        $this->assertSame(10, $arguments['expand.rows'], 'Expand.rows argument of query was not set to true with configured expand.rows');
+    }
+
+    /**
+     * @test
+     */
+    public function expandRowsIsNotSetWhenExpandIsInactive()
+    {
+        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['variants'] = 1;
+        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['variants.'] = [
+            'variantField' => 'variants',
+            'expand' => false,
+            'limit' => 10
+        ];
+
+        $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
+        $query = $this->getInitializedTestSearchQuery('test', $fakeConfiguration);
+        $arguments = $query->getQueryParameters();
+        $this->assertNull($arguments['expand.rows'], 'Expand.rows should not be set when expand is set to false');
     }
 
     /**
@@ -803,8 +980,8 @@ class QueryTest extends UnitTest
     public function variantsAreDisabledWhenNothingWasConfigured()
     {
         $fakeConfiguration = new TypoScriptConfiguration([]);
-        $query = $this->getInitializedTestQuery('test', $fakeConfiguration);
-        $this->assertFalse($query->getIsCollapsing(), 'Collapsing was not disabled by default');
+        $query = $this->getInitializedTestSearchQuery('test', $fakeConfiguration);
+        $this->assertFalse($query->getFieldCollapsing()->getIsEnabled(), 'Collapsing was not disabled by default');
     }
 
     /**
@@ -813,7 +990,7 @@ class QueryTest extends UnitTest
     public function canConvertQueryToString()
     {
         $fakeConfiguration = new TypoScriptConfiguration([]);
-        $query = $this->getInitializedTestQuery('test', $fakeConfiguration);
+        $query = $this->getInitializedTestSearchQuery('test', $fakeConfiguration);
 
         $queryToString = (string) $query;
         $this->assertSame('test', $queryToString, 'Could not convert query to string');
@@ -825,19 +1002,20 @@ class QueryTest extends UnitTest
     public function canSetCollapsing()
     {
         $fakeConfiguration = new TypoScriptConfiguration([]);
-        $query = $this->getInitializedTestQuery('test', $fakeConfiguration);
+        $query = $this->getInitializedTestSearchQuery('test', $fakeConfiguration);
         $filters = $query->getFilters()->getValues();
         $this->assertNull($filters['collapsing'], 'No collapsing filter should be set without collpasing');
 
         // can we enable collapsing
-        $query->setCollapsing(true);
-        $filters = $query->getFilters()->getValues();
-        $this->assertSame($filters['collapsing'], '{!collapse field=variantId}', 'No filter should be set without collpasing');
+        $query->getFieldCollapsing()->setIsEnabled(true);
+
+        $filters = $query->getQueryParameters()['fq'];
+        $this->assertSame($filters[0], '{!collapse field=variantId}', 'No filter should be set without collpasing');
 
         // can we disable it again
-        $query->setCollapsing(false);
-        $filters = $query->getFilters()->getValues();
-        $this->assertNull($filters['collapsing'], 'No collapsing filter should be set after disables collpasing');
+        $query->getFieldCollapsing()->setIsEnabled(false);
+        $filters = $query->getQueryParameters()['fq'];
+        $this->assertNull($filters[0], 'No collapsing filter should be set after disables collpasing');
     }
 
     /**
@@ -846,7 +1024,7 @@ class QueryTest extends UnitTest
     public function canAddAndRemoveFilters()
     {
         $fakeConfiguration = new TypoScriptConfiguration([]);
-        $query = $this->getInitializedTestQuery('test', $fakeConfiguration);
+        $query = $this->getInitializedTestSearchQuery('test', $fakeConfiguration);
 
         // can we add a filter?
         $query->getFilters()->add('foo:bar');
@@ -879,7 +1057,7 @@ class QueryTest extends UnitTest
     public function canRemoveFilterByValue()
     {
         $fakeConfiguration = new TypoScriptConfiguration([]);
-        $query = $this->getInitializedTestQuery('test', $fakeConfiguration);
+        $query = $this->getInitializedTestSearchQuery('test', $fakeConfiguration);
 
         // can we add a filter?
         $query->getFilters()->add('foo:bar');
@@ -896,7 +1074,7 @@ class QueryTest extends UnitTest
      */
     public function canSetAndUnSetQueryType()
     {
-        $query = $this->getInitializedTestQuery('test');
+        $query = $this->getInitializedTestSearchQuery('test');
         $queryParameters = $query->getQueryParameters();
         $this->assertNull($queryParameters['qt'], 'The qt parameter was expected to be null');
 
@@ -905,7 +1083,7 @@ class QueryTest extends UnitTest
         $this->assertSame('dismax', $queryParameters['qt'], 'The qt parameter was expected to be dismax');
         $this->assertSame('dismax', $query->getQueryType(), 'getQueryType should return the qt queryParameter');
 
-            //passing false as parameter should reset the query type
+        //passing false as parameter should reset the query type
         $query->setQueryType(false);
         $queryParameters = $query->getQueryParameters();
         $this->assertNull($queryParameters['qt'], 'The qt parameter was expected to be null after reset');
@@ -916,20 +1094,20 @@ class QueryTest extends UnitTest
      */
     public function canSetOperator()
     {
-        $query = $this->getInitializedTestQuery('test');
+        $query = $this->getInitializedTestSearchQuery('test');
 
         $queryParameters = $query->getQueryParameters();
         $this->assertNull($queryParameters['q.op'], 'The queryParameter q.op should be null because no operator was passed');
 
-        $query->setOperator(Query::OPERATOR_OR);
+        $query->setOperator(Operator::getOr());
         $queryParameters = $query->getQueryParameters();
-        $this->assertEquals(Query::OPERATOR_OR, $queryParameters['q.op'], 'The queryParameter q.op should be OR');
+        $this->assertEquals(Operator::OPERATOR_OR, $queryParameters['q.op'], 'The queryParameter q.op should be OR');
 
-        $query->setOperator(Query::OPERATOR_AND);
+        $query->setOperator(Operator::getAnd());
         $queryParameters = $query->getQueryParameters();
-        $this->assertEquals(Query::OPERATOR_AND, $queryParameters['q.op'], 'The queryParameter q.op should be AND');
+        $this->assertEquals(Operator::OPERATOR_AND, $queryParameters['q.op'], 'The queryParameter q.op should be AND');
 
-        $query->setOperator(false);
+        $query->getOperator()->setIsEnabled(false);
         $queryParameters = $query->getQueryParameters();
         $this->assertNull($queryParameters['q.op'], 'The queryParameter q.op should be null because operator was resetted');
     }
@@ -940,7 +1118,7 @@ class QueryTest extends UnitTest
     public function canSetAlternativeQuery()
     {
         // check initial value
-        $query = $this->getInitializedTestQuery('test');
+        $query = $this->getInitializedTestSearchQuery('test');
         $this->assertNull($query->getAlternativeQuery(), 'We expected that alternative query is initially null');
 
         // can we set it?
@@ -958,7 +1136,7 @@ class QueryTest extends UnitTest
     public function canSetOmitHeaders()
     {
         // check initial value
-        $query = $this->getInitializedTestQuery('test');
+        $query = $this->getInitializedTestSearchQuery('test');
         $queryParameters = $query->getQueryParameters();
         $this->assertNull($queryParameters['omitHeader'], 'The queryParameter omitHeader should be null because it was not');
 
@@ -977,7 +1155,7 @@ class QueryTest extends UnitTest
     public function canSetReturnFields()
     {
         // check initial value
-        $query = $this->getInitializedTestQuery('test');
+        $query = $this->getInitializedTestSearchQuery('test');
         $this->assertSame(['*', 'score'], $query->getReturnFields()->getValues(), 'FieldList initially contained unexpected values');
 
         // set from string
@@ -995,7 +1173,7 @@ class QueryTest extends UnitTest
     public function canSetSorting()
     {
         // check initial value
-        $query = $this->getInitializedTestQuery('test');
+        $query = $this->getInitializedTestSearchQuery('test');
         $queryParameters = $query->getQueryParameters();
         $this->assertNull($queryParameters['sort'], 'Sorting should be null at the beginning');
 
@@ -1021,21 +1199,21 @@ class QueryTest extends UnitTest
      */
     public function canSetQueryElevation()
     {
-        $query = $this->getInitializedTestQuery('test');
+        $query = $this->getInitializedTestSearchQuery('test');
 
         $this->assertNull($query->getQueryParameter('enableElevation'));
         $this->assertNull($query->getQueryParameter('forceElevation'));
         $this->assertNotContains('isElevated:[elevated]', $query->getReturnFields()->getValues());
 
         // do we get the expected default values, when calling setQueryElevantion with no arguments?
-        $query->setQueryElevation();
+        $query->getElevation()->setIsEnabled(true);
         $this->assertSame('true', $query->getQueryParameter('enableElevation'), 'enabledElevation was not set after enabling elevation');
         $this->assertSame('true', $query->getQueryParameter('forceElevation'), 'forceElevation was not set after enabling elevation');
         $this->assertContains('isElevated:[elevated]', $query->getReturnFields()->getValues(), 'isElevated should be in the list of return fields');
 
         // can we reset the elevantion?
-        $query->setQueryElevation(false);
-        $this->assertSame('false', $query->getQueryParameter('enableElevation'));
+        $query->getElevation()->setIsEnabled(false);
+        $this->assertNull($query->getQueryParameter('enableElevation'));
         $this->assertNull($query->getQueryParameter('forceElevation'));
         $this->assertNotContains('isElevated:[elevated]', $query->getReturnFields()->getValues());
     }
@@ -1045,11 +1223,12 @@ class QueryTest extends UnitTest
      */
     public function forceElevationIsFalseWhenForcingToFalse()
     {
-        $query = $this->getInitializedTestQuery('test');
+        $query = $this->getInitializedTestSearchQuery('test');
         $this->assertNull($query->getQueryParameter('enableElevation'));
         $this->assertNull($query->getQueryParameter('forceElevation'));
 
-        $query->setQueryElevation(true, false);
+        $query->getElevation()->setIsEnabled(true);
+        $query->getElevation()->setIsForced(false);
 
         $this->assertSame('true', $query->getQueryParameter('enableElevation'), 'enabledElevation was not set after enabling elevation');
         $this->assertSame('false', $query->getQueryParameter('forceElevation'), 'forceElevation was not false after forcing');
@@ -1060,7 +1239,7 @@ class QueryTest extends UnitTest
      */
     public function canBuildExpectedQueryUrlFromCombinedQuery()
     {
-        $query = $this->getInitializedTestQuery('hello world');
+        $query = $this->getInitializedTestSearchQuery('hello world');
 
         $query->getFaceting()->setIsEnabled(true);
         $query->getFaceting()->addField('content');
@@ -1068,16 +1247,21 @@ class QueryTest extends UnitTest
         $query->getFilters()->add('color:red');
         $query->getReturnFields()->add('title');
         $query->getFaceting()->addField('color');
-        $query->setCollapsing(true);
-        $query->setUserAccessGroups([1,2,3]);
-        $query->setPage(3);
+        $query->getFieldCollapsing()->setIsEnabled(true);
+        $query->getPagination()->setPage(3);
+
+        $queryBuilder = new QueryBuilder($this->configurationMock, $this->loggerMock);
+        $queryBuilder->startFrom($query)->useUserAccessGroups([1,2,3]);
 
         $parameters = $query->getQueryParameters();
-
         $this->assertSame('score,title', $parameters['fl']);
+
+        $filterQueries = $parameters['fq'];
+        $this->assertCount(3, $filterQueries, 'Unexpected amount of filter queries created');
         $this->assertSame('color:red', $parameters['fq'][0]);
-        $this->assertSame('{!collapse field=variantId}', $parameters['fq'][1]);
-        $this->assertSame('{!typo3access}0,1,2,3', $parameters['fq'][2]);
+        $this->assertSame('{!typo3access}0,1,2,3', $parameters['fq'][1]);
+        $this->assertSame('{!collapse field=variantId}', $parameters['fq'][2]);
+
         $this->assertSame('content', $parameters['facet.field'][0]);
         $this->assertSame('type', $parameters['facet.field'][1]);
         $this->assertSame('color', $parameters['facet.field'][2]);
@@ -1090,7 +1274,7 @@ class QueryTest extends UnitTest
      */
     public function canSetQueryFieldsFromString()
     {
-        $query = $this->getInitializedTestQuery('foo bar');
+        $query = $this->getInitializedTestSearchQuery('foo bar');
         $query->setQueryFields(QueryFields::fromString('content^100.0, title^10.0'));
         $queryFields = $query->getQueryFields()->toString();
 
@@ -1103,7 +1287,7 @@ class QueryTest extends UnitTest
      */
     public function canSetQueryFields()
     {
-        $query = $this->getInitializedTestQuery('foo bar');
+        $query = $this->getInitializedTestSearchQuery('foo bar');
         $this->assertSame('', $query->getQueryFields()->toString(), 'QueryFields are not empty by default');
 
         $query->getQueryFields()->set('content', 10);
@@ -1123,7 +1307,7 @@ class QueryTest extends UnitTest
      */
     public function canSetPhraseFieldsFromString()
     {
-        $query = $this->getInitializedTestQuery('foo bar');
+        $query = $this->getInitializedTestSearchQuery('foo bar');
         $query->setPhraseFields(PhraseFields::fromString('content^100.0, title^10.0'));
         $phraseFields = $query->getPhraseFields()->toString();
 
@@ -1136,7 +1320,7 @@ class QueryTest extends UnitTest
      */
     public function canSetPhraseFields()
     {
-        $query = $this->getInitializedTestQuery('foo bar');
+        $query = $this->getInitializedTestSearchQuery('foo bar');
         $this->assertSame('', $query->getPhraseFields()->toString(), 'Phrase Fields must be empty by default');
 
         $query->getPhraseFields()->add('content', 10);
@@ -1154,7 +1338,7 @@ class QueryTest extends UnitTest
      */
     public function phraseFieldsAreNotSetInUrlQueryIfPhraseSearchIsDisabled()
     {
-        $query = $this->getInitializedTestQuery('foo bar');
+        $query = $this->getInitializedTestSearchQuery('foo bar');
         $query->getPhraseFields()->add('content', 10);
         $query->getPhraseFields()->add('title', 11);
         $parameters = $query->getQueryParameters();
@@ -1169,7 +1353,7 @@ class QueryTest extends UnitTest
         $fakeConfigurationArray = [];
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['query.']['phrase'] = 1;
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
-        $query = $this->getInitializedTestQuery('foo bar', $fakeConfiguration);
+        $query = $this->getInitializedTestSearchQuery('foo bar', $fakeConfiguration);
 
         $query->getPhraseFields()->add('content', 10);
         $query->getPhraseFields()->add('title', 11);
@@ -1180,9 +1364,25 @@ class QueryTest extends UnitTest
     /**
      * @test
      */
+    public function canAddPhraseFieldsFromConfiguration()
+    {
+        $fakeConfigurationArray = [];
+        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['query.']['phrase'] = 1;
+        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['query.']['phrase.']['fields'] = 'content^22.0, title^11.0';
+
+        $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
+        $query = $this->getInitializedTestSearchQuery('foo bar', $fakeConfiguration);
+
+        $parameters = $query->getQueryParameters();
+        $this->assertSame('content^22.0 title^11.0', $parameters['pf'], 'pf parameters must be set if phrase search is enabled');
+    }
+
+    /**
+     * @test
+     */
     public function bigramPhraseFieldsAreNotSetInUrlQueryIfBigramPhraseSearchIsDisabled()
     {
-        $query = $this->getInitializedTestQuery('foo bar baz');
+        $query = $this->getInitializedTestSearchQuery('foo bar baz');
         $query->getBigramPhraseFields()->add('content', 10);
         $query->getBigramPhraseFields()->add('title', 11);
         $parameters = $query->getQueryParameters();
@@ -1192,12 +1392,12 @@ class QueryTest extends UnitTest
     /**
      * @test
      */
-    public function bigramPhraseFieldsAreSetInUrlQueryIfBigramPhraseSearchIsEnabled()
+    public function canAddBigramFieldsWhenBigramPhraseIsEnabled()
     {
         $fakeConfigurationArray = [];
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['query.']['bigramPhrase'] = 1;
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
-        $query = $this->getInitializedTestQuery('foo bar', $fakeConfiguration);
+        $query = $this->getInitializedTestSearchQuery('foo bar', $fakeConfiguration);
 
         $query->getBigramPhraseFields()->add('content', 10);
         $query->getBigramPhraseFields()->add('title', 11);
@@ -1208,9 +1408,25 @@ class QueryTest extends UnitTest
     /**
      * @test
      */
+    public function canAddBigramFieldsFromConfiguration()
+    {
+        $fakeConfigurationArray = [];
+        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['query.']['bigramPhrase'] = 1;
+        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['query.']['bigramPhrase.']['fields'] = 'content^12.0, title^14.0';
+
+        $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
+        $query = $this->getInitializedTestSearchQuery('foo bar', $fakeConfiguration);
+
+        $parameters = $query->getQueryParameters();
+        $this->assertSame('content^12.0 title^14.0', $parameters['pf2'], 'pf2 parameters must be set if bigram phrase search is enabled');
+    }
+
+    /**
+     * @test
+     */
     public function trigramPhraseFieldsAreNotSetInUrlQueryIfTrigramPhraseSearchIsDisabled()
     {
-        $query = $this->getInitializedTestQuery('foo bar baz foobar barbaz');
+        $query = $this->getInitializedTestSearchQuery('foo bar baz foobar barbaz');
         $query->getTrigramPhraseFields()->add('content', 10);
         $query->getTrigramPhraseFields()->add('title', 11);
         $parameters = $query->getQueryParameters();
@@ -1225,7 +1441,7 @@ class QueryTest extends UnitTest
         $fakeConfigurationArray = [];
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['query.']['trigramPhrase'] = 1;
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
-        $query = $this->getInitializedTestQuery('foo bar', $fakeConfiguration);
+        $query = $this->getInitializedTestSearchQuery('foo bar', $fakeConfiguration);
 
         $query->getTrigramPhraseFields()->add('content', 10);
         $query->getTrigramPhraseFields()->add('title', 11);
@@ -1236,9 +1452,25 @@ class QueryTest extends UnitTest
     /**
      * @test
      */
+    public function canAddTrigramFieldsFromConfiguration()
+    {
+        $fakeConfigurationArray = [];
+        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['query.']['trigramPhrase'] = 1;
+        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['query.']['trigramPhrase.']['fields'] = 'content^12.0, title^14.0';
+
+        $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
+        $query = $this->getInitializedTestSearchQuery('foo bar', $fakeConfiguration);
+
+        $parameters = $query->getQueryParameters();
+        $this->assertSame('content^12.0 title^14.0', $parameters['pf3'], 'pf3 parameters must be set if trigram phrase search is enabled');
+    }
+
+    /**
+     * @test
+     */
     public function setDebugMode()
     {
-        $query = $this->getInitializedTestQuery();
+        $query = $this->getInitializedTestSearchQuery();
 
         $parameter = $query->getQueryParameters();
         $this->assertEmpty($parameter['debugQuery'], 'Debug query should be disabled by default');
@@ -1261,29 +1493,46 @@ class QueryTest extends UnitTest
      */
     public function canGetResultsPerPage()
     {
-        $query = $this->getInitializedTestQuery('foo bar');
+        $query = $this->getInitializedTestSearchQuery('foo bar');
 
-        // is this wanted behaviour?
-        $this->assertSame(null, $query->getResultsPerPage());
+        $query->getPagination()->setResultsPerPage(12);
+        $this->assertSame(12, $query->getPagination()->getResultsPerPage());
 
-        $query->setResultsPerPage(10);
-        $this->assertSame(10, $query->getResultsPerPage());
+        $query->getPagination()->setResultsPerPage(-1);
+        $this->assertSame(0, $query->getPagination()->getResultsPerPage());
 
-        $query->setResultsPerPage(-1);
-        $this->assertSame(0, $query->getResultsPerPage());
+        $query->getPagination()->setResultsPerPage(10);
+    }
+
+    /**
+     * @test
+     */
+    public function canGetRowsFromQuery()
+    {
+        $query = $this->getInitializedTestSearchQuery('foo bar');
+
+        $query->getPagination()->setResultsPerPage(12);
+        $this->assertSame(12, $query->getRows());
+
+        $query->getPagination()->setResultsPerPage(-1);
+        $this->assertSame(0, $query->getRows());
+
+        $query->getPagination()->setResultsPerPage(10);
 
         // setNumberOfGroups implicitly changes the results per page since the row argument is used for the number of groups
         $query->getGrouping()->setIsEnabled(true);
         $query->getGrouping()->setNumberOfGroups(5);
-        $this->assertSame(5, $query->getResultsPerPage());
+        $this->assertSame(5, $query->getRows());
+        $this->assertSame(10, $query->getPagination()->getResultsPerPage(), 'Paginated results per Page should be 10 as set before');
     }
+
 
     /**
      * @test
      */
     public function addingQueriesToGroupingAddsToRightGroupingParameter()
     {
-        $query = $this->getInitializedTestQuery('group test');
+        $query = $this->getInitializedTestSearchQuery('group test');
         $query->getGrouping()->setIsEnabled(true);
         $query->getGrouping()->addQuery('price:[* TO 500]');
         $query->getGrouping()->addQuery('someField:someValue');
@@ -1297,7 +1546,7 @@ class QueryTest extends UnitTest
      */
     public function addingSortingsToGroupingAddsToRightGroupingParameter()
     {
-        $query = $this->getInitializedTestQuery('group test');
+        $query = $this->getInitializedTestSearchQuery('group test');
         $query->getGrouping()->setIsEnabled(true);
         $query->getGrouping()->addSorting('price_f');
         $query->getGrouping()->addSorting('title desc');
@@ -1311,7 +1560,7 @@ class QueryTest extends UnitTest
      */
     public function addingFieldsToGroupingAddsToRightGroupingParameter()
     {
-        $query = $this->getInitializedTestQuery('group test');
+        $query = $this->getInitializedTestSearchQuery('group test');
         $query->getGrouping()->setIsEnabled(true);
         $query->getGrouping()->addField('price_f');
         $query->getGrouping()->addField('category_s');
@@ -1325,7 +1574,7 @@ class QueryTest extends UnitTest
      */
     public function canDisablingGroupingRemoveTheGroupSorting()
     {
-        $query = $this->getInitializedTestQuery('foo bar');
+        $query = $this->getInitializedTestSearchQuery('foo bar');
         $query->getGrouping()->setIsEnabled(true);
 
         $parameters = $query->getQueryParameters();
@@ -1350,19 +1599,32 @@ class QueryTest extends UnitTest
     }
 
     /**
-     * @param string $queryString
-     * @param TypoScriptConfiguration $solrConfiguration
-     * @return Query
+     * @test
      */
-    protected function getInitializedTestQuery($queryString = 'test', TypoScriptConfiguration $solrConfiguration = null)
+    public function canBuildSuggestQuery()
     {
-        $siteHashServiceMock = $this->getDumbMock(SiteHashService::class);
-        $solrLogManagerMock = $this->getDumbMock(SolrLogManager::class);
+        $this->builder = $this->getMockBuilder(QueryBuilder::class)
+            ->setConstructorArgs([$this->configurationMock, $this->loggerMock])
+            ->setMethods(['useSiteHashFromTypoScript'])
+            ->getMock();
 
-        // since the escape service does not have any dependencies and is just doing some simple escape logic we pass a real instance
-        $escapeService = new EscapeService();
+        $suggestQuery = $this->builder->buildSuggestQuery('foo', '', 3232, '');
+        $queryParameters = $suggestQuery->getQueryParameters();
+        $this->assertSame('foo', $queryParameters['facet.prefix'], 'Passed query string is not used as facet.prefix argument');
+    }
 
-        $query = new Query($queryString, $solrConfiguration, $siteHashServiceMock, $escapeService, $solrLogManagerMock);
-        return $query;
+    /**
+     * @test
+     */
+    public function alternativeQueryIsWildCardQueryForSuggestQuery()
+    {
+
+        $this->builder = $this->getMockBuilder(QueryBuilder::class)
+                                ->setConstructorArgs([$this->configurationMock, $this->loggerMock])
+                                ->setMethods(['useSiteHashFromTypoScript'])
+                                ->getMock();
+
+        $suggestQuery = $this->builder->buildSuggestQuery('bar', '', 3232, '');
+        $this->assertSame('*:*', $suggestQuery->getAlternativeQuery(), 'Alterntive query is not set to wildcard query by default');
     }
 }

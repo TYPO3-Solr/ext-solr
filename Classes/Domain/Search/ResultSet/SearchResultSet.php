@@ -25,6 +25,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\FacetCollection;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResultCollection;
@@ -32,7 +33,6 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Sorting\Sorting;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Sorting\SortingCollection;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Spellchecking\Suggestion;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
-use ApacheSolrForTypo3\Solr\Query;
 use ApacheSolrForTypo3\Solr\Search;
 
 //@deprecated
@@ -247,7 +247,7 @@ class SearchResultSet
     }
 
     /**
-     * @param \ApacheSolrForTypo3\Solr\Query $usedQuery
+     * @param \ApacheSolrForTypo3\Solr\Domain\Search\Query\Query $usedQuery
      */
     public function setUsedQuery($usedQuery)
     {
@@ -257,7 +257,7 @@ class SearchResultSet
     /**
      * Retrieves the query object that has been used to build this result set.
      *
-     * @return \ApacheSolrForTypo3\Solr\Query
+     * @return \ApacheSolrForTypo3\Solr\Domain\Search\Query\Query
      */
     public function getUsedQuery()
     {
@@ -287,7 +287,7 @@ class SearchResultSet
      */
     public function getResultsPerPage()
     {
-        return $this->usedQuery->getResultsPerPage();
+        return $this->usedQuery->getPagination()->getResultsPerPage();
     }
 
     /**

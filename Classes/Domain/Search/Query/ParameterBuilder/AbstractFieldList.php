@@ -24,12 +24,13 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * The AbstractFieldList class
  */
-abstract class AbstractFieldList implements ParameterBuilder
+abstract class AbstractFieldList extends AbstractDeactivatableParameterBuilder implements ParameterBuilder
 {
     /**
      * @var array
@@ -46,13 +47,36 @@ abstract class AbstractFieldList implements ParameterBuilder
     /**
      * FieldList parameter builder constructor.
      *
-     * private constructor should only be created with the from* methods
-     *
      * @param array $fieldList
      */
-    private function __construct(array $fieldList)
+    public function __construct($isEnabled, array $fieldList = [])
     {
+        $this->isEnabled = $isEnabled;
         $this->fieldList = $fieldList;
+    }
+
+    /**
+     * @param string $fieldListString
+     * @param string $delimiter
+     * @return array
+     */
+    protected static function buildFieldList(string $fieldListString, string $delimiter):array
+    {
+        $fields = GeneralUtility::trimExplode($delimiter, $fieldListString, true);
+        $fieldList = [];
+
+        foreach ($fields as $field) {
+            $fieldNameAndBoost = explode('^', $field);
+
+            $boost = 1.0;
+            if (isset($fieldNameAndBoost[1])) {
+                $boost = floatval($fieldNameAndBoost[1]);
+            }
+
+            $fieldName = $fieldNameAndBoost[0];
+            $fieldList[$fieldName] = $boost;
+        }
+        return $fieldList;
     }
 
     /**
@@ -68,13 +92,20 @@ abstract class AbstractFieldList implements ParameterBuilder
     }
 
     /**
-     * @return array
+     * @param Query $query
+     * @return Query
      */
-    public function build() : array
+    public function build(Query $query): Query
     {
         $string = $this->toString();
         // return empty array on empty string
-        return trim($string) === '' ? [] : [$this->parameterKey => $string];
+        if (trim($string) === '' || !$this->isEnabled) {
+            $query->getQueryParametersContainer()->remove($this->parameterKey);
+            return $query;
+        }
+
+        $query->getQueryParametersContainer()->set($this->parameterKey, $string);
+        return $query;
     }
 
     /**
@@ -109,21 +140,7 @@ abstract class AbstractFieldList implements ParameterBuilder
      */
     protected static function initializeFromString(string $fieldListString, string $delimiter = ',') : AbstractFieldList
     {
-        $fields = GeneralUtility::trimExplode($delimiter, $fieldListString, true);
-        $fieldList = [];
-
-        foreach ($fields as $field) {
-            $fieldNameAndBoost = explode('^', $field);
-
-            $boost = 1.0;
-            if (isset($fieldNameAndBoost[1])) {
-                $boost = floatval($fieldNameAndBoost[1]);
-            }
-
-            $fieldName = $fieldNameAndBoost[0];
-            $fieldList[$fieldName] = $boost;
-        }
-
-        return new static($fieldList);
+        $fieldList = self::buildFieldList($fieldListString, $delimiter);
+        return new static(true, $fieldList);
     }
 }

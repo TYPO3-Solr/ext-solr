@@ -23,6 +23,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 
 /**
  * The TrigramPhraseFields class
@@ -46,5 +47,19 @@ class TrigramPhraseFields extends AbstractFieldList
     public static function fromString(string $fieldListString, string $delimiter = ',') : TrigramPhraseFields
     {
         return self::initializeFromString($fieldListString, $delimiter);
+    }
+
+    /**
+     * @param TypoScriptConfiguration $solrConfiguration
+     * @return TrigramPhraseFields
+     */
+    public static function fromTypoScriptConfiguration(TypoScriptConfiguration $solrConfiguration)
+    {
+        $isEnabled = $solrConfiguration->getTrigramPhraseSearchIsEnabled();
+        if (!$isEnabled) {
+            return new TrigramPhraseFields(false);
+        }
+
+        return self::fromString((string)$solrConfiguration->getSearchQueryTrigramPhraseFields());
     }
 }

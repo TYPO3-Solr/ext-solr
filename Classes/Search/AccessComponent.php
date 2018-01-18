@@ -24,8 +24,8 @@ namespace ApacheSolrForTypo3\Solr\Search;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Domain\Site\SiteHashService;
-use ApacheSolrForTypo3\Solr\Query;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -44,17 +44,17 @@ class AccessComponent extends AbstractComponent implements QueryAware
     protected $query;
 
     /**
-     * @var SiteHashService
+     * @var QueryBuilder
      */
-    protected $siteHashService;
+    protected $queryBuilder;
 
     /**
      * AccessComponent constructor.
-     * @param SiteHashService|null $siteService
+     * @param QueryBuilder|null
      */
-    public function __construct(SiteHashService $siteService = null)
+    public function __construct(QueryBuilder $queryBuilder = null)
     {
-        $this->siteHashService = is_null($siteService) ? GeneralUtility::makeInstance(SiteHashService::class) : $siteService;
+        $this->queryBuilder = $queryBuilder ?? GeneralUtility::makeInstance(QueryBuilder::class);
     }
 
     /**
@@ -62,13 +62,11 @@ class AccessComponent extends AbstractComponent implements QueryAware
      */
     public function initializeSearchComponent()
     {
-        $allowedSites = $this->siteHashService->getAllowedSitesForPageIdAndAllowedSitesConfiguration(
-            $GLOBALS['TSFE']->id,
-            $this->searchConfiguration['query.']['allowedSites']
-        );
-
-        $this->query->setSiteHashFilter($allowedSites);
-        $this->query->setUserAccessGroups(explode(',', $GLOBALS['TSFE']->gr_list));
+        $this->query = $this->queryBuilder
+            ->startFrom($this->query)
+            ->useSiteHashFromTypoScript($GLOBALS['TSFE']->id)
+            ->useUserAccessGroups(explode(',', $GLOBALS['TSFE']->gr_list))
+            ->getQuery();
     }
 
     /**

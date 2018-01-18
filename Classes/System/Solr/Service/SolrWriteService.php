@@ -24,7 +24,7 @@ namespace ApacheSolrForTypo3\Solr\System\Solr\Service;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\ExtractingQuery;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\ExtractingQuery;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 
 /**

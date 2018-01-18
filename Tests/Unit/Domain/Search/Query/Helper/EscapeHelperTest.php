@@ -68,7 +68,7 @@ class EscapeHelperTest extends UnitTest
     public function canEscapeAsExpected($input, $expectedOutput)
     {
         $escapeHelper = new EscapeService();
-        $output = $escapeHelper->escape($input);
+        $output = $escapeHelper::escape($input);
         $this->assertSame($expectedOutput, $output, 'Query was not escaped as expected');
     }
 

@@ -25,7 +25,9 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\Helper;
  ***************************************************************/
 
 /**
- * The EscpaeService is responsible to escape the querystring as ecpected for Apache Solr.
+ * The EscpaeService is responsible to escape the querystring as expected for Apache Solr.
+ *
+ * This class should have no dependencies since it only contains static functions
  *
  * @author Timo Hund <timo.hund@dkd.de>
  */
@@ -37,7 +39,7 @@ class EscapeService {
      * @param string|int|double $string String to escape
      * @return string|int|double The escaped/quoted string
      */
-    public function escape($string)
+    public static function escape($string)
     {
         // when we have a numeric string only, nothing needs to be done
         if (is_numeric($string)) {
@@ -46,18 +48,31 @@ class EscapeService {
 
         // when no whitespaces are in the query we can also just escape the special characters
         if (preg_match('/\W/', $string) != 1) {
-            return $this->escapeSpecialCharacters($string);
+            return static::escapeSpecialCharacters($string);
         }
 
         // when there are no quotes inside the query string we can also just escape the whole string
         $hasQuotes = strrpos($string, '"') !== false;
         if (!$hasQuotes) {
-            return $this->escapeSpecialCharacters($string);
+            return static::escapeSpecialCharacters($string);
         }
 
-        $result = $this->tokenizeByQuotesAndEscapeDependingOnContext($string);
+        $result = static::tokenizeByQuotesAndEscapeDependingOnContext($string);
 
         return $result;
+    }
+
+    /**
+     * Applies trim and htmlspecialchars on the querystring to use it as output.
+     *
+     * @param mixed $string
+     * @return string
+     */
+    public static function clean($string): string
+    {
+        $string = trim($string);
+        $string = htmlspecialchars($string);
+        return $string;
     }
 
     /**
@@ -67,7 +82,7 @@ class EscapeService {
      * @param string $string
      * @return string
      */
-    protected function tokenizeByQuotesAndEscapeDependingOnContext($string)
+    protected static function tokenizeByQuotesAndEscapeDependingOnContext($string)
     {
         $result = '';
         $quotesCount = substr_count($string, '"');
@@ -86,9 +101,9 @@ class EscapeService {
             }
 
             if ($isInQuote && !$isLastQuote) {
-                $result .= $this->escapePhrase($segment);
+                $result .= static::escapePhrase($segment);
             } else {
-                $result .= $this->escapeSpecialCharacters($segment);
+                $result .= static::escapeSpecialCharacters($segment);
             }
 
             $segmentsIndex++;
@@ -104,7 +119,7 @@ class EscapeService {
      * @param string $value Unescaped - "dirty" - string
      * @return string Escaped - "clean" - string
      */
-    protected function escapePhrase($value)
+    protected static function escapePhrase($value)
     {
         $pattern = '/("|\\\)/';
         $replace = '\\\$1';
@@ -118,7 +133,7 @@ class EscapeService {
      * @param string $value Unescaped - "dirty" - string
      * @return string Escaped - "clean" - string
      */
-    protected function escapeSpecialCharacters($value)
+    protected static function escapeSpecialCharacters($value)
     {
         // list taken from http://lucene.apache.org/core/4_4_0/queryparser/org/apache/lucene/queryparser/classic/package-summary.html#package_description
         // which mentions: + - && || ! ( ) { } [ ] ^ " ~ * ? : \ /

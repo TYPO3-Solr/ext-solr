@@ -383,6 +383,35 @@ class SearchControllerTest extends IntegrationTest
     /**
      * @test
      */
+    public function canFilterOnPageSections()
+    {
+        $this->importDataSetFromFixture('can_render_search_controller.xml');
+        $GLOBALS['TSFE'] = $this->getConfiguredTSFE([], 1);
+
+        $this->indexPages([1, 2, 3, 4, 5, 6, 7, 8]);
+
+        //not in the content but we expect to get shoes suggested
+        $_GET['q'] = '*';
+
+        $overwriteConfiguration = [];
+        $overwriteConfiguration['search.']['query.']['filter.']['__pageSections'] = '2,3';
+
+        /** @var $configurationManager ConfigurationManager */
+        $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
+        $configurationManager->getTypoScriptConfiguration()->mergeSolrConfiguration($overwriteConfiguration);
+
+        // since we overwrite the configuration in the testcase from outside we want to avoid that it will be resetted
+        $this->searchController->setResetConfigurationBeforeInitialize(false);
+        $this->searchController->processRequest($this->searchRequest, $this->searchResponse);
+        $resultPage1 = $this->searchResponse->getContent();
+
+        // we should only find 2 results since a __pageSections filter should be applied
+        $this->assertContains('Found 2 results', $resultPage1, 'No link to remove facet option found');
+    }
+
+    /**
+     * @test
+     */
     public function exceptionWillBeThrownWhenAWrongTemplateIsConfiguredForTheFacet()
     {
         // we expected that an exception will be thrown when a facet is rendered

@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 
 /**
@@ -32,14 +33,8 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
  *
  * @package ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder
  */
-class Highlighting implements ParameterBuilder
+class Highlighting extends AbstractDeactivatableParameterBuilder implements ParameterBuilder
 {
-
-    /**
-     * @var bool
-     */
-    protected $isEnabled = false;
-
     /**
      * @var int
      */
@@ -63,15 +58,13 @@ class Highlighting implements ParameterBuilder
     /**
      * Highlighting constructor.
      *
-     * private constructor should only be created with the from* methods
-     *
      * @param bool $isEnabled
      * @param int $fragmentSize
      * @param string $highlightingFieldList
      * @param string $prefix
      * @param string $postfix
      */
-    private function __construct($isEnabled = false, $fragmentSize = 200, $highlightingFieldList = '', $prefix = '', $postfix = '')
+    public function __construct($isEnabled = false, $fragmentSize = 200, $highlightingFieldList = '', $prefix = '', $postfix = '')
     {
         $this->isEnabled = $isEnabled;
         $this->fragmentSize = $fragmentSize;
@@ -145,28 +138,15 @@ class Highlighting implements ParameterBuilder
     }
 
     /**
-     * @return boolean
+     * @param Query $query
+     * @return Query
      */
-    public function getIsEnabled()
-    {
-        return $this->isEnabled;
-    }
-
-    /**
-     * @param boolean $isEnabled
-     */
-    public function setIsEnabled($isEnabled)
-    {
-        $this->isEnabled = $isEnabled;
-    }
-
-    /**
-     * @return array
-     */
-    public function build()
+    public function build(Query $query): Query
     {
         if (!$this->isEnabled) {
-            return [];
+            $query->getQueryParametersContainer()->removeMany(['hl', 'hl.fragsize', 'hl.fl', 'hl.useFastVectorHighlighter', 'hl.tag.pre', 'hl.tag.post', 'hl.simple.pre', 'hl.simple.post']);
+
+            return $query;
         }
 
         $highlightingParameter = [];
@@ -192,7 +172,8 @@ class Highlighting implements ParameterBuilder
             $highlightingParameter['hl.simple.post'] = $this->postfix;
         }
 
-        return $highlightingParameter;
+        $query->getQueryParametersContainer()->merge($highlightingParameter);
+        return $query;
     }
 
     /**
@@ -214,5 +195,13 @@ class Highlighting implements ParameterBuilder
 
 
         return new Highlighting($isEnabled, $fragmentSize, $highlightingFields, $prefix, $postfix);
+    }
+
+    /**
+     * @return Highlighting
+     */
+    public static function getEmpty()
+    {
+        return new Highlighting(false);
     }
 }
