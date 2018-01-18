@@ -78,10 +78,12 @@ class SearchUriBuilder
     public function getAddFacetValueUri(SearchRequest $previousSearchRequest, $facetName, $facetValue)
     {
         $persistentAndFacetArguments = $previousSearchRequest
-            ->getCopyForSubRequest()->addFacetValue($facetName, $facetValue)
+            ->getCopyForSubRequest()->removeAllGroupItemPages()->addFacetValue($facetName, $facetValue)
             ->getAsArray();
 
         $additionalArguments = $this->getAdditionalArgumentsFromRequestConfiguration($previousSearchRequest);
+        $additionalArguments = is_array($additionalArguments) ? $additionalArguments : [];
+
         $arguments = $persistentAndFacetArguments + $additionalArguments;
 
         $pageUid = $this->getTargetPageUidFromRequestConfiguration($previousSearchRequest);
@@ -99,7 +101,7 @@ class SearchUriBuilder
     public function getSetFacetValueUri(SearchRequest $previousSearchRequest, $facetName, $facetValue)
     {
         $previousSearchRequest = $previousSearchRequest
-            ->getCopyForSubRequest()->removeAllFacetValuesByName($facetName);
+            ->getCopyForSubRequest()->removeAllGroupItemPages()->removeAllFacetValuesByName($facetName);
 
         return $this->getAddFacetValueUri($previousSearchRequest, $facetName, $facetValue);
     }
@@ -113,14 +115,13 @@ class SearchUriBuilder
     public function getRemoveFacetValueUri(SearchRequest $previousSearchRequest, $facetName, $facetValue)
     {
         $persistentAndFacetArguments = $previousSearchRequest
-            ->getCopyForSubRequest()->removeFacetValue($facetName, $facetValue)
+            ->getCopyForSubRequest()->removeAllGroupItemPages()->removeFacetValue($facetName, $facetValue)
             ->getAsArray();
 
         $additionalArguments = [];
         if ($previousSearchRequest->getContextTypoScriptConfiguration()->getSearchFacetingFacetLinkUrlParametersUseForFacetResetLinkUrl()) {
             $additionalArguments = $this->getAdditionalArgumentsFromRequestConfiguration($previousSearchRequest);
         }
-
         $arguments = $persistentAndFacetArguments + $additionalArguments;
 
         $pageUid = $this->getTargetPageUidFromRequestConfiguration($previousSearchRequest);
@@ -135,7 +136,7 @@ class SearchUriBuilder
     public function getRemoveFacetUri(SearchRequest $previousSearchRequest, $facetName)
     {
         $persistentAndFacetArguments = $previousSearchRequest
-            ->getCopyForSubRequest()->removeAllFacetValuesByName($facetName)
+            ->getCopyForSubRequest()->removeAllGroupItemPages()->removeAllFacetValuesByName($facetName)
             ->getAsArray();
 
         $additionalArguments = [];
@@ -156,7 +157,7 @@ class SearchUriBuilder
     public function getRemoveAllFacetsUri(SearchRequest $previousSearchRequest)
     {
         $persistentAndFacetArguments = $previousSearchRequest
-            ->getCopyForSubRequest()->removeAllFacets()
+            ->getCopyForSubRequest()->removeAllGroupItemPages()->removeAllFacets()
             ->getAsArray();
 
         $additionalArguments = [];

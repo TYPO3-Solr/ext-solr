@@ -428,6 +428,19 @@ class SearchRequest
     }
 
     /**
+     * Can be used to reset all groupPages.
+     *
+     * @return SearchRequest
+     */
+    public function removeAllGroupItemPages(): SearchRequest
+    {
+        $path = $this->prefixWithNamespace('groupPage');
+        $this->argumentsAccessor->reset($path);
+
+        return $this;
+    }
+
+    /**
      * Can be used to paginate within a groupItem.
      *
      * @param string $groupName e.g. type
