@@ -36,7 +36,7 @@ tools:
 
   external_code_coverage:
     runs: 2
-    timeout: 1800
+    timeout: 2400
 
 build_failure_conditions:
   - 'patches.label("Doc Comments").count > 10'
