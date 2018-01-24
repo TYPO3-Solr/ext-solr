@@ -1,5 +1,5 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\Query\ParameterBuilder;
+namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\Query\Parameter;
 
 /***************************************************************
  *  Copyright notice
@@ -24,9 +24,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\Query\ParameterBuilde
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\BigramPhraseFields;
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
-use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\Parameter\BigramPhraseFields;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 
 /**
@@ -40,12 +38,6 @@ class BigramPhraseFieldsTest extends UnitTest
     public function buildFromEmptyStringCreatesEmptyArrayOnBuild()
     {
         $bigramPhraseFields = BigramPhraseFields::fromString('');
-
-        $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
-        $query = new Query('foo', $configurationMock);
-
-        $bigramPhraseFields->build($query);
-
-        $this->assertEmpty($query->getQueryParameters()['pf2'], 'Build on Phrase field does not create empty array when calling build');
+        $this->assertSame('', $bigramPhraseFields->toString());
     }
 }

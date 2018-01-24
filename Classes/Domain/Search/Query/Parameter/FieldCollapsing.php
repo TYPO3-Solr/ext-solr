@@ -1,5 +1,5 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
+namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\Parameter;
 
 /***************************************************************
  *  Copyright notice
@@ -24,7 +24,6 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 
 /**
@@ -33,7 +32,7 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
  *
  * @package ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder
  */
-class FieldCollapsing extends AbstractDeactivatableParameterBuilder implements ParameterBuilder
+class FieldCollapsing extends AbstractDeactivatable
 {
     /**
      * @var string
@@ -114,29 +113,6 @@ class FieldCollapsing extends AbstractDeactivatableParameterBuilder implements P
     }
 
     /**
-     * @param Query $query
-     * @return Query
-     */
-    public function build(Query $query): Query
-    {
-        if (!$this->isEnabled) {
-            $query->getFilters()->removeByName('collapsing');
-            $query->getQueryParametersContainer()->remove('expand');
-            $query->getQueryParametersContainer()->remove('expand.rows');
-
-            return $query;
-        }
-
-        $query->getFilters()->add('{!collapse field=' . $this->collapseFieldName . '}', 'collapsing');
-        if ($this->expand) {
-            $query->getQueryParametersContainer()->set('expand', 'true');
-            $query->getQueryParametersContainer()->set('expand.rows', $this->expandRowCount);
-        }
-
-        return $query;
-    }
-
-    /**
      * @param TypoScriptConfiguration $solrConfiguration
      * @return FieldCollapsing
      */
@@ -148,7 +124,7 @@ class FieldCollapsing extends AbstractDeactivatableParameterBuilder implements P
         }
 
         $collapseField = $solrConfiguration->getSearchVariantsField();
-        $expand = $solrConfiguration->getSearchVariantsExpand();
+        $expand = (bool)$solrConfiguration->getSearchVariantsExpand();
         $expandRows = $solrConfiguration->getSearchVariantsLimit();
 
         return new FieldCollapsing(true, $collapseField, $expand, $expandRows);

@@ -1,5 +1,6 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
+
+namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\Parameter;
 
 /***************************************************************
  *  Copyright notice
@@ -23,7 +24,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
+
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 
 /**
@@ -32,7 +33,7 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
  *
  * @package ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder
  */
-class Slops implements ParameterBuilder
+class Slops
 {
     const NO_SLOP = null;
 
@@ -76,7 +77,7 @@ class Slops implements ParameterBuilder
     /**
      * @return int
      */
-    public function getQuerySlop(): int
+    public function getQuerySlop()
     {
         return $this->querySlop;
     }
@@ -92,7 +93,7 @@ class Slops implements ParameterBuilder
     /**
      * @return int
      */
-    public function getPhraseSlop(): int
+    public function getPhraseSlop()
     {
         return $this->phraseSlop;
     }
@@ -108,7 +109,7 @@ class Slops implements ParameterBuilder
     /**
      * @return int
      */
-    public function getBigramPhraseSlop(): int
+    public function getBigramPhraseSlop()
     {
         return $this->bigramPhraseSlop;
     }
@@ -124,7 +125,7 @@ class Slops implements ParameterBuilder
     /**
      * @return int
      */
-    public function getTrigramPhraseSlop(): int
+    public function getTrigramPhraseSlop()
     {
         return $this->trigramPhraseSlop;
     }
@@ -135,20 +136,6 @@ class Slops implements ParameterBuilder
     public function setTrigramPhraseSlop(int $trigramPhraseSlop)
     {
         $this->trigramPhraseSlop = $trigramPhraseSlop;
-    }
-
-    /**
-     * @param Query $query
-     * @return Query
-     */
-    public function build(Query $query): Query
-    {
-        $query->getQueryParametersContainer()->setWhenIntOrUnsetWhenNull('qs', $this->querySlop);
-        $query->getQueryParametersContainer()->setWhenIntOrUnsetWhenNull('ps', $this->phraseSlop);
-        $query->getQueryParametersContainer()->setWhenIntOrUnsetWhenNull('ps2', $this->bigramPhraseSlop);
-        $query->getQueryParametersContainer()->setWhenIntOrUnsetWhenNull('ps3', $this->trigramPhraseSlop);
-
-        return $query;
     }
 
     /**

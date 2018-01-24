@@ -26,8 +26,8 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ApacheSolrDocument;
 
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\Domain\Search\ApacheSolrDocument\Repository;
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\SearchQuery;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\Parser\DocumentEscapeService;
 use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
 use ApacheSolrForTypo3\Solr\Search;
@@ -138,7 +138,7 @@ class RepositoryTest extends UnitTest
         /* @var $apacheSolrDocumentRepository Repository */
         $apacheSolrDocumentRepository = $this->getAccessibleMock(Repository::class, ['getQueryForPage', 'getSearch'],[null, null, $queryBuilderMock]);
         $apacheSolrDocumentRepository->expects($this->once())->method('getSearch')->willReturn($search);
-        $queryMock = $this->getDumbMock(Query::class);
+        $queryMock = $this->getDumbMock(SearchQuery::class);
         $queryBuilderMock->expects($this->any())->method('buildPageQuery')->willReturn($queryMock);
         $actualApacheSolrDocumentCollection = $apacheSolrDocumentRepository->findByPageIdAndByLanguageId(777, 0);
 

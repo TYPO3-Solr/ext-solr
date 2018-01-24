@@ -1,5 +1,5 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
+namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\Parameter;
 
 /***************************************************************
  *  Copyright notice
@@ -24,7 +24,6 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -32,7 +31,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @package ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder
  */
-class QueryFields implements ParameterBuilder
+class QueryFields
 {
 
     /**
@@ -45,7 +44,7 @@ class QueryFields implements ParameterBuilder
      *
      * @param array $queryFields
      */
-    public function __construct(array $queryFields)
+    public function __construct(array $queryFields = [])
     {
         $this->queryFields = $queryFields;
     }
@@ -57,23 +56,6 @@ class QueryFields implements ParameterBuilder
     public function set($fieldName, $boost = 1.0)
     {
         $this->queryFields[$fieldName] = (float)$boost;
-    }
-
-    /**
-     * @param Query $query
-     * @return Query
-     */
-    public function build(Query $query): Query
-    {
-        $string = $this->toString();
-        // return empty array on empty string
-
-        if (trim($string) === '') {
-            return $query;
-        }
-
-        $query->getQueryParametersContainer()->set('qf', $string);
-        return $query;
     }
 
     /**

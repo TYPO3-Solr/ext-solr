@@ -1,6 +1,5 @@
 <?php
-
-namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
+namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\Parameter;
 
 /***************************************************************
  *  Copyright notice
@@ -25,28 +24,29 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-
-abstract class AbstractDeactivatableParameterBuilder {
-
+/**
+ * The Debug ParameterProvider is responsible to build the solr query parameters
+ * that are needed for the debugging.
+ *
+ * @package ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder
+ */
+class Debug extends AbstractDeactivatable
+{
     /**
-     * @var bool
+     * Debug constructor.
+     *
+     * @param bool $isEnabled
      */
-    protected $isEnabled = false;
-
-    /**
-     * @return boolean
-     */
-    public function getIsEnabled()
-    {
-        return $this->isEnabled;
-    }
-
-    /**
-     * @param boolean $isEnabled
-     */
-    public function setIsEnabled($isEnabled)
+    public function __construct($isEnabled)
     {
         $this->isEnabled = $isEnabled;
     }
 
+    /**
+     * @return Debug
+     */
+    public static function getEmpty()
+    {
+        return new Debug(false);
+    }
 }

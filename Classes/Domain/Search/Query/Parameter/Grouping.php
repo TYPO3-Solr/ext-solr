@@ -1,5 +1,5 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
+namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\Parameter;
 
 /***************************************************************
  *  Copyright notice
@@ -24,7 +24,6 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 
 /**
@@ -33,7 +32,7 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
  *
  * @package ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder
  */
-class Grouping extends AbstractDeactivatableParameterBuilder implements ParameterBuilder
+class Grouping extends AbstractDeactivatable
 {
 
     /**
@@ -79,42 +78,6 @@ class Grouping extends AbstractDeactivatableParameterBuilder implements Paramete
         $this->queries = $queries;
         $this->numberOfGroups = $numberOfGroups;
         $this->resultsPerGroup = $resultsPerGroup;
-    }
-
-    /**
-     * @param Query $query
-     * @return Query
-     */
-    public function build(Query $query): Query
-    {
-        if (!$this->isEnabled) {
-            $query->getQueryParametersContainer()->removeMany(['group', 'group.format', 'group.ngroups', 'group.limit', 'group.query', 'group.sort', 'group.field']);
-
-            return $query;
-        }
-        $groupingParameter = [];
-        $groupingParameter ['group'] = 'true';
-        $groupingParameter ['group.format'] = 'grouped';
-        $groupingParameter ['group.ngroups'] = 'true';
-
-        if ($this->resultsPerGroup) {
-            $groupingParameter['group.limit'] = $this->resultsPerGroup;
-        }
-
-        if (count($this->queries) > 0) {
-            $groupingParameter['group.query'] = $this->queries;
-        }
-
-        if (count($this->sortings) > 0) {
-            $groupingParameter['group.sort'] = $this->sortings;
-        }
-
-        if (count($this->fields) > 0) {
-            $groupingParameter['group.field'] = $this->fields;
-        }
-
-        $query->getQueryParametersContainer()->merge($groupingParameter);
-        return $query;
     }
 
     /**

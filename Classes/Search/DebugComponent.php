@@ -24,7 +24,7 @@ namespace ApacheSolrForTypo3\Solr\Search;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\SearchQuery;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequestAware;
 
@@ -40,7 +40,7 @@ class DebugComponent extends AbstractComponent implements QueryAware, SearchRequ
     /**
      * Solr query
      *
-     * @var Query
+     * @var SearchQuery
      */
     protected $query;
 
@@ -68,16 +68,17 @@ class DebugComponent extends AbstractComponent implements QueryAware, SearchRequ
     public function initializeSearchComponent()
     {
         if ($this->seachRequest->getContextTypoScriptConfiguration()->getEnabledDebugMode()) {
-            $this->query->setDebugMode();
+            //@todo
+            // $this->query->getDebug()->;
         }
     }
 
     /**
      * Provides the extension component with an instance of the current query.
      *
-     * @param Query $query Current query
+     * @param SearchQuery $query Current query
      */
-    public function setQuery(Query $query)
+    public function setQuery(SearchQuery $query)
     {
         $this->query = $query;
     }

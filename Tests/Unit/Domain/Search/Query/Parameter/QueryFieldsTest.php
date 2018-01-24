@@ -1,11 +1,10 @@
 <?php
-
-namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
+namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\Query\Parameter;
 
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2017 <timo.hund@dkd.de>
+ *  (c) 2017 Timo Hund <timo.hund@dkd.de>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -25,21 +24,24 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\Parameter\QueryFields;
+use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 
 /**
- * The implementation of ParameterBuilder is responsible to build an array with
- * the query parameter that are needed for solr
- *
- * Interface ParameterProvider
- * @package ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder
+ * @author Timo Hund <timo.hund@dkd.de>
  */
-interface ParameterBuilder {
-
-
+class QueryFieldsTest extends UnitTest
+{
     /**
-     * @param Query $query
-     * @return Query
+     * @test
      */
-    public function build(Query $query): Query;
+    public function canBuildFromString()
+    {
+        $input = 'one^10.0,two^20.0,three^5.0';
+        $queryFields = QueryFields::fromString($input, ',');
+        $output = $queryFields->toString(',');
+
+        $this->assertSame($input, $output, 'Parsing QueryFields from and to string did not produce the same result');
+    }
+
 }

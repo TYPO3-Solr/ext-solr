@@ -1,5 +1,5 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
+namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\Parameter;
 
 /***************************************************************
  *  Copyright notice
@@ -23,7 +23,6 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 
 
 /**
@@ -32,7 +31,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
  *
  * @package ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder
  */
-class Sorting extends AbstractDeactivatableParameterBuilder implements ParameterBuilder
+class Sorting extends AbstractDeactivatable
 {
     const SORT_ASC = 'ASC';
     const SORT_DESC = 'DESC';
@@ -52,22 +51,6 @@ class Sorting extends AbstractDeactivatableParameterBuilder implements Parameter
     {
         $this->isEnabled = $isEnabled;
         $this->setSortField($sortField);
-    }
-
-    /**
-     * @param Query $query
-     * @return Query
-     */
-    public function build(Query $query): Query
-    {
-        $isEnabledAndField = $this->isEnabled && !empty($this->sortField);
-        if (!$isEnabledAndField) {
-            $query->getQueryParametersContainer()->remove('sort');
-            return $query;
-        }
-
-        $query->getQueryParametersContainer()->set('sort', $this->sortField);
-        return $query;
     }
 
     /**

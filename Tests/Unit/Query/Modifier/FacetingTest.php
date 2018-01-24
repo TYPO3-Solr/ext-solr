@@ -31,6 +31,7 @@ use ApacheSolrForTypo3\Solr\Query\Modifier\Faceting;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use Solarium\QueryType\Select\RequestBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 
@@ -68,8 +69,11 @@ class FacetingTest extends UnitTest
         $facetModifier->setSearchRequest($fakeSearchRequest);
         $facetModifier->modifyQuery($query);
 
-        $queryParameter = $query->getQueryParameters();
-        return $queryParameter;
+        $requestBuilder = new RequestBuilder();
+
+        $request = $requestBuilder->build($query);
+
+        return $request->getParams();
     }
 
     /**

@@ -1,5 +1,5 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Query\Modifier;
+namespace ApacheSolrForTypo3\Solr\Domain\Search\Query;
 
 /***************************************************************
  *  Copyright notice
@@ -15,9 +15,6 @@ namespace ApacheSolrForTypo3\Solr\Query\Modifier;
  *
  *  The GNU General Public License can be found at
  *  http://www.gnu.org/copyleft/gpl.html.
- *  A copy is found in the textfile GPL.txt and important notices to the license
- *  from the author is found in LICENSE.txt distributed with these scripts.
- *
  *
  *  This script is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -27,22 +24,24 @@ namespace ApacheSolrForTypo3\Solr\Query\Modifier;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\SearchQuery;
+use Solarium\QueryType\Select\Query\Query;
 
-
-/**
- * QueryModifier interface, allows to modify search queries
- *
- * @author Ingo Renner <ingo@typo3.org>
- */
-interface Modifier
-{
+class SearchQuery extends Query {
 
     /**
-     * Modifies the given query and returns the modified query as result
+     * Returns the query parameters that should be used.
      *
-     * @param SearchQuery $query The query to modify
-     * @return SearchQuery The modified query
+     * @return array
      */
-    public function modifyQuery(SearchQuery $query);
+    public function getQueryParameters() {
+        return $this->getParams();
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->getQuery();
+    }
 }

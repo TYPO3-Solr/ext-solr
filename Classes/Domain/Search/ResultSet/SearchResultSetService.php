@@ -25,9 +25,9 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\QueryFields;
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\Parameter\QueryFields;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\SearchQuery;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\Parser\ResultParserRegistry;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequestAware;
@@ -139,10 +139,10 @@ class SearchResultSetService
     }
 
     /**
-     * @param Query $query
+     * @param SearchQuery $query
      * @param SearchRequest $searchRequest
      */
-    protected function initializeRegisteredSearchComponents(Query $query, SearchRequest $searchRequest)
+    protected function initializeRegisteredSearchComponents(SearchQuery $query, SearchRequest $searchRequest)
     {
         $searchComponents = $this->getRegisteredSearchComponents();
 
@@ -256,7 +256,7 @@ class SearchResultSetService
     /**
      * Executes the search and builds a fake response for a current bug in Apache Solr 6.3
      *
-     * @param Query $query
+     * @param SearchQuery $query
      * @param int $offSet
      * @return \Apache_Solr_Response
      */
@@ -333,13 +333,13 @@ class SearchResultSetService
     /**
      * Allows to modify a query before eventually handing it over to Solr.
      *
-     * @param Query $query The current query before it's being handed over to Solr.
+     * @param SearchQuery $query The current query before it's being handed over to Solr.
      * @param SearchRequest $searchRequest The searchRequest, relevant in the current context
      * @param Search $search The search, relevant in the current context
      * @throws \UnexpectedValueException
-     * @return Query The modified query that is actually going to be given to Solr.
+     * @return SearchQuery The modified query that is actually going to be given to Solr.
      */
-    protected function modifyQuery(Query $query, SearchRequest $searchRequest, Search $search)
+    protected function modifyQuery(SearchQuery $query, SearchRequest $searchRequest, Search $search)
     {
         // hook to modify the search query
         if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchQuery'])) {
@@ -376,9 +376,8 @@ class SearchResultSetService
      */
     public function getDocumentById($documentId)
     {
-        /* @var $query Query */
-        $query = GeneralUtility::makeInstance(Query::class, $documentId);
-        $query->setQueryFields(QueryFields::fromString('id'));
+        /* @var $query SearchQuery */
+        $query = $this->queryBuilder->newSearchQuery($documentId)->useQueryFields(QueryFields::fromString('id'))->getQuery();
         $response = $this->search->search($query, 0, 1);
         $parsedData = $response->getParsedData();
         $resultDocument = isset($parsedData->response->docs[0]) ? $parsedData->response->docs[0] : null;

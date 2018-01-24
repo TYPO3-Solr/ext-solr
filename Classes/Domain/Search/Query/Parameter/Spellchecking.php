@@ -1,10 +1,10 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
+namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\Parameter;
 
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2010-2017 dkd Internet Service GmbH <solr-support@dkd.de>
+ *  (c) 2017 <timo.hund@dkd.de>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -23,43 +23,64 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 
 /**
- * The BigramPhraseFields class
+ * The Spellchecking ParameterProvider is responsible to build the solr query parameters
+ * that are needed for the spellchecking.
+ *
+ * @package ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder
  */
-class BigramPhraseFields extends AbstractFieldList
+class Spellchecking extends AbstractDeactivatable
 {
-    /**
-     * Parameter key which should be used for Apache Solr URL query
-     *
-     * @var string
-     */
-    protected $parameterKey = 'pf2';
 
     /**
-     * Parses the string representation of the fieldList (e.g. content^100, title^10) to the object representation.
-     *
-     * @param string $fieldListString
-     * @param string $delimiter
-     * @return BigramPhraseFields
+     * @var int
      */
-    public static function fromString(string $fieldListString, string $delimiter = ',') : BigramPhraseFields
+    protected $maxCollationTries = 0;
+
+    /**
+     * Spellchecking constructor.
+     *
+     * @param bool $isEnabled
+     * @param int $maxCollationTries
+     */
+    public function __construct($isEnabled = false, int $maxCollationTries = 0)
     {
-        return self::initializeFromString($fieldListString, $delimiter);
+        $this->isEnabled = $isEnabled;
+        $this->maxCollationTries = $maxCollationTries;
+    }
+
+    /**
+     * @return int
+     */
+    public function getMaxCollationTries(): int
+    {
+        return $this->maxCollationTries;
     }
 
     /**
      * @param TypoScriptConfiguration $solrConfiguration
-     * @return BigramPhraseFields
+     * @return Spellchecking
      */
     public static function fromTypoScriptConfiguration(TypoScriptConfiguration $solrConfiguration)
     {
-        $isEnabled = $solrConfiguration->getBigramPhraseSearchIsEnabled();
+        $isEnabled = $solrConfiguration->getSearchSpellchecking();
         if (!$isEnabled) {
-            return new BigramPhraseFields(false);
+            return new Spellchecking(false);
         }
 
-        return self::fromString((string)$solrConfiguration->getSearchQueryBigramPhraseFields());
+        $maxCollationTries = $solrConfiguration->getSearchSpellcheckingNumberOfSuggestionsToTry();
+
+        return new Spellchecking($isEnabled, $maxCollationTries);
+    }
+
+    /**
+     * @return Spellchecking
+     */
+    public static function getEmpty()
+    {
+        return new Spellchecking(false);
     }
 }

@@ -24,8 +24,8 @@ namespace ApacheSolrForTypo3\Solr\Query\Modifier;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\SearchQuery;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -53,10 +53,10 @@ class Elevation implements Modifier
     /**
      * Enables the query's elevation mode.
      *
-     * @param Query $query The query to modify
-     * @return Query The modified query with enabled elevation mode
+     * @param SearchQuery $query The query to modify
+     * @return SearchQuery The modified query with enabled elevation mode
      */
-    public function modifyQuery(Query $query)
+    public function modifyQuery(SearchQuery $query)
     {
         $query = $this->queryBuilder->startFrom($query)->useElevationFromTypoScript()->getQuery();
         return $query;

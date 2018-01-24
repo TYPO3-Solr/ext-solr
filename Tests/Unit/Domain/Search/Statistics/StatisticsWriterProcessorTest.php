@@ -26,6 +26,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\Statistics;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\Helper\QueryStringContainer;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\SearchQuery;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Domain\Search\Statistics\StatisticsRepository;
@@ -74,7 +75,7 @@ class StatisticsWriterProcessorTest extends UnitTest
         $this->processor = $this->getMockBuilder(StatisticsWriterProcessor::class)->setConstructorArgs([$this->statisticsRepositoryMock])->setMethods(['getTSFE', 'getTime', 'getUserIp'])->getMock();
         $this->typoScriptConfigurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
         $this->searchRequestMock = $this->getDumbMock(SearchRequest::class);
-        $this->queryMock = $this->getDumbMock(Query::class);
+        $this->queryMock = $this->getDumbMock(SearchQuery::class);
     }
 
     /**
@@ -92,9 +93,7 @@ class StatisticsWriterProcessorTest extends UnitTest
         $this->typoScriptConfigurationMock->expects($this->once())->method('getStatisticsAnonymizeIP')->will($this->returnValue(0));
         $this->searchRequestMock->expects($this->once())->method('getContextTypoScriptConfiguration')->will($this->returnValue($this->typoScriptConfigurationMock));
 
-        $queryStringsMock = $this->getDumbMock(QueryStringContainer::class);
-        $queryStringsMock->expects($this->once())->method('getKeywords')->willReturn('my search');
-        $this->queryMock->expects($this->once())->method('getQueryStringContainer')->willReturn($queryStringsMock);
+        $this->queryMock->expects($this->once())->method('getQuery')->willReturn('my search');
 
         $resultSetMock = $this->getDumbMock(SearchResultSet::class);
         $resultSetMock->expects($this->once())->method('getUsedQuery')->will($this->returnValue($this->queryMock));

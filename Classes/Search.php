@@ -24,13 +24,14 @@ namespace ApacheSolrForTypo3\Solr;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\SearchQuery;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\Parser\DocumentEscapeService;
 use ApacheSolrForTypo3\Solr\Search\FacetsModifier;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrCommunicationException;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query as NewQuery;
+use Solarium\QueryType\Select\RequestBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -51,7 +52,7 @@ class Search
     /**
      * The search query
      *
-     * @var NewQuery
+     * @var Query
      */
     protected $query = null;
 
@@ -132,13 +133,13 @@ class Search
      * 2) Conducts the actual search
      * 3) Checks debug settings
      *
-     * @param Query $query The query with keywords, filters, and so on.
+     * @param SearchQuery $query The query with keywords, filters, and so on.
      * @param int $offset Result offset for pagination.
      * @param int $limit Maximum number of results to return. If set to NULL, this value is taken from the query object.
      * @return \Apache_Solr_Response Solr response
      * @throws \Exception
      */
-    public function search(NewQuery $query, $offset = 0, $limit = 10)
+    public function search(SearchQuery $query, $offset = 0, $limit = 10)
     {
         $this->query = $query;
 
@@ -147,11 +148,15 @@ class Search
         }
 
         try {
+            $requestBuilder = new RequestBuilder();
+            $solariumRequest = $requestBuilder->build($query);
+            $param = $solariumRequest->getParams();
+
             $response = $this->solr->getReadService()->search(
-                (string)$query->getQueryStringContainer()->getQueryString(),
+                (string)$query->getQuery(),
                 $offset,
                 $limit,
-                $query->getQueryParameters()
+                $param
             );
 
             if ($this->configuration->getLoggingQueryQueryString()) {
@@ -159,8 +164,8 @@ class Search
                     SolrLogManager::INFO,
                     'Querying Solr, getting result',
                     [
-                        'query string' => $query->getQueryStringContainer()->getQueryString(),
-                        'query parameters' => $query->getQueryParameters(),
+                        'query string' => $query->getQuery(),
+                        'query parameters' => $param,
                         'response' => json_decode($response->getRawResponse(),
                             true)
                     ]
@@ -234,7 +239,7 @@ class Search
     /**
      * Gets the query object.
      *
-     * @return NewQuery Query
+     * @return SearchQuery Query
      */
     public function getQuery()
     {

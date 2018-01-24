@@ -24,7 +24,8 @@ namespace ApacheSolrForTypo3\Solr\Query\Modifier;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\SearchQuery;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\FacetRegistry;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequestAware;
@@ -73,21 +74,21 @@ class Faceting implements Modifier, SearchRequestAware
      * Modifies the given query and adds the parameters necessary for faceted
      * search.
      *
-     * @param Query $query The query to modify
-     * @return Query The modified query with faceting parameters
+     * @param SearchQuery $query The query to modify
+     * @return SearchQuery The modified query with faceting parameters
      */
-    public function modifyQuery(Query $query)
+    public function modifyQuery(SearchQuery $query)
     {
-        $query->getFaceting()->setIsEnabled(true);
         $typoScriptConfiguration = $this->searchRequest->getContextTypoScriptConfiguration();
-        $allFacets = $typoScriptConfiguration->getSearchFacetingFacets();
+        $faceting = \ApacheSolrForTypo3\Solr\Domain\Search\Query\Parameter\Faceting::fromTypoScriptConfiguration($typoScriptConfiguration);
 
+        $allFacets = $typoScriptConfiguration->getSearchFacetingFacets();
         $facetParameters = $this->buildFacetingParameters($allFacets, $typoScriptConfiguration);
         foreach ($facetParameters as $facetParameter => $value) {
             if(strtolower($facetParameter) === 'facet.field') {
-                $query->getFaceting()->setFields($value);
+                $faceting->setFields($value);
             } else {
-                $query->getFaceting()->addAdditionalParameter($facetParameter, $value);
+                $faceting->addAdditionalParameter($facetParameter, $value);
             }
         }
 
@@ -99,10 +100,8 @@ class Faceting implements Modifier, SearchRequestAware
         $keepAllFacetsOnSelection = $typoScriptConfiguration->getSearchFacetingKeepAllFacetsOnSelection();
         $facetFilters = $this->addFacetQueryFilters($searchArguments, $allFacets, $keepAllFacetsOnSelection);
 
-        foreach ($facetFilters as $filter) {
-            $query->getFilters()->add($filter);
-        }
-
+        $queryBuilder = new QueryBuilder($typoScriptConfiguration);
+        $queryBuilder->startFrom($query)->useFaceting($faceting)->useFilterArray($facetFilters);
         return $query;
     }
 
