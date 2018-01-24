@@ -97,7 +97,7 @@ class SuggestServiceTest extends UnitTest
      */
     protected function assertSuggestQueryWithQueryStringCreated($queryString)
     {
-        $this->suggestQueryMock->expects($this->any())->method('getQueryStringContainer')->willReturn(new QueryStringContainer($queryString));
+        $this->suggestQueryMock->expects($this->any())->method('getQuery')->willReturn($queryString);
     }
 
     /**

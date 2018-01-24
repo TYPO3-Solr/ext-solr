@@ -24,6 +24,8 @@ namespace ApacheSolrForTypo3\Solr\Query\Modifier;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Faceting as FacetingBuilder;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\FacetRegistry;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
@@ -78,16 +80,16 @@ class Faceting implements Modifier, SearchRequestAware
      */
     public function modifyQuery(Query $query)
     {
-        $query->getFaceting()->setIsEnabled(true);
         $typoScriptConfiguration = $this->searchRequest->getContextTypoScriptConfiguration();
-        $allFacets = $typoScriptConfiguration->getSearchFacetingFacets();
+        $faceting = FacetingBuilder::fromTypoScriptConfiguration($typoScriptConfiguration);
 
+        $allFacets = $typoScriptConfiguration->getSearchFacetingFacets();
         $facetParameters = $this->buildFacetingParameters($allFacets, $typoScriptConfiguration);
         foreach ($facetParameters as $facetParameter => $value) {
             if(strtolower($facetParameter) === 'facet.field') {
-                $query->getFaceting()->setFields($value);
+                $faceting->setFields($value);
             } else {
-                $query->getFaceting()->addAdditionalParameter($facetParameter, $value);
+                $faceting->addAdditionalParameter($facetParameter, $value);
             }
         }
 
@@ -99,10 +101,8 @@ class Faceting implements Modifier, SearchRequestAware
         $keepAllFacetsOnSelection = $typoScriptConfiguration->getSearchFacetingKeepAllFacetsOnSelection();
         $facetFilters = $this->addFacetQueryFilters($searchArguments, $allFacets, $keepAllFacetsOnSelection);
 
-        foreach ($facetFilters as $filter) {
-            $query->getFilters()->add($filter);
-        }
-
+        $queryBuilder = new QueryBuilder($typoScriptConfiguration);
+        $queryBuilder->startFrom($query)->useFaceting($faceting)->useFilterArray($facetFilters);
         return $query;
     }
 

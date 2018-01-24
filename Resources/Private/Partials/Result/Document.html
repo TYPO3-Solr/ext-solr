@@ -15,7 +15,7 @@
 
 		<div class="row">
 			<div class="col-md-10">
-				<h3 class="results-topic"><a href="{s:uri.result.addSearchWordList(url:document.url, searchWords:resultSet.usedQuery.keywords)}">{document.title}</a></h3>
+				<h3 class="results-topic"><a href="{s:uri.result.addSearchWordList(url:document.url, searchWords:resultSet.usedQuery.query)}">{document.title}</a></h3>
 			</div>
 			<div class="col-md-2">
 				<f:render partial="Result/RelevanceBar" section="RelevanceBar" arguments="{resultSet:resultSet, document:document}" />

@@ -1,11 +1,10 @@
 <?php
-
-namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
+namespace ApacheSolrForTypo3\Solr\Domain\Search\Query;
 
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2017 <timo.hund@dkd.de>
+ *  (c) 2009-2015 Ingo Renner <ingo@typo3.org>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -25,22 +24,4 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
-
-
-/**
- * The implementation of ParameterBuilder is responsible to build an array with
- * the query parameter that are needed for solr
- *
- * Interface ParameterProvider
- * @package ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder
- */
-interface ParameterBuilder {
-
-
-    /**
-     * @param QueryBuilder $parentBuilder
-     * @return QueryBuilder
-     */
-    public function build(QueryBuilder $parentBuilder): QueryBuilder;
-}
+class SearchQuery extends Query {}

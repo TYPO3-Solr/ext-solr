@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
 
 /***************************************************************
@@ -24,7 +25,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -46,7 +47,7 @@ class ReturnFields implements ParameterBuilder
      *
      * @param array $fieldList
      */
-    public function __construct(array $fieldList)
+    public function __construct(array $fieldList = [])
     {
         $this->fieldList = $fieldList;
     }
@@ -78,16 +79,6 @@ class ReturnFields implements ParameterBuilder
         if ($key !== false) {
             unset($this->fieldList[$key]);
         }
-    }
-
-    /**
-     * @param Query $query
-     * @return Query
-     */
-    public function build(Query $query): Query
-    {
-        $query->getQueryParametersContainer()->set('fl', $this->toString());
-        return $query;
     }
 
     /**
@@ -125,5 +116,15 @@ class ReturnFields implements ParameterBuilder
     public function getValues()
     {
         return array_unique(array_values($this->fieldList));
+    }
+
+    /**
+     * @param QueryBuilder $parentBuilder
+     * @return QueryBuilder
+     */
+    public function build(QueryBuilder $parentBuilder): QueryBuilder
+    {
+        $parentBuilder->getQuery()->setFields($this->getValues());
+        return $parentBuilder;
     }
 }

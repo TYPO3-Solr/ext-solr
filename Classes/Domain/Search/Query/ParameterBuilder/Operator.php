@@ -24,8 +24,6 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
-use Doctrine\Common\Proxy\Exception\InvalidArgumentException;
 
 /**
  * The Operator ParameterProvider is responsible to build the solr query parameters
@@ -33,7 +31,7 @@ use Doctrine\Common\Proxy\Exception\InvalidArgumentException;
  *
  * @package ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder
  */
-class Operator extends AbstractDeactivatableParameterBuilder implements ParameterBuilder
+class Operator extends AbstractDeactivatable
 {
     const OPERATOR_AND = 'AND';
     const OPERATOR_OR = 'OR';
@@ -61,10 +59,18 @@ class Operator extends AbstractDeactivatableParameterBuilder implements Paramete
     public function setOperator($operator)
     {
         if (!in_array($operator, [self::OPERATOR_AND, self::OPERATOR_OR])) {
-            throw new InvalidArgumentException("Invalid operator");
+            throw new \InvalidArgumentException("Invalid operator");
         }
 
         $this->operator = $operator;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOperator(): string
+    {
+        return $this->operator;
     }
 
     /**
@@ -89,21 +95,6 @@ class Operator extends AbstractDeactivatableParameterBuilder implements Paramete
     public static function getOr(): Operator
     {
         return new Operator(true, static::OPERATOR_OR);
-    }
-
-    /**
-     * @param Query $query
-     * @return Query
-     */
-    public function build(Query $query): Query
-    {
-        if (!$this->isEnabled) {
-            $query->getQueryParametersContainer()->remove('q.op');
-            return $query;
-        }
-
-        $query->getQueryParametersContainer()->set('q.op', $this->operator);
-        return $query;
     }
 
     /**

@@ -141,3 +141,10 @@ if ((TYPO3_MODE === 'BE') || (TYPO3_MODE === 'FE' && isset($_POST['TSFE_EDIT']))
 # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
 $GLOBALS['TYPO3_CONF_VARS']['BE']['ContextMenu']['ItemProviders'][1487876780] = \ApacheSolrForTypo3\Solr\ContextMenu\ItemProviders\InitializeConnectionProvider::class;
+
+$isComposerMode = defined('TYPO3_COMPOSER_MODE') && TYPO3_COMPOSER_MODE;
+if(!$isComposerMode) {
+    // we load the autoloader for our libraries
+    $dir = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($_EXTKEY);
+    require $dir . '/Resources/Private/Php/ComposerLibraries/vendor/autoload.php';
+}

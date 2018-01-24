@@ -1,5 +1,5 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Tests\Integration\Plugin\Results;
+namespace ApacheSolrForTypo3\Solr\Tests\Integration\Controller;
 
 /***************************************************************
  *  Copyright notice
@@ -25,9 +25,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Plugin\Results;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageFieldMappingIndexer;
-use ApacheSolrForTypo3\Solr\Typo3PageIndexer;
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
-use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use ApacheSolrForTypo3\Solr\Controller\SearchController;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\TimeTracker\TimeTracker;
@@ -46,7 +44,7 @@ use TYPO3\CMS\Frontend\Page\PageGenerator;
  *
  * @author Timo Hund
  */
-class SearchControllerTest extends IntegrationTest
+class SearchControllerTest extends AbstractFrontendControllerTest
 {
     /**
      * @var ObjectManagerInterface The object manager
@@ -947,7 +945,7 @@ class SearchControllerTest extends IntegrationTest
         $this->importDataSetFromFixture('can_render_search_controller.xml');
         $GLOBALS['TSFE'] = $this->getConfiguredTSFE([], 1);
 
-        $formRequest = $this->getPreparedRequest('form');
+        $formRequest = $this->getPreparedRequest('Search','form');
         $formResponse = $this->getPreparedResponse();
         $this->searchController->processRequest($formRequest, $formResponse);
 
@@ -965,7 +963,7 @@ class SearchControllerTest extends IntegrationTest
 
         $this->indexPages([1]);
 
-        $searchRequest = $this->getPreparedRequest('frequentlySearched', 'pi_frequentlySearched');
+        $searchRequest = $this->getPreparedRequest('Search', 'frequentlySearched', 'pi_frequentlySearched');
         $searchResponse = $this->getPreparedResponse();
 
         $this->searchController->processRequest($searchRequest, $searchResponse);
@@ -979,7 +977,7 @@ class SearchControllerTest extends IntegrationTest
      */
     public function canRenderDetailAction()
     {
-        $request = $this->getPreparedRequest('detail');
+        $request = $this->getPreparedRequest('Search', 'detail');
         $request->setArgument('documentId', '23c51a0d5cf548afecc043a7068902e8f82a22a0/pages/1/0/0/0');
 
         $this->importDataSetFromFixture('can_render_search_controller.xml');
@@ -995,7 +993,7 @@ class SearchControllerTest extends IntegrationTest
      */
     public function canRenderSearchFormOnly()
     {
-        $request = $this->getPreparedRequest('form', 'pi_search');
+        $request = $this->getPreparedRequest('Search', 'form', 'pi_search');
 
         $this->importDataSetFromFixture('can_render_search_controller.xml');
         $GLOBALS['TSFE'] = $this->getConfiguredTSFE([], 1);
@@ -1119,58 +1117,5 @@ class SearchControllerTest extends IntegrationTest
     {
         $this->assertContains('class="solr-pagination"', $content, 'No pagination container visible');
         $this->assertContains('ul class="pagination"', $content, 'Could not see pagination list');
-    }
-
-    /**
-     * @param $importPageIds
-     */
-    protected function indexPages($importPageIds)
-    {
-        foreach ($importPageIds as $importPageId) {
-            $fakeTSFE = $this->getConfiguredTSFE([], $importPageId);
-            $GLOBALS['TSFE'] = $fakeTSFE;
-            $fakeTSFE->newCObj();
-            $fakeTSFE->preparePageContentGeneration();
-            PageGenerator::renderContent();
-            /** @var $pageIndexer \ApacheSolrForTypo3\Solr\Typo3PageIndexer */
-            $pageIndexer = GeneralUtility::makeInstance(Typo3PageIndexer::class, $fakeTSFE);
-            $pageIndexer->indexPage();
-        }
-
-        /** @var $beUser  \TYPO3\CMS\Core\Authentication\BackendUserAuthentication */
-        $beUser = GeneralUtility::makeInstance(BackendUserAuthentication::class);
-        $GLOBALS['BE_USER'] = $beUser;
-        $this->waitToBeVisibleInSolr();
-    }
-
-    /**
-     * @param string $actionName
-     * @param string $plugin
-     * @return Request
-     */
-    protected function getPreparedRequest($actionName = 'results', $plugin = 'pi_result')
-    {
-        /** @var Request $request */
-        $request = $this->objectManager->get(Request::class);
-        $request->setControllerName('Search');
-        $request->setControllerActionName($actionName);
-        $request->setControllerVendorName('ApacheSolrForTypo3');
-        $request->setPluginName($plugin);
-        $request->setFormat('html');
-        $request->setControllerExtensionName('Solr');
-
-        return $request;
-    }
-
-
-    /**
-     * @return Response
-     */
-    protected function getPreparedResponse()
-    {
-        /** @var $response Response */
-        $response = $this->objectManager->get(Response::class);
-
-        return $response;
     }
 }

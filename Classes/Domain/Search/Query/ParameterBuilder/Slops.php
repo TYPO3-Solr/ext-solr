@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
 
 /***************************************************************
@@ -23,7 +24,8 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
+
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 
 /**
@@ -74,9 +76,17 @@ class Slops implements ParameterBuilder
     }
 
     /**
-     * @return int
+     * @return boolean
      */
-    public function getQuerySlop(): int
+    public function getHasQuerySlop()
+    {
+        return $this->querySlop !== null;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getQuerySlop()
     {
         return $this->querySlop;
     }
@@ -90,9 +100,18 @@ class Slops implements ParameterBuilder
     }
 
     /**
-     * @return int
+     * @return boolean
      */
-    public function getPhraseSlop(): int
+    public function getHasPhraseSlop()
+    {
+        return $this->phraseSlop !== null;
+    }
+
+
+    /**
+     * @return int|null
+     */
+    public function getPhraseSlop()
     {
         return $this->phraseSlop;
     }
@@ -106,9 +125,17 @@ class Slops implements ParameterBuilder
     }
 
     /**
-     * @return int
+     * @return boolean
      */
-    public function getBigramPhraseSlop(): int
+    public function getHasBigramPhraseSlop()
+    {
+        return $this->bigramPhraseSlop !== null;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getBigramPhraseSlop()
     {
         return $this->bigramPhraseSlop;
     }
@@ -122,9 +149,17 @@ class Slops implements ParameterBuilder
     }
 
     /**
-     * @return int
+     * @return boolean
      */
-    public function getTrigramPhraseSlop(): int
+    public function getHasTrigramPhraseSlop()
+    {
+        return $this->trigramPhraseSlop !== null;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getTrigramPhraseSlop()
     {
         return $this->trigramPhraseSlop;
     }
@@ -135,20 +170,6 @@ class Slops implements ParameterBuilder
     public function setTrigramPhraseSlop(int $trigramPhraseSlop)
     {
         $this->trigramPhraseSlop = $trigramPhraseSlop;
-    }
-
-    /**
-     * @param Query $query
-     * @return Query
-     */
-    public function build(Query $query): Query
-    {
-        $query->getQueryParametersContainer()->setWhenIntOrUnsetWhenNull('qs', $this->querySlop);
-        $query->getQueryParametersContainer()->setWhenIntOrUnsetWhenNull('ps', $this->phraseSlop);
-        $query->getQueryParametersContainer()->setWhenIntOrUnsetWhenNull('ps2', $this->bigramPhraseSlop);
-        $query->getQueryParametersContainer()->setWhenIntOrUnsetWhenNull('ps3', $this->trigramPhraseSlop);
-
-        return $query;
     }
 
     /**
@@ -207,5 +228,32 @@ class Slops implements ParameterBuilder
         $trigramPhraseEnabled = !empty($searchConfiguration['query.']['trigramPhrase']) && $searchConfiguration['query.']['trigramPhrase'] === 1;
         $trigramSlopConfigured = !empty($searchConfiguration['query.']['trigramPhrase.']['slop']);
         return ($trigramPhraseEnabled && $trigramSlopConfigured) ? $searchConfiguration['query.']['trigramPhrase.']['slop'] : self::NO_SLOP;
+    }
+
+    /**
+     * @param QueryBuilder $parentBuilder
+     * @return QueryBuilder
+     */
+    public function build(QueryBuilder $parentBuilder): QueryBuilder
+    {
+        $query = $parentBuilder->getQuery();
+
+        if ($this->getHasPhraseSlop()) {
+            $query->getEDisMax()->setPhraseSlop($this->getPhraseSlop());
+        }
+
+        if ($this->getHasBigramPhraseSlop()) {
+            $query->getEDisMax()->setPhraseBigramSlop($this->getBigramPhraseSlop());
+        }
+
+        if ($this->getHasTrigramPhraseSlop()) {
+            $query->getEDisMax()->setPhraseTrigramSlop($this->getTrigramPhraseSlop());
+        }
+
+        if ($this->getHasQuerySlop()) {
+            $query->getEDisMax()->setQueryPhraseSlop($this->getQuerySlop());
+        }
+
+        return $parentBuilder;
     }
 }

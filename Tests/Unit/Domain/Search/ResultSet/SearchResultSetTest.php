@@ -36,9 +36,7 @@ use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\Search\SpellcheckingComponent;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
-use ApacheSolrForTypo3\Solr\System\Session\FrontendUserSession;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
-use TYPO3\CMS\Frontend\Plugin\AbstractPlugin;
 
 
 /**
@@ -56,11 +54,6 @@ class SearchResultSetTest extends UnitTest
      * @var Search
      */
     protected $searchMock;
-
-    /**
-     * @var AbstractPlugin
-     */
-    protected $pluginMock;
 
     /**
      * @var SearchResultSetService
@@ -101,16 +94,9 @@ class SearchResultSetTest extends UnitTest
         $this->escapeServiceMock->expects($this->any())->method('escape')->will($this->returnArgument(0));
 
         $this->searchResultSetService = $this->getMockBuilder(SearchResultSetService::class)
-            ->setMethods(['getRegisteredSearchComponents', 'getQueryInstance'])
+            ->setMethods(['getRegisteredSearchComponents'])
             ->setConstructorArgs([$this->configurationMock, $this->searchMock, $this->solrLogManagerMock])
             ->getMock();
-
-        // @todo we should fake the result of getQueryInstance with a mock and move the tests that test Query partly into the QueryTest
-        $this->searchResultSetService->expects($this->any())->method('getQueryInstance')->will(
-            $this->returnCallback(function($queryString){
-                return new Query($queryString, $this->configurationMock, $this->siteHashServiceMock, $this->escapeServiceMock, $this->solrLogManagerMock);
-            })
-        );
     }
 
     /**
@@ -244,8 +230,7 @@ class SearchResultSetTest extends UnitTest
         $resultSet = $this->searchResultSetService->search($fakeRequest);
 
         $this->assertSame($resultSet->getResponse(), $fakeResponse, 'Did not get the expected fakeResponse');
-
-        $this->assertSame(count($resultSet->getUsedQuery()->getFilters()->getValues()), 1, 'There should be one registered filter in the query');
+        $this->assertSame(count($resultSet->getUsedQuery()->getFilterQueries()), 1, 'There should be one registered filter in the query');
     }
 
     /**
@@ -291,7 +276,7 @@ class SearchResultSetTest extends UnitTest
             $this->returnCallback(
                 function(Query $query, $offset) use($expextedQueryString, $expectedOffset, $fakeResponse) {
 
-                    $this->assertSame($expextedQueryString, $query->getQueryStringContainer()->getKeywords() , "Search was not triggered with an expected queryString");
+                    $this->assertSame($expextedQueryString, $query->getQuery() , "Search was not triggered with an expected queryString");
                     $this->assertSame($expectedOffset, $offset);
                     return $fakeResponse;
                 }

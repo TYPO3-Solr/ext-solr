@@ -57,7 +57,8 @@ class SortingComponentTest extends UnitTest
      */
     public function setUp()
     {
-        $this->query = new Query('');
+        $this->query = new Query();
+        $this->query->setQuery('');
         $this->searchRequestMock = $this->getDumbMock(SearchRequest::class);
 
         $this->sortingComponent = new SortingComponent();
@@ -70,9 +71,9 @@ class SortingComponentTest extends UnitTest
      */
     public function sortingFromUrlIsNotAppliedWhenSortingIsDisabled()
     {
-        $this->searchRequestMock->expects($this->once())->method('getArguments')->willReturn(['sort' => 'title asc']);
+        $this->searchRequestMock->expects($this->any())->method('getArguments')->willReturn(['sort' => 'title asc']);
         $this->sortingComponent->initializeSearchComponent();
-        $this->assertNull($this->query->getQueryParameter('sort'), 'No sorting should be present in query');
+        $this->assertSame([], $this->query->getSorts(), 'No sorting should be present in query');
     }
 
     /**
@@ -90,9 +91,9 @@ class SortingComponentTest extends UnitTest
                 ]
             ]
         ]);
-        $this->searchRequestMock->expects($this->once())->method('getArguments')->willReturn(['sort' => 'title asc']);
+        $this->searchRequestMock->expects($this->any())->method('getArguments')->willReturn(['sort' => 'title asc']);
         $this->sortingComponent->initializeSearchComponent();
-        $this->assertSame('sortTitle asc', $this->query->getQueryParameter('sort'), 'Sorting was not applied in the query as expected');
+        $this->assertSame(['sortTitle' => 'asc'], $this->query->getSorts(), 'Sorting was not applied in the query as expected');
     }
 
     /**
@@ -110,9 +111,9 @@ class SortingComponentTest extends UnitTest
                 ]
             ]
         ]);
-        $this->searchRequestMock->expects($this->once())->method('getArguments')->willReturn(['sort' => 'title INVALID']);
+        $this->searchRequestMock->expects($this->any())->method('getArguments')->willReturn(['sort' => 'title INVALID']);
         $this->sortingComponent->initializeSearchComponent();
-        $this->assertNull($this->query->getQueryParameter('sort'), 'No sorting should be present in query');
+        $this->assertSame([], $this->query->getSorts(), 'No sorting should be present in query');
     }
 
     /**
@@ -125,9 +126,9 @@ class SortingComponentTest extends UnitTest
                 'sortBy' => 'price desc'
             ]
         ]);
-        $this->searchRequestMock->expects($this->once())->method('getArguments')->willReturn([]);
+        $this->searchRequestMock->expects($this->any())->method('getArguments')->willReturn([]);
         $this->sortingComponent->initializeSearchComponent();
-        $this->assertSame('price desc', $this->query->getQueryParameter('sort'), 'No sorting should be present in query');
+        $this->assertSame(['price' => 'desc'], $this->query->getSorts(), 'No sorting should be present in query');
     }
 
     /**
@@ -148,9 +149,9 @@ class SortingComponentTest extends UnitTest
                 ]
             ]
         ]);
-        $this->searchRequestMock->expects($this->once())->method('getArguments')->willReturn(['sort' => 'title asc']);
+        $this->searchRequestMock->expects($this->any())->method('getArguments')->willReturn(['sort' => 'title asc']);
         $this->sortingComponent->initializeSearchComponent();
-        $this->assertSame('sortTitle asc', $this->query->getQueryParameter('sort'), 'No sorting should be present in query');
+        $this->assertSame(['sortTitle' =>  'asc'], $this->query->getSorts(), 'No sorting should be present in query');
     }
 
     /**
@@ -171,8 +172,8 @@ class SortingComponentTest extends UnitTest
                 ]
             ]
         ]);
-        $this->searchRequestMock->expects($this->once())->method('getArguments')->willReturn(['sort' => 'title asc']);
+        $this->searchRequestMock->expects($this->any())->method('getArguments')->willReturn(['sort' => 'title asc']);
         $this->sortingComponent->initializeSearchComponent();
-        $this->assertSame('price desc', $this->query->getQueryParameter('sort'), 'No sorting should be present in query');
+        $this->assertSame(['price' => 'desc'],  $this->query->getSorts(), 'No sorting should be present in query');
     }
 }

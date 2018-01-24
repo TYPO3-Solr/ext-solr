@@ -23,12 +23,14 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 
 /**
  * The BigramPhraseFields class
  */
-class BigramPhraseFields extends AbstractFieldList
+class BigramPhraseFields extends AbstractFieldList implements ParameterBuilder
 {
     /**
      * Parameter key which should be used for Apache Solr URL query
@@ -61,5 +63,33 @@ class BigramPhraseFields extends AbstractFieldList
         }
 
         return self::fromString((string)$solrConfiguration->getSearchQueryBigramPhraseFields());
+    }
+
+    /**
+     * Parses the string representation of the fieldList (e.g. content^100, title^10) to the object representation.
+     *
+     * @param string $fieldListString
+     * @param string $delimiter
+     * @return BigramPhraseFields
+     */
+    protected static function initializeFromString(string $fieldListString, string $delimiter = ',') : BigramPhraseFields
+    {
+        $fieldList = self::buildFieldList($fieldListString, $delimiter);
+        return new BigramPhraseFields(true, $fieldList);
+    }
+
+    /**
+     * @param QueryBuilder $parentBuilder
+     * @return QueryBuilder
+     */
+    public function build(QueryBuilder $parentBuilder): QueryBuilder
+    {
+        $bigramPhraseFieldsString = $this->toString();
+        if ($bigramPhraseFieldsString === '' || !$this->getIsEnabled()) {
+            return $parentBuilder;
+        }
+
+        $parentBuilder->getQuery()->getEDisMax()->setPhraseBigramFields($bigramPhraseFieldsString);
+        return $parentBuilder;
     }
 }

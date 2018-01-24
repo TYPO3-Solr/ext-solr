@@ -24,8 +24,9 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * The Highlighting ParameterProvider is responsible to build the solr query parameters
@@ -33,7 +34,7 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
  *
  * @package ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder
  */
-class Highlighting extends AbstractDeactivatableParameterBuilder implements ParameterBuilder
+class Highlighting extends AbstractDeactivatable implements ParameterBuilder
 {
     /**
      * @var int
@@ -138,43 +139,13 @@ class Highlighting extends AbstractDeactivatableParameterBuilder implements Para
     }
 
     /**
-     * @param Query $query
-     * @return Query
+     * @return bool
      */
-    public function build(Query $query): Query
+    public function getUseFastVectorHighlighter()
     {
-        if (!$this->isEnabled) {
-            $query->getQueryParametersContainer()->removeMany(['hl', 'hl.fragsize', 'hl.fl', 'hl.useFastVectorHighlighter', 'hl.tag.pre', 'hl.tag.post', 'hl.simple.pre', 'hl.simple.post']);
-
-            return $query;
-        }
-
-        $highlightingParameter = [];
-        $highlightingParameter['hl'] = 'true';
-        $highlightingParameter['hl.fragsize'] = (int)$this->fragmentSize;
-
-        if ($this->highlightingFieldList != '') {
-            $highlightingParameter['hl.fl'] = $this->highlightingFieldList;
-        }
-
-        // the fast vector highlighter can only be used, when the fragmentSize is
-        // higher then 17 otherwise solr throws an exception
-        $useFastVectorHighlighter = ($this->fragmentSize >= 18);
-
-        if ($useFastVectorHighlighter) {
-            $highlightingParameter['hl.useFastVectorHighlighter'] = 'true';
-            $highlightingParameter['hl.tag.pre'] = $this->prefix;
-            $highlightingParameter['hl.tag.post'] = $this->postfix;
-        }
-
-        if ($this->prefix !== '' && $this->postfix !== '') {
-            $highlightingParameter['hl.simple.pre'] = $this->prefix;
-            $highlightingParameter['hl.simple.post'] = $this->postfix;
-        }
-
-        $query->getQueryParametersContainer()->merge($highlightingParameter);
-        return $query;
+        return ($this->fragmentSize >= 18);
     }
+
 
     /**
      * @param TypoScriptConfiguration $solrConfiguration
@@ -203,5 +174,40 @@ class Highlighting extends AbstractDeactivatableParameterBuilder implements Para
     public static function getEmpty()
     {
         return new Highlighting(false);
+    }
+
+
+    /**
+     * @param QueryBuilder $parentBuilder
+     * @return QueryBuilder
+     */
+    public function build(QueryBuilder $parentBuilder): QueryBuilder
+    {
+        $query = $parentBuilder->getQuery();
+        if(!$this->getIsEnabled()) {
+            $query->removeComponent($query->getHighlighting());
+            return $parentBuilder;
+        }
+
+        $query->getHighlighting()->setFragSize($this->getFragmentSize());
+        $query->getHighlighting()->setFields(GeneralUtility::trimExplode(",", $this->getHighlightingFieldList()));
+
+        if ($this->getUseFastVectorHighlighter()) {
+            $query->getHighlighting()->setUseFastVectorHighlighter(true);
+            $query->getHighlighting()->setTagPrefix($this->getPrefix());
+            $query->getHighlighting()->setTagPostfix($this->getPostfix());
+        } else {
+            $query->getHighlighting()->setUseFastVectorHighlighter(false);
+            $query->getHighlighting()->setTagPrefix(null);
+            $query->getHighlighting()->setTagPostfix(null);
+        }
+
+        if ($this->getPrefix() !== '' && $this->getPostfix() !== '') {
+            $query->getHighlighting()->setSimplePrefix($this->getPrefix());
+            $query->getHighlighting()->setSimplePostfix($this->getPostfix());
+        }
+
+        return $parentBuilder;
+
     }
 }

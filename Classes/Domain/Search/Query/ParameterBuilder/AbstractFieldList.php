@@ -24,13 +24,12 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * The AbstractFieldList class
  */
-abstract class AbstractFieldList extends AbstractDeactivatableParameterBuilder implements ParameterBuilder
+abstract class AbstractFieldList extends AbstractDeactivatable
 {
     /**
      * @var array
@@ -83,29 +82,12 @@ abstract class AbstractFieldList extends AbstractDeactivatableParameterBuilder i
      * @param string $fieldName
      * @param float $boost
      *
-     * @return ParameterBuilder
+     * @return AbstractFieldList
      */
-    public function add(string $fieldName, float $boost = 1.0): ParameterBuilder
+    public function add(string $fieldName, float $boost = 1.0): AbstractFieldList
     {
         $this->fieldList[$fieldName] = (float)$boost;
         return $this;
-    }
-
-    /**
-     * @param Query $query
-     * @return Query
-     */
-    public function build(Query $query): Query
-    {
-        $string = $this->toString();
-        // return empty array on empty string
-        if (trim($string) === '' || !$this->isEnabled) {
-            $query->getQueryParametersContainer()->remove($this->parameterKey);
-            return $query;
-        }
-
-        $query->getQueryParametersContainer()->set($this->parameterKey, $string);
-        return $query;
     }
 
     /**
@@ -129,18 +111,5 @@ abstract class AbstractFieldList extends AbstractDeactivatableParameterBuilder i
         }
 
         return rtrim($fieldListString, $delimiter);
-    }
-
-    /**
-     * Parses the string representation of the fieldList (e.g. content^100, title^10) to the object representation.
-     *
-     * @param string $fieldListString
-     * @param string $delimiter
-     * @return AbstractFieldList
-     */
-    protected static function initializeFromString(string $fieldListString, string $delimiter = ',') : AbstractFieldList
-    {
-        $fieldList = self::buildFieldList($fieldListString, $delimiter);
-        return new static(true, $fieldList);
     }
 }

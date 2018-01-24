@@ -253,3 +253,11 @@ if (!isset($GLOBALS['TYPO3_CONF_VARS']['LOG']['ApacheSolrForTypo3']['Solr']['wri
 
 // add tsconfig
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPageTSConfig('<INCLUDE_TYPOSCRIPT: source="FILE:EXT:solr/Configuration/TSconfig/ContentElementWizard.typoscript">');
+
+
+$isComposerMode = defined('TYPO3_COMPOSER_MODE') && TYPO3_COMPOSER_MODE;
+if(!$isComposerMode) {
+    // we load the autoloader for our libraries
+    $dir = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($_EXTKEY);
+    require $dir . '/Resources/Private/Php/ComposerLibraries/vendor/autoload.php';
+}

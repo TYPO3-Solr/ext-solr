@@ -24,7 +24,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\SortingExpression;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 
@@ -34,7 +34,7 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
  *
  * @package ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder
  */
-class Faceting extends AbstractDeactivatableParameterBuilder implements ParameterBuilder
+class Faceting extends AbstractDeactivatable implements ParameterBuilder
 {
 
     /**
@@ -179,40 +179,6 @@ class Faceting extends AbstractDeactivatableParameterBuilder implements Paramete
     }
 
     /**
-     * @param Query $query
-     * @return Query
-     */
-    public function build(Query $query): Query
-    {
-        if (!$this->isEnabled) {
-            $query->getQueryParametersContainer()->removeMany(['facet', 'json.facet']);
-            $query->getQueryParametersContainer()->removeByPrefix('facet.');
-            $query->getQueryParametersContainer()->removeByPrefix('f.');
-            return $query;
-        }
-
-        $facetParameters = [];
-
-        $facetParameters['facet'] = 'true';
-        $facetParameters['facet.mincount'] = $this->minCount;
-        $facetParameters['facet.limit'] = $this->limit;
-        $facetParameters['facet.field'] = $this->fields;
-
-        foreach ($this->additionalParameters as $additionalParameterKey => $additionalParameterValue) {
-            $facetParameters[$additionalParameterKey] = $additionalParameterValue;
-        }
-
-        if ($facetParameters['json.facet']) {
-            $facetParameters['json.facet'] = json_encode($facetParameters['json.facet']);
-        }
-
-        $facetParameters = $this->applySorting($facetParameters);
-        $query->getQueryParametersContainer()->merge($facetParameters);
-
-        return $query;
-    }
-
-    /**
      * Reads the facet sorting configuration and applies it to the queryParameters.
      *
      * @param array $facetParameters
@@ -254,5 +220,64 @@ class Faceting extends AbstractDeactivatableParameterBuilder implements Paramete
     public static function getEmpty()
     {
         return new Faceting(false);
+    }
+
+    /**
+     * Retrieves all parameters that are required for faceting.
+     *
+     * @return array
+     */
+    protected function getFacetParameters() {
+        $facetParameters = [];
+        $facetParameters['facet'] = 'true';
+        $facetParameters['facet.mincount'] = $this->getMinCount();
+        $facetParameters['facet.limit'] = $this->getLimit();
+        $facetParameters['facet.field'] = $this->getFields();
+
+        foreach ($this->getAdditionalParameters() as $additionalParameterKey => $additionalParameterValue) {
+            $facetParameters[$additionalParameterKey] = $additionalParameterValue;
+        }
+
+        if ($facetParameters['json.facet']) {
+            $facetParameters['json.facet'] = json_encode($facetParameters['json.facet']);
+        }
+
+        $facetParameters = $this->applySorting($facetParameters);
+        return $facetParameters;
+    }
+
+    /**
+     * @param QueryBuilder $parentBuilder
+     * @return QueryBuilder
+     */
+    public function build(QueryBuilder $parentBuilder): QueryBuilder
+    {
+        $query = $parentBuilder->getQuery();
+        if (!$this->getIsEnabled()) {
+            //@todo use unset functionality when present
+            $query->addParam('facet', null);
+            $query->addParam('lex', null);
+            $query->addParam('json.mincount', null);
+            $query->addParam('json.limit', null);
+            $query->addParam('json.field', null);
+            $query->addParam('facet.sort', null);
+
+            $params = $query->getParams();
+            foreach($params as $key => $value) {
+                if (strpos($key, 'f.') !== false) {
+                    $query->addParam($key, null);
+                }
+            }
+
+            return $parentBuilder;
+        }
+
+        //@todo check of $this->queryToBuilder->getFacetSet() can be used
+        $facetingParameters = $this->getFacetParameters();
+        foreach($facetingParameters as $key => $value) {
+            $query->addParam($key, $value);
+        }
+
+        return $parentBuilder;
     }
 }

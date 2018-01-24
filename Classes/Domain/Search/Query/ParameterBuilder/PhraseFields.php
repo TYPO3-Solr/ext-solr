@@ -23,12 +23,14 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 
 /**
  * The PhraseFields class
  */
-class PhraseFields extends AbstractFieldList
+class PhraseFields extends AbstractFieldList implements ParameterBuilder
 {
     /**
      * Parameter key which should be used for Apache Solr URL query
@@ -51,7 +53,7 @@ class PhraseFields extends AbstractFieldList
 
     /**
      * @param TypoScriptConfiguration $solrConfiguration
-     * @return BigramPhraseFields
+     * @return PhraseFields
      */
     public static function fromTypoScriptConfiguration(TypoScriptConfiguration $solrConfiguration)
     {
@@ -61,5 +63,33 @@ class PhraseFields extends AbstractFieldList
         }
 
         return self::fromString((string)$solrConfiguration->getSearchQueryPhraseFields());
+    }
+
+    /**
+     * Parses the string representation of the fieldList (e.g. content^100, title^10) to the object representation.
+     *
+     * @param string $fieldListString
+     * @param string $delimiter
+     * @return PhraseFields
+     */
+    protected static function initializeFromString(string $fieldListString, string $delimiter = ',') : PhraseFields
+    {
+        $fieldList = self::buildFieldList($fieldListString, $delimiter);
+        return new PhraseFields(true, $fieldList);
+    }
+
+    /**
+     * @param QueryBuilder $parentBuilder
+     * @return QueryBuilder
+     */
+    public function build(QueryBuilder $parentBuilder): QueryBuilder
+    {
+        $phraseFieldString = $this->toString();
+        if ($phraseFieldString === '' || !$this->getIsEnabled()) {
+            return $parentBuilder;
+        }
+
+        $parentBuilder->getQuery()->getEDisMax()->setPhraseFields($phraseFieldString);
+        return $parentBuilder;
     }
 }

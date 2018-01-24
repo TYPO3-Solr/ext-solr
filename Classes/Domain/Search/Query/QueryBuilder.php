@@ -36,8 +36,11 @@ use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\PhraseFields;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\QueryFields;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\ReturnFields;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Slops;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Sorting;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Sortings;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Spellchecking;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\TrigramPhraseFields;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\SortingExpression;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteHashService;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\FieldProcessor\PageUidToHierarchy;
@@ -111,7 +114,7 @@ class QueryBuilder {
      */
     public function newSearchQuery($queryString): QueryBuilder
     {
-        $this->queryToBuild = $this->getQueryInstance($queryString);
+        $this->queryToBuild = $this->getSearchQueryInstance($queryString);
         return $this;
     }
 
@@ -140,21 +143,22 @@ class QueryBuilder {
      * @param string|null $rawQuery
      * @param int $resultsPerPage
      * @param array $additionalFiltersFromRequest
-     * @return Query
+     * @return SearchQuery
      */
-    public function buildSearchQuery($rawQuery, $resultsPerPage = 10, array $additionalFiltersFromRequest = []) : Query
+    public function buildSearchQuery($rawQuery, $resultsPerPage = 10, array $additionalFiltersFromRequest = []) : SearchQuery
     {
         if ($this->typoScriptConfiguration->getLoggingQuerySearchWords()) {
             $this->logger->log(SolrLogManager::INFO, 'Received search query', [$rawQuery]);
         }
-        /* @var $query Query */
+
+        /* @var $query SearchQuery */
         return $this->newSearchQuery($rawQuery)
                 ->useResultsPerPage($resultsPerPage)
                 ->useReturnFieldsFromTypoScript()
                 ->useQueryFieldsFromTypoScript()
                 ->useInitialQueryFromTypoScript()
                 ->useFiltersFromTypoScript()
-                ->useFilterArray($this->getQuery()->getFilters()->addMultiple($additionalFiltersFromRequest)->getValues())
+                ->useFilterArray($additionalFiltersFromRequest)
                 ->useFacetingFromTypoScript()
                 ->useVariantsFromTypoScript()
                 ->useGroupingFromTypoScript()
@@ -179,15 +183,26 @@ class QueryBuilder {
         $this->newSuggestQuery($queryString)
             ->useFiltersFromTypoScript()
             ->useSiteHashFromTypoScript($requestedPageId)
-            ->useUserAccessGroups(explode(',', $groupList));
+            ->useUserAccessGroups(explode(',', $groupList))
+            ->useOmitHeader();
 
-        $this->queryToBuild->setOmitHeader();
 
         if (!empty($additionalFilters)) {
             $this->useFilterArray($additionalFilters);
         }
 
         return $this->queryToBuild;
+    }
+
+    /**
+     * @param bool $omitHeader
+     * @return QueryBuilder
+     */
+    public function useOmitHeader($omitHeader = true): QueryBuilder
+    {
+        $this->queryToBuild->setOmitHeader($omitHeader);
+
+        return $this;
     }
 
     /**
@@ -221,9 +236,8 @@ class QueryBuilder {
             ->useFilter('(type:pages AND uid:' . $pageId . ') OR (*:* AND pid:' . $pageId . ' NOT type:pages)', 'type')
             ->useFilter('siteHash:' . $site->getSiteHash(), 'siteHash')
             ->useReturnFields(ReturnFields::fromString('*'))
-            ->useSorting('type asc, title asc')
+            ->useSortings(Sortings::fromString('type asc, title asc'))
             ->useQueryType('standard')
-            ->useRawQueryString()
             ->getQuery();
     }
 
@@ -242,9 +256,8 @@ class QueryBuilder {
             ->useFilter('type:' . $type . ' AND uid:' . $uid, 'type')
             ->useFilter('siteHash:' . $site->getSiteHash(), 'siteHash')
             ->useReturnFields(ReturnFields::fromString('*'))
-            ->useSorting('type asc, title asc')
+            ->useSortings(Sortings::fromString('type asc, title asc'))
             ->useQueryType('standard')
-            ->useRawQueryString()
             ->getQuery();
     }
 
@@ -256,19 +269,7 @@ class QueryBuilder {
      */
     public function useQueryString($queryString): QueryBuilder
     {
-        $this->queryToBuild->getQueryStringContainer()->setQueryString($queryString);
-        return $this;
-    }
-
-    /**
-     * Applies the useRawQueryString flag to the queryString.
-     *
-     * @param boolean $boolean
-     * @return QueryBuilder
-     */
-    public function useRawQueryString($boolean = true): QueryBuilder
-    {
-        $this->queryToBuild->getQueryStringContainer()->useRawQueryString($boolean);
+        $this->queryToBuild->setQuery($queryString);
         return $this;
     }
 
@@ -278,21 +279,63 @@ class QueryBuilder {
      * @param string $queryType
      * @return QueryBuilder
      */
-    public function useQueryType($queryType): QueryBuilder
+    public function useQueryType(string $queryType): QueryBuilder
     {
-        $this->queryToBuild->setQueryType($queryType);
+        $this->queryToBuild->addParam('qt', $queryType);
+        return $this;
+    }
+
+    /**
+     * Remove the queryType (qt) from the query.
+     *
+     * @return QueryBuilder
+     */
+    public function removeQueryType(): QueryBuilder
+    {
+        $this->queryToBuild->addParam('qt', null);
+        return $this;
+    }
+
+    /**
+     * Can be used to remove all sortings from the query.
+     *
+     * @return QueryBuilder
+     */
+    public function removeAllSortings(): QueryBuilder
+    {
+        $this->queryToBuild->clearSorts();
         return $this;
     }
 
     /**
      * Applies the passed sorting to the query.
      *
-     * @param string $sorting
+     * @param Sorting $sorting
      * @return QueryBuilder
      */
-    public function useSorting($sorting): QueryBuilder
+    public function useSorting(Sorting $sorting): QueryBuilder
     {
-        $this->queryToBuild->setSorting($sorting);
+        if (strpos($sorting->getFieldName(), 'relevance') !== false) {
+            $this->removeAllSortings();
+            return $this;
+        }
+
+        $this->queryToBuild->addSort($sorting->getFieldName(), $sorting->getDirection());
+        return $this;
+    }
+
+    /**
+     * Applies the passed sorting to the query.
+     *
+     * @param Sortings $sortings
+     * @return QueryBuilder
+     */
+    public function useSortings(Sortings $sortings): QueryBuilder
+    {
+        foreach($sortings->getSortings() as $sorting) {
+            $this->useSorting($sorting);
+        }
+
         return $this;
     }
 
@@ -302,7 +345,7 @@ class QueryBuilder {
      */
     public function useResultsPerPage($resultsPerPage): QueryBuilder
     {
-        $this->queryToBuild->getPagination()->setResultsPerPage($resultsPerPage);
+        $this->queryToBuild->setRows($resultsPerPage);
         return $this;
     }
 
@@ -312,7 +355,7 @@ class QueryBuilder {
      */
     public function usePage($page): QueryBuilder
     {
-        $this->queryToBuild->getPagination()->setPage($page);
+        $this->queryToBuild->setStart($page);
         return $this;
     }
 
@@ -322,7 +365,18 @@ class QueryBuilder {
      */
     public function useOperator(Operator $operator): QueryBuilder
     {
-        $this->queryToBuild->setOperator($operator);
+        $this->queryToBuild->setQueryDefaultOperator( $operator->getOperator());
+        return $this;
+    }
+
+    /**
+     * Remove the default query operator.
+     *
+     * @return QueryBuilder
+     */
+    public function removeOperator(): QueryBuilder
+    {
+        $this->queryToBuild->setQueryDefaultOperator(null);
         return $this;
     }
 
@@ -340,8 +394,7 @@ class QueryBuilder {
      */
     public function useSlops(Slops $slops): QueryBuilder
     {
-        $this->queryToBuild->setSlops($slops);
-        return $this;
+        return $slops->build($this);
     }
 
     /**
@@ -373,7 +426,27 @@ class QueryBuilder {
      */
     public function useBoostQueries($boostQueries): QueryBuilder
     {
-        $this->queryToBuild->setBoostQuery($boostQueries);
+        $boostQueryArray = [];
+        if(is_array($boostQueries)) {
+            foreach($boostQueries as $boostQuery) {
+                $boostQueryArray[] = ['key' => md5($boostQuery), 'query' => $boostQuery];
+            }
+        } else {
+            $boostQueryArray[] = ['key' => md5($boostQueries), 'query' => $boostQueries];
+        }
+
+        $this->queryToBuild->getEDisMax()->setBoostQueries($boostQueryArray);
+        return $this;
+    }
+
+    /**
+     * Removes all boost queries from the query.
+     *
+     * @return QueryBuilder
+     */
+    public function removeAllBoostQueries(): QueryBuilder
+    {
+        $this->queryToBuild->getEDisMax()->clearBoostQueries();
         return $this;
     }
 
@@ -398,9 +471,20 @@ class QueryBuilder {
      * @param string $boostFunction
      * @return QueryBuilder
      */
-    public function useBoostFunction($boostFunction): QueryBuilder
+    public function useBoostFunction(string $boostFunction): QueryBuilder
     {
-        $this->queryToBuild->setBoostFunction($boostFunction);
+        $this->queryToBuild->getEDisMax()->setBoostFunctions($boostFunction);
+        return $this;
+    }
+
+    /**
+     * Removes all previously configured boost functions.
+     *
+     * @return $this
+     */
+    public function removeAllBoostFunctions()
+    {
+        $this->queryToBuild->getEDisMax()->setBoostFunctions(null);
         return $this;
     }
 
@@ -422,12 +506,23 @@ class QueryBuilder {
     /**
      * Uses the passed minimumMatch(mm) for the query.
      *
-     * @param string $boostFunction
+     * @param string $minimumMatch
      * @return QueryBuilder
      */
-    public function useMinimumMatch($boostFunction): QueryBuilder
+    public function useMinimumMatch(string $minimumMatch): QueryBuilder
     {
-        $this->queryToBuild->setMinimumMatch($boostFunction);
+        $this->queryToBuild->getEDisMax()->setMinimumMatch($minimumMatch);
+        return $this;
+    }
+
+    /**
+     * Remove any previous passed minimumMatch parameter.
+     *
+     * @return QueryBuilder
+     */
+    public function removeMinimumMatch(): QueryBuilder
+    {
+        $this->queryToBuild->getEDisMax()->setMinimumMatch(null);
         return $this;
     }
 
@@ -452,7 +547,7 @@ class QueryBuilder {
      */
     public function useTieParameter($tie): QueryBuilder
     {
-        $this->queryToBuild->setTieParameter($tie);
+        $this->queryToBuild->getEDisMax()->setTie($tie);
         return $this;
     }
 
@@ -474,8 +569,7 @@ class QueryBuilder {
      */
     public function useQueryFields(QueryFields $queryFields): QueryBuilder
     {
-        $this->queryToBuild->setQueryFields($queryFields);
-        return $this;
+        return $queryFields->build($this);
     }
 
     /**
@@ -497,8 +591,7 @@ class QueryBuilder {
      */
     public function useReturnFields(ReturnFields $returnFields): QueryBuilder
     {
-        $this->queryToBuild->setReturnFields($returnFields);
-        return $this;
+        return $returnFields->build($this);
     }
 
     /**
@@ -548,7 +641,75 @@ class QueryBuilder {
      */
     public function useFilter($filterString, $filterName = ''): QueryBuilder
     {
-        $this->queryToBuild->getFilters()->add($filterString, $filterName);
+        $filterName = $filterName === '' ? $filterString : $filterName;
+        $this->queryToBuild->addFilterQuery(['key' => $filterName, 'query' => $filterString]);
+        return $this;
+    }
+
+    /**
+     * Removes a filter by the fieldName.
+     *
+     * @param string $fieldName
+     * @return QueryBuilder
+     */
+    public function removeFilterByFieldName($fieldName): QueryBuilder
+    {
+        return $this->removeFilterByFunction(
+            function($key, $query) use ($fieldName) {
+                $queryString = $query->getQuery();
+                $storedFieldName = substr($queryString,0, strpos($queryString, ":"));
+                return $storedFieldName == $fieldName;
+            }
+        );
+    }
+
+    /**
+     * Removes a filter by the name of the filter (also known as key).
+     *
+     * @param string $name
+     * @return QueryBuilder
+     */
+    public function removeFilterByName($name): QueryBuilder
+    {
+        return $this->removeFilterByFunction(
+            function($key, $query) use ($name) {
+                $key = $query->getKey();
+                return $key == $name;
+            }
+        );
+    }
+
+    /**
+     * Removes a filter by the filter value.
+     *
+     * @param string $value
+     * @return QueryBuilder
+     */
+    public function removeFilterByValue($value): QueryBuilder
+    {
+        return $this->removeFilterByFunction(
+            function($key, $query) use ($value) {
+                $query = $query->getQuery();
+                return $query == $value;
+            }
+        );
+    }
+
+    /**
+     * @param \Closure $filterFunction
+     * @return QueryBuilder
+     */
+    public function removeFilterByFunction($filterFunction) : QueryBuilder
+    {
+        $queries = $this->queryToBuild->getFilterQueries();
+        foreach($queries as $key =>  $query) {
+            $canBeRemoved = $filterFunction($key, $query);
+            if($canBeRemoved) {
+                unset($queries[$key]);
+            }
+        }
+
+        $this->queryToBuild->setFilterQueries($queries);
         return $this;
     }
 
@@ -566,7 +727,8 @@ class QueryBuilder {
         sort($groups, SORT_NUMERIC);
 
         $accessFilter = '{!typo3access}' . implode(',', $groups);
-        return $this->useFilter($accessFilter, 'accessFilter');
+        $this->queryToBuild->removeFilterQuery('access');
+        return $this->useFilter($accessFilter, 'access');
     }
 
     /**
@@ -579,13 +741,35 @@ class QueryBuilder {
         if ($this->typoScriptConfiguration->getSearchInitializeWithEmptyQuery() || $this->typoScriptConfiguration->getSearchQueryAllowEmptyQuery()) {
             // empty main query, but using a "return everything"
             // alternative query in q.alt
-            $this->queryToBuild->setAlternativeQuery('*:*');
+            $this->useAlternativeQuery('*:*');
         }
 
         if ($this->typoScriptConfiguration->getSearchInitializeWithQuery()) {
-            $this->queryToBuild->setAlternativeQuery($this->typoScriptConfiguration->getSearchInitializeWithQuery());
+            $this->useAlternativeQuery($this->typoScriptConfiguration->getSearchInitializeWithQuery());
         }
 
+        return $this;
+    }
+
+    /**
+     * Passes the alternative query to the Query
+     * @param string $query
+     * @return QueryBuilder
+     */
+    public function useAlternativeQuery(string $query): QueryBuilder
+    {
+        $this->queryToBuild->getEDisMax()->setQueryAlternative($query);
+        return $this;
+    }
+
+    /**
+     * Remove the alternative query from the Query.
+     *
+     * @return QueryBuilder
+     */
+    public function removeAlternativeQuery(): QueryBuilder
+    {
+        $this->queryToBuild->getEDisMax()->setQueryAlternative(null);
         return $this;
     }
 
@@ -607,8 +791,7 @@ class QueryBuilder {
      */
     public function useFaceting(Faceting $faceting): QueryBuilder
     {
-        $this->queryToBuild->setFaceting($faceting);
-        return $this;
+        return $faceting->build($this);
     }
 
     /**
@@ -627,8 +810,7 @@ class QueryBuilder {
      */
     public function useFieldCollapsing(FieldCollapsing $fieldCollapsing): QueryBuilder
     {
-        $this->queryToBuild->setFieldCollapsing($fieldCollapsing);
-        return $this;
+        return $fieldCollapsing->build($this);
     }
 
     /**
@@ -649,7 +831,24 @@ class QueryBuilder {
      */
     public function useGrouping(Grouping $grouping): QueryBuilder
     {
-        $this->queryToBuild->setGrouping($grouping);
+        return $grouping->build($this);
+    }
+
+    /**
+     * @param boolean $debugMode
+     * @return QueryBuilder
+     */
+    public function useDebug($debugMode): QueryBuilder
+    {
+        if (!$debugMode) {
+            $this->queryToBuild->addParam('debugQuery', null);
+            $this->queryToBuild->addParam('echoParams', null);
+            return $this;
+        }
+
+        $this->queryToBuild->addParam('debugQuery', 'true');
+        $this->queryToBuild->addParam('echoParams', 'all');
+
         return $this;
     }
 
@@ -669,8 +868,7 @@ class QueryBuilder {
      */
     public function useHighlighting(Highlighting $highlighting): QueryBuilder
     {
-        $this->queryToBuild->setHighlighting($highlighting);
-        return $this;
+        return $highlighting->build($this);
     }
 
     /**
@@ -681,7 +879,7 @@ class QueryBuilder {
     public function useFiltersFromTypoScript(): QueryBuilder
     {
         $filters = Filters::fromTypoScriptConfiguration($this->typoScriptConfiguration);
-        $this->queryToBuild->setFilters($filters);
+        $this->queryToBuild->setFilterQueries($filters->getValues());
 
         $this->useFilterArray($this->getAdditionalFilters());
 
@@ -717,8 +915,7 @@ class QueryBuilder {
      */
     public function useElevation(Elevation $elevation): QueryBuilder
     {
-        $this->queryToBuild->setElevation($elevation);
-        return $this;
+        return $elevation->build($this);
     }
 
     /**
@@ -737,8 +934,7 @@ class QueryBuilder {
      */
     public function useSpellchecking(Spellchecking $spellchecking): QueryBuilder
     {
-        $this->queryToBuild->setSpellchecking($spellchecking);
-        return $this;
+        return $spellchecking->build($this);
     }
 
     /**
@@ -782,8 +978,7 @@ class QueryBuilder {
      */
     public function usePhraseFields(PhraseFields $phraseFields): QueryBuilder
     {
-        $this->queryToBuild->setPhraseFields($phraseFields);
-        return $this;
+        return $phraseFields->build($this);
     }
 
     /**
@@ -804,8 +999,7 @@ class QueryBuilder {
      */
     public function useBigramPhraseFields(BigramPhraseFields $bigramPhraseFields): QueryBuilder
     {
-        $this->queryToBuild->setBigramPhraseFields($bigramPhraseFields);
-        return $this;
+        return $bigramPhraseFields->build($this);
     }
 
     /**
@@ -826,8 +1020,7 @@ class QueryBuilder {
      */
     public function useTrigramPhraseFields(TrigramPhraseFields $trigramPhraseFields): QueryBuilder
     {
-        $this->queryToBuild->setTrigramPhraseFields($trigramPhraseFields);
-        return $this;
+        return $trigramPhraseFields->build($this);
     }
 
     /**
@@ -874,11 +1067,12 @@ class QueryBuilder {
 
     /**
      * @param string $rawQuery
-     * @return Query|object
+     * @return SearchQuery
      */
-    protected function getQueryInstance($rawQuery): Query
+    protected function getSearchQueryInstance($rawQuery): SearchQuery
     {
-        $query = GeneralUtility::makeInstance(Query::class, /** @scrutinizer ignore-type */ $rawQuery);
+        $query = GeneralUtility::makeInstance(SearchQuery::class);
+        $query->setQuery($rawQuery);
         return $query;
     }
 

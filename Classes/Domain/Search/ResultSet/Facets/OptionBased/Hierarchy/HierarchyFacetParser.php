@@ -14,8 +14,6 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Hie
  * The TYPO3 project - inspiring people to share!
  */
 
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Faceting;
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetParser;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 
@@ -56,7 +54,7 @@ class HierarchyFacetParser extends AbstractFacetParser
 
         $nodesToCreate = $this->getMergedFacetValueFromSearchRequestAndSolrResponse($optionsFromSolrResponse, $optionsFromRequest);
 
-        if ($this->facetOptionsMustBeResorted($facetConfiguration, $resultSet) === true) {
+        if ($this->facetOptionsMustBeResorted($facetConfiguration)) {
             $nodesToCreate = $this->sortFacetOptionsInNaturalOrder($nodesToCreate);
         }
 
@@ -105,20 +103,12 @@ class HierarchyFacetParser extends AbstractFacetParser
      * see: https://lucene.apache.org/solr/guide/6_6/faceting.html#Faceting-Thefacet.sortParameter
      * see: https://wiki.apache.org/solr/SimpleFacetParameters#facet.sort : "This parameter can be specified on a per field basis."
      *
-     * If plugin.tx_solr.search.faceting.facets.[facetName].sortBy is not set, then trying to get global parameter from ResultSet.
-     *
      * @param array $facetConfiguration
-     * @param SearchResultSet $resultSet
      * @return bool
      */
-    protected function facetOptionsMustBeResorted(array $facetConfiguration, SearchResultSet $resultSet)
+    protected function facetOptionsMustBeResorted(array $facetConfiguration)
     {
         if (isset($facetConfiguration['sortBy']) && $facetConfiguration['sortBy'] === 'index') {
-            return true;
-        }
-
-        if (!isset($facetConfiguration['sortBy'])
-            && $resultSet->getUsedQuery()->getFaceting()->getSorting() === 'index') {
             return true;
         }
 

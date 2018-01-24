@@ -24,10 +24,8 @@ namespace ApacheSolrForTypo3\Solr\Search;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Highlighting;
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
-use ApacheSolrForTypo3\Solr\Util;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**

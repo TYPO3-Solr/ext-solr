@@ -28,8 +28,11 @@ if [ -n "$TRAVIS_TAG" ] && [ -n "$TYPO3_ORG_USERNAME" ] && [ -n "$TYPO3_ORG_PASS
          pwd
 
          git reset --hard HEAD && git clean -fx
+
+         composer run-script extension-build
+
          echo "Files in this package"
-         ls -l
+         ls -lRa
 
          TAG_MESSAGE=`git tag -n10 -l $TRAVIS_TAG | sed 's/^[0-9.]*[ ]*//g'`
          echo "Uploading release ${TRAVIS_TAG} to TER"
