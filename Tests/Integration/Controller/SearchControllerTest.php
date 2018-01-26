@@ -35,6 +35,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Exception\StopActionException;
 use TYPO3\CMS\Extbase\Mvc\Request;
 use TYPO3\CMS\Extbase\Mvc\Web\Response;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 use TYPO3\CMS\Fluid\View\Exception\InvalidTemplateResourceException;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Frontend\Page\PageGenerator;
@@ -46,6 +48,11 @@ use TYPO3\CMS\Frontend\Page\PageGenerator;
  */
 class SearchControllerTest extends IntegrationTest
 {
+    /**
+     * @var ObjectManagerInterface The object manager
+     */
+    protected $objectManager;
+
     /**
      * @var SearchController
      */
@@ -64,6 +71,9 @@ class SearchControllerTest extends IntegrationTest
     public function setUp()
     {
         parent::setUp();
+        
+        $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+
         $GLOBALS['TT'] = $this->getMockBuilder(TimeTracker::class)->disableOriginalConstructor()->getMock();
 
         /** @var  $searchController SearchController */

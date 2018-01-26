@@ -31,7 +31,6 @@ use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Core\Bootstrap;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
-use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\TimeTracker\TimeTracker;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
@@ -49,11 +48,6 @@ use TYPO3\CMS\Install\Service\SqlSchemaMigrationService;
  */
 abstract class IntegrationTest extends FunctionalTestCase
 {
-
-    /**
-     * @var \TYPO3\CMS\Extbase\Object\ObjectManagerInterface The object manager
-     */
-    protected $objectManager;
 
     /**
      * @var array
@@ -76,8 +70,6 @@ abstract class IntegrationTest extends FunctionalTestCase
      */
     public function setUp()
     {
-        $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-
         parent::setUp();
 
         //this is needed by the TYPO3 core.
