@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataset>
+    <pages>
+        <uid>1</uid>
+        <is_siteroot>1</is_siteroot>
+        <doktype>1</doktype>
+        <title>Page</title>
+    </pages>
+
+    <pages>
+        <uid>7</uid>
+        <pid>1</pid>
+        <doktype>1</doktype>
+        <title>Sub page with assigned category</title>
+    </pages>
+
+    <pages_language_overlay>
+        <uid>2</uid>
+        <pid>7</pid>
+        <sys_language_uid>1</sys_language_uid>
+        <doktype>1</doktype>
+        <title>Translated Sub page with assigned category</title>
+    </pages_language_overlay>
+
+    <sys_category_record_mm>
+        <!-- the category id -->
+        <uid_local>123</uid_local>
+        <!-- the page id -->
+        <uid_foreign>7</uid_foreign>
+        <tablenames>pages</tablenames>
+        <fieldname>categories</fieldname>
+        <sorting>1</sorting>
+        <sorting_foreign>1</sorting_foreign>
+    </sys_category_record_mm>
+
+    <sys_category>
+        <uid>123</uid>
+        <pid>0</pid>
+        <title>Some Category</title>
+        <sys_language_uid>0</sys_language_uid>
+    </sys_category>
+</dataset>

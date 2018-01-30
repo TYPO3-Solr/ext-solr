@@ -119,33 +119,56 @@ class Relation
     protected function getRelatedItems(
         ContentObjectRenderer $parentContentObject
     ) {
-        $relatedItems = [];
-
-        list($localTableName, $localRecordUid) = explode(':',
-            $parentContentObject->currentRecord);
-
-        $localTableNameOrg = $localTableName;
-        // pages has a special overlay table constriction
-        if ($GLOBALS['TSFE']->sys_language_uid > 0 && $localTableName === 'pages') {
-            $localTableName = 'pages_language_overlay';
-        }
-
-        $localTableTca = $GLOBALS['TCA'][$localTableName];
+        list($localTableNameOrg, $localRecordUid) = explode(':', $parentContentObject->currentRecord);
         $localFieldName = $this->configuration['localField'];
 
-        if (isset($localTableTca['columns'][$localFieldName])) {
-            $localFieldTca = $localTableTca['columns'][$localFieldName];
-            $localRecordUid = $this->getUidOfRecordOverlay($localTableNameOrg, $localRecordUid);
-            if (isset($localFieldTca['config']['MM']) && trim($localFieldTca['config']['MM']) !== '') {
-                $relatedItems = $this->getRelatedItemsFromMMTable($localTableName,
-                    $localRecordUid, $localFieldTca);
-            } else {
-                $relatedItems = $this->getRelatedItemsFromForeignTable($localTableName,
-                    $localRecordUid, $localFieldTca, $parentContentObject);
-            }
+        if (!$this->isTcaConfiguredForTablesField($localTableNameOrg, $localFieldName)) {
+            return [];
+        }
+
+        $localTableName = $this->usePagesLanguageOverlayInsteadOfPagesIfPossible($localTableNameOrg, $localFieldName);
+        $localRecordUid = $this->getUidOfRecordOverlay($localTableNameOrg, $localFieldName, $localRecordUid);
+
+        $localFieldTca = $GLOBALS['TCA'][$localTableName]['columns'][$localFieldName];
+        if (isset($localFieldTca['config']['MM']) && trim($localFieldTca['config']['MM']) !== '') {
+            $relatedItems = $this->getRelatedItemsFromMMTable($localTableName,
+                $localRecordUid, $localFieldTca);
+        } else {
+            $relatedItems = $this->getRelatedItemsFromForeignTable($localTableName,
+                $localRecordUid, $localFieldTca, $parentContentObject);
         }
 
         return $relatedItems;
+    }
+
+    /**
+     * @param string $localTableName
+     * @param string $localFieldName
+     * @return string
+     * @todo this can be removed when TYPO3 8 support is dropped since pages translations are in pages then as well
+     */
+    protected function usePagesLanguageOverlayInsteadOfPagesIfPossible(string $localTableName, string $localFieldName) : string
+    {
+        // pages has a special overlay table constriction
+        if ($GLOBALS['TSFE']->sys_language_uid > 0
+            && $localTableName === 'pages'
+            && $this->isTcaConfiguredForTablesField('pages_language_overlay', $localFieldName)) {
+            return 'pages_language_overlay';
+        }
+
+        return $localTableName;
+    }
+
+    /**
+     * Checks if TCA is available for column by table
+     *
+     * @param string $tableName
+     * @param string $fieldName
+     * @return bool
+     */
+    protected function isTcaConfiguredForTablesField(string $tableName, string $fieldName) : bool
+    {
+        return isset($GLOBALS['TCA'][$tableName]['columns'][$fieldName]);
     }
 
     /**
@@ -156,11 +179,8 @@ class Relation
      * @param array $localFieldTca The local table's TCA
      * @return array Array of related items, values already resolved from related records
      */
-    protected function getRelatedItemsFromMMTable(
-        $localTableName,
-        $localRecordUid,
-        array $localFieldTca
-    ) {
+    protected function getRelatedItemsFromMMTable($localTableName, $localRecordUid, array $localFieldTca)
+    {
         $relatedItems = [];
         $foreignTableName = $localFieldTca['config']['foreign_table'];
         $foreignTableTca = $GLOBALS['TCA'][$foreignTableName];
@@ -374,7 +394,7 @@ class Relation
      * @param int $localRecordUid
      * @return int
      */
-    protected function getUidOfRecordOverlay($localTableName, $localRecordUid)
+    protected function getUidOfRecordOverlay($localTableName, $localFieldName, $localRecordUid)
     {
         // when no language is set at all we do not need to overlay
         if (!isset($GLOBALS['TSFE']->sys_language_uid)) {
@@ -384,6 +404,11 @@ class Relation
         if (!$GLOBALS['TSFE']->sys_language_uid > 0) {
             return $localRecordUid;
         }
+        // when no TCA configured for pages_language_overlay's field, then use original record Uid
+        if ($localTableName === 'pages' && !$this->isTcaConfiguredForTablesField('pages_language_overlay', $localFieldName)) {
+            return $localRecordUid;
+        }
+
         /** @var  $db  \TYPO3\CMS\Core\Database\DatabaseConnection */
         $db = $GLOBALS['TYPO3_DB'];
         $record = $db->exec_SELECTgetSingleRow('*', $localTableName, 'uid = ' . $localRecordUid);
