@@ -2,7 +2,7 @@
   "name": "apache-solr-for-typo3/solr",
   "type": "typo3-cms-extension",
   "description": "Apache Solr for TYPO3",
-  "license": "GPL-2.0+",
+  "license": "GPL-3.0-or-later",
   "keywords": ["typo3", "TYPO3 CMS", "solr", "search"],
   "homepage": "http://www.typo3-solr.com",
   "authors": [
