@@ -14,6 +14,7 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers\Widget;
  * The TYPO3 project - inspiring people to share!
  */
 
+use ApacheSolrForTypo3\Solr\ViewHelpers\Widget\Controller\LastSearchesController;
 use ApacheSolrForTypo3\Solr\Widget\AbstractWidgetViewHelper;
 
 /**
@@ -27,10 +28,17 @@ class LastSearchesViewHelper extends AbstractWidgetViewHelper
 {
 
     /**
-     * @var \ApacheSolrForTypo3\Solr\ViewHelpers\Widget\Controller\LastSearchesController
-     * @inject
+     * @var LastSearchesController
      */
     protected $controller;
+
+    /**
+     * @param LastSearchesController $lastSearchesController
+     */
+    public function injectLastSearchesController(LastSearchesController $lastSearchesController)
+    {
+        $this->controller = $lastSearchesController;
+    }
 
     /**
      * @return \TYPO3\CMS\Extbase\Mvc\ResponseInterface

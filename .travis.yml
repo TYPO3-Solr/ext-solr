@@ -6,6 +6,7 @@ services:
 php:
   - 7.0
   - 7.1
+  - 7.2
 
 jdk:
   - oraclejdk8
@@ -26,15 +27,15 @@ env:
   matrix:
     - TYPO3_VERSION="^8.7"
     - TYPO3_VERSION="8.x-dev"
-    - TYPO3_VERSION="9.x-dev as 8.7.99"
+    - TYPO3_VERSION="^9.1"
 
 matrix:
   fast_finish: true
-  allow_failures:
-    - env: TYPO3_VERSION="9.x-dev as 8.7.99"
-      php: 7.0
-    - env: TYPO3_VERSION="9.x-dev as 8.7.99"
-      php: 7.1
+  exclude:
+    - php: 7.0
+      env: TYPO3_VERSION="^9.1"
+    - php: 7.1
+      env: TYPO3_VERSION="^9.1"
 
 before_install:
   - composer self-update

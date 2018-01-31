@@ -25,6 +25,7 @@ use TYPO3\CMS\Fluid\Core\Widget\AjaxWidgetContextHolder;
 use TYPO3\CMS\Fluid\Core\Widget\Exception\MissingControllerException;
 use TYPO3\CMS\Fluid\Core\Widget\WidgetRequest as CoreWidgetRequest;
 use TYPO3\CMS\Fluid\Core\Widget\WidgetContext;
+use TYPO3\CMS\Extbase\Service\ExtensionService;
 
 
 /**
@@ -70,8 +71,7 @@ abstract class AbstractWidgetViewHelper extends AbstractCoreWidgetViewHelper imp
     protected $objectManager;
 
     /**
-     * @var \TYPO3\CMS\Extbase\Service\ExtensionService
-     * @inject
+     * @var ExtensionService
      */
     protected $extensionService;
 
@@ -79,6 +79,14 @@ abstract class AbstractWidgetViewHelper extends AbstractCoreWidgetViewHelper imp
      * @var \TYPO3\CMS\Fluid\Core\Widget\WidgetContext
      */
     private $widgetContext;
+
+    /**
+     * @param ExtensionService $extensionService
+     */
+    public function injectExtensionService(ExtensionService $extensionService)
+    {
+        $this->extensionService = $extensionService;
+    }
 
     /**
      * @param AjaxWidgetContextHolder $ajaxWidgetContextHolder

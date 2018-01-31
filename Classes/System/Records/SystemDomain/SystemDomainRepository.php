@@ -26,6 +26,7 @@ namespace ApacheSolrForTypo3\Solr\System\Records\SystemDomain;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\System\Records\AbstractRepository;
+use ApacheSolrForTypo3\Solr\Util;
 
 class SystemDomainRepository extends AbstractRepository
 {
@@ -42,8 +43,33 @@ class SystemDomainRepository extends AbstractRepository
      */
     public function findDomainRecordsByRootPagesIds(array $rootPageIds = [])
     {
+
+        if (Util::getIsTYPO3VersionBelow9()) {
+            //@todo this can be dropped when support of TYPO3 8 is dropped
+            $resultTmp = $this->getDomainRecordsByRootPageIdsFor8($rootPageIds);
+        } else {
+            $resultTmp = $this->getDomainRecordsByRootPageIdsFor9($rootPageIds);
+        }
+
+        $result = [];
+        foreach ($resultTmp as $key => $row) {
+            $result[$row['pid']] = $row;
+        }
+        return $result;
+    }
+
+    /**
+     * Fetches the domain records for TYPO3 8.
+     *
+     * @todo this can be dropped when support of TYPO3 8 is dropped
+     * @param array $rootPageIds
+     * @return array
+     */
+    protected function getDomainRecordsByRootPageIdsFor8(array $rootPageIds = [])
+    {
         $queryBuilder = $this->getQueryBuilder();
-        $resultTmp = $queryBuilder->select('uid', 'pid')
+
+        return $queryBuilder->select('uid', 'pid')
             ->from($this->table)
             ->where(
                 $queryBuilder->expr()->in('pid', $rootPageIds),
@@ -52,11 +78,25 @@ class SystemDomainRepository extends AbstractRepository
             ->orderBy('pid')
             ->addOrderBy('sorting')
             ->execute()->fetchAll();
+    }
 
-        $result = [];
-        foreach ($resultTmp as $key => $row) {
-            $result[$row['pid']] = $row;
-        }
-        return $result;
+    /**
+     * Fetches the domain records for TYPO3 9.
+     *
+     * @param array $rootPageIds
+     * @return array
+     */
+    protected function getDomainRecordsByRootPageIdsFor9(array $rootPageIds = [])
+    {
+        $queryBuilder = $this->getQueryBuilder();
+
+        return $queryBuilder->select('uid', 'pid')
+            ->from($this->table)
+            ->where(
+                $queryBuilder->expr()->in('pid', $rootPageIds)
+            )->groupBy('uid', 'pid', 'sorting')
+            ->orderBy('pid')
+            ->addOrderBy('sorting')
+            ->execute()->fetchAll();
     }
 }

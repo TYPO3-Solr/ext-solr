@@ -26,6 +26,7 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers\Widget;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Grouping\GroupItem;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
+use ApacheSolrForTypo3\Solr\ViewHelpers\Widget\Controller\GroupItemPaginateController;
 use ApacheSolrForTypo3\Solr\Widget\AbstractWidgetViewHelper;
 
 /**
@@ -35,11 +36,17 @@ class GroupItemPaginateViewHelper extends AbstractWidgetViewHelper
 {
 
     /**
-     * @var \ApacheSolrForTypo3\Solr\ViewHelpers\Widget\Controller\GroupItemPaginateController
-     * @inject
+     * @var GroupItemPaginateController
      */
     protected $controller;
 
+    /**
+     * @param GroupItemPaginateController $groupItemPaginateController
+     */
+    public function injectGroupItemPaginateController(GroupItemPaginateController $groupItemPaginateController)
+    {
+        $this->controller = $groupItemPaginateController;
+    }
 
     /**
      * Initializes the arguments

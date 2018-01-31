@@ -38,6 +38,12 @@ tools:
     runs: 2
     timeout: 2400
 
+checks:
+    php:
+        excluded_dependencies:
+            - typo3/cms-install
+        avoid_superglobals: false
+
 build_failure_conditions:
   - 'patches.label("Doc Comments").count > 10'
   - 'patches.label("Spacing").count > 15'
@@ -45,3 +51,11 @@ build_failure_conditions:
   - 'issues.severity(>= MAJOR).count > 30'
   - 'project.metric("scrutinizer.quality", < 8)'
   - 'project.metric_change("scrutinizer.test_coverage", < -0.10)'
+
+
+build:
+  nodes:
+    analysis:
+      tests:
+        override:
+          - php-scrutinizer-run

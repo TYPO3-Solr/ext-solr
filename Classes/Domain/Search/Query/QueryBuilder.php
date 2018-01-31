@@ -688,7 +688,7 @@ class QueryBuilder {
 
         $searchQueryFilters = $this->typoScriptConfiguration->getSearchQueryFilterConfiguration();
 
-        if (count($searchQueryFilters) <= 0) {
+        if (!is_array($searchQueryFilters) || count($searchQueryFilters) <= 0) {
             return $this;
         }
 
@@ -844,7 +844,7 @@ class QueryBuilder {
         }
 
         $searchQueryFilters = $this->typoScriptConfiguration->getSearchQueryFilterConfiguration();
-        if (count($searchQueryFilters) <= 0) {
+        if (!is_array($searchQueryFilters) || count($searchQueryFilters) <= 0) {
             return [];
         }
 

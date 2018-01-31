@@ -71,6 +71,7 @@ abstract class IntegrationTest extends FunctionalTestCase
     public function setUp()
     {
         parent::setUp();
+        $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
 
         //this is needed by the TYPO3 core.
         chdir(PATH_site);
@@ -250,6 +251,7 @@ abstract class IntegrationTest extends FunctionalTestCase
         /** @var $TSFE \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController */
         $TSFE = GeneralUtility::makeInstance(TypoScriptFrontendController::class,
             $TYPO3_CONF_VARS, $id, $type, $no_cache, $cHash, $_2, $MP, $RDCT);
+        $GLOBALS['TSFE'] = $TSFE;
 
 
         EidUtility::initLanguage();
