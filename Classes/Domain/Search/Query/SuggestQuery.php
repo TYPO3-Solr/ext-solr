@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Query;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use Solarium\QueryType\Select\Query\Query;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\Helper\EscapeService;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Util;

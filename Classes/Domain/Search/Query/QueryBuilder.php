@@ -24,26 +24,28 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Query;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\BigramPhraseFields;
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Elevation;
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Faceting;
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\FieldCollapsing;
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Filters;
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Grouping;
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Highlighting;
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Operator;
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\PhraseFields;
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\QueryFields;
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\ReturnFields;
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Slops;
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Spellchecking;
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\TrigramPhraseFields;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\Parameter\BigramPhraseFields;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\Parameter\Elevation;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\Parameter\Faceting;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\Parameter\FieldCollapsing;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\Parameter\Filters;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\Parameter\Grouping;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\Parameter\Highlighting;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\Parameter\Operator;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\Parameter\PhraseFields;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\Parameter\QueryFields;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\Parameter\ReturnFields;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\Parameter\Slops;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\Parameter\Spellchecking;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\Parameter\TrigramPhraseFields;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\SortingExpression;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteHashService;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\FieldProcessor\PageUidToHierarchy;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\Util;
+use Solarium\QueryType\Select\Query\Query;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
@@ -111,7 +113,7 @@ class QueryBuilder {
      */
     public function newSearchQuery($queryString): QueryBuilder
     {
-        $this->queryToBuild = $this->getQueryInstance($queryString);
+        $this->queryToBuild = $this->getSearchQueryInstance($queryString);
         return $this;
     }
 
@@ -147,6 +149,7 @@ class QueryBuilder {
             $this->logger->log(SolrLogManager::INFO, 'Received search query', [$rawQuery]);
         }
 
+
         /* @var $query Query */
         return $this->newSearchQuery($rawQuery)
                 ->useResultsPerPage($resultsPerPage)
@@ -178,9 +181,9 @@ class QueryBuilder {
         $this->newSuggestQuery($queryString)
             ->useFiltersFromTypoScript()
             ->useSiteHashFromTypoScript($requestedPageId)
-            ->useUserAccessGroups(explode(',', $groupList));
+            ->useUserAccessGroups(explode(',', $groupList))
+            ->useOmitHeader();
 
-        $this->queryToBuild->setOmitHeader();
 
         if (!empty($additionalFilters)) {
             $additionalFilters = (array)json_decode($additionalFilters);
@@ -192,6 +195,17 @@ class QueryBuilder {
     }
 
     /**
+     * @param bool $omitHeader
+     * @return QueryBuilder
+     */
+    public function useOmitHeader($omitHeader = true): QueryBuilder
+    {
+        $this->queryToBuild->setOmitHeader($omitHeader);
+
+        return $this;
+    }
+
+    /**
      * Uses an array of filters and applies them to the query.
      *
      * @param array $filterArray
@@ -199,8 +213,8 @@ class QueryBuilder {
      */
     public function useFilterArray(array $filterArray): QueryBuilder
     {
-        foreach ($filterArray as $additionalFilter) {
-            $this->useFilter($additionalFilter);
+        foreach ($filterArray as $key => $additionalFilter) {
+            $this->useFilter($additionalFilter, $key);
         }
 
         return $this;
@@ -257,7 +271,7 @@ class QueryBuilder {
      */
     public function useQueryString($queryString): QueryBuilder
     {
-        $this->queryToBuild->getQueryStringContainer()->setQueryString($queryString);
+        $this->queryToBuild->setQuery($queryString);
         return $this;
     }
 
@@ -269,7 +283,8 @@ class QueryBuilder {
      */
     public function useRawQueryString($boolean = true): QueryBuilder
     {
-        $this->queryToBuild->getQueryStringContainer()->useRawQueryString($boolean);
+        // @todo
+        //        $this->queryToBuild->getQueryStringContainer()->useRawQueryString($boolean);
         return $this;
     }
 
@@ -281,7 +296,8 @@ class QueryBuilder {
      */
     public function useQueryType($queryType): QueryBuilder
     {
-        $this->queryToBuild->setQueryType($queryType);
+        $queryType = $queryType === false ? null : $queryType;
+        $this->queryToBuild->addParam('qt', $queryType);
         return $this;
     }
 
@@ -293,7 +309,17 @@ class QueryBuilder {
      */
     public function useSorting($sorting): QueryBuilder
     {
-        $this->queryToBuild->setSorting($sorting);
+        if ($sorting === false || strpos($sorting, 'relevance') !== false) {
+            $this->queryToBuild->clearSorts();
+            return $this;
+        }
+
+        //@todo extract functionality to split field and direction
+        $sortFields = GeneralUtility::trimExplode(',', $sorting);
+        foreach($sortFields as $sortField) {
+            $parts = GeneralUtility::trimExplode(' ', $sortField);
+            $this->queryToBuild->addSort($parts[0], $parts[1]);
+        }
         return $this;
     }
 
@@ -303,7 +329,7 @@ class QueryBuilder {
      */
     public function useResultsPerPage($resultsPerPage): QueryBuilder
     {
-        $this->queryToBuild->getPagination()->setResultsPerPage($resultsPerPage);
+        $this->queryToBuild->setRows($resultsPerPage);
         return $this;
     }
 
@@ -313,17 +339,18 @@ class QueryBuilder {
      */
     public function usePage($page): QueryBuilder
     {
-        $this->queryToBuild->getPagination()->setPage($page);
+        $this->queryToBuild->setStart($page);
         return $this;
     }
 
     /**
-     * @param Operator $operator
+     * @param Operator|bool $operator
      * @return QueryBuilder
      */
-    public function useOperator(Operator $operator): QueryBuilder
+    public function useOperator($operator): QueryBuilder
     {
-        $this->queryToBuild->setOperator($operator);
+        $operatorValue = $operator === false ? null : $operator->getOperator();
+        $this->queryToBuild->setQueryDefaultOperator($operatorValue);
         return $this;
     }
 
@@ -341,7 +368,22 @@ class QueryBuilder {
      */
     public function useSlops(Slops $slops): QueryBuilder
     {
-        $this->queryToBuild->setSlops($slops);
+        if ($slops->getPhraseSlop() !== null) {
+            $this->queryToBuild->getEDisMax()->setPhraseSlop($slops->getPhraseSlop());
+        }
+
+        if ($slops->getBigramPhraseSlop() !== null) {
+            $this->queryToBuild->getEDisMax()->setPhraseBigramSlop($slops->getBigramPhraseSlop());
+        }
+
+        if ($slops->getTrigramPhraseSlop()) {
+            $this->queryToBuild->getEDisMax()->setPhraseTrigramSlop($slops->getTrigramPhraseSlop());
+        }
+
+        if ($slops->getQuerySlop()) {
+            $this->queryToBuild->getEDisMax()->setQueryPhraseSlop($slops->getQuerySlop());
+        }
+
         return $this;
     }
 
@@ -374,7 +416,20 @@ class QueryBuilder {
      */
     public function useBoostQueries($boostQueries): QueryBuilder
     {
-        $this->queryToBuild->setBoostQuery($boostQueries);
+        if($boostQueries === false) {
+            $this->queryToBuild->getEDisMax()->clearBoostQueries();
+        }
+
+        $boostQueryArray = [];
+        if(is_array($boostQueries)) {
+            foreach($boostQueries as $boostQuery) {
+                $boostQueryArray[] = ['key' => md5($boostQuery), 'query' => $boostQuery];
+            }
+        } else {
+            $boostQueryArray[] = ['key' => md5($boostQueries), 'query' => $boostQueries];
+        }
+
+        $this->queryToBuild->getEDisMax()->setBoostQueries($boostQueryArray);
         return $this;
     }
 
@@ -401,7 +456,8 @@ class QueryBuilder {
      */
     public function useBoostFunction($boostFunction): QueryBuilder
     {
-        $this->queryToBuild->setBoostFunction($boostFunction);
+        $boostFunction = $boostFunction === false ? null : $boostFunction;
+        $this->queryToBuild->getEDisMax()->setBoostFunctions($boostFunction);
         return $this;
     }
 
@@ -423,12 +479,13 @@ class QueryBuilder {
     /**
      * Uses the passed minimumMatch(mm) for the query.
      *
-     * @param string $boostFunction
+     * @param string $minimumMatch
      * @return QueryBuilder
      */
-    public function useMinimumMatch($boostFunction): QueryBuilder
+    public function useMinimumMatch($minimumMatch): QueryBuilder
     {
-        $this->queryToBuild->setMinimumMatch($boostFunction);
+        $minimumMatch = ($minimumMatch === false) ? null : $minimumMatch;
+        $this->queryToBuild->getEDisMax()->setMinimumMatch($minimumMatch);
         return $this;
     }
 
@@ -453,7 +510,7 @@ class QueryBuilder {
      */
     public function useTieParameter($tie): QueryBuilder
     {
-        $this->queryToBuild->setTieParameter($tie);
+        $this->queryToBuild->getEDisMax()->setTie($tie);
         return $this;
     }
 
@@ -475,7 +532,7 @@ class QueryBuilder {
      */
     public function useQueryFields(QueryFields $queryFields): QueryBuilder
     {
-        $this->queryToBuild->setQueryFields($queryFields);
+        $this->queryToBuild->getEDisMax()->setQueryFields($queryFields->toString());
         return $this;
     }
 
@@ -498,7 +555,7 @@ class QueryBuilder {
      */
     public function useReturnFields(ReturnFields $returnFields): QueryBuilder
     {
-        $this->queryToBuild->setReturnFields($returnFields);
+        $this->queryToBuild->setFields($returnFields->getValues());
         return $this;
     }
 
@@ -549,7 +606,8 @@ class QueryBuilder {
      */
     public function useFilter($filterString, $filterName = ''): QueryBuilder
     {
-        $this->queryToBuild->getFilters()->add($filterString, $filterName);
+        $filterName = $filterName === '' ? $filterString : $filterName;
+        $this->queryToBuild->addFilterQuery(['key' => $filterName, 'query' => $filterString]);
         return $this;
     }
 
@@ -567,7 +625,8 @@ class QueryBuilder {
         sort($groups, SORT_NUMERIC);
 
         $accessFilter = '{!typo3access}' . implode(',', $groups);
-        return $this->useFilter($accessFilter, 'accessFilter');
+        $this->queryToBuild->removeFilterQuery('access');
+        return $this->useFilter($accessFilter, 'access');
     }
 
     /**
@@ -580,12 +639,24 @@ class QueryBuilder {
         if ($this->typoScriptConfiguration->getSearchInitializeWithEmptyQuery() || $this->typoScriptConfiguration->getSearchQueryAllowEmptyQuery()) {
             // empty main query, but using a "return everything"
             // alternative query in q.alt
-            $this->queryToBuild->setAlternativeQuery('*:*');
+            $this->useAlternativeQuery('*:*');
         }
 
         if ($this->typoScriptConfiguration->getSearchInitializeWithQuery()) {
-            $this->queryToBuild->setAlternativeQuery($this->typoScriptConfiguration->getSearchInitializeWithQuery());
+            $this->useAlternativeQuery($this->typoScriptConfiguration->getSearchInitializeWithQuery());
         }
+
+        return $this;
+    }
+
+    /**
+     * @param string|bool $query
+     * @return $this
+     */
+    public function useAlternativeQuery($query)
+    {
+        $query = $query === false ? null : $query;
+        $this->queryToBuild->getEDisMax()->setQueryAlternative($query);
 
         return $this;
     }
@@ -608,8 +679,75 @@ class QueryBuilder {
      */
     public function useFaceting(Faceting $faceting): QueryBuilder
     {
-        $this->queryToBuild->setFaceting($faceting);
+        if (!$faceting->getIsEnabled()) {
+            //@todo use unset functionality when present
+            $this->queryToBuild->addParam('facet', null);
+            $this->queryToBuild->addParam('lex', null);
+            $this->queryToBuild->addParam('json.mincount', null);
+            $this->queryToBuild->addParam('json.limit', null);
+            $this->queryToBuild->addParam('json.field', null);
+            $this->queryToBuild->addParam('facet.sort', null);
+
+            $params = $this->queryToBuild->getParams();
+            foreach($params as $key => $value) {
+                if (strpos($key, 'f.') !== false) {
+                    $this->queryToBuild->addParam($key, null);
+                }
+            }
+
+            return $this;
+        }
+
+        //@todo check of $this->queryToBuilder->getFacetSet() can be used
+        $facetingParameters = $this->getFacetParameters($faceting);
+        foreach($facetingParameters as $key => $value) {
+            $this->queryToBuild->addParam($key, $value);
+        }
+
         return $this;
+    }
+
+    /**
+     * Retrieves all parameters that are required for faceting.
+     *
+     * @param Faceting $faceting
+     * @return array
+     */
+    protected function getFacetParameters(Faceting $faceting) {
+        $facetParameters = [];
+        $facetParameters['facet'] = 'true';
+        $facetParameters['facet.mincount'] = $faceting->getMinCount();
+        $facetParameters['facet.limit'] = $faceting->getLimit();
+        $facetParameters['facet.field'] = $faceting->getFields();
+
+        foreach ($faceting->getAdditionalParameters() as $additionalParameterKey => $additionalParameterValue) {
+            $facetParameters[$additionalParameterKey] = $additionalParameterValue;
+        }
+
+        if ($facetParameters['json.facet']) {
+            $facetParameters['json.facet'] = json_encode($facetParameters['json.facet']);
+        }
+
+        $facetParameters = $this->applySorting($facetParameters, $faceting->getSorting());
+        return $facetParameters;
+    }
+
+    /**
+     * Reads the facet sorting configuration and applies it to the queryParameters.
+     *
+     * @param array $facetParameters
+     * @param string $sorting
+     * @return array
+     */
+    protected function applySorting(array $facetParameters, $sorting)
+    {
+        $sortingExpression = new SortingExpression();
+        $globalSortingExpression = $sortingExpression->getForFacet($sorting);
+        if (!empty($globalSortingExpression)) {
+            $facetParameters['facet.sort'] = $globalSortingExpression;
+        }
+
+        return $facetParameters;
     }
 
     /**
@@ -628,7 +766,16 @@ class QueryBuilder {
      */
     public function useFieldCollapsing(FieldCollapsing $fieldCollapsing): QueryBuilder
     {
-        $this->queryToBuild->setFieldCollapsing($fieldCollapsing);
+        if(!$fieldCollapsing->getIsEnabled()) {
+            return $this;
+        }
+        $this->useFilter('{!collapse field=' .$fieldCollapsing->getCollapseFieldName(). '}', 'fieldCollapsing');
+
+        if($fieldCollapsing->getIsExpand()) {
+            $this->queryToBuild->addParam('expand', 'true');
+            $this->queryToBuild->addParam('expand.rows', $fieldCollapsing->getExpandRowCount());
+        }
+
         return $this;
     }
 
@@ -650,7 +797,37 @@ class QueryBuilder {
      */
     public function useGrouping(Grouping $grouping): QueryBuilder
     {
-        $this->queryToBuild->setGrouping($grouping);
+        if(!$grouping->getIsEnabled()) {
+            $this->queryToBuild->removeComponent($this->queryToBuild->getGrouping());
+            return $this;
+        }
+
+        $this->queryToBuild->getGrouping()->setFields($grouping->getFields());
+        $this->queryToBuild->getGrouping()->setNumberOfGroups($grouping->getNumberOfGroups());
+        $this->queryToBuild->getGrouping()->setLimit($grouping->getResultsPerGroup());
+        $this->queryToBuild->getGrouping()->setQueries($grouping->getQueries());
+        $this->queryToBuild->getGrouping()->setFormat('grouped');
+        $sorting = implode(' ',$grouping->getSortings());
+        $this->queryToBuild->getGrouping()->setSort($sorting);
+
+        return $this;
+    }
+
+    /**
+     * @param boolean $debugMode
+     * @return QueryBuilder
+     */
+    public function useDebug($debugMode): QueryBuilder
+    {
+        if (!$debugMode) {
+            $this->queryToBuild->addParam('debugQuery', null);
+            $this->queryToBuild->addParam('echoParams', null);
+            return $this;
+        }
+
+        $this->queryToBuild->addParam('debugQuery', 'true');
+        $this->queryToBuild->addParam('echoParams', 'all');
+
         return $this;
     }
 
@@ -670,7 +847,29 @@ class QueryBuilder {
      */
     public function useHighlighting(Highlighting $highlighting): QueryBuilder
     {
-        $this->queryToBuild->setHighlighting($highlighting);
+        if(!$highlighting->getIsEnabled()) {
+            $this->queryToBuild->removeComponent($this->queryToBuild->getHighlighting());
+            return $this;
+        }
+
+        $this->queryToBuild->getHighlighting()->setFragSize($highlighting->getFragmentSize());
+        $this->queryToBuild->getHighlighting()->setFields(GeneralUtility::trimExplode(",", $highlighting->getHighlightingFieldList()));
+
+        if ($highlighting->getUseFastVectorHighlighter()) {
+            $this->queryToBuild->getHighlighting()->setUseFastVectorHighlighter(true);
+            $this->queryToBuild->getHighlighting()->setTagPrefix($highlighting->getPrefix());
+            $this->queryToBuild->getHighlighting()->setTagPostfix($highlighting->getPostfix());
+        } else {
+            $this->queryToBuild->getHighlighting()->setUseFastVectorHighlighter(false);
+            $this->queryToBuild->getHighlighting()->setTagPrefix(null);
+            $this->queryToBuild->getHighlighting()->setTagPostfix(null);
+        }
+
+        if ($highlighting->getPrefix() !== '' && $highlighting->getPostfix() !== '') {
+            $this->queryToBuild->getHighlighting()->setSimplePrefix($highlighting->getPrefix());
+            $this->queryToBuild->getHighlighting()->setSimplePostfix($highlighting->getPostfix());
+        }
+
         return $this;
     }
 
@@ -682,7 +881,7 @@ class QueryBuilder {
     public function useFiltersFromTypoScript(): QueryBuilder
     {
         $filters = Filters::fromTypoScriptConfiguration($this->typoScriptConfiguration);
-        $this->queryToBuild->setFilters($filters);
+        $this->queryToBuild->setFilterQueries($filters->getValues());
 
         $this->useFilterArray($this->getAdditionalFilters());
 
@@ -718,7 +917,21 @@ class QueryBuilder {
      */
     public function useElevation(Elevation $elevation): QueryBuilder
     {
-        $this->queryToBuild->setElevation($elevation);
+        if (!$elevation->getIsEnabled()) {
+            $this->queryToBuild->addParam('enableElevation', null);
+            $this->queryToBuild->addParam('forceElevation', null);
+            $this->queryToBuild->removeField('isElevated:[elevated]');
+            return $this;
+        }
+
+        $this->queryToBuild->addParam('enableElevation', 'true');
+        $forceElevationString = $elevation->getIsForced() ? 'true' : 'false';
+        $this->queryToBuild->addParam('forceElevation', $forceElevationString);
+
+        if ($elevation->getMarkElevatedResults()) {
+            $this->queryToBuild->addField('isElevated:[elevated]');
+        }
+
         return $this;
     }
 
@@ -738,7 +951,11 @@ class QueryBuilder {
      */
     public function useSpellchecking(Spellchecking $spellchecking): QueryBuilder
     {
-        $this->queryToBuild->setSpellchecking($spellchecking);
+        if (!$spellchecking->getIsEnabled()) {
+            $this->queryToBuild->removeComponent($this->queryToBuild->getSpellcheck());
+            return $this;
+        }
+        $this->queryToBuild->getSpellcheck()->setMaxCollationTries($spellchecking->getMaxCollationTries());
         return $this;
     }
 
@@ -783,7 +1000,11 @@ class QueryBuilder {
      */
     public function usePhraseFields(PhraseFields $phraseFields): QueryBuilder
     {
-        $this->queryToBuild->setPhraseFields($phraseFields);
+        $phraseFieldString = $phraseFields->toString();
+        if ($phraseFieldString === '' || !$phraseFields->getIsEnabled()) {
+            return $this;
+        }
+        $this->queryToBuild->getEDisMax()->setPhraseFields($phraseFieldString);
         return $this;
     }
 
@@ -805,7 +1026,12 @@ class QueryBuilder {
      */
     public function useBigramPhraseFields(BigramPhraseFields $bigramPhraseFields): QueryBuilder
     {
-        $this->queryToBuild->setBigramPhraseFields($bigramPhraseFields);
+        $bigramPhraseFieldsString = $bigramPhraseFields->toString();
+        if ($bigramPhraseFieldsString === '' || !$bigramPhraseFields->getIsEnabled()) {
+            return $this;
+        }
+
+        $this->queryToBuild->getEDisMax()->setPhraseBigramFields($bigramPhraseFieldsString);
         return $this;
     }
 
@@ -827,7 +1053,11 @@ class QueryBuilder {
      */
     public function useTrigramPhraseFields(TrigramPhraseFields $trigramPhraseFields): QueryBuilder
     {
-        $this->queryToBuild->setTrigramPhraseFields($trigramPhraseFields);
+        $trigramPhraseFieldsString = $trigramPhraseFields->toString();
+        if ($trigramPhraseFieldsString === '' || !$trigramPhraseFields->getIsEnabled()) {
+            return $this;
+        }
+        $this->queryToBuild->getEDisMax()->setPhraseTrigramFields($trigramPhraseFieldsString);
         return $this;
     }
 
@@ -875,11 +1105,12 @@ class QueryBuilder {
 
     /**
      * @param string $rawQuery
-     * @return Query|object
+     * @return SearchQuery
      */
-    protected function getQueryInstance($rawQuery): Query
+    protected function getSearchQueryInstance($rawQuery): Query
     {
-        $query = GeneralUtility::makeInstance(Query::class, $rawQuery);
+        $query = GeneralUtility::makeInstance(SearchQuery::class);
+        $query->setQuery($rawQuery);
         return $query;
     }
 

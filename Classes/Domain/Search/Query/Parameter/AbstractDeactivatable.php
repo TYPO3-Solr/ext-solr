@@ -1,10 +1,10 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\Query\ParameterBuilder;
+namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\Parameter;
 
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2017 Timo Hund <timo.hund@dkd.de>
+ *  (c) 2017 <timo.hund@dkd.de>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -23,25 +23,24 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\Query\ParameterBuilde
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+abstract class AbstractDeactivatable {
 
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\QueryFields;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
-
-/**
- * @author Timo Hund <timo.hund@dkd.de>
- */
-class QueryFieldsTest extends UnitTest
-{
     /**
-     * @test
+     * @var bool
      */
-    public function canBuildFromString()
+    protected $isEnabled = false;
+    /**
+     * @return boolean
+     */
+    public function getIsEnabled()
     {
-        $input = 'one^10.0,two^20.0,three^5.0';
-        $queryFields = QueryFields::fromString($input, ',');
-        $output = $queryFields->toString(',');
-
-        $this->assertSame($input, $output, 'Parsing QueryFields from and to string did not produce the same result');
+        return $this->isEnabled;
     }
-
+    /**
+     * @param boolean $isEnabled
+     */
+    public function setIsEnabled($isEnabled)
+    {
+        $this->isEnabled = $isEnabled;
+    }
 }

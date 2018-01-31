@@ -183,7 +183,7 @@ class SuggestService {
      */
     protected function getSuggestionArray(SuggestQuery $suggestQuery, $solrSuggestions, $maxSuggestions) : array
     {
-        $queryString = $suggestQuery->getQueryStringContainer()->getKeywords();
+        $queryString = $suggestQuery->getQuery();
         $suggestionCount = 0;
         $suggestions = [];
         foreach ($solrSuggestions as $string => $count) {

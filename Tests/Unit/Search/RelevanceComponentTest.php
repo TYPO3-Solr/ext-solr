@@ -26,8 +26,10 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\SearchQuery;
 use ApacheSolrForTypo3\Solr\Search\RelevanceComponent;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use Solarium\QueryType\Select\RequestBuilder;
 
 /**
  * Testcase for RelevanceComponent
@@ -36,6 +38,18 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
  */
 class RelevanceComponentTest extends UnitTest
 {
+
+    /**
+     * @param $query
+     * @return array
+     */
+    protected function getQueryParameters($query)
+    {
+        $requestBuilder = new RequestBuilder();
+        $request = $requestBuilder->build($query);
+        return $request->getParams();
+    }
+
     /**
      * @test
      */
@@ -54,13 +68,14 @@ class RelevanceComponentTest extends UnitTest
         $queryBuilder = new QueryBuilder($typoscriptConfiguration);
         $relevanceComponent = new RelevanceComponent($queryBuilder);
 
-        $query = new Query('test');
-        $this->assertNull($query->getQueryParameter('qs'));
+        $query = new SearchQuery();
+        $query->setQuery('test');
+        $this->assertNull($this->getQueryParameters($query)['qs']);
 
         $relevanceComponent->setQuery($query);
         $relevanceComponent->initializeSearchComponent();
 
-        $this->assertSame(2, $query->getQueryParameter('qs'), 'querySlop was not applied as qs parameter');
+        $this->assertSame(2, $this->getQueryParameters($query)['qs'], 'querySlop was not applied as qs parameter');
     }
 
     /**
@@ -80,13 +95,14 @@ class RelevanceComponentTest extends UnitTest
         $queryBuilder = new QueryBuilder($typoscriptConfiguration);
         $relevanceComponent = new RelevanceComponent($queryBuilder);
 
-        $query = new Query('test');
-        $this->assertNull($query->getQueryParameter('qs'));
+        $query = new SearchQuery();
+        $query->setQuery('test');
+        $this->assertNull($this->getQueryParameters($query)['qs']);
 
         $relevanceComponent->setQuery($query);
         $relevanceComponent->initializeSearchComponent();
 
-        $this->assertNull($query->getQueryParameter('qs'), 'querySlop should still be null because phrase is disabled');
+        $this->assertNull($this->getQueryParameters($query)['qs'], 'querySlop should still be null because phrase is disabled');
     }
 
     /**
@@ -107,13 +123,14 @@ class RelevanceComponentTest extends UnitTest
         $queryBuilder = new QueryBuilder($typoscriptConfiguration);
         $relevanceComponent = new RelevanceComponent($queryBuilder);
 
-        $query = new Query('test');
-        $this->assertNull($query->getQueryParameter('ps'));
+        $query = new SearchQuery();
+        $query->setQuery('test');
+        $this->assertNull($this->getQueryParameters($query)['ps']);
 
         $relevanceComponent->setQuery($query);
         $relevanceComponent->initializeSearchComponent();
 
-        $this->assertSame(3, $query->getQueryParameter('ps'), 'slop was not applied as qs parameter');
+        $this->assertSame(3, $this->getQueryParameters($query)['ps'], 'slop was not applied as qs parameter');
     }
 
     /**
@@ -133,13 +150,14 @@ class RelevanceComponentTest extends UnitTest
         $queryBuilder = new QueryBuilder($typoscriptConfiguration);
         $relevanceComponent = new RelevanceComponent($queryBuilder);
 
-        $query = new Query('test');
-        $this->assertNull($query->getQueryParameter('ps'));
+        $query = new SearchQuery();
+        $query->setQuery('test');
+        $this->assertNull($this->getQueryParameters($query)['ps']);
 
         $relevanceComponent->setQuery($query);
         $relevanceComponent->initializeSearchComponent();
 
-        $this->assertNull($query->getQueryParameter('ps'), 'PhraseSlop should be null, when phrase is disabled');
+        $this->assertNull($this->getQueryParameters($query)['ps'], 'PhraseSlop should be null, when phrase is disabled');
     }
 
     /**
@@ -159,13 +177,15 @@ class RelevanceComponentTest extends UnitTest
         $queryBuilder = new QueryBuilder($typoscriptConfiguration);
         $relevanceComponent = new RelevanceComponent($queryBuilder);
 
-        $query = new Query('test');
-        $this->assertNull($query->getQueryParameter('ps2'));
+        $query = new SearchQuery();
+        $query->setQuery('test');
+
+        $this->assertNull($this->getQueryParameters($query)['ps2']);
 
         $relevanceComponent->setQuery($query);
         $relevanceComponent->initializeSearchComponent();
 
-        $this->assertSame(4, $query->getQueryParameter('ps2'), 'slop was not applied as qs parameter');
+        $this->assertSame(4, $this->getQueryParameters($query)['ps2'], 'slop was not applied as qs parameter');
     }
 
     /**
@@ -185,13 +205,14 @@ class RelevanceComponentTest extends UnitTest
         $queryBuilder = new QueryBuilder($typoscriptConfiguration);
         $relevanceComponent = new RelevanceComponent($queryBuilder);
 
-        $query = new Query('test');
-        $this->assertNull($query->getQueryParameter('ps2'));
+        $query = new SearchQuery();
+        $query->setQuery('test');
+        $this->assertNull($this->getQueryParameters($query)['ps2']);
 
         $relevanceComponent->setQuery($query);
         $relevanceComponent->initializeSearchComponent();
 
-        $this->assertNull($query->getQueryParameter('ps2'), 'ps2 parameter should be empty because bigramPhrases are disabled');
+        $this->assertNull($this->getQueryParameters($query)['ps2'], 'ps2 parameter should be empty because bigramPhrases are disabled');
     }
 
     /**
@@ -211,13 +232,14 @@ class RelevanceComponentTest extends UnitTest
         $queryBuilder = new QueryBuilder($typoscriptConfiguration);
         $relevanceComponent = new RelevanceComponent($queryBuilder);
 
-        $query = new Query('test');
-        $this->assertNull($query->getQueryParameter('ps3'));
+        $query = new SearchQuery();
+        $query->setQuery('test');
+        $this->assertNull($this->getQueryParameters($query)['ps3']);
 
         $relevanceComponent->setQuery($query);
         $relevanceComponent->initializeSearchComponent();
 
-        $this->assertSame(4, $query->getQueryParameter('ps3'), 'slop was not applied as qs parameter');
+        $this->assertSame(4, $this->getQueryParameters($query)['ps3'], 'slop was not applied as qs parameter');
     }
 
     /**
@@ -237,13 +259,14 @@ class RelevanceComponentTest extends UnitTest
         $queryBuilder = new QueryBuilder($typoscriptConfiguration);
         $relevanceComponent = new RelevanceComponent($queryBuilder);
 
-        $query = new Query('test');
-        $this->assertNull($query->getQueryParameter('ps3'));
+        $query = new SearchQuery();
+        $query->setQuery('test');
+        $this->assertNull($this->getQueryParameters($query)['ps3']);
 
         $relevanceComponent->setQuery($query);
         $relevanceComponent->initializeSearchComponent();
 
-        $this->assertNull($query->getQueryParameter('ps3'), 'ps2 parameter should be empty because bigramPhrases are disabled');
+        $this->assertNull($this->getQueryParameters($query)['ps3'], 'ps3 parameter should be empty because bigramPhrases are disabled');
     }
 
 
@@ -261,13 +284,14 @@ class RelevanceComponentTest extends UnitTest
         $queryBuilder = new QueryBuilder($typoscriptConfiguration);
         $relevanceComponent = new RelevanceComponent($queryBuilder);
 
-        $query = new Query('test');
-        $this->assertNull($query->getQueryParameter('tie'));
+        $query = new SearchQuery();
+        $query->setQuery('test');
+        $this->assertNull($this->getQueryParameters($query)['tie']);
 
         $relevanceComponent->setQuery($query);
         $relevanceComponent->initializeSearchComponent();
 
-        $this->assertSame('0.78', $query->getQueryParameter('tie'), 'tieParameter was not applied as tie parameter');
+        $this->assertSame('0.78', $this->getQueryParameters($query)['tie'], 'tieParameter was not applied as tie parameter');
     }
 
     /**
@@ -281,8 +305,9 @@ class RelevanceComponentTest extends UnitTest
             ]
         ];
 
-        $query = new Query('test');
-        $this->assertNull($query->getQueryParameter('bq'));
+        $query = new SearchQuery();
+        $query->setQuery('test');
+        $this->assertNull($this->getQueryParameters($query)['bq']);
 
         $typoscriptConfiguration = $this->getTypoScriptConfigurationWithQueryConfiguration($searchConfiguration);
         $queryBuilder = new QueryBuilder($typoscriptConfiguration);
@@ -292,7 +317,7 @@ class RelevanceComponentTest extends UnitTest
         $relevanceComponent->setQuery($query);
         $relevanceComponent->initializeSearchComponent();
 
-        $this->assertSame('type:pages^100', $query->getQueryParameters()['bq'], 'Configured boostQuery was not applied');
+        $this->assertSame('type:pages^100', $this->getQueryParameters($query)['bq'], 'Configured boostQuery was not applied');
     }
 
     /**
@@ -309,8 +334,9 @@ class RelevanceComponentTest extends UnitTest
             ]
         ];
 
-        $query = new Query('test');
-        $this->assertNull($query->getQueryParameter('bq'));
+        $query = new SearchQuery();
+        $query->setQuery('test');
+        $this->assertNull($this->getQueryParameters($query)['bq']);
 
         $typoscriptConfiguration = $this->getTypoScriptConfigurationWithQueryConfiguration($searchConfiguration);
         $queryBuilder = new QueryBuilder($typoscriptConfiguration);
@@ -320,8 +346,8 @@ class RelevanceComponentTest extends UnitTest
         $relevanceComponent->setQuery($query);
         $relevanceComponent->initializeSearchComponent();
 
-        $this->assertSame('type:pages^100', $query->getQueryParameters()['bq'][0], 'Configured boostQuery was not applied');
-        $this->assertSame('type:tx_solr_file^400', $query->getQueryParameters()['bq'][1], 'Configured boostQuery was not applied');
+        $this->assertSame('type:pages^100', $this->getQueryParameters($query)['bq'][0], 'Configured boostQuery was not applied');
+        $this->assertSame('type:tx_solr_file^400', $this->getQueryParameters($query)['bq'][1], 'Configured boostQuery was not applied');
     }
 
     /**
@@ -335,8 +361,9 @@ class RelevanceComponentTest extends UnitTest
             ]
         ];
 
-        $query = new Query('test');
-        $this->assertNull($query->getQueryParameter('bf'));
+        $query = new SearchQuery();
+        $query->setQuery('test');
+        $this->assertNull($this->getQueryParameters($query)['bf']);
 
         $typoscriptConfiguration = $this->getTypoScriptConfigurationWithQueryConfiguration($searchConfiguration);
         $queryBuilder = new QueryBuilder($typoscriptConfiguration);
@@ -346,7 +373,7 @@ class RelevanceComponentTest extends UnitTest
         $relevanceComponent->setQuery($query);
         $relevanceComponent->initializeSearchComponent();
 
-        $this->assertSame('sum(clicks)^100', $query->getQueryParameters()['bf'], 'Configured boostFunction was not applied');
+        $this->assertSame('sum(clicks)^100', $this->getQueryParameters($query)['bf'], 'Configured boostFunction was not applied');
     }
 
     /**
@@ -360,8 +387,9 @@ class RelevanceComponentTest extends UnitTest
             ]
         ];
 
-        $query = new Query('test');
-        $this->assertNull($query->getQueryParameter('bf'));
+        $query = new SearchQuery();
+        $query->setQuery('test');
+        $this->assertNull($this->getQueryParameters($query)['mm']);
 
         $typoscriptConfiguration = $this->getTypoScriptConfigurationWithQueryConfiguration($searchConfiguration);
         $queryBuilder = new QueryBuilder($typoscriptConfiguration);
@@ -371,7 +399,7 @@ class RelevanceComponentTest extends UnitTest
         $relevanceComponent->setQuery($query);
         $relevanceComponent->initializeSearchComponent();
 
-        $this->assertSame('<1', $query->getQueryParameters()['mm'], 'Configured minimumMatch was not applied');
+        $this->assertSame('<1', $this->getQueryParameters($query)['mm'], 'Configured minimumMatch was not applied');
     }
 
     /**

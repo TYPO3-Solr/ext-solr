@@ -24,7 +24,7 @@ namespace ApacheSolrForTypo3\Solr\Search;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\SearchQuery;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequestAware;
 use ApacheSolrForTypo3\Solr\Sorting;
@@ -43,7 +43,7 @@ class SortingComponent extends AbstractComponent implements QueryAware, SearchRe
     /**
      * Solr query
      *
-     * @var Query
+     * @var SearchQuery
      */
     protected $query;
 
@@ -61,8 +61,12 @@ class SortingComponent extends AbstractComponent implements QueryAware, SearchRe
     public function initializeSearchComponent()
     {
         if (!empty($this->searchConfiguration['query.']['sortBy'])) {
-            $this->query->addQueryParameter('sort',
-                $this->searchConfiguration['query.']['sortBy']);
+            //@todo extract functionality to split field and direction
+            $sortFields = GeneralUtility::trimExplode(',', $this->searchConfiguration['query.']['sortBy']);
+            foreach($sortFields as $sortField) {
+                $parts = GeneralUtility::trimExplode(' ', $sortField);
+                $this->query->addSort($parts[0], $parts[1]);
+            }
         }
 
         $arguments = $this->searchRequest->getArguments();
@@ -76,18 +80,24 @@ class SortingComponent extends AbstractComponent implements QueryAware, SearchRe
                 Sorting::class,
                 $this->searchConfiguration['sorting.']['options.']
             );
-            $sortField = $sortHelper->getSortFieldFromUrlParameter($arguments['sort']);
+            $sortFields = $sortHelper->getSortFieldFromUrlParameter($arguments['sort']);
 
-            $this->query->setSorting($sortField);
+            //@todo extract functionality to split field and direction
+            $sortFields = GeneralUtility::trimExplode(',', $sortFields);
+            foreach($sortFields as $sortField) {
+                $parts = GeneralUtility::trimExplode(' ', $sortField);
+                $this->query->addSort($parts[0], $parts[1]);
+            }
+
         }
     }
 
     /**
      * Provides the extension component with an instance of the current query.
      *
-     * @param Query $query Current query
+     * @param SearchQuery $query Current query
      */
-    public function setQuery(Query $query)
+    public function setQuery(SearchQuery $query)
     {
         $this->query = $query;
     }

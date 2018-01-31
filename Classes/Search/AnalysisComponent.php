@@ -24,7 +24,7 @@ namespace ApacheSolrForTypo3\Solr\Search;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\SearchQuery;
 
 /**
  * Analysis search component
@@ -37,7 +37,7 @@ class AnalysisComponent extends AbstractComponent implements QueryAware
     /**
      * Solr query
      *
-     * @var Query
+     * @var SearchQuery
      */
     protected $query;
 
@@ -49,7 +49,7 @@ class AnalysisComponent extends AbstractComponent implements QueryAware
     public function initializeSearchComponent()
     {
         if ($this->searchConfiguration['results.']['showDocumentScoreAnalysis']) {
-            $this->query->setDebugMode();
+         //   $this->query->setDebugMode();
         }
     }
 
@@ -58,7 +58,7 @@ class AnalysisComponent extends AbstractComponent implements QueryAware
      *
      * @param Query $query Current query
      */
-    public function setQuery(Query $query)
+    public function setQuery(SearchQuery $query)
     {
         $this->query = $query;
     }

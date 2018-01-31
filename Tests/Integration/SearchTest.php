@@ -24,13 +24,14 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\BigramPhraseFields;
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\PhraseFields;
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\QueryFields;
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\TrigramPhraseFields;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\Parameter\PhraseFields;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\Parameter\QueryFields;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\Parameter\Slops;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Typo3PageIndexer;
 use TYPO3\CMS\Core\TimeTracker\TimeTracker;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -68,11 +69,11 @@ class SearchTest extends IntegrationTest
             /** @var $searchInstance \ApacheSolrForTypo3\Solr\Search */
         $searchInstance = GeneralUtility::makeInstance(Search::class);
 
-            /** @var $query \ApacheSolrForTypo3\Solr\Domain\Search\Query\Query */
-        $query = GeneralUtility::makeInstance(Query::class, '');
-        $query->getQueryStringContainer()->useRawQueryString(true);
-        $query->setQueryFields(QueryFields::fromString('content^40.0, title^5.0, keywords^2.0, tagsH1^5.0, tagsH2H3^3.0, tagsH4H5H6^2.0, tagsInline^1.0, description^4.0, abstract^1.0, subtitle^1.0, navtitle^1.0, author^1.0'));
-        $query->getQueryStringContainer()->setQueryString('hello');
+        $builder = new QueryBuilder(new TypoScriptConfiguration());
+        $query = $builder
+            ->newSearchQuery('hello')
+            ->useQueryFields(QueryFields::fromString('content^40.0, title^5.0, keywords^2.0, tagsH1^5.0, tagsH2H3^3.0, tagsH4H5H6^2.0, tagsInline^1.0, description^4.0, abstract^1.0, subtitle^1.0, navtitle^1.0, author^1.0'))
+            ->getQuery();
 
         $searchResponse = $searchInstance->search($query);
         $rawResponse = $searchResponse->getRawResponse();
@@ -90,8 +91,10 @@ class SearchTest extends IntegrationTest
         /** @var $searchInstance \ApacheSolrForTypo3\Solr\Search */
         $searchInstance = GeneralUtility::makeInstance(Search::class);
 
-        $query = $this->getQueryForSolr();
-        $query->getQueryStringContainer()->setQueryString('Hello World');
+        $builder = new QueryBuilder(new TypoScriptConfiguration());
+        $query = $builder
+            ->newSearchQuery('Hello World')
+            ->getQuery();
 
         $searchResponse = $searchInstance->search($query);
         $parsedData = $searchResponse->getParsedData();
@@ -100,7 +103,7 @@ class SearchTest extends IntegrationTest
         $this->assertNotEquals('Hello World for phrase serching', $parsedData->response->docs[0]->getTitle(), 'Unexpected score calculation. Expected Document shouldn\'t be at first place.');
 
         // Boost the document with query to make it first.
-        $query->setPhraseFields(PhraseFields::fromString('title^10.0'));
+        $query = $builder->startFrom($query)->usePhraseFields(PhraseFields::fromString('title^10.0'))->getQuery();
         $searchResponse = $searchInstance->search($query);
         $parsedData = $searchResponse->getParsedData();
 
@@ -118,17 +121,22 @@ class SearchTest extends IntegrationTest
         /** @var $searchInstance \ApacheSolrForTypo3\Solr\Search */
         $searchInstance = GeneralUtility::makeInstance(Search::class);
 
-        $query = $this->getQueryForSolr();
-        $query->getQueryStringContainer()->setQueryString('Hello World');
+        $builder = new QueryBuilder(new TypoScriptConfiguration());
+        $query = $builder
+            ->newSearchQuery('Hello World')
+            ->getQuery();
+
 
         // Boost the document with query to make it first.
-        $query->setPhraseFields(PhraseFields::fromString('title^10.0'));
+        $query = $builder->startFrom($query)->usePhraseFields(PhraseFields::fromString('title^10.0'))->getQuery();
         // do following things
 
         // test different phrase slop values
         $parsedDatasByPhraseSlop = [];
         for ($i = 0; $i <= 2; $i++) {
-            $query->getSlops()->setPhraseSlop($i);
+            $slops = new Slops();
+            $slops->setPhraseSlop($i);
+            $query = $builder->startFrom($query)->useSlops($slops)->getQuery();
 
             $searchResponse = $searchInstance->search($query);
             $parsedDatasByPhraseSlop[$i] = $searchResponse->getParsedData();

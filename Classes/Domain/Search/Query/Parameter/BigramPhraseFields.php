@@ -1,5 +1,5 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
+namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\Parameter;
 
 /***************************************************************
  *  Copyright notice
@@ -23,43 +23,44 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 
 /**
- * The TrigramPhraseFields class
+ * The BigramPhraseFields class
  */
-class TrigramPhraseFields extends AbstractFieldList
+class BigramPhraseFields extends AbstractFieldList
 {
     /**
      * Parameter key which should be used for Apache Solr URL query
      *
      * @var string
      */
-    protected $parameterKey = 'pf3';
+    protected $parameterKey = 'pf2';
 
     /**
      * Parses the string representation of the fieldList (e.g. content^100, title^10) to the object representation.
      *
      * @param string $fieldListString
      * @param string $delimiter
-     * @return TrigramPhraseFields
+     * @return BigramPhraseFields
      */
-    public static function fromString(string $fieldListString, string $delimiter = ',') : TrigramPhraseFields
+    public static function fromString(string $fieldListString, string $delimiter = ',') : BigramPhraseFields
     {
         return self::initializeFromString($fieldListString, $delimiter);
     }
 
     /**
      * @param TypoScriptConfiguration $solrConfiguration
-     * @return TrigramPhraseFields
+     * @return BigramPhraseFields
      */
     public static function fromTypoScriptConfiguration(TypoScriptConfiguration $solrConfiguration)
     {
-        $isEnabled = $solrConfiguration->getTrigramPhraseSearchIsEnabled();
+        $isEnabled = $solrConfiguration->getBigramPhraseSearchIsEnabled();
         if (!$isEnabled) {
-            return new TrigramPhraseFields(false);
+            return new BigramPhraseFields(false);
         }
 
-        return self::fromString((string)$solrConfiguration->getSearchQueryTrigramPhraseFields());
+        return self::fromString((string)$solrConfiguration->getSearchQueryBigramPhraseFields());
     }
 }

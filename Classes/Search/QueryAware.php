@@ -26,8 +26,8 @@ namespace ApacheSolrForTypo3\Solr\Search;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\SearchQuery;
 
 /**
  * Query awareness interface for extension components.
@@ -40,7 +40,7 @@ interface QueryAware
     /**
      * Provides the extension component with an instance of the current query.
      *
-     * @param Query $query Current query
+     * @param SearchQuery $query Current query
      */
-    public function setQuery(Query $query);
+    public function setQuery(SearchQuery $query);
 }

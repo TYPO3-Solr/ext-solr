@@ -21,7 +21,8 @@
   },
   "require": {
     "php": ">=7.0.0",
-    "typo3/cms-core": "^8.7.0 || ^9.0"
+    "typo3/cms-core": "^8.7.0 || ^9.0",
+    "solarium/solarium": "dev-master"
   },
   "require-dev": {
     "phpunit/phpunit": "^5.6",

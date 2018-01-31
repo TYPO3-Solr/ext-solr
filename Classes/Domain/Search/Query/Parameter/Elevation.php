@@ -1,5 +1,5 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
+namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\Parameter;
 
 /***************************************************************
  *  Copyright notice
@@ -24,7 +24,6 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 
 /**
@@ -33,7 +32,7 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
  *
  * @package ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder
  */
-class Elevation extends AbstractDeactivatableParameterBuilder  implements ParameterBuilder
+class Elevation extends AbstractDeactivatable
 {
     /**
      * @var bool
@@ -88,31 +87,6 @@ class Elevation extends AbstractDeactivatableParameterBuilder  implements Parame
     public function setMarkElevatedResults(bool $markElevatedResults)
     {
         $this->markElevatedResults = $markElevatedResults;
-    }
-
-    /**
-     * @param Query $query
-     * @return Query
-     */
-    public function build(Query $query): Query
-    {
-        if (!$this->isEnabled) {
-            $query->getQueryParametersContainer()->remove('enableElevation');
-            $query->getQueryParametersContainer()->remove('forceElevation');
-            $query->getReturnFields()->remove('isElevated:[elevated]');
-            $query->getReturnFields()->remove('[elevated]'); // fallback
-
-            return $query;
-        }
-
-        $query->getQueryParametersContainer()->set('enableElevation', 'true');
-        $forceElevationString = $this->isForced ? 'true' : 'false';
-        $query->getQueryParametersContainer()->set('forceElevation', $forceElevationString);
-        if ($this->markElevatedResults) {
-            $query->getReturnFields()->add('isElevated:[elevated]');
-        }
-
-        return $query;
     }
 
     /**

@@ -1,5 +1,5 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
+namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\Parameter;
 
 /***************************************************************
  *  Copyright notice
@@ -24,7 +24,6 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\SortingExpression;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 
@@ -34,7 +33,7 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
  *
  * @package ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder
  */
-class Faceting extends AbstractDeactivatableParameterBuilder implements ParameterBuilder
+class Faceting extends AbstractDeactivatable
 {
 
     /**
@@ -176,40 +175,6 @@ class Faceting extends AbstractDeactivatableParameterBuilder implements Paramete
     public function addAdditionalParameter($key, $value)
     {
         $this->additionalParameters[$key] = $value;
-    }
-
-    /**
-     * @param Query $query
-     * @return Query
-     */
-    public function build(Query $query): Query
-    {
-        if (!$this->isEnabled) {
-            $query->getQueryParametersContainer()->removeMany(['facet', 'json.facet']);
-            $query->getQueryParametersContainer()->removeByPrefix('facet.');
-            $query->getQueryParametersContainer()->removeByPrefix('f.');
-            return $query;
-        }
-
-        $facetParameters = [];
-
-        $facetParameters['facet'] = 'true';
-        $facetParameters['facet.mincount'] = $this->minCount;
-        $facetParameters['facet.limit'] = $this->limit;
-        $facetParameters['facet.field'] = $this->fields;
-
-        foreach ($this->additionalParameters as $additionalParameterKey => $additionalParameterValue) {
-            $facetParameters[$additionalParameterKey] = $additionalParameterValue;
-        }
-
-        if ($facetParameters['json.facet']) {
-            $facetParameters['json.facet'] = json_encode($facetParameters['json.facet']);
-        }
-
-        $facetParameters = $this->applySorting($facetParameters);
-        $query->getQueryParametersContainer()->merge($facetParameters);
-
-        return $query;
     }
 
     /**
