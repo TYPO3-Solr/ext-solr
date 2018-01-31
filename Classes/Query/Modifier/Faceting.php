@@ -206,7 +206,16 @@ class Faceting implements Modifier
                             $filterOptions);
                         $filterParts[] = $facetConfiguration['field'] . ':' . $filterValue;
                     } else {
-                        $filterParts[] = $facetConfiguration['field'] . ':"' . addslashes($filterValue) . '"';
+                        $firstChar = substr($filterValue, 0, 1);
+                        // Avoid escaping with double quotes when using a sub-expression with round brackets to be
+                        // able to construct complex filter queries using request parameters.
+                        // EXAMPLE: "tx_solr[filter][]=myfield_intS:(1+2)" can be used to only show documents where
+                        //          "myfield_intS" equals to 1 OR 2.
+                        if ($firstChar === '(') {
+                            $filterParts[] = $facetConfiguration['field'] . ':' . addslashes($filterValue);
+                        } else {
+                            $filterParts[] = $facetConfiguration['field'] . ':"' . addslashes($filterValue) . '"';
+                        }
                     }
                 }
 
