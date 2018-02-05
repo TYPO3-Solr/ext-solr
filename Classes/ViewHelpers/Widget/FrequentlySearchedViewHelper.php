@@ -14,6 +14,7 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers\Widget;
  * The TYPO3 project - inspiring people to share!
  */
 
+use ApacheSolrForTypo3\Solr\ViewHelpers\Widget\Controller\FrequentlySearchedController;
 use ApacheSolrForTypo3\Solr\Widget\AbstractWidgetViewHelper;
 
 /**
@@ -27,10 +28,17 @@ class FrequentlySearchedViewHelper extends AbstractWidgetViewHelper
 {
 
     /**
-     * @var \ApacheSolrForTypo3\Solr\ViewHelpers\Widget\Controller\FrequentlySearchedController
-     * @inject
+     * @var FrequentlySearchedController
      */
     protected $controller;
+
+    /**
+     * @param FrequentlySearchedController $controller
+     */
+    public function injectFrequentlySearchedController(FrequentlySearchedController $controller)
+    {
+        $this->controller = $controller;
+    }
 
     /**
      * @return \TYPO3\CMS\Extbase\Mvc\ResponseInterface

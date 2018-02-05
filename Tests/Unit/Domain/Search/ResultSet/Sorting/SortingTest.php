@@ -46,7 +46,7 @@ class SortingTest extends UnitTest
     protected $resultSetMock;
 
     /**
-     * @test
+     * @return void
      */
     public function setUp()
     {

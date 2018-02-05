@@ -228,12 +228,13 @@ class PagesRepository extends AbstractRepository
                     . BackendUtility::BEenableFields('pages_language_overlay')
                 )->execute()->fetchAll();
         } else {
+            $queryBuilder->getRestrictions()->add(GeneralUtility::makeInstance(DeletedRestriction::class));
+
             return $queryBuilder
                 ->select('pid', 'l10n_parent', 'sys_language_uid')
                 ->from('pages')
                 ->add('where',
                     $queryBuilder->expr()->eq('l10n_parent', $queryBuilder->createNamedParameter($pageId, \PDO::PARAM_INT))
-                    . BackendUtility::deleteClause('pages')
                     . BackendUtility::BEenableFields('pages')
                 )->execute()->fetchAll();
         }
@@ -249,12 +250,13 @@ class PagesRepository extends AbstractRepository
     {
         $queryBuilder = $this->getQueryBuilder();
         $queryBuilder->getRestrictions()->removeAll();
+        $queryBuilder->getRestrictions()->add(GeneralUtility::makeInstance(DeletedRestriction::class));
+
         return $queryBuilder
             ->select('uid')
             ->from($this->table)
             ->add('where',
                 $queryBuilder->expr()->eq('content_from_pid', $queryBuilder->createNamedParameter($pageId, \PDO::PARAM_INT))
-                . BackendUtility::deleteClause('pages')
             )->execute()->fetchAll();
     }
 

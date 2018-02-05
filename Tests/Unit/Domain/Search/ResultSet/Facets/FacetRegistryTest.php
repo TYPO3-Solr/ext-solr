@@ -14,10 +14,10 @@ namespace ApacheSolrForTypo3\Solr\Test\Domain\Search\ResultSet\Facets;
  * The TYPO3 project - inspiring people to share!
  */
 
+use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\FacetRegistry;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\OptionsPackage;
 use ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets\TestPackage\TestPackage;
-use TYPO3\CMS\Core\Tests\UnitTestCase;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 
@@ -27,7 +27,7 @@ use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
  * @author Frans Saris <frans@beech.it>
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class FacetRegistryTest extends UnitTestCase
+class FacetRegistryTest extends UnitTest
 {
     /**
      * @var ObjectManagerInterface

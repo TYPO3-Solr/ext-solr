@@ -70,17 +70,17 @@ class SolrAdminServiceTest extends IntegrationTest
      */
     public function canAddSynonym($baseWord, $synonyms = [])
     {
-        // make sure old synonyms have been deleted
-        $this->solrAdminService->deleteSynonym($baseWord);
-
         $synonymsBeforeAdd = $this->solrAdminService->getSynonyms($baseWord);
         $this->assertEquals([], $synonymsBeforeAdd, 'Synonyms was not empty');
 
         $this->solrAdminService->addSynonym($baseWord, $synonyms);
+        $this->solrAdminService->reloadCore();
+
         $synonymsAfterAdd = $this->solrAdminService->getSynonyms($baseWord);
         $this->assertEquals($synonyms, $synonymsAfterAdd, 'Could not retrieve synonym after adding');
 
         $this->solrAdminService->deleteSynonym($baseWord);
+        $this->solrAdminService->reloadCore();
 
         $synonymsAfterRemove = $this->solrAdminService->getSynonyms($baseWord);
         $this->assertEquals([], $synonymsAfterRemove, 'Synonym was not removed');
@@ -103,16 +103,20 @@ class SolrAdminServiceTest extends IntegrationTest
      */
     public function canAddStopWord($stopWord)
     {
-        // make sure old stopwords are deleted
-        $this->solrAdminService->deleteStopWord($stopWord);
         $stopWords = $this->solrAdminService->getStopWords();
+
         $this->assertNotContains($stopWord, $stopWords, 'Stopwords are not empty after initializing');
 
         $this->solrAdminService->addStopWords($stopWord);
+        $this->solrAdminService->reloadCore();
+
         $stopWordsAfterAdd = $this->solrAdminService->getStopWords();
+
         $this->assertContains($stopWord, $stopWordsAfterAdd, 'Stopword was not added');
 
         $this->solrAdminService->deleteStopWord($stopWord);
+        $this->solrAdminService->reloadCore();
+
         $stopWordsAfterDelete = $this->solrAdminService->getStopWords();
         $this->assertNotContains($stopWord, $stopWordsAfterDelete, 'Stopwords are not empty after removing');
     }

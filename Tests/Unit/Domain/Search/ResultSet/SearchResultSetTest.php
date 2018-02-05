@@ -244,7 +244,8 @@ class SearchResultSetTest extends UnitTest
         $resultSet = $this->searchResultSetService->search($fakeRequest);
 
         $this->assertSame($resultSet->getResponse(), $fakeResponse, 'Did not get the expected fakeResponse');
-        $this->assertSame(count($resultSet->getUsedQuery()->getFilters()), 1, 'There should be one registered filter in the query');
+
+        $this->assertSame(count($resultSet->getUsedQuery()->getFilters()->getValues()), 1, 'There should be one registered filter in the query');
     }
 
     /**

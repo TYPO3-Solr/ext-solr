@@ -54,7 +54,20 @@ echo "Using package path $TYPO3_PATH_PACKAGES"
 echo "Using web path $TYPO3_PATH_WEB"
 
 # Install TYPO3 sources
-composer require --dev typo3/cms="$TYPO3_VERSION"
+if [[ $TYPO3_VERSION = *"9."* ]]; then
+    composer require --dev typo3/cms-backend="$TYPO3_VERSION"
+    composer require --dev typo3/cms-core="$TYPO3_VERSION"
+    composer require --dev typo3/cms-fluid="$TYPO3_VERSION"
+    composer require --dev typo3/cms-frontend="$TYPO3_VERSION"
+    composer require --dev typo3/cms-lang="$TYPO3_VERSION"
+    composer require --dev typo3/cms-extbase="$TYPO3_VERSION"
+    composer require --dev typo3/cms-extbase="$TYPO3_VERSION"
+    composer require --dev typo3/cms-reports="$TYPO3_VERSION"
+    composer require --dev typo3/cms-scheduler="$TYPO3_VERSION"
+    composer require --dev typo3/cms-tstemplate="$TYPO3_VERSION"
+else
+    composer require --dev typo3/cms="$TYPO3_VERSION"
+fi
 
 # Restore composer.json
 git checkout composer.json

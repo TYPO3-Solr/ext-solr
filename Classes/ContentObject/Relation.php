@@ -406,7 +406,9 @@ class Relation
             return $localRecordUid;
         }
         // when no TCA configured for pages_language_overlay's field, then use original record Uid
-        if ($localTableName === 'pages' && !$this->isTcaConfiguredForTablesField('pages_language_overlay', $localFieldName)) {
+        // @todo this can be dropped when TYPO3 8 compatibility is dropped
+        $translatedInPagesLanguageOverlayAndNoTCAPresent = Util::getIsTYPO3VersionBelow9() && !$this->isTcaConfiguredForTablesField('pages_language_overlay', $localFieldName);
+        if ($localTableName === 'pages' && $translatedInPagesLanguageOverlayAndNoTCAPresent) {
             return $localRecordUid;
         }
 

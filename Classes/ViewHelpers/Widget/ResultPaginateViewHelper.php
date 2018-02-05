@@ -24,8 +24,8 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers\Widget;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
+use ApacheSolrForTypo3\Solr\ViewHelpers\Widget\Controller\ResultPaginateController;
 use ApacheSolrForTypo3\Solr\Widget\AbstractWidgetViewHelper;
 
 /**
@@ -35,10 +35,17 @@ class ResultPaginateViewHelper extends AbstractWidgetViewHelper
 {
 
     /**
-     * @var \ApacheSolrForTypo3\Solr\ViewHelpers\Widget\Controller\ResultPaginateController
-     * @inject
+     * @var ResultPaginateController
      */
     protected $controller;
+
+    /**
+     * @param ResultPaginateController $resultPaginateController
+     */
+    public function injectResultPaginateController(ResultPaginateController $resultPaginateController)
+    {
+        $this->controller = $resultPaginateController;
+    }
 
     /**
      * Initializes the arguments
