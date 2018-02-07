@@ -218,7 +218,7 @@ class PageIndexerRequest
     public function getHeaders()
     {
         $headers = $this->header;
-        $headers[] = $this->getUserAgent();
+        $headers[] = 'User-Agent: ' . $this->getUserAgent();
         $itemId = $this->indexQueueItem->getIndexQueueUid();
         $pageId = $this->indexQueueItem->getRecordPageId();
 
