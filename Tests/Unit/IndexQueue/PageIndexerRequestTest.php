@@ -197,7 +197,19 @@ class PageIndexerRequestTest extends UnitTest
 
         $pageIndexerRequest->setParameter('test', 4711);
         $this->assertSame(4711, $pageIndexerRequest->getParameter('test'), 'Could not get parameter foo after setting it');
+    }
 
+    /**
+     * @test
+     */
+    public function canSetUserAgent()
+    {
+        $pageIndexerRequest = $this->getPageIndexerRequest();
+
+        $itemMock = $this->getDumbMock(Item::class);
+        $pageIndexerRequest->setIndexQueueItem($itemMock);
+        $headers = $pageIndexerRequest->getHeaders();
+        $this->assertContains('User-Agent: TYPO3', $headers, 'Header should contain a proper User-Agent');
     }
 
     /**

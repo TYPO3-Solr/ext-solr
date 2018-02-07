@@ -48,7 +48,7 @@ build_failure_conditions:
   - 'patches.label("Doc Comments").count > 10'
   - 'patches.label("Spacing").count > 15'
   - 'issues.label("coding-style").count > 10'
-  - 'issues.severity(>= MAJOR).count > 30'
+  - 'issues.severity(>= MAJOR).count > 60'
   - 'project.metric("scrutinizer.quality", < 8)'
   - 'project.metric_change("scrutinizer.test_coverage", < -0.10)'
 
