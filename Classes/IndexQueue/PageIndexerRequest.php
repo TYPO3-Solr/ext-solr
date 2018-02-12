@@ -26,6 +26,7 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
 
 use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
+use TYPO3\CMS\Core\Http\RequestFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -190,7 +191,7 @@ class PageIndexerRequest
         $headers = $this->getHeaders();
         $rawResponse = $this->getUrl($url, $headers, $this->timeout);
         // convert JSON response to response object properties
-        $decodedResponse = $response->getResultsFromJson($rawResponse);
+        $decodedResponse = $response->getResultsFromJson($rawResponse->getBody()->getContents());
 
         if ($rawResponse === false || $decodedResponse === false) {
             $this->logger->log(
@@ -200,8 +201,8 @@ class PageIndexerRequest
                     'request ID' => $this->requestId,
                     'request url' => $url,
                     'request headers' => $headers,
-                    'response headers' => $http_response_header, // automatically defined by file_get_contents()
-                    'raw response body' => $rawResponse
+                    'response headers' => $rawResponse->getHeaders(),
+                    'raw response body' => $rawResponse->getBody()->getContents()
                 ]
             );
 
@@ -235,11 +236,7 @@ class PageIndexerRequest
         ];
 
         $indexerRequestData = array_merge($indexerRequestData, $this->parameters);
-        $headers[] = 'X-Tx-Solr-Iq: ' . json_encode($indexerRequestData);
-
-        if (!empty($this->username) && !empty($this->password)) {
-            $headers[] = 'Authorization: Basic ' . base64_encode($this->username . ':' . $this->password);
-        }
+        $headers[] = 'X-Tx-Solr-Iq: ' . json_encode($indexerRequestData, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT | JSON_UNESCAPED_SLASHES);
 
         return $headers;
     }
@@ -393,26 +390,33 @@ class PageIndexerRequest
      * @param string $url
      * @param string[] $headers
      * @param float $timeout
-     * @return string
+     * @return \Psr\Http\Message\ResponseInterface
      */
-    protected function getUrl($url, $headers, $timeout)
+    protected function getUrl($url, $headers, $timeout): \Psr\Http\Message\ResponseInterface
     {
+        foreach ($headers as $header) {
+            list($name, $value) = explode(':', $header, 2);
+            $finalHeaders[$name] = trim($value);
+        }
         $options = [
-            'http' => [
-                'header' => implode(CRLF, $headers),
-                'timeout' => $timeout
-            ],
+            'headers' => $finalHeaders,
+            'timeout' => $timeout
         ];
 
-        if ($this->extensionConfiguration->getIsSelfSignedCertificatesEnabled()) {
-            $options['ssl'] = [
-                'verify_peer' => false,
-                'allow_self_signed'=> true
-            ];
+        if (!empty($this->username) && !empty($this->password)) {
+            $options['auth'] = [$this->username, $this->password];
         }
 
-        $context = stream_context_create($options);
-        $rawResponse = file_get_contents($url, false, $context);
-        return $rawResponse;
+        if ($this->extensionConfiguration->getIsSelfSignedCertificatesEnabled()) {
+            $options['verify'] = false;
+        }
+
+        $requestFactory = GeneralUtility::makeInstance(RequestFactory::class);
+        try {
+            $response = $requestFactory->request($url, 'GET', $options);
+        } catch (\Exception $e) {
+            return $e->getResponse();
+        }
+        return $response;
     }
 }
