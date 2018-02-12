@@ -222,4 +222,15 @@ class SolrConnection
 
         return $service;
     }
+
+    /**
+     * Creates a string representation of the Solr connection. Specifically
+     * will return the Solr URL.
+     *
+     * @return string The Solr URL.
+     */
+    public function __toString()
+    {
+        return $this->scheme . '://' . $this->host . ':' . $this->port . $this->path;
+    }
 }
