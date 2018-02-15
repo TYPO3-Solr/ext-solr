@@ -28,7 +28,11 @@ use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
 use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
+use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\StreamInterface;
+use TYPO3\CMS\Core\Http\RequestFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -172,16 +176,25 @@ class PageIndexerRequestTest extends UnitTest
      */
     public function authenticationHeaderIsSetWhenUsernameAndPasswordHaveBeenPassed()
     {
+        $requestFactoryMock = $this->getDumbMock(RequestFactory::class);
+        $requestFactoryMock->expects($this->once())->method('request')->willReturnCallback(function($url, $method, $options) {
+            $this->assertSame(['bob', 'topsecret'], $options['auth'], 'Authentication options have not been set');
+            $this->assertSame('GET', $method, 'Unexpected http method');
+
+            return $this->getFakedGuzzleResponse($this->getFixtureContentByName('fakeResponse.json'));
+        });
+
+        $solrLogManagerMock = $this->getDumbMock(SolrLogManager::class);
+        $extensionConfigurationMock = $this->getDumbMock(ExtensionConfiguration::class);
+
+        $testParameters = json_encode(['requestId' => '581f76be71f60']);
+        $pageIndexerRequest = new PageIndexerRequest($testParameters, $solrLogManagerMock, $extensionConfigurationMock, $requestFactoryMock);
+
         $queueItemMock = $this->getDumbMock(Item::class);
-
-        $pageIndexerRequest = $this->getPageIndexerRequest();
         $pageIndexerRequest->setIndexQueueItem($queueItemMock);
-        $pageIndexerRequest->setAuthorizationCredentials('bob','topsecret');
+        $pageIndexerRequest->setAuthorizationCredentials('bob', 'topsecret');
 
-        $headers = $pageIndexerRequest->getHeaders();
-
-        $expetedHeader = 'Authorization: Basic ' . base64_encode('bob:topsecret');
-        $this->assertContains($expetedHeader, $headers, 'Headers did not contain authentication details');
+        $pageIndexerRequest->send('https://7.6.local.typo3.org/about/typo3/');
     }
 
     /**
@@ -214,13 +227,14 @@ class PageIndexerRequestTest extends UnitTest
 
     /**
      * @param string $jsonEncodedParameter
+     * @param RequestFactory $requestFactory
      * @return PageIndexerRequest
      */
-    protected function getPageIndexerRequest($jsonEncodedParameter = null)
+    protected function getPageIndexerRequest($jsonEncodedParameter = null, RequestFactory $requestFactory = null)
     {
         $solrLogManagerMock = $this->getDumbMock(SolrLogManager::class);
         $extensionConfigurationMock = $this->getDumbMock(ExtensionConfiguration::class);
-        $request = new PageIndexerRequest($jsonEncodedParameter, $solrLogManagerMock, $extensionConfigurationMock);
+        $request = new PageIndexerRequest($jsonEncodedParameter, $solrLogManagerMock, $extensionConfigurationMock, $requestFactory);
         return $request;
     }
 
@@ -236,8 +250,25 @@ class PageIndexerRequestTest extends UnitTest
         /** @var $requestMock PageIndexerRequest */
         $requestMock = $this->getMockBuilder(PageIndexerRequest::class)->setMethods(['getUrl'])->setConstructorArgs([$testParameters, $solrLogManagerMock, $extensionConfigurationMock])->getMock();
 
+        $responseMock = $this->getFakedGuzzleResponse($fakeResponse);
+
         // we fake the response from a captured response json file
-        $requestMock->expects($this->once())->method('getUrl')->will($this->returnValue($fakeResponse));
+        $requestMock->expects($this->once())->method('getUrl')->willReturn($responseMock);
         return $requestMock;
+    }
+
+    /**
+     * @param $fakeResponse
+     * @return ResponseInterface
+     */
+    protected function getFakedGuzzleResponse($fakeResponse): ResponseInterface
+    {
+        $bodyStream = $this->getDumbMock(StreamInterface::class);
+        $bodyStream->expects($this->any())->method('getContents')->willReturn($fakeResponse);
+
+        /** @var $responseMock  ResponseInterface */
+        $responseMock = $this->getDumbMock(ResponseInterface::class);
+        $responseMock->expects($this->any())->method('getBody')->willReturn($bodyStream);
+        return $responseMock;
     }
 }
