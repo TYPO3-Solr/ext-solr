@@ -28,6 +28,7 @@ namespace ApacheSolrForTypo3\Solr\System\Records\SystemLanguage;
 use ApacheSolrForTypo3\Solr\System\Records\AbstractRepository;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
+use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -73,6 +74,7 @@ class SystemLanguageRepository extends AbstractRepository implements SingletonIn
         $languages = [0];
 
         $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder->getRestrictions()->add(GeneralUtility::makeInstance(HiddenRestriction::class));
         $languageRecords = $queryBuilder->select('uid')
             ->from($this->table)
             ->execute()->fetchAll();

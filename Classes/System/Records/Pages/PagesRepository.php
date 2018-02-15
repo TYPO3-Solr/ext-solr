@@ -68,15 +68,22 @@ class PagesRepository extends AbstractRepository
     {
         $queryBuilder = $this->getQueryBuilder();
 
-        $result = $queryBuilder
+        $queryBuilder
             ->select('uid', 'title')
             ->from($this->table)
             ->where(
                 $queryBuilder->expr()->neq('pid', -1),
                 $queryBuilder->expr()->eq('is_siteroot', 1)
-            )->execute()->fetchAll();
+            );
 
-        return $result;
+        // Only check for default language records, can be removed once TYPO3 v8 support is dropped
+        if (!Util::getIsTYPO3VersionBelow9()) {
+            $queryBuilder->andWhere(
+                $queryBuilder->expr()->eq('sys_language_uid', 0)
+            );
+        }
+
+        return $queryBuilder->execute()->fetchAll();
     }
 
     /**
@@ -128,6 +135,11 @@ class PagesRepository extends AbstractRepository
                     ),
                     $queryBuilder->expr()->in('mount_pid', $rootLineParentPageIds)
                 )
+            );
+        }
+        if (!Util::getIsTYPO3VersionBelow9()) {
+            $queryBuilder->andWhere(
+                $queryBuilder->expr()->eq('sys_language_uid', 0)
             );
         }
 
@@ -190,6 +202,14 @@ class PagesRepository extends AbstractRepository
             ->where(
                 $queryBuilder->expr()->eq('pid', $queryBuilder->createNamedParameter($recursionRootPageId, \PDO::PARAM_INT))
             );
+
+        // Only check for default language records, can be removed once TYPO3 v8 support is dropped
+        if (!Util::getIsTYPO3VersionBelow9()) {
+            $queryBuilder->andWhere(
+                $queryBuilder->expr()->eq('sys_language_uid', 0)
+            );
+        }
+
         if (!empty($initialPagesAdditionalWhereClause)) {
             $queryBuilder->add('where', $initialPagesAdditionalWhereClause, true);
         }
@@ -252,12 +272,20 @@ class PagesRepository extends AbstractRepository
         $queryBuilder->getRestrictions()->removeAll();
         $queryBuilder->getRestrictions()->add(GeneralUtility::makeInstance(DeletedRestriction::class));
 
-        return $queryBuilder
+        $queryBuilder
             ->select('uid')
             ->from($this->table)
             ->add('where',
                 $queryBuilder->expr()->eq('content_from_pid', $queryBuilder->createNamedParameter($pageId, \PDO::PARAM_INT))
-            )->execute()->fetchAll();
+            );
+
+        if (!Util::getIsTYPO3VersionBelow9()) {
+            $queryBuilder->andWhere(
+                $queryBuilder->expr()->eq('sys_language_uid', 0)
+            );
+        }
+
+        return $queryBuilder->execute()->fetchAll();
     }
 
     /**
@@ -270,14 +298,20 @@ class PagesRepository extends AbstractRepository
     {
         $queryBuilder = $this->getQueryBuilder();
         $queryBuilder->getRestrictions()->removeAll();
-        return $queryBuilder
+        $queryBuilder
             ->select(
                 'uid',
                 'mount_pid AS mountPageSource',
                 'uid AS mountPageDestination',
                 'mount_pid_ol AS mountPageOverlayed')
             ->from($this->table)
-            ->add('where', $whereClause)
-            ->execute()->fetchAll();
+            ->add('where', $whereClause);
+
+        if (!Util::getIsTYPO3VersionBelow9()) {
+            $queryBuilder->andWhere(
+                $queryBuilder->expr()->eq('sys_language_uid', 0)
+            );
+        }
+        return $queryBuilder->execute()->fetchAll();
     }
 }
