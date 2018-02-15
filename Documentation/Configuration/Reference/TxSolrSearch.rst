@@ -594,6 +594,17 @@ spellchecking.wrap
 
 This can be used to configure a custom wrap for your did you mean rendering.
 
+spellchecking.searchUsingSpellCheckerSuggestion
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+:Type: Boolean
+:TS Path: plugin.tx_solr.search.spellchecking.searchUsingSpellCheckerSuggestion
+:Since: 4.0
+:Default: 0
+
+This setting can be used to trigger a new search automatically when the previous search had no results but
+suggestions from the spellchecking. In this case the user can directly see the results of the best correction option.
+
 lastSearches
 ------------
 
