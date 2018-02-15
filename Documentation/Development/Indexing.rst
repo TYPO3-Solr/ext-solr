@@ -83,6 +83,20 @@ If external data should be indexed or the RecordIndexer is not required, it is p
            $connection = $this->connectionManager->getConnectionByPageId($pageId, $language);
            $connection->addDocuments($documents);
        }
+       
+       
+       /**
+        * Remove all from index
+        *
+        * @throws \ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException
+        */
+       public function clearIndex() {
+           $connections = $this->getSolrConnections();
+           foreach ($connections as $connectionLanguage => $connection) {
+               /** @var ConnectionManager */
+               $connection->deleteByType('cutom_type');
+           }
+       }
 
        /**
         * Create a solr document which then is sent to solr
@@ -131,8 +145,8 @@ If external data should be indexed or the RecordIndexer is not required, it is p
            $document = GeneralUtility::makeInstance(Apache_Solr_Document::class);
 
            // required fields
-           $document->setField('id', 'kb_' . $itemRecord['uid']);
-           $document->setField('variantId', 'kb_' . $itemRecord['uid']);
+           $document->setField('id', 'cutom_type_' . $itemRecord['uid']);
+           $document->setField('variantId', 'cutom_type' . $itemRecord['uid']);
            $document->setField('type', 'cutom_type');
            $document->setField('appKey', 'EXT:solr');
            $document->setField('access', ['r:0']);
