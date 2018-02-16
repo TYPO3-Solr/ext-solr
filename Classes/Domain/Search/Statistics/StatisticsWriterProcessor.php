@@ -71,7 +71,7 @@ class StatisticsWriterProcessor implements SearchResultSetProcessor
         $filters = $searchRequest->getActiveFacets();
         $sorting = $this->sanitizeString($searchRequest->getSorting());
         $page = (int)$searchRequest->getPage();
-        $ipMaskLength = $configuration->getStatisticsAnonymizeIP();
+        $ipMaskLength = (int)$configuration->getStatisticsAnonymizeIP();
 
         $TSFE = $this->getTSFE();
         $statisticData = [
@@ -86,7 +86,7 @@ class StatisticsWriterProcessor implements SearchResultSetProcessor
             'time_processing' => isset($response->debug->timing->process->time) ? $response->debug->timing->process->time : 0,
             'feuser_id' => (int)$TSFE->fe_user->user['uid'],
             'cookie' => $TSFE->fe_user->id,
-            'ip' => $this->applyIpMask($this->getUserIp(), $ipMaskLength),
+            'ip' => $this->applyIpMask((string)$this->getUserIp(), $ipMaskLength),
             'page' => (int)$page,
             'keywords' => $keywords,
             'filters' => serialize($filters),
@@ -139,29 +139,53 @@ class StatisticsWriterProcessor implements SearchResultSetProcessor
      * @param int $maskLength Number of octets to reset
      * @return string
      */
-    protected function applyIpMask($ip, $maskLength)
+    protected function applyIpMask(string $ip, int $maskLength): string
     {
-        // IPv4 or mapped IPv4 in IPv6
-        if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
-            $i = strlen($ip);
-            if ($maskLength > $i) {
-                $maskLength = $i;
-            }
-
-            while ($maskLength-- > 0) {
-                $ip[--$i] = chr(0);
-            }
-        } else {
-            $masks = [
-                'ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff',
-                'ffff:ffff:ffff:ffff::',
-                'ffff:ffff:ffff:0000::',
-                'ffff:ff00:0000:0000::'
-            ];
-            return $ip & pack('a16', inet_pton($masks[$maskLength]));
+        if (empty($ip) || $maskLength === 0) {
+            return $ip;
         }
 
-        return $ip;
+        // IPv4 or mapped IPv4 in IPv6
+        if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+            return $this->applyIpV4Mask($ip, $maskLength);
+        }
+
+        return $this->applyIpV6Mask($ip, $maskLength);
+    }
+
+    /**
+     * Apply a mask filter on the ip v4 address.
+     *
+     * @param string $ip
+     * @param int $maskLength
+     * @return string
+     */
+    protected function applyIpV4Mask($ip, $maskLength)
+    {
+        $i = strlen($ip);
+        if ($maskLength > $i) {
+            $maskLength = $i;
+        }
+
+        while ($maskLength-- > 0) {
+            $ip[--$i] = chr(0);
+        }
+        return (string)$ip;
+    }
+
+    /**
+     * Apply a mask filter on the ip v6 address.
+     *
+     * @param string $ip
+     * @param int $maskLength
+     * @return int
+     */
+    protected function applyIpV6Mask($ip, $maskLength):int
+    {
+        $masks = ['ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff', 'ffff:ffff:ffff:ffff::', 'ffff:ffff:ffff:0000::', 'ffff:ff00:0000:0000::'];
+        $packedAddress = inet_pton($masks[$maskLength]);
+        $binaryString = pack('a16', $packedAddress);
+        return (string)($ip & $binaryString);
     }
 
     /**
