@@ -263,15 +263,19 @@ class RecordMonitor extends AbstractDataHandlerListener
             return;
         }
 
-        $recordPageId = $this->getRecordPageId($status, $recordTable, $recordUid, $uid, $fields, $tceMain);
+        try {
+            $recordPageId = $this->getRecordPageId($status, $recordTable, $recordUid, $uid, $fields, $tceMain);
 
-        // when a content element changes we need to updated the page instead
-        if ($recordTable === 'tt_content') {
-            $recordTable = 'pages';
-            $recordUid = $recordPageId;
+            // when a content element changes we need to updated the page instead
+            if ($recordTable === 'tt_content') {
+                $recordTable = 'pages';
+                $recordUid = $recordPageId;
+            }
+
+            $this->processRecord($recordTable, $recordPageId, $recordUid, $fields);
+        } catch (NoPidException $e) {
+            // do nothing
         }
-
-        $this->processRecord($recordTable, $recordPageId, $recordUid, $fields);
     }
 
     /**
