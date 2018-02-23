@@ -240,6 +240,7 @@ class Grouping extends AbstractDeactivatableParameterBuilder implements Paramete
         $resultsPerGroup = $solrConfiguration->getSearchGroupingHighestGroupResultsLimit();
         $configuredGroups = $solrConfiguration->getSearchGroupingGroupsConfiguration();
         $numberOfGroups = $solrConfiguration->getSearchGroupingNumberOfGroups();
+        $sortBy = $solrConfiguration->getSearchGroupingSortBy();
 
         foreach ($configuredGroups as $groupName => $groupConfiguration) {
             if (isset($groupConfiguration['field'])) {
@@ -247,9 +248,10 @@ class Grouping extends AbstractDeactivatableParameterBuilder implements Paramete
             } elseif (isset($groupConfiguration['query'])) {
                 $queries[] = $groupConfiguration['query'];
             }
-            if (isset($groupConfiguration['sortBy'])) {
-                $sortings[] = $groupConfiguration['sortBy'];
-            }
+        }
+
+        if (!empty(trim($sortBy))) {
+            $sortings[] = $sortBy;
         }
 
         return new Grouping($isEnabled, $fields, $sortings, $queries, $numberOfGroups, $resultsPerGroup);
