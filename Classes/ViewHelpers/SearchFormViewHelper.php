@@ -99,7 +99,7 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
             $pageUid = $this->getTypoScriptConfiguration()->getSearchTargetPage();
         }
 
-        $uri = $this->buildUriFromArguments();
+        $uri = $this->buildUriFromPageUidAndArguments($pageUid);
 
         $this->tag->addAttribute('action', trim($uri));
         if ($this->arguments['addSuggestUrl']) {
@@ -109,17 +109,25 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
         $this->tag->addAttribute('accept-charset', $this->frontendController->metaCharset);
 
         // Get search term
-        $this->templateVariableContainer->add('q', $this->getQueryString());
-        $this->templateVariableContainer->add('pageUid', $pageUid);
-        $this->templateVariableContainer->add('languageUid', $this->frontendController->sys_language_uid);
+        $this->getTemplateVariableContainer()->add('q', $this->getQueryString());
+        $this->getTemplateVariableContainer()->add('pageUid', $pageUid);
+        $this->getTemplateVariableContainer()->add('languageUid', $this->frontendController->sys_language_uid);
         $formContent = $this->renderChildren();
-        $this->templateVariableContainer->remove('q');
-        $this->templateVariableContainer->remove('pageUid');
-        $this->templateVariableContainer->remove('languageUid');
+        $this->getTemplateVariableContainer()->remove('q');
+        $this->getTemplateVariableContainer()->remove('pageUid');
+        $this->getTemplateVariableContainer()->remove('languageUid');
 
         $this->tag->setContent($formContent);
 
         return $this->tag->render();
+    }
+
+    /**
+     * @return \TYPO3Fluid\Fluid\Core\Variables\VariableProviderInterface
+     */
+    protected function getTemplateVariableContainer()
+    {
+        return $this->templateVariableContainer;
     }
 
     /**
@@ -162,12 +170,13 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
     }
 
     /**
+     * @param int|null $pageUid
      * @return string
      */
-    protected function buildUriFromArguments(): string
+    protected function buildUriFromPageUidAndArguments($pageUid): string
     {
         $uriBuilder = $this->getControllerContext()->getUriBuilder();
-        $uri = $uriBuilder->reset()->setTargetPageUid($this->arguments['pageUid'])->setTargetPageType($this->arguments['pageType'])->setNoCache($this->arguments['noCache'])->setUseCacheHash(!$this->arguments['noCacheHash'])->setArguments($this->arguments['additionalParams'])->setCreateAbsoluteUri($this->arguments['absolute'])->setAddQueryString($this->arguments['addQueryString'])->setArgumentsToBeExcludedFromQueryString($this->arguments['argumentsToBeExcludedFromQueryString'])->setAddQueryStringMethod($this->arguments['addQueryStringMethod'])->setSection($this->arguments['section'])->build();
+        $uri = $uriBuilder->reset()->setTargetPageUid($pageUid)->setTargetPageType($this->arguments['pageType'])->setNoCache($this->arguments['noCache'])->setUseCacheHash(!$this->arguments['noCacheHash'])->setArguments($this->arguments['additionalParams'])->setCreateAbsoluteUri($this->arguments['absolute'])->setAddQueryString($this->arguments['addQueryString'])->setArgumentsToBeExcludedFromQueryString($this->arguments['argumentsToBeExcludedFromQueryString'])->setAddQueryStringMethod($this->arguments['addQueryStringMethod'])->setSection($this->arguments['section'])->build();
         return $uri;
     }
 }
