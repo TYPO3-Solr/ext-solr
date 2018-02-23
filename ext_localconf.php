@@ -253,3 +253,19 @@ if(!$isComposerMode) {
     $dir = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('solr');
     require $dir . '/Resources/Private/Php/ComposerLibraries/vendor/autoload.php';
 }
+
+/** @var \TYPO3\CMS\Extbase\SignalSlot\Dispatcher $signalSlotDispatcher */
+$signalSlotDispatcher = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\SignalSlot\Dispatcher::class);
+$signalSlotDispatcher->connect(
+    \TYPO3\CMS\Extbase\Persistence\Generic\Backend::class,
+    'afterUpdateObject',
+    \ApacheSolrForTypo3\Solr\IndexQueue\DomainObjectObserver::class,
+    'afterUpdateObject'
+);
+$signalSlotDispatcher->connect(
+    \TYPO3\CMS\Extbase\Persistence\Generic\Backend::class,
+    'afterRemoveObject',
+    \ApacheSolrForTypo3\Solr\IndexQueue\DomainObjectObserver::class,
+    'afterRemoveObject'
+);
+unset($signalSlotDispatcher);
