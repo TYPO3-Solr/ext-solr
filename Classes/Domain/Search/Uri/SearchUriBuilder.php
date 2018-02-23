@@ -197,7 +197,6 @@ class SearchUriBuilder
         $persistentAndFacetArguments = $previousSearchRequest
             ->getCopyForSubRequest()->setGroupItemPage($groupItem->getGroup()->getGroupName(), $groupItem->getGroupValue(), $page)
             ->getAsArray();
-
         $pageUid = $this->getTargetPageUidFromRequestConfiguration($previousSearchRequest);
         return $this->buildLinkWithInMemoryCache($pageUid, $persistentAndFacetArguments);
     }

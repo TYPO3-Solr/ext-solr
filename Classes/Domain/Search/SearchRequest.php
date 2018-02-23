@@ -451,7 +451,8 @@ class SearchRequest
     public function setGroupItemPage(string $groupName, string $groupItemValue, int $page): SearchRequest
     {
         $this->stateChanged = true;
-        $path = $this->prefixWithNamespace('groupPage:' . $groupName . ':' . $groupItemValue);
+        $escapedValue = $this->getEscapedGroupItemValue($groupItemValue);
+        $path = $this->prefixWithNamespace('groupPage:' . $groupName . ':' . $escapedValue);
         $this->argumentsAccessor->set($path, $page);
         return $this;
     }
@@ -465,8 +466,20 @@ class SearchRequest
      */
     public function getGroupItemPage(string $groupName, string $groupItemValue): int
     {
-        $path = $this->prefixWithNamespace('groupPage:' . $groupName . ':' . $groupItemValue);
+        $escapedValue = $this->getEscapedGroupItemValue($groupItemValue);
+        $path = $this->prefixWithNamespace('groupPage:' . $groupName . ':' . $escapedValue);
         return max(1, (int)$this->argumentsAccessor->get($path));
+    }
+
+    /**
+     * Removes all non alphanumeric values from the groupItem value to have a valid array key.
+     *
+     * @param string $groupItemValue
+     * @return string
+     */
+    protected function getEscapedGroupItemValue(string $groupItemValue)
+    {
+        return preg_replace("/[^A-Za-z0-9]/", '', $groupItemValue);
     }
 
     /**
