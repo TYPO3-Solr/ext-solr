@@ -24,6 +24,8 @@ namespace ApacheSolrForTypo3\Solr\Test\Domain\Search\Uri;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Grouping\Group;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Grouping\GroupItem;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
@@ -221,5 +223,33 @@ class SearchUriBuilderTest extends UnitTest
             0, 0, $configurationMock);
         $uri = $this->searchUrlBuilder->getAddFacetValueUri($previousRequest, 'type', 'pages');
         $this->assertSame('tx_solr[filter][0]=type:pages', urldecode($uri), 'Unexpected uri generated');
+    }
+
+    /**
+     * @test
+     */
+    public function canSetGroupPageForQueryGroup()
+    {
+        $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
+        $configurationMock->expects($this->any())->method('getSearchPluginNamespace')->will($this->returnValue('tx_solr'));
+        $previousRequest =  new SearchRequest([], 0, 0, $configurationMock);
+
+        $group = new Group('smallPidRange', 5);
+        $groupItem = new GroupItem($group, 'pid:[0 to 5]', 12, 0, 32);
+
+        $expectedArguments = [
+            'tx_solr' => [
+                'groupPage' => [
+                   'smallPidRange' => [
+                       'pid0to5' => '###tx_solr:groupPage:smallPidRange:pid0to5###'
+                   ]
+                ]
+            ]
+        ];
+        $this->extBaseUriBuilderMock->expects($this->once())->method('setArguments')->with($expectedArguments)->will($this->returnValue($this->extBaseUriBuilderMock));
+        $this->extBaseUriBuilderMock->expects($this->once())->method('setUseCacheHash')->with(false)->will($this->returnValue($this->extBaseUriBuilderMock));
+        $this->extBaseUriBuilderMock->expects($this->once())->method('build')->will($this->returnValue('tx_solr[groupPage][smallPidRange][pid0to5]='.urlencode('###tx_solr:groupPage:smallPidRange:pid0to5###')));
+        $uri = $this->searchUrlBuilder->getResultGroupItemPageUri($previousRequest, $groupItem, 5);
+        $this->assertContains('tx_solr[groupPage][smallPidRange][pid0to5]=5', $uri, 'Uri did not contain link segment for query group');
     }
 }
