@@ -2279,6 +2279,19 @@ class TypoScriptConfiguration
     }
 
     /**
+     * Returns the sortBy configuration for the grouping.
+     *
+     * plugin.tx_solr.search.grouping.sortBy
+     *
+     * @param string $defaultIfEmpty
+     * @return string
+     */
+    public function getSearchGroupingSortBy($defaultIfEmpty = '')
+    {
+        return (string)$this->getValueByPathOrDefaultValue('plugin.tx_solr.search.grouping.sortBy', $defaultIfEmpty);
+    }
+
+    /**
      * Returns the highestValue of the numberOfResultsPerGroup configuration that is globally configured and
      * for each group.
      *
