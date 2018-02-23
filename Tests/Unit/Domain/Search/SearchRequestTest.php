@@ -313,6 +313,18 @@ class SearchRequestTest extends UnitTest
     /**
      * @test
      */
+    public function canSetGroupItemPageForQuery()
+    {
+        $query = 'tx_solr%5Bq%5D=typo3';
+        $request = $this->getSearchRequestFromQueryString($query);
+        $request->setGroupItemPage('pidGroup', 'pid:[0 to 5]', 3);
+
+        $this->assertSame(3, $request->getGroupItemPage('pidGroup', 'pid:[0 to 5]'), 'Can not set and get groupItemPage for a query');
+    }
+
+    /**
+     * @test
+     */
     public function canResetAllGroupItemPages()
     {
         $query = 'tx_solr%5Bq%5D=typo3';
