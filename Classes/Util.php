@@ -139,7 +139,7 @@ class Util
         $pageId = self::getConfigurationPageIdToUse($pageId);
 
         static $configurationObjectCache = [];
-        $cacheId = md5($pageId . '|' . $path . '|' . $language);
+        $cacheId = md5($pageId . '|' . $path . '|' . $language . '|' . ($initializeTsfe ? '1' : '0'));
         if (isset($configurationObjectCache[$cacheId])) {
             return $configurationObjectCache[$cacheId];
         }
