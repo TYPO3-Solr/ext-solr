@@ -14,7 +14,7 @@
 		solr
 
 	:Version:
-		8.0.0
+		8.1.0-dev
 
 	:Language:
 		en
@@ -26,7 +26,7 @@
 		search, full text, index, solr, lucene, fast, query, results
 
 	:Copyright:
-		2009-2017
+		2009-2018
 
 	:Author:
 		Ingo Renner, Markus Friedrich, Rafael Kähm, Timo Hund
