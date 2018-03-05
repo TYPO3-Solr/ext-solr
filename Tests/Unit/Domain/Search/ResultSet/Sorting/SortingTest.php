@@ -1,5 +1,5 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Test\Domain\Search\ResultSet;
+namespace ApacheSolrForTypo3\Solr\Test\Domain\Search\ResultSet\Sorting;
 
 /***************************************************************
  *  Copyright notice
