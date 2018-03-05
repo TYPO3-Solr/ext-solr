@@ -25,9 +25,9 @@ namespace ApacheSolrForTypo3\Solr\Search;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Sorting\SortingHelper;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequestAware;
-use ApacheSolrForTypo3\Solr\Sorting;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -56,30 +56,31 @@ class SortingComponent extends AbstractComponent implements QueryAware, SearchRe
      * Initializes the search component.
      *
      * Sets the sorting query parameters
-     *
      */
     public function initializeSearchComponent()
     {
         if (!empty($this->searchConfiguration['query.']['sortBy'])) {
-            $this->query->addQueryParameter('sort',
-                $this->searchConfiguration['query.']['sortBy']);
+            $this->query->addQueryParameter('sort', $this->searchConfiguration['query.']['sortBy']);
         }
 
         $arguments = $this->searchRequest->getArguments();
 
-        if (!empty($this->searchConfiguration['sorting'])
-            && !empty($arguments['sort'])
-            && preg_match('/^([a-z0-9_]+ (asc|desc)[, ]*)*([a-z0-9_]+ (asc|desc))+$/i',
-                $arguments['sort'])
-        ) {
-            $sortHelper = GeneralUtility::makeInstance(
-                Sorting::class,
-                $this->searchConfiguration['sorting.']['options.']
-            );
+        if (!empty($this->searchConfiguration['sorting']) && $this->hasValidSorting($arguments)) {
+            $sortHelper = GeneralUtility::makeInstance(SortingHelper::class, $this->searchConfiguration['sorting.']['options.']);
             $sortField = $sortHelper->getSortFieldFromUrlParameter($arguments['sort']);
-
             $this->query->setSorting($sortField);
         }
+    }
+
+    /**
+     * Checks if the arguments array has a valid sorting.
+     *
+     * @param array $arguments
+     * @return bool
+     */
+    protected function hasValidSorting(array $arguments)
+    {
+        return !empty($arguments['sort']) && preg_match('/^([a-z0-9_]+ (asc|desc)[, ]*)*([a-z0-9_]+ (asc|desc))+$/i', $arguments['sort']);
     }
 
     /**
@@ -99,5 +100,4 @@ class SortingComponent extends AbstractComponent implements QueryAware, SearchRe
     {
         $this->searchRequest = $searchRequest;
     }
-
 }

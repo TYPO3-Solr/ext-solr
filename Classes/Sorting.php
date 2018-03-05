@@ -25,17 +25,15 @@ namespace ApacheSolrForTypo3\Solr;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Sorting\SortingHelper;
 
 /**
  * Utility class for sorting.
  *
  * @author Stefan Sprenger <stefan.sprenger@dkd.de>
  */
-class Sorting
+class Sorting extends SortingHelper
 {
-    protected $configuration;
 
     /**
      * Constructor
@@ -44,97 +42,7 @@ class Sorting
      */
     public function __construct(array $sortingConfiguration)
     {
-        $this->configuration = $sortingConfiguration;
-    }
-
-    /**
-     * Gets a list of configured sorting fields.
-     *
-     * @return array Array of (resolved) sorting field names.
-     */
-    public function getSortFields()
-    {
-        $sortFields = [];
-        $contentObject = GeneralUtility::makeInstance(ContentObjectRenderer::class);
-
-        foreach ($this->configuration as $optionName => $optionConfiguration) {
-            $fieldName = $contentObject->stdWrap(
-                $optionConfiguration['field'],
-                $optionConfiguration['field.']
-            );
-
-            $sortFields[] = $fieldName;
-        }
-
-        return $sortFields;
-    }
-
-    /**
-     * Takes the tx_solr[sort] URL parameter containing the option names and
-     * directions to sort by and resolves it to the actual sort fields and
-     * directions as configured through TypoScript. Makes sure that only
-     * configured sorting options get applied to the query.
-     *
-     * @param string $urlParameters tx_solr[sort] URL parameter.
-     * @return string The actual index field configured to sort by for the given sort option name
-     * @throws \InvalidArgumentException if the given sort option is not configured
-     */
-    public function getSortFieldFromUrlParameter($urlParameters)
-    {
-        $sortFields = [];
-        $sortParameters = GeneralUtility::trimExplode(',', $urlParameters);
-        $availableSortOptions = $this->getSortOptions();
-
-        foreach ($sortParameters as $sortParameter) {
-            list($sortOption, $sortDirection) = explode(' ', $sortParameter);
-
-            if (!array_key_exists($sortOption, $availableSortOptions)) {
-                throw new \InvalidArgumentException(
-                    'No sorting configuration found for option name ' . $sortOption,
-                    1316187644
-                );
-            }
-
-            $sortField = $availableSortOptions[$sortOption]['field'];
-            $sortFields[] = $sortField . ' ' . $sortDirection;
-        }
-
-        return implode(', ', $sortFields);
-    }
-
-    /**
-     * Gets the sorting options with resolved field names in case stdWrap was
-     * used to define them.
-     *
-     * @return array The sorting options with resolved field names.
-     */
-    public function getSortOptions()
-    {
-        $sortOptions = [];
-        $contentObject = GeneralUtility::makeInstance(ContentObjectRenderer::class);
-
-        foreach ($this->configuration as $optionName => $optionConfiguration) {
-            $optionField = $contentObject->stdWrap(
-                $optionConfiguration['field'],
-                $optionConfiguration['field.']
-            );
-
-            $optionLabel = $contentObject->stdWrap(
-                $optionConfiguration['label'],
-                $optionConfiguration['label.']
-            );
-
-            $optionName = substr($optionName, 0, -1);
-            $sortOptions[$optionName] = [
-                'field' => $optionField,
-                'label' => $optionLabel,
-                'defaultOrder' => $optionConfiguration['defaultOrder']
-            ];
-            if (isset($optionConfiguration['fixedOrder'])) {
-                $sortOptions[$optionName]['fixedOrder'] = $optionConfiguration['fixedOrder'];
-            }
-        }
-
-        return $sortOptions;
+        trigger_error('ApacheSolrForTypo3\Solr\Sorting is deprecated please use ApacheSolrForTypo3\Domain\Search\ResultsSet\Sorting\SortingHelper now', E_USER_DEPRECATED);
+        parent::__construct($sortingConfiguration);
     }
 }
