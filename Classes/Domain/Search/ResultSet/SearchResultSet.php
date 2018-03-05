@@ -125,6 +125,11 @@ class SearchResultSet
     protected $correctedQueryString = '';
 
     /**
+     * @var bool
+     */
+    protected $hasSearched = false;
+
+    /**
      * @return \ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet
      */
     public function __construct()
@@ -412,5 +417,19 @@ class SearchResultSet
         $this->correctedQueryString = $correctedQueryString;
     }
 
+    /**
+     * @return boolean
+     */
+    public function getHasSearched(): bool
+    {
+        return $this->hasSearched;
+    }
 
+    /**
+     * @param boolean $hasSearched
+     */
+    public function setHasSearched(bool $hasSearched)
+    {
+        $this->hasSearched = $hasSearched;
+    }
 }
