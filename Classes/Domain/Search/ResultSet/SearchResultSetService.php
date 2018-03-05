@@ -29,6 +29,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\QueryFields;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\Parser\ResultParserRegistry;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResultCollection;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequestAware;
 use ApacheSolrForTypo3\Solr\Domain\Variants\VariantsProcessor;
@@ -105,9 +106,9 @@ class SearchResultSetService
     {
         $this->search = $search;
         $this->typoScriptConfiguration = $configuration;
-        $this->logger = is_null($solrLogManager) ? GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__) : $solrLogManager;
-        $this->searchResultBuilder = is_null($resultBuilder) ? GeneralUtility::makeInstance(SearchResultBuilder::class) : $resultBuilder;
-        $this->queryBuilder = is_null($queryBuilder) ? GeneralUtility::makeInstance(QueryBuilder::class, $configuration, $solrLogManager) : $queryBuilder;
+        $this->logger = $solrLogManager ?? GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
+        $this->searchResultBuilder = $resultBuilder ?? GeneralUtility::makeInstance(SearchResultBuilder::class);
+        $this->queryBuilder = $queryBuilder ?? GeneralUtility::makeInstance(QueryBuilder::class, $configuration, $solrLogManager);
     }
 
     /**
@@ -179,55 +180,32 @@ class SearchResultSetService
      */
     public function search(SearchRequest $searchRequest)
     {
-        /** @var $resultSet SearchResultSet */
-        $resultSetClass = $this->getResultSetClassName();
-        $resultSet = GeneralUtility::makeInstance($resultSetClass);
-        $resultSet->setUsedSearchRequest($searchRequest);
+        $resultSet = $this->getInitializedSearchResultSet($searchRequest);
         $this->lastResultSet = $resultSet;
 
         $resultSet = $this->handleSearchHook('beforeSearch', $resultSet);
-
-        if ($searchRequest->getRawUserQueryIsNull() && !$this->getInitialSearchIsConfigured()) {
-            // when no rawQuery was passed or no initialSearch is configured, we pass an empty result set
+        if ($this->shouldReturnEmptyResultSetWithoutExecutedSearch($searchRequest)) {
+            $resultSet->setHasSearched(false);
             return $resultSet;
         }
 
-        if ($searchRequest->getRawUserQueryIsEmptyString() && !$this->typoScriptConfiguration->getSearchQueryAllowEmptyQuery()) {
-            // the user entered an empty query string "" or "  " and empty querystring is not allowed
-            return $resultSet;
-        }
-
-        $rawQuery = $searchRequest->getRawUserQuery();
-        $resultsPerPage = (int)$searchRequest->getResultsPerPage();
-        $query = $this->queryBuilder->buildSearchQuery($rawQuery, $resultsPerPage);
+        $query = $this->queryBuilder->buildSearchQuery($searchRequest->getRawUserQuery(), (int)$searchRequest->getResultsPerPage());
         $this->initializeRegisteredSearchComponents($query, $searchRequest);
         $resultSet->setUsedQuery($query);
 
-        // the offset mulitplier is page - 1 but not less then zero
-        $offsetMultiplier = max(0, $searchRequest->getPage() - 1);
-        $offSet = $offsetMultiplier * $resultsPerPage;
-
         // performing the actual search, sending the query to the Solr server
         $query = $this->modifyQuery($query, $searchRequest, $this->search);
-        $response = $this->doASearch($query, $offSet);
+        $response = $this->doASearch($query, $searchRequest);
 
-        if ($resultsPerPage === 0) {
+        if ((int)$searchRequest->getResultsPerPage() === 0) {
             // when resultPerPage was forced to 0 we also set the numFound to 0 to hide results, e.g.
             // when results for the initial search should not be shown.
             $response->response->numFound = 0;
         }
 
-        $resultSet->setUsedSearch($this->search);
+        $resultSet->setHasSearched(true);
         $resultSet->setResponse($response);
-
-            /** @var ResultParserRegistry $parserRegistry */
-        $parserRegistry = GeneralUtility::makeInstance(ResultParserRegistry::class, $this->typoScriptConfiguration);
-        $useRawDocuments = (bool)$this->typoScriptConfiguration->getValueByPathOrDefaultValue('plugin.tx_solr.features.useRawDocuments', false);
-        $searchResults = $parserRegistry->getParser($resultSet)->parse($resultSet, $useRawDocuments);
-        $resultSet->setSearchResults($searchResults);
-
-        $resultSet->setUsedPage((int)$searchRequest->getPage());
-        $resultSet->setUsedResultsPerPage($resultsPerPage);
+        $resultSet->setSearchResults($this->getParsedSearchResults($resultSet));
         $resultSet->setUsedAdditionalFilters($this->queryBuilder->getAdditionalFilters());
 
         /** @var $variantsProcessor VariantsProcessor */
@@ -244,6 +222,62 @@ class SearchResultSetService
     }
 
     /**
+     * Uses the configured parser and retrieves the parsed search resutls.
+     *
+     * @param SearchResultSet $resultSet
+     * @return Result\SearchResultCollection
+     */
+    protected function getParsedSearchResults($resultSet): SearchResultCollection
+    {
+        /** @var ResultParserRegistry $parserRegistry */
+        $parserRegistry = GeneralUtility::makeInstance(ResultParserRegistry::class, $this->typoScriptConfiguration);
+        $useRawDocuments = (bool)$this->typoScriptConfiguration->getValueByPathOrDefaultValue('plugin.tx_solr.features.useRawDocuments', false);
+        $searchResults = $parserRegistry->getParser($resultSet)->parse($resultSet, $useRawDocuments);
+        return $searchResults;
+    }
+
+    /**
+     * Evaluates conditions on the request and configuration and returns true if no search should be triggered and an empty
+     * SearchResultSet should be returned.
+     *
+     * @param SearchRequest $searchRequest
+     * @return bool
+     */
+    protected function shouldReturnEmptyResultSetWithoutExecutedSearch(SearchRequest $searchRequest)
+    {
+        if ($searchRequest->getRawUserQueryIsNull() && !$this->getInitialSearchIsConfigured()) {
+            // when no rawQuery was passed or no initialSearch is configured, we pass an empty result set
+            return true;
+        }
+
+        if ($searchRequest->getRawUserQueryIsEmptyString() && !$this->typoScriptConfiguration->getSearchQueryAllowEmptyQuery()) {
+            // the user entered an empty query string "" or "  " and empty querystring is not allowed
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Initializes the SearchResultSet from the SearchRequest
+     *
+     * @param SearchRequest $searchRequest
+     * @return SearchResultSet
+     */
+    protected function getInitializedSearchResultSet(SearchRequest $searchRequest):SearchResultSet
+    {
+        /** @var $resultSet SearchResultSet */
+        $resultSetClass = $this->getResultSetClassName();
+        $resultSet = GeneralUtility::makeInstance($resultSetClass);
+
+        $resultSet->setUsedSearchRequest($searchRequest);
+        $resultSet->setUsedPage((int)$searchRequest->getPage());
+        $resultSet->setUsedResultsPerPage((int)$searchRequest->getResultsPerPage());
+        $resultSet->setUsedSearch($this->search);
+        return $resultSet;
+    }
+
+    /**
      * Retrieves the configuration filters from the TypoScript configuration, except the __pageSections filter.
      *
      * @return array
@@ -257,11 +291,15 @@ class SearchResultSetService
      * Executes the search and builds a fake response for a current bug in Apache Solr 6.3
      *
      * @param Query $query
-     * @param int $offSet
+     * @param SearchRequest $searchRequest
      * @return \Apache_Solr_Response
      */
-    protected function doASearch($query, $offSet)
+    protected function doASearch($query, $searchRequest)
     {
+        // the offset mulitplier is page - 1 but not less then zero
+        $offsetMultiplier = max(0, $searchRequest->getPage() - 1);
+        $offSet = $offsetMultiplier * (int)$searchRequest->getResultsPerPage();
+
         $response = $this->search->search($query, $offSet, null);
         if($response === null) {
             throw new SolrIncompleteResponseException('The response retrieved from solr was incomplete', 1505989678);
