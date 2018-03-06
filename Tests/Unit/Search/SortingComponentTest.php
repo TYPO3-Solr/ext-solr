@@ -114,4 +114,65 @@ class SortingComponentTest extends UnitTest
         $this->sortingComponent->initializeSearchComponent();
         $this->assertNull($this->query->getQueryParameter('sort'), 'No sorting should be present in query');
     }
+
+    /**
+     * @test
+     */
+    public function sortByIsApplied()
+    {
+        $this->sortingComponent->setSearchConfiguration([
+            'query.' => [
+                'sortBy' => 'price desc'
+            ]
+        ]);
+        $this->searchRequestMock->expects($this->once())->method('getArguments')->willReturn([]);
+        $this->sortingComponent->initializeSearchComponent();
+        $this->assertSame('price desc', $this->query->getQueryParameter('sort'), 'No sorting should be present in query');
+    }
+
+    /**
+     * @test
+     */
+    public function urlSortingHasPrioriy()
+    {
+        $this->sortingComponent->setSearchConfiguration([
+            'query.' => [
+                'sortBy' => 'price desc'
+            ],
+            'sorting' => 1,
+            'sorting.' => [
+                'options.' => [
+                    'relevance.' => ['field' => 'relevance', 'label' => 'Title'],
+                    'title.' => ['field' => 'sortTitle', 'label' => 'Title'],
+                    'type.' => ['field' => 'type', 'label' => 'Type']
+                ]
+            ]
+        ]);
+        $this->searchRequestMock->expects($this->once())->method('getArguments')->willReturn(['sort' => 'title asc']);
+        $this->sortingComponent->initializeSearchComponent();
+        $this->assertSame('sortTitle asc', $this->query->getQueryParameter('sort'), 'No sorting should be present in query');
+    }
+
+    /**
+     * @test
+     */
+    public function querySortingHasPriorityWhenSortingIsDisabled()
+    {
+        $this->sortingComponent->setSearchConfiguration([
+            'query.' => [
+                'sortBy' => 'price desc'
+            ],
+            'sorting' => 0,
+            'sorting.' => [
+                'options.' => [
+                    'relevance.' => ['field' => 'relevance', 'label' => 'Title'],
+                    'title.' => ['field' => 'sortTitle', 'label' => 'Title'],
+                    'type.' => ['field' => 'type', 'label' => 'Type']
+                ]
+            ]
+        ]);
+        $this->searchRequestMock->expects($this->once())->method('getArguments')->willReturn(['sort' => 'title asc']);
+        $this->sortingComponent->initializeSearchComponent();
+        $this->assertSame('price desc', $this->query->getQueryParameter('sort'), 'No sorting should be present in query');
+    }
 }
