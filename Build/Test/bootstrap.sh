@@ -4,10 +4,23 @@ SCRIPTPATH=$( cd $(dirname $0) ; pwd -P )
 EXTENSION_ROOTPATH="$SCRIPTPATH/../../"
 SOLR_INSTALL_PATH="/opt/solr-tomcat/"
 
+if [[ $* == *--use-defaults* ]]; then
+    export TYPO3_VERSION="^8.7"
+    export PHP_CS_FIXER_VERSION="v2.3.2"
+    export TYPO3_DATABASE_HOST="localhost"
+    export TYPO3_DATABASE_NAME="test"
+    export TYPO3_DATABASE_USERNAME="root"
+    export TYPO3_DATABASE_PASSWORD="supersecret"
+fi
+
 if [[ $* == *--local* ]]; then
     echo -n "Choose a TYPO3 Version (e.g. dev-master,^8.7): "
     read typo3Version
     export TYPO3_VERSION=$typo3Version
+
+    echo -n "Choose a php-cs-fixer version (v2.3.2): "
+    read phpCSFixerVersion
+    export PHP_CS_FIXER_VERSION=$phpCSFixerVersion
 
     echo -n "Choose a database hostname: "
     read typo3DbHost
@@ -24,11 +37,13 @@ if [[ $* == *--local* ]]; then
     echo -n "Choose a database password: "
     read typo3DbPassword
     export TYPO3_DATABASE_PASSWORD=$typo3DbPassword
-
-    echo -n "Choose a php-cs-fixer version (v2.3.2): "
-    read phpCSFixerVersion
-    export PHP_CS_FIXER_VERSION=$phpCSFixerVersion
 fi
+
+echo "Using TYPO3 Version: $TYPO3_VERSION"
+echo "Using PHP-CS Fixer Version: $PHP_CS_FIXER_VERSION"
+echo "Using database host: $TYPO3_DATABASE_HOST"
+echo "Using database dbname: $TYPO3_DATABASE_NAME"
+echo "Using database user: $TYPO3_DATABASE_USERNAME"
 
 if [ -z $TYPO3_VERSION ]; then
 	echo "Must set env var TYPO3_VERSION (e.g. dev-master or ^8.7)"
