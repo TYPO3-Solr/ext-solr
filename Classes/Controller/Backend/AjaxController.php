@@ -71,10 +71,17 @@ class AjaxController
      * @param ResponseInterface $response
      * @return ResponseInterface
      */
-    public function updateConnections(ServerRequestInterface $request, ResponseInterface $response)
+    public function updateConnections(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
     {
         $connectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
         $connectionManager->updateConnections();
+        // Currently no return value from connection manager
+        $content = [
+            'success' => true,
+            'message' => 'Solr connections heve been updated'
+        ];
+        $response->getBody()->write(json_encode($content));
+        return $response;
     }
 
 }
