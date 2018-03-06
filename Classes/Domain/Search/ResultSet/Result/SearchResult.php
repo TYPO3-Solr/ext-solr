@@ -106,6 +106,14 @@ class SearchResult extends \Apache_Solr_Document
     }
 
     /**
+     * @return bool
+     */
+    public function getHasGroupItem()
+    {
+        return $this->groupItem !== null;
+    }
+
+    /**
      * @param GroupItem $group
      */
     public function setGroupItem(GroupItem $group)

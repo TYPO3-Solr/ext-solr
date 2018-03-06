@@ -57,7 +57,15 @@ function SuggestController() {
 
                     $.each(response.documents, function (key, value) {
                         var dataObject = value;
-                        dataObject.category = $form.data('suggest-header') ? $form.data('suggest-header') : 'Top results';
+
+                        var defaultGroup = $form.data('suggest-header') ? $form.data('suggest-header') : 'Top results';
+                        dataObject.category = defaultGroup;
+
+                        // if a group is set we try to get a label
+                        if(dataObject.group) {
+                            dataObject.category = $form.data('suggest-header-' + dataObject.group) ? $form.data('suggest-header-' + dataObject.group) : dataObject.group;
+                        }
+
                         result.suggestions.push(
                             {
                                 value: firstSuggestion,
