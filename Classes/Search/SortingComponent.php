@@ -61,8 +61,7 @@ class SortingComponent extends AbstractComponent implements QueryAware, SearchRe
     public function initializeSearchComponent()
     {
         if (!empty($this->searchConfiguration['query.']['sortBy'])) {
-            $this->query->addQueryParameter('sort',
-                $this->searchConfiguration['query.']['sortBy']);
+            $this->query->setSorting($this->searchConfiguration['query.']['sortBy']);
         }
 
         $arguments = $this->searchRequest->getArguments();
