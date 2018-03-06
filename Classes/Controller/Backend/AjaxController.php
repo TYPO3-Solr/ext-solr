@@ -29,6 +29,7 @@ use ApacheSolrForTypo3\Solr\ConnectionManager;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Http\Response;
 
 /**
  * Handling of Ajax requests
@@ -71,10 +72,12 @@ class AjaxController
      * @param ResponseInterface $response
      * @return ResponseInterface
      */
-    public function updateConnections(ServerRequestInterface $request, ResponseInterface $response)
+    public function updateConnections(ServerRequestInterface $request): ResponseInterface
     {
         $connectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
         $connectionManager->updateConnections();
+        // Currently no return value from connection manager
+        return new Response();
     }
 
 }
