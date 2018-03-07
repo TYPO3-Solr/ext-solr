@@ -232,6 +232,7 @@ class SuggestService {
             'type' => $document->getField('type_stringS') ? $document->getField('type_stringS')['value'] : $document->getType(),
             'title' => $document->getTitle(),
             'content' => $document->getContent(),
+            'group' => $document->getHasGroupItem() ? $document->getGroupItem()->getGroupValue() : '',
             'previewImage' => $document->getField('previewImage_stringS') ? $document->getField('previewImage_stringS')['value'] : '',
         ];
     }
