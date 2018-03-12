@@ -42,7 +42,7 @@ class Pagination {
      * @param int $page
      * @param int $resultsPerPage
      */
-    public function __construct(int $page = 0, int $resultsPerPage = 01)
+    public function __construct(int $page = 0, int $resultsPerPage = 10)
     {
         $this->page = $page;
         $this->resultsPerPage = $resultsPerPage;
