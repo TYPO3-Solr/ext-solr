@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-SCRIPTPATH=$( cd $(dirname $0) ; pwd -P )
+SCRIPTPATH=$( cd $(dirname ${BASH_SOURCE[0]}) ; pwd -P )
 EXTENSION_ROOTPATH="$SCRIPTPATH/../../"
 SOLR_INSTALL_PATH="/opt/solr-tomcat/"
 
