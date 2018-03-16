@@ -29,6 +29,8 @@ use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
 use TYPO3\CMS\Fluid\View\StandaloneView;
+use TYPO3\CMS\Lang\LanguageService;
+use TYPO3\CMS\Backend\View\PageLayoutView;
 
 /**
  * Summary to display flexform settings in the page layout backend module.
@@ -38,6 +40,13 @@ use TYPO3\CMS\Fluid\View\StandaloneView;
  */
 class PageModuleSummary
 {
+    /**
+     * PageLayoutView
+     *
+     * @var PageLayoutView
+     */
+    protected $pageLayoutView;
+
     /**
      * @var array
      */
@@ -61,7 +70,7 @@ class PageModuleSummary
      */
     public function getSummary(array $parameters)
     {
-        $this->initialize($parameters['row']);
+        $this->initialize($parameters['row'], $parameters['pObj']);
 
         $this->addTargetPage();
         $this->addSettingFromFlexForm('Filter', 'search.query.filter');
@@ -76,9 +85,12 @@ class PageModuleSummary
 
     /**
      * @param array $contentElement
+     * @param PageLayoutView $pObj
      */
-    protected function initialize(array $contentElement)
+    protected function initialize(array $contentElement, PageLayoutView $pObj)
     {
+        $this->pageLayoutView = $pObj;
+
         /** @var $service \TYPO3\CMS\Extbase\Service\FlexFormService::class */
         $service = GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Service\FlexFormService::class);
         $this->flexformData = $service->convertFlexFormContentToArray($contentElement['pi_flexform']);
@@ -164,11 +176,39 @@ class PageModuleSummary
         $standaloneView->setTemplatePathAndFilename(
             GeneralUtility::getFileAbsFileName('EXT:solr/Resources/Private/Templates/Backend/PageModule/Summary.html')
         );
+
         $standaloneView->assignMultiple([
+            'pluginLabel' => $this->getPluginLabel(),
             'hidden' => $this->pluginContentElement['hidden'],
             'settings' => $this->settings,
         ]);
-
         return $standaloneView->render();
+    }
+
+    /**
+     * Returns the plugin label
+     *
+     * @return string
+     */
+    protected function getPluginLabel()
+    {
+        $label = BackendUtility::getLabelFromItemListMerged($this->pluginContentElement['pid'], 'tt_content', 'list_type', $this->pluginContentElement['list_type']);
+        if (!empty($label)) {
+            $label = $this->getLanguageService()->sL($label);
+        } else {
+            $label = sprintf($this->getLanguageService()->sL('LLL:EXT:lang/Resources/Private/Language/locallang_core.xlf:labels.noMatchingValue'), $this->pluginContentElement['list_type']);
+        }
+
+        return $this->pageLayoutView->linkEditContent(htmlspecialchars($label), $this->pluginContentElement);
+    }
+
+    /**
+     * Returns the language service
+     *
+     * @return LanguageService
+     */
+    protected function getLanguageService(): LanguageService
+    {
+        return $GLOBALS['LANG'];
     }
 }

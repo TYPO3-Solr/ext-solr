@@ -1,4 +1,10 @@
 <table class="typo3-dblist" style="width:100%; {f:if(condition: hidden, then: 'hidden')}">
+	<thead>
+		<tr>
+			<th colspan="2" style="padding-bottom: 0.5em;"><f:format.raw>{pluginLabel}</f:format.raw></th>
+		</tr>
+	</thead>
+
 	<f:for each="{settings}" as="settingValue" key="settingName" iteration="current">
 		<tr class="{f:if(condition: current.isOdd, then: 'bgColor4', else: 'bgColor3')}">
 			<td style="font-weight:bold; width:40%; padding-right: 3px;">{settingName}</td>
@@ -6,4 +12,3 @@
 		</tr>
 	</f:for>
 </table>
-
