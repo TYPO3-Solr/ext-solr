@@ -110,10 +110,8 @@ class PageIndexerResponse
      */
     public function sendHeaders()
     {
-        // This overwrites the "Content-Encoding: gzip" header that is usually sent by TYPO3 by default. This header
-        // would require that the content really is gzip-ed (which it is not). This lets e.g. Varnish 3.0
-        // fail when trying to decode the response.
-        header('Content-Encoding: none');
+        // set content type header to prevent problems with Content-Encoding
+        header('Content-Type: application/json');
 
         header('Content-Length: ' . strlen($this->getContent()));
     }
