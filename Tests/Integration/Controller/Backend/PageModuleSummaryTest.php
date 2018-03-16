@@ -26,6 +26,8 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Controller\Backend;
 
 use ApacheSolrForTypo3\Solr\Controller\Backend\PageModuleSummary;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
+use TYPO3\CMS\Backend\View\PageLayoutView;
+use TYPO3\CMS\Lang\LanguageService;
 
 /**
  * EXT:solr offers a summary in the backend module that summarizes the extension
@@ -35,6 +37,14 @@ use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
  */
 class PageModuleSummaryTest extends IntegrationTest
 {
+    /**
+     * @return void
+     */
+    public function setUp()
+    {
+        parent::setUp();
+        $GLOBALS['LANG'] = $this->getMockBuilder(LanguageService::class)->getMock();
+    }
 
     /**
      * @test
@@ -43,10 +53,16 @@ class PageModuleSummaryTest extends IntegrationTest
         $flexFormData = $this->getFixtureContentByName('fakeFlexform.xml');
 
         $fakeRow = ['pi_flexform' => $flexFormData];
-        $data = ['row' => $fakeRow];
+        $pageLayoutViewMock = $this->getMockBuilder(PageLayoutView::class)->disableOriginalConstructor()->getMock();
+        $pageLayoutViewMock->expects($this->any())->method('linkEditContent')->will($this->returnValue('fakePluginLabel'));
+        $data = [
+            'row' => $fakeRow,
+            'pObj' => $pageLayoutViewMock
+        ];
         $summary = new PageModuleSummary();
         $result = $summary->getSummary($data);
 
+        $this->assertContains('fakePluginLabel', $result, 'Summary did not contain plugin label');
         $this->assertContains('>Filter appKey</td>', $result, 'Summary did not contain filter label');
         $this->assertContains('<td>test</td>', $result, 'Summary did not contain filter value');
         $this->assertContains('<td>sorting</td>', $result, 'Summary did not contain sorting');
@@ -54,7 +70,5 @@ class PageModuleSummaryTest extends IntegrationTest
         $this->assertContains('<td>boostQuery</td>', $result, 'Summary did not contain boostQuery');
         $this->assertContains('<td>10</td>', $result, 'Summary did not contain resultsPerPage');
         $this->assertContains('<td>myTemplateFile.html</td>', $result, 'Templatefile not in summary');
-
     }
-
 }
