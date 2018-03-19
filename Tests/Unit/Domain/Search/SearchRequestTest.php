@@ -301,6 +301,24 @@ class SearchRequestTest extends UnitTest
     /**
      * @test
      */
+    public function canGetHighestGroupItemPageWhenNoPageWasPassed()
+    {
+        $request = $this->getSearchRequestFromQueryString('');
+        $this->assertSame(1, $request->getHighestGroupPage(), 'Can not get highest group item page when no group page was passed');
+    }
+
+    /**
+     * @test
+     */
+    public function canGetInitialGroupItemPage()
+    {
+        $request = $this->getSearchRequestFromQueryString('');
+        $this->assertSame(1, $request->getGroupItemPage('typeGroup', 'pages'), 'Can not get initial group item page');
+    }
+
+    /**
+     * @test
+     */
     public function canSetGroupItemPage()
     {
         $query = 'tx_solr%5Bq%5D=typo3';
