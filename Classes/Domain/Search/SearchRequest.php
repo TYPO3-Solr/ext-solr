@@ -491,7 +491,7 @@ class SearchRequest
     {
         $max = 1;
         $path = $this->prefixWithNamespace('groupPage');
-        $groupPages = $this->argumentsAccessor->get($path);
+        $groupPages = $this->argumentsAccessor->get($path, []);
         foreach ($groupPages as $groups) {
             if (!is_array($groups)) continue;
             foreach ($groups as $groupItemPage) {
