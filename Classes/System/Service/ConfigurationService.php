@@ -54,7 +54,7 @@ class ConfigurationService
     }
 
     /**
-     * @param \TYPO3\CMS\Extbase\Service\TypoScriptService $typoScriptService
+     * @param \TYPO3\CMS\Core\TypoScript\TypoScriptService $typoScriptService
      */
     public function setTypoScriptService($typoScriptService)
     {
