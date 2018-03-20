@@ -3,7 +3,7 @@ function SuggestController() {
     this.init = function () {
 
         jQuery('form[data-suggest]').each(function () {
-            var $form = $(this), $searchBox = $form.closest('.tx-solr-suggest');
+            var $form = $(this), $searchBox = $form.find('.tx-solr-suggest');
 
             $form.find('.tx-solr-suggest').focus();
 
@@ -29,9 +29,8 @@ function SuggestController() {
                 paramName: 'tx_solr[queryString]',
                 groupBy: 'category',
                 maxHeight: 1000,
-                appendTo: $searchBox,
                 autoSelectFirst: false,
-                width: $searchBox.width() * 0.66,
+                width: $searchBox.outerWidth() * 0.66,
                 onSelect: function (suggestion) {
                     // go to link when selecting found result
                     if (suggestion.data.link) {
