@@ -71,7 +71,7 @@ class SearchControllerTest extends IntegrationTest
     public function setUp()
     {
         parent::setUp();
-        
+
         $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
 
         $GLOBALS['TT'] = $this->getMockBuilder(TimeTracker::class)->disableOriginalConstructor()->getMock();
@@ -1117,7 +1117,7 @@ class SearchControllerTest extends IntegrationTest
      */
     protected function assertPaginationVisible($content)
     {
-        $this->assertContains('id="solr-pagination"', $content, 'No pagination container visible');
+        $this->assertContains('class="solr-pagination"', $content, 'No pagination container visible');
         $this->assertContains('ul class="pagination"', $content, 'Could not see pagination list');
     }
 
