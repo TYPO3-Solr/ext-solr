@@ -92,7 +92,7 @@ class QueueTest extends IntegrationTest
 
         // after initialize the prefilled queue item should be lost and the root page should be added again
         $site = $this->siteRepository->getFirstAvailableSite();
-        $this->indexQueue->initialize($site, 'pages');
+        $this->indexQueue->getInitializationService()->initializeBySiteAndIndexConfiguration($site, 'pages');
 
         $this->assertItemsInQueue(1);
         $this->assertTrue($this->indexQueue->containsItem('pages', 1));
@@ -172,10 +172,10 @@ class QueueTest extends IntegrationTest
         $this->assertEmptyQueue();
         $site = $this->siteRepository->getFirstAvailableSite();
 
-        $this->indexQueue->initialize($site, 'pages');
+        $this->indexQueue->getInitializationService()->initializeBySiteAndIndexConfiguration($site, 'pages');
         $this->assertItemsInQueue(4);
 
-        $this->indexQueue->initialize($site, 'pages');
+        $this->indexQueue->getInitializationService()->initializeBySiteAndIndexConfiguration($site, 'pages');
         $this->assertItemsInQueue(4);
 
     }
@@ -187,7 +187,7 @@ class QueueTest extends IntegrationTest
     {
         $this->importDataSetFromFixture('can_index_custom_page_type_with_own_configuration.xml');
         $site = $this->siteRepository->getFirstAvailableSite();
-        $this->indexQueue->initialize($site, 'custom_page_type');
+        $this->indexQueue->getInitializationService()->initializeBySiteAndIndexConfiguration($site, 'custom_page_type');
 
         $this->assertItemsInQueue(1);
 
@@ -243,7 +243,7 @@ class QueueTest extends IntegrationTest
         if (is_array($availableSites)) {
             foreach ($availableSites as $site) {
                 if ($site instanceof Site) {
-                    $this->indexQueue->initialize($site);
+                    $this->indexQueue->getInitializationService()->initializeBySiteAndIndexConfiguration($site);
                 }
             }
         }
