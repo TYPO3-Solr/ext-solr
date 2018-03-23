@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\QueueInitializationService;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\QueueItemRepository;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\ConfigurationAwareRecordService;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\RootPageResolver;
@@ -70,19 +71,26 @@ class Queue
     protected $queueStatisticsRepository;
 
     /**
+     * @var QueueInitializationService
+     */
+    protected $queueInitializationService;
+
+    /**
      * Queue constructor.
      * @param RootPageResolver|null $rootPageResolver
      * @param ConfigurationAwareRecordService|null $recordService
      * @param QueueItemRepository|null $queueItemRepository
      * @param QueueStatisticsRepository|null $queueStatisticsRepository
+     * @param QueueInitializationService|null $queueInitializationService
      */
-    public function __construct(RootPageResolver $rootPageResolver = null, ConfigurationAwareRecordService $recordService = null, QueueItemRepository $queueItemRepository = null, QueueStatisticsRepository $queueStatisticsRepository = null)
+    public function __construct(RootPageResolver $rootPageResolver = null, ConfigurationAwareRecordService $recordService = null, QueueItemRepository $queueItemRepository = null, QueueStatisticsRepository $queueStatisticsRepository = null, QueueInitializationService $queueInitializationService = null)
     {
         $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
-        $this->rootPageResolver = isset($rootPageResolver) ? $rootPageResolver : GeneralUtility::makeInstance(RootPageResolver::class);
-        $this->recordService = isset($recordService) ? $recordService : GeneralUtility::makeInstance(ConfigurationAwareRecordService::class);
-        $this->queueItemRepository = isset($queueItemRepository) ? $queueItemRepository : GeneralUtility::makeInstance(QueueItemRepository::class);
-        $this->queueStatisticsRepository = isset($queueStatisticsRepository) ? $queueStatisticsRepository : GeneralUtility::makeInstance(QueueStatisticsRepository::class);
+        $this->rootPageResolver = $rootPageResolver ?? GeneralUtility::makeInstance(RootPageResolver::class);
+        $this->recordService = $recordService ?? GeneralUtility::makeInstance(ConfigurationAwareRecordService::class);
+        $this->queueItemRepository = $queueItemRepository ?? GeneralUtility::makeInstance(QueueItemRepository::class);
+        $this->queueStatisticsRepository = $queueStatisticsRepository ??  GeneralUtility::makeInstance(QueueStatisticsRepository::class);
+        $this->queueInitializationService = $queueInitializationService ?? GeneralUtility::makeInstance(QueueInitializationService::class, $this);
     }
 
     // FIXME some of the methods should be renamed to plural forms
@@ -128,10 +136,19 @@ class Queue
     }
 
     /**
+     * @return QueueInitializationService
+     */
+    public function getInitializationService()
+    {
+        return $this->queueInitializationService;
+    }
+
+    /**
      * Truncate and rebuild the tx_solr_indexqueue_item table. This is the most
      * complete way to force reindexing, or to build the Index Queue for the
      * first time. The Index Queue initialization is site-specific.
      *
+     * @deprecated Deprecated sine 8.1.0 will be removed in 9.0.0 please use QueueInitializationService::initializeBySiteAndIndexConfiguration now
      * @param Site $site The site to initialize
      * @param string $indexingConfigurationName Name of a specific
      *      indexing configuration
@@ -140,74 +157,25 @@ class Queue
      */
     public function initialize(Site $site, $indexingConfigurationName = '')
     {
-        $indexingConfigurations = [];
-        $initializationStatus = [];
-
-        if (empty($indexingConfigurationName)) {
-            $solrConfiguration = $site->getSolrConfiguration();
-            $indexingConfigurations = $solrConfiguration->getEnabledIndexQueueConfigurationNames();
-        } else {
-            $indexingConfigurations[] = $indexingConfigurationName;
-        }
-
-        foreach ($indexingConfigurations as $indexingConfigurationName) {
-            $initializationStatus[$indexingConfigurationName] = $this->initializeIndexingConfiguration(
-                $site,
-                $indexingConfigurationName
-            );
-        }
-
-        if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessIndexQueueInitialization'])) {
-            foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessIndexQueueInitialization'] as $classReference) {
-                $indexQueueInitializationPostProcessor = GeneralUtility::makeInstance($classReference);
-
-                if ($indexQueueInitializationPostProcessor instanceof InitializationPostProcessor) {
-                    $indexQueueInitializationPostProcessor->postProcessIndexQueueInitialization(
-                        $site,
-                        $indexingConfigurations,
-                        $initializationStatus
-                    );
-                } else {
-                    throw new \UnexpectedValueException(
-                        get_class($indexQueueInitializationPostProcessor) .
-                        ' must implement interface ' . InitializationPostProcessor::class,
-                        1345815561
-                    );
-                }
-            }
-        }
-
-        return $initializationStatus;
+        trigger_error('Queue::initialize is deprecated please use QueueInitializationService::initializeBySiteAndIndexConfiguration now. Deprecated since 8.1.0 will be removed in 9.0.0', E_USER_DEPRECATED);
+        // for backwards compatibility we convert '*' to the wildcard argument
+        $indexingConfigurationName = $indexingConfigurationName === '' ? '*' : $indexingConfigurationName;
+        return $this->queueInitializationService->initializeBySiteAndIndexConfiguration($site, $indexingConfigurationName);
     }
 
     /**
-     * Initializes the Index Queue for a specific indexing configuration.
+     * Initializes a set index configurations for a given site.
      *
-     * @param Site $site The site to initialize
-     * @param string $indexingConfigurationName name of a specific
-     *      indexing configuration
-     * @return bool TRUE if the initialization was successful, FALSE otherwise
+     * @deprecated Deprecated sine 8.1.0 will be removed in 9.0.0 please use QueueInitializationService::initializeBySiteAndIndexConfigurations now
+     * @param Site $site
+     * @param array $indexingConfigurationNames
+     * @return array An array of booleans, each representing whether the
+     *      initialization for an indexing configuration was successful
      */
-    protected function initializeIndexingConfiguration(Site $site, $indexingConfigurationName)
+    public function initializeIndexingConfigurations(Site $site, array $indexingConfigurationNames)
     {
-        // clear queue
-        $this->deleteItemsBySite($site, $indexingConfigurationName);
-
-        $solrConfiguration = $site->getSolrConfiguration();
-
-        $tableToIndex = $solrConfiguration->getIndexQueueTableNameOrFallbackToConfigurationName($indexingConfigurationName);
-        $initializerClass = $solrConfiguration->getIndexQueueInitializerClassByConfigurationName($indexingConfigurationName);
-
-        $initializer = GeneralUtility::makeInstance($initializerClass);
-        /** @var $initializer \ApacheSolrForTypo3\Solr\IndexQueue\Initializer\AbstractInitializer */
-        $initializer->setSite($site);
-        $initializer->setType($tableToIndex);
-        $initializer->setIndexingConfigurationName($indexingConfigurationName);
-
-        $indexConfiguration = $solrConfiguration->getIndexQueueConfigurationByName($indexingConfigurationName);
-        $initializer->setIndexingConfiguration($indexConfiguration);
-
-        return $initializer->initialize();
+        trigger_error('Queue::initializeIndexingConfigurations is deprecated please use QueueInitializationService::initializeBySiteAndIndexConfigurations now. Deprecated since 8.1.0 will be removed in 9.0.0', E_USER_DEPRECATED);
+        return $this->queueInitializationService->initializeBySiteAndIndexConfigurations($site, $indexingConfigurationNames);
     }
 
     /**

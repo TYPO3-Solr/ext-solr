@@ -151,18 +151,7 @@ class IndexQueueModuleController extends AbstractModuleController
         $indexingConfigurationsToInitialize = GeneralUtility::_POST('tx_solr-index-queue-initialization');
         if ((!empty($indexingConfigurationsToInitialize)) && (is_array($indexingConfigurationsToInitialize))) {
             // initialize selected indexing configuration
-            foreach ($indexingConfigurationsToInitialize as $indexingConfigurationName) {
-                $initializedIndexingConfiguration = $this->indexQueue->initialize(
-                    $this->selectedSite,
-                    $indexingConfigurationName
-                );
-
-                // track initialized indexing configurations for the flash message
-                $initializedIndexingConfigurations = array_merge(
-                    $initializedIndexingConfigurations,
-                    $initializedIndexingConfiguration
-                );
-            }
+            $initializedIndexingConfigurations = $this->indexQueue->getInitializationService()->initializeBySiteAndIndexConfigurations($this->selectedSite, $indexingConfigurationsToInitialize);
         } else {
             $messageLabel = 'solr.backend.index_queue_module.flashmessage.initialize.no_selection';
             $titleLabel = 'solr.backend.index_queue_module.flashmessage.not_initialized.title';
@@ -172,7 +161,6 @@ class IndexQueueModuleController extends AbstractModuleController
                 FlashMessage::WARNING
             );
         }
-
         $messagesForConfigurations = [];
         foreach (array_keys($initializedIndexingConfigurations) as $indexingConfigurationName) {
             $itemCount = $this->indexQueue->getStatisticsBySite($this->selectedSite, $indexingConfigurationName)->getTotalCount();
@@ -183,8 +171,7 @@ class IndexQueueModuleController extends AbstractModuleController
             $messageLabel = 'solr.backend.index_queue_module.flashmessage.initialize.success';
             $titleLabel = 'solr.backend.index_queue_module.flashmessage.initialize.title';
             $this->addFlashMessage(
-                LocalizationUtility::translate($messageLabel, 'Solr',
-                    [implode(', ', $messagesForConfigurations)]),
+                LocalizationUtility::translate($messageLabel, 'Solr', [implode(', ', $messagesForConfigurations)]),
                 LocalizationUtility::translate($titleLabel, 'Solr'),
                 FlashMessage::OK
             );
