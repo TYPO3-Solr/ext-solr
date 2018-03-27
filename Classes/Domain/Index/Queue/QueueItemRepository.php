@@ -180,6 +180,31 @@ class QueueItemRepository extends AbstractRepository
     }
 
     /**
+     * Retrieves the count of items that match certain filters. Each filter is passed as parts of the where claus combined with AND.
+     *
+     * @param array $sites
+     * @param array $indexQueueConfigurationNames
+     * @param array $itemTypes
+     * @param array $itemUids
+     * @param array $uids
+     * @return int
+     */
+    public function countItems(array $sites = [], array $indexQueueConfigurationNames = [], array $itemTypes = [], array $itemUids = [], array $uids = []): int
+    {
+        $rootPageIds = Site::getRootPageIdsFromSites($sites);
+        $indexQueueConfigurationList = implode(",", $indexQueueConfigurationNames);
+        $itemTypeList = implode(",", $itemTypes);
+        $itemUids = array_map("intval", $itemUids);
+        $uids = array_map("intval", $uids);
+
+        $queryBuilderForCountingItems = $this->getQueryBuilder();
+        $queryBuilderForCountingItems->count('uid')->from($this->table);
+        $queryBuilderForCountingItems = $this->addItemWhereClauses($queryBuilderForCountingItems, $rootPageIds, $indexQueueConfigurationList, $itemTypeList, $itemUids, $uids);
+
+        return (int)$queryBuilderForCountingItems->execute()->fetchColumn(0);
+    }
+
+    /**
      * Gets the most recent changed time of a page's content elements
      *
      * @param int $pageUid
@@ -297,59 +322,15 @@ class QueueItemRepository extends AbstractRepository
     }
 
     /**
-     * Returns the list with Uids to delete by given item type and optional item Uid
-     *
-     * @param string $itemType The item's type, usually a table name.
-     * @param int|null $itemUid The item's uid
-     * @return array the list with item Uids to delete
-     */
-    protected function getItemListToDeleteByItemTypeAndOptionalItemUid(string $itemType, int $itemUid = null) : array
-    {
-        $queryBuilderForItemListToDelete = $this->getQueryBuilder();
-        $queryBuilderForItemListToDelete
-            ->select('uid')
-            ->from($this->table)
-            ->andWhere(
-                $queryBuilderForItemListToDelete->expr()->eq('item_type', $queryBuilderForItemListToDelete->createNamedParameter($itemType))
-            );
-
-        if (isset($itemUid)) {
-            $queryBuilderForItemListToDelete->andWhere($queryBuilderForItemListToDelete->expr()->eq('item_uid', $itemUid));
-        }
-
-        return $queryBuilderForItemListToDelete->execute()->fetchAll(\PDO::FETCH_COLUMN);
-    }
-
-    /**
      * Removes an item from the Index Queue.
      *
-     * @todo: use transaction
-     *        use sub-select for tx_solr_indexqueue_indexing_property IN() clause and native WHERE clause for tx_solr_indexqueue_item instead of fetching and concat it with PHP
      * @param string $itemType The type of the item to remove, usually a table name.
      * @param int $itemUid The uid of the item to remove
      */
     public function deleteItem(string $itemType, int $itemUid = null)
     {
-        $items = $this->getItemListToDeleteByItemTypeAndOptionalItemUid($itemType, $itemUid);
-        if (empty($items)) {
-            return;
-        }
-
-        $queryBuilder = $this->getQueryBuilder();
-        $queryBuilder
-            ->delete($this->table)
-            ->where(
-                $queryBuilder->expr()->in('uid', $items)
-            )
-            ->execute();
-
-        $queryBuilder2 = $this->getQueryBuilder();
-        $queryBuilder2
-            ->delete('tx_solr_indexqueue_indexing_property')
-            ->where(
-                $queryBuilder2->expr()->in('uid', $items)
-            )
-            ->execute();
+        $itemUids = empty($itemUid) ? [] : [$itemUid];
+        $this->deleteItems([], [], [$itemType], $itemUids);
     }
 
     /**
@@ -372,29 +353,33 @@ class QueueItemRepository extends AbstractRepository
      */
     public function deleteItemsBySite(Site $site, string $indexingConfigurationName = '')
     {
-        $queryBuilderForDeletingItems = $this->getQueryBuilder();
-        $queryBuilderForDeletingItems
-            ->delete($this->table)
-            ->where($queryBuilderForDeletingItems->expr()->eq('root', $site->getRootPageId()));
-        if (!empty($indexingConfigurationName)) {
-            $queryBuilderForDeletingItems->andWhere($queryBuilderForDeletingItems->expr()->eq('indexing_configuration', $queryBuilderForDeletingItems->createNamedParameter($indexingConfigurationName)));
-        }
+        $indexingConfigurationNames = empty($indexingConfigurationName) ? [] : [$indexingConfigurationName];
+        $this->deleteItems([$site], $indexingConfigurationNames);
+    }
 
-        $queryBuilderForDeletingProperties = $queryBuilderForDeletingItems->getConnection()->createQueryBuilder();
-        $queryBuilderForDeletingProperties
-            ->delete('tx_solr_indexqueue_indexing_property')
-            ->innerJoin(
-                'properties',
-                $this->table,
-                'items',
-                (string)$queryBuilderForDeletingProperties->expr()->andX(
-                    $queryBuilderForDeletingProperties->expr()->eq('items.uid', $queryBuilderForDeletingProperties->quoteIdentifier('properties.item_id')),
-                    $queryBuilderForDeletingProperties->expr()->eq('items.root', $site->getRootPageId()),
-                    empty($indexingConfigurationName) ? '' : $queryBuilderForDeletingProperties->expr()->eq(
-                        'items.indexing_configuration', $queryBuilderForDeletingProperties->createNamedParameter($indexingConfigurationName)
-                    )
-                )
-            );
+    /**
+     * Removes items in the index queue filtered by the passed arguments.
+     *
+     * @param array $sites
+     * @param array $indexQueueConfigurationNames
+     * @param array $itemTypes
+     * @param array $itemUids
+     * @param array $uids
+     * @throws \Exception
+     */
+    public function deleteItems(array $sites = [], array $indexQueueConfigurationNames = [], array $itemTypes = [], array $itemUids = [], array $uids = [])
+    {
+        $rootPageIds = Site::getRootPageIdsFromSites($sites);
+        $indexQueueConfigurationList = implode(",", $indexQueueConfigurationNames);
+        $itemTypeList = implode(",", $itemTypes);
+        $itemUids = array_map("intval", $itemUids);
+        $uids = array_map("intval", $uids);
+
+        $queryBuilderForDeletingItems = $this->getQueryBuilder();
+        $queryBuilderForDeletingItems->delete($this->table);
+        $queryBuilderForDeletingItems = $this->addItemWhereClauses($queryBuilderForDeletingItems, $rootPageIds, $indexQueueConfigurationList, $itemTypeList, $itemUids, $uids);
+
+        $queryBuilderForDeletingProperties = $this->buildQueryForPropertyDeletion($queryBuilderForDeletingItems, $rootPageIds, $indexQueueConfigurationList, $itemTypeList, $itemUids, $uids);
 
         $queryBuilderForDeletingItems->getConnection()->beginTransaction();
         try {
@@ -406,6 +391,72 @@ class QueueItemRepository extends AbstractRepository
             $queryBuilderForDeletingItems->getConnection()->rollback();
             throw $e;
         }
+    }
+
+    /**
+     * Initializes the query builder to delete items in the index queue filtered by the passed arguments.
+     *
+     * @param array $rootPageIds filter on a set of rootPageUids.
+     * @param string $indexQueueConfigurationList
+     * @param string $itemTypeList
+     * @param array $itemUids filter on a set of item uids
+     * @param array $uids filter on a set of queue item uids
+     * @return QueryBuilder
+     */
+    private function addItemWhereClauses(QueryBuilder $queryBuilderForDeletingItems, array $rootPageIds, string $indexQueueConfigurationList, string $itemTypeList, array $itemUids, array $uids): QueryBuilder
+    {
+
+        if (!empty($rootPageIds)) {
+            $queryBuilderForDeletingItems->andWhere($queryBuilderForDeletingItems->expr()->in('root', $rootPageIds));
+        };
+
+        if (!empty($indexQueueConfigurationList)) {
+            $queryBuilderForDeletingItems->andWhere($queryBuilderForDeletingItems->expr()->in('indexing_configuration', $queryBuilderForDeletingItems->createNamedParameter($indexQueueConfigurationList)));
+        }
+
+        if (!empty($itemTypeList)) {
+            $queryBuilderForDeletingItems->andWhere($queryBuilderForDeletingItems->expr()->in('item_type', $queryBuilderForDeletingItems->createNamedParameter($itemTypeList)));
+        }
+
+        if (!empty($itemUids)) {
+            $queryBuilderForDeletingItems->andWhere($queryBuilderForDeletingItems->expr()->in('item_uid', $itemUids));
+        }
+
+        if (!empty($uids)) {
+            $queryBuilderForDeletingItems->andWhere($queryBuilderForDeletingItems->expr()->in('uid', $uids));
+        }
+
+        return $queryBuilderForDeletingItems;
+    }
+
+    /**
+     * Initializes a query builder to delete the indexing properties of an item by the passed conditions.
+     *
+     * @param QueryBuilder $queryBuilderForDeletingItems
+     * @param array $rootPageIds
+     * @param string $indexQueueConfigurationList
+     * @param string $itemTypeList
+     * @param array $itemUids
+     * @param array $uids
+     * @return QueryBuilder
+     */
+    private function buildQueryForPropertyDeletion(QueryBuilder $queryBuilderForDeletingItems, array $rootPageIds, string $indexQueueConfigurationList, string $itemTypeList, array $itemUids, array $uids): QueryBuilder
+    {
+        $queryBuilderForDeletingProperties = $queryBuilderForDeletingItems->getConnection()->createQueryBuilder();
+        $queryBuilderForDeletingProperties->delete('tx_solr_indexqueue_indexing_property')->innerJoin(
+            'properties',
+            $this->table,
+            'items',
+            (string)$queryBuilderForDeletingProperties->expr()->andX(
+                $queryBuilderForDeletingProperties->expr()->eq('items.uid', $queryBuilderForDeletingProperties->quoteIdentifier('properties.item_id')),
+                empty($rootPageIds) ? '' : $queryBuilderForDeletingProperties->expr()->in('items.root', $rootPageIds),
+                empty($indexQueueConfigurationList) ? '' : $queryBuilderForDeletingProperties->expr()->in('items.indexing_configuration', $queryBuilderForDeletingProperties->createNamedParameter($indexQueueConfigurationList)),
+                empty($itemTypeList) ? '' : $queryBuilderForDeletingProperties->expr()->in('items.item_type', $queryBuilderForDeletingProperties->createNamedParameter($itemTypeList)),
+                empty($itemUids) ? '' : $queryBuilderForDeletingProperties->expr()->in('items.item_uid', $itemUids),
+                empty($uids) ? '' : $queryBuilderForDeletingProperties->expr()->in('items.uid', $uids)
+            )
+        );
+        return $queryBuilderForDeletingProperties;
     }
 
     /**
@@ -527,6 +578,31 @@ class QueueItemRepository extends AbstractRepository
     }
 
     /**
+     * Retrieves the count of items that match certain filters. Each filter is passed as parts of the where claus combined with AND.
+     *
+     * @param array $sites
+     * @param array $indexQueueConfigurationNames
+     * @param array $itemTypes
+     * @param array $itemUids
+     * @param array $uids
+     * @param int $start
+     * @param int $limit
+     * @return array
+     */
+    public function findItems(array $sites = [], array $indexQueueConfigurationNames = [], array $itemTypes = [], array $itemUids = [], array $uids = [], $start = 0, $limit = 50): array
+    {
+        $rootPageIds = Site::getRootPageIdsFromSites($sites);
+        $indexQueueConfigurationList = implode(",", $indexQueueConfigurationNames);
+        $itemTypeList = implode(",", $itemTypes);
+        $itemUids = array_map("intval", $itemUids);
+        $uids = array_map("intval", $uids);
+        $itemQueryBuilder = $this->getQueryBuilder()->select('*')->from($this->table);
+        $itemQueryBuilder = $this->addItemWhereClauses($itemQueryBuilder, $rootPageIds, $indexQueueConfigurationList, $itemTypeList, $itemUids, $uids);
+        $itemRecords = $itemQueryBuilder->setFirstResult($start)->setMaxResults($limit)->execute()->fetchAll();
+        return $this->getIndexQueueItemObjectsFromRecords($itemRecords);
+    }
+
+    /**
      * Creates an array of ApacheSolrForTypo3\Solr\IndexQueue\Item objects from an array of
      * index queue records.
      *
@@ -640,16 +716,8 @@ class QueueItemRepository extends AbstractRepository
      */
     public function markItemAsFailed($item, string $errorMessage = ''): int
     {
-        if ($item instanceof Item) {
-            $itemUid = $item->getIndexQueueUid();
-        } else {
-            $itemUid = (int)$item;
-        }
-
-        if (empty($errorMessage)) {
-            // simply set to "TRUE"
-            $errorMessage = '1';
-        }
+        $itemUid = ($item instanceof Item) ? $item->getIndexQueueUid() : (int)$item;
+        $errorMessage = empty($errorMessage) ? '1' : $errorMessage;
 
         $queryBuilder = $this->getQueryBuilder();
         return (int)$queryBuilder

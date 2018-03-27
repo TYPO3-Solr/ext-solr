@@ -282,4 +282,20 @@ class Site
 
         return $this->sysLanguageMode;
     }
+
+    /**
+     * Retrieves the rootPageIds as an array from a set of sites.
+     *
+     * @param array $sites
+     * @return array
+     */
+    public static function getRootPageIdsFromSites(array $sites): array
+    {
+        $rootPageIds = [];
+        foreach ($sites as $site) {
+            $rootPageIds[] = (int)$site->getRootPageId();
+        }
+
+        return $rootPageIds;
+    }
 }
