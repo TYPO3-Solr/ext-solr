@@ -25,6 +25,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Domain\Index;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\QueueItemRepository;
+use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -59,4 +60,61 @@ class QueueItemRepositoryTest extends IntegrationTest
         $this->assertFalse($queueItem->hasIndexingProperties());
     }
 
+    /**
+     * @test
+     */
+    public function deleteItemDeletesItemForEverySite()
+    {
+        $this->importDataSetFromFixture('can_delete_item_by_type_and_uid.xml');
+        /** @var $queueItemRepository QueueItemRepository */
+        $queueItemRepository = GeneralUtility::makeInstance(QueueItemRepository::class);
+        $this->assertSame(6, $queueItemRepository->count(), 'Unexpected amount of items in the index queue');
+        $queueItemRepository->deleteItem('pages', 1);
+
+        $this->assertSame(3, $queueItemRepository->count(), 'Unexpected amount of items in the index queue after deletion by type and uid');
+    }
+
+    /**
+     * @test
+     */
+    public function canDeleteItemByPassingTypeOnly()
+    {
+        $this->importDataSetFromFixture('can_delete_item_by_type.xml');
+        /** @var $queueItemRepository QueueItemRepository */
+        $queueItemRepository = GeneralUtility::makeInstance(QueueItemRepository::class);
+        $this->assertSame(6, $queueItemRepository->count(), 'Unexpected amount of items in the index queue');
+        $queueItemRepository->deleteItem('pages');
+
+        $this->assertSame(2, $queueItemRepository->count(), 'Unexpected amount of items in the index queue after deletion by type and uid');
+    }
+
+    /**
+     * @test
+     */
+    public function canCountItems()
+    {
+        $this->importDataSetFromFixture('can_count_items.xml');
+        /** @var $queueItemRepository QueueItemRepository */
+        $queueItemRepository = GeneralUtility::makeInstance(QueueItemRepository::class);
+        $this->assertSame(6, $queueItemRepository->countItems(), 'Unexpected amount of items counted when no filter was passed');
+        $this->assertSame(4, $queueItemRepository->countItems([], ['pages']), 'Unexpected amount of counted pages');
+        $this->assertSame(2, $queueItemRepository->countItems([], ['pages'], [], [3,4]), 'Unexpected amount of counted pages and item uids');
+        $this->assertSame(1, $queueItemRepository->countItems([], ['pages'], [], [], [4713]), 'Unexpected amount of counted pages and uids');
+    }
+
+    /**
+     * @test
+     */
+    public function canFindItems()
+    {
+        $this->importDataSetFromFixture('can_find_items.xml');
+        /** @var $queueItemRepository QueueItemRepository */
+        $queueItemRepository = GeneralUtility::makeInstance(QueueItemRepository::class);
+        $items = $queueItemRepository->findItems([], ['pages']);
+
+            /** @var Item $firstItem */
+        $firstItem = $items[0];
+        $this->assertSame(4, count($items));
+        $this->assertSame('pages', $firstItem->getType(), 'First item has unexpected type');
+    }
 }
