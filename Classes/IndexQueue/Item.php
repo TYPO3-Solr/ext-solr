@@ -41,6 +41,12 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class Item
 {
+    const STATE_BLOCKED = -1;
+
+    const STATE_PENDING = 0;
+
+    const STATE_INDEXED = 1;
+
     /**
      * The item's uid in the index queue (tx_solr_indexqueue_item.uid)
      *
@@ -76,6 +82,13 @@ class Item
      * @var int
      */
     protected $changed;
+
+    /**
+     * The unix timestamp when the record was last indexed (tx_solr_indexqueue_item.indexed)
+     *
+     * @var int
+     */
+    protected $indexed;
 
     /**
      * Indexing properties to provide additional information for the item's
@@ -150,6 +163,7 @@ class Item
         $this->recordUid = $itemMetaData['item_uid'];
         $this->mountPointIdentifier = (string) empty($itemMetaData['pages_mountidentifier']) ? '' : $itemMetaData['pages_mountidentifier'];
         $this->changed = $itemMetaData['changed'];
+        $this->indexed = $itemMetaData['indexed'];
         $this->errors = (string) empty($itemMetaData['errors']) ? '' : $itemMetaData['errors'];
 
         $this->indexingConfigurationName = $itemMetaData['indexing_configuration'];
@@ -159,8 +173,8 @@ class Item
             $this->record = $fullRecord;
         }
 
-        $this->indexQueueIndexingPropertyRepository = isset($indexQueueIndexingPropertyRepository) ? $indexQueueIndexingPropertyRepository : GeneralUtility::makeInstance(IndexQueueIndexingPropertyRepository::class);
-        $this->queueItemRepository = isset($queueItemRepository) ? $queueItemRepository : GeneralUtility::makeInstance(QueueItemRepository::class);
+        $this->indexQueueIndexingPropertyRepository = $indexQueueIndexingPropertyRepository ?? GeneralUtility::makeInstance(IndexQueueIndexingPropertyRepository::class);
+        $this->queueItemRepository = $queueItemRepository ?? GeneralUtility::makeInstance(QueueItemRepository::class);
     }
 
     /**
@@ -210,6 +224,30 @@ class Item
     }
 
     /**
+     * @return boolean
+     */
+    public function getHasErrors()
+    {
+        return trim($this->errors) !== '';
+    }
+
+    /**
+     * @return int
+     */
+    public function getState()
+    {
+        if ($this->getHasErrors()) {
+            return self::STATE_BLOCKED;
+        }
+
+        if ($this->getIndexed() > $this->getChanged()) {
+            return self::STATE_INDEXED;
+        }
+
+        return self::STATE_PENDING;
+    }
+
+    /**
      * Gets the site the item belongs to.
      *
      * @return Site Site instance the item belongs to.
@@ -220,36 +258,77 @@ class Item
         return $siteRepository->getSiteByRootPageId($this->rootPageUid);
     }
 
+    /**
+     * Returns the type/tablename of the queue record.
+     *
+     * @return mixed|string
+     */
     public function getType()
     {
         return $this->type;
     }
 
+    /**
+     * @param $type
+     */
     public function setType($type)
     {
         $this->type = $type;
     }
 
+    /**
+     * Returns the name of the index configuration that was used to create this record.
+     *
+     * @return mixed|string
+     */
     public function getIndexingConfigurationName()
     {
         return $this->indexingConfigurationName;
     }
 
+    /**
+     * @param string $indexingConfigurationName
+     */
     public function setIndexingConfigurationName($indexingConfigurationName)
     {
         $this->indexingConfigurationName = $indexingConfigurationName;
     }
 
+    /**
+     * Returns the timestamp when this queue item was changed.
+     *
+     * @return int|mixed
+     */
     public function getChanged()
     {
         return $this->changed;
     }
 
+    /**
+     * Returns the timestamp when this queue item was indexed.
+     *
+     * @return int|mixed
+     */
+    public function getIndexed()
+    {
+        return $this->indexed;
+    }
+
+    /**
+     * Used to set the timestamp when the related item was changed.
+     *
+     * @param int $changed
+     */
     public function setChanged($changed)
     {
         $this->changed = intval($changed);
     }
 
+    /**
+     * Returns the uid of related record (item_uid).
+     *
+     * @return mixed
+     */
     public function getRecordUid()
     {
         $this->getRecord();
@@ -279,12 +358,19 @@ class Item
         return $this->record;
     }
 
+    /**
+     * Can be used to set the related record.
+     *
+     * @param array $record
+     */
     public function setRecord(array $record)
     {
         $this->record = $record;
     }
 
     /**
+     * Retrieves the page id where the related record is stored.
+     *
      * @return int
      */
     public function getRecordPageId()
@@ -309,6 +395,9 @@ class Item
         $this->queueItemRepository->updateHasIndexingPropertiesFlagByItemUid($this->indexQueueUid, $this->hasIndexingProperties);
     }
 
+    /**
+     * @return bool
+     */
     public function hasIndexingProperties()
     {
         return $this->hasIndexingProperties;
