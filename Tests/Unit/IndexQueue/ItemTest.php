@@ -28,7 +28,7 @@ use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 
 /**
- * @authot Timo Hund <timo.hund@dkd.de>
+ * @author Timo Hund <timo.hund@dkd.de>
  */
 class ItemTest extends UnitTest
 {
@@ -57,5 +57,51 @@ class ItemTest extends UnitTest
 
         $type = $item->getType();
         $this->assertSame('pages', $type, 'Can not get type from queue item');
+    }
+
+    /**
+     * @return array
+     */
+    public function getStateDataProvider()
+    {
+        return [
+            'pending item' => [['item_type' => 'pages', 'indexed' => 3, 'changed' => '4'], Item::STATE_PENDING],
+            'indexed item' => [['item_type' => 'pages', 'indexed' => 5, 'changed' => '4'], Item::STATE_INDEXED],
+            'blocked item' => [['item_type' => 'pages', 'indexed' => 5, 'changed' => '4', 'errors' => 'Something bad happened'], Item::STATE_BLOCKED]
+        ];
+    }
+
+    /**
+     * @dataProvider getStateDataProvider
+     * @test
+     */
+    public function canGetState($metaData, $expectedState)
+    {
+        $item = new Item($metaData, []);
+        $this->assertSame($expectedState, $item->getState(), 'Can not get state from item as expected');
+    }
+
+    /**
+     * @test
+     */
+    public function testHasErrors()
+    {
+        $item = new Item([], []);
+        $this->assertFalse($item->getHasErrors(), 'Expected that item without any data has no errors');
+
+        $item = new Item(['errors' => 'something is broken'], []);
+        $this->assertTrue($item->getHasErrors(), 'Item with errors was not indicated to have errors');
+    }
+
+    /**
+     * @test
+     */
+    public function testHasIndexingProperties()
+    {
+        $item = new Item([], []);
+        $this->assertFalse($item->hasIndexingProperties(), 'Expected that empty item should not have any indexing properties');
+
+        $item = new Item(['has_indexing_properties' => true], []);
+        $this->assertTrue($item->hasIndexingProperties(), 'Item with proper meta data should have indexing properties');
     }
 }
