@@ -45,9 +45,9 @@
 					</f:then>
 
 					<f:else>
-						<f:if condition="{resultSet.usedQuery.keywordsCleaned}">
+						<f:if condition="{resultSet.usedQuery.queryStringContainer.keywordsCleaned}">
 						<span class="searched-for">
-							<s:translate key="results_searched_for" arguments="{0: resultSet.usedQuery.keywordsCleaned}">Searched for "%s"</s:translate>
+							<s:translate key="results_searched_for" arguments="{0: resultSet.usedQuery.queryStringContainer.keywordsCleaned}">Searched for "%s"</s:translate>
 						</span>
 						</f:if>
 					</f:else>
