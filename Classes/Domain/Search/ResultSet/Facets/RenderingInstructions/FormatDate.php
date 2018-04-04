@@ -54,7 +54,7 @@ class FormatDate
      */
     public function __construct(FormatService $formatService = null)
     {
-        $this->formatService = is_null($formatService) ? GeneralUtility::makeInstance(FormatService::class) : $formatService;
+        $this->formatService = $formatService ?? GeneralUtility::makeInstance(FormatService::class);
     }
 
     /**

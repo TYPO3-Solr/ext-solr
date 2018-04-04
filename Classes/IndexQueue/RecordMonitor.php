@@ -89,11 +89,11 @@ class RecordMonitor extends AbstractDataHandlerListener
     public function __construct(Queue $indexQueue = null, MountPagesUpdater $mountPageUpdater = null, TCAService $TCAService = null, RootPageResolver $rootPageResolver = null, PagesRepository $pagesRepository = null)
     {
         parent::__construct();
-        $this->indexQueue = is_null($indexQueue) ? GeneralUtility::makeInstance(Queue::class) : $indexQueue;
-        $this->mountPageUpdater = is_null($mountPageUpdater) ? GeneralUtility::makeInstance(MountPagesUpdater::class) : $mountPageUpdater;
-        $this->tcaService = is_null($TCAService) ? GeneralUtility::makeInstance(TCAService::class) : $TCAService;
-        $this->rootPageResolver = is_null($rootPageResolver) ? GeneralUtility::makeInstance(RootPageResolver::class) : $rootPageResolver;
-        $this->pagesRepository = isset($pagesRepository) ? $pagesRepository : GeneralUtility::makeInstance(PagesRepository::class);
+        $this->indexQueue = $indexQueue ?? GeneralUtility::makeInstance(Queue::class);
+        $this->mountPageUpdater = $mountPageUpdater ?? GeneralUtility::makeInstance(MountPagesUpdater::class);
+        $this->tcaService = $TCAService ?? GeneralUtility::makeInstance(TCAService::class);
+        $this->rootPageResolver = $rootPageResolver ?? GeneralUtility::makeInstance(RootPageResolver::class);
+        $this->pagesRepository = $pagesRepository ?? GeneralUtility::makeInstance(PagesRepository::class);
     }
 
     /**
@@ -172,6 +172,7 @@ class RecordMonitor extends AbstractDataHandlerListener
                 case 'tt_content':
                     $uid = $this->getValidatedPid($tceMain, $table, $uid);
                     $table = 'pages';
+                    // no break here since we use the logic for pages after resolving the pid
                 case 'pages':
                     $solrConfiguration = Util::getSolrConfigurationFromPageId($uid);
                     $record = $this->configurationAwareRecordService->getRecord($table, $uid, $solrConfiguration);

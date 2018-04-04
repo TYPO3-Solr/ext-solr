@@ -55,7 +55,7 @@ class SearchRequestBuilder
     public function __construct(TypoScriptConfiguration $typoScriptConfiguration, FrontendUserSession $frontendUserSession = null)
     {
         $this->typoScriptConfiguration = $typoScriptConfiguration;
-        $this->session = is_null($frontendUserSession) ? GeneralUtility::makeInstance(FrontendUserSession::class) : $frontendUserSession;
+        $this->session = $frontendUserSession ?? GeneralUtility::makeInstance(FrontendUserSession::class);
     }
 
     /**

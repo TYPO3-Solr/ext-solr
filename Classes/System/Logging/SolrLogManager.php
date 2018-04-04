@@ -66,7 +66,7 @@ class SolrLogManager
     public function __construct($className, DebugWriter $debugWriter = null)
     {
         $this->className = $className;
-        $this->debugWriter = isset($debugWriter) ? $debugWriter : GeneralUtility::makeInstance(DebugWriter::class);
+        $this->debugWriter = $debugWriter ?? GeneralUtility::makeInstance(DebugWriter::class);
     }
 
     /**

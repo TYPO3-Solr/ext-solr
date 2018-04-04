@@ -51,7 +51,7 @@ class SolrConfigurationStatus extends AbstractSolrStatus
      */
     public function __construct(SystemDomainRepository $systemDomainRepository = null)
     {
-        $this->systemDomainRepository = isset($systemDomainRepository) ? $systemDomainRepository : GeneralUtility::makeInstance(SystemDomainRepository::class);
+        $this->systemDomainRepository = $systemDomainRepository ?? GeneralUtility::makeInstance(SystemDomainRepository::class);
     }
 
     /**

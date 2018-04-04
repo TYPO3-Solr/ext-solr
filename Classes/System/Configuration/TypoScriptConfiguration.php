@@ -87,7 +87,7 @@ class TypoScriptConfiguration
     {
         $this->configurationAccess = new ArrayAccessor($configuration, '.', true);
         $this->contextPageId = $contextPageId;
-        $this->contentObjectService = is_null($contentObjectService) ? GeneralUtility::makeInstance(ContentObjectService::class) : $contentObjectService;
+        $this->contentObjectService = $contentObjectService ?? GeneralUtility::makeInstance(ContentObjectService::class);
     }
 
     /**

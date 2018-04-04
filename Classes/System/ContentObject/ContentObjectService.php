@@ -47,7 +47,7 @@ class ContentObjectService
      */
     public function __construct(ContentObjectRenderer $contentObject = null)
     {
-        $this->contentObjectRenderer = is_null($contentObject) ? GeneralUtility::makeInstance(ContentObjectRenderer::class) : $contentObject;
+        $this->contentObjectRenderer = $contentObject ?? GeneralUtility::makeInstance(ContentObjectRenderer::class);
     }
 
     /**

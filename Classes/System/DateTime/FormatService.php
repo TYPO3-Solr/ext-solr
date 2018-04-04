@@ -54,7 +54,7 @@ class FormatService
         }
 
         // try to create DateTime object
-        $timezone = is_null($timezone) ? new DateTimeZone(date_default_timezone_get()) : $timezone;
+        $timezone = $timezone ?? new DateTimeZone(date_default_timezone_get());
         return $this->getFormattedDate($input, $inputFormat, $outputFormat, $timezone);
     }
 

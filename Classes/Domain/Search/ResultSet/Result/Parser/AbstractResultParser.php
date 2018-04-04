@@ -54,10 +54,9 @@ abstract class AbstractResultParser {
      * @param SearchResultBuilder|null $resultBuilder
      * @param DocumentEscapeService|null $documentEscapeService
      */
-    public function __construct(SearchResultBuilder $resultBuilder = null,
-                                DocumentEscapeService $documentEscapeService = null) {
-        $this->searchResultBuilder = is_null($resultBuilder) ? GeneralUtility::makeInstance(SearchResultBuilder::class) : $resultBuilder;
-        $this->documentEscapeService = is_null($documentEscapeService) ? GeneralUtility::makeInstance(DocumentEscapeService::class) : $documentEscapeService;
+    public function __construct(SearchResultBuilder $resultBuilder = null, DocumentEscapeService $documentEscapeService = null) {
+        $this->searchResultBuilder = $resultBuilder ?? GeneralUtility::makeInstance(SearchResultBuilder::class);
+        $this->documentEscapeService = $documentEscapeService ?? GeneralUtility::makeInstance(DocumentEscapeService::class);
     }
 
     /**

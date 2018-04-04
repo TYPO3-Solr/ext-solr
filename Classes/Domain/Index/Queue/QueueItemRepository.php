@@ -57,7 +57,7 @@ class QueueItemRepository extends AbstractRepository
      */
     public function __construct(SolrLogManager $logManager = null)
     {
-        $this->logger = isset($logManager) ? $logManager : GeneralUtility::makeInstance(SolrLogManager::class, /** @scrutinizer ignore-type */ __CLASS__);
+        $this->logger = $logManager ?? GeneralUtility::makeInstance(SolrLogManager::class, /** @scrutinizer ignore-type */ __CLASS__);
     }
 
     /**

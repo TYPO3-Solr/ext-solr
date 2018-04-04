@@ -78,7 +78,7 @@ class SuggestService {
         $this->tsfe = $tsfe;
         $this->searchService = $searchResultSetService;
         $this->typoScriptConfiguration = $typoScriptConfiguration;
-        $this->queryBuilder = is_null($queryBuilder) ? GeneralUtility::makeInstance(QueryBuilder::class, /** @scrutinizer ignore-type */ $typoScriptConfiguration) : $queryBuilder;
+        $this->queryBuilder = $queryBuilder ?? GeneralUtility::makeInstance(QueryBuilder::class, /** @scrutinizer ignore-type */ $typoScriptConfiguration);
     }
 
     /**
@@ -170,7 +170,7 @@ class SuggestService {
         $facetSuggestions = $results->facet_counts->facet_fields->{$suggestConfig['suggestField']};
         $facetSuggestions = get_object_vars($facetSuggestions);
 
-        return is_null($facetSuggestions) ? [] : $facetSuggestions;
+        return $facetSuggestions ?? [];
     }
 
     /**

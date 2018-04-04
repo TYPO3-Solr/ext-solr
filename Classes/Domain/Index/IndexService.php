@@ -84,9 +84,9 @@ class IndexService
     public function __construct(Site $site, Queue $queue = null, Dispatcher $dispatcher = null, SolrLogManager $solrLogManager = null)
     {
         $this->site = $site;
-        $this->indexQueue = is_null($queue) ? GeneralUtility::makeInstance(Queue::class) : $queue;
-        $this->signalSlotDispatcher = is_null($dispatcher) ? GeneralUtility::makeInstance(Dispatcher::class) : $dispatcher;
-        $this->logger = is_null($solrLogManager) ? GeneralUtility::makeInstance(SolrLogManager::class, /** @scrutinizer ignore-type */ __CLASS__) : $solrLogManager;
+        $this->indexQueue = $queue ?? GeneralUtility::makeInstance(Queue::class);
+        $this->signalSlotDispatcher = $dispatcher ?? GeneralUtility::makeInstance(Dispatcher::class);
+        $this->logger = $solrLogManager ?? GeneralUtility::makeInstance(SolrLogManager::class, /** @scrutinizer ignore-type */ __CLASS__);
     }
 
     /**

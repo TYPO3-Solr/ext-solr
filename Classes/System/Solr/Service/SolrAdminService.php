@@ -143,9 +143,9 @@ class SolrAdminService extends AbstractSolrService
     {
         parent::__construct($host, $port, $path, $scheme, $typoScriptConfiguration);
 
-        $this->synonymParser = is_null($synonymParser) ? GeneralUtility::makeInstance(SynonymParser::class) : $synonymParser;
-        $this->stopWordParser = is_null($stopWordParser) ? GeneralUtility::makeInstance(StopWordParser::class) : $stopWordParser;
-        $this->schemaParser = is_null($schemaParser) ? GeneralUtility::makeInstance(SchemaParser::class) : $schemaParser;
+        $this->synonymParser = $synonymParser ?? GeneralUtility::makeInstance(SynonymParser::class);
+        $this->stopWordParser = $stopWordParser ?? GeneralUtility::makeInstance(StopWordParser::class);
+        $this->schemaParser = $schemaParser ?? GeneralUtility::makeInstance(SchemaParser::class);
     }
 
     protected function _initUrls()

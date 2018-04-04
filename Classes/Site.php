@@ -107,7 +107,7 @@ class Site
         $this->rootPage = $page;
         $this->domain = $domain;
         $this->siteHash = $siteHash;
-        $this->pagesRepository = isset($pagesRepository) ? $pagesRepository : GeneralUtility::makeInstance(PagesRepository::class);
+        $this->pagesRepository = $pagesRepository ?? GeneralUtility::makeInstance(PagesRepository::class);
     }
 
     /**

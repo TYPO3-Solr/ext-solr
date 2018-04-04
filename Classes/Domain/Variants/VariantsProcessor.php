@@ -58,7 +58,7 @@ class VariantsProcessor implements SearchResultSetProcessor {
     public function __construct(TypoScriptConfiguration $configuration, SearchResultBuilder $resultBuilder = null)
     {
         $this->typoScriptConfiguration = $configuration;
-        $this->resultBuilder = is_null($resultBuilder) ? GeneralUtility::makeInstance(SearchResultBuilder::class) : $resultBuilder;
+        $this->resultBuilder = $resultBuilder ?? GeneralUtility::makeInstance(SearchResultBuilder::class);
     }
 
     /**

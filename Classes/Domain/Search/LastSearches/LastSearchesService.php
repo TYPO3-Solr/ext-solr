@@ -63,8 +63,8 @@ class LastSearchesService
     public function __construct(TypoScriptConfiguration $typoscriptConfiguration, FrontendUserSession $session = null, LastSearchesRepository $lastSearchesRepository = null)
     {
         $this->configuration = $typoscriptConfiguration;
-        $this->session = isset($session) ? $session : GeneralUtility::makeInstance(FrontendUserSession::class);
-        $this->lastSearchesRepository = isset($lastSearchesRepository) ? $lastSearchesRepository : GeneralUtility::makeInstance(LastSearchesRepository::class);
+        $this->session = $session ?? GeneralUtility::makeInstance(FrontendUserSession::class);
+        $this->lastSearchesRepository = $lastSearchesRepository ?? GeneralUtility::makeInstance(LastSearchesRepository::class);
     }
 
     /**

@@ -54,6 +54,9 @@ build_failure_conditions:
 
 
 build:
+  environment:
+    php:
+      version: 7.0.20
   nodes:
     analysis:
       tests:

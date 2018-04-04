@@ -72,7 +72,7 @@ class FrequentSearchesService
         $this->configuration = $typoscriptConfiguration;
         $this->cache = $cache;
         $this->tsfe = $tsfe;
-        $this->statisticsRepository = isset($statisticsRepository) ? $statisticsRepository : GeneralUtility::makeInstance(StatisticsRepository::class);
+        $this->statisticsRepository = $statisticsRepository ?? GeneralUtility::makeInstance(StatisticsRepository::class);
     }
 
     /**

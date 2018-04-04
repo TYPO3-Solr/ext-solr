@@ -71,9 +71,9 @@ class SiteRepository
      */
     public function __construct(RootPageResolver $rootPageResolver = null, TwoLevelCache $twoLevelCache = null, Registry $registry = null)
     {
-        $this->rootPageResolver = isset($rootPageResolver) ? $rootPageResolver : GeneralUtility::makeInstance(RootPageResolver::class);
-        $this->runtimeCache = isset($twoLevelCache) ? $twoLevelCache : GeneralUtility::makeInstance(TwoLevelCache::class, /** @scrutinizer ignore-type */ 'cache_runtime');
-        $this->registry = isset($registry) ? $registry : GeneralUtility::makeInstance(Registry::class);
+        $this->rootPageResolver = $rootPageResolver ?? GeneralUtility::makeInstance(RootPageResolver::class);
+        $this->runtimeCache = $twoLevelCache ?? GeneralUtility::makeInstance(TwoLevelCache::class, /** @scrutinizer ignore-type */ 'cache_runtime');
+        $this->registry = $registry ?? GeneralUtility::makeInstance(Registry::class);
     }
 
     /**
