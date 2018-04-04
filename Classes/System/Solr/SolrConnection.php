@@ -188,7 +188,15 @@ class SolrConnection
      */
     protected function buildReadService()
     {
-        return GeneralUtility::makeInstance(SolrReadService::class, $this->host, $this->port, $this->path, $this->scheme, $this->configuration, $this->logger);
+        return GeneralUtility::makeInstance(
+            SolrReadService::class,
+            /** @scrutinizer ignore-type */ $this->host,
+            /** @scrutinizer ignore-type */ $this->port,
+            /** @scrutinizer ignore-type */ $this->path,
+            /** @scrutinizer ignore-type */ $this->scheme,
+            /** @scrutinizer ignore-type */ $this->configuration,
+            /** @scrutinizer ignore-type */ $this->logger
+        );
     }
 
     /**
@@ -208,7 +216,15 @@ class SolrConnection
      */
     protected function buildWriteService()
     {
-        return GeneralUtility::makeInstance(SolrWriteService::class, $this->host, $this->port, $this->path, $this->scheme, $this->configuration, $this->logger);
+        return GeneralUtility::makeInstance(
+            SolrWriteService::class,
+            /** @scrutinizer ignore-type */ $this->host,
+            /** @scrutinizer ignore-type */ $this->port,
+            /** @scrutinizer ignore-type */ $this->path,
+            /** @scrutinizer ignore-type */ $this->scheme,
+            /** @scrutinizer ignore-type */ $this->configuration,
+            /** @scrutinizer ignore-type */ $this->logger
+        );
     }
 
     /**

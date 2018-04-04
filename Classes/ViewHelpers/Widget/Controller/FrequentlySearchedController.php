@@ -57,7 +57,12 @@ class FrequentlySearchedController extends AbstractWidgetController
         $cache = $this->getInitializedCache();
         $configuration = $this->controllerContext->getTypoScriptConfiguration();
 
-        $frequentSearchesService = GeneralUtility::makeInstance(FrequentSearchesService::class, $configuration, $cache, $tsfe);
+        $frequentSearchesService = GeneralUtility::makeInstance(
+            FrequentSearchesService::class,
+            /** @scrutinizer ignore-type */ $configuration,
+            /** @scrutinizer ignore-type */ $cache,
+            /** @scrutinizer ignore-type */ $tsfe
+        );
 
         $frequentSearches = $frequentSearchesService->getFrequentSearchTerms();
         $minimumSize = $configuration->getSearchFrequentSearchesMinSize();

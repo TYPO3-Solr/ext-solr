@@ -75,7 +75,7 @@ class MountPagesUpdater
         }
 
         /** @var $rootLine Rootline */
-        $rootLine = GeneralUtility::makeInstance(Rootline::class, $rootLineArray);
+        $rootLine = GeneralUtility::makeInstance(Rootline::class, /** @scrutinizer ignore-type */ $rootLineArray);
         $rootLineParentPageIds = array_map('intval', $rootLine->getParentPageIds());
         $destinationMountProperties = $this->pagesRepository->findMountPointPropertiesByPageIdOrByRootLineParentPageIds($currentPageUid, $rootLineParentPageIds);
 

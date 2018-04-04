@@ -98,7 +98,13 @@ class SolrConfigurationStatus extends AbstractSolrStatus
         }
 
         $report = $this->getRenderedReport('RootPageFlagStatus.html');
-        return GeneralUtility::makeInstance(Status::class, 'Sites', 'No sites found', $report, Status::ERROR);
+        return GeneralUtility::makeInstance(
+            Status::class,
+            /** @scrutinizer ignore-type */ 'Sites',
+            /** @scrutinizer ignore-type */ 'No sites found',
+            /** @scrutinizer ignore-type */ $report,
+            /** @scrutinizer ignore-type */ Status::ERROR
+        );
     }
 
     /**
@@ -114,7 +120,13 @@ class SolrConfigurationStatus extends AbstractSolrStatus
         }
 
         $report = $this->getRenderedReport('SolrConfigurationStatusDomainRecord.html', ['pages' => $rootPagesWithoutDomain]);
-        return GeneralUtility::makeInstance(Status::class, 'Domain Records', 'Domain records missing', $report, Status::ERROR);
+        return GeneralUtility::makeInstance(
+            Status::class,
+            /** @scrutinizer ignore-type */ 'Domain Records',
+            /** @scrutinizer ignore-type */ 'Domain records missing',
+            /** @scrutinizer ignore-type */ $report,
+            /** @scrutinizer ignore-type */ Status::ERROR
+        );
     }
 
     /**
@@ -131,7 +143,13 @@ class SolrConfigurationStatus extends AbstractSolrStatus
         }
 
         $report = $this->getRenderedReport('SolrConfigurationStatusIndexing.html', ['pages' => $rootPagesWithIndexingOff]);
-        return GeneralUtility::makeInstance(Status::class, 'Page Indexing', 'Indexing is disabled', $report, Status::WARNING);
+        return GeneralUtility::makeInstance(
+            Status::class,
+            /** @scrutinizer ignore-type */ 'Page Indexing',
+            /** @scrutinizer ignore-type */ 'Indexing is disabled',
+            /** @scrutinizer ignore-type */ $report,
+            /** @scrutinizer ignore-type */ Status::WARNING
+        );
     }
 
     /**

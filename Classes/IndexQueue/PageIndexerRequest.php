@@ -124,7 +124,7 @@ class PageIndexerRequest
         $this->requestId = uniqid();
         $this->timeout = (float)ini_get('default_socket_timeout');
 
-        $this->logger = $solrLogManager ?? GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
+        $this->logger = $solrLogManager ?? GeneralUtility::makeInstance(SolrLogManager::class, /** @scrutinizer ignore-type */ __CLASS__);
         $this->extensionConfiguration = $extensionConfiguration ?? GeneralUtility::makeInstance(ExtensionConfiguration::class);
         $this->requestFactory = $requestFactory ?? GeneralUtility::makeInstance(RequestFactory::class);
 

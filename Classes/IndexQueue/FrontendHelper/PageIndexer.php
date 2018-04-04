@@ -156,7 +156,7 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
             $stringAccessRootline = $this->request->getParameter('accessRootline');
         }
 
-        $accessRootline = GeneralUtility::makeInstance(Rootline::class, $stringAccessRootline);
+        $accessRootline = GeneralUtility::makeInstance(Rootline::class, /** @scrutinizer ignore-type */ $stringAccessRootline);
         return $accessRootline;
     }
 
@@ -263,7 +263,7 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
      */
     public function hook_indexContent(TypoScriptFrontendController $page)
     {
-        $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
+        $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, /** @scrutinizer ignore-type */ __CLASS__);
 
         $this->page = $page;
         $configuration = Util::getSolrConfiguration();
@@ -288,7 +288,7 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
             $solrConnection = $this->getSolrConnection($indexQueueItem);
 
             /** @var $indexer Typo3PageIndexer */
-            $indexer = GeneralUtility::makeInstance(Typo3PageIndexer::class, $page);
+            $indexer = GeneralUtility::makeInstance(Typo3PageIndexer::class, /** @scrutinizer ignore-type */ $page);
             $indexer->setSolrConnection($solrConnection);
             $indexer->setPageAccessRootline($this->getAccessRootline());
             $indexer->setPageUrl($this->generatePageUrl());

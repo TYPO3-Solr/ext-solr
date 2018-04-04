@@ -33,7 +33,10 @@ class LastSearchesController extends AbstractWidgetController
     public function indexAction()
     {
         $typoScriptConfiguration = $this->controllerContext->getTypoScriptConfiguration();
-        $lastSearchesService = GeneralUtility::makeInstance(LastSearchesService::class, $typoScriptConfiguration);
+        $lastSearchesService = GeneralUtility::makeInstance(
+            LastSearchesService::class,
+            /** @scrutinizer ignore-type */ $typoScriptConfiguration
+        );
         $this->view->assign('contentArguments', ['lastSearches' => $lastSearchesService->getLastSearches()]);
     }
 }

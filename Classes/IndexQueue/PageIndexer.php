@@ -444,7 +444,7 @@ class PageIndexer extends Indexer
             if (is_null($contentAccessGroup)) {
                 $contentAccessGroups = $this->getAccessGroupsFromContent($item, $language);
             }
-            $element = GeneralUtility::makeInstance(RootlineElement::class, 'c:' . implode(',', $contentAccessGroups));
+            $element = GeneralUtility::makeInstance(RootlineElement::class, /** @scrutinizer ignore-type */ 'c:' . implode(',', $contentAccessGroups));
             $accessRootline->push($element);
 
             $accessRootlineCache[$accessRootlineCacheEntryId] = $accessRootline;

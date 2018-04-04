@@ -66,7 +66,7 @@ class SortingComponent extends AbstractComponent implements QueryAware, SearchRe
         $arguments = $this->searchRequest->getArguments();
 
         if (!empty($this->searchConfiguration['sorting']) && $this->hasValidSorting($arguments)) {
-            $sortHelper = GeneralUtility::makeInstance(SortingHelper::class, $this->searchConfiguration['sorting.']['options.']);
+            $sortHelper = GeneralUtility::makeInstance(SortingHelper::class, /** @scrutinizer ignore-type */ $this->searchConfiguration['sorting.']['options.']);
             $sortField = $sortHelper->getSortFieldFromUrlParameter($arguments['sort']);
             $this->query->setSorting($sortField);
         }

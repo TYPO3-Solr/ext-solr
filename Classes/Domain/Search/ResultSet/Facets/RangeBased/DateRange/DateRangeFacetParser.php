@@ -17,7 +17,6 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\Date
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\AbstractRangeFacetParser;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\System\Data\DateTime;
-use ApacheSolrForTypo3\Solr\System\Data\DateTimeProxy;
 
 /**
  * Class DateRangeFacetParser

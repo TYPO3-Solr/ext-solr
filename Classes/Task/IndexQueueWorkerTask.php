@@ -203,7 +203,7 @@ class IndexQueueWorkerTask extends AbstractSolrTask implements ProgressProviderI
      */
     protected function getInitializedIndexService(Site $site)
     {
-        $indexService = GeneralUtility::makeInstance(IndexService::class, $site);
+        $indexService = GeneralUtility::makeInstance(IndexService::class, /** @scrutinizer ignore-type */ $site);
         $indexService->setContextTask($this);
         return $indexService;
     }

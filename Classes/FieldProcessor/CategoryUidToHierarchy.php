@@ -91,7 +91,7 @@ class CategoryUidToHierarchy extends AbstractHierarchyProcessor implements Field
      * Returns a Solr hierarchy notation string for rootline of given category uid.
      *
      * @param int $categoryId Category ID to get a rootline as Solr hierarchy for
-     * @return string Rootline as Solr hierarchy
+     * @return array Rootline as Solr hierarchy array
      */
     protected function getSolrRootlineForCategoryId($categoryId)
     {

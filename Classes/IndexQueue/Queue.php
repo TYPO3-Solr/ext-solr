@@ -85,12 +85,12 @@ class Queue
      */
     public function __construct(RootPageResolver $rootPageResolver = null, ConfigurationAwareRecordService $recordService = null, QueueItemRepository $queueItemRepository = null, QueueStatisticsRepository $queueStatisticsRepository = null, QueueInitializationService $queueInitializationService = null)
     {
-        $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
+        $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, /** @scrutinizer ignore-type */ __CLASS__);
         $this->rootPageResolver = $rootPageResolver ?? GeneralUtility::makeInstance(RootPageResolver::class);
         $this->recordService = $recordService ?? GeneralUtility::makeInstance(ConfigurationAwareRecordService::class);
         $this->queueItemRepository = $queueItemRepository ?? GeneralUtility::makeInstance(QueueItemRepository::class);
         $this->queueStatisticsRepository = $queueStatisticsRepository ??  GeneralUtility::makeInstance(QueueStatisticsRepository::class);
-        $this->queueInitializationService = $queueInitializationService ?? GeneralUtility::makeInstance(QueueInitializationService::class, $this);
+        $this->queueInitializationService = $queueInitializationService ?? GeneralUtility::makeInstance(QueueInitializationService::class, /** @scrutinizer ignore-type */ $this);
     }
 
     // FIXME some of the methods should be renamed to plural forms
@@ -331,7 +331,7 @@ class Queue
      */
     protected function getRecordCached($itemType, $itemUid, $additionalRecordFields)
     {
-        $cache = GeneralUtility::makeInstance(TwoLevelCache::class, 'cache_runtime');
+        $cache = GeneralUtility::makeInstance(TwoLevelCache::class, /** @scrutinizer ignore-type */ 'cache_runtime');
         $cacheId = md5('Queue' . ':' . 'getRecordCached' . ':' . $itemType . ':' . $itemUid . ':' . 'pid' . $additionalRecordFields);
 
         $record = $cache->get($cacheId);

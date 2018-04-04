@@ -297,7 +297,7 @@ class Page extends AbstractInitializer
 
         foreach ($mountPageItems as $mountPageItemRecord) {
             /* @var Item $mountPageItem */
-            $mountPageItem = GeneralUtility::makeInstance(Item::class, $mountPageItemRecord);
+            $mountPageItem = GeneralUtility::makeInstance(Item::class, /** @scrutinizer ignore-type */ $mountPageItemRecord);
             $mountPageItem->setIndexingProperty('mountPageSource', $mountPage['mountPageSource']);
             $mountPageItem->setIndexingProperty('mountPageDestination', $mountPage['mountPageDestination']);
             $mountPageItem->setIndexingProperty('isMountedPage', '1');

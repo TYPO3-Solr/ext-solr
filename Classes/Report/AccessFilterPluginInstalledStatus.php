@@ -100,7 +100,13 @@ class AccessFilterPluginInstalledStatus extends AbstractSolrStatus
         $variables = ['solr' => $adminService, 'recommendedVersion' => self::RECOMMENDED_PLUGIN_VERSION];
 
         $report = $this->getRenderedReport('AccessFilterPluginInstalledStatusNotInstalled.html', $variables);
-        return GeneralUtility::makeInstance(Status::class, 'Access Filter Plugin', 'Not Installed', $report, Status::WARNING);
+        return GeneralUtility::makeInstance(
+            Status::class,
+            /** @scrutinizer ignore-type */ 'Access Filter Plugin',
+            /** @scrutinizer ignore-type */ 'Not Installed',
+            /** @scrutinizer ignore-type */ $report,
+            /** @scrutinizer ignore-type */ Status::WARNING
+        );
     }
 
     /**
@@ -119,7 +125,13 @@ class AccessFilterPluginInstalledStatus extends AbstractSolrStatus
         $variables = ['solr' => $adminService, 'installedVersion' => $version, 'recommendedVersion' => self::RECOMMENDED_PLUGIN_VERSION];
         $report = $this->getRenderedReport('AccessFilterPluginInstalledStatusIsOutDated.html', $variables);
 
-        return GeneralUtility::makeInstance(Status::class, 'Access Filter Plugin', 'Outdated', $report, Status::WARNING);
+        return GeneralUtility::makeInstance(
+            Status::class,
+            /** @scrutinizer ignore-type */ 'Access Filter Plugin',
+            /** @scrutinizer ignore-type */ 'Outdated',
+            /** @scrutinizer ignore-type */ $report,
+            /** @scrutinizer ignore-type */ Status::WARNING
+        );
     }
 
     /**

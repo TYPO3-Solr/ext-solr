@@ -62,6 +62,11 @@ class GroupItem
     protected $searchResults;
 
     /**
+     * @var Group
+     */
+    protected $group;
+
+    /**
      * @param Group $group
      * @param string $groupValue
      * @param int $numFound

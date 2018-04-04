@@ -91,7 +91,7 @@ class QueryBuilder {
     public function __construct(TypoScriptConfiguration $configuration = null, SolrLogManager $solrLogManager = null, SiteHashService $siteHashService = null)
     {
         $this->typoScriptConfiguration = $configuration ?? Util::getSolrConfiguration();
-        $this->logger = $solrLogManager ?? GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
+        $this->logger = $solrLogManager ?? GeneralUtility::makeInstance(SolrLogManager::class, /** @scrutinizer ignore-type */ __CLASS__);
         $this->siteHashService = $siteHashService ?? GeneralUtility::makeInstance(SiteHashService::class);
     }
 
@@ -179,6 +179,7 @@ class QueryBuilder {
             ->useFiltersFromTypoScript()
             ->useSiteHashFromTypoScript($requestedPageId)
             ->useUserAccessGroups(explode(',', $groupList));
+
 
         $this->queryToBuild->setOmitHeader();
 
@@ -879,7 +880,7 @@ class QueryBuilder {
      */
     protected function getQueryInstance($rawQuery): Query
     {
-        $query = GeneralUtility::makeInstance(Query::class, $rawQuery);
+        $query = GeneralUtility::makeInstance(Query::class, /** @scrutinizer ignore-type */ $rawQuery);
         return $query;
     }
 
@@ -890,7 +891,8 @@ class QueryBuilder {
      */
     protected function getSuggestQueryInstance($rawQuery): SuggestQuery
     {
-        $query = GeneralUtility::makeInstance(SuggestQuery::class, $rawQuery, $this->typoScriptConfiguration);
+        $query = GeneralUtility::makeInstance(SuggestQuery::class, /** @scrutinizer ignore-type */ $rawQuery, /** @scrutinizer ignore-type */ $this->typoScriptConfiguration);
+
         return $query;
     }
 }

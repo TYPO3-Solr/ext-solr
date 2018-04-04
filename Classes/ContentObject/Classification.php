@@ -106,7 +106,11 @@ class Classification
 
             $patterns = GeneralUtility::trimExplode(',', $class['patterns']);
             $className = $class['class'];
-            $classifications[] = GeneralUtility::makeInstance(ClassificationItem::class, $patterns, $className);
+            $classifications[] = GeneralUtility::makeInstance(
+                ClassificationItem::class,
+                /** @scrutinizer ignore-type */ $patterns,
+                /** @scrutinizer ignore-type */ $className
+            );
         }
 
         return $classifications;

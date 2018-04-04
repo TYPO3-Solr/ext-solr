@@ -102,7 +102,7 @@ class Indexer extends AbstractIndexer
      */
     public function __construct(array $options = [], PagesRepository $pagesRepository = null, Builder $documentBuilder = null)
     {
-        $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
+        $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, /** @scrutinizer ignore-type */ __CLASS__);
         $this->options = $options;
         $this->connectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
         $this->pagesRepository = isset($pagesRepository) ? $pagesRepository : GeneralUtility::makeInstance(PagesRepository::class);

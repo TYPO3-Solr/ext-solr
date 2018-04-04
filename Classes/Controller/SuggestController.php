@@ -53,7 +53,11 @@ class SuggestController extends AbstractBaseController
 
         try {
             /** @var SuggestService $suggestService */
-            $suggestService = GeneralUtility::makeInstance(SuggestService::class, $this->typoScriptFrontendController, $this->searchService, $this->typoScriptConfiguration);
+            $suggestService = GeneralUtility::makeInstance(
+                SuggestService::class,
+                /** @scrutinizer ignore-type */ $this->typoScriptFrontendController,
+                /** @scrutinizer ignore-type */ $this->searchService,
+                /** @scrutinizer ignore-type */ $this->typoScriptConfiguration);
             $additionalFilters = htmlspecialchars(GeneralUtility::_GET('filters'));
 
             $pageId = $this->typoScriptFrontendController->getRequestedId();

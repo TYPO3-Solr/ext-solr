@@ -21,7 +21,14 @@
   },
   "require": {
     "php": ">=7.0.0",
-    "typo3/cms-core": "^8.7.0 || ^9.1"
+    "typo3/cms-core": "^8.7.0 || ^9.1",
+    "typo3/cms-backend": "^8.7.0 || ^9.1",
+    "typo3/cms-extbase": "^8.7.0 || ^9.1",
+    "typo3/cms-frontend": "^8.7.0 || ^9.1",
+    "typo3/cms-fluid": "^8.7.0 || ^9.1",
+    "typo3/cms-reports": "^8.7.0 || ^9.1",
+    "typo3/cms-scheduler": "^8.7.0 || ^9.1",
+    "typo3/cms-tstemplate": "^8.7.0 || ^9.1"
   },
   "require-dev": {
     "phpunit/phpunit": "^6.0",

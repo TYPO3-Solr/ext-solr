@@ -212,7 +212,11 @@ class SearchUriBuilder
         $contextSystemLanguage = $previousSearchRequest->getContextSystemLanguageUid();
         $contextPageUid = $previousSearchRequest->getContextPageUid();
 
-        $request = GeneralUtility::makeInstance(SearchRequest::class, [], $contextPageUid, $contextSystemLanguage, $contextConfiguration);
+        $request = GeneralUtility::makeInstance(
+            SearchRequest::class, [],
+            /** @scrutinizer ignore-type */ $contextPageUid,
+            /** @scrutinizer ignore-type */ $contextSystemLanguage,
+            /** @scrutinizer ignore-type */ $contextConfiguration);
         $arguments = $request->setRawQueryString($queryString)->getAsArray();
 
         $pageUid = $this->getTargetPageUidFromRequestConfiguration($previousSearchRequest);

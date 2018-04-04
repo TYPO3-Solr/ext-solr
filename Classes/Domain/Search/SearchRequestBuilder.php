@@ -167,7 +167,11 @@ class SearchRequestBuilder
      */
     protected function getRequest(array $requestArguments = [], $pageId = 0, $languageId = 0)
     {
-        $searchRequest = GeneralUtility::makeInstance(SearchRequest::class, $requestArguments, $pageId, $languageId, $this->typoScriptConfiguration);
+        $searchRequest = GeneralUtility::makeInstance(SearchRequest::class,
+            /** @scrutinizer ignore-type */ $requestArguments,
+            /** @scrutinizer ignore-type */ $pageId,
+            /** @scrutinizer ignore-type */ $languageId,
+            /** @scrutinizer ignore-type */ $this->typoScriptConfiguration);
         return $searchRequest;
     }
 

@@ -78,7 +78,7 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
     {
         $this->systemLanguageRepository = isset($systemLanguageRepository) ? $systemLanguageRepository : GeneralUtility::makeInstance(SystemLanguageRepository::class);
         $this->pagesRepositoryAtExtSolr = isset($pagesRepositoryAtExtSolr) ? $pagesRepositoryAtExtSolr : GeneralUtility::makeInstance(PagesRepositoryAtExtSolr::class);
-        $this->logger                   = isset($solrLogManager) ? $solrLogManager : GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
+        $this->logger                   = isset($solrLogManager) ? $solrLogManager : GeneralUtility::makeInstance(SolrLogManager::class, /** @scrutinizer ignore-type */ __CLASS__);
     }
 
     /**
@@ -135,7 +135,15 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
      */
     protected function buildSolrConnection($host, $port, $path, $scheme, $username = '', $password = '')
     {
-        return GeneralUtility::makeInstance(SolrConnection::class, $host, $port, $path, $scheme, $username, $password);
+        return GeneralUtility::makeInstance(
+            SolrConnection::class,
+            /** @scrutinizer ignore-type */ $host,
+            /** @scrutinizer ignore-type */ $port,
+            /** @scrutinizer ignore-type */ $path,
+            /** @scrutinizer ignore-type */ $scheme,
+            /** @scrutinizer ignore-type */ $username,
+            /** @scrutinizer ignore-type */ $password
+        );
     }
 
     /**
@@ -171,7 +179,7 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
         $pageSelect = GeneralUtility::makeInstance(PageRepository::class);
 
         /** @var Rootline $rootLine */
-        $rootLine = GeneralUtility::makeInstance(Rootline::class, $pageSelect->getRootLine($pageId, $mount));
+        $rootLine = GeneralUtility::makeInstance(Rootline::class, /** @scrutinizer ignore-type */ $pageSelect->getRootLine($pageId, $mount));
         $siteRootPageId = $rootLine->getRootPageId();
 
         try {
@@ -180,8 +188,8 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
             /* @var $noSolrConnectionException NoSolrConnectionFoundException */
             $noSolrConnectionException = GeneralUtility::makeInstance(
                 NoSolrConnectionFoundException::class,
-                $nscfe->getMessage() . ' Initial page used was [' . $pageId . ']',
-                1275399922
+                /** @scrutinizer ignore-type */ $nscfe->getMessage() . ' Initial page used was [' . $pageId . ']',
+                /** @scrutinizer ignore-type */ 1275399922
             );
             $noSolrConnectionException->setPageId($pageId);
 
@@ -226,9 +234,8 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
             /* @var $noSolrConnectionException NoSolrConnectionFoundException */
             $noSolrConnectionException = GeneralUtility::makeInstance(
                 NoSolrConnectionFoundException::class,
-                'Could not find a Solr connection for root page ['
-                . $pageId . '] and language [' . $language . '].',
-                1275396474
+                /** @scrutinizer ignore-type */  'Could not find a Solr connection for root page [' . $pageId . '] and language [' . $language . '].',
+                /** @scrutinizer ignore-type */ 1275396474
             );
             $noSolrConnectionException->setRootPageId($pageId);
             $noSolrConnectionException->setLanguageId($language);

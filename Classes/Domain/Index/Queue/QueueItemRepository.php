@@ -57,7 +57,7 @@ class QueueItemRepository extends AbstractRepository
      */
     public function __construct(SolrLogManager $logManager = null)
     {
-        $this->logger = isset($logManager) ? $logManager : GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
+        $this->logger = isset($logManager) ? $logManager : GeneralUtility::makeInstance(SolrLogManager::class, /** @scrutinizer ignore-type */ __CLASS__);
     }
 
     /**
@@ -489,7 +489,7 @@ class QueueItemRepository extends AbstractRepository
         }
 
         /** @var Item $item*/
-        $item = GeneralUtility::makeInstance(Item::class, $indexQueueItemRecord);
+        $item = GeneralUtility::makeInstance(Item::class, /** @scrutinizer ignore-type */ $indexQueueItemRecord);
         return $item;
     }
 
@@ -687,8 +687,8 @@ class QueueItemRepository extends AbstractRepository
             if (isset($tableRecords[$indexQueueItemRecord['item_type']][$indexQueueItemRecord['item_uid']])) {
                 $indexQueueItems[] = GeneralUtility::makeInstance(
                     Item::class,
-                    $indexQueueItemRecord,
-                    $tableRecords[$indexQueueItemRecord['item_type']][$indexQueueItemRecord['item_uid']]
+                    /** @scrutinizer ignore-type */ $indexQueueItemRecord,
+                    /** @scrutinizer ignore-type */ $tableRecords[$indexQueueItemRecord['item_type']][$indexQueueItemRecord['item_uid']]
                 );
             } else {
                 $this->logger->log(

@@ -46,7 +46,7 @@ class VariantsProcessor implements SearchResultSetProcessor {
     protected $typoScriptConfiguration;
 
     /**
-     * @var SearchResultBuilder|null
+     * @var SearchResultBuilder
      */
     protected $resultBuilder;
 

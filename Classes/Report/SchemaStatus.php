@@ -68,7 +68,13 @@ class SchemaStatus extends AbstractSolrStatus
             if (!$adminService->ping()) {
                 $url = $adminService->__toString();
                 $pingFailedMsg = 'Could not ping solr server, can not check version ' . (string)$url;
-                $status = GeneralUtility::makeInstance(Status::class, 'Apache Solr Version', 'Not accessible', $pingFailedMsg, Status::ERROR);
+                $status = GeneralUtility::makeInstance(
+                    Status::class,
+                    /** @scrutinizer ignore-type */ 'Apache Solr Version',
+                    /** @scrutinizer ignore-type */ 'Not accessible',
+                    /** @scrutinizer ignore-type */ $pingFailedMsg,
+                    /** @scrutinizer ignore-type */ Status::ERROR
+                );
                 $reports[] = $status;
                 continue;
             }
@@ -77,7 +83,13 @@ class SchemaStatus extends AbstractSolrStatus
             if ($isWrongSchema) {
                 $variables = ['solr' => $adminService, 'recommendedVersion' => self::RECOMMENDED_SCHEMA_VERSION];
                 $report = $this->getRenderedReport('SchemaStatus.html', $variables);
-                $status = GeneralUtility::makeInstance(Status::class, 'Schema Version', 'Unsupported Schema', $report, Status::WARNING);
+                $status = GeneralUtility::makeInstance(
+                    Status::class,
+                    /** @scrutinizer ignore-type */ 'Schema Version',
+                    /** @scrutinizer ignore-type */ 'Unsupported Schema',
+                    /** @scrutinizer ignore-type */ $report,
+                    /** @scrutinizer ignore-type */ Status::WARNING
+                );
                 $reports[] = $status;
             }
         }

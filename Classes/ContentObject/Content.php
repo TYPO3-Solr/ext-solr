@@ -56,7 +56,7 @@ class Content
     ) {
         $contentExtractor = GeneralUtility::makeInstance(
             HtmlContentExtractor::class,
-            $this->getRawContent($contentObject, $configuration)
+            /** @scrutinizer ignore-type */ $this->getRawContent($contentObject, $configuration)
         );
 
         return $contentExtractor->getIndexableContent();

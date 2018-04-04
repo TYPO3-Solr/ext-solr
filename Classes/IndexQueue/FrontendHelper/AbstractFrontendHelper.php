@@ -99,7 +99,7 @@ abstract class AbstractFrontendHelper implements FrontendHelper
     ) {
         $this->request = $request;
         $this->response = $response;
-        $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
+        $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, /** @scrutinizer ignore-type */ __CLASS__);
 
         if ($request->getParameter('loggingEnabled')) {
             $this->logger->log(

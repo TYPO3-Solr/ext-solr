@@ -72,7 +72,7 @@ class SiteRepository
     public function __construct(RootPageResolver $rootPageResolver = null, TwoLevelCache $twoLevelCache = null, Registry $registry = null)
     {
         $this->rootPageResolver = isset($rootPageResolver) ? $rootPageResolver : GeneralUtility::makeInstance(RootPageResolver::class);
-        $this->runtimeCache = isset($twoLevelCache) ? $twoLevelCache : GeneralUtility::makeInstance(TwoLevelCache::class, 'cache_runtime');
+        $this->runtimeCache = isset($twoLevelCache) ? $twoLevelCache : GeneralUtility::makeInstance(TwoLevelCache::class, /** @scrutinizer ignore-type */ 'cache_runtime');
         $this->registry = isset($registry) ? $registry : GeneralUtility::makeInstance(Registry::class);
     }
 
@@ -198,7 +198,13 @@ class SiteRepository
         $domain = $this->getDomainFromConfigurationOrFallbackToDomainRecord($rootPageId);
         $siteHash = $this->getSiteHashForDomain($domain);
 
-        return GeneralUtility::makeInstance(Site::class, $solrConfiguration, $rootPageRecord, $domain, $siteHash);
+        return GeneralUtility::makeInstance(
+            Site::class,
+            /** @scrutinizer ignore-type */ $solrConfiguration,
+            /** @scrutinizer ignore-type */ $rootPageRecord,
+            /** @scrutinizer ignore-type */ $domain,
+            /** @scrutinizer ignore-type */ $siteHash
+        );
     }
 
     /**
