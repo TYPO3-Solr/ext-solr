@@ -107,7 +107,7 @@ class AuthorizationService extends AbstractAuthenticationService
         $accessRootline = $requestHandler->getRequest()->getParameter('accessRootline');
 
         if ($user['username'] == self::SOLR_INDEXER_USERNAME && !empty($accessRootline)) {
-            $accessRootline = GeneralUtility::makeInstance(Rootline::class, $accessRootline);
+            $accessRootline = GeneralUtility::makeInstance(Rootline::class, /** @scrutinizer ignore-type */ $accessRootline);
             $groups = $accessRootline->getGroups();
 
             foreach ($groups as $groupId) {

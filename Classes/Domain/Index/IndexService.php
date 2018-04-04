@@ -86,7 +86,7 @@ class IndexService
         $this->site = $site;
         $this->indexQueue = is_null($queue) ? GeneralUtility::makeInstance(Queue::class) : $queue;
         $this->signalSlotDispatcher = is_null($dispatcher) ? GeneralUtility::makeInstance(Dispatcher::class) : $dispatcher;
-        $this->logger = is_null($solrLogManager) ? GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__) : $solrLogManager;
+        $this->logger = is_null($solrLogManager) ? GeneralUtility::makeInstance(SolrLogManager::class, /** @scrutinizer ignore-type */ __CLASS__) : $solrLogManager;
     }
 
     /**
@@ -230,7 +230,7 @@ class IndexService
         $indexerClass = $configuration->getIndexQueueIndexerByConfigurationName($indexingConfigurationName);
         $indexerConfiguration = $configuration->getIndexQueueIndexerConfigurationByConfigurationName($indexingConfigurationName);
 
-        $indexer = GeneralUtility::makeInstance($indexerClass, $indexerConfiguration);
+        $indexer = GeneralUtility::makeInstance($indexerClass, /** @scrutinizer ignore-type */ $indexerConfiguration);
         if (!($indexer instanceof Indexer)) {
             throw new \RuntimeException(
                 'The indexer class "' . $indexerClass . '" for indexing configuration "' . $indexingConfigurationName . '" is not a valid indexer. Must be a subclass of ApacheSolrForTypo3\Solr\IndexQueue\Indexer.',

@@ -79,7 +79,6 @@ if [[ $TYPO3_VERSION = *"9."* ]]; then
     composer require --dev typo3/cms-frontend="$TYPO3_VERSION"
     composer require --dev typo3/cms-lang="$TYPO3_VERSION"
     composer require --dev typo3/cms-extbase="$TYPO3_VERSION"
-    composer require --dev typo3/cms-extbase="$TYPO3_VERSION"
     composer require --dev typo3/cms-reports="$TYPO3_VERSION"
     composer require --dev typo3/cms-scheduler="$TYPO3_VERSION"
     composer require --dev typo3/cms-tstemplate="$TYPO3_VERSION"

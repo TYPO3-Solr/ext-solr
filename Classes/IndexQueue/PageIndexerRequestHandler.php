@@ -71,9 +71,9 @@ class PageIndexerRequestHandler implements SingletonInterface
      */
     public function __construct()
     {
-        $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
+        $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, /** @scrutinizer ignore-type */ __CLASS__);
         $this->dispatcher = GeneralUtility::makeInstance(Dispatcher::class);
-        $this->request = GeneralUtility::makeInstance(PageIndexerRequest::class, $_SERVER['HTTP_X_TX_SOLR_IQ']);
+        $this->request = GeneralUtility::makeInstance(PageIndexerRequest::class, /** @scrutinizer ignore-type */ $_SERVER['HTTP_X_TX_SOLR_IQ']);
         $this->response = GeneralUtility::makeInstance(PageIndexerResponse::class);
         $this->response->setRequestId($this->request->getRequestId());
     }

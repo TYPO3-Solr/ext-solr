@@ -67,7 +67,13 @@ class SolrConfigStatus extends AbstractSolrStatus
             if ($adminService->ping() && $adminService->getSolrconfigName() != self::RECOMMENDED_SOLRCONFIG_VERSION) {
                 $variables = ['solr' => $adminService, 'recommendedVersion' => self::RECOMMENDED_SOLRCONFIG_VERSION];
                 $report = $this->getRenderedReport('SolrConfigStatus.html', $variables);
-                $status = GeneralUtility::makeInstance(Status::class, 'Solrconfig Version', 'Unsupported solrconfig.xml', $report, Status::WARNING);
+                $status = GeneralUtility::makeInstance(
+                    Status::class,
+                    /** @scrutinizer ignore-type */ 'Solrconfig Version',
+                    /** @scrutinizer ignore-type */ 'Unsupported solrconfig.xml',
+                    /** @scrutinizer ignore-type */ $report,
+                    /** @scrutinizer ignore-type */ Status::WARNING
+                );
 
                 $reports[] = $status;
             }

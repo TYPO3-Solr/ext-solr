@@ -122,7 +122,13 @@ class SolrStatus extends AbstractSolrStatus
         ];
 
         $report = $this->getRenderedReport('SolrStatus.html', $variables);
-        return GeneralUtility::makeInstance(Status::class, 'Apache Solr', '', $report, $this->responseStatus);
+        return GeneralUtility::makeInstance(
+            Status::class,
+            /** @scrutinizer ignore-type */ 'Apache Solr',
+            /** @scrutinizer ignore-type */ '',
+            /** @scrutinizer ignore-type */ $report,
+            /** @scrutinizer ignore-type */ $this->responseStatus
+        );
     }
 
     /**

@@ -14,7 +14,6 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\Nume
  * The TYPO3 project - inspiring people to share!
 */
 
-use ApacheSolrForTypo3\Solr\ViewHelper\Date;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\AbstractRangeFacetItem;
 
 /**

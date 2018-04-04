@@ -163,7 +163,7 @@ class ReIndexTaskAdditionalFieldProvider implements AdditionalFieldProviderInter
             return $selectorMarkup;
         }
 
-        $selectorField = GeneralUtility::makeInstance(IndexingConfigurationSelectorField::class, $this->site);
+        $selectorField = GeneralUtility::makeInstance(IndexingConfigurationSelectorField::class, /** @scrutinizer ignore-type */ $this->site);
 
         $selectorField->setFormElementName('tx_scheduler[indexingConfigurations]');
         $selectorField->setSelectedValues($this->task->getIndexingConfigurationsToReIndex());

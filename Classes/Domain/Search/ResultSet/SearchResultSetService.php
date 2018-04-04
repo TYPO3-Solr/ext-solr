@@ -106,9 +106,9 @@ class SearchResultSetService
     {
         $this->search = $search;
         $this->typoScriptConfiguration = $configuration;
-        $this->logger = $solrLogManager ?? GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
+        $this->logger = $solrLogManager ?? GeneralUtility::makeInstance(SolrLogManager::class, /** @scrutinizer ignore-type */ __CLASS__);
         $this->searchResultBuilder = $resultBuilder ?? GeneralUtility::makeInstance(SearchResultBuilder::class);
-        $this->queryBuilder = $queryBuilder ?? GeneralUtility::makeInstance(QueryBuilder::class, $configuration, $solrLogManager);
+        $this->queryBuilder = $queryBuilder ?? GeneralUtility::makeInstance(QueryBuilder::class, /** @scrutinizer ignore-type */ $configuration, /** @scrutinizer ignore-type */ $solrLogManager);
     }
 
     /**
@@ -209,7 +209,11 @@ class SearchResultSetService
         $resultSet->setUsedAdditionalFilters($this->queryBuilder->getAdditionalFilters());
 
         /** @var $variantsProcessor VariantsProcessor */
-        $variantsProcessor = GeneralUtility::makeInstance(VariantsProcessor::class, $this->typoScriptConfiguration, $this->searchResultBuilder);
+        $variantsProcessor = GeneralUtility::makeInstance(
+            VariantsProcessor::class,
+            /** @scrutinizer ignore-type */ $this->typoScriptConfiguration,
+            /** @scrutinizer ignore-type */ $this->searchResultBuilder
+        );
         $variantsProcessor->process($resultSet);
 
         /** @var $searchResultReconstitutionProcessor ResultSetReconstitutionProcessor */
@@ -230,7 +234,7 @@ class SearchResultSetService
     protected function getParsedSearchResults($resultSet): SearchResultCollection
     {
         /** @var ResultParserRegistry $parserRegistry */
-        $parserRegistry = GeneralUtility::makeInstance(ResultParserRegistry::class, $this->typoScriptConfiguration);
+        $parserRegistry = GeneralUtility::makeInstance(ResultParserRegistry::class, /** @scrutinizer ignore-type */ $this->typoScriptConfiguration);
         $useRawDocuments = (bool)$this->typoScriptConfiguration->getValueByPathOrDefaultValue('plugin.tx_solr.features.useRawDocuments', false);
         $searchResults = $parserRegistry->getParser($resultSet)->parse($resultSet, $useRawDocuments);
         return $searchResults;
@@ -415,7 +419,7 @@ class SearchResultSetService
     public function getDocumentById($documentId)
     {
         /* @var $query Query */
-        $query = GeneralUtility::makeInstance(Query::class, $documentId);
+        $query = GeneralUtility::makeInstance(Query::class, /** @scrutinizer ignore-type */ $documentId);
         $query->setQueryFields(QueryFields::fromString('id'));
         $response = $this->search->search($query, 0, 1);
         $parsedData = $response->getParsedData();

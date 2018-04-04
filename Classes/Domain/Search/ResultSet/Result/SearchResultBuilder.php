@@ -46,7 +46,7 @@ class SearchResultBuilder {
     public function fromApacheSolrDocument(\Apache_Solr_Document $originalDocument)
     {
         $searchResultClassName = $this->getResultClassName();
-        $result = GeneralUtility::makeInstance($searchResultClassName, $originalDocument);
+        $result = GeneralUtility::makeInstance($searchResultClassName, /** @scrutinizer ignore-type */ $originalDocument);
         if (!$result instanceof SearchResult) {
             throw new \InvalidArgumentException('Could not create result object with class: ' . (string)$searchResultClassName, 1470037679);
         }

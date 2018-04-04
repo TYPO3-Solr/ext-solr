@@ -82,7 +82,7 @@ class PageUidToHierarchy extends AbstractHierarchyProcessor implements FieldProc
      *
      * @param int $pageId Page ID to get a rootline as Solr hierarchy for
      * @param string $mountPoint The mount point parameter that will be used for building the rootline.
-     * @return string Rootline as Solr hierarchy
+     * @return array Rootline as Solr hierarchy array
      */
     protected function getSolrRootlineForPageId($pageId, $mountPoint = '')
     {

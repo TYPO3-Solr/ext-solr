@@ -88,7 +88,7 @@ class Search
      */
     public function __construct(SolrConnection $solrConnection = null)
     {
-        $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
+        $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, /** @scrutinizer ignore-type */ __CLASS__);
 
         $this->solr = $solrConnection;
 
@@ -290,7 +290,7 @@ class Search
     {
         trigger_error('Call deprecated method Search::getResultDocumentsEscaped, deprecated since 8.0.0 will be removed in 9.0.0', E_USER_DEPRECATED);
         /** @var $escapeService DocumentEscapeService */
-        $escapeService = GeneralUtility::makeInstance(DocumentEscapeService::class, $this->configuration);
+        $escapeService = GeneralUtility::makeInstance(DocumentEscapeService::class, /** @scrutinizer ignore-type */ $this->configuration);
         return $escapeService->applyHtmlSpecialCharsOnAllFields($this->getResponseBody()->docs);
     }
 

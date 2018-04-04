@@ -211,7 +211,7 @@ class Builder
      */
     protected function getExtractorForPageContent($pageContent)
     {
-        return GeneralUtility::makeInstance(Typo3PageContentExtractor::class, $pageContent);
+        return GeneralUtility::makeInstance(Typo3PageContentExtractor::class, /** @scrutinizer ignore-type */ $pageContent);
     }
 
     /**

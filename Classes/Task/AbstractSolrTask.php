@@ -81,7 +81,7 @@ abstract class AbstractSolrTask extends AbstractTask {
             $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
             $this->site = $siteRepository->getSiteByRootPageId($this->rootPageId);
         } catch (\InvalidArgumentException $e) {
-            $logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
+            $logger = GeneralUtility::makeInstance(SolrLogManager::class, /** @scrutinizer ignore-type */ __CLASS__);
             $logger->log(SolrLogManager::ERROR, 'Scheduler task tried to get invalid site');
         }
 

@@ -72,7 +72,7 @@ abstract class AbstractSolrService extends \Apache_Solr_Service {
         parent::__construct($host, $port, $path);
 
         $this->configuration = is_null($typoScriptConfiguration) ? Util::getSolrConfiguration() : $typoScriptConfiguration;
-        $this->logger = is_null($logManager) ? GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__) : $logManager;
+        $this->logger = is_null($logManager) ? GeneralUtility::makeInstance(SolrLogManager::class, /** @scrutinizer ignore-type */ __CLASS__) : $logManager;
         $this->initializeTimeoutFromConfiguration();
     }
 
@@ -350,7 +350,7 @@ abstract class AbstractSolrService extends \Apache_Solr_Service {
         if ($httpResponse->getStatusCode() !== 200) {
             $message = 'Solr ping failed with unexpected response code: ' . $httpResponse->getStatusCode();
             /** @var $exception \ApacheSolrForTypo3\Solr\PingFailedException */
-            $exception = GeneralUtility::makeInstance(PingFailedException::class, $message);
+            $exception = GeneralUtility::makeInstance(PingFailedException::class, /** @scrutinizer ignore-type */ $message);
             $exception->setHttpResponse($httpResponse);
             throw $exception;
         }

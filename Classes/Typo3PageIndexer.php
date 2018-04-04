@@ -124,7 +124,7 @@ class Typo3PageIndexer
      */
     public function __construct(TypoScriptFrontendController $page)
     {
-        $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
+        $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, /** @scrutinizer ignore-type */ __CLASS__);
 
         $this->page = $page;
         $this->pageUrl = GeneralUtility::getIndpEnv('TYPO3_REQUEST_URL');
@@ -150,7 +150,7 @@ class Typo3PageIndexer
             }
         }
 
-        $this->pageAccessRootline = GeneralUtility::makeInstance(Rootline::class, '');
+        $this->pageAccessRootline = GeneralUtility::makeInstance(Rootline::class, /** @scrutinizer ignore-type */ '');
     }
 
     /**

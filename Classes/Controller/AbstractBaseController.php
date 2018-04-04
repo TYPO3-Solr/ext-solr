@@ -218,7 +218,11 @@ abstract class AbstractBaseController extends ActionController
         $solrConnection = GeneralUtility::makeInstance(ConnectionManager::class)->getConnectionByPageId($this->typoScriptFrontendController->id, $this->typoScriptFrontendController->sys_language_uid, $this->typoScriptFrontendController->MP);
         $search = GeneralUtility::makeInstance(Search::class, $solrConnection);
 
-        $this->searchService = GeneralUtility::makeInstance(SearchResultSetService::class, $this->typoScriptConfiguration, $search);
+        $this->searchService = GeneralUtility::makeInstance(
+            SearchResultSetService::class,
+            /** @scrutinizer ignore-type */ $this->typoScriptConfiguration,
+            /** @scrutinizer ignore-type */ $search
+        );
     }
 
     /**
@@ -227,7 +231,7 @@ abstract class AbstractBaseController extends ActionController
     protected function getSearchRequestBuilder()
     {
         if ($this->searchRequestBuilder === null) {
-            $this->searchRequestBuilder = GeneralUtility::makeInstance(SearchRequestBuilder::class, $this->typoScriptConfiguration);
+            $this->searchRequestBuilder = GeneralUtility::makeInstance(SearchRequestBuilder::class, /** @scrutinizer ignore-type */ $this->typoScriptConfiguration);
         }
 
         return $this->searchRequestBuilder;
@@ -242,7 +246,7 @@ abstract class AbstractBaseController extends ActionController
     {
         if ($this->typoScriptConfiguration->getLoggingExceptions()) {
             /** @var SolrLogManager $logger */
-            $logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
+            $logger = GeneralUtility::makeInstance(SolrLogManager::class, /** @scrutinizer ignore-type */ __CLASS__);
             $logger->log(SolrLogManager::ERROR, 'Solr server is not available');
         }
     }

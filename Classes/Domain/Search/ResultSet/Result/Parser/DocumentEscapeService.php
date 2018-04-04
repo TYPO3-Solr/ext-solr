@@ -36,7 +36,7 @@ use ApacheSolrForTypo3\Solr\Util;
 class DocumentEscapeService {
 
     /**
-     * @var TypoScriptConfiguration|null
+     * @var TypoScriptConfiguration
      */
     protected $typoScriptConfiguration = null;
 
