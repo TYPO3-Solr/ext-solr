@@ -70,6 +70,9 @@ echo "Using web path $TYPO3_PATH_WEB"
 
 # Install TYPO3 sources
 if [[ $TYPO3_VERSION = *"9."* ]]; then
+    # only needed until https://github.com/symfony/symfony/issues/26757 is resolved
+    composer require --dev symfony/finder:4.0.6
+
     composer require --dev typo3/cms-backend="$TYPO3_VERSION"
     composer require --dev typo3/cms-core="$TYPO3_VERSION"
     composer require --dev typo3/cms-fluid="$TYPO3_VERSION"
