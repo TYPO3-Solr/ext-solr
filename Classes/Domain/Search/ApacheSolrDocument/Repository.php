@@ -71,9 +71,9 @@ class Repository implements SingletonInterface
      */
     public function __construct(DocumentEscapeService $documentEscapeService = null, TypoScriptConfiguration $typoScriptConfiguration = null, QueryBuilder $queryBuilder = null)
     {
-        $this->typoScriptConfiguration = is_null($typoScriptConfiguration) ? Util::getSolrConfiguration() : $typoScriptConfiguration;
-        $this->documentEscapeService = is_null($documentEscapeService) ? GeneralUtility::makeInstance(DocumentEscapeService::class, /** @scrutinizer ignore-type */ $typoScriptConfiguration) : $documentEscapeService;
-        $this->queryBuilder = is_null($queryBuilder) ? GeneralUtility::makeInstance(QueryBuilder::class, /** @scrutinizer ignore-type */ $this->typoScriptConfiguration) : $queryBuilder;
+        $this->typoScriptConfiguration = $typoScriptConfiguration ?? Util::getSolrConfiguration();
+        $this->documentEscapeService = $documentEscapeService ?? GeneralUtility::makeInstance(DocumentEscapeService::class, /** @scrutinizer ignore-type */ $typoScriptConfiguration);
+        $this->queryBuilder = $queryBuilder ?? GeneralUtility::makeInstance(QueryBuilder::class, /** @scrutinizer ignore-type */ $this->typoScriptConfiguration);
     }
 
     /**

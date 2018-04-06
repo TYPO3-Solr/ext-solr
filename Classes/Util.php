@@ -421,7 +421,7 @@ class Util
     public static function isAllowedPageType(array $pageRecord, $configurationName = 'pages')
     {
         $isAllowedPageType = false;
-        $configurationName = is_null($configurationName) ? 'pages' : $configurationName;
+        $configurationName = $configurationName ?? 'pages';
         $allowedPageTypes = self::getAllowedPageTypes($pageRecord['uid'], $configurationName);
 
         if (in_array($pageRecord['doktype'], $allowedPageTypes)) {

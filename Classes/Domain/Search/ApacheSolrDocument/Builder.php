@@ -54,7 +54,7 @@ class Builder
      */
     public function __construct(IdBuilder $variantIdBuilder = null)
     {
-        $this->variantIdBuilder = is_null($variantIdBuilder) ? GeneralUtility::makeInstance(IdBuilder::class) : $variantIdBuilder;
+        $this->variantIdBuilder = $variantIdBuilder ?? GeneralUtility::makeInstance(IdBuilder::class);
     }
 
     /**

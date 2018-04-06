@@ -59,7 +59,7 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
     public function __construct(TCAService $TCAService = null)
     {
         parent::__construct();
-        $this->tcaService = is_null($TCAService) ? GeneralUtility::makeInstance(TCAService::class) : $TCAService;
+        $this->tcaService = $TCAService ?? GeneralUtility::makeInstance(TCAService::class);
     }
 
     /**
@@ -178,7 +178,6 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
                 $this->getIndexQueue()->updateItem($table, $uid);
                 break;
             case 'pages':
-
                 // @todo The content of this if statement can allways be executed when TYPO3 8 support is dropped
                 if (!Util::getIsTYPO3VersionBelow9()) {
                     $pageOverlay = BackendUtility::getRecord('pages', $uid, 'l10n_parent', '', false);

@@ -33,7 +33,7 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
  *
  * @package ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder
  */
-class Elevation extends AbstractDeactivatableParameterBuilder  implements ParameterBuilder
+class Elevation extends AbstractDeactivatableParameterBuilder implements ParameterBuilder
 {
     /**
      * @var bool

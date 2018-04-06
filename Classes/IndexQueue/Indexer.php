@@ -105,8 +105,8 @@ class Indexer extends AbstractIndexer
         $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, /** @scrutinizer ignore-type */ __CLASS__);
         $this->options = $options;
         $this->connectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
-        $this->pagesRepository = isset($pagesRepository) ? $pagesRepository : GeneralUtility::makeInstance(PagesRepository::class);
-        $this->documentBuilder = isset($documentBuilder) ? $documentBuilder : GeneralUtility::makeInstance(Builder::class);
+        $this->pagesRepository = $pagesRepository ?? GeneralUtility::makeInstance(PagesRepository::class);
+        $this->documentBuilder = $documentBuilder ?? GeneralUtility::makeInstance(Builder::class);
     }
 
     /**

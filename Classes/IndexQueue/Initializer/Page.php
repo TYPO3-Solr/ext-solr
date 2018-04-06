@@ -68,7 +68,7 @@ class Page extends AbstractInitializer
     public function __construct(QueueItemRepository $queueItemRepository = null, PagesRepository $pagesRepository = null)
     {
         parent::__construct($queueItemRepository);
-        $this->pagesRepository = isset($pagesRepository) ? $pagesRepository : GeneralUtility::makeInstance(PagesRepository::class);
+        $this->pagesRepository = $pagesRepository ?? GeneralUtility::makeInstance(PagesRepository::class);
     }
 
     /**

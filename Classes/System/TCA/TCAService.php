@@ -48,7 +48,7 @@ class TCAService
      */
     public function __construct($TCA = null)
     {
-        $this->tca = (array)(is_null($TCA) ? $GLOBALS['TCA'] : $TCA);
+        $this->tca = (array)($TCA ?? $GLOBALS['TCA']);
     }
 
     /**

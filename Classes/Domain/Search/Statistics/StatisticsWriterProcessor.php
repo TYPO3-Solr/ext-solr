@@ -50,7 +50,7 @@ class StatisticsWriterProcessor implements SearchResultSetProcessor
      */
     public function __construct(StatisticsRepository $statisticsRepository = null)
     {
-        $this->statisticsRepository = isset($statisticsRepository) ? $statisticsRepository : GeneralUtility::makeInstance(StatisticsRepository::class);
+        $this->statisticsRepository = $statisticsRepository ?? GeneralUtility::makeInstance(StatisticsRepository::class);
     }
 
     /**

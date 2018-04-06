@@ -76,9 +76,9 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
      */
     public function __construct(SystemLanguageRepository $systemLanguageRepository = null, PagesRepositoryAtExtSolr $pagesRepositoryAtExtSolr = null, SolrLogManager $solrLogManager = null)
     {
-        $this->systemLanguageRepository = isset($systemLanguageRepository) ? $systemLanguageRepository : GeneralUtility::makeInstance(SystemLanguageRepository::class);
-        $this->pagesRepositoryAtExtSolr = isset($pagesRepositoryAtExtSolr) ? $pagesRepositoryAtExtSolr : GeneralUtility::makeInstance(PagesRepositoryAtExtSolr::class);
-        $this->logger                   = isset($solrLogManager) ? $solrLogManager : GeneralUtility::makeInstance(SolrLogManager::class, /** @scrutinizer ignore-type */ __CLASS__);
+        $this->systemLanguageRepository = $systemLanguageRepository ?? GeneralUtility::makeInstance(SystemLanguageRepository::class);
+        $this->pagesRepositoryAtExtSolr = $pagesRepositoryAtExtSolr ?? GeneralUtility::makeInstance(PagesRepositoryAtExtSolr::class);
+        $this->logger                   = $solrLogManager ?? GeneralUtility::makeInstance(SolrLogManager::class, /** @scrutinizer ignore-type */ __CLASS__);
     }
 
     /**

@@ -51,7 +51,7 @@ class MountPagesUpdater
      * @param PagesRepository|null $pagesRepository
      */
     public function __construct(PagesRepository $pagesRepository = null) {
-        $this->pagesRepository = isset($pagesRepository) ? $pagesRepository : GeneralUtility::makeInstance(PagesRepository::class);
+        $this->pagesRepository = $pagesRepository ?? GeneralUtility::makeInstance(PagesRepository::class);
     }
 
     /**

@@ -70,9 +70,8 @@ abstract class AbstractSolrService extends \Apache_Solr_Service {
     {
         $this->setScheme($scheme);
         parent::__construct($host, $port, $path);
-
-        $this->configuration = is_null($typoScriptConfiguration) ? Util::getSolrConfiguration() : $typoScriptConfiguration;
-        $this->logger = is_null($logManager) ? GeneralUtility::makeInstance(SolrLogManager::class, /** @scrutinizer ignore-type */ __CLASS__) : $logManager;
+        $this->configuration = $typoScriptConfiguration ?? Util::getSolrConfiguration();
+        $this->logger = $logManager ?? GeneralUtility::makeInstance(SolrLogManager::class, /** @scrutinizer ignore-type */ __CLASS__);
         $this->initializeTimeoutFromConfiguration();
     }
 

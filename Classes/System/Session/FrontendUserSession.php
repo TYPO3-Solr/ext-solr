@@ -47,7 +47,7 @@ class FrontendUserSession
      */
     public function __construct(FrontendUserAuthentication $feUser = null)
     {
-        $this->feUser = is_null($feUser) ? $GLOBALS['TSFE']->fe_user : $feUser;
+        $this->feUser = $feUser ?? $GLOBALS['TSFE']->fe_user;
     }
 
     /**
