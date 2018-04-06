@@ -295,7 +295,7 @@ Yes. You need a ssl certificate (can be self signed) and change the following se
 
 ::
 
-    plugin.tx_solr.index.queue.pages.frontendDataHelper.scheme = https
+    plugin.tx_solr.index.queue.pages.indexer.frontendDataHelper.scheme = https
 
 |
 
