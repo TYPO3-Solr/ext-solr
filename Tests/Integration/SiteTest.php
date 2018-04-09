@@ -98,4 +98,19 @@ class SiteTest extends IntegrationTest
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $this->site = $siteRepository->getSiteByRootPageId(2);
     }
+
+
+    /**
+     * @test
+     */
+    public function canGetTranslationsForRootSite() {
+        $this->importDataSetFromFixture('can_get_translations_for_root_site.xml');
+
+        /** @var $siteRepository SiteRepository */
+        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
+        $this->site = $siteRepository->getSiteByRootPageId(1);
+        $languageIds = $this->site->getRootPageLanguageIds();
+
+        $this->assertEquals([1, 2], $languageIds);
+    }
 }

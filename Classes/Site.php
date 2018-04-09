@@ -144,6 +144,25 @@ class Site
         return (int)$this->rootPage['uid'];
     }
 
+
+    /**
+     * Gets the site's root page language IDs (uids).
+     *
+     * @return array
+     */
+    public function getRootPageLanguageIds() : array
+    {
+        $rootPageLanguageIds = [];
+        $rootPageId = $this->getRootPageId();
+        $rootPageOverlays = $this->pagesRepository->findTranslationOverlaysByPageId($rootPageId);
+        if (count($rootPageOverlays)) {
+            foreach ($rootPageOverlays as $rootPageOverlay) {
+                $rootPageLanguageIds[] = $rootPageOverlay['sys_language_uid'];
+            }
+        }
+        return $rootPageLanguageIds;
+    }
+
     /**
      * Gets the site's label. The label is build from the the site title and root
      * page ID (uid).
