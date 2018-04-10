@@ -14,7 +14,7 @@
 		solr
 
 	:Version:
-		7.5.1
+		7.5.2
 
 	:Language:
 		en
