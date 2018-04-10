@@ -23,7 +23,7 @@ env:
     - TYPO3_DATABASE_HOST="127.0.0.1"
     - TYPO3_DATABASE_USERNAME="root"
     - TYPO3_DATABASE_PASSWORD=""
-    - PHP_CS_FIXER_VERSION="v2.3.2"
+    - PHP_CS_FIXER_VERSION="^2.11"
   matrix:
     - TYPO3_VERSION="^8.7"
     - TYPO3_VERSION="8.x-dev"
