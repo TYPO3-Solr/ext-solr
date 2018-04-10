@@ -6,8 +6,8 @@
 conf.py:
   copyright: 2018
   project: Documentation for EXT:solr the Apache Solr integration for TYPO3
-  version: 8.0.2
-  release: 8.0.2
+  version: 8.0.3
+  release: 8.0.3
   extensions:
     - sphinx.ext.intersphinx
     - t3sphinx.ext.t3extras
