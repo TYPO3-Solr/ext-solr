@@ -13,6 +13,17 @@ plugin.tx_solr.index.queue {
 
 			title = title
 
+			datetime_stringS = TEXT
+			datetime_stringS {
+				field = datetime
+				date = d.m.Y H:i
+			}
+			
+			datetime_dateS = TEXT
+			datetime_dateS {
+				field = datetime
+				date = Y-m-d\TH:i:s\Z
+			}
 
 			content = SOLR_CONTENT
 			content {
