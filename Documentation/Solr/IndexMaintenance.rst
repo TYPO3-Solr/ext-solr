@@ -88,7 +88,7 @@ Since we support configSets a core could be generated with the following http ca
 
 .. code-block:: bash
 
-    curl 'http://host:port/path-to-solr/admin/cores?action=CREATE&name=core_de&configSet=ext_solr_6_0_0&schema=german/schema.xml&dataDir=dataDir=../../data/german'
+    curl 'http://host:port/path-to-solr/admin/cores?action=CREATE&name=core_de&configSet=ext_solr_6_0_0&schema=german/schema.xml&dataDir=../../data/german'
 
 |
 

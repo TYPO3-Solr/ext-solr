@@ -151,7 +151,7 @@ Create a core with the rest api:
 
 .. code-block:: bash
 
-    curl "http://localhost:8983/solr/admin/cores?action=CREATE&name=core_de&configSet=ext_solr_6_0_0&schema=german/schema.xml&dataDir=dataDir=../../data/german"
+    curl "http://localhost:8983/solr/admin/cores?action=CREATE&name=core_de&configSet=ext_solr_6_0_0&schema=german/schema.xml&dataDir=../../data/german"
 
 |
 
