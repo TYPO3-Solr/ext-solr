@@ -36,9 +36,6 @@ matrix:
       env: TYPO3_VERSION="^9.1"
     - php: 7.1
       env: TYPO3_VERSION="^9.1"
-  allow_failures:
-    - env: TYPO3_VERSION="^9.1"
-      php: 7.2
 
 before_install:
   - composer self-update

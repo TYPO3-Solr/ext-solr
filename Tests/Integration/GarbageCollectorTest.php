@@ -26,6 +26,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration;
 
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\GarbageCollector;
+use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\IndexQueue\RecordMonitor;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
@@ -214,7 +215,8 @@ class GarbageCollectorTest extends IntegrationTest
         $items = $this->indexQueue->getItems('pages', 1);
 
         // we index this item
-        $this->indexPageIds($items);
+        $itemIds = $this->getItemPageIds($items);
+        $this->indexPageIds($itemIds);
         $this->waitToBeVisibleInSolr();
 
         // now the content of the deletec content element should be gone
@@ -262,8 +264,10 @@ class GarbageCollectorTest extends IntegrationTest
         $this->assertIndexQueryContainsItemAmount(1);
         $items = $this->indexQueue->getItems('pages', 1);
 
+        $itemIds = $this->getItemPageIds($items);
+
         // we index this item
-        $this->indexPageIds($items);
+        $this->indexPageIds($itemIds);
         $this->waitToBeVisibleInSolr();
 
         // now the content of the deletec content element should be gone
@@ -314,8 +318,9 @@ class GarbageCollectorTest extends IntegrationTest
         $this->assertIndexQueryContainsItemAmount(1);
         $items = $this->indexQueue->getItems('pages', 1);
 
+        $itemIds = $this->getItemPageIds($items);
         // we index this item
-        $this->indexPageIds($items);
+        $this->indexPageIds($itemIds);
         $this->waitToBeVisibleInSolr();
 
         // now the content of the deletec content element should be gone
@@ -367,7 +372,8 @@ class GarbageCollectorTest extends IntegrationTest
         $items = $this->indexQueue->getItems('pages', 1);
 
         // we index this item
-        $this->indexPageIds($items);
+        $itemIds = $this->getItemPageIds($items);
+        $this->indexPageIds($itemIds);
         $this->waitToBeVisibleInSolr();
 
         // now the content of the deletec content element should be gone
@@ -418,7 +424,8 @@ class GarbageCollectorTest extends IntegrationTest
         $items = $this->indexQueue->getItems('pages', 1);
 
         // we index this item
-        $this->indexPageIds($items);
+        $itemIds = $this->getItemPageIds($items);
+        $this->indexPageIds($itemIds);
         $this->waitToBeVisibleInSolr();
 
         // now the content of the deletec content element should be gone
@@ -530,5 +537,19 @@ class GarbageCollectorTest extends IntegrationTest
         $this->assertNotContains('will be removed!', $solrContent, 'solr did not remove content from deleted page');
         $this->assertContains('will stay!', $solrContent, 'solr did not contain rendered page content');
         $this->assertContains('"numFound":1', $solrContent, 'Expected to have two documents in the index');
+    }
+
+    /**
+     * @param $items
+     * @return array
+     */
+    protected function getItemPageIds($items):array
+    {
+        $itemIds = [];
+        foreach ($items as $item) {
+            /** @var $item Item */
+            $itemIds[] = $item->getRecordPageId();
+        }
+        return $itemIds;
     }
 }
