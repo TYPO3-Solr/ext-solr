@@ -443,4 +443,54 @@ class QueueTest extends IntegrationTest
         $lastestUpdatedItem = $this->indexQueue->getLastIndexedItemId(1);
         $this->assertEquals($lastestUpdatedItem, 4711);
     }
+
+    /**
+     * @test
+     */
+    public function canFlushAllErrors()
+    {
+        $this->importDataSetFromFixture('can_flush_errors.xml');
+        $this->assertItemsInQueue(4);
+
+        /** @var $siteRepository SiteRepository */
+        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
+        $firstSite = $siteRepository->getFirstAvailableSite();
+
+        $errorsForFirstSite = $this->indexQueue->getErrorsBySite($firstSite);
+        $this->assertSame(2, count($errorsForFirstSite), 'Unexpected amount of errors for the first site');
+
+        $this->indexQueue->resetAllErrors();
+
+        $errorsForFirstSite = $this->indexQueue->getErrorsBySite($firstSite);
+        $this->assertSame(0, count($errorsForFirstSite), 'Unexpected amount of errors for the first site after reset');
+
+        $secondSite = $siteRepository->getSiteByPageId(2);
+        $errorsForSecondSite = $this->indexQueue->getErrorsBySite($secondSite);
+        $this->assertSame(0, count($errorsForSecondSite), 'Unexpected amount of errors for the second site after reset');
+    }
+
+    /**
+     * @test
+     */
+    public function canFlushErrorsBySite()
+    {
+        $this->importDataSetFromFixture('can_flush_errors.xml');
+        $this->assertItemsInQueue(4);
+
+        /** @var $siteRepository SiteRepository */
+        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
+        $firstSite = $siteRepository->getFirstAvailableSite();
+
+        $errorsForFirstSite = $this->indexQueue->getErrorsBySite($firstSite);
+        $this->assertSame(2, count($errorsForFirstSite), 'Unexpected amount of errors for the first site');
+
+        $this->indexQueue->resetErrorsBySite($firstSite);
+
+        $errorsForFirstSite = $this->indexQueue->getErrorsBySite($firstSite);
+        $this->assertSame(0, count($errorsForFirstSite), 'Unexpected amount of errors for the first site after reset');
+
+        $secondSite = $siteRepository->getSiteByPageId(2);
+        $errorsForSecondSite = $this->indexQueue->getErrorsBySite($secondSite);
+        $this->assertSame(1, count($errorsForSecondSite), 'Unexpected amount of errors for the second site after reset');
+    }
 }

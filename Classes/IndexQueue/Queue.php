@@ -289,6 +289,17 @@ class Queue
     }
 
     /**
+     * Resets the errors in the index queue for a specific site
+     *
+     * @param Site $site
+     * @return mixed
+     */
+    public function resetErrorsBySite(Site $site)
+    {
+        return $this->queueItemRepository->flushErrorsBySite($site);
+    }
+
+    /**
      * Adds an item to the index queue.
      *
      * Not meant for public use.
