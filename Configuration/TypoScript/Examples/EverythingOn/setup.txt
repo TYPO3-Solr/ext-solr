@@ -25,6 +25,7 @@ plugin.tx_solr {
 	}
 
 	statistics = 1
+	statistics.anonymizeIP = 1
 
 	suggest = 1
 
