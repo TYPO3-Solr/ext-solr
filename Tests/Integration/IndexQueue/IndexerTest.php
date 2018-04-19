@@ -30,8 +30,10 @@ use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\SolrService;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
+use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Charset\CharsetConverter;
+use TYPO3\CMS\Core\Http\ServerRequestFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Lang\LanguageService;
 
@@ -70,6 +72,15 @@ class IndexerTest extends IntegrationTest
         $languageService = GeneralUtility::makeInstance(LanguageService::class);
         $languageService->csConvObj = GeneralUtility::makeInstance(CharsetConverter::class);
         $GLOBALS['LANG'] = $languageService;
+
+        //@todo when TYPO3 8 support is dropped we need to refactor the tests to bootstrap the middleware stack with 9 LTS core components
+        if (!Util::getIsTYPO3VersionBelow9()) {
+            $_SERVER['HTTP_HOST'] = 'test.local.typo3.org';
+            $request = ServerRequestFactory::fromGlobals();
+            $handlerMock = $this->getMockBuilder( \Psr\Http\Server\RequestHandlerInterface::class)->getMock();
+            $normalizer = new \TYPO3\CMS\Core\Middleware\NormalizedParamsAttribute();
+            $normalizer->process($request, $handlerMock);
+        }
     }
 
     /**
