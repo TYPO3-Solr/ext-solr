@@ -303,7 +303,7 @@ plugin.tx_solr {
 
 	statistics = 0
 	statistics {
-		anonymizeIP = 0
+		anonymizeIP = 1
 	}
 
 	view {
