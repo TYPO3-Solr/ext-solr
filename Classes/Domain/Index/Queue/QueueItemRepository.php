@@ -110,14 +110,40 @@ class QueueItemRepository extends AbstractRepository
     public function flushAllErrors() : int
     {
         $queryBuilder = $this->getQueryBuilder();
-        $affectedRows = $queryBuilder
+        $affectedRows = $this->getPreparedFlushErrorQuery($queryBuilder)->execute();
+        return $affectedRows;
+    }
+
+    /**
+     * Flushes the errors for a single site.
+     *X
+     * @param Site $site
+     * @return int
+     */
+    public function flushErrorsBySite(Site $site) : int
+    {
+        $queryBuilder = $this->getQueryBuilder();
+        $affectedRows = $this->getPreparedFlushErrorQuery($queryBuilder)
+            ->andWhere(
+                $queryBuilder->expr()->eq('root', (int)$site->getRootPageId())
+            )
+            ->execute();
+        return $affectedRows;
+    }
+
+    /**
+     * Initializes the QueryBuilder with a query the resets the error field for items that have an error.
+     *
+     * @return QueryBuilder
+     */
+    private function getPreparedFlushErrorQuery(QueryBuilder $queryBuilder)
+    {
+        return $queryBuilder
             ->update($this->table)
             ->set('errors', '')
             ->where(
                 $queryBuilder->expr()->notLike('errors', $queryBuilder->createNamedParameter(''))
-            )
-            ->execute();
-        return $affectedRows;
+            );
     }
 
     /**
