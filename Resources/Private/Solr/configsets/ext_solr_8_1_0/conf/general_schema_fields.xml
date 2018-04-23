@@ -154,7 +154,7 @@
 	<field name="fileRelativePathOnly"    type="string"  indexed="true"  stored="true" />
 	<field name="fileSha1"                type="string"  indexed="false" stored="true" />
 	<field name="fileStorage"             type="integer" indexed="true"  stored="true" docValues="true" />
-	<field name="fileSize"                type="integer" indexed="true"  stored="true" />
+	<field name="fileSize"                type="long" indexed="true"  stored="true" />
 	<field name="fileUid"                 type="integer" indexed="true"  stored="true" />
 	<field name="filePublicUrl"           type="string"  indexed="true"  stored="true" />
 
