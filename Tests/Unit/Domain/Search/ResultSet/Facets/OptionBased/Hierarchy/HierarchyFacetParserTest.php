@@ -14,13 +14,10 @@ namespace ApacheSolrForTypo3\Solr\Test\Domain\Search\ResultSet\Facets\OptionBase
  * The TYPO3 project - inspiring people to share!
  */
 
-use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
-use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Hierarchy\Node;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Hierarchy\HierarchyFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Hierarchy\HierarchyFacetParser;
 use ApacheSolrForTypo3\Solr\Test\Domain\Search\ResultSet\Facets\AbstractFacetParserTest;
-use ApacheSolrForTypo3\Solr\Tests\Unit\Helper\FakeObjectManager;
 
 /**
  * Class HierarchyFacetParserTest
@@ -54,13 +51,79 @@ class HierarchyFacetParserTest extends AbstractFacetParserTest
         $facet = $parser->parse($searchResultSet, 'pageHierarchy', $facetConfiguration['pageHierarchy.']);
         $this->assertInstanceOf(HierarchyFacet::class, $facet);
 
-            // on the rootlevel there should only be one childNode
+        // on the rootlevel there should only be one childNode
         $this->assertSame(1, $facet->getChildNodes()->getCount());
         $this->assertSame(8, $facet->getChildNodes()->getByPosition(0)->getChildNodes()->getCount());
 
         $firstNode = $facet->getChildNodes()->getByPosition(0)->getChildNodes()->getByPosition(0);
         $this->assertSame('/1/14/', $firstNode->getValue());
         $this->assertSame('14', $firstNode->getKey());
+    }
+
+    /**
+     * @return array
+     */
+    public function dataProviderForDeepMoreThen10DoesNotBreakHierarchyFacet()
+    {
+        return [
+            'sortByCount' => [
+                [
+                    'pageHierarchy.' => [
+                        'type' => 'hierarchy',
+                        'label' => 'Rootline',
+                        'field' => 'rootline',
+                        'sortBy' => 'count'
+                    ]
+                ],
+                'fake_solr_response_with_deep_more_then_10_hierarchy_facet_sorted_by_count.json'
+            ],
+            'sortByIndex' => [
+                [
+                    'pageHierarchy.' => [
+                        'type' => 'hierarchy',
+                        'label' => 'Rootline',
+                        'field' => 'rootline',
+                        'sortBy' => 'index'
+                    ]
+                ],
+                'fake_solr_response_with_deep_more_then_10_hierarchy_facet_sorted_by_index.json'
+            ]
+        ];
+    }
+
+    /**
+     * @test
+     * @dataProvider dataProviderForDeepMoreThen10DoesNotBreakHierarchyFacet
+     */
+    public function deepMoreThen10DoesNotBreakHierarchyFacet(array $facetConfiguration, string $fixtureFile)
+    {
+        $searchResultSet = $this->initializeSearchResultSetFromFakeResponse(
+            $fixtureFile,
+            $facetConfiguration
+        );
+
+        /** @var $parser HierarchyFacetParser */
+        $parser = $this->getInitializedParser(HierarchyFacetParser::class);
+        $facet = $parser->parse($searchResultSet, 'pageHierarchy', $facetConfiguration['pageHierarchy.']);
+
+        $this->assertInstanceOf(HierarchyFacet::class, $facet);
+
+        $this->assertSame(1, $facet->getChildNodes()->getCount(), 'The hierarchy facet is broken. Expected that no node has more than one child node.');
+        $this->assertNoNodeHasMoreThanOneChildInTheHierarchy($facet->getChildNodes()->getByPosition(0));
+    }
+
+    /**
+     * Traverses the hierarchy facet and checks if some has more than one child.
+     *
+     * @param Node $node
+     */
+    protected function assertNoNodeHasMoreThanOneChildInTheHierarchy(Node $node)
+    {
+        $this->assertLessThanOrEqual(1, $node->getChildNodes()->getCount(), 'The hierarchy facet is broken. Expected that no node has more than one child node.');
+        if ($node->getChildNodes()->getCount() === 0) {
+            return;
+        }
+        $this->assertNoNodeHasMoreThanOneChildInTheHierarchy($node->getChildNodes()->getByPosition(0));
     }
 
     /**
