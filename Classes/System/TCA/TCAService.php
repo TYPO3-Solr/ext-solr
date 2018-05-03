@@ -198,6 +198,56 @@ class TCAService
     }
 
     /**
+     * @param string $table
+     * @param array $record
+     * @return mixed
+     */
+    public function getTranslationOriginalUid($table, array $record)
+    {
+        return $record[$this->tca[$table]['ctrl']['transOrigPointerField']];
+    }
+
+    /**
+     * Retrieves the uid that as marked as original if the record is a translation if not it returns the
+     * originalUid.
+     *
+     * @param $table
+     * @param array $record
+     * @param $originalUid
+     * @return integer
+     */
+    public function getTranslationOriginalUidIfTranslated($table, array $record, $originalUid)
+    {
+        if (!$this->isLocalizedRecord($table, $record)) {
+            return $originalUid;
+        }
+
+        return $this->getTranslationOriginalUid($table, $record);
+    }
+
+    /**
+     * Checks whether a record is a localization overlay.
+     *
+     * @param string $tableName The record's table name
+     * @param array $record The record to check
+     * @return bool TRUE if the record is a language overlay, FALSE otherwise
+     */
+    public function isLocalizedRecord($tableName, array $record)
+    {
+        $translationUid = $this->getTranslationOriginalUid($tableName, $record);
+        if (is_null($translationUid)) {
+            return false;
+        }
+
+        $hasTranslationReference = $translationUid > 0;
+        if (!$hasTranslationReference) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * Compiles a list of visibility affecting fields of a table so that it can
      * be used in SQL queries.
      *

@@ -182,9 +182,7 @@ class RecordMonitor extends AbstractDataHandlerListener
                         $this->indexQueue->updateItem($table, $uid);
                     } else {
                         // TODO should be moved to garbage collector
-                        if ($this->indexQueue->containsItem($table, $uid)) {
-                            $this->removeFromIndexAndQueue($table, $uid);
-                        }
+                        $this->removeFromIndexAndQueueWhenItemInQueue($table, $uid);
                     }
                     break;
                 default:
@@ -196,20 +194,13 @@ class RecordMonitor extends AbstractDataHandlerListener
                         $record = $this->configurationAwareRecordService->getRecord($table, $uid, $solrConfiguration);
 
                         if (!empty($record) && $this->tcaService->isEnabledRecord($table, $record)) {
-                            if (Util::isLocalizedRecord($table, $record)) {
-                                // if it's a localization overlay, update the original record instead
-                                $uid = $record[$GLOBALS['TCA'][$table]['ctrl']['transOrigPointerField']];
-                            }
-
+                            $uid = $this->tcaService->getTranslationOriginalUidIfTranslated($table, $record, $uid);
                             $configurationName = $this->configurationAwareRecordService->getIndexingConfigurationName($table,
                                 $uid, $solrConfiguration);
-                            $this->indexQueue->updateItem($table, $uid,
-                                $configurationName);
+                            $this->indexQueue->updateItem($table, $uid, $configurationName);
                         } else {
                             // TODO should be moved to garbage collector
-                            if ($this->indexQueue->containsItem($table, $uid)) {
-                                $this->removeFromIndexAndQueue($table, $uid);
-                            }
+                            $this->removeFromIndexAndQueueWhenItemInQueue($table, $uid);
                         }
                     }
             }
@@ -223,9 +214,7 @@ class RecordMonitor extends AbstractDataHandlerListener
                 $this->indexQueue->updateItem('pages', $uid);
             } else {
                 // check if the item should be removed from the index because it no longer matches the conditions
-                if ($this->indexQueue->containsItem('pages', $uid)) {
-                    $this->removeFromIndexAndQueue('pages', $uid);
-                }
+                $this->removeFromIndexAndQueueWhenItemInQueue('pages', $uid);
             }
         }
     }
@@ -329,9 +318,7 @@ class RecordMonitor extends AbstractDataHandlerListener
         if (empty($record)) {
             // TODO move this part to the garbage collector
             // check if the item should be removed from the index because it no longer matches the conditions
-            if ($this->indexQueue->containsItem($recordTable, $recordUid)) {
-                $this->removeFromIndexAndQueue($recordTable, $recordUid);
-            }
+            $this->removeFromIndexAndQueueWhenItemInQueue($recordTable, $recordUid);
             return;
         }
 
@@ -344,15 +331,12 @@ class RecordMonitor extends AbstractDataHandlerListener
         }
 
         // only update/insert the item if we actually found a record
-        $isLocalizedRecord = Util::isLocalizedRecord($recordTable, $record);
-        if ($isLocalizedRecord) {
-            // if it's a localization overlay, update the original record instead
-            $recordUid = $record[$GLOBALS['TCA'][$recordTable]['ctrl']['transOrigPointerField']];
+        $isLocalizedRecord = $this->tcaService->isLocalizedRecord($recordTable, $record);
+        $recordUid = $this->tcaService->getTranslationOriginalUidIfTranslated($recordTable, $record, $recordUid);
 
-            //@todo This can be dropped when TYPO3 8 compatibility is dropped
-            if ($recordTable === 'pages_language_overlay') {
-                $recordTable = 'pages';
-            }
+        //@todo This can be dropped when TYPO3 8 compatibility is dropped
+        if ($isLocalizedRecord && $recordTable === 'pages_language_overlay') {
+            $recordTable = 'pages';
         }
 
         if ($isLocalizedRecord && !$this->getIsTranslationParentRecordEnabled($recordTable, $recordUid)) {
@@ -472,6 +456,21 @@ class RecordMonitor extends AbstractDataHandlerListener
     {
         $garbageCollector = GeneralUtility::makeInstance(GarbageCollector::class);
         $garbageCollector->collectGarbage($recordTable, $recordUid);
+    }
+
+    /**
+     * Removes record from the index queue and from the solr index when the item is in the queue.
+     *
+     * @param string $recordTable Name of table where the record lives
+     * @param int $recordUid Id of record
+     */
+    protected function removeFromIndexAndQueueWhenItemInQueue($recordTable, $recordUid)
+    {
+        if (!$this->indexQueue->containsItem($recordTable, $recordUid)) {
+            return;
+        }
+
+        $this->removeFromIndexAndQueue($recordTable, $recordUid);
     }
 
     // Handle pages showing content from another page

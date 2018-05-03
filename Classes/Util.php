@@ -33,6 +33,7 @@ use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationPageResolver;
 use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\DateTime\FormatService;
+use ApacheSolrForTypo3\Solr\System\TCA\TCAService;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\TimeTracker\TimeTracker;
 use TYPO3\CMS\Core\TypoScript\ExtendedTemplateService;
@@ -393,21 +394,16 @@ class Util
      *
      * @param string $tableName The record's table name
      * @param array $record The record to check
+     * @deprecated Since 8.1.0 will be removed in 9.0.0. Use TCAService::isLocalizedRecord instead.
      * @return bool TRUE if the record is a language overlay, FALSE otherwise
      */
     public static function isLocalizedRecord($tableName, array $record)
     {
-        $isLocalizedRecord = false;
+        trigger_error('Call deprecated method Util::isLocalizedRecord, use TCAService::isLocalizedRecord instead, deprecated since 8.1.0 will be removed in 9.0.0', E_USER_DEPRECATED);
 
-        if (isset($GLOBALS['TCA'][$tableName]['ctrl']['transOrigPointerField'])) {
-            $translationOriginalPointerField = $GLOBALS['TCA'][$tableName]['ctrl']['transOrigPointerField'];
-
-            if ($record[$translationOriginalPointerField] > 0) {
-                $isLocalizedRecord = true;
-            }
-        }
-
-        return $isLocalizedRecord;
+        /** @var $tcaService TCAService */
+        $tcaService = GeneralUtility::makeInstance(TCAService::class);
+        return $tcaService->isLocalizedRecord($tableName, $record);
     }
 
     /**
