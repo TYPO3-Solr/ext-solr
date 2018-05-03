@@ -71,22 +71,17 @@ class Manager
      */
     public function resolveAction($action)
     {
-        $frontendHelper = null;
-
-        if (array_key_exists($action, self::$frontendHelperRegistry)) {
-            $helperCandidate = GeneralUtility::makeInstance(self::$frontendHelperRegistry[$action]);
-
-            if ($helperCandidate instanceof FrontendHelper) {
-                $frontendHelper = $helperCandidate;
-                $this->activatedFrontendHelpers[$action] = $frontendHelper;
-            } else {
-                throw new \RuntimeException(
-                    self::$frontendHelperRegistry[$action] . ' is not an implementation of ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\FrontendHelper',
-                    1292497896
-                );
-            }
+        if (!array_key_exists($action, self::$frontendHelperRegistry)) {
+            return null;
         }
 
+        $frontendHelper = GeneralUtility::makeInstance(self::$frontendHelperRegistry[$action]);
+        if (!$frontendHelper instanceof FrontendHelper) {
+            $message = self::$frontendHelperRegistry[$action] . ' is not an implementation of ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\FrontendHelper';
+            throw new \RuntimeException($message, 1292497896);
+        }
+
+        $this->activatedFrontendHelpers[$action] = $frontendHelper;
         return $frontendHelper;
     }
 
