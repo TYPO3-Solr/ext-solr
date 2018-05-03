@@ -216,11 +216,7 @@ abstract class AbstractInitializer implements IndexQueueInitializer
     protected function buildPagesClause()
     {
         $pages = $this->getPages();
-
-        $pageIdField = 'pid';
-        if ($this->type === 'pages') {
-            $pageIdField = 'uid';
-        }
+        $pageIdField = ($this->type === 'pages') ? 'uid' : 'pid';
 
         return $pageIdField . ' IN(' . implode(',', $pages) . ')';
     }
@@ -236,10 +232,7 @@ abstract class AbstractInitializer implements IndexQueueInitializer
         $pages = $this->site->getPages();
         $additionalPageIds = [];
         if (!empty($this->indexingConfiguration['additionalPageIds'])) {
-            $additionalPageIds = GeneralUtility::intExplode(
-                ',',
-                $this->indexingConfiguration['additionalPageIds']
-            );
+            $additionalPageIds = GeneralUtility::intExplode(',', $this->indexingConfiguration['additionalPageIds']);
         }
 
         $pages = array_merge($pages, $additionalPageIds);
@@ -368,27 +361,25 @@ abstract class AbstractInitializer implements IndexQueueInitializer
         */
     }
 
+    /**
+     * Writes the passed log data to the log.
+     *
+     * @param array $logData
+     */
     protected function logInitialization(array $logData)
     {
-        $solrConfiguration = $this->site->getSolrConfiguration();
-
-        $logSeverity = SolrLogManager::NOTICE;
-        if (isset($logData['error'])) {
-            $logSeverity = SolrLogManager::ERROR;
+        if (!$this->site->getSolrConfiguration()->getLoggingIndexingIndexQueueInitialization()) {
+            return;
         }
 
+        $logSeverity = isset($logData['error']) ? SolrLogManager::ERROR : SolrLogManager::NOTICE;
         $logData = array_merge($logData, [
             'site' => $this->site->getLabel(),
             'indexing configuration name' => $this->indexingConfigurationName,
             'type' => $this->type,
         ]);
 
-        if ($solrConfiguration->getLoggingIndexingIndexQueueInitialization()) {
-            $this->logger->log(
-                $logSeverity,
-                'Index Queue initialized for indexing configuration ' . $this->indexingConfigurationName,
-                $logData
-            );
-        }
+        $message = 'Index Queue initialized for indexing configuration ' . $this->indexingConfigurationName;
+        $this->logger->log($logSeverity, $message, $logData);
     }
 }
