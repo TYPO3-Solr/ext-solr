@@ -28,9 +28,11 @@ use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\IndexQueue\NoPidException;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\IndexQueue\RecordMonitor;
+use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
+use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -244,10 +246,16 @@ class RecordMonitorTest extends IntegrationTest
      *
      * @test
      */
-    public function exceptionIsThrowsWhenRecordWithoutPidIsCreated()
+    public function logMessageIsCreatedWhenRecordWithoutPidIsCreated()
     {
+        $loggerMock = $this->getMockBuilder(SolrLogManager::class)->setMethods([])->disableOriginalConstructor()->getMock();
+
+        $expectedSeverity = SolrLogManager::WARNING;
+        $expectedMessage = 'Record without valid pid was processed tx_fakeextension_domain_model_foo:NEW566a9eac309d8193936351';
+        $loggerMock->expects($this->once())->method('log')->with($expectedSeverity, $expectedMessage);
+        $this->recordMonitor->setLogger($loggerMock);
+
         // we expect that this exception is getting thrown, because a record without pid was updated
-        $this->expectException(NoPidException::class);
 
         // create fake extension database table and TCA
         $this->importExtTablesDefinition('fake_extension_table.sql');

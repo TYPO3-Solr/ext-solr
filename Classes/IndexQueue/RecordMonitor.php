@@ -29,6 +29,7 @@ use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\MountPagesUp
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\RootPageResolver;
 use ApacheSolrForTypo3\Solr\GarbageCollector;
 use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
+use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
 use ApacheSolrForTypo3\Solr\System\TCA\TCAService;
 use ApacheSolrForTypo3\Solr\Util;
@@ -78,6 +79,11 @@ class RecordMonitor extends AbstractDataHandlerListener
     protected $pagesRepository;
 
     /**
+     * @var SolrLogManager
+     */
+    protected $logger = null;
+
+    /**
      * RecordMonitor constructor.
      *
      * @param Queue|null $indexQueue
@@ -85,8 +91,9 @@ class RecordMonitor extends AbstractDataHandlerListener
      * @param TCAService|null $TCAService
      * @param RootPageResolver $rootPageResolver
      * @param PagesRepository|null $pagesRepository
+     * @param SolrLogManager|null $solrLogManager
      */
-    public function __construct(Queue $indexQueue = null, MountPagesUpdater $mountPageUpdater = null, TCAService $TCAService = null, RootPageResolver $rootPageResolver = null, PagesRepository $pagesRepository = null)
+    public function __construct(Queue $indexQueue = null, MountPagesUpdater $mountPageUpdater = null, TCAService $TCAService = null, RootPageResolver $rootPageResolver = null, PagesRepository $pagesRepository = null, SolrLogManager $solrLogManager = null)
     {
         parent::__construct();
         $this->indexQueue = $indexQueue ?? GeneralUtility::makeInstance(Queue::class);
@@ -94,6 +101,15 @@ class RecordMonitor extends AbstractDataHandlerListener
         $this->tcaService = $TCAService ?? GeneralUtility::makeInstance(TCAService::class);
         $this->rootPageResolver = $rootPageResolver ?? GeneralUtility::makeInstance(RootPageResolver::class);
         $this->pagesRepository = $pagesRepository ?? GeneralUtility::makeInstance(PagesRepository::class);
+        $this->logger = $solrLogManager ?? GeneralUtility::makeInstance(SolrLogManager::class, /** @scrutinizer ignore-type */ __CLASS__);
+    }
+
+    /**
+     * @param SolrLogManager $logger
+     */
+    public function setLogger(SolrLogManager $logger)
+    {
+        $this->logger = $logger;
     }
 
     /**
@@ -242,13 +258,7 @@ class RecordMonitor extends AbstractDataHandlerListener
      * @param DataHandler $tceMain TYPO3 Core Engine parent object
      * @return void
      */
-    public function processDatamap_afterDatabaseOperations(
-        $status,
-        $table,
-        $uid,
-        array $fields,
-        DataHandler $tceMain
-    ) {
+    public function processDatamap_afterDatabaseOperations($status, $table, $uid, array $fields, DataHandler $tceMain) {
         $recordTable = $table;
         $recordUid = $uid;
 
@@ -264,15 +274,20 @@ class RecordMonitor extends AbstractDataHandlerListener
             return;
         }
 
-        $recordPageId = $this->getRecordPageId($status, $recordTable, $recordUid, $uid, $fields, $tceMain);
+        try {
+            $recordPageId = $this->getRecordPageId($status, $recordTable, $recordUid, $uid, $fields, $tceMain);
 
-        // when a content element changes we need to updated the page instead
-        if ($recordTable === 'tt_content') {
-            $recordTable = 'pages';
-            $recordUid = $recordPageId;
+            // when a content element changes we need to updated the page instead
+            if ($recordTable === 'tt_content') {
+                $recordTable = 'pages';
+                $recordUid = $recordPageId;
+            }
+
+            $this->processRecord($recordTable, $recordPageId, $recordUid, $fields);
+        } catch (NoPidException $e) {
+            $message = 'Record without valid pid was processed ' . $table . ':' . $uid;
+            $this->logger->log(SolrLogManager::WARNING, $message);
         }
-
-        $this->processRecord($recordTable, $recordPageId, $recordUid, $fields);
     }
 
     /**
