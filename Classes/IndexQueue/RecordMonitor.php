@@ -211,9 +211,7 @@ class RecordMonitor extends AbstractDataHandlerListener
 
                         if (!empty($record) && $this->tcaService->isEnabledRecord($table, $record)) {
                             $uid = $this->tcaService->getTranslationOriginalUidIfTranslated($table, $record, $uid);
-                            $configurationName = $this->configurationAwareRecordService->getIndexingConfigurationName($table,
-                                $uid, $solrConfiguration);
-                            $this->indexQueue->updateItem($table, $uid, $configurationName);
+                            $this->indexQueue->updateItem($table, $uid);
                         } else {
                             // TODO should be moved to garbage collector
                             $this->removeFromIndexAndQueueWhenItemInQueue($table, $uid);
