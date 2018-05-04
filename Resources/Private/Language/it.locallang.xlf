@@ -70,7 +70,7 @@
 				<target>La ricerca di &quot;@searchWord&quot; non ha prodotto risultati in nessun documento.</target>
 			</trans-unit>
 			<trans-unit id="no_results_showing_results_suggestion" xml:space="preserve" approved="yes">
-				<source>Showing results for &quot;@suggestedWord&quot;</source>
+				<source>Showing results for &quot;@suggestedWord&quot;.</source>
 				<target></target>
 			</trans-unit>
 			<trans-unit id="no_results_search_for_original" xml:space="preserve" approved="yes">
