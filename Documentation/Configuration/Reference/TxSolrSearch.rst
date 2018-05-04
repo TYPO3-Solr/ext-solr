@@ -584,16 +584,6 @@ spellchecking
 
 Set `plugin.tx_solr.search.spellchecking = 1` to enable spellchecking / did you mean.
 
-spellchecking.wrap
-~~~~~~~~~~~~~~~~~~
-
-:Type: String
-:TS Path: plugin.tx_solr.search.spellchecking.wrap
-:Since: 1.0
-:Default: \|<div class="spelling-suggestions">###LLL:didYouMean### \|</div>\|
-
-This can be used to configure a custom wrap for your did you mean rendering.
-
 spellchecking.searchUsingSpellCheckerSuggestion
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

@@ -1765,19 +1765,6 @@ class TypoScriptConfiguration
     }
 
     /**
-     * Returns the wrap that should be used for spellchecking
-     *
-     * plugin.tx_solr.search.spellchecking.wrap
-     *
-     * @param string $defaultIfEmpty
-     * @return string
-     */
-    public function getSearchSpellcheckingWrap($defaultIfEmpty = '')
-    {
-        return (string)$this->getValueByPathOrDefaultValue('plugin.tx_solr.search.spellchecking.wrap', $defaultIfEmpty);
-    }
-
-    /**
      * Returns the numberOfSuggestionsToTry that should be used for the spellchecking.
      *
      * plugin.tx_solr.search.spellchecking.numberOfSuggestionsToTry
