@@ -25,10 +25,12 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\AbstractDataHandlerListener;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\ConfigurationAwareRecordService;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\MountPagesUpdater;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\RootPageResolver;
 use ApacheSolrForTypo3\Solr\GarbageCollector;
 use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
 use ApacheSolrForTypo3\Solr\System\TCA\TCAService;
@@ -92,10 +94,11 @@ class RecordMonitor extends AbstractDataHandlerListener
      * @param RootPageResolver $rootPageResolver
      * @param PagesRepository|null $pagesRepository
      * @param SolrLogManager|null $solrLogManager
+     * @param ConfigurationAwareRecordService|null $recordService
      */
-    public function __construct(Queue $indexQueue = null, MountPagesUpdater $mountPageUpdater = null, TCAService $TCAService = null, RootPageResolver $rootPageResolver = null, PagesRepository $pagesRepository = null, SolrLogManager $solrLogManager = null)
+    public function __construct(Queue $indexQueue = null, MountPagesUpdater $mountPageUpdater = null, TCAService $TCAService = null, RootPageResolver $rootPageResolver = null, PagesRepository $pagesRepository = null, SolrLogManager $solrLogManager = null, ConfigurationAwareRecordService $recordService = null)
     {
-        parent::__construct();
+        parent::__construct($recordService);
         $this->indexQueue = $indexQueue ?? GeneralUtility::makeInstance(Queue::class);
         $this->mountPageUpdater = $mountPageUpdater ?? GeneralUtility::makeInstance(MountPagesUpdater::class);
         $this->tcaService = $TCAService ?? GeneralUtility::makeInstance(TCAService::class);
@@ -168,14 +171,9 @@ class RecordMonitor extends AbstractDataHandlerListener
      * @param string $value
      * @param DataHandler $tceMain TYPO3 Core Engine parent object
      */
-    public function processCmdmap_postProcess(
-        $command,
-        $table,
-        $uid,
-        $value,
-        DataHandler $tceMain
-    ) {
-        if (Util::isDraftRecord($table, $uid)) {
+    public function processCmdmap_postProcess($command, $table, $uid, $value, DataHandler $tceMain)
+    {
+        if ($this->isDraftRecord($table, $uid)) {
             // skip workspaces: index only LIVE workspace
             return;
         }
@@ -183,52 +181,74 @@ class RecordMonitor extends AbstractDataHandlerListener
         // track publish / swap events for records (workspace support)
         // command "version"
         if ($command === 'version' && $value['action'] === 'swap') {
-            switch ($table) {
-                /** @noinspection PhpMissingBreakStatementInspection */
-                case 'tt_content':
-                    $uid = $this->getValidatedPid($tceMain, $table, $uid);
-                    $table = 'pages';
-                    // no break here since we use the logic for pages after resolving the pid
-                case 'pages':
-                    $solrConfiguration = Util::getSolrConfigurationFromPageId($uid);
-                    $record = $this->configurationAwareRecordService->getRecord($table, $uid, $solrConfiguration);
-
-                    if (!empty($record) && $this->tcaService->isEnabledRecord($table, $record)) {
-                        $this->mountPageUpdater->update($uid);
-                        $this->indexQueue->updateItem($table, $uid);
-                    } else {
-                        // TODO should be moved to garbage collector
-                        $this->removeFromIndexAndQueueWhenItemInQueue($table, $uid);
-                    }
-                    break;
-                default:
-                    $recordPageId = $this->getValidatedPid($tceMain, $table, $uid);
-                    $solrConfiguration = Util::getSolrConfigurationFromPageId($recordPageId);
-                    $isMonitoredTable = $solrConfiguration->getIndexQueueIsMonitoredTable($table);
-
-                    if ($isMonitoredTable) {
-                        $record = $this->configurationAwareRecordService->getRecord($table, $uid, $solrConfiguration);
-
-                        if (!empty($record) && $this->tcaService->isEnabledRecord($table, $record)) {
-                            $uid = $this->tcaService->getTranslationOriginalUidIfTranslated($table, $record, $uid);
-                            $this->indexQueue->updateItem($table, $uid);
-                        } else {
-                            // TODO should be moved to garbage collector
-                            $this->removeFromIndexAndQueueWhenItemInQueue($table, $uid);
-                        }
-                    }
-            }
+            $this->applyVersionSwap($table, $uid, $tceMain);
         }
 
         if ($command === 'move' && $table === 'pages' && $GLOBALS['BE_USER']->workspace == 0) {
             // moving pages in LIVE workspace
-            $solrConfiguration = Util::getSolrConfigurationFromPageId($uid);
-            $record = $this->configurationAwareRecordService->getRecord('pages', $uid, $solrConfiguration);
+            $this->applyPageChangesToQueue($uid);
+        }
+    }
+
+    /**
+     * Apply's version swap to the IndexQueue.
+     *
+     * @param string $table
+     * @param integer $uid
+     * @param DataHandler $tceMain
+     */
+    protected function applyVersionSwap($table, $uid, DataHandler $tceMain)
+    {
+        $isPageRelatedRecord = $table === 'tt_content' || $table === 'pages';
+        if($isPageRelatedRecord) {
+            $uid = $table === 'tt_content' ? $this->getValidatedPid($tceMain, $table, $uid) : $uid;
+            $this->applyPageChangesToQueue($uid);
+        } else {
+            $recordPageId = $this->getValidatedPid($tceMain, $table, $uid);
+            $this->applyRecordChangesToQueue($table, $uid, $recordPageId);
+        }
+    }
+
+    /**
+     * Add's a page to the queue and updates mounts, when it is enabled, otherwise ensure that the page is removed
+     * from the queue.
+     *
+     * @param integer $uid
+     */
+    protected function applyPageChangesToQueue($uid)
+    {
+        $solrConfiguration = $this->getSolrConfigurationFromPageId($uid);
+        $record = $this->configurationAwareRecordService->getRecord('pages', $uid, $solrConfiguration);
+        if (!empty($record) && $this->tcaService->isEnabledRecord('pages', $record)) {
+            $this->mountPageUpdater->update($uid);
+            $this->indexQueue->updateItem('pages', $uid);
+        } else {
+            // TODO should be moved to garbage collector
+            $this->removeFromIndexAndQueueWhenItemInQueue('pages', $uid);
+        }
+    }
+
+    /**
+     * Add's a record to the queue if it is monitored and enabled, otherwise it removes the record from the queue.
+     * 
+     * @param string $table
+     * @param integer $uid
+     * @param integer $pid
+     */
+    protected function applyRecordChangesToQueue($table, $uid, $pid)
+    {
+        $solrConfiguration = $this->getSolrConfigurationFromPageId($pid);
+        $isMonitoredTable = $solrConfiguration->getIndexQueueIsMonitoredTable($table);
+
+        if ($isMonitoredTable) {
+            $record = $this->configurationAwareRecordService->getRecord($table, $uid, $solrConfiguration);
+
             if (!empty($record) && $this->tcaService->isEnabledRecord($table, $record)) {
-                $this->indexQueue->updateItem('pages', $uid);
+                $uid = $this->tcaService->getTranslationOriginalUidIfTranslated($table, $record, $uid);
+                $this->indexQueue->updateItem($table, $uid);
             } else {
-                // check if the item should be removed from the index because it no longer matches the conditions
-                $this->removeFromIndexAndQueueWhenItemInQueue('pages', $uid);
+                // TODO should be moved to garbage collector
+                $this->removeFromIndexAndQueueWhenItemInQueue($table, $uid);
             }
         }
     }
@@ -256,7 +276,7 @@ class RecordMonitor extends AbstractDataHandlerListener
         if ($status === 'new') {
             $recordUid = $tceMain->substNEWwithIDs[$recordUid];
         }
-        if (Util::isDraftRecord($table, $recordUid)) {
+        if ($this->isDraftRecord($table, $recordUid)) {
             // skip workspaces: index only LIVE workspace
             return;
         }
@@ -318,7 +338,7 @@ class RecordMonitor extends AbstractDataHandlerListener
             return;
         }
 
-        $solrConfiguration = Util::getSolrConfigurationFromPageId($configurationPageId);
+        $solrConfiguration = $this->getSolrConfigurationFromPageId($configurationPageId);
         $isMonitoredRecord = $solrConfiguration->getIndexQueueIsMonitoredTable($recordTable);
 
         if (!$isMonitoredRecord) {
@@ -520,5 +540,28 @@ class RecordMonitor extends AbstractDataHandlerListener
 
         $pid = intval($pid);
         return $pid;
+    }
+
+    /**
+     * Checks if the record is a draft record.
+     *
+     * @param string $table
+     * @param int $uid
+     * @return bool
+     */
+    protected function isDraftRecord($table, $uid)
+    {
+        return Util::isDraftRecord($table, $uid);
+    }
+
+    /**
+     * @param $pageId
+     * @param bool $initializeTsfe
+     * @param int $language
+     * @return TypoScriptConfiguration
+     */
+    protected function getSolrConfigurationFromPageId($pageId, $initializeTsfe = false, $language = 0)
+    {
+        return Util::getSolrConfigurationFromPageId($pageId, $initializeTsfe, $language);
     }
 }

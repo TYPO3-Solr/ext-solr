@@ -47,9 +47,13 @@ abstract class AbstractDataHandlerListener
      */
     protected $configurationAwareRecordService;
 
-    public function __construct()
+    /**
+     * AbstractDataHandlerListener constructor.
+     * @param ConfigurationAwareRecordService|null $recordService
+     */
+    public function __construct(ConfigurationAwareRecordService $recordService = null)
     {
-        $this->configurationAwareRecordService = GeneralUtility::makeInstance(ConfigurationAwareRecordService::class);
+        $this->configurationAwareRecordService = $recordService ?? GeneralUtility::makeInstance(ConfigurationAwareRecordService::class);
     }
 
     /**
