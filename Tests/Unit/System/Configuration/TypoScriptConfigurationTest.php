@@ -281,7 +281,7 @@ class TypoScriptConfigurationTest extends UnitTest
         $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
 
         $this->assertEquals('', $configuration->getIndexQueueAdditionalWhereClauseByConfigurationName('pages'));
-        $this->assertEquals('AND 1=1', $configuration->getIndexQueueAdditionalWhereClauseByConfigurationName('custom'));
+        $this->assertEquals(' AND 1=1', $configuration->getIndexQueueAdditionalWhereClauseByConfigurationName('custom'));
         $this->assertEquals('', $configuration->getIndexQueueAdditionalWhereClauseByConfigurationName('notconfigured'));
     }
 
