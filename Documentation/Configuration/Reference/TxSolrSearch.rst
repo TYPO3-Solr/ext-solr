@@ -95,6 +95,17 @@ ignoreGlobalQParameter
 
 In some cases you want EXT:solr to react on the parameter "q" in the url. Normally plugins are bounded to a namespace to allow multiple instances of the search on the same page. In this case you might want to disable this and let EXT:solr only react on the namespaced query parameter (tx_solr[q] by default).
 
+additionalPersistentArgumentNames
+---------------------------------
+
+:Type: String
+:TS Path: plugin.tx_solr.search.additionalPersistentArgumentNames
+:Since: 8.0
+
+Comma-separated list of additional argument names, that should be added to the persistent arguments that are kept for sub request, like the facet and sorting urls. Hard coded argument names are q, filter and sort.
+
+Till solr version 6.5.x all parameters of the plugin namespace was added to the url again. With this setting you could enable this behavior again, but only with a whitelist of argument names.
+
 query
 -----
 
