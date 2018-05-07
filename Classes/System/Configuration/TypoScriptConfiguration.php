@@ -593,7 +593,7 @@ class TypoScriptConfiguration
             return '';
         }
 
-        return $initialPagesAdditionalWhereClause;
+        return trim($initialPagesAdditionalWhereClause);
     }
 
     /**
