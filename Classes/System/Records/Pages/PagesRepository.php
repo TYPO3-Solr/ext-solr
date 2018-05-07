@@ -211,7 +211,7 @@ class PagesRepository extends AbstractRepository
         }
 
         if (!empty($initialPagesAdditionalWhereClause)) {
-            $queryBuilder->add('where', $initialPagesAdditionalWhereClause, true);
+            $queryBuilder->andWhere($initialPagesAdditionalWhereClause);
         }
 
         $resultSet = $queryBuilder->execute();

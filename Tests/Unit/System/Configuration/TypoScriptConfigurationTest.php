@@ -256,7 +256,7 @@ class TypoScriptConfigurationTest extends UnitTest
         $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
 
         $this->assertEquals('', $configuration->getInitialPagesAdditionalWhereClause('pages'));
-        $this->assertEquals(' AND 1=1', $configuration->getInitialPagesAdditionalWhereClause('custom'));
+        $this->assertEquals('1=1', $configuration->getInitialPagesAdditionalWhereClause('custom'));
         $this->assertEquals('', $configuration->getInitialPagesAdditionalWhereClause('notconfigured'));
     }
 
