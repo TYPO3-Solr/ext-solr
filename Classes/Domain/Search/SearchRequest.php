@@ -121,7 +121,7 @@ class SearchRequest
 
         if (!is_null($typoScriptConfiguration)) {
             $additionalPersistentArgumentsNames = $typoScriptConfiguration->getSearchAdditionalPersistentArgumentNames();
-            foreach ($additionalPersistentArgumentsNames as $additionalPersistentArgumentsName) {
+            foreach ($additionalPersistentArgumentsNames ?? [] as $additionalPersistentArgumentsName) {
                 $this->persistentArgumentsPaths[] = $this->argumentNameSpace . ':' . $additionalPersistentArgumentsName;
             }
             $this->persistentArgumentsPaths = array_unique($this->persistentArgumentsPaths);
