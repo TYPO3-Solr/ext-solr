@@ -815,4 +815,28 @@ class TypoScriptConfigurationTest extends UnitTest
 
         $this->assertFalse($configuration->getSearchGrouping(), 'Expected grouping to be disabled');
     }
+
+    /**
+     * @test
+     */
+    public function getSearchAdditionalPersistentArgumentNamesReturnsEmptyArrayWhenNothingIsConfigured()
+    {
+        $configuration = new TypoScriptConfiguration([]);
+        $this->assertSame([], $configuration->getSearchAdditionalPersistentArgumentNames(), 'Expected to get an empty array, when nothing configured');
+    }
+
+    /**
+     * @test
+     */
+    public function canGetAdditionalPersistentArgumentNames()
+    {
+        $fakeConfigurationArray['plugin.']['tx_solr.'] = [
+            'search.' => [
+                'additionalPersistentArgumentNames' => 'customA, customB',
+            ]
+        ];
+
+        $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
+        $this->assertSame(['customA','customB'], $configuration->getSearchAdditionalPersistentArgumentNames(), 'Can not get configured custom parameters');
+    }
 }

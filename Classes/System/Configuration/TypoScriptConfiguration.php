@@ -2252,6 +2252,26 @@ class TypoScriptConfiguration
     }
 
     /**
+     * Returns the argument names, that should be added to the persistent arguments, as array.
+     *
+     * plugin.tx_solr.search.additionalPersistentArgumentNames
+     *
+     * @param array $defaultIfEmpty
+     * @return array
+     */
+    public function getSearchAdditionalPersistentArgumentNames($defaultIfEmpty = [])
+    {
+        $additionalPersistentArgumentNames = $this->getValueByPathOrDefaultValue('plugin.tx_solr.search.additionalPersistentArgumentNames', '');
+
+        if ($additionalPersistentArgumentNames === '') {
+            return $defaultIfEmpty;
+        }
+
+        return GeneralUtility::trimExplode(',', $additionalPersistentArgumentNames, true);
+
+    }
+
+    /**
      * Method to check if grouping was enabled with typoscript.
      *
      * plugin.tx_solr.search.grouping
