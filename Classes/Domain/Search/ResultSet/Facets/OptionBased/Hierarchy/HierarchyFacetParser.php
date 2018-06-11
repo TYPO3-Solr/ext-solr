@@ -14,6 +14,8 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Hie
  * The TYPO3 project - inspiring people to share!
  */
 
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Faceting;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetParser;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 
@@ -54,6 +56,10 @@ class HierarchyFacetParser extends AbstractFacetParser
 
         $nodesToCreate = $this->getMergedFacetValueFromSearchRequestAndSolrResponse($optionsFromSolrResponse, $optionsFromRequest);
 
+        if ($this->facetOptionsMustBeResorted($facetConfiguration, $resultSet) === true) {
+            $nodesToCreate = $this->sortFacetOptionsInNaturalOrder($nodesToCreate);
+        }
+
         foreach ($nodesToCreate as $value => $count) {
             if ($this->getIsExcludedFacetValue($value, $facetConfiguration)) {
                 continue;
@@ -71,6 +77,52 @@ class HierarchyFacetParser extends AbstractFacetParser
         }
 
         return $facet;
+    }
+
+    /**
+     * Sorts facet options in natural order.
+     * Options must be sorted in natural order,
+     * because lower nesting levels must be instantiated first, to serve as parents for higher nested levels.
+     * See implementation of HierarchyFacet::createNode().
+     *
+     * @param array $flatOptionsListForFacet
+     * @return void sorted list of facet options
+     */
+    protected function sortFacetOptionsInNaturalOrder(array $flatOptionsListForHierarchyFacet)
+    {
+        uksort($flatOptionsListForHierarchyFacet, "strnatcmp");
+        return $flatOptionsListForHierarchyFacet;
+    }
+
+    /**
+     * Checks if options must be resorted.
+     *
+     * Apache Solr facet.sort can be set globally or per facet.
+     * Relevant TypoScript paths:
+     * plugin.tx_solr.search.faceting.sortBy causes facet.sort Apache Solr parameter
+     * plugin.tx_solr.search.faceting.facets.[facetName].sortBy causes f.<fieldname>.facet.sort parameter
+     *
+     * see: https://lucene.apache.org/solr/guide/6_6/faceting.html#Faceting-Thefacet.sortParameter
+     * see: https://wiki.apache.org/solr/SimpleFacetParameters#facet.sort : "This parameter can be specified on a per field basis."
+     *
+     * If plugin.tx_solr.search.faceting.facets.[facetName].sortBy is not set, then trying to get global parameter from ResultSet.
+     *
+     * @param array $facetConfiguration
+     * @param SearchResultSet $resultSet
+     * @return bool
+     */
+    protected function facetOptionsMustBeResorted(array $facetConfiguration, SearchResultSet $resultSet)
+    {
+        if (isset($facetConfiguration['sortBy']) && $facetConfiguration['sortBy'] === 'index') {
+            return true;
+        }
+
+        if (!isset($facetConfiguration['sortBy'])
+            && $resultSet->getUsedQuery()->getFaceting()->getSorting() === 'index') {
+            return true;
+        }
+
+        return false;
     }
 
     /**

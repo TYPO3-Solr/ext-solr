@@ -14,6 +14,8 @@ namespace ApacheSolrForTypo3\Solr\Test\Domain\Search\ResultSet\Facets;
  * The TYPO3 project - inspiring people to share!
  */
 
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Faceting;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
@@ -42,11 +44,17 @@ abstract class AbstractFacetParserTest extends UnitTest
         $httpResponseMock = $this->getDumbMock('\Apache_Solr_HttpTransport_Response');
         $httpResponseMock->expects($this->any())->method('getBody')->will($this->returnValue($fakeResponseJson));
 
+        $facetingMock = $this->getMockBuilder(Faceting::class)->setMethods(['getSorting'])->disableOriginalConstructor()->getMock();
+        $facetingMock->expects($this->any())->method('getSorting')->will($this->returnValue(''));
+        $usedQueryMock = $this->getMockBuilder(Query::class)->setMethods(['getFaceting'])->disableOriginalConstructor()->getMock();
+        $usedQueryMock->expects($this->any())->method('getFaceting')->will($this->returnValue($facetingMock));
+
         $searchRequestMock = $this->getMockBuilder(SearchRequest::class)->setMethods(['getActiveFacetNames', 'getContextTypoScriptConfiguration', 'getActiveFacets'])->getMock();
 
         $fakeResponse = new \Apache_Solr_Response($httpResponseMock);
 
         $searchResultSet = new SearchResultSet();
+        $searchResultSet->setUsedQuery($usedQueryMock);
         $searchResultSet->setUsedSearchRequest($searchRequestMock);
         $searchResultSet->setResponse($fakeResponse);
 

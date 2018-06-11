@@ -2262,7 +2262,6 @@ class TypoScriptConfiguration
     public function getSearchAdditionalPersistentArgumentNames($defaultIfEmpty = [])
     {
         $additionalPersistentArgumentNames = $this->getValueByPathOrDefaultValue('plugin.tx_solr.search.additionalPersistentArgumentNames', '');
-
         if ($additionalPersistentArgumentNames === '') {
             return $defaultIfEmpty;
         }

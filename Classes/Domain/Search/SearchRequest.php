@@ -118,6 +118,15 @@ class SearchRequest
         }
 
         $this->persistentArgumentsPaths = [$this->argumentNameSpace . ':q', $this->argumentNameSpace . ':filter', $this->argumentNameSpace . ':sort', $this->argumentNameSpace . ':groupPage'];
+
+        if (!is_null($typoScriptConfiguration)) {
+            $additionalPersistentArgumentsNames = $typoScriptConfiguration->getSearchAdditionalPersistentArgumentNames();
+            foreach ($additionalPersistentArgumentsNames ?? [] as $additionalPersistentArgumentsName) {
+                $this->persistentArgumentsPaths[] = $this->argumentNameSpace . ':' . $additionalPersistentArgumentsName;
+            }
+            $this->persistentArgumentsPaths = array_unique($this->persistentArgumentsPaths);
+        }
+
         $this->reset();
     }
 

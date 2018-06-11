@@ -177,7 +177,7 @@
 				<source>Nothing found for &quot;@searchWord&quot;.</source>
 			</trans-unit>
 			<trans-unit id="no_results_showing_results_suggestion" xml:space="preserve">
-				<source>Showing results for &quot;@suggestedWord&quot;</source>
+				<source>Showing results for &quot;@suggestedWord&quot;.</source>
 			</trans-unit>
 			<trans-unit id="no_results_search_for_original" xml:space="preserve">
 				<source>Search instead for &quot;@searchWord&quot;.</source>

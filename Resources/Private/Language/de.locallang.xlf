@@ -136,8 +136,8 @@
 				<target>Nichts gefunden für &quot;@searchWord&quot;.</target>
 			</trans-unit>
 			<trans-unit id="no_results_showing_results_suggestion" xml:space="preserve" approved="yes">
-				<source>Showing results for &quot;@suggestedWord&quot;</source>
-				<target>Ergebnisse für &quot;@suggestedWord&quot;</target>
+				<source>Showing results for &quot;@suggestedWord&quot;.</source>
+				<target>Ergebnisse für &quot;@suggestedWord&quot;.</target>
 			</trans-unit>
 			<trans-unit id="no_results_search_for_original" xml:space="preserve" approved="yes">
 				<source>Search instead for &quot;@searchWord&quot;.</source>

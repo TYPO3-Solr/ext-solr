@@ -1,4 +1,4 @@
-FROM solr:6.6.2
+FROM solr:6.6.3
 MAINTAINER Timo Hund <timo.hund@dkd.de>
 ENV TERM linux
 

@@ -5,7 +5,7 @@ function SuggestController() {
         jQuery('form[data-suggest]').each(function () {
             var $form = $(this), $searchBox = $form.find('.tx-solr-suggest');
 
-            $form.find('.tx-solr-suggest').focus();
+            $form.find('.tx-solr-suggest-focus').focus();
 
             jQuery.ajaxSetup({jsonp: "tx_solr[callback]"})
 
