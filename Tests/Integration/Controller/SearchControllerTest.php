@@ -209,7 +209,7 @@ class SearchControllerTest extends IntegrationTest
         $resultPage1 = $this->searchResponse->getContent();
 
         $this->assertContains("Nothing found for shoo", $resultPage1, 'Could not find nothing found message');
-        $this->assertContains("Search instead for shoes", $resultPage1, 'Could not find correction message');
+        $this->assertContains("Showing results for shoes", $resultPage1, 'Could not find correction message');
     }
 
     /**

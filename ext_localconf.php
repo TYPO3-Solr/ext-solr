@@ -117,7 +117,6 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['ApacheSolrForTy
 
 // registering the eID scripts
 // TODO move to suggest form modifier
-$TYPO3_CONF_VARS['FE']['eID_include']['tx_solr_suggest'] = 'EXT:solr/Classes/Eid/Suggest.php';
 $TYPO3_CONF_VARS['FE']['eID_include']['tx_solr_api'] = 'EXT:solr/Classes/Eid/Api.php';
 
 # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #

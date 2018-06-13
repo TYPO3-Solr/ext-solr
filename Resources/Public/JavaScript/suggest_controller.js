@@ -137,5 +137,9 @@ jQuery(document).ready(function() {
     /** solr search autocomplete **/
     var solrSuggestController = new SuggestController();
     solrSuggestController.init();
+
+    jQuery("body").on("tx_solr_updated", function() {
+        solrSuggestController.init();
+    });
 });
 
