@@ -30,6 +30,7 @@ function SuggestController() {
                 groupBy: 'category',
                 maxHeight: 1000,
                 autoSelectFirst: false,
+                triggerSelectOnValidInput: false,
                 width: $searchBox.outerWidth() * 0.66,
                 onSelect: function (suggestion) {
                     // go to link when selecting found result
@@ -72,12 +73,6 @@ function SuggestController() {
                             }
                         );
                     });
-
-                    // 1 result means not result for given input; then we don't show is as suggestion
-                    // also prevents autosubmit when selecting input box
-                    if (result.suggestions.length <= 1) {
-                        result.suggestions = [];
-                    }
 
                     return result;
                 },
