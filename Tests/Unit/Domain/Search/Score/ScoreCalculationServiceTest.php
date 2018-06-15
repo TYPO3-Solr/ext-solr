@@ -56,11 +56,11 @@ class ScoreCalculationServiceTest extends UnitTest
 
         $scoreAnalysis = $this->scoreCalculationService->getRenderedScores($fakeDebugData, $fakeQueryFields);
 
-        $this->assertContains('<td>+       0.1781365</td>', $scoreAnalysis);
+        $this->assertContains('<td>+     98.444336</td', $scoreAnalysis);
         $this->assertContains('<td>content</td>', $scoreAnalysis);
         $this->assertContains('<td>40.0</td></tr>', $scoreAnalysis);
 
-        $this->assertContains('<td>+       0.38260993</td>', $scoreAnalysis);
+        $this->assertContains('<td>+     6.2762194</td>', $scoreAnalysis);
         $this->assertContains('<td>tagsH2H3</td>', $scoreAnalysis);
         $this->assertContains('<td>3.0</td></tr>', $scoreAnalysis);
     }
