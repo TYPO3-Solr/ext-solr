@@ -1,4 +1,4 @@
-<config name="tx_solr-8-1-0--20180423">
+<config name="tx_solr-8-1-0--20180615">
 
 	<luceneMatchVersion>6.6.0</luceneMatchVersion>
 
@@ -169,6 +169,7 @@
 			<int name="ps">15</int>
 
 			<str name="mm">2&lt;-35%</str>
+			<str name="mm.autoRelax">true</str>
 
 			<str name="hl.fl">title,content</str>
 			<int name="hl.snippets">3</int>
