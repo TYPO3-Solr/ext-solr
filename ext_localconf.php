@@ -16,6 +16,13 @@ if (!function_exists('strptime')) {
 // registering Index Queue page indexer helpers
 
 if (TYPO3_MODE == 'FE' && isset($_SERVER['HTTP_X_TX_SOLR_IQ'])) {
+
+    // prevent indexing process from die() if page does not exist to be able to log errors properly.
+    $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'][\TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController::class] = array(
+        'className' => \ApacheSolrForTypo3\Solr\System\Mvc\Frontend\Controller\OverriddenTypoScriptFrontendController::class
+    );
+    define('EXT_SOLR_INDEXING_CONTEXT', true);
+
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/index_ts.php']['preprocessRequest']['ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequestHandler'] = \ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequestHandler::class . '->run';
     $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageSubstitutePageDocument']['ApacheSolrForTypo3\Solr\AdditionalFieldsIndexer'] = \ApacheSolrForTypo3\Solr\AdditionalFieldsIndexer::class;
 
