@@ -1,64 +1,47 @@
-
-0.7992293 = (MATCH) sum of:
-  0.76521987 = (MATCH) sum of:
-    0.38260993 = (MATCH) max of:
-      0.1781365 = (MATCH) weight(content:open^40.0 in 60) [DefaultSimilarity], result of:
-        0.1781365 = score(doc=60,freq=2.0), product of:
-          0.721729 = queryWeight, product of:
-            40.0 = boost
-            3.1913595 = idf(docFreq=18, maxDocs=170)
-            0.005653774 = queryNorm
-          0.24681911 = fieldWeight in 60, product of:
-            1.4142135 = tf(freq=2.0), with freq of:
-              2.0 = termFreq=2.0
-            3.1913595 = idf(docFreq=18, maxDocs=170)
-            0.0546875 = fieldNorm(doc=60)
-      0.38260993 = (MATCH) weight(tagsH2H3:open^3.0 in 60) [DefaultSimilarity], result of:
-        0.38260993 = score(doc=60,freq=1.0), product of:
-          0.08055787 = queryWeight, product of:
-            3.0 = boost
-            4.749504 = idf(docFreq=3, maxDocs=170)
-            0.005653774 = queryNorm
-          4.749504 = fieldWeight in 60, product of:
-            1.0 = tf(freq=1.0), with freq of:
-              1.0 = termFreq=1.0
-            4.749504 = idf(docFreq=3, maxDocs=170)
-            1.0 = fieldNorm(doc=60)
-    0.38260993 = (MATCH) max of:
-      0.16214608 = (MATCH) weight(content:sourc^40.0 in 60) [DefaultSimilarity], result of:
-        0.16214608 = score(doc=60,freq=2.0), product of:
-          0.6885745 = queryWeight, product of:
-            40.0 = boost
-            3.044756 = idf(docFreq=21, maxDocs=170)
-            0.005653774 = queryNorm
-          0.23548082 = fieldWeight in 60, product of:
-            1.4142135 = tf(freq=2.0), with freq of:
-              2.0 = termFreq=2.0
-            3.044756 = idf(docFreq=21, maxDocs=170)
-            0.0546875 = fieldNorm(doc=60)
-      0.38260993 = (MATCH) weight(tagsH2H3:sourc^3.0 in 60) [DefaultSimilarity], result of:
-        0.38260993 = score(doc=60,freq=1.0), product of:
-          0.08055787 = queryWeight, product of:
-            3.0 = boost
-            4.749504 = idf(docFreq=3, maxDocs=170)
-            0.005653774 = queryNorm
-          4.749504 = fieldWeight in 60, product of:
-            1.0 = tf(freq=1.0), with freq of:
-              1.0 = termFreq=1.0
-            4.749504 = idf(docFreq=3, maxDocs=170)
-            1.0 = fieldNorm(doc=60)
-  0.03400946 = (MATCH) weight(content:"open sourc"~15^2.0 in 60) [DefaultSimilarity], result of:
-    0.03400946 = score(doc=60,freq=2.0), product of:
-      0.07051517 = queryWeight, product of:
-        2.0 = boost
-        6.2361155 = idf(), sum of:
-          3.1913595 = idf(docFreq=18, maxDocs=170)
-          3.044756 = idf(docFreq=21, maxDocs=170)
-        0.005653774 = queryNorm
-      0.48229992 = fieldWeight in 60, product of:
-        1.4142135 = tf(freq=2.0), with freq of:
-          2.0 = phraseFreq=2.0
-        6.2361155 = idf(), sum of:
-          3.1913595 = idf(docFreq=18, maxDocs=170)
-          3.044756 = idf(docFreq=21, maxDocs=170)
-        0.0546875 = fieldNorm(doc=60)
+98.444336 = sum of:
+  98.444336 = max of:
+    6.2762194 = weight(tagsH2H3:coach in 610) [SchemaSimilarity], result of:      6.2762194 = score(doc=610,freq=1.0 = termFreq=1.0
+), product of:
+        3.0 = boost
+        2.0920732 = idf, computed as log(1 + (docCount - docFreq + 0.5) / (docFreq + 0.5)) from:
+          29.0 = docFreq
+          238.0 = docCount
+        1.0 = tfNorm, computed as (freq * (k1 + 1)) / (freq + k1) from:
+          1.0 = termFreq=1.0
+          1.2 = parameter k1
+          0.0 = parameter b (norms omitted for field)
+    13.230293 = weight(tagsH1:coach in 610) [SchemaSimilarity], result of:
+      13.230293 = score(doc=610,freq=1.0 = termFreq=1.0
+), product of:
+        5.0 = boost
+        2.6460586 = idf, computed as log(1 + (docCount - docFreq + 0.5) / (docFreq + 0.5)) from:
+          30.0 = docFreq
+          429.0 = docCount
+        1.0 = tfNorm, computed as (freq * (k1 + 1)) / (freq + k1) from:
+          1.0 = termFreq=1.0
+          1.2 = parameter k1
+          0.0 = parameter b (norms omitted for field)
+    98.444336 = weight(content:coach in 610) [SchemaSimilarity], result of:
+      98.444336 = score(doc=610,freq=27.0 = termFreq=27.0
+), product of:
+        40.0 = boost
+        1.1881583 = idf, computed as log(1 + (docCount - docFreq + 0.5) / (docFreq + 0.5)) from:
+          503.0 = docFreq
+          1651.0 = docCount
+        2.0713642 = tfNorm, computed as (freq * (k1 + 1)) / (freq + k1 * (1 - b + b * fieldLength / avgFieldLength)) from:
+          27.0 = termFreq=27.0
+          1.2 = parameter k1
+          0.75 = parameter b
+          218.57965 = avgFieldLength
+          334.36734 = fieldLength
+    2.8561218 = weight(tagsInline:coach in 610) [SchemaSimilarity], result of:
+      2.8561218 = score(doc=610,freq=1.0 = termFreq=1.0
+), product of:
+        2.8561218 = idf, computed as log(1 + (docCount - docFreq + 0.5) / (docFreq + 0.5)) from:
+          16.0 = docFreq
+          286.0 = docCount
+        1.0 = tfNorm, computed as (freq * (k1 + 1)) / (freq + k1) from:
+          1.0 = termFreq=1.0
+          1.2 = parameter k1
+          0.0 = parameter b (norms omitted for field)
+",
