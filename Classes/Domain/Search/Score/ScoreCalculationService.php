@@ -101,7 +101,7 @@ class ScoreCalculationService
          */
 
         // matches search term weights, ex: 0.42218783 = (MATCH) weight(content:iPod^40.0 in 43), product of:
-        $pattern = '/(.*) = \(MATCH\) weight\((.*)\^/';
+        $pattern = '/(.*) = weight\(([^ \)]*)/';
         $scoreMatches = [];
         preg_match_all($pattern, $debugData, $scoreMatches);
 
