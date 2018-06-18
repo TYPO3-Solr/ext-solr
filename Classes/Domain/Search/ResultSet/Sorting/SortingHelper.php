@@ -135,9 +135,6 @@ class SortingHelper {
                 'label' => $optionLabel,
                 'defaultOrder' => $optionConfiguration['defaultOrder']
             ];
-            if (isset($optionConfiguration['fixedOrder'])) {
-                $sortOptions[$optionName]['fixedOrder'] = $optionConfiguration['fixedOrder'];
-            }
         }
 
         return $sortOptions;

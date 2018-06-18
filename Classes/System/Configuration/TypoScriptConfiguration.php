@@ -1377,21 +1377,6 @@ class TypoScriptConfiguration
     }
 
     /**
-     * Returns the configured fixedOrder, if nothing configured defaultIfEmpty will be returned.
-     *
-     * plugin.tx_solr.search.sorting.options.<sortOptionName>.fixedOrder
-     *
-     * @param string $sortOptionName
-     * @param string $defaultIfEmpty
-     * @return string
-     */
-    public function getSearchSortingFixedOrderBySortOptionName($sortOptionName = '', $defaultIfEmpty = '')
-    {
-        $fixedOrder = 'plugin.tx_solr.search.sorting.options.' . $sortOptionName . '.fixedOrder';
-        return mb_strtolower($this->getValueByPathOrDefaultValue($fixedOrder, $defaultIfEmpty));
-    }
-
-    /**
      * Returns the trusted fields configured for the search that do not need to be escaped.
      *
      * @param array $defaultIfEmpty

@@ -783,18 +783,6 @@ sorting.options.[optionName].defaultOrder
 
 Sets the default sort order for a particular sort option.
 
-sorting.options.[optionName].fixedOrder
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-:Type: String
-:TS Path: plugin.tx_solr.search.sorting.options.[optionName].fixedOrder
-:Since: 2.2
-:Default: asc
-:Options: asc, desc
-
-Sets a fixed sort order for a particular sort option that can not be changed.
-
-
 faceting
 --------
 
