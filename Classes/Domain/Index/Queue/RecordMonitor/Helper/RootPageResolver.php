@@ -160,7 +160,11 @@ class RootPageResolver implements SingletonInterface
             /* @var $pageSelect PageRepository */
             $pageSelect = GeneralUtility::makeInstance(PageRepository::class);
 
-            $rootLineArray = $pageSelect->getRootLine($pageId, $mountPointIdentifier, true);
+            try {
+                $rootLineArray = $pageSelect->getRootLine($pageId, $mountPointIdentifier);
+            } catch (\RuntimeException $e) {
+                $rootLineArray = [];
+            }
             $rootLine->setRootLineArray($rootLineArray);
         }
 
