@@ -250,4 +250,18 @@ abstract class AbstractBaseController extends ActionController
             $logger->log(SolrLogManager::ERROR, 'Solr server is not available');
         }
     }
+
+    /**
+     * Emits signal for various actions
+     *
+     * @param string $className Name of the class containing the signal
+     * @param string $signalName Name of the signal slot
+     * @param array $signalArguments arguments for the signal slot
+     *
+     * @return array
+     */
+    protected function emitActionSignal($className, $signalName, array $signalArguments)
+    {
+        return $this->signalSlotDispatcher->dispatch($className, $signalName, $signalArguments)[0];
+    }
 }

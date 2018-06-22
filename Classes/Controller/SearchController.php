@@ -105,14 +105,16 @@ class SearchController extends AbstractBaseController
             // to access it without passing it from partial to partial
             $this->controllerContext->setSearchResultSet($searchResultSet);
 
-            $this->view->assignMultiple(
-                [
-                    'hasSearched' => $this->searchService->getHasSearched(),
-                    'additionalFilters' => $this->searchService->getAdditionalFilters(),
-                    'resultSet' => $searchResultSet,
-                    'pluginNamespace' => $this->typoScriptConfiguration->getSearchPluginNamespace()
-                ]
-            );
+            $values = [
+                'hasSearched' => $this->searchService->getHasSearched(),
+                'additionalFilters' => $this->searchService->getAdditionalFilters(),
+                'resultSet' => $searchResultSet,
+                'pluginNamespace' => $this->typoScriptConfiguration->getSearchPluginNamespace()
+            ];
+
+            $values = $this->emitActionSignal(__CLASS__, __FUNCTION__, [$values]);
+
+            $this->view->assignMultiple($values);
         } catch (SolrUnavailableException $e) {
             $this->handleSolrUnavailable();
         }
@@ -123,13 +125,15 @@ class SearchController extends AbstractBaseController
      */
     public function formAction()
     {
-        $this->view->assignMultiple(
-            [
-                'search' => $this->searchService->getSearch(),
-                'additionalFilters' => $this->searchService->getAdditionalFilters(),
-                'pluginNamespace' => $this->typoScriptConfiguration->getSearchPluginNamespace()
-            ]
-        );
+
+        $values = [
+            'search' => $this->searchService->getSearch(),
+            'additionalFilters' => $this->searchService->getAdditionalFilters(),
+            'pluginNamespace' => $this->typoScriptConfiguration->getSearchPluginNamespace()
+        ];
+        $values = $this->emitActionSignal(__CLASS__, __FUNCTION__, [$values]);
+
+        $this->view->assignMultiple($values);
     }
 
     /**
@@ -146,13 +150,15 @@ class SearchController extends AbstractBaseController
         $searchResultSet->setUsedSearchRequest($searchRequest);
 
         $this->controllerContext->setSearchResultSet($searchResultSet);
-        $this->view->assignMultiple(
-            [
-                'hasSearched' => $this->searchService->getHasSearched(),
-                'additionalFilters' => $this->searchService->getAdditionalFilters(),
-                'resultSet' => $searchResultSet
-            ]
-        );
+
+        $values = [
+            'hasSearched' => $this->searchService->getHasSearched(),
+            'additionalFilters' => $this->searchService->getAdditionalFilters(),
+            'resultSet' => $searchResultSet
+        ];
+        $values = $this->emitActionSignal(__CLASS__, __FUNCTION__, [$values]);
+
+        $this->view->assignMultiple($values);
     }
 
     /**
