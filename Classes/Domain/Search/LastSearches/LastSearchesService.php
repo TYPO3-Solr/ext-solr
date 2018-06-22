@@ -28,8 +28,6 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\LastSearches;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Session\FrontendUserSession;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Persistence\Generic\Session;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * The LastSearchesService is responsible to return the LastSearches from the session or database,
