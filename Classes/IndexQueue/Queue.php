@@ -604,4 +604,15 @@ class Queue
     {
         $this->queueItemRepository->updateIndexTimeByItem($item);
     }
+
+    /**
+     * Sets the change timestamp of an item.
+     *
+     * @param Item $item
+     * @param int $forcedChangeTime The change time for the item
+     */
+    public function setForcedChangeTimeByItem(Item $item, $forcedChangeTime)
+    {
+        $this->queueItemRepository->updateChangedTimeByItem($item, $forcedChangeTime);
+    }
 }
