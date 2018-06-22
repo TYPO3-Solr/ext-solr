@@ -244,6 +244,7 @@ class Util
 
     /**
      * This function is used to retrieve the configuration from an existing TSFE instance
+     *
      * @param $pageId
      * @param $path
      * @param $language
@@ -300,6 +301,7 @@ class Util
      * @param int $pageId The page id to initialize the TSFE for
      * @param int $language System language uid, optional, defaults to 0
      * @param bool $useCache Use cache to reuse TSFE
+     * @todo When we drop TYPO3 8 support we should use a middleware stack to initialize a TSFE for our needs
      * @return void
      */
     public static function initializeTsfe($pageId, $language = 0, $useCache = true)
@@ -318,8 +320,8 @@ class Util
         if (!isset($tsfeCache[$cacheId]) || !$useCache) {
             GeneralUtility::_GETset($language, 'L');
 
-            $GLOBALS['TSFE'] = GeneralUtility::makeInstance(OverriddenTypoScriptFrontendController::class,
-                $GLOBALS['TYPO3_CONF_VARS'], $pageId, 0);
+
+            $GLOBALS['TSFE'] = GeneralUtility::makeInstance(OverriddenTypoScriptFrontendController::class, $GLOBALS['TYPO3_CONF_VARS'], $pageId, 0);
 
             // for certain situations we need to trick TSFE into granting us
             // access to the page in any case to make getPageAndRootline() work
@@ -329,7 +331,7 @@ class Util
             $GLOBALS['TSFE']->gr_list = $pageRecord['fe_group'];
 
             $GLOBALS['TSFE']->sys_page = GeneralUtility::makeInstance(PageRepository::class);
-            $GLOBALS['TSFE']->getPageAndRootline();
+            self::getPageAndRootlineOfTSFE($pageId);
 
             // restore gr_list
             $GLOBALS['TSFE']->gr_list = $groupListBackup;
@@ -344,7 +346,6 @@ class Util
             $GLOBALS['TSFE']->tmpl->start($GLOBALS['TSFE']->rootLine);
             $GLOBALS['TSFE']->no_cache = false;
             $GLOBALS['TSFE']->getConfigArray();
-
             $GLOBALS['TSFE']->settingLanguage();
             if (!$useCache) {
                 $GLOBALS['TSFE']->settingLocale();
@@ -362,6 +363,25 @@ class Util
         if ($useCache) {
             $GLOBALS['TSFE'] = $tsfeCache[$cacheId];
             $GLOBALS['TSFE']->settingLocale();
+        }
+    }
+
+    /**
+     * @deprecated This is only implemented to provide compatibility for TYPO3 8 and 9 when we drop TYPO3 8 support this
+     * should changed to use a middleware stack
+     * @param integer $pageId
+     */
+    private static function getPageAndRootlineOfTSFE($pageId)
+    {
+        //@todo This can be dropped when TYPO3 8 compatibility is dropped
+        if (Util::getIsTYPO3VersionBelow9()) {
+            $GLOBALS['TSFE']->getPageAndRootline();
+        } else {
+            //@todo When we drop the support of TYPO3 8 we should use the frontend middleware stack instead of initializing this on our own
+            /** @var $siteRepository SiteRepository */
+            $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
+            $site = $siteRepository->getSiteByPageId($pageId);
+            $GLOBALS['TSFE']->getPageAndRootlineWithDomain($site->getRootPageId());
         }
     }
 
