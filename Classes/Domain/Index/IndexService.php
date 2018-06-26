@@ -193,12 +193,20 @@ class IndexService
         // Remember original http host value
         $originalHttpHost = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : null;
 
+        $itemChangedDate = $item->getChanged();
+        $itemChangedDateAfterIndex = 0;
+
         $this->initializeHttpServerEnvironment($item);
         $itemIndexed = $indexer->index($item);
 
         // update IQ item so that the IQ can determine what's been indexed already
         if ($itemIndexed) {
             $this->indexQueue->updateIndexTimeByItem($item);
+            $itemChangedDateAfterIndex = $item->getChanged();
+        }
+
+        if ($itemChangedDateAfterIndex > $itemChangedDate && $itemChangedDateAfterIndex > time()) {
+            $this->indexQueue->setForcedChangeTimeByItem($item, $itemChangedDateAfterIndex);
         }
 
         if (!is_null($originalHttpHost)) {

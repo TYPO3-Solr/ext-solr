@@ -770,6 +770,23 @@ class QueueItemRepository extends AbstractRepository
     }
 
     /**
+     * Sets the change timestamp of an item.
+     *
+     * @param Item $item
+     * @param int $changedTime
+     * @return int affected rows
+     */
+    public function updateChangedTimeByItem(Item $item, int $changedTime) : int
+    {
+        $queryBuilder = $this->getQueryBuilder();
+        return (int)$queryBuilder
+            ->update($this->table)
+            ->set('changed', $changedTime)
+            ->where($queryBuilder->expr()->eq('uid', $item->getIndexQueueUid()))
+            ->execute();
+    }
+
+    /**
      * Initializes Queue by given sql
      *
      * Note: Do not use platform specific functions!
