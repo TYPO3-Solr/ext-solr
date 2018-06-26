@@ -85,10 +85,10 @@ class SuggestService {
      * Build an array structure of the suggestions.
      *
      * @param SearchRequest $searchRequest
-     * @param string $additionalFilters
+     * @param array $additionalFilters
      * @return array
      */
-    public function getSuggestions(SearchRequest $searchRequest, $additionalFilters) : array
+    public function getSuggestions(SearchRequest $searchRequest, array $additionalFilters = []) : array
     {
         $requestId = (int)$this->tsfe->getRequestedId();
         $groupList = (string)$this->tsfe->gr_list;
@@ -108,7 +108,7 @@ class SuggestService {
             return $this->getResultArray($searchRequest, $suggestions, [], false);
         }
 
-        return $this->addTopResultsToSuggestions($searchRequest, $suggestions);
+        return $this->addTopResultsToSuggestions($searchRequest, $suggestions, $additionalFilters);
     }
 
     /**
@@ -116,14 +116,16 @@ class SuggestService {
      *
      * @param SearchRequest $searchRequest
      * @param array $suggestions
+     * @param array $additionalFilters
      * @return array
      */
-    protected function addTopResultsToSuggestions(SearchRequest $searchRequest, $suggestions) : array
+    protected function addTopResultsToSuggestions(SearchRequest $searchRequest, $suggestions, array $additionalFilters) : array
     {
         $maxDocuments = $this->typoScriptConfiguration->getSuggestNumberOfTopResults();
 
         // perform the current search.
         $searchRequest->setResultsPerPage($maxDocuments);
+        $searchRequest->setAdditionalFilters($additionalFilters);
 
         $didASecondSearch = false;
         $documents = [];
@@ -139,6 +141,7 @@ class SuggestService {
         $bestSuggestionRequest = $searchRequest->getCopyForSubRequest();
         $bestSuggestionRequest->setRawQueryString($bestSuggestion);
         $bestSuggestionRequest->setResultsPerPage($maxDocuments);
+        $bestSuggestionRequest->setAdditionalFilters($additionalFilters);
 
         // No results found, use first proposed suggestion to perform the search
         if (count($documents) === 0 && !empty($suggestions) && ($searchResultSet = $this->doASearch($bestSuggestionRequest)) && count($searchResultSet->getSearchResults()) > 0) {

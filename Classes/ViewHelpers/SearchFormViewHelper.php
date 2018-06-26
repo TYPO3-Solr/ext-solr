@@ -85,6 +85,8 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
         $this->registerArgument('addQueryStringMethod', 'string', 'Set which parameters will be kept. Only active if $addQueryString = TRUE', false);
         $this->registerArgument('addSuggestUrl', 'boolean', 'Indicates if suggestUrl should be rendered or not', false, true);
         $this->registerArgument('suggestHeader', 'string', 'The header for the top results', false, 'Top Results');
+        $this->registerArgument('suggestPageType', 'integer', 'The page type that should be used for the suggest', false, 7384);
+
     }
 
     /**
@@ -103,7 +105,7 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
 
         $this->tag->addAttribute('action', trim($uri));
         if ($this->arguments['addSuggestUrl']) {
-            $this->tag->addAttribute('data-suggest', $this->getSuggestEidUrl($this->arguments['additionalFilters'], $pageUid));
+            $this->tag->addAttribute('data-suggest', $this->getSuggestUrl($this->arguments['additionalFilters'], $pageUid));
         }
         $this->tag->addAttribute('data-suggest-header', htmlspecialchars($this->arguments['suggestHeader']));
         $this->tag->addAttribute('accept-charset', $this->frontendController->metaCharset);
@@ -147,25 +149,11 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
      * @param int $pageUid
      * @return string
      */
-    protected function getSuggestEidUrl($additionalFilters, $pageUid)
+    protected function getSuggestUrl($additionalFilters, $pageUid)
     {
-        $suggestUrl = $this->frontendController->absRefPrefix;
-
-        $suggestUrl .= '?type=7384&id=' . $pageUid;
-
-        // add filters
-        if (!empty($additionalFilters)) {
-            $additionalFilters = json_encode($additionalFilters);
-            $additionalFilters = rawurlencode($additionalFilters);
-
-            $suggestUrl .= '&filters=' . $additionalFilters;
-        }
-
-        // adds the language parameter to the suggest URL
-        if ($this->frontendController->sys_language_uid > 0) {
-            $suggestUrl .= '&L=' . $this->frontendController->sys_language_uid;
-        }
-
+        $uriBuilder = $this->getControllerContext()->getUriBuilder();
+        $pluginNamespace = $this->getTypoScriptConfiguration()->getSearchPluginNamespace();
+        $suggestUrl = $uriBuilder->reset()->setTargetPageUid($pageUid)->setTargetPageType($this->arguments['suggestPageType'])->setUseCacheHash(false)->setArguments([$pluginNamespace => ['additionalFilters' => $additionalFilters]])->build();
         return $suggestUrl;
     }
 

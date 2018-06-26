@@ -171,7 +171,7 @@ class QueryBuilderTest extends UnitTest
         $this->configurationMock->expects($this->any())->method('getSearchQueryFilterConfiguration')->willReturn(['noPage' => '-type:pages']);
         $query = $this->builder->buildSearchQuery('applies configured filters');
 
-        $filterValues = $query->getFilters()->getValues();
+        $filterValues = $query->getQueryParameter('fq');
         $this->assertCount(1, $filterValues, 'Unpexcted amount of filters for query');
         $this->assertSame('-type:pages', $filterValues[0], 'First filter has unexpected value');
     }
@@ -1608,7 +1608,7 @@ class QueryBuilderTest extends UnitTest
             ->setMethods(['useSiteHashFromTypoScript'])
             ->getMock();
 
-        $suggestQuery = $this->builder->buildSuggestQuery('foo', '', 3232, '');
+        $suggestQuery = $this->builder->buildSuggestQuery('foo', [], 3232, '');
         $queryParameters = $suggestQuery->getQueryParameters();
         $this->assertSame('foo', $queryParameters['facet.prefix'], 'Passed query string is not used as facet.prefix argument');
     }
@@ -1624,7 +1624,7 @@ class QueryBuilderTest extends UnitTest
                                 ->setMethods(['useSiteHashFromTypoScript'])
                                 ->getMock();
 
-        $suggestQuery = $this->builder->buildSuggestQuery('bar', '', 3232, '');
+        $suggestQuery = $this->builder->buildSuggestQuery('bar', [], 3232, '');
         $this->assertSame('*:*', $suggestQuery->getAlternativeQuery(), 'Alterntive query is not set to wildcard query by default');
     }
 }

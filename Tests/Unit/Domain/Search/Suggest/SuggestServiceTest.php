@@ -118,7 +118,7 @@ class SuggestServiceTest extends UnitTest
             'typo'
         ]));
 
-        $suggestions = $this->suggestService->getSuggestions($fakeRequest, '');
+        $suggestions = $this->suggestService->getSuggestions($fakeRequest, []);
 
         $expectedSuggestions = [
             'suggestions' => ['type', 'typo'],
@@ -141,7 +141,7 @@ class SuggestServiceTest extends UnitTest
         $fakeRequest = $this->getFakedSearchRequest('ty');
 
         $this->suggestService->expects($this->once())->method('getSolrSuggestions')->will($this->returnValue([]));
-        $suggestions = $this->suggestService->getSuggestions($fakeRequest, '');
+        $suggestions = $this->suggestService->getSuggestions($fakeRequest, []);
 
         $expectedSuggestions = ['status' => false];
         $this->assertSame($expectedSuggestions, $suggestions, 'Suggest did not return status false');
@@ -176,7 +176,7 @@ class SuggestServiceTest extends UnitTest
         $this->searchResultSetServiceMock->expects($this->once())->method('search')->will($this->returnValue($fakeTopResults));
 
 
-        $suggestions = $this->suggestService->getSuggestions($fakeRequest, '');
+        $suggestions = $this->suggestService->getSuggestions($fakeRequest, []);
 
         $this->assertCount(2, $suggestions['documents'], 'Expected to have two top results');
         $this->assertSame('pages', $suggestions['documents'][0]['type'],'The first top result has an unexpected type');

@@ -609,6 +609,32 @@ class SearchRequest
     }
 
     /**
+     * Allows to set additional filters that are used on time and not transported during the request.
+     *
+     * @param array $additionalFilters
+     * @return SearchRequest
+     */
+    public function setAdditionalFilters($additionalFilters)
+    {
+        $path = $this->prefixWithNamespace('additionalFilters');
+        $this->argumentsAccessor->set($path, $additionalFilters);
+        $this->stateChanged = true;
+
+        return $this;
+    }
+
+    /**
+     * Retrieves the addtional filters that have been set
+     *
+     * @return array
+     */
+    public function getAdditionalFilters()
+    {
+        $path = $this->prefixWithNamespace('additionalFilters');
+        return $this->argumentsAccessor->get($path, []);
+    }
+
+    /**
      * @return int
      */
     public function getContextSystemLanguageUid()

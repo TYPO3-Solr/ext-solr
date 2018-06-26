@@ -43,9 +43,10 @@ class SuggestController extends AbstractBaseController
      *
      * @param string $queryString
      * @param string $callback
+     * @param array $additionalFilters
      * @return string
      */
-    public function suggestAction($queryString, $callback)
+    public function suggestAction($queryString, $callback, $additionalFilters = [])
     {
         $jsonPCallback = htmlspecialchars($callback);
         // Get suggestions
@@ -58,11 +59,12 @@ class SuggestController extends AbstractBaseController
                 /** @scrutinizer ignore-type */ $this->typoScriptFrontendController,
                 /** @scrutinizer ignore-type */ $this->searchService,
                 /** @scrutinizer ignore-type */ $this->typoScriptConfiguration);
-            $additionalFilters = htmlspecialchars(GeneralUtility::_GET('filters'));
 
+            $additionalFilters = is_array($additionalFilters) ? array_map("htmlspecialchars", $additionalFilters) : [];
             $pageId = $this->typoScriptFrontendController->getRequestedId();
             $languageId = $this->typoScriptFrontendController->sys_language_uid;
             $arguments = (array)$this->request->getArguments();
+
             $searchRequest = $this->getSearchRequestBuilder()->buildForSuggest($arguments, $rawQuery, $pageId, $languageId);
             $result = $suggestService->getSuggestions($searchRequest, $additionalFilters);
         } catch (SolrUnavailableException $e) {

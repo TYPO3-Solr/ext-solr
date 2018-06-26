@@ -139,14 +139,14 @@ class QueryBuilder {
      *
      * @param string|null $rawQuery
      * @param int $resultsPerPage
+     * @param array $additionalFiltersFromRequest
      * @return Query
      */
-    public function buildSearchQuery($rawQuery, $resultsPerPage = 10) : Query
+    public function buildSearchQuery($rawQuery, $resultsPerPage = 10, array $additionalFiltersFromRequest = []) : Query
     {
         if ($this->typoScriptConfiguration->getLoggingQuerySearchWords()) {
             $this->logger->log(SolrLogManager::INFO, 'Received search query', [$rawQuery]);
         }
-
         /* @var $query Query */
         return $this->newSearchQuery($rawQuery)
                 ->useResultsPerPage($resultsPerPage)
@@ -154,6 +154,7 @@ class QueryBuilder {
                 ->useQueryFieldsFromTypoScript()
                 ->useInitialQueryFromTypoScript()
                 ->useFiltersFromTypoScript()
+                ->useFilterArray($this->getQuery()->getFilters()->addMultiple($additionalFiltersFromRequest)->getValues())
                 ->useFacetingFromTypoScript()
                 ->useVariantsFromTypoScript()
                 ->useGroupingFromTypoScript()
@@ -168,26 +169,23 @@ class QueryBuilder {
      * Builds a SuggestQuery with all applied filters.
      *
      * @param string $queryString
-     * @param string $additionalFilters
+     * @param array $additionalFilters
      * @param integer $requestedPageId
      * @param string $groupList
      * @return SuggestQuery
      */
-    public function buildSuggestQuery(string $queryString, string $additionalFilters, int $requestedPageId, string $groupList) : SuggestQuery
+    public function buildSuggestQuery(string $queryString, array $additionalFilters, int $requestedPageId, string $groupList) : SuggestQuery
     {
         $this->newSuggestQuery($queryString)
             ->useFiltersFromTypoScript()
             ->useSiteHashFromTypoScript($requestedPageId)
             ->useUserAccessGroups(explode(',', $groupList));
 
-
         $this->queryToBuild->setOmitHeader();
 
         if (!empty($additionalFilters)) {
-            $additionalFilters = (array)json_decode($additionalFilters);
             $this->useFilterArray($additionalFilters);
         }
-
 
         return $this->queryToBuild;
     }
@@ -200,8 +198,8 @@ class QueryBuilder {
      */
     public function useFilterArray(array $filterArray): QueryBuilder
     {
-        foreach ($filterArray as $additionalFilter) {
-            $this->useFilter($additionalFilter);
+        foreach ($filterArray as $key => $additionalFilter) {
+            $this->useFilter($additionalFilter, $key);
         }
 
         return $this;
