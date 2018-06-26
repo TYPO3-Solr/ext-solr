@@ -303,7 +303,22 @@ class CoreOptimizationModuleController extends AbstractModuleController
             $coreAdmin->getCoreName() . '.' . $fileExtension,
             true
         );
-        return $content;
+
+        $this->response->setContent($content);
+        $this->sendFileResponse();
+    }
+
+    /**
+     * This method send the headers and content and does an exit, since without the exit TYPO3 produces and error.
+     * @return void
+     */
+    protected function sendFileResponse()
+    {
+        $this->response->sendHeaders();
+        $this->response->shutdown();
+        $this->response->send();
+
+        exit();
     }
 
     /**
