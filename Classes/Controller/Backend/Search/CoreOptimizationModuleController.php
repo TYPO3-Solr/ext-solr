@@ -315,8 +315,8 @@ class CoreOptimizationModuleController extends AbstractModuleController
     protected function sendFileResponse()
     {
         $this->response->sendHeaders();
-        $this->response->shutdown();
         $this->response->send();
+        $this->response->shutdown();
 
         exit();
     }
