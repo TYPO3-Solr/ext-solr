@@ -106,7 +106,8 @@ class SearchController extends AbstractBaseController
             $this->controllerContext->setSearchResultSet($searchResultSet);
 
             $values = [
-                'hasSearched' => $this->searchService->getHasSearched(),
+                /** @deprecated The option hasSearched is deprecated no, use resultSet.hasSearched in the templates instead, can be moved in EXT:solr 9.0.0 */
+                'hasSearched' => $searchResultSet->getHasSearched(),
                 'additionalFilters' => $this->searchService->getAdditionalFilters(),
                 'resultSet' => $searchResultSet,
                 'pluginNamespace' => $this->typoScriptConfiguration->getSearchPluginNamespace()
@@ -152,7 +153,8 @@ class SearchController extends AbstractBaseController
         $this->controllerContext->setSearchResultSet($searchResultSet);
 
         $values = [
-            'hasSearched' => $this->searchService->getHasSearched(),
+            /** @deprecated The option hasSearched is deprecated no, use resultSet.hasSearched in the templates instead, can be moved in EXT:solr 9.0.0 */
+            'hasSearched' => $searchResultSet->getHasSearched(),
             'additionalFilters' => $this->searchService->getAdditionalFilters(),
             'resultSet' => $searchResultSet
         ];

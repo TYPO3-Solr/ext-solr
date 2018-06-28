@@ -65,6 +65,7 @@ class Search
     /**
      * Flag for marking a search
      *
+     * @deprecated will be removed in EXT:solr 9.0.0 use SearchResultSet::getHasSearched instead
      * @var bool
      */
     protected $hasSearched = false;
@@ -184,6 +185,8 @@ class Search
         }
 
         $this->response = $response;
+
+        //@todo can be dropped in EXT:solr 9.0.0
         $this->hasSearched = true;
 
         return $this->response;
@@ -222,12 +225,15 @@ class Search
     }
 
     /**
-     * checks whether a search has been executed
+     * checks whether a search has been executed.
      *
+     * @deprecated Since 8.1.0 will be removed in 9.0.0. This method is deprecated. Use SearchResultSet::getHasSearched instead.
      * @return bool    TRUE if there was a search, FALSE otherwise (if the user just visited the search page f.e.)
      */
     public function hasSearched()
     {
+        trigger_error('Call deprecated method Search::hasSearched, deprecated since 8.1.0 will be removed in 9.0.0 use SearchResultSet::getHasSearched instead', E_USER_DEPRECATED);
+
         return $this->hasSearched;
     }
 

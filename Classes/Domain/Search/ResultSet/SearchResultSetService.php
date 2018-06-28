@@ -122,10 +122,13 @@ class SearchResultSetService
     }
 
     /**
+     * @deprecated Since 8.1.0 will be removed in 9.0.0. This method is deprecated. Use SearchResultSet::getHasSearched instead.
      * @return bool
      */
     public function getHasSearched()
     {
+        trigger_error('Call deprecated method SearchResultSetService::getHasSearched, deprecated since 8.1.0 will be removed in 9.0.0 use SearchResultSet::getHasSearched instead', E_USER_DEPRECATED);
+
         return $this->search->hasSearched();
     }
 
