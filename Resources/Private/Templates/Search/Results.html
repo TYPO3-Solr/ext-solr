@@ -14,7 +14,7 @@
 
 			<div class="tx-solr-search-form col-lg-2 hidden-xs">&nbsp;</div>
 			<div class="col-lg-2 hidden-xs">
-				<f:if condition="{hasSearched}">
+				<f:if condition="{resultSet.hasSearched}">
 					<f:if condition="{resultSet.usedSearchRequest.contextTypoScriptConfiguration.searchSorting}">
 						<f:render partial="Result/Sorting" section="Sorting" arguments="{resultSet:resultSet}" />
 					</f:if>
@@ -87,7 +87,7 @@
 
 		<div class="row">
 			<div class="col-md-12">
-				<f:if condition="{hasSearched}">
+				<f:if condition="{resultSet.hasSearched}">
 					<s:widget.resultPaginate resultSet="{resultSet}">
 						<div data-start="{pagination.resultCountStart}" class="results-list list-group">
 							<f:for each="{documents}" as="document">
@@ -104,7 +104,7 @@
 
 <f:section name="extra">
 	<div id="tx-solr-search-functions">
-		<f:if condition="{hasSearched}">
+		<f:if condition="{resultSet.hasSearched}">
 			<f:if condition="{resultSet.usedSearchRequest.contextTypoScriptConfiguration.searchFaceting}">
 				<f:render partial="Result/Facets" section="Facets" arguments="{resultSet:resultSet}" />
 			</f:if>
