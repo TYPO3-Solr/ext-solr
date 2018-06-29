@@ -14,7 +14,7 @@
 		solr
 
 	:Version:
-		8.1.0-dev
+		8.1.0
 
 	:Language:
 		en
