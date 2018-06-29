@@ -23,3 +23,5 @@ Releases
 	:glob:
 
 	solr-release-7-0
+	solr-release-8-0
+	solr-release-8-1
