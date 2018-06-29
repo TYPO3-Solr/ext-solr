@@ -192,7 +192,7 @@ class SearchResultSetService
             return $resultSet;
         }
 
-        $query = $this->queryBuilder->buildSearchQuery($searchRequest->getRawUserQuery(), (int)$searchRequest->getResultsPerPage());
+        $query = $this->queryBuilder->buildSearchQuery($searchRequest->getRawUserQuery(), (int)$searchRequest->getResultsPerPage(), $searchRequest->getAdditionalFilters());
         $this->initializeRegisteredSearchComponents($query, $searchRequest);
         $resultSet->setUsedQuery($query);
 

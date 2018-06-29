@@ -90,6 +90,23 @@ class Filters implements ParameterBuilder
     }
 
     /**
+     * Add's multiple filters to the filter collection.
+     *
+     * @param array $filterArray
+     * @return Filters
+     */
+    public function addMultiple($filterArray)
+    {
+        foreach($filterArray as $key => $value) {
+            if (!$this->hasWithName($key)) {
+                $this->add($value, $key);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
      * @param string $name
      * @return bool
      */

@@ -446,6 +446,19 @@ class Query
     }
 
     /**
+     * @param Filters $filtersToAdd
+     * @return Filters
+     */
+    public function addFilters(Filters $filtersToAdd)
+    {
+        foreach($filtersToAdd->getValues() as $key => $value) {
+            $this->getFilters()->add($value, $key);
+        }
+
+        return $this->filters;
+    }
+
+    /**
      * @param ReturnFields $returnFields
      */
     public function setReturnFields(ReturnFields $returnFields)
