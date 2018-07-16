@@ -56,12 +56,19 @@ class DateRangeUrlDecoder implements FacetUrlDecoderInterface
     {
         list($dateRangeStart, $dateRangeEnd) = explode(self::DELIMITER, $dateRange);
 
-        $dateRangeEnd .= '59'; // adding 59 seconds
-
         $formatService = GeneralUtility::makeInstance(FormatService::class);
-        $dateRangeFilter = '[' . $formatService->timestampToIso(strtotime($dateRangeStart));
-        $dateRangeFilter .= ' TO ';
-        $dateRangeFilter .= $formatService->timestampToIso(strtotime($dateRangeEnd)) . ']';
+        $fromPart = '*';
+        if($dateRangeStart !== ''){
+            $fromPart = $formatService->timestampToIso(strtotime($dateRangeStart));
+        }
+
+        $toPart = '*';
+        if($dateRangeEnd !== ''){
+            $dateRangeEnd .= '59'; // adding 59 seconds
+            $toPart = $formatService->timestampToIso(strtotime($dateRangeEnd));
+        }
+
+        $dateRangeFilter = '[' . $fromPart . ' TO ' . $toPart . ']';
         return $dateRangeFilter;
     }
 }
