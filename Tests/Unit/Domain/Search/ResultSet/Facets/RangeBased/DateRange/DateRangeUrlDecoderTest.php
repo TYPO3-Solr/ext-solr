@@ -56,4 +56,24 @@ class DateRangeUrlEncoderTest extends UnitTest
         $actual = $this->rangeParser->decode('201001010000-201001312359');
         $this->assertEquals($expected, $actual);
     }
+    
+    /**
+     * @test
+     */
+    public function canParseMinOpenDateRangeQuery()
+    {
+        $expected = '[* TO 2010-01-31T23:59:59Z]';
+        $actual = $this->rangeParser->decode('-201001312359');
+        $this->assertEquals($expected, $actual);
+    }
+    
+    /**
+     * @test
+     */
+    public function canParseMaxOpenDateRangeQuery()
+    {
+        $expected = '[2010-01-01T00:00:00Z TO *]';
+        $actual = $this->rangeParser->decode('201001010000-');
+        $this->assertEquals($expected, $actual);
+    }
 }
