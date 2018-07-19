@@ -158,6 +158,7 @@ class HtmlContentExtractor
 
         $content = str_replace(["\t", "\n", "\r", '&nbsp;'], ' ', $content);
         $content = self::stripUnicodeRanges($content);
+        $content = preg_replace('/\s{2,}/', ' ', $content);
         $content = trim($content);
 
         return $content;
