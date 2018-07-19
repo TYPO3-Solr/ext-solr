@@ -29,6 +29,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\QueryFields;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\Parser\ResultParserRegistry;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResult;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResultCollection;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequestAware;
@@ -119,17 +120,6 @@ class SearchResultSetService
     {
         $this->isSolrAvailable = $this->search->ping($useCache);
         return $this->isSolrAvailable;
-    }
-
-    /**
-     * @deprecated Since 8.1.0 will be removed in 9.0.0. This method is deprecated. Use SearchResultSet::getHasSearched instead.
-     * @return bool
-     */
-    public function getHasSearched()
-    {
-        trigger_error('Call deprecated method SearchResultSetService::getHasSearched, deprecated since 8.1.0 will be removed in 9.0.0 use SearchResultSet::getHasSearched instead', E_USER_DEPRECATED);
-
-        return $this->search->hasSearched();
     }
 
     /**

@@ -28,17 +28,13 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\FacetCollection;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResult;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResultCollection;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Sorting\Sorting;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Sorting\SortingCollection;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Spellchecking\Suggestion;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Search;
-
-//@deprecated
-//@todo this alias can be removed when the old class was dropped
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResult as NewSearchResult;
-
 
 /**
  * The SearchResultSet is used to provided access to the \Apache_Solr_Response and
@@ -364,7 +360,7 @@ class SearchResultSet
     /**
      * @param SearchResult $searchResult
      */
-    public function addSearchResult(NewSearchResult $searchResult)
+    public function addSearchResult(SearchResult $searchResult)
     {
         $this->searchResults[] = $searchResult;
     }

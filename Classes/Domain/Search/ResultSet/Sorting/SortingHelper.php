@@ -49,30 +49,6 @@ class SortingHelper {
     }
 
     /**
-     * Gets a list of configured sorting fields.
-     *
-     * @deprecated Since 8.1 will be removed in EXT:solr 9.0
-     * @return array Array of (resolved) sorting field names.
-     */
-    public function getSortFields()
-    {
-        trigger_error('SortingHelper::getSortFields is deprecated please use the sorting of the SearchResultSet now or retrieve it on your own.', E_USER_DEPRECATED);
-        $sortFields = [];
-        $contentObject = GeneralUtility::makeInstance(ContentObjectRenderer::class);
-
-        foreach ($this->configuration as $optionName => $optionConfiguration) {
-            $fieldName = $contentObject->stdWrap(
-                $optionConfiguration['field'],
-                $optionConfiguration['field.']
-            );
-
-            $sortFields[] = $fieldName;
-        }
-
-        return $sortFields;
-    }
-
-    /**
      * Takes the tx_solr[sort] URL parameter containing the option names and
      * directions to sort by and resolves it to the actual sort fields and
      * directions as configured through TypoScript. Makes sure that only
@@ -102,41 +78,5 @@ class SortingHelper {
         }
 
         return implode(', ', $sortFields);
-    }
-
-    /**
-     * Gets the sorting options with resolved field names in case stdWrap was
-     * used to define them.
-     *
-     * @deprecated Since 8.1 will be removed in EXT:solr 9.0
-     * @return array The sorting options with resolved field names.
-     */
-    public function getSortOptions()
-    {
-        trigger_error('SortingHelper::getSortOptions is deprecated please use the sorting of the SearchResultSet now or retrieve it on your own.', E_USER_DEPRECATED);
-
-        $sortOptions = [];
-        $contentObject = GeneralUtility::makeInstance(ContentObjectRenderer::class);
-
-        foreach ($this->configuration as $optionName => $optionConfiguration) {
-            $optionField = $contentObject->stdWrap(
-                $optionConfiguration['field'],
-                $optionConfiguration['field.']
-            );
-
-            $optionLabel = $contentObject->stdWrap(
-                $optionConfiguration['label'],
-                $optionConfiguration['label.']
-            );
-
-            $optionName = substr($optionName, 0, -1);
-            $sortOptions[$optionName] = [
-                'field' => $optionField,
-                'label' => $optionLabel,
-                'defaultOrder' => $optionConfiguration['defaultOrder']
-            ];
-        }
-
-        return $sortOptions;
     }
 }

@@ -63,14 +63,6 @@ class Search
     protected $response = null;
 
     /**
-     * Flag for marking a search
-     *
-     * @deprecated will be removed in EXT:solr 9.0.0 use SearchResultSet::getHasSearched instead
-     * @var bool
-     */
-    protected $hasSearched = false;
-
-    /**
      * @var TypoScriptConfiguration
      */
     protected $configuration;
@@ -186,9 +178,6 @@ class Search
 
         $this->response = $response;
 
-        //@todo can be dropped in EXT:solr 9.0.0
-        $this->hasSearched = true;
-
         return $this->response;
     }
 
@@ -222,19 +211,6 @@ class Search
         }
 
         return $solrAvailable;
-    }
-
-    /**
-     * checks whether a search has been executed.
-     *
-     * @deprecated Since 8.1.0 will be removed in 9.0.0. This method is deprecated. Use SearchResultSet::getHasSearched instead.
-     * @return bool    TRUE if there was a search, FALSE otherwise (if the user just visited the search page f.e.)
-     */
-    public function hasSearched()
-    {
-        trigger_error('Call deprecated method Search::hasSearched, deprecated since 8.1.0 will be removed in 9.0.0 use SearchResultSet::getHasSearched instead', E_USER_DEPRECATED);
-
-        return $this->hasSearched;
     }
 
     /**
@@ -273,34 +249,6 @@ class Search
     }
 
     /**
-     * Returns all results documents raw. Use with caution!
-     *
-     * @deprecated Since 8.0.0 will be removed in 9.0.0. Use $resultSet->getSearchResults() this will be initialized by the parser depending on the settings
-     * @return \Apache_Solr_Document[]
-     */
-    public function getResultDocumentsRaw()
-    {
-        trigger_error('Call deprecated method Search::getResultDocumentsRaw, deprecated since 8.0.0 will be removed in 9.0.0', E_USER_DEPRECATED);
-        return $this->getResponseBody()->docs;
-    }
-
-    /**
-     * Returns all result documents but applies htmlspecialchars() on all fields retrieved
-     * from solr except the configured fields in plugin.tx_solr.search.trustedFields
-     *
-     * @deprecated Since 8.0.0 will be removed in 9.0.0. Use DocumentEscapeService or
-     * $resultSet->getSearchResults() this will be initialized by the parser depending on the settings.
-     * @return \Apache_Solr_Document[]
-     */
-    public function getResultDocumentsEscaped()
-    {
-        trigger_error('Call deprecated method Search::getResultDocumentsEscaped, deprecated since 8.0.0 will be removed in 9.0.0', E_USER_DEPRECATED);
-        /** @var $escapeService DocumentEscapeService */
-        $escapeService = GeneralUtility::makeInstance(DocumentEscapeService::class, /** @scrutinizer ignore-type */ $this->configuration);
-        return $escapeService->applyHtmlSpecialCharsOnAllFields($this->getResponseBody()->docs);
-    }
-
-    /**
      * Gets the time Solr took to execute the query and return the result.
      *
      * @return int Query time in milliseconds
@@ -318,115 +266,6 @@ class Search
     public function getResultsPerPage()
     {
         return $this->getResponseHeader()->params->rows;
-    }
-
-    /**
-     * Gets all facets with their fields, options, and counts.
-     *
-     * @deprecated Since 8.0.0 will be removed in 9.0.0. This method is deprecated. Use SearchResultSet::getFacets instead.
-     * The parsing of facets count's is now done in the parser of the corresponding facet type
-     * @see \ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\
-     *
-     * @return array
-     */
-    public function getFacetCounts()
-    {
-        trigger_error('Call deprecated method Search::getFacetCounts, deprecated since 8.0.0 will be removed in 9.0.0', E_USER_DEPRECATED);
-        static $facetCountsModified = false;
-        static $facetCounts = null;
-
-        $unmodifiedFacetCounts = $this->response->facet_counts;
-
-        if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyFacets'])) {
-            if (!$facetCountsModified) {
-                $facetCounts = $unmodifiedFacetCounts;
-
-                foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyFacets'] as $classReference) {
-                    $facetsModifier = GeneralUtility::makeInstance($classReference);
-
-                    if ($facetsModifier instanceof FacetsModifier) {
-                        $facetCounts = $facetsModifier->modifyFacets($facetCounts);
-                        $facetCountsModified = true;
-                    } else {
-                        throw new \UnexpectedValueException(
-                            get_class($facetsModifier) . ' must implement interface ' . FacetsModifier::class,
-                            1310387526
-                        );
-                    }
-                }
-            }
-        } else {
-            $facetCounts = $unmodifiedFacetCounts;
-        }
-
-        return $facetCounts;
-    }
-
-    /**
-     * @deprecated Since 8.0.0 will be removed in 9.0.0. This method is deprecated. Use SearchResultSet::getFacets instead.
-     * The parsing of the "options" is now done in the facet parser of the OptionsFacets
-     * @see \ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\OptionsFacetParser
-     *
-     * @param $facetField
-     * @return array|null
-     */
-    public function getFacetFieldOptions($facetField)
-    {
-        trigger_error('Call deprecated method Search::getFacetFieldOptions, deprecated since 8.0.0 will be removed in 9.0.0', E_USER_DEPRECATED);
-        $facetOptions = null;
-
-        if (property_exists($this->getFacetCounts()->facet_fields,
-            $facetField)) {
-            $facetOptions = get_object_vars($this->getFacetCounts()->facet_fields->$facetField);
-        }
-
-        return $facetOptions;
-    }
-
-    /**
-     * @deprecated Since 8.0.0 will be removed in 9.0.0. This method is deprecated. Use SearchResultSet::getFacets instead.
-     * The parsing of the "query options" is now done in the facet parser of the QueryFacets
-     * @see \ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\QueryGroup\QueryGroupFacetParser
-     *
-     * @param string $facetField
-     * @return array
-     */
-    public function getFacetQueryOptions($facetField)
-    {
-        trigger_error('Call deprecated method Search::getFacetQueryOptions, deprecated since 8.0.0 will be removed in 9.0.0', E_USER_DEPRECATED);
-
-        $options = [];
-
-        $facetQueries = get_object_vars($this->getFacetCounts()->facet_queries);
-        foreach ($facetQueries as $facetQuery => $numberOfResults) {
-            // remove tags from the facet.query response, for facet.field
-            // and facet.range Solr does that on its own automatically
-            $facetQuery = preg_replace('/^\{!ex=[^\}]*\}(.*)/', '\\1',
-                $facetQuery);
-
-            if (GeneralUtility::isFirstPartOfStr($facetQuery, $facetField)) {
-                $options[$facetQuery] = $numberOfResults;
-            }
-        }
-
-        // filter out queries with no results
-        $options = array_filter($options);
-
-        return $options;
-    }
-
-    /**
-     * @deprecated Since 8.0.0 will be removed in 9.0.0. This method is deprecated. Use SearchResultSet::getFacets instead.
-     * The parsing of the range options is now done in the facet parser of the RangeFacets
-     * @see \ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\AbstractRangeFacetParser
-     *
-     * @param string $rangeFacetField
-     * @return array
-     */
-    public function getFacetRangeOptions($rangeFacetField)
-    {
-        trigger_error('Call deprecated method Search::getFacetRangeOptions, deprecated since 8.0.0 will be removed in 9.0.0', E_USER_DEPRECATED);
-        return get_object_vars($this->getFacetCounts()->facet_ranges->$rangeFacetField);
     }
 
     public function getNumberOfResults()
@@ -463,30 +302,5 @@ class Search
         }
 
         return $highlightedContent;
-    }
-
-    /**
-     * @deprecated Since 8.0.0 will be removed in 9.0.0. This method is deprecated. Use SearchResultSet::getSpellcheckingSuggestions
-     * and the domain model instead
-     * @return array|bool
-     */
-    public function getSpellcheckingSuggestions()
-    {
-        trigger_error('Call deprecated method Search::getSpellcheckingSuggestions, deprecated since 8.0.0 will be removed in 9.0.0', E_USER_DEPRECATED);
-
-        $spellcheckingSuggestions = false;
-
-        $suggestions = (array)$this->response->spellcheck->suggestions;
-
-        if (!empty($suggestions)) {
-            $spellcheckingSuggestions = $suggestions;
-
-            if (isset($this->response->spellcheck->collations)) {
-                $collections = (array)$this->response->spellcheck->collations;
-                $spellcheckingSuggestions['collation'] = $collections['collation'];
-            }
-        }
-
-        return $spellcheckingSuggestions;
     }
 }

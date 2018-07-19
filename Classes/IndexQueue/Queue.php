@@ -144,41 +144,6 @@ class Queue
     }
 
     /**
-     * Truncate and rebuild the tx_solr_indexqueue_item table. This is the most
-     * complete way to force reindexing, or to build the Index Queue for the
-     * first time. The Index Queue initialization is site-specific.
-     *
-     * @deprecated Deprecated sine 8.1.0 will be removed in 9.0.0 please use QueueInitializationService::initializeBySiteAndIndexConfiguration now
-     * @param Site $site The site to initialize
-     * @param string $indexingConfigurationName Name of a specific
-     *      indexing configuration
-     * @return array An array of booleans, each representing whether the
-     *      initialization for an indexing configuration was successful
-     */
-    public function initialize(Site $site, $indexingConfigurationName = '')
-    {
-        trigger_error('Queue::initialize is deprecated please use QueueInitializationService::initializeBySiteAndIndexConfiguration now. Deprecated since 8.1.0 will be removed in 9.0.0', E_USER_DEPRECATED);
-        // for backwards compatibility we convert '*' to the wildcard argument
-        $indexingConfigurationName = $indexingConfigurationName === '' ? '*' : $indexingConfigurationName;
-        return $this->queueInitializationService->initializeBySiteAndIndexConfiguration($site, $indexingConfigurationName);
-    }
-
-    /**
-     * Initializes a set index configurations for a given site.
-     *
-     * @deprecated Deprecated sine 8.1.0 will be removed in 9.0.0 please use QueueInitializationService::initializeBySiteAndIndexConfigurations now
-     * @param Site $site
-     * @param array $indexingConfigurationNames
-     * @return array An array of booleans, each representing whether the
-     *      initialization for an indexing configuration was successful
-     */
-    public function initializeIndexingConfigurations(Site $site, array $indexingConfigurationNames)
-    {
-        trigger_error('Queue::initializeIndexingConfigurations is deprecated please use QueueInitializationService::initializeBySiteAndIndexConfigurations now. Deprecated since 8.1.0 will be removed in 9.0.0', E_USER_DEPRECATED);
-        return $this->queueInitializationService->initializeBySiteAndIndexConfigurations($site, $indexingConfigurationNames);
-    }
-
-    /**
      * Marks an item as needing (re)indexing.
      *
      * Like with Solr itself, there's no add method, just a simple update method
