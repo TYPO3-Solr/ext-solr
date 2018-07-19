@@ -381,9 +381,9 @@ lib.solr_extbase_bootstrap {
 	userFunc = TYPO3\CMS\Extbase\Core\Bootstrap->run
 	vendorName = ApacheSolrForTypo3
 	extensionName = Solr
-	settings =< plugin.tx_solr.settings
-	persistence =< plugin.tx_solr.persistence
-	view =< plugin.tx_solr.view
+	settings < plugin.tx_solr.settings
+	persistence < plugin.tx_solr.persistence
+	view < plugin.tx_solr.view
 }
 
 plugin.tx_solr_PiResults_Results < lib.solr_extbase_bootstrap
