@@ -295,7 +295,9 @@ class Site
     public function getSysLanguageMode($languageUid = 0)
     {
         if (is_null($this->sysLanguageMode)) {
-            Util::initializeTsfe($this->getRootPageId(), $languageUid);
+            if (!$GLOBALS['TSFE']) {
+                Util::initializeTsfe($this->getRootPageId(), $languageUid);
+            }
             $this->sysLanguageMode = $GLOBALS['TSFE']->sys_language_mode;
         }
 
