@@ -50,4 +50,35 @@ class HtmlContentExtractorTest extends UnitTest
         $this->assertSame($expectedTagContent, $tagContent, 'Extractor did not retrieve expected tag content');
     }
 
+    public function getIndexableContentDataProvider()
+    {
+        return [
+            'unifyWhitespaces' => [
+                'websiteContent' => $this->getFixtureContentByName('fixture2.html'),
+                'exptectedIndexableContent' => 'Title Level 1 headline Hello World Level 2 headline Level 3 headline'
+            ],
+            'unifyTabs' => [
+                'websiteContent' => "Test\t\tTest",
+                'exptectedIndexableContent' => 'Test Test'
+            ],
+            'removeScriptTags' => [
+                'websiteContent' => '<script>foo</script>Test',
+                'exptectedIndexableContent' => 'Test'
+            ],
+            'decodeEntities' => [
+                'websiteContent' => 'B&auml;hm',
+                'exptectedIndexableContent' => 'Bähm'
+            ]
+        ];
+    }
+
+    /**
+     * @dataProvider getIndexableContentDataProvider
+     * @test
+     */
+    public function canUnifyWhitespacesInIndexableContent($websiteContent, $expectedIndexableContent)
+    {
+        $extractor = new HtmlContentExtractor($websiteContent);
+        $this->assertSame($expectedIndexableContent, $extractor->getIndexableContent(), 'Unexpected indexable content');
+    }
 }
