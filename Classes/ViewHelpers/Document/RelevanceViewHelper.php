@@ -38,6 +38,7 @@ class RelevanceViewHelper extends AbstractSolrFrontendViewHelper
         parent::initializeArguments();
         $this->registerArgument('resultSet', SearchResultSet::class, 'The context searchResultSet', true);
         $this->registerArgument('document', \Apache_Solr_Document::class, 'The document to highlight', true);
+        $this->registerArgument('maximumScore', 'float', 'The maximum score that should be used for percentage calculation, if nothing is passed the maximum from the resultSet is used', false);
     }
 
     /**
@@ -54,7 +55,7 @@ class RelevanceViewHelper extends AbstractSolrFrontendViewHelper
             /** @var $resultSet SearchResultSet */
         $resultSet = $arguments['resultSet'];
 
-        $maximumScore = $document->__solr_grouping_groupMaximumScore ?: $resultSet->getUsedSearch()->getMaximumResultScore();
+        $maximumScore = $arguments['maximumScore'] ?? $resultSet->getMaximumScore();
         $content = 0;
 
         if ($maximumScore <= 0) {

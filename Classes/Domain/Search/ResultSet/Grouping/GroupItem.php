@@ -54,7 +54,7 @@ class GroupItem
     /**
      * @var float
      */
-    protected $maxScore = 0;
+    protected $maximumScore = 0;
 
     /**
      * @var SearchResultCollection
@@ -79,7 +79,7 @@ class GroupItem
         $this->groupValue = $groupValue;
         $this->numFound = $numFound;
         $this->start = $start;
-        $this->maxScore = $maxScore;
+        $this->maximumScore = $maxScore;
         $this->searchResults = new SearchResultCollection();
     }
 
@@ -118,10 +118,23 @@ class GroupItem
      *
      * @return float
      */
+    public function getMaximumScore()
+    {
+        return $this->maximumScore;
+    }
+
+    /**
+     * Get maxScore
+     *
+     * @deprecated Deprecated since EXT:solr 9.0.0 will be removed in EXT:solr 10.0.0
+     * @return float
+     */
     public function getMaxScore()
     {
-        return $this->maxScore;
+        trigger_error('GroupItem::getMaxScore is deprecated please use GroupItem::getMaximumScore now', E_USER_DEPRECATED);
+        return $this->getMaximumScore();
     }
+
 
     /**
      * @return SearchResultCollection

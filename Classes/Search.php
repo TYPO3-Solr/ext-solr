@@ -283,8 +283,13 @@ class Search
         return $this->response->response->start;
     }
 
+    /**
+     * @deprecated Since 9.0.0 will be removed in 10.0.0. Please use SearchResultSet::getMaxScore now.
+     * @return mixed
+     */
     public function getMaximumResultScore()
     {
+        trigger_error('Search::getMaximumResultScore is deprecated please use SearchResultSet::getMaximumScore now', E_USER_DEPRECATED);
         return $this->response->response->maxScore;
     }
 

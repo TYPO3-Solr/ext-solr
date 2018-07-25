@@ -58,7 +58,7 @@ class DefaultParserTest extends UnitTest
      */
     public function parseWillCreateResultCollectionFromSolrResponse()
     {
-        $fakeResultSet = $this->getDumbMock(SearchResultSet::class);
+        $fakeResultSet = $this->getMockBuilder(SearchResultSet::class)->setMethods(['getResponse'])->getMock();
 
         $fakedSolrResponse = $this->getFixtureContentByName('fakeResponse.json');
         $fakeHttpResponse = $this->getDumbMock(\Apache_Solr_HttpTransport_Response::class);
@@ -66,8 +66,25 @@ class DefaultParserTest extends UnitTest
         $fakeResponse = new \Apache_Solr_Response($fakeHttpResponse);
 
         $fakeResultSet->expects($this->once())->method('getResponse')->will($this->returnValue($fakeResponse));
-        $collection = $this->parser->parse($fakeResultSet, true);
-        $this->assertCount(3, $collection);
+        $parsedResultSet = $this->parser->parse($fakeResultSet, true);
+        $this->assertCount(3, $parsedResultSet->getSearchResults());
+    }
+
+    /**
+     * @test
+     */
+    public function parseWillSetMaximumScore()
+    {
+        $fakeResultSet = $this->getMockBuilder(SearchResultSet::class)->setMethods(['getResponse'])->getMock();
+
+        $fakedSolrResponse = $this->getFixtureContentByName('fakeResponse.json');
+        $fakeHttpResponse = $this->getDumbMock(\Apache_Solr_HttpTransport_Response::class);
+        $fakeHttpResponse->expects($this->once())->method('getBody')->will($this->returnValue($fakedSolrResponse));
+        $fakeResponse = new \Apache_Solr_Response($fakeHttpResponse);
+
+        $fakeResultSet->expects($this->once())->method('getResponse')->will($this->returnValue($fakeResponse));
+        $parsedResultSet = $this->parser->parse($fakeResultSet, true);
+        $this->assertSame(3.1, $parsedResultSet->getMaximumScore());
     }
 
     /**

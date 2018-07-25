@@ -62,7 +62,7 @@ abstract class AbstractResultParser {
     /**
      * @param SearchResultSet $resultSet
      * @param bool $useRawDocuments
-     * @return SearchResultCollection
+     * @return SearchResultSet
      */
     abstract public function parse(SearchResultSet $resultSet, bool $useRawDocuments = true);
 

@@ -91,6 +91,11 @@ class SearchResultSet
     protected $allResultCount = 0;
 
     /**
+     * @var float
+     */
+    protected $maximumScore = 0.0;
+
+    /**
      * @var Suggestion[]
      */
     protected $spellCheckingSuggestions = [];
@@ -197,6 +202,22 @@ class SearchResultSet
     public function addFacet(AbstractFacet $facet)
     {
         $this->facets->addFacet($facet);
+    }
+
+    /**
+     * @return float
+     */
+    public function getMaximumScore()
+    {
+        return $this->maximumScore;
+    }
+
+    /**
+     * @param float $maximumScore
+     */
+    public function setMaximumScore($maximumScore)
+    {
+        $this->maximumScore = $maximumScore;
     }
 
     /**
