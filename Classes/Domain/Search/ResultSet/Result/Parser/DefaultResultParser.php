@@ -40,7 +40,7 @@ class DefaultResultParser extends AbstractResultParser {
     /**
      * @param SearchResultSet $resultSet
      * @param bool $useRawDocuments
-     * @return SearchResultCollection|array|object
+     * @return SearchResultSet
      */
     public function parse(SearchResultSet $resultSet, bool $useRawDocuments = true)
     {
@@ -60,7 +60,10 @@ class DefaultResultParser extends AbstractResultParser {
             $searchResults[] = $searchResultObject;
         }
 
-        return $searchResults;
+        $resultSet->setSearchResults($searchResults);
+        $resultSet->setMaximumScore($parsedData->response->maxScore ?? 0.0);
+
+        return $resultSet;
     }
 
     /**

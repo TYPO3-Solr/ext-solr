@@ -59,9 +59,9 @@ class GroupItemTest extends UnitTest
     /**
      * @test
      */
-    public function canGetMaxScore()
+    public function canGetMaximumScore()
     {
-        $this->assertSame(99, $this->groupItem->getMaxScore(), 'Unexpected maxScore');
+        $this->assertSame(99, $this->groupItem->getMaximumScore(), 'Unexpected maximumScore');
     }
 
     /**

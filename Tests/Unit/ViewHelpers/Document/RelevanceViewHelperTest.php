@@ -42,10 +42,8 @@ class RelevanceViewHelperTest extends UnitTest
      */
     public function canCalculateRelevance()
     {
-        $searchMock = $this->getDumbMock(Search::class);
-        $searchMock->expects($this->once())->method('getMaximumResultScore')->will($this->returnValue(5.5));
         $resultSetMock = $this->getDumbMock(SearchResultSet::class);
-        $resultSetMock->expects($this->any())->method('getUsedSearch')->will($this->returnValue($searchMock));
+        $resultSetMock->expects($this->any())->method('getMaximumScore')->will($this->returnValue(5.5));
 
         $documentMock = $this->getDumbMock(SearchResult::class);
         $documentMock->expects($this->once())->method('getScore')->will($this->returnValue(0.55));
@@ -58,5 +56,27 @@ class RelevanceViewHelperTest extends UnitTest
         $score = RelevanceViewHelper::renderStatic($arguments, function () {}, $renderingContextMock);
 
         $this->assertEquals(10.0, $score, 'Unexpected score');
+    }
+
+    /**
+     * @test
+     */
+    public function canCalculateRelevanceFromPassedMaximumScore()
+    {
+        $resultSetMock = $this->getDumbMock(SearchResultSet::class);
+        $resultSetMock->expects($this->never())->method('getMaximumScore');
+
+        $documentMock = $this->getDumbMock(SearchResult::class);
+        $documentMock->expects($this->once())->method('getScore')->will($this->returnValue(0.55));
+
+        $arguments = [
+            'resultSet' => $resultSetMock,
+            'document' => $documentMock,
+            'maximumScore' => 11
+        ];
+        $renderingContextMock = $this->getDumbMock(RenderingContextInterface::class);
+        $score = RelevanceViewHelper::renderStatic($arguments, function () {}, $renderingContextMock);
+
+        $this->assertEquals(5.0, $score, 'Unexpected score');
     }
 }

@@ -198,7 +198,9 @@ class SearchResultSetService
 
         $resultSet->setHasSearched(true);
         $resultSet->setResponse($response);
-        $resultSet->setSearchResults($this->getParsedSearchResults($resultSet));
+
+        $this->getParsedSearchResults($resultSet);
+
         $resultSet->setUsedAdditionalFilters($this->queryBuilder->getAdditionalFilters());
 
         /** @var $variantsProcessor VariantsProcessor */
@@ -222,15 +224,13 @@ class SearchResultSetService
      * Uses the configured parser and retrieves the parsed search resutls.
      *
      * @param SearchResultSet $resultSet
-     * @return Result\SearchResultCollection
      */
-    protected function getParsedSearchResults($resultSet): SearchResultCollection
+    protected function getParsedSearchResults($resultSet)
     {
         /** @var ResultParserRegistry $parserRegistry */
         $parserRegistry = GeneralUtility::makeInstance(ResultParserRegistry::class, /** @scrutinizer ignore-type */ $this->typoScriptConfiguration);
         $useRawDocuments = (bool)$this->typoScriptConfiguration->getValueByPathOrDefaultValue('plugin.tx_solr.features.useRawDocuments', false);
-        $searchResults = $parserRegistry->getParser($resultSet)->parse($resultSet, $useRawDocuments);
-        return $searchResults;
+        $parserRegistry->getParser($resultSet)->parse($resultSet, $useRawDocuments);
     }
 
     /**

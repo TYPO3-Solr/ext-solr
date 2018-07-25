@@ -53,7 +53,7 @@
     "response": {
         "numFound": 8,
         "start": 5,
-        "maxScore": 1.0,
+        "maxScore": 3.1,
         "docs": [
             {
                 "id": "23c51a0d5cf548afecc043a7068902e8f82a22a0/pages/6/0/0/0",
@@ -79,7 +79,7 @@
                 "url": "http:///.Build/bin/phpunit",
                 "_version_": 1527228677005246464,
                 "indexed": "2016-02-26T09:26:04Z",
-                "score": 1.0,
+                "score": 3.1,
                 "isElevated": false
             },
             {
