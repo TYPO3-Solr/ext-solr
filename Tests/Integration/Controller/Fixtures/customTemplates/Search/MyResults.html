@@ -28,9 +28,9 @@
 			</f:then>
 		</f:if>
 
-		<f:if condition="{resultSet.usedSearch.numberOfResults}">
+		<f:if condition="{resultSet.allResultCount}">
 			<span class="result-found">
-				<s:translate key="results_found" arguments="{0:resultSet.usedSearch.numberOfResults, 1: resultSet.usedSearch.queryTime}">Found %d results in %d seconds</s:translate>
+				<s:translate key="results_found" arguments="{0:resultSet.allResultCount, 1: resultSet.usedSearch.queryTime}">Found %d results in %d seconds</s:translate>
 			</span>
 
 			<span class="result-range">
@@ -41,7 +41,7 @@
 		</f:if>
 
 		<f:if condition="{resultSet.hasSearched}">
-			<f:if condition="{resultSet.usedSearch.numberOfResults}">
+			<f:if condition="{resultSet.allResultCount}">
 				<f:render partial="Result/PerPage" section="PerPage" arguments="{resultSet: resultSet}" />
 			</f:if>
 			<s:widget.resultPaginate resultSet="{resultSet}">

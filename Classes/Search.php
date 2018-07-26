@@ -268,8 +268,13 @@ class Search
         return $this->getResponseHeader()->params->rows;
     }
 
+    /**
+     * @deprecated Since 9.0.0 will be removed in 10.0.0. Please use SearchResultSet::getAllResultCount now
+     * @return int
+     */
     public function getNumberOfResults()
     {
+        trigger_error('Search::getNumberOfResults is deprecated please use SearchResultSet::getAllResultCount now', E_USER_DEPRECATED);
         return $this->response->response->numFound;
     }
 

@@ -79,28 +79,12 @@ class ResultSetReconstitutionProcessor implements SearchResultSetProcessor
             return $resultSet;
         }
 
-        $resultSet = $this->parseResultCount($resultSet);
         $resultSet = $this->parseSpellCheckingResponseIntoObjects($resultSet);
         $resultSet = $this->parseSortingIntoObjects($resultSet);
 
         // here we can reconstitute other domain objects from the solr response
         $resultSet = $this->parseFacetsIntoObjects($resultSet);
 
-        return $resultSet;
-    }
-
-    /**
-     * @param SearchResultSet $resultSet
-     * @return SearchResultSet
-     */
-    protected function parseResultCount(SearchResultSet $resultSet)
-    {
-        $response = $resultSet->getResponse();
-        $solrResponse = $response->__get('response');
-        if (!isset($solrResponse->numFound)) {
-            return $resultSet;
-        }
-        $resultSet->setAllResultCount($solrResponse->numFound);
         return $resultSet;
     }
 

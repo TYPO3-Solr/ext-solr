@@ -49,7 +49,7 @@ class GroupItemPaginateController extends AbstractPaginateWidgetController
         $this->groupItem = $this->widgetConfiguration['groupItem'];
         $this->configuration['itemsPerPage'] = $this->getItemsPerPage();
 
-        $this->numberOfPages = (int)ceil($this->groupItem->getNumFound() / $this->configuration['itemsPerPage']);
+        $this->numberOfPages = (int)ceil($this->groupItem->getAllResultCount() / $this->configuration['itemsPerPage']);
     }
 
     /**

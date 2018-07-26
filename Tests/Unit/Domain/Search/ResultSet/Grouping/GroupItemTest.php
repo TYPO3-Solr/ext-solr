@@ -77,7 +77,7 @@ class GroupItemTest extends UnitTest
      */
     public function canGetNumFound()
     {
-        $this->assertSame(12, $this->groupItem->getNumFound(), 'Unexpected numFound');
+        $this->assertSame(12, $this->groupItem->getAllResultCount(), 'Unexpected numFound');
     }
 
     /**
