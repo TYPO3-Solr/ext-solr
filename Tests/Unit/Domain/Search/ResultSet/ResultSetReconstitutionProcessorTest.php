@@ -1053,21 +1053,6 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
     /**
      * @test
      */
-    public function returnsResultSetWithResultCount()
-    {
-        $searchResultSet = $this->initializeSearchResultSetFromFakeResponse('fake_solr_response_with_query_fields_facets.json');
-
-        $configuration = [];
-
-        $processor = $this->getConfiguredReconstitutionProcessor($configuration, $searchResultSet);
-        $processor->process($searchResultSet);
-
-        $this->assertEquals(10, $searchResultSet->getAllResultCount(), 'Unexpected all result count');
-    }
-
-    /**
-     * @test
-     */
     public function canReturnSortingsAndMarkedSelectedAsActive()
     {
         $searchResultSet = $this->initializeSearchResultSetFromFakeResponse('fake_solr_response_with_query_fields_facets.json');

@@ -42,7 +42,7 @@ class ResultPaginateController extends AbstractPaginateWidgetController
         $this->resultSet = $this->widgetConfiguration['resultSet'];
         $this->configuration['itemsPerPage'] = $this->getItemsPerPage();
 
-        $this->numberOfPages = (int)ceil($this->resultSet->getUsedSearch()->getNumberOfResults() / $this->configuration['itemsPerPage']);
+        $this->numberOfPages = (int)ceil($this->resultSet->getAllResultCount() / $this->configuration['itemsPerPage']);
     }
 
     /**

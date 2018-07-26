@@ -44,7 +44,7 @@ class GroupItem
     /**
      * @var int
      */
-    protected $numFound = 0;
+    protected $allResultCount = 0;
 
     /**
      * @var int
@@ -77,7 +77,7 @@ class GroupItem
     {
         $this->group = $group;
         $this->groupValue = $groupValue;
-        $this->numFound = $numFound;
+        $this->allResultCount = $numFound;
         $this->start = $start;
         $this->maximumScore = $maxScore;
         $this->searchResults = new SearchResultCollection();
@@ -98,9 +98,21 @@ class GroupItem
      *
      * @return int
      */
+    public function getAllResultCount()
+    {
+        return $this->allResultCount;
+    }
+
+    /**
+     * Get numFound
+     *
+     * @deprecated Deprecated since EXT:solr 9.0.0 will be removed in EXT:solr 10.0.0 use getAllResultCount now
+     * @return int
+     */
     public function getNumFound()
     {
-        return $this->numFound;
+        trigger_error('GroupItem::getNumFound is deprecated please use GroupItem::getAllResultCount now', E_USER_DEPRECATED);
+        return $this->getAllResultCount();
     }
 
     /**
@@ -126,7 +138,7 @@ class GroupItem
     /**
      * Get maxScore
      *
-     * @deprecated Deprecated since EXT:solr 9.0.0 will be removed in EXT:solr 10.0.0
+     * @deprecated Deprecated since EXT:solr 9.0.0 will be removed in EXT:solr 10.0.0 getMaximumScore now
      * @return float
      */
     public function getMaxScore()

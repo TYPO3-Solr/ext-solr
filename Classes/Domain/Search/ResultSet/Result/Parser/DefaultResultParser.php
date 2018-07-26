@@ -46,8 +46,12 @@ class DefaultResultParser extends AbstractResultParser {
     {
         $searchResults = GeneralUtility::makeInstance(SearchResultCollection::class);
         $parsedData = $resultSet->getResponse()->getParsedData();
+
+        $resultSet->setMaximumScore($parsedData->response->maxScore ?? 0.0);
+        $resultSet->setAllResultCount($parsedData->response->numFound ?? 0);
+
         if (!is_array($parsedData->response->docs)) {
-            return $searchResults;
+            return $resultSet;
         }
 
         $documents = $parsedData->response->docs;
@@ -61,8 +65,6 @@ class DefaultResultParser extends AbstractResultParser {
         }
 
         $resultSet->setSearchResults($searchResults);
-        $resultSet->setMaximumScore($parsedData->response->maxScore ?? 0.0);
-
         return $resultSet;
     }
 

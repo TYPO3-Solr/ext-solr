@@ -62,14 +62,14 @@
 					</f:then>
 				</f:if>
 
-				<f:if condition="{resultSet.usedSearch.numberOfResults}">
+				<f:if condition="{resultSet.allResultCount}">
 					<span class="result-found">
-						<f:if condition="{resultSet.usedSearch.numberOfResults} == 1">
+						<f:if condition="{resultSet.allResultCount} == 1">
 							<f:then>
 								<s:translate key="results_found.singular" arguments="{0:resultSet.usedSearch.queryTime}">Found 1 result in %d seconds</s:translate>
 							</f:then>
 							<f:else>
-								<s:translate key="results_found" arguments="{0:resultSet.usedSearch.numberOfResults, 1: resultSet.usedSearch.queryTime}">Found %d results in %d seconds</s:translate>
+								<s:translate key="results_found" arguments="{0:resultSet.allResultCount, 1: resultSet.usedSearch.queryTime}">Found %d results in %d seconds</s:translate>
 							</f:else>
 						</f:if>
 					</span>
@@ -79,7 +79,7 @@
 						</s:pageBrowserRange>
 					</span>
 				</f:if>
-				<f:if condition="{resultSet.usedSearch.numberOfResults}">
+				<f:if condition="{resultSet.allResultCount}">
 					<f:render partial="Result/PerPage" section="PerPage" arguments="{resultSet: resultSet}" />
 				</f:if>
 			</div>
