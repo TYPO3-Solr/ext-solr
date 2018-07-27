@@ -45,7 +45,7 @@ class AccessFilterPluginInstalledStatus extends AbstractSolrStatus
      *
      * @var string
      */
-    const RECOMMENDED_PLUGIN_VERSION = '2.0.0';
+    const RECOMMENDED_PLUGIN_VERSION = '3.0.0';
 
     /**
      * The plugin's Java class name.
@@ -177,7 +177,16 @@ class AccessFilterPluginInstalledStatus extends AbstractSolrStatus
     public function getInstalledPluginVersion(SolrAdminService $adminService)
     {
         $pluginsInformation = $adminService->getPluginsInformation();
-        $rawVersion = $pluginsInformation->plugins->OTHER->{self::PLUGIN_CLASS_NAME}->version;
+
+        if(isset($pluginsInformation->plugins->OTHER->{self::PLUGIN_CLASS_NAME}->version)) {
+            // @deprecated old version location, can be dropped in EXT:solr 10
+            $rawVersion = $pluginsInformation->plugins->OTHER->{self::PLUGIN_CLASS_NAME}->version;
+        } else {
+            $description = $pluginsInformation->plugins->OTHER->{self::PLUGIN_CLASS_NAME}->description;
+            $matches = [];
+            preg_match_all('/.*\(Version: (?<version>[^\)]*)\)/ums', $description, $matches);
+            $rawVersion = $matches['version'][0] ?? '';
+        }
 
         $explodedRawVersion = explode('-', $rawVersion);
         $version = $explodedRawVersion[0];

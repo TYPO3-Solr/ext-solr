@@ -45,7 +45,6 @@ class AccessFilterPluginInstalledStatusTest extends IntegrationTest
         /** @var $accessFilterStatus  AccessFilterPluginInstalledStatus */
         $accessFilterStatus = GeneralUtility::makeInstance(AccessFilterPluginInstalledStatus::class);
         $violations = $accessFilterStatus->getStatus();
-
         $this->assertEmpty($violations, 'We expect to get no violations against the test solr server ');
     }
 }
