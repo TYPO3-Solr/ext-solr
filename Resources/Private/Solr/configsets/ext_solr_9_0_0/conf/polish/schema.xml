@@ -46,7 +46,7 @@
 		<analyzer type="index">
 			<tokenizer class="solr.WhitespaceTokenizerFactory"/>
 
-			<filter class="solr.WordDelimiterFilterFactory"
+			<filter class="solr.WordDelimiterGraphFilterFactory"
 				generateWordParts="1"
 				generateNumberParts="1"
 				catenateWords="1"
@@ -58,7 +58,8 @@
 
 			<filter class="solr.LowerCaseFilterFactory"/>
 
-			<filter class="solr.ManagedSynonymFilterFactory" managed="polish"/>
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="polish" />
+			<filter class="solr.FlattenGraphFilterFactory"/>
 			<filter class="solr.ManagedStopFilterFactory" managed="polish"/>
 
 			<filter class="solr.StempelPolishStemFilterFactory"/>
@@ -67,7 +68,7 @@
 		<analyzer type="query">
 			<tokenizer class="solr.WhitespaceTokenizerFactory"/>
 
-			<filter class="solr.WordDelimiterFilterFactory"
+			<filter class="solr.WordDelimiterGraphFilterFactory"
 				generateWordParts="1"
 				generateNumberParts="1"
 				catenateWords="0"
@@ -80,7 +81,7 @@
 
 			<filter class="solr.LowerCaseFilterFactory"/>
 
-			<filter class="solr.ManagedSynonymFilterFactory" managed="polish"/>
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="polish" />
 			<filter class="solr.ManagedStopFilterFactory" managed="polish"/>
 
 			<filter class="solr.StempelPolishStemFilterFactory"/>
@@ -92,15 +93,16 @@
 	<!-- Less flexible matching, but less false matches.	Probably not ideal for product names,
 		but may be good for SKUs.	Can insert dashes in the wrong place and still match. -->
 	<fieldType name="textTight" class="solr.TextField" positionIncrementGap="100" >
-		<analyzer>
+		<analyzer type="index">
 			<tokenizer class="solr.WhitespaceTokenizerFactory"/>
 
 			<filter class="solr.LowerCaseFilterFactory"/>
 
-			<filter class="solr.ManagedSynonymFilterFactory" managed="polish"/>
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="polish" />
+			<filter class="solr.FlattenGraphFilterFactory"/>
 			<filter class="solr.ManagedStopFilterFactory" managed="polish"/>
 
-			<filter class="solr.WordDelimiterFilterFactory"
+			<filter class="solr.WordDelimiterGraphFilterFactory"
 				generateWordParts="0"
 				generateNumberParts="0"
 				catenateWords="1"
@@ -112,17 +114,47 @@
 			<filter class="solr.StempelPolishStemFilterFactory"/>
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
+		<analyzer type="query">
+			<tokenizer class="solr.WhitespaceTokenizerFactory"/>
+
+			<filter class="solr.LowerCaseFilterFactory"/>
+
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="polish" />
+			<filter class="solr.ManagedStopFilterFactory" managed="polish"/>
+
+			<filter class="solr.WordDelimiterGraphFilterFactory"
+					generateWordParts="0"
+					generateNumberParts="0"
+					catenateWords="1"
+					catenateNumbers="1"
+					catenateAll="0"
+					preserveOriginal="1"
+					protected="polish/protwords.txt"
+			/>
+			<filter class="solr.StempelPolishStemFilterFactory"/>
+			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
+		</analyzer>
 	</fieldType>
 
 	<!-- Exact matching of words like textWhiteSpaceTokenized,
 		but with enabled Synonym and Stop Filter
 	 -->
 	<fieldType name="textExact" class="solr.TextField" positionIncrementGap="100" >
-		<analyzer>
+		<analyzer type="index">
 			<tokenizer class="solr.WhitespaceTokenizerFactory"/>
 
 			<filter class="solr.LowerCaseFilterFactory"/>
-			<filter class="solr.ManagedSynonymFilterFactory" managed="polish"/>
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="polish" />
+			<filter class="solr.FlattenGraphFilterFactory"/>
+			<filter class="solr.ManagedStopFilterFactory" managed="polish"/>
+			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
+		</analyzer>
+		<analyzer type="query">
+			<tokenizer class="solr.WhitespaceTokenizerFactory"/>
+
+			<filter class="solr.LowerCaseFilterFactory"/>
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="polish" />
+			<filter class="solr.FlattenGraphFilterFactory"/>
 			<filter class="solr.ManagedStopFilterFactory" managed="polish"/>
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
@@ -146,7 +178,8 @@
 
 			<filter class="solr.LowerCaseFilterFactory"/>
 
-			<filter class="solr.ManagedSynonymFilterFactory" managed="polish"/>
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="polish" />
+			<filter class="solr.FlattenGraphFilterFactory"/>
 			<filter class="solr.ManagedStopFilterFactory" managed="polish"/>
 
 			<filter class="solr.StandardFilterFactory" />

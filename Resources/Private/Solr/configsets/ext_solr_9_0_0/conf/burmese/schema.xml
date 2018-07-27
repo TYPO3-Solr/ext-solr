@@ -45,11 +45,12 @@
 	<fieldType name="text" class="solr.TextField" positionIncrementGap="100">
 		<analyzer type="index">
 			<tokenizer class="solr.ICUTokenizerFactory"/>
-			<filter class="solr.ManagedSynonymFilterFactory" managed="burmese"/>
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="burmese" />
+			<filter class="solr.FlattenGraphFilterFactory"/>
 		</analyzer>
 		<analyzer type="query">
 			<tokenizer class="solr.ICUTokenizerFactory"/>
-			<filter class="solr.ManagedSynonymFilterFactory" managed="burmese"/>
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="burmese" />
 		</analyzer>
 	</fieldType>
 
@@ -57,9 +58,14 @@
 	<!-- Less flexible matching, but less false matches.	Probably not ideal for product names,
 		but may be good for SKUs.	Can insert dashes in the wrong place and still match. -->
 	<fieldType name="textTight" class="solr.TextField" positionIncrementGap="100" >
-		<analyzer>
+		<analyzer type="index">
 			<tokenizer class="solr.ICUTokenizerFactory"/>
-			<filter class="solr.ManagedSynonymFilterFactory" managed="burmese"/>
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="burmese" />
+			<filter class="solr.FlattenGraphFilterFactory"/>
+		</analyzer>
+		<analyzer type="query">
+			<tokenizer class="solr.ICUTokenizerFactory"/>
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="burmese" />
 		</analyzer>
 	</fieldType>
 
@@ -67,11 +73,20 @@
 		but with enabled Synonym and Stop Filter
 	 -->
 	<fieldType name="textExact" class="solr.TextField" positionIncrementGap="100" >
-		<analyzer>
+		<analyzer type="index">
 			<tokenizer class="solr.WhitespaceTokenizerFactory"/>
 
 			<filter class="solr.LowerCaseFilterFactory"/>
-			<filter class="solr.ManagedSynonymFilterFactory" managed="burmese"/>
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="burmese" />
+			<filter class="solr.FlattenGraphFilterFactory"/>
+			<filter class="solr.ManagedStopFilterFactory" managed="burmese"/>
+			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
+		</analyzer>
+		<analyzer type="query">
+			<tokenizer class="solr.WhitespaceTokenizerFactory"/>
+
+			<filter class="solr.LowerCaseFilterFactory"/>
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="burmese" />
 			<filter class="solr.ManagedStopFilterFactory" managed="burmese"/>
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
@@ -81,11 +96,12 @@
 	<fieldType name="textSpell" class="solr.TextField" positionIncrementGap="100" omitNorms="true">
 		<analyzer type="index">
 			<tokenizer class="solr.ICUTokenizerFactory"/>
-			<filter class="solr.ManagedSynonymFilterFactory" managed="burmese"/>
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="burmese" />
+			<filter class="solr.FlattenGraphFilterFactory"/>
 		</analyzer>
 		<analyzer type="query">
 			<tokenizer class="solr.ICUTokenizerFactory" />
-			<filter class="solr.ManagedSynonymFilterFactory" managed="burmese"/>
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="burmese" />
 		</analyzer>
 	</fieldType>
 

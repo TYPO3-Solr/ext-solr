@@ -33,36 +33,28 @@ Extension               Type                                 Multivalue  Comment
 \*_binM                 binary                               Yes         Stored but not indexed
 \*_boolS                Boolean                              No
 \*_boolM                Boolean                              Yes
-\*_intS                 Integer                              No          deprecated use _tIntS now
-\*_intM                 Integer                              Yes         deprecated use _tIntM now
-\*_sIntS                Sortable        Integer              No          not available use _tIntS now
-\*_sIntM                Sortable        Integer              Yes         not available use _tIntM now
-\*_tIntS                Trie Integer                         No
-\*_tIntM                Trie Integer                         Yes
-\*_longS                Long                                 No          deprecated use _tLongS now
-\*_longM                Long                                 Yes         deprecated use _tLongM now
-\*_sLongS               Sortable Long                        No          not available use _tLongS now
-\*_sLongM               Sortable Long                        Yes         not available use _tLongM now
-\*_tLongS               Trie Long                            No
-\*_tLongM               Trie Long                            Yes
-\*_floatS               Float                                No          deprecated use _tFloatS now
-\*_floatM               Float                                Yes         deprecated use _tFloatM now
-\*_sFloatS              Sortable Float                       No          not available use _tFloatS now
-\*_sFloatM              Sortable Float                       Yes         not available use _tFloatM now
-\*_tFloatS              Trie Float                           No
-\*_tFloatM              Trie Float                           Yes
-\*_doubleS              Double                               No          deprecated use _tDoubleS now
-\*_doubleM              Double                               Yes         deprecated use _tDoubleM now
-\*_sDoubleS             Sortable Double                      No          not available use _tDoubleS now
-\*_sDoubleM             Sortable Double                      Yes         not available use _tDoubleM now
-\*_tDoubleS             Trie Double                          No
-\*_tDoubleM             Trie Double                          Yes
-\*_tDouble4S            Trie Double with Precision Step 4    No
-\*_tDouble4M            Trie Double with Precision Step 4    Yes
-\*_dateS                Date                                 No          deprecated use _tDateS now
-\*_dateM                Date                                 Yes         deprecated use _tDateM now
-\*_tDateS               Trie Date                            No
-\*_tDateM               Trie Date                            Yes
+\*_intS                 Integer                              No
+\*_intM                 Integer                              Yes
+\*_tIntS                Integer                              No          Deprecated use _intS removed in EXT:solr 10
+\*_tIntM                Integer                              Yes         Deprecated use _intM removed in EXT:solr 10
+\*_longS                Long                                 No
+\*_longM                Long                                 Yes
+\*_tLongS               Long                                 No          Deprecated use _longS removed in EXT:solr 10
+\*_tLongM               Long                                 Yes         Deprecated use _longM removed in EXT:solr 10
+\*_floatS               Float                                No
+\*_floatM               Float                                Yes
+\*_tFloatS              Float                                No          Deprecated use _floatS removed in EXT:solr 10
+\*_tFloatM              Float                                Yes         Deprecated use _floatM removed in EXT:solr 10
+\*_doubleS              Double                               No
+\*_doubleM              Double                               Yes
+\*_tDoubleS             Double                               No          Deprecated use _doubleS removed in EXT:solr 10
+\*_tDoubleM             Double                               Yes         Deprecated use _doubleS removed in EXT:solr 10
+\*_tDouble4S            Double                               No          Deprecated use _double4S removed in EXT:solr 10
+\*_tDouble4M            Double                               Yes         Deprecated use _double4M removed in EXT:solr 10
+\*_dateS                Date                                 No
+\*_dateM                Date                                 Yes
+\*_tDateS               Date                                 No          Deprecated use _dateS removed in EXT:solr 10
+\*_tDateM               Date                                 Yes         Deprecated use _dateM removed in EXT:solr 10
 \*_random               Random                               No
 \*_textS                Text                                 No
 \*_textM                Text                                 Yes
