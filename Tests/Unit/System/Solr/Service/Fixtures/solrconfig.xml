@@ -1,6 +1,6 @@
 <config name="tx_solr-9-9-9--20221020">
 
-	<luceneMatchVersion>6.6.0</luceneMatchVersion>
+	<luceneMatchVersion>7.4.0</luceneMatchVersion>
 
 	<abortOnConfigurationError>${solr.abortOnConfigurationError:true}</abortOnConfigurationError>
 
@@ -152,7 +152,7 @@
 
 	<requestDispatcher handleSelect="false" >
 		<!-- Make sure your system has some authentication! before using enableRemoteStreaming="true" -->
-		<requestParsers enableRemoteStreaming="true" multipartUploadLimitInKB="2048000" />
+		<requestParsers enableRemoteStreaming="true" enableStreamBody="true" multipartUploadLimitInKB="2048000" />
 
 		<httpCaching lastModifiedFrom="openTime" etagSeed="Solr" />
 		<httpCaching never304="true"/>
