@@ -46,7 +46,7 @@
 		<analyzer type="index">
 			<tokenizer class="solr.WhitespaceTokenizerFactory"/>
 
-			<filter class="solr.WordDelimiterFilterFactory"
+			<filter class="solr.WordDelimiterGraphFilterFactory"
 				generateWordParts="1" generateNumberParts="1"
 				catenateWords="1"
 				catenateNumbers="1"
@@ -57,7 +57,8 @@
 			/>
 			<filter class="solr.LowerCaseFilterFactory"/>
 
-			<filter class="solr.ManagedSynonymFilterFactory" managed="hungarian"/>
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="hungarian" />
+			<filter class="solr.FlattenGraphFilterFactory"/>
 			<filter class="solr.ManagedStopFilterFactory" managed="hungarian"/>
 
 			<filter class="solr.SnowballPorterFilterFactory" language="Hungarian" protected="hungarian/protwords.txt"/>
@@ -65,7 +66,7 @@
 		</analyzer>
 		<analyzer type="query">
 			<tokenizer class="solr.WhitespaceTokenizerFactory"/>
-			<filter class="solr.WordDelimiterFilterFactory"
+			<filter class="solr.WordDelimiterGraphFilterFactory"
 				generateWordParts="1"
 				generateNumberParts="1"
 				catenateWords="0"
@@ -77,7 +78,7 @@
 			/>
 			<filter class="solr.LowerCaseFilterFactory"/>
 
-			<filter class="solr.ManagedSynonymFilterFactory" managed="hungarian"/>
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="hungarian" />
 			<filter class="solr.ManagedStopFilterFactory" managed="hungarian"/>
 
 			<filter class="solr.SnowballPorterFilterFactory" language="Hungarian" protected="hungarian/protwords.txt"/>
@@ -89,15 +90,16 @@
 	<!-- Less flexible matching, but less false matches.	Probably not ideal for product names,
 		but may be good for SKUs.	Can insert dashes in the wrong place and still match. -->
 	<fieldType name="textTight" class="solr.TextField" positionIncrementGap="100" >
-		<analyzer>
+		<analyzer type="index">
 			<tokenizer class="solr.WhitespaceTokenizerFactory"/>
 
 			<filter class="solr.LowerCaseFilterFactory"/>
 
-			<filter class="solr.ManagedSynonymFilterFactory" managed="hungarian"/>
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="hungarian" />
+			<filter class="solr.FlattenGraphFilterFactory"/>
 			<filter class="solr.ManagedStopFilterFactory" managed="hungarian"/>
 
-			<filter class="solr.WordDelimiterFilterFactory"
+			<filter class="solr.WordDelimiterGraphFilterFactory"
 				generateWordParts="0"
 				generateNumberParts="0"
 				catenateWords="1"
@@ -109,17 +111,46 @@
 			<filter class="solr.SnowballPorterFilterFactory" language="Hungarian" protected="hungarian/protwords.txt"/>
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
+		<analyzer type="query">
+			<tokenizer class="solr.WhitespaceTokenizerFactory"/>
+
+			<filter class="solr.LowerCaseFilterFactory"/>
+
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="hungarian" />
+			<filter class="solr.ManagedStopFilterFactory" managed="hungarian"/>
+
+			<filter class="solr.WordDelimiterGraphFilterFactory"
+					generateWordParts="0"
+					generateNumberParts="0"
+					catenateWords="1"
+					catenateNumbers="1"
+					catenateAll="0"
+					preserveOriginal="1"
+					protected="hungarian/protwords.txt"
+			/>
+			<filter class="solr.SnowballPorterFilterFactory" language="Hungarian" protected="hungarian/protwords.txt"/>
+			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
+		</analyzer>
 	</fieldType>
 
 	<!-- Exact matching of words like textWhiteSpaceTokenized,
 		but with enabled Synonym and Stop Filter
 	 -->
 	<fieldType name="textExact" class="solr.TextField" positionIncrementGap="100" >
-		<analyzer>
+		<analyzer type="query">
 			<tokenizer class="solr.WhitespaceTokenizerFactory"/>
 
 			<filter class="solr.LowerCaseFilterFactory"/>
-			<filter class="solr.ManagedSynonymFilterFactory" managed="hungarian"/>
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="hungarian" />
+			<filter class="solr.FlattenGraphFilterFactory"/>
+			<filter class="solr.ManagedStopFilterFactory" managed="hungarian"/>
+			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
+		</analyzer>
+		<analyzer type="index">
+			<tokenizer class="solr.WhitespaceTokenizerFactory"/>
+
+			<filter class="solr.LowerCaseFilterFactory"/>
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="hungarian" />
 			<filter class="solr.ManagedStopFilterFactory" managed="hungarian"/>
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
@@ -142,7 +173,7 @@
 
 			<filter class="solr.LowerCaseFilterFactory"/>
 
-			<filter class="solr.ManagedSynonymFilterFactory" managed="hungarian"/>
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="hungarian" />
 			<filter class="solr.ManagedStopFilterFactory" managed="hungarian"/>
 
 			<filter class="solr.StandardFilterFactory" />

@@ -191,33 +191,39 @@
 	<dynamicField name="*_binS"      type="binary"    indexed="false" stored="true" multiValued="false" />
 	<dynamicField name="*_binM"      type="binary"    indexed="false" stored="true" multiValued="true" />
 
+	<!--
+		Numeric point fields
+	-->
 	<dynamicField name="*_intS"      type="integer"   indexed="true" stored="true" docValues="true" multiValued="false" />
 	<dynamicField name="*_intM"      type="integer"   indexed="true" stored="true" docValues="true" multiValued="true" />
-	<dynamicField name="*_tIntS"     type="tint"      indexed="true" stored="true" docValues="true" multiValued="false" />
-	<dynamicField name="*_tIntM"     type="tint"      indexed="true" stored="true" docValues="true" multiValued="true" />
-
 	<dynamicField name="*_longS"     type="long"      indexed="true" stored="true" docValues="true" multiValued="false" />
 	<dynamicField name="*_longM"     type="long"      indexed="true" stored="true" docValues="true" multiValued="true" />
-	<dynamicField name="*_tLongS"    type="tlong"     indexed="true" stored="true" docValues="true" multiValued="false" />
-	<dynamicField name="*_tLongM"    type="tlong"     indexed="true" stored="true" docValues="true" multiValued="true" />
-
 	<dynamicField name="*_floatS"    type="float"     indexed="true" stored="true" docValues="true" multiValued="false"/>
 	<dynamicField name="*_floatM"    type="float"     indexed="true" stored="true" docValues="true" multiValued="true"/>
-	<dynamicField name="*_tFloatS"   type="tfloat"    indexed="true" stored="true" docValues="true" multiValued="false"/>
-	<dynamicField name="*_tFloatM"   type="tfloat"    indexed="true" stored="true" docValues="true" multiValued="true"/>
-
 	<dynamicField name="*_doubleS"   type="double"    indexed="true" stored="true" docValues="true" multiValued="false" />
 	<dynamicField name="*_doubleM"   type="double"    indexed="true" stored="true" docValues="true" multiValued="true" />
-	<dynamicField name="*_tDoubleS"  type="tdouble"   indexed="true" stored="true" docValues="true" multiValued="false" />
-	<dynamicField name="*_tDoubleM"  type="tdouble"   indexed="true" stored="true" docValues="true" multiValued="true" />
-	<dynamicField name="*_tDouble4S" type="tdouble4"  indexed="true" stored="true" docValues="true" multiValued="false" />
-	<dynamicField name="*_tDouble4M" type="tdouble4"  indexed="true" stored="true" docValues="true" multiValued="true" />
-
-
 	<dynamicField name="*_dateS"     type="date"      indexed="true" stored="true" docValues="true" multiValued="false" />
 	<dynamicField name="*_dateM"     type="date"      indexed="true" stored="true" docValues="true" multiValued="true" />
-	<dynamicField name="*_tDateS"    type="tdate"     indexed="true" stored="true" docValues="true" multiValued="false" />
-	<dynamicField name="*_tDateM"    type="tdate"     indexed="true" stored="true" docValues="true" multiValued="true" />
+
+
+	<!--
+		These fields are deprecated and only kept for backwards compatibility:
+	-->
+	<dynamicField name="*_tIntS"      type="integer"   indexed="true" stored="true" docValues="true" multiValued="false" />
+	<dynamicField name="*_tIntM"      type="integer"   indexed="true" stored="true" docValues="true" multiValued="true" />
+	<dynamicField name="*_tLongS"     type="long"      indexed="true" stored="true" docValues="true" multiValued="false" />
+	<dynamicField name="*_tLongM"     type="long"      indexed="true" stored="true" docValues="true" multiValued="true" />
+	<dynamicField name="*_tFloatS"    type="float"     indexed="true" stored="true" docValues="true" multiValued="false"/>
+	<dynamicField name="*_tFloatM"    type="float"     indexed="true" stored="true" docValues="true" multiValued="true"/>
+	<dynamicField name="*_tDoubleS"   type="double"    indexed="true" stored="true" docValues="true" multiValued="false" />
+	<dynamicField name="*_tDoubleM"   type="double"    indexed="true" stored="true" docValues="true" multiValued="true" />
+	<dynamicField name="*_tDouble4S"  type="double"    indexed="true" stored="true" docValues="true" multiValued="false" />
+	<dynamicField name="*_tDouble4M"  type="double"    indexed="true" stored="true" docValues="true" multiValued="true" />
+	<dynamicField name="*_tDateS"     type="date"      indexed="true" stored="true" docValues="true" multiValued="false" />
+	<dynamicField name="*_tDateM"     type="date"      indexed="true" stored="true" docValues="true" multiValued="true" />
+	<!--
+		End of deprecated fields
+	-->
 
 	<dynamicField name="*_textS"      type="text"      indexed="true" stored="true" multiValued="false" />
 	<dynamicField name="*_textM"      type="text"      indexed="true" stored="true" multiValued="true" />
@@ -242,21 +248,16 @@
 
 	<dynamicField name="*_phoneticS" type="phonetic"  indexed="true" stored="true" multiValued="false" />
 	<dynamicField name="*_phoneticM" type="phonetic"  indexed="true" stored="true" multiValued="true" />
-
-
 	<dynamicField name="*_random"    type="random"    indexed="true" stored="true" multiValued="false" />
 
 
 	<dynamicField name="*_point"       type="point"       indexed="true" stored="true" multiValued="false" />
-	<dynamicField name="*_location"    type="location"    indexed="true" stored="true" multiValued="false" />
+	<dynamicField name="*_location"    type="location"    indexed="true" stored="true" docValues="true" multiValued="false" />
 	<!-- Type used to index the lat and lon components for the "location" field type -->
 	<dynamicField name="*_coordinate"  type="double"      indexed="true" stored="false" />
 	<dynamicField name="*_locationRpt" type="locationRpt" indexed="true" stored="true" multiValued="false" />
 
-
 	<dynamicField name="*_currency"  type="currency"  indexed="true" stored="true" multiValued="false" />
-
-
 
 	<!--
 		The following causes solr to ignore any fields that don't already
