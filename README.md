@@ -33,7 +33,7 @@ We're open for [contributions](./CONTRIBUTING.md) !
 Please find further information regarding Apache Solr and its related projects at the following links:
 
 - http://www.typo3-solr.com/
-- http://www.dkd.de/de/agentur/produkte/apache-solr/
+- https://www.dkd.de/de/leistungen/enterprise-search/
 - https://github.com/TYPO3-Solr
 - http://lucene.apache.org/
 - http://lucene.apache.org/solr/
