@@ -223,6 +223,10 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
         /** @var $connectionManager ConnectionManager */
         $connectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
 
+        if ($table === 'pages') {
+            $this->deleteRecordsOfPage($uid);
+        }
+
         // record can be indexed for multiple sites
         $indexQueueItems = $this->getIndexQueue()->getItems($table, $uid);
         foreach ($indexQueueItems as $indexQueueItem) {
@@ -237,6 +241,33 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
                 if ($enableCommitsSetting) {
                     $solr->getWriteService()->commit(false, false, false);
                 }
+            }
+        }
+    }
+
+    /**
+     * Delete all index documents that are related to a TYPO3 "page"
+     *
+     * @param $uid
+     */
+    protected function deleteRecordsOfPage($uid)
+    {
+        /** @var \ApacheSolrForTypo3\Solr\ConnectionManager $connectionManager */
+        $connectionManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\ConnectionManager');
+        $indexQueue = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\IndexQueue\\Queue');
+        $site = Site::getSiteByPageId($uid);
+
+        // a site can have multiple connections (cores / languages)
+        $solrConnections = $connectionManager->getConnectionsBySite($site);
+
+        /** @var  $solr */
+        foreach ($solrConnections as $solr) {
+            $response = $solr->search('pid:' . intval($uid), 0, 10000);
+            foreach ($response->__get('response')->docs as $doc) {
+                $typeField = $doc->getField('type');
+                $uidField = $doc->getField('uid');
+                $this->deleteIndexDocuments($typeField['value'], $uidField['value']);
+                $indexQueue->deleteItem($typeField['value'], $uidField['value']);
             }
         }
     }
