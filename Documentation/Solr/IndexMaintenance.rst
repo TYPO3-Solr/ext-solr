@@ -28,13 +28,10 @@ Clearing the index
 Optimizing the index
 ====================
 
-You should do this every once in a while, f.e. every day. For TYPO3, there is already a scheduler task available for this.
+This is no longer needed. The old scheduler task have also been removed.
 
 
-.. code-block:: bash
 
-    curl http://host:port/solr-path/update -H "Content-Type: text/xml"
-        --data-binary '<optimize />'
 
 Searching the index from the command line
 =========================================
