@@ -29,7 +29,9 @@ use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Solr\Parser\SchemaParser;
 use ApacheSolrForTypo3\Solr\System\Solr\Parser\StopWordParser;
 use ApacheSolrForTypo3\Solr\System\Solr\Parser\SynonymParser;
+use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\System\Solr\Schema\Schema;
+use Solarium\Client;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -41,50 +43,26 @@ class SolrAdminService extends AbstractSolrService
     const PLUGINS_SERVLET = 'admin/plugins';
     const LUKE_SERVLET = 'admin/luke';
     const SYSTEM_SERVLET = 'admin/system';
-    const CORES_SERVLET = 'admin/cores';
+    const CORES_SERVLET = '../admin/cores';
     const FILE_SERVLET = 'admin/file';
     const SCHEMA_SERVLET = 'schema';
     const SYNONYMS_SERVLET = 'schema/analysis/synonyms/';
     const STOPWORDS_SERVLET = 'schema/analysis/stopwords/';
 
-    /**
-     * Constructed servlet URL for plugin information
-     *
-     * @var string
-     */
-    protected $_pluginsUrl;
-
-    /**
-     * Constructed servlet URL for Luke
-     *
-     * @var string
-     */
-    protected $_lukeUrl;
 
     /**
      * @var array
      */
     protected $lukeData = [];
 
-    /**
-     * @var string
-     */
-    protected $_coresUrl;
-
-
     protected $systemData = null;
 
-    protected $pluginsData = null;
+    protected $pluginsData = [];
 
     /**
      * @var string|null
      */
     protected $solrconfigName;
-
-    /**
-     * @var string
-     */
-    protected $_schemaUrl;
 
     /**
      * @var SchemaParser
@@ -100,7 +78,6 @@ class SolrAdminService extends AbstractSolrService
      * @var string
      */
     protected $_synonymsUrl;
-
     /**
      * @var string
      */
@@ -119,10 +96,6 @@ class SolrAdminService extends AbstractSolrService
     /**
      * Constructor
      *
-     * @param string $host Solr host
-     * @param string $port Solr port
-     * @param string $path Solr path
-     * @param string $scheme Scheme, defaults to http, can be https
      * @param TypoScriptConfiguration $typoScriptConfiguration
      * @param SynonymParser $synonymParser
      * @param StopWordParser $stopWordParser
@@ -130,10 +103,7 @@ class SolrAdminService extends AbstractSolrService
      * @param SolrLogManager $logManager
      */
     public function __construct(
-        $host = '',
-        $port = '8983',
-        $path = '/solr/',
-        $scheme = 'http',
+        Client $client,
         TypoScriptConfiguration $typoScriptConfiguration = null,
         SolrLogManager $logManager = null,
         SynonymParser $synonymParser = null,
@@ -141,38 +111,22 @@ class SolrAdminService extends AbstractSolrService
         SchemaParser $schemaParser = null
     )
     {
-        parent::__construct($host, $port, $path, $scheme, $typoScriptConfiguration);
+        parent::__construct($client, $typoScriptConfiguration);
 
         $this->synonymParser = $synonymParser ?? GeneralUtility::makeInstance(SynonymParser::class);
         $this->stopWordParser = $stopWordParser ?? GeneralUtility::makeInstance(StopWordParser::class);
         $this->schemaParser = $schemaParser ?? GeneralUtility::makeInstance(SchemaParser::class);
     }
 
-    protected function _initUrls()
+    /**
+     * Call the /admin/system servlet and retrieve system information about Solr
+     *
+     * @return ResponseAdapter
+     */
+    public function system()
     {
-        parent::_initUrls();
-        $this->_pluginsUrl = $this->_constructUrl(
-            self::PLUGINS_SERVLET,
-            ['wt' => self::SOLR_WRITER]
-        );
-        $this->_lukeUrl = $this->_constructUrl(
-            self::LUKE_SERVLET,
-            [
-                'numTerms' => '0',
-                'wt' => self::SOLR_WRITER
-            ]
-        );
-
-        $this->_coresUrl =
-            $this->_scheme . '://' .
-            $this->_host . ':' .
-            $this->_port .
-            $this->getCoreBasePath() .
-            self::CORES_SERVLET;
-
-        $this->_schemaUrl = $this->_constructUrl(self::SCHEMA_SERVLET);
+        return $this->_sendRawGet($this->_constructUrl(self::SYSTEM_SERVLET, ['wt' => 'json']));
     }
-
 
     /**
      * Gets information about the plugins installed in Solr
@@ -181,8 +135,9 @@ class SolrAdminService extends AbstractSolrService
      */
     public function getPluginsInformation()
     {
-        if (empty($this->pluginsData)) {
-            $pluginsInformation = $this->_sendRawGet($this->_pluginsUrl);
+        if (count($this->pluginsData) == 0) {
+            $url = $this->_constructUrl(self::PLUGINS_SERVLET, ['wt' => 'json']);
+            $pluginsInformation = $this->_sendRawGet($url);
 
             // access a random property to trigger response parsing
             $pluginsInformation->responseHeader;
@@ -196,7 +151,7 @@ class SolrAdminService extends AbstractSolrService
      * get field meta data for the index
      *
      * @param int $numberOfTerms Number of top terms to fetch for each field
-     * @return array
+     * @return \stdClass
      */
     public function getFieldsMetaData($numberOfTerms = 0)
     {
@@ -207,13 +162,13 @@ class SolrAdminService extends AbstractSolrService
      * Retrieves meta data about the index from the luke request handler
      *
      * @param int $numberOfTerms Number of top terms to fetch for each field
-     * @return \Apache_Solr_Response Index meta data
+     * @return ResponseAdapter Index meta data
      */
     public function getLukeMetaData($numberOfTerms = 0)
     {
         if (!isset($this->lukeData[$numberOfTerms])) {
             $lukeUrl = $this->_constructUrl(
-                self::LUKE_SERVLET, ['numTerms' => $numberOfTerms, 'wt' => self::SOLR_WRITER, 'fl' => '*']
+                self::LUKE_SERVLET, ['numTerms' => $numberOfTerms, 'wt' => 'json', 'fl' => '*']
             );
 
             $this->lukeData[$numberOfTerms] = $this->_sendRawGet($lukeUrl);
@@ -225,7 +180,7 @@ class SolrAdminService extends AbstractSolrService
     /**
      * Gets information about the Solr server
      *
-     * @return array A nested array of system data.
+     * @return ResponseAdapter
      */
     public function getSystemInformation()
     {
@@ -277,23 +232,25 @@ class SolrAdminService extends AbstractSolrService
     /**
      * Reloads the current core
      *
-     * @return \Apache_Solr_Response
+     * @return ResponseAdapter
      */
     public function reloadCore()
     {
-        return $this->reloadCoreByName($this->getCoreName());
+        $response = $this->reloadCoreByName($this->getPrimaryEndpoint()->getCore());
+        return $response;
     }
 
     /**
      * Reloads a core of the connection by a given corename.
      *
      * @param string $coreName
-     * @return \Apache_Solr_Response
+     * @return ResponseAdapter
      */
     public function reloadCoreByName($coreName)
     {
-        $coreAdminReloadUrl = $this->_coresUrl . '?action=reload&core=' . $coreName;
-        return $this->_sendRawGet($coreAdminReloadUrl);
+        $coreAdminReloadUrl = $this->_constructUrl(self::CORES_SERVLET) . '?action=reload&core=' . $coreName;
+        $response = $this->_sendRawGet($coreAdminReloadUrl);
+        return $response;
     }
 
     /**
@@ -306,7 +263,8 @@ class SolrAdminService extends AbstractSolrService
         if ($this->schema !== null) {
             return $this->schema;
         }
-        $response = $this->_sendRawGet($this->_schemaUrl);
+        $response = $this->_sendRawGet($this->_constructUrl(self::SCHEMA_SERVLET));
+
         $this->schema = $this->schemaParser->parseJson($response->getRawResponse());
         return $this->schema;
     }
@@ -335,35 +293,35 @@ class SolrAdminService extends AbstractSolrService
      * @param string $baseWord
      * @param array $synonyms
      *
-     * @return \Apache_Solr_Response
+     * @return ResponseAdapter
      *
-     * @throws \Apache_Solr_InvalidArgumentException If $baseWord or $synonyms are empty
+     * @throws \InvalidArgumentException If $baseWord or $synonyms are empty
      */
     public function addSynonym($baseWord, array $synonyms)
     {
         $this->initializeSynonymsUrl();
         $json = $this->synonymParser->toJson($baseWord, $synonyms);
-        return $this->_sendRawPost($this->_synonymsUrl, $json,
-            $this->getHttpTransport()->getDefaultTimeout(), 'application/json');
+        $response = $this->_sendRawPost($this->_synonymsUrl, $json, 'application/json');
+        return $response;
     }
 
     /**
      * Remove a synonym from the synonyms map
      *
      * @param string $baseWord
-     * @return \Apache_Solr_Response
-     * @throws \Apache_Solr_InvalidArgumentException
+     * @return ResponseAdapter
+     * @throws \InvalidArgumentException
      */
     public function deleteSynonym($baseWord)
     {
         $this->initializeSynonymsUrl();
         if (empty($baseWord)) {
-            throw new \Apache_Solr_InvalidArgumentException('Must provide base word.');
+            throw new \InvalidArgumentException('Must provide base word.');
         }
 
-        return $this->_sendRawDelete($this->_synonymsUrl . '/' . urlencode($baseWord));
+        $response = $this->_sendRawDelete($this->_synonymsUrl . '/' . urlencode($baseWord));
+        return $response;
     }
-
 
     /**
      * Get currently configured stop words
@@ -381,29 +339,28 @@ class SolrAdminService extends AbstractSolrService
      * Adds stop words to the managed stop word list
      *
      * @param array|string $stopWords string for a single word, array for multiple words
-     * @return \Apache_Solr_Response
-     * @throws \Apache_Solr_InvalidArgumentException If $stopWords is empty
+     * @return ResponseAdapter
+     * @throws \InvalidArgumentException If $stopWords is empty
      */
     public function addStopWords($stopWords)
     {
         $this->initializeStopWordsUrl();
         $json = $this->stopWordParser->toJson($stopWords);
-        return $this->_sendRawPost($this->_stopWordsUrl, $json,
-            $this->getHttpTransport()->getDefaultTimeout(), 'application/json');
+        return $this->_sendRawPost($this->_stopWordsUrl, $json, 'application/json');
     }
 
     /**
      * Deletes a words from the managed stop word list
      *
      * @param string $stopWord stop word to delete
-     * @return \Apache_Solr_Response
-     * @throws \Apache_Solr_InvalidArgumentException If $stopWords is empty
+     * @return ResponseAdapter
+     * @throws \InvalidArgumentException If $stopWords is empty
      */
     public function deleteStopWord($stopWord)
     {
         $this->initializeStopWordsUrl();
         if (empty($stopWord)) {
-            throw new \Apache_Solr_InvalidArgumentException('Must provide stop word.');
+            throw new \InvalidArgumentException('Must provide stop word.');
         }
 
         return $this->_sendRawDelete($this->_stopWordsUrl . '/' . urlencode($stopWord));

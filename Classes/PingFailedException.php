@@ -30,26 +30,4 @@ namespace ApacheSolrForTypo3\Solr;
  *
  * @author Timo Schmidt <timo.schmidt@dkd.de>
  */
-class PingFailedException extends \Exception
-{
-    /**
-     * @var \Apache_Solr_HttpTransport_Response
-     */
-    protected $httpResponse;
-
-    /**
-     * @param \Apache_Solr_HttpTransport_Response $httpResponse
-     */
-    public function setHttpResponse($httpResponse)
-    {
-        $this->httpResponse = $httpResponse;
-    }
-
-    /**
-     * @return \Apache_Solr_HttpTransport_Response
-     */
-    public function getHttpResponse()
-    {
-        return $this->httpResponse;
-    }
-}
+class PingFailedException extends \Exception {}

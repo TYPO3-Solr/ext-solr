@@ -24,11 +24,11 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ApacheSolrDocument;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use Apache_Solr_Document;
 use ApacheSolrForTypo3\Solr\Access\Rootline;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\Domain\Variants\IdBuilder;
 use ApacheSolrForTypo3\Solr\Site;
+use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use ApacheSolrForTypo3\Solr\Typo3PageContentExtractor;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -58,18 +58,18 @@ class Builder
     }
 
     /**
-     * This method can be used to build an Apache_Solr_Document from a TYPO3 page.
+     * This method can be used to build an Document from a TYPO3 page.
      *
      * @param TypoScriptFrontendController $page
      * @param string $url
      * @param Rootline $pageAccessRootline
      * @param string $mountPointParameter
-     * @return Apache_Solr_Document|object
+     * @return Document|object
      */
-    public function fromPage(TypoScriptFrontendController $page, $url, Rootline $pageAccessRootline, $mountPointParameter): \Apache_Solr_Document
+    public function fromPage(TypoScriptFrontendController $page, $url, Rootline $pageAccessRootline, $mountPointParameter): Document
     {
-        /* @var $document \Apache_Solr_Document */
-        $document = GeneralUtility::makeInstance(Apache_Solr_Document::class);
+        /* @var $document Document */
+        $document = GeneralUtility::makeInstance(Document::class);
         $site = $this->getSiteByPageId($page->id);
         $pageRecord = $page->page;
 
@@ -126,12 +126,12 @@ class Builder
      * @param string $type
      * @param int $rootPageUid
      * @param string $accessRootLine
-     * @return Apache_Solr_Document
+     * @return Document
      */
-    public function fromRecord(array $itemRecord, string $type, int $rootPageUid, string $accessRootLine): \Apache_Solr_Document
+    public function fromRecord(array $itemRecord, string $type, int $rootPageUid, string $accessRootLine): Document
     {
-        /* @var $document Apache_Solr_Document */
-        $document = GeneralUtility::makeInstance(Apache_Solr_Document::class);
+        /* @var $document Document */
+        $document = GeneralUtility::makeInstance(Document::class);
 
         $site = $this->getSiteByPageId($rootPageUid);
 
@@ -254,10 +254,10 @@ class Builder
     /**
      * Adds the access field to the document if needed.
      *
-     * @param \Apache_Solr_Document $document
+     * @param Document $document
      * @param Rootline $pageAccessRootline
      */
-    protected function addAccessField(\Apache_Solr_Document $document, Rootline $pageAccessRootline)
+    protected function addAccessField(Document $document, Rootline $pageAccessRootline)
     {
         $access = (string)$pageAccessRootline;
         if (trim($access) !== '') {
@@ -266,12 +266,12 @@ class Builder
     }
 
     /**
-     * Adds the endtime field value to the Apache_Solr_Document.
+     * Adds the endtime field value to the Document.
      *
-     * @param \Apache_Solr_Document $document
+     * @param Document $document
      * @param array $pageRecord
      */
-    protected function addEndtimeField(\Apache_Solr_Document  $document, $pageRecord)
+    protected function addEndtimeField(Document $document, $pageRecord)
     {
         if ($pageRecord['endtime']) {
             $document->setField('endtime', $pageRecord['endtime']);
@@ -281,10 +281,10 @@ class Builder
     /**
      * Adds keywords, multi valued.
      *
-     * @param \Apache_Solr_Document $document
+     * @param Document $document
      * @param array $pageRecord
      */
-    protected function addKeywordsField(\Apache_Solr_Document $document, $pageRecord)
+    protected function addKeywordsField(Document $document, $pageRecord)
     {
         if (!isset($pageRecord['keywords'])) {
             return;
@@ -299,10 +299,10 @@ class Builder
     /**
      * Add content from several tags like headers, anchors, ...
      *
-     * @param \Apache_Solr_Document $document
+     * @param Document $document
      * @param array $tagContent
      */
-    protected function addTagContentFields(\Apache_Solr_Document  $document, $tagContent = [])
+    protected function addTagContentFields(Document  $document, $tagContent = [])
     {
         foreach ($tagContent as $fieldName => $fieldValue) {
             $document->setField($fieldName, $fieldValue);

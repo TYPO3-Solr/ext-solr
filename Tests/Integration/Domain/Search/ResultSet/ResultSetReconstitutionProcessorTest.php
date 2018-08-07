@@ -30,6 +30,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\O
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\OptionsFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\ResultSetReconstitutionProcessor;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
+use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use ApacheSolrForTypo3\Solr\Tests\Unit\Helper\FakeObjectManager;
 use TYPO3\CMS\Core\TimeTracker\TimeTracker;
@@ -52,13 +53,10 @@ class ResultSetReconstitutionProcessorTest extends IntegrationTest
      */
     protected function initializeSearchResultSetFromFakeResponse($fixtureFile)
     {
-        $fakeResponseJson = $this->getFixtureContentByName($fixtureFile);
-        $httpResponseMock = $this->getMockBuilder('\Apache_Solr_HttpTransport_Response')->disableOriginalConstructor()->getMock();
-        $httpResponseMock->expects($this->any())->method('getBody')->will($this->returnValue($fakeResponseJson));
-
         $searchRequestMock = $this->getMockBuilder(SearchRequest::class)->getMock();
 
-        $fakeResponse = new \Apache_Solr_Response($httpResponseMock);
+        $fakeResponseJson = $this->getFixtureContentByName($fixtureFile);
+        $fakeResponse = new ResponseAdapter($fakeResponseJson);
 
         $searchResultSet = new SearchResultSet();
         $searchResultSet->setUsedSearchRequest($searchRequestMock);

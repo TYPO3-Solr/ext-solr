@@ -232,11 +232,11 @@ class SuggestService {
     {
         return [
             'link' => $document->getUrl(),
-            'type' => $document->getField('type_stringS') ? $document->getField('type_stringS')['value'] : $document->getType(),
+            'type' => $document['type_stringS'] ? $document['type_stringS'] : $document->getType(),
             'title' => $document->getTitle(),
             'content' => $document->getContent(),
             'group' => $document->getHasGroupItem() ? $document->getGroupItem()->getGroupValue() : '',
-            'previewImage' => $document->getField('previewImage_stringS') ? $document->getField('previewImage_stringS')['value'] : '',
+            'previewImage' => $document['previewImage_stringS'] ? $document['previewImage_stringS'] : '',
         ];
     }
 

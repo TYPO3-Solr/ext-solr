@@ -16,6 +16,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Que
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetParser;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
+use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 
 /**
  * Class QueryGroupFacetParser
@@ -97,11 +98,11 @@ class QueryGroupFacetParser extends AbstractFacetParser
     /**
      * Get raw query options
      *
-     * @param \Apache_Solr_Response $response
+     * @param ResponseAdapter $response
      * @param string $fieldName
      * @return array
      */
-    protected function getRawOptions(\Apache_Solr_Response $response, $fieldName)
+    protected function getRawOptions(ResponseAdapter $response, $fieldName)
     {
         $options = [];
 

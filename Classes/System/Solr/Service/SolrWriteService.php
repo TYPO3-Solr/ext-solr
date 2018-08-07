@@ -26,6 +26,7 @@ namespace ApacheSolrForTypo3\Solr\System\Solr\Service;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ExtractingQuery;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
+use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 
 /**
  * Class SolrReadService
@@ -33,6 +34,8 @@ use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
  */
 class SolrWriteService extends AbstractSolrService
 {
+    const EXTRACT_SERVLET = 'update/extract';
+
     /**
      * Performs a content and meta data extraction request.
      *
@@ -41,16 +44,13 @@ class SolrWriteService extends AbstractSolrService
      */
     public function extractByQuery(ExtractingQuery $query)
     {
-        $headers = [
-            'Content-Type' => 'multipart/form-data; boundary=' . $query->getMultiPartPostDataBoundary()
-        ];
-
         try {
-            $param = $query->getRequestBuilder()->build($query)->getParams();
-            $response = $this->requestServlet(self::EXTRACT_SERVLET, $param, 'POST', $headers, $query->getRawPostFileData());
-
-            return [$response->extracted, (array)$response->extracted_metadata];
+            $response = $this->createAndExecuteRequest($query);
+            $fileName = basename($query->getFile());
+            $metaKey = $fileName . '_metadata';
+            return [$response->{$fileName}, (array)$response->{$metaKey}];
         } catch (\Exception $e) {
+            $param = $query->getRequestBuilder()->build($query)->getParams();
             $this->logger->log(
                 SolrLogManager::ERROR,
                 'Extracting text and meta data through Solr Cell over HTTP POST',
@@ -58,7 +58,6 @@ class SolrWriteService extends AbstractSolrService
                     'query' => (array)$query,
                     'parameters' => $param,
                     'file' => $query->getFile(),
-                    'headers' => $headers,
                     'query url' => self::EXTRACT_SERVLET,
                     'exception' => $e->getMessage()
                 ]
@@ -80,24 +79,46 @@ class SolrWriteService extends AbstractSolrService
         $this->deleteByQuery('type:' . trim($type));
 
         if ($commit) {
-            $this->commit(false, false, false);
+            $this->commit(false, false);
         }
     }
 
     /**
-     * Raw Delete Method. Takes a raw post body and sends it to the update service. Body should be
-     * a complete and well formed "delete" xml document
+     * Create a delete document based on a query and submit it
      *
-     * @param string $rawPost Expected to be utf-8 encoded xml document
-     * @param float|int $timeout Maximum expected duration of the delete operation on the server (otherwise, will throw a communication exception)
-     * @return \Apache_Solr_Response
+     * @param string $rawQuery Expected to be utf-8 encoded
+     * @return ResponseAdapter
      */
-    public function delete($rawPost, $timeout = 3600)
-    {
-        $response = $this->_sendRawPost($this->_updateUrl, $rawPost, $timeout);
-        $this->logger->log(SolrLogManager::NOTICE, 'Delete Query sent.', ['query' => $rawPost, 'query url' => $this->_updateUrl, 'response' => (array)$response]);
-
-        return $response;
+    public function deleteByQuery($rawQuery) {
+        $query = $this->client->createUpdate();
+        $query->addDeleteQuery($rawQuery);
+        return $this->createAndExecuteRequest($query);
     }
 
+    /**
+     * Add an array of Solr Documents to the index all at once
+     *
+     * @param array $documents Should be an array of Apache_Solr_Document instances
+     * @return ResponseAdapter
+     */
+    public function addDocuments($documents)
+    {
+        $update = $this->client->createUpdate();
+        $update->addDocuments($documents);
+        return $this->createAndExecuteRequest($update);
+    }
+
+    /**
+     * Send a commit command.  Will be synchronous unless both wait parameters are set to false.
+     *
+     * @param boolean $expungeDeletes Defaults to false, merge segments with deletes away
+     * @param boolean $waitSearcher Defaults to true, block until a new searcher is opened and registered as the main query searcher, making the changes visible
+     * @return ResponseAdapter
+     */
+    public function commit($expungeDeletes = false, $waitSearcher = true)
+    {
+        $update = $this->client->createUpdate();
+        $update->addCommit(false, $waitSearcher, $expungeDeletes);
+        return $this->createAndExecuteRequest($update);
+    }
 }

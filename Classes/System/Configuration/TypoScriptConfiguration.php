@@ -924,12 +924,12 @@ class TypoScriptConfiguration
      *
      * plugin.tx_solr.solr.timeout
      *
-     * @param float $defaultIfEmpty
-     * @return float
+     * @param int $defaultIfEmpty
+     * @return int
      */
-    public function getSolrTimeout($defaultIfEmpty = 0.0)
+    public function getSolrTimeout($defaultIfEmpty = 0)
     {
-        return (float)$this->getValueByPathOrDefaultValue('plugin.tx_solr.solr.timeout', $defaultIfEmpty);
+        return (int)$this->getValueByPathOrDefaultValue('plugin.tx_solr.solr.timeout', $defaultIfEmpty);
     }
 
     /**

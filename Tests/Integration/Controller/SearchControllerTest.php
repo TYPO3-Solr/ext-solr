@@ -176,7 +176,6 @@ class SearchControllerTest extends AbstractFrontendControllerTest
 
         $this->searchController->processRequest($this->searchRequest, $this->searchResponse);
         $resultPage1 = $this->searchResponse->getContent();
-
         $this->assertContains("Did you mean", $resultPage1, 'Could not find did you mean in response');
         $this->assertContains("shoes", $resultPage1, 'Could not find shoes in response');
     }

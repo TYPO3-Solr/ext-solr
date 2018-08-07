@@ -60,7 +60,9 @@ class SchemaStatus extends AbstractSolrStatus
     public function getStatus()
     {
         $reports = [];
-        $solrConnections = GeneralUtility::makeInstance(ConnectionManager::class)->getAllConnections();
+            /** @var $connectionManager ConnectionManager */
+        $connectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
+        $solrConnections = $connectionManager->getAllConnections();
 
         foreach ($solrConnections as $solrConnection) {
             $adminService = $solrConnection->getAdminService();

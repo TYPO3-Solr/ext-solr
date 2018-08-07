@@ -33,6 +33,9 @@ use ApacheSolrForTypo3\Solr\System\Solr\Service\AbstractSolrService;
 use ApacheSolrForTypo3\Solr\System\Solr\Service\SolrAdminService;
 use ApacheSolrForTypo3\Solr\System\Solr\Service\SolrReadService;
 use ApacheSolrForTypo3\Solr\System\Solr\Service\SolrWriteService;
+use ApacheSolrForTypo3\Solr\Util;
+use Solarium\Client;
+use Solarium\Core\Client\Endpoint;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -95,6 +98,11 @@ class SolrConnection
     /**
      * @var string
      */
+    protected $core = '';
+
+    /**
+     * @var string
+     */
     protected $scheme = 'http';
 
     /**
@@ -113,12 +121,19 @@ class SolrConnection
     protected $logger = null;
 
     /**
+     * @var array
+     */
+    protected $clients = [];
+
+    /**
      * Constructor
      *
      * @param string $host Solr host
      * @param string $port Solr port
      * @param string $path Solr path
      * @param string $scheme Scheme, defaults to http, can be https
+     * @param string $username the username that should be used to authenticate
+     * @param string $password the password that should be used to authenticate
      * @param TypoScriptConfiguration $typoScriptConfiguration
      * @param SynonymParser $synonymParser
      * @param StopWordParser $stopWordParser
@@ -140,15 +155,40 @@ class SolrConnection
     ) {
         $this->host = $host;
         $this->port = $port;
-        $this->path = $path;
+        $this->path = $this->getCoreBasePath($path);
+        $this->core = $this->getCoreName($path);
+
         $this->scheme = $scheme;
         $this->username = $username;
         $this->password = $password;
-        $this->configuration = $typoScriptConfiguration;
+        $this->configuration = $typoScriptConfiguration ?? Util::getSolrConfiguration();
         $this->synonymParser = $synonymParser;
         $this->stopWordParser = $stopWordParser;
         $this->schemaParser = $schemaParser;
         $this->logger = $logManager;
+    }
+
+    /**
+     * Returns the core name from the configured path without the core name.
+     *
+     * @return string
+     */
+    protected function getCoreBasePath($path)
+    {
+        $pathWithoutLeadingAndTrailingSlashes = trim(trim($path), "/");
+        $pathWithoutLastSegment = substr($pathWithoutLeadingAndTrailingSlashes, 0, strrpos($pathWithoutLeadingAndTrailingSlashes, "/"));
+        return '/' . $pathWithoutLastSegment . '/';
+    }
+
+    /**
+     * Returns the core name from the configured path.
+     *
+     * @return string
+     */
+    protected function getCoreName($path)
+    {
+        $paths = explode('/', trim($path, '/'));
+        return (string)array_pop($paths);
     }
 
     /**
@@ -160,7 +200,7 @@ class SolrConnection
             $this->adminService = $this->buildAdminService();
         }
 
-        return $this->initializeService($this->adminService);
+        return $this->adminService;
     }
 
     /**
@@ -168,7 +208,9 @@ class SolrConnection
      */
     protected function buildAdminService()
     {
-        return GeneralUtility::makeInstance(SolrAdminService::class, $this->host, $this->port, $this->path, $this->scheme, $this->configuration, $this->logger, $this->synonymParser, $this->stopWordParser, $this->schemaParser);
+        $client = $this->getClient('admin');
+        $this->initializeClient($client);
+        return GeneralUtility::makeInstance(SolrAdminService::class, $client, $this->configuration, $this->logger, $this->synonymParser, $this->stopWordParser, $this->schemaParser);
     }
 
     /**
@@ -180,7 +222,7 @@ class SolrConnection
             $this->readService = $this->buildReadService();
         }
 
-        return $this->initializeService($this->readService);
+        return $this->readService;
     }
 
     /**
@@ -188,15 +230,9 @@ class SolrConnection
      */
     protected function buildReadService()
     {
-        return GeneralUtility::makeInstance(
-            SolrReadService::class,
-            /** @scrutinizer ignore-type */ $this->host,
-            /** @scrutinizer ignore-type */ $this->port,
-            /** @scrutinizer ignore-type */ $this->path,
-            /** @scrutinizer ignore-type */ $this->scheme,
-            /** @scrutinizer ignore-type */ $this->configuration,
-            /** @scrutinizer ignore-type */ $this->logger
-        );
+        $client = $this->getClient('read');
+        $this->initializeClient($client);
+        return GeneralUtility::makeInstance(SolrReadService::class, $client);
     }
 
     /**
@@ -208,7 +244,7 @@ class SolrConnection
             $this->writeService = $this->buildWriteService();
         }
 
-        return $this->initializeService($this->writeService);
+        return $this->writeService;
     }
 
     /**
@@ -216,27 +252,34 @@ class SolrConnection
      */
     protected function buildWriteService()
     {
-        return GeneralUtility::makeInstance(
-            SolrWriteService::class,
-            /** @scrutinizer ignore-type */ $this->host,
-            /** @scrutinizer ignore-type */ $this->port,
-            /** @scrutinizer ignore-type */ $this->path,
-            /** @scrutinizer ignore-type */ $this->scheme,
-            /** @scrutinizer ignore-type */ $this->configuration,
-            /** @scrutinizer ignore-type */ $this->logger
-        );
+        $endpointKey = 'write';
+        $client = $this->getClient($endpointKey);
+        $this->initializeClient($client);
+        return GeneralUtility::makeInstance(SolrWriteService::class, $client);
     }
 
     /**
-     * @param AbstractSolrService $service
-     * @return AbstractSolrService
+     * @param Client $client
+     * @return Client
      */
-    protected function initializeService(AbstractSolrService $service) {
-        if (trim($this->username) !== '') {
-            $service->setAuthenticationCredentials($this->username, $this->password);
+    protected function initializeClient(Client $client) {
+        if (trim($this->username) === '') {
+            return $client;
         }
 
-        return $service;
+        $this->setAuthenticationOnAllEndpoints($client);
+
+        return $client;
+    }
+
+    /**
+     * @param Client $client
+     */
+    protected function setAuthenticationOnAllEndpoints(Client $client)
+    {
+        foreach ($client->getEndpoints() as $endpoint) {
+            $endpoint->setAuthentication($this->username, $this->password);
+        }
     }
 
     /**
@@ -249,4 +292,63 @@ class SolrConnection
     {
         return $this->scheme . '://' . $this->host . ':' . $this->port . $this->path;
     }
+
+    /**
+     * @param string $key
+     * @param int $timeout
+     * @return array
+     */
+    protected function getSolrClientOptions($key = 'read', $timeout = 5):array
+    {
+        return ['host' => $this->host, 'port' => $this->port, 'scheme' => $this->scheme, 'path' => $this->path, 'core' => $this->core, 'key' => $key, 'timeout' => $timeout];
+    }
+
+    /**
+     * @param string $endpointKey
+     * @return Client
+     */
+    protected function getClient($endpointKey): Client
+    {
+        if($this->clients[$endpointKey]) {
+            return $this->clients[$endpointKey];
+        }
+
+        $client = new Client(['adapter' => 'Solarium\Core\Client\Adapter\Guzzle']);
+
+        $client->clearEndpoints();
+
+        $this->checkIfRequiredPropertyIsSet($this->scheme, 'scheme');
+        $this->checkIfRequiredPropertyIsSet($this->host, 'host');
+        $this->checkIfRequiredPropertyIsSet($this->port, 'port');
+        $this->checkIfRequiredPropertyIsSet($this->path, 'path');
+        $this->checkIfRequiredPropertyIsSet($this->core, 'core');
+
+        $newEndpointOptions = $this->getSolrClientOptions($endpointKey, $this->configuration->getSolrTimeout());
+        $client->createEndpoint($newEndpointOptions, true);
+
+        $this->clients[$endpointKey] = $client;
+        return $client;
+    }
+
+    /**
+     * @param Client $client
+     * @param string $endpointKey
+     */
+    public function setClient(Client $client, $endpointKey = 'read')
+    {
+        $this->clients[$endpointKey] = $client;
+    }
+
+    /**
+     * @param mixed $property
+     * @param string $name
+     * @throws |UnexpectedValueException
+     */
+    protected function checkIfRequiredPropertyIsSet($property, $name)
+    {
+        if (empty($property)) {
+            throw new \UnexpectedValueException('Required solr connection property ' . $name. ' is missing.');
+        }
+    }
+
 }

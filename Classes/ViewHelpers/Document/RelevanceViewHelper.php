@@ -14,6 +14,7 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers\Document;
  * The TYPO3 project - inspiring people to share!
  */
 
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResult;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\ViewHelpers\AbstractSolrFrontendViewHelper;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
@@ -37,7 +38,7 @@ class RelevanceViewHelper extends AbstractSolrFrontendViewHelper
     {
         parent::initializeArguments();
         $this->registerArgument('resultSet', SearchResultSet::class, 'The context searchResultSet', true);
-        $this->registerArgument('document', \Apache_Solr_Document::class, 'The document to highlight', true);
+        $this->registerArgument('document', SearchResult::class, 'The document to highlight', true);
         $this->registerArgument('maximumScore', 'float', 'The maximum score that should be used for percentage calculation, if nothing is passed the maximum from the resultSet is used', false);
     }
 
@@ -49,7 +50,7 @@ class RelevanceViewHelper extends AbstractSolrFrontendViewHelper
      */
     public static function renderStatic(array $arguments, \Closure $renderChildrenClosure, RenderingContextInterface $renderingContext)
     {
-        /** @var $document \Apache_Solr_Document */
+        /** @var $document SearchResult */
         $document = $arguments['document'];
 
             /** @var $resultSet SearchResultSet */

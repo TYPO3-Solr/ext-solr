@@ -42,6 +42,8 @@ use ApacheSolrForTypo3\Solr\Search\SearchAware;
 use ApacheSolrForTypo3\Solr\Search\SearchComponentManager;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
+use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
+use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrIncompleteResponseException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResultBuilder;
@@ -290,9 +292,9 @@ class SearchResultSetService
      *
      * @param Query $query
      * @param SearchRequest $searchRequest
-     * @return \Apache_Solr_Response
+     * @return ResponseAdapter
      */
-    protected function doASearch($query, $searchRequest)
+    protected function doASearch($query, $searchRequest): ResponseAdapter
     {
         // the offset mulitplier is page - 1 but not less then zero
         $offsetMultiplier = max(0, $searchRequest->getPage() - 1);
@@ -417,6 +419,10 @@ class SearchResultSetService
         $response = $this->search->search($query, 0, 1);
         $parsedData = $response->getParsedData();
         $resultDocument = isset($parsedData->response->docs[0]) ? $parsedData->response->docs[0] : null;
+
+        if (!$resultDocument instanceof Document) {
+            throw new \UnexpectedValueException("Response did not contain a valid Document object");
+        }
 
         return $this->searchResultBuilder->fromApacheSolrDocument($resultDocument);
     }

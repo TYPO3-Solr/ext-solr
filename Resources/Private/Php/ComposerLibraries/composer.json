@@ -7,6 +7,6 @@
     "prepend-autoloader": false
   },
   "require": {
-    "solarium/solarium": "4.1.0-rc.1"
+    "solarium/solarium": "^4.1.0"
   }
 }

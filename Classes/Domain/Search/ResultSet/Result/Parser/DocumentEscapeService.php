@@ -26,6 +26,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\Parser;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use ApacheSolrForTypo3\Solr\Util;
 
 /**
@@ -52,15 +53,15 @@ class DocumentEscapeService {
      * This method is used to apply htmlspecialchars on all document fields that
      * are not configured to be secure. Secure mean that we know where the content is coming from.
      *
-     * @param array $documents
-     * @return \Apache_Solr_Document[]
+     * @param Document[] $documents
+     * @return Document[]
      */
     public function applyHtmlSpecialCharsOnAllFields(array $documents)
     {
         $trustedSolrFields = $this->typoScriptConfiguration->getSearchTrustedFieldsArray();
 
         foreach ($documents as $key => $document) {
-            $fieldNames = $document->getFieldNames();
+            $fieldNames = array_keys($document->getFields() ?? []);
 
             foreach ($fieldNames as $fieldName) {
                 if (is_array($trustedSolrFields) && in_array($fieldName, $trustedSolrFields)) {
@@ -68,7 +69,8 @@ class DocumentEscapeService {
                     continue;
                 }
 
-                $document->{$fieldName} = $this->applyHtmlSpecialCharsOnSingleFieldValue($document->{$fieldName});
+                $value = $this->applyHtmlSpecialCharsOnSingleFieldValue($document[$fieldName]);
+                $document->setField($fieldName, $value);
             }
 
             $documents[$key] = $document;

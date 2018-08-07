@@ -152,30 +152,4 @@ class ConnectionManagerTest extends UnitTest
         }
         $this->assertEquals($expectsException, $exceptionOccured);
     }
-
-    /**
-     * @test
-     */
-    public function authenticationIsNotTriggeredWithoutUsername()
-    {
-        $adminServiceMock = $this->getDumbMock(SolrAdminService::class);
-        $adminServiceMock->expects($this->never())->method('setAuthenticationCredentials');
-        $solrConnectionMock = $this->getMockBuilder(SolrConnection::class)->setMethods(['buildAdminService'])->getMock();
-        $solrConnectionMock->expects($this->once())->method('buildAdminService')->will($this->returnValue($adminServiceMock));
-        $this->connectionManager->expects($this->once())->method('buildSolrConnection')->will($this->returnValue($solrConnectionMock));
-        $this->connectionManager->getConnection('127.0.0.1', 8080, '/solr/core_en/', 'https', ' ', '')->getAdminService();
-    }
-
-    /**
-     * @test
-     */
-    public function authenticationIsTriggeredWhenUsernameIsPassed()
-    {
-        $adminServiceMock = $this->getDumbMock(SolrAdminService::class);
-        $adminServiceMock->expects($this->never())->method('setAuthenticationCredentials');
-        $solrConnectionMock = $this->getMockBuilder(SolrConnection::class)->setMethods(['buildAdminService'])->getMock();
-        $solrConnectionMock->expects($this->once())->method('buildAdminService')->will($this->returnValue($adminServiceMock));
-        $this->connectionManager->expects($this->once())->method('buildSolrConnection')->will($this->returnValue($solrConnectionMock));
-        $this->connectionManager->getConnection('127.0.0.1', 8080, '/solr/core_en/', 'https', 'foo', 'bar')->getAdminService();
-    }
 }

@@ -33,6 +33,8 @@ use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
 use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\SolrService;
+use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
+use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -62,7 +64,7 @@ class RepositoryTest extends UnitTest
      */
     public function findOneByPageIdAndByLanguageIdReturnsFirstFoundDocument()
     {
-        $apacheSolrDocumentCollection = [new \Apache_Solr_Document(), new \Apache_Solr_Document()];
+        $apacheSolrDocumentCollection = [new Document(), new Document()];
         $apacheSolrDocumentRepository = $this->getAccessibleMock(Repository::class, ['findByPageIdAndByLanguageId']);
         $apacheSolrDocumentRepository->expects($this->at(0))->method('findByPageIdAndByLanguageId')->will($this->returnValue($apacheSolrDocumentCollection));
 
@@ -123,12 +125,12 @@ class RepositoryTest extends UnitTest
 
         GeneralUtility::resetSingletonInstances($mockedSingletons);
 
-        $testDocuments = [new \Apache_Solr_Document(), new \Apache_Solr_Document()];
+        $testDocuments = [new Document(), new Document()];
 
         $parsedData = new \stdClass();
         $parsedData->response = new \stdClass();
         $parsedData->response->docs = $testDocuments;
-        $fakeResponse = $this->getDumbMock(\Apache_Solr_Response::class);
+        $fakeResponse = $this->getDumbMock(ResponseAdapter::class);
         $fakeResponse->expects($this->once())->method('getParsedData')->will($this->returnValue($parsedData));
         $search->expects($this->any())->method('search')->willReturn($fakeResponse);
         $documentEscapeServiceMock->expects($this->any())->method('applyHtmlSpecialCharsOnAllFields')->willReturn($expectedApacheSolrDocumentCollection);

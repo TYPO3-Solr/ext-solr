@@ -25,6 +25,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -36,17 +37,19 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class SearchResultBuilder {
 
     /**
-     * This method is used to wrap the \Apache_Solr_Document instance in an instance of the configured SearchResult
+     * This method is used to wrap the original solr document instance in an instance of the configured SearchResult
      * class.
      *
-     * @param \Apache_Solr_Document $originalDocument
+     * @param Document $originalDocument
      * @throws \InvalidArgumentException
      * @return SearchResult
      */
-    public function fromApacheSolrDocument(\Apache_Solr_Document $originalDocument)
+    public function fromApacheSolrDocument(Document $originalDocument)
     {
+
         $searchResultClassName = $this->getResultClassName();
-        $result = GeneralUtility::makeInstance($searchResultClassName, /** @scrutinizer ignore-type */ $originalDocument);
+        $result = GeneralUtility::makeInstance($searchResultClassName, /** @scrutinizer ignore-type */ $originalDocument->getFields() ?? []);
+
         if (!$result instanceof SearchResult) {
             throw new \InvalidArgumentException('Could not create result object with class: ' . (string)$searchResultClassName, 1470037679);
         }

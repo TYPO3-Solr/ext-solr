@@ -24,8 +24,6 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use Apache_Solr_Document;
-use Apache_Solr_Response;
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\Domain\Search\ApacheSolrDocument\Builder;
 use ApacheSolrForTypo3\Solr\FieldProcessor\Service;
@@ -33,6 +31,8 @@ use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
 use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
+use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
+use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Backend\Configuration\TranslationConfigurationProvider;
@@ -331,7 +331,7 @@ class Indexer extends AbstractIndexer
      *
      * @param Item $item An index queue item
      * @param int $language Language Id
-     * @return Apache_Solr_Document The Solr document converted from the record
+     * @return Document The Solr document converted from the record
      */
     protected function itemToDocument(Item $item, $language = 0)
     {
@@ -352,7 +352,7 @@ class Indexer extends AbstractIndexer
      *
      * @param Item $item The item to index
      * @param array $itemRecord The record to use to build the base document
-     * @return Apache_Solr_Document A basic Solr document
+     * @return Document A basic Solr document
      */
     protected function getBaseDocument(Item $item, array $itemRecord)
     {
@@ -393,7 +393,7 @@ class Indexer extends AbstractIndexer
      *
      * @param Item $item An index queue item
      * @param array $documents An array of Apache_Solr_Document objects to manipulate.
-     * @return array Array of manipulated Apache_Solr_Document objects.
+     * @return Document[] array Array of manipulated Document objects.
      */
     protected function processDocuments(Item $item, array $documents)
     {
@@ -416,10 +416,10 @@ class Indexer extends AbstractIndexer
      *
      * @param Item $item The item currently being indexed.
      * @param int $language The language uid currently being indexed.
-     * @param Apache_Solr_Document $itemDocument The document representing the item for the given language.
-     * @return array An array of additional Apache_Solr_Document objects to index.
+     * @param Document $itemDocument The document representing the item for the given language.
+     * @return Document[] array An array of additional Document objects to index.
      */
-    protected function getAdditionalDocuments(Item $item, $language, Apache_Solr_Document $itemDocument)
+    protected function getAdditionalDocuments(Item $item, $language, Document $itemDocument)
     {
         $documents = [];
 
@@ -552,7 +552,7 @@ class Indexer extends AbstractIndexer
      * @param array $siteLanguages
      *
      * @return int
-     * @throws \Apache_Solr_Exception
+     * @throws \RuntimeException
      */
     private function getDefaultLanguageUid(Item $item, array $rootPage, array $siteLanguages)
     {
@@ -562,7 +562,7 @@ class Indexer extends AbstractIndexer
             $defaultLanguageUid = $siteLanguages[min(array_keys($siteLanguages))];
         } elseif (($rootPage['l18n_cfg'] & 1) == 1 && count($siteLanguages) == 1) {
             $message = 'Root page ' . (int)$item->getRootPageUid() . ' is set to hide default translation, but no other language is configured!';
-            throw new \Apache_Solr_Exception($message);
+            throw new \RuntimeException($message);
         }
 
         return $defaultLanguageUid;
@@ -674,9 +674,9 @@ class Indexer extends AbstractIndexer
      *
      * @param Item $item The item that is being indexed.
      * @param array $itemDocuments An array of Solr documents created from the item's data
-     * @param Apache_Solr_Response $response The Solr response for the particular index document
+     * @param ResponseAdapter $response The Solr response for the particular index document
      */
-    protected function log(Item $item, array $itemDocuments, Apache_Solr_Response $response)
+    protected function log(Item $item, array $itemDocuments, ResponseAdapter $response)
     {
         if (!$this->loggingEnabled) {
             return;

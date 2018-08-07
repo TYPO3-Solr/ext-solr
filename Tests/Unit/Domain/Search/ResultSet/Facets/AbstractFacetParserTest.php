@@ -18,6 +18,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Faceting;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetParser;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
@@ -41,8 +42,6 @@ abstract class AbstractFacetParserTest extends UnitTest
     protected function initializeSearchResultSetFromFakeResponse($fixtureFile, $facetConfiguration, array $activeFilters = [])
     {
         $fakeResponseJson = $this->getFixtureContentByName($fixtureFile);
-        $httpResponseMock = $this->getDumbMock('\Apache_Solr_HttpTransport_Response');
-        $httpResponseMock->expects($this->any())->method('getBody')->will($this->returnValue($fakeResponseJson));
 
         $facetingMock = $this->getMockBuilder(Faceting::class)->setMethods(['getSorting'])->disableOriginalConstructor()->getMock();
         $facetingMock->expects($this->any())->method('getSorting')->will($this->returnValue(''));
@@ -51,7 +50,7 @@ abstract class AbstractFacetParserTest extends UnitTest
 
         $searchRequestMock = $this->getMockBuilder(SearchRequest::class)->setMethods(['getActiveFacetNames', 'getContextTypoScriptConfiguration', 'getActiveFacets'])->getMock();
 
-        $fakeResponse = new \Apache_Solr_Response($httpResponseMock);
+        $fakeResponse = new ResponseAdapter($fakeResponseJson, 200);
 
         $searchResultSet = new SearchResultSet();
         $searchResultSet->setUsedQuery($usedQueryMock);
