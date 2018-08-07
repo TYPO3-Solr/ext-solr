@@ -57,9 +57,9 @@ class SolrWriteServiceTest extends IntegrationTest
     public function canExtractByQuery()
     {
         $testFilePath = $this->getFixturePathByName('testpdf.pdf');
-            /** @var $extractQuery \ApacheSolrForTypo3\Solr\ExtractingQuery */
+            /** @var $extractQuery \ApacheSolrForTypo3\Solr\Domain\Search\Query\ExtractingQuery*/
         $extractQuery = GeneralUtility::makeInstance(ExtractingQuery::class, $testFilePath);
-        $extractQuery->setExtractOnly();
+        $extractQuery->setExtractOnly(true);
         $response = $this->solrWriteService->extractByQuery($extractQuery);
         $this->assertContains('PDF Test', $response[0], 'Could not extract text');
     }

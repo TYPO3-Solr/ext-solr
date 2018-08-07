@@ -269,7 +269,7 @@ class SearchResultSet
     }
 
     /**
-     * @param \ApacheSolrForTypo3\Solr\Domain\Search\Query\Query $usedQuery
+     * @param Query $usedQuery
      */
     public function setUsedQuery($usedQuery)
     {
@@ -279,7 +279,7 @@ class SearchResultSet
     /**
      * Retrieves the query object that has been used to build this result set.
      *
-     * @return \ApacheSolrForTypo3\Solr\Domain\Search\Query\Query
+     * @return Query
      */
     public function getUsedQuery()
     {
@@ -302,14 +302,6 @@ class SearchResultSet
     public function getUsedPage()
     {
         return $this->usedPage;
-    }
-
-    /**
-     * @return int
-     */
-    public function getResultsPerPage()
-    {
-        return $this->usedQuery->getPagination()->getResultsPerPage();
     }
 
     /**

@@ -24,7 +24,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 
 /**
@@ -33,7 +33,7 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
  *
  * @package ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder
  */
-class Spellchecking extends AbstractDeactivatableParameterBuilder implements ParameterBuilder
+class Spellchecking extends AbstractDeactivatable implements ParameterBuilder
 {
 
     /**
@@ -54,23 +54,11 @@ class Spellchecking extends AbstractDeactivatableParameterBuilder implements Par
     }
 
     /**
-     * @param Query $query
-     * @return Query
+     * @return int
      */
-    public function build(Query $query): Query
+    public function getMaxCollationTries(): int
     {
-        if (!$this->isEnabled) {
-            $query->getQueryParametersContainer()->removeMany(['spellcheck', 'spellcheck.collate', 'spellcheck.maxCollationTries']);
-            return $query;
-        }
-
-        $spellcheckingParameters = [];
-        $spellcheckingParameters['spellcheck'] = 'true';
-        $spellcheckingParameters['spellcheck.collate'] = 'true';
-        $spellcheckingParameters['spellcheck.maxCollationTries'] = $this->maxCollationTries;
-
-        $query->getQueryParametersContainer()->merge($spellcheckingParameters);
-        return $query;
+        return $this->maxCollationTries;
     }
 
     /**
@@ -95,5 +83,20 @@ class Spellchecking extends AbstractDeactivatableParameterBuilder implements Par
     public static function getEmpty()
     {
         return new Spellchecking(false);
+    }
+
+    /**
+     * @param QueryBuilder $parentBuilder
+     * @return QueryBuilder
+     */
+    public function build(QueryBuilder $parentBuilder): QueryBuilder
+    {
+        $query = $parentBuilder->getQuery();
+        if (!$this->getIsEnabled()) {
+            $query->removeComponent($query->getSpellcheck());
+            return $parentBuilder;
+        }
+        $query->getSpellcheck()->setMaxCollationTries($this->getMaxCollationTries());
+        return $parentBuilder;
     }
 }

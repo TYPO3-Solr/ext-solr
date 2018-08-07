@@ -24,7 +24,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -45,7 +45,7 @@ class QueryFields implements ParameterBuilder
      *
      * @param array $queryFields
      */
-    public function __construct(array $queryFields)
+    public function __construct(array $queryFields = [])
     {
         $this->queryFields = $queryFields;
     }
@@ -57,23 +57,6 @@ class QueryFields implements ParameterBuilder
     public function set($fieldName, $boost = 1.0)
     {
         $this->queryFields[$fieldName] = (float)$boost;
-    }
-
-    /**
-     * @param Query $query
-     * @return Query
-     */
-    public function build(Query $query): Query
-    {
-        $string = $this->toString();
-        // return empty array on empty string
-
-        if (trim($string) === '') {
-            return $query;
-        }
-
-        $query->getQueryParametersContainer()->set('qf', $string);
-        return $query;
     }
 
     /**
@@ -122,5 +105,15 @@ class QueryFields implements ParameterBuilder
         }
 
         return new QueryFields($queryFields);
+    }
+
+    /**
+     * @param QueryBuilder $parentBuilder
+     * @return QueryBuilder
+     */
+    public function build(QueryBuilder $parentBuilder): QueryBuilder
+    {
+        $parentBuilder->getQuery()->getEDisMax()->setQueryFields($this->toString());
+        return $parentBuilder;
     }
 }

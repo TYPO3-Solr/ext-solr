@@ -24,13 +24,14 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Query;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use Solarium\QueryType\Extract\Query as SolariumExtractQuery;
+
 /**
  * Specialized query for content extraction using Solr Cell
  *
  */
-class ExtractingQuery extends Query
+class ExtractingQuery extends SolariumExtractQuery
 {
-    protected $file;
     protected $multiPartPostDataBoundary;
 
     /**
@@ -40,10 +41,10 @@ class ExtractingQuery extends Query
      */
     public function __construct($file)
     {
-        parent::__construct('');
-
-        $this->file = $file;
+        parent::__construct();
+        $this->setFile($file);
         $this->multiPartPostDataBoundary = '--' . md5(uniqid(time()));
+        $this->addParam('extractFormat', 'text');
     }
 
     /**
@@ -57,35 +58,13 @@ class ExtractingQuery extends Query
     }
 
     /**
-     * Gets the absolute path to the file to extract content and meta data from.
-     *
-     * @return string Absolute path to the file to extract content and meta data from.
-     */
-    public function getFile()
-    {
-        return $this->file;
-    }
-
-    /**
-     * Sets the absolute path to the file to extract content and meta data from.
-     *
-     * @param string $file Absolute path to the file to extract content and meta data from.
-     */
-    public function setFile($file)
-    {
-        if (is_file($file)) {
-            $this->file = $file;
-        }
-    }
-
-    /**
      * Gets the filename portion of the file.
      *
      * @return string The filename.
      */
     public function getFileName()
     {
-        return basename($this->file);
+        return basename($this->getFile());
     }
 
     /**
@@ -101,11 +80,9 @@ class ExtractingQuery extends Query
             $boundary = $this->multiPartPostDataBoundary;
         }
 
-        $fileData = file_get_contents($this->file);
+        $fileData = file_get_contents($this->getFile());
         if ($fileData === false) {
-            throw new \Apache_Solr_InvalidArgumentException(
-                'Could not retrieve content from file ' . $this->file
-            );
+            throw new \Apache_Solr_InvalidArgumentException('Could not retrieve content from file ' . $this->getFile());
         }
 
         $data = "--{$boundary}\r\n";
@@ -116,39 +93,5 @@ class ExtractingQuery extends Query
         $data .= "\r\n--{$boundary}--\r\n";
 
         return $data;
-    }
-
-    /**
-     * En / Disables extraction only
-     *
-     * @param bool $extractOnly If TRUE, only extracts content from the given file without indexing
-     */
-    public function setExtractOnly($extractOnly = true)
-    {
-        if ($extractOnly) {
-            $this->queryParametersContainer->set('extractOnly', 'true');
-        } else {
-            $this->queryParametersContainer->remove('extractOnly');
-        }
-    }
-
-    /**
-     * Builds an array of query parameters to use for the search query.
-     *
-     * @return array An array ready to use with query parameters
-     */
-    public function getQueryParameters()
-    {
-        $filename = basename($this->file);
-
-        // TODO create an Apache Solr patch to support Apache Tika's -m (and -l) options
-        $extractingParameters = [
-            'resource.name' => $filename,
-            'extractFormat' => 'text',
-            // Matches the -t command for the tika CLI app.
-        ];
-
-        $this->queryParametersContainer->merge($extractingParameters);
-        return $this->queryParametersContainer->toArray();
     }
 }

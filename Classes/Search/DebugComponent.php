@@ -24,9 +24,11 @@ namespace ApacheSolrForTypo3\Solr\Search;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequestAware;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Debug search component
@@ -50,6 +52,22 @@ class DebugComponent extends AbstractComponent implements QueryAware, SearchRequ
     protected $seachRequest;
 
     /**
+     * QueryBuilder
+     *
+     * @var QueryBuilder|object
+     */
+    protected $queryBuilder;
+
+    /**
+     * AccessComponent constructor.
+     * @param QueryBuilder|null
+     */
+    public function __construct(QueryBuilder $queryBuilder = null)
+    {
+        $this->queryBuilder = $queryBuilder ?? GeneralUtility::makeInstance(QueryBuilder::class);
+    }
+
+    /**
      * Provides a component that is aware of the current SearchRequest
      *
      * @param SearchRequest $searchRequest
@@ -68,7 +86,7 @@ class DebugComponent extends AbstractComponent implements QueryAware, SearchRequ
     public function initializeSearchComponent()
     {
         if ($this->seachRequest->getContextTypoScriptConfiguration()->getEnabledDebugMode()) {
-            $this->query->setDebugMode();
+            $this->queryBuilder->startFrom($this->query)->useDebug(true);
         }
     }
 

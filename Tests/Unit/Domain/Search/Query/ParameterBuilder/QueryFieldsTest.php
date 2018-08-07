@@ -1,5 +1,5 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\Query\ParameterBuilder;
+namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\Query\Parameter;
 
 /***************************************************************
  *  Copyright notice

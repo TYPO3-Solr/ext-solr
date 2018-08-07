@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Query;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\ReturnFields;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\Helper\EscapeService;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Util;
@@ -53,13 +54,12 @@ class SuggestQuery extends Query
      */
     public function __construct($keywords, $solrConfiguration = null)
     {
+        parent::__construct();
         $keywords = (string)$keywords;
-        if ($solrConfiguration == null) {
-            $solrConfiguration = Util::getSolrConfiguration();
-        }
 
-        parent::__construct('');
+        $solrConfiguration = $solrConfiguration ?? Util::getSolrConfiguration();
 
+        $this->setQuery($keywords);
         $this->configuration = $solrConfiguration->getObjectByPathOrDefault('plugin.tx_solr.suggest.', []);
 
         if (!empty($this->configuration['treatMultipleTermsAsSingleTerm'])) {
@@ -70,31 +70,16 @@ class SuggestQuery extends Query
             $fullKeywords = trim($matches[2]);
             $partialKeyword = trim($matches[3]);
 
-            $this->getQueryStringContainer()->setKeywords($fullKeywords);
+            $this->setQuery($fullKeywords);
             $this->prefix = EscapeService::escape($partialKeyword);
         }
 
-        $this->setAlternativeQuery('*:*');
-    }
-
-    /**
-     * Returns the query parameters that should be used.
-     *
-     * @return array
-     */
-    public function getQueryParameters()
-    {
-        $suggestParameters = [
-            'facet' => 'on',
-            'facet.prefix' => $this->prefix,
-            'facet.field' => $this->configuration['suggestField'],
-            'facet.limit' => $this->configuration['numberOfSuggestions'],
-            'facet.mincount' => '1',
-            'fl' => $this->configuration['suggestField']
-        ];
-
-        $this->filters->build($this);
-        $this->queryParametersContainer->merge($suggestParameters);
-        return $this->queryParametersContainer->toArray();
+        $this->getEDisMax()->setQueryAlternative('*:*');
+        $this->setFields(ReturnFields::fromString($this->configuration['suggestField'])->getValues());
+        $this->addParam('facet', 'on');
+        $this->addParam('facet.prefix', $this->prefix);
+        $this->addParam('facet.field', $this->configuration['suggestField']);
+        $this->addParam('facet.limit', $this->configuration['numberOfSuggestions']);
+        $this->addParam('facet.mincount', 1);
     }
 }

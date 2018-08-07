@@ -106,7 +106,7 @@ class StatisticsWriterProcessor implements SearchResultSetProcessor
      */
     protected function getProcessedKeywords(Query $query, $lowerCaseQuery = false)
     {
-        $keywords = $query->getQueryStringContainer()->getKeywords();
+        $keywords = $query->getQuery();
         $keywords = $this->sanitizeString($keywords);
         if ($lowerCaseQuery) {
             $keywords = mb_strtolower($keywords);

@@ -24,13 +24,11 @@ namespace ApacheSolrForTypo3\Solr;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\Parser\DocumentEscapeService;
-use ApacheSolrForTypo3\Solr\Search\FacetsModifier;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrCommunicationException;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query as NewQuery;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -51,7 +49,7 @@ class Search
     /**
      * The search query
      *
-     * @var NewQuery
+     * @var Query
      */
     protected $query = null;
 
@@ -131,7 +129,7 @@ class Search
      * @return \Apache_Solr_Response Solr response
      * @throws \Exception
      */
-    public function search(NewQuery $query, $offset = 0, $limit = 10)
+    public function search(Query $query, $offset = 0, $limit = 10)
     {
         $this->query = $query;
 
@@ -140,22 +138,17 @@ class Search
         }
 
         try {
-            $response = $this->solr->getReadService()->search(
-                (string)$query->getQueryStringContainer()->getQueryString(),
-                $offset,
-                $limit,
-                $query->getQueryParameters()
-            );
+            $param = $query->getRequestBuilder()->build($query)->getParams();
+            $response = $this->solr->getReadService()->search((string)$query->getQuery(), $offset, $limit, $param);
 
             if ($this->configuration->getLoggingQueryQueryString()) {
                 $this->logger->log(
                     SolrLogManager::INFO,
                     'Querying Solr, getting result',
                     [
-                        'query string' => $query->getQueryStringContainer()->getQueryString(),
-                        'query parameters' => $query->getQueryParameters(),
-                        'response' => json_decode($response->getRawResponse(),
-                            true)
+                        'query string' => $query->getQuery(),
+                        'query parameters' => $param,
+                        'response' => json_decode($response->getRawResponse(), true)
                     ]
                 );
             }
@@ -216,7 +209,7 @@ class Search
     /**
      * Gets the query object.
      *
-     * @return NewQuery Query
+     * @return Query
      */
     public function getQuery()
     {

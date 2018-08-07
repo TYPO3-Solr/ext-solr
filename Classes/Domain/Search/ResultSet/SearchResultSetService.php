@@ -26,8 +26,9 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\QueryFields;
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\SearchQuery;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\Parser\ResultParserRegistry;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResult;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResultCollection;
@@ -411,9 +412,8 @@ class SearchResultSetService
      */
     public function getDocumentById($documentId)
     {
-        /* @var $query Query */
-        $query = GeneralUtility::makeInstance(Query::class, /** @scrutinizer ignore-type */ $documentId);
-        $query->setQueryFields(QueryFields::fromString('id'));
+        /* @var $query SearchQuery */
+        $query = $this->queryBuilder->newSearchQuery($documentId)->useQueryFields(QueryFields::fromString('id'))->getQuery();
         $response = $this->search->search($query, 0, 1);
         $parsedData = $response->getParsedData();
         $resultDocument = isset($parsedData->response->docs[0]) ? $parsedData->response->docs[0] : null;

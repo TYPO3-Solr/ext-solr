@@ -92,9 +92,7 @@ class StatisticsWriterProcessorTest extends UnitTest
         $this->typoScriptConfigurationMock->expects($this->once())->method('getStatisticsAnonymizeIP')->will($this->returnValue(0));
         $this->searchRequestMock->expects($this->once())->method('getContextTypoScriptConfiguration')->will($this->returnValue($this->typoScriptConfigurationMock));
 
-        $queryStringsMock = $this->getDumbMock(QueryStringContainer::class);
-        $queryStringsMock->expects($this->once())->method('getKeywords')->willReturn('my search');
-        $this->queryMock->expects($this->once())->method('getQueryStringContainer')->willReturn($queryStringsMock);
+        $this->queryMock->expects($this->once())->method('getQuery')->willReturn('my search');
 
         $resultSetMock = $this->getDumbMock(SearchResultSet::class);
         $resultSetMock->expects($this->once())->method('getUsedQuery')->will($this->returnValue($this->queryMock));

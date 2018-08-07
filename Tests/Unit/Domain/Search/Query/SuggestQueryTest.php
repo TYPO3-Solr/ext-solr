@@ -25,6 +25,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\Query;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\Helper\EscapeService;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\SuggestQuery;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteHashService;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
@@ -49,8 +50,10 @@ class SuggestQueryTest extends UnitTest
         ];
 
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
-        $suggestQuery = new SuggestQuery('typ', $fakeConfiguration);
-        $this->assertFalse($suggestQuery->getFieldCollapsing()->getIsEnabled(), 'Collapsing should never be active for a suggest query, even when active');
+        $queryBuilder = new QueryBuilder($fakeConfiguration);
+        $suggestQuery = $queryBuilder->newSuggestQuery('type')->getQuery();
+
+        $this->assertNull($suggestQuery->getFilterQuery('fieldCollapsing'), 'Collapsing should never be active for a suggest query, even when active');
     }
 
     /**
@@ -60,8 +63,10 @@ class SuggestQueryTest extends UnitTest
     {
         $fakeConfiguration = new TypoScriptConfiguration([]);
         $suggestQuery = new SuggestQuery('typ', $fakeConfiguration);
-        $suggestQuery->getFilters()->add('+type:pages');
-        $queryParameters = $suggestQuery->getQueryParameters();
-        $this->assertSame('+type:pages', $queryParameters['fq'][0], 'Filter was not added to the suggest query parameters');
+
+        $queryBuilder = new QueryBuilder($fakeConfiguration);
+        $queryBuilder->startFrom($suggestQuery)->useFilter('+type:pages');
+        $queryParameters = $suggestQuery->getRequestBuilder()->build($suggestQuery)->getParams();
+        $this->assertSame('+type:pages', $queryParameters['fq'], 'Filter was not added to the suggest query parameters');
     }
 }

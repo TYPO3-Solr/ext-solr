@@ -24,8 +24,10 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\ParameterBuilder;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use Solarium\QueryType\Select\Query\Query;
 
 /**
  * The Grouping ParameterProvider is responsible to build the solr query parameters
@@ -33,7 +35,7 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
  *
  * @package ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder
  */
-class Grouping extends AbstractDeactivatableParameterBuilder implements ParameterBuilder
+class Grouping extends AbstractDeactivatable implements ParameterBuilder
 {
 
     /**
@@ -79,42 +81,6 @@ class Grouping extends AbstractDeactivatableParameterBuilder implements Paramete
         $this->queries = $queries;
         $this->numberOfGroups = $numberOfGroups;
         $this->resultsPerGroup = $resultsPerGroup;
-    }
-
-    /**
-     * @param Query $query
-     * @return Query
-     */
-    public function build(Query $query): Query
-    {
-        if (!$this->isEnabled) {
-            $query->getQueryParametersContainer()->removeMany(['group', 'group.format', 'group.ngroups', 'group.limit', 'group.query', 'group.sort', 'group.field']);
-
-            return $query;
-        }
-        $groupingParameter = [];
-        $groupingParameter ['group'] = 'true';
-        $groupingParameter ['group.format'] = 'grouped';
-        $groupingParameter ['group.ngroups'] = 'true';
-
-        if ($this->resultsPerGroup) {
-            $groupingParameter['group.limit'] = $this->resultsPerGroup;
-        }
-
-        if (count($this->queries) > 0) {
-            $groupingParameter['group.query'] = $this->queries;
-        }
-
-        if (count($this->sortings) > 0) {
-            $groupingParameter['group.sort'] = $this->sortings;
-        }
-
-        if (count($this->fields) > 0) {
-            $groupingParameter['group.field'] = $this->fields;
-        }
-
-        $query->getQueryParametersContainer()->merge($groupingParameter);
-        return $query;
     }
 
     /**
@@ -263,5 +229,28 @@ class Grouping extends AbstractDeactivatableParameterBuilder implements Paramete
     public static function getEmpty()
     {
         return new Grouping(false);
+    }
+
+    /**
+     * @param QueryBuilder $parentBuilder
+     * @return QueryBuilder
+     */
+    public function build(QueryBuilder $parentBuilder): QueryBuilder
+    {
+        $query = $parentBuilder->getQuery();
+        if(!$this->getIsEnabled()) {
+            $query->removeComponent($query->getGrouping());
+            return $parentBuilder;
+        }
+
+        $query->getGrouping()->setFields($this->getFields());
+        $query->getGrouping()->setLimit($this->getResultsPerGroup());
+        $query->getGrouping()->setQueries($this->getQueries());
+        $query->getGrouping()->setFormat('grouped');
+        $query->getGrouping()->setNumberOfGroups(true);
+
+        $sorting = implode(' ', $this->getSortings());
+        $query->getGrouping()->setSort($sorting);
+        return $parentBuilder;
     }
 }

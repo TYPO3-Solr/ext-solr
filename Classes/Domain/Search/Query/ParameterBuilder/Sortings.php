@@ -32,83 +32,70 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @package ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder
  */
-class Sorting extends AbstractDeactivatable
+class Sortings extends AbstractDeactivatable
 {
-    const SORT_ASC = 'ASC';
-    const SORT_DESC = 'DESC';
-
     /**
-     * @var string
+     * @var array
      */
-    protected $fieldName = '';
+    protected $sortings = [];
 
     /**
-     * @var string
-     */
-    protected $direction = self::SORT_ASC;
-
-    /**
-     * Debug constructor.
-     *
+     * Sortings constructor.
      * @param bool $isEnabled
-     * @param string $fieldName
-     * @param string $direction
+     * @param array $sortings
      */
-    public function __construct($isEnabled = false, $fieldName = '', $direction = self::SORT_ASC)
+    public function __construct($isEnabled = false, $sortings = [])
     {
         $this->isEnabled = $isEnabled;
-        $this->setFieldName($fieldName);
-        $this->setDirection($direction);
+        $this->setSortings($sortings);
     }
 
     /**
-     * @return Sorting
+     * @return Sortings
      */
     public static function getEmpty()
     {
-        return new Sorting(false);
+        return new Sortings(false);
     }
 
     /**
-     * @return string
+     * @return Sorting[]
      */
-    public function getFieldName(): string
+    public function getSortings(): array
     {
-        return $this->fieldName;
+        return $this->sortings;
     }
 
     /**
-     * @param string $fieldName
+     * @param array $sortings
      */
-    public function setFieldName(string $fieldName)
+    public function setSortings(array $sortings)
     {
-        $this->fieldName = $fieldName;
+        $this->sortings = $sortings;
     }
 
     /**
-     * @return string
+     * @param Sorting $sorting
      */
-    public function getDirection(): string
+    public function addSorting(Sorting $sorting)
     {
-        return $this->direction;
+        $this->sortings[] = $sorting;
     }
 
     /**
-     * @param string $direction
+     * Parses a sortings representation "<fieldName> <direction>,<fieldName> <direction>"
+     * @param string $sortingsString
+     * @return Sortings
      */
-    public function setDirection(string $direction)
+    public static function fromString($sortingsString)
     {
-        $this->direction = $direction;
-    }
+        $sortFields = GeneralUtility::trimExplode(',',$sortingsString);
+        $sortings = [];
+        foreach($sortFields as $sortField) {
+            $sorting = Sorting::fromString($sortField);
+            $sortings[] = $sorting;
+        }
 
-    /**
-     * Parses a sorting representation "<fieldName> <direction>"
-     * @param string $sortingString
-     * @return Sorting
-     */
-    public static function fromString($sortingString)
-    {
-        $parts = GeneralUtility::trimExplode(' ', $sortingString);
-        return new Sorting(true, $parts[0], $parts[1]);
+        return new Sortings(true, $sortings);
     }
 }

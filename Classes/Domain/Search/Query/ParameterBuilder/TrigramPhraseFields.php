@@ -23,12 +23,14 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 
 /**
  * The TrigramPhraseFields class
  */
-class TrigramPhraseFields extends AbstractFieldList
+class TrigramPhraseFields extends AbstractFieldList implements ParameterBuilder
 {
     /**
      * Parameter key which should be used for Apache Solr URL query
@@ -61,5 +63,32 @@ class TrigramPhraseFields extends AbstractFieldList
         }
 
         return self::fromString((string)$solrConfiguration->getSearchQueryTrigramPhraseFields());
+    }
+
+    /**
+     * Parses the string representation of the fieldList (e.g. content^100, title^10) to the object representation.
+     *
+     * @param string $fieldListString
+     * @param string $delimiter
+     * @return TrigramPhraseFields
+     */
+    protected static function initializeFromString(string $fieldListString, string $delimiter = ',') : TrigramPhraseFields
+    {
+        $fieldList = self::buildFieldList($fieldListString, $delimiter);
+        return new TrigramPhraseFields(true, $fieldList);
+    }
+
+    /**
+     * @param QueryBuilder $parentBuilder
+     * @return QueryBuilder
+     */
+    public function build(QueryBuilder $parentBuilder): QueryBuilder
+    {
+        $trigramPhraseFieldsString = $this->toString();
+        if ($trigramPhraseFieldsString === '' || !$this->getIsEnabled()) {
+            return $parentBuilder;
+        }
+        $parentBuilder->getQuery()->getEDisMax()->setPhraseTrigramFields($trigramPhraseFieldsString);
+        return $parentBuilder;
     }
 }

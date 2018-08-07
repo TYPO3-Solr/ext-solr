@@ -24,7 +24,9 @@ namespace ApacheSolrForTypo3\Solr\Search;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Analysis search component
@@ -42,14 +44,28 @@ class AnalysisComponent extends AbstractComponent implements QueryAware
     protected $query;
 
     /**
+     * QueryBuilder
+     *
+     * @var QueryBuilder|object
+     */
+    protected $queryBuilder;
+
+    /**
+     * AccessComponent constructor.
+     * @param QueryBuilder|null
+     */
+    public function __construct(QueryBuilder $queryBuilder = null)
+    {
+        $this->queryBuilder = $queryBuilder ?? GeneralUtility::makeInstance(QueryBuilder::class);
+    }
+
+    /**
      * Initializes the search component.
-     *
-     *
      */
     public function initializeSearchComponent()
     {
         if ($this->searchConfiguration['results.']['showDocumentScoreAnalysis']) {
-            $this->query->setDebugMode();
+            $this->queryBuilder->startFrom($this->query)->useDebug(true);
         }
     }
 

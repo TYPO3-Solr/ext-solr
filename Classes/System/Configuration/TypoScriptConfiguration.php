@@ -1624,7 +1624,7 @@ class TypoScriptConfiguration
      * plugin.tx_solr.search.results.resultsHighlighting
      *
      * @param boolean $defaultIfEmpty
-     * @return string
+     * @return boolean
      */
     public function getSearchResultsHighlighting($defaultIfEmpty = false)
     {

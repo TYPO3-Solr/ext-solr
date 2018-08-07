@@ -23,7 +23,10 @@ namespace ApacheSolrForTypo3\Solr\Query\Modifier;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Enables tracking of detailed statistics
@@ -32,6 +35,19 @@ use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
  */
 class Statistics implements Modifier
 {
+    /**
+     * @var QueryBuilder
+     */
+    protected $queryBuilder;
+
+    /**
+     * Elevation constructor.
+     * @param QueryBuilder|null $builder
+     */
+    public function __construct(QueryBuilder $builder = null)
+    {
+        $this->queryBuilder = $builder ?? GeneralUtility::makeInstance(QueryBuilder::class);
+    }
 
     /**
      * Enables the query's debug mode to get more detailed information.
@@ -41,8 +57,6 @@ class Statistics implements Modifier
      */
     public function modifyQuery(Query $query)
     {
-        $query->setDebugMode(true);
-
-        return $query;
+        return $this->queryBuilder->startFrom($query)->useDebug(true)->getQuery();
     }
 }

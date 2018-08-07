@@ -46,20 +46,17 @@ class SolrWriteService extends AbstractSolrService
         ];
 
         try {
-            $response = $this->requestServlet(
-                self::EXTRACT_SERVLET,
-                $query->getQueryParameters(),
-                'POST',
-                $headers,
-                $query->getRawPostFileData()
-            );
+            $param = $query->getRequestBuilder()->build($query)->getParams();
+            $response = $this->requestServlet(self::EXTRACT_SERVLET, $param, 'POST', $headers, $query->getRawPostFileData());
+
+            return [$response->extracted, (array)$response->extracted_metadata];
         } catch (\Exception $e) {
             $this->logger->log(
                 SolrLogManager::ERROR,
                 'Extracting text and meta data through Solr Cell over HTTP POST',
                 [
                     'query' => (array)$query,
-                    'parameters' => $query->getQueryParameters(),
+                    'parameters' => $param,
                     'file' => $query->getFile(),
                     'headers' => $headers,
                     'query url' => self::EXTRACT_SERVLET,
@@ -68,10 +65,7 @@ class SolrWriteService extends AbstractSolrService
             );
         }
 
-        return [
-            $response->extracted,
-            (array)$response->extracted_metadata
-        ];
+        return [];
     }
 
     /**
