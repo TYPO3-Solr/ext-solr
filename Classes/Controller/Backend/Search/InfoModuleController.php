@@ -28,6 +28,7 @@ use ApacheSolrForTypo3\Solr\Api;
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\Domain\Search\Statistics\StatisticsRepository;
 use ApacheSolrForTypo3\Solr\Domain\Search\ApacheSolrDocument\Repository;
+use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\System\Validator\Path;
 use TYPO3\CMS\Backend\Template\ModuleTemplate;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
@@ -132,7 +133,7 @@ class InfoModuleController extends AbstractModuleController
 
         foreach ($connections as $connection) {
             $coreAdmin = $connection->getAdminService();
-            $coreUrl = $coreAdmin->getScheme() . '://' . $coreAdmin->getHost() . ':' . $coreAdmin->getPort() . $coreAdmin->getPath();
+            $coreUrl = (string)$coreAdmin;
 
             if ($coreAdmin->ping()) {
                 $connectedHosts[] = $coreUrl;
@@ -140,8 +141,8 @@ class InfoModuleController extends AbstractModuleController
                 $missingHosts[] = $coreUrl;
             }
 
-            if (!$path->isValidSolrPath($coreAdmin->getPath())) {
-                $invalidPaths[] = $coreAdmin->getPath();
+            if (!$path->isValidSolrPath($coreAdmin->getCorePath())) {
+                $invalidPaths[] = $coreAdmin->getCorePath();
             }
         }
 
@@ -208,7 +209,7 @@ class InfoModuleController extends AbstractModuleController
             $coreAdmin = $solrCoreConnection->getAdminService();
 
             $indexFieldsInfo = [
-                'corePath' => $coreAdmin->getPath()
+                'corePath' => $coreAdmin->getCorePath()
             ];
             if ($coreAdmin->ping()) {
                 $lukeData = $coreAdmin->getLukeMetaData();
@@ -238,11 +239,11 @@ class InfoModuleController extends AbstractModuleController
 
                 $this->addFlashMessage(
                     '',
-                    'Unable to contact Apache Solr server: ' . $this->selectedSite->getLabel() . ' ' . $coreAdmin->getPath(),
+                    'Unable to contact Apache Solr server: ' . $this->selectedSite->getLabel() . ' ' . $coreAdmin->getCorePath(),
                     FlashMessage::ERROR
                 );
             }
-            $indexFieldsInfoByCorePaths[$coreAdmin->getPath()] = $indexFieldsInfo;
+            $indexFieldsInfoByCorePaths[$coreAdmin->getCorePath()] = $indexFieldsInfo;
         }
         $this->view->assign('indexFieldsInfoByCorePaths', $indexFieldsInfoByCorePaths);
     }
@@ -262,7 +263,7 @@ class InfoModuleController extends AbstractModuleController
 
             $documentsByType = [];
             foreach ($documents as $document) {
-                $documentsByType[$document->type][] = $document;
+                $documentsByType[$document['type']][] = $document;
             }
 
             $documentsByCoreAndType[$languageId]['core'] = $coreAdmin;
@@ -278,12 +279,12 @@ class InfoModuleController extends AbstractModuleController
     /**
      * Gets field metrics.
      *
-     * @param \Apache_Solr_Response $lukeData Luke index data
+     * @param ResponseAdapter $lukeData Luke index data
      * @param string $limitNote Note to display if there are too many documents in the index to show number of terms for a field
      *
      * @return array An array of field metrics
      */
-    protected function getFields(\Apache_Solr_Response $lukeData, $limitNote)
+    protected function getFields(ResponseAdapter $lukeData, $limitNote)
     {
         $rows = [];
 
@@ -304,12 +305,12 @@ class InfoModuleController extends AbstractModuleController
     /**
      * Gets general core metrics.
      *
-     * @param \Apache_Solr_Response $lukeData Luke index data
+     * @param ResponseAdapter $lukeData Luke index data
      * @param array $fields Fields metrics
      *
      * @return array An array of core metrics
      */
-    protected function getCoreMetrics(\Apache_Solr_Response $lukeData, array $fields)
+    protected function getCoreMetrics(ResponseAdapter $lukeData, array $fields)
     {
         $coreMetrics = [
             'numberOfDocuments' => $lukeData->index->numDocs,

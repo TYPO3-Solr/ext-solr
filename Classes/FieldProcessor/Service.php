@@ -29,10 +29,11 @@ use ApacheSolrForTypo3\Solr\FieldProcessor\PageUidToHierarchy;
 use ApacheSolrForTypo3\Solr\FieldProcessor\PathToHierarchy;
 use ApacheSolrForTypo3\Solr\FieldProcessor\TimestampToIsoDate;
 use ApacheSolrForTypo3\Solr\FieldProcessor\TimestampToUtcIsoDate;
+use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Service class that modifies fields in a Apache_Solr_Document, used for
+ * Service class that modifies fields in a Apache Solr Document, used for
  * common field processing during indexing or resolving
  *
  * @author Daniel Poetzinger <poetzinger@aoemedia.de>
@@ -43,13 +44,10 @@ class Service
     /**
      * Modifies a list of documents
      *
-     * @param \Apache_Solr_Document[] $documents
+     * @param Document[] $documents
      * @param array $processingConfiguration
      */
-    public function processDocuments(
-        array $documents,
-        array $processingConfiguration
-    ) {
+    public function processDocuments(array $documents, array $processingConfiguration) {
         foreach ($documents as $document) {
             $this->processDocument($document, $processingConfiguration);
         }
@@ -58,20 +56,15 @@ class Service
     /**
      * modifies a document according to the given configuration
      *
-     * @param \Apache_Solr_Document $document
+     * @param Document $document
      * @param array $processingConfiguration
      */
-    public function processDocument(
-        \Apache_Solr_Document $document,
-        array $processingConfiguration
-    ) {
+    public function processDocument(Document $document, array $processingConfiguration) {
         foreach ($processingConfiguration as $fieldName => $instruction) {
-            $fieldInformation = $document->getField($fieldName);
+            $fieldValue = $document[$fieldName] ?? false;
             $isSingleValueField = false;
 
-            if ($fieldInformation !== false) {
-                $fieldValue = $fieldInformation['value'];
-
+            if ($fieldValue !== false) {
                 if (!is_array($fieldValue)) {
                     // turn single value field into multi value field
                     $fieldValue = [$fieldValue];

@@ -27,6 +27,8 @@ namespace ApacheSolrForTypo3\Solr\Search;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
+
 /**
  * ResponseModifier interface, allows to modify the search response
  *
@@ -38,8 +40,8 @@ interface ResponseModifier
     /**
      * Modifies the given response and returns the modified response as result
      *
-     * @param \Apache_Solr_Response $response The response to modify
-     * @return \Apache_Solr_Response The modified response
+     * @param ResponseAdapter $response The response to modify
+     * @return ResponseAdapter The modified response
      */
-    public function modifyResponse(\Apache_Solr_Response $response);
+    public function modifyResponse(ResponseAdapter $response);
 }

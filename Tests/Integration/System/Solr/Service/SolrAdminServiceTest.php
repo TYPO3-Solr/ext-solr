@@ -24,8 +24,10 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\System\Solr\Service;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\System\Solr\Service\AbstractSolrService;
 use ApacheSolrForTypo3\Solr\System\Solr\Service\SolrAdminService;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
+use Solarium\Client;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -47,7 +49,11 @@ class SolrAdminServiceTest extends IntegrationTest
     public function setUp()
     {
         parent::setUp();
-        $this->solrAdminService = GeneralUtility::makeInstance(SolrAdminService::class, 'localhost', 8999, '/solr/core_en/');
+        $client = new Client(['adapter' => 'Solarium\Core\Client\Adapter\Guzzle']);
+        $client->clearEndpoints();
+        $client->createEndpoint(['host' => 'localhost', 'port' => 8999, 'path' => '/solr', 'core' => 'core_en', 'key' => 'admin'] , true);
+
+        $this->solrAdminService = GeneralUtility::makeInstance(SolrAdminService::class, $client);
     }
 
     /**
@@ -70,6 +76,9 @@ class SolrAdminServiceTest extends IntegrationTest
      */
     public function canAddSynonym($baseWord, $synonyms = [])
     {
+        $this->solrAdminService->deleteSynonym('homepage');
+        $this->solrAdminService->reloadCore();
+
         $synonymsBeforeAdd = $this->solrAdminService->getSynonyms($baseWord);
         $this->assertEquals([], $synonymsBeforeAdd, 'Synonyms was not empty');
 
@@ -77,6 +86,7 @@ class SolrAdminServiceTest extends IntegrationTest
         $this->solrAdminService->reloadCore();
 
         $synonymsAfterAdd = $this->solrAdminService->getSynonyms($baseWord);
+
         $this->assertEquals($synonyms, $synonymsAfterAdd, 'Could not retrieve synonym after adding');
 
         $this->solrAdminService->deleteSynonym($baseWord);
@@ -168,5 +178,14 @@ class SolrAdminServiceTest extends IntegrationTest
     {
         $result = $this->solrAdminService->reloadCore();
         $this->assertSame(200, $result->getHttpStatus(), 'Reload core did not responde with a 200 ok status');
+    }
+
+    /**
+     * @test
+     */
+    public function canRequestServlet()
+    {
+        $result = $this->solrAdminService->requestServlet('/solr/core_en/admin/ping');
+        $this->assertSame('OK', $result->status, 'Unexpected servlet response');
     }
 }

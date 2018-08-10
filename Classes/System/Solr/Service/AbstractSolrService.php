@@ -27,25 +27,22 @@ namespace ApacheSolrForTypo3\Solr\System\Solr\Service;
 use ApacheSolrForTypo3\Solr\PingFailedException;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
+use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\Util;
+
+use Solarium\Client;
+use Solarium\Core\Client\Endpoint;
+use Solarium\Core\Client\Request;
+use Solarium\Core\Query\QueryInterface;
+use Solarium\Exception\HttpException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-abstract class AbstractSolrService extends \Apache_Solr_Service {
-
-    const SCHEME_HTTP = 'http';
-    const SCHEME_HTTPS = 'https';
+abstract class AbstractSolrService {
 
     /**
      * @var array
      */
     protected static $pingCache = [];
-
-    /**
-     * Server connection scheme. http or https.
-     *
-     * @var string
-     */
-    protected $_scheme = self::SCHEME_HTTP;
 
     /**
      * @var TypoScriptConfiguration
@@ -58,34 +55,105 @@ abstract class AbstractSolrService extends \Apache_Solr_Service {
     protected $logger = null;
 
     /**
-     * SolrAdminService constructor.
-     * @param string $host
-     * @param string $port
-     * @param string $path
-     * @param string $scheme
-     * @param TypoScriptConfiguration $typoScriptConfiguration
-     * @param SolrLogManager $logManager
+     * @var Client
      */
-    public function __construct($host = '', $port = '8983', $path = '/solr/', $scheme = 'http', $typoScriptConfiguration = null, $logManager = null)
+    protected $client = null;
+
+    /**
+     * SolrReadService constructor.
+     */
+    public function __construct(Client $client, $typoScriptConfiguration = null, $logManager = null)
     {
-        $this->setScheme($scheme);
-        parent::__construct($host, $port, $path);
+        $this->client = $client;
         $this->configuration = $typoScriptConfiguration ?? Util::getSolrConfiguration();
         $this->logger = $logManager ?? GeneralUtility::makeInstance(SolrLogManager::class, /** @scrutinizer ignore-type */ __CLASS__);
-        $this->initializeTimeoutFromConfiguration();
     }
 
     /**
-     * Initializes the timeout from TypoScript when configuration is present.
-     *
-     * @return void
+     * @deprecated Since 9.0.0 will be removed in 10.0.0 please use getPrimaryEndpoint()->getScheme() now.
+     * @return string
      */
-    protected function initializeTimeoutFromConfiguration()
+    public function getScheme()
     {
-        $timeout = $this->configuration->getSolrTimeout();
-        if ($timeout > 0) {
-            $this->getHttpTransport()->setDefaultTimeout($timeout);
-        }
+        $endpoint = $this->getPrimaryEndpoint();
+        return is_null($endpoint) ? '' : $endpoint->getScheme();
+    }
+
+    /**
+     * @deprecated Since 9.0.0 will be removed in 10.0.0 please use getPrimaryEndpoint()->getHost() now.
+     * @return string
+     */
+    public function getHost()
+    {
+        $endpoint = $this->getPrimaryEndpoint();
+        return is_null($endpoint) ? '' : $endpoint->getHost();
+    }
+
+    /**
+     * @deprecated Since 9.0.0 will be removed in 10.0.0 please use getPrimaryEndpoint()->getPort() now.
+     * @return string
+     */
+    public function getPort()
+    {
+        $endpoint = $this->getPrimaryEndpoint();
+        return is_null($endpoint) ? '' : $endpoint->getPort();
+    }
+
+    /**
+     * @deprecated Since 9.0.0 will be removed in 10.0.0 please use getCorePath() now
+     * @return string
+     */
+    public function getPath()
+    {
+        return $this->getCorePath();
+    }
+
+    /**
+     * Returns the path to the core solr path + core path.
+     *
+     * @return string
+     */
+    public function getCorePath()
+    {
+        $endpoint = $this->getPrimaryEndpoint();
+        return is_null($endpoint) ? '' : $endpoint->getPath() .'/'. $endpoint->getCore();
+    }
+
+    /**
+     * Returns the core name from the configured path without the core name.
+     *
+     * @deprecated Since 9.0.0 will be removed in 10.0.0 please use getPrimaryEndpoint()->getPath() now.
+     * @return string
+     */
+    public function getCoreBasePath()
+    {
+        $endpoint = $this->getPrimaryEndpoint();
+        return is_null($endpoint) ? '' : $endpoint->getPath();
+    }
+
+    /**
+     * Returns the core name from the configured path.
+     *
+     * @deprecated Since 9.0.0 will be removed in 10.0.0 please use getPrimaryEndpoint()->getCore() now.
+     * @return string
+     */
+    public function getCoreName()
+    {
+        $endpoint = $this->getPrimaryEndpoint();
+        return is_null($endpoint) ? '' : $endpoint->getCore();
+    }
+
+    /**
+     * Return a valid http URL given this server's host, port and path and a provided servlet name
+     *
+     * @param string $servlet
+     * @param array $params
+     * @return string
+     */
+    protected function _constructUrl($servlet, $params = [])
+    {
+        $queryString = count($params) ? '?' . http_build_query($params, null, '&') : '';
+        return $this->__toString() . $servlet . $queryString;
     }
 
     /**
@@ -96,124 +164,42 @@ abstract class AbstractSolrService extends \Apache_Solr_Service {
      */
     public function __toString()
     {
-        return $this->_scheme . '://' . $this->_host . ':' . $this->_port . $this->_path;
+        $endpoint = $this->getPrimaryEndpoint();
+        if (!$endpoint instanceof Endpoint) {
+            return '';
+        }
+
+        return  $endpoint->getScheme(). '://' . $endpoint->getHost() . ':' . $endpoint->getPort() . $endpoint->getPath() . '/' . $endpoint->getCore() . '/';
     }
 
     /**
-     * Returns the set scheme
-     *
-     * @return string
+     * @return Endpoint|null
      */
-    public function getScheme()
+    public function getPrimaryEndpoint()
     {
-        return $this->_scheme;
-    }
-
-    /**
-     * Set the scheme used. If empty will fallback to constants
-     *
-     * @param string $scheme Either http or https
-     * @throws \UnexpectedValueException
-     */
-    public function setScheme($scheme)
-    {
-        // Use the provided scheme or use the default
-        if (empty($scheme)) {
-            throw new \UnexpectedValueException('Scheme parameter is empty', 1380756390);
-        }
-
-        $isHttpOrHttps = in_array($scheme, [self::SCHEME_HTTP, self::SCHEME_HTTPS]);
-        if (!$isHttpOrHttps) {
-            throw new \UnexpectedValueException('Unsupported scheme parameter, scheme must be http or https', 1380756442);
-        }
-
-        // we have a valid scheme
-        $this->_scheme = $scheme;
-
-        if ($this->_urlsInited) {
-            $this->_initUrls();
-        }
-    }
-
-    /**
-     * Return a valid http URL given this server's scheme, host, port, and path
-     * and a provided servlet name.
-     *
-     * @param string $servlet Servlet name
-     * @param array $params Additional URL parameters to attach to the end of the URL
-     * @return string Servlet URL
-     */
-    protected function _constructUrl($servlet, $params = [])
-    {
-        $url = parent::_constructUrl($servlet, $params);
-
-        if (!GeneralUtility::isFirstPartOfStr($url, $this->_scheme)) {
-            $parsedUrl = parse_url($url);
-
-            // unfortunately can't use str_replace as it replace all
-            // occurrences of $needle and can't be limited to replace only once
-            $url = $this->_scheme . substr($url, strlen($parsedUrl['scheme']));
-        }
-
-        return $url;
+        return is_array($this->client->getEndpoints()) ? reset($this->client->getEndpoints()) : null;
     }
 
     /**
      * Central method for making a get operation against this Solr Server
      *
      * @param string $url
-     * @param float|bool $timeout Read timeout in seconds
-     * @return \Apache_Solr_Response
+     * @return ResponseAdapter
      */
-    protected function _sendRawGet($url, $timeout = false)
+    protected function _sendRawGet($url)
     {
-        $logSeverity = SolrLogManager::INFO;
-        $exception = null;
-
-        try {
-            $response = parent::_sendRawGet($url, $timeout);
-        } catch (\Apache_Solr_HttpTransportException $exception) {
-            $logSeverity = SolrLogManager::ERROR;
-            $response = $exception->getResponse();
-        }
-
-        if ($this->configuration->getLoggingQueryRawGet() || $response->getHttpStatus() != 200) {
-            $this->writeLog($logSeverity, 'Querying Solr using GET', $url, $response, $exception);
-        }
-
-        return $response;
+        return $this->_sendRawRequest($url, Request::METHOD_GET);
     }
 
     /**
      * Central method for making a HTTP DELETE operation against the Solr server
      *
      * @param string $url
-     * @param bool|float $timeout Read timeout in seconds
-     * @return \Apache_Solr_Response
+     * @return ResponseAdapter
      */
-    protected function _sendRawDelete($url, $timeout = false)
+    protected function _sendRawDelete($url)
     {
-        $logSeverity = SolrLogManager::INFO;
-        $exception = null;
-
-        try {
-            $httpTransport = $this->getHttpTransport();
-            $httpResponse = $httpTransport->performDeleteRequest($url, $timeout);
-            $solrResponse = new \Apache_Solr_Response($httpResponse, $this->_createDocuments, $this->_collapseSingleValueArrays);
-
-            if ($solrResponse->getHttpStatus() != 200) {
-                throw new \Apache_Solr_HttpTransportException($solrResponse);
-            }
-        } catch (\Apache_Solr_HttpTransportException $exception) {
-            $logSeverity = SolrLogManager::ERROR;
-            $solrResponse = $exception->getResponse();
-        }
-
-        if ($this->configuration->getLoggingQueryRawDelete() || $solrResponse->getHttpStatus() != 200) {
-            $this->writeLog($logSeverity, 'Querying Solr using DELETE', $url, $solrResponse, $exception);
-        }
-
-        return $solrResponse;
+        return $this->_sendRawRequest($url, Request::METHOD_DELETE);
     }
 
     /**
@@ -221,29 +207,54 @@ abstract class AbstractSolrService extends \Apache_Solr_Service {
      *
      * @param string $url
      * @param string $rawPost
-     * @param float|bool $timeout Read timeout in seconds
      * @param string $contentType
-     * @return \Apache_Solr_Response
+     * @return ResponseAdapter
      */
-    protected function _sendRawPost($url, $rawPost, $timeout = false, $contentType = 'text/xml; charset=UTF-8')
+    protected function _sendRawPost($url, $rawPost, $contentType = 'text/xml; charset=UTF-8')
+    {
+        $initializeRequest = function(Request $request) use ($rawPost, $contentType) {
+            $request->setRawData($rawPost);
+            $request->addHeader('Content-Type: ' . $contentType);
+            return $request;
+        };
+
+        return $this->_sendRawRequest($url, Request::METHOD_POST, $rawPost, $initializeRequest);
+    }
+
+    /**
+     * Method that performs an http request with the solarium client.
+     *
+     * @param string $url
+     * @param string $method
+     * @param string $body
+     * @param \Closure $initializeRequest
+     * @return ResponseAdapter
+     */
+    protected function _sendRawRequest($url, $method = Request::METHOD_GET, $body = '', \Closure $initializeRequest = null)
     {
         $logSeverity = SolrLogManager::INFO;
         $exception = null;
 
         try {
-            $response = parent::_sendRawPost($url, $rawPost, $timeout, $contentType);
-        } catch (\Apache_Solr_HttpTransportException $exception) {
+            $request = $this->buildSolariumRequestFromUrl($url, $method);
+
+            if($initializeRequest !== null) {
+                $request = $initializeRequest($request);
+            }
+
+            $response = $this->executeRequest($request);
+        } catch (HttpException $exception) {
             $logSeverity = SolrLogManager::ERROR;
-            $response = $exception->getResponse();
+            $response = new ResponseAdapter($exception->getBody(), $exception->getCode(), $exception->getMessage());
         }
 
         if ($this->configuration->getLoggingQueryRawPost() || $response->getHttpStatus() != 200) {
-            $this->writeLog($logSeverity, 'Querying Solr using POST', $url, $response, $exception, $rawPost);
+            $message = 'Querying Solr using '.$method;
+            $this->writeLog($logSeverity, $message, $url, $response, $exception, $body);
         }
 
         return $response;
     }
-
 
     /**
      * Build the log data and writes the message to the log
@@ -251,7 +262,7 @@ abstract class AbstractSolrService extends \Apache_Solr_Service {
      * @param integer $logSeverity
      * @param string $message
      * @param string $url
-     * @param \Apache_Solr_Response $solrResponse
+     * @param ResponseAdapter $solrResponse
      * @param \Exception $exception
      * @param string $contentSend
      */
@@ -264,13 +275,13 @@ abstract class AbstractSolrService extends \Apache_Solr_Service {
     /**
      * Parses the solr information to build data for the logger.
      *
-     * @param \Apache_Solr_Response $solrResponse
+     * @param ResponseAdapter $solrResponse
      * @param \Exception $e
      * @param string $url
      * @param string $contentSend
      * @return array
      */
-    protected function buildLogDataFromResponse(\Apache_Solr_Response $solrResponse, \Exception $e = null, $url = '', $contentSend = '')
+    protected function buildLogDataFromResponse(ResponseAdapter $solrResponse, \Exception $e = null, $url = '', $contentSend = '')
     {
         $logData = ['query url' => $url, 'response' => (array)$solrResponse];
 
@@ -289,30 +300,6 @@ abstract class AbstractSolrService extends \Apache_Solr_Service {
         }
     }
 
-
-    /**
-     * Returns the core name from the configured path without the core name.
-     *
-     * @return string
-     */
-    public function getCoreBasePath()
-    {
-        $pathWithoutLeadingAndTrailingSlashes = trim(trim($this->_path), "/");
-        $pathWithoutLastSegment = substr($pathWithoutLeadingAndTrailingSlashes, 0, strrpos($pathWithoutLeadingAndTrailingSlashes, "/"));
-        return '/' . $pathWithoutLastSegment . '/';
-    }
-
-    /**
-     * Returns the core name from the configured path.
-     *
-     * @return string
-     */
-    public function getCoreName()
-    {
-        $paths = explode('/', trim($this->_path, '/'));
-        return (string)array_pop($paths);
-    }
-
     /**
      * Call the /admin/ping servlet, can be used to quickly tell if a connection to the
      * server is available.
@@ -322,35 +309,39 @@ abstract class AbstractSolrService extends \Apache_Solr_Service {
      *
      * Also does not report the time, see https://forge.typo3.org/issues/64551
      *
-     * @param int $timeout maximum time to wait for ping in seconds, -1 for unlimited (default is 2)
      * @param boolean $useCache indicates if the ping result should be cached in the instance or not
      * @return bool TRUE if Solr can be reached, FALSE if not
      */
-    public function ping($timeout = 2, $useCache = true)
+    public function ping($useCache = true)
     {
-        $httpResponse = $this->performPingRequest($timeout, $useCache);
-        return ($httpResponse->getStatusCode() === 200);
+        $httpResponse = $this->performPingRequest($useCache);
+        return ($httpResponse->getHttpStatus() === 200);
     }
 
     /**
      * Call the /admin/ping servlet, can be used to get the runtime of a ping request.
      *
-     * @param int $timeout maximum time to wait for ping in seconds, -1 for unlimited (default is 2)
      * @param boolean $useCache indicates if the ping result should be cached in the instance or not
      * @return double runtime in milliseconds
      * @throws \ApacheSolrForTypo3\Solr\PingFailedException
      */
-    public function getPingRoundTripRuntime($timeout = 2, $useCache = true)
+    public function getPingRoundTripRuntime($useCache = true)
     {
-        $start = $this->getMilliseconds();
-        $httpResponse = $this->performPingRequest($timeout, $useCache);
-        $end = $this->getMilliseconds();
-
-        if ($httpResponse->getStatusCode() !== 200) {
-            $message = 'Solr ping failed with unexpected response code: ' . $httpResponse->getStatusCode();
+        try {
+            $start = $this->getMilliseconds();
+            $httpResponse = $this->performPingRequest($useCache);
+            $end = $this->getMilliseconds();
+        } catch (HttpException $e) {
+            $message = 'Solr ping failed with unexpected response code: ' . $e->getCode();
             /** @var $exception \ApacheSolrForTypo3\Solr\PingFailedException */
             $exception = GeneralUtility::makeInstance(PingFailedException::class, /** @scrutinizer ignore-type */ $message);
-            $exception->setHttpResponse($httpResponse);
+            throw $exception;
+        }
+
+        if ($httpResponse->getHttpStatus() !== 200) {
+            $message = 'Solr ping failed with unexpected response code: ' . $httpResponse->getHttpStatus();
+            /** @var $exception \ApacheSolrForTypo3\Solr\PingFailedException */
+            $exception = GeneralUtility::makeInstance(PingFailedException::class, /** @scrutinizer ignore-type */ $message);
             throw $exception;
         }
 
@@ -360,71 +351,54 @@ abstract class AbstractSolrService extends \Apache_Solr_Service {
     /**
      * Make a request to a servlet (a path) that's not a standard path.
      *
+     * @deprecated Since 9.0.0 will be removed in 10.0.0 please use getClient()->executeRequest() now
      * @param string $servlet Path to be added to the base Solr path.
      * @param array $parameters Optional, additional request parameters when constructing the URL.
      * @param string $method HTTP method to use, defaults to GET.
      * @param array $requestHeaders Key value pairs of header names and values. Should include 'Content-Type' for POST and PUT.
      * @param string $rawPost Must be an empty string unless method is POST or PUT.
-     * @param float|bool $timeout Read timeout in seconds, defaults to FALSE.
-     * @return \Apache_Solr_Response Response object
-     * @throws \Apache_Solr_HttpTransportException if returned HTTP status is other than 200
+     * @return ResponseAdapter Response object
+     * @throws HttpException if returned HTTP status is other than 200
      */
-    public function requestServlet($servlet, $parameters = [], $method = 'GET', $requestHeaders = [], $rawPost = '', $timeout = false)
+    public function requestServlet($servlet, $parameters = [], $method = 'GET', $requestHeaders = [], $rawPost = '')
     {
         // Add default parameters
-        $parameters['wt'] = self::SOLR_WRITER;
-        $parameters['json.nl'] = $this->_namedListTreatment;
+        $parameters['wt'] = 'json';
+        $parameters['json.nl'] = 'map';
         $url = $this->_constructUrl($servlet, $parameters);
 
-        $httpResponse = $this->getResponseFromTransport($url, $method, $requestHeaders, $rawPost, $timeout);
-        $solrResponse = new \Apache_Solr_Response($httpResponse, $this->_createDocuments, $this->_collapseSingleValueArrays);
-        if ($solrResponse->getHttpStatus() != 200) {
-            throw new \Apache_Solr_HttpTransportException($solrResponse);
+        $setHeader = function(Request $request) use ($requestHeaders) {
+            $request->addHeaders($requestHeaders);
+            return $request;
+        };
+
+        if($method == Request::METHOD_GET) {
+            $solrResponse = $this->_sendRawRequest($url, Request::METHOD_GET, '', $setHeader);
+        } elseif ($method == Request::METHOD_POST) {
+            $solrResponse = $this->_sendRawRequest($url, Request::METHOD_POST, $rawPost, $setHeader);
+        } else {
+            throw new \InvalidArgumentException("Invalid http method passed");
         }
 
         return $solrResponse;
     }
 
-    /**
-     * Decides which transport method to used, depending on the request method and retrieves the response.
-     *
-     * @param string $url
-     * @param string $method
-     * @param array $requestHeaders
-     * @param string $rawPost
-     * @param float|bool $timeout
-     * @return \Apache_Solr_HttpTransport_Response
-     */
-    protected function getResponseFromTransport($url, $method, $requestHeaders, $rawPost, $timeout)
-    {
-        $httpTransport = $this->getHttpTransport();
-
-        if ($method == self::METHOD_GET) {
-            return $httpTransport->performGetRequest($url, $timeout);
-        }
-        if ($method == self::METHOD_POST) {
-            // FIXME should respect all headers, not only Content-Type
-            return $httpTransport->performPostRequest($url, $rawPost, $requestHeaders['Content-Type'], $timeout);
-        }
-
-        throw new \InvalidArgumentException('$method should be GET or POST');
-    }
 
     /**
      * Performs a ping request and returns the result.
      *
-     * @param int $timeout
      * @param boolean $useCache indicates if the ping result should be cached in the instance or not
-     * @return \Apache_Solr_HttpTransport_Response
+     * @return ResponseAdapter
      */
-    protected function performPingRequest($timeout = 2, $useCache = true)
+    protected function performPingRequest($useCache = true)
     {
         $cacheKey = (string)($this);
         if ($useCache && isset(static::$pingCache[$cacheKey])) {
             return static::$pingCache[$cacheKey];
         }
 
-        $pingResult = $this->getHttpTransport()->performGetRequest($this->_pingUrl, $timeout);
+        $pingQuery = $this->client->createPing();
+        $pingResult = $this->createAndExecuteRequest($pingQuery);
 
         if ($useCache) {
             static::$pingCache[$cacheKey] = $pingResult;
@@ -441,5 +415,47 @@ abstract class AbstractSolrService extends \Apache_Solr_Service {
     protected function getMilliseconds()
     {
         return GeneralUtility::milliseconds();
+    }
+
+    /**
+     * @param QueryInterface $query
+     * @return ResponseAdapter
+     */
+    protected function createAndExecuteRequest(QueryInterface $query): ResponseAdapter
+    {
+        $request = $this->client->createRequest($query);
+        return $this->executeRequest($request);
+    }
+
+    /**
+     * @param $request
+     * @return ResponseAdapter
+     */
+    protected function executeRequest($request): ResponseAdapter
+    {
+        $result = $this->client->executeRequest($request);
+        return new ResponseAdapter($result->getBody(), $result->getStatusCode(), $result->getStatusMessage());
+    }
+
+    /**
+     * @param string $url
+     * @param string $httpMethod
+     * @return Request
+     */
+    protected function buildSolariumRequestFromUrl($url, $httpMethod = Request::METHOD_GET): Request
+    {
+        $params = [];
+        parse_str(parse_url($url, PHP_URL_QUERY), $params);
+
+        $path = parse_url($url, PHP_URL_PATH);
+        $endpoint = $this->getPrimaryEndpoint();
+        $coreBasePath = $endpoint->getPath() . '/' . $endpoint->getCore() . '/';
+        $handler = str_replace($coreBasePath, '', $path);
+
+        $request = new Request();
+        $request->setMethod($httpMethod);
+        $request->setParams($params);
+        $request->setHandler($handler);
+        return $request;
     }
 }

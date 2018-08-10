@@ -16,6 +16,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Opt
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetParser;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
+use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 
 /**
  * Class OptionsFacetParser
@@ -81,10 +82,10 @@ class OptionsFacetParser extends AbstractFacetParser
 
     /**
      * @param string $facetName
-     * @param \Apache_Solr_Response $response
+     * @param ResponseAdapter $response
      * @return array
      */
-    protected function getOptionsFromSolrResponse($facetName, \Apache_Solr_Response $response)
+    protected function getOptionsFromSolrResponse($facetName, ResponseAdapter $response)
     {
         $optionsFromSolrResponse = [];
         if (!isset($response->facets->{$facetName})) {
@@ -102,10 +103,10 @@ class OptionsFacetParser extends AbstractFacetParser
 
     /**
      * @param string $facetName
-     * @param \Apache_Solr_Response $response
+     * @param ResponseAdapter $response
      * @return array
      */
-    protected function getMetricsFromSolrResponse($facetName, \Apache_Solr_Response $response)
+    protected function getMetricsFromSolrResponse($facetName, ResponseAdapter $response)
     {
         $metricsFromSolrResponse = [];
 

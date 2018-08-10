@@ -26,6 +26,7 @@ namespace ApacheSolrForTypo3\Solr\Test\Domain\Search\ResultSet;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\Option;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\OptionsFacet;
@@ -52,13 +53,10 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
      */
     protected function initializeSearchResultSetFromFakeResponse($fixtureFile)
     {
-        $fakeResponseJson = $this->getFixtureContentByName($fixtureFile);
-        $httpResponseMock = $this->getDumbMock('\Apache_Solr_HttpTransport_Response');
-        $httpResponseMock->expects($this->any())->method('getBody')->will($this->returnValue($fakeResponseJson));
-
         $searchRequestMock = $this->getDumbMock(SearchRequest::class);
 
-        $fakeResponse = new \Apache_Solr_Response($httpResponseMock);
+        $fakeResponseJson = $this->getFixtureContentByName($fixtureFile);
+        $fakeResponse = new ResponseAdapter($fakeResponseJson);
 
         $searchResultSet = new SearchResultSet();
         $searchResultSet->setUsedSearchRequest($searchRequestMock);

@@ -31,6 +31,7 @@ use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
 use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\SingletonInterface;
@@ -80,7 +81,7 @@ class Repository implements SingletonInterface
      * Returns firs found Apache_Solr_Document for current page by given language id.
      *
      * @param $languageId
-     * @return \Apache_Solr_Document|false
+     * @return Document|false
      */
     public function findOneByPageIdAndByLanguageId($pageId, $languageId)
     {
@@ -94,7 +95,7 @@ class Repository implements SingletonInterface
      *
      * @param int $pageId
      * @param int $languageId
-     * @return \Apache_Solr_Document[]
+     * @return Document[]
      */
     public function findByPageIdAndByLanguageId($pageId, $languageId)
     {
@@ -106,7 +107,7 @@ class Repository implements SingletonInterface
             return [];
         }
         $data = $response->getParsedData();
-        return $this->documentEscapeService->applyHtmlSpecialCharsOnAllFields($data->response->docs);
+        return $this->documentEscapeService->applyHtmlSpecialCharsOnAllFields($data->response->docs ?? []);
     }
 
     /**
@@ -114,7 +115,7 @@ class Repository implements SingletonInterface
      * @param int $uid
      * @param int $pageId
      * @param int $languageId
-     * @return \Apache_Solr_Document[]|array
+     * @return Document[]|array
      */
     public function findByTypeAndPidAndUidAndLanguageId($type, $uid, $pageId, $languageId): array
     {
@@ -126,7 +127,7 @@ class Repository implements SingletonInterface
             return [];
         }
         $data = $response->getParsedData();
-        return $this->documentEscapeService->applyHtmlSpecialCharsOnAllFields($data->response->docs);
+        return $this->documentEscapeService->applyHtmlSpecialCharsOnAllFields($data->response->docs ?? []);
     }
 
     /**

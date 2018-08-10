@@ -32,22 +32,22 @@ namespace ApacheSolrForTypo3\Solr\System\Solr;
 class SolrCommunicationException extends \RuntimeException {
 
     /**
-     * @var \Apache_Solr_Response
+     * @var ResponseAdapter
      */
     protected $solrResponse;
 
     /**
-     * @return \Apache_Solr_Response
+     * @return ResponseAdapter
      */
-    public function getSolrResponse(): \Apache_Solr_Response
+    public function getSolrResponse(): ResponseAdapter
     {
         return $this->solrResponse;
     }
 
     /**
-     * @param \Apache_Solr_Response $solrResponse
+     * @param ResponseAdapter $solrResponse
      */
-    public function setSolrResponse(\Apache_Solr_Response $solrResponse)
+    public function setSolrResponse(ResponseAdapter $solrResponse)
     {
         $this->solrResponse = $solrResponse;
     }

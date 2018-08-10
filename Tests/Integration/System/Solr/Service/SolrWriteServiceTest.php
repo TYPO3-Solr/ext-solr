@@ -27,6 +27,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\System\Solr\Service;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ExtractingQuery;
 use ApacheSolrForTypo3\Solr\System\Solr\Service\SolrWriteService;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
+use Solarium\Client;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -48,7 +49,11 @@ class SolrWriteServiceTest extends IntegrationTest
     public function setUp()
     {
         parent::setUp();
-        $this->solrWriteService = GeneralUtility::makeInstance(SolrWriteService::class, 'localhost', 8999, '/solr/core_en/');
+        $client = new Client(['adapter' => 'Solarium\Core\Client\Adapter\Guzzle']);
+        $client->clearEndpoints();
+        $client->createEndpoint(['host' => 'localhost', 'port' => 8999, 'path' => '/solr', 'core' => 'core_en', 'key' => 'admin'] , true);
+
+        $this->solrWriteService = GeneralUtility::makeInstance(SolrWriteService::class, $client);
     }
 
     /**

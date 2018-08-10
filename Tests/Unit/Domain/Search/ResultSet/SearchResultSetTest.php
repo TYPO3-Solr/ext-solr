@@ -24,8 +24,6 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use Apache_Solr_Response;
-use Apache_Solr_HttpTransport_Response;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\Helper\EscapeService;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResult;
@@ -36,7 +34,9 @@ use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\Search\SpellcheckingComponent;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
+use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use Solarium\Core\Client\Response;
 
 
 /**
@@ -119,7 +119,7 @@ class SearchResultSetTest extends UnitTest
             // we expect the the ->search method on the Search object will be called once
             // and we pass the response that should be returned when it was call to compare
             // later if we retrieve the expected result
-        $fakeResponse = $this->getDumbMock(Apache_Solr_Response::class);
+        $fakeResponse = $this->getDumbMock(ResponseAdapter::class);
         $this->assertOneSearchWillBeTriggeredWithQueryAndShouldReturnFakeResponse('my search', 0, $fakeResponse);
         $this->configurationMock->expects($this->once())->method('getSearchQueryReturnFieldsAsArray')->willReturn(['*']);
 
@@ -138,7 +138,7 @@ class SearchResultSetTest extends UnitTest
     {
         $this->fakeRegisteredSearchComponents([]);
 
-        $fakeResponse = $this->getDumbMock(Apache_Solr_Response::class);
+        $fakeResponse = $this->getDumbMock(ResponseAdapter::class);
         $this->assertOneSearchWillBeTriggeredWithQueryAndShouldReturnFakeResponse('my 2. search', 50, $fakeResponse);
         $this->configurationMock->expects($this->once())->method('getSearchQueryReturnFieldsAsArray')->willReturn(['*']);
 
@@ -163,7 +163,7 @@ class SearchResultSetTest extends UnitTest
         $fakeQueryAwareSpellChecker->expects($this->once())->method('setQuery');
 
         $this->fakeRegisteredSearchComponents([$fakeQueryAwareSpellChecker]);
-        $fakeResponse = $this->getDumbMock(Apache_Solr_Response::class);
+        $fakeResponse = $this->getDumbMock(ResponseAdapter::class);
         $this->assertOneSearchWillBeTriggeredWithQueryAndShouldReturnFakeResponse('my 3. search', 0, $fakeResponse);
 
         $fakeRequest = new SearchRequest(['tx_solr' => ['q' => 'my 3. search']]);
@@ -187,10 +187,7 @@ class SearchResultSetTest extends UnitTest
         $this->fakeRegisteredSearchComponents([]);
 
         $fakedSolrResponse = $this->getFixtureContentByName('fakeResponse.json');
-        $fakeHttpResponse = $this->getDumbMock(Apache_Solr_HttpTransport_Response::class);
-        $fakeHttpResponse->expects($this->once())->method('getBody')->will($this->returnValue($fakedSolrResponse));
-
-        $fakeResponse =new \Apache_Solr_Response($fakeHttpResponse);
+        $fakeResponse = new ResponseAdapter($fakedSolrResponse);
         $this->assertOneSearchWillBeTriggeredWithQueryAndShouldReturnFakeResponse('my 4. search', 0, $fakeResponse);
 
         $fakeRequest = new SearchRequest(['tx_solr' => ['q' => 'my 4. search']]);
@@ -214,7 +211,7 @@ class SearchResultSetTest extends UnitTest
     public function testAdditionalFiltersGetPassedToTheQuery()
     {
         $this->fakeRegisteredSearchComponents([]);
-        $fakeResponse = $this->getDumbMock(Apache_Solr_Response::class);
+        $fakeResponse = $this->getDumbMock(ResponseAdapter::class);
 
         $this->assertOneSearchWillBeTriggeredWithQueryAndShouldReturnFakeResponse('test', 0, $fakeResponse);
 
@@ -248,10 +245,7 @@ class SearchResultSetTest extends UnitTest
 
         $this->fakeRegisteredSearchComponents([]);
         $fakedSolrResponse = $this->getFixtureContentByName('fakeCollapsedResponse.json');
-        $fakeHttpResponse = $this->getDumbMock(Apache_Solr_HttpTransport_Response::class);
-        $fakeHttpResponse->expects($this->once())->method('getBody')->will($this->returnValue($fakedSolrResponse));
-
-        $fakeResponse =new \Apache_Solr_Response($fakeHttpResponse);
+        $fakeResponse = new ResponseAdapter($fakedSolrResponse);
         $this->assertOneSearchWillBeTriggeredWithQueryAndShouldReturnFakeResponse('variantsSearch', 0, $fakeResponse);
 
         $fakeRequest = new SearchRequest(['tx_solr' => ['q' => 'variantsSearch']]);
@@ -268,9 +262,9 @@ class SearchResultSetTest extends UnitTest
     /**
      * @param string $expextedQueryString
      * @param int $expectedOffset
-     * @param \Apache_Solr_Response $fakeResponse
+     * @param ResponseAdapter $fakeResponse
      */
-    public function assertOneSearchWillBeTriggeredWithQueryAndShouldReturnFakeResponse($expextedQueryString, $expectedOffset, \Apache_Solr_Response $fakeResponse)
+    public function assertOneSearchWillBeTriggeredWithQueryAndShouldReturnFakeResponse($expextedQueryString, $expectedOffset, ResponseAdapter $fakeResponse)
     {
         $this->searchMock->expects($this->once())->method('search')->will(
             $this->returnCallback(

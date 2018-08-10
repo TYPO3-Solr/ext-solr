@@ -26,7 +26,9 @@ namespace ApacheSolrForTypo3\Solr\Response\Processor;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
+use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 
 /**
  * ResponseProcessor interface, allows to process search responses.
@@ -40,11 +42,11 @@ interface ResponseProcessor
      * Processes a query and its response after searching for that query.
      *
      * @param Query $query The query that has been searched for.
-     * @param \Apache_Solr_Response $response The response for the last query.
+     * @param ResponseAdapter $response The response for the last query.
      * @return void
      */
     public function processResponse(
         Query $query,
-        \Apache_Solr_Response $response
+        ResponseAdapter $response
     );
 }

@@ -67,7 +67,6 @@ class AccessFilterPluginInstalledStatus extends AbstractSolrStatus
 
         foreach ($solrConnections as $solrConnection) {
             $adminService = $solrConnection->getAdminService();
-
             if ($adminService->ping()) {
                 $installationStatus = $this->checkPluginInstallationStatus($adminService);
                 $versionStatus = $this->checkPluginVersion($adminService);
@@ -146,7 +145,6 @@ class AccessFilterPluginInstalledStatus extends AbstractSolrStatus
         $accessFilterQueryParserPluginInstalled = false;
 
         $pluginsInformation = $adminService->getPluginsInformation();
-
         if (isset($pluginsInformation->plugins->OTHER->{self::PLUGIN_CLASS_NAME})) {
             $accessFilterQueryParserPluginInstalled = true;
         }

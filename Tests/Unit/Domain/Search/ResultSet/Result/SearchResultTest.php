@@ -41,15 +41,16 @@ class SearchResultTest extends UnitTest
 
     public function setUp()
     {
-        $document = new \Apache_Solr_Document();
-        $document->setField('id', 4711);
-        $document->setField('score', 0.55);
-        $document->setField('content', 'foobar');
-        $document->setField('isElevated', true);
-        $document->setField('title', 'The title');
-        $document->setField('url', '://mytestdomain.com/test');
-        $document->setField('type', 'pages');
-        $this->searchResult = new SearchResult($document);
+        $fields = [
+            'id' => 4711,
+            'title' => 'The title',
+            'score' => 0.55,
+            'content' => 'foobar',
+            'isElevated' => true,
+            'url' => '://mytestdomain.com/test',
+            'type' => 'pages'
+        ];
+        $this->searchResult = new SearchResult($fields);
     }
 
     /**

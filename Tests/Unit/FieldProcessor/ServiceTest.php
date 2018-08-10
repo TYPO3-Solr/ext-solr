@@ -25,6 +25,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\FieldProcessor;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\FieldProcessor\Service;
+use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 
 /**
@@ -36,7 +37,7 @@ class ServiceTest extends UnitTest
 {
 
     /**
-     * @var Apache_Solr_Document
+     * @var Document
      */
     protected $documentMock;
 
@@ -50,7 +51,7 @@ class ServiceTest extends UnitTest
     public function setUp()
     {
         date_default_timezone_set('Europe/Berlin');
-        $this->documentMock = new \Apache_Solr_Document();
+        $this->documentMock = new Document();
         $this->service = new Service();
     }
 

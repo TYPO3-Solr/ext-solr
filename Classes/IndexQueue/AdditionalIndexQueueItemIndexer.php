@@ -26,6 +26,7 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 
 /**
  * Interface that defines the method an indexer must implement to provide
@@ -41,12 +42,8 @@ interface AdditionalIndexQueueItemIndexer
      *
      * @param Item $item The item currently being indexed.
      * @param int $language The language uid of the documents
-     * @param \Apache_Solr_Document $itemDocument The original item document.
-     * @return array An array of additional Apache_Solr_Document objects
+     * @param Document $itemDocument The original item document.
+     * @return Document[] array An array of additional Document objects
      */
-    public function getAdditionalItemDocuments(
-        Item $item,
-        $language,
-        \Apache_Solr_Document $itemDocument
-    );
+    public function getAdditionalItemDocuments(Item $item, $language, Document $itemDocument);
 }

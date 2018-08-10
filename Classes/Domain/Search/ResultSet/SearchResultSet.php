@@ -35,6 +35,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Sorting\SortingCollection;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Spellchecking\Suggestion;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Search;
+use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 
 /**
  * The SearchResultSet is used to provided access to the \Apache_Solr_Response and
@@ -61,7 +62,7 @@ class SearchResultSet
     protected $usedSearch;
 
     /**
-     * @var \Apache_Solr_Response
+     * @var ResponseAdapter
      */
     protected $response = null;
 
@@ -237,7 +238,7 @@ class SearchResultSet
     }
 
     /**
-     * @param \Apache_Solr_Response $response
+     * @param ResponseAdapter $response
      */
     public function setResponse($response)
     {
@@ -245,7 +246,7 @@ class SearchResultSet
     }
 
     /**
-     * @return \Apache_Solr_Response
+     * @return ResponseAdapter
      */
     public function getResponse()
     {

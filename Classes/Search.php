@@ -27,8 +27,10 @@ namespace ApacheSolrForTypo3\Solr;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
+use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrCommunicationException;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
+use Solarium\Exception\HttpException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -56,7 +58,7 @@ class Search
     /**
      * The search response
      *
-     * @var \Apache_Solr_Response
+     * @var ResponseAdapter
      */
     protected $response = null;
 
@@ -126,7 +128,7 @@ class Search
      * @param Query $query The query with keywords, filters, and so on.
      * @param int $offset Result offset for pagination.
      * @param int $limit Maximum number of results to return. If set to NULL, this value is taken from the query object.
-     * @return \Apache_Solr_Response Solr response
+     * @return ResponseAdapter Solr response
      * @throws \Exception
      */
     public function search(Query $query, $offset = 0, $limit = 10)
@@ -136,23 +138,21 @@ class Search
         if (empty($limit)) {
             $limit = $query->getRows();
         }
+        $query->setStart($offset);
 
         try {
-            $param = $query->getRequestBuilder()->build($query)->getParams();
-            $response = $this->solr->getReadService()->search((string)$query->getQuery(), $offset, $limit, $param);
-
+            $response = $this->solr->getReadService()->search($query);
             if ($this->configuration->getLoggingQueryQueryString()) {
-                $this->logger->log(
-                    SolrLogManager::INFO,
+                $this->logger->log(SolrLogManager::INFO,
                     'Querying Solr, getting result',
                     [
                         'query string' => $query->getQuery(),
-                        'query parameters' => $param,
+                        'query parameters' => $query->getRequestBuilder()->build($query)->getParams(),
                         'response' => json_decode($response->getRawResponse(), true)
                     ]
                 );
             }
-        } catch (SolrCommunicationException $e) {
+        }  catch (SolrCommunicationException $e) {
             if ($this->configuration->getLoggingExceptions()) {
                 $this->logger->log(
                     SolrLogManager::ERROR,
@@ -186,7 +186,7 @@ class Search
         $solrAvailable = false;
 
         try {
-            if (!$this->solr->getReadService()->ping(2, $useCache)) {
+            if (!$this->solr->getReadService()->ping($useCache)) {
                 throw new \Exception('Solr Server not responding.', 1237475791);
             }
 
@@ -219,7 +219,7 @@ class Search
     /**
      * Gets the Solr response
      *
-     * @return \Apache_Solr_Response
+     * @return ResponseAdapter
      */
     public function getResponse()
     {

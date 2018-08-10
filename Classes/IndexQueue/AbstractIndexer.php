@@ -27,6 +27,7 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
 use ApacheSolrForTypo3\Solr\ContentObject\Classification;
 use ApacheSolrForTypo3\Solr\ContentObject\Multivalue;
 use ApacheSolrForTypo3\Solr\ContentObject\Relation;
+use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use TYPO3\CMS\Core\TypoScript\Parser\TypoScriptParser;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
@@ -66,16 +67,12 @@ abstract class AbstractIndexer
     /**
      * Adds fields to the document as defined in $indexingConfiguration
      *
-     * @param \Apache_Solr_Document $document base document to add fields to
+     * @param Document $document base document to add fields to
      * @param array $indexingConfiguration Indexing configuration / mapping
      * @param array $data Record data
-     * @return \Apache_Solr_Document Modified document with added fields
+     * @return Document Modified document with added fields
      */
-    protected function addDocumentFieldsFromTyposcript(
-        \Apache_Solr_Document $document,
-        array $indexingConfiguration,
-        array $data
-    ) {
+    protected function addDocumentFieldsFromTyposcript(Document $document, array $indexingConfiguration, array $data) {
         $data = static::addVirtualContentFieldToRecord($document, $data);
 
         // mapping of record fields => solr document fields, resolving cObj
@@ -114,15 +111,14 @@ abstract class AbstractIndexer
      * Add's the content of the field 'content' from the solr document as virtual field __solr_content in the record,
      * to have it available in typoscript.
      *
-     * @param \Apache_Solr_Document $document
+     * @param Document $document
      * @param array $data
      * @return array
      */
-    public static function addVirtualContentFieldToRecord(\Apache_Solr_Document $document, array $data): array
+    public static function addVirtualContentFieldToRecord(Document $document, array $data): array
     {
-        $contentField = $document->getField('content');
-        if (isset($contentField['value'])) {
-            $data['__solr_content'] = $contentField['value'];
+        if (isset($document['content'])) {
+            $data['__solr_content'] = $document['content'];
             return $data;
         }
         return $data;

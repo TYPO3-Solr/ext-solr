@@ -28,6 +28,8 @@ use ApacheSolrForTypo3\Solr\IndexQueue\Indexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\SolrService;
+use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
+use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use ApacheSolrForTypo3\Solr\Util;
@@ -461,7 +463,7 @@ class IndexerTest extends IntegrationTest
     {
         $this->expectException(\InvalidArgumentException::class);
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['indexItemAddDocuments'][] = \ApacheSolrForTypo3\Solr\IndexQueue\AdditionalIndexQueueItemIndexer::class;
-        $document = new \Apache_Solr_Document;
+        $document = new Document;
         $metaData = ['item_type' => 'pages'];
         $record = [];
         $item = GeneralUtility::makeInstance(Item::class, $metaData, $record);
@@ -475,7 +477,7 @@ class IndexerTest extends IntegrationTest
     {
         $this->expectException(\UnexpectedValueException::class);
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['indexItemAddDocuments'][] = \ApacheSolrForTypo3\Solr\Tests\Integration\IndexQueue\Helpers\DummyIndexer::class;
-        $document = new \Apache_Solr_Document;
+        $document = new Document;
         $metaData = ['item_type' => 'pages'];
         $record = [];
         $item = GeneralUtility::makeInstance(Item::class, $metaData, $record);
@@ -489,7 +491,7 @@ class IndexerTest extends IntegrationTest
     {
         $this->expectException(\InvalidArgumentException::class);
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['indexItemAddDocuments'][] = 'NonExistingClass';
-        $document = new \Apache_Solr_Document;
+        $document = new Document;
         $metaData = ['item_type' => 'pages'];
         $record = [];
         $item = GeneralUtility::makeInstance(Item::class, $metaData, $record);
@@ -503,7 +505,7 @@ class IndexerTest extends IntegrationTest
     public function canGetAdditionalDocuments()
     {
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['indexItemAddDocuments'][] = \ApacheSolrForTypo3\Solr\Tests\Integration\IndexQueue\Helpers\DummyAdditionalIndexQueueItemIndexer::class;
-        $document = new \Apache_Solr_Document;
+        $document = new Document;
         $metaData = ['item_type' => 'pages'];
         $record = [];
         $item = GeneralUtility::makeInstance(Item::class, $metaData, $record);
@@ -542,7 +544,7 @@ class IndexerTest extends IntegrationTest
     /**
      * @param string $table
      * @param int $uid
-     * @return \Apache_Solr_Response
+     * @return ResponseAdapter
      */
     protected function addToQueueAndIndexRecord($table, $uid)
     {

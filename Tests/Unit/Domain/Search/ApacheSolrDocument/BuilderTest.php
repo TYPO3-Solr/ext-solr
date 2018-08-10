@@ -28,6 +28,7 @@ use ApacheSolrForTypo3\Solr\Access\Rootline;
 use ApacheSolrForTypo3\Solr\Domain\Search\ApacheSolrDocument\Builder;
 use ApacheSolrForTypo3\Solr\Domain\Variants\IdBuilder;
 use ApacheSolrForTypo3\Solr\Site;
+use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use ApacheSolrForTypo3\Solr\Typo3PageContentExtractor;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
@@ -90,7 +91,7 @@ class BuilderTest extends UnitTest
         $document = $this->documentBuilder->fromPage($fakePage, 'http://www.typo3-solr.com', $fakeRootLine, '');
         $idField = $document->getField('id');
 
-        $this->assertInstanceOf(\Apache_Solr_Document::class, $document, 'Expect to get an Apache_Solr_Document back');
+        $this->assertInstanceOf(Document::class, $document, 'Expect to get an Apache_Solr_Document back');
         $this->assertSame('siteHash/pages/4711', $idField['value'], 'Builder did not use documentId from mock');
     }
 

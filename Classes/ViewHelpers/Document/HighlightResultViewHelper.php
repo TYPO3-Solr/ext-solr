@@ -14,6 +14,7 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers\Document;
  * The TYPO3 project - inspiring people to share!
  */
 
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResult;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\ViewHelpers\AbstractSolrFrontendViewHelper;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -43,7 +44,7 @@ class HighlightResultViewHelper extends AbstractSolrFrontendViewHelper
     {
         parent::initializeArguments();
         $this->registerArgument('resultSet', SearchResultSet::class, 'The context searchResultSet', true);
-        $this->registerArgument('document', \Apache_Solr_Document::class, 'The document to highlight', true);
+        $this->registerArgument('document', SearchResult::class, 'The document to highlight', true);
         $this->registerArgument('fieldName', 'string', 'The fieldName', true);
     }
 

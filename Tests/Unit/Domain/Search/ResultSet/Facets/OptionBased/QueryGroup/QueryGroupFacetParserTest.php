@@ -16,6 +16,7 @@ namespace ApacheSolrForTypo3\Solr\Test\Domain\Search\ResultSet\Facets\OptionBase
 
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\QueryGroup\Option;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\QueryGroup\QueryGroupFacet;
@@ -40,12 +41,8 @@ class QueryGroupFacetParserTest extends AbstractFacetParserTest
     protected function initializeSearchResultSetFromFakeResponse($fixtureFile, $facetConfiguration, array $activeFilters = [])
     {
         $fakeResponseJson = $this->getFixtureContentByName($fixtureFile);
-        $httpResponseMock = $this->getDumbMock('\Apache_Solr_HttpTransport_Response');
-        $httpResponseMock->expects($this->any())->method('getBody')->will($this->returnValue($fakeResponseJson));
-
         $searchRequestMock = $this->getDumbMock(SearchRequest::class);
-
-        $fakeResponse = new \Apache_Solr_Response($httpResponseMock);
+        $fakeResponse = new ResponseAdapter($fakeResponseJson);
 
         $searchResultSet = new SearchResultSet();
         $searchResultSet->setUsedSearchRequest($searchRequestMock);

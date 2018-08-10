@@ -25,6 +25,7 @@ namespace ApacheSolrForTypo3\Solr;
  ***************************************************************/
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\ContentObject\ContentObjectService;
+use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -78,10 +79,10 @@ class AdditionalFieldsIndexer implements SubstitutePageIndexer
      * Uses the original document and adds fields as defined in
      * plugin.tx_solr.index.additionalFields.
      *
-     * @param \Apache_Solr_Document $pageDocument The original page document.
-     * @return \Apache_Solr_Document A Apache_Solr_Document object that replace the default page document
+     * @param Document $pageDocument The original page document.
+     * @return Document A Apache Solr Document object that replace the default page document
      */
-    public function getPageDocument(\Apache_Solr_Document $pageDocument)
+    public function getPageDocument(Document $pageDocument)
     {
         $substitutePageDocument = clone $pageDocument;
         $additionalFields = $this->getAdditionalFields();

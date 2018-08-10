@@ -26,22 +26,15 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Grouping\GroupItem;
+use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 
 /**
- * Proxy class for \Apache_Solr_Document to customize \Apache_Solr_Document without
- * changing the library code.
- *
- * Implements
+ * Solr document class that should be used in the frontend in the search context.
  *
  * @author Timo Schmidt <timo.schmidt@dkd.de>
  */
-class SearchResult extends \Apache_Solr_Document
+class SearchResult extends Document
 {
-
-    /**
-     * @var bool
-     */
-    protected $throwExceptions = false;
 
     /**
      * @var SearchResult[]
@@ -67,35 +60,6 @@ class SearchResult extends \Apache_Solr_Document
      */
     protected $groupItem = null;
 
-    /**
-     * @param \Apache_Solr_Document $document
-     * @param bool $throwExceptions
-     */
-    public function __construct(\Apache_Solr_Document $document, $throwExceptions = false)
-    {
-        $this->throwExceptions = false;
-        $this->_documentBoost = $document->_documentBoost;
-        $this->_fields = $document->_fields;
-        $this->_fieldBoosts = $document->_fieldBoosts;
-    }
-
-    /**
-     * @param string $name
-     * @param array $arguments
-     * @throws \Exception
-     * @throws \RuntimeException
-     * @return string
-     */
-    public function __call($name, $arguments)
-    {
-        try {
-            return parent::__call($name, $arguments);
-        } catch (\RuntimeException $e) {
-            if ($this->throwExceptions) {
-                throw $e;
-            }
-        }
-    }
 
     /**
      * @return GroupItem
@@ -174,7 +138,7 @@ class SearchResult extends \Apache_Solr_Document
      */
     public function getContent()
     {
-        return $this->_fields['content'];
+        return $this->fields['content'];
     }
 
     /**
@@ -182,7 +146,7 @@ class SearchResult extends \Apache_Solr_Document
      */
     public function getIsElevated()
     {
-        return $this->_fields['isElevated'];
+        return $this->fields['isElevated'];
     }
 
     /**
@@ -190,7 +154,7 @@ class SearchResult extends \Apache_Solr_Document
      */
     public function getType()
     {
-        return $this->_fields['type'];
+        return $this->fields['type'];
     }
 
     /**
@@ -198,7 +162,7 @@ class SearchResult extends \Apache_Solr_Document
      */
     public function getId()
     {
-        return $this->_fields['id'];
+        return $this->fields['id'];
     }
 
     /**
@@ -206,7 +170,7 @@ class SearchResult extends \Apache_Solr_Document
      */
     public function getScore()
     {
-        return $this->_fields['score'];
+        return $this->fields['score'];
     }
 
     /**
@@ -214,7 +178,7 @@ class SearchResult extends \Apache_Solr_Document
      */
     public function getUrl()
     {
-        return $this->_fields['url'];
+        return $this->fields['url'];
     }
 
     /**
@@ -222,6 +186,6 @@ class SearchResult extends \Apache_Solr_Document
      */
     public function getTitle()
     {
-        return $this->_fields['title'];
+        return $this->fields['title'];
     }
 }

@@ -29,6 +29,7 @@ use ApacheSolrForTypo3\Solr\IndexQueue\AbstractIndexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\InvalidFieldNameException;
 use ApacheSolrForTypo3\Solr\SubstitutePageIndexer;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
@@ -73,10 +74,10 @@ class PageFieldMappingIndexer implements SubstitutePageIndexer
      * Uses the original document and adds fields as defined in
      * plugin.tx_solr.index.queue.pages.fields.
      *
-     * @param \Apache_Solr_Document $pageDocument The original page document.
-     * @return \Apache_Solr_Document A Apache_Solr_Document object that replace the default page document
+     * @param Document $pageDocument The original page document.
+     * @return Document A Apache Solr Document object that replace the default page document
      */
-    public function getPageDocument(\Apache_Solr_Document $pageDocument)
+    public function getPageDocument(Document $pageDocument)
     {
         $substitutePageDocument = clone $pageDocument;
 
@@ -102,10 +103,10 @@ class PageFieldMappingIndexer implements SubstitutePageIndexer
      * Gets the mapped fields as an array mapping field names to values.
      *
      * @throws InvalidFieldNameException
-     * @param \Apache_Solr_Document $pageDocument The original page document.
+     * @param Document $pageDocument The original page document.
      * @return array An array mapping field names to their values.
      */
-    protected function getMappedFields(\Apache_Solr_Document $pageDocument)
+    protected function getMappedFields(Document $pageDocument)
     {
         $fields = [];
 
@@ -133,7 +134,7 @@ class PageFieldMappingIndexer implements SubstitutePageIndexer
      * @param string $solrFieldName The Solr field name to resolve the value from the item's record
      * @return string The resolved string value to be indexed
      */
-    protected function resolveFieldValue($solrFieldName, \Apache_Solr_Document $pageDocument)
+    protected function resolveFieldValue($solrFieldName, Document $pageDocument)
     {
         $pageRecord = $GLOBALS['TSFE']->page;
 

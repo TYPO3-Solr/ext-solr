@@ -28,6 +28,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\Parser\DefaultResultP
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 
 /**
@@ -61,9 +62,7 @@ class DefaultParserTest extends UnitTest
         $fakeResultSet = $this->getMockBuilder(SearchResultSet::class)->setMethods(['getResponse'])->getMock();
 
         $fakedSolrResponse = $this->getFixtureContentByName('fakeResponse.json');
-        $fakeHttpResponse = $this->getDumbMock(\Apache_Solr_HttpTransport_Response::class);
-        $fakeHttpResponse->expects($this->once())->method('getBody')->will($this->returnValue($fakedSolrResponse));
-        $fakeResponse = new \Apache_Solr_Response($fakeHttpResponse);
+        $fakeResponse = new ResponseAdapter($fakedSolrResponse);
 
         $fakeResultSet->expects($this->once())->method('getResponse')->will($this->returnValue($fakeResponse));
         $parsedResultSet = $this->parser->parse($fakeResultSet, true);
@@ -78,9 +77,7 @@ class DefaultParserTest extends UnitTest
         $fakeResultSet = $this->getMockBuilder(SearchResultSet::class)->setMethods(['getResponse'])->getMock();
 
         $fakedSolrResponse = $this->getFixtureContentByName('fake_solr_response_with_query_fields_facets.json');
-        $fakeHttpResponse = $this->getDumbMock(\Apache_Solr_HttpTransport_Response::class);
-        $fakeHttpResponse->expects($this->once())->method('getBody')->will($this->returnValue($fakedSolrResponse));
-        $fakeResponse = new \Apache_Solr_Response($fakeHttpResponse);
+        $fakeResponse = new ResponseAdapter($fakedSolrResponse);
 
         $fakeResultSet->expects($this->once())->method('getResponse')->will($this->returnValue($fakeResponse));
         $parsedResultSet = $this->parser->parse($fakeResultSet, true);
@@ -95,9 +92,7 @@ class DefaultParserTest extends UnitTest
         $fakeResultSet = $this->getMockBuilder(SearchResultSet::class)->setMethods(['getResponse'])->getMock();
 
         $fakedSolrResponse = $this->getFixtureContentByName('fakeResponse.json');
-        $fakeHttpResponse = $this->getDumbMock(\Apache_Solr_HttpTransport_Response::class);
-        $fakeHttpResponse->expects($this->once())->method('getBody')->will($this->returnValue($fakedSolrResponse));
-        $fakeResponse = new \Apache_Solr_Response($fakeHttpResponse);
+        $fakeResponse = new ResponseAdapter($fakedSolrResponse);
 
         $fakeResultSet->expects($this->once())->method('getResponse')->will($this->returnValue($fakeResponse));
         $parsedResultSet = $this->parser->parse($fakeResultSet, true);

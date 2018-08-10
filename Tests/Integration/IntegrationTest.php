@@ -71,7 +71,6 @@ abstract class IntegrationTest extends FunctionalTestCase
     public function setUp()
     {
         parent::setUp();
-        $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
 
         //this is needed by the TYPO3 core.
         chdir(PATH_site);
@@ -286,7 +285,6 @@ abstract class IntegrationTest extends FunctionalTestCase
 
         // cleanup the solr server
         $result = file_get_contents('http://localhost:8999/solr/' . $coreName . '/update?stream.body=<delete><query>*:*</query></delete>&commit=true');
-
         if (strpos($result, '<int name="QTime">') == false) {
             $this->fail('Could not empty solr test index');
         }

@@ -96,7 +96,9 @@ class Spellchecking extends AbstractDeactivatable implements ParameterBuilder
             $query->removeComponent($query->getSpellcheck());
             return $parentBuilder;
         }
+
         $query->getSpellcheck()->setMaxCollationTries($this->getMaxCollationTries());
+        $query->getSpellcheck()->setCollate(true);
         return $parentBuilder;
     }
 }

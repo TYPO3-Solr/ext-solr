@@ -32,8 +32,6 @@ use Solarium\QueryType\Extract\Query as SolariumExtractQuery;
  */
 class ExtractingQuery extends SolariumExtractQuery
 {
-    protected $multiPartPostDataBoundary;
-
     /**
      * Constructor
      *
@@ -43,55 +41,7 @@ class ExtractingQuery extends SolariumExtractQuery
     {
         parent::__construct();
         $this->setFile($file);
-        $this->multiPartPostDataBoundary = '--' . md5(uniqid(time()));
         $this->addParam('extractFormat', 'text');
     }
 
-    /**
-     * Returns the boundary used for this multi-part form-data POST body data.
-     *
-     * @return string multi-part form-data POST boundary
-     */
-    public function getMultiPartPostDataBoundary()
-    {
-        return $this->multiPartPostDataBoundary;
-    }
-
-    /**
-     * Gets the filename portion of the file.
-     *
-     * @return string The filename.
-     */
-    public function getFileName()
-    {
-        return basename($this->getFile());
-    }
-
-    /**
-     * Constructs a multi-part form-data POST body from the file's content.
-     *
-     * @param string $boundary Optional boundary to use
-     * @return string The file to extract as raw POST data.
-     * @throws \Apache_Solr_InvalidArgumentException
-     */
-    public function getRawPostFileData($boundary = '')
-    {
-        if (empty($boundary)) {
-            $boundary = $this->multiPartPostDataBoundary;
-        }
-
-        $fileData = file_get_contents($this->getFile());
-        if ($fileData === false) {
-            throw new \Apache_Solr_InvalidArgumentException('Could not retrieve content from file ' . $this->getFile());
-        }
-
-        $data = "--{$boundary}\r\n";
-        // The 'filename' used here becomes the property name in the response.
-        $data .= 'Content-Disposition: form-data; name="file"; filename="extracted"';
-        $data .= "\r\nContent-Type: application/octet-stream\r\n\r\n";
-        $data .= $fileData;
-        $data .= "\r\n--{$boundary}--\r\n";
-
-        return $data;
-    }
 }

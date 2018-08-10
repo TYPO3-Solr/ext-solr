@@ -30,6 +30,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResultBuilder;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSetProcessor;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -82,8 +83,7 @@ class VariantsProcessor implements SearchResultSetProcessor {
         $variantsField = $this->typoScriptConfiguration->getSearchVariantsField();
         foreach ($resultSet->getSearchResults() as $key => $resultDocument) {
             /** @var $resultDocument SearchResult */
-            $variantField = $resultDocument->getField($variantsField);
-            $variantId = isset($variantField['value']) ? $variantField['value'] : null;
+            $variantId = $resultDocument[$variantsField] ?? null;
 
             // when there is no value in the collapsing field, we can return
             if ($variantId === null) {
@@ -104,17 +104,16 @@ class VariantsProcessor implements SearchResultSetProcessor {
     /**
      * Build the SearchResult of the variant and assigns it to the parent result document.
      *
-     * @param \Apache_Solr_Response $response
+     * @param ResponseAdapter $response
      * @param string $variantAccessKey
      * @param SearchResult $resultDocument
      */
-    protected function buildVariantDocumentAndAssignToParentResult(\Apache_Solr_Response $response, $variantAccessKey, SearchResult $resultDocument)
+    protected function buildVariantDocumentAndAssignToParentResult(ResponseAdapter $response, $variantAccessKey, SearchResult $resultDocument)
     {
         foreach ($response->{'expanded'}->{$variantAccessKey}->{'docs'} as $variantDocumentArray) {
-            $variantDocument = new \Apache_Solr_Document();
-            foreach (get_object_vars($variantDocumentArray) as $propertyName => $propertyValue) {
-                $variantDocument->{$propertyName} = $propertyValue;
-            }
+            $fields = get_object_vars($variantDocumentArray);
+            $variantDocument = new SearchResult($fields);
+
             $variantSearchResult = $this->resultBuilder->fromApacheSolrDocument($variantDocument);
             $variantSearchResult->setIsVariant(true);
             $variantSearchResult->setVariantParent($resultDocument);

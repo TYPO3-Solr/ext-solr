@@ -14,6 +14,7 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers\Debug;
  * The TYPO3 project - inspiring people to share!
  */
 
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResult;
 use ApacheSolrForTypo3\Solr\Domain\Search\Score\ScoreCalculationService;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\ViewHelpers\AbstractSolrFrontendViewHelper;
@@ -48,7 +49,7 @@ class DocumentScoreAnalyzerViewHelper extends AbstractSolrFrontendViewHelper
     public function initializeArguments()
     {
         parent::initializeArguments();
-        $this->registerArgument('document', \Apache_Solr_Document::class, 'The solr document', true);
+        $this->registerArgument('document', SearchResult::class, 'The solr document', true);
     }
 
     /**
