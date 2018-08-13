@@ -100,7 +100,7 @@ class ConfigurationManager implements SingletonInterface
      * This method is used to build the TypoScriptConfiguration.
      *
      * @param array $configurationArray
-     * @param null $contextPageId
+     * @param int|null $contextPageId
      * @return object
      */
     protected function getTypoScriptConfigurationInstance(array $configurationArray = null, $contextPageId = null)

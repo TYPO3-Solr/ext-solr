@@ -91,7 +91,7 @@ class ArrayAccessor
 
     /**
      * @param $path
-     * @param null $defaultIfEmpty
+     * @param mixed $defaultIfEmpty
      * @return array|null
      */
     public function get($path, $defaultIfEmpty = null)
