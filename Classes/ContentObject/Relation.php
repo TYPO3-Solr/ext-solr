@@ -24,8 +24,8 @@ namespace ApacheSolrForTypo3\Solr\ContentObject;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\System\Language\FrontendOverlayService;
 use ApacheSolrForTypo3\Solr\System\TCA\TCAService;
-use ApacheSolrForTypo3\Solr\Util;
 use Doctrine\DBAL\Driver\Statement;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
@@ -66,14 +66,21 @@ class Relation
     protected $tcaService = null;
 
     /**
+     * @var FrontendOverlayService
+     */
+    protected $frontendOverlayService = null;
+
+    /**
      * Relation constructor.
      * @param TCAService|null $tcaService
+     * @param FrontendOverlayService|null $frontendOverlayService
      */
-    public function __construct(TCAService $tcaService = null)
+    public function __construct(TCAService $tcaService = null, FrontendOverlayService $frontendOverlayService = null)
     {
         $this->configuration['enableRecursiveValueResolution'] = 1;
         $this->configuration['removeEmptyValues'] = 1;
         $this->tcaService = $tcaService ?? GeneralUtility::makeInstance(TCAService::class);
+        $this->frontendOverlayService = $frontendOverlayService ?? GeneralUtility::makeInstance(FrontendOverlayService::class);
     }
 
     /**
@@ -123,45 +130,29 @@ class Relation
      */
     protected function getRelatedItems(ContentObjectRenderer $parentContentObject)
     {
+        list($table, $uid) = explode(':', $parentContentObject->currentRecord);
+        $uid = (int) $uid;
+        $field = $this->configuration['localField'];
 
-        list($localTableNameOrg, $localRecordUid) = explode(':', $parentContentObject->currentRecord);
-        $localFieldName = $this->configuration['localField'];
-
-        if (!$this->tcaService->getHasConfigurationForField($localTableNameOrg, $localFieldName)) {
+        if (!$this->tcaService->getHasConfigurationForField($table, $field)) {
             return [];
         }
 
-        $localTableName = $this->usePagesLanguageOverlayInsteadOfPagesIfPossible($localTableNameOrg, $localFieldName);
-        $localRecordUid = $this->getUidOfRecordOverlay($localTableNameOrg, $localFieldName, $localRecordUid);
-        $localFieldTca = $this->tcaService->getConfigurationForField($localTableName, $localFieldName);
+        /**
+         * @todo this can be removed when TYPO3 8 support is dropped since overlays are then also stored in the same
+         * table for pages
+         */
+        $overlayTable = $this->frontendOverlayService->getOverlayTable($table, $field);
+        $overlayUid = $this->frontendOverlayService->getUidOfOverlay($table, $field, $uid);
+        $fieldTCA = $this->tcaService->getConfigurationForField($overlayTable, $field);
 
-        if (isset($localFieldTca['config']['MM']) && trim($localFieldTca['config']['MM']) !== '') {
-            $relatedItems = $this->getRelatedItemsFromMMTable($localTableName, $localRecordUid, $localFieldTca);
+        if (isset($fieldTCA['config']['MM']) && trim($fieldTCA['config']['MM']) !== '') {
+            $relatedItems = $this->getRelatedItemsFromMMTable($overlayTable, $overlayUid, $fieldTCA);
         } else {
-            $relatedItems = $this->getRelatedItemsFromForeignTable($localTableName,
-                $localRecordUid, $localFieldTca, $parentContentObject);
+            $relatedItems = $this->getRelatedItemsFromForeignTable($overlayTable, $overlayUid, $fieldTCA, $parentContentObject);
         }
 
         return $relatedItems;
-    }
-
-    /**
-     * @param string $localTableName
-     * @param string $localFieldName
-     * @return string
-     * @todo this can be removed when TYPO3 8 support is dropped since pages translations are in pages then as well
-     */
-    protected function usePagesLanguageOverlayInsteadOfPagesIfPossible(string $localTableName, string $localFieldName) : string
-    {
-        // pages has a special overlay table constriction
-        if ($GLOBALS['TSFE']->sys_language_uid > 0
-            && $localTableName === 'pages'
-            && $this->tcaService->getHasConfigurationForField('pages_language_overlay', $localFieldName)
-            && Util::getIsTYPO3VersionBelow9()) {
-            return 'pages_language_overlay';
-        }
-
-        return $localTableName;
     }
 
     /**
@@ -213,7 +204,7 @@ class Relation
                 return $this->getRelatedItems($contentObject);
             } else {
                 if ($GLOBALS['TSFE']->sys_language_uid > 0) {
-                    $record = $this->getTranslationOverlay($foreignTableName, $record);
+                    $record = $this->frontendOverlayService->getOverlay($foreignTableName, $record);
                 }
                 $relatedItems[] = $record[$foreignTableLabelField];
             }
@@ -245,22 +236,6 @@ class Relation
         }
 
         return $foreignTableLabelField;
-    }
-
-    /**
-     * Return the translated record
-     *
-     * @param string $tableName
-     * @param array $record
-     * @return array
-     */
-    protected function getTranslationOverlay($tableName, $record)
-    {
-        if ($tableName === 'pages') {
-            return $GLOBALS['TSFE']->sys_page->getPageOverlay($record, $GLOBALS['TSFE']->sys_language_uid);
-        }
-
-        return $GLOBALS['TSFE']->sys_page->getRecordOverlay($tableName, $record, $GLOBALS['TSFE']->sys_language_uid);
     }
 
     /**
@@ -333,7 +308,7 @@ class Relation
         $foreignTableName = ''
     ) {
         if ($GLOBALS['TSFE']->sys_language_uid > 0 && !empty($foreignTableName)) {
-            $relatedRecord = $this->getTranslationOverlay($foreignTableName, $relatedRecord);
+            $relatedRecord = $this->frontendOverlayService->getOverlay($foreignTableName, $relatedRecord);
         }
 
         $value = $relatedRecord[$foreignTableLabelField];
@@ -372,76 +347,6 @@ class Relation
         }
 
         return $parentContentObject->stdWrap($value, $this->configuration);
-    }
-
-    /**
-     * When the record has an overlay we retrieve the uid of the translated record,
-     * to resolve the relations from the translation.
-     *
-     * @param string $localTableName
-     * @param int $localRecordUid
-     * @return int
-     */
-    protected function getUidOfRecordOverlay($localTableName, $localFieldName, $localRecordUid)
-    {
-        // when no language is set at all we do not need to overlay
-        if (!isset($GLOBALS['TSFE']->sys_language_uid)) {
-            return $localRecordUid;
-        }
-        // when no language is set we can return the passed recordUid
-        if (!$GLOBALS['TSFE']->sys_language_uid > 0) {
-            return $localRecordUid;
-        }
-        // when no TCA configured for pages_language_overlay's field, then use original record Uid
-        // @todo this can be dropped when TYPO3 8 compatibility is dropped
-        $translatedInPagesLanguageOverlayAndNoTCAPresent = Util::getIsTYPO3VersionBelow9() &&
-            !$this->tcaService->getHasConfigurationForField('pages_language_overlay', $localFieldName);
-        if ($localTableName === 'pages' && $translatedInPagesLanguageOverlayAndNoTCAPresent) {
-            return $localRecordUid;
-        }
-
-        /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable($localTableName);
-
-        $record = $queryBuilder
-            ->select('*')
-            ->from($localTableName)
-            ->where(
-                $queryBuilder->expr()->eq('uid', $localRecordUid)
-            )
-            ->execute()
-            ->fetch();
-
-        // when the overlay is not an array, we return the localRecordUid
-        if (!is_array($record)) {
-            return $localRecordUid;
-        }
-
-        $overlayUid = $this->getLocalRecordUidFromOverlay($localTableName, $record);
-        $localRecordUid = ($overlayUid !== 0) ? $overlayUid : $localRecordUid;
-        return $localRecordUid;
-    }
-
-    /**
-     * This method retrieves the _PAGES_OVERLAY_UID or _LOCALIZED_UID from the localized record.
-     *
-     * @param string $localTableName
-     * @param array $overlayRecord
-     * @return int
-     */
-    protected function getLocalRecordUidFromOverlay($localTableName, $overlayRecord)
-    {
-        $overlayRecord = $this->getTranslationOverlay($localTableName, $overlayRecord);
-
-        // when there is a _PAGES_OVERLAY_UID | _LOCALIZED_UID in the overlay, we return it
-        if ($localTableName === 'pages' && isset($overlayRecord['_PAGES_OVERLAY_UID'])) {
-            return (int)$overlayRecord['_PAGES_OVERLAY_UID'];
-        } elseif (isset($overlayRecord['_LOCALIZED_UID'])) {
-            return (int)$overlayRecord['_LOCALIZED_UID'];
-        }
-
-        return 0;
     }
 
     /**
