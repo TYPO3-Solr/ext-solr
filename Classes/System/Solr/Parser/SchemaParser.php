@@ -71,7 +71,6 @@ class SchemaParser
     protected function parseLanguage(\stdClass $schema)
     {
         $language = 'english';
-
         if (!is_object($schema) || !isset($schema->fieldTypes)) {
             return $language;
         }
@@ -82,7 +81,7 @@ class SchemaParser
             }
             // we have a text field
             foreach ($fieldType->queryAnalyzer->filters as $filter) {
-                if ($filter->class === 'solr.ManagedSynonymFilterFactory') {
+                if ($filter->class === 'solr.ManagedSynonymGraphFilterFactory') {
                     $language = $filter->managed;
                 }
             }

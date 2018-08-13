@@ -142,7 +142,7 @@
             {
               "class":"solr.LowerCaseFilterFactory"},
             {
-              "class":"solr.ManagedSynonymFilterFactory",
+              "class":"solr.ManagedSynonymGraphFilterFactory",
               "managed":"german"},
             {
               "class":"solr.ManagedStopFilterFactory",
@@ -171,7 +171,7 @@
             {
               "class":"solr.LowerCaseFilterFactory"},
             {
-              "class":"solr.ManagedSynonymFilterFactory",
+              "class":"solr.ManagedSynonymGraphFilterFactory",
               "managed":"german"},
             {
               "class":"solr.ManagedStopFilterFactory",
@@ -222,7 +222,7 @@
           "filters":[{
               "class":"solr.LowerCaseFilterFactory"},
             {
-              "class":"solr.ManagedSynonymFilterFactory",
+              "class":"solr.ManagedSynonymGraphFilterFactory",
               "managed":"german"},
             {
               "class":"solr.ManagedStopFilterFactory",
@@ -250,7 +250,7 @@
             {
               "class":"solr.LowerCaseFilterFactory"},
             {
-              "class":"solr.ManagedSynonymFilterFactory",
+              "class":"solr.ManagedSynonymGraphFilterFactory",
               "managed":"german"},
             {
               "class":"solr.ManagedStopFilterFactory",
