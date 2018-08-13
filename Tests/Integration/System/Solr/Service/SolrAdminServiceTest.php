@@ -188,4 +188,17 @@ class SolrAdminServiceTest extends IntegrationTest
         $result = $this->solrAdminService->requestServlet('/solr/core_en/admin/ping');
         $this->assertSame('OK', $result->status, 'Unexpected servlet response');
     }
+
+    /**
+     * @test
+     */
+    public function canParseLanguageFromSchema()
+    {
+        $client = new Client(['adapter' => 'Solarium\Core\Client\Adapter\Guzzle']);
+        $client->clearEndpoints();
+        $client->createEndpoint(['host' => 'localhost', 'port' => 8999, 'path' => '/solr', 'core' => 'core_de', 'key' => 'admin'] , true);
+
+        $this->solrAdminService = GeneralUtility::makeInstance(SolrAdminService::class, $client);
+        $this->assertSame("german", $this->solrAdminService->getSchema()->getLanguage(), "Could not get language from core in non default language");
+    }
 }
