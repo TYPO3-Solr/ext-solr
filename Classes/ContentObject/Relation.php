@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr\ContentObject;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\System\TCA\TCAService;
 use ApacheSolrForTypo3\Solr\Util;
 use Doctrine\DBAL\Driver\Statement;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -60,13 +61,19 @@ class Relation
     protected $configuration = [];
 
     /**
-     * Constructor.
-     *
+     * @var TCAService
      */
-    public function __construct()
+    protected $tcaService = null;
+
+    /**
+     * Relation constructor.
+     * @param TCAService|null $tcaService
+     */
+    public function __construct(TCAService $tcaService = null)
     {
         $this->configuration['enableRecursiveValueResolution'] = 1;
         $this->configuration['removeEmptyValues'] = 1;
+        $this->tcaService = $tcaService ?? GeneralUtility::makeInstance(TCAService::class);
     }
 
     /**
@@ -98,12 +105,7 @@ class Relation
 
         if (empty($configuration['multiValue'])) {
             // single value, need to concatenate related items
-            $singleValueGlue = ', ';
-
-            if (!empty($configuration['singleValueGlue'])) {
-                $singleValueGlue = trim($configuration['singleValueGlue'], '|');
-            }
-
+            $singleValueGlue = !empty($configuration['singleValueGlue']) ? trim($configuration['singleValueGlue'], '|') : ', ';
             $result = implode($singleValueGlue, $relatedItems);
         } else {
             // multi value, need to serialize as content objects must return strings
@@ -119,24 +121,22 @@ class Relation
      * @param ContentObjectRenderer $parentContentObject parent content object
      * @return array Array of related items, values already resolved from related records
      */
-    protected function getRelatedItems(
-        ContentObjectRenderer $parentContentObject
-    ) {
+    protected function getRelatedItems(ContentObjectRenderer $parentContentObject)
+    {
 
         list($localTableNameOrg, $localRecordUid) = explode(':', $parentContentObject->currentRecord);
         $localFieldName = $this->configuration['localField'];
 
-        if (!$this->isTcaConfiguredForTablesField($localTableNameOrg, $localFieldName)) {
+        if (!$this->tcaService->getHasConfigurationForField($localTableNameOrg, $localFieldName)) {
             return [];
         }
 
         $localTableName = $this->usePagesLanguageOverlayInsteadOfPagesIfPossible($localTableNameOrg, $localFieldName);
         $localRecordUid = $this->getUidOfRecordOverlay($localTableNameOrg, $localFieldName, $localRecordUid);
+        $localFieldTca = $this->tcaService->getConfigurationForField($localTableName, $localFieldName);
 
-        $localFieldTca = $GLOBALS['TCA'][$localTableName]['columns'][$localFieldName];
         if (isset($localFieldTca['config']['MM']) && trim($localFieldTca['config']['MM']) !== '') {
-            $relatedItems = $this->getRelatedItemsFromMMTable($localTableName,
-                $localRecordUid, $localFieldTca);
+            $relatedItems = $this->getRelatedItemsFromMMTable($localTableName, $localRecordUid, $localFieldTca);
         } else {
             $relatedItems = $this->getRelatedItemsFromForeignTable($localTableName,
                 $localRecordUid, $localFieldTca, $parentContentObject);
@@ -156,24 +156,12 @@ class Relation
         // pages has a special overlay table constriction
         if ($GLOBALS['TSFE']->sys_language_uid > 0
             && $localTableName === 'pages'
-            && $this->isTcaConfiguredForTablesField('pages_language_overlay', $localFieldName)
+            && $this->tcaService->getHasConfigurationForField('pages_language_overlay', $localFieldName)
             && Util::getIsTYPO3VersionBelow9()) {
             return 'pages_language_overlay';
         }
 
         return $localTableName;
-    }
-
-    /**
-     * Checks if TCA is available for column by table
-     *
-     * @param string $tableName
-     * @param string $fieldName
-     * @return bool
-     */
-    protected function isTcaConfiguredForTablesField(string $tableName, string $fieldName) : bool
-    {
-        return isset($GLOBALS['TCA'][$tableName]['columns'][$fieldName]);
     }
 
     /**
@@ -188,7 +176,7 @@ class Relation
     {
         $relatedItems = [];
         $foreignTableName = $localFieldTca['config']['foreign_table'];
-        $foreignTableTca = $GLOBALS['TCA'][$foreignTableName];
+        $foreignTableTca = $this->tcaService->getTableConfiguration($foreignTableName);
         $foreignTableLabelField = $this->resolveForeignTableLabelField($foreignTableTca);
         $mmTableName = $localFieldTca['config']['MM'];
 
@@ -212,9 +200,9 @@ class Relation
                 && $this->configuration['enableRecursiveValueResolution']
             ) {
                 if (strpos($this->configuration['foreignLabelField'], '.') !== false) {
-                    $foreignLabelFieldArr = explode('.', $this->configuration['foreignLabelField']);
-                    unset($foreignLabelFieldArr[0]);
-                    $this->configuration['foreignLabelField'] = implode('.', $foreignLabelFieldArr);
+                    $foreignTableLabelFieldArr = explode('.', $this->configuration['foreignLabelField']);
+                    unset($foreignTableLabelFieldArr[0]);
+                    $this->configuration['foreignLabelField'] = implode('.', $foreignTableLabelFieldArr);
                 }
 
                 $this->configuration['localField'] = $foreignTableLabelField;
@@ -292,14 +280,13 @@ class Relation
     ) {
         $relatedItems = [];
         $foreignTableName = $localFieldTca['config']['foreign_table'];
-        $foreignTableTca = $GLOBALS['TCA'][$foreignTableName];
+        $foreignTableTca = $this->tcaService->getTableConfiguration($foreignTableName);
         $foreignTableLabelField = $this->resolveForeignTableLabelField($foreignTableTca);
 
             /** @var $relationHandler RelationHandler */
         $relationHandler = GeneralUtility::makeInstance(RelationHandler::class);
 
-        $itemList = isset($parentContentObject->data[$this->configuration['localField']]) ?
-                        $parentContentObject->data[$this->configuration['localField']] : '';
+        $itemList = $parentContentObject->data[$this->configuration['localField']] ?? '';
 
         $relationHandler->start($itemList, $foreignTableName, '', $localRecordUid, $localTableName, $localFieldTca['config']);
         $selectUids = $relationHandler->tableArray[$foreignTableName];
@@ -407,7 +394,8 @@ class Relation
         }
         // when no TCA configured for pages_language_overlay's field, then use original record Uid
         // @todo this can be dropped when TYPO3 8 compatibility is dropped
-        $translatedInPagesLanguageOverlayAndNoTCAPresent = Util::getIsTYPO3VersionBelow9() && !$this->isTcaConfiguredForTablesField('pages_language_overlay', $localFieldName);
+        $translatedInPagesLanguageOverlayAndNoTCAPresent = Util::getIsTYPO3VersionBelow9() &&
+            !$this->tcaService->getHasConfigurationForField('pages_language_overlay', $localFieldName);
         if ($localTableName === 'pages' && $translatedInPagesLanguageOverlayAndNoTCAPresent) {
             return $localRecordUid;
         }

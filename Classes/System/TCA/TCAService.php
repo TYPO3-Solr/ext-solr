@@ -279,4 +279,37 @@ class TCAService
 
         return $this->visibilityAffectingFields[$table];
     }
+
+    /**
+     * Checks if TCA is available for column by table
+     *
+     * @param string $tableName
+     * @param string $fieldName
+     * @return bool
+     */
+    public function getHasConfigurationForField(string $tableName, string $fieldName) : bool
+    {
+        return isset($this->tca[$tableName]['columns'][$fieldName]);
+    }
+
+    /**
+     * Returns the tca configuration for a certains field
+     *
+     * @param string $tableName
+     * @param string $fieldName
+     * @return array
+     */
+    public function getConfigurationForField(string $tableName, string $fieldName) : array
+    {
+        return $this->tca[$tableName]['columns'][$fieldName] ?? [];
+    }
+
+    /**
+     * @param string $tableName
+     * @return array
+     */
+    public function getTableConfiguration(string $tableName) : array
+    {
+        return $this->tca[$tableName] ?? [];
+    }
 }
