@@ -49,9 +49,10 @@ If external data should be indexed or the RecordIndexer is not required, it is p
 
    namespace Vendor\ExtensionName\Import;
 
-   use Apache_Solr_Document;
    use ApacheSolrForTypo3\Solr\ConnectionManager;
    use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
+   use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
+   use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
    use TYPO3\CMS\Core\Utility\GeneralUtility;
 
    class Indexer
@@ -81,20 +82,20 @@ If external data should be indexed or the RecordIndexer is not required, it is p
            }
 
            $connection = $this->connectionManager->getConnectionByPageId($pageId, $language);
-           $connection->addDocuments($documents);
+           $connection->getWriteService()->addDocuments($documents);
        }
-       
-       
+
+
        /**
         * Remove all from index
         *
         * @throws \ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException
         */
        public function clearIndex() {
-           $connections = $this->getSolrConnections();
+           $connections = $this->connectionManager->getAllConnections();
            foreach ($connections as $connectionLanguage => $connection) {
-               /** @var ConnectionManager */
-               $connection->deleteByType('cutom_type');
+               /** @var SolrConnection */
+               $connection->getWriteService()->deleteByType('cutom_type');
            }
        }
 
@@ -103,9 +104,9 @@ If external data should be indexed or the RecordIndexer is not required, it is p
         *
         * @param array $row
         * @param int $pageId
-        * @return Apache_Solr_Document
+        * @return Document
         */
-       protected function createDocument(array $row, int $pageId): Apache_Solr_Document
+       protected function createDocument(array $row, int $pageId): Document
        {
            $document = $this->getBaseDocument($row, $pageId);
 
@@ -135,14 +136,15 @@ If external data should be indexed or the RecordIndexer is not required, it is p
         *
         * @param array $itemRecord The record to use to build the base document
         * @param int $rootPageId root page id
-        * @return Apache_Solr_Document A basic Solr document
+        * @return Document A basic Solr document
         */
-       protected function getBaseDocument(array $itemRecord, int $rootPageId): Apache_Solr_Document
+       protected function getBaseDocument(array $itemRecord, int $rootPageId): Document
        {
            $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
            $site = $siteRepository->getSiteByRootPageId($rootPageId);
 
-           $document = GeneralUtility::makeInstance(Apache_Solr_Document::class);
+               /** @var $document Document */
+           $document = GeneralUtility::makeInstance(Document::class);
 
            // required fields
            $document->setField('id', 'cutom_type_' . $itemRecord['uid']);
