@@ -51,7 +51,7 @@ class SearchResult extends Document
     /**
      * References the parent document of the document is a variant.
      *
-     * @var null
+     * @var SearchResult|null
      */
     protected $variantParent = null;
 
@@ -118,7 +118,7 @@ class SearchResult extends Document
     }
 
     /**
-     * @return null
+     * @return SearchResult
      */
     public function getVariantParent()
     {
@@ -126,9 +126,9 @@ class SearchResult extends Document
     }
 
     /**
-     * @param null $variantParent
+     * @param SearchResult $variantParent
      */
-    public function setVariantParent($variantParent)
+    public function setVariantParent(SearchResult $variantParent)
     {
         $this->variantParent = $variantParent;
     }

@@ -44,7 +44,7 @@ class TCAService
 
     /**
      * TCAService constructor.
-     * @param null $TCA
+     * @param array|null $TCA
      */
     public function __construct($TCA = null)
     {

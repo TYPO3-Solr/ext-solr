@@ -55,7 +55,7 @@ abstract class AbstractFacet
     protected $label;
 
     /**
-     * @var []
+     * @var array
      */
     protected $configuration;
 

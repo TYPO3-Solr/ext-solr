@@ -69,7 +69,6 @@ class AjaxController
      * Update all connections
      *
      * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
      * @return ResponseInterface
      */
     public function updateConnections(ServerRequestInterface $request): ResponseInterface
