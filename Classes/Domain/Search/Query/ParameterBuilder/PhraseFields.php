@@ -24,7 +24,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\AbstractQueryBuilder;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 
 /**
@@ -79,10 +79,10 @@ class PhraseFields extends AbstractFieldList implements ParameterBuilder
     }
 
     /**
-     * @param QueryBuilder $parentBuilder
-     * @return QueryBuilder
+     * @param AbstractQueryBuilder $parentBuilder
+     * @return AbstractQueryBuilder
      */
-    public function build(QueryBuilder $parentBuilder): QueryBuilder
+    public function build(AbstractQueryBuilder $parentBuilder): AbstractQueryBuilder
     {
         $phraseFieldString = $this->toString();
         if ($phraseFieldString === '' || !$this->getIsEnabled()) {

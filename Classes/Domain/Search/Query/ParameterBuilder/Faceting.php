@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\AbstractQueryBuilder;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\SortingExpression;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
@@ -247,10 +248,10 @@ class Faceting extends AbstractDeactivatable implements ParameterBuilder
     }
 
     /**
-     * @param QueryBuilder $parentBuilder
+     * @param AbstractQueryBuilder $parentBuilder
      * @return QueryBuilder
      */
-    public function build(QueryBuilder $parentBuilder): QueryBuilder
+    public function build(AbstractQueryBuilder $parentBuilder): AbstractQueryBuilder
     {
         $query = $parentBuilder->getQuery();
         if (!$this->getIsEnabled()) {
