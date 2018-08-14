@@ -51,11 +51,11 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 /**
- * The QueryBuilder is responsible to build solr queries, that are used in the extension to query the solr server.
+ * The concrete QueryBuilder contains all TYPO3 specific initialization logic of solr queries, for TYPO3.
  *
  * @package ApacheSolrForTypo3\Solr\Domain\Search\Query
  */
-class QueryBuilder {
+class QueryBuilder extends AbstractQueryBuilder {
 
     /**
      * Additional filters, which will be added to the query, as well as to
@@ -81,11 +81,6 @@ class QueryBuilder {
     protected $siteHashService = null;
 
     /**
-     * @var Query
-     */
-    protected $queryToBuild = null;
-
-    /**
      * QueryBuilder constructor.
      * @param TypoScriptConfiguration|null $configuration
      * @param SolrLogManager|null $solrLogManager
@@ -96,16 +91,6 @@ class QueryBuilder {
         $this->typoScriptConfiguration = $configuration ?? Util::getSolrConfiguration();
         $this->logger = $solrLogManager ?? GeneralUtility::makeInstance(SolrLogManager::class, /** @scrutinizer ignore-type */ __CLASS__);
         $this->siteHashService = $siteHashService ?? GeneralUtility::makeInstance(SiteHashService::class);
-    }
-
-    /**
-     * @param Query $query
-     * @return QueryBuilder
-     */
-    public function startFrom(Query $query): QueryBuilder
-    {
-        $this->queryToBuild = $query;
-        return $this;
     }
 
     /**
@@ -126,14 +111,6 @@ class QueryBuilder {
     {
         $this->queryToBuild = $this->getSuggestQueryInstance($queryString);
         return $this;
-    }
-
-    /**
-     * @return Query
-     */
-    public function getQuery(): Query
-    {
-        return $this->queryToBuild;
     }
 
     /**
@@ -195,32 +172,6 @@ class QueryBuilder {
     }
 
     /**
-     * @param bool $omitHeader
-     * @return QueryBuilder
-     */
-    public function useOmitHeader($omitHeader = true): QueryBuilder
-    {
-        $this->queryToBuild->setOmitHeader($omitHeader);
-
-        return $this;
-    }
-
-    /**
-     * Uses an array of filters and applies them to the query.
-     *
-     * @param array $filterArray
-     * @return QueryBuilder
-     */
-    public function useFilterArray(array $filterArray): QueryBuilder
-    {
-        foreach ($filterArray as $key => $additionalFilter) {
-            $this->useFilter($additionalFilter, $key);
-        }
-
-        return $this;
-    }
-
-    /**
      * Returns Query for Search which finds document for given page.
      * Note: The Connection is per language as recommended in ext-solr docs.
      *
@@ -262,139 +213,11 @@ class QueryBuilder {
     }
 
     /**
-     * Applies the queryString that is used to search
-     *
-     * @param string $queryString
-     * @return QueryBuilder
-     */
-    public function useQueryString($queryString): QueryBuilder
-    {
-        $this->queryToBuild->setQuery($queryString);
-        return $this;
-    }
-
-    /**
-     * Applies the passed queryType to the query.
-     *
-     * @param string $queryType
-     * @return QueryBuilder
-     */
-    public function useQueryType(string $queryType): QueryBuilder
-    {
-        $this->queryToBuild->addParam('qt', $queryType);
-        return $this;
-    }
-
-    /**
-     * Remove the queryType (qt) from the query.
-     *
-     * @return QueryBuilder
-     */
-    public function removeQueryType(): QueryBuilder
-    {
-        $this->queryToBuild->addParam('qt', null);
-        return $this;
-    }
-
-    /**
-     * Can be used to remove all sortings from the query.
-     *
-     * @return QueryBuilder
-     */
-    public function removeAllSortings(): QueryBuilder
-    {
-        $this->queryToBuild->clearSorts();
-        return $this;
-    }
-
-    /**
-     * Applies the passed sorting to the query.
-     *
-     * @param Sorting $sorting
-     * @return QueryBuilder
-     */
-    public function useSorting(Sorting $sorting): QueryBuilder
-    {
-        if (strpos($sorting->getFieldName(), 'relevance') !== false) {
-            $this->removeAllSortings();
-            return $this;
-        }
-
-        $this->queryToBuild->addSort($sorting->getFieldName(), $sorting->getDirection());
-        return $this;
-    }
-
-    /**
-     * Applies the passed sorting to the query.
-     *
-     * @param Sortings $sortings
-     * @return QueryBuilder
-     */
-    public function useSortings(Sortings $sortings): QueryBuilder
-    {
-        foreach($sortings->getSortings() as $sorting) {
-            $this->useSorting($sorting);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param int $resultsPerPage
-     * @return QueryBuilder
-     */
-    public function useResultsPerPage($resultsPerPage): QueryBuilder
-    {
-        $this->queryToBuild->setRows($resultsPerPage);
-        return $this;
-    }
-
-    /**
-     * @param int $page
-     * @return QueryBuilder
-     */
-    public function usePage($page): QueryBuilder
-    {
-        $this->queryToBuild->setStart($page);
-        return $this;
-    }
-
-    /**
-     * @param Operator $operator
-     * @return QueryBuilder
-     */
-    public function useOperator(Operator $operator): QueryBuilder
-    {
-        $this->queryToBuild->setQueryDefaultOperator( $operator->getOperator());
-        return $this;
-    }
-
-    /**
-     * Remove the default query operator.
-     *
-     * @return QueryBuilder
-     */
-    public function removeOperator(): QueryBuilder
-    {
-        $this->queryToBuild->setQueryDefaultOperator(null);
-        return $this;
-    }
-
-    /**
      * @return QueryBuilder
      */
     public function useSlopsFromTypoScript(): QueryBuilder
     {
         return $this->useSlops(Slops::fromTypoScriptConfiguration($this->typoScriptConfiguration));
-    }
-
-    /**
-     * @param Slops $slops
-     * @return QueryBuilder
-     */
-    public function useSlops(Slops $slops): QueryBuilder
-    {
-        return $slops->build($this);
     }
 
     /**
@@ -419,38 +242,6 @@ class QueryBuilder {
     }
 
     /**
-     * Uses the passed boostQuer(y|ies) for the query.
-     *
-     * @param string|array $boostQueries
-     * @return QueryBuilder
-     */
-    public function useBoostQueries($boostQueries): QueryBuilder
-    {
-        $boostQueryArray = [];
-        if(is_array($boostQueries)) {
-            foreach($boostQueries as $boostQuery) {
-                $boostQueryArray[] = ['key' => md5($boostQuery), 'query' => $boostQuery];
-            }
-        } else {
-            $boostQueryArray[] = ['key' => md5($boostQueries), 'query' => $boostQueries];
-        }
-
-        $this->queryToBuild->getEDisMax()->setBoostQueries($boostQueryArray);
-        return $this;
-    }
-
-    /**
-     * Removes all boost queries from the query.
-     *
-     * @return QueryBuilder
-     */
-    public function removeAllBoostQueries(): QueryBuilder
-    {
-        $this->queryToBuild->getEDisMax()->clearBoostQueries();
-        return $this;
-    }
-
-    /**
      * Uses the configured boostFunction from the typoscript configuration.
      *
      * @return QueryBuilder
@@ -462,29 +253,6 @@ class QueryBuilder {
             return $this->useBoostFunction($searchConfiguration['query.']['boostFunction']);
         }
 
-        return $this;
-    }
-
-    /**
-     * Uses the passed boostFunction for the query.
-     *
-     * @param string $boostFunction
-     * @return QueryBuilder
-     */
-    public function useBoostFunction(string $boostFunction): QueryBuilder
-    {
-        $this->queryToBuild->getEDisMax()->setBoostFunctions($boostFunction);
-        return $this;
-    }
-
-    /**
-     * Removes all previously configured boost functions.
-     *
-     * @return $this
-     */
-    public function removeAllBoostFunctions()
-    {
-        $this->queryToBuild->getEDisMax()->setBoostFunctions(null);
         return $this;
     }
 
@@ -504,29 +272,6 @@ class QueryBuilder {
     }
 
     /**
-     * Uses the passed minimumMatch(mm) for the query.
-     *
-     * @param string $minimumMatch
-     * @return QueryBuilder
-     */
-    public function useMinimumMatch(string $minimumMatch): QueryBuilder
-    {
-        $this->queryToBuild->getEDisMax()->setMinimumMatch($minimumMatch);
-        return $this;
-    }
-
-    /**
-     * Remove any previous passed minimumMatch parameter.
-     *
-     * @return QueryBuilder
-     */
-    public function removeMinimumMatch(): QueryBuilder
-    {
-        $this->queryToBuild->getEDisMax()->setMinimumMatch(null);
-        return $this;
-    }
-
-    /**
      * @return QueryBuilder
      */
     public function useTieParameterFromTypoScript(): QueryBuilder
@@ -540,18 +285,6 @@ class QueryBuilder {
     }
 
     /**
-     * Applies the tie parameter to the query.
-     *
-     * @param mixed $tie
-     * @return QueryBuilder
-     */
-    public function useTieParameter($tie): QueryBuilder
-    {
-        $this->queryToBuild->getEDisMax()->setTie($tie);
-        return $this;
-    }
-
-    /**
      * Applies the configured query fields from the typoscript configuration.
      *
      * @return QueryBuilder
@@ -559,17 +292,6 @@ class QueryBuilder {
     public function useQueryFieldsFromTypoScript(): QueryBuilder
     {
         return $this->useQueryFields(QueryFields::fromString($this->typoScriptConfiguration->getSearchQueryQueryFields()));
-    }
-
-    /**
-     * Applies custom QueryFields to the query.
-     *
-     * @param QueryFields $queryFields
-     * @return QueryBuilder
-     */
-    public function useQueryFields(QueryFields $queryFields): QueryBuilder
-    {
-        return $queryFields->build($this);
     }
 
     /**
@@ -583,16 +305,7 @@ class QueryBuilder {
         return $this->useReturnFields(ReturnFields::fromArray($returnFieldsArray));
     }
 
-    /**
-     * Applies custom ReturnFields to the query.
-     *
-     * @param ReturnFields $returnFields
-     * @return QueryBuilder
-     */
-    public function useReturnFields(ReturnFields $returnFields): QueryBuilder
-    {
-        return $returnFields->build($this);
-    }
+
 
     /**
      * Can be used to apply the allowed sites from plugin.tx_solr.search.query.allowedSites to the query.
@@ -630,87 +343,6 @@ class QueryBuilder {
 
         $siteHashFilterString = implode(' OR ', $filters);
         return $this->useFilter($siteHashFilterString, 'siteHash');
-    }
-
-    /**
-     * Can be used to use a specific filter string in the solr query.
-     *
-     * @param string $filterString
-     * @param string $filterName
-     * @return QueryBuilder
-     */
-    public function useFilter($filterString, $filterName = ''): QueryBuilder
-    {
-        $filterName = $filterName === '' ? $filterString : $filterName;
-        $this->queryToBuild->addFilterQuery(['key' => $filterName, 'query' => $filterString]);
-        return $this;
-    }
-
-    /**
-     * Removes a filter by the fieldName.
-     *
-     * @param string $fieldName
-     * @return QueryBuilder
-     */
-    public function removeFilterByFieldName($fieldName): QueryBuilder
-    {
-        return $this->removeFilterByFunction(
-            function($key, $query) use ($fieldName) {
-                $queryString = $query->getQuery();
-                $storedFieldName = substr($queryString,0, strpos($queryString, ":"));
-                return $storedFieldName == $fieldName;
-            }
-        );
-    }
-
-    /**
-     * Removes a filter by the name of the filter (also known as key).
-     *
-     * @param string $name
-     * @return QueryBuilder
-     */
-    public function removeFilterByName($name): QueryBuilder
-    {
-        return $this->removeFilterByFunction(
-            function($key, $query) use ($name) {
-                $key = $query->getKey();
-                return $key == $name;
-            }
-        );
-    }
-
-    /**
-     * Removes a filter by the filter value.
-     *
-     * @param string $value
-     * @return QueryBuilder
-     */
-    public function removeFilterByValue($value): QueryBuilder
-    {
-        return $this->removeFilterByFunction(
-            function($key, $query) use ($value) {
-                $query = $query->getQuery();
-                return $query == $value;
-            }
-        );
-    }
-
-    /**
-     * @param \Closure $filterFunction
-     * @return QueryBuilder
-     */
-    public function removeFilterByFunction($filterFunction) : QueryBuilder
-    {
-        $queries = $this->queryToBuild->getFilterQueries();
-        foreach($queries as $key =>  $query) {
-            $canBeRemoved = $filterFunction($key, $query);
-            if($canBeRemoved) {
-                unset($queries[$key]);
-            }
-        }
-
-        $this->queryToBuild->setFilterQueries($queries);
-        return $this;
     }
 
     /**
@@ -752,28 +384,6 @@ class QueryBuilder {
     }
 
     /**
-     * Passes the alternative query to the Query
-     * @param string $query
-     * @return QueryBuilder
-     */
-    public function useAlternativeQuery(string $query): QueryBuilder
-    {
-        $this->queryToBuild->getEDisMax()->setQueryAlternative($query);
-        return $this;
-    }
-
-    /**
-     * Remove the alternative query from the Query.
-     *
-     * @return QueryBuilder
-     */
-    public function removeAlternativeQuery(): QueryBuilder
-    {
-        $this->queryToBuild->getEDisMax()->setQueryAlternative(null);
-        return $this;
-    }
-
-    /**
      * Applies the configured facets from the typoscript configuration on the query.
      *
      * @return QueryBuilder
@@ -781,17 +391,6 @@ class QueryBuilder {
     public function useFacetingFromTypoScript(): QueryBuilder
     {
         return $this->useFaceting(Faceting::fromTypoScriptConfiguration($this->typoScriptConfiguration));
-    }
-
-    /**
-     * Applies a custom Faceting configuration to the query.
-     *
-     * @param Faceting $faceting
-     * @return QueryBuilder
-     */
-    public function useFaceting(Faceting $faceting): QueryBuilder
-    {
-        return $faceting->build($this);
     }
 
     /**
@@ -805,15 +404,6 @@ class QueryBuilder {
     }
 
     /**
-     * @param FieldCollapsing $fieldCollapsing
-     * @return QueryBuilder
-     */
-    public function useFieldCollapsing(FieldCollapsing $fieldCollapsing): QueryBuilder
-    {
-        return $fieldCollapsing->build($this);
-    }
-
-    /**
      * Applies the configured groupings from the typoscript configuration to the query.
      *
      * @return QueryBuilder
@@ -824,35 +414,6 @@ class QueryBuilder {
     }
 
     /**
-     * Applies a custom initialized grouping to the query.
-     *
-     * @param Grouping $grouping
-     * @return QueryBuilder
-     */
-    public function useGrouping(Grouping $grouping): QueryBuilder
-    {
-        return $grouping->build($this);
-    }
-
-    /**
-     * @param boolean $debugMode
-     * @return QueryBuilder
-     */
-    public function useDebug($debugMode): QueryBuilder
-    {
-        if (!$debugMode) {
-            $this->queryToBuild->addParam('debugQuery', null);
-            $this->queryToBuild->addParam('echoParams', null);
-            return $this;
-        }
-
-        $this->queryToBuild->addParam('debugQuery', 'true');
-        $this->queryToBuild->addParam('echoParams', 'all');
-
-        return $this;
-    }
-
-    /**
      * Applies the configured highlighting from the typoscript configuration to the query.
      *
      * @return QueryBuilder
@@ -860,15 +421,6 @@ class QueryBuilder {
     public function useHighlightingFromTypoScript(): QueryBuilder
     {
         return $this->useHighlighting(Highlighting::fromTypoScriptConfiguration($this->typoScriptConfiguration));
-    }
-
-    /**
-     * @param Highlighting $highlighting
-     * @return QueryBuilder
-     */
-    public function useHighlighting(Highlighting $highlighting): QueryBuilder
-    {
-        return $highlighting->build($this);
     }
 
     /**
@@ -910,15 +462,6 @@ class QueryBuilder {
     }
 
     /**
-     * @param Elevation $elevation
-     * @return QueryBuilder
-     */
-    public function useElevation(Elevation $elevation): QueryBuilder
-    {
-        return $elevation->build($this);
-    }
-
-    /**
      * Applies the configured spellchecking from the typoscript configuration.
      *
      * @return QueryBuilder
@@ -926,15 +469,6 @@ class QueryBuilder {
     public function useSpellcheckingFromTypoScript(): QueryBuilder
     {
         return $this->useSpellchecking(Spellchecking::fromTypoScriptConfiguration($this->typoScriptConfiguration));
-    }
-
-    /**
-     * @param Spellchecking $spellchecking
-     * @return QueryBuilder
-     */
-    public function useSpellchecking(Spellchecking $spellchecking): QueryBuilder
-    {
-        return $spellchecking->build($this);
     }
 
     /**
@@ -971,17 +505,6 @@ class QueryBuilder {
     }
 
     /**
-     * Applies a custom configured PhraseFields to the query.
-     *
-     * @param PhraseFields $phraseFields
-     * @return QueryBuilder
-     */
-    public function usePhraseFields(PhraseFields $phraseFields): QueryBuilder
-    {
-        return $phraseFields->build($this);
-    }
-
-    /**
      * Applies the configured bigram phrase fields from the typoscript configuration to the query.
      *
      * @return QueryBuilder
@@ -992,17 +515,6 @@ class QueryBuilder {
     }
 
     /**
-     * Applies a custom configured BigramPhraseFields to the query.
-     *
-     * @param BigramPhraseFields $bigramPhraseFields
-     * @return QueryBuilder
-     */
-    public function useBigramPhraseFields(BigramPhraseFields $bigramPhraseFields): QueryBuilder
-    {
-        return $bigramPhraseFields->build($this);
-    }
-
-    /**
      * Applies the configured trigram phrase fields from the typoscript configuration to the query.
      *
      * @return QueryBuilder
@@ -1010,17 +522,6 @@ class QueryBuilder {
     public function useTrigramPhraseFieldsFromTypoScript(): QueryBuilder
     {
         return $this->useTrigramPhraseFields(TrigramPhraseFields::fromTypoScriptConfiguration($this->typoScriptConfiguration));
-    }
-
-    /**
-     * Applies a custom configured TrigramPhraseFields to the query.
-     *
-     * @param TrigramPhraseFields $trigramPhraseFields
-     * @return QueryBuilder
-     */
-    public function useTrigramPhraseFields(TrigramPhraseFields $trigramPhraseFields): QueryBuilder
-    {
-        return $trigramPhraseFields->build($this);
     }
 
     /**
