@@ -290,7 +290,7 @@ class SolrConnection
      */
     public function __toString()
     {
-        return $this->scheme . '://' . $this->host . ':' . $this->port . $this->path;
+        return $this->scheme . '://' . $this->host . ':' . $this->port . $this->path . $this->core . '/';
     }
 
     /**

@@ -131,4 +131,14 @@ class SolrConnectionTest extends UnitTest
         $solrService = new SolrConnection('localhost','8080','/solr/','http', '', '', $configuration);
         $this->assertSame(99, $solrService->getReadService()->getPrimaryEndpoint()->getTimeout(), 'Default timeout was not set from configuration');
     }
+
+    /**
+     * @test
+     */
+    public function toStringContainsAllSegments()
+    {
+        $configuration = new TypoScriptConfiguration([]);
+        $solrService = new SolrConnection('localhost','8080','/solr/core_de/','http', '', '', $configuration);
+        $this->assertSame('http://localhost:8080/solr/core_de/', (string) $solrService, 'Could not get string representation of connection');
+    }
 }
