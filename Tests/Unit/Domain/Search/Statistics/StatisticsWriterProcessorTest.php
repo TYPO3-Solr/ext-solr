@@ -30,6 +30,8 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Domain\Search\Statistics\StatisticsRepository;
 use ApacheSolrForTypo3\Solr\Domain\Search\Statistics\StatisticsWriterProcessor;
+use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
+use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use PHPUnit_Framework_MockObject_MockObject;
@@ -46,6 +48,11 @@ class StatisticsWriterProcessorTest extends UnitTest
      * @var StatisticsRepository|PHPUnit_Framework_MockObject_MockObject
      */
     protected $statisticsRepositoryMock;
+
+    /**
+     * @var SiteRepository|PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $siteRepositoryMock;
 
     /**
      * @var StatisticsWriterProcessor|PHPUnit_Framework_MockObject_MockObject
@@ -71,7 +78,9 @@ class StatisticsWriterProcessorTest extends UnitTest
     {
         parent::setUp();
         $this->statisticsRepositoryMock = $this->getMockBuilder(StatisticsRepository::class)->setMethods(['saveStatisticsRecord'])->getMock();
-        $this->processor = $this->getMockBuilder(StatisticsWriterProcessor::class)->setConstructorArgs([$this->statisticsRepositoryMock])->setMethods(['getTSFE', 'getTime', 'getUserIp'])->getMock();
+
+        $this->siteRepositoryMock = $this->getDumbMock(SiteRepository::class);
+        $this->processor = $this->getMockBuilder(StatisticsWriterProcessor::class)->setConstructorArgs([$this->statisticsRepositoryMock, $this->siteRepositoryMock])->setMethods(['getTSFE', 'getTime', 'getUserIp'])->getMock();
         $this->typoScriptConfigurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
         $this->searchRequestMock = $this->getDumbMock(SearchRequest::class);
         $this->queryMock = $this->getDumbMock(Query::class);
@@ -83,9 +92,14 @@ class StatisticsWriterProcessorTest extends UnitTest
     public function canWriteExpectedStatisticsData()
     {
         $fakeTSFE = $this->getDumbMock(TypoScriptFrontendController::class);
+        $fakeTSFE->id = 888;
         $fakeTime = 100;
         $fakeIP = '192.168.2.22';
-        
+
+        $fakeSite = $this->getDumbMock(Site::class);
+        $fakeSite->expects($this->once())->method('getRootPageId')->willReturn(4711);
+        $this->siteRepositoryMock->expects($this->once())->method('getSiteByPageId')->with(888)->willReturn($fakeSite);
+
         $this->processor->expects($this->once())->method('getTSFE')->will($this->returnValue($fakeTSFE));
         $this->processor->expects($this->once())->method('getUserIp')->will($this->returnValue($fakeIP));
         $this->processor->expects($this->once())->method('getTime')->will($this->returnValue($fakeTime));
@@ -104,6 +118,7 @@ class StatisticsWriterProcessorTest extends UnitTest
         $this->statisticsRepositoryMock->expects($this->any())->method('saveStatisticsRecord')->will($this->returnCallback(function($statisticData) use ($self) {
             $this->assertSame('my search', $statisticData['keywords'], 'Unexpected keywords given');
             $this->assertSame('192.168.2.22', $statisticData['ip'], 'Unexpected ip given');
+            $this->assertSame(4711, $statisticData['root_pid'], 'Unexpected root pid given');
         }));
 
         $this->processor->process($resultSetMock);
