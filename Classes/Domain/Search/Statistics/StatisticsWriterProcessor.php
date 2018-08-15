@@ -31,7 +31,6 @@ use ApacheSolrForTypo3\Solr\HtmlContentExtractor;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
-use TYPO3\CMS\Frontend\Page\PageRepository;
 
 /**
  * Writes statistics after searches have been conducted.
@@ -48,11 +47,17 @@ class StatisticsWriterProcessor implements SearchResultSetProcessor
     protected $statisticsRepository;
 
     /**
+     * @var SiteRepository
+     */
+    protected $siteRepository;
+
+    /**
      * @param StatisticsRepository $statisticsRepository
      */
     public function __construct(StatisticsRepository $statisticsRepository = null)
     {
         $this->statisticsRepository = $statisticsRepository ?? GeneralUtility::makeInstance(StatisticsRepository::class);
+        $this->siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
     }
 
     /**
@@ -76,7 +81,7 @@ class StatisticsWriterProcessor implements SearchResultSetProcessor
         $ipMaskLength = (int)$configuration->getStatisticsAnonymizeIP();
 
         $TSFE = $this->getTSFE();
-        $root_pid = GeneralUtility::makeInstance(SiteRepository::class)->getSiteByPageId($TSFE->id)->getRootPageId();
+        $root_pid = $this->siteRepository->getSiteByPageId($TSFE->id)->getRootPageId();
         $statisticData = [
             'pid' => $TSFE->id,
             'root_pid' => $root_pid,
