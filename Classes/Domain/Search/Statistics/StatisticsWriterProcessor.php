@@ -28,6 +28,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSetProcessor;
 use ApacheSolrForTypo3\Solr\HtmlContentExtractor;
+use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use TYPO3\CMS\Frontend\Page\PageRepository;
@@ -75,7 +76,7 @@ class StatisticsWriterProcessor implements SearchResultSetProcessor
         $ipMaskLength = (int)$configuration->getStatisticsAnonymizeIP();
 
         $TSFE = $this->getTSFE();
-        $root_pid = $this->determineSearchRoot($TSFE);
+        $root_pid = GeneralUtility::makeInstance(SiteRepository::class)->getSiteByPageId($TSFE->id)->getRootPageId();
         $statisticData = [
             'pid' => $TSFE->id,
             'root_pid' => $root_pid,
@@ -117,28 +118,6 @@ class StatisticsWriterProcessor implements SearchResultSetProcessor
         return $keywords;
     }
 
-    /**
-     * @param $TSFE
-     * @return null | integer
-     * @throws \Exception
-     */
-    protected function determineSearchRoot($TSFE)
-    {
-        $root_pid = null;
-        if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['sites']) &&
-            count($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['sites']) > 0
-        ) {
-            $sites = array_keys($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['sites']);
-            foreach ($TSFE->tmpl->rootLine as $pageInRootline) {
-                if (in_array ($pageInRootline['uid'], $sites)){
-                    $root_pid = $pageInRootline['uid'];
-                }
-            }
-        } else {
-            $root_pid = $TSFE->tmpl->rootLine[0]['uid'];
-        }
-        return $root_pid;
-    }
     /**
      * Sanitizes a string
      *
