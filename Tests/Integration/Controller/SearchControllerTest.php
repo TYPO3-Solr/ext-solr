@@ -118,6 +118,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $this->searchController->processRequest($this->searchRequest, $this->searchResponse);
         $result = $this->searchResponse->getContent();
 
+        $this->assertRegExp('/Found [0-9]+ results in [0-9]+ milliseconds/i',$result);
         $this->assertContains('pages/3/0/0/0', $result, 'Could not find page 3 in result set');
         $this->assertContains('pages/2/0/0/0', $result, 'Could not find page 2 in result set');
     }

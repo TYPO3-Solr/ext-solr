@@ -143,6 +143,7 @@ class QueryBuilder extends AbstractQueryBuilder {
                 ->usePhraseFieldsFromTypoScript()
                 ->useBigramPhraseFieldsFromTypoScript()
                 ->useTrigramPhraseFieldsFromTypoScript()
+                ->useOmitHeader(false)
                 ->getQuery();
     }
 
