@@ -18,12 +18,7 @@ class Document extends SolariumDocument {
         if (substr($name, 0, 3) == 'get') {
             $field = substr($name, 3);
             $field = strtolower($field[0]) . substr($field, 1);
-
-            if (!isset($this->fields[$field])) {
-                throw new RuntimeException('Tried to access non-existent field "' . $field . '".', 1311006894);
-            }
-
-            return $this->fields[$field];
+            return $this->fields[$field] ?? null;
         } else {
             throw new RuntimeException('Call to undefined method. Supports magic getters only.', 1311006605);
         }
