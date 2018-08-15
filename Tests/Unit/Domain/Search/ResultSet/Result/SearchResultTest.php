@@ -108,4 +108,12 @@ class SearchResultTest extends UnitTest
     {
         $this->assertSame(true, $this->searchResult->getIsElevated(), 'Could not get isElevated from searchResult');
     }
+
+    /**
+     * @test
+     */
+    public function getOnUnexistingFieldReturnsNull()
+    {
+        $this->assertNull($this->searchResult->getUnexistingField(), 'Calling getter for unexisting field does not return null');
+    }
 }
