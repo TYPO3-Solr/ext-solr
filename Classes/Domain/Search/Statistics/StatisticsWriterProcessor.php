@@ -28,6 +28,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSetProcessor;
 use ApacheSolrForTypo3\Solr\HtmlContentExtractor;
+use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
@@ -46,11 +47,18 @@ class StatisticsWriterProcessor implements SearchResultSetProcessor
     protected $statisticsRepository;
 
     /**
-     * @param StatisticsRepository $statisticsRepository
+     * @var SiteRepository
      */
-    public function __construct(StatisticsRepository $statisticsRepository = null)
+    protected $siteRepository;
+
+    /**
+     * @param StatisticsRepository $statisticsRepository
+     * @param SiteRepository $siteRepository
+     */
+    public function __construct(StatisticsRepository $statisticsRepository = null, SiteRepository $siteRepository = null)
     {
         $this->statisticsRepository = $statisticsRepository ?? GeneralUtility::makeInstance(StatisticsRepository::class);
+        $this->siteRepository = $siteRepository ?? GeneralUtility::makeInstance(SiteRepository::class);
     }
 
     /**
@@ -74,9 +82,10 @@ class StatisticsWriterProcessor implements SearchResultSetProcessor
         $ipMaskLength = (int)$configuration->getStatisticsAnonymizeIP();
 
         $TSFE = $this->getTSFE();
+        $root_pid = $this->siteRepository->getSiteByPageId($TSFE->id)->getRootPageId();
         $statisticData = [
             'pid' => $TSFE->id,
-            'root_pid' => $TSFE->tmpl->rootLine[0]['uid'],
+            'root_pid' => $root_pid,
             'tstamp' => $this->getTime(),
             'language' => $TSFE->sys_language_uid,
             'num_found' => isset($response->response->numFound) ? (int)$response->response->numFound : 0,
