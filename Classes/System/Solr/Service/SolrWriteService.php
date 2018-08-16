@@ -24,9 +24,9 @@ namespace ApacheSolrForTypo3\Solr\System\Solr\Service;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\ExtractingQuery;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
+use Solarium\QueryType\Extract\Query;
 
 /**
  * Class SolrReadService
@@ -39,10 +39,10 @@ class SolrWriteService extends AbstractSolrService
     /**
      * Performs a content and meta data extraction request.
      *
-     * @param ExtractingQuery $query An extraction query
+     * @param Query $query An extraction query
      * @return array An array containing the extracted content [0] and meta data [1]
      */
-    public function extractByQuery(ExtractingQuery $query)
+    public function extractByQuery(Query $query)
     {
         try {
             $response = $this->createAndExecuteRequest($query);
