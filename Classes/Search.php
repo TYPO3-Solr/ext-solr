@@ -135,8 +135,8 @@ class Search
     {
         $this->query = $query;
 
-        if (empty($limit)) {
-            $limit = $query->getRows();
+        if (!empty($limit)) {
+            $query->setRows($limit);
         }
         $query->setStart($offset);
 
@@ -161,7 +161,7 @@ class Search
                         'exception' => $e->__toString(),
                         'query' => (array)$query,
                         'offset' => $offset,
-                        'limit' => $limit
+                        'limit' => $query->getRows()
                     ]
                 );
             }
