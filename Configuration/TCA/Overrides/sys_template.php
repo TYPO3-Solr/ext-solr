@@ -6,7 +6,7 @@
 
 // StyleSheets
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile('solr',
-    'Configuration/TypoScript/Bootstrap/', 'Search - Bootstrap CSS Framework');
+    'Configuration/TypoScript/BootstrapCss/', 'Search - Bootstrap CSS Framework');
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile('solr',
     'Configuration/TypoScript/StyleSheets/', 'Search - Default Stylesheets');
 
