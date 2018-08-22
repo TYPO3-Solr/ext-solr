@@ -21,7 +21,7 @@
       "wt": "json",
       "hl.tag.pre": "<span class=\"results-highlight\">",
       "facet.field": "type",
-      "json.nl": "map",
+      "json.nl": "flat",
       "start": "0",
       "hl.tag.post": "</span>",
       "rows": "10",

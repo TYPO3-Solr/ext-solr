@@ -11,7 +11,7 @@
             "spellcheck.maxCollationTries": "0",
             "qf": "content^40.0 title^5.0 keywords^2.0 tagsH1^5.0 tagsH2H3^3.0 tagsH4H5H6^2.0 tagsInline",
             "hl.simple.pre": "<span class=\"results-highlight\">",
-            "json.nl": "map",
+            "json.nl": "flat",
             "hl.fl": "content",
             "wt": "json",
             "spellcheck.collate": "true",
@@ -59,16 +59,19 @@
         ]
     },
     "spellcheck": {
-        "suggestions": {
-            "tipo3": {
+        "suggestions": [
+            "tipo3", {
                 "numFound": 1,
                 "startOffset": 0,
                 "endOffset": 5,
                 "suggestion": [
                     "typo3"
                 ]
-            },
-            "collation": "typo3"
-        }
+            }
+        ],
+        "collations":  [
+            "collation",
+            "typo3"
+        ]
     }
 }

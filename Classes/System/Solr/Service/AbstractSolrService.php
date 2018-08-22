@@ -364,7 +364,6 @@ abstract class AbstractSolrService {
     {
         // Add default parameters
         $parameters['wt'] = 'json';
-        $parameters['json.nl'] = 'map';
         $url = $this->_constructUrl($servlet, $parameters);
 
         $setHeader = function(Request $request) use ($requestHeaders) {

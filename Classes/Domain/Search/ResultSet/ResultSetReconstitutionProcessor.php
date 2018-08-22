@@ -140,27 +140,32 @@ class ResultSetReconstitutionProcessor implements SearchResultSetProcessor
     {
         //read the response
         $response = $resultSet->getResponse();
-        if (!is_object($response->spellcheck->suggestions)) {
+
+        if (!is_array($response->spellcheck->suggestions)) {
             return $resultSet;
         }
 
+        $misspelledTerm = '';
         foreach ($response->spellcheck->suggestions as $key => $suggestionData) {
-            if (!isset($suggestionData->suggestion) && !is_array($suggestionData->suggestion)) {
+            if (is_string($suggestionData)) {
+                $misspelledTerm = $key;
                 continue;
             }
 
-            // the key contains the misspelled word expect the internal key "collation"
-            if ($key === 'collation') {
+            if ($misspelledTerm === '') {
+                throw new \UnexpectedValueException('No missspelled term before suggestion');
+            }
+
+            if (!is_object($suggestionData) && !is_array($suggestionData->suggestion)) {
                 continue;
             }
-            //create the spellchecking object structure
-            $misspelledTerm = $key;
+
             foreach ($suggestionData->suggestion as $suggestedTerm) {
                 $suggestion = $this->createSuggestionFromResponseFragment($suggestionData, $suggestedTerm, $misspelledTerm);
-
                 //add it to the resultSet
                 $resultSet->addSpellCheckingSuggestion($suggestion);
             }
+
         }
 
         return $resultSet;
