@@ -35,6 +35,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSetService;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use ApacheSolrForTypo3\Solr\System\Solr\ParsingUtil;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
@@ -171,7 +172,7 @@ class SuggestService {
         $results = json_decode($rawResponse);
         $suggestConfig = $this->typoScriptConfiguration->getObjectByPath('plugin.tx_solr.suggest.');
         $facetSuggestions = $results->facet_counts->facet_fields->{$suggestConfig['suggestField']};
-        $facetSuggestions = get_object_vars($facetSuggestions);
+        $facetSuggestions = ParsingUtil::getMapArrayFromFlatArray($facetSuggestions);
 
         return $facetSuggestions ?? [];
     }

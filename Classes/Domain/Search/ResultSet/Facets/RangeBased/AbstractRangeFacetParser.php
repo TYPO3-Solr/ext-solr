@@ -16,6 +16,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetParser;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
+use ApacheSolrForTypo3\Solr\System\Solr\ParsingUtil;
 
 /**
  * Class NumericRangeFacetParser
@@ -41,6 +42,7 @@ abstract class AbstractRangeFacetParser extends AbstractFacetParser
         $label = $this->getPlainLabelOrApplyCObject($facetConfiguration);
         $activeValue = $this->getActiveFacetValuesFromRequest($resultSet, $facetName);
         $response = $resultSet->getResponse();
+
         $valuesFromResponse = isset($response->facet_counts->facet_ranges->{$fieldName}) ? get_object_vars($response->facet_counts->facet_ranges->{$fieldName}) : [];
 
         $facet = $this->objectManager->get(
@@ -59,7 +61,8 @@ abstract class AbstractRangeFacetParser extends AbstractFacetParser
             $rangeCounts = [];
             $allCount = 0;
 
-            $countsFromResponse = isset($valuesFromResponse['counts']) ? get_object_vars($valuesFromResponse['counts']) : [];
+            $countsFromResponse = isset($valuesFromResponse['counts']) ? ParsingUtil::getMapArrayFromFlatArray($valuesFromResponse['counts']) : [];
+
             foreach ($countsFromResponse as $rangeCountValue => $count) {
                 $rangeCountValue = $this->parseResponseValue($rangeCountValue);
                 $rangeCount = new $facetRangeCountClass($rangeCountValue, $count);

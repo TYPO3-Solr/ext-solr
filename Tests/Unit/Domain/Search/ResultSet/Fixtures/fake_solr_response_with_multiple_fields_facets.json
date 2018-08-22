@@ -32,7 +32,7 @@
       "f.content.hl.alternateField": "content",
       "hl.tag.pre": "<span class=\"results-highlight\">",
       "mm": "2<-35%",
-      "json.nl": "map",
+      "json.nl": "flat",
       "start": "0",
       "hl.tag.post": "</span>",
       "rows": "0",

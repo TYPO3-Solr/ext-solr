@@ -34,7 +34,7 @@
       "qf": "content^10.0 title^12.0 category_textM^2.0",
       "hl.tag.pre": "<em class=\"match\">",
       "hl.fl": "content",
-      "json.nl": "map",
+      "json.nl": "flat",
       "spellcheck.collate": "true",
       "wt": "json",
       "rows": "10",
@@ -76,19 +76,19 @@
       "created:[* TO NOW/DAY-1YEAR]": 17
     },
     "facet_fields": {
-      "type_stringS": {
-        "page": 31,
-        "event": 7,
-        "news": 6,
-        "protocol": 3
-      },
-      "category_stringM": {
-        "Cat 1": 3,
-        "Cat 2": 2,
-        "Cat 3": 2,
-        "Cat 4": 1,
-        "Cat 5": 1
-      }
+      "type_stringS": [
+        "page", 31,
+        "event", 7,
+        "news", 6,
+        "protocol", 3
+      ],
+      "category_stringM": [
+        "Cat 1", 3,
+        "Cat 2", 2,
+        "Cat 3", 2,
+        "Cat 4", 1,
+        "Cat 5", 1
+      ]
     },
     "facet_dates": {},
     "facet_ranges": {},

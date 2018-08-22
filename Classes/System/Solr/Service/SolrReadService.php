@@ -59,8 +59,6 @@ class SolrReadService extends AbstractSolrService
     {
         try {
             $request = $this->client->createRequest($query);
-            $request->removeParam('json.nl');
-            $request->addParam('json.nl', 'map');
             $response = $this->executeRequest($request);
             $this->hasSearched = true;
             $this->responseCache = $response;

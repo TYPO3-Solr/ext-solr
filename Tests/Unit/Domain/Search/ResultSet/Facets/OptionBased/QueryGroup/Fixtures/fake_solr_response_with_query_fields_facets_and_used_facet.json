@@ -35,7 +35,7 @@
       "qf": "content^10.0 title^12.0 category_textM^2.0",
       "hl.tag.pre": "<em class=\"match\">",
       "hl.fl": "content",
-      "json.nl": "map",
+      "json.nl": "flat",
       "spellcheck.collate": "true",
       "wt": "json",
       "rows": "10",
@@ -77,16 +77,16 @@
       "created:[* TO NOW/DAY-1YEAR]": 7
     },
     "facet_fields": {
-      "type": {
-        "tx_solr_file": 3
-      },
-      "category_stringM": {
-        "Huisartsen": 2,
-        "Leden en buitengewone leden": 1,
-        "POH's": 1,
-        "Specialisten": 1,
-        "Waarnemers": 1
-      }
+      "type": [
+        "tx_solr_file", 3
+      ],
+      "category_stringM": [
+        "Huisartsen", 2,
+        "Leden en buitengewone leden", 1,
+        "POH's", 1,
+        "Specialisten", 1,
+        "Waarnemers", 1
+      ]
     },
     "facet_dates": {},
     "facet_ranges": {},

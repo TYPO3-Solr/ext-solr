@@ -16,6 +16,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Hie
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetParser;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
+use ApacheSolrForTypo3\Solr\System\Solr\ParsingUtil;
 
 /**
  * Class OptionsFacetParser
@@ -33,7 +34,7 @@ class HierarchyFacetParser extends AbstractFacetParser
         $response = $resultSet->getResponse();
         $fieldName = $facetConfiguration['field'];
         $label = $this->getPlainLabelOrApplyCObject($facetConfiguration);
-        $optionsFromSolrResponse = isset($response->facet_counts->facet_fields->{$fieldName}) ? get_object_vars($response->facet_counts->facet_fields->{$fieldName}) : [];
+        $optionsFromSolrResponse = isset($response->facet_counts->facet_fields->{$fieldName}) ? ParsingUtil::getMapArrayFromFlatArray($response->facet_counts->facet_fields->{$fieldName}) : [];
         $optionsFromRequest = $this->getActiveFacetValuesFromRequest($resultSet, $facetName);
         $hasOptionsInResponse = !empty($optionsFromSolrResponse);
         $hasSelectedOptionsInRequest = count($optionsFromRequest) > 0;
