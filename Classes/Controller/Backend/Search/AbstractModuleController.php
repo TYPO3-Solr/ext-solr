@@ -141,6 +141,12 @@ abstract class AbstractModuleController extends ActionController
     protected function initializeView(ViewInterface $view)
     {
         parent::initializeView($view);
+        /* @var SiteRepository $siteRepository */
+        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
+        $sites = $siteRepository->getAvailableSites();
+
+        $selectOtherPage = count($sites) > 0 || $this->selectedPageUID < 1;
+        $this->view->assign('showSelectOtherPage', $selectOtherPage);
         $this->view->assign('pageUID', $this->selectedPageUID);
         if ($view instanceof NotFoundView || $this->selectedPageUID < 1) {
             return;
