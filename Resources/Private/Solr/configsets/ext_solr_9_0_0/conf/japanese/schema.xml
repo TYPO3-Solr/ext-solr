@@ -47,6 +47,7 @@
 			<tokenizer class="solr.StandardTokenizerFactory"/>
 			<filter class="solr.CJKWidthFilterFactory"/>
 			<filter class="solr.CJKBigramFilterFactory" han="true" hiragana="true" katakana="true" hangul="true" outputUnigrams="false"/>
+			<filter class="solr.LowerCaseFilterFactory"/>
 			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="japanese" />
 			<filter class="solr.FlattenGraphFilterFactory"/>
 		</analyzer>
@@ -54,6 +55,7 @@
 			<tokenizer class="solr.StandardTokenizerFactory"/>
 			<filter class="solr.CJKWidthFilterFactory"/>
 			<filter class="solr.CJKBigramFilterFactory" han="true" hiragana="true" katakana="true" hangul="true" outputUnigrams="false"/>
+			<filter class="solr.LowerCaseFilterFactory"/>
 			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="japanese" />
 		</analyzer>
 	</fieldType>
@@ -66,6 +68,7 @@
 			<tokenizer class="solr.StandardTokenizerFactory"/>
 			<filter class="solr.CJKWidthFilterFactory"/>
 			<filter class="solr.CJKBigramFilterFactory" han="true" hiragana="true" katakana="true" hangul="true" outputUnigrams="false"/>
+			<filter class="solr.LowerCaseFilterFactory"/>
 			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="japanese" />
 			<filter class="solr.FlattenGraphFilterFactory"/>
 		</analyzer>
@@ -73,6 +76,7 @@
 			<tokenizer class="solr.StandardTokenizerFactory"/>
 			<filter class="solr.CJKWidthFilterFactory"/>
 			<filter class="solr.CJKBigramFilterFactory" han="true" hiragana="true" katakana="true" hangul="true" outputUnigrams="false"/>
+			<filter class="solr.LowerCaseFilterFactory"/>
 			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="japanese" />
 		</analyzer>
 	</fieldType>
@@ -102,11 +106,13 @@
 			<tokenizer class="solr.StandardTokenizerFactory"/>
 			<filter class="solr.CJKWidthFilterFactory"/>
 			<filter class="solr.CJKBigramFilterFactory" han="true" hiragana="true" katakana="true" hangul="true" outputUnigrams="false"/>
+			<filter class="solr.LowerCaseFilterFactory"/>
 		</analyzer>
 		<analyzer type="query">
 			<tokenizer class="solr.StandardTokenizerFactory"/>
 			<filter class="solr.CJKWidthFilterFactory"/>
 			<filter class="solr.CJKBigramFilterFactory" han="true" hiragana="true" katakana="true" hangul="true" outputUnigrams="false" />
+			<filter class="solr.LowerCaseFilterFactory"/>
 			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="japanese" />
 		</analyzer>
 	</fieldType>
