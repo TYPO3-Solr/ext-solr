@@ -348,11 +348,15 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
     /**
      * Adds a menu entry to the clear cache menu to detect Solr connections.
      *
+     * @deprecated deprecated since 9.0.0 will we removed in 10.0.0 still in place to prevent errors from cached localconf.php
+     * @todo this method and the implementation of the ClearCacheActionsHookInterface can be removed in EXT:solr 10
      * @param array $cacheActions Array of CacheMenuItems
      * @param array $optionValues Array of AccessConfigurations-identifiers (typically  used by userTS with options.clearCache.identifier)
      */
     public function manipulateCacheActions(&$cacheActions, &$optionValues)
     {
+        trigger_error('ConnectionManager::manipulateCacheActions is deprecated please use ClearCacheActionsHook::manipulateCacheActions now', E_USER_DEPRECATED);
+
         if ($GLOBALS['BE_USER']->isAdmin()) {
             $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
             $optionValues[] = 'clearSolrConnectionCache';

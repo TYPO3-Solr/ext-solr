@@ -56,9 +56,16 @@ build_failure_conditions:
 build:
   environment:
     php:
-      version: 7.0.20
+      version: 7.1.21
   nodes:
     analysis:
+      dependencies:
+        after:
+          - composer require --dev squizlabs/php_codesniffer:3.1.1
       tests:
         override:
           - php-scrutinizer-run
+        override:
+          -
+            command: phpcs-run
+            use_website_config: false
