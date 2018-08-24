@@ -79,7 +79,7 @@ class Indexer extends AbstractIndexer
     protected $loggingEnabled = false;
 
     /**
-     * @var \ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager
+     * @var SolrLogManager
      */
     protected $logger = null;
 
@@ -99,14 +99,16 @@ class Indexer extends AbstractIndexer
      * @param array $options array of indexer options
      * @param PagesRepository|null $pagesRepository
      * @param Builder|null $documentBuilder
+     * @param SolrLogManager|null $logger
+     * @param ConnectionManager|null $connectionManager
      */
-    public function __construct(array $options = [], PagesRepository $pagesRepository = null, Builder $documentBuilder = null)
+    public function __construct(array $options = [], PagesRepository $pagesRepository = null, Builder $documentBuilder = null, SolrLogManager $logger = null, ConnectionManager $connectionManager = null)
     {
-        $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, /** @scrutinizer ignore-type */ __CLASS__);
         $this->options = $options;
-        $this->connectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
         $this->pagesRepository = $pagesRepository ?? GeneralUtility::makeInstance(PagesRepository::class);
         $this->documentBuilder = $documentBuilder ?? GeneralUtility::makeInstance(Builder::class);
+        $this->logger = $logger ?? GeneralUtility::makeInstance(SolrLogManager::class, /** @scrutinizer ignore-type */ __CLASS__);
+        $this->connectionManager = $connectionManager ?? GeneralUtility::makeInstance(ConnectionManager::class);
     }
 
     /**

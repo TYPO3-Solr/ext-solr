@@ -57,8 +57,7 @@ class PageIndexer extends Indexer
 
         $solrConnections = $this->getSolrConnectionsByItem($item);
         foreach ($solrConnections as $systemLanguageUid => $solrConnection) {
-            $contentAccessGroups = $this->getAccessGroupsFromContent($item,
-                $systemLanguageUid);
+            $contentAccessGroups = $this->getAccessGroupsFromContent($item, $systemLanguageUid);
 
             if (empty($contentAccessGroups)) {
                 // might be an empty page w/no content elements or some TYPO3 error / bug
@@ -195,7 +194,7 @@ class PageIndexer extends Indexer
      */
     protected function buildBasePageIndexerRequest()
     {
-        $request = GeneralUtility::makeInstance(PageIndexerRequest::class);
+        $request = $this->getPageIndexerRequest();
         $request->setParameter('loggingEnabled', $this->loggingEnabled);
 
         if (!empty($this->options['authorization.'])) {
@@ -216,6 +215,14 @@ class PageIndexer extends Indexer
         }
 
         return $request;
+    }
+
+    /**
+     * @return PageIndexerRequest
+     */
+    protected function getPageIndexerRequest()
+    {
+        return GeneralUtility::makeInstance(PageIndexerRequest::class);
     }
 
     /**
@@ -319,16 +326,11 @@ class PageIndexer extends Indexer
      */
     protected function getMountPageDataUrlParameter(Item $item)
     {
-        $mountPageUrlParameter = '';
-
-        if ($item->hasIndexingProperty('isMountedPage')) {
-            $mountPageUrlParameter =
-                $item->getIndexingProperty('mountPageSource')
-                . '-'
-                . $item->getIndexingProperty('mountPageDestination');
+        if (!$item->hasIndexingProperty('isMountedPage')) {
+            return '';
         }
 
-        return $mountPageUrlParameter;
+        return $item->getIndexingProperty('mountPageSource') . '-' . $item->getIndexingProperty('mountPageDestination');
     }
 
     #
@@ -347,9 +349,7 @@ class PageIndexer extends Indexer
      */
     protected function indexPage(Item $item, $language = 0, $userGroup = 0)
     {
-        $accessRootline = $this->getAccessRootline($item, $language,
-            $userGroup);
-
+        $accessRootline = $this->getAccessRootline($item, $language, $userGroup);
         $request = $this->buildBasePageIndexerRequest();
         $request->setIndexQueueItem($item);
         $request->addAction('indexPage');
@@ -415,11 +415,8 @@ class PageIndexer extends Indexer
      * @param int $contentAccessGroup The user group to use for the content access rootline element. Optional, will be determined automatically if not set.
      * @return string An Access Rootline.
      */
-    protected function getAccessRootline(
-        Item $item,
-        $language = 0,
-        $contentAccessGroup = null
-    ) {
+    protected function getAccessRootline(Item $item, $language = 0, $contentAccessGroup = null)
+    {
         static $accessRootlineCache;
 
         $mountPointParameter = $this->getMountPageDataUrlParameter($item);
@@ -433,10 +430,7 @@ class PageIndexer extends Indexer
         }
 
         if (!isset($accessRootlineCache[$accessRootlineCacheEntryId])) {
-            $accessRootline = Rootline::getAccessRootlineByPageId(
-                $item->getRecordUid(),
-                $mountPointParameter
-            );
+            $accessRootline = $this->getAccessRootlineByPageId($item->getRecordUid(), $mountPointParameter);
 
             // current page's content access groups
             $contentAccessGroups = [$contentAccessGroup];
@@ -450,5 +444,17 @@ class PageIndexer extends Indexer
         }
 
         return $accessRootlineCache[$accessRootlineCacheEntryId];
+    }
+
+    /**
+     * Returns the access rootLine for a certain pageId.
+     *
+     * @param int $pageId
+     * @param string $mountPointparameter
+     * @return Rootline
+     */
+    protected function getAccessRootlineByPageId($pageId, $mountPointParameter)
+    {
+        return Rootline::getAccessRootlineByPageId($pageId, $mountPointParameter);
     }
 }
