@@ -942,6 +942,33 @@ class SearchControllerTest extends IntegrationTest
     /**
      * @test
      */
+    public function canSortByMetric()
+    {
+        $this->importDataSetFromFixture('can_sort_by_metric.xml');
+        $GLOBALS['TSFE'] = $this->getConfiguredTSFE([], 1);
+
+        $this->indexPages([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]);
+
+        $pid1Option = urlencode('tx_solr[filter][0]') . '=' . urlencode('pid:1');
+        $pid2Option = urlencode('tx_solr[filter][0]') . '=' . urlencode('pid:2');
+
+        //not in the content but we expect to get shoes suggested
+        $_GET['q'] = '*';
+        $this->searchController->processRequest($this->searchRequest, $this->searchResponse);
+
+        $content = $this->searchResponse->getContent();
+        $pid1OptionPosition = strpos($content, $pid1Option);
+        $pid2OptionPosition = strpos($content, $pid2Option);
+
+        $this->assertGreaterThan(0, $pid1OptionPosition, 'Pid 1 option does not appear in the content');
+        $this->assertGreaterThan(0, $pid2OptionPosition, 'Pid 2 option does not appear in the content');
+        $isPid2OptionBefore1Option = $pid2OptionPosition < $pid1OptionPosition;
+        $this->assertTrue($isPid2OptionBefore1Option);
+    }
+
+    /**
+     * @test
+     */
     public function formActionIsRenderingTheForm()
     {
         $this->importDataSetFromFixture('can_render_search_controller.xml');

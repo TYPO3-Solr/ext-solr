@@ -76,6 +76,9 @@ class SortingExpressionTest extends UnitTest
             'byCountJson' => ['sorting' => 'count', 'direction' => '', 'isJson' => true, 'expectedResult' => 'count'],
             'byCountJsonSortAsc' => ['sorting' => 'count', 'direction' => 'asc', 'isJson' => true, 'expectedResult' => 'count asc'],
             'byCountJsonSortDesc' => ['sorting' => 'count', 'direction' => 'desc', 'isJson' => true, 'expectedResult' => 'count desc'],
+
+            'byMetricJsonSortAsc' => ['sorting' => 'metrics_neweset', 'direction' => 'asc', 'isJson' => true, 'expectedResult' => 'metrics_neweset asc'],
+            'byMetricJsonSortDesc' => ['sorting' => 'metrics_neweset', 'direction' => 'desc', 'isJson' => true, 'expectedResult' => 'metrics_neweset desc'],
         ];
     }
 
