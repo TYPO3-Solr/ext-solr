@@ -1063,7 +1063,22 @@ faceting.facets.[facetName].sortBy
 Sets how a single facet's options are sorted, by default they are sorted by number of results, highest on top.
 Facet options can also be sorted alphabetically by setting the option to alpha.
 
-Note: Since 8.0 sortBy for option facets can also be a function applied on the faceted documents (e.g. avg(price_floatS)).
+Note: Since 9.0.0 it is possible to sort a facet by a function. This can be done be defining a metric and use that metric in the sortBy configuration. As sorting name you then need to use by convention "metrics_<metricName>"
+
+Example:
+
+.. code-block:: typoscript
+
+    pid {
+        label = Content Type
+        field = pid
+        metrics {
+           newest = max(created)
+        }
+        sortBy = metrics_newest desc
+    }
+
+
 
 faceting.facets.[facetName].manualSortOrder
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
