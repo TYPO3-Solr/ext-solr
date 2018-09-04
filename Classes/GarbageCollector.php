@@ -298,14 +298,8 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
      * @param mixed $uid The record's uid, [integer] or [string] (like 'NEW...')
      * @param DataHandler $tceMain TYPO3 Core Engine parent object, not used
      */
-    public function processDatamap_preProcessFieldArray(
-        /** @noinspection PhpUnusedParameterInspection */
-        $incomingFields,
-        $table,
-        $uid,
-        /** @noinspection PhpUnusedParameterInspection */
-        DataHandler $tceMain
-    ) {
+    public function processDatamap_preProcessFieldArray($incomingFields, $table, $uid, DataHandler $tceMain)
+    {
         if (!is_int($uid)) {
             // a newly created record, skip
             return;
@@ -317,27 +311,21 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
         }
 
         $hasConfiguredEnableColumnForFeGroup = $this->tcaService->isEnableColumn($table, 'fe_group');
-
-        if ($hasConfiguredEnableColumnForFeGroup) {
-            $visibilityAffectingFields = $this->tcaService->getVisibilityAffectingFieldsByTable($table);
-            $record = (array)BackendUtility::getRecord(
-                $table,
-                $uid,
-                $visibilityAffectingFields,
-                '',
-                false
-            );
-
-            // If no record could be found skip further processing
-            if (empty($record)) {
-                return;
-            }
-
-            $record = $this->tcaService->normalizeFrontendGroupField($table, $record);
-
-            // keep previous state of important fields for later comparison
-            $this->trackedRecords[$table][$uid] = $record;
+        if (!$hasConfiguredEnableColumnForFeGroup) {
+            return;
         }
+
+        $visibilityAffectingFields = $this->tcaService->getVisibilityAffectingFieldsByTable($table);
+        $record = (array)BackendUtility::getRecord($table, $uid, $visibilityAffectingFields, '', false);
+        // If no record could be found skip further processing
+        if (empty($record)) {
+            return;
+        }
+
+        $record = $this->tcaService->normalizeFrontendGroupField($table, $record);
+
+        // keep previous state of important fields for later comparison
+        $this->trackedRecords[$table][$uid] = $record;
     }
 
     /**
