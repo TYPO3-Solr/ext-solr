@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\GarbageRemover\StrategyFactory;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\System\TCA\TCAService;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
@@ -116,128 +117,8 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
      */
     public function collectGarbage($table, $uid)
     {
-        $isPageRelatedTable = in_array($table, ['tt_content','pages','pages_language_overlay']);
-        if ($isPageRelatedTable) {
-            $this->collectPageGarbage($table, $uid);
-        } else {
-            $this->collectRecordGarbage($table, $uid);
-        }
-
-        $this->callPostProcessGarbageCollectorHook($table, $uid);
-    }
-
-    /**
-     * Calls the registered post processing hooks after the garbageCollection.
-     *
-     * @param string $table
-     * @param int $uid
-     */
-    protected function callPostProcessGarbageCollectorHook($table, $uid)
-    {
-        if (!is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessGarbageCollector'])) {
-            return;
-        }
-
-        foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessGarbageCollector'] as $classReference) {
-            $garbageCollectorPostProcessor = GeneralUtility::makeInstance($classReference);
-
-            if ($garbageCollectorPostProcessor instanceof GarbageCollectorPostProcessor) {
-                $garbageCollectorPostProcessor->postProcessGarbageCollector($table, $uid);
-            } else {
-                $message = get_class($garbageCollectorPostProcessor) . ' must implement interface ' .
-                    GarbageCollectorPostProcessor::class;
-                throw new \UnexpectedValueException($message, 1345807460);
-            }
-        }
-    }
-    /**
-     * Tracks down index documents belonging to a particular page and
-     * removes them from the index and the Index Queue.
-     *
-     * @param string $table The record's table name.
-     * @param int $uid The record's uid.
-     */
-    protected function collectPageGarbage($table, $uid)
-    {
-        if ($table === 'tt_content') {
-            $this->collectPageGarbageByContentChange($uid);
-            return;
-        }
-
-        if ($table === 'pages_language_overlay') {
-            $this->collectPageGarbageByPageOverlayChange($uid);
-            return;
-        }
-
-        if ($table === 'pages') {
-            $this->collectPageGarbageByPageChange($uid);
-            return;
-        }
-    }
-
-    /**
-     * Determines the relevant page id for an content element update. Deletes the page from solr and requeues the
-     * page for a reindex.
-     *
-     * @todo This case can be deleted when TYPO3 8 compatibility is dropped
-     * @param int $ttContentUid
-     */
-    protected function collectPageGarbageByContentChange($ttContentUid)
-    {
-        $contentElement = BackendUtility::getRecord('tt_content', $ttContentUid, 'uid, pid', '', false);
-        $this->deleteInSolrAndUpdateIndexQueue('pages', $contentElement['pid']);
-    }
-
-    /**
-     * Determines the relavant page id for the pages_language_overlay. Deletes the page from solr and requeues the
-     * page for a re index.
-     *
-     * @param int $pagesLanguageOverlayUid
-     */
-    protected function collectPageGarbageByPageOverlayChange($pagesLanguageOverlayUid)
-    {
-        $pageOverlayRecord = BackendUtility::getRecord('pages_language_overlay', $pagesLanguageOverlayUid, 'uid, pid', '', false);
-        $this->deleteInSolrAndUpdateIndexQueue('pages', $pageOverlayRecord['pid']);
-    }
-
-    /**
-     * When a page was changed it is removed from the index and index queue.
-     *
-     * @param int $uid
-     */
-    protected function collectPageGarbageByPageChange($uid)
-    {
-        // @todo The content of this if statement can allways be executed when TYPO3 8 support is dropped
-        if (!Util::getIsTYPO3VersionBelow9()) {
-            $pageOverlay = BackendUtility::getRecord('pages', $uid, 'l10n_parent', '', false);
-            $uid = empty($pageOverlay['l10n_parent']) ? $uid : $pageOverlay['l10n_parent'];
-        }
-
-        $this->deleteInSolrAndRemoveFromIndexQueue('pages', $uid);
-    }
-
-    /**
-     * Deletes a document from solr and from the index queue.
-     *
-     * @param string $table
-     * @param integer $uid
-     */
-    protected function deleteInSolrAndRemoveFromIndexQueue($table, $uid)
-    {
-        $this->deleteIndexDocuments($table, $uid);
-        $this->getIndexQueue()->deleteItem($table, $uid);
-    }
-
-    /**
-     * Deletes a document from solr and updates the item in the index queue (e.g. on page content updates).
-     *
-     * @param string $table
-     * @param integer $uid
-     */
-    protected function deleteInSolrAndUpdateIndexQueue($table, $uid)
-    {
-        $this->deleteIndexDocuments($table, $uid);
-        $this->getIndexQueue()->updateItem($table, $uid);
+        $garbageRemoverStrategy = StrategyFactory::getByTable($table);
+        $garbageRemoverStrategy->removeGarbageOf($table, $uid);
     }
 
     /**
@@ -251,55 +132,12 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
             return;
         }
 
-        $indexQueue = $this->getIndexQueue();
         // get affected subpages when "extendToSubpages" flag was set
         $pagesToDelete = $this->getSubPageIds($uid);
         // we need to at least remove this page
         foreach ($pagesToDelete as $pageToDelete) {
-            $this->deleteIndexDocuments($table, $pageToDelete);
-            $indexQueue->deleteItem($table, $pageToDelete);
+            $this->collectGarbage($table, $pageToDelete);
         }
-    }
-
-    /**
-     * Deletes index documents for a given record identification.
-     *
-     * @param string $table The record's table name.
-     * @param int $uid The record's uid.
-     */
-    protected function deleteIndexDocuments($table, $uid)
-    {
-        /** @var $connectionManager ConnectionManager */
-        $connectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
-
-        // record can be indexed for multiple sites
-        $indexQueueItems = $this->getIndexQueue()->getItems($table, $uid);
-        foreach ($indexQueueItems as $indexQueueItem) {
-            $site = $indexQueueItem->getSite();
-            $solrConfiguration = $site->getSolrConfiguration();
-            $enableCommitsSetting = $solrConfiguration->getEnableCommits();
-
-            // a site can have multiple connections (cores / languages)
-            $solrConnections = $connectionManager->getConnectionsBySite($site);
-            foreach ($solrConnections as $solr) {
-                $solr->getWriteService()->deleteByQuery('type:' . $table . ' AND uid:' . intval($uid));
-                if ($enableCommitsSetting) {
-                    $solr->getWriteService()->commit(false, false, false);
-                }
-            }
-        }
-    }
-
-    /**
-     * Tracks down index documents belonging to a particular record and
-     * removes them from the index and the Index Queue.
-     *
-     * @param string $table The record's table name.
-     * @param int $uid The record's uid.
-     */
-    protected function collectRecordGarbage($table, $uid)
-    {
-        $this->deleteInSolrAndRemoveFromIndexQUeue($table, $uid);
     }
 
     // methods checking whether to trigger garbage collection
