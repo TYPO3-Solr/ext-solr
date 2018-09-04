@@ -26,11 +26,14 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration;
 
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\GarbageCollector;
+use ApacheSolrForTypo3\Solr\IndexQueue\Indexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\IndexQueue\RecordMonitor;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Charset\CharsetConverter;
+use TYPO3\CMS\Lang\LanguageService;
 
 /**
  * This testcase is used to check if the GarbageCollector can delete garbage from the
@@ -61,6 +64,11 @@ class GarbageCollectorTest extends IntegrationTest
      */
     protected $garbageCollector;
 
+    /**
+     * @var Indexer
+     */
+    protected $indexer;
+
     public function setUp()
     {
         parent::setUp();
@@ -68,6 +76,7 @@ class GarbageCollectorTest extends IntegrationTest
         $this->dataHandler = GeneralUtility::makeInstance(DataHandler::class);
         $this->indexQueue = GeneralUtility::makeInstance(Queue::class);
         $this->garbageCollector = GeneralUtility::makeInstance(GarbageCollector::class);
+        $this->indexer = GeneralUtility::makeInstance(Indexer::class);
     }
 
     /**
@@ -540,6 +549,65 @@ class GarbageCollectorTest extends IntegrationTest
     }
 
     /**
+     * @test
+     */
+    public function canTriggerHookAfterRecordDeletion()
+    {
+        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessGarbageCollector'][] = TestGarbageCollectorPostProcessor::class;
+
+        $this->importExtTablesDefinition('fake_extension_table.sql');
+        $GLOBALS['TCA']['tx_fakeextension_domain_model_foo'] = include($this->getFixturePathByName('fake_extension_tca.php'));
+        $this->importDataSetFromFixture('can_delete_custom_record.xml');
+
+        $this->cleanUpSolrServerAndAssertEmpty();
+        $this->fakeLanguageService();
+
+        // we hide the seconde page
+        $beUser = $this->fakeBEUser(1, 0);
+
+        $this->addToQueueAndIndexRecord('tx_fakeextension_domain_model_foo', 111);
+        $this->waitToBeVisibleInSolr();
+        $this->assertSolrContainsDocumentCount(1);
+
+        $cmd['tx_fakeextension_domain_model_foo'][111]['delete'] = 1;
+        $this->dataHandler->start([], $cmd, $beUser);
+        $this->dataHandler->stripslashes_values = 0;
+        $this->dataHandler->process_cmdmap();
+        $this->dataHandler->process_datamap();
+        $this->dataHandler->clear_cacheCmd('all');
+
+        $this->waitToBeVisibleInSolr();
+        $this->assertSolrIsEmpty();
+
+            // since our hook is a singleton we check here if it was called.
+            /** @var TestGarbageCollectorPostProcessor $hook */
+        $hook = GeneralUtility::makeInstance(TestGarbageCollectorPostProcessor::class);
+        $this->assertTrue($hook->isHookWasCalled());
+
+            // reset the hooks
+        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessGarbageCollector'] = [];
+    }
+
+    /**
+     * @param string $table
+     * @param int $uid
+     * @return ResponseAdapter
+     */
+    protected function addToQueueAndIndexRecord($table, $uid)
+    {
+        // write an index queue item
+        $this->indexQueue->updateItem($table, $uid);
+
+        // run the indexer
+        $items = $this->indexQueue->getItems($table, $uid);
+        foreach ($items as $item) {
+            $result = $this->indexer->index($item);
+        }
+
+        return $result;
+    }
+
+    /**
      * @param $items
      * @return array
      */
@@ -551,5 +619,16 @@ class GarbageCollectorTest extends IntegrationTest
             $itemIds[] = $item->getRecordPageId();
         }
         return $itemIds;
+    }
+
+    /**
+     *
+     */
+    protected function fakeLanguageService()
+    {
+        /** @var $languageService  \TYPO3\CMS\Lang\LanguageService */
+        $languageService = GeneralUtility::makeInstance(LanguageService::class);
+        $languageService->csConvObj = GeneralUtility::makeInstance(CharsetConverter::class);
+        $GLOBALS['LANG'] = $languageService;
     }
 }
