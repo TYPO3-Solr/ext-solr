@@ -27,6 +27,7 @@ namespace ApacheSolrForTypo3\Solr\Controller\Backend\Search;
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
+use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Backend\Routing\UriBuilder as BackendUriBuilder;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -168,22 +169,23 @@ class IndexAdministrationModuleController extends AbstractModuleController
      */
     protected function redirectToReferrerModule()
     {
-        /* @var ReferringRequest $referringRequest */
-        $referringRequest = $this->request->getReferringRequest();
-        $controllerName = $this->request->getControllerName();
-        $referrerControllerName = $referringRequest->getControllerName();
-        if ($controllerName === $referrerControllerName) {
+        $wasFromQueue = $this->request->hasArgument('fromQueue');
+        if (!$wasFromQueue) {
             $this->redirect('index');
             return;
         }
+
         /* @var BackendUriBuilder $backendUriBuilder */
         $backendUriBuilder = GeneralUtility::makeInstance(BackendUriBuilder::class);
-        $referrerUriFromBackendUriBuilder = $backendUriBuilder->buildUriFromModule(
-            'searchbackend_SolrIndexqueue',
-            [
-                'id' => $this->selectedPageUID
-            ]
-        );
-        $this->redirectToUri($referrerUriFromBackendUriBuilder);
+
+        $parameters =  ['id' => $this->selectedPageUID];
+        if (Util::getIsTYPO3VersionBelow9()) {
+            /** @var  @todo This can be dropped when the support for TYPO3 8 ist dropped */
+            $referringUri = $backendUriBuilder->buildUriFromModule('searchbackend_SolrIndexqueue', $parameters);
+        } else {
+            $referringUri = $backendUriBuilder->buildUriFromRoute('searchbackend_SolrIndexqueue', $parameters);
+        }
+
+        $this->redirectToUri($referringUri);
     }
 }
