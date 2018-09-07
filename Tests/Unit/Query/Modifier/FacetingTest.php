@@ -101,7 +101,7 @@ class FacetingTest extends UnitTest
         $queryParameter = $this->getQueryParametersFromExecutedFacetingModifier($fakeConfiguration, $fakeRequest);
         $this->assertContains('true',  $queryParameter['facet'], 'Query string did not contain expected snipped');
 
-        $expectedJsonFacet = '{"type":{"type":"terms","field":"type","limit":100,"mincount":1,"domain":{"excludeTags":"type"}}}';
+        $expectedJsonFacet = '{"type":{"type":"terms","field":"type","limit":100,"mincount":1}}';
         $this->assertSame($expectedJsonFacet,  $queryParameter['json.facet'], 'Query string did not contain expected snipped');
     }
 
@@ -213,6 +213,48 @@ class FacetingTest extends UnitTest
         $jsonData = \json_decode($queryParameter['json.facet']);
         $this->assertEquals('type,color', $jsonData->type->domain->excludeTags, 'Query string did not contain expected snipped');
         $this->assertEquals('type,color', $jsonData->color->domain->excludeTags, 'Query string did not contain expected snipped');
+    }
+
+    /**
+     * Whe nothing is set, no exclude tags should be set.
+     *
+     * faceting {
+     *    facets {
+     *       type {
+     *          field = type
+     *       }
+     *       color {
+     *          field = color
+     *       }
+     *    }
+     * }
+     *
+     * @test
+     */
+    public function testExcludeTagsAreEmptyWhenKeepAllFacetsOnSelectionIsNotSet()
+    {
+        $fakeConfigurationArray = [];
+        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting'] = 1;
+        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting.']['facets.'] = [
+            'type.' => [
+                'field' => 'type',
+            ],
+            'color.' => [
+                'field' => 'color',
+            ]
+        ];
+        $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
+
+        $fakeRequest = $this->getDumbMock(SearchRequest::class);
+        $fakeRequest->expects($this->once())->method('getArguments')->will($this->returnValue([]));
+        $fakeRequest->expects($this->any())->method('getContextTypoScriptConfiguration')->will($this->returnValue($fakeConfiguration));
+
+        $queryParameter = $this->getQueryParametersFromExecutedFacetingModifier($fakeConfiguration, $fakeRequest);
+        $this->assertContains('true',  $queryParameter['facet'], 'Query string did not contain expected snipped');
+
+        $jsonData = \json_decode($queryParameter['json.facet']);
+        $this->assertEmpty($jsonData->type->domain->excludeTags, 'Query string did not contain expected snipped');
+        $this->assertEmpty($jsonData->color->domain->excludeTags, 'Query string did not contain expected snipped');
     }
 
     /**
