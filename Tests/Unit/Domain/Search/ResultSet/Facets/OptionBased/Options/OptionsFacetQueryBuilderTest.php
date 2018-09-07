@@ -1,5 +1,5 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Test\Domain\Search\ResultSet\Facets\RangeBased\DateRange;
+namespace ApacheSolrForTypo3\Solr\Test\Domain\Search\ResultSet\Facets\OptionBase\Options;
 
 /***************************************************************
  *  Copyright notice
@@ -55,9 +55,6 @@ class OptionsFacetQueryBuilderTest extends UnitTest
         $configurationMock->expects($this->once())->method('getSearchFacetingFacetByName')->with('category')->will(
             $this->returnValue($fakeFacetConfiguration)
         );
-        $configurationMock->expects($this->once())->method('getSearchFacetingFacets')->will(
-            $this->returnValue([])
-        );
 
         $builder = new OptionsFacetQueryBuilder();
         $facetParameters = $builder->build('category', $configurationMock);
@@ -93,9 +90,6 @@ class OptionsFacetQueryBuilderTest extends UnitTest
         $configurationMock->expects($this->once())->method('getSearchFacetingFacetByName')->with('category')->will(
             $this->returnValue($fakeFacetConfiguration)
         );
-        $configurationMock->expects($this->once())->method('getSearchFacetingFacets')->will(
-            $this->returnValue([])
-        );
 
         $builder = new OptionsFacetQueryBuilder();
         $facetParameters = $builder->build('category', $configurationMock);
@@ -128,9 +122,7 @@ class OptionsFacetQueryBuilderTest extends UnitTest
         $configurationMock->expects($this->once())->method('getSearchFacetingFacetByName')->with('category')->will(
             $this->returnValue($fakeFacetConfiguration)
         );
-        $configurationMock->expects($this->once())->method('getSearchFacetingFacets')->will(
-            $this->returnValue([])
-        );
+
         $configurationMock->expects($this->any())->method('getSearchFacetingFacetLimit')->will(
             $this->returnValue(15)
         );
@@ -167,9 +159,6 @@ class OptionsFacetQueryBuilderTest extends UnitTest
         $configurationMock->expects($this->once())->method('getSearchFacetingFacetByName')->with('category')->will(
             $this->returnValue($fakeFacetConfiguration)
         );
-        $configurationMock->expects($this->once())->method('getSearchFacetingFacets')->will(
-            $this->returnValue([])
-        );
 
         $builder = new OptionsFacetQueryBuilder();
         $facetParameters = $builder->build('category', $configurationMock);
@@ -202,9 +191,7 @@ class OptionsFacetQueryBuilderTest extends UnitTest
         $configurationMock->expects($this->once())->method('getSearchFacetingFacetByName')->with('category')->will(
             $this->returnValue($fakeFacetConfiguration)
         );
-        $configurationMock->expects($this->once())->method('getSearchFacetingFacets')->will(
-            $this->returnValue([])
-        );
+
         $configurationMock->expects($this->any())->method('getSearchFacetingMinimumCount')->will(
             $this->returnValue(5)
         );
@@ -244,9 +231,6 @@ class OptionsFacetQueryBuilderTest extends UnitTest
         $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
         $configurationMock->expects($this->once())->method('getSearchFacetingFacetByName')->with('category')->will(
             $this->returnValue($fakeFacetConfiguration)
-        );
-        $configurationMock->expects($this->once())->method('getSearchFacetingFacets')->will(
-            $this->returnValue([])
         );
 
         $builder = new OptionsFacetQueryBuilder();
