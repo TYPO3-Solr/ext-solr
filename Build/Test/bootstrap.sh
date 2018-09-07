@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 
-SCRIPTPATH=$( cd $(dirname ${BASH_SOURCE[0]}) ; pwd -P )
+if [[ ! -z ${BASH_SOURCE[0]} ]]; then
+    SCRIPTPATH=$( cd $(dirname ${BASH_SOURCE[0]}) ; pwd -P )
+else
+    SCRIPTPATH=$( cd $(dirname $0) ; pwd -P )
+fi
+
 EXTENSION_ROOTPATH="$SCRIPTPATH/../../"
 SOLR_INSTALL_PATH="/opt/solr-tomcat/"
 
@@ -69,25 +74,14 @@ echo "Using package path $TYPO3_PATH_PACKAGES"
 echo "Using web path $TYPO3_PATH_WEB"
 
 # Install TYPO3 sources
-if [[ $TYPO3_VERSION = *"9."* ]]; then
-    # only needed until https://github.com/symfony/symfony/issues/26757 is resolved
-    composer require --dev symfony/finder:4.0.6
-
-    composer require --dev typo3/cms-backend="$TYPO3_VERSION"
-    composer require --dev typo3/cms-core="$TYPO3_VERSION"
-    composer require --dev typo3/cms-fluid="$TYPO3_VERSION"
-    composer require --dev typo3/cms-frontend="$TYPO3_VERSION"
-    composer require --dev typo3/cms-lang="$TYPO3_VERSION"
-    composer require --dev typo3/cms-extbase="$TYPO3_VERSION"
-    composer require --dev typo3/cms-reports="$TYPO3_VERSION"
-    composer require --dev typo3/cms-scheduler="$TYPO3_VERSION"
-    composer require --dev typo3/cms-tstemplate="$TYPO3_VERSION"
+if [[ $TYPO3_VERSION = *"master"*  ]]; then
+    composer config minimum-stability dev
+    composer require --dev --update-with-dependencies typo3/cms-core="$TYPO3_VERSION" typo3/cms-backend="$TYPO3_VERSION" typo3/cms-fluid="$TYPO3_VERSION" typo3/cms-frontend="$TYPO3_VERSION" typo3/cms-extbase="$TYPO3_VERSION" typo3/cms-reports="$TYPO3_VERSION" typo3/cms-scheduler="$TYPO3_VERSION" typo3/cms-tstemplate="$TYPO3_VERSION"
 else
     composer require --dev typo3/cms="$TYPO3_VERSION"
 fi
 
 # Restore composer.json
-git checkout composer.json
 mkdir -p $TYPO3_PATH_WEB/uploads $TYPO3_PATH_WEB/typo3temp
 
 # Setup Solr Using our install script
