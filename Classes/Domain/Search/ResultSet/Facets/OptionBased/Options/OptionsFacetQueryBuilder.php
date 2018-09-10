@@ -103,7 +103,7 @@ class OptionsFacetQueryBuilder extends DefaultFacetQueryBuilder implements Facet
     {
         if (isset($facetConfiguration['facetLimit'])) {
             return (int)$facetConfiguration['facetLimit'];
-        } elseif ($configuration->getSearchFacetingFacetLimit() > 0) {
+        } elseif (!is_null($configuration->getSearchFacetingFacetLimit()) && $configuration->getSearchFacetingFacetLimit() >= 0) {
             return $configuration->getSearchFacetingFacetLimit();
         } else {
             return -1;
@@ -119,7 +119,7 @@ class OptionsFacetQueryBuilder extends DefaultFacetQueryBuilder implements Facet
     {
         if (isset($facetConfiguration['minimumCount'])) {
             return (int)$facetConfiguration['minimumCount'];
-        } elseif ($configuration->getSearchFacetingMinimumCount() > 0) {
+        } elseif (!is_null($configuration->getSearchFacetingMinimumCount()) && (int)$configuration->getSearchFacetingMinimumCount() >= 0) {
             return $configuration->getSearchFacetingMinimumCount();
         } else {
             return 1;
