@@ -82,7 +82,7 @@ class OptionsFacetQueryBuilder extends DefaultFacetQueryBuilder implements Facet
 
         if ($isKeepAllOptionsActiveForSingleFacet || $isKeepAllOptionsActiveGlobalsAndCountsEnabled) {
             return $facetConfiguration['field'];
-        } else {
+        } elseif($configuration->getSearchFacetingKeepAllFacetsOnSelection()) {
             // keepAllOptionsOnSelection globally active
             $facets = [];
             foreach ($configuration->getSearchFacetingFacets() as $facet) {
@@ -90,6 +90,8 @@ class OptionsFacetQueryBuilder extends DefaultFacetQueryBuilder implements Facet
             }
             return implode(',', $facets);
         }
+
+        return '';
     }
 
     /**
