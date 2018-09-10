@@ -177,9 +177,23 @@ class OptionsFacetQueryBuilderTest extends UnitTest
     }
 
     /**
+     * @return array
+     */
+    public function getGlobalMinimumCountValue()
+    {
+        return [
+            ['configuredMinimumCount' => 5, 'expectedMinimumCount' => 5],
+            ['configuredMinimumCount' => 0, 'expectedMinimumCount' => 0],
+            ['configuredMinimumCount' => null, 'expectedMinimumCount' => 1],
+
+        ];
+    }
+
+    /**
+     * @dataProvider getGlobalMinimumCountValue
      * @test
      */
-    public function canBuildMincountParameterFromGlobalSetting()
+    public function canBuildMincountParameterFromGlobalSetting($configuredMinimumCount, $expectedMinimumCount)
     {
         /**
          * mincount = 2
@@ -193,7 +207,7 @@ class OptionsFacetQueryBuilderTest extends UnitTest
         );
 
         $configurationMock->expects($this->any())->method('getSearchFacetingMinimumCount')->will(
-            $this->returnValue(5)
+            $this->returnValue($configuredMinimumCount)
         );
 
         $builder = new OptionsFacetQueryBuilder();
@@ -204,7 +218,7 @@ class OptionsFacetQueryBuilderTest extends UnitTest
                     'type' => 'terms',
                     'field' => 'category',
                     'limit' => -1,
-                    'mincount' => 5,
+                    'mincount' => $expectedMinimumCount,
                 ],
             ]
         ];
