@@ -1,6 +1,7 @@
 <?php
 namespace ApacheSolrForTypo3\Solr\System\Solr;
 use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
+use Countable;
 
 /**
  * In EXT:solr 9 we have switched from the SolrPhpClient to the solarium api.
@@ -27,7 +28,7 @@ use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
  * @property \stdClass index
  * @property \stdClass fields
  */
-class ResponseAdapter
+class ResponseAdapter implements Countable
 {
     /**
      * @var string
@@ -35,9 +36,9 @@ class ResponseAdapter
     protected $responseBody;
 
     /**
-     * @var array
+     * @var \stdClass
      */
-    protected $data = [];
+    protected $data = null;
 
     /**
      * @var int
@@ -132,5 +133,13 @@ class ResponseAdapter
     public function getHttpStatusMessage(): string
     {
         return $this->httpStatusMessage;
+    }
+
+    /**
+     * Counts the elements of
+     */
+    public function count()
+    {
+        return count(get_object_vars($this->data));
     }
 }
