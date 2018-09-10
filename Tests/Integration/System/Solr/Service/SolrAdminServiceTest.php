@@ -192,6 +192,16 @@ class SolrAdminServiceTest extends IntegrationTest
     /**
      * @test
      */
+    public function canGetPluginsInformation()
+    {
+        $result = $this->solrAdminService->getPluginsInformation();
+        $this->assertSame(0, $result->responseHeader->status);
+        $this->assertSame(2, count($result));
+    }
+
+    /**
+     * @test
+     */
     public function canParseLanguageFromSchema()
     {
         $client = new Client(['adapter' => 'Solarium\Core\Client\Adapter\Guzzle']);
