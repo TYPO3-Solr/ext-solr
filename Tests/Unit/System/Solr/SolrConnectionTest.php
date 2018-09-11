@@ -25,6 +25,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\Solr;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use ApacheSolrForTypo3\Solr\System\Solr\Node;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use Solarium\Client;
@@ -46,7 +47,11 @@ class SolrConnectionTest extends UnitTest
         $clientMock->expects($this->any())->method('getEndpoints')->willReturn([$endpointMock]);
         $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
 
-        $connection = new SolrConnection('127.0.0.1', 8080, '/solr/core_en/', 'https', ' ', '', $configurationMock);
+        $readNode = Node::fromArray(
+            ['host' => 'localhost', 'port' => 8080, 'path' => '/solr/core_en/', 'scheme' => 'https', 'username' => '', 'password' => '']
+        );
+        $writeNode = $readNode;
+        $connection = new SolrConnection($readNode, $writeNode, $configurationMock);
         $connection->setClient($clientMock, 'admin');
 
         $endpointMock->expects($this->never())->method('setAuthentication');
@@ -63,7 +68,11 @@ class SolrConnectionTest extends UnitTest
         $clientMock->expects($this->any())->method('getEndpoints')->willReturn([$endpointMock]);
         $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
 
-        $connection = new SolrConnection('127.0.0.1', 8080, '/solr/core_en/', 'https', 'foo', 'bar', $configurationMock);
+        $readNode = Node::fromArray(
+            ['host' => 'localhost', 'port' => 8080, 'path' => '/solr/core_en/', 'scheme' => 'https', 'username' => 'foo', 'password' => 'bar']
+        );
+        $writeNode = $readNode;
+        $connection = new SolrConnection($readNode, $writeNode, $configurationMock);
         $connection->setClient($clientMock, 'admin');
 
         $endpointMock->expects($this->once())->method('setAuthentication');
@@ -88,7 +97,11 @@ class SolrConnectionTest extends UnitTest
     public function canGetCoreName($path, $expectedCoreName)
     {
         $fakeConfiguration = $this->getDumbMock(TypoScriptConfiguration::class);
-        $solrService = new SolrConnection('localhost','8080', $path,'http', '', '', $fakeConfiguration);
+        $readNode = Node::fromArray(
+            ['host' => 'localhost', 'port' => 8080, 'path' => $path, 'scheme' => 'http', 'username' => '', 'password' => '']
+        );
+        $writeNode = $readNode;
+        $solrService = new SolrConnection($readNode, $writeNode, $fakeConfiguration);
         $this->assertSame($expectedCoreName, $solrService->getReadService()->getPrimaryEndpoint()->getCore());
     }
 
@@ -110,25 +123,26 @@ class SolrConnectionTest extends UnitTest
     public function canGetCoreBasePath($path, $expectedCoreBasePath)
     {
         $fakeConfiguration = $this->getDumbMock(TypoScriptConfiguration::class);
-        $solrService = new SolrConnection('localhost','8080', $path,'http', '', '', $fakeConfiguration);
+        $readNode = Node::fromArray(
+            ['host' => 'localhost', 'port' => 8080, 'path' => $path, 'scheme' => 'http', 'username' => '', 'password' => '']
+        );
+        $writeNode = $readNode;
+        $solrService = new SolrConnection($readNode, $writeNode, $fakeConfiguration);
         $this->assertSame($expectedCoreBasePath, $solrService->getReadService()->getPrimaryEndpoint()->getPath());
     }
 
     /**
      * @test
      */
-    public function timeoutIsInitializedFromConfiguration()
+    public function timeoutIsUsedFromNode()
     {
-        $configuration = new TypoScriptConfiguration([
-            'plugin.' => [
-                'tx_solr.' => [
-                    'solr.' => [
-                        'timeout' => 99
-                    ]
-                ]
-            ]
-        ]);
-        $solrService = new SolrConnection('localhost','8080','/solr/','http', '', '', $configuration);
+        $fakeConfiguration = $this->getDumbMock(TypoScriptConfiguration::class);
+        $readNode = Node::fromArray(
+            ['host' => 'localhost', 'port' => 8080, 'path' => '/solr/', 'scheme' => 'http', 'username' => '', 'password' => '', 'timeout' => 99]
+        );
+        $writeNode = $readNode;
+        $solrService = new SolrConnection($readNode, $writeNode, $fakeConfiguration);
+
         $this->assertSame(99, $solrService->getReadService()->getPrimaryEndpoint()->getTimeout(), 'Default timeout was not set from configuration');
     }
 
@@ -137,8 +151,12 @@ class SolrConnectionTest extends UnitTest
      */
     public function toStringContainsAllSegments()
     {
-        $configuration = new TypoScriptConfiguration([]);
-        $solrService = new SolrConnection('localhost','8080','/solr/core_de/','http', '', '', $configuration);
-        $this->assertSame('http://localhost:8080/solr/core_de/', (string) $solrService, 'Could not get string representation of connection');
+        $fakeConfiguration = $this->getDumbMock(TypoScriptConfiguration::class);
+        $readNode = Node::fromArray(
+            ['host' => 'localhost', 'port' => 8080, 'path' => '/solr/core_de/', 'scheme' => 'http', 'username' => '', 'password' => '', 'timeout' => 99]
+        );
+        $writeNode = $readNode;
+        $solrService = new SolrConnection($readNode, $writeNode, $fakeConfiguration);
+        $this->assertSame('http://localhost:8080/solr/core_de/', (string) $solrService->getNode('read'), 'Could not get string representation of connection');
     }
 }

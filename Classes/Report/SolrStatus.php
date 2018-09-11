@@ -91,14 +91,9 @@ class SolrStatus extends AbstractSolrStatus
         $header = 'Your site has contacted the Apache Solr server.';
         $this->responseStatus = Status::OK;
 
-        $solrAdmin = $this->connectionManager->getConnection(
-            $solrConnection['solrHost'],
-            $solrConnection['solrPort'],
-            $solrConnection['solrPath'],
-            $solrConnection['solrScheme'],
-            $solrConnection['solrUsername'],
-            $solrConnection['solrPassword']
-        )->getAdminService();
+        $solrAdmin = $this->connectionManager
+            ->getSolrConnectionForNodes($solrConnection['read'], $solrConnection['write'])
+            ->getAdminService();
 
         $solrVersion = $this->checkSolrVersion($solrAdmin);
         $accessFilter = $this->checkAccessFilter($solrAdmin);

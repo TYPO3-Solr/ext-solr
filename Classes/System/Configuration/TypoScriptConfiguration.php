@@ -927,9 +927,16 @@ class TypoScriptConfiguration
      * @param int $defaultIfEmpty
      * @return int
      */
-    public function getSolrTimeout($defaultIfEmpty = 0)
+    public function getSolrTimeout($defaultIfEmpty = 0, $scope = 'read')
     {
-        return (int)$this->getValueByPathOrDefaultValue('plugin.tx_solr.solr.timeout', $defaultIfEmpty);
+        $scopePath = 'plugin.tx_solr.solr.' . $scope . '.timeout';
+        $fallbackPath = 'plugin.tx_solr.solr.timeout';
+        $result = (int)$this->getValueByPathOrDefaultValue($scopePath, -1);
+        if($result !== -1) {
+            return $result;
+        }
+
+        return (int)$this->getValueByPathOrDefaultValue($fallbackPath, $defaultIfEmpty);
     }
 
     /**
@@ -940,13 +947,15 @@ class TypoScriptConfiguration
      * Applies stdWrap on the configured setting
      *
      * @param string $defaultIfEmpty
+     * @param string $scope read or write, read by default
      * @return string
      */
-    public function getSolrScheme($defaultIfEmpty = 'http')
+    public function getSolrScheme($defaultIfEmpty = 'http', $scope = 'read')
     {
-        $valuePath = 'plugin.tx_solr.solr.scheme';
-        $value = (string)$this->getValueByPathOrDefaultValue($valuePath, $defaultIfEmpty);
-        return $this->renderContentElementOfConfigured($valuePath, $value);
+        $scopePath = 'plugin.tx_solr.solr.' . $scope . '.scheme';
+        $fallbackPath = 'plugin.tx_solr.solr.scheme';
+
+        return $this->getValueByPathWithFallbackOrDefaultValueAndApplyStdWrap($scopePath, $fallbackPath, $defaultIfEmpty);
     }
 
     /**
@@ -957,13 +966,15 @@ class TypoScriptConfiguration
      * Applies stdWrap on the configured setting
      *
      * @param string $defaultIfEmpty
+     * @param string $scope read or write, read by default
      * @return string
      */
-    public function getSolrHost($defaultIfEmpty = 'localhost')
+    public function getSolrHost($defaultIfEmpty = 'localhost', $scope = 'read')
     {
-        $valuePath = 'plugin.tx_solr.solr.host';
-        $value = (string)$this->getValueByPathOrDefaultValue($valuePath, $defaultIfEmpty);
-        return $this->renderContentElementOfConfigured($valuePath, $value);
+        $scopePath = 'plugin.tx_solr.solr.' . $scope . '.host';
+        $fallbackPath = 'plugin.tx_solr.solr.host';
+
+        return $this->getValueByPathWithFallbackOrDefaultValueAndApplyStdWrap($scopePath, $fallbackPath, $defaultIfEmpty);
     }
 
     /**
@@ -974,13 +985,15 @@ class TypoScriptConfiguration
      * Applies stdWrap on the configured setting
      *
      * @param int $defaultIfEmpty
+     * @param string $scope read or write, read by default
      * @return int
      */
-    public function getSolrPort($defaultIfEmpty = 8983)
+    public function getSolrPort($defaultIfEmpty = 8983, $scope = 'read')
     {
-        $valuePath = 'plugin.tx_solr.solr.port';
-        $value = (string)$this->getValueByPathOrDefaultValue($valuePath, $defaultIfEmpty);
-        return $this->renderContentElementOfConfigured($valuePath, $value);
+        $scopePath = 'plugin.tx_solr.solr.' . $scope . '.port';
+        $fallbackPath = 'plugin.tx_solr.solr.port';
+
+        return (int)$this->getValueByPathWithFallbackOrDefaultValueAndApplyStdWrap($scopePath, $fallbackPath, $defaultIfEmpty);
     }
 
     /**
@@ -991,13 +1004,15 @@ class TypoScriptConfiguration
      * Applies stdWrap on the configured setting
      *
      * @param string $defaultIfEmpty
+     * @param string $scope read or write, read by default
      * @return string
      */
-    public function getSolrPath($defaultIfEmpty = '/solr/core_en/')
+    public function getSolrPath($defaultIfEmpty = '/solr/core_en/', $scope = 'read')
     {
-        $valuePath = 'plugin.tx_solr.solr.path';
-        $value = (string)$this->getValueByPathOrDefaultValue($valuePath, $defaultIfEmpty);
-        $solrPath = $this->renderContentElementOfConfigured($valuePath, $value);
+        $scopePath = 'plugin.tx_solr.solr.' . $scope . '.path';
+        $fallbackPath = 'plugin.tx_solr.solr.path';
+
+        $solrPath =  $this->getValueByPathWithFallbackOrDefaultValueAndApplyStdWrap($scopePath, $fallbackPath, $defaultIfEmpty);
 
         $solrPath = trim($solrPath, '/');
         $solrPath = '/' . $solrPath . '/';
@@ -1013,13 +1028,15 @@ class TypoScriptConfiguration
      * Applies stdWrap on the configured setting
      *
      * @param string $defaultIfEmpty
+     * @param string $scope read or write, read by default
      * @return string
      */
-    public function getSolrUsername($defaultIfEmpty = '')
+    public function getSolrUsername($defaultIfEmpty = '', $scope = 'read')
     {
-        $valuePath = 'plugin.tx_solr.solr.username';
-        $value = (string)$this->getValueByPathOrDefaultValue($valuePath, $defaultIfEmpty);
-        return $this->renderContentElementOfConfigured($valuePath, $value);
+        $scopePath = 'plugin.tx_solr.solr.' . $scope . '.username';
+        $fallbackPath = 'plugin.tx_solr.solr.username';
+
+        return $this->getValueByPathWithFallbackOrDefaultValueAndApplyStdWrap($scopePath, $fallbackPath, $defaultIfEmpty);
     }
 
     /**
@@ -1030,13 +1047,32 @@ class TypoScriptConfiguration
      * Applies stdWrap on the configured setting
      *
      * @param string $defaultIfEmpty
+     * @param string $scope read or write, read by default
      * @return string
      */
-    public function getSolrPassword($defaultIfEmpty = '')
+    public function getSolrPassword($defaultIfEmpty = '', $scope = 'read')
     {
-        $valuePath = 'plugin.tx_solr.solr.password';
-        $value = (string)$this->getValueByPathOrDefaultValue($valuePath, $defaultIfEmpty);
-        return $this->renderContentElementOfConfigured($valuePath, $value);
+        $scopePath = 'plugin.tx_solr.solr.' . $scope . '.password';
+        $fallbackPath = 'plugin.tx_solr.solr.password';
+
+        return $this->getValueByPathWithFallbackOrDefaultValueAndApplyStdWrap($scopePath, $fallbackPath, $defaultIfEmpty);
+    }
+
+    /**
+     * @param $path
+     * @param $fallbackPath
+     * @param $defaultIfBothIsEmpty
+     * @return mixed
+     */
+    public function getValueByPathWithFallbackOrDefaultValueAndApplyStdWrap($path, $fallbackPath, $defaultIfBothIsEmpty)
+    {
+        $result = (string)$this->getValueByPathOrDefaultValue($path, '');
+        if($result !== '') {
+            return $this->renderContentElementOfConfigured($path, $result);
+        }
+
+        $result = (string)$this->getValueByPathOrDefaultValue($fallbackPath, $defaultIfBothIsEmpty);
+        return $this->renderContentElementOfConfigured($fallbackPath, $result);
     }
 
     /**
