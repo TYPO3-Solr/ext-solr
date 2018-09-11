@@ -191,7 +191,9 @@ class Queue
                 $updatedRows = $this->queueItemRepository->updateExistingItemByItemTypeAndItemUidAndRootPageId($itemType, $itemUid, $rootPageId, $changedTime, $indexingConfiguration);
             } else {
                 // add the item since it's not in the queue yet
-                $updatedRows = $this->addNewItem($itemType, $itemUid, $indexingConfiguration, $rootPageId);
+                if($indexingConfiguration !== '') {
+                    $updatedRows = $this->addNewItem($itemType, $itemUid, $indexingConfiguration, $rootPageId);
+                }
             }
 
             $updateCount += $updatedRows;

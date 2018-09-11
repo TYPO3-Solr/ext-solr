@@ -49,7 +49,7 @@ class ConfigurationAwareRecordService
      */
     public function getIndexingConfigurationName($recordTable, $recordUid, TypoScriptConfiguration $solrConfiguration)
     {
-        $name = $recordTable;
+        $name = ''; //$recordTable;
         $indexingConfigurations = $solrConfiguration->getEnabledIndexQueueConfigurationNames();
         foreach ($indexingConfigurations as $indexingConfigurationName) {
             if (!$solrConfiguration->getIndexQueueConfigurationIsEnabled($indexingConfigurationName)) {
