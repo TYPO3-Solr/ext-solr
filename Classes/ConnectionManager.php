@@ -29,6 +29,7 @@ use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Page\Rootline;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository as PagesRepositoryAtExtSolr;
 use ApacheSolrForTypo3\Solr\System\Records\SystemLanguage\SystemLanguageRepository;
+use ApacheSolrForTypo3\Solr\System\Solr\Node;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Backend\Toolbar\ClearCacheActionsHookInterface;
@@ -88,62 +89,45 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
      * kept and checked whether the requested connection already exists. If a
      * connection already exists, it's reused.
      *
+     * @deprecated This method can only be used to build a connection with the same endpoint for reading, writing and admin operations,
+     * if you need a connection to the different endpoints, please use getConnectionByPageId()
      * @param string $host Solr host (optional)
      * @param int $port Solr port (optional)
      * @param string $path Solr path (optional)
      * @param string $scheme Solr scheme, defaults to http, can be https (optional)
      * @param string $username Solr user name (optional)
      * @param string $password Solr password (optional)
+     * @param int $timeout
      * @return SolrConnection A solr connection.
      */
-    public function getConnection($host = '', $port = 8983, $path = '/solr/', $scheme = 'http', $username = '', $password = '')
+    public function getConnection($host = '', $port = 8983, $path = '/solr/', $scheme = 'http', $username = '', $password = '', $timeout = 0)
     {
+        trigger_error('ConnectionManager::getConnection is deprecated please use getSolrConnectionForNodes now.', E_USER_DEPRECATED);
         if (empty($host)) {
-            $this->logger->log(
-                SolrLogManager::WARNING,
-                'ApacheSolrForTypo3\Solr\ConnectionManager::getConnection() called with empty host parameter. Using configuration from TSFE, might be inaccurate. Always provide a host or use the getConnectionBy* methods.'
-            );
-
-            $configuration = Util::getSolrConfiguration();
-            $host = $configuration->getSolrHost();
-            $port = $configuration->getSolrPort();
-            $path = $configuration->getSolrPath();
-            $scheme = $configuration->getSolrScheme();
-            $username = $configuration->getSolrUsername();
-            $password = $configuration->getSolrPassword();
+            throw new \InvalidArgumentException('Host argument should not be empty');
         }
 
-        $connectionHash = md5($scheme . '://' . $host . $port . $path . $username . $password);
-        if (!isset(self::$connections[$connectionHash])) {
-            $connection = $this->buildSolrConnection($host, $port, $path, $scheme, $username, $password);
-            self::$connections[$connectionHash] = $connection;
-        }
-
-        return self::$connections[$connectionHash];
+        $readNode = ['scheme' => $scheme, 'host' => $host, 'port' => $port, 'path' => $path, 'username' => $username, 'password' => $password, 'timeout' => $timeout];
+        $writeNode = ['scheme' => $scheme, 'host' => $host, 'port' => $port, 'path' => $path, 'username' => $username, 'password' => $password, 'timeout' => $timeout];
+        return $this->getSolrConnectionForNodes($readNode, $writeNode);
     }
 
     /**
-     * Create a Solr Service instance from the passed connection configuration.
+     * Creates a solr connection for read and write endpoints
      *
-     * @param string $host
-     * @param int $port
-     * @param string $path
-     * @param string $scheme
-     * @param string $username
-     * @param string $password
+     * @param array $readNodeConfiguration
+     * @param array $writeNodeConfiguration
      * @return SolrConnection|object
      */
-    protected function buildSolrConnection($host, $port, $path, $scheme, $username = '', $password = '')
+    public function getSolrConnectionForNodes(array $readNodeConfiguration, array $writeNodeConfiguration)
     {
-        return GeneralUtility::makeInstance(
-            SolrConnection::class,
-            /** @scrutinizer ignore-type */ $host,
-            /** @scrutinizer ignore-type */ $port,
-            /** @scrutinizer ignore-type */ $path,
-            /** @scrutinizer ignore-type */ $scheme,
-            /** @scrutinizer ignore-type */ $username,
-            /** @scrutinizer ignore-type */ $password
-        );
+        $connectionHash = md5(\json_encode($readNodeConfiguration) .  \json_encode($writeNodeConfiguration));
+        if (!isset(self::$connections[$connectionHash])) {
+            $readNode = Node::fromArray($readNodeConfiguration);
+            $writeNode = Node::fromArray($writeNodeConfiguration);
+            self::$connections[$connectionHash] = GeneralUtility::makeInstance(SolrConnection::class, $readNode, $writeNode);
+        }
+        return self::$connections[$connectionHash];
     }
 
     /**
@@ -152,16 +136,13 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
      * @param array $config The solr configuration array
      * @return SolrConnection
      */
-    protected function getConnectionFromConfiguration(array $config)
+    public function getConnectionFromConfiguration(array $config)
     {
-        return $this->getConnection(
-            $config['solrHost'],
-            $config['solrPort'],
-            $config['solrPath'],
-            $config['solrScheme'],
-            $config['solrUsername'],
-            $config['solrPassword']
-        );
+        if(empty($config['read']) && !empty($config['solrHost'])) {
+            throw new \InvalidArgumentException('Invalid registry data please re-initialize your solr connections');
+        }
+
+        return $this->getSolrConnectionForNodes($config['read'], $config['write']);
     }
 
     /**
@@ -210,8 +191,8 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
      */
     public function getConnectionByPageId($pageId, $language = 0, $mount = '')
     {
-        $solrServer = $this->getConfigurationByPageId($pageId, $language, $mount);
-        $solrConnection = $this->getConnectionFromConfiguration($solrServer);
+        $solrConnections = $this->getConfigurationByPageId($pageId, $language, $mount);
+        $solrConnection = $this->getConnectionFromConfiguration($solrConnections);
         return $solrConnection;
     }
 
@@ -426,8 +407,7 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
         // find solr configurations and add them as function menu entries
         foreach ($rootPages as $rootPage) {
             foreach ($languages as $languageId) {
-                $connection = $this->getConfiguredSolrConnectionByRootPage($rootPage,
-                    $languageId);
+                $connection = $this->getConfiguredSolrConnectionByRootPage($rootPage, $languageId);
 
                 if (!empty($connection)) {
                     $configuredSolrConnections[$connection['connectionKey']] = $connection;
@@ -484,12 +464,24 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
             'connectionKey' => $connectionKey,
             'rootPageTitle' => $rootPage['title'],
             'rootPageUid' => $rootPage['uid'],
-            'solrScheme' => $configuration->getSolrScheme(),
-            'solrHost' => $configuration->getSolrHost(),
-            'solrPort' => $configuration->getSolrPort(),
-            'solrPath' => $configuration->getSolrPath(),
-            'solrUsername' => $configuration->getSolrUsername(),
-            'solrPassword' => $configuration->getSolrPassword(),
+            'read' => [
+                'scheme' => $configuration->getSolrScheme(),
+                'host' => $configuration->getSolrHost(),
+                'port' => $configuration->getSolrPort(),
+                'path' => $configuration->getSolrPath(),
+                'username' => $configuration->getSolrUsername(),
+                'password' => $configuration->getSolrPassword(),
+                'timeout' => $configuration->getSolrTimeout()
+            ],
+            'write' => [
+                'scheme' => $configuration->getSolrScheme('http', 'write'),
+                'host' => $configuration->getSolrHost('localhost', 'write'),
+                'port' => $configuration->getSolrPort(8983, 'write'),
+                'path' => $configuration->getSolrPath('/solr/core_en/', 'write'),
+                'username' => $configuration->getSolrUsername('', 'write'),
+                'password' => $configuration->getSolrPassword('', 'write'),
+                'timeout' => $configuration->getSolrTimeout(0, 'write')
+            ],
 
             'language' => $languageId
         ];
@@ -511,11 +503,14 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
         return $connection['rootPageTitle']
             . ' (pid: ' . $connection['rootPageUid']
             . ', language: ' . $this->systemLanguageRepository->findOneLanguageTitleByLanguageId($connection['language'])
-            . ') - '
-//            . $connection['solrScheme'] . '://'
-            . $connection['solrHost'] . ':'
-            . $connection['solrPort']
-            . $connection['solrPath'];
+            . ') - Read node: '
+            . $connection['read']['host'] . ':'
+            . $connection['read']['port']
+            . $connection['read']['path']
+            .' - Write node: '
+            . $connection['write']['host'] . ':'
+            . $connection['write']['port']
+            . $connection['write']['path'];
     }
 
     /**

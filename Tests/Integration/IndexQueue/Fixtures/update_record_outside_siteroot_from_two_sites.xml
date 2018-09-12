@@ -5,7 +5,7 @@
         <uid>4711</uid>
         <entry_namespace>tx_solr</entry_namespace>
         <entry_key>servers</entry_key>
-        <entry_value>a:2:{s:3:"1|0";a:9:{s:13:"connectionKey";s:3:"1|0";s:13:"rootPageTitle";s:0:"";s:11:"rootPageUid";i:1;s:10:"solrScheme";s:4:"http";s:8:"solrHost";s:9:"localhost";s:8:"solrPort";i:8999;s:8:"solrPath";s:14:"/solr/core_en/";s:8:"language";i:0;s:5:"label";s:16:"testconnection a";}s:3:"2|0";a:9:{s:13:"connectionKey";s:3:"2|0";s:13:"rootPageTitle";s:0:"";s:11:"rootPageUid";i:2;s:10:"solrScheme";s:4:"http";s:8:"solrHost";s:9:"localhost";s:8:"solrPort";i:8998;s:8:"solrPath";s:14:"/solr/core_de/";s:8:"language";i:0;s:5:"label";s:16:"testconnection a";}}</entry_value>
+        <entry_value>a:2:{s:3:"1|0";a:7:{s:13:"connectionKey";s:3:"1|0";s:13:"rootPageTitle";s:0:"";s:11:"rootPageUid";i:1;s:8:"language";i:0;s:5:"label";s:16:"testconnection a";s:4:"read";a:4:{s:6:"scheme";s:4:"http";s:4:"host";s:9:"localhost";s:4:"port";i:8999;s:4:"path";s:14:"/solr/core_en/";}s:5:"write";a:4:{s:6:"scheme";s:4:"http";s:4:"host";s:9:"localhost";s:4:"port";i:8999;s:4:"path";s:14:"/solr/core_en/";}}s:3:"2|0";a:7:{s:13:"connectionKey";s:3:"2|0";s:13:"rootPageTitle";s:0:"";s:11:"rootPageUid";i:2;s:8:"language";i:0;s:5:"label";s:16:"testconnection a";s:4:"read";a:4:{s:6:"scheme";s:4:"http";s:4:"host";s:9:"localhost";s:4:"port";i:8998;s:4:"path";s:14:"/solr/core_de/";}s:5:"write";a:4:{s:6:"scheme";s:4:"http";s:4:"host";s:9:"localhost";s:4:"port";i:8998;s:4:"path";s:14:"/solr/core_de/";}}}</entry_value>
     </sys_registry>
 
     <sys_template>

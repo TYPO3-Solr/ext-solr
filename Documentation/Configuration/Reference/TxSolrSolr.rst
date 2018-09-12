@@ -23,6 +23,26 @@ This section defines the address of the Solr server. As the communication with
 the Solr server happens over HTTP this is just a simple URL. Each of the URL's
 components can be defined separately.
 
+Note: Since version 9 of EXT:solr you can optionally configure different endpoints for reading and writing
+
+.. code-block:: typoscript
+
+   plugin.tx_solr.solr {
+      read {
+         scheme = https
+         host = localhost
+         port = 8983
+         path = /solr/core_en/
+      }
+      write < .read
+   }
+
+As fallback (when nothing special is configured in read or write, EXT:solr is fallingback to the old global setting)
+
+Example:
+
+* When nothing is configured in ```plugin.tx_solr.solr.read.host``` the path ```plugin.tx_solr.solr.host```is used.
+
 
 .. contents::
    :local:
