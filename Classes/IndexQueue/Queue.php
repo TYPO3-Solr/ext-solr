@@ -185,15 +185,14 @@ class Queue
             $solrConfiguration = Util::getSolrConfigurationFromPageId($rootPageId);
             $indexingConfiguration = $this->recordService->getIndexingConfigurationName($itemType, $itemUid, $solrConfiguration);
             $itemInQueueForRootPage = $this->containsItemWithRootPageId($itemType, $itemUid, $rootPageId);
+            $updatedRows = 0;
             if ($itemInQueueForRootPage) {
                 // update changed time if that item is in the queue already
                 $changedTime = ($forcedChangeTime > 0) ? $forcedChangeTime : $this->getItemChangedTime($itemType, $itemUid);
                 $updatedRows = $this->queueItemRepository->updateExistingItemByItemTypeAndItemUidAndRootPageId($itemType, $itemUid, $rootPageId, $changedTime, $indexingConfiguration);
-            } else {
+            } else if($indexingConfiguration !== '') {
                 // add the item since it's not in the queue yet
-                if($indexingConfiguration !== '') {
-                    $updatedRows = $this->addNewItem($itemType, $itemUid, $indexingConfiguration, $rootPageId);
-                }
+                $updatedRows = $this->addNewItem($itemType, $itemUid, $indexingConfiguration, $rootPageId);
             }
 
             $updateCount += $updatedRows;
