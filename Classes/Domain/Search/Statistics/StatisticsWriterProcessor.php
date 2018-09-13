@@ -187,9 +187,9 @@ class StatisticsWriterProcessor implements SearchResultSetProcessor
      *
      * @param string $ip
      * @param int $maskLength
-     * @return int
+     * @return string
      */
-    protected function applyIpV6Mask($ip, $maskLength):int
+    protected function applyIpV6Mask($ip, $maskLength):string
     {
         $masks = ['ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff', 'ffff:ffff:ffff:ffff::', 'ffff:ffff:ffff:0000::', 'ffff:ff00:0000:0000::'];
         $packedAddress = inet_pton($masks[$maskLength]);
