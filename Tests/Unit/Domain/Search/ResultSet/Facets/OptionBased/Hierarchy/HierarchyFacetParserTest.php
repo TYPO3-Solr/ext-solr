@@ -129,6 +129,44 @@ class HierarchyFacetParserTest extends AbstractFacetParserTest
     /**
      * @test
      */
+    public function selectedOptionWithSlashInTitleOnHierarchicalFacetDoesNotBreakTheFacet() {
+        $facetConfiguration = [
+            'type' => 'hierarchy',
+            'label' => 'Category Hierarch By Title',
+            'field' => 'categoryHierarchyByTitle_stringM',
+            'sortBy' => 'alpha',
+            'keepAllOptionsOnSelection' => 1
+        ];
+        $searchResultSet = $this->initializeSearchResultSetFromFakeResponse(
+            'fake_solr_response_with_hierachy_facet_with_slash_in_title.json',
+            $facetConfiguration
+            , ['categoryHierarchyByTitle:/folder2\/level1\//folder2\/level2\//']
+        );
+
+        /** @var $parser HierarchyFacetParser */
+        $parser = $this->getInitializedParser(HierarchyFacetParser::class);
+        $facet = $parser->parse($searchResultSet, 'categoryHierarchyByTitle', $facetConfiguration);
+        // HierarchyFacetParser::getActiveFacetValuesFromRequest() must be aware about slashes in path segments
+        $this->assertSame(5, $facet->getAllFacetItems()->count(), 'Selected facet option is wrong parsed. The slash in Title leads to new facet option.');
+
+        // each node has only one child node in fake response, parsing must be synchron with data.
+        $this->assertNoNodeHasMoreThanOneChildInTheHierarchy($facet->getChildNodes()->getByPosition(0));
+
+        // sub-options of facet
+        $optionValue = '/folder2\/level1\//folder2\/level2\//folder2\/level3/';
+        $searchResultSet = $this->initializeSearchResultSetFromFakeResponse(
+            'fake_solr_response_with_hierachy_facet_with_slash_in_title.json',
+            $facetConfiguration
+            , ['categoryHierarchyByTitle:' . $optionValue]
+        );
+        $facet = $parser->parse($searchResultSet, 'categoryHierarchyByTitle', $facetConfiguration);
+
+        $this->assertSame(1, $facet->getAllFacetItems()->getByValue($optionValue)->getChildNodes()->count(), 'Selected facet-option with slash in title/name breaks the Hierarchical facets.');
+    }
+
+    /**
+     * @test
+     */
     public function facetIsNotActive()
     {
         $facetConfiguration = [
