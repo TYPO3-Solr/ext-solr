@@ -574,3 +574,34 @@ Afterwards you could render the typoscript path "lib.searchbox" with several way
     <f:cObject typoscriptObjectPath="lib.searchbox" />
 
 By adding the snippet to a generic tempate you could render the searchbox on every page.
+
+**How can I index protected pages (htaccess protection)?**
+
+Protected pages can be accessed by passing the htpasswd username and password to the indexing queue.
+You can set the credentials by the following configuration:
+
+::
+
+	plugin.tx_solr.index.queue.pages.indexer.authorization.username = your_username
+	plugin.tx_solr.index.queue.pages.indexer.authorization.password = your_password
+
+::
+
+As credentials are stored as plain text, go for sure that your web server does not serve your TypoScript files publicly (protect the directory or by file endings).
+If you don't want to store plain text passwords, you can configure your web server to allow access from a specific domain (see below).
+
+If you have multiple domains to index, the webserver requires the credentials for each domain accessed by the solr indexer. The extension passes the credentials only once, so you will run into errors on a multi domain environment.
+Solution: Instead of passing the credentials as shown above, configure your webserver directory protection to allow access from the solr IP:
+
+::
+
+	AuthType Basic
+	AuthUserFile /path/to/.htpasswd
+	<RequireAny>
+	        Require ip XXX.XX.XX.XX (the IP of the solr server)
+	        Require valid-user
+	</RequireAny>
+
+::
+
+Be aware, that this will allow all accesses by given IP.
