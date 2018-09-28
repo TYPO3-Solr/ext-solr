@@ -1,0 +1,80 @@
+{
+  "responseHeader":{
+    "status": 0,
+    "QTime": 4,
+    "params":{
+      "df": "content",
+      "ps": "15",
+      "spellcheck.dictionary": [
+        "default",
+        "wordbreak"
+      ],
+      "hl": "true",
+      "echoParams": "all",
+      "indent": "true",
+      "fl": "*,score",
+      "hl.requireFieldMatch": "true",
+      "hl.fragsize": "200",
+      "spellcheck.maxCollationTries": "1",
+      "fq": [
+        "siteHash:\"965d4c17710f5f608b3d05724f6e6bc1581a5c66\"",
+        "{!typo3access}-1,0",
+        "{!tag=categoryHierarchyByTitle_stringM}(categoryHierarchyByTitle_stringM:\"1-folder2\\\\/level1\\\\//folder2\\\\/level2\\\\//\")",
+        "{!collapse field=variantId}"
+      ],
+      "hl.simple.pre": "<span class=\"results-highlight\">",
+      "hl.useFastVectorHighlighter": "true",
+      "defType": "edismax",
+      "hl.mergeContiguous": "true",
+      "expand.rows": "10",
+      "qf": "content^40.0 title^5.0 keywords^2.0 tagsH1^5.0 tagsH2H3^3.0 tagsH4H5H6^2.0 tagsInline description^4.0 abstract subtitle navtitle author",
+      "hl.fl": "content",
+      "wt": "json",
+      "f.content.hl.alternateField": "content",
+      "hl.tag.pre": "<span class=\"results-highlight\">",
+      "mm": "2<-35%",
+      "facet.field": "{!ex=categoryHierarchyByTitle_stringM}categoryHierarchyByTitle_stringM",
+      "start": "0",
+      "hl.tag.post": "</span>",
+      "rows": "10",
+      "f.content.hl.maxAlternateFieldLength": "200",
+      "spellcheck.extendedResults": "false",
+      "hl.snippets": "3",
+      "facet.limit": "1000",
+      "q": "*",
+      "expand": "true",
+      "hl.simple.post": "</span>",
+      "f.categoryHierarchyByTitle_stringM.facet.sort": "index",
+      "spellcheck": "true",
+      "pf": "content^2.0",
+      "spellcheck.onlyMorePopular": "false",
+      "facet.mincount": "1",
+      "spellcheck.count": "1",
+      "facet": "true",
+      "facet.sort": "count",
+      "debugQuery": "on",
+      "spellcheck.collate": "true"
+    }
+  },
+  "response":{
+    "numFound": 3,
+    "start": 0,
+    "maxScore": 1.0,
+    "docs": []
+  },
+  "facet_counts":{
+    "facet_queries":{},
+    "facet_fields":{
+      "categoryHierarchyByTitle_stringM": [
+        "0-folder2\\/level1\\//",5,
+        "1-folder2\\/level1\\//folder2\\/level2\\//",4,
+        "2-folder2\\/level1\\//folder2\\/level2\\//folder2\\/level3/",3,
+        "3-folder2\\/level1\\//folder2\\/level2\\//folder2\\/level3/folder2\\/level4\\//",2,
+        "4-folder2\\/level1\\//folder2\\/level2\\//folder2\\/level3/folder2\\/level4\\//folder2\\/level5\\//",1
+      ]
+    },
+    "facet_ranges":{},
+    "facet_intervals":{},
+    "facet_heatmaps":{}
+  }
+}
