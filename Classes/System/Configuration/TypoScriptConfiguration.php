@@ -2154,6 +2154,24 @@ class TypoScriptConfiguration
     }
 
     /**
+     * Returns additional fields for the top results
+     *
+     * plugin.tx_solr.suggest.additionalTopResultsFields
+     *
+     * @param array $defaultIfEmpty
+     * @return array
+     */
+    public function getSuggestAdditionalTopResultsFields($defaultIfEmpty = [])
+    {
+        $additionalTopResultsFields = $this->getValueByPathOrDefaultValue('plugin.tx_solr.suggest.additionalTopResultsFields', '');
+        if ($additionalTopResultsFields === '') {
+            return $defaultIfEmpty;
+        }
+
+        return GeneralUtility::trimExplode(',', $additionalTopResultsFields, true);
+    }
+
+    /**
      * Returns the configured template for a specific template fileKey.
      *
      * plugin.tx_solr.view.templateFiles.<fileKey>

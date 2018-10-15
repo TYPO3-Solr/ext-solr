@@ -5,7 +5,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search;
  *  Copyright notice
  *
  *  (c) 2017 Timo Hund <timo.hund@dkd.de>
- * 
+ *
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -154,6 +154,7 @@ class SuggestServiceTest extends UnitTest
     {
         $this->configurationMock->expects($this->once())->method('getSuggestShowTopResults')->will($this->returnValue(true));
         $this->configurationMock->expects($this->once())->method('getSuggestNumberOfTopResults')->will($this->returnValue(2));
+        $this->configurationMock->expects($this->once())->method('getSuggestAdditionalTopResultsFields')->will($this->returnValue([]));
 
         $this->assertSuggestQueryWithQueryStringCreated('');
         $fakeRequest = $this->getFakedSearchRequest('type');
