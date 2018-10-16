@@ -90,4 +90,13 @@ numberOfTopResults
 
 Defines the number of top results that will be shown.
 
+additionalTopResultsFields
+--------------------------
+
+:Type: String
+:TS Path: plugin.tx_solr.suggest.additionalTopResultsFields
+:Since: 9.0
+
+Comma-separated list of fields that should be added to the top results response json.
+
 

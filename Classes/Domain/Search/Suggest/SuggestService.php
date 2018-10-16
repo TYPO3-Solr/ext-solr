@@ -212,9 +212,10 @@ class SuggestService {
      */
     protected function addDocumentsWhenLimitNotReached(array $documents, SearchResultCollection $documentsToAdd, int $maxDocuments)  : array
     {
+        $additionalTopResultsFields = $this->typoScriptConfiguration->getSuggestAdditionalTopResultsFields();
         /** @var SearchResult $document */
         foreach ($documentsToAdd as $document) {
-            $documents[] = $this->getDocumentAsArray($document);
+            $documents[] = $this->getDocumentAsArray($document, $additionalTopResultsFields);
             if (count($documents) >= $maxDocuments) {
                 return $documents;
             }
@@ -227,11 +228,12 @@ class SuggestService {
      * Creates an array representation of the result and returns it.
      *
      * @param SearchResult $document
+     * @param array $additionalTopResultsFields
      * @return array
      */
-    protected function getDocumentAsArray(SearchResult $document) : array
+    protected function getDocumentAsArray(SearchResult $document, $additionalTopResultsFields = []) : array
     {
-        return [
+        $fields = [
             'link' => $document->getUrl(),
             'type' => $document['type_stringS'] ? $document['type_stringS'] : $document->getType(),
             'title' => $document->getTitle(),
@@ -239,6 +241,10 @@ class SuggestService {
             'group' => $document->getHasGroupItem() ? $document->getGroupItem()->getGroupValue() : '',
             'previewImage' => $document['previewImage_stringS'] ? $document['previewImage_stringS'] : '',
         ];
+        foreach ($additionalTopResultsFields as $additionalTopResultsField) {
+            $fields[$additionalTopResultsField] = $document[$additionalTopResultsField] ? $document[$additionalTopResultsField] : '';
+        }
+        return $fields;
     }
 
     /**
