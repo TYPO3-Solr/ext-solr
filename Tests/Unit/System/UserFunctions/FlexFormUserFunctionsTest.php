@@ -24,15 +24,10 @@ namespace ApacheSolrForTypo3\Solr\Test\System\Service;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
-use ApacheSolrForTypo3\Solr\Mvc\Controller\SolrControllerContext;
-use ApacheSolrForTypo3\Solr\System\Service\ConfigurationService;
 use ApacheSolrForTypo3\Solr\System\UserFunctions\FlexFormUserFunctions;
-use TYPO3\CMS\Core\TypoScript\TypoScriptService;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Service\FlexFormService;
+use TYPO3\CMS\Extbase\Service\TypoScriptService;
+use TYPO3\CMS\Lang\LanguageService;
 
 /**
  * @author Timo Hund <timo.hund@dkd.de>
@@ -87,7 +82,123 @@ class FlexFormUserFunctionsTest extends UnitTest
 
         $userFunc->getFacetFieldsFromSchema($parentInformation);
         $this->assertCount(3, $parentInformation['items']);
-        $this->assertEquals('The type', $parentInformation['items']['The type'][0]);
+        $this->assertEquals('type (Facet Label: "The type")', $parentInformation['items']['type'][0]);
+    }
+
+    /**
+     * @test
+     */
+    public function duplicateFacetLabelDoesNotMakeFieldsDisappearingInFlexForms()
+    {
+        /** @var FlexFormUserFunctions $flexFormUserFunctionsMock */
+        $flexFormUserFunctionsMock = $this->getMockBuilder(FlexFormUserFunctions::class)
+            ->setMethods(['getFieldNamesFromSolrMetaDataForPage', 'getConfiguredFacetsForPage'])->getMock();
+        $flexFormUserFunctionsMock->expects($this->once())->method('getFieldNamesFromSolrMetaDataForPage')
+            ->will($this->returnValue(['some_field', 'someOther_field'])
+        );
+
+        $flexFormUserFunctionsMock->expects($this->once())->method('getConfiguredFacetsForPage')
+            ->will($this->returnValue([
+                'someFacet.' => [
+                    'field' => 'some_field',
+                    'label' => 'TEXT'
+                ],
+                'someOtherFacet.' => [
+                    'field' => 'someOther_field',
+                    'label' => 'TEXT'
+                ]
+            ]));
+
+        $parentInformation = [
+            'flexParentDatabaseRow' => [
+                'pid' => 4711
+            ]
+        ];
+        $flexFormUserFunctionsMock->getFacetFieldsFromSchema($parentInformation);
+        $this->assertCount(2, $parentInformation['items']);
+    }
+
+    /**
+     * @test
+     */
+    public function facetLabelIsShownTranslatedInBracketsSignsInFlexFormsIfTranslationIsAvailable()
+    {
+        /** @var FlexFormUserFunctions $flexFormUserFunctionsMock */
+        $flexFormUserFunctionsMock = $this->getMockBuilder(FlexFormUserFunctions::class)
+            ->setMethods(['getFieldNamesFromSolrMetaDataForPage', 'getConfiguredFacetsForPage'])->getMock();
+        $flexFormUserFunctionsMock->expects($this->once())->method('getFieldNamesFromSolrMetaDataForPage')
+            ->will($this->returnValue(['some_field', 'someOther_field', 'someQuiteOther_field', 'uid', 'pid']));
+
+        $flexFormUserFunctionsMock->expects($this->once())->method('getConfiguredFacetsForPage')
+            ->will($this->returnValue([
+                'someFacet.' => [
+                    'field' => 'some_field',
+                    'label' => 'LLL:EXT:some_ext/locallang.xlf:existing_label'
+                ],
+                'someOtherFacet.' => [
+                    'field' => 'someOther_field',
+                    'label' => 'LLL:EXT:some_ext/locallang.xlf:not_existing_label'
+                ],
+                'someQuiteOtherFacet.' => [
+                    'field' => 'someQuiteOther_field',
+                    'label' => 'LLL:EXT:some_ext/locallang.xlf:not_existing_label'
+                ]
+            ]));
+
+        /** @var LanguageService $languageServiceMock */
+        $languageServiceMock = $this->getMockBuilder(LanguageService::class)->disableOriginalConstructor()->setMethods(['sL'])->getMock();
+        $languageServiceMock->expects($this->any())->method('sL')->will(
+            $this->returnCallback(function() {
+                $args = func_get_args();
+                if ($args[0] === 'LLL:EXT:some_ext/locallang.xlf:existing_label') {
+                    return 'Translated Facet';
+                }
+                return '';
+            })
+        );
+        $GLOBALS['LANG'] = $languageServiceMock;
+
+        $parentInformation = [
+            'flexParentDatabaseRow' => [
+                'pid' => 4711
+            ]
+        ];
+        $flexFormUserFunctionsMock->getFacetFieldsFromSchema($parentInformation);
+
+        $this->assertCount(5, $parentInformation['items']);
+        $this->assertEquals('some_field (Facet Label: "Translated Facet")', $parentInformation['items']['some_field'][0]);
+        $this->assertEquals('someOther_field (Facet Label: "LLL:EXT:some_ext/locallang.xlf:not_existing_label")', $parentInformation['items']['someOther_field'][0]);
+        $this->assertEquals('someQuiteOther_field (Facet Label: "LLL:EXT:some_ext/locallang.xlf:not_existing_label")', $parentInformation['items']['someQuiteOther_field'][0]);
+    }
+
+    /**
+     * @test
+     */
+    public function cObjectPathIsShownInBracketsSignsInFlexFormsIfcObjectIsUsed()
+    {
+        /** @var FlexFormUserFunctions $flexFormUserFunctionsMock */
+        $flexFormUserFunctionsMock = $this->getMockBuilder(FlexFormUserFunctions::class)
+            ->setMethods(['getFieldNamesFromSolrMetaDataForPage', 'getConfiguredFacetsForPage'])->getMock();
+        $flexFormUserFunctionsMock->expects($this->once())->method('getFieldNamesFromSolrMetaDataForPage')
+            ->will($this->returnValue(['some_field', 'someOther_field', 'someQuiteOther_field']));
+
+        $flexFormUserFunctionsMock->expects($this->once())->method('getConfiguredFacetsForPage')
+            ->will($this->returnValue([
+                'someFacet.' => [
+                    'field' => 'some_field',
+                    'label' => 'TEXT',
+                    'label.' => 'LLL:EXT:some_ext/locallang.xlf:existing_label'
+                ]
+            ]));
+        $parentInformation = [
+            'flexParentDatabaseRow' => [
+                'pid' => 4711
+            ]
+        ];
+        $flexFormUserFunctionsMock->getFacetFieldsFromSchema($parentInformation);
+
+        $this->assertCount(3, $parentInformation['items']);
+        $this->assertEquals('some_field (Facet Label: "cObject[...faceting.facets.someFacet.label]")', $parentInformation['items']['some_field'][0]);
     }
 
     /**
