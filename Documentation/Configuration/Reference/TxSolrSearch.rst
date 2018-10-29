@@ -810,6 +810,7 @@ faceting.facets.[facetName].label
 :Required: yes
 
 Used as a headline or title to describe the options of a facet.
+Used in flex forms of plugin for filter labels. Can be translated with LLL: and consumed and translated in Partial/Facets/* with f:translate ViewHelper.
 
 faceting.facets.[facetName].excludeValues
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
