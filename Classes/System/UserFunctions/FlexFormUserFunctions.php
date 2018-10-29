@@ -23,6 +23,7 @@ namespace ApacheSolrForTypo3\Solr\System\UserFunctions;
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /**
  * This class contains all user functions for flexforms.
@@ -74,14 +75,22 @@ class FlexFormUserFunctions
             if (!empty($configuredFacets)) {
                 $configuredFacet = array_values($configuredFacets);
                 $label = $configuredFacet[0]['label'];
+                // try to translate LLL: label or leave it unchanged
+                if (GeneralUtility::isFirstPartOfStr($label, 'LLL:') && LocalizationUtility::translate($label) != '') {
+                    $label = LocalizationUtility::translate($label);
+                } elseif (!GeneralUtility::isFirstPartOfStr($label, 'LLL:') && $configuredFacet[0]['label.']) {
+                    $label = sprintf('cObject[...faceting.facets.%slabel]', array_keys($configuredFacets)[0]);
+                }
+                $label = sprintf('%s (Facet Label: "%s")', $value, $label);
             }
 
-            $newItems[$label] = [$label, $value];
+            $newItems[$value] = [$label, $value];
         }, $this->getFieldNamesFromSolrMetaDataForPage($pageRecord));
 
         ksort($newItems, SORT_NATURAL);
         return $newItems;
     }
+
     /**
      * Retrieves the configured facets for a page.
      *
