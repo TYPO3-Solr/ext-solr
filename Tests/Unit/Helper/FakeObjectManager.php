@@ -56,7 +56,7 @@ class FakeObjectManager implements ObjectManagerInterface
      * @return object The object instance
      * @api
      */
-    public function get($objectName)
+    public function get($objectName, ...$constructorArguments)
     {
         $arguments = func_get_args();
 

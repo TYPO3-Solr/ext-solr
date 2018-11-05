@@ -10,6 +10,17 @@ use TYPO3\CMS\Extbase\Mvc\Web\Response;
 use TYPO3\CMS\Frontend\Page\PageGenerator;
 
 abstract class AbstractFrontendControllerTest  extends IntegrationTest {
+
+    /**
+     * @return void
+     */
+    public function setUp()
+    {
+        $_SERVER['HTTP_HOST'] = 'test.local.typo3.org';
+        $_SERVER['REQUEST_URI'] = '/search.html';
+        parent::setUp();
+    }
+
     /**
      * @param $importPageIds
      */

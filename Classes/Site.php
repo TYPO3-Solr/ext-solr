@@ -294,12 +294,19 @@ class Site
      */
     public function getSysLanguageMode($languageUid = 0)
     {
-        if (is_null($this->sysLanguageMode)) {
-            Util::initializeTsfe($this->getRootPageId(), $languageUid);
-            $this->sysLanguageMode = $GLOBALS['TSFE']->sys_language_mode;
+        if (!is_null($this->sysLanguageMode)) {
+            return $this->sysLanguageMode;
         }
 
-        return $this->sysLanguageMode;
+        try {
+            Util::initializeTsfe($this->getRootPageId(), $languageUid);
+            $this->sysLanguageMode = $GLOBALS['TSFE']->sys_language_mode;
+            return $this->sysLanguageMode;
+
+        } catch (\TYPO3\CMS\Core\Error\Http\ServiceUnavailableException $e) {
+            // when there is an error during initialization we return the default sysLanguageMode
+            return $this->sysLanguageMode;
+        }
     }
 
     /**

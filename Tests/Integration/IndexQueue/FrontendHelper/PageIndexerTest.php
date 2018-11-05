@@ -415,15 +415,4 @@ class PageIndexerTest extends IntegrationTest
             'className' => OverriddenTypoScriptFrontendController::class
         );
     }
-
-    /**
-     * Applies in CMS 9.2 introduced error handling.
-     */
-    private function applyUsingErrorControllerForCMS9andAbove()
-    {
-        if(Util::getIsTYPO3VersionBelow9()) {
-            return;
-        }
-        $GLOBALS['TYPO3_REQUEST'] = new ServerRequest();
-    }
 }

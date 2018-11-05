@@ -27,6 +27,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Domain\Site;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
+use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -120,6 +121,10 @@ class SiteRepositoryTest extends IntegrationTest
      */
     public function canGetSiteWithDomainFromDomainRecord()
     {
+        if (!Util::getIsTYPO3VersionBelow9()) {
+            $this->markTestSkipped('Needs to be checked with TYPO3 9');
+        }
+
         /** @var $siteRepository SiteRepository */
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $this->importDataSetFromFixture('can_get_site_by_page_id.xml');

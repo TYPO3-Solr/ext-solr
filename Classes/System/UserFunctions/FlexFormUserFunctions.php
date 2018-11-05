@@ -76,8 +76,8 @@ class FlexFormUserFunctions
                 $configuredFacet = array_values($configuredFacets);
                 $label = $configuredFacet[0]['label'];
                 // try to translate LLL: label or leave it unchanged
-                if (GeneralUtility::isFirstPartOfStr($label, 'LLL:') && LocalizationUtility::translate($label) != '') {
-                    $label = LocalizationUtility::translate($label);
+                if (GeneralUtility::isFirstPartOfStr($label, 'LLL:') && $this->getTranslation($label) != '') {
+                    $label = $this->getTranslation($label);
                 } elseif (!GeneralUtility::isFirstPartOfStr($label, 'LLL:') && $configuredFacet[0]['label.']) {
                     $label = sprintf('cObject[...faceting.facets.%slabel]', array_keys($configuredFacets)[0]);
                 }
@@ -101,6 +101,17 @@ class FlexFormUserFunctions
     {
         $typoScriptConfiguration = $this->getConfigurationFromPageId($pid);
         return $typoScriptConfiguration->getSearchFacetingFacets();
+    }
+
+    /**
+     * Retrieves the translation with the LocalizationUtility.
+     *
+     * @param string $label
+     * @return null|string
+     */
+    protected function getTranslation($label)
+    {
+        return LocalizationUtility::translate($label);
     }
 
     /**

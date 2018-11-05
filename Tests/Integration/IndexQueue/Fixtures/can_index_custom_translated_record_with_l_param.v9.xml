@@ -93,6 +93,7 @@
         <uid>2</uid>
         <l10n_parent>1</l10n_parent>
         <sys_language_uid>1</sys_language_uid>
+        <is_siteroot>1</is_siteroot>
         <doktype>1</doktype>
     </pages>
     <tx_fakeextension_domain_model_bar>
