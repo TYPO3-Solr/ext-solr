@@ -101,7 +101,7 @@ class SolrReadService extends AbstractSolrService
         $message = $exception->getStatusMessage();
         $solrRespone = new ResponseAdapter($exception->getBody());
 
-        if ($status === 0) {
+        if ($status === 0 || $status === 502) {
             $e = new SolrUnavailableException('Solr Server not available: ' . $message, 1505989391);
             $e->setSolrResponse($solrRespone);
             throw $e;
