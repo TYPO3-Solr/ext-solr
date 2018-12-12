@@ -54,6 +54,11 @@ class Group
     protected $groupConfiguration = [];
 
     /**
+     * @var int
+     */
+    protected $matches = 0;
+
+    /**
      * Group constructor.
      * @param string $groupName
      * @param int $resultsPerPage
@@ -119,5 +124,21 @@ class Group
     public function setResultsPerPage(int $resultsPerPage)
     {
         $this->resultsPerPage = $resultsPerPage;
+    }
+
+    /**
+     * @return int
+     */
+    public function getMatches(): int
+    {
+        return $this->matches;
+    }
+
+    /**
+     * @param int $matches
+     */
+    public function setMatches(int $matches)
+    {
+        $this->matches = $matches;
     }
 }
