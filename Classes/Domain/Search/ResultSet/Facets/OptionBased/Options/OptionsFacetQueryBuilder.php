@@ -94,6 +94,10 @@ class OptionsFacetQueryBuilder extends DefaultFacetQueryBuilder implements Facet
             $excludeFields[] = $facetConfiguration['field'];
         }
 
+        if (!empty($facetConfiguration['additionalExcludeTags'])) {
+            $excludeFields[] = $facetConfiguration['additionalExcludeTags'];
+        }
+
         return implode(',', array_unique($excludeFields));
     }
 
