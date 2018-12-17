@@ -475,4 +475,37 @@ class FacetingTest extends UnitTest
         $this->assertEquals('{!tag=color}(color:"red")', $queryParameter['fq'][0], 'Did not build filter query from color');
         $this->assertEquals('{!tag=type}(type:"product")', $queryParameter['fq'][1], 'Did not build filter query from type');
     }
+
+    /**
+     * @test
+     */
+    public function testCanAddExcludeTagWithAdditionalExcludeTagConfiguration()
+    {
+        $fakeConfigurationArray = [];
+        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting'] = 1;
+        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting.']['facets.'] = [
+            'type.' => [
+                'field' => 'type',
+                'additionalExcludeTags' => 'type,color',
+                'addFieldAsTag' => 1
+            ],
+            'color.' => [
+                'field' => 'color',
+            ]
+        ];
+        $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
+
+        $fakeArguments = ['filter' => [urlencode('type:product')]];
+
+        $fakeRequest = $this->getDumbMock(SearchRequest::class);
+        $fakeRequest->expects($this->once())->method('getArguments')->will($this->returnValue($fakeArguments));
+        $fakeRequest->expects($this->any())->method('getContextTypoScriptConfiguration')->will($this->returnValue($fakeConfiguration));
+
+        $queryParameter = $this->getQueryParametersFromExecutedFacetingModifier($fakeConfiguration, $fakeRequest);
+        $this->assertContains('true',  $queryParameter['facet'], 'Query string did not contain expected snipped');
+
+        $jsonData = \json_decode($queryParameter['json.facet']);
+        $this->assertEquals('type,color', $jsonData->type->domain->excludeTags, 'Query string did not contain expected snipped');
+        $this->assertEquals('{!tag=type}(type:"product")', $queryParameter['fq'], 'Did not build filter query from color');
+    }
 }

@@ -154,13 +154,26 @@ Thanks to Marc Bastian Heinrichs for creating a patch for that.
 
 * https://github.com/TYPO3-Solr/ext-solr/pull/2194
 
+
+Allow to configure additionalExcludeTags for option facets
+----------------------------------------------------------
+
+When you want to exclude facets from the counts of another facets, Apache Solr uses tags and excludeTags to realize that.
+
+With the setting ```additionalExcludeTags``` you can add custom exclude tags for a facet and ```addFieldAsTag``` allows you, to force the creation of a tag for a certain facet.
+
+Thanks to Marc Bastian Heinrichs for creating a patch for that and to in2code for paying for the finalization and documentation.
+
+* https://github.com/TYPO3-Solr/ext-solr/issues/2195
+
+
 Bugfixes
 ========
 
 * https://github.com/TYPO3-Solr/ext-solr/pull/2048 Fixes a warning in the TranslateViewHelper
 * https://github.com/TYPO3-Solr/ext-solr/pull/2052 Use copy instead of reference in the TypoScript template
 * https://github.com/TYPO3-Solr/ext-solr/pull/2053 Unify multiple whitespaces to a single whitespace
-
+* https://github.com/TYPO3-Solr/ext-solr/pull/2245 KeepAllFacetsOnSelection is not evaluated when KeepAllOptionsOnSelection is used
 
 Migration from EXT:solr 8.1.0 to EXT:solr 9.0.0
 ===============================================
