@@ -116,12 +116,12 @@ class RootPageResolver implements SingletonInterface
 
         $cacheId = 'RootPageResolver' . '_' . 'getIsRootPageId' . '_' . $pageId;
         $isSiteRoot = $this->runtimeCache->get($cacheId);
+
         if (!empty($isSiteRoot)) {
             return $isSiteRoot;
         }
 
-        $page = (array)BackendUtility::getRecord('pages', $pageId, 'is_siteroot');
-
+        $page = $this->getPageRecordByPageId($pageId);
         if (empty($page)) {
             throw new \InvalidArgumentException(
                 'The page for the given page ID \'' . $pageId
@@ -134,6 +134,16 @@ class RootPageResolver implements SingletonInterface
         $this->runtimeCache->set($cacheId, $isSiteRoot);
 
         return $isSiteRoot;
+    }
+
+    /**
+     * @param $pageId
+     * @param string $fieldList
+     * @return array
+     */
+    protected function getPageRecordByPageId($pageId, $fieldList = 'is_siteroot')
+    {
+        return (array)BackendUtility::getRecord('pages', $pageId, $fieldList);
     }
 
     /**

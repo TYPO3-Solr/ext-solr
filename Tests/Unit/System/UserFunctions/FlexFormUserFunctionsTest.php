@@ -125,7 +125,7 @@ class FlexFormUserFunctionsTest extends UnitTest
     {
         /** @var FlexFormUserFunctions $flexFormUserFunctionsMock */
         $flexFormUserFunctionsMock = $this->getMockBuilder(FlexFormUserFunctions::class)
-            ->setMethods(['getFieldNamesFromSolrMetaDataForPage', 'getConfiguredFacetsForPage'])->getMock();
+            ->setMethods(['getFieldNamesFromSolrMetaDataForPage', 'getConfiguredFacetsForPage','getTranslation'])->getMock();
         $flexFormUserFunctionsMock->expects($this->once())->method('getFieldNamesFromSolrMetaDataForPage')
             ->will($this->returnValue(['some_field', 'someOther_field', 'someQuiteOther_field', 'uid', 'pid']));
 
@@ -145,9 +145,7 @@ class FlexFormUserFunctionsTest extends UnitTest
                 ]
             ]));
 
-        /** @var LanguageService $languageServiceMock */
-        $languageServiceMock = $this->getMockBuilder(LanguageService::class)->disableOriginalConstructor()->setMethods(['sL'])->getMock();
-        $languageServiceMock->expects($this->any())->method('sL')->will(
+        $flexFormUserFunctionsMock->expects($this->any())->method('getTranslation')->will(
             $this->returnCallback(function() {
                 $args = func_get_args();
                 if ($args[0] === 'LLL:EXT:some_ext/locallang.xlf:existing_label') {
@@ -156,7 +154,7 @@ class FlexFormUserFunctionsTest extends UnitTest
                 return '';
             })
         );
-        $GLOBALS['LANG'] = $languageServiceMock;
+
 
         $parentInformation = [
             'flexParentDatabaseRow' => [

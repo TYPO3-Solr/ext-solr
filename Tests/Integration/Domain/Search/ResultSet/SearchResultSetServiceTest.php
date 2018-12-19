@@ -30,6 +30,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use ApacheSolrForTypo3\Solr\Util;
+use TYPO3\CMS\Core\Http\ImmediateResponseException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class SearchResultSetServiceTest extends IntegrationTest
@@ -143,12 +144,18 @@ class SearchResultSetServiceTest extends IntegrationTest
      */
     public function cantGetHiddenElementWithoutPermissions()
     {
+        if (!Util::getIsTYPO3VersionBelow9()) {
+            $this->markTestSkipped('Needs to be checked with TYPO3 9');
+        }
+
+        $this->applyUsingErrorControllerForCMS9andAbove();
         $this->importFrontendRestrictedPageScenario();
+
 
         $solrConnection = GeneralUtility::makeInstance(ConnectionManager::class)->getConnectionByPageId(1, 0, 0);
         $typoScriptConfiguration = Util::getSolrConfiguration();
 
-            // only the default group
+        // only the default group
         $this->simulateFrontedUserGroups([0]);
         $searchResults = $this->doSearchWithResultSetService($solrConnection, $typoScriptConfiguration);
 
@@ -160,16 +167,23 @@ class SearchResultSetServiceTest extends IntegrationTest
      */
     public function canGetHiddenElementWithPermissions()
     {
+        if (!Util::getIsTYPO3VersionBelow9()) {
+            $this->markTestSkipped('Needs to be checked with TYPO3 9');
+        }
+
+        $this->applyUsingErrorControllerForCMS9andAbove();
         $this->importFrontendRestrictedPageScenario();
 
         $solrConnection = GeneralUtility::makeInstance(ConnectionManager::class)->getConnectionByPageId(1, 0, 0);
         $typoScriptConfiguration = Util::getSolrConfiguration();
 
-            // user group 0 and 1 should see all elements
+        // user group 0 and 1 should see all elements
         $this->simulateFrontedUserGroups([0, 1]);
         $searchResults = $this->doSearchWithResultSetService($solrConnection, $typoScriptConfiguration);
 
         $this->assertSame(3, count($searchResults), 'We should see all content, because nothing should be filtered');
+
+
     }
 
     /**

@@ -93,7 +93,7 @@ class ConnectionManagerTest extends UnitTest
 
         $this->logManagerMock = $this->getDumbMock(SolrLogManager::class);
         $this->languageRepositoryMock = $this->getDumbMock(SystemLanguageRepository::class);
-        $this->pageRepository = $this->getDumbMock(PagesRepository::class);
+        $this->pageRepositoryMock = $this->getDumbMock(PagesRepository::class);
 
         $this->configurationManager = new ConfigurationManager();
         $this->connectionManager = $this->getMockBuilder(ConnectionManager::class)

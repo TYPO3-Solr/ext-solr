@@ -31,6 +31,7 @@ use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Core\Bootstrap;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
+use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\TimeTracker\TimeTracker;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
@@ -259,6 +260,7 @@ abstract class IntegrationTest extends FunctionalTestCase
         /** @var $TSFE \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController */
         $TSFE = GeneralUtility::makeInstance(TypoScriptFrontendController::class,
             $TYPO3_CONF_VARS, $id, $type, $no_cache, $cHash, $_2, $MP, $RDCT);
+        $TSFE->set_no_cache();
         $GLOBALS['TSFE'] = $TSFE;
 
 
@@ -266,7 +268,6 @@ abstract class IntegrationTest extends FunctionalTestCase
 
         $TSFE->id = $id;
         $TSFE->initFEuser();
-        $TSFE->set_no_cache();
         $TSFE->checkAlternativeIdMethods();
         $TSFE->clear_preview();
         $TSFE->determineId();
@@ -401,6 +402,8 @@ abstract class IntegrationTest extends FunctionalTestCase
     protected function fakeTSFE($pageId, $feUserGroupArray = [0])
     {
         $GLOBALS['TT'] = $this->getMockBuilder(TimeTracker::class)->disableOriginalConstructor()->getMock();
+        $_SERVER['HTTP_HOST'] = 'test.local.typo3.org';
+        $_SERVER['REQUEST_URI'] = '/search.html';
 
         $fakeTSFE = $this->getConfiguredTSFE([], $pageId);
         $fakeTSFE->newCObj();
@@ -418,6 +421,35 @@ abstract class IntegrationTest extends FunctionalTestCase
      */
     protected function simulateFrontedUserGroups(array $feUserGroupArray)
     {
-        $GLOBALS['TSFE']->gr_list = implode(',', $feUserGroupArray);
+        if (Util::getIsTYPO3VersionBelow9()) {
+            $GLOBALS['TSFE']->gr_list = implode(',', $feUserGroupArray);
+        } else {
+            /** @var  $context \TYPO3\CMS\Core\Context\Context::class */
+            $context = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Context\Context::class);
+            $userAspect = $this->getMockBuilder(\TYPO3\CMS\Core\Context\UserAspect::class)->setMethods([])->getMock();
+            $userAspect->expects($this->any())->method('get')->willReturnCallback(function($key) use($feUserGroupArray){
+                if ($key === 'groupIds') {
+                    return $feUserGroupArray;
+                }
+
+                if ($key === 'isLoggedIn') {
+                    return true;
+                }
+            });
+            $userAspect->expects($this->any())->method('getGroupIds')->willReturn($feUserGroupArray);
+            $context->setAspect('frontend.user', $userAspect);
+        }
+    }
+
+
+    /**
+     * Applies in CMS 9.2 introduced error handling.
+     */
+    protected function applyUsingErrorControllerForCMS9andAbove()
+    {
+        if(Util::getIsTYPO3VersionBelow9()) {
+            return;
+        }
+        $GLOBALS['TYPO3_REQUEST'] = new ServerRequest();
     }
 }

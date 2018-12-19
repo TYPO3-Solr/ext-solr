@@ -91,6 +91,7 @@
     </pages>
     <pages>
         <uid>2</uid>
+        <is_siteroot>1</is_siteroot>
         <l10n_parent>1</l10n_parent>
         <sys_language_uid>1</sys_language_uid>
         <doktype>1</doktype>

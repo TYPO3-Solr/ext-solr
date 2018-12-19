@@ -81,6 +81,7 @@
     </pages>
     <pages>
         <uid>2</uid>
+        <is_siteroot>1</is_siteroot>
         <pid>0</pid>
         <l10n_parent>1</l10n_parent>
         <doktype>1</doktype>

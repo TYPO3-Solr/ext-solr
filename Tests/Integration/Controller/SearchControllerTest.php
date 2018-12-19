@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\Controller;
 
 /***************************************************************
@@ -27,14 +28,17 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Controller;
 use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageFieldMappingIndexer;
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
 use ApacheSolrForTypo3\Solr\Controller\SearchController;
-use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
+use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\TimeTracker\TimeTracker;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManager as ExtbaseConfigurationManager;
 use TYPO3\CMS\Extbase\Mvc\Exception\StopActionException;
 use TYPO3\CMS\Extbase\Mvc\Request;
 use TYPO3\CMS\Extbase\Mvc\Web\Response;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
+use TYPO3\CMS\Extbase\Service\EnvironmentService;
 use TYPO3\CMS\Fluid\View\Exception\InvalidTemplateResourceException;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Frontend\Page\PageGenerator;
@@ -66,9 +70,11 @@ class SearchControllerTest extends AbstractFrontendControllerTest
      */
     protected $searchResponse;
 
+
     public function setUp()
     {
         parent::setUp();
+        $this->fakeSingletonsForFrontendContext();
 
         $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
 
@@ -78,9 +84,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $this->searchController = $this->objectManager->get(SearchController::class);
         $this->searchRequest = $this->getPreparedRequest();
         $this->searchResponse = $this->getPreparedResponse();
-
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageSubstitutePageDocument']['ApacheSolrForTypo3\\Solr\\IndexQueue\\FrontendHelper\\PageFieldMappingIndexer'] = PageFieldMappingIndexer::class;
-
     }
 
     /**
@@ -456,13 +460,12 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $this->importDataSetFromFixture('can_render_search_controller.xml');
         $GLOBALS['TSFE'] = $this->getConfiguredTSFE([], 1);
 
-
         $this->indexPages([1, 2]);
 
         //not in the content but we expect to get shoes suggested
         $_GET['q'] = '*';
         // fake that a backend user is logged in
-        $GLOBALS['TSFE']->beUserLogin = true;
+        $this->fakeBackendUserLoggedInInFrontend();
 
         $this->searchController->processRequest($this->searchRequest, $this->searchResponse);
         $resultPage1 = $this->searchResponse->getContent();
@@ -572,6 +575,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
     public function canRenderHierarchicalFacet()
     {
         $this->importDataSetFromFixture('can_render_search_controller.xml');
+
         $GLOBALS['TSFE'] = $this->getConfiguredTSFE([], 1);
 
         $this->indexPages([1, 2, 3, 4, 5, 6, 7, 8]);
@@ -698,7 +702,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         //not in the content but we expect to get shoes suggested
         $_GET['q'] = '*';
         // fake that a backend user is logged in
-        $GLOBALS['TSFE']->beUserLogin = true;
+        $this->fakeBackendUserLoggedInInFrontend();
 
         $this->searchController->processRequest($this->searchRequest, $this->searchResponse);
         $resultPage1 = $this->searchResponse->getContent();
@@ -1037,6 +1041,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
     public function canRenderAsUserObjectWithCustomTemplatePath()
     {
         $_GET['q'] = '*';
+
         $this->importDataSetFromFixture('can_render_search_customTemplate.xml');
         $GLOBALS['TSFE'] = $this->getConfiguredTSFE([], 1);
         $this->indexPages([1, 2, 3, 4, 5, 6, 7, 8]);
@@ -1054,6 +1059,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
     public function canPassCustomSettingsToView()
     {
         GeneralUtility::_GETset('q', '*');
+
         $this->importDataSetFromFixture('can_render_search_customTemplate.xml');
         $GLOBALS['TSFE'] = $this->getConfiguredTSFE([], 1);
         $this->indexPages([1, 2, 3, 4, 5, 6, 7, 8]);
@@ -1144,5 +1150,43 @@ class SearchControllerTest extends AbstractFrontendControllerTest
     {
         $this->assertContains('class="solr-pagination"', $content, 'No pagination container visible');
         $this->assertContains('ul class="pagination"', $content, 'Could not see pagination list');
+    }
+
+    /**
+     * We fake in the frontend context, that a backend user is logged in.
+     *
+     * @return void
+     */
+    protected function fakeBackendUserLoggedInInFrontend()
+    {
+        if (Util::getIsTYPO3VersionBelow9()) {
+            $GLOBALS['TSFE']->beUserLogin = true;
+
+        } else {
+            /** @var  $context \TYPO3\CMS\Core\Context\Context::class */
+            $context = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Context\Context::class);
+            $userAspect = $this->getMockBuilder(\TYPO3\CMS\Core\Context\UserAspect::class)->setMethods([])->getMock();
+            $userAspect->expects($this->any())->method('get')->with('isLoggedIn')->willReturn(true);
+            $context->setAspect('backend.user', $userAspect);
+        }
+    }
+
+    /**
+     * In this method we initialize a few singletons with mocked classes to be able to generate links
+     * for the frontend in the testing context.
+     * @return void
+     */
+    protected function fakeSingletonsForFrontendContext()
+    {
+        $configurationManagerMock = $this->getMockBuilder(ExtbaseConfigurationManager::class)->setMethods(['getContentObject'])->getMock();
+        $configurationManagerMock->expects($this->any())->method('getContentObject')->willReturn(GeneralUtility::makeInstance(ContentObjectRenderer::class));
+
+        $environmentServiceMock = $this->getMockBuilder(EnvironmentService::class)->setMethods([])->disableOriginalConstructor()->getMock();
+        $environmentServiceMock->expects($this->any())->method('isEnvironmentInFrontendMode')->willReturn(true);
+        $environmentServiceMock->expects($this->any())->method('isEnvironmentInBackendMode')->willReturn(false);
+        $environmentServiceMock->expects($this->any())->method('isEnvironmentInCliMode')->willReturn(false);
+
+        GeneralUtility::setSingletonInstance(EnvironmentService::class, $environmentServiceMock);
+        GeneralUtility::setSingletonInstance(ExtbaseConfigurationManager::class, $configurationManagerMock);
     }
 }

@@ -62,7 +62,7 @@ class RootPageResolverTest extends UnitTest
         /** @var $rootPageResolver RootPageResolver */
         $this->rootPageResolver = $this->getMockBuilder(RootPageResolver::class)
             ->setConstructorArgs([$this->recordServiceMock, $this->cacheMock])
-            ->setMethods(['getIsRootPageId','getAlternativeSiteRootPagesIds', 'getRootPageIdByTableAndUid', 'getRecordPageId'])->getMock();
+            ->setMethods(['getIsRootPageId','getAlternativeSiteRootPagesIds', 'getRootPageIdByTableAndUid', 'getRecordPageId', 'getPageRecordByPageId'])->getMock();
     }
 
     /**
@@ -103,9 +103,10 @@ class RootPageResolverTest extends UnitTest
      * @test
      */
     public function getIsRootPageIdWithPageIdZero() {
-        $rootPageResolver = GeneralUtility::makeInstance(RootPageResolver::class);
-        $rootPage = $rootPageResolver->getIsRootPageId(0);
-
+        /** @var $rootPageResolver RootPageResolver */
+        $this->rootPageResolver = $this->getMockBuilder(RootPageResolver::class)
+            ->setConstructorArgs([$this->recordServiceMock, $this->cacheMock])->getMock();
+        $rootPage = $this->rootPageResolver->getIsRootPageId(0);
         $this->assertEquals(false, $rootPage);
     }
 
@@ -113,9 +114,9 @@ class RootPageResolverTest extends UnitTest
      * @test
      */
     public function getIsRootPageWithPageIdMinusOne() {
-        $rootPageResolver = GeneralUtility::makeInstance(RootPageResolver::class);
-        $rootPage = $rootPageResolver->getIsRootPageId(-1);
-
+        $this->rootPageResolver = $this->getMockBuilder(RootPageResolver::class)
+            ->setConstructorArgs([$this->recordServiceMock, $this->cacheMock])->getMock();
+        $rootPage = $this->rootPageResolver->getIsRootPageId(-1);
         $this->assertEquals(false, $rootPage);
     }
 
@@ -123,10 +124,12 @@ class RootPageResolverTest extends UnitTest
      * @test
      */
     public function getIsRootPageIdWithUnknownPageId() {
-        $rootPageResolver = GeneralUtility::makeInstance(RootPageResolver::class);
-
+        $this->rootPageResolver = $this->getMockBuilder(RootPageResolver::class)
+            ->setConstructorArgs([$this->recordServiceMock, $this->cacheMock])
+            ->setMethods(['getPageRecordByPageId'])->getMock();
+        $this->rootPageResolver->expects($this->once())->method('getPageRecordByPageId')->willReturn(null);
         $this->expectException(\InvalidArgumentException::class);
-        $rootPageResolver->getIsRootPageId(42);
+        $this->rootPageResolver->getIsRootPageId(42);
     }
 
     /**
