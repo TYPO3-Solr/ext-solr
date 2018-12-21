@@ -21,9 +21,9 @@
 Apache Solr for TYPO3 9.0.0
 ===========================
 
-We are happy to release EXT:solr 9.0.0. The focus of EXT:solr 9.0.0 was, to support the latest version of Apache Solr (7.6.0) and to drop the usage of the solrphpclient and use the solarium php api instead.
+We are happy to release EXT:solr 9.0.0. The focus of EXT:solr 9.0.0 was, to support the latest version of Apache Solr (7.6.0) and to drop the usage of the solrphpclient and use the solarium php API instead.
 
-**Important**: This version is installable with TYPO3 9 LTS, but does **not** support all features of TYPO3 9 yet. Especially the site handling needs further development in EXT:solr to fully support it with TYPO3 9 LTS. Since the development budget is limited at one side and we have other project requests at the other side we could spent less time on the development of EXT:solr by the end of the year. If you want to support us please consider to sponsor us in 2019.
+**Important**: This version is installable with TYPO3 9 LTS, but does **not** support all features of TYPO3 9 yet. Especially the site handling needs further development in EXT:solr to fully support it with TYPO3 9 LTS. Since the development budget is limited at one side and we have other project requests at the other side we could spend less time on the development of EXT:solr by the end of the year. If you want to support us please consider to sponsor us in 2019.
 
 New in this release
 ===================
@@ -43,7 +43,7 @@ This brings us the following advantages:
 * Use a common, robust, maintained library
 * Join the forces with other PHP projects to improve solarium and benefit from that
 
-The migration to solarium required several changes in EXT:solr and all addon's and we will provide compabtility releases for them as well.
+The migration to solarium required several changes in EXT:solr and all add-on's and we will provide compabtility releases for them as well.
 
 With the move to solarium we donated some parts to the solarium API (e.g. the solr core handling). This allows us to remove some redundant logic in EXT:solr in the future.
 
@@ -78,7 +78,7 @@ The following parts require additional work and are not supported:
 * SiteHandling
 * Extensionscanner proofed
 
-Since a backwards compatibility to TYPO3 8.7 LTS make it harder to support the previous mentioned topics. We will drop the support for TYPO3 8 LTS
+Since a backward compatibility to TYPO3 8.7 LTS make it harder to support the previous mentioned topics. We will drop the support for TYPO3 8 LTS
 in the next version and improve the support of those TYPO3 9 LTS features.
 
 Nevertheless a lot of work was allready done for the basic support of TYPO3 9 LTS in the following pull requests:
@@ -104,7 +104,7 @@ By now each site had one solr connection for reading and writing. In most of the
 Some setups require a more flexible approach:
 
 * E.g. when you want to clean a core and re-index that data your index is not complete for some time on the live site
-* When you want to do a master/slave setup for performance reasons(e.g. by using a slave node on the webserver) this was not possible by now
+* When you want to do a master/slave setup for performance reasons(e.g. by using a slave node on the web server) this was not possible by now
 
 With a separation of read and write connections this is now possible. With these building blocks you could e.g.
 
