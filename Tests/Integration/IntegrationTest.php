@@ -29,6 +29,7 @@ use ApacheSolrForTypo3\Solr\Typo3PageIndexer;
 
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
+use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Core\Bootstrap;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 use TYPO3\CMS\Core\Http\ServerRequest;
@@ -84,6 +85,11 @@ abstract class IntegrationTest extends FunctionalTestCase
 
         //this is needed by the TYPO3 core.
         chdir(PATH_site);
+
+        // during the tests we don't want the core to cache something in cache_core
+        $cacheManager = GeneralUtility::makeInstance(CacheManager::class);
+        $coreCache = $cacheManager->getCache('cache_core');
+        $coreCache->flush();
     }
 
     /**

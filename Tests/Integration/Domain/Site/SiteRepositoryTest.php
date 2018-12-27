@@ -27,7 +27,6 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Domain\Site;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
-use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -37,15 +36,27 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class SiteRepositoryTest extends IntegrationTest
 {
+    /**
+     * @var SiteRepository
+     */
+    protected $siteRepository;
+
+    /**
+     * @return void
+     */
+    public function setUp()
+    {
+        parent::setUp();
+        $this->siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
+    }
 
     /**
      * @test
      */
     public function canGetAllSites()
     {
-        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $this->importDataSetFromFixture('can_get_all_sites.xml');
-        $sites = $siteRepository->getAvailableSites();
+        $sites = $this->siteRepository->getAvailableSites();
         $this->assertSame(1, count($sites), 'Expected to retrieve one site from fixture');
     }
 
@@ -54,9 +65,8 @@ class SiteRepositoryTest extends IntegrationTest
      */
     public function canGetAllPagesFromSite()
     {
-        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $this->importDataSetFromFixture('can_get_all_pages_from_sites.xml');
-        $site = $siteRepository->getFirstAvailableSite();
+        $site = $this->siteRepository->getFirstAvailableSite();
         $this->assertSame([1,2,21,22,3,30], $site->getPages(), 'Can not get all pages from site');
     }
 
@@ -65,9 +75,8 @@ class SiteRepositoryTest extends IntegrationTest
      */
     public function canGetSiteByRootPageIdExistingRoot()
     {
-        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $this->importDataSetFromFixture('can_get_site_by_root_page_id.xml');
-        $site = $siteRepository->getSiteByRootPageId(1);
+        $site = $this->siteRepository->getSiteByRootPageId(1);
         $this->assertContainsOnlyInstancesOf(Site::class, [$site], 'Could not retrieve site from root page');
     }
 
@@ -87,9 +96,8 @@ class SiteRepositoryTest extends IntegrationTest
      */
     public function canGetSiteByPageIdExistingPage()
     {
-        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $this->importDataSetFromFixture('can_get_site_by_page_id.xml');
-        $site = $siteRepository->getSiteByPageId(2);
+        $site = $this->siteRepository->getSiteByPageId(2);
         $this->assertContainsOnlyInstancesOf(Site::class, [$site], 'Could not retrieve site from page');
     }
 
@@ -99,9 +107,8 @@ class SiteRepositoryTest extends IntegrationTest
     public function canGetSiteByPageIdNonExistingPage()
     {
         $this->expectException(\InvalidArgumentException::class);
-        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $this->importDataSetFromFixture('can_get_site_by_page_id.xml');
-        $siteRepository->getSiteByPageId(42);
+        $this->siteRepository->getSiteByPageId(42);
     }
 
     /**
@@ -110,9 +117,8 @@ class SiteRepositoryTest extends IntegrationTest
     public function canGetSiteWithDomainFromTYPO3CONFVARS()
     {
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['sites'][1]['domains'] = ['my-confvars-domain.de'];
-        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $this->importDataSetFromFixture('can_get_site_by_page_id.xml');
-        $domain = $siteRepository->getSiteByPageId(1)->getDomain();
+        $domain = $this->siteRepository->getSiteByPageId(1)->getDomain();
         $this->assertSame('my-confvars-domain.de', $domain, 'Can not configured domain with TYPO3_CONF_VARS');
     }
 
@@ -121,14 +127,8 @@ class SiteRepositoryTest extends IntegrationTest
      */
     public function canGetSiteWithDomainFromDomainRecord()
     {
-        if (!Util::getIsTYPO3VersionBelow9()) {
-            $this->markTestSkipped('Needs to be checked with TYPO3 9');
-        }
-
-        /** @var $siteRepository SiteRepository */
-        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $this->importDataSetFromFixture('can_get_site_by_page_id.xml');
-        $site = $siteRepository->getSiteByPageId(1);
+        $site = $this->siteRepository->getSiteByPageId(1);
         $domain = $site->getDomain();
         $this->assertSame('my-database-domain.de', $domain, 'Can not configured domain with sys_domain record');
     }
