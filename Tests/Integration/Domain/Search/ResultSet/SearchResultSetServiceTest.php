@@ -144,10 +144,6 @@ class SearchResultSetServiceTest extends IntegrationTest
      */
     public function cantGetHiddenElementWithoutPermissions()
     {
-        if (!Util::getIsTYPO3VersionBelow9()) {
-            $this->markTestSkipped('Needs to be checked with TYPO3 9');
-        }
-
         $this->applyUsingErrorControllerForCMS9andAbove();
         $this->importFrontendRestrictedPageScenario();
 
@@ -167,10 +163,6 @@ class SearchResultSetServiceTest extends IntegrationTest
      */
     public function canGetHiddenElementWithPermissions()
     {
-        if (!Util::getIsTYPO3VersionBelow9()) {
-            $this->markTestSkipped('Needs to be checked with TYPO3 9');
-        }
-
         $this->applyUsingErrorControllerForCMS9andAbove();
         $this->importFrontendRestrictedPageScenario();
 
