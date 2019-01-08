@@ -116,7 +116,7 @@ class QueueItemRepository extends AbstractRepository
 
     /**
      * Flushes the errors for a single site.
-     *X
+     *
      * @param Site $site
      * @return int
      */
@@ -126,6 +126,23 @@ class QueueItemRepository extends AbstractRepository
         $affectedRows = $this->getPreparedFlushErrorQuery($queryBuilder)
             ->andWhere(
                 $queryBuilder->expr()->eq('root', (int)$site->getRootPageId())
+            )
+            ->execute();
+        return $affectedRows;
+    }
+
+    /**
+     * Flushes the error for a single item.
+     *
+     * @param Item $item
+     * @return int affected rows
+     */
+    public function flushErrorByItem(Item $item) : int
+    {
+        $queryBuilder = $this->getQueryBuilder();
+        $affectedRows = $this->getPreparedFlushErrorQuery($queryBuilder)
+            ->andWhere(
+                $queryBuilder->expr()->eq('uid', $item->getIndexQueueUid())
             )
             ->execute();
         return $affectedRows;
