@@ -134,7 +134,7 @@ abstract class AbstractStrategy
      * @param string $table
      * @param int $uid
      * @param SolrConnection[] $solrConnections
-     * @param string siteHash
+     * @param string $siteHash
      * @param boolean $enableCommitsSetting
      */
     protected function deleteRecordInAllSolrConnections($table, $uid, $solrConnections, $siteHash, $enableCommitsSetting)
