@@ -309,73 +309,18 @@ class SearchUriBuilder
      */
     protected function buildLinkWithInMemoryCache($pageUid, array $arguments)
     {
-        $values = [];
-        $structure = $arguments;
-        $this->getSubstitution($structure, $values);
-        $hash = md5($pageUid . json_encode($structure));
+        $hash = md5($pageUid . '|' . json_encode($arguments));
 
         if (isset(self::$preCompiledLinks[$hash])) {
             self::$hitCount++;
-            $template = self::$preCompiledLinks[$hash];
+            $uri = self::$preCompiledLinks[$hash];
         } else {
             self::$missCount++;
             $this->uriBuilder->setTargetPageUid($pageUid);
-            $template = $this->uriBuilder->setArguments($structure)->setUseCacheHash(false)->build();
-            self::$preCompiledLinks[$hash] = $template;
+            $uri = $this->uriBuilder->setArguments($arguments)->setUseCacheHash(true)->build();
+            self::$preCompiledLinks[$hash] = $uri;
         }
 
-        $keys = array_map(function($value) {
-            return urlencode($value);
-        }, array_keys($values));
-        $values = array_map(function($value) {
-            return urlencode($value);
-        }, $values);
-        $uri = str_replace($keys, $values, $template);
         return $uri;
-    }
-
-    /**
-     * This method is used to build two arrays from a nested array. The first one represents the structure.
-     * In this structure the values are replaced with the pass to the value. At the same time the values get collected
-     * in the $values array, with the path as key. This can be used to build a comparable hash from the arguments
-     * in order to reduce the amount of typolink calls
-     *
-     *
-     * Example input
-     *
-     * $data = [
-     *  'foo' => [
-     *      'bar' => 111
-     *   ]
-     * ]
-     *
-     * will return:
-     *
-     * $structure = [
-     *  'foo' => [
-     *      'bar' => '###foo:bar###'
-     *   ]
-     * ]
-     *
-     * $values = [
-     *  '###foo:bar###' => 111
-     * ]
-     *
-     * @param $structure
-     * @param $values
-     * @param array $branch
-     */
-    protected function getSubstitution(array &$structure, array  &$values, array $branch = [])
-    {
-        foreach ($structure as $key => &$value) {
-            $branch[] = $key;
-            if (is_array($value)) {
-                $this->getSubstitution($value, $values, $branch);
-            } else {
-                $path = '###' . implode(':', $branch) . '###';
-                $values[$path] = $value;
-                $structure[$key] = $path;
-            }
-        }
     }
 }
