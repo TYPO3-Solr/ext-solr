@@ -132,13 +132,14 @@ class Search
      * 2) Conducts the actual search
      * 3) Checks debug settings
      *
-     * @param Query $query The query with keywords, filters, and so on.
+     * @param NewQuery $query The query with keywords, filters, and so on.
      * @param int $offset Result offset for pagination.
      * @param int $limit Maximum number of results to return. If set to NULL, this value is taken from the query object.
+     * @param string $method
      * @return \Apache_Solr_Response Solr response
      * @throws \Exception
      */
-    public function search(NewQuery $query, $offset = 0, $limit = 10)
+    public function search(NewQuery $query, $offset = 0, $limit = 10, $method = 'GET')
     {
         $this->query = $query;
 
@@ -151,7 +152,8 @@ class Search
                 (string)$query->getQueryStringContainer()->getQueryString(),
                 $offset,
                 $limit,
-                $query->getQueryParameters()
+                $query->getQueryParameters(),
+                $method
             );
 
             if ($this->configuration->getLoggingQueryQueryString()) {
