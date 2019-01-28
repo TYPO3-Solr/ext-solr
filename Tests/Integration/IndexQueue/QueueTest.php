@@ -493,4 +493,25 @@ class QueueTest extends IntegrationTest
         $errorsForSecondSite = $this->indexQueue->getErrorsBySite($secondSite);
         $this->assertSame(1, count($errorsForSecondSite), 'Unexpected amount of errors for the second site after reset');
     }
+
+    /**
+     * @test
+     */
+    public function canFlushErrorByItem() {
+        $this->importDataSetFromFixture('can_flush_error_by_item.xml');
+        $this->assertItemsInQueue(4);
+
+        /** @var $siteRepository SiteRepository */
+        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
+        $firstSite = $siteRepository->getFirstAvailableSite();
+
+        $errorsForFirstSite = $this->indexQueue->getErrorsBySite($firstSite);
+        $this->assertSame(2, count($errorsForFirstSite), 'Unexpected amount of errors for the first site');
+
+        $item = $this->indexQueue->getItem(4714);
+        $this->indexQueue->resetErrorByItem($item);
+
+        $errorsForFirstSite = $this->indexQueue->getErrorsBySite($firstSite);
+        $this->assertSame(1, count($errorsForFirstSite), 'Unexpected amount of errors for the first site after resetting one item');
+    }
 }

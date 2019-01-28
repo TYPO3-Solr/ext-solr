@@ -265,6 +265,17 @@ class Queue
     }
 
     /**
+     * Resets the error in the index queue for a specific item
+     *
+     * @param Item $item
+     * @return mixed
+     */
+    public function resetErrorByItem(Item $item)
+    {
+        return $this->queueItemRepository->flushErrorByItem($item);
+    }
+
+    /**
      * Adds an item to the index queue.
      *
      * Not meant for public use.

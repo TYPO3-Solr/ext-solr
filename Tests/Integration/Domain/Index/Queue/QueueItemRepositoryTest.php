@@ -117,4 +117,21 @@ class QueueItemRepositoryTest extends IntegrationTest
         $this->assertSame(4, count($items));
         $this->assertSame('pages', $firstItem->getType(), 'First item has unexpected type');
     }
+
+    /**
+     * @test
+     */
+    public function canFlushErrorByItem() {
+        $this->importDataSetFromFixture('can_flush_error_by_item.xml');
+        /** @var $queueItemRepository QueueItemRepository */
+        $queueItemRepository = GeneralUtility::makeInstance(QueueItemRepository::class);
+
+        $item = $queueItemRepository->findItemByUid(4714);
+        $this->assertInstanceOf(Item::class, $item);
+        $queueItemRepository->flushErrorByItem($item);
+
+        $item = $queueItemRepository->findItemByUid(4714);
+        $this->assertInstanceOf(Item::class, $item);
+        $this->assertEmpty($item->getErrors());
+    }
 }
