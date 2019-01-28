@@ -16,6 +16,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Uri;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Grouping\GroupItem;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
+use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 
@@ -87,7 +88,7 @@ class SearchUriBuilder
         $arguments = $persistentAndFacetArguments + $additionalArguments;
 
         $pageUid = $this->getTargetPageUidFromRequestConfiguration($previousSearchRequest);
-        return $this->buildLinkWithInMemoryCache($pageUid, $arguments);
+        return $this->buildLink($pageUid, $arguments);
     }
 
     /**
@@ -125,7 +126,7 @@ class SearchUriBuilder
         $arguments = $persistentAndFacetArguments + $additionalArguments;
 
         $pageUid = $this->getTargetPageUidFromRequestConfiguration($previousSearchRequest);
-        return $this->buildLinkWithInMemoryCache($pageUid, $arguments);
+        return $this->buildLink($pageUid, $arguments);
     }
 
     /**
@@ -147,7 +148,7 @@ class SearchUriBuilder
         $arguments = $persistentAndFacetArguments + $additionalArguments;
 
         $pageUid = $this->getTargetPageUidFromRequestConfiguration($previousSearchRequest);
-        return $this->buildLinkWithInMemoryCache($pageUid, $arguments);
+        return $this->buildLink($pageUid, $arguments);
     }
 
     /**
@@ -168,7 +169,7 @@ class SearchUriBuilder
         $arguments = $persistentAndFacetArguments + $additionalArguments;
 
         $pageUid = $this->getTargetPageUidFromRequestConfiguration($previousSearchRequest);
-        return $this->buildLinkWithInMemoryCache($pageUid, $arguments);
+        return $this->buildLink($pageUid, $arguments);
     }
 
     /**
@@ -183,7 +184,7 @@ class SearchUriBuilder
             ->getAsArray();
 
         $pageUid = $this->getTargetPageUidFromRequestConfiguration($previousSearchRequest);
-        return $this->buildLinkWithInMemoryCache($pageUid, $persistentAndFacetArguments);
+        return $this->buildLink($pageUid, $persistentAndFacetArguments);
     }
 
     /**
@@ -198,7 +199,7 @@ class SearchUriBuilder
             ->getCopyForSubRequest()->setGroupItemPage($groupItem->getGroup()->getGroupName(), $groupItem->getGroupValue(), $page)
             ->getAsArray();
         $pageUid = $this->getTargetPageUidFromRequestConfiguration($previousSearchRequest);
-        return $this->buildLinkWithInMemoryCache($pageUid, $persistentAndFacetArguments);
+        return $this->buildLink($pageUid, $persistentAndFacetArguments);
     }
     /**
      * @param SearchRequest $previousSearchRequest
@@ -220,7 +221,7 @@ class SearchUriBuilder
         $arguments = $request->setRawQueryString($queryString)->getAsArray();
 
         $pageUid = $this->getTargetPageUidFromRequestConfiguration($previousSearchRequest);
-        return $this->buildLinkWithInMemoryCache($pageUid, $arguments);
+        return $this->buildLink($pageUid, $arguments);
     }
 
     /**
@@ -236,7 +237,7 @@ class SearchUriBuilder
             ->getAsArray();
 
         $pageUid = $this->getTargetPageUidFromRequestConfiguration($previousSearchRequest);
-        return $this->buildLinkWithInMemoryCache($pageUid, $persistentAndFacetArguments);
+        return $this->buildLink($pageUid, $persistentAndFacetArguments);
     }
 
     /**
@@ -250,7 +251,7 @@ class SearchUriBuilder
             ->getAsArray();
 
         $pageUid = $this->getTargetPageUidFromRequestConfiguration($previousSearchRequest);
-        return $this->buildLinkWithInMemoryCache($pageUid, $persistentAndFacetArguments);
+        return $this->buildLink($pageUid, $persistentAndFacetArguments);
     }
 
     /**
@@ -265,7 +266,7 @@ class SearchUriBuilder
 
 
         $pageUid = $this->getTargetPageUidFromRequestConfiguration($previousSearchRequest);
-        return $this->buildLinkWithInMemoryCache($pageUid, $persistentAndFacetArguments);
+        return $this->buildLink($pageUid, $persistentAndFacetArguments);
     }
 
     /**
@@ -307,6 +308,23 @@ class SearchUriBuilder
      * @param array $arguments
      * @return string
      */
+    protected function buildLink($pageUid, array $arguments)
+    {
+        if (Util::getIsTYPO3VersionBelow9()) {
+            return $this->buildLinkWithInMemoryCache($pageUid, $arguments);
+        } else {
+            return $this->buildLinkForPageIdAndArguments($pageUid, $arguments, true);
+        }
+    }
+
+    /**
+     * Build the link with an i memory cache that reduces the amount of required typolink calls.
+     *
+     * @param integer $pageUid
+     * @param array $arguments
+     * @deprecated This method is deprecated and will be dropped with EXT:solr 10
+     * @return string
+     */
     protected function buildLinkWithInMemoryCache($pageUid, array $arguments)
     {
         $values = [];
@@ -319,8 +337,7 @@ class SearchUriBuilder
             $template = self::$preCompiledLinks[$hash];
         } else {
             self::$missCount++;
-            $this->uriBuilder->setTargetPageUid($pageUid);
-            $template = $this->uriBuilder->setArguments($structure)->setUseCacheHash(false)->build();
+            $template = $this->buildLinkForPageIdAndArguments($pageUid, $structure, false);
             self::$preCompiledLinks[$hash] = $template;
         }
 
@@ -332,6 +349,18 @@ class SearchUriBuilder
         }, $values);
         $uri = str_replace($keys, $values, $template);
         return $uri;
+    }
+
+    /**
+     * @param int $pageUid
+     * @param array $uriArguments
+     * @param bool $useCHash
+     * @return string
+     */
+    private function buildLinkForPageIdAndArguments($pageUid, array $uriArguments, $useCHash = false)
+    {
+        $this->uriBuilder->setTargetPageUid($pageUid);
+        return $this->uriBuilder->setArguments($uriArguments)->setUseCacheHash($useCHash)->build();
     }
 
     /**
