@@ -31,6 +31,7 @@ use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
 use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use ApacheSolrForTypo3\Solr\System\Solr\SolrCommunicationException;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\SingletonInterface;
@@ -102,7 +103,7 @@ class Repository implements SingletonInterface
             $this->initializeSearch($pageId, $languageId);
             $pageQuery = $this->queryBuilder->buildPageQuery($pageId);
             $response = $this->search->search($pageQuery, 0, 10000);
-        } catch (NoSolrConnectionFoundException $exception) {
+        } catch (SolrCommunicationException $exception) {
             return [];
         }
         $data = $response->getParsedData();
