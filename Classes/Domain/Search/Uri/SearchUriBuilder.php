@@ -16,7 +16,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Uri;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Grouping\GroupItem;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
-use ApacheSolrForTypo3\Solr\Util;
+use ApacheSolrForTypo3\Solr\System\Url\UrlHelper;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 
@@ -88,7 +88,7 @@ class SearchUriBuilder
         $arguments = $persistentAndFacetArguments + $additionalArguments;
 
         $pageUid = $this->getTargetPageUidFromRequestConfiguration($previousSearchRequest);
-        return $this->buildLink($pageUid, $arguments);
+        return $this->buildLinkWithInMemoryCache($pageUid, $arguments);
     }
 
     /**
@@ -126,7 +126,7 @@ class SearchUriBuilder
         $arguments = $persistentAndFacetArguments + $additionalArguments;
 
         $pageUid = $this->getTargetPageUidFromRequestConfiguration($previousSearchRequest);
-        return $this->buildLink($pageUid, $arguments);
+        return $this->buildLinkWithInMemoryCache($pageUid, $arguments);
     }
 
     /**
@@ -148,7 +148,7 @@ class SearchUriBuilder
         $arguments = $persistentAndFacetArguments + $additionalArguments;
 
         $pageUid = $this->getTargetPageUidFromRequestConfiguration($previousSearchRequest);
-        return $this->buildLink($pageUid, $arguments);
+        return $this->buildLinkWithInMemoryCache($pageUid, $arguments);
     }
 
     /**
@@ -169,7 +169,7 @@ class SearchUriBuilder
         $arguments = $persistentAndFacetArguments + $additionalArguments;
 
         $pageUid = $this->getTargetPageUidFromRequestConfiguration($previousSearchRequest);
-        return $this->buildLink($pageUid, $arguments);
+        return $this->buildLinkWithInMemoryCache($pageUid, $arguments);
     }
 
     /**
@@ -184,7 +184,7 @@ class SearchUriBuilder
             ->getAsArray();
 
         $pageUid = $this->getTargetPageUidFromRequestConfiguration($previousSearchRequest);
-        return $this->buildLink($pageUid, $persistentAndFacetArguments);
+        return $this->buildLinkWithInMemoryCache($pageUid, $persistentAndFacetArguments);
     }
 
     /**
@@ -199,7 +199,7 @@ class SearchUriBuilder
             ->getCopyForSubRequest()->setGroupItemPage($groupItem->getGroup()->getGroupName(), $groupItem->getGroupValue(), $page)
             ->getAsArray();
         $pageUid = $this->getTargetPageUidFromRequestConfiguration($previousSearchRequest);
-        return $this->buildLink($pageUid, $persistentAndFacetArguments);
+        return $this->buildLinkWithInMemoryCache($pageUid, $persistentAndFacetArguments);
     }
     /**
      * @param SearchRequest $previousSearchRequest
@@ -221,7 +221,7 @@ class SearchUriBuilder
         $arguments = $request->setRawQueryString($queryString)->getAsArray();
 
         $pageUid = $this->getTargetPageUidFromRequestConfiguration($previousSearchRequest);
-        return $this->buildLink($pageUid, $arguments);
+        return $this->buildLinkWithInMemoryCache($pageUid, $arguments);
     }
 
     /**
@@ -237,7 +237,7 @@ class SearchUriBuilder
             ->getAsArray();
 
         $pageUid = $this->getTargetPageUidFromRequestConfiguration($previousSearchRequest);
-        return $this->buildLink($pageUid, $persistentAndFacetArguments);
+        return $this->buildLinkWithInMemoryCache($pageUid, $persistentAndFacetArguments);
     }
 
     /**
@@ -251,7 +251,7 @@ class SearchUriBuilder
             ->getAsArray();
 
         $pageUid = $this->getTargetPageUidFromRequestConfiguration($previousSearchRequest);
-        return $this->buildLink($pageUid, $persistentAndFacetArguments);
+        return $this->buildLinkWithInMemoryCache($pageUid, $persistentAndFacetArguments);
     }
 
     /**
@@ -266,7 +266,7 @@ class SearchUriBuilder
 
 
         $pageUid = $this->getTargetPageUidFromRequestConfiguration($previousSearchRequest);
-        return $this->buildLink($pageUid, $persistentAndFacetArguments);
+        return $this->buildLinkWithInMemoryCache($pageUid, $persistentAndFacetArguments);
     }
 
     /**
@@ -304,25 +304,10 @@ class SearchUriBuilder
     }
 
     /**
-     * @param integer $pageUid
-     * @param array $arguments
-     * @return string
-     */
-    protected function buildLink($pageUid, array $arguments)
-    {
-        if (Util::getIsTYPO3VersionBelow9()) {
-            return $this->buildLinkWithInMemoryCache($pageUid, $arguments);
-        } else {
-            return $this->buildLinkForPageIdAndArguments($pageUid, $arguments, true);
-        }
-    }
-
-    /**
      * Build the link with an i memory cache that reduces the amount of required typolink calls.
      *
      * @param integer $pageUid
      * @param array $arguments
-     * @deprecated This method is deprecated and will be dropped with EXT:solr 10
      * @return string
      */
     protected function buildLinkWithInMemoryCache($pageUid, array $arguments)
@@ -331,14 +316,22 @@ class SearchUriBuilder
         $structure = $arguments;
         $this->getSubstitution($structure, $values);
         $hash = md5($pageUid . json_encode($structure));
-
         if (isset(self::$preCompiledLinks[$hash])) {
             self::$hitCount++;
-            $template = self::$preCompiledLinks[$hash];
+            $uriCacheTemplate = self::$preCompiledLinks[$hash];
         } else {
             self::$missCount++;
-            $template = $this->buildLinkForPageIdAndArguments($pageUid, $structure, false);
-            self::$preCompiledLinks[$hash] = $template;
+            $this->uriBuilder->setTargetPageUid($pageUid);
+            $uriCacheTemplate = $this->uriBuilder->setArguments($structure)->setUseCacheHash(false)->build();
+
+            // even if we call build with disabled cHash in TYPO3 9 a cHash will be generated when site management is active
+            // to prevent wrong cHashes we remove the cHash here from the cached uri template.
+            // @todo: This can be removed when https://forge.typo3.org/issues/87120 is resolved and we can ship a proper configuration
+            $urlHelper = GeneralUtility::makeInstance(UrlHelper::class, $uriCacheTemplate);
+            $urlHelper->removeQueryParameter('cHash');
+            $uriCacheTemplate = $urlHelper->getUrl();
+
+            self::$preCompiledLinks[$hash] = $uriCacheTemplate;
         }
 
         $keys = array_map(function($value) {
@@ -347,20 +340,18 @@ class SearchUriBuilder
         $values = array_map(function($value) {
             return urlencode($value);
         }, $values);
-        $uri = str_replace($keys, $values, $template);
+        $uri = str_replace($keys, $values, $uriCacheTemplate);
         return $uri;
     }
 
     /**
-     * @param int $pageUid
-     * @param array $uriArguments
-     * @param bool $useCHash
-     * @return string
+     * Flushes the internal in memory cache.
+     *
+     * @return void
      */
-    private function buildLinkForPageIdAndArguments($pageUid, array $uriArguments, $useCHash = false)
+    public function flushInMemoryCache()
     {
-        $this->uriBuilder->setTargetPageUid($pageUid);
-        return $this->uriBuilder->setArguments($uriArguments)->setUseCacheHash($useCHash)->build();
+        self::$preCompiledLinks = [];
     }
 
     /**
