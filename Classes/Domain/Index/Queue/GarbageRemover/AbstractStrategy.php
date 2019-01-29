@@ -37,7 +37,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @package ApacheSolrForTypo3\Solr\Domain\Index\Queue\GarbageRemover
  */
-abstract class AbstractStrategy {
+abstract class AbstractStrategy
+{
 
     /**
      * @var Queue
@@ -120,9 +121,10 @@ abstract class AbstractStrategy {
         foreach ($indexQueueItems as $indexQueueItem) {
             $site = $indexQueueItem->getSite();
             $enableCommitsSetting = $site->getSolrConfiguration()->getEnableCommits();
+            $siteHash = $site->getSiteHash();
             // a site can have multiple connections (cores / languages)
             $solrConnections = $this->connectionManager->getConnectionsBySite($site);
-            $this->deleteRecordInAllSolrConnections($table, $uid, $solrConnections, $enableCommitsSetting);
+            $this->deleteRecordInAllSolrConnections($table, $uid, $solrConnections, $siteHash, $enableCommitsSetting);
         }
     }
 
@@ -132,12 +134,13 @@ abstract class AbstractStrategy {
      * @param string $table
      * @param int $uid
      * @param SolrConnection[] $solrConnections
+     * @param string $siteHash
      * @param boolean $enableCommitsSetting
      */
-    protected function deleteRecordInAllSolrConnections($table, $uid, $solrConnections, $enableCommitsSetting)
+    protected function deleteRecordInAllSolrConnections($table, $uid, $solrConnections, $siteHash, $enableCommitsSetting)
     {
         foreach ($solrConnections as $solr) {
-            $solr->getWriteService()->deleteByQuery('type:' . $table . ' AND uid:' . intval($uid));
+            $solr->getWriteService()->deleteByQuery('type:' . $table . ' AND uid:' . (int)$uid . ' AND siteHash:' . $siteHash);
             if ($enableCommitsSetting) {
                 $solr->getWriteService()->commit(false, false);
             }
