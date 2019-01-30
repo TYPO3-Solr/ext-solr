@@ -59,11 +59,12 @@ class SearchFormViewHelperTest extends UnitTest
         $controllerContextMock = $this->getDumbMock(ControllerContext::class);
         $controllerContextMock->expects($this->once())->method('getUriBuilder')->willReturn($this->uriBuilderMock);
 
-        $this->viewHelper = $this->getMockBuilder(SearchFormViewHelper::class)->setMethods(['getControllerContext', 'getTypoScriptConfiguration', 'getTemplateVariableContainer', 'getSearchResultSet', 'renderChildren'])->getMock();
+        $this->viewHelper = $this->getMockBuilder(SearchFormViewHelper::class)->setMethods(['getControllerContext', 'getTypoScriptConfiguration', 'getTemplateVariableContainer', 'getSearchResultSet', 'renderChildren', 'getIsSiteManagedSite'])->getMock();
         $this->viewHelper->expects($this->any())->method('getControllerContext')->willReturn($controllerContextMock);
         $this->viewHelper->expects($this->any())->method('getTypoScriptConfiguration')->willReturn($this->typoScriptConfigurationMock);
         $this->viewHelper->expects($this->any())->method('getTemplateVariableContainer')->willReturn($this->getDumbMock(VariableProviderInterface::class));
         $this->viewHelper->expects($this->once())->method('renderChildren')->willReturn('');
+        $this->viewHelper->expects($this->once())->method('getIsSiteManagedSite')->willReturn(false);
 
     }
 

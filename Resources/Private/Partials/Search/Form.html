@@ -7,8 +7,10 @@
 	<div class="tx-solr-search-form">
 		<s:searchForm id="tx-solr-search-form-pi-results" additionalFilters="{additionalFilters}" suggestHeader="{s:translate(key:'suggest_header',default:'Top Results')}">
 			<div class="input-group">
-				<input type="hidden" name="L" value="{languageUid}" />
-				<input type="hidden" name="id" value="{pageUid}" />
+				<f:if condition="{addPageAndLanguageId}">
+					<input type="hidden" name="L" value="{languageUid}" />
+					<input type="hidden" name="id" value="{pageUid}" />
+				</f:if>
 
 				<input type="text" class="tx-solr-q js-solr-q tx-solr-suggest tx-solr-suggest-focus form-control" name="{pluginNamespace}[q]" value="{q}" />
 				<span class="input-group-btn">
