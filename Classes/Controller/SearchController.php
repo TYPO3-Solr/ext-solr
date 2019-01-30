@@ -106,7 +106,7 @@ class SearchController extends AbstractBaseController
             $this->controllerContext->setSearchResultSet($searchResultSet);
 
             $values = [
-                'additionalFilters' => $this->searchService->getAdditionalFilters(),
+                'additionalFilters' => $this->getAdditionalFilters(),
                 'resultSet' => $searchResultSet,
                 'pluginNamespace' => $this->typoScriptConfiguration->getSearchPluginNamespace()
             ];
@@ -127,7 +127,7 @@ class SearchController extends AbstractBaseController
 
         $values = [
             'search' => $this->searchService->getSearch(),
-            'additionalFilters' => $this->searchService->getAdditionalFilters(),
+            'additionalFilters' => $this->getAdditionalFilters(),
             'pluginNamespace' => $this->typoScriptConfiguration->getSearchPluginNamespace()
         ];
         $values = $this->emitActionSignal(__CLASS__, __FUNCTION__, [$values]);
@@ -151,7 +151,7 @@ class SearchController extends AbstractBaseController
         $this->controllerContext->setSearchResultSet($searchResultSet);
 
         $values = [
-            'additionalFilters' => $this->searchService->getAdditionalFilters(),
+            'additionalFilters' => $this->getAdditionalFilters(),
             'resultSet' => $searchResultSet
         ];
         $values = $this->emitActionSignal(__CLASS__, __FUNCTION__, [$values]);
@@ -194,5 +194,16 @@ class SearchController extends AbstractBaseController
     {
         parent::handleSolrUnavailable();
         $this->forward('solrNotAvailable');
+    }
+
+    /**
+     * This method can be overwritten to add additionalFilters for the autosuggest.
+     * By default the suggest controller will apply the configured filters from the typoscript configuration.
+     *
+     * @return array
+     */
+    protected function getAdditionalFilters()
+    {
+        return [];
     }
 }
