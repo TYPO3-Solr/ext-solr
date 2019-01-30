@@ -14,6 +14,7 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers;
  * The TYPO3 project - inspiring people to share!
  */
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 
@@ -114,7 +115,11 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
         $this->getTemplateVariableContainer()->add('q', $this->getQueryString());
         $this->getTemplateVariableContainer()->add('pageUid', $pageUid);
         $this->getTemplateVariableContainer()->add('languageUid', $this->frontendController->sys_language_uid);
+
+        // @todo when TYPO3 8 support is dropped we can remove this property and remove
+        $this->getTemplateVariableContainer()->add('addPageAndLanguageId', !$this->getIsSiteManagedSite($pageUid));
         $formContent = $this->renderChildren();
+        $this->getTemplateVariableContainer()->remove('addPageAndLanguageId');
         $this->getTemplateVariableContainer()->remove('q');
         $this->getTemplateVariableContainer()->remove('pageUid');
         $this->getTemplateVariableContainer()->remove('languageUid');
@@ -122,6 +127,32 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
         $this->tag->setContent($formContent);
 
         return $this->tag->render();
+    }
+
+    /**
+     * When a site is managed with site management the language and the id are encoded in the path segment of the url.
+     * When no speaking urls are active (e.g. with TYPO3 8 and no realurl) this information is passed as query parameter
+     * and would get lost when it is only part of the query arguments in the action parameter of the form.
+     *
+     * Therefore we check if we have a TYPO3 9 system with active site management and then do not render these arguments in the form.
+     *
+     * @return boolean
+     */
+    protected function getIsSiteManagedSite($pageId)
+    {
+        if (!class_exists('\TYPO3\CMS\Core\Site\SiteFinder')) {
+           return false;
+        }
+
+        //we have a TYPO3 9 System
+        $siteFinder = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Site\SiteFinder::class);
+        try {
+            $site = $siteFinder->getSiteByPageId($pageId);
+        } catch (\TYPO3\CMS\Core\Exception\SiteNotFoundException $e) {
+            return false;
+        }
+
+        return $site instanceof \TYPO3\CMS\Core\Site\Entity\Site;
     }
 
     /**
