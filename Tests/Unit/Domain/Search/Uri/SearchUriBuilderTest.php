@@ -59,6 +59,7 @@ class SearchUriBuilderTest extends UnitTest
         $this->extBaseUriBuilderMock = $this->getDumbMock(UriBuilder::class);
         $this->searchUrlBuilder = new SearchUriBuilder();
         $this->searchUrlBuilder->injectUriBuilder($this->extBaseUriBuilderMock);
+        $this->searchUrlBuilder->flushInMemoryCache();
     }
 
     /**
@@ -69,18 +70,10 @@ class SearchUriBuilderTest extends UnitTest
         $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
         $configurationMock->expects($this->any())->method('getSearchPluginNamespace')->will($this->returnValue('tx_solr'));
         $configurationMock->expects($this->once())->method('getSearchFacetingFacetLinkUrlParametersAsArray')->will($this->returnValue([]));
-
-        // @todo This check can be dropped with TYPO3 8 LTS support is dropped
-        if (Util::getIsTYPO3VersionBelow9()) {
-            $expectedArguments = ['tx_solr' => ['filter' => ['###tx_solr:filter:0###']]];
-            $cHashIsUsed = false;
-        } else {
-            $expectedArguments = ['tx_solr' => ['filter' => ['foo:bar']]];
-            $cHashIsUsed = true;
-        }
+        $expectedArguments = ['tx_solr' => ['filter' => ['###tx_solr:filter:0###']]];
 
         $this->extBaseUriBuilderMock->expects($this->once())->method('setArguments')->with($expectedArguments)->will($this->returnValue($this->extBaseUriBuilderMock));
-        $this->extBaseUriBuilderMock->expects($this->once())->method('setUseCacheHash')->with($cHashIsUsed)->will($this->returnValue($this->extBaseUriBuilderMock));
+        $this->extBaseUriBuilderMock->expects($this->once())->method('setUseCacheHash')->with(false)->will($this->returnValue($this->extBaseUriBuilderMock));
 
         $previousRequest =  new SearchRequest([], 0, 0, $configurationMock);
         $this->searchUrlBuilder->getAddFacetValueUri($previousRequest, 'foo', 'bar');
@@ -91,29 +84,21 @@ class SearchUriBuilderTest extends UnitTest
      */
     public function addFacetLinkWillAddAdditionalConfiguredArguments()
     {
-        // @todo This check can be dropped with TYPO3 8 LTS support is dropped
-        if (Util::getIsTYPO3VersionBelow9()) {
-            $expectedArguments = ['tx_solr' => ['filter' => ['###tx_solr:filter:0###']], '###tx_solr:0###'];
-            $linkBuilderResult = 'filter='.urlencode('###tx_solr:filter:0###').'&'.urlencode('###tx_solr:0###');
-            $cHashIsUsed = false;
-        } else {
-            $expectedArguments = ['tx_solr' => ['filter' => ['option:value']], 'foo=bar'];
-            $linkBuilderResult = 'filter='.urlencode('option:value').'&'.urlencode('foo=bar');
-            $cHashIsUsed = true;
-        }
+        $expectedArguments = ['tx_solr' => ['filter' => ['###tx_solr:filter:0###']], 'foo' => '###tx_solr:foo###'];
+        $linkBuilderResult = '/index.php?id=1&filter='.urlencode('###tx_solr:filter:0###').'&foo='.urlencode('###tx_solr:foo###');
 
         $this->extBaseUriBuilderMock->expects($this->once())->method('setArguments')->with($expectedArguments)->will($this->returnValue($this->extBaseUriBuilderMock));
-        $this->extBaseUriBuilderMock->expects($this->once())->method('setUseCacheHash')->with($cHashIsUsed)->will($this->returnValue($this->extBaseUriBuilderMock));
+        $this->extBaseUriBuilderMock->expects($this->once())->method('setUseCacheHash')->with(false)->will($this->returnValue($this->extBaseUriBuilderMock));
         $this->extBaseUriBuilderMock->expects($this->once())->method('build')->with()->will($this->returnValue($linkBuilderResult));
 
         $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
         $configurationMock->expects($this->any())->method('getSearchPluginNamespace')->will($this->returnValue('tx_solr'));
 
-        $configurationMock->expects($this->once())->method('getSearchFacetingFacetLinkUrlParametersAsArray')->will($this->returnValue(['foo=bar']));
+        $configurationMock->expects($this->once())->method('getSearchFacetingFacetLinkUrlParametersAsArray')->will($this->returnValue(['foo' => 'bar']));
         $previousRequest =  new SearchRequest([], 1, 0, $configurationMock);
         $linkBuilderResult = $this->searchUrlBuilder->getAddFacetValueUri($previousRequest, 'option', 'value');
 
-        $this->assertEquals($linkBuilderResult, 'filter=option%3Avalue&foo%3Dbar');
+        $this->assertEquals($linkBuilderResult, '/index.php?id=1&filter=option%3Avalue&foo=bar');
     }
 
     /**
@@ -121,11 +106,6 @@ class SearchUriBuilderTest extends UnitTest
      */
     public function setArgumentsIsOnlyCalledOnceEvenWhenMultipleFacetsGetRendered()
     {
-        // @todo This test can be dropped when TYPO3 8 support is dropped
-        if (!Util::getIsTYPO3VersionBelow9()) {
-            $this->markTestSkipped('This scenario is only relevant for TYPO3 8 when the typolink cache is active');
-        }
-
         $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
         $configurationMock->expects($this->any())->method('getSearchPluginNamespace')->will($this->returnValue('tx_solr'));
         $configurationMock->expects($this->once())->method('getSearchFacetingFacetLinkUrlParametersAsArray')->will($this->returnValue([]));
@@ -133,7 +113,7 @@ class SearchUriBuilderTest extends UnitTest
         $expectedArguments = ['tx_solr' => ['filter' => ['###tx_solr:filter:0###']]];
         $this->extBaseUriBuilderMock->expects($this->once())->method('setArguments')->with($expectedArguments)->will($this->returnValue($this->extBaseUriBuilderMock));
         $this->extBaseUriBuilderMock->expects($this->once())->method('setUseCacheHash')->with(false)->will($this->returnValue($this->extBaseUriBuilderMock));
-        $this->extBaseUriBuilderMock->expects($this->once())->method('build')->will($this->returnValue(urlencode('tx_solr[filter][0]=###tx_solr:filter:0###')));
+        $this->extBaseUriBuilderMock->expects($this->once())->method('build')->will($this->returnValue(urlencode('/index.php?id=1&tx_solr[filter][0]=###tx_solr:filter:0###')));
 
         $previousRequest =  new SearchRequest([], 0, 0, $configurationMock);
         $previousRequest->removeAllFacets();
@@ -145,64 +125,14 @@ class SearchUriBuilderTest extends UnitTest
         $previousRequest->removeAllFacets();
         $this->searchUrlBuilder->getAddFacetValueUri($previousRequest, 'color', 'red');
     }
-
-    /**
-     * @test
-     */
-    public function setArgumentsIsCalledForEveryArgument()
-    {
-        // @todo This check can be dropped with TYPO3 8 LTS support is dropped, the test can be kept for 9 LTS
-        if (Util::getIsTYPO3VersionBelow9()) {
-            $this->markTestSkipped('This scenario is only relevant for TYPO3 8 when the typolink cache is active');
-        }
-
-        $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
-        $configurationMock->expects($this->any())->method('getSearchPluginNamespace')->will($this->returnValue('tx_solr'));
-        $configurationMock->expects($this->once())->method('getSearchFacetingFacetLinkUrlParametersAsArray')->will($this->returnValue([]));
-
-        $this->extBaseUriBuilderMock->expects($this->exactly(3))->method('setArguments')
-            ->withConsecutive(
-                [['tx_solr' => ['filter' => ['color:green']]]],
-                [['tx_solr' => ['filter' => ['color:blue']]]],
-                [['tx_solr' => ['filter' => ['color:red']]]]
-            )->will($this->returnValue($this->extBaseUriBuilderMock));
-
-        $this->extBaseUriBuilderMock->expects($this->exactly(3))->method('setUseCacheHash')->with(true)->will($this->returnValue($this->extBaseUriBuilderMock));
-        $this->extBaseUriBuilderMock->expects($this->exactly(3))->method('build')->will(
-            $this->onConsecutiveCalls(
-                urlencode('tx_solr[filter][0]=color:green'),
-                urlencode('tx_solr[filter][0]=color:blue'),
-                urlencode('tx_solr[filter][0]=color:red')
-            )
-        );
-
-        $previousRequest =  new SearchRequest([], 0, 0, $configurationMock);
-        $previousRequest->removeAllFacets();
-        $this->searchUrlBuilder->getAddFacetValueUri($previousRequest, 'color', 'green');
-
-        $previousRequest->removeAllFacets();
-        $this->searchUrlBuilder->getAddFacetValueUri($previousRequest, 'color', 'blue');
-
-        $previousRequest->removeAllFacets();
-        $this->searchUrlBuilder->getAddFacetValueUri($previousRequest, 'color', 'red');
-    }
-
 
     /**
      * @test
      */
     public function targetPageUidIsPassedWhenSortingIsAdded()
     {
-        // @todo This check can be dropped with TYPO3 8 LTS support is dropped
-        if (Util::getIsTYPO3VersionBelow9()) {
-            $expectedArguments = ['tx_solr' => ['sort' => '###tx_solr:sort###']];
-            $linkBuilderResult = 'tx_solr[sort]='.urlencode('###tx_solr:sort###');
-            $cHashIsUsed = false;
-        } else {
-            $expectedArguments = ['tx_solr' => ['sort' => 'title desc']];
-            $linkBuilderResult = 'tx_solr[sort]='.urlencode('title desc');
-            $cHashIsUsed = true;
-        }
+        $expectedArguments = ['tx_solr' => ['sort' => '###tx_solr:sort###']];
+        $linkBuilderResult = '/index.php?id=1&' . urlencode('tx_solr[sort]') . '='.urlencode('###tx_solr:sort###');
 
         $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
         $configurationMock->expects($this->once())->method('getSearchTargetPage')->will($this->returnValue(4711));
@@ -213,24 +143,17 @@ class SearchUriBuilderTest extends UnitTest
             // we expect that the page uid from the configruation will be used to build the url with the uri builder
         $this->extBaseUriBuilderMock->expects($this->once())->method('setTargetPageUid')->with(4711)->will($this->returnValue($this->extBaseUriBuilderMock));
         $this->extBaseUriBuilderMock->expects($this->once())->method('setArguments')->with($expectedArguments)->will($this->returnValue($this->extBaseUriBuilderMock));
-        $this->extBaseUriBuilderMock->expects($this->once())->method('setUseCacheHash')->with($cHashIsUsed)->will($this->returnValue($this->extBaseUriBuilderMock));
+        $this->extBaseUriBuilderMock->expects($this->once())->method('setUseCacheHash')->with(false)->will($this->returnValue($this->extBaseUriBuilderMock));
         $this->extBaseUriBuilderMock->expects($this->once())->method('build')->will($this->returnValue($linkBuilderResult));
         $result = $this->searchUrlBuilder->getSetSortingUri($previousRequest, 'title', 'desc');
-        $this->assertEquals('tx_solr[sort]=title+desc', $result);
+        $this->assertEquals('/index.php?id=1&'  . urlencode('tx_solr[sort]') . '=' . urlencode('title desc'), $result);
     }
 
-    /**
+   /**
      * @test
      */
     public function canGetRemoveFacetOptionUri()
     {
-        // @todo This check can be dropped with TYPO3 8 LTS support is dropped
-        if (Util::getIsTYPO3VersionBelow9()) {
-            $cHashIsUsed = false;
-        } else {
-            $cHashIsUsed = true;
-        }
-
         $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
         $configurationMock->expects($this->any())->method('getSearchPluginNamespace')->will($this->returnValue('tx_solr'));
 
@@ -248,7 +171,7 @@ class SearchUriBuilderTest extends UnitTest
         // we expect that the filters are empty after remove
         $expectedArguments = ['tx_solr' => ['filter' => []]];
         $this->extBaseUriBuilderMock->expects($this->once())->method('setArguments')->with($expectedArguments)->will($this->returnValue($this->extBaseUriBuilderMock));
-        $this->extBaseUriBuilderMock->expects($this->once())->method('setUseCacheHash')->with($cHashIsUsed)->will($this->returnValue($this->extBaseUriBuilderMock));
+        $this->extBaseUriBuilderMock->expects($this->once())->method('setUseCacheHash')->with(false)->will($this->returnValue($this->extBaseUriBuilderMock));
         $this->searchUrlBuilder->getRemoveFacetValueUri($previousRequest, 'type', 'pages');
     }
 
@@ -257,13 +180,6 @@ class SearchUriBuilderTest extends UnitTest
      */
     public function canGetRemoveFacetUri()
     {
-        // @todo This check can be dropped with TYPO3 8 LTS support is dropped
-        if (Util::getIsTYPO3VersionBelow9()) {
-            $cHashIsUsed = false;
-        } else {
-            $cHashIsUsed = true;
-        }
-
         $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
         $configurationMock->expects($this->any())->method('getSearchPluginNamespace')->will($this->returnValue('tx_solr'));
 
@@ -283,7 +199,7 @@ class SearchUriBuilderTest extends UnitTest
         //@todo we need to refactor the request in ext:solr to cleanup empty arguments completely to assert  $expectedArguments = []
         $expectedArguments = ['tx_solr' => ['filter' => []]];
         $this->extBaseUriBuilderMock->expects($this->once())->method('setArguments')->with($expectedArguments)->will($this->returnValue($this->extBaseUriBuilderMock));
-        $this->extBaseUriBuilderMock->expects($this->once())->method('setUseCacheHash')->with($cHashIsUsed)->will($this->returnValue($this->extBaseUriBuilderMock));
+        $this->extBaseUriBuilderMock->expects($this->once())->method('setUseCacheHash')->with(false)->will($this->returnValue($this->extBaseUriBuilderMock));
         $this->searchUrlBuilder->getRemoveFacetUri($previousRequest, 'type');
     }
 
@@ -310,10 +226,10 @@ class SearchUriBuilderTest extends UnitTest
 
         $this->extBaseUriBuilderMock->expects($this->any())->method('setArguments')->will($this->returnValue($this->extBaseUriBuilderMock));
         $this->extBaseUriBuilderMock->expects($this->any())->method('setUseCacheHash')->will($this->returnValue($this->extBaseUriBuilderMock));
-        $this->extBaseUriBuilderMock->expects($this->any())->method('build')->will($this->returnValue('tx_solr[filter][0]=type:pages'));
+        $this->extBaseUriBuilderMock->expects($this->any())->method('build')->will($this->returnValue('/index.php?id=1&tx_solr[filter][0]=type:pages'));
 
         $uri = $this->searchUrlBuilder->getAddFacetValueUri($previousRequest, 'type', 'pages');
-        $this->assertSame('tx_solr[filter][0]=type:pages', urldecode($uri), 'Unexpected uri generated');
+        $this->assertSame('/index.php?id=1&tx_solr[filter][0]=type:pages', urldecode($uri), 'Unexpected uri generated');
     }
 
     /**
@@ -321,32 +237,17 @@ class SearchUriBuilderTest extends UnitTest
      */
     public function canSetGroupPageForQueryGroup()
     {
-        // @todo This check can be dropped with TYPO3 8 LTS support is dropped
-        if (Util::getIsTYPO3VersionBelow9()) {
-            $cHashIsUsed = false;
-            $expectedArguments = [
-                'tx_solr' => [
-                    'groupPage' => [
-                        'smallPidRange' => [
-                            'pid0to5' => '###tx_solr:groupPage:smallPidRange:pid0to5###'
-                        ]
+        $expectedArguments = [
+            'tx_solr' => [
+                'groupPage' => [
+                    'smallPidRange' => [
+                        'pid0to5' => '###tx_solr:groupPage:smallPidRange:pid0to5###'
                     ]
                 ]
-            ];
-            $linkBuilderResult = 'tx_solr[groupPage][smallPidRange][pid0to5]='.urlencode('###tx_solr:groupPage:smallPidRange:pid0to5###');
-        } else {
-            $cHashIsUsed = true;
-            $expectedArguments = [
-                'tx_solr' => [
-                    'groupPage' => [
-                        'smallPidRange' => [
-                            'pid0to5' => '5'
-                        ]
-                    ]
-                ]
-            ];
-            $linkBuilderResult = 'tx_solr[groupPage][smallPidRange][pid0to5]='.urlencode('5');
-        }
+            ]
+        ];
+        $linkBuilderResult = '/index.php?id=1&tx_solr[groupPage][smallPidRange][pid0to5]='.urlencode('###tx_solr:groupPage:smallPidRange:pid0to5###');
+
 
         $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
         $configurationMock->expects($this->any())->method('getSearchPluginNamespace')->will($this->returnValue('tx_solr'));
@@ -357,9 +258,9 @@ class SearchUriBuilderTest extends UnitTest
 
 
         $this->extBaseUriBuilderMock->expects($this->once())->method('setArguments')->with($expectedArguments)->will($this->returnValue($this->extBaseUriBuilderMock));
-        $this->extBaseUriBuilderMock->expects($this->once())->method('setUseCacheHash')->with($cHashIsUsed)->will($this->returnValue($this->extBaseUriBuilderMock));
+        $this->extBaseUriBuilderMock->expects($this->once())->method('setUseCacheHash')->with(false)->will($this->returnValue($this->extBaseUriBuilderMock));
         $this->extBaseUriBuilderMock->expects($this->once())->method('build')->will($this->returnValue($linkBuilderResult));
         $uri = $this->searchUrlBuilder->getResultGroupItemPageUri($previousRequest, $groupItem, 5);
-        $this->assertContains('tx_solr[groupPage][smallPidRange][pid0to5]=5', $uri, 'Uri did not contain link segment for query group');
+        $this->assertContains(urlencode('tx_solr[groupPage][smallPidRange][pid0to5]') . '=5', $uri, 'Uri did not contain link segment for query group');
     }
 }

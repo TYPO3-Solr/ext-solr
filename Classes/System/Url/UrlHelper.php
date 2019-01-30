@@ -29,7 +29,12 @@ class UrlHelper {
     /**
      * @var array
      */
-    protected $parts = [];
+    protected $urlParts = [];
+
+    /**
+     * @var array
+     */
+    protected $queryParts = [];
 
     /**
      * @var bool
@@ -57,7 +62,10 @@ class UrlHelper {
         if (!is_array($parts)) {
             throw new \InvalidArgumentException("Non parseable url passed to UrlHelper", 1498751529);
         }
-        $this->parts = $parts;
+        $this->urlParts = $parts;
+
+        parse_str($this->urlParts['query'], $this->queryParts);
+
         $this->wasParsed = true;
     }
 
@@ -69,10 +77,7 @@ class UrlHelper {
     public function removeQueryParameter(string $parameterName): UrlHelper
     {
         $this->parseInitialUrl();
-        $queryParts = [];
-        parse_str($this->parts['query'], $queryParts);
-        unset($queryParts[$parameterName]);
-        $this->parts['query'] = http_build_query($queryParts);
+        unset($this->queryParts[$parameterName]);
 
         return $this;
     }
@@ -86,10 +91,7 @@ class UrlHelper {
     public function addQueryParameter(string $parameterName, $value): UrlHelper
     {
         $this->parseInitialUrl();
-        $queryParts = [];
-        parse_str($this->parts['query'], $queryParts);
-        $queryParts[$parameterName] = $value;
-        $this->parts['query'] = http_build_query($queryParts);
+        $this->queryParts[$parameterName] = $value;
 
         return $this;
     }
@@ -99,7 +101,10 @@ class UrlHelper {
      */
     public function getUrl(): string
     {
-        return $this->unparse_url($this->parts);
+        $this->parseInitialUrl();
+        $this->urlParts['query'] = http_build_query($this->queryParts);
+
+        return $this->unparse_url($this->urlParts);
     }
 
     /**
