@@ -314,7 +314,12 @@ abstract class AbstractSolrService {
      */
     public function ping($useCache = true)
     {
-        $httpResponse = $this->performPingRequest($useCache);
+        try {
+            $httpResponse = $this->performPingRequest($useCache);
+        } catch (HttpException $exception) {
+            return false;
+        }
+
         return ($httpResponse->getHttpStatus() === 200);
     }
 
