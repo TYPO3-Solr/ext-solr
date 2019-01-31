@@ -1961,11 +1961,14 @@ class TypoScriptConfiguration
      *
      * plugin.tx_solr.search.faceting.singleFacetMode
      *
+     * @deprecated singleFacetMode is not supported anymore with TypoScript. If you need this behaviour please use the partialName=OptionsSinglemode for that
      * @param bool $defaultIfEmpty
      * @return bool
      */
     public function getSearchFacetingSingleFacetMode($defaultIfEmpty = false)
     {
+        trigger_error('TypoScriptConfiguration::getSearchFacetingSingleFacetMode is deprecated please use partialName=OptionsSinglemode typoscript configuration for that. Will be removed in EXT:solr 10', E_USER_DEPRECATED);
+
         $singleFacetMode = $this->getValueByPathOrDefaultValue('plugin.tx_solr.search.faceting.singleFacetMode', $defaultIfEmpty);
         return $this->getBool($singleFacetMode);
     }
