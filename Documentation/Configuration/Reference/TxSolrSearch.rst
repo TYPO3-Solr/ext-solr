@@ -842,19 +842,6 @@ faceting.facetLimit
 Number of options of a facet returned from solr.
 
 
-faceting.singleFacetMode
-~~~~~~~~~~~~~~~~~~~~~~~~
-
-:Type: Boolean
-:TS Path: plugin.tx_solr.search.faceting.singleFacetMode
-:Since: 1.2, 2.0
-:Default: 0
-:Options: 0, 1
-
-If enabled, the user can only select an option from one facet at a time.
-
-Lets say you have two facets configured, type and author. If the user selects a facet option from type its filter is added to the query. Normally when selecting another option from the other facet - the author facet - this would lead to having two facet filters applied to the query. When this option is activated the option from the author facet will simply replace the first option from the type facet.
-
 faceting.keepAllFacetsOnSelection
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
