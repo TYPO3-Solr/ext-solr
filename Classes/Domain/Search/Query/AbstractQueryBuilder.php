@@ -351,6 +351,11 @@ abstract class AbstractQueryBuilder {
     public function useFilter($filterString, $filterName = '')
     {
         $filterName = $filterName === '' ? $filterString : $filterName;
+
+        $nameWasPassedAndFilterIsAllreadySet = $filterName !== '' && $this->queryToBuild->getFilterQuery($filterName) !== null;
+        if($nameWasPassedAndFilterIsAllreadySet) {
+            return $this;
+        }
         $this->queryToBuild->addFilterQuery(['key' => $filterName, 'query' => $filterString]);
         return $this;
     }
