@@ -14,6 +14,7 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers;
  * The TYPO3 project - inspiring people to share!
  */
 
+use ApacheSolrForTypo3\Solr\System\Url\UrlHelper;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
@@ -185,6 +186,10 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
         $uriBuilder = $this->getControllerContext()->getUriBuilder();
         $pluginNamespace = $this->getTypoScriptConfiguration()->getSearchPluginNamespace();
         $suggestUrl = $uriBuilder->reset()->setTargetPageUid($pageUid)->setTargetPageType($this->arguments['suggestPageType'])->setUseCacheHash(false)->setArguments([$pluginNamespace => ['additionalFilters' => $additionalFilters]])->build();
+
+        $urlService = GeneralUtility::makeInstance(UrlHelper::class, $suggestUrl);
+        $suggestUrl = $urlService->removeQueryParameter('cHash')->getUrl();
+
         return $suggestUrl;
     }
 
