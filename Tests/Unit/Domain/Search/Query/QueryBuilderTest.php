@@ -1045,6 +1045,20 @@ class QueryBuilderTest extends UnitTest
     /**
      * @test
      */
+    public function canUseFilterIgnoreSecondePassedFilterWithSameKey()
+    {
+        $fakeConfiguration = new TypoScriptConfiguration([]);
+        $query = $this->getInitializedTestSearchQuery('test', $fakeConfiguration);
+
+        // we add a filter with the same key twice and expect that only the first one is kept and not overwritten
+        $this->builder->startFrom($query)->useFilter('foo:bar', 'test')->useFilter('foo:bla', 'test');
+        $parameters = $this->getAllQueryParameters($query);
+        $this->assertSame('foo:bar', $parameters['fq'], 'Unexpected filter query was added');
+    }
+
+    /**
+     * @test
+     */
     public function canSetAndUnSetQueryType()
     {
         $query = $this->getInitializedTestSearchQuery('test');
