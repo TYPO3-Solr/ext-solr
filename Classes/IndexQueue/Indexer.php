@@ -35,6 +35,7 @@ use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use ApacheSolrForTypo3\Solr\Util;
+use Solarium\Exception\HttpException;
 use TYPO3\CMS\Backend\Configuration\TranslationConfigurationProvider;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Page\PageRepository;
@@ -172,9 +173,13 @@ class Indexer extends AbstractIndexer
         $documents = $this->processDocuments($item, $documents);
         $documents = $this->preAddModifyDocuments($item, $language, $documents);
 
-        $response = $this->solr->getWriteService()->addDocuments($documents);
-        if ($response->getHttpStatus() == 200) {
-            $itemIndexed = true;
+        try {
+            $response = $this->solr->getWriteService()->addDocuments($documents);
+            if ($response->getHttpStatus() == 200) {
+                $itemIndexed = true;
+            }
+        } catch (HttpException $e) {
+            $response = new ResponseAdapter($e->getBody(), $httpStatus = 500, $e->getStatusMessage());
         }
 
         $this->log($item, $documents, $response);
