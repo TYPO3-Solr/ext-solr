@@ -26,6 +26,8 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
 
 use ApacheSolrForTypo3\Solr\Access\Rootline;
 use ApacheSolrForTypo3\Solr\Access\RootlineElement;
+use ApacheSolrForTypo3\Solr\Domain\Index\PageIndexer\Helper\UriBuilder\AbstractUriStrategy;
+use ApacheSolrForTypo3\Solr\Domain\Index\PageIndexer\Helper\UriStrategyFactory;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -238,83 +240,21 @@ class PageIndexer extends Indexer
      */
     protected function getDataUrl(Item $item, $language = 0)
     {
-        $scheme = 'http';
-        $host = $item->getSite()->getDomain();
-        $path = '/';
         $pageId = $item->getRecordUid();
-
-        // deprecated
-        if (!empty($this->options['scheme'])) {
-            $this->logger->log(
-                SolrLogManager::INFO,
-                'Using deprecated option "scheme" to set the scheme (http / https) for the page indexer frontend helper. Use plugin.tx_solr.index.queue.pages.indexer.frontendDataHelper.scheme instead'
-            );
-            $scheme = $this->options['scheme'];
-        }
-
-        // check whether we should use ssl / https
-        if (!empty($this->options['frontendDataHelper.']['scheme'])) {
-            $scheme = $this->options['frontendDataHelper.']['scheme'];
-        }
-
-        // overwriting the host
-        if (!empty($this->options['frontendDataHelper.']['host'])) {
-            $host = $this->options['frontendDataHelper.']['host'];
-        }
-
-        // setting a path if TYPO3 is installed in a sub directory
-        if (!empty($this->options['frontendDataHelper.']['path'])) {
-            $path = $this->options['frontendDataHelper.']['path'];
-        }
-
+        $strategy = $this->getUriStrategy($pageId);
         $mountPointParameter = $this->getMountPageDataUrlParameter($item);
-        $dataUrl = $scheme . '://' . $host . $path . 'index.php?id=' . $pageId;
-        $dataUrl .= ($mountPointParameter !== '') ? '&MP=' . $mountPointParameter : '';
-        $dataUrl .= '&L=' . $language;
-
-        if (!GeneralUtility::isValidUrl($dataUrl)) {
-            $this->logger->log(
-                SolrLogManager::ERROR,
-                'Could not create a valid URL to get frontend data while trying to index a page.',
-                [
-                    'item' => (array)$item,
-                    'constructed URL' => $dataUrl,
-                    'scheme' => $scheme,
-                    'host' => $host,
-                    'path' => $path,
-                    'page ID' => $pageId,
-                    'indexer options' => $this->options
-                ]
-            );
-
-            throw new \RuntimeException(
-                'Could not create a valid URL to get frontend data while trying to index a page. Created URL: ' . $dataUrl,
-                1311080805
-            );
-        }
-
-        if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueuePageIndexer']['dataUrlModifier']) {
-            $dataUrlModifier = GeneralUtility::makeInstance($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueuePageIndexer']['dataUrlModifier']);
-
-            if ($dataUrlModifier instanceof PageIndexerDataUrlModifier) {
-                $dataUrl = $dataUrlModifier->modifyDataUrl($dataUrl, [
-                    'item' => $item,
-                    'scheme' => $scheme,
-                    'host' => $host,
-                    'path' => $path,
-                    'pageId' => $pageId,
-                    'language' => $language
-                ]);
-            } else {
-                throw new \RuntimeException(
-                    $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueuePageIndexer']['dataUrlModifier']
-                    . ' is not an implementation of ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerDataUrlModifier',
-                    1290523345
-                );
-            }
-        }
+        $dataUrl = $strategy->getPageIndexingUriFromPageItemAndLanguageId($item, $language, $mountPointParameter, $this->options);
 
         return $dataUrl;
+    }
+
+    /**
+     * @param int $pageId
+     * @return AbstractUriStrategy
+     */
+    protected function getUriStrategy($pageId)
+    {
+        return GeneralUtility::makeInstance(UriStrategyFactory::class)->getForPageId($pageId);
     }
 
     /**

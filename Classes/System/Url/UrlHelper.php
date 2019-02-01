@@ -48,6 +48,7 @@ class UrlHelper {
     public function __construct($url)
     {
         $this->initialUrl = $url;
+        $this->parseInitialUrl();
     }
 
     /**
@@ -70,15 +71,85 @@ class UrlHelper {
     }
 
     /**
+     * @param string $part
+     * @param mixed $value
+     */
+    protected function setUrlPart($part, $value)
+    {
+        $this->urlParts[$part] = $value;
+    }
+
+    /**
+     * @param $path
+     * @return mixed
+     */
+    protected function getUrlPart($path)
+    {
+        return $this->urlParts[$path];
+    }
+
+    /**
+     * @param string $host
+     * @return UrlHelper
+     */
+    public function setHost(string $host)
+    {
+        $this->setUrlPart('host', $host);
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getHost(): string
+    {
+        return $this->getUrlPart('host');
+    }
+
+    /**
+     * @param string $scheme
+     * @return UrlHelper
+     */
+    public function setScheme(string $scheme)
+    {
+        $this->setUrlPart('scheme', $scheme);
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getScheme(): string
+    {
+        return $this->getUrlPart('scheme');
+    }
+
+    /**
+     * @param string $path
+     * @return UrlHelper
+     */
+    public function setPath($path)
+    {
+        $this->setUrlPart('path', $path);
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPath(): string
+    {
+        return $this->getUrlPart('path');
+    }
+
+    /**
      * @param string $parameterName
      * @throws \InvalidArgumentException
      * @return UrlHelper
      */
     public function removeQueryParameter(string $parameterName): UrlHelper
     {
-        $this->parseInitialUrl();
         unset($this->queryParts[$parameterName]);
-
         return $this;
     }
 
@@ -90,9 +161,7 @@ class UrlHelper {
      */
     public function addQueryParameter(string $parameterName, $value): UrlHelper
     {
-        $this->parseInitialUrl();
         $this->queryParts[$parameterName] = $value;
-
         return $this;
     }
 
@@ -101,28 +170,24 @@ class UrlHelper {
      */
     public function getUrl(): string
     {
-        $this->parseInitialUrl();
         $this->urlParts['query'] = http_build_query($this->queryParts);
-
-        return $this->unparse_url($this->urlParts);
+        return $this->unparseUrl();
     }
 
     /**
-     * @param array $parsed_url
      * @return string
      */
-    protected function unparse_url(array $parsed_url): string
+    protected function unparseUrl(): string
     {
-        $scheme   = isset($parsed_url['scheme']) ? $parsed_url['scheme'] . '://' : '';
-        $host     = $parsed_url['host'] ?? '';
-        $port     = $parsed_url['port'] ?? '';
-        $user     = $parsed_url['user'] ?? '';
-        $pass     = $parsed_url['pass'] ?? '';
+        $scheme   = isset($this->urlParts['scheme']) ? $this->urlParts['scheme'] . '://' : '';
+        $host     = $this->urlParts['host'] ?? '';
+        $port     = $this->urlParts['port'] ?? '';
+        $user     = $this->urlParts['user'] ?? '';
+        $pass     = $this->urlParts['pass'] ?? '';
         $pass     = ($user || $pass) ? "$pass@" : '';
-        $path     = $parsed_url['path'] ?? '';
-        $query    = isset($parsed_url['query']) ? '?' . $parsed_url['query'] : '';
-        $fragment = isset($parsed_url['fragment']) ? '#' . $parsed_url['fragment'] : '';
+        $path     = $this->urlParts['path'] ?? '';
+        $query    = isset($this->urlParts['query']) && !empty($this->urlParts['query']) ? '?' . $this->urlParts['query'] : '';
+        $fragment = isset($this->urlParts['fragment']) ? '#' . $this->urlParts['fragment'] : '';
         return $scheme . $user . $pass . $host . $port . $path . $query . $fragment;
     }
-
 }
