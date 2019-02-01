@@ -33,6 +33,7 @@ use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\Task\IndexQueueWorkerTask;
+use Solarium\Exception\HttpException;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
@@ -142,7 +143,11 @@ class IndexService
         if ($enableCommitsSetting && count($itemsToIndex) > 0) {
             $solrServers = GeneralUtility::makeInstance(ConnectionManager::class)->getConnectionsBySite($this->site);
             foreach ($solrServers as $solrServer) {
-                $solrServer->getWriteService()->commit(false, false, false);
+                try {
+                    $solrServer->getWriteService()->commit(false, false, false);
+                } catch (HttpException $e) {
+                    $errors++;
+                }
             }
         }
 
