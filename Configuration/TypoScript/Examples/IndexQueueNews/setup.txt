@@ -54,13 +54,34 @@ plugin.tx_solr.index.queue {
 				multiValue = 1
 			}
 
-			url = TEXT
+			url = CASE
 			url {
-				typolink.parameter = {$plugin.tx_news.settings.detailPid}
-				typolink.additionalParams = &tx_news_pi1[controller]=News&tx_news_pi1[action]=detail&tx_news_pi1[news]={field:uid}&L={field:__solr_index_language}
-				typolink.additionalParams.insertData = 1
-				typolink.useCacheHash = 1
-				typolink.returnLast = url
+				key.field = type
+
+				# Internal
+				1 = TEXT
+				1 {
+					if.isTrue.field = internalurl
+					typolink.parameter.field = internalurl
+					typolink.useCacheHash = 1
+					typolink.returnLast = url
+				}
+
+				# External
+				2 = TEXT
+				2 {
+					if.isTrue.field = externalurl
+					field = externalurl
+				}
+
+				default = TEXT
+				default {
+					typolink.parameter = {$plugin.tx_news.settings.detailPid}
+					typolink.additionalParams = &tx_news_pi1[controller]=News&tx_news_pi1[action]=detail&tx_news_pi1[news]={field:uid}&L={field:__solr_index_language}
+					typolink.additionalParams.insertData = 1
+					typolink.useCacheHash = 1
+					typolink.returnLast = url
+				}
 			}
 		}
 
