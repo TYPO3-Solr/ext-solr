@@ -75,6 +75,8 @@ abstract class AbstractSolrService {
      */
     public function getScheme()
     {
+        trigger_error('AbstractSolrService::getScheme is deprecated please use getPrimaryEndpoint()->getScheme() now. Will be dropped with EXT:solr 10', E_USER_DEPRECATED);
+
         $endpoint = $this->getPrimaryEndpoint();
         return is_null($endpoint) ? '' : $endpoint->getScheme();
     }
@@ -85,6 +87,8 @@ abstract class AbstractSolrService {
      */
     public function getHost()
     {
+        trigger_error('AbstractSolrService::getHost is deprecated please use getPrimaryEndpoint()->getHost() now. Will be dropped with EXT:solr 10', E_USER_DEPRECATED);
+
         $endpoint = $this->getPrimaryEndpoint();
         return is_null($endpoint) ? '' : $endpoint->getHost();
     }
@@ -95,6 +99,8 @@ abstract class AbstractSolrService {
      */
     public function getPort()
     {
+        trigger_error('AbstractSolrService::getPort is deprecated please use getPrimaryEndpoint()->getPort() now. Will be dropped with EXT:solr 10', E_USER_DEPRECATED);
+
         $endpoint = $this->getPrimaryEndpoint();
         return is_null($endpoint) ? '' : $endpoint->getPort();
     }
@@ -105,6 +111,8 @@ abstract class AbstractSolrService {
      */
     public function getPath()
     {
+        trigger_error('AbstractSolrService::getPath is deprecated please use getCorePath() now. Will be dropped with EXT:solr 10', E_USER_DEPRECATED);
+
         return $this->getCorePath();
     }
 
@@ -139,6 +147,8 @@ abstract class AbstractSolrService {
      */
     public function getCoreName()
     {
+        trigger_error('AbstractSolrService::getCoreName is deprecated please use getCorePath() now. Will be dropped with EXT:solr 10', E_USER_DEPRECATED);
+
         $endpoint = $this->getPrimaryEndpoint();
         return is_null($endpoint) ? '' : $endpoint->getCore();
     }
@@ -362,6 +372,8 @@ abstract class AbstractSolrService {
      */
     public function requestServlet($servlet, $parameters = [], $method = 'GET', $requestHeaders = [], $rawPost = '')
     {
+        trigger_error('AbstractSolrService::requestServlet is deprecated please use getClient()->executeRequest() now. Will be dropped with EXT:solr 10', E_USER_DEPRECATED);
+
         // Add default parameters
         $parameters['wt'] = 'json';
         $url = $this->_constructUrl($servlet, $parameters);

@@ -183,15 +183,6 @@ class SolrAdminServiceTest extends IntegrationTest
     /**
      * @test
      */
-    public function canRequestServlet()
-    {
-        $result = $this->solrAdminService->requestServlet('/solr/core_en/admin/ping');
-        $this->assertSame('OK', $result->status, 'Unexpected servlet response');
-    }
-
-    /**
-     * @test
-     */
     public function canGetPluginsInformation()
     {
         $result = $this->solrAdminService->getPluginsInformation();
