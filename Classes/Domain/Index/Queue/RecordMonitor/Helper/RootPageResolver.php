@@ -26,7 +26,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
-use ApacheSolrForTypo3\Solr\Site;
+use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
 use ApacheSolrForTypo3\Solr\System\Page\Rootline;

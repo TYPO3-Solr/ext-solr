@@ -27,7 +27,7 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue\Initializer;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Site;
+use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 
 /**
  * Interface to initialize items in the Index Queue.

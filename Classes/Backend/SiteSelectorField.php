@@ -26,7 +26,7 @@ namespace ApacheSolrForTypo3\Solr\Backend;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
-use ApacheSolrForTypo3\Solr\Site;
+use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
