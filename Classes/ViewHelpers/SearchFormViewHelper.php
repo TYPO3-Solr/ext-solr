@@ -15,6 +15,7 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers;
  */
 
 use ApacheSolrForTypo3\Solr\System\Url\UrlHelper;
+use ApacheSolrForTypo3\Solr\System\Util\SiteUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
@@ -117,7 +118,6 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
         $this->getTemplateVariableContainer()->add('pageUid', $pageUid);
         $this->getTemplateVariableContainer()->add('languageUid', $this->frontendController->sys_language_uid);
 
-        // @todo when TYPO3 8 support is dropped we can remove this property and remove
         $this->getTemplateVariableContainer()->add('addPageAndLanguageId', !$this->getIsSiteManagedSite($pageUid));
         $formContent = $this->renderChildren();
         $this->getTemplateVariableContainer()->remove('addPageAndLanguageId');
@@ -135,25 +135,11 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
      * When no speaking urls are active (e.g. with TYPO3 8 and no realurl) this information is passed as query parameter
      * and would get lost when it is only part of the query arguments in the action parameter of the form.
      *
-     * Therefore we check if we have a TYPO3 9 system with active site management and then do not render these arguments in the form.
-     *
      * @return boolean
      */
     protected function getIsSiteManagedSite($pageId)
     {
-        if (!class_exists('\TYPO3\CMS\Core\Site\SiteFinder')) {
-           return false;
-        }
-
-        //we have a TYPO3 9 System
-        $siteFinder = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Site\SiteFinder::class);
-        try {
-            $site = $siteFinder->getSiteByPageId($pageId);
-        } catch (\TYPO3\CMS\Core\Exception\SiteNotFoundException $e) {
-            return false;
-        }
-
-        return $site instanceof \TYPO3\CMS\Core\Site\Entity\Site;
+        return SiteUtility::getIsSiteManagedSite($pageId);
     }
 
     /**

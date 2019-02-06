@@ -91,7 +91,6 @@ class UrlHelperTest extends UnitTest
     }
 
     /**
-     *
      * @dataProvider getUrl
      * @test
      * @param string $inputUrl
@@ -101,5 +100,53 @@ class UrlHelperTest extends UnitTest
     {
         $urlHelper = new UrlHelper($inputUrl);
         $this->assertSame($expectedOutputUrl, $urlHelper->getUrl(), 'Can not get expected output url');
+    }
+
+    /**
+     * @test
+     */
+    public function testSetHost()
+    {
+        $urlHelper = new UrlHelper('http://www.google.de/test/index.php?foo=bar');
+        $urlHelper->setHost('www.test.de');
+        $this->assertSame('http://www.test.de/test/index.php?foo=bar', $urlHelper->getUrl());
+    }
+
+    /**
+     * @test
+     */
+    public function testSetScheme()
+    {
+        $urlHelper = new UrlHelper('http://www.google.de/test/index.php?foo=bar');
+        $urlHelper->setScheme('https');
+        $this->assertSame('https://www.google.de/test/index.php?foo=bar', $urlHelper->getUrl());
+    }
+
+    /**
+     * @test
+     */
+    public function testSetPath()
+    {
+        $urlHelper = new UrlHelper('http://www.google.de/one/two?foo=bar');
+        $urlHelper->setPath('/one/two');
+        $this->assertSame('http://www.google.de/one/two?foo=bar', $urlHelper->getUrl());
+    }
+
+    public function unmodifiedUrl()
+    {
+        return [
+            'noQuery' => ['http://www.site.de/en/test'],
+            'withQuery' => ['http://www.site.de/en/test?id=1'],
+            'withQueries' => ['http://www.site.de/en/test?id=1&L=2']
+
+        ];
+    }
+    /**
+     * @dataProvider unmodifiedUrl
+     */
+    public function testGetUnmodifiedUrl($uri)
+    {
+        $urlHelper = new UrlHelper($uri);
+        $this->assertSame($uri, $urlHelper->getUrl(), 'Could not get unmodified url');
     }
 }
