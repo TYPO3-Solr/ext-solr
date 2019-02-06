@@ -26,9 +26,8 @@ namespace ApacheSolrForTypo3\Solr\Domain\Site;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\RootPageResolver;
-use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
-use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
 use ApacheSolrForTypo3\Solr\System\Service\SiteService;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
@@ -197,14 +196,37 @@ class SiteRepository
         $solrConfiguration = Util::getSolrConfigurationFromPageId($rootPageId);
         $domain = $this->getDomainFromConfigurationOrFallbackToDomainRecord($rootPageId);
         $siteHash = $this->getSiteHashForDomain($domain);
+        $defaultLanguage = $this->getDefaultLanguage($rootPageId);
+        $pageRepository = GeneralUtility::makeInstance(PagesRepository::class);
 
         return GeneralUtility::makeInstance(
             Site::class,
             /** @scrutinizer ignore-type */ $solrConfiguration,
             /** @scrutinizer ignore-type */ $rootPageRecord,
             /** @scrutinizer ignore-type */ $domain,
-            /** @scrutinizer ignore-type */ $siteHash
+            /** @scrutinizer ignore-type */ $siteHash,
+            /** @scrutinizer ignore-type */ $pageRepository,
+            /** @scrutinizer ignore-type */ $defaultLanguage
         );
+    }
+
+    /**
+     * Retrieves the default language by the rootPageId of a site.
+     *
+     * @param int $rootPageId
+     * @return int|mixed
+     */
+    protected function getDefaultLanguage($rootPageId)
+    {
+        $siteDefaultLanguage = 0;
+
+        $configuration = Util::getConfigurationFromPageId($rootPageId, 'config');
+
+        $siteDefaultLanguage = $configuration->getValueByPathOrDefaultValue('sys_language_uid', $siteDefaultLanguage);
+        // default language is set through default L GET parameter -> overruling config.sys_language_uid
+        $siteDefaultLanguage = $configuration->getValueByPathOrDefaultValue('defaultGetVars.L', $siteDefaultLanguage);
+
+        return $siteDefaultLanguage;
     }
 
     /**

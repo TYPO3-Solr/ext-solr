@@ -24,74 +24,19 @@ namespace ApacheSolrForTypo3\Solr;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\ConfigurationAwareRecordService;
+use ApacheSolrForTypo3\Solr\Domain\Site\Site as NewSite;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
-use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * A site is a branch in a TYPO3 installation. Each site's root page is marked
  * by the "Use as Root Page" flag.
  *
+ * @deprecated The class was  moved to ApacheSolrForTypo3\Solr\Domain\Site\Site the old class will be removed in EXT:solr 10
  * @author Ingo Renner <ingo@typo3.org>
  */
-class Site
+class Site extends NewSite
 {
-
-    /**
-     * @var TypoScriptConfiguration
-     */
-    protected $configuration;
-
-    /**
-     * Cache for ApacheSolrForTypo3\Solr\Site objects
-     *
-     * @var array
-     */
-    protected static $sitesCache = [];
-
-    /**
-     * Small cache for the list of pages in a site, so that the results of this
-     * rather expensive operation can be used by all initializers without having
-     * each initializer do it again.
-     *
-     * TODO Move to caching framework once TYPO3 4.6 is the minimum required
-     * version.
-     *
-     * @var array
-     */
-    protected static $sitePagesCache = [];
-
-    /**
-     * Root page record.
-     *
-     * @var array
-     */
-    protected $rootPage = [];
-
-    /**
-     * The site's sys_language_mode
-     *
-     * @var string
-     */
-    protected $sysLanguageMode = null;
-
-    /**
-     * @var string
-     */
-    protected $domain;
-
-    /**
-     * @var string
-     */
-    protected $siteHash;
-
-    /**
-     * @var PagesRepository
-     */
-    protected $pagesRepository;
-
     /**
      * Constructor.
      *
@@ -100,228 +45,26 @@ class Site
      * @param string $domain The domain record used by this Site
      * @param string $siteHash The site hash used by this site
      * @param PagesRepository $pagesRepository
+     * @param int $defaultLanguageId
+     * @deprecated Deprecated since 9.0.0 please use ApacheSolrForTypo3\Solr\Domain\Site\Site now. Will be removed in EXT:solr 10
      */
-    public function __construct(TypoScriptConfiguration $configuration, array $page, $domain, $siteHash, PagesRepository $pagesRepository = null)
+    public function __construct(TypoScriptConfiguration $configuration, array $page, $domain, $siteHash, PagesRepository $pagesRepository = null, $defaultLanguageId = 0)
     {
-        $this->configuration = $configuration;
-        $this->rootPage = $page;
-        $this->domain = $domain;
-        $this->siteHash = $siteHash;
-        $this->pagesRepository = $pagesRepository ?? GeneralUtility::makeInstance(PagesRepository::class);
+        trigger_error('The class Site was moved to ApacheSolrForTypo3\Solr\Domain\Site\Site please make sure that you this class now. Will be removed in EXT:solr 10', E_USER_DEPRECATED);
+        parent::__construct($configuration, $page, $domain, $siteHash, $pagesRepository, $defaultLanguageId);
     }
 
     /**
-     * Clears the $sitePagesCache
-     *
+     * @param string $method
+     * @param array $args
+     * @return mixed
      */
-    public static function clearSitePagesCache()
-    {
-        self::$sitePagesCache = [];
-    }
-
-    /**
-     * Takes an pagerecord and checks whether the page is marked as root page.
-     *
-     * @param array $page pagerecord
-     * @return bool true if the page is marked as root page, false otherwise
-     */
-    public static function isRootPage($page)
-    {
-        if ($page['is_siteroot']) {
-            return true;
+    public function __call($method, $args) {
+        if(is_callable(array($this,$method))) {
+            trigger_error('The class Site was moved to ApacheSolrForTypo3\Solr\Domain\Site\Site please make sure that you this class now. Will be removed in EXT:solr 10', E_USER_DEPRECATED);
+            return call_user_func_array(array($this,$method), $args);
+        } else {
+            trigger_error("Call to undefined method '{$method}'");
         }
-
-        return false;
-    }
-
-    /**
-     * Gets the site's root page ID (uid).
-     *
-     * @return int The site's root page ID.
-     */
-    public function getRootPageId()
-    {
-        return (int)$this->rootPage['uid'];
-    }
-
-
-    /**
-     * Gets the site's root page language IDs (uids).
-     *
-     * @return array
-     */
-    public function getRootPageLanguageIds() : array
-    {
-        $rootPageLanguageIds = [];
-        $rootPageId = $this->getRootPageId();
-        $rootPageOverlays = $this->pagesRepository->findTranslationOverlaysByPageId($rootPageId);
-        if (count($rootPageOverlays)) {
-            foreach ($rootPageOverlays as $rootPageOverlay) {
-                $rootPageLanguageIds[] = $rootPageOverlay['sys_language_uid'];
-            }
-        }
-        return $rootPageLanguageIds;
-    }
-
-    /**
-     * Gets the site's label. The label is build from the the site title and root
-     * page ID (uid).
-     *
-     * @return string The site's label.
-     */
-    public function getLabel()
-    {
-        $rootlineTitles = [];
-        $rootLine = BackendUtility::BEgetRootLine($this->rootPage['uid']);
-        // Remove last
-        array_pop($rootLine);
-        $rootLine = array_reverse($rootLine);
-        foreach ($rootLine as $rootLineItem) {
-            $rootlineTitles[] = $rootLineItem['title'];
-        }
-        return implode(' - ', $rootlineTitles) . ', Root Page ID: ' . $this->rootPage['uid'];
-    }
-
-    /**
-     * Gets the site's Solr TypoScript configuration (plugin.tx_solr.*)
-     *
-     * @return  \ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration The Solr TypoScript configuration
-     */
-    public function getSolrConfiguration()
-    {
-        return $this->configuration;
-    }
-
-    /**
-     * Gets the site's default language as configured in
-     * config.sys_language_uid. If sys_language_uid is not set, 0 is assumed to
-     * be the default.
-     *
-     * @return int The site's default language.
-     */
-    public function getDefaultLanguage()
-    {
-        $siteDefaultLanguage = 0;
-
-        $configuration = Util::getConfigurationFromPageId(
-            $this->rootPage['uid'],
-            'config'
-        );
-
-        $siteDefaultLanguage = $configuration->getValueByPathOrDefaultValue('sys_language_uid', $siteDefaultLanguage);
-        // default language is set through default L GET parameter -> overruling config.sys_language_uid
-        $siteDefaultLanguage = $configuration->getValueByPathOrDefaultValue('defaultGetVars.L', $siteDefaultLanguage);
-
-        return $siteDefaultLanguage;
-    }
-
-    /**
-     * Generates a list of page IDs in this site. Attention, this includes
-     * all page types! Deleted pages are not included.
-     *
-     * @param int|string $rootPageId Page ID from where to start collection sub pages
-     * @param int $maxDepth Maximum depth to descend into the site tree
-     * @return array Array of pages (IDs) in this site
-     */
-    public function getPages($rootPageId = 'SITE_ROOT', $maxDepth = 999)
-    {
-        $pageIds = [];
-        if ($rootPageId === 'SITE_ROOT') {
-            $rootPageId = (int)$this->rootPage['uid'];
-            $pageIds[] = $rootPageId;
-        }
-
-        $configurationAwareRecordService = GeneralUtility::makeInstance(ConfigurationAwareRecordService::class);
-        // Fetch configuration in order to be able to read initialPagesAdditionalWhereClause
-        $solrConfiguration = $this->getSolrConfiguration();
-        $indexQueueConfigurationName = $configurationAwareRecordService->getIndexingConfigurationName('pages', $this->rootPage['uid'], $solrConfiguration);
-        $initialPagesAdditionalWhereClause = $solrConfiguration->getInitialPagesAdditionalWhereClause($indexQueueConfigurationName);
-
-        return array_merge($pageIds, $this->pagesRepository->findAllSubPageIdsByRootPage($rootPageId, $maxDepth, $initialPagesAdditionalWhereClause));
-    }
-
-    /**
-     * Generates the site's unique Site Hash.
-     *
-     * The Site Hash is build from the site's main domain, the system encryption
-     * key, and the extension "tx_solr". These components are concatenated and
-     * sha1-hashed.
-     *
-     * @return string Site Hash.
-     */
-    public function getSiteHash()
-    {
-        return $this->siteHash;
-    }
-
-    /**
-     * Gets the site's main domain. More specifically the first domain record in
-     * the site tree.
-     *
-     * @return string The site's main domain.
-     */
-    public function getDomain()
-    {
-        return $this->domain;
-    }
-
-    /**
-     * Gets the site's root page.
-     *
-     * @return array The site's root page.
-     */
-    public function getRootPage()
-    {
-        return $this->rootPage;
-    }
-
-    /**
-     * Gets the site's root page's title.
-     *
-     * @return string The site's root page's title
-     */
-    public function getTitle()
-    {
-        return $this->rootPage['title'];
-    }
-
-    /**
-     * Gets the site's config.sys_language_mode setting
-     *
-     * @param int $languageUid
-     *
-     * @return string The site's config.sys_language_mode
-     */
-    public function getSysLanguageMode($languageUid = 0)
-    {
-        if (!is_null($this->sysLanguageMode)) {
-            return $this->sysLanguageMode;
-        }
-
-        try {
-            Util::initializeTsfe($this->getRootPageId(), $languageUid);
-            $this->sysLanguageMode = $GLOBALS['TSFE']->sys_language_mode;
-            return $this->sysLanguageMode;
-
-        } catch (\TYPO3\CMS\Core\Error\Http\ServiceUnavailableException $e) {
-            // when there is an error during initialization we return the default sysLanguageMode
-            return $this->sysLanguageMode;
-        }
-    }
-
-    /**
-     * Retrieves the rootPageIds as an array from a set of sites.
-     *
-     * @param array $sites
-     * @return array
-     */
-    public static function getRootPageIdsFromSites(array $sites): array
-    {
-        $rootPageIds = [];
-        foreach ($sites as $site) {
-            $rootPageIds[] = (int)$site->getRootPageId();
-        }
-
-        return $rootPageIds;
     }
 }

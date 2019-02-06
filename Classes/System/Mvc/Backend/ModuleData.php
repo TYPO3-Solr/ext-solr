@@ -24,7 +24,7 @@ namespace ApacheSolrForTypo3\Solr\System\Mvc\Backend;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Site;
+use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 
 /**
  * Represents the state of needed for backend module components e.g. selected option from select menu, enabled or disabled button, etc..

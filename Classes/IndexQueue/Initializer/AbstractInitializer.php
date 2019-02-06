@@ -28,7 +28,7 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue\Initializer;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\QueueItemRepository;
-use ApacheSolrForTypo3\Solr\Site;
+use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use Doctrine\DBAL\DBALException;
 use TYPO3\CMS\Backend\Utility\BackendUtility;

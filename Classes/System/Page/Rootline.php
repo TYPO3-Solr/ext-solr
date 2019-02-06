@@ -25,7 +25,7 @@ namespace ApacheSolrForTypo3\Solr\System\Page;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Site;
+use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 
 /**
  * Rootline class. This class is used to perform operations on a rootline array.
