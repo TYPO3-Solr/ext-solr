@@ -23,7 +23,7 @@ Apache Solr for TYPO3 9.0.0
 
 We are happy to release EXT:solr 9.0.0. The focus of EXT:solr 9.0.0 was, to support the latest version of Apache Solr (7.6.0) and to drop the usage of the solrphpclient and use the solarium php API instead.
 
-**Important**: This version is installable with TYPO3 9 LTS, but does **not** support all features of TYPO3 9 yet. Especially the site handling needs further development in EXT:solr to fully support it with TYPO3 9 LTS. Since the development budget is limited at one side and we have other project requests at the other side we could spend less time on the development of EXT:solr by the end of the year. If you want to support us please consider to sponsor us in 2019.
+**Important**: This version is installable with TYPO3 9 LTS, but does **not** support all features of TYPO3 9 yet. Especially the site handling needs further development in EXT:solr to fully support it with TYPO3 9 LTS. Beside the open tasks in EXT:solr there are also parts left in the TYPO3 core (e.g. when using language fallbacks). In the next release of EXT:solr we want to improve the integration with the site management in TYPO3. Since the development budget is limited at one side and we have other project requests at the other side we could spend less time on the development of EXT:solr by the end of the year. If you want to support us please consider to sponsor us in 2019.
 
 New in this release
 ===================
@@ -67,7 +67,7 @@ In the future we want to get rid of redundant code and use the API where we can 
 TYPO3 9 compatibility
 ---------------------
 
-The current release is installable and useable with TYPO3 9 LTS but not all features are supported.
+The current release is installable and useable with TYPO3 9 LTS **but not all features** are supported.
 
 Currently it is supported to:
 
@@ -191,7 +191,6 @@ plugin.tx_solr.solr {
 ```
 
 
-
 Removed Code
 ============
 
@@ -220,128 +219,60 @@ awesome community. Here are the contributors to this release.
 
 (patches, comments, bug reports, reviews, ... in alphabetical order)
 
-* Andreas Lappe
+* Aljoscha Weber
 * Benni Mack
-* Florian Schöppe
-* Frans Saris
+* Felix Nagel
+* Florian Wessels
+* Helmut Hummel
 * Jens Jacobsen
 * Marc Bastian Heinrichs
-* Markus Friedrich
-* Michael Telgkamp
-* Olivier Dobberkau
+* Patrick Gaumond
 * Rafael Kähm
-* Rémy DANIEL
-* Sascha Egerer
-* Thomas Löffler
-* Timo Hund
+* Sasche Egerer
 * Thomas Hohn
+* Timo Hund
 
-Also a big thanks to our partners that have joined the EB2018 program:
+Also a big thanks to our partners that have joined the EB2019 program:
 
-* 4eyes GmbH
-* Albervanderveen
-* Agentur Frontal AG
-* AlrweNWR Internet BV
-* Amedick & Sommer
-* AUSY SA
-* BARDEHLE PAGENBERG Partnerschaft mbH
-* Bibus AG
+* Amedick & Sommer Neue Medien GmbH
+* BIBUS AG Group
 * Bitmotion GmbH
-* bgm Websolutions GmbH
-* bplusd interactive GmbH
-* Cast Iron Coding, Inc
-* Centre de gestion de la Fonction Publique Territoriale du Nord (Siège)
-* chiliSCHARF Kommunikationsagentur e.U.
-* Citkomm services GmbH
-* Cobytes GmbH
-* Columbus Interactive GmbH
-* Consulting Piezunka und Schamoni - Information Technologies GmbH
-* Cows Online GmbH
-* creativ clicks GmbH
-* DACHCOM.DIGITAL AG
-* Deutsches Literaturarchiv Marbach
-* E-Magineurs
-* Evangelische Stiftung Alsterdorf
-* food media Frank Wörner
-* Fachhochschule für öffentliche Verwaltung NRW
-* fixpunkt werbeagentur gmbh
-* FLOWSITE GmbH
-* FTI Touristik GmbH
-* GAYA - La Nouvelle Agence
+* CS2 AG
 * Gernot Leitgab
 * Getdesigned GmbH
 * Hirsch & Wölfl GmbH
-* Hochschule Furtwangen
-* ijuice Agentur GmbH
 * ITK Rheinland
-* Image Transfer GmbH
-* JUNGMUT Communications GmbH
-* Kreis Coesfeld
-* Landeskriminalamt Thüringen
-* Linnea Rådgivning
-* LINGNER CONSULTING NEW MEDIA GMBH
-* LOUIS INTERNET GmbH
-* L.N. Schaffrath DigitalMedien GmbH
-* l'Université Paris-Dauphine
-* Marketing Factory Consulting GmbH
-* MEDIA::ESSENZ
-* Mehr Demokratie e.V.
-* mehrwert intermediale kommunikation GmbH
-* Mercedes AMG GmbH
-* nullacht15 GmbH
-* Petz & Co
-* pietzpluswild GmbH
-* pixelcreation GmbH
-* plan.net
-* Pluswerk AG
-* POCO Service AG
-* polargold GmbH
-* Pottkinder GmbH
-* PROVITEX GmbH
-* Publicis Pixelpark
-* punkt.de GmbH
-* PROFILE MEDIA GmbG
-* Q3i GmbH & Co. KG
-* ressourcenmangel an der panke GmbH
-* RKW Rationalisierungs- und Innovationszentrum der Deutschen Wirtschaft e. V.
-* rms. relationship marketing solutions GmbH
-* Roza Sancken
-* sesamnet GmbH
-* Site'nGo
-* SIWA Online GmbH
-* snowflake productions gmbh
-* Stadt Brandenburg an der Havel
-* Studio B12 GmbH
-* systime
-* SYZYGY Deutschland GmbH
-* Talleux & Zöllner GbR
+* Kassenärztliche Vereinigung Bayerns (KZVB)
 * TOUMORO
-* THE BRETTINGHAMS GmbH
-* TWT Interactive GmbH
-* T-Systems Multimedia Solutions GmbH
-* Typoheads GmbH
-* Q3i GmbH
-* Ueberbit GmbH
-* WACON Internet GmbH
-* webconsulting business services gmbh
-* wow! solution
-* zdreicon GmbH
-* zimmer7 GmbH
+* Ueberbit Gmbh
+* XIMA MEDIA GmbH
+* b13 GmbH
+* bgm business websolutions GmbH & Co KG
+* datamints GmbH
+* medien.de mde GmbH
+* mehrwert intermediale kommunikation GmbH
+* mellowmessage GmbH
+* plan2net GmbH
+* punkt.de GmbH
 
-Special thanks to our premium EB 2018 partners:
+Special thanks to our premium EB 2019 partners:
 
-* b13 http://www.b13.de/
-* dkd http://www.dkd.de/
-* Image Transfer GmbH https://www.image-transfer.de/
-* jweiland.net http://www.jweiland.net/
-* Sitegeist http://www.sitegeist.de/
+* jweiland.net
+* sitegeist media solutions GmbH
+
+
+In addition i want to thank Markus Kalkbrenner and the whole solarium team for the support.
 
 Thanks to everyone who helped in creating this release!
 
 Outlook
 =======
 
-In the next release, we want to focus on the move to solarium and the support of the latest Apache Solr version.
+In the next release we will drop the support of TYPO3 8 and focus on the integration into TYPO39. Depending on the funding we would like to support
+the integration into the TYPO3 site management and want to allow to configure you Solr site with the TYPO3 site management module.
+
+With the move to the solarium php api, we take the first step of the integration. In the next releases we want to use more parts of the solarium API and also contribute to that API to share the improvements with other PHP projects.
+
 
 How to Get Involved
 ===================
