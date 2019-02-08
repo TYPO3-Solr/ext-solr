@@ -76,22 +76,25 @@ class OptionsFacetQueryBuilder extends DefaultFacetQueryBuilder implements Facet
      */
     protected function buildExcludeTagsForJson(array $facetConfiguration, TypoScriptConfiguration $configuration)
     {
-        $isKeepAllOptionsActiveForSingleFacet = $facetConfiguration['keepAllOptionsOnSelection'] == 1;
-        $isKeepAllOptionsActiveGlobalsAndCountsEnabled = $configuration->getSearchFacetingKeepAllFacetsOnSelection()
-            && $configuration->getSearchFacetingCountAllFacetsForSelection();
+        $excludeFields = [];
 
-        if ($isKeepAllOptionsActiveForSingleFacet || $isKeepAllOptionsActiveGlobalsAndCountsEnabled) {
-            return $facetConfiguration['field'];
-        } elseif($configuration->getSearchFacetingKeepAllFacetsOnSelection()) {
-            // keepAllOptionsOnSelection globally active
-            $facets = [];
-            foreach ($configuration->getSearchFacetingFacets() as $facet) {
-                $facets[] = $facet['field'];
+        if ($configuration->getSearchFacetingKeepAllFacetsOnSelection()) {
+            if (!$configuration->getSearchFacetingCountAllFacetsForSelection()) {
+                // keepAllOptionsOnSelection globally active
+                foreach ($configuration->getSearchFacetingFacets() as $facet) {
+                    $excludeFields[] = $facet['field'];
+                }
+            } else {
+                $excludeFields[] = $facetConfiguration['field'];
             }
-            return implode(',', $facets);
         }
 
-        return '';
+        $isKeepAllOptionsActiveForSingleFacet = $facetConfiguration['keepAllOptionsOnSelection'] == 1;
+        if ($isKeepAllOptionsActiveForSingleFacet) {
+            $excludeFields[] = $facetConfiguration['field'];
+        }
+
+        return implode(',', array_unique($excludeFields));
     }
 
     /**
