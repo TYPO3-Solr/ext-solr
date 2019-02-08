@@ -853,6 +853,25 @@ faceting.keepAllFacetsOnSelection
 
 When enabled selecting an option from a facet will not reduce the number of options available in other facets.
 
+faceting.countAllFacetsForSelection
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+:Type: Boolean
+:TS Path: plugin.tx_solr.search.faceting.countAllFacetsForSelection
+:Since: 8.0
+:Default: 0
+:Options: 0, 1
+
+When ```keepAllFacetsOnSelection``` is active the count of a facet do not get reduced. You can use ```countAllFacetsForSelection``` to achieve that.
+
+The following example shows how to keep all options of all facets by keeping the real document count, even when it has zero options:
+
+```
+plugin.tx_solr.search.faceting.keepAllFacetsOnSelection = 1
+plugin.tx_solr.search.faceting.countAllFacetsForSelection = 1
+plugin.tx_solr.search.faceting.minimumCount = 0
+```
+
 faceting.showAllLink.wrap
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 

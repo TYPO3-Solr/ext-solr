@@ -306,6 +306,82 @@ class FacetingTest extends UnitTest
     }
 
     /**
+     * @test
+     */
+    public function testCanHandleCombinationOfKeepAllFacetsOnSelectionAndKeepAllOptionsOnSelection()
+    {
+        $fakeConfigurationArray = [];
+        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting'] = 1;
+        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting.']['keepAllFacetsOnSelection'] = 1;
+        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting.']['facets.'] = [
+            'type.' => [
+                'field' => 'type',
+                'keepAllOptionsOnSelection' => 1
+            ],
+            'color.' => [
+                'field' => 'color',
+            ]
+        ];
+        $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
+
+        $fakeArguments = ['filter' => [urlencode('color:red'),urlencode('type:product')]];
+
+        $fakeRequest = $this->getDumbMock(SearchRequest::class);
+        $fakeRequest->expects($this->once())->method('getArguments')->will($this->returnValue($fakeArguments));
+        $fakeRequest->expects($this->any())->method('getContextTypoScriptConfiguration')->will($this->returnValue($fakeConfiguration));
+
+        $queryParameter = $this->getQueryParametersFromExecutedFacetingModifier($fakeConfiguration, $fakeRequest);
+        $this->assertContains('true',  $queryParameter['facet'], 'Query string did not contain expected snipped');
+
+        $jsonData = \json_decode($queryParameter['json.facet']);
+
+        $this->assertEquals('type,color', $jsonData->type->domain->excludeTags, 'Query string did not contain expected snipped');
+        $this->assertEquals('type', $jsonData->type->field, 'Did not build json field properly');
+
+        $this->assertEquals('type,color', $jsonData->color->domain->excludeTags, 'Query string did not contain expected snipped');
+        $this->assertEquals('color', $jsonData->color->field, 'Did not build json field properly');
+    }
+
+    /**
+     * @test
+     */
+    public function testCanHandleCombinationOfKeepAllFacetsOnSelectionAndKeepAllOptionsOnSelectionAndCountAllFacetsForSelection()
+    {
+        $fakeConfigurationArray = [];
+        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting'] = 1;
+        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting.']['keepAllFacetsOnSelection'] = 1;
+        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting.']['countAllFacetsForSelection'] = 1;
+
+        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting.']['facets.'] = [
+            'type.' => [
+                'field' => 'type',
+                'keepAllOptionsOnSelection' => 1
+            ],
+            'color.' => [
+                'field' => 'color',
+            ]
+        ];
+        $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
+
+        $fakeArguments = ['filter' => [urlencode('color:red'),urlencode('type:product')]];
+
+        $fakeRequest = $this->getDumbMock(SearchRequest::class);
+        $fakeRequest->expects($this->once())->method('getArguments')->will($this->returnValue($fakeArguments));
+        $fakeRequest->expects($this->any())->method('getContextTypoScriptConfiguration')->will($this->returnValue($fakeConfiguration));
+
+        $queryParameter = $this->getQueryParametersFromExecutedFacetingModifier($fakeConfiguration, $fakeRequest);
+        $this->assertContains('true',  $queryParameter['facet'], 'Query string did not contain expected snipped');
+
+        $jsonData = \json_decode($queryParameter['json.facet']);
+
+        $this->assertEquals('type', $jsonData->type->domain->excludeTags, 'Query string did not contain expected snipped');
+        $this->assertEquals('type', $jsonData->type->field, 'Did not build json field properly');
+
+        $this->assertEquals('color', $jsonData->color->domain->excludeTags, 'Query string did not contain expected snipped');
+        $this->assertEquals('color', $jsonData->color->field, 'Did not build json field properly');
+    }
+
+    /**
      *
      * @test
      */
