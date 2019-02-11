@@ -171,7 +171,7 @@ class Faceting implements Modifier, SearchRequestAware
     protected function getFilterTag($facetConfiguration, $keepAllFacetsOnSelection)
     {
         $tag = '';
-        if ($facetConfiguration['keepAllOptionsOnSelection'] == 1 || $keepAllFacetsOnSelection) {
+        if ($facetConfiguration['keepAllOptionsOnSelection'] == 1 || $facetConfiguration['addFieldAsTag'] == 1 || $keepAllFacetsOnSelection) {
             $tag = '{!tag=' . addslashes($facetConfiguration['field']) . '}';
         }
 

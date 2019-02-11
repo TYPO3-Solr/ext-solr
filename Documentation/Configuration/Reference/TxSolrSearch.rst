@@ -946,6 +946,33 @@ A facet will use the values of a configured index field to offer these values as
 
 To configure a facet you only need to provide the label and field configuration options, all other configuration options are optional.
 
+
+faceting.facets.[facetName].additionalExcludeTags
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+:Type: String
+:TS Path: plugin.tx_solr.search.faceting.facets.[facetName].additionalExcludeTags
+:Since: 9.0
+:Required: no
+
+The settings ``keepAllOptionsOnSelection``` and ``keepAllFacetsOnSelection``` are used internally to build exclude tags for facets in order to exclude the filters from the facet counts.
+This helps to keep the counts of a facet as expected by the user, in some usecases (Read also: http://yonik.com/multi-select-faceting/).
+
+With the setting ``additionalExcludeTags``` you can add tags of factes that should be excluded from the counts as well.
+
+**Note:** This setting is only available for option facets by now.
+
+faceting.facets.[facetName].addFieldAsTag
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+:Type: Boolean
+:TS Path: plugin.tx_solr.search.faceting.facets.[facetName].addFieldAsTag
+:Since: 9.0
+:Required: no
+:Default: false
+
+When you want to add fields as ```additionalExcludeTags``` for a facet a tag for this facet needs to exist. You can use this setting to force the creation of a tag for this facet in the solr query.
+
 faceting.facets.[facetName].field
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
