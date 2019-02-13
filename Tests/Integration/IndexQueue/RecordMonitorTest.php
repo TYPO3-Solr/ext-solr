@@ -909,4 +909,42 @@ class RecordMonitorTest extends IntegrationTest
 
         $this->assertIndexQueueContainsItemAmount(1);
     }
+
+    /**
+     * This testcase checks if we can create a new testpage on the root level without any errors.
+     *
+     * @test
+     */
+    public function canCreateSiteOneRootLevel()
+    {
+        $this->importDataSetFromFixture('can_create_new_page.xml');
+        $this->setUpBackendUserFromFixture(1);
+
+        $this->assertIndexQueueContainsItemAmount(0);
+        $dataHandler = $this->getDataHandler();
+        $dataHandler->start(['pages' => ['NEW' => ['hidden' => 0]]], []);
+        $dataHandler->process_datamap();
+
+        // the item is outside a siteroot so we should not have any queue entry
+        $this->assertIndexQueueContainsItemAmount(0);
+    }
+
+    /**
+     * This testcase checks if we can create a new testpage on the root level without any errors.
+     *
+     * @test
+     */
+    public function canCreateSubPageBelowSiteRoot()
+    {
+        $this->importDataSetFromFixture('can_create_new_page.xml');
+        $this->setUpBackendUserFromFixture(1);
+
+        $this->assertIndexQueueContainsItemAmount(0);
+        $dataHandler = $this->getDataHandler();
+        $dataHandler->start(['pages' => ['NEW' => ['hidden' => 0, 'pid' => 1]]], []);
+        $dataHandler->process_datamap();
+
+        // we should have one item in the solr queue
+        $this->assertIndexQueueContainsItemAmount(1);
+    }
 }
