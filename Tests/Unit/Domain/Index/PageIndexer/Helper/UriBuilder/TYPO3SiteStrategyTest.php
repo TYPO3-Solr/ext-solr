@@ -24,11 +24,6 @@ class TYPO3SiteStrategyTest extends UnitTest
      */
     public function testPageIndexingUriFromPageItemAndLanguageId()
     {
-        // @todo this check can be dropped when TYPO3 8 compatibility is dropped
-        if (Util::getIsTYPO3VersionBelow9()) {
-            $this->markTestSkipped('SiteFinder is only available with TYPO3 9');
-        }
-
         $pageRecord = ['uid' => 55];
         $itemMock = $this->getDumbMock(Item::class);
         $itemMock->expects($this->any())->method('getRecord')->willReturn($pageRecord);

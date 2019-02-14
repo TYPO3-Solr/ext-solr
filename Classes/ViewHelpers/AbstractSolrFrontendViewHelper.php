@@ -52,16 +52,13 @@ abstract class AbstractSolrFrontendViewHelper extends AbstractSolrViewHelper
     }
 
     /**
-     * @todo The fallback on $this->controllerContext is only needed for TYPO3 8 backwards compatibility and can be dropped when TYPO3 8 is not supported anymore
      * @return SolrControllerContext
      * @throws \InvalidArgumentException
      */
     protected function getControllerContext()
     {
         $controllerContext = null;
-        if (!is_null($this->controllerContext)) {
-            $controllerContext = $this->controllerContext;
-        } elseif (method_exists($this->renderingContext, 'getControllerContext')) {
+        if (method_exists($this->renderingContext, 'getControllerContext')) {
             $controllerContext = $this->renderingContext->getControllerContext();
         }
 

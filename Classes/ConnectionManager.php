@@ -48,7 +48,7 @@ use TYPO3\CMS\Frontend\Page\PageRepository;
  *
  * @author Ingo Renner <ingo@typo3.org>
  */
-class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInterface
+class ConnectionManager implements SingletonInterface
 {
 
     /**
@@ -81,36 +81,6 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
         $this->systemLanguageRepository = $systemLanguageRepository ?? GeneralUtility::makeInstance(SystemLanguageRepository::class);
         $this->pagesRepositoryAtExtSolr = $pagesRepositoryAtExtSolr ?? GeneralUtility::makeInstance(PagesRepositoryAtExtSolr::class);
         $this->logger                   = $solrLogManager ?? GeneralUtility::makeInstance(SolrLogManager::class, /** @scrutinizer ignore-type */ __CLASS__);
-    }
-
-    /**
-     * Gets a Solr connection.
-     *
-     * Instead of generating a new connection with each call, connections are
-     * kept and checked whether the requested connection already exists. If a
-     * connection already exists, it's reused.
-     *
-     * @deprecated This method can only be used to build a connection with the same endpoint for reading, writing and admin operations,
-     * if you need a connection to the different endpoints, please use getConnectionByPageId()
-     * @param string $host Solr host (optional)
-     * @param int $port Solr port (optional)
-     * @param string $path Solr path (optional)
-     * @param string $scheme Solr scheme, defaults to http, can be https (optional)
-     * @param string $username Solr user name (optional)
-     * @param string $password Solr password (optional)
-     * @param int $timeout
-     * @return SolrConnection A solr connection.
-     */
-    public function getConnection($host = '', $port = 8983, $path = '/solr/', $scheme = 'http', $username = '', $password = '', $timeout = 0)
-    {
-        trigger_error('ConnectionManager::getConnection is deprecated please use getSolrConnectionForNodes now.', E_USER_DEPRECATED);
-        if (empty($host)) {
-            throw new \InvalidArgumentException('Host argument should not be empty');
-        }
-
-        $readNode = ['scheme' => $scheme, 'host' => $host, 'port' => $port, 'path' => $path, 'username' => $username, 'password' => $password, 'timeout' => $timeout];
-        $writeNode = ['scheme' => $scheme, 'host' => $host, 'port' => $port, 'path' => $path, 'username' => $username, 'password' => $password, 'timeout' => $timeout];
-        return $this->getSolrConnectionForNodes($readNode, $writeNode);
     }
 
     /**
@@ -326,30 +296,6 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
     }
 
     // updates
-
-    /**
-     * Adds a menu entry to the clear cache menu to detect Solr connections.
-     *
-     * @deprecated deprecated since 9.0.0 will we removed in 10.0.0 still in place to prevent errors from cached localconf.php
-     * @todo this method and the implementation of the ClearCacheActionsHookInterface can be removed in EXT:solr 10
-     * @param array $cacheActions Array of CacheMenuItems
-     * @param array $optionValues Array of AccessConfigurations-identifiers (typically  used by userTS with options.clearCache.identifier)
-     */
-    public function manipulateCacheActions(&$cacheActions, &$optionValues)
-    {
-        trigger_error('ConnectionManager::manipulateCacheActions is deprecated please use ClearCacheActionsHook::manipulateCacheActions now', E_USER_DEPRECATED);
-
-        if ($GLOBALS['BE_USER']->isAdmin()) {
-            $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
-            $optionValues[] = 'clearSolrConnectionCache';
-            $cacheActions[] = [
-                'id' => 'clearSolrConnectionCache',
-                'title' => 'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:cache_initialize_solr_connections',
-                'href' => $uriBuilder->buildUriFromRoute('ajax_solr_updateConnections'),
-                'iconIdentifier' => 'extensions-solr-module-initsolrconnections'
-            ];
-        }
-    }
 
     /**
      * Updates the connections in the registry.

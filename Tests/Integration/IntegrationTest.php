@@ -121,18 +121,15 @@ abstract class IntegrationTest extends FunctionalTestCase
      */
     protected function getFixturePathByName($fixtureName)
     {
-        if(!Util::getIsTYPO3VersionBelow9())
-        {
-            $overlayPostFix = '.v9';
-            $dotInFileName = strrpos($fixtureName,'.');
-            $fileName = substr($fixtureName, 0, $dotInFileName);
-            $fileExtension = substr($fixtureName, $dotInFileName);
-            $overlayName = $fileName.$overlayPostFix.$fileExtension;
+        $overlayPostFix = '.v9';
+        $dotInFileName = strrpos($fixtureName,'.');
+        $fileName = substr($fixtureName, 0, $dotInFileName);
+        $fileExtension = substr($fixtureName, $dotInFileName);
+        $overlayName = $fileName.$overlayPostFix.$fileExtension;
 
 
-            if(file_exists($this->getFixtureRootPath() . $overlayName)) {
-                return $this->getFixtureRootPath() . $overlayName;
-            }
+        if(file_exists($this->getFixtureRootPath() . $overlayName)) {
+            return $this->getFixtureRootPath() . $overlayName;
         }
 
         return $this->getFixtureRootPath() . $fixtureName;
@@ -405,35 +402,27 @@ abstract class IntegrationTest extends FunctionalTestCase
      */
     protected function simulateFrontedUserGroups(array $feUserGroupArray)
     {
-        if (Util::getIsTYPO3VersionBelow9()) {
-            $GLOBALS['TSFE']->gr_list = implode(',', $feUserGroupArray);
-        } else {
-            /** @var  $context \TYPO3\CMS\Core\Context\Context::class */
-            $context = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Context\Context::class);
-            $userAspect = $this->getMockBuilder(\TYPO3\CMS\Core\Context\UserAspect::class)->setMethods([])->getMock();
-            $userAspect->expects($this->any())->method('get')->willReturnCallback(function($key) use($feUserGroupArray){
-                if ($key === 'groupIds') {
-                    return $feUserGroupArray;
-                }
+        /** @var  $context \TYPO3\CMS\Core\Context\Context::class */
+        $context = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Context\Context::class);
+        $userAspect = $this->getMockBuilder(\TYPO3\CMS\Core\Context\UserAspect::class)->setMethods([])->getMock();
+        $userAspect->expects($this->any())->method('get')->willReturnCallback(function($key) use($feUserGroupArray){
+            if ($key === 'groupIds') {
+                return $feUserGroupArray;
+            }
 
-                if ($key === 'isLoggedIn') {
-                    return true;
-                }
-            });
-            $userAspect->expects($this->any())->method('getGroupIds')->willReturn($feUserGroupArray);
-            $context->setAspect('frontend.user', $userAspect);
-        }
+            if ($key === 'isLoggedIn') {
+                return true;
+            }
+        });
+        $userAspect->expects($this->any())->method('getGroupIds')->willReturn($feUserGroupArray);
+        $context->setAspect('frontend.user', $userAspect);
     }
-
 
     /**
      * Applies in CMS 9.2 introduced error handling.
      */
     protected function applyUsingErrorControllerForCMS9andAbove()
     {
-        if(Util::getIsTYPO3VersionBelow9()) {
-            return;
-        }
         $GLOBALS['TYPO3_REQUEST'] = new ServerRequest();
     }
 

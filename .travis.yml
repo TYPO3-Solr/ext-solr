@@ -4,8 +4,6 @@ services:
   - docker
 
 php:
-  - 7.0
-  - 7.1
   - 7.2
 
 jdk:
@@ -24,27 +22,12 @@ env:
     - TYPO3_DATABASE_PASSWORD=""
     - PHP_CS_FIXER_VERSION="^2.11"
   matrix:
-    - TYPO3_VERSION="^8.7"
-    - TYPO3_VERSION="8.x-dev"
     - TYPO3_VERSION="^9.5"
     - TYPO3_VERSION="9.5.x-dev"
     - TYPO3_VERSION="dev-master"
 
 matrix:
   fast_finish: true
-  exclude:
-    - php: 7.0
-      env: TYPO3_VERSION="dev-master"
-    - php: 7.1
-      env: TYPO3_VERSION="dev-master"
-    - php: 7.0
-      env: TYPO3_VERSION="^9.5"
-    - php: 7.1
-      env: TYPO3_VERSION="^9.5"
-    - php: 7.0
-      env: TYPO3_VERSION="9.5.x-dev"
-    - php: 7.1
-      env: TYPO3_VERSION="9.5.x-dev"
   allow_failures:
     - env: TYPO3_VERSION="dev-master"
     - env: TYPO3_VERSION="9.5.x-dev"

@@ -138,18 +138,13 @@ class Relation
             return [];
         }
 
-        /**
-         * @todo this can be removed when TYPO3 8 support is dropped since overlays are then also stored in the same
-         * table for pages
-         */
-        $overlayTable = $this->frontendOverlayService->getOverlayTable($table, $field);
         $overlayUid = $this->frontendOverlayService->getUidOfOverlay($table, $field, $uid);
-        $fieldTCA = $this->tcaService->getConfigurationForField($overlayTable, $field);
+        $fieldTCA = $this->tcaService->getConfigurationForField($table, $field);
 
         if (isset($fieldTCA['config']['MM']) && trim($fieldTCA['config']['MM']) !== '') {
-            $relatedItems = $this->getRelatedItemsFromMMTable($overlayTable, $overlayUid, $fieldTCA);
+            $relatedItems = $this->getRelatedItemsFromMMTable($table, $overlayUid, $fieldTCA);
         } else {
-            $relatedItems = $this->getRelatedItemsFromForeignTable($overlayTable, $overlayUid, $fieldTCA, $parentContentObject);
+            $relatedItems = $this->getRelatedItemsFromForeignTable($table, $overlayUid, $fieldTCA, $parentContentObject);
         }
 
         return $relatedItems;

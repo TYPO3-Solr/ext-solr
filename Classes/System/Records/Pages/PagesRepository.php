@@ -76,12 +76,8 @@ class PagesRepository extends AbstractRepository
                 $queryBuilder->expr()->eq('is_siteroot', 1)
             );
 
-        // Only check for default language records, can be removed once TYPO3 v8 support is dropped
-        if (!Util::getIsTYPO3VersionBelow9()) {
-            $queryBuilder->andWhere(
-                $queryBuilder->expr()->eq('sys_language_uid', 0)
-            );
-        }
+
+        $this->addDefaultLanguageUidConstraint($queryBuilder);
 
         return $queryBuilder->execute()->fetchAll();
     }
@@ -137,11 +133,8 @@ class PagesRepository extends AbstractRepository
                 )
             );
         }
-        if (!Util::getIsTYPO3VersionBelow9()) {
-            $queryBuilder->andWhere(
-                $queryBuilder->expr()->eq('sys_language_uid', 0)
-            );
-        }
+
+        $this->addDefaultLanguageUidConstraint($queryBuilder);
 
         return $queryBuilder;
     }
@@ -203,12 +196,7 @@ class PagesRepository extends AbstractRepository
                 $queryBuilder->expr()->eq('pid', $queryBuilder->createNamedParameter($recursionRootPageId, \PDO::PARAM_INT))
             );
 
-        // Only check for default language records, can be removed once TYPO3 v8 support is dropped
-        if (!Util::getIsTYPO3VersionBelow9()) {
-            $queryBuilder->andWhere(
-                $queryBuilder->expr()->eq('sys_language_uid', 0)
-            );
-        }
+        $this->addDefaultLanguageUidConstraint($queryBuilder);
 
         if (!empty($initialPagesAdditionalWhereClause)) {
             $queryBuilder->andWhere($initialPagesAdditionalWhereClause);
@@ -236,28 +224,16 @@ class PagesRepository extends AbstractRepository
     {
         $queryBuilder = $this->getQueryBuilder();
         $queryBuilder->getRestrictions()->removeAll();
+        $queryBuilder->getRestrictions()->add(GeneralUtility::makeInstance(DeletedRestriction::class));
 
-        //@todo this is only needed for TYPO3 8 backwards compatibility and can be dropped when TYPO3 8 is not supported anymore
-        if (Util::getIsTYPO3VersionBelow9()) {
-            return $queryBuilder
-                ->select('pid', 'sys_language_uid')
-                ->from('pages_language_overlay')
-                ->add('where',
-                    $queryBuilder->expr()->eq('pid', $queryBuilder->createNamedParameter($pageId, \PDO::PARAM_INT))
-                    . BackendUtility::deleteClause('pages_language_overlay')
-                    . BackendUtility::BEenableFields('pages_language_overlay')
-                )->execute()->fetchAll();
-        } else {
-            $queryBuilder->getRestrictions()->add(GeneralUtility::makeInstance(DeletedRestriction::class));
+        return $queryBuilder
+            ->select('pid', 'l10n_parent', 'sys_language_uid')
+            ->from('pages')
+            ->add('where',
+                $queryBuilder->expr()->eq('l10n_parent', $queryBuilder->createNamedParameter($pageId, \PDO::PARAM_INT))
+                . BackendUtility::BEenableFields('pages')
+            )->execute()->fetchAll();
 
-            return $queryBuilder
-                ->select('pid', 'l10n_parent', 'sys_language_uid')
-                ->from('pages')
-                ->add('where',
-                    $queryBuilder->expr()->eq('l10n_parent', $queryBuilder->createNamedParameter($pageId, \PDO::PARAM_INT))
-                    . BackendUtility::BEenableFields('pages')
-                )->execute()->fetchAll();
-        }
     }
 
     /**
@@ -279,11 +255,7 @@ class PagesRepository extends AbstractRepository
                 $queryBuilder->expr()->eq('content_from_pid', $queryBuilder->createNamedParameter($pageId, \PDO::PARAM_INT))
             );
 
-        if (!Util::getIsTYPO3VersionBelow9()) {
-            $queryBuilder->andWhere(
-                $queryBuilder->expr()->eq('sys_language_uid', 0)
-            );
-        }
+        $this->addDefaultLanguageUidConstraint($queryBuilder);
 
         return $queryBuilder->execute()->fetchAll();
     }
@@ -307,11 +279,18 @@ class PagesRepository extends AbstractRepository
             ->from($this->table)
             ->add('where', $whereClause);
 
-        if (!Util::getIsTYPO3VersionBelow9()) {
-            $queryBuilder->andWhere(
-                $queryBuilder->expr()->eq('sys_language_uid', 0)
-            );
-        }
+        $this->addDefaultLanguageUidConstraint($queryBuilder);
+
         return $queryBuilder->execute()->fetchAll();
+    }
+
+    /**
+     * Limits the pages to the sys_language_uid = 0 (default language)
+     *
+     * @param $queryBuilder
+     */
+    protected function addDefaultLanguageUidConstraint($queryBuilder)
+    {
+        $queryBuilder->andWhere($queryBuilder->expr()->eq('sys_language_uid', 0));
     }
 }

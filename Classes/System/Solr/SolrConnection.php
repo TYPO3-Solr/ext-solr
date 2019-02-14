@@ -232,20 +232,6 @@ class SolrConnection
     }
 
     /**
-     * Creates a string representation of the Solr connection. Specifically
-     * will return the Solr URL.
-     *
-     * @deprecated Please use the string representations of the nodes instead
-     * @return string The Solr URL.
-     */
-    public function __toString()
-    {
-        trigger_error('ConnectionManager::__toString is deprecated please use getNode($key)->__toString() now.', E_USER_DEPRECATED);
-        $node = $this->getNode('read');
-        return $node->__toString();
-    }
-
-    /**
      * @param string $endpointKey
      * @return Client
      */

@@ -48,9 +48,7 @@ class RelationTest extends IntegrationTest
      */
     public function canFallbackToPagesTableIfPagesLanguageOverlayTCAHasNoDefinitionForLocalColumn($fixtureName)
     {
-        if (!Util::getIsTYPO3VersionBelow9()) {
-            $this->markTestSkipped('This testcase is relevant for TYPO3 8 only');
-        }
+        $this->markTestSkipped('This testcase is relevant for TYPO3 8 only');
         $this->importDataSetFromFixture($fixtureName);
         $GLOBALS['TSFE'] = $this->getMockBuilder(OverriddenTypoScriptFrontendController::class)->disableOriginalConstructor()->getMock();
         $GLOBALS['TSFE']->sys_page = GeneralUtility::makeInstance(PageRepository::class);

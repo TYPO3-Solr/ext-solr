@@ -262,16 +262,6 @@ class Search
     }
 
     /**
-     * @deprecated Since 9.0.0 will be removed in 10.0.0. Please use SearchResultSet::getAllResultCount now
-     * @return int
-     */
-    public function getNumberOfResults()
-    {
-        trigger_error('Search::getNumberOfResults is deprecated please use SearchResultSet::getAllResultCount now', E_USER_DEPRECATED);
-        return $this->response->response->numFound;
-    }
-
-    /**
      * Gets the result offset.
      *
      * @return int Result offset
@@ -279,16 +269,6 @@ class Search
     public function getResultOffset()
     {
         return $this->response->response->start;
-    }
-
-    /**
-     * @deprecated Since 9.0.0 will be removed in 10.0.0. Please use SearchResultSet::getMaxScore now.
-     * @return mixed
-     */
-    public function getMaximumResultScore()
-    {
-        trigger_error('Search::getMaximumResultScore is deprecated please use SearchResultSet::getMaximumScore now', E_USER_DEPRECATED);
-        return $this->response->response->maxScore;
     }
 
     public function getDebugResponse()

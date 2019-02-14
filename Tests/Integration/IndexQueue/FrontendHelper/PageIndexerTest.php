@@ -111,13 +111,6 @@ class PageIndexerTest extends IntegrationTest
         $GLOBALS['TCA']['pages']['columns']['page_relations'] = $additionalPageTca['columns']['page_relations'];
         $GLOBALS['TCA']['pages']['columns']['relations'] = $additionalPageTca['columns']['relations'];
 
-        //@todo when TYPO3 8 support is dropped, pages and the translation overlay can use the same tca configuration
-        if (Util::getIsTYPO3VersionBelow9()) {
-            $additionalPageLanguageOverlayTca = include($this->getFixturePathByName('fake_extension3_pages_language_overlay_tca.php'));
-            $GLOBALS['TCA']['pages_language_overlay']['columns']['page_relations'] = $additionalPageLanguageOverlayTca['columns']['page_relations'];
-            $GLOBALS['TCA']['pages_language_overlay']['columns']['relations'] = $additionalPageLanguageOverlayTca['columns']['relations'];
-        }
-
         $this->importDataSetFromFixture('can_index_page_with_relation_to_page.xml');
 
         $this->executePageIndexer([], 1, 0, '', '', null, '', '', 0);
@@ -326,12 +319,8 @@ class PageIndexerTest extends IntegrationTest
         $this->applyXClassOverriddenTypoScriptFrontendController();
         $this->applyUsingErrorControllerForCMS9andAbove();
         $this->registerShutdownFunctionToPrintExplanationOf404HandlingOnCMSIfDieIsCalled();
+        $this->expectException(PageNotFoundException::class);
 
-        if(Util::getIsTYPO3VersionBelow9()) {
-            $this->expectException(DocumentPreparationException::class);
-        } else {
-            $this->expectException(PageNotFoundException::class);
-        }
 
         $this->importDataSetFromFixture('does_not_die_if_page_not_available.xml');
         define('EXT_SOLR_INDEXING_CONTEXT', true);

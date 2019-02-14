@@ -367,11 +367,6 @@ class RecordMonitor extends AbstractDataHandlerListener
         $isLocalizedRecord = $this->tcaService->isLocalizedRecord($recordTable, $record);
         $recordUid = $this->tcaService->getTranslationOriginalUidIfTranslated($recordTable, $record, $recordUid);
 
-        //@todo This can be dropped when TYPO3 8 compatibility is dropped
-        if ($isLocalizedRecord && $recordTable === 'pages_language_overlay') {
-            $recordTable = 'pages';
-        }
-
         if ($isLocalizedRecord && !$this->getIsTranslationParentRecordEnabled($recordTable, $recordUid)) {
             // we have a localized record without a visible parent record. Nothing to do.
             return;
