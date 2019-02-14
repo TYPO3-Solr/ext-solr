@@ -451,7 +451,7 @@ class RecordMonitor extends AbstractDataHandlerListener
      */
     protected function getRecordPageId($status, $recordTable, $recordUid, $originalUid, array $fields, DataHandler $tceMain)
     {
-        if ($recordTable === 'pages' && isset($fields['l10n_parent'])) {
+        if ($recordTable === 'pages' && isset($fields['l10n_parent']) && intval($fields['l10n_parent']) > 0) {
             return $fields['l10n_parent'];
         }
 
