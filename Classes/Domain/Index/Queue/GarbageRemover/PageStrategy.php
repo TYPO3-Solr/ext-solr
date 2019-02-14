@@ -46,11 +46,6 @@ class PageStrategy extends AbstractStrategy {
             return;
         }
 
-        if ($table === 'pages_language_overlay') {
-            $this->collectPageGarbageByPageOverlayChange($uid);
-            return;
-        }
-
         if ($table === 'pages') {
             $this->collectPageGarbageByPageChange($uid);
             return;
@@ -61,7 +56,6 @@ class PageStrategy extends AbstractStrategy {
      * Determines the relevant page id for an content element update. Deletes the page from solr and requeues the
      * page for a reindex.
      *
-     * @todo This case can be deleted when TYPO3 8 compatibility is dropped
      * @param int $ttContentUid
      */
     protected function collectPageGarbageByContentChange($ttContentUid)
@@ -71,29 +65,14 @@ class PageStrategy extends AbstractStrategy {
     }
 
     /**
-     * Determines the relavant page id for the pages_language_overlay. Deletes the page from solr and requeues the
-     * page for a re index.
-     *
-     * @param int $pagesLanguageOverlayUid
-     */
-    protected function collectPageGarbageByPageOverlayChange($pagesLanguageOverlayUid)
-    {
-        $pageOverlayRecord = BackendUtility::getRecord('pages_language_overlay', $pagesLanguageOverlayUid, 'uid, pid', '', false);
-        $this->deleteInSolrAndUpdateIndexQueue('pages', $pageOverlayRecord['pid']);
-    }
-
-    /**
      * When a page was changed it is removed from the index and index queue.
      *
      * @param int $uid
      */
     protected function collectPageGarbageByPageChange($uid)
     {
-        // @todo The content of this if statement can allways be executed when TYPO3 8 support is dropped
-        if (!Util::getIsTYPO3VersionBelow9()) {
-            $pageOverlay = BackendUtility::getRecord('pages', $uid, 'l10n_parent', '', false);
-            $uid = empty($pageOverlay['l10n_parent']) ? $uid : $pageOverlay['l10n_parent'];
-        }
+        $pageOverlay = BackendUtility::getRecord('pages', $uid, 'l10n_parent', '', false);
+        $uid = empty($pageOverlay['l10n_parent']) || intval($pageOverlay['l10n_parent']) === 0 ? $uid : $pageOverlay['l10n_parent'];
 
         $this->deleteInSolrAndRemoveFromIndexQueue('pages', $uid);
     }

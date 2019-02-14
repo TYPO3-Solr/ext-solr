@@ -25,6 +25,9 @@ namespace ApacheSolrForTypo3\Solr\System\Util;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Util;
+use TYPO3\CMS\Core\Exception\SiteNotFoundException;
+use TYPO3\CMS\Core\Site\Entity\Site;
+use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -42,17 +45,14 @@ class SiteUtility
      */
     public static function getIsSiteManagedSite($pageId)
     {
-        if (Util::getIsTYPO3VersionBelow9()) {
-            return false;
-        }
 
-        $siteFinder = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Site\SiteFinder::class);
+        $siteFinder = GeneralUtility::makeInstance(SiteFinder::class);
         try {
             $site = $siteFinder->getSiteByPageId($pageId);
-        } catch (\TYPO3\CMS\Core\Exception\SiteNotFoundException $e) {
+        } catch (SiteNotFoundException $e) {
             return false;
         }
 
-        return $site instanceof \TYPO3\CMS\Core\Site\Entity\Site;
+        return $site instanceof Site;
     }
 }

@@ -432,22 +432,13 @@ class RecordMonitorTest extends IntegrationTest
 
         $status = 'update';
         $uid = 2;
+        $table = 'pages';
+        $fields = [
+            'title' => 'New Translated Rootpage',
+            'l10n_parent' => 1,
+            'pid' => 0
+        ];
 
-        // @todo the handling for pages_language_overlay can be removed when the TYPO3 8 support is dropped
-        if (Util::getIsTYPO3VersionBelow9()) {
-            $table = 'pages_language_overlay';
-            $fields = [
-                'title' => 'New Translated Rootpage',
-                'pid' => 1
-            ];
-        } else {
-            $table = 'pages';
-            $fields = [
-                'title' => 'New Translated Rootpage',
-                'l10n_parent' => 1,
-                'pid' => 0
-            ];
-        }
         $this->recordMonitor->processDatamap_afterDatabaseOperations($status, $table, $uid, $fields,
             $this->dataHandler);
 
@@ -472,12 +463,7 @@ class RecordMonitorTest extends IntegrationTest
         $uid = 2;
         $fields = ['title' => 'New Translated Rootpage', 'pid' => 1, 'hidden' => 1];
 
-        if (Util::getIsTYPO3VersionBelow9()) {
-            $table = 'pages_language_overlay';
-        } else {
-            $table = 'pages';
-        }
-
+        $table = 'pages';
 
         $this->recordMonitor->processDatamap_afterDatabaseOperations($status, $table, $uid, $fields,
             $this->dataHandler);
@@ -501,13 +487,7 @@ class RecordMonitorTest extends IntegrationTest
         $status = 'update';
         $uid = 2;
         $fields = ['title' => 'New Translated Rootpage', 'pid' => 1];
-
-        // @todo the handling for pages_language_overlay can be removed when the TYPO3 8 support is dropped
-        if (Util::getIsTYPO3VersionBelow9()) {
-            $table = 'pages_language_overlay';
-        } else {
-            $table = 'pages';
-        }
+        $table = 'pages';
 
         $this->recordMonitor->processDatamap_afterDatabaseOperations($status, $table, $uid, $fields,
             $this->dataHandler);

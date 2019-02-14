@@ -1159,16 +1159,11 @@ class SearchControllerTest extends AbstractFrontendControllerTest
      */
     protected function fakeBackendUserLoggedInInFrontend()
     {
-        if (Util::getIsTYPO3VersionBelow9()) {
-            $GLOBALS['TSFE']->beUserLogin = true;
-
-        } else {
-            /** @var  $context \TYPO3\CMS\Core\Context\Context::class */
-            $context = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Context\Context::class);
-            $userAspect = $this->getMockBuilder(\TYPO3\CMS\Core\Context\UserAspect::class)->setMethods([])->getMock();
-            $userAspect->expects($this->any())->method('get')->with('isLoggedIn')->willReturn(true);
-            $context->setAspect('backend.user', $userAspect);
-        }
+        /** @var  $context \TYPO3\CMS\Core\Context\Context::class */
+        $context = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Context\Context::class);
+        $userAspect = $this->getMockBuilder(\TYPO3\CMS\Core\Context\UserAspect::class)->setMethods([])->getMock();
+        $userAspect->expects($this->any())->method('get')->with('isLoggedIn')->willReturn(true);
+        $context->setAspect('backend.user', $userAspect);
     }
 
     /**

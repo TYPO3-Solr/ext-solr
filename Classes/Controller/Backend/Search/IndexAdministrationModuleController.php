@@ -179,12 +179,7 @@ class IndexAdministrationModuleController extends AbstractModuleController
         $backendUriBuilder = GeneralUtility::makeInstance(BackendUriBuilder::class);
 
         $parameters =  ['id' => $this->selectedPageUID];
-        if (Util::getIsTYPO3VersionBelow9()) {
-            /** @var  @todo This can be dropped when the support for TYPO3 8 ist dropped */
-            $referringUri = $backendUriBuilder->buildUriFromModule('searchbackend_SolrIndexqueue', $parameters);
-        } else {
-            $referringUri = $backendUriBuilder->buildUriFromRoute('searchbackend_SolrIndexqueue', $parameters);
-        }
+        $referringUri = $backendUriBuilder->buildUriFromRoute('searchbackend_SolrIndexqueue', $parameters);
 
         $this->redirectToUri($referringUri);
     }

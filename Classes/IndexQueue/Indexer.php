@@ -641,8 +641,7 @@ class Indexer extends AbstractIndexer
         $connections = [];
 
         foreach ($translationOverlays as $translationOverlay) {
-            // @todo usage of pid can be removed when TYPO3 8 compatibility is dropped
-            $pageId = (Util::getIsTYPO3VersionBelow9()) ? $translationOverlay['pid'] : $translationOverlay['l10n_parent'];
+            $pageId = $translationOverlay['l10n_parent'];
             $languageId = $translationOverlay['sys_language_uid'];
 
             try {

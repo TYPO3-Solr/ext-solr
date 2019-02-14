@@ -104,18 +104,6 @@ class GroupItem
     }
 
     /**
-     * Get numFound
-     *
-     * @deprecated Deprecated since EXT:solr 9.0.0 will be removed in EXT:solr 10.0.0 use getAllResultCount now
-     * @return int
-     */
-    public function getNumFound()
-    {
-        trigger_error('GroupItem::getNumFound is deprecated please use GroupItem::getAllResultCount now', E_USER_DEPRECATED);
-        return $this->getAllResultCount();
-    }
-
-    /**
      * Get start
      *
      * @return int
@@ -134,19 +122,6 @@ class GroupItem
     {
         return $this->maximumScore;
     }
-
-    /**
-     * Get maxScore
-     *
-     * @deprecated Deprecated since EXT:solr 9.0.0 will be removed in EXT:solr 10.0.0 getMaximumScore now
-     * @return float
-     */
-    public function getMaxScore()
-    {
-        trigger_error('GroupItem::getMaxScore is deprecated please use GroupItem::getMaximumScore now', E_USER_DEPRECATED);
-        return $this->getMaximumScore();
-    }
-
 
     /**
      * @return SearchResultCollection

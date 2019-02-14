@@ -128,31 +128,13 @@
 
 			<div class="row section-with-header">
 				<div class="col-md-3">
-					<f:comment>
-					<!--
-						This is the dirty hack to make it possible to call actions between backend modules.
-						When TYPO3 8 support is dropped we should drop the special generation for TYPO3 8
-					-->
-					</f:comment>
 
-					<solr:backend.isTYPO3VersionBelow9>
-						<f:then>
-							<f:form addQueryString="1" addQueryStringMethod="POST" fieldNamePrefix="tx_solr_searchbackend_solrindexadministration"
-									additionalParams="{M: 'searchbackend_SolrIndexadministration', id: '{pageUID}', tx_solr_searchbackend_solrindexadministration:{controller: 'Backend\\Search\\IndexAdministrationModule', action: 'clearIndexQueue', fromQueue: 'true'}}">
-								<f:form.submit class="btn btn-sm btn-default btn-danger t3js-modal-formsubmit-trigger"
-											   data="{title: 'Please confirm', content: 'Are you sure you want to clear the Index Queue?', severity: 'warning'}"
-											   value="{f:translate(key:'solr.backend.index_queue_module.button.clear_index_queue')}"/>
-							</f:form>
-						</f:then>
-						<f:else>
-							<f:form addQueryString="1" addQueryStringMethod="POST"
-									additionalParams="{route: '/searchbackend/SolrIndexadministration/', tx_solr_searchbackend_solrindexadministration:{controller: 'Backend\\Search\\IndexAdministrationModule', action: 'clearIndexQueue', id: '{pageUID}', fromQueue: 'true'}}">
-								<f:form.submit class="btn btn-sm btn-default btn-danger t3js-modal-formsubmit-trigger"
-											   data="{title: 'Please confirm', content: 'Are you sure you want to clear the Index Queue?', severity: 'warning'}"
-											   value="{f:translate(key:'solr.backend.index_queue_module.button.clear_index_queue')}"/>
-							</f:form>
-						</f:else>
-					</solr:backend.isTYPO3VersionBelow9>
+					<f:form addQueryString="1" addQueryStringMethod="POST"
+							additionalParams="{route: '/searchbackend/SolrIndexadministration/', tx_solr_searchbackend_solrindexadministration:{controller: 'Backend\\Search\\IndexAdministrationModule', action: 'clearIndexQueue', id: '{pageUID}', fromQueue: 'true'}}">
+						<f:form.submit class="btn btn-sm btn-default btn-danger t3js-modal-formsubmit-trigger"
+									   data="{title: 'Please confirm', content: 'Are you sure you want to clear the Index Queue?', severity: 'warning'}"
+									   value="{f:translate(key:'solr.backend.index_queue_module.button.clear_index_queue')}"/>
+					</f:form>
 
 				</div>
 				<div class="col-md-9 action-description">

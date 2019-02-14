@@ -73,22 +73,6 @@ class IfHasAccessToModuleViewHelper extends AbstractConditionViewHelper
         return $hasAccessToModule;
     }
 
-    /**
-     * Renders <f:then> child if $condition is true, otherwise renders <f:else> child.
-     *
-     * @todo This copy of the render method is just required for TYPO3 8 backwards compatibility, can be dropped when TYPO3 8 support is dropped.
-     *
-     * @param bool $condition View helper condition
-     * @return string the rendered string
-     */
-    public function render()
-    {
-        if (static::evaluateCondition($this->arguments)) {
-            return $this->renderThenChild();
-        }
-        return $this->renderElseChild();
-    }
-
     protected static function getModuleConfiguration(string $moduleSignature)
     {
         return $GLOBALS['TBE_MODULES']['_configuration'][$moduleSignature];

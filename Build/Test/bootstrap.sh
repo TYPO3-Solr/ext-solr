@@ -51,7 +51,7 @@ echo "Using database dbname: $TYPO3_DATABASE_NAME"
 echo "Using database user: $TYPO3_DATABASE_USERNAME"
 
 if [ -z $TYPO3_VERSION ]; then
-	echo "Must set env var TYPO3_VERSION (e.g. dev-master or ^8.7)"
+	echo "Must set env var TYPO3_VERSION (e.g. dev-master or ^9.5)"
 	exit 1
 fi
 
@@ -63,7 +63,7 @@ fi
 
 # Install build tools
 composer global require friendsofphp/php-cs-fixer:"$PHP_CS_FIXER_VERSION"
-composer global require scrutinizer/ocular:"1.3.1"
+composer global require scrutinizer/ocular:"1.5.2"
 composer global require namelesscoder/typo3-repository-client
 
 # Setup TYPO3 environment variables
@@ -79,11 +79,8 @@ if [[ $TYPO3_VERSION = *"master"*  ]]; then
     composer config minimum-stability dev
 fi
 
-if [[ $TYPO3_VERSION = *"master"*  || $TYPO3_VERSION = *"9"* ]]; then
-    composer require --dev --update-with-dependencies typo3/cms-core="$TYPO3_VERSION" typo3/cms-backend="$TYPO3_VERSION" typo3/cms-fluid="$TYPO3_VERSION" typo3/cms-frontend="$TYPO3_VERSION" typo3/cms-extbase="$TYPO3_VERSION" typo3/cms-reports="$TYPO3_VERSION" typo3/cms-scheduler="$TYPO3_VERSION" typo3/cms-tstemplate="$TYPO3_VERSION"
-else
-    composer require --dev typo3/cms="$TYPO3_VERSION"
-fi
+composer require --dev --update-with-dependencies typo3/cms-core="$TYPO3_VERSION" typo3/cms-backend="$TYPO3_VERSION" typo3/cms-fluid="$TYPO3_VERSION" typo3/cms-frontend="$TYPO3_VERSION" typo3/cms-extbase="$TYPO3_VERSION" typo3/cms-reports="$TYPO3_VERSION" typo3/cms-scheduler="$TYPO3_VERSION" typo3/cms-tstemplate="$TYPO3_VERSION"
+
 
 # Restore composer.json
 mkdir -p $TYPO3_PATH_WEB/uploads $TYPO3_PATH_WEB/typo3temp

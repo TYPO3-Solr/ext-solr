@@ -373,16 +373,11 @@ class Util
      */
     private static function getPageAndRootlineOfTSFE($pageId)
     {
-        //@todo This can be dropped when TYPO3 8 compatibility is dropped
-        if (Util::getIsTYPO3VersionBelow9()) {
-            $GLOBALS['TSFE']->getPageAndRootline();
-        } else {
-            //@todo When we drop the support of TYPO3 8 we should use the frontend middleware stack instead of initializing this on our own
-            /** @var $siteRepository SiteRepository */
-            $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
-            $site = $siteRepository->getSiteByPageId($pageId);
-            $GLOBALS['TSFE']->getPageAndRootlineWithDomain($site->getRootPageId());
-        }
+        //@todo When we drop the support of TYPO3 8 we should use the frontend middleware stack instead of initializing this on our own
+        /** @var $siteRepository SiteRepository */
+        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
+        $site = $siteRepository->getSiteByPageId($pageId);
+        $GLOBALS['TSFE']->getPageAndRootlineWithDomain($site->getRootPageId());
     }
 
     /**
@@ -465,23 +460,6 @@ class Util
         return $absRefPrefix;
     }
 
-    /**
-     * @todo This method is just added for pages_language_overlay compatibility checks and will be removed when TYPO8 support is dropped
-     * @return boolean
-     */
-    public static function getIsTYPO3VersionBelow9()
-    {
-        return (bool)version_compare(TYPO3_branch, '9.0', '<');
-    }
-
-    /**
-     * @todo This method is just added for pages_language_overlay compatibility checks and will be removed when TYPO8 support is dropped
-     * @return string
-     */
-    public static function getPageOverlayTableName()
-    {
-        return self::getIsTYPO3VersionBelow9() ? 'pages_language_overlay' : 'pages';
-    }
 
     /**
      * This function can be used to check if one of the strings in needles is

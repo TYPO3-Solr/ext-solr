@@ -76,26 +76,6 @@ class FrontendOverlayService {
     }
 
     /**
-     * Returns the overlay table for a certain table.
-     *
-     * @param string $table
-     * @param string $field
-     * @return string
-     */
-    public function getOverlayTable(string $table, string $field) : string
-    {
-        // pages has a special overlay table constriction
-        if ($this->tsfe->sys_language_uid > 0
-            && $table === 'pages'
-            && $this->tcaService->getHasConfigurationForField('pages_language_overlay', $field)
-            && Util::getIsTYPO3VersionBelow9()) {
-            return 'pages_language_overlay';
-        }
-
-        return $table;
-    }
-
-    /**
      * When the record has an overlay we retrieve the uid of the translated record,
      * to resolve the relations from the translation.
      *
@@ -112,13 +92,6 @@ class FrontendOverlayService {
         }
         // when no language is set we can return the passed recordUid
         if (!$this->tsfe->sys_language_uid > 0) {
-            return $uid;
-        }
-        // when no TCA configured for pages_language_overlay's field, then use original record Uid
-        // @todo this can be dropped when TYPO3 8 compatibility is dropped
-        $translatedInPagesLanguageOverlayAndNoTCAPresent = Util::getIsTYPO3VersionBelow9() &&
-            !$this->tcaService->getHasConfigurationForField('pages_language_overlay', $field);
-        if ($table === 'pages' && $translatedInPagesLanguageOverlayAndNoTCAPresent) {
             return $uid;
         }
 

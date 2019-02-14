@@ -42,8 +42,7 @@ if (TYPO3_MODE == 'BE') {
         ]
     );
 
-    //@todo can be changed to a simple assignment when TYPO3 8 compatibility is dropped
-    $treeComponentId =  ApacheSolrForTypo3\Solr\Util::getIsTYPO3VersionBelow9() ? 'typo3-pagetree' : 'TYPO3/CMS/Backend/PageTree/PageTreeElement';
+    $treeComponentId = 'TYPO3/CMS/Backend/PageTree/PageTreeElement';
 
     \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
         'ApacheSolrForTypo3.' . $_EXTKEY,

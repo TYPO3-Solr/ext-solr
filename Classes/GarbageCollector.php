@@ -277,8 +277,7 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
      */
     protected function isRelatedQueueRecordMarkedAsIndexed($table, $record)
     {
-        //@todo check for pages_language_overlay can be dropped when TYPO3 8 compatibility is dropped.
-        if ($table === 'tt_content' || $table === 'pages_language_overlay') {
+        if ($table === 'tt_content') {
             $table = 'pages';
             $uid = $record['pid'];
         } else {
