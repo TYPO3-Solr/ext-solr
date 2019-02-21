@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ad853db0661d152a88b87f2b462480c3",
+    "content-hash": "f90f4df5f1b6e811cfd729013235904f",
     "packages": [
         {
             "name": "solarium/solarium",
