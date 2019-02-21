@@ -369,7 +369,7 @@ Now the facet belongs to another group and will not be rendered in the "main" ar
 Default Partials
 ----------------
 
-Another important fact is that *Facet->getPartianName()* is used to render the detail partial.
+Another important fact is that *Facet->getPartialName()* is used to render the detail partial.
 The default implementation of a facet will return the default partial, that is able to render this facet.
 
 If you need another rendering for one facet you can overwrite the used partial within the configuration:
