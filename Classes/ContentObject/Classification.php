@@ -100,15 +100,21 @@ class Classification
     {
         $classifications = [];
         foreach ($configuredMappedClasses as $class) {
-            if (empty($class['patterns']) || empty($class['class'])) {
+            if ( (empty($class['patterns']) && empty($class['matchPatterns'])) || empty($class['class'])) {
                 throw new \InvalidArgumentException('A class configuration in SOLR_CLASSIFCATION needs to have a pattern and a class configured. Given configuration: ' . serialize($class));
             }
 
-            $patterns = GeneralUtility::trimExplode(',', $class['patterns']);
+                // @todo deprecate patterns configuration
+            $patterns = empty($class['patterns']) ? [] : GeneralUtility::trimExplode(',', $class['patterns']);
+            $matchPatterns = empty($class['matchPatterns']) ? [] : GeneralUtility::trimExplode(',', $class['matchPatterns']);
+            $matchPatterns = $matchPatterns + $patterns;
+            $unMatchPatters = empty($class['unmatchPatterns']) ? [] : GeneralUtility::trimExplode(',', $class['unmatchPatterns']);
+
             $className = $class['class'];
             $classifications[] = GeneralUtility::makeInstance(
                 ClassificationItem::class,
-                /** @scrutinizer ignore-type */ $patterns,
+                /** @scrutinizer ignore-type */ $matchPatterns,
+                /** @scrutinizer ignore-type */ $unMatchPatters,
                 /** @scrutinizer ignore-type */ $className
             );
         }
