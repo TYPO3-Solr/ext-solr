@@ -674,19 +674,32 @@ Example:
         field = __solr_content
         classes {
             programming {
-                patterns = php, java, javascript, go
+                matchPatterns = php, java, javascript, go
                 class = programming
             }
             cms {
-                patterns = TYPO3, joomla
+                matchPatterns = TYPO3, joomla
                 class = cms
             }
             database {
-                patterns = mysql, MariaDB, postgreSQL
+                matchPatterns = mysql, MariaDB, postgreSQL
                 class = database
             }
         }
     }
+
+
+The ```matchPatterns`` can be used to configure pattern that can occure in the content to add that class. In addition ```unmatchPatterns```can be configured to define patterns that should not occure in the content.
+
+Patterns are regular expressions. You configure everything that is possible with regular expressions.
+
+Example:s
+
+The pattern ```\ssmart[a-z]*\s``` will match everything, that starts with a **space** followed by **smart** ending with any lowercase letter and ending by **space**. This would match e.g. smartphone, smarthome and every other word that starts with ```smart```.
+
+**Note**:
+
+* The configuration ```patterns``` is deprecated with 10.0.0 and will be removed in EXT:solr 11. Please use ```matchPatterns``` and ```unmatchPatterns`` now.
 
 
 **field**
