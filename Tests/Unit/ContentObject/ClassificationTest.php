@@ -69,6 +69,48 @@ class ClassificationTest extends UnitTest
         $this->assertEquals($expected, $actual);
     }
 
+    /**
+     * @return array
+     */
+    public function excludePatternDataProvider()
+    {
+        return [
+            'excludePatternShouldLeadToUnassignedClass' => [
+                'input' => 'from the beach i can see the waves',
+                'expectedOutput' => []
+            ],
+            'noMatchingExlucePatternLeadsToExpectedClass' => [
+                'input' => 'i saw a shark between the waves',
+                'expectedOutput' => ['ocean']
+            ]
+        ];
+    }
+
+    /**
+     * @dataProvider excludePatternDataProvider
+     * @test
+     */
+    public function canExcludePatterns($input, $expectedOutput)
+    {
+        $GLOBALS['TSFE']->cObjectDepthCounter = 2;
+        $this->contentObject->start(['content' => $input]);
+
+        $configuration = [
+            'field' => 'content',
+            'classes.' => [
+                [
+                    'matchPatterns' => 'waves',
+                    'unmatchPatterns' => 'beach',
+                    'class' => 'ocean'
+                ]
+            ]
+        ];
+
+        $actual = $this->contentObject->cObjGetSingle(Classification::CONTENT_OBJECT_NAME, $configuration);
+        $expected = serialize($expectedOutput);
+        $this->assertEquals($expected, $actual);
+    }
+
     protected function setUp()
     {
         // fake a registered hook

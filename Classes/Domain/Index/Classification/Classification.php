@@ -39,17 +39,43 @@ class Classification {
     protected $matchPatterns = [];
 
     /**
+     * Array of regular expressions
+     * @var array
+     */
+    protected $unMatchPatterns = [];
+
+    /**
      * @var string
      */
     protected $mappedClass = '';
 
     /**
      * Classification constructor.
+     * @param array $matchPatterns
+     * @param array $unMatchPatterns
+     * @param string $mappedClass
      */
-    public function __construct(array $matchPatterns = [], string $mappedClass = '')
+    public function __construct(array $matchPatterns = [], array $unMatchPatterns = [],string $mappedClass = '')
     {
         $this->matchPatterns = $matchPatterns;
+        $this->unMatchPatterns = $unMatchPatterns;
         $this->mappedClass = $mappedClass;
+    }
+
+    /**
+     * @return array
+     */
+    public function getUnMatchPatterns(): array
+    {
+        return $this->unMatchPatterns;
+    }
+
+    /**
+     * @param array $unMatchPatterns
+     */
+    public function setUnMatchPatterns(array $unMatchPatterns)
+    {
+        $this->unMatchPatterns = $unMatchPatterns;
     }
 
     /**
