@@ -89,10 +89,9 @@ class BuilderTest extends UnitTest
 
         $fakePage->page = [];
         $document = $this->documentBuilder->fromPage($fakePage, 'http://www.typo3-solr.com', $fakeRootLine, '');
-        $idField = $document->getField('id');
 
         $this->assertInstanceOf(Document::class, $document, 'Expect to get an Apache_Solr_Document back');
-        $this->assertSame('siteHash/pages/4711', $idField['value'], 'Builder did not use documentId from mock');
+        $this->assertSame('siteHash/pages/4711', $document['id'], 'Builder did not use documentId from mock');
     }
 
     /**
@@ -109,9 +108,8 @@ class BuilderTest extends UnitTest
 
         $fakePage->page = ['keywords' => 'foo,bar'];
         $document = $this->documentBuilder->fromPage($fakePage, 'http://www.typo3-solr.com', $fakeRootLine, '');
-        $keywords = $document->getField('keywords');
 
-        $this->assertSame($keywords['value'], ['foo','bar'], 'Could not set keywords from page document');
+        $this->assertSame($document['keywords'], ['foo','bar'], 'Could not set keywords from page document');
     }
 
     /**
@@ -128,9 +126,8 @@ class BuilderTest extends UnitTest
 
         $fakePage->page = ['endtime' => 1234];
         $document = $this->documentBuilder->fromPage($fakePage, 'http://www.typo3-solr.com', $fakeRootLine, '');
-        $endtime = $document->getField('endtime');
 
-        $this->assertSame($endtime['value'], 1234, 'Could not set endtime from page document');
+        $this->assertSame($document['endtime'], 1234, 'Could not set endtime from page document');
     }
 
     /**
@@ -147,9 +144,8 @@ class BuilderTest extends UnitTest
 
         $fakePage->page = [];
         $document = $this->documentBuilder->fromPage($fakePage, 'http://www.typo3-solr.com', $fakeRootLine, '');
-        $tagsH1 = $document->getField('tagsH1');
 
-        $this->assertSame($tagsH1['value'], 'Fake H1 content', 'Could not assign extracted h1 heading to solr document');
+        $this->assertSame($document['tagsH1'], 'Fake H1 content', 'Could not assign extracted h1 heading to solr document');
     }
 
     /**

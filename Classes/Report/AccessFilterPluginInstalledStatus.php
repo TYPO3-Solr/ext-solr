@@ -176,15 +176,10 @@ class AccessFilterPluginInstalledStatus extends AbstractSolrStatus
     {
         $pluginsInformation = $adminService->getPluginsInformation();
 
-        if(isset($pluginsInformation->plugins->OTHER->{self::PLUGIN_CLASS_NAME}->version)) {
-            // @deprecated old version location, can be dropped in EXT:solr 10
-            $rawVersion = $pluginsInformation->plugins->OTHER->{self::PLUGIN_CLASS_NAME}->version;
-        } else {
-            $description = $pluginsInformation->plugins->OTHER->{self::PLUGIN_CLASS_NAME}->description;
-            $matches = [];
-            preg_match_all('/.*\(Version: (?<version>[^\)]*)\)/ums', $description, $matches);
-            $rawVersion = $matches['version'][0] ?? '';
-        }
+        $description = $pluginsInformation->plugins->OTHER->{self::PLUGIN_CLASS_NAME}->description;
+        $matches = [];
+        preg_match_all('/.*\(Version: (?<version>[^\)]*)\)/ums', $description, $matches);
+        $rawVersion = $matches['version'][0] ?? '';
 
         $explodedRawVersion = explode('-', $rawVersion);
         $version = $explodedRawVersion[0];

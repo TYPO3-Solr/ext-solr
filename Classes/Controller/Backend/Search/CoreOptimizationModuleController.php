@@ -300,7 +300,7 @@ class CoreOptimizationModuleController extends AbstractModuleController
         $this->response->setHeader(
             'Content-disposition',
             'attachment; filename =' . $type . '_' .
-            $coreAdmin->getCoreName() . '.' . $fileExtension,
+            $coreAdmin->getPrimaryEndpoint()->getCore() . '.' . $fileExtension,
             true
         );
 
