@@ -91,7 +91,7 @@ class IndexAdministrationModuleController extends AbstractModuleController
                 /* @var $solrServer SolrConnection */
                 $writeService->deleteByQuery('siteHash:' . $siteHash);
                 $writeService->commit(false, false, false);
-                $affectedCores[] = $writeService->getCoreName();
+                $affectedCores[] = $writeService->getCorePath();
             }
             $this->addFlashMessage(LocalizationUtility::translate('solr.backend.index_administration.index_emptied_all', 'Solr', [$this->selectedSite->getLabel(), implode(', ', $affectedCores)]));
         } catch (\Exception $e) {
@@ -131,7 +131,7 @@ class IndexAdministrationModuleController extends AbstractModuleController
             /* @var $solrServer SolrConnection */
             $coreAdmin = $solrServer->getAdminService();
             $coreReloaded = $coreAdmin->reloadCore()->getHttpStatus() === 200;
-            $coreName = $coreAdmin->getCoreName();
+            $coreName = $coreAdmin->getCorePath();
 
             if (!$coreReloaded) {
                 $coresReloaded = false;

@@ -64,9 +64,8 @@ class ServiceTest extends UnitTest
         $configuration = ['stringField' => 'uppercase'];
 
         $this->service->processDocument($this->documentMock, $configuration);
-        $value = $this->documentMock->getField('stringField');
         $this->assertEquals(
-            $value['value'],
+            $this->documentMock['stringField'],
             'STRINGVALUE',
             'field was not processed with uppercase'
         );
@@ -82,9 +81,8 @@ class ServiceTest extends UnitTest
         $configuration = ['stringField' => 'uppercase'];
 
         $this->service->processDocument($this->documentMock, $configuration);
-        $value = $this->documentMock->getField('stringField');
         $this->assertEquals(
-            $value['value'],
+            $this->documentMock['stringField'],
             ['STRINGVALUE_1', 'STRINGVALUE_2'],
             'field was not processed with uppercase'
         );
@@ -100,9 +98,8 @@ class ServiceTest extends UnitTest
         $configuration = ['dateField' => 'timestampToIsoDate'];
 
         $this->service->processDocument($this->documentMock, $configuration);
-        $value = $this->documentMock->getField('dateField');
         $this->assertEquals(
-            $value['value'],
+            $this->documentMock['dateField'],
             '2010-01-01T12:00:00Z',
             'field was not processed with timestampToIsoDate'
         );
@@ -120,9 +117,8 @@ class ServiceTest extends UnitTest
         $configuration = ['dateField' => 'timestampToIsoDate'];
 
         $this->service->processDocument($this->documentMock, $configuration);
-        $value = $this->documentMock->getField('dateField');
         $this->assertEquals(
-            $value['value'],
+            $this->documentMock['dateField'],
             ['2010-01-01T12:00:00Z', '2010-01-01T12:00:01Z'],
             'field was not processed with timestampToIsoDate'
         );

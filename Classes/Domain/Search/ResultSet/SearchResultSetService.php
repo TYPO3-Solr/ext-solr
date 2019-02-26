@@ -278,21 +278,6 @@ class SearchResultSetService
     }
 
     /**
-     * Retrieves the configuration filters from the TypoScript configuration, except the __pageSections filter.
-     *
-     * @deprecated Since the suggest controller is a controller with a pagetype there is no need to pass around
-     * the filters that are configured in TypoScript. Therefore this method is not required anymore since the suggest
-     * controller retrieves the configured filters directly from the typoscript. Nevertheless you can pass view specific
-     * additionFilters to you search view when needed and they will still be evaluated. Depreacted since EXT:solr 9 will be removed in EXT:solr 10
-     * @return array
-     */
-    public function getAdditionalFilters()
-    {
-        trigger_error('Additional filters in the suggest are now retrieved from typoscript directly and there is no need to keep this. Will be removed in EXT:solr 10.', E_USER_DEPRECATED);
-        return $this->queryBuilder->getAdditionalFilters();
-    }
-
-    /**
      * Executes the search and builds a fake response for a current bug in Apache Solr 6.3
      *
      * @param Query $query
