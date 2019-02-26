@@ -26,6 +26,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Index;
 
 use ApacheSolrForTypo3\Solr\Domain\Index\IndexService;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\Statistic\QueueStatistic;
+use ApacheSolrForTypo3\Solr\IndexQueue\Indexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\Query\Modifier\Statistics;
@@ -119,6 +120,39 @@ class IndexServiceTest extends UnitTest
 
         $progress = $indexService->getProgress();
         $this->assertEquals(50, $progress);
+    }
+
+    /**
+     * @test
+     */
+    public function testServerHostIsRestoredInCaseOfAnException()
+    {
+        $fakeConfiguration = $this->getDumbMock(TypoScriptConfiguration::class);
+        $this->siteMock->expects($this->once())->method('getSolrConfiguration')->will($this->returnValue($fakeConfiguration));
+
+        /** @var $indexService IndexService */
+        $indexService = $this->getMockBuilder(IndexService::class)
+            ->setConstructorArgs([$this->siteMock, $this->queueMock, $this->dispatcherMock, $this->logManagerMock])
+            ->setMethods(['getIndexerByItem','getHostByRootPageId','restoreOriginalHttpHost'])
+            ->getMock();
+
+        $indexService->expects($this->exactly(1))->method('getHostByRootPageId')->willReturn('www.indextest.local');
+        $indexService->expects($this->exactly(2))->method('restoreOriginalHttpHost');
+
+
+        $indexerMock = $this->getDumbMock(Indexer::class);
+        $indexerMock->expects($this->exactly(2))->method('index')->willReturnCallback(function() {
+            throw new \Exception('unknowen error occured');
+        });
+        $indexService->expects($this->exactly(2))->method('getIndexerByItem')->willReturn($indexerMock);
+
+        // we fake an index queue with two items
+        $item1 = $this->getDumbMock(Item::class);
+        $item2 = $this->getDumbMock(Item::class);
+        $fakeItems = [$item1, $item2];
+        $this->fakeQueueItemContent($fakeItems);
+
+        $indexService->indexItems(2);
     }
 
     /**

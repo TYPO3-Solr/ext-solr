@@ -201,27 +201,25 @@ class IndexService
         $itemChangedDate = $item->getChanged();
         $itemChangedDateAfterIndex = 0;
 
-        $this->initializeHttpServerEnvironment($item);
-        $itemIndexed = $indexer->index($item);
+        try {
+            $this->initializeHttpServerEnvironment($item);
+            $itemIndexed = $indexer->index($item);
 
-        // update IQ item so that the IQ can determine what's been indexed already
-        if ($itemIndexed) {
-            $this->indexQueue->updateIndexTimeByItem($item);
-            $itemChangedDateAfterIndex = $item->getChanged();
+            // update IQ item so that the IQ can determine what's been indexed already
+            if ($itemIndexed) {
+                $this->indexQueue->updateIndexTimeByItem($item);
+                $itemChangedDateAfterIndex = $item->getChanged();
+            }
+
+            if ($itemChangedDateAfterIndex > $itemChangedDate && $itemChangedDateAfterIndex > time()) {
+                $this->indexQueue->setForcedChangeTimeByItem($item, $itemChangedDateAfterIndex);
+            }
+        } catch (\Exception $e) {
+            $this->restoreOriginalHttpHost($originalHttpHost);
+            throw $e;
         }
 
-        if ($itemChangedDateAfterIndex > $itemChangedDate && $itemChangedDateAfterIndex > time()) {
-            $this->indexQueue->setForcedChangeTimeByItem($item, $itemChangedDateAfterIndex);
-        }
-
-        if (!is_null($originalHttpHost)) {
-            $_SERVER['HTTP_HOST'] = $originalHttpHost;
-        } else {
-            unset($_SERVER['HTTP_HOST']);
-        }
-
-        // needed since TYPO3 7.5
-        GeneralUtility::flushInternalRuntimeCaches();
+        $this->restoreOriginalHttpHost($originalHttpHost);
 
         return $itemIndexed;
     }
@@ -295,8 +293,7 @@ class IndexService
         $hostFound = !empty($hosts[$rootpageId]);
 
         if (!$hostFound) {
-            $rootline = BackendUtility::BEgetRootLine($rootpageId);
-            $host = BackendUtility::firstDomainRecord($rootline);
+            $host = $this->getHostByRootPageId($rootpageId);
             $hosts[$rootpageId] = $host;
         }
 
@@ -304,5 +301,31 @@ class IndexService
 
         // needed since TYPO3 7.5
         GeneralUtility::flushInternalRuntimeCaches();
+    }
+
+    /**
+     * @param string|null $originalHttpHost
+     */
+    protected function restoreOriginalHttpHost($originalHttpHost)
+    {
+        if (!is_null($originalHttpHost)) {
+            $_SERVER['HTTP_HOST'] = $originalHttpHost;
+        } else {
+            unset($_SERVER['HTTP_HOST']);
+        }
+
+        // needed since TYPO3 7.5
+        GeneralUtility::flushInternalRuntimeCaches();
+    }
+
+    /**
+     * @param $rootpageId
+     * @return string
+     */
+    protected function getHostByRootPageId($rootpageId)
+    {
+        $rootline = BackendUtility::BEgetRootLine($rootpageId);
+        $host = BackendUtility::firstDomainRecord($rootline);
+        return $host;
     }
 }
