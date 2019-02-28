@@ -1,0 +1,19 @@
+version: '3.6'
+
+services:
+  solr:
+    image: typo3solr/ext-solr:latest
+    restart: always
+    labels:
+      com.ddev.site-name: ${DDEV_SITENAME}
+      com.ddev.approot: $DDEV_APPROOT
+      com.ddev.app-url: $DDEV_URL
+    environment:
+      - VIRTUAL_HOST=$DDEV_HOSTNAME
+      - HTTP_EXPOSE=8983
+    volumes:
+      - "./solr:/opt/solr/server/solr"
+      - "$HOME/.ddev/${DDEV_SITENAME}/solr/data:/opt/solr/server/solr/data"
+  web:
+    links:
+      - solr:$DDEV_HOSTNAME
