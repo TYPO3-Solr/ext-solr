@@ -293,8 +293,7 @@ class IndexService
         $hostFound = !empty($hosts[$rootpageId]);
 
         if (!$hostFound) {
-            $host = $this->getHostByRootPageId($rootpageId);
-            $hosts[$rootpageId] = $host;
+            $hosts[$rootpageId] = $item->getSite()->getDomain();
         }
 
         $_SERVER['HTTP_HOST'] = $hosts[$rootpageId];
@@ -316,16 +315,5 @@ class IndexService
 
         // needed since TYPO3 7.5
         GeneralUtility::flushInternalRuntimeCaches();
-    }
-
-    /**
-     * @param $rootpageId
-     * @return string
-     */
-    protected function getHostByRootPageId($rootpageId)
-    {
-        $rootline = BackendUtility::BEgetRootLine($rootpageId);
-        $host = BackendUtility::firstDomainRecord($rootline);
-        return $host;
     }
 }
