@@ -94,8 +94,8 @@ abstract class AbstractSolrTask extends AbstractTask {
     public function __sleep()
     {
         $properties = get_object_vars($this);
-        // avoid serialization if the site object
-        unset($properties['site']);
+        // avoid serialization if the site and logger object
+        unset($properties['site'], $properties['logger']);
         return array_keys($properties);
     }
 }
