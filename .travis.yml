@@ -35,6 +35,7 @@ matrix:
 before_install:
   - composer self-update
   - composer --version
+  - composer validate --no-check-lock
 
 install:
   - Build/Test/bootstrap.sh
