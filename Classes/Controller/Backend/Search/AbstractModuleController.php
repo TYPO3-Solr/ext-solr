@@ -96,6 +96,14 @@ abstract class AbstractModuleController extends ActionController
     protected $moduleDataStorageService = null;
 
     /**
+     * @param Site $selectedSite
+     */
+    public function setSelectedSite(Site $selectedSite)
+    {
+        $this->selectedSite = $selectedSite;
+    }
+
+    /**
      * Initializes the controller and sets needed vars.
      */
     protected function initializeAction()
