@@ -26,10 +26,12 @@ namespace ApacheSolrForTypo3\Solr\Domain\Site;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\ConfigurationAwareRecordService;
+use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Registry;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class Site
@@ -94,6 +96,11 @@ class Site
     protected $defaultLanguageId = 0;
 
     /**
+     * @var int[] Available language ids
+     */
+    protected $availableLanguageIds = [];
+
+    /**
      * Constructor.
      *
      * @param TypoScriptConfiguration $configuration
@@ -102,8 +109,9 @@ class Site
      * @param string $siteHash The site hash used by this site
      * @param PagesRepository $pagesRepository
      * @param int $defaultLanguageId
+     * @param int[] $availableLanguageIds
      */
-    public function __construct(TypoScriptConfiguration $configuration, array $page, $domain, $siteHash, PagesRepository $pagesRepository = null, $defaultLanguageId = 0)
+    public function __construct(TypoScriptConfiguration $configuration, array $page, $domain, $siteHash, PagesRepository $pagesRepository = null, $defaultLanguageId = 0, $availableLanguageIds = [])
     {
         $this->configuration = $configuration;
         $this->rootPage = $page;
@@ -111,6 +119,7 @@ class Site
         $this->siteHash = $siteHash;
         $this->pagesRepository = $pagesRepository ?? GeneralUtility::makeInstance(PagesRepository::class);
         $this->defaultLanguageId = $defaultLanguageId;
+        $this->availableLanguageIds = $availableLanguageIds;
     }
 
     /**
@@ -147,16 +156,27 @@ class Site
         return (int)$this->rootPage['uid'];
     }
 
+    /**
+     * Gets available language id's for this site
+     *
+     * @return int[] array or language id's
+     */
+    public function getAvailableLanguageIds(): array {
+        return $this->availableLanguageIds;
+    }
 
     /**
      * Gets the site's root page language IDs (uids).
      *
      * @return array
+     * @deprecated use getAvailableLanguageIds()
+     * @todo check if this method is still needed (only used in tests currently)
      */
     public function getRootPageLanguageIds() : array
     {
         $rootPageLanguageIds = [];
         $rootPageId = $this->getRootPageId();
+
         $rootPageOverlays = $this->pagesRepository->findTranslationOverlaysByPageId($rootPageId);
         if (count($rootPageOverlays)) {
             foreach ($rootPageOverlays as $rootPageOverlay) {
@@ -315,5 +335,58 @@ class Site
         }
 
         return $rootPageIds;
+    }
+
+    /**
+     * @param int $language
+     * @return array
+     * @throws NoSolrConnectionFoundException
+     */
+    public function getSolrConnectionConfiguration(int $language = 0): array {
+        $connectionKey = $this->getRootPageId() . '|' . $language;
+        $solrConfiguration = $this->getSolrConnectionConfigFromRegistry($connectionKey);
+
+        if (!is_array($solrConfiguration)) {
+            /* @var $noSolrConnectionException NoSolrConnectionFoundException */
+            $noSolrConnectionException = GeneralUtility::makeInstance(
+                NoSolrConnectionFoundException::class,
+                /** @scrutinizer ignore-type */  'Could not find a Solr connection for root page [' . $this->getRootPageId() . '] and language [' . $language . '].',
+                /** @scrutinizer ignore-type */ 1275396474
+            );
+            $noSolrConnectionException->setRootPageId($this->getRootPageId());
+            $noSolrConnectionException->setLanguageId($language);
+
+            throw $noSolrConnectionException;
+        }
+
+        return $solrConfiguration;
+    }
+
+    /**
+     * Gets all connection configurations found.
+     *
+     * @return array An array of connection configurations.
+     */
+    protected function getSolrConnectionConfigFromRegistry(string $connectionKey)
+    {
+        /** @var $registry Registry */
+        $registry = GeneralUtility::makeInstance(Registry::class);
+        $solrConfigurations = $registry->get('tx_solr', 'servers', []);
+
+        return $solrConfigurations[$connectionKey] ?? null;
+    }
+
+    /**
+     * @return array
+     * @throws NoSolrConnectionFoundException
+     */
+    public function getAllSolrConnectionConfigurations(): array {
+        $configs = [];
+        foreach ($this->getAvailableLanguageIds() as $languageId) {
+            try {
+                $configs[] = $this->getSolrConnectionConfiguration($languageId);
+            } catch (NoSolrConnectionFoundException $e) {}
+        }
+        return $configs;
     }
 }

@@ -72,13 +72,19 @@ class ConnectionManager implements SingletonInterface
     protected $pagesRepositoryAtExtSolr;
 
     /**
+     * @var SiteRepository
+     */
+    protected $siteRepository;
+
+    /**
      * @param SystemLanguageRepository $systemLanguageRepository
      * @param PagesRepositoryAtExtSolr|null $pagesRepositoryAtExtSolr
      * @param SolrLogManager $solrLogManager
      */
-    public function __construct(SystemLanguageRepository $systemLanguageRepository = null, PagesRepositoryAtExtSolr $pagesRepositoryAtExtSolr = null, SolrLogManager $solrLogManager = null)
+    public function __construct(SystemLanguageRepository $systemLanguageRepository = null, PagesRepositoryAtExtSolr $pagesRepositoryAtExtSolr = null, SolrLogManager $solrLogManager = null, SiteRepository $siteRepository = null)
     {
         $this->systemLanguageRepository = $systemLanguageRepository ?? GeneralUtility::makeInstance(SystemLanguageRepository::class);
+        $this->siteRepository           = $siteRepository ?? GeneralUtility::makeInstance(SiteRepository::class);
         $this->pagesRepositoryAtExtSolr = $pagesRepositoryAtExtSolr ?? GeneralUtility::makeInstance(PagesRepositoryAtExtSolr::class);
         $this->logger                   = $solrLogManager ?? GeneralUtility::makeInstance(SolrLogManager::class, /** @scrutinizer ignore-type */ __CLASS__);
     }
@@ -162,6 +168,7 @@ class ConnectionManager implements SingletonInterface
      */
     public function getConnectionByPageId($pageId, $language = 0, $mount = '')
     {
+
         $solrConnections = $this->getConfigurationByPageId($pageId, $language, $mount);
         $solrConnection = $this->getConnectionFromConfiguration($solrConnections);
         return $solrConnection;
@@ -174,28 +181,13 @@ class ConnectionManager implements SingletonInterface
      * @param int $language The language ID to get the configuration for as the path may differ. Optional, defaults to 0.
      * @return array A solr configuration.
      * @throws NoSolrConnectionFoundException
+     * @deprecated will be removed in v11, use Site object/SiteRepository directly
      */
     public function getConfigurationByRootPageId($pageId, $language = 0)
     {
-        $connectionKey = $pageId . '|' . $language;
-        $solrServers = $this->getAllConfigurations();
+        $site = $this->siteRepository->getSiteByRootPageId($pageId);
 
-        if (isset($solrServers[$connectionKey])) {
-            $solrConfiguration = $solrServers[$connectionKey];
-        } else {
-            /* @var $noSolrConnectionException NoSolrConnectionFoundException */
-            $noSolrConnectionException = GeneralUtility::makeInstance(
-                NoSolrConnectionFoundException::class,
-                /** @scrutinizer ignore-type */  'Could not find a Solr connection for root page [' . $pageId . '] and language [' . $language . '].',
-                /** @scrutinizer ignore-type */ 1275396474
-            );
-            $noSolrConnectionException->setRootPageId($pageId);
-            $noSolrConnectionException->setLanguageId($language);
-
-            throw $noSolrConnectionException;
-        }
-
-        return $solrConfiguration;
+        return $site->getSolrConnectionConfiguration($language);
     }
 
     /**
@@ -218,12 +210,16 @@ class ConnectionManager implements SingletonInterface
      * Gets all connection configurations found.
      *
      * @return array An array of connection configurations.
+     * @deprecated will be removed in v11, use SiteRepository
      */
     public function getAllConfigurations()
     {
-        /** @var $registry Registry */
-        $registry = GeneralUtility::makeInstance(Registry::class);
-        $solrConfigurations = $registry->get('tx_solr', 'servers', []);
+        $solrConfigurations = [];
+        foreach ($this->siteRepository->getAvailableSites() as $site) {
+            foreach ($site->getAllSolrConnectionConfigurations() as $solrConfiguration) {
+                $solrConfigurations[] = $solrConfiguration;
+            }
+        }
 
         return $solrConfigurations;
     }
@@ -232,6 +228,7 @@ class ConnectionManager implements SingletonInterface
      * Stores the connections in the registry.
      *
      * @param array $solrConfigurations
+     * @deprecated will be removed in v11, use SiteRepository
      */
     protected function setAllConfigurations(array $solrConfigurations)
     {
@@ -244,14 +241,15 @@ class ConnectionManager implements SingletonInterface
      * Gets all connections found.
      *
      * @return SolrConnection[] An array of initialized ApacheSolrForTypo3\Solr\System\Solr\SolrConnection connections
+     * @deprecated will be removed in v11, use SiteRepository
      */
     public function getAllConnections()
     {
         $solrConnections = [];
-
-        $solrConfigurations = $this->getAllConfigurations();
-        foreach ($solrConfigurations as $solrConfiguration) {
-            $solrConnections[] = $this->getConnectionFromConfiguration($solrConfiguration);
+        foreach ($this->siteRepository->getAvailableSites() as $site) {
+            foreach ($site->getAllSolrConnectionConfigurations() as $solrConfiguration) {
+                $solrConnections[] = $this->getConnectionFromConfiguration($solrConfiguration);
+            }
         }
 
         return $solrConnections;
@@ -262,19 +260,11 @@ class ConnectionManager implements SingletonInterface
      *
      * @param Site $site A TYPO3 site
      * @return array An array of Solr connection configurations for a site
+     * @deprecated will be removed in v11, use $site->getAllSolrConnectionConfigurations()
      */
     public function getConfigurationsBySite(Site $site)
     {
-        $solrConfigurations = [];
-
-        $allConfigurations = $this->getAllConfigurations();
-        foreach ($allConfigurations as $configuration) {
-            if ($configuration['rootPageUid'] == $site->getRootPageId()) {
-                $solrConfigurations[] = $configuration;
-            }
-        }
-
-        return $solrConfigurations;
+        return $site->getAllSolrConnectionConfigurations();
     }
 
     /**
@@ -282,14 +272,14 @@ class ConnectionManager implements SingletonInterface
      *
      * @param Site $site A TYPO3 site
      * @return SolrConnection[] An array of Solr connection objects (ApacheSolrForTypo3\Solr\System\Solr\SolrConnection)
+     * @deprecated will be removed in v11, use $site->getAllSolrConnectionConfigurations()
      */
     public function getConnectionsBySite(Site $site)
     {
         $connections = [];
 
-        $solrServers = $this->getConfigurationsBySite($site);
-        foreach ($solrServers as $solrServer) {
-            $connections[] = $this->getConnectionFromConfiguration($solrServer);
+        foreach ($site->getAllSolrConnectionConfigurations() as $solrConnectionConfiguration) {
+            $connections[] = $this->getConnectionFromConfiguration($solrConnectionConfiguration);
         }
 
         return $connections;
@@ -300,9 +290,11 @@ class ConnectionManager implements SingletonInterface
     /**
      * Updates the connections in the registry.
      *
+     * @deprecated will be removed in v11, use SiteRepository
      */
     public function updateConnections()
     {
+
         $solrConnections = $this->getConfiguredSolrConnections();
         $solrConnections = $this->filterDuplicateConnections($solrConnections);
 
@@ -315,6 +307,7 @@ class ConnectionManager implements SingletonInterface
      * Updates the Solr connections for a specific root page ID / site.
      *
      * @param int $rootPageId A site root page id
+     * @deprecated Use TYPO3 site config to configure site/connection info
      */
     public function updateConnectionByRootPageId($rootPageId)
     {
@@ -343,6 +336,7 @@ class ConnectionManager implements SingletonInterface
      * environments.
      *
      * @return array An array with connections, each connection with keys rootPageTitle, rootPageUid, solrHost, solrPort, solrPath
+     * @deprecated will be removed in v11, use SiteRepository
      */
     protected function getConfiguredSolrConnections()
     {
@@ -371,6 +365,7 @@ class ConnectionManager implements SingletonInterface
      * @param array $rootPage A root page record with at least title and uid
      * @param int $languageId ID of a system language
      * @return array A solr connection configuration.
+     * @deprecated will be removed in v11, use SiteRepository
      */
     protected function getConfiguredSolrConnectionByRootPage(array $rootPage, $languageId)
     {
@@ -467,6 +462,7 @@ class ConnectionManager implements SingletonInterface
      *
      * @param array $connections An array of unfiltered connections, containing duplicates
      * @return array An array with connections, no duplicates.
+     * @deprecated will be removed in v11, use SiteRepository
      */
     protected function filterDuplicateConnections(array $connections)
     {

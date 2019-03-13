@@ -28,6 +28,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Site;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\RootPageResolver;
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
+use ApacheSolrForTypo3\Solr\System\Records\SystemLanguage\SystemLanguageRepository;
 use ApacheSolrForTypo3\Solr\System\Service\SiteService;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
@@ -163,19 +164,17 @@ class SiteRepository
      * Gets the system languages (IDs) for which Solr connections have been
      * configured.
      *
-     * @return array Array of system language IDs for which connections have been configured on this site.
+     * @param Site $site
+     * @return array
+     * @throws \ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException
+     * @deprecated use $site->getConnectionConfig
+     * @todo check if method is still needed
      */
     public function getAllLanguages(Site $site)
     {
         $siteLanguages = [];
-        $servers = $this->getSolrServersFromRegistry();
-
-        foreach ($servers as $connectionKey => $solrConnection) {
-            list($siteRootPageId, $systemLanguageId) = explode('|', $connectionKey);
-
-            if ($siteRootPageId == $site->getRootPageId()) {
-                $siteLanguages[] = $systemLanguageId;
-            }
+        foreach ($site->getAllSolrConnectionConfigurations() as $solrConnectionConfiguration) {
+            $siteLanguages[] = $solrConnectionConfiguration['language'];
         }
 
         return $siteLanguages;
@@ -190,6 +189,9 @@ class SiteRepository
      */
     protected function buildSite($rootPageId)
     {
+        if (empty($rootPageId)) {
+            throw new \InvalidArgumentException('Root page id can not be empty');
+        }
         $rootPageRecord = (array)BackendUtility::getRecord('pages', $rootPageId);
 
         $this->validateRootPageRecord($rootPageId, $rootPageRecord);
@@ -198,6 +200,7 @@ class SiteRepository
         $siteHash = $this->getSiteHashForDomain($domain);
         $defaultLanguage = $this->getDefaultLanguage($rootPageId);
         $pageRepository = GeneralUtility::makeInstance(PagesRepository::class);
+        $availableLanguageIds = GeneralUtility::makeInstance(SystemLanguageRepository::class)->findSystemLanguages();
 
         return GeneralUtility::makeInstance(
             Site::class,
@@ -206,7 +209,8 @@ class SiteRepository
             /** @scrutinizer ignore-type */ $domain,
             /** @scrutinizer ignore-type */ $siteHash,
             /** @scrutinizer ignore-type */ $pageRepository,
-            /** @scrutinizer ignore-type */ $defaultLanguage
+            /** @scrutinizer ignore-type */ $defaultLanguage,
+            /** @scrutinizer ignore-type */ $availableLanguageIds
         );
     }
 
@@ -215,6 +219,7 @@ class SiteRepository
      *
      * @param int $rootPageId
      * @return int|mixed
+     * @deprecated Use Site directly
      */
     protected function getDefaultLanguage($rootPageId)
     {
