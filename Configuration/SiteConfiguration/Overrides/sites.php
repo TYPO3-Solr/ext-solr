@@ -18,6 +18,13 @@ $GLOBALS['SiteConfiguration']['site']['columns']['solr_scheme_read'] = [
         'maxitems' => 1
     ],
 ];
+$GLOBALS['SiteConfiguration']['site']['columns']['solr_port_read'] = [
+    'label' => 'Port',
+    'config' => [
+        'type' => 'input',
+        'eval' => 'int,required',
+    ],
+];
 
 
 $GLOBALS['SiteConfiguration']['site']['columns']['solr_use_write_connection'] = [
@@ -39,11 +46,15 @@ $GLOBALS['SiteConfiguration']['site']['columns']['solr_use_write_connection'] = 
 
 // write TCA
 $GLOBALS['SiteConfiguration']['site']['columns']['solr_scheme_write'] = $GLOBALS['SiteConfiguration']['site']['columns']['solr_scheme_read'];
-$GLOBALS['SiteConfiguration']['site']['columns']['solr_scheme_write']['config']['eval'] = 'optional';
+
 $GLOBALS['SiteConfiguration']['site']['columns']['solr_scheme_write']['displayCond'] = 'FIELD:solr_use_write_connection:=:1';
 
-$GLOBALS['SiteConfiguration']['site']['palettes']['solr_read']['showitem'] = 'solr_scheme_read';
-$GLOBALS['SiteConfiguration']['site']['palettes']['solr_write']['showitem'] = 'solr_scheme_write';
+$GLOBALS['SiteConfiguration']['site']['columns']['solr_port_write'] = $GLOBALS['SiteConfiguration']['site']['columns']['solr_port_read'];
+$GLOBALS['SiteConfiguration']['site']['columns']['solr_port_write']['config']['eval'] = '';
+$GLOBALS['SiteConfiguration']['site']['columns']['solr_port_write']['displayCond'] = 'FIELD:solr_use_write_connection:=:1';
+
+$GLOBALS['SiteConfiguration']['site']['palettes']['solr_read']['showitem'] = 'solr_scheme_read, solr_port_read';
+$GLOBALS['SiteConfiguration']['site']['palettes']['solr_write']['showitem'] = 'solr_scheme_write, solr_port_write';
 
 $GLOBALS['SiteConfiguration']['site']['types']['0']['showitem'] = str_replace(
     'base,',

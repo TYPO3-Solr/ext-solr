@@ -8,6 +8,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Site;
  * All code (c) Beech Applications B.V. all rights reserved
  */
 
+use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -21,8 +22,15 @@ class Typo3ManagedSite extends Site
      */
     protected $typo3SiteObject;
 
-    
-    public function __construct(TypoScriptConfiguration $configuration, array $page, $domain, $siteHash, PagesRepository $pagesRepository = null, $defaultLanguageId = 0, $availableLanguageIds = [], Typo3Site $typo3SiteObject = null)
+    /**
+     * @var array
+     */
+    protected $solrConnectionConfigurations;
+
+
+    public function __construct(
+        TypoScriptConfiguration $configuration,
+        array $page, $domain, $siteHash, PagesRepository $pagesRepository = null, $defaultLanguageId = 0, $availableLanguageIds = [], array $solrConnectionConfigurations = [], Typo3Site $typo3SiteObject = null)
     {
         $this->configuration = $configuration;
         $this->rootPage = $page;
@@ -31,6 +39,7 @@ class Typo3ManagedSite extends Site
         $this->pagesRepository = $pagesRepository ?? GeneralUtility::makeInstance(PagesRepository::class);
         $this->defaultLanguageId = $defaultLanguageId;
         $this->availableLanguageIds = $availableLanguageIds;
+        $this->solrConnectionConfigurations = $solrConnectionConfigurations;
         $this->typo3SiteObject = $typo3SiteObject;
     }
 
@@ -39,11 +48,26 @@ class Typo3ManagedSite extends Site
         // TODO: Implement getSysLanguageMode() method.
     }
 
-
+    /**
+     * @param int $language
+     * @return array
+     * @throws NoSolrConnectionFoundException
+     */
     public function getSolrConnectionConfiguration(int $language = 0): array
     {
-        return ['read' => [], 'write' => []];
-//        $this->typo3SiteObject->getConfiguration()
-        // TODO: Implement getSolrConnectionConfiguration() method.
+        if (!is_array($this->solrConnectionConfigurations[$language])) {
+            /* @var $noSolrConnectionException NoSolrConnectionFoundException */
+            $noSolrConnectionException = GeneralUtility::makeInstance(
+                NoSolrConnectionFoundException::class,
+                /** @scrutinizer ignore-type */  'Could not find a Solr connection for root page [' . $this->getRootPageId() . '] and language [' . $language . '].',
+                /** @scrutinizer ignore-type */ 1552491117
+            );
+            $noSolrConnectionException->setRootPageId($this->getRootPageId());
+            $noSolrConnectionException->setLanguageId($language);
+
+            throw $noSolrConnectionException;
+        }
+
+        return $this->solrConnectionConfigurations[$language];
     }
 }

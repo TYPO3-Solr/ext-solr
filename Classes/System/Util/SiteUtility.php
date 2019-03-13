@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\System\Util;
 
 /***************************************************************
@@ -54,5 +55,44 @@ class SiteUtility
         }
 
         return $site instanceof Site;
+    }
+
+    public static function getConnectionProperty(Site $typo3Site, $property, $languageId, $scope, $defaultValue = null): string
+    {
+
+        // convention kez solr_$property_$scope
+        $keyToCheck = 'solr_' . $property . '_' . $scope;
+
+        // convention fallback kez solr_$property_read
+        $fallbackKey = 'solr_' . $property . '_read';
+
+        // try to find language specific setting if found return it
+        $languageSpecificConfiguration = $typo3Site->getLanguageById($languageId)->toArray();
+        $value = self::getValueOrFallback($languageSpecificConfiguration, $keyToCheck, $fallbackKey);
+
+        if (!empty($value)) {
+            return $value;
+        }
+
+        // if not found check global configuration
+        $siteBaseConfiguration = $typo3Site->getConfiguration();
+
+        return self::getValueOrFallback($siteBaseConfiguration, $keyToCheck, $fallbackKey) ?: $defaultValue;
+    }
+
+    /**
+     * @param array $data
+     * @param string $keyToCheck
+     * @param string $fallbackKey
+     * @return string|null
+     */
+    protected static function getValueOrFallback(array $data, string $keyToCheck, string $fallbackKey)
+    {
+        $value = $data[$keyToCheck] ?? null;
+        if (!empty($value)) {
+            return $value;
+        }
+
+        return $data[$fallbackKey] ?? null;
     }
 }
