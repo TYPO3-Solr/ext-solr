@@ -29,37 +29,15 @@ use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\Configuratio
 use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
-use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Core\Registry;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-class Site
+abstract class Site implements SiteInterface
 {
-
     /**
      * @var TypoScriptConfiguration
      */
     protected $configuration;
-
-    /**
-     * Cache for ApacheSolrForTypo3\Solr\Site objects
-     *
-     * @var array
-     */
-    protected static $sitesCache = [];
-
-    /**
-     * Small cache for the list of pages in a site, so that the results of this
-     * rather expensive operation can be used by all initializers without having
-     * each initializer do it again.
-     *
-     * TODO Move to caching framework once TYPO3 4.6 is the minimum required
-     * version.
-     *
-     * @var array
-     */
-    protected static $sitePagesCache = [];
 
     /**
      * Root page record.
@@ -67,14 +45,6 @@ class Site
      * @var array
      */
     protected $rootPage = [];
-
-    /**
-     * The site's sys_language_mode
-     *
-     * @var string
-     */
-    protected $sysLanguageMode = null;
-
     /**
      * @var string
      */
@@ -101,34 +71,15 @@ class Site
     protected $availableLanguageIds = [];
 
     /**
-     * Constructor.
+     * Gets the site's config.sys_language_mode setting
      *
-     * @param TypoScriptConfiguration $configuration
-     * @param array $page Site root page ID (uid). The page must be marked as site root ("Use as Root Page" flag).
-     * @param string $domain The domain record used by this Site
-     * @param string $siteHash The site hash used by this site
-     * @param PagesRepository $pagesRepository
-     * @param int $defaultLanguageId
-     * @param int[] $availableLanguageIds
-     */
-    public function __construct(TypoScriptConfiguration $configuration, array $page, $domain, $siteHash, PagesRepository $pagesRepository = null, $defaultLanguageId = 0, $availableLanguageIds = [])
-    {
-        $this->configuration = $configuration;
-        $this->rootPage = $page;
-        $this->domain = $domain;
-        $this->siteHash = $siteHash;
-        $this->pagesRepository = $pagesRepository ?? GeneralUtility::makeInstance(PagesRepository::class);
-        $this->defaultLanguageId = $defaultLanguageId;
-        $this->availableLanguageIds = $availableLanguageIds;
-    }
-
-    /**
-     * Clears the $sitePagesCache
+     * @param int $languageUid
      *
+     * @return string The site's config.sys_language_mode
      */
-    public static function clearSitePagesCache()
+    public function getSysLanguageMode($languageUid = 0)
     {
-        self::$sitePagesCache = [];
+        return null;
     }
 
     /**
@@ -136,6 +87,7 @@ class Site
      *
      * @param array $page pagerecord
      * @return bool true if the page is marked as root page, false otherwise
+     * @todo: move to SiteUtility?
      */
     public static function isRootPage($page)
     {
@@ -252,6 +204,7 @@ class Site
         return array_merge($pageIds, $this->pagesRepository->findAllSubPageIdsByRootPage($rootPageId, $maxDepth, $initialPagesAdditionalWhereClause));
     }
 
+
     /**
      * Generates the site's unique Site Hash.
      *
@@ -298,34 +251,11 @@ class Site
     }
 
     /**
-     * Gets the site's config.sys_language_mode setting
-     *
-     * @param int $languageUid
-     *
-     * @return string The site's config.sys_language_mode
-     */
-    public function getSysLanguageMode($languageUid = 0)
-    {
-        if (!is_null($this->sysLanguageMode)) {
-            return $this->sysLanguageMode;
-        }
-
-        try {
-            Util::initializeTsfe($this->getRootPageId(), $languageUid);
-            $this->sysLanguageMode = $GLOBALS['TSFE']->sys_language_mode;
-            return $this->sysLanguageMode;
-
-        } catch (\TYPO3\CMS\Core\Error\Http\ServiceUnavailableException $e) {
-            // when there is an error during initialization we return the default sysLanguageMode
-            return $this->sysLanguageMode;
-        }
-    }
-
-    /**
      * Retrieves the rootPageIds as an array from a set of sites.
      *
      * @param array $sites
      * @return array
+     * @todo: move to SiteUtility?
      */
     public static function getRootPageIdsFromSites(array $sites): array
     {
@@ -335,45 +265,6 @@ class Site
         }
 
         return $rootPageIds;
-    }
-
-    /**
-     * @param int $language
-     * @return array
-     * @throws NoSolrConnectionFoundException
-     */
-    public function getSolrConnectionConfiguration(int $language = 0): array {
-        $connectionKey = $this->getRootPageId() . '|' . $language;
-        $solrConfiguration = $this->getSolrConnectionConfigFromRegistry($connectionKey);
-
-        if (!is_array($solrConfiguration)) {
-            /* @var $noSolrConnectionException NoSolrConnectionFoundException */
-            $noSolrConnectionException = GeneralUtility::makeInstance(
-                NoSolrConnectionFoundException::class,
-                /** @scrutinizer ignore-type */  'Could not find a Solr connection for root page [' . $this->getRootPageId() . '] and language [' . $language . '].',
-                /** @scrutinizer ignore-type */ 1275396474
-            );
-            $noSolrConnectionException->setRootPageId($this->getRootPageId());
-            $noSolrConnectionException->setLanguageId($language);
-
-            throw $noSolrConnectionException;
-        }
-
-        return $solrConfiguration;
-    }
-
-    /**
-     * Gets all connection configurations found.
-     *
-     * @return array An array of connection configurations.
-     */
-    protected function getSolrConnectionConfigFromRegistry(string $connectionKey)
-    {
-        /** @var $registry Registry */
-        $registry = GeneralUtility::makeInstance(Registry::class);
-        $solrConfigurations = $registry->get('tx_solr', 'servers', []);
-
-        return $solrConfigurations[$connectionKey] ?? null;
     }
 
     /**

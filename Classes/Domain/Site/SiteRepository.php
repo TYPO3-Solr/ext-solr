@@ -30,10 +30,13 @@ use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
 use ApacheSolrForTypo3\Solr\System\Records\SystemLanguage\SystemLanguageRepository;
 use ApacheSolrForTypo3\Solr\System\Service\SiteService;
+use ApacheSolrForTypo3\Solr\System\Util\SiteUtility;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Registry;
+use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 use TYPO3\CMS\Frontend\Page\PageRepository;
 
 /**
@@ -185,7 +188,7 @@ class SiteRepository
      *
      * @param integer $rootPageId
      * @throws \InvalidArgumentException
-     * @return Site
+     * @return SiteInterface
      */
     protected function buildSite($rootPageId)
     {
@@ -195,23 +198,11 @@ class SiteRepository
         $rootPageRecord = (array)BackendUtility::getRecord('pages', $rootPageId);
 
         $this->validateRootPageRecord($rootPageId, $rootPageRecord);
-        $solrConfiguration = Util::getSolrConfigurationFromPageId($rootPageId);
-        $domain = $this->getDomainFromConfigurationOrFallbackToDomainRecord($rootPageId);
-        $siteHash = $this->getSiteHashForDomain($domain);
-        $defaultLanguage = $this->getDefaultLanguage($rootPageId);
-        $pageRepository = GeneralUtility::makeInstance(PagesRepository::class);
-        $availableLanguageIds = GeneralUtility::makeInstance(SystemLanguageRepository::class)->findSystemLanguages();
+        if(!SiteUtility::getIsSiteManagedSite($rootPageId)) {
+            return $this->buildLegacySite($rootPageRecord);
+        }
 
-        return GeneralUtility::makeInstance(
-            Site::class,
-            /** @scrutinizer ignore-type */ $solrConfiguration,
-            /** @scrutinizer ignore-type */ $rootPageRecord,
-            /** @scrutinizer ignore-type */ $domain,
-            /** @scrutinizer ignore-type */ $siteHash,
-            /** @scrutinizer ignore-type */ $pageRepository,
-            /** @scrutinizer ignore-type */ $defaultLanguage,
-            /** @scrutinizer ignore-type */ $availableLanguageIds
-        );
+        return $this->buildTypo3ManagedSite($rootPageRecord);
     }
 
     /**
@@ -296,5 +287,77 @@ class SiteRepository
                 1309272922
             );
         }
+    }
+
+    /**
+     * @param array $rootPageRecord
+     * @return LegacySite
+     */
+    protected function buildLegacySite($rootPageRecord): LegacySite
+    {
+
+
+        $solrConfiguration = Util::getSolrConfigurationFromPageId($rootPageRecord['uid']);
+        $domain = $this->getDomainFromConfigurationOrFallbackToDomainRecord($rootPageRecord['uid']);
+        $siteHash = $this->getSiteHashForDomain($domain);
+        $defaultLanguage = $this->getDefaultLanguage($rootPageRecord['uid']);
+        $pageRepository = GeneralUtility::makeInstance(PagesRepository::class);
+        $availableLanguageIds = GeneralUtility::makeInstance(SystemLanguageRepository::class)->findSystemLanguages();
+
+        return GeneralUtility::makeInstance(
+            LegacySite::class,
+            /** @scrutinizer ignore-type */
+            $solrConfiguration,
+            /** @scrutinizer ignore-type */
+            $rootPageRecord,
+            /** @scrutinizer ignore-type */
+            $domain,
+            /** @scrutinizer ignore-type */
+            $siteHash,
+            /** @scrutinizer ignore-type */
+            $pageRepository,
+            /** @scrutinizer ignore-type */
+            $defaultLanguage,
+            /** @scrutinizer ignore-type */
+            $availableLanguageIds
+        );
+    }
+
+    /**
+     * @param array $rootPageRecord
+     * @return Typo3ManagedSite
+     */
+    protected function buildTypo3ManagedSite(array $rootPageRecord): Typo3ManagedSite
+    {
+        $solrConfiguration = Util::getSolrConfigurationFromPageId($rootPageRecord['uid']);
+        $siteFinder = GeneralUtility::makeInstance(SiteFinder::class);
+        /** @var \TYPO3\CMS\Core\Site\Entity\Site $typo3Site */
+        $typo3Site = $siteFinder->getSiteByPageId($rootPageRecord['uid']);
+        $domain = $typo3Site->getBase()->getHost();
+
+        $siteHash = $this->getSiteHashForDomain($domain);
+        $defaultLanguage = $typo3Site->getDefaultLanguage()->getLanguageId();
+        $pageRepository = GeneralUtility::makeInstance(PagesRepository::class);
+        $availableLanguageIds = array_map(function($language) { return $language->getLanguageId();}, $typo3Site->getAllLanguages());
+
+        return GeneralUtility::makeInstance(
+            Typo3ManagedSite::class,
+            /** @scrutinizer ignore-type */
+            $solrConfiguration,
+            /** @scrutinizer ignore-type */
+            $rootPageRecord,
+            /** @scrutinizer ignore-type */
+            $domain,
+            /** @scrutinizer ignore-type */
+            $siteHash,
+            /** @scrutinizer ignore-type */
+            $pageRepository,
+            /** @scrutinizer ignore-type */
+            $defaultLanguage,
+            /** @scrutinizer ignore-type */
+            $availableLanguageIds,
+            /** @scrutinizer ignore-type */
+            $typo3Site
+        );
     }
 }
