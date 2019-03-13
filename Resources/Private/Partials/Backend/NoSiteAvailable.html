@@ -10,6 +10,18 @@
 
 		<f:be.infobox title="There is no site configured for your solr extension!" state="3">
 			<p>Please check the following:</p>
+			<p>If you want to use solr with the TYPO3 site configuration:</p>
+
+			<ul>
+				<li>Your site has a page, marked as root page.</li>
+				<li>Configure EXT:solr with the TYPO3 site module.</li>
+				<li>Check the reports module if any solr error is shown.</li>
+			</ul>
+
+			<hr />
+			<p><strong>OR</strong></p>
+			<hr />
+			<p>If you want to use solr with the legacy configuration (domain record and typoscript of EXTCONF setup):</p>
 			<ul>
 				<li>Your site has a domain configured, please create a domain record on the root page, or configure it in "TYPO3_CONF_VARS|EXTCONF|solr|sites|###rootPageId###|domains"</li>
 				<li>Your site has a page, marked as root page.</li>

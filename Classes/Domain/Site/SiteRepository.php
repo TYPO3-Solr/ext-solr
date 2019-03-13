@@ -28,11 +28,15 @@ namespace ApacheSolrForTypo3\Solr\Domain\Site;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\RootPageResolver;
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
+use ApacheSolrForTypo3\Solr\System\Records\SystemLanguage\SystemLanguageRepository;
 use ApacheSolrForTypo3\Solr\System\Service\SiteService;
+use ApacheSolrForTypo3\Solr\System\Util\SiteUtility;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Registry;
+use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 use TYPO3\CMS\Frontend\Page\PageRepository;
 
 /**
@@ -71,7 +75,7 @@ class SiteRepository
     public function __construct(RootPageResolver $rootPageResolver = null, TwoLevelCache $twoLevelCache = null, Registry $registry = null)
     {
         $this->rootPageResolver = $rootPageResolver ?? GeneralUtility::makeInstance(RootPageResolver::class);
-        $this->runtimeCache = $twoLevelCache ?? GeneralUtility::makeInstance(TwoLevelCache::class, /** @scrutinizer ignore-type */ 'cache_runtime');
+        $this->runtimeCache = $twoLevelCache ?? GeneralUtility::makeInstance(TwoLevelCache::class, /** @scrutinizer ignore-type */'cache_runtime');
         $this->registry = $registry ?? GeneralUtility::makeInstance(Registry::class);
     }
 
@@ -80,7 +84,7 @@ class SiteRepository
      *
      * @param int $pageId The page Id to get a Site object for.
      * @param string $mountPointIdentifier
-     * @return Site Site for the given page Id.
+     * @return SiteInterface Site for the given page Id.
      */
     public function getSiteByPageId($pageId, $mountPointIdentifier = '')
     {
@@ -92,7 +96,7 @@ class SiteRepository
      * Gets the Site for a specific root page Id.
      *
      * @param int $rootPageId Root page Id to get a Site object for.
-     * @return Site Site for the given page Id.
+     * @return SiteInterface Site for the given page Id.
      */
     public function getSiteByRootPageId($rootPageId)
     {
@@ -163,19 +167,17 @@ class SiteRepository
      * Gets the system languages (IDs) for which Solr connections have been
      * configured.
      *
-     * @return array Array of system language IDs for which connections have been configured on this site.
+     * @param Site $site
+     * @return array
+     * @throws \ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException
+     * @deprecated use $site->getConnectionConfig
+     * @todo check if method is still needed
      */
     public function getAllLanguages(Site $site)
     {
         $siteLanguages = [];
-        $servers = $this->getSolrServersFromRegistry();
-
-        foreach ($servers as $connectionKey => $solrConnection) {
-            list($siteRootPageId, $systemLanguageId) = explode('|', $connectionKey);
-
-            if ($siteRootPageId == $site->getRootPageId()) {
-                $siteLanguages[] = $systemLanguageId;
-            }
+        foreach ($site->getAllSolrConnectionConfigurations() as $solrConnectionConfiguration) {
+            $siteLanguages[] = $solrConnectionConfiguration['language'];
         }
 
         return $siteLanguages;
@@ -186,28 +188,23 @@ class SiteRepository
      *
      * @param integer $rootPageId
      * @throws \InvalidArgumentException
-     * @return Site
+     * @return SiteInterface
      */
     protected function buildSite($rootPageId)
     {
+        if (empty($rootPageId)) {
+            throw new \InvalidArgumentException('Root page id can not be empty');
+        }
         $rootPageRecord = (array)BackendUtility::getRecord('pages', $rootPageId);
 
         $this->validateRootPageRecord($rootPageId, $rootPageRecord);
-        $solrConfiguration = Util::getSolrConfigurationFromPageId($rootPageId);
-        $domain = $this->getDomainFromConfigurationOrFallbackToDomainRecord($rootPageId);
-        $siteHash = $this->getSiteHashForDomain($domain);
-        $defaultLanguage = $this->getDefaultLanguage($rootPageId);
-        $pageRepository = GeneralUtility::makeInstance(PagesRepository::class);
 
-        return GeneralUtility::makeInstance(
-            Site::class,
-            /** @scrutinizer ignore-type */ $solrConfiguration,
-            /** @scrutinizer ignore-type */ $rootPageRecord,
-            /** @scrutinizer ignore-type */ $domain,
-            /** @scrutinizer ignore-type */ $siteHash,
-            /** @scrutinizer ignore-type */ $pageRepository,
-            /** @scrutinizer ignore-type */ $defaultLanguage
-        );
+        //@todo The handling of the legacy site can be removed in EXT:solr 11
+        if (!SiteUtility::getIsSiteManagedSite($rootPageId)) {
+            return $this->buildLegacySite($rootPageRecord);
+        }
+
+        return $this->buildTypo3ManagedSite($rootPageRecord);
     }
 
     /**
@@ -215,6 +212,7 @@ class SiteRepository
      *
      * @param int $rootPageId
      * @return int|mixed
+     * @deprecated Use Site directly
      */
     protected function getDefaultLanguage($rootPageId)
     {
@@ -232,6 +230,7 @@ class SiteRepository
     /**
      * Retrieves the configured solr servers from the registry.
      *
+     * @deprecated This method is only required for old solr based sites.
      * @return array
      */
     protected function getSolrServersFromRegistry()
@@ -242,11 +241,12 @@ class SiteRepository
 
     /**
      * @param $rootPageId
+     * @deprecated This method is only required for old solr based sites.
      * @return NULL|string
      */
     protected function getDomainFromConfigurationOrFallbackToDomainRecord($rootPageId)
     {
-            /** @var $siteService SiteService */
+        /** @var $siteService SiteService */
         $siteService = GeneralUtility::makeInstance(SiteService::class);
         $domain = $siteService->getFirstDomainForRootPage($rootPageId);
         if ($domain === '') {
@@ -291,5 +291,114 @@ class SiteRepository
                 1309272922
             );
         }
+    }
+
+    /**
+     * @param array $rootPageRecord
+     * @return LegacySite
+     */
+    protected function buildLegacySite($rootPageRecord): LegacySite
+    {
+        $solrConfiguration = Util::getSolrConfigurationFromPageId($rootPageRecord['uid']);
+        $domain = $this->getDomainFromConfigurationOrFallbackToDomainRecord($rootPageRecord['uid']);
+        $siteHash = $this->getSiteHashForDomain($domain);
+        $defaultLanguage = $this->getDefaultLanguage($rootPageRecord['uid']);
+        $pageRepository = GeneralUtility::makeInstance(PagesRepository::class);
+        $availableLanguageIds = GeneralUtility::makeInstance(SystemLanguageRepository::class)->findSystemLanguages();
+
+        return GeneralUtility::makeInstance(
+            LegacySite::class,
+            /** @scrutinizer ignore-type */
+            $solrConfiguration,
+            /** @scrutinizer ignore-type */
+            $rootPageRecord,
+            /** @scrutinizer ignore-type */
+            $domain,
+            /** @scrutinizer ignore-type */
+            $siteHash,
+            /** @scrutinizer ignore-type */
+            $pageRepository,
+            /** @scrutinizer ignore-type */
+            $defaultLanguage,
+            /** @scrutinizer ignore-type */
+            $availableLanguageIds
+        );
+    }
+
+    /**
+     * @param array $rootPageRecord
+     * @return Typo3ManagedSite
+     */
+    protected function buildTypo3ManagedSite(array $rootPageRecord): Typo3ManagedSite
+    {
+        $solrConfiguration = Util::getSolrConfigurationFromPageId($rootPageRecord['uid']);
+        $siteFinder = GeneralUtility::makeInstance(SiteFinder::class);
+        /** @var \TYPO3\CMS\Core\Site\Entity\Site $typo3Site */
+        $typo3Site = $siteFinder->getSiteByPageId($rootPageRecord['uid']);
+        $domain = $typo3Site->getBase()->getHost();
+
+        $siteHash = $this->getSiteHashForDomain($domain);
+        $defaultLanguage = $typo3Site->getDefaultLanguage()->getLanguageId();
+        $pageRepository = GeneralUtility::makeInstance(PagesRepository::class);
+        $availableLanguageIds = array_map(function($language) {
+            return $language->getLanguageId();
+        }, $typo3Site->getAllLanguages());
+
+        $solrConnectionConfigurations = [];
+        foreach ($availableLanguageIds as $languageUid) {
+            $solrConnectionConfigurations[$languageUid] = [
+                'connectionKey' =>  $rootPageRecord['uid'] . '|' . $languageUid,
+                'rootPageTitle' => $rootPageRecord['title'],
+                'rootPageUid' => $rootPageRecord['uid'],
+                'read' => [
+                    'scheme' => SiteUtility::getConnectionProperty($typo3Site, 'scheme', $languageUid, 'read', 'http'),
+                    'host' => SiteUtility::getConnectionProperty($typo3Site, 'host', $languageUid, 'read', 'localhost'),
+                    'port' => (int)SiteUtility::getConnectionProperty($typo3Site, 'port', $languageUid, 'read', 8983),
+                    // @todo: transform core to path
+                    'path' =>
+                        SiteUtility::getConnectionProperty($typo3Site, 'path', $languageUid, 'read', '/solr/') .
+                        SiteUtility::getConnectionProperty($typo3Site, 'core', $languageUid, 'read', 'core_en') . '/' ,
+                    'username' => SiteUtility::getConnectionProperty($typo3Site, 'username', $languageUid, 'read', ''),
+                    'password' => SiteUtility::getConnectionProperty($typo3Site, 'password', $languageUid, 'read', ''),
+                    'timeout' => SiteUtility::getConnectionProperty($typo3Site, 'timeout', $languageUid, 'read', 0)
+                ],
+                'write' => [
+                    'scheme' => SiteUtility::getConnectionProperty($typo3Site, 'scheme', $languageUid, 'write', 'http'),
+                    'host' => SiteUtility::getConnectionProperty($typo3Site, 'host', $languageUid, 'write', 'localhost'),
+                    'port' => (int)SiteUtility::getConnectionProperty($typo3Site, 'port', $languageUid, 'write', 8983),
+                    // @todo: transform core to path
+                    'path' =>
+                        SiteUtility::getConnectionProperty($typo3Site, 'path', $languageUid, 'read', '/solr/') .
+                        SiteUtility::getConnectionProperty($typo3Site, 'core', $languageUid, 'read', 'core_en') . '/' ,
+                    'username' => SiteUtility::getConnectionProperty($typo3Site, 'username', $languageUid, 'write', ''),
+                    'password' => SiteUtility::getConnectionProperty($typo3Site, 'password', $languageUid, 'write', ''),
+                    'timeout' => SiteUtility::getConnectionProperty($typo3Site, 'timeout', $languageUid, 'write', 0)
+                ],
+
+                'language' => $languageUid
+            ];
+        }
+
+        return GeneralUtility::makeInstance(
+            Typo3ManagedSite::class,
+            /** @scrutinizer ignore-type */
+            $solrConfiguration,
+            /** @scrutinizer ignore-type */
+            $rootPageRecord,
+            /** @scrutinizer ignore-type */
+            $domain,
+            /** @scrutinizer ignore-type */
+            $siteHash,
+            /** @scrutinizer ignore-type */
+            $pageRepository,
+            /** @scrutinizer ignore-type */
+            $defaultLanguage,
+            /** @scrutinizer ignore-type */
+            $availableLanguageIds,
+            /** @scrutinizer ignore-type */
+            $solrConnectionConfigurations,
+            /** @scrutinizer ignore-type */
+            $typo3Site
+        );
     }
 }

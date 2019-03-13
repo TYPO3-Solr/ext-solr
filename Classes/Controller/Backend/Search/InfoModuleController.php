@@ -259,7 +259,7 @@ class InfoModuleController extends AbstractModuleController
         $documentsByCoreAndType = [];
         foreach ($solrCoreConnections as $languageId => $solrCoreConnection) {
             $coreAdmin = $solrCoreConnection->getAdminService();
-            $documents = $this->apacheSolrDocumentRepository->findByPageIdAndByLanguageId($this->requestedPageUID, $languageId);
+            $documents = $this->apacheSolrDocumentRepository->findByPageIdAndByLanguageId($this->selectedPageUID, $languageId);
 
             $documentsByType = [];
             foreach ($documents as $document) {
@@ -271,7 +271,7 @@ class InfoModuleController extends AbstractModuleController
         }
 
         $this->view->assignMultiple([
-            'pageId' => $this->requestedPageUID,
+            'pageId' => $this->selectedPageUID,
             'indexInspectorDocumentsByLanguageAndType' => $documentsByCoreAndType
         ]);
     }
