@@ -43,7 +43,7 @@ class ConfigurationServiceTest extends UnitTest
     public function overrideFilterDataProvider()
     {
         return [
-            'simpleInteger' => ['id', 4711, 'id:"4711"'],
+            'simpleInteger' => ['id', 4711, 'id:4711'],
             'escapedString' => ['id', 'foo"bar', 'id:"foo\"bar"']
         ];
     }
