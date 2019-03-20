@@ -68,7 +68,11 @@ class HtmlContentExtractorTest extends UnitTest
             'decodeEntities' => [
                 'websiteContent' => 'B&auml;hm',
                 'exptectedIndexableContent' => 'Bähm'
-            ]
+            ],
+            'decodeSpaceEntities' => [
+                'websiteContent' => 'B&auml;hm&nbsp; Bum',
+                'exptectedIndexableContent' => 'Bähm Bum'
+            ],
         ];
     }
 

@@ -82,17 +82,17 @@ class Typo3PageContentExtractor extends HtmlContentExtractor
     public function excludeContentByClass($indexableContent)
     {
         if (empty(trim($indexableContent))) {
-            return html_entity_decode($indexableContent);
+            return $indexableContent;
         }
 
         $excludeClasses = $this->getConfiguration()->getIndexQueuePagesExcludeContentByClassArray();
         if (count($excludeClasses) === 0) {
-            return html_entity_decode($indexableContent);
+            return $indexableContent;
         }
 
         $isInContent = Util::containsOneOfTheStrings($indexableContent, $excludeClasses);
         if (!$isInContent) {
-            return html_entity_decode($indexableContent);
+            return $indexableContent;
         }
 
         $doc = new \DOMDocument('1.0', 'UTF-8');
