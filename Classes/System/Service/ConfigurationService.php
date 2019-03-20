@@ -132,9 +132,12 @@ class ConfigurationService
 
             $fieldName = $filter['field'];
             $fieldValue = $filter['value'];
-            $quotedFieldValue = '"' . str_replace('"', '\"', $fieldValue) . '"';
 
-            $filterConfiguration[] =  $fieldName . ':' . $quotedFieldValue;
+            if (!is_numeric($fieldValue)) {
+                $fieldValue = '"' . str_replace('"', '\"', $fieldValue) . '"';
+            }
+
+            $filterConfiguration[] =  $fieldName . ':' . $fieldValue;
         }
         return $filterConfiguration;
     }
