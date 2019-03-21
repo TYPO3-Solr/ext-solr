@@ -55,7 +55,7 @@ class Typo3PageContentExtractorTest extends UnitTest
     public function changesNbspToSpace()
     {
         $content = '<!-- TYPO3SEARCH_begin -->In Olten&nbsp;ist<!-- TYPO3SEARCH_end -->';
-        $expectedResult = 'In Olten ist';
+        $expectedResult = 'In Olten ist';
 
         $contentExtractor = GeneralUtility::makeInstance(Typo3PageContentExtractor::class, $content);
         $contentExtractor->setConfiguration($this->typoScripConfigurationMock);
