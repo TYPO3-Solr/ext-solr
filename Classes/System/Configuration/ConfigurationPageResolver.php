@@ -27,6 +27,7 @@ namespace ApacheSolrForTypo3\Solr\System\Configuration;
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\System\Records\SystemTemplate\SystemTemplateRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\RootlineUtility;
 use TYPO3\CMS\Frontend\Page\PageRepository;
 
 /**
@@ -104,7 +105,7 @@ class ConfigurationPageResolver
      */
     protected function calculateClosestPageIdWithActiveTemplate($startPageId)
     {
-        $rootLine = $this->pageRepository->getRootLine($startPageId);
+        $rootLine = GeneralUtility::makeInstance(RootlineUtility::class, $startPageId)->get();
         // when no rootline is present the startpage it's self is the closest page
         if (!is_array($rootLine)) {
             return $startPageId;

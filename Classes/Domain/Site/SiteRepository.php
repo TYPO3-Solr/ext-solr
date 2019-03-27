@@ -33,6 +33,7 @@ use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Registry;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\RootlineUtility;
 use TYPO3\CMS\Frontend\Page\PageRepository;
 
 /**
@@ -250,8 +251,7 @@ class SiteRepository
         $siteService = GeneralUtility::makeInstance(SiteService::class);
         $domain = $siteService->getFirstDomainForRootPage($rootPageId);
         if ($domain === '') {
-            $pageSelect = GeneralUtility::makeInstance(PageRepository::class);
-            $rootLine = $pageSelect->getRootLine($rootPageId);
+            $rootLine = GeneralUtility::makeInstance(RootlineUtility::class, $rootPageId)->get();
             $domain = BackendUtility::firstDomainRecord($rootLine);
             return (string)$domain;
         }

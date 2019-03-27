@@ -38,6 +38,7 @@ use TYPO3\CMS\Core\Registry;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\TypoScript\ExtendedTemplateService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\RootlineUtility;
 use TYPO3\CMS\Frontend\Page\PageRepository;
 
 /**
@@ -127,11 +128,8 @@ class ConnectionManager implements SingletonInterface
      */
     public function getConfigurationByPageId($pageId, $language = 0, $mount = '')
     {
-        // find the root page
-        $pageSelect = GeneralUtility::makeInstance(PageRepository::class);
-
         /** @var Rootline $rootLine */
-        $rootLine = GeneralUtility::makeInstance(Rootline::class, /** @scrutinizer ignore-type */ $pageSelect->getRootLine($pageId, $mount));
+        $rootLine = GeneralUtility::makeInstance(Rootline::class, /** @scrutinizer ignore-type */ GeneralUtility::makeInstance(RootlineUtility::class, $pageId, $mount)->get());
         $siteRootPageId = $rootLine->getRootPageId();
 
         try {
@@ -381,7 +379,7 @@ class ConnectionManager implements SingletonInterface
         $connectionKey = $rootPage['uid'] . '|' . $languageId;
 
         $pageSelect = GeneralUtility::makeInstance(PageRepository::class);
-        $rootLine = $pageSelect->getRootLine($rootPage['uid']);
+        $rootLine = GeneralUtility::makeInstance(RootlineUtility::class, $rootPage['uid'])->get();
 
         $tmpl = GeneralUtility::makeInstance(ExtendedTemplateService::class);
         $tmpl->tt_track = false; // Do not log time-performance information

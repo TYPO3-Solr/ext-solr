@@ -31,6 +31,7 @@ use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationPageResolver;
 use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\TCA\TCAService;
+use TYPO3\CMS\Core\Utility\RootlineUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use ApacheSolrForTypo3\Solr\System\Mvc\Frontend\Controller\OverriddenTypoScriptFrontendController;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
@@ -258,7 +259,7 @@ class Util
 
             /** @var $pageSelect PageRepository */
         $pageSelect = GeneralUtility::makeInstance(PageRepository::class);
-        $rootLine = $pageSelect->getRootLine($pageId);
+        $rootLine = GeneralUtility::makeInstance(RootlineUtility::class, $pageId)->get();
 
         $initializedTsfe = false;
         $initializedPageSelect = false;
