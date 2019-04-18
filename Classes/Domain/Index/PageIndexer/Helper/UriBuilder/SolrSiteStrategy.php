@@ -29,6 +29,13 @@ namespace ApacheSolrForTypo3\Solr\Domain\Index\PageIndexer\Helper\UriBuilder;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
+use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Exception\SiteNotFoundException;
+use TYPO3\CMS\Core\Routing\InvalidRouteArgumentsException;
+use TYPO3\CMS\Core\Routing\SiteMatcher;
+use TYPO3\CMS\Core\Site\Entity\Site;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\Page\PageRepository;
 
 /**
  * This class is used to build the indexing url based on the EXT:solr site.
@@ -56,9 +63,43 @@ class SolrSiteStrategy extends AbstractUriStrategy
         $path = '/';
         $pageId = $item->getRecordUid();
 
-        $pageIndexUri = $scheme . '://' . $host . $path . 'index.php?id=' . $pageId;
-        $pageIndexUri .= ($mountPointParameter !== '') ? '&MP=' . $mountPointParameter : '';
-        $pageIndexUri .= '&L=' . $language;
+        $pageIndexUri = '';
+        $pageRecord = BackendUtility::getRecord('pages', $pageId);
+        if ($pageRecord) {
+            $rootLine = BackendUtility::BEgetRootLine($pageId);
+            // Mount point overlay: Set new target page id and mp parameter
+            $pageRepository = GeneralUtility::makeInstance(PageRepository::class);
+            $siteMatcher = GeneralUtility::makeInstance(SiteMatcher::class);
+            try {
+                $site = $siteMatcher->matchByPageId($pageId, $rootLine);
+            } catch (SiteNotFoundException $e) {
+                $site = null;
+            }
+            $finalPageIdToShow = $pageId;
+            $additionalGetVars = '';
+            $mountPointInformation = $pageRepository->getMountPointInfo($pageId);
+            if ($mountPointInformation && $mountPointInformation['overlay']) {
+                // New page id
+                $finalPageIdToShow = $mountPointInformation['mount_pid'];
+                $additionalGetVars = '&MP=' . $mountPointInformation['MPvar'];
+            }
+            if ($site instanceof Site) {
+                $additionalQueryParams = [];
+                parse_str($additionalGetVars, $additionalQueryParams);
+                $additionalQueryParams['_language'] = $site->getLanguageById($language);
+                try {
+                    $pageIndexUri = (string)$site->getRouter()->generateUri($finalPageIdToShow, $additionalQueryParams);
+                } catch (InvalidRouteArgumentsException $e) {
+                    $pageIndexUri = '';
+                }
+            }
+        }
+
+        if (empty($pageIndexUri)) {
+            $pageIndexUri = $scheme . '://' . $host . $path . 'index.php?id=' . $pageId;
+            $pageIndexUri .= ($mountPointParameter !== '') ? '&MP=' . $mountPointParameter : '';
+            $pageIndexUri .= '&L=' . $language;
+        }
 
         return $pageIndexUri;
     }
