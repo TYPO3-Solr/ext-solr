@@ -31,6 +31,9 @@ use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationPageResolver;
 use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\TCA\TCAService;
+use TYPO3\CMS\Core\Context\Context;
+use TYPO3\CMS\Core\Context\LanguageAspect;
+use TYPO3\CMS\Core\Utility\VersionNumberUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use ApacheSolrForTypo3\Solr\System\Mvc\Frontend\Controller\OverriddenTypoScriptFrontendController;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
@@ -317,6 +320,14 @@ class Util
             $GLOBALS['TT'] = GeneralUtility::makeInstance(TimeTracker::class, false);
         }
 
+        // Typo3 9.5 and above
+        if (VersionNumberUtility::convertVersionNumberToInteger(VersionNumberUtility::getCurrentTypo3Version())
+            >= VersionNumberUtility::convertVersionNumberToInteger('9.5')) {
+            /** @var Context $context */
+            $context = GeneralUtility::makeInstance(Context::class);
+            $context->setAspect('language', GeneralUtility::makeInstance(LanguageAspect::class, $language));
+        }
+
         if (!isset($tsfeCache[$cacheId]) || !$useCache) {
             GeneralUtility::_GETset($language, 'L');
 
@@ -354,6 +365,12 @@ class Util
             $GLOBALS['TSFE']->newCObj();
             $GLOBALS['TSFE']->absRefPrefix = self::getAbsRefPrefixFromTSFE($GLOBALS['TSFE']);
             $GLOBALS['TSFE']->calculateLinkVars();
+
+            // should be removed when compatibility to versions below Typo3 10 is dropped
+            if (VersionNumberUtility::convertVersionNumberToInteger(VersionNumberUtility::getCurrentTypo3Version())
+                < VersionNumberUtility::convertVersionNumberToInteger('10')) {
+                $GLOBALS['TSFE']->__set('sys_language_uid', $language);
+            }
 
             if ($useCache) {
                 $tsfeCache[$cacheId] = $GLOBALS['TSFE'];
@@ -490,5 +507,24 @@ class Util
         }
 
         return false;
+    }
+
+    /**
+     * Returns the current sys_language_uid from the active context.
+     * For Typo3 versions before 9.5 $GLOBALS['TSFE']->sys_language_uid is returned instead.
+     *
+     * @return int
+     */
+    public static function getLanguageUid()
+    {
+        // Typo3 9.5 and above
+        if (VersionNumberUtility::convertVersionNumberToInteger(VersionNumberUtility::getCurrentTypo3Version())
+            >= VersionNumberUtility::convertVersionNumberToInteger('9.5')) {
+            /** @var Context $context */
+            $context = GeneralUtility::makeInstance(Context::class);
+            return $context->getPropertyFromAspect('language', 'id');
+        }
+        // older versions
+        return $GLOBALS['TSFE']->sys_language_uid;
     }
 }
