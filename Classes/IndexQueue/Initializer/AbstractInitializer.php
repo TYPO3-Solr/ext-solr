@@ -32,6 +32,7 @@ use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use Doctrine\DBAL\DBALException;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -149,17 +150,35 @@ abstract class AbstractInitializer implements IndexQueueInitializer
      */
     public function initialize()
     {
-        $initializationQuery = 'INSERT INTO tx_solr_indexqueue_item (root, item_type, item_uid, indexing_configuration, indexing_priority, changed, errors) '
-            . $this->buildSelectStatement() . ',"" '
+        /** @var ConnectionPool $connectionPool */
+        $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
+
+        $fetchItemsQuery = $this->buildSelectStatement() . ', "" as errors '
             . 'FROM ' . $this->type . ' '
             . 'WHERE '
             . $this->buildPagesClause()
             . $this->buildTcaWhereClause()
             . $this->buildUserWhereClause();
-        $logData = ['query' => $initializationQuery];
 
         try {
-            $logData['rows'] = $this->queueItemRepository->initializeByNativeSQLStatement($initializationQuery);
+            if ($connectionPool->getConnectionForTable($this->type)->getParams() === $connectionPool->getConnectionForTable('tx_solr_indexqueue_item')->getParams()) {
+                // If both tables are in the same DB, send only one query to copy all datas from one table to the other
+                $initializationQuery = 'INSERT INTO tx_solr_indexqueue_item (root, item_type, item_uid, indexing_configuration, indexing_priority, changed, errors) ' . $fetchItemsQuery;
+                $logData = ['query' => $initializationQuery];
+                $logData['rows'] = $this->queueItemRepository->initializeByNativeSQLStatement($initializationQuery);
+            } else {
+                // If tables are using distinct connections, start by fetching items matching criteria
+                $logData = ['query' => $fetchItemsQuery];
+                $items = $connectionPool->getConnectionForTable($this->type)->fetchAll($fetchItemsQuery);
+                $logData['rows'] = count($items);
+
+                if (count($items)) {
+                    // Add items to the queue (if any)
+                    $logData['rows'] = $connectionPool
+                        ->getConnectionForTable('tx_solr_indexqueue_item')
+                        ->bulkInsert('tx_solr_indexqueue_item', $items, array_keys($items[0]));
+                }
+            }
         } catch (DBALException $DBALException) {
             $logData['error'] = $DBALException->getCode() . ': ' . $DBALException->getMessage();
         }
