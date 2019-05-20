@@ -69,10 +69,10 @@ class FrontendOverlayService {
     public function getOverlay($tableName, $record)
     {
         if ($tableName === 'pages') {
-            return $this->tsfe->sys_page->getPageOverlay($record, $this->tsfe->sys_language_uid);
+            return $this->tsfe->sys_page->getPageOverlay($record, Util::getLanguageUid());
         }
 
-        return $this->tsfe->sys_page->getRecordOverlay($tableName, $record, $this->tsfe->sys_language_uid);
+        return $this->tsfe->sys_page->getRecordOverlay($tableName, $record, Util::getLanguageUid());
     }
 
     /**
@@ -87,11 +87,11 @@ class FrontendOverlayService {
     public function getUidOfOverlay($table, $field, $uid)
     {
         // when no language is set at all we do not need to overlay
-        if (!isset($this->tsfe->sys_language_uid)) {
+        if (Util::getLanguageUid() === null) {
             return $uid;
         }
         // when no language is set we can return the passed recordUid
-        if (!$this->tsfe->sys_language_uid > 0) {
+        if (!(Util::getLanguageUid() > 0)) {
             return $uid;
         }
 
