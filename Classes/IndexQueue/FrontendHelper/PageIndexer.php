@@ -299,7 +299,7 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
             $this->responseData['originalPageDocument'] = (array)$indexer->getPageSolrDocument();
             $this->responseData['solrConnection'] = [
                 'rootPage' => $indexQueueItem->getRootPageUid(),
-                'sys_language_uid' => $GLOBALS['TSFE']->sys_language_uid,
+                'sys_language_uid' => Util::getLanguageUid(),
                 'solr' => (string)$solrConnection->getNode('write')
             ];
 
@@ -345,7 +345,7 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
 
         $solrConnection = $connectionManager->getConnectionByRootPageId(
             $indexQueueItem->getRootPageUid(),
-            $GLOBALS['TSFE']->sys_language_uid
+            Util::getLanguageUid()
         );
 
         return $solrConnection;
