@@ -5,7 +5,7 @@ What does it do?
 ----------------
 
 Apache Solr for TYPO3 is the search engine you were looking for with special
-features such as **Facetted Search** or **Synonym Support** and an incredibly fast
+features such as **Faceted Search** or **Synonym Support** and an incredibly fast
 response times of results within milliseconds.
 
 When development started, the primary goal was to create a replacement for
@@ -19,7 +19,7 @@ The results can be rendered with flexible fluid templates, to render the results
 Feature List
 ------------
 
-* Facetted Search
+* Faceted Search
 * Spellchecking / **Did you mean**
 * **Multi Language Support**
 * Search word highlighting
