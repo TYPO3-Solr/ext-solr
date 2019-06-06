@@ -43,6 +43,7 @@ class UtilTest extends UnitTest
      */
     public function getConfigurationFromPageIdReturnsCachedConfiguration()
     {
+        error_reporting(0); // needed to disable exception reporting of deprecate methods with trigger_error
         $pageId = 12;
         $path = '';
         $language = 0;
@@ -109,7 +110,7 @@ class UtilTest extends UnitTest
      */
     public function getConfigurationFromPageIdInitializesTsfe()
     {
-        error_reporting(0);
+        error_reporting(0); // needed to disable exception reporting of deprecate methods with trigger_error
         $pageId = 12;
         $path = '';
         $language = 0;
@@ -150,6 +151,7 @@ class UtilTest extends UnitTest
      */
     public function getConfigurationFromPageIdInitializesTsfeOnCacheCall()
     {
+        error_reporting(0); // needed to disable exception reporting of deprecate methods with trigger_error
         $path = '';
         $language = 0;
         $initializeTsfe = true;
