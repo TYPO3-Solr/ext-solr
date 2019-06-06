@@ -19,6 +19,9 @@ class UtilTest extends UnitTest
             ->getCache('cache_pages')
             ->willReturn($frontendCache->reveal());
         $cacheManager
+            ->getCache('cache_runtime')
+            ->willReturn($frontendCache->reveal());
+        $cacheManager
             ->getCache('tx_solr_configuration')
             ->willReturn($frontendCache->reveal());
         GeneralUtility::setSingletonInstance(\TYPO3\CMS\Core\Cache\CacheManager::class, $cacheManager->reveal());
@@ -26,7 +29,9 @@ class UtilTest extends UnitTest
 
     public function tearDown()
     {
+        GeneralUtility::resetSingletonInstances([]);
         unset($GLOBALS['TSFE']);
+        parent::tearDown();
     }
 
     /**
@@ -111,7 +116,7 @@ class UtilTest extends UnitTest
     public function getConfigurationFromPageIdInitializesTsfe()
     {
         error_reporting(0); // needed to disable exception reporting of deprecate methods with trigger_error
-        $pageId = 12;
+        $pageId = 24;
         $path = '';
         $language = 0;
         $initializeTsfe = true;
@@ -128,7 +133,7 @@ class UtilTest extends UnitTest
             ->shouldBeCalledOnce();
         GeneralUtility::addInstance(TwoLevelCache::class, $twoLevelCache->reveal());
 
-        $this->buildTestCaseForTsfe(12, 1);
+        $this->buildTestCaseForTsfe($pageId, 13);
 
         $newConfiguration = Util::getConfigurationFromPageId(
             $pageId,
@@ -141,7 +146,7 @@ class UtilTest extends UnitTest
         $this->assertInstanceOf('ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration', $newConfiguration);
 
         $this->assertSame(
-            12,
+            24,
             $GLOBALS['TSFE']->id
         );
     }
@@ -162,7 +167,6 @@ class UtilTest extends UnitTest
         $twoLevelCache = $this->prophesize(TwoLevelCache::class);
         $twoLevelCache
             ->get(\Prophecy\Argument::cetera())
-            ->shouldBeCalled()
             ->willReturn([]);
         $twoLevelCache
             ->set(\Prophecy\Argument::cetera())
@@ -170,30 +174,30 @@ class UtilTest extends UnitTest
         GeneralUtility::addInstance(TwoLevelCache::class, $twoLevelCache->reveal());
 
         // Change TSFE->id to 12 ($pageId) and create new cache
-        $this->buildTestCaseForTsfe(12, 1);
+        $this->buildTestCaseForTsfe(34, 1);
         Util::getConfigurationFromPageId(
-            12,
+            34,
             $path,
             $initializeTsfe,
             $language,
             true
         );
         $this->assertSame(
-            12,
+            34,
             $GLOBALS['TSFE']->id
         );
 
         // Change TSFE->id to 23 and create new cache
-        $this->buildTestCaseForTsfe(23, 8);
+        $this->buildTestCaseForTsfe(56, 8);
         Util::getConfigurationFromPageId(
-            23,
+            56,
             $path,
             $initializeTsfe,
             $language,
             true
         );
         $this->assertSame(
-            23,
+            56,
             $GLOBALS['TSFE']->id
         );
 
@@ -201,7 +205,7 @@ class UtilTest extends UnitTest
         // TSFE->id has to be changed back to 12 $pageId
 
         Util::getConfigurationFromPageId(
-            12,
+            34,
             $path,
             $initializeTsfe,
             $language,
@@ -209,7 +213,7 @@ class UtilTest extends UnitTest
         );
 
         $this->assertSame(
-            12,
+            34,
             $GLOBALS['TSFE']->id
         );
     }
