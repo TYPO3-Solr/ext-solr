@@ -140,6 +140,9 @@ class Util
         static $configurationObjectCache = [];
         $cacheId = md5($pageId . '|' . $path . '|' . $language . '|' . ($initializeTsfe ? '1' : '0'));
         if (isset($configurationObjectCache[$cacheId])) {
+            if ($initializeTsfe) {
+                self::initializeTsfe($pageId, $language);
+            }
             return $configurationObjectCache[$cacheId];
         }
 
