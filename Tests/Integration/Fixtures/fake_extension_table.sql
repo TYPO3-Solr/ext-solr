@@ -12,7 +12,7 @@ CREATE TABLE tx_fakeextension_domain_model_foo (
 	t3ver_stage tinyint(4) DEFAULT '0' NOT NULL,
 	t3ver_count int(11) DEFAULT '0' NOT NULL,
 	t3ver_tstamp int(11) DEFAULT '0' NOT NULL,
-  t3ver_move_id int(11) DEFAULT '0' NOT NULL,
+	t3ver_move_id int(11) DEFAULT '0' NOT NULL,
 	t3_origuid int(11) DEFAULT '0' NOT NULL,
 	editlock tinyint(4) DEFAULT '0' NOT NULL,
 	sys_language_uid int(11) DEFAULT '0' NOT NULL,
