@@ -285,7 +285,7 @@ class Indexer extends AbstractIndexer
     {
         $indexConfigurationName = $item->getIndexingConfigurationName();
         $fields = $this->getFieldConfigurationFromItemRecordPage($item, $language, $indexConfigurationName);
-        if (count($fields) === 0) {
+        if (!$this->isRootPageIdPartOfRootLine($item) || count($fields) === 0) {
             $fields = $this->getFieldConfigurationFromItemRootPage($item, $language, $indexConfigurationName);
             if (count($fields) === 0) {
                 throw new \RuntimeException('The item indexing configuration "' . $item->getIndexingConfigurationName() .
@@ -330,6 +330,23 @@ class Indexer extends AbstractIndexer
         }
 
         return $solrConfiguration->getIndexQueueFieldsConfigurationByConfigurationName($indexConfigurationName, []);
+    }
+
+    /**
+     * In case of additionalStoragePid config recordPageId can be outsite of siteroot.
+     * In that case we should not read TS config of foreign siteroot.
+     *
+     * @return bool
+     */
+    protected function isRootPageIdPartOfRootLine(Item $item)
+    {
+        $rootPageId = $item->getRootPageUid();
+        $pageRepository = GeneralUtility::makeInstance(PageRepository::class);
+        $rootLine = $pageRepository->getRootLine($item->getRecordPageId());
+        $pageInRootline = array_filter($rootLine, function($page) use ($rootPageId) {
+            return (int)$page['uid'] === $rootPageId;
+        });
+        return !empty($pageInRootline);
     }
 
     /**
