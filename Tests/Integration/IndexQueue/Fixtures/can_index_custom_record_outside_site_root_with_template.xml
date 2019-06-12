@@ -124,7 +124,6 @@
                             foo = 1
                             foo {
                                 table = tx_fakeextension_domain_model_bar
-                                additionalPageIds = 112
 
                                 fields {
                                     title = title
@@ -146,25 +145,36 @@
 
     <pages>
         <uid>1</uid>
+        <pid>0</pid>
         <title>Siteroot with correct Solr configuration</title>
         <is_siteroot>1</is_siteroot>
         <doktype>1</doktype>
-        <pid>0</pid>
     </pages>
     <pages>
-        <title>Another siteroot with Solr configuration which should not be used</title>
         <uid>111</uid>
+        <pid>0</pid>
+        <title>Another siteroot with Solr configuration which should not be used</title>
         <is_siteroot>1</is_siteroot>
         <doktype>1</doktype>
-        <pid>0</pid>
     </pages>
     <pages>
-        <title>Storage folder outside siteroot</title>
         <uid>112</uid>
+        <pid>111</pid>
+        <title>Storage folder outside siteroot</title>
         <is_siteroot>0</is_siteroot>
         <doktype>254</doktype>
-        <pid>111</pid>
     </pages>
+
+    <sys_domain>
+        <uid>1</uid>
+        <pid>1</pid>
+        <domainName>www.correct-domain.local</domainName>
+    </sys_domain>
+    <sys_domain>
+        <uid>2</uid>
+        <pid>111</pid>
+        <domainName>www.wrong-domain.local</domainName>
+    </sys_domain>
 
     <tx_fakeextension_domain_model_bar>
         <uid>1</uid>
@@ -172,5 +182,4 @@
         <title>external testnews</title>
         <category>4711</category>
     </tx_fakeextension_domain_model_bar>
-
 </dataset>
