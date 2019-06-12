@@ -38,6 +38,7 @@ use ApacheSolrForTypo3\Solr\Util;
 use Solarium\Exception\HttpException;
 use TYPO3\CMS\Backend\Configuration\TranslationConfigurationProvider;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\RootlineUtility;
 use TYPO3\CMS\Frontend\Page\PageRepository;
 
 /**
@@ -341,9 +342,14 @@ class Indexer extends AbstractIndexer
     protected function isRootPageIdPartOfRootLine(Item $item)
     {
         $rootPageId = $item->getRootPageUid();
-        $pageRepository = GeneralUtility::makeInstance(PageRepository::class);
-        $rootLine = $pageRepository->getRootLine($item->getRecordPageId());
-        $pageInRootline = array_filter($rootLine, function($page) use ($rootPageId) {
+        $buildRootlineWithPid = $item->getRecordPageId();
+        if ($item->getType() === 'pages') {
+            $buildRootlineWithPid = $item->getRecordUid();
+        }
+        $rootlineUtility = GeneralUtility::makeInstance(RootlineUtility::class, $buildRootlineWithPid);
+        $rootline = $rootlineUtility->get();
+
+        $pageInRootline = array_filter($rootline, function($page) use ($rootPageId) {
             return (int)$page['uid'] === $rootPageId;
         });
         return !empty($pageInRootline);
