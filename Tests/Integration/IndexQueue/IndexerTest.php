@@ -32,7 +32,6 @@ use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
-use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Charset\CharsetConverter;
 use TYPO3\CMS\Core\Http\ServerRequestFactory;
@@ -512,7 +511,6 @@ class IndexerTest extends IntegrationTest
         $this->assertSame([], $result);
     }
 
-
     /**
      * @test
      */
@@ -536,6 +534,34 @@ class IndexerTest extends IntegrationTest
 
         $this->assertContains('"numFound":1', $solrContent, 'Could not index document into solr');
         $this->assertContains('"title":"external testnews"', $solrContent, 'Could not index document into solr');
+        $this->cleanUpSolrServerAndAssertEmpty();
+    }
+
+    /**
+     * @test
+     */
+    public function testCanIndexCustomRecordOutsideOfSiteRootWithTemplate()
+    {
+        $this->cleanUpSolrServerAndAssertEmpty();
+
+        // create fake extension database table and TCA
+        $this->importExtTablesDefinition('fake_extension2_table.sql');
+        $GLOBALS['TCA']['tx_fakeextension_domain_model_bar'] = include($this->getFixturePathByName('fake_extension2_bar_tca.php'));
+        $GLOBALS['TCA']['tx_fakeextension_domain_model_mmrelated'] = include($this->getFixturePathByName('fake_extension2_mmrelated_tca.php'));
+        $this->importDataSetFromFixture('can_index_custom_record_outside_site_root_with_template.xml');
+
+        $result = $this->addToQueueAndIndexRecord('tx_fakeextension_domain_model_bar', 1);
+
+        $this->assertTrue($result, 'Indexing was not indicated to be successful');
+
+        // do we have the record in the index with the value from the mm relation?
+        $this->waitToBeVisibleInSolr();
+        $solrContent = file_get_contents('http://localhost:8999/solr/core_en/select?q=*:*');
+        $this->assertContains('"numFound":2', $solrContent, 'Could not index document into solr');
+
+        $solrContent = file_get_contents('http://localhost:8999/solr/core_en/select?q=*:*&fq=site:www.correct-domain.local');
+        $this->assertContains('"numFound":1', $solrContent, 'Could not index document into solr');
+        $this->assertContains('"url":"index.php?id=1"', $solrContent, 'Item was indexed with false site UID');
         $this->cleanUpSolrServerAndAssertEmpty();
     }
 
