@@ -86,7 +86,9 @@ class UrlHelperTest extends UnitTest
     {
         return [
             'nothing should be changed' => ['inputUrl' => 'index.php?foo%5B1%5D=bar&cHash=ddd&id=1', 'expectedOutputUrl' => 'index.php?foo%5B1%5D=bar&cHash=ddd&id=1'],
-            'url should be encoded' => ['inputUrl' => 'index.php?foo[1]=bar&cHash=ddd&id=1', 'expectedOutputUrl' => 'index.php?foo%5B1%5D=bar&cHash=ddd&id=1']
+            'url should be encoded' => ['inputUrl' => 'index.php?foo[1]=bar&cHash=ddd&id=1', 'expectedOutputUrl' => 'index.php?foo%5B1%5D=bar&cHash=ddd&id=1'],
+            'url with https protocol' => ['inputUrl' => 'https://www.google.de/index.php', 'expectedOutputUrl' => 'https://www.google.de/index.php'],
+            'url with port' => ['inputUrl' => 'http://www.google.de:8080/index.php', 'expectedOutputUrl' => 'http://www.google.de:8080/index.php'],
         ];
     }
 
@@ -110,6 +112,16 @@ class UrlHelperTest extends UnitTest
         $urlHelper = new UrlHelper('http://www.google.de/test/index.php?foo=bar');
         $urlHelper->setHost('www.test.de');
         $this->assertSame('http://www.test.de/test/index.php?foo=bar', $urlHelper->getUrl());
+    }
+
+    /**
+     * @test
+     */
+    public function testSetHostWithPort()
+    {
+        $urlHelper = new UrlHelper('http://www.google.de/test/index.php?foo=bar');
+        $urlHelper->setHost('www.test.de:8080');
+        $this->assertSame('http://www.test.de:8080/test/index.php?foo=bar', $urlHelper->getUrl());
     }
 
     /**
