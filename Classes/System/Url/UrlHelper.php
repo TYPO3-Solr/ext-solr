@@ -181,7 +181,7 @@ class UrlHelper {
     {
         $scheme   = isset($this->urlParts['scheme']) ? $this->urlParts['scheme'] . '://' : '';
         $host     = $this->urlParts['host'] ?? '';
-        $port     = $this->urlParts['port'] ?? '';
+        $port     = $this->urlParts['port'] ? ':' . $this->urlParts['port'] : '';
         $user     = $this->urlParts['user'] ?? '';
         $pass     = $this->urlParts['pass'] ?? '';
         $pass     = ($user || $pass) ? "$pass@" : '';
