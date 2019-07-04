@@ -109,7 +109,10 @@ class TwoLevelCache
             return $firstLevelResult;
         }
 
-        return $this->secondLevelCache->get($cacheId);
+        $secondLevelResult = $this->secondLevelCache->get($cacheId);
+        $this->setToFirstLevelCache($cacheId, $secondLevelResult);
+
+        return $secondLevelResult;
     }
 
     /**
