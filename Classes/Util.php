@@ -161,6 +161,9 @@ class Util
 
         if (!empty($configurationArray)) {
             // we have a cache hit and can return it.
+            if ($initializeTsfe) {
+                self::initializeTsfe($pageId, $language);
+            }
             return $configurationObjectCache[$cacheId] = self::buildTypoScriptConfigurationFromArray($configurationArray, $pageId, $language, $path);
         }
 
