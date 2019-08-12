@@ -47,7 +47,7 @@ class SolrVersionStatus extends AbstractSolrStatus
      *
      * @var string
      */
-    const REQUIRED_SOLR_VERSION = '7.4.0';
+    const REQUIRED_SOLR_VERSION = '7.7.0';
 
     /**
      * Compiles a version check against each configured Solr server.
