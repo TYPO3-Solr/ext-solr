@@ -154,7 +154,7 @@ class Faceting implements Modifier, SearchRequestAware
             $tag = $this->getFilterTag($facetConfiguration, $keepAllFacetsOnSelection);
             $filterParts = $this->getFilterParts($facetConfiguration, $facetName, $filterValues);
             $operator = ($facetConfiguration['operator'] === 'OR') ? ' OR ' : ' AND ';
-            $facetFilters[] = $tag . '(' . implode($operator, $filterParts) . ')';
+            $facetFilters[$facetName] = $tag . '(' . implode($operator, $filterParts) . ')';
         }
 
         return $facetFilters;
