@@ -93,9 +93,7 @@ abstract class AbstractIndexer
 
             if (is_array($fieldValue)) {
                 // multi value
-                foreach ($fieldValue as $multiValue) {
-                    $document->addField($solrFieldName, $multiValue);
-                }
+                $document->setField($solrFieldName, $fieldValue);
             } else {
                 if ($fieldValue !== '' && $fieldValue !== null) {
                     $document->setField($solrFieldName, $fieldValue);
