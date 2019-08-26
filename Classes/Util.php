@@ -328,9 +328,11 @@ class Util
             $context->setAspect('language', GeneralUtility::makeInstance(LanguageAspect::class, $language));
         }
 
-        if (!isset($tsfeCache[$cacheId]) || !$useCache) {
-            GeneralUtility::_GETset($language, 'L');
+        // needs to be set regardless if $GLOBALS['TSFE'] is loaded from cache
+        // otherwise it is not guaranteed that the correct language id is used everywhere for this index cycle (e.g. Typo3QuerySettings)
+        GeneralUtility::_GETset($language, 'L');
 
+        if (!isset($tsfeCache[$cacheId]) || !$useCache) {
 
             $GLOBALS['TSFE'] = GeneralUtility::makeInstance(OverriddenTypoScriptFrontendController::class, $GLOBALS['TYPO3_CONF_VARS'], $pageId, 0);
 
