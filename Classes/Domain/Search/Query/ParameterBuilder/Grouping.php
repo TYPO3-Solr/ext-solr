@@ -247,6 +247,8 @@ class Grouping extends AbstractDeactivatable implements ParameterBuilder
         $query->getGrouping()->setFormat('grouped');
         $query->getGrouping()->setNumberOfGroups(true);
 
+        $query->setRows($this->getNumberOfGroups());
+
         $sorting = implode(' ', $this->getSortings());
         $query->getGrouping()->setSort($sorting);
         return $parentBuilder;
