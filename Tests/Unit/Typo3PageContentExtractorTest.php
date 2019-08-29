@@ -135,6 +135,10 @@ class Typo3PageContentExtractorTest extends UnitTest
             'keep less then character' => [
                 'content' => '<p>If <b>the value</b> is &lt;50 please contact me</p>',
                 'expectedResult' => 'If the value is <50 please contact me'
+            ],
+            'keep escaped html' => [
+                'content' => '<em>this</em> is how to make &lt;b&gt;fat&lt;/b&gt;',
+                'expectedResult' => 'this is how to make <b>fat</b>'
             ]
         ];
     }

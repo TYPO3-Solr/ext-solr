@@ -128,9 +128,8 @@ class HtmlContentExtractor
     public function getIndexableContent()
     {
         $content = self::cleanContent($this->content);
-        $content = html_entity_decode($content, ENT_QUOTES, 'UTF-8');
-        // after entity decoding we might have tags again
         $content = strip_tags($content);
+        $content = html_entity_decode($content, ENT_QUOTES, 'UTF-8');
         $content = trim($content);
 
         return $content;
@@ -154,7 +153,6 @@ class HtmlContentExtractor
 
         // prevents concatenated words when stripping tags afterwards
         $content = str_replace(['<', '>'], [' <', '> '], $content);
-        $content = static::stripTags($content);
 
         $content = str_replace(["\t", "\n", "\r", '&nbsp;'], ' ', $content);
         $content = self::stripUnicodeRanges($content);
@@ -162,20 +160,6 @@ class HtmlContentExtractor
         $content = trim($content);
 
         return $content;
-    }
-
-    /**
-     * Strips html tags, but keeps single < and > characters.
-     *
-     * @param string $content
-     * @return mixed
-     */
-    protected static function stripTags($content)
-    {
-        $content = preg_replace('@<([^>]+(<|\z))@msi', '##lt##$1', $content);
-        $content = strip_tags($content);
-        // unescape < that are not used to open a tag
-        return str_replace('##lt##', '<', $content);
     }
 
     /**

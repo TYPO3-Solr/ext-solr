@@ -131,8 +131,8 @@ class Typo3PageContentExtractor extends HtmlContentExtractor
 
         // clean content
         $content = self::cleanContent($content);
+        $content = strip_tags($content);
         $content = html_entity_decode($content, ENT_QUOTES, 'UTF-8');
-        $content = static::stripTags($content); // after entity decoding we might have tags again
 
         $content = trim($content);
         $content = preg_replace('!\s+!', ' ', $content); // reduce multiple spaces to one space
