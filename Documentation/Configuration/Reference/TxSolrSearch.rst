@@ -1008,7 +1008,7 @@ faceting.facets.[facetName].metrics
 :Since: 8.0
 :Default: empty
 
-Metrics can be use to collect and enhance facet options with statistical data of the facetted documents. They can
+Metrics can be use to collect and enhance facet options with statistical data of the faceted documents. They can
 be used to render useful information in the context of an facet option.
 
 Example:
