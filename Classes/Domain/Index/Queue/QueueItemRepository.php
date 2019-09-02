@@ -29,6 +29,7 @@ use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Records\AbstractRepository;
 use Doctrine\DBAL\DBALException;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Expression\CompositeExpression;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -255,7 +256,7 @@ class QueueItemRepository extends AbstractRepository
      */
     public function getPageItemChangedTimeByPageUid(int $pageUid)
     {
-        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tt_content');
         $queryBuilder->getRestrictions()->removeAll();
         $pageContentLastChangedTime = $queryBuilder
             ->add('select', $queryBuilder->expr()->max('tstamp', 'changed_time'))
@@ -288,7 +289,7 @@ class QueueItemRepository extends AbstractRepository
             // table is localizable
             $translationOriginalPointerField = $GLOBALS['TCA'][$itemType]['ctrl']['transOrigPointerField'];
 
-            $queryBuilder = $this->getQueryBuilder();
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($itemType);
             $queryBuilder->getRestrictions()->removeAll();
             $localizedChangedTime = $queryBuilder
                 ->add('select', $queryBuilder->expr()->max('tstamp', 'changed_time'))
@@ -677,7 +678,7 @@ class QueueItemRepository extends AbstractRepository
         foreach ($tableUids as $table => $uids) {
             $uidList = implode(',', $uids);
 
-            $queryBuilderForRecordTable = $this->getQueryBuilder();
+            $queryBuilderForRecordTable = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($table);
             $queryBuilderForRecordTable->getRestrictions()->removeAll();
             $resultsFromRecordTable = $queryBuilderForRecordTable
                 ->select('*')
