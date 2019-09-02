@@ -17,6 +17,8 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Opt
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetParser;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 
 /**
  * Class OptionsFacetParser
@@ -76,6 +78,9 @@ class OptionsFacetParser extends AbstractFacetParser
         // need to be handled in the frontend.
         $this->applyManualSortOrder($facet, $facetConfiguration);
         $this->applyReverseOrder($facet, $facetConfiguration);
+
+        $signalSlotDispatcher = GeneralUtility::makeInstance(Dispatcher::class);
+        $signalSlotDispatcher->dispatch(__CLASS__, 'optionsParsed', [&$facet, $facetConfiguration]);
 
         return $facet;
     }
