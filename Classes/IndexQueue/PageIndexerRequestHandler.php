@@ -119,7 +119,7 @@ class PageIndexerRequestHandler implements SingletonInterface
         $this->dispatcher->shutdown();
 
         // make sure that no other output messes up the data
-        ob_end_clean();
+        if (ob_get_contents()) ob_end_clean();
 
         $this->response->sendHeaders();
         echo $this->response->getContent();
