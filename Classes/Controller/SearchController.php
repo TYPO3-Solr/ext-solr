@@ -108,7 +108,8 @@ class SearchController extends AbstractBaseController
             $values = [
                 'additionalFilters' => $this->getAdditionalFilters(),
                 'resultSet' => $searchResultSet,
-                'pluginNamespace' => $this->typoScriptConfiguration->getSearchPluginNamespace()
+                'pluginNamespace' => $this->typoScriptConfiguration->getSearchPluginNamespace(),
+                'arguments' => $arguments
             ];
 
             $values = $this->emitActionSignal(__CLASS__, __FUNCTION__, [$values]);
