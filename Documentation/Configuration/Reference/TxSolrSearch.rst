@@ -551,25 +551,6 @@ results.resultsPerPageSwitchOptions
 
 Defines the shown options of possible results per page.
 
-results.pagebrowser
-~~~~~~~~~~~~~~~~~~~
-
-:Since: 2.0
-:TS Path: plugin.tx_solr.search.results.pagebrowser
-
-Allows to set configuration options for the pagebrowser provided by EXT:pagebrowse.
-
-results.ignorePageBrowser
-~~~~~~~~~~~~~~~~~~~~~~~~~
-
-:Type: Boolean
-:TS Path: plugin.tx_solr.search.results.ignorePageBrowser
-:Since: 1.0
-:Default: 0
-:Options: 0, 1
-
-If enabled, the selected page will be ignored. Useful if you place two search plugins on a page but want one of the to always show the first results only.
-
 results.showDocumentScoreAnalysis
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
