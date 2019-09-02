@@ -25,7 +25,6 @@ namespace ApacheSolrForTypo3\Solr\Domain\Site;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -121,7 +120,7 @@ class SiteHashService
 
     /**
      * @param $pageId
-     * @return Site
+     * @return SiteInterface
      */
     protected function getSiteByPageId($pageId)
     {

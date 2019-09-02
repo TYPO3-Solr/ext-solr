@@ -154,7 +154,14 @@ class SiteRepositoryTest extends UnitTest
             '123|2' => ['rootPageUid' => 123],
             '234|0' => ['rootPageUid' => 234]
         ]);
-        $this->assertThatSitesAreCreatedWithPageIds([123,234]);
+        $this->assertThatSitesAreCreatedWithPageIds(
+            [123,234],
+            [
+                0 => ['language' => 0],
+                1 => ['language' => 1],
+                2 => ['language' => 2],
+            ]
+        );
 
         $siteOne = $this->siteRepository->getFirstAvailableSite();
         $languages = $this->siteRepository->getAllLanguages($siteOne);
@@ -179,16 +186,21 @@ class SiteRepositoryTest extends UnitTest
 
     /**
      * @param array $pageIds
+     * @param array $fakedConnectionConfiguration
      */
-    protected function assertThatSitesAreCreatedWithPageIds(array $pageIds)
+    protected function assertThatSitesAreCreatedWithPageIds(array $pageIds, array $fakedConnectionConfiguration = [])
     {
         $this->siteRepository->expects($this->any())->method('buildSite')->will(
-            $this->returnCallback(function($idToUse) use ($pageIds) {
+            $this->returnCallback(function($idToUse) use ($pageIds, $fakedConnectionConfiguration) {
                 if(in_array($idToUse, $pageIds)) {
                     $site = $this->getDumbMock(Site::class);
                     $site->expects($this->any())->method('getRootPageId')->will(
                         $this->returnValue($idToUse)
                     );
+
+                    $site->expects($this->any())
+                        ->method('getAllSolrConnectionConfigurations')
+                        ->willReturn($fakedConnectionConfiguration);
                     return $site;
                 }
             })

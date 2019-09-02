@@ -67,7 +67,7 @@ class SystemLanguageRepository extends AbstractRepository implements SingletonIn
     /**
      * Finds the system's configured languages.
      *
-     * @return array An array of language IDs
+     * @return array An array of language UIDs
      */
     public function findSystemLanguages()
     {

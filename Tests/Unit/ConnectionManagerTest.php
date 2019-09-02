@@ -25,6 +25,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\ConnectionManager;
+use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\SolrService;
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
@@ -70,6 +71,11 @@ class ConnectionManagerTest extends UnitTest
     protected $pageRepositoryMock;
 
     /**
+     * @var SiteRepository
+     */
+    protected $siteRepositoryMock;
+
+    /**
      * Set up the connection manager test
      *
      * @return void
@@ -94,10 +100,11 @@ class ConnectionManagerTest extends UnitTest
         $this->logManagerMock = $this->getDumbMock(SolrLogManager::class);
         $this->languageRepositoryMock = $this->getDumbMock(SystemLanguageRepository::class);
         $this->pageRepositoryMock = $this->getDumbMock(PagesRepository::class);
+        $this->siteRepositoryMock = $this->getDumbMock(SiteRepository::class);
 
         $this->configurationManager = new ConfigurationManager();
         $this->connectionManager = $this->getMockBuilder(ConnectionManager::class)
-            ->setConstructorArgs([$this->languageRepositoryMock, $this->pageRepositoryMock, $this->logManagerMock])
+            ->setConstructorArgs([$this->languageRepositoryMock, $this->pageRepositoryMock, $this->siteRepositoryMock])
             ->setMethods(['getSolrConnectionForNodes'])
             ->getMock();
     }
