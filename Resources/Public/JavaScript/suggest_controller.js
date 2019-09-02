@@ -7,7 +7,7 @@ function SuggestController() {
 
             $form.find('.tx-solr-suggest-focus').focus();
 
-            jQuery.ajaxSetup({jsonp: "tx_solr[callback]"})
+            jQuery.ajaxSetup({jsonp: "tx_solr[callback]"});
 
             // when no specific container found, use the form as container
             if ($searchBox.length === 0) {
