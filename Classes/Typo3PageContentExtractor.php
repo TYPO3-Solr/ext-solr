@@ -82,17 +82,17 @@ class Typo3PageContentExtractor extends HtmlContentExtractor
     public function excludeContentByClass($indexableContent)
     {
         if (empty(trim($indexableContent))) {
-            return html_entity_decode($indexableContent);
+            return $indexableContent;
         }
 
         $excludeClasses = $this->getConfiguration()->getIndexQueuePagesExcludeContentByClassArray();
         if (count($excludeClasses) === 0) {
-            return html_entity_decode($indexableContent);
+            return $indexableContent;
         }
 
         $isInContent = Util::containsOneOfTheStrings($indexableContent, $excludeClasses);
         if (!$isInContent) {
-            return html_entity_decode($indexableContent);
+            return $indexableContent;
         }
 
         $doc = new \DOMDocument('1.0', 'UTF-8');
@@ -131,9 +131,6 @@ class Typo3PageContentExtractor extends HtmlContentExtractor
 
         // clean content
         $content = self::cleanContent($content);
-        $content = html_entity_decode($content, ENT_QUOTES, 'UTF-8');
-        $content = static::stripTags($content); // after entity decoding we might have tags again
-
         $content = trim($content);
         $content = preg_replace('!\s+!', ' ', $content); // reduce multiple spaces to one space
 

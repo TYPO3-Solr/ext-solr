@@ -55,7 +55,7 @@ class Typo3PageContentExtractorTest extends UnitTest
     public function changesNbspToSpace()
     {
         $content = '<!-- TYPO3SEARCH_begin -->In Olten&nbsp;ist<!-- TYPO3SEARCH_end -->';
-        $expectedResult = 'In Olten ist';
+        $expectedResult = 'In Olten ist';
 
         $contentExtractor = GeneralUtility::makeInstance(Typo3PageContentExtractor::class, $content);
         $contentExtractor->setConfiguration($this->typoScripConfigurationMock);
@@ -135,6 +135,10 @@ class Typo3PageContentExtractorTest extends UnitTest
             'keep less then character' => [
                 'content' => '<p>If <b>the value</b> is &lt;50 please contact me</p>',
                 'expectedResult' => 'If the value is <50 please contact me'
+            ],
+            'keep escaped html' => [
+                'content' => '<em>this</em> is how to make &lt;b&gt;fat&lt;/b&gt;',
+                'expectedResult' => 'this is how to make <b>fat</b>'
             ]
         ];
     }
