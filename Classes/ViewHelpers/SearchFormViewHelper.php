@@ -117,6 +117,7 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
         $this->getTemplateVariableContainer()->add('q', $this->getQueryString());
         $this->getTemplateVariableContainer()->add('pageUid', $pageUid);
         $this->getTemplateVariableContainer()->add('languageUid', $this->frontendController->sys_language_uid);
+        $this->getTemplateVariableContainer()->add('existingParameters', $this->getExistingSearchParameters());
 
         $this->getTemplateVariableContainer()->add('addPageAndLanguageId', !$this->getIsSiteManagedSite($pageUid));
         $formContent = $this->renderChildren();
@@ -124,10 +125,53 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
         $this->getTemplateVariableContainer()->remove('q');
         $this->getTemplateVariableContainer()->remove('pageUid');
         $this->getTemplateVariableContainer()->remove('languageUid');
+        $this->getTemplateVariableContainer()->remove('existingParameters');
 
         $this->tag->setContent($formContent);
 
         return $this->tag->render();
+    }
+
+    /**
+     * Get the existing search parameters in an array
+     * Returns an empty array if search.keepExistingParametersForNewSearches is not set
+     *
+     * @return array
+     */
+    protected function getExistingSearchParameters()
+    {
+        $searchParameters = [];
+        if ($this->getTypoScriptConfiguration()->getSearchKeepExistingParametersForNewSearches()) {
+            $arguments = $this->controllerContext->getRequest()->getArguments();
+            $searchParameters = $this->translateSearchParametersToInputTagAttributes($arguments);
+            unset($searchParameters['[page]']);
+            unset($searchParameters['[q]']);
+        }
+        return $searchParameters;
+    }
+
+    /**
+     * Translate the multi-dimensional array of existing arguments into a flat array of name-value pairs for the input tags
+     *
+     * @param $arguments
+     * @param string $nameAttributePrefix
+     * @return array
+     */
+    protected function translateSearchParametersToInputTagAttributes($arguments, $nameAttributePrefix = '')
+    {
+        $attributes = [];
+        foreach ($arguments as $key => $value) {
+            $name = $nameAttributePrefix . '[' . $key . ']';
+            if (is_array($value)) {
+                $attributes = array_merge(
+                    $attributes,
+                    $this->translateSearchParametersToInputTagAttributes($value, $name)
+                );
+            } else {
+                $attributes[$name] = $value;
+            }
+        }
+        return $attributes;
     }
 
     /**

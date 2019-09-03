@@ -11,6 +11,9 @@
 					<input type="hidden" name="L" value="{languageUid}" />
 					<input type="hidden" name="id" value="{pageUid}" />
 				</f:if>
+                <f:for each="{existingParameters}" key="name" as="value">
+                    <f:form.hidden name="{pluginNamespace}{name}" value="{value}" />
+                </f:for>
 
 				<input type="text" class="tx-solr-q js-solr-q tx-solr-suggest tx-solr-suggest-focus form-control" name="{pluginNamespace}[q]" value="{q}" />
 				<span class="input-group-btn">
