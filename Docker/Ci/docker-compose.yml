@@ -1,0 +1,15 @@
+version: '2'
+services:
+  ######################################
+  # CI
+  ######################################
+  ci:
+    build:
+      context: ../../
+      dockerfile: ./Docker/Ci/Dockerfile
+      args:
+        PHP_VERSION: 7.2
+    command: /sbin/init
+    working_dir: /app
+    env_file:
+      - environment.yml

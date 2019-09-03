@@ -265,6 +265,21 @@ Each time you want to run the test suite:
 
 Make sure that the test suite is running, before you do a pull request.
 
+As alternative for a local run you can use our docker test setup to run the tests
+
+```bash
+cd ./Docker/Ci
+make bootstrap
+```
+
+and afterwards:
+
+```bash
+make test
+```
+
+
+
 ## Documentation
 
 The documentation currently is still mainly on [TYPO3 forge](https://forge.typo3.org/projects/extension-solr/wiki),
