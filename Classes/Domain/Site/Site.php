@@ -119,6 +119,8 @@ abstract class Site implements SiteInterface
      */
     public function getRootPageLanguageIds() : array
     {
+        trigger_error('Method getRootPageLanguageIds is deprecated since EXT:solr 10 and will be removed in v11, use getAvailableLanguageIds instead', E_USER_DEPRECATED);
+
         $rootPageLanguageIds = [];
         $rootPageId = $this->getRootPageId();
 
@@ -268,9 +270,15 @@ abstract class Site implements SiteInterface
         $configs = [];
         foreach ($this->getAvailableLanguageIds() as $languageId) {
             try {
-                $configs[] = $this->getSolrConnectionConfiguration($languageId);
+                $configs[$languageId] = $this->getSolrConnectionConfiguration($languageId);
             } catch (NoSolrConnectionFoundException $e) {}
         }
         return $configs;
     }
+
+    /**
+     * @param int $languageId
+     * @return array
+     */
+    abstract function getSolrConnectionConfiguration(int $language = 0): array;
 }

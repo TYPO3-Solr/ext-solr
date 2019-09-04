@@ -66,17 +66,24 @@ class SiteRepository
     protected $registry;
 
     /**
+     * @var SiteFinder
+     */
+    protected $siteFinder;
+
+    /**
      * SiteRepository constructor.
      *
      * @param RootPageResolver|null $rootPageResolver
      * @param TwoLevelCache|null $twoLevelCache
      * @param Registry|null $registry
+     * @param SiteFinder
      */
-    public function __construct(RootPageResolver $rootPageResolver = null, TwoLevelCache $twoLevelCache = null, Registry $registry = null)
+    public function __construct(RootPageResolver $rootPageResolver = null, TwoLevelCache $twoLevelCache = null, Registry $registry = null, SiteFinder $siteFinder = null)
     {
         $this->rootPageResolver = $rootPageResolver ?? GeneralUtility::makeInstance(RootPageResolver::class);
         $this->runtimeCache = $twoLevelCache ?? GeneralUtility::makeInstance(TwoLevelCache::class, /** @scrutinizer ignore-type */'cache_runtime');
         $this->registry = $registry ?? GeneralUtility::makeInstance(Registry::class);
+        $this->siteFinder = $siteFinder ?? GeneralUtility::makeInstance(SiteFinder::class);
     }
 
     /**
@@ -117,6 +124,7 @@ class SiteRepository
      * Returns the first available Site.
      *
      * @param bool $stopOnInvalidSite
+     * @throws \Exception
      * @return Site
      */
     public function getFirstAvailableSite($stopOnInvalidSite = false)
@@ -129,11 +137,11 @@ class SiteRepository
      * Gets all available TYPO3 sites with Solr configured.
      *
      * @param bool $stopOnInvalidSite
-     * @return Site[] An array of available sites
+     * @throws \Exception
+     * @return Site[] An array of availablesites
      */
     public function getAvailableSites($stopOnInvalidSite = false)
     {
-        $sites = [];
         $cacheId = 'SiteRepository' . '_' . 'getAvailableSites';
 
         $methodResult = $this->runtimeCache->get($cacheId);
@@ -141,26 +149,73 @@ class SiteRepository
             return $methodResult;
         }
 
-        $servers = $this->getSolrServersFromRegistry();
-        foreach ($servers as $server) {
-            if (isset($sites[$server['rootPageUid']])) {
+        $legacySites = $this->getAvailableLegacySites($stopOnInvalidSite);
+        $typo3ManagedSolrSites = $this->getAvailableTYPO3ManagedSites($stopOnInvalidSite);
+
+        $methodResult = array_merge($legacySites, $typo3ManagedSolrSites);
+        $this->runtimeCache->set($cacheId, $methodResult);
+
+        return $methodResult;
+    }
+
+    /**
+     * @deprecated deprecated since EXT:solr 10 will be removed with EXT:solr 11 please use the site handling now
+     * @param bool $stopOnInvalidSite
+     * @return array
+     */
+    protected function getAvailableLegacySites(bool $stopOnInvalidSite): array
+    {
+        $serversFromRegistry = $this->getSolrServersFromRegistry();
+        if(empty($serversFromRegistry)) {
+            return [];
+        }
+
+        trigger_error('Method getAvailableLegacySites is deprecated since EXT:solr 10 and will be removed in v11, please use the site handling to configure EXT:solr', E_USER_DEPRECATED);
+        $legacySites = [];
+        foreach ($serversFromRegistry as $server) {
+            if (isset($legacySites[$server['rootPageUid']])) {
                 //get each site only once
                 continue;
             }
 
             try {
-                $sites[$server['rootPageUid']] = $this->buildSite($server['rootPageUid']);
+                $legacySites[$server['rootPageUid']] = $this->buildSite($server['rootPageUid']);
             } catch (\InvalidArgumentException $e) {
                 if ($stopOnInvalidSite) {
                     throw $e;
                 }
             }
         }
+        return $legacySites;
+    }
 
-        $methodResult = $sites;
-        $this->runtimeCache->set($cacheId, $methodResult);
 
-        return $methodResult;
+    /**
+     * @param bool $stopOnInvalidSite
+     * @return array
+     * @throws \Exception
+     */
+    protected function getAvailableTYPO3ManagedSites(bool $stopOnInvalidSite): array
+    {
+        $typo3ManagedSolrSites = [];
+        $typo3Sites = $this->siteFinder->getAllSites();
+        foreach ($typo3Sites as $typo3Site) {
+            try {
+                $rootPageId = $typo3Site->getRootPageId();
+                if (isset($typo3ManagedSolrSites[$rootPageId])) {
+                    //get each site only once
+                    continue;
+                }
+
+                $typo3ManagedSolrSites[$rootPageId] = $this->buildSite($rootPageId);
+
+            } catch (\Exception $e) {
+                if ($stopOnInvalidSite) {
+                    throw $e;
+                }
+            }
+        }
+        return $typo3ManagedSolrSites;
     }
 
     /**
@@ -175,6 +230,8 @@ class SiteRepository
      */
     public function getAllLanguages(Site $site)
     {
+        trigger_error('Method getAllLanguages is deprecated since EXT:solr 10 and will be removed in v11, use  $site->getConnectionConfig instead', E_USER_DEPRECATED);
+
         $siteLanguages = [];
         foreach ($site->getAllSolrConnectionConfigurations() as $solrConnectionConfiguration) {
             $siteLanguages[] = $solrConnectionConfiguration['language'];
@@ -216,6 +273,8 @@ class SiteRepository
      */
     protected function getDefaultLanguage($rootPageId)
     {
+        trigger_error('Method getDefaultLanguage is deprecated since EXT:solr 10 and will be removed in v11, use  the site directly instead', E_USER_DEPRECATED);
+
         $siteDefaultLanguage = 0;
 
         $configuration = Util::getConfigurationFromPageId($rootPageId, 'config');
@@ -235,6 +294,8 @@ class SiteRepository
      */
     protected function getSolrServersFromRegistry()
     {
+        trigger_error('Method getSolrServersFromRegistry is deprecated since EXT:solr 10 and will be removed in v11, use sitehanlding instead', E_USER_DEPRECATED);
+
         $servers = (array)$this->registry->get('tx_solr', 'servers', []);
         return $servers;
     }
@@ -246,6 +307,8 @@ class SiteRepository
      */
     protected function getDomainFromConfigurationOrFallbackToDomainRecord($rootPageId)
     {
+        trigger_error('Method getDomainFromConfigurationOrFallbackToDomainRecord is deprecated since EXT:solr 10 and will be removed in v11, use sitehanlding instead', E_USER_DEPRECATED);
+
         /** @var $siteService SiteService */
         $siteService = GeneralUtility::makeInstance(SiteService::class);
         $domain = $siteService->getFirstDomainForRootPage($rootPageId);
@@ -294,11 +357,15 @@ class SiteRepository
     }
 
     /**
+     *
+     * @deprecated buildLegacySite is deprecated and will be removed in EXT:solr 11. Please configure your system with the TYPO3 sitehandling
      * @param array $rootPageRecord
      * @return LegacySite
      */
     protected function buildLegacySite($rootPageRecord): LegacySite
     {
+        trigger_error('You are using EXT:solr without sitehandling. This setup is deprecated and will be removed in EXT:solr 11', E_USER_DEPRECATED);
+
         $solrConfiguration = Util::getSolrConfigurationFromPageId($rootPageRecord['uid']);
         $domain = $this->getDomainFromConfigurationOrFallbackToDomainRecord($rootPageRecord['uid']);
         $siteHash = $this->getSiteHashForDomain($domain);
@@ -332,9 +399,8 @@ class SiteRepository
     protected function buildTypo3ManagedSite(array $rootPageRecord): Typo3ManagedSite
     {
         $solrConfiguration = Util::getSolrConfigurationFromPageId($rootPageRecord['uid']);
-        $siteFinder = GeneralUtility::makeInstance(SiteFinder::class);
         /** @var \TYPO3\CMS\Core\Site\Entity\Site $typo3Site */
-        $typo3Site = $siteFinder->getSiteByPageId($rootPageRecord['uid']);
+        $typo3Site = $this->siteFinder->getSiteByPageId($rootPageRecord['uid']);
         $domain = $typo3Site->getBase()->getHost();
 
         $siteHash = $this->getSiteHashForDomain($domain);
@@ -401,4 +467,5 @@ class SiteRepository
             $typo3Site
         );
     }
+
 }

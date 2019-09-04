@@ -38,11 +38,14 @@ class SystemDomainRepository extends AbstractRepository
     /**
      * Retrieves sys_domain records for a set of root page ids.
      *
+     * @deprecated This class is deprecated since EXT:solr 10 and will be removed in EXT:solr 11 since then only the site handling configuration will be supported
      * @param array $rootPageIds
      * @return mixed
      */
     public function findDomainRecordsByRootPagesIds(array $rootPageIds = [])
     {
+        trigger_error('You are using EXT:solr without sitehandling. This setup is deprecated and will be removed in EXT:solr 11', E_USER_DEPRECATED);
+
         $resultTmp = $this->getDomainRecordsByRootPageIds($rootPageIds);
 
         $result = [];
