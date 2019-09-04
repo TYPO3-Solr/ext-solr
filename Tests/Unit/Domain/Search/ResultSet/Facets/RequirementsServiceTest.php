@@ -68,6 +68,7 @@ class RequirementsServiceTest extends UnitTest
         $colorConfig = [];
         $colorFacet = new OptionsFacet($resultSet, 'mycolor', 'colors_stringM', 'Colors', $colorConfig);
         $redOption = new Option($colorFacet, 'Red', 'red', 42, true);
+
         $colorFacet->addOption($redOption);
         $colorFacet->setIsUsed(true);
 
@@ -85,6 +86,77 @@ class RequirementsServiceTest extends UnitTest
         $resultSet->addFacet($categoryFacet);
         $service = new RequirementsService();
         $this->assertTrue($service->getAllRequirementsMet($categoryFacet), 'Requirement should be met, because color option is present, but is indicated to not be met');
+    }
+
+    /**
+     * @test
+     */
+    public function getAllRequirementsMetIsReturnsTrueWhenRequirementIsMetForMultipleFacets()
+    {
+        $resultSet = new SearchResultSet();
+        $colorFacet = new OptionsFacet($resultSet, 'mycolor', 'colors_stringM', 'Colors', []);
+        $redOption = new Option($colorFacet, 'Red', 'red', 42, true);
+        $colorFacet->addOption($redOption);
+        $colorFacet->setIsUsed(true);
+        $resultSet->addFacet($colorFacet);
+
+        $siteFacet = new OptionsFacet($resultSet, 'mysize', 'sizes_stringM', 'Sizes', []);
+        $xlOption = new Option($colorFacet, 'XL', 'xl', 12, true);
+        $siteFacet->addOption($xlOption);
+        $siteFacet->setIsUsed(true);
+        $resultSet->addFacet($siteFacet);
+
+        $categoryConfig = [
+            'requirements.' => [
+                'matchesColor' => [
+                    'facet' => 'mycolor',
+                    'values' => 'red,green'
+                ],
+                'matchesSize' => [
+                    'facet' => 'mysize',
+                    'values' => 'xl'
+                ],
+
+            ]
+        ];
+        $categoryFacet = new OptionsFacet($resultSet, 'mycategory', 'category_stringM', 'Category', $categoryConfig);
+        $resultSet->addFacet($categoryFacet);
+        $service = new RequirementsService();
+        $this->assertTrue($service->getAllRequirementsMet($categoryFacet), 'Requirement should be met, because color and size option is present, but is indicated to not be met');
+    }
+
+    /**
+     * @test
+     */
+    public function getAllRequirementsMetIsReturnsFalseWhenOnlyOneConfiguredRequirementIsMet()
+    {
+        $resultSet = new SearchResultSet();
+        $colorFacet = new OptionsFacet($resultSet, 'mycolor', 'colors_stringM', 'Colors', []);
+        $redOption = new Option($colorFacet, 'Red', 'red', 42, true);
+        $colorFacet->addOption($redOption);
+        $colorFacet->setIsUsed(true);
+        $resultSet->addFacet($colorFacet);
+
+        $sizeFacet = new OptionsFacet($resultSet, 'mysize', 'size_stringM', 'Size', []);
+        $resultSet->addFacet($sizeFacet);
+
+        $categoryConfig = [
+            'requirements.' => [
+                'matchesColor' => [
+                    'facet' => 'mycolor',
+                    'values' => 'red,green'
+                ],
+                'matchesSize' => [
+                    'facet' => 'mysize',
+                    'values' => 'xl'
+                ],
+
+            ]
+        ];
+        $categoryFacet = new OptionsFacet($resultSet, 'mycategory', 'category_stringM', 'Category', $categoryConfig);
+        $resultSet->addFacet($categoryFacet);
+        $service = new RequirementsService();
+        $this->assertFalse($service->getAllRequirementsMet($categoryFacet), 'Requirement should not be met since the matchesSize requirement is not met.');
     }
 
     /**
