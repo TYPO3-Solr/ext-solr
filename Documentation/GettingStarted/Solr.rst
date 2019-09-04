@@ -39,7 +39,7 @@ To build the images, simply type one of the following:
 
 .. code-block:: bash
 
-    docker build -t typo3-solr .
+    docker build -t typo3-solr Docker/SolrServer/Dockerfile .
 
 Prepare the data folder (data is shared with the docker container by user and group with UID/GID 8983):
 

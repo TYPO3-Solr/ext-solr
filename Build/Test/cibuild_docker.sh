@@ -18,7 +18,7 @@ assertCoreIsAvailable ()
 }
 
 echo "Building docker image"
-docker build -t solrci -f Dockerfile .
+docker build -t solrci -f Docker/SolrServer/Dockerfile .
 
 echo "Creating testvolume"
 mkdir -p ~/solrcivolume

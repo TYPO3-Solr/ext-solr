@@ -277,7 +277,7 @@ This was tested with "Docker for Mac" (not Docker Toolbox). Before executing the
 ::
 
     # build the image
-    docker build -t typo3-solr -f Dockerfile .
+    docker build -t typo3-solr -f Docker/SolrServer/Dockerfile .
 
     # create volume directory locally
     mkdir -p ~/solrdata
