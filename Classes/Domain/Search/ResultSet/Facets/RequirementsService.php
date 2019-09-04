@@ -43,13 +43,13 @@ class RequirementsService
             $requirementMet = $this->getRequirementMet($facet, $requirement);
             $requirementMet = $this->getNegationWhenConfigured($requirementMet, $requirement);
 
-            if ($requirementMet) {
-                // early return
-                return true;
+            if (!$requirementMet) {
+                // early return as soon as one requirement is not met
+                return false;
             }
         }
 
-        return false;
+        return true;
     }
 
     /**
