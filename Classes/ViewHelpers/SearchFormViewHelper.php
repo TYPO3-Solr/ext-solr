@@ -142,10 +142,9 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
     {
         $searchParameters = [];
         if ($this->getTypoScriptConfiguration()->getSearchKeepExistingParametersForNewSearches()) {
-            $arguments = $this->controllerContext->getRequest()->getArguments();
+            $arguments = GeneralUtility::_GPmerged('tx_solr');
+            unset($arguments['q'], $arguments['id'], $arguments['L']);
             $searchParameters = $this->translateSearchParametersToInputTagAttributes($arguments);
-            unset($searchParameters['[page]']);
-            unset($searchParameters['[q]']);
         }
         return $searchParameters;
     }
