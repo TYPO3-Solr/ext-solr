@@ -20,7 +20,7 @@ $GLOBALS['SiteConfiguration']['site']['columns']['solr_scheme_read'] = [
 ];
 
 $GLOBALS['SiteConfiguration']['site']['columns']['solr_host_read'] = [
-    'label' => 'Scheme',
+    'label' => 'Host',
     'config' => [
         'type' => 'input',
         'default' => 'localhost',
@@ -87,11 +87,7 @@ $GLOBALS['SiteConfiguration']['site']['columns']['solr_path_write']['displayCond
 $GLOBALS['SiteConfiguration']['site']['palettes']['solr_read']['showitem'] = 'solr_scheme_read, solr_host_read, solr_port_read, solr_path_read';
 $GLOBALS['SiteConfiguration']['site']['palettes']['solr_write']['showitem'] = 'solr_scheme_write, solr_host_write, solr_port_write, solr_path_write';
 
-$GLOBALS['SiteConfiguration']['site']['types']['0']['showitem'] = str_replace(
-    'base,',
-    'base, --palette--;Solr Configuration;solr_read, solr_use_write_connection, --palette--;Solr Write Configuration;solr_write,',
-    $GLOBALS['SiteConfiguration']['site']['types']['0']['showitem']
-);
+$GLOBALS['SiteConfiguration']['site']['types']['0']['showitem'] .= ',--div--;Solr,--palette--;;solr_read, solr_use_write_connection,--palette--;;solr_write';
 
 
 /**
