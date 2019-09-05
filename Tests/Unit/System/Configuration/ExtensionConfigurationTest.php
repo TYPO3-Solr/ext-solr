@@ -119,4 +119,17 @@ class ExtensionConfigurationTest extends UnitTest
         );
         $this->assertTrue($configurationUseConfigurationAllowSelfSignedCertificates->getIsSelfSignedCertificatesEnabled());
     }
+
+    /**
+     * @test
+     */
+    public function testIsAllowLegacySiteModeIsImplemented()
+    {
+        $defaultConfiguration = new ExtensionConfiguration();
+        $this->assertFalse($defaultConfiguration->getIsAllowLegacySiteModeEnabled());
+        $configurationUseConfigurationAllowSelfSignedCertificates = new ExtensionConfiguration(
+            ['allowLegacySiteMode' => 1]
+        );
+        $this->assertTrue($configurationUseConfigurationAllowSelfSignedCertificates->getIsAllowLegacySiteModeEnabled());
+    }
 }

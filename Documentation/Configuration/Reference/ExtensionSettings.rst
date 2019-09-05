@@ -19,7 +19,7 @@
 Extension Configuration
 =======================
 
-The following settings can be defined in the extension manager
+The following settings can be defined in the "Settings":>"Extension Configuration":>"solr"
 
 useConfigurationFromClosestTemplate
 -----------------------------------
@@ -50,3 +50,13 @@ allowSelfSignedCertificates
 :Default: 0
 
 Can be used to allow self signed certificates - when using the SSL protocol.
+
+
+allowLegacySiteMode
+-------------------
+
+:Type: Boolean
+:Since: 10.0
+:Default: 0
+
+Can be used to allow using classic TypoScript Configuration for Sites.
