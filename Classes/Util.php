@@ -30,7 +30,8 @@ use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationPageResolver;
 use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
-use ApacheSolrForTypo3\Solr\System\TCA\TCAService;
+use TYPO3\CMS\Core\Context\Context;
+use TYPO3\CMS\Core\Context\LanguageAspect;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use ApacheSolrForTypo3\Solr\System\Mvc\Frontend\Controller\OverriddenTypoScriptFrontendController;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
@@ -323,9 +324,16 @@ class Util
             $GLOBALS['TT'] = GeneralUtility::makeInstance(TimeTracker::class, false);
         }
 
-        if (!isset($tsfeCache[$cacheId]) || !$useCache) {
-            GeneralUtility::_GETset($language, 'L');
 
+        /** @var Context $context */
+        $context = GeneralUtility::makeInstance(Context::class);
+        $context->setAspect('language', GeneralUtility::makeInstance(LanguageAspect::class, $language));
+
+        // needs to be set regardless if $GLOBALS['TSFE'] is loaded from cache
+        // otherwise it is not guaranteed that the correct language id is used everywhere for this index cycle (e.g. Typo3QuerySettings)
+        GeneralUtility::_GETset($language, 'L');
+
+        if (!isset($tsfeCache[$cacheId]) || !$useCache) {
 
             $GLOBALS['TSFE'] = GeneralUtility::makeInstance(OverriddenTypoScriptFrontendController::class, $GLOBALS['TYPO3_CONF_VARS'], $pageId, 0);
 
@@ -360,6 +368,10 @@ class Util
             $GLOBALS['TSFE']->newCObj();
             $GLOBALS['TSFE']->absRefPrefix = self::getAbsRefPrefixFromTSFE($GLOBALS['TSFE']);
             $GLOBALS['TSFE']->calculateLinkVars();
+
+            // fixes wrong language uid in global context when tsfe is taken from cache
+            $GLOBALS['TSFE']->__set('sys_language_uid', $language);
+
 
             if ($useCache) {
                 $tsfeCache[$cacheId] = $GLOBALS['TSFE'];
@@ -496,5 +508,18 @@ class Util
         }
 
         return false;
+    }
+
+    /**
+     * Returns the current sys_language_uid from the active context.
+     * For Typo3 versions before 9.5 $GLOBALS['TSFE']->sys_language_uid is returned instead.
+     *
+     * @return int
+     */
+    public static function getLanguageUid()
+    {
+        /** @var Context $context */
+        $context = GeneralUtility::makeInstance(Context::class);
+        return $context->getPropertyFromAspect('language', 'id');
     }
 }
