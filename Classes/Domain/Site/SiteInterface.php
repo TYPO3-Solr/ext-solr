@@ -111,13 +111,10 @@ interface SiteInterface
     public function getTitle();
 
     /**
-     * Gets the site's config.sys_language_mode setting
-     *
      * @param int $languageUid
-     *
-     * @return string The site's config.sys_language_mode
+     * @return array
      */
-    public function getSysLanguageMode($languageUid = 0);
+    public function getFallbackOrder(int $languageUid): array;
 
     /**
      * @param int $language

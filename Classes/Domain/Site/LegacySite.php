@@ -29,6 +29,7 @@ use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
 use ApacheSolrForTypo3\Solr\Util;
+use TYPO3\CMS\Core\Context\LanguageAspectFactory;
 use TYPO3\CMS\Core\Registry;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -40,12 +41,11 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class LegacySite extends Site
 {
+
     /**
-     * The site's sys_language_mode
-     *
-     * @var string
+     * @var array
      */
-    protected $sysLanguageMode = null;
+    protected $typoScriptConfig = null;
 
     /**
      * Constructor.
@@ -69,31 +69,29 @@ class LegacySite extends Site
         $this->pagesRepository = $pagesRepository ?? GeneralUtility::makeInstance(PagesRepository::class);
         $this->defaultLanguageId = $defaultLanguageId;
         $this->availableLanguageIds = $availableLanguageIds;
+
     }
 
     /**
-     * Gets the site's config.sys_language_mode setting
-     *
      * @param int $languageUid
-     *
-     * @return string The site's config.sys_language_mode
+     * @return array
      */
-    public function getSysLanguageMode($languageUid = 0)
+    public function getFallbackOrder(int $languageUid): array
     {
-        if ($this->sysLanguageMode !== null) {
-            return $this->sysLanguageMode;
-        }
+        if ($this->typoScriptConfig === null) {
+            try {
+                Util::initializeTsfe($this->getRootPageId(), $languageUid);
+                $this->typoScriptConfig = $GLOBALS['TSFE']->config['config'] ?? [];
 
-        try {
-            Util::initializeTsfe($this->getRootPageId(), $languageUid);
-            $this->sysLanguageMode = $GLOBALS['TSFE']->sys_language_mode;
-            return $this->sysLanguageMode;
-
-        } catch (\TYPO3\CMS\Core\Error\Http\ServiceUnavailableException $e) {
-            // when there is an error during initialization we return the default sysLanguageMode
-            return $this->sysLanguageMode;
+            } catch (\TYPO3\CMS\Core\Error\Http\ServiceUnavailableException $e) {
+                // when there is an error during initialization we return the default sysLanguageMode
+                $this->typoScriptConfig = [];
+            }
         }
+        $languageAspect = LanguageAspectFactory::createFromTypoScript($this->typoScriptConfig);
+        return $languageAspect->getFallbackChain();
     }
+
 
     /**
      * @param int $language
