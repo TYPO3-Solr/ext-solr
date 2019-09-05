@@ -28,8 +28,10 @@ namespace ApacheSolrForTypo3\Solr\Domain\Site;
 use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
+use TYPO3\CMS\Core\Context\LanguageAspectFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Site\Entity\Site as Typo3Site;
+
 
 /**
  * Class Typo3ManagedSite
@@ -66,11 +68,12 @@ class Typo3ManagedSite extends Site
 
     /**
      * @param int $languageUid
-     * @return string
+     * @return array
      */
-    public function getSysLanguageMode($languageUid = 0)
+    public function getFallbackOrder(int $languageUid): array
     {
-        return $this->typo3SiteObject->getLanguageById($languageUid)->getFallbackType();
+        $languageAspect = LanguageAspectFactory::createFromSiteLanguage($this->typo3SiteObject->getLanguageById($languageUid));
+        return $languageAspect->getFallbackChain();
     }
 
     /**

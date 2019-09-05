@@ -539,7 +539,7 @@ class Indexer extends AbstractIndexer
         }
 
         $defaultLanguageUid = $this->getDefaultLanguageUid($item, $site->getRootPage(), $siteLanguages);
-        $translationOverlays = $this->getTranslationOverlaysWithConfiguredSite($pageId, $site, $defaultLanguageUid, $siteLanguages);
+        $translationOverlays = $this->getTranslationOverlaysWithConfiguredSite((int)$pageId, $site, (array)$siteLanguages);
 
         $defaultConnection = $this->connectionManager->getConnectionByPageId($pageId, 0, $item->getMountPointIdentifier());
         $translationConnections = $this->getConnectionsForIndexableLanguages($translationOverlays);
@@ -555,26 +555,46 @@ class Indexer extends AbstractIndexer
     }
 
     /**
-     * Retrieves only translation overlays where a solr site is configured.
-     *
      * @param int $pageId
      * @param Site $site
-     * @param int $defaultLanguageUid
-     * @param $siteLanguages
+     * @param array $siteLanguages
      * @return array
      */
-    protected function getTranslationOverlaysWithConfiguredSite($pageId, Site $site, $defaultLanguageUid, $siteLanguages)
+    protected function getTranslationOverlaysWithConfiguredSite(int $pageId, Site $site, array $siteLanguages): array
     {
-        $translationOverlays = $this->getTranslationOverlaysForPage($pageId, $site->getSysLanguageMode($defaultLanguageUid));
-
+        $translationOverlays = $this->pagesRepository->findTranslationOverlaysByPageId($pageId);
+        $translatedLanguages = [];
         foreach ($translationOverlays as $key => $translationOverlay) {
             if (!in_array($translationOverlay['sys_language_uid'], $siteLanguages)) {
                 unset($translationOverlays[$key]);
+            } else {
+                $translatedLanguages[] = (int)$translationOverlay['sys_language_uid'];
             }
         }
 
+        if (count($translationOverlays) + 1 !== count($siteLanguages)) {
+            // not all Languages are translated
+            // add Language Fallback
+            foreach ($siteLanguages as $languageId) {
+                if ($languageId !== 0 && !in_array((int)$languageId, $translatedLanguages, true)) {
+                    $fallbackLanguageIds = $site->getFallbackOrder((int)$languageId);
+                    foreach ($fallbackLanguageIds as $fallbackLanguageId) {
+                        if ($fallbackLanguageId === 0 || in_array((int)$fallbackLanguageId, $translatedLanguages, true)) {
+                            $translationOverlay = [
+                                'pid' => $pageId,
+                                'sys_language_uid' => $languageId,
+                                'l10n_parent' => $pageId
+                            ];
+                            $translationOverlays[] = $translationOverlay;
+                            continue 2;
+                        }
+                    }
+                }
+            }
+        }
         return $translationOverlays;
     }
+
 
     /**
      * @param Item $item An index queue item
@@ -596,50 +616,6 @@ class Indexer extends AbstractIndexer
         }
 
         return $defaultLanguageUid;
-    }
-
-    /**
-     * Finds the alternative page language overlay records for a page based on
-     * the sys_language_mode.
-     *
-     * Possible Language Modes:
-     * 1) content_fallback --> all languages
-     * 2) strict --> available languages with page overlay
-     * 3) ignore --> available languages with page overlay
-     * 4) unknown mode or blank --> all languages
-     *
-     * @param int $pageId Page ID.
-     * @param string $languageMode
-     * @return array An array of translation overlays (or fake overlays) found for the given page.
-     */
-    protected function getTranslationOverlaysForPage($pageId, $languageMode)
-    {
-        $translationOverlays = [];
-        $pageId = intval($pageId);
-
-        $languageModes = ['content_fallback', 'strict', 'ignore'];
-        $hasOverlayMode = in_array($languageMode, $languageModes,
-            true);
-        $isContentFallbackMode = ($languageMode === 'content_fallback');
-
-        if ($hasOverlayMode && !$isContentFallbackMode) {
-            $translationOverlays = $this->pagesRepository->findTranslationOverlaysByPageId($pageId);
-        } else {
-            // ! If no sys_language_mode is configured, all languages will be indexed !
-            $languages = $this->getSystemLanguages();
-            foreach ($languages as $language) {
-                if ($language['uid'] <= 0) {
-                    continue;
-                }
-                $translationOverlays[] = [
-                    'pid' => $pageId,
-                    'l10n_parent' => $pageId,
-                    'sys_language_uid' => $language['uid'],
-                ];
-            }
-        }
-
-        return $translationOverlays;
     }
 
     /**
