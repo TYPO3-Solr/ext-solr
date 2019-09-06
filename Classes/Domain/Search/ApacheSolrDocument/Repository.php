@@ -110,6 +110,7 @@ class Repository implements SingletonInterface
             return [];
         }
         $data = $response->getParsedData();
+        // @extensionScannerIgnoreLine
         return $this->documentEscapeService->applyHtmlSpecialCharsOnAllFields($data->response->docs ?? []);
     }
 
@@ -132,6 +133,7 @@ class Repository implements SingletonInterface
             return [];
         }
         $data = $response->getParsedData();
+        // @extensionScannerIgnoreLine
         return $this->documentEscapeService->applyHtmlSpecialCharsOnAllFields($data->response->docs ?? []);
     }
 

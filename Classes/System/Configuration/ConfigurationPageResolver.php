@@ -27,6 +27,7 @@ namespace ApacheSolrForTypo3\Solr\System\Configuration;
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\System\Records\SystemTemplate\SystemTemplateRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\RootlineUtility;
 use TYPO3\CMS\Frontend\Page\PageRepository;
 
 /**
@@ -38,10 +39,6 @@ use TYPO3\CMS\Frontend\Page\PageRepository;
  */
 class ConfigurationPageResolver
 {
-    /**
-     * @var PageRepository
-     */
-    protected $pageRepository;
 
     /**
      * @var SystemTemplateRepository
@@ -66,7 +63,6 @@ class ConfigurationPageResolver
      */
     public function __construct(PageRepository $pageRepository = null, TwoLevelCache $twoLevelCache = null, SystemTemplateRepository $systemTemplateRepository = null)
     {
-        $this->pageRepository = $pageRepository ?? GeneralUtility::makeInstance(PageRepository::class);
         $this->runtimeCache = $twoLevelCache ?? GeneralUtility::makeInstance(TwoLevelCache::class, /** @scrutinizer ignore-type */ 'cache_runtime');
         $this->systemTemplateRepository = $systemTemplateRepository ?? GeneralUtility::makeInstance(SystemTemplateRepository::class);
     }
@@ -104,13 +100,15 @@ class ConfigurationPageResolver
      */
     protected function calculateClosestPageIdWithActiveTemplate($startPageId)
     {
-        $rootLine = $this->pageRepository->getRootLine($startPageId);
-        // when no rootline is present the startpage it's self is the closest page
-        if (!is_array($rootLine)) {
+
+        $rootlineUtility = GeneralUtility::makeInstance(RootlineUtility::class, $startPageId);
+        try {
+            $rootline = $rootlineUtility->get();
+        } catch (\RuntimeException $e) {
             return $startPageId;
         }
 
-        $closestPageIdWithTemplate = $this->systemTemplateRepository->findOneClosestPageIdWithActiveTemplateByRootLine($rootLine);
+        $closestPageIdWithTemplate = $this->systemTemplateRepository->findOneClosestPageIdWithActiveTemplateByRootLine($rootline);
         if ($closestPageIdWithTemplate === 0) {
             return $startPageId;
         }

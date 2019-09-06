@@ -167,7 +167,7 @@ class Typo3PageIndexer
      */
     protected function initializeSolrConnection()
     {
-        $solr = GeneralUtility::makeInstance(ConnectionManager::class)->getConnectionByPageId($this->page->id, $this->page->sys_language_uid);
+        $solr = GeneralUtility::makeInstance(ConnectionManager::class)->getConnectionByPageId($this->page->id, Util::getLanguageUid());
 
         // do not continue if no server is available
         if (!$solr->getWriteService()->ping()) {

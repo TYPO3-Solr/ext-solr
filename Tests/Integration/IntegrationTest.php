@@ -32,6 +32,7 @@ use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 use TYPO3\CMS\Core\Charset\CharsetConverter;
+use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Lang\LanguageService;
@@ -84,7 +85,7 @@ abstract class IntegrationTest extends FunctionalTestCase
         parent::setUp();
 
         //this is needed by the TYPO3 core.
-        chdir(PATH_site);
+        chdir(Environment::getPublicPath() . '/');
 
         // during the tests we don't want the core to cache something in cache_core
         $cacheManager = GeneralUtility::makeInstance(CacheManager::class);
@@ -171,58 +172,25 @@ abstract class IntegrationTest extends FunctionalTestCase
         // create fake extension database table and TCA
         $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
 
+        $schemaMigrationService = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Database\\Schema\\SchemaMigrator');
+        $sqlReader = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Database\\Schema\\SqlReader');
+        $sqlCode = $this->getFixtureContentByName($fixtureName);
 
-        if(!class_exists('TYPO3\\CMS\\Core\\Database\\Schema\\SchemaMigrator')) {
-            // @todo this can be removed when we drop 8 LTS support
-            // @deprecated
-            /** @var $schemaMigrationService SqlSchemaMigrationService */
-            $schemaMigrationService = $objectManager->get(SqlSchemaMigrationService::class);
+        $createTableStatements = $sqlReader->getCreateTableStatementArray($sqlCode);
 
-            /** @var  $expectedSchemaService SqlExpectedSchemaService */
-            $expectedSchemaService = $objectManager->get(SqlExpectedSchemaService::class);
-
-            $expectedSchemaString = $expectedSchemaService->getTablesDefinitionString(true);
-            $statements = $schemaMigrationService->getStatementArray($expectedSchemaString, true);
-            list($_, $insertCount) = $schemaMigrationService->getCreateTables($statements, true);
-
-            $fieldDefinitionsFile = $schemaMigrationService->getFieldDefinitions_fileContent($this->getFixtureContentByName($fixtureName));
-            $fieldDefinitionsDatabase = $schemaMigrationService->getFieldDefinitions_database();
-            $difference = $schemaMigrationService->getDatabaseExtra($fieldDefinitionsFile, $fieldDefinitionsDatabase);
-            $updateStatements = $schemaMigrationService->getUpdateSuggestions($difference);
-
-            $schemaMigrationService->performUpdateQueries($updateStatements['add'], $updateStatements['add']);
-            $schemaMigrationService->performUpdateQueries($updateStatements['change'], $updateStatements['change']);
-            $schemaMigrationService->performUpdateQueries($updateStatements['create_table'], $updateStatements['create_table']);
-
-            $connection = $this->getDatabaseConnection();
-            foreach ($insertCount as $table => $count) {
-                $insertStatements = $schemaMigrationService->getTableInsertStatements($statements, $table);
-                foreach ($insertStatements as $insertQuery) {
-                    $insertQuery = rtrim($insertQuery, ';');
-                    $connection->exec($insertQuery);
-                }
-            }
-        } else {
-            $schemaMigrationService = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Database\\Schema\\SchemaMigrator');
-            $sqlReader = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Database\\Schema\\SqlReader');
-            $sqlCode = $this->getFixtureContentByName($fixtureName);
-
-            $createTableStatements = $sqlReader->getCreateTableStatementArray($sqlCode);
-
-            $updateResult = $schemaMigrationService->install($createTableStatements);
-            $failedStatements = array_filter($updateResult);
-            $result = array();
-            foreach ($failedStatements as $query => $error) {
-                $result[] = 'Query "' . $query . '" returned "' . $error . '"';
-            }
-
-            if (!empty($result)) {
-                throw new \RuntimeException(implode("\n", $result), 1505058450);
-            }
-
-            $insertStatements = $sqlReader->getInsertStatementArray($sqlCode);
-            $schemaMigrationService->importStaticData($insertStatements);
+        $updateResult = $schemaMigrationService->install($createTableStatements);
+        $failedStatements = array_filter($updateResult);
+        $result = array();
+        foreach ($failedStatements as $query => $error) {
+            $result[] = 'Query "' . $query . '" returned "' . $error . '"';
         }
+
+        if (!empty($result)) {
+            throw new \RuntimeException(implode("\n", $result), 1505058450);
+        }
+
+        $insertStatements = $sqlReader->getInsertStatementArray($sqlCode);
+        $schemaMigrationService->importStaticData($insertStatements);
     }
 
     /**

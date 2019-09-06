@@ -25,7 +25,7 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractTagBasedViewHelper;
+use \TYPO3Fluid\Fluid\Core\ViewHelper\AbstractTagBasedViewHelper;
 
 abstract class AbstractSolrTagBasedViewHelper extends AbstractTagBasedViewHelper
 {

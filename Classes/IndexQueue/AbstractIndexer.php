@@ -28,6 +28,7 @@ use ApacheSolrForTypo3\Solr\ContentObject\Classification;
 use ApacheSolrForTypo3\Solr\ContentObject\Multivalue;
 use ApacheSolrForTypo3\Solr\ContentObject\Relation;
 use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
+use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\TypoScript\Parser\TypoScriptParser;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
@@ -147,7 +148,7 @@ abstract class AbstractIndexer
             // need to change directory to make IMAGE content objects work in BE context
             // see http://blog.netzelf.de/lang/de/tipps-und-tricks/tslib_cobj-image-im-backend
             $backupWorkingDirectory = getcwd();
-            chdir(PATH_site);
+            chdir(Environment::getPublicPath() . '/');
 
             $contentObject->start($data, $this->type);
             $fieldValue = $contentObject->cObjGetSingle(
@@ -175,7 +176,7 @@ abstract class AbstractIndexer
             // need to change directory to make IMAGE content objects work in BE context
             // see http://blog.netzelf.de/lang/de/tipps-und-tricks/tslib_cobj-image-im-backend
             $backupWorkingDirectory = getcwd();
-            chdir(PATH_site);
+            chdir(Environment::getPublicPath() . '/');
 
             $contentObject->start($data, $this->type);
             $fieldValue = $contentObject->cObjGetSingle($name, $conf);

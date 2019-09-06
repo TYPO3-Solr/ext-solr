@@ -259,6 +259,7 @@ class IndexerTest extends IntegrationTest
         $solrContent = file_get_contents('http://localhost:8999/solr/core_en/select?q=*:*');
 
         $decodedSolrContent = json_decode($solrContent);
+        // @extensionScannerIgnoreLine
         $tags = $decodedSolrContent->response->docs[0]->tags_stringM;
 
         $this->assertSame(["the tag","the second tag"], $tags, $solrContent, 'Did not find MM related tags');
@@ -386,12 +387,16 @@ class IndexerTest extends IntegrationTest
         $this->assertContains('"numFound":1', $solrContent, 'Could not index document into solr');
         $this->assertContains('"title":"testnews"', $solrContent, 'Could not index document into solr');
 
+        // @extensionScannerIgnoreLine
         $category_stringM = $decodedSolrContent->response->docs[0]->category_stringM;
         $this->assertSame(['the category','the second category'], $category_stringM, 'Unexpected category_stringM value');
+        // @extensionScannerIgnoreLine
         $sysCategoryId_stringM = $decodedSolrContent->response->docs[0]->sysCategoryId_stringM;
         $this->assertSame(['1','2'], $sysCategoryId_stringM, 'Unexpected sysCategoryId_stringM value');
+        // @extensionScannerIgnoreLine
         $sysCategory_stringM = $decodedSolrContent->response->docs[0]->sysCategory_stringM;
         $this->assertSame(['sys_category','sys_category 2'], $sysCategory_stringM, 'Unexpected sysCategory_stringM value');
+        // @extensionScannerIgnoreLine
         $sysCategoryDescription_stringM = $decodedSolrContent->response->docs[0]->sysCategoryDescription_stringM;
         $this->assertSame(['sys_category description','second sys_category description'], $sysCategoryDescription_stringM, 'Unexpected sysCategoryDescription_stringM value');
 

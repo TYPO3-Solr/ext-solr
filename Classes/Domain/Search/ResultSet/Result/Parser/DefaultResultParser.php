@@ -47,13 +47,17 @@ class DefaultResultParser extends AbstractResultParser {
         $searchResults = GeneralUtility::makeInstance(SearchResultCollection::class);
         $parsedData = $resultSet->getResponse()->getParsedData();
 
+        // @extensionScannerIgnoreLine
         $resultSet->setMaximumScore($parsedData->response->maxScore ?? 0.0);
+        // @extensionScannerIgnoreLine
         $resultSet->setAllResultCount($parsedData->response->numFound ?? 0);
 
+        // @extensionScannerIgnoreLine
         if (!is_array($parsedData->response->docs)) {
             return $resultSet;
         }
 
+        // @extensionScannerIgnoreLine
         $documents = $parsedData->response->docs;
         if (!$useRawDocuments) {
             $documents = $this->documentEscapeService->applyHtmlSpecialCharsOnAllFields($documents);

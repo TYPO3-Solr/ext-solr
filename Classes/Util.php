@@ -30,8 +30,10 @@ use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationPageResolver;
 use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use Symfony\Component\EventDispatcher\GenericEvent;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\LanguageAspect;
+use TYPO3\CMS\Core\Utility\RootlineUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use ApacheSolrForTypo3\Solr\System\Mvc\Frontend\Controller\OverriddenTypoScriptFrontendController;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
@@ -265,7 +267,13 @@ class Util
 
             /** @var $pageSelect PageRepository */
         $pageSelect = GeneralUtility::makeInstance(PageRepository::class);
-        $rootLine = $pageSelect->getRootLine($pageId);
+
+        $rootlineUtility = GeneralUtility::makeInstance(RootlineUtility::class, $pageId);
+        try {
+            $rootLine = $rootlineUtility->get();
+        } catch (\RuntimeException $e) {
+            $rootLine = [];
+        }
 
         $initializedTsfe = false;
         $initializedPageSelect = false;
@@ -511,15 +519,30 @@ class Util
     }
 
     /**
-     * Returns the current sys_language_uid from the active context.
-     * For Typo3 versions before 9.5 $GLOBALS['TSFE']->sys_language_uid is returned instead.
-     *
+     * Returns the current language ID from the active context.
      * @return int
      */
-    public static function getLanguageUid()
+    public static function getLanguageUid(): int
     {
-        /** @var Context $context */
         $context = GeneralUtility::makeInstance(Context::class);
-        return $context->getPropertyFromAspect('language', 'id');
+        return (int)$context->getPropertyFromAspect('language', 'id');
+    }
+
+    /**
+     * @return string
+     */
+    public static function getFrontendUserGroupsList(): string
+    {
+        return implode(',', self::getFrontendUserGroups());
+    }
+
+    /**
+     * @return array
+     * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
+     */
+    public static function getFrontendUserGroups(): array
+    {
+        $context = GeneralUtility::makeInstance(Context::class);
+        return $context->getPropertyFromAspect('frontend.user', 'groupIds');
     }
 }

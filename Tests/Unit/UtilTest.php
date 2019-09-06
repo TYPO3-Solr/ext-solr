@@ -68,13 +68,10 @@ class UtilTest extends UnitTest
             ->shouldBeCalledOnce();
         GeneralUtility::addInstance(TwoLevelCache::class, $twoLevelCache->reveal());
 
-        /** @var PageRepository|\Prophecy\Prophecy\ObjectProphecy $pageRepository */
-        $pageRepository = $this->prophesize(PageRepository::class);
-        $pageRepository
-            ->getRootLine($pageId)
-            ->shouldBeCalledOnce()
-            ->willReturn([]);
-        GeneralUtility::addInstance(PageRepository::class, $pageRepository->reveal());
+
+        $rootLineUtility = $this->prophesize(\TYPO3\CMS\Core\Utility\RootlineUtility::class);
+        $rootLineUtility->get()->shouldBeCalledOnce()->willReturn([]);
+        GeneralUtility::addInstance(\TYPO3\CMS\Core\Utility\RootlineUtility::class, $rootLineUtility->reveal());
 
         /** @var ExtendedTemplateService|\Prophecy\Prophecy\ObjectProphecy $extendedTemplateService */
         $extendedTemplateService = $this->prophesize(ExtendedTemplateService::class);

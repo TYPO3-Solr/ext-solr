@@ -64,15 +64,18 @@ class ResponseAdapter implements Countable
         $this->httpStatus = $httpStatus;
         $this->httpStatusMessage = $httpStatusMessage;
 
+        // @extensionScannerIgnoreLine
         if (isset($this->data->response) && is_array($this->data->response->docs)) {
             $documents = array();
 
+            // @extensionScannerIgnoreLine
             foreach ($this->data->response->docs as $originalDocument) {
                 $fields = get_object_vars($originalDocument);
                 $document = new Document($fields);
                 $documents[] = $document;
             }
 
+            // @extensionScannerIgnoreLine
             $this->data->response->docs = $documents;
         }
     }

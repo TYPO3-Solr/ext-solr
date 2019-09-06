@@ -25,7 +25,7 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers\Backend;
  ***************************************************************/
 
 
-use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractConditionViewHelper;
+use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractConditionViewHelper;
 
 /**
  * Condition for checking if type is a string.

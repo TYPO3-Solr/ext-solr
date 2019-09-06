@@ -18,8 +18,8 @@ use ApacheSolrForTypo3\Solr\Mvc\Controller\SolrControllerContext;
 use ApacheSolrForTypo3\Solr\Widget\WidgetRequest as SolrFluidWidgetRequest;
 use TYPO3\CMS\Extbase\Mvc\Web\Response;
 use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
-use TYPO3\CMS\Fluid\Core\Parser\SyntaxTree\RootNode;
-use TYPO3\CMS\Fluid\Core\ViewHelper\Facets\ChildNodeAccessInterface;
+use TYPO3Fluid\Fluid\Core\Parser\SyntaxTree\RootNode;
+use TYPO3Fluid\Fluid\Core\ViewHelper\ViewHelperInterface;
 use TYPO3\CMS\Fluid\Core\Widget\AbstractWidgetViewHelper as AbstractCoreWidgetViewHelper;
 use TYPO3\CMS\Fluid\Core\Widget\AjaxWidgetContextHolder;
 use TYPO3\CMS\Fluid\Core\Widget\Exception\MissingControllerException;
@@ -39,12 +39,12 @@ use TYPO3\CMS\Extbase\Service\ExtensionService;
  * @author Timo Hund <timo.hund@dkd.de>
  * @package ApacheSolrForTypo3\Solr\Widget
  */
-abstract class AbstractWidgetViewHelper extends AbstractCoreWidgetViewHelper implements ChildNodeAccessInterface
+abstract class AbstractWidgetViewHelper extends AbstractCoreWidgetViewHelper implements ViewHelperInterface
 {
 
     /**
      * The Controller associated to this widget.
-     * This needs to be filled by the individual subclass by an @inject
+     * This needs to be filled by the individual subclass by di
      * annotation.
      *
      * @var AbstractWidgetController

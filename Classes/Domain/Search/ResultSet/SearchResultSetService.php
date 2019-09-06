@@ -196,6 +196,7 @@ class SearchResultSetService
         if ((int)$searchRequest->getResultsPerPage() === 0) {
             // when resultPerPage was forced to 0 we also set the numFound to 0 to hide results, e.g.
             // when results for the initial search should not be shown.
+            // @extensionScannerIgnoreLine
             $response->response->numFound = 0;
         }
 
@@ -408,6 +409,7 @@ class SearchResultSetService
         $query = $this->queryBuilder->newSearchQuery($documentId)->useQueryFields(QueryFields::fromString('id'))->getQuery();
         $response = $this->search->search($query, 0, 1);
         $parsedData = $response->getParsedData();
+        // @extensionScannerIgnoreLine
         $resultDocument = isset($parsedData->response->docs[0]) ? $parsedData->response->docs[0] : null;
 
         if (!$resultDocument instanceof Document) {

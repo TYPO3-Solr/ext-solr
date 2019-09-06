@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr\System\Environment;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\SingletonInterface;
 
 /**
@@ -63,7 +64,7 @@ class CliEnvironment implements SingletonInterface
      * @throws WebRootAllReadyDefinedException
      * @return bool
      */
-    public function initialize($webRoot, $scriptFileName = PATH_site, $phpSelf = '/index.php', $scriptName = '/index.php')
+    public function initialize($webRoot, $scriptFileName = '', $phpSelf = '/index.php', $scriptName = '/index.php')
     {
         // if the environment has be initialized once, we do not need to initialize it twice.
         if ($this->isInitialized) {
@@ -72,6 +73,10 @@ class CliEnvironment implements SingletonInterface
 
         if (defined('TYPO3_PATH_WEB')) {
             throw new WebRootAllReadyDefinedException('TYPO3_PATH_WEB is already defined');
+        }
+
+        if ($scriptFileName === '') {
+            $scriptFileName = Environment::getPublicPath() . '/';
         }
 
         define('TYPO3_PATH_WEB', $webRoot);

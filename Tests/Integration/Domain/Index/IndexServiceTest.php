@@ -31,6 +31,7 @@ use ApacheSolrForTypo3\Solr\System\Environment\CliEnvironment;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Charset\CharsetConverter;
+use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Lang\LanguageService;
 
@@ -122,7 +123,7 @@ class IndexServiceTest extends IntegrationTest
         /** @var  $cliEnvironment CliEnvironment */
         $cliEnvironment = GeneralUtility::makeInstance(CliEnvironment::class);
         $cliEnvironment->backup();
-        $cliEnvironment->initialize(PATH_site);
+        $cliEnvironment->initialize(Environment::getPublicPath() . '/');
 
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $site = $siteRepository->getFirstAvailableSite();

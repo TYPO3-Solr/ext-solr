@@ -25,6 +25,7 @@ namespace ApacheSolrForTypo3\Solr\Access;
  ***************************************************************/
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\RootlineUtility;
 use TYPO3\CMS\Frontend\Page\PageRepository;
 
 /**
@@ -140,10 +141,12 @@ class Rootline
         $mountPointParameter = ''
     ) {
         $accessRootline = GeneralUtility::makeInstance(Rootline::class);
-
-        $pageSelector = GeneralUtility::makeInstance(PageRepository::class);
-        $pageSelector->init(false);
-        $rootline = $pageSelector->getRootLine($pageId, $mountPointParameter);
+        $rootlineUtility = GeneralUtility::makeInstance(RootlineUtility::class, $pageId, $mountPointParameter);
+        try {
+            $rootline = $rootlineUtility->get();
+        } catch (\RuntimeException $e) {
+            $rootline = [];
+        }
         $rootline = array_reverse($rootline);
         // parent pages
         foreach ($rootline as $pageRecord) {
@@ -157,6 +160,8 @@ class Rootline
                 ));
             }
         }
+
+        $pageSelector = GeneralUtility::makeInstance(PageRepository::class);
 
         // current page
         $currentPageRecord = $pageSelector->getPage($pageId);
