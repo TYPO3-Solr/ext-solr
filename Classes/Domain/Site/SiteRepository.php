@@ -386,13 +386,19 @@ class SiteRepository
 
     /**
      *
-     * @deprecated buildLegacySite is deprecated and will be removed in EXT:solr 11. Please configure your system with the TYPO3 sitehandling
      * @param array $rootPageRecord
      * @return LegacySite
+     * @throws Exception\InvalidSiteConfigurationCombinationException
+     * @deprecated buildLegacySite is deprecated and will be removed in EXT:solr 11. Please configure your system with the TYPO3 sitehandling
      */
     protected function buildLegacySite($rootPageRecord): LegacySite
     {
         trigger_error('solr:deprecation: You are using EXT:solr without sitehandling. This setup is deprecated and will be removed in EXT:solr 11', E_USER_DEPRECATED);
+
+        if (!$this->extensionConfiguration->getIsAllowLegacySiteModeEnabled()) {
+            throw new Exception\InvalidSiteConfigurationCombinationException('It was tried to boot legacy site configuration, but allowLegacySiteMode is not enabled. ' .
+                'Please use site handling feature or enable legacy mode under "Settings":>"Extension Configuration":>"solr"', 1567770263);
+        }
 
         $solrConfiguration = Util::getSolrConfigurationFromPageId($rootPageRecord['uid']);
         $domain = $this->getDomainFromConfigurationOrFallbackToDomainRecord($rootPageRecord['uid']);
