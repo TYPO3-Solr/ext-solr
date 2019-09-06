@@ -545,4 +545,15 @@ class Util
         $context = GeneralUtility::makeInstance(Context::class);
         return $context->getPropertyFromAspect('frontend.user', 'groupIds');
     }
+
+    /**
+     * Checks whether legacy site mode is enabled.
+     *
+     * @return bool
+     */
+    public static function legacySiteModeIsEnabled(): bool
+    {
+        return isset($GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['solr']['allowLegacySiteMode']) && (int)$GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['solr']['allowLegacySiteMode'] === 1;
+    }
+
 }

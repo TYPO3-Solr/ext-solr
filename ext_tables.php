@@ -1,5 +1,7 @@
 <?php
 
+use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
+
 if (!defined('TYPO3_MODE')) {
     die('Access denied.');
 }
@@ -121,7 +123,9 @@ if (TYPO3_MODE == 'BE') {
     ];
 
     // register Clear Cache Menu hook
-    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['additionalBackendItems']['cacheActions']['clearSolrConnectionCache'] = \ApacheSolrForTypo3\Solr\System\Hooks\Backend\Toolbar\ClearCacheActionsHook::class;
+    if (\ApacheSolrForTypo3\Solr\Util::legacySiteModeIsEnabled()) {
+        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['additionalBackendItems']['cacheActions']['clearSolrConnectionCache'] = \ApacheSolrForTypo3\Solr\System\Hooks\Backend\Toolbar\ClearCacheActionsHook::class;
+    }
 }
 
 if ((TYPO3_MODE === 'BE') || (TYPO3_MODE === 'FE' && isset($_POST['TSFE_EDIT']))) {
@@ -139,7 +143,9 @@ if ((TYPO3_MODE === 'BE') || (TYPO3_MODE === 'FE' && isset($_POST['TSFE_EDIT']))
 
 # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
-$GLOBALS['TYPO3_CONF_VARS']['BE']['ContextMenu']['ItemProviders'][1487876780] = \ApacheSolrForTypo3\Solr\ContextMenu\ItemProviders\InitializeConnectionProvider::class;
+if (\ApacheSolrForTypo3\Solr\Util::legacySiteModeIsEnabled()) {
+    $GLOBALS['TYPO3_CONF_VARS']['BE']['ContextMenu']['ItemProviders'][1487876780] = \ApacheSolrForTypo3\Solr\ContextMenu\ItemProviders\InitializeConnectionProvider::class;
+}
 
 $isComposerMode = defined('TYPO3_COMPOSER_MODE') && TYPO3_COMPOSER_MODE;
 if(!$isComposerMode) {
