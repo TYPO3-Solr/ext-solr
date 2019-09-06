@@ -102,6 +102,16 @@ class ExtensionConfiguration
     }
 
     /**
+     * Get configuration for allowLegacySiteMode
+     *
+     * @return bool
+     */
+    public function getIsAllowLegacySiteModeEnabled(): bool
+    {
+        return (bool)$this->getConfigurationOrDefaultValue('allowLegacySiteMode', false);
+    }
+
+    /**
      * @param string $key
      * @param mixed $defaultValue
      * @return mixed

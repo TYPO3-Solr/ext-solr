@@ -9,3 +9,6 @@ useConfigurationMonitorTables =
 
 # cat=basic/enable/40; type=boolean; label=Allow self signed certificates
 allowSelfSignedCertificates = 0
+
+# cat=basic/enable/50; type=boolean; label=Allow legacy site mode (classic TypoScript site configuration way)
+allowLegacySiteMode = 0
