@@ -30,6 +30,7 @@ use ApacheSolrForTypo3\Solr\IndexQueue\Initializer\Page;
 use ApacheSolrForTypo3\Solr\System\Page\Rootline;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\RootlineUtility;
 use TYPO3\CMS\Frontend\Page\PageRepository;
 
 /**
@@ -63,9 +64,12 @@ class MountPagesUpdater
     public function update($pageId)
     {
         // get the root line of the page, every parent page could be a Mount Page source
-        /** @var $pageSelect PageRepository */
-        $pageSelect = GeneralUtility::makeInstance(PageRepository::class);
-        $rootLineArray = $pageSelect->getRootLine($pageId);
+        $rootlineUtility = GeneralUtility::makeInstance(RootlineUtility::class, $pageId);
+        try {
+            $rootLineArray = $rootlineUtility->get();
+        } catch (\RuntimeException $e) {
+            $rootLineArray = [];
+        }
 
         $currentPage = array_shift($rootLineArray);
         $currentPageUid = (int)$currentPage['uid'];

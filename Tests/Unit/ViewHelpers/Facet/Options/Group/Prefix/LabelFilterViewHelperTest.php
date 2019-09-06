@@ -29,8 +29,8 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\O
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use ApacheSolrForTypo3\Solr\ViewHelpers\Facet\Options\Group\Prefix\LabelFilterViewHelper;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\OptionsFacet;
-use TYPO3\CMS\Fluid\Core\Rendering\RenderingContextInterface;
-use TYPO3\CMS\Fluid\Core\ViewHelper\TemplateVariableContainer;
+use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
+use TYPO3Fluid\Fluid\Core\Variables\StandardVariableProvider;
 
 /**
  * @author Timo Hund <timo.hund@dkd.de>
@@ -57,7 +57,7 @@ class LabelFilterViewHelperTest extends UnitTest
         $optionCollection->add($red);
         $optionCollection->add($royalGreen);
 
-        $variableContainer = $this->getMockBuilder(TemplateVariableContainer::class)->setMethods(['remove'])->getMock();
+        $variableContainer = $this->getMockBuilder(StandardVariableProvider::class)->setMethods(['remove'])->getMock();
         $renderingContextMock = $this->getDumbMock(RenderingContextInterface::class);
         $renderingContextMock->expects($this->any())->method('getVariableProvider')->will($this->returnValue($variableContainer));
 
@@ -87,7 +87,7 @@ class LabelFilterViewHelperTest extends UnitTest
         $optionCollection->add($ben);
         $optionCollection->add($ole);
 
-        $variableContainer = $this->getMockBuilder(TemplateVariableContainer::class)->setMethods(['remove'])->getMock();
+        $variableContainer = $this->getMockBuilder(StandardVariableProvider::class)->setMethods(['remove'])->getMock();
         $renderingContextMock = $this->getDumbMock(RenderingContextInterface::class);
         $renderingContextMock->expects($this->any())->method('getVariableProvider')->will($this->returnValue($variableContainer));
 

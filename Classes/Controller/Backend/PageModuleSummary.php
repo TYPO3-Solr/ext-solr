@@ -29,7 +29,7 @@ use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
 use TYPO3\CMS\Fluid\View\StandaloneView;
-use TYPO3\CMS\Lang\LanguageService;
+use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Backend\View\PageLayoutView;
 
 /**
@@ -91,8 +91,8 @@ class PageModuleSummary
     {
         $this->pageLayoutView = $pObj;
 
-        /** @var $service \TYPO3\CMS\Extbase\Service\FlexFormService::class */
-        $service = GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Service\FlexFormService::class);
+        /** @var $service \TYPO3\CMS\Core\Service\FlexFormService::class */
+        $service = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Service\FlexFormService::class);
         $this->flexformData = $service->convertFlexFormContentToArray($contentElement['pi_flexform']);
         $this->pluginContentElement = $contentElement;
     }

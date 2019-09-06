@@ -35,6 +35,7 @@ use TYPO3\CMS\Core\Registry;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\TypoScript\ExtendedTemplateService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\RootlineUtility;
 use TYPO3\CMS\Frontend\Page\PageRepository;
 
 /**
@@ -400,7 +401,13 @@ class ConnectionManager implements SingletonInterface
         $connectionKey = $rootPage['uid'] . '|' . $languageId;
 
         $pageSelect = GeneralUtility::makeInstance(PageRepository::class);
-        $rootLine = $pageSelect->getRootLine($rootPage['uid']);
+
+        $rootlineUtility = GeneralUtility::makeInstance(RootlineUtility::class, $rootPage['uid']);
+        try {
+            $rootLine = $rootlineUtility->get();
+        } catch (\RuntimeException $e) {
+            $rootLine = [];
+        }
 
         $tmpl = GeneralUtility::makeInstance(ExtendedTemplateService::class);
         $tmpl->tt_track = false; // Do not log time-performance information

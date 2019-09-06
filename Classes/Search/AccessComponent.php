@@ -26,6 +26,7 @@ namespace ApacheSolrForTypo3\Solr\Search;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
+use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -65,7 +66,7 @@ class AccessComponent extends AbstractComponent implements QueryAware
         $this->query = $this->queryBuilder
             ->startFrom($this->query)
             ->useSiteHashFromTypoScript($GLOBALS['TSFE']->id)
-            ->useUserAccessGroups(explode(',', $GLOBALS['TSFE']->gr_list))
+            ->useUserAccessGroups(Util::getFrontendUserGroups())
             ->getQuery();
     }
 

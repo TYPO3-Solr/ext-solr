@@ -29,6 +29,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSetProcessor;
 use ApacheSolrForTypo3\Solr\HtmlContentExtractor;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
+use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
@@ -87,11 +88,15 @@ class StatisticsWriterProcessor implements SearchResultSetProcessor
             'pid' => $TSFE->id,
             'root_pid' => $root_pid,
             'tstamp' => $this->getTime(),
-            'language' => $TSFE->sys_language_uid,
+            'language' => Util::getLanguageUid(),
+            // @extensionScannerIgnoreLine
             'num_found' => isset($response->response->numFound) ? (int)$response->response->numFound : 0,
             'suggestions_shown' => is_object($response->spellcheck->suggestions) ? (int)get_object_vars($response->spellcheck->suggestions) : 0,
+            // @extensionScannerIgnoreLine
             'time_total' => isset($response->debug->timing->time) ? $response->debug->timing->time : 0,
+            // @extensionScannerIgnoreLine
             'time_preparation' => isset($response->debug->timing->prepare->time) ? $response->debug->timing->prepare->time : 0,
+            // @extensionScannerIgnoreLine
             'time_processing' => isset($response->debug->timing->process->time) ? $response->debug->timing->process->time : 0,
             'feuser_id' => (int)$TSFE->fe_user->user['uid'],
             'cookie' => $TSFE->fe_user->id,

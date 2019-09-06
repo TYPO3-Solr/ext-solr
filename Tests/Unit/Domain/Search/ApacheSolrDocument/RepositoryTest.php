@@ -115,25 +115,26 @@ class RepositoryTest extends UnitTest
      */
     public function findByPageIdAndByLanguageIdReturnsResultFromSearch()
     {
-        $documentEscapeServiceMock = $this->getDumbMock(DocumentEscapeService::class);
+
         $solrServiceMock = $this->getDumbMock(SolrService::class);
         $solrConnectionManager = $this->getAccessibleMock(ConnectionManager::class, ['getConnectionByPageId'], [], '', false);
         $solrConnectionManager->expects($this->any())->method('getConnectionByPageId')->will($this->returnValue($solrServiceMock));
         $mockedSingletons = [ConnectionManager::class => $solrConnectionManager];
 
-        $search = $this->getAccessibleMock(Search::class, ['search', 'getResultDocumentsEscaped'], [$documentEscapeServiceMock], '', false);
+        $search = $this->getAccessibleMock(Search::class, ['search', 'getResultDocumentsEscaped'], [], '', false);
 
         GeneralUtility::resetSingletonInstances($mockedSingletons);
 
         $testDocuments = [new Document(), new Document()];
 
         $parsedData = new \stdClass();
+        // @extensionScannerIgnoreLine
         $parsedData->response = new \stdClass();
+        // @extensionScannerIgnoreLine
         $parsedData->response->docs = $testDocuments;
         $fakeResponse = $this->getDumbMock(ResponseAdapter::class);
         $fakeResponse->expects($this->once())->method('getParsedData')->will($this->returnValue($parsedData));
         $search->expects($this->any())->method('search')->willReturn($fakeResponse);
-        $documentEscapeServiceMock->expects($this->any())->method('applyHtmlSpecialCharsOnAllFields')->willReturn($expectedApacheSolrDocumentCollection);
 
         $queryBuilderMock = $this->getDumbMock(QueryBuilder::class);
 

@@ -16,6 +16,7 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers;
 
 use ApacheSolrForTypo3\Solr\System\Url\UrlHelper;
 use ApacheSolrForTypo3\Solr\System\Util\SiteUtility;
+use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
@@ -116,7 +117,7 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
         // Get search term
         $this->getTemplateVariableContainer()->add('q', $this->getQueryString());
         $this->getTemplateVariableContainer()->add('pageUid', $pageUid);
-        $this->getTemplateVariableContainer()->add('languageUid', $this->frontendController->sys_language_uid);
+        $this->getTemplateVariableContainer()->add('languageUid', Util::getLanguageUid());
         $this->getTemplateVariableContainer()->add('existingParameters', $this->getExistingSearchParameters());
 
         $this->getTemplateVariableContainer()->add('addPageAndLanguageId', !$this->getIsSiteManagedSite($pageUid));

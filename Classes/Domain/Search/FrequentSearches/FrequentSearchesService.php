@@ -26,6 +26,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\FrequentSearches;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Statistics\StatisticsRepository;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Cache\Frontend\AbstractFrontend;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
@@ -124,7 +125,7 @@ class FrequentSearchesService
             $checkRootPidWhere = '1';
         }
         if ($frequentSearchConfiguration['select.']['checkLanguage']) {
-            $checkLanguageWhere = ' AND language =' . $this->tsfe->sys_language_uid;
+            $checkLanguageWhere = ' AND language =' . Util::getLanguageUid();
         } else {
             $checkLanguageWhere = '';
         }
@@ -160,7 +161,7 @@ class FrequentSearchesService
             $identifier .= '_RP' . (int)$this->tsfe->tmpl->rootLine[0]['uid'];
         }
         if ($frequentSearchConfiguration['select.']['checkLanguage']) {
-            $identifier .= '_L' . (int)$this->tsfe->sys_language_uid;
+            $identifier .= '_L' . Util::getLanguageUid();
         }
 
         $identifier .= '_' . md5(serialize($frequentSearchConfiguration));

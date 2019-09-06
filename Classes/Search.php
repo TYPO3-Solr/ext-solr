@@ -30,7 +30,6 @@ use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrCommunicationException;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
-use Solarium\Exception\HttpException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -88,7 +87,7 @@ class Search
         if (is_null($solrConnection)) {
             /** @var $connectionManager ConnectionManager */
             $connectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
-            $this->solr = $connectionManager->getConnectionByPageId($GLOBALS['TSFE']->id, $GLOBALS['TSFE']->sys_language_uid);
+            $this->solr = $connectionManager->getConnectionByPageId($GLOBALS['TSFE']->id, Util::getLanguageUid());
         }
 
         $this->configuration = Util::getSolrConfiguration();
@@ -238,6 +237,7 @@ class Search
 
     public function getResponseBody()
     {
+        // @extensionScannerIgnoreLine
         return $this->getResponse()->response;
     }
 
@@ -268,11 +268,13 @@ class Search
      */
     public function getResultOffset()
     {
+        // @extensionScannerIgnoreLine
         return $this->response->response->start;
     }
 
     public function getDebugResponse()
     {
+        // @extensionScannerIgnoreLine
         return $this->response->debug;
     }
 

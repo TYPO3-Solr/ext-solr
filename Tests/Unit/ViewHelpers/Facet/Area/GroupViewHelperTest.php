@@ -29,8 +29,8 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\FacetCollection;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\OptionsFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\ViewHelpers\Facet\Area\GroupViewHelper;
-use TYPO3\CMS\Fluid\Core\Rendering\RenderingContextInterface;
-use TYPO3\CMS\Fluid\Core\ViewHelper\TemplateVariableContainer;
+use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
+use TYPO3Fluid\Fluid\Core\Variables\StandardVariableProvider;
 
 /**
  * @author Timo Hund <timo.hund@dkd.de>
@@ -44,7 +44,7 @@ class GroupViewHelperTest extends UnitTest
     {
         $facetCollection = $this->getTestFacetCollection();
 
-        $variableContainer = $this->getMockBuilder(TemplateVariableContainer::class)->setMethods(['remove'])->getMock();
+        $variableContainer = $this->getMockBuilder(StandardVariableProvider::class)->setMethods(['remove'])->getMock();
         $renderingContextMock = $this->getDumbMock(RenderingContextInterface::class);
         $renderingContextMock->expects($this->any())->method('getVariableProvider')->will($this->returnValue($variableContainer));
 
@@ -70,7 +70,7 @@ class GroupViewHelperTest extends UnitTest
     {
         $facetCollection = $this->getTestFacetCollection();
 
-        $variableContainer = $this->getMockBuilder(TemplateVariableContainer::class)->setMethods(['remove'])->getMock();
+        $variableContainer = $this->getMockBuilder(StandardVariableProvider::class)->setMethods(['remove'])->getMock();
         $renderingContextMock = $this->getDumbMock(RenderingContextInterface::class);
         $renderingContextMock->expects($this->any())->method('getVariableProvider')->will($this->returnValue($variableContainer));
 

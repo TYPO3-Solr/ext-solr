@@ -29,7 +29,7 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use ApacheSolrForTypo3\Solr\System\Service\ConfigurationService;
 use TYPO3\CMS\Core\TypoScript\TypoScriptService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Service\FlexFormService;
+use TYPO3\CMS\Core\Service\FlexFormService;
 
 /**
  * @author Timo Hund <timo.hund@dkd.de>

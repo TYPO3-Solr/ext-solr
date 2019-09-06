@@ -26,15 +26,15 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers\Backend\Button;
 
 use ApacheSolrForTypo3\Solr\ViewHelpers\AbstractSolrViewHelper;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Fluid\Core\Rendering\RenderingContextInterface;
-use TYPO3\CMS\Fluid\Core\ViewHelper\Facets\CompilableInterface;
+use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
+use TYPO3Fluid\Fluid\Core\ViewHelper\ViewHelperInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
 /**
  * View helper to return a help button
  *
  */
-class HelpButtonViewHelper extends AbstractSolrViewHelper implements CompilableInterface
+class HelpButtonViewHelper extends AbstractSolrViewHelper implements ViewHelperInterface
 {
     use CompileWithRenderStatic;
 

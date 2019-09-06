@@ -27,6 +27,7 @@ namespace ApacheSolrForTypo3\Solr\Task;
 use ApacheSolrForTypo3\Solr\Domain\Index\IndexService;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\System\Environment\CliEnvironment;
+use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Scheduler\ProgressProviderInterface;
 
@@ -63,7 +64,7 @@ class IndexQueueWorkerTask extends AbstractSolrTask implements ProgressProviderI
         if (TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_CLI) {
             $cliEnvironment = GeneralUtility::makeInstance(CliEnvironment::class);
             $cliEnvironment->backup();
-            $cliEnvironment->initialize($this->getWebRoot());
+            $cliEnvironment->initialize($this->getWebRoot(), Environment::getPublicPath() . '/');
         }
 
         $site = $this->getSite();
@@ -93,9 +94,7 @@ class IndexQueueWorkerTask extends AbstractSolrTask implements ProgressProviderI
             return $this->replaceWebRootMarkers($this->forcedWebRoot);
         }
 
-        // when nothing is configured, we use the constant PATH_site
-        // which should fit in the most cases
-        return PATH_site;
+        return Environment::getPublicPath() . '/';
     }
 
     /**
@@ -105,11 +104,11 @@ class IndexQueueWorkerTask extends AbstractSolrTask implements ProgressProviderI
     protected function replaceWebRootMarkers($webRoot)
     {
         if (strpos($webRoot, '###PATH_typo3###') !== false) {
-            $webRoot = str_replace('###PATH_typo3###', PATH_typo3, $webRoot);
+            $webRoot = str_replace('###PATH_typo3###', Environment::getPublicPath() . '/typo3/', $webRoot);
         }
 
         if (strpos($webRoot, '###PATH_site###') !== false) {
-            $webRoot = str_replace('###PATH_site###', PATH_site, $webRoot);
+            $webRoot = str_replace('###PATH_site###', Environment::getPublicPath() . '/', $webRoot);
         }
 
         return $webRoot;

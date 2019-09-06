@@ -36,8 +36,8 @@ use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Registry;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
-use TYPO3\CMS\Frontend\Page\PageRepository;
+use TYPO3\CMS\Core\Utility\RootlineUtility;
+use TYPO3\CMS\Frontend\Compatibility\LegacyDomainResolver;
 
 /**
  * SiteRepository
@@ -294,7 +294,7 @@ class SiteRepository
      */
     protected function getSolrServersFromRegistry()
     {
-        trigger_error('Method getSolrServersFromRegistry is deprecated since EXT:solr 10 and will be removed in v11, use sitehanlding instead', E_USER_DEPRECATED);
+        trigger_error('Method getSolrServersFromRegistry is deprecated since EXT:solr 10 and will be removed in v11, use sitehandling instead', E_USER_DEPRECATED);
 
         $servers = (array)$this->registry->get('tx_solr', 'servers', []);
         return $servers;
@@ -307,19 +307,40 @@ class SiteRepository
      */
     protected function getDomainFromConfigurationOrFallbackToDomainRecord($rootPageId)
     {
-        trigger_error('Method getDomainFromConfigurationOrFallbackToDomainRecord is deprecated since EXT:solr 10 and will be removed in v11, use sitehanlding instead', E_USER_DEPRECATED);
+        trigger_error('Method getDomainFromConfigurationOrFallbackToDomainRecord is deprecated since EXT:solr 10 and will be removed in v11, use sitehandling instead', E_USER_DEPRECATED);
 
         /** @var $siteService SiteService */
         $siteService = GeneralUtility::makeInstance(SiteService::class);
         $domain = $siteService->getFirstDomainForRootPage($rootPageId);
         if ($domain === '') {
-            $pageSelect = GeneralUtility::makeInstance(PageRepository::class);
-            $rootLine = $pageSelect->getRootLine($rootPageId);
-            $domain = BackendUtility::firstDomainRecord($rootLine);
+            $rootlineUtility = GeneralUtility::makeInstance(RootlineUtility::class, $rootPageId);
+            try {
+                $rootLine = $rootlineUtility->get();
+            } catch (\RuntimeException $e) {
+                $rootLine = [];
+            }
+            $domain = $this->firstDomainRecordFromLegacyDomainResolver($rootLine);
             return (string)$domain;
         }
 
         return $domain;
+    }
+
+    /**
+     * @param $rootLine
+     * @return null|string
+     */
+    private function firstDomainRecordFromLegacyDomainResolver($rootLine)
+    {
+        trigger_error('BackendUtility::firstDomainRecord() will be removed in TYPO3 v10.0. Use sitehandling instead.', E_USER_DEPRECATED);
+        $domainResolver = GeneralUtility::makeInstance(LegacyDomainResolver::class);
+        foreach ($rootLine as $row) {
+            $domain = $domainResolver->matchRootPageId($row['uid']);
+            if (is_array($domain)) {
+                return rtrim($domain['domainName'], '/');
+            }
+        }
+        return null;
     }
 
     /**
