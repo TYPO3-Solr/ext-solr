@@ -37,12 +37,19 @@ use TYPO3\CMS\Reports\Status;
 class SchemaStatusTest extends IntegrationTest
 {
     /**
+     * @return void
+     */
+    public function setUp()
+    {
+        parent::setUp();
+        $this->writeDefaultSolrTestSiteConfiguration();
+    }
+
+    /**
      * @test
      */
     public function canGetAGrennSchemaStatusAgainstTestServer()
     {
-        $this->importDataSetFromFixture('can_check_status.xml');
-
         /** @var $schemaStatus  SchemaStatus */
         $schemaStatus = GeneralUtility::makeInstance(SchemaStatus::class);
         $violations = $schemaStatus->getStatus();

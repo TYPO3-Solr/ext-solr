@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataset>
+    <pages>
+        <uid>1</uid>
+        <is_siteroot>1</is_siteroot>
+        <doktype>1</doktype>
+        <title>Hello Solr</title>
+    </pages>
+</dataset>

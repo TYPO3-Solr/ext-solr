@@ -41,6 +41,7 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use TYPO3\CMS\Frontend\Page\PageGenerator;
 use TYPO3\CMS\Install\Service\SqlExpectedSchemaService;
 use TYPO3\CMS\Install\Service\SqlSchemaMigrationService;
+use TYPO3\CMS\Core\Tests\Functional\SiteHandling\SiteBasedTestTrait;
 
 /**
  * Base class for all integration tests in the EXT:solr project
@@ -49,6 +50,17 @@ use TYPO3\CMS\Install\Service\SqlSchemaMigrationService;
  */
 abstract class IntegrationTest extends FunctionalTestCase
 {
+
+    use SiteBasedTestTrait;
+
+    /**
+     * @var array
+     */
+    protected const LANGUAGE_PRESETS = [
+        'EN' => ['id' => 0, 'title' => 'English', 'locale' => 'en_US.UTF8'],
+        'DE' => ['id' => 1, 'title' => 'German', 'locale' => 'de_DE.UTF8'],
+        'DA' => ['id' => 2, 'title' => 'Danish', 'locale' => 'da_DA.UTF8']
+    ];
 
     /**
      * @var array
@@ -76,6 +88,11 @@ abstract class IntegrationTest extends FunctionalTestCase
     ];
 
     /**
+     * @var string
+     */
+    protected $instancePath;
+
+    /**
      * @return void
      */
     public function setUp()
@@ -89,6 +106,10 @@ abstract class IntegrationTest extends FunctionalTestCase
         $cacheManager = GeneralUtility::makeInstance(CacheManager::class);
         $coreCache = $cacheManager->getCache('cache_core');
         $coreCache->flush();
+
+        $this->instancePath = $this->getInstancePath();
+
+        $this->failWhenSolrDeprecationIsCreated();
     }
 
     /**
@@ -401,5 +422,79 @@ abstract class IntegrationTest extends FunctionalTestCase
     {
         $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageService::class);
         return GeneralUtility::makeInstance(DataHandler::class);
+    }
+
+    /**
+     * @return void
+     */
+    protected function writeDefaultSolrTestSiteConfiguration() {
+        $this->writeDefaultSolrTestSiteConfigurationForHostAndPort();
+    }
+
+    /**
+     * @return void
+     */
+    protected function writeDefaultSolrTestSiteConfigurationForHostAndPort($host = 'localhost', $port = 8999)
+    {
+        $defaultLanguage = $this->buildDefaultLanguageConfiguration('EN', '/en/');
+        $defaultLanguage['solr_core_read'] = 'core_en';
+
+        $german = $this->buildLanguageConfiguration('DE', '/de/');
+        $german['solr_core_read'] = 'core_de';
+
+        $danish = $this->buildLanguageConfiguration('DA', '/da/');
+        $danish['solr_core_read'] = 'core_da';
+
+        $this->writeSiteConfiguration(
+            'integration_tree_one',
+            $this->buildSiteConfiguration(1, 'http://testone.site/'),
+            [
+                $defaultLanguage, $german, $danish
+            ],
+            [
+                $this->buildErrorHandlingConfiguration('Fluid', [404])
+            ]
+        );
+
+        $this->writeSiteConfiguration(
+            'integration_tree_two',
+            $this->buildSiteConfiguration(111, 'http://testtwo.site/'),
+            [
+                $defaultLanguage, $german, $danish
+            ],
+            [
+                $this->buildErrorHandlingConfiguration('Fluid', [404])
+            ]
+        );
+
+        $globalSolrSettings = [
+            'solr_scheme_read' => 'http',
+            'solr_host_read' => $host,
+            'solr_port_read' => $port,
+            'solr_timeout_read' => 20,
+            'solr_path_read' => '/solr/',
+            'solr_use_write_connection' => false,
+        ];
+        $this->mergeSiteConfiguration('integration_tree_one', $globalSolrSettings);
+        $this->mergeSiteConfiguration('integration_tree_two', $globalSolrSettings);
+
+        clearstatcache();
+        usleep(500);
+    }
+
+    /**
+     * This method registers an error handler that fails the testcase when a E_USER_DEPRECATED error
+     * is thrown with the prefix solr:deprecation
+     *
+     * @return void
+     */
+    protected function failWhenSolrDeprecationIsCreated(): void
+    {
+        error_reporting(error_reporting() & ~E_USER_DEPRECATED);
+        set_error_handler(function ($id, $msg) {
+            if ($id === E_USER_DEPRECATED && strpos($msg, 'solr:deprecation: ') === 0) {
+                $this->fail("Executed deprecated EXT:solr code: " . $msg);
+            }
+        });
     }
 }

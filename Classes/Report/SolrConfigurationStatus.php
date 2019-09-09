@@ -114,6 +114,11 @@ class SolrConfigurationStatus extends AbstractSolrStatus
      */
     protected function getDomainRecordAvailableStatus()
     {
+        // @deprecated we can drop that check when the legacy site mode is dropped
+        if (!Util::legacySiteModeIsEnabled()) {
+            // when no legacy mode is enabled we do not need to check for domain record
+            return null;
+        }
         $rootPagesWithoutDomain = $this->getRootPagesWithoutDomain();
         if (empty($rootPagesWithoutDomain)) {
             return null;

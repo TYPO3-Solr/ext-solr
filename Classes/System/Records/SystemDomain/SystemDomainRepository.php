@@ -44,7 +44,7 @@ class SystemDomainRepository extends AbstractRepository
      */
     public function findDomainRecordsByRootPagesIds(array $rootPageIds = [])
     {
-        trigger_error('You are using EXT:solr without sitehandling. This setup is deprecated and will be removed in EXT:solr 11', E_USER_DEPRECATED);
+        trigger_error('solr:deprecation: You are using EXT:solr without sitehandling. This setup is deprecated and will be removed in EXT:solr 11', E_USER_DEPRECATED);
 
         $resultTmp = $this->getDomainRecordsByRootPageIds($rootPageIds);
 

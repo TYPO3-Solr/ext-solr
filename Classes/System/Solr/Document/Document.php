@@ -41,7 +41,7 @@ class Document extends SolariumDocument {
      */
     public function getField($fieldName)
     {
-        trigger_error('Method getField is deprecated since EXT:solr 10 and will be removed  in EXT:solr 11. Please use document[$fieldname] without the array key value.', E_USER_DEPRECATED);
+        trigger_error('solr:deprecation: Method getField is deprecated since EXT:solr 10 and will be removed  in EXT:solr 11. Please use document[$fieldname] without the array key value.', E_USER_DEPRECATED);
         return isset($this->fields[$fieldName]) ? ['value' => $this->fields[$fieldName]] : false;
     }
 }

@@ -1,13 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <dataset>
 
-    <sys_registry>
-        <uid>4711</uid>
-        <entry_namespace>tx_solr</entry_namespace>
-        <entry_key>servers</entry_key>
-        <entry_value>a:1:{s:3:"1|0";a:7:{s:13:"connectionKey";s:3:"1|0";s:13:"rootPageTitle";s:15:"Congratulations";s:11:"rootPageUid";s:1:"1";s:8:"language";i:0;s:5:"label";s:74:"Congratulations (pid: 1, language: default) - localhost:8999/solr/core_en/";s:4:"read";a:4:{s:6:"scheme";s:4:"http";s:4:"host";s:9:"localhost";s:4:"port";s:4:"8999";s:4:"path";s:14:"/solr/core_en/";}s:5:"write";a:4:{s:6:"scheme";s:4:"http";s:4:"host";s:9:"localhost";s:4:"port";s:4:"8999";s:4:"path";s:14:"/solr/core_en/";}}}</entry_value>
-    </sys_registry>
-
     <sys_template>
         <uid>1</uid>
         <pid>1</pid>
@@ -35,13 +28,6 @@
                 plugin.tx_solr {
 
                     enabled = 1
-
-                    solr {
-                        scheme = http
-                        host   = localhost
-                        port   = 8081
-                        path   = /solr/core_en/
-                    }
 
                     index {
                         fieldProcessingInstructions {

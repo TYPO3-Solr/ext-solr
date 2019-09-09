@@ -1,25 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <dataset>
 
-    <sys_registry>
-        <uid>4711</uid>
-        <entry_namespace>tx_solr</entry_namespace>
-        <entry_key>servers</entry_key>
-        <entry_value>a:1:{s:3:"1|0";a:7:{s:13:"connectionKey";s:3:"1|0";s:13:"rootPageTitle";s:15:"Congratulations";s:11:"rootPageUid";s:1:"1";s:8:"language";i:0;s:5:"label";s:74:"Congratulations (pid: 1, language: default) - localhost:8999/solr/core_en/";s:4:"read";a:4:{s:6:"scheme";s:4:"http";s:4:"host";s:9:"localhost";s:4:"port";s:4:"8999";s:4:"path";s:14:"/solr/core_en/";}s:5:"write";a:4:{s:6:"scheme";s:4:"http";s:4:"host";s:9:"localhost";s:4:"port";s:4:"8999";s:4:"path";s:14:"/solr/core_en/";}}}</entry_value>
-    </sys_registry>
     <pages>
         <uid>1</uid>
         <is_siteroot>1</is_siteroot>
         <doktype>1</doktype>
     </pages>
     <pages>
-        <uid>2</uid>
+        <uid>111</uid>
         <is_siteroot>1</is_siteroot>
         <doktype>1</doktype>
     </pages>
     <pages>
         <uid>3</uid>
-        <pid>2</pid>
+        <pid>111</pid>
         <doktype>1</doktype>
     </pages>
     <pages>
@@ -46,9 +40,9 @@
     <!-- scheduled site 2 -->
     <tx_solr_indexqueue_item>
         <uid>4712</uid>
-        <root>2</root>
+        <root>111</root>
         <item_type>pages</item_type>
-        <item_uid>2</item_uid>
+        <item_uid>111</item_uid>
         <indexing_configuration>pages</indexing_configuration>
         <has_indexing_properties>0</has_indexing_properties>
         <indexing_priority>0</indexing_priority>
@@ -60,7 +54,7 @@
     <!-- failed -->
     <tx_solr_indexqueue_item>
         <uid>4713</uid>
-        <root>2</root>
+        <root>111</root>
         <item_type>pages</item_type>
         <item_uid>3</item_uid>
         <indexing_configuration>pages</indexing_configuration>
@@ -74,7 +68,7 @@
     <!-- processed -->
     <tx_solr_indexqueue_item>
         <uid>4714</uid>
-        <root>2</root>
+        <root>111</root>
         <item_type>pages</item_type>
         <item_uid>4</item_uid>
         <indexing_configuration>pages</indexing_configuration>

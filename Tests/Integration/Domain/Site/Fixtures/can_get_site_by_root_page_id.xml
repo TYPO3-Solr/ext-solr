@@ -1,12 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <dataset>
 
-	<sys_registry>
-		<uid>4711</uid>
-		<entry_namespace>tx_solr</entry_namespace>
-		<entry_key>servers</entry_key>
-		<entry_value>a:1:{s:3:"1|0";a:9:{s:13:"connectionKey";s:3:"1|0";s:13:"rootPageTitle";s:15:"Congratulations";s:11:"rootPageUid";s:1:"1";s:10:"solrScheme";s:4:"http";s:8:"solrHost";s:9:"localhost";s:8:"solrPort";s:4:"8081";s:8:"solrPath";s:14:"/solr/core_en/";s:8:"language";i:0;s:5:"label";s:74:"Congratulations (pid: 1, language: default) - localhost:8081/solr/core_en/";}}</entry_value>
-	</sys_registry>
 
 	<pages>
 		<uid>1</uid>

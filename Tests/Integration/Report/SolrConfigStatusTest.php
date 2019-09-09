@@ -36,11 +36,19 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class SolrConfigStatusTest extends IntegrationTest
 {
     /**
+     * @return void
+     */
+    public function setUp()
+    {
+        parent::setUp();
+        $this->writeDefaultSolrTestSiteConfiguration();
+    }
+
+    /**
      * @test
      */
     public function canGetAGreenSolrConfigStatusAgainstTestServer()
     {
-        $this->importDataSetFromFixture('can_check_status.xml');
 
         /** @var $schemaStatus  SolrConfigStatus */
         $schemaStatus = GeneralUtility::makeInstance(SolrConfigStatus::class);

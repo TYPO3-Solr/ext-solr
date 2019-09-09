@@ -38,14 +38,19 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class SiteHashServiceTest extends IntegrationTest
 {
 
+    public function setUp() {
+        parent::setUp();
+        $this->writeDefaultSolrTestSiteConfiguration();
+    }
+
     /**
      * @return array
      */
     public function canResolveSiteHashAllowedSitesDataProvider() {
         return [
             'siteHashDisabled' => ['*', '*'],
-            'allSitesInSystem' => ['__all', 'solrtesta.local,solrtestb.local'],
-            'currentSiteOnly' => ['__current_site', 'solrtesta.local']
+            'allSitesInSystem' => ['__all', 'testone.site,testtwo.site'],
+            'currentSiteOnly' => ['__current_site', 'testone.site']
         ];
     }
 

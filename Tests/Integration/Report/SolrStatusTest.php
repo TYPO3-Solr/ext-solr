@@ -36,12 +36,14 @@ use TYPO3\CMS\Reports\Status;
  */
 class SolrStatusTest extends IntegrationTest
 {
+
     /**
      * @test
      */
     public function allStatusChecksShouldBeOkForValidSolrConnection()
     {
-        $this->importDataSetFromFixture('can_check_status.xml');
+        $this->writeDefaultSolrTestSiteConfiguration();
+        $this->importDataSetFromFixture('simple_site.xml');
 
         /** @var $solrStatus  SolrStatus */
         $solrStatus = GeneralUtility::makeInstance(SolrStatus::class);
@@ -58,7 +60,9 @@ class SolrStatusTest extends IntegrationTest
      */
     public function allStatusChecksShouldFailForInvalidSolrConnection()
     {
-        $this->importDataSetFromFixture('can_check_status_fail_on_invalid_connection.xml');
+        $this->writeDefaultSolrTestSiteConfigurationForHostAndPort('invalid', 4711);
+        $this->importDataSetFromFixture('simple_site.xml');
+
 
         /** @var $solrStatus  SolrStatus */
         $solrStatus = GeneralUtility::makeInstance(SolrStatus::class);

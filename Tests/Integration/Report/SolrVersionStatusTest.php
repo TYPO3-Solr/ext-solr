@@ -36,6 +36,15 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class SolrVersionStatusTest extends IntegrationTest
 {
     /**
+     * @return void
+     */
+    public function setUp()
+    {
+        parent::setUp();
+        $this->writeDefaultSolrTestSiteConfiguration();
+    }
+
+    /**
      * @test
      */
     public function canGetAGreenSolrConfigStatusAgainstTestServer()

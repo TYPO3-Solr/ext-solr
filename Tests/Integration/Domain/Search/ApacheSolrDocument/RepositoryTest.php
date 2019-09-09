@@ -39,7 +39,9 @@ class ApacheSolrDocumentRepositoryTest extends IntegrationTest
     public function setUp()
     {
         parent::setUp();
-        $_SERVER['HTTP_HOST'] = 'test.local.typo3.org';
+
+        $this->writeDefaultSolrTestSiteConfiguration();
+        $_SERVER['HTTP_HOST'] = 'testone.site';
         $_SERVER['REQUEST_URI'] = '/search.html';
         // trigger a search
         $this->indexPageIdsFromFixture('can_get_apacheSolrDocuments.xml', [1, 2, 3, 4, 5]);

@@ -1,13 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <dataset>
 
-    <sys_registry>
-        <uid>4711</uid>
-        <entry_namespace>tx_solr</entry_namespace>
-        <entry_key>servers</entry_key>
-        <entry_value>a:2:{s:3:"1|0";a:7:{s:13:"connectionKey";s:3:"1|0";s:13:"rootPageTitle";s:0:"";s:11:"rootPageUid";i:1;s:8:"language";i:0;s:5:"label";s:16:"testconnection a";s:4:"read";a:4:{s:6:"scheme";s:4:"http";s:4:"host";s:9:"localhost";s:4:"port";i:8999;s:4:"path";s:14:"/solr/core_en/";}s:5:"write";a:4:{s:6:"scheme";s:4:"http";s:4:"host";s:9:"localhost";s:4:"port";i:8999;s:4:"path";s:14:"/solr/core_en/";}}s:3:"2|0";a:7:{s:13:"connectionKey";s:3:"2|0";s:13:"rootPageTitle";s:0:"";s:11:"rootPageUid";i:2;s:8:"language";i:0;s:5:"label";s:16:"testconnection a";s:4:"read";a:4:{s:6:"scheme";s:4:"http";s:4:"host";s:9:"localhost";s:4:"port";i:8998;s:4:"path";s:14:"/solr/core_de/";}s:5:"write";a:4:{s:6:"scheme";s:4:"http";s:4:"host";s:9:"localhost";s:4:"port";i:8998;s:4:"path";s:14:"/solr/core_de/";}}}</entry_value>
-    </sys_registry>
-
     <sys_template>
         <uid>1</uid>
         <pid>1</pid>
@@ -17,12 +10,6 @@
             <![CDATA[
                 plugin.tx_solr {
                     enabled = 1
-                    solr {
-                        scheme = http
-                        host   = localhost
-                        port   = 8999
-                        path   = /solr/core_en/
-                    }
 
                     index {
                         fieldProcessingInstructions {
@@ -51,19 +38,13 @@
 
     <sys_template>
         <uid>2</uid>
-        <pid>2</pid>
+        <pid>111</pid>
         <root>1</root>
         <clear>3</clear>
         <config>
             <![CDATA[
                 plugin.tx_solr {
                     enabled = 1
-                    solr {
-                        scheme = http
-                        host   = localhost
-                        port   = 8999
-                        path   = /solr/core_de/
-                    }
 
                     index {
                         fieldProcessingInstructions {
@@ -96,7 +77,7 @@
         <doktype>1</doktype>
     </pages>
     <pages>
-        <uid>2</uid>
+        <uid>111</uid>
         <pid>0</pid>
         <is_siteroot>1</is_siteroot>
         <doktype>1</doktype>

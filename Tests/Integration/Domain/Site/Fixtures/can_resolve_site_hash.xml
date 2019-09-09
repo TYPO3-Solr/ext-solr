@@ -1,22 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <dataset>
 
-    <sys_registry>
-        <uid>4711</uid>
-        <entry_namespace>tx_solr</entry_namespace>
-        <entry_key>servers</entry_key>
-        <entry_value>a:2:{s:3:"1|0";a:9:{s:13:"connectionKey";s:3:"1|0";s:13:"rootPageTitle";s:0:"";s:11:"rootPageUid";i:1;s:10:"solrScheme";s:4:"http";s:8:"solrHost";s:9:"localhost";s:8:"solrPort";i:8999;s:8:"solrPath";s:14:"/solr/core_en/";s:8:"language";i:0;s:5:"label";s:16:"testconnection a";}s:3:"2|0";a:9:{s:13:"connectionKey";s:3:"2|0";s:13:"rootPageTitle";s:0:"";s:11:"rootPageUid";i:2;s:10:"solrScheme";s:4:"http";s:8:"solrHost";s:9:"localhost";s:8:"solrPort";i:8998;s:8:"solrPath";s:14:"/solr/core_en/";s:8:"language";i:0;s:5:"label";s:16:"testconnection a";}}</entry_value>
-    </sys_registry>
-
-    <sys_domain>
-        <pid>1</pid>
-        <domainName>solrtesta.local</domainName>
-    </sys_domain>
-
-    <sys_domain>
-        <pid>2</pid>
-        <domainName>solrtestb.local</domainName>
-    </sys_domain>
     <pages>
         <uid>1</uid>
         <pid>0</pid>
@@ -26,7 +10,7 @@
     </pages>
 
     <pages>
-        <uid>2</uid>
+        <uid>111</uid>
         <pid>0</pid>
         <is_siteroot>1</is_siteroot>
         <doktype>1</doktype>

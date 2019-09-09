@@ -47,6 +47,7 @@ class SiteRepositoryTest extends IntegrationTest
     public function setUp()
     {
         parent::setUp();
+        $this->writeDefaultSolrTestSiteConfiguration();
         $this->siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
     }
 
@@ -114,22 +115,11 @@ class SiteRepositoryTest extends IntegrationTest
     /**
      * @test
      */
-    public function canGetSiteWithDomainFromTYPO3CONFVARS()
-    {
-        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['sites'][1]['domains'] = ['my-confvars-domain.de'];
-        $this->importDataSetFromFixture('can_get_site_by_page_id.xml');
-        $domain = $this->siteRepository->getSiteByPageId(1)->getDomain();
-        $this->assertSame('my-confvars-domain.de', $domain, 'Can not configured domain with TYPO3_CONF_VARS');
-    }
-
-    /**
-     * @test
-     */
-    public function canGetSiteWithDomainFromDomainRecord()
+    public function canGetSiteWithDomainFromSiteConfiguration()
     {
         $this->importDataSetFromFixture('can_get_site_by_page_id.xml');
         $site = $this->siteRepository->getSiteByPageId(1);
         $domain = $site->getDomain();
-        $this->assertSame('my-database-domain.de', $domain, 'Can not configured domain with sys_domain record');
+        $this->assertSame('testone.site', $domain, 'Can not configured domain with sys_domain record');
     }
 }
