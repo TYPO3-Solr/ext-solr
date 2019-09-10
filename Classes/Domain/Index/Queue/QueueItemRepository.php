@@ -503,9 +503,16 @@ class QueueItemRepository extends AbstractRepository
         $propertyEntriesToDelete = implode(',', array_column($queryBuilderForSelectingProperties->execute()->fetchAll(), 'uid'));
 
         $queryBuilderForDeletingProperties = $queryBuilderForDeletingItems->getConnection()->createQueryBuilder();
+
+        // make sure executing the propety deletion query doesn't fail if there are no properties to delete
+        if (empty($propertyEntriesToDelete)) {
+            $propertyEntriesToDelete = '0';
+        }
+
         $queryBuilderForDeletingProperties->delete('tx_solr_indexqueue_indexing_property')->where(
             $queryBuilderForDeletingProperties->expr()->in('item_id', $propertyEntriesToDelete)
         );
+
         return $queryBuilderForDeletingProperties;
     }
 
