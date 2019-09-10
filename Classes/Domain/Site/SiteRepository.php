@@ -429,7 +429,7 @@ class SiteRepository
         $pageRepository = GeneralUtility::makeInstance(PagesRepository::class);
         $availableLanguageIds = array_map(function($language) {
             return $language->getLanguageId();
-        }, $typo3Site->getAllLanguages());
+        }, $typo3Site->getLanguages());
 
         $solrConnectionConfigurations = [];
         foreach ($availableLanguageIds as $languageUid) {
