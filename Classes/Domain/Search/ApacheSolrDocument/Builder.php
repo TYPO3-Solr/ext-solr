@@ -102,6 +102,7 @@ class Builder
         $this->addEndtimeField($document, $pageRecord);
 
         // content
+        // @extensionScannerIgnoreLine
         $contentExtractor = $this->getExtractorForPageContent($page->content);
         $document->setField('title', $contentExtractor->getPageTitle());
         $document->setField('subTitle', $pageRecord['subtitle']);

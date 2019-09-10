@@ -56,6 +56,7 @@ class FacetingTest extends UnitTest
         }));
 
         $facetRegistry = new FacetRegistry();
+        // @extensionScannerIgnoreLine
         $facetRegistry->injectObjectManager($fakeObjectManager);
 
         $solrLogManagerMock = $this->getDumbMock(SolrLogManager::class);

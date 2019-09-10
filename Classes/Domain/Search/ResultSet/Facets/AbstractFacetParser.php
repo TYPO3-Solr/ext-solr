@@ -147,7 +147,10 @@ abstract class AbstractFacetParser implements FacetParserInterface
             return $facet;
         }
         $fields = GeneralUtility::trimExplode(',', $facetConfiguration['manualSortOrder']);
+        // @extensionScannerIgnoreLine
         $sortedOptions = $facet->getOptions()->getManualSortedCopy($fields);
+
+        // @extensionScannerIgnoreLine
         $facet->setOptions($sortedOptions);
 
         return $facet;
@@ -164,6 +167,7 @@ abstract class AbstractFacetParser implements FacetParserInterface
             return $facet;
         }
 
+        // @extensionScannerIgnoreLine
         $facet->setOptions($facet->getOptions()->getReversedOrderCopy());
 
         return $facet;

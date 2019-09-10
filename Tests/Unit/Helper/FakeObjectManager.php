@@ -62,6 +62,7 @@ class FakeObjectManager implements ObjectManagerInterface
 
         $instance = call_user_func_array([GeneralUtility::class, 'makeInstance'], $arguments);
         if (method_exists($instance, 'injectObjectManager')) {
+            // @extensionScannerIgnoreLine
             $instance->injectObjectManager($this);
         }
 

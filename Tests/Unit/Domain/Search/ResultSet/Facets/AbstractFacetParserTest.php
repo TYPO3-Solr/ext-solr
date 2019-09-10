@@ -83,6 +83,7 @@ abstract class AbstractFacetParserTest extends UnitTest
     protected function getInitializedParser($className)
     {
         $parser = GeneralUtility::makeInstance($className);
+        // @extensionScannerIgnoreLine
         $parser->injectObjectManager(new FakeObjectManager());
 
         return $parser;

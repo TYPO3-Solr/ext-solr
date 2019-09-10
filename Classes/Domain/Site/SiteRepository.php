@@ -332,7 +332,7 @@ class SiteRepository
      */
     private function firstDomainRecordFromLegacyDomainResolver($rootLine)
     {
-        trigger_error('BackendUtility::firstDomainRecord() will be removed in TYPO3 v10.0. Use sitehandling instead.', E_USER_DEPRECATED);
+        trigger_error('Method firstDomainRecordFromLegacyDomainResolver is deprecated since EXT:solr 10 and will be removed in v11, use sitehandling instead.', E_USER_DEPRECATED);
         $domainResolver = GeneralUtility::makeInstance(LegacyDomainResolver::class);
         foreach ($rootLine as $row) {
             $domain = $domainResolver->matchRootPageId($row['uid']);

@@ -30,10 +30,9 @@ use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\System\Environment\CliEnvironment;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
-use TYPO3\CMS\Core\Charset\CharsetConverter;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Lang\LanguageService;
+use TYPO3\CMS\Core\Localization\LanguageService;
 
 /**
  * Testcase for the record indexer
@@ -60,9 +59,9 @@ class IndexServiceTest extends IntegrationTest
         $beUser = GeneralUtility::makeInstance(BackendUserAuthentication::class);
         $GLOBALS['BE_USER'] = $beUser;
 
-        /** @var $languageService  \TYPO3\CMS\Lang\LanguageService */
+        /** @var $languageService  \TYPO3\CMS\Core\Localization\LanguageService */
         $languageService = GeneralUtility::makeInstance(LanguageService::class);
-        $languageService->csConvObj = GeneralUtility::makeInstance(CharsetConverter::class);
+
         $GLOBALS['LANG'] = $languageService;
     }
 

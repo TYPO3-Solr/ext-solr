@@ -112,7 +112,9 @@ class SearchTest extends IntegrationTest
         $searchResponse = $searchInstance->search($query);
         $parsedData = $searchResponse->getParsedData();
         // document with "Hello World for phrase serchin" is not on first place!
+        // @extensionScannerIgnoreLine
         $this->assertGreaterThan(0, $parsedData->response->numFound, 'Could not index document into solr');
+        // @extensionScannerIgnoreLine
         $this->assertNotEquals('Hello World for phrase serching', $parsedData->response->docs[0]->getTitle(), 'Unexpected score calculation. Expected Document shouldn\'t be at first place.');
 
         // Boost the document with query to make it first.
@@ -120,7 +122,9 @@ class SearchTest extends IntegrationTest
         $searchResponse = $searchInstance->search($query);
         $parsedData = $searchResponse->getParsedData();
 
+        // @extensionScannerIgnoreLine
         $this->assertGreaterThan(0, $parsedData->response->numFound, 'Could not index document into solr');
+        // @extensionScannerIgnoreLine
         $this->assertSame('Hello World for phrase searching', $parsedData->response->docs[0]->getTitle(), 'Unexpected score calculation. Document');
     }
 
@@ -179,14 +183,19 @@ class SearchTest extends IntegrationTest
         */
         // Note positons beginning by 0 = first
         // first position is the same for all three slop values
+        // @extensionScannerIgnoreLine
         $this->assertTrue($parsedDatasByPhraseSlop[0]->response->docs[0]->getUid() === $parsedDatasByPhraseSlop[1]->response->docs[0]->getUid()
+            // @extensionScannerIgnoreLine
                 && $parsedDatasByPhraseSlop[0]->response->docs[0]->getUid() === $parsedDatasByPhraseSlop[2]->response->docs[0]->getUid()
         , 'Phrase search does not work properly. Solr should position the document independent from slop value at first position.');
         // the slop value of 1 moves doc UID = 11 to the second position
+        // @extensionScannerIgnoreLine
         $this->assertSame(11, $parsedDatasByPhraseSlop[1]->response->docs[1]->getUid(), 'Phrase slop setting does not work as expected.');
         // the slop value of 2 moves doc UID = 3 to the fifth position
+        // @extensionScannerIgnoreLine
         $this->assertSame(3, $parsedDatasByPhraseSlop[2]->response->docs[4]->getUid(), 'Phrase slop setting does not work as expected. The Phrase Slop value of 2 has no influence on boosts.');
         // the slop value of 2 has an influence of positions up to 8
+        // @extensionScannerIgnoreLine
         $this->assertSame(2, $parsedDatasByPhraseSlop[2]->response->docs[7]->getUid(), 'Phrase slop setting does not work as expected.');
     }
 
@@ -248,24 +257,30 @@ class SearchTest extends IntegrationTest
 
         // Note positons beginning by 0 = first
         // first position is the same for all three slop values
+        // @extensionScannerIgnoreLine
         $this->assertTrue($parsedDatasByPhraseSlop[0]->response->docs[0]->getUid() === $parsedDatasByPhraseSlop[1]->response->docs[0]->getUid()
+            // @extensionScannerIgnoreLine
             && $parsedDatasByPhraseSlop[0]->response->docs[0]->getUid() === $parsedDatasByPhraseSlop[2]->response->docs[0]->getUid()
             , 'Bigram Phrase search does not work properly. Solr should position the documents independent from slop value at first position.');
 
         // slop = 1
         // the slop value of 1 moves doc UID = 4 to the fourth(key 3) position
+        // @extensionScannerIgnoreLine
         $this->assertSame(4, $parsedDatasByPhraseSlop[1]->response->docs[3]->getUid(), 'Bigram phrase slop setting does not work as expected. It does not boost "sloppy phrase" docs for slop=1.');
         // the docuemnt on position 3 and 4 have same score
         $this->assertTrue(
+        // @extensionScannerIgnoreLine
             $parsedDatasByPhraseSlop[1]->response->docs[3]->getScore() === $parsedDatasByPhraseSlop[1]->response->docs[4]->getScore(),
             'Bigram phrase slop setting does not work as expected. It does not boost all "sloppy phrase" docs for slop=1.'
         );
 
         // slop = 2
         // the slop value of 2 moves doc UID = 6 to the sixth(key 5) position
+        // @extensionScannerIgnoreLine
         $this->assertSame(6, $parsedDatasByPhraseSlop[2]->response->docs[5]->getUid(), 'Trigram phrase slop setting does not work as expected. The Phrase Slop value of 2 has no influence on boosts.');
         // the docuemnt on position 5 and 6 have same score
         $this->assertTrue(
+        // @extensionScannerIgnoreLine
             $parsedDatasByPhraseSlop[2]->response->docs[5]->getScore() === $parsedDatasByPhraseSlop[2]->response->docs[6]->getScore(),
             'Bigram phrase slop setting does not work as expected. It does not boost all "sloppy phrase" docs for slop=2.'
         );
@@ -327,13 +342,17 @@ class SearchTest extends IntegrationTest
 
         // Note positons beginning by 0 = first
         // first position is the same for all three slop values
+        // @extensionScannerIgnoreLine
         $this->assertTrue($parsedDatasByPhraseSlop[0]->response->docs[0]->getUid() === $parsedDatasByPhraseSlop[1]->response->docs[0]->getUid()
+            // @extensionScannerIgnoreLine
             && $parsedDatasByPhraseSlop[0]->response->docs[0]->getUid() === $parsedDatasByPhraseSlop[2]->response->docs[0]->getUid()
             , 'Trigram Phrase search does not work properly. Solr should position the documents independent from slop value at first position.');
 
         // slop = 1
         // the slop value of 1 moves doc UID = 4 to the fourth(key 3) position
+        // @extensionScannerIgnoreLine
         $slop0ResponseDocs = $parsedDatasByPhraseSlop[0]->response->docs;
+        // @extensionScannerIgnoreLine
         $slop1ResponseDocs = $parsedDatasByPhraseSlop[1]->response->docs;
         $this->assertTrue(
             $slop0ResponseDocs[3]->getUid() === $slop1ResponseDocs[3]->getUid()
@@ -341,7 +360,7 @@ class SearchTest extends IntegrationTest
             'Trigram phrase slop value = 1 does not boost docs with "sloppy phrases"'
         );
 
-
+        // @extensionScannerIgnoreLine
         $slop2ResponseDocs = $parsedDatasByPhraseSlop[2]->response->docs;
         $this->assertTrue(
             $slop1ResponseDocs[5]->getUid() === $slop2ResponseDocs[5]->getUid()
@@ -366,7 +385,9 @@ class SearchTest extends IntegrationTest
         $parsedData = $searchResponse->getParsedData();
 
         // document with "Hello World for phrase searching" is not on first place!
+        // @extensionScannerIgnoreLine
         $this->assertSame(1, $parsedData->response->numFound, 'Could not index documents into solr to test boosts on explicit phrase searches.');
+        // @extensionScannerIgnoreLine
         $this->assertSame('Hello World for phrase searching', $parsedData->response->docs[0]->getTitle(), 'Document containing "Hello World for phrase searching" should be found on explicit(surrounded with double quotes) phrase searching.');
     }
 
@@ -387,7 +408,9 @@ class SearchTest extends IntegrationTest
         $parsedData = $searchResponse->getParsedData();
 
         // document with "Hello World for phrase serchin" is not on first place!
+        // @extensionScannerIgnoreLine
         $this->assertSame(1, $parsedData->response->numFound, 'Could not index document into solr');
+        // @extensionScannerIgnoreLine
         $this->assertSame('Hello World for phrase searching', $parsedData->response->docs[0]->getTitle(), 'Document containing "Hello World for phrase serching" should be found');
 
         // simulate Lucenes "Hello World"~1
@@ -396,6 +419,7 @@ class SearchTest extends IntegrationTest
         $query = $this->queryBuilder->useSlops($slops)->getQuery();
         $searchResponse = $searchInstance->search($query);
         $parsedData = $searchResponse->getParsedData();
+        // @extensionScannerIgnoreLine
         $this->assertSame(3, $parsedData->response->numFound, 'Could not index document into solr');
 
         // simulate Lucenes "Hello World"~2
@@ -404,6 +428,7 @@ class SearchTest extends IntegrationTest
 
         $searchResponse = $searchInstance->search($query);
         $parsedData = $searchResponse->getParsedData();
+        // @extensionScannerIgnoreLine
         $this->assertSame(7, $parsedData->response->numFound, 'Found wrong number of decuments by explicit phrase search query.');
     }
 

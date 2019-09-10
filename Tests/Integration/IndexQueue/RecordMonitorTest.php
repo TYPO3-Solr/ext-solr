@@ -844,7 +844,7 @@ class RecordMonitorTest extends IntegrationTest
 
         $testConfig = [];
         $testConfig['useConfigurationMonitorTables'] = 'tt_content';
-        $GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['solr'] = serialize($testConfig);
+        $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['solr'] = $testConfig;
 
         $status = 'update';
         $table = 'pages';
@@ -857,7 +857,7 @@ class RecordMonitorTest extends IntegrationTest
             $this->dataHandler);
 
         $testConfig = [];
-        $GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['solr'] = serialize($testConfig);
+        $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['solr'] = $testConfig;
 
         $this->assertEmptyIndexQueue();
     }
@@ -872,7 +872,7 @@ class RecordMonitorTest extends IntegrationTest
 
         $testConfig = [];
         $testConfig['useConfigurationMonitorTables'] = 'pages, tt_content';
-        $GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['solr'] = serialize($testConfig);
+        $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['solr'] = $testConfig;
 
         $status = 'update';
         $table = 'pages';
@@ -885,7 +885,7 @@ class RecordMonitorTest extends IntegrationTest
             $this->dataHandler);
 
         $testConfig = [];
-        $GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['solr'] = serialize($testConfig);
+        $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['solr'] = $testConfig;
 
         $this->assertIndexQueueContainsItemAmount(1);
     }

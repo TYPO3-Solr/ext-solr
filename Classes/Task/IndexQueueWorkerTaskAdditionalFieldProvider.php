@@ -30,6 +30,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Scheduler\AdditionalFieldProviderInterface;
 use TYPO3\CMS\Scheduler\Controller\SchedulerModuleController;
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
+use TYPO3\CMS\Scheduler\Task\Enumeration\Action;
 
 /**
  * Additional field provider for the index queue worker task
@@ -75,13 +76,14 @@ class IndexQueueWorkerTaskAdditionalFieldProvider implements AdditionalFieldProv
             return $additionalFields;
         }
 
-        if ($schedulerModule->CMD === 'add') {
+        $currentAction = $schedulerModule->getCurrentAction();
+        if ($currentAction->equals(Action::ADD)) {
             $taskInfo['site'] = null;
             $taskInfo['documentsToIndexLimit'] = 50;
             $taskInfo['forcedWebRoot'] = '';
         }
 
-        if ($schedulerModule->CMD === 'edit') {
+        if ($currentAction->equals(Action::EDIT)) {
             $taskInfo['site'] = $this->siteRepository->getSiteByRootPageId($task->getRootPageId());
             $taskInfo['documentsToIndexLimit'] = $task->getDocumentsToIndexLimit();
             $taskInfo['forcedWebRoot'] = $task->getForcedWebRoot();

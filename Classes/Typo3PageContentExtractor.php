@@ -47,6 +47,7 @@ class Typo3PageContentExtractor extends HtmlContentExtractor
      */
     public function getContentMarkedForIndexing()
     {
+        // @extensionScannerIgnoreLine
         return $this->extractContentMarkedForIndexing($this->content);
     }
 
@@ -127,6 +128,7 @@ class Typo3PageContentExtractor extends HtmlContentExtractor
      */
     public function getIndexableContent()
     {
+        // @extensionScannerIgnoreLine
         $content = $this->extractContentMarkedForIndexing($this->content);
 
         // clean content
@@ -165,6 +167,7 @@ class Typo3PageContentExtractor extends HtmlContentExtractor
      */
     public function getPageBody()
     {
+        // @extensionScannerIgnoreLine
         $pageContent = $this->content;
 
         return stristr($pageContent, '<body');

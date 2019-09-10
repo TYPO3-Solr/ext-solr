@@ -63,6 +63,7 @@ class ResultSetReconstitutionProcessor implements SearchResultSetProcessor
      */
     protected function getFacetRegistry()
     {
+        // @extensionScannerIgnoreLine
         return $this->getObjectManager()->get(FacetRegistry::class);
     }
 
@@ -250,6 +251,7 @@ class ResultSetReconstitutionProcessor implements SearchResultSetProcessor
      */
     protected function getRequirementsService()
     {
+        // @extensionScannerIgnoreLine
         return $this->getObjectManager()->get(RequirementsService::class);
     }
 }

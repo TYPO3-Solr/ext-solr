@@ -51,6 +51,7 @@ class AddFacetItemViewHelperTest extends AbstractFacetItemViewHelperTest
             // we expected that the getAddFacetOptionUri will be called on the searchUriBuilder in the end.
         $searchUriBuilderMock->expects($this->once())->method('getAddFacetValueUri')->with($facet->getResultSet()->getUsedSearchRequest(), 'Color', 'red');
         $viewHelper->injectSearchUriBuilder($searchUriBuilderMock);
+        // @extensionScannerIgnoreLine
         $viewHelper->setArguments(['facet' => $facet, 'facetItem' => $facet->getOptions()->getByPosition(0)]);
         $viewHelper->render();
     }

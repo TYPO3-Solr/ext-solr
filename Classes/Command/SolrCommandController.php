@@ -19,6 +19,7 @@ use TYPO3\CMS\Extbase\Mvc\Controller\CommandController;
 
 /**
  * Controller to run solr specific tasks via CLI
+ * @extensionScannerIgnoreFile
  */
 class SolrCommandController extends CommandController
 {

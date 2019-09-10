@@ -57,6 +57,8 @@ class RootPageResolverTest extends UnitTest
     {
         $this->fakeDisabledCache();
 
+        $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['solr'] = [];
+
         $this->recordServiceMock = $this->getDumbMock(ConfigurationAwareRecordService::class);
 
         /** @var $rootPageResolver RootPageResolver */

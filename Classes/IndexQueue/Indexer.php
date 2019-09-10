@@ -37,6 +37,7 @@ use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use ApacheSolrForTypo3\Solr\Util;
 use Solarium\Exception\HttpException;
 use TYPO3\CMS\Backend\Configuration\TranslationConfigurationProvider;
+use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\RootlineUtility;
 use TYPO3\CMS\Frontend\Page\PageRepository;
@@ -203,7 +204,9 @@ class Indexer extends AbstractIndexer
     {
         Util::initializeTsfe($item->getRootPageUid(), $language);
 
-        $systemLanguageContentOverlay = $GLOBALS['TSFE']->sys_language_contentOL;
+        $languageAspect = GeneralUtility::makeInstance(Context::class)->getAspect('language');
+
+        $systemLanguageContentOverlay = $languageAspect->getLegacyOverlayType();
         $itemRecord = $this->getItemRecordOverlayed($item, $language, $systemLanguageContentOverlay);
 
         /*
@@ -616,16 +619,6 @@ class Indexer extends AbstractIndexer
         }
 
         return $defaultLanguageUid;
-    }
-
-    /**
-     * Returns an array of system languages.
-     *
-     * @return array
-     */
-    protected function getSystemLanguages()
-    {
-        return GeneralUtility::makeInstance(TranslationConfigurationProvider::class)->getSystemLanguages();
     }
 
     /**

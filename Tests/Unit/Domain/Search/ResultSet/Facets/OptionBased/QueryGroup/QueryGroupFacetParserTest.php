@@ -192,7 +192,7 @@ class QueryGroupFacetParserTest extends AbstractFacetParserTest
         /** @var QueryGroupFacet $facet */
         $facet = $parser->parse($searchResultSet, 'age', $facetConfiguration['age.']);
 
-        /** @var Option $option */
+        /** @var Option $option */ // @extensionScannerIgnoreLine
         foreach ($facet->getOptions() as $option) {
             if ($option->getValue() === 'week') {
                 $this->assertTrue($option->getSelected(), 'Option ' . $option->getValue() . ' isn\'t active');

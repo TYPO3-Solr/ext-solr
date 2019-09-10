@@ -37,6 +37,12 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 class ExtensionConfigurationTest extends UnitTest
 {
 
+
+    public function setUp()
+    {
+        $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['solr'] = [];
+    }
+
     /**
      * @test
      */

@@ -419,6 +419,7 @@ class ConnectionManager implements SingletonInterface
         $GLOBALS['TSFE']->tmpl = new \stdClass();
         $GLOBALS['TSFE']->cObjectDepthCounter = 50;
         $GLOBALS['TSFE']->tmpl->rootLine = $rootLine;
+        // @extensionScannerIgnoreLine
         $GLOBALS['TSFE']->sys_page = $pageSelect;
         $GLOBALS['TSFE']->id = $rootPage['uid'];
         $GLOBALS['TSFE']->page = $rootPage;

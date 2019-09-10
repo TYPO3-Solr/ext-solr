@@ -199,6 +199,7 @@ class Page extends AbstractInitializer
                 'Failed to initialize Mount Page tree. ',
                 FlashMessage::ERROR
             );
+            // @extensionScannerIgnoreLine
             $this->flashMessageQueue->addMessage($flashMessage);
         }
 
@@ -215,6 +216,7 @@ class Page extends AbstractInitializer
                 'Failed to initialize Mount Page tree. ',
                 FlashMessage::ERROR
             );
+            // @extensionScannerIgnoreLine
             $this->flashMessageQueue->addMessage($flashMessage);
         }
 

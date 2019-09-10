@@ -184,7 +184,7 @@ if (!isset($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations'][
 }
 
 # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
-
+// @extensionScannerIgnoreLine
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['extbase']['commandControllers'][] = \ApacheSolrForTypo3\Solr\Command\SolrCommandController::class;
 
 # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #

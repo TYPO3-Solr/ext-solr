@@ -115,17 +115,26 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
         $this->tag->addAttribute('accept-charset', $this->frontendController->metaCharset);
 
         // Get search term
+        // @extensionScannerIgnoreLine
         $this->getTemplateVariableContainer()->add('q', $this->getQueryString());
+        // @extensionScannerIgnoreLine
         $this->getTemplateVariableContainer()->add('pageUid', $pageUid);
+        // @extensionScannerIgnoreLine
         $this->getTemplateVariableContainer()->add('languageUid', Util::getLanguageUid());
+        // @extensionScannerIgnoreLine
         $this->getTemplateVariableContainer()->add('existingParameters', $this->getExistingSearchParameters());
-
+        // @extensionScannerIgnoreLine
         $this->getTemplateVariableContainer()->add('addPageAndLanguageId', !$this->getIsSiteManagedSite($pageUid));
         $formContent = $this->renderChildren();
+        // @extensionScannerIgnoreLine
         $this->getTemplateVariableContainer()->remove('addPageAndLanguageId');
+        // @extensionScannerIgnoreLine
         $this->getTemplateVariableContainer()->remove('q');
+        // @extensionScannerIgnoreLine
         $this->getTemplateVariableContainer()->remove('pageUid');
+        // @extensionScannerIgnoreLine
         $this->getTemplateVariableContainer()->remove('languageUid');
+        // @extensionScannerIgnoreLine
         $this->getTemplateVariableContainer()->remove('existingParameters');
 
         $this->tag->setContent($formContent);
