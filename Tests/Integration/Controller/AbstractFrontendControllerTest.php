@@ -16,9 +16,12 @@ abstract class AbstractFrontendControllerTest  extends IntegrationTest {
      */
     public function setUp()
     {
-        $_SERVER['HTTP_HOST'] = 'test.local.typo3.org';
-        $_SERVER['REQUEST_URI'] = '/search.html';
+        $_SERVER['HTTP_HOST'] = 'testone.site';
+        $_SERVER['REQUEST_URI'] = '/en/search/';
+
+
         parent::setUp();
+        $this->writeDefaultSolrTestSiteConfiguration();
     }
 
     /**

@@ -1,16 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <dataset>
 
-    <sys_registry>
-        <uid>4711</uid>
-        <entry_namespace>tx_solr</entry_namespace>
-        <entry_key>servers</entry_key>
-        <entry_value>a:1:{s:3:"1|0";a:7:{s:13:"connectionKey";s:3:"1|0";s:13:"rootPageTitle";s:15:"Congratulations";s:11:"rootPageUid";s:1:"1";s:8:"language";i:0;s:5:"label";s:76:"Congratulations (pid: 1, language: default) - localhost:8889/solr/core_fail/";s:4:"read";a:4:{s:6:"scheme";s:4:"http";s:4:"host";s:9:"localhost";s:4:"port";s:4:"8889";s:4:"path";s:16:"/solr/core_fail/";}s:5:"write";a:4:{s:6:"scheme";s:4:"http";s:4:"host";s:9:"localhost";s:4:"port";s:4:"8889";s:4:"path";s:16:"/solr/core_fail/";}}}</entry_value>
-    </sys_registry>
-
     <sys_template>
         <uid>1</uid>
-        <pid>1</pid>
+        <pid>333</pid>
         <root>1</root>
         <clear>3</clear>
         <config>
@@ -63,12 +56,6 @@
                         }
                     }
 
-                    solr {
-                        scheme = http
-                        host   = localhost
-                        port   = 8889
-                        path   = /solr/core_fail/
-                    }
 
                     index {
                         additionalFields {
@@ -313,7 +300,7 @@
         <static_file_mode>0</static_file_mode>
     </sys_template>
     <pages>
-        <uid>1</uid>
+        <uid>333</uid>
         <is_siteroot>1</is_siteroot>
         <doktype>1</doktype>
         <title>Products</title>

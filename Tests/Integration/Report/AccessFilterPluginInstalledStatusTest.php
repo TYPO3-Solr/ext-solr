@@ -36,12 +36,19 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class AccessFilterPluginInstalledStatusTest extends IntegrationTest
 {
     /**
+     * @return void
+     */
+    public function setUp()
+    {
+        parent::setUp();
+        $this->writeDefaultSolrTestSiteConfiguration();
+    }
+
+    /**
      * @test
      */
     public function canGetGreenAccessFilterStatus()
     {
-        $this->importDataSetFromFixture('can_get_green_access_filter_plugin_status_report.xml');
-
         /** @var $accessFilterStatus  AccessFilterPluginInstalledStatus */
         $accessFilterStatus = GeneralUtility::makeInstance(AccessFilterPluginInstalledStatus::class);
         $violations = $accessFilterStatus->getStatus();

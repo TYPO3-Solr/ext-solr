@@ -64,6 +64,7 @@ class ReIndexTaskTest extends IntegrationTest
     public function setUp()
     {
         parent::setUp();
+        $this->writeDefaultSolrTestSiteConfiguration();
         $this->task = GeneralUtility::makeInstance(ReIndexTask::class);
         $this->indexQueue = GeneralUtility::makeInstance(Queue::class);
 

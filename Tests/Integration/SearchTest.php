@@ -55,6 +55,7 @@ class SearchTest extends IntegrationTest
     public function setUp()
     {
         parent::setUp();
+        $this->writeDefaultSolrTestSiteConfiguration();
         $this->queryBuilder = new QueryBuilder(new TypoScriptConfiguration([]));
     }
 

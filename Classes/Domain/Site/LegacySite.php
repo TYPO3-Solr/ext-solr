@@ -60,7 +60,7 @@ class LegacySite extends Site
      */
     public function __construct(TypoScriptConfiguration $configuration, array $page, $domain, $siteHash, PagesRepository $pagesRepository = null, $defaultLanguageId = 0, $availableLanguageIds = [])
     {
-        trigger_error('Using legacy sites is deprecated since EXT:solr 10 and will be removed in v11, use sitehandling instead', E_USER_DEPRECATED);
+        trigger_error('solr:deprecation: Using legacy sites is deprecated since EXT:solr 10 and will be removed in v11, use sitehandling instead', E_USER_DEPRECATED);
 
         $this->configuration = $configuration;
         $this->rootPage = $page;

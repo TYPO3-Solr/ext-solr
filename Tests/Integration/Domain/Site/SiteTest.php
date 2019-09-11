@@ -42,6 +42,11 @@ class SiteTest extends IntegrationTest
      */
     private $site;
 
+    public function setUp() {
+        parent::setUp();
+        $this->writeDefaultSolrTestSiteConfiguration();
+    }
+
     /**
      * @test
      */
@@ -50,7 +55,7 @@ class SiteTest extends IntegrationTest
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $this->importDataSetFromFixture('can_get_default_language.xml');
         $site = $siteRepository->getFirstAvailableSite();
-        $this->assertEquals(888, $site->getDefaultLanguage(), 'Could not get default language from site');
+        $this->assertEquals(0, $site->getDefaultLanguage(), 'Could not get default language from site');
     }
 
     /**
@@ -104,14 +109,14 @@ class SiteTest extends IntegrationTest
     /**
      * @test
      */
-    public function canGetTranslationsForRootSite() {
+    public function canGetAvailableLanguageIds() {
         $this->importDataSetFromFixture('can_get_translations_for_root_site.xml');
 
         /** @var $siteRepository SiteRepository */
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $this->site = $siteRepository->getSiteByRootPageId(1);
-        $languageIds = $this->site->getRootPageLanguageIds();
+        $languageIds = $this->site->getAvailableLanguageIds();
 
-        $this->assertEquals([1, 2], $languageIds);
+        $this->assertEquals([0, 1, 2], $languageIds);
     }
 }

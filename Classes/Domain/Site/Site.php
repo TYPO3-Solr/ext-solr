@@ -119,7 +119,7 @@ abstract class Site implements SiteInterface
      */
     public function getRootPageLanguageIds() : array
     {
-        trigger_error('Method getRootPageLanguageIds is deprecated since EXT:solr 10 and will be removed in v11, use getAvailableLanguageIds instead', E_USER_DEPRECATED);
+        trigger_error('solr:deprecation: Method getRootPageLanguageIds is deprecated since EXT:solr 10 and will be removed in v11, use getAvailableLanguageIds instead', E_USER_DEPRECATED);
 
         $rootPageLanguageIds = [];
         $rootPageId = $this->getRootPageId();

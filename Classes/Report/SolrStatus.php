@@ -25,6 +25,7 @@ namespace ApacheSolrForTypo3\Solr\Report;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\ConnectionManager;
+use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\PingFailedException;
 use ApacheSolrForTypo3\Solr\System\Solr\Service\SolrAdminService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -40,6 +41,13 @@ use TYPO3\CMS\Reports\StatusProviderInterface;
  */
 class SolrStatus extends AbstractSolrStatus
 {
+
+    /**
+     * Site Repository
+     *
+     * @var SiteRepository
+     */
+    protected $siteRepository = null;
 
     /**
      * Connection Manager
@@ -62,6 +70,18 @@ class SolrStatus extends AbstractSolrStatus
      */
     protected $responseMessage = '';
 
+
+    /**
+     * SolrStatus constructor.
+     * @param SiteRepository|null $siteRepository
+     * @param ConnectionManager|null $connectionManager
+     */
+    public function __construct(SiteRepository $siteRepository = null, ConnectionManager $connectionManager = null)
+    {
+        $this->siteRepository = $siteRepository ?? GeneralUtility::makeInstance(SiteRepository::class);
+        $this->connectionManager = $connectionManager ?? GeneralUtility::makeInstance(ConnectionManager::class);
+    }
+
     /**
      * Compiles a collection of status checks against each configured Solr server.
      *
@@ -69,12 +89,10 @@ class SolrStatus extends AbstractSolrStatus
     public function getStatus()
     {
         $reports = [];
-        $this->connectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
-
-        $solrConnections = $this->connectionManager->getAllConfigurations();
-
-        foreach ($solrConnections as $solrConnection) {
-            $reports[] = $this->getConnectionStatus($solrConnection);
+        foreach ($this->siteRepository->getAvailableSites() as $site) {
+            foreach ($site->getAllSolrConnectionConfigurations() as $solrConfiguration) {
+                $reports[] = $this->getConnectionStatus($solrConfiguration);
+            }
         }
 
         return $reports;

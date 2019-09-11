@@ -58,6 +58,7 @@ class IndexQueueWorkerTest extends IntegrationTest
     {
         parent::setUp();
         $this->indexQueue = GeneralUtility::makeInstance(Queue::class);
+        $this->writeDefaultSolrTestSiteConfiguration();
     }
 
     /**

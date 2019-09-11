@@ -61,6 +61,7 @@ class IndexerTest extends IntegrationTest
     public function setUp()
     {
         parent::setUp();
+        $this->writeDefaultSolrTestSiteConfiguration();
         $this->indexQueue = GeneralUtility::makeInstance(Queue::class);
         $this->indexer = GeneralUtility::makeInstance(Indexer::class);
 
@@ -148,16 +149,16 @@ class IndexerTest extends IntegrationTest
         $this->assertContains('"numFound":2', $solrContent, 'Could not index document into solr');
         $this->assertContains('"title":"original"', $solrContent, 'Could not index document into solr');
         $this->assertContains('"title":"original2"', $solrContent, 'Could not index document into solr');
-        $this->assertContains('"url":"index.php?id=1&L=0&tx_foo%5Buid%5D=88', $solrContent, 'Can not build typolink as expected');
-        $this->assertContains('"url":"index.php?id=1&L=0&tx_foo%5Buid%5D=777', $solrContent, 'Can not build typolink as expected');
+        $this->assertContains('"url":"http://testone.site/en/?tx_foo%5Buid%5D=88', $solrContent, 'Can not build typolink as expected');
+        $this->assertContains('"url":"http://testone.site/en/?tx_foo%5Buid%5D=777', $solrContent, 'Can not build typolink as expected');
 
         $this->waitToBeVisibleInSolr('core_de');
         $solrContent = file_get_contents('http://localhost:8999/solr/core_de/select?q=*:*');
         $this->assertContains('"numFound":2', $solrContent, 'Could not find translated record in solr document into solr');
         $this->assertContains('"title":"translation"', $solrContent, 'Could not index  translated document into solr');
         $this->assertContains('"title":"translation2"', $solrContent, 'Could not index  translated document into solr');
-        $this->assertContains('"url":"index.php?id=1&L=1&tx_foo%5Buid%5D=88', $solrContent, 'Can not build typolink as expected');
-        $this->assertContains('"url":"index.php?id=1&L=1&tx_foo%5Buid%5D=777', $solrContent, 'Can not build typolink as expected');
+        $this->assertContains('"url":"http://testone.site/de/?tx_foo%5Buid%5D=88', $solrContent, 'Can not build typolink as expected');
+        $this->assertContains('"url":"http://testone.site/de/?tx_foo%5Buid%5D=777', $solrContent, 'Can not build typolink as expected');
 
         $this->cleanUpSolrServerAndAssertEmpty('core_en');
         $this->cleanUpSolrServerAndAssertEmpty('core_de');
@@ -242,6 +243,7 @@ class IndexerTest extends IntegrationTest
     public function canIndexMultipleMMRelatedItems()
     {
         $this->cleanUpSolrServerAndAssertEmpty('core_en');
+        $this->writeDefaultSolrTestSiteConfiguration();
 
         // create fake extension database table and TCA
         $this->importExtTablesDefinition('fake_extension2_table.sql');
@@ -562,9 +564,9 @@ class IndexerTest extends IntegrationTest
         $solrContent = file_get_contents('http://localhost:8999/solr/core_en/select?q=*:*');
         $this->assertContains('"numFound":2', $solrContent, 'Could not index document into solr');
 
-        $solrContent = file_get_contents('http://localhost:8999/solr/core_en/select?q=*:*&fq=site:www.correct-domain.local');
+        $solrContent = file_get_contents('http://localhost:8999/solr/core_en/select?q=*:*&fq=site:testone.site');
         $this->assertContains('"numFound":1', $solrContent, 'Could not index document into solr');
-        $this->assertContains('"url":"index.php?id=1"', $solrContent, 'Item was indexed with false site UID');
+        $this->assertContains('"url":"http://testone.site/en/"', $solrContent, 'Item was indexed with false site UID');
         $this->cleanUpSolrServerAndAssertEmpty();
     }
 

@@ -36,6 +36,15 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class SolrConfigurationStatusTest extends IntegrationTest
 {
     /**
+     * @return void
+     */
+    public function setUp()
+    {
+        parent::setUp();
+        $this->writeDefaultSolrTestSiteConfiguration();
+    }
+
+    /**
      * @test
      */
     public function canGetGreenReportAgainstTestServer()
@@ -46,23 +55,6 @@ class SolrConfigurationStatusTest extends IntegrationTest
         $solrConfigurationStatus = GeneralUtility::makeInstance(SolrConfigurationStatus::class);
         $violations = $solrConfigurationStatus->getStatus();
         $this->assertEmpty($violations, 'We did not get an empty response from the solr configuration status report! Something is wrong');
-    }
-
-    /**
-     * @test
-     */
-    public function canDetectMissingDomainRecord()
-    {
-        $this->importDataSetFromFixture('can_detect_missing_domain_record.xml');
-
-        /** @var $solrConfigurationStatus  \ApacheSolrForTypo3\Solr\Report\SolrConfigurationStatus */
-        $solrConfigurationStatus = GeneralUtility::makeInstance(SolrConfigurationStatus::class);
-        $violations = $solrConfigurationStatus->getStatus();
-
-        $this->assertCount(1, $violations, 'Asserting to contain only one violation.');
-
-        $firstViolation = array_pop($violations);
-        $this->assertContains('Domain records missing', $firstViolation->getValue(), 'Did not get a domain record violation');
     }
 
     /**

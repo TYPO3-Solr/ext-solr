@@ -534,8 +534,7 @@ class Indexer extends AbstractIndexer
 
         // Solr configurations possible for this item
         $site = $item->getSite();
-
-        $solrConfigurationsBySite = $this->connectionManager->getConfigurationsBySite($site);
+        $solrConfigurationsBySite = $site->getAllSolrConnectionConfigurations();
         $siteLanguages = [];
         foreach ($solrConfigurationsBySite as $solrConfiguration) {
             $siteLanguages[] = $solrConfiguration['language'];
