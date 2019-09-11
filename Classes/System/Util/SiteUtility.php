@@ -25,7 +25,7 @@ namespace ApacheSolrForTypo3\Solr\System\Util;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Util;
+
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\SiteFinder;
@@ -90,21 +90,27 @@ class SiteUtility
         $languageSpecificConfiguration = $typo3Site->getLanguageById($languageId)->toArray();
         $value = self::getValueOrFallback($languageSpecificConfiguration, $keyToCheck, $fallbackKey);
 
-        if (!empty($value)) {
+        if ($value !== null) {
             return $value;
         }
 
         // if not found check global configuration
         $siteBaseConfiguration = $typo3Site->getConfiguration();
 
-        return self::getValueOrFallback($siteBaseConfiguration, $keyToCheck, $fallbackKey) ?: $defaultValue;
+        $value = self::getValueOrFallback($siteBaseConfiguration, $keyToCheck, $fallbackKey);
+        if ($value === null) {
+            return $defaultValue;
+        }
+        return $value;
+
+
     }
 
     /**
      * @param array $data
      * @param string $keyToCheck
      * @param string $fallbackKey
-     * @return string|null
+     * @return string|bool|null
      */
     protected static function getValueOrFallback(array $data, string $keyToCheck, string $fallbackKey)
     {

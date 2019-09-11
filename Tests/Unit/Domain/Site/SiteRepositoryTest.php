@@ -70,6 +70,7 @@ class SiteRepositoryTest extends UnitTest
 
     public function setUp()
     {
+        $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['solr'] = [];
         $this->cacheMock = $this->getDumbMock(TwoLevelCache::class);
         $this->rootPageResolverMock = $this->getDumbMock(RootPageResolver::class);
         $this->registryMock = $this->getDumbMock(Registry::class);

@@ -114,7 +114,7 @@ class IndexQueueModuleController extends AbstractModuleController
      */
     protected function canQueueSelectedSite()
     {
-        if ($this->selectedSite === null) {
+        if ($this->selectedSite === null || empty($this->solrConnectionManager->getConnectionsBySite($this->selectedSite))) {
             return false;
         }
         $enabledIndexQueueConfigurationNames = $this->selectedSite->getSolrConfiguration()->getEnabledIndexQueueConfigurationNames();
