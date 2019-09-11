@@ -27,15 +27,13 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration;
 use ApacheSolrForTypo3\Solr\Access\Rootline;
 use ApacheSolrForTypo3\Solr\Typo3PageIndexer;
 
-use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
-use TYPO3\CMS\Core\Charset\CharsetConverter;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Http\ServerRequest;
-use TYPO3\CMS\Lang\LanguageService;
+use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\TimeTracker\TimeTracker;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
@@ -402,8 +400,6 @@ abstract class IntegrationTest extends FunctionalTestCase
     protected function getDataHandler()
     {
         $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageService::class);
-        $csConf = GeneralUtility::makeInstance(CharsetConverter::class);
-        $GLOBALS['LANG']->csConvObj = $csConf;
         return GeneralUtility::makeInstance(DataHandler::class);
     }
 }

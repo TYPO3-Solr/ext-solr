@@ -51,6 +51,7 @@ class RemoveFacetItemViewHelperTest extends AbstractFacetItemViewHelperTest
             // we expected that the getRemoveFacetValueUri will be called on the searchUriBuilder in the end.
         $searchUriBuilderMock->expects($this->once())->method('getRemoveFacetValueUri')->with($facet->getResultSet()->getUsedSearchRequest(), 'Color', 'red');
         $viewHelper->injectSearchUriBuilder($searchUriBuilderMock);
+        // @extensionScannerIgnoreLine
         $viewHelper->setArguments(['facet' => $facet, 'facetItem' => $facet->getOptions()->getByPosition(0)]);
         $viewHelper->render();
     }

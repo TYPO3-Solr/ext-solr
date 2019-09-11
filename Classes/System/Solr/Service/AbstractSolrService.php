@@ -231,6 +231,7 @@ abstract class AbstractSolrService {
             return $logData;
         } else {
             // trigger data parsing
+            // @extensionScannerIgnoreLine
             $solrResponse->response;
             $logData['response data'] = print_r($solrResponse, true);
             return $logData;

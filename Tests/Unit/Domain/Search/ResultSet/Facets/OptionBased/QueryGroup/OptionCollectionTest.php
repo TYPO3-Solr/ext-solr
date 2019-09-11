@@ -43,6 +43,7 @@ class OptionCollectionTest extends UnitTest
         $facet->addOption($month);
         $facet->addOption($year);
 
+        // @extensionScannerIgnoreLine
         $sortedOptions = $facet->getOptions()->getManualSortedCopy(['1year', '1month']);
 
         $this->assertSame($year, $sortedOptions->getByPosition(0), 'First sorted item was not 1year');

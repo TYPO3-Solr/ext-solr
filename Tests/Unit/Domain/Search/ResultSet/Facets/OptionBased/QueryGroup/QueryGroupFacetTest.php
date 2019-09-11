@@ -48,10 +48,12 @@ class QueryGroupFacetTest extends UnitTest
         $option = new Option($queryGroupFacet);
 
             // before adding there should not be any facet present
+        // @extensionScannerIgnoreLine
         $this->assertEquals(0, $queryGroupFacet->getOptions()->getCount());
         $queryGroupFacet->addOption($option);
 
             // now we should have 1 option present
+        // @extensionScannerIgnoreLine
         $this->assertEquals(1, $queryGroupFacet->getOptions()->getCount());
     }
 

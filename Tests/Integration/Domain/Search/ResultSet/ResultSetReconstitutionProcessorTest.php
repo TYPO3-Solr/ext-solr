@@ -109,7 +109,7 @@ class ResultSetReconstitutionProcessorTest extends IntegrationTest
         /** @var $facet OptionsFacet */
         $facet = $searchResultSet->getFacets()->getByPosition(0);
 
-        /** @var $option1 Option */
+        /** @var $option1 Option */ // @extensionScannerIgnoreLine
         $option1 = $facet->getOptions()->getByPosition(0);
         $this->assertSame('Pages', $option1->getLabel(), 'Rendering instructions have not been applied on the facet options');
     }

@@ -76,7 +76,7 @@ class SolrAdminServiceTest extends IntegrationTest
      */
     public function canAddSynonym($baseWord, $synonyms = [])
     {
-        $this->solrAdminService->deleteSynonym('homepage');
+        $this->solrAdminService->deleteSynonym($baseWord);
         $this->solrAdminService->reloadCore();
 
         $synonymsBeforeAdd = $this->solrAdminService->getSynonyms($baseWord);

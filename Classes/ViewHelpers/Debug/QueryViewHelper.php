@@ -15,6 +15,8 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers\Debug;
  */
 
 use ApacheSolrForTypo3\Solr\ViewHelpers\AbstractSolrFrontendViewHelper;
+use TYPO3\CMS\Core\Context\Context;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
@@ -43,7 +45,8 @@ class QueryViewHelper extends AbstractSolrFrontendViewHelper
     {
         $content = '';
         $resultSet = self::getUsedSearchResultSetFromRenderingContext($renderingContext);
-        if (!empty($GLOBALS['TSFE']->beUserLogin) && $resultSet && $resultSet->getUsedSearch() !== null) {
+        $backendUserIsLoggedIn = GeneralUtility::makeInstance(Context::class)->getPropertyFromAspect('backend.user', 'isLoggedIn');
+        if ($backendUserIsLoggedIn === true && $resultSet && $resultSet->getUsedSearch() !== null) {
             $content = '<br><strong>Parsed Query:</strong><br>' . htmlspecialchars($resultSet->getUsedSearch()->getDebugResponse()->parsedquery);
         }
         return $content;

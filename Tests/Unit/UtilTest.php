@@ -25,6 +25,7 @@ class UtilTest extends UnitTest
             ->getCache('tx_solr_configuration')
             ->willReturn($frontendCache->reveal());
         GeneralUtility::setSingletonInstance(\TYPO3\CMS\Core\Cache\CacheManager::class, $cacheManager->reveal());
+        $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['solr'] = [];
     }
 
     public function tearDown()

@@ -27,7 +27,7 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper;
 use ApacheSolrForTypo3\Solr\Access\Rootline;
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequestHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Sv\AbstractAuthenticationService;
+use TYPO3\CMS\Core\Authentication\AbstractAuthenticationService;
 
 /**
  * Authentication service to authorize the Index Queue page indexer to access

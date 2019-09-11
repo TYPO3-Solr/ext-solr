@@ -94,6 +94,7 @@ abstract class AbstractBaseController extends ActionController
     public function injectConfigurationManager(ConfigurationManagerInterface $configurationManager)
     {
         $this->configurationManager = $configurationManager;
+        // @extensionScannerIgnoreLine
         $this->contentObjectRenderer = $this->configurationManager->getContentObject();
     }
 

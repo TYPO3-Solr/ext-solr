@@ -27,7 +27,6 @@ namespace ApacheSolrForTypo3\Solr\System\Language;
 
 use ApacheSolrForTypo3\Solr\System\TCA\TCAService;
 use ApacheSolrForTypo3\Solr\Util;
-use Doctrine\DBAL\Driver\Statement;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
@@ -69,9 +68,11 @@ class FrontendOverlayService {
     public function getOverlay($tableName, $record)
     {
         if ($tableName === 'pages') {
+            // @extensionScannerIgnoreLine
             return $this->tsfe->sys_page->getPageOverlay($record, Util::getLanguageUid());
         }
 
+        // @extensionScannerIgnoreLine
         return $this->tsfe->sys_page->getRecordOverlay($tableName, $record, Util::getLanguageUid());
     }
 

@@ -55,6 +55,7 @@ class FacetRegistryTest extends UnitTest
             ->setMethods(['createInstance'])
             ->getMock();
 
+        // @extensionScannerIgnoreLine
         $facetRegistry->injectObjectManager($this->objectManagerMock);
 
         if (!empty($createsPackageInstances)) {

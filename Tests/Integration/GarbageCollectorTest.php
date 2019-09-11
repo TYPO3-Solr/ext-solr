@@ -32,8 +32,7 @@ use ApacheSolrForTypo3\Solr\IndexQueue\RecordMonitor;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Charset\CharsetConverter;
-use TYPO3\CMS\Lang\LanguageService;
+use TYPO3\CMS\Core\Localization\LanguageService;
 
 /**
  * This testcase is used to check if the GarbageCollector can delete garbage from the
@@ -626,9 +625,8 @@ class GarbageCollectorTest extends IntegrationTest
      */
     protected function fakeLanguageService()
     {
-        /** @var $languageService  \TYPO3\CMS\Lang\LanguageService */
+        /** @var $languageService  \TYPO3\CMS\Core\Localization\LanguageService */
         $languageService = GeneralUtility::makeInstance(LanguageService::class);
-        $languageService->csConvObj = GeneralUtility::makeInstance(CharsetConverter::class);
         $GLOBALS['LANG'] = $languageService;
     }
 }

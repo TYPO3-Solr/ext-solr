@@ -94,6 +94,7 @@ class HtmlContentExtractor
      */
     public function __construct($content)
     {
+        // @extensionScannerIgnoreLine
         $this->content = $content;
     }
 
@@ -127,6 +128,7 @@ class HtmlContentExtractor
      */
     public function getIndexableContent()
     {
+        // @extensionScannerIgnoreLine
         $content = self::cleanContent($this->content);
         $content = trim($content);
 
@@ -211,6 +213,7 @@ class HtmlContentExtractor
      */
     public function getContentMarkedForIndexing()
     {
+        // @extensionScannerIgnoreLine
         return $this->content;
     }
 

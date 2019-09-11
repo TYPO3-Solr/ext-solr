@@ -18,6 +18,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResult;
 use ApacheSolrForTypo3\Solr\Domain\Search\Score\ScoreCalculationService;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\ViewHelpers\AbstractSolrFrontendViewHelper;
+use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
@@ -63,7 +64,8 @@ class DocumentScoreAnalyzerViewHelper extends AbstractSolrFrontendViewHelper
         $content = '';
         // only check whether a BE user is logged in, don't need to check
         // for enabled score analysis as we wouldn't be here if it was disabled
-        if (empty($GLOBALS['TSFE']->beUserLogin)) {
+        $backendUserIsLoggedIn = GeneralUtility::makeInstance(Context::class)->getPropertyFromAspect('backend.user', 'isLoggedIn');
+        if ($backendUserIsLoggedIn === false) {
             return $content;
         }
 

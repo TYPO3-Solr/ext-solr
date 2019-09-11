@@ -33,10 +33,9 @@ use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
-use TYPO3\CMS\Core\Charset\CharsetConverter;
 use TYPO3\CMS\Core\Http\ServerRequestFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Lang\LanguageService;
+use TYPO3\CMS\Core\Localization\LanguageService;
 
 /**
  * Testcase for the record indexer
@@ -69,9 +68,8 @@ class IndexerTest extends IntegrationTest
         $beUser = GeneralUtility::makeInstance(BackendUserAuthentication::class);
         $GLOBALS['BE_USER'] = $beUser;
 
-        /** @var $languageService  \TYPO3\CMS\Lang\LanguageService */
+        /** @var $languageService  \TYPO3\CMS\Core\Localization\LanguageService */
         $languageService = GeneralUtility::makeInstance(LanguageService::class);
-        $languageService->csConvObj = GeneralUtility::makeInstance(CharsetConverter::class);
         $GLOBALS['LANG'] = $languageService;
 
         $_SERVER['HTTP_HOST'] = 'test.local.typo3.org';
