@@ -45,7 +45,9 @@ class SiteHashServiceTest extends UnitTest
         return [
             'siteHashDisabled' => ['*', '*'],
             'allSitesInSystem' => ['__all', 'solrtesta.local,solrtestb.local'],
-            'currentSiteOnly' => ['__current_site', 'solrtesta.local']
+            'currentSiteOnly' => ['__current_site', 'solrtesta.local'],
+            'emptyIsFallingBackToCurrentSiteOnly' => ['', 'solrtesta.local'],
+            'nullIsFallingBackToCurrentSiteOnly' => [null, 'solrtesta.local']
         ];
     }
 

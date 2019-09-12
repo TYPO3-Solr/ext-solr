@@ -56,6 +56,8 @@ class SiteHashService
         } elseif ($allowedSitesConfiguration === '*') {
             return '*';
         } else {
+            // we thread empty allowed site configurations as __solr_current_site since this is the default behaviour
+            $allowedSitesConfiguration = empty($allowedSitesConfiguration) ? '__solr_current_site' : $allowedSitesConfiguration;
             return $this->getDomainByPageIdAndReplaceMarkers($pageId, $allowedSitesConfiguration);
         }
     }
