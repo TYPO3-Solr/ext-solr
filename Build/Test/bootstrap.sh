@@ -75,16 +75,22 @@ echo "Using web path $TYPO3_PATH_WEB"
 
 # Install TYPO3 sources
 
-if [[ $TYPO3_VERSION = *"master"* || $TYPO3_VERSION = *"dev"* ]]; then
+if [[ $TYPO3_VERSION = *"dev"* ]]; then
     composer config minimum-stability dev
 fi
 
-composer require --dev --update-with-dependencies --prefer-source typo3/cms-core="$TYPO3_VERSION" typo3/cms-backend="$TYPO3_VERSION" typo3/cms-fluid="$TYPO3_VERSION" typo3/cms-frontend="$TYPO3_VERSION" typo3/cms-extbase="$TYPO3_VERSION" typo3/cms-reports="$TYPO3_VERSION" typo3/cms-scheduler="$TYPO3_VERSION" typo3/cms-tstemplate="$TYPO3_VERSION"
+if [[ $TYPO3_VERSION = *"master"* ]]; then
+    TYPO3_MASTER_DEPENDENCIES='nimut/testing-framework:dev-master'
+fi
 
+composer require --dev --update-with-dependencies --prefer-source typo3/cms-core:"$TYPO3_VERSION" typo3/cms-backend:"$TYPO3_VERSION" typo3/cms-fluid:"$TYPO3_VERSION" typo3/cms-frontend:"$TYPO3_VERSION" typo3/cms-extbase:"$TYPO3_VERSION" typo3/cms-reports:"$TYPO3_VERSION" typo3/cms-scheduler:"$TYPO3_VERSION" typo3/cms-tstemplate:"$TYPO3_VERSION" $TYPO3_MASTER_DEPENDENCIES
 
 # Restore composer.json
 mkdir -p $TYPO3_PATH_WEB/uploads $TYPO3_PATH_WEB/typo3temp
 
-# Setup Solr Using our install script
-chmod 500 ${EXTENSION_ROOTPATH}Resources/Private/Install/install-solr.sh
-${EXTENSION_ROOTPATH}Resources/Private/Install/install-solr.sh -d "$HOME/solr" -t
+
+if [[ $* != *--skip-solr-install* ]]; then
+    # Setup Solr Using our install script
+    chmod 500 ${EXTENSION_ROOTPATH}Resources/Private/Install/install-solr.sh
+    ${EXTENSION_ROOTPATH}Resources/Private/Install/install-solr.sh -d "$HOME/solr" -t
+fi
