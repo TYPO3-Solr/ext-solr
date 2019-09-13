@@ -75,7 +75,7 @@ echo "Using web path $TYPO3_PATH_WEB"
 
 # Install TYPO3 sources
 
-if [[ $TYPO3_VERSION = *"master"*  ]]; then
+if [[ $TYPO3_VERSION = *"master"* || $TYPO3_VERSION = *"dev"* ]]; then
     composer config minimum-stability dev
 fi
 
