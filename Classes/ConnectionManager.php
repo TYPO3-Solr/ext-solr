@@ -26,17 +26,20 @@ namespace ApacheSolrForTypo3\Solr;
 
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
-use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository as PagesRepositoryAtExtSolr;
 use ApacheSolrForTypo3\Solr\System\Records\SystemLanguage\SystemLanguageRepository;
 use ApacheSolrForTypo3\Solr\System\Solr\Node;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
+use InvalidArgumentException;
+use RuntimeException;
+use stdClass;
 use TYPO3\CMS\Core\Registry;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\TypoScript\ExtendedTemplateService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\RootlineUtility;
 use TYPO3\CMS\Frontend\Page\PageRepository;
+use function json_encode;
 
 /**
  * ConnectionManager is responsible to create SolrConnection objects.
@@ -52,7 +55,7 @@ class ConnectionManager implements SingletonInterface
     protected static $connections = [];
 
     /**
-     * @var \ApacheSolrForTypo3\Solr\System\Records\SystemLanguage\SystemLanguageRepository
+     * @var SystemLanguageRepository
      */
     protected $systemLanguageRepository;
 
@@ -87,7 +90,7 @@ class ConnectionManager implements SingletonInterface
      */
     public function getSolrConnectionForNodes(array $readNodeConfiguration, array $writeNodeConfiguration)
     {
-        $connectionHash = md5(\json_encode($readNodeConfiguration) .  \json_encode($writeNodeConfiguration));
+        $connectionHash = md5(json_encode($readNodeConfiguration) .  json_encode($writeNodeConfiguration));
         if (!isset(self::$connections[$connectionHash])) {
             $readNode = Node::fromArray($readNodeConfiguration);
             $writeNode = Node::fromArray($writeNodeConfiguration);
@@ -105,7 +108,7 @@ class ConnectionManager implements SingletonInterface
     public function getConnectionFromConfiguration(array $config)
     {
         if(empty($config['read']) && !empty($config['solrHost'])) {
-            throw new \InvalidArgumentException('Invalid registry data please re-initialize your solr connections');
+            throw new InvalidArgumentException('Invalid registry data please re-initialize your solr connections');
         }
 
         return $this->getSolrConnectionForNodes($config['read'], $config['write']);
@@ -128,7 +131,8 @@ class ConnectionManager implements SingletonInterface
         try {
             $site = $this->siteRepository->getSiteByPageId($pageId, $mount);
             return $site->getSolrConnectionConfiguration($language);
-        } catch(\InvalidArgumentException $e) {
+        } catch(InvalidArgumentException $e) {
+            /* @var NoSolrConnectionFoundException $noSolrConnectionException */
             $noSolrConnectionException = GeneralUtility::makeInstance(
                 NoSolrConnectionFoundException::class,
                 /** @scrutinizer ignore-type */  'Could not find a Solr connection for page [' . $pageId. '] and language [' . $language . '].',
@@ -156,7 +160,8 @@ class ConnectionManager implements SingletonInterface
             $solrConnection = $this->getConnectionFromConfiguration($config);
 
             return $solrConnection;
-        } catch(\InvalidArgumentException $e) {
+        } catch(InvalidArgumentException $e) {
+            /* @var NoSolrConnectionFoundException $noSolrConnectionException */
             $noSolrConnectionException = GeneralUtility::makeInstance(
                 NoSolrConnectionFoundException::class,
                 /** @scrutinizer ignore-type */  'Could not find a Solr connection for page [' . $pageId. '] and language [' . $language . '].',
@@ -183,7 +188,8 @@ class ConnectionManager implements SingletonInterface
         try {
             $site = $this->siteRepository->getSiteByRootPageId($pageId);
             return $site->getSolrConnectionConfiguration($language);
-        } catch(\InvalidArgumentException $e) {
+        } catch(InvalidArgumentException $e) {
+            /* @var NoSolrConnectionFoundException $noSolrConnectionException */
             $noSolrConnectionException = GeneralUtility::makeInstance(
                 NoSolrConnectionFoundException::class,
                 /** @scrutinizer ignore-type */  'Could not find a Solr connection for page [' . $pageId. '] and language [' . $language . '].',
@@ -209,7 +215,8 @@ class ConnectionManager implements SingletonInterface
             $config = $site->getSolrConnectionConfiguration($language);
             $solrConnection = $this->getConnectionFromConfiguration($config);
             return $solrConnection;
-        } catch (\InvalidArgumentException $e) {
+        } catch (InvalidArgumentException $e) {
+            /* @var NoSolrConnectionFoundException $noSolrConnectionException */
             $noSolrConnectionException = GeneralUtility::makeInstance(
                 NoSolrConnectionFoundException::class,
                 /** @scrutinizer ignore-type */  'Could not find a Solr connection for page [' . $pageId. '] and language [' . $language . '].',
@@ -224,6 +231,7 @@ class ConnectionManager implements SingletonInterface
      * Gets all connection configurations found.
      *
      * @return array An array of connection configurations.
+     * @throws NoSolrConnectionFoundException
      * @deprecated will be removed in v11, use SiteRepository
      */
     public function getAllConfigurations()
@@ -259,6 +267,7 @@ class ConnectionManager implements SingletonInterface
      * Gets all connections found.
      *
      * @return SolrConnection[] An array of initialized ApacheSolrForTypo3\Solr\System\Solr\SolrConnection connections
+     * @throws NoSolrConnectionFoundException
      */
     public function getAllConnections()
     {
@@ -277,6 +286,7 @@ class ConnectionManager implements SingletonInterface
      *
      * @param Site $site A TYPO3 site
      * @return array An array of Solr connection configurations for a site
+     * @throws NoSolrConnectionFoundException
      * @deprecated will be removed in v11, use $site->getAllSolrConnectionConfigurations()
      */
     public function getConfigurationsBySite(Site $site)
@@ -291,6 +301,7 @@ class ConnectionManager implements SingletonInterface
      *
      * @param Site $site A TYPO3 site
      * @return SolrConnection[] An array of Solr connection objects (ApacheSolrForTypo3\Solr\System\Solr\SolrConnection)
+     * @throws NoSolrConnectionFoundException
      */
     public function getConnectionsBySite(Site $site)
     {
@@ -326,6 +337,7 @@ class ConnectionManager implements SingletonInterface
      * Updates the Solr connections for a specific root page ID / site.
      *
      * @param int $rootPageId A site root page id
+     * @throws NoSolrConnectionFoundException
      * @deprecated Use TYPO3 site config to configure site/connection info
      */
     public function updateConnectionByRootPageId($rootPageId)
@@ -333,6 +345,7 @@ class ConnectionManager implements SingletonInterface
         trigger_error('solr:deprecation: Method updateConnectionByRootPageId is deprecated since EXT:solr 10 and will be removed in v11, use sitehandling instead', E_USER_DEPRECATED);
 
         $systemLanguages = $this->systemLanguageRepository->findSystemLanguages();
+        /* @var SiteRepository $siteRepository */
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $site = $siteRepository->getSiteByRootPageId($rootPageId);
         $rootPage = $site->getRootPage();
@@ -405,7 +418,7 @@ class ConnectionManager implements SingletonInterface
         $rootlineUtility = GeneralUtility::makeInstance(RootlineUtility::class, $rootPage['uid']);
         try {
             $rootLine = $rootlineUtility->get();
-        } catch (\RuntimeException $e) {
+        } catch (RuntimeException $e) {
             $rootLine = [];
         }
 
@@ -415,8 +428,8 @@ class ConnectionManager implements SingletonInterface
         $tmpl->runThroughTemplates($rootLine); // This generates the constants/config + hierarchy info for the template.
 
         // fake micro TSFE to get correct condition parsing
-        $GLOBALS['TSFE'] = new \stdClass();
-        $GLOBALS['TSFE']->tmpl = new \stdClass();
+        $GLOBALS['TSFE'] = new stdClass();
+        $GLOBALS['TSFE']->tmpl = new stdClass();
         $GLOBALS['TSFE']->cObjectDepthCounter = 50;
         $GLOBALS['TSFE']->tmpl->rootLine = $rootLine;
         // @extensionScannerIgnoreLine

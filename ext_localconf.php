@@ -18,20 +18,20 @@ if (!function_exists('strptime')) {
 if (TYPO3_MODE == 'FE' && isset($_SERVER['HTTP_X_TX_SOLR_IQ'])) {
 
     // prevent indexing process from die() if page does not exist to be able to log errors properly.
-    $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'][\TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController::class] = array(
+    $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'][\TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController::class] = [
         'className' => \ApacheSolrForTypo3\Solr\System\Mvc\Frontend\Controller\OverriddenTypoScriptFrontendController::class
-    );
+    ];
     define('EXT_SOLR_INDEXING_CONTEXT', true);
 
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/index_ts.php']['preprocessRequest']['ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequestHandler'] = \ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequestHandler::class . '->run';
     $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageSubstitutePageDocument']['ApacheSolrForTypo3\Solr\AdditionalFieldsIndexer'] = \ApacheSolrForTypo3\Solr\AdditionalFieldsIndexer::class;
 
-    ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\Manager::registerFrontendHelper(
+    \ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\Manager::registerFrontendHelper(
         'findUserGroups',
         \ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\UserGroupDetector::class
     );
 
-    ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\Manager::registerFrontendHelper(
+    \ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\Manager::registerFrontendHelper(
         'indexPage',
         \ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageIndexer::class
     );
@@ -47,57 +47,57 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['cms/layout/class.tx_cms_layout.php'][
 
 // register search components
 
-ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
+\ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
     'access',
     \ApacheSolrForTypo3\Solr\Search\AccessComponent::class
 );
 
-ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
+\ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
     'relevance',
     \ApacheSolrForTypo3\Solr\Search\RelevanceComponent::class
 );
 
-ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
+\ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
     'sorting',
     \ApacheSolrForTypo3\Solr\Search\SortingComponent::class
 );
 
-ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
+\ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
     'debug',
     \ApacheSolrForTypo3\Solr\Search\DebugComponent::class
 );
 
-ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
+\ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
     'analysis',
     \ApacheSolrForTypo3\Solr\Search\AnalysisComponent::class
 );
 
-ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
+\ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
     'highlighting',
     \ApacheSolrForTypo3\Solr\Search\HighlightingComponent::class
 );
 
-ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
+\ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
     'spellchecking',
     \ApacheSolrForTypo3\Solr\Search\SpellcheckingComponent::class
 );
 
-ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
+\ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
     'faceting',
     \ApacheSolrForTypo3\Solr\Search\FacetingComponent::class
 );
 
-ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
+\ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
     'statistics',
     \ApacheSolrForTypo3\Solr\Search\StatisticsComponent::class
 );
 
-ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
+\ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
     'lastSearches',
     \ApacheSolrForTypo3\Solr\Search\LastSearchesComponent::class
 );
 
-ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
+\ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
     'elevation',
     \ApacheSolrForTypo3\Solr\Search\ElevationComponent::class
 );
@@ -137,23 +137,23 @@ $TYPO3_CONF_VARS['FE']['eID_include']['tx_solr_api'] = 'EXT:solr/Classes/Eid/Api
 
 // add custom Solr content objects
 
-$TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_content.php']['cObjTypeAndClass'][ApacheSolrForTypo3\Solr\ContentObject\Multivalue::CONTENT_OBJECT_NAME] = [
-    ApacheSolrForTypo3\Solr\ContentObject\Multivalue::CONTENT_OBJECT_NAME,
+$TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_content.php']['cObjTypeAndClass'][\ApacheSolrForTypo3\Solr\ContentObject\Multivalue::CONTENT_OBJECT_NAME] = [
+    \ApacheSolrForTypo3\Solr\ContentObject\Multivalue::CONTENT_OBJECT_NAME,
     \ApacheSolrForTypo3\Solr\ContentObject\Multivalue::class
 ];
 
-$TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_content.php']['cObjTypeAndClass'][ApacheSolrForTypo3\Solr\ContentObject\Content::CONTENT_OBJECT_NAME] = [
-    ApacheSolrForTypo3\Solr\ContentObject\Content::CONTENT_OBJECT_NAME,
+$TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_content.php']['cObjTypeAndClass'][\ApacheSolrForTypo3\Solr\ContentObject\Content::CONTENT_OBJECT_NAME] = [
+    \ApacheSolrForTypo3\Solr\ContentObject\Content::CONTENT_OBJECT_NAME,
     \ApacheSolrForTypo3\Solr\ContentObject\Content::class
 ];
 
-$TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_content.php']['cObjTypeAndClass'][ApacheSolrForTypo3\Solr\ContentObject\Relation::CONTENT_OBJECT_NAME] = [
-    ApacheSolrForTypo3\Solr\ContentObject\Relation::CONTENT_OBJECT_NAME,
+$TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_content.php']['cObjTypeAndClass'][\ApacheSolrForTypo3\Solr\ContentObject\Relation::CONTENT_OBJECT_NAME] = [
+    \ApacheSolrForTypo3\Solr\ContentObject\Relation::CONTENT_OBJECT_NAME,
     \ApacheSolrForTypo3\Solr\ContentObject\Relation::class
 ];
 
-$TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_content.php']['cObjTypeAndClass'][ApacheSolrForTypo3\Solr\ContentObject\Classification::CONTENT_OBJECT_NAME] = [
-    ApacheSolrForTypo3\Solr\ContentObject\Classification::CONTENT_OBJECT_NAME,
+$TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_content.php']['cObjTypeAndClass'][\ApacheSolrForTypo3\Solr\ContentObject\Classification::CONTENT_OBJECT_NAME] = [
+    \ApacheSolrForTypo3\Solr\ContentObject\Classification::CONTENT_OBJECT_NAME,
     \ApacheSolrForTypo3\Solr\ContentObject\Classification::class
 ];
 

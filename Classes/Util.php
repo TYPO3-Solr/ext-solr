@@ -538,7 +538,6 @@ class Util
 
     /**
      * @return array
-     * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
      */
     public static function getFrontendUserGroups(): array
     {
@@ -548,7 +547,7 @@ class Util
 
     /**
      * Checks whether legacy site mode is enabled.
-     *
+     * @deprecated we can drop that check when the legacy site mode is dropped
      * @return bool
      */
     public static function legacySiteModeIsEnabled(): bool

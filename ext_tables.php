@@ -1,7 +1,5 @@
 <?php
 
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
-
 if (!defined('TYPO3_MODE')) {
     die('Access denied.');
 }
@@ -9,6 +7,10 @@ if (!defined('TYPO3_MODE')) {
 if (TYPO3_MODE == 'BE') {
     $modulePrefix = 'extensions-solr-module';
     $svgProvider = \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class;
+    /* @var \ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration $extensionConfiguration */
+    $extensionConfiguration = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+        \ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration::class
+    );
 
     // register all module icons with extensions-solr-module-modulename
     $extIconPath = 'EXT:solr/Resources/Public/Images/Icons/';
@@ -122,9 +124,11 @@ if (TYPO3_MODE == 'BE') {
         \ApacheSolrForTypo3\Solr\Report\FilterVarStatus::class
     ];
 
-    // register Clear Cache Menu hook
-    if (\ApacheSolrForTypo3\Solr\Util::legacySiteModeIsEnabled()) {
+    if ($extensionConfiguration->getIsAllowLegacySiteModeEnabled()) {
+        // register Clear Cache Menu hook
         $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['additionalBackendItems']['cacheActions']['clearSolrConnectionCache'] = \ApacheSolrForTypo3\Solr\System\Hooks\Backend\Toolbar\ClearCacheActionsHook::class;
+        // register Initialize Solr Connection Button in page tree context menu
+        $GLOBALS['TYPO3_CONF_VARS']['BE']['ContextMenu']['ItemProviders'][1487876780] = \ApacheSolrForTypo3\Solr\ContextMenu\ItemProviders\InitializeConnectionProvider::class;
     }
 }
 
@@ -142,10 +146,6 @@ if ((TYPO3_MODE === 'BE') || (TYPO3_MODE === 'FE' && isset($_POST['TSFE_EDIT']))
 }
 
 # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
-
-if (\ApacheSolrForTypo3\Solr\Util::legacySiteModeIsEnabled()) {
-    $GLOBALS['TYPO3_CONF_VARS']['BE']['ContextMenu']['ItemProviders'][1487876780] = \ApacheSolrForTypo3\Solr\ContextMenu\ItemProviders\InitializeConnectionProvider::class;
-}
 
 $isComposerMode = defined('TYPO3_COMPOSER_MODE') && TYPO3_COMPOSER_MODE;
 if(!$isComposerMode) {

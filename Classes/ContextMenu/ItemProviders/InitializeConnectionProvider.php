@@ -33,6 +33,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Context menu item provider for the solr connection initialization
  *
  * @author Timo Hund <timo.hund@dkd.de>
+ *
+ * @deprecated Since EXT:solr 10 and will be removed in version 11
  */
 class InitializeConnectionProvider extends AbstractProvider
 {
@@ -65,6 +67,7 @@ class InitializeConnectionProvider extends AbstractProvider
      */
     public function canHandle(): bool
     {
+        trigger_error('solr:deprecation: Class InitializeConnectionProvider is deprecated since EXT:solr 10 and will be removed in v11, use sitehandling instead.', E_USER_DEPRECATED);
         if ($this->table !== 'pages') {
             return false;
         }
