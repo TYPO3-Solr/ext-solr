@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr\Report;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
 use ApacheSolrForTypo3\Solr\System\Records\SystemDomain\SystemDomainRepository;
 use ApacheSolrForTypo3\Solr\System\Service\SiteService;
@@ -46,12 +47,19 @@ class SolrConfigurationStatus extends AbstractSolrStatus
     protected $systemDomainRepository;
 
     /**
+     * @var ExtensionConfiguration
+     */
+    protected $extensionConfiguration;
+
+    /**
      * SolrConfigurationStatus constructor.
      * @param SystemDomainRepository|null $systemDomainRepository
+     * @param ExtensionConfiguration|null $extensionConfiguration
      */
-    public function __construct(SystemDomainRepository $systemDomainRepository = null)
+    public function __construct(SystemDomainRepository $systemDomainRepository = null, ExtensionConfiguration $extensionConfiguration = null)
     {
         $this->systemDomainRepository = $systemDomainRepository ?? GeneralUtility::makeInstance(SystemDomainRepository::class);
+        $this->extensionConfiguration = $extensionConfiguration ?? GeneralUtility::makeInstance(ExtensionConfiguration::class);
     }
 
     /**
@@ -115,7 +123,7 @@ class SolrConfigurationStatus extends AbstractSolrStatus
     protected function getDomainRecordAvailableStatus()
     {
         // @deprecated we can drop that check when the legacy site mode is dropped
-        if (!Util::legacySiteModeIsEnabled()) {
+        if (!$this->extensionConfiguration->getIsAllowLegacySiteModeEnabled()) {
             // when no legacy mode is enabled we do not need to check for domain record
             return null;
         }
