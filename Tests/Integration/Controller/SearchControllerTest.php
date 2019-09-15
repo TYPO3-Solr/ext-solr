@@ -624,15 +624,12 @@ class SearchControllerTest extends AbstractFrontendControllerTest
      */
     public function canFacetOnHierarchicalTextCategory()
     {
-        $this->markTestSkipped('Need to be checked');
         $this->importDataSetFromFixture('can_render_path_facet_with_search_controller.xml');
         $GLOBALS['TSFE'] = $this->getConfiguredTSFE([], 1);
 
         $this->indexPages([1, 2, 3]);
-
         // we should have 3 documents in solr
         $solrContent = file_get_contents('http://localhost:8999/solr/core_en/select?q=*:*');
-        echo $solrContent;
         $this->assertContains('"numFound":3', $solrContent, 'Could not index document into solr');
 
         // but when we facet on the categoryPaths:/Men/Shoes \/ Socks/ we should only have one result since the others
@@ -1011,14 +1008,14 @@ class SearchControllerTest extends AbstractFrontendControllerTest
      */
     public function canRenderDetailAction()
     {
-        $this->markTestSkipped('Fixme');
         $request = $this->getPreparedRequest('Search', 'detail');
-        $request->setArgument('documentId', '23c51a0d5cf548afecc043a7068902e8f82a22a0/pages/1/0/0/0');
+        $request->setArgument('documentId', '002de2729efa650191f82900ea02a0a3189dfabb/pages/1/0/0/0');
 
         $this->importDataSetFromFixture('can_render_search_controller.xml');
         $GLOBALS['TSFE'] = $this->getConfiguredTSFE([], 1);
 
         $this->indexPages([1, 2]);
+
         $this->searchController->processRequest($request, $this->searchResponse);
         $this->assertContains("Products", $this->searchResponse->getContent());
     }
