@@ -19,6 +19,7 @@ use TYPO3\CMS\Extbase\Mvc\Controller\CommandController;
 
 /**
  * Controller to run solr specific tasks via CLI
+ * @todo @deprecated This class can be dropped when legacy support will be dropped
  * @extensionScannerIgnoreFile
  */
 class SolrCommandController extends CommandController
