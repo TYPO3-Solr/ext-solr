@@ -576,7 +576,6 @@ class QueryBuilder extends AbstractQueryBuilder {
         return $query;
     }
 
-
     /**
      * @param string $rawQuery
      * @return SuggestQuery
