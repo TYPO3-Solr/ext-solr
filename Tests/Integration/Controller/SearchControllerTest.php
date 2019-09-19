@@ -629,7 +629,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
 
         $this->indexPages([1, 2, 3]);
         // we should have 3 documents in solr
-        $solrContent = file_get_contents('http://localhost:8999/solr/core_en/select?q=*:*');
+        $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
         $this->assertContains('"numFound":3', $solrContent, 'Could not index document into solr');
 
         // but when we facet on the categoryPaths:/Men/Shoes \/ Socks/ we should only have one result since the others

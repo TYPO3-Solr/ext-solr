@@ -59,7 +59,7 @@ class SearchResultSetServiceTest extends IntegrationTest
 
         $this->waitToBeVisibleInSolr();
 
-        $solrContent = file_get_contents('http://localhost:8999/solr/core_en/select?q=*:*');
+        $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
         $this->assertContains('002de2729efa650191f82900ea02a0a3189dfabb/pages/1/0/0/0', $solrContent);
 
         $solrConnection = GeneralUtility::makeInstance(ConnectionManager::class)->getConnectionByPageId(1, 0, 0);
@@ -189,7 +189,7 @@ class SearchResultSetServiceTest extends IntegrationTest
     {
         $this->indexPageIdsFromFixture('fe_user_page.xml', [1, 2, 3], [1]);
         $this->waitToBeVisibleInSolr();
-        $solrContent = file_get_contents('http://localhost:8999/solr/core_en/select?q=*:*');
+        $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
         $this->assertContains('"numFound":3', $solrContent);
     }
 

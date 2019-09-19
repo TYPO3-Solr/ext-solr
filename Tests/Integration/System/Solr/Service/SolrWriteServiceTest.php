@@ -28,6 +28,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\Query\ExtractingQuery;
 use ApacheSolrForTypo3\Solr\System\Solr\Service\SolrWriteService;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use Solarium\Client;
+use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -45,13 +46,15 @@ class SolrWriteServiceTest extends IntegrationTest
 
     /**
      * @return void
+     * @throws NoSuchCacheException
      */
     public function setUp()
     {
         parent::setUp();
         $client = new Client(['adapter' => 'Solarium\Core\Client\Adapter\Guzzle']);
         $client->clearEndpoints();
-        $client->createEndpoint(['host' => 'localhost', 'port' => 8999, 'path' => '/solr', 'core' => 'core_en', 'key' => 'admin'] , true);
+        $solrConnectionInfo = $this->getSolrConnectionInfo();
+        $client->createEndpoint(['host' => $solrConnectionInfo['host'], 'port' => $solrConnectionInfo['port'], 'path' => '/solr', 'core' => 'core_en', 'key' => 'admin'] , true);
 
         $this->solrWriteService = GeneralUtility::makeInstance(SolrWriteService::class, $client);
     }
