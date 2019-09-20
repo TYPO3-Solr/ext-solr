@@ -25,6 +25,7 @@ namespace ApacheSolrForTypo3\Solr\Task;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Backend\SiteSelectorField;
+use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Scheduler\AdditionalFieldProviderInterface;
@@ -119,19 +120,21 @@ class IndexQueueWorkerTaskAdditionalFieldProvider implements AdditionalFieldProv
      * class is not relevant, the method is expected to return TRUE
      *
      * @param array $submittedData reference to the array containing the data submitted by the user
-     * @param SchedulerModuleController $schedulerModule reference to the calling object (Scheduler's BE module)
+     * @param SchedulerModuleController $schedulerModule  reference to the calling object (Scheduler's BE module)
      * @return bool True if validation was ok (or selected class is not relevant), FALSE otherwise
+     * @throws \Exception
      */
-    public function validateAdditionalFields(
-        array &$submittedData,
-        SchedulerModuleController $schedulerModule
-    ) {
+    public function validateAdditionalFields(array &$submittedData, SchedulerModuleController $schedulerModule): bool
+    {
         $result = false;
 
         // validate site
-        $sites = $this->siteRepository->getAvailableSites();
-        if (array_key_exists($submittedData['site'], $sites)) {
-            $result = true;
+        $allSites = $this->siteRepository->getAvailableSites();
+        /** @var Site $site */
+        foreach ($allSites as $site) {
+            if($site->getRootPageId() === (int) $submittedData['site']) {
+                return true;
+            }
         }
 
         // escape limit
