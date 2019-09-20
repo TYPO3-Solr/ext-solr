@@ -15,33 +15,6 @@ edit an existing, TypoScript Template record in your page tree and add the provi
 
 .. image:: ../Images/GettingStarted/typo3-include-static-typoscript.png
 
-Update the constants to match the current setup:
-
-.. code-block:: typoscript
-
-    plugin {
-        tx_solr {
-            solr {
-                read {
-                    host = 192.168.99.100
-                    port = 8983
-                }
-                write < .read
-            }
-        }
-    }
-
-Adjust the host according to where your Solr is reachable, see :ref:`started-solr`.
-
-**Note:**
-
-The static template configures what you need to query the solr server and do the indexing.
-In most projects you want to add facets or custom styles. If you want to use the default style you need to add
-the template "Search - Default Stylesheets". Beside that EXT:solr provides a few example typoscript templates that should
-help you to build your own configuration.
-
-.. _started-search-markers:
-
 Search Markers
 --------------
 
@@ -58,39 +31,20 @@ The most simple configuration for my page was:
         stdWrap.dataWrap = <!--TYPO3SEARCH_begin-->|<!--TYPO3SEARCH_end-->
     }
 
+Site Handling or Legacy site mode
+---------------------------------
 
-Domain Records and Indexing
----------------------------
+Site Handling (recommended)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-To enable Solr connections, the extension needs a Domain Record and indexing has to be enabled.
-Therefore enable indexing by setting the following TypoScript:
+TYPO3 9.5 LTS `introduced <https://docs.typo3.org/m/typo3/reference-coreapi/9.5/en-us/ApiOverview/SiteHandling/Basics.html />`_ new concept for configuring sites.
+This method should be preferred from "Legacy site Mode". All the Legacy Site mode things will be removed in feature releases of TYPO3 and EXT:Solr.
 
-.. code-block:: typoscript
+@Todo: Screenshots, site config.yml code blocks and vars, etc.
 
-    config {
-        index_enable = 1
-    }
+Legacy site mode (not recommended)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Also define that your root page is actually a root page:
+.. include::ConfigureExtensionLegacySiteMode
 
-.. image:: /Images/GettingStarted/typo3-root-page.png
-
-Last but not least, add the domain record to the root page:
-
-.. image:: /Images/GettingStarted/typo3-domain-record.png
-
-Initialize Solr Connection
----------------------------
-
-Next, initialize the Solr Connection from TYPO3 and check whether everything works as expected.
-
-To initialize the connection, open the Cache-Menu and start Initialization.
-
-.. image:: /Images/GettingStarted/typo3-initialize-connections.png
-
-Check whether connections to Solr could be established by opening the *Reports* module and go to
-*Status Report* view:
-
-.. image:: /Images/GettingStarted/typo3-check-connections.png
-
-That's it, head over to :ref:`started-index`.
+.. include::
