@@ -152,18 +152,20 @@ class SiteRepository
     {
         $cacheId = 'SiteRepository' . '_' . 'getAvailableSites';
 
-        $methodResult = $this->runtimeCache->get($cacheId);
-        if (!empty($methodResult)) {
-            return $methodResult;
+        $sites = $this->runtimeCache->get($cacheId);
+        if (!empty($sites)) {
+            return $sites;
         }
 
-        $legacySites = $this->extensionConfiguration->getIsAllowLegacySiteModeEnabled() ? $this->getAvailableLegacySites($stopOnInvalidSite) : [];
-        $typo3ManagedSolrSites = $this->getAvailableTYPO3ManagedSites($stopOnInvalidSite);
+        if ($this->extensionConfiguration->getIsAllowLegacySiteModeEnabled()) {
+            $sites = $this->getAvailableLegacySites($stopOnInvalidSite);
+        } else {
+            $sites = $this->getAvailableTYPO3ManagedSites($stopOnInvalidSite);
+        }
 
-        $methodResult = array_merge($legacySites, $typo3ManagedSolrSites);
-        $this->runtimeCache->set($cacheId, $methodResult);
+        $this->runtimeCache->set($cacheId, $sites);
 
-        return $methodResult;
+        return $sites;
     }
 
     /**
