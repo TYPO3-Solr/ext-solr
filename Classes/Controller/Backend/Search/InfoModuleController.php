@@ -259,7 +259,7 @@ class InfoModuleController extends AbstractModuleController
         $documentsByCoreAndType = [];
         foreach ($solrCoreConnections as $languageId => $solrCoreConnection) {
             $coreAdmin = $solrCoreConnection->getAdminService();
-            $documents = $this->apacheSolrDocumentRepository->findByPageIdAndByLanguageId($this->selectedPageUID, $languageId);
+            $documents = $this->apacheSolrDocumentRepository->findByPageIdAndByLanguageId($this->requestedPageUID, $languageId);
 
             $documentsByType = [];
             foreach ($documents as $document) {
