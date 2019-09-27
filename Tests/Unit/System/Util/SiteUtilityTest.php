@@ -71,6 +71,55 @@ class SiteUtilityTest extends UnitTest
     }
 
     /**
+     * @return array
+     */
+    public function writeConnectionTestsDataProvider(): array
+    {
+        return [
+            [ // enabling solr_use_write_connection, resolves to specified write host
+                'expectedSolrHost' => 'writehost',
+                'expectedSiteMockConfiguration' => [
+                    'solr_host_read' => 'readhost',
+                    'solr_use_write_connection' => true,
+                    'solr_host_write' => 'writehost'
+                ]
+            ],
+            [ // enabling solr_use_write_connection but not specifying write host, falls back to specified read host
+                'expectedSolrHost' => 'readhost',
+                'expectedSiteMockConfiguration' => [
+                    'solr_host_read' => 'readhost',
+                    'solr_use_write_connection' => true
+                ]
+            ],
+            [ // disabling solr_use_write_connection and specifying write host, falls back to specified read host
+                'expectedSolrHost' => 'readhost',
+                'expectedSiteMockConfiguration' => [
+                    'solr_host_read' => 'readhost',
+                    'solr_use_write_connection' => false,
+                    'solr_host_write' => 'writehost'
+                ]
+            ]
+        ];
+    }
+
+    /**
+     * solr_use_write_connection is functional
+     *
+     * @dataProvider writeConnectionTestsDataProvider
+     * @test
+     */
+    public function solr_use_write_connectionSiteSettingInfluencesTheWriteConnection(string $expectedSolrHost, array $expectedSiteMockConfiguration)
+    {
+        $siteMock = $this->getDumbMock(Site::class);
+        $siteMock->expects($this->any())->method('getConfiguration')->willReturn($expectedSiteMockConfiguration);
+        $property = SiteUtility::getConnectionProperty($siteMock, 'host', 0, 'write');
+
+        $this->assertEquals($expectedSolrHost, $property,
+            'The setting "solr_use_write_connection" from sites config.yaml has no influence on system.' .
+            'The setting "solr_use_write_connection=true/false" must enable or disable the write connection respectively.');
+    }
+
+    /**
      * @test
      */
     public function canLanguageSpecificConfigurationOverwriteGlobalConfiguration()
@@ -86,5 +135,18 @@ class SiteUtilityTest extends UnitTest
         $property = SiteUtility::getConnectionProperty($siteMock, 'host', 2, 'read');
 
         $this->assertSame('readhost.local.de', $property, 'Can not fallback to read property when write property is undefined');
+    }
+
+    /**
+     * @test
+     */
+    public function specifiedDefaultValueIsReturnedByGetConnectionPropertyIfPropertyIsNotDefinedInConfiguration()
+    {
+        $languageMock = $this->getDumbMock(SiteLanguage::class);
+        $siteMock = $this->getDumbMock(Site::class);
+        $siteMock->expects($this->any())->method('getLanguageById')->willReturn($languageMock);
+        $property = SiteUtility::getConnectionProperty($siteMock, 'some_property', 2, 'read', 'value-of_some_property');
+
+        $this->assertEquals('value-of_some_property', $property, 'Can not fall back to defaultValue.');
     }
 }
