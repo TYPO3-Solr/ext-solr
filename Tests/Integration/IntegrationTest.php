@@ -27,10 +27,20 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration;
 use ApacheSolrForTypo3\Solr\Access\Rootline;
 use ApacheSolrForTypo3\Solr\Typo3PageIndexer;
 
+use InvalidArgumentException;
+use Nimut\TestingFramework\Exception\Exception;
+use ReflectionClass;
+use ReflectionException;
+use RuntimeException;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
+use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
+use TYPO3\CMS\Core\Context\Context;
+use TYPO3\CMS\Core\Context\UserAspect;
 use TYPO3\CMS\Core\Core\Environment;
+use TYPO3\CMS\Core\Database\Schema\SchemaMigrator;
+use TYPO3\CMS\Core\Database\Schema\SqlReader;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Localization\LanguageService;
@@ -39,9 +49,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use TYPO3\CMS\Frontend\Page\PageGenerator;
-use TYPO3\CMS\Install\Service\SqlExpectedSchemaService;
-use TYPO3\CMS\Install\Service\SqlSchemaMigrationService;
 use TYPO3\CMS\Core\Tests\Functional\SiteHandling\SiteBasedTestTrait;
+use function getenv;
 
 /**
  * Base class for all integration tests in the EXT:solr project
@@ -94,6 +103,7 @@ abstract class IntegrationTest extends FunctionalTestCase
 
     /**
      * @return void
+     * @throws NoSuchCacheException
      */
     public function setUp()
     {
@@ -103,6 +113,7 @@ abstract class IntegrationTest extends FunctionalTestCase
         chdir(Environment::getPublicPath() . '/');
 
         // during the tests we don't want the core to cache something in cache_core
+        /* @var CacheManager $cacheManager */
         $cacheManager = GeneralUtility::makeInstance(CacheManager::class);
         $coreCache = $cacheManager->getCache('cache_core');
         $coreCache->flush();
@@ -116,7 +127,8 @@ abstract class IntegrationTest extends FunctionalTestCase
      * Loads a Fixture from the Fixtures folder beside the current test case.
      *
      * @param $fixtureName
-     * @throws \TYPO3\CMS\Core\Tests\Exception
+     * @throws ReflectionException
+     * @throws Exception
      */
     protected function importDataSetFromFixture($fixtureName)
     {
@@ -127,6 +139,7 @@ abstract class IntegrationTest extends FunctionalTestCase
      * Returns the absolute root path to the fixtures.
      *
      * @return string
+     * @throws ReflectionException
      */
     protected function getFixtureRootPath()
     {
@@ -138,6 +151,7 @@ abstract class IntegrationTest extends FunctionalTestCase
      *
      * @param $fixtureName
      * @return string
+     * @throws ReflectionException
      */
     protected function getFixturePathByName($fixtureName)
     {
@@ -160,6 +174,7 @@ abstract class IntegrationTest extends FunctionalTestCase
      *
      * @param string $fixtureName
      * @return string
+     * @throws ReflectionException
      */
     protected function getFixtureContentByName($fixtureName)
     {
@@ -168,6 +183,7 @@ abstract class IntegrationTest extends FunctionalTestCase
 
     /**
      * @param string $fixtureName
+     * @throws ReflectionException
      */
     protected function importDumpFromFixture($fixtureName)
     {
@@ -185,14 +201,15 @@ abstract class IntegrationTest extends FunctionalTestCase
      * Imports an ext_tables.sql definition as done by the install tool.
      *
      * @param string $fixtureName
+     * @throws ReflectionException
      */
     protected function importExtTablesDefinition($fixtureName)
     {
         // create fake extension database table and TCA
         $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
 
-        $schemaMigrationService = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Database\\Schema\\SchemaMigrator');
-        $sqlReader = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Database\\Schema\\SqlReader');
+        $schemaMigrationService = GeneralUtility::makeInstance(SchemaMigrator::class);
+        $sqlReader = GeneralUtility::makeInstance(SqlReader::class);
         $sqlCode = $this->getFixtureContentByName($fixtureName);
 
         $createTableStatements = $sqlReader->getCreateTableStatementArray($sqlCode);
@@ -205,7 +222,7 @@ abstract class IntegrationTest extends FunctionalTestCase
         }
 
         if (!empty($result)) {
-            throw new \RuntimeException(implode("\n", $result), 1505058450);
+            throw new RuntimeException(implode("\n", $result), 1505058450);
         }
 
         $insertStatements = $sqlReader->getInsertStatementArray($sqlCode);
@@ -216,10 +233,11 @@ abstract class IntegrationTest extends FunctionalTestCase
      * Returns the directory on runtime.
      *
      * @return string
+     * @throws ReflectionException
      */
     protected function getRuntimeDirectory()
     {
-        $rc = new \ReflectionClass(get_class($this));
+        $rc = new ReflectionClass(get_class($this));
         return dirname($rc->getFileName());
     }
 
@@ -243,7 +261,18 @@ abstract class IntegrationTest extends FunctionalTestCase
     }
 
     /**
-     * @return \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController
+     * Setup configured TSFE
+     *
+     * @param array $TYPO3_CONF_VARS
+     * @param int $id
+     * @param int $type
+     * @param string $no_cache
+     * @param string $cHash
+     * @param null $_2
+     * @param string $MP
+     * @param string $RDCT
+     * @param array $config
+     * @return TypoScriptFrontendController
      */
     protected function getConfiguredTSFE($TYPO3_CONF_VARS = [], $id = 1, $type = 0, $no_cache = '', $cHash = '', $_2 = null, $MP = '', $RDCT = '', $config = [])
     {
@@ -262,7 +291,7 @@ abstract class IntegrationTest extends FunctionalTestCase
         $this->validateTestCoreName($coreName);
 
         // cleanup the solr server
-        $result = file_get_contents('http://localhost:8999/solr/' . $coreName . '/update?stream.body=<delete><query>*:*</query></delete>&commit=true');
+        $result = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/' . $coreName . '/update?stream.body=<delete><query>*:*</query></delete>&commit=true');
         if (strpos($result, '<int name="QTime">') == false) {
             $this->fail('Could not empty solr test index');
         }
@@ -280,18 +309,18 @@ abstract class IntegrationTest extends FunctionalTestCase
     protected function waitToBeVisibleInSolr($coreName = 'core_en')
     {
         $this->validateTestCoreName($coreName);
-        $url = 'http://localhost:8999/solr/' . $coreName . '/update?softCommit=true';
+        $url = $this->getSolrConnectionUriAuthority() . '/solr/' . $coreName . '/update?softCommit=true';
         get_headers($url);
     }
 
     /**
      * @param string $coreName
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     protected function validateTestCoreName($coreName)
     {
         if(!in_array($coreName, $this->testSolrCores)) {
-            throw new \InvalidArgumentException('No valid testcore passed');
+            throw new InvalidArgumentException('No valid testcore passed');
         }
     }
 
@@ -312,7 +341,7 @@ abstract class IntegrationTest extends FunctionalTestCase
      */
     protected function assertSolrContainsDocumentCount($documentCount)
     {
-        $solrContent = file_get_contents('http://localhost:8999/solr/core_en/select?q=*:*');
+        $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
         $this->assertContains('"numFound":' . intval($documentCount), $solrContent, 'Solr contains unexpected amount of documents');
     }
 
@@ -320,6 +349,8 @@ abstract class IntegrationTest extends FunctionalTestCase
      * @param string $fixture
      * @param array $importPageIds
      * @param array $feUserGroupArray
+     * @throws Exception
+     * @throws ReflectionException
      */
     protected function indexPageIdsFromFixture($fixture, $importPageIds, $feUserGroupArray = [0])
     {
@@ -337,7 +368,7 @@ abstract class IntegrationTest extends FunctionalTestCase
         foreach ($importPageIds as $importPageId) {
             $fakeTSFE = $this->fakeTSFE($importPageId, $feUserGroupArray);
 
-            /** @var $pageIndexer \ApacheSolrForTypo3\Solr\Typo3PageIndexer */
+            /** @var $pageIndexer Typo3PageIndexer */
             $pageIndexer = GeneralUtility::makeInstance(Typo3PageIndexer::class, $fakeTSFE);
             $pageIndexer->setPageAccessRootline(Rootline::getAccessRootlineByPageId($importPageId));
             $pageIndexer->indexPage();
@@ -389,9 +420,9 @@ abstract class IntegrationTest extends FunctionalTestCase
      */
     protected function simulateFrontedUserGroups(array $feUserGroupArray)
     {
-        /** @var  $context \TYPO3\CMS\Core\Context\Context::class */
-        $context = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Context\Context::class);
-        $userAspect = $this->getMockBuilder(\TYPO3\CMS\Core\Context\UserAspect::class)->setMethods([])->getMock();
+        /** @var  $context Context::class */
+        $context = GeneralUtility::makeInstance(Context::class);
+        $userAspect = $this->getMockBuilder(UserAspect::class)->setMethods([])->getMock();
         $userAspect->expects($this->any())->method('get')->willReturnCallback(function($key) use($feUserGroupArray){
             if ($key === 'groupIds') {
                 return $feUserGroupArray;
@@ -400,8 +431,13 @@ abstract class IntegrationTest extends FunctionalTestCase
             if ($key === 'isLoggedIn') {
                 return true;
             }
+
+            /* @var UserAspect $originalUserAspect */
+            $originalUserAspect = GeneralUtility::makeInstance(UserAspect::class);
+            return $originalUserAspect->get($key);
         });
         $userAspect->expects($this->any())->method('getGroupIds')->willReturn($feUserGroupArray);
+        /* @var UserAspect $userAspect */
         $context->setAspect('frontend.user', $userAspect);
     }
 
@@ -416,25 +452,31 @@ abstract class IntegrationTest extends FunctionalTestCase
     /**
      * Returns the data handler
      *
-     * @return \TYPO3\CMS\Core\DataHandling\DataHandler
+     * @return DataHandler
      */
     protected function getDataHandler()
     {
         $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageService::class);
-        return GeneralUtility::makeInstance(DataHandler::class);
+        /* @var DataHandler $dataHandler */
+        $dataHandler = GeneralUtility::makeInstance(DataHandler::class);
+        return $dataHandler;
     }
 
     /**
      * @return void
      */
     protected function writeDefaultSolrTestSiteConfiguration() {
-        $this->writeDefaultSolrTestSiteConfigurationForHostAndPort();
+        $solrConnectionInfo = $this->getSolrConnectionInfo();
+        $this->writeDefaultSolrTestSiteConfigurationForHostAndPort($solrConnectionInfo['scheme'], $solrConnectionInfo['host'], $solrConnectionInfo['port']);
     }
 
     /**
+     * @param string $scheme
+     * @param string $host
+     * @param int $port
      * @return void
      */
-    protected function writeDefaultSolrTestSiteConfigurationForHostAndPort($host = 'localhost', $port = 8999)
+    protected function writeDefaultSolrTestSiteConfigurationForHostAndPort($scheme = 'http', $host = 'localhost', $port = 8999)
     {
         $defaultLanguage = $this->buildDefaultLanguageConfiguration('EN', '/en/');
         $defaultLanguage['solr_core_read'] = 'core_en';
@@ -468,7 +510,7 @@ abstract class IntegrationTest extends FunctionalTestCase
         );
 
         $globalSolrSettings = [
-            'solr_scheme_read' => 'http',
+            'solr_scheme_read' => $scheme,
             'solr_host_read' => $host,
             'solr_port_read' => $port,
             'solr_timeout_read' => 20,
@@ -496,5 +538,26 @@ abstract class IntegrationTest extends FunctionalTestCase
                 $this->fail("Executed deprecated EXT:solr code: " . $msg);
             }
         });
+    }
+
+    protected function getSolrConnectionInfo(): array
+    {
+        return [
+            'scheme' => getenv('TESTING_SOLR_SCHEME') ?: 'http',
+            'host' => getenv('TESTING_SOLR_HOST') ?: 'localhost',
+            'port' => getenv('TESTING_SOLR_PORT') ?: 8999,
+        ];
+    }
+
+    /**
+     * Returns solr connection URI authority as string as
+     * scheme://host:port
+     *
+     * @return string
+     */
+    protected function getSolrConnectionUriAuthority(): string
+    {
+        $solrConnectionInfo = $this->getSolrConnectionInfo();
+        return $solrConnectionInfo['scheme'] . '://' . $solrConnectionInfo['host'] . ':' . $solrConnectionInfo['port'];
     }
 }

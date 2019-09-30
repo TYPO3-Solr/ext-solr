@@ -16,13 +16,6 @@
 
                     enabled = 1
 
-                    solr {
-                        scheme = http
-                        host   = localhost
-                        port   = 8999
-                        path   = /solr/core_en/
-                    }
-
                     index {
                         fieldProcessingInstructions {
                             changed = timestampToIsoDate

@@ -28,6 +28,7 @@ use ApacheSolrForTypo3\Solr\System\Solr\Service\AbstractSolrService;
 use ApacheSolrForTypo3\Solr\System\Solr\Service\SolrAdminService;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use Solarium\Client;
+use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -45,13 +46,15 @@ class SolrAdminServiceTest extends IntegrationTest
 
     /**
      * @return void
+     * @throws NoSuchCacheException
      */
     public function setUp()
     {
         parent::setUp();
         $client = new Client(['adapter' => 'Solarium\Core\Client\Adapter\Guzzle']);
         $client->clearEndpoints();
-        $client->createEndpoint(['host' => 'localhost', 'port' => 8999, 'path' => '/solr', 'core' => 'core_en', 'key' => 'admin'] , true);
+        $solrConnectionInfo = $this->getSolrConnectionInfo();
+        $client->createEndpoint(['host' => $solrConnectionInfo['host'], 'port' => $solrConnectionInfo['port'], 'path' => '/solr', 'core' => 'core_en', 'key' => 'admin'] , true);
 
         $this->solrAdminService = GeneralUtility::makeInstance(SolrAdminService::class, $client);
     }
@@ -197,7 +200,8 @@ class SolrAdminServiceTest extends IntegrationTest
     {
         $client = new Client(['adapter' => 'Solarium\Core\Client\Adapter\Guzzle']);
         $client->clearEndpoints();
-        $client->createEndpoint(['host' => 'localhost', 'port' => 8999, 'path' => '/solr', 'core' => 'core_de', 'key' => 'admin'] , true);
+        $solrConnectionInfo = $this->getSolrConnectionInfo();
+        $client->createEndpoint(['host' => $solrConnectionInfo['host'], 'port' => $solrConnectionInfo['port'], 'path' => '/solr', 'core' => 'core_de', 'key' => 'admin'] , true);
 
         $this->solrAdminService = GeneralUtility::makeInstance(SolrAdminService::class, $client);
         $this->assertSame("german", $this->solrAdminService->getSchema()->getLanguage(), "Could not get language from core in non default language");
