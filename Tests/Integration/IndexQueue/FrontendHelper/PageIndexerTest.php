@@ -234,7 +234,6 @@ class PageIndexerTest extends IntegrationTest
      */
     public function canExecuteAdditionalPageIndexer()
     {
-        $this->markTestSkipped('Need to be checked');
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageAddDocuments']['TestAdditionalPageIndexer'] = TestAdditionalPageIndexer::class;
 
         $this->importDataSetFromFixture('can_index_into_solr.xml');
