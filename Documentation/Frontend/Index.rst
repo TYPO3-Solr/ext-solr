@@ -6,7 +6,7 @@
 .. include:: ../Includes.txt
 
 
-.. _conf-backend:
+.. _conf-frontend:
 
 
 Frontend

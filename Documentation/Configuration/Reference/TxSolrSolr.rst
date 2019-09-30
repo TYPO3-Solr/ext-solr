@@ -33,7 +33,7 @@ As fallback (when nothing special is configured in read or write, EXT:solr is fa
 
 Example:
 
-* When nothing is configured in ```plugin.tx_solr.solr.read.host``` the path ```plugin.tx_solr.solr.host```is used.
+* When nothing is configured in ```plugin.tx_solr.solr.read.host``` the path ```plugin.tx_solr.solr.host``` is used.
 
 
 .. contents::

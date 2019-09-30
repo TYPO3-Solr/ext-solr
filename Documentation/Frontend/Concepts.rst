@@ -16,5 +16,5 @@ Along with this change some concepts have changed:
     * plugin.tx_solr.search.faceting.facetLinkATagParams or plugin.tx_solr.search.faceting.[facetName].facetLinkATagParams When you need something like this, you can just change the partials or render a facet with a custom partial (partialName = MyPartial) and add the properties there.
     * plugin.tx_solr.search.faceting.removeFacetLinkText This can be done just be rendering the text in the partial, that you need.
 
-* The setting faceting.facets.[facetName].selectingSelectedFacetOptionRemovesFilter has been removed, since it is possible to build this functionality just with Fluid ViewHelpers. The file "EXT:solr/Resources/Private/Templates/Partials/Facets/OptionsToggle.html" shows
-how f:if together with option.selected can be used to have this behaviour.
+* The setting faceting.facets.[facetName].selectingSelectedFacetOptionRemovesFilter has been removed, since it is possible to build this functionality just with Fluid ViewHelpers. The file "EXT:solr/Resources/Private/Templates/Partials/Facets/OptionsToggle.html" shows how f:if together with ```option.selected``` can be used to have this behaviour.
+

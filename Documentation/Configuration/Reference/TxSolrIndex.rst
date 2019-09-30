@@ -682,7 +682,7 @@ Example:
     }
 
 
-The ```matchPatterns`` can be used to configure pattern that can occure in the content to add that class. In addition ```unmatchPatterns```can be configured to define patterns that should not occure in the content.
+The ```matchPatterns``` can be used to configure pattern that can occure in the content to add that class. In addition ```unmatchPatterns``` can be configured to define patterns that should not occure in the content.
 
 Patterns are regular expressions. You configure everything that is possible with regular expressions.
 

@@ -359,7 +359,7 @@ This parameter defines the "phrase slop" value, which represents the number of p
 Note: The value of this setting has NO influence on explicit phrase search.
 
 query.phrase.querySlop
-~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~
 
 :Type: Integer
 :TS Path: plugin.tx_solr.search.query.phrase.querySlop
@@ -413,7 +413,7 @@ This parameter defines the "bigram phrase slop" value, which represents the numb
 Note: The value of this setting has NO influence on explicit phrase search.
 
 query.trigramPhrase
-~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~
 
 :Type: Boolean
 :TS Path: plugin.tx_solr.search.query.trigramPhrase
@@ -425,7 +425,7 @@ This parameter enables the phrase search feature from Apache Solr. Setting is to
 Enabling phrase search feature influences the scores of documents with phrase occurrences.
 
 query.trigramPhrase.fields
-~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 :Type: String
 :TS Path: plugin.tx_solr.search.query.trigramPhrase.fields
@@ -439,7 +439,7 @@ Fields are defined as a comma separated list and same way as queryFields.
 Note: The value of this setting has NO influence on explicit phrase search.
 
 query.trigramPhrase.slop
-~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 :Type: Integer
 :TS Path: plugin.tx_solr.search.query.trigramPhrase.slop

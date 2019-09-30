@@ -15,6 +15,8 @@ edit an existing TypoScript Template record in your page tree and add the provid
 
 .. image:: ../Images/GettingStarted/typo3-include-static-typoscript.png
 
+.. _started-search-markers:
+
 Search Markers
 --------------
 
