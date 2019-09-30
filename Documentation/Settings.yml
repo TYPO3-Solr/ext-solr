@@ -15,11 +15,12 @@ conf.py:
     - t3sphinx.ext.targets
   intersphinx_mapping:
     t3tsref:
-    - https://docs.typo3.org/typo3cms/TyposcriptReference/
-    - /var/www/dev-master.local.typo3.org/typo3temp/tx_sphinx/intersphinx/t3tsref-efb6a4193f9a7fa543b2c135e4f9c6c7-objects.inv
+      - https://docs.typo3.org/typo3cms/GettingStartedTutorial/
+      - https://docs.typo3.org/typo3cms/TyposcriptReference/
+      - /var/www/dev-master.local.typo3.org/typo3temp/tx_sphinx/intersphinx/t3tsref-efb6a4193f9a7fa543b2c135e4f9c6c7-objects.inv
     t3api:
-    - https://docs.typo3.org/typo3cms/CoreApiReference/
-    - /var/www/dev-master.local.typo3.org/typo3temp/tx_sphinx/intersphinx/t3api-2761377f435645484c196727c22473f7-objects.inv
+      - https://docs.typo3.org/typo3cms/CoreApiReference/
+      - /var/www/dev-master.local.typo3.org/typo3temp/tx_sphinx/intersphinx/t3api-2761377f435645484c196727c22473f7-objects.inv
   latex_documents:
   - - Index
     - ExtSolr.tex

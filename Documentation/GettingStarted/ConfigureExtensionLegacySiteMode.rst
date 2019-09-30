@@ -5,13 +5,15 @@ Extension Configuration
 
 **Note:**
 
-    This variant of configuration is outdated and will not work with enabled "Site Handling" for site.
+    This variant of configuration is outdated and will not work with enabled `"Site Handling" <https://docs.typo3.org/m/typo3/reference-coreapi/9.5/en-us/ApiOverview/SiteHandling/Basics.html />`_.
 
 To enable Solr with legacy site configuration(TypoScript, conditions and co.) you must enable "Legacy Site Mode" in Extension configuration under Backend "Settings":>"Extension Configuration":>"solr".
 
 **Note:**
 
     This setting will enable globally for the TYPO3 instance and can not be enabled/disabled per Site.
+
+After that you can proceed with configuration via TypoScript.
 
 TypoScript
 ----------
