@@ -56,6 +56,30 @@ Site Handling (recommended)
 In TYPO3 9.5 the new backend module called "Sites" was introduced.
 This Module can be used to setup and configure the Apache Solr connections.
 
+    .. tip::
+
+        Please refer to `official TYPO3 docs about site handling <https://docs.typo3.org/m/typo3/tutorial-getting-started/9.5/en-us/NextSteps/Integrators/Index.html#site-and-language-handling>`__, to setup your first site configuration.
+
+Configure Solr Connections
+""""""""""""""""""""""""""
+
+.. important::
+
+    The Site-Handling GUI provides the common setup scenario for most users only.
+    There is no possibility in the GUI to setup different things for each language in site configuration except Corename(core path).
+
+.. tip::
+
+    All in sites config.yaml global defined thing for EXT:solr can be configured for each language differently by editing this file manually.
+
+**As first step the authority part of URI to Apache Solr machine must be configured.**
+
+.. image:: ../Images/GettingStarted/Site_handling_Setup_solr_01.jpg
+
+**The Corename(aka path to core) for each available language must be assigned respectively.**
+
+.. image:: ../Images/GettingStarted/Site_handling_Setup_solr_02.jpg
+
 Legacy site mode (not recommended)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
