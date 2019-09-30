@@ -117,7 +117,6 @@ class PageTest extends IntegrationTest
      */
     public function initializerIsFillingQueueWithMountPages()
     {
-        $this->markTestSkipped('Fixme');
         $this->importDataSetFromFixture('can_add_mount_pages.xml');
 
         $this->assertEmptyQueue();
@@ -152,8 +151,6 @@ class PageTest extends IntegrationTest
      */
     public function initializerIsFillingQueueWithMountedNonRootPages()
     {
-        $this->markTestSkipped('Fixme');
-
         $this->importDataSetFromFixture('mouted_shared_non_root_page_from_different_tree_can_be_indexed.xml');
         $this->assertEmptyQueue();
         $this->initializeAllPageIndexQueues();
@@ -188,8 +185,6 @@ class PageTest extends IntegrationTest
      */
     public function initializerIsFillingQueueWithMountedRootPages()
     {
-        $this->markTestSkipped('Fixme');
-
         $this->importDataSetFromFixture('mouted_shared_root_page_from_different_tree_can_be_indexed.xml');
         $this->assertEmptyQueue();
         $this->initializeAllPageIndexQueues();
@@ -228,8 +223,6 @@ class PageTest extends IntegrationTest
      */
     public function initializerIsFillingQueuesWithMultipleSitesMounted()
     {
-        $this->markTestSkipped('Fixme');
-
         $this->importDataSetFromFixture('mouted_shared_page_from_multiple_trees_can_be_queued.xml');
         $this->assertEmptyQueue();
         $this->initializeAllPageIndexQueues();
@@ -240,7 +233,7 @@ class PageTest extends IntegrationTest
         $this->assertTrue($this->indexQueue->containsItem('pages', 14));
         $this->assertTrue($this->indexQueue->containsItem('pages', 24));
 
-        $this->assertTrue($this->indexQueue->containsItem('pages', 2));
+        $this->assertTrue($this->indexQueue->containsItem('pages', 111));
         $this->assertTrue($this->indexQueue->containsItem('pages', 34));
 
         $items = $this->indexQueue->getItems('pages', 24);
@@ -260,8 +253,6 @@ class PageTest extends IntegrationTest
      */
     public function initializerAddsInfoMessagesAboutInvalidMountPages()
     {
-        $this->markTestSkipped('Fixme');
-
         $this->importDataSetFromFixture('can_add_mount_pages.xml');
 
         $this->assertEmptyQueue();
