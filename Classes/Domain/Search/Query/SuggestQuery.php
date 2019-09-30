@@ -81,5 +81,6 @@ class SuggestQuery extends Query
         $this->addParam('facet.field', $this->configuration['suggestField']);
         $this->addParam('facet.limit', $this->configuration['numberOfSuggestions']);
         $this->addParam('facet.mincount', 1);
+        $this->addParam('facet.method', 'enum');
     }
 }
