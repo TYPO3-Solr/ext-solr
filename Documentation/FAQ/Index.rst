@@ -5,14 +5,6 @@
 
 .. include:: ../Includes.txt
 
-.. raw:: latex
-
-    \newpage
-
-.. raw:: pdf
-
-   PageBreak
-
 .. _faq-index:
 
 FAQ - Frequently Asked Questions

@@ -1,12 +1,5 @@
 .. _getting-started:
 
-.. raw:: latex
-
-    \newpage
-
-.. raw:: pdf
-
-   PageBreak
 
 ***************
 Getting Started

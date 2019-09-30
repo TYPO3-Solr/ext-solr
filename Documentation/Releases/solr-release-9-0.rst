@@ -9,13 +9,6 @@
 .. _conf-logging:
 
 
-.. raw:: latex
-
-    \newpage
-
-.. raw:: pdf
-
-   PageBreak
 
 ===========================
 Apache Solr for TYPO3 9.0.0

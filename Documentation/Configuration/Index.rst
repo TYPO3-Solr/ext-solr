@@ -8,15 +8,6 @@
 
 .. _conf-index:
 
-
-.. raw:: latex
-
-    \newpage
-
-.. raw:: pdf
-
-   PageBreak
-
 Configuration Reference
 =======================
 

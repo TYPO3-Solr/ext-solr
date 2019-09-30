@@ -9,14 +9,6 @@
 .. _conf-backend:
 
 
-.. raw:: latex
-
-    \newpage
-
-.. raw:: pdf
-
-   PageBreak
-
 Frontend
 ========
 

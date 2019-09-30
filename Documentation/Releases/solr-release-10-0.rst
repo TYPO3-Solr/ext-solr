@@ -8,16 +8,6 @@
 .. include:: ../Includes.txt
 
 
-.. _conf-logging:
-
-
-.. raw:: latex
-
-    \newpage
-
-.. raw:: pdf
-
-   PageBreak
 
 ============================
 Apache Solr for TYPO3 10.0.0
