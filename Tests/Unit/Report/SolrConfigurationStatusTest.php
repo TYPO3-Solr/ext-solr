@@ -49,6 +49,7 @@ class SolrConfigurationStatusTest extends UnitTest
     protected $systemDomainRepository;
 
     public function setUp() {
+        $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['solr'] = [];
         // we mock the methods to external dependencies.
         $this->systemDomainRepository = $this->getMockBuilder(SystemDomainRepository::class)->setMethods(
             ['findDomainRecordsByRootPagesIds']
