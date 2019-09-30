@@ -184,9 +184,14 @@ class RecordMonitor extends AbstractDataHandlerListener
             $this->applyVersionSwap($table, $uid, $tceMain);
         }
 
-        if ($command === 'move' && $table === 'pages' && $GLOBALS['BE_USER']->workspace == 0) {
-            // moving pages in LIVE workspace
-            $this->applyPageChangesToQueue($uid);
+        // moving pages/records in LIVE workspace
+        if ($command === 'move' && $GLOBALS['BE_USER']->workspace == 0) {
+            if ($table === 'pages') {
+                $this->applyPageChangesToQueue($uid);
+            } else {
+                $this->applyRecordChangesToQueue($table, $uid, $value);
+            }
+
         }
     }
 
