@@ -713,9 +713,12 @@ class SearchControllerTest extends AbstractFrontendControllerTest
      */
     public function frontendWillRenderErrorMessageForSolrNotAvailableAction()
     {
-        $this->markTestSkipped('Fixme');
+        $this->applyUsingErrorControllerForCMS9andAbove();
+
+        // set a wrong port where no solr is running
+        $this->writeDefaultSolrTestSiteConfigurationForHostAndPort('http','localhost', 4711);
         $this->importDataSetFromFixture('can_render_error_message_when_solr_unavailable.xml');
-        $GLOBALS['TSFE'] = $this->getConfiguredTSFE([], 333);
+        $GLOBALS['TSFE'] = $this->getConfiguredTSFE([], 1);
 
         $this->searchRequest->setControllerActionName('solrNotAvailable');
         $this->searchController->processRequest($this->searchRequest, $this->searchResponse);
@@ -732,7 +735,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
     {
         return [
             ['action' => 'results', 'getArguments' =>['q' => '*']],
-            ['action' => 'detail', 'getArguments' =>['id' => 333]],
+            ['action' => 'detail', 'getArguments' =>['id' => 1]],
         ];
     }
 
@@ -744,13 +747,15 @@ class SearchControllerTest extends AbstractFrontendControllerTest
      */
     public function frontendWillForwardsToErrorActionWhenSolrEndpointIsNotAvailable($action, $getArguments)
     {
-        $this->markTestSkipped('Fixme');
+        $this->applyUsingErrorControllerForCMS9andAbove();
+        // set a wrong port where no solr is running
+        $this->writeDefaultSolrTestSiteConfigurationForHostAndPort('http','localhost', 4711);
         $this->expectException(StopActionException::class);
         $this->expectExceptionMessage('forward');
         $this->expectExceptionCode(1476045801);
 
         $this->importDataSetFromFixture('can_render_error_message_when_solr_unavailable.xml');
-        $GLOBALS['TSFE'] = $this->getConfiguredTSFE([], 333);
+        $GLOBALS['TSFE'] = $this->getConfiguredTSFE([], 1);
 
         $_GET = $getArguments;
         $this->searchRequest->setControllerActionName($action);

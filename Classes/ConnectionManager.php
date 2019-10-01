@@ -133,12 +133,7 @@ class ConnectionManager implements SingletonInterface
             return $site->getSolrConnectionConfiguration($language);
         } catch(InvalidArgumentException $e) {
             /* @var NoSolrConnectionFoundException $noSolrConnectionException */
-            $noSolrConnectionException = GeneralUtility::makeInstance(
-                NoSolrConnectionFoundException::class,
-                /** @scrutinizer ignore-type */  'Could not find a Solr connection for page [' . $pageId. '] and language [' . $language . '].',
-                /** @scrutinizer ignore-type */ 1575396474
-            );
-            $noSolrConnectionException->setLanguageId($language);
+            $noSolrConnectionException = $this->buildNoConnectionException($pageId, $language);
             throw $noSolrConnectionException;
         }
     }
@@ -161,13 +156,7 @@ class ConnectionManager implements SingletonInterface
 
             return $solrConnection;
         } catch(InvalidArgumentException $e) {
-            /* @var NoSolrConnectionFoundException $noSolrConnectionException */
-            $noSolrConnectionException = GeneralUtility::makeInstance(
-                NoSolrConnectionFoundException::class,
-                /** @scrutinizer ignore-type */  'Could not find a Solr connection for page [' . $pageId. '] and language [' . $language . '].',
-                /** @scrutinizer ignore-type */ 1575396474
-            );
-            $noSolrConnectionException->setLanguageId($language);
+            $noSolrConnectionException = $this->buildNoConnectionException($pageId, $language);
             throw $noSolrConnectionException;
         }
     }
@@ -190,12 +179,7 @@ class ConnectionManager implements SingletonInterface
             return $site->getSolrConnectionConfiguration($language);
         } catch(InvalidArgumentException $e) {
             /* @var NoSolrConnectionFoundException $noSolrConnectionException */
-            $noSolrConnectionException = GeneralUtility::makeInstance(
-                NoSolrConnectionFoundException::class,
-                /** @scrutinizer ignore-type */  'Could not find a Solr connection for page [' . $pageId. '] and language [' . $language . '].',
-                /** @scrutinizer ignore-type */ 1575396474
-            );
-            $noSolrConnectionException->setLanguageId($language);
+            $noSolrConnectionException = $this->buildNoConnectionException($pageId, $language);
             throw $noSolrConnectionException;
         }
     }
@@ -528,5 +512,24 @@ class ConnectionManager implements SingletonInterface
         }
 
         return $filteredConnections;
+    }
+
+    /**
+     * @param $pageId
+     * @param $language
+     * @return NoSolrConnectionFoundException
+     */
+    protected function buildNoConnectionException($pageId, $language): NoSolrConnectionFoundException
+    {
+        /* @var NoSolrConnectionFoundException $noSolrConnectionException */
+        $noSolrConnectionException = GeneralUtility::makeInstance(
+            NoSolrConnectionFoundException::class,
+            /** @scrutinizer ignore-type */
+            'Could not find a Solr connection for page [' . $pageId . '] and language [' . $language . '].',
+            /** @scrutinizer ignore-type */
+            1575396474
+        );
+        $noSolrConnectionException->setLanguageId($language);
+        return $noSolrConnectionException;
     }
 }
