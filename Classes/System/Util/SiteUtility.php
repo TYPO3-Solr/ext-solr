@@ -42,13 +42,15 @@ class SiteUtility
     /**
      * Determines if the site where the page belongs to is managed with the TYPO3 site management.
      *
+     * @param int $pageId
      * @return boolean
      */
-    public static function getIsSiteManagedSite($pageId)
+    public static function getIsSiteManagedSite(int $pageId): bool
     {
 
         $siteFinder = GeneralUtility::makeInstance(SiteFinder::class);
         try {
+            /* @var SiteFinder $siteFinder */
             $site = $siteFinder->getSiteByPageId($pageId);
         } catch (SiteNotFoundException $e) {
             return false;
@@ -60,6 +62,8 @@ class SiteUtility
     /**
      * This method is used to retrieve the connection configuration from the TYPO3 site configuration.
      *
+     * Note: Language context properties have precedence over global settings.
+     *
      * The configuration is done in the globals configuration of a site, and be extended in the language specific configuration
      * of a site.
      *
@@ -67,20 +71,42 @@ class SiteUtility
      *
      * In addition every property can be defined for the ```read``` and ```write``` scope.
      *
-     * The convension for propery keys is "solr_{propertyName}_{scope}". With the configuration "solr_host_read" you define the host
+     * The convention for property keys is "solr_{propertyName}_{scope}". With the configuration "solr_host_read" you define the host
      * for the solr read connection.
      *
      * @param Site $typo3Site
-     * @param $property
-     * @param $languageId
-     * @param $scope
-     * @param null $defaultValue
+     * @param string $property
+     * @param int $languageId
+     * @param string $scope
+     * @param string $defaultValue
      * @return string
      */
-    public static function getConnectionProperty(Site $typo3Site, $property, $languageId, $scope, $defaultValue = null): string
+    public static function getConnectionProperty(Site $typo3Site, string $property, int $languageId, string $scope, string $defaultValue = null): string
     {
+        $value = self::getConnectionPropertyOrFallback($typo3Site, $property, $languageId, $scope);
+        if ($value === null) {
+            return $defaultValue;
+        }
+        return $value;
+    }
 
-        // convention kez solr_$property_$scope
+    /**
+     * Resolves site configuration properties.
+     * Language context properties have precedence over global settings.
+     *
+     * @param Site $typo3Site
+     * @param string $property
+     * @param int $languageId
+     * @param string $scope
+     * @return mixed
+     */
+    protected static function getConnectionPropertyOrFallback(Site $typo3Site, string $property, int $languageId, string $scope)
+    {
+        if ($scope === 'write' && !self::writeConnectionIsEnabled($typo3Site, $languageId)) {
+            $scope = 'read';
+        }
+
+        // convention key solr_$property_$scope
         $keyToCheck = 'solr_' . $property . '_' . $scope;
 
         // convention fallback key solr_$property_read
@@ -89,21 +115,37 @@ class SiteUtility
         // try to find language specific setting if found return it
         $languageSpecificConfiguration = $typo3Site->getLanguageById($languageId)->toArray();
         $value = self::getValueOrFallback($languageSpecificConfiguration, $keyToCheck, $fallbackKey);
-
         if ($value !== null) {
             return $value;
         }
 
         // if not found check global configuration
         $siteBaseConfiguration = $typo3Site->getConfiguration();
+        return self::getValueOrFallback($siteBaseConfiguration, $keyToCheck, $fallbackKey);
+    }
 
-        $value = self::getValueOrFallback($siteBaseConfiguration, $keyToCheck, $fallbackKey);
-        if ($value === null) {
-            return $defaultValue;
+    /**
+     * Checks whether write connection is enabled.
+     * Language context properties have precedence over global settings.
+     *
+     * @param Site $typo3Site
+     * @param int $languageId
+     * @return bool
+     */
+    protected static function writeConnectionIsEnabled(Site $typo3Site, int $languageId): bool
+    {
+        $languageSpecificConfiguration = $typo3Site->getLanguageById($languageId)->toArray();
+        $value = self::getValueOrFallback($languageSpecificConfiguration, 'solr_use_write_connection', 'solr_use_write_connection');
+        if ($value !== null) {
+            return $value;
         }
-        return $value;
 
-
+        $siteBaseConfiguration = $typo3Site->getConfiguration();
+        $value = self::getValueOrFallback($siteBaseConfiguration, 'solr_use_write_connection', 'solr_use_write_connection');
+        if ($value !== null) {
+            return $value;
+        }
+        return false;
     }
 
     /**
