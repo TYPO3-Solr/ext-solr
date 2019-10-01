@@ -433,14 +433,14 @@ class SiteRepository
      * @param array $rootPageRecord
      * @return Typo3ManagedSite
      */
-    protected function buildTypo3ManagedSite(array $rootPageRecord): Typo3ManagedSite
+    protected function buildTypo3ManagedSite(array $rootPageRecord): ?Typo3ManagedSite
     {
         $solrConfiguration = Util::getSolrConfigurationFromPageId($rootPageRecord['uid']);
         /** @var \TYPO3\CMS\Core\Site\Entity\Site $typo3Site */
         try {
             $typo3Site = $this->siteFinder->getSiteByPageId($rootPageRecord['uid']);
         } catch (SiteNotFoundException $e) {
-            throw new \InvalidArgumentException("No site found with uid ". intval($rootPageRecord['uid']));
+            return null;
         }
         $domain = $typo3Site->getBase()->getHost();
 

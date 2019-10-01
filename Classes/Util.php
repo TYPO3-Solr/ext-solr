@@ -403,7 +403,9 @@ class Util
         /** @var $siteRepository SiteRepository */
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $site = $siteRepository->getSiteByPageId($pageId);
-        $GLOBALS['TSFE']->getPageAndRootlineWithDomain($site->getRootPageId());
+        if (!is_null($site)) {
+            $GLOBALS['TSFE']->getPageAndRootlineWithDomain($site->getRootPageId());
+        }
     }
 
     /**
