@@ -124,16 +124,17 @@ class ConnectionManager implements SingletonInterface
      * @return array A solr configuration.
      * @throws NoSolrConnectionFoundException
      */
-    public function getConfigurationByPageId($pageId, $language = 0, $mount = '')
+    public function getConfigurationByPageId(int $pageId, int $language = 0, string $mount = '')
     {
         trigger_error('solr:deprecation: Method getConfigurationByPageId is deprecated since EXT:solr 10 and will be removed in v11, use Site object/SiteRepository directly.', E_USER_DEPRECATED);
 
         try {
             $site = $this->siteRepository->getSiteByPageId($pageId, $mount);
+            $this->throwExceptionOnInvalidSite($site, 'No site for pageId ' . $pageId);
             return $site->getSolrConnectionConfiguration($language);
         } catch(InvalidArgumentException $e) {
             /* @var NoSolrConnectionFoundException $noSolrConnectionException */
-            $noSolrConnectionException = $this->buildNoConnectionException($pageId, $language);
+            $noSolrConnectionException = $this->buildNoConnectionExceptionForPageAndLanguage($pageId, $language);
             throw $noSolrConnectionException;
         }
     }
@@ -151,12 +152,12 @@ class ConnectionManager implements SingletonInterface
     {
         try {
             $site = $this->siteRepository->getSiteByPageId($pageId, $mount);
+            $this->throwExceptionOnInvalidSite($site, 'No site for pageId ' . $pageId);
             $config = $site->getSolrConnectionConfiguration($language);
             $solrConnection = $this->getConnectionFromConfiguration($config);
-
             return $solrConnection;
         } catch(InvalidArgumentException $e) {
-            $noSolrConnectionException = $this->buildNoConnectionException($pageId, $language);
+            $noSolrConnectionException = $this->buildNoConnectionExceptionForPageAndLanguage($pageId, $language);
             throw $noSolrConnectionException;
         }
     }
@@ -176,10 +177,12 @@ class ConnectionManager implements SingletonInterface
 
         try {
             $site = $this->siteRepository->getSiteByRootPageId($pageId);
+            $this->throwExceptionOnInvalidSite($site, 'No site for pageId ' . $pageId);
+
             return $site->getSolrConnectionConfiguration($language);
         } catch(InvalidArgumentException $e) {
             /* @var NoSolrConnectionFoundException $noSolrConnectionException */
-            $noSolrConnectionException = $this->buildNoConnectionException($pageId, $language);
+            $noSolrConnectionException = $this->buildNoConnectionExceptionForPageAndLanguage($pageId, $language);
             throw $noSolrConnectionException;
         }
     }
@@ -196,17 +199,13 @@ class ConnectionManager implements SingletonInterface
     {
         try {
             $site = $this->siteRepository->getSiteByRootPageId($pageId);
+            $this->throwExceptionOnInvalidSite($site, 'No site for pageId ' . $pageId);
             $config = $site->getSolrConnectionConfiguration($language);
             $solrConnection = $this->getConnectionFromConfiguration($config);
             return $solrConnection;
         } catch (InvalidArgumentException $e) {
             /* @var NoSolrConnectionFoundException $noSolrConnectionException */
-            $noSolrConnectionException = GeneralUtility::makeInstance(
-                NoSolrConnectionFoundException::class,
-                /** @scrutinizer ignore-type */  'Could not find a Solr connection for page [' . $pageId. '] and language [' . $language . '].',
-                /** @scrutinizer ignore-type */ 1875396474
-            );
-            $noSolrConnectionException->setLanguageId($language);
+            $noSolrConnectionException = $this->buildNoConnectionExceptionForPageAndLanguage($pageId, $language);
             throw $noSolrConnectionException;
         }
     }
@@ -519,17 +518,46 @@ class ConnectionManager implements SingletonInterface
      * @param $language
      * @return NoSolrConnectionFoundException
      */
-    protected function buildNoConnectionException($pageId, $language): NoSolrConnectionFoundException
+    protected function buildNoConnectionExceptionForPageAndLanguage($pageId, $language): NoSolrConnectionFoundException
+    {
+        $message = 'Could not find a Solr connection for page [' . $pageId . '] and language [' . $language . '].';
+        $noSolrConnectionException = $this->buildNoConnectionException($message);
+
+        $noSolrConnectionException->setLanguageId($language);
+        return $noSolrConnectionException;
+    }
+
+    /**
+     * Throws a no connection exception when no site was passed.
+     *
+     * @param Site|null $site
+     * @param $message
+     * @throws NoSolrConnectionFoundException
+     */
+    protected function throwExceptionOnInvalidSite(?Site $site, string $message)
+    {
+        if (!is_null($site)) {
+            return;
+        }
+
+        throw $this->buildNoConnectionException($message);
+    }
+
+    /**
+     * Build a NoSolrConnectionFoundException with the passed message.
+     * @param string $message
+     * @return NoSolrConnectionFoundException
+     */
+    protected function buildNoConnectionException(string $message): NoSolrConnectionFoundException
     {
         /* @var NoSolrConnectionFoundException $noSolrConnectionException */
         $noSolrConnectionException = GeneralUtility::makeInstance(
             NoSolrConnectionFoundException::class,
             /** @scrutinizer ignore-type */
-            'Could not find a Solr connection for page [' . $pageId . '] and language [' . $language . '].',
+            $message,
             /** @scrutinizer ignore-type */
             1575396474
         );
-        $noSolrConnectionException->setLanguageId($language);
         return $noSolrConnectionException;
     }
 }
