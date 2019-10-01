@@ -3,7 +3,7 @@
 
     <sys_template>
         <uid>1</uid>
-        <pid>333</pid>
+        <pid>1</pid>
         <root>1</root>
         <clear>3</clear>
         <config>
@@ -300,7 +300,7 @@
         <static_file_mode>0</static_file_mode>
     </sys_template>
     <pages>
-        <uid>333</uid>
+        <uid>1</uid>
         <is_siteroot>1</is_siteroot>
         <doktype>1</doktype>
         <title>Products</title>

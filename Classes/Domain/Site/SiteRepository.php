@@ -34,6 +34,7 @@ use ApacheSolrForTypo3\Solr\System\Service\SiteService;
 use ApacheSolrForTypo3\Solr\System\Util\SiteUtility;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Registry;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -436,7 +437,11 @@ class SiteRepository
     {
         $solrConfiguration = Util::getSolrConfigurationFromPageId($rootPageRecord['uid']);
         /** @var \TYPO3\CMS\Core\Site\Entity\Site $typo3Site */
-        $typo3Site = $this->siteFinder->getSiteByPageId($rootPageRecord['uid']);
+        try {
+            $typo3Site = $this->siteFinder->getSiteByPageId($rootPageRecord['uid']);
+        } catch (SiteNotFoundException $e) {
+            throw new \InvalidArgumentException("No site found with uid ". intval($rootPageRecord['uid']));
+        }
         $domain = $typo3Site->getBase()->getHost();
 
         $siteHash = $this->getSiteHashForDomain($domain);
