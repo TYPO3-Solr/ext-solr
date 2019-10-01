@@ -6,16 +6,7 @@
 .. include:: ../Includes.txt
 
 
-.. _conf-logging:
-
-
-.. raw:: latex
-
-    \newpage
-
-.. raw:: pdf
-
-   PageBreak
+.. _releases-9:
 
 ===========================
 Apache Solr for TYPO3 9.0.0
@@ -113,20 +104,20 @@ With a separation of read and write connections this is now possible. With these
 
 The new setup can be configured like that:
 
-```
-plugin.tx_solr.solr {
-        read {
-            scheme = https
-            host   = 127.0.0.1
-            port   = 8983
-            path   = /solr/core_en/
-        }
-        write < .read
-        write {
-            port   = 8984
-        }
-}
-```
+::
+
+    plugin.tx_solr.solr {
+            read {
+                scheme = https
+                host   = 127.0.0.1
+                port   = 8983
+                path   = /solr/core_en/
+            }
+            write < .read
+            write {
+                port   = 8984
+            }
+    }
 
 For compatibility reasons EXT:solr is falling back to ```plugin.tx_solr.solr.*``` when nothing is configured here:
 
@@ -180,16 +171,15 @@ Migration from EXT:solr 8.1.0 to EXT:solr 9.0.0
 
 * We ship Apache Solr 7.5.0, you need to install that Version with our configSet.
 * The argument "hasSearched" was removed from the searchAction and is no longer passed. You can now retrieve this
-information by calling "SearchResultSet::getHasSearch" or "{resultSet.hasSearched}" in the FLUID template.
-
-When you access this argument in your FLUID Template, you need to change that as well.
-
+  information by calling "SearchResultSet::getHasSearch" or "{resultSet.hasSearched}" in the FLUID template.
+  When you access this argument in your FLUID Template, you need to change that as well.
 * EXT:solr 9 differs between read and write connections now. As fallback the old configuration is still supported and used for reading and writing.
-Nevertheless you need to re-initialize the solr connections that the data in the registry is rewritten. If you want to make use of the new configuration
-you can configure the connections like that:
+  Nevertheless you need to re-initialize the solr connections that the data in the registry is rewritten. If you want to make use of the new configuration
+  you can configure the connections like that:
 
-```
-plugin.tx_solr.solr {
+::
+
+    plugin.tx_solr.solr {
         read {
             scheme = https
             host   = 127.0.0.1
@@ -200,9 +190,7 @@ plugin.tx_solr.solr {
         write {
             port   = 8984
         }
-}
-```
-
+    }
 
 Removed Code
 ============
@@ -299,7 +287,7 @@ There are many ways to get involved with Apache Solr for TYPO3:
 
 Support us in 2019 by becoming an EB partner:
 
-http://www.typo3-solr.com/en/contact/ 
+http://www.typo3-solr.com/en/contact/
 
 or call:
 

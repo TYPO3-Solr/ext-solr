@@ -6,16 +6,8 @@
 .. include:: ../Includes.txt
 
 
-.. _conf-backend:
+.. _development-index:
 
-
-.. raw:: latex
-
-    \newpage
-
-.. raw:: pdf
-
-   PageBreak
 
 Development
 ===========

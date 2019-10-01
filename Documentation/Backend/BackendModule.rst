@@ -1,11 +1,3 @@
-.. raw:: latex
-
-    \newpage
-
-.. raw:: pdf
-
-   PageBreak
-
 .. _backend-module:
 
 Backend Modules

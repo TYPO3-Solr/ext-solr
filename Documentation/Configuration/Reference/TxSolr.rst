@@ -33,7 +33,7 @@ conditions where you do not want EXT:solr.
 .. important::
 
    This also influences the connection manager; connections will be registered /
-   detected only for enabled = 1.
+   detected only for enabled = 1
 
 enableDebugMode
 ---------------

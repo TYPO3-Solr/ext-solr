@@ -5,13 +5,6 @@
 
 .. include:: ../Includes.txt
 
-.. raw:: latex
-
-    \newpage
-
-.. raw:: pdf
-
-   PageBreak
 
 .. _releases:
 
@@ -25,3 +18,6 @@ Releases
 	solr-release-7-0
 	solr-release-8-0
 	solr-release-8-1
+	solr-release-9-0
+	solr-release-10-0
+

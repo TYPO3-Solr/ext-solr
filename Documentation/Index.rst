@@ -5,8 +5,11 @@
 
 .. include:: Includes.txt
 
-
 .. _start:
+
+================================
+Apache Solr for TYPO3 (EXT:solr)
+================================
 
 .. only:: html
 

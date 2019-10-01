@@ -6,14 +6,6 @@
 .. include:: ../../Includes.txt
 
 
-.. raw:: latex
-
-    \newpage
-
-.. raw:: pdf
-
-   PageBreak
-
 .. _conf-tx-solr-view:
 
 tx_solr.view
@@ -42,7 +34,7 @@ If you want to use FLUID fallbacks you can just configure the template name, oth
 The templates that you configure in availableTemplate can be used in the flexform by the editor to select a template for the concrete plugin instance.
 
 templateFiles.results
---------------------
+---------------------
 
 :Type: String
 :TS Path: plugin.tx_solr.view.templateFiles.results
@@ -52,7 +44,7 @@ templateFiles.results
     By convention the "Results" template from you configured FLUID template path will be used As alternative you can configure a different template name here (e.g. MyResults or a full path to an entry template here).
 
 templateFiles.results.availableTemplates
----------------------------------------
+----------------------------------------
 
 :Type: Array
 :TS Path: plugin.tx_solr.view.templateFiles.results.availableTemplates

@@ -22,6 +22,9 @@ test: up bootstrap
 down:
 	docker-compose down
 
+docs:
+	docker-compose run --rm t3docmake
+
 #############################
 # Argument fix workaround
 #############################

@@ -6,16 +6,7 @@
 .. include:: ../Includes.txt
 
 
-.. _conf-logging:
-
-
-.. raw:: latex
-
-    \newpage
-
-.. raw:: pdf
-
-   PageBreak
+.. .. _releases-8.1:
 
 ===========================
 Apache Solr for TYPO3 8.1.0
@@ -308,7 +299,7 @@ There are many ways to get involved with Apache Solr for TYPO3:
 
 Support us in 2018 by becoming an EB partner:
 
-http://www.typo3-solr.com/en/contact/ 
+http://www.typo3-solr.com/en/contact/
 
 or call:
 

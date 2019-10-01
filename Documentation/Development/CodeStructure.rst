@@ -46,6 +46,6 @@ For advanced use cases you can use the **"FacetRegistry"** to register your own 
 
 .. figure:: ../Images/Development/uml_facets.png
 
-    UML diagram of the *Facet classes
+    UML diagram of the \*Facet classes
 
 As you see in the diagram above solr ships a clean object structure of the facets, that you can render in your custom templates as you need them.

@@ -8,15 +8,6 @@
 
 .. _conf-logging:
 
-
-.. raw:: latex
-
-    \newpage
-
-.. raw:: pdf
-
-   PageBreak
-
 Logging
 =======
 

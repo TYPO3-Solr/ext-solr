@@ -8,15 +8,6 @@
 
 .. _conf-solr:
 
-
-.. raw:: latex
-
-    \newpage
-
-.. raw:: pdf
-
-   PageBreak
-
 The Apache Solr Server
 ======================
 

@@ -6,16 +6,8 @@
 .. include:: ../Includes.txt
 
 
-.. _conf-backend:
+.. _conf-frontend:
 
-
-.. raw:: latex
-
-    \newpage
-
-.. raw:: pdf
-
-   PageBreak
 
 Frontend
 ========

@@ -26,11 +26,11 @@ To fulfill that signal, you can create a slot in your custom extension. All what
 	/** @var \TYPO3\CMS\Extbase\SignalSlot\Dispatcher $signalSlotDispatcher */
 	$signalSlotDispatcher = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\SignalSlot\Dispatcher::class);
 	$signalSlotDispatcher->connect(
-	\ApacheSolrForTypo3\Solr\Controller\SearchController::class,
-	'resultsAction',
-	\YourVendor\yourextkey\Slot\SearchControllerSlot::class, // fully your choice
-	'resultsActionSlot', // fully your choice
-);
+	    \ApacheSolrForTypo3\Solr\Controller\SearchController::class,
+	    'resultsAction',
+	    \YourVendor\yourextkey\Slot\SearchControllerSlot::class, // fully your choice
+	    'resultsActionSlot', // fully your choice
+	);
 
 An example call look like this:
 

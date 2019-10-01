@@ -1,12 +1,5 @@
 .. highlight:: bash
 
-.. raw:: latex
-
-    \newpage
-
-.. raw:: pdf
-
-   PageBreak
 
 .. _started-install-extension:
 
