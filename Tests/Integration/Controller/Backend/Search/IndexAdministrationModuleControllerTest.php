@@ -62,7 +62,6 @@ class IndexAdministrationModuleControllerTest extends IntegrationTest
      */
     public function testReloadIndexConfigurationAction()
     {
-        $this->markTestSkipped('Fixme');
         $this->importDataSetFromFixture('can_reload_index_configuration.xml');
 
         /** @var SiteRepository $siteRepository */
@@ -71,7 +70,7 @@ class IndexAdministrationModuleControllerTest extends IntegrationTest
         $this->controller->setSelectedSite($selectedSite);
         $this->controller->expects($this->exactly(1))
             ->method('addFlashMessage')
-            ->with('Core configuration reloaded (core_en).','',FlashMessage::OK);
+            ->with('Core configuration reloaded (core_en, core_de, core_da).','',FlashMessage::OK);
         $this->controller->reloadIndexConfigurationAction();
     }
 
@@ -80,16 +79,16 @@ class IndexAdministrationModuleControllerTest extends IntegrationTest
      */
     public function testEmptyIndexAction()
     {
-        $this->markTestSkipped('Fixme');
         $this->importDataSetFromFixture('can_reload_index_configuration.xml');
 
         /** @var SiteRepository $siteRepository */
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $selectedSite = $siteRepository->getFirstAvailableSite();
         $this->controller->setSelectedSite($selectedSite);
-        $this->controller->expects($this->exactly(1))
+        $this->controller->expects($this->once())
             ->method('addFlashMessage')
-            ->with('Index emptied for Site ", Root Page ID: 1" (core_en).','',FlashMessage::OK);
+            ->with('Index emptied for Site ", Root Page ID: 1" (core_en, core_de, core_da).','',FlashMessage::OK);
+
         $this->controller->emptyIndexAction();
     }
 }
