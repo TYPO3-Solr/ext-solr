@@ -41,7 +41,7 @@ if (TYPO3_MODE == 'BE') {
         null,
         [
             'name' => 'searchbackend',
-            'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang_mod.xlf',
+            'labels' => 'LLL:EXT:solr/Resources/Private/Language/locallang_mod.xlf',
             'iconIdentifier' => 'extensions-solr-module-main'
         ]
     );
@@ -49,7 +49,7 @@ if (TYPO3_MODE == 'BE') {
     $treeComponentId = 'TYPO3/CMS/Backend/PageTree/PageTreeElement';
 
     \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
-        'ApacheSolrForTypo3.' . $_EXTKEY,
+        'ApacheSolrForTypo3.solr',
         'searchbackend',
         'Info',
         '',
@@ -59,13 +59,13 @@ if (TYPO3_MODE == 'BE') {
         [
             'access' => 'user,group',
             'icon' => 'EXT:solr/Resources/Public/Images/Icons/ModuleInfo.svg',
-            'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang_mod_info.xlf',
+            'labels' => 'LLL:EXT:solr/Resources/Private/Language/locallang_mod_info.xlf',
             'navigationComponentId' => $treeComponentId
         ]
     );
 
     \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
-        'ApacheSolrForTypo3.' . $_EXTKEY,
+        'ApacheSolrForTypo3.solr',
         'searchbackend',
         'CoreOptimization',
         '',
@@ -75,13 +75,13 @@ if (TYPO3_MODE == 'BE') {
         [
             'access' => 'user,group',
             'icon' => 'EXT:solr/Resources/Public/Images/Icons/ModuleCoreOptimization.svg',
-            'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang_mod_coreoptimize.xlf',
+            'labels' => 'LLL:EXT:solr/Resources/Private/Language/locallang_mod_coreoptimize.xlf',
             'navigationComponentId' => $treeComponentId
         ]
     );
 
     \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
-        'ApacheSolrForTypo3.' . $_EXTKEY,
+        'ApacheSolrForTypo3.solr',
         'searchbackend',
         'IndexQueue',
         '',
@@ -91,13 +91,13 @@ if (TYPO3_MODE == 'BE') {
         [
             'access' => 'user,group',
             'icon' => 'EXT:solr/Resources/Public/Images/Icons/ModuleIndexQueue.svg',
-            'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang_mod_indexqueue.xlf',
+            'labels' => 'LLL:EXT:solr/Resources/Private/Language/locallang_mod_indexqueue.xlf',
             'navigationComponentId' => $treeComponentId
         ]
     );
 
     \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
-        'ApacheSolrForTypo3.' . $_EXTKEY,
+        'ApacheSolrForTypo3.solr',
         'searchbackend',
         'IndexAdministration',
         '',
@@ -107,7 +107,7 @@ if (TYPO3_MODE == 'BE') {
         [
             'access' => 'user,group',
             'icon' => 'EXT:solr/Resources/Public/Images/Icons/ModuleIndexAdministration.svg',
-            'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang_mod_indexadmin.xlf',
+            'labels' => 'LLL:EXT:solr/Resources/Private/Language/locallang_mod_indexadmin.xlf',
             'navigationComponentId' => $treeComponentId
         ]
     );
@@ -150,6 +150,6 @@ if ((TYPO3_MODE === 'BE') || (TYPO3_MODE === 'FE' && isset($_POST['TSFE_EDIT']))
 $isComposerMode = defined('TYPO3_COMPOSER_MODE') && TYPO3_COMPOSER_MODE;
 if(!$isComposerMode) {
     // we load the autoloader for our libraries
-    $dir = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($_EXTKEY);
+    $dir = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('solr');
     require $dir . '/Resources/Private/Php/ComposerLibraries/vendor/autoload.php';
 }
