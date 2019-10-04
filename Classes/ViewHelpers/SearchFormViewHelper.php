@@ -239,7 +239,19 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
     protected function buildUriFromPageUidAndArguments($pageUid): string
     {
         $uriBuilder = $this->getControllerContext()->getUriBuilder();
-        $uri = $uriBuilder->reset()->setTargetPageUid($pageUid)->setTargetPageType($this->arguments['pageType'])->setNoCache($this->arguments['noCache'])->setUseCacheHash(!$this->arguments['noCacheHash'])->setArguments($this->arguments['additionalParams'])->setCreateAbsoluteUri($this->arguments['absolute'])->setAddQueryString($this->arguments['addQueryString'])->setArgumentsToBeExcludedFromQueryString($this->arguments['argumentsToBeExcludedFromQueryString'])->setAddQueryStringMethod($this->arguments['addQueryStringMethod'])->setSection($this->arguments['section'])->build();
+        $uri = $uriBuilder
+            ->reset()
+            ->setTargetPageUid($pageUid)
+            ->setTargetPageType($this->arguments['pageType'])
+            ->setNoCache($this->arguments['noCache'])
+            ->setUseCacheHash(!$this->arguments['noCacheHash'])
+            ->setArguments($this->arguments['additionalParams'])
+            ->setCreateAbsoluteUri($this->arguments['absolute'])
+            ->setAddQueryString($this->arguments['addQueryString'])
+            ->setArgumentsToBeExcludedFromQueryString($this->arguments['argumentsToBeExcludedFromQueryString'])
+            ->setAddQueryStringMethod($this->arguments['addQueryStringMethod'] ?? '')
+            ->setSection($this->arguments['section'])
+            ->build();
         return $uri;
     }
 }
