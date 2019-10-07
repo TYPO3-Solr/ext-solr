@@ -41,7 +41,7 @@ if (TYPO3_MODE == 'FE' && isset($_SERVER['HTTP_X_TX_SOLR_IQ'])) {
 
 // page module plugin settings summary
 
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['cms/layout/class.tx_cms_layout.php']['list_type_Info'][$_EXTKEY . '_pi_results'][$_EXTKEY] = \ApacheSolrForTypo3\Solr\Controller\Backend\PageModuleSummary::class . '->getSummary';
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['cms/layout/class.tx_cms_layout.php']['list_type_Info']['solr_pi_results']['solr'] = \ApacheSolrForTypo3\Solr\Controller\Backend\PageModuleSummary::class . '->getSummary';
 
 # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
@@ -107,14 +107,14 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['cms/layout/class.tx_cms_layout.php'][
 // adding scheduler tasks
 
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['ApacheSolrForTypo3\Solr\Task\ReIndexTask'] = [
-    'extension' => $_EXTKEY,
+    'extension' => 'solr',
     'title' => 'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:reindex_title',
     'description' => 'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:reindex_description',
     'additionalFields' => \ApacheSolrForTypo3\Solr\Task\ReIndexTaskAdditionalFieldProvider::class
 ];
 
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['ApacheSolrForTypo3\Solr\Task\IndexQueueWorkerTask'] = [
-    'extension' => $_EXTKEY,
+    'extension' => 'solr',
     'title' => 'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:indexqueueworker_title',
     'description' => 'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:indexqueueworker_description',
     'additionalFields' => \ApacheSolrForTypo3\Solr\Task\IndexQueueWorkerTaskAdditionalFieldProvider::class
@@ -275,6 +275,6 @@ $GLOBALS['TYPO3_CONF_VARS']['SYS']['fluid']['namespaces']['solr'] = ['ApacheSolr
 $isComposerMode = defined('TYPO3_COMPOSER_MODE') && TYPO3_COMPOSER_MODE;
 if(!$isComposerMode) {
     // we load the autoloader for our libraries
-    $dir = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($_EXTKEY);
+    $dir = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('solr');
     require $dir . '/Resources/Private/Php/ComposerLibraries/vendor/autoload.php';
 }
