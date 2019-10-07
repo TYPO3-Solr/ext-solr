@@ -39,12 +39,15 @@ class AjaxController
     /**
      * Update a single solr connection
      *
+     * @deprecated Configuring solr connections with TypoScript is deprecated please use the site handling. Will be dropped with EXT:solr 11
      * @param ServerRequestInterface $request
      * @param ResponseInterface $response
      * @return ResponseInterface
      */
     public function updateConnection(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
     {
+        trigger_error('solr:deprecation: Configuring solr connections with TypoScript is deprecated please use the site handling', E_USER_DEPRECATED);
+
         $queryParams = $request->getQueryParams();
         $pageId = 0;
         if (isset($queryParams['id'])) {
@@ -68,11 +71,14 @@ class AjaxController
     /**
      * Update all connections
      *
+     * @deprecated Configuring solr connections with TypoScript is deprecated please use the site handling. Will be dropped with EXT:solr 11
      * @param ServerRequestInterface $request
      * @return ResponseInterface
      */
     public function updateConnections(ServerRequestInterface $request): ResponseInterface
     {
+        trigger_error('solr:deprecation: Configuring solr connections with TypoScript is deprecated please use the site handling', E_USER_DEPRECATED);
+
         $connectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
         $connectionManager->updateConnections();
         // Currently no return value from connection manager

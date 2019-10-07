@@ -47,103 +47,15 @@ class TypoScriptConfigurationTest extends IntegrationTest
         parent::setUp();
     }
 
-    /**
-     * @test
-     */
-    public function testCanRenderCObjectInConfiguration() {
-
-        // we fake some deployment settings
-        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['host'] = 'mydeployhostname';
-        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['path'] = '/deploy/core_en/';
-
-        $configuration = [
-            'plugin.' => [
-                'tx_solr.' => [
-                    'solr.' => [
-                        'host' => 'TEXT',
-                        'host.' => [
-                            'value' => 'mydefaulthostname',
-                            'override.' => [
-                                'data' => 'global:TYPO3_CONF_VARS|EXTCONF|solr|host'
-                            ]
-                        ],
-                        'path' => 'TEXT',
-                        'path.' => [
-                            'value' => '/mydefaultpath/',
-                            'override.' => [
-                                'data' => 'global:TYPO3_CONF_VARS|EXTCONF|solr|path'
-                            ]
-                        ]
-
-                    ]
-                ]
-            ]
-        ];
-
-            /** @var $typoScriptConfiguration TypoScriptConfiguration */
-        $typoScriptConfiguration = GeneralUtility::makeInstance(TypoScriptConfiguration::class, $configuration, 0);
-
-        $hostname = $typoScriptConfiguration->getSolrHost();
-        $this->assertSame('mydeployhostname', $hostname, 'Could not apply cObject with configuration from TYPO3_CONF_VARS for host');
-
-        $path = $typoScriptConfiguration->getSolrPath();
-        $this->assertSame('/deploy/core_en/', $path, 'Could not apply cObject with configuration from TYPO3_CONF_VARS for path');
-
-        unset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['host']);
-        unset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['path']);
-    }
-
-
-    /**
-     * @test
-     */
-    public function testValueOfCObjectIsUsedWhenNoTYPO3ConfVarIsPresent() {
-        // no configuration in TYPO3_CONF_VARS done we expect that the fallback configuration in value will be used
-
-        $configuration = [
-            'plugin.' => [
-                'tx_solr.' => [
-                    'solr.' => [
-                        'host' => 'TEXT',
-                        'host.' => [
-                            'value' => 'mydefaulthostname',
-                            'override.' => [
-                                'data' => 'global:TYPO3_CONF_VARS|EXTCONF|solr|host'
-                            ]
-                        ],
-                        'path' => 'TEXT',
-                        'path.' => [
-                            'value' => '/mydefaultpath/',
-                            'override.' => [
-                                'data' => 'global:TYPO3_CONF_VARS|EXTCONF|solr|path'
-                            ]
-                        ]
-
-                    ]
-                ]
-            ]
-        ];
-
-        /** @var $typoScriptConfiguration TypoScriptConfiguration */
-        $typoScriptConfiguration = GeneralUtility::makeInstance(TypoScriptConfiguration::class, $configuration, 0);
-
-        $hostname = $typoScriptConfiguration->getSolrHost();
-        $this->assertSame('mydefaulthostname', $hostname, 'cObject does not fallback to value when TYPO3_CONF_VARS value is missing');
-
-        $path = $typoScriptConfiguration->getSolrPath();
-        $this->assertSame('/mydefaultpath/', $path, 'cObject does not fallback to value when TYPO3_CONF_VARS value is missing');
-    }
-
-    /**
+     /**
      * @test
      */
     public function testCanUsePlainValuesFromConfiguration() {
         $configuration = [
             'plugin.' => [
                 'tx_solr.' => [
-                    'solr.' => [
-                        'host' => 'plainhost',
-                        'path' => '/plainpath/',
+                    'search.' =>[
+                        'sorting' => 1
                     ]
                 ]
             ]
@@ -151,11 +63,7 @@ class TypoScriptConfigurationTest extends IntegrationTest
 
         /** @var $typoScriptConfiguration TypoScriptConfiguration */
         $typoScriptConfiguration = GeneralUtility::makeInstance(TypoScriptConfiguration::class, $configuration, 0);
-
-        $hostname = $typoScriptConfiguration->getSolrHost();
-        $this->assertSame('plainhost', $hostname, 'Can not use configured plain value as host');
-
-        $path = $typoScriptConfiguration->getSolrPath();
-        $this->assertSame('/plainpath/', $path, 'Can not use configured plain value as path');
+        $sorting = $typoScriptConfiguration->getSearchSorting();
+        $this->assertTrue($sorting, 'Can not get sorting configuration from typoscript');
     }
 }
