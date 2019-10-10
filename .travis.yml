@@ -1,6 +1,7 @@
 language: php
 
 services:
+  - mysql
   - docker
 
 php:
