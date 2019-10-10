@@ -28,7 +28,7 @@ The fallback mechanism allows you to overwrite settings on the language level.
 
 The fallback mechanism work like that:
 
-Each setting has the following structure ``solr_{$setting}_{$scope}"```. The score can be read or write. Every setting can be overwritten for the scope *write*, if nothing is configured it will fallback to the *read* setting. Every setting can be defined on the language level, if it is not configured on the language level it fallsback to the global setting.
+Each setting has the following structure ``solr_{$setting}_{$scope}"```. The scope can be read or write. Every setting can be overwritten for the scope *write*, if nothing is configured it will fallback to the *read* setting. Every setting can be defined on the language level, if it is not configured on the language level it fallsback to the global setting.
 
 Example:
 
