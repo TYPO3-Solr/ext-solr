@@ -75,16 +75,16 @@
         <doktype>1</doktype>
         <title>Page</title>
     </pages>
-    <pages_language_overlay>
+    <pages>
         <uid>2</uid>
-        <pid>1</pid>
+        <l10n_parent>1</l10n_parent>
         <sys_language_uid>1</sys_language_uid>
         <doktype>1</doktype>
         <hidden>0</hidden>
         <deleted>0</deleted>
         <title>Seite</title>
         <relations>1</relations>
-    </pages_language_overlay>
+    </pages>
 
     <pages>
         <uid>10</uid>
@@ -92,20 +92,21 @@
         <doktype>1</doktype>
         <title>Related page</title>
     </pages>
-    <pages_language_overlay>
+    <pages>
         <uid>11</uid>
-        <pid>10</pid>
+        <pid>0</pid>
+        <l10n_parent>10</l10n_parent>
         <sys_language_uid>1</sys_language_uid>
         <doktype>1</doktype>
         <hidden>0</hidden>
         <deleted>0</deleted>
         <title>Verwante Seite</title>
-    </pages_language_overlay>
+    </pages>
 
     <tx_fakeextension3_pages_mm>
         <uid_local>10</uid_local>
         <uid_foreign>2</uid_foreign>
-        <tablenames>pages_language_overlay</tablenames>
+        <tablenames>pages</tablenames>
         <fieldname>page_relations</fieldname>
         <sorting>0</sorting>
         <sorting_foreign>0</sorting_foreign>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <dataset>
+
     <sys_template>
         <uid>1</uid>
         <pid>1</pid>
@@ -64,12 +65,14 @@
         <pid>0</pid>
         <title>Rootpage</title>
     </pages>
-    <pages_language_overlay>
+    <pages>
         <uid>2</uid>
-        <pid>1</pid>
+        <is_siteroot>1</is_siteroot>
+        <l10n_parent>1</l10n_parent>
+        <pid>0</pid>
         <doktype>1</doktype>
         <sys_language_uid>1</sys_language_uid>
         <title>Translated Rootpage</title>
-    </pages_language_overlay>
+    </pages>
 
 </dataset>
