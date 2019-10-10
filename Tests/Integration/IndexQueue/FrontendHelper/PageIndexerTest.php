@@ -25,19 +25,14 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\IndexQueue\FrontendHelper;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\AdditionalFieldsIndexer;
-use ApacheSolrForTypo3\Solr\IndexQueue\Exception\DocumentPreparationException;
 use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageIndexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerResponse;
-use ApacheSolrForTypo3\Solr\System\Mvc\Frontend\Controller\OverriddenTypoScriptFrontendController;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
-use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Error\Http\PageNotFoundException;
-use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\TimeTracker\TimeTracker;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * Testcase to check if we can index page documents using the PageIndexer
@@ -328,14 +323,12 @@ class PageIndexerTest extends IntegrationTest
      * @test
      */
     public function phpProcessDoesNotDieIfPageIsNotAvailable() {
-        $this->applyXClassOverriddenTypoScriptFrontendController();
         $this->applyUsingErrorControllerForCMS9andAbove();
         $this->registerShutdownFunctionToPrintExplanationOf404HandlingOnCMSIfDieIsCalled();
         $this->expectException(PageNotFoundException::class);
 
 
         $this->importDataSetFromFixture('does_not_die_if_page_not_available.xml');
-        define('EXT_SOLR_INDEXING_CONTEXT', true);
         $this->executePageIndexer(null, null, null, null, null, null, null, null, 3, ['sys_language_mode' => 'strict']);
     }
 
@@ -405,15 +398,5 @@ class PageIndexerTest extends IntegrationTest
         $pageIndexer->activate();
         $pageIndexer->processRequest($request, $response);
         $pageIndexer->hook_indexContent($TSFE);
-    }
-
-    /**
-     * Simulates loading in ext_localconf.php loaded XClass for TSFE.
-     */
-    private function applyXClassOverriddenTypoScriptFrontendController()
-    {
-        $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'][TypoScriptFrontendController::class] = array(
-            'className' => OverriddenTypoScriptFrontendController::class
-        );
     }
 }
