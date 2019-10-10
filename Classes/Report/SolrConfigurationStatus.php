@@ -168,7 +168,8 @@ class SolrConfigurationStatus extends AbstractSolrStatus
         }
 
         $domainRecords = $this->systemDomainRepository->findDomainRecordsByRootPagesIds($rootPageIds);
-        foreach ($rootPageIds as $rootPageId) {
+        foreach ($rootPages as $rootPage) {
+            $rootPageId = $rootPage['uid'];
             $hasDomainRecord = true;
             $hasDomainInTypoScript = true;
 
@@ -184,7 +185,7 @@ class SolrConfigurationStatus extends AbstractSolrStatus
             }
 
             if (!$hasDomainRecord && !$hasDomainInTypoScript) {
-                $rootPagesWithoutDomain[$rootPageId] = $rootPages[$rootPageId];
+                $rootPagesWithoutDomain[$rootPageId] = $rootPage;
             }
         }
         return $rootPagesWithoutDomain;
