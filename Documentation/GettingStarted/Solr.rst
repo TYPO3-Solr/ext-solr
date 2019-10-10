@@ -53,7 +53,7 @@ To run the container (only run one of the following):
 
 .. code-block:: bash
 
-    docker run -d -p 127.0.0.1:8983:8983 -v "$PWD/.solrdata:/opt/solr/server/solr/data/" typo3-solr
+    docker run -d -p 127.0.0.1:8983:8983 -v "$PWD/.solrdata:/var/solr/data/data" typo3-solr
 
 To check whether Solr is up and running head over to:
 
@@ -83,7 +83,7 @@ The following example shows how you can run our configuration with the official 
     mkdir -p ~/mysolr
     cp -r Resources/Private/Solr/* ~/mysolr
     sudo chown -R :8983 ~/mysolr
-    docker run -d -p 127.0.0.1:8983:8983 -v ~/mysolr:/opt/solr/server/solr/ solr:6.3.0
+    docker run -d -p 127.0.0.1:8983:8983 -v ~/mysolr:/var/solr/data/data solr:6.3.0
 
 
 Other Setup

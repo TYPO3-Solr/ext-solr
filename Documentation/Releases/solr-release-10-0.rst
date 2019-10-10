@@ -29,6 +29,12 @@ TYPO3 9 LTS site handling support
 The major new feature of EXT:solr 10 is the support of the TYPO3 site handling. You can now configure the Apache Solr connections along with your TYPO3 site.
 To get a typical solr site running you now need only a few settings and can use the site handling user interface for that.
 
+Apache Solr 8.2 support
+-----------------------
+
+EXT:solr 10 ships Apache Solr 8.2.
+
+Note: The data volume of the Apache Solr Docker container was changed from ```/opt/solr/server/solr/data``` to ```/var/solr/data/data``` this might require changes in your infrastructure configuration.
 
 Extensionscanner cleanup
 ------------------------
@@ -86,7 +92,7 @@ can be used in the yaml file.
 
 The fallback mechanism work like that:
 
-Each setting has the following structure ``solr_{$setting}_{$scope}"```. The score can be read or write. Every setting can be overwritten for the scope *write*, if nothing is configured it will fallback to the *read* setting. Every setting can be defined on the language level, if it is not configured on the language level it fallsback to the global setting.
+Each setting has the following structure ``solr_{$setting}_{$scope}"```. The scope can be read or write. Every setting can be overwritten for the scope *write*, if nothing is configured it will fallback to the *read* setting. Every setting can be defined on the language level, if it is not configured on the language level it fallsback to the global setting.
 
 Example:
 

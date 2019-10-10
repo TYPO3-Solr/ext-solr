@@ -278,7 +278,7 @@ This was tested with "Docker for Mac" (not Docker Toolbox). Before executing the
     sudo chown :8983 ~/solrdata
 
     # run docker container from image with volume
-    docker run -d -p 127.0.0.1:8282:8983 -v ~/solrdata:/opt/solr/server/solr/data typo3-solr
+    docker run -d -p 127.0.0.1:8282:8983 -v ~/solrdata:/var/solr/data/data typo3-solr
 
 
 **Can i index a https (SSL) site?**
