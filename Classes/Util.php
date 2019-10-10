@@ -384,7 +384,7 @@ class Util
 
         $GLOBALS['TSFE'] = $tsfeCache[$cacheId];
         $GLOBALS['TSFE']->settingLocale();
-
+        self::changeLanguageContext((int)$pageId, (int)$language);
     }
 
     /**
