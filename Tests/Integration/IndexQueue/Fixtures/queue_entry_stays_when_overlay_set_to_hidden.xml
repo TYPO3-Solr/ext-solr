@@ -65,13 +65,15 @@
         <pid>0</pid>
         <title>Rootpage</title>
     </pages>
-    <pages_language_overlay>
+    <pages>
         <uid>2</uid>
-        <pid>1</pid>
+        <is_siteroot>1</is_siteroot>
+        <pid>0</pid>
+        <l10n_parent>1</l10n_parent>
         <doktype>1</doktype>
         <sys_language_uid>1</sys_language_uid>
         <title>Translated Rootpage</title>
-    </pages_language_overlay>
+    </pages>
     <tx_solr_indexqueue_item>
         <uid>1</uid>
         <root>1</root>

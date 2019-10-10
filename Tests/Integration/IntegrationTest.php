@@ -155,17 +155,6 @@ abstract class IntegrationTest extends FunctionalTestCase
      */
     protected function getFixturePathByName($fixtureName)
     {
-        $overlayPostFix = '.v9';
-        $dotInFileName = strrpos($fixtureName,'.');
-        $fileName = substr($fixtureName, 0, $dotInFileName);
-        $fileExtension = substr($fixtureName, $dotInFileName);
-        $overlayName = $fileName.$overlayPostFix.$fileExtension;
-
-
-        if(file_exists($this->getFixtureRootPath() . $overlayName)) {
-            return $this->getFixtureRootPath() . $overlayName;
-        }
-
         return $this->getFixtureRootPath() . $fixtureName;
     }
 

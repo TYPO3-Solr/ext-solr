@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <dataset>
-
     <sys_template>
         <uid>1</uid>
         <pid>1</pid>
@@ -76,14 +75,15 @@
         <is_siteroot>1</is_siteroot>
         <doktype>1</doktype>
     </pages>
-    <pages_language_overlay>
+    <pages>
         <uid>2</uid>
-        <pid>1</pid>
+        <is_siteroot>1</is_siteroot>
+        <l10n_parent>1</l10n_parent>
         <sys_language_uid>1</sys_language_uid>
         <doktype>1</doktype>
         <hidden>0</hidden>
         <deleted>0</deleted>
-    </pages_language_overlay>
+    </pages>
     <tx_fakeextension_domain_model_bar>
         <uid>88</uid>
         <pid>1</pid>

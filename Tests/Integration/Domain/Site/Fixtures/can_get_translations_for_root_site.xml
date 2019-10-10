@@ -8,19 +8,19 @@
         <doktype>1</doktype>
     </pages>
 
-    <pages_language_overlay>
-        <uid>1</uid>
-        <pid>1</pid>
+    <pages>
+        <uid>2</uid>
+        <l10n_parent>1</l10n_parent>
         <sys_language_uid>1</sys_language_uid>
         <title>Congratulations (L1)</title>
         <doktype>1</doktype>
-    </pages_language_overlay>
-    <pages_language_overlay>
-        <uid>2</uid>
-        <pid>1</pid>
+    </pages>
+    <pages>
+        <uid>3</uid>
+        <l10n_parent>1</l10n_parent>
         <sys_language_uid>2</sys_language_uid>
         <title>Congratulations (L2)</title>
         <doktype>1</doktype>
-    </pages_language_overlay>
+    </pages>
 
 </dataset>
