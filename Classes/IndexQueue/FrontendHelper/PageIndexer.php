@@ -82,6 +82,7 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
         $pageIndexingHookRegistration = PageIndexer::class;
 
         $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['initFEuser'][__CLASS__] = $pageIndexingHookRegistration . '->authorizeFrontendUser';
+        // disable TSFE cache for TYPO3 v9
         $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['tslib_fe-PostProc'][__CLASS__] = $pageIndexingHookRegistration . '->disableCaching';
         $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['pageIndexing'][__CLASS__] = $pageIndexingHookRegistration;
 

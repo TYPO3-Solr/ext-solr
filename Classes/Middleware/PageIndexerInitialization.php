@@ -52,6 +52,8 @@ class PageIndexerInitialization implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         if ($request->hasHeader(PageIndexerRequest::SOLR_INDEX_HEADER)) {
+            // disable TSFE cache for TYPO3 v10
+            $request = $request->withAttribute('noCache', true);
             $jsonEncodedParameters = $request->getHeader(PageIndexerRequest::SOLR_INDEX_HEADER)[0];
             $pageIndexerRequestHandler = GeneralUtility::makeInstance(PageIndexerRequestHandler::class, $jsonEncodedParameters);
 
@@ -71,6 +73,7 @@ class PageIndexerInitialization implements MiddlewareInterface
             $pageIndexerRequestHandler->run();
 
         }
+
         return $handler->handle($request);
     }
 }
