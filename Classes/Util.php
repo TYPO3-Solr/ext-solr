@@ -261,6 +261,12 @@ class Util
     private static function changeLanguageContext(int $pageId, int $language): void
     {
         $context = GeneralUtility::makeInstance(Context::class);
+        if ($context->hasAspect('language')) {
+            if ($context->getPropertyFromAspect('language', 'id') === $language) {
+                return;
+            }
+        }
+
         $siteFinder = GeneralUtility::makeInstance(SiteFinder::class);
         try {
             $site = $siteFinder->getSiteByPageId($pageId);
