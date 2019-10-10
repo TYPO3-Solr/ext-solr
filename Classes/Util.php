@@ -33,6 +33,8 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\LanguageAspect;
 use TYPO3\CMS\Core\Context\LanguageAspectFactory;
+use TYPO3\CMS\Core\Exception\SiteNotFoundException;
+use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\TypoScript\TemplateService;
 use TYPO3\CMS\Core\Utility\RootlineUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
@@ -253,6 +255,38 @@ class Util
     }
 
     /**
+     * @param int $pageId
+     * @param int $language
+     */
+    private static function changeLanguageContext(int $pageId, int $language): void
+    {
+        $context = GeneralUtility::makeInstance(Context::class);
+        $siteFinder = GeneralUtility::makeInstance(SiteFinder::class);
+        try {
+            $site = $siteFinder->getSiteByPageId($pageId);
+            $languageAspect = LanguageAspectFactory::createFromSiteLanguage($site->getLanguageById($language));
+            $context->setAspect('language', $languageAspect);
+        } catch (SiteNotFoundException $e) {
+            // legacy site
+            if ($context->hasAspect('language')) {
+                $languageAspect = $context->getAspect('language');
+                $context->setAspect('language', GeneralUtility::makeInstance(
+                    LanguageAspect::class,
+                    (int)$language,
+                    $languageAspect->getContentId(),
+                    $languageAspect->getOverlayType(),
+                    $languageAspect->getFallbackChain()
+                ));
+            } else {
+                $context->setAspect('language', GeneralUtility::makeInstance(
+                    LanguageAspect::class,
+                    (int)$language
+                ));
+            }
+        }
+    }
+
+    /**
      * This function is used to retrieve the configuration from an existing TSFE instance
      *
      * @param $pageId
@@ -263,15 +297,7 @@ class Util
     private static function getConfigurationFromExistingTSFE($pageId, $path, $language)
     {
         if (is_int($language)) {
-            $context = GeneralUtility::makeInstance(Context::class);
-            $languageAspect = LanguageAspectFactory::createFromTypoScript($GLOBALS['TSFE']->config['config'] ?? []);
-            $context->setAspect('language', GeneralUtility::makeInstance(
-                LanguageAspect::class,
-                (int)$language,
-                $languageAspect->getContentId(),
-                $languageAspect->getOverlayType(),
-                $languageAspect->getFallbackChain())
-            );
+            self::changeLanguageContext((int)$pageId, (int)$language);
         }
         $rootlineUtility = GeneralUtility::makeInstance(RootlineUtility::class, $pageId);
         try {
@@ -283,7 +309,6 @@ class Util
             /** @var $tmpl ExtendedTemplateService */
         $tmpl = GeneralUtility::makeInstance(ExtendedTemplateService::class);
         $tmpl->tt_track = false; // Do not log time-performance information
-        $tmpl->init();
         $tmpl->runThroughTemplates($rootLine); // This generates the constants/config + hierarchy info for the template.
         $tmpl->generateConfig();
 
@@ -313,11 +338,9 @@ class Util
 
         /** @var Context $context */
         $context = GeneralUtility::makeInstance(Context::class);
+        self::changeLanguageContext((int)$pageId, (int)$language);
 
         if (!isset($tsfeCache[$cacheId])) {
-
-            $languageAsepct = GeneralUtility::makeInstance(LanguageAspect::class, $language);
-            $context->setAspect('language', $languageAsepct);
 
             $GLOBALS['TSFE'] = GeneralUtility::makeInstance(TypoScriptFrontendController::class, $GLOBALS['TYPO3_CONF_VARS'], $pageId, 0);
 
@@ -356,14 +379,6 @@ class Util
         $GLOBALS['TSFE'] = $tsfeCache[$cacheId];
         $GLOBALS['TSFE']->settingLocale();
 
-        $languageAspect = LanguageAspectFactory::createFromTypoScript($GLOBALS['TSFE']->config['config'] ?? []);
-        $context->setAspect('language', GeneralUtility::makeInstance(
-            LanguageAspect::class,
-            (int)$language,
-            $languageAspect->getContentId(),
-            $languageAspect->getOverlayType(),
-            $languageAspect->getFallbackChain())
-        );
     }
 
     /**

@@ -67,16 +67,6 @@ class Typo3ManagedSite extends Site
     }
 
     /**
-     * @param int $languageUid
-     * @return array
-     */
-    public function getFallbackOrder(int $languageUid): array
-    {
-        $languageAspect = LanguageAspectFactory::createFromSiteLanguage($this->typo3SiteObject->getLanguageById($languageUid));
-        return $languageAspect->getFallbackChain();
-    }
-
-    /**
      * @param int $language
      * @return array
      * @throws NoSolrConnectionFoundException

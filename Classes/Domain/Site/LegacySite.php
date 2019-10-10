@@ -28,7 +28,6 @@ namespace ApacheSolrForTypo3\Solr\Domain\Site;
 use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
-use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Registry;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -65,20 +64,6 @@ class LegacySite extends Site
         $this->defaultLanguageId = $defaultLanguageId;
         $this->availableLanguageIds = $availableLanguageIds;
 
-    }
-
-    /**
-     * @param int $languageUid
-     * @return array
-     */
-    public function getFallbackOrder(int $languageUid): array
-    {
-        // only one fallcack chain exists for legacy site
-        if (empty($GLOBALS['TSFE'])) {
-            Util::initializeTsfe($this->getRootPageId(), 0);
-        }
-        $languageAspect = GeneralUtility::makeInstance(Context::class)->getAspect('language');
-        return $languageAspect->getFallbackChain();
     }
 
 
