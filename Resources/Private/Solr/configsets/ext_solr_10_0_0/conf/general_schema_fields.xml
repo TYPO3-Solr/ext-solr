@@ -110,6 +110,10 @@
 
 	<field name="url"         type="string" indexed="true" stored="true" />
 
+	<!-- optional fields that could be filled but should have a defined name in the schema -->
+	<field name="image"       type="string" indexed="true" stored="true" />
+	<field name="price"       type="double" indexed="true" stored="true" />
+
 	<!--
 		A set of fields to contain text extracted from tag contents which
 		we can boost at query time.

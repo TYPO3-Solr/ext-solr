@@ -47,6 +47,12 @@ Drop TYPO3 8 compatibility
 To simplify the development we've dropped the compatibility for TYPO3 8 LTS. If you need to use TYPO3 8 please use the 9.0.x branch.
 
 
+Add default field for image and price
+-------------------------------------
+
+To allow external applications to index common information for product's we've added a field for price and image. Along with that we've changed the suggest to render the content of the "image" field instead of "previewImage_stringS", this might require changes in  your index configuration.
+
+
 Migration from EXT:solr 9 to EXT:solr 10
 ========================================
 

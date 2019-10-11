@@ -240,7 +240,7 @@ class SuggestService {
             'title' => $document->getTitle(),
             'content' => $document->getContent(),
             'group' => $document->getHasGroupItem() ? $document->getGroupItem()->getGroupValue() : '',
-            'previewImage' => $document['previewImage_stringS'] ? $document['previewImage_stringS'] : '',
+            'previewImage' => $document['image'] ? $document['image'] : '',
         ];
         foreach ($additionalTopResultsFields as $additionalTopResultsField) {
             $fields[$additionalTopResultsField] = $document[$additionalTopResultsField] ? $document[$additionalTopResultsField] : '';
