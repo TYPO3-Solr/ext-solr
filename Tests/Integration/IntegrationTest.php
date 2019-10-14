@@ -456,6 +456,14 @@ abstract class IntegrationTest extends FunctionalTestCase
      */
     protected function writeDefaultSolrTestSiteConfiguration() {
         $solrConnectionInfo = $this->getSolrConnectionInfo();
+        $pathSiteOne = $this->instancePath . 'typo3conf/sites/integration_tree_one/config.yaml';
+        $pathSiteTwo = $this->instancePath . 'typo3conf/sites/integration_tree_two/config.yaml';
+
+        $configurationAllreadyExists = file_exists($pathSiteOne) && file_exists($pathSiteTwo);
+        if ($configurationAllreadyExists) {
+            return;
+        }
+
         $this->writeDefaultSolrTestSiteConfigurationForHostAndPort($solrConnectionInfo['scheme'], $solrConnectionInfo['host'], $solrConnectionInfo['port']);
     }
 
@@ -467,6 +475,9 @@ abstract class IntegrationTest extends FunctionalTestCase
      */
     protected function writeDefaultSolrTestSiteConfigurationForHostAndPort($scheme = 'http', $host = 'localhost', $port = 8999)
     {
+        $siteNameOne = 'integration_tree_one';
+        $siteNameTwo = 'integration_tree_two';
+
         $defaultLanguage = $this->buildDefaultLanguageConfiguration('EN', '/en/');
         $defaultLanguage['solr_core_read'] = 'core_en';
 
@@ -477,7 +488,7 @@ abstract class IntegrationTest extends FunctionalTestCase
         $danish['solr_core_read'] = 'core_da';
 
         $this->writeSiteConfiguration(
-            'integration_tree_one',
+            $siteNameOne,
             $this->buildSiteConfiguration(1, 'http://testone.site/'),
             [
                 $defaultLanguage, $german, $danish
@@ -488,7 +499,7 @@ abstract class IntegrationTest extends FunctionalTestCase
         );
 
         $this->writeSiteConfiguration(
-            'integration_tree_two',
+            $siteNameTwo,
             $this->buildSiteConfiguration(111, 'http://testtwo.site/'),
             [
                 $defaultLanguage, $german, $danish
@@ -506,8 +517,8 @@ abstract class IntegrationTest extends FunctionalTestCase
             'solr_path_read' => '/solr/',
             'solr_use_write_connection' => false,
         ];
-        $this->mergeSiteConfiguration('integration_tree_one', $globalSolrSettings);
-        $this->mergeSiteConfiguration('integration_tree_two', $globalSolrSettings);
+        $this->mergeSiteConfiguration($siteNameOne, $globalSolrSettings);
+        $this->mergeSiteConfiguration($siteNameTwo, $globalSolrSettings);
 
         clearstatcache();
         usleep(500);
