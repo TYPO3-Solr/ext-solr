@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataset>
+
+
+
+    <sys_template>
+        <uid>1</uid>
+        <pid>1</pid>
+        <root>1</root>
+        <clear>3</clear>
+        <config>
+            <![CDATA[
+                page = PAGE
+                page.typeNum = 0
+                page.bodyTag = <body>
+
+                plugin.tx_solr {
+
+                    enabled = 1
+
+
+                    index {
+                        fieldProcessingInstructions {
+                            changed = timestampToIsoDate
+                            created = timestampToIsoDate
+                            endtime = timestampToUtcIsoDate
+                            rootline = pageUidToHierarchy
+                        }
+
+                        queue {
+
+                            // mapping tableName.fields.SolrFieldName => TableFieldName (+ cObj processing)
+
+                            pages = 1
+                            pages {
+                                initialization = ApacheSolrForTypo3\Solr\IndexQueue\Initializer\Page
+
+                                // allowed page types (doktype) when indexing records from table "pages"
+                                allowedPageTypes = 1,7
+
+                                indexingPriority = 0
+
+                                indexer = ApacheSolrForTypo3\Solr\IndexQueue\PageIndexer
+                                indexer {
+                                    // add options for the indexer here
+                                }
+
+                                // Only index standard pages and mount points that are not overlayed.
+                                additionalWhereClause = (doktype = 1 OR (doktype=7 AND mount_pid_ol=0)) AND no_search = 0
+
+                                fields {
+                                    sortSubTitle_stringS = subtitle
+                                    custom_stringS = TEXT
+                                    custom_stringS.value = my text
+                                }
+                            }
+
+                        }
+                    }
+                }
+            ]]>
+        </config>
+        <sorting>100</sorting>
+    </sys_template>
+    <pages>
+        <uid>1</uid>
+        <pid>0</pid>
+        <is_siteroot>1</is_siteroot>
+        <doktype>1</doktype>
+        <title>hello solr</title>
+        <subtitle>the subtitle</subtitle>
+        <crdate>1449151778</crdate>
+        <tstamp>1449151778</tstamp>
+    </pages>
+
+    <pages>
+        <uid>4711</uid>
+        <pid>1</pid>
+        <is_siteroot>0</is_siteroot>
+        <doktype>1</doktype>
+        <title>hello subpage</title>
+        <subtitle>the subtitle</subtitle>
+        <crdate>1449151778</crdate>
+        <tstamp>1449151778</tstamp>
+    </pages>
+
+</dataset>

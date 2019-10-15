@@ -486,20 +486,33 @@ class QueueItemRepository extends AbstractRepository
      */
     private function buildQueryForPropertyDeletion(QueryBuilder $queryBuilderForDeletingItems, array $rootPageIds, string $indexQueueConfigurationList, string $itemTypeList, array $itemUids, array $uids): QueryBuilder
     {
-        $queryBuilderForDeletingProperties = $queryBuilderForDeletingItems->getConnection()->createQueryBuilder();
-        $queryBuilderForDeletingProperties->delete('tx_solr_indexqueue_indexing_property')->innerJoin(
+        $queryBuilderForSelectingProperties = $queryBuilderForDeletingItems->getConnection()->createQueryBuilder();
+        $queryBuilderForSelectingProperties->select('items.uid')->from('tx_solr_indexqueue_indexing_property', 'properties')->innerJoin(
             'properties',
             $this->table,
             'items',
-            (string)$queryBuilderForDeletingProperties->expr()->andX(
-                $queryBuilderForDeletingProperties->expr()->eq('items.uid', $queryBuilderForDeletingProperties->quoteIdentifier('properties.item_id')),
-                empty($rootPageIds) ? '' : $queryBuilderForDeletingProperties->expr()->in('items.root', $rootPageIds),
-                empty($indexQueueConfigurationList) ? '' : $queryBuilderForDeletingProperties->expr()->in('items.indexing_configuration', $queryBuilderForDeletingProperties->createNamedParameter($indexQueueConfigurationList)),
-                empty($itemTypeList) ? '' : $queryBuilderForDeletingProperties->expr()->in('items.item_type', $queryBuilderForDeletingProperties->createNamedParameter($itemTypeList)),
-                empty($itemUids) ? '' : $queryBuilderForDeletingProperties->expr()->in('items.item_uid', $itemUids),
-                empty($uids) ? '' : $queryBuilderForDeletingProperties->expr()->in('items.uid', $uids)
+            (string)$queryBuilderForSelectingProperties->expr()->andX(
+                $queryBuilderForSelectingProperties->expr()->eq('items.uid', $queryBuilderForSelectingProperties->quoteIdentifier('properties.item_id')),
+                empty($rootPageIds) ? '' : $queryBuilderForSelectingProperties->expr()->in('items.root', $rootPageIds),
+                empty($indexQueueConfigurationList) ? '' : $queryBuilderForSelectingProperties->expr()->in('items.indexing_configuration', $queryBuilderForSelectingProperties->createNamedParameter($indexQueueConfigurationList)),
+                empty($itemTypeList) ? '' : $queryBuilderForSelectingProperties->expr()->in('items.item_type', $queryBuilderForSelectingProperties->createNamedParameter($itemTypeList)),
+                empty($itemUids) ? '' : $queryBuilderForSelectingProperties->expr()->in('items.item_uid', $itemUids),
+                empty($uids) ? '' : $queryBuilderForSelectingProperties->expr()->in('items.uid', $uids)
             )
         );
+        $propertyEntriesToDelete = implode(',', array_column($queryBuilderForSelectingProperties->execute()->fetchAll(), 'uid'));
+
+        $queryBuilderForDeletingProperties = $queryBuilderForDeletingItems->getConnection()->createQueryBuilder();
+
+        // make sure executing the propety deletion query doesn't fail if there are no properties to delete
+        if (empty($propertyEntriesToDelete)) {
+            $propertyEntriesToDelete = '0';
+        }
+
+        $queryBuilderForDeletingProperties->delete('tx_solr_indexqueue_indexing_property')->where(
+            $queryBuilderForDeletingProperties->expr()->in('item_id', $propertyEntriesToDelete)
+        );
+
         return $queryBuilderForDeletingProperties;
     }
 

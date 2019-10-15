@@ -25,8 +25,10 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Domain\Index;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\QueueItemRepository;
+use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
+use ApacheSolrForTypo3\Solr\IndexQueue\Initializer\Page;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -121,6 +123,49 @@ class QueueItemRepositoryTest extends IntegrationTest
         $firstItem = $items[0];
         $this->assertSame(4, count($items));
         $this->assertSame('pages', $firstItem->getType(), 'First item has unexpected type');
+    }
+
+    /**
+     * @test
+     */
+    public function indexingPropertyIsKeptWhenItIsReferencedToAnotherQueueItem()
+    {
+        $this->importDataSetFromFixture('can_keep_indexing_properties.xml');
+
+        /** @var SiteRepository $siteRepository */
+        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
+
+        $currentSite = $siteRepository->getSiteByPageId(4711);
+
+
+        /** @var $queueItemRepository  QueueItemRepository */
+        $queueItemRepository = GeneralUtility::makeInstance(QueueItemRepository::class);
+        $queueItemRepository->add('pages', 4711, 1, 2, 'news_pages');
+        $queueItemRepository->add('pages', 4711, 1, 2, 'product_pages');
+
+        $items = $queueItemRepository->findItemsByItemTypeAndItemUid('pages', 4711);
+        $this->assertCount(2, $items, 'Retrieved unexpected amount of records from queue item repository');
+
+        foreach($items as $item) {
+            $this->assertSame([], $item->getIndexingProperties(), 'New added item should have empty indexing properties');
+            $this->assertFalse($item->hasIndexingProperty('sense_of_live'), 'New indexing property should not exist');
+
+            $item->setIndexingProperty('shared_property', 'hello solr');
+            $item->storeIndexingProperties();
+            $this->assertSame('hello solr', $item->getIndexingProperty('shared_property'), 'New indexing property be retrieved');
+        }
+
+        $queueItemRepository->deleteItemsBySite($currentSite, 'news_pages');
+
+        $items = $queueItemRepository->findAll();
+        $this->assertCount(1, $items, 'Queue should only contain on more item after deletion with index queue configuration');
+
+        $items = $queueItemRepository->findItemsByItemTypeAndItemUid('pages', 4711);
+        $this->assertCount(1, $items, 'Retrieved unexpected amount of records from queue item repository');
+
+        foreach($items as $item) {
+            $this->assertSame('hello solr', $item->getIndexingProperty('shared_property'), 'Previous added indexing property was lost');
+        }
     }
 
     /**
