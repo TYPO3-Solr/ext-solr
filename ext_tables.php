@@ -114,6 +114,7 @@ if (TYPO3_MODE == 'BE') {
 
     // registering reports
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['reports']['tx_reports']['status']['providers']['solr'] = [
+        \ApacheSolrForTypo3\Solr\Report\SiteHandlingStatus::class,
         \ApacheSolrForTypo3\Solr\Report\SchemaStatus::class,
         \ApacheSolrForTypo3\Solr\Report\SolrConfigStatus::class,
         \ApacheSolrForTypo3\Solr\Report\SolrConfigurationStatus::class,

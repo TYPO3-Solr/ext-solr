@@ -98,4 +98,14 @@ class Typo3ManagedSite extends Site
 
         return $this->solrConnectionConfigurations[$language];
     }
+
+    /**
+     * Returns \TYPO3\CMS\Core\Site\Entity\Site
+     *
+     * @return Typo3Site
+     */
+    public function getTypo3SiteObject(): Typo3Site
+    {
+        return $this->typo3SiteObject;
+    }
 }

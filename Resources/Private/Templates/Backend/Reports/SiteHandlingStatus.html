@@ -1,0 +1,7 @@
+<table class="table table-condensed table-hover table-striped">
+    <thead><tr><td colspan="3">Site Identifier: {identifier}</td></tr></thead>
+
+    <f:for each="{validationResults}" as="validationResult">
+        <tr><th>{validationResult.label}</th><td>{validationResult.message}</td><td>{f:if(condition: '{validationResult.passed}', then: 'OK', else: 'FAILED')}</td></tr>
+    </f:for>
+</table>
