@@ -242,6 +242,7 @@ class SolrConnection
         }
 
         $client = new Client(['adapter' => 'Solarium\Core\Client\Adapter\Guzzle']);
+        $client->getPlugin('postbigrequest');
         $client->clearEndpoints();
 
         $newEndpointOptions = $this->getNode($endpointKey)->getSolariumClientOptions();
