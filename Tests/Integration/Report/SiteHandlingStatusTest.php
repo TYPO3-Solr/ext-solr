@@ -26,6 +26,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Report;
 
 use ApacheSolrForTypo3\Solr\Report\SiteHandlingStatus;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
+use TYPO3\CMS\Core\Configuration\SiteConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Reports\Status;
 
@@ -56,7 +57,7 @@ class SiteHandlingStatusTest extends IntegrationTest
     /**
      * @test
      */
-    public function schemeStatusCheckShouldFailIfNotDefined()
+    public function statusCheckShouldFailIfSchemeIsNotDefined()
     {
         $this->writeDefaultSolrTestSiteConfiguration();
         $this->mergeSiteConfiguration('integration_tree_one', [
@@ -72,14 +73,14 @@ class SiteHandlingStatusTest extends IntegrationTest
         foreach($statusCollection as $status) {
             /** @var $status Status */
             $this->assertSame(Status::ERROR, $status->getSeverity(), 'Expected that status checks for site handling configuration should indicate an error if scheme in "Entry Point[base]" is not defined.');
-            $this->assertRegExp('~.*http\[s\]\:\/\/.*\<\/td\>\<td\>FAILED\<\/td\>\<\/tr\>~', $status->getMessage());
+            $this->assertRegExp('~.*are empty or invalid\: &quot;scheme&quot;~', $status->getMessage());
         }
     }
 
     /**
      * @test
      */
-    public function authorityStatusCheckShouldFailIfNotDefined()
+    public function statusCheckShouldFailIfAuthorityIsNotDefined()
     {
         $this->writeDefaultSolrTestSiteConfiguration();
         $this->mergeSiteConfiguration('integration_tree_one', [
@@ -95,7 +96,33 @@ class SiteHandlingStatusTest extends IntegrationTest
         foreach($statusCollection as $status) {
             /** @var $status Status */
             $this->assertSame(Status::ERROR, $status->getSeverity(), 'Expected that status checks for site handling configuration should indicate an error if authority in "Entry Point[base]" is not defined.');
-            $this->assertRegExp('~.*\[user\-info@\]host\[\:port\].*\<\/td\>\<td\>FAILED\<\/td\>\<\/tr\>~', $status->getMessage());
+            $this->assertRegExp('~.*are empty or invalid\: &quot;scheme, host&quot;~', $status->getMessage());
+        }
+    }
+
+    /**
+     * @test
+     */
+    public function statusCheckShouldFailIfBaseIsSetWrongInLanguages()
+    {
+        $this->writeDefaultSolrTestSiteConfiguration();
+
+        // mergeSiteConfiguration() do not work recursively
+        $siteConfiguration = new SiteConfiguration($this->instancePath . '/typo3conf/sites/');
+        $configuration = $siteConfiguration->load('integration_tree_one');
+        $configuration['languages'][1]['base'] = 'authorityOnly.example.com';
+
+        $this->mergeSiteConfiguration('integration_tree_one', $configuration);
+        $this->importDataSetFromFixture('simple_site.xml');
+
+        /** @var $siteHandlingStatus  SiteHandlingStatus */
+        $siteHandlingStatus = GeneralUtility::makeInstance(SiteHandlingStatus::class);
+        $statusCollection = $siteHandlingStatus->getStatus();
+
+        foreach($statusCollection as $status) {
+            /** @var $status Status */
+            $this->assertSame(Status::ERROR, $status->getSeverity(), 'Expected that status checks for site handling configuration should indicate an error if authority in "Entry Point[base]" is not defined.');
+            $this->assertRegExp('~.*is not valid URL\. Following parts of defined URL are empty or invalid\: &quot;scheme&quot;~', $status->getMessage());
         }
     }
 }

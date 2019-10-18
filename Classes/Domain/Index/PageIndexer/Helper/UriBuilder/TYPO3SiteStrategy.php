@@ -30,6 +30,8 @@ namespace ApacheSolrForTypo3\Solr\Domain\Index\PageIndexer\Helper\UriBuilder;
 
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
+use TYPO3\CMS\Core\Exception\SiteNotFoundException;
+use TYPO3\CMS\Core\Routing\InvalidRouteArgumentsException;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -63,6 +65,8 @@ class TYPO3SiteStrategy extends AbstractUriStrategy
      * @param int $language
      * @param string $mountPointParameter
      * @return string
+     * @throws SiteNotFoundException
+     * @throws InvalidRouteArgumentsException
      */
     protected function buildPageIndexingUriFromPageItemAndLanguageId(Item $item, int $language = 0,  string $mountPointParameter = '')
     {
