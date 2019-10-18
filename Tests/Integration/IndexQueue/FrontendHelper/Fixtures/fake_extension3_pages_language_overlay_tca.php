@@ -13,7 +13,7 @@ return [
                 'MM' => 'tx_fakeextension3_pages_mm',
                 'MM_opposite_field' => 'relations',
                 'MM_match_fields' => [
-                    'tablenames' => 'pages_language_overlay',
+                    'tablenames' => 'pages',
                     'fieldname' => 'page_relations'
                 ],
                 'size' => 10,

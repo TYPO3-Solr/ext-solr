@@ -341,7 +341,7 @@ class TypoScriptConfigurationTest extends UnitTest
 
         $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
         $monitoredTables =  $configuration->getIndexQueueMonitoredTables();
-        $this->assertEquals(['tx_model_news', 'tx_model_bar', 'pages', 'pages_language_overlay'], $monitoredTables);
+        $this->assertEquals(['tx_model_news', 'tx_model_bar', 'pages'], $monitoredTables);
     }
 
     /**
@@ -375,7 +375,6 @@ class TypoScriptConfigurationTest extends UnitTest
         $this->assertFalse($configuration->getIndexQueueIsMonitoredTable('tx_mycustom_table2'), 'tx_mycustom_table2 was not expected to be monitored');
 
         $this->assertTrue($configuration->getIndexQueueIsMonitoredTable('pages'), 'pages was expected to be monitored');
-        $this->assertTrue($configuration->getIndexQueueIsMonitoredTable('pages_language_overlay'), 'pages_language_overlay was expected to be monitored');
         $this->assertTrue($configuration->getIndexQueueIsMonitoredTable('tx_model_bar'), 'tx_model_bar was expected to be monitored');
         $this->assertTrue($configuration->getIndexQueueIsMonitoredTable('tx_model_news'), 'tx_model_news was expected to be monitored');
     }

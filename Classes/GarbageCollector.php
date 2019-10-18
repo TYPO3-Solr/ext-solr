@@ -268,7 +268,7 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
     /**
      * Checks if the related index queue item is indexed.
      *
-     * * For tt_content and pages_language_overlay the page from the pid is checked
+     * * For tt_content the page from the pid is checked
      * * For all other records the table it's self is checked
      *
      * @param string $table The table name.
