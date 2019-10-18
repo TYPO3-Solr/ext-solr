@@ -37,7 +37,7 @@ class StrategyFactory {
      */
     public static function getByTable($table)
     {
-        $isPageRelated = in_array($table, ['tt_content','pages','pages_language_overlay']);
+        $isPageRelated = in_array($table, ['tt_content','pages']);
         return $isPageRelated ? new PageStrategy() : new RecordStrategy();
     }
 }

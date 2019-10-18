@@ -444,10 +444,6 @@ class TypoScriptConfiguration
         foreach ($indexingConfigurations as $indexingConfigurationName) {
             $monitoredTable = $this->getIndexQueueTableNameOrFallbackToConfigurationName($indexingConfigurationName);
             $monitoredTables[] = $monitoredTable;
-            if ($monitoredTable === 'pages') {
-                // when monitoring pages, also monitor creation of translations
-                $monitoredTables[] = 'pages_language_overlay';
-            }
         }
 
         return array_values(array_unique($monitoredTables));

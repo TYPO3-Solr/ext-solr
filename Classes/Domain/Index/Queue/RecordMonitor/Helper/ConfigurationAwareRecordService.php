@@ -111,10 +111,6 @@ class ConfigurationAwareRecordService
 
         $recordWhereClause = $solrConfiguration->getIndexQueueAdditionalWhereClauseByConfigurationName($indexingConfigurationName);
 
-        if ($recordTable === 'pages_language_overlay') {
-            return $this->getPageOverlayRecordIfParentIsAccessible($recordUid, $recordWhereClause);
-        }
-
         $row = $this->getRecordForIndexConfigurationIsValid($recordTable, $recordUid, $recordWhereClause);
 
         return $row;
@@ -168,7 +164,7 @@ class ConfigurationAwareRecordService
     }
 
     /**
-     * This method retrieves the pages_language_overlay record when the parent record is accessible
+     * This method retrieves the parent pages record when the parent record is accessible
      * through the recordWhereClause
      *
      * @param int $recordUid
