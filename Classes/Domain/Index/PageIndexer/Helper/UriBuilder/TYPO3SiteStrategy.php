@@ -70,7 +70,7 @@ class TYPO3SiteStrategy extends AbstractUriStrategy
      */
     protected function buildPageIndexingUriFromPageItemAndLanguageId(Item $item, int $language = 0,  string $mountPointParameter = '')
     {
-        $site = $this->siteFinder->getSiteByPageId($item->getRecordUid());
+        $site = $this->siteFinder->getSiteByPageId((int)$item->getRecordUid());
         $parameters = [];
 
         if ($language > 0) {
