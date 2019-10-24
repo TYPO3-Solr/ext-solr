@@ -35,8 +35,7 @@ use TYPO3\CMS\Frontend\Page\PageRepositoryGetPageHookInterface;
 use TYPO3\CMS\Frontend\Page\PageRepositoryGetPageOverlayHookInterface;
 
 /**
- * Index Queue Page Indexer frontend helper to track which user groups are used
- * on a page.
+ * The UserGroupDetector is responsible to identify the fe_group references on records that are visible on the page (not the page itself).
  *
  * @author Ingo Renner <ingo@typo3.org>
  */

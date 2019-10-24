@@ -142,6 +142,7 @@ class Rootline
     ) {
         $accessRootline = GeneralUtility::makeInstance(Rootline::class);
 
+        /** @var  $pageSelector PageRepository */
         $pageSelector = GeneralUtility::makeInstance(PageRepository::class);
         $pageSelector->init(false);
         $rootline = $pageSelector->getRootLine($pageId, $mountPointParameter);
@@ -160,7 +161,7 @@ class Rootline
         }
 
         // current page
-        $currentPageRecord = $pageSelector->getPage($pageId);
+        $currentPageRecord = $pageSelector->getPage($pageId, true);
         if ($currentPageRecord['fe_group']) {
             $accessRootline->push(GeneralUtility::makeInstance(
                 RootlineElement::class,
