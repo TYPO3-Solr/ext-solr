@@ -1,25 +1,23 @@
 language: php
 
 services:
+  - mysql
   - docker
 
 php:
-  - 5.5
   - 5.6
   - 7.0
   - 7.1
 
 jdk:
-  - oraclejdk8
+  - openjdk8
 
 addons:
   apt:
     packages:
       - parallel
-      - oracle-java8-installer
 env:
   global:
-    - JAVA_HOME=/usr/lib/jvm/java-8-oracle
     - TYPO3_DATABASE_NAME="typo3_ci"
     - TYPO3_DATABASE_HOST="127.0.0.1"
     - TYPO3_DATABASE_USERNAME="root"
@@ -34,12 +32,8 @@ env:
 matrix:
   fast_finish: true
   exclude:
-    - php: 5.5
-      env: TYPO3_VERSION="^8.7"
     - php: 5.6
       env: TYPO3_VERSION="^8.7"
-    - php: 5.5
-      env: TYPO3_VERSION="8.x-dev"
     - php: 5.6
       env: TYPO3_VERSION="8.x-dev"
     - php: 7.1
@@ -50,8 +44,6 @@ matrix:
 before_install:
   - composer self-update
   - composer --version
-  # resources for solr
-  - sudo update-java-alternatives -s java-8-oracle
 
 install:
   - Build/Test/bootstrap.sh
