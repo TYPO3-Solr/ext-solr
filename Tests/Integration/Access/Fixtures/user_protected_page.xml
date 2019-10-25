@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataset>
+    <pages>
+        <uid>1</uid>
+        <is_siteroot>1</is_siteroot>
+        <doktype>1</doktype>
+        <hidden>0</hidden>
+        <extendToSubpages>1</extendToSubpages>
+    </pages>
+    <pages>
+        <uid>10</uid>
+        <is_siteroot>0</is_siteroot>
+        <doktype>1</doktype>
+        <pid>1</pid>
+        <fe_group>4711</fe_group>
+    </pages>
+</dataset>
