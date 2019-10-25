@@ -161,13 +161,20 @@ then
 fi
 
 JAVA_VERSION_INSTALLED=$(java -version 2>&1 | grep -Eom1 "[._0-9]{5,}")
-# extract the main Java version from 1.7.0_11 => 7
-JAVA_VERSION_INSTALLED=${JAVA_VERSION_INSTALLED:2:1}
+JAVA_MAJOR_VERSION_INSTALLED=${JAVA_VERSION_INSTALLED%%\.*}
+
+# check if java uses the old version number like 1.7.0_11
+if [ $JAVA_MAJOR_VERSION_INSTALLED -eq 1 ]
+then
+	# extract the main Java version from 1.7.0_11 => 7
+	JAVA_MAJOR_VERSION_INSTALLED=${JAVA_VERSION_INSTALLED:2:1}
+fi
+
 
 # check if java version is equal or higher then required
-if [ $JAVA_VERSION_INSTALLED -lt $JAVA_VERSION ]
+if [ $JAVA_MAJOR_VERSION_INSTALLED -lt $JAVA_VERSION ]
 then
-	cecho "You have installed Java version $JAVA_VERSION_INSTALLED. Please install Java $JAVA_VERSION or newer." $red
+	cecho "You have installed Java version $JAVA_MAJOR_VERSION_INSTALLED. Please install Java $JAVA_VERSION or newer." $red
 	PASSALLCHECKS=0
 fi
 
