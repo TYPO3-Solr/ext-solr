@@ -83,16 +83,19 @@ class Service
                         $fieldValue = $processor->process($fieldValue);
                         break;
                     case 'pathToHierarchy':
+                        $isSingleValueField = false;
                         /** @var $processor PathToHierarchy */
                         $processor = GeneralUtility::makeInstance(PathToHierarchy::class);
                         $fieldValue = $processor->process($fieldValue);
                         break;
                     case 'pageUidToHierarchy':
+                        $isSingleValueField = false;
                         /** @var $processor PageUidToHierarchy */
                         $processor = GeneralUtility::makeInstance(PageUidToHierarchy::class);
                         $fieldValue = $processor->process($fieldValue);
                         break;
                     case 'categoryUidToHierarchy':
+                        $isSingleValueField = false;
                         /** @var $processor CategoryUidToHierarchy */
                         $processor = GeneralUtility::makeInstance(CategoryUidToHierarchy::class);
                         $fieldValue = $processor->process($fieldValue);
