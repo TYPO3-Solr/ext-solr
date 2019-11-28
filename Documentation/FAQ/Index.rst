@@ -594,3 +594,23 @@ Solution: Instead of passing the credentials as shown above, configure your webs
 	</RequireAny>
 
 Be aware, that this will allow all accesses by given IP.
+
+**How can I use different host / port configurations in Solr v10 (e.g. for local environments)?**
+
+While you could use TypoScript conditions to change the configuration for different project evironments in the past, you can now use environment variables in the config.yaml like shown below.
+
+In your sites config.yaml:
+::
+
+	solr_host_read: '%env(SOLR_HOST)%'
+	solr_port_read: '%env(SOLR_HOST)%'
+
+In your .env file:
+
+::
+
+	SOLR_HOST=127.0.0.1
+	SOLR_PORT=8983
+
+Refer to TYPO3 documentation:
+https://docs.typo3.org/m/typo3/reference-coreapi/master/en-us/ApiOverview/SiteHandling/UsingEnvVars.html#using-environment-variables-in-site-configuration
