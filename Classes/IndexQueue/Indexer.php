@@ -329,9 +329,6 @@ class Indexer extends AbstractIndexer
     protected function getFieldConfigurationFromItemRootPage(Item $item, $language, $indexConfigurationName)
     {
         $solrConfiguration = Util::getSolrConfigurationFromPageId($item->getRootPageUid(), true, $language);
-        if (empty($solrConfiguration->getIndexQueueAdditionalPageIdsByConfigurationName($indexConfigurationName))) {
-            return [];
-        }
 
         return $solrConfiguration->getIndexQueueFieldsConfigurationByConfigurationName($indexConfigurationName, []);
     }
@@ -344,7 +341,7 @@ class Indexer extends AbstractIndexer
      */
     protected function isRootPageIdPartOfRootLine(Item $item)
     {
-        $rootPageId = $item->getRootPageUid();
+        $rootPageId = (int)$item->getRootPageUid();
         $buildRootlineWithPid = $item->getRecordPageId();
         if ($item->getType() === 'pages') {
             $buildRootlineWithPid = $item->getRecordUid();
