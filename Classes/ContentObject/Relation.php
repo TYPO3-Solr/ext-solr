@@ -183,27 +183,37 @@ class Relation
 
         $relatedRecords = $this->getRelatedRecords($foreignTableName, ...$selectUids);
         foreach ($relatedRecords as $record) {
-            if (isset($foreignTableTca['columns'][$foreignTableLabelField]['config']['foreign_table'])
-                && $this->configuration['enableRecursiveValueResolution']
-            ) {
-                if (strpos($this->configuration['foreignLabelField'], '.') !== false) {
-                    $foreignTableLabelFieldArr = explode('.', $this->configuration['foreignLabelField']);
-                    unset($foreignTableLabelFieldArr[0]);
-                    $this->configuration['foreignLabelField'] = implode('.', $foreignTableLabelFieldArr);
+            $itemParts = [];
+            foreach (explode(',', $foreignTableLabelField) as $fieldName) {
+                $fieldName = trim($fieldName);
+
+                if (isset($foreignTableTca['columns'][$fieldName]['config']['foreign_table'])
+                    && $this->configuration['enableRecursiveValueResolution']
+                ) {
+                    if (strpos($this->configuration['foreignLabelField'], '.') !== false) {
+                        $foreignTableLabelFieldArr = explode('.', $this->configuration['foreignLabelField']);
+                        unset($foreignTableLabelFieldArr[0]);
+                        $this->configuration['foreignLabelField'] = implode('.', $foreignTableLabelFieldArr);
+                    }
+
+                    $this->configuration['localField'] = $fieldName;
+
+                    $contentObject = GeneralUtility::makeInstance(ContentObjectRenderer::class);
+                    $contentObject->start($record, $foreignTableName);
+
+                    $itemParts = array_merge($itemParts, $this->getRelatedItems($contentObject));
+                } else {
+                    if (Util::getLanguageUid() > 0) {
+                        $record = $this->frontendOverlayService->getOverlay($foreignTableName, $record);
+                    }
+                    $itemParts[] = $record[$fieldName];
                 }
-
-                $this->configuration['localField'] = $foreignTableLabelField;
-
-                $contentObject = GeneralUtility::makeInstance(ContentObjectRenderer::class);
-                $contentObject->start($record, $foreignTableName);
-
-                return $this->getRelatedItems($contentObject);
-            } else {
-                if (Util::getLanguageUid() > 0) {
-                    $record = $this->frontendOverlayService->getOverlay($foreignTableName, $record);
-                }
-                $relatedItems[] = $record[$foreignTableLabelField];
             }
+            $glue = ' ';
+            if (array_key_exists('foreignLabelFieldGlue', $this->configuration)) {
+                $glue = $this->configuration['foreignLabelFieldGlue'];
+            }
+            $relatedItems[] = trim(implode($glue, $itemParts));
         }
 
         return $relatedItems;
@@ -306,42 +316,51 @@ class Relation
         if (Util::getLanguageUid() > 0 && !empty($foreignTableName)) {
             $relatedRecord = $this->frontendOverlayService->getOverlay($foreignTableName, $relatedRecord);
         }
+        $values = [];
+        foreach (explode(',', $foreignTableLabelField) as $fieldName) {
+            $fieldName = trim($fieldName);
 
-        $value = $relatedRecord[$foreignTableLabelField];
+            if (
+                !empty($foreignTableName)
+                && isset($foreignTableTca['columns'][$fieldName]['config']['foreign_table'])
+                && $this->configuration['enableRecursiveValueResolution']
+            ) {
+                // backup
+                $backupRecord = $parentContentObject->data;
+                $backupConfiguration = $this->configuration;
 
-        if (
-            !empty($foreignTableName)
-            && isset($foreignTableTca['columns'][$foreignTableLabelField]['config']['foreign_table'])
-            && $this->configuration['enableRecursiveValueResolution']
-        ) {
-            // backup
-            $backupRecord = $parentContentObject->data;
-            $backupConfiguration = $this->configuration;
+                // adjust configuration for next level
+                $this->configuration['localField'] = $fieldName;
+                $parentContentObject->data = $relatedRecord;
+                if (strpos($this->configuration['foreignLabelField'], '.') !== false) {
+                    list(, $this->configuration['foreignLabelField']) = explode('.',
+                        $this->configuration['foreignLabelField'], 2);
+                } else {
+                    $this->configuration['foreignLabelField'] = '';
+                }
 
-            // adjust configuration for next level
-            $this->configuration['localField'] = $foreignTableLabelField;
-            $parentContentObject->data = $relatedRecord;
-            if (strpos($this->configuration['foreignLabelField'], '.') !== false) {
-                list(, $this->configuration['foreignLabelField']) = explode('.',
-                    $this->configuration['foreignLabelField'], 2);
+                // recursion
+                $relatedItemsFromForeignTable = $this->getRelatedItemsFromForeignTable(
+                    $foreignTableName,
+                    $relatedRecord['uid'],
+                    $foreignTableTca['columns'][$fieldName],
+                    $parentContentObject
+                );
+                $values[] = array_pop($relatedItemsFromForeignTable);
+
+                // restore
+                $this->configuration = $backupConfiguration;
+                $parentContentObject->data = $backupRecord;
             } else {
-                $this->configuration['foreignLabelField'] = '';
+                $values[] = $relatedRecord[$fieldName];
             }
-
-            // recursion
-            $relatedItemsFromForeignTable = $this->getRelatedItemsFromForeignTable(
-                $foreignTableName,
-                $relatedRecord['uid'],
-                $foreignTableTca['columns'][$foreignTableLabelField],
-                $parentContentObject
-            );
-            $value = array_pop($relatedItemsFromForeignTable);
-
-            // restore
-            $this->configuration = $backupConfiguration;
-            $parentContentObject->data = $backupRecord;
         }
 
+        $glue = ' ';
+        if (array_key_exists('foreignLabelFieldGlue', $this->configuration)) {
+            $glue = $this->configuration['foreignLabelFieldGlue'];
+        }
+        $value = trim(implode($glue, $values));
         return $parentContentObject->stdWrap($value, $this->configuration);
     }
 

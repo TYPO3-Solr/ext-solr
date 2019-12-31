@@ -573,7 +573,18 @@ The current record's field name to use to resolve the relation to the foreign ta
 :TS Path: plugin.tx_solr.index.queue.[indexConfig].fields.[fieldName].foreignLabelField
 :Since: 2.0
 
-Usually the label field to retrieve from the related records is determined automatically using TCA, using this option the desired field can be specified explicitly. To specify the label field for recursive relations, the field names can be separated by a dot, e.g. for a category hierarchy to get the name of the parent category one could use "parent.name" (since version:2.9).
+Usually the label field to retrieve from the related records is determined automatically using TCA, using this option the desired field can be specified explicitly.
+To specify the label field for recursive relations, the field names can be separated by a dot, e.g. for a category hierarchy to get the name of the parent category one could use "parent.name" (since version:2.9).
+If your label consists of multiple fields, separete them with a comma (since version:10.1).
+
+**foreignLabelFieldGlue**
+
+:Type: String
+:TS Path: plugin.tx_solr.index.queue.[indexConfig].fields.[fieldName].foreignLabelFieldGlue
+:Since: 10.1
+:Default: (space)
+
+If `foreignLabelField` is a comma separated list, this value will be used for concatenating the parts. Defaults to a blank space.
 
 **multiValue**
 
