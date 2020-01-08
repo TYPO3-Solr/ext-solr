@@ -14,14 +14,13 @@ addons:
   apt:
     packages:
       - parallel
-
 env:
   global:
     - TYPO3_DATABASE_NAME="typo3_ci"
     - TYPO3_DATABASE_HOST="127.0.0.1"
     - TYPO3_DATABASE_USERNAME="root"
     - TYPO3_DATABASE_PASSWORD=""
-    - PHP_CS_FIXER_VERSION="^2.11"
+    - PHP_CS_FIXER_VERSION="^2.16.1"
   matrix:
     - TYPO3_VERSION="^9.5"
     - TYPO3_VERSION="9.5.x-dev"
@@ -34,6 +33,7 @@ matrix:
     - env: TYPO3_VERSION="9.5.x-dev"
 
 before_install:
+  - mysql -e 'CREATE DATABASE IF NOT EXISTS typo3_ci;'
   - composer self-update
   - composer --version
   - composer validate --no-check-lock

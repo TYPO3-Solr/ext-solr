@@ -63,7 +63,6 @@ fi
 
 # Install build tools
 composer global require friendsofphp/php-cs-fixer:"$PHP_CS_FIXER_VERSION"
-composer global require scrutinizer/ocular:"1.5.2"
 composer global require namelesscoder/typo3-repository-client
 
 # Setup TYPO3 environment variables
