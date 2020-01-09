@@ -6,6 +6,7 @@ services:
 
 php:
   - 7.2
+  - 7.3
 
 jdk:
   - oraclejdk8
@@ -23,14 +24,14 @@ env:
     - PHP_CS_FIXER_VERSION="^2.16.1"
   matrix:
     - TYPO3_VERSION="^9.5"
-    - TYPO3_VERSION="9.5.x-dev"
+    - TYPO3_VERSION="^10.0"
     - TYPO3_VERSION="dev-master"
 
 matrix:
   fast_finish: true
   allow_failures:
+    - env: TYPO3_VERSION="^10.0"
     - env: TYPO3_VERSION="dev-master"
-    - env: TYPO3_VERSION="9.5.x-dev"
 
 before_install:
   - mysql -e 'CREATE DATABASE IF NOT EXISTS typo3_ci;'
