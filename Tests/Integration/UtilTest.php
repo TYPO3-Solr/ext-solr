@@ -1,16 +1,17 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Tests\Integration;
 
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\TypoScript\ExtendedTemplateService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Page\PageRepository;
 
-class UtilTest extends UnitTest
+class UtilTest extends IntegrationTest
 {
     public function setUp()
     {
+        parent::setUp();
         /** @var \TYPO3\CMS\Core\Cache\Frontend\VariableFrontend|\Prophecy\Prophecy\ObjectProphecy $frontendCache */
         $frontendCache = $this->prophesize(\TYPO3\CMS\Core\Cache\Frontend\VariableFrontend::class);
         /** @var \TYPO3\CMS\Core\Cache\CacheManager|\Prophecy\Prophecy\ObjectProphecy $cacheManager */
@@ -22,10 +23,17 @@ class UtilTest extends UnitTest
             ->getCache('cache_runtime')
             ->willReturn($frontendCache->reveal());
         $cacheManager
+            ->getCache('cache_hash')
+            ->willReturn($frontendCache->reveal());
+        $cacheManager
+            ->getCache('cache_core')
+            ->willReturn($frontendCache->reveal());
+        $cacheManager
             ->getCache('tx_solr_configuration')
             ->willReturn($frontendCache->reveal());
         GeneralUtility::setSingletonInstance(\TYPO3\CMS\Core\Cache\CacheManager::class, $cacheManager->reveal());
         $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['solr'] = [];
+        $GLOBALS['TYPO3_CONF_VARS']['FE']['ContentObjects'] = [];
     }
 
     public function tearDown()

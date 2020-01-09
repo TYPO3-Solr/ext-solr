@@ -32,8 +32,8 @@
     "solarium/solarium": "~4.2.0"
   },
   "require-dev": {
-    "phpunit/phpunit": "^6.0",
-    "nimut/testing-framework": "^4.0.0"
+    "phpunit/phpunit": "^7.0",
+    "nimut/testing-framework": "^5.0.0"
   },
   "replace": {
     "typo3-ter/solr": "self.version",
