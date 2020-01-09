@@ -110,11 +110,6 @@ interface SiteInterface
      */
     public function getTitle();
 
-    /**
-     * @param int $languageUid
-     * @return array
-     */
-    public function getFallbackOrder(int $languageUid): array;
 
     /**
      * @param int $language

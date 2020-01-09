@@ -30,18 +30,21 @@ use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationPageResolver;
 use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
-use Symfony\Component\EventDispatcher\GenericEvent;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\LanguageAspect;
+use TYPO3\CMS\Core\Context\LanguageAspectFactory;
+use TYPO3\CMS\Core\Exception\SiteNotFoundException;
+use TYPO3\CMS\Core\Site\SiteFinder;
+use TYPO3\CMS\Core\TypoScript\TemplateService;
 use TYPO3\CMS\Core\Utility\RootlineUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
-use ApacheSolrForTypo3\Solr\System\Mvc\Frontend\Controller\OverriddenTypoScriptFrontendController;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Core\TimeTracker\TimeTracker;
 use TYPO3\CMS\Core\TypoScript\ExtendedTemplateService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Frontend\Page\PageRepository;
+use TYPO3\CMS\Core\Context\UserAspect;
+use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 
 /**
  * Utility class for tx_solr
@@ -252,6 +255,44 @@ class Util
     }
 
     /**
+     * @param int $pageId
+     * @param int $language
+     */
+    private static function changeLanguageContext(int $pageId, int $language): void
+    {
+        $context = GeneralUtility::makeInstance(Context::class);
+        if ($context->hasAspect('language')) {
+            if ($context->getPropertyFromAspect('language', 'id') === $language) {
+                return;
+            }
+        }
+
+        $siteFinder = GeneralUtility::makeInstance(SiteFinder::class);
+        try {
+            $site = $siteFinder->getSiteByPageId($pageId);
+            $languageAspect = LanguageAspectFactory::createFromSiteLanguage($site->getLanguageById($language));
+            $context->setAspect('language', $languageAspect);
+        } catch (SiteNotFoundException $e) {
+            // legacy site
+            if ($context->hasAspect('language')) {
+                $languageAspect = $context->getAspect('language');
+                $context->setAspect('language', GeneralUtility::makeInstance(
+                    LanguageAspect::class,
+                    (int)$language,
+                    $languageAspect->getContentId(),
+                    $languageAspect->getOverlayType(),
+                    $languageAspect->getFallbackChain()
+                ));
+            } else {
+                $context->setAspect('language', GeneralUtility::makeInstance(
+                    LanguageAspect::class,
+                    (int)$language
+                ));
+            }
+        }
+    }
+
+    /**
      * This function is used to retrieve the configuration from an existing TSFE instance
      *
      * @param $pageId
@@ -262,12 +303,8 @@ class Util
     private static function getConfigurationFromExistingTSFE($pageId, $path, $language)
     {
         if (is_int($language)) {
-            GeneralUtility::_GETset($language, 'L');
+            self::changeLanguageContext((int)$pageId, (int)$language);
         }
-
-            /** @var $pageSelect PageRepository */
-        $pageSelect = GeneralUtility::makeInstance(PageRepository::class);
-
         $rootlineUtility = GeneralUtility::makeInstance(RootlineUtility::class, $pageId);
         try {
             $rootLine = $rootlineUtility->get();
@@ -275,38 +312,15 @@ class Util
             $rootLine = [];
         }
 
-        $initializedTsfe = false;
-        $initializedPageSelect = false;
-        if (empty($GLOBALS['TSFE']->sys_page)) {
-            if (empty($GLOBALS['TSFE'])) {
-                $GLOBALS['TSFE'] = new \stdClass();
-                $GLOBALS['TSFE']->tmpl = new \stdClass();
-                $GLOBALS['TSFE']->tmpl->rootLine = $rootLine;
-                $GLOBALS['TSFE']->sys_page = $pageSelect;
-                $GLOBALS['TSFE']->id = $pageId;
-                $GLOBALS['TSFE']->tx_solr_initTsfe = 1;
-                $initializedTsfe = true;
-            }
-
-            $GLOBALS['TSFE']->sys_page = $pageSelect;
-            $initializedPageSelect = true;
-        }
             /** @var $tmpl ExtendedTemplateService */
         $tmpl = GeneralUtility::makeInstance(ExtendedTemplateService::class);
         $tmpl->tt_track = false; // Do not log time-performance information
-        $tmpl->init();
         $tmpl->runThroughTemplates($rootLine); // This generates the constants/config + hierarchy info for the template.
         $tmpl->generateConfig();
 
         $getConfigurationFromInitializedTSFEAndWriteToCache = $tmpl->ext_getSetup($tmpl->setup, $path);
         $configurationToUse = $getConfigurationFromInitializedTSFEAndWriteToCache[0];
 
-        if ($initializedPageSelect) {
-            $GLOBALS['TSFE']->sys_page = null;
-        }
-        if ($initializedTsfe) {
-            unset($GLOBALS['TSFE']);
-        }
         return $configurationToUse;
     }
 
@@ -328,68 +342,49 @@ class Util
 
         $cacheId = $pageId . '|' . $language;
 
-        if (!is_object($GLOBALS['TT'])) {
-            $GLOBALS['TT'] = GeneralUtility::makeInstance(TimeTracker::class, false);
-        }
-
-
         /** @var Context $context */
         $context = GeneralUtility::makeInstance(Context::class);
-        $context->setAspect('language', GeneralUtility::makeInstance(LanguageAspect::class, $language));
+        self::changeLanguageContext((int)$pageId, (int)$language);
 
-        // needs to be set regardless if $GLOBALS['TSFE'] is loaded from cache
-        // otherwise it is not guaranteed that the correct language id is used everywhere for this index cycle (e.g. Typo3QuerySettings)
-        GeneralUtility::_GETset($language, 'L');
+        if (!isset($tsfeCache[$cacheId])) {
 
-        if (!isset($tsfeCache[$cacheId]) || !$useCache) {
-
-            $GLOBALS['TSFE'] = GeneralUtility::makeInstance(OverriddenTypoScriptFrontendController::class, $GLOBALS['TYPO3_CONF_VARS'], $pageId, 0);
+            $GLOBALS['TSFE'] = GeneralUtility::makeInstance(TypoScriptFrontendController::class, $GLOBALS['TYPO3_CONF_VARS'], $pageId, 0);
 
             // for certain situations we need to trick TSFE into granting us
             // access to the page in any case to make getPageAndRootline() work
             // see http://forge.typo3.org/issues/42122
             $pageRecord = BackendUtility::getRecord('pages', $pageId, 'fe_group');
-            $groupListBackup = $GLOBALS['TSFE']->gr_list;
-            $GLOBALS['TSFE']->gr_list = $pageRecord['fe_group'];
 
+            $feUser = GeneralUtility::makeInstance(FrontendUserAuthentication::class);
+            $userGroups = [0, -1];
+            if (!empty($pageRecord['fe_group'])) {
+                $userGroups = array_unique(array_merge($userGroups, explode(',', $pageRecord['fe_group'])));
+            }
+            $context->setAspect('frontend.user', GeneralUtility::makeInstance(UserAspect::class, $feUser, $userGroups));
+
+            // @extensionScannerIgnoreLine
             $GLOBALS['TSFE']->sys_page = GeneralUtility::makeInstance(PageRepository::class);
             self::getPageAndRootlineOfTSFE($pageId);
 
-            // restore gr_list
-            $GLOBALS['TSFE']->gr_list = $groupListBackup;
-
-            $GLOBALS['TSFE']->initTemplate();
+            $template = GeneralUtility::makeInstance(TemplateService::class, $context);
+            $GLOBALS['TSFE']->tmpl = $template;
             $GLOBALS['TSFE']->forceTemplateParsing = true;
-            $GLOBALS['TSFE']->initFEuser();
-            $GLOBALS['TSFE']->initUserGroups();
-            //  $GLOBALS['TSFE']->getCompressedTCarray(); // seems to cause conflicts sometimes
-
             $GLOBALS['TSFE']->no_cache = true;
             $GLOBALS['TSFE']->tmpl->start($GLOBALS['TSFE']->rootLine);
             $GLOBALS['TSFE']->no_cache = false;
             $GLOBALS['TSFE']->getConfigArray();
             $GLOBALS['TSFE']->settingLanguage();
-            if (!$useCache) {
-                $GLOBALS['TSFE']->settingLocale();
-            }
 
             $GLOBALS['TSFE']->newCObj();
             $GLOBALS['TSFE']->absRefPrefix = self::getAbsRefPrefixFromTSFE($GLOBALS['TSFE']);
             $GLOBALS['TSFE']->calculateLinkVars();
 
-            // fixes wrong language uid in global context when tsfe is taken from cache
-            $GLOBALS['TSFE']->__set('sys_language_uid', $language);
-
-
-            if ($useCache) {
-                $tsfeCache[$cacheId] = $GLOBALS['TSFE'];
-            }
+            $tsfeCache[$cacheId] = $GLOBALS['TSFE'];
         }
 
-        if ($useCache) {
-            $GLOBALS['TSFE'] = $tsfeCache[$cacheId];
-            $GLOBALS['TSFE']->settingLocale();
-        }
+        $GLOBALS['TSFE'] = $tsfeCache[$cacheId];
+        $GLOBALS['TSFE']->settingLocale();
+        self::changeLanguageContext((int)$pageId, (int)$language);
     }
 
     /**

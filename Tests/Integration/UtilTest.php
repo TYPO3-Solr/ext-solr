@@ -248,12 +248,10 @@ class UtilTest extends IntegrationTest
             ->shouldBeCalled()
             ->willReturn($site->reveal());
         GeneralUtility::addInstance(\ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository::class, $siteRepository->reveal());
-
-        /** @var \ApacheSolrForTypo3\Solr\System\Mvc\Frontend\Controller\OverriddenTypoScriptFrontendController|\Prophecy\Prophecy\ObjectProphecy $tsfeProphecy */
-        $tsfeProphecy = $this->prophesize(\ApacheSolrForTypo3\Solr\System\Mvc\Frontend\Controller\OverriddenTypoScriptFrontendController::class);
+        
+        $tsfeProphecy = $this->prophesize(\TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController::class);
         $tsfeProphecy->willBeConstructedWith([null, $pageId, 0]);
         $tsfe = $tsfeProphecy->reveal();
-        $tsfe->tmpl = new \TYPO3\CMS\Core\TypoScript\TemplateService();
-        GeneralUtility::addInstance(\ApacheSolrForTypo3\Solr\System\Mvc\Frontend\Controller\OverriddenTypoScriptFrontendController::class, $tsfe);
+        GeneralUtility::addInstance(\TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController::class, $tsfe);
     }
 }

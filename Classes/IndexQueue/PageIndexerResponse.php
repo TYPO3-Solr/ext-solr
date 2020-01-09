@@ -104,19 +104,6 @@ class PageIndexerResponse
     }
 
     /**
-     * Sends the response's headers.
-     *
-     * @return void
-     */
-    public function sendHeaders()
-    {
-        // set content type header to prevent problems with Content-Encoding
-        header('Content-Type: application/json');
-
-        header('Content-Length: ' . strlen($this->getContent()));
-    }
-
-    /**
      * Compiles the response's content so that it can be sent back to the
      * Index Queue page indexer.
      *

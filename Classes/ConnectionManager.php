@@ -33,6 +33,8 @@ use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use InvalidArgumentException;
 use RuntimeException;
 use stdClass;
+use TYPO3\CMS\Core\Context\Context;
+use TYPO3\CMS\Core\Context\LanguageAspectFactory;
 use TYPO3\CMS\Core\Registry;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\TypoScript\ExtendedTemplateService;
@@ -393,7 +395,16 @@ class ConnectionManager implements SingletonInterface
         $connection = [];
 
         $languageId = (int)$languageId;
-        GeneralUtility::_GETset($languageId, 'L');
+
+        $context = GeneralUtility::makeInstance(Context::class);
+        $languageAspect = LanguageAspectFactory::createFromTypoScript($GLOBALS['TSFE']->config['config'] ?? []);
+        $context->setAspect('language', GeneralUtility::makeInstance(
+            LanguageAspect::class,
+            $languageId,
+            $languageAspect->getContentId(),
+            $languageAspect->getOverlayType(),
+            $languageAspect->getFallbackChain())
+        );
         $connectionKey = $rootPage['uid'] . '|' . $languageId;
 
         $pageSelect = GeneralUtility::makeInstance(PageRepository::class);

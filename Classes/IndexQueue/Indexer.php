@@ -38,6 +38,10 @@ use ApacheSolrForTypo3\Solr\Util;
 use Solarium\Exception\HttpException;
 use TYPO3\CMS\Backend\Configuration\TranslationConfigurationProvider;
 use TYPO3\CMS\Core\Context\Context;
+use TYPO3\CMS\Core\Context\LanguageAspectFactory;
+use TYPO3\CMS\Core\Exception\SiteNotFoundException;
+use TYPO3\CMS\Core\Site\SiteFinder;
+use TYPO3\CMS\Core\TypoScript\ExtendedTemplateService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\RootlineUtility;
 use TYPO3\CMS\Frontend\Page\PageRepository;
@@ -579,7 +583,7 @@ class Indexer extends AbstractIndexer
             // add Language Fallback
             foreach ($siteLanguages as $languageId) {
                 if ($languageId !== 0 && !in_array((int)$languageId, $translatedLanguages, true)) {
-                    $fallbackLanguageIds = $site->getFallbackOrder((int)$languageId);
+                    $fallbackLanguageIds = $this->getFallbackOrder($site, (int)$languageId, (int)$pageId);
                     foreach ($fallbackLanguageIds as $fallbackLanguageId) {
                         if ($fallbackLanguageId === 0 || in_array((int)$fallbackLanguageId, $translatedLanguages, true)) {
                             $translationOverlay = [
@@ -595,6 +599,42 @@ class Indexer extends AbstractIndexer
             }
         }
         return $translationOverlays;
+    }
+
+    /**
+     * @param Site $site
+     * @param int $languageId
+     * @param int $pageId
+     * @return array
+     */
+    protected function getFallbackOrder(Site $site,  int $languageId, int $pageId): array
+    {
+        $context = GeneralUtility::makeInstance(Context::class);
+        $siteFinder = GeneralUtility::makeInstance(SiteFinder::class);
+        try {
+            $site = $siteFinder->getSiteByRootPageId($site->getRootPageId());
+            $languageAspect = LanguageAspectFactory::createFromSiteLanguage($site->getLanguageById($languageId));
+        } catch (SiteNotFoundException $e) {
+            // only for Legacy Site
+            if ($context->hasAspect('language')) {
+                $languageAspect = $context->getAspect('language');
+            } else {
+                // must be done only once
+                $rootlineUtility = GeneralUtility::makeInstance(RootlineUtility::class, $pageId);
+                try {
+                    $rootLine = $rootlineUtility->get();
+                } catch (\RuntimeException $e) {
+                    $rootLine = [];
+                }
+                $tmpl = GeneralUtility::makeInstance(ExtendedTemplateService::class);
+                $tmpl->tt_track = false; // Do not log time-performance information
+                $tmpl->runThroughTemplates($rootLine); // This generates the constants/config + hierarchy info for the template.
+                $tmpl->generateConfig();
+                $languageAspect = LanguageAspectFactory::createFromTypoScript($tmpl->setup['config.']);
+                $context->setAspect('language', $languageAspect);
+            }
+        }
+        return $languageAspect->getFallbackChain();
     }
 
 

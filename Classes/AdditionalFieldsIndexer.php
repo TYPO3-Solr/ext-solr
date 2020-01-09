@@ -70,7 +70,7 @@ class AdditionalFieldsIndexer implements SubstitutePageIndexer
         $this->configuration = $configuration === null ? Util::getSolrConfiguration() : $configuration;
         $this->additionalIndexingFields = $this->configuration->getIndexAdditionalFieldsConfiguration();
         $this->additionalFieldNames = $this->configuration->getIndexMappedAdditionalFieldNames();
-        $this->contentObjectService = $contentObjectService === null ? GeneralUtility::makeInstance(ContentObjectService::class, /** @scrutinizer ignore-type */ $GLOBALS['TSFE']->cObj) : $contentObjectService;
+        $this->contentObjectService = $contentObjectService === null ? GeneralUtility::makeInstance(ContentObjectService::class) : $contentObjectService;
     }
 
     /**

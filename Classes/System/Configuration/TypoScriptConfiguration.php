@@ -76,7 +76,7 @@ class TypoScriptConfiguration
     /**
      * @var ContentObjectService
      */
-    protected $contentObjectService;
+    protected $contentObjectService = null;
 
     /**
      * @param array $configuration
@@ -87,7 +87,7 @@ class TypoScriptConfiguration
     {
         $this->configurationAccess = new ArrayAccessor($configuration, '.', true);
         $this->contextPageId = $contextPageId;
-        $this->contentObjectService = $contentObjectService ?? GeneralUtility::makeInstance(ContentObjectService::class);
+        $this->contentObjectService = $contentObjectService;
     }
 
     /**
@@ -2432,7 +2432,9 @@ class TypoScriptConfiguration
         if ($configuration == null) {
             return $value;
         }
-
+        if ($this->contentObjectService === null) {
+            $this->contentObjectService = GeneralUtility::makeInstance(ContentObjectService::class);
+        }
         return $this->contentObjectService->renderSingleContentObject($value, $configuration);
     }
 }
