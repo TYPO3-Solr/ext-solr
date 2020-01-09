@@ -28,6 +28,7 @@ use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\Controller\Backend\Search\IndexAdministrationModuleController;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
+use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -50,6 +51,10 @@ class IndexAdministrationModuleControllerTest extends IntegrationTest
 
     public function setUp() {
         parent::setUp();
+
+        $languageClass = Util::getIsTYPO3VersionBelow10() ? \TYPO3\CMS\Lang\LanguageService::class : \TYPO3\CMS\Core\Localization\LanguageService::class;
+        $GLOBALS['LANG'] = $this->getMockBuilder($languageClass)->disableOriginalConstructor()->getMock($languageClass);
+
         $this->writeDefaultSolrTestSiteConfiguration();
         $this->connectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
 

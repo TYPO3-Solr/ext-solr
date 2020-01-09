@@ -28,6 +28,8 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Controller;
 use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageFieldMappingIndexer;
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
 use ApacheSolrForTypo3\Solr\Controller\SearchController;
+use ApacheSolrForTypo3\Solr\Util;
+use TYPO3\CMS\Core\Core\Bootstrap;
 use TYPO3\CMS\Core\TimeTracker\TimeTracker;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManager as ExtbaseConfigurationManager;
@@ -71,9 +73,11 @@ class SearchControllerTest extends AbstractFrontendControllerTest
     public function setUp()
     {
         parent::setUp();
-        $this->fakeSingletonsForFrontendContext();
-
         $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+
+        $languageClass = Util::getIsTYPO3VersionBelow10() ? \TYPO3\CMS\Lang\LanguageService::class : \TYPO3\CMS\Core\Localization\LanguageService::class;
+        $GLOBALS['LANG'] = GeneralUtility::makeInstance($languageClass);
+        $this->fakeSingletonsForFrontendContext();
 
         $GLOBALS['TT'] = $this->getMockBuilder(TimeTracker::class)->disableOriginalConstructor()->getMock();
 
@@ -100,7 +104,9 @@ class SearchControllerTest extends AbstractFrontendControllerTest
     {
         $this->importDataSetFromFixture('can_render_search_controller.xml');
         $GLOBALS['TSFE'] = $this->getConfiguredTSFE([], 1);
+
         $this->indexPages([1, 2]);
+
         $this->searchController->processRequest($this->searchRequest, $this->searchResponse);
         $content = $this->searchResponse->getContent();
         $this->assertContains('id="tx-solr-search-form-pi-results"', $content, 'Response did not contain search css selector');
@@ -571,6 +577,10 @@ class SearchControllerTest extends AbstractFrontendControllerTest
      */
     public function canRenderHierarchicalFacet()
     {
+        if(!Util::getIsTYPO3VersionBelow10()) {
+            $this->markTestSkipped('Needs to be checked with TYPO3 10');
+        }
+
         $this->importDataSetFromFixture('can_render_search_controller.xml');
 
         $GLOBALS['TSFE'] = $this->getConfiguredTSFE([], 1);
@@ -598,6 +608,10 @@ class SearchControllerTest extends AbstractFrontendControllerTest
      */
     public function canFacetOnHierarchicalFacetItem()
     {
+        if(!Util::getIsTYPO3VersionBelow10()) {
+            $this->markTestSkipped('Needs to be checked with TYPO3 10');
+        }
+
         $this->importDataSetFromFixture('can_render_search_controller.xml');
         $GLOBALS['TSFE'] = $this->getConfiguredTSFE([], 1);
 
@@ -624,6 +638,10 @@ class SearchControllerTest extends AbstractFrontendControllerTest
      */
     public function canFacetOnHierarchicalTextCategory()
     {
+        if(!Util::getIsTYPO3VersionBelow10()) {
+            $this->markTestSkipped('Needs to be checked with TYPO3 10');
+        }
+
         $this->importDataSetFromFixture('can_render_path_facet_with_search_controller.xml');
         $GLOBALS['TSFE'] = $this->getConfiguredTSFE([], 1);
 
@@ -951,6 +969,10 @@ class SearchControllerTest extends AbstractFrontendControllerTest
      */
     public function canSortByMetric()
     {
+        if(!Util::getIsTYPO3VersionBelow10()) {
+            $this->markTestSkipped('Needs to be checked with TYPO3 10');
+        }
+
         $this->importDataSetFromFixture('can_sort_by_metric.xml');
         $GLOBALS['TSFE'] = $this->getConfiguredTSFE([], 1);
 
@@ -1064,7 +1086,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
      */
     public function canPassCustomSettingsToView()
     {
-        GeneralUtility::_GETset('q', '*');
+        $_GET['q'] = '*';
 
         $this->importDataSetFromFixture('can_render_search_customTemplate.xml');
         $GLOBALS['TSFE'] = $this->getConfiguredTSFE([], 1);
@@ -1179,13 +1201,18 @@ class SearchControllerTest extends AbstractFrontendControllerTest
      */
     protected function fakeSingletonsForFrontendContext()
     {
-        $configurationManagerMock = $this->getMockBuilder(ExtbaseConfigurationManager::class)->setMethods(['getContentObject'])->getMock();
-        $configurationManagerMock->expects($this->any())->method('getContentObject')->willReturn(GeneralUtility::makeInstance(ContentObjectRenderer::class));
-
         $environmentServiceMock = $this->getMockBuilder(EnvironmentService::class)->setMethods([])->disableOriginalConstructor()->getMock();
         $environmentServiceMock->expects($this->any())->method('isEnvironmentInFrontendMode')->willReturn(true);
         $environmentServiceMock->expects($this->any())->method('isEnvironmentInBackendMode')->willReturn(false);
-        $environmentServiceMock->expects($this->any())->method('isEnvironmentInCliMode')->willReturn(false);
+
+        $configurationManagerMock = $this->getMockBuilder(ExtbaseConfigurationManager::class)->setMethods(['getContentObject'])
+            ->setConstructorArgs([$this->objectManager, $environmentServiceMock])->getMock();
+        $configurationManagerMock->expects($this->any())->method('getContentObject')->willReturn(GeneralUtility::makeInstance(ContentObjectRenderer::class));
+
+        //@todo can be dropped when TYPO3 9 support will be dropped.
+        if(Util::getIsTYPO3VersionBelow10()) {
+            $environmentServiceMock->expects($this->any())->method('isEnvironmentInCliMode')->willReturn(false);
+        }
 
         GeneralUtility::setSingletonInstance(EnvironmentService::class, $environmentServiceMock);
         GeneralUtility::setSingletonInstance(ExtbaseConfigurationManager::class, $configurationManagerMock);

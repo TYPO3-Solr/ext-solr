@@ -70,6 +70,7 @@ class SearchUriBuilderTest extends UnitTest
         $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
         $configurationMock->expects($this->any())->method('getSearchPluginNamespace')->will($this->returnValue('tx_solr'));
         $configurationMock->expects($this->once())->method('getSearchFacetingFacetLinkUrlParametersAsArray')->will($this->returnValue([]));
+        $configurationMock->expects($this->once())->method('getSearchTargetPage')->will($this->returnValue(1));
         $expectedArguments = ['tx_solr' => ['filter' => ['###tx_solr:filter:0###']]];
 
         $this->extBaseUriBuilderMock->expects($this->once())->method('setArguments')->with($expectedArguments)->will($this->returnValue($this->extBaseUriBuilderMock));
@@ -93,8 +94,9 @@ class SearchUriBuilderTest extends UnitTest
 
         $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
         $configurationMock->expects($this->any())->method('getSearchPluginNamespace')->will($this->returnValue('tx_solr'));
-
         $configurationMock->expects($this->once())->method('getSearchFacetingFacetLinkUrlParametersAsArray')->will($this->returnValue(['foo' => 'bar']));
+        $configurationMock->expects($this->once())->method('getSearchTargetPage')->will($this->returnValue(1));
+
         $previousRequest =  new SearchRequest([], 1, 0, $configurationMock);
         $linkBuilderResult = $this->searchUrlBuilder->getAddFacetValueUri($previousRequest, 'option', 'value');
 
@@ -109,6 +111,7 @@ class SearchUriBuilderTest extends UnitTest
         $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
         $configurationMock->expects($this->any())->method('getSearchPluginNamespace')->will($this->returnValue('tx_solr'));
         $configurationMock->expects($this->once())->method('getSearchFacetingFacetLinkUrlParametersAsArray')->will($this->returnValue([]));
+        $configurationMock->expects($this->any())->method('getSearchTargetPage')->will($this->returnValue(1));
 
         $expectedArguments = ['tx_solr' => ['filter' => ['###tx_solr:filter:0###']]];
         $this->extBaseUriBuilderMock->expects($this->once())->method('setArguments')->with($expectedArguments)->will($this->returnValue($this->extBaseUriBuilderMock));
@@ -137,6 +140,7 @@ class SearchUriBuilderTest extends UnitTest
         $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
         $configurationMock->expects($this->once())->method('getSearchTargetPage')->will($this->returnValue(4711));
         $configurationMock->expects($this->any())->method('getSearchPluginNamespace')->will($this->returnValue('tx_solr'));
+        $configurationMock->expects($this->once())->method('getSearchTargetPage')->will($this->returnValue(1));
 
         $previousRequest =  new SearchRequest([], 0, 0, $configurationMock);
 
@@ -156,6 +160,7 @@ class SearchUriBuilderTest extends UnitTest
     {
         $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
         $configurationMock->expects($this->any())->method('getSearchPluginNamespace')->will($this->returnValue('tx_solr'));
+        $configurationMock->expects($this->once())->method('getSearchTargetPage')->will($this->returnValue(1));
 
         $previousRequest =  new SearchRequest([
                     'tx_solr' => [
@@ -182,6 +187,7 @@ class SearchUriBuilderTest extends UnitTest
     {
         $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
         $configurationMock->expects($this->any())->method('getSearchPluginNamespace')->will($this->returnValue('tx_solr'));
+        $configurationMock->expects($this->once())->method('getSearchTargetPage')->will($this->returnValue(1));
 
         $previousRequest =  new SearchRequest([
                     'tx_solr' => [
@@ -212,6 +218,7 @@ class SearchUriBuilderTest extends UnitTest
     {
         $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
         $configurationMock->expects($this->any())->method('getSearchPluginNamespace')->will($this->returnValue('tx_solr'));
+        $configurationMock->expects($this->once())->method('getSearchTargetPage')->will($this->returnValue(1));
 
         $previousRequest =  new SearchRequest([
                 'tx_solr' => [
@@ -251,6 +258,8 @@ class SearchUriBuilderTest extends UnitTest
 
         $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
         $configurationMock->expects($this->any())->method('getSearchPluginNamespace')->will($this->returnValue('tx_solr'));
+        $configurationMock->expects($this->once())->method('getSearchTargetPage')->will($this->returnValue(1));
+
         $previousRequest =  new SearchRequest([], 0, 0, $configurationMock);
 
         $group = new Group('smallPidRange', 5);

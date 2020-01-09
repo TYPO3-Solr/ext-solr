@@ -541,4 +541,14 @@ class Util
         $context = GeneralUtility::makeInstance(Context::class);
         return $context->getPropertyFromAspect('frontend.user', 'groupIds');
     }
+
+    /**
+     * @todo This method is just added for compatibility checks for TYPO3 version 9 and will be removed when TYPO9 support is dropped
+     * @return boolean
+     */
+    public static function getIsTYPO3VersionBelow10()
+    {
+        return (bool)version_compare(TYPO3_branch, '10.0', '<');
+    }
+
 }

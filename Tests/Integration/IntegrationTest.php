@@ -27,6 +27,8 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration;
 use ApacheSolrForTypo3\Solr\Access\Rootline;
 use ApacheSolrForTypo3\Solr\Typo3PageIndexer;
 
+use ApacheSolrForTypo3\Solr\Util;
+use Composer\Autoload\ClassLoader;
 use InvalidArgumentException;
 use Nimut\TestingFramework\Exception\Exception;
 use ReflectionClass;
@@ -267,7 +269,13 @@ abstract class IntegrationTest extends FunctionalTestCase
     {
             /** @var TSFETestBootstrapper $bootstrapper */
         $bootstrapper = GeneralUtility::makeInstance(TSFETestBootstrapper::class);
-        $result = $bootstrapper->run($TYPO3_CONF_VARS, $id, $type, $no_cache, $cHash, $_2, $MP, $RDCT, $config);
+
+        if(Util::getIsTYPO3VersionBelow10()) {
+            // @todo this part can be dropped when TYPO3 9 support will be dropped
+            $result = $bootstrapper->legacyBootstrap($TYPO3_CONF_VARS, $id, $type, $no_cache, $cHash, $_2, $MP, $RDCT, $config);
+        } else {
+            $result = $bootstrapper->bootstrap($TYPO3_CONF_VARS, $id, $no_cache, $cHash, $_2, $MP, $RDCT, $config);
+        }
         return $result->getTsfe();
     }
 
@@ -399,8 +407,6 @@ abstract class IntegrationTest extends FunctionalTestCase
         $GLOBALS['TSFE'] = $fakeTSFE;
         $this->simulateFrontedUserGroups($feUserGroupArray);
 
-        $fakeTSFE->preparePageContentGeneration();
-        PageGenerator::renderContent();
         return $fakeTSFE;
     }
 

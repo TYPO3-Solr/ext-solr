@@ -57,10 +57,9 @@ class Faceting implements Modifier, SearchRequestAware
     /**
      * @param FacetRegistry $facetRegistry
      */
-    public function __construct(FacetRegistry $facetRegistry = null)
+    public function __construct(FacetRegistry $facetRegistry)
     {
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $this->facetRegistry = $facetRegistry ?? $objectManager->get(FacetRegistry::class);
+        $this->facetRegistry = $facetRegistry;
     }
 
     /**

@@ -26,8 +26,8 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Controller\Backend;
 
 use ApacheSolrForTypo3\Solr\Controller\Backend\PageModuleSummary;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
+use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Backend\View\PageLayoutView;
-use TYPO3\CMS\Lang\LanguageService;
 
 /**
  * EXT:solr offers a summary in the backend module that summarizes the extension
@@ -43,7 +43,8 @@ class PageModuleSummaryTest extends IntegrationTest
     public function setUp()
     {
         parent::setUp();
-        $GLOBALS['LANG'] = $this->getMockBuilder(LanguageService::class)->getMock();
+        $languageClass = Util::getIsTYPO3VersionBelow10() ? \TYPO3\CMS\Lang\LanguageService::class : \TYPO3\CMS\Core\Localization\LanguageService::class;
+        $GLOBALS['LANG'] = $this->getMockBuilder($languageClass)->disableOriginalConstructor()->getMock($languageClass);
     }
 
     /**
