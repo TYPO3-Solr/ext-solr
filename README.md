@@ -8,9 +8,9 @@
 [![License](https://poser.pugx.org/apache-solr-for-typo3/solr/license)](https://packagist.org/packages/apache-solr-for-typo3/solr)
 [![Monthly Downloads](https://poser.pugx.org/apache-solr-for-typo3/solr/d/monthly)](https://packagist.org/packages/apache-solr-for-typo3/solr)
 
-An extension that integrates the Apache Solr enterprise search server with TYPO3 CMS.
+A TYPO3 extension that integrates the Apache Solr enterprise search server with TYPO3 CMS.
 
-The extension has initially been developed by dkd Internet Service GmbH and is now being continued as a community project. The version you find here is a version that does not contain all the features that have been implemented yet. These features can be obtained through add-ons for the Extension.
+The extension has initially been developed by dkd Internet Service GmbH and is now being continued as a community project. The version you find here is a version that does not contain all the features that have been implemented yet. These features can be obtained through add-ons for the extension.
 
 In case you need access to the full feature set, please feel free to contact us for details.
 
@@ -33,14 +33,14 @@ We're open for [contributions](./CONTRIBUTING.md) !
 Please find further information regarding Apache Solr and its related projects at the following links:
 
 - http://www.typo3-solr.com/
-- https://www.dkd.de/de/leistungen/enterprise-search/
+- https://www.dkd.de/de/leistungen/enterprise-websites/enterprise-search/
 - https://github.com/TYPO3-Solr
 - http://lucene.apache.org/
 - http://lucene.apache.org/solr/
 - http://tomcat.apache.org
 - http://www.eclipse.org/jetty/
 
-To try out Apache Solr for TYPO3 visit [www.typo3-solr.com](http://www.typo3-solr.com) where we've set up a basic configuration. Another showcase can be found here: [search.dkd.de](http://search.dkd.de/solr)
+To try out Apache Solr for TYPO3 visit [www.typo3-solr.com](http://www.typo3-solr.com) where we've set up a basic configuration. 
 
 ![dkd Internet Service GmbH](./Resources/Public/Images/dkd_logo.png)
 
@@ -48,7 +48,7 @@ To try out Apache Solr for TYPO3 visit [www.typo3-solr.com](http://www.typo3-sol
 
 -   **Main Documentation:**
 
-    https://docs.typo3.org/typo3cms/extensions/solr/
+   https://docs.typo3.org/p/apache-solr-for-typo3/solr/10.0/en-us/Index.html
 
 
 -   **Slack Channel:**
