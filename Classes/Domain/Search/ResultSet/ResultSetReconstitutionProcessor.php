@@ -126,7 +126,7 @@ class ResultSetReconstitutionProcessor implements SearchResultSetProcessor
 
             $isResetOption = $field === 'relevance';
             // @todo allow stdWrap on label
-            $sorting = new Sorting($resultSet, $sortingName, $field, $direction, $label, $selected, $isResetOption);
+            $sorting = $this->getObjectManager()->get(Sorting::class, $resultSet, $sortingName, $field, $direction, $label, $selected, $isResetOption);
             $resultSet->addSorting($sorting);
         }
 
