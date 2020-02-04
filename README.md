@@ -48,7 +48,7 @@ To try out Apache Solr for TYPO3 visit [www.typo3-solr.com](http://www.typo3-sol
 
 -   **Main Documentation:**
 
-    https://docs.typo3.org/typo3cms/extensions/solr/
+    https://docs.typo3.org/p/apache-solr-for-typo3/solr/master/en-us/
 
 
 -   **Slack Channel:**
