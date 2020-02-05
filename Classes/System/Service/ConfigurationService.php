@@ -131,7 +131,7 @@ class ConfigurationService
             $fieldName = $filter['field'];
             $fieldValue = $filter['value'];
 
-            if (!is_numeric($fieldValue)) {
+            if (!is_numeric($fieldValue) && strpos($fieldValue, '?') === false && strpos($fieldValue, '*') === false) {
                 $fieldValue = '"' . str_replace('"', '\"', $fieldValue) . '"';
             }
 
