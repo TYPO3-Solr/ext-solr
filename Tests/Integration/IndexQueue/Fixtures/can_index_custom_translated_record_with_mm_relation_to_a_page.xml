@@ -129,7 +129,6 @@
         <title>German</title>
         <flag>de</flag>
         <language_isocode>de</language_isocode>
-        <static_lang_isocode>0</static_lang_isocode>
         <sorting>128</sorting>
     </sys_language>
 </dataset>

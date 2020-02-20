@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr\Report;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\FrontendEnvironment;
 use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
 use ApacheSolrForTypo3\Solr\System\Records\SystemDomain\SystemDomainRepository;
@@ -52,14 +53,24 @@ class SolrConfigurationStatus extends AbstractSolrStatus
     protected $extensionConfiguration;
 
     /**
+     * @var FrontendEnvironment
+     */
+    protected $fronendEnvironment = null;
+
+    /**
      * SolrConfigurationStatus constructor.
      * @param SystemDomainRepository|null $systemDomainRepository
      * @param ExtensionConfiguration|null $extensionConfiguration
      */
-    public function __construct(SystemDomainRepository $systemDomainRepository = null, ExtensionConfiguration $extensionConfiguration = null)
+    public function __construct(
+        SystemDomainRepository $systemDomainRepository = null,
+        ExtensionConfiguration $extensionConfiguration = null,
+        FrontendEnvironment $frontendEnvironment = null
+    )
     {
         $this->systemDomainRepository = $systemDomainRepository ?? GeneralUtility::makeInstance(SystemDomainRepository::class);
         $this->extensionConfiguration = $extensionConfiguration ?? GeneralUtility::makeInstance(ExtensionConfiguration::class);
+        $this->fronendEnvironment = $frontendEnvironment ?? GeneralUtility::makeInstance(FrontendEnvironment::class);
     }
 
     /**
@@ -279,6 +290,6 @@ class SolrConfigurationStatus extends AbstractSolrStatus
      */
     protected function initializeTSFE($rootPage)
     {
-        Util::initializeTsfe($rootPage['uid']);
+        $this->fronendEnvironment->initializeTsfe($rootPage['uid']);
     }
 }

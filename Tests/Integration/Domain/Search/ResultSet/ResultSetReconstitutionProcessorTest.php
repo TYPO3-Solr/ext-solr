@@ -179,7 +179,8 @@ class ResultSetReconstitutionProcessorTest extends IntegrationTest
         $searchResultSet->getUsedSearchRequest()->expects($this->any())->method('getActiveFacetNames')->will($this->returnValue([]));
 
         $processor = new ResultSetReconstitutionProcessor();
-        $processor->setObjectManager(new FakeObjectManager());
+        $fakeObjectManager = $this->getFakeObjectManager();
+        $processor->setObjectManager($fakeObjectManager);
         return $processor;
     }
 

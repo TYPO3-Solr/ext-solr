@@ -155,8 +155,13 @@ class IndexerTest extends IntegrationTest
         $this->waitToBeVisibleInSolr('core_de');
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_de/select?q=*:*');
         $this->assertContains('"numFound":2', $solrContent, 'Could not find translated record in solr document into solr');
-        $this->assertContains('"title":"translation"', $solrContent, 'Could not index  translated document into solr');
-        $this->assertContains('"title":"translation2"', $solrContent, 'Could not index  translated document into solr');
+        if ($fixture === 'can_index_custom_translated_record_without_l_param_and_content_fallback.xml') {
+            $this->assertContains('"title":"original"', $solrContent, 'Could not index  translated document into solr');
+            $this->assertContains('"title":"original2"', $solrContent, 'Could not index  translated document into solr');
+        } else {
+            $this->assertContains('"title":"translation"', $solrContent, 'Could not index  translated document into solr');
+            $this->assertContains('"title":"translation2"', $solrContent, 'Could not index  translated document into solr');
+        }
         $this->assertContains('"url":"http://testone.site/de/?tx_foo%5Buid%5D=88', $solrContent, 'Can not build typolink as expected');
         $this->assertContains('"url":"http://testone.site/de/?tx_foo%5Buid%5D=777', $solrContent, 'Can not build typolink as expected');
 

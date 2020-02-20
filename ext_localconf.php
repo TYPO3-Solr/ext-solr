@@ -120,28 +120,28 @@ if (!is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][\T
 
 // registering the eID scripts
 // TODO move to suggest form modifier
-$TYPO3_CONF_VARS['FE']['eID_include']['tx_solr_api'] = 'EXT:solr/Classes/Eid/Api.php';
+$GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['tx_solr_api'] = 'EXT:solr/Classes/Eid/Api.php';
 
 # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
 // add custom Solr content objects
 
-$TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_content.php']['cObjTypeAndClass'][\ApacheSolrForTypo3\Solr\ContentObject\Multivalue::CONTENT_OBJECT_NAME] = [
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_content.php']['cObjTypeAndClass'][\ApacheSolrForTypo3\Solr\ContentObject\Multivalue::CONTENT_OBJECT_NAME] = [
     \ApacheSolrForTypo3\Solr\ContentObject\Multivalue::CONTENT_OBJECT_NAME,
     \ApacheSolrForTypo3\Solr\ContentObject\Multivalue::class
 ];
 
-$TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_content.php']['cObjTypeAndClass'][\ApacheSolrForTypo3\Solr\ContentObject\Content::CONTENT_OBJECT_NAME] = [
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_content.php']['cObjTypeAndClass'][\ApacheSolrForTypo3\Solr\ContentObject\Content::CONTENT_OBJECT_NAME] = [
     \ApacheSolrForTypo3\Solr\ContentObject\Content::CONTENT_OBJECT_NAME,
     \ApacheSolrForTypo3\Solr\ContentObject\Content::class
 ];
 
-$TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_content.php']['cObjTypeAndClass'][\ApacheSolrForTypo3\Solr\ContentObject\Relation::CONTENT_OBJECT_NAME] = [
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_content.php']['cObjTypeAndClass'][\ApacheSolrForTypo3\Solr\ContentObject\Relation::CONTENT_OBJECT_NAME] = [
     \ApacheSolrForTypo3\Solr\ContentObject\Relation::CONTENT_OBJECT_NAME,
     \ApacheSolrForTypo3\Solr\ContentObject\Relation::class
 ];
 
-$TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_content.php']['cObjTypeAndClass'][\ApacheSolrForTypo3\Solr\ContentObject\Classification::CONTENT_OBJECT_NAME] = [
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_content.php']['cObjTypeAndClass'][\ApacheSolrForTypo3\Solr\ContentObject\Classification::CONTENT_OBJECT_NAME] = [
     \ApacheSolrForTypo3\Solr\ContentObject\Classification::CONTENT_OBJECT_NAME,
     \ApacheSolrForTypo3\Solr\ContentObject\Classification::class
 ];

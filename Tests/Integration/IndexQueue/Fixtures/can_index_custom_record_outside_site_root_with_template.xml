@@ -51,6 +51,7 @@
                                         typolink.parameter = 1
                                         typolink.useCacheHash = 1
                                         typolink.returnLast = url
+                                        typolink.forceAbsoluteUrl = 1
                                     }
                                 }
                             }

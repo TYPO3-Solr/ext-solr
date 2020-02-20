@@ -29,6 +29,7 @@ use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageIndexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerResponse;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
+use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Error\Http\PageNotFoundException;
 use TYPO3\CMS\Core\TimeTracker\TimeTracker;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -120,8 +121,8 @@ class PageIndexerTest extends IntegrationTest
 
         $this->importDataSetFromFixture('can_index_page_with_relation_to_page.xml');
 
-        $this->executePageIndexer([], 1, 0, '', '', null, '', '', 0);
-        $this->executePageIndexer([], 1, 0, '', '', null, '', '', 1);
+        $this->executePageIndexer(1, '', 0);
+        $this->executePageIndexer(1, '', 1);
 
         // do we have the record in the index with the value from the mm relation?
         $this->waitToBeVisibleInSolr('core_en');
@@ -149,7 +150,7 @@ class PageIndexerTest extends IntegrationTest
         $this->cleanUpSolrServerAndAssertEmpty('core_en');
 
         $this->importDataSetFromFixture('can_index_page_with_relation_to_category.xml');
-        $this->executePageIndexer([], 10, 0, '', '', null, '', '', 0);
+        $this->executePageIndexer(10);
 
         $this->waitToBeVisibleInSolr('core_en');
 
@@ -193,7 +194,7 @@ class PageIndexerTest extends IntegrationTest
     public function canIndexPageIntoSolrWithAdditionalFieldsFromRootLine()
     {
         $this->importDataSetFromFixture('can_overwrite_configuration_in_rootline.xml');
-        $this->executePageIndexer([], 2);
+        $this->executePageIndexer(2);
 
         // we wait to make sure the document will be available in solr
         $this->waitToBeVisibleInSolr();
@@ -266,7 +267,7 @@ class PageIndexerTest extends IntegrationTest
 
         $this->cleanUpSolrServerAndAssertEmpty();
         $this->importDataSetFromFixture('can_index_mounted_page.xml');
-        $this->executePageIndexer([], 24, 0, '', '', null, '24-14');
+        $this->executePageIndexer(24, '24-14');
 
         // we wait to make sure the document will be available in solr
         $this->waitToBeVisibleInSolr();
@@ -276,8 +277,6 @@ class PageIndexerTest extends IntegrationTest
     }
 
     /**
-     * This testcase should check if we can queue an custom record with MM relations and respect the additionalWhere clause.
-     *
      * There is following scenario:
      *
      *  [0]
@@ -302,8 +301,8 @@ class PageIndexerTest extends IntegrationTest
 
         $this->cleanUpSolrServerAndAssertEmpty();
         $this->importDataSetFromFixture('can_index_multiple_mounted_page.xml');
-        $this->executePageIndexer([], 44, 0, '', '', null, '44-14');
-        $this->executePageIndexer([], 44, 0, '', '', null, '44-24');
+        $this->executePageIndexer(44, '44-14');
+        $this->executePageIndexer(44, '44-24');
 
         // we wait to make sure the document will be available in solr
         $this->waitToBeVisibleInSolr();
@@ -312,8 +311,8 @@ class PageIndexerTest extends IntegrationTest
 
         $this->assertContains('"numFound":2', $solrContent, 'Unexpected amount of documents in the core');
 
-        $this->assertContains('"url":"index.php?id=44&MP=44-14"', $solrContent, 'Could not find document of first mounted page');
-        $this->assertContains('"url":"index.php?id=44&MP=44-24"', $solrContent, 'Could not find document of second mounted page');
+        $this->assertContains('/pages/44/44-14/', $solrContent, 'Could not find document of first mounted page');
+        $this->assertContains('/pages/44/44-24/', $solrContent, 'Could not find document of second mounted page');
     }
 
     /**
@@ -325,11 +324,14 @@ class PageIndexerTest extends IntegrationTest
     public function phpProcessDoesNotDieIfPageIsNotAvailable() {
         $this->applyUsingErrorControllerForCMS9andAbove();
         $this->registerShutdownFunctionToPrintExplanationOf404HandlingOnCMSIfDieIsCalled();
-        $this->expectException(PageNotFoundException::class);
-
+        if (Util::getIsTYPO3VersionBelow10()) {
+            $this->expectException(PageNotFoundException::class);
+        } else {
+            $this->expectException(\InvalidArgumentException::class);
+        }
 
         $this->importDataSetFromFixture('does_not_die_if_page_not_available.xml');
-        $this->executePageIndexer(null, null, null, null, null, null, null, null, 3, ['sys_language_mode' => 'strict']);
+        $this->executePageIndexer(null);
     }
 
     /**
@@ -368,21 +370,13 @@ class PageIndexerTest extends IntegrationTest
      * @param int $languageId
      * @throws \TYPO3\CMS\Core\Error\Http\ServiceUnavailableException
      */
-    protected function executePageIndexer($typo3ConfVars = [], $pageId = 1, $type = 0, $no_cache = '', $cHash = '', $_2 = null, $MP = '', $RDCT = '', $languageId = 0, $additionalConfigs = [])
+    protected function executePageIndexer($pageId = 1, $MP = '', $languageId = 0)
     {
-        GeneralUtility::_GETset($languageId, 'L');
         $GLOBALS['TT'] = $this->getMockBuilder(TimeTracker::class)->disableOriginalConstructor()->getMock();
-
-        $config = [
-            'config' => array_merge([
-                'index_enable' => 1,
-                'sys_language_uid' => $languageId
-            ], $additionalConfigs)
-        ];
 
         unset($GLOBALS['TSFE']);
 
-        $TSFE = $this->getConfiguredTSFE($typo3ConfVars, $pageId, $type, $no_cache, $cHash, $_2, $MP, $RDCT, $config);
+        $TSFE = $this->getConfiguredTSFE($pageId, $MP, $languageId);
         $TSFE->cObj = GeneralUtility::makeInstance(ContentObjectRenderer::class);
         $GLOBALS['TSFE'] = $TSFE;
 

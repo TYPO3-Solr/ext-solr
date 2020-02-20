@@ -30,8 +30,9 @@ use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use ApacheSolrForTypo3\Solr\Util;
-use TYPO3\CMS\Core\Http\ImmediateResponseException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 
 class SearchResultSetServiceTest extends IntegrationTest
 {
@@ -203,14 +204,18 @@ class SearchResultSetServiceTest extends IntegrationTest
     {
         $search = GeneralUtility::makeInstance(Search::class, $solrConnection);
         /** @var $searchResultsSetService SearchResultSetService */
-        $searchResultsSetService = GeneralUtility::makeInstance(SearchResultSetService::class, $typoScriptConfiguration, $search);
+        $searchResultSetService = GeneralUtility::makeInstance(SearchResultSetService::class, $typoScriptConfiguration, $search);
+
+        $fakeObjectManager = $this->getFakeObjectManager();
+
+        $searchResultSetService->injectObjectManager($fakeObjectManager);
 
         /** @var $searchRequest SearchRequest */
         $searchRequest = GeneralUtility::makeInstance(SearchRequest::class, [], 0, 0, $typoScriptConfiguration);
         $searchRequest->setRawQueryString($queryString);
         $searchRequest->setResultsPerPage(10);
 
-        $searchResultSet = $searchResultsSetService->search($searchRequest);
+        $searchResultSet = $searchResultSetService->search($searchRequest);
 
         $searchResults = $searchResultSet->getSearchResults();
         return $searchResults;
