@@ -397,4 +397,5 @@ class PageIndexer extends Indexer
     {
         return Rootline::getAccessRootlineByPageId($pageId, $mountPointParameter);
     }
+
 }

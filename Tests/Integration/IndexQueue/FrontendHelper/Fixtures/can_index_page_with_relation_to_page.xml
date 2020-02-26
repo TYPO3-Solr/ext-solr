@@ -8,10 +8,7 @@
         <clear>3</clear>
         <config>
             <![CDATA[
-                config.sys_language_overlay = 1
-                config.sys_language_mode = content_fallback
-                config.sys_language_uid = 0
-                config.linkVars = L
+                config.index_enable = 1
 
                 page = PAGE
                 page.typeNum = 0
@@ -60,11 +57,6 @@
                         }
                     }
                 }
-                [globalVar = GP:L = 1]
-                    plugin.tx_solr.solr.path = /solr/core_de/
-                    config.sys_language_uid = 1
-                [end]
-
             ]]>
         </config>
         <sorting>100</sorting>
@@ -119,7 +111,6 @@
         <title>German</title>
         <flag>de</flag>
         <language_isocode>de</language_isocode>
-        <static_lang_isocode>0</static_lang_isocode>
     </sys_language>
 
     <tx_solr_indexqueue_item>

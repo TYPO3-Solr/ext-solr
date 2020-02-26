@@ -28,6 +28,7 @@ use ApacheSolrForTypo3\Solr\AbstractDataHandlerListener;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\ConfigurationAwareRecordService;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\MountPagesUpdater;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\RootPageResolver;
+use ApacheSolrForTypo3\Solr\FrontendEnvironment;
 use ApacheSolrForTypo3\Solr\GarbageCollector;
 use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
@@ -86,6 +87,11 @@ class RecordMonitor extends AbstractDataHandlerListener
     protected $logger = null;
 
     /**
+     * @var FrontendEnvironment
+     */
+    protected $frontendEnvironment = null;
+
+    /**
      * RecordMonitor constructor.
      *
      * @param Queue|null $indexQueue
@@ -96,7 +102,16 @@ class RecordMonitor extends AbstractDataHandlerListener
      * @param SolrLogManager|null $solrLogManager
      * @param ConfigurationAwareRecordService|null $recordService
      */
-    public function __construct(Queue $indexQueue = null, MountPagesUpdater $mountPageUpdater = null, TCAService $TCAService = null, RootPageResolver $rootPageResolver = null, PagesRepository $pagesRepository = null, SolrLogManager $solrLogManager = null, ConfigurationAwareRecordService $recordService = null)
+    public function __construct(
+        Queue $indexQueue = null,
+        MountPagesUpdater $mountPageUpdater = null,
+        TCAService $TCAService = null,
+        RootPageResolver $rootPageResolver = null,
+        PagesRepository $pagesRepository = null,
+        SolrLogManager $solrLogManager = null,
+        ConfigurationAwareRecordService $recordService = null,
+        FrontendEnvironment $frontendEnvironment = null
+    )
     {
         parent::__construct($recordService);
         $this->indexQueue = $indexQueue ?? GeneralUtility::makeInstance(Queue::class);
@@ -105,6 +120,7 @@ class RecordMonitor extends AbstractDataHandlerListener
         $this->rootPageResolver = $rootPageResolver ?? GeneralUtility::makeInstance(RootPageResolver::class);
         $this->pagesRepository = $pagesRepository ?? GeneralUtility::makeInstance(PagesRepository::class);
         $this->logger = $solrLogManager ?? GeneralUtility::makeInstance(SolrLogManager::class, /** @scrutinizer ignore-type */ __CLASS__);
+        $this->frontendEnvironment = $frontendEnvironment ?? GeneralUtility::makeInstance(FrontendEnvironment::class);
     }
 
     /**
@@ -560,8 +576,8 @@ class RecordMonitor extends AbstractDataHandlerListener
      * @param int $language
      * @return TypoScriptConfiguration
      */
-    protected function getSolrConfigurationFromPageId($pageId, $initializeTsfe = false, $language = 0)
+    protected function getSolrConfigurationFromPageId($pageId)
     {
-        return Util::getSolrConfigurationFromPageId($pageId, $initializeTsfe, $language);
+        return $this->frontendEnvironment->getSolrConfigurationFromPageId($pageId);
     }
 }

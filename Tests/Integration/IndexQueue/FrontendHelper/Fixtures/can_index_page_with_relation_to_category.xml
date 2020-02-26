@@ -8,11 +8,7 @@
         <clear>3</clear>
         <config>
             <![CDATA[
-                config.sys_language_overlay = 1
-                config.sys_language_mode = content_fallback
-                config.sys_language_uid = 0
-                config.linkVars = L
-
+                config.index_enable = 1
                 page = PAGE
                 page.typeNum = 0
                 page.bodyTag = <body>

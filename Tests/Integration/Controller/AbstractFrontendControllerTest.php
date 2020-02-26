@@ -40,7 +40,7 @@ abstract class AbstractFrontendControllerTest  extends IntegrationTest {
     protected function indexPages($importPageIds)
     {
         foreach ($importPageIds as $importPageId) {
-            $fakeTSFE = $this->getConfiguredTSFE([], $importPageId);
+            $fakeTSFE = $this->getConfiguredTSFE($importPageId);
             $GLOBALS['TSFE'] = $fakeTSFE;
             $fakeTSFE->newCObj();
 

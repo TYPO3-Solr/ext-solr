@@ -8,9 +8,6 @@
         <clear>3</clear>
         <config>
             <![CDATA[
-                config.sys_language_mode = ignore
-                config.sys_language_uid = 0
-                config.linkVars = L
 
                 page = PAGE
                 page.typeNum = 0
@@ -55,17 +52,13 @@
                                         typolink.additionalParams.insertData = 1
                                         typolink.returnLast = url
                                         typolink.useCacheHash = 1
+                                        typolink.forceAbsoluteUrl = 1
                                     }
                                 }
                             }
                         }
                     }
                 }
-                [globalVar = GP:L = 1]
-                    plugin.tx_solr.solr.path = /solr/core_de/
-                    config.sys_language_uid = 1
-                [end]
-
             ]]>
         </config>
         <sorting>100</sorting>
@@ -118,7 +111,6 @@
         <title>German</title>
         <flag>de</flag>
         <language_isocode>de</language_isocode>
-        <static_lang_isocode>0</static_lang_isocode>
         <sorting>128</sorting>
     </sys_language>
 </dataset>

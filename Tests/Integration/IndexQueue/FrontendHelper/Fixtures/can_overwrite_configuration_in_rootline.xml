@@ -8,6 +8,7 @@
         <clear>3</clear>
         <config>
             <![CDATA[
+                config.index_enable = 1
                 page = PAGE
                 page.typeNum = 0
                 page.bodyTag = <body>

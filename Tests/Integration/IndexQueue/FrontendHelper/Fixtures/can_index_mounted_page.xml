@@ -24,6 +24,7 @@ There is following scenario:
                 page = PAGE
                 page.typeNum = 0
                 page.bodyTag = <body>
+                config.index_enable = 1
 
                 plugin.tx_solr {
 

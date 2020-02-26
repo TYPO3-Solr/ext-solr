@@ -442,7 +442,7 @@ class SearchTest extends IntegrationTest
 
         $GLOBALS['TT'] = $this->getMockBuilder(TimeTracker::class)->disableOriginalConstructor()->getMock();
         for ($i = 1; $i <= 15; $i++) {
-            $fakeTSFE = $this->getConfiguredTSFE([], $i);
+            $fakeTSFE = $this->getConfiguredTSFE($i);
             $GLOBALS['TSFE'] = $fakeTSFE;
 
             /** @var $pageIndexer \ApacheSolrForTypo3\Solr\Typo3PageIndexer */

@@ -45,6 +45,7 @@ use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Frontend\Page\PageRepository;
 use TYPO3\CMS\Core\Context\UserAspect;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
+use TYPO3\CMS\Core\Http\ServerRequest;
 
 /**
  * Utility class for tx_solr
@@ -102,7 +103,6 @@ class Util
 
     /**
      * Shortcut to retrieve the TypoScript configuration for EXT:solr
-     * (plugin.tx_solr) from TSFE.
      *
      * @return TypoScriptConfiguration
      */
@@ -117,14 +117,16 @@ class Util
      * To be used from the backend.
      *
      * @param int $pageId Id of the (root) page to get the Solr configuration from.
-     * @param bool $initializeTsfe Optionally initializes a full TSFE to get the configuration, defaults to FALSE
      * @param int $language System language uid, optional, defaults to 0
      * @return TypoScriptConfiguration The Solr configuration for the requested tree.
      */
     public static function getSolrConfigurationFromPageId($pageId, $initializeTsfe = false, $language = 0)
     {
-        $rootPath = '';
-        return self::getConfigurationFromPageId($pageId, $rootPath, $initializeTsfe, $language);
+        trigger_error('Method getSolrConfigurationFromPageId is deprecated since EXT:solr 11 and will be removed in v12, use FrontendEnvironment directly.', E_USER_DEPRECATED);
+        if ($initializeTsfe === true) {
+            GeneralUtility::makeInstance(FrontendEnvironment::class)->initializeTsfe($pageId, $language);
+        }
+        return GeneralUtility::makeInstance(FrontendEnvironment::class)->getSolrConfigurationFromPageId($pageId, $language);
     }
 
     /**
@@ -134,274 +136,37 @@ class Util
      *
      * @param int $pageId Id of the (root) page to get the Solr configuration from.
      * @param string $path The TypoScript configuration path to retrieve.
-     * @param bool $initializeTsfe Optionally initializes a full TSFE to get the configuration, defaults to FALSE
+     * @param bool $initializeTsfe
      * @param int $language System language uid, optional, defaults to 0
      * @param bool $useTwoLevelCache Flag to enable the two level cache for the typoscript configuration array
      * @return TypoScriptConfiguration The Solr configuration for the requested tree.
      */
     public static function getConfigurationFromPageId($pageId, $path, $initializeTsfe = false, $language = 0, $useTwoLevelCache = true)
     {
-        $pageId = self::getConfigurationPageIdToUse($pageId);
-
-        static $configurationObjectCache = [];
-        $cacheId = md5($pageId . '|' . $path . '|' . $language . '|' . ($initializeTsfe ? '1' : '0'));
-        if (isset($configurationObjectCache[$cacheId])) {
-            if ($initializeTsfe) {
-                self::initializeTsfe($pageId, $language);
-            }
-            return $configurationObjectCache[$cacheId];
+        trigger_error('Method getConfigurationFromPageId is deprecated since EXT:solr 11 and will be removed in v12, use FrontendEnvironment directly.', E_USER_DEPRECATED);
+        if ($initializeTsfe === true) {
+            GeneralUtility::makeInstance(FrontendEnvironment::class)->initializeTsfe($pageId, $language);
         }
-
-        // If we're on UID 0, we cannot retrieve a configuration currently.
-        // getRootline() below throws an exception (since #typo3-60 )
-        // as UID 0 cannot have any parent rootline by design.
-        if ($pageId == 0) {
-            return $configurationObjectCache[$cacheId] = self::buildTypoScriptConfigurationFromArray([], $pageId, $language, $path);
-        }
-
-        if ($useTwoLevelCache) {
-            /** @var $cache TwoLevelCache */
-            $cache = GeneralUtility::makeInstance(TwoLevelCache::class, /** @scrutinizer ignore-type */ 'tx_solr_configuration');
-            $configurationArray = $cache->get($cacheId);
-        }
-
-        if (!empty($configurationArray)) {
-            // we have a cache hit and can return it.
-            if ($initializeTsfe) {
-                self::initializeTsfe($pageId, $language);
-            }
-            return $configurationObjectCache[$cacheId] = self::buildTypoScriptConfigurationFromArray($configurationArray, $pageId, $language, $path);
-        }
-
-        // we have nothing in the cache. We need to build the configurationToUse
-        $configurationArray = self::buildConfigurationArray($pageId, $path, $initializeTsfe, $language);
-
-        if ($useTwoLevelCache && isset($cache)) {
-            $cache->set($cacheId, $configurationArray);
-        }
-
-        return $configurationObjectCache[$cacheId] = self::buildTypoScriptConfigurationFromArray($configurationArray, $pageId, $language, $path);
+        return GeneralUtility::makeInstance(FrontendEnvironment::class)->getConfigurationFromPageId($pageId, $path, $language);
     }
 
-    /**
-     * This method retrieves the closest pageId where a configuration is located, when this
-     * feature is enabled.
-     *
-     * @param int $pageId
-     * @return int
-     */
-    protected static function getConfigurationPageIdToUse($pageId)
-    {
-        $extensionConfiguration = GeneralUtility::makeInstance(ExtensionConfiguration::class);
-        if ($extensionConfiguration->getIsUseConfigurationFromClosestTemplateEnabled()) {
-            /** @var $configurationPageResolve ConfigurationPageResolver */
-            $configurationPageResolver = GeneralUtility::makeInstance(ConfigurationPageResolver::class);
-            $pageId = $configurationPageResolver->getClosestPageIdWithActiveTemplate($pageId);
-            return $pageId;
-        }
-        return $pageId;
-    }
-
-    /**
-     * Initializes a TSFE, if required and builds an configuration array, containing the solr configuration.
-     *
-     * @param integer $pageId
-     * @param string $path
-     * @param boolean $initializeTsfe
-     * @param integer $language
-     * @return array
-     */
-    protected static function buildConfigurationArray($pageId, $path, $initializeTsfe, $language)
-    {
-        if ($initializeTsfe) {
-            self::initializeTsfe($pageId, $language);
-            $configurationToUse = self::getConfigurationFromInitializedTSFE($path);
-        } else {
-            $configurationToUse = self::getConfigurationFromExistingTSFE($pageId, $path, $language);
-        }
-
-        return is_array($configurationToUse) ? $configurationToUse : [];
-    }
-
-    /**
-     * Builds the configuration object from a config array and returns it.
-     *
-     * @param array $configurationToUse
-     * @param int $pageId
-     * @param int $languageId
-     * @param string $typoScriptPath
-     * @return TypoScriptConfiguration
-     */
-    protected static function buildTypoScriptConfigurationFromArray(array $configurationToUse, $pageId, $languageId, $typoScriptPath)
-    {
-        $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
-        return $configurationManager->getTypoScriptConfiguration($configurationToUse, $pageId, $languageId, $typoScriptPath);
-    }
-
-    /**
-     * This function is used to retrieve the configuration from a previous initialized TSFE
-     * (see: getConfigurationFromPageId)
-     *
-     * @param string $path
-     * @return mixed
-     */
-    private static function getConfigurationFromInitializedTSFE($path)
-    {
-        /** @var $tmpl ExtendedTemplateService */
-        $tmpl = GeneralUtility::makeInstance(ExtendedTemplateService::class);
-        $configuration = $tmpl->ext_getSetup($GLOBALS['TSFE']->tmpl->setup, $path);
-        $configurationToUse = $configuration[0];
-        return $configurationToUse;
-    }
-
-    /**
-     * @param int $pageId
-     * @param int $language
-     */
-    private static function changeLanguageContext(int $pageId, int $language): void
-    {
-        $context = GeneralUtility::makeInstance(Context::class);
-        if ($context->hasAspect('language')) {
-            if ($context->getPropertyFromAspect('language', 'id') === $language) {
-                return;
-            }
-        }
-
-        $siteFinder = GeneralUtility::makeInstance(SiteFinder::class);
-        try {
-            $site = $siteFinder->getSiteByPageId($pageId);
-            $languageAspect = LanguageAspectFactory::createFromSiteLanguage($site->getLanguageById($language));
-            $context->setAspect('language', $languageAspect);
-        } catch (SiteNotFoundException $e) {
-            // legacy site
-            if ($context->hasAspect('language')) {
-                $languageAspect = $context->getAspect('language');
-                $context->setAspect('language', GeneralUtility::makeInstance(
-                    LanguageAspect::class,
-                    (int)$language,
-                    $languageAspect->getContentId(),
-                    $languageAspect->getOverlayType(),
-                    $languageAspect->getFallbackChain()
-                ));
-            } else {
-                $context->setAspect('language', GeneralUtility::makeInstance(
-                    LanguageAspect::class,
-                    (int)$language
-                ));
-            }
-        }
-    }
-
-    /**
-     * This function is used to retrieve the configuration from an existing TSFE instance
-     *
-     * @param $pageId
-     * @param $path
-     * @param $language
-     * @return mixed
-     */
-    private static function getConfigurationFromExistingTSFE($pageId, $path, $language)
-    {
-        if (is_int($language)) {
-            self::changeLanguageContext((int)$pageId, (int)$language);
-        }
-        $rootlineUtility = GeneralUtility::makeInstance(RootlineUtility::class, $pageId);
-        try {
-            $rootLine = $rootlineUtility->get();
-        } catch (\RuntimeException $e) {
-            $rootLine = [];
-        }
-
-            /** @var $tmpl ExtendedTemplateService */
-        $tmpl = GeneralUtility::makeInstance(ExtendedTemplateService::class);
-        $tmpl->tt_track = false; // Do not log time-performance information
-        $tmpl->runThroughTemplates($rootLine); // This generates the constants/config + hierarchy info for the template.
-        $tmpl->generateConfig();
-
-        $getConfigurationFromInitializedTSFEAndWriteToCache = $tmpl->ext_getSetup($tmpl->setup, $path);
-        $configurationToUse = $getConfigurationFromInitializedTSFEAndWriteToCache[0];
-
-        return $configurationToUse;
-    }
 
     /**
      * Initializes the TSFE for a given page ID and language.
      *
-     * @param int $pageId The page id to initialize the TSFE for
-     * @param int $language System language uid, optional, defaults to 0
-     * @param bool $useCache Use cache to reuse TSFE
-     * @todo When we drop TYPO3 8 support we should use a middleware stack to initialize a TSFE for our needs
-     * @return void
+     * @param $pageId
+     * @param int $language
+     * @param bool $useCache
+     * @throws SiteNotFoundException
+     * @throws \TYPO3\CMS\Core\Error\Http\ServiceUnavailableException
+     * @throws \TYPO3\CMS\Core\Http\ImmediateResponseException
      */
     public static function initializeTsfe($pageId, $language = 0, $useCache = true)
     {
-        static $tsfeCache = [];
-
-        // resetting, a TSFE instance with data from a different page Id could be set already
-        unset($GLOBALS['TSFE']);
-
-        $cacheId = $pageId . '|' . $language;
-
-        /** @var Context $context */
-        $context = GeneralUtility::makeInstance(Context::class);
-        self::changeLanguageContext((int)$pageId, (int)$language);
-
-        if (!isset($tsfeCache[$cacheId])) {
-
-            $GLOBALS['TSFE'] = GeneralUtility::makeInstance(TypoScriptFrontendController::class, $GLOBALS['TYPO3_CONF_VARS'], $pageId, 0);
-
-            // for certain situations we need to trick TSFE into granting us
-            // access to the page in any case to make getPageAndRootline() work
-            // see http://forge.typo3.org/issues/42122
-            $pageRecord = BackendUtility::getRecord('pages', $pageId, 'fe_group');
-
-            $feUser = GeneralUtility::makeInstance(FrontendUserAuthentication::class);
-            $userGroups = [0, -1];
-            if (!empty($pageRecord['fe_group'])) {
-                $userGroups = array_unique(array_merge($userGroups, explode(',', $pageRecord['fe_group'])));
-            }
-            $context->setAspect('frontend.user', GeneralUtility::makeInstance(UserAspect::class, $feUser, $userGroups));
-
-            // @extensionScannerIgnoreLine
-            $GLOBALS['TSFE']->sys_page = GeneralUtility::makeInstance(PageRepository::class);
-            self::getPageAndRootlineOfTSFE($pageId);
-
-            $template = GeneralUtility::makeInstance(TemplateService::class, $context);
-            $GLOBALS['TSFE']->tmpl = $template;
-            $GLOBALS['TSFE']->forceTemplateParsing = true;
-            $GLOBALS['TSFE']->no_cache = true;
-            $GLOBALS['TSFE']->tmpl->start($GLOBALS['TSFE']->rootLine);
-            $GLOBALS['TSFE']->no_cache = false;
-            $GLOBALS['TSFE']->getConfigArray();
-            $GLOBALS['TSFE']->settingLanguage();
-
-            $GLOBALS['TSFE']->newCObj();
-            $GLOBALS['TSFE']->absRefPrefix = self::getAbsRefPrefixFromTSFE($GLOBALS['TSFE']);
-            $GLOBALS['TSFE']->calculateLinkVars();
-
-            $tsfeCache[$cacheId] = $GLOBALS['TSFE'];
-        }
-
-        $GLOBALS['TSFE'] = $tsfeCache[$cacheId];
-        $GLOBALS['TSFE']->settingLocale();
-        self::changeLanguageContext((int)$pageId, (int)$language);
+        trigger_error('Method initializeTsfe is deprecated since EXT:solr 11 and will be removed in v12, use FrontendEnvironment directly.', E_USER_DEPRECATED);
+        GeneralUtility::makeInstance(FrontendEnvironment::class)->initializeTsfe($pageId, $language);
     }
 
-    /**
-     * @deprecated This is only implemented to provide compatibility for TYPO3 8 and 9 when we drop TYPO3 8 support this
-     * should changed to use a middleware stack
-     * @param integer $pageId
-     */
-    private static function getPageAndRootlineOfTSFE($pageId)
-    {
-        //@todo When we drop the support of TYPO3 8 we should use the frontend middleware stack instead of initializing this on our own
-        /** @var $siteRepository SiteRepository */
-        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
-        $site = $siteRepository->getSiteByPageId($pageId);
-        if (!is_null($site)) {
-            $GLOBALS['TSFE']->getPageAndRootlineWithDomain($site->getRootPageId());
-        }
-    }
 
     /**
      * Check if record ($table, $uid) is a workspace record
@@ -435,15 +200,8 @@ class Util
      */
     public static function isAllowedPageType(array $pageRecord, $configurationName = 'pages')
     {
-        $isAllowedPageType = false;
-        $configurationName = $configurationName ?? 'pages';
-        $allowedPageTypes = self::getAllowedPageTypes($pageRecord['uid'], $configurationName);
-
-        if (in_array($pageRecord['doktype'], $allowedPageTypes)) {
-            $isAllowedPageType = true;
-        }
-
-        return $isAllowedPageType;
+        trigger_error('Method isAllowedPageType is deprecated since EXT:solr 11 and will be removed in v12, use FrontendEnvironment directly.', E_USER_DEPRECATED);
+        return GeneralUtility::makeInstance(FrontendEnvironment::class)->isAllowedPageType($pageRecord, $configurationName);
     }
 
     /**
@@ -456,6 +214,7 @@ class Util
      */
     public static function getAllowedPageTypes($pageId, $configurationName = 'pages')
     {
+        trigger_error('Method getAllowedPageTypes is deprecated since EXT:solr 11 and will be removed in v12, no call required.', E_USER_DEPRECATED);
         $rootPath = '';
         $configuration = self::getConfigurationFromPageId($pageId, $rootPath);
         return $configuration->getIndexQueueAllowedPageTypesArrayByConfigurationName($configurationName);
@@ -470,6 +229,7 @@ class Util
      */
     public static function getAbsRefPrefixFromTSFE(TypoScriptFrontendController $TSFE)
     {
+        trigger_error('Method getAbsRefPrefixFromTSFE is deprecated since EXT:solr 11 and will be removed in v12, no call required.', E_USER_DEPRECATED);
         $absRefPrefix = '';
         if (empty($TSFE->config['config']['absRefPrefix'])) {
             return $absRefPrefix;

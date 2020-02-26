@@ -222,10 +222,10 @@ class GarbageCollectorTest extends IntegrationTest
         // we expect the is one item in the indexQueue
         $this->assertIndexQueryContainsItemAmount(1);
         $items = $this->indexQueue->getItems('pages', 1);
+        $this->assertSame(1, count($items));
 
         // we index this item
-        $itemIds = $this->getItemPageIds($items);
-        $this->indexPageIds($itemIds);
+        $this->indexPageIds([1]);
         $this->waitToBeVisibleInSolr();
 
         // now the content of the deletec content element should be gone
@@ -272,11 +272,10 @@ class GarbageCollectorTest extends IntegrationTest
         // we expect the is one item in the indexQueue
         $this->assertIndexQueryContainsItemAmount(1);
         $items = $this->indexQueue->getItems('pages', 1);
-
-        $itemIds = $this->getItemPageIds($items);
-
+        $this->assertSame(1, count($items));
+        
         // we index this item
-        $this->indexPageIds($itemIds);
+        $this->indexPageIds([1]);
         $this->waitToBeVisibleInSolr();
 
         // now the content of the deletec content element should be gone
@@ -326,10 +325,10 @@ class GarbageCollectorTest extends IntegrationTest
         // we expect the is one item in the indexQueue
         $this->assertIndexQueryContainsItemAmount(1);
         $items = $this->indexQueue->getItems('pages', 1);
+        $this->assertSame(1, count($items));
 
-        $itemIds = $this->getItemPageIds($items);
         // we index this item
-        $this->indexPageIds($itemIds);
+        $this->indexPageIds([1]);
         $this->waitToBeVisibleInSolr();
 
         // now the content of the deletec content element should be gone
@@ -379,10 +378,10 @@ class GarbageCollectorTest extends IntegrationTest
 
         $this->assertIndexQueryContainsItemAmount(1);
         $items = $this->indexQueue->getItems('pages', 1);
+        $this->assertSame(1, count($items));
 
         // we index this item
-        $itemIds = $this->getItemPageIds($items);
-        $this->indexPageIds($itemIds);
+        $this->indexPageIds([1]);
         $this->waitToBeVisibleInSolr();
 
         // now the content of the deletec content element should be gone
@@ -431,10 +430,10 @@ class GarbageCollectorTest extends IntegrationTest
         // we expect the is one item in the indexQueue
         $this->assertIndexQueryContainsItemAmount(1);
         $items = $this->indexQueue->getItems('pages', 1);
+        $this->assertSame(1, count($items));
 
         // we index this item
-        $itemIds = $this->getItemPageIds($items);
-        $this->indexPageIds($itemIds);
+        $this->indexPageIds([1]);
         $this->waitToBeVisibleInSolr();
 
         // now the content of the deletec content element should be gone
@@ -606,20 +605,7 @@ class GarbageCollectorTest extends IntegrationTest
 
         return $result;
     }
-
-    /**
-     * @param $items
-     * @return array
-     */
-    protected function getItemPageIds($items):array
-    {
-        $itemIds = [];
-        foreach ($items as $item) {
-            /** @var $item Item */
-            $itemIds[] = $item->getRecordPageId();
-        }
-        return $itemIds;
-    }
+    
 
     /**
      *
