@@ -19,7 +19,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 
 
 /**
- * Class ResultPaginateController
+ * Class GroupItemPaginateController
  *
  * @author Frans Saris <frans@beech.it>
  * @author Timo Hund <timo.hund@dkd.de>

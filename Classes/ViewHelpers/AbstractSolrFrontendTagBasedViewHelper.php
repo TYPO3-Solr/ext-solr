@@ -20,7 +20,7 @@ use ApacheSolrForTypo3\Solr\Mvc\Controller\SolrControllerContext;
 use ApacheSolrForTypo3\Solr\ViewHelpers\AbstractSolrTagBasedViewHelper;
 
 /**
- * Class AbstractTagBasedViewHelper
+ * Class AbstractSolrFrontendTagBasedViewHelper
  *
  * @author Frans Saris <frans@beech.it>
  * @author Timo Hund <timo.hund@dkd.de>

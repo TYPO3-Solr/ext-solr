@@ -29,7 +29,7 @@ use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use Solarium\QueryType\Extract\Query;
 
 /**
- * Class SolrReadService
+ * Class SolrWriteService
  * @package ApacheSolrForTypo3\System\Solr\Service
  */
 class SolrWriteService extends AbstractSolrService

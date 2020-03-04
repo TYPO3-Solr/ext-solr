@@ -39,7 +39,7 @@ use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Class ApacheSolrDocumentRepository uses connection to Solr Server
+ * Class Repository
  */
 class Repository implements SingletonInterface
 {
