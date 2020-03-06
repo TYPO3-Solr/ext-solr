@@ -91,11 +91,17 @@ class Service
                         /** @var $processor PageUidToHierarchy */
                         $processor = GeneralUtility::makeInstance(PageUidToHierarchy::class);
                         $fieldValue = $processor->process($fieldValue);
+                        if ($isSingleValueField && count($fieldValue) > 1){
+                                $isSingleValueField = false;
+                        }
                         break;
                     case 'categoryUidToHierarchy':
                         /** @var $processor CategoryUidToHierarchy */
                         $processor = GeneralUtility::makeInstance(CategoryUidToHierarchy::class);
                         $fieldValue = $processor->process($fieldValue);
+                        if ($isSingleValueField && count($fieldValue) > 1){
+                                $isSingleValueField = false;
+                        }
                         break;
                     case 'uppercase':
                         $fieldValue = array_map('mb_strtoupper', $fieldValue);
