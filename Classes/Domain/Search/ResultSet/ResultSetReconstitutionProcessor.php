@@ -29,7 +29,6 @@ use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
  *
  * @author Frans Saris <frans@beech.it>
  * @author Timo Hund <timo.hund@dkd.de>
- * @package ApacheSolrForTypo3\Solr\Domain\Search\ResultSet
  */
 class ResultSetReconstitutionProcessor implements SearchResultSetProcessor
 {

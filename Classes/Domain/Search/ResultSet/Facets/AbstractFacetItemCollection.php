@@ -21,7 +21,6 @@ use ApacheSolrForTypo3\Solr\System\Data\AbstractCollection;
  *
  * @author Frans Saris <frans@beech.it>
  * @author Timo Hund <timo.hund@dkd.de>
- * @package ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionsFacet
  */
 abstract class AbstractFacetItemCollection extends AbstractCollection
 {

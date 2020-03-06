@@ -29,8 +29,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * The Sorting ParameterProvider is responsible to build the solr query parameters
  * that are needed for the sorting.
- *
- * @package ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder
  */
 class Sorting extends AbstractDeactivatable
 {

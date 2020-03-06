@@ -5,7 +5,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Sorting;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 
 /**
- * @package ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Sorting
+ * Class Sorting
  */
 class Sorting
 {

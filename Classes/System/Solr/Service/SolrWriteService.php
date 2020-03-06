@@ -30,7 +30,6 @@ use Solarium\QueryType\Extract\Query;
 
 /**
  * Class SolrWriteService
- * @package ApacheSolrForTypo3\System\Solr\Service
  */
 class SolrWriteService extends AbstractSolrService
 {

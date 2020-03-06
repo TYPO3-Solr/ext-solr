@@ -29,7 +29,6 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets;
  *
  * @author Timo Hund <timo.hund@dkd.de>
  * @author Jens Jacobsen <jens.jacobsen@ueberbit.de>
- * @package ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets
  */
 class SortingExpression
 {

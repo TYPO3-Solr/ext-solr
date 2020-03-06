@@ -27,8 +27,6 @@ namespace ApacheSolrForTypo3\Solr\System\Solr;
 /**
  * Represent a server node of solr, in the most setups you would only have one, but sometimes
  * mulitple for reading and writing.
- *
- * @package ApacheSolrForTypo3\Solr\System\Solr
  */
 class Node {
 

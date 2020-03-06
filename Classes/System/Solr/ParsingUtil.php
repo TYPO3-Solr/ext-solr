@@ -3,8 +3,6 @@ namespace ApacheSolrForTypo3\Solr\System\Solr;
 
 /**
  * This class provides static helper functions that are helpful during the result parsing for solr.
- *
- * @package ApacheSolrForTypo3\Solr\System\Solr
  */
 class ParsingUtil
 {

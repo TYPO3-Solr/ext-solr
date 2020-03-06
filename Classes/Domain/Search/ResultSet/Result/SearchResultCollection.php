@@ -30,8 +30,6 @@ use ApacheSolrForTypo3\Solr\System\Data\AbstractCollection;
 
 /**
  * The SearchResultCollection contains the SearchResult object and related objects. e.g groups.
- *
- * @package ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result
  */
 class SearchResultCollection extends AbstractCollection {
 

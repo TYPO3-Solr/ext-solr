@@ -6,7 +6,6 @@ use ApacheSolrForTypo3\Solr\System\Data\AbstractCollection;
 
 /**
  * Class FacetCollection
- * @package ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets
  */
 class FacetCollection extends AbstractCollection
 {

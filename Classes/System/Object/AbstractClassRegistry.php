@@ -24,7 +24,6 @@ use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
  * Can be used to retrieve different "strategies" for the same thing.
  *
  * @author Timo Hund <timo.hund@dkd.de>
- * @package ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets
  */
 class AbstractClassRegistry implements SingletonInterface
 {

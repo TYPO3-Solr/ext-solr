@@ -29,7 +29,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class SiteHighlighterUrlModifier
- * @package ApacheSolrForTypo3\Solr\System\Service
  */
 class SiteHighlighterUrlModifier {
 

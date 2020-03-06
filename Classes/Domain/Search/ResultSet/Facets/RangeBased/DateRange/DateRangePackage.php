@@ -18,7 +18,6 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetPackage;
 
 /**
  * Class DateRangePackage
- * @package ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\DateRange
  */
 class DateRangePackage extends AbstractFacetPackage {
 

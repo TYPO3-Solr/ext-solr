@@ -18,7 +18,6 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetPackage;
 
 /**
  * Class QueryGroupPackage
- * @package ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\QueryGroup
  */
 class QueryGroupPackage extends AbstractFacetPackage {
 

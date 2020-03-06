@@ -34,8 +34,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * An implementation ob a garbage remover strategy is responsible to remove all garbage from the index queue and
  * the solr server for a certain table and uid combination.
- *
- * @package ApacheSolrForTypo3\Solr\Domain\Index\Queue\GarbageRemover
  */
 abstract class AbstractStrategy
 {

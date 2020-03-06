@@ -30,7 +30,6 @@ use TYPO3\CMS\Fluid\Core\Widget\AbstractWidgetController as CoreAbstractWidgetCo
  *
  * @author Frans Saris <frans@beech.it>
  * @author Timo Hund <timo.hund@dkd.de>
- * @package ApacheSolrForTypo3\Solr\Widget
  */
 class AbstractWidgetController extends CoreAbstractWidgetController
 {

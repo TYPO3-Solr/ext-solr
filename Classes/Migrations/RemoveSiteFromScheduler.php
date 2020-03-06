@@ -31,8 +31,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Removes the Site property from the SchedulerTask and set the rootPageId property.
- *
- * @package ApacheSolrForTypo3\Solr\Migrations
  */
 class RemoveSiteFromScheduler implements Migration {
 

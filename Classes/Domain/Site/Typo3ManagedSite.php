@@ -35,7 +35,6 @@ use TYPO3\CMS\Core\Site\Entity\Site as Typo3Site;
 
 /**
  * Class Typo3ManagedSite
- * @package ApacheSolrForTypo3\Solr\Domain\Site
  */
 class Typo3ManagedSite extends Site
 {

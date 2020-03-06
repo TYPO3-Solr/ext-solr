@@ -33,8 +33,6 @@ use TYPO3\CMS\Scheduler\Task\AbstractTask;
 /**
  * Abstract scheduler task for solr scheduler tasks, contains the logic to
  * retrieve the site, avoids serialization of site, when scheduler task is saved.
- *
- * @package ApacheSolrForTypo3\Solr\Task
  */
 abstract class AbstractSolrTask extends AbstractTask {
     /**

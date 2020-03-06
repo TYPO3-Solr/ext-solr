@@ -32,8 +32,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * The Highlighting ParameterProvider is responsible to build the solr query parameters
  * that are needed for the highlighting.
- *
- * @package ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder
  */
 class Highlighting extends AbstractDeactivatable implements ParameterBuilder
 {

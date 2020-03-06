@@ -36,8 +36,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Builds the SearchResult objects from the solr response and assigns the created child SearchResult objects (the variants)
  * to the parent search result object.
- *
- * @package ApacheSolrForTypo3\Solr\Domain\Variants
  */
 class VariantsProcessor implements SearchResultSetProcessor {
 

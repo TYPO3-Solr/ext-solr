@@ -31,8 +31,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * The SearchRequestBuilder is responsible to build a valid SearchRequest.
- *
- * @package ApacheSolrForTypo3\Solr\Domain\Search
  */
 class SearchRequestBuilder
 {

@@ -30,8 +30,6 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 /**
  * The Grouping ParameterProvider is responsible to build the solr query parameters
  * that are needed for the grouping.
- *
- * @package ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder
  */
 class Grouping extends AbstractDeactivatable implements ParameterBuilder
 {

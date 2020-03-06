@@ -24,7 +24,6 @@ use ApacheSolrForTypo3\Solr\ViewHelpers\AbstractSolrTagBasedViewHelper;
  *
  * @author Frans Saris <frans@beech.it>
  * @author Timo Hund <timo.hund@dkd.de>
- * @package ApacheSolrForTypo3\Solr\ViewHelpers
  */
 abstract class AbstractSolrFrontendTagBasedViewHelper extends AbstractSolrTagBasedViewHelper
 {

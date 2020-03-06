@@ -31,8 +31,6 @@ use ApacheSolrForTypo3\Solr\Util;
 
 /**
  * Applies htmlspecialschars on documents of a solr response.
- *
- * @package ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\Parser
  */
 class DocumentEscapeService {
 

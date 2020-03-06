@@ -35,7 +35,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author Timo Hund <timo.hund@dkd.de>
  * @author Ingo Renner <ingo.renner@dkd.de>
- * @package ApacheSolrForTypo3\Solr\Domain\Index\Queue
  */
 class QueueInitializationService {
 

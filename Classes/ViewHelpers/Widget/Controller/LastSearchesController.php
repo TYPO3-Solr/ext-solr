@@ -23,7 +23,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author Frans Saris <frans@beech.it>
  * @author Timo Hund <timo.hund@dkd.de>
- * @package ApacheSolrForTypo3\Solr\ViewHelpers\Widget\Controller
  */
 class LastSearchesController extends AbstractWidgetController
 {

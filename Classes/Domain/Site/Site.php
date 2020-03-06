@@ -34,8 +34,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Base Clas for Typo3ManagedSite and LegacySite
- *
- * @package ApacheSolrForTypo3\Solr\Domain\Site
  */
 abstract class Site implements SiteInterface
 {

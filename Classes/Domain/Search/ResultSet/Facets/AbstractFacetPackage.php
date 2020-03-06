@@ -17,7 +17,6 @@ use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 
 /**
  * Class AbstractFacetPackage
- * @package ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets
  */
 abstract class AbstractFacetPackage {
     /**

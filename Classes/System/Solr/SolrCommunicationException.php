@@ -26,8 +26,6 @@ namespace ApacheSolrForTypo3\Solr\System\Solr;
 
 /**
  * This exception or a more specific one should be thrown when the is an error in the communication with the solr server.
- *
- * @package ApacheSolrForTypo3\Solr\System\Solr
  */
 class SolrCommunicationException extends \RuntimeException {
 

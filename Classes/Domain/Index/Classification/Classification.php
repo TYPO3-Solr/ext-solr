@@ -27,7 +27,6 @@ namespace ApacheSolrForTypo3\Solr\Domain\Index\Classification;
 
 /**
  * Class Classification
- * @package ApacheSolrForTypo3\Solr\Domain\Index\Classification
  */
 class Classification {
 

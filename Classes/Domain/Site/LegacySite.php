@@ -37,7 +37,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Class LegacySite
  *
  * @deprecated This class is used for the old solr setup based on TypoScript and sys_registry records.
- * @package ApacheSolrForTypo3\Solr\Domain\Site
  */
 class LegacySite extends Site
 {

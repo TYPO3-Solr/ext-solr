@@ -26,7 +26,6 @@ namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\GarbageRemover;
  ***************************************************************/
 /**
  * Class RecordStrategy
- * @package ApacheSolrForTypo3\Solr\Domain\Index\Queue\GarbageRemover
  */
 class RecordStrategy extends AbstractStrategy  {
 

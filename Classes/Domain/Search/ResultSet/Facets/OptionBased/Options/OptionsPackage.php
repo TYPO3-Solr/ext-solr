@@ -18,7 +18,6 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetPackage;
 
 /**
  * Class OptionsPackage
- * @package ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options
  */
 class OptionsPackage extends AbstractFacetPackage {
 

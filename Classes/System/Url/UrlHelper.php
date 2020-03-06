@@ -12,12 +12,12 @@ namespace ApacheSolrForTypo3\Solr\System\Url;
  * LICENSE.txt file that was distributed with this source code.
  *
  * The TYPO3 project - inspiring people to share!
+ */
 
 /**
  * Class UrlHelper
  *
  * @author Timo Hund <timo.hund@dkd.de>
- * @package ApacheSolrForTypo3\Solr\System\Url
  */
 class UrlHelper {
 

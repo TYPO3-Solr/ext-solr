@@ -31,8 +31,6 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 /**
  * The Slops ParameterProvider is responsible to build the solr query parameters
  * that are needed for the several slop arguments.
- *
- * @package ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder
  */
 class Slops implements ParameterBuilder
 {

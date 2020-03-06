@@ -30,8 +30,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * The Filters ParameterProvider is responsible to build the solr query parameters
  * that are needed for the filtering.
- *
- * @package ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder
  */
 class Filters
 {
