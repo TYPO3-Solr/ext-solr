@@ -48,7 +48,7 @@ To try out Apache Solr for TYPO3 visit [www.typo3-solr.com](http://www.typo3-sol
 
 -   **Main Documentation:**
 
-   https://docs.typo3.org/p/apache-solr-for-typo3/solr/10.0/en-us/Index.html
+   https://docs.typo3.org/p/apache-solr-for-typo3/solr/master/en-us/Index.html
 
 
 -   **Slack Channel:**
@@ -65,4 +65,3 @@ To try out Apache Solr for TYPO3 visit [www.typo3-solr.com](http://www.typo3-sol
 ## <a name="Contributions"></a>Contributions
 
 [You want to contribute and like to know how? Check our guidelines about how to contribute to EXT:solr](./CONTRIBUTING.md)
-
