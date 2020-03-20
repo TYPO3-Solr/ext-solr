@@ -34,6 +34,7 @@ use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\LanguageAspect;
 use TYPO3\CMS\Core\Context\LanguageAspectFactory;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
+use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\TypoScript\TemplateService;
 use TYPO3\CMS\Core\Utility\RootlineUtility;
@@ -308,6 +309,9 @@ class Util
      */
     public static function getIsTYPO3VersionBelow10()
     {
+        if (!defined('TYPO3_branch')) {
+            $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
+        }
         return (bool)version_compare(TYPO3_branch, '10.0', '<');
     }
 
