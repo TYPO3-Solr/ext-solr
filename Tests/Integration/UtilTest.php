@@ -6,6 +6,7 @@ use ApacheSolrForTypo3\Solr\Util;
 use Prophecy\Argument;
 use TYPO3\CMS\Core\Context\LanguageAspect;
 use TYPO3\CMS\Core\Context\UserAspect;
+use TYPO3\CMS\Core\Context\WorkspaceAspect;
 use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
@@ -21,13 +22,13 @@ class UtilTest extends IntegrationTest
     public function setUp()
     {
         parent::setUp();
-        /** @var \TYPO3\CMS\Core\Cache\Frontend\VariableFrontend|\Prophecy\Prophecy\ObjectProphecy $frontendCache */
-        $frontendCache = $this->prophesize(\TYPO3\CMS\Core\Cache\Frontend\VariableFrontend::class);
+
         /** @var \TYPO3\CMS\Core\Cache\CacheManager|\Prophecy\Prophecy\ObjectProphecy $cacheManager */
         $cacheManager = $this->prophesize(\TYPO3\CMS\Core\Cache\CacheManager::class);
 
         if (Util::getIsTYPO3VersionBelow10()) {
-
+            /** @var \TYPO3\CMS\Core\Cache\Frontend\VariableFrontend|\Prophecy\Prophecy\ObjectProphecy $frontendCache */
+            $frontendCache = $this->prophesize(\TYPO3\CMS\Core\Cache\Frontend\VariableFrontend::class);
             $cacheManager
                 ->getCache('cache_pages')
                 ->willReturn($frontendCache->reveal());
@@ -40,12 +41,15 @@ class UtilTest extends IntegrationTest
             $cacheManager
                 ->getCache('cache_core')
                 ->willReturn($frontendCache->reveal());
-
-
             $cacheManager
                 ->getCache('cache_rootline')
                 ->willReturn($frontendCache->reveal());
         } else {
+            /** @var \TYPO3\CMS\Core\Cache\Frontend\PhpFrontend|\Prophecy\Prophecy\ObjectProphecy $frontendCache */
+            $frontendCache = $this->prophesize(\TYPO3\CMS\Core\Cache\Frontend\PhpFrontend::class);
+            $frontendCache->require(Argument::any())->willReturn([]);
+            $frontendCache->get(Argument::any())->willReturn([]);
+            $frontendCache->set(Argument::any(), Argument::any(), Argument::any(), Argument::any())->willReturn();
             $cacheManager
                 ->getCache('pages')
                 ->willReturn($frontendCache->reveal());
@@ -294,6 +298,7 @@ class UtilTest extends IntegrationTest
             GeneralUtility::addInstance(\TYPO3\CMS\Core\Utility\RootlineUtility::class, $rootLineUtility->reveal());
 
             $frontendUserAspect = $this->prophesize(UserAspect::class);
+            $workspaceAspect =  $this->prophesize(WorkspaceAspect::class);
 
             $context = $this->prophesize(Context::class);
             $context->hasAspect('frontend.preview')->shouldBeCalled()->willReturn(false);
@@ -303,10 +308,12 @@ class UtilTest extends IntegrationTest
             $context->getPropertyFromAspect('language', 'id')->shouldBeCalled()->willReturn(0);
             $context->getPropertyFromAspect('language', 'id', 0)->shouldBeCalled()->willReturn(0);
             $context->getAspect('frontend.user')->shouldBeCalled()->willReturn($frontendUserAspect->reveal());
+            $context->getAspect('workspace')->shouldBeCalled()->willReturn($workspaceAspect->reveal());
             $context->getPropertyFromAspect('visibility', 'includeHiddenContent', false)->shouldBeCalled();
             $context->getPropertyFromAspect('backend.user', 'isLoggedIn', false)->shouldBeCalled();
             $context->setAspect('frontend.user', Argument::any())->shouldBeCalled();
             $context->getPropertyFromAspect('workspace', 'id')->shouldBeCalled()->willReturn(0);
+            $context->getPropertyFromAspect('date', 'accessTime', 0)->shouldBeCalled()->willReturn(0);
             $context->getPropertyFromAspect('visibility', 'includeHiddenPages')->shouldBeCalled()->willReturn(false);
             $context->setAspect('typoscript', Argument::any())->shouldBeCalled();
             GeneralUtility::setSingletonInstance(Context::class, $context->reveal());
