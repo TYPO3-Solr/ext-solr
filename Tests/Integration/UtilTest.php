@@ -3,31 +3,69 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration;
 
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\Util;
+use Prophecy\Argument;
+use TYPO3\CMS\Core\Context\LanguageAspect;
+use TYPO3\CMS\Core\Context\UserAspect;
+use TYPO3\CMS\Core\Context\WorkspaceAspect;
+use TYPO3\CMS\Core\Http\ServerRequest;
+use TYPO3\CMS\Core\Site\Entity\Site;
+use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
+use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\TypoScript\ExtendedTemplateService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use TYPO3\CMS\Frontend\Page\PageRepository;
+use TYPO3\CMS\Core\Context\Context;
 
 class UtilTest extends IntegrationTest
 {
     public function setUp()
     {
         parent::setUp();
-        /** @var \TYPO3\CMS\Core\Cache\Frontend\VariableFrontend|\Prophecy\Prophecy\ObjectProphecy $frontendCache */
-        $frontendCache = $this->prophesize(\TYPO3\CMS\Core\Cache\Frontend\VariableFrontend::class);
+
         /** @var \TYPO3\CMS\Core\Cache\CacheManager|\Prophecy\Prophecy\ObjectProphecy $cacheManager */
         $cacheManager = $this->prophesize(\TYPO3\CMS\Core\Cache\CacheManager::class);
-        $cacheManager
-            ->getCache('cache_pages')
-            ->willReturn($frontendCache->reveal());
-        $cacheManager
-            ->getCache('cache_runtime')
-            ->willReturn($frontendCache->reveal());
-        $cacheManager
-            ->getCache('cache_hash')
-            ->willReturn($frontendCache->reveal());
-        $cacheManager
-            ->getCache('cache_core')
-            ->willReturn($frontendCache->reveal());
+
+        if (Util::getIsTYPO3VersionBelow10()) {
+            /** @var \TYPO3\CMS\Core\Cache\Frontend\VariableFrontend|\Prophecy\Prophecy\ObjectProphecy $frontendCache */
+            $frontendCache = $this->prophesize(\TYPO3\CMS\Core\Cache\Frontend\VariableFrontend::class);
+            $cacheManager
+                ->getCache('cache_pages')
+                ->willReturn($frontendCache->reveal());
+            $cacheManager
+                ->getCache('cache_runtime')
+                ->willReturn($frontendCache->reveal());
+            $cacheManager
+                ->getCache('cache_hash')
+                ->willReturn($frontendCache->reveal());
+            $cacheManager
+                ->getCache('cache_core')
+                ->willReturn($frontendCache->reveal());
+            $cacheManager
+                ->getCache('cache_rootline')
+                ->willReturn($frontendCache->reveal());
+        } else {
+            /** @var \TYPO3\CMS\Core\Cache\Frontend\PhpFrontend|\Prophecy\Prophecy\ObjectProphecy $frontendCache */
+            $frontendCache = $this->prophesize(\TYPO3\CMS\Core\Cache\Frontend\PhpFrontend::class);
+            $frontendCache->require(Argument::any())->willReturn([]);
+            $frontendCache->get(Argument::any())->willReturn([]);
+            $frontendCache->set(Argument::any(), Argument::any(), Argument::any(), Argument::any())->willReturn();
+            $cacheManager
+                ->getCache('pages')
+                ->willReturn($frontendCache->reveal());
+            $cacheManager
+                ->getCache('runtime')
+                ->willReturn($frontendCache->reveal());
+            $cacheManager
+                ->getCache('hash')
+                ->willReturn($frontendCache->reveal());
+            $cacheManager
+                ->getCache('core')
+                ->willReturn($frontendCache->reveal());
+            $cacheManager
+                ->getCache('hash')
+                ->willReturn($frontendCache->reveal());
+        }
         $cacheManager
             ->getCache('tx_solr_configuration')
             ->willReturn($frontendCache->reveal());
@@ -57,12 +95,17 @@ class UtilTest extends IntegrationTest
      */
     public function getConfigurationFromPageIdReturnsCachedConfiguration()
     {
-        error_reporting(0); // needed to disable exception reporting of deprecate methods with trigger_error
         $pageId = 12;
         $path = '';
         $language = 0;
         $initializeTsfe = false;
-        $cacheId = md5($pageId . '|' . $path . '|' . $language . '|' . ($initializeTsfe ? '1' : '0'));
+        $cacheId = md5($pageId . '|' . $path . '|' . $language);
+
+        if (!Util::getIsTYPO3VersionBelow10()) {
+            $rootLineUtility = $this->prophesize(\TYPO3\CMS\Core\Utility\RootlineUtility::class);
+            $rootLineUtility->get()->shouldBeCalledOnce()->willReturn([]);
+            GeneralUtility::addInstance(\TYPO3\CMS\Core\Utility\RootlineUtility::class, $rootLineUtility->reveal());
+        }
 
         // prepare first call
 
@@ -76,11 +119,6 @@ class UtilTest extends IntegrationTest
             ->set($cacheId, [])
             ->shouldBeCalledOnce();
         GeneralUtility::addInstance(TwoLevelCache::class, $twoLevelCache->reveal());
-
-
-        $rootLineUtility = $this->prophesize(\TYPO3\CMS\Core\Utility\RootlineUtility::class);
-        $rootLineUtility->get()->shouldBeCalledOnce()->willReturn([]);
-        GeneralUtility::addInstance(\TYPO3\CMS\Core\Utility\RootlineUtility::class, $rootLineUtility->reveal());
 
         /** @var ExtendedTemplateService|\Prophecy\Prophecy\ObjectProphecy $extendedTemplateService */
         $extendedTemplateService = $this->prophesize(ExtendedTemplateService::class);
@@ -121,12 +159,11 @@ class UtilTest extends IntegrationTest
      */
     public function getConfigurationFromPageIdInitializesTsfe()
     {
-        error_reporting(0); // needed to disable exception reporting of deprecate methods with trigger_error
         $pageId = 24;
         $path = '';
         $language = 0;
         $initializeTsfe = true;
-        $cacheId = md5($pageId . '|' . $path . '|' . $language . '|' . ($initializeTsfe ? '1' : '0'));
+        $cacheId = md5($pageId . '|' . $path . '|' . $language);
 
         /** @var TwoLevelCache|\Prophecy\Prophecy\ObjectProphecy $twoLevelCache */
         $twoLevelCache = $this->prophesize(TwoLevelCache::class);
@@ -162,7 +199,6 @@ class UtilTest extends IntegrationTest
      */
     public function getConfigurationFromPageIdInitializesTsfeOnCacheCall()
     {
-        error_reporting(0); // needed to disable exception reporting of deprecate methods with trigger_error
         $path = '';
         $language = 0;
         $initializeTsfe = true;
@@ -179,6 +215,7 @@ class UtilTest extends IntegrationTest
             ->shouldBeCalled();
         GeneralUtility::addInstance(TwoLevelCache::class, $twoLevelCache->reveal());
 
+
         // Change TSFE->id to 12 ($pageId) and create new cache
         $this->buildTestCaseForTsfe(34, 1);
         Util::getConfigurationFromPageId(
@@ -194,6 +231,7 @@ class UtilTest extends IntegrationTest
         );
 
         // Change TSFE->id to 23 and create new cache
+
         $this->buildTestCaseForTsfe(56, 8);
         Util::getConfigurationFromPageId(
             56,
@@ -207,9 +245,9 @@ class UtilTest extends IntegrationTest
             $GLOBALS['TSFE']->id
         );
 
+
         // prepare second/cached call
         // TSFE->id has to be changed back to 12 $pageId
-
         Util::getConfigurationFromPageId(
             34,
             $path,
@@ -222,6 +260,7 @@ class UtilTest extends IntegrationTest
             34,
             $GLOBALS['TSFE']->id
         );
+
     }
 
     protected function buildTestCaseForTsfe(int $pageId, int $rootPageId)
@@ -234,26 +273,56 @@ class UtilTest extends IntegrationTest
         $extendedTemplateService = $this->prophesize(ExtendedTemplateService::class);
         GeneralUtility::addInstance(ExtendedTemplateService::class, $extendedTemplateService->reveal());
 
-        /** @var \ApacheSolrForTypo3\Solr\Domain\Site\Site|\Prophecy\Prophecy\ObjectProphecy $site */
-        $site = $this->prophesize(\ApacheSolrForTypo3\Solr\Domain\Site\Site::class);
-        $site
-            ->getRootPageId()
-            ->shouldBeCalled()
-            ->willReturn($rootPageId);
+        $siteLanguage = $this->prophesize(SiteLanguage::class);
 
-        /** @var \ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository|\Prophecy\Prophecy\ObjectProphecy $siteRepository */
-        $siteRepository = $this->prophesize(\ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository::class);
-        $siteRepository
-            ->getSiteByPageId($pageId)
+
+        $site = $this->prophesize(Site::class);
+        $site->getLanguageById(0)
+            ->shouldBeCalled()
+            ->willReturn($siteLanguage->reveal());
+        $siteFinder = $this->prophesize(SiteFinder::class);
+        $siteFinder->getSiteByPageId($pageId)
             ->shouldBeCalled()
             ->willReturn($site->reveal());
-        GeneralUtility::addInstance(\ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository::class, $siteRepository->reveal());
 
-        /** @var \ApacheSolrForTypo3\Solr\System\Mvc\Frontend\Controller\OverriddenTypoScriptFrontendController|\Prophecy\Prophecy\ObjectProphecy $tsfeProphecy */
-        $tsfeProphecy = $this->prophesize(\ApacheSolrForTypo3\Solr\System\Mvc\Frontend\Controller\OverriddenTypoScriptFrontendController::class);
-        $tsfeProphecy->willBeConstructedWith([null, $pageId, 0]);
+        GeneralUtility::addInstance(SiteFinder::class, $siteFinder->reveal());
+
+        $tsfeProphecy = $this->prophesize(TypoScriptFrontendController::class);
+        if (Util::getIsTYPO3VersionBelow10()) {
+            $tsfeProphecy->willBeConstructedWith([null, $pageId, 0]);
+        } else {
+            $siteLanguage->getTypo3Language()->shouldBeCalled()->willReturn(0);
+
+            $rootLineUtility = $this->prophesize(\TYPO3\CMS\Core\Utility\RootlineUtility::class);
+            $rootLineUtility->get()->shouldBeCalledOnce()->willReturn([]);
+            GeneralUtility::addInstance(\TYPO3\CMS\Core\Utility\RootlineUtility::class, $rootLineUtility->reveal());
+
+            $frontendUserAspect = $this->prophesize(UserAspect::class);
+            $workspaceAspect =  $this->prophesize(WorkspaceAspect::class);
+
+            $context = $this->prophesize(Context::class);
+            $context->hasAspect('frontend.preview')->shouldBeCalled()->willReturn(false);
+            $context->setAspect('frontend.preview', Argument::any())->shouldBeCalled();
+            $context->hasAspect('frontend.user')->shouldBeCalled()->willReturn(false);
+            $context->hasAspect('language')->shouldBeCalled()->willReturn(true);
+            $context->getPropertyFromAspect('language', 'id')->shouldBeCalled()->willReturn(0);
+            $context->getPropertyFromAspect('language', 'id', 0)->shouldBeCalled()->willReturn(0);
+            $context->getAspect('frontend.user')->shouldBeCalled()->willReturn($frontendUserAspect->reveal());
+            $context->getAspect('workspace')->shouldBeCalled()->willReturn($workspaceAspect->reveal());
+            $context->getPropertyFromAspect('visibility', 'includeHiddenContent', false)->shouldBeCalled();
+            $context->getPropertyFromAspect('backend.user', 'isLoggedIn', false)->shouldBeCalled();
+            $context->setAspect('frontend.user', Argument::any())->shouldBeCalled();
+            $context->getPropertyFromAspect('workspace', 'id')->shouldBeCalled()->willReturn(0);
+            $context->getPropertyFromAspect('date', 'accessTime', 0)->shouldBeCalled()->willReturn(0);
+            $context->getPropertyFromAspect('visibility', 'includeHiddenPages')->shouldBeCalled()->willReturn(false);
+            $context->setAspect('typoscript', Argument::any())->shouldBeCalled();
+            GeneralUtility::setSingletonInstance(Context::class, $context->reveal());
+            $GLOBALS['TYPO3_REQUEST'] = GeneralUtility::makeInstance(ServerRequest::class);
+            $tsfeProphecy->willBeConstructedWith([$context->reveal(), $site->reveal(), $siteLanguage->reveal()]);
+        }
+
         $tsfe = $tsfeProphecy->reveal();
         $tsfe->tmpl = new \TYPO3\CMS\Core\TypoScript\TemplateService();
-        GeneralUtility::addInstance(\ApacheSolrForTypo3\Solr\System\Mvc\Frontend\Controller\OverriddenTypoScriptFrontendController::class, $tsfe);
+        GeneralUtility::addInstance(TypoScriptFrontendController::class, $tsfe);
     }
 }

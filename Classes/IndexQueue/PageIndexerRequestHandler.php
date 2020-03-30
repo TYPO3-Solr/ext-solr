@@ -60,23 +60,18 @@ class PageIndexerRequestHandler implements SingletonInterface
     protected $dispatcher;
 
     /**
-     * @var \ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager
-     */
-    protected $logger = null;
-
-    /**
      * Constructor.
      *
      * Initializes request, response, and dispatcher.
      */
-    public function __construct()
+    public function __construct(string $jsonEncodedParameters = null)
     {
-        $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, /** @scrutinizer ignore-type */ __CLASS__);
         $this->dispatcher = GeneralUtility::makeInstance(Dispatcher::class);
-        $this->request = GeneralUtility::makeInstance(PageIndexerRequest::class, /** @scrutinizer ignore-type */ $_SERVER['HTTP_X_TX_SOLR_IQ']);
+        $this->request = GeneralUtility::makeInstance(PageIndexerRequest::class, /** @scrutinizer ignore-type */ $jsonEncodedParameters);
         $this->response = GeneralUtility::makeInstance(PageIndexerResponse::class);
         $this->response->setRequestId($this->request->getRequestId());
     }
+    
 
     /**
      * Authenticates the request, runs the frontend helpers defined by the
@@ -87,25 +82,7 @@ class PageIndexerRequestHandler implements SingletonInterface
      */
     public function run()
     {
-        if (!$this->request->isAuthenticated()) {
-            $this->logger->log(
-                SolrLogManager::ERROR,
-                'Invalid Index Queue Frontend Request detected!',
-                [
-                    'page indexer request' => (array)$this->request,
-                    'index queue header' => $_SERVER['HTTP_X_TX_SOLR_IQ']
-                ]
-            );
-            http_response_code(403);
-            die('Invalid Index Queue Request!');
-        }
-
         $this->dispatcher->dispatch($this->request, $this->response);
-
-        // register shutdown method here instead of in ext_localconf.php to
-        // allow frontend helpers to execute at hook_eofe in
-        // tslib/class.tslib_fe.php before shutting down
-        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['hook_eofe'][__CLASS__] = self::class . '->shutdown';
     }
 
     /**
@@ -117,15 +94,6 @@ class PageIndexerRequestHandler implements SingletonInterface
     public function shutdown()
     {
         $this->dispatcher->shutdown();
-
-        // make sure that no other output messes up the data
-        if (ob_get_contents()) ob_end_clean();
-
-        $this->response->sendHeaders();
-        echo $this->response->getContent();
-
-        // exit since we don't want anymore output
-        exit;
     }
 
     /**

@@ -34,8 +34,9 @@ use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
  * injectObjectManager it injects the object manager into the instance.
  *
  * @package ApacheSolrForTypo3\Solr\Tests\Unit\Helper
+ * @deprecated Can be dropped when TYPO3 9 support will be dropped
  */
-class FakeObjectManager implements ObjectManagerInterface
+class LegacyFakeObjectManager implements ObjectManagerInterface
 {
 
     /**
@@ -44,7 +45,7 @@ class FakeObjectManager implements ObjectManagerInterface
      * @param string $objectName Name of the object
      * @return bool TRUE if the object has been registered, otherwise FALSE
      */
-    public function isRegistered(string $objectName): bool
+    public function isRegistered($objectName)
     {
         throw new InvalidArgumentException("Not implemented in the FakeObjectManager");
     }
@@ -56,7 +57,7 @@ class FakeObjectManager implements ObjectManagerInterface
      * @return object The object instance
      * @api
      */
-    public function get(string $objectName, ...$constructorArguments): object
+    public function get($objectName, ...$constructorArguments)
     {
         $arguments = func_get_args();
 
@@ -76,7 +77,7 @@ class FakeObjectManager implements ObjectManagerInterface
      * @return object
      * @api
      */
-    public function getEmptyObject(string $className): object
+    public function getEmptyObject($className)
     {
         throw new InvalidArgumentException("Not implemented in the FakeObjectManager");
     }
@@ -87,7 +88,7 @@ class FakeObjectManager implements ObjectManagerInterface
      * @param string $objectName The object name
      * @return int One of the Container::SCOPE_ constants
      */
-    public function getScope(string $objectName): int
+    public function getScope($objectName)
     {
         throw new InvalidArgumentException("Not implemented in the FakeObjectManager");
     }

@@ -48,12 +48,18 @@ abstract class AbstractDataHandlerListener
     protected $configurationAwareRecordService;
 
     /**
+     * @var FrontendEnvironment
+     */
+    protected $frontendEnvironment = null;
+
+    /**
      * AbstractDataHandlerListener constructor.
      * @param ConfigurationAwareRecordService|null $recordService
      */
-    public function __construct(ConfigurationAwareRecordService $recordService = null)
+    public function __construct(ConfigurationAwareRecordService $recordService = null, FrontendEnvironment $frontendEnvironment = null)
     {
         $this->configurationAwareRecordService = $recordService ?? GeneralUtility::makeInstance(ConfigurationAwareRecordService::class);
+        $this->frontendEnvironment = $frontendEnvironment ?? GeneralUtility::makeInstance(FrontendEnvironment::class);
     }
 
     /**
@@ -115,7 +121,7 @@ abstract class AbstractDataHandlerListener
         $isRecursiveUpdateRequired = $this->isRecursiveUpdateRequired($pageId, $changedFields);
         // If RecursiveUpdateTriggerConfiguration is false => check if changeFields are part of recursiveUpdateFields
         if ($isRecursiveUpdateRequired === false) {
-            $solrConfiguration = Util::getSolrConfigurationFromPageId($pageId);
+            $solrConfiguration = $this->frontendEnvironment->getSolrConfigurationFromPageId($pageId);
             $indexQueueConfigurationName = $this->configurationAwareRecordService->getIndexingConfigurationName('pages', $pageId, $solrConfiguration);
             $updateFields = $solrConfiguration->getIndexQueueConfigurationRecursiveUpdateFields($indexQueueConfigurationName);
 

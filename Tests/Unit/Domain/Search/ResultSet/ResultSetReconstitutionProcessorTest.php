@@ -34,11 +34,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\QueryGrou
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\ResultSetReconstitutionProcessor;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Tests\Unit\Helper\FakeObjectManager;
-use TYPO3\CMS\Core\TimeTracker\TimeTracker;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
-use TYPO3\CMS\Frontend\ContentObject\CaseContentObject;
-use TYPO3\CMS\Frontend\ContentObject\TextContentObject;
+use ApacheSolrForTypo3\Solr\Util;
 
 /**
  * Unit test case for the ObjectReconstitutionProcessor.
@@ -108,7 +104,6 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
         $configuration = $this->getConfigurationArrayFromFacetConfigurationArray($facetConfiguration);
         $processor = $this->getConfiguredReconstitutionProcessor($configuration, $searchResultSet);
         $processor->process($searchResultSet);
-
         // after the reconstitution they should be 1 facet present
         $this->assertCount(1, $searchResultSet->getFacets());
     }
@@ -1123,7 +1118,13 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
         $searchResultSet->getUsedSearchRequest()->expects($this->any())->method('getActiveFacetNames')->will($this->returnValue([]));
 
         $processor = new ResultSetReconstitutionProcessor();
-        $processor->setObjectManager(new FakeObjectManager());
+
+        if(Util::getIsTYPO3VersionBelow10()) {
+            $fakeObjectManager = new \ApacheSolrForTypo3\Solr\Tests\Unit\Helper\LegacyFakeObjectManager();
+        } else {
+            $fakeObjectManager = new \ApacheSolrForTypo3\Solr\Tests\Unit\Helper\FakeObjectManager();
+        }
+        $processor->setObjectManager($fakeObjectManager);
         return $processor;
     }
 }

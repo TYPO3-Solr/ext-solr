@@ -26,6 +26,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Site;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\RootPageResolver;
+use ApacheSolrForTypo3\Solr\FrontendEnvironment;
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
@@ -78,6 +79,11 @@ class SiteRepository
     protected $extensionConfiguration;
 
     /**
+     * @var FrontendEnvironment
+     */
+    protected $frontendEnvironment = null;
+
+    /**
      * SiteRepository constructor.
      *
      * @param RootPageResolver|null $rootPageResolver
@@ -86,13 +92,21 @@ class SiteRepository
      * @param SiteFinder|null $siteFinder
      * @param ExtensionConfiguration| null
      */
-    public function __construct(RootPageResolver $rootPageResolver = null, TwoLevelCache $twoLevelCache = null, Registry $registry = null, SiteFinder $siteFinder = null, ExtensionConfiguration $extensionConfiguration = null)
+    public function __construct(
+        RootPageResolver $rootPageResolver = null,
+        TwoLevelCache $twoLevelCache = null,
+        Registry $registry = null,
+        SiteFinder $siteFinder = null,
+        ExtensionConfiguration $extensionConfiguration = null,
+        FrontendEnvironment $frontendEnvironment = null
+    )
     {
         $this->rootPageResolver = $rootPageResolver ?? GeneralUtility::makeInstance(RootPageResolver::class);
         $this->runtimeCache = $twoLevelCache ?? GeneralUtility::makeInstance(TwoLevelCache::class, /** @scrutinizer ignore-type */'cache_runtime');
         $this->registry = $registry ?? GeneralUtility::makeInstance(Registry::class);
         $this->siteFinder = $siteFinder ?? GeneralUtility::makeInstance(SiteFinder::class);
         $this->extensionConfiguration = $extensionConfiguration ?? GeneralUtility::makeInstance(ExtensionConfiguration::class);
+        $this->frontendEnvironment = $frontendEnvironment ?? GeneralUtility::makeInstance(FrontendEnvironment::class);
     }
 
     /**
@@ -287,7 +301,7 @@ class SiteRepository
 
         $siteDefaultLanguage = 0;
 
-        $configuration = Util::getConfigurationFromPageId($rootPageId, 'config');
+        $configuration = $this->frontendEnvironment->getConfigurationFromPageId($rootPageId, 'config');
 
         $siteDefaultLanguage = $configuration->getValueByPathOrDefaultValue('sys_language_uid', $siteDefaultLanguage);
         // default language is set through default L GET parameter -> overruling config.sys_language_uid
@@ -403,7 +417,7 @@ class SiteRepository
                 'Please use site handling feature or enable legacy mode under "Settings":>"Extension Configuration":>"solr"', 1567770263);
         }
 
-        $solrConfiguration = Util::getSolrConfigurationFromPageId($rootPageRecord['uid']);
+        $solrConfiguration = $this->frontendEnvironment->getSolrConfigurationFromPageId($rootPageRecord['uid']);
         $domain = $this->getDomainFromConfigurationOrFallbackToDomainRecord($rootPageRecord['uid']);
         $siteHash = $this->getSiteHashForDomain($domain);
         $defaultLanguage = $this->getDefaultLanguage($rootPageRecord['uid']);
@@ -435,7 +449,7 @@ class SiteRepository
      */
     protected function buildTypo3ManagedSite(array $rootPageRecord): ?Typo3ManagedSite
     {
-        $solrConfiguration = Util::getSolrConfigurationFromPageId($rootPageRecord['uid']);
+        $solrConfiguration = $this->frontendEnvironment->getSolrConfigurationFromPageId($rootPageRecord['uid']);
         /** @var \TYPO3\CMS\Core\Site\Entity\Site $typo3Site */
         try {
             $typo3Site = $this->siteFinder->getSiteByPageId($rootPageRecord['uid']);

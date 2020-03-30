@@ -27,6 +27,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration;
 use ApacheSolrForTypo3\Solr\Access\Rootline;
 use ApacheSolrForTypo3\Solr\Typo3PageIndexer;
 
+use ApacheSolrForTypo3\Solr\Util;
 use InvalidArgumentException;
 use Nimut\TestingFramework\Exception\Exception;
 use ReflectionClass;
@@ -47,7 +48,9 @@ use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\TimeTracker\TimeTracker;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
+use TYPO3\CMS\Frontend\Http\RequestHandler;
 use TYPO3\CMS\Frontend\Page\PageGenerator;
 use TYPO3\CMS\Core\Tests\Functional\SiteHandling\SiteBasedTestTrait;
 use function getenv;
@@ -67,7 +70,7 @@ abstract class IntegrationTest extends FunctionalTestCase
      */
     protected const LANGUAGE_PRESETS = [
         'EN' => ['id' => 0, 'title' => 'English', 'locale' => 'en_US.UTF8'],
-        'DE' => ['id' => 1, 'title' => 'German', 'locale' => 'de_DE.UTF8'],
+        'DE' => ['id' => 1, 'title' => 'German', 'locale' => 'de_DE.UTF8', 'fallbackType' => 'fallback', 'fallbacks' => 'EN'],
         'DA' => ['id' => 2, 'title' => 'Danish', 'locale' => 'da_DA.UTF8']
     ];
 
@@ -250,24 +253,22 @@ abstract class IntegrationTest extends FunctionalTestCase
     }
 
     /**
-     * Setup configured TSFE
-     *
-     * @param array $TYPO3_CONF_VARS
      * @param int $id
-     * @param int $type
-     * @param string $no_cache
-     * @param string $cHash
-     * @param null $_2
      * @param string $MP
-     * @param string $RDCT
-     * @param array $config
+     * @param $language
      * @return TypoScriptFrontendController
      */
-    protected function getConfiguredTSFE($TYPO3_CONF_VARS = [], $id = 1, $type = 0, $no_cache = '', $cHash = '', $_2 = null, $MP = '', $RDCT = '', $config = [])
+    protected function getConfiguredTSFE($id = 1, $MP = '', $language = 0)
     {
             /** @var TSFETestBootstrapper $bootstrapper */
         $bootstrapper = GeneralUtility::makeInstance(TSFETestBootstrapper::class);
-        $result = $bootstrapper->run($TYPO3_CONF_VARS, $id, $type, $no_cache, $cHash, $_2, $MP, $RDCT, $config);
+
+        if(Util::getIsTYPO3VersionBelow10()) {
+            // @todo this part can be dropped when TYPO3 9 support will be dropped
+            $result = $bootstrapper->legacyBootstrap($id, $MP, $language);
+        } else {
+            $result = $bootstrapper->bootstrap($id, $MP, $language);
+        }
         return $result->getTsfe();
     }
 
@@ -393,14 +394,21 @@ abstract class IntegrationTest extends FunctionalTestCase
         $_SERVER['HTTP_HOST'] = 'test.local.typo3.org';
         $_SERVER['REQUEST_URI'] = '/search.html';
 
-        $fakeTSFE = $this->getConfiguredTSFE([], $pageId);
+        $fakeTSFE = $this->getConfiguredTSFE($pageId);
         $fakeTSFE->newCObj();
 
         $GLOBALS['TSFE'] = $fakeTSFE;
         $this->simulateFrontedUserGroups($feUserGroupArray);
 
-        $fakeTSFE->preparePageContentGeneration();
-        PageGenerator::renderContent();
+        #$fakeTSFE->preparePageContentGeneration();
+        if(Util::getIsTYPO3VersionBelow10()) {
+            PageGenerator::renderContent();
+        } else {
+            $request = $GLOBALS['TYPO3_REQUEST'];
+            $requestHandler = GeneralUtility::makeInstance(RequestHandler::class);
+            $requestHandler->handle($request);
+        }
+
         return $fakeTSFE;
     }
 
@@ -470,7 +478,7 @@ abstract class IntegrationTest extends FunctionalTestCase
         $defaultLanguage = $this->buildDefaultLanguageConfiguration('EN', '/en/');
         $defaultLanguage['solr_core_read'] = 'core_en';
 
-        $german = $this->buildLanguageConfiguration('DE', '/de/');
+        $german = $this->buildLanguageConfiguration('DE', '/de/', ['EN'], 'fallback');
         $german['solr_core_read'] = 'core_de';
 
         $danish = $this->buildLanguageConfiguration('DA', '/da/');
@@ -548,5 +556,18 @@ abstract class IntegrationTest extends FunctionalTestCase
     {
         $solrConnectionInfo = $this->getSolrConnectionInfo();
         return $solrConnectionInfo['scheme'] . '://' . $solrConnectionInfo['host'] . ':' . $solrConnectionInfo['port'];
+    }
+
+    /**
+     * @return ObjectManagerInterface
+     */
+    protected function getFakeObjectManager(): ObjectManagerInterface
+    {
+        if(Util::getIsTYPO3VersionBelow10()) {
+            $fakeObjectManager = new \ApacheSolrForTypo3\Solr\Tests\Unit\Helper\LegacyFakeObjectManager();
+        } else {
+            $fakeObjectManager = new \ApacheSolrForTypo3\Solr\Tests\Unit\Helper\FakeObjectManager();
+        }
+        return $fakeObjectManager;
     }
 }

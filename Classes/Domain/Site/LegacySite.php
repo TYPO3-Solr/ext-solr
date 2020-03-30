@@ -28,8 +28,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Site;
 use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
-use ApacheSolrForTypo3\Solr\Util;
-use TYPO3\CMS\Core\Context\LanguageAspectFactory;
+use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Registry;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -41,11 +40,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class LegacySite extends Site
 {
-
-    /**
-     * @var array
-     */
-    protected $typoScriptConfig = null;
 
     /**
      * Constructor.
@@ -70,26 +64,6 @@ class LegacySite extends Site
         $this->defaultLanguageId = $defaultLanguageId;
         $this->availableLanguageIds = $availableLanguageIds;
 
-    }
-
-    /**
-     * @param int $languageUid
-     * @return array
-     */
-    public function getFallbackOrder(int $languageUid): array
-    {
-        if ($this->typoScriptConfig === null) {
-            try {
-                Util::initializeTsfe($this->getRootPageId(), $languageUid);
-                $this->typoScriptConfig = $GLOBALS['TSFE']->config['config'] ?? [];
-
-            } catch (\TYPO3\CMS\Core\Error\Http\ServiceUnavailableException $e) {
-                // when there is an error during initialization we return the default sysLanguageMode
-                $this->typoScriptConfig = [];
-            }
-        }
-        $languageAspect = LanguageAspectFactory::createFromTypoScript($this->typoScriptConfig);
-        return $languageAspect->getFallbackChain();
     }
 
 

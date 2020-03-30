@@ -21,7 +21,7 @@ namespace ApacheSolrForTypo3\Solr\System\UserFunctions;
  */
 
 use ApacheSolrForTypo3\Solr\ConnectionManager;
-use ApacheSolrForTypo3\Solr\Util;
+use ApacheSolrForTypo3\Solr\FrontendEnvironment;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
@@ -32,6 +32,17 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
  */
 class FlexFormUserFunctions
 {
+
+    /**
+     * @var FrontendEnvironment
+     */
+    protected $frontendEnvironment = null;
+
+    public function __construct(FrontendEnvironment $frontendEnvironment = null)
+    {
+        $this->frontendEnvironment = $frontendEnvironment ?? GeneralUtility::makeInstance(FrontendEnvironment::class);
+    }
+
     /**
      * Provides all facet fields for a flexform select, enabling the editor to select one of them.
      *
@@ -173,7 +184,7 @@ class FlexFormUserFunctions
      */
     protected function getConfigurationFromPageId($pid)
     {
-        $typoScriptConfiguration = Util::getSolrConfigurationFromPageId($pid);
+        $typoScriptConfiguration = $this->frontendEnvironment->getSolrConfigurationFromPageId($pid);
         return $typoScriptConfiguration;
     }
 

@@ -36,7 +36,8 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
-use Solarium\Core\Client\Response;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 
 
 /**
@@ -81,6 +82,11 @@ class SearchResultSetTest extends UnitTest
     protected $escapeServiceMock;
 
     /**
+     * @var ObjectManager
+     */
+    protected $objectManagerMock = null;
+
+    /**
      * @return void
      */
     public function setUp()
@@ -97,6 +103,8 @@ class SearchResultSetTest extends UnitTest
             ->setMethods(['getRegisteredSearchComponents'])
             ->setConstructorArgs([$this->configurationMock, $this->searchMock, $this->solrLogManagerMock])
             ->getMock();
+        $this->objectManagerMock = $this->getMockBuilder(ObjectManager::class)->disableOriginalConstructor()->getMock();
+        $this->searchResultSetService->injectObjectManager($this->objectManagerMock);
     }
 
     /**
@@ -127,6 +135,7 @@ class SearchResultSetTest extends UnitTest
         $fakeRequest = new SearchRequest(['tx_solr' => ['q' => 'my search']]);
         $fakeRequest->setResultsPerPage(10);
 
+        $this->objectManagerMock->expects($this->once())->method('get')->with(SearchResultSet::class)->willReturn(new SearchResultSet());
         $resultSet = $this->searchResultSetService->search($fakeRequest);
         $this->assertSame($resultSet->getResponse(), $fakeResponse, 'Did not get the expected fakeResponse');
     }
@@ -145,6 +154,7 @@ class SearchResultSetTest extends UnitTest
         $fakeRequest = new SearchRequest(['tx_solr' => ['q' => 'my 2. search','page' => 3]]);
         $fakeRequest->setResultsPerPage(25);
 
+        $this->objectManagerMock->expects($this->once())->method('get')->with(SearchResultSet::class)->willReturn(new SearchResultSet());
         $resultSet = $this->searchResultSetService->search($fakeRequest);
         $this->assertSame($resultSet->getResponse(), $fakeResponse, 'Did not get the expected fakeResponse');
     }
@@ -169,6 +179,7 @@ class SearchResultSetTest extends UnitTest
         $fakeRequest = new SearchRequest(['tx_solr' => ['q' => 'my 3. search']]);
         $fakeRequest->setResultsPerPage(10);
 
+        $this->objectManagerMock->expects($this->once())->method('get')->with(SearchResultSet::class)->willReturn(new SearchResultSet());
         $resultSet = $this->searchResultSetService->search($fakeRequest);
         $this->assertSame($resultSet->getResponse(), $fakeResponse, 'Did not get the expected fakeResponse');
     }
@@ -192,6 +203,9 @@ class SearchResultSetTest extends UnitTest
 
         $fakeRequest = new SearchRequest(['tx_solr' => ['q' => 'my 4. search']]);
         $fakeRequest->setResultsPerPage(10);
+
+        $this->objectManagerMock->expects($this->at(0))->method('get')->with(SearchResultSet::class)->willReturn(new SearchResultSet());
+        $this->objectManagerMock->expects($this->at(1))->method('get')->with($testProcessor)->willReturn(new TestSearchResultSetProcessor());
 
         $resultSet  = $this->searchResultSetService->search($fakeRequest);
 
@@ -224,6 +238,7 @@ class SearchResultSetTest extends UnitTest
 
         $this->assertOneSearchWillBeTriggeredWithQueryAndShouldReturnFakeResponse('test', 0, $fakeResponse);
 
+        $this->objectManagerMock->expects($this->once())->method('get')->with(SearchResultSet::class)->willReturn(new SearchResultSet());
         $resultSet = $this->searchResultSetService->search($fakeRequest);
 
         $this->assertSame($resultSet->getResponse(), $fakeResponse, 'Did not get the expected fakeResponse');
@@ -251,6 +266,7 @@ class SearchResultSetTest extends UnitTest
         $fakeRequest = new SearchRequest(['tx_solr' => ['q' => 'variantsSearch']]);
         $fakeRequest->setResultsPerPage(10);
 
+        $this->objectManagerMock->expects($this->once())->method('get')->with(SearchResultSet::class)->willReturn(new SearchResultSet());
         $resultSet = $this->searchResultSetService->search($fakeRequest);
         $this->assertSame(1, count($resultSet->getSearchResults()), 'Unexpected amount of document');
 

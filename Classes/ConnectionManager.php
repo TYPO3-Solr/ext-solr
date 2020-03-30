@@ -31,14 +31,9 @@ use ApacheSolrForTypo3\Solr\System\Records\SystemLanguage\SystemLanguageReposito
 use ApacheSolrForTypo3\Solr\System\Solr\Node;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use InvalidArgumentException;
-use RuntimeException;
-use stdClass;
 use TYPO3\CMS\Core\Registry;
 use TYPO3\CMS\Core\SingletonInterface;
-use TYPO3\CMS\Core\TypoScript\ExtendedTemplateService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Utility\RootlineUtility;
-use TYPO3\CMS\Frontend\Page\PageRepository;
 use function json_encode;
 
 /**
@@ -69,12 +64,17 @@ class ConnectionManager implements SingletonInterface
      */
     protected $siteRepository;
 
+
     /**
      * @param SystemLanguageRepository $systemLanguageRepository
      * @param PagesRepositoryAtExtSolr|null $pagesRepositoryAtExtSolr
      * @param SiteRepository $siteRepository
      */
-    public function __construct(SystemLanguageRepository $systemLanguageRepository = null, PagesRepositoryAtExtSolr $pagesRepositoryAtExtSolr = null, SiteRepository $siteRepository = null)
+    public function __construct(
+        SystemLanguageRepository $systemLanguageRepository = null,
+        PagesRepositoryAtExtSolr $pagesRepositoryAtExtSolr = null,
+        SiteRepository $siteRepository = null
+    )
     {
         $this->systemLanguageRepository = $systemLanguageRepository ?? GeneralUtility::makeInstance(SystemLanguageRepository::class);
         $this->siteRepository           = $siteRepository ?? GeneralUtility::makeInstance(SiteRepository::class);
@@ -376,88 +376,6 @@ class ConnectionManager implements SingletonInterface
         }
 
         return $configuredSolrConnections;
-    }
-
-    /**
-     * Gets the configured Solr connection for a specific root page and language ID.
-     *
-     * @param array $rootPage A root page record with at least title and uid
-     * @param int $languageId ID of a system language
-     * @return array A solr connection configuration.
-     * @deprecated will be removed in v11, use SiteRepository
-     */
-    protected function getConfiguredSolrConnectionByRootPage(array $rootPage, $languageId)
-    {
-        trigger_error('solr:deprecation: Method getConfiguredSolrConnectionByRootPage is deprecated since EXT:solr 10 and will be removed in v11, use sitehandling instead', E_USER_DEPRECATED);
-
-        $connection = [];
-
-        $languageId = (int)$languageId;
-        GeneralUtility::_GETset($languageId, 'L');
-        $connectionKey = $rootPage['uid'] . '|' . $languageId;
-
-        $pageSelect = GeneralUtility::makeInstance(PageRepository::class);
-
-        $rootlineUtility = GeneralUtility::makeInstance(RootlineUtility::class, $rootPage['uid']);
-        try {
-            $rootLine = $rootlineUtility->get();
-        } catch (RuntimeException $e) {
-            $rootLine = [];
-        }
-
-        $tmpl = GeneralUtility::makeInstance(ExtendedTemplateService::class);
-        $tmpl->tt_track = false; // Do not log time-performance information
-        $tmpl->init();
-        $tmpl->runThroughTemplates($rootLine); // This generates the constants/config + hierarchy info for the template.
-
-        // fake micro TSFE to get correct condition parsing
-        $GLOBALS['TSFE'] = new stdClass();
-        $GLOBALS['TSFE']->tmpl = new stdClass();
-        $GLOBALS['TSFE']->cObjectDepthCounter = 50;
-        $GLOBALS['TSFE']->tmpl->rootLine = $rootLine;
-        // @extensionScannerIgnoreLine
-        $GLOBALS['TSFE']->sys_page = $pageSelect;
-        $GLOBALS['TSFE']->id = $rootPage['uid'];
-        $GLOBALS['TSFE']->page = $rootPage;
-
-        $tmpl->generateConfig();
-        $GLOBALS['TSFE']->tmpl->setup = $tmpl->setup;
-
-        $configuration = Util::getSolrConfigurationFromPageId($rootPage['uid'], false, $languageId);
-
-        $solrIsEnabledAndConfigured = $configuration->getEnabled() && $configuration->getSolrHasConnectionConfiguration();
-        if (!$solrIsEnabledAndConfigured) {
-            return $connection;
-        }
-
-        $connection = [
-            'connectionKey' => $connectionKey,
-            'rootPageTitle' => $rootPage['title'],
-            'rootPageUid' => $rootPage['uid'],
-            'read' => [
-                'scheme' => $configuration->getSolrScheme(),
-                'host' => $configuration->getSolrHost(),
-                'port' => $configuration->getSolrPort(),
-                'path' => $configuration->getSolrPath(),
-                'username' => $configuration->getSolrUsername(),
-                'password' => $configuration->getSolrPassword(),
-                'timeout' => $configuration->getSolrTimeout()
-            ],
-            'write' => [
-                'scheme' => $configuration->getSolrScheme('http', 'write'),
-                'host' => $configuration->getSolrHost('localhost', 'write'),
-                'port' => $configuration->getSolrPort(8983, 'write'),
-                'path' => $configuration->getSolrPath('/solr/core_en/', 'write'),
-                'username' => $configuration->getSolrUsername('', 'write'),
-                'password' => $configuration->getSolrPassword('', 'write'),
-                'timeout' => $configuration->getSolrTimeout(0, 'write')
-            ],
-
-            'language' => $languageId
-        ];
-
-        $connection['label'] = $this->buildConnectionLabel($connection);
-        return $connection;
     }
 
     /**

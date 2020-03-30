@@ -25,7 +25,6 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\System\Configuration;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
-use ApacheSolrForTypo3\Solr\System\Mvc\Frontend\Controller\OverriddenTypoScriptFrontendController;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
@@ -41,7 +40,7 @@ class TypoScriptConfigurationTest extends IntegrationTest
      * @return void
      */
     public function setUp() {
-        $tsfe = $this->getMockBuilder(OverriddenTypoScriptFrontendController::class)->setMethods([])->disableOriginalConstructor()->getMock();
+        $tsfe = $this->getMockBuilder(TypoScriptFrontendController::class)->setMethods([])->disableOriginalConstructor()->getMock();
         $tsfe->cObjectDepthCounter = 50;
         $GLOBALS['TSFE'] = $tsfe;
         parent::setUp();

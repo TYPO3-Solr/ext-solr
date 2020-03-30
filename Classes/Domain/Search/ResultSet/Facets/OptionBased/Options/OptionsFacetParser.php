@@ -26,6 +26,19 @@ use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 class OptionsFacetParser extends AbstractFacetParser
 {
     /**
+     * @var Dispatcher
+     */
+    protected $dispatcher;
+
+    /**
+     * @param Dispatcher $dispatcher
+     */
+    public function injectDispatcher(Dispatcher $dispatcher)
+    {
+        $this->dispatcher = $dispatcher;
+    }
+
+    /**
      * @param SearchResultSet $resultSet
      * @param string $facetName
      * @param array $facetConfiguration
@@ -79,8 +92,9 @@ class OptionsFacetParser extends AbstractFacetParser
         $this->applyManualSortOrder($facet, $facetConfiguration);
         $this->applyReverseOrder($facet, $facetConfiguration);
 
-        $signalSlotDispatcher = GeneralUtility::makeInstance(Dispatcher::class);
-        $signalSlotDispatcher->dispatch(__CLASS__, 'optionsParsed', [&$facet, $facetConfiguration]);
+        if(!is_null($this->dispatcher)) {
+            $this->dispatcher->dispatch(__CLASS__, 'optionsParsed', [&$facet, $facetConfiguration]);
+        }
 
         return $facet;
     }

@@ -242,15 +242,15 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
         $uri = $uriBuilder
             ->reset()
             ->setTargetPageUid($pageUid)
-            ->setTargetPageType($this->arguments['pageType'])
-            ->setNoCache($this->arguments['noCache'])
+            ->setTargetPageType($this->arguments['pageType'] ?? 0)
+            ->setNoCache($this->arguments['noCache'] ?? false)
             ->setUseCacheHash(!$this->arguments['noCacheHash'])
-            ->setArguments($this->arguments['additionalParams'])
-            ->setCreateAbsoluteUri($this->arguments['absolute'])
-            ->setAddQueryString($this->arguments['addQueryString'])
-            ->setArgumentsToBeExcludedFromQueryString($this->arguments['argumentsToBeExcludedFromQueryString'])
+            ->setArguments($this->arguments['additionalParams'] ?? [])
+            ->setCreateAbsoluteUri($this->arguments['absolute'] ?? false)
+            ->setAddQueryString($this->arguments['addQueryString'] ?? false)
+            ->setArgumentsToBeExcludedFromQueryString($this->arguments['argumentsToBeExcludedFromQueryString'] ?? [])
             ->setAddQueryStringMethod($this->arguments['addQueryStringMethod'] ?? '')
-            ->setSection($this->arguments['section'])
+            ->setSection($this->arguments['section'] ?? '')
             ->build();
         return $uri;
     }

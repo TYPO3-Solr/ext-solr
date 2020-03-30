@@ -339,7 +339,7 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
      */
     protected function isIndexablePageType(array $record)
     {
-        return Util::isAllowedPageType($record);
+        return $this->frontendEnvironment->isAllowedPageType($record);
     }
 
     /**

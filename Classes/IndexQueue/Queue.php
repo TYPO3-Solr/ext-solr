@@ -31,9 +31,9 @@ use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\RootPageReso
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\Statistic\QueueStatistic;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\Statistic\QueueStatisticsRepository;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
+use ApacheSolrForTypo3\Solr\FrontendEnvironment;
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
-use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -76,6 +76,11 @@ class Queue
     protected $queueInitializationService;
 
     /**
+     * @var FrontendEnvironment
+     */
+    protected $frontendEnvironment = null;
+
+    /**
      * Queue constructor.
      * @param RootPageResolver|null $rootPageResolver
      * @param ConfigurationAwareRecordService|null $recordService
@@ -83,7 +88,14 @@ class Queue
      * @param QueueStatisticsRepository|null $queueStatisticsRepository
      * @param QueueInitializationService|null $queueInitializationService
      */
-    public function __construct(RootPageResolver $rootPageResolver = null, ConfigurationAwareRecordService $recordService = null, QueueItemRepository $queueItemRepository = null, QueueStatisticsRepository $queueStatisticsRepository = null, QueueInitializationService $queueInitializationService = null)
+    public function __construct(
+        RootPageResolver $rootPageResolver = null,
+        ConfigurationAwareRecordService $recordService = null,
+        QueueItemRepository $queueItemRepository = null,
+        QueueStatisticsRepository $queueStatisticsRepository = null,
+        QueueInitializationService $queueInitializationService = null,
+        FrontendEnvironment $frontendEnvironment = null
+    )
     {
         $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, /** @scrutinizer ignore-type */ __CLASS__);
         $this->rootPageResolver = $rootPageResolver ?? GeneralUtility::makeInstance(RootPageResolver::class);
@@ -91,6 +103,7 @@ class Queue
         $this->queueItemRepository = $queueItemRepository ?? GeneralUtility::makeInstance(QueueItemRepository::class);
         $this->queueStatisticsRepository = $queueStatisticsRepository ??  GeneralUtility::makeInstance(QueueStatisticsRepository::class);
         $this->queueInitializationService = $queueInitializationService ?? GeneralUtility::makeInstance(QueueInitializationService::class, /** @scrutinizer ignore-type */ $this);
+        $this->frontendEnvironment = $frontendEnvironment ?? GeneralUtility::makeInstance(FrontendEnvironment::class);
     }
 
     // FIXME some of the methods should be renamed to plural forms
@@ -182,7 +195,7 @@ class Queue
                 continue;
             }
 
-            $solrConfiguration = Util::getSolrConfigurationFromPageId($rootPageId);
+            $solrConfiguration = $this->frontendEnvironment->getSolrConfigurationFromPageId($rootPageId);
             $indexingConfiguration = $this->recordService->getIndexingConfigurationName($itemType, $itemUid, $solrConfiguration);
             $itemInQueueForRootPage = $this->containsItemWithRootPageId($itemType, $itemUid, $rootPageId);
             if ($itemInQueueForRootPage) {
@@ -297,7 +310,7 @@ class Queue
 
         $record = $this->getRecordCached($itemType, $itemUid, $additionalRecordFields);
 
-        if (empty($record) || ($itemType === 'pages' && !Util::isAllowedPageType($record, $indexingConfiguration))) {
+        if (empty($record) || ($itemType === 'pages' && !$this->frontendEnvironment->isAllowedPageType($record, $indexingConfiguration))) {
             return 0;
         }
 

@@ -33,6 +33,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use ApacheSolrForTypo3\Solr\Tests\Unit\Helper\FakeObjectManager;
+use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\TimeTracker\TimeTracker;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
@@ -70,6 +71,10 @@ class ResultSetReconstitutionProcessorTest extends IntegrationTest
      */
     public function canApplyRenderingInstructionsOnOptions()
     {
+        if(!Util::getIsTYPO3VersionBelow10()) {
+            $this->markTestSkipped('Needs to be checked with TYPO3 10');
+        }
+
         $this->fakeTSFEToUseCObject();
 
         $searchResultSet = $this->initializeSearchResultSetFromFakeResponse('fake_solr_response_with_multiple_fields_facets.json');
@@ -119,6 +124,9 @@ class ResultSetReconstitutionProcessorTest extends IntegrationTest
      */
     public function labelCanBeUsedAsCObject()
     {
+        if(!Util::getIsTYPO3VersionBelow10()) {
+            $this->markTestSkipped('Needs to be checked with TYPO3 10');
+        }
         $this->fakeTSFEToUseCObject();
         $searchResultSet = $this->initializeSearchResultSetFromFakeResponse('fake_solr_response_with_multiple_fields_facets.json');
 
@@ -171,7 +179,8 @@ class ResultSetReconstitutionProcessorTest extends IntegrationTest
         $searchResultSet->getUsedSearchRequest()->expects($this->any())->method('getActiveFacetNames')->will($this->returnValue([]));
 
         $processor = new ResultSetReconstitutionProcessor();
-        $processor->setObjectManager(new FakeObjectManager());
+        $fakeObjectManager = $this->getFakeObjectManager();
+        $processor->setObjectManager($fakeObjectManager);
         return $processor;
     }
 
