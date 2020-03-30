@@ -96,7 +96,8 @@ class HierarchyFacet extends AbstractFacet
     {
         /** @var $parentNode Node|null */
         $parentNode = isset($this->nodesByKey[$parentKey]) ? $this->nodesByKey[$parentKey] : null;
-        $node = new Node($this, $parentNode, $key, $label, $value, $count, $selected);
+        /** @var Node $node */
+        $node = $this->objectManager->get(Node::class, $this, $parentNode, $key, $label, $value, $count, $selected);
         $this->nodesByKey[$key] = $node;
 
         if ($parentNode === null) {

@@ -81,7 +81,7 @@ class QueryGroupFacetParser extends AbstractFacetParser
                     $facetName,
                     $facetConfiguration
                 );
-                $facet->addOption(new Option($facet, $label, $value, $count, $isOptionsActive));
+                $facet->addOption($this->objectManager->get(Option::class, $facet, $label, $value, $count, $isOptionsActive));
             }
         }
 
