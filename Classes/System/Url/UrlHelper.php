@@ -183,6 +183,7 @@ class UrlHelper {
         $host     = $this->urlParts['host'] ?? '';
         $port     = $this->urlParts['port'] ? ':' . $this->urlParts['port'] : '';
         $user     = $this->urlParts['user'] ?? '';
+        $user     = $this->urlParts['pass'] ? $user . ':' : $user;
         $pass     = $this->urlParts['pass'] ?? '';
         $pass     = ($user || $pass) ? "$pass@" : '';
         $path     = $this->urlParts['path'] ?? '';
