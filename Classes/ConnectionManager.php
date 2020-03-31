@@ -290,8 +290,8 @@ class ConnectionManager implements SingletonInterface
     {
         $connections = [];
 
-        foreach ($site->getAllSolrConnectionConfigurations() as $solrConnectionConfiguration) {
-            $connections[] = $this->getConnectionFromConfiguration($solrConnectionConfiguration);
+        foreach ($site->getAllSolrConnectionConfigurations() as $languageId => $solrConnectionConfiguration) {
+            $connections[$languageId] = $this->getConnectionFromConfiguration($solrConnectionConfiguration);
         }
 
         return $connections;
