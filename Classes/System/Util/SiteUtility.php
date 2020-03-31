@@ -157,10 +157,31 @@ class SiteUtility
     protected static function getValueOrFallback(array $data, string $keyToCheck, string $fallbackKey)
     {
         $value = $data[$keyToCheck] ?? null;
-        if (!empty($value)) {
-            return $value;
+        if ($value === '0' || $value === 0 || !empty($value)) {
+            return self::evaluateConfigurationData($value);
         }
 
-        return $data[$fallbackKey] ?? null;
+        return self::evaluateConfigurationData($data[$fallbackKey] ?? null);
+    }
+
+    /**
+     * Evaluate configuration data
+     *
+     * Setting boolean values via environment variables
+     * results in strings like 'false' that may be misinterpreted
+     * thus we check for boolean values in strings.
+     *
+     * @param string|bool|null $value
+     * @return string|bool|null
+     */
+    protected static function evaluateConfigurationData($value)
+    {
+        if ($value === 'true') {
+            return true;
+        } elseif ($value === 'false') {
+            return false;
+        }
+
+        return $value;
     }
 }
