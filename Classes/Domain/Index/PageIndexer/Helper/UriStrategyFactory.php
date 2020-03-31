@@ -42,8 +42,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * * A TYPO3 site managed with site management
  * * A TYPO3 site without site management where the url is build by EXT:solr with L and id param and information from the domain
  * record or solr specific configuration.
- *
- * @package ApacheSolrForTypo3\Solr\Domain\Index\PageIndexer\Helper
  */
 class UriStrategyFactory
 {

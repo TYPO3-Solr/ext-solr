@@ -34,7 +34,6 @@ use TYPO3\CMS\Frontend\Page\PageRepository;
  * This class is responsible to find the closest page id from the rootline where
  * a typoscript template is stored on.
  *
- * @package ApacheSolrForTypo3\Solr\System\Configuration
  * @author Timo Hund <timo.hund@dkd.de>
  */
 class ConfigurationPageResolver

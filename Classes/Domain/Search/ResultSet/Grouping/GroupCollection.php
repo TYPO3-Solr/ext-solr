@@ -29,8 +29,6 @@ use ApacheSolrForTypo3\Solr\System\Data\AbstractCollection;
 
 /**
  * The Group contains the Group objects.
- *
- * @package ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Grouping
  */
 class GroupCollection extends AbstractCollection {
 

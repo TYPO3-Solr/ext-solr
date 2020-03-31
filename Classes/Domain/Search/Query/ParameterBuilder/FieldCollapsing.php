@@ -30,8 +30,6 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 /**
  * The FieldCollapsing ParameterProvider is responsible to build the solr query parameters
  * that are needed for the field collapsing.
- *
- * @package ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder
  */
 class FieldCollapsing extends AbstractDeactivatable implements ParameterBuilder
 {

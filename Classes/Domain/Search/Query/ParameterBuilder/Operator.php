@@ -28,8 +28,6 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
 /**
  * The Operator ParameterProvider is responsible to build the solr query parameters
  * that are needed for the operator q.op.
- *
- * @package ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder
  */
 class Operator extends AbstractDeactivatable
 {

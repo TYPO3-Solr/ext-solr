@@ -18,7 +18,6 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetPackage;
 
 /**
  * Class NumericRangePackage
- * @package ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\NumericRange
  */
 class NumericRangePackage extends AbstractFacetPackage {
 

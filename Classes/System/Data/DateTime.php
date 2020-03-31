@@ -16,7 +16,7 @@ namespace ApacheSolrForTypo3\Solr\System\Data;
  */
 
 /**
- * Class DateTimeProxy
+ * Class DateTime
  */
 class DateTime extends \DateTime
 {

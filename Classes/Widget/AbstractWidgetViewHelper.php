@@ -37,7 +37,6 @@ use TYPO3\CMS\Extbase\Service\ExtensionService;
  *
  * @author Frans Saris <frans@beech.it>
  * @author Timo Hund <timo.hund@dkd.de>
- * @package ApacheSolrForTypo3\Solr\Widget
  */
 abstract class AbstractWidgetViewHelper extends AbstractCoreWidgetViewHelper implements ViewHelperInterface
 {

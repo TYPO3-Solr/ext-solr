@@ -50,8 +50,6 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 /**
  * The concrete QueryBuilder contains all TYPO3 specific initialization logic of solr queries, for TYPO3.
- *
- * @package ApacheSolrForTypo3\Solr\Domain\Search\Query
  */
 class QueryBuilder extends AbstractQueryBuilder {
 

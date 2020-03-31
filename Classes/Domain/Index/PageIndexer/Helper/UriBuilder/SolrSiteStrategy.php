@@ -38,8 +38,6 @@ use ApacheSolrForTypo3\Solr\IndexQueue\Item;
  *
  * In TYPO3 9 "site's" have been introduced in TYPO3 and are managed with the "site management" for those sites
  * we build the indexing url in a different way since they have the pageId and languageId encoded in the speaking url by the core.
- *
- * @package ApacheSolrForTypo3\Solr\Domain\Index\PageIndexer\Helper\UriBuilder
  */
 class SolrSiteStrategy extends AbstractUriStrategy
 {

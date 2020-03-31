@@ -33,8 +33,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * This class contains related functions for the new site management that was introduced with TYPO3 9.
- *
- * @package ApacheSolrForTypo3\Solr\System\Util
  */
 class SiteUtility
 {

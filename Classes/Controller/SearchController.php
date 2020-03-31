@@ -28,7 +28,6 @@ use TYPO3\CMS\Fluid\View\TemplateView;
  *
  * @author Frans Saris <frans@beech.it>
  * @author Timo Hund <timo.hund@dkd.de>
- * @package ApacheSolrForTypo3\Solr\Controller
  */
 class SearchController extends AbstractBaseController
 {

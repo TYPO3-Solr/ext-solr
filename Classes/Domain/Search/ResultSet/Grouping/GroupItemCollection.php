@@ -29,7 +29,5 @@ use ApacheSolrForTypo3\Solr\System\Data\AbstractCollection;
 
 /**
  * The GroupItemCollection contains the GroupItem objects.
- *
- * @package ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Grouping
  */
 class GroupItemCollection extends AbstractCollection {}

@@ -33,7 +33,6 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * Class FrontendOverlayService
- * @package ApacheSolrForTypo3\Solr\System\Language
  */
 class FrontendOverlayService {
 

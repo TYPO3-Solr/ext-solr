@@ -27,7 +27,6 @@ namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\GarbageRemover;
 
 /**
  * Class StrategyFactory
- * @package ApacheSolrForTypo3\Solr\Domain\Index\Queue\GarbageRemover
  */
 class StrategyFactory {
 

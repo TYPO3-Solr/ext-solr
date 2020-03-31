@@ -32,8 +32,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * The DefaultResultParser is able to parse normal(ungroupd results)
- *
- * @package ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\Parser
  */
 class DefaultResultParser extends AbstractResultParser {
 

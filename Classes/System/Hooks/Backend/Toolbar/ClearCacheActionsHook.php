@@ -33,7 +33,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class ClearCacheActionsHook
- * @package ApacheSolrForTypo3\Solr\System\Hooks\Backend\Toolbar
  */
 class ClearCacheActionsHook implements ClearCacheActionsHookInterface
 {

@@ -30,8 +30,6 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 /**
  * The Spellchecking ParameterProvider is responsible to build the solr query parameters
  * that are needed for the spellchecking.
- *
- * @package ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder
  */
 class Spellchecking extends AbstractDeactivatable implements ParameterBuilder
 {

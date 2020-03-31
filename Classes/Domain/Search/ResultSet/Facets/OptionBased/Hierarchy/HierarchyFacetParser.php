@@ -19,7 +19,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\System\Solr\ParsingUtil;
 
 /**
- * Class OptionsFacetParser
+ * Class HierarchyFacetParser
  */
 class HierarchyFacetParser extends AbstractFacetParser
 {

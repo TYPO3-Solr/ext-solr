@@ -36,7 +36,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class SolrAdminService
- * @package ApacheSolrForTypo3\System\Solr\Service
  */
 class SolrAdminService extends AbstractSolrService
 {

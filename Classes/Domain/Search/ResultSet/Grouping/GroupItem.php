@@ -32,7 +32,6 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResultCollectio
  *
  * @author Frans Saris <frans@beech.it>
  * @author Timo Hund <timo.hund@dkd.de>
- * @package ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Grouping
  */
 class GroupItem
 {

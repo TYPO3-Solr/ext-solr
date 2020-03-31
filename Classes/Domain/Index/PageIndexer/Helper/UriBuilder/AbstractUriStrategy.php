@@ -36,8 +36,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Implementations of this class are able to build an indexing url for solr page indexing.
- *
- * @package ApacheSolrForTypo3\Solr\Domain\Index\PageIndexer\Helper\UriBuilder
  */
 abstract class AbstractUriStrategy
 {

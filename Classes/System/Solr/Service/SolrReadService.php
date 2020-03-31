@@ -33,7 +33,6 @@ use Solarium\Exception\HttpException;
 
 /**
  * Class SolrReadService
- * @package ApacheSolrForTypo3\System\Solr\Service
  */
 class SolrReadService extends AbstractSolrService
 {

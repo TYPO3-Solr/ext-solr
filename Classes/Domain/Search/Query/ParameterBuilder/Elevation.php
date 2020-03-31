@@ -30,8 +30,6 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 /**
  * The Elevation ParameterProvider is responsible to build the solr query parameters
  * that are needed for the elevation.
- *
- * @package ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder
  */
 class Elevation extends AbstractDeactivatable implements ParameterBuilder
 {

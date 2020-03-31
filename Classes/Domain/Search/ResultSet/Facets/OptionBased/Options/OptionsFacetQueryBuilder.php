@@ -25,8 +25,6 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
  * The Options facet query builder builds the facets as json structure
  *
  * @Todo: When we use json faceting for other facets some logic of this class can be moved to the base class.
- *
- * @package ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options
  */
 class OptionsFacetQueryBuilder extends DefaultFacetQueryBuilder implements FacetQueryBuilderInterface {
 

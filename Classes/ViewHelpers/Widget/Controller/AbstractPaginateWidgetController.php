@@ -18,11 +18,10 @@ use ApacheSolrForTypo3\Solr\Widget\AbstractWidgetController;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 
 /**
- * Class ResultPaginateController
+ * Class AbstractPaginateWidgetController
  *
  * @author Frans Saris <frans@beech.it>
  * @author Timo Hund <timo.hund@dkd.de>
- * @package ApacheSolrForTypo3\Solr\ViewHelpers\Widget\Controller
  */
 abstract class AbstractPaginateWidgetController extends AbstractWidgetController
 {

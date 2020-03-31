@@ -20,11 +20,10 @@ use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
 /**
- * Class PageBrowserRangeViewHelper
+ * Class GroupViewHelper
  *
  * @author Frans Saris <frans@beech.it>
  * @author Timo Hund <timo.hund@dkd.de> *
- * @package ApacheSolrForTypo3\Solr\ViewHelpers
  */
 class GroupViewHelper extends AbstractSolrFrontendViewHelper
 {

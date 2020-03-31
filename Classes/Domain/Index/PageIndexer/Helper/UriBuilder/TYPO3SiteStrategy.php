@@ -39,8 +39,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * This class is used to build the indexing url for a TYPO3 site that is managed with the TYPO3 site management.
  *
  * These sites have the pageId and language information encoded in the speaking url.
- *
- * @package ApacheSolrForTypo3\Solr\Domain\Index\PageIndexer\Helper\UriBuilder
  */
 class TYPO3SiteStrategy extends AbstractUriStrategy
 {

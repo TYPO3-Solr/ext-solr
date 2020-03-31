@@ -45,8 +45,6 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 /**
  * The AbstractQueryBuilder contains all logic to initialize solr queries independent from TYPO3.
- *
- * @package ApacheSolrForTypo3\Solr\Domain\Search\Query
  */
 abstract class AbstractQueryBuilder {
 

@@ -30,7 +30,6 @@ use TYPO3\CMS\Backend\Utility\BackendUtility;
 
 /**
  * Class PageStrategy
- * @package ApacheSolrForTypo3\Solr\Domain\Index\Queue\GarbageRemover
  */
 class PageStrategy extends AbstractStrategy {
 

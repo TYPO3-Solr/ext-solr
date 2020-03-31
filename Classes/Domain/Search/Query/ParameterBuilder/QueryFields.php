@@ -29,8 +29,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * The QueryFields class holds all information for the query which fields should be used to query (Solr qf parameter).
- *
- * @package ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder
  */
 class QueryFields implements ParameterBuilder
 {
