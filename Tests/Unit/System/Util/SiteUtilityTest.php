@@ -149,4 +149,141 @@ class SiteUtilityTest extends UnitTest
 
         $this->assertEquals('value-of_some_property', $property, 'Can not fall back to defaultValue.');
     }
+
+    /**
+     * Data provider for testing boolean value handling
+     *
+     * @return array
+     */
+    public function siteConfigurationValueHandlingDataProvider(): array
+    {
+        return [
+            [ // directly set boolean value (true) for solr_enabled_read
+                'fakeConfiguration' => [
+                    'solr_enabled_read' => true
+                ],
+                'property' => 'enabled',
+                'scope' => 'read',
+                'expectedConfigurationValue' => true
+            ],
+            [ // directly set boolean value (false) for solr_enabled_read
+                'fakeConfiguration' => [
+                    'solr_enabled_read' => false
+                ],
+                'property' => 'enabled',
+                'scope' => 'read',
+                'expectedConfigurationValue' => false
+            ],
+            [ // boolean value (true) set via environment variable for solr_enabled_read
+                'fakeConfiguration' => [
+                    'solr_enabled_read' => 'true'
+                ],
+                'property' => 'enabled',
+                'scope' => 'read',
+                'expectedConfigurationValue' => true
+            ],
+            [ // boolean value (false) set via environment variable for solr_enabled_read
+                'fakeConfiguration' => [
+                    'solr_enabled_read' => 'false'
+                ],
+                'property' => 'enabled',
+                'scope' => 'read',
+                'expectedConfigurationValue' => false
+            ],
+            [ // string '0' for solr_enabled_read
+                'fakeConfiguration' => [
+                    'solr_enabled_read' => '0'
+                ],
+                'property' => 'enabled',
+                'scope' => 'read',
+                'expectedConfigurationValue' => '0'
+            ],
+            [ // int 0 value for solr_enabled_read
+                'fakeConfiguration' => [
+                    'solr_enabled_read' => 0
+                ],
+                'property' => 'enabled',
+                'scope' => 'read',
+                'expectedConfigurationValue' => 0
+            ],
+            [ // int 0 value for solr_enabled_read
+                'fakeConfiguration' => [
+                    'solr_enabled_read' => 0
+                ],
+                'property' => 'enabled',
+                'scope' => 'read',
+                'expectedConfigurationValue' => 0
+            ],
+            [ // int 8080 value for solr_port_read
+                'fakeConfiguration' => [
+                    'solr_port_read' => 8080
+                ],
+                'property' => 'port',
+                'scope' => 'read',
+                'expectedConfigurationValue' => 8080
+            ],
+            [ // core_en value for solr_core_read
+                'fakeConfiguration' => [
+                    'solr_core_read' => 'core_en',
+                    'solr_core_write' => 'core_en_write'
+                ],
+                'property' => 'core',
+                'scope' => 'read',
+                'expectedConfigurationValue' => 'core_en'
+            ],
+            [ // core_en_write value for solr_core_write, use right scope
+                'fakeConfiguration' => [
+                    'solr_use_write_connection' => 1,
+                    'solr_core_read' => 'core_en',
+                    'solr_core_write' => 'core_en_write'
+                ],
+                'property' => 'core',
+                'scope' => 'write',
+                'expectedConfigurationValue' => 'core_en_write'
+            ],
+            [ // core_en value for solr_core_read, tests fallback to read
+                'fakeConfiguration' => [
+                    'solr_use_write_connection' => 1,
+                    'solr_core_read' => 'core_en',
+                ],
+                'property' => 'core',
+                'scope' => 'write',
+                'expectedConfigurationValue' => 'core_en'
+            ],
+            [ // disabled write connection via int 0 for solr_enabled_write, use right scope
+                'fakeConfiguration' => [
+                    'solr_use_write_connection' => 1,
+                    'solr_enabled_read' => '1',
+                    'solr_enabled_write' => '0'
+                ],
+                'property' => 'enabled',
+                'scope' => 'write',
+                'expectedConfigurationValue' => '0'
+            ]
+        ];
+    }
+
+    /**
+     * Tests if boolean values in site configuration can be handled
+     *
+     * @param array $fakeConfiguration
+     * @param string $property
+     * @param string $scope
+     * @param mixed $expectedConfigurationValue
+     *
+     * @test
+     * @dataProvider siteConfigurationValueHandlingDataProvider
+     */
+    public function canHandleSiteConfigurationValues (
+        array $fakeConfiguration,
+        string $property,
+        string $scope,
+        $expectedConfigurationValue
+    ) {
+        $siteMock = $this->getDumbMock(Site::class);
+        $siteMock->expects($this->any())->method('getConfiguration')->willReturn($fakeConfiguration);
+        $property = SiteUtility::getConnectionProperty($siteMock, $property, 0, $scope);
+
+        $this->assertEquals($expectedConfigurationValue, $property, 'Value from site configuration not read/handled correctly.');
+    }
 }
