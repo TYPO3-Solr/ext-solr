@@ -62,7 +62,7 @@ class Typo3PageContentExtractor extends HtmlContentExtractor
     {
         preg_match_all('/<!--\s*?TYPO3SEARCH_begin\s*?-->.*?<!--\s*?TYPO3SEARCH_end\s*?-->/mis',
             $html, $indexableContents);
-        $indexableContent = implode($indexableContents[0], '');
+        $indexableContent = implode('', $indexableContents[0]);
 
         $indexableContent = $this->excludeContentByClass($indexableContent);
         if (empty($indexableContent) && $this->getConfiguration()->getLoggingIndexingMissingTypo3SearchMarkers()) {
