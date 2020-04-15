@@ -27,7 +27,9 @@ class Tsfe implements SingletonInterface
     {
         $context = GeneralUtility::makeInstance(Context::class);
         if ($context->hasAspect('language')) {
-            if ($context->getPropertyFromAspect('language', 'id') === $language) {
+            $hasRightLanguageId = $context->getPropertyFromAspect('language', 'id') === $language;
+            $hasRightContentLanguageId = $context->getPropertyFromAspect('language', 'contentId')  === $language;
+            if ($hasRightLanguageId && $hasRightContentLanguageId) {
                 return;
             }
         }
