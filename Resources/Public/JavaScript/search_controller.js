@@ -27,6 +27,7 @@ function SearchController() {
                 _this.scrollToTopOfElement(solrParent, 50);
                 jQuery("body").trigger("tx_solr_updated");
                 loader.fadeOut().remove();
+                history.replaceState({}, null, uri.removeQuery("type").href());
             }
         );
         return false;
