@@ -307,6 +307,7 @@ class UtilTest extends IntegrationTest
             $context->hasAspect('language')->shouldBeCalled()->willReturn(true);
             $context->getPropertyFromAspect('language', 'id')->shouldBeCalled()->willReturn(0);
             $context->getPropertyFromAspect('language', 'id', 0)->shouldBeCalled()->willReturn(0);
+            $context->getPropertyFromAspect('language', 'contentId')->shouldBeCalled()->willReturn(0);
             $context->getAspect('frontend.user')->shouldBeCalled()->willReturn($frontendUserAspect->reveal());
             $context->getAspect('workspace')->shouldBeCalled()->willReturn($workspaceAspect->reveal());
             $context->getPropertyFromAspect('visibility', 'includeHiddenContent', false)->shouldBeCalled();
