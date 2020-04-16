@@ -109,29 +109,6 @@ abstract class Site implements SiteInterface
     }
 
     /**
-     * Gets the site's root page language IDs (uids).
-     *
-     * @return array
-     * @deprecated use getAvailableLanguageIds()
-     * @todo check if this method is still needed (only used in tests currently)
-     */
-    public function getRootPageLanguageIds() : array
-    {
-        trigger_error('solr:deprecation: Method getRootPageLanguageIds is deprecated since EXT:solr 10 and will be removed in v11, use getAvailableLanguageIds instead', E_USER_DEPRECATED);
-
-        $rootPageLanguageIds = [];
-        $rootPageId = $this->getRootPageId();
-
-        $rootPageOverlays = $this->pagesRepository->findTranslationOverlaysByPageId($rootPageId);
-        if (count($rootPageOverlays)) {
-            foreach ($rootPageOverlays as $rootPageOverlay) {
-                $rootPageLanguageIds[] = $rootPageOverlay['sys_language_uid'];
-            }
-        }
-        return $rootPageLanguageIds;
-    }
-
-    /**
      * Gets the site's label. The label is build from the the site title and root
      * page ID (uid).
      *

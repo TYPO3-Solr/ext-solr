@@ -27,9 +27,6 @@ namespace ApacheSolrForTypo3\Solr\Report;
 use ApacheSolrForTypo3\Solr\FrontendEnvironment;
 use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
-use ApacheSolrForTypo3\Solr\System\Records\SystemDomain\SystemDomainRepository;
-use ApacheSolrForTypo3\Solr\System\Service\SiteService;
-use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Error\Http\ServiceUnavailableException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Reports\Status;
@@ -43,11 +40,6 @@ use TYPO3\CMS\Reports\Status;
 class SolrConfigurationStatus extends AbstractSolrStatus
 {
     /**
-     * @var SystemDomainRepository
-     */
-    protected $systemDomainRepository;
-
-    /**
      * @var ExtensionConfiguration
      */
     protected $extensionConfiguration;
@@ -59,16 +51,15 @@ class SolrConfigurationStatus extends AbstractSolrStatus
 
     /**
      * SolrConfigurationStatus constructor.
-     * @param SystemDomainRepository|null $systemDomainRepository
      * @param ExtensionConfiguration|null $extensionConfiguration
+     * @param FrontendEnvironment|null $frontendEnvironment
+
      */
     public function __construct(
-        SystemDomainRepository $systemDomainRepository = null,
         ExtensionConfiguration $extensionConfiguration = null,
         FrontendEnvironment $frontendEnvironment = null
     )
     {
-        $this->systemDomainRepository = $systemDomainRepository ?? GeneralUtility::makeInstance(SystemDomainRepository::class);
         $this->extensionConfiguration = $extensionConfiguration ?? GeneralUtility::makeInstance(ExtensionConfiguration::class);
         $this->fronendEnvironment = $frontendEnvironment ?? GeneralUtility::makeInstance(FrontendEnvironment::class);
     }
@@ -88,11 +79,6 @@ class SolrConfigurationStatus extends AbstractSolrStatus
 
             // intended early return, no sense in going on if there are no root pages
             return $reports;
-        }
-
-        $domainRecordAvailableStatus = $this->getDomainRecordAvailableStatus();
-        if (!is_null($domainRecordAvailableStatus)) {
-            $reports[] = $domainRecordAvailableStatus;
         }
 
         $configIndexEnableStatus = $this->getConfigIndexEnableStatus();
@@ -127,33 +113,6 @@ class SolrConfigurationStatus extends AbstractSolrStatus
     }
 
     /**
-     * Checks whether a domain record (sys_domain) has been configured for each site root.
-     *
-     * @return NULL|Status An error status is returned for each site root page without domain record.
-     */
-    protected function getDomainRecordAvailableStatus()
-    {
-        // @deprecated we can drop that check when the legacy site mode is dropped
-        if (!$this->extensionConfiguration->getIsAllowLegacySiteModeEnabled()) {
-            // when no legacy mode is enabled we do not need to check for domain record
-            return null;
-        }
-        $rootPagesWithoutDomain = $this->getRootPagesWithoutDomain();
-        if (empty($rootPagesWithoutDomain)) {
-            return null;
-        }
-
-        $report = $this->getRenderedReport('SolrConfigurationStatusDomainRecord.html', ['pages' => $rootPagesWithoutDomain]);
-        return GeneralUtility::makeInstance(
-            Status::class,
-            /** @scrutinizer ignore-type */ 'Domain Records',
-            /** @scrutinizer ignore-type */ 'Domain records missing',
-            /** @scrutinizer ignore-type */ $report,
-            /** @scrutinizer ignore-type */ Status::ERROR
-        );
-    }
-
-    /**
      * Checks whether config.index_enable is set to 1, otherwise indexing will
      * not work.
      *
@@ -174,44 +133,6 @@ class SolrConfigurationStatus extends AbstractSolrStatus
             /** @scrutinizer ignore-type */ $report,
             /** @scrutinizer ignore-type */ Status::WARNING
         );
-    }
-
-    /**
-     * Returns an array of rootPages without an existing domain record.
-     *
-     * @return array
-     */
-    protected function getRootPagesWithoutDomain()
-    {
-        $rootPagesWithoutDomain = [];
-        $rootPages = $this->getRootPages();
-
-        $rootPageIds = [];
-        foreach ($rootPages as $rootPage) {
-            $rootPageIds[] = $rootPage['uid'];
-        }
-
-        $domainRecords = $this->systemDomainRepository->findDomainRecordsByRootPagesIds($rootPageIds);
-        foreach ($rootPageIds as $rootPageId) {
-            $hasDomainRecord = true;
-            $hasDomainInTypoScript = true;
-
-            if (!array_key_exists($rootPageId, $domainRecords)) {
-                $hasDomainRecord = false;
-            }
-
-            /** @var $siteService SiteService */
-            $siteService = GeneralUtility::makeInstance(SiteService::class);
-            $domain = $siteService->getFirstDomainForRootPage($rootPageId);
-            if ($domain === '') {
-                $hasDomainInTypoScript = false;
-            }
-
-            if (!$hasDomainRecord && !$hasDomainInTypoScript) {
-                $rootPagesWithoutDomain[$rootPageId] = $rootPages[$rootPageId];
-            }
-        }
-        return $rootPagesWithoutDomain;
     }
 
     /**

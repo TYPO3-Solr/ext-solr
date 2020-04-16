@@ -85,17 +85,6 @@ class SiteHandlingStatus extends AbstractSolrStatus
     {
         $reports = [];
 
-        if ($this->extensionConfiguration->getIsAllowLegacySiteModeEnabled()) {
-            $reports[] = GeneralUtility::makeInstance(
-                Status::class,
-                /** @scrutinizer ignore-type */ self::TITLE_SITE_HANDLING_CONFIGURATION,
-                /** @scrutinizer ignore-type */ 'The lagacy site mode is enabled. This setting is global and can not be applied per site.',
-                /** @scrutinizer ignore-type */ 'The legacy site mode is not recommended and will be removed in EXT:Solr 11. Please switch to site handling as soon as possible.',
-                /** @scrutinizer ignore-type */ Status::WARNING
-            );
-            return $reports;
-        }
-
         /* @var Site $site */
         foreach ($this->siteRepository->getAvailableSites() as $site) {
             if (!($site instanceof Typo3ManagedSite)) {

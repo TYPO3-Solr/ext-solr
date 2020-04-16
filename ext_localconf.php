@@ -178,12 +178,6 @@ $extensionConfiguration = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
     \ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration::class
 );
 
-if ($extensionConfiguration->getIsAllowLegacySiteModeEnabled()) {
-    // @todo @deprecated this can be removed when legacyMode is dropped
-    // @extensionScannerIgnoreLine
-    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['extbase']['commandControllers'][] = \ApacheSolrForTypo3\Solr\Command\SolrCommandController::class;
-}
-
 # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
 if (!isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['searchResultClassName '])) {
