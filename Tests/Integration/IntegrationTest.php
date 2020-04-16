@@ -467,6 +467,12 @@ abstract class IntegrationTest extends FunctionalTestCase
         $this->writeDefaultSolrTestSiteConfigurationForHostAndPort($solrConnectionInfo['scheme'], $solrConnectionInfo['host'], $solrConnectionInfo['port']);
     }
 
+
+    /**
+     * @var string
+     */
+    protected static $lastSiteCreated = '';
+
     /**
      * @param string $scheme
      * @param string $host
@@ -475,6 +481,11 @@ abstract class IntegrationTest extends FunctionalTestCase
      */
     protected function writeDefaultSolrTestSiteConfigurationForHostAndPort($scheme = 'http', $host = 'localhost', $port = 8999)
     {
+        $siteCreatedHash = md5($scheme . $host . $port);
+        if (self::$lastSiteCreated === $siteCreatedHash) {
+            return;
+        }
+
         $defaultLanguage = $this->buildDefaultLanguageConfiguration('EN', '/en/');
         $defaultLanguage['solr_core_read'] = 'core_en';
 
@@ -519,6 +530,7 @@ abstract class IntegrationTest extends FunctionalTestCase
 
         clearstatcache();
         usleep(500);
+        self::$lastSiteCreated = $siteCreatedHash;
     }
 
     /**

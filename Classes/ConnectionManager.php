@@ -115,31 +115,6 @@ class ConnectionManager implements SingletonInterface
     }
 
     /**
-     * Gets a Solr configuration for a page ID.
-     *
-     * @param int $pageId A page ID.
-     * @param int $language The language ID to get the connection for as the path may differ. Optional, defaults to 0.
-     * @param string $mount Comma list of MountPoint parameters
-     * @deprecated will be removed in v11, use Site object/SiteRepository directly
-     * @return array A solr configuration.
-     * @throws NoSolrConnectionFoundException
-     */
-    public function getConfigurationByPageId(int $pageId, int $language = 0, string $mount = '')
-    {
-        trigger_error('solr:deprecation: Method getConfigurationByPageId is deprecated since EXT:solr 10 and will be removed in v11, use Site object/SiteRepository directly.', E_USER_DEPRECATED);
-
-        try {
-            $site = $this->siteRepository->getSiteByPageId($pageId, $mount);
-            $this->throwExceptionOnInvalidSite($site, 'No site for pageId ' . $pageId);
-            return $site->getSolrConnectionConfiguration($language);
-        } catch(InvalidArgumentException $e) {
-            /* @var NoSolrConnectionFoundException $noSolrConnectionException */
-            $noSolrConnectionException = $this->buildNoConnectionExceptionForPageAndLanguage($pageId, $language);
-            throw $noSolrConnectionException;
-        }
-    }
-
-    /**
      * Gets a Solr connection for a page ID.
      *
      * @param int $pageId A page ID.
@@ -157,31 +132,6 @@ class ConnectionManager implements SingletonInterface
             $solrConnection = $this->getConnectionFromConfiguration($config);
             return $solrConnection;
         } catch(InvalidArgumentException $e) {
-            $noSolrConnectionException = $this->buildNoConnectionExceptionForPageAndLanguage($pageId, $language);
-            throw $noSolrConnectionException;
-        }
-    }
-
-    /**
-     * Gets a Solr configuration for a root page ID.
-     *
-     * @param int $pageId A root page ID.
-     * @param int $language The language ID to get the configuration for as the path may differ. Optional, defaults to 0.
-     * @return array A solr configuration.
-     * @throws NoSolrConnectionFoundException
-     * @deprecated will be removed in v11, use Site object/SiteRepository directly
-     */
-    public function getConfigurationByRootPageId($pageId, $language = 0)
-    {
-        trigger_error('solr:deprecation: Method getConfigurationByRootPageId is deprecated since EXT:solr 10 and will be removed in v11, use Site object/SiteRepository directly.', E_USER_DEPRECATED);
-
-        try {
-            $site = $this->siteRepository->getSiteByRootPageId($pageId);
-            $this->throwExceptionOnInvalidSite($site, 'No site for pageId ' . $pageId);
-
-            return $site->getSolrConnectionConfiguration($language);
-        } catch(InvalidArgumentException $e) {
-            /* @var NoSolrConnectionFoundException $noSolrConnectionException */
             $noSolrConnectionException = $this->buildNoConnectionExceptionForPageAndLanguage($pageId, $language);
             throw $noSolrConnectionException;
         }
@@ -211,42 +161,6 @@ class ConnectionManager implements SingletonInterface
     }
 
     /**
-     * Gets all connection configurations found.
-     *
-     * @return array An array of connection configurations.
-     * @throws NoSolrConnectionFoundException
-     * @deprecated will be removed in v11, use SiteRepository
-     */
-    public function getAllConfigurations()
-    {
-        trigger_error('solr:deprecation: Method getAllConfigurations is deprecated since EXT:solr 10 and will be removed in v11, use Site object/SiteRepository directly.', E_USER_DEPRECATED);
-
-        $solrConfigurations = [];
-        foreach ($this->siteRepository->getAvailableSites() as $site) {
-            foreach ($site->getAllSolrConnectionConfigurations() as $solrConfiguration) {
-                $solrConfigurations[] = $solrConfiguration;
-            }
-        }
-
-        return $solrConfigurations;
-    }
-
-    /**
-     * Stores the connections in the registry.
-     *
-     * @param array $solrConfigurations
-     * @deprecated will be removed in v11, use SiteRepository
-     */
-    protected function setAllConfigurations(array $solrConfigurations)
-    {
-        trigger_error('solr:deprecation: Method setAllConfigurations is deprecated since EXT:solr 10 and will be removed in v11, use Site object/SiteRepository directly.', E_USER_DEPRECATED);
-
-        /** @var $registry Registry */
-        $registry = GeneralUtility::makeInstance(Registry::class);
-        $registry->set('tx_solr', 'servers', $solrConfigurations);
-    }
-
-    /**
      * Gets all connections found.
      *
      * @return SolrConnection[] An array of initialized ApacheSolrForTypo3\Solr\System\Solr\SolrConnection connections
@@ -265,21 +179,6 @@ class ConnectionManager implements SingletonInterface
     }
 
     /**
-     * Gets all connection configurations for a given site.
-     *
-     * @param Site $site A TYPO3 site
-     * @return array An array of Solr connection configurations for a site
-     * @throws NoSolrConnectionFoundException
-     * @deprecated will be removed in v11, use $site->getAllSolrConnectionConfigurations()
-     */
-    public function getConfigurationsBySite(Site $site)
-    {
-        trigger_error('solr:deprecation: Method getConfigurationsBySite is deprecated since EXT:solr 10 and will be removed in v11, use $site->getAllSolrConnectionConfigurations()', E_USER_DEPRECATED);
-
-        return $site->getAllSolrConnectionConfigurations();
-    }
-
-    /**
      * Gets all connections configured for a given site.
      *
      * @param Site $site A TYPO3 site
@@ -295,87 +194,6 @@ class ConnectionManager implements SingletonInterface
         }
 
         return $connections;
-    }
-
-    // updates
-
-    /**
-     * Updates the connections in the registry.
-     *
-     * @deprecated will be removed in v11, use SiteRepository
-     */
-    public function updateConnections()
-    {
-        trigger_error('solr:deprecation: Method updateConnections is deprecated since EXT:solr 10 and will be removed in v11, use sitehandling instead', E_USER_DEPRECATED);
-
-        $solrConnections = $this->getConfiguredSolrConnections();
-        $solrConnections = $this->filterDuplicateConnections($solrConnections);
-
-        if (!empty($solrConnections)) {
-            $this->setAllConfigurations($solrConnections);
-        }
-    }
-
-    /**
-     * Updates the Solr connections for a specific root page ID / site.
-     *
-     * @param int $rootPageId A site root page id
-     * @throws NoSolrConnectionFoundException
-     * @deprecated Use TYPO3 site config to configure site/connection info
-     */
-    public function updateConnectionByRootPageId($rootPageId)
-    {
-        trigger_error('solr:deprecation: Method updateConnectionByRootPageId is deprecated since EXT:solr 10 and will be removed in v11, use sitehandling instead', E_USER_DEPRECATED);
-
-        $systemLanguages = $this->systemLanguageRepository->findSystemLanguages();
-        /* @var SiteRepository $siteRepository */
-        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
-        $site = $siteRepository->getSiteByRootPageId($rootPageId);
-        $rootPage = $site->getRootPage();
-
-        $updatedSolrConnections = [];
-        foreach ($systemLanguages as $languageId) {
-            $connection = $this->getConfiguredSolrConnectionByRootPage($rootPage, $languageId);
-
-            if (!empty($connection)) {
-                $updatedSolrConnections[$connection['connectionKey']] = $connection;
-            }
-        }
-
-        $solrConnections = $this->getAllConfigurations();
-        $solrConnections = array_merge($solrConnections, $updatedSolrConnections);
-        $solrConnections = $this->filterDuplicateConnections($solrConnections);
-        $this->setAllConfigurations($solrConnections);
-    }
-
-    /**
-     * Finds the configured Solr connections. Also respects multi-site
-     * environments.
-     *
-     * @return array An array with connections, each connection with keys rootPageTitle, rootPageUid, solrHost, solrPort, solrPath
-     * @deprecated will be removed in v11, use SiteRepository
-     */
-    protected function getConfiguredSolrConnections()
-    {
-        trigger_error('solr:deprecation: Method getConfiguredSolrConnections is deprecated since EXT:solr 10 and will be removed in v11, use sitehandling instead', E_USER_DEPRECATED);
-
-        $configuredSolrConnections = [];
-        // find website roots and languages for this installation
-        $rootPages = $this->pagesRepositoryAtExtSolr->findAllRootPages();
-        $languages = $this->systemLanguageRepository->findSystemLanguages();
-
-        // find solr configurations and add them as function menu entries
-        foreach ($rootPages as $rootPage) {
-            foreach ($languages as $languageId) {
-                $connection = $this->getConfiguredSolrConnectionByRootPage($rootPage, $languageId);
-
-                if (!empty($connection)) {
-                    $configuredSolrConnections[$connection['connectionKey']] = $connection;
-                }
-            }
-        }
-
-        return $configuredSolrConnections;
     }
 
     /**
@@ -397,38 +215,6 @@ class ConnectionManager implements SingletonInterface
             . $connection['write']['host'] . ':'
             . $connection['write']['port']
             . $connection['write']['path'];
-    }
-
-    /**
-     * Filters duplicate connections. When detecting the configured connections
-     * this is done with a little brute force by simply combining all root pages
-     * with all languages, this method filters out the duplicates.
-     *
-     * @param array $connections An array of unfiltered connections, containing duplicates
-     * @return array An array with connections, no duplicates.
-     * @deprecated will be removed in v11, use SiteRepository
-     */
-    protected function filterDuplicateConnections(array $connections)
-    {
-        trigger_error('solr:deprecation: Method filterDuplicateConnections is deprecated since EXT:solr 10 and will be removed in v11, use sitehandling instead', E_USER_DEPRECATED);
-
-        $hashedConnections = [];
-        $filteredConnections = [];
-
-        // array_unique() doesn't work on multi dimensional arrays, so we need to flatten it first
-        foreach ($connections as $key => $connection) {
-            unset($connection['language']);
-            $connectionHash = md5(implode('|', $connection));
-            $hashedConnections[$key] = $connectionHash;
-        }
-
-        $hashedConnections = array_unique($hashedConnections);
-
-        foreach ($hashedConnections as $key => $hash) {
-            $filteredConnections[$key] = $connections[$key];
-        }
-
-        return $filteredConnections;
     }
 
     /**

@@ -32,6 +32,8 @@ matrix:
   fast_finish: true
   allow_failures:
     - env: TYPO3_VERSION="dev-master"
+    - php: 7.2
+      env: TYPO3_VERSION="^10.0"
 
 before_install:
   - mysql -e 'CREATE DATABASE IF NOT EXISTS typo3_ci;'

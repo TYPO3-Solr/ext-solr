@@ -90,6 +90,7 @@ class Util
      */
     public static function getDocumentId($table, $rootPageId, $uid, $additionalIdParameters = '')
     {
+            /** @var SiteRepository $siteRepository */
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $site = $siteRepository->getSiteByPageId($rootPageId);
         $siteHash = $site->getSiteHash();
@@ -119,11 +120,13 @@ class Util
      *
      * @param int $pageId Id of the (root) page to get the Solr configuration from.
      * @param int $language System language uid, optional, defaults to 0
+     * @deprecated
+     *
      * @return TypoScriptConfiguration The Solr configuration for the requested tree.
      */
     public static function getSolrConfigurationFromPageId($pageId, $initializeTsfe = false, $language = 0)
     {
-        trigger_error('Method getSolrConfigurationFromPageId is deprecated since EXT:solr 11 and will be removed in v12, use FrontendEnvironment directly.', E_USER_DEPRECATED);
+        trigger_error('solr:deprecation: Method getSolrConfigurationFromPageId is deprecated since EXT:solr 11 and will be removed in v12, use FrontendEnvironment directly.', E_USER_DEPRECATED);
         if ($initializeTsfe === true) {
             GeneralUtility::makeInstance(FrontendEnvironment::class)->initializeTsfe($pageId, $language);
         }
@@ -138,6 +141,7 @@ class Util
      * @param int $pageId Id of the (root) page to get the Solr configuration from.
      * @param string $path The TypoScript configuration path to retrieve.
      * @param bool $initializeTsfe
+     * @deprecated
      * @param int $language System language uid, optional, defaults to 0
      * @param bool $useTwoLevelCache Flag to enable the two level cache for the typoscript configuration array
      * @return TypoScriptConfiguration The Solr configuration for the requested tree.
@@ -151,23 +155,22 @@ class Util
         return GeneralUtility::makeInstance(FrontendEnvironment::class)->getConfigurationFromPageId($pageId, $path, $language);
     }
 
-
     /**
      * Initializes the TSFE for a given page ID and language.
      *
      * @param $pageId
      * @param int $language
      * @param bool $useCache
+     * @deprecated
      * @throws SiteNotFoundException
      * @throws \TYPO3\CMS\Core\Error\Http\ServiceUnavailableException
      * @throws \TYPO3\CMS\Core\Http\ImmediateResponseException
      */
     public static function initializeTsfe($pageId, $language = 0, $useCache = true)
     {
-        trigger_error('Method initializeTsfe is deprecated since EXT:solr 11 and will be removed in v12, use FrontendEnvironment directly.', E_USER_DEPRECATED);
+        trigger_error('solr:deprecation: Method initializeTsfe is deprecated since EXT:solr 11 and will be removed in v12, use FrontendEnvironment directly.', E_USER_DEPRECATED);
         GeneralUtility::makeInstance(FrontendEnvironment::class)->initializeTsfe($pageId, $language);
     }
-
 
     /**
      * Check if record ($table, $uid) is a workspace record
@@ -196,12 +199,13 @@ class Util
      *
      * @param array $pageRecord The pages database row
      * @param string $configurationName The name of the configuration to use.
+     * @deprecated
      *
      * @return bool TRUE if the page type is allowed, otherwise FALSE
      */
     public static function isAllowedPageType(array $pageRecord, $configurationName = 'pages')
     {
-        trigger_error('Method isAllowedPageType is deprecated since EXT:solr 11 and will be removed in v12, use FrontendEnvironment directly.', E_USER_DEPRECATED);
+        trigger_error('solr:deprecation: Method isAllowedPageType is deprecated since EXT:solr 11 and will be removed in v12, use FrontendEnvironment directly.', E_USER_DEPRECATED);
         return GeneralUtility::makeInstance(FrontendEnvironment::class)->isAllowedPageType($pageRecord, $configurationName);
     }
 
@@ -210,12 +214,12 @@ class Util
      *
      * @param int $pageId Page ID
      * @param string $configurationName The name of the configuration to use.
-     *
+     * @deprecated
      * @return array Allowed page types to compare to a doktype of a page record
      */
     public static function getAllowedPageTypes($pageId, $configurationName = 'pages')
     {
-        trigger_error('Method getAllowedPageTypes is deprecated since EXT:solr 11 and will be removed in v12, no call required.', E_USER_DEPRECATED);
+        trigger_error('solr:deprecation: Method getAllowedPageTypes is deprecated since EXT:solr 11 and will be removed in v12, no call required.', E_USER_DEPRECATED);
         $rootPath = '';
         $configuration = self::getConfigurationFromPageId($pageId, $rootPath);
         return $configuration->getIndexQueueAllowedPageTypesArrayByConfigurationName($configurationName);
@@ -226,11 +230,12 @@ class Util
      * is set to "auto".
      *
      * @param TypoScriptFrontendController $TSFE
+     * @deprecated
      * @return string
      */
     public static function getAbsRefPrefixFromTSFE(TypoScriptFrontendController $TSFE)
     {
-        trigger_error('Method getAbsRefPrefixFromTSFE is deprecated since EXT:solr 11 and will be removed in v12, no call required.', E_USER_DEPRECATED);
+        trigger_error('solr:deprecation: Method getAbsRefPrefixFromTSFE is deprecated since EXT:solr 11 and will be removed in v12, no call required.', E_USER_DEPRECATED);
         $absRefPrefix = '';
         if (empty($TSFE->config['config']['absRefPrefix'])) {
             return $absRefPrefix;
@@ -243,7 +248,6 @@ class Util
 
         return $absRefPrefix;
     }
-
 
     /**
      * This function can be used to check if one of the strings in needles is
