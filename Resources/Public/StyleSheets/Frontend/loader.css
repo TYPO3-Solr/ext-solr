@@ -1,7 +1,7 @@
 
 .tx-solr-loader {
     position: fixed;
-    left: 50%;
+    left: calc(50% - 50px);
     top: 35%;
     width: 100px;
     height: 100px;
