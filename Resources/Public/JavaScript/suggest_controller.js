@@ -3,7 +3,13 @@ function SuggestController() {
     this.init = function () {
 
         jQuery('form[data-suggest]').each(function () {
-            var $form = $(this), $searchBox = $form.find('.tx-solr-suggest');
+            var $form = $(this), $searchBox = $form.find('.tx-solr-suggest'), $formAutoComplete;
+
+            if ($form.find('.tx-solr-autocomplete').length > 0){
+                $formAutoComplete = $form.find('.tx-solr-autocomplete');
+            } else {
+                $formAutoComplete = $('body');
+            }
 
             $form.find('.tx-solr-suggest-focus').focus();
 
@@ -29,6 +35,7 @@ function SuggestController() {
                 paramName: 'tx_solr[queryString]',
                 groupBy: 'category',
                 maxHeight: 1000,
+                appendTo: $formAutoComplete,
                 autoSelectFirst: false,
                 triggerSelectOnValidInput: false,
                 width: $searchBox.outerWidth() * 0.66,
