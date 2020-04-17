@@ -25,7 +25,9 @@ namespace ApacheSolrForTypo3\Solr\Test\ViewHelpers\Uri\Facet;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Uri\SearchUriBuilder;
+use ApacheSolrForTypo3\Solr\Util;
 use ApacheSolrForTypo3\Solr\ViewHelpers\Uri\Facet\RemoveFacetViewHelper;
+use TYPO3Fluid\Fluid\Component\Argument\ArgumentCollection;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 
 /**
@@ -44,15 +46,21 @@ class RemoveFacetViewHelperTest extends AbstractFacetItemViewHelperTest
 
         $renderContextMock = $this->getDumbMock(RenderingContextInterface::class);
         $viewHelper = new RemoveFacetViewHelper();
-        $viewHelper->setRenderingContext($renderContextMock);
+
 
         $searchUriBuilderMock = $this->getDumbMock(SearchUriBuilder::class);
 
             // we expected that the getRemoveFacetValueUri will be called on the searchUriBuilder in the end.
         $searchUriBuilderMock->expects($this->once())->method('getRemoveFacetUri')->with($facet->getResultSet()->getUsedSearchRequest(), 'Color');
         $viewHelper->injectSearchUriBuilder($searchUriBuilderMock);
-        // @extensionScannerIgnoreLine
-        $viewHelper->setArguments(['facet' => $facet, 'facetItem' => $facet->getOptions()->getByPosition(0)]);
+        if (Util::getIsTYPO3VersionBelow10()) {
+            // @extensionScannerIgnoreLine
+            $viewHelper->setArguments(['facet' => $facet, 'facetItem' => $facet->getOptions()->getByPosition(0)]);
+            $viewHelper->setRenderingContext($renderContextMock);
+        } else {
+            $viewHelper->setArguments(new ArgumentCollection(['facet' => $facet, 'facetItem' => $facet->getOptions()->getByPosition(0)]));
+            $viewHelper->getArguments()->setRenderingContext($renderContextMock);
+        }
         $viewHelper->render();
     }
 }

@@ -30,7 +30,9 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResult;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
+use ApacheSolrForTypo3\Solr\Util;
 use ApacheSolrForTypo3\Solr\ViewHelpers\Document\HighlightResultViewHelper;
+use TYPO3Fluid\Fluid\Component\Argument\ArgumentCollection;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 
 /**
@@ -108,12 +110,24 @@ class HighlightingResultViewHelperTest extends UnitTest
         $documentMock->expects($this->any())->method('getId')->will($this->returnValue("foo"));
 
         $viewHelper = new HighlightResultViewHelper();
-        $viewHelper->setRenderingContext($renderingContextMock);
-        $viewHelper->setArguments([
-            'resultSet' => $resultSetMock,
-            'document' => $documentMock,
-            'fieldName' => 'content']
-        );
+
+        if (Util::getIsTYPO3VersionBelow10()) {
+            $viewHelper->setRenderingContext($renderingContextMock);
+            $viewHelper->setArguments([
+                    'resultSet' => $resultSetMock,
+                    'document' => $documentMock,
+                    'fieldName' => 'content']
+            );
+        } else {
+            $argumentsCollection = new ArgumentCollection([
+                'resultSet' => $resultSetMock,
+                'document' => $documentMock,
+                'fieldName' => 'content']);
+            $argumentsCollection->setRenderingContext($renderingContextMock);
+            $viewHelper->setArguments($argumentsCollection);
+        }
+
+
 
         $output = $viewHelper->render();
         $this->assertSame($expectedOutput, $output);

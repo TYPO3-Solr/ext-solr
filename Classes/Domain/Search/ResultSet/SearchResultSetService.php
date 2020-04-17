@@ -87,7 +87,7 @@ class SearchResultSetService
     protected $typoScriptConfiguration;
 
     /**
-     * @var SolrLogManager;
+     * @var SolrLogManager
      */
     protected $logger = null;
 

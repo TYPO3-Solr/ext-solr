@@ -25,6 +25,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\ViewHelpers\Backend;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Util;
 use ApacheSolrForTypo3\Solr\ViewHelpers\Backend\IsStringViewHelper;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 
@@ -39,6 +40,9 @@ class IsStringViewHelperTest extends UnitTest
      */
     public function viewHelperRendersThenChildIfStringIsGiven()
     {
+        if(!Util::getIsTYPO3VersionBelow10()) {
+            $this->markTestSkipped('Needs to be checked with TYPO3 10');
+        }
         $arguments = [
             'value' => 'givenString',
             '__thenClosure' => function() { return 'thenResult'; },
@@ -55,6 +59,9 @@ class IsStringViewHelperTest extends UnitTest
      */
     public function viewHelperRendersElseChildIfNotStringTypeIsGiven()
     {
+        if(!Util::getIsTYPO3VersionBelow10()) {
+            $this->markTestSkipped('Needs to be checked with TYPO3 10');
+        }
         $arguments = [
             'value' => ['givenStringInArray'],
             '__thenClosure' => function() { return 'thenResult'; },

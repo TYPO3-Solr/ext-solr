@@ -243,8 +243,6 @@
 
 <f:section name="IndexInspector">
     <div class="panel-group" id="index-inspector_accordion">
-
-
         <f:for each="{indexInspectorDocumentsByLanguageAndType}" as="indexInspectorDocumentsByType" key="language" iteration="currentCore">
             <div class="panel panel-default">
                 <div class="panel-heading">
@@ -268,48 +266,49 @@
             </div>
         </f:for>
     </div>
+</f:section>
 
-    <f:section name="PanelGroupForDocumentType">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title">
-                    <a href="#panel-group4document-type-{currentCore.index}-{documentType}" data-toggle="collapse">Type: {documentType} ({f:count(subject: documents)})</a>
-                    <a href="#panel-group4document-type-{currentCore.index}-{documentType}" title="Collapse table" class="pull-right" data-toggle="collapse">
-                        <core:icon identifier="actions-view-list-expand" size="small"/><f:comment><!-- @todo: make Icon toggable between actions-view-list-collapse/actions-view-list-expand --></f:comment>
-                    </a>
-                </h3>
-            </div>
-            <div id="panel-group4document-type-{currentCore.index}-{documentType}" class="panel-collapse collapse {f:if(condition: '{f:count(subject: documentsByType)} < 2', then: 'in', else: '')}">
-                <div class="panel-body">
-                    <div class="panel-group">
-                        <table class="table table-striped table-condensed">
+<f:section name="PanelGroupForDocumentType">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                <a href="#panel-group4document-type-{currentCore.index}-{documentType}" data-toggle="collapse">Type: {documentType} ({f:count(subject: documents)})</a>
+                <a href="#panel-group4document-type-{currentCore.index}-{documentType}" title="Collapse table" class="pull-right" data-toggle="collapse">
+                    <core:icon identifier="actions-view-list-expand" size="small"/><f:comment><!-- @todo: make Icon toggable between actions-view-list-collapse/actions-view-list-expand --></f:comment>
+                </a>
+            </h3>
+        </div>
+        <div id="panel-group4document-type-{currentCore.index}-{documentType}" class="panel-collapse collapse {f:if(condition: '{f:count(subject: documentsByType)} < 2', then: 'in', else: '')}">
+            <div class="panel-body">
+                <div class="panel-group">
+                    <table class="table table-striped table-condensed">
+                        <tr>
+                            <th>Id</th>
+                            <th>Title</th>
+                            <th>Url</th>
+                            <th>Created</th>
+                            <th>Indexed</th>
+                            <th>Actions</th>
+
+                        </tr>
+                        <f:for each="{documents}" as="document">
                             <tr>
-                                <th>Id</th>
-                                <th>Title</th>
-                                <th>Url</th>
-                                <th>Created</th>
-                                <th>Indexed</th>
-                                <th>Actions</th>
+                                <td>{document.uid}</td>
+                                <td><f:format.crop maxCharacters="20">{document.title}</f:format.crop></td>
+                                <td><f:format.crop maxCharacters="40">{document.url}</f:format.crop></td>
+                                <td><f:format.date format="d.m.Y H:i:s">{document.created}</f:format.date></td>
+                                <td><f:format.date format="d.m.Y H:i:s">{document.indexed}</f:format.date></td>
 
-                            </tr>
-                            <f:for each="{documents}" as="document">
-                                <tr>
-                                    <td>{document.uid}</td>
-                                    <td><f:format.crop maxCharacters="20">{document.title}</f:format.crop></td>
-                                    <td><f:format.crop maxCharacters="40">{document.url}</f:format.crop></td>
-                                    <td><f:format.date format="d.m.Y H:i:s">{document.created}</f:format.date></td>
-                                    <td><f:format.date format="d.m.Y H:i:s">{document.indexed}</f:format.date></td>
-
-                                    <td>
+                                <td>
                                         <span class="btn btn-default">
                                             <f:link.action action="documentsDetails" arguments="{uid: document.uid, type: document.type, languageUid: language, pageId: pageId}" title="Show details">
                                                 <core:icon identifier="actions-document-view" />
                                             </f:link.action>
                                         </span>
-                                        <f:comment>
-                                            <!-- The additionalPrams M:'...' can be removed whe TYPO3 8 support will be dropped. -->
-                                        </f:comment>
-                                        <solr:backend.security.ifHasAccessToModule extension="Solr" main="searchbackend" sub="indexqueue">
+                                    <f:comment>
+                                        <!-- The additionalPrams M:'...' can be removed whe TYPO3 8 support will be dropped. -->
+                                    </f:comment>
+                                    <solr:backend.security.ifHasAccessToModule extension="Solr" main="searchbackend" sub="indexqueue">
                                             <span class="btn btn-default">
 
                                                 <f:link.action action="requeueDocument" arguments="{uid: document.uid, type: document.type}"
@@ -320,15 +319,14 @@
                                                 </f:link.action>
 
                                             </span>
-                                        </solr:backend.security.ifHasAccessToModule>
-                                    </td>
-                                </tr>
-                            </f:for>
-                        </table>
+                                    </solr:backend.security.ifHasAccessToModule>
+                                </td>
+                            </tr>
+                        </f:for>
+                    </table>
 
-                    </div>
                 </div>
             </div>
         </div>
-    </f:section>
+    </div>
 </f:section>
