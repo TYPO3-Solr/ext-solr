@@ -33,6 +33,7 @@ use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
 use ApacheSolrForTypo3\Solr\System\Util\SiteUtility;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
+use TYPO3\CMS\Core\Http\Uri;
 use TYPO3\CMS\Core\Registry;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -228,8 +229,7 @@ class SiteRepository
     {
         /** @var $siteHashService SiteHashService */
         $siteHashService = GeneralUtility::makeInstance(SiteHashService::class);
-        $siteHash = $siteHashService->getSiteHashForDomain($domain);
-        return $siteHash;
+        return $siteHashService->getSiteHashForDomain($domain);
     }
 
     /**
@@ -267,7 +267,8 @@ class SiteRepository
         } catch (SiteNotFoundException $e) {
             return null;
         }
-        $domain = $typo3Site->getBase()->getHost();
+
+        $domain = (new Uri($this->sanitizeBaseUrl($typo3Site->getAttribute('base'))))->getHost();
 
         $siteHash = $this->getSiteHashForDomain($domain);
         $defaultLanguage = $typo3Site->getDefaultLanguage()->getLanguageId();
@@ -336,6 +337,32 @@ class SiteRepository
             /** @scrutinizer ignore-type */
             $typo3Site
         );
+    }
+
+    /**
+     * If a site base contains "/" or "www.domain.com", it is ensured that
+     * parse_url() can handle this kind of configuration properly.
+     *
+     * @param string $base
+     * @return string
+     * @see \TYPO3\CMS\Core\Site\Entity\Site::sanitizeBaseUrl()
+     */
+    protected function sanitizeBaseUrl(string $base): string
+    {
+        // no protocol ("//") and the first part is no "/" (path), means that this is a domain like
+        // "www.domain.com/subpage", and we want to ensure that this one then gets a "no-scheme agnostic" part
+        if (!empty($base) && strpos($base, '//') === false && $base[0] !== '/') {
+            // either a scheme is added, or no scheme but with domain, or a path which is not absolute
+            // make the base prefixed with a slash, so it is recognized as path, not as domain
+            // treat as path
+            if (strpos($base, '.') === false) {
+                $base = '/' . $base;
+            } else {
+                // treat as domain name
+                $base = '//' . $base;
+            }
+        }
+        return $base;
     }
 
 }
