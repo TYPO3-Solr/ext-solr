@@ -1,8 +1,7 @@
 #!/bin/bash
 
-
 ## BASH COLORS
-RED='\033[0;31m'
+RED='\03[0;31m'
 GREEN='\033[0;32m'
 NC='\033[0m'
 
@@ -64,6 +63,25 @@ prettyPrintOrExitOnError ()
   [ ${1} -eq 0 ] && echo -en ${GREEN}' ✔\n'${NC} || { echo -en ${RED}' ✘\n'${NC} "${output[@]}"; cleanUp; exit 1; }
 }
 
+assertDockerVersionIsGtOrEq193 ()
+{
+  echo -n "Check Docker version is >= 19.03"
+  local DOCKER_VERSION=$(docker version -f "{{.Server.Version}}")
+  local DOCKER_VERSION_MAJOR=$(echo "$DOCKER_VERSION"| cut -d'.' -f 1)
+  local DOCKER_VERSION_MINOR=$(echo "$DOCKER_VERSION"| cut -d'.' -f 2)
+  local DOCKER_VERSION_BUILD=$(echo "$DOCKER_VERSION"| cut -d'.' -f 3)
+
+  if [ "${DOCKER_VERSION_MAJOR}" -ge 19 ] && \
+     [ "${DOCKER_VERSION_MINOR}" -ge 3 ]  && \
+     [ "${DOCKER_VERSION_BUILD}" -ge 0 ]; then
+      prettyPrintOrExitOnError 0
+  else
+    echo -en "${RED}"' ✘\n'${NC}
+    echo -e "${RED}"'Docker version less than 19.0.3 can not continue'"${NC}"
+    exit 1
+  fi
+}
+
 isHTTP200 ()
 {
   response=$(curl --write-out %{http_code} --silent --output /dev/null "${1}")
@@ -79,7 +97,8 @@ isPathOwnedBySolr ()
   local status=0
   for path in "$@"
   do
-    [ `sudo stat -c '%u' $path` == 8983 ] && echo -e '  '${GREEN}'✔'${NC} $path || { echo -e '  '${RED}'✘'${NC} $path; status=1; }
+    pathOwner=$(sudo stat -c '%u' "$path")
+    [ "$pathOwner" == 8983 ] && echo -e '  '"${GREEN}"'✔'"${NC}" "$path" || { echo -e '  '"${RED}"'✘'"${NC}" "$path"; status=1; }
   done
 
   return $status;
@@ -127,6 +146,8 @@ cleanUp ()
 
   echo -n "  remove \"$LOCAL_VOLUME_PATH\" directory"
   prettyPrintOrExitOnError $? "$(sudo rm -Rf $LOCAL_VOLUME_PATH 2>&1)"
+  # clean stdout
+  echo
 }
 
 isCoreAvailable ()
@@ -139,6 +160,22 @@ isCoreAvailable ()
 pingCore ()
 {
   isHTTP200 "http://localhost:8998/solr/${1}/admin/ping" && { return 0; } || { return 1; }
+}
+
+getExpandedListOfPathsAsSudo ()
+{
+  if [[ $EUID -ne 0 ]] ; then
+    echo "Function is unusable as non root user, please call function as root."
+    return 1
+  fi
+
+  local paths=(
+    ${1}/data
+    ${1}/data/data
+    ${1}/data/configsets/ext_solr_*/conf/
+    ${1}/data/configsets/*/conf/_schema_analysis*.json
+  )
+  echo "${paths[@]}"
 }
 
 assertVolumeExportHasNotBeenChanged ()
@@ -195,20 +232,18 @@ assertAllCoresAreQueriable ()
 
 assertNeccesseryPathsAreOwnedBySolr ()
 {
-  echo -e "\nCheck paths are owned by solr(8983)":
-  local paths=(
-    $LOCAL_VOLUME_PATH/data
-    $LOCAL_VOLUME_PATH/data/data
-    $LOCAL_VOLUME_PATH/data/configsets/ext_solr_*/conf/
-    $LOCAL_VOLUME_PATH/data/configsets/*/conf/_schema_analysis*.json
-  )
+  echo -e "\nCheck paths are owned by solr(8983):"
+  local paths=($(sudo /bin/bash -c "$(declare -f getExpandedListOfPathsAsSudo); getExpandedListOfPathsAsSudo $LOCAL_VOLUME_PATH"))
 
-  isPathOwnedBySolr "${paths[@]}" || { echo -e ${RED}'\nThe image has files, which are not owned by solr(8983) user.\n'${NC}; exit 1; }
+  isPathOwnedBySolr "${paths[@]}" || { echo -e "${RED}"'\nThe image has files, which are not owned by solr(8983) user.\n'"${NC}"; exit 1; }
 }
 
 ### run the tests
 
+assertDockerVersionIsGtOrEq193
+
 build_image
+
 assertVolumeExportHasNotBeenChanged
 
 run_container
