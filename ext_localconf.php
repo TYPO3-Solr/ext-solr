@@ -126,25 +126,17 @@ $GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['tx_solr_api'] = 'EXT:solr/Clas
 
 // add custom Solr content objects
 
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_content.php']['cObjTypeAndClass'][\ApacheSolrForTypo3\Solr\ContentObject\Multivalue::CONTENT_OBJECT_NAME] = [
-    \ApacheSolrForTypo3\Solr\ContentObject\Multivalue::CONTENT_OBJECT_NAME,
-    \ApacheSolrForTypo3\Solr\ContentObject\Multivalue::class
-];
+$GLOBALS['TYPO3_CONF_VARS']['FE']['ContentObjects'][\ApacheSolrForTypo3\Solr\ContentObject\Multivalue::CONTENT_OBJECT_NAME]
+    = \ApacheSolrForTypo3\Solr\ContentObject\Multivalue::class;
 
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_content.php']['cObjTypeAndClass'][\ApacheSolrForTypo3\Solr\ContentObject\Content::CONTENT_OBJECT_NAME] = [
-    \ApacheSolrForTypo3\Solr\ContentObject\Content::CONTENT_OBJECT_NAME,
-    \ApacheSolrForTypo3\Solr\ContentObject\Content::class
-];
+$GLOBALS['TYPO3_CONF_VARS']['FE']['ContentObjects'][\ApacheSolrForTypo3\Solr\ContentObject\Content::CONTENT_OBJECT_NAME]
+    = \ApacheSolrForTypo3\Solr\ContentObject\Content::class;
 
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_content.php']['cObjTypeAndClass'][\ApacheSolrForTypo3\Solr\ContentObject\Relation::CONTENT_OBJECT_NAME] = [
-    \ApacheSolrForTypo3\Solr\ContentObject\Relation::CONTENT_OBJECT_NAME,
-    \ApacheSolrForTypo3\Solr\ContentObject\Relation::class
-];
+$GLOBALS['TYPO3_CONF_VARS']['FE']['ContentObjects'][\ApacheSolrForTypo3\Solr\ContentObject\Relation::CONTENT_OBJECT_NAME]
+    = \ApacheSolrForTypo3\Solr\ContentObject\Relation::class;
 
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_content.php']['cObjTypeAndClass'][\ApacheSolrForTypo3\Solr\ContentObject\Classification::CONTENT_OBJECT_NAME] = [
-    \ApacheSolrForTypo3\Solr\ContentObject\Classification::CONTENT_OBJECT_NAME,
-    \ApacheSolrForTypo3\Solr\ContentObject\Classification::class
-];
+$GLOBALS['TYPO3_CONF_VARS']['FE']['ContentObjects'][\ApacheSolrForTypo3\Solr\ContentObject\Classification::CONTENT_OBJECT_NAME]
+    = \ApacheSolrForTypo3\Solr\ContentObject\Classification::class;
 
 
 # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #

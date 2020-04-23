@@ -47,7 +47,7 @@ class ArrayAccessor
 {
 
     /**
-     * @var
+     * @var array
      */
     protected $data;
 

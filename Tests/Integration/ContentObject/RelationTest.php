@@ -55,8 +55,8 @@ class RelationTest extends IntegrationTest
         $GLOBALS['TSFE']->sys_language_uid = 1;
 
         /* @var Relation $solrRelation */
-        $solrRelation = GeneralUtility::makeInstance(Relation::class);
-        $actual = $solrRelation->cObjGetSingleExt(Relation::CONTENT_OBJECT_NAME, ['localField' => 'categories'], null, $contentObjectRendererMock);
+        $solrRelation = GeneralUtility::makeInstance(Relation::class, $contentObjectRendererMock);
+        $actual = $solrRelation->render(['localField' => 'categories']);
 
         $this->assertSame('Some Category', $actual, 'Can not fallback to table "pages" on non existent column configuration in TCA for table "pages_language_overlay".');
     }

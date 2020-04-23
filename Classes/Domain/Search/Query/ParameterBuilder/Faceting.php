@@ -47,7 +47,7 @@ class Faceting extends AbstractDeactivatable implements ParameterBuilder
     protected $minCount = 1;
 
     /**
-     * @var
+     * @var int
      */
     protected $limit = 10;
 

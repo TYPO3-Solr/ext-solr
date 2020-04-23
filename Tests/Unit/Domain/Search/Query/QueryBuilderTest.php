@@ -65,7 +65,7 @@ class QueryBuilderTest extends UnitTest
     protected $loggerMock;
 
     /**
-     * @var
+     * @var SiteHashService
      */
     protected $siteHashServiceMock;
 

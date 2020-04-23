@@ -32,7 +32,7 @@ class DateRangeFacetParser extends AbstractRangeFacetParser
     protected $facetClass = DateRangeFacet::class;
 
     /**
-     * @var
+     * @var string
      */
     protected $facetItemClass = DateRange::class;
 

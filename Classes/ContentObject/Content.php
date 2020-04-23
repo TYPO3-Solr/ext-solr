@@ -26,6 +26,8 @@ namespace ApacheSolrForTypo3\Solr\ContentObject;
 
 use ApacheSolrForTypo3\Solr\HtmlContentExtractor;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\ContentObject\AbstractContentObject;
+use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 /**
  * A content object (cObj) to clean a database field in a way so that it can be
@@ -33,7 +35,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author Ingo Renner <ingo@typo3.org>
  */
-class Content
+class Content extends AbstractContentObject
 {
     const CONTENT_OBJECT_NAME = 'SOLR_CONTENT';
 
@@ -42,21 +44,13 @@ class Content
      *
      * Cleans content coming from a database field, removing HTML tags ...
      *
-     * @param string $name content object name 'SOLR_CONTENT'
-     * @param array $configuration for the content object
-     * @param string $TyposcriptKey not used
-     * @param \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer $contentObject parent cObj
-     * @return string serialized array representation of the given list
+     * @inheritDoc
      */
-    public function cObjGetSingleExt(
-        /** @noinspection PhpUnusedParameterInspection */ $name,
-        array $configuration,
-        /** @noinspection PhpUnusedParameterInspection */ $TyposcriptKey,
-        $contentObject
-    ) {
+    public function render($conf = [])
+    {
         $contentExtractor = GeneralUtility::makeInstance(
             HtmlContentExtractor::class,
-            /** @scrutinizer ignore-type */ $this->getRawContent($contentObject, $configuration)
+            /** @scrutinizer ignore-type */ $this->getRawContent($this->cObj, $conf)
         );
 
         return $contentExtractor->getIndexableContent();
@@ -65,7 +59,7 @@ class Content
     /**
      * Gets the raw content as configured - a certain value or database field.
      *
-     * @param \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer $contentObject The original content object
+     * @param ContentObjectRenderer $contentObject The original content object
      * @param array $configuration content object configuration
      * @return string The raw content
      */
