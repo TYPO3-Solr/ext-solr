@@ -17,7 +17,7 @@ class TSFEBootstrapResult
     protected $tsfe;
 
     /**
-     * @var
+     * @var array
      */
     protected $exceptions = [];
 

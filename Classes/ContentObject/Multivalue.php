@@ -25,6 +25,7 @@ namespace ApacheSolrForTypo3\Solr\ContentObject;
  ***************************************************************/
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\ContentObject\AbstractContentObject;
 
 /**
  * A content object (cObj) to turn comma separated strings into an array to be
@@ -42,7 +43,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author Ingo Renner <ingo@typo3.org>
  */
-class Multivalue
+class Multivalue extends AbstractContentObject
 {
     const CONTENT_OBJECT_NAME = 'SOLR_MULTIVALUE';
 
@@ -53,44 +54,36 @@ class Multivalue
      * multivalued fields in a Solr document. The array is returned in
      * serialized form as content objects are expected to return strings.
      *
-     * @param string $name content object name 'SOLR_MULTIVALUE'
-     * @param array $configuration for the content object, expects keys 'separator' and 'field'
-     * @param string $TyposcriptKey not used
-     * @param \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer $contentObject parent cObj
-     * @return string serialized array representation of the given list
+     * @inheritDoc
      */
-    public function cObjGetSingleExt(
-        /** @noinspection PhpUnusedParameterInspection */ $name,
-        array $configuration,
-        /** @noinspection PhpUnusedParameterInspection */ $TyposcriptKey,
-        $contentObject
-    ) {
+    public function render($conf = [])
+    {
         $data = '';
-        if (isset($configuration['value'])) {
-            $data = $configuration['value'];
-            unset($configuration['value']);
+        if (isset($conf['value'])) {
+            $data = $conf['value'];
+            unset($conf['value']);
         }
 
-        if (!empty($configuration)) {
-            $data = $contentObject->stdWrap($data, $configuration);
+        if (!empty($conf)) {
+            $data = $this->cObj->stdWrap($data, $conf);
         }
 
-        if (!array_key_exists('separator', $configuration)) {
-            $configuration['separator'] = ',';
+        if (!array_key_exists('separator', $conf)) {
+            $conf['separator'] = ',';
         }
 
         $removeEmptyValues = true;
-        if (isset($configuration['removeEmptyValues']) && $configuration['removeEmptyValues'] == 0) {
+        if (isset($conf['removeEmptyValues']) && $conf['removeEmptyValues'] == 0) {
             $removeEmptyValues = false;
         }
 
         $listAsArray = GeneralUtility::trimExplode(
-            $configuration['separator'],
+            $conf['separator'],
             $data,
             $removeEmptyValues
         );
 
-        if (!empty($configuration['removeDuplicateValues'])) {
+        if (!empty($conf['removeDuplicateValues'])) {
             $listAsArray = array_unique($listAsArray);
         }
 

@@ -32,6 +32,7 @@ use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Database\RelationHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\ContentObject\AbstractContentObject;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 /**
@@ -50,7 +51,7 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
  *
  * @author Ingo Renner <ingo@typo3.org>
  */
-class Relation
+class Relation extends AbstractContentObject
 {
     const CONTENT_OBJECT_NAME = 'SOLR_RELATION';
 
@@ -76,8 +77,9 @@ class Relation
      * @param TCAService|null $tcaService
      * @param FrontendOverlayService|null $frontendOverlayService
      */
-    public function __construct(TCAService $tcaService = null, FrontendOverlayService $frontendOverlayService = null)
+    public function __construct(ContentObjectRenderer $cObj, TCAService $tcaService = null, FrontendOverlayService $frontendOverlayService = null)
     {
+        $this->cObj = $cObj;
         $this->configuration['enableRecursiveValueResolution'] = 1;
         $this->configuration['removeEmptyValues'] = 1;
         $this->tcaService = $tcaService ?? GeneralUtility::makeInstance(TCAService::class);
@@ -91,29 +93,21 @@ class Relation
      * TYPO3-style m:n relations.
      * May resolve single value and multi value relations.
      *
-     * @param string $name content object name 'SOLR_RELATION'
-     * @param array $configuration for the content object
-     * @param string $TyposcriptKey not used
-     * @param \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer $parentContentObject parent content object
-     * @return string serialized array representation of the given list
+     * @inheritDoc
      */
-    public function cObjGetSingleExt(
-        /** @noinspection PhpUnusedParameterInspection */ $name,
-        array $configuration,
-        /** @noinspection PhpUnusedParameterInspection */ $TyposcriptKey,
-        $parentContentObject
-    ) {
-        $this->configuration = array_merge($this->configuration, $configuration);
+    public function render($conf = [])
+    {
+        $this->configuration = array_merge($this->configuration, $conf);
 
-        $relatedItems = $this->getRelatedItems($parentContentObject);
+        $relatedItems = $this->getRelatedItems($this->cObj);
 
         if (!empty($this->configuration['removeDuplicateValues'])) {
             $relatedItems = array_unique($relatedItems);
         }
 
-        if (empty($configuration['multiValue'])) {
+        if (empty($conf['multiValue'])) {
             // single value, need to concatenate related items
-            $singleValueGlue = !empty($configuration['singleValueGlue']) ? trim($configuration['singleValueGlue'], '|') : ', ';
+            $singleValueGlue = !empty($conf['singleValueGlue']) ? trim($conf['singleValueGlue'], '|') : ', ';
             $result = implode($singleValueGlue, $relatedItems);
         } else {
             // multi value, need to serialize as content objects must return strings

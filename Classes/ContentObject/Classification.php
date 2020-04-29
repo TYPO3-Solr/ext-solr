@@ -26,7 +26,9 @@ namespace ApacheSolrForTypo3\Solr\ContentObject;
 
 use ApacheSolrForTypo3\Solr\Domain\Index\Classification\Classification as ClassificationItem;
 use ApacheSolrForTypo3\Solr\Domain\Index\Classification\ClassificationService;
+use InvalidArgumentException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\ContentObject\AbstractContentObject;
 
 /**
  * A content object (cObj) to classify content based on a configuration.
@@ -44,7 +46,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *   }
  * }
  */
-class Classification
+class Classification extends AbstractContentObject
 {
     const CONTENT_OBJECT_NAME = 'SOLR_CLASSIFICATION';
 
@@ -53,41 +55,32 @@ class Classification
      *
      * Returns mapped classes when the field matches on of the configured patterns ...
      *
-     * @param string $name content object name 'SOLR_CONTENT'
-     * @param array $configuration for the content object
-     * @param string $TyposcriptKey not used
-     * @param \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer $contentObject parent cObj
-     * @return string serialized array representation of the given list
+     * @inheritDoc
      */
-    public function cObjGetSingleExt(
-        /** @noinspection PhpUnusedParameterInspection */ $name,
-        array $configuration,
-        /** @noinspection PhpUnusedParameterInspection */ $TyposcriptKey,
-        $contentObject
-    ) {
+    public function render($conf = [])
+    {
 
-        if (!is_array($configuration['classes.'])) {
-            throw new \InvalidArgumentException('No class configuration configured for SOLR_CLASSIFICATION object. Given configuration: ' . serialize($configuration));
+        if (!is_array($conf['classes.'])) {
+            throw new InvalidArgumentException('No class configuration configured for SOLR_CLASSIFICATION object. Given configuration: ' . serialize($conf));
         }
 
-        $configuredMappedClasses = $configuration['classes.'];
-        unset($configuration['classes.']);
+        $configuredMappedClasses = $conf['classes.'];
+        unset($conf['classes.']);
 
         $data = '';
-        if (isset($configuration['value'])) {
-            $data = $configuration['value'];
-            unset($configuration['value']);
+        if (isset($conf['value'])) {
+            $data = $conf['value'];
+            unset($conf['value']);
         }
 
-        if (!empty($configuration)) {
-            $data = $contentObject->stdWrap($data, $configuration);
+        if (!empty($conf)) {
+            $data = $this->cObj->stdWrap($data, $conf);
         }
         $classifications = $this->buildClassificationsFromConfiguration($configuredMappedClasses);
         /** @var $classificationService ClassificationService */
         $classificationService = GeneralUtility::makeInstance(ClassificationService::class);
-        $classes = serialize($classificationService->getMatchingClassNames((string)$data, $classifications));
 
-        return $classes;
+        return serialize($classificationService->getMatchingClassNames((string)$data, $classifications));
     }
 
     /**
@@ -101,7 +94,7 @@ class Classification
         $classifications = [];
         foreach ($configuredMappedClasses as $class) {
             if ( (empty($class['patterns']) && empty($class['matchPatterns'])) || empty($class['class'])) {
-                throw new \InvalidArgumentException('A class configuration in SOLR_CLASSIFCATION needs to have a pattern and a class configured. Given configuration: ' . serialize($class));
+                throw new InvalidArgumentException('A class configuration in SOLR_CLASSIFCATION needs to have a pattern and a class configured. Given configuration: ' . serialize($class));
             }
 
                 // @todo deprecate patterns configuration

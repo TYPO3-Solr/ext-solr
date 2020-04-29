@@ -31,7 +31,7 @@ class NumericRangeFacetParser extends AbstractRangeFacetParser
     protected $facetClass = NumericRangeFacet::class;
 
     /**
-     * @var
+     * @var string
      */
     protected $facetItemClass = NumericRange::class;
 

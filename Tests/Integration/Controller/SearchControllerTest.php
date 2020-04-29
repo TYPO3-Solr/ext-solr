@@ -29,7 +29,6 @@ use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageFieldMappingIndexer;
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
 use ApacheSolrForTypo3\Solr\Controller\SearchController;
 use ApacheSolrForTypo3\Solr\Util;
-use TYPO3\CMS\Core\Core\Bootstrap;
 use TYPO3\CMS\Core\TimeTracker\TimeTracker;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManager as ExtbaseConfigurationManager;

@@ -159,6 +159,10 @@ class UtilTest extends IntegrationTest
      */
     public function getConfigurationFromPageIdInitializesTsfe()
     {
+        if(!Util::getIsTYPO3VersionBelow10()) {
+            $this->markTestSkipped('Needs to be checked with TYPO3 10');
+        }
+
         $pageId = 24;
         $path = '';
         $language = 0;
@@ -199,6 +203,10 @@ class UtilTest extends IntegrationTest
      */
     public function getConfigurationFromPageIdInitializesTsfeOnCacheCall()
     {
+        if(!Util::getIsTYPO3VersionBelow10()) {
+            $this->markTestSkipped('Needs to be checked with TYPO3 10');
+        }
+
         $path = '';
         $language = 0;
         $initializeTsfe = true;

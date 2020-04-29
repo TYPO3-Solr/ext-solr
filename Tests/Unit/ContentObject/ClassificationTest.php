@@ -114,10 +114,7 @@ class ClassificationTest extends UnitTest
     protected function setUp()
     {
         // fake a registered hook
-        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_content.php']['cObjTypeAndClass'][Classification::CONTENT_OBJECT_NAME] = [
-            Classification::CONTENT_OBJECT_NAME,
-            Classification::class
-        ];
+        $GLOBALS['TYPO3_CONF_VARS']['FE']['ContentObjects'][Classification::CONTENT_OBJECT_NAME] = Classification::class;
 
         $GLOBALS['TSFE'] = $this->getDumbMock(TypoScriptFrontendController::class);
 
