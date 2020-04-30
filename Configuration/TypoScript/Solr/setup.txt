@@ -49,7 +49,7 @@ plugin.tx_solr {
 				initialization = ApacheSolrForTypo3\Solr\IndexQueue\Initializer\Page
 
 				// allowed page types (doktype) when indexing records from table "pages"
-				allowedPageTypes = 1,7,4
+				allowedPageTypes = 1,4,7
 
 				indexingPriority = 0
 

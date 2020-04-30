@@ -381,7 +381,7 @@ queue.pages.allowedPageTypes
 :Type: List of Integers
 :TS Path: plugin.tx_solr.index.queue.pages.allowedPageTypes
 :Since: 3.0
-:Default: 1,7
+:Default: 1,4,7
 
 Allows to set the pages types allowed to be indexed.
 
