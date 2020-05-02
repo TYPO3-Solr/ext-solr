@@ -130,12 +130,14 @@ abstract class IntegrationTest extends FunctionalTestCase
      * Loads a Fixture from the Fixtures folder beside the current test case.
      *
      * @param $fixtureName
-     * @throws ReflectionException
-     * @throws Exception
      */
     protected function importDataSetFromFixture($fixtureName)
     {
-        $this->importDataSet($this->getFixturePathByName($fixtureName));
+        try {
+            $this->importDataSet($this->getFixturePathByName($fixtureName));
+            return;
+        } catch (\Exception $e) {}
+        $this->fail(sprintf('Can not import "%s" fixture.', $fixtureName));
     }
 
     /**

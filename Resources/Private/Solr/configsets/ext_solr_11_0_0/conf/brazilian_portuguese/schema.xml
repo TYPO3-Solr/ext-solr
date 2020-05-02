@@ -170,7 +170,7 @@
 
 			<filter class="solr.LowerCaseFilterFactory"/>
 
-			<filter class="solr.ManagedStopFilterFactory" managed="brazilian-portuguese"/>
+			<filter class="solr.ManagedStopFilterFactory" managed="brazilian_portuguese"/>
 
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
@@ -180,7 +180,7 @@
 			<filter class="solr.LowerCaseFilterFactory"/>
 
 			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="brazilian_portuguese" />
-			<filter class="solr.ManagedStopFilterFactory" managed="brazilian-portuguese"/>
+			<filter class="solr.ManagedStopFilterFactory" managed="brazilian_portuguese"/>
 
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>

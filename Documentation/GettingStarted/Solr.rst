@@ -32,28 +32,107 @@ After running the script you are able to open a solr server with over the loopba
 Docker
 ------
 
-You can use docker to install your solr server with a small effort. With the extension we provide a Dockerfile, that creates a container with a core for all languages ready to run.
-This helps you to setup a container very quickly.
+You can use our official docker image to start and maintain solr server with a small effort.
 
-To build the images, simply type one of the following:
-
-.. code-block:: bash
-
-    docker build -t typo3-solr Docker/SolrServer/Dockerfile .
-
-Prepare the data folder (data is shared with the docker container by user and group with UID/GID 8983):
+To pull the TYPO3 Solr image from docker hub, simply type the following in command line:
 
 .. code-block:: bash
 
-    mkdir -p .solrdata
-    chmod g+w .solrdata
-    chown :8983 .solrdata
+    docker pull typo3solr/ext-solr:<EXT:Solr_Version>
 
-To run the container (only run one of the following):
+.. tip::
+
+    To find out available image versions refer to https://hub.docker.com/r/typo3solr/ext-solr/tags
+
+Persistent Data
+^^^^^^^^^^^^^^^
+
+Our docker image is based on `official Apache Solr image <https://github.com/docker-solr/docker-solr>`_.
+
+.. important::
+
+    Our and official Apache Solr image exports a volume ``/var/solr`` for persistent data.
+
+This volume will be mounted to persist the index and other resources from Apache Solr server.
+Following paths inside the exported volume are relevant for backups.
+
++---------------------------------------------------------------------------------------------------------+----------------------------------------------------------------+
+| Path                                                                                                    | Contents                                                       |
++=========================================================================================================+================================================================+
+| data/data/<language>                                                                                    | the index data of corresponding core                           |
++---------------------------------------------------------------------------------------------------------+----------------------------------------------------------------+
+| data/configsets/ext_solr_<EXT:Solr_Version>/conf/_schema_analysis_(stopwords\|synonyms)_<language>.json | the managed stop words and synonyms of corresponding core      |
++---------------------------------------------------------------------------------------------------------+----------------------------------------------------------------+
+
+.. tip::
+
+    To be save for other scenarios(e.g. SVC of modified Solr Schemas and managed resources), simply backup the whole "data/" folder.
+
+
+Start container with anonymous volume
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+To run the container with anonymous volume, simply type the following in command line:
 
 .. code-block:: bash
 
-    docker run -d -p 127.0.0.1:8983:8983 -v "$PWD/.solrdata:/var/solr/data/data" typo3-solr
+    docker run --name=typo3s-solr-server -d -p 8983:8983 typo3solr/ext-solr
+
+This will create a docker anonymous volume and store the data inside of it.
+To find out the path of used anonymous volume, simply type the following in command line:
+
+.. code-block:: bash
+
+    docker inspect -f '{{ .Mounts }}' typo3s-solr-server
+
+Start container with volume on hosts path
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+There are few steps required to be able to run the container with volume on hosts path.
+
+Following commands will create the named volume "typo3s-solr-server-data" on hosts path and start the container with this volume.
+
+.. code-block:: bash
+
+    mkdir .solrdata
+    docker volume create --name typo3s-solr-server-data --opt type=none --opt device=$PWD/.solrdata --opt o=bind
+    docker run --name=typo3s-solr-server --mount source=typo3s-solr-server-data,target=/var/solr -d -p 8983:8983 typo3solr/ext-solr
+
+.. important::
+
+    The folder for solr data MUST exist on the host machine.
+
+.. important::
+
+    The data is owned by containers solr UNIX-User/Group with id 8983, and MUST NOT be changed(re-owned) to different UNIX-Users.
+
+.. tip::
+
+    Following is equivalent docker-compose.yaml definition with ".solrdata" folder next to docker-compose.yaml file.
+
+    .. code-block:: yaml
+
+        version: '3.6'
+        services:
+          solr:
+            container_name: typo3s-solr-server
+            image: typo3solr/ext-solr:<EXT:Solr_Version>
+            ports:
+              - 8983:8983
+            volumes:
+              - typo3s-solr-server-data:/var/solr
+
+        volumes:
+          typo3s-solr-server-data:
+            driver: local
+            driver_opts:
+              type: none
+              device: $PWD/.solrdata
+              o: bind
+
+
+Check if Solr is up and running
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 To check whether Solr is up and running head over to:
 
@@ -63,14 +142,14 @@ You should see the web interface of Solr to run queries:
 
 .. figure:: ../Images/GettingStarted/solr-query-webinterface.png
 
-**Important**: The image "typo3-solr" ships a default core for all languages. The data of the cores is stored on a data volume. When you want to update the container, you can just start a new container using the data volume of the old container. But at the same time this has the limitation, that you should only use this image with the default cores! If you want to create custom cores with a different configuration please read the section "Advanced Docker Usage"
+**Important**: The image ships a default cores for all languages. The data of the cores is stored on an exported volume. When you want to update the container, you can just start a new container using the data volume of the old container. But at the same time this has the limitation, that you should only use this image with the default cores! If you want to create custom cores with a different configuration please read the section "Advanced Docker Usage"
 
 Please note: The steps above show how to build the image from the Dockerfile. You can also download and use our compiled images from dockerhub:
 
 https://hub.docker.com/r/typo3solr/ext-solr/
 
 Advanced Docker Usage
-^^^^^^^^^^^^^^^^^^^^^
+---------------------
 
 Our image has the intension to create running cores out of the box. This implies, that the schema is inside the container.
 The intension in our integration was to stay as close as possible to the official Apache Solr docker images. Sometimes it might make
@@ -81,9 +160,10 @@ The following example shows how you can run our configuration with the official 
 .. code-block:: bash
 
     mkdir -p ~/mysolr
-    cp -r Resources/Private/Solr/* ~/mysolr
-    sudo chown -R :8983 ~/mysolr
-    docker run -d -p 127.0.0.1:8983:8983 -v ~/mysolr:/var/solr/data/data solr:6.3.0
+    cp -r Resources/Private/Solr/* ~/mysolr/.
+    mkdir ~/mysolr/data
+    sudo chown -R 8983:8983 ~/mysolr
+    docker run -d -p 8983:8983 -v ~/mysolr:/var/solr/data solr:8.5
 
 
 Other Setup

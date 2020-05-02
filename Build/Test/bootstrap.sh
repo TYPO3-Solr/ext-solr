@@ -10,8 +10,8 @@ EXTENSION_ROOTPATH="$SCRIPTPATH/../../"
 SOLR_INSTALL_PATH="/opt/solr-tomcat/"
 
 if [[ $* == *--use-defaults* ]]; then
-    export TYPO3_VERSION="^8.7"
-    export PHP_CS_FIXER_VERSION="v2.3.2"
+    export TYPO3_VERSION="^10.4"
+    export PHP_CS_FIXER_VERSION="^2.16.1"
     export TYPO3_DATABASE_HOST="localhost"
     export TYPO3_DATABASE_NAME="test"
     export TYPO3_DATABASE_USERNAME="root"
@@ -19,11 +19,11 @@ if [[ $* == *--use-defaults* ]]; then
 fi
 
 if [[ $* == *--local* ]]; then
-    echo -n "Choose a TYPO3 Version (e.g. dev-master,^8.7): "
+    echo -n "Choose a TYPO3 Version (e.g. dev-master,^10.4): "
     read typo3Version
     export TYPO3_VERSION=$typo3Version
 
-    echo -n "Choose a php-cs-fixer version (v2.3.2): "
+    echo -n "Choose a php-cs-fixer version (v2.16.1): "
     read phpCSFixerVersion
     export PHP_CS_FIXER_VERSION=$phpCSFixerVersion
 
