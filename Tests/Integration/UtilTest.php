@@ -159,10 +159,6 @@ class UtilTest extends IntegrationTest
      */
     public function getConfigurationFromPageIdInitializesTsfe()
     {
-        if(!Util::getIsTYPO3VersionBelow10()) {
-            $this->markTestSkipped('Needs to be checked with TYPO3 10');
-        }
-
         $pageId = 24;
         $path = '';
         $language = 0;
@@ -203,10 +199,6 @@ class UtilTest extends IntegrationTest
      */
     public function getConfigurationFromPageIdInitializesTsfeOnCacheCall()
     {
-        if(!Util::getIsTYPO3VersionBelow10()) {
-            $this->markTestSkipped('Needs to be checked with TYPO3 10');
-        }
-
         $path = '';
         $language = 0;
         $initializeTsfe = true;
@@ -226,6 +218,8 @@ class UtilTest extends IntegrationTest
 
         // Change TSFE->id to 12 ($pageId) and create new cache
         $this->buildTestCaseForTsfe(34, 1);
+
+
         Util::getConfigurationFromPageId(
             34,
             $path,
@@ -293,6 +287,9 @@ class UtilTest extends IntegrationTest
             ->shouldBeCalled()
             ->willReturn($site->reveal());
 
+        $site->getConfiguration()
+            ->willReturn(['settings' => []]);
+
         GeneralUtility::addInstance(SiteFinder::class, $siteFinder->reveal());
 
         $tsfeProphecy = $this->prophesize(TypoScriptFrontendController::class);
@@ -306,6 +303,7 @@ class UtilTest extends IntegrationTest
             GeneralUtility::addInstance(\TYPO3\CMS\Core\Utility\RootlineUtility::class, $rootLineUtility->reveal());
 
             $frontendUserAspect = $this->prophesize(UserAspect::class);
+            $backendUserAspect = $this->prophesize(UserAspect::class);
             $workspaceAspect =  $this->prophesize(WorkspaceAspect::class);
 
             $context = $this->prophesize(Context::class);
@@ -317,6 +315,7 @@ class UtilTest extends IntegrationTest
             $context->getPropertyFromAspect('language', 'id', 0)->shouldBeCalled()->willReturn(0);
             $context->getPropertyFromAspect('language', 'contentId')->shouldBeCalled()->willReturn(0);
             $context->getAspect('frontend.user')->shouldBeCalled()->willReturn($frontendUserAspect->reveal());
+            $context->getAspect('backend.user')->shouldBeCalled()->willReturn($backendUserAspect->reveal());
             $context->getAspect('workspace')->shouldBeCalled()->willReturn($workspaceAspect->reveal());
             $context->getPropertyFromAspect('visibility', 'includeHiddenContent', false)->shouldBeCalled();
             $context->getPropertyFromAspect('backend.user', 'isLoggedIn', false)->shouldBeCalled();
@@ -328,9 +327,18 @@ class UtilTest extends IntegrationTest
             GeneralUtility::setSingletonInstance(Context::class, $context->reveal());
             $GLOBALS['TYPO3_REQUEST'] = GeneralUtility::makeInstance(ServerRequest::class);
             $tsfeProphecy->willBeConstructedWith([$context->reveal(), $site->reveal(), $siteLanguage->reveal()]);
+            $tsfeProphecy->getSite()->shouldBeCalled()->willReturn($site);
+            $tsfeProphecy->getPageAndRootlineWithDomain($pageId)->shouldBeCalled();
+            $tsfeProphecy->getConfigArray()->shouldBeCalled();
+            $tsfeProphecy->settingLanguage()->shouldBeCalled();
+            $tsfeProphecy->newCObj()->shouldBeCalled();
+            $tsfeProphecy->calculateLinkVars([])->shouldBeCalled();
+            $tsfeProphecy->settingLocale()->shouldBeCalled();
+
         }
 
         $tsfe = $tsfeProphecy->reveal();
+
         $tsfe->tmpl = new \TYPO3\CMS\Core\TypoScript\TemplateService();
         GeneralUtility::addInstance(TypoScriptFrontendController::class, $tsfe);
     }
