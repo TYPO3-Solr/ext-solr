@@ -70,11 +70,13 @@ class Tsfe implements SingletonInterface
             $site = $siteFinder->getSiteByPageId($pageId);
             $siteLanguage = $site->getLanguageById($language);
 
+                /** @var ServerRequest $request */
             $request = GeneralUtility::makeInstance(ServerRequest::class);
             $request = $request->withAttribute('site', $site);
             $this->requestCache[$cacheId] = $request->withAttribute('language', $siteLanguage);
         }
         $GLOBALS['TYPO3_REQUEST'] = $this->requestCache[$cacheId];
+
 
         if (!isset($this->tsfeCache[$cacheId])) {
 
