@@ -71,11 +71,9 @@ class ResultSetReconstitutionProcessorTest extends IntegrationTest
      */
     public function canApplyRenderingInstructionsOnOptions()
     {
-        if(!Util::getIsTYPO3VersionBelow10()) {
-            $this->markTestSkipped('Needs to be checked with TYPO3 10');
-        }
-
-        $this->fakeTSFEToUseCObject();
+        $this->importDataSetFromFixture('simple_site.xml');
+        $this->writeDefaultSolrTestSiteConfiguration();
+        $this->fakeTSFE(1);
 
         $searchResultSet = $this->initializeSearchResultSetFromFakeResponse('fake_solr_response_with_multiple_fields_facets.json');
 
@@ -124,10 +122,9 @@ class ResultSetReconstitutionProcessorTest extends IntegrationTest
      */
     public function labelCanBeUsedAsCObject()
     {
-        if(!Util::getIsTYPO3VersionBelow10()) {
-            $this->markTestSkipped('Needs to be checked with TYPO3 10');
-        }
-        $this->fakeTSFEToUseCObject();
+        $this->importDataSetFromFixture('simple_site.xml');
+        $this->writeDefaultSolrTestSiteConfiguration();
+        $this->fakeTSFE(1);
         $searchResultSet = $this->initializeSearchResultSetFromFakeResponse('fake_solr_response_with_multiple_fields_facets.json');
 
         // before the reconstitution of the domain object from the response we expect that no facets
@@ -182,19 +179,5 @@ class ResultSetReconstitutionProcessorTest extends IntegrationTest
         $fakeObjectManager = $this->getFakeObjectManager();
         $processor->setObjectManager($fakeObjectManager);
         return $processor;
-    }
-
-    /**
-     *
-     */
-    protected function fakeTSFEToUseCObject()
-    {
-        $GLOBALS['TYPO3_CONF_VARS']['FE']['ContentObjects'] = array_merge($GLOBALS['TYPO3_CONF_VARS']['FE']['ContentObjects'], ['TEXT' => TextContentObject::class, 'CASE' => CaseContentObject::class, ]);
-
-        $TSFE = GeneralUtility::makeInstance(TypoScriptFrontendController::class, [], 1, 0);
-        $TSFE->cObjectDepthCounter = 5;
-        $TSFE->fe_user = GeneralUtility::makeInstance(FrontendUserAuthentication::class);
-        $GLOBALS['TSFE'] = $TSFE;
-        $GLOBALS['TT'] = $this->getMockBuilder(TimeTracker::class)->disableOriginalConstructor()->getMock();
     }
 }
