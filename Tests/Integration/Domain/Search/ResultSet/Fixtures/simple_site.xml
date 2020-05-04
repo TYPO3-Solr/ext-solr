@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataset>
+    <sys_template>
+        <uid>1</uid>
+        <pid>1</pid>
+        <root>1</root>
+        <clear>3</clear>
+        <config>
+            <![CDATA[
+                page = PAGE
+                page.typeNum = 0
+                page.bodyTag = <body>
+
+                # very simple rendering
+                page.10 = CONTENT
+                page.10 {
+                    table = tt_content
+                    select.orderBy = sorting
+                    select.where = colPos=0
+                    renderObj = COA
+                    renderObj {
+                        10 = TEXT
+                        10.field = bodytext
+                    }
+                }
+            ]]>
+        </config>
+        <sorting>100</sorting>
+        <static_file_mode>0</static_file_mode>
+    </sys_template>
+    <pages>
+        <uid>1</uid>
+        <is_siteroot>1</is_siteroot>
+    </pages>
+
+</dataset>
