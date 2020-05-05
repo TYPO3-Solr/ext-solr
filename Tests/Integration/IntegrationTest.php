@@ -481,15 +481,19 @@ abstract class IntegrationTest extends FunctionalTestCase
      * @param int $port
      * @return void
      */
-    protected function writeDefaultSolrTestSiteConfigurationForHostAndPort($scheme = 'http', $host = 'localhost', $port = 8999)
+    protected function writeDefaultSolrTestSiteConfigurationForHostAndPort($scheme = 'http', $host = 'localhost', $port = 8999, $disableDefaultLanguage = false)
     {
-        $siteCreatedHash = md5($scheme . $host . $port);
+        $siteCreatedHash = md5($scheme . $host . $port . $disableDefaultLanguage);
         if (self::$lastSiteCreated === $siteCreatedHash) {
             return;
         }
 
         $defaultLanguage = $this->buildDefaultLanguageConfiguration('EN', '/en/');
         $defaultLanguage['solr_core_read'] = 'core_en';
+
+        if ($disableDefaultLanguage === true) {
+            $defaultLanguage['enabled'] = 0;
+        }
 
         $german = $this->buildLanguageConfiguration('DE', '/de/', ['EN'], 'fallback');
         $german['solr_core_read'] = 'core_de';
