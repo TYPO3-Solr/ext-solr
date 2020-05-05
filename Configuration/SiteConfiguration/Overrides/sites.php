@@ -52,7 +52,7 @@ $GLOBALS['SiteConfiguration']['site']['columns']['solr_port_read'] = [
     'label' => 'Port',
     'config' => [
         'type' => 'input',
-        'eval' => 'int,required',
+        'eval' => 'required',
         'size' => 5,
         'default' => 8983
     ],
