@@ -106,9 +106,6 @@ class IndexServiceTest extends IntegrationTest
      */
     public function canResolveBaseAsPrefix($absRefPrefix, $expectedUrl)
     {
-        if(!Util::getIsTYPO3VersionBelow10()) {
-            $this->markTestSkipped('Needs to be checked with TYPO3 10');
-        }
         $this->cleanUpSolrServerAndAssertEmpty();
 
         // create fake extension database table and TCA
