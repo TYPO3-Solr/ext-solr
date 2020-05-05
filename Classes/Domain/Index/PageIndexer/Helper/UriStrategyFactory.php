@@ -29,7 +29,6 @@ namespace ApacheSolrForTypo3\Solr\Domain\Index\PageIndexer\Helper;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Domain\Index\PageIndexer\Helper\UriBuilder\AbstractUriStrategy;
-use ApacheSolrForTypo3\Solr\Domain\Index\PageIndexer\Helper\UriBuilder\SolrSiteStrategy;
 use ApacheSolrForTypo3\Solr\Domain\Index\PageIndexer\Helper\UriBuilder\TYPO3SiteStrategy;
 use ApacheSolrForTypo3\Solr\System\Util\SiteUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -49,16 +48,14 @@ class UriStrategyFactory
      * @param integer $pageId
      * @oaram array $overrideConfiguration
      * @return AbstractUriStrategy
+     * @throws \Exception
      */
     public function getForPageId(int $pageId): AbstractUriStrategy
     {
-        // @todo by now using the site urls leads to problems
-        // since e.g. fallbacks do not work and urls could be indexed that lead to a 404 error
-        // when this is resolved we could generate the urls with the router of the site for indexing with solr
-        if (SiteUtility::getIsSiteManagedSite($pageId)) {
-            return GeneralUtility::makeInstance(TYPO3SiteStrategy::class);
+        if (!SiteUtility::getIsSiteManagedSite($pageId)) {
+            throw new \Exception('Site of page with uid ' . $pageId . ' is not a TYPO3 managed site');
         }
 
-        return GeneralUtility::makeInstance(SolrSiteStrategy::class);
+        return GeneralUtility::makeInstance(TYPO3SiteStrategy::class);
     }
 }
