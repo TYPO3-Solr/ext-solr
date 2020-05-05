@@ -313,10 +313,7 @@ class Util
      */
     public static function getIsTYPO3VersionBelow10()
     {
-        if (!defined('TYPO3_branch')) {
-            $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
-        }
-        return (bool)version_compare(TYPO3_branch, '10.0', '<');
+        return GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 10;
     }
 
 }
