@@ -528,7 +528,7 @@ class Indexer extends AbstractIndexer
         $defaultLanguageUid = $this->getDefaultLanguageUid($item, $site->getRootPage(), $siteLanguages);
         $translationOverlays = $this->getTranslationOverlaysWithConfiguredSite((int)$pageId, $site, (array)$siteLanguages);
 
-        $defaultConnection = $this->connectionManager->getConnectionByPageId($pageId, 0, $item->getMountPointIdentifier());
+        $defaultConnection = $this->connectionManager->getConnectionByPageId($pageId, $defaultLanguageUid, $item->getMountPointIdentifier());
         $translationConnections = $this->getConnectionsForIndexableLanguages($translationOverlays);
 
         if ($defaultLanguageUid == 0) {
@@ -611,10 +611,12 @@ class Indexer extends AbstractIndexer
      * @return int
      * @throws \RuntimeException
      */
-    private function getDefaultLanguageUid(Item $item, array $rootPage, array $siteLanguages)
+    protected function getDefaultLanguageUid(Item $item, array $rootPage, array $siteLanguages)
     {
         $defaultLanguageUid = 0;
-        if (($rootPage['l18n_cfg'] & 1) == 1 && count($siteLanguages) > 1) {
+        if (($rootPage['l18n_cfg'] & 1) == 1 && count($siteLanguages) == 1 && $siteLanguages[min(array_keys($siteLanguages))] > 0) {
+            $defaultLanguageUid = $siteLanguages[min(array_keys($siteLanguages))];
+        } elseif (($rootPage['l18n_cfg'] & 1) == 1 && count($siteLanguages) > 1) {
             unset($siteLanguages[array_search('0', $siteLanguages)]);
             $defaultLanguageUid = $siteLanguages[min(array_keys($siteLanguages))];
         } elseif (($rootPage['l18n_cfg'] & 1) == 1 && count($siteLanguages) == 1) {

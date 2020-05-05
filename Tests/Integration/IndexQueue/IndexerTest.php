@@ -616,4 +616,29 @@ class IndexerTest extends IntegrationTest
         $this->assertCount(1, $result, "Expect only one SOLR connection.");
         $this->assertArrayNotHasKey(0, $result, "Expect, that there is no solr connection returned for default language,");
     }
+
+    /**
+     * @test
+     */
+    public function getSolrConnectionsByItemReturnsNoDefaultConnectionDefaultLanguageIsHiddenInSiteConfig()
+    {
+        $this->writeDefaultSolrTestSiteConfigurationForHostAndPort('http', 'localhost', 8999, true);
+        $this->importDataSetFromFixture('can_index_with_rootPage_set_to_hide_default_language.xml');
+        $itemMetaData = [
+            'uid' => 1,
+            'root' => 1,
+            'item_type' => 'pages',
+            'item_uid' => 1,
+            'indexing_configuration' => '',
+            'has_indexing_properties' => false
+        ];
+        $item = new Item($itemMetaData);
+
+        $result = $this->callInaccessibleMethod($this->indexer,'getSolrConnectionsByItem', $item);
+
+        $this->assertEmpty($result[0], 'Connection for default language was expected to be empty');
+        $this->assertInstanceOf(SolrConnection::class, $result[1], "Expect SolrConnection object in connection array item with key 1.");
+        $this->assertCount(1, $result, "Expect only one SOLR connection.");
+        $this->assertArrayNotHasKey(0, $result, "Expect, that there is no solr connection returned for default language,");
+    }
 }
