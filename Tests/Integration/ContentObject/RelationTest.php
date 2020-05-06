@@ -28,6 +28,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\ContentObject;
 
 use ApacheSolrForTypo3\Solr\ContentObject\Relation;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
+use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
@@ -47,12 +48,14 @@ class RelationTest extends IntegrationTest
     public function canFallbackToPagesTableIfPagesLanguageOverlayTCAHasNoDefinitionForLocalColumn($fixtureName)
     {
         $this->importDataSetFromFixture($fixtureName);
-        $GLOBALS['TSFE'] = $this->getMockBuilder(TypoScriptFrontendController::class)->disableOriginalConstructor()->getMock();
-        $GLOBALS['TSFE']->sys_page = GeneralUtility::makeInstance(PageRepository::class);
-        /* @var ContentObjectRenderer $contentObjectRenderer */
+        /* @var TypoScriptFrontendController|MockObject $tsfe */
+        $GLOBALS['TSFE'] = $tsfe = $this->getMockBuilder(TypoScriptFrontendController::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $tsfe->sys_page = GeneralUtility::makeInstance(PageRepository::class);
+        /* @var ContentObjectRenderer $contentObjectRendererMock */
         $contentObjectRendererMock = $this->getMockBuilder(ContentObjectRenderer::class)->setConstructorArgs([$GLOBALS['TSFE']])->getMock();
         $contentObjectRendererMock->currentRecord = 'pages:7';
-        $GLOBALS['TSFE']->sys_language_uid = 1;
 
         /* @var Relation $solrRelation */
         $solrRelation = GeneralUtility::makeInstance(Relation::class, $contentObjectRendererMock);
