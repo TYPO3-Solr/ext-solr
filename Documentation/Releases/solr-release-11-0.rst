@@ -58,6 +58,9 @@ Beside the major changes we did several small improvements and bugfixes:
 * Add FAQ for different host/port configuration https://github.com/TYPO3-Solr/ext-solr/pull/2509 (Thanks to Florian Langer)
 * Replace current URL with new filter URL https://github.com/TYPO3-Solr/ext-solr/pull/2557 (Thanks to Klaus Hörmann-Engl)
 * Add colon after user if password given https://github.com/TYPO3-Solr/ext-solr/pull/2537 (Thanks to Thomas Löffler)
+* Remove eval int from port in site configuration  https://github.com/TYPO3-Solr/ext-solr/pull/2599 (Thanks to Georg Ringer)
+* Replace usage of TYPO3_branch https://github.com/TYPO3-Solr/ext-solr/pull/2600 (Thanks to Georg Ringer)
+* Remove langdisable=1 in FlexForms https://github.com/TYPO3-Solr/ext-solr/pull/2601 (Thanks to Georg Ringer)
 
 Contributors
 ============
@@ -69,6 +72,7 @@ awesome community. Here are the contributors to this release.
 
 * dev-rke
 * Florian Langer
+* Georg Ringer
 * Goddart Goth
 * Hannes Lau
 * Jens Jacobsen
