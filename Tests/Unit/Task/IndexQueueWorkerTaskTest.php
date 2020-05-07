@@ -47,14 +47,14 @@ class IndexQueueWorkerTaskTest extends UnitTest
             ->setMethods(['execute'])
             ->getMock();
 
-            // by default the webroot should be PATH_site
+        // by default the webroot should be Environment::getPublicPath()
         $this->assertSame(Environment::getPublicPath() . '/', $indexQueuerWorker->getWebRoot(), 'Not using PATH_site as webroot');
 
-            // can we overwrite it?
+        // can we overwrite it?
         $indexQueuerWorker->setForcedWebRoot('/var/www/foobar.de/subdir');
         $this->assertSame('/var/www/foobar.de/subdir', $indexQueuerWorker->getWebRoot(), 'Can not force a webroot');
 
-            // can we use a marker?
+        // can we use a marker?
         $indexQueuerWorker->setForcedWebRoot('###PATH_site###../test/');
         $this->assertSame(Environment::getPublicPath() . '/../test/', $indexQueuerWorker->getWebRoot(), 'Could not use a marker in forced webroot');
     }
