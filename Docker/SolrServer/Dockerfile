@@ -6,5 +6,5 @@ USER root
 RUN rm -fR /opt/solr/server/solr/*
 USER solr
 
-COPY --chown=$SOLR_USER:$SOLR_GROUP Resources/Private/Solr/ /var/solr/data
+COPY --chown=solr:solr Resources/Private/Solr/ /var/solr/data
 RUN mkdir -p /var/solr/data/data
