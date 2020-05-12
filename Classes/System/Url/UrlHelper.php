@@ -107,6 +107,24 @@ class UrlHelper {
     }
 
     /**
+     * @param string $port
+     * @return UrlHelper
+     */
+    public function setPort(string $port)
+    {
+        $this->setUrlPart('port', $port);
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPort(): string
+    {
+        return $this->getUrlPart('port');
+    }
+
+    /**
      * @param string $scheme
      * @return UrlHelper
      */
