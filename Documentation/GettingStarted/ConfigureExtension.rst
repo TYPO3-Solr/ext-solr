@@ -59,6 +59,11 @@ This Module can be used to setup and configure the Apache Solr connections.
     .. tip::
 
         Please refer to `official TYPO3 docs about site handling <https://docs.typo3.org/m/typo3/tutorial-getting-started/9.5/en-us/NextSteps/Integrators/Index.html#site-and-language-handling>`__, to setup your first site configuration.
+        
+.. warning::
+
+   EXT:Solr needs a proper domain as base for the site. If the base is set to "/" or a similar relative path, the Indexing will throw an error, so please make sure that "base" is a fully qualified domain like "https://my.project.tld/"
+   
 
 Configure Solr Connections
 """"""""""""""""""""""""""
