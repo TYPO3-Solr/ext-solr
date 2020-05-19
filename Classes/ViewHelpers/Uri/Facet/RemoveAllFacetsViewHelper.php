@@ -35,7 +35,7 @@ class RemoveAllFacetsViewHelper extends AbstractUriViewHelper
     public static function renderStatic(array $arguments, \Closure $renderChildrenClosure, RenderingContextInterface $renderingContext)
     {
         $previousRequest = static::getUsedSearchRequestFromRenderingContext($renderingContext);
-        $uri = self::getSearchUriBuilder()->getRemoveAllFacetsUri($previousRequest);
+        $uri = self::getSearchUriBuilder($renderingContext)->getRemoveAllFacetsUri($previousRequest);
         return $uri;
     }
 }

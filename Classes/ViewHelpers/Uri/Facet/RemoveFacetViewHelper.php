@@ -47,7 +47,7 @@ class RemoveFacetViewHelper extends AbstractUriViewHelper
         /** @var  $facet AbstractFacet */
         $facet = $arguments['facet'];
         $previousRequest = $facet->getResultSet()->getUsedSearchRequest();
-        $uri = self::getSearchUriBuilder()->getRemoveFacetUri($previousRequest, $facet->getName());
+        $uri = self::getSearchUriBuilder($renderingContext)->getRemoveFacetUri($previousRequest, $facet->getName());
         return $uri;
     }
 }

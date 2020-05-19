@@ -1,0 +1,29 @@
+<phpunit
+    backupGlobals="false"
+    backupStaticAttributes="false"
+    colors="true"
+    convertErrorsToExceptions="true"
+    convertWarningsToExceptions="true"
+    forceCoversAnnotation="false"
+    processIsolation="true"
+    stopOnError="true"
+    stopOnFailure="true"
+    stopOnIncomplete="false"
+    stopOnSkipped="false"
+    verbose="false">
+
+    <testsuites>
+        <testsuite name="ext-solr-integration-tests">
+            <directory>../../Tests/Integration/Controller</directory>
+            <exclude>../../Tests/Integration/Controller/Backend/</exclude>
+        </testsuite>
+    </testsuites>
+    <filter>
+        <whitelist processUncoveredFilesFromWhitelist="false">
+            <directory suffix=".php">../../Classes/</directory>
+        </whitelist>
+    </filter>
+    <php>
+        <const name="TYPO3_MODE" value="FE" />
+    </php>
+</phpunit>

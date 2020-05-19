@@ -39,6 +39,7 @@ abstract class AbstractFrontendControllerTest  extends IntegrationTest {
      */
     protected function indexPages($importPageIds)
     {
+        $existingAttributes = $GLOBALS['TYPO3_REQUEST'] ? $GLOBALS['TYPO3_REQUEST']->getAttributes() : [];
         foreach ($importPageIds as $importPageId) {
             $fakeTSFE = $this->getConfiguredTSFE($importPageId);
             $GLOBALS['TSFE'] = $fakeTSFE;
@@ -65,6 +66,11 @@ abstract class AbstractFrontendControllerTest  extends IntegrationTest {
         /** @var $beUser  \TYPO3\CMS\Core\Authentication\BackendUserAuthentication */
         $beUser = GeneralUtility::makeInstance(BackendUserAuthentication::class);
         $GLOBALS['BE_USER'] = $beUser;
+        if (!empty($existingAttributes)) {
+            foreach ($existingAttributes as $attributeName => $attribute) {
+                $GLOBALS['TYPO3_REQUEST'] = $GLOBALS['TYPO3_REQUEST']->withAttribute($attributeName, $attribute);
+            }
+        }
         $this->waitToBeVisibleInSolr();
     }
 

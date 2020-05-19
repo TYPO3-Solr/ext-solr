@@ -576,10 +576,6 @@ class SearchControllerTest extends AbstractFrontendControllerTest
      */
     public function canRenderHierarchicalFacet()
     {
-        if(!Util::getIsTYPO3VersionBelow10()) {
-            $this->markTestSkipped('Needs to be checked with TYPO3 10');
-        }
-
         $this->importDataSetFromFixture('can_render_search_controller.xml');
 
         $GLOBALS['TSFE'] = $this->getConfiguredTSFE(1);
@@ -607,10 +603,6 @@ class SearchControllerTest extends AbstractFrontendControllerTest
      */
     public function canFacetOnHierarchicalFacetItem()
     {
-        if(!Util::getIsTYPO3VersionBelow10()) {
-            $this->markTestSkipped('Needs to be checked with TYPO3 10');
-        }
-
         $this->importDataSetFromFixture('can_render_search_controller.xml');
         $GLOBALS['TSFE'] = $this->getConfiguredTSFE(1);
 
@@ -637,10 +629,6 @@ class SearchControllerTest extends AbstractFrontendControllerTest
      */
     public function canFacetOnHierarchicalTextCategory()
     {
-        if(!Util::getIsTYPO3VersionBelow10()) {
-            $this->markTestSkipped('Needs to be checked with TYPO3 10');
-        }
-
         $this->importDataSetFromFixture('can_render_path_facet_with_search_controller.xml');
         $GLOBALS['TSFE'] = $this->getConfiguredTSFE(1);
 
@@ -968,10 +956,6 @@ class SearchControllerTest extends AbstractFrontendControllerTest
      */
     public function canSortByMetric()
     {
-        if(!Util::getIsTYPO3VersionBelow10()) {
-            $this->markTestSkipped('Needs to be checked with TYPO3 10');
-        }
-
         $this->importDataSetFromFixture('can_sort_by_metric.xml');
         $GLOBALS['TSFE'] = $this->getConfiguredTSFE(1);
 
