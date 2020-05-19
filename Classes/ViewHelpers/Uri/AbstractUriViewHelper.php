@@ -16,6 +16,7 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers\Uri;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Domain\Search\Uri\SearchUriBuilder;
+use ApacheSolrForTypo3\Solr\Mvc\Controller\SolrControllerContext;
 use ApacheSolrForTypo3\Solr\ViewHelpers\AbstractSolrFrontendViewHelper;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
@@ -46,13 +47,18 @@ abstract class AbstractUriViewHelper extends AbstractSolrFrontendViewHelper
     }
 
     /**
+     * @param RenderingContextInterface|null $renderingContext
      * @return SearchUriBuilder|object
      */
-    protected static function getSearchUriBuilder()
+    protected static function getSearchUriBuilder(RenderingContextInterface $renderingContext = null)
     {
         if (!isset(self::$searchUriBuilder)) {
             $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
             self::$searchUriBuilder = $objectManager->get(SearchUriBuilder::class);
+        }
+
+        if ($renderingContext && method_exists($renderingContext, 'getControllerContext')) {
+            self::$searchUriBuilder->injectUriBuilder($renderingContext->getControllerContext()->getUriBuilder());
         }
 
         return self::$searchUriBuilder;

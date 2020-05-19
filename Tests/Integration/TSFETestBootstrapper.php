@@ -112,6 +112,7 @@ class TSFETestBootstrapper
                 $siteLanguage = $site->getLanguageById($language);
                 $request = $request->withAttribute('site', $site);
                 $request = $request->withAttribute('language', $siteLanguage);
+                $request = $request->withAttribute('routing', $pageArguments);
             } catch (SiteNotFoundException $e) {
                 throw $e;
             }
@@ -121,7 +122,7 @@ class TSFETestBootstrapper
 
         /** @var $TSFE \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController */
         $TSFE = GeneralUtility::makeInstance(TypoScriptFrontendController::class, $context, $site, $siteLanguage, $pageArguments);
-        $TSFE->set_no_cache();
+        $TSFE->set_no_cache('', true);
         $GLOBALS['TSFE'] = $TSFE;
 
         $feUser = GeneralUtility::makeInstance(FrontendUserAuthentication::class);

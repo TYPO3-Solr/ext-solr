@@ -15,6 +15,8 @@
 	<testsuites>
 		<testsuite name="ext-solr-integration-tests">
 			<directory>../../Tests/Integration/</directory>
+			<directory>../../Tests/Integration/Controller/Backend/</directory>
+			<exclude>../../Tests/Integration/Controller/</exclude>
 		</testsuite>
 	</testsuites>
 	<filter>
@@ -22,4 +24,7 @@
 			<directory suffix=".php">../../Classes/</directory>
 		</whitelist>
 	</filter>
+	<php>
+		<const name="TYPO3_MODE" value="BE" />
+	</php>
 </phpunit>
