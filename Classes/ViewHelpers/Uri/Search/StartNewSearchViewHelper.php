@@ -45,7 +45,7 @@ class StartNewSearchViewHelper extends AbstractUriViewHelper
     {
         $queryString = $arguments['queryString'];
         $previousRequest = static::getUsedSearchRequestFromRenderingContext($renderingContext);
-        $uri = self::getSearchUriBuilder()->getNewSearchUri($previousRequest, $queryString);
+        $uri = self::getSearchUriBuilder($renderingContext)->getNewSearchUri($previousRequest, $queryString);
         return $uri;
     }
 }
