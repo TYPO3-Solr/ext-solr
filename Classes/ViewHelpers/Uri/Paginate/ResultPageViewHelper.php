@@ -46,7 +46,7 @@ class ResultPageViewHelper extends AbstractUriViewHelper
     {
         $page = $arguments['page'];
         $previousRequest = static::getUsedSearchRequestFromRenderingContext($renderingContext);
-        $uri = self::getSearchUriBuilder()->getResultPageUri($previousRequest, $page);
+        $uri = self::getSearchUriBuilder($renderingContext)->getResultPageUri($previousRequest, $page);
         return $uri;
     }
 }
