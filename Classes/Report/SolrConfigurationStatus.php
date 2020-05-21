@@ -28,6 +28,7 @@ use ApacheSolrForTypo3\Solr\FrontendEnvironment;
 use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
 use TYPO3\CMS\Core\Error\Http\ServiceUnavailableException;
+use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Reports\Status;
 
@@ -157,6 +158,12 @@ class SolrConfigurationStatus extends AbstractSolrStatus
             } catch (ServiceUnavailableException $sue) {
                 if ($sue->getCode() == 1294587218) {
                     //  No TypoScript template found, continue with next site
+                    $rootPagesWithIndexingOff[] = $rootPage;
+                    continue;
+                }
+            } catch (SiteNotFoundException $sue) {
+                if ($sue->getCode() == 1521716622) {
+                    //  No site found, continue with next site
                     $rootPagesWithIndexingOff[] = $rootPage;
                     continue;
                 }
