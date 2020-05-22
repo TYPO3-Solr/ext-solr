@@ -87,6 +87,7 @@ class SuggestControllerTest extends AbstractFrontendControllerTest
 
     /**
      * @test
+     * @group frontend
      */
     public function canDoABasicSuggest()
     {

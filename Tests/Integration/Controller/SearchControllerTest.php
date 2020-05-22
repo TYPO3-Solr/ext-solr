@@ -98,6 +98,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
 
     /**
      * @test
+     * @group frontend
      */
     public function canShowSearchForm()
     {
@@ -113,6 +114,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
 
     /**
      * @test
+     * @group frontend
      */
     public function canSearchForPrices()
     {
@@ -131,6 +133,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
 
     /**
      * @test
+     * @group frontend
      */
     public function canDoAPaginatedSearch()
     {
@@ -150,6 +153,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
 
     /**
      * @test
+     * @group frontend
      */
     public function canOpenSecondPageOfPaginatedSearch()
     {
@@ -170,6 +174,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
 
     /**
      * @test
+     * @group frontend
      */
     public function canGetADidYouMeanProposalForATypo()
     {
@@ -189,6 +194,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
 
     /**
      * @test
+     * @group frontend
      */
     public function canAutoCorrectATypo()
     {
@@ -218,6 +224,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
 
     /**
      * @test
+     * @group frontend
      */
     public function canRenderAFacetWithFluid()
     {
@@ -240,6 +247,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
 
     /**
      * @test
+     * @group frontend
      */
     public function canDoAnInitialEmptySearchWithoutResults()
     {
@@ -268,6 +276,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
 
     /**
      * @test
+     * @group frontend
      */
     public function canDoAnInitialEmptySearchWithResults()
     {
@@ -296,6 +305,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
 
     /**
      * @test
+     * @group frontend
      */
     public function canDoAnInitialSearchWithoutResults()
     {
@@ -325,6 +335,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
 
     /**
      * @test
+     * @group frontend
      */
     public function canDoAnInitialSearchWithResults()
     {
@@ -352,6 +363,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
 
     /**
      * @test
+     * @group frontend
      */
     public function removeOptionLinkWillBeShownWhenFacetWasSelected()
     {
@@ -374,6 +386,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
 
     /**
      * @test
+     * @group frontend
      */
     public function removeOptionLinkWillIsAlsoShownWhenAFacetIsNotInTheResponse()
     {
@@ -396,6 +409,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
 
     /**
      * @test
+     * @group frontend
      */
     public function canFilterOnPageSections()
     {
@@ -425,6 +439,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
 
     /**
      * @test
+     * @group frontend
      */
     public function exceptionWillBeThrownWhenAWrongTemplateIsConfiguredForTheFacet()
     {
@@ -456,6 +471,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
 
     /**
      * @test
+     * @group frontend
      */
     public function canRenderAScoreAnalysisWhenBackendUserIsLoggedIn()
     {
@@ -477,6 +493,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
 
     /**
      * @test
+     * @group frontend
      */
     public function canSortFacetsByLex()
     {
@@ -518,6 +535,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
 
     /**
      * @test
+     * @group frontend
      */
     public function canSortFacetsByOptionCountWhenNothingIsConfigured()
     {
@@ -550,6 +568,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
 
     /**
      * @test
+     * @group frontend
      */
     public function canRenderQueryGroupFacet()
     {
@@ -573,6 +592,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
 
     /**
      * @test
+     * @group frontend
      */
     public function canRenderHierarchicalFacet()
     {
@@ -600,6 +620,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
 
     /**
      * @test
+     * @group frontend
      */
     public function canFacetOnHierarchicalFacetItem()
     {
@@ -626,6 +647,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
 
     /**
      * @test
+     * @group frontend
      */
     public function canFacetOnHierarchicalTextCategory()
     {
@@ -652,6 +674,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
 
     /**
      * @test
+     * @group frontend
      */
     public function canDefineAManualSortOrder()
     {
@@ -694,6 +717,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
 
     /**
      * @test
+     * @group frontend
      */
     public function canSeeTheParsedQueryWhenABackendUserIsLoggedIn()
     {
@@ -715,6 +739,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
 
     /**
      * @test
+     * @group frontend
      */
     public function frontendWillRenderErrorMessageForSolrNotAvailableAction()
     {
@@ -749,6 +774,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
      * @param array $getArguments
      * @dataProvider frontendWillForwardsToErrorActionWhenSolrEndpointIsNotAvailableDataProvider
      * @test
+     * @group frontend
      */
     public function frontendWillForwardsToErrorActionWhenSolrEndpointIsNotAvailable($action, $getArguments)
     {
@@ -769,6 +795,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
 
     /**
      * @test
+     * @group frontend
      */
     public function canShowLastSearchesFromSessionInResponse()
     {
@@ -792,6 +819,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
 
     /**
      * @test
+     * @group frontend
      */
     public function canChangeResultsPerPage()
     {
@@ -814,6 +842,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
 
     /**
      * @test
+     * @group frontend
      */
     public function canShowLastSearchesFromDatabaseInResponse()
     {
@@ -844,6 +873,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
 
     /**
      * @test
+     * @group frontend
      */
     public function canNotStoreQueyStringInLastSearchesWhenQueryDoesNotReturnAResult()
     {
@@ -874,6 +904,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
 
     /**
      * @test
+     * @group frontend
      */
     public function canOverwriteAFilterWithTheFlexformSettings()
     {
@@ -896,6 +927,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
 
     /**
      * @test
+     * @group frontend
      */
     public function canRenderDateRangeFacet()
     {
@@ -924,6 +956,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
 
     /**
      * @test
+     * @group frontend
      */
     public function canRenderASecondFacetOnTheTypeField()
     {
@@ -953,6 +986,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
 
     /**
      * @test
+     * @group frontend
      */
     public function canSortByMetric()
     {
@@ -980,6 +1014,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
 
     /**
      * @test
+     * @group frontend
      */
     public function formActionIsRenderingTheForm()
     {
@@ -996,6 +1031,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
 
     /**
      * @test
+     * @group frontend
      */
     public function searchingAndRenderingFrequentSearchesIsShowingTheTermAsFrequentSearch()
     {
@@ -1015,6 +1051,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
 
     /**
      * @test
+     * @group frontend
      */
     public function canRenderDetailAction()
     {
@@ -1032,6 +1069,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
 
     /**
      * @test
+     * @group frontend
      */
     public function canRenderSearchFormOnly()
     {
@@ -1048,6 +1086,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
      * The template root path is configured in the typoscript template to point to another folder-
      *
      * @test
+     * @group frontend
      */
     public function canRenderAsUserObjectWithCustomTemplatePath()
     {
@@ -1066,6 +1105,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
 
     /**
      * @test
+     * @group frontend
      */
     public function canPassCustomSettingsToView()
     {
@@ -1095,6 +1135,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
      * Only the entry template points to a different file.
      *
      * @test
+     * @group frontend
      */
     public function canRenderAsUserObjectWithCustomTemplateInTypoScript()
     {
