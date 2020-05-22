@@ -23,10 +23,10 @@ class UtilTest extends IntegrationTest
     {
         parent::setUp();
 
-        /** @var \TYPO3\CMS\Core\Cache\CacheManager|\Prophecy\Prophecy\ObjectProphecy $cacheManager */
-        $cacheManager = $this->prophesize(\TYPO3\CMS\Core\Cache\CacheManager::class);
-
         if (Util::getIsTYPO3VersionBelow10()) {
+
+            /** @var \TYPO3\CMS\Core\Cache\CacheManager|\Prophecy\Prophecy\ObjectProphecy $cacheManager */
+            $cacheManager = $this->prophesize(\TYPO3\CMS\Core\Cache\CacheManager::class);
             /** @var \TYPO3\CMS\Core\Cache\Frontend\VariableFrontend|\Prophecy\Prophecy\ObjectProphecy $frontendCache */
             $frontendCache = $this->prophesize(\TYPO3\CMS\Core\Cache\Frontend\VariableFrontend::class);
             $cacheManager
@@ -44,32 +44,11 @@ class UtilTest extends IntegrationTest
             $cacheManager
                 ->getCache('cache_rootline')
                 ->willReturn($frontendCache->reveal());
-        } else {
-            /** @var \TYPO3\CMS\Core\Cache\Frontend\PhpFrontend|\Prophecy\Prophecy\ObjectProphecy $frontendCache */
-            $frontendCache = $this->prophesize(\TYPO3\CMS\Core\Cache\Frontend\PhpFrontend::class);
-            $frontendCache->require(Argument::any())->willReturn([]);
-            $frontendCache->get(Argument::any())->willReturn([]);
-            $frontendCache->set(Argument::any(), Argument::any(), Argument::any(), Argument::any())->willReturn();
             $cacheManager
-                ->getCache('pages')
+                ->getCache('tx_solr_configuration')
                 ->willReturn($frontendCache->reveal());
-            $cacheManager
-                ->getCache('runtime')
-                ->willReturn($frontendCache->reveal());
-            $cacheManager
-                ->getCache('hash')
-                ->willReturn($frontendCache->reveal());
-            $cacheManager
-                ->getCache('core')
-                ->willReturn($frontendCache->reveal());
-            $cacheManager
-                ->getCache('hash')
-                ->willReturn($frontendCache->reveal());
+            GeneralUtility::setSingletonInstance(\TYPO3\CMS\Core\Cache\CacheManager::class, $cacheManager->reveal());
         }
-        $cacheManager
-            ->getCache('tx_solr_configuration')
-            ->willReturn($frontendCache->reveal());
-        GeneralUtility::setSingletonInstance(\TYPO3\CMS\Core\Cache\CacheManager::class, $cacheManager->reveal());
         $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['solr'] = [];
         $GLOBALS['TYPO3_CONF_VARS']['FE']['ContentObjects'] = [];
     }
