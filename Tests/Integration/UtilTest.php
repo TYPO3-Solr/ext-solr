@@ -321,7 +321,8 @@ class UtilTest extends IntegrationTest
             $context->getPropertyFromAspect('backend.user', 'isLoggedIn', false)->shouldBeCalled();
             $context->setAspect('frontend.user', Argument::any())->shouldBeCalled();
             $context->getPropertyFromAspect('workspace', 'id')->shouldBeCalled()->willReturn(0);
-            $context->getPropertyFromAspect('date', 'accessTime', 0)->shouldBeCalled()->willReturn(0);
+            $context->getPropertyFromAspect('date', 'accessTime', 0)->willReturn(0);
+            $context->getPropertyFromAspect('typoscript', 'forcedTemplateParsing')->willReturn(false);
             $context->getPropertyFromAspect('visibility', 'includeHiddenPages')->shouldBeCalled()->willReturn(false);
             $context->setAspect('typoscript', Argument::any())->shouldBeCalled();
             GeneralUtility::setSingletonInstance(Context::class, $context->reveal());
