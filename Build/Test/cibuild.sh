@@ -71,4 +71,10 @@ fi
 echo "Run integration tests"
 INTEGRATION_BOOTSTRAP=".Build/vendor/nimut/testing-framework/res/Configuration/FunctionalTestsBootstrap.php"
 .Build/bin/phpunit --colors -c Build/Test/IntegrationTests.xml --bootstrap=$INTEGRATION_BOOTSTRAP --coverage-clover=coverage.integration.clover
-.Build/bin/phpunit --colors -c Build/Test/IntegrationFrontendTests.xml --bootstrap=$INTEGRATION_BOOTSTRAP --coverage-clover=coverage.integration.clover
+if [ $? -ne "0" ]; then
+    echo "Error during running the integration tests please check and fix them"
+    exit 1
+fi
+
+echo "Run frontend-related integration tests"
+.Build/bin/phpunit --colors -c Build/Test/IntegrationFrontendTests.xml --bootstrap=$INTEGRATION_BOOTSTRAP --coverage-clover=coverage.integration.frontend.clover
