@@ -15,10 +15,13 @@
 	<testsuites>
 		<testsuite name="ext-solr-integration-tests">
 			<directory>../../Tests/Integration/</directory>
-			<directory>../../Tests/Integration/Controller/Backend/</directory>
-			<exclude>../../Tests/Integration/Controller/</exclude>
 		</testsuite>
 	</testsuites>
+	<groups>
+		<exclude>
+			<group>frontend</group>
+		</exclude>
+	</groups>
 	<filter>
 		<whitelist processUncoveredFilesFromWhitelist="false">
 			<directory suffix=".php">../../Classes/</directory>
