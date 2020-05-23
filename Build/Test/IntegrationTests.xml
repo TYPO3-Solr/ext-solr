@@ -27,7 +27,4 @@
 			<directory suffix=".php">../../Classes/</directory>
 		</whitelist>
 	</filter>
-	<php>
-		<const name="TYPO3_MODE" value="BE" />
-	</php>
 </phpunit>
