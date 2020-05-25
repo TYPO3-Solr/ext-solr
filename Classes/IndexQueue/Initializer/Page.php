@@ -337,6 +337,6 @@ class Page extends AbstractInitializer
         /* @var $siteRepository SiteRepository */
         $mountedSite = $siteRepository->getSiteByPageId($mountPageSourceId, $mountPageIdentifier);
 
-        return $mountedSite->getPages($mountPageSourceId);
+        return $mountedSite ? $mountedSite->getPages($mountPageSourceId) : [];
     }
 }
