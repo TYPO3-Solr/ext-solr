@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataset>
+	<sys_template>
+		<uid>1</uid>
+		<pid>1</pid>
+		<root>1</root>
+		<clear>3</clear>
+		<config>
+			<![CDATA[
+                page = PAGE
+                page.typeNum = 0
+
+                # very simple rendering
+                page.10 = CONTENT
+                page.10 {
+                    table = tt_content
+                    select.orderBy = sorting
+                    select.where = colPos=0
+                    renderObj = COA
+                    renderObj {
+                        10 = TEXT
+                        10.field = bodytext
+                    }
+                }
+
+                plugin.tx_solr {
+                    enabled = 1
+                    index {
+                        fieldProcessingInstructions {
+                            changed = timestampToIsoDate
+                            created = timestampToIsoDate
+                            endtime = timestampToUtcIsoDate
+                            rootline = pageUidToHierarchy
+                            pageHierarchy_stringM = pathToHierarchy
+                        }
+                        queue {
+				pages = 1
+				pages {
+					allowedPageTypes = 1
+								fields {
+									sitetitle_stringS = TEXT
+									sitetitle_stringS.value = Outer Site
+								}
+				}
+                        }
+                    }
+                }
+            ]]>
+		</config>
+		<sorting>100</sorting>
+	</sys_template>
+	<sys_template>
+		<uid>2</uid>
+		<pid>111</pid>
+		<root>1</root>
+		<clear>3</clear>
+		<config>
+			<![CDATA[
+                page = PAGE
+
+                # very simple rendering
+                page.10 = CONTENT
+                page.10 {
+                    table = tt_content
+                    select.orderBy = sorting
+                    select.where = colPos=0
+                    renderObj = COA
+                    renderObj {
+                        10 = TEXT
+                        10.field = bodytext
+                    }
+                }
+                plugin.tx_solr {
+                    enabled = 1
+                    index {
+                        fieldProcessingInstructions {
+                            changed = timestampToIsoDate
+                            created = timestampToIsoDate
+                            endtime = timestampToUtcIsoDate
+                            rootline = pageUidToHierarchy
+                            pageHierarchy_stringM = pathToHierarchy
+                        }
+                        queue {
+				pages = 1
+				pages {
+					allowedPageTypes = 1
+								fields {
+									sitetitle_stringS = TEXT
+									sitetitle_stringS.value = Inner Site
+								}
+				}
+                        }
+                    }
+
+                }
+            ]]>
+		</config>
+		<sorting>100</sorting>
+	</sys_template>
+
+	<pages>
+		<uid>1</uid>
+		<title>Outer Site</title>
+		<is_siteroot>1</is_siteroot>
+		<doktype>1</doktype>
+		<hidden>0</hidden>
+	</pages>
+
+	<pages>
+		<uid>111</uid>
+		<pid>1</pid>
+		<title>Inner Site</title>
+		<doktype>1</doktype>
+		<is_siteroot>1</is_siteroot>
+		<hidden>0</hidden>
+	</pages>
+
+	<pages>
+		<uid>120</uid>
+		<pid>111</pid>
+		<title>Subpage of Inner Site</title>
+		<doktype>1</doktype>
+		<hidden>0</hidden>
+	</pages>
+</dataset>

@@ -33,6 +33,7 @@ use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Http\ServerRequestFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Localization\LanguageService;
@@ -640,5 +641,34 @@ class IndexerTest extends IntegrationTest
         $this->assertInstanceOf(SolrConnection::class, $result[1], "Expect SolrConnection object in connection array item with key 1.");
         $this->assertCount(1, $result, "Expect only one SOLR connection.");
         $this->assertArrayNotHasKey(0, $result, "Expect, that there is no solr connection returned for default language,");
+    }
+
+    /**
+     * @test
+     */
+    public function getSolrConnectionsByItemReturnsProperItemInNestedSite()
+    {
+        $this->cleanUpSolrServerAndAssertEmpty();
+        $this->writeDefaultSolrTestSiteConfigurationForHostAndPort();
+        $this->importDataSetFromFixture('can_index_with_multiple_sites.xml');
+        $result = $this->addToQueueAndIndexRecord('pages', 1);
+        self::assertTrue($result, 'Indexing was not indicated to be successful');
+        $result = $this->addToQueueAndIndexRecord('pages', 111);
+        self::assertTrue($result, 'Indexing was not indicated to be successful');
+        $result = $this->addToQueueAndIndexRecord('pages', 120);
+        self::assertTrue($result, 'Indexing was not indicated to be successful');
+        $this->waitToBeVisibleInSolr();
+        $solrContentJson = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
+        $solrContent = json_decode($solrContentJson, true);
+        $solrContentResponse = $solrContent['response'];
+        self::assertArrayHasKey('docs', $solrContentResponse, 'Did not find docs in solr response');
+
+        $solrDocs = $solrContentResponse['docs'];
+        self::assertCount(3, $solrDocs, 'Could not found index document into solr');
+
+        $sites = array_column($solrDocs, 'site');
+        self::assertEquals('testone.site', $sites[0]);
+        self::assertEquals('testtwo.site', $sites[1]);
+        self::assertEquals('testtwo.site', $sites[2]);
     }
 }
