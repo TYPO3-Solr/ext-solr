@@ -515,7 +515,12 @@ class Indexer extends AbstractIndexer
     {
         $solrConnections = [];
 
-        $pageId = $item->getRootPageUid();
+        $rootPageId = $item->getRootPageUid();
+        if ($item->getType() === 'pages') {
+            $pageId = $item->getRecordUid();
+        } else {
+            $pageId = $item->getRecordPageId();
+        }
 
         // Solr configurations possible for this item
         $site = $item->getSite();
@@ -528,7 +533,7 @@ class Indexer extends AbstractIndexer
         $defaultLanguageUid = $this->getDefaultLanguageUid($item, $site->getRootPage(), $siteLanguages);
         $translationOverlays = $this->getTranslationOverlaysWithConfiguredSite((int)$pageId, $site, (array)$siteLanguages);
 
-        $defaultConnection = $this->connectionManager->getConnectionByPageId($pageId, $defaultLanguageUid, $item->getMountPointIdentifier());
+        $defaultConnection = $this->connectionManager->getConnectionByPageId($rootPageId, $defaultLanguageUid, $item->getMountPointIdentifier());
         $translationConnections = $this->getConnectionsForIndexableLanguages($translationOverlays);
 
         if ($defaultLanguageUid == 0) {
