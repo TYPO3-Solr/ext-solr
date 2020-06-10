@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use RuntimeException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -67,7 +68,7 @@ class Manager
      *
      * @param string $action The action to get a frontend helper for.
      * @return FrontendHelper Index Queue page indexer frontend helper
-     * @throws \RuntimeException if the class registered for an action is not an implementation of ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\FrontendHelper
+     * @throws RuntimeException if the class registered for an action is not an implementation of ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\FrontendHelper
      */
     public function resolveAction($action)
     {
@@ -78,7 +79,7 @@ class Manager
         $frontendHelper = GeneralUtility::makeInstance(self::$frontendHelperRegistry[$action]);
         if (!$frontendHelper instanceof FrontendHelper) {
             $message = self::$frontendHelperRegistry[$action] . ' is not an implementation of ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\FrontendHelper';
-            throw new \RuntimeException($message, 1292497896);
+            throw new RuntimeException($message, 1292497896);
         }
 
         $this->activatedFrontendHelpers[$action] = $frontendHelper;

@@ -1,5 +1,6 @@
 <?php
 
+/** @noinspection PhpFullyQualifiedNameUsageInspection */
 return [
     'frontend' => [
         'apache-solr-for-typo3/page-indexer-initialization' => [
