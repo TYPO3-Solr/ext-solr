@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper;
 
 /***************************************************************
@@ -28,15 +29,19 @@ use ApacheSolrForTypo3\Solr\Access\Rootline;
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
+use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use ApacheSolrForTypo3\Solr\Typo3PageIndexer;
 use ApacheSolrForTypo3\Solr\Util;
+use Exception;
+use TYPO3\CMS\Core\Log\Logger;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
+use UnexpectedValueException;
 
 /**
  * Index Queue Page Indexer frontend helper to ask the frontend page indexer to
@@ -69,13 +74,15 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
     protected $responseData = [];
 
     /**
-     * @var \TYPO3\CMS\Core\Log\Logger
+     * @var Logger
      */
     protected $logger = null;
 
     /**
      * Activates a frontend helper by registering for hooks and other
      * resources required by the frontend helper to work.
+     *
+     * @noinspection PhpUnused
      */
     public function activate()
     {
@@ -104,6 +111,7 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
      * Returns the status of whether a page was indexed.
      *
      * @return array Page indexed status.
+     * @noinspection PhpUnused
      */
     public function getData()
     {
@@ -118,6 +126,7 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
      * Fakes a logged in user to retrieve access restricted content.
      *
      * @return void
+     * @noinspection PhpUnused
      */
     public function authorizeFrontendUser()
     {
@@ -157,8 +166,8 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
             $stringAccessRootline = $this->request->getParameter('accessRootline');
         }
 
-        $accessRootline = GeneralUtility::makeInstance(Rootline::class, /** @scrutinizer ignore-type */ $stringAccessRootline);
-        return $accessRootline;
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
+        return GeneralUtility::makeInstance(Rootline::class, /** @scrutinizer ignore-type */ $stringAccessRootline);
     }
 
     /**
@@ -261,6 +270,7 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
      * generated page.
      *
      * @param TypoScriptFrontendController $page TypoScript frontend
+     * @noinspection PhpUnused
      */
     public function hook_indexContent(TypoScriptFrontendController $page)
     {
@@ -283,7 +293,7 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
         try {
             $indexQueueItem = $this->getIndexQueueItem();
             if (is_null($indexQueueItem)) {
-                throw new \UnexpectedValueException('Can not get index queue item', 1482162337);
+                throw new UnexpectedValueException('Can not get index queue item', 1482162337);
             }
 
             $solrConnection = $this->getSolrConnection($indexQueueItem);
@@ -308,7 +318,7 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
             foreach ($documentsSentToSolr as $document) {
                 $this->responseData['documentsSentToSolr'][] = (array)$document;
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             if ($configuration->getLoggingExceptions()) {
                 $this->logger->log(
                     SolrLogManager::ERROR,
@@ -338,30 +348,28 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
      *
      * @param Item $indexQueueItem
      * @return SolrConnection Solr server connection
+     * @throws NoSolrConnectionFoundException
      */
     protected function getSolrConnection(Item $indexQueueItem)
     {
         /** @var $connectionManager ConnectionManager */
         $connectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
 
-        $solrConnection = $connectionManager->getConnectionByRootPageId(
+        return $connectionManager->getConnectionByRootPageId(
             $indexQueueItem->getRootPageUid(),
             Util::getLanguageUid()
         );
-
-        return $solrConnection;
     }
 
     /**
      * This method retrieves the item from the index queue, that is indexed in this request.
      *
-     * @return \ApacheSolrForTypo3\Solr\IndexQueue\Item
+     * @return Item
      */
     protected function getIndexQueueItem()
     {
         /** @var $indexQueue Queue */
         $indexQueue = GeneralUtility::makeInstance(Queue::class);
-        $indexQueueItem = $indexQueue->getItem($this->request->getParameter('item'));
-        return $indexQueueItem;
+        return $indexQueue->getItem($this->request->getParameter('item'));
     }
 }
