@@ -308,7 +308,7 @@ class UtilTest extends IntegrationTest
             $GLOBALS['TYPO3_REQUEST'] = GeneralUtility::makeInstance(ServerRequest::class);
             $tsfeProphecy->willBeConstructedWith([$context->reveal(), $site->reveal(), $siteLanguage->reveal()]);
             $tsfeProphecy->getSite()->shouldBeCalled()->willReturn($site);
-            $tsfeProphecy->getPageAndRootlineWithDomain($pageId)->shouldBeCalled();
+            $tsfeProphecy->getPageAndRootlineWithDomain($pageId, $GLOBALS['TYPO3_REQUEST'])->shouldBeCalled();
             $tsfeProphecy->getConfigArray()->shouldBeCalled();
             $tsfeProphecy->settingLanguage()->shouldBeCalled();
             $tsfeProphecy->newCObj()->shouldBeCalled();
