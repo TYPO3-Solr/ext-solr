@@ -102,7 +102,8 @@ class Tsfe implements SingletonInterface
 
             // @extensionScannerIgnoreLine
             $GLOBALS['TSFE']->sys_page = GeneralUtility::makeInstance(PageRepository::class);
-            $GLOBALS['TSFE']->getPageAndRootlineWithDomain($pageId);
+            $request = \TYPO3\CMS\Core\Http\ServerRequestFactory::fromGlobals();
+            $GLOBALS['TSFE']->getPageAndRootlineWithDomain($pageId, $request);
 
             $template = GeneralUtility::makeInstance(TemplateService::class, $context);
             $GLOBALS['TSFE']->tmpl = $template;
