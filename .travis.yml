@@ -26,7 +26,10 @@ env:
     - PHP_CS_FIXER_VERSION="^2.16.1"
   matrix:
     - TYPO3_VERSION="^9.5"
+    - TYPO3_VERSION="9.5.x-dev"
+    - TYPO3_VERSION="^10.4.3"
     - TYPO3_VERSION="^10.4"
+    - TYPO3_VERSION="10.4.x-dev"
     - TYPO3_VERSION="dev-master"
 
 matrix:
