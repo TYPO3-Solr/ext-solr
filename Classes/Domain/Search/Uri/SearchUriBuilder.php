@@ -319,7 +319,7 @@ class SearchUriBuilder
             $uriCacheTemplate = self::$preCompiledLinks[$hash];
         } else {
             self::$missCount++;
-            $this->uriBuilder->setTargetPageUid($pageUid);
+            $this->uriBuilder->reset()->setTargetPageUid($pageUid);
             $uriCacheTemplate = $this->uriBuilder->setArguments($structure)->setUseCacheHash(false)->build();
 
             // even if we call build with disabled cHash in TYPO3 9 a cHash will be generated when site management is active
