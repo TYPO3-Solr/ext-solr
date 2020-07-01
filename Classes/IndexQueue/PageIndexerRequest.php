@@ -233,7 +233,7 @@ class PageIndexerRequest
         $headers = $this->header;
         $headers[] = 'User-Agent: ' . $this->getUserAgent();
         $itemId = $this->indexQueueItem->getIndexQueueUid();
-        $pageId = $this->indexQueueItem->getRecordPageId();
+        $pageId = $this->indexQueueItem->getRecordUid();
 
         $indexerRequestData = [
             'requestId' => $this->requestId,
