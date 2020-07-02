@@ -28,7 +28,6 @@
     "phpunit/phpunit": ">=4.8.0 <6.0.0"
   },
   "replace": {
-    "solr": "self.version",
     "typo3-ter/solr": "self.version"
   },
   "autoload": {
