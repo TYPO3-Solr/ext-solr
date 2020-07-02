@@ -28,7 +28,6 @@
     "nimut/testing-framework": "^1.1"
   },
   "replace": {
-    "solr": "self.version",
     "typo3-ter/solr": "self.version"
   },
   "autoload": {
