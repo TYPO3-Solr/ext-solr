@@ -90,7 +90,7 @@ class StatisticsWriterProcessor implements SearchResultSetProcessor
             'tstamp' => $this->getTime(),
             'language' => Util::getLanguageUid(),
             // @extensionScannerIgnoreLine
-            'num_found' => isset($response->response->numFound) ? (int)$response->response->numFound : 0,
+            'num_found' => (int)$resultSet->getAllResultCount(),
             'suggestions_shown' => is_object($response->spellcheck->suggestions) ? (int)get_object_vars($response->spellcheck->suggestions) : 0,
             // @extensionScannerIgnoreLine
             'time_total' => isset($response->debug->timing->time) ? $response->debug->timing->time : 0,
