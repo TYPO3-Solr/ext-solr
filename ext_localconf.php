@@ -95,6 +95,13 @@ if (!function_exists('strptime')) {
 
     // adding scheduler tasks
 
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][\ApacheSolrForTypo3\Solr\Task\OptimizeIndexTask::class] = [
+        'extension' => 'solr',
+        'title' => 'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:optimizeindex_title',
+        'description' => 'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:optimizeindex_description',
+        'additionalFields' => \ApacheSolrForTypo3\Solr\Task\OptimizeIndexTaskAdditionalFieldProvider::class
+    ];
+
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][\ApacheSolrForTypo3\Solr\Task\ReIndexTask::class] = [
         'extension' => 'solr',
         'title' => 'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:reindex_title',
