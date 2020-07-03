@@ -4,6 +4,14 @@
 		<header/>
 		<body>
 			<!-- From ModuleScheduler/locallang.xlf //-->
+			<trans-unit id="optimizeindex_title" xml:space="preserve">
+				<source>Optimize index of a site</source>
+				<target>Index der Seite optimieren</target>
+			</trans-unit>
+			<trans-unit id="optimizeindex_description" xml:space="preserve">
+				<source>Optimizes the index of a site.</source>
+				<target>Optimiert den Index einer Seite.</target>
+			</trans-unit>
 			<trans-unit id="reindex_title" xml:space="preserve" approved="yes">
 				<source>Force Re-Indexing of a site</source>
 				<target>Re-Indexierung der Seite erzwingen</target>
