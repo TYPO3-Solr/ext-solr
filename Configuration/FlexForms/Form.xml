@@ -34,6 +34,7 @@
                             <config>
                                 <section>1</section>
                                 <type>select</type>
+                                <renderType>selectSingle</renderType>
                                 <itemsProcFunc>ApacheSolrForTypo3\Solr\System\UserFunctions\FlexFormUserFunctions->getAvailableTemplates</itemsProcFunc>
                             </config>
                         </TCEforms>
