@@ -9,13 +9,13 @@ There is following scenario:
    |   |
    |   ——[44] FirstShared (Not root)
    |
-   ——[ 1] Page (Root)
-       |
-       ——[14] Mount Point (to [44] to show contents from)
+   ——[ 1] Page (Root a)
+   |   |
+   |   ——[14] Mount Point (to [44] to show contents from)
    |
-   ——[ 2] Page (Root)
-       |
-       ——[24] Mount Point (to [44] to show contents from)
+   ——[111] Page (Root b)
+        |
+        ——[24] Mount Point (to [44] to show contents from)
 -->
 
     <sys_template>
@@ -25,6 +25,7 @@ There is following scenario:
         <clear>3</clear>
         <config>
             <![CDATA[
+                config.index_enable = 1
                 page = PAGE
                 page.typeNum = 0
                 page.bodyTag = <body>
@@ -77,11 +78,12 @@ There is following scenario:
 
     <sys_template>
         <uid>2</uid>
-        <pid>2</pid>
+        <pid>111</pid>
         <root>1</root>
         <clear>3</clear>
         <config>
             <![CDATA[
+                config.index_enable = 1
                 page = PAGE
                 page.typeNum = 0
                 page.bodyTag = <body>
@@ -162,7 +164,7 @@ There is following scenario:
                 <colPos>0</colPos>
             </tt_content>
 
-    <!-- Site tree a -->
+    <!-- Site tree "Page (Root a)" -->
     <pages>
         <uid>1</uid>
         <is_siteroot>1</is_siteroot>
@@ -181,10 +183,12 @@ There is following scenario:
             <TSconfig/>
             <content_from_pid>0</content_from_pid>
             <tsconfig_includes/>
+            <slug>14/44-14</slug>
         </pages>
 
+    <!-- Site tree "Page (Root b)" -->
     <pages>
-        <uid>2</uid>
+        <uid>111</uid>
         <is_siteroot>1</is_siteroot>
         <doktype>1</doktype>
         <pid>0</pid>
@@ -192,7 +196,7 @@ There is following scenario:
     </pages>
         <pages>
             <uid>24</uid>
-            <pid>1</pid>
+            <pid>111</pid>
             <is_siteroot>0</is_siteroot>
             <doktype>7</doktype>
             <mount_pid>44</mount_pid>
@@ -201,7 +205,9 @@ There is following scenario:
             <TSconfig/>
             <content_from_pid>0</content_from_pid>
             <tsconfig_includes/>
+            <slug>24/44-24</slug>
         </pages>
+
     <tx_solr_indexqueue_item>
         <uid>4711</uid>
         <root>1</root>
@@ -215,9 +221,10 @@ There is following scenario:
         <errors></errors>
         <pages_mountidentifier></pages_mountidentifier>
     </tx_solr_indexqueue_item>
+
     <tx_solr_indexqueue_item>
         <uid>4712</uid>
-        <root>1</root>
+        <root>111</root>
         <item_type>pages</item_type>
         <item_uid>44</item_uid>
         <indexing_configuration>pages</indexing_configuration>
