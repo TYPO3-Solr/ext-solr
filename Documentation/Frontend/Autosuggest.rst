@@ -9,7 +9,7 @@ This feature can be easily configured with the following typoscript setting:
 
 .. code-block:: typoscript
 
-    plugin.tx_solr.search {
+    plugin.tx_solr {
         suggest = 1
         suggest {
             numberOfSuggestions = 10
@@ -35,13 +35,13 @@ This feature can be enabled with:
 
 .. code-block:: typoscript
 
-    plugin.tx_solr.search.suggest.showTopResults = 1
+    plugin.tx_solr.suggest.showTopResults = 1
 
 
 If you want to change the number of proposed top results you can also configure them:
 
 .. code-block:: typoscript
 
-    plugin.tx_solr.search.suggest.numberOfTopResults = 5
+    plugin.tx_solr.suggest.numberOfTopResults = 5
 
 
