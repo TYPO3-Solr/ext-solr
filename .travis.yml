@@ -1,11 +1,14 @@
+dist: bionic
+
 language: php
 
 services:
   - mysql
-  - docker
 
 php:
   - 7.2
+  - 7.3
+  - 7.4
 
 jdk:
   - oraclejdk8
@@ -25,15 +28,16 @@ env:
   matrix:
     - TYPO3_VERSION="^9.5"
     - TYPO3_VERSION="9.5.x-dev"
-    - TYPO3_VERSION="dev-master"
 
 matrix:
   fast_finish: true
-  allow_failures:
-    - env: TYPO3_VERSION="dev-master"
-    - env: TYPO3_VERSION="9.5.x-dev"
 
 before_install:
+  - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+  - sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+  - sudo apt-get update
+  - sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-ce
+  - mysql -e 'CREATE DATABASE IF NOT EXISTS typo3_ci;'
   - composer self-update
   - composer --version
   - composer validate --no-check-lock
@@ -42,8 +46,8 @@ install:
   - Build/Test/bootstrap.sh
 
 script:
-  - Build/Test/cibuild.sh
   - Build/Test/cibuild_docker.sh
+  - Build/Test/cibuild.sh
 
 after_script:
   - Build/Test/publish_coverage.sh
