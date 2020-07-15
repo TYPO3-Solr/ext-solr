@@ -260,8 +260,8 @@ class PageIndexerTest extends IntegrationTest
      *  |   ——[24] FirstShared (Not root)
      *  |
      *  ——[ 1] Page (Root)
-     *  |
-     *  ——[14] Mount Point (to [24] to show contents from)
+     *      |
+     *      ——[14] Mount Point (to [24] to show contents from)
      *
      * @test
      */
@@ -291,14 +291,15 @@ class PageIndexerTest extends IntegrationTest
      *  |   |
      *  |   ——[44] FirstShared (Not root)
      *  |
-     *  ——[ 1] Page (Root)
+     *  ——[ 1] Page (Root a)
+     *  |   |
+     *  |   ——[14] Mount Point (to [44] to show contents from)
      *  |
-     *  ——[14] Mount Point (to [24] to show contents from)
-     *
      *  |
-     *  ——[ 2] Page (Root)
+     *  ——[111] Page (Root b)
+     *  |    |
+     *  |    ——[24] Mount Point (to [44] to show contents from)
      *  |
-     *  ——[24] Mount Point (to [24] to show contents from)
      * @test
      */
     public function canIndexMultipleMountedPage()
@@ -317,8 +318,8 @@ class PageIndexerTest extends IntegrationTest
 
         $this->assertContains('"numFound":2', $solrContent, 'Unexpected amount of documents in the core');
 
-        $this->assertContains('"url":"index.php?id=44&MP=44-14"', $solrContent, 'Could not find document of first mounted page');
-        $this->assertContains('"url":"index.php?id=44&MP=44-24"', $solrContent, 'Could not find document of second mounted page');
+        $this->assertContains('"url":"http://testone.site/en/14/44-14/"', $solrContent, 'Could not find document of first mounted page');
+        $this->assertContains('"url":"http://testtwo.site/en/24/44-24/"', $solrContent, 'Could not find document of second mounted page');
     }
 
     /**
