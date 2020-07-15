@@ -23,7 +23,7 @@ tx_solr_suggest {
 }
 
 # Enable suggest
-plugin.tx_solr.search {
+plugin.tx_solr {
     suggest = 1
     suggest {
         numberOfSuggestions = 10
