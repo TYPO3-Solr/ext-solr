@@ -187,7 +187,7 @@ class Node {
     {
         $pathWithoutLeadingAndTrailingSlashes = trim(trim($this->path), "/");
         $pathWithoutLastSegment = substr($pathWithoutLeadingAndTrailingSlashes, 0, strrpos($pathWithoutLeadingAndTrailingSlashes, "/"));
-        return '/' . $pathWithoutLastSegment . '/';
+        return ($pathWithoutLastSegment === '') ? '/' : '/' . $pathWithoutLastSegment . '/';
     }
 
     /**
