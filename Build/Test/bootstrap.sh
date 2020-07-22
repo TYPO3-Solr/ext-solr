@@ -62,6 +62,7 @@ if [ $? -ne "0" ]; then
 fi
 
 # Install build tools
+echo "Install build tools: "
 composer global require friendsofphp/php-cs-fixer:"$PHP_CS_FIXER_VERSION"
 composer global require namelesscoder/typo3-repository-client
 
@@ -82,7 +83,20 @@ if [[ $TYPO3_VERSION = *"master"* ]]; then
     TYPO3_MASTER_DEPENDENCIES='nimut/testing-framework:dev-master'
 fi
 
-composer require --dev --update-with-dependencies --prefer-source typo3/cms-core:"$TYPO3_VERSION" typo3/cms-backend:"$TYPO3_VERSION" typo3/cms-fluid:"$TYPO3_VERSION" typo3/cms-frontend:"$TYPO3_VERSION" typo3/cms-extbase:"$TYPO3_VERSION" typo3/cms-reports:"$TYPO3_VERSION" typo3/cms-scheduler:"$TYPO3_VERSION" typo3/cms-tstemplate:"$TYPO3_VERSION" $TYPO3_MASTER_DEPENDENCIES
+# Temporary Fix for https://forge.typo3.org/issues/91832 "phpdocumentor/reflection-docblock" BC in 5.2.0
+if [[ $TYPO3_VERSION = *"10.4"* ]]; then
+    FIX_TYPO3_DEPENDENCIES='phpdocumentor/reflection-docblock:5.1.*'
+fi
+
+composer require --dev --update-with-dependencies --prefer-source \
+  typo3/cms-core:"$TYPO3_VERSION" \
+  typo3/cms-backend:"$TYPO3_VERSION" \
+  typo3/cms-fluid:"$TYPO3_VERSION" \
+  typo3/cms-frontend:"$TYPO3_VERSION" \
+  typo3/cms-extbase:"$TYPO3_VERSION" \
+  typo3/cms-reports:"$TYPO3_VERSION" \
+  typo3/cms-scheduler:"$TYPO3_VERSION" \
+  typo3/cms-tstemplate:"$TYPO3_VERSION" $FIX_TYPO3_DEPENDENCIES $TYPO3_MASTER_DEPENDENCIES
 
 # Restore composer.json
 mkdir -p $TYPO3_PATH_WEB/uploads $TYPO3_PATH_WEB/typo3temp
@@ -90,6 +104,7 @@ mkdir -p $TYPO3_PATH_WEB/uploads $TYPO3_PATH_WEB/typo3temp
 
 if [[ $* != *--skip-solr-install* ]]; then
     # Setup Solr Using our install script
+    echo "Setup Solr Using our install script: "
     chmod 500 ${EXTENSION_ROOTPATH}Resources/Private/Install/install-solr.sh
     ${EXTENSION_ROOTPATH}Resources/Private/Install/install-solr.sh -d "$HOME/solr" -t
 fi
