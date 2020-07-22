@@ -25,13 +25,14 @@ env:
     - TYPO3_DATABASE_PASSWORD=""
     - PHP_CS_FIXER_VERSION="^2.16.1"
   matrix:
-    - TYPO3_VERSION="^9.5"
     - TYPO3_VERSION="^10.4"
+    - TYPO3_VERSION="10.4.x-dev"
     - TYPO3_VERSION="dev-master"
 
 matrix:
   fast_finish: true
   allow_failures:
+    - env: TYPO3_VERSION="10.4.x-dev"
     - env: TYPO3_VERSION="dev-master"
 
 before_install:
