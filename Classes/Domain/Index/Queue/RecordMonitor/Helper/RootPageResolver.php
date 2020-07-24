@@ -301,6 +301,9 @@ class RootPageResolver implements SingletonInterface
         foreach ($allSites as $site) {
             $solrConfiguration = $site->getSolrConfiguration();
             $indexingConfigurationName = $this->recordService->getIndexingConfigurationName($table, $uid, $solrConfiguration);
+            if ($indexingConfigurationName === null) {
+                continue;
+            }
             $observedPageIdsOfSiteRoot = $solrConfiguration->getIndexQueueAdditionalPageIdsByConfigurationName($indexingConfigurationName);
             foreach ($observedPageIdsOfSiteRoot as $observedPageIdOfSiteRoot) {
                 $siteRootByObservedPageIds[$observedPageIdOfSiteRoot][] = $site->getRootPageId();

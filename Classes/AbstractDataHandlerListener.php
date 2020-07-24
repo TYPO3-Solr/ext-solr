@@ -123,6 +123,9 @@ abstract class AbstractDataHandlerListener
         if ($isRecursiveUpdateRequired === false) {
             $solrConfiguration = $this->frontendEnvironment->getSolrConfigurationFromPageId($pageId);
             $indexQueueConfigurationName = $this->configurationAwareRecordService->getIndexingConfigurationName('pages', $pageId, $solrConfiguration);
+            if ($indexQueueConfigurationName === null) {
+                return false;
+            }
             $updateFields = $solrConfiguration->getIndexQueueConfigurationRecursiveUpdateFields($indexQueueConfigurationName);
 
             // Check if no additional fields have been defined and then skip recursive update

@@ -169,8 +169,10 @@ abstract class Site implements SiteInterface
         // Fetch configuration in order to be able to read initialPagesAdditionalWhereClause
         $solrConfiguration = $this->getSolrConfiguration();
         $indexQueueConfigurationName = $configurationAwareRecordService->getIndexingConfigurationName('pages', $this->rootPage['uid'], $solrConfiguration);
+        if ($indexQueueConfigurationName === null) {
+            return $pageIds;
+        }
         $initialPagesAdditionalWhereClause = $solrConfiguration->getInitialPagesAdditionalWhereClause($indexQueueConfigurationName);
-
         return array_merge($pageIds, $this->pagesRepository->findAllSubPageIdsByRootPage($rootPageId, $maxDepth, $initialPagesAdditionalWhereClause));
     }
 

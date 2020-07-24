@@ -36,4 +36,10 @@
         <indexed>0</indexed>
         <errors></errors>
     </tx_solr_indexqueue_item>
+    <sys_template>
+        <pid>1</pid>
+        <uid>1</uid>
+        <root>1</root>
+        <config>plugin.tx_solr.index.queue.pages = 1</config>
+    </sys_template>
 </dataset>

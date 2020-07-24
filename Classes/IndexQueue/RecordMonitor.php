@@ -351,54 +351,63 @@ class RecordMonitor extends AbstractDataHandlerListener
      */
     protected function processRecord($recordTable, $recordPageId, $recordUid, $fields)
     {
-        $configurationPageId = $this->getConfigurationPageId($recordTable, $recordPageId, $recordUid);
-
-        if ($configurationPageId === 0) {
-            // when the monitored record doesn't belong to a solr configured root-page and no alternative
-            // siteroot can be found this is not a relevant record
-            return;
-        }
-
-        $solrConfiguration = $this->getSolrConfigurationFromPageId($configurationPageId);
-        $isMonitoredRecord = $solrConfiguration->getIndexQueueIsMonitoredTable($recordTable);
-
-        if (!$isMonitoredRecord) {
-            // when it is a non monitored record, we can skip it.
-            return;
-        }
-
-        $record = $this->configurationAwareRecordService->getRecord($recordTable, $recordUid, $solrConfiguration);
-
-        if (empty($record)) {
-            // TODO move this part to the garbage collector
-            // check if the item should be removed from the index because it no longer matches the conditions
-            $this->removeFromIndexAndQueueWhenItemInQueue($recordTable, $recordUid);
-            return;
-        }
-
-        // Clear existing index queue items to prevent mount point duplicates.
-        // This needs to be done before the overlay handling, because handling an overlay record should
-        // not trigger a deletion.
-        $isTranslation = !empty($record['sys_language_uid']) && $record['sys_language_uid'] !== 0;
-        if ($recordTable === 'pages' && !$isTranslation) {
-            $this->indexQueue->deleteItem('pages', $recordUid);
-        }
-
-        // only update/insert the item if we actually found a record
-        $isLocalizedRecord = $this->tcaService->isLocalizedRecord($recordTable, $record);
-        $recordUid = $this->tcaService->getTranslationOriginalUidIfTranslated($recordTable, $record, $recordUid);
-
-        if ($isLocalizedRecord && !$this->getIsTranslationParentRecordEnabled($recordTable, $recordUid)) {
-            // we have a localized record without a visible parent record. Nothing to do.
-            return;
-        }
-
-        if ($this->tcaService->isEnabledRecord($recordTable, $record)) {
-            $this->indexQueue->updateItem($recordTable, $recordUid);
-        }
-
         if ($recordTable === 'pages') {
-            $this->doPagesPostUpdateOperations($fields, $recordUid);
+            $configurationPageId = $this->getConfigurationPageId($recordTable, $recordPageId, $recordUid);
+            if ($configurationPageId === 0) {
+                return;
+            }
+            $rootPageIds = [$configurationPageId];
+        } else {
+            try {
+                $rootPageIds = $this->rootPageResolver->getResponsibleRootPageIds($recordTable, $recordUid);
+                if (empty($rootPageIds)) {
+                    $this->removeFromIndexAndQueueWhenItemInQueue($recordTable, $recordUid);
+                    return;
+                }
+            } catch ( \InvalidArgumentException $e) {
+                $this->removeFromIndexAndQueueWhenItemInQueue($recordTable, $recordUid);
+                return;
+            }
+        }
+        foreach ($rootPageIds as $configurationPageId) {
+            $solrConfiguration = $this->getSolrConfigurationFromPageId($configurationPageId);
+            $isMonitoredRecord = $solrConfiguration->getIndexQueueIsMonitoredTable($recordTable);
+            if (!$isMonitoredRecord) {
+                // when it is a non monitored record, we can skip it.
+                continue;
+            }
+
+            $record = $this->configurationAwareRecordService->getRecord($recordTable, $recordUid, $solrConfiguration);
+            if (empty($record)) {
+                // TODO move this part to the garbage collector
+                // check if the item should be removed from the index because it no longer matches the conditions
+                $this->removeFromIndexAndQueueWhenItemInQueue($recordTable, $recordUid);
+                continue;
+            }
+            // Clear existing index queue items to prevent mount point duplicates.
+            // This needs to be done before the overlay handling, because handling an overlay record should
+            // not trigger a deletion.
+            $isTranslation = !empty($record['sys_language_uid']) && $record['sys_language_uid'] !== 0;
+            if ($recordTable === 'pages' && !$isTranslation) {
+                $this->indexQueue->deleteItem('pages', $recordUid);
+            }
+
+            // only update/insert the item if we actually found a record
+            $isLocalizedRecord = $this->tcaService->isLocalizedRecord($recordTable, $record);
+            $recordUid = $this->tcaService->getTranslationOriginalUidIfTranslated($recordTable, $record, $recordUid);
+
+            if ($isLocalizedRecord && !$this->getIsTranslationParentRecordEnabled($recordTable, $recordUid)) {
+                // we have a localized record without a visible parent record. Nothing to do.
+                continue;
+            }
+
+            if ($this->tcaService->isEnabledRecord($recordTable, $record)) {
+                $this->indexQueue->updateItem($recordTable, $recordUid);
+            }
+
+            if ($recordTable === 'pages') {
+                $this->doPagesPostUpdateOperations($fields, $recordUid);
+            }
         }
     }
 
