@@ -197,6 +197,9 @@ class Queue
 
             $solrConfiguration = $this->frontendEnvironment->getSolrConfigurationFromPageId($rootPageId);
             $indexingConfiguration = $this->recordService->getIndexingConfigurationName($itemType, $itemUid, $solrConfiguration);
+            if ($indexingConfiguration === null) {
+                continue;
+            }
             $itemInQueueForRootPage = $this->containsItemWithRootPageId($itemType, $itemUid, $rootPageId);
             if ($itemInQueueForRootPage) {
                 // update changed time if that item is in the queue already

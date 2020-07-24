@@ -141,4 +141,10 @@ There is following scenario:
         <content_from_pid>0</content_from_pid>
         <tsconfig_includes/>
     </pages>
+    <sys_template>
+        <pid>111</pid>
+        <uid>2</uid>
+        <root>1</root>
+        <config>plugin.tx_solr.index.queue.pages = 1</config>
+    </sys_template>
 </dataset>

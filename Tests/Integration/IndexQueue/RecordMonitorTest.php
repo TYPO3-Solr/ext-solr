@@ -731,6 +731,51 @@ class RecordMonitorTest extends IntegrationTest
     }
 
     /**
+     * @return array
+     */
+    public function updateRecordOutsideSiteRootWithAdditionalWhereClauseDataProvider(): array
+    {
+        return [
+            'record-1' => [
+                'uid' => 1,
+                'root' => 1
+            ],
+            'record-2' => [
+                'uid' => 2,
+                'root' => 111
+            ]
+        ];
+    }
+
+    /**
+     * @dataProvider updateRecordOutsideSiteRootWithAdditionalWhereClauseDataProvider
+     * @test
+     */
+    public function updateRecordOutsideSiteRootWithAdditionalWhereClause($uid, $root)
+    {
+        $this->importExtTablesDefinition('fake_extension_table.sql');
+        $GLOBALS['TCA']['tx_fakeextension_domain_model_foo'] = include($this->getFixturePathByName('fake_extension_tca.php'));
+
+        $this->importDataSetFromFixture('update_record_outside_siteroot_with_additionalWhereClause.xml');
+
+        $this->assertEmptyIndexQueue();
+
+        // create faked tce main call data
+        $status = 'update';
+        $table = 'tx_fakeextension_domain_model_foo';
+        $fields = [
+            'title' => 'foo',
+            'pid' => 2
+        ];
+        $this->recordMonitor->processDatamap_afterDatabaseOperations($status, $table, $uid, $fields, $this->dataHandler);
+        $this->assertIndexQueueContainsItemAmount(1);
+        $firstQueueItem = $this->indexQueue->getItem(1);
+        $this->assertSame($uid, $firstQueueItem->getRecordUid());
+        $this->assertSame($root, $firstQueueItem->getRootPageUid());
+
+    }
+
+    /**
      * @test
      */
     public function updateRecordOutsideSiteRoot()

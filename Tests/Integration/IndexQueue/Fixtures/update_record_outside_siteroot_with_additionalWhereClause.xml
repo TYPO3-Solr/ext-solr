@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataset>
+    <sys_template>
+        <uid>1</uid>
+        <pid>1</pid>
+        <root>1</root>
+        <clear>3</clear>
+        <config>
+            <![CDATA[
+                plugin.tx_solr {
+                    enabled = 1
+                    index {
+                        queue {
+                            foo = 1
+                            foo {
+                                additionalPageIds = 2
+                                additionalWhereClause = uid=1
+                                table = tx_fakeextension_domain_model_foo
+                                fields {
+                                    title = title
+                                }
+                            }
+                        }
+                    }
+                }
+            ]]>
+        </config>
+        <sorting>100</sorting>
+    </sys_template>
+    <pages>
+        <uid>1</uid>
+        <pid>0</pid>
+        <is_siteroot>1</is_siteroot>
+        <doktype>1</doktype>
+    </pages>
+    <!-- sysfolder -->
+    <pages>
+        <uid>2</uid>
+        <pid>1</pid>
+        <doktype>254</doktype>
+        <is_siteroot>0</is_siteroot>
+    </pages>
+    <!-- other root page -->
+    <pages>
+        <uid>111</uid>
+        <pid>0</pid>
+        <is_siteroot>1</is_siteroot>
+        <doktype>1</doktype>
+    </pages>
+    <sys_template>
+        <uid>2</uid>
+        <pid>111</pid>
+        <root>1</root>
+        <clear>3</clear>
+        <config>
+            <![CDATA[
+                plugin.tx_solr {
+                    enabled = 1
+                    index {
+                        queue {
+                            foo = 1
+                            foo {
+                                additionalPageIds = 2
+                                additionalWhereClause = uid=2
+                                table = tx_fakeextension_domain_model_foo
+                                fields {
+                                    title = title
+                                }
+                            }
+                        }
+                    }
+                }
+            ]]>
+        </config>
+        <sorting>100</sorting>
+    </sys_template>
+    <!-- to records -->
+    <tx_fakeextension_domain_model_foo>
+        <uid>1</uid>
+        <title>testnews</title>
+        <pid>2</pid>
+    </tx_fakeextension_domain_model_foo>
+    <tx_fakeextension_domain_model_foo>
+        <uid>2</uid>
+        <title>testnews2</title>
+        <pid>2</pid>
+    </tx_fakeextension_domain_model_foo>
+</dataset>

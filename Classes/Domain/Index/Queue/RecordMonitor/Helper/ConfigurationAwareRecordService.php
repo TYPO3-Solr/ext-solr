@@ -27,7 +27,6 @@ namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper;
 
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
-use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -45,11 +44,11 @@ class ConfigurationAwareRecordService
      * @param string $recordTable Table to read from
      * @param int $recordUid Id of the record
      * @param TypoScriptConfiguration $solrConfiguration
-     * @return string Name of indexing configuration
+     * @return string|null Name of indexing configuration
      */
     public function getIndexingConfigurationName($recordTable, $recordUid, TypoScriptConfiguration $solrConfiguration)
     {
-        $name = $recordTable;
+        $name = null;
         $indexingConfigurations = $solrConfiguration->getEnabledIndexQueueConfigurationNames();
         foreach ($indexingConfigurations as $indexingConfigurationName) {
             if (!$solrConfiguration->getIndexQueueConfigurationIsEnabled($indexingConfigurationName)) {

@@ -25,4 +25,10 @@
         <uid>30</uid>
         <pid>3</pid>
     </pages>
+    <sys_template>
+        <pid>1</pid>
+        <uid>1</uid>
+        <root>1</root>
+        <config>plugin.tx_solr.index.queue.pages = 1</config>
+    </sys_template>
 </dataset>
