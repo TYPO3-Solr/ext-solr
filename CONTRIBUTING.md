@@ -282,6 +282,31 @@ make test
 
 ## Documentation
 
+The documentation for typo3-solr exists in the *Documentation* subdirectory.
+ 
+It is rendered on docs.typo3.org:
+
+* https://docs.typo3.org/p/apache-solr-for-typo3/solr/master/en-us/
+
+It can be modified by changing the reStructuredText files (.rst).
+
+The documentation for this extension has the same structure as the 
+official TYPO3 documentation and is generated using the same workflow,
+tools and infrastructure as the official TYPO3 documentation. 
+
+Please look at the general information about TYPO3 documentation for 
+more information:
+
+* [Directory and file structure](https://docs.typo3.org/m/typo3/docs-how-to-document/master/en-us/GeneralConventions/DirectoryFilenames.html)
+* [How to contribute]()
+* [reStructuredText & sphinx](https://docs.typo3.org/m/typo3/docs-how-to-document/master/en-us/WritingReST/Index.html)
+* [Render documentation with Docker](https://docs.typo3.org/m/typo3/docs-how-to-document/master/en-us/RenderingDocs/Index.html)
+
+For issues and pull requests, please use the tag [DOCS] in your commit 
+messages / PR title / issue title, e.g.: 
+
+    [DOCS] Fix typos
+
 
 ## Translations
 
