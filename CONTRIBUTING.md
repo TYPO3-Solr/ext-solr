@@ -282,8 +282,6 @@ make test
 
 ## Documentation
 
-The documentation currently is still mainly on [TYPO3 forge](https://forge.typo3.org/projects/extension-solr/wiki),
-but we are in the process of migrating it to TYPO3's documentation server using [Restructured Text](https://github.com/TYPO3-Solr/ext-solr/issues/20).
 
 ## Translations
 
