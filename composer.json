@@ -33,7 +33,7 @@
   },
   "require-dev": {
     "phpunit/phpunit": "^7.0",
-    "nimut/testing-framework": "^5.0.2"
+    "nimut/testing-framework": "^4.2.0"
   },
   "replace": {
     "typo3-ter/solr": "self.version",
