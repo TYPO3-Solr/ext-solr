@@ -88,21 +88,15 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
     {
         $pageIndexingHookRegistration = PageIndexer::class;
 
-        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['initFEuser'][__CLASS__] = $pageIndexingHookRegistration . '->authorizeFrontendUser';
-        // disable TSFE cache for TYPO3 v9
-        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['tslib_fe-PostProc'][__CLASS__] = $pageIndexingHookRegistration . '->disableCaching';
+        if (Util::getIsTYPO3VersionBelow10()) { // @todo: remove by dropping TYPO3 9.5 support, See: https://docs.typo3.org/c/typo3/cms-core/10.4/en-us/Changelog/10.0/Breaking-87193-DeprecatedFunctionalityRemoved.html
+            $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['initFEuser'][__CLASS__] = $pageIndexingHookRegistration . '->authorizeFrontendUser';
+            // disable TSFE cache for TYPO3 v9
+            $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['tslib_fe-PostProc'][__CLASS__] = $pageIndexingHookRegistration . '->disableCaching';
+        }
         $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['pageIndexing'][__CLASS__] = $pageIndexingHookRegistration;
 
         // indexes fields defined in plugin.tx_solr.index.queue.pages.fields
-        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageSubstitutePageDocument']['ApacheSolrForTypo3\\Solr\\IndexQueue\\FrontendHelper\\PageFieldMappingIndexer'] = PageFieldMappingIndexer::class;
-
-        // making sure this instance is reused when called by the hooks registered before
-        // \TYPO3\CMS\Core\Utility\GeneralUtility::callUserFunction() and \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj() use
-        // these storages while the object was instantiated by
-        // ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\Manager before.
-        // \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance() also uses a dedicated cache
-        $GLOBALS['T3_VAR']['callUserFunction_classPool'][__CLASS__] = $this;
-        //$GLOBALS['T3_VAR']['getUserObj'][$pageIndexingHookRegistration] = $this;
+        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageSubstitutePageDocument'][PageFieldMappingIndexer::class] = PageFieldMappingIndexer::class;
 
         $this->registerAuthorizationService();
     }
