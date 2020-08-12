@@ -10,8 +10,8 @@ EXTENSION_ROOTPATH="$SCRIPTPATH/../../"
 SOLR_INSTALL_PATH="/opt/solr-tomcat/"
 
 if [[ $* == *--use-defaults* ]]; then
-    export TYPO3_VERSION="^8.7"
-    export PHP_CS_FIXER_VERSION="v2.3.2"
+    export TYPO3_VERSION="^9.5"
+    export PHP_CS_FIXER_VERSION="v2.16.1"
     export TYPO3_DATABASE_HOST="localhost"
     export TYPO3_DATABASE_NAME="test"
     export TYPO3_DATABASE_USERNAME="root"
@@ -19,11 +19,11 @@ if [[ $* == *--use-defaults* ]]; then
 fi
 
 if [[ $* == *--local* ]]; then
-    echo -n "Choose a TYPO3 Version (e.g. dev-master,^8.7): "
+    echo -n "Choose a TYPO3 Version (e.g. dev-master,^9.5): "
     read typo3Version
     export TYPO3_VERSION=$typo3Version
 
-    echo -n "Choose a php-cs-fixer version (v2.3.2): "
+    echo -n "Choose a php-cs-fixer version (v2.16.1): "
     read phpCSFixerVersion
     export PHP_CS_FIXER_VERSION=$phpCSFixerVersion
 
@@ -63,7 +63,6 @@ fi
 
 # Install build tools
 composer global require friendsofphp/php-cs-fixer:"$PHP_CS_FIXER_VERSION"
-composer global require scrutinizer/ocular:"^1.7"
 composer global require namelesscoder/typo3-repository-client
 
 # Setup TYPO3 environment variables
@@ -79,11 +78,15 @@ if [[ $TYPO3_VERSION = *"dev"* ]]; then
     composer config minimum-stability dev
 fi
 
-if [[ $TYPO3_VERSION = *"master"* ]]; then
-    TYPO3_MASTER_DEPENDENCIES='nimut/testing-framework:dev-master'
-fi
-
-composer require --dev --update-with-dependencies --prefer-source typo3/cms-core:"$TYPO3_VERSION" typo3/cms-backend:"$TYPO3_VERSION" typo3/cms-fluid:"$TYPO3_VERSION" typo3/cms-frontend:"$TYPO3_VERSION" typo3/cms-extbase:"$TYPO3_VERSION" typo3/cms-reports:"$TYPO3_VERSION" typo3/cms-scheduler:"$TYPO3_VERSION" typo3/cms-tstemplate:"$TYPO3_VERSION" $TYPO3_MASTER_DEPENDENCIES
+composer require --dev --update-with-dependencies --prefer-source \
+  typo3/cms-core:"$TYPO3_VERSION" \
+  typo3/cms-backend:"$TYPO3_VERSION" \
+  typo3/cms-fluid:"$TYPO3_VERSION" \
+  typo3/cms-frontend:"$TYPO3_VERSION" \
+  typo3/cms-extbase:"$TYPO3_VERSION" \
+  typo3/cms-reports:"$TYPO3_VERSION" \
+  typo3/cms-scheduler:"$TYPO3_VERSION" \
+  typo3/cms-tstemplate:"$TYPO3_VERSION" $TYPO3_MASTER_DEPENDENCIES
 
 # Restore composer.json
 mkdir -p $TYPO3_PATH_WEB/uploads $TYPO3_PATH_WEB/typo3temp

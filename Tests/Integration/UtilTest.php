@@ -11,6 +11,8 @@ class UtilTest extends IntegrationTest
 {
     public function setUp()
     {
+        parent::setUp();
+        $this->writeDefaultSolrTestSiteConfiguration();
         /** @var \TYPO3\CMS\Core\Cache\Frontend\VariableFrontend|\Prophecy\Prophecy\ObjectProphecy $frontendCache */
         $frontendCache = $this->prophesize(\TYPO3\CMS\Core\Cache\Frontend\VariableFrontend::class);
         /** @var \TYPO3\CMS\Core\Cache\CacheManager|\Prophecy\Prophecy\ObjectProphecy $cacheManager */
@@ -20,6 +22,15 @@ class UtilTest extends IntegrationTest
             ->willReturn($frontendCache->reveal());
         $cacheManager
             ->getCache('cache_runtime')
+            ->willReturn($frontendCache->reveal());
+        $cacheManager
+            ->getCache('cache_hash')
+            ->willReturn($frontendCache->reveal());
+        $cacheManager
+            ->getCache('cache_core')
+            ->willReturn($frontendCache->reveal());
+        $cacheManager
+            ->getCache('cache_rootline')
             ->willReturn($frontendCache->reveal());
         $cacheManager
             ->getCache('tx_solr_configuration')
