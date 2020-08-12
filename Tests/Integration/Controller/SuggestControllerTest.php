@@ -81,7 +81,7 @@ class SuggestControllerTest extends AbstractFrontendControllerTest
         $this->suggestRequest = $this->getPreparedRequest('Suggest', 'suggest');
         $this->suggestResponse = $this->getPreparedResponse();
 
-        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageSubstitutePageDocument']['ApacheSolrForTypo3\\Solr\\IndexQueue\\FrontendHelper\\PageFieldMappingIndexer'] = PageFieldMappingIndexer::class;
+        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageSubstitutePageDocument'][PageFieldMappingIndexer::class] = PageFieldMappingIndexer::class;
 
     }
 
