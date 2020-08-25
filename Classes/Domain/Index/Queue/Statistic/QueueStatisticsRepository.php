@@ -57,7 +57,7 @@ class QueueStatisticsRepository extends AbstractRepository
                 $queryBuilder->quoteIdentifier('pending')
             ]), true)
             ->add('select', vsprintf('(%s) AS %s', [
-                $queryBuilder->expr()->notLike('errors', '""'),
+                $queryBuilder->expr()->notLike('errors', $queryBuilder->createNamedParameter('')),
                 $queryBuilder->quoteIdentifier('failed')
             ]), true)
             ->add('select', $queryBuilder->expr()->count('*', 'count'), true)
