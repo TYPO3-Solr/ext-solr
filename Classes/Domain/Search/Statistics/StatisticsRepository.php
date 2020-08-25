@@ -156,8 +156,8 @@ class StatisticsRepository extends AbstractRepository
         $queryBuilder = $this->getQueryBuilder();
         $result = $queryBuilder
             ->addSelectLiteral(
-                'FLOOR(`tstamp`/' . $bucketSeconds . ') AS `bucket`',
-                '(`tstamp` - (`tstamp` % 86400)) AS `timestamp`',
+                'FLOOR(tstamp/' . $bucketSeconds . ') AS bucket',
+                '(tstamp - (tstamp % 86400)) AS timestamp',
                 $queryBuilder->expr()->count('*', 'numQueries')
             )
             ->from($this->table)
