@@ -40,14 +40,14 @@ Please check the documentation for the required [versions](Documentation/Appendi
 You can use the following preconfigured development environments to get started
 very quickly:
 
-### Vagrant
+### Docker using ddev
 
-There is a Vagrant box with a preconfigured TYPO3 6.2 / 7.6 LTS with two
-local Solr servers (version 4.8.0 & version 6.3:
+There is a ddev configuration with a preconfigured TYPO3 10 LTS and a
+local Solr server (version 8.5.1):
 
-https://github.com/TYPO3-Solr/solr-typo3-devbox
+https://github.com/TYPO3-Solr/solr-ddev-site
 
-To start the box follow its README.
+To start the ddev follow its README.
 
 ## Bug Reports & Feature Requests
 
