@@ -25,6 +25,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\UrlFacetDataBag;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Util\ArrayAccessor;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
@@ -91,6 +92,13 @@ class SearchRequest
      * @var TypoScriptConfiguration
      */
     protected $contextTypoScriptConfiguration;
+
+    /**
+     * Data bag contains all activate facets inside of the URL
+     *
+     * @var UrlFacetDataBag
+     */
+    protected $activeFacetDataBag;
 
     /**
      * @var array
@@ -172,14 +180,7 @@ class SearchRequest
      */
     public function getActiveFacetNames()
     {
-        $activeFacets = $this->getActiveFacets();
-        $facetNames = [];
-
-        array_map(function($activeFacet) use (&$facetNames) {
-            $facetNames[] = substr($activeFacet, 0, strpos($activeFacet, ':'));
-        }, $activeFacets);
-
-        return $facetNames;
+        return $this->activeFacetDataBag->getActiveFacetNames();
     }
 
     /**
@@ -187,19 +188,9 @@ class SearchRequest
      * @param string $facetName
      * @return array
      */
-    public function getActiveFacetValuesByName($facetName)
+    public function getActiveFacetValuesByName(string $facetName)
     {
-        $values = [];
-        $activeFacets = $this->getActiveFacets();
-
-        array_map(function($activeFacet) use (&$values, $facetName) {
-            $parts = explode(':', $activeFacet, 2);
-            if ($parts[0] === $facetName) {
-                $values[] = $parts[1];
-            }
-        }, $activeFacets);
-
-        return $values;
+        return $this->activeFacetDataBag->getActiveFacetValuesByName($facetName);
     }
 
     /**
@@ -207,29 +198,51 @@ class SearchRequest
      */
     public function getActiveFacets()
     {
-        $path = $this->prefixWithNamespace('filter');
-        $pathValue = $this->argumentsAccessor->get($path, []);
-
-        return is_array($pathValue) ? $pathValue : [];
+        return $this->activeFacetDataBag->getActiveFacets();
     }
 
     /**
+     * Enable sorting of URL parameters
+     */
+    public function sortActiveFacets(): void
+    {
+        $this->activeFacetDataBag->enableSort();
+    }
+
+    /**
+     * @return bool
+     */
+    public function isActiveFacetsSorted(): bool
+    {
+        return $this->activeFacetDataBag->isSorted();
+    }
+
+    /**
+     * @return string
+     */
+    public function getActiveFacetsUrlParameterStyle(): string
+    {
+        return $this->activeFacetDataBag->getParameterStyle();
+    }
+
+    /**
+     * Returns the active count of facets
+     *
      * @return int
      */
     public function getActiveFacetCount()
     {
-        return count($this->getActiveFacets());
+        return $this->activeFacetDataBag->count();
     }
 
     /**
-     * @param $activeFacets
+     * @param array $activeFacets
      *
      * @return SearchRequest
      */
     protected function setActiveFacets($activeFacets = [])
     {
-        $path = $this->prefixWithNamespace('filter');
-        $this->argumentsAccessor->set($path, $activeFacets);
+        $this->activeFacetDataBag->setActiveFacets($activeFacets);
 
         return $this;
     }
@@ -242,17 +255,15 @@ class SearchRequest
      *
      * @return SearchRequest
      */
-    public function addFacetValue($facetName, $facetValue)
+    public function addFacetValue(string $facetName, $facetValue)
     {
-        if ($this->getHasFacetValue($facetName, $facetValue)) {
-            return $this;
+        $this->activeFacetDataBag->addFacetValue($facetName, $facetValue);
+
+        if ($this->activeFacetDataBag->hasChanged()) {
+            $this->stateChanged = true;
+            $this->activeFacetDataBag->acknowledgeChange();
         }
 
-        $facetValues = $this->getActiveFacets();
-        $facetValues[] = $facetName . ':' . $facetValue;
-        $this->setActiveFacets($facetValues);
-
-        $this->stateChanged = true;
         return $this;
     }
 
@@ -264,23 +275,14 @@ class SearchRequest
      *
      * @return SearchRequest
      */
-    public function removeFacetValue($facetName, $facetValue)
+    public function removeFacetValue(string $facetName, $facetValue)
     {
-        if (!$this->getHasFacetValue($facetName, $facetValue)) {
-            return $this;
-        }
-        $facetValues = $this->getActiveFacets();
-        $facetValueToLookFor = $facetName . ':' . $facetValue;
-
-        foreach ($facetValues as $index => $facetValue) {
-            if ($facetValue === $facetValueToLookFor) {
-                unset($facetValues[$index]);
-                break;
-            }
+        $this->activeFacetDataBag->removeFacetValue($facetName, $facetValue);
+        if ($this->activeFacetDataBag->hasChanged()) {
+            $this->stateChanged = true;
+            $this->activeFacetDataBag->acknowledgeChange();
         }
 
-        $this->setActiveFacets($facetValues);
-        $this->stateChanged = true;
         return $this;
     }
 
@@ -291,16 +293,13 @@ class SearchRequest
      *
      * @return SearchRequest
      */
-    public function removeAllFacetValuesByName($facetName)
+    public function removeAllFacetValuesByName(string $facetName)
     {
-        $facetValues = $this->getActiveFacets();
-        $facetValues = array_filter($facetValues, function($facetValue) use ($facetName) {
-            $parts = explode(':', $facetValue, 2);
-            return $parts[0] !== $facetName;
-        });
-
-        $this->setActiveFacets($facetValues);
-        $this->stateChanged = true;
+        $this->activeFacetDataBag->removeAllFacetValuesByName($facetName);
+        if ($this->activeFacetDataBag->hasChanged()) {
+            $this->stateChanged = true;
+            $this->activeFacetDataBag->acknowledgeChange();
+        }
         return $this;
     }
 
@@ -311,21 +310,24 @@ class SearchRequest
      */
     public function removeAllFacets()
     {
-        $path = $this->prefixWithNamespace('filter');
-        $this->argumentsAccessor->reset($path);
-        $this->stateChanged = true;
+        $this->activeFacetDataBag->removeAllFacets();
+        if ($this->activeFacetDataBag->hasChanged()) {
+            $this->stateChanged = true;
+            $this->activeFacetDataBag->acknowledgeChange();
+        }
         return $this;
     }
 
     /**
+     * Check if an active facet has a given value
+     *
      * @param string $facetName
      * @param mixed $facetValue
      * @return bool
      */
-    public function getHasFacetValue($facetName, $facetValue)
+    public function getHasFacetValue(string $facetName, $facetValue): bool
     {
-        $facetNameAndValueToCheck = $facetName . ':' . $facetValue;
-        return in_array($facetNameAndValueToCheck, $this->getActiveFacets());
+        return $this->activeFacetDataBag->hasFacetValue($facetName, $facetValue);
     }
 
     /**
@@ -673,6 +675,22 @@ class SearchRequest
     {
         $this->argumentsAccessor = new ArrayAccessor($this->persistedArguments);
         $this->stateChanged = false;
+        $this->activeFacetDataBag = new UrlFacetDataBag(
+            $this->argumentsAccessor,
+            $this->argumentNameSpace ?? 'tx_solr',
+            $this->contextTypoScriptConfiguration instanceof TypoScriptConfiguration ?
+            $this->contextTypoScriptConfiguration->getSearchFacetingUrlParameterStyle(
+                UrlFacetDataBag::PARAMETER_STYLE_INDEX
+            ) : UrlFacetDataBag::PARAMETER_STYLE_INDEX
+        );
+
+        // If the default of sorting parameter should be true, a modification of this condition is needed.
+        // If instance of contextTypoScriptConfiguration is not TypoScriptConfiguration the sort should be enabled too
+        if ($this->contextTypoScriptConfiguration instanceof TypoScriptConfiguration &&
+                $this->contextTypoScriptConfiguration->getSearchFacetingUrlParameterSort(false)) {
+            $this->activeFacetDataBag->enableSort();
+        }
+
         return $this;
     }
 
