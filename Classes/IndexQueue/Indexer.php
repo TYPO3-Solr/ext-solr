@@ -534,7 +534,7 @@ class Indexer extends AbstractIndexer
         $translationOverlays = $this->getTranslationOverlaysWithConfiguredSite((int)$pageId, $site, (array)$siteLanguages);
 
         $defaultConnection = $this->connectionManager->getConnectionByPageId($rootPageId, $defaultLanguageUid, $item->getMountPointIdentifier());
-        $translationConnections = $this->getConnectionsForIndexableLanguages($translationOverlays);
+        $translationConnections = $this->getConnectionsForIndexableLanguages($translationOverlays, $rootPageId);
 
         if ($defaultLanguageUid == 0) {
             $solrConnections[0] = $defaultConnection;
@@ -637,18 +637,18 @@ class Indexer extends AbstractIndexer
      * these connections.
      *
      * @param array $translationOverlays An array of translation overlays to check for configured connections.
+     * @param integer $rootPageId
      * @return array An array of ApacheSolrForTypo3\Solr\System\Solr\SolrConnection connections.
      */
-    protected function getConnectionsForIndexableLanguages(array $translationOverlays)
+    protected function getConnectionsForIndexableLanguages(array $translationOverlays, $rootPageId)
     {
         $connections = [];
 
         foreach ($translationOverlays as $translationOverlay) {
-            $pageId = $translationOverlay['l10n_parent'];
             $languageId = $translationOverlay['sys_language_uid'];
 
             try {
-                $connection = $this->connectionManager->getConnectionByPageId($pageId, $languageId);
+                $connection = $this->connectionManager->getConnectionByPageId($rootPageId, $languageId);
                 $connections[$languageId] = $connection;
             } catch (NoSolrConnectionFoundException $e) {
                 // ignore the exception as we seek only those connections
