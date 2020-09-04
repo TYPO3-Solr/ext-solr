@@ -23,5 +23,11 @@ plugin.tx_solr {
 		results {
 			resultsPerPage = 10
 		}
+		faceting {
+			# cat=advanced ; type=options[index,assoc] ; label=Choose the style of the URL parameters
+			urlParameterStyle = index
+			# cat=advanced ; type=boolean ; label=Enable sorting or URL parameters
+			urlParameterSort = 0
+		}
 	}
 }
