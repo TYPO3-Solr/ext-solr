@@ -63,7 +63,7 @@ class SearchRequestBuilderTest extends UnitTest
     /**
      * @test
      */
-    public function testPageIsSetToZeroWhenValidResultsPerPageValueWasPassed()
+    public function testPageIsResettedWhenValidResultsPerPageValueWasPassed()
     {
         $this->configurationMock->expects($this->once())->method('getSearchResultsPerPageSwitchOptionsAsArray')
             ->will($this->returnValue([10, 25]));
@@ -71,7 +71,7 @@ class SearchRequestBuilderTest extends UnitTest
 
         $requestArguments = ['q' => 'test', 'page' => 5, 'resultsPerPage' => 25];
         $request = $this->searchRequestBuilder->buildForSearch($requestArguments, 0, 0);
-        $this->assertSame($request->getPage(), 0, 'Page was not resetted to 0');
+        $this->assertSame($request->getPage(), null, 'Page was not resetted.');
     }
 
     /**

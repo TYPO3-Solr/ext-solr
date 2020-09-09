@@ -422,6 +422,10 @@ class SearchRequest
         $this->stateChanged = true;
         $path = $this->prefixWithNamespace('page');
         $this->argumentsAccessor->set($path, $page);
+        // use initial url by switching back to page 0
+        if ($page === 0) {
+            $this->argumentsAccessor->reset($path);
+        }
         return $this;
     }
 
