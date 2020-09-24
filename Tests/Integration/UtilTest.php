@@ -2,9 +2,12 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Integration;
 
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Util;
 use Prophecy\Argument;
-use TYPO3\CMS\Core\Context\LanguageAspect;
+use Prophecy\Prophecy\ObjectProphecy;
+use TYPO3\CMS\Core\Cache\CacheManager;
+use TYPO3\CMS\Core\Cache\Frontend\VariableFrontend;
 use TYPO3\CMS\Core\Context\UserAspect;
 use TYPO3\CMS\Core\Context\WorkspaceAspect;
 use TYPO3\CMS\Core\Http\ServerRequest;
@@ -13,6 +16,7 @@ use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\TypoScript\ExtendedTemplateService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\RootlineUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use TYPO3\CMS\Frontend\Page\PageRepository;
 use TYPO3\CMS\Core\Context\Context;
@@ -25,10 +29,10 @@ class UtilTest extends IntegrationTest
 
         if (Util::getIsTYPO3VersionBelow10()) {
 
-            /** @var \TYPO3\CMS\Core\Cache\CacheManager|\Prophecy\Prophecy\ObjectProphecy $cacheManager */
-            $cacheManager = $this->prophesize(\TYPO3\CMS\Core\Cache\CacheManager::class);
-            /** @var \TYPO3\CMS\Core\Cache\Frontend\VariableFrontend|\Prophecy\Prophecy\ObjectProphecy $frontendCache */
-            $frontendCache = $this->prophesize(\TYPO3\CMS\Core\Cache\Frontend\VariableFrontend::class);
+            /* @var CacheManager|ObjectProphecy $cacheManager */
+            $cacheManager = $this->prophesize(CacheManager::class);
+            /* @var VariableFrontend|ObjectProphecy $frontendCache */
+            $frontendCache = $this->prophesize(VariableFrontend::class);
             $cacheManager
                 ->getCache('cache_pages')
                 ->willReturn($frontendCache->reveal());
@@ -47,10 +51,11 @@ class UtilTest extends IntegrationTest
             $cacheManager
                 ->getCache('tx_solr_configuration')
                 ->willReturn($frontendCache->reveal());
-            GeneralUtility::setSingletonInstance(\TYPO3\CMS\Core\Cache\CacheManager::class, $cacheManager->reveal());
+            GeneralUtility::setSingletonInstance(CacheManager::class, $cacheManager->reveal());
         }
         $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['solr'] = [];
         $GLOBALS['TYPO3_CONF_VARS']['FE']['ContentObjects'] = [];
+
     }
 
     public function tearDown()
@@ -66,7 +71,7 @@ class UtilTest extends IntegrationTest
     public function getConfigurationFromPageIdReturnsEmptyConfigurationForPageIdZero()
     {
         $configuration = Util::getConfigurationFromPageId(0, 'plugin.tx_solr', false, 0, false);
-        $this->assertInstanceOf('ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration', $configuration);
+        $this->assertInstanceOf(TypoScriptConfiguration::class, $configuration);
     }
 
     /**
@@ -81,14 +86,14 @@ class UtilTest extends IntegrationTest
         $cacheId = md5($pageId . '|' . $path . '|' . $language);
 
         if (!Util::getIsTYPO3VersionBelow10()) {
-            $rootLineUtility = $this->prophesize(\TYPO3\CMS\Core\Utility\RootlineUtility::class);
+            $rootLineUtility = $this->prophesize(RootlineUtility::class);
             $rootLineUtility->get()->shouldBeCalledOnce()->willReturn([]);
-            GeneralUtility::addInstance(\TYPO3\CMS\Core\Utility\RootlineUtility::class, $rootLineUtility->reveal());
+            GeneralUtility::addInstance(RootlineUtility::class, $rootLineUtility->reveal());
         }
 
         // prepare first call
 
-        /** @var TwoLevelCache|\Prophecy\Prophecy\ObjectProphecy $twoLevelCache */
+        /** @var TwoLevelCache|ObjectProphecy $twoLevelCache */
         $twoLevelCache = $this->prophesize(TwoLevelCache::class);
         $twoLevelCache
             ->get($cacheId)
@@ -99,7 +104,7 @@ class UtilTest extends IntegrationTest
             ->shouldBeCalledOnce();
         GeneralUtility::addInstance(TwoLevelCache::class, $twoLevelCache->reveal());
 
-        /** @var ExtendedTemplateService|\Prophecy\Prophecy\ObjectProphecy $extendedTemplateService */
+        /** @var ExtendedTemplateService|ObjectProphecy $extendedTemplateService */
         $extendedTemplateService = $this->prophesize(ExtendedTemplateService::class);
         GeneralUtility::addInstance(ExtendedTemplateService::class, $extendedTemplateService->reveal());
 
@@ -144,7 +149,7 @@ class UtilTest extends IntegrationTest
         $initializeTsfe = true;
         $cacheId = md5($pageId . '|' . $path . '|' . $language);
 
-        /** @var TwoLevelCache|\Prophecy\Prophecy\ObjectProphecy $twoLevelCache */
+        /** @var TwoLevelCache|ObjectProphecy $twoLevelCache */
         $twoLevelCache = $this->prophesize(TwoLevelCache::class);
         $twoLevelCache
             ->get($cacheId)
@@ -184,7 +189,7 @@ class UtilTest extends IntegrationTest
 
         // prepare first call
 
-        /** @var TwoLevelCache|\Prophecy\Prophecy\ObjectProphecy $twoLevelCache */
+        /** @var TwoLevelCache|ObjectProphecy $twoLevelCache */
         $twoLevelCache = $this->prophesize(TwoLevelCache::class);
         $twoLevelCache
             ->get(\Prophecy\Argument::cetera())
@@ -246,11 +251,11 @@ class UtilTest extends IntegrationTest
 
     protected function buildTestCaseForTsfe(int $pageId, int $rootPageId)
     {
-        /** @var PageRepository|\Prophecy\Prophecy\ObjectProphecy $pageRepository */
+        /** @var PageRepository|ObjectProphecy $pageRepository */
         $pageRepository = $this->prophesize(PageRepository::class);
         GeneralUtility::addInstance(PageRepository::class, $pageRepository->reveal());
 
-        /** @var ExtendedTemplateService|\Prophecy\Prophecy\ObjectProphecy $extendedTemplateService */
+        /** @var ExtendedTemplateService|ObjectProphecy $extendedTemplateService */
         $extendedTemplateService = $this->prophesize(ExtendedTemplateService::class);
         GeneralUtility::addInstance(ExtendedTemplateService::class, $extendedTemplateService->reveal());
 
@@ -277,11 +282,17 @@ class UtilTest extends IntegrationTest
         } else {
             $siteLanguage->getTypo3Language()->shouldBeCalled()->willReturn(0);
 
-            $rootLineUtility = $this->prophesize(\TYPO3\CMS\Core\Utility\RootlineUtility::class);
+            $rootLineUtility = $this->prophesize(RootlineUtility::class);
             $rootLineUtility->get()->shouldBeCalledOnce()->willReturn([]);
-            GeneralUtility::addInstance(\TYPO3\CMS\Core\Utility\RootlineUtility::class, $rootLineUtility->reveal());
+            GeneralUtility::addInstance(RootlineUtility::class, $rootLineUtility->reveal());
 
+            /* @var ObjectProphecy|UserAspect $frontendUserAspect */
             $frontendUserAspect = $this->prophesize(UserAspect::class);
+            $frontendUserAspect->isLoggedIn()->willReturn(false);
+            $frontendUserAspect->get('isLoggedIn')->willReturn(false);
+            $frontendUserAspect->get('id')->shouldBeCalled()->willReturn('UtilTest_TSFEUser');
+            $frontendUserAspect->getGroupIds()->shouldBeCalled()->willReturn([0, -1]);
+            $frontendUserAspect->get('groupIds')->shouldBeCalled()->willReturn([0, -1]);
             $backendUserAspect = $this->prophesize(UserAspect::class);
             $workspaceAspect =  $this->prophesize(WorkspaceAspect::class);
 
