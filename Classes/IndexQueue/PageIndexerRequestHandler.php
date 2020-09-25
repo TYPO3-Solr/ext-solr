@@ -25,7 +25,6 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\Dispatcher;
-use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -63,6 +62,7 @@ class PageIndexerRequestHandler implements SingletonInterface
      * Constructor.
      *
      * Initializes request, response, and dispatcher.
+     * @param string|null $jsonEncodedParameters
      */
     public function __construct(string $jsonEncodedParameters = null)
     {
