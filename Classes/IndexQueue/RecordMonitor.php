@@ -415,8 +415,7 @@ class RecordMonitor extends AbstractDataHandlerListener
      */
     protected function getIsTranslationParentRecordEnabled($recordTable, $recordUid)
     {
-        $tableEnableFields = implode(', ', $GLOBALS['TCA'][$recordTable]['ctrl']['enablecolumns']);
-        $l10nParentRecord = (array)BackendUtility::getRecord($recordTable, $recordUid, $tableEnableFields, '', false);
+        $l10nParentRecord = (array)BackendUtility::getRecord($recordTable, $recordUid, '*', '', false);
         return $this->tcaService->isEnabledRecord($recordTable, $l10nParentRecord);
     }
 
