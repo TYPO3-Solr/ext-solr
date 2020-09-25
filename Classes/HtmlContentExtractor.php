@@ -158,7 +158,7 @@ class HtmlContentExtractor
         $content = html_entity_decode($content, ENT_QUOTES, 'UTF-8');
 
         $content = self::stripUnicodeRanges($content);
-        $content = preg_replace('/\s{2,}/', ' ', $content);
+        $content = preg_replace('/\s{2,}/u', ' ', $content);
         $content = trim($content);
 
         return $content;
