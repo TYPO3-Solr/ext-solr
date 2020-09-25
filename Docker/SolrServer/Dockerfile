@@ -1,4 +1,4 @@
-FROM solr:8.5.1
+FROM solr:8.5
 MAINTAINER Timo Hund <timo.hund@dkd.de>
 ENV TERM linux
 
