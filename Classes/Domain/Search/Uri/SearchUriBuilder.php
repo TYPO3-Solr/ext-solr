@@ -201,7 +201,7 @@ class SearchUriBuilder
     }
     /**
      * @param SearchRequest $previousSearchRequest
-     * @param $queryString
+     * @param string $queryString
      * @return string
      */
     public function getNewSearchUri(SearchRequest $previousSearchRequest, $queryString)
@@ -304,11 +304,13 @@ class SearchUriBuilder
     /**
      * Build the link with an i memory cache that reduces the amount of required typolink calls.
      *
-     * @param integer $pageUid
+     * The caching is required, because a facet could contain more than hundred of values.
+     *
+     * @param int $pageUid
      * @param array $arguments
      * @return string
      */
-    protected function buildLinkWithInMemoryCache($pageUid, array $arguments)
+    protected function buildLinkWithInMemoryCache(int $pageUid, array $arguments)
     {
         $values = [];
         $structure = $arguments;
@@ -320,7 +322,11 @@ class SearchUriBuilder
         } else {
             self::$missCount++;
             $this->uriBuilder->reset()->setTargetPageUid($pageUid);
-            $uriCacheTemplate = $this->uriBuilder->setArguments($structure)->setUseCacheHash(false)->build();
+            $uriCacheTemplate = $this->uriBuilder
+                ->setArguments($structure)
+                // @TODO Call of setUseCacheHash is deprecated and has no functionality anymore. Need replacement
+                ->setUseCacheHash(false)
+                ->build();
 
             // even if we call build with disabled cHash in TYPO3 9 a cHash will be generated when site management is active
             // to prevent wrong cHashes we remove the cHash here from the cached uri template.
@@ -383,17 +389,34 @@ class SearchUriBuilder
      * @param $values
      * @param array $branch
      */
-    protected function getSubstitution(array &$structure, array  &$values, array $branch = [])
+    protected function getSubstitution(array &$structure, array  &$values, array $branch = []): void
     {
+        /*
+         * Adds information about the filter facet to the placeholder.
+         *
+         * This feature allows to handle even placeholder in RouteEnhancer
+         */
+        $filter = false;
+        if (count($branch) > 0 && $branch[count($branch) - 1] === 'filter') {
+            $filter = true;
+        }
         foreach ($structure as $key => &$value) {
             $branch[] = $key;
             if (is_array($value)) {
                 $this->getSubstitution($value, $values, $branch);
             } else {
+                if ($filter) {
+                    [$facetType, $facetValue] = explode(':', $value);
+                    $branch[] = $facetType;
+                }
                 $path = '###' . implode(':', $branch) . '###';
                 $values[$path] = $value;
                 $structure[$key] = $path;
+                if ($filter) {
+                    array_pop($branch);
+                }
             }
+            array_pop($branch);
         }
     }
 }
