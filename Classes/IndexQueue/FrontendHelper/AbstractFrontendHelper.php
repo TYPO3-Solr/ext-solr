@@ -59,7 +59,7 @@ abstract class AbstractFrontendHelper implements FrontendHelper
     protected $action = null;
 
     /**
-     * @var \ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager
+     * @var SolrLogManager
      */
     protected $logger = null;
 

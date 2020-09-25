@@ -34,7 +34,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use TYPO3\CMS\Core\Http\NullResponse;
+use TYPO3\CMS\Core\Http\JsonResponse;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -55,10 +55,12 @@ class PageIndexerInitialization implements MiddlewareInterface
             // disable TSFE cache for TYPO3 v10
             $request = $request->withAttribute('noCache', true);
             $jsonEncodedParameters = $request->getHeader(PageIndexerRequest::SOLR_INDEX_HEADER)[0];
+            /* @var PageIndexerRequestHandler $pageIndexerRequestHandler */
             $pageIndexerRequestHandler = GeneralUtility::makeInstance(PageIndexerRequestHandler::class, $jsonEncodedParameters);
 
             $pageIndexerRequest = $pageIndexerRequestHandler->getRequest();
             if (!$pageIndexerRequest->isAuthenticated()) {
+                /* @var SolrLogManager $logger */
                 $logger = GeneralUtility::makeInstance(SolrLogManager::class, self::class);
                 $logger->log(
                     SolrLogManager::ERROR,
@@ -68,10 +70,9 @@ class PageIndexerInitialization implements MiddlewareInterface
                         'index queue header' => $jsonEncodedParameters
                     ]
                 );
-                return new NullResponse('Invalid Index Queue Request!', 403);
+                return new JsonResponse(['error' => ['code' => 403, 'message' => 'Invalid Index Queue Request.']], 403);
             }
             $pageIndexerRequestHandler->run();
-
         }
 
         return $handler->handle($request);
