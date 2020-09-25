@@ -34,6 +34,20 @@ The most simple configuration for my page was:
         stdWrap.dataWrap = <!--TYPO3SEARCH_begin-->|<!--TYPO3SEARCH_end-->
     }
 
+.. _started-enable-indexing:
+
+Enable indexing
+---------------
+
+Indexing wil only work if you allow content to be indexed by stating so in your TypoScript setup configuration:
+
+
+.. code-block:: typoscript
+
+    config {
+        index_enable = 1
+    }
+
 Site Handling or Legacy site mode
 ---------------------------------
 
