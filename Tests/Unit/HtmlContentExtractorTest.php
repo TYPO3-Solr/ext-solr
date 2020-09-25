@@ -73,6 +73,10 @@ class HtmlContentExtractorTest extends UnitTest
                 'websiteContent' => 'B&auml;hm&nbsp; Bum',
                 'exptectedIndexableContent' => 'Bähm Bum'
             ],
+            'decodeSpaceUtf8Nbsp' => [
+                'websiteContent' => 'test <br/>afterNBSP',
+                'exptectedIndexableContent' => 'test afterNBSP'
+            ]
         ];
     }
 
