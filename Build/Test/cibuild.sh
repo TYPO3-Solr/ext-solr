@@ -1,80 +1,176 @@
 #!/usr/bin/env bash
 
-echo "PWD: $(pwd)"
+CWD=$(pwd)
 
-export TYPO3_PATH_WEB="$(pwd)/.Build/Web/"
-export TYPO3_PATH_PACKAGES="$(pwd)/.Build/vendor/"
+# Defaults
+DEFAULT_TYPO3_PATH_WEB=$CWD"/.Build/Web/"
+DEFAULT_TYPO3_PATH_VENDOR=$CWD"/.Build/vendor/"
+DEFAULT_UNIT_BOOTSTRAP=$DEFAULT_TYPO3_PATH_VENDOR"nimut/testing-framework/res/Configuration/UnitTestsBootstrap.php"
+DEFAULT_INTEGRATION_BOOTSTRAP=$DEFAULT_TYPO3_PATH_VENDOR"nimut/testing-framework/res/Configuration/FunctionalTestsBootstrap.php"
+DEFAULT_TYPO3_BIN_DIR=$CWD"/.Build/bin/"
 
-export TYPO3_BIN_DIR="$(pwd)/.Build/bin/"
-export COMPOSER_BIN_DIR="$HOME/.composer/vendor/bin"
+DEFAULT_COMPOSER_BIN_DIR="$HOME/.composer/vendor/bin"
 
-# Add TYPO3_BIN_DIR and COMPOSER_BIN_DIR to $PATH
+## Settings via environment variables
+if [[ -v TYPO3_PATH_WEB && -d "${TYPO3_PATH_WEB}" ]]; then
+  echo "Using public path provided by environment variable TYPO3_PATH_WEB=""$TYPO3_PATH_WEB"
+else
+  export TYPO3_PATH_WEB=$DEFAULT_TYPO3_PATH_WEB
+fi
+
+if [[ -v TYPO3_PATH_VENDOR && -d "${TYPO3_PATH_VENDOR}" ]]; then
+  echo "Using composer vendor path provided by environment variable TYPO3_PATH_VENDOR=""$TYPO3_PATH_VENDOR"
+else
+  export TYPO3_PATH_VENDOR=$DEFAULT_TYPO3_PATH_VENDOR
+fi
+
+if [[ -v TYPO3_BIN_DIR && -d "${TYPO3_BIN_DIR}" ]]; then
+  echo "Using TYPO3 bin path provided by environment variable TYPO3_BIN_DIR=""$TYPO3_BIN_DIR"
+else
+  export TYPO3_BIN_DIR=$DEFAULT_TYPO3_BIN_DIR
+fi
+
+if [[ -v COMPOSER_BIN_DIR && -d "${COMPOSER_BIN_DIR}" ]]; then
+  echo "Using public path provided by environment variable COMPOSER_BIN_DIR=""$COMPOSER_BIN_DIR"
+else
+  export COMPOSER_BIN_DIR=$DEFAULT_COMPOSER_BIN_DIR
+fi
+## End: Settings via environment variables
+
+## Add TYPO3_BIN_DIR and COMPOSER_BIN_DIR to $PATH
 export PATH="$TYPO3_BIN_DIR:$COMPOSER_BIN_DIR:$PATH"
 
-echo "Run PHP Lint"
-find . -name \*.php ! -path "./.Build/*" | parallel --gnu php -d display_errors=stderr -l {} > /dev/null \;
-
-# use from vendor dir
-php-cs-fixer --version > /dev/null 2>&1
-if [ $? -eq "0" ]; then
-    echo "Check PSR-2 compliance"
-    php-cs-fixer fix --diff --verbose --dry-run --rules='{"function_declaration": {"closure_function_spacing": "none"}}' Classes
-
-    if [ $? -ne "0" ]; then
-        echo "Some files are not PSR-2 compliant"
-        echo "Please fix the files listed above"
-        exit 1
-    fi
-fi
+function runPHPsLinterSyntaxCheckOnly() {
+  echo "Run PHP Lint"
+  if ! find "." -name "*.php" ! -path "./.Build/*" | parallel --gnu php -d display_errors=stderr -l {} > /dev/null ;
+  then
+    echo "You have syntax errors in your code, please fix them from above and try again." | tee >(cat >&2)
+    exit 101
+  fi
+}
 
 
-echo "Run unit tests"
-UNIT_BOOTSTRAP=".Build/vendor/nimut/testing-framework/res/Configuration/UnitTestsBootstrap.php"
-.Build/bin/phpunit --colors -c Build/Test/UnitTests.xml --bootstrap=$UNIT_BOOTSTRAP --coverage-clover=coverage.unit.clover
-if [ $? -ne "0" ]; then
-    echo "Error during running the unit tests please check and fix them"
-    exit 1
-fi
+function runPhpCsFixer() {
+  # use from vendor dir
+  if ! php-cs-fixer --version > /dev/null 2>&1;
+  then
+    echo "php-cs-fixer is not installed, please make sure it is installed." | tee >(cat >&2)
+    exit 102
+  fi
+
+  echo "Check PSR-2 compliance"
+  if ! php-cs-fixer fix --diff --verbose --dry-run --rules='{"function_declaration": {"closure_function_spacing": "none"}}' Classes;
+  then
+    echo "Some files are not PSR-2 compliant" | tee >(cat >&2)
+    echo "Please fix the files listed above" | tee >(cat >&2)
+    exit 103
+  fi
+}
+
+
+function runUnitTests() {
+  echo "Run unit tests"
+
+  if [[ -v UNIT_BOOTSTRAP && -f "${UNIT_BOOTSTRAP}" ]]; then
+    echo "Using bootstrap for unit tests from environment variable UNIT_BOOTSTRAP=""$UNIT_BOOTSTRAP"
+  else
+    UNIT_BOOTSTRAP=$DEFAULT_UNIT_BOOTSTRAP
+  fi
+
+  if ! phpunit --colors -c Build/Test/UnitTests.xml --bootstrap=$UNIT_BOOTSTRAP --coverage-clover=coverage.unit.clover;
+  then
+      echo "Error during running the unit tests please check and fix them" | tee >(cat >&2)
+      exit 104
+  fi
+}
 
 #
 # Map the travis and shell variable names to the expected
 # casing of the TYPO3 core.
 #
-if [ -n $TYPO3_DATABASE_NAME ]; then
+if [[ -n $TYPO3_DATABASE_NAME ]]; then
 	export typo3DatabaseName=$TYPO3_DATABASE_NAME
 else
-	echo "No environment variable TYPO3_DATABASE_NAME set. Please set it to run the integration tests."
-	exit 1
+	echo "No environment variable TYPO3_DATABASE_NAME set. Please set it to run the integration tests." | tee >(cat >&2)
+	exit 10
 fi
 
-if [ -n $TYPO3_DATABASE_HOST ]; then
+if [[ -n $TYPO3_DATABASE_HOST ]]; then
 	export typo3DatabaseHost=$TYPO3_DATABASE_HOST
 else
-	echo "No environment variable TYPO3_DATABASE_HOST set. Please set it to run the integration tests."
-	exit 1
+	echo "No environment variable TYPO3_DATABASE_HOST set. Please set it to run the integration tests." | tee >(cat >&2)
+	exit 11
 fi
 
-if [ -n $TYPO3_DATABASE_USERNAME ]; then
+if [[ -n $TYPO3_DATABASE_USERNAME ]]; then
 	export typo3DatabaseUsername=$TYPO3_DATABASE_USERNAME
 else
-	echo "No environment variable TYPO3_DATABASE_USERNAME set. Please set it to run the integration tests."
-	exit 1
+	echo "No environment variable TYPO3_DATABASE_USERNAME set. Please set it to run the integration tests." | tee >(cat >&2)
+	exit 12
 fi
 
-if [ -n $TYPO3_DATABASE_PASSWORD ]; then
+if [[ -n $TYPO3_DATABASE_PASSWORD ]]; then
 	export typo3DatabasePassword=$TYPO3_DATABASE_PASSWORD
 else
-	echo "No environment variable TYPO3_DATABASE_PASSWORD set. Please set it to run the integration tests."
-	exit 1
+	echo "No environment variable TYPO3_DATABASE_PASSWORD set. Please set it to run the integration tests." | tee >(cat >&2)
+	exit 13
 fi
 
-echo "Run integration tests"
-INTEGRATION_BOOTSTRAP=".Build/vendor/nimut/testing-framework/res/Configuration/FunctionalTestsBootstrap.php"
-.Build/bin/phpunit --colors -c Build/Test/IntegrationTests.xml --bootstrap=$INTEGRATION_BOOTSTRAP --coverage-clover=coverage.integration.clover
-if [ $? -ne "0" ]; then
-    echo "Error during running the integration tests please check and fix them"
-    exit 1
+function runIntegrationTests() {
+  echo "Run integration tests"
+
+  if [[ -v INTEGRATION_BOOTSTRAP && -f "${INTEGRATION_BOOTSTRAP}" ]]; then
+    echo "Using bootstrap for unit tests from environment variable UNIT_BOOTSTRAP=""$UNIT_BOOTSTRAP"
+  else
+    INTEGRATION_BOOTSTRAP=$DEFAULT_INTEGRATION_BOOTSTRAP
+  fi
+
+  if ! phpunit --colors -c Build/Test/IntegrationTests.xml --bootstrap="$INTEGRATION_BOOTSTRAP" --coverage-clover=coverage.integration.clover;
+  then
+      echo "Error during running the integration tests please check and fix them" | tee >(cat >&2)
+      exit 105
+  fi
+
+  echo "Run frontend-related integration tests"
+  if ! phpunit --colors -c Build/Test/IntegrationFrontendTests.xml --bootstrap="$INTEGRATION_BOOTSTRAP" --coverage-clover=coverage.integration.frontend.clover;
+  then
+    echo "Error during running the frontend-related integration tests please check and fix them" | tee >(cat >&2)
+    exit 106
+  fi
+}
+
+### atomic or sequential test scenario calls
+VIA_PARAMETER_CALLED=0
+
+if [[ $* == *--lint* ]]; then
+  VIA_PARAMETER_CALLED=1
+  runPHPsLinterSyntaxCheckOnly
 fi
 
-echo "Run frontend-related integration tests"
-.Build/bin/phpunit --colors -c Build/Test/IntegrationFrontendTests.xml --bootstrap=$INTEGRATION_BOOTSTRAP --coverage-clover=coverage.integration.frontend.clover
+if [[ $* == *--php-cs-fixer* ]]; then
+  VIA_PARAMETER_CALLED=1
+  runPhpCsFixer
+fi
+
+if [[ $* == *--unit* ]]; then
+  VIA_PARAMETER_CALLED=1
+  runUnitTests
+fi
+
+if [[ $* == *--integration* ]]; then
+  VIA_PARAMETER_CALLED=1
+  runIntegrationTests
+fi
+
+#
+if [[ $VIA_PARAMETER_CALLED -eq 1 ]]; then
+  exit 0
+fi
+### End: atomic or sequential test scenario calls
+
+
+# call in standard sequence if no params provided
+runPHPsLinterSyntaxCheckOnly
+runPhpCsFixer
+runUnitTests
+runIntegrationTests
