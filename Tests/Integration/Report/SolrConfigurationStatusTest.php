@@ -38,7 +38,7 @@ class SolrConfigurationStatusTest extends IntegrationTest
     /**
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->writeDefaultSolrTestSiteConfiguration();
@@ -71,7 +71,7 @@ class SolrConfigurationStatusTest extends IntegrationTest
         $this->assertCount(1, $violations, 'Asserting to contain only one violation.');
 
         $firstViolation = array_pop($violations);
-        $this->assertContains('No sites', $firstViolation->getValue(), 'Did not get a no sites found violation');
+        $this->assertStringContainsString('No sites', $firstViolation->getValue(), 'Did not get a no sites found violation');
     }
 
     /**
@@ -88,6 +88,6 @@ class SolrConfigurationStatusTest extends IntegrationTest
         $this->assertCount(1, $violations, 'Asserting to contain only one violation.');
 
         $firstViolation = array_pop($violations);
-        $this->assertContains('Indexing is disabled', $firstViolation->getValue(), 'Did not get a no sites found violation');
+        $this->assertStringContainsString('Indexing is disabled', $firstViolation->getValue(), 'Did not get a no sites found violation');
     }
 }

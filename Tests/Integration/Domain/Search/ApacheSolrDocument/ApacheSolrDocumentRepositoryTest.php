@@ -36,10 +36,11 @@ class ApacheSolrDocumentRepositoryTest extends IntegrationTest
      */
     protected $apacheSolrDocumentRepository;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
+        $this->fakeBEUser();
         $this->writeDefaultSolrTestSiteConfiguration();
         $_SERVER['HTTP_HOST'] = 'testone.site';
         $_SERVER['REQUEST_URI'] = '/search.html';
@@ -55,7 +56,7 @@ class ApacheSolrDocumentRepositoryTest extends IntegrationTest
     /**
      * Executed after each test. Emptys solr and checks if the index is empty
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->cleanUpSolrServerAndAssertEmpty();
         parent::tearDown();
@@ -68,7 +69,7 @@ class ApacheSolrDocumentRepositoryTest extends IntegrationTest
     {
         $apacheSolrDocumentsCollection = $this->apacheSolrDocumentRepository->findByPageIdAndByLanguageId(3, 0);
 
-        $this->assertInternalType('array', $apacheSolrDocumentsCollection, 'Repository did not get Document collection from pageId 3.');
+        $this->assertIsArray($apacheSolrDocumentsCollection, 'Repository did not get Document collection from pageId 3.');
         $this->assertNotEmpty($apacheSolrDocumentsCollection, 'Repository did not get apache solr documents from pageId 3.');
         $this->assertInstanceOf(Document::class, $apacheSolrDocumentsCollection[0], 'ApacheSolrDocumentRepository returned not an array of type Document.');
     }

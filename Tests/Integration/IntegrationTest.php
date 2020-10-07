@@ -107,7 +107,7 @@ abstract class IntegrationTest extends FunctionalTestCase
      * @return void
      * @throws NoSuchCacheException
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -328,7 +328,7 @@ abstract class IntegrationTest extends FunctionalTestCase
     protected function assertSolrContainsDocumentCount($documentCount)
     {
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
-        $this->assertContains('"numFound":' . intval($documentCount), $solrContent, 'Solr contains unexpected amount of documents');
+        $this->assertStringContainsString('"numFound":' . intval($documentCount), $solrContent, 'Solr contains unexpected amount of documents');
     }
 
     /**
@@ -554,10 +554,18 @@ abstract class IntegrationTest extends FunctionalTestCase
 
     protected function getSolrConnectionInfo(): array
     {
+        if (getenv('TEST_TOKEN') !== false) {  // Using paratest
+            $testToken = (int)getenv('TEST_TOKEN');
+            return [
+                'scheme' => getenv('TESTING_SOLR_SCHEME') ?: 'http',
+                'host' => getenv('TESTING_SOLR_HOST_PREFIX') . '-' . (string)($testToken),
+                'port' => (int)getenv('TESTING_SOLR_PORT')
+            ];
+        }
         return [
             'scheme' => getenv('TESTING_SOLR_SCHEME') ?: 'http',
             'host' => getenv('TESTING_SOLR_HOST') ?: 'localhost',
-            'port' => getenv('TESTING_SOLR_PORT') ?: 8999,
+            'port' => getenv('TESTING_SOLR_PORT') ?: 8999
         ];
     }
 

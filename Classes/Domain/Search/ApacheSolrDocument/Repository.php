@@ -27,7 +27,6 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ApacheSolrDocument;
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\Parser\DocumentEscapeService;
-use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
 use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
@@ -35,6 +34,8 @@ use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrCommunicationException;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use ApacheSolrForTypo3\Solr\Util;
+use Exception;
+use InvalidArgumentException;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -47,7 +48,7 @@ class Repository implements SingletonInterface
     /**
      * Search
      *
-     * @var \ApacheSolrForTypo3\Solr\Search
+     * @var Search
      */
     protected $search;
 
@@ -81,8 +82,10 @@ class Repository implements SingletonInterface
     /**
      * Returns firs found \ApacheSolrForTypo3\Solr\System\Solr\Document\Document for current page by given language id.
      *
+     * @param $pageId
      * @param $languageId
      * @return Document|false
+     * @throws Exception
      */
     public function findOneByPageIdAndByLanguageId($pageId, $languageId)
     {
@@ -97,6 +100,7 @@ class Repository implements SingletonInterface
      * @param int $pageId
      * @param int $languageId
      * @return Document[]
+     * @throws Exception
      */
     public function findByPageIdAndByLanguageId($pageId, $languageId)
     {
@@ -120,6 +124,7 @@ class Repository implements SingletonInterface
      * @param int $pageId
      * @param int $languageId
      * @return Document[]|array
+     * @throws Exception
      */
     public function findByTypeAndPidAndUidAndLanguageId($type, $uid, $pageId, $languageId): array
     {
@@ -140,15 +145,17 @@ class Repository implements SingletonInterface
     /**
      * Initializes Search for given language
      *
+     * @param $pageId
      * @param int $languageId
+     * @throws NoSolrConnectionFoundException
      */
     protected function initializeSearch($pageId, $languageId = 0)
     {
         if (!is_int($pageId)) {
-            throw new \InvalidArgumentException('Invalid page ID = ' . $pageId, 1487332926);
+            throw new InvalidArgumentException('Invalid page ID = ' . $pageId, 1487332926);
         }
         if (!is_int($languageId)) { // @todo: Check if lang id is defined and present?
-            throw new \InvalidArgumentException('Invalid language ID = ' . $languageId, 1487335178);
+            throw new InvalidArgumentException('Invalid language ID = ' . $languageId, 1487335178);
         }
         /* @var $connectionManager ConnectionManager */
         $connectionManager = GeneralUtility::makeInstance(ConnectionManager::class);

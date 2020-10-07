@@ -37,12 +37,14 @@ use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
  * Unit test case for the ObjectReconstitutionProcessor.
  *
  * @author Timo Hund <timo.hund@dkd.de>
+ * @group frontend
  */
 class ResultSetReconstitutionProcessorTest extends IntegrationTest
 {
     /**
      * @param $fixtureFile
      * @return SearchResultSet
+     * @throws ReflectionException
      */
     protected function initializeSearchResultSetFromFakeResponse($fixtureFile)
     {
@@ -65,6 +67,7 @@ class ResultSetReconstitutionProcessorTest extends IntegrationTest
     {
         $this->importDataSetFromFixture('simple_site.xml');
         $this->writeDefaultSolrTestSiteConfiguration();
+        $this->fakeBEUser(0);
         $this->fakeTSFE(1);
 
         $searchResultSet = $this->initializeSearchResultSetFromFakeResponse('fake_solr_response_with_multiple_fields_facets.json');
@@ -116,6 +119,7 @@ class ResultSetReconstitutionProcessorTest extends IntegrationTest
     {
         $this->importDataSetFromFixture('simple_site.xml');
         $this->writeDefaultSolrTestSiteConfiguration();
+        $this->fakeBEUser(0);
         $this->fakeTSFE(1);
         $searchResultSet = $this->initializeSearchResultSetFromFakeResponse('fake_solr_response_with_multiple_fields_facets.json');
 

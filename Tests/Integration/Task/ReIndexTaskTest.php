@@ -61,7 +61,7 @@ class ReIndexTaskTest extends IntegrationTest
     /**
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->writeDefaultSolrTestSiteConfiguration();
@@ -134,8 +134,8 @@ class ReIndexTaskTest extends IntegrationTest
         $this->task->setIndexingConfigurationsToReIndex(['pages']);
         $additionalInformation = $this->task->getAdditionalInformation();
 
-        $this->assertContains('Indexing Configurations: pages', $additionalInformation);
-        $this->assertContains('Root Page ID: 1', $additionalInformation);
+        $this->assertStringContainsString('Indexing Configurations: pages', $additionalInformation);
+        $this->assertStringContainsString('Root Page ID: 1', $additionalInformation);
     }
 
     /**

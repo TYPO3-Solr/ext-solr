@@ -52,14 +52,14 @@ class SearchTest extends IntegrationTest
     protected $queryBuilder;
 
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->writeDefaultSolrTestSiteConfiguration();
         $this->queryBuilder = new QueryBuilder(new TypoScriptConfiguration([]));
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
         $this->cleanUpSolrServerAndAssertEmpty();
@@ -92,8 +92,8 @@ class SearchTest extends IntegrationTest
 
         $searchResponse = $searchInstance->search($query);
         $rawResponse = $searchResponse->getRawResponse();
-        $this->assertContains('"numFound":1', $rawResponse, 'Could not index document into solr');
-        $this->assertContains('"title":"Hello Search Test"', $rawResponse, 'Could not index document into solr');
+        $this->assertStringContainsString('"numFound":1', $rawResponse, 'Could not index document into solr');
+        $this->assertStringContainsString('"title":"Hello Search Test"', $rawResponse, 'Could not index document into solr');
     }
 
     /**

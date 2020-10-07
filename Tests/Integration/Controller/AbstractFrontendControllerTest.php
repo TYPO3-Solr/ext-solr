@@ -19,6 +19,9 @@ use ApacheSolrForTypo3\Solr\Typo3PageIndexer;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Http\ServerRequestFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Mvc\Exception\InvalidActionNameException;
+use TYPO3\CMS\Extbase\Mvc\Exception\InvalidControllerNameException;
+use TYPO3\CMS\Extbase\Mvc\Exception\InvalidExtensionNameException;
 use TYPO3\CMS\Extbase\Mvc\Request as ExtbaseRequest;
 use TYPO3\CMS\Extbase\Mvc\Web\Response;
 use TYPO3\CMS\Frontend\Http\RequestHandler;
@@ -28,8 +31,9 @@ abstract class AbstractFrontendControllerTest  extends IntegrationTest {
 
     /**
      * @return void
+     * @throws NoSuchCacheException
      */
-    public function setUp()
+    public function setUp(): void
     {
         $_SERVER['HTTP_HOST'] = 'testone.site';
         $_SERVER['REQUEST_URI'] = '/en/search/';
@@ -44,6 +48,7 @@ abstract class AbstractFrontendControllerTest  extends IntegrationTest {
      */
     protected function indexPages($importPageIds)
     {
+        $this->fakeBEUser(1);
         $existingAttributes = $GLOBALS['TYPO3_REQUEST'] ? $GLOBALS['TYPO3_REQUEST']->getAttributes() : [];
         foreach ($importPageIds as $importPageId) {
             $fakeTSFE = $this->getConfiguredTSFE($importPageId);
@@ -58,14 +63,11 @@ abstract class AbstractFrontendControllerTest  extends IntegrationTest {
             $requestHandler = GeneralUtility::makeInstance(RequestHandler::class);
             $requestHandler->handle($request);
 
-            /** @var $pageIndexer \ApacheSolrForTypo3\Solr\Typo3PageIndexer */
+            /** @var $pageIndexer Typo3PageIndexer */
             $pageIndexer = GeneralUtility::makeInstance(Typo3PageIndexer::class, $fakeTSFE);
             $pageIndexer->indexPage();
         }
 
-        /** @var $beUser  \TYPO3\CMS\Core\Authentication\BackendUserAuthentication */
-        $beUser = GeneralUtility::makeInstance(BackendUserAuthentication::class);
-        $GLOBALS['BE_USER'] = $beUser;
         if (!empty($existingAttributes)) {
             foreach ($existingAttributes as $attributeName => $attribute) {
                 $GLOBALS['TYPO3_REQUEST'] = $GLOBALS['TYPO3_REQUEST']->withAttribute($attributeName, $attribute);
@@ -79,6 +81,10 @@ abstract class AbstractFrontendControllerTest  extends IntegrationTest {
      * @param string $actionName
      * @param string $plugin
      * @return ExtbaseRequest
+     *
+     * @throws InvalidActionNameException
+     * @throws InvalidControllerNameException
+     * @throws InvalidExtensionNameException
      */
     protected function getPreparedRequest($controllerName = 'Search', $actionName = 'results', $plugin = 'pi_result')
     {

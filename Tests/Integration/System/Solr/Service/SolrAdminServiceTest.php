@@ -49,7 +49,7 @@ class SolrAdminServiceTest extends IntegrationTest
      * @return void
      * @throws NoSuchCacheException
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         /* @var EventDispatcher $eventDispatcher */
@@ -123,11 +123,11 @@ class SolrAdminServiceTest extends IntegrationTest
      * @test
      * @dataProvider stopwordDataProvider
      */
-    public function canAddStopWord($stopWord)
+    public function canAddAndDeleteStopWord($stopWord)
     {
         $stopWords = $this->solrAdminService->getStopWords();
 
-        $this->assertNotContains($stopWord, $stopWords, 'Stopwords are not empty after initializing');
+        $this->assertNotContains($stopWord, $stopWords, 'Stopwords were not emptied after last run of test.');
 
         $this->solrAdminService->addStopWords($stopWord);
         $this->solrAdminService->reloadCore();

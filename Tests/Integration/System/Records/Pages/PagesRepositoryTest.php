@@ -40,7 +40,7 @@ class PagesRepositoryTest extends IntegrationTest
      */
     protected $repository;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->repository = GeneralUtility::makeInstance(PagesRepository::class);

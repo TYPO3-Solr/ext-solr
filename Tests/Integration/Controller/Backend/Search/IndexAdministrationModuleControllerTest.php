@@ -35,7 +35,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class IndexAdministrationModuleControllerTest
- * @package ApacheSolrForTypo3\Solr\Tests\Integration\Controller\Search
  */
 class IndexAdministrationModuleControllerTest extends IntegrationTest
 {
@@ -44,7 +43,8 @@ class IndexAdministrationModuleControllerTest extends IntegrationTest
      */
     protected $controller;
 
-    public function setUp() {
+    public function setUp(): void
+    {
         parent::setUp();
         $GLOBALS['LANG'] = $this->getMockBuilder(LanguageService::class)->disableOriginalConstructor()->getMock();
 
@@ -53,6 +53,12 @@ class IndexAdministrationModuleControllerTest extends IntegrationTest
 
         $this->controller = $this->getMockBuilder(IndexAdministrationModuleController::class)->setMethods(['addFlashMessage', 'redirect'])->getMock();
         $this->controller->setSolrConnectionManager($connectionManager);
+    }
+
+    public function tearDown(): void
+    {
+        parent::tearDown();
+        unset($this->connectionManager, $this->controller);
     }
 
     /**

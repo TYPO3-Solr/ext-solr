@@ -33,17 +33,23 @@ use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResult;
 
+/**
+ * Class SearchResultSetServiceTest
+ * @group frontend
+ */
 class SearchResultSetServiceTest extends IntegrationTest
 {
-    public function setUp() {
+    public function setUp(): void
+    {
         parent::setUp();
         $this->writeDefaultSolrTestSiteConfiguration();
+        $this->fakeBEUser(1);
     }
 
     /**
      * Executed after each test. Emptys solr and checks if the index is empty
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->cleanUpSolrServerAndAssertEmpty();
         parent::tearDown();
@@ -60,7 +66,7 @@ class SearchResultSetServiceTest extends IntegrationTest
         $this->waitToBeVisibleInSolr();
 
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
-        $this->assertContains('002de2729efa650191f82900ea02a0a3189dfabb/pages/1/0/0/0', $solrContent);
+        $this->assertStringContainsString('002de2729efa650191f82900ea02a0a3189dfabb/pages/1/0/0/0', $solrContent);
 
         $solrConnection = GeneralUtility::makeInstance(ConnectionManager::class)->getConnectionByPageId(1, 0, 0);
 
@@ -256,7 +262,7 @@ class SearchResultSetServiceTest extends IntegrationTest
         $this->indexPageIdsFromFixture('fe_user_page.xml', [1, 2, 3], [1]);
         $this->waitToBeVisibleInSolr();
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
-        $this->assertContains('"numFound":3', $solrContent);
+        $this->assertStringContainsString('"numFound":3', $solrContent);
     }
 
     /**
