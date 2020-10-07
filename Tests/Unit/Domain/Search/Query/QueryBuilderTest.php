@@ -74,7 +74,7 @@ class QueryBuilderTest extends UnitTest
      */
     protected $builder;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
         $this->loggerMock = $this->getDumbMock(SolrLogManager::class);
@@ -1201,7 +1201,7 @@ class QueryBuilderTest extends UnitTest
 
         $this->assertNull($queryParameters['enableElevation']);
         $this->assertNull($queryParameters['forceElevation']);
-        $this->assertNotContains('isElevated:[elevated]', $queryParameters['fl']);
+        $this->assertStringNotContainsString('isElevated:[elevated]', $queryParameters['fl']);
 
         // do we get the expected default values, when calling setQueryElevantion with no arguments?
 
@@ -1210,7 +1210,7 @@ class QueryBuilderTest extends UnitTest
         $queryParameters = $this->getAllQueryParameters($query);
         $this->assertSame('true', $queryParameters['enableElevation'], 'enabledElevation was not set after enabling elevation');
         $this->assertSame('true', $queryParameters['forceElevation'], 'forceElevation was not set after enabling elevation');
-        $this->assertContains('isElevated:[elevated]', $queryParameters['fl'], 'isElevated should be in the list of return fields');
+        $this->assertStringContainsString('isElevated:[elevated]', $queryParameters['fl'], 'isElevated should be in the list of return fields');
 
         // can we reset the elevantion?
         $elevation->setIsEnabled(false);

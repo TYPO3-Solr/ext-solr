@@ -18,6 +18,7 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\FacetRegistry;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\OptionsPackage;
 use ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets\TestPackage\TestPackage;
+use InvalidArgumentException;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 
@@ -37,7 +38,8 @@ class FacetRegistryTest extends UnitTest
     /**
      * @return void
      */
-    public function setUp() {
+    public function setUp(): void
+    {
         parent::setUp();
         $this->objectManagerMock = $this->getMockBuilder(ObjectManager::class)->disableOriginalConstructor()->getMock();
     }
@@ -84,22 +86,22 @@ class FacetRegistryTest extends UnitTest
 
     /**
      * @test
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionCode 1462883324
      */
     public function registerParserClassThrowsExceptionIfClassDoesNotExist()
     {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionCode(1462883324);
         $facetParserRegistry = $this->getTestFacetPackageRegistry();
         $facetParserRegistry->registerPackage($this->getUniqueId(), 'unknown');
     }
 
     /**
      * @test
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionCode 1462883325
      */
     public function registerParserClassThrowsExceptionIfClassDoesNotImplementFacetPackageInterface()
     {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionCode(1462883325);
         $className = __CLASS__;
         $facetParserRegistry = $this->getTestFacetPackageRegistry();
         $facetParserRegistry->registerPackage($className, 'unknown');

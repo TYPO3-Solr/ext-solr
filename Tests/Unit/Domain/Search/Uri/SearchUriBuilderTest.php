@@ -54,7 +54,7 @@ class SearchUriBuilderTest extends UnitTest
     /**
      * @return void
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->extBaseUriBuilderMock = $this->getDumbMock(UriBuilder::class);
         $this->searchUrlBuilder = new SearchUriBuilder();
@@ -288,6 +288,6 @@ class SearchUriBuilderTest extends UnitTest
         $this->extBaseUriBuilderMock->expects($this->once())->method('reset')->with()->will($this->returnValue($this->extBaseUriBuilderMock));
         $this->extBaseUriBuilderMock->expects($this->once())->method('build')->will($this->returnValue($linkBuilderResult));
         $uri = $this->searchUrlBuilder->getResultGroupItemPageUri($previousRequest, $groupItem, 5);
-        $this->assertContains(urlencode('tx_solr[groupPage][smallPidRange][pid0to5]') . '=5', $uri, 'Uri did not contain link segment for query group');
+        $this->assertStringContainsString(urlencode('tx_solr[groupPage][smallPidRange][pid0to5]') . '=5', $uri, 'Uri did not contain link segment for query group');
     }
 }

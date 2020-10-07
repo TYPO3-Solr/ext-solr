@@ -41,7 +41,7 @@ class Typo3PageContentExtractorTest extends UnitTest
      */
     protected $typoScripConfigurationMock;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->typoScripConfigurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
         $this->typoScripConfigurationMock->expects($this->once())->method(
@@ -85,13 +85,14 @@ class Typo3PageContentExtractorTest extends UnitTest
     {
         $content = '<!-- TYPO3SEARCH_begin --><div class="typo3-search-exclude">Remove me</div><p>Was ein schöner Tag</p><!-- TYPO3SEARCH_end -->';
 
+        /* @var Typo3PageContentExtractor $contentExtractor */
         $contentExtractor = GeneralUtility::makeInstance(Typo3PageContentExtractor::class, $content);
         $contentExtractor->setConfiguration($this->typoScripConfigurationMock);
 
         $actualResult = $contentExtractor->excludeContentByClass($content);
 
-        $this->assertContains('Was ein schöner Tag', $actualResult);
-        $this->assertNotContains('Remove me', $actualResult);
+        $this->assertStringContainsString('Was ein schöner Tag', $actualResult);
+        $this->assertStringNotContainsString('Remove me', $actualResult);
     }
 
     /**
@@ -106,8 +107,8 @@ class Typo3PageContentExtractorTest extends UnitTest
 
         $actualResult = $contentExtractor->excludeContentByClass($content);
 
-        $this->assertContains('100€', $actualResult);
-        $this->assertNotContains('Remove me', $actualResult);
+        $this->assertStringContainsString('100€', $actualResult);
+        $this->assertStringNotContainsString('Remove me', $actualResult);
     }
 
     public function canGetIndexableContentDataProvider() {
@@ -160,6 +161,6 @@ class Typo3PageContentExtractorTest extends UnitTest
         $contentExtractor->setConfiguration($this->typoScripConfigurationMock);
 
         $actualResult = $contentExtractor->getIndexableContent();
-        $this->assertContains($expectedResult, $actualResult);
+        $this->assertStringContainsString($expectedResult, $actualResult);
     }
 }

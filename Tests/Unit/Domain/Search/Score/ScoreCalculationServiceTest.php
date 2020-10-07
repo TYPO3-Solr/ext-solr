@@ -41,7 +41,7 @@ class ScoreCalculationServiceTest extends UnitTest
     /**
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         $this->scoreCalculationService = new ScoreCalculationService();
     }
@@ -56,12 +56,12 @@ class ScoreCalculationServiceTest extends UnitTest
 
         $scoreAnalysis = $this->scoreCalculationService->getRenderedScores($fakeDebugData, $fakeQueryFields);
 
-        $this->assertContains('<td>+     98.444336</td', $scoreAnalysis);
-        $this->assertContains('<td>content</td>', $scoreAnalysis);
-        $this->assertContains('<td>40.0</td></tr>', $scoreAnalysis);
+        $this->assertStringContainsString('<td>+     98.444336</td>', $scoreAnalysis);
+        $this->assertStringContainsString('<td>content</td>', $scoreAnalysis);
+        $this->assertStringContainsString('<td>40.0</td></tr>', $scoreAnalysis);
 
-        $this->assertContains('<td>+     6.2762194</td>', $scoreAnalysis);
-        $this->assertContains('<td>tagsH2H3</td>', $scoreAnalysis);
-        $this->assertContains('<td>3.0</td></tr>', $scoreAnalysis);
+        $this->assertStringContainsString('<td>+     6.2762194</td>', $scoreAnalysis);
+        $this->assertStringContainsString('<td>tagsH2H3</td>', $scoreAnalysis);
+        $this->assertStringContainsString('<td>3.0</td></tr>', $scoreAnalysis);
     }
 }

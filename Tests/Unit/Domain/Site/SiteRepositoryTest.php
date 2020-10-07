@@ -68,7 +68,7 @@ class SiteRepositoryTest extends UnitTest
      */
     protected $siteFinderMock;
 
-    public function setUp()
+    public function setUp(): void
     {
         $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['solr'] = [];
         $this->cacheMock = $this->getDumbMock(TwoLevelCache::class);

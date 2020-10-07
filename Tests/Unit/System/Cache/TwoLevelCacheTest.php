@@ -49,7 +49,7 @@ class TwoLevelCacheTest extends UnitTest
     /**
      * @return false
      */
-    public function setUp()
+    public function setUp(): void
     {
         $this->secondLevelCacheMock = $this->getDumbMock(FrontendInterface::class);
         $this->twoLevelCache = new TwoLevelCache('test', $this->secondLevelCacheMock);

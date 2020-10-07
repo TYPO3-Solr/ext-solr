@@ -45,7 +45,7 @@ class SearchResultCollectionTest extends UnitTest
     /**
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         $this->searchResultCollection = new SearchResultCollection();
     }

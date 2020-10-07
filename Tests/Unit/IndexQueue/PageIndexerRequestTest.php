@@ -226,8 +226,8 @@ class PageIndexerRequestTest extends UnitTest
     }
 
     /**
-     * @param string $jsonEncodedParameter
-     * @param RequestFactory $requestFactory
+     * @param string|null $jsonEncodedParameter
+     * @param RequestFactory|null $requestFactory
      * @return PageIndexerRequest
      */
     protected function getPageIndexerRequest($jsonEncodedParameter = null, RequestFactory $requestFactory = null)
