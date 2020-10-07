@@ -1,5 +1,5 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Test\Domain\Search\ResultSet\Facets\RangeBased\NumericRange;
+namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets\RangeBased\NumericRange;
 
 /***************************************************************
  *  Copyright notice
@@ -38,7 +38,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @author Ingo Renner <ingo@typo3.org>
  * @author Markus Friedrich <markus.friedrich@dkd.de>
  */
-class NumericRangeUrlEncoderTest extends UnitTest
+class NumericRangeUrlDecoderTest extends UnitTest
 {
     /**
      * Parser to build Solr range queries

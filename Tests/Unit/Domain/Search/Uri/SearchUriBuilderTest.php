@@ -1,5 +1,5 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Test\Domain\Search\Uri;
+namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\Uri;
 
 /***************************************************************
  *  Copyright notice

@@ -34,7 +34,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author Markus Goldbach
  */
-class DateRangeUrlEncoderTest extends UnitTest
+class DateRangeUrlDecoderTest extends UnitTest
 {
 
     /**
