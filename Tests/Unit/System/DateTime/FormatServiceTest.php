@@ -84,7 +84,7 @@ class FormatServiceTest extends UnitTest
      */
     public function canTimestampToIsoLegalDate()
     {
-        $this->assertSame('2017-02-16T20:13:57Z', $this->formatService->TimestampToIso(1487272437));
+        $this->assertSame('2017-02-16T19:13:57Z', $this->formatService->TimestampToIso(1487272437));
     }
 
     /**
@@ -92,7 +92,7 @@ class FormatServiceTest extends UnitTest
      */
     public function canTimestampToIsoIllegalDate()
     {
-        $this->assertEquals('1970-01-01T00:59:59Z', $this->formatService->TimestampToIso(-1));
+        $this->assertEquals('1969-12-31T23:59:59Z', $this->formatService->TimestampToIso(-1));
     }
 
     /**
@@ -100,7 +100,7 @@ class FormatServiceTest extends UnitTest
      */
     public function canTimestampToIsoNull()
     {
-        $this->assertEquals('1970-01-01T01:00:00Z', $this->formatService->TimestampToIso(null));
+        $this->assertEquals('1970-01-01T00:00:00Z', $this->formatService->TimestampToIso(null));
     }
 
     /**
@@ -108,7 +108,7 @@ class FormatServiceTest extends UnitTest
      */
     public function canIsoToTimestampLegalDate()
     {
-        $this->assertEquals(1487272437, $this->formatService->IsoToTimestamp('2017-02-16T20:13:57Z'));
+        $this->assertEquals(1487276037, $this->formatService->IsoToTimestamp('2017-02-16T20:13:57Z'));
     }
 
     /**

@@ -50,7 +50,6 @@ class ServiceTest extends UnitTest
 
     public function setUp(): void
     {
-        date_default_timezone_set('Europe/Berlin');
         $this->documentMock = new Document();
         $this->service = new Service();
     }
@@ -99,8 +98,8 @@ class ServiceTest extends UnitTest
 
         $this->service->processDocument($this->documentMock, $configuration);
         $this->assertEquals(
+            '2010-01-01T11:00:00Z',
             $this->documentMock['dateField'],
-            '2010-01-01T12:00:00Z',
             'field was not processed with timestampToIsoDate'
         );
     }
@@ -118,8 +117,8 @@ class ServiceTest extends UnitTest
 
         $this->service->processDocument($this->documentMock, $configuration);
         $this->assertEquals(
+            ['2010-01-01T11:00:00Z', '2010-01-01T11:00:01Z'],
             $this->documentMock['dateField'],
-            ['2010-01-01T12:00:00Z', '2010-01-01T12:00:01Z'],
             'field was not processed with timestampToIsoDate'
         );
     }

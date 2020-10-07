@@ -22,4 +22,8 @@
 			<directory suffix=".php">../../Classes/</directory>
 		</whitelist>
 	</filter>
+
+	<php>
+		<ini name="date.timezone" value="UTC" />
+	</php>
 </phpunit>
