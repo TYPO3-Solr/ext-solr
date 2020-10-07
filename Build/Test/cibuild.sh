@@ -125,14 +125,14 @@ function runIntegrationTests() {
     INTEGRATION_BOOTSTRAP=$DEFAULT_INTEGRATION_BOOTSTRAP
   fi
 
-  if ! phpunit --colors -c Build/Test/IntegrationTests.xml --bootstrap="$INTEGRATION_BOOTSTRAP" --coverage-clover=coverage.integration.clover;
+  if ! .Build/bin/phpunit --colors -c Build/Test/IntegrationTests.xml --bootstrap="$INTEGRATION_BOOTSTRAP" --coverage-clover=coverage.integration.clover;
   then
       echo "Error during running the integration tests please check and fix them" | tee >(cat >&2)
       exit 105
   fi
 
   echo "Run frontend-related integration tests"
-  if ! phpunit --colors -c Build/Test/IntegrationFrontendTests.xml --bootstrap="$INTEGRATION_BOOTSTRAP" --coverage-clover=coverage.integration.frontend.clover;
+  if ! .Build/bin/phpunit --colors -c Build/Test/IntegrationFrontendTests.xml --bootstrap="$INTEGRATION_BOOTSTRAP" --coverage-clover=coverage.integration.frontend.clover;
   then
     echo "Error during running the frontend-related integration tests please check and fix them" | tee >(cat >&2)
     exit 106
