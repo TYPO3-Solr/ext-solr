@@ -1,30 +1,20 @@
 <?php
 namespace ApacheSolrForTypo3\Solr\Middleware;
 
-/***************************************************************
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- * All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- * This script is part of the TYPO3 project. The TYPO3 project is
- * free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3 of the License, or
- * (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- * The GNU General Public License can be found at
- * http://www.gnu.org/copyleft/gpl.html.
- * A copy is found in the textfile GPL.txt and important notices to the license
- * from the author is found in LICENSE.txt distributed with these scripts.
- *
- *
- * This script is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 
+use ApacheSolrForTypo3\Solr\Routing\RoutingService;
 use ApacheSolrForTypo3\Solr\Utility\RoutingUtility;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -108,7 +98,7 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $site = $this->getSite($request->getUri());
+        $site = $this->getRoutingService()->findSiteByUri($request->getUri());
         if (!($site instanceof Site)) {
             return $handler->handle($request);
         }
@@ -126,7 +116,6 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
             return $handler->handle($request);
         }
         $enhancerConfiguration = $this->getEnhancerConfiguration(
-            $request,
             $site,
             $this->language->getLanguageId() === 0 ? (int)$page['uid'] : (int)$page['l10n_parent']
         );
@@ -161,6 +150,8 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
         );
         $uri = $request->getUri();
 
+        // TODO: Explode query parameters if they are joined!
+
         /*
          * Replace internal URI with existing site taken from path information
          * We removed a possible path segment from the slug, that again needs to attach.
@@ -192,31 +183,21 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
     /**
      * Retrieve the enhancer configuration for given site
      *
-     * @param ServerRequestInterface $request
      * @param Site $site
      * @param int $pageUid
      * @return array|null
      */
-    protected function getEnhancerConfiguration(ServerRequestInterface $request, Site $site, int $pageUid): ?array
+    protected function getEnhancerConfiguration(Site $site, int $pageUid): ?array
     {
-        $configuration = $site->getConfiguration();
-        if (empty($configuration['routeEnhancers']) || !is_array($configuration['routeEnhancers'])) {
+        $enhancers = $this->getRoutingService()->fetchEnhancerInSiteConfigurationByPageUid(
+            $site,
+            $pageUid
+        );
+        if (empty($enhancers)) {
             return null;
         }
 
-        foreach ($configuration['routeEnhancers'] as $routing => $settings) {
-            if (empty($settings) || !isset($settings['type']) || $settings['type'] !== 'CombinedFacetEnhancer') {
-                continue;
-            }
-
-            if (!in_array($pageUid, $settings['limitToPages'])) {
-                continue;
-            }
-
-            return $settings;
-        }
-
-        return null;
+        return $enhancers[0];
     }
 
     /**
@@ -352,64 +333,6 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
         }
 
         return $queryParams;
-    }
-
-    /**
-     * Retrieve the side
-     *
-     * @param UriInterface $uri
-     * @return Site|null
-     */
-    protected function getSite(UriInterface $uri): ?Site
-    {
-        $sites = $this->getSiteFinder()->getAllSites();
-        if (count($sites) === 1) {
-            return array_values($sites)[0];
-        }
-
-        foreach ($sites as $siteKey => $site) {
-            $baseUri = $this->getUriFromBase($site->getBase());
-            if (!($baseUri instanceof UriInterface)) {
-                continue;
-            }
-
-            if ($baseUri->getHost() !== $uri->getHost()) {
-                continue;
-            }
-
-            return $site;
-        }
-
-        return null;
-    }
-
-    /**
-     * Convert the base string into a URI object
-     *
-     * @param string $base
-     * @return UriInterface|null
-     */
-    protected function getUriFromBase(string $base): ?UriInterface
-    {
-        try {
-            /* @var Uri $uri */
-            $uri = GeneralUtility::makeInstance(
-                Uri::class,
-                $base
-            );
-
-            return $uri;
-        } catch (\InvalidArgumentException $argumentException) {
-            return null;
-        }
-    }
-
-    /**
-     * @return SiteFinder|null
-     */
-    protected function getSiteFinder(): ?SiteFinder
-    {
-        return GeneralUtility::makeInstance(SiteFinder::class);
     }
 
     /**
@@ -604,5 +527,13 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
             $site,
             null
         );
+    }
+
+    /**
+     * @return RoutingService
+     */
+    protected function getRoutingService(): RoutingService
+    {
+        return GeneralUtility::makeInstance(RoutingService::class);
     }
 }

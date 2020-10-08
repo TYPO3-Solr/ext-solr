@@ -20,6 +20,7 @@ use ApacheSolrForTypo3\Solr\Event\EnhancedRouting\BeforeProcessCachedVariablesEv
 use ApacheSolrForTypo3\Solr\Event\EnhancedRouting\BeforeReplaceVariableInCachedUrlEvent as BeforeReplaceVariableInEnhancedCachedUrlEvent;
 use ApacheSolrForTypo3\Solr\Event\Routing\BeforeProcessCachedVariablesEvent;
 use ApacheSolrForTypo3\Solr\Event\Routing\BeforeReplaceVariableInCachedUrlEvent;
+use ApacheSolrForTypo3\Solr\Routing\RoutingService;
 use ApacheSolrForTypo3\Solr\System\Url\UrlHelper;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
@@ -352,7 +353,7 @@ class SearchUriBuilder
             return urlencode($value);
         }, $values);
 
-        $routingConfigurations = $this->getRouteConfigurations($pageUid);
+        $routingConfigurations = $this->getRoutingService()->fetchEnhancerByPageUid($pageUid);
         $enhancedRouting = count($routingConfigurations) > 0;
         /* @var Uri $uri */
         $uri = GeneralUtility::makeInstance(
@@ -424,86 +425,35 @@ class SearchUriBuilder
      * @param $values
      * @param array $branch
      */
-    protected function getSubstitution(array &$structure, array  &$values, array $branch = [])
+    protected function getSubstitution(array &$structure, array  &$values, array $branch = []): void
     {
+        /*
+         * Adds information about the filter facet to the placeholder.
+         *
+         * This feature allows to handle even placeholder in RouteEnhancer
+         */
+        $filter = false;
+        if (count($branch) > 0 && $branch[count($branch) - 1] === 'filter') {
+            $filter = true;
+        }
         foreach ($structure as $key => &$value) {
             $branch[] = $key;
             if (is_array($value)) {
                 $this->getSubstitution($value, $values, $branch);
             } else {
+                if ($filter) {
+                    [$facetType, $facetValue] = explode(':', $value);
+                    $branch[] = $facetType;
+                }
                 $path = '###' . implode(':', $branch) . '###';
                 $values[$path] = $value;
                 $structure[$key] = $path;
+                if ($filter) {
+                    array_pop($branch);
+                }
             }
+            array_pop($branch);
         }
-    }
-
-    /**
-     * In case a route enhancer is in use we need to modify data
-     *
-     * @param int $pageUid
-     * @return bool
-     */
-    protected function isEnhancerInUse(int $pageUid = 0): bool
-    {
-        $site = $this->getSite($pageUid);
-        if (!($site instanceof Site)) {
-            return false;
-        }
-
-        $configuration = $site->getConfiguration();
-        if (empty($configuration['routeEnhancers']) || !is_array($configuration['routeEnhancers'])) {
-            return false;
-        }
-
-        foreach ($configuration['routeEnhancers'] as $routing => $settings) {
-            if (empty($settings) || !isset($settings['type']) || $settings['type'] !== 'CombinedFacetEnhancer') {
-                continue;
-            }
-
-            if (!in_array($pageUid, $settings['limitToPages'])) {
-                continue;
-            }
-
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * Returns a list of routing configurations for Solr
-     *
-     * @param int $pageUid
-     * @return array
-     */
-    protected function getRouteConfigurations(int $pageUid = 0): array
-    {
-        $configurations = [];
-
-        $site = $this->getSite($pageUid);
-        if (!($site instanceof Site)) {
-            return $configurations;
-        }
-
-        $configuration = $site->getConfiguration();
-        if (empty($configuration['routeEnhancers']) || !is_array($configuration['routeEnhancers'])) {
-            return $configurations;
-        }
-
-        foreach ($configuration['routeEnhancers'] as $routing => $settings) {
-            if (empty($settings) || !isset($settings['type']) || $settings['type'] !== 'CombinedFacetEnhancer') {
-                continue;
-            }
-
-            if (!in_array($pageUid, $settings['limitToPages'])) {
-                continue;
-            }
-
-            $configurations[] = $settings;
-        }
-
-        return $configurations;
     }
 
     /**
@@ -521,28 +471,10 @@ class SearchUriBuilder
     }
 
     /**
-     * Retrieve the site by given UID
-     *
-     * @param int $pageUid
-     * @return Site|null
+     * @return RoutingService
      */
-    protected function getSite(int $pageUid): ?Site
+    protected function getRoutingService(): RoutingService
     {
-        try {
-            $site = $this->getSiteFinder()->getSiteByPageId($pageUid);
-            return $site;
-        } catch (SiteNotFoundException $exception) {
-            return null;
-        }
-
-        return null;
-    }
-
-    /**
-     * @return SiteFinder|null
-     */
-    protected function getSiteFinder(): ?SiteFinder
-    {
-        return GeneralUtility::makeInstance(SiteFinder::class);
+        return GeneralUtility::makeInstance(RoutingService::class);
     }
 }
