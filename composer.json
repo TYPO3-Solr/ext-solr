@@ -82,5 +82,11 @@
       "cms-package-dir": "{$vendor-dir}/typo3/cms",
       "web-dir": ".Build/Web"
     }
+  },
+  "repositories": {
+    "dkd-kaehm-fork-nimut": {
+      "type": "vcs",
+      "url": "https://github.com/dkd-kaehm/testing-framework.git"
+    }
   }
 }

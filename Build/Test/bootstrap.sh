@@ -77,6 +77,7 @@ fi
 
 # Install build tools
 echo "Install build tools: "
+composer config -g github-oauth.github.com "$GITHUB_CLONE_ACCESS_TOKEN"
 if ! composer global require \
   friendsofphp/php-cs-fixer:"$PHP_CS_FIXER_VERSION" \
   namelesscoder/typo3-repository-client
@@ -84,6 +85,7 @@ then
 	echo "The build tools(php-cs-fixer, typo3-repository-client) could not be installed. Please fix this issue."
 	exit 1
 fi
+
 
 
 # Setup TYPO3 environment variables

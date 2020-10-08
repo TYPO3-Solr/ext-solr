@@ -109,12 +109,8 @@ else
 	exit 12
 fi
 
-if [[ -n $TYPO3_DATABASE_PASSWORD ]]; then
-	export typo3DatabasePassword=$TYPO3_DATABASE_PASSWORD
-else
-	echo "No environment variable TYPO3_DATABASE_PASSWORD set. Please set it to run the integration tests." | tee >(cat >&2)
-	exit 13
-fi
+# DB password can be empty, no needs to check.
+export typo3DatabasePassword=$TYPO3_DATABASE_PASSWORD
 
 function runIntegrationTests() {
   echo "Run integration tests"
