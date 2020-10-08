@@ -253,3 +253,11 @@ if(!$isComposerMode) {
     $dir = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('solr');
     require $dir . '/Resources/Private/Php/ComposerLibraries/vendor/autoload.php';
 }
+
+call_user_func(
+    function (string $extensionKey) {
+        $GLOBALS['TYPO3_CONF_VARS']['SYS']['routing']['enhancers']['CombinedFacetEnhancer'] =
+            \ApacheSolrForTypo3\Solr\Routing\Enhancer\CombinedFacetEnhancer::class;
+    },
+    'solr'
+);
