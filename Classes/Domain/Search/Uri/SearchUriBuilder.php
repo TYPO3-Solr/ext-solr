@@ -16,7 +16,16 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Uri;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Grouping\GroupItem;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
+use ApacheSolrForTypo3\Solr\Event\EnhancedRouting\BeforeProcessCachedVariablesEvent as BeforeProcessCachedEnhancedVariablesEvent;
+use ApacheSolrForTypo3\Solr\Event\EnhancedRouting\BeforeReplaceVariableInCachedUrlEvent as BeforeReplaceVariableInEnhancedCachedUrlEvent;
+use ApacheSolrForTypo3\Solr\Event\Routing\BeforeProcessCachedVariablesEvent;
+use ApacheSolrForTypo3\Solr\Event\Routing\BeforeReplaceVariableInCachedUrlEvent;
 use ApacheSolrForTypo3\Solr\System\Url\UrlHelper;
+use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
+use TYPO3\CMS\Core\Exception\SiteNotFoundException;
+use TYPO3\CMS\Core\Http\Uri;
+use TYPO3\CMS\Core\Site\Entity\Site;
+use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 
@@ -59,6 +68,11 @@ class SearchUriBuilder
      * @var array
      */
     protected static $additionalArgumentsCache = [];
+
+    /**
+     * @var EventDispatcher
+     */
+    protected $eventDispatcher;
 
     /**
      * @param UriBuilder $uriBuilder
@@ -262,7 +276,6 @@ class SearchUriBuilder
             ->getCopyForSubRequest()
             ->getAsArray();
 
-
         $pageUid = $this->getTargetPageUidFromRequestConfiguration($previousSearchRequest);
         return $this->buildLinkWithInMemoryCache($pageUid, $persistentAndFacetArguments);
     }
@@ -272,7 +285,7 @@ class SearchUriBuilder
      * @return array
      */
     protected function getAdditionalArgumentsFromRequestConfiguration(SearchRequest $request)
-    {
+    {   
         if ($request->getContextTypoScriptConfiguration() == null) {
             return [];
         }
@@ -338,6 +351,34 @@ class SearchUriBuilder
         $values = array_map(function($value) {
             return urlencode($value);
         }, $values);
+
+        $routingConfigurations = $this->getRouteConfigurations($pageUid);
+        $enhancedRouting = count($routingConfigurations) > 0;
+        /* @var Uri $uri */
+        $uri = GeneralUtility::makeInstance(
+            Uri::class,
+            $uriCacheTemplate
+        );
+        $urlEvent = $enhancedRouting ?
+            new BeforeReplaceVariableInEnhancedCachedUrlEvent($uri) :
+            new BeforeReplaceVariableInCachedUrlEvent($uri);
+        /* @var BeforeReplaceVariableInCachedUrlEvent $urlEvent */
+        $urlEvent = $this->getEventDispatcher()->dispatch($urlEvent);
+        $uriCacheTemplate = (string)$urlEvent->getUri();
+        
+        $variableEvent = $enhancedRouting ?
+            new BeforeProcessCachedEnhancedVariablesEvent(
+                $uri,
+                $routingConfigurations,
+                $keys,
+                $values
+            ) :
+            new BeforeProcessCachedVariablesEvent($keys, $values);
+        $this->getEventDispatcher()->dispatch($variableEvent);
+
+        $keys = $variableEvent->getVariableKeys();
+        $values = $variableEvent->getVariableValues();
+
         $uri = str_replace($keys, $values, $uriCacheTemplate);
         return $uri;
     }
@@ -395,5 +436,113 @@ class SearchUriBuilder
                 $structure[$key] = $path;
             }
         }
+    }
+
+    /**
+     * In case a route enhancer is in use we need to modify data
+     *
+     * @param int $pageUid
+     * @return bool
+     */
+    protected function isEnhancerInUse(int $pageUid = 0): bool
+    {
+        $site = $this->getSite($pageUid);
+        if (!($site instanceof Site)) {
+            return false;
+        }
+
+        $configuration = $site->getConfiguration();
+        if (empty($configuration['routeEnhancers']) || !is_array($configuration['routeEnhancers'])) {
+            return false;
+        }
+
+        foreach ($configuration['routeEnhancers'] as $routing => $settings) {
+            if (empty($settings) || !isset($settings['type']) || $settings['type'] !== 'CombinedFacetEnhancer') {
+                continue;
+            }
+
+            if (!in_array($pageUid, $settings['limitToPages'])) {
+                continue;
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Returns a list of routing configurations for Solr
+     *
+     * @param int $pageUid
+     * @return array
+     */
+    protected function getRouteConfigurations(int $pageUid = 0): array
+    {
+        $configurations = [];
+
+        $site = $this->getSite($pageUid);
+        if (!($site instanceof Site)) {
+            return $configurations;
+        }
+
+        $configuration = $site->getConfiguration();
+        if (empty($configuration['routeEnhancers']) || !is_array($configuration['routeEnhancers'])) {
+            return $configurations;
+        }
+
+        foreach ($configuration['routeEnhancers'] as $routing => $settings) {
+            if (empty($settings) || !isset($settings['type']) || $settings['type'] !== 'CombinedFacetEnhancer') {
+                continue;
+            }
+
+            if (!in_array($pageUid, $settings['limitToPages'])) {
+                continue;
+            }
+
+            $configurations[] = $settings;
+        }
+
+        return $configurations;
+    }
+
+    /**
+     * Returns the event dispatcher
+     *
+     * @return EventDispatcher
+     */
+    protected function getEventDispatcher(): EventDispatcher
+    {
+        if (!($this->eventDispatcher instanceof EventDispatcher)) {
+            $this->eventDispatcher = GeneralUtility::makeInstance(EventDispatcher::class);
+        }
+
+        return $this->eventDispatcher;
+    }
+
+    /**
+     * Retrieve the site by given UID
+     *
+     * @param int $pageUid
+     * @return Site|null
+     */
+    protected function getSite(int $pageUid): ?Site
+    {
+        try {
+            $site = $this->getSiteFinder()->getSiteByPageId($pageUid);
+            return $site;
+        } catch (SiteNotFoundException $exception) {
+            return null;
+        }
+
+        return null;
+    }
+
+    /**
+     * @return SiteFinder|null
+     */
+    protected function getSiteFinder(): ?SiteFinder
+    {
+        return GeneralUtility::makeInstance(SiteFinder::class);
     }
 }
