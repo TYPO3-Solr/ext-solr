@@ -31,6 +31,8 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UriInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Http\Uri;
 use TYPO3\CMS\Core\Routing\PageSlugCandidateProvider;
@@ -60,8 +62,10 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @author Lars Tode <lars.tode@dkd.de>
  * @see https://docs.typo3.org/m/typo3/reference-coreapi/master/en-us/ApiOverview/RequestHandling/Index.html
  */
-class SolrRoutingMiddleware implements MiddlewareInterface
+class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
 {
+    use LoggerAwareTrait;
+
     /**
      * Solr parameter key
      *
@@ -91,6 +95,11 @@ class SolrRoutingMiddleware implements MiddlewareInterface
     protected $masqueParameter = true;
 
     /**
+     * @var SiteLanguage
+     */
+    protected $language = null;
+
+    /**
      * Process the request
      *
      * @param ServerRequestInterface $request
@@ -103,11 +112,24 @@ class SolrRoutingMiddleware implements MiddlewareInterface
         if (!($site instanceof Site)) {
             return $handler->handle($request);
         }
-        [$pageUid, $pageSlug] = $this->retrievePageInformation($request->getUri()->getPath(), $site);
-        if ($pageUid === 0) {
+
+        $this->determineSiteLanguage(
+            $site,
+            $request->getUri()
+        );
+
+        $page = $this->retrievePageInformation(
+            $request->getUri(),
+            $site
+        );
+        if ((int)$page['uid'] === 0) {
             return $handler->handle($request);
         }
-        $enhancerConfiguration = $this->getEnhancerConfiguration($request, $site, $pageUid);
+        $enhancerConfiguration = $this->getEnhancerConfiguration(
+            $request,
+            $site,
+            $this->language->getLanguageId() === 0 ? (int)$page['uid'] : (int)$page['l10n_parent']
+        );
 
         if ($enhancerConfiguration === null) {
             return $handler->handle($request);
@@ -121,7 +143,7 @@ class SolrRoutingMiddleware implements MiddlewareInterface
         [$slug, $parameters] = $this->getSlugAndParameters(
             $request->getUri(),
             $enhancerConfiguration['routePath'],
-            $pageSlug
+            (string)$page['slug']
         );
 
         // No parameter exists -> Skip
@@ -141,10 +163,14 @@ class SolrRoutingMiddleware implements MiddlewareInterface
 
         /*
          * Replace internal URI with existing site taken from path information
+         * We removed a possible path segment from the slug, that again needs to attach.
          *
          * NOTE: TypoScript is not available at this point!
          */
-        $uri = $uri->withPath($pageSlug);
+        $uri = $uri->withPath(
+            $this->language->getBase()->getPath() .
+            (string)$page['slug']
+        );
         $request = $request->withUri($uri);
 
         return $handler->handle($request);
@@ -389,28 +415,60 @@ class SolrRoutingMiddleware implements MiddlewareInterface
     /**
      * Retrieve the page uid to filter the route enhancer
      *
-     * @param string $path
+     * @param UriInterface $uri
      * @param Site $site
-     * @return int
+     * @return array
      */
-    protected function retrievePageInformation(string $path, Site $site): array
+    protected function retrievePageInformation(UriInterface $uri, Site $site): array
     {
+        $path = $this->stripLanguagePrefixFromPath($uri->getPath());
         $slugProvider = $this->getSlugCandidateProvider($site);
-        $currentLanguage = $this->getCurrentLanguage($site);
         $scan = true;
-        $pageUid = 0;
-        $slug = '';
+        $page = [];
         do {
-            $items = $slugProvider->getCandidatesForPath($path, $currentLanguage);
+            $items = $slugProvider->getCandidatesForPath(
+                $path,
+                $this->language
+            );
             if (empty($items)) {
+                $this->logger
+                    ->error(
+                        vsprintf(
+                            'Could not determine page for slug "%1$s" and language "%2$s". Given path "%3$s"',
+                            [
+                                $path,
+                                $this->language->getTwoLetterIsoCode(),
+                                $uri->getPath()
+                            ]
+                        )
+                    );
                 $scan = false;
             } elseif (empty($path)) {
+                $this->logger
+                    ->error(
+                        vsprintf(
+                            'Could resolve page by path "%1$s" and language "%2$s".',
+                            [
+                                $uri->getPath(),
+                                $this->language->getTwoLetterIsoCode()
+                            ]
+                        )
+                    );
                 $scan = false;
             } else {
                 foreach ($items as $item) {
+                    $this->logger
+                        ->info(
+                            vsprintf(
+                                'Path "%1$s" -> slug "%2$s"',
+                                [
+                                    $path,
+                                    $item['slug']
+                                ]
+                            )
+                        );
                     if ($item['slug'] === $path) {
-                        $pageUid = (int)$item['uid'];
-                        $slug = (string)$item['slug'];
+                        $page = $item;
                         $scan = false;
                         break;
                     }
@@ -427,20 +485,110 @@ class SolrRoutingMiddleware implements MiddlewareInterface
                 }
             }
         } while($scan);
+        return $page;
+    }
 
-        return [$pageUid, $slug];
+    /**
+     * In order to search for a path, a possible language prefix need to remove
+     *
+     * @param string $path
+     * @return string
+     */
+    protected function stripLanguagePrefixFromPath(string $path): string
+    {
+        if ($this->language->getBase()->getPath() === '/') {
+            return $path;
+        }
+
+        $pathLength = mb_strlen($this->language->getBase()->getPath());
+
+        $path = mb_substr($path, $pathLength, mb_strlen($path) - $pathLength);
+        if (mb_substr($path, 0, 1) !== '/') {
+            $path = '/' . $path;
+        }
+
+        return $path;
     }
 
     /**
      * Returns the current language
-     * @TODO Need implementation
+     * @TODO Improvement: Currently we expect that the longest length for base is at the end of the language array
+     *       This may be incorrect and lead to wrong results.
      *
      * @param Site $site
-     * @return SiteLanguage
+     * @param UriInterface $uri
      */
-    protected function getCurrentLanguage(Site $site): SiteLanguage
+    protected function determineSiteLanguage(Site $site, UriInterface $uri)
     {
-        return $site->getDefaultLanguage();
+        if ($this->language instanceof SiteLanguage) {
+            return;
+        }
+        $configuration = $site->getConfiguration();
+        if (empty($configuration) || empty($configuration['languages']) || !is_array($configuration['languages'])) {
+            $this->logger
+                ->info('No language configuration available! Return default language');
+            $this->language = $site->getDefaultLanguage();
+            return;
+        }
+        $this->language = $site->getDefaultLanguage();
+        $languageId = -1;
+        $languages = array_reverse($configuration['languages']);
+
+        foreach ($languages as $language) {
+            if (empty($language['base'])) {
+                continue;
+            }
+
+            // Base could be a path segment or a URL
+            if (mb_substr($language['base'], 0, 1) === '/') {
+                /*
+                 * Only the path segment need to be checked
+                 */
+                if (mb_substr($uri->getPath(), 0, mb_strlen($language['base'])) === $language['base']) {
+                    $languageId = (int)$language['languageId'];
+                    break;
+                }
+            } else {
+                /*
+                 * There different versions of a domain are possible
+                 * - http://domain.example
+                 * - https://domain.example
+                 * - ://domain.example
+                 *
+                 * It is possible that the base contains a path too.
+                 * In order to keep it simple as possible, we convert the base into an URI object
+                 */
+
+                try {
+                    $baseUri = new Uri($language['base']);
+
+                    // Host not match ... base is not what we are looking for
+                    if ($baseUri->getHost() !== $uri->getHost()) {
+                        continue;
+                    }
+                    // Path is configured but does not match ... base is not what we are looking for
+                    if (!empty($baseUri->getPath()) &&
+                        mb_substr($uri->getPath(), 0, mb_strlen($baseUri->getPath())) !== $baseUri->getPath()) {
+                        continue;
+                    }
+
+                    $languageId = (int)$language['languageId'];
+                } catch (\Exception $exception) {
+                    // Base could not be parsed as a URI
+                    $this->logger
+                        ->error(vsprintf('Could not parse language base "%1$s" as URI', [$language['base']]));
+                }
+            }
+        }
+
+        if ($languageId > 0) {
+            try {
+                $this->language = $site->getLanguageById($languageId);
+            } catch (\InvalidArgumentException $invalidArgumentException) {
+                $this->logger
+                    ->error(vsprintf('Could not find language by ID "%1$s"', [$languageId]));
+            }
+        }
     }
 
     /**
