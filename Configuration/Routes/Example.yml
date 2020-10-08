@@ -1,0 +1,18 @@
+routeEnhancers:
+  Products:
+    type: CombinedFacetEnhancer
+    limitToPages:
+      - 10
+    extensionKey: tx_solr
+    solr:
+      multiValueSeparator: '+'
+      ignoreUrlKeys: ['no_cache', 'cHash', 'id', 'MP']
+      replaceCharacters:
+        ' ': '_'
+    routePath: '/{type}'
+    # Note: All arguments inside of namespace tx_solr. See -> extensionKey
+    # Example: Argument 'type' define as 'filter-type' will convert into 'tx_solr/filter-type'
+    _arguments:
+      type: filter-type
+    requirements:
+      type: '.*'
