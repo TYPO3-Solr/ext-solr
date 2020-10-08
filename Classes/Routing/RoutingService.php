@@ -74,21 +74,18 @@ class RoutingService
         if (empty($configuration['routeEnhancers']) || !is_array($configuration['routeEnhancers'])) {
             return [];
         }
-
         $result = [];
         foreach ($configuration['routeEnhancers'] as $routing => $settings) {
             if (empty($settings) || !isset($settings['type']) || $settings['type'] !== 'CombinedFacetEnhancer') {
                 continue;
             }
-
             if (!in_array($pageUid, $settings['limitToPages'])) {
                 continue;
             }
-
-            return $result[] = $settings;
+            $result[] = $settings;
         }
 
-        return [];
+        return $result;
     }
 
     /**

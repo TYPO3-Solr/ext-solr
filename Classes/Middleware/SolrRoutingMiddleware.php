@@ -28,7 +28,6 @@ use TYPO3\CMS\Core\Http\Uri;
 use TYPO3\CMS\Core\Routing\PageSlugCandidateProvider;
 use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
-use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -135,6 +134,7 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
             (string)$page['slug']
         );
 
+
         // No parameter exists -> Skip
         if (count($parameters) === 0) {
             return $handler->handle($request);
@@ -193,6 +193,7 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
             $site,
             $pageUid
         );
+
         if (empty($enhancers)) {
             return null;
         }
