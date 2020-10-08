@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+#print System-Hardware Information
+echo "System-Hardware Information:"
+echo "CPUs: " "$(nproc)"
+echo "RAM: "
+free -hg
+
 CWD=$(pwd)
 
 # Defaults
@@ -117,8 +123,37 @@ fi
 # DB password can be empty, no needs to check.
 export typo3DatabasePassword=$TYPO3_DATABASE_PASSWORD
 
+function removeInTestsUnusedCores() {
+  # only danish, german and english cores are currently used in integration tests.
+  CORES_TO_REMOVE=(
+    "arabic" "basque" "bulgarian" "catalan" "czech" "dutch" "finnish" "galician" "greek" "hungarian" \
+    "irish" "japanese" "korean" "latvia" "persian" "portuguese" "russian" "spanish" "thai" "ukrainian" \
+    "armenian" "brazilian_portuguese" "burmese" "chinese" "french" "hindi" "indonesian" \
+    "italian" "khmer" "lao" "norwegian" "polish" "romanian" "serbian" "swedish" "turkish"
+  )
+  for CORE_TO_REMOVE in "${CORES_TO_REMOVE[@]}"
+  do
+    rm -Rf "Resources/Private/Solr/cores/""$CORE_TO_REMOVE"
+  done
+}
+
+removeInTestsUnusedCores
+
+function scaleSolrServers() {
+  echo "Start $(nproc) Solr Servers in docker."
+  removeInTestsUnusedCores
+  docker-compose --project-name=travis-test-build --file=Build/testing-via-docker/docker-compose.yaml up --scale solr-test-node="$(nproc)" -d
+  docker ps
+}
+
+function shutdownSolrServers() {
+  docker-compose --project-name=travis-test-build --file=Build/testing-via-docker/docker-compose.yaml down --rmi=all
+}
+
+
 function runIntegrationTests() {
   echo "Run integration tests"
+  scaleSolrServers
 
   if [[ -v INTEGRATION_BOOTSTRAP && -f "${INTEGRATION_BOOTSTRAP}" ]]; then
     echo "Using bootstrap for unit tests from environment variable UNIT_BOOTSTRAP=""$UNIT_BOOTSTRAP"
@@ -129,10 +164,12 @@ function runIntegrationTests() {
   if ! .Build/bin/paratest \
     --runner=WrapperRunner \
     --configuration=Build/Test/IntegrationTests.xml \
+    --exclude-group=frontend \
     --bootstrap="$INTEGRATION_BOOTSTRAP" \
     --coverage-clover=coverage.integration.clover \
     --colors;
   then
+      shutdownSolrServers
       echo "Error during running the integration tests please check and fix them" | tee >(cat >&2)
       exit 105
   fi
@@ -140,22 +177,18 @@ function runIntegrationTests() {
   echo "Run frontend-related integration tests"
   if ! .Build/bin/paratest \
     --runner=WrapperRunner \
-    --configuration=Build/Test/IntegrationTests.xml \
+    --configuration=Build/Test/IntegrationFrontendTests.xml \
     --bootstrap="$INTEGRATION_BOOTSTRAP" \
+    --group=frontend \
     --coverage-clover=coverage.integration.clover \
     --colors;
   then
+    shutdownSolrServers
     echo "Error during running the frontend-related integration tests please check and fix them" | tee >(cat >&2)
     exit 106
   fi
+  shutdownSolrServers
 }
-
-#print System-Hardware Information
-echo "System-Hardware Information:"
-echo "CPUs: " $(nproc)
-echo "RAM: "
-free -hg
-
 
 ### atomic or sequential test scenario calls
 VIA_PARAMETER_CALLED=0

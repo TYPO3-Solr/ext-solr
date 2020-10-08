@@ -1,0 +1,10 @@
+version: '3.6'
+services:
+  solr-test-node:
+    build:
+      context:
+        ../../.
+      dockerfile: Docker/SolrServer/Dockerfile
+    restart: "no"
+    ports:
+      - "8001-8064:8983"

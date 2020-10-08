@@ -1,5 +1,5 @@
 arch: arm64-graviton2 # in AWS over Graviton2 CPU
-virt: vm              # required, routes to a 'full VM' instance
+virt: lxd             # required, routes to an LXD container
 os: linux             # required for arch different than amd64
 dist: focal
 
@@ -26,6 +26,8 @@ env:
     - TYPO3_DATABASE_USERNAME="root"
     - TYPO3_DATABASE_PASSWORD=""
     - PHP_CS_FIXER_VERSION="^2.16.1"
+    - TESTING_SOLR_HOST=localhost
+    - TESTING_SOLR_PORT_BEGIN_RANGE=8001
   matrix:
     - TYPO3_VERSION="^10.4"
     - TYPO3_VERSION="10.4.x-dev"
@@ -54,12 +56,12 @@ before_install:
   - composer validate --no-check-lock
 
 install:
-  - Build/Test/bootstrap.sh
+  - Build/Test/bootstrap.sh --skip-solr-install
 
 script:
 #  - Build/Test/cibuild_docker.sh
-  - Build/Test/cibuild.sh --unit --integration
-  - Build/Test/cibuild-paratest.sh --unit --integration
+#  - Build/Test/cibuild.sh
+  - Build/Test/cibuild-paratest.sh
 
 after_script:
   - Build/Test/publish_coverage.sh

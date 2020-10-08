@@ -558,8 +558,8 @@ abstract class IntegrationTest extends FunctionalTestCase
             $testToken = (int)getenv('TEST_TOKEN');
             return [
                 'scheme' => getenv('TESTING_SOLR_SCHEME') ?: 'http',
-                'host' => getenv('TESTING_SOLR_HOST_PREFIX') . '-' . (string)($testToken),
-                'port' => (int)getenv('TESTING_SOLR_PORT')
+                'host' => getenv('TESTING_SOLR_HOST'),
+                'port' => (int)getenv('TESTING_SOLR_PORT_BEGIN_RANGE') + (int)($testToken) - 1
             ];
         }
         return [
