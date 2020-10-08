@@ -6,7 +6,6 @@ services:
   - mysql
 
 php:
-  - 7.2
   - 7.3
   - 7.4
 
@@ -56,8 +55,9 @@ install:
   - Build/Test/bootstrap.sh
 
 script:
-  - Build/Test/cibuild_docker.sh
-  - Build/Test/cibuild.sh
+#  - Build/Test/cibuild_docker.sh
+  - Build/Test/cibuild.sh --unit --integration
+  - Build/Test/cibuild-paratest.sh --unit --integration
 
 after_script:
   - Build/Test/publish_coverage.sh
