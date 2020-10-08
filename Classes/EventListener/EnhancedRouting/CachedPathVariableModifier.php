@@ -24,7 +24,7 @@ use Psr\Http\Message\UriInterface;
  *
  * @author Lars Tode <lars.tode@dkd.de>
  */
-class PathVariableModifier
+class CachedPathVariableModifier
 {
     public function __invoke(BeforeProcessCachedVariablesEvent $event): void
     {
@@ -37,6 +37,23 @@ class PathVariableModifier
 
         $variableKeys = $event->getVariableKeys();
         $variableValues = $event->getVariableValues();
+        $enhancerConfigurations = $event->getRouterConfiguration();
+
+        $multiValue = false;
+        // TODO: Move into configuration
+        $multiValueSeparator = ',';
+
+        // Find required enhancer
+        foreach ($enhancerConfigurations as $enhancerConfiguration) {
+            if ($enhancerConfiguration['type'] !== 'CombinedFacetEnhancer') {
+                continue;
+            }
+
+            $multiValue = true;
+            $multiValueSeparator = $enhancerConfiguration['solr']['multiValueSeparator'] ?? $multiValueSeparator;
+            break;
+        }
+
         for ($i = 0; $i < count($variableKeys); $i++) {
             $standardizedKey = $this->standardizeKey($variableKeys[$i]);
             if (!in_array($standardizedKey, $pathVariables)) {
@@ -45,8 +62,34 @@ class PathVariableModifier
             if (empty($variableValues[$standardizedKey])) {
                 continue;
             }
-            // TODO: Need to check route enhancer and if there is a separator ...
-            [$prefix, $value] = explode(':', $this->standardizeKey((string)$variableValues[$standardizedKey]), 2);
+            /*
+             * TODO: Needs to be tested -> The path variable can contains a list of facets.
+             *       The string needs to be checked and if required split before remove the prefix on each element
+             */
+
+            $value = '';
+            if ($multiValue) {
+                $facets = explode(
+                    $multiValueSeparator,
+                    $this->standardizeKey((string)$variableValues[$standardizedKey])
+                );
+                $singleValues = [];
+                foreach ($facets as $facet) {
+                    [$prefix, $value] = explode(
+                        ':',
+                        $facet,
+                        2
+                    );
+                    $singleValues[] = $value;
+                }
+                $value = implode($multiValueSeparator, $singleValues);
+            } else {
+                [$prefix, $value] = explode(
+                    ':',
+                    $this->standardizeKey((string)$variableValues[$standardizedKey]),
+                    2
+                );
+            }
             $variableValues[$standardizedKey] = $value;
         }
 
@@ -79,6 +122,12 @@ class PathVariableModifier
         return $variables;
     }
 
+    /**
+     * Standardize a given string in order to reduce the amount of if blocks
+     *
+     * @param string $key
+     * @return string
+     */
     protected function standardizeKey(string $key): string
     {
         $map = [
