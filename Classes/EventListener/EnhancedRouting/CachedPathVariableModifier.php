@@ -37,21 +37,15 @@ class CachedPathVariableModifier
 
         $variableKeys = $event->getVariableKeys();
         $variableValues = $event->getVariableValues();
-        $enhancerConfigurations = $event->getRouterConfiguration();
+        $enhancerConfiguration = $event->getRouterConfiguration();
 
         $multiValue = false;
         // TODO: Move into configuration
         $multiValueSeparator = ',';
 
-        // Find required enhancer
-        foreach ($enhancerConfigurations as $enhancerConfiguration) {
-            if ($enhancerConfiguration['type'] !== 'CombinedFacetEnhancer') {
-                continue;
-            }
-
+        if ($enhancerConfiguration['type'] === 'CombinedFacetEnhancer') {
             $multiValue = true;
             $multiValueSeparator = $enhancerConfiguration['solr']['multiValueSeparator'] ?? $multiValueSeparator;
-            break;
         }
 
         for ($i = 0; $i < count($variableKeys); $i++) {

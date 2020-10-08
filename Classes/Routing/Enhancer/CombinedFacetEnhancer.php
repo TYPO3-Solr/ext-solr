@@ -7,29 +7,18 @@ use TYPO3\CMS\Core\Routing\Enhancer\RoutingEnhancerInterface;
 use TYPO3\CMS\Core\Routing\Route;
 use TYPO3\CMS\Core\Routing\RouteCollection;
 
-/***************************************************************
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- * All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- * This script is part of the TYPO3 project. The TYPO3 project is
- * free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3 of the License, or
- * (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- * The GNU General Public License can be found at
- * http://www.gnu.org/copyleft/gpl.html.
- * A copy is found in the textfile GPL.txt and important notices to the license
- * from the author is found in LICENSE.txt distributed with these scripts.
- *
- *
- * This script is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 
 class CombinedFacetEnhancer extends AbstractEnhancer implements RoutingEnhancerInterface
 {
@@ -105,6 +94,7 @@ class CombinedFacetEnhancer extends AbstractEnhancer implements RoutingEnhancerI
         $deflatedParameters = $this->deflateParameters($variant, $parameters);
         $deflatedParameters = $this->combineArrayParameters($deflatedParameters);
         $deflatedParameters = $this->inflateUnprocessedVariables($variant, $deflatedParameters);
+        // TODO: Implode query parameters if configured!
         $deflatedParameters = $this->replaceVariableWithHash($variant, $deflatedParameters);
         $variant->setOption('deflatedParameters', $deflatedParameters);
         $variables = array_flip($compiledRoute->getPathVariables());
@@ -136,6 +126,14 @@ class CombinedFacetEnhancer extends AbstractEnhancer implements RoutingEnhancerI
             $parameterPattern = implode('-', $elements);
             $parameterPattern .= '__\d+';
 
+            // @TODO: Here the behaviour changed. The whole functionality need to be tested
+            $pathElements = explode('-', $fieldPath);
+            $facetTypeToHandle = array_pop($pathElements);
+
+            if (empty($facetTypeToHandle)) {
+                continue;
+            }
+
             foreach ($parameters as $parameterName => $parameterValue) {
                 // Skip parameters that we don't care for
                 if (!preg_match('/' . $parameterPattern . '/', $parameterName)) {
@@ -147,25 +145,28 @@ class CombinedFacetEnhancer extends AbstractEnhancer implements RoutingEnhancerI
                     $parametersCombined[$combinedKey] = [];
                 }
 
+                $parameterNameNew = $parameterName;
+                $parameterValueNew = $parameterValue;
+
                 // Placeholder for cached URIs (type is the last part of the parameter value)
                 if (substr($parameterValue, 0, 3) === '###') {
-                    // @TODO: Currently you can configure more than only filter but this condition only process them
-                    if (substr($parameterValue, strlen($parameterValue) - 8, 8) === ':type###') {
-                        $parametersCombined[$combinedKey][] = $parameterValue;
-                    } else {
-                        $parametersCombined[$parameterName] = $parameterValue;
+                    $facetFieldElements = explode(':', $parameterValue);
+                    $facetField = array_pop($facetFieldElements);
+                    $facetField = substr($facetField, 0, strlen($facetField) - 3);
+                    if ($facetField === $facetTypeToHandle) {
+                        $parameterNameNew = $combinedKey;
                     }
                 } else {
                     [$facetField, $facetValue] = explode(':', $parameterValue, 2);
-                    if ($facetField === 'type') {
-                        $parametersCombined[$combinedKey][] = $facetValue;
-                    } else {
-                        $parametersCombined[$parameterName] = $parameterValue;
+                    if ($facetField === $facetTypeToHandle) {
+                        $parameterNameNew = $combinedKey;
+                        $parameterValueNew = $facetValue;
                     }
                 }
+                $parametersCombined[$parameterNameNew] = $parameterValueNew;
             }
 
-            if (isset($parametersCombined[$combinedKey])) {
+            if (isset($parametersCombined[$combinedKey]) && is_array($parametersCombined[$combinedKey])) {
                 $parametersCombined[$combinedKey] = RoutingUtility::facetsToString(
                     $parametersCombined[$combinedKey],
                     $this->configuration['solr']
@@ -264,6 +265,12 @@ class CombinedFacetEnhancer extends AbstractEnhancer implements RoutingEnhancerI
         return $mixedVariables;
     }
 
+    /**
+     * Inflate deflated query parameters
+     *
+     * @param array $elements
+     * @return array
+     */
     protected function inflateQueryParams(array $elements = []): array
     {
         $result = [];
@@ -278,6 +285,8 @@ class CombinedFacetEnhancer extends AbstractEnhancer implements RoutingEnhancerI
     }
 
     /**
+     * Deflate query parameters
+     *
      * @param Route $route
      * @param array $parameters
      * @return array
