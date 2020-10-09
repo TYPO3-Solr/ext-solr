@@ -70,23 +70,25 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
     protected $settings = [];
 
     /**
-     * List of query parameters to ignore
-     *
-     * @var array
-     */
-    protected $ignoreQueryParameters = [];
-
-    /**
-     * Masque alle parameters with the given Solr key
-     *
-     * @var bool
-     */
-    protected $masqueParameter = true;
-
-    /**
      * @var SiteLanguage
      */
     protected $language = null;
+
+    /**
+     * @var RoutingService
+     */
+    protected $routingService;
+
+    /**
+     * Inject the routing service.
+     * Used in unit tests too
+     *
+     * @param RoutingService $routingService
+     */
+    public function injectRoutingService(RoutingService $routingService)
+    {
+        $this->routingService = $routingService;
+    }
 
     /**
      * Process the request
@@ -148,22 +150,20 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
             $enhancerConfiguration['_arguments'],
             $parameters
         );
-        $uri = $request->getUri();
-
-        // TODO: Explode query parameters if they are joined!
-
-
         /*
          * Replace internal URI with existing site taken from path information
          * We removed a possible path segment from the slug, that again needs to attach.
          *
          * NOTE: TypoScript is not available at this point!
          */
-        $uri = $uri->withPath(
+        $uri = $request->getUri()->withPath(
             $this->language->getBase()->getPath() .
             (string)$page['slug']
         );
         $request = $request->withUri($uri);
+        // TODO: Filter variables need to convert back info filter array
+        $queryParams = $this->routingService->inflateQueryParameter($request->getQueryParams());
+        $request = $request->withQueryParams($queryParams);
 
         return $handler->handle($request);
     }
@@ -469,9 +469,14 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
      */
     protected function getRoutingService(): RoutingService
     {
-        return GeneralUtility::makeInstance(
-            RoutingService::class,
-            $this->settings
-        );
+        if (!($this->routingService instanceof RoutingService)) {
+            $this->routingService = GeneralUtility::makeInstance(
+                RoutingService::class,
+                $this->settings
+            );
+        } else {
+            $this->routingService = $this->routingService->withSettings($this->settings);
+        }
+        return $this->routingService;
     }
 }

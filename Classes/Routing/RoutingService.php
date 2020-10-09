@@ -44,6 +44,13 @@ class RoutingService implements LoggerAwareInterface
     protected $settings = [];
 
     /**
+     * Query namespace
+     *
+     * @var string
+     */
+    protected $queryNamespace = 'tx_solr';
+
+    /**
      * List of default parameters, that we should ignore
      *
      * @var string[]
@@ -57,6 +64,136 @@ class RoutingService implements LoggerAwareInterface
     public function __construct(array $settings = [])
     {
         $this->settings = $settings;
+    }
+
+    /**
+     * Creates a clone of the current service and replace the settings inside
+     *
+     * @param array $settings
+     * @return RoutingService
+     */
+    public function withSettings(array $settings): RoutingService
+    {
+        $service = clone $this;
+        $service->settings = $settings;
+        return $service;
+    }
+
+    /**
+     * Should same parameters be flatten?
+     *
+     * @return bool
+     */
+    public function shouldFlattenSameParameter(): bool
+    {
+        if (isset($this->settings['flattenParameter'])) {
+            return (bool)$this->settings['flattenParameter'];
+        }
+        return false;
+    }
+
+    /**
+     * Deflate the query parameters if configured
+     * Note: this will just handle filter values
+     *
+     * IN:
+     * tx_solr => [
+     *   filter => [
+     *      color:red
+     *      product:candy
+     *      color:blue
+     *      taste:sour
+     *   ]
+     * ]
+     *
+     * OUT:
+     * tx_solr => [
+     *   filter => [
+     *      color:blue,red
+     *      product:candy
+     *      taste:sour
+     *   ]
+     * ]
+     * @param array $queryParams
+     * @return array
+     */
+    public function deflateQueryParameter(array $queryParams = []): array
+    {
+        if (!$this->shouldFlattenSameParameter()) {
+            return $queryParams;
+        }
+
+        if (!isset($queryParams['filter'])) {
+            return $queryParams;
+        }
+
+        $newQueryParams = [];
+        foreach ($queryParams['filter'] as $set) {
+            [$facetName, $facetValue] = explode(':', $set, 2);
+            if (!isset($newQueryParams[$facetName])) {
+                $newQueryParams[$facetName] = [$facetValue];
+            } else {
+                $newQueryParams[$facetName][] = $facetValue;
+            }
+        }
+
+        foreach ($newQueryParams as $facetName => $facetValues) {
+            $newQueryParams[$facetName] = $facetName . ':' . $this->facetsToString($facetValues);
+        }
+
+        $queryParams['filter'] = array_values($newQueryParams);
+
+        return $queryParams;
+    }
+
+    /**
+     * Inflate given query parameters if configured
+     * Note: this will just combine filter values
+     *
+     * IN:
+     * tx_solr => [
+     *   filter => [
+     *      color:blue,red
+     *      product:candy
+     *      taste:sour
+     *   ]
+     * ]
+     *
+     * OUT:
+     * tx_solr => [
+     *   filter => [
+     *      color:red
+     *      product:candy
+     *      color:blue
+     *      taste:sour
+     *   ]
+     * ]
+     *
+     * @param array $queryParams
+     * @return array
+     */
+    public function inflateQueryParameter(array $queryParams = []): array
+    {
+        if (!$this->shouldFlattenSameParameter()) {
+            return $queryParams;
+        }
+
+        if (!isset($queryParams['filter'])) {
+            return $queryParams;
+        }
+
+        $newQueryParams = [];
+        foreach ($queryParams['filter'] as $set) {
+            [$facetName, $facetValuesString] = explode(':', $set, 2);
+
+            $facetValues = explode($this->getFacetValueSeparator(), $facetValuesString);
+            foreach ($facetValues as $facetValue) {
+                $newQueryParams[] = $facetName . ':' . $facetValue;
+            }
+        }
+        $queryParams['filter'] = array_values($newQueryParams);
+
+        return $queryParams;
     }
 
     /**

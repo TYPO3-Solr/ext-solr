@@ -77,7 +77,6 @@ class CachedPathVariableModifier
                     );
                     $singleValues[] = $value;
                 }
-                // Sort values
                 $value = $routingService->facetsToString($singleValues);
             } else {
                 [$prefix, $value] = explode(
