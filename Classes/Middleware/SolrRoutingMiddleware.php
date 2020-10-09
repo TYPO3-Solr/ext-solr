@@ -152,6 +152,7 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
 
         // TODO: Explode query parameters if they are joined!
 
+
         /*
          * Replace internal URI with existing site taken from path information
          * We removed a possible path segment from the slug, that again needs to attach.
@@ -316,10 +317,8 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
             [$queryKey, $filterName] = explode('-', $queryKey, 2);
 
             // explode multiple values
-            $values = explode(
-                RoutingUtility::getFacetValueSeparator($this->settings),
-                $parameters[$fieldName]
-            );
+            $values = $this->getRoutingService()->facetStringToArray($parameters[$fieldName]);
+
             // @TODO: Support URL data bag
             foreach ($values as $value) {
                 $queryParams[$queryKey][] = $filterName . ':' . $value;
@@ -435,9 +434,7 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
     }
 
     /**
-     * Returns the current language
-     * @TODO Improvement: Currently we expect that the longest length for base is at the end of the language array
-     *       This may be incorrect and lead to wrong results.
+     * Determine the current language by given site and URI
      *
      * @param Site $site
      * @param UriInterface $uri
@@ -447,72 +444,9 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
         if ($this->language instanceof SiteLanguage) {
             return;
         }
-        $configuration = $site->getConfiguration();
-        if (empty($configuration) || empty($configuration['languages']) || !is_array($configuration['languages'])) {
-            $this->logger
-                ->info('No language configuration available! Return default language');
-            $this->language = $site->getDefaultLanguage();
-            return;
-        }
-        $this->language = $site->getDefaultLanguage();
-        $languageId = -1;
-        $languages = array_reverse($configuration['languages']);
 
-        foreach ($languages as $language) {
-            if (empty($language['base'])) {
-                continue;
-            }
-
-            // Base could be a path segment or a URL
-            if (mb_substr($language['base'], 0, 1) === '/') {
-                /*
-                 * Only the path segment need to be checked
-                 */
-                if (mb_substr($uri->getPath(), 0, mb_strlen($language['base'])) === $language['base']) {
-                    $languageId = (int)$language['languageId'];
-                    break;
-                }
-            } else {
-                /*
-                 * There different versions of a domain are possible
-                 * - http://domain.example
-                 * - https://domain.example
-                 * - ://domain.example
-                 *
-                 * It is possible that the base contains a path too.
-                 * In order to keep it simple as possible, we convert the base into an URI object
-                 */
-
-                try {
-                    $baseUri = new Uri($language['base']);
-
-                    // Host not match ... base is not what we are looking for
-                    if ($baseUri->getHost() !== $uri->getHost()) {
-                        continue;
-                    }
-                    // Path is configured but does not match ... base is not what we are looking for
-                    if (!empty($baseUri->getPath()) &&
-                        mb_substr($uri->getPath(), 0, mb_strlen($baseUri->getPath())) !== $baseUri->getPath()) {
-                        continue;
-                    }
-
-                    $languageId = (int)$language['languageId'];
-                } catch (\Exception $exception) {
-                    // Base could not be parsed as a URI
-                    $this->logger
-                        ->error(vsprintf('Could not parse language base "%1$s" as URI', [$language['base']]));
-                }
-            }
-        }
-
-        if ($languageId > 0) {
-            try {
-                $this->language = $site->getLanguageById($languageId);
-            } catch (\InvalidArgumentException $invalidArgumentException) {
-                $this->logger
-                    ->error(vsprintf('Could not find language by ID "%1$s"', [$languageId]));
-            }
-        }
+        $this->language = $this->getRoutingService()
+            ->determineSiteLanguage($site, $uri);
     }
 
     /**
@@ -535,6 +469,9 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
      */
     protected function getRoutingService(): RoutingService
     {
-        return GeneralUtility::makeInstance(RoutingService::class);
+        return GeneralUtility::makeInstance(
+            RoutingService::class,
+            $this->settings
+        );
     }
 }

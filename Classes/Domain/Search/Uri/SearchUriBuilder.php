@@ -23,10 +23,7 @@ use ApacheSolrForTypo3\Solr\Event\Routing\BeforeReplaceVariableInCachedUrlEvent;
 use ApacheSolrForTypo3\Solr\Routing\RoutingService;
 use ApacheSolrForTypo3\Solr\System\Url\UrlHelper;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
-use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Http\Uri;
-use TYPO3\CMS\Core\Site\Entity\Site;
-use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 
@@ -76,11 +73,32 @@ class SearchUriBuilder
     protected $eventDispatcher;
 
     /**
+     * @var RoutingService
+     */
+    protected $routingService;
+
+    /**
      * @param UriBuilder $uriBuilder
      */
     public function injectUriBuilder(UriBuilder $uriBuilder)
     {
         $this->uriBuilder = $uriBuilder;
+    }
+
+    /**
+     * @param RoutingService $routingService
+     */
+    public function injectRoutingService(RoutingService $routingService)
+    {
+        $this->routingService = $routingService;
+    }
+
+    /**
+     * @param EventDispatcher $eventDispatcher
+     */
+    public function injectEventDispatcher(EventDispatcher $eventDispatcher)
+    {
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
@@ -353,7 +371,8 @@ class SearchUriBuilder
             return urlencode($value);
         }, $values);
 
-        $routingConfigurations = $this->getRoutingService()->fetchEnhancerByPageUid($pageUid);
+        $routingConfigurations = $this->routingService
+            ->fetchEnhancerByPageUid($pageUid);
         $enhancedRouting = count($routingConfigurations) > 0;
         /* @var Uri $uri */
         $uri = GeneralUtility::makeInstance(
@@ -364,7 +383,7 @@ class SearchUriBuilder
             new BeforeReplaceVariableInEnhancedCachedUrlEvent($uri) :
             new BeforeReplaceVariableInCachedUrlEvent($uri);
         /* @var BeforeReplaceVariableInCachedUrlEvent $urlEvent */
-        $urlEvent = $this->getEventDispatcher()->dispatch($urlEvent);
+        $urlEvent = $this->eventDispatcher->dispatch($urlEvent);
         $uriCacheTemplate = (string)$urlEvent->getUri();
         
         $variableEvent = $enhancedRouting ?
@@ -375,7 +394,7 @@ class SearchUriBuilder
                 $values
             ) :
             new BeforeProcessCachedVariablesEvent($keys, $values);
-        $this->getEventDispatcher()->dispatch($variableEvent);
+        $this->eventDispatcher->dispatch($variableEvent);
 
         $keys = $variableEvent->getVariableKeys();
         $values = $variableEvent->getVariableValues();
@@ -454,27 +473,5 @@ class SearchUriBuilder
             }
             array_pop($branch);
         }
-    }
-
-    /**
-     * Returns the event dispatcher
-     *
-     * @return EventDispatcher
-     */
-    protected function getEventDispatcher(): EventDispatcher
-    {
-        if (!($this->eventDispatcher instanceof EventDispatcher)) {
-            $this->eventDispatcher = GeneralUtility::makeInstance(EventDispatcher::class);
-        }
-
-        return $this->eventDispatcher;
-    }
-
-    /**
-     * @return RoutingService
-     */
-    protected function getRoutingService(): RoutingService
-    {
-        return GeneralUtility::makeInstance(RoutingService::class);
     }
 }

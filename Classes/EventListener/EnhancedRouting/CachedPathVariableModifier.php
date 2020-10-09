@@ -17,7 +17,9 @@ declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\EventListener\EnhancedRouting;
 
 use ApacheSolrForTypo3\Solr\Event\EnhancedRouting\BeforeProcessCachedVariablesEvent;
+use ApacheSolrForTypo3\Solr\Routing\RoutingService;
 use Psr\Http\Message\UriInterface;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Event listener to handle path elements containing placeholder
@@ -40,13 +42,13 @@ class CachedPathVariableModifier
         $enhancerConfiguration = $event->getRouterConfiguration();
 
         $multiValue = false;
-        // TODO: Move into configuration
-        $multiValueSeparator = ',';
 
         if ($enhancerConfiguration['type'] === 'CombinedFacetEnhancer') {
             $multiValue = true;
-            $multiValueSeparator = $enhancerConfiguration['solr']['multiValueSeparator'] ?? $multiValueSeparator;
         }
+
+        /* @var RoutingService $routingService */
+        $routingService = GeneralUtility::makeInstance(RoutingService::class, $enhancerConfiguration['solr']);
 
         for ($i = 0; $i < count($variableKeys); $i++) {
             $standardizedKey = $this->standardizeKey($variableKeys[$i]);
@@ -63,8 +65,7 @@ class CachedPathVariableModifier
 
             $value = '';
             if ($multiValue) {
-                $facets = explode(
-                    $multiValueSeparator,
+                $facets = $routingService->facetStringToArray(
                     $this->standardizeKey((string)$variableValues[$standardizedKey])
                 );
                 $singleValues = [];
@@ -76,7 +77,8 @@ class CachedPathVariableModifier
                     );
                     $singleValues[] = $value;
                 }
-                $value = implode($multiValueSeparator, $singleValues);
+                // Sort values
+                $value = $routingService->facetsToString($singleValues);
             } else {
                 [$prefix, $value] = explode(
                     ':',

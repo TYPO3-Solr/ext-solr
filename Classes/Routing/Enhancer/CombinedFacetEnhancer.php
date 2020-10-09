@@ -1,11 +1,13 @@
 <?php
 namespace ApacheSolrForTypo3\Solr\Routing\Enhancer;
 
+use ApacheSolrForTypo3\Solr\Routing\RoutingService;
 use ApacheSolrForTypo3\Solr\Utility\RoutingUtility;
 use TYPO3\CMS\Core\Routing\Enhancer\AbstractEnhancer;
 use TYPO3\CMS\Core\Routing\Enhancer\RoutingEnhancerInterface;
 use TYPO3\CMS\Core\Routing\Route;
 use TYPO3\CMS\Core\Routing\RouteCollection;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -167,9 +169,8 @@ class CombinedFacetEnhancer extends AbstractEnhancer implements RoutingEnhancerI
             }
 
             if (isset($parametersCombined[$combinedKey]) && is_array($parametersCombined[$combinedKey])) {
-                $parametersCombined[$combinedKey] = RoutingUtility::facetsToString(
-                    $parametersCombined[$combinedKey],
-                    $this->configuration['solr']
+                $parametersCombined[$combinedKey] = $this->getRoutingService()->facetsToString(
+                    $parametersCombined[$combinedKey]
                 );
             }
         }
@@ -297,6 +298,17 @@ class CombinedFacetEnhancer extends AbstractEnhancer implements RoutingEnhancerI
             $parameters,
             $this->namespace,
             $route->getArguments()
+        );
+    }
+
+    /**
+     * @return RoutingService
+     */
+    protected function getRoutingService(): RoutingService
+    {
+        return GeneralUtility::makeInstance(
+            RoutingService::class,
+            $this->configuration['solr']
         );
     }
 }

@@ -32,30 +32,6 @@ namespace ApacheSolrForTypo3\Solr\Utility;
 class RoutingUtility
 {
     /**
-     * Builds a string out of multiple facet values
-     *
-     * @param array $facets
-     * @param array $settings
-     * @return string
-     */
-    public static function facetsToString(array $facets, array $settings = []): string
-    {
-        sort($facets);
-        return implode(self::getFacetValueSeparator($settings), $facets);
-    }
-
-    /**
-     * Returns the multi value separator
-     *
-     * @param array $settings
-     * @return string
-     */
-    public static function getFacetValueSeparator(array $settings = []): string
-    {
-        return $settings['multiValueSeparator'] ?? ',';
-    }
-
-    /**
      * Builds the hash of an inflated parameter
      * This method based on the VariableProcessor since the logic is not public
      *
