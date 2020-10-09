@@ -1,7 +1,4 @@
-arch: arm64-graviton2 # in AWS over Graviton2 CPU
-virt: lxd             # required, routes to an LXD container
-os: linux             # required for arch different than amd64
-dist: focal
+dist: bionic
 
 language: php
 
@@ -9,6 +6,9 @@ services:
   - mysql
 
 php:
+# Disable 7.2 temporary, due to PhpUnit 9.4 incompatibility
+#  - 7.2
+  - 7.3
   - 7.4
 
 jdk:
@@ -27,6 +27,7 @@ env:
     - TYPO3_DATABASE_PASSWORD=""
     - PHP_CS_FIXER_VERSION="^2.16.1"
     - TESTING_SOLR_HOST=localhost
+    - TESTING_SOLR_PORT=8001
     - TESTING_SOLR_PORT_BEGIN_RANGE=8001
   matrix:
     - TYPO3_VERSION="^10.4"
@@ -60,8 +61,8 @@ install:
 
 script:
 #  - Build/Test/cibuild_docker.sh
-#  - Build/Test/cibuild.sh
-  - Build/Test/cibuild-paratest.sh
+  - Build/Test/cibuild-paratest.sh --unit --integration
+  - Build/Test/cibuild.sh --unit --integration
 
 after_script:
   - Build/Test/publish_coverage.sh

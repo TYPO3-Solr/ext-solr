@@ -113,6 +113,10 @@ fi
 export typo3DatabasePassword=$TYPO3_DATABASE_PASSWORD
 
 function runIntegrationTests() {
+  #
+  echo "Start single Solr Server for measurements:"
+  docker-compose --project-name=travis-test-build --file=Build/testing-via-docker/docker-compose.yaml up --scale solr-test-node=1 -d
+
   echo "Run integration tests"
 
   if [[ -v INTEGRATION_BOOTSTRAP && -f "${INTEGRATION_BOOTSTRAP}" ]]; then
@@ -133,6 +137,8 @@ function runIntegrationTests() {
     echo "Error during running the frontend-related integration tests please check and fix them" | tee >(cat >&2)
     exit 106
   fi
+
+  docker-compose --project-name=travis-test-build --file=Build/testing-via-docker/docker-compose.yaml down --rmi=all
 }
 
 ### atomic or sequential test scenario calls

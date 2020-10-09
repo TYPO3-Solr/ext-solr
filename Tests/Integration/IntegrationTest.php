@@ -554,18 +554,41 @@ abstract class IntegrationTest extends FunctionalTestCase
 
     protected function getSolrConnectionInfo(): array
     {
+        $solr_host = getenv('TESTING_SOLR_HOST') ?: 'localhost';
+        $solr_port = getenv('TESTING_SOLR_PORT') ?: 8999;
+
         if (getenv('TEST_TOKEN') !== false) {  // Using paratest
             $testToken = (int)getenv('TEST_TOKEN');
-            return [
-                'scheme' => getenv('TESTING_SOLR_SCHEME') ?: 'http',
-                'host' => getenv('TESTING_SOLR_HOST'),
-                'port' => (int)getenv('TESTING_SOLR_PORT_BEGIN_RANGE') + (int)($testToken) - 1
-            ];
+
+            // use preference chain from most to lowest
+            //   TESTING_PARATEST_SOLR_HOST_PREFIX
+            //   TESTING_PARATEST_SOLR_HOST
+            //   TESTING_SOLR_HOST
+            //   localhost
+            $solr_host = getenv('TESTING_PARATEST_SOLR_HOST') !== false
+                ? getenv('TESTING_PARATEST_SOLR_HOST') . $testToken
+                : $solr_host;
+            $solr_host = getenv('TESTING_PARATEST_SOLR_HOST_PREFIX') !== false
+                ? getenv('TESTING_PARATEST_SOLR_HOST_PREFIX') . $testToken
+                : $solr_host;
+
+            // use preference chain from most to lowest
+            //   TESTING_PARATEST_SOLR_PORT_BEGIN_RANGE
+            //   TESTING_PARATEST_SOLR_PORT
+            //   TESTING_SOLR_PORT
+            //   8999
+            $solr_port = getenv('TESTING_PARATEST_SOLR_PORT') !== false
+                ? (int)getenv('TESTING_PARATEST_SOLR_PORT')
+                : $solr_port;
+            $solr_port = getenv('TESTING_PARATEST_SOLR_PORT_BEGIN_RANGE') !== false
+                ? (int)getenv('TESTING_PARATEST_SOLR_PORT_BEGIN_RANGE') + (int)($testToken) - 1
+                : $solr_port;
         }
+
         return [
             'scheme' => getenv('TESTING_SOLR_SCHEME') ?: 'http',
-            'host' => getenv('TESTING_SOLR_HOST') ?: 'localhost',
-            'port' => getenv('TESTING_SOLR_PORT') ?: 8999
+            'host' => $solr_host,
+            'port' => $solr_port
         ];
     }
 
