@@ -32,6 +32,7 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use ApacheSolrForTypo3\Solr\Domain\Search\Uri\SearchUriBuilder;
 use ApacheSolrForTypo3\Solr\Util;
+use Symfony\Component\Yaml\Yaml;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 
@@ -320,12 +321,132 @@ class SearchUriBuilderTest extends UnitTest
         $group = new Group('smallPidRange', 5);
         $groupItem = new GroupItem($group, 'pid:[0 to 5]', 12, 0, 32);
 
-
         $this->extBaseUriBuilderMock->expects($this->once())->method('setArguments')->with($expectedArguments)->will($this->returnValue($this->extBaseUriBuilderMock));
         $this->extBaseUriBuilderMock->expects($this->once())->method('setUseCacheHash')->with(false)->will($this->returnValue($this->extBaseUriBuilderMock));
         $this->extBaseUriBuilderMock->expects($this->once())->method('reset')->with()->will($this->returnValue($this->extBaseUriBuilderMock));
         $this->extBaseUriBuilderMock->expects($this->once())->method('build')->will($this->returnValue($linkBuilderResult));
         $uri = $this->searchUrlBuilder->getResultGroupItemPageUri($previousRequest, $groupItem, 5);
         $this->assertContains(urlencode('tx_solr[groupPage][smallPidRange][pid0to5]') . '=5', $uri, 'Uri did not contain link segment for query group');
+    }
+
+    /*
+     * Unit tests for router behaviour
+     */
+
+    /**
+     * @test
+     */
+    public function siteConfigurationModifyUriTest()
+    {
+        $configuration = Yaml::parse($this->getFixtureContentByName('siteConfiguration.yaml'));
+        $routingServiceMock = $this->getDumbMock(RoutingService::class);
+        $routingServiceMock->expects($this->any())
+            ->method('fetchEnhancerByPageUid')
+            ->will($this->returnValue($configuration['routeEnhancers']['example']));
+        $queryParameters = [
+            'tx_solr' => [
+                'filter' => [
+                    'type:pages',
+                    'color:green',
+                    'color:red',
+                    'color:yellow',
+                    'taste:matcha',
+                    'taste:sour',
+                    'product:candy',
+                    'product:sweets',
+                ]
+            ]
+        ];
+        $expectedQueryParameters = [
+            'tx_solr' => [
+                'filter' => [
+                    '###tx_solr:filter:0:type###',
+                    '###tx_solr:filter:1:color###',
+                    '###tx_solr:filter:2:color###',
+                    '###tx_solr:filter:3:color###',
+                    '###tx_solr:filter:4:taste###',
+                    '###tx_solr:filter:5:taste###',
+                    '###tx_solr:filter:6:product###',
+                    '###tx_solr:filter:7:product###',
+                ]
+            ]
+        ];
+        $linkBuilderResult = '/index.php?id=42&color=' . urlencode('green,red,yellow') .
+            '&taste=' . urlencode('matcha,sour') .
+            '&product=' . urlencode('candy,sweets');
+        $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
+        $configurationMock->expects($this->any())->method('getSearchPluginNamespace')->will($this->returnValue('tx_solr'));
+        $configurationMock->expects($this->once())->method('getSearchTargetPage')->will($this->returnValue(42));
+
+        $previousRequest =  new SearchRequest($queryParameters, 42, 0, $configurationMock);
+        $this->extBaseUriBuilderMock->expects($this->any())->method('setArguments')->with($expectedQueryParameters)
+            ->will($this->returnValue($this->extBaseUriBuilderMock));
+        $this->extBaseUriBuilderMock->expects($this->once())->method('setUseCacheHash')->with(false)
+            ->will($this->returnValue($this->extBaseUriBuilderMock));
+        $this->extBaseUriBuilderMock->expects($this->once())->method('reset')->with()->will($this->returnValue($this->extBaseUriBuilderMock));
+        $this->extBaseUriBuilderMock->expects($this->once())->method('build')->will($this->returnValue($linkBuilderResult));
+        $this->searchUrlBuilder->injectRoutingService($routingServiceMock);
+        $uri = $this->searchUrlBuilder->getResultPageUri($previousRequest, 0);
+        $this->assertEquals($linkBuilderResult, $uri);
+    }
+
+    /**
+     * @test
+     */
+    public function siteConfigurationModifyUriKeepUnmappedFilterTest()
+    {
+        $configuration = Yaml::parse($this->getFixtureContentByName('siteConfiguration.yaml'));
+        $routingServiceMock = $this->getDumbMock(RoutingService::class);
+        $routingServiceMock->expects($this->any())
+            ->method('fetchEnhancerByPageUid')
+            ->will($this->returnValue($configuration['routeEnhancers']['example']));
+        $queryParameters = [
+            'tx_solr' => [
+                'filter' => [
+                    'type:pages',
+                    'color:green',
+                    'color:red',
+                    'color:yellow',
+                    'taste:matcha',
+                    'taste:sour',
+                    'product:candy',
+                    'product:sweets',
+                    'quantity:20'
+                ]
+            ]
+        ];
+        $expectedQueryParameters = [
+            'tx_solr' => [
+                'filter' => [
+                    '###tx_solr:filter:0:type###',
+                    '###tx_solr:filter:1:color###',
+                    '###tx_solr:filter:2:color###',
+                    '###tx_solr:filter:3:color###',
+                    '###tx_solr:filter:4:taste###',
+                    '###tx_solr:filter:5:taste###',
+                    '###tx_solr:filter:6:product###',
+                    '###tx_solr:filter:7:product###',
+                    '###tx_solr:filter:8:quantity###',
+                ]
+            ]
+        ];
+        $linkBuilderResult = '/index.php?id=42&color=' . urlencode('green,red,yellow') .
+            '&taste=' . urlencode('matcha,sour') .
+            '&product=' . urlencode('candy,sweets') .
+            '&' . urlencode('tx_solr[filter][0]') .'=' . urlencode('quantity:20');
+        $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
+        $configurationMock->expects($this->any())->method('getSearchPluginNamespace')->will($this->returnValue('tx_solr'));
+        $configurationMock->expects($this->once())->method('getSearchTargetPage')->will($this->returnValue(42));
+
+        $previousRequest =  new SearchRequest($queryParameters, 42, 0, $configurationMock);
+        $this->extBaseUriBuilderMock->expects($this->any())->method('setArguments')->with($expectedQueryParameters)
+            ->will($this->returnValue($this->extBaseUriBuilderMock));
+        $this->extBaseUriBuilderMock->expects($this->once())->method('setUseCacheHash')->with(false)
+            ->will($this->returnValue($this->extBaseUriBuilderMock));
+        $this->extBaseUriBuilderMock->expects($this->once())->method('reset')->with()->will($this->returnValue($this->extBaseUriBuilderMock));
+        $this->extBaseUriBuilderMock->expects($this->once())->method('build')->will($this->returnValue($linkBuilderResult));
+        $this->searchUrlBuilder->injectRoutingService($routingServiceMock);
+        $uri = $this->searchUrlBuilder->getResultPageUri($previousRequest, 0);
+        $this->assertEquals($linkBuilderResult, $uri);
     }
 }
