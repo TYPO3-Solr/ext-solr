@@ -43,6 +43,8 @@ class CachedPathVariableModifier
 
         $multiValue = false;
 
+        // TODO: Instead of checking a string, check an interface (special interface for combined enhancer)
+        //       This have be enabled by configuration to avoid long rendering times
         if ($enhancerConfiguration['type'] === 'CombinedFacetEnhancer') {
             $multiValue = true;
         }
@@ -58,14 +60,9 @@ class CachedPathVariableModifier
             if (empty($variableValues[$standardizedKey])) {
                 continue;
             }
-            /*
-             * TODO: Needs to be tested -> The path variable can contains a list of facets.
-             *       The string needs to be checked and if required split before remove the prefix on each element
-             */
-
             $value = '';
             if ($multiValue) {
-                $facets = $routingService->facetStringToArray(
+                $facets = $routingService->pathFacetStringToArray(
                     $this->standardizeKey((string)$variableValues[$standardizedKey])
                 );
                 $singleValues = [];
@@ -77,7 +74,7 @@ class CachedPathVariableModifier
                     );
                     $singleValues[] = $value;
                 }
-                $value = $routingService->facetsToString($singleValues);
+                $value = $routingService->pathFacetsToString($singleValues);
             } else {
                 [$prefix, $value] = explode(
                     ':',
