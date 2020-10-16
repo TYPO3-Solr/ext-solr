@@ -32,7 +32,6 @@ class CachedUrlModifier
         $uri = $event->getUri();
         $path = $uri->getPath();
         $path = str_replace(':', '%3A', $path);
-        #$path = str_replace('%23', '#', $path);
 
         $uri = $uri->withPath($path);
         $event->replaceUri($uri);
