@@ -249,7 +249,7 @@ class RoutingService implements LoggerAwareInterface
         $self = $this;
         return array_filter(
             $this->settings['query']['map'],
-            function ($value) use ($self) {
+            function($value) use ($self) {
                 return !$self->isCoreParameter($value);
             }
         );
