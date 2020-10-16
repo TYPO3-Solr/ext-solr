@@ -161,8 +161,9 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
             (string)$page['slug']
         );
         $request = $request->withUri($uri);
-        // TODO: Filter variables need to convert back info filter array
-        $queryParams = $this->routingService->inflateQueryParameter($request->getQueryParams());
+        $queryParams = $request->getQueryParams();
+        $queryParams = $this->routingService->unmaskQueryParameters($queryParams);
+        $queryParams = $this->routingService->inflateQueryParameter($queryParams);
         $request = $request->withQueryParams($queryParams);
 
         return $handler->handle($request);
