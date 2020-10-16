@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 /*
@@ -44,18 +43,12 @@ class RoutingService implements LoggerAwareInterface
     protected $settings = [];
 
     /**
-     * Query namespace
+     * List of TYPO3 core parameters, that we should ignore
      *
-     * @var string
-     */
-    protected $queryNamespace = 'tx_solr';
-
-    /**
-     * List of default parameters, that we should ignore
-     *
+     * @see \TYPO3\CMS\Frontend\Page\CacheHashCalculator::isCoreParameter
      * @var string[]
      */
-    protected $noneSolrParameters = ['no_cache', 'cHash', 'id', 'MP', 'type'];
+    protected $coreParameters = ['no_cache', 'cHash', 'id', 'MP', 'type'];
 
     /**
      * RoutingService constructor.
@@ -80,20 +73,190 @@ class RoutingService implements LoggerAwareInterface
     }
 
     /**
-     * Should same parameters be flatten?
+     * Test if the given parameter is a Core parameter
      *
+     * @see \TYPO3\CMS\Frontend\Page\CacheHashCalculator::isCoreParameter
+     * @param string $parameterName
      * @return bool
      */
-    public function shouldFlattenSameParameter(): bool
+    public function isCoreParameter(string $parameterName): bool
     {
-        if (isset($this->settings['flattenParameter'])) {
-            return (bool)$this->settings['flattenParameter'];
-        }
-        return false;
+        return in_array($parameterName, $this->coreParameters);
     }
 
     /**
-     * Deflate the query parameters if configured
+     * This returns the plugin namespace
+     * @see https://docs.typo3.org/p/apache-solr-for-typo3/solr/master/en-us/Configuration/Reference/TxSolrView.html#pluginnamespace
+     *
+     * @return string
+     */
+    public function getPluginNamespace(): string
+    {
+        if (isset($this->settings['pluginNamespace']) && !empty(trim($this->settings['pluginNamespace']))) {
+            return (string)$this->settings['pluginNamespace'];
+        }
+        return 'tx_solr';
+    }
+
+    /**
+     * This method checks if the query parameter should be masked.
+     *
+     * @return bool
+     */
+    public function shouldMaskQueryParameter(): bool
+    {
+        if (!isset($this->settings['query']['mask']) ||
+            !(bool)$this->settings['query']['mask']) {
+            return false;
+        }
+
+        $targetFields = $this->getQueryParameterMap();
+
+        return !empty($targetFields);
+    }
+
+    /**
+     * Masks Solr filter inside of the query parameters
+     *
+     * @param array $queryParams
+     * @return array
+     */
+    public function maskQueryParameters(array $queryParams): array
+    {
+        if (!$this->shouldMaskQueryParameter()) {
+            return $queryParams;
+        }
+
+        if (!isset($queryParams[$this->getPluginNamespace()])) {
+            $this->logger
+                ->error('Mask error: Query parameters has no entry for namespace ' . $this->getPluginNamespace());
+            return $queryParams;
+        }
+
+        if (!isset($queryParams[$this->getPluginNamespace()]['filter'])) {
+            $this->logger
+                ->info('Mask info: Query parameters has no filter in namespace ' . $this->getPluginNamespace());
+            return $queryParams;
+        }
+
+        $queryParameterMap = $this->getQueryParameterMap();
+        $newQueryParams = $queryParams;
+
+        $newFilterArray = [];
+        foreach ($newQueryParams[$this->getPluginNamespace()]['filter'] as $queryParamName => $queryParamValue) {
+            [$facetName, $facetValue] = explode(':', $queryParamValue, 2);
+            $keep = false;
+            if (isset($queryParameterMap[$facetName]) &&
+                isset($newQueryParams[$queryParameterMap[$facetName]])) {
+                $this->logger->error(
+                    'Mask error: Facet "' . $facetName . '" as "' . $queryParameterMap[$facetName] .
+                    '" already in query!'
+                );
+                $keep = true;
+            }
+            if (!isset($queryParameterMap[$facetName]) || $keep) {
+                $newFilterArray[] = $queryParamValue;
+                continue;
+            }
+
+            $newQueryParams[$queryParameterMap[$facetName]] = $facetValue;
+        }
+
+        $newQueryParams[$this->getPluginNamespace()]['filter'] = $newFilterArray;
+
+        return $this->cleanUpQueryParameters($newQueryParams);
+    }
+
+    /**
+     * Unmask incoming parameters if needed
+     *
+     * @param array $queryParams
+     * @return array
+     */
+    public function unmaskQueryParameters(array $queryParams): array
+    {
+        if (!$this->shouldMaskQueryParameter()) {
+            return $queryParams;
+        }
+        /*
+         * The array $queryParameterMap contains the mapping of
+         * facet name to new url name. In order to unmask we need to switch key and values.
+         */
+        $queryParameterMap = $this->getQueryParameterMap();
+        $queryParameterMapSwitched = [];
+        foreach ($queryParameterMap as $value => $key) {
+            $queryParameterMapSwitched[$key] = $value;
+        }
+
+        $newQueryParams = [];
+
+        foreach ($queryParams as $queryParamName => $queryParamValue) {
+            if (!isset($queryParameterMapSwitched[$queryParamName])) {
+                $newQueryParams[$queryParamName] = $queryParamValue;
+                continue;
+            }
+            if (!isset($newQueryParams[$this->getPluginNamespace()])) {
+                $newQueryParams[$this->getPluginNamespace()] = [];
+            }
+            if (!isset($newQueryParams[$this->getPluginNamespace()]['filter'])) {
+                $newQueryParams[$this->getPluginNamespace()]['filter'] = [];
+            }
+
+            $newQueryParams[$this->getPluginNamespace()]['filter'][] =
+                $queryParameterMapSwitched[$queryParamName] . ':' . $queryParamValue;
+        }
+
+        return $this->cleanUpQueryParameters($newQueryParams);
+    }
+
+    /**
+     * This method check if the query parameters should be touched or not.
+     *
+     * There are following requirements:
+     * - Masking is activated and the mal is valid or
+     * - Concat is activated
+     *
+     * @return bool
+     */
+    public function shouldConcatQueryParameters(): bool
+    {
+        /*
+         * The concat will activate automatically if parameters should be masked.
+         * This solution is less complex since not every mapping parameter needs to be tested
+         */
+        if ($this->shouldMaskQueryParameter()) {
+            return true;
+        }
+
+        return isset($this->settings['query']['concat']) && (bool)$this->settings['query']['concat'];
+    }
+
+    /**
+     * Returns the query parameter map
+     *
+     * Note TYPO3 core query arguments removed from the configured map!
+     *
+     * @return array
+     */
+    public function getQueryParameterMap(): array
+    {
+        if (!isset($this->settings['query']['map']) ||
+            !is_array($this->settings['query']['map']) ||
+            empty($this->settings['query']['map'])) {
+            return [];
+        }
+        // TODO: Test if there is more than one value!
+        $self = $this;
+        return array_filter(
+            $this->settings['query']['map'],
+            function ($value) use ($self) {
+                return !$self->isCoreParameter($value);
+            }
+        );
+    }
+
+    /**
+     * Group all filter values together and concat e
      * Note: this will just handle filter values
      *
      * IN:
@@ -117,33 +280,66 @@ class RoutingService implements LoggerAwareInterface
      * @param array $queryParams
      * @return array
      */
-    public function deflateQueryParameter(array $queryParams = []): array
+    public function concatQueryParameter(array $queryParams = []): array
     {
-        if (!$this->shouldFlattenSameParameter()) {
+        if (!$this->shouldConcatQueryParameters()) {
             return $queryParams;
         }
 
-        if (!isset($queryParams['filter'])) {
+        if (!isset($queryParams[$this->getPluginNamespace()])) {
+            $this->logger
+                ->error('Mask error: Query parameters has no entry for namespace ' . $this->getPluginNamespace());
             return $queryParams;
         }
 
-        $newQueryParams = [];
-        foreach ($queryParams['filter'] as $set) {
+        if (!isset($queryParams[$this->getPluginNamespace()]['filter'])) {
+            $this->logger
+                ->info('Mask info: Query parameters has no filter in namespace ' . $this->getPluginNamespace());
+            return $queryParams;
+        }
+
+        $queryParams[$this->getPluginNamespace()]['filter'] =
+            $this->contactFilterValues($queryParams[$this->getPluginNamespace()]['filter']);
+
+        return $this->cleanUpQueryParameters($queryParams);
+    }
+
+    /**
+     * This method expect a filter array that should be concat instead of the whole query
+     *
+     * @param array $filterArray
+     * @return array
+     */
+    public function contactFilterValues(array $filterArray): array
+    {
+        if (empty($filterArray)) {
+            return $filterArray;
+        }
+
+        if (!$this->shouldConcatQueryParameters()) {
+            return $filterArray;
+        }
+
+        $queryParameterMap = $this->getQueryParameterMap();
+        $newFilterArray = [];
+        // Collect parameter names and rename parameter if required
+        foreach ($filterArray as $set) {
             [$facetName, $facetValue] = explode(':', $set, 2);
-            if (!isset($newQueryParams[$facetName])) {
-                $newQueryParams[$facetName] = [$facetValue];
+            if (isset($queryParameterMap[$facetName])) {
+                $facetName = $queryParameterMap[$facetName];
+            }
+            if (!isset($newFilterArray[$facetName])) {
+                $newFilterArray[$facetName] = [$facetValue];
             } else {
-                $newQueryParams[$facetName][] = $facetValue;
+                $newFilterArray[$facetName][] = $facetValue;
             }
         }
 
-        foreach ($newQueryParams as $facetName => $facetValues) {
-            $newQueryParams[$facetName] = $facetName . ':' . $this->facetsToString($facetValues);
+        foreach ($newFilterArray as $facetName => $facetValues) {
+            $newFilterArray[$facetName] = $facetName . ':' . $this->queryParameterFacetsToString($facetValues);
         }
 
-        $queryParams['filter'] = array_values($newQueryParams);
-
-        return $queryParams;
+        return array_values($newFilterArray);
     }
 
     /**
@@ -174,26 +370,72 @@ class RoutingService implements LoggerAwareInterface
      */
     public function inflateQueryParameter(array $queryParams = []): array
     {
-        if (!$this->shouldFlattenSameParameter()) {
+        if (!$this->shouldConcatQueryParameters()) {
             return $queryParams;
         }
 
-        if (!isset($queryParams['filter'])) {
-            return $queryParams;
+        if (!isset($queryParams[$this->getPluginNamespace()])) {
+            $queryParams[$this->getPluginNamespace()] = [];
+        }
+
+        if (!isset($queryParams[$this->getPluginNamespace()]['filter'])) {
+            $queryParams[$this->getPluginNamespace()]['filter'] = [];
         }
 
         $newQueryParams = [];
-        foreach ($queryParams['filter'] as $set) {
+        foreach ($queryParams[$this->getPluginNamespace()]['filter'] as $set) {
             [$facetName, $facetValuesString] = explode(':', $set, 2);
 
-            $facetValues = explode($this->getFacetValueSeparator(), $facetValuesString);
+            $facetValues = explode($this->getQueryParameterValueSeparator(), $facetValuesString);
             foreach ($facetValues as $facetValue) {
                 $newQueryParams[] = $facetName . ':' . $facetValue;
             }
         }
-        $queryParams['filter'] = array_values($newQueryParams);
+        $queryParams[$this->getPluginNamespace()]['filter'] = array_values($newQueryParams);
 
+        return $this->cleanUpQueryParameters($queryParams);
+    }
+
+    /**
+     * Cleanup the query parameters, to avoid empty solr arguments
+     *
+     * @param array $queryParams
+     * @return array
+     */
+    public function cleanUpQueryParameters(array $queryParams): array
+    {
+        if (empty($queryParams[$this->getPluginNamespace()]['filter'])) {
+            unset($queryParams[$this->getPluginNamespace()]['filter']);
+        }
+
+        if (empty($queryParams[$this->getPluginNamespace()])) {
+            unset($queryParams[$this->getPluginNamespace()]);
+        }
         return $queryParams;
+    }
+
+    /**
+     * Builds a string out of multiple facet values
+     *
+     * @param array $facets
+     * @return string
+     */
+    public function queryParameterFacetsToString(array $facets): string
+    {
+        sort($facets);
+        return implode($this->getQueryParameterValueSeparator(), $facets);
+    }
+
+    /**
+     * Builds a string out of multiple facet values
+     *
+     * @param array $facets
+     * @return string
+     */
+    public function pathFacetsToString(array $facets): string
+    {
+        sort($facets);
+        return implode($this->getFacetValueSeparator(), $facets);
     }
 
     /**
@@ -206,6 +448,17 @@ class RoutingService implements LoggerAwareInterface
     {
         sort($facets);
         return implode($this->getFacetValueSeparator(), $facets);
+    }
+
+    /**
+     * Builds a string out of multiple facet values
+     *
+     * @param string $facets
+     * @return array
+     */
+    public function pathFacetStringToArray(string $facets): array
+    {
+        return explode($this->getFacetValueSeparator(), $facets);
     }
 
     /**
@@ -229,40 +482,18 @@ class RoutingService implements LoggerAwareInterface
     }
 
     /**
-     * Returns the list of parameters, that should ignored
+     * Returns the multi value separator for query parameters
      *
-     * @return array
+     * @return string
      */
-    public function getNonSolrParameters(): array
+    public function getQueryParameterValueSeparator(): string
     {
-        $parameters = $this->noneSolrParameters;
-
-        if (isset($this->settings['keepUrlKeys']) && is_array($this->settings['keepUrlKeys'])) {
-            $keepKeys = $this->settings['keepUrlKeys'];
-            $parameters = array_filter(
-                $parameters,
-                function ($value) use ($keepKeys) {
-                    return !in_array($value, $keepKeys);
-                }
-            );
+        if (isset($this->settings['query']['multiValueSeparator'])) {
+            return (string)$this->settings['query']['multiValueSeparator'];
         }
 
-        if (isset($this->settings['ignoreUrlKeys']) && is_array($this->settings['ignoreUrlKeys'])) {
-            $parameters = array_merge($parameters, $this->settings['ignoreUrlKeys']);
-        }
-
-        return array_unique($parameters);
-    }
-
-    /**
-     * Resolve a URI into a page uid
-     *
-     * @param UriInterface $uri
-     * @return int
-     */
-    public function uriToPageUid(UriInterface $uri): int
-    {
-        return 0;
+        // Fall back
+        return $this->getFacetValueSeparator();
     }
 
     /**
@@ -299,10 +530,13 @@ class RoutingService implements LoggerAwareInterface
         }
         $result = [];
         foreach ($configuration['routeEnhancers'] as $routing => $settings) {
-            if (empty($settings) || !isset($settings['type']) || $settings['type'] !== 'CombinedFacetEnhancer') {
+            // Not the page we are looking for
+            if (!in_array($pageUid, $settings['limitToPages'])) {
                 continue;
             }
-            if (!in_array($pageUid, $settings['limitToPages'])) {
+            // TODO: Instead of checking a string, check an interface (special interface for combined enhancer)
+            //       This have be enabled by configuration to avoid long rendering times
+            if (empty($settings) || !isset($settings['type']) || $settings['type'] !== 'CombinedFacetEnhancer') {
                 continue;
             }
             $result[] = $settings;

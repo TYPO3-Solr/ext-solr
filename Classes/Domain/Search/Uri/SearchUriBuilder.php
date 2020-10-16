@@ -20,6 +20,8 @@ use ApacheSolrForTypo3\Solr\Event\EnhancedRouting\BeforeProcessCachedVariablesEv
 use ApacheSolrForTypo3\Solr\Event\EnhancedRouting\BeforeReplaceVariableInCachedUrlEvent as BeforeReplaceVariableInEnhancedCachedUrlEvent;
 use ApacheSolrForTypo3\Solr\Event\Routing\BeforeProcessCachedVariablesEvent;
 use ApacheSolrForTypo3\Solr\Event\Routing\BeforeReplaceVariableInCachedUrlEvent;
+use ApacheSolrForTypo3\Solr\Event\EnhancedRouting\PostProcessUriEvent as PostProcessEnhancedUriEvent;
+use ApacheSolrForTypo3\Solr\Event\Routing\PostProcessUriEvent;
 use ApacheSolrForTypo3\Solr\Routing\RoutingService;
 use ApacheSolrForTypo3\Solr\System\Url\UrlHelper;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
@@ -400,7 +402,16 @@ class SearchUriBuilder
         $values = $variableEvent->getVariableValues();
 
         $uri = str_replace($keys, $values, $uriCacheTemplate);
-        return $uri;
+        $uri = GeneralUtility::makeInstance(
+            Uri::class,
+            $uri
+        );
+        $uriEvent = $enhancedRouting ?
+            new PostProcessEnhancedUriEvent($uri, $routingConfigurations) :
+            new PostProcessUriEvent($uri, $routingConfigurations);
+        $this->eventDispatcher->dispatch($uriEvent);
+        $uri = $uriEvent->getUri();
+        return (string)$uri;
     }
 
     /**
