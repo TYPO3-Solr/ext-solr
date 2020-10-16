@@ -18,6 +18,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Routing;
 
 use ApacheSolrForTypo3\Solr\Routing\RoutingService;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use Psr\Log\NullLogger;
 use Symfony\Component\Yaml\Yaml;
 use TYPO3\CMS\Core\Http\Uri;
 use TYPO3\CMS\Core\Site\Entity\Site;
@@ -40,58 +41,6 @@ class RoutingServiceTest extends UnitTest
             'example',
             1,
             Yaml::parse($this->getFixtureContentByName('siteConfiguration.yaml'))
-        );
-    }
-
-    /**
-     * @test
-     * @covers \ApacheSolrForTypo3\Solr\Routing\RoutingService::getNonSolrParameters
-     */
-    public function defaultParametersAvailableOnBlacklistTest()
-    {
-        $routingService = new RoutingService(
-            []
-        );
-
-        $this->assertEquals(
-            ['no_cache', 'cHash', 'id', 'MP', 'type'],
-            $routingService->getNonSolrParameters()
-        );
-    }
-
-    /**
-     * @test
-     * @covers \ApacheSolrForTypo3\Solr\Routing\RoutingService::getNonSolrParameters
-     */
-    public function canExcludeDefaultParameterFromBlacklistTest()
-    {
-        $routingService = new RoutingService(
-            [
-                'keepUrlKeys' => ['type']
-            ]
-        );
-
-        $this->assertEquals(
-            ['no_cache', 'cHash', 'id', 'MP'],
-            $routingService->getNonSolrParameters()
-        );
-    }
-
-    /**
-     * @test
-     * @covers \ApacheSolrForTypo3\Solr\Routing\RoutingService::getNonSolrParameters
-     */
-    public function canAddParameterToBlacklistTest()
-    {
-        $routingService = new RoutingService(
-            [
-                'ignoreUrlKeys' => ['campaign']
-            ]
-        );
-
-        $this->assertEquals(
-            ['no_cache', 'cHash', 'id', 'MP', 'type', 'campaign'],
-            $routingService->getNonSolrParameters()
         );
     }
 
@@ -263,24 +212,33 @@ class RoutingServiceTest extends UnitTest
         );
     }
 
+    protected function getRoutingService(string $fixtureName = 'siteConfiguration.yaml'): RoutingService
+    {
+        $configuration = Yaml::parse($this->getFixtureContentByName($fixtureName));
+        $routingService = new RoutingService($configuration['routeEnhancers']['example']['solr']);
+        $routingService->setLogger(new NullLogger());
+        return $routingService;
+    }
+
     /**
      * @test
-     * @covers \ApacheSolrForTypo3\Solr\Routing\RoutingService::deflateQueryParameter
+     * @covers \ApacheSolrForTypo3\Solr\Routing\RoutingService::concatQueryParameter
      */
     public function testDeflateFilterQueryParameterTest()
     {
-        $configuration = Yaml::parse($this->getFixtureContentByName('siteConfiguration.yaml'));
-        $routingService = new RoutingService($configuration['routeEnhancers']['example']['solr']);
+        $routingService = $this->getRoutingService();
 
-        $filter = [
-            'filter' => [
-                'color:yellow',
-                'taste:sour',
-                'product:sweets',
-                'color:green',
-                'taste:matcha',
-                'color:red',
-                'product:candy',
+        $queryParameters = [
+            'tx_solr' => [
+                'filter' => [
+                    'color:yellow',
+                    'taste:sour',
+                    'product:sweets',
+                    'color:green',
+                    'taste:matcha',
+                    'color:red',
+                    'product:candy',
+                ]
             ]
         ];
         /*
@@ -288,17 +246,19 @@ class RoutingServiceTest extends UnitTest
          * The order of the values should be alphanumeric
          */
         $expectedResult = [
-            'filter' => [
-                'color:green,red,yellow',
-                'taste:matcha,sour',
-                'product:candy,sweets'
+            'tx_solr' => [
+                'filter' => [
+                    'color:green,red,yellow',
+                    'taste:matcha,sour',
+                    'product:candy,sweets'
+                ]
             ]
         ];
 
-        $this->assertTrue($routingService->shouldFlattenSameParameter());
+        $this->assertTrue($routingService->shouldConcatQueryParameters());
         $this->assertEquals(
             $expectedResult,
-            $routingService->deflateQueryParameter($filter)
+            $routingService->concatQueryParameter($queryParameters)
         );
     }
 
@@ -308,14 +268,15 @@ class RoutingServiceTest extends UnitTest
      */
     public function testInflateFilterQueryParameterTest()
     {
-        $configuration = Yaml::parse($this->getFixtureContentByName('siteConfiguration.yaml'));
-        $routingService = new RoutingService($configuration['routeEnhancers']['example']['solr']);
+        $routingService = $this->getRoutingService();
 
         $filter = [
-            'filter' => [
-                'color:green,red,yellow',
-                'product:candy,sweets',
-                'taste:matcha,sour'
+            'tx_solr' => [
+                'filter' => [
+                    'color:green,red,yellow',
+                    'product:candy,sweets',
+                    'taste:matcha,sour'
+                ]
             ]
         ];
 
@@ -323,21 +284,101 @@ class RoutingServiceTest extends UnitTest
          * The order of the expected result based on the order of the filter!
          */
         $expectedResult = [
-            'filter' => [
-                'color:green',
-                'color:red',
-                'color:yellow',
-                'product:candy',
-                'product:sweets',
-                'taste:matcha',
-                'taste:sour'
+            'tx_solr' => [
+                'filter' => [
+                    'color:green',
+                    'color:red',
+                    'color:yellow',
+                    'product:candy',
+                    'product:sweets',
+                    'taste:matcha',
+                    'taste:sour'
+                ]
             ]
         ];
 
-        $this->assertTrue($routingService->shouldFlattenSameParameter());
+        $this->assertTrue($routingService->shouldConcatQueryParameters());
         $this->assertEquals(
             $expectedResult,
             $routingService->inflateQueryParameter($filter)
+        );
+    }
+
+    /**
+     * @test
+     * @covers \ApacheSolrForTypo3\Solr\Routing\RoutingService::maskQueryParameters
+     */
+    public function testIfFilterParametersCanBeMaskedTest()
+    {
+        $routingService = $this->getRoutingService();
+        $queryParameters = [
+            'tx_solr' => [
+                'filter' => [
+                    'color:yellow',
+                    'taste:sour',
+                    'product:sweets',
+                    'color:green',
+                    'taste:matcha',
+                    'color:red',
+                    'product:candy',
+                ]
+            ]
+        ];
+        /*
+         * The order of the facet name based on their first appearance in the given filter array
+         * The order of the values should be alphanumeric
+         */
+        $expectedResult = [
+            'color' => 'green,red,yellow',
+            'taste' => 'matcha,sour',
+            'product' => 'candy,sweets'
+        ];
+
+        $this->assertTrue($routingService->shouldMaskQueryParameter());
+        $queryParameters = $routingService->concatQueryParameter($queryParameters);
+
+        $this->assertEquals(
+            $expectedResult,
+            $routingService->maskQueryParameters($queryParameters)
+        );
+    }
+
+    /**
+     * @test
+     * @covers \ApacheSolrForTypo3\Solr\Routing\RoutingService::maskQueryParameters
+     */
+    public function testIfFilterParametersCanBeUnmaskedTest()
+    {
+        $routingService = $this->getRoutingService();
+        $queryParameters = [
+            'color' => 'green,red,yellow',
+            'taste' => 'matcha,sour',
+            'product' => 'candy,sweets'
+        ];
+
+        /*
+         * The order of the facet name based on their first appearance in the given filter array
+         * The order of the values should be alphanumeric
+         */
+        $expectedResult = [
+            'tx_solr' => [
+                'filter' => [
+                    'color:green',
+                    'color:red',
+                    'color:yellow',
+                    'taste:matcha',
+                    'taste:sour',
+                    'product:candy',
+                    'product:sweets',
+                ]
+            ]
+        ];
+        $this->assertTrue($routingService->shouldMaskQueryParameter());
+        $queryParameters = $routingService->unmaskQueryParameters($queryParameters);
+
+        $this->assertEquals(
+            $expectedResult,
+            $routingService->inflateQueryParameter($queryParameters)
         );
     }
 }
