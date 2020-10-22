@@ -45,10 +45,29 @@ class PostProcessUriEvent extends OriginPostProcessUriEvent
     }
 
     /**
+     * Available router configurations
+     *
      * @return array
      */
     public function getRouterConfiguration(): array
     {
+        if (!isset($this->routerConfiguration['type']) && isset($this->routerConfiguration['0'])) {
+            return $this->routerConfiguration[0];
+        }
+        return $this->routerConfiguration;
+    }
+
+    /**
+     * Return all the configuration settings
+     *
+     * @return array[]
+     */
+    public function getRouterConfigurations(): array
+    {
+        if (isset($this->routerConfiguration['type'])) {
+            return [$this->routerConfiguration];
+        }
+
         return $this->routerConfiguration;
     }
 }
