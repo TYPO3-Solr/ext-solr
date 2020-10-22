@@ -30,10 +30,12 @@ class PostEnhancedUriProcessor
 {
     public function __invoke(PostProcessUriEvent $event): void
     {
+        $configuration = $event->getRouterConfiguration();
+
         /* @var RoutingService $routingService */
         $routingService = GeneralUtility::makeInstance(
             RoutingService::class,
-            $event->getRouterConfiguration()['solr']
+            $configuration['solr']
         );
         if (!$routingService->shouldConcatQueryParameters()) {
             return;

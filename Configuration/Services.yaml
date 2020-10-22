@@ -4,7 +4,7 @@ services:
       - name: event.listener
         identifier: 'solr.routing.cachedurl-modifier'
         event: ApacheSolrForTypo3\Solr\Event\EnhancedRouting\BeforeReplaceVariableInCachedUrlEvent
-  ApacheSolrForTypo3\Solr\EventListener\EnhancedRouting\PathVariableModifier:
+  ApacheSolrForTypo3\Solr\EventListener\EnhancedRouting\CachedPathVariableModifier:
     tags:
       - name: event.listener
         identifier: 'solr.routing.cachedurl-modifier'
