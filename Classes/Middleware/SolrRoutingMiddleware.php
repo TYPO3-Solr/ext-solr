@@ -145,7 +145,7 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
         /*
          * Map arguments against the argument configuration
          */
-        $request = $this->enrichUriByPathArguments(
+        $request = $this->enrichQueryByPathArguments(
             $request,
             $enhancerConfiguration['_arguments'],
             $parameters
@@ -259,7 +259,7 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
      * @param array $parameters
      * @return ServerRequestInterface
      */
-    protected function enrichUriByPathArguments(
+    protected function enrichQueryByPathArguments(
         ServerRequestInterface $request,
         array $arguments,
         array $parameters
@@ -275,6 +275,7 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
             if (!empty($this->namespace)) {
                 array_unshift($pathElements, $this->namespace);
             }
+
             $queryParams = $this->processUriPathArgument(
                 $queryParams,
                 $fieldName,
@@ -316,9 +317,8 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
 
         if (strpos($queryKey, '-') !== false) {
             [$queryKey, $filterName] = explode('-', $queryKey, 2);
-
             // explode multiple values
-            $values = $this->getRoutingService()->facetStringToArray($parameters[$fieldName]);
+            $values = $this->getRoutingService()->pathFacetStringToArray($parameters[$fieldName]);
 
             // @TODO: Support URL data bag
             foreach ($values as $value) {
