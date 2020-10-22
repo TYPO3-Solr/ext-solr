@@ -41,16 +41,18 @@ class CachedPathVariableModifier
         $variableValues = $event->getVariableValues();
         $enhancerConfiguration = $event->getRouterConfiguration();
 
-        $multiValue = false;
-
         // TODO: Instead of checking a string, check an interface (special interface for combined enhancer)
         //       This have be enabled by configuration to avoid long rendering times
-        if ($enhancerConfiguration['type'] === 'CombinedFacetEnhancer') {
-            $multiValue = true;
+        if ($enhancerConfiguration['type'] !== 'CombinedFacetEnhancer') {
+            return;
         }
+        $multiValue = true;
 
         /* @var RoutingService $routingService */
-        $routingService = GeneralUtility::makeInstance(RoutingService::class, $enhancerConfiguration['solr']);
+        $routingService = GeneralUtility::makeInstance(
+            RoutingService::class,
+            $enhancerConfiguration['solr']
+        );
 
         for ($i = 0; $i < count($variableKeys); $i++) {
             $standardizedKey = $this->standardizeKey($variableKeys[$i]);
@@ -62,17 +64,26 @@ class CachedPathVariableModifier
             }
             $value = '';
             if ($multiValue) {
+
+                // Note: if the customer configured a + as separator an additional check on the facet value is required!
                 $facets = $routingService->pathFacetStringToArray(
                     $this->standardizeKey((string)$variableValues[$standardizedKey])
                 );
+
                 $singleValues = [];
+                $index = 0;
                 foreach ($facets as $facet) {
-                    [$prefix, $value] = explode(
-                        ':',
-                        $facet,
-                        2
-                    );
-                    $singleValues[] = $value;
+                    if (mb_strpos($facet, ':') !== false) {
+                        [$prefix, $value] = explode(
+                            ':',
+                            $facet,
+                            2
+                        );
+                        $singleValues[] = $value;
+                        $index++;
+                    } else {
+                        $singleValues[$index - 1] .= ' ' . $facet;
+                    }
                 }
                 $value = $routingService->pathFacetsToString($singleValues);
             } else {
