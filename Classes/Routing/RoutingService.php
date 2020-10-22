@@ -427,6 +427,44 @@ class RoutingService implements LoggerAwareInterface
     }
 
     /**
+     * Encode a string for path segment
+     *
+     * @param string $string
+     * @return string
+     */
+    public function encodeStringForPathSegment(string $string): string
+    {
+        if (!isset($this->settings['replaceCharacters']) || !is_array($this->settings['replaceCharacters'])) {
+            return urlencode($string);
+        }
+
+        foreach ($this->settings['replaceCharacters'] as $search => $replace) {
+            $string = str_replace($search, $replace, $string);
+        }
+
+        return urlencode($string);
+    }
+
+    /**
+     * Encode a string for path segment
+     *
+     * @param string $string
+     * @return string
+     */
+    public function decodeStringForPathSegment(string $string): string
+    {
+        if (!isset($this->settings['replaceCharacters']) || !is_array($this->settings['replaceCharacters'])) {
+            return urldecode($string);
+        }
+        $string = urldecode($string);
+        foreach ($this->settings['replaceCharacters'] as $search => $replace) {
+            $string = str_replace($replace, $search, $string);
+        }
+
+        return $string;
+    }
+
+    /**
      * Builds a string out of multiple facet values
      *
      * @param array $facets
@@ -435,6 +473,9 @@ class RoutingService implements LoggerAwareInterface
     public function pathFacetsToString(array $facets): string
     {
         sort($facets);
+        for ($i = 0; $i < count($facets); $i++) {
+            $facets[$i] = $this->encodeStringForPathSegment($facets[$i]);
+        }
         return implode($this->getFacetValueSeparator(), $facets);
     }
 
@@ -458,6 +499,7 @@ class RoutingService implements LoggerAwareInterface
      */
     public function pathFacetStringToArray(string $facets): array
     {
+        $facets = $this->decodeStringForPathSegment($facets);
         return explode($this->getFacetValueSeparator(), $facets);
     }
 
