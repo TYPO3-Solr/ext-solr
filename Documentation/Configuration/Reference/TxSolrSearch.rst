@@ -588,7 +588,7 @@ lastSearches
 :Since: 1.3-dkd
 :Default: 0
 
-Set `plugin.tx_solr.lastSearches = 1` to display a list of the last searches.
+Set `plugin.tx_solr.search.lastSearches = 1` to display a list of the last searches.
 
 lastSearches.limit
 ~~~~~~~~~~~~~~~~~~
