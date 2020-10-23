@@ -30,7 +30,7 @@ The following example shows a the basement of the enhancer configuration.
 
 If you use something else as *tx_solr* for the plugin namespace (see :ref:`conf-tx-solr-view`) you need additional configuration.
 
-Add *pluginNamespace* below the key *solr* and configure your plugin namespace.
+Change the *extensionKey* from *tx_solr* to your plugin namespace.
 
 .. code-block:: yaml
 
@@ -39,8 +39,6 @@ Add *pluginNamespace* below the key *solr* and configure your plugin namespace.
         type: CombinedFacetEnhancer
         limitToPages:
           - 42
-        extensionKey: tx_solr
-        solr:
-          pluginNamespace: 'search'
+        extensionKey: search
 
 The next step is to configure a path segment or to mask the facets inside of the query.
