@@ -160,12 +160,19 @@ class CombinedFacetEnhancer extends AbstractEnhancer implements RoutingEnhancerI
                     }
                 } else {
                     [$facetField, $facetValue] = explode(':', $parameterValue, 2);
+                    if (substr($facetValue, 0, mb_strlen($facetField) + 1) === $facetField . ':') {
+                        [$facetField, $facetValue] = explode(':', $facetValue, 2);
+                    }
                     if ($facetField === $facetTypeToHandle) {
                         $parameterNameNew = $combinedKey;
                         $parameterValueNew = $facetValue;
                     }
                 }
-                $parametersCombined[$parameterNameNew] = $parameterValueNew;
+                if (is_array($parametersCombined[$parameterNameNew])) {
+                    $parametersCombined[$parameterNameNew][] = $parameterValueNew;
+                } else {
+                    $parametersCombined[$parameterNameNew] = $parameterValueNew;
+                }
             }
 
             if (isset($parametersCombined[$combinedKey]) && is_array($parametersCombined[$combinedKey])) {
@@ -308,7 +315,8 @@ class CombinedFacetEnhancer extends AbstractEnhancer implements RoutingEnhancerI
     {
         return GeneralUtility::makeInstance(
             RoutingService::class,
-            $this->configuration['solr']
-        );
+            $this->configuration['solr'],
+            (string)$this->configuration['extensionKey']
+        )->withPathArguments($this->configuration['_arguments']);
     }
 }
