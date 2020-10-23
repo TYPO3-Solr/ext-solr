@@ -16,6 +16,7 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\Routing;
 
+use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UriInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
@@ -36,11 +37,30 @@ class RoutingService implements LoggerAwareInterface
     use LoggerAwareTrait;
 
     /**
+     * Default plugin namespace
+     */
+    const PLUGIN_NAMESPACE = 'tx_solr';
+
+    /**
      * Settings from routing configuration
      *
      * @var array
      */
     protected $settings = [];
+
+    /**
+     * List of filter that are placed as path arguments
+     *
+     * @var array
+     */
+    protected $pathArguments = [];
+
+    /**
+     * Plugin/extension namespace
+     *
+     * @var string
+     */
+    protected $pluginNamespace = 'tx_solr';
 
     /**
      * List of TYPO3 core parameters, that we should ignore
@@ -52,11 +72,17 @@ class RoutingService implements LoggerAwareInterface
 
     /**
      * RoutingService constructor.
+     *
      * @param array $settings
+     * @param string $pluginNamespace
      */
-    public function __construct(array $settings = [])
+    public function __construct(array $settings = [], string $pluginNamespace = self::PLUGIN_NAMESPACE)
     {
         $this->settings = $settings;
+        $this->pluginNamespace = $pluginNamespace;
+        if (empty($this->pluginNamespace)) {
+            $this->pluginNamespace = self::PLUGIN_NAMESPACE;
+        }
     }
 
     /**
@@ -69,6 +95,19 @@ class RoutingService implements LoggerAwareInterface
     {
         $service = clone $this;
         $service->settings = $settings;
+        return $service;
+    }
+
+    /**
+     * Creates a clone of the current service and replace the settings inside
+     *
+     * @param array $pathArguments
+     * @return RoutingService
+     */
+    public function withPathArguments(array $pathArguments): RoutingService
+    {
+        $service = clone $this;
+        $service->pathArguments = $pathArguments;
         return $service;
     }
 
@@ -92,10 +131,7 @@ class RoutingService implements LoggerAwareInterface
      */
     public function getPluginNamespace(): string
     {
-        if (isset($this->settings['pluginNamespace']) && !empty(trim($this->settings['pluginNamespace']))) {
-            return (string)$this->settings['pluginNamespace'];
-        }
-        return 'tx_solr';
+        return $this->pluginNamespace;
     }
 
     /**
@@ -178,6 +214,7 @@ class RoutingService implements LoggerAwareInterface
         if (!$this->shouldMaskQueryParameter()) {
             return $queryParams;
         }
+
         /*
          * The array $queryParameterMap contains the mapping of
          * facet name to new url name. In order to unmask we need to switch key and values.
@@ -189,10 +226,17 @@ class RoutingService implements LoggerAwareInterface
         }
 
         $newQueryParams = [];
-
         foreach ($queryParams as $queryParamName => $queryParamValue) {
+            // A merge is needed!
             if (!isset($queryParameterMapSwitched[$queryParamName])) {
-                $newQueryParams[$queryParamName] = $queryParamValue;
+                if (isset($newQueryParams[$queryParamName])) {
+                    $newQueryParams[$queryParamName] = array_merge_recursive(
+                        $newQueryParams[$queryParamName],
+                        $queryParamValue
+                    );
+                } else {
+                    $newQueryParams[$queryParamName] = $queryParamValue;
+                }
                 continue;
             }
             if (!isset($newQueryParams[$this->getPluginNamespace()])) {
@@ -465,6 +509,33 @@ class RoutingService implements LoggerAwareInterface
     }
 
     /**
+     * Cleanup facet values (strip type if needed)
+     *
+     * @param array $facetValues
+     * @return array
+     */
+    public function cleanupFacetValues(array $facetValues): array
+    {
+        for ($i = 0; $i < count($facetValues); $i++) {
+            if (mb_strpos($facetValues[$i], ':') === false && mb_strpos($facetValues[$i], '%3A') === false) {
+                continue;
+            }
+
+            $separator = ':';
+            if (mb_strpos($facetValues[$i], '%3A') !== false) {
+                $separator = '%3A';
+            }
+            [$type, $value] = explode($separator, $facetValues[$i]);
+
+
+            if ($this->isMappingArgument($type) || $this->isPathArgument($type)) {
+                $facetValues[$i] = $value;
+            }
+        }
+        return $facetValues;
+    }
+
+    /**
      * Builds a string out of multiple facet values
      *
      * @param array $facets
@@ -472,6 +543,7 @@ class RoutingService implements LoggerAwareInterface
      */
     public function pathFacetsToString(array $facets): string
     {
+        $facets = $this->cleanupFacetValues($facets);
         sort($facets);
         for ($i = 0; $i < count($facets); $i++) {
             $facets[$i] = $this->encodeStringForPathSegment($facets[$i]);
@@ -487,6 +559,7 @@ class RoutingService implements LoggerAwareInterface
      */
     public function facetsToString(array $facets): string
     {
+        $facets = $this->cleanupFacetValues($facets);
         sort($facets);
         return implode($this->getFacetValueSeparator(), $facets);
     }
@@ -573,7 +646,9 @@ class RoutingService implements LoggerAwareInterface
         $result = [];
         foreach ($configuration['routeEnhancers'] as $routing => $settings) {
             // Not the page we are looking for
-            if (!in_array($pageUid, $settings['limitToPages'])) {
+            if (isset($settings['limitToPages']) &&
+                is_array($settings['limitToPages']) &&
+                !in_array($pageUid, $settings['limitToPages'])) {
                 continue;
             }
             // TODO: Instead of checking a string, check an interface (special interface for combined enhancer)
@@ -585,6 +660,53 @@ class RoutingService implements LoggerAwareInterface
         }
 
         return $result;
+    }
+
+    /**
+     * Add heading slash to given slug
+     *
+     * @param string $slug
+     * @return string
+     */
+    public function cleanupHeadingSlash(string $slug): string
+    {
+        if (mb_substr($slug, 0, 1) !== '/') {
+            return '/' . $slug;
+        } else if (mb_substr($slug, 0, 2) === '//') {
+            return mb_substr($slug, 1, mb_strlen($slug) - 1);
+        }
+
+        return $slug;
+    }
+
+    /**
+     * Add heading slash to given slug
+     *
+     * @param string $slug
+     * @return string
+     */
+    public function addHeadingSlash(string $slug): string
+    {
+        if (mb_substr($slug, 0, 1) === '/') {
+            return $slug;
+        }
+
+        return '/' . $slug;
+    }
+
+    /**
+     * Remove heading slash from given slug
+     *
+     * @param string $slug
+     * @return string
+     */
+    public function removeHeadingSlash(string $slug): string
+    {
+        if (mb_substr($slug, 0, 1) !== '/') {
+            return $slug;
+        }
+
+        return mb_substr($slug, 1, mb_strlen($slug) - 1);
     }
 
     /**
@@ -647,6 +769,45 @@ class RoutingService implements LoggerAwareInterface
         } catch (\InvalidArgumentException $argumentException) {
             return null;
         }
+    }
+
+    /**
+     * @param SiteLanguage $language
+     * @param string $path
+     * @return bool
+     */
+    public function containsPathLanguageArgument(SiteLanguage $language, string $path): bool
+    {
+        if ($language->getBase()->getPath() === '/') {
+            return false;
+        }
+
+        $pathLength = mb_strlen($language->getBase()->getPath());
+        $languagePath = mb_substr($path, 0, $pathLength);
+        return $languagePath === $language->getBase()->getPath();
+    }
+
+    /**
+     * In order to search for a path, a possible language prefix need to remove
+     *
+     * @param SiteLanguage $language
+     * @param string $path
+     * @return string
+     */
+    public function stripLanguagePrefixFromPath(SiteLanguage $language, string $path): string
+    {
+        if ($language->getBase()->getPath() === '/') {
+            return $path;
+        }
+
+        $pathLength = mb_strlen($language->getBase()->getPath());
+
+        $path = mb_substr($path, $pathLength, mb_strlen($path) - $pathLength);
+        if (mb_substr($path, 0, 1) !== '/') {
+            $path = '/' . $path;
+        }
+
+        return $path;
     }
 
     /**
@@ -730,6 +891,181 @@ class RoutingService implements LoggerAwareInterface
         }
 
         return $language;
+    }
+
+    /**
+     * Enrich the current query Params with data from path information
+     *
+     * @param ServerRequestInterface $request
+     * @param array $arguments
+     * @param array $parameters
+     * @return ServerRequestInterface
+     */
+    public function addPathArgumentsToQuery(
+        ServerRequestInterface $request,
+        array $arguments,
+        array $parameters
+    ): ServerRequestInterface {
+        $queryParams = $request->getQueryParams();
+        foreach ($arguments as $fieldName => $queryPath) {
+            // Skip if there is no parameter
+            if (!isset($parameters[$fieldName])) {
+                continue;
+            }
+            $pathElements = explode('/', $queryPath);
+
+            if (!empty($this->pluginNamespace)) {
+                array_unshift($pathElements, $this->pluginNamespace);
+            }
+
+            $queryParams = $this->processUriPathArgument(
+                $queryParams,
+                $fieldName,
+                $parameters,
+                $pathElements
+            );
+        }
+
+        return $request->withQueryParams($queryParams);
+    }
+
+    /**
+     * Check if given argument is a mapping argument
+     *
+     * @param string $facetName
+     * @return bool
+     */
+    public function isMappingArgument(string $facetName): bool
+    {
+        $map = $this->getQueryParameterMap();
+        if (isset($map[$facetName]) && $this->shouldMaskQueryParameter()) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Check if given facet type is an path argument
+     *
+     * @param string $facetName
+     * @return bool
+     */
+    public function isPathArgument(string $facetName): bool
+    {
+        return isset($this->pathArguments[$facetName]);
+    }
+
+    /**
+     * @param string $variable
+     * @return string
+     */
+    public function reviewVariable(string $variable): string
+    {
+        if (mb_strpos($variable, ':') === false && mb_strpos($variable, '%3A') === false) {
+            return $variable;
+        }
+
+        $separator = ':';
+        if (mb_strpos($variable, '%3A') !== false) {
+            $separator = '%3A';
+        }
+        [$type, $value] = explode($separator, $variable, 2);
+
+        return $this->isMappingArgument($type) ? $value : $variable;
+    }
+
+    /**
+     * Remove type prefix from filter
+     *
+     * @param array $variables
+     * @return array
+     */
+    public function reviseFilterVariables(array $variables): array
+    {
+        $newVariables = [];
+        foreach ($variables as $key => $value) {
+            $matches = [];
+            if (!preg_match('/###' . $this->getPluginNamespace() . ':filter:\d+:(.+?)###/', $key, $matches)) {
+                $newVariables[$key] = $value;
+                continue;
+            }
+
+            if (!$this->isMappingArgument($matches[1]) && !$this->isPathArgument($matches[1])) {
+                $newVariables[$key] = $value;
+                continue;
+            }
+            $separator = ':';
+            if (mb_strpos($value, '%3A') !== false) {
+                $separator = '%3A';
+            }
+            $parts = explode($separator, $value);
+
+            do {
+                if ($parts[0] === $matches[1]) {
+                    array_shift($parts);
+                }
+            } while ($parts[0] === $matches[1]);
+
+            $newVariables[$key] = implode($separator, $parts);
+        }
+
+        return $newVariables;
+    }
+
+    /**
+     * Converts path segment information into query parameters
+     *
+     * Example:
+     * /products/household
+     *
+     * tx_solr:
+     *      filter:
+     *          - type:household
+     *
+     * @param array $queryParams
+     * @param string $fieldName
+     * @param array $parameters
+     * @param array $pathElements
+     * @return array
+     */
+    protected function processUriPathArgument(
+        array $queryParams,
+        string $fieldName,
+        array $parameters,
+        array $pathElements
+    ): array {
+        $queryKey = array_shift($pathElements);
+        $queryKey = (string)$queryKey;
+
+        $tmpQueryKey = $queryKey;
+        if (strpos($queryKey, '-') !== false) {
+            [$tmpQueryKey, $filterName] = explode('-', $tmpQueryKey, 2);
+        }
+        if (!isset($queryParams[$tmpQueryKey]) || $queryParams[$tmpQueryKey] === null) {
+            $queryParams[$tmpQueryKey] = [];
+        }
+
+        if (strpos($queryKey, '-') !== false) {
+            [$queryKey, $filterName] = explode('-', $queryKey, 2);
+            // explode multiple values
+            $values = $this->pathFacetStringToArray($parameters[$fieldName]);
+            sort($values);
+
+            // @TODO: Support URL data bag
+            foreach ($values as $value) {
+                $queryParams[$queryKey][] = $filterName . ':' . $value;
+            }
+        } else {
+            $queryParams[$queryKey] = $this->processUriPathArgument(
+                $queryParams[$queryKey],
+                $fieldName,
+                $parameters,
+                $pathElements
+            );
+        }
+
+        return $queryParams;
     }
 
     /**
