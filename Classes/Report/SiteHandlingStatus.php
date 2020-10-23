@@ -181,13 +181,19 @@ class SiteHandlingStatus extends AbstractSolrStatus
         /* @var UrlHelper $solrUriHelper */
         $solrUriHelper = GeneralUtility::makeInstance(UrlHelper::class, $uri);
         try {
-            $solrUriHelper->getScheme();
+            $scheme = $solrUriHelper->getScheme();
+            if (empty($scheme)  ) {
+                $invalidParts .= 'scheme';
+            }
         } catch (\TypeError $error) {
             $invalidParts .= 'scheme';
         }
 
         try {
-            $solrUriHelper->getHost();
+            $host = $solrUriHelper->getHost();
+            if (empty($host)) {
+                $invalidParts .= ', host';
+            }
         } catch (\TypeError $error) {
             $invalidParts .= ', host';
         }

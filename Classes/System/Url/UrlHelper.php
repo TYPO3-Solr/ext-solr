@@ -103,7 +103,7 @@ class UrlHelper {
      */
     public function getHost(): string
     {
-        return $this->getUrlPart('host');
+        return $this->getUrlPart('host') ?? '';
     }
 
     /**
@@ -121,7 +121,7 @@ class UrlHelper {
      */
     public function getPort(): string
     {
-        return $this->getUrlPart('port');
+        return $this->getUrlPart('port') ?? '';
     }
 
     /**
@@ -139,7 +139,7 @@ class UrlHelper {
      */
     public function getScheme(): string
     {
-        return $this->getUrlPart('scheme');
+        return $this->getUrlPart('scheme') ?? '';
     }
 
     /**
@@ -157,7 +157,7 @@ class UrlHelper {
      */
     public function getPath(): string
     {
-        return $this->getUrlPart('path');
+        return $this->getUrlPart('path') ?? '';
     }
 
     /**
