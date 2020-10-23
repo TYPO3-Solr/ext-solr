@@ -130,26 +130,23 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
         /*
          * Take slug path segments and argument from incoming URI
          */
-        [$slug, $parameters] = $this->getSlugAndParameters(
+        [$slug, $parameters] = $this->extractParametersFromUriPath(
             $request->getUri(),
             $enhancerConfiguration['routePath'],
             (string)$page['slug']
         );
 
-
-        // No parameter exists -> Skip
-        if (count($parameters) === 0) {
-            return $handler->handle($request);
+        /*
+         * Convert path arguments to query arguments
+         */
+        if (!empty($parameters)) {
+            $request = $this->getRoutingService()->addPathArgumentsToQuery(
+                $request,
+                $enhancerConfiguration['_arguments'],
+                $parameters
+            );
         }
 
-        /*
-         * Map arguments against the argument configuration
-         */
-        $request = $this->enrichQueryByPathArguments(
-            $request,
-            $enhancerConfiguration['_arguments'],
-            $parameters
-        );
         /*
          * Replace internal URI with existing site taken from path information
          * We removed a possible path segment from the slug, that again needs to attach.
@@ -157,13 +154,22 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
          * NOTE: TypoScript is not available at this point!
          */
         $uri = $request->getUri()->withPath(
-            $this->language->getBase()->getPath() .
-            (string)$page['slug']
+            $this->getRoutingService()->cleanupHeadingSlash(
+                $this->language->getBase()->getPath() .
+                (string)$page['slug']
+            )
         );
         $request = $request->withUri($uri);
         $queryParams = $request->getQueryParams();
-        $queryParams = $this->routingService->unmaskQueryParameters($queryParams);
-        $queryParams = $this->routingService->inflateQueryParameter($queryParams);
+
+        $queryParams = $this->getRoutingService()->unmaskQueryParameters($queryParams);
+        $queryParams = $this->getRoutingService()->inflateQueryParameter($queryParams);
+
+        // @todo Drop cHash, but need to recalculate
+        if (array_key_exists('cHash', $queryParams)) {
+            unset($queryParams['cHash']);
+        }
+
         $request = $request->withQueryParams($queryParams);
 
         return $handler->handle($request);
@@ -180,6 +186,7 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
         $this->namespace = isset($enhancerConfiguration['extensionKey']) ?
             $enhancerConfiguration['extensionKey'] :
             $this->namespace;
+        $this->routingService = null;
     }
 
     /**
@@ -211,22 +218,43 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
      * @param string $pageSlug
      * @return array
      */
-    protected function getSlugAndParameters(UriInterface $uri, string $path, string $pageSlug): array
+    protected function extractParametersFromUriPath(UriInterface $uri, string $path, string $pageSlug): array
     {
-        if ($uri->getPath() === $pageSlug) {
+        // URI get path returns the path with given language parameter
+        // The parameter pageSlug itself does not contains the language parameter.
+        $uriPath = $this->getRoutingService()->stripLanguagePrefixFromPath(
+            $this->language,
+            $uri->getPath()
+        );
+
+        if ($uriPath === $pageSlug) {
             return [
                 $pageSlug,
                 []
             ];
         }
 
-        $uriElements = explode('/', $uri->getPath());
+        // Remove slug from URI path in order the ensure only the arguments left
+        if (mb_substr($uriPath, 0, mb_strlen($pageSlug) + 1) === $pageSlug . '/') {
+            $length = mb_strlen($pageSlug) + 1;
+            $uriPath = mb_substr($uriPath, $length, mb_strlen($uriPath) - $length);
+        }
+
+        // Take care the format of configuration and given slug equals
+        $uriPath = $this->getRoutingService()->removeHeadingSlash($uriPath);
+        $path = $this->getRoutingService()->removeHeadingSlash($path);
+
+        // Remove begin
+        $uriElements = explode('/', $uriPath);
         $routeElements = explode('/', $path);
         $slugElements = [];
         $arguments = [];
         $process = true;
+        /*
+         * Extract the slug elements, until the the amount of route elements reached
+         */
         do {
-            if (count($uriElements) >= count($routeElements)) {
+            if (count($uriElements) > count($routeElements)) {
                 $slugElements[] = array_shift($uriElements);
             } else {
                 $process = false;
@@ -236,9 +264,17 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
         if (empty($routeElements[0])) {
             array_shift($routeElements);
         }
+        if (empty($uriElements[0])) {
+            array_shift($uriElements);
+        }
 
         // Extract the values
         for ($i = 0; $i < count($uriElements); $i++) {
+            // Skip empty elements
+            if (empty($uriElements[$i])) {
+                continue;
+            }
+
             $key = substr($routeElements[$i], 1, strlen($routeElements[$i]) - 1);
             $key = substr($key, 0, strlen($key) - 1);
 
@@ -252,91 +288,6 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
     }
 
     /**
-     * Enrich the current query Params with data from path information
-     *
-     * @param ServerRequestInterface $request
-     * @param array $arguments
-     * @param array $parameters
-     * @return ServerRequestInterface
-     */
-    protected function enrichQueryByPathArguments(
-        ServerRequestInterface $request,
-        array $arguments,
-        array $parameters
-    ): ServerRequestInterface {
-        $queryParams = $request->getQueryParams();
-        foreach ($arguments as $fieldName => $queryPath) {
-            // Skip if there is no parameter
-            if (!isset($parameters[$fieldName])) {
-                continue;
-            }
-            $pathElements = explode('/', $queryPath);
-
-            if (!empty($this->namespace)) {
-                array_unshift($pathElements, $this->namespace);
-            }
-
-            $queryParams = $this->processUriPathArgument(
-                $queryParams,
-                $fieldName,
-                $parameters,
-                $pathElements
-            );
-        }
-
-        return $request->withQueryParams($queryParams);
-    }
-
-    /**
-     * Converts path segment information into query parameters
-     *
-     * Example:
-     * /products/household
-     *
-     * tx_solr:
-     *      filter:
-     *          - type:household
-     *
-     * @param array $queryParams
-     * @param string $fieldName
-     * @param array $parameters
-     * @param array $pathElements
-     * @return array
-     */
-    protected function processUriPathArgument(
-        array $queryParams,
-        string $fieldName,
-        array $parameters,
-        array $pathElements
-    ): array {
-        $queryKey = array_shift($pathElements);
-
-        if (!isset($queryParams[$queryKey]) || $queryParams[$queryKey] === null) {
-            $queryParams[$queryKey] = [];
-        }
-
-        if (strpos($queryKey, '-') !== false) {
-            [$queryKey, $filterName] = explode('-', $queryKey, 2);
-            // explode multiple values
-            $values = $this->getRoutingService()->pathFacetStringToArray($parameters[$fieldName]);
-
-            // @TODO: Support URL data bag
-            foreach ($values as $value) {
-                $queryParams[$queryKey][] = $filterName . ':' . $value;
-            }
-        } else {
-            $queryParams[$queryKey] = $this->processUriPathArgument(
-                $queryParams[$queryKey],
-                $fieldName,
-                $parameters,
-                $pathElements
-            );
-        }
-
-        return $queryParams;
-    }
-
-    /**
      * Retrieve the page uid to filter the route enhancer
      *
      * @param UriInterface $uri
@@ -345,7 +296,10 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
      */
     protected function retrievePageInformation(UriInterface $uri, Site $site): array
     {
-        $path = $this->stripLanguagePrefixFromPath($uri->getPath());
+        $path = $this->getRoutingService()->stripLanguagePrefixFromPath(
+            $this->language,
+            $uri->getPath()
+        );
         $slugProvider = $this->getSlugCandidateProvider($site);
         $scan = true;
         $page = [];
@@ -413,28 +367,6 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
     }
 
     /**
-     * In order to search for a path, a possible language prefix need to remove
-     *
-     * @param string $path
-     * @return string
-     */
-    protected function stripLanguagePrefixFromPath(string $path): string
-    {
-        if ($this->language->getBase()->getPath() === '/') {
-            return $path;
-        }
-
-        $pathLength = mb_strlen($this->language->getBase()->getPath());
-
-        $path = mb_substr($path, $pathLength, mb_strlen($path) - $pathLength);
-        if (mb_substr($path, 0, 1) !== '/') {
-            $path = '/' . $path;
-        }
-
-        return $path;
-    }
-
-    /**
      * Determine the current language by given site and URI
      *
      * @param Site $site
@@ -473,7 +405,8 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
         if (!($this->routingService instanceof RoutingService)) {
             $this->routingService = GeneralUtility::makeInstance(
                 RoutingService::class,
-                $this->settings
+                $this->settings,
+                $this->namespace
             );
         } else {
             $this->routingService = $this->routingService->withSettings($this->settings);

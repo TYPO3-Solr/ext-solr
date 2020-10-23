@@ -13,9 +13,6 @@ Example
         - 10
       extensionKey: tx_solr
       solr:
-        # The plugin namespace used
-        # @see https://docs.typo3.org/p/apache-solr-for-typo3/solr/master/en-us/Configuration/Reference/TxSolrView.html#pluginnamespace
-        pluginNamespace: 'tx_solr'
         multiValueSeparator: '+'
         replaceCharacters:
           ' ': '_'

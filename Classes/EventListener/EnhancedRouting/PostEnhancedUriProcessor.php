@@ -35,21 +35,27 @@ class PostEnhancedUriProcessor
         /* @var RoutingService $routingService */
         $routingService = GeneralUtility::makeInstance(
             RoutingService::class,
-            $configuration['solr']
+            $configuration['solr'],
+            (string)$configuration['extensionKey']
         );
         if (!$routingService->shouldConcatQueryParameters()) {
             return;
         }
 
         $uri = $event->getUri();
-        $queryParameters = UriUtility::queryStringToArray($uri->getQuery());
+        parse_str($uri->getQuery(), $queryParameters);
+
+        if (empty($queryParameters) || !is_array($queryParameters)) {
+            $queryParameters = [];
+        }
+
         /*
          * The order here is important.
          * Method maskQueryParameters expects that the filter array does not contain multiple entries for the same facet.
          */
         $queryParameters = $routingService->concatQueryParameter($queryParameters);
         $queryParameters = $routingService->maskQueryParameters($queryParameters);
-        $query = UriUtility::queryArrayToString($queryParameters);
+        $query = http_build_query($queryParameters);
         $uri = $uri->withQuery($query);
         $event->replaceUri($uri);
     }
