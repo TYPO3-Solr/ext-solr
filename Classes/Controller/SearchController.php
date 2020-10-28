@@ -22,6 +22,7 @@ use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
 use TYPO3\CMS\Extbase\Mvc\Web\Response;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Fluid\View\TemplateView;
+use TYPO3\CMS\Frontend\ContentObject\ContentDataProcessor;
 
 /**
  * Class SearchController
@@ -35,6 +36,19 @@ class SearchController extends AbstractBaseController
      * @var TemplateView
      */
     protected $view;
+
+    /**
+     * @var ContentDataProcessor
+     */
+    protected $contentDataProcessor;
+
+    /**
+     * @param ContentDataProcessor $contentDataProcessor
+     */
+    public function injectContentDataProcessor(ContentDataProcessor $contentDataProcessor)
+    {
+        $this->contentDataProcessor = $contentDataProcessor;
+    }
 
     /**
      * Provide search query in extbase arguments.
@@ -113,6 +127,11 @@ class SearchController extends AbstractBaseController
             ];
 
             $values = $this->emitActionSignal(__CLASS__, __FUNCTION__, [$values]);
+            $values = $this->contentDataProcessor->process(
+                $this->getContentObjectRenderer(),
+                $this->typoScriptConfiguration->getValueByPathOrDefaultValue("plugin.tx_solr.search.results.",[]),
+                $values
+            );
 
             $this->view->assignMultiple($values);
         } catch (SolrUnavailableException $e) {
