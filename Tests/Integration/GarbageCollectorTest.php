@@ -27,7 +27,6 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\GarbageCollector;
 use ApacheSolrForTypo3\Solr\IndexQueue\Indexer;
-use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\IndexQueue\RecordMonitor;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
@@ -78,6 +77,22 @@ class GarbageCollectorTest extends IntegrationTest
         $this->indexQueue = GeneralUtility::makeInstance(Queue::class);
         $this->garbageCollector = GeneralUtility::makeInstance(GarbageCollector::class);
         $this->indexer = GeneralUtility::makeInstance(Indexer::class);
+    }
+
+    /**
+     * Executed after each test. Empties solr and checks if the index is really empty.
+     */
+    public function tearDown(): void
+    {
+        parent::tearDown();
+        $this->cleanUpSolrServerAndAssertEmpty();
+        unset(
+            $this->recordMonitor,
+            $this->dataHandler,
+            $this->indexQueue,
+            $this->garbageCollector,
+            $this->indexer
+        );
     }
 
     /**
@@ -209,7 +224,6 @@ class GarbageCollectorTest extends IntegrationTest
      */
     public function canRemoveDeletedContentElement()
     {
-        $this->cleanUpSolrServerAndAssertEmpty();
         $this->importDataSetFromFixture('can_remove_content_element.xml');
 
         $this->indexPageIds([1]);
@@ -254,7 +268,6 @@ class GarbageCollectorTest extends IntegrationTest
      */
     public function canRemoveHiddenContentElement()
     {
-        $this->cleanUpSolrServerAndAssertEmpty();
         $this->importDataSetFromFixture('can_remove_content_element.xml');
 
         $this->indexPageIds([1]);
@@ -304,7 +317,6 @@ class GarbageCollectorTest extends IntegrationTest
      */
     public function canRemoveContentElementWithEndTimeSetToPast()
     {
-        $this->cleanUpSolrServerAndAssertEmpty();
         $this->importDataSetFromFixture('can_remove_content_element.xml');
 
         $this->indexPageIds([1]);
@@ -357,7 +369,6 @@ class GarbageCollectorTest extends IntegrationTest
      */
     public function doesNotRemoveUpdatedContentElementWithNotSetEndTime()
     {
-        $this->cleanUpSolrServerAndAssertEmpty();
         $this->importDataSetFromFixture('does_not_remove_updated_content_element_with_not_set_endtime.xml');
 
         $this->indexPageIds([1]);
@@ -409,7 +420,6 @@ class GarbageCollectorTest extends IntegrationTest
      */
     public function canRemoveContentElementWithStartDateSetToFuture()
     {
-        $this->cleanUpSolrServerAndAssertEmpty();
         $this->importDataSetFromFixture('can_remove_content_element.xml');
 
         $this->indexPageIds([1]);
@@ -463,7 +473,6 @@ class GarbageCollectorTest extends IntegrationTest
      */
     public function canRemovePageWhenPageIsHidden()
     {
-        $this->cleanUpSolrServerAndAssertEmpty();
         $this->importDataSetFromFixture('can_remove_page.xml');
 
         $this->indexPageIds([1,2]);
@@ -518,7 +527,6 @@ class GarbageCollectorTest extends IntegrationTest
      */
     public function canRemovePageWhenPageIsDeleted()
     {
-        $this->cleanUpSolrServerAndAssertEmpty();
         $this->importDataSetFromFixture('can_remove_page.xml');
 
         $this->indexPageIds([1,2]);
@@ -573,7 +581,6 @@ class GarbageCollectorTest extends IntegrationTest
         $GLOBALS['TCA']['tx_fakeextension_domain_model_foo'] = include($this->getFixturePathByName('fake_extension_tca.php'));
         $this->importDataSetFromFixture('can_delete_custom_record.xml');
 
-        $this->cleanUpSolrServerAndAssertEmpty();
         $this->fakeLanguageService();
 
         // we hide the seconde page

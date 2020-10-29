@@ -44,7 +44,6 @@ use TYPO3\CMS\Core\Localization\LanguageService;
  */
 class IndexerTest extends IntegrationTest
 {
-
     /**
      * @var Queue
      */
@@ -95,8 +94,6 @@ class IndexerTest extends IntegrationTest
      */
     public function canIndexItemWithMMRelation()
     {
-        $this->cleanUpSolrServerAndAssertEmpty();
-
         // create fake extension database table and TCA
         $this->importExtTablesDefinition('fake_extension2_table.sql');
         $GLOBALS['TCA']['tx_fakeextension_domain_model_bar'] = include($this->getFixturePathByName('fake_extension2_bar_tca.php'));
@@ -114,7 +111,6 @@ class IndexerTest extends IntegrationTest
         $this->assertStringContainsString('"category_stringM":["the tag"]', $solrContent, 'Did not find MM related tag');
         $this->assertStringContainsString('"numFound":1', $solrContent, 'Could not index document into solr');
         $this->assertStringContainsString('"title":"testnews"', $solrContent, 'Could not index document into solr');
-        $this->cleanUpSolrServerAndAssertEmpty();
     }
 
     /**
@@ -183,8 +179,6 @@ class IndexerTest extends IntegrationTest
      */
     public function canIndexItemWithMMRelationsInTheExpectedOrder()
     {
-        $this->cleanUpSolrServerAndAssertEmpty();
-
         // create fake extension database table and TCA
         $this->importExtTablesDefinition('fake_extension2_table.sql');
         $GLOBALS['TCA']['tx_fakeextension_domain_model_bar'] = include($this->getFixturePathByName('fake_extension2_bar_tca.php'));
@@ -211,8 +205,6 @@ class IndexerTest extends IntegrationTest
         $this->assertArrayHasKey('category_stringM', $solrDocs[0], 'Did not find MM related tags.');
         $this->assertCount(2, $solrDocs[0]['category_stringM'], 'Did not find all MM related tags.');
         $this->assertSame(['the tag', 'another tag'], $solrDocs[0]['category_stringM']);
-
-        $this->cleanUpSolrServerAndAssertEmpty();
     }
 
 
@@ -245,7 +237,7 @@ class IndexerTest extends IntegrationTest
 
         $this->cleanUpSolrServerAndAssertEmpty('core_en');
         $this->cleanUpSolrServerAndAssertEmpty('core_de');
-     }
+    }
 
     /**
      * This testcase should check if we can queue an custom record with multiple MM relations.
@@ -288,8 +280,6 @@ class IndexerTest extends IntegrationTest
      */
     public function canIndexItemWithMMRelationAndAdditionalWhere()
     {
-        $this->cleanUpSolrServerAndAssertEmpty();
-
         // create fake extension database table and TCA
         $this->importExtTablesDefinition('fake_extension2_table.sql');
         $GLOBALS['TCA']['tx_fakeextension_domain_model_bar'] = include($this->getFixturePathByName('fake_extension2_bar_tca.php'));
@@ -306,7 +296,6 @@ class IndexerTest extends IntegrationTest
         $this->assertStringContainsString('"category_stringM":["another tag"]', $solrContent, 'Did not find MM related tag');
         $this->assertStringContainsString('"numFound":1', $solrContent, 'Could not index document into solr');
         $this->assertStringContainsString('"title":"testnews"', $solrContent, 'Could not index document into solr');
-        $this->cleanUpSolrServerAndAssertEmpty();
     }
 
     /**
@@ -349,8 +338,6 @@ class IndexerTest extends IntegrationTest
      */
     public function canIndexItemWithDirectRelation()
     {
-        $this->cleanUpSolrServerAndAssertEmpty();
-
         // create fake extension database table and TCA
         $this->importExtTablesDefinition('fake_extension2_table.sql');
         $GLOBALS['TCA']['tx_fakeextension_domain_model_bar'] = include($this->getFixturePathByName('fake_extension2_bar_tca.php'));
@@ -370,7 +357,6 @@ class IndexerTest extends IntegrationTest
         $this->assertStringContainsString('"sysCategoryId_stringM":["1"]', $solrContent, 'Uid of related sys_category couldn\'t be resolved by using "foreignLabelField"');
         $this->assertStringContainsString('"sysCategory_stringM":["sys_category"]', $solrContent, 'Label of related sys_category couldn\'t be resolved by using "foreignLabelField" and "enableRecursiveValueResolution"');
         $this->assertStringContainsString('"sysCategoryDescription_stringM":["sys_category description"]', $solrContent, 'Description of related sys_category couldn\'t be resolved by using "foreignLabelField" and "enableRecursiveValueResolution"');
-        $this->cleanUpSolrServerAndAssertEmpty();
     }
 
     /**
@@ -380,8 +366,6 @@ class IndexerTest extends IntegrationTest
      */
     public function canIndexItemWithMultipleDirectRelation()
     {
-        $this->cleanUpSolrServerAndAssertEmpty();
-
         // create fake extension database table and TCA
         $this->importExtTablesDefinition('fake_extension2_table.sql');
         $GLOBALS['TCA']['tx_fakeextension_domain_model_bar'] = include($this->getFixturePathByName('fake_extension2_bar_tca.php'));
@@ -412,7 +396,6 @@ class IndexerTest extends IntegrationTest
         $sysCategoryDescription_stringM = $decodedSolrContent->response->docs[0]->sysCategoryDescription_stringM;
         $this->assertSame(['sys_category description','second sys_category description'], $sysCategoryDescription_stringM, 'Unexpected sysCategoryDescription_stringM value');
 
-        $this->cleanUpSolrServerAndAssertEmpty();
     }
 
     /**
@@ -423,8 +406,6 @@ class IndexerTest extends IntegrationTest
      */
     public function canIndexItemWithDirectRelationAndAdditionalWhere()
     {
-        $this->cleanUpSolrServerAndAssertEmpty();
-
         // create fake extension database table and TCA
         $this->importExtTablesDefinition('fake_extension2_table.sql');
         $GLOBALS['TCA']['tx_fakeextension_domain_model_bar'] = include($this->getFixturePathByName('fake_extension2_bar_tca.php'));
@@ -441,7 +422,6 @@ class IndexerTest extends IntegrationTest
         $this->assertStringContainsString('"category_stringM":["another category"]', $solrContent, 'Did not find direct related category');
         $this->assertStringContainsString('"numFound":1', $solrContent, 'Could not index document into solr');
         $this->assertStringContainsString('"title":"testnews"', $solrContent, 'Could not index document into solr');
-        $this->cleanUpSolrServerAndAssertEmpty();
     }
 
     /**
@@ -449,8 +429,6 @@ class IndexerTest extends IntegrationTest
      */
     public function canUseConfigurationFromTemplateInRootLine()
     {
-        $this->cleanUpSolrServerAndAssertEmpty();
-
         // create fake extension database table and TCA
         $this->importExtTablesDefinition('fake_extension2_table.sql');
         $GLOBALS['TCA']['tx_fakeextension_domain_model_bar'] = include($this->getFixturePathByName('fake_extension2_bar_tca.php'));
@@ -467,7 +445,6 @@ class IndexerTest extends IntegrationTest
         $this->assertStringContainsString('"fieldFromRootLine_stringS":"TESTNEWS"', $solrContent, 'Did not find field configured in rootline');
         $this->assertStringContainsString('"title":"testnews"', $solrContent, 'Could not index document into solr');
         $this->assertStringContainsString('"numFound":1', $solrContent, 'Could not index document into solr');
-        $this->cleanUpSolrServerAndAssertEmpty();
     }
 
     /**
@@ -533,8 +510,6 @@ class IndexerTest extends IntegrationTest
      */
     public function testCanIndexCustomRecordOutsideOfSiteRoot()
     {
-        $this->cleanUpSolrServerAndAssertEmpty();
-
         // create fake extension database table and TCA
         $this->importExtTablesDefinition('fake_extension2_table.sql');
         $GLOBALS['TCA']['tx_fakeextension_domain_model_bar'] = include($this->getFixturePathByName('fake_extension2_bar_tca.php'));
@@ -551,7 +526,6 @@ class IndexerTest extends IntegrationTest
 
         $this->assertStringContainsString('"numFound":1', $solrContent, 'Could not index document into solr');
         $this->assertStringContainsString('"title":"external testnews"', $solrContent, 'Could not index document into solr');
-        $this->cleanUpSolrServerAndAssertEmpty();
     }
 
     /**
@@ -559,8 +533,6 @@ class IndexerTest extends IntegrationTest
      */
     public function testCanIndexCustomRecordOutsideOfSiteRootWithTemplate()
     {
-        $this->cleanUpSolrServerAndAssertEmpty();
-
         // create fake extension database table and TCA
         $this->importExtTablesDefinition('fake_extension2_table.sql');
         $GLOBALS['TCA']['tx_fakeextension_domain_model_bar'] = include($this->getFixturePathByName('fake_extension2_bar_tca.php'));
@@ -579,7 +551,6 @@ class IndexerTest extends IntegrationTest
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*&fq=site:testone.site');
         $this->assertStringContainsString('"numFound":1', $solrContent, 'Could not index document into solr');
         $this->assertStringContainsString('"url":"http://testone.site/en/"', $solrContent, 'Item was indexed with false site UID');
-        $this->cleanUpSolrServerAndAssertEmpty();
     }
 
     /**
@@ -654,7 +625,6 @@ class IndexerTest extends IntegrationTest
      */
     public function getSolrConnectionsByItemReturnsProperItemInNestedSite()
     {
-        $this->cleanUpSolrServerAndAssertEmpty();
         $this->writeDefaultSolrTestSiteConfigurationForHostAndPort();
         $this->importDataSetFromFixture('can_index_with_multiple_sites.xml');
         $result = $this->addToQueueAndIndexRecord('pages', 1);
