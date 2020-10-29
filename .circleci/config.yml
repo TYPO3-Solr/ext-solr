@@ -1,0 +1,58 @@
+# PHP CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-php/ for more details
+#
+version: 2
+
+jobs:
+  build:
+    environment:
+      TYPO3_DATABASE_NAME: 'typo3_ci'
+      TYPO3_DATABASE_HOST: '127.0.0.1'
+      TYPO3_DATABASE_USERNAME: 'root'
+      TYPO3_DATABASE_PASSWORD: 'typo3_ci'
+      PHP_CS_FIXER_VERSION: '^2.16.1'
+      TYPO3_VERSION: '^10.4'
+    docker:
+      # Specify the version you desire here
+      - image: circleci/php:7.4
+
+      # Specify service dependencies here if necessary
+      # CircleCI maintains a library of pre-built images
+      # documented at https://circleci.com/docs/2.0/circleci-images/
+      # Using the RAM variation mitigates I/O contention
+      # for database intensive operations.
+      - image: circleci/mysql:5.7-ram
+        environment:
+          MYSQL_USER: typo3_ci
+          MYSQL_DATABASE: $TYPO3_DATABASE_NAME
+          MYSQL_ROOT_PASSWORD: $TYPO3_DATABASE_PASSWORD
+          MYSQL_PASSWORD: $TYPO3_DATABASE_PASSWORD
+          MYSQL_ROOT_HOST: '127.0.0.1'
+      #
+      # - image: redis:2.8.19
+
+    steps:
+      - checkout
+
+      - run: sudo apt update # PHP CircleCI 2.0 Configuration File# PHP CircleCI 2.0 Configuration File sudo apt install zlib1g-dev libsqlite3-dev
+      - run: sudo docker-php-ext-install zip mysqli pdo pdo_mysql
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            # "composer.lock" can be used if it is committed to the repo
+            - v1-dependencies-{{ checksum "composer.json" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
+
+      - run: Build/Test/bootstrap.sh --skip-solr-install
+
+      - save_cache:
+          key: v1-dependencies-{{ checksum "composer.json" }}
+          paths:
+            - ./vendor
+
+      # prepare the database
+      - run: Build/Test/cibuild.sh
+
