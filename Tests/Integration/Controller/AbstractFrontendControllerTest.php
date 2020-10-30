@@ -44,6 +44,15 @@ abstract class AbstractFrontendControllerTest  extends IntegrationTest {
     }
 
     /**
+     * Executed after each test. Emptys solr and checks if the index is empty
+     */
+    public function tearDown(): void
+    {
+        $this->cleanUpSolrServerAndAssertEmpty();
+        parent::tearDown();
+    }
+
+    /**
      * @param $importPageIds
      */
     protected function indexPages($importPageIds)

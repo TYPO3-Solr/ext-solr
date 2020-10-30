@@ -250,8 +250,6 @@ class SearchResultSetServiceTest extends IntegrationTest
         $searchResults = $this->doSearchWithResultSetService($solrConnection, $typoScriptConfiguration);
 
         $this->assertSame(3, count($searchResults), 'We should see all content, because nothing should be filtered');
-
-
     }
 
     /**

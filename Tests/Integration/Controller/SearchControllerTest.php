@@ -81,15 +81,6 @@ class SearchControllerTest extends AbstractFrontendControllerTest
     }
 
     /**
-     * Executed after each test. Emptys solr and checks if the index is empty
-     */
-    public function tearDown(): void
-    {
-        $this->cleanUpSolrServerAndAssertEmpty();
-        parent::tearDown();
-    }
-
-    /**
      * @test
      */
     public function canShowSearchForm()
