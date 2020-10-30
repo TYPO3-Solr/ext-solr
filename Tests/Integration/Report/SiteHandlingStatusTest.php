@@ -60,9 +60,12 @@ class SiteHandlingStatusTest extends IntegrationTest
     public function statusCheckShouldFailIfSchemeIsNotDefined()
     {
         $this->writeDefaultSolrTestSiteConfiguration();
-        $this->mergeSiteConfiguration('integration_tree_one', [
-            'base' => 'authorityOnly.example.com'
-        ]);
+        $this->mergeSiteConfiguration(
+            $this->getSiteIdentifier('integration_tree_one'),
+            [
+                'base' => 'authorityOnly.example.com'
+            ]
+        );
         $this->importDataSetFromFixture('simple_site.xml');
 
 
@@ -83,9 +86,12 @@ class SiteHandlingStatusTest extends IntegrationTest
     public function statusCheckShouldFailIfAuthorityIsNotDefined()
     {
         $this->writeDefaultSolrTestSiteConfiguration();
-        $this->mergeSiteConfiguration('integration_tree_one', [
-            'base' => '/'
-        ]);
+        $this->mergeSiteConfiguration(
+            $this->getSiteIdentifier('integration_tree_one'),
+            [
+                'base' => '/'
+            ]
+        );
         $this->importDataSetFromFixture('simple_site.xml');
 
 
@@ -109,10 +115,10 @@ class SiteHandlingStatusTest extends IntegrationTest
 
         // mergeSiteConfiguration() do not work recursively
         $siteConfiguration = new SiteConfiguration($this->instancePath . '/typo3conf/sites/');
-        $configuration = $siteConfiguration->load('integration_tree_one');
+        $configuration = $siteConfiguration->load($this->getSiteIdentifier('integration_tree_one'));
         $configuration['languages'][1]['base'] = 'authorityOnly.example.com';
 
-        $this->mergeSiteConfiguration('integration_tree_one', $configuration);
+        $this->mergeSiteConfiguration($this->getSiteIdentifier('integration_tree_one'), $configuration);
         $this->importDataSetFromFixture('simple_site.xml');
 
         /** @var $siteHandlingStatus  SiteHandlingStatus */

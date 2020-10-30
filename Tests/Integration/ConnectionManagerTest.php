@@ -53,8 +53,16 @@ class ConnectionManagerTest extends IntegrationTest
     public function  canFindSolrConnectionsByRootPageIdDataProvider()
     {
         return [
-            ['rootPageId' => 1, 'siteName' => 'integration_tree_one', 'expectedSolrHost' => 'solr.testone.endpoint'],
-            ['rootPageId' => 111, 'siteName' => 'integration_tree_two', 'expectedSolrHost' => 'solr.testtwo.endpoint']
+            [
+                'rootPageId' => 1,
+                'siteName' => $this->getSiteIdentifier('integration_tree_one'),
+                'expectedSolrHost' => 'solr.testone.endpoint'
+            ],
+            [
+                'rootPageId' => 111,
+                'siteName' => $this->getSiteIdentifier('integration_tree_two'),
+                'expectedSolrHost' => 'solr.testtwo.endpoint'
+            ]
         ];
     }
 
@@ -101,8 +109,16 @@ class ConnectionManagerTest extends IntegrationTest
     public function  canFindSolrConnectionsByPageIdDataProvider()
     {
         return [
-            ['pageId' => 11, 'siteName' => 'integration_tree_one', 'expectedSolrHost' => 'solr.testone.endpoint'],
-            ['ageId' => 21, 'siteName' => 'integration_tree_two', 'expectedSolrHost' => 'solr.testtwo.endpoint']
+            [
+                'pageId' => 11,
+                'siteName' => $this->getSiteIdentifier('integration_tree_one'),
+                'expectedSolrHost' => 'solr.testone.endpoint'
+            ],
+            [
+                'ageId' => 21,
+                'siteName' => $this->getSiteIdentifier('integration_tree_two'),
+                'expectedSolrHost' => 'solr.testtwo.endpoint'
+            ]
         ];
     }
 

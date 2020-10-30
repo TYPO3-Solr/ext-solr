@@ -468,11 +468,12 @@ abstract class IntegrationTest extends FunctionalTestCase
      * @param string $scheme
      * @param string $host
      * @param int $port
+     * @param bool $disableDefaultLanguage
      * @return void
      */
     protected function writeDefaultSolrTestSiteConfigurationForHostAndPort($scheme = 'http', $host = 'localhost', $port = 8999, $disableDefaultLanguage = false)
     {
-        $siteCreatedHash = md5($scheme . $host . $port . $disableDefaultLanguage);
+        $siteCreatedHash = md5($scheme . $host . $port . $disableDefaultLanguage . getenv('TEST_TOKEN') ?? '');
         if (self::$lastSiteCreated === $siteCreatedHash) {
             return;
         }
@@ -491,7 +492,7 @@ abstract class IntegrationTest extends FunctionalTestCase
         $danish['solr_core_read'] = 'core_da';
 
         $this->writeSiteConfiguration(
-            'integration_tree_one',
+            $this->getSiteIdentifier('integration_tree_one'),
             $this->buildSiteConfiguration(1, 'http://testone.site/'),
             [
                 $defaultLanguage, $german, $danish
@@ -502,7 +503,7 @@ abstract class IntegrationTest extends FunctionalTestCase
         );
 
         $this->writeSiteConfiguration(
-            'integration_tree_two',
+            $this->getSiteIdentifier('integration_tree_two'),
             $this->buildSiteConfiguration(111, 'http://testtwo.site/'),
             [
                 $defaultLanguage, $german, $danish
@@ -534,6 +535,17 @@ abstract class IntegrationTest extends FunctionalTestCase
         clearstatcache();
         usleep(500);
         self::$lastSiteCreated = $siteCreatedHash;
+    }
+
+    /**
+     * Returns Paratest aware site identifier.
+     *
+     * @param string $identifier
+     * @return string
+     */
+    protected function getSiteIdentifier(string $identifier): string
+    {
+        return $identifier . (getenv('TEST_TOKEN') === false ? '' : '_proc_' . getenv('TEST_TOKEN'));
     }
 
     /**
