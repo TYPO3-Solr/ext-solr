@@ -16,6 +16,7 @@ namespace ApacheSolrForTypo3\Solr\FrontendEnvironment;
 
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\LanguageAspectFactory;
+use TYPO3\CMS\Core\Context\TypoScriptAspect;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Localization\Locales;
 use TYPO3\CMS\Core\SingletonInterface;
@@ -113,7 +114,8 @@ class Tsfe implements SingletonInterface
 
             $template = GeneralUtility::makeInstance(TemplateService::class, $context);
             $GLOBALS['TSFE']->tmpl = $template;
-            $GLOBALS['TSFE']->forceTemplateParsing = true;
+            GeneralUtility::makeInstance(Context::class)->getPropertyFromAspect('typoscript', 'forcedTemplateParsing');
+            $context->setAspect('typoscript', GeneralUtility::makeInstance(TypoScriptAspect::class, true));
             $GLOBALS['TSFE']->no_cache = true;
             $GLOBALS['TSFE']->tmpl->start($GLOBALS['TSFE']->rootLine);
             $GLOBALS['TSFE']->no_cache = false;

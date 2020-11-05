@@ -107,9 +107,8 @@ class Util
      *
      * @param int $pageId Id of the (root) page to get the Solr configuration from.
      * @param int $language System language uid, optional, defaults to 0
-     * @deprecated
-     *
      * @return TypoScriptConfiguration The Solr configuration for the requested tree.
+     * @deprecated Will be removed with with EXT:solr 12. Use FrontendEnvironment directly
      */
     public static function getSolrConfigurationFromPageId($pageId, $initializeTsfe = false, $language = 0)
     {
@@ -128,10 +127,10 @@ class Util
      * @param int $pageId Id of the (root) page to get the Solr configuration from.
      * @param string $path The TypoScript configuration path to retrieve.
      * @param bool $initializeTsfe
-     * @deprecated
      * @param int $language System language uid, optional, defaults to 0
      * @param bool $useTwoLevelCache Flag to enable the two level cache for the typoscript configuration array
      * @return TypoScriptConfiguration The Solr configuration for the requested tree.
+     * @deprecated Will be removed with with EXT:solr 12. Use FrontendEnvironment directly
      */
     public static function getConfigurationFromPageId($pageId, $path, $initializeTsfe = false, $language = 0, $useTwoLevelCache = true)
     {
@@ -186,9 +185,8 @@ class Util
      *
      * @param array $pageRecord The pages database row
      * @param string $configurationName The name of the configuration to use.
-     * @deprecated
-     *
      * @return bool TRUE if the page type is allowed, otherwise FALSE
+     * @deprecated Will be removed with with EXT:solr 12. Use FrontendEnvironment directly
      */
     public static function isAllowedPageType(array $pageRecord, $configurationName = 'pages')
     {
@@ -201,8 +199,8 @@ class Util
      *
      * @param int $pageId Page ID
      * @param string $configurationName The name of the configuration to use.
-     * @deprecated
      * @return array Allowed page types to compare to a doktype of a page record
+     * @deprecated Will be removed with with EXT:solr 12. Use FrontendEnvironment directly
      */
     public static function getAllowedPageTypes($pageId, $configurationName = 'pages')
     {
@@ -217,8 +215,8 @@ class Util
      * is set to "auto".
      *
      * @param TypoScriptFrontendController $TSFE
-     * @deprecated
      * @return string
+     * @deprecated Will be removed with with EXT:solr 12.
      */
     public static function getAbsRefPrefixFromTSFE(TypoScriptFrontendController $TSFE)
     {
@@ -292,14 +290,5 @@ class Util
     {
         $context = GeneralUtility::makeInstance(Context::class);
         return $context->getPropertyFromAspect('frontend.user', 'groupIds');
-    }
-
-    /**
-     * @todo This method is just added for compatibility checks for TYPO3 version 9 and will be removed when TYPO9 support is dropped
-     * @return boolean
-     */
-    public static function getIsTYPO3VersionBelow11()
-    {
-        return GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 11;
     }
 }

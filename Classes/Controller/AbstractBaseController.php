@@ -68,7 +68,7 @@ abstract class AbstractBaseController extends ActionController
     protected $typoScriptConfiguration;
 
     /**
-     * @var \ApacheSolrForTypo3\Solr\Mvc\Controller\SolrControllerContext
+     * @var SolrControllerContext
      */
     protected $controllerContext;
 
@@ -136,9 +136,9 @@ abstract class AbstractBaseController extends ActionController
      * @return \TYPO3\CMS\Extbase\Mvc\Controller\ControllerContext ControllerContext to be passed to the view
      * @api
      */
-    protected function buildControllerContext()
+    protected function buildControllerContext(): \TYPO3\CMS\Extbase\Mvc\Controller\ControllerContext
     {
-        /** @var $controllerContext \ApacheSolrForTypo3\Solr\Mvc\Controller\SolrControllerContext */
+        /** @var SolrControllerContext $controllerContext */
         $controllerContext = $this->objectManager->get(SolrControllerContext::class);
         $controllerContext->setRequest($this->request);
         $controllerContext->setResponse($this->response);
@@ -204,7 +204,7 @@ abstract class AbstractBaseController extends ActionController
      */
     protected function initializeSettings()
     {
-        /** @var $typoScriptService TypoScriptService */
+        /** @var TypoScriptService $typoScriptService */
         $typoScriptService = $this->objectManager->get(TypoScriptService::class);
 
         // Make sure plugin.tx_solr.settings are available in the view as {settings}

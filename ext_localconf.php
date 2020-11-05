@@ -191,7 +191,7 @@ if (!isset($GLOBALS['TYPO3_CONF_VARS']['LOG']['ApacheSolrForTypo3']['Solr']['wri
     }
     $GLOBALS['TYPO3_CONF_VARS']['LOG']['ApacheSolrForTypo3']['Solr']['writerConfiguration'] = [
         $logLevel => [
-            'TYPO3\\CMS\\Core\\Log\\Writer\\FileWriter' => [
+            \TYPO3\CMS\Core\Log\Writer\FileWriter::class => [
                 'logFileInfix' => 'solr'
             ]
         ],
@@ -242,7 +242,7 @@ if (!isset($GLOBALS['TYPO3_CONF_VARS']['LOG']['ApacheSolrForTypo3']['Solr']['wri
 );
 
 // add tsconfig
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPageTSConfig('<INCLUDE_TYPOSCRIPT: source="FILE:EXT:solr/Configuration/TSconfig/ContentElementWizard.typoscript">');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPageTSConfig('@import \'EXT:solr/Configuration/TSconfig/ContentElementWizard.tsconfig\'');
 
 // register the Fluid namespace 'solr' globally
 $GLOBALS['TYPO3_CONF_VARS']['SYS']['fluid']['namespaces']['solr'] = ['ApacheSolrForTypo3\\Solr\\ViewHelpers'];
