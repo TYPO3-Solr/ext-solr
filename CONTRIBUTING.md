@@ -244,7 +244,7 @@ In our test setup we currently do the following:
    "stack" is working.
 
 The simplest way to use the testing framework is to just enable
-[Travis CI](http://travis-ci.org) for your fork and automatically have Travis
+[Travis CI](http://travis-ci.com) for your fork and automatically have Travis
 execute the tests for you. If you want to run the tests on your local system
 you need to follow these steps:
 

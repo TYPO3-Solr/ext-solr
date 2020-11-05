@@ -1,5 +1,5 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Tests\Integration\Domain\Index;
+namespace ApacheSolrForTypo3\Solr\Tests\Integration\Domain\Index\Queue;
 
 /***************************************************************
  *  Copyright notice

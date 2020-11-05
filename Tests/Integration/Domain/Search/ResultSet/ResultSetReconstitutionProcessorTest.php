@@ -1,5 +1,5 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Test\Domain\Search\ResultSet;
+namespace ApacheSolrForTypo3\Solr\Tests\Integration\Domain\Search\ResultSet;
 
 /***************************************************************
  *  Copyright notice
@@ -32,14 +32,6 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\ResultSetReconstitutionProce
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
-use ApacheSolrForTypo3\Solr\Tests\Unit\Helper\FakeObjectManager;
-use ApacheSolrForTypo3\Solr\Util;
-use TYPO3\CMS\Core\TimeTracker\TimeTracker;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
-use TYPO3\CMS\Frontend\ContentObject\CaseContentObject;
-use TYPO3\CMS\Frontend\ContentObject\TextContentObject;
 
 /**
  * Unit test case for the ObjectReconstitutionProcessor.

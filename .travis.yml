@@ -11,12 +11,13 @@ php:
   - 7.4
 
 jdk:
-  - oraclejdk8
+  - oraclejdk11
 
 addons:
   apt:
     packages:
       - parallel
+      - haveged
 env:
   global:
     - TYPO3_DATABASE_NAME="typo3_ci"
@@ -36,11 +37,17 @@ matrix:
     - env: TYPO3_VERSION="dev-master"
 
 before_install:
+  # Move MySQL data to ram file system
+  - sudo mount -o remount,size=3584m /var/ramfs
+  - sudo systemctl stop mysql && sudo mv /var/lib/mysql /var/ramfs/. && sudo ln -s /var/ramfs/mysql /var/lib/mysql
+  - sudo systemctl start mysql
+  - mysql -e 'CREATE DATABASE IF NOT EXISTS typo3_ci;'
+  # Install newer docker version
   - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
   - sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
   - sudo apt-get update
   - sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-ce
-  - mysql -e 'CREATE DATABASE IF NOT EXISTS typo3_ci;'
+  # Update composer
   - composer self-update
   - composer --version
   - composer validate --no-check-lock

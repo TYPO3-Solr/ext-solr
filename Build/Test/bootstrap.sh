@@ -69,16 +69,22 @@ if [ -z $TYPO3_VERSION ]; then
 	exit 1
 fi
 
-wget --version > /dev/null 2>&1
-if [ $? -ne "0" ]; then
+if ! wget --version > /dev/null 2>&1
+then
 	echo "Couldn't find wget."
 	exit 1
 fi
 
 # Install build tools
 echo "Install build tools: "
-composer global require friendsofphp/php-cs-fixer:"$PHP_CS_FIXER_VERSION"
-composer global require namelesscoder/typo3-repository-client
+if ! composer global require \
+  friendsofphp/php-cs-fixer:"$PHP_CS_FIXER_VERSION" \
+  namelesscoder/typo3-repository-client
+then
+	echo "The build tools(php-cs-fixer, typo3-repository-client) could not be installed. Please fix this issue."
+	exit 1
+fi
+
 
 # Setup TYPO3 environment variables
 export TYPO3_PATH_PACKAGES="${EXTENSION_ROOTPATH}.Build/vendor/"
@@ -88,37 +94,36 @@ echo "Using package path $TYPO3_PATH_PACKAGES"
 echo "Using web path $TYPO3_PATH_WEB"
 
 # Install TYPO3 sources
-
-if [[ $TYPO3_VERSION = *"dev"* ]]; then
-    composer config minimum-stability dev
-fi
-
 if [[ $TYPO3_VERSION = *"master"* ]]; then
+    composer config minimum-stability dev
     TYPO3_MASTER_DEPENDENCIES='nimut/testing-framework:dev-master'
 fi
 
-# Temporary Fix for https://forge.typo3.org/issues/91832 "phpdocumentor/reflection-docblock" BC in 5.2.0
-if [[ $TYPO3_VERSION = *"10.4"* ]]; then
-    FIX_TYPO3_DEPENDENCIES='phpdocumentor/reflection-docblock:5.1.*'
-fi
-
-composer require --dev --update-with-dependencies --prefer-source \
+if ! composer require --dev --update-with-dependencies --prefer-source \
   typo3/cms-core:"$TYPO3_VERSION" \
   typo3/cms-backend:"$TYPO3_VERSION" \
+  typo3/cms-recordlist:"$TYPO3_VERSION" \
   typo3/cms-fluid:"$TYPO3_VERSION" \
   typo3/cms-frontend:"$TYPO3_VERSION" \
   typo3/cms-extbase:"$TYPO3_VERSION" \
   typo3/cms-reports:"$TYPO3_VERSION" \
   typo3/cms-scheduler:"$TYPO3_VERSION" \
-  typo3/cms-tstemplate:"$TYPO3_VERSION" $FIX_TYPO3_DEPENDENCIES $TYPO3_MASTER_DEPENDENCIES
+  typo3/cms-tstemplate:"$TYPO3_VERSION" \
+  typo3/cms-install:"$TYPO3_VERSION" $TYPO3_MASTER_DEPENDENCIES
+then
+	echo "The test environment could not be . Please fix this issue."
+	exit 1
+fi
 
-# Restore composer.json
 mkdir -p $TYPO3_PATH_WEB/uploads $TYPO3_PATH_WEB/typo3temp
-
 
 if [[ $* != *--skip-solr-install* ]]; then
     # Setup Solr Using our install script
     echo "Setup Solr Using our install script: "
     chmod 500 ${EXTENSION_ROOTPATH}Resources/Private/Install/install-solr.sh
-    ${EXTENSION_ROOTPATH}Resources/Private/Install/install-solr.sh -d "$HOME/solr" -t
+    if ! ${EXTENSION_ROOTPATH}Resources/Private/Install/install-solr.sh -d "$HOME/solr" -t
+    then
+      echo "Apache Solr server could not be installed or started. Please fix this issue."
+      exit 1
+    fi
 fi
