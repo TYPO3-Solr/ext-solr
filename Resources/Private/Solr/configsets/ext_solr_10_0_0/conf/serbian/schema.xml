@@ -111,6 +111,7 @@
 				preserveOriginal="1"
 				protected="serbian/protwords.txt"
 			/>
+			<filter class="solr.FlattenGraphFilterFactory"/>
 
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>

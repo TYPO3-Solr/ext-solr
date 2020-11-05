@@ -111,6 +111,8 @@
 				preserveOriginal="1"
 				protected="polish/protwords.txt"
 			/>
+			<filter class="solr.FlattenGraphFilterFactory"/>
+
 			<filter class="solr.StempelPolishStemFilterFactory"/>
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>

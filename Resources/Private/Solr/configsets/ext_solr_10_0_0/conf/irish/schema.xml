@@ -103,6 +103,8 @@
 				preserveOriginal="1"
 				protected="irish/protwords.txt"
 			/>
+			<filter class="solr.FlattenGraphFilterFactory"/>
+
 			<filter class="solr.IrishLowerCaseFilterFactory"/>
 
 			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="irish" />
