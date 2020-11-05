@@ -1,4 +1,4 @@
-dist: bionic
+dist: focal
 
 language: php
 
@@ -6,8 +6,6 @@ services:
   - mysql
 
 php:
-  - 7.2
-  - 7.3
   - 7.4
 
 jdk:
@@ -18,53 +16,71 @@ addons:
     packages:
       - parallel
       - haveged
+
 env:
+  - TYPO3_VERSION="^10.4"
+  - TYPO3_VERSION="10.4.x-dev"
+  - TYPO3_VERSION="dev-master"
   global:
     - TYPO3_DATABASE_NAME="typo3_ci"
     - TYPO3_DATABASE_HOST="127.0.0.1"
     - TYPO3_DATABASE_USERNAME="root"
     - TYPO3_DATABASE_PASSWORD=""
     - PHP_CS_FIXER_VERSION="^2.16.1"
-  matrix:
-    - TYPO3_VERSION="^10.4"
-    - TYPO3_VERSION="10.4.x-dev"
-    - TYPO3_VERSION="dev-master"
 
-matrix:
-  fast_finish: true
-  allow_failures:
-    - env: TYPO3_VERSION="10.4.x-dev"
-    - env: TYPO3_VERSION="dev-master"
+#stages:
+#  # Bootstrap the environments for "PHP version" x "TYPO3 Version"
+#  # Example:
+#  #  - PHP:7.2 @ TYPO3:^10.4
+#  #  - PHP:7.3 @ TYPO3:^10.4
+#  #  - PHP:7.4 @ TYPO3:^10.4
+#  #  - PHP:7.2 @ TYPO3:10.4.x-dev
+#  #  - PHP:7.3 @ TYPO3:10.4.x-dev
+#  #  - PHP:7.4 @ TYPO3:10.4.x-dev
+#  #  - PHP:7.2 @ TYPO3:dev-master
+#  #  - PHP:7.3 @ TYPO3:dev-master
+#  #  - PHP:7.4 @ TYPO3:dev-master
+#  - Bootstrap
+#  - Docker
+#  - Unit
+#  - Integration
+#  - Release
 
-before_install:
-  # Move MySQL data to ram file system
-  - sudo mount -o remount,size=3584m /var/ramfs
-  - sudo systemctl stop mysql && sudo mv /var/lib/mysql /var/ramfs/. && sudo ln -s /var/ramfs/mysql /var/lib/mysql
-  - sudo systemctl start mysql
-  - mysql -e 'CREATE DATABASE IF NOT EXISTS typo3_ci;'
-  # Install newer docker version
-  - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-  - sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-  - sudo apt-get update
-  - sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-ce
-  # Update composer
-  - composer self-update
-  - composer --version
-  - composer validate --no-check-lock
+jobs:
+  include:
+    - stage: Bootstrap
+      script: echo $TYPO3_VERSION && php -v
 
-install:
-  - Build/Test/bootstrap.sh
 
-script:
-  - Build/Test/cibuild_docker.sh
-  - Build/Test/cibuild.sh
-
-after_script:
-  - Build/Test/publish_coverage.sh
-  - Build/Test/cleanup.sh
-  - Build/Release/ter_tag_uploader.sh
-
-cache:
-  directories:
-    - $HOME/.composer/cache
-    - $HOME/solr/downloads
+#before_install:
+#  # Move MySQL data to ram file system
+#  - sudo mount -o remount,size=3584m /var/ramfs
+#  - sudo systemctl stop mysql && sudo mv /var/lib/mysql /var/ramfs/. && sudo ln -s /var/ramfs/mysql /var/lib/mysql
+#  - sudo systemctl start mysql
+#  - mysql -e 'CREATE DATABASE IF NOT EXISTS typo3_ci;'
+#  # Install newer docker version
+#  - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+#  - sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+#  - sudo apt-get update
+#  - sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-ce
+#  # Update composer
+#  - composer self-update
+#  - composer --version
+#  - composer validate --no-check-lock
+#
+#install:
+#  - Build/Test/bootstrap.sh
+#
+#script:
+#  - Build/Test/cibuild_docker.sh
+#  - Build/Test/cibuild.sh
+#
+#after_script:
+#  - Build/Test/publish_coverage.sh
+#  - Build/Test/cleanup.sh
+#  - Build/Release/ter_tag_uploader.sh
+#
+#cache:
+#  directories:
+#    - $HOME/.composer/cache
+#    - $HOME/solr/downloads
