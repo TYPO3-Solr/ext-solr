@@ -1,9 +1,23 @@
 <?php
 namespace ApacheSolrForTypo3\Solr\FrontendEnvironment;
 
+/*
+ * This file is part of the TYPO3 CMS project.
+ *
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
+ *
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ *
+ * The TYPO3 project - inspiring people to share!
+ */
+
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\LanguageAspectFactory;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
+use TYPO3\CMS\Core\Localization\Locales;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\TypoScript\TemplateService;
@@ -14,7 +28,6 @@ use TYPO3\CMS\Frontend\Page\PageRepository;
 use TYPO3\CMS\Core\Context\UserAspect;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 use TYPO3\CMS\Core\Http\ServerRequest;
-use ApacheSolrForTypo3\Solr\Util;
 
 class Tsfe implements SingletonInterface
 {
@@ -77,16 +90,10 @@ class Tsfe implements SingletonInterface
         }
         $GLOBALS['TYPO3_REQUEST'] = $this->requestCache[$cacheId];
 
-
         if (!isset($this->tsfeCache[$cacheId])) {
-
-            if (Util::getIsTYPO3VersionBelow10()) {
-                $GLOBALS['TSFE'] = GeneralUtility::makeInstance(TypoScriptFrontendController::class, [], $pageId, 0);
-            } else {
-                $GLOBALS['TSFE'] = GeneralUtility::makeInstance(TypoScriptFrontendController::class, $context, $site, $siteLanguage);
-                $GLOBALS['TSFE']->id = $pageId;
-                $GLOBALS['TSFE']->type = 0;
-            }
+            $GLOBALS['TSFE'] = GeneralUtility::makeInstance(TypoScriptFrontendController::class, $context, $site, $siteLanguage);
+            $GLOBALS['TSFE']->id = $pageId;
+            $GLOBALS['TSFE']->type = 0;
 
             // for certain situations we need to trick TSFE into granting us
             // access to the page in any case to make getPageAndRootline() work
@@ -121,7 +128,7 @@ class Tsfe implements SingletonInterface
         }
 
         $GLOBALS['TSFE'] = $this->tsfeCache[$cacheId];
-        $GLOBALS['TSFE']->settingLocale();
+        Locales::setSystemLocaleFromSiteLanguage($GLOBALS['TSFE']->getLanguage());
         $this->changeLanguageContext((int)$pageId, (int)$language);
     }
 

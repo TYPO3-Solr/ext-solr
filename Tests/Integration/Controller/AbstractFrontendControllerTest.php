@@ -44,19 +44,13 @@ abstract class AbstractFrontendControllerTest  extends IntegrationTest {
             $fakeTSFE = $this->getConfiguredTSFE($importPageId);
             $GLOBALS['TSFE'] = $fakeTSFE;
             $fakeTSFE->newCObj();
+                /** @var ServerRequestFactory $serverRequestFactory */
+            $serverRequestFactory = GeneralUtility::makeInstance(ServerRequestFactory::class);
+            $request = $serverRequestFactory::fromGlobals();
 
-            if(Util::getIsTYPO3VersionBelow10()) {
-                $fakeTSFE->preparePageContentGeneration();
-                PageGenerator::renderContent();
-            } else {
-                    /** @var ServerRequestFactory $serverRequestFactory */
-                $serverRequestFactory = GeneralUtility::makeInstance(ServerRequestFactory::class);
-                $request = $serverRequestFactory::fromGlobals();
-
-                    /** @var RequestHandler $requestHandler */
-                $requestHandler = GeneralUtility::makeInstance(RequestHandler::class);
-                $requestHandler->handle($request);
-            }
+                /** @var RequestHandler $requestHandler */
+            $requestHandler = GeneralUtility::makeInstance(RequestHandler::class);
+            $requestHandler->handle($request);
 
             /** @var $pageIndexer \ApacheSolrForTypo3\Solr\Typo3PageIndexer */
             $pageIndexer = GeneralUtility::makeInstance(Typo3PageIndexer::class, $fakeTSFE);
@@ -86,11 +80,6 @@ abstract class AbstractFrontendControllerTest  extends IntegrationTest {
         $request = $this->objectManager->get(ExtbaseRequest::class);
         $request->setControllerName($controllerName);
         $request->setControllerActionName($actionName);
-
-        //@todo can be dropped when TYPO3 9 support will be dropped
-        if(Util::getIsTYPO3VersionBelow10()) {
-            $request->setControllerVendorName('ApacheSolrForTypo3');
-        }
 
         $request->setPluginName($plugin);
         $request->setFormat('html');

@@ -29,6 +29,7 @@ use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageFieldMappingIndexer;
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
 use ApacheSolrForTypo3\Solr\Controller\SearchController;
 use ApacheSolrForTypo3\Solr\Util;
+use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\TimeTracker\TimeTracker;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManager as ExtbaseConfigurationManager;
@@ -74,7 +75,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         parent::setUp();
         $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
 
-        $languageClass = Util::getIsTYPO3VersionBelow10() ? \TYPO3\CMS\Lang\LanguageService::class : \TYPO3\CMS\Core\Localization\LanguageService::class;
+        $languageClass = LanguageService::class;
         $GLOBALS['LANG'] = GeneralUtility::makeInstance($languageClass);
         $this->fakeSingletonsForFrontendContext();
 
@@ -1228,16 +1229,8 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $environmentServiceMock = $this->getMockBuilder(EnvironmentService::class)->setMethods([])->disableOriginalConstructor()->getMock();
         $environmentServiceMock->expects($this->any())->method('isEnvironmentInFrontendMode')->willReturn(true);
         $environmentServiceMock->expects($this->any())->method('isEnvironmentInBackendMode')->willReturn(false);
-
-        if (Util::getIsTYPO3VersionBelow10()) {
-            $configurationManagerMock = $this->getMockBuilder(ExtbaseConfigurationManager::class)->setMethods(['getContentObject'])->getMock();
-            $configurationManagerMock->injectObjectManager($this->objectManager);
-            $configurationManagerMock->injectEnvironmentService($environmentServiceMock);
-            $environmentServiceMock->expects($this->any())->method('isEnvironmentInCliMode')->willReturn(false);
-        } else {
-            $configurationManagerMock = $this->getMockBuilder(ExtbaseConfigurationManager::class)->setMethods(['getContentObject'])
-                ->setConstructorArgs([$this->objectManager, $environmentServiceMock])->getMock();
-        }
+        $configurationManagerMock = $this->getMockBuilder(ExtbaseConfigurationManager::class)->setMethods(['getContentObject'])
+            ->setConstructorArgs([$this->objectManager, $environmentServiceMock])->getMock();
 
         $configurationManagerMock->expects($this->any())->method('getContentObject')->willReturn(GeneralUtility::makeInstance(ContentObjectRenderer::class));
 

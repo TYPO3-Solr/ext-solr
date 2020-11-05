@@ -29,7 +29,7 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\Util;
-
+use Exception;
 use Solarium\Client;
 use Solarium\Core\Client\Endpoint;
 use Solarium\Core\Client\Request;
@@ -61,6 +61,10 @@ abstract class AbstractSolrService {
 
     /**
      * SolrReadService constructor.
+     *
+     * @param Client $client
+     * @param null $typoScriptConfiguration
+     * @param null $logManager
      */
     public function __construct(Client $client, $typoScriptConfiguration = null, $logManager = null)
     {
@@ -200,7 +204,7 @@ abstract class AbstractSolrService {
      * @param string $message
      * @param string $url
      * @param ResponseAdapter $solrResponse
-     * @param \Exception $exception
+     * @param Exception $exception
      * @param string $contentSend
      */
     protected function writeLog($logSeverity, $message, $url, $solrResponse, $exception = null, $contentSend = '')
@@ -213,12 +217,12 @@ abstract class AbstractSolrService {
      * Parses the solr information to build data for the logger.
      *
      * @param ResponseAdapter $solrResponse
-     * @param \Exception $e
+     * @param ?Exception $e
      * @param string $url
      * @param string $contentSend
      * @return array
      */
-    protected function buildLogDataFromResponse(ResponseAdapter $solrResponse, \Exception $e = null, $url = '', $contentSend = '')
+    protected function buildLogDataFromResponse(ResponseAdapter $solrResponse, Exception $e = null, $url = '', $contentSend = '')
     {
         $logData = ['query url' => $url, 'response' => (array)$solrResponse];
 
@@ -266,7 +270,7 @@ abstract class AbstractSolrService {
      *
      * @param boolean $useCache indicates if the ping result should be cached in the instance or not
      * @return double runtime in milliseconds
-     * @throws \ApacheSolrForTypo3\Solr\PingFailedException
+     * @throws PingFailedException
      */
     public function getPingRoundTripRuntime($useCache = true)
     {
@@ -276,14 +280,14 @@ abstract class AbstractSolrService {
             $end = $this->getMilliseconds();
         } catch (HttpException $e) {
             $message = 'Solr ping failed with unexpected response code: ' . $e->getCode();
-            /** @var $exception \ApacheSolrForTypo3\Solr\PingFailedException */
+            /** @var $exception PingFailedException */
             $exception = GeneralUtility::makeInstance(PingFailedException::class, /** @scrutinizer ignore-type */ $message);
             throw $exception;
         }
 
         if ($httpResponse->getHttpStatus() !== 200) {
             $message = 'Solr ping failed with unexpected response code: ' . $httpResponse->getHttpStatus();
-            /** @var $exception \ApacheSolrForTypo3\Solr\PingFailedException */
+            /** @var $exception PingFailedException */
             $exception = GeneralUtility::makeInstance(PingFailedException::class, /** @scrutinizer ignore-type */ $message);
             throw $exception;
         }
@@ -321,7 +325,7 @@ abstract class AbstractSolrService {
      */
     protected function getMilliseconds()
     {
-        return GeneralUtility::milliseconds();
+        return round(microtime(true) * 1000);
     }
 
     /**

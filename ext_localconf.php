@@ -181,7 +181,7 @@ if (!isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['searchResultSetClassN
 }
 
 if (!isset($GLOBALS['TYPO3_CONF_VARS']['LOG']['ApacheSolrForTypo3']['Solr']['writerConfiguration'])) {
-    $context = \TYPO3\CMS\Core\Utility\GeneralUtility::getApplicationContext();
+    $context = \TYPO3\CMS\Core\Core\Environment::getContext();
     if ($context->isProduction()) {
         $logLevel = \TYPO3\CMS\Core\Log\LogLevel::ERROR;
     } elseif ($context->isDevelopment()) {

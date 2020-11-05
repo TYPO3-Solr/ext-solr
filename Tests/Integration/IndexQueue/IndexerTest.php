@@ -206,7 +206,7 @@ class IndexerTest extends IntegrationTest
         $solrDocs = $solrContentResponse['docs'];
 
         $this->assertCount(1, $solrDocs, 'Could not found index document into solr');
-        $this->assertInternalType('array', $solrDocs[0]);
+        $this->assertThat('array', $solrDocs[0]);
         $this->assertEquals('testnews', (string)$solrDocs[0]['title'], 'Title of Solr document is not as expected.');
         $this->assertArrayHasKey('category_stringM', $solrDocs[0], 'Did not find MM related tags.');
         $this->assertCount(2, $solrDocs[0]['category_stringM'], 'Did not find all MM related tags.');

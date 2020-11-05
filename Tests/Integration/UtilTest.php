@@ -26,33 +26,6 @@ class UtilTest extends IntegrationTest
     public function setUp()
     {
         parent::setUp();
-
-        if (Util::getIsTYPO3VersionBelow10()) {
-
-            /* @var CacheManager|ObjectProphecy $cacheManager */
-            $cacheManager = $this->prophesize(CacheManager::class);
-            /* @var VariableFrontend|ObjectProphecy $frontendCache */
-            $frontendCache = $this->prophesize(VariableFrontend::class);
-            $cacheManager
-                ->getCache('cache_pages')
-                ->willReturn($frontendCache->reveal());
-            $cacheManager
-                ->getCache('cache_runtime')
-                ->willReturn($frontendCache->reveal());
-            $cacheManager
-                ->getCache('cache_hash')
-                ->willReturn($frontendCache->reveal());
-            $cacheManager
-                ->getCache('cache_core')
-                ->willReturn($frontendCache->reveal());
-            $cacheManager
-                ->getCache('cache_rootline')
-                ->willReturn($frontendCache->reveal());
-            $cacheManager
-                ->getCache('tx_solr_configuration')
-                ->willReturn($frontendCache->reveal());
-            GeneralUtility::setSingletonInstance(CacheManager::class, $cacheManager->reveal());
-        }
         $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['solr'] = [];
         $GLOBALS['TYPO3_CONF_VARS']['FE']['ContentObjects'] = [];
 
@@ -84,12 +57,6 @@ class UtilTest extends IntegrationTest
         $language = 0;
         $initializeTsfe = false;
         $cacheId = md5($pageId . '|' . $path . '|' . $language);
-
-        if (!Util::getIsTYPO3VersionBelow10()) {
-            $rootLineUtility = $this->prophesize(RootlineUtility::class);
-            $rootLineUtility->get()->shouldBeCalledOnce()->willReturn([]);
-            GeneralUtility::addInstance(RootlineUtility::class, $rootLineUtility->reveal());
-        }
 
         // prepare first call
 
@@ -277,56 +244,51 @@ class UtilTest extends IntegrationTest
         GeneralUtility::addInstance(SiteFinder::class, $siteFinder->reveal());
 
         $tsfeProphecy = $this->prophesize(TypoScriptFrontendController::class);
-        if (Util::getIsTYPO3VersionBelow10()) {
-            $tsfeProphecy->willBeConstructedWith([null, $pageId, 0]);
-        } else {
-            $siteLanguage->getTypo3Language()->shouldBeCalled()->willReturn(0);
+        $siteLanguage->getTypo3Language()->shouldBeCalled()->willReturn(0);
 
-            $rootLineUtility = $this->prophesize(RootlineUtility::class);
-            $rootLineUtility->get()->shouldBeCalledOnce()->willReturn([]);
-            GeneralUtility::addInstance(RootlineUtility::class, $rootLineUtility->reveal());
+        $rootLineUtility = $this->prophesize(RootlineUtility::class);
+        $rootLineUtility->get()->shouldBeCalledOnce()->willReturn([]);
+        GeneralUtility::addInstance(RootlineUtility::class, $rootLineUtility->reveal());
 
-            /* @var ObjectProphecy|UserAspect $frontendUserAspect */
-            $frontendUserAspect = $this->prophesize(UserAspect::class);
-            $frontendUserAspect->isLoggedIn()->willReturn(false);
-            $frontendUserAspect->get('isLoggedIn')->willReturn(false);
-            $frontendUserAspect->get('id')->shouldBeCalled()->willReturn('UtilTest_TSFEUser');
-            $frontendUserAspect->getGroupIds()->shouldBeCalled()->willReturn([0, -1]);
-            $frontendUserAspect->get('groupIds')->shouldBeCalled()->willReturn([0, -1]);
-            $backendUserAspect = $this->prophesize(UserAspect::class);
-            $workspaceAspect =  $this->prophesize(WorkspaceAspect::class);
+        /* @var ObjectProphecy|UserAspect $frontendUserAspect */
+        $frontendUserAspect = $this->prophesize(UserAspect::class);
+        $frontendUserAspect->isLoggedIn()->willReturn(false);
+        $frontendUserAspect->get('isLoggedIn')->willReturn(false);
+        $frontendUserAspect->get('id')->shouldBeCalled()->willReturn('UtilTest_TSFEUser');
+        $frontendUserAspect->getGroupIds()->shouldBeCalled()->willReturn([0, -1]);
+        $frontendUserAspect->get('groupIds')->shouldBeCalled()->willReturn([0, -1]);
+        $backendUserAspect = $this->prophesize(UserAspect::class);
+        $workspaceAspect =  $this->prophesize(WorkspaceAspect::class);
 
-            $context = $this->prophesize(Context::class);
-            $context->hasAspect('frontend.preview')->shouldBeCalled()->willReturn(false);
-            $context->setAspect('frontend.preview', Argument::any())->shouldBeCalled();
-            $context->hasAspect('frontend.user')->shouldBeCalled()->willReturn(false);
-            $context->hasAspect('language')->shouldBeCalled()->willReturn(true);
-            $context->getPropertyFromAspect('language', 'id')->shouldBeCalled()->willReturn(0);
-            $context->getPropertyFromAspect('language', 'id', 0)->shouldBeCalled()->willReturn(0);
-            $context->getPropertyFromAspect('language', 'contentId')->shouldBeCalled()->willReturn(0);
-            $context->getAspect('frontend.user')->shouldBeCalled()->willReturn($frontendUserAspect->reveal());
-            $context->getAspect('backend.user')->shouldBeCalled()->willReturn($backendUserAspect->reveal());
-            $context->getAspect('workspace')->shouldBeCalled()->willReturn($workspaceAspect->reveal());
-            $context->getPropertyFromAspect('visibility', 'includeHiddenContent', false)->shouldBeCalled();
-            $context->getPropertyFromAspect('backend.user', 'isLoggedIn', false)->shouldBeCalled();
-            $context->setAspect('frontend.user', Argument::any())->shouldBeCalled();
-            $context->getPropertyFromAspect('workspace', 'id')->shouldBeCalled()->willReturn(0);
-            $context->getPropertyFromAspect('date', 'accessTime', 0)->willReturn(0);
-            $context->getPropertyFromAspect('typoscript', 'forcedTemplateParsing')->willReturn(false);
-            $context->getPropertyFromAspect('visibility', 'includeHiddenPages')->shouldBeCalled()->willReturn(false);
-            $context->setAspect('typoscript', Argument::any())->shouldBeCalled();
-            GeneralUtility::setSingletonInstance(Context::class, $context->reveal());
-            $GLOBALS['TYPO3_REQUEST'] = GeneralUtility::makeInstance(ServerRequest::class);
-            $tsfeProphecy->willBeConstructedWith([$context->reveal(), $site->reveal(), $siteLanguage->reveal()]);
-            $tsfeProphecy->getSite()->shouldBeCalled()->willReturn($site);
-            $tsfeProphecy->getPageAndRootlineWithDomain($pageId, Argument::type(ServerRequest::class))->shouldBeCalled();
-            $tsfeProphecy->getConfigArray()->shouldBeCalled();
-            $tsfeProphecy->settingLanguage()->shouldBeCalled();
-            $tsfeProphecy->newCObj()->shouldBeCalled();
-            $tsfeProphecy->calculateLinkVars([])->shouldBeCalled();
-            $tsfeProphecy->settingLocale()->shouldBeCalled();
-
-        }
+        $context = $this->prophesize(Context::class);
+        $context->hasAspect('frontend.preview')->shouldBeCalled()->willReturn(false);
+        $context->setAspect('frontend.preview', Argument::any())->shouldBeCalled();
+        $context->hasAspect('frontend.user')->shouldBeCalled()->willReturn(false);
+        $context->hasAspect('language')->shouldBeCalled()->willReturn(true);
+        $context->getPropertyFromAspect('language', 'id')->shouldBeCalled()->willReturn(0);
+        $context->getPropertyFromAspect('language', 'id', 0)->shouldBeCalled()->willReturn(0);
+        $context->getPropertyFromAspect('language', 'contentId')->shouldBeCalled()->willReturn(0);
+        $context->getAspect('frontend.user')->shouldBeCalled()->willReturn($frontendUserAspect->reveal());
+        $context->getAspect('backend.user')->shouldBeCalled()->willReturn($backendUserAspect->reveal());
+        $context->getAspect('workspace')->shouldBeCalled()->willReturn($workspaceAspect->reveal());
+        $context->getPropertyFromAspect('visibility', 'includeHiddenContent', false)->shouldBeCalled();
+        $context->getPropertyFromAspect('backend.user', 'isLoggedIn', false)->shouldBeCalled();
+        $context->setAspect('frontend.user', Argument::any())->shouldBeCalled();
+        $context->getPropertyFromAspect('workspace', 'id')->shouldBeCalled()->willReturn(0);
+        $context->getPropertyFromAspect('date', 'accessTime', 0)->willReturn(0);
+        $context->getPropertyFromAspect('typoscript', 'forcedTemplateParsing')->willReturn(false);
+        $context->getPropertyFromAspect('visibility', 'includeHiddenPages')->shouldBeCalled()->willReturn(false);
+        $context->setAspect('typoscript', Argument::any())->shouldBeCalled();
+        GeneralUtility::setSingletonInstance(Context::class, $context->reveal());
+        $GLOBALS['TYPO3_REQUEST'] = GeneralUtility::makeInstance(ServerRequest::class);
+        $tsfeProphecy->willBeConstructedWith([$context->reveal(), $site->reveal(), $siteLanguage->reveal()]);
+        $tsfeProphecy->getSite()->shouldBeCalled()->willReturn($site);
+        $tsfeProphecy->getPageAndRootlineWithDomain($pageId, Argument::type(ServerRequest::class))->shouldBeCalled();
+        $tsfeProphecy->getConfigArray()->shouldBeCalled();
+        $tsfeProphecy->settingLanguage()->shouldBeCalled();
+        $tsfeProphecy->newCObj()->shouldBeCalled();
+        $tsfeProphecy->calculateLinkVars([])->shouldBeCalled();
+        $tsfeProphecy->settingLocale()->shouldBeCalled();
 
         $tsfe = $tsfeProphecy->reveal();
 

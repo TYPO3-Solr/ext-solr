@@ -27,6 +27,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Domain\Search\ApacheSolrDocu
 use ApacheSolrForTypo3\Solr\Domain\Search\ApacheSolrDocument\Repository;
 use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
+use PHPUnit\Framework\Constraint\IsType;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class ApacheSolrDocumentRepositoryTest extends IntegrationTest
@@ -68,7 +69,7 @@ class ApacheSolrDocumentRepositoryTest extends IntegrationTest
     {
         $apacheSolrDocumentsCollection = $this->apacheSolrDocumentRepository->findByPageIdAndByLanguageId(3, 0);
 
-        $this->assertInternalType('array', $apacheSolrDocumentsCollection, 'Repository did not get Document collection from pageId 3.');
+        $this->assertThat('array', new IsType($apacheSolrDocumentsCollection), 'Repository did not get Document collection from pageId 3.');
         $this->assertNotEmpty($apacheSolrDocumentsCollection, 'Repository did not get apache solr documents from pageId 3.');
         $this->assertInstanceOf(Document::class, $apacheSolrDocumentsCollection[0], 'ApacheSolrDocumentRepository returned not an array of type Document.');
     }

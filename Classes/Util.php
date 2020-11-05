@@ -25,28 +25,15 @@ namespace ApacheSolrForTypo3\Solr;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
-use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
-use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationPageResolver;
-use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use TYPO3\CMS\Core\Context\Context;
-use TYPO3\CMS\Core\Context\LanguageAspect;
-use TYPO3\CMS\Core\Context\LanguageAspectFactory;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Information\Typo3Version;
-use TYPO3\CMS\Core\Site\SiteFinder;
-use TYPO3\CMS\Core\TypoScript\TemplateService;
-use TYPO3\CMS\Core\Utility\RootlineUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Core\TypoScript\ExtendedTemplateService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
-use TYPO3\CMS\Frontend\Page\PageRepository;
-use TYPO3\CMS\Core\Context\UserAspect;
-use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
-use TYPO3\CMS\Core\Http\ServerRequest;
 
 /**
  * Utility class for tx_solr
@@ -311,9 +298,8 @@ class Util
      * @todo This method is just added for compatibility checks for TYPO3 version 9 and will be removed when TYPO9 support is dropped
      * @return boolean
      */
-    public static function getIsTYPO3VersionBelow10()
+    public static function getIsTYPO3VersionBelow11()
     {
-        return GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 10;
+        return GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 11;
     }
-
 }
