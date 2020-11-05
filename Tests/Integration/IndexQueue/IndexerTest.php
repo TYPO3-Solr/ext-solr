@@ -33,7 +33,6 @@ use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
-use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Http\ServerRequestFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Localization\LanguageService;
@@ -80,6 +79,13 @@ class IndexerTest extends IntegrationTest
         $normalizer = new \TYPO3\CMS\Core\Middleware\NormalizedParamsAttribute();
         $normalizer->process($request, $handlerMock);
 
+    }
+
+    public function tearDown()
+    {
+        parent::tearDown();
+        $this->cleanUpSolrServerAndAssertEmpty();
+        unset($this->indexQueue, $this->indexer);
     }
 
     /**
