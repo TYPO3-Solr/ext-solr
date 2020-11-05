@@ -107,6 +107,7 @@
 				preserveOriginal="1"
 				protected="generic/protwords.txt"
 			/>
+			<filter class="solr.FlattenGraphFilterFactory"/>
 
 			<!-- no stemming -->
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>

@@ -113,6 +113,8 @@
 				preserveOriginal="1"
 				protected="french/protwords.txt"
 			/>
+			<filter class="solr.FlattenGraphFilterFactory"/>
+
 			<filter class="solr.SnowballPorterFilterFactory" language="French" protected="french/protwords.txt"/>
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>

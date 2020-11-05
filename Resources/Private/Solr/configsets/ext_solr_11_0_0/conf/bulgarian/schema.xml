@@ -106,6 +106,8 @@
 				preserveOriginal="1"
 				protected="bulgarian/protwords.txt"
 			/>
+			<filter class="solr.FlattenGraphFilterFactory"/>
+
 			<filter class="solr.LowerCaseFilterFactory"/>
 
 			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="bulgarian" />

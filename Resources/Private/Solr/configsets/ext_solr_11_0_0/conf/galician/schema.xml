@@ -112,6 +112,8 @@
 				preserveOriginal="1"
 				protected="galician/protwords.txt"
 			/>
+			<filter class="solr.FlattenGraphFilterFactory"/>
+
 			<filter class="solr.KeywordMarkerFilterFactory" protected="galician/protwords.txt"/>
 			<filter class="solr.GalicianStemFilterFactory"/>
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>

@@ -100,6 +100,8 @@
 				preserveOriginal="1"
 				protected="armenian/protwords.txt"
 			/>
+			<filter class="solr.FlattenGraphFilterFactory"/>
+
 			<filter class="solr.LowerCaseFilterFactory"/>
 			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="armenian" />
 			<filter class="solr.FlattenGraphFilterFactory"/>

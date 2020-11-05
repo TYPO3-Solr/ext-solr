@@ -25,6 +25,6 @@ indent_size = 2
 [*.{typoscript,tsconfig}]
 indent_size = 2
 
-# XLF-Files
-[*.xlf]
+# XLF/XML-Files
+[*.{xlf,xml}]
 indent_style = tab
