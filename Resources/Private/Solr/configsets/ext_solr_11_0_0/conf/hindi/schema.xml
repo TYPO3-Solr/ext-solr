@@ -115,6 +115,8 @@
 				preserveOriginal="1"
 				protected="hindi/protwords.txt"
 			/>
+			<filter class="solr.FlattenGraphFilterFactory"/>
+
 			<filter class="solr.KeywordMarkerFilterFactory" protected="hindi/protwords.txt"/>
 			<filter class="solr.HindiStemFilterFactory"/>
 			<filter class="solr.IndicNormalizationFilterFactory"/>
