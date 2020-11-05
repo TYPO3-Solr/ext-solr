@@ -109,6 +109,8 @@
 				preserveOriginal="1"
 				protected="catalan/protwords.txt"
 			/>
+			<filter class="solr.FlattenGraphFilterFactory"/>
+
 			<filter class="solr.SnowballPorterFilterFactory" language="Catalan" protected="catalan/protwords.txt"/>
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>

@@ -111,6 +111,8 @@
 				preserveOriginal="1"
 				protected="indonesian/protwords.txt"
 			/>
+			<filter class="solr.FlattenGraphFilterFactory"/>
+
 			<filter class="solr.KeywordMarkerFilterFactory" protected="indonesian/protwords.txt"/>
 			<filter class="solr.IndonesianStemFilterFactory" stemDerivational="true"/>
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>

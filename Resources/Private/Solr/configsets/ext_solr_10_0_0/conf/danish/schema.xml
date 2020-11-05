@@ -111,6 +111,7 @@
 				preserveOriginal="1"
 				protected="danish/protwords.txt"
 			/>
+			<filter class="solr.FlattenGraphFilterFactory"/>
 
 			<filter class="solr.SnowballPorterFilterFactory" language="Danish" protected="danish/protwords.txt"/>
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>

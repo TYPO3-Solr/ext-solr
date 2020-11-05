@@ -112,6 +112,8 @@
 				preserveOriginal="1"
 				protected="persian/protwords.txt"
 			/>
+			<filter class="solr.FlattenGraphFilterFactory"/>
+
 			<filter class="solr.KeywordMarkerFilterFactory" protected="persian/protwords.txt"/>
 			<filter class="solr.PersianNormalizationFilterFactory"/>
 			<filter class="solr.ArabicNormalizationFilterFactory"/>

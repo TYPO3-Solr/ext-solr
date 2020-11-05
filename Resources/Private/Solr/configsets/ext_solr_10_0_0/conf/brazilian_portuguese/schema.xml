@@ -112,6 +112,7 @@
 				preserveOriginal="1"
 				protected="brazilian_portuguese/protwords.txt"
 			/>
+			<filter class="solr.FlattenGraphFilterFactory"/>
 
 			<filter class="solr.KeywordMarkerFilterFactory" protected="brazilian_portuguese/protwords.txt"/>
 			<filter class="solr.BrazilianStemFilterFactory"/>
