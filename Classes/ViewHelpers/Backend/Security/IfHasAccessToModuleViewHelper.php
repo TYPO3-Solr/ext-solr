@@ -61,18 +61,32 @@ class IfHasAccessToModuleViewHelper extends AbstractConditionViewHelper
         $this->registerArgument('signature', 'string', 'The full signature of module. Simply mainmodulename_submodulename in most cases.');
     }
 
-
+    /**
+     * Evaluate condition
+     *
+     * @param null $arguments
+     * @return bool
+     */
     protected static function evaluateCondition($arguments = null)
     {
         /* @var BackendUserAuthentication $beUser */
         $beUser = $GLOBALS['BE_USER'];
-        $hasAccessToModule = $beUser->modAccess(
-            self::getModuleConfiguration(self::getModuleSignatureFromArguments($arguments)),
-            false
-        );
+        try {
+            $hasAccessToModule = $beUser->modAccess(
+                self::getModuleConfiguration(self::getModuleSignatureFromArguments($arguments))
+            );
+        } catch (\RuntimeException $exception) {
+            return false;
+        }
         return $hasAccessToModule;
     }
 
+    /**
+     * Returns the backend module configuration
+     *
+     * @param string $moduleSignature
+     * @return mixed
+     */
     protected static function getModuleConfiguration(string $moduleSignature)
     {
         return $GLOBALS['TBE_MODULES']['_configuration'][$moduleSignature];
