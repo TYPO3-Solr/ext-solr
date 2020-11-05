@@ -112,6 +112,7 @@
 				preserveOriginal="1"
 				protected="greek/protwords.txt"
 			/>
+			<filter class="solr.FlattenGraphFilterFactory"/>
 
 			<filter class="solr.KeywordMarkerFilterFactory" protected="greek/protwords.txt"/>
 			<filter class="solr.GreekStemFilterFactory"/>

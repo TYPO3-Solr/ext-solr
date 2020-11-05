@@ -111,6 +111,8 @@
 				preserveOriginal="1"
 				protected="czech/protwords.txt"
 			/>
+			<filter class="solr.FlattenGraphFilterFactory"/>
+
 			<filter class="solr.CzechStemFilterFactory"/>
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
