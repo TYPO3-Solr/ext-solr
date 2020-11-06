@@ -20,6 +20,7 @@ use TYPO3\CMS\Core\Context\TypoScriptAspect;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Localization\Locales;
 use TYPO3\CMS\Core\SingletonInterface;
+use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\TypoScript\TemplateService;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
@@ -32,13 +33,19 @@ use TYPO3\CMS\Core\Http\ServerRequest;
 
 class Tsfe implements SingletonInterface
 {
-
     private $tsfeCache = [];
 
     private $requestCache = [];
 
+    /**
+     * Change the language context by given page and language id
+     *
+     * @param int $pageId
+     * @param int $language
+     */
     public function changeLanguageContext(int $pageId, int $language): void
     {
+        /* @var Context $context */
         $context = GeneralUtility::makeInstance(Context::class);
         if ($context->hasAspect('language')) {
             $hasRightLanguageId = $context->getPropertyFromAspect('language', 'id') === $language;
@@ -48,13 +55,13 @@ class Tsfe implements SingletonInterface
             }
         }
 
+        /* @var SiteFinder $siteFinder */
         $siteFinder = GeneralUtility::makeInstance(SiteFinder::class);
         try {
             $site = $siteFinder->getSiteByPageId($pageId);
             $languageAspect = LanguageAspectFactory::createFromSiteLanguage($site->getLanguageById($language));
             $context->setAspect('language', $languageAspect);
         } catch (SiteNotFoundException $e) {
-
         }
     }
 
@@ -64,27 +71,25 @@ class Tsfe implements SingletonInterface
      * @param $pageId
      * @param int $language
      * @throws SiteNotFoundException
-     * @throws \TYPO3\CMS\Core\Error\Http\ServiceUnavailableException
-     * @throws \TYPO3\CMS\Core\Http\ImmediateResponseException
      */
     public function initializeTsfe($pageId, $language = 0)
     {
-
         // resetting, a TSFE instance with data from a different page Id could be set already
         unset($GLOBALS['TSFE']);
 
         $cacheId = $pageId . '|' . $language;
 
-        /** @var Context $context */
+        /* @var Context $context */
         $context = GeneralUtility::makeInstance(Context::class);
         $this->changeLanguageContext((int)$pageId, (int)$language);
 
         if (!isset($this->requestCache[$cacheId])) {
+            /* @var SiteFinder $siteFinder */
             $siteFinder = GeneralUtility::makeInstance(SiteFinder::class);
-            $site = $siteFinder->getSiteByPageId($pageId);
-            $siteLanguage = $site->getLanguageById($language);
+            $site = $siteFinder->getSiteByPageId((int)$pageId);
+            $siteLanguage = $site->getLanguageById((int)$language);
 
-                /** @var ServerRequest $request */
+            /* @var ServerRequest $request */
             $request = GeneralUtility::makeInstance(ServerRequest::class);
             $request = $request->withAttribute('site', $site);
             $this->requestCache[$cacheId] = $request->withAttribute('language', $siteLanguage);
@@ -101,6 +106,7 @@ class Tsfe implements SingletonInterface
             // see http://forge.typo3.org/issues/42122
             $pageRecord = BackendUtility::getRecord('pages', $pageId, 'fe_group');
 
+            /* @var FrontendUserAuthentication $feUser */
             $feUser = GeneralUtility::makeInstance(FrontendUserAuthentication::class);
             $userGroups = [0, -1];
             if (!empty($pageRecord['fe_group'])) {
@@ -112,6 +118,7 @@ class Tsfe implements SingletonInterface
             $GLOBALS['TSFE']->sys_page = GeneralUtility::makeInstance(PageRepository::class);
             $GLOBALS['TSFE']->getPageAndRootlineWithDomain($pageId, $GLOBALS['TYPO3_REQUEST']);
 
+            /* @var TemplateService $template */
             $template = GeneralUtility::makeInstance(TemplateService::class, $context);
             $GLOBALS['TSFE']->tmpl = $template;
             GeneralUtility::makeInstance(Context::class)->getPropertyFromAspect('typoscript', 'forcedTemplateParsing');
@@ -130,13 +137,20 @@ class Tsfe implements SingletonInterface
         }
 
         $GLOBALS['TSFE'] = $this->tsfeCache[$cacheId];
-        Locales::setSystemLocaleFromSiteLanguage($GLOBALS['TSFE']->getLanguage());
+        if ($siteLanguage instanceof SiteLanguage || $GLOBALS['TSFE']->getLanguage() instanceof SiteLanguage) {
+            Locales::setSystemLocaleFromSiteLanguage(
+                $siteLanguage instanceof SiteLanguage ? $siteLanguage : $GLOBALS['TSFE']->getLanguage()
+            );
+        }
         $this->changeLanguageContext((int)$pageId, (int)$language);
     }
 
     /**
      * Resolves the configured absRefPrefix to a valid value and resolved if absRefPrefix
      * is set to "auto".
+     *
+     * @param TypoScriptFrontendController $TSFE
+     * @return string
      */
     private function getAbsRefPrefixFromTSFE(TypoScriptFrontendController $TSFE): string
     {

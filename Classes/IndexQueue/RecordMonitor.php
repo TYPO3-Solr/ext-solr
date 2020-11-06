@@ -97,10 +97,11 @@ class RecordMonitor extends AbstractDataHandlerListener
      * @param Queue|null $indexQueue
      * @param MountPagesUpdater|null $mountPageUpdater
      * @param TCAService|null $TCAService
-     * @param RootPageResolver $rootPageResolver
+     * @param ?RootPageResolver $rootPageResolver
      * @param PagesRepository|null $pagesRepository
      * @param SolrLogManager|null $solrLogManager
      * @param ConfigurationAwareRecordService|null $recordService
+     * @param ?FrontendEnvironment $frontendEnvironment
      */
     public function __construct(
         Queue $indexQueue = null,
@@ -132,7 +133,7 @@ class RecordMonitor extends AbstractDataHandlerListener
     }
 
     /**
-     * Holds the configuration when a recursive page queing should be triggered.
+     * Holds the configuration when a recursive page queuing should be triggered.
      *
      * @var array
      * @return array
@@ -161,6 +162,7 @@ class RecordMonitor extends AbstractDataHandlerListener
      * @param int $uid The record's uid
      * @param string $value
      * @param DataHandler $tceMain TYPO3 Core Engine parent object
+     * @throws NoPidException
      */
     public function processCmdmap_preProcess(
         $command,
@@ -186,6 +188,7 @@ class RecordMonitor extends AbstractDataHandlerListener
      * @param int $uid The record's uid
      * @param string $value
      * @param DataHandler $tceMain TYPO3 Core Engine parent object
+     * @throws NoPidException
      */
     public function processCmdmap_postProcess($command, $table, $uid, $value, DataHandler $tceMain)
     {
@@ -207,16 +210,16 @@ class RecordMonitor extends AbstractDataHandlerListener
             } else {
                 $this->applyRecordChangesToQueue($table, $uid, $value);
             }
-
         }
     }
 
     /**
-     * Apply's version swap to the IndexQueue.
+     * Apply version swap to the IndexQueue.
      *
      * @param string $table
      * @param integer $uid
      * @param DataHandler $tceMain
+     * @throws NoPidException
      */
     protected function applyVersionSwap($table, $uid, DataHandler $tceMain)
     {
@@ -251,7 +254,7 @@ class RecordMonitor extends AbstractDataHandlerListener
 
     /**
      * Add's a record to the queue if it is monitored and enabled, otherwise it removes the record from the queue.
-     * 
+     *
      * @param string $table
      * @param integer $uid
      * @param integer $pid
@@ -472,6 +475,7 @@ class RecordMonitor extends AbstractDataHandlerListener
      * @param DataHandler $tceMain
      *
      * @return int
+     * @throws NoPidException
      */
     protected function getRecordPageId($status, $recordTable, $recordUid, $originalUid, array $fields, DataHandler $tceMain)
     {

@@ -29,7 +29,6 @@ use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
-use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -42,7 +41,6 @@ use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
  */
 class Util
 {
-
     /**
      * Generates a document id for documents representing page records.
      *
@@ -108,7 +106,7 @@ class Util
      * @param int $pageId Id of the (root) page to get the Solr configuration from.
      * @param int $language System language uid, optional, defaults to 0
      * @return TypoScriptConfiguration The Solr configuration for the requested tree.
-     * @deprecated Will be removed with with EXT:solr 12. Use FrontendEnvironment directly
+     * @deprecated Will be removed with EXT:solr 12. Use FrontendEnvironment directly
      */
     public static function getSolrConfigurationFromPageId($pageId, $initializeTsfe = false, $language = 0)
     {
@@ -130,7 +128,7 @@ class Util
      * @param int $language System language uid, optional, defaults to 0
      * @param bool $useTwoLevelCache Flag to enable the two level cache for the typoscript configuration array
      * @return TypoScriptConfiguration The Solr configuration for the requested tree.
-     * @deprecated Will be removed with with EXT:solr 12. Use FrontendEnvironment directly
+     * @deprecated Will be removed with EXT:solr 12. Use FrontendEnvironment directly
      */
     public static function getConfigurationFromPageId($pageId, $path, $initializeTsfe = false, $language = 0, $useTwoLevelCache = true)
     {
@@ -147,10 +145,10 @@ class Util
      * @param $pageId
      * @param int $language
      * @param bool $useCache
-     * @deprecated
      * @throws SiteNotFoundException
      * @throws \TYPO3\CMS\Core\Error\Http\ServiceUnavailableException
      * @throws \TYPO3\CMS\Core\Http\ImmediateResponseException
+     * @deprecated Will be removed with EXT:solr 12. Use FrontendEnvironment directly
      */
     public static function initializeTsfe($pageId, $language = 0, $useCache = true)
     {
@@ -186,7 +184,7 @@ class Util
      * @param array $pageRecord The pages database row
      * @param string $configurationName The name of the configuration to use.
      * @return bool TRUE if the page type is allowed, otherwise FALSE
-     * @deprecated Will be removed with with EXT:solr 12. Use FrontendEnvironment directly
+     * @deprecated Will be removed with EXT:solr 12. Use FrontendEnvironment directly
      */
     public static function isAllowedPageType(array $pageRecord, $configurationName = 'pages')
     {
@@ -200,7 +198,7 @@ class Util
      * @param int $pageId Page ID
      * @param string $configurationName The name of the configuration to use.
      * @return array Allowed page types to compare to a doktype of a page record
-     * @deprecated Will be removed with with EXT:solr 12. Use FrontendEnvironment directly
+     * @deprecated Will be removed with EXT:solr 12. Use FrontendEnvironment directly
      */
     public static function getAllowedPageTypes($pageId, $configurationName = 'pages')
     {
