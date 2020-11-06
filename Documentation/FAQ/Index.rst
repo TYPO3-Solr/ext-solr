@@ -609,7 +609,7 @@ In your sites config.yaml:
 ::
 
 	solr_host_read: '%env(SOLR_HOST)%'
-	solr_port_read: '%env(SOLR_HOST)%'
+	solr_port_read: '%env(SOLR_PORT)%'
 
 In your .env file:
 
