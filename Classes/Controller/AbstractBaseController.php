@@ -222,6 +222,7 @@ abstract class AbstractBaseController extends ActionController
         /** @var \ApacheSolrForTypo3\Solr\ConnectionManager $solrConnection */
         try {
             $solrConnection = $this->objectManager->get(ConnectionManager::class)->getConnectionByPageId($this->typoScriptFrontendController->id, Util::getLanguageUid(), $this->typoScriptFrontendController->MP);
+            /* @var Search $search */
             $search = $this->objectManager->get(Search::class, $solrConnection);
 
             $this->searchService = $this->objectManager->get(

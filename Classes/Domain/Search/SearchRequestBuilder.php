@@ -165,6 +165,7 @@ class SearchRequestBuilder
      */
     protected function getRequest(array $requestArguments = [], $pageId = 0, $languageId = 0)
     {
+        /* @var SearchRequest $searchRequest */
         $searchRequest = GeneralUtility::makeInstance(SearchRequest::class,
             /** @scrutinizer ignore-type */ $requestArguments,
             /** @scrutinizer ignore-type */ $pageId,

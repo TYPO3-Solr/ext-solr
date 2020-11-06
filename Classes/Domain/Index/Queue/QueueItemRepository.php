@@ -256,6 +256,7 @@ class QueueItemRepository extends AbstractRepository
      */
     public function getPageItemChangedTimeByPageUid(int $pageUid)
     {
+        /* @var QueryBuilder $queryBuilder */
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tt_content');
         $queryBuilder->getRestrictions()->removeAll();
         $pageContentLastChangedTime = $queryBuilder
@@ -284,7 +285,7 @@ class QueueItemRepository extends AbstractRepository
         if (isset($GLOBALS['TCA'][$itemType]['ctrl']['transOrigPointerField'])) {
             // table is localizable
             $translationOriginalPointerField = $GLOBALS['TCA'][$itemType]['ctrl']['transOrigPointerField'];
-
+            /* @var QueryBuilder $queryBuilder */
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($itemType);
             $queryBuilder->getRestrictions()->removeAll();
             $localizedChangedTime = $queryBuilder
@@ -541,7 +542,7 @@ class QueueItemRepository extends AbstractRepository
             return null;
         }
 
-        /** @var Item $item*/
+        /* @var Item $item */
         $item = GeneralUtility::makeInstance(Item::class, /** @scrutinizer ignore-type */ $indexQueueItemRecord);
         return $item;
     }
@@ -687,6 +688,7 @@ class QueueItemRepository extends AbstractRepository
         foreach ($tableUids as $table => $uids) {
             $uidList = implode(',', $uids);
 
+            /* @var QueryBuilder $queryBuilder */
             $queryBuilderForRecordTable = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($table);
             $queryBuilderForRecordTable->getRestrictions()->removeAll();
             $resultsFromRecordTable = $queryBuilderForRecordTable

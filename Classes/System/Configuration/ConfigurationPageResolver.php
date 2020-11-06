@@ -99,7 +99,7 @@ class ConfigurationPageResolver
      */
     protected function calculateClosestPageIdWithActiveTemplate($startPageId)
     {
-
+        /* @var RootlineUtility $rootlineUtility */
         $rootlineUtility = GeneralUtility::makeInstance(RootlineUtility::class, $startPageId);
         try {
             $rootline = $rootlineUtility->get();

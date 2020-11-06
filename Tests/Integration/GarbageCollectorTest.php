@@ -273,7 +273,7 @@ class GarbageCollectorTest extends IntegrationTest
         $this->assertIndexQueryContainsItemAmount(1);
         $items = $this->indexQueue->getItems('pages', 1);
         $this->assertSame(1, count($items));
-        
+
         // we index this item
         $this->indexPageIds([1]);
         $this->waitToBeVisibleInSolr();
@@ -481,6 +481,7 @@ class GarbageCollectorTest extends IntegrationTest
         $this->assertIndexQueryContainsItemAmount(1);
 
         // we reindex all queue items
+        /* @var SiteRepository $siteRepository */
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $site = $siteRepository->getFirstAvailableSite();
         $items = $this->indexQueue->getItemsToIndex($site);
@@ -530,6 +531,7 @@ class GarbageCollectorTest extends IntegrationTest
         $this->assertIndexQueryContainsItemAmount(1);
 
         // we reindex all queue items
+        /* @var SiteRepository $siteRepository */
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $site = $siteRepository->getFirstAvailableSite();
         $items = $this->indexQueue->getItemsToIndex($site);
@@ -605,7 +607,6 @@ class GarbageCollectorTest extends IntegrationTest
 
         return $result;
     }
-    
 
     /**
      *

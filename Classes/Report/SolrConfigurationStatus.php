@@ -181,6 +181,7 @@ class SolrConfigurationStatus extends AbstractSolrStatus
      */
     protected function getRootPages()
     {
+        /* @var PagesRepository $pagesRepository */
         $pagesRepository = GeneralUtility::makeInstance(PagesRepository::class);
 
         return $pagesRepository->findAllRootPages();

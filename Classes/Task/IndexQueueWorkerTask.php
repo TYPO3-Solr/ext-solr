@@ -62,6 +62,7 @@ class IndexQueueWorkerTask extends AbstractSolrTask implements ProgressProviderI
         // should only be done in the case when running it from outside TYPO3 BE
         // @see #921 and #934 on https://github.com/TYPO3-Solr
         if (TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_CLI) {
+            /* @var CliEnvironment $cliEnvironment */
             $cliEnvironment = GeneralUtility::makeInstance(CliEnvironment::class);
             $cliEnvironment->backup();
             $cliEnvironment->initialize($this->getWebRoot(), Environment::getPublicPath() . '/');
@@ -202,6 +203,7 @@ class IndexQueueWorkerTask extends AbstractSolrTask implements ProgressProviderI
      */
     protected function getInitializedIndexService(Site $site)
     {
+        /* @var IndexService $indexService */
         $indexService = GeneralUtility::makeInstance(IndexService::class, /** @scrutinizer ignore-type */ $site);
         $indexService->setContextTask($this);
         return $indexService;

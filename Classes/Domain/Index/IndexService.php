@@ -140,6 +140,7 @@ class IndexService
         $this->emitSignal('afterIndexItems', [$itemsToIndex, $this->getContextTask(), $indexRunId]);
 
         if ($enableCommitsSetting && count($itemsToIndex) > 0) {
+            /* @var ConnectionManager $solrServers */
             $solrServers = GeneralUtility::makeInstance(ConnectionManager::class)->getConnectionsBySite($this->site);
             foreach ($solrServers as $solrServer) {
                 try {

@@ -80,7 +80,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
 
         $GLOBALS['TT'] = $this->getMockBuilder(TimeTracker::class)->disableOriginalConstructor()->getMock();
 
-        /** @var  $searchController SearchController */
+        /* @var SearchController $searchController */
         $this->searchController = $this->objectManager->get(SearchController::class);
         $this->searchRequest = $this->getPreparedRequest();
         $this->searchResponse = $this->getPreparedResponse();
@@ -210,7 +210,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $overwriteConfiguration['search.']['spellchecking.']['searchUsingSpellCheckerSuggestion'] = 1;
         $overwriteConfiguration['search.']['spellchecking.']['numberOfSuggestionsToTry'] = 1;
 
-        /** @var $configurationManager ConfigurationManager */
+        /* @var ConfigurationManager $configurationManager */
         $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
         $configurationManager->getTypoScriptConfiguration()->mergeSolrConfiguration($overwriteConfiguration);
 
@@ -320,7 +320,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $overwriteConfiguration['search.']['initializeWithQuery'] = 'product';
         $overwriteConfiguration['search.']['showResultsOfInitialQuery'] = 0;
 
-        /** @var $configurationManager ConfigurationManager */
+        /* @var ConfigurationManager $configurationManager */
         $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
         $configurationManager->getTypoScriptConfiguration()->mergeSolrConfiguration($overwriteConfiguration);
 
@@ -349,7 +349,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $overwriteConfiguration['search.']['initializeWithQuery'] = 'product';
         $overwriteConfiguration['search.']['showResultsOfInitialQuery'] = 1;
 
-        /** @var $configurationManager ConfigurationManager */
+        /* @var ConfigurationManager $configurationManager */
         $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
         $configurationManager->getTypoScriptConfiguration()->mergeSolrConfiguration($overwriteConfiguration);
 
@@ -424,7 +424,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $overwriteConfiguration = [];
         $overwriteConfiguration['search.']['query.']['filter.']['__pageSections'] = '2,3';
 
-        /** @var $configurationManager ConfigurationManager */
+        /* @var ConfigurationManager $configurationManager */
         $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
         $configurationManager->getTypoScriptConfiguration()->mergeSolrConfiguration($overwriteConfiguration);
 
@@ -457,7 +457,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $overwriteConfiguration = [];
         $overwriteConfiguration['search.']['faceting.']['facets.']['type.']['partialName'] = 'NotFound';
 
-        /** @var $configurationManager ConfigurationManager */
+        /* @var ConfigurationManager $configurationManager */
         $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
         $configurationManager->getTypoScriptConfiguration()->mergeSolrConfiguration($overwriteConfiguration);
 
@@ -513,7 +513,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $overwriteConfiguration['search.']['faceting.']['facets.']['subtitle.']['sortBy'] = 'lex';
 
 
-        /** @var $configurationManager ConfigurationManager */
+        /* @var ConfigurationManager $configurationManager */
         $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
         $configurationManager->getTypoScriptConfiguration()->mergeSolrConfiguration($overwriteConfiguration);
 
@@ -694,7 +694,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $overwriteConfiguration['search.']['faceting.']['facets.']['subtitle.']['manualSortOrder'] = 'men, woman';
 
 
-        /** @var $configurationManager ConfigurationManager */
+        /* @var ConfigurationManager $configurationManager */
         $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
         $configurationManager->getTypoScriptConfiguration()->mergeSolrConfiguration($overwriteConfiguration);
 
@@ -854,7 +854,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $overwriteConfiguration = [];
         $overwriteConfiguration['search.']['lastSearches.']['mode'] = 'global';
 
-        /** @var $configurationManager ConfigurationManager */
+        /* @var ConfigurationManager $configurationManager */
         $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
         $configurationManager->getTypoScriptConfiguration()->mergeSolrConfiguration($overwriteConfiguration);
         $this->searchController->setResetConfigurationBeforeInitialize(false);
@@ -885,7 +885,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $overwriteConfiguration = [];
         $overwriteConfiguration['search.']['lastSearches.']['mode'] = 'global';
 
-        /** @var $configurationManager ConfigurationManager */
+        /* @var ConfigurationManager $configurationManager */
         $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
         $configurationManager->getTypoScriptConfiguration()->mergeSolrConfiguration($overwriteConfiguration);
         $this->searchController->setResetConfigurationBeforeInitialize(false);

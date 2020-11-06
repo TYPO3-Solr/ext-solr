@@ -169,6 +169,7 @@ abstract class AbstractWidgetViewHelper extends AbstractCoreWidgetViewHelper imp
      */
     public function setChildNodes(array $childNodes)
     {
+        /* @var RootNode $rootNode */
         $rootNode = $this->objectManager->get(RootNode::class);
         foreach ($childNodes as $childNode) {
             $rootNode->addChildNode($childNode);
@@ -207,6 +208,7 @@ abstract class AbstractWidgetViewHelper extends AbstractCoreWidgetViewHelper imp
         $subRequest->setWidgetContext($this->widgetContext);
 
         $this->passArgumentsToSubRequest($subRequest);
+        /* @var Response $subResponse */
         $subResponse = $this->objectManager->get(Response::class);
         $this->controller->processRequest($subRequest, $subResponse);
         return $subResponse;

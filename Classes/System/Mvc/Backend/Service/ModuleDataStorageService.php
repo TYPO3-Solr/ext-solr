@@ -51,6 +51,7 @@ class ModuleDataStorageService implements SingletonInterface
 
         $this->unsetModuleDataIfCanNotBeSerialized($moduleData);
         if (empty($moduleData) || !$moduleData) {
+            /* @var ModuleData $moduleData */
             $moduleData = GeneralUtility::makeInstance(ModuleData::class);
         } else {
             $moduleData = unserialize($moduleData);

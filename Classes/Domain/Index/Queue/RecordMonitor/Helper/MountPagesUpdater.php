@@ -64,6 +64,7 @@ class MountPagesUpdater
     public function update($pageId)
     {
         // get the root line of the page, every parent page could be a Mount Page source
+        /* @var RootlineUtility $rootlineUtility */
         $rootlineUtility = GeneralUtility::makeInstance(RootlineUtility::class, $pageId);
         try {
             $rootLineArray = $rootlineUtility->get();
@@ -100,6 +101,7 @@ class MountPagesUpdater
      */
     protected function addPageToMountingSiteIndexQueue($mountedPageId, array $mountProperties)
     {
+        /* @var SiteRepository $siteRepository */
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $mountingSite = $siteRepository->getSiteByPageId($mountProperties['mountPageDestination']);
 

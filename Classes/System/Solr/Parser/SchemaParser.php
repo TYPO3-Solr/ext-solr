@@ -46,7 +46,7 @@ class SchemaParser
     {
         $decodedResponse = json_decode($jsonString);
         $schemaResponse = $decodedResponse->schema;
-
+        /* @var Schema $schema */
         $schema = GeneralUtility::makeInstance(Schema::class);
 
         if ($schemaResponse === null) {

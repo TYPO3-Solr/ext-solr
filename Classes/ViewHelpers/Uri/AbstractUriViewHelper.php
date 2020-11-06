@@ -53,6 +53,7 @@ abstract class AbstractUriViewHelper extends AbstractSolrFrontendViewHelper
     protected static function getSearchUriBuilder(RenderingContextInterface $renderingContext = null)
     {
         if (!isset(self::$searchUriBuilder)) {
+            /* @var ObjectManager $objectManager */
             $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
             self::$searchUriBuilder = $objectManager->get(SearchUriBuilder::class);
         }

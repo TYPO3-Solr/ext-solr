@@ -176,6 +176,7 @@ class QueryBuilder extends AbstractQueryBuilder {
      */
     public function buildPageQuery($pageId)
     {
+        /* @var SiteRepository $siteRepository */
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $site = $siteRepository->getSiteByPageId($pageId);
 
@@ -196,6 +197,7 @@ class QueryBuilder extends AbstractQueryBuilder {
      */
     public function buildRecordQuery($type, $uid, $pageId): Query
     {
+        /* @var SiteRepository $siteRepository */
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $site = $siteRepository->getSiteByPageId($pageId);
 
@@ -537,7 +539,7 @@ class QueryBuilder extends AbstractQueryBuilder {
         if (!is_array($searchQueryFilters) || count($searchQueryFilters) <= 0) {
             return [];
         }
-
+        /* @var ContentObjectRenderer GeneralUtility */
         $cObj = GeneralUtility::makeInstance(ContentObjectRenderer::class);
 
         // all other regular filters
@@ -569,6 +571,7 @@ class QueryBuilder extends AbstractQueryBuilder {
      */
     protected function getSearchQueryInstance($rawQuery): SearchQuery
     {
+        /* @var SearchQuery $query */
         $query = GeneralUtility::makeInstance(SearchQuery::class);
         $query->setQuery($rawQuery);
         return $query;
@@ -580,6 +583,7 @@ class QueryBuilder extends AbstractQueryBuilder {
      */
     protected function getSuggestQueryInstance($rawQuery): SuggestQuery
     {
+        /* @var SearchQuery $query */
         $query = GeneralUtility::makeInstance(SuggestQuery::class, /** @scrutinizer ignore-type */ $rawQuery, /** @scrutinizer ignore-type */ $this->typoScriptConfiguration);
 
         return $query;

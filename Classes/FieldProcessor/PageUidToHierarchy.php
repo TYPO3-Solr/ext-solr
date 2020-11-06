@@ -102,7 +102,7 @@ class PageUidToHierarchy extends AbstractHierarchyProcessor implements FieldProc
     protected function buildPageIdRootline($pageId, $mountPoint = '')
     {
         $rootlinePageIds = [];
-
+        /* @var RootlineUtility $rootlineUtility */
         $rootlineUtility = GeneralUtility::makeInstance(RootlineUtility::class, $pageId, $mountPoint);
         try {
             $rootline = $rootlineUtility->get();

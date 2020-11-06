@@ -332,6 +332,7 @@ class RecordMonitor extends AbstractDataHandlerListener
         static $configurationMonitorTables;
 
         if (empty($configurationMonitorTables)) {
+            /* @var ExtensionConfiguration $configuration */
             $configuration = GeneralUtility::makeInstance(ExtensionConfiguration::class);
             $configurationMonitorTables = $configuration->getIsUseConfigurationMonitorTables();
         }
@@ -515,6 +516,7 @@ class RecordMonitor extends AbstractDataHandlerListener
      */
     protected function removeFromIndexAndQueue($recordTable, $recordUid)
     {
+        /* @var GarbageCollector $garbageCollector */
         $garbageCollector = GeneralUtility::makeInstance(GarbageCollector::class);
         $garbageCollector->collectGarbage($recordTable, $recordUid);
     }

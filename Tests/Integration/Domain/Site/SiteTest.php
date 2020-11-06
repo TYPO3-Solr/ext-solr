@@ -52,6 +52,7 @@ class SiteTest extends IntegrationTest
      */
     public function canGetDefaultLanguage()
     {
+        /* @var SiteRepository $siteRepository */
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $this->importDataSetFromFixture('can_get_default_language.xml');
         $site = $siteRepository->getFirstAvailableSite();
@@ -104,7 +105,6 @@ class SiteTest extends IntegrationTest
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $this->site = $siteRepository->getSiteByRootPageId(2);
     }
-
 
     /**
      * @test

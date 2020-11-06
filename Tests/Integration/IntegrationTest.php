@@ -200,9 +200,11 @@ abstract class IntegrationTest extends FunctionalTestCase
     protected function importExtTablesDefinition($fixtureName)
     {
         // create fake extension database table and TCA
+        /* @var ObjectManager $objectManager */
         $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-
+        /* @var SchemaMigrator $schemaMigrationService */
         $schemaMigrationService = GeneralUtility::makeInstance(SchemaMigrator::class);
+        /* @var SqlReader $sqlReader */
         $sqlReader = GeneralUtility::makeInstance(SqlReader::class);
         $sqlCode = $this->getFixtureContentByName($fixtureName);
 
@@ -398,6 +400,7 @@ abstract class IntegrationTest extends FunctionalTestCase
 
         #$fakeTSFE->preparePageContentGeneration();
         $request = $GLOBALS['TYPO3_REQUEST'];
+        /* @var RequestHandler $requestHandler */
         $requestHandler = GeneralUtility::makeInstance(RequestHandler::class);
         $requestHandler->handle($request);
 

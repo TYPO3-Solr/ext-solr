@@ -67,6 +67,7 @@ class SolrConfigStatus extends AbstractSolrStatus
             if ($adminService->ping() && $adminService->getSolrconfigName() != self::RECOMMENDED_SOLRCONFIG_VERSION) {
                 $variables = ['solr' => $adminService, 'recommendedVersion' => self::RECOMMENDED_SOLRCONFIG_VERSION];
                 $report = $this->getRenderedReport('SolrConfigStatus.html', $variables);
+                /* @var Status $status */
                 $status = GeneralUtility::makeInstance(
                     Status::class,
                     /** @scrutinizer ignore-type */ 'Solrconfig Version',

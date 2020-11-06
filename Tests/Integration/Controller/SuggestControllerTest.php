@@ -68,7 +68,7 @@ class SuggestControllerTest extends AbstractFrontendControllerTest
 
         $GLOBALS['TT'] = $this->getMockBuilder(TimeTracker::class)->disableOriginalConstructor()->getMock();
 
-        /** @var  $searchController SearchController */
+        /* @var SuggestController $searchController */
         $this->suggestController = $this->objectManager->get(SuggestController::class);
         $this->suggestRequest = $this->getPreparedRequest('Suggest', 'suggest');
         $this->suggestResponse = $this->getPreparedResponse();

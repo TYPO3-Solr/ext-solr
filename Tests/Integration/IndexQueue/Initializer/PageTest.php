@@ -88,8 +88,8 @@ class PageTest extends IntegrationTest
      */
     protected function initializeAllPageIndexQueues()
     {
-        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         /* @var $siteRepository SiteRepository */
+        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $sites = $siteRepository->getAvailableSites();
 
         foreach($sites as $site) {
@@ -259,7 +259,7 @@ class PageTest extends IntegrationTest
         $this->initializeAllPageIndexQueues();
 
         $this->assertItemsInQueue(4);
-
+        /* @var FlashMessageService $flashMessageService */
         $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);
         $flashMessageQueue = $flashMessageService->getMessageQueueByIdentifier('solr.queue.initializer');
         $this->assertEquals(2, count($flashMessageQueue->getAllMessages()));

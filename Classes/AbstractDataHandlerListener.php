@@ -90,7 +90,7 @@ abstract class AbstractDataHandlerListener
      */
     protected function getSubPageIds($pageId)
     {
-        /** @var $queryGenerator \TYPO3\CMS\Core\Database\QueryGenerator */
+        /* @var QueryGenerator $queryGenerator */
         $queryGenerator = GeneralUtility::makeInstance(QueryGenerator::class);
 
         // here we retrieve only the subpages of this page because the permission clause is not evaluated

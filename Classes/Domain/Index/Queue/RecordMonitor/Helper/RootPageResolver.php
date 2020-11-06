@@ -168,6 +168,7 @@ class RootPageResolver implements SingletonInterface
 
         // fallback, backend
         if ($pageId != 0 && ($forceFallback || !$rootLine->getHasRootPage())) {
+            /* @var RootlineUtility $rootlineUtility */
             $rootlineUtility = GeneralUtility::makeInstance(RootlineUtility::class, $pageId, $mountPointIdentifier);
             try {
                 $rootLineArray = $rootlineUtility->get();
@@ -295,6 +296,7 @@ class RootPageResolver implements SingletonInterface
     protected function buildSiteRootsByObservedPageIds($table, $uid)
     {
         $siteRootByObservedPageIds = [];
+        /* @var SiteRepository $siteRepository */
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $allSites = $siteRepository->getAvailableSites();
 

@@ -239,6 +239,7 @@ class Indexer extends AbstractIndexer
         $itemRecord = $item->getRecord();
 
         if ($language > 0) {
+            /* @var PageRepository $page */
             $page = GeneralUtility::makeInstance(PageRepository::class);
             $itemRecord = $page->getLanguageOverlay($item->getType(), $itemRecord);
         }
@@ -328,6 +329,7 @@ class Indexer extends AbstractIndexer
     protected function isRootPageIdPartOfRootLine(Item $item)
     {
         $rootPageId = (int)$item->getRootPageUid();
+        /* @var RootlineUtility $rootlineUtility */
         $rootlineUtility = GeneralUtility::makeInstance(RootlineUtility::class, $buildRootlineWithPid);
         $rootline = $rootlineUtility->get();
 
@@ -420,6 +422,7 @@ class Indexer extends AbstractIndexer
 
         // same as in the FE indexer
         if (is_array($fieldProcessingInstructions)) {
+            /* @var Service $service */
             $service = GeneralUtility::makeInstance(Service::class);
             $service->processDocuments($documents, $fieldProcessingInstructions);
         }
@@ -592,6 +595,7 @@ class Indexer extends AbstractIndexer
     protected function getFallbackOrder(Site $site,  int $languageId, int $pageId): array
     {
         $fallbackChain = [];
+        /* @var SiteFinder $siteFinder */
         $siteFinder = GeneralUtility::makeInstance(SiteFinder::class);
         try {
             $site = $siteFinder->getSiteByRootPageId($site->getRootPageId());

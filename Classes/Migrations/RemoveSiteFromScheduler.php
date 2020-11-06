@@ -26,6 +26,7 @@ namespace ApacheSolrForTypo3\Solr\Migrations;
  ***************************************************************/
 
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -57,6 +58,7 @@ class RemoveSiteFromScheduler implements Migration {
     {
         $taskRows = $this->getTasksWithAssignedSite();
         $legacySchedulerTasks = $taskRows->fetchAll();
+        /* @var QueryBuilder $queryBuilder */
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable("tx_scheduler_task");
 
         $status = FlashMessage::OK;
@@ -90,6 +92,7 @@ class RemoveSiteFromScheduler implements Migration {
      */
     protected function getTasksWithAssignedSite()
     {
+        /* @var QueryBuilder $queryBuilder */
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable("tx_scheduler_task");
         $taskRows = $queryBuilder
             ->select('uid', 'serialized_task_object')

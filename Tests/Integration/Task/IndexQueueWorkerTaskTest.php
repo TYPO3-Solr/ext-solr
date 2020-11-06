@@ -67,6 +67,7 @@ class IndexQueueWorkerTest extends IntegrationTest
     public function canGetAdditionalInformationFromTask()
     {
         $this->importDataSetFromFixture('can_trigger_frontend_calls_for_page_index.xml');
+        /* @var SiteRepository $siteRepository */
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $site = $siteRepository->getFirstAvailableSite();
         /** @var $indexQueueQueueWorkerTask \ApacheSolrForTypo3\Solr\Task\IndexQueueWorkerTask */

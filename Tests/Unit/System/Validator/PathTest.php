@@ -40,6 +40,7 @@ class PathTest extends UnitTest
      */
     public function canIsValidSolrPathisValidPath()
     {
+        /* @var Path $path */
         $path = GeneralUtility::makeInstance(Path::class);
         $isValidPath = $path->isValidSolrPath('/sorl/core_da');
 
@@ -51,6 +52,7 @@ class PathTest extends UnitTest
      */
     public function canIsValidSolrPathEmptyString()
     {
+        /* @var Path $path */
         $path = GeneralUtility::makeInstance(Path::class);
         $isValidPath = $path->isValidSolrPath('');
 
@@ -62,6 +64,7 @@ class PathTest extends UnitTest
      */
     public function canIsValidSolrPathisInvalidPathButAppears()
     {
+        /* @var Path $path */
         $path = GeneralUtility::makeInstance(Path::class);
         $isValidPath = $path->isValidSolrPath('/sorl/#/core_da');
 
@@ -73,6 +76,7 @@ class PathTest extends UnitTest
      */
     public function canIsValidSolrPathisInvalidPath()
     {
+        /* @var Path $path */
         $path = GeneralUtility::makeInstance(Path::class);
         $isValidPath = $path->isValidSolrPath('/sorl/core_da?bogus');
 

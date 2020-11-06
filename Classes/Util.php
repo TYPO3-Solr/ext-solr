@@ -75,7 +75,7 @@ class Util
      */
     public static function getDocumentId($table, $rootPageId, $uid, $additionalIdParameters = '')
     {
-            /** @var SiteRepository $siteRepository */
+        /* @var SiteRepository $siteRepository */
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $site = $siteRepository->getSiteByPageId($rootPageId);
         $siteHash = $site->getSiteHash();
@@ -95,6 +95,7 @@ class Util
      */
     public static function getSolrConfiguration()
     {
+        /* @var ConfigurationManager $configurationManager */
         $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
         return $configurationManager->getTypoScriptConfiguration();
     }
@@ -269,6 +270,7 @@ class Util
      */
     public static function getLanguageUid(): int
     {
+        /* @var Context $context */
         $context = GeneralUtility::makeInstance(Context::class);
         return (int)$context->getPropertyFromAspect('language', 'id');
     }
@@ -286,6 +288,7 @@ class Util
      */
     public static function getFrontendUserGroups(): array
     {
+        /* @var Context $context */
         $context = GeneralUtility::makeInstance(Context::class);
         return $context->getPropertyFromAspect('frontend.user', 'groupIds');
     }

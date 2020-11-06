@@ -104,6 +104,7 @@ class AbstractWidgetController extends CoreAbstractWidgetController
     {
         /** @var \ApacheSolrForTypo3\Solr\ConnectionManager $solrConnection */
         $solrConnection = GeneralUtility::makeInstance(ConnectionManager::class)->getConnectionByPageId($GLOBALS['TSFE']->id, Util::getLanguageUid(), $GLOBALS['TSFE']->MP);
+        /* @var Search $search */
         $search = GeneralUtility::makeInstance(Search::class, /** @scrutinizer ignore-type */ $solrConnection);
 
         return GeneralUtility::makeInstance(

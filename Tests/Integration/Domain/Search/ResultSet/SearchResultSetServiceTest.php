@@ -66,7 +66,7 @@ class SearchResultSetServiceTest extends IntegrationTest
         $solrConnection = GeneralUtility::makeInstance(ConnectionManager::class)->getConnectionByPageId(1, 0, 0);
 
         $typoScriptConfiguration = Util::getSolrConfiguration();
-
+        /* @var Search $search */
         $search = GeneralUtility::makeInstance(Search::class, $solrConnection);
         /** @var $searchResultsSetService SearchResultSetService */
         $searchResultsSetService = GeneralUtility::makeInstance(SearchResultSetService::class, $typoScriptConfiguration, $search);
@@ -202,6 +202,7 @@ class SearchResultSetServiceTest extends IntegrationTest
      */
     protected function doSearchWithResultSetService($solrConnection, $typoScriptConfiguration, $queryString = '*')
     {
+        /* @var Search $search */
         $search = GeneralUtility::makeInstance(Search::class, $solrConnection);
         /** @var $searchResultsSetService SearchResultSetService */
         $searchResultSetService = GeneralUtility::makeInstance(SearchResultSetService::class, $typoScriptConfiguration, $search);

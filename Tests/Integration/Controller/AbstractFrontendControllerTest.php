@@ -27,7 +27,6 @@ abstract class AbstractFrontendControllerTest extends IntegrationTest
         $_SERVER['HTTP_HOST'] = 'testone.site';
         $_SERVER['REQUEST_URI'] = '/en/search/';
 
-
         parent::setUp();
         $this->writeDefaultSolrTestSiteConfiguration();
     }
@@ -42,20 +41,20 @@ abstract class AbstractFrontendControllerTest extends IntegrationTest
             $fakeTSFE = $this->getConfiguredTSFE($importPageId);
             $GLOBALS['TSFE'] = $fakeTSFE;
             $fakeTSFE->newCObj();
-            /** @var ServerRequestFactory $serverRequestFactory */
+            /* @var ServerRequestFactory $serverRequestFactory */
             $serverRequestFactory = GeneralUtility::makeInstance(ServerRequestFactory::class);
             $request = $serverRequestFactory::fromGlobals();
 
-            /** @var RequestHandler $requestHandler */
+            /* @var RequestHandler $requestHandler */
             $requestHandler = GeneralUtility::makeInstance(RequestHandler::class);
             $requestHandler->handle($request);
 
-            /** @var Typo3PageIndexer $pageIndexer */
+            /* @var Typo3PageIndexer $pageIndexer */
             $pageIndexer = GeneralUtility::makeInstance(Typo3PageIndexer::class, $fakeTSFE);
             $pageIndexer->indexPage();
         }
 
-        /** @var BackendUserAuthentication $beUser */
+        /* @var BackendUserAuthentication $beUser */
         $beUser = GeneralUtility::makeInstance(BackendUserAuthentication::class);
         $GLOBALS['BE_USER'] = $beUser;
         if (!empty($existingAttributes)) {
@@ -74,7 +73,7 @@ abstract class AbstractFrontendControllerTest extends IntegrationTest
      */
     protected function getPreparedRequest($controllerName = 'Search', $actionName = 'results', $plugin = 'pi_result')
     {
-        /** @var ExtbaseRequest $request */
+        /* @var ExtbaseRequest $request */
         $request = $this->objectManager->get(ExtbaseRequest::class);
         $request->setControllerName($controllerName);
         $request->setControllerActionName($actionName);
@@ -91,7 +90,7 @@ abstract class AbstractFrontendControllerTest extends IntegrationTest
      */
     protected function getPreparedResponse(): Response
     {
-        /** @var Response $response */
+        /* @var Response $response */
         return $this->objectManager->get(Response::class);
     }
 }

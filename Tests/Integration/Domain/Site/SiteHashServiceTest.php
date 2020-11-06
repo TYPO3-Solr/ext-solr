@@ -61,6 +61,7 @@ class SiteHashServiceTest extends IntegrationTest
     public function canResolveSiteHashAllowedSites($allowedSitesConfiguration , $expectedAllowedSites)
     {
         $this->importDataSetFromFixture('can_resolve_site_hash.xml');
+        /* @var SiteHashService $siteHashService */
         $siteHashService = GeneralUtility::makeInstance(SiteHashService::class);
         $allowedSites = $siteHashService->getAllowedSitesForPageIdAndAllowedSitesConfiguration(1, $allowedSitesConfiguration);
         $this->assertSame($expectedAllowedSites, $allowedSites, 'resolveSiteHashAllowedSites did not return expected allowed sites');

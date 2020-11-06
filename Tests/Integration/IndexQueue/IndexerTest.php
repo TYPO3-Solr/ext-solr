@@ -481,6 +481,7 @@ class IndexerTest extends IntegrationTest
         $document = new Document;
         $metaData = ['item_type' => 'pages'];
         $record = [];
+        /* @var Item $item */
         $item = GeneralUtility::makeInstance(Item::class, $metaData, $record);
         $this->callInaccessibleMethod($this->indexer,'getAdditionalDocuments', $item, 0, $document);
     }
@@ -495,6 +496,7 @@ class IndexerTest extends IntegrationTest
         $document = new Document;
         $metaData = ['item_type' => 'pages'];
         $record = [];
+        /* @var Item $item */
         $item = GeneralUtility::makeInstance(Item::class, $metaData, $record);
         $this->callInaccessibleMethod($this->indexer, 'getAdditionalDocuments', $item, 0, $document);
     }
@@ -509,6 +511,7 @@ class IndexerTest extends IntegrationTest
         $document = new Document;
         $metaData = ['item_type' => 'pages'];
         $record = [];
+        /* @var Item $item */
         $item = GeneralUtility::makeInstance(Item::class, $metaData, $record);
 
         $result = $this->callInaccessibleMethod($this->indexer,'getAdditionalDocuments', $item, 0, $document);
@@ -523,6 +526,7 @@ class IndexerTest extends IntegrationTest
         $document = new Document;
         $metaData = ['item_type' => 'pages'];
         $record = [];
+        /* @var Item $item */
         $item = GeneralUtility::makeInstance(Item::class, $metaData, $record);
 
         $result = $this->callInaccessibleMethod($this->indexer,'getAdditionalDocuments', $item, 0, $document);

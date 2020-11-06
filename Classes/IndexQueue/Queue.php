@@ -334,6 +334,7 @@ class Queue
      */
     protected function getRecordCached($itemType, $itemUid, $additionalRecordFields)
     {
+        /* @var TwoLevelCache $cache */
         $cache = GeneralUtility::makeInstance(TwoLevelCache::class, /** @scrutinizer ignore-type */ 'cache_runtime');
         $cacheId = md5('Queue' . ':' . 'getRecordCached' . ':' . $itemType . ':' . $itemUid . ':' . 'pid' . $additionalRecordFields);
 

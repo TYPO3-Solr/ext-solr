@@ -26,7 +26,6 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Controller\Backend;
 
 use ApacheSolrForTypo3\Solr\Controller\Backend\PageModuleSummary;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
-use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Backend\View\PageLayoutView;
 use TYPO3\CMS\Core\Localization\LanguageService;
 

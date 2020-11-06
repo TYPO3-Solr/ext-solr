@@ -28,7 +28,6 @@ use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\Controller\Backend\Search\IndexAdministrationModuleController;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
-use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -51,6 +50,7 @@ class IndexAdministrationModuleControllerTest extends IntegrationTest
         $GLOBALS['LANG'] = $this->getMockBuilder($languageClass)->disableOriginalConstructor()->getMock($languageClass);
 
         $this->writeDefaultSolrTestSiteConfiguration();
+        /* @var ConnectionManager $connectionManager */
         $connectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
 
         $this->controller = $this->getMockBuilder(IndexAdministrationModuleController::class)->setMethods(['addFlashMessage', 'redirect'])->getMock();
@@ -64,7 +64,7 @@ class IndexAdministrationModuleControllerTest extends IntegrationTest
     {
         $this->importDataSetFromFixture('can_reload_index_configuration.xml');
 
-        /** @var SiteRepository $siteRepository */
+        /* @var SiteRepository $siteRepository */
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $selectedSite = $siteRepository->getFirstAvailableSite();
         $this->controller->setSelectedSite($selectedSite);
@@ -81,7 +81,7 @@ class IndexAdministrationModuleControllerTest extends IntegrationTest
     {
         $this->importDataSetFromFixture('can_reload_index_configuration.xml');
 
-        /** @var SiteRepository $siteRepository */
+        /* @var SiteRepository $siteRepository */
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $selectedSite = $siteRepository->getFirstAvailableSite();
         $this->controller->setSelectedSite($selectedSite);

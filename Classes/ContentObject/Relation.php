@@ -168,6 +168,7 @@ class Relation extends AbstractContentObject
             $this->configuration['foreignLabelField'] = implode('.', $foreignTableLabelFieldArr);
         }
 
+        /* @var RelationHandler $relationHandler */
         $relationHandler = GeneralUtility::makeInstance(RelationHandler::class);
         $relationHandler->start('', $foreignTableName, $mmTableName, $localRecordUid, $localTableName, $localFieldTca['config']);
         $selectUids = $relationHandler->tableArray[$foreignTableName];
@@ -187,7 +188,7 @@ class Relation extends AbstractContentObject
                 }
 
                 $this->configuration['localField'] = $foreignTableLabelField;
-
+                /* @var ContentObjectRenderer $contentObject */
                 $contentObject = GeneralUtility::makeInstance(ContentObjectRenderer::class);
                 $contentObject->start($record, $foreignTableName);
 
@@ -248,7 +249,7 @@ class Relation extends AbstractContentObject
         $foreignTableTca = $this->tcaService->getTableConfiguration($foreignTableName);
         $foreignTableLabelField = $this->resolveForeignTableLabelField($foreignTableTca);
 
-            /** @var $relationHandler RelationHandler */
+        /* @var RelationHandler $relationHandler */
         $relationHandler = GeneralUtility::makeInstance(RelationHandler::class);
 
         $itemList = $parentContentObject->data[$this->configuration['localField']] ?? '';
@@ -348,7 +349,7 @@ class Relation extends AbstractContentObject
      */
     protected function getRelatedRecords($foreignTable, int ...$uids): array
     {
-        /** @var QueryBuilder $queryBuilder */
+        /* @var QueryBuilder $queryBuilder */
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($foreignTable);
         $queryBuilder->select('*')
             ->from($foreignTable)

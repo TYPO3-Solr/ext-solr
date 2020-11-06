@@ -224,7 +224,7 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
         $uriBuilder = $this->getControllerContext()->getUriBuilder();
         $pluginNamespace = $this->getTypoScriptConfiguration()->getSearchPluginNamespace();
         $suggestUrl = $uriBuilder->reset()->setTargetPageUid($pageUid)->setTargetPageType($this->arguments['suggestPageType'])->setUseCacheHash(false)->setArguments([$pluginNamespace => ['additionalFilters' => $additionalFilters]])->build();
-
+        /* @var UrlHelper $urlService */
         $urlService = GeneralUtility::makeInstance(UrlHelper::class, $suggestUrl);
         $suggestUrl = $urlService->removeQueryParameter('cHash')->getUrl();
 
