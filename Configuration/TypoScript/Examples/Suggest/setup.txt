@@ -7,7 +7,7 @@ tx_solr_suggest {
         disableAllHeaderCode = 1
         xhtml_cleaning = 0
         admPanel = 0
-        additionalHeaders = Content-type: text/plain
+        additionalHeaders.10.header = Content-type: application/javascript
         no_cache = 0
     }
 
@@ -21,6 +21,10 @@ tx_solr_suggest {
         action = suggest
     }
 }
+
+[globalString = GP:tx_solr|callback = ]
+    tx_solr_suggest.config.additionalHeaders.10.header = Content-type: application/json
+[global]
 
 # Enable suggest
 plugin.tx_solr {
