@@ -171,6 +171,7 @@ class SolrStatus extends AbstractSolrStatus
     protected function checkAccessFilter(SolrAdminService $solrAdminService)
     {
         try {
+            /* @var AccessFilterPluginInstalledStatus $accessFilterPluginStatus */
             $accessFilterPluginStatus = GeneralUtility::makeInstance(AccessFilterPluginInstalledStatus::class);
             $accessFilterPluginVersion = $accessFilterPluginStatus->getInstalledPluginVersion($solrAdminService);
             $accessFilterMessage = $accessFilterPluginVersion;

@@ -1,34 +1,31 @@
 <?php
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\Controller;
 
-use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use ApacheSolrForTypo3\Solr\Typo3PageIndexer;
-use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
-use TYPO3\CMS\Core\Http\MiddlewareDispatcher;
-use TYPO3\CMS\Core\Http\MiddlewareStackResolver;
-use TYPO3\CMS\Core\Http\ServerRequest;
+use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
 use TYPO3\CMS\Core\Http\ServerRequestFactory;
-use TYPO3\CMS\Core\Http\Stream;
-use TYPO3\CMS\Core\Http\Uri;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Request as ExtbaseRequest;
-use TYPO3\CMS\Extbase\Mvc\Web\Response;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Mvc\Response;
 use TYPO3\CMS\Frontend\Http\RequestHandler;
-use TYPO3\CMS\Frontend\Page\PageGenerator;
 
-abstract class AbstractFrontendControllerTest  extends IntegrationTest {
+/**
+ * Abstract frontend controller test class
+ *
+ * @author Timo Hund <timo.hund@dkd.de>
+ */
+abstract class AbstractFrontendControllerTest extends IntegrationTest
+{
 
     /**
-     * @return void
+     * @throws NoSuchCacheException
      */
     public function setUp()
     {
         $_SERVER['HTTP_HOST'] = 'testone.site';
         $_SERVER['REQUEST_URI'] = '/en/search/';
-
 
         parent::setUp();
         $this->writeDefaultSolrTestSiteConfiguration();
@@ -44,26 +41,20 @@ abstract class AbstractFrontendControllerTest  extends IntegrationTest {
             $fakeTSFE = $this->getConfiguredTSFE($importPageId);
             $GLOBALS['TSFE'] = $fakeTSFE;
             $fakeTSFE->newCObj();
+            /* @var ServerRequestFactory $serverRequestFactory */
+            $serverRequestFactory = GeneralUtility::makeInstance(ServerRequestFactory::class);
+            $request = $serverRequestFactory::fromGlobals();
 
-            if(Util::getIsTYPO3VersionBelow10()) {
-                $fakeTSFE->preparePageContentGeneration();
-                PageGenerator::renderContent();
-            } else {
-                    /** @var ServerRequestFactory $serverRequestFactory */
-                $serverRequestFactory = GeneralUtility::makeInstance(ServerRequestFactory::class);
-                $request = $serverRequestFactory::fromGlobals();
+            /* @var RequestHandler $requestHandler */
+            $requestHandler = GeneralUtility::makeInstance(RequestHandler::class);
+            $requestHandler->handle($request);
 
-                    /** @var RequestHandler $requestHandler */
-                $requestHandler = GeneralUtility::makeInstance(RequestHandler::class);
-                $requestHandler->handle($request);
-            }
-
-            /** @var $pageIndexer \ApacheSolrForTypo3\Solr\Typo3PageIndexer */
+            /* @var Typo3PageIndexer $pageIndexer */
             $pageIndexer = GeneralUtility::makeInstance(Typo3PageIndexer::class, $fakeTSFE);
             $pageIndexer->indexPage();
         }
 
-        /** @var $beUser  \TYPO3\CMS\Core\Authentication\BackendUserAuthentication */
+        /* @var BackendUserAuthentication $beUser */
         $beUser = GeneralUtility::makeInstance(BackendUserAuthentication::class);
         $GLOBALS['BE_USER'] = $beUser;
         if (!empty($existingAttributes)) {
@@ -82,15 +73,10 @@ abstract class AbstractFrontendControllerTest  extends IntegrationTest {
      */
     protected function getPreparedRequest($controllerName = 'Search', $actionName = 'results', $plugin = 'pi_result')
     {
-        /** @var ExtbaseRequest $request */
+        /* @var ExtbaseRequest $request */
         $request = $this->objectManager->get(ExtbaseRequest::class);
         $request->setControllerName($controllerName);
         $request->setControllerActionName($actionName);
-
-        //@todo can be dropped when TYPO3 9 support will be dropped
-        if(Util::getIsTYPO3VersionBelow10()) {
-            $request->setControllerVendorName('ApacheSolrForTypo3');
-        }
 
         $request->setPluginName($plugin);
         $request->setFormat('html');
@@ -99,15 +85,12 @@ abstract class AbstractFrontendControllerTest  extends IntegrationTest {
         return $request;
     }
 
-
     /**
      * @return Response
      */
-    protected function getPreparedResponse()
+    protected function getPreparedResponse(): Response
     {
-        /** @var $response Response */
-        $response = $this->objectManager->get(Response::class);
-
-        return $response;
+        /* @var Response $response */
+        return $this->objectManager->get(Response::class);
     }
 }

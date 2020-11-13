@@ -93,6 +93,7 @@ abstract class AbstractUriStrategy
     public function getPageIndexingUriFromPageItemAndLanguageId(Item $item, int $language = 0, string $mountPointParameter = '', $options = []): string
     {
         $pageIndexUri = $this->buildPageIndexingUriFromPageItemAndLanguageId($item, $language, $mountPointParameter);
+        /* @var UrlHelper $urlHelper */
         $urlHelper = GeneralUtility::makeInstance(UrlHelper::class, $pageIndexUri);
         $overrideConfiguration = is_array($options['frontendDataHelper.']) ? $options['frontendDataHelper.'] : [];
         $urlHelper = $this->applyTypoScriptOverridesOnIndexingUrl($urlHelper, $overrideConfiguration);

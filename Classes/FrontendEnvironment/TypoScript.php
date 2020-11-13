@@ -72,6 +72,7 @@ class TypoScript implements SingletonInterface
      */
     private function getConfigurationPageIdToUse($pageId)
     {
+        /* @var ExtensionConfiguration $extensionConfiguration */
         $extensionConfiguration = GeneralUtility::makeInstance(ExtensionConfiguration::class);
         if ($extensionConfiguration->getIsUseConfigurationFromClosestTemplateEnabled()) {
             /** @var $configurationPageResolve ConfigurationPageResolver */
@@ -95,6 +96,7 @@ class TypoScript implements SingletonInterface
         if (is_int($language)) {
             GeneralUtility::makeInstance(FrontendEnvironment::class)->changeLanguageContext((int)$pageId, (int)$language);
         }
+        /* @var RootlineUtility $rootlineUtility */
         $rootlineUtility = GeneralUtility::makeInstance(RootlineUtility::class, $pageId);
         try {
             $rootLine = $rootlineUtility->get();
@@ -125,6 +127,7 @@ class TypoScript implements SingletonInterface
      */
     private function buildTypoScriptConfigurationFromArray(array $configurationToUse, $pageId, $languageId, $typoScriptPath)
     {
+        /* @var ConfigurationManager $configurationManager */
         $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
         return $configurationManager->getTypoScriptConfiguration($configurationToUse, $pageId, $languageId, $typoScriptPath);
     }

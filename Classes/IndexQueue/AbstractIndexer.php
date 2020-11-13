@@ -140,6 +140,7 @@ abstract class AbstractIndexer
         $solrFieldName,
         array $data
     ) {
+        /* @var ContentObjectRenderer $contentObject */
         $contentObject = GeneralUtility::makeInstance(ContentObjectRenderer::class);
 
         if (isset($indexingConfiguration[$solrFieldName . '.'])) {
@@ -168,6 +169,7 @@ abstract class AbstractIndexer
         ) {
             $referencedTsPath = trim(substr($indexingConfiguration[$solrFieldName],
                 1));
+            /* @var TypoScriptParser $typoScriptParser */
             $typoScriptParser = GeneralUtility::makeInstance(TypoScriptParser::class);
             // $name and $conf is loaded with the referenced values.
             list($name, $conf) = $typoScriptParser->getVal($referencedTsPath,

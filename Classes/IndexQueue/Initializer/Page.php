@@ -146,6 +146,7 @@ class Page extends AbstractInitializer
             } else {
                 // Add page like a regular page, as only the sub tree is
                 // mounted. The page itself has its own content.
+                /* @var Queue $indexQueue */
                 $indexQueue = GeneralUtility::makeInstance(Queue::class);
                 $indexQueue->updateItem($this->type, $mountPage['uid']);
             }
@@ -192,7 +193,7 @@ class Page extends AbstractInitializer
 
         if (empty($mountPage['mountPageSource'])) {
             $isValidMountPage = false;
-
+            /* @var FlashMessage $flashMessage */
             $flashMessage = GeneralUtility::makeInstance(
                 FlashMessage::class,
                 'Property "Mounted page" must not be empty. Invalid Mount Page configuration for page ID ' . $mountPage['uid'] . '.',
@@ -205,7 +206,7 @@ class Page extends AbstractInitializer
 
         if (!$this->mountedPageExists($mountPage['mountPageSource'])) {
             $isValidMountPage = false;
-
+            /* @var FlashMessage $flashMessage */
             $flashMessage = GeneralUtility::makeInstance(
                 FlashMessage::class,
                 'The mounted page must be accessible in the frontend. '
@@ -333,8 +334,8 @@ class Page extends AbstractInitializer
         $mountPageSourceId = $mountPage['mountPageSource'];
         $mountPageIdentifier = $this->getMountPointIdentifier($mountPage);
 
-        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         /* @var $siteRepository SiteRepository */
+        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $mountedSite = $siteRepository->getSiteByPageId($mountPageSourceId, $mountPageIdentifier);
 
         return $mountedSite ? $mountedSite->getPages($mountPageSourceId) : [];

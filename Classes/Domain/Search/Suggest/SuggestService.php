@@ -36,6 +36,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Solr\ParsingUtil;
+use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
@@ -164,7 +165,9 @@ class SuggestService {
     {
         $pageId = $this->tsfe->getRequestedId();
         $languageId = Util::getLanguageUid();
+        /* @var SolrConnection $solr */
         $solr = GeneralUtility::makeInstance(ConnectionManager::class)->getConnectionByPageId($pageId, $languageId);
+        /* @var Search $search */
         $search = GeneralUtility::makeInstance(Search::class, /** @scrutinizer ignore-type */ $solr);
         $response = $search->search($suggestQuery, 0, 0);
 

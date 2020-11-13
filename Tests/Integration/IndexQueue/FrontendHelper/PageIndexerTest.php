@@ -324,11 +324,7 @@ class PageIndexerTest extends IntegrationTest
     public function phpProcessDoesNotDieIfPageIsNotAvailable() {
         $this->applyUsingErrorControllerForCMS9andAbove();
         $this->registerShutdownFunctionToPrintExplanationOf404HandlingOnCMSIfDieIsCalled();
-        if (Util::getIsTYPO3VersionBelow10()) {
-            $this->expectException(PageNotFoundException::class);
-        } else {
-            $this->expectException(\InvalidArgumentException::class);
-        }
+        $this->expectException(\InvalidArgumentException::class);
 
         $this->importDataSetFromFixture('does_not_die_if_page_not_available.xml');
         $this->executePageIndexer(null);

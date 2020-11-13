@@ -89,6 +89,7 @@ class SiteRepositoryTest extends IntegrationTest
     public function canGetSiteByRootPageIdNonExistingRoot()
     {
         $this->expectException(\InvalidArgumentException::class);
+        /* @var SiteRepository $siteRepository */
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $this->importDataSetFromFixture('can_get_site_by_root_page_id.xml');
         $siteRepository->getSiteByRootPageId(42);

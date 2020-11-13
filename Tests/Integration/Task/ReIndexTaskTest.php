@@ -111,6 +111,7 @@ class ReIndexTaskTest extends IntegrationTest
         $this->importDataSetFromFixture('can_reindex_task_fill_queue.xml');
         $this->assertEmptyIndexQueue();
 
+        /* @var SiteRepository $siteRepository */
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $site = $siteRepository->getFirstAvailableSite();
         $this->task->setRootPageId($site->getRootPageId());
@@ -128,6 +129,7 @@ class ReIndexTaskTest extends IntegrationTest
         $this->importDataSetFromFixture('can_reindex_task_fill_queue.xml');
         $this->assertEmptyIndexQueue();
 
+        /* @var SiteRepository $siteRepository */
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $site = $siteRepository->getFirstAvailableSite();
         $this->task->setRootPageId($site->getRootPageId());
@@ -146,6 +148,7 @@ class ReIndexTaskTest extends IntegrationTest
         $this->importDataSetFromFixture('can_reindex_task_fill_queue.xml');
 
         // fill the solr
+        /* @var SiteRepository $siteRepository */
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $site = $siteRepository->getFirstAvailableSite();
         $this->indexQueue->updateItem('pages', 1);

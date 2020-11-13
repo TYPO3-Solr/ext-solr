@@ -25,28 +25,14 @@ namespace ApacheSolrForTypo3\Solr;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
-use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
-use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationPageResolver;
-use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use TYPO3\CMS\Core\Context\Context;
-use TYPO3\CMS\Core\Context\LanguageAspect;
-use TYPO3\CMS\Core\Context\LanguageAspectFactory;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
-use TYPO3\CMS\Core\Information\Typo3Version;
-use TYPO3\CMS\Core\Site\SiteFinder;
-use TYPO3\CMS\Core\TypoScript\TemplateService;
-use TYPO3\CMS\Core\Utility\RootlineUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Core\TypoScript\ExtendedTemplateService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
-use TYPO3\CMS\Frontend\Page\PageRepository;
-use TYPO3\CMS\Core\Context\UserAspect;
-use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
-use TYPO3\CMS\Core\Http\ServerRequest;
 
 /**
  * Utility class for tx_solr
@@ -55,7 +41,6 @@ use TYPO3\CMS\Core\Http\ServerRequest;
  */
 class Util
 {
-
     /**
      * Generates a document id for documents representing page records.
      *
@@ -90,7 +75,7 @@ class Util
      */
     public static function getDocumentId($table, $rootPageId, $uid, $additionalIdParameters = '')
     {
-            /** @var SiteRepository $siteRepository */
+        /* @var SiteRepository $siteRepository */
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $site = $siteRepository->getSiteByPageId($rootPageId);
         $siteHash = $site->getSiteHash();
@@ -110,6 +95,7 @@ class Util
      */
     public static function getSolrConfiguration()
     {
+        /* @var ConfigurationManager $configurationManager */
         $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
         return $configurationManager->getTypoScriptConfiguration();
     }
@@ -120,9 +106,8 @@ class Util
      *
      * @param int $pageId Id of the (root) page to get the Solr configuration from.
      * @param int $language System language uid, optional, defaults to 0
-     * @deprecated
-     *
      * @return TypoScriptConfiguration The Solr configuration for the requested tree.
+     * @deprecated Will be removed with EXT:solr 12. Use FrontendEnvironment directly
      */
     public static function getSolrConfigurationFromPageId($pageId, $initializeTsfe = false, $language = 0)
     {
@@ -141,10 +126,10 @@ class Util
      * @param int $pageId Id of the (root) page to get the Solr configuration from.
      * @param string $path The TypoScript configuration path to retrieve.
      * @param bool $initializeTsfe
-     * @deprecated
      * @param int $language System language uid, optional, defaults to 0
      * @param bool $useTwoLevelCache Flag to enable the two level cache for the typoscript configuration array
      * @return TypoScriptConfiguration The Solr configuration for the requested tree.
+     * @deprecated Will be removed with EXT:solr 12. Use FrontendEnvironment directly
      */
     public static function getConfigurationFromPageId($pageId, $path, $initializeTsfe = false, $language = 0, $useTwoLevelCache = true)
     {
@@ -161,10 +146,10 @@ class Util
      * @param $pageId
      * @param int $language
      * @param bool $useCache
-     * @deprecated
      * @throws SiteNotFoundException
      * @throws \TYPO3\CMS\Core\Error\Http\ServiceUnavailableException
      * @throws \TYPO3\CMS\Core\Http\ImmediateResponseException
+     * @deprecated Will be removed with EXT:solr 12. Use FrontendEnvironment directly
      */
     public static function initializeTsfe($pageId, $language = 0, $useCache = true)
     {
@@ -199,9 +184,8 @@ class Util
      *
      * @param array $pageRecord The pages database row
      * @param string $configurationName The name of the configuration to use.
-     * @deprecated
-     *
      * @return bool TRUE if the page type is allowed, otherwise FALSE
+     * @deprecated Will be removed with EXT:solr 12. Use FrontendEnvironment directly
      */
     public static function isAllowedPageType(array $pageRecord, $configurationName = 'pages')
     {
@@ -214,8 +198,8 @@ class Util
      *
      * @param int $pageId Page ID
      * @param string $configurationName The name of the configuration to use.
-     * @deprecated
      * @return array Allowed page types to compare to a doktype of a page record
+     * @deprecated Will be removed with EXT:solr 12. Use FrontendEnvironment directly
      */
     public static function getAllowedPageTypes($pageId, $configurationName = 'pages')
     {
@@ -230,8 +214,8 @@ class Util
      * is set to "auto".
      *
      * @param TypoScriptFrontendController $TSFE
-     * @deprecated
      * @return string
+     * @deprecated Will be removed with with EXT:solr 12.
      */
     public static function getAbsRefPrefixFromTSFE(TypoScriptFrontendController $TSFE)
     {
@@ -286,6 +270,7 @@ class Util
      */
     public static function getLanguageUid(): int
     {
+        /* @var Context $context */
         $context = GeneralUtility::makeInstance(Context::class);
         return (int)$context->getPropertyFromAspect('language', 'id');
     }
@@ -303,17 +288,8 @@ class Util
      */
     public static function getFrontendUserGroups(): array
     {
+        /* @var Context $context */
         $context = GeneralUtility::makeInstance(Context::class);
         return $context->getPropertyFromAspect('frontend.user', 'groupIds');
     }
-
-    /**
-     * @todo This method is just added for compatibility checks for TYPO3 version 9 and will be removed when TYPO9 support is dropped
-     * @return boolean
-     */
-    public static function getIsTYPO3VersionBelow10()
-    {
-        return GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 10;
-    }
-
 }

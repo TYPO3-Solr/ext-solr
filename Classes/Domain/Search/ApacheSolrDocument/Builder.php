@@ -202,6 +202,7 @@ class Builder
      */
     protected function getSiteByPageId($pageId)
     {
+        /* @var SiteRepository $siteRepository */
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         return $siteRepository->getSiteByPageId($pageId);
     }

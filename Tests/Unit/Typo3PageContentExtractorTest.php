@@ -56,7 +56,7 @@ class Typo3PageContentExtractorTest extends UnitTest
     {
         $content = '<!-- TYPO3SEARCH_begin -->In Olten&nbsp;ist<!-- TYPO3SEARCH_end -->';
         $expectedResult = 'In Olten ist';
-
+        /* @var Typo3PageContentExtractor $contentExtractor */
         $contentExtractor = GeneralUtility::makeInstance(Typo3PageContentExtractor::class, $content);
         $contentExtractor->setConfiguration($this->typoScripConfigurationMock);
         $actualResult = $contentExtractor->getIndexableContent();
@@ -71,6 +71,7 @@ class Typo3PageContentExtractorTest extends UnitTest
         $content = '<!-- TYPO3SEARCH_begin --><div class="typo3-search-exclude">Exclude content</div><p>Expected content</p><!-- TYPO3SEARCH_end -->';
         $expectedResult = '<!-- TYPO3SEARCH_begin --><p>Expected content</p><!-- TYPO3SEARCH_end -->';
 
+        /* @var Typo3PageContentExtractor $contentExtractor */
         $contentExtractor = GeneralUtility::makeInstance(Typo3PageContentExtractor::class, $content);
         $contentExtractor->setConfiguration($this->typoScripConfigurationMock);
 
@@ -85,6 +86,7 @@ class Typo3PageContentExtractorTest extends UnitTest
     {
         $content = '<!-- TYPO3SEARCH_begin --><div class="typo3-search-exclude">Remove me</div><p>Was ein schöner Tag</p><!-- TYPO3SEARCH_end -->';
 
+        /* @var Typo3PageContentExtractor $contentExtractor */
         $contentExtractor = GeneralUtility::makeInstance(Typo3PageContentExtractor::class, $content);
         $contentExtractor->setConfiguration($this->typoScripConfigurationMock);
 
@@ -101,6 +103,7 @@ class Typo3PageContentExtractorTest extends UnitTest
     {
         $content = '<!-- TYPO3SEARCH_begin --><div class="typo3-search-exclude">Remove me</div><p>100€</p><!-- TYPO3SEARCH_end -->';
 
+        /* @var Typo3PageContentExtractor $contentExtractor */
         $contentExtractor = GeneralUtility::makeInstance(Typo3PageContentExtractor::class, $content);
         $contentExtractor->setConfiguration($this->typoScripConfigurationMock);
 
@@ -152,6 +155,7 @@ class Typo3PageContentExtractorTest extends UnitTest
     {
         $content = '<!-- TYPO3SEARCH_begin -->' . $content . '<!-- TYPO3SEARCH_end -->';
 
+        /* @var Typo3PageContentExtractor $contentExtractor */
         $contentExtractor = GeneralUtility::makeInstance(Typo3PageContentExtractor::class, $content);
         $contentExtractor->setConfiguration($this->typoScripConfigurationMock);
 

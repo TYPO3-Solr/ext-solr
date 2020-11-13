@@ -164,7 +164,7 @@ abstract class Site implements SiteInterface
             $rootPageId = (int)$this->rootPage['uid'];
             $pageIds[] = $rootPageId;
         }
-
+        /* @var ConfigurationAwareRecordService $configurationAwareRecordService */
         $configurationAwareRecordService = GeneralUtility::makeInstance(ConfigurationAwareRecordService::class);
         // Fetch configuration in order to be able to read initialPagesAdditionalWhereClause
         $solrConfiguration = $this->getSolrConfiguration();

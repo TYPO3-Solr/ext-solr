@@ -77,7 +77,7 @@ class Classification extends AbstractContentObject
             $data = $this->cObj->stdWrap($data, $conf);
         }
         $classifications = $this->buildClassificationsFromConfiguration($configuredMappedClasses);
-        /** @var $classificationService ClassificationService */
+        /* @var ClassificationService $classificationService */
         $classificationService = GeneralUtility::makeInstance(ClassificationService::class);
 
         return serialize($classificationService->getMatchingClassNames((string)$data, $classifications));

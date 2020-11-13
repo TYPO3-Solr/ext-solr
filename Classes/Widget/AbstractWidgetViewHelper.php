@@ -16,7 +16,7 @@ namespace ApacheSolrForTypo3\Solr\Widget;
 
 use ApacheSolrForTypo3\Solr\Mvc\Controller\SolrControllerContext;
 use ApacheSolrForTypo3\Solr\Widget\WidgetRequest as SolrFluidWidgetRequest;
-use TYPO3\CMS\Extbase\Mvc\Web\Response;
+use TYPO3\CMS\Extbase\Mvc\Response;
 use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 use TYPO3Fluid\Fluid\Core\Parser\SyntaxTree\RootNode;
 use TYPO3Fluid\Fluid\Core\ViewHelper\ViewHelperInterface;
@@ -40,7 +40,6 @@ use TYPO3\CMS\Extbase\Service\ExtensionService;
  */
 abstract class AbstractWidgetViewHelper extends AbstractCoreWidgetViewHelper implements ViewHelperInterface
 {
-
     /**
      * The Controller associated to this widget.
      * This needs to be filled by the individual subclass by di
@@ -170,6 +169,7 @@ abstract class AbstractWidgetViewHelper extends AbstractCoreWidgetViewHelper imp
      */
     public function setChildNodes(array $childNodes)
     {
+        /* @var RootNode $rootNode */
         $rootNode = $this->objectManager->get(RootNode::class);
         foreach ($childNodes as $childNode) {
             $rootNode->addChildNode($childNode);
@@ -203,11 +203,12 @@ abstract class AbstractWidgetViewHelper extends AbstractCoreWidgetViewHelper imp
             }
             throw new MissingControllerException('initiateSubRequest() can not be called if there is no controller inside $this->controller. Make sure to add a corresponding injectController method to your WidgetViewHelper class "' . get_class($this) . '".', 1284401632);
         }
-            /** @var $subRequest \ApacheSolrForTypo3\Solr\Widget\WidgetRequest */
+        /** @var $subRequest \ApacheSolrForTypo3\Solr\Widget\WidgetRequest */
         $subRequest = $this->objectManager->get(SolrFluidWidgetRequest::class);
         $subRequest->setWidgetContext($this->widgetContext);
 
         $this->passArgumentsToSubRequest($subRequest);
+        /* @var Response $subResponse */
         $subResponse = $this->objectManager->get(Response::class);
         $this->controller->processRequest($subRequest, $subResponse);
         return $subResponse;

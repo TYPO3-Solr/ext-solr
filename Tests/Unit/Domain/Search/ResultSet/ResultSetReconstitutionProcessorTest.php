@@ -34,7 +34,6 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\QueryGrou
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\ResultSetReconstitutionProcessor;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Tests\Unit\Helper\FakeObjectManager;
-use ApacheSolrForTypo3\Solr\Util;
 
 /**
  * Unit test case for the ObjectReconstitutionProcessor.
@@ -1118,12 +1117,7 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
         $searchResultSet->getUsedSearchRequest()->expects($this->any())->method('getActiveFacetNames')->will($this->returnValue([]));
 
         $processor = new ResultSetReconstitutionProcessor();
-
-        if(Util::getIsTYPO3VersionBelow10()) {
-            $fakeObjectManager = new \ApacheSolrForTypo3\Solr\Tests\Unit\Helper\LegacyFakeObjectManager();
-        } else {
-            $fakeObjectManager = new \ApacheSolrForTypo3\Solr\Tests\Unit\Helper\FakeObjectManager();
-        }
+        $fakeObjectManager = new FakeObjectManager();
         $processor->setObjectManager($fakeObjectManager);
         return $processor;
     }

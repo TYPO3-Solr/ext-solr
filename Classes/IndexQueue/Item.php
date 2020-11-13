@@ -254,6 +254,7 @@ class Item
      */
     public function getSite()
     {
+        /* @var SiteRepository $siteRepository */
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         return $siteRepository->getSiteByRootPageId($this->rootPageUid);
     }

@@ -62,6 +62,7 @@ class TwoLevelCache
     {
         $this->cacheName = $cacheName;
         if ($secondaryCacheFrontend == null) {
+            /* @var CacheManager $cacheManager */
             $cacheManager = GeneralUtility::makeInstance(CacheManager::class);
             $this->secondLevelCache = $cacheManager->getCache($cacheName);
         } else {

@@ -56,6 +56,7 @@ class DateRangeUrlDecoder implements FacetUrlDecoderInterface
     {
         list($dateRangeStart, $dateRangeEnd) = explode(self::DELIMITER, $dateRange);
 
+        /* @var FormatService $parserRegistry */
         $formatService = GeneralUtility::makeInstance(FormatService::class);
         $fromPart = '*';
         if($dateRangeStart !== ''){

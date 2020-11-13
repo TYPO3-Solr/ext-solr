@@ -70,6 +70,7 @@ class IndexQueueWorkerTaskAdditionalFieldProvider implements AdditionalFieldProv
     ) {
         /** @var $task IndexQueueWorkerTask */
         $additionalFields = [];
+        /* @var SiteSelectorField $siteSelectorField */
         $siteSelectorField = GeneralUtility::makeInstance(SiteSelectorField::class);
 
         if (!$this->isTaskInstanceofIndexQueueWorkerTask($task)) {

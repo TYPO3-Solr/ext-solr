@@ -271,6 +271,7 @@ class SiteRepository
 
         $siteHash = $this->getSiteHashForDomain($domain);
         $defaultLanguage = $typo3Site->getDefaultLanguage()->getLanguageId();
+        /* @var PagesRepository $pageRepository */
         $pageRepository = GeneralUtility::makeInstance(PagesRepository::class);
         $availableLanguageIds = array_map(function($language) {
             return $language->getLanguageId();

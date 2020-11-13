@@ -94,11 +94,11 @@ class ext_update {
     protected function generateOutput() {
         $flashMessages = [];
         foreach ($this->messages as $messageItem) {
-            /** @var \TYPO3\CMS\Core\Messaging\FlashMessage $flashMessage */
+            /* @var FlashMessage $flashMessage */
             $flashMessages[] = GeneralUtility::makeInstance(FlashMessage::class, $messageItem[2], $messageItem[1], $messageItem[0]);
         }
 
-            /** @var $resolver FlashMessageRendererResolver */
+        /* @var FlashMessageRendererResolver $resolver */
         $resolver = GeneralUtility::makeInstance(FlashMessageRendererResolver::class);
         $renderer = $resolver->resolve();
         return $renderer->render($flashMessages);

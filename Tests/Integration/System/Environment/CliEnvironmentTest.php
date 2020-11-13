@@ -73,6 +73,7 @@ class CliEnvironmentTest extends IntegrationTest
      */
     public function canInitializeTwiceWhenUsedAsSingleton()
     {
+        /* @var CliEnvironment $cliEnvironment */
         $cliEnvironment = GeneralUtility::makeInstance(CliEnvironment::class);
 
         // the result should be true because the constant should have been set

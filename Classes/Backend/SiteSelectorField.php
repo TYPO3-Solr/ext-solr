@@ -49,6 +49,7 @@ class SiteSelectorField
         $selectorName,
         Site $selectedSite = null
     ) {
+        /* @var SiteRepository $siteRepository */
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
 
         $sites = $siteRepository->getAvailableSites();

@@ -34,7 +34,6 @@ use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\AuthorizationService;
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequestHandler;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
-use ApacheSolrForTypo3\Solr\Util;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -76,9 +75,7 @@ class FrontendUserAuthenticator implements MiddlewareInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        if (Util::getIsTYPO3VersionBelow10()
-            || !$request->hasHeader(PageIndexerRequest::SOLR_INDEX_HEADER)
-        ) {
+        if (!$request->hasHeader(PageIndexerRequest::SOLR_INDEX_HEADER)) {
             return $handler->handle($request);
         }
 

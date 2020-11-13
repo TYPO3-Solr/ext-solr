@@ -194,6 +194,7 @@ class IndexingConfigurationSelectorField
             'fieldTSConfig' => ['noMatchingValue_label' => '']
         ];
 
+        /* @var NodeFactory $nodeFactory */
         $nodeFactory = GeneralUtility::makeInstance(NodeFactory::class);
         $options = [
             'renderType' => 'selectCheckBox', 'table' => 'tx_solr_classes_backend_indexingconfigurationselector',
@@ -203,6 +204,7 @@ class IndexingConfigurationSelectorField
         $options['parameterArray']['fieldTSConfig']['noMatchingValue_label'] = '';
 
         $selectCheckboxResult = $nodeFactory->create($options)->render();
+        /* @var FormResultCompiler $formResultCompiler */
         $formResultCompiler = GeneralUtility::makeInstance(FormResultCompiler::class);
         $formResultCompiler->mergeResult($selectCheckboxResult);
 

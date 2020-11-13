@@ -144,6 +144,7 @@ class PageFieldMappingIndexer implements SubstitutePageIndexer
             $pageRecord = AbstractIndexer::addVirtualContentFieldToRecord($pageDocument, $pageRecord);
 
             // configuration found => need to resolve a cObj
+            /* @var ContentObjectRenderer $contentObject */
             $contentObject = GeneralUtility::makeInstance(ContentObjectRenderer::class);
             $contentObject->start($pageRecord, 'pages');
 

@@ -18,6 +18,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\FrequentSearches\FrequentSearchesServi
 use ApacheSolrForTypo3\Solr\Widget\AbstractWidgetController;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
+use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -31,17 +32,24 @@ class FrequentlySearchedController extends AbstractWidgetController
     /**
      * Initializes the cache for this command.
      *
-     * @return \TYPO3\CMS\Core\Cache\AbstractFrontend
+     * @return FrontendInterface
      */
     protected function getInitializedCache()
     {
         $cacheIdentifier = 'tx_solr';
         try {
+            /* @var FrontendInterface $cacheInstance */
             $cacheInstance = GeneralUtility::makeInstance(CacheManager::class)->getCache($cacheIdentifier);
         } catch (NoSuchCacheException $e) {
-            /** @var t3lib_cache_Factory $typo3CacheFactory */
+            // @TODO Class t3lib_cache_Factory does not exists anymore.
+            /* @var t3lib_cache_Factory $typo3CacheFactory */
             $typo3CacheFactory = $GLOBALS['typo3CacheFactory'];
-            $cacheInstance = $typo3CacheFactory->create($cacheIdentifier, $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations'][$cacheIdentifier]['frontend'], $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations'][$cacheIdentifier]['backend'], $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations'][$cacheIdentifier]['options']);
+            $cacheInstance = $typo3CacheFactory->create(
+                $cacheIdentifier,
+                $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations'][$cacheIdentifier]['frontend'],
+                $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations'][$cacheIdentifier]['backend'],
+                $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations'][$cacheIdentifier]['options']
+            );
         }
 
         return $cacheInstance;
@@ -56,6 +64,7 @@ class FrequentlySearchedController extends AbstractWidgetController
         $cache = $this->getInitializedCache();
         $configuration = $this->controllerContext->getTypoScriptConfiguration();
 
+        /* @var FrequentSearchesService $frequentSearchesService */
         $frequentSearchesService = GeneralUtility::makeInstance(
             FrequentSearchesService::class,
             /** @scrutinizer ignore-type */ $configuration,

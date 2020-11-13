@@ -87,12 +87,6 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
     public function activate()
     {
         $pageIndexingHookRegistration = PageIndexer::class;
-
-        if (Util::getIsTYPO3VersionBelow10()) { // @todo: remove by dropping TYPO3 9.5 support, See: https://docs.typo3.org/c/typo3/cms-core/10.4/en-us/Changelog/10.0/Breaking-87193-DeprecatedFunctionalityRemoved.html
-            $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['initFEuser'][__CLASS__] = $pageIndexingHookRegistration . '->authorizeFrontendUser';
-            // disable TSFE cache for TYPO3 v9
-            $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['tslib_fe-PostProc'][__CLASS__] = $pageIndexingHookRegistration . '->disableCaching';
-        }
         $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['pageIndexing'][__CLASS__] = $pageIndexingHookRegistration;
 
         // indexes fields defined in plugin.tx_solr.index.queue.pages.fields
@@ -121,6 +115,7 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
      *
      * @return void
      * @noinspection PhpUnused
+     * @deprecated Dropped with END of TYPO3 9 Support
      */
     public function authorizeFrontendUser()
     {
@@ -346,7 +341,7 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
      */
     protected function getSolrConnection(Item $indexQueueItem)
     {
-        /** @var $connectionManager ConnectionManager */
+        /* @var ConnectionManager $connectionManager */
         $connectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
 
         return $connectionManager->getConnectionByRootPageId(
@@ -362,7 +357,7 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
      */
     protected function getIndexQueueItem()
     {
-        /** @var $indexQueue Queue */
+        /* @var Queue $indexQueue */
         $indexQueue = GeneralUtility::makeInstance(Queue::class);
         return $indexQueue->getItem($this->request->getParameter('item'));
     }

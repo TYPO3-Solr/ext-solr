@@ -28,13 +28,13 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Controller;
 use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageFieldMappingIndexer;
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
 use ApacheSolrForTypo3\Solr\Controller\SearchController;
-use ApacheSolrForTypo3\Solr\Util;
+use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\TimeTracker\TimeTracker;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManager as ExtbaseConfigurationManager;
 use TYPO3\CMS\Extbase\Mvc\Exception\StopActionException;
 use TYPO3\CMS\Extbase\Mvc\Request;
-use TYPO3\CMS\Extbase\Mvc\Web\Response;
+use TYPO3\CMS\Extbase\Mvc\Response;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 use TYPO3\CMS\Extbase\Service\EnvironmentService;
@@ -74,13 +74,13 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         parent::setUp();
         $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
 
-        $languageClass = Util::getIsTYPO3VersionBelow10() ? \TYPO3\CMS\Lang\LanguageService::class : \TYPO3\CMS\Core\Localization\LanguageService::class;
+        $languageClass = LanguageService::class;
         $GLOBALS['LANG'] = GeneralUtility::makeInstance($languageClass);
         $this->fakeSingletonsForFrontendContext();
 
         $GLOBALS['TT'] = $this->getMockBuilder(TimeTracker::class)->disableOriginalConstructor()->getMock();
 
-        /** @var  $searchController SearchController */
+        /* @var SearchController $searchController */
         $this->searchController = $this->objectManager->get(SearchController::class);
         $this->searchRequest = $this->getPreparedRequest();
         $this->searchResponse = $this->getPreparedResponse();
@@ -210,7 +210,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $overwriteConfiguration['search.']['spellchecking.']['searchUsingSpellCheckerSuggestion'] = 1;
         $overwriteConfiguration['search.']['spellchecking.']['numberOfSuggestionsToTry'] = 1;
 
-        /** @var $configurationManager ConfigurationManager */
+        /* @var ConfigurationManager $configurationManager */
         $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
         $configurationManager->getTypoScriptConfiguration()->mergeSolrConfiguration($overwriteConfiguration);
 
@@ -320,7 +320,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $overwriteConfiguration['search.']['initializeWithQuery'] = 'product';
         $overwriteConfiguration['search.']['showResultsOfInitialQuery'] = 0;
 
-        /** @var $configurationManager ConfigurationManager */
+        /* @var ConfigurationManager $configurationManager */
         $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
         $configurationManager->getTypoScriptConfiguration()->mergeSolrConfiguration($overwriteConfiguration);
 
@@ -349,7 +349,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $overwriteConfiguration['search.']['initializeWithQuery'] = 'product';
         $overwriteConfiguration['search.']['showResultsOfInitialQuery'] = 1;
 
-        /** @var $configurationManager ConfigurationManager */
+        /* @var ConfigurationManager $configurationManager */
         $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
         $configurationManager->getTypoScriptConfiguration()->mergeSolrConfiguration($overwriteConfiguration);
 
@@ -424,7 +424,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $overwriteConfiguration = [];
         $overwriteConfiguration['search.']['query.']['filter.']['__pageSections'] = '2,3';
 
-        /** @var $configurationManager ConfigurationManager */
+        /* @var ConfigurationManager $configurationManager */
         $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
         $configurationManager->getTypoScriptConfiguration()->mergeSolrConfiguration($overwriteConfiguration);
 
@@ -457,7 +457,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $overwriteConfiguration = [];
         $overwriteConfiguration['search.']['faceting.']['facets.']['type.']['partialName'] = 'NotFound';
 
-        /** @var $configurationManager ConfigurationManager */
+        /* @var ConfigurationManager $configurationManager */
         $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
         $configurationManager->getTypoScriptConfiguration()->mergeSolrConfiguration($overwriteConfiguration);
 
@@ -513,7 +513,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $overwriteConfiguration['search.']['faceting.']['facets.']['subtitle.']['sortBy'] = 'lex';
 
 
-        /** @var $configurationManager ConfigurationManager */
+        /* @var ConfigurationManager $configurationManager */
         $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
         $configurationManager->getTypoScriptConfiguration()->mergeSolrConfiguration($overwriteConfiguration);
 
@@ -694,7 +694,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $overwriteConfiguration['search.']['faceting.']['facets.']['subtitle.']['manualSortOrder'] = 'men, woman';
 
 
-        /** @var $configurationManager ConfigurationManager */
+        /* @var ConfigurationManager $configurationManager */
         $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
         $configurationManager->getTypoScriptConfiguration()->mergeSolrConfiguration($overwriteConfiguration);
 
@@ -854,7 +854,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $overwriteConfiguration = [];
         $overwriteConfiguration['search.']['lastSearches.']['mode'] = 'global';
 
-        /** @var $configurationManager ConfigurationManager */
+        /* @var ConfigurationManager $configurationManager */
         $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
         $configurationManager->getTypoScriptConfiguration()->mergeSolrConfiguration($overwriteConfiguration);
         $this->searchController->setResetConfigurationBeforeInitialize(false);
@@ -885,7 +885,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $overwriteConfiguration = [];
         $overwriteConfiguration['search.']['lastSearches.']['mode'] = 'global';
 
-        /** @var $configurationManager ConfigurationManager */
+        /* @var ConfigurationManager $configurationManager */
         $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
         $configurationManager->getTypoScriptConfiguration()->mergeSolrConfiguration($overwriteConfiguration);
         $this->searchController->setResetConfigurationBeforeInitialize(false);
@@ -1228,16 +1228,8 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $environmentServiceMock = $this->getMockBuilder(EnvironmentService::class)->setMethods([])->disableOriginalConstructor()->getMock();
         $environmentServiceMock->expects($this->any())->method('isEnvironmentInFrontendMode')->willReturn(true);
         $environmentServiceMock->expects($this->any())->method('isEnvironmentInBackendMode')->willReturn(false);
-
-        if (Util::getIsTYPO3VersionBelow10()) {
-            $configurationManagerMock = $this->getMockBuilder(ExtbaseConfigurationManager::class)->setMethods(['getContentObject'])->getMock();
-            $configurationManagerMock->injectObjectManager($this->objectManager);
-            $configurationManagerMock->injectEnvironmentService($environmentServiceMock);
-            $environmentServiceMock->expects($this->any())->method('isEnvironmentInCliMode')->willReturn(false);
-        } else {
-            $configurationManagerMock = $this->getMockBuilder(ExtbaseConfigurationManager::class)->setMethods(['getContentObject'])
-                ->setConstructorArgs([$this->objectManager, $environmentServiceMock])->getMock();
-        }
+        $configurationManagerMock = $this->getMockBuilder(ExtbaseConfigurationManager::class)->setMethods(['getContentObject'])
+            ->setConstructorArgs([$this->objectManager, $environmentServiceMock])->getMock();
 
         $configurationManagerMock->expects($this->any())->method('getContentObject')->willReturn(GeneralUtility::makeInstance(ContentObjectRenderer::class));
 

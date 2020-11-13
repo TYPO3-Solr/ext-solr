@@ -64,6 +64,7 @@ class SolrVersionStatus extends AbstractSolrStatus
             if (!$coreAdmin->ping()) {
                 $url = $coreAdmin->__toString();
                 $pingFailedMsg = 'Could not ping solr server, can not check version ' . (string)$url;
+                /* @var Status $status */
                 $status = GeneralUtility::makeInstance(
                     Status::class,
                     /** @scrutinizer ignore-type */ 'Apache Solr Version',
@@ -85,6 +86,7 @@ class SolrVersionStatus extends AbstractSolrStatus
             $formattedVersion = $this->formatSolrVersion($solrVersion);
             $variables = ['requiredVersion' => self::REQUIRED_SOLR_VERSION, 'currentVersion' => $formattedVersion, 'solr' => $coreAdmin];
             $report = $this->getRenderedReport('SolrVersionStatus.html', $variables);
+            /* @var Status $status */
             $status = GeneralUtility::makeInstance(
                 Status::class,
                 /** @scrutinizer ignore-type */ 'Apache Solr Version',

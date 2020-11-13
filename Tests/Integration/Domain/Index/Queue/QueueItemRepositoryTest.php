@@ -50,7 +50,7 @@ class QueueItemRepositoryTest extends IntegrationTest
     public function canUpdateHasIndexingPropertiesFlagByItemUid()
     {
         $this->importDataSetFromFixture('update_has_indexing_properties_flag.xml');
-
+        /* @var QueueItemRepository $queueItemRepository */
         $queueItemRepository = GeneralUtility::makeInstance(QueueItemRepository::class);
 
         $queueItem = $queueItemRepository->findItemByUid(4711);

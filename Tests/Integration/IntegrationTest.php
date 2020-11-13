@@ -25,6 +25,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Access\Rootline;
+use ApacheSolrForTypo3\Solr\Tests\Unit\Helper\FakeObjectManager;
 use ApacheSolrForTypo3\Solr\Typo3PageIndexer;
 
 use ApacheSolrForTypo3\Solr\Util;
@@ -51,7 +52,6 @@ use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use TYPO3\CMS\Frontend\Http\RequestHandler;
-use TYPO3\CMS\Frontend\Page\PageGenerator;
 use TYPO3\CMS\Core\Tests\Functional\SiteHandling\SiteBasedTestTrait;
 use function getenv;
 
@@ -200,9 +200,11 @@ abstract class IntegrationTest extends FunctionalTestCase
     protected function importExtTablesDefinition($fixtureName)
     {
         // create fake extension database table and TCA
+        /* @var ObjectManager $objectManager */
         $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-
+        /* @var SchemaMigrator $schemaMigrationService */
         $schemaMigrationService = GeneralUtility::makeInstance(SchemaMigrator::class);
+        /* @var SqlReader $sqlReader */
         $sqlReader = GeneralUtility::makeInstance(SqlReader::class);
         $sqlCode = $this->getFixtureContentByName($fixtureName);
 
@@ -264,13 +266,7 @@ abstract class IntegrationTest extends FunctionalTestCase
     {
             /** @var TSFETestBootstrapper $bootstrapper */
         $bootstrapper = GeneralUtility::makeInstance(TSFETestBootstrapper::class);
-
-        if(Util::getIsTYPO3VersionBelow10()) {
-            // @todo this part can be dropped when TYPO3 9 support will be dropped
-            $result = $bootstrapper->legacyBootstrap($id, $MP, $language);
-        } else {
-            $result = $bootstrapper->bootstrap($id, $MP, $language);
-        }
+        $result = $bootstrapper->bootstrap($id, $MP, $language);
         return $result->getTsfe();
     }
 
@@ -403,13 +399,10 @@ abstract class IntegrationTest extends FunctionalTestCase
         $this->simulateFrontedUserGroups($feUserGroupArray);
 
         #$fakeTSFE->preparePageContentGeneration();
-        if(Util::getIsTYPO3VersionBelow10()) {
-            PageGenerator::renderContent();
-        } else {
-            $request = $GLOBALS['TYPO3_REQUEST'];
-            $requestHandler = GeneralUtility::makeInstance(RequestHandler::class);
-            $requestHandler->handle($request);
-        }
+        $request = $GLOBALS['TYPO3_REQUEST'];
+        /* @var RequestHandler $requestHandler */
+        $requestHandler = GeneralUtility::makeInstance(RequestHandler::class);
+        $requestHandler->handle($request);
 
         return $fakeTSFE;
     }
@@ -581,11 +574,6 @@ abstract class IntegrationTest extends FunctionalTestCase
      */
     protected function getFakeObjectManager(): ObjectManagerInterface
     {
-        if(Util::getIsTYPO3VersionBelow10()) {
-            $fakeObjectManager = new \ApacheSolrForTypo3\Solr\Tests\Unit\Helper\LegacyFakeObjectManager();
-        } else {
-            $fakeObjectManager = new \ApacheSolrForTypo3\Solr\Tests\Unit\Helper\FakeObjectManager();
-        }
-        return $fakeObjectManager;
+        return new FakeObjectManager();
     }
 }

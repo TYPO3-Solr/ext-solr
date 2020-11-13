@@ -43,7 +43,7 @@ class PageIndexerResponseTest extends UnitTest
     {
         $action = 'testAction';
         $result = 'testResult';
-
+        /* @var PageIndexerResponse $request */
         $request = GeneralUtility::makeInstance(PageIndexerResponse::class);
         $request->addActionResult($action, $result);
 
@@ -55,6 +55,7 @@ class PageIndexerResponseTest extends UnitTest
      */
     public function getResultReturnsAllResults()
     {
+        /* @var PageIndexerResponse $request */
         $request = GeneralUtility::makeInstance(PageIndexerResponse::class);
         $request->addActionResult('action1', 'result1');
         $request->addActionResult('action2', 'result2');

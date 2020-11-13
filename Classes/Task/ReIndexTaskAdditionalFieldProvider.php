@@ -137,6 +137,7 @@ class ReIndexTaskAdditionalFieldProvider implements AdditionalFieldProviderInter
         }
 
         $this->initialize($taskInfo, $task, $schedulerModule);
+        /* @var SiteSelectorField $siteSelectorField */
         $siteSelectorField = GeneralUtility::makeInstance(SiteSelectorField::class);
 
         $additionalFields['site'] = [
@@ -165,7 +166,7 @@ class ReIndexTaskAdditionalFieldProvider implements AdditionalFieldProviderInter
         if (is_null($this->site)) {
             return $selectorMarkup;
         }
-
+        /* @var IndexingConfigurationSelectorField $selectorField */
         $selectorField = GeneralUtility::makeInstance(IndexingConfigurationSelectorField::class, /** @scrutinizer ignore-type */ $this->site);
 
         $selectorField->setFormElementName('tx_scheduler[indexingConfigurations]');

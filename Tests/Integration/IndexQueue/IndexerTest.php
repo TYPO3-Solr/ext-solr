@@ -32,6 +32,7 @@ use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
+use PHPUnit\Framework\Constraint\IsType;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Http\ServerRequestFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -206,7 +207,7 @@ class IndexerTest extends IntegrationTest
         $solrDocs = $solrContentResponse['docs'];
 
         $this->assertCount(1, $solrDocs, 'Could not found index document into solr');
-        $this->assertInternalType('array', $solrDocs[0]);
+        $this->assertThat($solrDocs[0], new IsType('array'));
         $this->assertEquals('testnews', (string)$solrDocs[0]['title'], 'Title of Solr document is not as expected.');
         $this->assertArrayHasKey('category_stringM', $solrDocs[0], 'Did not find MM related tags.');
         $this->assertCount(2, $solrDocs[0]['category_stringM'], 'Did not find all MM related tags.');
@@ -480,6 +481,7 @@ class IndexerTest extends IntegrationTest
         $document = new Document;
         $metaData = ['item_type' => 'pages'];
         $record = [];
+        /* @var Item $item */
         $item = GeneralUtility::makeInstance(Item::class, $metaData, $record);
         $this->callInaccessibleMethod($this->indexer,'getAdditionalDocuments', $item, 0, $document);
     }
@@ -494,6 +496,7 @@ class IndexerTest extends IntegrationTest
         $document = new Document;
         $metaData = ['item_type' => 'pages'];
         $record = [];
+        /* @var Item $item */
         $item = GeneralUtility::makeInstance(Item::class, $metaData, $record);
         $this->callInaccessibleMethod($this->indexer, 'getAdditionalDocuments', $item, 0, $document);
     }
@@ -508,6 +511,7 @@ class IndexerTest extends IntegrationTest
         $document = new Document;
         $metaData = ['item_type' => 'pages'];
         $record = [];
+        /* @var Item $item */
         $item = GeneralUtility::makeInstance(Item::class, $metaData, $record);
 
         $result = $this->callInaccessibleMethod($this->indexer,'getAdditionalDocuments', $item, 0, $document);
@@ -522,6 +526,7 @@ class IndexerTest extends IntegrationTest
         $document = new Document;
         $metaData = ['item_type' => 'pages'];
         $record = [];
+        /* @var Item $item */
         $item = GeneralUtility::makeInstance(Item::class, $metaData, $record);
 
         $result = $this->callInaccessibleMethod($this->indexer,'getAdditionalDocuments', $item, 0, $document);

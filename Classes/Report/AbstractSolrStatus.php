@@ -59,6 +59,7 @@ abstract class AbstractSolrStatus implements StatusProviderInterface
      */
     private function getFluidStandaloneViewWithTemplate($templatePath = '')
     {
+        /* @var StandaloneView $standaloneView */
         $standaloneView = GeneralUtility::makeInstance(StandaloneView::class);
         $standaloneView->setTemplatePathAndFilename(GeneralUtility::getFileAbsFileName($templatePath));
 

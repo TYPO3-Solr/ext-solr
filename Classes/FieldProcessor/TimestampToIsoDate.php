@@ -47,6 +47,7 @@ class TimestampToIsoDate implements FieldProcessor
     public function process(array $values)
     {
         $results = [];
+        /* @var FormatService $formatService */
         $formatService = GeneralUtility::makeInstance(FormatService::class);
 
         foreach ($values as $timestamp) {

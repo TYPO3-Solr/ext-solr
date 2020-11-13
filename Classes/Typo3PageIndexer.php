@@ -282,6 +282,7 @@ class Typo3PageIndexer
      */
     protected function getPageDocument()
     {
+        /* @var Builder $documentBuilder */
         $documentBuilder = GeneralUtility::makeInstance(Builder::class);
         $document = $documentBuilder->fromPage($this->page, $this->pageUrl, $this->pageAccessRootline, (string)$this->mountPointParameter);
 
@@ -406,6 +407,7 @@ class Typo3PageIndexer
     {
         $processingInstructions = $this->configuration->getIndexFieldProcessingInstructionsConfiguration();
         if (count($processingInstructions) > 0) {
+            /* @var Service $service */
             $service = GeneralUtility::makeInstance(Service::class);
             $service->processDocuments($documents, $processingInstructions);
         }

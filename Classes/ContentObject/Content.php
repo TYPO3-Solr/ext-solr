@@ -48,6 +48,7 @@ class Content extends AbstractContentObject
      */
     public function render($conf = [])
     {
+        /* @var HtmlContentExtractor $contentExtractor */
         $contentExtractor = GeneralUtility::makeInstance(
             HtmlContentExtractor::class,
             /** @scrutinizer ignore-type */ $this->getRawContent($this->cObj, $conf)

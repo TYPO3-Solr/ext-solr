@@ -133,6 +133,7 @@ class IndexQueueModuleController extends AbstractModuleController
      */
     protected function getIndexQueueInitializationSelector()
     {
+        /* @var IndexingConfigurationSelectorField $selector */
         $selector = GeneralUtility::makeInstance(IndexingConfigurationSelectorField::class, /** @scrutinizer ignore-type */ $this->selectedSite);
         $selector->setFormElementName('tx_solr-index-queue-initialization');
 
