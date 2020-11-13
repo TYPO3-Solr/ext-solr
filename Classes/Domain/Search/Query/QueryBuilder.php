@@ -539,7 +539,7 @@ class QueryBuilder extends AbstractQueryBuilder {
         if (!is_array($searchQueryFilters) || count($searchQueryFilters) <= 0) {
             return [];
         }
-        /* @var ContentObjectRenderer GeneralUtility */
+        /* @var ContentObjectRenderer $cObj */
         $cObj = GeneralUtility::makeInstance(ContentObjectRenderer::class);
 
         // all other regular filters
