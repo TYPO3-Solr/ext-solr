@@ -60,15 +60,15 @@ $GLOBALS['SiteConfiguration']['site']['columns']['solr_port_read'] = [
 ];
 
 $GLOBALS['SiteConfiguration']['site']['columns']['solr_path_read'] = [
-    'label' => 'Path to cores (e.g. /solr/)',
+    'label' => 'URL path to Apache Solr server',
+    'description' => 'I.e. if you use Hosted-Solr.com the path inside the admin panel. Should not contain "/solr/".',
     'config' => [
         'type' => 'input',
         'eval' => 'required',
-        'default' => '/solr/'
+        'default' => '/'
     ],
     'displayCond' => 'FIELD:solr_enabled_read:=:1'
 ];
-
 
 $GLOBALS['SiteConfiguration']['site']['columns']['solr_use_write_connection'] = [
     'label' => 'Use different write connection',
@@ -86,7 +86,6 @@ $GLOBALS['SiteConfiguration']['site']['columns']['solr_use_write_connection'] = 
     ],
     'displayCond' => 'FIELD:solr_enabled_read:=:1'
 ];
-
 
 // write TCA
 $GLOBALS['SiteConfiguration']['site']['columns']['solr_scheme_write'] = $GLOBALS['SiteConfiguration']['site']['columns']['solr_scheme_read'];

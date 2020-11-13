@@ -29,15 +29,16 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\Util;
-
 use Solarium\Client;
 use Solarium\Core\Client\Endpoint;
 use Solarium\Core\Client\Request;
 use Solarium\Core\Query\QueryInterface;
 use Solarium\Exception\HttpException;
+use TYPO3\CMS\Core\Http\Uri;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-abstract class AbstractSolrService {
+abstract class AbstractSolrService
+{
 
     /**
      * @var array
@@ -81,6 +82,16 @@ abstract class AbstractSolrService {
     }
 
     /**
+     * Returns the Solarium client
+     *
+     * @return ?Client
+     */
+    public function getClient(): ?Client
+    {
+        return $this->client;
+    }
+
+    /**
      * Return a valid http URL given this server's host, port and path and a provided servlet name
      *
      * @param string $servlet
@@ -98,6 +109,7 @@ abstract class AbstractSolrService {
      * will return the Solr URL.
      *
      * @return string The Solr URL.
+     * @TODO: Add support for API version 2
      */
     public function __toString()
     {
@@ -106,6 +118,10 @@ abstract class AbstractSolrService {
             return '';
         }
 
+        try {
+            return $endpoint->getCoreBaseUri();
+        } catch (\Exception $exception) {
+        }
         return  $endpoint->getScheme(). '://' . $endpoint->getHost() . ':' . $endpoint->getPort() . $endpoint->getPath() . '/' . $endpoint->getCore() . '/';
     }
 
@@ -164,21 +180,23 @@ abstract class AbstractSolrService {
      * @param string $url
      * @param string $method
      * @param string $body
-     * @param \Closure $initializeRequest
+     * @param ?\Closure $initializeRequest
      * @return ResponseAdapter
      */
-    protected function _sendRawRequest($url, $method = Request::METHOD_GET, $body = '', \Closure $initializeRequest = null)
-    {
+    protected function _sendRawRequest(
+        string $url,
+        $method = Request::METHOD_GET,
+        $body = '',
+        \Closure $initializeRequest = null
+    ) {
         $logSeverity = SolrLogManager::INFO;
         $exception = null;
-
+        $url = $this->reviseUrl($url);
         try {
             $request = $this->buildSolariumRequestFromUrl($url, $method);
-
             if($initializeRequest !== null) {
                 $request = $initializeRequest($request);
             }
-
             $response = $this->executeRequest($request);
         } catch (HttpException $exception) {
             $logSeverity = SolrLogManager::ERROR;
@@ -194,13 +212,47 @@ abstract class AbstractSolrService {
     }
 
     /**
+     * Revise url
+     * - Resolve relative paths
+     *
+     * @param string $url
+     * @return string
+     */
+    protected function reviseUrl(string $url): string
+    {
+        /* @var Uri $uri */
+        $uri = GeneralUtility::makeInstance(Uri::class, $url);
+
+        if ((string)$uri->getPath() === '') {
+            return $url;
+        }
+
+        $path = trim($uri->getPath(), '/');
+        $pathsCurrent = explode('/', $path);
+        $pathNew = [];
+        foreach ($pathsCurrent as $pathCurrent) {
+            if ($pathCurrent === '..') {
+                array_pop($pathNew);
+                continue;
+            }
+            if ($pathCurrent === '.') {
+                continue;
+            }
+            $pathNew[] = $pathCurrent;
+        }
+
+        $uri = $uri->withPath(implode('/', $pathNew));
+        return (string)$uri;
+    }
+
+    /**
      * Build the log data and writes the message to the log
      *
      * @param integer $logSeverity
      * @param string $message
      * @param string $url
      * @param ResponseAdapter $solrResponse
-     * @param \Exception $exception
+     * @param ?\Exception $exception
      * @param string $contentSend
      */
     protected function writeLog($logSeverity, $message, $url, $solrResponse, $exception = null, $contentSend = '')
@@ -213,7 +265,7 @@ abstract class AbstractSolrService {
      * Parses the solr information to build data for the logger.
      *
      * @param ResponseAdapter $solrResponse
-     * @param \Exception $e
+     * @param ?\Exception $e
      * @param string $url
      * @param string $contentSend
      * @return array
@@ -345,24 +397,55 @@ abstract class AbstractSolrService {
     }
 
     /**
+     * Build the request for Solarium.
+     *
+     * Important: The endpoint already contains the API information.
+     * The internal Solarium will append the information including the core if set.
+     *
      * @param string $url
      * @param string $httpMethod
      * @return Request
      */
-    protected function buildSolariumRequestFromUrl($url, $httpMethod = Request::METHOD_GET): Request
+    protected function buildSolariumRequestFromUrl(string $url, $httpMethod = Request::METHOD_GET): Request
     {
         $params = [];
         parse_str(parse_url($url, PHP_URL_QUERY), $params);
-
+        $request = new Request();
         $path = parse_url($url, PHP_URL_PATH);
         $endpoint = $this->getPrimaryEndpoint();
-        $coreBasePath = $endpoint->getPath() . '/' . $endpoint->getCore() . '/';
-        $handler = str_replace($coreBasePath, '', $path);
+        $api = $request->getApi() === Request::API_V1 ? 'solr' : 'api';
+        $coreBasePath = $endpoint->getPath() . '/' . $api . '/' . $endpoint->getCore() . '/';
 
-        $request = new Request();
+        $handler = $this->buildRelativePath($coreBasePath, $path);
         $request->setMethod($httpMethod);
         $request->setParams($params);
         $request->setHandler($handler);
         return $request;
+    }
+
+    /**
+     * Build a relative path from base path to target path.
+     * Required since Solarium contains the core information
+     *
+     * @param string $basePath
+     * @param string $targetPath
+     * @return string
+     */
+    protected function buildRelativePath(string $basePath, string $targetPath): string
+    {
+        $basePath = trim($basePath, '/');
+        $targetPath = trim($targetPath, '/');
+        $baseElements = explode('/', $basePath);
+        $targetElements = explode('/', $targetPath);
+        $targetSegment = array_pop($targetElements);
+        foreach ($baseElements as $i => $segment) {
+            if (isset($targetElements[$i]) && $segment === $targetElements[$i]) {
+                unset($baseElements[$i], $targetElements[$i]);
+            } else {
+                break;
+            }
+        }
+        $targetElements[] = $targetSegment;
+        return str_repeat('../', count($baseElements)) . implode('/', $targetElements);
     }
 }

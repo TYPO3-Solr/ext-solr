@@ -197,8 +197,8 @@ class Highlighting extends AbstractDeactivatable implements ParameterBuilder
             $query->getHighlighting()->setTagPostfix($this->getPostfix());
         } else {
             $query->getHighlighting()->setUseFastVectorHighlighter(false);
-            $query->getHighlighting()->setTagPrefix(null);
-            $query->getHighlighting()->setTagPostfix(null);
+            $query->getHighlighting()->setTagPrefix('');
+            $query->getHighlighting()->setTagPostfix('');
         }
 
         if ($this->getPrefix() !== '' && $this->getPostfix() !== '') {

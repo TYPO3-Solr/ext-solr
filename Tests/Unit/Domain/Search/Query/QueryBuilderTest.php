@@ -508,8 +508,8 @@ class QueryBuilderTest extends UnitTest
     public function canSetNumberOfGroups()
     {
         $query = $this->getInitializedTestSearchQuery('test');
-        $query->getGrouping()->setNumberOfGroups(2);
-        $this->assertSame(2, $query->getGrouping()->getNumberOfGroups(), 'Could not set and get number of groups');
+        $query->getGrouping()->setNumberOfGroups(true);
+        $this->assertSame(true, $query->getGrouping()->getNumberOfGroups(), 'Could not set and get number of groups');
     }
 
     /**
@@ -613,7 +613,7 @@ class QueryBuilderTest extends UnitTest
 
         $query = $this->builder->startFrom($query)->removeMinimumMatch()->getQuery();
         $queryParameters = $this->getAllQueryParameters($query);
-        $this->assertNull($queryParameters['mm']);
+        $this->assertEmpty($queryParameters['mm']);
     }
 
     /**
@@ -634,7 +634,7 @@ class QueryBuilderTest extends UnitTest
         $query = $this->builder->startFrom($query)->removeAllBoostFunctions()->getQuery();
         $queryParameters = $this->getAllQueryParameters($query);
 
-        $this->assertNull($queryParameters['bf'], 'bf parameter should be null after reset');
+        $this->assertEmpty($queryParameters['bf'], 'bf parameter should be null after reset');
     }
 
     /**
@@ -1096,7 +1096,7 @@ class QueryBuilderTest extends UnitTest
 
         $this->builder->startFrom($query)->removeOperator();
         $queryParameters = $this->getAllQueryParameters($query);
-        $this->assertNull($queryParameters['q.op'], 'The queryParameter q.op should be null because operator was resetted');
+        $this->assertEmpty($queryParameters['q.op'], 'The queryParameter q.op should be null because operator was resetted');
     }
 
     /**
