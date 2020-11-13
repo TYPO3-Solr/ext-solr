@@ -580,4 +580,23 @@ abstract class IntegrationTest extends FunctionalTestCase
     {
         return new FakeObjectManager();
     }
+
+    /**
+     * Returns inaccessible(private/protected/etc.) property from given object.
+     *
+     * @param object $object
+     * @param string $property
+     * @return ?mixed
+     */
+    protected function getInaccessiblePropertyFromObject(object $object, string $property)
+    {
+        $reflection = new ReflectionClass($object);
+        try {
+            $property = $reflection->getProperty($property);
+        } catch (ReflectionException $e) {
+            return null;
+        }
+        $property->setAccessible(true);
+        return $property->getValue($object);
+    }
 }

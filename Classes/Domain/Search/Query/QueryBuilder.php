@@ -95,7 +95,7 @@ class QueryBuilder extends AbstractQueryBuilder {
      */
     public function newSearchQuery($queryString): QueryBuilder
     {
-        $this->queryToBuild = $this->getSearchQueryInstance($queryString);
+        $this->queryToBuild = $this->getSearchQueryInstance((string)$queryString);
         return $this;
     }
 
@@ -567,7 +567,7 @@ class QueryBuilder extends AbstractQueryBuilder {
      * @param string $rawQuery
      * @return SearchQuery
      */
-    protected function getSearchQueryInstance($rawQuery): SearchQuery
+    protected function getSearchQueryInstance(string $rawQuery): SearchQuery
     {
         $query = GeneralUtility::makeInstance(SearchQuery::class);
         $query->setQuery($rawQuery);

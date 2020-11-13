@@ -7,6 +7,6 @@
     "prepend-autoloader": false
   },
   "require": {
-    "solarium/solarium": "~4.2.0"
+    "solarium/solarium": ">=6.0 <7.0"
   }
 }

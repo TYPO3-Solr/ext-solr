@@ -123,6 +123,6 @@ timeout
 :Default: 0.0
 :Since: 1.0
 :cObject supported: no
-:Deprecated: 10.0
+:Deprecated: in 10.0 removed in 11.1.
 
-Can be used to configure a connection timeout.
+Now the $GLOBALS['TYPO3_CONF_VARS']['HTTP'] can be used to configure a connection timeout and other options.
