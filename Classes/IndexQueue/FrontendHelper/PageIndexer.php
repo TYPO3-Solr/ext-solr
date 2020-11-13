@@ -115,6 +115,7 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
      *
      * @return void
      * @noinspection PhpUnused
+     * @deprecated Dropped with END of TYPO3 9 Support
      */
     public function authorizeFrontendUser()
     {
@@ -340,7 +341,7 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
      */
     protected function getSolrConnection(Item $indexQueueItem)
     {
-        /** @var $connectionManager ConnectionManager */
+        /* @var ConnectionManager $connectionManager */
         $connectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
 
         return $connectionManager->getConnectionByRootPageId(
@@ -356,7 +357,7 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
      */
     protected function getIndexQueueItem()
     {
-        /** @var $indexQueue Queue */
+        /* @var Queue $indexQueue */
         $indexQueue = GeneralUtility::makeInstance(Queue::class);
         return $indexQueue->getItem($this->request->getParameter('item'));
     }

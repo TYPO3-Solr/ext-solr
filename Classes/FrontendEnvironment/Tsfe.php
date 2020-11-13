@@ -16,6 +16,7 @@ namespace ApacheSolrForTypo3\Solr\FrontendEnvironment;
 
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Context\Context;
+use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Context\LanguageAspectFactory;
 use TYPO3\CMS\Core\Context\TypoScriptAspect;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
@@ -34,8 +35,14 @@ use TYPO3\CMS\Core\Http\ServerRequest;
 
 class Tsfe implements SingletonInterface
 {
+    /**
+     * @var TypoScriptFrontendController[]
+     */
     private $tsfeCache = [];
 
+    /**
+     * @var ServerRequest[]
+     */
     private $requestCache = [];
 
     /**
@@ -43,6 +50,7 @@ class Tsfe implements SingletonInterface
      *
      * @param int $pageId
      * @param int $language
+     * @throws AspectNotFoundException
      */
     public function changeLanguageContext(int $pageId, int $language): void
     {
@@ -69,9 +77,10 @@ class Tsfe implements SingletonInterface
     /**
      * Initializes the TSFE for a given page ID and language.
      *
-     * @param $pageId
+     * @param int $pageId
      * @param int $language
      * @throws SiteNotFoundException
+     * @throws AspectNotFoundException
      */
     public function initializeTsfe($pageId, $language = 0)
     {
