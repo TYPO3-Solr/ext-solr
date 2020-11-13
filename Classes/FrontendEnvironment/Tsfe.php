@@ -14,6 +14,7 @@ namespace ApacheSolrForTypo3\Solr\FrontendEnvironment;
  * The TYPO3 project - inspiring people to share!
  */
 
+use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\LanguageAspectFactory;
 use TYPO3\CMS\Core\Context\TypoScriptAspect;
@@ -137,9 +138,16 @@ class Tsfe implements SingletonInterface
         }
 
         $GLOBALS['TSFE'] = $this->tsfeCache[$cacheId];
-        if ($siteLanguage instanceof SiteLanguage || $GLOBALS['TSFE']->getLanguage() instanceof SiteLanguage) {
+        if (!defined($siteLanguage) || !($siteLanguage instanceof SiteLanguage)) {
+            $siteLanguage = $this->determineSiteLanguage(
+                (int)$pageId,
+                (int)$language,
+                $GLOBALS['TYPO3_REQUEST']
+            );
+        }
+        if (defined($siteLanguage) && $siteLanguage instanceof SiteLanguage) {
             Locales::setSystemLocaleFromSiteLanguage(
-                $siteLanguage instanceof SiteLanguage ? $siteLanguage : $GLOBALS['TSFE']->getLanguage()
+                $siteLanguage
             );
         }
         $this->changeLanguageContext((int)$pageId, (int)$language);
@@ -165,5 +173,45 @@ class Tsfe implements SingletonInterface
         }
 
         return $absRefPrefix;
+    }
+
+    /**
+     * Determine the site language by given page and language id.
+     *
+     * @param int $pageUid
+     * @param int $languageId
+     * @param ?ServerRequestInterface $serverRequest
+     * @return SiteLanguage|null
+     */
+    protected function determineSiteLanguage(
+        int $pageUid,
+        int $languageId,
+        ?ServerRequestInterface $serverRequest = null
+    ): ?SiteLanguage {
+        $siteLanguage = null;
+        if ($serverRequest instanceof ServerRequestInterface) {
+            $language = $serverRequest->getAttribute('language', null);
+            if ($language instanceof SiteLanguage) {
+                return $language;
+            }
+        }
+        if (!defined($siteLanguage) || !($siteLanguage instanceof SiteLanguage)) {
+            $siteLanguage = null;
+            try {
+                $siteLanguage = $GLOBALS['TSFE']->getLanguage();
+            } catch (\TypeError $typeError) {
+            }
+        }
+        if (!defined($siteLanguage) || $siteLanguage === null) {
+            /* @var SiteFinder $siteFinder */
+            $siteFinder = GeneralUtility::makeInstance(SiteFinder::class);
+            try {
+                $site = $siteFinder->getSiteByPageId($pageUid);
+                return $site->getLanguageById($languageId);
+            } catch (SiteNotFoundException $siteNotFoundException) {
+            }
+        }
+
+        return $siteLanguage;
     }
 }
