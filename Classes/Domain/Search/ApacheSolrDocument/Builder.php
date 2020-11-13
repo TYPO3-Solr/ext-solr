@@ -37,7 +37,7 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 /**
  * Builder class to build an ApacheSolrDocument
  *
- * Responsible to build Apache_Solr_Documents
+ * Responsible to build \ApacheSolrForTypo3\Solr\System\Solr\Document\Document
  *
  * @author Timo Hund <timo.hund@dkd.de>
  */

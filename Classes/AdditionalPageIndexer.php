@@ -43,7 +43,7 @@ interface AdditionalPageIndexer
      *
      * @param Document $pageDocument The original page document.
      * @param array $allDocuments An array containing all the documents collected until here, including the page document
-     * @return array An array of additional Apache_Solr_Document objects
+     * @return array An array of additional \ApacheSolrForTypo3\Solr\System\Solr\Document\Document objects
      */
     public function getAdditionalPageDocuments(Document $pageDocument, array $allDocuments);
 }
