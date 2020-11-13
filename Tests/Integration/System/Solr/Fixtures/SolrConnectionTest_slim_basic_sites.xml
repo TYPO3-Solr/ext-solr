@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<dataset>
+<!--
+There is following scenario:
+
+ [0]
+  |
+  ——[ 1] First site
+  |   |
+  |   ——[11] Subpage of first site
+  |
+  ——[111] Second site
+  |   |
+  |   ——[21] Subpage of second site
+  |
+  ——[ 3] Detached and non Root Page-Tree
+      |
+      —— [31] Subpage 1 of Detached
+      |
+      —— [32] Subpage 2 of Detached
+-->
+
+    <!-- Site tree for first site -->
+    <sys_template>
+        <uid>1</uid>
+        <pid>1</pid>
+        <root>1</root>
+        <clear>3</clear>
+        <config>
+            <![CDATA[
+                page = PAGE
+                page.typeNum = 0
+                page.bodyTag = <body>
+
+                plugin.tx_solr {
+                    enabled = 1
+                }
+            ]]>
+        </config>
+        <sorting>100</sorting>
+    </sys_template>
+    <pages>
+        <uid>1</uid>
+        <is_siteroot>1</is_siteroot>
+        <doktype>1</doktype>
+        <pid>0</pid>
+        <title>First site</title>
+    </pages>
+        <pages>
+            <uid>11</uid>
+            <pid>1</pid>
+            <is_siteroot>0</is_siteroot>
+            <doktype>7</doktype>
+            <mount_pid>24</mount_pid>
+            <mount_pid_ol>1</mount_pid_ol>
+            <title>Subpage of first site</title>
+            <TSconfig/>
+            <content_from_pid>0</content_from_pid>
+            <tsconfig_includes/>
+        </pages>
+
+    <!-- Site tree for secod site -->
+    <sys_template>
+        <uid>111</uid>
+        <pid>111</pid>
+        <root>1</root>
+        <clear>3</clear>
+        <config>
+            <![CDATA[
+                page = PAGE
+                page.typeNum = 0
+                page.bodyTag = <body>
+
+                plugin.tx_solr {
+                    enabled = 1
+                }
+            ]]>
+        </config>
+        <sorting>100</sorting>
+    </sys_template>
+    <pages>
+        <uid>111</uid>
+        <is_siteroot>1</is_siteroot>
+        <doktype>1</doktype>
+        <pid>0</pid>
+        <title>Second site</title>
+    </pages>
+        <pages>
+            <uid>21</uid>
+            <pid>111</pid>
+            <is_siteroot>0</is_siteroot>
+            <doktype>7</doktype>
+            <mount_pid>24</mount_pid>
+            <mount_pid_ol>1</mount_pid_ol>
+            <title>Subpage of second site</title>
+            <TSconfig/>
+            <content_from_pid>0</content_from_pid>
+            <tsconfig_includes/>
+        </pages>
+
+
+    <!-- detached and non Root Page-Tree -->
+    <pages>
+        <uid>3</uid>
+        <is_siteroot>0</is_siteroot>
+        <doktype>1</doktype>
+        <pid>0</pid>
+        <title>Detached and non Root Page-Tree</title>
+    </pages>
+        <pages>
+            <uid>31</uid>
+            <pid>3</pid>
+            <is_siteroot>0</is_siteroot>
+            <doktype>7</doktype>
+            <mount_pid>24</mount_pid>
+            <mount_pid_ol>1</mount_pid_ol>
+            <title>Subpage 1 of Detached</title>
+            <TSconfig/>
+            <content_from_pid>0</content_from_pid>
+            <tsconfig_includes/>
+        </pages>
+        <pages>
+            <uid>32</uid>
+            <pid>3</pid>
+            <is_siteroot>0</is_siteroot>
+            <doktype>7</doktype>
+            <mount_pid>24</mount_pid>
+            <mount_pid_ol>1</mount_pid_ol>
+            <title>Subpage 2 of Detached</title>
+            <TSconfig/>
+            <content_from_pid>0</content_from_pid>
+            <tsconfig_includes/>
+        </pages>
+</dataset>

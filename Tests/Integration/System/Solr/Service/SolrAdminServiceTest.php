@@ -24,11 +24,12 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\System\Solr\Service;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\System\Solr\Service\AbstractSolrService;
 use ApacheSolrForTypo3\Solr\System\Solr\Service\SolrAdminService;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use Solarium\Client;
+use Solarium\Core\Client\Adapter\Curl;
 use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
+use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -51,10 +52,18 @@ class SolrAdminServiceTest extends IntegrationTest
     public function setUp()
     {
         parent::setUp();
-        $client = new Client(['adapter' => 'Solarium\Core\Client\Adapter\Guzzle']);
+        /* @var EventDispatcher $eventDispatcher */
+        $eventDispatcher = $this->getMockBuilder(EventDispatcher::class)
+            ->disableOriginalConstructor()
+            ->getMock(EventDispatcher::class);
+        $adapter = new Curl();
+        $client = new Client(
+            $adapter,
+            $eventDispatcher
+        );
         $client->clearEndpoints();
         $solrConnectionInfo = $this->getSolrConnectionInfo();
-        $client->createEndpoint(['host' => $solrConnectionInfo['host'], 'port' => $solrConnectionInfo['port'], 'path' => '/solr', 'core' => 'core_en', 'key' => 'admin'] , true);
+        $client->createEndpoint(['host' => $solrConnectionInfo['host'], 'port' => $solrConnectionInfo['port'], 'path' => '/', 'core' => 'core_en', 'key' => 'admin'] , true);
 
         $this->solrAdminService = GeneralUtility::makeInstance(SolrAdminService::class, $client);
     }
@@ -198,10 +207,18 @@ class SolrAdminServiceTest extends IntegrationTest
      */
     public function canParseLanguageFromSchema()
     {
-        $client = new Client(['adapter' => 'Solarium\Core\Client\Adapter\Guzzle']);
+        /* @var EventDispatcher $eventDispatcher */
+        $eventDispatcher = $this->getMockBuilder(EventDispatcher::class)
+            ->disableOriginalConstructor()
+            ->getMock(EventDispatcher::class);
+        $adapter = new Curl();
+        $client = new Client(
+            $adapter,
+            $eventDispatcher
+        );
         $client->clearEndpoints();
         $solrConnectionInfo = $this->getSolrConnectionInfo();
-        $client->createEndpoint(['host' => $solrConnectionInfo['host'], 'port' => $solrConnectionInfo['port'], 'path' => '/solr', 'core' => 'core_de', 'key' => 'admin'] , true);
+        $client->createEndpoint(['host' => $solrConnectionInfo['host'], 'port' => $solrConnectionInfo['port'], 'path' => '/', 'core' => 'core_de', 'key' => 'admin'] , true);
 
         $this->solrAdminService = GeneralUtility::makeInstance(SolrAdminService::class, $client);
         $this->assertSame("german", $this->solrAdminService->getSchema()->getLanguage(), "Could not get language from core in non default language");

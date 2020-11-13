@@ -290,7 +290,7 @@ class RelevanceComponentTest extends UnitTest
         $relevanceComponent->setQuery($query);
         $relevanceComponent->initializeSearchComponent();
 
-        $this->assertSame('0.78', $this->getQueryParameters($query)['tie'], 'tieParameter was not applied as tie parameter');
+        $this->assertSame((float)'0.78', $this->getQueryParameters($query)['tie'], 'tieParameter was not applied as tie parameter');
     }
 
     /**

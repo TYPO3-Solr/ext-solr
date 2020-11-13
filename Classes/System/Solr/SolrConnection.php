@@ -33,8 +33,14 @@ use ApacheSolrForTypo3\Solr\System\Solr\Service\SolrAdminService;
 use ApacheSolrForTypo3\Solr\System\Solr\Service\SolrReadService;
 use ApacheSolrForTypo3\Solr\System\Solr\Service\SolrWriteService;
 use ApacheSolrForTypo3\Solr\Util;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
+use Psr\EventDispatcher\EventDispatcherInterface;
+use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestFactoryInterface;
+use Psr\Http\Message\StreamFactoryInterface;
 use Solarium\Client;
-use Solarium\Core\Client\Endpoint;
+use Solarium\Core\Client\Adapter\Psr18Adapter;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -90,20 +96,47 @@ class SolrConnection
     protected $logger = null;
 
     /**
-     * @var array
+     * @var ClientInterface[]
      */
     protected $clients = [];
 
     /**
+     * @var ClientInterface
+     */
+    protected $psr7Client;
+
+    /**
+     * @var RequestFactoryInterface
+     */
+    protected $requestFactory;
+
+    /**
+     * @var StreamFactoryInterface
+     */
+    protected $streamFactory;
+
+    /**
+     * @var EventDispatcherInterface
+     */
+    protected $eventDispatcher;
+
+    /**
      * Constructor
      *
-     * @param Node $readNode,
+     * @param Node $readNode
      * @param Node $writeNode
-     * @param TypoScriptConfiguration $configuration
-     * @param SynonymParser $synonymParser
-     * @param StopWordParser $stopWordParser
-     * @param SchemaParser $schemaParser
-     * @param SolrLogManager $logManager
+     * @param ?TypoScriptConfiguration $configuration
+     * @param ?SynonymParser $synonymParser
+     * @param ?StopWordParser $stopWordParser
+     * @param ?SchemaParser $schemaParser
+     * @param ?SolrLogManager $logManager
+     * @param ?ClientInterface $psr7Client
+     * @param ?RequestFactoryInterface $requestFactory
+     * @param ?StreamFactoryInterface $streamFactory
+     * @param ?EventDispatcherInterface $eventDispatcher
+     *
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public function __construct(
         Node $readNode,
@@ -112,7 +145,11 @@ class SolrConnection
         SynonymParser $synonymParser = null,
         StopWordParser $stopWordParser = null,
         SchemaParser $schemaParser = null,
-        SolrLogManager $logManager = null
+        SolrLogManager $logManager = null,
+        ClientInterface $psr7Client = null,
+        RequestFactoryInterface $requestFactory = null,
+        StreamFactoryInterface $streamFactory = null,
+        EventDispatcherInterface $eventDispatcher = null
     ) {
         $this->nodes['read'] = $readNode;
         $this->nodes['write'] = $writeNode;
@@ -122,13 +159,17 @@ class SolrConnection
         $this->stopWordParser = $stopWordParser;
         $this->schemaParser = $schemaParser;
         $this->logger = $logManager;
+        $this->psr7Client = $psr7Client ?? GeneralUtility::getContainer()->get(ClientInterface::class);
+        $this->requestFactory = $requestFactory ?? GeneralUtility::getContainer()->get(RequestFactoryInterface::class);
+        $this->streamFactory = $streamFactory ?? GeneralUtility::getContainer()->get(StreamFactoryInterface::class);
+        $this->eventDispatcher = $eventDispatcher ?? GeneralUtility::getContainer()->get(EventDispatcherInterface::class);
     }
 
     /**
      * @param string $key
      * @return Node
      */
-    public function getNode($key)
+    public function getNode(string $key): Node
     {
         return $this->nodes[$key];
     }
@@ -136,7 +177,7 @@ class SolrConnection
     /**
      * @return SolrAdminService
      */
-    public function getAdminService()
+    public function getAdminService(): SolrAdminService
     {
         if ($this->adminService === null) {
             $this->adminService = $this->buildAdminService();
@@ -147,8 +188,9 @@ class SolrConnection
 
     /**
      * @return SolrAdminService
+     * @noinspection PhpIncompatibleReturnTypeInspection
      */
-    protected function buildAdminService()
+    protected function buildAdminService(): SolrAdminService
     {
         $endpointKey = 'admin';
         $client = $this->getClient($endpointKey);
@@ -159,7 +201,7 @@ class SolrConnection
     /**
      * @return SolrReadService
      */
-    public function getReadService()
+    public function getReadService(): SolrReadService
     {
         if ($this->readService === null) {
             $this->readService = $this->buildReadService();
@@ -170,8 +212,9 @@ class SolrConnection
 
     /**
      * @return SolrReadService
+     * @noinspection PhpIncompatibleReturnTypeInspection
      */
-    protected function buildReadService()
+    protected function buildReadService(): SolrReadService
     {
         $endpointKey = 'read';
         $client = $this->getClient($endpointKey);
@@ -182,7 +225,7 @@ class SolrConnection
     /**
      * @return SolrWriteService
      */
-    public function getWriteService()
+    public function getWriteService(): SolrWriteService
     {
         if ($this->writeService === null) {
             $this->writeService = $this->buildWriteService();
@@ -193,8 +236,9 @@ class SolrConnection
 
     /**
      * @return SolrWriteService
+     * @noinspection PhpIncompatibleReturnTypeInspection
      */
-    protected function buildWriteService()
+    protected function buildWriteService(): SolrWriteService
     {
         $endpointKey = 'write';
         $client = $this->getClient($endpointKey);
@@ -207,7 +251,8 @@ class SolrConnection
      * @param string $endpointKey
      * @return Client
      */
-    protected function initializeClient(Client $client, $endpointKey) {
+    protected function initializeClient(Client $client, string $endpointKey): Client
+    {
         if (trim($this->getNode($endpointKey)->getUsername()) === '') {
             return $client;
         }
@@ -224,7 +269,7 @@ class SolrConnection
      * @param string $username
      * @param string $password
      */
-    protected function setAuthenticationOnAllEndpoints(Client $client, $username, $password)
+    protected function setAuthenticationOnAllEndpoints(Client $client, string $username, string $password)
     {
         foreach ($client->getEndpoints() as $endpoint) {
             $endpoint->setAuthentication($username, $password);
@@ -235,13 +280,15 @@ class SolrConnection
      * @param string $endpointKey
      * @return Client
      */
-    protected function getClient($endpointKey): Client
+    protected function getClient(string $endpointKey): Client
     {
-        if($this->clients[$endpointKey]) {
+        if ($this->clients[$endpointKey]) {
             return $this->clients[$endpointKey];
         }
 
-        $client = new Client(['adapter' => 'Solarium\Core\Client\Adapter\Guzzle']);
+        $adapter = new Psr18Adapter($this->psr7Client, $this->requestFactory, $this->streamFactory);
+
+        $client = new Client($adapter, $this->eventDispatcher);
         $client->getPlugin('postbigrequest');
         $client->clearEndpoints();
 
@@ -255,9 +302,9 @@ class SolrConnection
 
     /**
      * @param Client $client
-     * @param string $endpointKey
+     * @param ?string $endpointKey
      */
-    public function setClient(Client $client, $endpointKey = 'read')
+    public function setClient(Client $client, ?string $endpointKey = 'read')
     {
         $this->clients[$endpointKey] = $client;
     }
