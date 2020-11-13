@@ -42,7 +42,7 @@ interface SubstitutePageIndexer
      * returns a substitute document for the currently being indexed page
      *
      * @param Document $originalPageDocument The original page document.
-     * @return Document returns an Apache_Solr_Document object that replace the default page document
+     * @return Document returns an \ApacheSolrForTypo3\Solr\System\Solr\Document\Document object that replace the default page document
      */
     public function getPageDocument(Document $originalPageDocument);
 }

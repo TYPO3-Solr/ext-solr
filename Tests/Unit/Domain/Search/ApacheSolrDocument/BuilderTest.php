@@ -90,7 +90,7 @@ class BuilderTest extends UnitTest
         $fakePage->page = [];
         $document = $this->documentBuilder->fromPage($fakePage, 'http://www.typo3-solr.com', $fakeRootLine, '');
 
-        $this->assertInstanceOf(Document::class, $document, 'Expect to get an Apache_Solr_Document back');
+        $this->assertInstanceOf(Document::class, $document, 'Expect to get an ' . Document::class .  ' back');
         $this->assertSame('siteHash/pages/4711', $document['id'], 'Builder did not use documentId from mock');
     }
 

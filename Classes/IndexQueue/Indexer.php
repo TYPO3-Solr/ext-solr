@@ -413,7 +413,7 @@ class Indexer extends AbstractIndexer
      * manipulating fields as defined in the field's configuration.
      *
      * @param Item $item An index queue item
-     * @param array $documents An array of Apache_Solr_Document objects to manipulate.
+     * @param array $documents An array of \ApacheSolrForTypo3\Solr\System\Solr\Document\Document objects to manipulate.
      * @return Document[] array Array of manipulated Document objects.
      */
     protected function processDocuments(Item $item, array $documents)
