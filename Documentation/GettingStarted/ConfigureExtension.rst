@@ -54,9 +54,9 @@ Site Handling
 In TYPO3 9.5 the new backend module called "Sites" was introduced.
 This Module can be used to setup and configure the Apache Solr connections.
 
-    .. tip::
+.. tip::
 
-        Please refer to `official TYPO3 docs about site handling <https://docs.typo3.org/m/typo3/tutorial-getting-started/10.4/en-us/NextSteps/Integrators/Index.html#site-and-language-handling>`__, to setup your first site configuration.
+   Please refer to `official TYPO3 docs about site handling <https://docs.typo3.org/m/typo3/tutorial-getting-started/10.4/en-us/NextSteps/Integrators/Index.html#site-and-language-handling>`__, to setup your first site configuration.
 
 .. warning::
 
@@ -77,7 +77,7 @@ Configure Solr Connections
 
 **As first step the authority part of URI to Apache Solr machine must be configured.**
 
-.. image:: ../Images/GettingStarted/Site_handling_Setup_solr_01.jpg
+.. image:: ../Images/GettingStarted/Site_handling_Setup_solr_01.png
 
 **The Corename(aka path to core) for each available language must be assigned respectively.**
 
