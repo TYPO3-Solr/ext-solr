@@ -299,6 +299,11 @@ abstract class Site implements SiteInterface
         return $configs;
     }
 
+    public function isEnabled(): bool
+    {
+        return !empty($this->getAllSolrConnectionConfigurations());
+    }
+
     /**
      * @param int $languageId
      * @return array
