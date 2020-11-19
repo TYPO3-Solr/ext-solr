@@ -66,6 +66,16 @@ class SiteRepositoryTest extends IntegrationTest
     /**
      * @test
      */
+    public function getAvailableSitesDoNotReturnSitesNotEnabled(): void
+    {
+        $this->importDataSetFromFixture('get_available_sites_do_not_return_sites_not_enabled.xml');
+        $sites = $this->siteRepository->getAvailableSites();
+        $this->assertSame(2, count($sites), 'Expected to retrieve two sites');
+    }
+
+    /**
+     * @test
+     */
     public function canGetAllPagesFromSite()
     {
         $this->importDataSetFromFixture('can_get_all_pages_from_sites.xml');
