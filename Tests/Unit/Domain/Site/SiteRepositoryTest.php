@@ -122,7 +122,9 @@ class SiteRepositoryTest extends UnitTest
         $siteMock = $this->getSiteMock(333, [0,1,2]);
         $this->fakeSitesInTYPO3Systems([$siteMock]);
 
-        $this->assertThatSitesAreCreatedWithPageIds([333]);
+        $this->assertThatSitesAreCreatedWithPageIds([333], [
+            0 => ['language' => 0]
+        ]);
         $this->assertCacheIsWritten();
 
         $site = $this->siteRepository->getFirstAvailableSite();
@@ -139,7 +141,7 @@ class SiteRepositoryTest extends UnitTest
         $siteMockB = $this->getSiteMock(234, [0,2]);
         $this->fakeSitesInTYPO3Systems([$siteMockA, $siteMockB]);
 
-        $this->assertThatSitesAreCreatedWithPageIds([123,234]);
+        $this->assertThatSitesAreCreatedWithPageIds([123,234],[0 => ['language' => 0], 1 => ['language' => 1]]);
         $this->assertCacheIsWritten();
 
         $sites = $this->siteRepository->getAvailableSites();
@@ -199,7 +201,7 @@ class SiteRepositoryTest extends UnitTest
                     $site->expects($this->any())->method('getRootPageId')->will(
                         $this->returnValue($idToUse)
                     );
-
+                    $site->expects($this->any())->method('isEnabled')->willReturn(count($fakedConnectionConfiguration) > 0);
                     $site->expects($this->any())
                         ->method('getAllSolrConnectionConfigurations')
                         ->willReturn($fakedConnectionConfiguration);
