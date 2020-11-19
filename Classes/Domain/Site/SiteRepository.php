@@ -217,8 +217,10 @@ class SiteRepository
                     //get each site only once
                     continue;
                 }
-
-                $typo3ManagedSolrSites[$rootPageId] = $this->buildSite($rootPageId);
+                $typo3ManagedSolrSite = $this->buildSite($rootPageId);
+                if ($typo3ManagedSolrSite->isEnabled()) {
+                    $typo3ManagedSolrSites[$rootPageId] = $typo3ManagedSolrSite;
+                }
 
             } catch (\Exception $e) {
                 if ($stopOnInvalidSite) {

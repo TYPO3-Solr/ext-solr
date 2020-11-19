@@ -128,4 +128,6 @@ interface SiteInterface
      * @throws NoSolrConnectionFoundException
      */
     public function getAllSolrConnectionConfigurations(): array;
+
+    public function isEnabled(): bool;
 }
