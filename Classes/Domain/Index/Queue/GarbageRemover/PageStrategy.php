@@ -25,8 +25,8 @@ namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\GarbageRemover;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+
 
 /**
  * Class PageStrategy
@@ -70,9 +70,11 @@ class PageStrategy extends AbstractStrategy {
      */
     protected function collectPageGarbageByPageChange($uid)
     {
-        $pageOverlay = BackendUtility::getRecord('pages', $uid, 'l10n_parent', '', false);
-        $uid = empty($pageOverlay['l10n_parent']) || intval($pageOverlay['l10n_parent']) === 0 ? $uid : $pageOverlay['l10n_parent'];
-
-        $this->deleteInSolrAndRemoveFromIndexQueue('pages', $uid);
+        $pageOverlay = BackendUtility::getRecord('pages', $uid, 'l10n_parent, sys_language_uid', '', false);
+        if (!empty($pageOverlay['l10n_parent']) && intval($pageOverlay['l10n_parent']) !== 0) {
+            $this->deleteIndexDocuments('pages', (int)$pageOverlay['l10n_parent'], (int)$pageOverlay['sys_language_uid']);
+        } else {
+            $this->deleteInSolrAndRemoveFromIndexQueue('pages', $uid);
+        }
     }
 }

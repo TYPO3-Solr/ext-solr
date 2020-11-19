@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataset>
+
+    <pages>
+        <uid>1</uid>
+        <is_siteroot>1</is_siteroot>
+        <doktype>1</doktype>
+        <title>Hello Solr</title>
+    </pages>
+    <pages>
+        <uid>2</uid>
+        <l10n_parent>1</l10n_parent>
+        <sys_language_uid>1</sys_language_uid>
+        <doktype>1</doktype>
+        <title>Hello Translation</title>
+    </pages>
+
+    <tx_solr_indexqueue_item>
+        <uid>1</uid>
+        <root>1</root>
+        <item_type>pages</item_type>
+        <item_uid>1</item_uid>
+        <indexing_configuration>pages</indexing_configuration>
+        <has_indexing_properties>0</has_indexing_properties>
+        <indexing_priority>0</indexing_priority>
+        <changed>1449151778</changed>
+        <indexed>0</indexed>
+        <errors></errors>
+        <pages_mountidentifier></pages_mountidentifier>
+    </tx_solr_indexqueue_item>
+
+</dataset>
