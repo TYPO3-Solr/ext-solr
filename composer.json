@@ -22,14 +22,14 @@
   "require": {
     "php": ">=7.2.0",
     "ext-json": "*",
-    "typo3/cms-core": "^10.4.4",
-    "typo3/cms-backend": "^10.4.4",
-    "typo3/cms-extbase": "^10.4.4",
-    "typo3/cms-frontend": "^10.4.4",
-    "typo3/cms-fluid": "^10.4.4",
-    "typo3/cms-reports": "^10.4.4",
-    "typo3/cms-scheduler": "^10.4.4",
-    "typo3/cms-tstemplate": "^10.4.4",
+    "typo3/cms-core": "^10.4.9",
+    "typo3/cms-backend": "^10.4.9",
+    "typo3/cms-extbase": "^10.4.9",
+    "typo3/cms-frontend": "^10.4.9",
+    "typo3/cms-fluid": "^10.4.9",
+    "typo3/cms-reports": "^10.4.9",
+    "typo3/cms-scheduler": "^10.4.9",
+    "typo3/cms-tstemplate": "^10.4.9",
     "solarium/solarium": "~4.2.0"
   },
   "require-dev": {
