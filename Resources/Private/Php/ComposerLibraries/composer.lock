@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f90f4df5f1b6e811cfd729013235904f",
+    "content-hash": "94d93d11875145f536b152fe7ee02745",
     "packages": [
         {
             "name": "solarium/solarium",
@@ -137,6 +137,7 @@
     "platform": [],
     "platform-dev": [],
     "platform-overrides": {
-        "php": "7.0"
-    }
+        "php": "7.2"
+    },
+    "plugin-api-version": "1.1.0"
 }
