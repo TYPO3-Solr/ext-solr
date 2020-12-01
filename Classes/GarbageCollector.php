@@ -88,6 +88,8 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
     /**
      * Holds the configuration when a recursive page queing should be triggered.
      *
+     * Note: The SQL transaction is already committed, so the current state covers only "non"-changed fields.
+     *
      * @var array
      * @return array
      */
@@ -95,11 +97,15 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
     {
         return [
             // the current page has the field "extendToSubpages" enabled and the field "hidden" was set to 1
+            // covers following scenarios:
+            //   'currentState' =>  ['hidden' => '0', 'extendToSubpages' => '0|1'], 'changeSet' => ['hidden' => '1', (optional)'extendToSubpages' => '1']
             'extendToSubpageEnabledAndHiddenFlagWasAdded' => [
                 'currentState' =>  ['extendToSubpages' => '1'],
                 'changeSet' => ['hidden' => '1']
             ],
             // the current page has the field "hidden" enabled and the field "extendToSubpages" was set to 1
+            // covers following scenarios:
+            //   'currentState' =>  ['hidden' => '0|1', 'extendToSubpages' => '0'], 'changeSet' => [(optional)'hidden' => '1', 'extendToSubpages' => '1']
             'hiddenIsEnabledAndExtendToSubPagesWasAdded' => [
                 'currentState' =>  ['hidden' => '1'],
                 'changeSet' => ['extendToSubpages' => '1']
