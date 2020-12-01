@@ -29,6 +29,7 @@ use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\System\Records\AbstractRepository;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -209,6 +210,42 @@ class PagesRepository extends AbstractRepository
             if ($maxDepth > 1) {
                 $pageIds = array_merge($pageIds, $this->findAllSubPageIdsByRootPage($page['uid'], $maxDepth - 1));
             }
+        }
+
+        return $pageIds;
+    }
+
+    /**
+     * @param int $rootPageId
+     * @param int $maxDepth
+     * @param string $initialPagesAdditionalWhereClause
+     * @return array
+     */
+    public function findAllPagesWithinNoSearchSubEntriesMarkedPagesByRootPage(
+        int $rootPageId,
+        int $maxDepth = 999,
+        string $initialPagesAdditionalWhereClause = ''
+    ): array
+    {
+        $wholePagetree = $this->findAllSubPageIdsByRootPage($rootPageId, $maxDepth, $initialPagesAdditionalWhereClause);
+
+        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder->getRestrictions()->removeAll();
+        $noSearchSubEntriesEnabledPages = $queryBuilder
+            ->select('uid')
+            ->from($this->table)
+            ->where(
+                $queryBuilder->expr()->in('uid', $queryBuilder->createNamedParameter($wholePagetree, Connection::PARAM_INT_ARRAY)),
+                $queryBuilder->expr()->eq('no_search_sub_entries', $queryBuilder->createNamedParameter(1, \PDO::PARAM_INT))
+            )->execute()->fetchAll();
+
+        if (empty($noSearchSubEntriesEnabledPages)) {
+            return [];
+        }
+
+        $pageIds = [];
+        foreach ($noSearchSubEntriesEnabledPages as $page) {
+            $pageIds = array_merge($pageIds, $this->findAllSubPageIdsByRootPage($page['uid'], $maxDepth - 1));
         }
 
         return $pageIds;

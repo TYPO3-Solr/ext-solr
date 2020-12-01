@@ -116,7 +116,7 @@ class RecordMonitor extends AbstractDataHandlerListener
     }
 
     /**
-     * Holds the configuration when a recursive page queing should be triggered.
+     * Holds the configuration when a recursive page queuing should be triggered.
      *
      * Note: The SQL transaction is already committed, so the current state covers only "non"-changed fields.
      * 
@@ -142,7 +142,11 @@ class RecordMonitor extends AbstractDataHandlerListener
             'hiddenIsEnabledAndExtendToSubPagesWasRemoved' => [
                 'currentState' =>  ['hidden' => '1'],
                 'changeSet' => ['extendToSubpages' => '0']
-            ]
+            ],
+            // the field "no_search_sub_entries" of current page was set to 0
+            'no_search_sub_entriesFlagWasAdded' => [
+                'changeSet' => ['no_search_sub_entries' => '0']
+            ],
         ];
     }
 
@@ -244,7 +248,7 @@ class RecordMonitor extends AbstractDataHandlerListener
 
     /**
      * Add's a record to the queue if it is monitored and enabled, otherwise it removes the record from the queue.
-     * 
+     *
      * @param string $table
      * @param integer $uid
      * @param integer $pid
@@ -366,6 +370,11 @@ class RecordMonitor extends AbstractDataHandlerListener
             // TODO move this part to the garbage collector
             // check if the item should be removed from the index because it no longer matches the conditions
             $this->removeFromIndexAndQueueWhenItemInQueue($recordTable, $recordUid);
+            // Handle sub entries for pages, which are not in index queue.
+            if ($recordTable === 'pages' && $this->isRecursivePageUpdateRequired($recordUid, $fields)) {
+                $treePageIds = $this->getSubPageIds($recordUid);
+                $this->updatePageIdItems($treePageIds);
+            }
             return;
         }
 

@@ -86,7 +86,7 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
     }
 
     /**
-     * Holds the configuration when a recursive page queing should be triggered.
+     * Holds the configuration when a recursive page deletion should be triggered.
      *
      * Note: The SQL transaction is already committed, so the current state covers only "non"-changed fields.
      *
@@ -109,7 +109,11 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
             'hiddenIsEnabledAndExtendToSubPagesWasAdded' => [
                 'currentState' =>  ['hidden' => '1'],
                 'changeSet' => ['extendToSubpages' => '1']
-            ]
+            ],
+            // the field "no_search_sub_entries" of current page was set to 1
+            'no_search_sub_entriesFlagWasAdded' => [
+                'changeSet' => ['no_search_sub_entries' => '1']
+            ],
         ];
     }
 
@@ -132,7 +136,7 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
      * @param int $uid
      * @param array $changedFields
      */
-    protected function deleteSubpagesWhenExtendToSubpagesIsSet($table, $uid, $changedFields)
+    protected function deleteSubEntriesWhenRecursiveTriggerIsRecognized($table, $uid, $changedFields)
     {
         if (!$this->isRecursivePageUpdateRequired($uid, $changedFields)) {
             return;
@@ -242,6 +246,10 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
             return;
         }
 
+        if ($table === 'pages') {
+            $this->deleteSubEntriesWhenRecursiveTriggerIsRecognized($table, $uid, $fields);
+        }
+
         $record = $this->tcaService->normalizeFrontendGroupField($table, $record);
         $isGarbage = $this->getIsGarbageRecord($table, $record);
         if (!$isGarbage) {
@@ -249,10 +257,6 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
         }
 
         $this->collectGarbage($table, $uid);
-
-        if ($table === 'pages') {
-            $this->deleteSubpagesWhenExtendToSubpagesIsSet($table, $uid, $fields);
-        }
     }
 
     /**
