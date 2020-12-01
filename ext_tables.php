@@ -131,6 +131,12 @@ if (TYPO3_MODE == 'BE') {
         // register Initialize Solr Connection Button in page tree context menu
         $GLOBALS['TYPO3_CONF_VARS']['BE']['ContextMenu']['ItemProviders'][1487876780] = \ApacheSolrForTypo3\Solr\ContextMenu\ItemProviders\InitializeConnectionProvider::class;
     }
+
+    // Register Context Sensitive Help (CSH) translation labels
+    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addLLrefForTCAdescr(
+        'pages',
+        'EXT:solr/Resources/Private/Language/locallang_csh_pages.xlf'
+    );
 }
 
 if ((TYPO3_MODE === 'BE') || (TYPO3_MODE === 'FE' && isset($_POST['TSFE_EDIT']))) {

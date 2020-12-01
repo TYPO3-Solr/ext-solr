@@ -116,7 +116,7 @@ class RecordMonitor extends AbstractDataHandlerListener
     }
 
     /**
-     * Holds the configuration when a recursive page queing should be triggered.
+     * Holds the configuration when a recursive page queuing should be triggered.
      *
      * @var array
      * @return array
@@ -133,7 +133,11 @@ class RecordMonitor extends AbstractDataHandlerListener
             'hiddenIsEnabledAndExtendToSubPagesWasRemoved' => [
                 'currentState' =>  ['hidden' => '1'],
                 'changeSet' => ['extendToSubpages' => '0']
-            ]
+            ],
+            // the field "no_search_sub_entries" of current page was set to 0
+            'no_search_sub_entriesFlagWasAdded' => [
+                'changeSet' => ['no_search_sub_entries' => '0']
+            ],
         ];
     }
 
@@ -235,7 +239,7 @@ class RecordMonitor extends AbstractDataHandlerListener
 
     /**
      * Add's a record to the queue if it is monitored and enabled, otherwise it removes the record from the queue.
-     * 
+     *
      * @param string $table
      * @param integer $uid
      * @param integer $pid
