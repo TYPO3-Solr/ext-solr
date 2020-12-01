@@ -123,6 +123,7 @@ CREATE TABLE sys_registry (
 # Extending 'pages' table with extra keys
 #
 CREATE TABLE pages (
+	no_search_sub_entries tinyint(3) unsigned DEFAULT '0' NOT NULL,
 	KEY content_from_pid_deleted (content_from_pid,deleted),
 	KEY doktype_no_search_deleted (doktype,no_search,deleted)
 );
