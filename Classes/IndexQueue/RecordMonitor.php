@@ -118,12 +118,21 @@ class RecordMonitor extends AbstractDataHandlerListener
     /**
      * Holds the configuration when a recursive page queing should be triggered.
      *
+     * Note: The SQL transaction is already committed, so the current state covers only "non"-changed fields.
+     * 
      * @var array
      * @return array
      */
     protected function getUpdateSubPagesRecursiveTriggerConfiguration()
     {
         return [
+            // the current page has the both fields "extendToSubpages" and "hidden" set from 1 to 0 => requeue subpages
+            'HiddenAndExtendToSubpageWereDisabled' => [
+                'changeSet' => [
+                    'hidden' => '0',
+                    'extendToSubpages' => '0'
+                ]
+            ],
             // the current page has the field "extendToSubpages" enabled and the field "hidden" was set to 0 => requeue subpages
             'extendToSubpageEnabledAndHiddenFlagWasRemoved' => [
                 'currentState' =>  ['extendToSubpages' => '1'],
