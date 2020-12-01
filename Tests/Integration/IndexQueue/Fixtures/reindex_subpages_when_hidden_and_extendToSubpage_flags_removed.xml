@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataset>
+
+    <sys_template>
+        <uid>1</uid>
+        <pid>1</pid>
+        <root>1</root>
+        <clear>3</clear>
+        <config>
+            <![CDATA[
+
+                plugin.tx_solr {
+
+                    enabled = 1
+
+                    index {
+                        queue {
+
+                            // mapping tableName.fields.SolrFieldName => TableFieldName (+ cObj processing)
+
+                            pages = 1
+                            pages {
+                                initialization = ApacheSolrForTypo3\Solr\IndexQueue\Initializer\Page
+
+                                // allowed page types (doktype) when indexing records from table "pages"
+                                allowedPageTypes = 1,7
+
+                                indexingPriority = 0
+
+                                indexer = ApacheSolrForTypo3\Solr\IndexQueue\PageIndexer
+                                indexer {
+                                    // add options for the indexer here
+                                }
+
+                                // Only index standard pages and mount points that are not overlayed.
+                                additionalWhereClause = (doktype = 1 OR (doktype=7 AND mount_pid_ol=0)) AND no_search = 0
+
+                                fields {
+                                    sortSubTitle_stringS = subtitle
+                                }
+                            }
+
+                        }
+                    }
+                }
+            ]]>
+        </config>
+        <sorting>100</sorting>
+    </sys_template>
+    <pages>
+        <uid>1</uid>
+        <is_siteroot>1</is_siteroot>
+        <doktype>1</doktype>
+        <pid>0</pid>
+        <hidden>1</hidden>
+        <extendToSubpages>1</extendToSubpages>
+    </pages>
+    <pages>
+        <uid>10</uid>
+        <is_siteroot>0</is_siteroot>
+        <doktype>1</doktype>
+        <pid>1</pid>
+    </pages>
+
+    <pages>
+        <uid>100</uid>
+        <is_siteroot>0</is_siteroot>
+        <doktype>1</doktype>
+        <pid>10</pid>
+    </pages>
+    <pages>
+        <uid>11</uid>
+        <is_siteroot>0</is_siteroot>
+        <doktype>1</doktype>
+        <pid>1</pid>
+        <hidden>1</hidden>
+    </pages>
+
+</dataset>
