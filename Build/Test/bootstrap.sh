@@ -86,7 +86,7 @@ composer require --dev --update-with-dependencies --prefer-source \
   typo3/cms-extbase:"$TYPO3_VERSION" \
   typo3/cms-reports:"$TYPO3_VERSION" \
   typo3/cms-scheduler:"$TYPO3_VERSION" \
-  typo3/cms-tstemplate:"$TYPO3_VERSION" $TYPO3_MASTER_DEPENDENCIES
+  typo3/cms-tstemplate:"$TYPO3_VERSION"
 
 # Restore composer.json
 mkdir -p $TYPO3_PATH_WEB/uploads $TYPO3_PATH_WEB/typo3temp
