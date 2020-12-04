@@ -516,17 +516,13 @@ class FacetingTest extends UnitTest
      */
     public function testCanAddQueryFiltersContainingPlusSign()
     {
-        $fakeRequest = [
-            'tx_solr' => [
-                'filter' => [
-                    'something0%3AA+B',
-                    'something1%3AA%2BB',
-                    'something2%3AA%20B'
-                ]
+        $fakeArguments = [
+            'filter' => [
+                'something0%3AA+B',
+                'something1%3AA%2BB',
+                'something2%3AA%20B'
             ]
         ];
-
-        $_GET = $fakeRequest;
 
         $fakeConfigurationArray = [];
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting'] = 1;
@@ -542,7 +538,14 @@ class FacetingTest extends UnitTest
                 'field' => 'something2'
             ]
         ];
-        $queryParameter = $this->getQueryParametersFromExecutedFacetingModifier($fakeConfigurationArray);
+        $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
+
+        /* @var SearchRequest $fakeRequest */
+        $fakeRequest = $this->getDumbMock(SearchRequest::class);
+        $fakeRequest->expects($this->once())->method('getArguments')->will($this->returnValue($fakeArguments));
+        $fakeRequest->expects($this->any())->method('getContextTypoScriptConfiguration')->will($this->returnValue($fakeConfiguration));
+
+        $queryParameter = $this->getQueryParametersFromExecutedFacetingModifier($fakeConfiguration, $fakeRequest);
 
         $this->assertEquals('{!tag=something0}(something0:"A+B")', $queryParameter['fq'][0], 'Can handle plus as plus');
         $this->assertEquals('{!tag=something1}(something1:"A+B")', $queryParameter['fq'][1], 'Can handle %2B as plus');
