@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr\System\Configuration;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use TYPO3\CMS\Core\Configuration\SiteConfiguration;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -50,6 +51,56 @@ class ConfigurationManager implements SingletonInterface
     public function reset()
     {
         $this->typoScriptConfigurations = [];
+    }
+
+    /**
+     * Build a unified configuration in order to have all configuration settings in one place
+     *
+     * @param int $pageUid
+     * @param int $languageUid
+     * @return UnifiedConfiguration
+     */
+    public function getUnifiedConfiguration(int $pageUid = 0, int $languageUid = 0): UnifiedConfiguration
+    {
+        $hash = md5(UnifiedConfiguration::class . '-' . $pageUid . '-' . $languageUid);
+        if (isset($this->typoScriptConfigurations[$hash])) {
+            return $this->typoScriptConfigurations[$hash];
+        }
+
+        $unifiedConfiguration = new UnifiedConfiguration($pageUid, $languageUid);
+        $unifiedConfiguration->mergeConfigurationByObject($this->getGlobalConfiguration());
+        // TODO: Site configuration
+        $unifiedConfiguration->mergeConfigurationByObject($this->getExtensionConfiguration());
+        // TODO TypoScript configuration
+
+        $this->typoScriptConfigurations[$hash] = $unifiedConfiguration;
+
+        return $unifiedConfiguration;
+    }
+
+    /**
+     * Returns instance of the global configuration
+     *
+     * @return GlobalConfiguration
+     */
+    public function getGlobalConfiguration(): GlobalConfiguration
+    {
+        return new GlobalConfiguration();
+    }
+
+    /**
+     * Returns instance of the global configuration
+     *
+     * @return ExtensionConfiguration
+     */
+    public function getExtensionConfiguration(): ExtensionConfiguration
+    {
+        return new ExtensionConfiguration();
+    }
+
+    public function getSiteConfiguration(): SiteConfiguration
+    {
+
     }
 
     /**

@@ -32,6 +32,7 @@ use ApacheSolrForTypo3\Solr\IndexQueue\Initializer\Record;
 use ApacheSolrForTypo3\Solr\System\ContentObject\ContentObjectService;
 use ApacheSolrForTypo3\Solr\System\Util\ArrayAccessor;
 use InvalidArgumentException;
+use TYPO3\CMS\Core\TypoScript\TypoScriptService;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -60,10 +61,10 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @author Marc Bastian Heinrichs <mbh@mbh-software.de>
  * @author Timo Schmidt <timo.schmidt@dkd.de>
  */
-class TypoScriptConfiguration
+class TypoScriptConfiguration implements UnifyConfigurationInterface
 {
     /**
-     * @var \ApacheSolrForTypo3\Solr\System\Util\ArrayAccessor|null
+     * @var ArrayAccessor|null
      */
     protected $configurationAccess = null;
 
@@ -81,13 +82,62 @@ class TypoScriptConfiguration
     /**
      * @param array $configuration
      * @param int $contextPageId
-     * @param ContentObjectService $contentObjectService
+     * @param ?ContentObjectService $contentObjectService
      */
-    public function __construct(array $configuration, $contextPageId = 0, ContentObjectService $contentObjectService = null)
-    {
+    public function __construct(
+        array $configuration,
+        int $contextPageId = 0,
+        ContentObjectService $contentObjectService = null
+    ) {
         $this->configurationAccess = new ArrayAccessor($configuration, '.', true);
         $this->contextPageId = $contextPageId;
         $this->contentObjectService = $contentObjectService;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function load(): UnifyConfigurationInterface
+    {
+        if (!empty($configuration)) {
+            return $this;
+        }
+        // TODO: Load configuration if empty
+
+        return $this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getUnifiedArray(): array
+    {
+        $pluginData = $this->configurationAccess->get('plugin.tx_solr.');
+
+        if ($pluginData === null) {
+            return [];
+        }
+        /*
+         * Remove dots and make the array clean
+         * Important: if a node can enabled and has sub nodes, the node value is located within _typoScriptNodeValue
+         */
+        $typoScriptService = new TypoScriptService();
+        $pluginData = $typoScriptService->convertTypoScriptArrayToPlainArray($pluginData);
+
+        // Change keys for Solr connection
+        // TODO: This should not be done if the site configuration is in use
+        if (isset($pluginData['solr'])) {
+            if (!isset($pluginData['connection'])) {
+                $pluginData['connection'] = [];
+            }
+            foreach (['read', 'write'] as $type) {
+                if (isset($pluginData['solr'][$type])) {
+                    $pluginData['connection'][$type] = $pluginData['solr'][$type];
+                    unset($pluginData['solr'][$type]);
+                }
+            }
+        }
+        return $pluginData;
     }
 
     /**
