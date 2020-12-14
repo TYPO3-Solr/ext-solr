@@ -139,7 +139,11 @@ class Typo3PageContentExtractorTest extends UnitTest
             'keep escaped html' => [
                 'content' => '<em>this</em> is how to make &lt;b&gt;fat&lt;/b&gt;',
                 'expectedResult' => 'this is how to make <b>fat</b>'
-            ]
+            ],
+            'support chinese characters' => [
+                'content' => '媒体和投资者 新闻 财务报告 公司股票信息 概览',
+                'expectedResult' => '媒体和投资者 新闻 财务报告 公司股票信息 概览'
+            ],
         ];
     }
 
