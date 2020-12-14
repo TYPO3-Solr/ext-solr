@@ -134,7 +134,7 @@ class Typo3PageContentExtractor extends HtmlContentExtractor
         // clean content
         $content = self::cleanContent($content);
         $content = trim($content);
-        $content = preg_replace('!\s+!', ' ', $content); // reduce multiple spaces to one space
+        $content = preg_replace('!\s+!u', ' ', $content); // reduce multiple spaces to one space
 
         return $content;
     }
