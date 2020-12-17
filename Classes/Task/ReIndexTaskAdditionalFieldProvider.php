@@ -127,7 +127,14 @@ class ReIndexTaskAdditionalFieldProvider implements AdditionalFieldProviderInter
 
         $additionalFields['indexingConfigurations'] = array(
             'code' => $this->getIndexingConfigurationSelector(),
-            'label' => 'Index Queue configurations to re-index',
+            'label' => 'LLL:EXT:solr/Resources/Private/Language/ModuleScheduler.xml:reindex_field_indexingConfigurations',
+            'cshKey' => '',
+            'cshLabel' => ''
+        );
+
+        $additionalFields['clearSearchIndex'] = array(
+            'code' => '<input type="checkbox" name="tx_scheduler[clearSearchIndex]" value="1" ' . (($task && $task->shouldClearSearchIndex()) ? 'checked="checked"' : '') . ' />',
+            'label' => 'LLL:EXT:solr/Resources/Private/Language/ModuleScheduler.xml:reindex_field_clearSearchIndex',
             'cshKey' => '',
             'cshLabel' => ''
         );
@@ -202,6 +209,8 @@ class ReIndexTaskAdditionalFieldProvider implements AdditionalFieldProviderInter
             $indexingConfigurations = $submittedData['indexingConfigurations'];
         }
         $task->setIndexingConfigurationsToReIndex($indexingConfigurations);
+
+        $task->setClearSearchIndex((bool)$submittedData['clearSearchIndex']);
     }
 
     /**

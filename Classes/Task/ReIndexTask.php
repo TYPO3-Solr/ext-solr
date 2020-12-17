@@ -54,7 +54,14 @@ class ReIndexTask extends AbstractTask
      *
      * @var array
      */
-    protected $indexingConfigurationsToReIndex = array();
+    protected $indexingConfigurationsToReIndex = [];
+
+    /**
+     * Clear Index for selected sites and record types
+     *
+     * @var boolean
+     */
+    protected $clearSearchIndex = false;
 
 
     /**
@@ -65,12 +72,18 @@ class ReIndexTask extends AbstractTask
      */
     public function execute()
     {
-        // clean up
-        $cleanUpResult = $this->cleanUpIndex();
+
+        if ($this->shouldClearSearchIndex()) {
+                // clean up
+            $cleanUpResult = $this->cleanUpIndex();
+        } else {
+            $cleanUpResult = true;
+        }
+
 
         // initialize for re-indexing
         $indexQueue = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\IndexQueue\\Queue');
-        $indexQueueInitializationResults = array();
+        $indexQueueInitializationResults = [];
         foreach ($this->indexingConfigurationsToReIndex as $indexingConfigurationName) {
             $indexQueueInitializationResults = $indexQueue->initialize($this->site,
                 $indexingConfigurationName);
@@ -90,7 +103,7 @@ class ReIndexTask extends AbstractTask
         $cleanUpResult = true;
         $solrConfiguration = $this->site->getSolrConfiguration();
         $solrServers = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\ConnectionManager')->getConnectionsBySite($this->site);
-        $typesToCleanUp = array();
+        $typesToCleanUp = [];
 
         foreach ($this->indexingConfigurationsToReIndex as $indexingConfigurationName) {
             $type = Queue::getTableToIndexByIndexingConfigurationName(
@@ -138,6 +151,24 @@ class ReIndexTask extends AbstractTask
     {
         $this->site = $site;
     }
+
+    /**
+     * @return bool
+     */
+    public function shouldClearSearchIndex()
+    {
+        return $this->clearSearchIndex;
+    }
+
+    /**
+     * @param bool $clearSearchIndex
+     */
+    public function setClearSearchIndex($clearSearchIndex)
+    {
+        $this->clearSearchIndex = $clearSearchIndex;
+    }
+
+
 
     /**
      * Gets the indexing configurations to re-index.
