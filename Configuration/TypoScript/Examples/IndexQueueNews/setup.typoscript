@@ -1,0 +1,97 @@
+
+plugin.tx_solr.index.queue {
+
+	news = 1
+	news {
+		table = tx_news_domain_model_news
+
+		fields {
+			abstract = teaser
+
+			author = author
+			authorEmail_stringS = author_email
+
+			title = title
+
+			datetime_stringS = TEXT
+			datetime_stringS {
+				field = datetime
+				date = d.m.Y H:i
+			}
+			
+			datetime_dateS = TEXT
+			datetime_dateS {
+				field = datetime
+				date = Y-m-d\TH:i:s\Z
+			}
+
+			content = SOLR_CONTENT
+			content {
+				cObject = COA
+				cObject {
+					10 = TEXT
+					10 {
+						field = bodytext
+						noTrimWrap = || |
+					}
+				}
+			}
+
+			category_stringM = SOLR_RELATION
+			category_stringM {
+				localField = categories
+				multiValue = 1
+			}
+
+			keywords = SOLR_MULTIVALUE
+			keywords {
+				field = keywords
+			}
+
+			tags_stringM = SOLR_RELATION
+			tags_stringM {
+				localField = tags
+				multiValue = 1
+			}
+
+			url = CASE
+			url {
+				key.field = type
+
+				# Internal
+				1 = TEXT
+				1 {
+					if.isTrue.field = internalurl
+					typolink.parameter.field = internalurl
+					typolink.useCacheHash = 1
+					typolink.returnLast = url
+				}
+
+				# External
+				2 = TEXT
+				2 {
+					if.isTrue.field = externalurl
+					field = externalurl
+				}
+
+				default = TEXT
+				default {
+					typolink.parameter = {$plugin.tx_news.settings.detailPid}
+					typolink.additionalParams = &tx_news_pi1[controller]=News&tx_news_pi1[action]=detail&tx_news_pi1[news]={field:uid}&L={field:__solr_index_language}
+					typolink.additionalParams.insertData = 1
+					typolink.useCacheHash = 1
+					typolink.returnLast = url
+				}
+			}
+		}
+
+		attachments = 1
+		attachments {
+			fields = fal_related_files
+			fileExtensions = *
+		}
+	}
+
+}
+
+plugin.tx_solr.logging.indexing.queue.news = 1

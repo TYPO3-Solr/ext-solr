@@ -1,0 +1,56 @@
+
+plugin.tx_solr {
+
+	enableDebugMode = 1
+
+
+	search {
+
+		results {
+			resultsHighlighting = 1
+			siteHighlighting = 1
+
+			showDocumentScoreAnalysis = 1
+		}
+
+		spellchecking = 1
+		spellchecking {
+			searchUsingSpellCheckerSuggestion = 1
+		}
+		lastSearches = 1
+		frequentSearches = 1
+		sorting = 1
+		faceting = 1
+		variants = 1
+	}
+
+	statistics = 1
+	statistics.anonymizeIP = 1
+
+	suggest = 1
+
+	logging {
+		exceptions = 1
+		debugOutput = 1
+
+		indexing {
+			indexQueueInitialization = 1
+			missingTypo3SearchMarkers = 1
+			pageIndexed = 1
+
+			queue {
+				pages = 1
+				tt_news = 1
+			}
+		}
+
+		query {
+			filters = 1
+			searchWords = 1
+			queryString = 1
+			rawPost = 1
+			rawGet = 1
+		}
+	}
+}
+
