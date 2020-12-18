@@ -1,0 +1,39 @@
+# Ajaxify the results
+
+tx_solr_ajaxPage = PAGE
+tx_solr_ajaxPage {
+	typeNum = 7383
+	config {
+		disableAllHeaderCode = 1
+		xhtml_cleaning = 0
+		admPanel = 0
+		additionalHeaders.10.header = Content-type: text/plain
+		no_cache = 0
+	}
+
+	10 = USER
+	10 {
+		userFunc = TYPO3\CMS\Extbase\Core\Bootstrap->run
+		extensionName = Solr
+		pluginName = pi_results
+		vendorName = ApacheSolrForTypo3
+		controller = Search
+		action = results
+		switchableControllerActions {
+			Search {
+				1 = results
+				2 = form
+			}
+		}
+		view < plugin.tx_solr.view
+		persistence < plugin.tx_solr.persistence
+		settings < plugin.tx_solr.settings
+	}
+}
+
+page.includeJSFooterlibs {
+    solr-jquery = EXT:solr/Resources/Public/JavaScript/JQuery/jquery.min.js
+    solr-uri = EXT:solr/Resources/Public/JavaScript/JQuery/URI.min.js
+    solr-uri-jquery = EXT:solr/Resources/Public/JavaScript/JQuery/jquery.URI.min.js
+    solr-ajaxify = EXT:solr/Resources/Public/JavaScript/search_controller.js
+}
