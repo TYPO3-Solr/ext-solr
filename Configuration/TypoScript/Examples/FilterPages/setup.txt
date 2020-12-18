@@ -1,7 +1,1 @@
-plugin.tx_solr.search.query {
-
-	filter {
-		pagesOnlyFilter = type:pages
-	}
-
-}
+@import 'EXT:solr/Configuration/TypoScript/Examples/FilterPages/setup.typoscript'
