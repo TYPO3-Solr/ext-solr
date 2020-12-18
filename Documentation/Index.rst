@@ -17,7 +17,7 @@ Apache Solr for TYPO3 (EXT:solr)
 		solr
 
 	:Version:
-		10.0.3
+		10.0.4-dev
 
 	:Language:
 		en
