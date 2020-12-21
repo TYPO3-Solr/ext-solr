@@ -509,4 +509,46 @@ class FacetingTest extends UnitTest
         $this->assertEquals('type,color', $jsonData->type->domain->excludeTags, 'Query string did not contain expected snipped');
         $this->assertEquals('{!tag=type}(type:"product")', $queryParameter['fq'], 'Did not build filter query from color');
     }
+
+
+    /**
+     * @test
+     */
+    public function testCanAddQueryFiltersContainingPlusSign()
+    {
+        $fakeArguments = [
+            'filter' => [
+                'something0%3AA+B',
+                'something1%3AA%2BB',
+                'something2%3AA%20B'
+            ]
+        ];
+
+        $fakeConfigurationArray = [];
+        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting'] = 1;
+        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting.']['keepAllFacetsOnSelection'] = 1;
+        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting.']['facets.'] = [
+            'something0.' => [
+                'field' => 'something0'
+            ],
+            'something1.' => [
+                'field' => 'something1'
+            ],
+            'something2.' => [
+                'field' => 'something2'
+            ]
+        ];
+        $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
+
+        /* @var SearchRequest $fakeRequest */
+        $fakeRequest = $this->getDumbMock(SearchRequest::class);
+        $fakeRequest->expects($this->once())->method('getArguments')->will($this->returnValue($fakeArguments));
+        $fakeRequest->expects($this->any())->method('getContextTypoScriptConfiguration')->will($this->returnValue($fakeConfiguration));
+
+        $queryParameter = $this->getQueryParametersFromExecutedFacetingModifier($fakeConfiguration, $fakeRequest);
+
+        $this->assertEquals('{!tag=something0}(something0:"A+B")', $queryParameter['fq'][0], 'Can handle plus as plus');
+        $this->assertEquals('{!tag=something1}(something1:"A+B")', $queryParameter['fq'][1], 'Can handle %2B as plus');
+        $this->assertEquals('{!tag=something2}(something2:"A B")', $queryParameter['fq'][2], 'Can handle %20 as space');
+    }
 }
