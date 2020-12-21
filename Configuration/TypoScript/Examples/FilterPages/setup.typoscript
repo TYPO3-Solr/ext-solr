@@ -1,0 +1,7 @@
+plugin.tx_solr.search.query {
+
+	filter {
+		pagesOnlyFilter = type:pages
+	}
+
+}

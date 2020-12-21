@@ -1,23 +1,2 @@
-# Enable a hierarchy facet on the field "rootline"
-
-lib.tx_solr.pagetitle = HMENU
-lib.tx_solr.pagetitle {
-    special = list
-    special.value.current = 1
-    1 = TMENU
-    1 {
-        NO {
-            doNotLinkIt = 1
-        }
-    }
-}
-
-plugin.tx_solr.search.faceting = 1
-plugin.tx_solr.search.faceting.facets {
-    pageHierarchy {
-        field = rootline
-        label = Rootline
-        type = hierarchy
-        partialName = Rootline
-    }
-}
+# Important: This file is deprecated and will removed with EXT:solr 12.x
+@import 'EXT:solr/Configuration/TypoScript/Examples/Facets/Hierarchy/setup.typoscript'

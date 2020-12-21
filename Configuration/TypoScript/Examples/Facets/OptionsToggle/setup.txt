@@ -1,13 +1,2 @@
-plugin.tx_solr.search.faceting = 1
-plugin.tx_solr.search.faceting.facets {
-    typeToggle {
-        label = Type Toggle
-        field = type
-        partialName = OptionsToggle
-    }
-}
-
-page.includeJSFooterlibs {
-    solr-jquery = EXT:solr/Resources/Public/JavaScript/JQuery/jquery.min.js
-    solr-options = EXT:solr/Resources/Public/JavaScript/facet_options_controller.js
-}
+# Important: This file is deprecated and will removed with EXT:solr 12.x
+@import 'EXT:solr/Configuration/TypoScript/Examples/Facets/OptionsToggle/setup.typoscript'
