@@ -73,7 +73,7 @@ indexed into solr. Shown in the frontend it will look like this:
 
 When you have an option facet with very much options you might want to group the options by an prefix of an option. This can be used e.g. to group the options alphabetically.
 
-The following example shows how options can be grouped by prefix (from EXT:solr/Configuration/TypoScript/Examples/Facets/OptionsPrefixGrouped/setup.txt):
+The following example shows how options can be grouped by prefix (from EXT:solr/Configuration/TypoScript/Examples/Facets/OptionsPrefixGrouped/setup.typoscript):
 
 .. code-block:: xml
 
@@ -203,7 +203,7 @@ by writing and reading the facet options by a convention:
     [depth]-/Level1Label/Level2Label
 
 
-When you follow this convention by writing date into a solr field you can render it as hierarchical facet. As example you can check indexing configuration in EXT:solr (EXT:solr/Configuration/ TypoScript/Solr/setup.txt)
+When you follow this convention by writing date into a solr field you can render it as hierarchical facet. As example you can check indexing configuration in EXT:solr (EXT:solr/Configuration/TypoScript/Solr/setup.typoscript)
 
 .. code-block:: typoscript
 

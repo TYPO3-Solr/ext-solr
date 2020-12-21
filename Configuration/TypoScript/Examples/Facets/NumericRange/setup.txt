@@ -1,25 +1,2 @@
-# Enable a numericRange facet on the pidField
-
-plugin.tx_solr.search.faceting = 1
-plugin.tx_solr.search.faceting.facets {
-    pidRangeRange {
-        field = pid
-        label = Pid Range
-        type = numericRange
-        numericRange {
-            start = 0
-            end = 100
-            gap = 1
-        }
-    }
-}
-# Load js files
-page.includeJSFooterlibs {
-    solr-jquery = EXT:solr/Resources/Public/JavaScript/JQuery/jquery.min.js
-    solr-ui = EXT:solr/Resources/Public/JavaScript/JQuery/jquery-ui.min.js
-    solr-numericrange = EXT:solr/Resources/Public/JavaScript/facet_numericrange_controller.js
-}
-
-page.includeCSS {
-    solr-ui = EXT:solr/Resources/Css/JQueryUi/jquery-ui.custom.css
-}
+# Important: This file is deprecated and will removed with EXT:solr 12.x
+@import 'EXT:solr/Configuration/TypoScript/Examples/Facets/NumericRange/setup.typoscript'

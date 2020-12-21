@@ -1,4 +1,2 @@
-page.includeCSS {
-	search = EXT:solr/Resources/Public/StyleSheets/Frontend/results.css
-	solr-loader = EXT:solr/Resources/Public/StyleSheets/Frontend/loader.css
-}
+# Important: This file is deprecated and will removed with EXT:solr 12.x
+@import 'EXT:solr/Configuration/TypoScript/StyleSheets/setup.typoscript'

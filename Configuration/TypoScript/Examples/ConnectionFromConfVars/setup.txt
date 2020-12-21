@@ -1,24 +1,2 @@
-plugin.tx_solr {
-	solr {
-		scheme = TEXT
-		scheme {
-			value = {$plugin.tx_solr.solr.scheme}
-			override.data = global:TYPO3_CONF_VARS|EXTCONF|solr|scheme
-		}
-		host = TEXT
-		host {
-			value = {$plugin.tx_solr.solr.host}
-			override.data = global:TYPO3_CONF_VARS|EXTCONF|solr|host
-		}
-		port = TEXT
-		port {
-			value = {$plugin.tx_solr.solr.port}
-			override.data = global:TYPO3_CONF_VARS|EXTCONF|solr|port
-		}
-		path = TEXT
-		path {
-			value = {$plugin.tx_solr.solr.path}
-			override.data = global:TYPO3_CONF_VARS|EXTCONF|solr|path
-		}
-	}
-}
+# Important: This file is deprecated and will removed with EXT:solr 12.x
+@import 'EXT:solr/Configuration/TypoScript/Examples/ConnectionFromConfVars/setup.typoscript'

@@ -1,27 +1,2 @@
-plugin.tx_solr {
-	# cat=solr: basic/10/enable; type=boolean; label=Enable/disable Solr extension: EXT:solr should only be enabled for relevant sys_languages, to avoid unnecessary connections and overwritten contents.
-	enabled = 1
-
-	view {
-		templateRootPath =
-		partialRootPath =
-		layoutRootPath =
-	}
-
-	solr {
-		scheme = http
-		host = localhost
-		port = 8983
-		path = /solr/core_en/
-		username =
-		password =
-	}
-
-	search {
-		targetPage = 0
-
-		results {
-			resultsPerPage = 10
-		}
-	}
-}
+# Important: This file is deprecated and will removed with EXT:solr 12.x
+@import 'EXT:solr/Configuration/TypoScript/Solr/constants.typoscript'

@@ -1,9 +1,2 @@
-page.includeCSS {
-
-	bootstrap = EXT:solr/Resources/Public/StyleSheets/Frontend/Bootstrap/bootstrap.min.css
-	bootstrap-theme = EXT:solr/Resources/Public/StyleSheets/Frontend/Bootstrap/bootstrap-theme.min.css
-}
-
-page.includeJSFooterlibs {
-    bootstrap-js = EXT:solr/Resources/Public/JavaScript/Bootstrap/bootstrap.js
-}
+# Important: This file is deprecated and will removed with EXT:solr 12.x
+@import 'EXT:solr/Configuration/TypoScript/BootstrapCss/setup.typoscript'

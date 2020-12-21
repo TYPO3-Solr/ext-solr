@@ -1,13 +1,2 @@
-mod.wizards.newContentElement.wizardItems.plugins {
-  elements {
-    tx_solr_results {
-      iconIdentifier = extensions-solr-plugin-contentelement
-      title = LLL:EXT:solr/Resources/Private/Language/locallang.xlf:plugin_results
-      description = LLL:EXT:solr/Resources/Private/Language/locallang.xlf:plugin_results_description
-      tt_content_defValues {
-        CType = list
-        list_type = solr_pi_results
-      }
-    }
-  }
-}
+# Important: This file is deprecated and will removed with EXT:solr 12.x
+@import 'EXT:solr/Configuration/TSconfig/Page/Mod/Wizards/NewContentElement.tsconfig'
