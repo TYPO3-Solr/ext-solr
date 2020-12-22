@@ -108,6 +108,20 @@ class GarbageCollectorTest extends IntegrationTest
     /**
      * @test
      */
+    public function queueItemStaysWhenOverlayIsSetToHidden()
+    {
+        $this->importDataSetFromFixture('queue_item_stays_when_overlay_set_to_hidden.xml');
+
+        $this->assertIndexQueryContainsItemAmount(1);
+
+        $this->garbageCollector->processDatamap_afterDatabaseOperations('update', 'pages', 2, ['hidden' => 1], $this->dataHandler);
+        // index queue not modified
+        $this->assertIndexQueryContainsItemAmount(1);
+    }
+
+    /**
+     * @test
+     */
     public function canQueueAPageAndRemoveItWithTheGarbageCollector()
     {
         $this->importDataSetFromFixture('can_queue_a_page_and_remove_it_with_the_garbage_collector.xml');
@@ -606,6 +620,7 @@ class GarbageCollectorTest extends IntegrationTest
 
         return $result;
     }
+
 
     /**
      * @param $items
