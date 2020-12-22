@@ -44,27 +44,27 @@ class UrlHelperTest extends UnitTest
             'cHash at the end' => [
                 'input' => 'index.php?id=1&cHash=ddd',
                 'queryParameterToRemove' => 'cHash',
-                'expectedUrl' => 'index.php?id=1'
+                'expectedUrl' => '/index.php?id=1'
              ],
             'cHash at the beginning' => [
                 'input' => 'index.php?cHash=ddd&id=1',
                 'queryParameterToRemove' => 'cHash',
-                'expectedUrl' => 'index.php?id=1'
+                'expectedUrl' => '/index.php?id=1'
             ],
             'cHash in the middle' => [
                 'input' => 'index.php?foo=bar&cHash=ddd&id=1',
                 'queryParameterToRemove' => 'cHash',
-                'expectedUrl' => 'index.php?foo=bar&id=1'
+                'expectedUrl' => '/index.php?foo=bar&id=1'
             ],
             'result is urlencoded' => [
                 'input' => 'index.php?foo[1]=bar&cHash=ddd&id=1',
                 'queryParameterToRemove' => 'cHash',
-                'expectedUrl' => 'index.php?foo%5B1%5D=bar&id=1'
+                'expectedUrl' => '/index.php?foo%5B1%5D=bar&id=1'
             ],
             'result is urlencoded with unexisting remove param' => [
                 'input' => 'index.php?foo[1]=bar&cHash=ddd&id=1',
                 'queryParameterToRemove' => 'notExisting',
-                'expectedUrl' => 'index.php?foo%5B1%5D=bar&cHash=ddd&id=1'
+                'expectedUrl' => '/index.php?foo%5B1%5D=bar&cHash=ddd&id=1'
             ]
         ];
     }
@@ -85,8 +85,8 @@ class UrlHelperTest extends UnitTest
     public function getUrl()
     {
         return [
-            'nothing should be changed' => ['inputUrl' => 'index.php?foo%5B1%5D=bar&cHash=ddd&id=1', 'expectedOutputUrl' => 'index.php?foo%5B1%5D=bar&cHash=ddd&id=1'],
-            'url should be encoded' => ['inputUrl' => 'index.php?foo[1]=bar&cHash=ddd&id=1', 'expectedOutputUrl' => 'index.php?foo%5B1%5D=bar&cHash=ddd&id=1'],
+            'nothing should be changed' => ['inputUrl' => 'index.php?foo%5B1%5D=bar&cHash=ddd&id=1', 'expectedOutputUrl' => '/index.php?foo%5B1%5D=bar&cHash=ddd&id=1'],
+            'url should be encoded' => ['inputUrl' => 'index.php?foo[1]=bar&cHash=ddd&id=1', 'expectedOutputUrl' => '/index.php?foo%5B1%5D=bar&cHash=ddd&id=1'],
             'url with https protocol' => ['inputUrl' => 'https://www.google.de/index.php', 'expectedOutputUrl' => 'https://www.google.de/index.php'],
             'url with port' => ['inputUrl' => 'http://www.google.de:8080/index.php', 'expectedOutputUrl' => 'http://www.google.de:8080/index.php'],
         ];

@@ -14,161 +14,149 @@ namespace ApacheSolrForTypo3\Solr\System\Url;
  * The TYPO3 project - inspiring people to share!
  */
 
+use TYPO3\CMS\Core\Http\Uri;
+use TYPO3\CMS\Core\Utility\MathUtility;
+
 /**
  * Class UrlHelper
  *
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class UrlHelper {
-
-    /**
-     * @var string
-     */
-    protected $initialUrl;
-
-    /**
-     * @var array
-     */
-    protected $urlParts = [];
-
-    /**
-     * @var array
-     */
-    protected $queryParts = [];
-
-    /**
-     * @var bool
-     */
-    protected $wasParsed = false;
-
-    /**
-     * UrlHelper constructor.
-     * @param string $url
-     */
-    public function __construct($url)
-    {
-        $this->initialUrl = $url;
-        $this->parseInitialUrl();
-    }
-
-    /**
-     * @return void
-     */
-    protected function parseInitialUrl()
-    {
-        if ($this->wasParsed) {
-            return;
-        }
-        $parts = parse_url($this->initialUrl);
-        if (!is_array($parts)) {
-            throw new \InvalidArgumentException("Non parseable url passed to UrlHelper", 1498751529);
-        }
-        $this->urlParts = $parts;
-
-        parse_str($this->urlParts['query'], $this->queryParts);
-
-        $this->wasParsed = true;
-    }
-
-    /**
-     * @param string $part
-     * @param mixed $value
-     */
-    protected function setUrlPart($part, $value)
-    {
-        $this->urlParts[$part] = $value;
-    }
-
-    /**
-     * @param $path
-     * @return mixed
-     */
-    protected function getUrlPart($path)
-    {
-        return $this->urlParts[$path];
-    }
-
+class UrlHelper extends Uri
+{
     /**
      * @param string $host
      * @return UrlHelper
+     * @deprecated Will be removed with v12. Use withHost instead.
+     * @see Uri::withHost()
      */
     public function setHost(string $host)
     {
-        $this->setUrlPart('host', $host);
+        $this->host = $host;
         return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getHost(): string
-    {
-        return $this->getUrlPart('host');
     }
 
     /**
      * @param string $port
      * @return UrlHelper
+     * @deprecated Will be removed with v12. Use withPort instead.
+     * @see Uri::withPort()
      */
     public function setPort(string $port)
     {
-        $this->setUrlPart('port', $port);
-        return $this;
-    }
+        if ($port !== '') {
+            if (MathUtility::canBeInterpretedAsInteger($port) === false) {
+                $argumentType = is_object($port) ? get_class($port) : gettype($port);
+                throw new \InvalidArgumentException('Invalid port "' . $argumentType . '" specified, must be an integer.', 1436717324);
+            }
 
-    /**
-     * @return string
-     */
-    public function getPort(): string
-    {
-        return $this->getUrlPart('port');
+            $port = (int)$port;
+            if ($port < 1 || $port > 65535) {
+                throw new \InvalidArgumentException('Invalid port "' . $port . '" specified, must be a valid TCP/UDP port.', 1436717326);
+            }
+        }
+
+        $this->port = $port;
+        return $this;
     }
 
     /**
      * @param string $scheme
      * @return UrlHelper
+     * @deprecated Will be removed with v12. Use Uri::withScheme instead.
+     * @see Uri::withScheme()
      */
     public function setScheme(string $scheme)
     {
-        $this->setUrlPart('scheme', $scheme);
+        $this->scheme = $this->sanitizeScheme($scheme);
         return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getScheme(): string
-    {
-        return $this->getUrlPart('scheme');
     }
 
     /**
      * @param string $path
      * @return UrlHelper
+     * @deprecated Will be removed with v12. Use withPath instead.
+     * @see Uri::withPath()
      */
     public function setPath($path)
     {
-        $this->setUrlPart('path', $path);
+        if (!is_string($path)) {
+            throw new \InvalidArgumentException('Invalid path provided. Must be of type string.', 1436717328);
+        }
+
+        if (strpos($path, '?') !== false) {
+            throw new \InvalidArgumentException('Invalid path provided. Must not contain a query string.', 1436717330);
+        }
+
+        if (strpos($path, '#') !== false) {
+            throw new \InvalidArgumentException('Invalid path provided; must not contain a URI fragment', 1436717332);
+        }
+        $this->path = $this->sanitizePath($path);
         return $this;
     }
 
     /**
-     * @return string
+     * Remove a given parameter from the query and create a new instance.
+     *
+     * @param string $parameterName
+     * @return UrlHelper
      */
-    public function getPath(): string
+    public function withoutQueryParameter(string $parameterName): UrlHelper
     {
-        return $this->getUrlPart('path');
+        parse_str($this->query, $parameters);
+        if (isset($parameters[$parameterName])) {
+            unset($parameters[$parameterName]);
+        }
+        $query = '';
+        if (!empty($parameters)) {
+            $query = http_build_query($parameters);
+        }
+        $query = $this->sanitizeQuery($query);
+        $clonedObject = clone $this;
+        $clonedObject->query = $query;
+        return $clonedObject;
     }
 
     /**
      * @param string $parameterName
      * @throws \InvalidArgumentException
      * @return UrlHelper
+     * @deprecated Will be removed with v12. Use withoutQueryParameter instead.
      */
     public function removeQueryParameter(string $parameterName): UrlHelper
     {
-        unset($this->queryParts[$parameterName]);
+        parse_str($this->query, $parameters);
+        if (isset($parameters[$parameterName])) {
+            unset($parameters[$parameterName]);
+        }
+        $query = '';
+        if (!empty($parameters)) {
+            $query = http_build_query($parameters);
+        }
+        $this->query = $this->sanitizeQuery($query);
+
         return $this;
+    }
+
+    /**
+     * Add a given parameter with value to the query and create a new instance.
+     *
+     * @param string $parameterName
+     * @param mixed $value
+     * @return UrlHelper
+     */
+    public function withQueryParameter(string $parameterName, $value): UrlHelper
+    {
+        parse_str($this->query, $parameters);
+        $parameters[$parameterName] = $value;
+        $query = '';
+        if (!empty($parameters)) {
+            $query = http_build_query($parameters);
+        }
+        $query = $this->sanitizeQuery($query);
+        $clonedObject = clone $this;
+        $clonedObject->query = $query;
+        return $clonedObject;
     }
 
     /**
@@ -176,37 +164,30 @@ class UrlHelper {
      * @param mixed $value
      * @throws \InvalidArgumentException
      * @return UrlHelper
+     * @deprecated Will be removed with v12. Use withQueryParameter instead.
      */
     public function addQueryParameter(string $parameterName, $value): UrlHelper
     {
-        $this->queryParts[$parameterName] = $value;
+        $parameters = $this->query;
+        parse_str($this->query, $parameters);
+        if (empty($parameters)) {
+            $parameters = [];
+        }
+        $parameters[$parameterName] = $value;
+        $query = '';
+        if (!empty($parameters)) {
+            $query = http_build_query($parameters);
+        }
+        $this->query = $this->sanitizeQuery($query);
         return $this;
     }
 
     /**
      * @return string
+     * @deprecated Will be removed with v12. Use __toString() instead.
      */
     public function getUrl(): string
     {
-        $this->urlParts['query'] = http_build_query($this->queryParts);
-        return $this->unparseUrl();
-    }
-
-    /**
-     * @return string
-     */
-    protected function unparseUrl(): string
-    {
-        $scheme   = isset($this->urlParts['scheme']) ? $this->urlParts['scheme'] . '://' : '';
-        $host     = $this->urlParts['host'] ?? '';
-        $port     = $this->urlParts['port'] ? ':' . $this->urlParts['port'] : '';
-        $user     = $this->urlParts['user'] ?? '';
-        $user     = $this->urlParts['pass'] ? $user . ':' : $user;
-        $pass     = $this->urlParts['pass'] ?? '';
-        $pass     = ($user || $pass) ? "$pass@" : '';
-        $path     = $this->urlParts['path'] ?? '';
-        $query    = isset($this->urlParts['query']) && !empty($this->urlParts['query']) ? '?' . $this->urlParts['query'] : '';
-        $fragment = isset($this->urlParts['fragment']) ? '#' . $this->urlParts['fragment'] : '';
-        return $scheme . $user . $pass . $host . $port . $path . $query . $fragment;
+        return $this->__toString();
     }
 }
