@@ -28,7 +28,6 @@ use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\Domain\Site\Typo3ManagedSite;
 use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
-use ApacheSolrForTypo3\Solr\System\Url\UrlHelper;
 use Exception;
 use Psr\Http\Message\UriInterface;
 use TYPO3\CMS\Core\Site\Entity\Site as Typo3Site;
@@ -177,21 +176,14 @@ class SiteHandlingStatus extends AbstractSolrStatus
      */
     protected function fetchInvalidPartsOfUri(UriInterface $uri): string
     {
-        $invalidParts = '';
-        /* @var UrlHelper $solrUriHelper */
-        $solrUriHelper = GeneralUtility::makeInstance(UrlHelper::class, $uri);
-        try {
-            $solrUriHelper->getScheme();
-        } catch (\TypeError $error) {
-            $invalidParts .= 'scheme';
+        $invalidParts = [];
+        if (empty($uri->getScheme())) {
+            $invalidParts[] = 'scheme';
+        }
+        if (empty($uri->getHost())) {
+            $invalidParts[] = 'host';
         }
 
-        try {
-            $solrUriHelper->getHost();
-        } catch (\TypeError $error) {
-            $invalidParts .= ', host';
-        }
-
-        return $invalidParts;
+        return implode(', ', $invalidParts);
     }
 }

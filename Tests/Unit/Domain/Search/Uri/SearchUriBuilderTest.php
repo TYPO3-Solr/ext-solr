@@ -260,7 +260,17 @@ class SearchUriBuilderTest extends UnitTest
                 ]
             ]
         ];
-        $linkBuilderResult = '/index.php?id=1&tx_solr[groupPage][smallPidRange][pid0to5]='.urlencode('###tx_solr:groupPage:smallPidRange:pid0to5###');
+        $givenTemplate = [
+            'id' => 1,
+            'tx_solr' => [
+                'groupPage' => [
+                    'smallPidRange' => [
+                        'pid0to5' => '###tx_solr:groupPage:smallPidRange:pid0to5###'
+                    ]
+                ],
+            ]
+        ];
+        $linkBuilderResult = '/index.php?' . http_build_query($givenTemplate);
 
 
         $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
