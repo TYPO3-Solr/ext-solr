@@ -44,6 +44,11 @@ class SiteConfiguration implements UnifyConfigurationInterface
     protected $languageUid = 0;
 
     /**
+     * @var Site
+     */
+    protected $site = null;
+
+    /**
      * The unified configuration
      *
      * @var array
@@ -70,6 +75,24 @@ class SiteConfiguration implements UnifyConfigurationInterface
     {
         $this->rootPageUid = $pageUid;
         $this->languageUid = $languageUid;
+    }
+
+    /**
+     * Return an instance of site configuration.
+     *
+     * @param Site $site
+     * @param int $languageUid
+     * @return static
+     */
+    public static function newWithSite(Site $site, int $languageUid = 0): self
+    {
+        $siteConfiguration = new self(
+            $site->getRootPageId(),
+            $languageUid
+        );
+        $siteConfiguration->site = $site;
+
+        return $siteConfiguration;
     }
 
     /**
@@ -117,16 +140,19 @@ class SiteConfiguration implements UnifyConfigurationInterface
      */
     protected function getSite(): ?Site
     {
-        $site = null;
+        if ($this->site instanceof Site) {
+            return $this->site;
+        }
+
         $siteFinder = GeneralUtility::makeInstance(SiteFinder::class);
         try {
             /* @var SiteFinder $siteFinder */
-            $site = $siteFinder->getSiteByPageId($this->rootPageUid);
+            $this->site = $siteFinder->getSiteByPageId($this->rootPageUid);
         } catch (SiteNotFoundException $e) {
             return null;
         }
 
-        return $site;
+        return $this->site;
     }
 
     /**
