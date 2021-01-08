@@ -1,33 +1,24 @@
 <?php
 namespace ApacheSolrForTypo3\Solr\Tests\Unit;
 
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2016 Markus Friedrich <markus.friedrich@dkd.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use ApacheSolrForTypo3\Solr\System\Configuration\UnifiedConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
 use ApacheSolrForTypo3\Solr\System\Records\SystemLanguage\SystemLanguageRepository;
@@ -45,6 +36,7 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
  * PHP Unit test for connection manager
  *
  * @author Markus Friedrich <markus.friedrich@dkd.de>
+ * @copyright (c) 2016 Markus Friedrich <markus.friedrich@dkd.de>
  */
 class ConnectionManagerTest extends UnitTest
 {
@@ -143,12 +135,20 @@ class ConnectionManagerTest extends UnitTest
 
                 $readNode = Node::fromArray($readNode);
                 $writeNode = Node::fromArray($writeNode);
-                $typoScriptConfigurationMock = $self->getDumbMock(TypoScriptConfiguration::class);
+                $typoScriptConfigurationMock = $self->getDumbMock(UnifiedConfiguration::class);
                 $synonymsParserMock = $self->getDumbMock(SynonymParser::class);
                 $stopWordParserMock = $self->getDumbMock(StopWordParser::class);
                 $schemaParserMock = $self->getDumbMock(SchemaParser::class);
 
-                return new SolrConnection($readNode, $writeNode, $typoScriptConfigurationMock, $synonymsParserMock, $stopWordParserMock, $schemaParserMock, $self->logManagerMock);
+                return new SolrConnection(
+                    $readNode,
+                    $writeNode,
+                    $typoScriptConfigurationMock,
+                    $synonymsParserMock,
+                    $stopWordParserMock,
+                    $schemaParserMock,
+                    $self->logManagerMock
+                );
             })
         );
         $exceptionOccured = false;

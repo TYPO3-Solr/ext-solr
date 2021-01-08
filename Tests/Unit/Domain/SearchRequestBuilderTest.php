@@ -1,44 +1,40 @@
 <?php
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search;
 
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2017 Timo Hund <timo.hund@dkd.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequestBuilder;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use ApacheSolrForTypo3\Solr\System\Configuration\UnifiedConfiguration;
 use ApacheSolrForTypo3\Solr\System\Session\FrontendUserSession;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 
 /**
  * @author Timo Hund <timo.hund@dkd.de>
+ * @copyright (c) 2017-2021 Timo Hund <timo.hund@dkd.de
  */
 class SearchRequestBuilderTest extends UnitTest
 {
-
     /**
      * @var FrontendUserSession
      */
     protected $sessionMock;
+
+    /**
+     * @var UnifiedConfiguration
+     */
+    protected $unifiedConfiguration;
 
     /**
      * @var TypoScriptConfiguration
@@ -56,8 +52,13 @@ class SearchRequestBuilderTest extends UnitTest
     public function setUp()
     {
         $this->configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
+        $this->unifiedConfiguration = new UnifiedConfiguration(1, 0);
+        $this->unifiedConfiguration->mergeConfigurationByObject(new TypoScriptConfiguration([]));
         $this->sessionMock = $this->getDumbMock(FrontendUserSession::class);
-        $this->searchRequestBuilder = new SearchRequestBuilder($this->configurationMock, $this->sessionMock);
+        $this->searchRequestBuilder = new SearchRequestBuilder(
+            $this->unifiedConfiguration,
+            $this->sessionMock
+        );
     }
 
     /**
@@ -65,8 +66,21 @@ class SearchRequestBuilderTest extends UnitTest
      */
     public function testPageIsResettedWhenValidResultsPerPageValueWasPassed()
     {
-        $this->configurationMock->expects($this->once())->method('getSearchResultsPerPageSwitchOptionsAsArray')
-            ->will($this->returnValue([10, 25]));
+        $this->unifiedConfiguration->replaceConfigurationByObject(
+            new TypoScriptConfiguration(
+                [
+                    'plugin.' => [
+                        'tx_solr.' => [
+                            'search.' => [
+                                'results.' => [
+                                    'resultsPerPageSwitchOptions' => '10,25'
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            )
+        );
         $this->assertPerPageInSessionWillBeChanged();
 
         $requestArguments = ['q' => 'test', 'page' => 5, 'resultsPerPage' => 25];
@@ -79,8 +93,21 @@ class SearchRequestBuilderTest extends UnitTest
      */
     public function testPerPageValueIsNotSetInSession()
     {
-        $this->configurationMock->expects($this->once())->method('getSearchResultsPerPageSwitchOptionsAsArray')
-            ->will($this->returnValue([10, 25]));
+        $this->unifiedConfiguration->replaceConfigurationByObject(
+            new TypoScriptConfiguration(
+                [
+                    'plugin.' => [
+                        'tx_solr.' => [
+                            'search.' => [
+                                'results.' => [
+                                    'resultsPerPageSwitchOptions' => '10,25'
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            )
+        );
         $this->assertPerPageInSessionWillNotBeChanged();
 
         $requestArguments = ['q' => 'test', 'page' => 3];

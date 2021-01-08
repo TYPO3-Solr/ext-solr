@@ -2,28 +2,18 @@
 
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\Controller;
 
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2010-2015 Timo Hund <timo.hund@dkd.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 
 use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageFieldMappingIndexer;
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
@@ -45,6 +35,7 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
  * Integration testcase to test for the SearchController
  *
  * @author Timo Hund
+ * @copyright (c) 2010-2015 Timo Hund <timo.hund@dkd.de>
  */
 class SearchControllerTest extends AbstractFrontendControllerTest
 {
@@ -68,7 +59,6 @@ class SearchControllerTest extends AbstractFrontendControllerTest
      */
     protected $searchResponse;
 
-
     public function setUp()
     {
         parent::setUp();
@@ -80,7 +70,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
 
         $GLOBALS['TT'] = $this->getMockBuilder(TimeTracker::class)->disableOriginalConstructor()->getMock();
 
-        /** @var  $searchController SearchController */
+        /** @var SearchController $searchController */
         $this->searchController = $this->objectManager->get(SearchController::class);
         $this->searchRequest = $this->getPreparedRequest();
         $this->searchResponse = $this->getPreparedResponse();
@@ -88,7 +78,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
     }
 
     /**
-     * Executed after each test. Emptys solr and checks if the index is empty
+     * Executed after each test. Empties solr and checks if the index is empty
      */
     public function tearDown()
     {
