@@ -1,30 +1,19 @@
 <?php
 namespace ApacheSolrForTypo3\Solr\System\Configuration;
 
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2010-2016 Timo Schmidt <timo.schmidt@dkd.de
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 
-use TYPO3\CMS\Core\Configuration\SiteConfiguration;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -33,13 +22,14 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Singleton
  *
  * @author Timo Schmidt <timo.schmidt@dkd.de>
+ * @copyright (c) 2010-2016 Timo Schmidt <timo.schmidt@dkd.de
  */
 class ConfigurationManager implements SingletonInterface
 {
     /**
      * TypoScript Configurations
      *
-     * @var array
+     * @var TypoScriptConfiguration|UnifiedConfiguration[]
      */
     protected $typoScriptConfigurations = [];
 
@@ -67,11 +57,18 @@ class ConfigurationManager implements SingletonInterface
             return $this->typoScriptConfigurations[$hash];
         }
 
+        if ($pageUid === 0 && !empty($GLOBALS['TSFE']->id)) {
+            $pageUid = (int)$GLOBALS['TSFE']->id;
+        }
+
         $unifiedConfiguration = new UnifiedConfiguration($pageUid, $languageUid);
+        // TODO: Move this into a middle ware
         $unifiedConfiguration->mergeConfigurationByObject($this->getGlobalConfiguration());
-        // TODO: Site configuration
+        $unifiedConfiguration->mergeConfigurationByObject($this->getSiteConfiguration($pageUid, $languageUid));
         $unifiedConfiguration->mergeConfigurationByObject($this->getExtensionConfiguration());
-        // TODO TypoScript configuration
+        $unifiedConfiguration->mergeConfigurationByObject(
+            $this->getTypoScriptConfigurationByPageAndLanguage($pageUid, $languageUid)
+        );
 
         $this->typoScriptConfigurations[$hash] = $unifiedConfiguration;
 
@@ -98,9 +95,36 @@ class ConfigurationManager implements SingletonInterface
         return new ExtensionConfiguration();
     }
 
-    public function getSiteConfiguration(): SiteConfiguration
+    /**
+     * Returns the site configuration by given page uid and language
+     *
+     * @param int $pageUid
+     * @param int $languageUid
+     * @return SiteConfiguration
+     */
+    public function getSiteConfiguration(int $pageUid = 0, int $languageUid = 0): SiteConfiguration
     {
+        return new SiteConfiguration($pageUid, $languageUid);
+    }
 
+    /**
+     * Returns the TypoScript configuration by given page and language uid.
+     *
+     * @see ConfigurationManager:getTypoScriptConfiguration
+     *
+     * @param int $pageUid
+     * @param int $languageUid
+     * @return TypoScriptConfiguration
+     */
+    public function getTypoScriptConfigurationByPageAndLanguage(
+        int $pageUid,
+        int $languageUid = 0
+    ): TypoScriptConfiguration {
+        return $this->getTypoScriptConfiguration(
+            null,
+            $pageUid,
+            $languageUid
+        );
     }
 
     /**
@@ -143,23 +167,26 @@ class ConfigurationManager implements SingletonInterface
             return $this->typoScriptConfigurations[$hash];
         }
 
-        $this->typoScriptConfigurations[$hash] = $this->getTypoScriptConfigurationInstance($configurationArray, $contextPageId);
+        $this->typoScriptConfigurations[$hash] = $this->getTypoScriptConfigurationInstance(
+            $configurationArray,
+            $contextPageId
+        );
         return $this->typoScriptConfigurations[$hash];
     }
 
     /**
      * This method is used to build the TypoScriptConfiguration.
      *
-     * @param array $configurationArray
+     * @param ?array $configurationArray
      * @param int|null $contextPageId
-     * @return object
+     * @return TypoScriptConfiguration
      */
-    protected function getTypoScriptConfigurationInstance(array $configurationArray = null, $contextPageId = null)
+    protected function getTypoScriptConfigurationInstance(array $configurationArray = null, $contextPageId = 0)
     {
         return GeneralUtility::makeInstance(
             TypoScriptConfiguration::class,
             /** @scrutinizer ignore-type */ $configurationArray,
-            /** @scrutinizer ignore-type */ $contextPageId
+            /** @scrutinizer ignore-type */ (int)$contextPageId
         );
     }
 }
