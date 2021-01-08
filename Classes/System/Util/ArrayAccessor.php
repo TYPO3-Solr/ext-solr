@@ -125,10 +125,12 @@ class ArrayAccessor
     }
 
     /**
-     * @param $pathArray
-     * @return array|null
+     * Search for a configuration value by given path
+     *
+     * @param array $pathArray
+     * @return array|string|null
      */
-    protected function getDeepElementWithLoop($pathArray)
+    protected function getDeepElementWithLoop(array $pathArray)
     {
         $currentElement = $this->data;
         foreach ($pathArray as $key => $pathSegment) {
@@ -150,6 +152,8 @@ class ArrayAccessor
     }
 
     /**
+     * Check if given path exists
+     *
      * @param string $path
      * @return bool
      */
