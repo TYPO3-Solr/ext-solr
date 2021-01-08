@@ -1,61 +1,39 @@
 <?php
 namespace ApacheSolrForTypo3\Solr;
 
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2009-2015 Ingo Renner <ingo@typo3.org>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
-use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
-use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationPageResolver;
-use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use ApacheSolrForTypo3\Solr\System\Configuration\UnifiedConfiguration;
 use TYPO3\CMS\Core\Context\Context;
-use TYPO3\CMS\Core\Context\LanguageAspect;
-use TYPO3\CMS\Core\Context\LanguageAspectFactory;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Information\Typo3Version;
-use TYPO3\CMS\Core\Site\SiteFinder;
-use TYPO3\CMS\Core\TypoScript\TemplateService;
-use TYPO3\CMS\Core\Utility\RootlineUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Core\TypoScript\ExtendedTemplateService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
-use TYPO3\CMS\Frontend\Page\PageRepository;
-use TYPO3\CMS\Core\Context\UserAspect;
-use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
-use TYPO3\CMS\Core\Http\ServerRequest;
 
 /**
  * Utility class for tx_solr
  *
  * @author Ingo Renner <ingo@typo3.org>
+ * @copyright (c) 2009-2015 Ingo Renner <ingo@typo3.org>
  */
 class Util
 {
-
     /**
      * Generates a document id for documents representing page records.
      *
@@ -104,12 +82,25 @@ class Util
     }
 
     /**
+     * Shortcut to retrieve the unified configuration for EXT:solr
+     *
+     * @return UnifiedConfiguration
+     */
+    public static function getUnifiedConfiguration(): UnifiedConfiguration
+    {
+        /* @var ConfigurationManager $configurationManager */
+        $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
+        return $configurationManager->getUnifiedConfiguration();
+    }
+
+    /**
      * Shortcut to retrieve the TypoScript configuration for EXT:solr
      *
      * @return TypoScriptConfiguration
      */
-    public static function getSolrConfiguration()
+    public static function getSolrConfiguration(): TypoScriptConfiguration
     {
+        /* @var ConfigurationManager $configurationManager */
         $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
         return $configurationManager->getTypoScriptConfiguration();
     }
@@ -299,7 +290,7 @@ class Util
     }
 
     /**
-     * @return array
+     * @return array$useTwoLevelCache
      */
     public static function getFrontendUserGroups(): array
     {
