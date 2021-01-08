@@ -51,7 +51,7 @@ class ScoreCalculationService
     /**
      * Renders an array of score objects into an score output.
      *
-     * @param $highScores
+     * @param array $highScores
      * @return string
      */
     public function render(array $highScores)
@@ -121,7 +121,7 @@ class ScoreCalculationService
 
             // keep track of highest score per search term
             if (!$scoreWasSetForFieldBefore || $scoreIsHigher) {
-                $pattern = '/' . $field . '\^([\d.]*)/';
+                $pattern = '/' . preg_quote($field, '/') . '\^([\d.]*)/';
                 $boostMatches = [];
                 preg_match_all($pattern, $queryFields, $boostMatches);
                 $boost = $boostMatches[1][0];
