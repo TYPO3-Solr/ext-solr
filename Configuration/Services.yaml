@@ -1,0 +1,14 @@
+services:
+  ApacheSolrForTypo3\Solr\EventListener\UnifiedConfigurationGlobalConfiguration:
+    tags:
+      - name: event.listener
+        identifier: 'solr.unifiedConfiguration.siteConfiguration'
+        event: ApacheSolrForTypo3\Solr\Event\UnifiedConfigurationEvent
+        before: ''
+#  ApacheSolrForTypo3\Solr\EventListener\UnifiedConfigurationSiteConfiguration:
+#    tags:
+#      - name: event.listener
+#        identifier: 'solr.unifiedConfiguration.siteConfiguration'
+#        event: ApacheSolrForTypo3\Solr\Event\UnifiedConfigurationEvent
+#        before: ''
+...

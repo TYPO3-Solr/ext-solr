@@ -14,6 +14,8 @@ namespace ApacheSolrForTypo3\Solr\System\Configuration;
  * The TYPO3 project - inspiring people to share!
  */
 
+use ApacheSolrForTypo3\Solr\Event\UnifiedConfigurationEvent;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -27,11 +29,24 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class ConfigurationManager implements SingletonInterface
 {
     /**
+     * @var EventDispatcherInterface
+     */
+    protected $eventDispatcher;
+
+    /**
      * TypoScript Configurations
      *
      * @var TypoScriptConfiguration|UnifiedConfiguration[]
      */
     protected $typoScriptConfigurations = [];
+
+    /**
+     * @param EventDispatcherInterface $eventDispatcher
+     */
+    public function injectEventDispatcher(EventDispatcherInterface $eventDispatcher)
+    {
+        $this->eventDispatcher = $eventDispatcher;
+    }
 
     /**
      * Resets the state of the configuration manager.
@@ -62,13 +77,18 @@ class ConfigurationManager implements SingletonInterface
         }
 
         $unifiedConfiguration = new UnifiedConfiguration($pageUid, $languageUid);
-        // TODO: Move this into a middle ware
+        // Requires TYPO3 10 LTS
+        $event = new UnifiedConfigurationEvent($unifiedConfiguration);
+        $this->eventDispatcher->dispatch($event);
+
+        /*
         $unifiedConfiguration->mergeConfigurationByObject($this->getGlobalConfiguration());
         $unifiedConfiguration->mergeConfigurationByObject($this->getSiteConfiguration($pageUid, $languageUid));
         $unifiedConfiguration->mergeConfigurationByObject($this->getExtensionConfiguration());
         $unifiedConfiguration->mergeConfigurationByObject(
             $this->getTypoScriptConfigurationByPageAndLanguage($pageUid, $languageUid)
         );
+        */
 
         $this->typoScriptConfigurations[$hash] = $unifiedConfiguration;
 
@@ -104,7 +124,12 @@ class ConfigurationManager implements SingletonInterface
      */
     public function getSiteConfiguration(int $pageUid = 0, int $languageUid = 0): SiteConfiguration
     {
-        return new SiteConfiguration($pageUid, $languageUid);
+        $hash = md5(SiteConfiguration::class . '-' . $pageUid . '-' . $languageUid);
+        if (!isset($this->typoScriptConfigurations[$hash])) {
+            $this->typoScriptConfigurations[$hash] = new SiteConfiguration($pageUid, $languageUid);
+        }
+
+        return $this->typoScriptConfigurations[$hash];
     }
 
     /**
@@ -137,8 +162,12 @@ class ConfigurationManager implements SingletonInterface
      * @param string $contextTypoScriptPath
      * @return TypoScriptConfiguration
      */
-    public function getTypoScriptConfiguration(array $configurationArray = null, $contextPageId = null, $contextLanguageId = 0, $contextTypoScriptPath = '')
-    {
+    public function getTypoScriptConfiguration(
+        array $configurationArray = null,
+        $contextPageId = null,
+        $contextLanguageId = 0,
+        $contextTypoScriptPath = ''
+    ) {
         if ($configurationArray == null) {
             if (isset($this->typoScriptConfigurations['default'])) {
                 $configurationArray = $this->typoScriptConfigurations['default'];
@@ -169,7 +198,7 @@ class ConfigurationManager implements SingletonInterface
 
         $this->typoScriptConfigurations[$hash] = $this->getTypoScriptConfigurationInstance(
             $configurationArray,
-            $contextPageId
+            (int)$contextPageId
         );
         return $this->typoScriptConfigurations[$hash];
     }
@@ -178,11 +207,13 @@ class ConfigurationManager implements SingletonInterface
      * This method is used to build the TypoScriptConfiguration.
      *
      * @param ?array $configurationArray
-     * @param int|null $contextPageId
+     * @param int $contextPageId
      * @return TypoScriptConfiguration
      */
-    protected function getTypoScriptConfigurationInstance(array $configurationArray = null, $contextPageId = 0)
-    {
+    protected function getTypoScriptConfigurationInstance(
+        array $configurationArray = null,
+        int $contextPageId = 0
+    ): TypoScriptConfiguration {
         return GeneralUtility::makeInstance(
             TypoScriptConfiguration::class,
             /** @scrutinizer ignore-type */ $configurationArray,

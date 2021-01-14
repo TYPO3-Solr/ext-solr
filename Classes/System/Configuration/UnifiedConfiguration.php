@@ -54,6 +54,26 @@ class UnifiedConfiguration extends ArrayAccessor
     }
 
     /**
+     * Returns the current root page id
+     *
+     * @return int
+     */
+    public function getRootPageUid(): int
+    {
+        return $this->rootPageUid;
+    }
+
+    /**
+     * Returns the current language uid
+     *
+     * @return int
+     */
+    public function getLanguageUid(): int
+    {
+        return $this->languageUid;
+    }
+
+    /**
      * Merge another configuration into this one
      *
      * @param UnifyConfigurationInterface $configuration
