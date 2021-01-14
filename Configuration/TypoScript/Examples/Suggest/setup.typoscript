@@ -9,6 +9,7 @@ tx_solr_suggest {
         admPanel = 0
         additionalHeaders.10.header = Content-type: application/javascript
         no_cache = 0
+        debug = 0
     }
 
     10 = USER
