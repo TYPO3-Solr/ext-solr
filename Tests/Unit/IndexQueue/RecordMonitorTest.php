@@ -34,7 +34,6 @@ use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
 use ApacheSolrForTypo3\Solr\System\TCA\TCAService;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
-use Codeception\Configuration;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 
 /**
@@ -96,11 +95,13 @@ class RecordMonitorTest extends UnitTest
         $this->recordServiceMock = $this->getDumbMock(ConfigurationAwareRecordService::class);
 
         $this->recordMonitor = $this->getMockBuilder(RecordMonitor::class)
-            ->setMethods([
-                 'isDraftRecord',
-                 'getSolrConfigurationFromPageId',
-                 'removeFromIndexAndQueueWhenItemInQueue'
-            ]
+            ->setMethods(
+                [
+                     'isDraftRecord',
+                     'getSolrConfigurationFromPageId',
+                     'removeFromIndexAndQueueWhenItemInQueue',
+                     'getRecordPageId'
+                ]
             )->setConstructorArgs([
                 $this->queueMock,
                 $this->mountPageUpdaterMock,
@@ -232,6 +233,21 @@ class RecordMonitorTest extends UnitTest
         $this->recordMonitor->expects($this->once())->method('removeFromIndexAndQueueWhenItemInQueue')->with('pages', 4711);
 
         $this->recordMonitor->processCmdmap_postProcess('move', 'pages', 4711, [], $dataHandlerMock);
+    }
+
+    /**
+     * @test
+     * For more infos, please refer https://github.com/TYPO3-Solr/ext-solr/pull/2836
+     */
+    public function processDatamap_afterDatabaseOperationsUsesAlreadyResolvedNextAutoIncrementValueForNewStatus()
+    {
+        $dataHandlerMock = $this->getDumbMock(DataHandler::class);
+        $this->rootPageResolverMock->expects($this->once())->method('getAlternativeSiteRootPagesIds')->willReturn([]);
+
+        $this->recordMonitor->expects($this->once())
+            ->method('getRecordPageId')
+            ->with('new', 'tt_content', 4711, 4711, ['pid' => 1], $dataHandlerMock);
+        $this->recordMonitor->processDatamap_afterDatabaseOperations('new', 'tt_content', 4711, ['pid' => 1], $dataHandlerMock);
     }
 
 }
