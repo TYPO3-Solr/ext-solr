@@ -39,6 +39,7 @@ use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\MathUtility;
 
 /**
  * A class that monitors changes to records so that the changed record gets
@@ -303,7 +304,7 @@ class RecordMonitor extends AbstractDataHandlerListener
             return;
         }
 
-        if ($status === 'new') {
+        if ($status === 'new' && !MathUtility::canBeInterpretedAsInteger($recordUid)) {
             $recordUid = $tceMain->substNEWwithIDs[$recordUid];
         }
         if ($this->isDraftRecord($table, $recordUid)) {
