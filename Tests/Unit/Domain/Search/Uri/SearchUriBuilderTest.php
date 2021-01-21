@@ -1,28 +1,18 @@
 <?php
 namespace ApacheSolrForTypo3\Solr\Test\Domain\Search\Uri;
 
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2015-2016 Timo Hund <timo.hund@dkd.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Grouping\Group;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Grouping\GroupItem;
@@ -125,6 +115,20 @@ class SearchUriBuilderTest extends UnitTest
         $configurationMock->expects($this->once())
             ->method('getSearchFacetingFacetLinkUrlParametersAsArray')
             ->will($this->returnValue(['foo' => 'bar']));
+        /*
+         * Method 'reviseFilterVariables()' of class RoutingService used to remove the facet prefix within
+         * the path segment
+         * Since the whole class is a mock, the variables need to return by the mock.
+         *
+         * Note:
+         * This unit test just test the arguments not the path information, the result of the logic within
+         * method 'reviseFilterVariables()' will not modify this array!
+         *
+         * @see \ApacheSolrForTypo3\Solr\Routing\RoutingService::reviseFilterVariables
+         */
+        $this->routingServiceMock->expects($this->any())
+            ->method('reviseFilterVariables')
+            ->will($this->returnValue(['###tx_solr:filter:0:option###' => 'option%3Avalue', '###foo###' => 'bar']));
         $configurationMock->expects($this->once())
             ->method('getSearchTargetPage')
             ->will($this->returnValue(1));
@@ -134,7 +138,7 @@ class SearchUriBuilderTest extends UnitTest
         $linkBuilderResult = $this->searchUrlBuilder
             ->getAddFacetValueUri($previousRequest, 'option', 'value');
 
-        $this->assertEquals($linkBuilderResult, '/index.php?id=1&filter=option%3Avalue&foo=bar');
+        $this->assertEquals('/index.php?id=1&filter=option%3Avalue&foo=bar', $linkBuilderResult);
     }
 
     /**
@@ -177,6 +181,21 @@ class SearchUriBuilderTest extends UnitTest
         $configurationMock->expects($this->any())->method('getSearchPluginNamespace')->will($this->returnValue('tx_solr'));
         $configurationMock->expects($this->once())->method('getSearchTargetPage')->will($this->returnValue(1));
 
+        /*
+         * Method 'reviseFilterVariables()' of class RoutingService used to remove the facet prefix within
+         * the path segment
+         * Since the whole class is a mock, the variables need to return by the mock.
+         *
+         * Note:
+         * This unit test just test the arguments not the path information, the result of the logic within
+         * method 'reviseFilterVariables()' will not modify this array!
+         *
+         * @see \ApacheSolrForTypo3\Solr\Routing\RoutingService::reviseFilterVariables
+         */
+        $this->routingServiceMock->expects($this->any())
+            ->method('reviseFilterVariables')
+            ->will($this->returnValue(['###tx_solr:sort###' => 'title+desc']));
+
         $previousRequest =  new SearchRequest([], 0, 0, $configurationMock);
 
             // we expect that the page uid from the configruation will be used to build the url with the uri builder
@@ -207,7 +226,8 @@ class SearchUriBuilderTest extends UnitTest
                 ],
                 0,
                 0,
-                $configurationMock);
+                $configurationMock
+        );
 
         // we expect that the filters are empty after remove
         $expectedArguments = ['tx_solr' => ['filter' => []]];
@@ -325,6 +345,21 @@ class SearchUriBuilderTest extends UnitTest
         $this->extBaseUriBuilderMock->expects($this->once())->method('setUseCacheHash')->with(false)->will($this->returnValue($this->extBaseUriBuilderMock));
         $this->extBaseUriBuilderMock->expects($this->once())->method('reset')->with()->will($this->returnValue($this->extBaseUriBuilderMock));
         $this->extBaseUriBuilderMock->expects($this->once())->method('build')->will($this->returnValue($linkBuilderResult));
+
+        /*
+         * Method 'reviseFilterVariables()' of class RoutingService used to remove the facet prefix within
+         * the path segment
+         * Since the whole class is a mock, the variables need to return by the mock.
+         *
+         * Note:
+         * This unit test just test the arguments not the path information, the result of the logic within
+         * method 'reviseFilterVariables()' will not modify this array!
+         *
+         * @see \ApacheSolrForTypo3\Solr\Routing\RoutingService::reviseFilterVariables
+         */
+        $this->routingServiceMock->expects($this->any())
+            ->method('reviseFilterVariables')
+            ->will($this->returnValue(['###tx_solr:groupPage:smallPidRange:pid0to5###' => '5']));
         $uri = $this->searchUrlBuilder->getResultGroupItemPageUri($previousRequest, $groupItem, 5);
         $this->assertContains(urlencode('tx_solr[groupPage][smallPidRange][pid0to5]') . '=5', $uri, 'Uri did not contain link segment for query group');
     }
