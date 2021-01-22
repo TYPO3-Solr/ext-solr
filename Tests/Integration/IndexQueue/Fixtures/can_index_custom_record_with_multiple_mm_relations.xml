@@ -50,6 +50,13 @@
                                         localField = tags
                                         multiValue = 1
                                     }
+
+                                    tags_stringM = SOLR_RELATION
+                                    tags_stringM {
+                                        localField = tags
+                                        enableRecursiveValueResolution = 1
+                                        multiValue = 1
+                                    }
                                 }
                             }
                         }
