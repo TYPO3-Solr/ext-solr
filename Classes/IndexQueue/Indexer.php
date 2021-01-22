@@ -1,28 +1,18 @@
 <?php
 namespace ApacheSolrForTypo3\Solr\IndexQueue;
 
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2009-2015 Ingo Renner <ingo@typo3.org>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\Domain\Search\ApacheSolrDocument\Builder;
@@ -38,6 +28,8 @@ use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use Exception;
 use RuntimeException;
 use Solarium\Exception\HttpException;
+use TYPO3\CMS\Core\Context\Context;
+use TYPO3\CMS\Core\Context\LanguageAspect;
 use TYPO3\CMS\Core\Context\LanguageAspectFactory;
 use TYPO3\CMS\Core\Error\Http\ServiceUnavailableException;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
@@ -54,6 +46,7 @@ use TYPO3\CMS\Frontend\Page\PageRepository;
  * category resolution in tt_news or file indexing.
  *
  * @author Ingo Renner <ingo@typo3.org>
+ * @copyright  (c) 2009-2015 Ingo Renner <ingo@typo3.org>
  */
 class Indexer extends AbstractIndexer
 {
@@ -242,7 +235,19 @@ class Indexer extends AbstractIndexer
         $itemRecord = $item->getRecord();
 
         if ($language > 0) {
-            $page = GeneralUtility::makeInstance(PageRepository::class);
+            // @TODO Information from the site configuration are required!
+            /* @var Context $context */
+            $context = GeneralUtility::makeInstance(Context::class);
+            /* @var LanguageAspect $languageAspect */
+            $languageAspect = $context->getAspect('language');
+            $languageAspect = new LanguageAspect(
+                (int)$language,
+                $languageAspect->getContentId(),
+                $languageAspect->getOverlayType(),
+                $languageAspect->getFallbackChain()
+            );
+            $context->setAspect('language', $languageAspect);
+            $page = GeneralUtility::makeInstance(PageRepository::class, $context);
             $itemRecord = $page->getLanguageOverlay($item->getType(), $itemRecord);
         }
 
