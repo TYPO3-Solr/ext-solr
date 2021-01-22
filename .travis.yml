@@ -6,8 +6,6 @@ services:
   - mysql
 
 php:
-  - 7.2
-  - 7.3
   - 7.4
 
 jdk:
@@ -25,19 +23,48 @@ env:
     - TYPO3_DATABASE_PASSWORD=""
     - PHP_CS_FIXER_VERSION="^2.16.1"
   matrix:
-    - TYPO3_VERSION="^9.5"
-    - TYPO3_VERSION="9.5.x-dev"
+    - TYPO3_VERSION="9.5.0"
+    - TYPO3_VERSION="9.5.1"
+    - TYPO3_VERSION="9.5.2"
+    - TYPO3_VERSION="9.5.3"
+    - TYPO3_VERSION="9.5.4"
+    - TYPO3_VERSION="9.5.5"
+    - TYPO3_VERSION="9.5.6"
+    - TYPO3_VERSION="9.5.7"
+    - TYPO3_VERSION="9.5.8"
+    - TYPO3_VERSION="9.5.9"
+    - TYPO3_VERSION="9.5.10"
+    - TYPO3_VERSION="9.5.11"
+    - TYPO3_VERSION="9.5.12"
+    - TYPO3_VERSION="9.5.13"
+    - TYPO3_VERSION="9.5.14"
+    - TYPO3_VERSION="9.5.15"
+    - TYPO3_VERSION="9.5.16"
+    - TYPO3_VERSION="9.5.17"
+    - TYPO3_VERSION="9.5.18"
+    - TYPO3_VERSION="9.5.19"
+    - TYPO3_VERSION="9.5.20"
+    - TYPO3_VERSION="9.5.21"
+    - TYPO3_VERSION="9.5.22"
+    - TYPO3_VERSION="9.5.23"
+    - TYPO3_VERSION="9.5.24"
+
+    - TYPO3_VERSION="10.4.0"
+    - TYPO3_VERSION="10.4.1"
+    - TYPO3_VERSION="10.4.2"
+    - TYPO3_VERSION="10.4.3"
+    - TYPO3_VERSION="10.4.4"
+    - TYPO3_VERSION="10.4.5"
+    - TYPO3_VERSION="10.4.6"
+    - TYPO3_VERSION="10.4.7"
     - TYPO3_VERSION="10.4.8"
-    - TYPO3_VERSION="^10.4"
-    - TYPO3_VERSION="10.4.x-dev"
-    - TYPO3_VERSION="dev-master"
+    - TYPO3_VERSION="10.4.9"
+    - TYPO3_VERSION="10.4.10"
+    - TYPO3_VERSION="10.4.11"
+    - TYPO3_VERSION="10.4.12"
 
 matrix:
   fast_finish: true
-  allow_failures:
-    - env: TYPO3_VERSION="dev-master"
-    - env: TYPO3_VERSION="10.4.x-dev"
-    - env: TYPO3_VERSION="9.5.x-dev"
 
 before_install:
   - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
