@@ -241,8 +241,8 @@ class Indexer extends AbstractIndexer
             /* @var LanguageAspect $languageAspect */
             $languageAspect = $context->getAspect('language');
             $languageAspect = new LanguageAspect(
+                $languageAspect->getId(),
                 (int)$language,
-                $languageAspect->getContentId(),
                 $languageAspect->getOverlayType(),
                 $languageAspect->getFallbackChain()
             );
