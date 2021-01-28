@@ -143,7 +143,7 @@ class Indexer extends AbstractIndexer
         foreach ($solrConnections as $systemLanguageUid => $solrConnection) {
             $this->solr = $solrConnection;
 
-            if (!$this->indexItem($item, $systemLanguageUid)) {
+            if (!$this->indexItem($item, (int)$systemLanguageUid)) {
                 /*
                  * A single language voting for "not indexed" should make the whole
                  * item count as being not indexed, even if all other languages are
@@ -166,7 +166,7 @@ class Indexer extends AbstractIndexer
      * @param int $language The language to use.
      * @return bool TRUE if item was indexed successfully, FALSE on failure
      */
-    protected function indexItem(Item $item, $language = 0)
+    protected function indexItem(Item $item, int $language = 0)
     {
         $itemIndexed = false;
         $documents = [];
@@ -212,7 +212,7 @@ class Indexer extends AbstractIndexer
      * @param int $language Language Id (sys_language.uid)
      * @return array|NULL The full record with fields of data to be used for indexing or NULL to prevent an item from being indexed
      */
-    protected function getFullItemRecord(Item $item, $language = 0)
+    protected function getFullItemRecord(Item $item, int $language = 0)
     {
         $itemRecord = $this->getItemRecordOverlayed($item, $language);
 
@@ -229,23 +229,40 @@ class Indexer extends AbstractIndexer
      * @param Item $item
      * @param int $language
      * @return array|mixed|null
+     * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
      */
     protected function getItemRecordOverlayed(Item $item, int $language): ?array
     {
         $itemRecord = $item->getRecord();
+
+        // Bugfix: This issue fixes a problem with the free mode temporary.
+        $languageField = $this->getLanguageFieldFromTable($item->getType());
+        if ($languageField !== null &&
+            (int)$itemRecord[$languageField] > 0 &&
+            (int)$itemRecord[$languageField] !== $language) {
+            return null;
+        }
 
         if ($language > 0) {
             // @TODO Information from the site configuration are required!
             /* @var Context $context */
             $context = GeneralUtility::makeInstance(Context::class);
             /* @var LanguageAspect $languageAspect */
-            $languageAspect = $context->getAspect('language');
-            $languageAspect = new LanguageAspect(
-                $languageAspect->getId(),
-                (int)$language,
-                $languageAspect->getOverlayType(),
-                $languageAspect->getFallbackChain()
-            );
+            if ($context->hasAspect('language')) {
+                $languageAspect = $context->getAspect('language');
+                $languageAspect = new LanguageAspect(
+                    $languageAspect->getId(),
+                    (int)$language,
+                    $languageAspect->getOverlayType(),
+                    $languageAspect->getFallbackChain()
+                );
+            } else {
+                $languageAspect = new LanguageAspect(
+                    0,
+                    (int)$language
+                );
+            }
+
             $context->setAspect('language', $languageAspect);
             $page = GeneralUtility::makeInstance(PageRepository::class, $context);
             $itemRecord = $page->getLanguageOverlay($item->getType(), $itemRecord);
@@ -289,7 +306,7 @@ class Indexer extends AbstractIndexer
      * @param string $indexConfigurationName
      * @return array
      */
-    protected function getFieldConfigurationFromItemRecordPage(Item $item, $language, $indexConfigurationName): array
+    protected function getFieldConfigurationFromItemRecordPage(Item $item, int $language, $indexConfigurationName): array
     {
         try {
             $pageId = $this->getPageIdOfItem($item);
@@ -320,7 +337,7 @@ class Indexer extends AbstractIndexer
      * @param string $indexConfigurationName
      * @return array
      */
-    protected function getFieldConfigurationFromItemRootPage(Item $item, $language, $indexConfigurationName)
+    protected function getFieldConfigurationFromItemRootPage(Item $item, int $language, $indexConfigurationName)
     {
         $solrConfiguration = $this->frontendEnvironment->getSolrConfigurationFromPageId($item->getRootPageUid(), $language);
 
@@ -358,7 +375,7 @@ class Indexer extends AbstractIndexer
      * @throws ServiceUnavailableException
      * @throws ImmediateResponseException
      */
-    protected function itemToDocument(Item $item, $language = 0): ?Document
+    protected function itemToDocument(Item $item, int $language = 0): ?Document
     {
         $document = null;
         if ($item->getType() === 'pages') {
@@ -449,7 +466,7 @@ class Indexer extends AbstractIndexer
      * @param Document $itemDocument The document representing the item for the given language.
      * @return Document[] array An array of additional Document objects to index.
      */
-    protected function getAdditionalDocuments(Item $item, $language, Document $itemDocument)
+    protected function getAdditionalDocuments(Item $item, int $language, Document $itemDocument)
     {
         $documents = [];
 
@@ -486,7 +503,7 @@ class Indexer extends AbstractIndexer
      * @param array $documents An array of documents to be indexed
      * @return array An array of modified documents
      */
-    protected function preAddModifyDocuments(Item $item, $language, array $documents)
+    protected function preAddModifyDocuments(Item $item, int $language, array $documents)
     {
         if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['preAddModifyDocuments'])) {
             foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['preAddModifyDocuments'] as $classReference) {
@@ -616,7 +633,6 @@ class Indexer extends AbstractIndexer
         return $fallbackChain;
     }
 
-
     /**
      * @param Item $item An index queue item
      * @param array $rootPage
@@ -722,5 +738,22 @@ class Indexer extends AbstractIndexer
         }
 
         $this->logger->log($severity, $message, $logData);
+    }
+
+    /**
+     * Returns the language field from given table or null
+     *
+     * @param string $tableName
+     * @return string|null
+     */
+    protected function getLanguageFieldFromTable(string $tableName): ?string
+    {
+        $tableControl = $GLOBALS['TCA'][$tableName]['ctrl'] ?? [];
+
+        if (!empty($tableControl['languageField'])) {
+            return $tableControl['languageField'];
+        }
+
+        return null;
     }
 }
