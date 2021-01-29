@@ -47,7 +47,7 @@ class RoutingServiceTest extends UnitTest
 
     /**
      * @test
-     * @covers \ApacheSolrForTypo3\Solr\Routing\RoutingService::getFacetValueSeparator
+     * @covers \ApacheSolrForTypo3\Solr\Routing\RoutingService::getDefaultMultiValueSeparator
      */
     public function defaultValueSeparatorIsAvailableTest()
     {
@@ -55,13 +55,13 @@ class RoutingServiceTest extends UnitTest
 
         $this->assertEquals(
             ',',
-            $routingService->getFacetValueSeparator()
+            $routingService->getDefaultMultiValueSeparator()
         );
     }
 
     /**
      * @test
-     * @covers \ApacheSolrForTypo3\Solr\Routing\RoutingService::getFacetValueSeparator
+     * @covers \ApacheSolrForTypo3\Solr\Routing\RoutingService::getDefaultMultiValueSeparator
      */
     public function canOverrideValueSeparatorTest()
     {
@@ -73,7 +73,7 @@ class RoutingServiceTest extends UnitTest
 
         $this->assertEquals(
             '+',
-            $routingService->getFacetValueSeparator()
+            $routingService->getDefaultMultiValueSeparator()
         );
     }
 
@@ -441,7 +441,7 @@ class RoutingServiceTest extends UnitTest
         $this->assertEquals(
             [
                 'tx_solr' => [
-                    'filter' => ['colorType:blue','colorType:green']
+                    'filter' => ['colorType:blue', 'colorType:green']
                 ]
             ],
             $newRequest->getQueryParams()

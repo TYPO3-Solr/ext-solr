@@ -55,17 +55,15 @@ class CachedPathVariableModifier
             (string)$enhancerConfiguration['extensionKey']
         );
 
+        $standardizedKeys = $variableKeys;
+
         for ($i = 0; $i < count($variableKeys); $i++) {
             $standardizedKey = $this->standardizeKey($variableKeys[$i]);
-            if (!in_array($standardizedKey, $pathVariables)) {
-                continue;
-            }
-            if (empty($variableValues[$standardizedKey])) {
+            if (!in_array($standardizedKey, $pathVariables) || empty($variableValues[$standardizedKey])) {
                 continue;
             }
             $value = '';
             if ($multiValue) {
-
                 // Note: if the customer configured a + as separator an additional check on the facet value is required!
                 $facets = $routingService->pathFacetStringToArray(
                     $this->standardizeKey((string)$variableValues[$standardizedKey])
@@ -94,10 +92,12 @@ class CachedPathVariableModifier
                     2
                 );
             }
+            $standardizedKeys[$i] = $standardizedKey;
             $variableValues[$standardizedKey] = $value;
         }
 
         $event->setVariableValues($variableValues);
+        $event->setVariableKeys($standardizedKeys);
     }
 
     /**
