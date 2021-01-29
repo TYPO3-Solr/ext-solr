@@ -161,7 +161,6 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
         );
         $request = $request->withUri($uri);
         $queryParams = $request->getQueryParams();
-
         $queryParams = $this->getRoutingService()->unmaskQueryParameters($queryParams);
         $queryParams = $this->getRoutingService()->inflateQueryParameter($queryParams);
 
@@ -171,7 +170,6 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
         }
 
         $request = $request->withQueryParams($queryParams);
-
         return $handler->handle($request);
     }
 
