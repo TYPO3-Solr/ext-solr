@@ -135,7 +135,6 @@ class CombinedFacetEnhancer extends AbstractEnhancer implements RoutingEnhancerI
             if (empty($facetTypeToHandle)) {
                 continue;
             }
-
             foreach ($parameters as $parameterName => $parameterValue) {
                 // Skip parameters that we don't care for
                 if (!preg_match('/' . $parameterPattern . '/', $parameterName)) {
@@ -155,8 +154,17 @@ class CombinedFacetEnhancer extends AbstractEnhancer implements RoutingEnhancerI
                     $facetFieldElements = explode(':', $parameterValue);
                     $facetField = array_pop($facetFieldElements);
                     $facetField = substr($facetField, 0, strlen($facetField) - 3);
+
+                    $facetValue = null;
+                    if (strpos($facetField, '%3A') !== false) {
+                        [$facetField, $facetValue] = explode('%3A', $facetField, 2);
+                    }
+
                     if ($facetField === $facetTypeToHandle) {
                         $parameterNameNew = $combinedKey;
+                        if ($facetValue !== null) {
+                            $parameterValueNew = $facetValue;
+                        }
                     }
                 } else {
                     [$facetField, $facetValue] = explode(':', $parameterValue, 2);

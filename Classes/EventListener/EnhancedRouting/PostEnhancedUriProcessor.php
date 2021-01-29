@@ -18,7 +18,6 @@ namespace ApacheSolrForTypo3\Solr\EventListener\EnhancedRouting;
 
 use ApacheSolrForTypo3\Solr\Event\EnhancedRouting\PostProcessUriEvent;
 use ApacheSolrForTypo3\Solr\Routing\RoutingService;
-use ApacheSolrForTypo3\Solr\Utility\UriUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -38,6 +37,9 @@ class PostEnhancedUriProcessor
             $configuration['solr'],
             (string)$configuration['extensionKey']
         );
+
+        $routingService->fromRoutingConfiguration($configuration);
+
         if (!$routingService->shouldConcatQueryParameters()) {
             return;
         }
@@ -55,8 +57,10 @@ class PostEnhancedUriProcessor
          */
         $queryParameters = $routingService->concatQueryParameter($queryParameters);
         $queryParameters = $routingService->maskQueryParameters($queryParameters);
+        $path = $routingService->finalizePathQuery($uri->getPath());
         $query = http_build_query($queryParameters);
         $uri = $uri->withQuery($query);
+        $uri = $uri->withPath($path);
         $event->replaceUri($uri);
     }
 }
