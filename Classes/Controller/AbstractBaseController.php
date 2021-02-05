@@ -17,13 +17,14 @@ namespace ApacheSolrForTypo3\Solr\Controller;
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSetService;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequestBuilder;
+use ApacheSolrForTypo3\Solr\Mvc\Controller\SolrControllerContext;
 use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
 use ApacheSolrForTypo3\Solr\Search;
-use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
-use ApacheSolrForTypo3\Solr\Mvc\Controller\SolrControllerContext;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Service\ConfigurationService;
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager as SolrConfigurationManager;
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use ApacheSolrForTypo3\Solr\System\Configuration\UnifiedConfiguration;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\TypoScript\TypoScriptService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -66,6 +67,13 @@ abstract class AbstractBaseController extends ActionController
      * @var TypoScriptConfiguration
      */
     protected $typoScriptConfiguration;
+
+    /**
+     * Unified configuration
+     *
+     * @var UnifiedConfiguration
+     */
+    protected $unifiedConfiguration;
 
     /**
      * @var \ApacheSolrForTypo3\Solr\Mvc\Controller\SolrControllerContext
@@ -138,7 +146,7 @@ abstract class AbstractBaseController extends ActionController
      */
     protected function buildControllerContext()
     {
-        /** @var $controllerContext \ApacheSolrForTypo3\Solr\Mvc\Controller\SolrControllerContext */
+        /* @var SolrControllerContext $controllerContext */
         $controllerContext = $this->objectManager->get(SolrControllerContext::class);
         $controllerContext->setRequest($this->request);
         $controllerContext->setResponse($this->response);
@@ -165,7 +173,9 @@ abstract class AbstractBaseController extends ActionController
         $typoScriptService = $this->objectManager->get(TypoScriptService::class);
 
         // Merge settings done by typoscript with solrConfiguration plugin.tx_solr (obsolete when part of ext:solr)
-        $frameWorkConfiguration = $this->configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
+        $frameWorkConfiguration = $this->configurationManager->getConfiguration(
+            ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK
+        );
         $pluginSettings = [];
         foreach (['search', 'settings', 'suggest', 'statistics', 'logging', 'general', 'solr', 'view'] as $key) {
             if (isset($frameWorkConfiguration[$key])) {
@@ -173,7 +183,9 @@ abstract class AbstractBaseController extends ActionController
             }
         }
 
+        $this->unifiedConfiguration = $this->solrConfigurationManager->getUnifiedConfiguration();
         $this->typoScriptConfiguration = $this->solrConfigurationManager->getTypoScriptConfiguration();
+
         if ($pluginSettings !== []) {
             $this->typoScriptConfiguration->mergeSolrConfiguration(
                 $typoScriptService->convertPlainArrayToTypoScriptArray($pluginSettings),
@@ -181,11 +193,12 @@ abstract class AbstractBaseController extends ActionController
                 false
             );
         }
+        $this->unifiedConfiguration->replaceConfigurationByObject($this->typoScriptConfiguration);
 
         $this->objectManager->get(ConfigurationService::class)
             ->overrideConfigurationWithFlexFormSettings(
                 $this->contentObjectRenderer->data['pi_flexform'],
-                $this->typoScriptConfiguration
+                $this->getTypoScriptConfiguration()
             );
 
         parent::initializeAction();
@@ -204,12 +217,12 @@ abstract class AbstractBaseController extends ActionController
      */
     protected function initializeSettings()
     {
-        /** @var $typoScriptService TypoScriptService */
+        /* @var TypoScriptService $typoScriptService */
         $typoScriptService = $this->objectManager->get(TypoScriptService::class);
 
         // Make sure plugin.tx_solr.settings are available in the view as {settings}
         $this->settings = $typoScriptService->convertTypoScriptArrayToPlainArray(
-            $this->typoScriptConfiguration->getObjectByPathOrDefault('plugin.tx_solr.settings.', [])
+            $this->getTypoScriptConfiguration()->getObjectByPathOrDefault('plugin.tx_solr.settings.', [])
         );
     }
 
@@ -219,14 +232,19 @@ abstract class AbstractBaseController extends ActionController
      */
     protected function initializeSearch()
     {
-        /** @var \ApacheSolrForTypo3\Solr\ConnectionManager $solrConnection */
+        /* @var ConnectionManager $solrConnection */
         try {
-            $solrConnection = $this->objectManager->get(ConnectionManager::class)->getConnectionByPageId($this->typoScriptFrontendController->id, Util::getLanguageUid(), $this->typoScriptFrontendController->MP);
+            $solrConnection = $this->objectManager->get(ConnectionManager::class)
+                ->getConnectionByPageId(
+                    $this->typoScriptFrontendController->id,
+                    Util::getLanguageUid(),
+                    $this->typoScriptFrontendController->MP
+                );
             $search = $this->objectManager->get(Search::class, $solrConnection);
 
             $this->searchService = $this->objectManager->get(
                 SearchResultSetService::class,
-                /** @scrutinizer ignore-type */ $this->typoScriptConfiguration,
+                /** @scrutinizer ignore-type */ $this->getTypoScriptConfiguration(),
                 /** @scrutinizer ignore-type */ $search
             );
         } catch (NoSolrConnectionFoundException $e) {
@@ -240,7 +258,11 @@ abstract class AbstractBaseController extends ActionController
     protected function getSearchRequestBuilder()
     {
         if ($this->searchRequestBuilder === null) {
-            $this->searchRequestBuilder = GeneralUtility::makeInstance(SearchRequestBuilder::class, /** @scrutinizer ignore-type */ $this->typoScriptConfiguration);
+            $this->searchRequestBuilder = GeneralUtility::makeInstance(
+                SearchRequestBuilder::class,
+                /** @scrutinizer ignore-type */
+                $this->unifiedConfiguration
+            );
         }
 
         return $this->searchRequestBuilder;
@@ -255,7 +277,10 @@ abstract class AbstractBaseController extends ActionController
     {
         if ($this->typoScriptConfiguration->getLoggingExceptions()) {
             /** @var SolrLogManager $logger */
-            $logger = GeneralUtility::makeInstance(SolrLogManager::class, /** @scrutinizer ignore-type */ __CLASS__);
+            $logger = GeneralUtility::makeInstance(
+                SolrLogManager::class,
+                /** @scrutinizer ignore-type */ __CLASS__
+            );
             $logger->log(SolrLogManager::ERROR, 'Solr server is not available');
         }
     }
@@ -272,5 +297,13 @@ abstract class AbstractBaseController extends ActionController
     protected function emitActionSignal($className, $signalName, array $signalArguments)
     {
         return $this->signalSlotDispatcher->dispatch($className, $signalName, $signalArguments)[0];
+    }
+
+    /**
+     * @return TypoScriptConfiguration
+     */
+    protected function getTypoScriptConfiguration(): TypoScriptConfiguration
+    {
+        return $this->unifiedConfiguration->getConfigurationByClass(TypoScriptConfiguration::class);
     }
 }

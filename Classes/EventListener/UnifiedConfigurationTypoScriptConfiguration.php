@@ -1,6 +1,6 @@
 <?php
+
 declare(strict_types=1);
-namespace ApacheSolrForTypo3\Solr\EventListener;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -15,25 +15,29 @@ namespace ApacheSolrForTypo3\Solr\EventListener;
  * The TYPO3 project - inspiring people to share!
  */
 
+namespace ApacheSolrForTypo3\Solr\EventListener;
+
 use ApacheSolrForTypo3\Solr\Event\UnifiedConfigurationEvent;
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
+use ApacheSolrForTypo3\Solr\System\Configuration\GlobalConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Insert the site configuration into the unified configuration
+ * Event listener to merge the typoscript configuration into the unified configuration
  *
  * @author Lars Tode <lars.tode@dkd.de>
+ * @copyright (c) 2020-2021 Lars Tode <lars.tode@dkd.de>
  */
-class UnifiedConfigurationSiteConfiguration
+class UnifiedConfigurationTypoScriptConfiguration
 {
     public function __invoke(UnifiedConfigurationEvent $event): void
     {
         /* @var ConfigurationManager $configurationManager */
         $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
-        $siteConfiguration = $configurationManager->getSiteConfiguration(
+        $typoScriptConfiguration = $configurationManager->getTypoScriptConfigurationByPageAndLanguage(
             $event->getUnifiedConfiguration()->getRootPageUid(),
             $event->getUnifiedConfiguration()->getLanguageUid(),
         );
-        $event->getUnifiedConfiguration()->mergeConfigurationByObject($siteConfiguration);
+        $event->getUnifiedConfiguration()->mergeConfigurationByObject($typoScriptConfiguration);
     }
 }

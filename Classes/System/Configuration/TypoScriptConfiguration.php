@@ -82,7 +82,7 @@ class TypoScriptConfiguration implements UnifyConfigurationInterface
     /**
      * @param array $configuration
      * @param int $contextPageId
-     * @param ?ContentObjectService $contentObjectService
+     * @param ContentObjectService $contentObjectService
      */
     public function __construct(
         array $configuration,

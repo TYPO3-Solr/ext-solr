@@ -2,13 +2,24 @@ services:
   ApacheSolrForTypo3\Solr\EventListener\UnifiedConfigurationGlobalConfiguration:
     tags:
       - name: event.listener
-        identifier: 'solr.unifiedConfiguration.siteConfiguration'
+        identifier: 'solr.unifiedConfiguration.globalConfiguration'
         event: ApacheSolrForTypo3\Solr\Event\UnifiedConfigurationEvent
         before: ''
-#  ApacheSolrForTypo3\Solr\EventListener\UnifiedConfigurationSiteConfiguration:
-#    tags:
-#      - name: event.listener
-#        identifier: 'solr.unifiedConfiguration.siteConfiguration'
-#        event: ApacheSolrForTypo3\Solr\Event\UnifiedConfigurationEvent
-#        before: ''
-...
+  ApacheSolrForTypo3\Solr\EventListener\UnifiedConfigurationExtensionConfiguration:
+    tags:
+      - name: event.listener
+        identifier: 'solr.unifiedConfiguration.extensionConfiguration'
+        event: ApacheSolrForTypo3\Solr\Event\UnifiedConfigurationEvent
+        after: 'solr.unifiedConfiguration.globalConfiguration'
+  ApacheSolrForTypo3\Solr\EventListener\UnifiedConfigurationSiteConfiguration:
+    tags:
+      - name: event.listener
+        identifier: 'solr.unifiedConfiguration.siteConfiguration'
+        event: ApacheSolrForTypo3\Solr\Event\UnifiedConfigurationEvent
+        after: 'solr.unifiedConfiguration.extensionConfiguration'
+  ApacheSolrForTypo3\Solr\EventListener\UnifiedConfigurationTypoScriptConfiguration:
+    tags:
+      - name: event.listener
+        identifier: 'solr.unifiedConfiguration.typoScriptConfiguration'
+        event: ApacheSolrForTypo3\Solr\Event\UnifiedConfigurationEvent
+        after: 'solr.unifiedConfiguration.siteConfiguration'

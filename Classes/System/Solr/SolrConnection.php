@@ -1,30 +1,21 @@
 <?php
 namespace ApacheSolrForTypo3\Solr\System\Solr;
 
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2009-2015 Ingo Renner <ingo@typo3.org>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use ApacheSolrForTypo3\Solr\System\Configuration\UnifiedConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Solr\Parser\SchemaParser;
 use ApacheSolrForTypo3\Solr\System\Solr\Parser\StopWordParser;
@@ -34,13 +25,13 @@ use ApacheSolrForTypo3\Solr\System\Solr\Service\SolrReadService;
 use ApacheSolrForTypo3\Solr\System\Solr\Service\SolrWriteService;
 use ApacheSolrForTypo3\Solr\Util;
 use Solarium\Client;
-use Solarium\Core\Client\Endpoint;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Solr Service Access
  *
  * @author Ingo Renner <ingo@typo3.org>
+ * @copyright (c) 2009-2021 Ingo Renner <ingo@typo3.org>
  */
 class SolrConnection
 {
@@ -58,6 +49,11 @@ class SolrConnection
      * @var SolrWriteService
      */
     protected $writeService;
+
+    /**
+     * @var UnifiedConfiguration
+     */
+    protected $unifiedConfiguration;
 
     /**
      * @var TypoScriptConfiguration
@@ -90,7 +86,7 @@ class SolrConnection
     protected $logger = null;
 
     /**
-     * @var array
+     * @var Client[]
      */
     protected $clients = [];
 
@@ -99,7 +95,7 @@ class SolrConnection
      *
      * @param Node $readNode,
      * @param Node $writeNode
-     * @param TypoScriptConfiguration $configuration
+     * @param UnifiedConfiguration $configuration
      * @param SynonymParser $synonymParser
      * @param StopWordParser $stopWordParser
      * @param SchemaParser $schemaParser
@@ -108,7 +104,7 @@ class SolrConnection
     public function __construct(
         Node $readNode,
         Node $writeNode,
-        TypoScriptConfiguration $configuration = null,
+        UnifiedConfiguration $configuration = null,
         SynonymParser $synonymParser = null,
         StopWordParser $stopWordParser = null,
         SchemaParser $schemaParser = null,
@@ -117,7 +113,8 @@ class SolrConnection
         $this->nodes['read'] = $readNode;
         $this->nodes['write'] = $writeNode;
         $this->nodes['admin'] = $writeNode;
-        $this->configuration = $configuration ?? Util::getSolrConfiguration();
+        $this->unifiedConfiguration = $configuration ?? Util::getUnifiedConfiguration();
+        $this->configuration = $this->unifiedConfiguration->getConfigurationByClass(TypoScriptConfiguration::class);
         $this->synonymParser = $synonymParser;
         $this->stopWordParser = $stopWordParser;
         $this->schemaParser = $schemaParser;
@@ -153,7 +150,15 @@ class SolrConnection
         $endpointKey = 'admin';
         $client = $this->getClient($endpointKey);
         $this->initializeClient($client, $endpointKey);
-        return GeneralUtility::makeInstance(SolrAdminService::class, $client, $this->configuration, $this->logger, $this->synonymParser, $this->stopWordParser, $this->schemaParser);
+        return GeneralUtility::makeInstance(
+            SolrAdminService::class,
+            $client,
+            $this->configuration,
+            $this->logger,
+            $this->synonymParser,
+            $this->stopWordParser,
+            $this->schemaParser
+        );
     }
 
     /**

@@ -17,7 +17,10 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\System\Configuration;
 
+use ApacheSolrForTypo3\Solr\System\Configuration\Exception\ConfigurationAlreadyMergedException;
 use ApacheSolrForTypo3\Solr\System\Util\ArrayAccessor;
+
+use function Webmozart\Assert\Tests\StaticAnalysis\boolean;
 
 /**
  * This class wraps all configuration information and offers one interface
@@ -41,16 +44,117 @@ class UnifiedConfiguration extends ArrayAccessor
     protected $languageUid = 0;
 
     /**
+     * Lists of sorted configurations
+     *
+     * @var string[]
+     */
+    protected $includedConfigurationClasses = [];
+
+    /**
+     * @var UnifyConfigurationInterface[]
+     */
+    protected $includedConfiguration = [];
+
+    /**
      * This constructor contains all required parameters used for other
      *
      * @param int $pageUid
      * @param int $languageUid
      */
-    public function __construct(int $pageUid, int $languageUid = 0)
+    public function __construct(int $pageUid = 0, int $languageUid = 0)
     {
         parent::__construct([], '.');
         $this->rootPageUid = $pageUid;
         $this->languageUid = $languageUid;
+    }
+
+    /**
+     * Check if a class is included within this configuration
+     *
+     * @param string $className
+     * @return bool
+     */
+    public function containsConfigurationClass(string $className): bool
+    {
+        return in_array($className, $this->includedConfigurationClasses);
+    }
+
+    /**
+     * Merge another configuration into this one
+     *
+     * @param UnifyConfigurationInterface $configuration
+     * @return $this
+     * @throws ConfigurationAlreadyMergedException
+     */
+    public function mergeConfigurationByObject(UnifyConfigurationInterface $configuration): UnifiedConfiguration
+    {
+        $className = get_class($configuration);
+        if (in_array($className, $this->includedConfigurationClasses)) {
+            throw new ConfigurationAlreadyMergedException(
+                'Configuration of type ' . $className . ' already merged. '.
+                'Use method \'replaceConfigurationByObject()\' to replace this configuration.',
+                409
+            );
+        }
+
+        $data = $configuration->load()->getUnifiedArray();
+        $this->includedConfiguration[$className] = $configuration;
+        $this->includedConfigurationClasses[] = $className;
+        $this->mergeArray($data);
+
+        return $this;
+    }
+
+    /**
+     * Merge another configuration into this one and execute a reloads
+     *
+     * @param UnifyConfigurationInterface $configuration
+     * @return $this
+     * @throws ConfigurationAlreadyMergedException
+     */
+    public function replaceConfigurationByObject(
+        UnifyConfigurationInterface $configuration
+    ): UnifiedConfiguration {
+        $className = get_class($configuration);
+        if (!$this->containsConfigurationClass($className)) {
+            return $this->mergeConfigurationByObject($configuration);
+        }
+        $this->includedConfiguration[$className] = $configuration;
+        $this->reload();
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function reload(): UnifiedConfiguration
+    {
+        $this->clear();
+        foreach ($this->includedConfigurationClasses as $className) {
+            if (!isset($this->includedConfiguration[$className])) {
+                continue;
+            }
+            $data = $this->includedConfiguration[$className]->load()->getUnifiedArray();
+            $this->mergeArray($data);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Returns a specific configuration from included configurations.
+     *
+     * @param string $className
+     * @return UnifyConfigurationInterface|null
+     */
+    public function getConfigurationByClass(string $className): ?UnifyConfigurationInterface
+    {
+        if (isset($this->includedConfiguration[$className]) &&
+            $this->includedConfiguration[$className] instanceof UnifyConfigurationInterface) {
+            return $this->includedConfiguration[$className];
+        }
+
+        return null;
     }
 
     /**
@@ -74,17 +178,25 @@ class UnifiedConfiguration extends ArrayAccessor
     }
 
     /**
-     * Merge another configuration into this one
+     * Is Solr enabled?
      *
-     * @param UnifyConfigurationInterface $configuration
-     * @return $this
+     * @return bool
      */
-    public function mergeConfigurationByObject(UnifyConfigurationInterface $configuration): UnifiedConfiguration
+    public function isEnabled(): bool
     {
-        $data = $configuration->load()->getUnifiedArray();
-        $this->mergeArray($data);
+        $enabled = null;
+        // @TODO: SiteConfiguration by language needs implementation
 
-        return $this;
+        // From SiteConfiguration
+        if ($enabled === null) {
+            $enabled = $this->get('connection.read.enabled', null);
+        }
+        // From TypoScript
+        if ($enabled === null) {
+            $enabled = (bool)$this->get('enabled', true);
+        }
+
+        return $enabled;
     }
 
     /**

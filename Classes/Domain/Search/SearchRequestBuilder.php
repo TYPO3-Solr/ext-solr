@@ -2,30 +2,21 @@
 
 namespace ApacheSolrForTypo3\Solr\Domain\Search;
 
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2017 Timo Hund <timo.hund@dkd.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use ApacheSolrForTypo3\Solr\System\Configuration\UnifiedConfiguration;
 use ApacheSolrForTypo3\Solr\System\Session\FrontendUserSession;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -34,9 +25,14 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class SearchRequestBuilder
 {
+    /**
+     * @var UnifiedConfiguration
+     */
+    protected $unifiedConfiguration;
 
     /**
      * @var TypoScriptConfiguration
+     * @deprecated Use $unifiedConfiguration instead
      */
     protected $typoScriptConfiguration;
 
@@ -47,12 +43,15 @@ class SearchRequestBuilder
 
     /**
      * SearchRequestBuilder constructor.
-     * @param TypoScriptConfiguration $typoScriptConfiguration
+     * @param UnifiedConfiguration $unifiedConfiguration
      * @param FrontendUserSession $frontendUserSession
      */
-    public function __construct(TypoScriptConfiguration $typoScriptConfiguration, FrontendUserSession $frontendUserSession = null)
-    {
-        $this->typoScriptConfiguration = $typoScriptConfiguration;
+    public function __construct(
+        UnifiedConfiguration $unifiedConfiguration,
+        FrontendUserSession $frontendUserSession = null
+    ) {
+        $this->unifiedConfiguration = $unifiedConfiguration;
+        $this->typoScriptConfiguration = $unifiedConfiguration->getConfigurationByClass(TypoScriptConfiguration::class);
         $this->session = $frontendUserSession ?? GeneralUtility::makeInstance(FrontendUserSession::class);
     }
 
@@ -62,12 +61,12 @@ class SearchRequestBuilder
      * @param int $languageId
      * @return SearchRequest
      */
-    public function buildForSearch(array $controllerArguments, $pageId, $languageId)
+    public function buildForSearch(array $controllerArguments, $pageId, $languageId): SearchRequest
     {
         $controllerArguments = $this->adjustPageArgumentToPositiveInteger($controllerArguments);
 
-        /** @var $searchRequest SearchRequest */
-        $argumentsNamespace = $this->typoScriptConfiguration->getSearchPluginNamespace();
+        /** @var SearchRequest $searchRequest */
+        $argumentsNamespace = $this->getTypoScriptConfiguration()->getSearchPluginNamespace();
         $searchRequest = $this->getRequest([$argumentsNamespace => $controllerArguments], $pageId, $languageId);
         $searchRequest = $this->applyPassedResultsPerPage($searchRequest);
 
@@ -85,13 +84,13 @@ class SearchRequestBuilder
     {
         $requestedPerPage = $searchRequest->getResultsPerPage();
 
-        $perPageSwitchOptions = $this->typoScriptConfiguration->getSearchResultsPerPageSwitchOptionsAsArray();
+        $perPageSwitchOptions = $this->getTypoScriptConfiguration()->getSearchResultsPerPageSwitchOptionsAsArray();
         if (isset($requestedPerPage) && in_array($requestedPerPage, $perPageSwitchOptions)) {
             $this->session->setPerPage($requestedPerPage);
             $searchRequest->setPage(0);
         }
 
-        $defaultResultsPerPage = $this->typoScriptConfiguration->getSearchResultsPerPage();
+        $defaultResultsPerPage = $this->getTypoScriptConfiguration()->getSearchResultsPerPage();
         $currentNumberOfResultsShown = $defaultResultsPerPage;
         if ($this->session->getHasPerPage()) {
             $sessionResultPerPage = $this->session->getPerPage();
@@ -120,10 +119,10 @@ class SearchRequestBuilder
      */
     protected function shouldHideResultsFromInitialSearch(SearchRequest $searchRequest)
     {
-        return ($this->typoScriptConfiguration->getSearchInitializeWithEmptyQuery() ||
-            $this->typoScriptConfiguration->getSearchInitializeWithQuery()) &&
-            !$this->typoScriptConfiguration->getSearchShowResultsOfInitialEmptyQuery() &&
-            !$this->typoScriptConfiguration->getSearchShowResultsOfInitialQuery() &&
+        return ($this->getTypoScriptConfiguration()->getSearchInitializeWithEmptyQuery() ||
+            $this->getTypoScriptConfiguration()->getSearchInitializeWithQuery()) &&
+            !$this->getTypoScriptConfiguration()->getSearchShowResultsOfInitialEmptyQuery() &&
+            !$this->getTypoScriptConfiguration()->getSearchShowResultsOfInitialQuery() &&
             $searchRequest->getRawUserQueryIsNull();
     }
 
@@ -150,7 +149,7 @@ class SearchRequestBuilder
     {
         $controllerArguments['page'] = 0;
         $controllerArguments['q'] = $rawUserQuery;
-        $argumentsNamespace = $this->typoScriptConfiguration->getSearchPluginNamespace();
+        $argumentsNamespace = $this->getTypoScriptConfiguration()->getSearchPluginNamespace();
 
         return $this->getRequest(['q' => $rawUserQuery, $argumentsNamespace => $controllerArguments], $pageId, $languageId);
     }
@@ -169,7 +168,8 @@ class SearchRequestBuilder
             /** @scrutinizer ignore-type */ $requestArguments,
             /** @scrutinizer ignore-type */ $pageId,
             /** @scrutinizer ignore-type */ $languageId,
-            /** @scrutinizer ignore-type */ $this->typoScriptConfiguration);
+            /** @scrutinizer ignore-type */ $this->getTypoScriptConfiguration()
+        );
         return $searchRequest;
     }
 
@@ -185,5 +185,10 @@ class SearchRequestBuilder
         $arguments['page'] = max($page, 0);
 
         return $arguments;
+    }
+
+    protected function getTypoScriptConfiguration(): TypoScriptConfiguration
+    {
+        return $this->unifiedConfiguration->getConfigurationByClass(TypoScriptConfiguration::class);
     }
 }

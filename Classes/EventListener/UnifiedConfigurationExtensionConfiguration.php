@@ -20,20 +20,17 @@ use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Insert the site configuration into the unified configuration
+ * Insert the extension configuration into the unified configuration
  *
  * @author Lars Tode <lars.tode@dkd.de>
  */
-class UnifiedConfigurationSiteConfiguration
+class UnifiedConfigurationExtensionConfiguration
 {
     public function __invoke(UnifiedConfigurationEvent $event): void
     {
         /* @var ConfigurationManager $configurationManager */
         $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
-        $siteConfiguration = $configurationManager->getSiteConfiguration(
-            $event->getUnifiedConfiguration()->getRootPageUid(),
-            $event->getUnifiedConfiguration()->getLanguageUid(),
-        );
-        $event->getUnifiedConfiguration()->mergeConfigurationByObject($siteConfiguration);
+        $extensionConfiguration = $configurationManager->getExtensionConfiguration();
+        $event->getUnifiedConfiguration()->mergeConfigurationByObject($extensionConfiguration);
     }
 }

@@ -84,6 +84,18 @@ class ArrayAccessor
     }
 
     /**
+     * Clears the internal data array
+     *
+     * @return ArrayAccessor
+     */
+    protected function clear(): ArrayAccessor
+    {
+        $this->data = [];
+
+        return $this;
+    }
+
+    /**
      * Merge array data into the configuration
      *
      * @param array $data

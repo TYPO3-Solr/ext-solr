@@ -67,28 +67,19 @@ class ConfigurationManager implements SingletonInterface
      */
     public function getUnifiedConfiguration(int $pageUid = 0, int $languageUid = 0): UnifiedConfiguration
     {
+        if ($pageUid === 0 && !empty($GLOBALS['TSFE']->id)) {
+            $pageUid = (int)$GLOBALS['TSFE']->id;
+        }
+
         $hash = md5(UnifiedConfiguration::class . '-' . $pageUid . '-' . $languageUid);
         if (isset($this->typoScriptConfigurations[$hash])) {
             return $this->typoScriptConfigurations[$hash];
-        }
-
-        if ($pageUid === 0 && !empty($GLOBALS['TSFE']->id)) {
-            $pageUid = (int)$GLOBALS['TSFE']->id;
         }
 
         $unifiedConfiguration = new UnifiedConfiguration($pageUid, $languageUid);
         // Requires TYPO3 10 LTS
         $event = new UnifiedConfigurationEvent($unifiedConfiguration);
         $this->eventDispatcher->dispatch($event);
-
-        /*
-        $unifiedConfiguration->mergeConfigurationByObject($this->getGlobalConfiguration());
-        $unifiedConfiguration->mergeConfigurationByObject($this->getSiteConfiguration($pageUid, $languageUid));
-        $unifiedConfiguration->mergeConfigurationByObject($this->getExtensionConfiguration());
-        $unifiedConfiguration->mergeConfigurationByObject(
-            $this->getTypoScriptConfigurationByPageAndLanguage($pageUid, $languageUid)
-        );
-        */
 
         $this->typoScriptConfigurations[$hash] = $unifiedConfiguration;
 
@@ -206,7 +197,7 @@ class ConfigurationManager implements SingletonInterface
     /**
      * This method is used to build the TypoScriptConfiguration.
      *
-     * @param ?array $configurationArray
+     * @param array $configurationArray
      * @param int $contextPageId
      * @return TypoScriptConfiguration
      */

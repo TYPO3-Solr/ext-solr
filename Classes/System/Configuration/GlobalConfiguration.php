@@ -32,6 +32,18 @@ class GlobalConfiguration implements UnifyConfigurationInterface
     protected $globals = null;
 
     /**
+     * Allows place own global configuration information.
+     *
+     * @param array $globals
+     */
+    public function __construct(array $globals = [])
+    {
+        if (!empty($globals)) {
+            $this->globals = $globals;
+        }
+    }
+
+    /**
      * Nothing to load
      *
      * @return UnifyConfigurationInterface

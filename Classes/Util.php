@@ -290,7 +290,7 @@ class Util
     }
 
     /**
-     * @return array$useTwoLevelCache
+     * @return array
      */
     public static function getFrontendUserGroups(): array
     {
