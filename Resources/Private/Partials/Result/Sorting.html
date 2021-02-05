@@ -14,7 +14,7 @@
 
 				<f:if condition="{sorting.isResetOption}">
 					<f:then>
-						<li>
+						<li class="{f:if(condition: '{sorting.selected}', then: 'active')}" >
 							<a href="{s:uri.sorting.removeSorting()}" class="solr-ajaxified">{sorting.label}</a>
 						</li>
 					</f:then>

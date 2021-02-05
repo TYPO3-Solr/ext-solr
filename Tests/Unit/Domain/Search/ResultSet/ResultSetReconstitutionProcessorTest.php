@@ -1054,7 +1054,8 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
         $processor->process($searchResultSet);
 
         $this->assertEquals(1, $searchResultSet->getSortings()->getCount(), 'No sorting was created');
-        $this->assertFalse($searchResultSet->getSortings()->getHasSelected(), 'Expected that no selected sorting was present');
+        $this->assertEquals('relevance', $searchResultSet->getSortings()->getSelected()->getName());
+        $this->assertTrue($searchResultSet->getSortings()->getHasSelected(), 'The sorting by "relevance/score" is active but not marked as selected.');
     }
 
     /**

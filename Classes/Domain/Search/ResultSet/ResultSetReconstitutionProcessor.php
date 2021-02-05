@@ -133,6 +133,10 @@ class ResultSetReconstitutionProcessor implements SearchResultSetProcessor
                 $label = $cObj->stdWrap($label, $sortingOptions['label.']);
             }
 
+            if ($isResetOption && !$hasSorting) {
+                $selected = true;
+            }
+            
             $sorting = $this->getObjectManager()->get(Sorting::class, $resultSet, $sortingName, $field, $direction, $label, $selected, $isResetOption);
             $resultSet->addSorting($sorting);
         }
