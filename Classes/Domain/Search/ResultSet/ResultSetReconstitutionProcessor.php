@@ -22,6 +22,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Spellchecking\Suggestion;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
+use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 /**
  * This processor is used to transform the solr response into a
@@ -125,8 +126,15 @@ class ResultSetReconstitutionProcessor implements SearchResultSetProcessor
             $label = $sortingOptions['label'];
 
             $isResetOption = $field === 'relevance';
-            // @todo allow stdWrap on label
-            $sorting = new Sorting($resultSet, $sortingName, $field, $direction, $label, $selected, $isResetOption);
+
+            // Allow stdWrap on label:
+            $labelHasSubConfiguration = is_array($sortingOptions['label.']);
+            if ($labelHasSubConfiguration) {
+                $cObj = GeneralUtility::makeInstance(ContentObjectRenderer::class);
+                $label = $cObj->stdWrap($label, $sortingOptions['label.']);
+            }
+
+            $sorting = $this->getObjectManager()->get(Sorting::class, $resultSet, $sortingName, $field, $direction, $label, $selected, $isResetOption);
             $resultSet->addSorting($sorting);
         }
 
