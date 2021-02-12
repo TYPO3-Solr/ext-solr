@@ -23,7 +23,7 @@ The name itself needs no connection to the facet, so you can choose something di
 
   routeEnhancers:
     products:
-      routePath: '/{product}'
+      routePath: '/{productType}'
 
 
 The next step is to map the variable to the facet itself.
@@ -57,15 +57,18 @@ This is done by separating the query path and the facet by a dash.
       # Note: All arguments inside of namespace tx_solr. See -> extensionKey
       # Example: Argument 'type' define as 'filter-type' will convert into 'tx_solr/filter-type'
       _arguments:
-        product: filter-productType
+        productType: filter-productType
       requirements:
-        product: '.*'
+        productType: '.*'
 
 The route enhancer now knows to place values of facet `productType` as path segment.
 
 As result the URL now changed into
 
 	/products/candy/?tx_solr[filter][0]=taste:matcha&tx_solr[filter][1]=color:yellow&tx_solr[filter][2]=color:green&tx_solr[filter][3]=taste:sweet
+
+.. important::
+   The name used as argument name have to match the name of the Solr filter.
 
 .. important::
    We recommend to configured the requirements for a variable with `.*`. If a value is required it will lead to an exception if not type is omitted.
@@ -125,14 +128,14 @@ This example shows the all configuration done above
       limitToPages:
         - 42
       extensionKey: tx_solr
-      routePath: '/{product}'
+      routePath: '/{productType}'
       # Note: All arguments inside of namespace tx_solr. See -> extensionKey
       # Example: Argument 'type' define as 'filter-type' will convert into 'tx_solr/filter-type'
       _arguments:
-        product: filter-productType
+        productType: filter-productType
       # Important: Configure requirement for fields! If you wand to allow empty values, set .*
       requirements:
-        product: '.*'
+        productType: '.*'
       solr:
         multiValueSeparator: ';'
         replaceCharacters:
