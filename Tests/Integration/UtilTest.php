@@ -77,70 +77,6 @@ class UtilTest extends IntegrationTest
     /**
      * @test
      */
-    public function getConfigurationFromPageIdReturnsCachedConfiguration()
-    {
-        $pageId = 12;
-        $path = '';
-        $language = 0;
-        $initializeTsfe = false;
-        $cacheId = md5($pageId . '|' . $path . '|' . $language);
-
-        if (!Util::getIsTYPO3VersionBelow10()) {
-            $rootLineUtility = $this->prophesize(RootlineUtility::class);
-            $rootLineUtility->get()->shouldBeCalledOnce()->willReturn([]);
-            GeneralUtility::addInstance(RootlineUtility::class, $rootLineUtility->reveal());
-        }
-
-        // prepare first call
-
-        /** @var TwoLevelCache|ObjectProphecy $twoLevelCache */
-        $twoLevelCache = $this->prophesize(TwoLevelCache::class);
-        $twoLevelCache
-            ->get($cacheId)
-            ->shouldBeCalled()
-            ->willReturn([]);
-        $twoLevelCache
-            ->set($cacheId, [])
-            ->shouldBeCalledOnce();
-        GeneralUtility::addInstance(TwoLevelCache::class, $twoLevelCache->reveal());
-
-        /** @var ExtendedTemplateService|ObjectProphecy $extendedTemplateService */
-        $extendedTemplateService = $this->prophesize(ExtendedTemplateService::class);
-        GeneralUtility::addInstance(ExtendedTemplateService::class, $extendedTemplateService->reveal());
-
-        $newConfiguration = Util::getConfigurationFromPageId(
-            $pageId,
-            $path,
-            $initializeTsfe,
-            $language,
-            true
-        );
-
-        $this->assertInstanceOf('ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration', $newConfiguration);
-
-        // prepare second/cached call
-        // pageRepository->getRootLine should be called only once
-        // cache->set should be called only once
-
-        $cachedConfiguration = Util::getConfigurationFromPageId(
-            $pageId,
-            $path,
-            $initializeTsfe,
-            $language,
-            true
-        );
-
-        $this->assertInstanceOf('ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration', $cachedConfiguration);
-
-        $this->assertSame(
-            $newConfiguration,
-            $cachedConfiguration
-        );
-    }
-
-    /**
-     * @test
-     */
     public function getConfigurationFromPageIdInitializesTsfe()
     {
         $pageId = 24;
@@ -170,7 +106,7 @@ class UtilTest extends IntegrationTest
             true
         );
 
-        $this->assertInstanceOf('ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration', $newConfiguration);
+        $this->assertInstanceOf(TypoScriptConfiguration::class, $newConfiguration);
 
         $this->assertSame(
             24,
