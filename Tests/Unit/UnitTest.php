@@ -25,6 +25,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit;
  ***************************************************************/
 
 use Nimut\TestingFramework\TestCase\UnitTestCase;
+use PHPUnit\Framework\MockObject\MockObject;
 
 /**
  * Base class for all unit tests in the solr project
@@ -39,7 +40,7 @@ abstract class UnitTest extends UnitTestCase
      * the datatype and have the possibility to mock the behaviour.
      *
      * @param string $className
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return MockObject
      */
     protected function getDumbMock($className)
     {

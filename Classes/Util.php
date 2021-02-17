@@ -126,7 +126,7 @@ class Util
      */
     public static function getSolrConfigurationFromPageId($pageId, $initializeTsfe = false, $language = 0)
     {
-        trigger_error('solr:deprecation: Method getSolrConfigurationFromPageId is deprecated since EXT:solr 11 and will be removed in v12, use FrontendEnvironment directly.', E_USER_DEPRECATED);
+        trigger_error('solr:deprecation: Method getSolrConfigurationFromPageId is deprecated since EXT:solr 11 and will be removed in v11.1.0, use FrontendEnvironment directly.', E_USER_DEPRECATED);
         if ($initializeTsfe === true) {
             GeneralUtility::makeInstance(FrontendEnvironment::class)->initializeTsfe($pageId, $language);
         }
@@ -148,7 +148,7 @@ class Util
      */
     public static function getConfigurationFromPageId($pageId, $path, $initializeTsfe = false, $language = 0, $useTwoLevelCache = true)
     {
-        trigger_error('Method getConfigurationFromPageId is deprecated since EXT:solr 11 and will be removed in v12, use FrontendEnvironment directly.', E_USER_DEPRECATED);
+        trigger_error('Method getConfigurationFromPageId is deprecated since EXT:solr 11 and will be removed in v11.1.0, use FrontendEnvironment directly.', E_USER_DEPRECATED);
         if ($initializeTsfe === true) {
             GeneralUtility::makeInstance(FrontendEnvironment::class)->initializeTsfe($pageId, $language);
         }
@@ -168,7 +168,7 @@ class Util
      */
     public static function initializeTsfe($pageId, $language = 0, $useCache = true)
     {
-        trigger_error('solr:deprecation: Method initializeTsfe is deprecated since EXT:solr 11 and will be removed in v12, use FrontendEnvironment directly.', E_USER_DEPRECATED);
+        trigger_error('solr:deprecation: Method initializeTsfe is deprecated since EXT:solr 11 and will be removed in v11.1.0, use FrontendEnvironment directly.', E_USER_DEPRECATED);
         GeneralUtility::makeInstance(FrontendEnvironment::class)->initializeTsfe($pageId, $language);
     }
 
@@ -205,7 +205,7 @@ class Util
      */
     public static function isAllowedPageType(array $pageRecord, $configurationName = 'pages')
     {
-        trigger_error('solr:deprecation: Method isAllowedPageType is deprecated since EXT:solr 11 and will be removed in v12, use FrontendEnvironment directly.', E_USER_DEPRECATED);
+        trigger_error('solr:deprecation: Method isAllowedPageType is deprecated since EXT:solr 11 and will be removed in v11.1.0, use FrontendEnvironment directly.', E_USER_DEPRECATED);
         return GeneralUtility::makeInstance(FrontendEnvironment::class)->isAllowedPageType($pageRecord, $configurationName);
     }
 
@@ -219,7 +219,7 @@ class Util
      */
     public static function getAllowedPageTypes($pageId, $configurationName = 'pages')
     {
-        trigger_error('solr:deprecation: Method getAllowedPageTypes is deprecated since EXT:solr 11 and will be removed in v12, no call required.', E_USER_DEPRECATED);
+        trigger_error('solr:deprecation: Method getAllowedPageTypes is deprecated since EXT:solr 11 and will be removed in v11.1.0, no call required.', E_USER_DEPRECATED);
         $rootPath = '';
         $configuration = self::getConfigurationFromPageId($pageId, $rootPath);
         return $configuration->getIndexQueueAllowedPageTypesArrayByConfigurationName($configurationName);
@@ -235,7 +235,7 @@ class Util
      */
     public static function getAbsRefPrefixFromTSFE(TypoScriptFrontendController $TSFE)
     {
-        trigger_error('solr:deprecation: Method getAbsRefPrefixFromTSFE is deprecated since EXT:solr 11 and will be removed in v12, no call required.', E_USER_DEPRECATED);
+        trigger_error('solr:deprecation: Method getAbsRefPrefixFromTSFE is deprecated since EXT:solr 11 and will be removed in v11.1.0, no call required.', E_USER_DEPRECATED);
         $absRefPrefix = '';
         if (empty($TSFE->config['config']['absRefPrefix'])) {
             return $absRefPrefix;
