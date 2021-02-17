@@ -90,7 +90,7 @@ class TypoScript implements SingletonInterface
      * @param integer $language
      * @return array
      */
-    private function buildConfigurationArray($pageId, $path, $language)
+    protected function buildConfigurationArray($pageId, $path, $language)
     {
         if (is_int($language)) {
             GeneralUtility::makeInstance(FrontendEnvironment::class)->changeLanguageContext((int)$pageId, (int)$language);
@@ -123,7 +123,7 @@ class TypoScript implements SingletonInterface
      * @param string $typoScriptPath
      * @return TypoScriptConfiguration
      */
-    private function buildTypoScriptConfigurationFromArray(array $configurationToUse, $pageId, $languageId, $typoScriptPath)
+    protected function buildTypoScriptConfigurationFromArray(array $configurationToUse, $pageId, $languageId, $typoScriptPath)
     {
         $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
         return $configurationManager->getTypoScriptConfiguration($configurationToUse, $pageId, $languageId, $typoScriptPath);
