@@ -30,6 +30,7 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue\Initializer;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\QueueItemRepository;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
+use ApacheSolrForTypo3\Solr\Util;
 use Doctrine\DBAL\DBALException;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -301,7 +302,12 @@ abstract class AbstractInitializer implements IndexQueueInitializer
 
         if (!empty($GLOBALS['TCA'][$this->type]['ctrl']['versioningWS'])) {
             // versioning is enabled for this table: exclude draft workspace records
-            $conditions['versioningWS'] = 'pid != -1';
+            if (Util::getIsTYPO3VersionBelow10()) {
+                $conditions['versioningWS'] = 'pid != -1';
+            } else {
+                /* @see \TYPO3\CMS\Core\Database\Query\Restriction\WorkspaceRestriction::buildExpression */
+                $conditions['versioningWS'] = 't3ver_wsid = 0';
+            }
         }
 
         if (count($conditions)) {
