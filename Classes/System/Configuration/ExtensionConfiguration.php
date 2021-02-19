@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr\System\Configuration;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration as CoreExtensionConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -31,7 +32,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class ExtensionConfiguration
+class ExtensionConfiguration implements UnifyConfigurationInterface
 {
     /**
      * Extension Configuration
@@ -44,13 +45,18 @@ class ExtensionConfiguration
      * ExtensionConfiguration constructor.
      * @param array $configurationToUse
      */
-    public function __construct($configurationToUse = [])
+    public function __construct(array $configurationToUse = [])
     {
         if (empty($configurationToUse)) {
-            $this->configuration = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Configuration\ExtensionConfiguration::class)->get('solr');
+            $this->configuration = GeneralUtility::makeInstance(CoreExtensionConfiguration::class)->get('solr');
         } else {
             $this->configuration = $configurationToUse;
         }
+    }
+
+    public function load(): UnifyConfigurationInterface
+    {
+        return $this;
     }
 
     /**
@@ -58,7 +64,7 @@ class ExtensionConfiguration
      *
      * @return bool
      */
-    public function getIsUseConfigurationFromClosestTemplateEnabled()
+    public function getIsUseConfigurationFromClosestTemplateEnabled(): bool
     {
         return (bool)$this->getConfigurationOrDefaultValue('useConfigurationFromClosestTemplate', false);
     }
@@ -68,7 +74,7 @@ class ExtensionConfiguration
      *
      * @return bool
      */
-    public function getIsUseConfigurationTrackRecordsOutsideSiteroot()
+    public function getIsUseConfigurationTrackRecordsOutsideSiteroot(): bool
     {
         return (bool)$this->getConfigurationOrDefaultValue('useConfigurationTrackRecordsOutsideSiteroot', true);
     }
@@ -78,7 +84,7 @@ class ExtensionConfiguration
      *
      * @return bool
      */
-    public function getIsSelfSignedCertificatesEnabled()
+    public function getIsSelfSignedCertificatesEnabled(): bool
     {
         return (bool)$this->getConfigurationOrDefaultValue('allowSelfSignedCertificates', false);
     }
@@ -88,7 +94,7 @@ class ExtensionConfiguration
      *
      * @return array of tableName
      */
-    public function getIsUseConfigurationMonitorTables()
+    public function getIsUseConfigurationMonitorTables(): array
     {
         $monitorTables = [];
         $monitorTablesList = $this->getConfigurationOrDefaultValue('useConfigurationMonitorTables', '');
@@ -104,6 +110,7 @@ class ExtensionConfiguration
      * Get configuration for allowLegacySiteMode
      *
      * @return bool
+     * @deprecated
      */
     public function getIsAllowLegacySiteModeEnabled(): bool
     {
@@ -123,8 +130,30 @@ class ExtensionConfiguration
      * @param mixed $defaultValue
      * @return mixed
      */
-    protected function getConfigurationOrDefaultValue($key, $defaultValue)
+    protected function getConfigurationOrDefaultValue(string $key, $defaultValue)
     {
         return isset($this->configuration[$key]) ? $this->configuration[$key] : $defaultValue;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getUnifiedArray(): array
+    {
+        // TODO: getIsUseConfigurationFromClosestTemplateEnabled needs implementation
+        return [
+            'connection' => [
+                'read' => [
+                    'allowSelfSignedCertificates' => $this->getIsSelfSignedCertificatesEnabled()
+                ],
+                'write' => [
+                    'allowSelfSignedCertificates' => $this->getIsSelfSignedCertificatesEnabled()
+                ]
+            ],
+            'recordMonitor' => [
+                'trackOutsideRoot' => $this->getIsUseConfigurationTrackRecordsOutsideSiteroot(),
+                'alwaysMonitorTables' => $this->getIsUseConfigurationMonitorTables()
+            ],
+        ];
     }
 }

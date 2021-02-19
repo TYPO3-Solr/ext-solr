@@ -58,7 +58,6 @@ use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
  */
 class SearchResultSetService
 {
-
     /**
      * Track, if the number of results per page has been changed by the current request
      *

@@ -1,29 +1,21 @@
 <?php
 namespace ApacheSolrForTypo3\Solr\System\Configuration;
 
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2010-2016 Timo Schmidt <timo.schmidt@dkd.de
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 
+use ApacheSolrForTypo3\Solr\Event\UnifiedConfigurationEvent;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -32,15 +24,29 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Singleton
  *
  * @author Timo Schmidt <timo.schmidt@dkd.de>
+ * @copyright (c) 2010-2016 Timo Schmidt <timo.schmidt@dkd.de
  */
 class ConfigurationManager implements SingletonInterface
 {
     /**
+     * @var EventDispatcherInterface
+     */
+    protected $eventDispatcher;
+
+    /**
      * TypoScript Configurations
      *
-     * @var array
+     * @var TypoScriptConfiguration|UnifiedConfiguration[]
      */
     protected $typoScriptConfigurations = [];
+
+    /**
+     * @param EventDispatcherInterface $eventDispatcher
+     */
+    public function injectEventDispatcher(EventDispatcherInterface $eventDispatcher)
+    {
+        $this->eventDispatcher = $eventDispatcher;
+    }
 
     /**
      * Resets the state of the configuration manager.
@@ -53,6 +59,91 @@ class ConfigurationManager implements SingletonInterface
     }
 
     /**
+     * Build a unified configuration in order to have all configuration settings in one place
+     *
+     * @param int $pageUid
+     * @param int $languageUid
+     * @return UnifiedConfiguration
+     */
+    public function getUnifiedConfiguration(int $pageUid = 0, int $languageUid = 0): UnifiedConfiguration
+    {
+        if ($pageUid === 0 && !empty($GLOBALS['TSFE']->id)) {
+            $pageUid = (int)$GLOBALS['TSFE']->id;
+        }
+
+        $hash = md5(UnifiedConfiguration::class . '-' . $pageUid . '-' . $languageUid);
+        if (isset($this->typoScriptConfigurations[$hash])) {
+            return $this->typoScriptConfigurations[$hash];
+        }
+
+        $unifiedConfiguration = new UnifiedConfiguration($pageUid, $languageUid);
+        // Requires TYPO3 10 LTS
+        $event = new UnifiedConfigurationEvent($unifiedConfiguration);
+        $this->eventDispatcher->dispatch($event);
+
+        $this->typoScriptConfigurations[$hash] = $unifiedConfiguration;
+
+        return $unifiedConfiguration;
+    }
+
+    /**
+     * Returns instance of the global configuration
+     *
+     * @return GlobalConfiguration
+     */
+    public function getGlobalConfiguration(): GlobalConfiguration
+    {
+        return new GlobalConfiguration();
+    }
+
+    /**
+     * Returns instance of the global configuration
+     *
+     * @return ExtensionConfiguration
+     */
+    public function getExtensionConfiguration(): ExtensionConfiguration
+    {
+        return new ExtensionConfiguration();
+    }
+
+    /**
+     * Returns the site configuration by given page uid and language
+     *
+     * @param int $pageUid
+     * @param int $languageUid
+     * @return SiteConfiguration
+     */
+    public function getSiteConfiguration(int $pageUid = 0, int $languageUid = 0): SiteConfiguration
+    {
+        $hash = md5(SiteConfiguration::class . '-' . $pageUid . '-' . $languageUid);
+        if (!isset($this->typoScriptConfigurations[$hash])) {
+            $this->typoScriptConfigurations[$hash] = new SiteConfiguration($pageUid, $languageUid);
+        }
+
+        return $this->typoScriptConfigurations[$hash];
+    }
+
+    /**
+     * Returns the TypoScript configuration by given page and language uid.
+     *
+     * @see ConfigurationManager:getTypoScriptConfiguration
+     *
+     * @param int $pageUid
+     * @param int $languageUid
+     * @return TypoScriptConfiguration
+     */
+    public function getTypoScriptConfigurationByPageAndLanguage(
+        int $pageUid,
+        int $languageUid = 0
+    ): TypoScriptConfiguration {
+        return $this->getTypoScriptConfiguration(
+            null,
+            $pageUid,
+            $languageUid
+        );
+    }
+
+    /**
      * Retrieves the TypoScriptConfiguration object from an configuration array, pageId, languageId and TypoScript
      * path that is used in in the current context.
      *
@@ -62,8 +153,12 @@ class ConfigurationManager implements SingletonInterface
      * @param string $contextTypoScriptPath
      * @return TypoScriptConfiguration
      */
-    public function getTypoScriptConfiguration(array $configurationArray = null, $contextPageId = null, $contextLanguageId = 0, $contextTypoScriptPath = '')
-    {
+    public function getTypoScriptConfiguration(
+        array $configurationArray = null,
+        $contextPageId = null,
+        $contextLanguageId = 0,
+        $contextTypoScriptPath = ''
+    ) {
         if ($configurationArray == null) {
             if (isset($this->typoScriptConfigurations['default'])) {
                 $configurationArray = $this->typoScriptConfigurations['default'];
@@ -92,7 +187,10 @@ class ConfigurationManager implements SingletonInterface
             return $this->typoScriptConfigurations[$hash];
         }
 
-        $this->typoScriptConfigurations[$hash] = $this->getTypoScriptConfigurationInstance($configurationArray, $contextPageId);
+        $this->typoScriptConfigurations[$hash] = $this->getTypoScriptConfigurationInstance(
+            $configurationArray,
+            (int)$contextPageId
+        );
         return $this->typoScriptConfigurations[$hash];
     }
 
@@ -100,15 +198,17 @@ class ConfigurationManager implements SingletonInterface
      * This method is used to build the TypoScriptConfiguration.
      *
      * @param array $configurationArray
-     * @param int|null $contextPageId
-     * @return object
+     * @param int $contextPageId
+     * @return TypoScriptConfiguration
      */
-    protected function getTypoScriptConfigurationInstance(array $configurationArray = null, $contextPageId = null)
-    {
+    protected function getTypoScriptConfigurationInstance(
+        array $configurationArray = null,
+        int $contextPageId = 0
+    ): TypoScriptConfiguration {
         return GeneralUtility::makeInstance(
             TypoScriptConfiguration::class,
             /** @scrutinizer ignore-type */ $configurationArray,
-            /** @scrutinizer ignore-type */ $contextPageId
+            /** @scrutinizer ignore-type */ (int)$contextPageId
         );
     }
 }
