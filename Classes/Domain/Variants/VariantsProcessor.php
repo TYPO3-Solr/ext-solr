@@ -39,8 +39,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @package ApacheSolrForTypo3\Solr\Domain\Variants
  */
-class VariantsProcessor implements SearchResultSetProcessor {
-
+class VariantsProcessor implements SearchResultSetProcessor
+{
     /**
      * @var TypoScriptConfiguration
      */
@@ -96,6 +96,8 @@ class VariantsProcessor implements SearchResultSetProcessor {
             }
 
             $this->buildVariantDocumentAndAssignToParentResult($response, $variantId, $resultDocument);
+            $resultDocument->setVariantsNumFound($response->{'expanded'}->{$variantId}->{'numFound'});
+            $resultDocument->setVariantFieldValue($variantId);
         }
 
         return $resultSet;

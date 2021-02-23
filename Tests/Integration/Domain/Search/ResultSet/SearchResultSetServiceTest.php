@@ -32,6 +32,7 @@ use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Http\ImmediateResponseException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResult;
 
 class SearchResultSetServiceTest extends IntegrationTest
 {
@@ -147,20 +148,30 @@ class SearchResultSetServiceTest extends IntegrationTest
         $this->assertSame(2, count($searchResults), 'There should be two results at all');
 
         // We assume that the first result has one variants.
+        /* @var SearchResult $firstResult */
         $firstResult = $searchResults[0];
         $this->assertSame(6, count($firstResult->getVariants()));
         $this->assertSame('John Doe', $firstResult->getAuthor());
+        $this->assertSame(6, $firstResult->getVariantsNumFound());
+        $this->assertSame('John Doe', $firstResult->getVariantFieldValue());
 
+        /* @var SearchResult $secondResult */
         $secondResult = $searchResults[1];
         $this->assertSame(2, count($secondResult->getVariants()));
         $this->assertSame('Jane Doe', $secondResult->getAuthor());
+        $this->assertSame(2, $secondResult->getVariantsNumFound());
+        $this->assertSame('Jane Doe', $secondResult->getVariantFieldValue());
 
         // And every variant is indicated to be a variant.
         foreach ($firstResult->getVariants() as $variant) {
             $this->assertTrue($variant->getIsVariant(), 'Document should be a variant');
+            $this->assertSame(0, $variant->getVariantsNumFound(), 'Variant shouldn\'t have variants itself');
+            $this->assertSame($firstResult, $variant->getVariantParent(), 'Variant parent should be set');
         }
         foreach ($secondResult->getVariants() as $variant) {
             $this->assertTrue($variant->getIsVariant(), 'Document should be a variant');
+            $this->assertSame(0, $variant->getVariantsNumFound(), 'Variant shouldn\'t have variants itself');
+            $this->assertSame($secondResult, $variant->getVariantParent(), 'Variant parent should be set');
         }
     }
 
