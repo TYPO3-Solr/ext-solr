@@ -121,6 +121,53 @@ class SearchResultSetServiceTest extends IntegrationTest
     /**
      * @test
      */
+    public function canGetCaseSensitiveVariants()
+    {
+        $this->indexPageIdsFromFixture('can_get_searchResultSet.xml', [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+
+        $this->waitToBeVisibleInSolr();
+        $solrConnection = GeneralUtility::makeInstance(ConnectionManager::class)->getConnectionByPageId(1, 0, 0);
+
+        $typoScriptConfiguration = Util::getSolrConfiguration();
+        $typoScriptConfiguration->mergeSolrConfiguration([
+            'search.' =>[
+                'variants' => 1,
+                'variants.' => [
+                    'variantField' => 'author',
+                    'expand' => 1,
+                    'limit' => 11
+                ]
+            ]
+        ]);
+
+        $this->assertTrue($typoScriptConfiguration->getSearchVariants(), 'Variants are not enabled');
+        $this->assertEquals('author', $typoScriptConfiguration->getSearchVariantsField());
+        $this->assertEquals(11, $typoScriptConfiguration->getSearchVariantsLimit());
+
+        $searchResults = $this->doSearchWithResultSetService($solrConnection, $typoScriptConfiguration);
+        $this->assertSame(2, count($searchResults), 'There should be two results at all');
+
+        // We assume that the first result has one variants.
+        $firstResult = $searchResults[0];
+        $this->assertSame(6, count($firstResult->getVariants()));
+        $this->assertSame('John Doe', $firstResult->getAuthor());
+
+        $secondResult = $searchResults[1];
+        $this->assertSame(2, count($secondResult->getVariants()));
+        $this->assertSame('Jane Doe', $secondResult->getAuthor());
+
+        // And every variant is indicated to be a variant.
+        foreach ($firstResult->getVariants() as $variant) {
+            $this->assertTrue($variant->getIsVariant(), 'Document should be a variant');
+        }
+        foreach ($secondResult->getVariants() as $variant) {
+            $this->assertTrue($variant->getIsVariant(), 'Document should be a variant');
+        }
+    }
+
+    /**
+     * @test
+     */
     public function canGetZeroResultsWithVariantsOnEmptyIndex()
     {
         $this->importDataSetFromFixture('can_get_searchResultSet.xml');
