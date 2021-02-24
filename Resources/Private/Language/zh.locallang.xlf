@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
-<xliff version="1.0">
-	<file source-language="en" target-language="cn" datatype="plaintext" original="messages" date="2015-12-23T10:35:41Z" product-name="solr">
+<xliff version="1.0" xmlns="urn:oasis:names:tc:xliff:document:1.1">
+	<file source-language="en" target-language="zh" datatype="plaintext" original="EXT:solr/Resources/Private/Language/locallang.xlf" date="2021-02-24T14:55:00Z" product-name="solr">
 		<header/>
 		<body>
 			<!-- From PluginResults|PluginSearch|PluginFrequentSearches/locallang.xlf -->
@@ -48,6 +48,10 @@
 				<source>Remove all filters</source>
 				<target>删除所有过滤器</target>
 			</trans-unit>
+			<trans-unit id="faceting_filter" xml:space="preserve">
+				<source>Filter</source>
+				<target>Filter</target>
+			</trans-unit>
 			<trans-unit id="results_range" xml:space="preserve" approved="yes">
 				<source>Displaying results @resultsFrom to @resultsTo of @resultsTotal.</source>
 				<target>显示搜索结果中的第 @resultsFrom 条到第 @resultsTo 条 (共 @resultsTotal 条)。</target>
@@ -70,7 +74,7 @@
 			</trans-unit>
 			<trans-unit id="no_results_showing_results_suggestion" xml:space="preserve" approved="yes">
 				<source>Showing results for &quot;@suggestedWord&quot;.</source>
-				<target></target>
+				<target>Showing results for &quot;@suggestedWord&quot;.</target>
 			</trans-unit>
 			<trans-unit id="no_results_search_for_original" xml:space="preserve" approved="yes">
 				<source>Search instead for &quot;@searchWord&quot;.</source>
@@ -106,27 +110,27 @@
 			</trans-unit>
 			<trans-unit id="error_errors" xml:space="preserve" approved="yes">
 				<source>We're sorry, there were some errors:</source>
-				<target></target>
+				<target>We're sorry, there were some errors:</target>
 			</trans-unit>
 			<trans-unit id="error_emptyQuery" xml:space="preserve" approved="yes">
 				<source>Please enter your search term in the box above.</source>
-				<target></target>
+				<target>Please enter your search term in the box above.</target>
 			</trans-unit>
 			<trans-unit id="pagebrowser_first" xml:space="preserve" approved="yes">
 				<source>First</source>
-				<target></target>
+				<target>First</target>
 			</trans-unit>
 			<trans-unit id="pagebrowser_prev" xml:space="preserve" approved="yes">
 				<source>Previous</source>
-				<target></target>
+				<target>Previous</target>
 			</trans-unit>
 			<trans-unit id="pagebrowser_next" xml:space="preserve" approved="yes">
 				<source>Next</source>
-				<target></target>
+				<target>Next</target>
 			</trans-unit>
 			<trans-unit id="pagebrowser_last" xml:space="preserve" approved="yes">
 				<source>Last</source>
-				<target></target>
+				<target>Last</target>
 			</trans-unit>
 		</body>
 	</file>

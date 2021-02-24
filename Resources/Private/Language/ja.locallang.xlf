@@ -1,310 +1,301 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0" xmlns="urn:oasis:names:tc:xliff:document:1.1">
-	<file source-language="en" target-language="fr" datatype="plaintext" original="EXT:solr/Resources/Private/Language/locallang.xlf" date="2021-02-24T14:00:00Z" product-name="solr">
+	<file source-language="en" target-language="ja" datatype="plaintext" original="EXT:solr/Resources/Private/Language/locallang.xlf" date="2021-02-24T13:40:00Z" product-name="solr">
 		<header/>
 		<body>
 			<trans-unit id="cache_initialize_solr_connections" xml:space="preserve">
 				<source>Initialize Solr connections</source>
-				<target>Initialiser les connexions Solr</target>
+				<target>Solr接続を初期化する</target>
 			</trans-unit>
 
 		<!-- Index Administration -->
 			<trans-unit id="solr.backend.index_administration.description" xml:space="preserve">
 				<source>The Index Administration Module is responsible for emptying the cores(deleting documents) on Solr Server and index queues in TYPO3 CMS. </source>
-				<target>Le module d&apos;administration d&apos;index est chargé de vider les noyaux (suppression de documents) sur le serveur Solr et les files d&apos;attente d&apos;index dans le CMS TYPO3. </target>
+				<target>Index Administration Module は、Solrサーバーと TYPO3 CMS のインデックス キュー上のコアを空にする (ドキュメントを削除する) 役割を担います。 </target>
 			</trans-unit>
 
 			<trans-unit id="solr.backend.index_administration.index_emptied_all" xml:space="preserve">
 				<source>Index emptied for Site "%s" (%s).</source>
-				<target>Index vidé pour le site « %s » (%s).</target>
+				<target>サイト「%s」 のインデックスを空にしました (%s)。</target>
 			</trans-unit>
 
 			<trans-unit id="solr.backend.index_administration.success.queue_emptied" xml:space="preserve">
 				<source>Index Queue emptied for Site "%s".</source>
-				<target>File d&apos;attente d’index vidée pour le site « %s ».</target>
+				<target>サイト「%s」 のインデックス キューを空にしました。</target>
 			</trans-unit>
 
 			<trans-unit id="solr.backend.index_administration.error.on_empty_index" xml:space="preserve">
 				<source>An error occurred while trying to delete documents from the index: %s</source>
-				<target>Une erreur s&apos;est produite lors de la tentative de suppression de documents de l&apos;index : %s</target>
+				<target>次のインデックスからドキュメントを削除する際にエラーが発生しました: %s</target>
 			</trans-unit>
 		<!-- End: Index Maintenance -->
 
-			<!-- From Backend/locallang.xlf //-->
-			<trans-unit id="module_indexinspector" xml:space="preserve" approved="yes">
+
+		<!-- From Backend/locallang.xlf //-->
+			<trans-unit id="module_indexinspector" xml:space="preserve">
 				<source>Search Index Inspector</source>
-				<target>Inspecteur de l'index de recherche</target>
+				<target>を検索</target>
 			</trans-unit>
-			<trans-unit id="plugin_results" xml:space="preserve" approved="yes">
+			<trans-unit id="plugin_results" xml:space="preserve">
 				<source>Search</source>
-				<target></target>
+				<target>検索</target>
 			</trans-unit>
-			<trans-unit id="plugin_results_description" xml:space="preserve" approved="yes">
+			<trans-unit id="plugin_results_description" xml:space="preserve">
 				<source>A search form and results list.</source>
-				<target></target>
+				<target>検索フォームと結果リスト。</target>
 			</trans-unit>
 
 		<!-- Backend Components -->
 			<!-- SiteSelector -->
 			<trans-unit id="siteselector_switched_successfully" xml:space="preserve">
 				<source>Successfully switched to Site "%s".</source>
-				<target>Passage réussi au site « %s ».</target>
+				<target>サイト「%s」に切り替えました。</target>
 			</trans-unit>
 
 			<trans-unit id="siteselector_switched_to_first_available_site" xml:space="preserve">
 				<source>The previously selected Site "%s" does not exist or the indexing for that Site was disabled. Switched to "%s", which was the first available one.</source>
-				<target>Le site « %s » précédemment sélectionné n&apos;existe pas ou l&apos;indexation de ce site a été désactivée. Passage au site « %s », qui était le premier disponible.</target>
+				<target>以前選択されたサイト「%s」が存在しないか、そのサイトのインデックス作成が無効になっています。利用可能な最初のサイト「%s」に切り替えました。</target>
 			</trans-unit>
 
 			<trans-unit id="siteselector_site_does_not_exist_anymore" xml:space="preserve">
 				<source>Couldn't switch to the Site "%s". This site does not exist anymore or the indexing for that Site was disabled. Switched to the first available Site "%s".</source>
-				<target>Impossible de passer au site « %s ». Ce site n&apos;existe plus ou l&apos;indexation de ce site a été désactivée. Passage au premier site disponible « %s ».</target>
+				<target>サイト「%s」に切り替えられませんでした。このサイトが存在しないか、そのサイトのインデックス作成が無効になっています。利用可能な最初のサイト「%s」に切り替えました。</target>
 			</trans-unit>
 
 			<!-- CoreSelector -->
 			<trans-unit id="coreselector_switched_to_default_core" xml:space="preserve">
 				<source>The previously selected core "%s" is not available in "%s" site, therefore switched to default core "%s".</source>
-				<target>Le noyau « %s » sélectionné précédemment n&apos;est pas disponible sur le site « %s », passage au noyau par défaut « %s ».</target>
+				<target>以前に選択されていたコア「%s」がサイト「%s」で利用できませんので、既定のコア「%s」に切り替えました。</target>
 			</trans-unit>
 
 			<trans-unit id="coreselector_switched_successfully" xml:space="preserve">
 				<source>Successfully switched to core "%s".</source>
-				<target>Passage réussi au noyau « %s ».</target>
+				<target>コア「%s」に切り替えました。</target>
 			</trans-unit>
 		<!-- End: Backend Components -->
 
 			<!-- From ModuleAdministration/locallang.xlf //-->
 			<trans-unit id="mlang_labels_tablabel" xml:space="preserve">
 				<source>Apache Solr Search Administration</source>
-				<target>Moteur de recherche Apache Solr</target>
+				<target>Apache Solr 検索管理</target>
 			</trans-unit>
 			<trans-unit id="mlang_labels_tabdescr" xml:space="preserve">
 				<source>Allows you to manage Apache Solr from TYPO3.&lt;br /&gt;&lt;em&gt;Access for 'admin' users only!&lt;/em&gt;</source>
-				<target>Vous permet d&apos;exécuter Apache Solr depuis TYPO3.&lt;br /&gt;&lt;em&gt;Accès réservé aux utilisateurs &apos;admin&apos; uniquement !&lt;/em&gt;</target>
+				<target>TYPO3 から Apache Solr を管理できるようになります。&lt;br /&gt;&lt;em&gt;「管理者」ユーザーのみ利用可能です。&lt;/em&gt;</target>
 			</trans-unit>
 			<trans-unit id="mlang_tabs_tab" xml:space="preserve">
 				<source>Search</source>
-				<target>Rechercher</target>
+				<target>検索</target>
 			</trans-unit>
 
 			<!-- From ModuleReports/locallang.xlf //-->
-			<trans-unit id="index_title" xml:space="preserve" approved="yes">
+			<trans-unit id="index_title" xml:space="preserve">
 				<source>Apache Solr Index</source>
-				<target>Index d'Apache Solr</target>
+				<target>Apache Solr インデックス</target>
 			</trans-unit>
-			<trans-unit id="index_description" xml:space="preserve" approved="yes">
+			<trans-unit id="index_description" xml:space="preserve">
 				<source>View the number of documents and fields in your index</source>
-				<target>Visualisez le nombre de documents et de champs de votre index</target>
+				<target>インデックスのドキュメントとフィールドの数を表示</target>
 			</trans-unit>
-			<trans-unit id="statistics_title" xml:space="preserve" approved="yes">
+			<trans-unit id="statistics_title" xml:space="preserve">
 				<source>Apache Solr Statistics</source>
-				<target>Statistiques d'Apache Solr</target>
+				<target>Apache Solr Statistics</target>
 			</trans-unit>
-			<trans-unit id="statistics_description" xml:space="preserve" approved="yes">
+			<trans-unit id="statistics_description" xml:space="preserve">
 				<source>Provides several Solr usage statistics</source>
-				<target>Fourni plusieurs statistiques d'usage de Solr</target>
+				<target>Solr 使用状況の統計情報数件を提供します</target>
 			</trans-unit>
 
 			<!-- From ModuleScheduler/locallang.xlf //-->
-			<trans-unit id="optimizeindex_title" xml:space="preserve">
-				<source>Optimize index of a site</source>
-				<target>Optimiser l'index d'un site</target>
-			</trans-unit>
-			<trans-unit id="optimizeindex_description" xml:space="preserve">
-				<source>Optimizes the index of a site.</source>
-				<target>Optimise l'index d'un site.</target>
-			</trans-unit>
-			<trans-unit id="reindex_title" xml:space="preserve" approved="yes">
+			<trans-unit id="reindex_title" xml:space="preserve">
 				<source>Force Re-Indexing of a site</source>
-				<target>Force la réindexation d'un site</target>
+				<target>サイトのインデックスを強制的に再設定します</target>
 			</trans-unit>
-			<trans-unit id="reindex_description" xml:space="preserve" approved="yes">
+			<trans-unit id="reindex_description" xml:space="preserve">
 				<source>Purges the Solr Index and initializes the Index Queue of a site.</source>
-				<target>Purge l'index de Solr et initialise la file d'attente d'indexation d'un site.</target>
+				<target>サイトの Solr インデックスを消去してインデックス キューを初期化します。</target>
 			</trans-unit>
-			<trans-unit id="indexqueueworker_title" xml:space="preserve" approved="yes">
+			<trans-unit id="indexqueueworker_title" xml:space="preserve">
 				<source>Index Queue Worker</source>
-				<target>Tâche de traitement de la file d'indexation.</target>
+				<target>Index Queue Worker</target>
 			</trans-unit>
-			<trans-unit id="indexqueueworker_description" xml:space="preserve" approved="yes">
+			<trans-unit id="indexqueueworker_description" xml:space="preserve">
 				<source>Processes the items in the Index Queue and sends them to Solr.</source>
-				<target>Traite les élément de la file d'attente et les envoie à Solr.</target>
+				<target>インデックス キューの項目を処理して Solr に送信します。</target>
 			</trans-unit>
-			<trans-unit id="indexqueueworker_field_documentsToIndexLimit" xml:space="preserve" approved="yes">
+			<trans-unit id="indexqueueworker_field_documentsToIndexLimit" xml:space="preserve">
 				<source>Number of documents to index</source>
-				<target>Nombre de documents à indexer</target>
+				<target>インデックスを設定するドキュメントの数</target>
 			</trans-unit>
 			<trans-unit id="indexqueueworker_field_forcedWebRoot" xml:space="preserve">
 				<source>Forced webroot (only needed when webroot is not PATH_site)</source>
-				<target>Forced webroot (only needed when webroot is not PATH_site)</target>
-			</trans-unit>			
-			<trans-unit id="field_host" xml:space="preserve" approved="yes">
+				<target>強制 webroot (webroot が PATH_site でない場合のみ必要)</target>
+			</trans-unit>
+			<trans-unit id="field_host" xml:space="preserve">
 				<source>Solr Host</source>
-				<target>Hôte Solr</target>
+				<target>Solr ホスト</target>
 			</trans-unit>
-			<trans-unit id="field_port" xml:space="preserve" approved="yes">
+			<trans-unit id="field_port" xml:space="preserve">
 				<source>Solr Port</source>
-				<target>Port Solr</target>
+				<target>Solr ポート</target>
 			</trans-unit>
-			<trans-unit id="field_path" xml:space="preserve" approved="yes">
+			<trans-unit id="field_path" xml:space="preserve">
 				<source>Solr Path</source>
-				<target>URI Solr</target>
+				<target>Solr パス</target>
 			</trans-unit>
-			<trans-unit id="field_server" xml:space="preserve" approved="yes">
+			<trans-unit id="field_server" xml:space="preserve">
 				<source>Solr Server</source>
-				<target>Serveur Solr</target>
+				<target>Solr サーバー</target>
 			</trans-unit>
-			<trans-unit id="field_site" xml:space="preserve" approved="yes">
+			<trans-unit id="field_site" xml:space="preserve">
 				<source>Site</source>
-				<target>Site</target>
+				<target>サイト</target>
 			</trans-unit>
 
-	 		<!-- From PluginResults|PluginSearch|PluginFrequentSearches/locallang.xlf -->
+			<!-- From PluginResults|PluginSearch|PluginFrequentSearches/locallang.xlf -->
 			<trans-unit id="searchUnavailable" xml:space="preserve" approved="yes">
 				<source>Search is currently not available.</source>
-				<target>La recherche est actuellement indisponible.</target>
+				<target>検索は現在使用できません。</target>
 			</trans-unit>
 			<trans-unit id="searchFailed" xml:space="preserve" approved="yes">
 				<source>We're sorry. The request you tried to make could not be processed.</source>
-				<target>Désolé. Votre demande n'a pas pu être traitée.</target>
+				<target>申し訳ありません。実行しようとした要求は処理できません。</target>
 			</trans-unit>
 			<trans-unit id="searchWord" xml:space="preserve" approved="yes">
 				<source>Search Term</source>
-				<target>Critère de recherche</target>
+				<target>検索語句</target>
 			</trans-unit>
 			<trans-unit id="didYouMean" xml:space="preserve" approved="yes">
 				<source>Did you mean</source>
-				<target>Pensiez-vous à</target>
+				<target>検索語句の候補</target>
 			</trans-unit>
 			<trans-unit id="submit" xml:space="preserve" approved="yes">
 				<source>Search</source>
-				<target>Recherche</target>
+				<target>検索</target>
 			</trans-unit>
 			<trans-unit id="sorting_sortBy" xml:space="preserve" approved="yes">
 				<source>Sort by</source>
-				<target>Trier par</target>
+				<target>並び替え項目</target>
 			</trans-unit>
 			<trans-unit id="faceting_narrowSearch" xml:space="preserve" approved="yes">
 				<source>Narrow Search</source>
-				<target>Filtre de résultats</target>
+				<target>絞り込み検索</target>
 			</trans-unit>
 			<trans-unit id="faceting_resultsNarrowedBy" xml:space="preserve" approved="yes">
 				<source>Search narrowed by</source>
-				<target>Filtres actifs</target>
+				<target>絞り込み結果</target>
 			</trans-unit>
 			<trans-unit id="faceting_showMore" xml:space="preserve" approved="yes">
 				<source>Show more</source>
-				<target>Afficher plus</target>
+				<target>表示数を増やす</target>
 			</trans-unit>
 			<trans-unit id="faceting_showFewer" xml:space="preserve" approved="yes">
 				<source>Show fewer</source>
-				<target>Afficher moins</target>
+				<target>表示数を減らす</target>
 			</trans-unit>
 			<trans-unit id="faceting_removeAllFilters" xml:space="preserve" approved="yes">
 				<source>Remove all filters</source>
-				<target>Retirer tous les filtres</target>
+				<target>フィルタをすべて削除</target>
 			</trans-unit>
 			<trans-unit id="faceting_filter" xml:space="preserve">
 				<source>Filter</source>
 				<target>Filter</target>
-			</trans-unit>			
+			</trans-unit>
 			<trans-unit id="results_range" xml:space="preserve" approved="yes">
 				<source>Displaying results @resultsFrom to @resultsTo of @resultsTotal.</source>
-				<target>Affiche les résultats de @resultsFrom à @resultsTo sur @resultsTotal.</target>
+				<target>@resultsTotal の結果のうち、 @resultsFrom から @resultsTo までを表示します。</target>
 			</trans-unit>
 			<trans-unit id="results_found" xml:space="preserve" approved="yes">
 				<source>Found @resultsTotal results in @resultsTime milliseconds.</source>
-				<target>@resultsTotal résultats ont été trouvés en @resultsTime millisecondes.</target>
+				<target>@resultsTime ミリ秒で @resultsTotal の結果が見つかりました。</target>
 			</trans-unit>
 			<trans-unit id="results_found.singular" xml:space="preserve" approved="yes">
-				<source>Found 1 result in @resultsTime milliseconds.</source>
-				<target>1 résultats ont été trouvés en @resultsTime millisecondes.</target>
+				<source>Found 1 results in @resultsTime milliseconds.</source>
+				<target>@resultsTime ミリ秒で 1 の結果が見つかりました。</target>
 			</trans-unit>
 			<trans-unit id="results_searched_for" xml:space="preserve" approved="yes">
 				<source>Searched for &quot;@searchWord&quot;.</source>
-				<target>Recherche de &quot;@searchWord&quot;.</target>
+				<target>&quot;@searchWord&quot; を検索しました。</target>
 			</trans-unit>
 			<trans-unit id="no_results_nothing_found" xml:space="preserve" approved="yes">
 				<source>Nothing found for &quot;@searchWord&quot;.</source>
-				<target>Rien trouvé pour &quot;@searchWord&quot;.</target>
+				<target>&quot;@searchWord&quot; が見つかりません。</target>
 			</trans-unit>
 			<trans-unit id="no_results_showing_results_suggestion" xml:space="preserve" approved="yes">
 				<source>Showing results for &quot;@suggestedWord&quot;.</source>
-				<target>Affichage des résultats pour &quot;@suggestedWord&quot;.</target>
+				<target></target>
 			</trans-unit>
 			<trans-unit id="no_results_search_for_original" xml:space="preserve" approved="yes">
 				<source>Search instead for &quot;@searchWord&quot;.</source>
-				<target>Chercher &quot;@searchWord&quot; à la place.</target>
+				<target></target>
 			</trans-unit>
 			<trans-unit id="lastSearches" xml:space="preserve" approved="yes">
 				<source>Last searches</source>
-				<target>Dernières recherches</target>
+				<target>前の検索</target>
 			</trans-unit>
 			<trans-unit id="frequentSearches" xml:space="preserve" approved="yes">
 				<source>Frequent searches</source>
-				<target>Recherches fréquentes</target>
+				<target>共通検索</target>
 			</trans-unit>
 			<trans-unit id="relevance" xml:space="preserve" approved="yes">
 				<source>Relevance</source>
-				<target>Pertinence</target>
+				<target>関連</target>
 			</trans-unit>
 			<trans-unit id="sponsored" xml:space="preserve" approved="yes">
 				<source>Sponsored</source>
-				<target>Sponsorisé</target>
+				<target></target>
 			</trans-unit>
 			<trans-unit id="file_mimetype" xml:space="preserve" approved="yes">
 				<source>File type</source>
-				<target>Type de fichier</target>
+				<target>ファイルの種類</target>
 			</trans-unit>
 			<trans-unit id="file_referenced" xml:space="preserve" approved="yes">
 				<source>Referenced at</source>
-				<target>Référencé par</target>
+				<target>参照元</target>
 			</trans-unit>
 			<trans-unit id="results_per_page" xml:space="preserve" approved="yes">
 				<source>Results per page:</source>
-				<target>Résultats par page:</target>
+				<target>ページ毎の結果:</target>
 			</trans-unit>
 			<trans-unit id="error_errors" xml:space="preserve" approved="yes">
 				<source>We're sorry, there were some errors:</source>
-				<target>Nous sommes désolés, il y a eu quelques erreurs :</target>
+				<target></target>
 			</trans-unit>
 			<trans-unit id="error_emptyQuery" xml:space="preserve" approved="yes">
 				<source>Please enter your search term in the box above.</source>
-				<target>Veuillez remplir les termes de recherche dans le champ ci-dessus.</target>
+				<target></target>
 			</trans-unit>
 			<trans-unit id="pagebrowser_first" xml:space="preserve" approved="yes">
 				<source>First</source>
-				<target>Premier</target>
+				<target></target>
 			</trans-unit>
 			<trans-unit id="pagebrowser_prev" xml:space="preserve" approved="yes">
 				<source>Previous</source>
-				<target>Précédent</target>
+				<target></target>
 			</trans-unit>
 			<trans-unit id="pagebrowser_next" xml:space="preserve" approved="yes">
 				<source>Next</source>
-				<target>Suivant</target>
+				<target></target>
 			</trans-unit>
 			<trans-unit id="pagebrowser_last" xml:space="preserve" approved="yes">
 				<source>Last</source>
-				<target>Dernier</target>
+				<target></target>
 			</trans-unit>
 			<trans-unit id="suggest_header" xml:space="preserve">
 				<source>Top Results</source>
-				<target>Top Results</target>
-			</trans-unit>			
-
+			</trans-unit>
 			<!-- From locallang.xlf -->
 			<trans-unit id="solr.backend.index_queue_module.description" xml:space="preserve">
 				<source>The Index Queue manages content indexing. Content enters the Index Queue by initialization below or when new content is created based on configuration. Items in the Index Queue are indexed newest changes first until all items in the queue have been indexed.</source>
-				<target>La file d’attente de l’index gère l’indexation du contenu. Le contenu entre dans la file d&apos;attente de l&apos;index par l’initialisation ci-dessous ou lors de la création d&apos;un nouveau contenu selon la configuration. Les éléments de la file d&apos;attente de l&apos;index sont indexés en commençant par les changements les plus récents jusqu&apos;à ce que tous les éléments de la file d&apos;attente aient été indexés.</target>
+				<target>インデックス キューはコンテンツのインデックス設定を管理します。コンテンツは、次の初期化によって、または構成設定に基づいて新規コンテンツが作成された時に、インデックス キューに追加されます。インデックス キュー内の項目は、キュー内の全ての項目がインデックス設定されるまで、最新の変更が最初にインデックス設定されいます。</target>
 			</trans-unit>
 			<trans-unit id="solr.backend.index_queue_module.errors.reset_button" xml:space="preserve">
 				<source>Reset errors</source>
-				<target>Erreurs de réinitialisation</target>
+				<target>リセット エラー</target>
 			</trans-unit>
 			<trans-unit id="solr.backend.index_queue_module.errors.headline" xml:space="preserve">
 				<source>Indexing Errors</source>
-				<target>Erreurs d’indexation</target>
+				<target>インデックス設定エラー</target>
 			</trans-unit>
 			<trans-unit id="solr.backend.index_queue_module.errors.id" xml:space="preserve">
 				<source>ID</source>
@@ -312,23 +303,22 @@
 			</trans-unit>
 			<trans-unit id="solr.backend.index_queue_module.errors.item_type" xml:space="preserve">
 				<source>Item Type</source>
-				<target>Type d’élément</target>
+				<target>項目の種類</target>
 			</trans-unit>
 			<trans-unit id="solr.backend.index_queue_module.errors.item_uid" xml:space="preserve">
 				<source>Item UID</source>
-				<target>Afficher l’erreur</target>
+				<target>項目の UID</target>
 			</trans-unit>
 			<trans-unit id="solr.backend.index_queue_module.errors.show_button" xml:space="preserve">
 				<source>Show error</source>
-				<target>Afficher l’erreur</target>
 			</trans-unit>
 			<trans-unit id="solr.backend.index_queue_module.flashmessage.error.index_manual" xml:space="preserve">
 				<source>An error occurred while indexing manual from the backend.</source>
-				<target>Une erreur s&apos;est produite lors de l’indexation manuelle de l’application en arrière-plan.</target>
+				<target>バックエンドから手動でインデックス設定する際にエラーが発生しました。</target>
 			</trans-unit>
 			<trans-unit id="solr.backend.index_queue_module.flashmessage.error.reset_errors" xml:space="preserve">
 				<source>An error occurred while resetting the error log in the index queue.</source>
-				<target>Une erreur s&apos;est produite lors de la réinitialisation du fichier d’erreurs dans la file d’attente de l&apos;index.</target>
+				<target>インデックス キュー内のエラーログのリセット時にエラーが発生しました:</target>
 			</trans-unit>
 			<trans-unit id="solr.backend.index_queue_module.flashmessage.error.single_item_not_requeued" xml:space="preserve">
 				<source>Single item was not requeued.</source>
@@ -336,28 +326,27 @@
 			</trans-unit>
 			<trans-unit id="solr.backend.index_queue_module.flashmessage.initialize.no_selection" xml:space="preserve">
 				<source>No indexing configurations selected.</source>
-				<target>Aucune configuration d’indexation sélectionnée.</target>
+				<target>インデックス設定の構成が選択されていません。</target>
 			</trans-unit>
 
 			<trans-unit id="solr.backend.index_queue_module.flashmessage.initialize.success" xml:space="preserve">
 				<source>Initialized indexing configurations: %s</source>
-				<target>Configurations d’indexation initialisées : %s</target>
+				<target>インデックス設定の構成が初期化されました: %s</target>
 			</trans-unit>
 			<trans-unit id="solr.backend.index_queue_module.flashmessage.initialize.title" xml:space="preserve">
 				<source>Index Queue initialized</source>
-				<target>File d&apos;attente de l’index initialisée</target>
+				<target>インデックス キューが初期化されました</target>
 			</trans-unit>
 			<trans-unit id="solr.backend.index_queue_module.flashmessage.not_initialized.title" xml:space="preserve">
 				<source>Index Queue not initialized</source>
-				<target>File d&apos;attente de l’index non initialisée</target>
 			</trans-unit>
 			<trans-unit id="solr.backend.index_queue_module.flashmessage.success.reset_errors" xml:space="preserve">
 				<source>All errors have been reset.</source>
-				<target>Toutes les erreurs ont été réinitialisées.</target>
+				<target>全てのエラーがリセットされました。</target>
 			</trans-unit>
 			<trans-unit id="solr.backend.index_queue_module.flashmessage.success.index_manual" xml:space="preserve">
 				<source>Indexing from the backend was successfully finished.</source>
-				<target>L&apos;indexation de l’application en arrière-plan s&apos;est terminée avec succès.</target>
+				<target>バックエンドからのインデックス設定が完了しました。</target>
 			</trans-unit>
 			<trans-unit id="solr.backend.index_queue_module.flashmessage.success.single_item_was_requeued" xml:space="preserve">
 				<source>Single item was successfully marked for reindexing.</source>
@@ -365,106 +354,106 @@
 			</trans-unit>
 			<trans-unit id="solr.backend.index_queue_module.flashmessage.title" xml:space="preserve">
 				<source>Index Queue</source>
-				<target>File d&apos;attente de l’index</target>
+				<target>インデックス キュー</target>
 			</trans-unit>
 			<trans-unit id="solr.backend.index_queue_module.flashmessage.index_manual" xml:space="preserve">
 				<source>Manual Indexing</source>
-				<target>Indexation manuelle</target>
+				<target>手動インデックス設定</target>
 			</trans-unit>
 			<trans-unit id="solr.backend.index_queue_module.help" xml:space="preserve">
 				<source>Initializing the Index Queue is the most complete way to force re-indexing, or to build the Index Queue for the first time. The Index Queue Worker scheduler task will then index the items listed in the Index Queue.</source>
-				<target>L&apos;initialisation de la file d&apos;attente de l&apos;index est le moyen le plus complet de forcer la ré-indexation ou de générer la file d&apos;attente de l&apos;index pour la première fois. La tâche du planificateur de l’exécuteur de file d&apos;attente de l&apos;index indexera alors les éléments énumérés dans la file d&apos;attente de l&apos;index.</target>
+				<target>インデックス キューの初期化は、インデックスの強制再設定時やインデックス キューの初回構築時の最も完全な方法です。その後、Index Queue Worker スケジューラーのタスクによりインデックス キューのリスト項目がインデックス設定されます。</target>
 			</trans-unit>
 			<trans-unit id="solr.backend.index_queue_module.status.errors" xml:space="preserve">
 				<source> Errors</source>
-				<target> Erreurs</target>
+				<target> エラー</target>
 			</trans-unit>
 			<trans-unit id="solr.backend.index_queue_module.status.header" xml:space="preserve">
 				<source>Indexing Progress</source>
-				<target>Indexation en cours</target>
+				<target>インデックス設定の進捗状況</target>
 			</trans-unit>
 			<trans-unit id="solr.backend.index_queue_module.status.indexed" xml:space="preserve">
 				<source> Indexed</source>
-				<target> Indexé</target>
+				<target> インデックス設定済み</target>
 			</trans-unit>
 			<trans-unit id="solr.backend.index_queue_module.status.pending" xml:space="preserve">
 				<source> Pending</source>
-				<target> En attente</target>
+				<target> 保留中</target>
 			</trans-unit>
 			<trans-unit id="solr.backend.index_queue_module.header_init" xml:space="preserve">
 				<source>Index Queue Initialization</source>
-				<target>Initialisation de la file d&apos;attente de l’index</target>
+				<target>インデックス キューの初期化</target>
 			</trans-unit>
 			<trans-unit id="solr.backend.index_queue_module.header_status" xml:space="preserve">
 				<source>Index Queue Status</source>
-				<target>État de la file d&apos;attente de l’index</target>
+				<target>インデックス キューの状態</target>
 			</trans-unit>
 			<trans-unit id="solr.backend.index_queue_module.button.clear_index_queue" xml:space="preserve">
 				<source>Clear Index Queue</source>
-				<target>Supprimer la file d&apos;attente de l’index</target>
+				<target>インデックス キューのクリア</target>
 			</trans-unit>
 			<trans-unit id="solr.backend.index_queue_module.back" xml:space="preserve">
 				<source>Go back</source>
-				<target>Retour</target>
+				<target>戻る</target>
 			</trans-unit>
 			<trans-unit id="solr.backend.index_queue_module.flashmessage.error.no_queue_item_for_queue_error" xml:space="preserve">
 				<source>No valid queue item passed to show the error information!</source>
-				<target>Aucun élément de file d&apos;attente valide transmis pour afficher les informations d&apos;erreur !</target>
+				<target>エラー情報を表示する有効なキュー項目はありませんでした。</target>
 			</trans-unit>
 			<trans-unit id="solr.backend.index_queue_module.error_details" xml:space="preserve">
 				<source>Error details for queue item</source>
-				<target>Détails de l&apos;erreur pour l’élément de la file d&apos;attente</target>
+				<target>キュー項目のエラーの詳細</target>
 			</trans-unit>
 			<trans-unit id="solr.backend.index_queue_module.index_now" xml:space="preserve">
 				<source>Index now</source>
-				<target>Indexer maintenant</target>
+				<target>今すぐインデックス設定</target>
 			</trans-unit>
 
 			<!-- From locallang_db.xlf -->
-			<trans-unit id="tt_content.list_type_pi_frequentsearches" xml:space="preserve" approved="yes">
+			<trans-unit id="tt_content.list_type_pi_frequentsearches" xml:space="preserve">
 				<source>Search: Frequent Searches</source>
-				<target>Rechercher: Recherches fréquentes</target>
+				<target>検索: 頻度の高い検索</target>
 			</trans-unit>
-			<trans-unit id="tt_content.list_type_pi_results" xml:space="preserve" approved="yes">
+			<trans-unit id="tt_content.list_type_pi_results" xml:space="preserve">
 				<source>Search: Form, Result, Additional Components</source>
-				<target>Rechercher: Formulaire, Résultats, Composants additionnels</target>
+				<target>検索: フォーム、結果、追加コンポーネント</target>
 			</trans-unit>
-			<trans-unit id="tt_content.list_type_pi_search" xml:space="preserve" approved="yes">
+			<trans-unit id="tt_content.list_type_pi_search" xml:space="preserve">
 				<source>Search: Form only</source>
-				<target>Rechercher: Formulaire seul</target>
+				<target>検索: フォームのみ</target>
 			</trans-unit>
 
 			<trans-unit id="solr.backend.search_statistics_module.item_phrase" xml:space="preserve">
 				<source>Phrase</source>
-				<target>Phrase</target>
+				<target>フレーズ</target>
 			</trans-unit>
 			<trans-unit id="solr.backend.search_statistics_module.item_count" xml:space="preserve">
 				<source>Number of Queries</source>
-				<target>Number of Queries</target>
+				<target>質問件数</target>
 			</trans-unit>
 			<trans-unit id="solr.backend.search_statistics_module.results" xml:space="preserve">
 				<source>Number of Results (Average)</source>
-				<target>Number of Results (Average)</target>
+				<target>結果件数 (平均)</target>
 			</trans-unit>
 			<trans-unit id="solr.backend.search_statistics_module.percentage" xml:space="preserve">
 				<source>Percentage</source>
-				<target>Percentage</target>
+				<target>割合</target>
 			</trans-unit>
 			<trans-unit id="solr.backend.search_statistics_module.no_records_found" xml:space="preserve">
 				<source>No records found. Did you enabled 'plugin.tx_solr.statistics = 1' in the typoscript configuration of your site?</source>
-				<target>No records found. Did you enabled 'plugin.tx_solr.statistics = 1' in the typoscript configuration of your site?</target>
+				<target>レコードが見つかりません。サイトのタイポスクリプト構成設定で「plugin.tx_solr.statistics = 1」を有効化しましたか?</target>
 			</trans-unit>
 			<trans-unit id="solr.backend.search_statistics_module.top_search_phrases" xml:space="preserve">
 				<source>Top 5 Search Phrases</source>
-				<target>Top 5 Search Phrases</target>
+				<target>トップ 5 検索フレーズ</target>
 			</trans-unit>
 			<trans-unit id="solr.backend.search_statistics_module.top_search_phrases_without_hits" xml:space="preserve">
 				<source>Top 5 Search Phrases Without Hits</source>
-				<target>Top 5 Search Phrases Without Hits</target>
+				<target>該当の無いトップ 5 検索フレーズ</target>
 			</trans-unit>
 			<trans-unit id="solr.backend.search_statistics_module.search_phrases_header" xml:space="preserve">
 				<source>Search Phrase Statistics</source>
-				<target>Search Phrase Statistics</target>
+				<target>検索フレーズ統計情報</target>
 			</trans-unit>
 		</body>
 	</file>
