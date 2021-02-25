@@ -37,8 +37,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Builds the SearchResult objects from the solr response and assigns the created child SearchResult objects (the variants)
  * to the parent search result object.
  */
-class VariantsProcessor implements SearchResultSetProcessor {
-
+class VariantsProcessor implements SearchResultSetProcessor
+{
     /**
      * @var TypoScriptConfiguration
      */
@@ -94,6 +94,8 @@ class VariantsProcessor implements SearchResultSetProcessor {
             }
 
             $this->buildVariantDocumentAndAssignToParentResult($response, $variantId, $resultDocument);
+            $resultDocument->setVariantsNumFound($response->{'expanded'}->{$variantId}->{'numFound'});
+            $resultDocument->setVariantFieldValue($variantId);
         }
 
         return $resultSet;
