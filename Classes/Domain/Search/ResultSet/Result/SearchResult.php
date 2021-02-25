@@ -35,6 +35,25 @@ use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
  */
 class SearchResult extends Document
 {
+    /**
+     * The variant field value
+     *
+     * Value of Solr collapse field, which is defined via
+     * TypoScript variable "variants.variantField"
+     *
+     * @var string
+     */
+    protected $variantFieldValue = '';
+
+    /**
+     * Number of variants found
+     *
+     * May differ from documents in variants as
+     * returned variants are limited by expand.rows
+     *
+     * @var int
+     */
+    protected $variantsNumFound = 0;
 
     /**
      * @var SearchResult[]
@@ -83,6 +102,38 @@ class SearchResult extends Document
     public function setGroupItem(GroupItem $group)
     {
         $this->groupItem = $group;
+    }
+
+    /**
+     * @return string
+     */
+    public function getVariantFieldValue(): string
+    {
+        return $this->variantFieldValue;
+    }
+
+    /**
+     * @param string $variantFieldValue
+     */
+    public function setVariantFieldValue(string $variantFieldValue)
+    {
+        $this->variantFieldValue = $variantFieldValue;
+    }
+
+    /**
+     * @return int
+     */
+    public function getVariantsNumFound(): int
+    {
+        return $this->variantsNumFound;
+    }
+
+    /**
+     * @param int $numFound
+     */
+    public function setVariantsNumFound(int $numFound)
+    {
+        $this->variantsNumFound = $numFound;
     }
 
     /**
