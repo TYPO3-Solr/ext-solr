@@ -3,7 +3,9 @@ namespace ApacheSolrForTypo3\Solr\FrontendEnvironment;
 
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\LanguageAspectFactory;
+use TYPO3\CMS\Core\Error\Http\ServiceUnavailableException;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
+use TYPO3\CMS\Core\Http\ImmediateResponseException;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\TypoScript\TemplateService;
@@ -50,8 +52,8 @@ class Tsfe implements SingletonInterface
      * @param $pageId
      * @param int $language
      * @throws SiteNotFoundException
-     * @throws \TYPO3\CMS\Core\Error\Http\ServiceUnavailableException
-     * @throws \TYPO3\CMS\Core\Http\ImmediateResponseException
+     * @throws ServiceUnavailableException
+     * @throws ImmediateResponseException
      */
     public function initializeTsfe($pageId, $language = 0)
     {
