@@ -323,11 +323,13 @@ class Indexer extends AbstractIndexer
      * In case of additionalStoragePid config recordPageId can be outsite of siteroot.
      * In that case we should not read TS config of foreign siteroot.
      *
+     * @param Item $item
      * @return bool
      */
-    protected function isRootPageIdPartOfRootLine(Item $item)
+    protected function isRootPageIdPartOfRootLine(Item $item): bool
     {
         $rootPageId = (int)$item->getRootPageUid();
+        $buildRootlineWithPid = $this->getPageIdOfItem($item);
         $rootlineUtility = GeneralUtility::makeInstance(RootlineUtility::class, $buildRootlineWithPid);
         $rootline = $rootlineUtility->get();
 
