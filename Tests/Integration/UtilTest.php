@@ -77,46 +77,6 @@ class UtilTest extends IntegrationTest
     /**
      * @test
      */
-    public function getConfigurationFromPageIdInitializesTsfe()
-    {
-        $pageId = 24;
-        $path = '';
-        $language = 0;
-        $initializeTsfe = true;
-        $cacheId = md5($pageId . '|' . $path . '|' . $language);
-
-        /** @var TwoLevelCache|ObjectProphecy $twoLevelCache */
-        $twoLevelCache = $this->prophesize(TwoLevelCache::class);
-        $twoLevelCache
-            ->get($cacheId)
-            ->shouldBeCalled()
-            ->willReturn([]);
-        $twoLevelCache
-            ->set($cacheId, [])
-            ->shouldBeCalledOnce();
-        GeneralUtility::addInstance(TwoLevelCache::class, $twoLevelCache->reveal());
-
-        $this->buildTestCaseForTsfe($pageId, 13);
-
-        $newConfiguration = Util::getConfigurationFromPageId(
-            $pageId,
-            $path,
-            $initializeTsfe,
-            $language,
-            true
-        );
-
-        $this->assertInstanceOf(TypoScriptConfiguration::class, $newConfiguration);
-
-        $this->assertSame(
-            24,
-            $GLOBALS['TSFE']->id
-        );
-    }
-
-    /**
-     * @test
-     */
     public function getConfigurationFromPageIdInitializesTsfeOnCacheCall()
     {
         $path = '';

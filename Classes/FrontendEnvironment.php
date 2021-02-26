@@ -4,7 +4,10 @@ namespace ApacheSolrForTypo3\Solr;
 
 use ApacheSolrForTypo3\Solr\FrontendEnvironment\Tsfe;
 use ApacheSolrForTypo3\Solr\FrontendEnvironment\TypoScript;
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use TYPO3\CMS\Core\Error\Http\ServiceUnavailableException;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
+use TYPO3\CMS\Core\Http\ImmediateResponseException;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -22,12 +25,25 @@ class FrontendEnvironment implements SingletonInterface
      */
     private $tsfe = null;
 
+    /**
+     * FrontendEnvironment constructor.
+     *
+     * @param Tsfe|null $tsfe
+     * @param TypoScript|null $typoScript
+     */
     public function __construct(Tsfe $tsfe = null, TypoScript $typoScript = null)
     {
         $this->tsfe = $tsfe ?? GeneralUtility::makeInstance(Tsfe::class);
         $this->typoScript = $typoScript ?? GeneralUtility::makeInstance(TypoScript::class);
     }
 
+    /**
+     * Changes language context.
+     * Should be used in indexing context.
+     *
+     * @param int $pageId
+     * @param int $language
+     */
     public function changeLanguageContext(int $pageId, int $language): void
     {
         $this->tsfe->changeLanguageContext($pageId, $language);
@@ -39,19 +55,37 @@ class FrontendEnvironment implements SingletonInterface
      * @param $pageId
      * @param int $language
      * @throws SiteNotFoundException
-     * @throws \TYPO3\CMS\Core\Error\Http\ServiceUnavailableException
-     * @throws \TYPO3\CMS\Core\Http\ImmediateResponseException
+     * @throws ServiceUnavailableException
+     * @throws ImmediateResponseException
      */
     public function initializeTsfe($pageId, $language = 0)
     {
         $this->tsfe->initializeTsfe($pageId, $language);
     }
 
-    public function getConfigurationFromPageId($pageId, $path, $language = 0)
+    /**
+     * Loads the TypoScript configuration for a given page id and language.
+     * Language usage may be disabled to get the default TypoScript
+     * configuration.
+     *
+     * @param $pageId
+     * @param $path
+     * @param int $language
+     * @return TypoScriptConfiguration
+     */
+    public function getConfigurationFromPageId($pageId, $path, $language = 0): TypoScriptConfiguration
     {
         return $this->typoScript->getConfigurationFromPageId($pageId, $path, $language);
     }
 
+    /**
+     * Check whether the page record is within the configured allowed pages types(doktype) for indexing.
+     * Uses TypoScript: plugin.tx_solr.index.queue.<queue name>.allowedPageTypes
+     *
+     * @param array $pageRecord
+     * @param string $configurationName
+     * @return bool
+     */
     public function isAllowedPageType(array $pageRecord, $configurationName = 'pages'): bool
     {
         $configuration = $this->getConfigurationFromPageId($pageRecord['uid'], '');
@@ -59,7 +93,14 @@ class FrontendEnvironment implements SingletonInterface
         return in_array($pageRecord['doktype'], $allowedPageTypes);
     }
 
-    public function getSolrConfigurationFromPageId($pageId, $language = 0)
+    /**
+     * Returns TypoScriptConfiguration for desired page ID and language id.
+     *
+     * @param $pageId
+     * @param int $language
+     * @return TypoScriptConfiguration
+     */
+    public function getSolrConfigurationFromPageId($pageId, $language = 0): TypoScriptConfiguration
     {
         return $this->getConfigurationFromPageId($pageId, '', $language);
     }
