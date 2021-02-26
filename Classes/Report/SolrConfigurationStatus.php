@@ -27,8 +27,10 @@ namespace ApacheSolrForTypo3\Solr\Report;
 use ApacheSolrForTypo3\Solr\FrontendEnvironment;
 use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
+use RuntimeException;
 use TYPO3\CMS\Core\Error\Http\ServiceUnavailableException;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
+use TYPO3\CMS\Core\Http\ImmediateResponseException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Reports\Status;
 
@@ -48,7 +50,7 @@ class SolrConfigurationStatus extends AbstractSolrStatus
     /**
      * @var FrontendEnvironment
      */
-    protected $fronendEnvironment = null;
+    protected $frontendEnvironment = null;
 
     /**
      * SolrConfigurationStatus constructor.
@@ -62,15 +64,16 @@ class SolrConfigurationStatus extends AbstractSolrStatus
     )
     {
         $this->extensionConfiguration = $extensionConfiguration ?? GeneralUtility::makeInstance(ExtensionConfiguration::class);
-        $this->fronendEnvironment = $frontendEnvironment ?? GeneralUtility::makeInstance(FrontendEnvironment::class);
+        $this->frontendEnvironment = $frontendEnvironment ?? GeneralUtility::makeInstance(FrontendEnvironment::class);
     }
 
     /**
      * Compiles a collection of configuration status checks.
      *
      * @return array
+     * @throws ImmediateResponseException
      */
-    public function getStatus()
+    public function getStatus(): array
     {
         $reports = [];
 
@@ -96,7 +99,7 @@ class SolrConfigurationStatus extends AbstractSolrStatus
      *
      * @return NULL|Status An error status is returned if no root pages were found.
      */
-    protected function getRootPageFlagStatus()
+    protected function getRootPageFlagStatus(): ?Status
     {
         $rootPages = $this->getRootPages();
         if (!empty($rootPages)) {
@@ -118,8 +121,9 @@ class SolrConfigurationStatus extends AbstractSolrStatus
      * not work.
      *
      * @return NULL|Status An error status is returned for each site root page config.index_enable = 0.
+     * @throws ImmediateResponseException
      */
-    protected function getConfigIndexEnableStatus()
+    protected function getConfigIndexEnableStatus(): ?Status
     {
         $rootPagesWithIndexingOff = $this->getRootPagesWithIndexingOff();
         if (empty($rootPagesWithIndexingOff)) {
@@ -140,8 +144,9 @@ class SolrConfigurationStatus extends AbstractSolrStatus
      * Returns an array of rootPages where the indexing is off and EXT:solr is enabled.
      *
      * @return array
+     * @throws ImmediateResponseException
      */
-    protected function getRootPagesWithIndexingOff()
+    protected function getRootPagesWithIndexingOff(): array
     {
         $rootPages = $this->getRootPages();
         $rootPagesWithIndexingOff = [];
@@ -153,7 +158,7 @@ class SolrConfigurationStatus extends AbstractSolrStatus
                 if ($solrIsEnabledAndIndexingDisabled) {
                     $rootPagesWithIndexingOff[] = $rootPage;
                 }
-            } catch (\RuntimeException $rte) {
+            } catch (RuntimeException $rte) {
                 $rootPagesWithIndexingOff[] = $rootPage;
             } catch (ServiceUnavailableException $sue) {
                 if ($sue->getCode() == 1294587218) {
@@ -191,7 +196,7 @@ class SolrConfigurationStatus extends AbstractSolrStatus
      *
      * @return bool
      */
-    protected function getIsSolrEnabled()
+    protected function getIsSolrEnabled(): bool
     {
         if (empty($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['enabled'])) {
             return false;
@@ -204,7 +209,7 @@ class SolrConfigurationStatus extends AbstractSolrStatus
      *
      * @return bool
      */
-    protected function getIsIndexingEnabled()
+    protected function getIsIndexingEnabled(): bool
     {
         if (empty($GLOBALS['TSFE']->config['config']['index_enable'])) {
             return false;
@@ -214,10 +219,17 @@ class SolrConfigurationStatus extends AbstractSolrStatus
     }
 
     /**
-     * @param $rootPage
+     * Initializes TSFE via FrontendEnvironment.
+     *
+     * Purpose: Unit test mocking helper method.
+     *
+     * @param $rootPageRecord
+     * @throws ImmediateResponseException
+     * @throws ServiceUnavailableException
+     * @throws SiteNotFoundException
      */
-    protected function initializeTSFE($rootPage)
+    protected function initializeTSFE(array $rootPageRecord)
     {
-        $this->fronendEnvironment->initializeTsfe($rootPage['uid']);
+        $this->frontendEnvironment->initializeTsfe($rootPageRecord['uid']);
     }
 }
