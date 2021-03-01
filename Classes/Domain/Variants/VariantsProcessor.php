@@ -91,13 +91,13 @@ class VariantsProcessor implements SearchResultSetProcessor
                 continue;
             }
 
+            $resultDocument->setVariantFieldValue($variantId);
             if (!isset($response->{'expanded'}) || !isset($response->{'expanded'}->{$variantId})) {
                 continue;
             }
 
             $this->buildVariantDocumentAndAssignToParentResult($response, $variantId, $resultDocument);
             $resultDocument->setVariantsNumFound($response->{'expanded'}->{$variantId}->{'numFound'});
-            $resultDocument->setVariantFieldValue($variantId);
         }
 
         return $resultSet;
