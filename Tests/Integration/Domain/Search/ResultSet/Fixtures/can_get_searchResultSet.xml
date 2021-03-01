@@ -256,6 +256,14 @@
         <title>Woman Sweatshirts</title>
         <author>John Doe</author>
     </pages>
+    <pages>
+        <uid>11</uid>
+        <pid>1</pid>
+        <is_siteroot>0</is_siteroot>
+        <doktype>1</doktype>
+        <title>Children Sweatshirts</title>
+        <author>Baby Doe</author>
+    </pages>
 
     <tt_content>
         <uid>1</uid>
