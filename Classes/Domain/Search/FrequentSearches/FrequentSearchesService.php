@@ -1,33 +1,24 @@
 <?php declare(strict_types = 1);
 namespace ApacheSolrForTypo3\Solr\Domain\Search\FrequentSearches;
 
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2015-2016 Timo Schmidt <timo.schmidt@dkd.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Statistics\StatisticsRepository;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Cache\Frontend\AbstractFrontend;
+use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
@@ -36,6 +27,7 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
  *
  * @author Dimitri Ebert <dimitri.ebert@dkd.de>
  * @author Timo Schmidt <timo.schmidt@dkd.de>
+ * @copyright (c) 2015-2021 dkd Internet Service GmbH <info@dkd.de>
  */
 class FrequentSearchesService
 {
@@ -64,12 +56,16 @@ class FrequentSearchesService
 
     /**
      * @param TypoScriptConfiguration $typoscriptConfiguration
-     * @param AbstractFrontend $cache
-     * @param TypoScriptFrontendController $tsfe
-     * @param StatisticsRepository $statisticsRepository
+     * @param AbstractFrontend|null $cache
+     * @param TypoScriptFrontendController|null $tsfe
+     * @param StatisticsRepository|null $statisticsRepository
      */
-    public function __construct(TypoScriptConfiguration $typoscriptConfiguration, AbstractFrontend $cache, TypoScriptFrontendController $tsfe, StatisticsRepository $statisticsRepository = null)
-    {
+    public function __construct(
+        TypoScriptConfiguration $typoscriptConfiguration,
+        AbstractFrontend $cache = null,
+        TypoScriptFrontendController $tsfe = null,
+        StatisticsRepository $statisticsRepository = null
+    ) {
         $this->configuration = $typoscriptConfiguration;
         $this->cache = $cache;
         $this->tsfe = $tsfe;
@@ -87,7 +83,7 @@ class FrequentSearchesService
 
         $identifier = $this->getCacheIdentifier($frequentSearchConfiguration);
 
-        if ($this->cache->has($identifier)) {
+        if ($this->hasValidCache() && $this->cache->has($identifier)) {
             $terms = $this->cache->get($identifier);
         } else {
             $terms = $this->getFrequentSearchTermsFromStatistics($frequentSearchConfiguration);
@@ -103,7 +99,9 @@ class FrequentSearchesService
                 $lifetime = intval($frequentSearchConfiguration['cacheLifetime']);
             }
 
-            $this->cache->set($identifier, $terms, [], $lifetime);
+            if ($this->hasValidCache()) {
+                $this->cache->set($identifier, $terms, [], $lifetime);
+            }
         }
 
         return $terms;
@@ -134,7 +132,8 @@ class FrequentSearchesService
             $checkLanguageWhere . ' ' .
             $frequentSearchConfiguration['select.']['ADD_WHERE'];
 
-        $frequentSearchTerms = $this->statisticsRepository->getFrequentSearchTermsFromStatisticsByFrequentSearchConfiguration($frequentSearchConfiguration);
+        $frequentSearchTerms = $this->statisticsRepository
+            ->getFrequentSearchTermsFromStatisticsByFrequentSearchConfiguration($frequentSearchConfiguration);
 
         if (!is_array($frequentSearchTerms)) {
             return $terms;
@@ -166,5 +165,15 @@ class FrequentSearchesService
 
         $identifier .= '_' . md5(serialize($frequentSearchConfiguration));
         return $identifier;
+    }
+
+    /**
+     * Checks if this service has a valid cache class
+     *
+     * @return bool
+     */
+    protected function hasValidCache(): bool
+    {
+        return ($this->cache instanceof FrontendInterface);
     }
 }
