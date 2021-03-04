@@ -16,8 +16,11 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers\Widget\Controller;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\FrequentSearches\FrequentSearchesService;
 use ApacheSolrForTypo3\Solr\Widget\AbstractWidgetController;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
+use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -26,22 +29,23 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @author Frans Saris <frans@beech.it>
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class FrequentlySearchedController extends AbstractWidgetController
+class FrequentlySearchedController extends AbstractWidgetController implements LoggerAwareInterface
 {
+    use LoggerAwareTrait;
+
     /**
      * Initializes the cache for this command.
      *
-     * @return \TYPO3\CMS\Core\Cache\AbstractFrontend
+     * @return FrontendInterface|null
      */
-    protected function getInitializedCache()
+    protected function getInitializedCache(): ?FrontendInterface
     {
         $cacheIdentifier = 'tx_solr';
         try {
             $cacheInstance = GeneralUtility::makeInstance(CacheManager::class)->getCache($cacheIdentifier);
-        } catch (NoSuchCacheException $e) {
-            /** @var t3lib_cache_Factory $typo3CacheFactory */
-            $typo3CacheFactory = $GLOBALS['typo3CacheFactory'];
-            $cacheInstance = $typo3CacheFactory->create($cacheIdentifier, $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations'][$cacheIdentifier]['frontend'], $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations'][$cacheIdentifier]['backend'], $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations'][$cacheIdentifier]['options']);
+        } catch (NoSuchCacheException $exception) {
+            $this->logger->error($exception->getMessage());
+           return null;
         }
 
         return $cacheInstance;
