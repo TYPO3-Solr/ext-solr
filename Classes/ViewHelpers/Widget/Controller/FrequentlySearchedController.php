@@ -42,11 +42,12 @@ class FrequentlySearchedController extends AbstractWidgetController implements L
     protected function getInitializedCache(): ?FrontendInterface
     {
         $cacheIdentifier = 'tx_solr';
+        /* @var FrontendInterface $cacheInstance */
         try {
             $cacheInstance = GeneralUtility::makeInstance(CacheManager::class)->getCache($cacheIdentifier);
         } catch (NoSuchCacheException $exception) {
-            $this->logger->error($exception->getMessage());
-           return null;
+            $this->logger->error('Getting cache failed: ' . $exception->getMessage());
+            return null;
         }
 
         return $cacheInstance;
@@ -61,6 +62,7 @@ class FrequentlySearchedController extends AbstractWidgetController implements L
         $cache = $this->getInitializedCache();
         $configuration = $this->controllerContext->getTypoScriptConfiguration();
 
+        /* @var FrequentSearchesService $frequentSearchesService */
         $frequentSearchesService = GeneralUtility::makeInstance(
             FrequentSearchesService::class,
             /** @scrutinizer ignore-type */ $configuration,
@@ -72,18 +74,23 @@ class FrequentlySearchedController extends AbstractWidgetController implements L
         $minimumSize = $configuration->getSearchFrequentSearchesMinSize();
         $maximumSize = $configuration->getSearchFrequentSearchesMaxSize();
 
-        $this->view->assign('contentArguments', ['frequentSearches' => $this->enrichFrequentSearchesInfo($frequentSearches, $minimumSize, $maximumSize)]);
+        $this->view->assign(
+            'contentArguments',
+            [
+                'frequentSearches' => $this->enrichFrequentSearchesInfo($frequentSearches, $minimumSize, $maximumSize)
+            ]
+        );
     }
 
     /**
      * Enrich the frequentSearches
      *
      * @param array Frequent search terms as array with terms as keys and hits as the value
-     * @param integer $minimumSize
-     * @param integer $maximumSize
+     * @param int $minimumSize
+     * @param int $maximumSize
      * @return array An array with content for the frequent terms markers
      */
-    protected function enrichFrequentSearchesInfo(array $frequentSearchTerms, $minimumSize, $maximumSize)
+    protected function enrichFrequentSearchesInfo(array $frequentSearchTerms, int $minimumSize, int $maximumSize): array
     {
         $frequentSearches = [];
         if (count($frequentSearchTerms)) {
@@ -94,7 +101,12 @@ class FrequentlySearchedController extends AbstractWidgetController implements L
 
             foreach ($frequentSearchTerms as $term => $hits) {
                 $size = round($minimumSize + (($hits - $minimumHits) * $step));
-                $frequentSearches[] = ['q' => htmlspecialchars_decode($term), 'hits' => $hits, 'style' => 'font-size: ' . $size . 'px', 'class' => 'tx-solr-frequent-term-' . $size, 'size' => $size];
+                $frequentSearches[] = [
+                    'q' => htmlspecialchars_decode($term),
+                    'hits' => $hits,
+                    'style' => 'font-size: ' . $size . 'px', 'class' => 'tx-solr-frequent-term-' . $size,
+                    'size' => $size
+                ];
             }
         }
 
