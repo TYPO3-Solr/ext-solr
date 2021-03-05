@@ -25,6 +25,11 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\NullLogger;
 use TYPO3\CMS\Core\Http\NullResponse;
+use TYPO3\CMS\Core\Routing\PageSlugCandidateProvider;
+use TYPO3\CMS\Core\Routing\SiteMatcher;
+use TYPO3\CMS\Core\Routing\SiteRouteResult;
+use TYPO3\CMS\Core\Site\Entity\Site;
+use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 
 /**
  * Test case to validate the behaviour of the middle ware
@@ -45,8 +50,11 @@ class SolrRoutingMiddlewareTest extends UnitTest
 
     public function setUp()
     {
-        //$data = Yaml::parse($this->getFixtureContentByName('siteConfiguration.yaml'));
-        $this->routingServiceMock = $this->getDumbMock(RoutingService::class);
+        $this->routingServiceMock = $this->getMockBuilder(RoutingService::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getSiteMatcher', 'getSlugCandidateProvider', 'fetchEnhancerInSiteConfigurationByPageUid'])
+            ->getMock();
+
         /* @see \TYPO3\CMS\Frontend\Tests\Unit\Middleware\PageResolverTest::setUp */
         $this->responseOutputHandler = new class() implements RequestHandlerInterface {
             /**
@@ -81,6 +89,37 @@ class SolrRoutingMiddlewareTest extends UnitTest
             'GET',
             'https://domain.example/facet/bar,buz,foo'
         );
+        $siteMatcherMock = $this->getMockBuilder(SiteMatcher::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['matchRequest'])
+            ->getMock();
+
+        $siteMatcherMock->expects($this->any())
+            ->method('matchRequest')
+            ->willReturn(
+                new SiteRouteResult(
+                    new Uri('https://domain.example/facet/bar,buz,foo'),
+                    new Site('website', 1, []),
+                    new SiteLanguage(0, 'en_US', new Uri('https://domain.example/'), [])
+                )
+            );
+        $this->routingServiceMock->expects($this->exactly(1))
+            ->method('getSiteMatcher')
+            ->willReturn($siteMatcherMock);
+
+        $pageSlugCandidateMock = $this->getMockBuilder(PageSlugCandidateProvider::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getCandidatesForPath'])
+            ->getMock();
+        $pageSlugCandidateMock->expects($this->atLeastOnce())
+            ->method('getCandidatesForPath')
+            ->willReturn([['slug' => '/facet', 'uid' => '1']]);
+        $this->routingServiceMock->expects($this->atLeastOnce())
+            ->method('getSlugCandidateProvider')
+            ->willReturn($pageSlugCandidateMock);
+        $this->routingServiceMock->expects($this->atLeastOnce())
+            ->method('fetchEnhancerInSiteConfigurationByPageUid')
+            ->willReturn([]);
 
         $solrRoutingMiddleware = new SolrRoutingMiddleware();
         $solrRoutingMiddleware->setLogger(New NullLogger());

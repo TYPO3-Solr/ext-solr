@@ -6,11 +6,11 @@ Configure Routing
 
 Currently only one route enhancer exists. It's purpose is to mask facets inside the query string or as part of the :ref:`path segment <routing-facet-in-path>`.
 
-The basement for routing is the enhancer `CombinedFacetEnhancer`. Open your site configuration with an editor of your choice.
+The basement for routing is the enhancer `SolrFacetMaskAndCombineEnhancer`. Open your site configuration with an editor of your choice.
 
 Locate the section of route enhancer `routeEnhancers`. If section available, add `routeEnhancers` to your configuration.
 
-Use enhancer `CombinedFacetEnhancer` as type of your route, and limit it to pages where the route should apply.
+Use enhancer `SolrFacetMaskAndCombineEnhancer` as type of your route, and limit it to pages where the route should apply.
 
 The extension key have to be set to `tx_solr`.
 
@@ -22,7 +22,7 @@ The following example shows a the basement of the enhancer configuration.
 
     routeEnhancers:
       products:
-        type: CombinedFacetEnhancer
+        type: SolrFacetMaskAndCombineEnhancer
         limitToPages:
           - 42
         extensionKey: tx_solr
@@ -36,7 +36,7 @@ Change the *extensionKey* from *tx_solr* to your plugin namespace.
 
     routeEnhancers:
       products:
-        type: CombinedFacetEnhancer
+        type: SolrFacetMaskAndCombineEnhancer
         limitToPages:
           - 42
         extensionKey: search

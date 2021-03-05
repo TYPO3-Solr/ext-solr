@@ -16,6 +16,8 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\Event\Routing;
 
+use Psr\Http\Message\UriInterface;
+
 /**
  * This event will triggered before process variable keys and values
  *
@@ -23,6 +25,20 @@ namespace ApacheSolrForTypo3\Solr\Event\Routing;
  */
 class BeforeProcessCachedVariablesEvent
 {
+    /**
+     * The uri, used to identify, what placeholder is part of the path and which one is part of the query
+     *
+     * @var UriInterface
+     */
+    protected $uri;
+
+    /**
+     * A list of router configurations, containing information how to process variables
+     *
+     * @var array
+     */
+    protected $routerConfiguration = [];
+
     /**
      * List of variable keys
      *
@@ -39,11 +55,20 @@ class BeforeProcessCachedVariablesEvent
 
     /**
      * BeforeReplaceVariableInCachedUrlEvent constructor.
+     *
+     * @param UriInterface $variableKeys
+     * @param array $routerConfiguration
      * @param array $variableKeys
      * @param array $variableValues
      */
-    public function __construct(array $variableKeys, array $variableValues)
-    {
+    public function __construct(
+        UriInterface $uri,
+        array $routerConfiguration,
+        array $variableKeys,
+        array $variableValues
+    ) {
+        $this->uri = $uri;
+        $this->routerConfiguration = $routerConfiguration;
         $this->variableKeys = $variableKeys;
         $this->variableValues = $variableValues;
     }
@@ -90,5 +115,50 @@ class BeforeProcessCachedVariablesEvent
     {
         $this->variableValues = $variableValues;
         return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasRouting(): bool
+    {
+        return !empty($this->routerConfiguration);
+    }
+
+    /**
+     * The URI containing placeholder
+     *
+     * @return UriInterface
+     */
+    public function getUri(): UriInterface
+    {
+        return $this->uri;
+    }
+
+    /**
+     * Available router configurations
+     *
+     * @return array
+     */
+    public function getRouterConfiguration(): array
+    {
+        if (!isset($this->routerConfiguration['type']) && isset($this->routerConfiguration['0'])) {
+            return $this->routerConfiguration[0];
+        }
+        return $this->routerConfiguration;
+    }
+
+    /**
+     * Return all the configuration settings
+     *
+     * @return array[]
+     */
+    public function getRouterConfigurations(): array
+    {
+        if (isset($this->routerConfiguration['type'])) {
+            return [$this->routerConfiguration];
+        }
+
+        return $this->routerConfiguration;
     }
 }

@@ -26,6 +26,13 @@ use Psr\Http\Message\UriInterface;
 class PostProcessUriEvent
 {
     /**
+     * The router configuration
+     *
+     * @var array
+     */
+    protected $routerConfiguration = [];
+
+    /**
      * @var UriInterface
      */
     protected $uri;
@@ -34,10 +41,12 @@ class PostProcessUriEvent
      * BeforeReplaceVariableInCachedUrlEvent constructor.
      *
      * @param UriInterface $uri
+     * @param array $routerConfiguration
      */
-    public function __construct(UriInterface $uri)
+    public function __construct(UriInterface $uri, array $routerConfiguration)
     {
         $this->uri = $uri;
+        $this->routerConfiguration = $routerConfiguration;
     }
 
     /**
@@ -56,5 +65,40 @@ class PostProcessUriEvent
     public function replaceUri(UriInterface  $uri)
     {
         $this->uri = $uri;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasRouting(): bool
+    {
+        return !empty($this->routerConfiguration);
+    }
+
+    /**
+     * Available router configurations
+     *
+     * @return array
+     */
+    public function getRouterConfiguration(): array
+    {
+        if (!isset($this->routerConfiguration['type']) && isset($this->routerConfiguration['0'])) {
+            return $this->routerConfiguration[0];
+        }
+        return $this->routerConfiguration;
+    }
+
+    /**
+     * Return all the configuration settings
+     *
+     * @return array[]
+     */
+    public function getRouterConfigurations(): array
+    {
+        if (isset($this->routerConfiguration['type'])) {
+            return [$this->routerConfiguration];
+        }
+
+        return $this->routerConfiguration;
     }
 }
