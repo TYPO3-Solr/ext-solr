@@ -16,11 +16,8 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Uri;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Grouping\GroupItem;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
-use ApacheSolrForTypo3\Solr\Event\EnhancedRouting\BeforeProcessCachedVariablesEvent as BeforeProcessCachedEnhancedVariablesEvent;
-use ApacheSolrForTypo3\Solr\Event\EnhancedRouting\BeforeReplaceVariableInCachedUrlEvent as BeforeReplaceVariableInEnhancedCachedUrlEvent;
 use ApacheSolrForTypo3\Solr\Event\Routing\BeforeProcessCachedVariablesEvent;
 use ApacheSolrForTypo3\Solr\Event\Routing\BeforeReplaceVariableInCachedUrlEvent;
-use ApacheSolrForTypo3\Solr\Event\EnhancedRouting\PostProcessUriEvent as PostProcessEnhancedUriEvent;
 use ApacheSolrForTypo3\Solr\Event\Routing\PostProcessUriEvent;
 use ApacheSolrForTypo3\Solr\Routing\RoutingService;
 use ApacheSolrForTypo3\Solr\System\Url\UrlHelper;
@@ -395,21 +392,17 @@ class SearchUriBuilder
             $uriCacheTemplate
         );
 
-        $urlEvent = $enhancedRouting ?
-            new BeforeReplaceVariableInEnhancedCachedUrlEvent($uri) :
-            new BeforeReplaceVariableInCachedUrlEvent($uri);
+        $urlEvent = new BeforeReplaceVariableInCachedUrlEvent($uri, $enhancedRouting);
         /* @var BeforeReplaceVariableInCachedUrlEvent $urlEvent */
         $urlEvent = $this->eventDispatcher->dispatch($urlEvent);
         $uriCacheTemplate = (string)$urlEvent->getUri();
 
-        $variableEvent = $enhancedRouting ?
-            new BeforeProcessCachedEnhancedVariablesEvent(
-                $uri,
-                $routingConfigurations,
-                $keys,
-                $values
-            ) :
-            new BeforeProcessCachedVariablesEvent($keys, $values);
+        $variableEvent = new BeforeProcessCachedVariablesEvent(
+            $uri,
+            $routingConfigurations,
+            $keys,
+            $values
+        );
         $this->eventDispatcher->dispatch($variableEvent);
 
         $values = $variableEvent->getVariableValues();
@@ -427,9 +420,7 @@ class SearchUriBuilder
             Uri::class,
             $uri
         );
-        $uriEvent = $enhancedRouting ?
-            new PostProcessEnhancedUriEvent($uri, $routingConfigurations) :
-            new PostProcessUriEvent($uri, $routingConfigurations);
+        $uriEvent = new PostProcessUriEvent($uri, $routingConfigurations);
         $this->eventDispatcher->dispatch($uriEvent);
         $uri = $uriEvent->getUri();
         return (string)$uri;

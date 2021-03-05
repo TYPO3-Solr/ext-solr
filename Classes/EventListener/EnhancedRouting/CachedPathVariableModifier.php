@@ -16,7 +16,7 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\EventListener\EnhancedRouting;
 
-use ApacheSolrForTypo3\Solr\Event\EnhancedRouting\BeforeProcessCachedVariablesEvent;
+use ApacheSolrForTypo3\Solr\Event\Routing\BeforeProcessCachedVariablesEvent;
 use ApacheSolrForTypo3\Solr\Routing\RoutingService;
 use Psr\Http\Message\UriInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -30,6 +30,9 @@ class CachedPathVariableModifier
 {
     public function __invoke(BeforeProcessCachedVariablesEvent $event): void
     {
+        if (!$event->hasRouting()) {
+            return;
+        }
         $pathVariables = $this->getPathVariablesFromUri($event->getUri());
 
         // No path variables exists .. skip processing
@@ -41,19 +44,18 @@ class CachedPathVariableModifier
         $variableValues = $event->getVariableValues();
         $enhancerConfiguration = $event->getRouterConfiguration();
 
-        // TODO: Instead of checking a string, check an interface (special interface for combined enhancer)
-        //       This have be enabled by configuration to avoid long rendering times
-        if ($enhancerConfiguration['type'] !== 'CombinedFacetEnhancer') {
-            return;
-        }
-        $multiValue = true;
-
         /* @var RoutingService $routingService */
         $routingService = GeneralUtility::makeInstance(
             RoutingService::class,
             $enhancerConfiguration['solr'],
             (string)$enhancerConfiguration['extensionKey']
         );
+
+        if (!$routingService->isRouteEnhancerForSolr((string)$enhancerConfiguration['type'])) {
+            return;
+        }
+
+        $multiValue = true;
 
         $standardizedKeys = $variableKeys;
 

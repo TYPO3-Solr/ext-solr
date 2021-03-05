@@ -265,6 +265,12 @@ if (!function_exists('strptime')) {
 
     // register the Fluid namespace 'solr' globally
     $GLOBALS['TYPO3_CONF_VARS']['SYS']['fluid']['namespaces']['solr'] = ['ApacheSolrForTypo3\\Solr\\ViewHelpers'];
+
+    /*
+     * Solr route enhancer configuration
+     */
+    $GLOBALS['TYPO3_CONF_VARS']['SYS']['routing']['enhancers']['SolrFacetMaskAndCombineEnhancer'] =
+        \ApacheSolrForTypo3\Solr\Routing\Enhancer\SolrFacetMaskAndCombineEnhancer::class;
 })();
 
 $isComposerMode = defined('TYPO3_COMPOSER_MODE') && TYPO3_COMPOSER_MODE;
@@ -273,11 +279,3 @@ if (!$isComposerMode) {
     $dir = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('solr');
     require $dir . '/Resources/Private/Php/ComposerLibraries/vendor/autoload.php';
 }
-
-call_user_func(
-    function (string $extensionKey) {
-        $GLOBALS['TYPO3_CONF_VARS']['SYS']['routing']['enhancers']['CombinedFacetEnhancer'] =
-            \ApacheSolrForTypo3\Solr\Routing\Enhancer\CombinedFacetEnhancer::class;
-    },
-    'solr'
-);

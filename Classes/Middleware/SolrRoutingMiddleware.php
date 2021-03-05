@@ -15,7 +15,6 @@ namespace ApacheSolrForTypo3\Solr\Middleware;
  */
 
 use ApacheSolrForTypo3\Solr\Routing\RoutingService;
-use ApacheSolrForTypo3\Solr\Utility\RoutingUtility;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UriInterface;
@@ -23,9 +22,8 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
-use TYPO3\CMS\Core\Context\Context;
-use TYPO3\CMS\Core\Http\Uri;
-use TYPO3\CMS\Core\Routing\PageSlugCandidateProvider;
+use TYPO3\CMS\Core\Routing\SiteRouteResult;
+use TYPO3\CMS\Core\Site\Entity\NullSite;
 use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -99,23 +97,32 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $site = $this->getRoutingService()->findSiteByUri($request->getUri());
-        if (!($site instanceof Site)) {
+        /* @var SiteRouteResult $routeResult */
+        $routeResult = $this->getRoutingService()
+            ->getSiteMatcher()
+            ->matchRequest($request);
+
+        $site = $routeResult->getSite();
+
+        if ($site instanceof NullSite) {
             return $handler->handle($request);
         }
 
-        $this->determineSiteLanguage(
-            $site,
-            $request->getUri()
-        );
+        $this->language = $routeResult->getLanguage();
+
+        if (!($this->language instanceof SiteLanguage)) {
+            return $handler->handle($request);
+        }
 
         $page = $this->retrievePageInformation(
             $request->getUri(),
             $site
         );
+
         if ((int)$page['uid'] === 0) {
             return $handler->handle($request);
         }
+
         $enhancerConfiguration = $this->getEnhancerConfiguration(
             $site,
             $this->language->getLanguageId() === 0 ? (int)$page['uid'] : (int)$page['l10n_parent']
@@ -298,7 +305,7 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
             $this->language,
             $uri->getPath()
         );
-        $slugProvider = $this->getSlugCandidateProvider($site);
+        $slugProvider = $this->getRoutingService()->getSlugCandidateProvider($site);
         $scan = true;
         $page = [];
         do {
@@ -343,6 +350,7 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
                                 ]
                             )
                         );
+
                     if ($item['slug'] === $path) {
                         $page = $item;
                         $scan = false;
@@ -362,37 +370,6 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
             }
         } while($scan);
         return $page;
-    }
-
-    /**
-     * Determine the current language by given site and URI
-     *
-     * @param Site $site
-     * @param UriInterface $uri
-     */
-    protected function determineSiteLanguage(Site $site, UriInterface $uri)
-    {
-        if ($this->language instanceof SiteLanguage) {
-            return;
-        }
-
-        $this->language = $this->getRoutingService()
-            ->determineSiteLanguage($site, $uri);
-    }
-
-    /**
-     * @param Site $site
-     * @return PageSlugCandidateProvider
-     */
-    protected function getSlugCandidateProvider(Site $site): PageSlugCandidateProvider
-    {
-        $context = GeneralUtility::makeInstance(Context::class);
-        return GeneralUtility::makeInstance(
-            PageSlugCandidateProvider::class,
-            $context,
-            $site,
-            null
-        );
     }
 
     /**

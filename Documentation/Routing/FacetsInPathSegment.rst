@@ -124,7 +124,7 @@ This example shows the all configuration done above
 
   routeEnhancers:
     products:
-      type: CombinedFacetEnhancer
+      type: SolrFacetMaskAndCombineEnhancer
       limitToPages:
         - 42
       extensionKey: tx_solr
