@@ -156,63 +156,6 @@ class RoutingServiceTest extends UnitTest
         );
     }
 
-    /**
-     * @test
-     * @covers \ApacheSolrForTypo3\Solr\Routing\RoutingService::determineSiteLanguage
-     */
-    public function determineSiteDefaultLanguageTest()
-    {
-        $uri = new Uri('http://domain.example');
-        $routingService = new RoutingService();
-
-        $language = $routingService->determineSiteLanguage($this->site, $uri);
-        $this->assertEquals(
-            'default',
-            $language->getTypo3Language()
-        );
-        $this->assertTrue(
-            $language->isEnabled()
-        );
-    }
-
-    /**
-     * @test
-     * @covers \ApacheSolrForTypo3\Solr\Routing\RoutingService::determineSiteLanguage
-     */
-    public function determineSiteLanguageTest()
-    {
-        $uri = new Uri('http://domain.example/da/');
-        $routingService = new RoutingService();
-
-        $language = $routingService->determineSiteLanguage($this->site, $uri);
-        $this->assertEquals(
-            'da',
-            $language->getTwoLetterIsoCode()
-        );
-        $this->assertTrue(
-            $language->isEnabled()
-        );
-    }
-
-    /**
-     * @test
-     * @covers \ApacheSolrForTypo3\Solr\Routing\RoutingService::determineSiteLanguage
-     */
-    public function canDetermineSiteLanguageMultiByteTest()
-    {
-        $uri = new Uri('http://domain.example/日本語/');
-        $routingService = new RoutingService();
-
-        $language = $routingService->determineSiteLanguage($this->site, $uri);
-        $this->assertEquals(
-            'ja',
-            $language->getTwoLetterIsoCode()
-        );
-        $this->assertTrue(
-            $language->isEnabled()
-        );
-    }
-
     protected function getRoutingService(string $fixtureName = 'siteConfiguration.yaml'): RoutingService
     {
         $configuration = Yaml::parse($this->getFixtureContentByName($fixtureName));

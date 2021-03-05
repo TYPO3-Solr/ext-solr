@@ -31,12 +31,21 @@ class BeforeReplaceVariableInCachedUrlEvent
     protected $uri;
 
     /**
+     * Routing is enabled
+     *
+     * @var bool
+     */
+    protected $routing = false;
+
+    /**
      * BeforeReplaceVariableInCachedUrlEvent constructor.
      * @param UriInterface $uri
+     * @param bool $routing
      */
-    public function __construct(UriInterface $uri)
+    public function __construct(UriInterface $uri, bool $routing = false)
     {
         $this->uri = $uri;
+        $this->routing = $routing;
     }
 
     /**
@@ -49,8 +58,21 @@ class BeforeReplaceVariableInCachedUrlEvent
         return $this->uri;
     }
 
+    /**
+     * Replace the URI object
+     *
+     * @param UriInterface $uri
+     */
     public function replaceUri(UriInterface  $uri)
     {
         $this->uri = $uri;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasRouting(): bool
+    {
+        return $this->routing;
     }
 }

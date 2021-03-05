@@ -1,6 +1,6 @@
 routeEnhancers:
   example:
-    type: CombinedFacetEnhancer
+    type: SolrFacetMaskAndCombineEnhancer
     limitToPages:
       - 42
     extensionKey: tx_solr

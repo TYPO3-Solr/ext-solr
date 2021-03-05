@@ -16,13 +16,19 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\Routing;
 
+use ApacheSolrForTypo3\Solr\Routing\Enhancer\SolrRouteEnhancerInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UriInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
+use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Http\Uri;
+use TYPO3\CMS\Core\Routing\PageSlugCandidateProvider;
+use TYPO3\CMS\Core\Routing\SiteMatcher;
+use TYPO3\CMS\Core\Site\Entity\NullSite;
 use TYPO3\CMS\Core\Site\Entity\Site;
+use TYPO3\CMS\Core\Site\Entity\SiteInterface;
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -121,7 +127,7 @@ class RoutingService implements LoggerAwareInterface
     {
         if (empty($routingConfiguration) ||
             empty($routingConfiguration['type']) ||
-            $routingConfiguration['type'] !== 'CombinedFacetEnhancer') {
+            !$this->isRouteEnhancerForSolr((string)$routingConfiguration['type'])) {
             return $this;
         }
 
@@ -171,6 +177,32 @@ class RoutingService implements LoggerAwareInterface
     public function getPluginNamespace(): string
     {
         return $this->pluginNamespace;
+    }
+
+    /**
+     * Determine if an enhancer is in use for Solr
+     *
+     * @param string $enhancerName
+     * @return bool
+     */
+    public function isRouteEnhancerForSolr(string $enhancerName): bool
+    {
+        if (empty($enhancerName)) {
+            return false;
+        }
+
+        if (!isset($GLOBALS['TYPO3_CONF_VARS']['SYS']['routing']['enhancers'][$enhancerName])) {
+            return false;
+        }
+        $className = $GLOBALS['TYPO3_CONF_VARS']['SYS']['routing']['enhancers'][$enhancerName];
+
+        if (!class_exists($className)) {
+            return false;
+        }
+
+        $interfaces = class_implements($className);
+
+        return in_array(SolrRouteEnhancerInterface::class, $interfaces);
     }
 
     /**
@@ -430,7 +462,7 @@ class RoutingService implements LoggerAwareInterface
         }
 
         $queryParams[$this->getPluginNamespace()]['filter'] =
-            $this->contactFilterValues($queryParams[$this->getPluginNamespace()]['filter']);
+            $this->concatFilterValues($queryParams[$this->getPluginNamespace()]['filter']);
 
         return $this->cleanUpQueryParameters($queryParams);
     }
@@ -441,7 +473,7 @@ class RoutingService implements LoggerAwareInterface
      * @param array $filterArray
      * @return array
      */
-    public function contactFilterValues(array $filterArray): array
+    public function concatFilterValues(array $filterArray): array
     {
         if (empty($filterArray) || !$this->shouldConcatQueryParameters()) {
             return $filterArray;
@@ -813,7 +845,7 @@ class RoutingService implements LoggerAwareInterface
     public function fetchEnhancerByPageUid(int $pageUid): array
     {
         $site = $this->findSiteByUid($pageUid);
-        if (!($site instanceof Site)) {
+        if ($site instanceof NullSite) {
             return [];
         }
 
@@ -844,9 +876,10 @@ class RoutingService implements LoggerAwareInterface
                 !in_array($pageUid, $settings['limitToPages'])) {
                 continue;
             }
-            // TODO: Instead of checking a string, check an interface (special interface for combined enhancer)
-            //       This have be enabled by configuration to avoid long rendering times
-            if (empty($settings) || !isset($settings['type']) || $settings['type'] !== 'CombinedFacetEnhancer') {
+
+            if (empty($settings) || !isset($settings['type']) ||
+                !$this->isRouteEnhancerForSolr((string)$settings['type'])
+            ) {
                 continue;
             }
             $result[] = $settings;
@@ -903,44 +936,35 @@ class RoutingService implements LoggerAwareInterface
     }
 
     /**
-     * Retrieve the site configuration by URI
-     *
-     * @param UriInterface $uri
-     * @return Site|null
-     */
-    public function findSiteByUri(UriInterface $uri): ?Site
-    {
-        $sites = $this->getSiteFinder()->getAllSites();
-        if (count($sites) === 1) {
-            return array_values($sites)[0];
-        }
-
-        foreach ($sites as $siteKey => $site) {
-            if ($site->getBase()->getHost() !== $uri->getHost()) {
-                continue;
-            }
-
-            return $site;
-        }
-
-        return null;
-    }
-
-    /**
      * Retrieve the site by given UID
      *
      * @param int $pageUid
-     * @return Site|null
+     * @return SiteInterface
      */
-    public function findSiteByUid(int $pageUid): ?Site
+    public function findSiteByUid(int $pageUid): SiteInterface
     {
         try {
             $site = $this->getSiteFinder()
                 ->getSiteByPageId($pageUid);
             return $site;
         } catch (SiteNotFoundException $exception) {
-            return null;
+            return new NullSite();
         }
+    }
+
+    /**
+     * @param Site $site
+     * @return PageSlugCandidateProvider
+     */
+    public function getSlugCandidateProvider(Site $site): PageSlugCandidateProvider
+    {
+        $context = GeneralUtility::makeInstance(Context::class);
+        return GeneralUtility::makeInstance(
+            PageSlugCandidateProvider::class,
+            $context,
+            $site,
+            null
+        );
     }
 
     /**
@@ -965,22 +989,6 @@ class RoutingService implements LoggerAwareInterface
     }
 
     /**
-     * @param SiteLanguage $language
-     * @param string $path
-     * @return bool
-     */
-    public function containsPathLanguageArgument(SiteLanguage $language, string $path): bool
-    {
-        if ($language->getBase()->getPath() === '/') {
-            return false;
-        }
-
-        $pathLength = mb_strlen($language->getBase()->getPath());
-        $languagePath = mb_substr($path, 0, $pathLength);
-        return $languagePath === $language->getBase()->getPath();
-    }
-
-    /**
      * In order to search for a path, a possible language prefix need to remove
      *
      * @param SiteLanguage $language
@@ -1001,89 +1009,6 @@ class RoutingService implements LoggerAwareInterface
         }
 
         return $path;
-    }
-
-    /**
-     * Returns the current language
-     * @TODO Improvement required: Currently we expect that the longest length for base is at the end of the language array
-     *       This may be incorrect and lead to wrong results.
-     *
-     * @param Site $site
-     * @param UriInterface $uri
-     * @return SiteLanguage
-     */
-    public function determineSiteLanguage(Site $site, UriInterface $uri): SiteLanguage
-    {
-        $configuration = $site->getConfiguration();
-        if (empty($configuration) || empty($configuration['languages']) || !is_array($configuration['languages'])) {
-            $this->logger
-                ->info('No language configuration available! Return default language');
-            return $site->getDefaultLanguage();
-        }
-        $languageId = -1;
-        $languages = array_reverse($configuration['languages']);
-
-        foreach ($languages as $language) {
-            if (empty($language['base'])) {
-                continue;
-            }
-
-            $basePath = $language['base'];
-
-            /*
-             * There different versions of a domain are possible
-             * - http://domain.example
-             * - https://domain.example
-             * - ://domain.example
-             *
-             * It is possible that the base contains a path too.
-             * In order to keep it simple as possible, we convert the base into an URI object
-             */
-            if (mb_substr($language['base'], 0, 1) !== '/') {
-                try {
-                    $baseUri = new Uri($language['base']);
-
-                    // Host not match ... base is not what we are looking for
-                    if ($baseUri->getHost() !== $uri->getHost()) {
-                        continue;
-                    }
-                    // TODO Needs to be testet on URL encoding
-                    $basePath = $baseUri->getPath();
-                } catch (\Exception $exception) {
-                    // Base could not be parsed as a URI
-                    $this->logger
-                        ->error(vsprintf('Could not parse language base "%1$s" as URI', [$language['base']]));
-                }
-            }
-
-            /*
-             * Only the path segment need to be checked
-             */
-            if (mb_substr($uri->getPath(), 0, mb_strlen($basePath)) === $basePath) {
-                $languageId = (int)$language['languageId'];
-                break;
-            }
-            if (mb_substr(urldecode($uri->getPath()), 0, mb_strlen($basePath)) === $basePath) {
-                $languageId = (int)$language['languageId'];
-                break;
-            }
-        }
-
-        $language = null;
-        if ($languageId > 0) {
-            try {
-                $language = $site->getLanguageById($languageId);
-            } catch (\InvalidArgumentException $invalidArgumentException) {
-                $this->logger
-                    ->error(vsprintf('Could not find language by ID "%1$s"', [$languageId]));
-            }
-        }
-
-        if (!($language instanceof SiteLanguage)) {
-            $language = $site->getDefaultLanguage();
-        }
-
-        return $language;
     }
 
     /**
@@ -1253,6 +1178,16 @@ class RoutingService implements LoggerAwareInterface
         }
 
         return $queryParams;
+    }
+
+    /**
+     * Return site matcher
+     *
+     * @return SiteMatcher
+     */
+    public function getSiteMatcher(): SiteMatcher
+    {
+        return GeneralUtility::makeInstance(SiteMatcher::class, $this->getSiteFinder());
     }
 
     /**
