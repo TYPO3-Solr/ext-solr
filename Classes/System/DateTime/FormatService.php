@@ -1,28 +1,18 @@
 <?php
 namespace ApacheSolrForTypo3\Solr\System\DateTime;
 
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2011-2016 Timo Schmidt <timo.hund@dkd.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 
 use DateTime;
 use DateTimeZone;
@@ -32,6 +22,7 @@ use DateTimeZone;
  *
  * @author Hendrik Putzek <hendrik.putzek@dkd.de>
  * @author Timo Hund <timo.hund@dkd.de>
+ * @copyright (c) 2011-2016 Timo Schmidt <timo.hund@dkd.de>
  */
 class FormatService
 {
@@ -43,7 +34,7 @@ class FormatService
      * @param string $inputFormat the input format that should be used for parsing
      * @param string $outputFormat The output format, when nothing is passed
      * $GLOBALS['TYPO3_CONF_VARS']['SYS']['ddmmyy'] will be used or Y-m-d when nothing is configured
-     * @param DateTimeZone $timezone
+     * @param DateTimeZone|null $timezone
      * @return \DateTime|string
      */
     public function format($input = '', $inputFormat = 'Y-m-d\TH:i:s\Z', $outputFormat = '', $timezone = null)
@@ -75,10 +66,12 @@ class FormatService
      * @param string $isoTime date in ISO 8601 format
      * @return int unix timestamp
      */
-    public function isoToTimestamp($isoTime)
+    public function isoToTimestamp($isoTime): int
     {
-        $dateTime = \DateTime::createFromFormat(self::SOLR_ISO_DATETIME_FORMAT,
-            $isoTime);
+        $dateTime = \DateTime::createFromFormat(
+            self::SOLR_ISO_DATETIME_FORMAT,
+            $isoTime
+        );
         return $dateTime ? (int)$dateTime->format('U') : 0;
     }
 
@@ -99,11 +92,14 @@ class FormatService
      * @param string $isoTime date in ISO 8601 format
      * @return int unix timestamp
      */
-    public function utcIsoToTimestamp($isoTime)
+    public function utcIsoToTimestamp($isoTime): int
     {
         $utcTimeZone = new \DateTimeZone('UTC');
-        $dateTime = \DateTime::createFromFormat(self::SOLR_ISO_DATETIME_FORMAT,
-            $isoTime, $utcTimeZone);
+        $dateTime = \DateTime::createFromFormat(
+            self::SOLR_ISO_DATETIME_FORMAT,
+            $isoTime,
+            $utcTimeZone
+        );
         return $dateTime ? (int)$dateTime->format('U') : 0;
     }
 
@@ -114,15 +110,15 @@ class FormatService
      * @param string $inputFormat
      * @param string $outputFormat
      * @param DateTimeZone $timezone
-     * @return \DateTime|string
+     * @return string
      */
-    protected function getFormattedDate($input, $inputFormat, $outputFormat, DateTimeZone $timezone)
+    protected function getFormattedDate($input, $inputFormat, $outputFormat, DateTimeZone $timezone): string
     {
         $formattedDate = DateTime::createFromFormat($inputFormat, $input, $timezone);
         if ($formattedDate) {
             return $formattedDate->format($outputFormat);
         }
 
-        return $input;
+        return (string)$input;
     }
 }
