@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+namespace ApacheSolrForTypo3\Solr\Routing\Enhancer;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -14,16 +14,12 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace ApacheSolrForTypo3\Solr\Event\EnhancedRouting;
-
-use ApacheSolrForTypo3\Solr\Event\Routing\BeforeReplaceVariableInCachedUrlEvent as OriginBeforeReplaceVariableInCachedUrlEvent;
-
 /**
- * This event will triggered before start to replace placeholder inside of cached URLs
+ * This interface uses to determine if an enhancer handle Solr specific requests
  *
  * @author Lars Tode <lars.tode@dkd.de>
- * @see \ApacheSolrForTypo3\Solr\Event\Routing\BeforeReplaceVariableInCachedUrlEvent
  */
-class BeforeReplaceVariableInCachedUrlEvent extends OriginBeforeReplaceVariableInCachedUrlEvent
+interface SolrRouteEnhancerInterface
 {
+
 }

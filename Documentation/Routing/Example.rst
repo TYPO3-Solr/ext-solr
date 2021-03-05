@@ -8,7 +8,7 @@ Example
 
   routeEnhancers:
     Products:
-      type: CombinedFacetEnhancer
+      type: SolrFacetMaskAndCombineEnhancer
       limitToPages:
         - 10
       extensionKey: tx_solr
