@@ -51,7 +51,7 @@ class ResultPaginateController extends AbstractPaginateWidgetController
      */
     protected function getItemsPerPage()
     {
-        $perPage = (int)$this->resultSet->getUsedSearch()->getQuery()->getRows();
+        $perPage = (int)$this->resultSet->getUsedSearchRequest()->getResultsPerPage();
         return $perPage > 0 ? $perPage : 10;
     }
 
