@@ -1,21 +1,26 @@
 <?php
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\Controller;
 
-use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
+/*
+ * This file is part of the TYPO3 CMS project.
+ *
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
+ *
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ *
+ * The TYPO3 project - inspiring people to share!
+ */
+
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use ApacheSolrForTypo3\Solr\Typo3PageIndexer;
-use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
-use TYPO3\CMS\Core\Http\MiddlewareDispatcher;
-use TYPO3\CMS\Core\Http\MiddlewareStackResolver;
-use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Http\ServerRequestFactory;
-use TYPO3\CMS\Core\Http\Stream;
-use TYPO3\CMS\Core\Http\Uri;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Request as ExtbaseRequest;
 use TYPO3\CMS\Extbase\Mvc\Web\Response;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Frontend\Http\RequestHandler;
 use TYPO3\CMS\Frontend\Page\PageGenerator;
 
@@ -45,18 +50,13 @@ abstract class AbstractFrontendControllerTest  extends IntegrationTest {
             $GLOBALS['TSFE'] = $fakeTSFE;
             $fakeTSFE->newCObj();
 
-            if(Util::getIsTYPO3VersionBelow10()) {
-                $fakeTSFE->preparePageContentGeneration();
-                PageGenerator::renderContent();
-            } else {
-                    /** @var ServerRequestFactory $serverRequestFactory */
-                $serverRequestFactory = GeneralUtility::makeInstance(ServerRequestFactory::class);
-                $request = $serverRequestFactory::fromGlobals();
+            /* @var ServerRequestFactory $serverRequestFactory */
+            $serverRequestFactory = GeneralUtility::makeInstance(ServerRequestFactory::class);
+            $request = $serverRequestFactory::fromGlobals();
 
-                    /** @var RequestHandler $requestHandler */
-                $requestHandler = GeneralUtility::makeInstance(RequestHandler::class);
-                $requestHandler->handle($request);
-            }
+            /* @var RequestHandler $requestHandler */
+            $requestHandler = GeneralUtility::makeInstance(RequestHandler::class);
+            $requestHandler->handle($request);
 
             /** @var $pageIndexer \ApacheSolrForTypo3\Solr\Typo3PageIndexer */
             $pageIndexer = GeneralUtility::makeInstance(Typo3PageIndexer::class, $fakeTSFE);
@@ -86,11 +86,6 @@ abstract class AbstractFrontendControllerTest  extends IntegrationTest {
         $request = $this->objectManager->get(ExtbaseRequest::class);
         $request->setControllerName($controllerName);
         $request->setControllerActionName($actionName);
-
-        //@todo can be dropped when TYPO3 9 support will be dropped
-        if(Util::getIsTYPO3VersionBelow10()) {
-            $request->setControllerVendorName('ApacheSolrForTypo3');
-        }
 
         $request->setPluginName($plugin);
         $request->setFormat('html');
