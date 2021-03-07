@@ -373,7 +373,7 @@ class SolrAdminService extends AbstractSolrService
         if (trim($this->_synonymsUrl) !== '') {
             return;
         }
-        $this->_synonymsUrl = $this->_constructUrl(self::SYNONYMS_SERVLET) . $this->getSchema()->getLanguage();
+        $this->_synonymsUrl = $this->_constructUrl(self::SYNONYMS_SERVLET) . $this->getSchema()->getManagedResourceId();
     }
 
     /**
@@ -385,6 +385,6 @@ class SolrAdminService extends AbstractSolrService
             return;
         }
 
-        $this->_stopWordsUrl = $this->_constructUrl(self::STOPWORDS_SERVLET) . $this->getSchema()->getLanguage();
+        $this->_stopWordsUrl = $this->_constructUrl(self::STOPWORDS_SERVLET) . $this->getSchema()->getManagedResourceId();
     }
 }

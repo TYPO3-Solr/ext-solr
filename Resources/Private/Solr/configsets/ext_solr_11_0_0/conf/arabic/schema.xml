@@ -58,10 +58,10 @@
 			/>
 			<filter class="solr.LowerCaseFilterFactory"/>
 
-			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="arabic"/>
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="${solr.core.name}"/>
 			<filter class="solr.FlattenGraphFilterFactory"/>
 
-			<filter class="solr.ManagedStopFilterFactory" managed="arabic"/>
+			<filter class="solr.ManagedStopFilterFactory" managed="${solr.core.name}"/>
 
 			<filter class="solr.ArabicNormalizationFilterFactory"/>
 			<filter class="solr.KeywordMarkerFilterFactory" protected="arabic/protwords.txt"/>
@@ -83,8 +83,8 @@
 			/>
 			<filter class="solr.LowerCaseFilterFactory"/>
 
-			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="arabic"/>
-			<filter class="solr.ManagedStopFilterFactory" managed="arabic"/>
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="${solr.core.name}"/>
+			<filter class="solr.ManagedStopFilterFactory" managed="${solr.core.name}"/>
 
 			<filter class="solr.ArabicNormalizationFilterFactory"/>
 			<filter class="solr.KeywordMarkerFilterFactory" protected="arabic/protwords.txt"/>
@@ -113,10 +113,10 @@
 
 			<filter class="solr.LowerCaseFilterFactory"/>
 
-			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="arabic"/>
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="${solr.core.name}"/>
 			<filter class="solr.FlattenGraphFilterFactory"/>
 
-			<filter class="solr.ManagedStopFilterFactory" managed="arabic"/>
+			<filter class="solr.ManagedStopFilterFactory" managed="${solr.core.name}"/>
 
 			<filter class="solr.KeywordMarkerFilterFactory" protected="arabic/protwords.txt"/>
 			<filter class="solr.ArabicStemFilterFactory"/>
@@ -138,9 +138,9 @@
 			/>
 			<filter class="solr.LowerCaseFilterFactory"/>
 
-			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="arabic"/>
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="${solr.core.name}"/>
 
-			<filter class="solr.ManagedStopFilterFactory" managed="arabic"/>
+			<filter class="solr.ManagedStopFilterFactory" managed="${solr.core.name}"/>
 
 			<filter class="solr.KeywordMarkerFilterFactory" protected="arabic/protwords.txt"/>
 			<filter class="solr.ArabicStemFilterFactory"/>
@@ -158,10 +158,10 @@
 
 			<filter class="solr.LowerCaseFilterFactory"/>
 
-			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="arabic"/>
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="${solr.core.name}"/>
 			<filter class="solr.FlattenGraphFilterFactory"/>
 
-			<filter class="solr.ManagedStopFilterFactory" managed="arabic"/>
+			<filter class="solr.ManagedStopFilterFactory" managed="${solr.core.name}"/>
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
 		<analyzer type="query">
@@ -169,9 +169,9 @@
 
 			<filter class="solr.LowerCaseFilterFactory"/>
 
-			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="arabic"/>
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="${solr.core.name}"/>
 
-			<filter class="solr.ManagedStopFilterFactory" managed="arabic"/>
+			<filter class="solr.ManagedStopFilterFactory" managed="${solr.core.name}"/>
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
 	</fieldType>
@@ -182,7 +182,7 @@
 			<tokenizer class="solr.StandardTokenizerFactory"/>
 
 			<filter class="solr.LowerCaseFilterFactory"/>
-			<filter class="solr.ManagedStopFilterFactory" managed="arabic"/>
+			<filter class="solr.ManagedStopFilterFactory" managed="${solr.core.name}"/>
 
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 			<filter class="solr.ArabicNormalizationFilterFactory"/>
@@ -193,8 +193,8 @@
 
 			<filter class="solr.LowerCaseFilterFactory"/>
 
-			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="arabic"/>
-			<filter class="solr.ManagedStopFilterFactory" managed="arabic"/>
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="${solr.core.name}"/>
+			<filter class="solr.ManagedStopFilterFactory" managed="${solr.core.name}"/>
 
 			<filter class="solr.ArabicNormalizationFilterFactory"/>
 			<filter class="solr.ArabicStemFilterFactory"/>

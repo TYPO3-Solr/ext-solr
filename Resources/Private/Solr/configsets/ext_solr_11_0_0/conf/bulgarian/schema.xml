@@ -58,9 +58,9 @@
 			/>
 			<filter class="solr.LowerCaseFilterFactory"/>
 
-			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="bulgarian" />
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="${solr.core.name}" />
 			<filter class="solr.FlattenGraphFilterFactory"/>
-			<filter class="solr.ManagedStopFilterFactory" managed="bulgarian"/>
+			<filter class="solr.ManagedStopFilterFactory" managed="${solr.core.name}"/>
 
 			<filter class="solr.KeywordMarkerFilterFactory" protected="bulgarian/protwords.txt"/>
 			<filter class="solr.BulgarianStemFilterFactory"/>
@@ -81,8 +81,8 @@
 			/>
 			<filter class="solr.LowerCaseFilterFactory"/>
 
-			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="bulgarian" />
-			<filter class="solr.ManagedStopFilterFactory" managed="bulgarian"/>
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="${solr.core.name}" />
+			<filter class="solr.ManagedStopFilterFactory" managed="${solr.core.name}"/>
 
 			<filter class="solr.KeywordMarkerFilterFactory" protected="bulgarian/protwords.txt"/>
 			<filter class="solr.BulgarianStemFilterFactory"/>
@@ -110,9 +110,9 @@
 
 			<filter class="solr.LowerCaseFilterFactory"/>
 
-			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="bulgarian" />
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="${solr.core.name}" />
 			<filter class="solr.FlattenGraphFilterFactory"/>
-			<filter class="solr.ManagedStopFilterFactory" managed="bulgarian"/>
+			<filter class="solr.ManagedStopFilterFactory" managed="${solr.core.name}"/>
 
 			<filter class="solr.KeywordMarkerFilterFactory" protected="bulgarian/protwords.txt"/>
 			<filter class="solr.BulgarianStemFilterFactory"/>
@@ -132,8 +132,8 @@
 			/>
 			<filter class="solr.LowerCaseFilterFactory"/>
 
-			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="bulgarian" />
-			<filter class="solr.ManagedStopFilterFactory" managed="bulgarian"/>
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="${solr.core.name}" />
+			<filter class="solr.ManagedStopFilterFactory" managed="${solr.core.name}"/>
 
 			<filter class="solr.KeywordMarkerFilterFactory" protected="bulgarian/protwords.txt"/>
 			<filter class="solr.BulgarianStemFilterFactory"/>
@@ -149,17 +149,17 @@
 			<tokenizer class="solr.WhitespaceTokenizerFactory"/>
 
 			<filter class="solr.LowerCaseFilterFactory"/>
-			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="bulgarian" />
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="${solr.core.name}" />
 			<filter class="solr.FlattenGraphFilterFactory"/>
-			<filter class="solr.ManagedStopFilterFactory" managed="bulgarian"/>
+			<filter class="solr.ManagedStopFilterFactory" managed="${solr.core.name}"/>
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
 		<analyzer type="query">
 			<tokenizer class="solr.WhitespaceTokenizerFactory"/>
 
 			<filter class="solr.LowerCaseFilterFactory"/>
-			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="bulgarian" />
-			<filter class="solr.ManagedStopFilterFactory" managed="bulgarian"/>
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="${solr.core.name}" />
+			<filter class="solr.ManagedStopFilterFactory" managed="${solr.core.name}"/>
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
 	</fieldType>
@@ -171,7 +171,7 @@
 
 			<filter class="solr.LowerCaseFilterFactory"/>
 
-			<filter class="solr.ManagedStopFilterFactory" managed="bulgarian"/>
+			<filter class="solr.ManagedStopFilterFactory" managed="${solr.core.name}"/>
 
 			<filter class="solr.BulgarianStemFilterFactory"/>
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
@@ -181,8 +181,8 @@
 
 			<filter class="solr.LowerCaseFilterFactory"/>
 
-			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="bulgarian" />
-			<filter class="solr.ManagedStopFilterFactory" managed="bulgarian"/>
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="${solr.core.name}" />
+			<filter class="solr.ManagedStopFilterFactory" managed="${solr.core.name}"/>
 
 			<filter class="solr.BulgarianStemFilterFactory"/>
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
