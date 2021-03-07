@@ -221,6 +221,6 @@ class SolrAdminServiceTest extends IntegrationTest
         $client->createEndpoint(['host' => $solrConnectionInfo['host'], 'port' => $solrConnectionInfo['port'], 'path' => '/', 'core' => 'core_de', 'key' => 'admin'] , true);
 
         $this->solrAdminService = GeneralUtility::makeInstance(SolrAdminService::class, $client);
-        $this->assertSame("german", $this->solrAdminService->getSchema()->getLanguage(), "Could not get language from core in non default language");
+        $this->assertSame("core_de", $this->solrAdminService->getSchema()->getManagedResourceId(), "Could not get the id of managed resources from core.");
     }
 }

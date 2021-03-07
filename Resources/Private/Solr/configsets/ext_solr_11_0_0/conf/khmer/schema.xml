@@ -45,12 +45,12 @@
 	<fieldType name="text" class="solr.TextField" positionIncrementGap="100">
 		<analyzer type="index">
 			<tokenizer class="solr.ICUTokenizerFactory"/>
-			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="khmer" />
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="${solr.core.name}" />
 			<filter class="solr.FlattenGraphFilterFactory"/>
 		</analyzer>
 		<analyzer type="query">
 			<tokenizer class="solr.ICUTokenizerFactory"/>
-			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="khmer" />
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="${solr.core.name}" />
 		</analyzer>
 	</fieldType>
 
@@ -60,12 +60,12 @@
 	<fieldType name="textTight" class="solr.TextField" positionIncrementGap="100" >
 		<analyzer type="index">
 			<tokenizer class="solr.ICUTokenizerFactory"/>
-			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="khmer" />
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="${solr.core.name}" />
 			<filter class="solr.FlattenGraphFilterFactory"/>
 		</analyzer>
 		<analyzer type="query">
 			<tokenizer class="solr.ICUTokenizerFactory"/>
-			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="khmer" />
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="${solr.core.name}" />
 		</analyzer>
 	</fieldType>
 
@@ -76,14 +76,14 @@
 		<analyzer type="index">
 			<tokenizer class="solr.WhitespaceTokenizerFactory"/>
 
-			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="khmer" />
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="${solr.core.name}" />
 			<filter class="solr.FlattenGraphFilterFactory"/>
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
 		<analyzer type="query">
 			<tokenizer class="solr.WhitespaceTokenizerFactory"/>
 
-			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="khmer" />
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="${solr.core.name}" />
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
 	</fieldType>
@@ -95,7 +95,7 @@
 		</analyzer>
 		<analyzer type="query">
 			<tokenizer class="solr.ICUTokenizerFactory" />
-			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="khmer" />
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="${solr.core.name}" />
 		</analyzer>
 	</fieldType>
 
