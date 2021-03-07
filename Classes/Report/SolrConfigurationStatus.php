@@ -223,7 +223,7 @@ class SolrConfigurationStatus extends AbstractSolrStatus
      *
      * Purpose: Unit test mocking helper method.
      *
-     * @param $rootPageRecord
+     * @param array $rootPageRecord
      * @throws ImmediateResponseException
      * @throws ServiceUnavailableException
      * @throws SiteNotFoundException

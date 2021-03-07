@@ -1,6 +1,19 @@
 <?php
-namespace ApacheSolrForTypo3\Solr;
 
+/*
+ * This file is part of the TYPO3 CMS project.
+ *
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
+ *
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ *
+ * The TYPO3 project - inspiring people to share!
+ */
+
+namespace ApacheSolrForTypo3\Solr;
 
 use ApacheSolrForTypo3\Solr\FrontendEnvironment\Tsfe;
 use ApacheSolrForTypo3\Solr\FrontendEnvironment\TypoScript;
@@ -11,7 +24,13 @@ use TYPO3\CMS\Core\Http\ImmediateResponseException;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
+/**
+ * Class FrontendEnvironment is responsible for initializing/simulating the frontend in backend context
+ * For example on:
+ * * indexing
+ * * Status-report and other actions via TYPO3 backend
+ * * etc.
+ */
 class FrontendEnvironment implements SingletonInterface
 {
 
@@ -68,12 +87,12 @@ class FrontendEnvironment implements SingletonInterface
      * Language usage may be disabled to get the default TypoScript
      * configuration.
      *
-     * @param $pageId
-     * @param $path
-     * @param int $language
+     * @param int $pageId
+     * @param ?string $path
+     * @param ?int $language
      * @return TypoScriptConfiguration
      */
-    public function getConfigurationFromPageId($pageId, $path, $language = 0): TypoScriptConfiguration
+    public function getConfigurationFromPageId($pageId, $path = '', $language = 0): TypoScriptConfiguration
     {
         return $this->typoScript->getConfigurationFromPageId($pageId, $path, $language);
     }
@@ -83,7 +102,7 @@ class FrontendEnvironment implements SingletonInterface
      * Uses TypoScript: plugin.tx_solr.index.queue.<queue name>.allowedPageTypes
      *
      * @param array $pageRecord
-     * @param string $configurationName
+     * @param ?string $configurationName
      * @return bool
      */
     public function isAllowedPageType(array $pageRecord, $configurationName = 'pages'): bool
@@ -96,8 +115,8 @@ class FrontendEnvironment implements SingletonInterface
     /**
      * Returns TypoScriptConfiguration for desired page ID and language id.
      *
-     * @param $pageId
-     * @param int $language
+     * @param int $pageId
+     * @param ?int $language
      * @return TypoScriptConfiguration
      */
     public function getSolrConfigurationFromPageId($pageId, $language = 0): TypoScriptConfiguration
