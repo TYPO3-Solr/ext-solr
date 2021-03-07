@@ -36,7 +36,7 @@ class Schema
     /**
      * @var string
      */
-    protected $language = 'english';
+    protected $managedResourceId = 'core_en';
 
     /**
      * @var string
@@ -46,23 +46,23 @@ class Schema
     /**
      * @return string
      */
-    public function getLanguage()
+    public function getManagedResourceId(): string
     {
-        return $this->language;
+        return $this->managedResourceId;
     }
 
     /**
-     * @param string $language
+     * @param string $managedResourceId
      */
-    public function setLanguage($language)
+    public function setManagedResourceId(string $managedResourceId)
     {
-        $this->language = $language;
+        $this->managedResourceId = $managedResourceId;
     }
 
     /**
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
@@ -70,7 +70,7 @@ class Schema
     /**
      * @param string $name
      */
-    public function setName($name)
+    public function setName(string $name)
     {
         $this->name = $name;
     }

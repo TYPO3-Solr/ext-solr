@@ -45,12 +45,12 @@
 	<fieldType name="text" class="solr.TextField" positionIncrementGap="100">
 		<analyzer type="index">
 			<tokenizer class="solr.ICUTokenizerFactory"/>
-			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="burmese" />
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="${solr.core.name}" />
 			<filter class="solr.FlattenGraphFilterFactory"/>
 		</analyzer>
 		<analyzer type="query">
 			<tokenizer class="solr.ICUTokenizerFactory"/>
-			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="burmese" />
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="${solr.core.name}" />
 		</analyzer>
 	</fieldType>
 
@@ -60,12 +60,12 @@
 	<fieldType name="textTight" class="solr.TextField" positionIncrementGap="100" >
 		<analyzer type="index">
 			<tokenizer class="solr.ICUTokenizerFactory"/>
-			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="burmese" />
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="${solr.core.name}" />
 			<filter class="solr.FlattenGraphFilterFactory"/>
 		</analyzer>
 		<analyzer type="query">
 			<tokenizer class="solr.ICUTokenizerFactory"/>
-			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="burmese" />
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="${solr.core.name}" />
 		</analyzer>
 	</fieldType>
 
@@ -77,17 +77,17 @@
 			<tokenizer class="solr.WhitespaceTokenizerFactory"/>
 
 			<filter class="solr.LowerCaseFilterFactory"/>
-			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="burmese" />
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="${solr.core.name}" />
 			<filter class="solr.FlattenGraphFilterFactory"/>
-			<filter class="solr.ManagedStopFilterFactory" managed="burmese"/>
+			<filter class="solr.ManagedStopFilterFactory" managed="${solr.core.name}"/>
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
 		<analyzer type="query">
 			<tokenizer class="solr.WhitespaceTokenizerFactory"/>
 
 			<filter class="solr.LowerCaseFilterFactory"/>
-			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="burmese" />
-			<filter class="solr.ManagedStopFilterFactory" managed="burmese"/>
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="${solr.core.name}" />
+			<filter class="solr.ManagedStopFilterFactory" managed="${solr.core.name}"/>
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
 	</fieldType>
@@ -96,12 +96,12 @@
 	<fieldType name="textSpell" class="solr.TextField" positionIncrementGap="100" omitNorms="true">
 		<analyzer type="index">
 			<tokenizer class="solr.ICUTokenizerFactory"/>
-			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="burmese" />
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="${solr.core.name}" />
 			<filter class="solr.FlattenGraphFilterFactory"/>
 		</analyzer>
 		<analyzer type="query">
 			<tokenizer class="solr.ICUTokenizerFactory" />
-			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="burmese" />
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="${solr.core.name}" />
 		</analyzer>
 	</fieldType>
 

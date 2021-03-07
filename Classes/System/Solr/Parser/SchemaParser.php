@@ -26,6 +26,7 @@ namespace ApacheSolrForTypo3\Solr\System\Solr\Parser;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\System\Solr\Schema\Schema;
+use stdClass;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -53,8 +54,8 @@ class SchemaParser
             return $schema;
         }
 
-        $language = $this->parseLanguage($schemaResponse);
-        $schema->setLanguage($language);
+        $language = $this->parseManagedResourceId($schemaResponse);
+        $schema->setManagedResourceId($language);
 
         $name = $this->parseName($schemaResponse);
         $schema->setName($name);
@@ -65,14 +66,14 @@ class SchemaParser
     /**
      * Extracts the language from a solr schema response.
      *
-     * @param \stdClass $schema
-     * @return string
+     * @param stdClass $schema
+     * @return ?string
      */
-    protected function parseLanguage(\stdClass $schema)
+    protected function parseManagedResourceId(stdClass $schema): ?string
     {
-        $language = 'english';
+        $managedResourceId = null;
         if (!is_object($schema) || !isset($schema->fieldTypes)) {
-            return $language;
+            return null;
         }
 
         foreach ($schema->fieldTypes as $fieldType) {
@@ -82,22 +83,22 @@ class SchemaParser
             // we have a text field
             foreach ($fieldType->queryAnalyzer->filters as $filter) {
                 if ($filter->class === 'solr.ManagedSynonymGraphFilterFactory') {
-                    $language = $filter->managed;
+                    $managedResourceId = $filter->managed;
                 }
             }
         }
 
-        return $language;
+        return $managedResourceId;
     }
 
     /**
      * Extracts the schema name from the response.
      *
-     * @param \stdClass $schemaResponse
+     * @param stdClass $schemaResponse
      * @return string
      */
-    protected function parseName(\stdClass $schemaResponse)
+    protected function parseName(stdClass $schemaResponse): string
     {
-        return isset($schemaResponse->name) ? $schemaResponse->name : '';
+        return $schemaResponse->name ?? '';
     }
 }
