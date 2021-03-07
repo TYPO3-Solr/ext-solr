@@ -172,10 +172,10 @@
               "class":"solr.LowerCaseFilterFactory"},
             {
               "class":"solr.ManagedSynonymGraphFilterFactory",
-              "managed":"german"},
+              "managed":"core_de"},
             {
               "class":"solr.ManagedStopFilterFactory",
-              "managed":"german"},
+              "managed":"core_de"},
             {
               "class":"solr.SnowballPorterFilterFactory",
               "language":"German",
@@ -211,7 +211,7 @@
               "class":"solr.LowerCaseFilterFactory"},
             {
               "class":"solr.ManagedStopFilterFactory",
-              "managed":"german"},
+              "managed":"core_de"},
             {
               "class":"solr.StandardFilterFactory"},
             {
@@ -223,10 +223,10 @@
               "class":"solr.LowerCaseFilterFactory"},
             {
               "class":"solr.ManagedSynonymGraphFilterFactory",
-              "managed":"german"},
+              "managed":"core_de"},
             {
               "class":"solr.ManagedStopFilterFactory",
-              "managed":"german"},
+              "managed":"core_de"},
             {
               "class":"solr.StandardFilterFactory"},
             {
@@ -251,10 +251,10 @@
               "class":"solr.LowerCaseFilterFactory"},
             {
               "class":"solr.ManagedSynonymGraphFilterFactory",
-              "managed":"german"},
+              "managed":"core_de"},
             {
               "class":"solr.ManagedStopFilterFactory",
-              "managed":"german"},
+              "managed":"core_de"},
             {
               "class":"solr.GermanPossessiveFilterFactory"},
             {

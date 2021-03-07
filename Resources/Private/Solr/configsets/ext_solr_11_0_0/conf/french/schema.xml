@@ -59,8 +59,8 @@
 			/>
 
 			<filter class="solr.LowerCaseFilterFactory"/>
-			<filter class="solr.ManagedStopFilterFactory" managed="french"/>
-			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="french" />
+			<filter class="solr.ManagedStopFilterFactory" managed="${solr.core.name}"/>
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="${solr.core.name}" />
 			<filter class="solr.FlattenGraphFilterFactory"/>
 
 			<filter class="solr.SnowballPorterFilterFactory" language="French" protected="french/protwords.txt"/>
@@ -82,8 +82,8 @@
 			/>
 			<filter class="solr.LowerCaseFilterFactory"/>
 
-			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="french" />
-			<filter class="solr.ManagedStopFilterFactory" managed="french"/>
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="${solr.core.name}" />
+			<filter class="solr.ManagedStopFilterFactory" managed="${solr.core.name}"/>
 
 			<filter class="solr.SnowballPorterFilterFactory" language="French" protected="french/protwords.txt"/>
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
@@ -98,10 +98,10 @@
 
 			<filter class="solr.LowerCaseFilterFactory"/>
 
-			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="french" />
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="${solr.core.name}" />
 			<filter class="solr.FlattenGraphFilterFactory"/>
 
-			<filter class="solr.ManagedStopFilterFactory" managed="french"/>
+			<filter class="solr.ManagedStopFilterFactory" managed="${solr.core.name}"/>
 
 			<filter class="solr.ElisionFilterFactory"/>
 			<filter class="solr.WordDelimiterGraphFilterFactory"
@@ -123,8 +123,8 @@
 
 			<filter class="solr.LowerCaseFilterFactory"/>
 
-			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="french" />
-			<filter class="solr.ManagedStopFilterFactory" managed="french"/>
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="${solr.core.name}" />
+			<filter class="solr.ManagedStopFilterFactory" managed="${solr.core.name}"/>
 
 			<filter class="solr.ElisionFilterFactory"/>
 			<filter class="solr.WordDelimiterGraphFilterFactory"
@@ -149,17 +149,17 @@
 			<tokenizer class="solr.WhitespaceTokenizerFactory"/>
 
 			<filter class="solr.LowerCaseFilterFactory"/>
-			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="french" />
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="${solr.core.name}" />
 			<filter class="solr.FlattenGraphFilterFactory"/>
-			<filter class="solr.ManagedStopFilterFactory" managed="french"/>
+			<filter class="solr.ManagedStopFilterFactory" managed="${solr.core.name}"/>
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
 		<analyzer type="query">
 			<tokenizer class="solr.WhitespaceTokenizerFactory"/>
 
 			<filter class="solr.LowerCaseFilterFactory"/>
-			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="french" />
-			<filter class="solr.ManagedStopFilterFactory" managed="french"/>
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="${solr.core.name}" />
+			<filter class="solr.ManagedStopFilterFactory" managed="${solr.core.name}"/>
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
 	</fieldType>
@@ -171,15 +171,15 @@
 
 			<filter class="solr.LowerCaseFilterFactory"/>
 			<filter class="solr.ElisionFilterFactory"/>
-			<filter class="solr.ManagedStopFilterFactory" managed="french"/>
+			<filter class="solr.ManagedStopFilterFactory" managed="${solr.core.name}"/>
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
 		<analyzer type="query">
 			<tokenizer class="solr.StandardTokenizerFactory" />
 
 			<filter class="solr.LowerCaseFilterFactory"/>
-			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="french" />
-			<filter class="solr.ManagedStopFilterFactory" managed="french"/>
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="${solr.core.name}" />
+			<filter class="solr.ManagedStopFilterFactory" managed="${solr.core.name}"/>
 
 			<filter class="solr.ElisionFilterFactory"/>
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>

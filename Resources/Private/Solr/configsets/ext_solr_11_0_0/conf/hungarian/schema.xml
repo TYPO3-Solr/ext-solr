@@ -57,9 +57,9 @@
 			/>
 			<filter class="solr.LowerCaseFilterFactory"/>
 
-			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="hungarian" />
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="${solr.core.name}" />
 			<filter class="solr.FlattenGraphFilterFactory"/>
-			<filter class="solr.ManagedStopFilterFactory" managed="hungarian"/>
+			<filter class="solr.ManagedStopFilterFactory" managed="${solr.core.name}"/>
 
 			<filter class="solr.SnowballPorterFilterFactory" language="Hungarian" protected="hungarian/protwords.txt"/>
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
@@ -78,8 +78,8 @@
 			/>
 			<filter class="solr.LowerCaseFilterFactory"/>
 
-			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="hungarian" />
-			<filter class="solr.ManagedStopFilterFactory" managed="hungarian"/>
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="${solr.core.name}" />
+			<filter class="solr.ManagedStopFilterFactory" managed="${solr.core.name}"/>
 
 			<filter class="solr.SnowballPorterFilterFactory" language="Hungarian" protected="hungarian/protwords.txt"/>
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
@@ -95,9 +95,9 @@
 
 			<filter class="solr.LowerCaseFilterFactory"/>
 
-			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="hungarian" />
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="${solr.core.name}" />
 			<filter class="solr.FlattenGraphFilterFactory"/>
-			<filter class="solr.ManagedStopFilterFactory" managed="hungarian"/>
+			<filter class="solr.ManagedStopFilterFactory" managed="${solr.core.name}"/>
 
 			<filter class="solr.WordDelimiterGraphFilterFactory"
 				generateWordParts="0"
@@ -118,8 +118,8 @@
 
 			<filter class="solr.LowerCaseFilterFactory"/>
 
-			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="hungarian" />
-			<filter class="solr.ManagedStopFilterFactory" managed="hungarian"/>
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="${solr.core.name}" />
+			<filter class="solr.ManagedStopFilterFactory" managed="${solr.core.name}"/>
 
 			<filter class="solr.WordDelimiterGraphFilterFactory"
 					generateWordParts="0"
@@ -143,17 +143,17 @@
 			<tokenizer class="solr.WhitespaceTokenizerFactory"/>
 
 			<filter class="solr.LowerCaseFilterFactory"/>
-			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="hungarian" />
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="${solr.core.name}" />
 			<filter class="solr.FlattenGraphFilterFactory"/>
-			<filter class="solr.ManagedStopFilterFactory" managed="hungarian"/>
+			<filter class="solr.ManagedStopFilterFactory" managed="${solr.core.name}"/>
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
 		<analyzer type="index">
 			<tokenizer class="solr.WhitespaceTokenizerFactory"/>
 
 			<filter class="solr.LowerCaseFilterFactory"/>
-			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="hungarian" />
-			<filter class="solr.ManagedStopFilterFactory" managed="hungarian"/>
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="${solr.core.name}" />
+			<filter class="solr.ManagedStopFilterFactory" managed="${solr.core.name}"/>
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
 	</fieldType>
@@ -165,7 +165,7 @@
 
 			<filter class="solr.LowerCaseFilterFactory"/>
 
-			<filter class="solr.ManagedStopFilterFactory" managed="hungarian"/>
+			<filter class="solr.ManagedStopFilterFactory" managed="${solr.core.name}"/>
 
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
@@ -174,8 +174,8 @@
 
 			<filter class="solr.LowerCaseFilterFactory"/>
 
-			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="hungarian" />
-			<filter class="solr.ManagedStopFilterFactory" managed="hungarian"/>
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="${solr.core.name}" />
+			<filter class="solr.ManagedStopFilterFactory" managed="${solr.core.name}"/>
 
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>

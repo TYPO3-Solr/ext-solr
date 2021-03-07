@@ -58,9 +58,9 @@
 			/>
 			<filter class="solr.LowerCaseFilterFactory"/>
 
-			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="hindi" />
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="${solr.core.name}" />
 			<filter class="solr.FlattenGraphFilterFactory"/>
-			<filter class="solr.ManagedStopFilterFactory" managed="hindi"/>
+			<filter class="solr.ManagedStopFilterFactory" managed="${solr.core.name}"/>
 
 			<filter class="solr.KeywordMarkerFilterFactory" protected="hindi/protwords.txt"/>
 			<filter class="solr.HindiStemFilterFactory"/>
@@ -83,8 +83,8 @@
 			/>
 			<filter class="solr.LowerCaseFilterFactory"/>
 
-			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="hindi" />
-			<filter class="solr.ManagedStopFilterFactory" managed="hindi"/>
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="${solr.core.name}" />
+			<filter class="solr.ManagedStopFilterFactory" managed="${solr.core.name}"/>
 
 			<filter class="solr.KeywordMarkerFilterFactory" protected="hindi/protwords.txt"/>
 			<filter class="solr.HindiStemFilterFactory"/>
@@ -102,9 +102,9 @@
 			<tokenizer class="solr.WhitespaceTokenizerFactory"/>
 			<filter class="solr.LowerCaseFilterFactory"/>
 
-			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="hindi" />
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="${solr.core.name}" />
 			<filter class="solr.FlattenGraphFilterFactory"/>
-			<filter class="solr.ManagedStopFilterFactory" managed="hindi"/>
+			<filter class="solr.ManagedStopFilterFactory" managed="${solr.core.name}"/>
 
 			<filter class="solr.WordDelimiterGraphFilterFactory"
 				generateWordParts="0"
@@ -127,8 +127,8 @@
 			<tokenizer class="solr.WhitespaceTokenizerFactory"/>
 			<filter class="solr.LowerCaseFilterFactory"/>
 
-			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="hindi" />
-			<filter class="solr.ManagedStopFilterFactory" managed="hindi"/>
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="${solr.core.name}" />
+			<filter class="solr.ManagedStopFilterFactory" managed="${solr.core.name}"/>
 
 			<filter class="solr.WordDelimiterGraphFilterFactory"
 					generateWordParts="0"
@@ -155,17 +155,17 @@
 			<tokenizer class="solr.WhitespaceTokenizerFactory"/>
 
 			<filter class="solr.LowerCaseFilterFactory"/>
-			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="hindi" />
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="${solr.core.name}" />
 			<filter class="solr.FlattenGraphFilterFactory"/>
-			<filter class="solr.ManagedStopFilterFactory" managed="hindi"/>
+			<filter class="solr.ManagedStopFilterFactory" managed="${solr.core.name}"/>
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
 		<analyzer type="query">
 			<tokenizer class="solr.WhitespaceTokenizerFactory"/>
 
 			<filter class="solr.LowerCaseFilterFactory"/>
-			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="hindi" />
-			<filter class="solr.ManagedStopFilterFactory" managed="hindi"/>
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="${solr.core.name}" />
+			<filter class="solr.ManagedStopFilterFactory" managed="${solr.core.name}"/>
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
 	</fieldType>
@@ -177,7 +177,7 @@
 
 			<filter class="solr.LowerCaseFilterFactory"/>
 
-			<filter class="solr.ManagedStopFilterFactory" managed="hindi"/>
+			<filter class="solr.ManagedStopFilterFactory" managed="${solr.core.name}"/>
 
 			<filter class="solr.IndicNormalizationFilterFactory"/>
 			<filter class="solr.HindiNormalizationFilterFactory"/>
@@ -188,8 +188,8 @@
 
 			<filter class="solr.LowerCaseFilterFactory"/>
 
-			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="hindi" />
-			<filter class="solr.ManagedStopFilterFactory" managed="hindi"/>
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="${solr.core.name}" />
+			<filter class="solr.ManagedStopFilterFactory" managed="${solr.core.name}"/>
 
 			<filter class="solr.IndicNormalizationFilterFactory"/>
 			<filter class="solr.HindiNormalizationFilterFactory"/>

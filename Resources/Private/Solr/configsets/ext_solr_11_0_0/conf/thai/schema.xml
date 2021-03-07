@@ -48,9 +48,9 @@
 
 			<filter class="solr.LowerCaseFilterFactory"/>
 
-			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="thai" />
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="${solr.core.name}" />
 			<filter class="solr.FlattenGraphFilterFactory"/>
-			<filter class="solr.ManagedStopFilterFactory" managed="thai"/>
+			<filter class="solr.ManagedStopFilterFactory" managed="${solr.core.name}"/>
 
 			<filter class="solr.KeywordMarkerFilterFactory" protected="thai/protwords.txt"/>
 			<filter class="solr.PorterStemFilterFactory"/>
@@ -61,8 +61,8 @@
 
 			<filter class="solr.LowerCaseFilterFactory"/>
 
-			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="thai" />
-			<filter class="solr.ManagedStopFilterFactory" managed="thai"/>
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="${solr.core.name}" />
+			<filter class="solr.ManagedStopFilterFactory" managed="${solr.core.name}"/>
 
 			<filter class="solr.KeywordMarkerFilterFactory" protected="thai/protwords.txt"/>
 			<filter class="solr.PorterStemFilterFactory"/>
@@ -79,9 +79,9 @@
 
 			<filter class="solr.LowerCaseFilterFactory"/>
 
-			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="thai" />
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="${solr.core.name}" />
 			<filter class="solr.FlattenGraphFilterFactory"/>
-			<filter class="solr.ManagedStopFilterFactory" managed="thai"/>
+			<filter class="solr.ManagedStopFilterFactory" managed="${solr.core.name}"/>
 
 			<filter class="solr.KeywordMarkerFilterFactory" protected="thai/protwords.txt"/>
 			<filter class="solr.PorterStemFilterFactory"/>
@@ -92,8 +92,8 @@
 
 			<filter class="solr.LowerCaseFilterFactory"/>
 
-			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="thai" />
-			<filter class="solr.ManagedStopFilterFactory" managed="thai"/>
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="${solr.core.name}" />
+			<filter class="solr.ManagedStopFilterFactory" managed="${solr.core.name}"/>
 
 			<filter class="solr.KeywordMarkerFilterFactory" protected="thai/protwords.txt"/>
 			<filter class="solr.PorterStemFilterFactory"/>
@@ -110,17 +110,17 @@
 			<tokenizer class="solr.WhitespaceTokenizerFactory"/>
 
 			<filter class="solr.LowerCaseFilterFactory"/>
-			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="thai" />
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="${solr.core.name}" />
 			<filter class="solr.FlattenGraphFilterFactory"/>
-			<filter class="solr.ManagedStopFilterFactory" managed="thai"/>
+			<filter class="solr.ManagedStopFilterFactory" managed="${solr.core.name}"/>
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
 		<analyzer type="query">
 			<tokenizer class="solr.WhitespaceTokenizerFactory"/>
 
 			<filter class="solr.LowerCaseFilterFactory"/>
-			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="thai" />
-			<filter class="solr.ManagedStopFilterFactory" managed="thai"/>
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="${solr.core.name}" />
+			<filter class="solr.ManagedStopFilterFactory" managed="${solr.core.name}"/>
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
 
@@ -133,7 +133,7 @@
 
 			<filter class="solr.LowerCaseFilterFactory"/>
 
-			<filter class="solr.ManagedStopFilterFactory" managed="thai"/>
+			<filter class="solr.ManagedStopFilterFactory" managed="${solr.core.name}"/>
 
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
@@ -142,8 +142,8 @@
 
 			<filter class="solr.LowerCaseFilterFactory"/>
 
-			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="thai" />
-			<filter class="solr.ManagedStopFilterFactory" managed="thai"/>
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="${solr.core.name}" />
+			<filter class="solr.ManagedStopFilterFactory" managed="${solr.core.name}"/>
 
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
