@@ -1,19 +1,27 @@
-# We use the travis php container since the we have php, java & mysql later we could use single containers for that for ci
-# https://docs.travis-ci.com/user/common-build-problems/#Running-a-Container-Based-Docker-Image-Locally
-FROM travisci/ci-garnet:packer-1512502276-986baf0
-MAINTAINER Timo Hund <timo.hund@dkd.de>
+ARG PHP_VERSION
+FROM php:$PHP_VERSION-cli
+LABEL maintainer="team-solr@dkd.de"
 ENV TERM linux
 
-ARG PHP_VERSION
-ENV PHP_VERSION=$PHP_VERSION
+# create man directory to fix jre dependencies issue
+RUN mkdir -p /usr/share/man/man1
 
-RUN cd /home/travis/ && \
-    wget  https://s3.amazonaws.com/travis-php-archives/binaries/ubuntu/14.04/x86_64/php-${PHP_VERSION}.tar.bz2  && \
-    tar xjf php-${PHP_VERSION}.tar.bz2 --directory /  && \
-    /home/travis/.phpenv/bin/phpenv global $PHP_VERSION
+# install required packages and modules
+RUN apt-get update && apt-get install -yq \
+        git \
+        zip \
+        wget \
+        libzip-dev \
+        default-mysql-client \
+        openjdk-11-jre \
+    && docker-php-ext-install \
+        zip \
+        mysqli
+COPY --from=composer:1 /usr/bin/composer /usr/local/bin/composer
 
-COPY . /app/
+COPY . /ext-solr/
 
-RUN chown -R travis:travis /app
-
-USER root
+# add and switch user
+RUN adduser --disabled-password --gecos "" solr \
+    && chown -R solr:solr /ext-solr
+USER solr
