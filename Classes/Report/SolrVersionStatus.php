@@ -28,9 +28,7 @@ namespace ApacheSolrForTypo3\Solr\Report;
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Fluid\View\StandaloneView;
 use TYPO3\CMS\Reports\Status;
-use TYPO3\CMS\Reports\StatusProviderInterface;
 
 /**
  * Provides a status report about whether the installed Solr version matches
@@ -47,7 +45,7 @@ class SolrVersionStatus extends AbstractSolrStatus
      *
      * @var string
      */
-    const REQUIRED_SOLR_VERSION = '7.4.0';
+    const REQUIRED_SOLR_VERSION = '8.8.1';
 
     /**
      * Compiles a version check against each configured Solr server.

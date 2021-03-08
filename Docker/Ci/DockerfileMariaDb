@@ -1,0 +1,7 @@
+FROM mariadb:10.5
+LABEL maintainer="team-solr@dkd.de"
+ENV TERM linux
+
+RUN echo 'GRANT ALL ON `typo3%`.* TO `typo3`@`%`' > /docker-entrypoint-initdb.d/grant_typo3.sql
+
+

@@ -11,13 +11,13 @@ up:
 	docker-compose up -d --build
 
 bash:
-	docker-compose exec --user travis ci /bin/bash -i
+	docker-compose exec ci /bin/bash -i
 
 bootstrap:
-	docker-compose exec --user travis ci /bin/bash -i "./Build/Test/bootstrap.sh"
+	docker-compose exec ci /bin/bash -i "./Build/Test/bootstrap.sh"
 
 test: up bootstrap
-	docker-compose exec --user travis ci /bin/bash -i "./Build/Test/cibuild.sh"
+	docker-compose exec ci /bin/bash -i "./Build/Test/cibuild.sh"
 
 down:
 	docker-compose down
