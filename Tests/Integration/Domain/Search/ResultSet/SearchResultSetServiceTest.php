@@ -101,18 +101,23 @@ class SearchResultSetServiceTest extends IntegrationTest
         $this->assertEquals(11, $typoScriptConfiguration->getSearchVariantsLimit());
 
         $searchResults = $this->doSearchWithResultSetService($solrConnection, $typoScriptConfiguration);
-        $this->assertSame(3, count($searchResults), 'There should be three results at all');
+        $this->assertSame(4, count($searchResults), 'There should be three results at all');
 
-        // We assume that the first result has one variants.
+        // We assume that the first result (pid=0) has no variants.
         $firstResult = $searchResults[0];
-        $this->assertSame(1, count($firstResult->getVariants()));
+        $this->assertSame(0, count($firstResult->getVariants()));
 
+        // We assume that the second result (pid=1) has 1 variant.
         $secondResult = $searchResults[1];
-        $this->assertSame(3, count($secondResult->getVariants()));
-        $this->assertSame('Men Socks', $secondResult->getTitle());
+        $this->assertSame(1, count($secondResult->getVariants()));
+
+        // We assume that the third result (pid=3) has 3 variants.
+        $thirdResult = $searchResults[2];
+        $this->assertSame(3, count($thirdResult->getVariants()));
+        $this->assertSame('Men Socks', $thirdResult->getTitle());
 
         // And every variant is indicated to be a variant.
-        foreach ($firstResult->getVariants() as $variant) {
+        foreach ($thirdResult->getVariants() as $variant) {
             $this->assertTrue($variant->getIsVariant(), 'Document should be a variant');
         }
     }
@@ -135,6 +140,11 @@ class SearchResultSetServiceTest extends IntegrationTest
                     'variantField' => 'author',
                     'expand' => 1,
                     'limit' => 11
+                ],
+                'query.' => [
+                    'filter.' => [
+                        'skipRootPage' => '-pid:0'
+                    ]
                 ]
             ]
         ]);
@@ -146,22 +156,22 @@ class SearchResultSetServiceTest extends IntegrationTest
         $searchResults = $this->doSearchWithResultSetService($solrConnection, $typoScriptConfiguration);
         $this->assertSame(3, count($searchResults), 'There should be three results at all');
 
-
-        // We assume that the first result has one variants.
+        // We assume that the first result has 2 variants.
         /* @var SearchResult $firstResult */
         $firstResult = $searchResults[0];
-        $this->assertSame(6, count($firstResult->getVariants()));
-        $this->assertSame('John Doe', $firstResult->getAuthor());
-        $this->assertSame(6, $firstResult->getVariantsNumFound());
-        $this->assertSame('John Doe', $firstResult->getVariantFieldValue());
+        $this->assertSame(2, count($firstResult->getVariants()));
+        $this->assertSame('Jane Doe', $firstResult->getAuthor());
+        $this->assertSame(2, $firstResult->getVariantsNumFound());
+        $this->assertSame('Jane Doe', $firstResult->getVariantFieldValue());
 
+        // We assume that the second result has 5 variants.
         /* @var SearchResult $secondResult */
         $secondResult = $searchResults[1];
-        $this->assertSame(2, count($secondResult->getVariants()));
-        $this->assertSame('Jane Doe', $secondResult->getAuthor());
-        $this->assertSame(2, $secondResult->getVariantsNumFound());
-        $this->assertSame('Jane Doe', $secondResult->getVariantFieldValue());
+        $this->assertSame(5, count($secondResult->getVariants()));
+        $this->assertSame('John Doe', $secondResult->getAuthor());
+        $this->assertSame(5, $secondResult->getVariantsNumFound());
 
+        // We assume that the third result has no variants.
         /* @var SearchResult $secondResult */
         $thirdResult = $searchResults[2];
         $this->assertSame(0, count($thirdResult->getVariants()));
@@ -180,7 +190,6 @@ class SearchResultSetServiceTest extends IntegrationTest
             $this->assertSame(0, $variant->getVariantsNumFound(), 'Variant shouldn\'t have variants itself');
             $this->assertSame($secondResult, $variant->getVariantParent(), 'Variant parent should be set');
         }
-
     }
 
     /**
