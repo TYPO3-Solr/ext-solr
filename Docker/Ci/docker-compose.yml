@@ -5,15 +5,27 @@ services:
   ######################################
   ci:
     restart: 'no'
+    tty: true
     build:
       context: ../../
       dockerfile: ./Docker/Ci/Dockerfile
       args:
-        PHP_VERSION: 7.2
-    command: /sbin/init
-    working_dir: /app
+        PHP_VERSION: 7.4
+    working_dir: /ext-solr
     env_file:
       - environment.yml
+
+  db:
+    restart: 'no'
+    tty: true
+    build:
+      context: ../../
+      dockerfile: ./Docker/Ci/DockerfileMariaDb
+    environment:
+      - MYSQL_ROOT_PASSWORD=joh316
+      - MYSQL_DATABASE=typo3
+      - MYSQL_USER=typo3
+      - MYSQL_PASSWORD=typo3
 
   t3docmake:
     image: t3docs/render-documentation:latest
