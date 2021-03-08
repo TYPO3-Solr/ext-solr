@@ -22,7 +22,9 @@ use Countable;
  * @property \stdClass highlighting
  * @property \stdClass debug
  * @property \stdClass lucene
- * 
+ * @property string file
+ * @property array file_metadata
+ *
  * Luke response
  *
  * @property \stdClass index
