@@ -16,8 +16,11 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers\Widget\Controller;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\FrequentSearches\FrequentSearchesService;
 use ApacheSolrForTypo3\Solr\Widget\AbstractWidgetController;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
+use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -26,22 +29,24 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @author Frans Saris <frans@beech.it>
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class FrequentlySearchedController extends AbstractWidgetController
+class FrequentlySearchedController extends AbstractWidgetController implements LoggerAwareInterface
 {
+    use LoggerAwareTrait;
+
     /**
      * Initializes the cache for this command.
      *
-     * @return \TYPO3\CMS\Core\Cache\AbstractFrontend
+     * @return FrontendInterface|null
      */
-    protected function getInitializedCache()
+    protected function getInitializedCache(): ?FrontendInterface
     {
         $cacheIdentifier = 'tx_solr';
+        /* @var FrontendInterface $cacheInstance */
         try {
             $cacheInstance = GeneralUtility::makeInstance(CacheManager::class)->getCache($cacheIdentifier);
-        } catch (NoSuchCacheException $e) {
-            /** @var t3lib_cache_Factory $typo3CacheFactory */
-            $typo3CacheFactory = $GLOBALS['typo3CacheFactory'];
-            $cacheInstance = $typo3CacheFactory->create($cacheIdentifier, $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations'][$cacheIdentifier]['frontend'], $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations'][$cacheIdentifier]['backend'], $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations'][$cacheIdentifier]['options']);
+        } catch (NoSuchCacheException $exception) {
+            $this->logger->error('Getting cache failed: ' . $exception->getMessage());
+            return null;
         }
 
         return $cacheInstance;
@@ -56,6 +61,7 @@ class FrequentlySearchedController extends AbstractWidgetController
         $cache = $this->getInitializedCache();
         $configuration = $this->controllerContext->getTypoScriptConfiguration();
 
+        /* @var FrequentSearchesService $frequentSearchesService */
         $frequentSearchesService = GeneralUtility::makeInstance(
             FrequentSearchesService::class,
             /** @scrutinizer ignore-type */ $configuration,
@@ -67,18 +73,23 @@ class FrequentlySearchedController extends AbstractWidgetController
         $minimumSize = $configuration->getSearchFrequentSearchesMinSize();
         $maximumSize = $configuration->getSearchFrequentSearchesMaxSize();
 
-        $this->view->assign('contentArguments', ['frequentSearches' => $this->enrichFrequentSearchesInfo($frequentSearches, $minimumSize, $maximumSize)]);
+        $this->view->assign(
+            'contentArguments',
+            [
+                'frequentSearches' => $this->enrichFrequentSearchesInfo($frequentSearches, $minimumSize, $maximumSize)
+            ]
+        );
     }
 
     /**
      * Enrich the frequentSearches
      *
      * @param array Frequent search terms as array with terms as keys and hits as the value
-     * @param integer $minimumSize
-     * @param integer $maximumSize
+     * @param int $minimumSize
+     * @param int $maximumSize
      * @return array An array with content for the frequent terms markers
      */
-    protected function enrichFrequentSearchesInfo(array $frequentSearchTerms, $minimumSize, $maximumSize)
+    protected function enrichFrequentSearchesInfo(array $frequentSearchTerms, int $minimumSize, int $maximumSize): array
     {
         $frequentSearches = [];
         if (count($frequentSearchTerms)) {
@@ -89,7 +100,12 @@ class FrequentlySearchedController extends AbstractWidgetController
 
             foreach ($frequentSearchTerms as $term => $hits) {
                 $size = round($minimumSize + (($hits - $minimumHits) * $step));
-                $frequentSearches[] = ['q' => htmlspecialchars_decode($term), 'hits' => $hits, 'style' => 'font-size: ' . $size . 'px', 'class' => 'tx-solr-frequent-term-' . $size, 'size' => $size];
+                $frequentSearches[] = [
+                    'q' => htmlspecialchars_decode($term),
+                    'hits' => $hits,
+                    'style' => 'font-size: ' . $size . 'px', 'class' => 'tx-solr-frequent-term-' . $size,
+                    'size' => $size
+                ];
             }
         }
 
