@@ -514,7 +514,7 @@ abstract class IntegrationTest extends FunctionalTestCase
         );
 
         $this->writeSiteConfiguration(
-            'integration_tree_three',
+            $this->getSiteIdentifier('integration_tree_three'),
             $this->buildSiteConfiguration(211, 'http://testthree.site/'),
             [$defaultLanguage]
         );
@@ -527,10 +527,10 @@ abstract class IntegrationTest extends FunctionalTestCase
             'solr_path_read' => '/solr/',
             'solr_use_write_connection' => false,
         ];
-        $this->mergeSiteConfiguration('integration_tree_one', $globalSolrSettings);
-        $this->mergeSiteConfiguration('integration_tree_two', $globalSolrSettings);
+        $this->mergeSiteConfiguration($this->getSiteIdentifier('integration_tree_one'), $globalSolrSettings);
+        $this->mergeSiteConfiguration($this->getSiteIdentifier('integration_tree_two'), $globalSolrSettings);
         // disable solr for site three
-        $this->mergeSiteConfiguration('integration_tree_three', ['solr_enabled_read' => false]);
+        $this->mergeSiteConfiguration($this->getSiteIdentifier('integration_tree_three'), ['solr_enabled_read' => false]);
 
         clearstatcache();
         usleep(500);

@@ -20,11 +20,15 @@ use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use PHPUnit\Framework\MockObject\MockObject;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class TypoScriptTest extends UnitTest
 {
+
+    use ProphecyTrait;
+
     /**
      * @var TypoScript
      */
@@ -35,7 +39,7 @@ class TypoScriptTest extends UnitTest
      */
     protected $typoScriptConfigurationDumpMock;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->typoScriptMock = $this->getMockBuilder(TypoScript::class)
@@ -51,7 +55,7 @@ class TypoScriptTest extends UnitTest
         $this->typoScriptConfigurationDumpMock = $this->getDumbMock(TypoScriptConfiguration::class);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         GeneralUtility::resetSingletonInstances([]);
         unset(

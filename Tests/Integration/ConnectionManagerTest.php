@@ -186,7 +186,7 @@ class ConnectionManagerTest extends IntegrationTest
         $german = $this->buildLanguageConfiguration('DE', '/de/');
         $danish = $this->buildLanguageConfiguration('DA', '/da/');
         $this->writeSiteConfiguration(
-            'integration_tree_three',
+            $this->getSiteIdentifier('integration_tree_three'),
             $this->buildSiteConfiguration(3, 'http://testthree.site/'),
             [
                 $defaultLanguage, $german, $danish

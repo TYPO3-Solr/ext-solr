@@ -22,13 +22,7 @@
   "require": {
     "php": ">=7.2.0",
     "ext-json": "*",
-    "solarium/solarium": "~4.2.0",
-    "typo3/cms-core": "^10.4.10"
-  },
-  "require-dev": {
-    "phpunit/phpunit": "^9",
-    "phpspec/prophecy-phpunit": "^2.0",
-    "nimut/testing-framework": "dev-update-phpunit-compatibility",
+    "typo3/cms-core": "^10.4.10",
     "typo3/cms-backend": "^10.4.10",
     "typo3/cms-fluid": "^10.4.10",
     "typo3/cms-frontend": "^10.4.10",
@@ -37,6 +31,12 @@
     "typo3/cms-scheduler": "^10.4.10",
     "typo3/cms-tstemplate": "^10.4.10",
     "solarium/solarium": ">=6.0 <7.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^9",
+    "phpspec/prophecy-phpunit": "^2.0",
+    "nimut/testing-framework": "dev-update-phpunit-compatibility",
+    "brianium/paratest": "^6.2"
   },
   "replace": {
     "typo3-ter/solr": "self.version",

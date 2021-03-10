@@ -80,7 +80,7 @@ class IndexerTest extends IntegrationTest
 
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
         $this->cleanUpSolrServerAndAssertEmpty();
@@ -266,9 +266,9 @@ class IndexerTest extends IntegrationTest
         // @extensionScannerIgnoreLine
         $tags = $decodedSolrContent->response->docs[0]->tags_stringM;
 
-        $this->assertSame(["the tag","the second tag"], $tags, $solrContent, 'Did not find MM related tags');
+        $this->assertSame(['the tag', 'another tag'], $tags, $solrContent, 'Did not find MM related tags');
         $this->assertStringContainsString('"numFound":1', $solrContent, 'Could not index document into solr');
-        $this->assertStringContainsString('"title":"the document"', $solrContent, 'Could not index document into solr');
+        $this->assertStringContainsString('"title":"testnews"', $solrContent, 'Could not index document into solr');
 
         $this->cleanUpSolrServerAndAssertEmpty('core_en');
     }
