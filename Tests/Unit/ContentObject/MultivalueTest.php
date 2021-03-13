@@ -85,7 +85,7 @@ class MultivalueTest extends UnitTest
         $this->assertEquals($expected, $actual);
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         // fake a registered hook
         $GLOBALS['TYPO3_CONF_VARS']['FE']['ContentObjects'][Multivalue::CONTENT_OBJECT_NAME] = Multivalue::class;
@@ -97,7 +97,7 @@ class MultivalueTest extends UnitTest
             ->setConstructorArgs([$GLOBALS['TSFE']])->getMock();
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         unset($GLOBALS['TSFE']);
     }

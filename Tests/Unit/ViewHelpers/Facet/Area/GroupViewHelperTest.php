@@ -1,5 +1,5 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Test\ViewHelpers\Facet\Area;
+namespace ApacheSolrForTypo3\Solr\Tests\Unit\ViewHelpers\Facet\Area;
 
 /***************************************************************
  *  Copyright notice

@@ -1,5 +1,5 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Test\Mvc\ControllerContext;
+namespace ApacheSolrForTypo3\Solr\Tests\Unit\Mvc\ControllerContext;
 
 /***************************************************************
  *  Copyright notice
@@ -39,7 +39,7 @@ class SolrControllerContextTest extends UnitTest
      */
     protected $controllerContext = null;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->controllerContext = new SolrControllerContext();
     }

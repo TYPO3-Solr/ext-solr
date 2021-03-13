@@ -1,5 +1,5 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Test\ViewHelpers\Facet\Options\Group\Prefix;
+namespace ApacheSolrForTypo3\Solr\Tests\Unit\ViewHelpers\Facet\Options\Group\Prefix;
 
 /***************************************************************
  *  Copyright notice
@@ -51,7 +51,7 @@ class SearchFormViewHelperTest extends UnitTest
      */
     protected $typoScriptConfigurationMock;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->uriBuilderMock = $this->getDumbMock(UriBuilder::class);

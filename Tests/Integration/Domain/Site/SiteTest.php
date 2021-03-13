@@ -42,7 +42,8 @@ class SiteTest extends IntegrationTest
      */
     private $site;
 
-    public function setUp() {
+    public function setUp(): void
+    {
         parent::setUp();
         $this->writeDefaultSolrTestSiteConfiguration();
     }

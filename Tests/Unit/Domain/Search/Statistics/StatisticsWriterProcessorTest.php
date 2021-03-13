@@ -74,7 +74,7 @@ class StatisticsWriterProcessorTest extends UnitTest
      */
     protected $queryMock;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->statisticsRepositoryMock = $this->getMockBuilder(StatisticsRepository::class)->setMethods(['saveStatisticsRecord'])->getMock();

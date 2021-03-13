@@ -23,6 +23,7 @@ use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use PHPUnit\Framework\MockObject\MockBuilder;
+use Prophecy\PhpUnit\ProphecyTrait;
 use ReflectionClass;
 use ReflectionException;
 
@@ -32,8 +33,9 @@ use ReflectionException;
  */
 class IndexerTest extends UnitTest
 {
+    use ProphecyTrait;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
     }

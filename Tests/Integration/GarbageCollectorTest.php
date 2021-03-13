@@ -27,7 +27,6 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\GarbageCollector;
 use ApacheSolrForTypo3\Solr\IndexQueue\Indexer;
-use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\IndexQueue\RecordMonitor;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
@@ -68,15 +67,32 @@ class GarbageCollectorTest extends IntegrationTest
      */
     protected $indexer;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->writeDefaultSolrTestSiteConfiguration();
+        $this->fakeBEUser();
         $this->recordMonitor = GeneralUtility::makeInstance(RecordMonitor::class);
         $this->dataHandler = GeneralUtility::makeInstance(DataHandler::class);
         $this->indexQueue = GeneralUtility::makeInstance(Queue::class);
         $this->garbageCollector = GeneralUtility::makeInstance(GarbageCollector::class);
         $this->indexer = GeneralUtility::makeInstance(Indexer::class);
+    }
+
+    /**
+     * Executed after each test. Empties solr and checks if the index is really empty.
+     */
+    public function tearDown(): void
+    {
+        parent::tearDown();
+        $this->cleanUpSolrServerAndAssertEmpty();
+        unset(
+            $this->recordMonitor,
+            $this->dataHandler,
+            $this->indexQueue,
+            $this->garbageCollector,
+            $this->indexer
+        );
     }
 
     /**
@@ -208,7 +224,6 @@ class GarbageCollectorTest extends IntegrationTest
      */
     public function canRemoveDeletedContentElement()
     {
-        $this->cleanUpSolrServerAndAssertEmpty();
         $this->importDataSetFromFixture('can_remove_content_element.xml');
 
         $this->indexPageIds([1]);
@@ -217,8 +232,8 @@ class GarbageCollectorTest extends IntegrationTest
         $this->waitToBeVisibleInSolr();
 
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
-        $this->assertContains('will be removed!', $solrContent, 'solr did not contain rendered page content');
-        $this->assertContains('will stay!', $solrContent, 'solr did not contain rendered page content');
+        $this->assertStringContainsString('will be removed!', $solrContent, 'solr did not contain rendered page content');
+        $this->assertStringContainsString('will stay!', $solrContent, 'solr did not contain rendered page content');
 
         // we delete the second content element
         $beUser = $this->fakeBEUser(1, 0);
@@ -244,8 +259,8 @@ class GarbageCollectorTest extends IntegrationTest
 
         // now the content of the deletec content element should be gone
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
-        $this->assertNotContains('will be removed!', $solrContent, 'solr did not remove deleted content');
-        $this->assertContains('will stay!', $solrContent, 'solr did not contain rendered page content');
+        $this->assertStringNotContainsString('will be removed!', $solrContent, 'solr did not remove deleted content');
+        $this->assertStringContainsString('will stay!', $solrContent, 'solr did not contain rendered page content');
     }
 
     /**
@@ -253,7 +268,6 @@ class GarbageCollectorTest extends IntegrationTest
      */
     public function canRemoveHiddenContentElement()
     {
-        $this->cleanUpSolrServerAndAssertEmpty();
         $this->importDataSetFromFixture('can_remove_content_element.xml');
 
         $this->indexPageIds([1]);
@@ -262,8 +276,8 @@ class GarbageCollectorTest extends IntegrationTest
         $this->waitToBeVisibleInSolr();
 
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
-        $this->assertContains('will be removed!', $solrContent, 'solr did not contain rendered page content');
-        $this->assertContains('will stay!', $solrContent, 'solr did not contain rendered page content');
+        $this->assertStringContainsString('will be removed!', $solrContent, 'solr did not contain rendered page content');
+        $this->assertStringContainsString('will stay!', $solrContent, 'solr did not contain rendered page content');
 
         // we hide the second content element
         $beUser = $this->fakeBEUser(1, 0);
@@ -294,8 +308,8 @@ class GarbageCollectorTest extends IntegrationTest
 
         // now the content of the deletec content element should be gone
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
-        $this->assertNotContains('will be removed!', $solrContent, 'solr did not remove hidden content');
-        $this->assertContains('will stay!', $solrContent, 'solr did not contain rendered page content');
+        $this->assertStringNotContainsString('will be removed!', $solrContent, 'solr did not remove hidden content');
+        $this->assertStringContainsString('will stay!', $solrContent, 'solr did not contain rendered page content');
     }
 
     /**
@@ -303,7 +317,6 @@ class GarbageCollectorTest extends IntegrationTest
      */
     public function canRemoveContentElementWithEndTimeSetToPast()
     {
-        $this->cleanUpSolrServerAndAssertEmpty();
         $this->importDataSetFromFixture('can_remove_content_element.xml');
 
         $this->indexPageIds([1]);
@@ -312,8 +325,8 @@ class GarbageCollectorTest extends IntegrationTest
         $this->waitToBeVisibleInSolr();
 
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
-        $this->assertContains('will be removed!', $solrContent, 'solr did not contain rendered page content');
-        $this->assertContains('will stay!', $solrContent, 'solr did not contain rendered page content');
+        $this->assertStringContainsString('will be removed!', $solrContent, 'solr did not contain rendered page content');
+        $this->assertStringContainsString('will stay!', $solrContent, 'solr did not contain rendered page content');
 
         // we hide the second content element
         $beUser = $this->fakeBEUser(1, 0);
@@ -347,8 +360,8 @@ class GarbageCollectorTest extends IntegrationTest
 
         // now the content of the deletec content element should be gone
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
-        $this->assertNotContains('will be removed!', $solrContent, 'solr did not remove content hidden by endtime in past');
-        $this->assertContains('will stay!', $solrContent, 'solr did not contain rendered page content');
+        $this->assertStringNotContainsString('will be removed!', $solrContent, 'solr did not remove content hidden by endtime in past');
+        $this->assertStringContainsString('will stay!', $solrContent, 'solr did not contain rendered page content');
     }
 
     /**
@@ -356,7 +369,6 @@ class GarbageCollectorTest extends IntegrationTest
      */
     public function doesNotRemoveUpdatedContentElementWithNotSetEndTime()
     {
-        $this->cleanUpSolrServerAndAssertEmpty();
         $this->importDataSetFromFixture('does_not_remove_updated_content_element_with_not_set_endtime.xml');
 
         $this->indexPageIds([1]);
@@ -365,7 +377,7 @@ class GarbageCollectorTest extends IntegrationTest
         $this->waitToBeVisibleInSolr();
 
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
-        $this->assertContains('Will stay after update!', $solrContent, 'solr did not contain rendered page content, which is needed for test.');
+        $this->assertStringContainsString('Will stay after update!', $solrContent, 'solr did not contain rendered page content, which is needed for test.');
 
         // we hide the second content element
         $beUser = $this->fakeBEUser(1, 0);
@@ -386,7 +398,7 @@ class GarbageCollectorTest extends IntegrationTest
 
         // document should stay in the index, because endtime was not in past but empty
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
-        $this->assertContains('Will stay after update!', $solrContent, 'solr did not contain rendered page content, which is needed for test.');
+        $this->assertStringContainsString('Will stay after update!', $solrContent, 'solr did not contain rendered page content, which is needed for test.');
 
         $this->waitToBeVisibleInSolr();
 
@@ -400,7 +412,7 @@ class GarbageCollectorTest extends IntegrationTest
 
         // now the content of the deletec content element should be gone
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
-        $this->assertContains('Updated! Will stay after update!', $solrContent, 'solr did not remove content hidden by endtime in past');
+        $this->assertStringContainsString('Updated! Will stay after update!', $solrContent, 'solr did not remove content hidden by endtime in past');
     }
 
     /**
@@ -408,7 +420,6 @@ class GarbageCollectorTest extends IntegrationTest
      */
     public function canRemoveContentElementWithStartDateSetToFuture()
     {
-        $this->cleanUpSolrServerAndAssertEmpty();
         $this->importDataSetFromFixture('can_remove_content_element.xml');
 
         $this->indexPageIds([1]);
@@ -417,8 +428,8 @@ class GarbageCollectorTest extends IntegrationTest
         $this->waitToBeVisibleInSolr();
 
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
-        $this->assertContains('will be removed!', $solrContent, 'solr did not contain rendered page content');
-        $this->assertContains('will stay!', $solrContent, 'solr did not contain rendered page content');
+        $this->assertStringContainsString('will be removed!', $solrContent, 'solr did not contain rendered page content');
+        $this->assertStringContainsString('will stay!', $solrContent, 'solr did not contain rendered page content');
 
         // we hide the second content element
         $beUser = $this->fakeBEUser(1, 0);
@@ -452,8 +463,8 @@ class GarbageCollectorTest extends IntegrationTest
 
         // now the content of the deletec content element should be gone
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
-        $this->assertNotContains('will be removed!', $solrContent, 'solr did not remove content hidden by starttime in future');
-        $this->assertContains('will stay!', $solrContent, 'solr did not contain rendered page content');
+        $this->assertStringNotContainsString('will be removed!', $solrContent, 'solr did not remove content hidden by starttime in future');
+        $this->assertStringContainsString('will stay!', $solrContent, 'solr did not contain rendered page content');
     }
 
 
@@ -462,7 +473,6 @@ class GarbageCollectorTest extends IntegrationTest
      */
     public function canRemovePageWhenPageIsHidden()
     {
-        $this->cleanUpSolrServerAndAssertEmpty();
         $this->importDataSetFromFixture('can_remove_page.xml');
 
         $this->indexPageIds([1,2]);
@@ -471,9 +481,9 @@ class GarbageCollectorTest extends IntegrationTest
         $this->waitToBeVisibleInSolr();
 
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
-        $this->assertContains('will be removed!', $solrContent, 'solr did not contain rendered page content');
-        $this->assertContains('will stay!', $solrContent, 'solr did not contain rendered page content');
-        $this->assertContains('"numFound":2', $solrContent, 'Expected to have two documents in the index');
+        $this->assertStringContainsString('will be removed!', $solrContent, 'solr did not contain rendered page content');
+        $this->assertStringContainsString('will stay!', $solrContent, 'solr did not contain rendered page content');
+        $this->assertStringContainsString('"numFound":2', $solrContent, 'Expected to have two documents in the index');
 
         // we hide the seconde page
         $beUser = $this->fakeBEUser(1, 0);
@@ -507,9 +517,9 @@ class GarbageCollectorTest extends IntegrationTest
 
         // now only one document should be left with the content of the first content element
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
-        $this->assertNotContains('will be removed!', $solrContent, 'solr did not remove content from hidden page');
-        $this->assertContains('will stay!', $solrContent, 'solr did not contain rendered page content');
-        $this->assertContains('"numFound":1', $solrContent, 'Expected to have two documents in the index');
+        $this->assertStringNotContainsString('will be removed!', $solrContent, 'solr did not remove content from hidden page');
+        $this->assertStringContainsString('will stay!', $solrContent, 'solr did not contain rendered page content');
+        $this->assertStringContainsString('"numFound":1', $solrContent, 'Expected to have two documents in the index');
     }
 
     /**
@@ -517,7 +527,6 @@ class GarbageCollectorTest extends IntegrationTest
      */
     public function canRemovePageWhenPageIsDeleted()
     {
-        $this->cleanUpSolrServerAndAssertEmpty();
         $this->importDataSetFromFixture('can_remove_page.xml');
 
         $this->indexPageIds([1,2]);
@@ -526,9 +535,9 @@ class GarbageCollectorTest extends IntegrationTest
         $this->waitToBeVisibleInSolr();
 
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
-        $this->assertContains('will be removed!', $solrContent, 'solr did not contain rendered page content');
-        $this->assertContains('will stay!', $solrContent, 'solr did not contain rendered page content');
-        $this->assertContains('"numFound":2', $solrContent, 'Expected to have two documents in the index');
+        $this->assertStringContainsString('will be removed!', $solrContent, 'solr did not contain rendered page content');
+        $this->assertStringContainsString('will stay!', $solrContent, 'solr did not contain rendered page content');
+        $this->assertStringContainsString('"numFound":2', $solrContent, 'Expected to have two documents in the index');
 
         // we hide the seconde page
         $beUser = $this->fakeBEUser(1, 0);
@@ -556,9 +565,9 @@ class GarbageCollectorTest extends IntegrationTest
 
         // now only one document should be left with the content of the first content element
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
-        $this->assertNotContains('will be removed!', $solrContent, 'solr did not remove content from deleted page');
-        $this->assertContains('will stay!', $solrContent, 'solr did not contain rendered page content');
-        $this->assertContains('"numFound":1', $solrContent, 'Expected to have two documents in the index');
+        $this->assertStringNotContainsString('will be removed!', $solrContent, 'solr did not remove content from deleted page');
+        $this->assertStringContainsString('will stay!', $solrContent, 'solr did not contain rendered page content');
+        $this->assertStringContainsString('"numFound":1', $solrContent, 'Expected to have two documents in the index');
     }
 
     /**
@@ -572,7 +581,6 @@ class GarbageCollectorTest extends IntegrationTest
         $GLOBALS['TCA']['tx_fakeextension_domain_model_foo'] = include($this->getFixturePathByName('fake_extension_tca.php'));
         $this->importDataSetFromFixture('can_delete_custom_record.xml');
 
-        $this->cleanUpSolrServerAndAssertEmpty();
         $this->fakeLanguageService();
 
         // we hide the seconde page

@@ -107,7 +107,7 @@ abstract class IntegrationTest extends FunctionalTestCase
      * @return void
      * @throws NoSuchCacheException
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -328,7 +328,7 @@ abstract class IntegrationTest extends FunctionalTestCase
     protected function assertSolrContainsDocumentCount($documentCount)
     {
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
-        $this->assertContains('"numFound":' . intval($documentCount), $solrContent, 'Solr contains unexpected amount of documents');
+        $this->assertStringContainsString('"numFound":' . intval($documentCount), $solrContent, 'Solr contains unexpected amount of documents');
     }
 
     /**
@@ -468,11 +468,12 @@ abstract class IntegrationTest extends FunctionalTestCase
      * @param string $scheme
      * @param string $host
      * @param int $port
+     * @param bool $disableDefaultLanguage
      * @return void
      */
     protected function writeDefaultSolrTestSiteConfigurationForHostAndPort($scheme = 'http', $host = 'localhost', $port = 8999, $disableDefaultLanguage = false)
     {
-        $siteCreatedHash = md5($scheme . $host . $port . $disableDefaultLanguage);
+        $siteCreatedHash = md5($scheme . $host . $port . $disableDefaultLanguage . getenv('TEST_TOKEN') ?? '');
         if (self::$lastSiteCreated === $siteCreatedHash) {
             return;
         }
@@ -491,7 +492,7 @@ abstract class IntegrationTest extends FunctionalTestCase
         $danish['solr_core_read'] = 'core_da';
 
         $this->writeSiteConfiguration(
-            'integration_tree_one',
+            $this->getSiteIdentifier('integration_tree_one'),
             $this->buildSiteConfiguration(1, 'http://testone.site/'),
             [
                 $defaultLanguage, $german, $danish
@@ -502,7 +503,7 @@ abstract class IntegrationTest extends FunctionalTestCase
         );
 
         $this->writeSiteConfiguration(
-            'integration_tree_two',
+            $this->getSiteIdentifier('integration_tree_two'),
             $this->buildSiteConfiguration(111, 'http://testtwo.site/'),
             [
                 $defaultLanguage, $german, $danish
@@ -513,7 +514,7 @@ abstract class IntegrationTest extends FunctionalTestCase
         );
 
         $this->writeSiteConfiguration(
-            'integration_tree_three',
+            $this->getSiteIdentifier('integration_tree_three'),
             $this->buildSiteConfiguration(211, 'http://testthree.site/'),
             [$defaultLanguage]
         );
@@ -526,14 +527,25 @@ abstract class IntegrationTest extends FunctionalTestCase
             'solr_path_read' => '/solr/',
             'solr_use_write_connection' => false,
         ];
-        $this->mergeSiteConfiguration('integration_tree_one', $globalSolrSettings);
-        $this->mergeSiteConfiguration('integration_tree_two', $globalSolrSettings);
+        $this->mergeSiteConfiguration($this->getSiteIdentifier('integration_tree_one'), $globalSolrSettings);
+        $this->mergeSiteConfiguration($this->getSiteIdentifier('integration_tree_two'), $globalSolrSettings);
         // disable solr for site three
-        $this->mergeSiteConfiguration('integration_tree_three', ['solr_enabled_read' => false]);
+        $this->mergeSiteConfiguration($this->getSiteIdentifier('integration_tree_three'), ['solr_enabled_read' => false]);
 
         clearstatcache();
         usleep(500);
         self::$lastSiteCreated = $siteCreatedHash;
+    }
+
+    /**
+     * Returns Paratest aware site identifier.
+     *
+     * @param string $identifier
+     * @return string
+     */
+    protected function getSiteIdentifier(string $identifier): string
+    {
+        return $identifier . (getenv('TEST_TOKEN') === false ? '' : '_proc_' . getenv('TEST_TOKEN'));
     }
 
     /**
@@ -554,10 +566,41 @@ abstract class IntegrationTest extends FunctionalTestCase
 
     protected function getSolrConnectionInfo(): array
     {
+        $solr_host = getenv('TESTING_SOLR_HOST') ?: 'localhost';
+        $solr_port = getenv('TESTING_SOLR_PORT') ?: 8999;
+
+        if (getenv('TEST_TOKEN') !== false) {  // Using paratest
+            $testToken = (int)getenv('TEST_TOKEN');
+
+            // use preference chain from most to lowest
+            //   TESTING_PARATEST_SOLR_HOST_PREFIX
+            //   TESTING_PARATEST_SOLR_HOST
+            //   TESTING_SOLR_HOST
+            //   localhost
+            $solr_host = getenv('TESTING_PARATEST_SOLR_HOST') !== false
+                ? getenv('TESTING_PARATEST_SOLR_HOST') . $testToken
+                : $solr_host;
+            $solr_host = getenv('TESTING_PARATEST_SOLR_HOST_PREFIX') !== false
+                ? getenv('TESTING_PARATEST_SOLR_HOST_PREFIX') . $testToken
+                : $solr_host;
+
+            // use preference chain from most to lowest
+            //   TESTING_PARATEST_SOLR_PORT_BEGIN_RANGE
+            //   TESTING_PARATEST_SOLR_PORT
+            //   TESTING_SOLR_PORT
+            //   8999
+            $solr_port = getenv('TESTING_PARATEST_SOLR_PORT') !== false
+                ? (int)getenv('TESTING_PARATEST_SOLR_PORT')
+                : $solr_port;
+            $solr_port = getenv('TESTING_PARATEST_SOLR_PORT_BEGIN_RANGE') !== false
+                ? (int)getenv('TESTING_PARATEST_SOLR_PORT_BEGIN_RANGE') + (int)($testToken) - 1
+                : $solr_port;
+        }
+
         return [
             'scheme' => getenv('TESTING_SOLR_SCHEME') ?: 'http',
-            'host' => getenv('TESTING_SOLR_HOST') ?: 'localhost',
-            'port' => getenv('TESTING_SOLR_PORT') ?: 8999,
+            'host' => $solr_host,
+            'port' => $solr_port
         ];
     }
 

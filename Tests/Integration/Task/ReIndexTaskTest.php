@@ -30,6 +30,7 @@ use ApacheSolrForTypo3\Solr\IndexQueue\Indexer;
 use ApacheSolrForTypo3\Solr\Task\ReIndexTask;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
+use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Localization\LanguageService;
 
@@ -60,19 +61,20 @@ class ReIndexTaskTest extends IntegrationTest
 
     /**
      * @return void
+     * @throws NoSuchCacheException
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->writeDefaultSolrTestSiteConfiguration();
         $this->task = GeneralUtility::makeInstance(ReIndexTask::class);
         $this->indexQueue = GeneralUtility::makeInstance(Queue::class);
 
-        /** @var $beUser  \TYPO3\CMS\Core\Authentication\BackendUserAuthentication */
+        /** @var $beUser  BackendUserAuthentication */
         $beUser = GeneralUtility::makeInstance(BackendUserAuthentication::class);
         $GLOBALS['BE_USER'] = $beUser;
 
-        /** @var $languageService  \TYPO3\CMS\Core\Localization\LanguageService */
+        /** @var $languageService  LanguageService */
         $languageService = GeneralUtility::makeInstance(LanguageService::class);
         $GLOBALS['LANG'] = $languageService;
     }
@@ -134,8 +136,8 @@ class ReIndexTaskTest extends IntegrationTest
         $this->task->setIndexingConfigurationsToReIndex(['pages']);
         $additionalInformation = $this->task->getAdditionalInformation();
 
-        $this->assertContains('Indexing Configurations: pages', $additionalInformation);
-        $this->assertContains('Root Page ID: 1', $additionalInformation);
+        $this->assertStringContainsString('Indexing Configurations: pages', $additionalInformation);
+        $this->assertStringContainsString('Root Page ID: 1', $additionalInformation);
     }
 
     /**
@@ -165,7 +167,7 @@ class ReIndexTaskTest extends IntegrationTest
         // after the task was running the solr server should be empty
         $this->assertSolrIsEmpty();
 
-        // if not we cleanup now
+        // if not we cleanup now anyway for subsequent tests.
         $this->cleanUpSolrServerAndAssertEmpty();
     }
 }

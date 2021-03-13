@@ -1,5 +1,5 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Test\Domain\Search\ResultSet\Sorting;
+namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Sorting;
 
 /***************************************************************
  *  Copyright notice
@@ -48,7 +48,7 @@ class SortingTest extends UnitTest
     /**
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         $this->resultSetMock = $this->getDumbMock(SearchResultSet::class);
 

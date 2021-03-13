@@ -36,7 +36,7 @@ class LastSearchesRepositoryTest extends IntegrationTest
      */
     protected $lastSearchesRepository;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->lastSearchesRepository = GeneralUtility::makeInstance(LastSearchesRepository::class);

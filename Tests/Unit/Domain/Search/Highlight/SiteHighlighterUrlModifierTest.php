@@ -1,5 +1,5 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Test\Domain\Search\Highlight;
+namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\Highlight;
 
 /***************************************************************
  *  Copyright notice

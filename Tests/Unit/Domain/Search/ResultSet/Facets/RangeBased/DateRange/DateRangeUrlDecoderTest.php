@@ -34,7 +34,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author Markus Goldbach
  */
-class DateRangeUrlEncoderTest extends UnitTest
+class DateRangeUrlDecoderTest extends UnitTest
 {
 
     /**
@@ -42,7 +42,7 @@ class DateRangeUrlEncoderTest extends UnitTest
      */
     protected $rangeParser;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->rangeParser = GeneralUtility::makeInstance(DateRangeUrlDecoder::class);
     }

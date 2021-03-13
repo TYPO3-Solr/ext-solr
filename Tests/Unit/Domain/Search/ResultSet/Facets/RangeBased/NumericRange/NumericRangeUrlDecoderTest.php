@@ -1,5 +1,5 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Test\Domain\Search\ResultSet\Facets\RangeBased\NumericRange;
+namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets\RangeBased\NumericRange;
 
 /***************************************************************
  *  Copyright notice
@@ -28,6 +28,7 @@ namespace ApacheSolrForTypo3\Solr\Test\Domain\Search\ResultSet\Facets\RangeBased
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\NumericRange\NumericRangeUrlDecoder;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use InvalidArgumentException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -37,7 +38,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @author Ingo Renner <ingo@typo3.org>
  * @author Markus Friedrich <markus.friedrich@dkd.de>
  */
-class NumericRangeUrlEncoderTest extends UnitTest
+class NumericRangeUrlDecoderTest extends UnitTest
 {
     /**
      * Parser to build Solr range queries
@@ -46,7 +47,7 @@ class NumericRangeUrlEncoderTest extends UnitTest
      */
     protected $rangeParser;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->rangeParser = GeneralUtility::makeInstance(NumericRangeUrlDecoder::class);
     }
@@ -86,11 +87,11 @@ class NumericRangeUrlEncoderTest extends UnitTest
      * Test the handling of invalid parameters
      *
      * @test
-     * @expectedException \InvalidArgumentException
      * @return void
      */
     public function canHandleInvalidParameters()
     {
+        $this->expectException(InvalidArgumentException::class);
         $this->rangeParser->decode('invalid-value');
     }
 }

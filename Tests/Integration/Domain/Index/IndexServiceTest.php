@@ -56,7 +56,7 @@ class IndexServiceTest extends IntegrationTest
      * @return void
      * @throws NoSuchCacheException
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -115,7 +115,7 @@ class IndexServiceTest extends IntegrationTest
 
         $this->importDataSetFromFixture('can_index_custom_record_withBasePrefix_' . $absRefPrefix . '.xml');
 
-        $this->mergeSiteConfiguration('integration_tree_one', ['base' => '/' . $absRefPrefix . '/']);
+        $this->mergeSiteConfiguration($this->getSiteIdentifier('integration_tree_one'), ['base' => '/' . $absRefPrefix . '/']);
 
         $this->addToIndexQueue('tx_fakeextension_domain_model_bar', 111);
 
@@ -138,8 +138,8 @@ class IndexServiceTest extends IntegrationTest
         // do we have the record in the index with the value from the mm relation?
         $this->waitToBeVisibleInSolr();
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
-        $this->assertContains('"numFound":1', $solrContent, 'Could not index document into solr');
-        $this->assertContains('"url":"' . $expectedUrl, $solrContent, 'Generated unexpected url with absRefPrefix = auto');
+        $this->assertStringContainsString('"numFound":1', $solrContent, 'Could not index document into solr');
+        $this->assertStringContainsString('"url":"' . $expectedUrl, $solrContent, 'Generated unexpected url with absRefPrefix = auto');
         $this->cleanUpSolrServerAndAssertEmpty();
     }
 }

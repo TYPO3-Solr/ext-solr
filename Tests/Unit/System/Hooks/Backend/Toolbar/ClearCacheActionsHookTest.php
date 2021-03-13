@@ -50,7 +50,7 @@ class ClearCacheActionsHookTest extends UnitTest
      */
     protected $hook;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->backendUserMock = $this->getDumbMock(BackendUserAuthentication::class);
         $this->uriBuilderMock = $this->getDumbMock(UriBuilder::class);

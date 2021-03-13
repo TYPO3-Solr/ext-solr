@@ -29,8 +29,6 @@ use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\Task\IndexQueueWorkerTask;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
-use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
-use TYPO3\CMS\Core\Charset\CharsetConverter;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Lang\LanguageService;
 
@@ -39,7 +37,7 @@ use TYPO3\CMS\Lang\LanguageService;
  *
  * @author Timo Schmidt
  */
-class IndexQueueWorkerTest extends IntegrationTest
+class IndexQueueWorkerTaskTest extends IntegrationTest
 {
     /**
      * @var Queue
@@ -54,7 +52,7 @@ class IndexQueueWorkerTest extends IntegrationTest
         'scheduler'
     ];
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->indexQueue = GeneralUtility::makeInstance(Queue::class);
@@ -69,14 +67,14 @@ class IndexQueueWorkerTest extends IntegrationTest
         $this->importDataSetFromFixture('can_trigger_frontend_calls_for_page_index.xml');
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $site = $siteRepository->getFirstAvailableSite();
-        /** @var $indexQueueQueueWorkerTask \ApacheSolrForTypo3\Solr\Task\IndexQueueWorkerTask */
+        /** @var $indexQueueQueueWorkerTask IndexQueueWorkerTask */
         $indexQueueQueueWorkerTask = GeneralUtility::makeInstance(IndexQueueWorkerTask::class);
         $indexQueueQueueWorkerTask->setDocumentsToIndexLimit(1);
         $indexQueueQueueWorkerTask->setRootPageId($site->getRootPageId());
 
         $additionalInformation = $indexQueueQueueWorkerTask->getAdditionalInformation();
 
-        $this->assertContains('Root Page ID: 1', $additionalInformation);
-        $this->assertContains('Site: page for testing', $additionalInformation);
+        $this->assertStringContainsString('Root Page ID: 1', $additionalInformation);
+        $this->assertStringContainsString('Site: page for testing', $additionalInformation);
     }
 }

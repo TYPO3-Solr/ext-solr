@@ -55,7 +55,7 @@ class RecordMonitorTest extends IntegrationTest
      */
     protected $indexQueue;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->writeDefaultSolrTestSiteConfiguration();
@@ -64,7 +64,7 @@ class RecordMonitorTest extends IntegrationTest
         $this->indexQueue = GeneralUtility::makeInstance(Queue::class);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->recordMonitor, $this->dataHandler, $this->indexQueue);
         parent::tearDown();
@@ -127,7 +127,7 @@ class RecordMonitorTest extends IntegrationTest
         $output = trim(ob_get_contents());
         ob_end_clean();
 
-        $this->assertNotContains('You have an error in your SQL syntax', $output,
+        $this->assertStringNotContainsString('You have an error in your SQL syntax', $output,
             'We expect no sql error during the update of a regular page root record');
 
         // we expect to have an index queue item now

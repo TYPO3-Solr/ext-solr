@@ -33,7 +33,7 @@ use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
  *
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class FrontendSessionTest extends UnitTest
+class FrontendUserSessionTest extends UnitTest
 {
 
     /**
@@ -46,7 +46,7 @@ class FrontendSessionTest extends UnitTest
      */
     protected $session;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->feUserMock = $this->getDumbMock(FrontendUserAuthentication::class);

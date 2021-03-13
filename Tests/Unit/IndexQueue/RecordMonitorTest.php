@@ -84,7 +84,7 @@ class RecordMonitorTest extends UnitTest
      */
     protected $recordServiceMock;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->queueMock = $this->getDumbMock(Queue::class);
         $this->mountPageUpdaterMock = $this->getDumbMock(MountPagesUpdater::class);

@@ -89,7 +89,7 @@ class SearchResultSetTest extends UnitTest
     /**
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         $this->configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
         $this->searchMock = $this->getDumbMock(Search::class);
@@ -193,8 +193,8 @@ class SearchResultSetTest extends UnitTest
 
         $processSearchResponseBackup = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['afterSearch'];
 
-        $testProcessor = TestSearchResultSetProcessor::class;
-        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['afterSearch']['testProcessor'] = $testProcessor;
+//        $testProcessor = TestSearchResultSetProcessor::class;
+        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['afterSearch']['testProcessor'] = TestSearchResultSetProcessor::class;
         $this->fakeRegisteredSearchComponents([]);
 
         $fakedSolrResponse = $this->getFixtureContentByName('fakeResponse.json');
@@ -204,8 +204,19 @@ class SearchResultSetTest extends UnitTest
         $fakeRequest = new SearchRequest(['tx_solr' => ['q' => 'my 4. search']]);
         $fakeRequest->setResultsPerPage(10);
 
-        $this->objectManagerMock->expects($this->at(0))->method('get')->with(SearchResultSet::class)->willReturn(new SearchResultSet());
-        $this->objectManagerMock->expects($this->at(1))->method('get')->with($testProcessor)->willReturn(new TestSearchResultSetProcessor());
+        $this->objectManagerMock->method('get')->will(
+            $this->returnValueMap(
+                [
+                    [
+                        TestSearchResultSetProcessor::class, new TestSearchResultSetProcessor()
+                    ],
+                    [
+                        SearchResultSet::class, new SearchResultSet()
+                    ]
+                ]
+            )
+        );
+
 
         $resultSet  = $this->searchResultSetService->search($fakeRequest);
 
