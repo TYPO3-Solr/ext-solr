@@ -11,8 +11,6 @@ function SuggestController() {
                 $formAutoComplete = $('body');
             }
 
-            $form.find('.tx-solr-suggest-focus').focus();
-
             jQuery.ajaxSetup({jsonp: "tx_solr[callback]"});
 
             // when no specific container found, use the form as container
