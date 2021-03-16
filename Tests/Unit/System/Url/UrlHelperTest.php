@@ -161,4 +161,40 @@ class UrlHelperTest extends UnitTest
         $urlHelper = new UrlHelper($uri);
         $this->assertSame($uri, $urlHelper->getUrl(), 'Could not get unmodified url');
     }
+
+    /**
+     * @test
+     */
+    public function ifNoSchemeIsGivenGetSchemeReturnsAnEmptyString(): void
+    {
+        $urlHelper = new UrlHelper('www.google.de');
+        $this->assertSame('', $urlHelper->getScheme());
+    }
+
+    /**
+     * @test
+     */
+    public function ifNoPathIsGivenGetPathReturnsAnEmptyString(): void
+    {
+        $urlHelper = new UrlHelper('https://www.google.de');
+        $this->assertSame('', $urlHelper->getPath());
+    }
+
+    /**
+     * @test
+     */
+    public function ifNoPortIsGivenGetPortReturnsAnEmptyString(): void
+    {
+        $urlHelper = new UrlHelper('https://www.google.de');
+        $this->assertSame('', $urlHelper->getPort());
+    }
+
+    /**
+     * @test
+     */
+    public function ifNoHostIsGivenGetHostReturnsAnEmptyString(): void
+    {
+        $urlHelper = new UrlHelper('/my/path/to/a/site');
+        $this->assertSame('', $urlHelper->getHost());
+    }
 }
