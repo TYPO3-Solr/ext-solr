@@ -27,6 +27,7 @@ namespace ApacheSolrForTypo3\Solr\Backend;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use TYPO3\CMS\Backend\Form\FormResultCompiler;
 use TYPO3\CMS\Backend\Form\NodeFactory;
+use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -159,15 +160,13 @@ class IndexingConfigurationSelectorField
     protected function buildSelectorItems(array $tablesToIndex)
     {
         $selectorItems = [];
+        $iconFactory = GeneralUtility::makeInstance(IconFactory::class);
 
         foreach ($tablesToIndex as $configurationName => $tableName) {
-            $icon = 'tcarecords-' . $tableName . '-default';
-            if ($tableName === 'pages') {
-                $icon = 'apps-pagetree-page-default';
-            }
+            $icon = $iconFactory->mapRecordTypeToIconIdentifier($tableName, []);
 
             $labelTableName = '';
-            if ($configurationName != $tableName) {
+            if ($configurationName !== $tableName) {
                 $labelTableName = ' (' . $tableName . ')';
             }
 
