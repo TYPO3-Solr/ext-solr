@@ -39,6 +39,9 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class SiteUtility
 {
 
+    /** @var array */
+    public static $languages = [];
+
     /**
      * Determines if the site where the page belongs to is managed with the TYPO3 site management.
      *
@@ -113,8 +116,10 @@ class SiteUtility
         $fallbackKey = 'solr_' . $property . '_read';
 
         // try to find language specific setting if found return it
-        $languageSpecificConfiguration = $typo3Site->getLanguageById($languageId)->toArray();
-        $value = self::getValueOrFallback($languageSpecificConfiguration, $keyToCheck, $fallbackKey);
+        if (isset(self::$languages[$languageId]) === false) {
+            self::$languages[$languageId] = $typo3Site->getLanguageById($languageId)->toArray();
+        }
+        $value = self::getValueOrFallback(self::$languages[$languageId], $keyToCheck, $fallbackKey);
         if ($value !== null) {
             return $value;
         }
@@ -134,8 +139,10 @@ class SiteUtility
      */
     protected static function writeConnectionIsEnabled(Site $typo3Site, int $languageId): bool
     {
-        $languageSpecificConfiguration = $typo3Site->getLanguageById($languageId)->toArray();
-        $value = self::getValueOrFallback($languageSpecificConfiguration, 'solr_use_write_connection', 'solr_use_write_connection');
+        if (isset(self::$languages[$languageId]) === false) {
+            self::$languages[$languageId] = $typo3Site->getLanguageById($languageId)->toArray();
+        }
+        $value = self::getValueOrFallback(self::$languages[$languageId], 'solr_use_write_connection', 'solr_use_write_connection');
         if ($value !== null) {
             return $value;
         }
