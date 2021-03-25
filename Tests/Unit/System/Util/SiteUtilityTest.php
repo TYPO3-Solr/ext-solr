@@ -36,6 +36,11 @@ use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
  */
 class SiteUtilityTest extends UnitTest
 {
+    public function tearDown()
+    {
+        SiteUtility::$languages = [];
+    }
+
     /**
      * @test
      */
