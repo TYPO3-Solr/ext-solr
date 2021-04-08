@@ -496,9 +496,7 @@ abstract class IntegrationTest extends FunctionalTestCase
             [
                 $defaultLanguage, $german, $danish
             ],
-            [
-                $this->buildErrorHandlingConfiguration('Fluid', [404])
-            ]
+            $this->buildErrorHandlingConfiguration('Fluid', [404])
         );
 
         $this->writeSiteConfiguration(
@@ -507,9 +505,7 @@ abstract class IntegrationTest extends FunctionalTestCase
             [
                 $defaultLanguage, $german, $danish
             ],
-            [
-                $this->buildErrorHandlingConfiguration('Fluid', [404])
-            ]
+            $this->buildErrorHandlingConfiguration('Fluid', [404])
         );
 
         $this->writeSiteConfiguration(
