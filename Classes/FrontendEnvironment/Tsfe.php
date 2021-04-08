@@ -91,7 +91,8 @@ class Tsfe implements SingletonInterface
             $this->requestCache[$cacheId] = $request
                 ->withAttribute('site', $site)
                 ->withAttribute('language', $siteLanguage)
-                ->withAttribute('applicationType', SystemEnvironmentBuilder::REQUESTTYPE_FE);
+                ->withAttribute('applicationType', SystemEnvironmentBuilder::REQUESTTYPE_FE)
+                ->withUri($site->getBase());
         }
         $GLOBALS['TYPO3_REQUEST'] = $this->requestCache[$cacheId];
 
