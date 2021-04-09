@@ -28,6 +28,11 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class CachedPathVariableModifier
 {
+    /**
+     * @var RoutingService
+     */
+    protected $routingService;
+
     public function __invoke(BeforeProcessCachedVariablesEvent $event): void
     {
         if (!$event->hasRouting()) {
@@ -44,30 +49,31 @@ class CachedPathVariableModifier
         $variableValues = $event->getVariableValues();
         $enhancerConfiguration = $event->getRouterConfiguration();
 
-        /* @var RoutingService $routingService */
-        $routingService = GeneralUtility::makeInstance(
+        $this->routingService = GeneralUtility::makeInstance(
             RoutingService::class,
             $enhancerConfiguration['solr'],
             (string)$enhancerConfiguration['extensionKey']
         );
 
-        if (!$routingService->isRouteEnhancerForSolr((string)$enhancerConfiguration['type'])) {
+        if (!$this->routingService->isRouteEnhancerForSolr((string)$enhancerConfiguration['type'])) {
             return;
         }
 
-        $multiValue = true;
+        // TODO: Detect multiValue? Could be removed?
+        $multiValue = false;
 
         $standardizedKeys = $variableKeys;
 
         for ($i = 0; $i < count($variableKeys); $i++) {
             $standardizedKey = $this->standardizeKey($variableKeys[$i]);
-            if (!in_array($standardizedKey, $pathVariables) || empty($variableValues[$standardizedKey])) {
+            if (!$this->containsPathVariable($standardizedKey, $pathVariables) || empty($variableValues[$standardizedKey])) {
                 continue;
             }
             $value = '';
+            // Note: Some values contain the multi value separator
             if ($multiValue) {
                 // Note: if the customer configured a + as separator an additional check on the facet value is required!
-                $facets = $routingService->pathFacetStringToArray(
+                $facets = $this->routingService->pathFacetStringToArray(
                     $this->standardizeKey((string)$variableValues[$standardizedKey])
                 );
 
@@ -86,7 +92,7 @@ class CachedPathVariableModifier
                         $singleValues[$index - 1] .= ' ' . $facet;
                     }
                 }
-                $value = $routingService->pathFacetsToString($singleValues);
+                $value = $this->routingService->pathFacetsToString($singleValues);
             } else {
                 [$prefix, $value] = explode(
                     ':',
@@ -141,5 +147,27 @@ class CachedPathVariableModifier
             '%3A' => ':',
         ];
         return str_replace(array_keys($map), array_values($map), $key);
+    }
+
+    /**
+     * Check if the variable is includes within the path variables
+     *
+     * @param string $variableName
+     * @param array $pathVariables
+     * @return bool
+     */
+    protected function containsPathVariable(string $variableName, array $pathVariables): bool
+    {
+        if (in_array($variableName, $pathVariables)) {
+            return true;
+        }
+        foreach ($pathVariables as $keyName => $value) {
+            $segments = explode($this->routingService->getUrlFacetPathService()->getMultiValueSeparator(), $value);
+            if (in_array($variableName, $segments)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
