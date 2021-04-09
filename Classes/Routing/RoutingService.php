@@ -77,6 +77,16 @@ class RoutingService implements LoggerAwareInterface
     protected $coreParameters = ['no_cache', 'cHash', 'id', 'MP', 'type'];
 
     /**
+     * @var UrlFacetService
+     */
+    protected $urlFacetPathService;
+
+    /**
+     * @var UrlFacetService
+     */
+    protected $urlFacetQueryService;
+
+    /**
      * RoutingService constructor.
      *
      * @param array $settings
@@ -89,6 +99,7 @@ class RoutingService implements LoggerAwareInterface
         if (empty($this->pluginNamespace)) {
             $this->pluginNamespace = self::PLUGIN_NAMESPACE;
         }
+        $this->initUrlFacetService();
     }
 
     /**
@@ -101,6 +112,7 @@ class RoutingService implements LoggerAwareInterface
     {
         $service = clone $this;
         $service->settings = $settings;
+        $service->initUrlFacetService();
         return $service;
     }
 
@@ -114,6 +126,7 @@ class RoutingService implements LoggerAwareInterface
     {
         $service = clone $this;
         $service->pathArguments = $pathArguments;
+        $service->initUrlFacetService();
         return $service;
     }
 
@@ -133,12 +146,12 @@ class RoutingService implements LoggerAwareInterface
 
         if (isset($routingConfiguration['solr'])) {
             $this->settings = $routingConfiguration['solr'];
+            $this->initUrlFacetService();
         }
 
         if (isset($routingConfiguration['_arguments'])) {
             $this->pathArguments = $routingConfiguration['_arguments'];
         }
-
 
         return $this;
     }
@@ -154,6 +167,35 @@ class RoutingService implements LoggerAwareInterface
         $this->pathArguments = [];
         $this->pluginNamespace = self::PLUGIN_NAMESPACE;
         return $this;
+    }
+
+    /**
+     * Initialize url facet services for different types
+     *
+     * @return $this
+     */
+    protected function initUrlFacetService(): RoutingService
+    {
+        $this->urlFacetPathService = new UrlFacetService('path', $this->settings);
+        $this->urlFacetQueryService = new UrlFacetService('query', $this->settings);
+
+        return $this;
+    }
+
+    /**
+     * @return UrlFacetService
+     */
+    public function getUrlFacetPathService(): UrlFacetService
+    {
+        return $this->urlFacetPathService;
+    }
+
+    /**
+     * @return UrlFacetService
+     */
+    public function getUrlFacetQueryService(): UrlFacetService
+    {
+        return $this->urlFacetQueryService;
     }
 
     /**
@@ -215,8 +257,8 @@ class RoutingService implements LoggerAwareInterface
     {
         $pathSegments = explode('/', $uriPath);
         $query = array_pop($pathSegments);
-        $queryValues = explode($this->getMultiValueSeparatorForPathSegment(), $query);
-
+        $queryValues = explode($this->urlFacetPathService->getMultiValueSeparator(), $query);
+        $queryValues = array_map([$this->urlFacetPathService, 'decodeSingleValue'], $queryValues);
         /*
          * In some constellations the path query contains the facet type in front.
          * This leads to the result, that the query values could contain the same facet value multiple times.
@@ -240,14 +282,14 @@ class RoutingService implements LoggerAwareInterface
                 }
 
             }
-            $queryValues[$i] = $this->encodeStringForPathSegment($queryValues[$i]);
+            $queryValues[$i] = $this->urlFacetPathService->applyCharacterMap($queryValues[$i]);
         }
 
         $queryValues = array_unique($queryValues);
+        $queryValues = array_map([$this->urlFacetPathService, 'encodeSingleValue'], $queryValues);
         sort($queryValues);
-
         $pathSegments[] = implode(
-            $this->getMultiValueSeparatorForPathSegment(),
+            $this->urlFacetPathService->getMultiValueSeparator(),
             $queryValues
         );
         return implode('/', $pathSegments);
@@ -547,8 +589,19 @@ class RoutingService implements LoggerAwareInterface
         foreach ($queryParams[$this->getPluginNamespace()]['filter'] as $set) {
             $separator = $this->detectFacetAndValueSeparator((string)$set);
             [$facetName, $facetValuesString] = explode($separator, $set, 2);
+            $facetValues = [$facetValuesString];
+            $facetValues = explode($this->urlFacetQueryService->getMultiValueSeparator(), $facetValuesString);
 
-            $facetValues = explode($this->getQueryParameterValueSeparator(), $facetValuesString);
+            /**
+             * A facet value could contain the multi value separator. This value is masked in order to
+             * avoid problems during separation of the values (line above).
+             *
+             * After splitting the values, the character inside the value need to be restored
+             *
+             * @see RoutingService::queryParameterFacetsToString
+             */
+            $facetValues = array_map([$this->urlFacetQueryService, 'decodeSingleValue'], $facetValues);
+
             foreach ($facetValues as $facetValue) {
                 $newQueryParams[] = $facetName . $separator . $facetValue;
             }
@@ -579,13 +632,19 @@ class RoutingService implements LoggerAwareInterface
     /**
      * Builds a string out of multiple facet values
      *
+     * A facet value could contain the multi value separator. This value have to masked in order to
+     * avoid problems during separation of the values later.
+     *
+     * This mask have to apply before contact the values
+     *
      * @param array $facets
      * @return string
      */
     public function queryParameterFacetsToString(array $facets): string
     {
+        $facets = array_map([$this->urlFacetQueryService, 'encodeSingleValue'], $facets);
         sort($facets);
-        return implode($this->getQueryParameterValueSeparator(), $facets);
+        return implode($this->urlFacetQueryService->getMultiValueSeparator(), $facets);
     }
 
     /**
@@ -617,109 +676,6 @@ class RoutingService implements LoggerAwareInterface
         }
 
         return true;
-    }
-
-    /**
-     * Returns the mapping array to replace characters within a facet value for a given type
-     *
-     * @param string $type
-     * @return array
-     */
-    protected function getReplacementMap(string $type): array
-    {
-        if (is_array($this->settings['facet-' . $type]['replaceCharacters'])) {
-            return $this->settings['facet-' . $type]['replaceCharacters'];
-        }
-        if (is_array($this->settings['replaceCharacters'])) {
-            return $this->settings['replaceCharacters'];
-        }
-        return [];
-    }
-
-    /**
-     * Apply character map for a given type and url encode it
-     *
-     * @param string $type
-     * @param string $string
-     * @return string
-     */
-    public function applyCharacterReplacementForType(string $type, string $string): string
-    {
-        $replacementMap = $this->getReplacementMap($type);
-        if (!empty($replacementMap)) {
-            foreach ($replacementMap as $search => $replace) {
-                $string = str_replace($search, $replace, $string);
-            }
-        }
-
-        return urlencode($string);
-    }
-
-    /**
-     * Encode a string for path segment
-     *
-     * @param string $string
-     * @return string
-     */
-    public function encodeStringForPathSegment(string $string): string
-    {
-        return $this->applyCharacterReplacementForType(
-            'path',
-            $string
-        );
-    }
-
-    /**
-     * Encode a string for path segment
-     *
-     * @param string $string
-     * @return string
-     */
-    public function decodeStringForPathSegment(string $string): string
-    {
-        $replacementMap = $this->getReplacementMap('path');
-        $string = urldecode($string);
-
-        if (!empty($replacementMap)) {
-            foreach ($replacementMap as $search => $replace) {
-                $string = str_replace($replace, $search, $string);
-            }
-        }
-
-        return $string;
-    }
-
-    /**
-     * Encode a string for query value
-     *
-     * @param string $string
-     * @return string
-     */
-    public function encodeStringForQueryValue(string $string): string
-    {
-        return $this->applyCharacterReplacementForType(
-            'query',
-            $string
-        );
-    }
-
-    /**
-     * Encode a string for path segment
-     *
-     * @param string $string
-     * @return string
-     */
-    public function decodeStringForQueryValue(string $string): string
-    {
-        $replacementMap = $this->getReplacementMap('query');
-        $string = urldecode($string);
-        if (!empty($replacementMap)) {
-            foreach ($replacementMap as $search => $replace) {
-                $string = str_replace($replace, $search, $string);
-            }
-        }
-
-        return $string;
     }
 
     /**
@@ -755,10 +711,9 @@ class RoutingService implements LoggerAwareInterface
     {
         $facets = $this->cleanupFacetValues($facets);
         sort($facets);
-        for ($i = 0; $i < count($facets); $i++) {
-            $facets[$i] = $this->encodeStringForPathSegment($facets[$i]);
-        }
-        return implode($this->getDefaultMultiValueSeparator(), $facets);
+        $facets = array_map([$this->urlFacetPathService, 'applyCharacterMap'], $facets);
+        $facets = array_map([$this->urlFacetPathService, 'encodeSingleValue'], $facets);
+        return implode($this->urlFacetPathService->getMultiValueSeparator(), $facets);
     }
 
     /**
@@ -777,24 +732,22 @@ class RoutingService implements LoggerAwareInterface
     /**
      * Builds a string out of multiple facet values
      *
-     * @param string $facets
-     * @return array
-     */
-    public function pathFacetStringToArray(string $facets): array
-    {
-        $facets = $this->decodeStringForPathSegment($facets);
-        return explode($this->getDefaultMultiValueSeparator(), $facets);
-    }
-
-    /**
-     * Builds a string out of multiple facet values
+     * This method is used in two different situation
+     *  1. Middleware: Here the values should not be decoded
+     *  2. Within the event listener CachedPathVariableModifier
      *
      * @param string $facets
+     * @param bool $decode
      * @return array
      */
-    public function facetStringToArray(string $facets): array
+    public function pathFacetStringToArray(string $facets, bool $decode = true): array
     {
-        return explode($this->getDefaultMultiValueSeparator(), $facets);
+        $facetString = $this->urlFacetPathService->applyCharacterMap($facets);
+        $facets = explode($this->urlFacetPathService->getMultiValueSeparator(), $facetString);
+        if (!$decode) {
+            return $facets;
+        }
+        return array_map([$this->urlFacetPathService, 'decodeSingleValue'], $facets);
     }
 
     /**
@@ -804,36 +757,6 @@ class RoutingService implements LoggerAwareInterface
     public function getDefaultMultiValueSeparator(): string
     {
         return $this->settings['multiValueSeparator'] ?? ',';
-    }
-
-    /**
-     * Returns the multi value separator for query parameters
-     *
-     * @return string
-     */
-    public function getQueryParameterValueSeparator(): string
-    {
-        if (isset($this->settings['query']['multiValueSeparator'])) {
-            return (string)$this->settings['query']['multiValueSeparator'];
-        }
-
-        // Fall back
-        return $this->getDefaultMultiValueSeparator();
-    }
-
-    /**
-     * Returns the multi value separator for query parameters
-     *
-     * @return string
-     */
-    public function getMultiValueSeparatorForPathSegment(): string
-    {
-        if (isset($this->settings['path']['multiValueSeparator'])) {
-            return (string)$this->settings['path']['multiValueSeparator'];
-        }
-
-        // Fall back
-        return $this->getDefaultMultiValueSeparator();
     }
 
     /**
@@ -1160,12 +1083,12 @@ class RoutingService implements LoggerAwareInterface
         if (strpos($queryKey, '-') !== false) {
             [$queryKey, $filterName] = explode('-', $queryKey, 2);
             // explode multiple values
-            $values = $this->pathFacetStringToArray($parameters[$fieldName]);
+            $values = $this->pathFacetStringToArray($parameters[$fieldName], false);
             sort($values);
 
             // @TODO: Support URL data bag
             foreach ($values as $value) {
-                $value = $this->decodeStringForPathSegment($value);
+                $value = $this->urlFacetPathService->applyCharacterMap($value);
                 $queryParams[$queryKey][] = $filterName . ':' . $value;
             }
         } else {
