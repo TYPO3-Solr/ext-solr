@@ -111,38 +111,6 @@ class RoutingServiceTest extends UnitTest
 
     /**
      * @test
-     * @covers \ApacheSolrForTypo3\Solr\Routing\RoutingService::facetStringToArray
-     */
-    public function canExplodeStringToArrayTest()
-    {
-        $routingService = new RoutingService([]);
-
-        $this->assertEquals(
-            ['bar', 'buz', 'foo'],
-            $routingService->facetStringToArray('bar,buz,foo')
-        );
-    }
-
-    /**
-     * @test
-     * @covers \ApacheSolrForTypo3\Solr\Routing\RoutingService::facetStringToArray
-     */
-    public function canExplodeStringToArrayWithCustomSeparatorTest()
-    {
-        $routingService = new RoutingService(
-            [
-                'multiValueSeparator' => '+'
-            ]
-        );
-
-        $this->assertEquals(
-            ['bar', 'buz', 'foo'],
-            $routingService->facetStringToArray('bar+buz+foo')
-        );
-    }
-
-    /**
-     * @test
      * @covers \ApacheSolrForTypo3\Solr\Routing\RoutingService::convertStringIntoUri
      */
     public function canConvertStringToUriTest()
@@ -183,6 +151,7 @@ class RoutingServiceTest extends UnitTest
                     'product:sweets',
                     'color:green',
                     'taste:matcha',
+                    'taste:sour,matcha',
                     'color:red',
                     'product:candy',
                 ]
@@ -196,7 +165,7 @@ class RoutingServiceTest extends UnitTest
             'tx_solr' => [
                 'filter' => [
                     'color:green,red,yellow',
-                    'taste:matcha,sour',
+                    'taste:matcha,sour,sour°matcha',
                     'product:candy,sweets'
                 ]
             ]
@@ -222,7 +191,7 @@ class RoutingServiceTest extends UnitTest
                 'filter' => [
                     'color:green,red,yellow',
                     'product:candy,sweets',
-                    'taste:matcha,sour'
+                    'taste:matcha,sour,sour°matcha'
                 ]
             ]
         ];
@@ -239,7 +208,8 @@ class RoutingServiceTest extends UnitTest
                     'product:candy',
                     'product:sweets',
                     'taste:matcha',
-                    'taste:sour'
+                    'taste:sour',
+                    'taste:sour,matcha'
                 ]
             ]
         ];
