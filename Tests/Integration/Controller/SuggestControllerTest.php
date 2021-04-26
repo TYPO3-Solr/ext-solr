@@ -1,50 +1,34 @@
 <?php
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\Controller;
 
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2018 Timo Hund <timo.hund@dkd.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 
 use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageFieldMappingIndexer;
-use ApacheSolrForTypo3\Solr\Typo3PageIndexer;
-use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
-use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use ApacheSolrForTypo3\Solr\Controller\SuggestController;
-use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\TimeTracker\TimeTracker;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Mvc\Exception\StopActionException;
 use TYPO3\CMS\Extbase\Mvc\Request;
-use TYPO3\CMS\Extbase\Mvc\Web\Response;
+use TYPO3\CMS\Extbase\Mvc\Response;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
-use TYPO3\CMS\Fluid\View\Exception\InvalidTemplateResourceException;
-use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
-use TYPO3\CMS\Frontend\Page\PageGenerator;
 
 /**
  * Integration testcase to test for the SuggestController
  *
  * @author Timo Hund
+ * @copyright (c) 2018 Timo Hund <timo.hund@dkd.de>
+ * @group frontend
  */
 class SuggestControllerTest extends AbstractFrontendControllerTest
 {
@@ -76,18 +60,15 @@ class SuggestControllerTest extends AbstractFrontendControllerTest
 
         $GLOBALS['TT'] = $this->getMockBuilder(TimeTracker::class)->disableOriginalConstructor()->getMock();
 
-        /** @var  $searchController SearchController */
         $this->suggestController = $this->objectManager->get(SuggestController::class);
         $this->suggestRequest = $this->getPreparedRequest('Suggest', 'suggest');
         $this->suggestResponse = $this->getPreparedResponse();
 
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageSubstitutePageDocument'][PageFieldMappingIndexer::class] = PageFieldMappingIndexer::class;
-
     }
 
     /**
      * @test
-     * @group frontend
      */
     public function canDoABasicSuggest()
     {
@@ -103,5 +84,43 @@ class SuggestControllerTest extends AbstractFrontendControllerTest
 
         //we assume to get suggestions like Sweatshirt
         $this->assertContains('suggestions":{"sweatshirts":2}', $result, 'Response did not contain sweatshirt suggestions');
+    }
+
+    /**
+     * @test
+     */
+    public function canSuggestWithUriSpecialChars()
+    {
+        $this->importDataSetFromFixture('can_suggest_with_uri_special_chars.xml');
+        $GLOBALS['TSFE'] = $this->getConfiguredTSFE(1);
+        $this->indexPages([1, 2, 3, 4]);
+
+        // @todo: add more variants
+        // @TODO: Check why does solr return some/larg instead of some/large
+        $testCases = [
+            [
+                'prefix' => 'Some/',
+                'expected' => 'suggestions":{"some/":1,"some/larg":1,"some/large/path":1}'
+            ],
+            [
+                'prefix' => 'Some/Large',
+                'expected' => 'suggestions":{"some/large/path":1}'
+            ],
+        ];
+        foreach ($testCases as $testCase) {
+            $this->expectSuggested($testCase['prefix'], $testCase['expected']);
+        }
+    }
+
+    protected function expectSuggested(string $prefix, string $expected)
+    {
+        $this->suggestRequest->setArgument('queryString', $prefix);
+        $this->suggestRequest->setArgument('callback', 'rand');
+
+        $this->suggestController->processRequest($this->suggestRequest, $this->suggestResponse);
+        $result = $this->suggestResponse->getContent();
+
+        //we assume to get suggestions like Sweatshirt
+        $this->assertContains($expected, $result, 'Response did not contain expected suggestions: ' . $expected);
     }
 }
