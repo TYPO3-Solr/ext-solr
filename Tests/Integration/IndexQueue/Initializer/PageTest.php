@@ -27,8 +27,8 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\IndexQueue\Initializer;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\IndexQueue\Initializer\Page;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
-use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
+use Exception;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -94,6 +94,9 @@ class PageTest extends IntegrationTest
 
         foreach($sites as $site) {
             $this->pageInitializer->setIndexingConfigurationName('pages');
+            $this->pageInitializer->setIndexingConfiguration(
+                $site->getSolrConfiguration()->getIndexQueueConfigurationByName('pages')
+            );
             $this->pageInitializer->setSite($site);
             $this->pageInitializer->setType('pages');
             $this->pageInitializer->initialize();
@@ -263,5 +266,29 @@ class PageTest extends IntegrationTest
         $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);
         $flashMessageQueue = $flashMessageService->getMessageQueueByIdentifier('solr.queue.initializer');
         $this->assertEquals(2, count($flashMessageQueue->getAllMessages()));
+    }
+
+    /**
+     * The test case for `additionalWhereClause` restrictions.
+     *
+     * The initializer MUST ignore only the pages, which matching the `additionalWhereClause`,
+     * and NOT the whole sub-tree of them, because The Record-Monitoring stack ignores the state of parents-tree
+     * and adds the pages to the index queue anyway.
+     *
+     * @test
+     */
+    public function initializerDoesNotIgnoreSubPagesOfRestrictedByAdditionalWhereClauseParents()
+    {
+        $this->importDataSetFromFixture('initializer_does_not_ignore_sub_pages_of_restricted_by_additionalWhereClause_parents.xml');
+        $this->assertEmptyQueue();
+        $this->initializeAllPageIndexQueues();
+
+        $this->assertItemsInQueue(1);
+
+        $this->assertTrue(
+            $this->indexQueue->containsItem('pages', 2),
+            'The index queue does not contain the sub pages of restricted by additionalWhereClause page.' . PHP_EOL
+            . 'The initializer MUST NOT ignore the sub pages of restricted pages.'
+        );
     }
 }

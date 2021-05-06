@@ -64,14 +64,24 @@
         <pid>0</pid>
         <title>Root page</title>
     </pages>
-    <pages>
-        <uid>10</uid>
-        <is_siteroot>0</is_siteroot>
-        <doktype>7</doktype>
-        <mount_pid>2</mount_pid>
-        <pid>1</pid>
-        <title>Mount Point</title>
-    </pages>
+		<pages>
+			<uid>10</uid>
+			<is_siteroot>0</is_siteroot>
+			<doktype>7</doktype>
+			<mount_pid>2</mount_pid>
+			<pid>1</pid>
+			<title>Mount Point</title>
+		</pages>
+
+		<pages>
+			<uid>40</uid>
+			<is_siteroot>0</is_siteroot>
+			<doktype>7</doktype>
+			<pid>1</pid>
+			<mount_pid>0</mount_pid>
+			<title>Invalid Mount Point</title>
+		</pages>
+
     <pages>
         <uid>2</uid>
         <is_siteroot>1</is_siteroot>
@@ -79,19 +89,11 @@
         <pid>0</pid>
         <title>Mounted</title>
     </pages>
-    <pages>
-        <uid>20</uid>
-        <is_siteroot>0</is_siteroot>
-        <doktype>1</doktype>
-        <pid>2</pid>
-        <title>Child of Mounter</title>
-    </pages>
-    <pages>
-        <uid>40</uid>
-        <is_siteroot>0</is_siteroot>
-        <doktype>7</doktype>
-        <pid>1</pid>
-        <mount_pid>0</mount_pid>
-        <title>Invalid Mount Point</title>
-    </pages>
+		<pages>
+			<uid>20</uid>
+			<is_siteroot>0</is_siteroot>
+			<doktype>1</doktype>
+			<pid>2</pid>
+			<title>Child of Mounter</title>
+		</pages>
 </dataset>
