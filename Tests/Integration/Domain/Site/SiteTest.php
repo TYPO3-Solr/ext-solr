@@ -105,7 +105,6 @@ class SiteTest extends IntegrationTest
         $this->site = $siteRepository->getSiteByRootPageId(2);
     }
 
-
     /**
      * @test
      */

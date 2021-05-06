@@ -27,11 +27,12 @@ namespace ApacheSolrForTypo3\Solr\System\Records\Pages;
 
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\System\Records\AbstractRepository;
-use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
+use TYPO3\CMS\Core\Database\Query\QueryHelper;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
+use TYPO3\CMS\Core\Database\QueryGenerator;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -142,35 +143,33 @@ class PagesRepository extends AbstractRepository
 
     /**
      * Generates a list of page IDs in this site.
-     * Attention: Includes all page types except Deleted pages!
+     * Attentions:
+     * * Includes all page types except Deleted pages!
      *
      * @param int $rootPageId Page ID from where to start collection sub pages
-     * @param int $maxDepth Maximum depth to descend into the site tree
      * @param string $initialPagesAdditionalWhereClause
      * @return array Array of pages (IDs) in this site
+     * @noinspection PhpArrayUsedOnlyForWriteInspection
      */
-    public function findAllSubPageIdsByRootPage(int $rootPageId, int $maxDepth = 999, string $initialPagesAdditionalWhereClause = '') : array
-    {
-        $pageIds = [];
+    public function findAllSubPageIdsByRootPage(
+        int $rootPageId,
+        string $initialPagesAdditionalWhereClause = ''
+    ) : array {
 
-        $recursionRootPageId = $rootPageId;
-
-        // when we have a cached value, we can return it.
-        $cacheIdentifier = sha1('getPages' . (string)$rootPageId);
+        $cacheIdentifier = sha1('getPages' . (string)$rootPageId . $initialPagesAdditionalWhereClause);
         if ($this->transientVariableCache->get($cacheIdentifier) !== false) {
             return $this->transientVariableCache->get($cacheIdentifier);
         }
 
-        if ($maxDepth <= 0) {
-            // exiting the recursion loop, may write to cache now
-            $this->transientVariableCache->set($cacheIdentifier, $pageIds);
-            return $pageIds;
+        /* @var QueryGenerator $queryGenerator */
+        $queryGenerator = GeneralUtility::makeInstance(QueryGenerator::class);
+        $pageIdsList = $queryGenerator->getTreeList($rootPageId, 9999, 'deleted = 0');
+        $pageIds = GeneralUtility::intExplode(',', $pageIdsList);
+
+        if (!empty($initialPagesAdditionalWhereClause)) {
+            $pageIds = $this->filterPageIdsByInitialPagesAdditionalWhereClause($pageIds, $initialPagesAdditionalWhereClause);
         }
 
-        // get the page ids of the current level and if needed call getPages recursive
-        $pageIds = $this->getPageIdsFromCurrentDepthAndCallRecursive($maxDepth, $recursionRootPageId, $pageIds, $initialPagesAdditionalWhereClause);
-
-        // exiting the recursion loop, may write to cache now
         $this->transientVariableCache->set($cacheIdentifier, $pageIds);
         return $pageIds;
     }
@@ -179,14 +178,15 @@ class PagesRepository extends AbstractRepository
      * This method retrieves the pages ids from the current tree level an calls getPages recursive,
      * when the maxDepth has not been reached.
      *
-     * @param int $maxDepth
-     * @param int $recursionRootPageId
      * @param array $pageIds
      * @param string $initialPagesAdditionalWhereClause
      * @return array
      */
-    protected function getPageIdsFromCurrentDepthAndCallRecursive(int $maxDepth, int $recursionRootPageId, array $pageIds, string $initialPagesAdditionalWhereClause = '')
-    {
+    protected function filterPageIdsByInitialPagesAdditionalWhereClause(
+        array $pageIds,
+        string $initialPagesAdditionalWhereClause
+    ): array {
+
         $queryBuilder = $this->getQueryBuilder();
         $queryBuilder->getRestrictions()->removeAll()->add(GeneralUtility::makeInstance(DeletedRestriction::class));
 
@@ -194,25 +194,15 @@ class PagesRepository extends AbstractRepository
             ->select('uid')
             ->from($this->table)
             ->where(
-                $queryBuilder->expr()->eq('pid', $queryBuilder->createNamedParameter($recursionRootPageId, \PDO::PARAM_INT))
+                $queryBuilder->expr()->in(
+                    'uid',
+                    $queryBuilder->createNamedParameter($pageIds, Connection::PARAM_INT_ARRAY)
+                )
             );
 
-        $this->addDefaultLanguageUidConstraint($queryBuilder);
+        $queryBuilder->andWhere(QueryHelper::stripLogicalOperatorPrefix($initialPagesAdditionalWhereClause));
 
-        if (!empty($initialPagesAdditionalWhereClause)) {
-            $queryBuilder->andWhere($initialPagesAdditionalWhereClause);
-        }
-
-        $resultSet = $queryBuilder->execute();
-        while ($page = $resultSet->fetch()) {
-            $pageIds[] = $page['uid'];
-
-            if ($maxDepth > 1) {
-                $pageIds = array_merge($pageIds, $this->findAllSubPageIdsByRootPage($page['uid'], $maxDepth - 1));
-            }
-        }
-
-        return $pageIds;
+        return $queryBuilder->execute()->fetchFirstColumn();
     }
 
     /**

@@ -28,12 +28,15 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue\Initializer;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\QueueItemRepository;
+use ApacheSolrForTypo3\Solr\Domain\Site\SiteInterface;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
-use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\ConnectionException;
+use Doctrine\DBAL\Exception as DBALException;
+use Exception;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -90,7 +93,7 @@ class Page extends AbstractInitializer
     public function initialize()
     {
         $pagesInitialized = parent::initialize();
-        $mountPagesInitialized = $this->initializeMountPages();
+        $mountPagesInitialized = $this->initializeMountPointPages();
 
         return ($pagesInitialized && $mountPagesInitialized);
     }
@@ -116,15 +119,15 @@ class Page extends AbstractInitializer
      * Mount Page.
      *
      * @return bool TRUE if initialization of the Mount Pages was successful, FALSE otherwise
+     * @throws ConnectionException
      */
-    protected function initializeMountPages()
+    protected function initializeMountPointPages(): bool
     {
-        $mountPagesInitialized = false;
-        $mountPages = $this->pagesRepository->findAllMountPagesByWhereClause($this->buildPagesClause() . $this->buildTcaWhereClause() . ' AND doktype = 7 AND no_search = 0');
+        $mountPointsInitialized = false;
+        $mountPoints = $this->pagesRepository->findAllMountPagesByWhereClause($this->buildPagesClause() . $this->buildTcaWhereClause() . ' AND doktype = 7 AND no_search = 0');
 
-        if (empty($mountPages)) {
-            $mountPagesInitialized = true;
-            return $mountPagesInitialized;
+        if (empty($mountPoints)) {
+            return true;
         }
 
         $databaseConnection = $this->queueItemRepository->getConnectionForAllInTransactionInvolvedTables(
@@ -132,22 +135,19 @@ class Page extends AbstractInitializer
             'tx_solr_indexqueue_indexing_property'
         );
 
-        foreach ($mountPages as $mountPage) {
-            if (!$this->validateMountPage($mountPage)) {
+        foreach ($mountPoints as $mountPoint) {
+            if (!$this->validateMountPoint($mountPoint)) {
                 continue;
             }
 
-            $mountedPages = $this->resolveMountPageTree($mountPage);
+            $mountedPages = $this->resolveMountPageTree($mountPoint);
 
             // handling mount_pid_ol behavior
-            if ($mountPage['mountPageOverlayed']) {
-                // the page shows the mounted page's content
-                $mountedPages[] = $mountPage['mountPageSource'];
-            } else {
-                // Add page like a regular page, as only the sub tree is
-                // mounted. The page itself has its own content.
+            if (!$mountPoint['mountPageOverlayed']) {
+                // Add page like a regular page, as only the sub tree is mounted.
+                // The page itself has its own content, which is handled like standard page.
                 $indexQueue = GeneralUtility::makeInstance(Queue::class);
-                $indexQueue->updateItem($this->type, $mountPage['uid']);
+                $indexQueue->updateItem($this->type, $mountPoint['uid']);
             }
 
             // This can happen when the mount point does not show the content of the
@@ -158,12 +158,12 @@ class Page extends AbstractInitializer
 
             $databaseConnection->beginTransaction();
             try {
-                $this->addMountedPagesToIndexQueue($mountedPages, $mountPage);
-                $this->addIndexQueueItemIndexingProperties($mountPage, $mountedPages);
+                $this->addMountedPagesToIndexQueue($mountedPages, $mountPoint);
+                $this->addIndexQueueItemIndexingProperties($mountPoint, $mountedPages);
 
                 $databaseConnection->commit();
-                $mountPagesInitialized = true;
-            } catch (\Exception $e) {
+                $mountPointsInitialized = true;
+            } catch (Exception $e) {
                 $databaseConnection->rollBack();
 
                 $this->logger->log(
@@ -177,25 +177,25 @@ class Page extends AbstractInitializer
             }
         }
 
-        return $mountPagesInitialized;
+        return $mountPointsInitialized;
     }
 
     /**
-     * Checks whether a Mount Page is properly configured.
+     * Checks whether a Mount Point page is properly configured.
      *
-     * @param array $mountPage A mount page
+     * @param array $mountPoint A mount page
      * @return bool TRUE if the Mount Page is OK, FALSE otherwise
      */
-    protected function validateMountPage(array $mountPage)
+    protected function validateMountPoint(array $mountPoint): bool
     {
         $isValidMountPage = true;
 
-        if (empty($mountPage['mountPageSource'])) {
+        if (empty($mountPoint['mountPageSource'])) {
             $isValidMountPage = false;
 
             $flashMessage = GeneralUtility::makeInstance(
                 FlashMessage::class,
-                'Property "Mounted page" must not be empty. Invalid Mount Page configuration for page ID ' . $mountPage['uid'] . '.',
+                'Property "Mounted page" must not be empty. Invalid Mount Page configuration for page ID ' . $mountPoint['uid'] . '.',
                 'Failed to initialize Mount Page tree. ',
                 FlashMessage::ERROR
             );
@@ -203,15 +203,15 @@ class Page extends AbstractInitializer
             $this->flashMessageQueue->addMessage($flashMessage);
         }
 
-        if (!$this->mountedPageExists($mountPage['mountPageSource'])) {
+        if (!$this->mountedPageExists($mountPoint['mountPageSource'])) {
             $isValidMountPage = false;
 
             $flashMessage = GeneralUtility::makeInstance(
                 FlashMessage::class,
                 'The mounted page must be accessible in the frontend. '
                 . 'Invalid Mount Page configuration for page ID '
-                . $mountPage['uid'] . ', the mounted page with ID '
-                . $mountPage['mountPageSource']
+                . $mountPoint['uid'] . ', the mounted page with ID '
+                . $mountPoint['mountPageSource']
                 . ' is not accessible in the frontend.',
                 'Failed to initialize Mount Page tree. ',
                 FlashMessage::ERROR
@@ -231,7 +231,7 @@ class Page extends AbstractInitializer
      * @param int $mountedPageId Mounted page ID
      * @return bool TRUE if the page is accessible in the frontend, FALSE otherwise.
      */
-    protected function mountedPageExists($mountedPageId)
+    protected function mountedPageExists($mountedPageId): bool
     {
         $mountedPageExists = false;
 
@@ -322,21 +322,29 @@ class Page extends AbstractInitializer
     }
 
     // Mount Page resolution
+
     /**
      * Gets all the pages from a mounted page tree.
      *
      * @param array $mountPage
      * @return array An array of page IDs in the mounted page tree
      */
-    protected function resolveMountPageTree($mountPage)
+    protected function resolveMountPageTree(array $mountPage): array
     {
-        $mountPageSourceId = $mountPage['mountPageSource'];
+        $mountPageSourceId = (int)$mountPage['mountPageSource'];
         $mountPageIdentifier = $this->getMountPointIdentifier($mountPage);
 
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         /* @var $siteRepository SiteRepository */
         $mountedSite = $siteRepository->getSiteByPageId($mountPageSourceId, $mountPageIdentifier);
 
-        return $mountedSite ? $mountedSite->getPages($mountPageSourceId) : [];
+        $mountPageTree = $mountedSite instanceof SiteInterface ? $mountedSite->getPages($mountPageSourceId) : [];
+
+        // Do not include $mountPageSourceId in tree, if the mount point is not set to overlay.
+        if (!empty($mountPageTree) && !$mountPage['mountPageOverlayed']) {
+            $mountPageTree = array_diff($mountPageTree , [$mountPageSourceId]);
+        }
+
+        return $mountPageTree;
     }
 }

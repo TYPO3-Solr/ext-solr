@@ -31,7 +31,6 @@ use ApacheSolrForTypo3\Solr\System\Page\Rootline;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\RootlineUtility;
-use TYPO3\CMS\Frontend\Page\PageRepository;
 
 /**
  * Extracted logic from the RecordMonitor to trigger mount page updates.

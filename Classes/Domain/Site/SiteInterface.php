@@ -26,9 +26,11 @@ namespace ApacheSolrForTypo3\Solr\Domain\Site;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 
 interface SiteInterface
 {
+
     /**
      * Gets the site's root page ID (uid).
      *
@@ -54,9 +56,9 @@ interface SiteInterface
     /**
      * Gets the site's Solr TypoScript configuration (plugin.tx_solr.*)
      *
-     * @return  \ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration The Solr TypoScript configuration
+     * @return TypoScriptConfiguration The Solr TypoScript configuration
      */
-    public function getSolrConfiguration();
+    public function getSolrConfiguration(): TypoScriptConfiguration;
 
     /**
      * Gets the site's default language as configured in
@@ -68,14 +70,22 @@ interface SiteInterface
     public function getDefaultLanguage();
 
     /**
-     * Generates a list of page IDs in this site. Attention, this includes
-     * all page types! Deleted pages are not included.
+     * Generates a list of page IDs in this site.
      *
-     * @param int|string $rootPageId Page ID from where to start collection sub pages
-     * @param int $maxDepth Maximum depth to descend into the site tree
+     * Attentions:
+     * * This includes all page types!
+     * * Deleted pages are not included.
+     * * Uses the root page, if $pageId is not given
+     * * Includes the given $pageId
+     *
+     * @param int|null $pageId Page ID from where to start collection sub pages. Uses and includes the root page if none given.
+     * @param string|null $indexQueueConfigurationName The name of index queue.
      * @return array Array of pages (IDs) in this site
      */
-    public function getPages($rootPageId = 'SITE_ROOT', $maxDepth = 999);
+    public function getPages(
+        ?int $pageId = null,
+        ?string $indexQueueConfigurationName = null
+    ): array;
 
     /**
      * Generates the site's unique Site Hash.

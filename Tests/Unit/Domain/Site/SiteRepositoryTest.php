@@ -264,4 +264,4 @@ class SiteRepositoryTest extends UnitTest
             $this->returnValue($sitesInTYPO3)
         );
     }
- }
+}
