@@ -154,14 +154,12 @@ class PageTest extends IntegrationTest
      */
     public function initializerIsFillingQueueWithMountedNonRootPages()
     {
-        $this->importDataSetFromFixture('mouted_shared_non_root_page_from_different_tree_can_be_indexed.xml');
+        $this->importDataSetFromFixture('mounted_shared_non_root_page_from_different_tree_can_be_indexed.xml');
         $this->assertEmptyQueue();
         $this->initializeAllPageIndexQueues();
-        $this->assertItemsInQueue(3);
+        $this->assertItemsInQueue(2);
 
         $this->assertTrue($this->indexQueue->containsItem('pages', 1));
-        // we should check if the mountpoint itself should be in the queue
-        $this->assertTrue($this->indexQueue->containsItem('pages', 14));
         $this->assertTrue($this->indexQueue->containsItem('pages', 24));
 
         $items = $this->indexQueue->getItems('pages', 24);
@@ -182,20 +180,21 @@ class PageTest extends IntegrationTest
      *      |
      *      ——[ 1] Page (Root)
      *          |
-     *          ——[14] Mounted Page (to [24] to show contents from)
+     *          ——[14] Mount Point (to [24] to show contents from)
      *
      * @test
      */
     public function initializerIsFillingQueueWithMountedRootPages()
     {
-        $this->importDataSetFromFixture('mouted_shared_root_page_from_different_tree_can_be_indexed.xml');
+        $this->importDataSetFromFixture('mounted_shared_root_page_from_different_tree_can_be_indexed.xml');
         $this->assertEmptyQueue();
         $this->initializeAllPageIndexQueues();
-        $this->assertItemsInQueue(3);
+        $this->assertItemsInQueue(2);
 
         $this->assertTrue($this->indexQueue->containsItem('pages', 1));
-        // we should check if the mountpoint itself should be in the queue
-        $this->assertTrue($this->indexQueue->containsItem('pages', 14));
+        // the mountpoint MUST NOT be in the queue,
+        // because the page "[14] Mount Point" is set to overlay the content from mount source page.
+        $this->assertFalse($this->indexQueue->containsItem('pages', 14));
         $this->assertTrue($this->indexQueue->containsItem('pages', 24));
 
         $items = $this->indexQueue->getItems('pages', 24);
@@ -212,32 +211,35 @@ class PageTest extends IntegrationTest
      *      |
      *      ——[20] Shared-Pages (Folder: Not root)
      *      |   |
-     *      |   ——[24] FirstShared_Root
+     *      |   ——[24] FirstShared
      *      |
      *      ——[ 1] Page (Root)
      *      |   |
-     *      |   ——[14] Mounted Page (to [24] to show contents from)
+     *      |   ——[14] Mount Point 1 (to [24] to show contents from)
      *      |
      *      ——[ 2] Page2 (Root)
      *          |
-     *          ——[34] Mounted Page (to [24] to show contents from)
+     *          ——[34] Mount Point 2 (to [24] to show contents from)
      *
      * @test
      */
     public function initializerIsFillingQueuesWithMultipleSitesMounted()
     {
-        $this->importDataSetFromFixture('mouted_shared_page_from_multiple_trees_can_be_queued.xml');
+        $this->importDataSetFromFixture('mounted_shared_page_from_multiple_trees_can_be_queued.xml');
         $this->assertEmptyQueue();
         $this->initializeAllPageIndexQueues();
-        $this->assertItemsInQueue(6);
+        $this->assertItemsInQueue(4);
 
         $this->assertTrue($this->indexQueue->containsItem('pages', 1));
-        // we should check if the mountpoint itself should be in the queue
-        $this->assertTrue($this->indexQueue->containsItem('pages', 14));
+        // the mountpoint MUST NOT be in the queue,
+        // because the page "[14] Mount Point" is set to overlay the content from mount source page.
+        $this->assertFalse($this->indexQueue->containsItem('pages', 14));
         $this->assertTrue($this->indexQueue->containsItem('pages', 24));
 
         $this->assertTrue($this->indexQueue->containsItem('pages', 111));
-        $this->assertTrue($this->indexQueue->containsItem('pages', 34));
+        // the mountpoint MUST NOT be in the queue,
+        // because the page "[34] Mount Point" is set to overlay the content from mount source page.
+        $this->assertFalse($this->indexQueue->containsItem('pages', 34));
 
         $items = $this->indexQueue->getItems('pages', 24);
         $firstItem = $items[0];

@@ -15,10 +15,12 @@ namespace ApacheSolrForTypo3\Solr\Domain\Site;
  * The TYPO3 project - inspiring people to share!
  */
 
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\ConfigurationAwareRecordService;
 use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Base Class for Typo3ManagedSite and LegacySite
@@ -161,16 +163,16 @@ abstract class Site implements SiteInterface
     }
 
     /**
-     * @param string $rootPageId
-     * @param int $maxDepth
+     * @param int|null $rootPageId
      * @return array
      */
-    public function getPagesWithinNoSearchSubEntriesPages($rootPageId = 'SITE_ROOT', $maxDepth = 999): array
+    public function getPagesWithinNoSearchSubEntriesPages(int $rootPageId = null): array
     {
-        if ($rootPageId === 'SITE_ROOT') {
+        if ($rootPageId === null) {
             $rootPageId = (int)$this->rootPage['uid'];
         }
 
+        /* @var ConfigurationAwareRecordService $configurationAwareRecordService */
         $configurationAwareRecordService = GeneralUtility::makeInstance(ConfigurationAwareRecordService::class);
         // Fetch configuration in order to be able to read initialPagesAdditionalWhereClause
         $solrConfiguration = $this->getSolrConfiguration();
@@ -179,7 +181,7 @@ abstract class Site implements SiteInterface
 
         return $this->pagesRepository->findAllPagesWithinNoSearchSubEntriesMarkedPagesByRootPage(
             $rootPageId,
-            $maxDepth,
+            999,
             $initialPagesAdditionalWhereClause
         );
     }
@@ -268,5 +270,5 @@ abstract class Site implements SiteInterface
      * @param int $language
      * @return array
      */
-    abstract function getSolrConnectionConfiguration(int $language = 0): array;
+    abstract public function getSolrConnectionConfiguration(int $language = 0): array;
 }
