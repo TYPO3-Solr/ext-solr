@@ -94,9 +94,10 @@ class Tsfe implements SingletonInterface
 
 
         if (!isset($this->tsfeCache[$cacheId])) {
+            $feUser = GeneralUtility::makeInstance(FrontendUserAuthentication::class);
 
             /* @var TypoScriptFrontendController $globalsTSFE */
-            $globalsTSFE = GeneralUtility::makeInstance(TypoScriptFrontendController::class, $context, $site, $siteLanguage);
+            $globalsTSFE = GeneralUtility::makeInstance(TypoScriptFrontendController::class, $context, $site, $siteLanguage, null, $feUser);
             $GLOBALS['TSFE'] = $globalsTSFE;
             $GLOBALS['TSFE']->id = $pageId;
             $GLOBALS['TSFE']->type = 0;
@@ -106,7 +107,6 @@ class Tsfe implements SingletonInterface
             // see http://forge.typo3.org/issues/42122
             $pageRecord = BackendUtility::getRecord('pages', $pageId, 'fe_group');
 
-            $feUser = GeneralUtility::makeInstance(FrontendUserAuthentication::class);
             $userGroups = [0, -1];
             if (!empty($pageRecord['fe_group'])) {
                 $userGroups = array_unique(array_merge($userGroups, explode(',', $pageRecord['fe_group'])));
