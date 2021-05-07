@@ -163,7 +163,7 @@ class PagesRepository extends AbstractRepository
 
         /* @var QueryGenerator $queryGenerator */
         $queryGenerator = GeneralUtility::makeInstance(QueryGenerator::class);
-        $pageIdsList = $queryGenerator->getTreeList($rootPageId, 9999, 'deleted = 0');
+        $pageIdsList = $queryGenerator->getTreeList($rootPageId, 9999, 0, 'deleted = 0');
         $pageIds = GeneralUtility::intExplode(',', $pageIdsList);
 
         if (!empty($initialPagesAdditionalWhereClause)) {
@@ -217,7 +217,7 @@ class PagesRepository extends AbstractRepository
         string $initialPagesAdditionalWhereClause = ''
     ): array
     {
-        $wholePagetree = $this->findAllSubPageIdsByRootPage($rootPageId, $maxDepth, $initialPagesAdditionalWhereClause);
+        $wholePagetree = $this->findAllSubPageIdsByRootPage($rootPageId, $initialPagesAdditionalWhereClause);
 
         $queryBuilder = $this->getQueryBuilder();
         $queryBuilder->getRestrictions()->removeAll();
@@ -235,12 +235,12 @@ class PagesRepository extends AbstractRepository
 
         $pageIds = [];
         foreach ($noSearchSubEntriesEnabledPages as $page) {
-            $pageIds = array_merge($pageIds, $this->findAllSubPageIdsByRootPage($page['uid'], $maxDepth - 1));
+            $pageIds = array_merge($pageIds, $this->findAllSubPageIdsByRootPage((int)$page['uid']));
         }
 
         return $pageIds;
     }
-  
+
     /**
      * Finds translation overlays by given page Id.
      *

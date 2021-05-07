@@ -102,21 +102,21 @@ class Page extends AbstractInitializer
      * Initialize a single page that is part of a mounted tree.
      *
      * @param array $mountProperties Array of mount point properties mountPageSource, mountPageDestination, and mountPageOverlayed
-     * @param int $mountPageId The ID of the mounted page
+     * @param int $mountedPageId The ID of the mounted page
      */
-    public function initializeMountedPage(array $mountProperties, $mountPageId)
+    public function initializeMountedPage(array $mountProperties, int $mountedPageId)
     {
-        $mountedPages = [$mountPageId];
+        $mountedPages = [$mountedPageId];
 
         $this->addMountedPagesToIndexQueue($mountedPages, $mountProperties);
         $this->addIndexQueueItemIndexingProperties($mountProperties, $mountedPages);
     }
 
     /**
-     * Initializes Mount Pages to be indexed through the Index Queue. The Mount
-     * Pages are searched and their mounted virtual sub-trees are then resolved
+     * Initializes Mount Point(pages) to be indexed through the Index Queue. The Mount
+     * Points are searched and their mounted virtual sub-trees are then resolved
      * and added to the Index Queue as if they were actually present below the
-     * Mount Page.
+     * Mount Point.
      *
      * @return bool TRUE if initialization of the Mount Pages was successful, FALSE otherwise
      * @throws ConnectionException
@@ -332,13 +332,8 @@ class Page extends AbstractInitializer
     protected function resolveMountPageTree(array $mountPage): array
     {
         $mountPageSourceId = (int)$mountPage['mountPageSource'];
-        $mountPageIdentifier = $this->getMountPointIdentifier($mountPage);
 
-        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
-        /* @var $siteRepository SiteRepository */
-        $mountedSite = $siteRepository->getSiteByPageId($mountPageSourceId, $mountPageIdentifier);
-
-        $mountPageTree = $mountedSite instanceof SiteInterface ? $mountedSite->getPages($mountPageSourceId) : [];
+        $mountPageTree = $this->site->getPages($mountPageSourceId, 'pages');
 
         // Do not include $mountPageSourceId in tree, if the mount point is not set to overlay.
         if (!empty($mountPageTree) && !$mountPage['mountPageOverlayed']) {
