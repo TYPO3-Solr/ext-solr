@@ -83,12 +83,15 @@ if [[ $TYPO3_VERSION = *"master"* ]]; then
     TYPO3_MASTER_DEPENDENCIES='nimut/testing-framework:dev-master'
 fi
 
-# Temporary Fix for https://forge.typo3.org/issues/91832 "phpdocumentor/reflection-docblock" BC in 5.2.0
-if [[ $TYPO3_VERSION = *"10.4"* ]]; then
-    FIX_TYPO3_DEPENDENCIES='phpdocumentor/reflection-docblock:5.1.*'
+# Temporary downgrades
+CURRENT_PHP_VERSION=$(php -r "echo PHP_VERSION;" | grep --only-matching --perl-regexp "7.\d+")
+if [[ ! $CURRENT_PHP_VERSION = *"7.2"* ]] && [[ $TYPO3_VERSION = *"10.4"* ]]; then
+    TYPO3_TEMPORARY_DOWNGRADES="doctrine/dbal:2.11.3"
+elif [[ $CURRENT_PHP_VERSION = *"7.2"* ]] && [[ $TYPO3_VERSION = *"10.4"* ]]; then
+    TYPO3_TEMPORARY_DOWNGRADES="doctrine/dbal:2.10.4"
 fi
 
-composer require --dev --update-with-dependencies --prefer-source \
+if ! composer require --dev --update-with-dependencies --prefer-source \
   typo3/cms-core:"$TYPO3_VERSION" \
   typo3/cms-backend:"$TYPO3_VERSION" \
   typo3/cms-fluid:"$TYPO3_VERSION" \
@@ -96,7 +99,12 @@ composer require --dev --update-with-dependencies --prefer-source \
   typo3/cms-extbase:"$TYPO3_VERSION" \
   typo3/cms-reports:"$TYPO3_VERSION" \
   typo3/cms-scheduler:"$TYPO3_VERSION" \
-  typo3/cms-tstemplate:"$TYPO3_VERSION" $FIX_TYPO3_DEPENDENCIES $TYPO3_MASTER_DEPENDENCIES
+  typo3/cms-tstemplate:"$TYPO3_VERSION" \
+  typo3/cms-install:"$TYPO3_VERSION" $TYPO3_TEMPORARY_DOWNGRADES $TYPO3_MASTER_DEPENDENCIES
+then
+	echo "The test environment could not be installed by composer as expected. Please fix this issue."
+	exit 1
+fi
 
 # Restore composer.json
 mkdir -p $TYPO3_PATH_WEB/uploads $TYPO3_PATH_WEB/typo3temp
