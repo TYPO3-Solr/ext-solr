@@ -99,6 +99,14 @@ if [[ $TYPO3_VERSION = *"master"* ]]; then
     TYPO3_MASTER_DEPENDENCIES='nimut/testing-framework:dev-master'
 fi
 
+# Temporary downgrades
+CURRENT_PHP_VERSION=$(php -r "echo PHP_VERSION;" | grep --only-matching --perl-regexp "7.\d+")
+if [[ ! $CURRENT_PHP_VERSION = *"7.2"* ]] && [[ $TYPO3_VERSION = *"10.4"* ]]; then
+    TYPO3_TEMPORARY_DOWNGRADES="doctrine/dbal:2.11.3"
+elif [[ $CURRENT_PHP_VERSION = *"7.2"* ]] && [[ $TYPO3_VERSION = *"10.4"* ]]; then
+    TYPO3_TEMPORARY_DOWNGRADES="doctrine/dbal:2.10.4"
+fi
+
 if ! composer require --dev --update-with-dependencies --prefer-source \
   typo3/cms-core:"$TYPO3_VERSION" \
   typo3/cms-backend:"$TYPO3_VERSION" \
@@ -109,9 +117,9 @@ if ! composer require --dev --update-with-dependencies --prefer-source \
   typo3/cms-reports:"$TYPO3_VERSION" \
   typo3/cms-scheduler:"$TYPO3_VERSION" \
   typo3/cms-tstemplate:"$TYPO3_VERSION" \
-  typo3/cms-install:"$TYPO3_VERSION" $TYPO3_MASTER_DEPENDENCIES
+  typo3/cms-install:"$TYPO3_VERSION" $TYPO3_TEMPORARY_DOWNGRADES $TYPO3_MASTER_DEPENDENCIES
 then
-	echo "The test environment could not be . Please fix this issue."
+	echo "The test environment could not be installed by composer as expected. Please fix this issue."
 	exit 1
 fi
 
