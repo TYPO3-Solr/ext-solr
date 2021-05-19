@@ -5,6 +5,7 @@ use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Context\LanguageAspectFactory;
 use TYPO3\CMS\Core\Context\TypoScriptAspect;
+use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
 use TYPO3\CMS\Core\Error\Http\InternalServerErrorException;
 use TYPO3\CMS\Core\Error\Http\ServiceUnavailableException;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
@@ -87,8 +88,10 @@ class Tsfe implements SingletonInterface
         if (!isset($this->requestCache[$cacheId])) {
             /* @var ServerRequest $request */
             $request = GeneralUtility::makeInstance(ServerRequest::class);
-            $request = $request->withAttribute('site', $site);
-            $this->requestCache[$cacheId] = $request->withAttribute('language', $siteLanguage);
+            $this->requestCache[$cacheId] = $request
+                ->withAttribute('site', $site)
+                ->withAttribute('language', $siteLanguage)
+                ->withAttribute('applicationType', SystemEnvironmentBuilder::REQUESTTYPE_FE);
         }
         $GLOBALS['TYPO3_REQUEST'] = $this->requestCache[$cacheId];
 
