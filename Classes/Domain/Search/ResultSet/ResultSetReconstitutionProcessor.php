@@ -124,7 +124,12 @@ class ResultSetReconstitutionProcessor implements SearchResultSetProcessor
             $field = $sortingOptions['field'];
             $label = $sortingOptions['label'];
 
-            $isResetOption = $field === 'relevance';
+            $sortBy = explode(' ', $configuration->getSearchQuerySortBy())[0];
+            if ($sortBy === '') {
+                $sortBy = 'relevance';
+            }
+
+            $isResetOption = $field === $sortBy;
 
             // Allow stdWrap on label:
             $labelHasSubConfiguration = is_array($sortingOptions['label.'] ?? null);
