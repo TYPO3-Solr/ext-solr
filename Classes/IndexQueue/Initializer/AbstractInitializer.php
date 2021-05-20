@@ -257,6 +257,9 @@ abstract class AbstractInitializer implements IndexQueueInitializer
         $pages = array_merge($pages, $additionalPageIds);
         sort($pages, SORT_NUMERIC);
 
+        $pagesWithinNoSearchSubEntriesPages = $this->site->getPagesWithinNoSearchSubEntriesPages();
+        // @todo: log properly if $additionalPageIds are within $pagesWithinNoSearchSubEntriesPages
+        $pages = array_values(array_diff($pages, $pagesWithinNoSearchSubEntriesPages));
         return $pages;
     }
 

@@ -24,6 +24,7 @@ In this chapter we want to go deeper and learn how to write more complex indexin
 	IndexQueue
 	BackendModule
 	IndexInspector
+	PageProperties
 	Scheduler
 	Plugins.rst
 	ResultsPlugin.rst
