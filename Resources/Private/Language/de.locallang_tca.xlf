@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2020-12-01T11:42:09Z">
+		<header>
+			<generator>LFEditor</generator>
+		</header>
+		<body>
+			<trans-unit id="pages.no_search_sub_entries" xml:space="preserve">
+				<source>Include sub entries in Search</source>
+				<target>Untereinträge in Indexsuche einbeziehen</target>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>
