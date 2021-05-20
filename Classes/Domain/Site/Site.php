@@ -176,6 +176,29 @@ abstract class Site implements SiteInterface
         return array_merge($pageIds, $this->pagesRepository->findAllSubPageIdsByRootPage($rootPageId, $maxDepth, $initialPagesAdditionalWhereClause));
     }
 
+    /**
+     * @param string $rootPageId
+     * @param int $maxDepth
+     * @return array
+     */
+    public function getPagesWithinNoSearchSubEntriesPages($rootPageId = 'SITE_ROOT', $maxDepth = 999): array
+    {
+        if ($rootPageId === 'SITE_ROOT') {
+            $rootPageId = (int)$this->rootPage['uid'];
+        }
+
+        $configurationAwareRecordService = GeneralUtility::makeInstance(ConfigurationAwareRecordService::class);
+        // Fetch configuration in order to be able to read initialPagesAdditionalWhereClause
+        $solrConfiguration = $this->getSolrConfiguration();
+        $indexQueueConfigurationName = $configurationAwareRecordService->getIndexingConfigurationName('pages', $this->rootPage['uid'], $solrConfiguration);
+        $initialPagesAdditionalWhereClause = $solrConfiguration->getInitialPagesAdditionalWhereClause($indexQueueConfigurationName);
+
+        return $this->pagesRepository->findAllPagesWithinNoSearchSubEntriesMarkedPagesByRootPage(
+            $rootPageId,
+            $maxDepth,
+            $initialPagesAdditionalWhereClause
+        );
+    }
 
     /**
      * Generates the site's unique Site Hash.
