@@ -140,6 +140,7 @@ class Rootline
         $pageId,
         $mountPointParameter = ''
     ) {
+        /* @var Rootline $accessRootline */
         $accessRootline = GeneralUtility::makeInstance(Rootline::class);
         $rootlineUtility = GeneralUtility::makeInstance(RootlineUtility::class, $pageId, $mountPointParameter);
         try {

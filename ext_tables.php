@@ -124,6 +124,12 @@ if (TYPO3_MODE == 'BE') {
         \ApacheSolrForTypo3\Solr\Report\AllowUrlFOpenStatus::class,
         \ApacheSolrForTypo3\Solr\Report\FilterVarStatus::class
     ];
+
+    // Register Context Sensitive Help (CSH) translation labels
+    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addLLrefForTCAdescr(
+        'pages',
+        'EXT:solr/Resources/Private/Language/locallang_csh_pages.xlf'
+    );
 }
 
 if ((TYPO3_MODE === 'BE') || (TYPO3_MODE === 'FE' && isset($_POST['TSFE_EDIT']))) {
