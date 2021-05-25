@@ -47,7 +47,10 @@ class SolrWriteService extends AbstractSolrService
             $response = $this->createAndExecuteRequest($query);
             $fileName = basename($query->getFile());
             $metaKey = $fileName . '_metadata';
-            return [$response->{$fileName}, (array)$response->{$metaKey}];
+            return [
+                $response->{$fileName} ?? $response->file,
+                (array)($response->{$metaKey} ?? $response->file_metadata)
+            ];
         } catch (\Exception $e) {
             $param = $query->getRequestBuilder()->build($query)->getParams();
             $this->logger->log(
