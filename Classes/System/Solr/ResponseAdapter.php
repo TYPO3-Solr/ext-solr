@@ -1,7 +1,22 @@
 <?php
 namespace ApacheSolrForTypo3\Solr\System\Solr;
+
+/*
+ * This file is part of the TYPO3 CMS project.
+ *
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
+ *
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ *
+ * The TYPO3 project - inspiring people to share!
+ */
+
 use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use Countable;
+use stdClass;
 
 /**
  * In EXT:solr 9 we have switched from the SolrPhpClient to the solarium api.
@@ -14,19 +29,23 @@ use Countable;
  *
  * Search response
  *
- * @property \stdClass facet_counts
- * @property \stdClass facets
- * @property \stdClass spellcheck
- * @property \stdClass response
- * @property \stdClass responseHeader
- * @property \stdClass highlighting
- * @property \stdClass debug
- * @property \stdClass lucene
+ * @property stdClass facet_counts
+ * @property stdClass facets
+ * @property stdClass spellcheck
+ * @property stdClass response
+ * @property stdClass responseHeader
+ * @property stdClass highlighting
+ * @property stdClass debug
+ * @property stdClass lucene
  * 
  * Luke response
  *
- * @property \stdClass index
- * @property \stdClass fields
+ * @property stdClass index
+ * @property stdClass fields
+ *
+ * Solr Cell Tika response data
+ * @property string|null file
+ * @property array|null file_metadata
  */
 class ResponseAdapter implements Countable
 {
@@ -36,7 +55,7 @@ class ResponseAdapter implements Countable
     protected $responseBody;
 
     /**
-     * @var \stdClass
+     * @var stdClass
      */
     protected $data = null;
 
