@@ -124,7 +124,7 @@ abstract class AbstractStrategy
             $siteHash = $site->getSiteHash();
             // a site can have multiple connections (cores / languages)
             $solrConnections = $this->connectionManager->getConnectionsBySite($site);
-            if ($language > 0) {
+            if ($language > 0 && isset($solrConnections[$language])) {
                 $solrConnections = [$language => $solrConnections[$language]];
             }
             $this->deleteRecordInAllSolrConnections($table, $uid, $solrConnections, $siteHash, $enableCommitsSetting);
