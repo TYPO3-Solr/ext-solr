@@ -137,7 +137,7 @@ plugin.tx_solr {
 				// @ slop = 1 will math "Hello World" and/or "Hello wonderful World"
 				// Note: this value is for implicit phrase searching(without double quotes)
 				slop = 0
-				
+
 				// The concept of query slop is similar to phrase.slop but it applies to the explicit phrase queries from the user and to match documents instead of boosting.
 				// Also if the user uses double quotes in the search term, then
 				// the query slop value is used and
@@ -273,6 +273,8 @@ plugin.tx_solr {
 			limit = 10
 			showEmptyFacets = 0
 			keepAllFacetsOnSelection = 0
+			urlParameterStyle = {$plugin.tx_solr.search.faceting.urlParameterStyle}
+			urlParameterSort = {$plugin.tx_solr.search.faceting.urlParameterSort}
 
 			facetLinkUrlParameters =
 

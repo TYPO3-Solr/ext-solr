@@ -17,6 +17,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Uri;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Grouping\GroupItem;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\System\Url\UrlHelper;
+use ApacheSolrForTypo3\Solr\Utility\ParameterSortingUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 
@@ -85,6 +86,14 @@ class SearchUriBuilder
 
         $arguments = $persistentAndFacetArguments + $additionalArguments;
 
+        // Sort filter arguments
+        if (is_array($arguments['tx_solr']['filter']) && $previousSearchRequest->isActiveFacetsSorted()) {
+            ParameterSortingUtility::sortByType(
+                $arguments['tx_solr']['filter'],
+                $previousSearchRequest->getActiveFacetsUrlParameterStyle()
+            );
+        }
+
         $pageUid = $this->getTargetPageUidFromRequestConfiguration($previousSearchRequest);
         return $this->buildLinkWithInMemoryCache($pageUid, $arguments);
     }
@@ -123,6 +132,14 @@ class SearchUriBuilder
         }
         $arguments = $persistentAndFacetArguments + $additionalArguments;
 
+        // Sort filter arguments
+        if (is_array($arguments['tx_solr']['filter']) && $previousSearchRequest->isActiveFacetsSorted()) {
+            ParameterSortingUtility::sortByType(
+                $arguments['tx_solr']['filter'],
+                $previousSearchRequest->getActiveFacetsUrlParameterStyle()
+            );
+        }
+
         $pageUid = $this->getTargetPageUidFromRequestConfiguration($previousSearchRequest);
         return $this->buildLinkWithInMemoryCache($pageUid, $arguments);
     }
@@ -145,6 +162,14 @@ class SearchUriBuilder
 
         $arguments = $persistentAndFacetArguments + $additionalArguments;
 
+        // Sort filter arguments
+        if (is_array($arguments['tx_solr']['filter']) && $previousSearchRequest->isActiveFacetsSorted()) {
+            ParameterSortingUtility::sortByType(
+                $arguments['tx_solr']['filter'],
+                $previousSearchRequest->getActiveFacetsUrlParameterStyle()
+            );
+        }
+
         $pageUid = $this->getTargetPageUidFromRequestConfiguration($previousSearchRequest);
         return $this->buildLinkWithInMemoryCache($pageUid, $arguments);
     }
@@ -165,6 +190,14 @@ class SearchUriBuilder
         }
 
         $arguments = $persistentAndFacetArguments + $additionalArguments;
+
+        // Sort filter arguments
+        if (is_array($arguments['tx_solr']['filter']) && $previousSearchRequest->isActiveFacetsSorted()) {
+            ParameterSortingUtility::sortByType(
+                $arguments['tx_solr']['filter'],
+                $previousSearchRequest->getActiveFacetsUrlParameterStyle()
+            );
+        }
 
         $pageUid = $this->getTargetPageUidFromRequestConfiguration($previousSearchRequest);
         return $this->buildLinkWithInMemoryCache($pageUid, $arguments);
@@ -217,6 +250,14 @@ class SearchUriBuilder
             /** @scrutinizer ignore-type */ $contextSystemLanguage,
             /** @scrutinizer ignore-type */ $contextConfiguration);
         $arguments = $request->setRawQueryString($queryString)->getAsArray();
+
+        // Sort filter arguments
+        if (is_array($arguments['tx_solr']['filter']) && $previousSearchRequest->isActiveFacetsSorted()) {
+            ParameterSortingUtility::sortByType(
+                $arguments['tx_solr']['filter'],
+                $previousSearchRequest->getActiveFacetsUrlParameterStyle()
+            );
+        }
 
         $pageUid = $this->getTargetPageUidFromRequestConfiguration($previousSearchRequest);
         return $this->buildLinkWithInMemoryCache($pageUid, $arguments);

@@ -21,6 +21,7 @@ use ApacheSolrForTypo3\Solr\System\Util\ArrayAccessor;
 use InvalidArgumentException;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use function Webmozart\Assert\Tests\StaticAnalysis\boolean;
 
 /**
  * TypoScript configuration object, used to read all TypoScript configuration.
@@ -1785,6 +1786,38 @@ class TypoScriptConfiguration
     public function getSearchFacetingFacetLimit($defaultIfEmpty = 100)
     {
         return (int)$this->getValueByPathOrDefaultValue('plugin.tx_solr.search.faceting.facetLimit', $defaultIfEmpty);
+    }
+
+    /**
+     * Return the configured url parameter style value for facets, used for building faceting parameters.
+     *
+     * plugin.tx_solr.search.faceting.urlParameterStyle
+     *
+     * @param string $defaultUrlParameterStyle
+     * @return string
+     */
+    public function getSearchFacetingUrlParameterStyle(string $defaultUrlParameterStyle = 'index'): string
+    {
+        return (string)$this->getValueByPathOrDefaultValue(
+            'plugin.tx_solr.search.faceting.urlParameterStyle',
+            $defaultUrlParameterStyle
+        );
+    }
+
+    /**
+     * Return the configuration if the URL parameters should be sorted.
+     *
+     * plugin.tx_solr.search.faceting.urlParameterSort
+     *
+     * @param bool $defaultUrlParameterSort
+     * @return bool
+     */
+    public function getSearchFacetingUrlParameterSort(bool $defaultUrlParameterSort = false): bool
+    {
+        return (bool)$this->getValueByPathOrDefaultValue(
+            'plugin.tx_solr.search.faceting.urlParameterSort',
+            $defaultUrlParameterSort
+        );
     }
 
     /**

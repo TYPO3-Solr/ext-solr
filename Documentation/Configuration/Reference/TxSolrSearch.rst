@@ -882,6 +882,29 @@ faceting.facetLinkUrlParameters.useForFacetResetLinkUrl
 
 Allows to prevent adding the URL parameters to the facets reset link by setting the option to 0.
 
+faceting.urlParameterStyle
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+:Type: Option/String (index or assoc)
+:TS Path: plugin.tx_solr.search.faceting.urlParameterStyle
+:Since: 11.1
+:Default: index
+
+Allows to change the url style of facets. This can be legacy index or more modern associative style.
+
+Index style: tx_solr[filter][0]=type:pages
+Associative style: tx_solr[filter][type:pages]=1
+
+faceting.urlParameterSort
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+:Type: Boolean
+:TS Path: plugin.tx_solr.search.faceting.urlParameterSort
+:Since: 11.1
+:Default: 0
+
+Allows to enable sorting of url parameters, so the single state of facets is associated with same url, no matter in which order the facets were selected.
+
 faceting.facets
 ~~~~~~~~~~~~~~~
 

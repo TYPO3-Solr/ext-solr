@@ -215,7 +215,7 @@ class HierarchyFacetParserTest extends AbstractFacetParserTest
         $this->assertTrue($facet->getIsUsed());
 
         $valueSelectedItem = $selectedFacetByUrl->getLabel();
-        $this->assertSame('14', $valueSelectedItem, 'Unpexcted value for selected item');
+        $this->assertSame('14', $valueSelectedItem, 'Unexpected value for selected item');
 
         $subItemCountOfSelectedFacet = $selectedFacetByUrl->getChildNodes()->count();
         $this->assertSame(15, $subItemCountOfSelectedFacet, 'Expected to have 15 sub items below path /1/14/');
