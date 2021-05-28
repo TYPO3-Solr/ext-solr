@@ -119,18 +119,4 @@ class SiteTest extends IntegrationTest
 
         $this->assertEquals([0, 1, 2], $languageIds);
     }
-
-    /**
-     * @test
-     */
-    public function getPagesReturnsSubpagesWhenRootPageShouldNotBeIndexed()
-    {
-        $this->importDataSetFromFixture('get_pages_returns_subpages_when_root_pages_should_not_be_indexed.xml');
-        /** @var $siteRepository SiteRepository */
-        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
-        $site = $siteRepository->getSiteByRootPageId(1);
-        $pages = $site->getPages();
-        $this->assertSame(2, count($pages));
-        $this->assertTrue(in_array(2, $pages));
-    }
 }

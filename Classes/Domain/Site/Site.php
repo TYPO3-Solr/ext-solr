@@ -170,7 +170,7 @@ abstract class Site implements SiteInterface
         $solrConfiguration = $this->getSolrConfiguration();
         $indexQueueConfigurationName = $configurationAwareRecordService->getIndexingConfigurationName('pages', $this->rootPage['uid'], $solrConfiguration);
         if ($indexQueueConfigurationName === null) {
-            $indexQueueConfigurationName = 'pages';
+            return $pageIds;
         }
         $initialPagesAdditionalWhereClause = $solrConfiguration->getInitialPagesAdditionalWhereClause($indexQueueConfigurationName);
         return array_merge($pageIds, $this->pagesRepository->findAllSubPageIdsByRootPage($rootPageId, $maxDepth, $initialPagesAdditionalWhereClause));
