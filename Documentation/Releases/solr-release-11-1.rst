@@ -20,6 +20,15 @@ The focus of this release has been on URL and SEO optimizations.
 New in this release
 ===================
 
+Apache Solr 8.8.2 support
+-------------------------
+
+With EXT:solr 11.1 we support Apache Solr 8.8.2, the latest release of Apache Solr.
+
+To see what has changed in Apache Solr please read the release notes of Apache Solr:
+https://solr.apache.org/docs/8_8_2/changes/Changes.html
+
+
 Update to Solarium 6
 --------------------
 
