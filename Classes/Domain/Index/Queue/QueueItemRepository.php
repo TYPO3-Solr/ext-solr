@@ -1,31 +1,24 @@
 <?php declare(strict_types = 1);
 namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue;
 
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2010-2017 dkd Internet Service GmbH <solr-support@dkd.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 
-use ApacheSolrForTypo3\Solr\IndexQueue\Item;
+use ApacheSolrForTypo3\Solr\Domain\DataProvider\ExternalDataProviderUtility;
+use ApacheSolrForTypo3\Solr\Domain\DataProvider\Exception\InterfaceNotImplementedException;
+use ApacheSolrForTypo3\Solr\Domain\Index\ExternalDataProviderInterface;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
+use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Records\AbstractRepository;
 use Doctrine\DBAL\DBALException;
@@ -34,10 +27,12 @@ use TYPO3\CMS\Core\Database\Query\Expression\CompositeExpression;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
+
 /**
  * Class QueueItemRepository
  * Handles all CRUD operations to tx_solr_indexqueue_item table
  *
+ * @copyright (c) 2010-2017 dkd Internet Service GmbH <solr-support@dkd.de>
  */
 class QueueItemRepository extends AbstractRepository
 {
@@ -220,11 +215,11 @@ class QueueItemRepository extends AbstractRepository
                 'indexing_configuration' => $indexingConfiguration
             ])
             ->execute();
-
     }
 
     /**
-     * Retrieves the count of items that match certain filters. Each filter is passed as parts of the where claus combined with AND.
+     * Retrieves the count of items that match certain filters.
+     * Each filter is passed as parts of the where claus combined with AND.
      *
      * @param array $sites
      * @param array $indexQueueConfigurationNames
@@ -679,27 +674,53 @@ class QueueItemRepository extends AbstractRepository
     {
         $tableUids = [];
         $tableRecords = [];
+        /* @var ExternalDataProviderInterface[] $dataProvider */
+        $dataProvider = [];
         // grouping records by table
         foreach ($indexQueueItemRecords as $indexQueueItemRecord) {
+            $externalDataProvider = ExternalDataProviderUtility::getInstance()
+                ->getProviderForIndexQueueByTableName(
+                    $indexQueueItemRecord['item_type'],
+                    $indexQueueItemRecord['root']
+                );
+            if ($externalDataProvider !== null) {
+                $dataProvider[$indexQueueItemRecord['item_type']] = $externalDataProvider;
+            }
             $tableUids[$indexQueueItemRecord['item_type']][] = $indexQueueItemRecord['item_uid'];
         }
 
         // fetching records by table, saves us a lot of single queries
         foreach ($tableUids as $table => $uids) {
-            $uidList = implode(',', $uids);
-
-            $queryBuilderForRecordTable = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($table);
-            $queryBuilderForRecordTable->getRestrictions()->removeAll();
-            $resultsFromRecordTable = $queryBuilderForRecordTable
-                ->select('*')
-                ->from($table)
-                ->where($queryBuilderForRecordTable->expr()->in('uid', $uidList))
-                ->execute();
-            $records = [];
-            while ($record = $resultsFromRecordTable->fetch()) {
-                $records[$record['uid']] = $record;
+            if (!empty($dataProvider[$table])) {
+                if (!($dataProvider[$table] instanceof ExternalDataProviderInterface)) {
+                    throw new InterfaceNotImplementedException(
+                        vsprintf(
+                            'External data provider "%1$s" for table "%2$s" must implement "%3$s"',
+                            [
+                                $dataProvider[$table],
+                                $table,
+                                ExternalDataProviderInterface::class
+                            ]
+                        ),
+                        1622610994
+                    );
+                }
+                $records = $dataProvider[$table]->fetchRecordsQueueItemUids($uids);
+            } else {
+                $uidList = implode(',', $uids);
+                $queryBuilderForRecordTable = GeneralUtility::makeInstance(ConnectionPool::class)
+                    ->getQueryBuilderForTable($table);
+                $queryBuilderForRecordTable->getRestrictions()->removeAll();
+                $resultsFromRecordTable = $queryBuilderForRecordTable
+                    ->select('*')
+                    ->from($table)
+                    ->where($queryBuilderForRecordTable->expr()->in('uid', $uidList))
+                    ->execute();
+                $records = [];
+                while ($record = $resultsFromRecordTable->fetch()) {
+                    $records[$record['uid']] = $record;
+                }
             }
-
             $tableRecords[$table] = $records;
             $this->hookPostProcessFetchRecordsForIndexQueueItem($table, $uids, $tableRecords);
         }
