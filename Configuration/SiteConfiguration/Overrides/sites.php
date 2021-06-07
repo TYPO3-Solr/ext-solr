@@ -23,15 +23,15 @@ $GLOBALS['SiteConfiguration']['site']['columns']['solr_enabled_read'] = [
 $GLOBALS['SiteConfiguration']['site']['columns']['solr_scheme_read'] = [
     'label' => 'Scheme',
     'config' => [
-        'type' => 'select',
-        'renderType' => 'selectSingle',
-        'items' => [
-            ['http', 'http'],
-            ['https', 'https'],
+        'type' => 'input',
+        'eval' => 'trim',
+        'valuePicker' => [
+            'items' => [
+                [ 'http', 'http'],
+                [ 'https', 'https']
+            ]
         ],
-        'size' => 1,
-        'minitems' => 0,
-        'maxitems' => 1
+        'placeholder' => 'http',
     ],
     'displayCond' => 'FIELD:solr_enabled_read:=:1'
 ];
