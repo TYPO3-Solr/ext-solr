@@ -75,8 +75,14 @@ class SolrAdminServiceTest extends IntegrationTest
     {
         return [
             'normal' => ['baseword' => 'homepage', 'synonyms' => ['website']],
-            'umlaut' => ['baseword' => 'früher', 'synonyms' => ['vergangenheit']]
-
+            'umlaut' => ['baseword' => 'früher', 'synonyms' => ['vergangenheit']],
+            '"' => ['baseword' => '"', 'synonyms' => ['quote mark']],
+            '%' => ['baseword' => '%', 'synonyms' => ['percent']],
+            '#' => ['baseword' => '#', 'synonyms' => ['hashtag']],
+            ':' => ['baseword' => ':', 'synonyms' => ['colon']],
+            ';' => ['baseword' => ';', 'synonyms' => ['semicolon']],
+            // '/' still persists in https://issues.apache.org/jira/browse/SOLR-6853
+            //'/' => ['baseword' => '/', 'synonyms' => ['slash']]
         ];
     }
 
@@ -86,7 +92,7 @@ class SolrAdminServiceTest extends IntegrationTest
      * @dataProvider synonymDataProvider
      * @test
      */
-    public function canAddSynonym($baseWord, $synonyms = [])
+    public function canAddAndDeleteSynonym($baseWord, $synonyms = [])
     {
         $this->solrAdminService->deleteSynonym($baseWord);
         $this->solrAdminService->reloadCore();
