@@ -96,11 +96,12 @@ class SolrAdminService extends AbstractSolrService
     /**
      * Constructor
      *
-     * @param TypoScriptConfiguration $typoScriptConfiguration
-     * @param SynonymParser $synonymParser
-     * @param StopWordParser $stopWordParser
-     * @param SchemaParser $schemaParser
-     * @param SolrLogManager $logManager
+     * @param Client $client
+     * @param TypoScriptConfiguration|null $typoScriptConfiguration
+     * @param SolrLogManager|null $logManager
+     * @param SynonymParser|null $synonymParser
+     * @param StopWordParser|null $stopWordParser
+     * @param SchemaParser|null $schemaParser
      */
     public function __construct(
         Client $client,
@@ -280,7 +281,7 @@ class SolrAdminService extends AbstractSolrService
         $this->initializeSynonymsUrl();
         $synonymsUrl = $this->_synonymsUrl;
         if (!empty($baseWord)) {
-            $synonymsUrl .= '/' . $baseWord;
+            $synonymsUrl .= '/' . rawurlencode(rawurlencode($baseWord));
         }
 
         $response = $this->_sendRawGet($synonymsUrl);
@@ -319,7 +320,7 @@ class SolrAdminService extends AbstractSolrService
             throw new \InvalidArgumentException('Must provide base word.');
         }
 
-        $response = $this->_sendRawDelete($this->_synonymsUrl . '/' . urlencode($baseWord));
+        $response = $this->_sendRawDelete($this->_synonymsUrl . '/' . rawurlencode(rawurlencode($baseWord)));
         return $response;
     }
 
@@ -363,7 +364,7 @@ class SolrAdminService extends AbstractSolrService
             throw new \InvalidArgumentException('Must provide stop word.');
         }
 
-        return $this->_sendRawDelete($this->_stopWordsUrl . '/' . urlencode($stopWord));
+        return $this->_sendRawDelete($this->_stopWordsUrl . '/' . rawurlencode(rawurlencode($stopWord)));
     }
 
     /**
