@@ -143,11 +143,13 @@
 
 	<fieldType name="textEdgeNgram" class="solr.TextField" positionIncrementGap="100">
 		<analyzer type="index">
-			<tokenizer class="solr.LowerCaseTokenizerFactory"/>
+			<tokenizer class="solr.StandardTokenizerFactory"/>
+			<filter class="solr.LowerCaseFilterFactory"/>
 			<filter class="solr.EdgeNGramFilterFactory" minGramSize="3" maxGramSize="15"/>
 		</analyzer>
 		<analyzer type="query">
-			<tokenizer class="solr.LowerCaseTokenizerFactory"/>
+			<tokenizer class="solr.StandardTokenizerFactory"/>
+			<filter class="solr.LowerCaseFilterFactory"/>
 		</analyzer>
 	</fieldType>
 
@@ -157,7 +159,8 @@
 			<filter class="solr.NGramFilterFactory" minGramSize="2" maxGramSize="3"/>
 		</analyzer>
 		<analyzer type="query">
-			<tokenizer class="solr.LowerCaseTokenizerFactory"/>
+			<tokenizer class="solr.StandardTokenizerFactory"/>
+			<filter class="solr.LowerCaseFilterFactory"/>
 		</analyzer>
 	</fieldType>
 
