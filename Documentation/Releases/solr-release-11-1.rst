@@ -20,6 +20,34 @@ The focus of this release has been on URL and SEO optimizations.
 New in this release
 ===================
 
+ASCII and Scandinavian Folding Filter
+-------------------------------------
+
+To improve the search behaviour we introduce folding filters, e.g. allowing to skip accents in search terms. The following languages are
+now using the ASCII folding filter:
+
+* dutch
+* english
+* finish
+* french
+* german
+* hungarian
+* irish
+* italian
+* polish
+* portuguese
+* serbian (for fields that don't include the Serbian Normalization Filter)
+* spanish
+* turkish
+
+For the Scandinavian languages, Norwegian, Swedish and Danish, a similiar approach is used, but we're using the more specialized Scandinavian Normalization
+and Scandinavian Folding Filters.
+
+Folding process usally takes place at a late stage, so your configurations shouldn't be affected. But for the Scandinavian languages the Scandinavian Normalization
+Filter processes the terms earlier, so your protected words for the Snowball Porter Filter, e.g. danish/protwords.txt, might be affected, please be sure to use the
+right spelling (see https://solr.apache.org/guide/8_8/language-analysis.html#scandinavian-normalization-filter).
+
+
 Apache Solr 8.8.2 support
 -------------------------
 
