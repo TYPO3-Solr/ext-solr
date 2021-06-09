@@ -62,6 +62,7 @@
 			<filter class="solr.ManagedStopFilterFactory" managed="${solr.core.name}"/>
 
 			<filter class="solr.SnowballPorterFilterFactory" language="Hungarian" protected="hungarian/protwords.txt"/>
+			<filter class="solr.ASCIIFoldingFilterFactory"/>
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
 		<analyzer type="query">
@@ -82,6 +83,7 @@
 			<filter class="solr.ManagedStopFilterFactory" managed="${solr.core.name}"/>
 
 			<filter class="solr.SnowballPorterFilterFactory" language="Hungarian" protected="hungarian/protwords.txt"/>
+			<filter class="solr.ASCIIFoldingFilterFactory"/>
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
 	</fieldType>
@@ -111,6 +113,7 @@
 			<filter class="solr.FlattenGraphFilterFactory"/>
 
 			<filter class="solr.SnowballPorterFilterFactory" language="Hungarian" protected="hungarian/protwords.txt"/>
+			<filter class="solr.ASCIIFoldingFilterFactory"/>
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
 		<analyzer type="query">
@@ -131,6 +134,7 @@
 					protected="hungarian/protwords.txt"
 			/>
 			<filter class="solr.SnowballPorterFilterFactory" language="Hungarian" protected="hungarian/protwords.txt"/>
+			<filter class="solr.ASCIIFoldingFilterFactory"/>
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
 	</fieldType>
@@ -146,6 +150,7 @@
 			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="${solr.core.name}" />
 			<filter class="solr.FlattenGraphFilterFactory"/>
 			<filter class="solr.ManagedStopFilterFactory" managed="${solr.core.name}"/>
+			<filter class="solr.ASCIIFoldingFilterFactory"/>
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
 		<analyzer type="index">
@@ -154,6 +159,7 @@
 			<filter class="solr.LowerCaseFilterFactory"/>
 			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="${solr.core.name}" />
 			<filter class="solr.ManagedStopFilterFactory" managed="${solr.core.name}"/>
+			<filter class="solr.ASCIIFoldingFilterFactory"/>
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
 	</fieldType>
@@ -166,7 +172,7 @@
 			<filter class="solr.LowerCaseFilterFactory"/>
 
 			<filter class="solr.ManagedStopFilterFactory" managed="${solr.core.name}"/>
-
+			<filter class="solr.ASCIIFoldingFilterFactory"/>
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
 		<analyzer type="query">
@@ -176,7 +182,7 @@
 
 			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="${solr.core.name}" />
 			<filter class="solr.ManagedStopFilterFactory" managed="${solr.core.name}"/>
-
+			<filter class="solr.ASCIIFoldingFilterFactory"/>
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
 	</fieldType>
