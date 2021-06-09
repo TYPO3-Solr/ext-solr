@@ -72,6 +72,7 @@
 			<filter class="solr.ManagedStopFilterFactory" managed="${solr.core.name}"/>
 			<filter class="solr.GermanNormalizationFilterFactory"/>
 			<filter class="solr.SnowballPorterFilterFactory" language="German2" protected="german/protwords.txt"/>
+			<filter class="solr.ASCIIFoldingFilterFactory"/>
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
 		<analyzer type="query">
@@ -94,6 +95,7 @@
 
 			<filter class="solr.GermanNormalizationFilterFactory"/>
 			<filter class="solr.SnowballPorterFilterFactory" language="German2" protected="german/protwords.txt"/>
+			<filter class="solr.ASCIIFoldingFilterFactory"/>
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
 	</fieldType>
@@ -131,6 +133,7 @@
 
 			<filter class="solr.GermanNormalizationFilterFactory"/>
 			<filter class="solr.SnowballPorterFilterFactory" language="German2" protected="german/protwords.txt"/>
+			<filter class="solr.ASCIIFoldingFilterFactory"/>
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
 		<analyzer type="query">
@@ -158,6 +161,7 @@
 			/>
 			<filter class="solr.GermanNormalizationFilterFactory"/>
 			<filter class="solr.SnowballPorterFilterFactory" language="German2" protected="german/protwords.txt"/>
+			<filter class="solr.ASCIIFoldingFilterFactory"/>
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
 	</fieldType>
@@ -173,6 +177,7 @@
 			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="${solr.core.name}" />
 			<filter class="solr.FlattenGraphFilterFactory"/>
 			<filter class="solr.ManagedStopFilterFactory" managed="${solr.core.name}"/>
+			<filter class="solr.ASCIIFoldingFilterFactory"/>
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
 		<analyzer type="query">
@@ -181,6 +186,7 @@
 			<filter class="solr.LowerCaseFilterFactory"/>
 			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="${solr.core.name}" />
 			<filter class="solr.ManagedStopFilterFactory" managed="${solr.core.name}"/>
+			<filter class="solr.ASCIIFoldingFilterFactory"/>
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
 	</fieldType>
@@ -201,6 +207,7 @@
 
 			<!-- no synonyms here because we do not want to add them as spell suggestion -->
 			<filter class="solr.ManagedStopFilterFactory" managed="${solr.core.name}"/>
+			<filter class="solr.ASCIIFoldingFilterFactory"/>
 
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
@@ -211,6 +218,7 @@
 
 			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="${solr.core.name}" />
 			<filter class="solr.ManagedStopFilterFactory" managed="${solr.core.name}"/>
+			<filter class="solr.ASCIIFoldingFilterFactory"/>
 
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
