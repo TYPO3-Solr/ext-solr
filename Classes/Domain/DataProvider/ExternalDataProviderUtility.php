@@ -68,10 +68,12 @@ class ExternalDataProviderUtility implements SingletonInterface
         } catch (\Exception $exception) {
         }
 
-        if ($className !== null && !empty($className)) {
-            if (!class_exists($className)) {
-                return null;
-            }
+        if (empty($className)) {
+            return null;
+        }
+
+        if (!class_exists($className)) {
+            return null;
         }
 
         return GeneralUtility::makeInstance($className);
