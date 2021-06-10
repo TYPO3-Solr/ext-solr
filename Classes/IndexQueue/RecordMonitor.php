@@ -368,6 +368,7 @@ class RecordMonitor extends AbstractDataHandlerListener
         if ($recordTable === 'pages') {
             $configurationPageId = $this->getConfigurationPageId($recordTable, $recordPageId, $recordUid);
             if ($configurationPageId === 0) {
+                $this->mountPageUpdater->update($recordUid);
                 return;
             }
             $rootPageIds = [$configurationPageId];

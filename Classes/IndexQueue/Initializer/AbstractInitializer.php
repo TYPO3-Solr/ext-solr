@@ -246,9 +246,9 @@ abstract class AbstractInitializer implements IndexQueueInitializer
      *
      * @return array A (sorted) array of page IDs in a site
      */
-    protected function getPages()
+    protected function getPages(): array
     {
-        $pages = $this->site->getPages();
+        $pages = $this->site->getPages(null, $this->indexingConfigurationName);
         $additionalPageIds = [];
         if (!empty($this->indexingConfiguration['additionalPageIds'])) {
             $additionalPageIds = GeneralUtility::intExplode(',', $this->indexingConfiguration['additionalPageIds']);
@@ -259,8 +259,7 @@ abstract class AbstractInitializer implements IndexQueueInitializer
 
         $pagesWithinNoSearchSubEntriesPages = $this->site->getPagesWithinNoSearchSubEntriesPages();
         // @todo: log properly if $additionalPageIds are within $pagesWithinNoSearchSubEntriesPages
-        $pages = array_values(array_diff($pages, $pagesWithinNoSearchSubEntriesPages));
-        return $pages;
+        return array_values(array_diff($pages, $pagesWithinNoSearchSubEntriesPages));
     }
 
     /**
