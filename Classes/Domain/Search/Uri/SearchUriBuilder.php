@@ -16,7 +16,13 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Uri;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Grouping\GroupItem;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
+use ApacheSolrForTypo3\Solr\Event\Routing\BeforeProcessCachedVariablesEvent;
+use ApacheSolrForTypo3\Solr\Event\Routing\BeforeReplaceVariableInCachedUrlEvent;
+use ApacheSolrForTypo3\Solr\Event\Routing\PostProcessUriEvent;
+use ApacheSolrForTypo3\Solr\Routing\RoutingService;
 use ApacheSolrForTypo3\Solr\System\Url\UrlHelper;
+use Psr\EventDispatcher\EventDispatcherInterface;
+use TYPO3\CMS\Core\Http\Uri;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 
@@ -61,11 +67,37 @@ class SearchUriBuilder
     protected static $additionalArgumentsCache = [];
 
     /**
+     * @var EventDispatcherInterface
+     */
+    protected $eventDispatcher;
+
+    /**
+     * @var RoutingService
+     */
+    protected $routingService;
+
+    /**
      * @param UriBuilder $uriBuilder
      */
     public function injectUriBuilder(UriBuilder $uriBuilder)
     {
         $this->uriBuilder = $uriBuilder;
+    }
+
+    /**
+     * @param RoutingService $routingService
+     */
+    public function injectRoutingService(RoutingService $routingService)
+    {
+        $this->routingService = $routingService;
+    }
+
+    /**
+     * @param EventDispatcherInterface $eventDispatcher
+     */
+    public function injectEventDispatcher(EventDispatcherInterface $eventDispatcher)
+    {
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
@@ -262,7 +294,6 @@ class SearchUriBuilder
             ->getCopyForSubRequest()
             ->getAsArray();
 
-
         $pageUid = $this->getTargetPageUidFromRequestConfiguration($previousSearchRequest);
         return $this->buildLinkWithInMemoryCache($pageUid, $persistentAndFacetArguments);
     }
@@ -308,7 +339,7 @@ class SearchUriBuilder
      * @param array $arguments
      * @return string
      */
-    protected function buildLinkWithInMemoryCache($pageUid, array $arguments)
+    protected function buildLinkWithInMemoryCache(int $pageUid, array $arguments): string
     {
         $values = [];
         $structure = $arguments;
@@ -338,8 +369,53 @@ class SearchUriBuilder
         $values = array_map(function($value) {
             return urlencode($value);
         }, $values);
+
+        $routingConfigurations = $this->routingService
+            ->fetchEnhancerByPageUid($pageUid);
+        $enhancedRouting = count($routingConfigurations) > 0;
+        $this->routingService->reset();
+        if ($enhancedRouting && is_array($routingConfigurations[0])) {
+            $this->routingService->fromRoutingConfiguration($routingConfigurations[0]);
+        }
+
+        /* @var Uri $uri */
+        $uri = GeneralUtility::makeInstance(
+            Uri::class,
+            $uriCacheTemplate
+        );
+
+        $urlEvent = new BeforeReplaceVariableInCachedUrlEvent($uri, $enhancedRouting);
+        /* @var BeforeReplaceVariableInCachedUrlEvent $urlEvent */
+        $urlEvent = $this->eventDispatcher->dispatch($urlEvent);
+        $uriCacheTemplate = (string)$urlEvent->getUri();
+
+        $variableEvent = new BeforeProcessCachedVariablesEvent(
+            $uri,
+            $routingConfigurations,
+            $keys,
+            $values
+        );
+        $this->eventDispatcher->dispatch($variableEvent);
+
+        $values = $variableEvent->getVariableValues();
+        // Take care that everything is urlencoded!
+        $keys = array_map(function($value) {
+            // @TODO: With only PHP 8 support, replace this with str_contains()
+            if (strpos($value, '###') === false) {
+                return $value;
+            }
+            return urlencode($value);
+        }, array_keys($values));
+
         $uri = str_replace($keys, $values, $uriCacheTemplate);
-        return $uri;
+        $uri = GeneralUtility::makeInstance(
+            Uri::class,
+            $uri
+        );
+        $uriEvent = new PostProcessUriEvent($uri, $routingConfigurations);
+        $this->eventDispatcher->dispatch($uriEvent);
+        $uri = $uriEvent->getUri();
+        return (string)$uri;
     }
 
     /**
@@ -383,17 +459,34 @@ class SearchUriBuilder
      * @param $values
      * @param array $branch
      */
-    protected function getSubstitution(array &$structure, array  &$values, array $branch = [])
+    protected function getSubstitution(array &$structure, array  &$values, array $branch = []): void
     {
+        /*
+         * Adds information about the filter facet to the placeholder.
+         *
+         * This feature allows to handle even placeholder in RouteEnhancer
+         */
+        $filter = false;
+        if (count($branch) > 0 && $branch[count($branch) - 1] === 'filter') {
+            $filter = true;
+        }
         foreach ($structure as $key => &$value) {
             $branch[] = $key;
             if (is_array($value)) {
                 $this->getSubstitution($value, $values, $branch);
             } else {
+                if ($filter) {
+                    [$facetType, $facetValue] = explode(':', $value);
+                    $branch[] = $facetType;
+                }
                 $path = '###' . implode(':', $branch) . '###';
                 $values[$path] = $value;
                 $structure[$key] = $path;
+                if ($filter) {
+                    array_pop($branch);
+                }
             }
+            array_pop($branch);
         }
     }
 }

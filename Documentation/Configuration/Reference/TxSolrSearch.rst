@@ -4,7 +4,7 @@
 .. -*- coding: utf-8 -*- with BOM.
 
 .. include:: ../../Includes.txt
-
+.. _configuration.reference.solrsearch:
 
 tx_solr.search
 ==============
@@ -907,6 +907,7 @@ Defines which fields you want to use for faceting. It's a list of facet configur
       }
     }
 
+.. _configuration.reference.solrsearch.facet.intro:
 
 faceting.facets.[facetName] - single facet configuration
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

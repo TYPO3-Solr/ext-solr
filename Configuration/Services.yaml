@@ -1,0 +1,16 @@
+services:
+  ApacheSolrForTypo3\Solr\EventListener\EnhancedRouting\CachedUrlModifier:
+    tags:
+      - name: event.listener
+        identifier: 'solr.routing.cachedurl-modifier'
+        event: ApacheSolrForTypo3\Solr\Event\Routing\BeforeReplaceVariableInCachedUrlEvent
+  ApacheSolrForTypo3\Solr\EventListener\EnhancedRouting\CachedPathVariableModifier:
+    tags:
+      - name: event.listener
+        identifier: 'solr.routing.cachedurl-modifier'
+        event: ApacheSolrForTypo3\Solr\Event\Routing\BeforeProcessCachedVariablesEvent
+  ApacheSolrForTypo3\Solr\EventListener\EnhancedRouting\PostEnhancedUriProcessor:
+    tags:
+      - name: event.listener
+        identifier: 'solr.routing.postenhanceduriprocessor-modifier'
+        event: ApacheSolrForTypo3\Solr\Event\Routing\PostProcessUriEvent

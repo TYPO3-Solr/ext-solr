@@ -60,6 +60,7 @@ Apache Solr for TYPO3 (EXT:solr)
 	GettingStarted/Index
 	Backend/Index
 	Frontend/Index
+	Routing/Index
 	Logging/Index
 	Solr/Index
 	Configuration/Index
