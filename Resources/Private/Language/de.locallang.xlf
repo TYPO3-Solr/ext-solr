@@ -85,7 +85,7 @@
 			</trans-unit>
 			<trans-unit id="submit" xml:space="preserve" approved="yes">
 				<source>Search</source>
-				<target>Suche</target>
+				<target>suchen</target>
 			</trans-unit>
 			<trans-unit id="sorting_sortBy" xml:space="preserve" approved="yes">
 				<source>Sort by</source>
