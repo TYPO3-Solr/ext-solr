@@ -1,31 +1,22 @@
 <?php
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Query\Modifier;
 
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2016 Timo Schmidt <timo.schmidt@dkd.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\FacetRegistry;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\UrlFacetContainer;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Query\Modifier\Faceting;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
@@ -38,7 +29,7 @@ use TYPO3\CMS\Extbase\Object\ObjectManager;
 /**
  * Tests the ApacheSolrForTypo3\Solr\Query\Modifier\Faceting class
  *
- * @author Timo Schmidt <timo.schmidt@dkd.de>
+ * @author Timo Hund <timo.hund@dkd.de>
  */
 class FacetingTest extends UnitTest
 {
@@ -550,5 +541,62 @@ class FacetingTest extends UnitTest
         $this->assertEquals('{!tag=something0}(something0:"A+B")', $queryParameter['fq'][0], 'Can handle plus as plus');
         $this->assertEquals('{!tag=something1}(something1:"A+B")', $queryParameter['fq'][1], 'Can handle %2B as plus');
         $this->assertEquals('{!tag=something2}(something2:"A B")', $queryParameter['fq'][2], 'Can handle %20 as space');
+    }
+
+    /**
+     * @test
+     */
+    public function getFiltersByFacetNameCanHandleAssocUrlParameterStyle()
+    {
+        $facetingModifierStub = new class($this->getDumbMock(FacetRegistry::class)) extends Faceting {
+            public function callGetFiltersByFacetName(array $resultParameters, array $allFacets): array
+            {
+                return parent::getFiltersByFacetName($resultParameters, $allFacets);
+            }
+        };
+
+        $typoScriptConfigurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
+        $typoScriptConfigurationMock->expects($this->once())
+            ->method('getSearchFacetingUrlParameterStyle')
+            ->will($this->returnValue(UrlFacetContainer::PARAMETER_STYLE_ASSOC));
+        $searchRequestMock = $this->getDumbMock(SearchRequest::class);
+        $searchRequestMock->expects($this->once())
+            ->method('getContextTypoScriptConfiguration')
+            ->will($this->returnValue($typoScriptConfigurationMock));
+
+        $facetingModifierStub->setSearchRequest($searchRequestMock);
+
+        $this->assertEquals(
+            [
+                'age' => [0 => 'week'],
+                'type' => [0 => 'tx_news_domain_model_news']
+            ],
+            $facetingModifierStub->callGetFiltersByFacetName(
+                [
+                    'filter' => [
+                        'age:week' => '1',
+                        'type:tx_news_domain_model_news' => '1',
+                    ]
+                ],
+                [
+                    'type.' => [
+                        'label' => 'Content Type',
+                        'field' => 'type',
+                    ],
+                    'age.' => [
+                        'label' => 'Age',
+                        'field' => 'created',
+                        'type' => 'queryGroup',
+                        'queryGroup.' => [
+                            'week.' => [
+                                'query' => '[NOW/DAY-7DAYS TO *]',
+                            ]
+                        ]
+                    ]
+                ]
+            ),
+            'The assoc parameters/keys for parameters of selected facets are not as expected.' . PHP_EOL
+            . 'Probably they are not delegated to Apache Solr query, which leads to a non functional faceting.'
+        );
     }
 }
