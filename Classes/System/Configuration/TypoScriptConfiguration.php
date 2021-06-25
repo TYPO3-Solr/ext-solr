@@ -21,7 +21,6 @@ use ApacheSolrForTypo3\Solr\System\Util\ArrayAccessor;
 use InvalidArgumentException;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use function Webmozart\Assert\Tests\StaticAnalysis\boolean;
 
 /**
  * TypoScript configuration object, used to read all TypoScript configuration.

@@ -14,7 +14,7 @@ namespace ApacheSolrForTypo3\Solr\Test\Domain\Search\ResultSet\Facets\OptionBase
  * The TYPO3 project - inspiring people to share!
  */
 
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\UrlFacetDataBag;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\UrlFacetContainer;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
@@ -57,7 +57,7 @@ class QueryGroupFacetParserTest extends AbstractFacetParserTest
             ->method('getContextTypoScriptConfiguration')
             ->will($this->returnValue($typoScriptConfiguration));
 
-        $activeUrlFacets = new UrlFacetDataBag(
+        $activeUrlFacets = new UrlFacetContainer(
             new ArrayAccessor([ 'tx_solr' => ['filter' => $activeFilters] ])
         );
 

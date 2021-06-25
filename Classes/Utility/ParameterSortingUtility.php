@@ -30,7 +30,7 @@ namespace ApacheSolrForTypo3\Solr\Utility;
  *
  * This class is used in places building URI for links, facets etc.
  *
- * @see \ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\UrlFacetDataBag::getActiveFacets
+ * @see \ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\UrlFacetContainer::getActiveFacets
  * @see \ApacheSolrForTypo3\Solr\Domain\Search\Uri\SearchUriBuilder::getAddFacetValueUri
  */
 class ParameterSortingUtility

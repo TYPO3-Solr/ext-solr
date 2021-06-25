@@ -2,29 +2,20 @@
 
 namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets;
 
-/**
- * Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- * (c) 2020 Lars Tode <lars.tode@dkd.de>
- * All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- * This script is part of the TYPO3 project. The TYPO3 project is
- * free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3 of the License, or
- * (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- * The GNU General Public License can be found at
- * http://www.gnu.org/copyleft/gpl.html.
- *
- * This script is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * This copyright notice MUST APPEAR in all copies of the script!
+ * The TYPO3 project - inspiring people to share!
  */
 
+use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\System\Util\ArrayAccessor;
 use ApacheSolrForTypo3\Solr\Utility\ParameterSortingUtility;
 
@@ -34,7 +25,7 @@ use ApacheSolrForTypo3\Solr\Utility\ParameterSortingUtility;
  * @author Lars Tode <lars.tode@dkd.de>
  * @api
  */
-class UrlFacetDataBag implements \Countable
+class UrlFacetContainer implements \Countable
 {
     /**
      * Parameters array has a numeric index
@@ -80,15 +71,15 @@ class UrlFacetDataBag implements \Countable
     protected $sort = false;
 
     /**
-     * UrlFacetDataBag constructor.
-     * 
+     * UrlFacetConstructor constructor.
+     *
      * @param ArrayAccessor $argumentsAccessor
      * @param string $argumentNameSpace
      * @param string $parameterStyle
      */
     public function __construct(
         ArrayAccessor $argumentsAccessor,
-        string $argumentNameSpace = 'tx_solr',
+        string $argumentNameSpace = SearchRequest::DEFAULT_PLUGIN_NAMESPACE,
         string $parameterStyle = self::PARAMETER_STYLE_INDEX
     ) {
         // Take care that the url style matches in case and is one of the allowed values
@@ -194,21 +185,15 @@ class UrlFacetDataBag implements \Countable
     {
         $values = [];
         $activeFacets = $this->getActiveFacets();
-        if ($this->parameterStyle === self::PARAMETER_STYLE_INDEX) {
-            array_map(function($activeFacet) use (&$values, $facetName) {
-                $parts = explode(':', $activeFacet, 2);
-                if ($parts[0] === $facetName) {
-                    $values[] = $parts[1];
-                }
-            }, $activeFacets);
-        } else {
-            array_map(function($activeFacet) use (&$values, $facetName) {
-                $parts = explode(':', $activeFacet, 2);
-                if ($parts[0] === $facetName) {
-                    $values[] = $parts[1];
-                }
-            }, array_keys($activeFacets));
+        if ($this->parameterStyle === self::PARAMETER_STYLE_ASSOC) {
+            $activeFacets = array_keys($activeFacets);
         }
+        array_map(function($activeFacet) use (&$values, $facetName) {
+            $parts = explode(':', $activeFacet, 2);
+            if ($parts[0] === $facetName) {
+                $values[] = $parts[1];
+            }
+        }, $activeFacets);
 
         return $values;
     }
@@ -228,7 +213,7 @@ class UrlFacetDataBag implements \Countable
         }
 
         // Sort url parameter
-        if ($this->sort) {
+        if ($this->sort && !empty($pathValue)) {
             ParameterSortingUtility::sortByType(
                 $pathValue,
                 $this->parameterStyle
@@ -253,9 +238,9 @@ class UrlFacetDataBag implements \Countable
      *
      * @param array $activeFacets
      *
-     * @return UrlFacetDataBag
+     * @return UrlFacetContainer
      */
-    public function setActiveFacets(array $activeFacets = []): UrlFacetDataBag
+    public function setActiveFacets(array $activeFacets = []): UrlFacetContainer
     {
         $path = $this->prefixWithNamespace('filter');
         $this->argumentsAccessor->set($path, $activeFacets);
@@ -269,9 +254,9 @@ class UrlFacetDataBag implements \Countable
      * @param string $facetName
      * @param mixed $facetValue
      *
-     * @return UrlFacetDataBag
+     * @return UrlFacetContainer
      */
-    public function addFacetValue(string $facetName, $facetValue): UrlFacetDataBag
+    public function addFacetValue(string $facetName, $facetValue): UrlFacetContainer
     {
         if ($this->hasFacetValue($facetName, $facetValue)) {
             return $this;
@@ -296,9 +281,9 @@ class UrlFacetDataBag implements \Countable
      * @param string $facetName
      * @param mixed $facetValue
      *
-     * @return UrlFacetDataBag
+     * @return UrlFacetContainer
      */
-    public function removeFacetValue(string $facetName, $facetValue): UrlFacetDataBag
+    public function removeFacetValue(string $facetName, $facetValue): UrlFacetContainer
     {
         if (!$this->hasFacetValue($facetName, $facetValue)) {
             return $this;
@@ -329,9 +314,9 @@ class UrlFacetDataBag implements \Countable
      *
      * @param string $facetName
      *
-     * @return UrlFacetDataBag
+     * @return UrlFacetContainer
      */
-    public function removeAllFacetValuesByName(string $facetName): UrlFacetDataBag
+    public function removeAllFacetValuesByName(string $facetName): UrlFacetContainer
     {
         $facetValues = $this->getActiveFacets();
         $filterOptions = 0;
@@ -353,9 +338,9 @@ class UrlFacetDataBag implements \Countable
     /**
      * Removes all active facets from the request.
      *
-     * @return UrlFacetDataBag
+     * @return UrlFacetContainer
      */
-    public function removeAllFacets(): UrlFacetDataBag
+    public function removeAllFacets(): UrlFacetContainer
     {
         $path = $this->prefixWithNamespace('filter');
         $this->argumentsAccessor->reset($path);
@@ -397,7 +382,7 @@ class UrlFacetDataBag implements \Countable
      *
      * @return $this
      */
-    public function acknowledgeChange(): UrlFacetDataBag
+    public function acknowledgeChange(): UrlFacetContainer
     {
         $this->changed = false;
 
