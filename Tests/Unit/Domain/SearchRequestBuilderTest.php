@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequestBuilder;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Session\FrontendUserSession;
@@ -67,9 +68,15 @@ class SearchRequestBuilderTest extends UnitTest
     {
         $this->configurationMock->expects($this->once())->method('getSearchResultsPerPageSwitchOptionsAsArray')
             ->will($this->returnValue([10, 25]));
+        $this->configurationMock->expects($this->any())->method('getSearchPluginNamespace')
+            ->will($this->returnValue(SearchRequest::DEFAULT_PLUGIN_NAMESPACE));
         $this->assertPerPageInSessionWillBeChanged();
 
-        $requestArguments = ['q' => 'test', 'page' => 5, 'resultsPerPage' => 25];
+        $requestArguments = [
+            'q' => 'test',
+            'resultsPerPage' => 25,
+            'page' => 5 // pagination page
+        ];
         $request = $this->searchRequestBuilder->buildForSearch($requestArguments, 0, 0);
         $this->assertSame($request->getPage(), null, 'Page was not resetted.');
     }

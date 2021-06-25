@@ -16,7 +16,7 @@ namespace ApacheSolrForTypo3\Solr\Test\Domain\Search\ResultSet\Facets;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Faceting;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\UrlFacetDataBag;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\UrlFacetContainer;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
@@ -61,7 +61,7 @@ abstract class AbstractFacetParserTest extends UnitTest
         $searchResultSet->setUsedSearchRequest($searchRequestMock);
         $searchResultSet->setResponse($fakeResponse);
 
-        $activeUrlFacets = new UrlFacetDataBag(
+        $activeUrlFacets = new UrlFacetContainer(
             new ArrayAccessor([ 'tx_solr' => ['filter' => $activeFilters] ])
         );
         $configuration = [];

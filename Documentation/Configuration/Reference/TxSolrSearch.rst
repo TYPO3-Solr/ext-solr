@@ -871,6 +871,7 @@ faceting.urlParameterStyle
 :TS Path: plugin.tx_solr.search.faceting.urlParameterStyle
 :Since: 11.1
 :Default: index
+:Note: On assoc, the setting faceting.urlParameterSort will be enabled and can not be disabled.
 
 Allows to change the url style of facets. This can be legacy index or more modern associative style.
 
@@ -884,6 +885,7 @@ faceting.urlParameterSort
 :TS Path: plugin.tx_solr.search.faceting.urlParameterSort
 :Since: 11.1
 :Default: 0
+:Note: On faceting.urlParameterStyle = assoc, this setting can not be disabled.
 
 Allows to enable sorting of url parameters, so the single state of facets is associated with same url, no matter in which order the facets were selected
 

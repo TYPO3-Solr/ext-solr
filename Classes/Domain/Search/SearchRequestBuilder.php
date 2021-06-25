@@ -2,28 +2,18 @@
 
 namespace ApacheSolrForTypo3\Solr\Domain\Search;
 
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2017 Timo Hund <timo.hund@dkd.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Session\FrontendUserSession;
@@ -31,6 +21,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * The SearchRequestBuilder is responsible to build a valid SearchRequest.
+ * @author Timo Hund <timo.hund@dkd.de>
  */
 class SearchRequestBuilder
 {
@@ -81,7 +72,7 @@ class SearchRequestBuilder
      * @param SearchRequest $searchRequest
      * @return SearchRequest
      */
-    protected function applyPassedResultsPerPage(SearchRequest $searchRequest)
+    protected function applyPassedResultsPerPage(SearchRequest $searchRequest): SearchRequest
     {
         $requestedPerPage = $searchRequest->getResultsPerPage();
 
@@ -163,14 +154,15 @@ class SearchRequestBuilder
      * @param int $languageId
      * @return SearchRequest
      */
-    protected function getRequest(array $requestArguments = [], $pageId = 0, $languageId = 0)
+    protected function getRequest(array $requestArguments = [], int $pageId = 0, int $languageId = 0): SearchRequest
     {
-        $searchRequest = GeneralUtility::makeInstance(SearchRequest::class,
+        return GeneralUtility::makeInstance(
+            SearchRequest::class,
             /** @scrutinizer ignore-type */ $requestArguments,
             /** @scrutinizer ignore-type */ $pageId,
             /** @scrutinizer ignore-type */ $languageId,
-            /** @scrutinizer ignore-type */ $this->typoScriptConfiguration);
-        return $searchRequest;
+            /** @scrutinizer ignore-type */ $this->typoScriptConfiguration
+        );
     }
 
     /**
@@ -179,7 +171,7 @@ class SearchRequestBuilder
      * @param array $arguments
      * @return array
      */
-    protected function adjustPageArgumentToPositiveInteger(array $arguments)
+    protected function adjustPageArgumentToPositiveInteger(array $arguments): array
     {
         $page = isset($arguments['page']) ? intval($arguments['page']) : 0;
         $arguments['page'] = max($page, 0);

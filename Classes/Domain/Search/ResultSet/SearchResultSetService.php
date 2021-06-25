@@ -240,7 +240,7 @@ class SearchResultSetService
     }
 
     /**
-     * Uses the configured parser and retrieves the parsed search resutls.
+     * Uses the configured parser and retrieves the parsed search results.
      *
      * @param SearchResultSet $resultSet
      */

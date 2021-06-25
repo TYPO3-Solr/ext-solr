@@ -14,7 +14,7 @@ namespace ApacheSolrForTypo3\Solr\Test\Domain\Search\ResultSet\Facets;
  * The TYPO3 project - inspiring people to share!
  */
 
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\UrlFacetDataBag;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\UrlFacetContainer;
 use ApacheSolrForTypo3\Solr\System\Util\ArrayAccessor;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 
@@ -23,7 +23,7 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
  *
  * @author Lars Tode <lars.tode@dkd.de>
  */
-class UrlFacetDataBagTest extends UnitTest
+class UrlFacetContainerTest extends UnitTest
 {
     /**
      * Test data for index based url parameters
@@ -61,7 +61,7 @@ class UrlFacetDataBagTest extends UnitTest
      */
     public function canFilterIndexFacetsParameterByName()
     {
-        $urlFacetBack = new UrlFacetDataBag(new ArrayAccessor($this->indexParameters));
+        $urlFacetBack = new UrlFacetContainer(new ArrayAccessor($this->indexParameters));
         $urlFacetBack->enableSort();
         $this->assertEquals(['example', 'news', 'pages'], $urlFacetBack->getActiveFacetValuesByName('type'));
     }
@@ -71,7 +71,7 @@ class UrlFacetDataBagTest extends UnitTest
      */
     public function canFilterAssocFacetsParameterByName()
     {
-        $urlFacetBack = new UrlFacetDataBag(
+        $urlFacetBack = new UrlFacetContainer(
             new ArrayAccessor($this->assocParameters),
             'tx_solr',
             'assoc'
@@ -84,7 +84,7 @@ class UrlFacetDataBagTest extends UnitTest
      */
     public function canRemoveAllIndexFacetsParameter()
     {
-        $urlFacetBack = new UrlFacetDataBag(new ArrayAccessor($this->indexParameters));
+        $urlFacetBack = new UrlFacetContainer(new ArrayAccessor($this->indexParameters));
         $this->assertEquals(4, $urlFacetBack->count());
         $urlFacetBack->removeAllFacets();
         $this->assertEquals(0, $urlFacetBack->count());
@@ -95,7 +95,7 @@ class UrlFacetDataBagTest extends UnitTest
      */
     public function canRemoveAllAssocFacetsParameter()
     {
-        $urlFacetBack = new UrlFacetDataBag(
+        $urlFacetBack = new UrlFacetContainer(
             new ArrayAccessor($this->assocParameters),
             'tx_solr',
             'assoc'
@@ -110,7 +110,7 @@ class UrlFacetDataBagTest extends UnitTest
      */
     public function canRemoveAllFacetsParameterByName()
     {
-        $urlFacetBack = new UrlFacetDataBag(new ArrayAccessor($this->indexParameters));
+        $urlFacetBack = new UrlFacetContainer(new ArrayAccessor($this->indexParameters));
         $this->assertEquals(4, $urlFacetBack->count());
         $urlFacetBack->removeAllFacetValuesByName('type');
         $this->assertEquals(1, $urlFacetBack->count());
@@ -121,7 +121,7 @@ class UrlFacetDataBagTest extends UnitTest
      */
     public function canRemoveAllAssocFacetsParameterByName()
     {
-        $urlFacetBack = new UrlFacetDataBag(
+        $urlFacetBack = new UrlFacetContainer(
             new ArrayAccessor($this->assocParameters),
             'tx_solr',
             'assoc'
@@ -136,7 +136,7 @@ class UrlFacetDataBagTest extends UnitTest
      */
     public function canRemoveASingleFacetParameterByName()
     {
-        $urlFacetBack = new UrlFacetDataBag(new ArrayAccessor($this->indexParameters));
+        $urlFacetBack = new UrlFacetContainer(new ArrayAccessor($this->indexParameters));
         $this->assertEquals(4, $urlFacetBack->count());
         $urlFacetBack->removeFacetValue('type', 'example');
         $this->assertEquals(3, $urlFacetBack->count());
@@ -147,7 +147,7 @@ class UrlFacetDataBagTest extends UnitTest
      */
     public function canRemoveASingleAssocFacetParameterByName()
     {
-        $urlFacetBack = new UrlFacetDataBag(
+        $urlFacetBack = new UrlFacetContainer(
             new ArrayAccessor($this->assocParameters),
             'tx_solr',
             'assoc'
@@ -161,7 +161,7 @@ class UrlFacetDataBagTest extends UnitTest
      */
     public function keepOrderingOfIndexParameters()
     {
-        $urlFacetBack = new UrlFacetDataBag(new ArrayAccessor($this->indexParameters));
+        $urlFacetBack = new UrlFacetContainer(new ArrayAccessor($this->indexParameters));
         $this->assertEquals(['pages', 'example', 'news'], $urlFacetBack->getActiveFacetValuesByName('type'));
     }
 
@@ -170,7 +170,7 @@ class UrlFacetDataBagTest extends UnitTest
      */
     public function canSortIndexParameters()
     {
-        $urlFacetBack = new UrlFacetDataBag(new ArrayAccessor($this->indexParameters));
+        $urlFacetBack = new UrlFacetContainer(new ArrayAccessor($this->indexParameters));
         $urlFacetBack->enableSort();
         $this->assertEquals(['example', 'news', 'pages'], $urlFacetBack->getActiveFacetValuesByName('type'));
     }
@@ -180,7 +180,7 @@ class UrlFacetDataBagTest extends UnitTest
      */
     public function didNotKeepOrderingOfAssocParameters()
     {
-        $urlFacetBack = new UrlFacetDataBag(
+        $urlFacetBack = new UrlFacetContainer(
             new ArrayAccessor($this->assocParameters),
             'tx_solr',
             'assoc'
@@ -196,7 +196,7 @@ class UrlFacetDataBagTest extends UnitTest
      */
     public function assocParametersSortedByDefault()
     {
-        $urlFacetBack = new UrlFacetDataBag(
+        $urlFacetBack = new UrlFacetContainer(
             new ArrayAccessor($this->assocParameters),
             'tx_solr',
             'assoc'
