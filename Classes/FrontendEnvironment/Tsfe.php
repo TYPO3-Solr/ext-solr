@@ -3,6 +3,7 @@ namespace ApacheSolrForTypo3\Solr\FrontendEnvironment;
 
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\LanguageAspectFactory;
+use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
 use TYPO3\CMS\Core\Error\Http\ServiceUnavailableException;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Http\ImmediateResponseException;
@@ -74,8 +75,10 @@ class Tsfe implements SingletonInterface
 
                 /** @var ServerRequest $request */
             $request = GeneralUtility::makeInstance(ServerRequest::class);
-            $request = $request->withAttribute('site', $site);
-            $this->requestCache[$cacheId] = $request->withAttribute('language', $siteLanguage);
+            $this->requestCache[$cacheId] = $request
+                ->withAttribute('site', $site)
+                ->withAttribute('language', $siteLanguage)
+                ->withAttribute('applicationType', SystemEnvironmentBuilder::REQUESTTYPE_FE);
         }
         $GLOBALS['TYPO3_REQUEST'] = $this->requestCache[$cacheId];
 
