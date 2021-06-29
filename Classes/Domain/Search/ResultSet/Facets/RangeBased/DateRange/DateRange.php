@@ -79,7 +79,9 @@ class DateRange extends AbstractRangeFacetItem
      */
     protected function getRangeString()
     {
-        return $this->startRequested->format('Ymd') . '0000-' . $this->endRequested->format('Ymd') . '0000';
+        $from = $this->startRequested instanceof DateTime ? $this->startRequested->format('Ymd') . '0000' : '';
+        $till = $this->endRequested instanceof DateTime ? $this->endRequested->format('Ymd') . '0000' : '';
+        return $from . '-' . $till;
     }
 
     /**
