@@ -135,7 +135,9 @@ class SearchResultSetTest extends UnitTest
         $fakeRequest = new SearchRequest(['tx_solr' => ['q' => 'my search']]);
         $fakeRequest->setResultsPerPage(10);
 
-        $this->objectManagerMock->expects($this->once())->method('get')->with(SearchResultSet::class)->willReturn(new SearchResultSet());
+        $this->objectManagerMock
+            ->expects($this->once())->method('get')->with(SearchResultSet::class)
+            ->willReturn(new SearchResultSet());
         $resultSet = $this->searchResultSetService->search($fakeRequest);
         $this->assertSame($resultSet->getResponse(), $fakeResponse, 'Did not get the expected fakeResponse');
     }
