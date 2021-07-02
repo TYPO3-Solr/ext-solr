@@ -329,7 +329,15 @@ class Relation extends AbstractContentObject
                 $foreignTableTca['columns'][$foreignTableLabelField],
                 $parentContentObject
             );
-            $value = array_pop($relatedItemsFromForeignTable);
+	        if (empty($this->configuration['multiValue']) || (int)$this->configuration['multiValue'] === 0) {
+		        // single value, needs to be concatenated related items
+		        $singleValueGlue = !empty($this->configuration['singleValueGlue'])
+                    ? trim($this->configuration['singleValueGlue'], '|')
+                    : ', ';
+		        $value = implode($singleValueGlue, $relatedItemsFromForeignTable);
+	        } else {
+                $value = array_pop($relatedItemsFromForeignTable);
+	        }
 
             // restore
             $this->configuration = $backupConfiguration;
