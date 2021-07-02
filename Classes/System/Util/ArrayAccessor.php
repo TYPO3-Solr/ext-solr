@@ -92,7 +92,7 @@ class ArrayAccessor
     /**
      * @param $path
      * @param mixed $defaultIfEmpty
-     * @return array|null
+     * @return mixed
      */
     public function get($path, $defaultIfEmpty = null)
     {
@@ -102,18 +102,15 @@ class ArrayAccessor
         switch ($pathSegmentCount) {
                 // direct access for small paths
             case 1:
-                return isset($this->data[$pathArray[0]]) ?
-                    $this->data[$pathArray[0]] : $defaultIfEmpty;
+                return $this->data[$pathArray[0]] ?? $defaultIfEmpty;
             case 2:
-                return isset($this->data[$pathArray[0]][$pathArray[1]]) ?
-                    $this->data[$pathArray[0]][$pathArray[1]] : $defaultIfEmpty;
+                return $this->data[$pathArray[0]][$pathArray[1]] ?? $defaultIfEmpty;
             case 3:
-                return isset($this->data[$pathArray[0]][$pathArray[1]][$pathArray[2]]) ?
-                    $this->data[$pathArray[0]][$pathArray[1]][$pathArray[2]] : $defaultIfEmpty;
+                return $this->data[$pathArray[0]][$pathArray[1]][$pathArray[2]] ?? $defaultIfEmpty;
             default:
                 // when we have a longer path we use a loop to get the element
                 $loopResult = $this->getDeepElementWithLoop($pathArray);
-                return $loopResult !== null ? $loopResult : $defaultIfEmpty;
+                return $loopResult ?? $defaultIfEmpty;
         }
     }
 
@@ -243,15 +240,14 @@ class ArrayAccessor
      * @param string $path
      * @return array
      */
-    protected function getPathAsArray($path)
+    protected function getPathAsArray(string $path): array
     {
         if (!$this->includePathSeparatorInKeys) {
             $pathArray = explode($this->pathSeparator, $path);
-            return $pathArray;
+            return $pathArray !== false ? $pathArray : [];
         }
 
         $substitutedPath = str_replace($this->pathSeparator, $this->pathSeparator . '@@@', trim($path));
-        $pathArray = array_filter(explode('@@@', $substitutedPath));
-        return $pathArray;
+        return array_filter(explode('@@@', $substitutedPath));
     }
 }

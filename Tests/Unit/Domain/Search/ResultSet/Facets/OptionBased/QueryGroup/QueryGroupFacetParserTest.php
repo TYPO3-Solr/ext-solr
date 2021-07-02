@@ -14,9 +14,11 @@ namespace ApacheSolrForTypo3\Solr\Test\Domain\Search\ResultSet\Facets\OptionBase
  * The TYPO3 project - inspiring people to share!
  */
 
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\UrlFacetContainer;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
+use ApacheSolrForTypo3\Solr\System\Util\ArrayAccessor;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\QueryGroup\Option;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\QueryGroup\QueryGroupFacet;
@@ -51,18 +53,25 @@ class QueryGroupFacetParserTest extends AbstractFacetParserTest
         $configuration = [];
         $configuration['plugin.']['tx_solr.']['search.']['faceting.']['facets.'] = $facetConfiguration;
         $typoScriptConfiguration = new TypoScriptConfiguration($configuration);
-        $searchRequestMock->expects($this->any())->method('getContextTypoScriptConfiguration')->will($this->returnValue($typoScriptConfiguration));
+        $searchRequestMock->expects($this->any())
+            ->method('getContextTypoScriptConfiguration')
+            ->will($this->returnValue($typoScriptConfiguration));
 
-        $activeFacetNames = [];
-        $activeFacetValueMap = [];
-        foreach ($activeFilters as $filter) {
-            list($facetName, $value) = explode(':', $filter, 2);
-            $activeFacetNames[] = $facetName;
-            $activeFacetValueMap[] = [$facetName, $value, true];
-        }
+        $activeUrlFacets = new UrlFacetContainer(
+            new ArrayAccessor([ 'tx_solr' => ['filter' => $activeFilters] ])
+        );
 
-        $searchRequestMock->expects($this->any())->method('getActiveFacetNames')->will($this->returnValue($activeFacetNames));
-        $searchRequestMock->expects($this->any())->method('getHasFacetValue')->will($this->returnValueMap($activeFacetValueMap));
+        $searchRequestMock->expects($this->any())
+            ->method('getActiveFacetNames')
+            ->will($this->returnCallback(function() use ($activeUrlFacets) {
+                return $activeUrlFacets->getActiveFacetNames();
+            }));
+
+        $searchRequestMock->expects($this->any())
+            ->method('getHasFacetValue')
+            ->will($this->returnCallback(function(string $facetName, $facetValue) use ($activeUrlFacets) {
+                return $activeUrlFacets->hasFacetValue($facetName, $facetValue);
+            }));
 
         return $searchResultSet;
     }

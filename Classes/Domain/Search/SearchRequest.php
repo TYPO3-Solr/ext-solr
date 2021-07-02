@@ -25,6 +25,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\UrlFacetContainer;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Util\ArrayAccessor;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
@@ -38,6 +39,13 @@ use TYPO3\CMS\Core\Utility\ArrayUtility;
 class SearchRequest
 {
     /**
+     * The default plugin namespace.
+     *
+     * @var string
+     */
+    const DEFAULT_PLUGIN_NAMESPACE = 'tx_solr';
+
+    /**
      * @var string
      */
     protected $id;
@@ -47,7 +55,7 @@ class SearchRequest
      *
      * @var string
      */
-    protected $argumentNameSpace = 'tx_solr';
+    protected $argumentNameSpace = self::DEFAULT_PLUGIN_NAMESPACE;
 
     /**
      * Arguments that should be kept for sub requests.
@@ -93,6 +101,13 @@ class SearchRequest
     protected $contextTypoScriptConfiguration;
 
     /**
+     * Container for all active facets inside of the URL(TYPO3/FE)
+     *
+     * @var UrlFacetContainer
+     */
+    protected $activeFacetContainer;
+
+    /**
      * @var array
      */
     protected $persistedArguments = [];
@@ -101,9 +116,9 @@ class SearchRequest
      * @param array $argumentsArray
      * @param int $pageUid
      * @param int $sysLanguageUid
-     * @param TypoScriptConfiguration $typoScriptConfiguration
+     * @param TypoScriptConfiguration|null $typoScriptConfiguration
      */
-    public function __construct(array $argumentsArray = [], $pageUid = 0, $sysLanguageUid = 0, TypoScriptConfiguration $typoScriptConfiguration = null)
+    public function __construct(array $argumentsArray = [], int $pageUid = 0, int $sysLanguageUid = 0, TypoScriptConfiguration $typoScriptConfiguration = null)
     {
         $this->stateChanged = true;
         $this->persistedArguments = $argumentsArray;
@@ -114,7 +129,7 @@ class SearchRequest
 
         // overwrite the plugin namespace and the persistentArgumentsPaths
         if (!is_null($typoScriptConfiguration)) {
-            $this->argumentNameSpace = $typoScriptConfiguration->getSearchPluginNamespace();
+            $this->argumentNameSpace = $typoScriptConfiguration->getSearchPluginNamespace() ?? self::DEFAULT_PLUGIN_NAMESPACE;
         }
 
         $this->persistentArgumentsPaths = [$this->argumentNameSpace . ':q', $this->argumentNameSpace . ':filter', $this->argumentNameSpace . ':sort', $this->argumentNameSpace . ':groupPage'];
@@ -172,14 +187,7 @@ class SearchRequest
      */
     public function getActiveFacetNames()
     {
-        $activeFacets = $this->getActiveFacets();
-        $facetNames = [];
-
-        array_map(function($activeFacet) use (&$facetNames) {
-            $facetNames[] = substr($activeFacet, 0, strpos($activeFacet, ':'));
-        }, $activeFacets);
-
-        return $facetNames;
+        return $this->activeFacetContainer->getActiveFacetNames();
     }
 
     /**
@@ -187,19 +195,9 @@ class SearchRequest
      * @param string $facetName
      * @return array
      */
-    public function getActiveFacetValuesByName($facetName)
+    public function getActiveFacetValuesByName(string $facetName)
     {
-        $values = [];
-        $activeFacets = $this->getActiveFacets();
-
-        array_map(function($activeFacet) use (&$values, $facetName) {
-            $parts = explode(':', $activeFacet, 2);
-            if ($parts[0] === $facetName) {
-                $values[] = $parts[1];
-            }
-        }, $activeFacets);
-
-        return $values;
+        return $this->activeFacetContainer->getActiveFacetValuesByName($facetName);
     }
 
     /**
@@ -207,29 +205,51 @@ class SearchRequest
      */
     public function getActiveFacets()
     {
-        $path = $this->prefixWithNamespace('filter');
-        $pathValue = $this->argumentsAccessor->get($path, []);
-
-        return is_array($pathValue) ? $pathValue : [];
+        return $this->activeFacetContainer->getActiveFacets();
     }
 
     /**
+     * Enable sorting of URL parameters
+     */
+    public function sortActiveFacets(): void
+    {
+        $this->activeFacetContainer->enableSort();
+    }
+
+    /**
+     * @return bool
+     */
+    public function isActiveFacetsSorted(): bool
+    {
+        return $this->activeFacetContainer->isSorted();
+    }
+
+    /**
+     * @return string
+     */
+    public function getActiveFacetsUrlParameterStyle(): string
+    {
+        return $this->activeFacetContainer->getParameterStyle();
+    }
+
+    /**
+     * Returns the active count of facets
+     *
      * @return int
      */
     public function getActiveFacetCount()
     {
-        return count($this->getActiveFacets());
+        return $this->activeFacetContainer->count();
     }
 
     /**
-     * @param $activeFacets
+     * @param array $activeFacets
      *
      * @return SearchRequest
      */
     protected function setActiveFacets($activeFacets = [])
     {
-        $path = $this->prefixWithNamespace('filter');
-        $this->argumentsAccessor->set($path, $activeFacets);
+        $this->activeFacetContainer->setActiveFacets($activeFacets);
 
         return $this;
     }
@@ -242,17 +262,15 @@ class SearchRequest
      *
      * @return SearchRequest
      */
-    public function addFacetValue($facetName, $facetValue)
+    public function addFacetValue(string $facetName, $facetValue)
     {
-        if ($this->getHasFacetValue($facetName, $facetValue)) {
-            return $this;
+        $this->activeFacetContainer->addFacetValue($facetName, $facetValue);
+
+        if ($this->activeFacetContainer->hasChanged()) {
+            $this->stateChanged = true;
+            $this->activeFacetContainer->acknowledgeChange();
         }
 
-        $facetValues = $this->getActiveFacets();
-        $facetValues[] = $facetName . ':' . $facetValue;
-        $this->setActiveFacets($facetValues);
-
-        $this->stateChanged = true;
         return $this;
     }
 
@@ -264,23 +282,14 @@ class SearchRequest
      *
      * @return SearchRequest
      */
-    public function removeFacetValue($facetName, $facetValue)
+    public function removeFacetValue(string $facetName, $facetValue)
     {
-        if (!$this->getHasFacetValue($facetName, $facetValue)) {
-            return $this;
-        }
-        $facetValues = $this->getActiveFacets();
-        $facetValueToLookFor = $facetName . ':' . $facetValue;
-
-        foreach ($facetValues as $index => $facetValue) {
-            if ($facetValue === $facetValueToLookFor) {
-                unset($facetValues[$index]);
-                break;
-            }
+        $this->activeFacetContainer->removeFacetValue($facetName, $facetValue);
+        if ($this->activeFacetContainer->hasChanged()) {
+            $this->stateChanged = true;
+            $this->activeFacetContainer->acknowledgeChange();
         }
 
-        $this->setActiveFacets($facetValues);
-        $this->stateChanged = true;
         return $this;
     }
 
@@ -291,16 +300,13 @@ class SearchRequest
      *
      * @return SearchRequest
      */
-    public function removeAllFacetValuesByName($facetName)
+    public function removeAllFacetValuesByName(string $facetName)
     {
-        $facetValues = $this->getActiveFacets();
-        $facetValues = array_filter($facetValues, function($facetValue) use ($facetName) {
-            $parts = explode(':', $facetValue, 2);
-            return $parts[0] !== $facetName;
-        });
-
-        $this->setActiveFacets($facetValues);
-        $this->stateChanged = true;
+        $this->activeFacetContainer->removeAllFacetValuesByName($facetName);
+        if ($this->activeFacetContainer->hasChanged()) {
+            $this->stateChanged = true;
+            $this->activeFacetContainer->acknowledgeChange();
+        }
         return $this;
     }
 
@@ -311,21 +317,24 @@ class SearchRequest
      */
     public function removeAllFacets()
     {
-        $path = $this->prefixWithNamespace('filter');
-        $this->argumentsAccessor->reset($path);
-        $this->stateChanged = true;
+        $this->activeFacetContainer->removeAllFacets();
+        if ($this->activeFacetContainer->hasChanged()) {
+            $this->stateChanged = true;
+            $this->activeFacetContainer->acknowledgeChange();
+        }
         return $this;
     }
 
     /**
+     * Check if an active facet has a given value
+     *
      * @param string $facetName
      * @param mixed $facetValue
      * @return bool
      */
-    public function getHasFacetValue($facetName, $facetValue)
+    public function getHasFacetValue(string $facetName, $facetValue): bool
     {
-        $facetNameAndValueToCheck = $facetName . ':' . $facetValue;
-        return in_array($facetNameAndValueToCheck, $this->getActiveFacets());
+        return $this->activeFacetContainer->hasFacetValue($facetName, $facetValue);
     }
 
     /**
@@ -659,7 +668,7 @@ class SearchRequest
      *
      * @return TypoScriptConfiguration
      */
-    public function getContextTypoScriptConfiguration()
+    public function getContextTypoScriptConfiguration(): ?TypoScriptConfiguration
     {
         return $this->contextTypoScriptConfiguration;
     }
@@ -669,10 +678,25 @@ class SearchRequest
      *
      * @return SearchRequest
      */
-    public function reset()
+    public function reset(): SearchRequest
     {
         $this->argumentsAccessor = new ArrayAccessor($this->persistedArguments);
         $this->stateChanged = false;
+        $this->activeFacetContainer = new UrlFacetContainer(
+            $this->argumentsAccessor,
+            $this->argumentNameSpace ?? self::DEFAULT_PLUGIN_NAMESPACE,
+            $this->contextTypoScriptConfiguration === null ?
+                UrlFacetContainer::PARAMETER_STYLE_INDEX :
+                $this->contextTypoScriptConfiguration->getSearchFacetingUrlParameterStyle()
+        );
+
+        // If the default of sorting parameter should be true, a modification of this condition is needed.
+        // If instance of contextTypoScriptConfiguration is not TypoScriptConfiguration the sort should be enabled too
+        if ($this->contextTypoScriptConfiguration instanceof TypoScriptConfiguration &&
+                $this->contextTypoScriptConfiguration->getSearchFacetingUrlParameterSort(false)) {
+            $this->activeFacetContainer->enableSort();
+        }
+
         return $this;
     }
 
@@ -682,7 +706,7 @@ class SearchRequest
      * @param bool $onlyPersistentArguments
      * @return SearchRequest
      */
-    public function getCopyForSubRequest($onlyPersistentArguments = true)
+    public function getCopyForSubRequest(bool $onlyPersistentArguments = true): SearchRequest
     {
         if (!$onlyPersistentArguments) {
             // create a new request with all data
@@ -713,7 +737,7 @@ class SearchRequest
     /**
      * @return string
      */
-    public function getArgumentNameSpace()
+    public function getArgumentNamespace(): string
     {
         return $this->argumentNameSpace;
     }
@@ -721,7 +745,7 @@ class SearchRequest
     /**
      * @return array
      */
-    public function getAsArray()
+    public function getAsArray(): array
     {
         return $this->argumentsAccessor->getData();
     }
@@ -731,7 +755,8 @@ class SearchRequest
      *
      * @return array
      */
-    public function getArguments() {
-        return $this->argumentsAccessor->get($this->argumentNameSpace, []);
+    public function getArguments(): array
+    {
+        return $this->argumentsAccessor->get($this->argumentNameSpace) ?? [];
     }
 }
