@@ -26,9 +26,11 @@ namespace ApacheSolrForTypo3\Solr\Test\ViewHelpers\Facet\Options\Group\Prefix;
 
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Util;
 use ApacheSolrForTypo3\Solr\ViewHelpers\SearchFormViewHelper;
 use TYPO3\CMS\Extbase\Mvc\Controller\ControllerContext;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
+use TYPO3Fluid\Fluid\Component\Argument\ArgumentCollection;
 use TYPO3Fluid\Fluid\Core\Variables\VariableProviderInterface;
 
 /**
@@ -95,7 +97,12 @@ class SearchFormViewHelperTest extends UnitTest
     {
         $this->typoScriptConfigurationMock->expects($this->any())->method('getSearchTargetPage')->willReturn(888);
         $this->viewHelper->expects($this->once())->method('getSearchResultSet')->willReturn(null);
-        $this->viewHelper->setArguments(['additionalParams' => [], 'argumentsToBeExcludedFromQueryString' => []]);
+
+        if (Util::getIsTYPO3VersionBelow10()) {
+            $this->viewHelper->setArguments(['additionalParams' => [], 'argumentsToBeExcludedFromQueryString' => []]);
+        } else {
+            $this->viewHelper->setArguments(new ArgumentCollection(['additionalParams' => [], 'argumentsToBeExcludedFromQueryString' => []]));
+        }
 
         $this->assertUriIsBuildForPageUid(888);
         $this->viewHelper->render();
@@ -108,7 +115,11 @@ class SearchFormViewHelperTest extends UnitTest
     {
         $this->typoScriptConfigurationMock->expects($this->any())->method('getSearchTargetPage')->willReturn(0);
         $this->viewHelper->expects($this->once())->method('getSearchResultSet')->willReturn(null);
-        $this->viewHelper->setArguments(['pageUid' => 4711, 'additionalParams' => [], 'argumentsToBeExcludedFromQueryString' => []]);
+        if (Util::getIsTYPO3VersionBelow10()) {
+            $this->viewHelper->setArguments(['pageUid' => 4711, 'additionalParams' => [], 'argumentsToBeExcludedFromQueryString' => []]);
+        } else {
+            $this->viewHelper->setArguments(new ArgumentCollection(['pageUid' => 4711, 'additionalParams' => [], 'argumentsToBeExcludedFromQueryString' => []]));
+        }
 
         $this->assertUriIsBuildForPageUid(4711);
         $this->viewHelper->render();
@@ -121,8 +132,11 @@ class SearchFormViewHelperTest extends UnitTest
     {
         $this->typoScriptConfigurationMock->expects($this->any())->method('getSearchTargetPage')->willReturn(888);
         $this->viewHelper->expects($this->once())->method('getSearchResultSet')->willReturn(null);
-        $this->viewHelper->setArguments(['pageUid' => 4711, 'additionalParams' => [], 'argumentsToBeExcludedFromQueryString' => []]);
-
+        if (Util::getIsTYPO3VersionBelow10()) {
+            $this->viewHelper->setArguments(['pageUid' => 4711, 'additionalParams' => [], 'argumentsToBeExcludedFromQueryString' => []]);
+        } else {
+            $this->viewHelper->setArguments(new ArgumentCollection(['pageUid' => 4711, 'additionalParams' => [], 'argumentsToBeExcludedFromQueryString' => []]));
+        }
         $this->assertUriIsBuildForPageUid(4711);
         $this->viewHelper->render();
     }

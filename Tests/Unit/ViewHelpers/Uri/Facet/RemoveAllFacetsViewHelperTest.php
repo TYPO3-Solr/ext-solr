@@ -27,6 +27,7 @@ namespace ApacheSolrForTypo3\Solr\Test\ViewHelpers\Uri\Facet;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Domain\Search\Uri\SearchUriBuilder;
+use ApacheSolrForTypo3\Solr\Util;
 use ApacheSolrForTypo3\Solr\ViewHelpers\Uri\Facet\RemoveAllFacetsViewHelper;
 use TYPO3\CMS\Extbase\Mvc\Controller\ControllerContext;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
@@ -59,7 +60,12 @@ class RemoveAllFacetsViewHelperTest extends AbstractFacetItemViewHelperTest
         $renderContextMock->expects($this->any())->method('getControllerContext')->will($this->returnValue($controllerContextMock));
 
         $viewHelper = new RemoveAllFacetsViewHelper();
-        $viewHelper->setRenderingContext($renderContextMock);
+
+        if (Util::getIsTYPO3VersionBelow10()) {
+            $viewHelper->setRenderingContext($renderContextMock);
+        } else {
+            $viewHelper->onOpen($renderContextMock);
+        }
 
         $searchUriBuilderMock = $this->getDumbMock(SearchUriBuilder::class);
 
