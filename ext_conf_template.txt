@@ -1,3 +1,9 @@
+# cat=basic/enable/8; type=string; label=A list of white listed plugin namespaces (Required by cacheHash/excludedParameters and plugin flex form): Note: This list only is available in Plugin -> Options -> Plugin Namespace
+pluginNamespaces = tx_solr
+
+# cat=basic/enable/9; type=boolean; label=Include/Exclude global q parameter in/from cacheHash
+includeGlobalQParameterInCacheHash = 0
+
 # cat=basic/enable/10; type=boolean; label=Use closest rootpage for configuration (Performance improvement)
 useConfigurationFromClosestTemplate = 0
 
