@@ -48,6 +48,25 @@ Filter processes the terms earlier, so your protected words for the Snowball Por
 right spelling (see https://solr.apache.org/guide/8_8/language-analysis.html#scandinavian-normalization-filter).
 
 
+cHash configuration
+-------------------
+
+EXT:solrs components like range facets can not be properly handled by cHash stack, because the amount of possible range-combinations is infinite, therefore they must be excluded from cHash calculation.
+
+This change makes it possible to exclude all EXT:solr parameters from cache hash. To prevent misconfigurations, the new extension configuration setting "pluginNamespaces" was introduced, which is used in FlexForm and in
+TYPO3_CONF_VARS/FE/cacheHash/excludedParameters. This setting makes it impossible to chose invalid/unhandled EXT:solr plugin namespace on FlexForm (Plugin -> Options -> Plugin Namespace)
+
+Please follow the following migration instructions
+
+Plugin namespaces:
+Needed only if other as default (tx_solr) plugin namespace is used in instance. Add the used namespace[s] to $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['solr']['pluginNamespaces'] or via backend
+"Settings" -> "Extension Configuration" -> "solr" -> "A list of white listed plugin namespaces"
+
+Global q parameter:
+Needed only if global "q" parameter without plugin namespace is used and wants to be included in cache hash calculation. Set the setting $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['solr']['pluginNamespaces'] = '1'
+or enable it via backend "Settings" -> "Extension Configuration" -> "solr" -> "Include/Exclude global q parameter in/from cacheHash"
+
+
 Apache Solr 8.8.2 support
 -------------------------
 
@@ -55,7 +74,6 @@ With EXT:solr 11.1 we support Apache Solr 8.8.2, the latest release of Apache So
 
 To see what has changed in Apache Solr please read the release notes of Apache Solr:
 https://solr.apache.org/docs/8_8_2/changes/Changes.html
-
 
 Update to Solarium 6
 --------------------
