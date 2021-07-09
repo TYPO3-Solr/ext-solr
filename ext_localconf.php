@@ -177,6 +177,18 @@ if (!function_exists('strptime')) {
         \ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration::class
     );
 
+    // cacheHash handling
+    \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule(
+        $GLOBALS['TYPO3_CONF_VARS'],
+        [
+            'FE' => [
+                'cacheHash' => [
+                    'excludedParameters' => $extensionConfiguration->getCacheHashExcludedParameters()
+                ]
+            ]
+        ]
+    );
+
     # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
     if (!isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['searchResultClassName '])) {

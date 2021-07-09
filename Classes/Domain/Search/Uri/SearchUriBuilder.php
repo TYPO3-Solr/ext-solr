@@ -75,7 +75,7 @@ class SearchUriBuilder
      * @param $facetValue
      * @return string
      */
-    public function getAddFacetValueUri(SearchRequest $previousSearchRequest, $facetName, $facetValue)
+    public function getAddFacetValueUri(SearchRequest $previousSearchRequest, $facetName, $facetValue): string
     {
         $persistentAndFacetArguments = $previousSearchRequest
             ->getCopyForSubRequest()->removeAllGroupItemPages()->addFacetValue($facetName, $facetValue)
@@ -100,7 +100,7 @@ class SearchUriBuilder
      * @param $facetValue
      * @return string
      */
-    public function getSetFacetValueUri(SearchRequest $previousSearchRequest, $facetName, $facetValue)
+    public function getSetFacetValueUri(SearchRequest $previousSearchRequest, $facetName, $facetValue): string
     {
         $previousSearchRequest = $previousSearchRequest
             ->getCopyForSubRequest()->removeAllGroupItemPages()->removeAllFacetValuesByName($facetName);
@@ -114,7 +114,7 @@ class SearchUriBuilder
      * @param $facetValue
      * @return string
      */
-    public function getRemoveFacetValueUri(SearchRequest $previousSearchRequest, $facetName, $facetValue)
+    public function getRemoveFacetValueUri(SearchRequest $previousSearchRequest, $facetName, $facetValue): string
     {
         $persistentAndFacetArguments = $previousSearchRequest
             ->getCopyForSubRequest()->removeAllGroupItemPages()->removeFacetValue($facetName, $facetValue)
@@ -137,7 +137,7 @@ class SearchUriBuilder
      * @param $facetName
      * @return string
      */
-    public function getRemoveFacetUri(SearchRequest $previousSearchRequest, $facetName)
+    public function getRemoveFacetUri(SearchRequest $previousSearchRequest, $facetName): string
     {
         $persistentAndFacetArguments = $previousSearchRequest
             ->getCopyForSubRequest()->removeAllGroupItemPages()->removeAllFacetValuesByName($facetName)
@@ -160,7 +160,7 @@ class SearchUriBuilder
      * @param SearchRequest $previousSearchRequest
      * @return string
      */
-    public function getRemoveAllFacetsUri(SearchRequest $previousSearchRequest)
+    public function getRemoveAllFacetsUri(SearchRequest $previousSearchRequest): string
     {
         $persistentAndFacetArguments = $previousSearchRequest
             ->getCopyForSubRequest()->removeAllGroupItemPages()->removeAllFacets()
@@ -184,7 +184,7 @@ class SearchUriBuilder
      * @param $page
      * @return string
      */
-    public function getResultPageUri(SearchRequest $previousSearchRequest, $page)
+    public function getResultPageUri(SearchRequest $previousSearchRequest, $page): string
     {
         $persistentAndFacetArguments = $previousSearchRequest
             ->getCopyForSubRequest()->setPage($page)
@@ -200,7 +200,7 @@ class SearchUriBuilder
      * @param int $page
      * @return string
      */
-    public function getResultGroupItemPageUri(SearchRequest $previousSearchRequest, GroupItem $groupItem, int $page)
+    public function getResultGroupItemPageUri(SearchRequest $previousSearchRequest, GroupItem $groupItem, int $page): string
     {
         $persistentAndFacetArguments = $previousSearchRequest
             ->getCopyForSubRequest()->setGroupItemPage($groupItem->getGroup()->getGroupName(), $groupItem->getGroupValue(), $page)
@@ -213,7 +213,7 @@ class SearchUriBuilder
      * @param $queryString
      * @return string
      */
-    public function getNewSearchUri(SearchRequest $previousSearchRequest, $queryString)
+    public function getNewSearchUri(SearchRequest $previousSearchRequest, $queryString): string
     {
         /** @var $request SearchRequest */
         $contextConfiguration = $previousSearchRequest->getContextTypoScriptConfiguration();
@@ -241,7 +241,7 @@ class SearchUriBuilder
      * @param $sortingDirection
      * @return string
      */
-    public function getSetSortingUri(SearchRequest $previousSearchRequest, $sortingName, $sortingDirection)
+    public function getSetSortingUri(SearchRequest $previousSearchRequest, $sortingName, $sortingDirection): string
     {
         $persistentAndFacetArguments = $previousSearchRequest
             ->getCopyForSubRequest()->setSorting($sortingName, $sortingDirection)
@@ -255,7 +255,7 @@ class SearchUriBuilder
      * @param SearchRequest $previousSearchRequest
      * @return string
      */
-    public function getRemoveSortingUri(SearchRequest $previousSearchRequest)
+    public function getRemoveSortingUri(SearchRequest $previousSearchRequest): string
     {
         $persistentAndFacetArguments = $previousSearchRequest
             ->getCopyForSubRequest()->removeSorting()
@@ -269,7 +269,7 @@ class SearchUriBuilder
      * @param SearchRequest $previousSearchRequest
      * @return string
      */
-    public function getCurrentSearchUri(SearchRequest $previousSearchRequest)
+    public function getCurrentSearchUri(SearchRequest $previousSearchRequest): string
     {
         $persistentAndFacetArguments = $previousSearchRequest
             ->getCopyForSubRequest()
@@ -284,7 +284,7 @@ class SearchUriBuilder
      * @param SearchRequest $request
      * @return array
      */
-    protected function getAdditionalArgumentsFromRequestConfiguration(SearchRequest $request)
+    protected function getAdditionalArgumentsFromRequestConfiguration(SearchRequest $request): array
     {
         if ($request->getContextTypoScriptConfiguration() == null) {
             return [];
@@ -303,9 +303,9 @@ class SearchUriBuilder
 
     /**
      * @param SearchRequest $request
-     * @return integer|null
+     * @return int|null
      */
-    protected function getTargetPageUidFromRequestConfiguration(SearchRequest $request)
+    protected function getTargetPageUidFromRequestConfiguration(SearchRequest $request): ?int
     {
         if ($request->getContextTypoScriptConfiguration() == null) {
             return null;
@@ -317,11 +317,11 @@ class SearchUriBuilder
     /**
      * Build the link with an i memory cache that reduces the amount of required typolink calls.
      *
-     * @param integer $pageUid
+     * @param int|null $pageUid
      * @param array $arguments
      * @return string
      */
-    protected function buildLinkWithInMemoryCache($pageUid, array $arguments)
+    protected function buildLinkWithInMemoryCache(?int $pageUid, array $arguments): string
     {
         $values = [];
         $structure = $arguments;
@@ -335,13 +335,8 @@ class SearchUriBuilder
             $this->uriBuilder->reset()->setTargetPageUid($pageUid);
             $uriCacheTemplate = $this->uriBuilder->setArguments($structure)->setUseCacheHash(false)->build();
 
-            // even if we call build with disabled cHash in TYPO3 9 a cHash will be generated when site management is active
-            // to prevent wrong cHashes we remove the cHash here from the cached uri template.
-            // @todo: This can be removed when https://forge.typo3.org/issues/87120 is resolved and we can ship a proper configuration
             /* @var UrlHelper $urlHelper */
             $urlHelper = GeneralUtility::makeInstance(UrlHelper::class, $uriCacheTemplate);
-            $urlHelper->removeQueryParameter('cHash');
-
             self::$preCompiledLinks[$hash] = (string)$urlHelper;
         }
 
@@ -351,8 +346,7 @@ class SearchUriBuilder
         $values = array_map(function($value) {
             return urlencode($value);
         }, $values);
-        $uri = str_replace($keys, $values, $uriCacheTemplate);
-        return $uri;
+        return str_replace($keys, $values, $uriCacheTemplate);
     }
 
     /**
