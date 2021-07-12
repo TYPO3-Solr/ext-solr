@@ -23,6 +23,10 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+if (!defined('TYPO3_MODE')) {
+    die('Access denied.');
+}
+
 use ApacheSolrForTypo3\Solr\Api;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\HttpUtility;
