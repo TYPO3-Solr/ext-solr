@@ -53,7 +53,7 @@ defined('TYPO3_MODE') || die();
             'Info',
             '',
             [
-                'Backend\\Search\\InfoModule' => 'index, switchSite, switchCore, documentsDetails',
+                \ApacheSolrForTypo3\Solr\Controller\Backend\Search\InfoModuleController::class => 'index, switchSite, switchCore, documentsDetails',
             ],
             [
                 'access' => 'user,group',
@@ -69,7 +69,7 @@ defined('TYPO3_MODE') || die();
             'CoreOptimization',
             '',
             [
-                'Backend\\Search\\CoreOptimizationModule' => 'index, addSynonyms, importSynonymList, deleteAllSynonyms, exportSynonyms, deleteSynonyms, saveStopWords, importStopWordList, exportStopWords, switchSite, switchCore'
+                \ApacheSolrForTypo3\Solr\Controller\Backend\Search\CoreOptimizationModuleController::class => 'index, addSynonyms, importSynonymList, deleteAllSynonyms, exportSynonyms, deleteSynonyms, saveStopWords, importStopWordList, exportStopWords, switchSite, switchCore'
             ],
             [
                 'access' => 'user,group',
@@ -85,7 +85,7 @@ defined('TYPO3_MODE') || die();
             'IndexQueue',
             '',
             [
-                'Backend\\Search\\IndexQueueModule' => 'index, initializeIndexQueue, requeueDocument, resetLogErrors, showError, doIndexingRun, switchSite'
+                \ApacheSolrForTypo3\Solr\Controller\Backend\Search\IndexQueueModuleController::class => 'index, initializeIndexQueue, requeueDocument, resetLogErrors, showError, doIndexingRun, switchSite'
             ],
             [
                 'access' => 'user,group',
@@ -101,7 +101,7 @@ defined('TYPO3_MODE') || die();
             'IndexAdministration',
             '',
             [
-                'Backend\\Search\\IndexAdministrationModule' => 'index, emptyIndex, clearIndexQueue, reloadIndexConfiguration, switchSite'
+                \ApacheSolrForTypo3\Solr\Controller\Backend\Search\IndexAdministrationModuleController::class => 'index, emptyIndex, clearIndexQueue, reloadIndexConfiguration, switchSite'
             ],
             [
                 'access' => 'user,group',
