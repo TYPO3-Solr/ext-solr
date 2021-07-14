@@ -44,6 +44,6 @@ $GLOBALS['TCA']['pages']['palettes']['slimmed_miscellaneous'] = [
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes(
     'pages',
     '--palette--;;slimmed_miscellaneous',
-    (string)\TYPO3\CMS\Frontend\Page\PageRepository::DOKTYPE_SYSFOLDER,
+    (string)\TYPO3\CMS\Core\Domain\Repository\PageRepository::DOKTYPE_SYSFOLDER,
     'after:module'
 );
