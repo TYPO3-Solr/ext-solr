@@ -29,6 +29,7 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use ApacheSolrForTypo3\Solr\ViewHelpers\SearchFormViewHelper;
 use TYPO3\CMS\Extbase\Mvc\Controller\ControllerContext;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
+use TYPO3Fluid\Fluid\Component\Argument\ArgumentCollection;
 use TYPO3Fluid\Fluid\Core\Variables\VariableProviderInterface;
 
 /**
@@ -95,7 +96,8 @@ class SearchFormViewHelperTest extends UnitTest
     {
         $this->typoScriptConfigurationMock->expects($this->any())->method('getSearchTargetPage')->willReturn(888);
         $this->viewHelper->expects($this->once())->method('getSearchResultSet')->willReturn(null);
-        $this->viewHelper->setArguments(['additionalParams' => [], 'argumentsToBeExcludedFromQueryString' => []]);
+
+        $this->viewHelper->setArguments(new ArgumentCollection(['additionalParams' => [], 'argumentsToBeExcludedFromQueryString' => []]));
 
         $this->assertUriIsBuildForPageUid(888);
         $this->viewHelper->render();
@@ -108,7 +110,7 @@ class SearchFormViewHelperTest extends UnitTest
     {
         $this->typoScriptConfigurationMock->expects($this->any())->method('getSearchTargetPage')->willReturn(0);
         $this->viewHelper->expects($this->once())->method('getSearchResultSet')->willReturn(null);
-        $this->viewHelper->setArguments(['pageUid' => 4711, 'additionalParams' => [], 'argumentsToBeExcludedFromQueryString' => []]);
+        $this->viewHelper->setArguments(new ArgumentCollection(['pageUid' => 4711, 'additionalParams' => [], 'argumentsToBeExcludedFromQueryString' => []]));
 
         $this->assertUriIsBuildForPageUid(4711);
         $this->viewHelper->render();
@@ -121,8 +123,7 @@ class SearchFormViewHelperTest extends UnitTest
     {
         $this->typoScriptConfigurationMock->expects($this->any())->method('getSearchTargetPage')->willReturn(888);
         $this->viewHelper->expects($this->once())->method('getSearchResultSet')->willReturn(null);
-        $this->viewHelper->setArguments(['pageUid' => 4711, 'additionalParams' => [], 'argumentsToBeExcludedFromQueryString' => []]);
-
+        $this->viewHelper->setArguments(new ArgumentCollection(['pageUid' => 4711, 'additionalParams' => [], 'argumentsToBeExcludedFromQueryString' => []]));
         $this->assertUriIsBuildForPageUid(4711);
         $this->viewHelper->render();
     }

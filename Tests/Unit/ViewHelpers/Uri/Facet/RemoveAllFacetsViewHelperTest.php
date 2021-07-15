@@ -59,7 +59,8 @@ class RemoveAllFacetsViewHelperTest extends AbstractFacetItemViewHelperTest
         $renderContextMock->expects($this->any())->method('getControllerContext')->will($this->returnValue($controllerContextMock));
 
         $viewHelper = new RemoveAllFacetsViewHelper();
-        $viewHelper->setRenderingContext($renderContextMock);
+
+        $viewHelper->onOpen($renderContextMock);
 
         $searchUriBuilderMock = $this->getDumbMock(SearchUriBuilder::class);
 

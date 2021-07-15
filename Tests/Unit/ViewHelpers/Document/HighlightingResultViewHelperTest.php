@@ -31,6 +31,7 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResult;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\ViewHelpers\Document\HighlightResultViewHelper;
+use TYPO3Fluid\Fluid\Component\Argument\ArgumentCollection;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 
 /**
@@ -108,12 +109,14 @@ class HighlightingResultViewHelperTest extends UnitTest
         $documentMock->expects($this->any())->method('getId')->will($this->returnValue("foo"));
 
         $viewHelper = new HighlightResultViewHelper();
-        $viewHelper->setRenderingContext($renderingContextMock);
-        $viewHelper->setArguments([
+
+        $argumentsCollection = new ArgumentCollection([
             'resultSet' => $resultSetMock,
             'document' => $documentMock,
             'fieldName' => 'content']
         );
+        $argumentsCollection->setRenderingContext($renderingContextMock);
+        $viewHelper->setArguments($argumentsCollection);
 
         $output = $viewHelper->render();
         $this->assertSame($expectedOutput, $output);

@@ -29,6 +29,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\FacetCollection;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\OptionsFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\ViewHelpers\Facet\Area\GroupViewHelper;
+use TYPO3Fluid\Fluid\Component\Argument\ArgumentCollection;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\Variables\StandardVariableProvider;
 
@@ -74,9 +75,11 @@ class GroupViewHelperTest extends UnitTest
         $renderingContextMock = $this->getDumbMock(RenderingContextInterface::class);
         $renderingContextMock->expects($this->any())->method('getVariableProvider')->will($this->returnValue($variableContainer));
 
+            /** @var GroupViewHelper $viewHelper */
         $viewHelper = $this->getMockBuilder(GroupViewHelper::class)->setMethods(['renderChildren'])->getMock();
-        $viewHelper->setRenderingContext($renderingContextMock);
-        $viewHelper->setArguments(['facets' => $facetCollection, 'groupName' => 'left']);
+
+        $viewHelper->setArguments(new ArgumentCollection(['facets' => $facetCollection, 'groupName' => 'left']));
+        $viewHelper->getArguments()->setRenderingContext($renderingContextMock);
         $viewHelper->render();
 
         $this->assertTrue($variableContainer->exists('areaFacets'), 'Expected that filteredFacets has been set');

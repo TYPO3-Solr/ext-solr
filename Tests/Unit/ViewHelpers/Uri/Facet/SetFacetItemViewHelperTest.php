@@ -27,6 +27,7 @@ namespace ApacheSolrForTypo3\Solr\Test\ViewHelpers\Uri\Facet;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Uri\SearchUriBuilder;
 use ApacheSolrForTypo3\Solr\ViewHelpers\Uri\Facet\SetFacetItemViewHelper;
+use TYPO3Fluid\Fluid\Component\Argument\ArgumentCollection;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 
 
@@ -45,15 +46,15 @@ class SetFacetItemViewHelperTest extends AbstractFacetItemViewHelperTest
 
         $renderContextMock = $this->getDumbMock(RenderingContextInterface::class);
         $viewHelper = new SetFacetItemViewHelper();
-        $viewHelper->setRenderingContext($renderContextMock);
 
         $searchUriBuilderMock = $this->getDumbMock(SearchUriBuilder::class);
 
             // we expected that the getSetFacetValueUri will be called on the searchUriBuilder in the end.
         $searchUriBuilderMock->expects($this->once())->method('getSetFacetValueUri')->with($facet->getResultSet()->getUsedSearchRequest(), 'Color', 'red');
         $viewHelper->injectSearchUriBuilder($searchUriBuilderMock);
-        // @extensionScannerIgnoreLine
-        $viewHelper->setArguments(['facet' => $facet, 'facetItem' => $facet->getOptions()->getByPosition(0)]);
+
+        $viewHelper->setArguments(new ArgumentCollection(['facet' => $facet, 'facetItem' => $facet->getOptions()->getByPosition(0)]));
+        $viewHelper->getArguments()->setRenderingContext($renderContextMock);
         $viewHelper->render();
     }
 }
