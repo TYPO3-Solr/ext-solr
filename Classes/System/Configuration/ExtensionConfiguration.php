@@ -121,7 +121,7 @@ class ExtensionConfiguration
     public function getCacheHashExcludedParameters(): array
     {
         $pluginNamespaces = array_map(
-            function ($pluginNamespace) {
+            function($pluginNamespace) {
                 return '^' . $pluginNamespace . '[';
             },
             $this->getAvailablePluginNamespaces()

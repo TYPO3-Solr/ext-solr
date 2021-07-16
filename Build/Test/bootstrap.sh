@@ -102,9 +102,9 @@ fi
 # Temporary downgrades
 CURRENT_PHP_VERSION=$(php -r "echo PHP_VERSION;" | grep --only-matching --perl-regexp "7.\d+")
 if [[ ! $CURRENT_PHP_VERSION = *"7.2"* ]] && [[ $TYPO3_VERSION = *"10.4"* ]]; then
-    TYPO3_TEMPORARY_DOWNGRADES="doctrine/dbal:2.11.3"
+  TYPO3_TEMPORARY_DOWNGRADES="doctrine/dbal:2.11.3"
 elif [[ $CURRENT_PHP_VERSION = *"7.2"* ]] && [[ $TYPO3_VERSION = *"10.4"* ]]; then
-    TYPO3_TEMPORARY_DOWNGRADES="doctrine/dbal:2.10.4"
+  TYPO3_TEMPORARY_DOWNGRADES="doctrine/dbal:2.10.4"
 fi
 
 if ! composer require --dev --update-with-dependencies --prefer-source \
