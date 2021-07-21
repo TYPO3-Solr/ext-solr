@@ -67,10 +67,10 @@ Needed only if global "q" parameter without plugin namespace is used and wants t
 or enable it via backend "Settings" -> "Extension Configuration" -> "solr" -> "Include/Exclude global q parameter in/from cacheHash"
 
 
-Apache Solr 8.8.2 support
+Apache Solr 8.9.0 support
 -------------------------
 
-With EXT:solr 11.1 we support Apache Solr 8.8.2, the latest release of Apache Solr.
+With EXT:solr 11.1 we support Apache Solr 8.9.0, the latest release of Apache Solr.
 
 To see what has changed in Apache Solr please read the release notes of Apache Solr:
 https://solr.apache.org/docs/8_8_2/changes/Changes.html
