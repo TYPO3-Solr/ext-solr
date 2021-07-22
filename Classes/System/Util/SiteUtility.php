@@ -116,10 +116,11 @@ class SiteUtility
         $fallbackKey = 'solr_' . $property . '_read';
 
         // try to find language specific setting if found return it
-        if (isset(self::$languages[$languageId]) === false) {
-            self::$languages[$languageId] = $typo3Site->getLanguageById($languageId)->toArray();
+        $rootPageUid = $typo3Site->getRootPageId();
+        if (isset(self::$languages[$rootPageUid][$languageId]) === false) {
+            self::$languages[$rootPageUid][$languageId] = $typo3Site->getLanguageById($languageId)->toArray();
         }
-        $value = self::getValueOrFallback(self::$languages[$languageId], $keyToCheck, $fallbackKey);
+        $value = self::getValueOrFallback(self::$languages[$rootPageUid][$languageId], $keyToCheck, $fallbackKey);
         if ($value !== null) {
             return $value;
         }
@@ -139,10 +140,11 @@ class SiteUtility
      */
     protected static function writeConnectionIsEnabled(Site $typo3Site, int $languageId): bool
     {
-        if (isset(self::$languages[$languageId]) === false) {
-            self::$languages[$languageId] = $typo3Site->getLanguageById($languageId)->toArray();
+        $rootPageUid = $typo3Site->getRootPageId();
+        if (isset(self::$languages[$rootPageUid][$languageId]) === false) {
+            self::$languages[$rootPageUid][$languageId] = $typo3Site->getLanguageById($languageId)->toArray();
         }
-        $value = self::getValueOrFallback(self::$languages[$languageId], 'solr_use_write_connection', 'solr_use_write_connection');
+        $value = self::getValueOrFallback(self::$languages[$rootPageUid][$languageId], 'solr_use_write_connection', 'solr_use_write_connection');
         if ($value !== null) {
             return $value;
         }
