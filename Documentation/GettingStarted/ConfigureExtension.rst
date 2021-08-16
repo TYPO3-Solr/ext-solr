@@ -7,10 +7,19 @@ Configure Extension
 
 After :ref:`started-install-extension` you need to configure the extension. Only a few steps from below are necessary for :ref:`started-index`.
 
+
+Extension Configuration
+-----------------------
+
+Underlying settings can be found in the extension configuration, though the default settings are appropriate for most sites you should check and adapt this settings if necessary:
+
+.. image:: ../Images/GettingStarted/typo3-extension-manager.png
+
+
 Static TypoScript
 -----------------
 
-The extension already comes with basic configuration that will work for small pages out of the box. For now create or
+The extension already comes with basic TypoScript configuration that will work for small pages out of the box. For now create or
 edit an existing TypoScript Template record in your page tree and add the provided static TypoScript:
 
 .. image:: ../Images/GettingStarted/typo3-include-static-typoscript.png
