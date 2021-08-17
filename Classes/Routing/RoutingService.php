@@ -268,7 +268,8 @@ class RoutingService implements LoggerAwareInterface
          * 2. Apply character replacements
          * 3. Filter duplicate values
          */
-        for ($i = 0; $i < count($queryValues); $i++) {
+        $queryValuesCount = count($queryValues);
+        for ($i = 0; $i < $queryValuesCount; $i++) {
             $queryValues[$i] = urldecode($queryValues[$i]);
             if ($this->containsFacetAndValueSeparator((string)$queryValues[$i])) {
                 [$facetName, $facetValue] = explode(
@@ -326,13 +327,15 @@ class RoutingService implements LoggerAwareInterface
 
         if (!isset($queryParams[$this->getPluginNamespace()])) {
             $this->logger
-                ->error('Mask error: Query parameters has no entry for namespace ' . $this->getPluginNamespace());
+                ->/** @scrutinizer ignore-call */
+                error('Mask error: Query parameters has no entry for namespace ' . $this->getPluginNamespace());
             return $queryParams;
         }
 
         if (!isset($queryParams[$this->getPluginNamespace()]['filter'])) {
             $this->logger
-                ->info('Mask info: Query parameters has no filter in namespace ' . $this->getPluginNamespace());
+                ->/** @scrutinizer ignore-call */
+                info('Mask info: Query parameters has no filter in namespace ' . $this->getPluginNamespace());
             return $queryParams;
         }
         $queryParameterMap = $this->getQueryParameterMap();
@@ -345,7 +348,7 @@ class RoutingService implements LoggerAwareInterface
             $keep = false;
             if (isset($queryParameterMap[$facetName]) &&
                 isset($newQueryParams[$queryParameterMap[$facetName]])) {
-                $this->logger->error(
+                $this->logger->/** @scrutinizer ignore-call */error(
                     'Mask error: Facet "' . $facetName . '" as "' . $queryParameterMap[$facetName] .
                     '" already in query!'
                 );
@@ -589,7 +592,6 @@ class RoutingService implements LoggerAwareInterface
         foreach ($queryParams[$this->getPluginNamespace()]['filter'] as $set) {
             $separator = $this->detectFacetAndValueSeparator((string)$set);
             [$facetName, $facetValuesString] = explode($separator, $set, 2);
-            $facetValues = [$facetValuesString];
             $facetValues = explode($this->urlFacetQueryService->getMultiValueSeparator(), $facetValuesString);
 
             /**
@@ -686,7 +688,8 @@ class RoutingService implements LoggerAwareInterface
      */
     public function cleanupFacetValues(array $facetValues): array
     {
-        for ($i = 0; $i < count($facetValues); $i++) {
+        $facetValuesCount = count($facetValues);
+        for ($i = 0; $i < $facetValuesCount; $i++) {
             if (!$this->containsFacetAndValueSeparator((string)$facetValues[$i])) {
                 continue;
             }

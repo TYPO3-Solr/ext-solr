@@ -188,9 +188,7 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
     protected function configure(array $enhancerConfiguration): void
     {
         $this->settings = $enhancerConfiguration['solr'];
-        $this->namespace = isset($enhancerConfiguration['extensionKey']) ?
-            $enhancerConfiguration['extensionKey'] :
-            $this->namespace;
+        $this->namespace = $enhancerConfiguration['extensionKey'] ?? $this->namespace;
         $this->routingService = null;
     }
 
@@ -274,7 +272,8 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
         }
 
         // Extract the values
-        for ($i = 0; $i < count($uriElements); $i++) {
+        $uriElementsCount = count($uriElements);
+        for ($i = 0; $i < $uriElementsCount; $i++) {
             // Skip empty elements
             if (empty($uriElements[$i])) {
                 continue;
@@ -315,7 +314,8 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
             );
             if (empty($items)) {
                 $this->logger
-                    ->error(
+                    ->/** @scrutinizer ignore-call */
+                    error(
                         vsprintf(
                             'Could not determine page for slug "%1$s" and language "%2$s". Given path "%3$s"',
                             [
@@ -328,7 +328,8 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
                 $scan = false;
             } elseif (empty($path)) {
                 $this->logger
-                    ->error(
+                    ->/** @scrutinizer ignore-call */
+                    error(
                         vsprintf(
                             'Could resolve page by path "%1$s" and language "%2$s".',
                             [
@@ -377,7 +378,7 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
      */
     protected function getRoutingService(): RoutingService
     {
-        if (!($this->routingService instanceof RoutingService)) {
+        if (null === $this->routingService) {
             $this->routingService = GeneralUtility::makeInstance(
                 RoutingService::class,
                 $this->settings,
