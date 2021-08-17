@@ -64,7 +64,8 @@ class CachedPathVariableModifier
 
         $standardizedKeys = $variableKeys;
 
-        for ($i = 0; $i < count($variableKeys); $i++) {
+        $variableKeysCount = count($variableKeys);
+        for ($i = 0; $i < $variableKeysCount; $i++) {
             $standardizedKey = $this->standardizeKey($variableKeys[$i]);
             if (!$this->containsPathVariable($standardizedKey, $pathVariables) || empty($variableValues[$standardizedKey])) {
                 continue;

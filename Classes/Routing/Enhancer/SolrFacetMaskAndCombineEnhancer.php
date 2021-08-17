@@ -102,7 +102,7 @@ class SolrFacetMaskAndCombineEnhancer extends AbstractEnhancer implements Routin
         $variables = array_flip($compiledRoute->getPathVariables());
         $mergedParams = array_replace($variant->getDefaults(), $deflatedParameters);
         // all params must be given, otherwise we exclude this variant
-        if ($diff = array_diff_key($variables, $mergedParams)) {
+        if (array_diff_key($variables, $mergedParams) !== []) {
             return;
         }
 
@@ -214,7 +214,8 @@ class SolrFacetMaskAndCombineEnhancer extends AbstractEnhancer implements Routin
 
         $keepVariables = [];
 
-        for ($i = 0; $i < count($pathTokens); $i++) {
+        $pathTokensCount = count($pathTokens);
+        for ($i = 0; $i < $pathTokensCount; $i++) {
             // wee only looking for variables
             if ($pathTokens[$i][0] !== 'variable') {
                 continue;
