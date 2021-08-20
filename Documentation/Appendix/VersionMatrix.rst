@@ -13,9 +13,13 @@ Appendix - Version Matrix
 
 List of EXT:solr versions and the matching versions of Apache Solr and TYPO3 that are supported:
 
+**Note:** Since EXT:solr v11.1 we harmonizing the versions with TYPO3.
+   The EXT:solr addons are harmonized with TYPO3 10 LTS, the main EXT:solr extension will be harmonized with TYPO3 11 LTS.
+
 ========= =========== ========== ======================== ======================== ========= =========== ============= ================ =============== ================== ===================== =========== =============
 EXT: solr Apache Solr  TYPO3     Schema                   Solrconfig               EXT:tika  EXT:solrfal EXT:solrfluid EXT:solrgrouping EXT:solrconsole EXT:solrdebugtools EXT:solrfluidgrouping EXT:solrmlt Accessplugin
 ========= =========== ========== ======================== ======================== ========= =========== ============= ================ =============== ================== ===================== =========== =============
+11.1      8.9.0       10.4       tx_solr-11-1-0--20210721 tx_solr-11-1-0--20210721 10.0      10.0        N/A           N/A              10.0            10.0               10.0                  10.0        5.0
 11.0      8.5.1       9.5 - 10.4 tx_solr-11-0-0--20200415 tx_solr-11-0-0--20200415 6.0       8.0         N/A           N/A              4.0             1.1.2              2.1                   3.1         4.0
 10.0      8.2.0       9.5        tx_solr-10-0-0--20191010 tx_solr-10-0-0--20191010 5.0       7.0         N/A           N/A              3.0             1.1.1              2.0                   3.0         4.0
 9.0       7.6.0       8.7 - 9.5  tx_solr-9-0-0--20180727  tx_solr-9-0-0--20180727  4.0       6.0         N/A           N/A              2.0             1.1.0              2.0                   3.0         3.0
