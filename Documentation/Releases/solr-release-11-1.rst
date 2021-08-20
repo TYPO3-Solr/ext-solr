@@ -313,6 +313,14 @@ Also a big thanks to our partners that have joined the EB2021 program:
 * Webtech AG
 * wow! solution
 * XIMA MEDIA GmbH
+* Bundesanstalt Statistik Österreich
+* ECOS TECHNOLOGY GMBH
+* Fachhochschule Erfurt
+* Hochschule Furtwangen - IMZ Online-Services
+* Hochschule Niederrhein University of Applied Sciences
+* l'Autorité des marchés financiers
+* La Financière agricole du Québec
+* LfdA - Labor für digitale Angelegenheiten GmbH
 
 How to Get Involved
 ===================
