@@ -61,7 +61,9 @@ class StatisticsComponent extends AbstractComponent implements SearchRequestAwar
         $solrConfiguration = $this->seachRequest->getContextTypoScriptConfiguration();
 
         if ($solrConfiguration->getStatistics()) {
-            $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['afterSearch']['statistics'] = StatisticsWriterProcessor::class;
+            if (empty($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['afterSearch']['statistics'])) {
+                $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['afterSearch']['statistics'] = StatisticsWriterProcessor::class;
+            }
             // Only if addDebugData is enabled add Query modifier
             if ($solrConfiguration->getStatisticsAddDebugData()) {
                 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchQuery']['statistics'] = Statistics::class;
