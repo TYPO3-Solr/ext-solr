@@ -60,4 +60,29 @@ class StatisticsComponentTest extends UnitTest
         $this->assertNotEmpty($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['afterSearch']['statistics'], 'Expected that a statistic component was registered');
     }
 
+    /**
+     * @test
+     */
+    public function canRegisterCustomStatisticsComponents()
+    {
+        $className = 'MyVendor/Namespace/Statistics/StatisticsWriterProcessor::class';
+        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['afterSearch']['statistics'] = $className;
+
+        $typoScriptConfiguration = new TypoScriptConfiguration([
+            'plugin.' => [
+                'tx_solr.' => [
+                    'statistics' => 1
+                ]
+            ]
+        ]);
+
+        $searchRequestMock = $this->getDumbMock(SearchRequest::class);
+        $searchRequestMock->expects($this->once())->method('getContextTypoScriptConfiguration')->willReturn($typoScriptConfiguration);
+
+        $statisticsComponent = new StatisticsComponent();
+        $statisticsComponent->setSearchRequest($searchRequestMock);
+        $statisticsComponent->initializeSearchComponent();
+        $this->assertEquals($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['afterSearch']['statistics'], $className);
+    }
+
 }
