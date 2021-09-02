@@ -64,9 +64,7 @@ class SuggestController extends AbstractBaseController
         if ($callback) {
             return htmlspecialchars($callback) . '(' . json_encode($result, JSON_UNESCAPED_SLASHES) . ')';
         }
-        else {
-            return json_encode($result, JSON_UNESCAPED_SLASHES);
-        }
+        return json_encode($result, JSON_UNESCAPED_SLASHES);
     }
 
 }
