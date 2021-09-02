@@ -25,7 +25,9 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\Helper\QueryStringContainer;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\SuggestQuery;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResult;
@@ -34,8 +36,12 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSetService;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Domain\Search\Suggest\SuggestService;
+use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use TYPO3\CMS\Core\SingletonInterface;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
@@ -133,6 +139,49 @@ class SuggestServiceTest extends UnitTest
     /**
      * @test
      */
+    public function canHandleInvalidSyntaxInAdditionalFilters()
+    {
+        $this->assertNoSearchWillBeTriggered();
+        $fakeRequest = $this->getFakedSearchRequest('some');
+
+        $connectionManagerMock = $this->getDumbMock(ConnectionManager::class);
+        GeneralUtility::setSingletonInstance(ConnectionManager::class, $connectionManagerMock);
+
+        $searchStub = new class extends Search implements SingletonInterface {
+            public static $suggestServiceTest;
+            public function search(Query $query, $offset = 0, $limit = 10)
+            {
+                return self::$suggestServiceTest->getMockBuilder(ResponseAdapter::class)
+                    ->setMethods([])->disableOriginalConstructor()->getMock();
+            }
+        };
+        $searchStub::$suggestServiceTest = $this;
+        GeneralUtility::setSingletonInstance(Search::class, $searchStub);
+
+        $suggestService = new SuggestService(
+            $this->tsfeMock,
+            $this->searchResultSetServiceMock,
+            $this->configurationMock,
+            $this->queryBuilderMock
+        );
+
+        try {
+            $suggestions = $suggestService->getSuggestions($fakeRequest);
+        } catch (\Error $error) {
+            $this->fail(
+                'The method \ApacheSolrForTypo3\Solr\Domain\Search\Suggest\SuggestService::getSolrSuggestions() ' .
+                'can not handle Apache Solr syntax errors. The method is failing with exception from below:' . PHP_EOL . PHP_EOL .
+                $error->getMessage() . ' in ' . $error->getFile() . ':' . $error->getLine()
+            );
+        }
+
+        $expectedSuggestions = ['status' => false];
+        $this->assertSame($expectedSuggestions, $suggestions, 'Suggest did not return status false');
+    }
+
+    /**
+     * @test
+     */
     public function emptyJsonIsReturnedWhenSolrHasNoSuggestions()
     {
         $this->configurationMock->expects($this->never())->method('getSuggestShowTopResults');
@@ -183,6 +232,8 @@ class SuggestServiceTest extends UnitTest
         $this->assertSame('pages', $suggestions['documents'][0]['type'],'The first top result has an unexpected type');
         $this->assertSame('news', $suggestions['documents'][1]['type'],'The second top result has an unexpected type');
     }
+
+
 
     /**
      * Builds a faked SearchResult object.
