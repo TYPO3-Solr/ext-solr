@@ -171,7 +171,7 @@ class SuggestService {
         $rawResponse = $response->getRawResponse();
         $results = json_decode($rawResponse);
         $suggestConfig = $this->typoScriptConfiguration->getObjectByPath('plugin.tx_solr.suggest.');
-        $facetSuggestions = $results->facet_counts->facet_fields->{$suggestConfig['suggestField']};
+        $facetSuggestions = $results->facet_counts->facet_fields->{$suggestConfig['suggestField']} ?? [];
         $facetSuggestions = ParsingUtil::getMapArrayFromFlatArray($facetSuggestions);
 
         return $facetSuggestions ?? [];
