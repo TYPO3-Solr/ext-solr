@@ -44,5 +44,5 @@ interface PageIndexerDocumentsModifier
      * @param array $documents An array of documents to be indexed
      * @return array An array of modified documents
      */
-    public function modifyDocuments(Item $item, $language, array $documents);
+    public function modifyDocuments(Item $item, int $language, array $documents);
 }
