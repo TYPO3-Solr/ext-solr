@@ -63,8 +63,8 @@ CREATE TABLE tx_solr_indexqueue_item (
 	PRIMARY KEY (uid),
 	KEY changed (changed),
 	KEY indexing_priority_changed (indexing_priority, changed),
-	KEY item_id (item_type,item_uid),
-	KEY pages_mountpoint (item_type,item_uid,has_indexing_properties,pages_mountidentifier)
+	KEY item_id (item_type(191),item_uid),
+	KEY pages_mountpoint (item_type(191),item_uid,has_indexing_properties,pages_mountidentifier(191))
 ) ENGINE=InnoDB;
 
 
