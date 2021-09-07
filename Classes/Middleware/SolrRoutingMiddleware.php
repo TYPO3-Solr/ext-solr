@@ -331,7 +331,7 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
                     ->/** @scrutinizer ignore-call */
                     error(
                         vsprintf(
-                            'Could resolve page by path "%1$s" and language "%2$s".',
+                            'Could not resolve page by path "%1$s" and language "%2$s".',
                             [
                                 $uri->getPath(),
                                 $this->language->getTwoLetterIsoCode()
