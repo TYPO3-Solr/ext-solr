@@ -1,4 +1,6 @@
 {
+  "name": "Non-Composer mode libs for EXT:solr",
+  "description": "This file contains the wanted by EXT:solr libraries. Note: in replace defined libs are provided by TYPO3 source.",
   "config": {
     "platform": {
       "php": "7.2"
@@ -8,5 +10,11 @@
   },
   "require": {
     "solarium/solarium": ">=6.0 <7.0"
+  },
+  "replace": {
+    "psr/event-dispatcher": "*",
+    "psr/http-client": "*",
+    "psr/http-factory": "*",
+    "symfony/event-dispatcher-contracts": "*"
   }
 }
