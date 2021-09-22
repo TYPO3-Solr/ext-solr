@@ -29,6 +29,7 @@ namespace ApacheSolrForTypo3\Solr\System\Cache;
 
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
 
 /**
  * Provides a two level cache that uses an in memory cache as the first level cache and
@@ -38,7 +39,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class TwoLevelCache
 {
-
     /**
      * @var string
      */
@@ -50,15 +50,15 @@ class TwoLevelCache
     protected static $firstLevelCache = [];
 
     /**
-     * @var \TYPO3\CMS\Core\Cache\Frontend\FrontendInterface
+     * @var FrontendInterface
      */
     protected $secondLevelCache = null;
 
     /**
      * @param string $cacheName
-     * @param \TYPO3\CMS\Core\Cache\Frontend\FrontendInterface $secondaryCacheFrontend
+     * @param FrontendInterface $secondaryCacheFrontend
      */
-    public function __construct($cacheName, $secondaryCacheFrontend = null)
+    public function __construct(string $cacheName, FrontendInterface $secondaryCacheFrontend = null)
     {
         $this->cacheName = $cacheName;
         if ($secondaryCacheFrontend == null) {
@@ -75,7 +75,7 @@ class TwoLevelCache
      * @param string $cacheId
      * @return mixed|null
      */
-    protected function getFromFirstLevelCache($cacheId)
+    protected function getFromFirstLevelCache(string $cacheId)
     {
         if (!empty(self::$firstLevelCache[$this->cacheName][$cacheId])) {
             return self::$firstLevelCache[$this->cacheName][$cacheId];
@@ -90,7 +90,7 @@ class TwoLevelCache
      * @param string $cacheId
      * @param mixed $value
      */
-    protected function setToFirstLevelCache($cacheId, $value)
+    protected function setToFirstLevelCache(string $cacheId, $value): void
     {
         self::$firstLevelCache[$this->cacheName][$cacheId] = $value;
     }
@@ -102,8 +102,10 @@ class TwoLevelCache
      * @param string $cacheId
      * @return mixed
      */
-    public function get($cacheId)
+    public function get(string $cacheId)
     {
+        $cacheId = $this->sanitizeCacheId($cacheId);
+
         $firstLevelResult = $this->getFromFirstLevelCache($cacheId);
         if ($firstLevelResult !== null) {
             return $firstLevelResult;
@@ -121,18 +123,33 @@ class TwoLevelCache
      * @param string $cacheId
      * @param mixed $value
      */
-    public function set($cacheId, $value)
+    public function set(string $cacheId, $value): void
     {
+        $cacheId = $this->sanitizeCacheId($cacheId);
+
         $this->setToFirstLevelCache($cacheId, $value);
         $this->secondLevelCache->set($cacheId, $value);
     }
 
     /**
-     * @return void
+     * Flushes the cache
      */
-    public function flush()
+    public function flush(): void
     {
         self::$firstLevelCache[$this->cacheName] = [];
         $this->secondLevelCache->flush();
+    }
+
+    /**
+     * Sanitizes the cache id to ensure compatibility with the FrontendInterface::PATTERN_ENTRYIDENTIFIER
+     *
+     * @see \TYPO3\CMS\Core\Cache\Frontend\AbstractFrontend::isValidEntryIdentifier()
+     *
+     * @param string $cacheEntryIdentifier
+     * @return string
+     */
+    protected function sanitizeCacheId(string $cacheId): string
+    {
+        return preg_replace('/[^a-zA-Z0-9_%\\-&]/', '-', $cacheId);
     }
 }
