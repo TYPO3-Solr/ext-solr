@@ -27,6 +27,8 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\Cache;
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
+use TYPO3\CMS\Core\Cache\Frontend\VariableFrontend;
+use TYPO3\CMS\Core\Cache\Backend\BackendInterface;
 
 /**
  * Unit testcase to check if the two level cache is working as expected.
@@ -42,23 +44,37 @@ class TwoLevelCacheTest extends UnitTest
     protected $twoLevelCache;
 
     /**
-     * @var  \TYPO3\CMS\Core\Cache\Frontend\FrontendInterface
+     * @var  FrontendInterface
      */
     protected $secondLevelCacheMock;
 
     /**
-     * @return false
+     * Prepare
+     *
+     * @see \PHPUnit\Framework\TestCase::setUp()
      */
-    public function setUp()
+    protected function setUp(): void
     {
         $this->secondLevelCacheMock = $this->getDumbMock(FrontendInterface::class);
         $this->twoLevelCache = new TwoLevelCache('test', $this->secondLevelCacheMock);
     }
 
     /**
+     * Cleanup
+     *
+     * {@inheritDoc}
+     * @see \Nimut\TestingFramework\TestCase\UnitTestCase::tearDown()
+     */
+    protected function tearDown(): void
+    {
+        $this->twoLevelCache->flush();
+        parent::tearDown();
+    }
+
+    /**
      * @test
      */
-    public function getOnSecondaryCacheIsNeverCalledWhenValueIsPresentInFirstLevelCache()
+    public function getOnSecondaryCacheIsNeverCalledWhenValueIsPresentInFirstLevelCache(): void
     {
         $this->secondLevelCacheMock->expects($this->never())->method('get');
 
@@ -69,5 +85,31 @@ class TwoLevelCacheTest extends UnitTest
 
         $value = $this->twoLevelCache->get('foo');
         $this->assertSame($value, 'bar', 'Did not get expected value from two level cache');
+    }
+
+    /**
+     * @test
+     */
+    public function canHandleInvalidCacheIdentifierOnSet(): void
+    {
+        $cacheBackendMock = $this->createMock(BackendInterface::class);
+        $cacheBackendMock->expects($this->once())->method('set');
+        $variableFrontend = new VariableFrontend('TwoLevelCacheTest', $cacheBackendMock);
+        $this->inject($this->twoLevelCache, 'secondLevelCache', $variableFrontend);
+
+        $this->twoLevelCache->set('I.Am.An.Invalid.Identifier-#ß%&!', 'dummyValue');
+    }
+
+    /**
+     * @test
+     */
+    public function canHandleInvalidCacheIdentifierOnGet(): void
+    {
+        $cacheBackendMock = $this->createMock(BackendInterface::class);
+        $cacheBackendMock->expects($this->once())->method('get');
+        $variableFrontend = new VariableFrontend('TwoLevelCacheTest', $cacheBackendMock);
+        $this->inject($this->twoLevelCache, 'secondLevelCache', $variableFrontend);
+
+        $this->assertFalse($this->twoLevelCache->get('I.Am.An.Invalid.Identifier-#ß%&!'));
     }
 }
