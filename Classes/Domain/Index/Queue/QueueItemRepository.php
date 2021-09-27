@@ -289,7 +289,7 @@ class QueueItemRepository extends AbstractRepository
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($itemType);
             $queryBuilder->getRestrictions()->removeAll();
             $localizedChangedTime = $queryBuilder
-                ->add('select', $queryBuilder->expr()->max($tStampField, 'changed_time'))
+                ->add('select', $queryBuilder->expr()->max($timeStampField, 'changed_time'))
                 ->from($itemType)
                 ->orWhere(
                     $queryBuilder->expr()->eq('uid', $itemUid),
