@@ -244,6 +244,8 @@
 	<dynamicField name="*_textSpellS" type="textSpell" indexed="true" stored="true" multiValued="false" />
 	<dynamicField name="*_textSpellM" type="textSpell" indexed="true" stored="true" multiValued="true" />
 
+	<dynamicField name="*_stringEdgeNgramS" type="stringEdgeNgram" indexed="true" stored="true" multiValued="false" />
+	<dynamicField name="*_stringEdgeNgramM" type="stringEdgeNgram" indexed="true" stored="true" multiValued="true" />
 	<dynamicField name="*_textEdgeNgramS" type="textEdgeNgram" indexed="true" stored="true" multiValued="false" />
 	<dynamicField name="*_textEdgeNgramM" type="textEdgeNgram" indexed="true" stored="true" multiValued="true" />
 
