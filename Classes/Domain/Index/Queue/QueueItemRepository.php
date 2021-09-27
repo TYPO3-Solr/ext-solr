@@ -284,11 +284,12 @@ class QueueItemRepository extends AbstractRepository
         if (isset($GLOBALS['TCA'][$itemType]['ctrl']['transOrigPointerField'])) {
             // table is localizable
             $translationOriginalPointerField = $GLOBALS['TCA'][$itemType]['ctrl']['transOrigPointerField'];
+            $timeStampField = $GLOBALS['TCA'][$itemType]['ctrl']['tstamp'];
 
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($itemType);
             $queryBuilder->getRestrictions()->removeAll();
             $localizedChangedTime = $queryBuilder
-                ->add('select', $queryBuilder->expr()->max('tstamp', 'changed_time'))
+                ->add('select', $queryBuilder->expr()->max($tStampField, 'changed_time'))
                 ->from($itemType)
                 ->orWhere(
                     $queryBuilder->expr()->eq('uid', $itemUid),
