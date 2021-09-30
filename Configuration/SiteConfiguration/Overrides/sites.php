@@ -64,7 +64,7 @@ $GLOBALS['SiteConfiguration']['site']['columns']['solr_path_read'] = [
     'description' => 'I.e. if you use Hosted-Solr.com the path inside the admin panel. Should not contain "/solr/".',
     'config' => [
         'type' => 'input',
-        'eval' => 'required',
+        'eval' => 'trim',
         'default' => '/'
     ],
     'displayCond' => 'FIELD:solr_enabled_read:=:1'
