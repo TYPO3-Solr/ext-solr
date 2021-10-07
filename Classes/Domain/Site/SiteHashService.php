@@ -79,7 +79,6 @@ class SiteHashService
         return $siteHashes[$domain];
     }
 
-
     /**
      * Returns a comma separated list of all domains from all sites.
      *
