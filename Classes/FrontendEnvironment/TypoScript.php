@@ -8,7 +8,7 @@ use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationPageResolver;
 use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use TYPO3\CMS\Core\SingletonInterface;
-use TYPO3\CMS\Core\TypoScript\ExtendedTemplateService;
+use TYPO3\CMS\Core\TypoScript\TemplateService;
 use TYPO3\CMS\Core\Utility\RootlineUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -102,16 +102,36 @@ class TypoScript implements SingletonInterface
             $rootLine = [];
         }
 
-        /** @var $tmpl ExtendedTemplateService */
-        $tmpl = GeneralUtility::makeInstance(ExtendedTemplateService::class);
+        /** @var $tmpl TemplateService */
+        $tmpl = GeneralUtility::makeInstance(TemplateService::class);
         $tmpl->tt_track = false; // Do not log time-performance information
-        $tmpl->runThroughTemplates($rootLine); // This generates the constants/config + hierarchy info for the template.
-        $tmpl->generateConfig();
+        $tmpl->start($rootLine); // This generates the constants/config + hierarchy info for the template.
 
-        $getConfigurationFromInitializedTSFEAndWriteToCache = $tmpl->ext_getSetup($tmpl->setup, $path);
+        $getConfigurationFromInitializedTSFEAndWriteToCache = $this->ext_getSetup($tmpl->setup, $path);
         $configurationToUse = $getConfigurationFromInitializedTSFEAndWriteToCache[0];
 
         return is_array($configurationToUse) ? $configurationToUse : [];
+    }
+
+
+    /**
+     * @param array $theSetup
+     * @param string $theKey
+     * @return array
+     */
+    public function ext_getSetup($theSetup, $theKey)
+    {
+        $parts = explode('.', $theKey, 2);
+        if ((string)$parts[0] !== '' && is_array($theSetup[$parts[0] . '.'])) {
+            if (trim($parts[1]) !== '') {
+                return $this->ext_getSetup($theSetup[$parts[0] . '.'], trim($parts[1]));
+            }
+            return [$theSetup[$parts[0] . '.'], $theSetup[$parts[0]]];
+        }
+        if (trim($theKey) !== '') {
+            return [[], $theSetup[$theKey]];
+        }
+        return [$theSetup, ''];
     }
 
     /**
