@@ -5,6 +5,7 @@ use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Context\LanguageAspectFactory;
 use TYPO3\CMS\Core\Context\TypoScriptAspect;
+use TYPO3\CMS\Core\Context\VisibilityAspect;
 use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
 use TYPO3\CMS\Core\Domain\Repository\PageRepository;
 use TYPO3\CMS\Core\Error\Http\InternalServerErrorException;
@@ -69,7 +70,6 @@ class Tsfe implements SingletonInterface
      */
     public function initializeTsfe($pageId, $language = 0)
     {
-
         // resetting, a TSFE instance with data from a different page Id could be set already
         unset($GLOBALS['TSFE']);
 
@@ -95,8 +95,21 @@ class Tsfe implements SingletonInterface
         }
         $GLOBALS['TYPO3_REQUEST'] = $this->requestCache[$cacheId];
 
-
         if (!isset($this->tsfeCache[$cacheId])) {
+            // TYPO3 by default enables a preview mode if a backend user is logged in,
+            // the VisibilityAspect is configured to show hidden elements.
+            // Due to this setting hidden relations/translations might be indexed
+            // when running the Solr indexer via the TYPO3 backend.
+            // To avoid this, the VisibilityAspect is adapted for indexing.
+            $context->setAspect(
+                'visibility',
+                GeneralUtility::makeInstance(
+                    VisibilityAspect::class,
+                    false,
+                    false
+                )
+            );
+
             $feUser = GeneralUtility::makeInstance(FrontendUserAuthentication::class);
 
             /* @var PageArguments $pageArguments */
