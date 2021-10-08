@@ -1,0 +1,2 @@
+# Important: This file is deprecated and will removed with EXT:solr 12.x
+@import 'EXT:solr/Configuration/TypoScript/StyleSheets/setup.typoscript'
