@@ -1,0 +1,256 @@
+name: build
+
+on:
+  push:
+    branches: [ main, release-11.5.x, release-11.1.x, release-11.0.x ]
+    tags:
+      - "**"
+  pull_request:
+    branches: [ main, release-11.5.x, release-11.1.x, release-11.0.x ]
+
+env:
+  CI_BUILD_DIRECTORY: '/home/runner/work/ext-solr/ext-solr/.Build'
+  LOCAL_IMAGE_NAME: 'solrci-image:latest'
+  LOCAL_CONTAINER_NAME: 'solrci-container'
+  TESTING_SOLR_PORT: 8983
+  LOCAL_VOLUME_NAME: 'solrci-volume'
+  LOCAL_VOLUME_PATH: '/home/runner/work/ext-solr/ext-solr/.Build/data-solr'
+
+jobs:
+  ci_bootstrapping:
+    name: "Build and test docker image + Collect build matrix"
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.collect_build_matrix.outputs.matrix }}
+    steps:
+      # Workaround for issue with actions/checkout@v2 wrong PR commit checkout: See https://github.com/actions/checkout/issues/299#issuecomment-677674415
+      -
+        name: Checkout current state of Pull Request
+        if: github.event_name == 'pull_request'
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      -
+        name: Checkout current state of Branch
+        if: github.event_name == 'push'
+        uses: actions/checkout@v2
+      # End: Workaround for issue with actions/checkout@v2 wrong PR commit checkout
+      -
+        name: "Resolve target branch of pull request."
+        if: github.event_name == 'pull_request'
+        run: |
+          echo "BRANCH_NAME=${{ github.event.pull_request.base.ref }}" >> $GITHUB_ENV
+      -
+        name: "Resolve branch name on push in branch of repository."
+        if: github.event_name == 'push' && !startsWith(github.ref, 'refs/tags/')
+        run: |
+          echo "BRANCH_NAME=$GITHUB_REF" >> $GITHUB_ENV
+      -
+        # We want to pass tests before the tag/release can be pushed to TER.
+        # This step resolves the branch name of the tag to use, to be able to collect proper build matrix values.
+        name: "Resolve branch name on release/tag in branch of repository."
+        if: startsWith(github.ref, 'refs/tags/')
+        # //[!0-9]/ removes possible "v" prefix from major part,
+        #   to prevent errors or make it possible to create tags with "v" or other prefixes.
+        run: |
+          export RELEASE_VERSION=${GITHUB_REF/refs\/tags\//}
+          export MAJOR_MINOR_VERSIONS_STRING=$(v=( ${RELEASE_VERSION//./ } ) && echo "${v[0]//[!0-9]/}.${v[1]}")
+          export BRANCH_NAME=release-"$MAJOR_MINOR_VERSIONS_STRING".x
+          echo "BRANCH_NAME=$BRANCH_NAME" >> $GITHUB_ENV
+      -
+        name: Collect build matrix
+        id: collect_build_matrix
+        run: |
+          export matrix=$(cat .github/workflows/ci-matrix.json | jq --raw-output .\"${{ env.BRANCH_NAME }}\")
+          echo "Base ref is $GITHUB_BASE_REF"
+          echo "BRANCH_NAME="$BRANCH_NAME
+          echo -e "matrix : "
+          echo $matrix
+          echo ::set-output name=matrix::$(echo $matrix)
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      -
+        name: Build Docker image
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./Docker/SolrServer/Dockerfile
+          tags: solrci-image:latest
+          outputs: type=docker,dest=/tmp/solrci-image.tar
+      -
+        name: Test Image
+        run: |
+          pwd
+          ls -la ../
+          docker load --input /tmp/solrci-image.tar
+          docker image ls -a
+          ./Build/Test/cibuild_docker.sh
+      -
+        name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: solrci-image
+          path: /tmp/solrci-image.tar
+
+  tests:
+    runs-on: ubuntu-latest
+    needs: ci_bootstrapping
+    continue-on-error: ${{ contains(matrix.TYPO3, '-dev') }}
+    strategy:
+      matrix: ${{fromJson(needs.ci_bootstrapping.outputs.matrix)}}
+    env:
+      TYPO3_DATABASE_NAME: 'typo3_ci'
+      TYPO3_DATABASE_HOST: '127.0.0.1'
+      TYPO3_DATABASE_USERNAME: 'root'
+      TYPO3_DATABASE_PASSWORD: 'root'
+      PHP_CS_FIXER_VERSION: '^2.16.1'
+      TYPO3_VERSION: ${{ matrix.TYPO3 }}
+
+    name: TYPO3 ${{ matrix.TYPO3 }} on PHP ${{ matrix.PHP }}
+    steps:
+      # Workaround for issue with actions/checkout@v2 wrong PR commit checkout: See https://github.com/actions/checkout/issues/299#issuecomment-677674415
+      -
+        name: Checkout current state of Pull Request
+        if: github.event_name == 'pull_request'
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      -
+        name: Checkout current state of Branch
+        if: github.event_name == 'push'
+        uses: actions/checkout@v2
+      # End: Workaround for issue with actions/checkout@v2 wrong PR commit checkout
+      -
+        name: Mount RAMFS
+        run: |
+          sudo mkdir -p ${{ env.CI_BUILD_DIRECTORY }}
+          sudo mount -t tmpfs -o size=2048m none ${{ env.CI_BUILD_DIRECTORY }}
+          sudo mkdir -p ${{ env.CI_BUILD_DIRECTORY }}/data-{solr,mysql} \
+            && sudo chown $USER ${{ env.CI_BUILD_DIRECTORY }}/data-mysql \
+            && sudo chown 8983:8983 ${{ env.CI_BUILD_DIRECTORY }}/data-solr
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      -
+        name: Download solrci-image from "ci_bootstrapping" job
+        uses: actions/download-artifact@v2
+        with:
+          name: solrci-image
+          path: /tmp
+      -
+        name: 'Start Docker: Solr, MySQL'
+        run: |
+          docker load --input /tmp/solrci-image.tar
+          docker run --name "MySQL-CI" -v ${{ env.CI_BUILD_DIRECTORY }}/data-mysql:/var/lib/mysql -p 3306:3306 \
+            -e MYSQL_DATABASE=$TYPO3_DATABASE_NAME \
+            -e MYSQL_ROOT_PASSWORD=$TYPO3_DATABASE_PASSWORD \
+            -d mysql:8.0 mysqld --default-authentication-plugin=mysql_native_password
+          sudo chmod g+w "$LOCAL_VOLUME_PATH"
+          docker volume create --name "$LOCAL_VOLUME_NAME" --opt type=none --opt device="$LOCAL_VOLUME_PATH" --opt o=bind
+          docker run --rm --name="$LOCAL_CONTAINER_NAME" -d -p 127.0.0.1:8983:8983 -v "$LOCAL_VOLUME_NAME":"/var/solr" "$LOCAL_IMAGE_NAME"
+          docker ps
+          rm /tmp/solrci-image.tar
+      -
+        name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.PHP }}
+          coverage: xdebug
+          tools: composer:v2
+      -
+        name: Resolve CI build cache key
+        run: |
+          export CURRENT_TYPO3_VERSION_REFERNCE=$(./Build/Helpers/TYPO3_SOURCE_REFERENCE.sh "$TYPO3_VERSION" --short)
+          export CURRENT_SOLARIUM_VERSION=$(cat composer.json | jq --raw-output '.require."solarium/solarium"')
+          export CI_BUILD_CACHE_KEY=${{ runner.os }}-2021.10.22_12:40_TYPO3:$TYPO3_VERSION@$CURRENT_TYPO3_VERSION_REFERNCE-SOLARIUM:$CURRENT_SOLARIUM_VERSION-PHP:${{ matrix.PHP }}
+          echo "CI_BUILD_CACHE_KEY=$CI_BUILD_CACHE_KEY" >> $GITHUB_ENV
+          echo "The key for actions/cache@v2 is \"$CI_BUILD_CACHE_KEY\""
+      -
+        name: Restore ci build caches
+        id: restore_ci_build_caches
+        uses: actions/cache@v2
+        with:
+          path: |
+            ${{ env.CI_BUILD_DIRECTORY }}/Web
+            ${{ env.CI_BUILD_DIRECTORY }}/bin
+            ${{ env.CI_BUILD_DIRECTORY }}/vendor
+            composer.json
+            composer.lock
+          key: ${{ env.CI_BUILD_CACHE_KEY }}
+      -
+        name: CI-Bootstrap
+        if: steps.restore_ci_build_caches.outputs.cache-hit != 'true'
+        run: |
+          ./Build/Test/bootstrap.sh --skip-solr-install
+          echo "Current Size of EXT:Solr build Artefacts before run: " \
+            && sudo du -sh "${{ env.CI_BUILD_DIRECTORY }}"
+      -
+        name: CI-Build
+        run: |
+          ./Build/Test/cibuild.sh
+          echo "Current Size of EXT:Solr build Artefacts after run: " \
+            && sudo du -sh "${{ env.CI_BUILD_DIRECTORY }}" \
+            && sudo du -sh ${{ env.CI_BUILD_DIRECTORY }}/*
+      -
+        name: Upload code coverage to Scrutinizer
+        run: |
+          mkdir -p bin
+          wget https://scrutinizer-ci.com/ocular.phar -O $GITHUB_WORKSPACE/bin/ocular && chmod +x bin/ocular
+          php bin/ocular code-coverage:upload --format=php-clover coverage.unit.clover
+          php bin/ocular code-coverage:upload --format=php-clover coverage.integration.clover
+      -
+        name: Clean up
+        run: |
+          docker stop "MySQL-CI" 2>&1
+          docker stop "$LOCAL_CONTAINER_NAME" 2>&1
+          sudo rm -Rf ${{ env.CI_BUILD_DIRECTORY }}/Web/typo3temp/* \
+            ${{ env.CI_BUILD_DIRECTORY }}/data-mysql \
+            ${{ env.CI_BUILD_DIRECTORY }}/data-solr
+
+  publish:
+    name: Publish new version to TER
+    needs: tests
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-20.04
+    env:
+      TYPO3_API_TOKEN: ${{ secrets.TYPO3_API_TOKEN }}
+    steps:
+      -
+        name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      -
+        name: Check tag
+        run: |
+          if ! [[ ${{ github.ref }} =~ ^refs/tags/[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}$ ]]; then
+            exit 1
+          fi
+      -
+        name: Resolve PHP version to use
+        run: |
+          export PHP_VERSION_TO_USE=$(cat Resources/Private/Php/ComposerLibraries/composer.json | jq --raw-output '.config.platform.php')
+          echo "PHP_VERSION_TO_USE=$PHP_VERSION_TO_USE" >> $GITHUB_ENV
+      -
+        name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.PHP_VERSION_TO_USE }}
+          extensions: intl, mbstring, json, zip, curl
+          tools: composer:v2
+      -
+        name: Install tailor
+        run: composer global require typo3/tailor --prefer-dist --no-progress
+
+      -
+        name: Publish EXT:solr to TER
+        run: |
+          export RELEASE_VERSION=${GITHUB_REF/refs\/tags\//}
+          export TER_COMMENT=$(git tag -n99 -l "$RELEASE_VERSION" | sed "s/^[0-9.]*[ ]*//g")
+          if [[ -z "${TER_COMMENT// }" ]]; then
+            export TER_COMMENT="Released version $RELEASE_VERSION of EXT:solr"
+          fi
+          echo "Following message will be printed in TER as release description:"
+          echo -e "$TER_COMMENT"
+          php ~/.composer/vendor/bin/tailor ter:publish --comment "$TER_COMMENT" "$RELEASE_VERSION"
