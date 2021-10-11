@@ -1,6 +1,6 @@
 # Apache Solr for TYPO3 CMS
 
-[![Build Status](https://travis-ci.com/TYPO3-Solr/ext-solr.svg?branch=master)](https://travis-ci.com/TYPO3-Solr/ext-solr)
+[![Build Status](https://github.com/TYPO3-Solr/ext-solr/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/TYPO3-Solr/ext-solr/actions?query=branch:master)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/TYPO3-Solr/ext-solr/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/TYPO3-Solr/ext-solr/?branch=master)
 [![Code Coverage](https://scrutinizer-ci.com/g/TYPO3-Solr/ext-solr/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/TYPO3-Solr/ext-solr/?branch=master)
 [![Latest Stable Version](https://poser.pugx.org/apache-solr-for-typo3/solr/v/stable)](https://packagist.org/packages/apache-solr-for-typo3/solr)
@@ -40,7 +40,7 @@ Please find further information regarding Apache Solr and its related projects a
 - http://tomcat.apache.org
 - http://www.eclipse.org/jetty/
 
-To try out Apache Solr for TYPO3 visit [www.typo3-solr.com](http://www.typo3-solr.com) where we've set up a basic configuration. 
+To try out Apache Solr for TYPO3 visit [www.typo3-solr.com](http://www.typo3-solr.com) where we've set up a basic configuration.
 
 ![dkd Internet Service GmbH](./Resources/Public/Images/dkd_logo.png)
 
