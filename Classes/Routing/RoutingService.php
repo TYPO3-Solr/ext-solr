@@ -332,12 +332,21 @@ class RoutingService implements LoggerAwareInterface
             return $queryParams;
         }
 
-        if (!isset($queryParams[$this->getPluginNamespace()]['filter'])) {
+        if (!isset($queryParams[$this->getPluginNamespace()]['filter']) ||
+            empty($queryParams[$this->getPluginNamespace()]['filter'])) {
             $this->logger
                 ->/** @scrutinizer ignore-call */
                 info('Mask info: Query parameters has no filter in namespace ' . $this->getPluginNamespace());
             return $queryParams;
         }
+
+        if (!is_array($queryParams[$this->getPluginNamespace()]['filter'])) {
+            $this->logger
+                ->/** @scrutinizer ignore-call */
+                warning('Mask info: Filter within the Query parameters is not an array');
+            return $queryParams;
+        }
+
         $queryParameterMap = $this->getQueryParameterMap();
         $newQueryParams = $queryParams;
 
@@ -500,9 +509,17 @@ class RoutingService implements LoggerAwareInterface
             return $queryParams;
         }
 
-        if (!isset($queryParams[$this->getPluginNamespace()]['filter'])) {
+        if (!isset($queryParams[$this->getPluginNamespace()]['filter']) ||
+            empty($queryParams[$this->getPluginNamespace()]['filter'])) {
             $this->logger
                 ->info('Mask info: Query parameters has no filter in namespace ' . $this->getPluginNamespace());
+            return $queryParams;
+        }
+
+        if (!is_array($queryParams[$this->getPluginNamespace()]['filter'])) {
+            $this->logger
+                ->/** @scrutinizer ignore-call */
+                warning('Mask info: Filter within the Query parameters is not an array');
             return $queryParams;
         }
 
@@ -584,7 +601,15 @@ class RoutingService implements LoggerAwareInterface
             $queryParams[$this->getPluginNamespace()] = [];
         }
 
-        if (!isset($queryParams[$this->getPluginNamespace()]['filter'])) {
+        if (!isset($queryParams[$this->getPluginNamespace()]['filter']) ||
+            is_null($queryParams[$this->getPluginNamespace()]['filter'])) {
+            $queryParams[$this->getPluginNamespace()]['filter'] = [];
+        }
+
+        if (!is_array($queryParams[$this->getPluginNamespace()]['filter'])) {
+            $this->logger
+                ->/** @scrutinizer ignore-call */
+                warning('Inflate query: Expected filter to be an array. Replace it with an array structure!');
             $queryParams[$this->getPluginNamespace()]['filter'] = [];
         }
 
