@@ -11,7 +11,7 @@ use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\TypoScript\TemplateService;
 use TYPO3\CMS\Core\Utility\RootlineUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-
+use TYPO3\CMS\Frontend\Page\PageRepository;
 
 class TypoScript implements SingletonInterface
 {
@@ -102,6 +102,22 @@ class TypoScript implements SingletonInterface
             $rootLine = [];
         }
 
+        $initializedTsfe = false;
+        $initializedPageSelect = false;
+        if (empty($GLOBALS['TSFE']->sys_page)) {
+            /** @var $pageSelect PageRepository */
+            $pageSelect = GeneralUtility::makeInstance(PageRepository::class);
+            if (empty($GLOBALS['TSFE'])) {
+                $GLOBALS['TSFE'] = new \stdClass();
+                $GLOBALS['TSFE']->tmpl = new \stdClass();
+                $GLOBALS['TSFE']->tmpl->rootLine = $rootLine;
+                $GLOBALS['TSFE']->id = $pageId;
+                $initializedTsfe = true;
+            }
+            $GLOBALS['TSFE']->sys_page = $pageSelect;
+            $initializedPageSelect = true;
+        }
+
         /** @var $tmpl TemplateService */
         $tmpl = GeneralUtility::makeInstance(TemplateService::class);
         $tmpl->tt_track = false; // Do not log time-performance information
@@ -109,6 +125,13 @@ class TypoScript implements SingletonInterface
 
         $getConfigurationFromInitializedTSFEAndWriteToCache = $this->ext_getSetup($tmpl->setup, $path);
         $configurationToUse = $getConfigurationFromInitializedTSFEAndWriteToCache[0];
+
+        if ($initializedPageSelect) {
+            $GLOBALS['TSFE']->sys_page = null;
+        }
+        if ($initializedTsfe) {
+            unset($GLOBALS['TSFE']);
+        }
 
         return is_array($configurationToUse) ? $configurationToUse : [];
     }
