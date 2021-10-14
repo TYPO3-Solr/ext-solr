@@ -62,7 +62,7 @@ class ConfigurationPageResolver
      */
     public function __construct(PageRepository $pageRepository = null, TwoLevelCache $twoLevelCache = null, SystemTemplateRepository $systemTemplateRepository = null)
     {
-        $this->runtimeCache = $twoLevelCache ?? GeneralUtility::makeInstance(TwoLevelCache::class, /** @scrutinizer ignore-type */ 'cache_runtime');
+        $this->runtimeCache = $twoLevelCache ?? GeneralUtility::makeInstance(TwoLevelCache::class, /** @scrutinizer ignore-type */ 'runtime');
         $this->systemTemplateRepository = $systemTemplateRepository ?? GeneralUtility::makeInstance(SystemTemplateRepository::class);
     }
 
