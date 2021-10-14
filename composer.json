@@ -73,7 +73,7 @@
   },
   "extra": {
     "branch-alias": {
-      "dev-master": "11.1.x-dev"
+      "dev-main": "12.0.x-dev"
     },
     "typo3/cms": {
       "extension-key": "solr",
