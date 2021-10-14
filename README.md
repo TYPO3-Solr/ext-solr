@@ -1,12 +1,13 @@
 # Apache Solr for TYPO3 CMS
 
-[![Build Status](https://travis-ci.com/TYPO3-Solr/ext-solr.svg?branch=master)](https://travis-ci.com/TYPO3-Solr/ext-solr)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/TYPO3-Solr/ext-solr/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/TYPO3-Solr/ext-solr/?branch=master)
-[![Code Coverage](https://scrutinizer-ci.com/g/TYPO3-Solr/ext-solr/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/TYPO3-Solr/ext-solr/?branch=master)
+[![Build Status](https://travis-ci.com/TYPO3-Solr/ext-solr.svg?branch=main)](https://travis-ci.com/TYPO3-Solr/ext-solr)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/TYPO3-Solr/ext-solr/badges/quality-score.png?b=main)](https://scrutinizer-ci.com/g/TYPO3-Solr/ext-solr/?branch=main)
+[![Code Coverage](https://scrutinizer-ci.com/g/TYPO3-Solr/ext-solr/badges/coverage.png?b=main)](https://scrutinizer-ci.com/g/TYPO3-Solr/ext-solr/?branch=main)
 [![Latest Stable Version](https://poser.pugx.org/apache-solr-for-typo3/solr/v/stable)](https://packagist.org/packages/apache-solr-for-typo3/solr)
 [![Latest Unstable Version](https://poser.pugx.org/apache-solr-for-typo3/solr/v/unstable)](https://packagist.org/packages/apache-solr-for-typo3/solr)
 [![License](https://poser.pugx.org/apache-solr-for-typo3/solr/license)](https://packagist.org/packages/apache-solr-for-typo3/solr)
 [![Monthly Downloads](https://poser.pugx.org/apache-solr-for-typo3/solr/d/monthly)](https://packagist.org/packages/apache-solr-for-typo3/solr)
+[![Total Downloads](http://poser.pugx.org/apache-solr-for-typo3/solr/downloads)](https://packagist.org/packages/apache-solr-for-typo3/solr)
 
 A TYPO3 extension that integrates the Apache Solr enterprise search server with TYPO3 CMS.
 
@@ -40,7 +41,7 @@ Please find further information regarding Apache Solr and its related projects a
 - http://tomcat.apache.org
 - http://www.eclipse.org/jetty/
 
-To try out Apache Solr for TYPO3 visit [www.typo3-solr.com](http://www.typo3-solr.com) where we've set up a basic configuration. 
+To try out Apache Solr for TYPO3 visit [www.typo3-solr.com](http://www.typo3-solr.com) where we've set up a basic configuration.
 
 ![dkd Internet Service GmbH](./Resources/Public/Images/dkd_logo.png)
 
@@ -48,7 +49,7 @@ To try out Apache Solr for TYPO3 visit [www.typo3-solr.com](http://www.typo3-sol
 
 -   **Main Documentation:**
 
-   https://docs.typo3.org/p/apache-solr-for-typo3/solr/master/en-us/Index.html
+   https://docs.typo3.org/p/apache-solr-for-typo3/solr/main/en-us/Index.html
 
 
 -   **Slack Channel:**

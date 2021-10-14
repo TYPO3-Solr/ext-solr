@@ -19,12 +19,12 @@ guidelines and where you can get further information.
 The source-code of EXT:solr is hosted on [GitHub](https://github.com/TYPO3-Solr/ext-solr).
 The code is organized in branches
 
-* master: The master branch is the branch where the development for the latest
+* main: The main branch is the branch where the development for the latest
   TYPO3 version and the latest features is happening. It is our goal to keep
   this branch always working, but nevertheless it is a development branch. It is
   not recommended to use this branch in production.
 
-* release-X.X.x: Whenever major and minor releases are created from master we
+* release-X.X.x: Whenever major and minor releases are created from main we
   create a release branch. This is needed to allow providing bug fixes for older
   release branches.
 
@@ -98,20 +98,20 @@ changes during review.
 #### Keep your fork up to date
 
 Before you create a branch for new changes you should update your fork with the
-latest changes from our master.
+latest changes from our main.
 
 To do this you need to do the following steps:
 
-1. Checkout your master branch
+1. Checkout your main branch
 2. Make sure our repository is configured as upstream (You only need to do this once)
-3. Rebase your master onto the upstream repository's changes
-4. Push the changes to your master
+3. Rebase your main onto the upstream repository's changes
+4. Push the changes to your main
 
 ```bash
-git checkout master
+git checkout main
 git remote add upstream https://github.com/TYPO3-Solr/ext-solr.git
-git pull --rebase upstream master
-git push --force origin master
+git pull --rebase upstream main
+git push --force origin main
 ```
 
 #### An example git workflow
@@ -123,7 +123,7 @@ Before you start, create your own fork on GitHub and follow these steps:
 
 ```bash
 git clone https://github.com/YourGitHubAccount/ext-solr.git
-git checkout master
+git checkout main
 git remote add upstream https://github.com/TYPO3-Solr/ext-solr.git
 git checkout -b 'bugfix/4711-my-bugifx'
 
@@ -151,7 +151,7 @@ commit 1ea657dfed4d41a4e457a15520d4e95efba4a4c3
 Author: Ingo Renner <ingo@typo3.org>
 Date:   Thu Jan 7 22:12:37 2016 -0800
 
-    Last commit from master
+    Last commit from main
 
     Change-Id: I17905b641ef322da09d2b93ed8adbd279ec680f0
 
@@ -287,7 +287,7 @@ The documentation for typo3-solr exists in the *Documentation* subdirectory.
 
 It is rendered on docs.typo3.org:
 
-* https://docs.typo3.org/p/apache-solr-for-typo3/solr/master/en-us/
+* https://docs.typo3.org/p/apache-solr-for-typo3/solr/main/en-us/
 
 It can be modified by changing the reStructuredText files (.rst).
 

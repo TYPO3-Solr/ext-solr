@@ -212,7 +212,7 @@ class RoutingService implements LoggerAwareInterface
 
     /**
      * This returns the plugin namespace
-     * @see https://docs.typo3.org/p/apache-solr-for-typo3/solr/master/en-us/Configuration/Reference/TxSolrView.html#pluginnamespace
+     * @see https://docs.typo3.org/p/apache-solr-for-typo3/solr/main/en-us/Configuration/Reference/TxSolrView.html#pluginnamespace
      *
      * @return string
      */

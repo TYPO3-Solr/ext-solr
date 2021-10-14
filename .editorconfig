@@ -1,5 +1,5 @@
 # EditorConfig is awesome: http://EditorConfig.org
-# TYPO3 Standard: https://github.com/TYPO3/TYPO3.CMS/blob/master/.editorconfig
+# TYPO3 Standard: https://github.com/TYPO3/typo3/blob/master/.editorconfig
 
 # top-most EditorConfig file
 root = true

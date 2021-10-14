@@ -2,7 +2,7 @@
    every ReST source file in THIS documentation project (= manual).
 
 .. This files lives at
-   https://github.com/TYPO3-Documentation/TYPO3CMS-Guide-HowToDocument/blob/master/Documentation/Includes.txt
+   https://github.com/TYPO3-Documentation/TYPO3CMS-Guide-HowToDocument/blob/master/Documentation/Includes.rst.txt
    Version: 2018-10-16
 
 .. More information about this file:

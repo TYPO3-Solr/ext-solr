@@ -65,7 +65,7 @@ echo "Using database user: $TYPO3_DATABASE_USERNAME"
 echo "Using database password: $TYPO3_DATABASE_PASSWORD"
 
 if [ -z $TYPO3_VERSION ]; then
-  echo "Must set env var TYPO3_VERSION (e.g. dev-master or ^10.4)"
+  echo "Must set env var TYPO3_VERSION (e.g. dev-main or ^11.5)"
   exit 1
 fi
 
