@@ -57,7 +57,7 @@ class PagesRepository extends AbstractRepository
      */
     public function __construct(TwoLevelCache $transientVariableCache = null)
     {
-        $this->transientVariableCache = $transientVariableCache ?? GeneralUtility::makeInstance(TwoLevelCache::class, /** @scrutinizer ignore-type */ 'cache_runtime');
+        $this->transientVariableCache = $transientVariableCache ?? GeneralUtility::makeInstance(TwoLevelCache::class, /** @scrutinizer ignore-type */ 'runtime');
     }
 
     /**

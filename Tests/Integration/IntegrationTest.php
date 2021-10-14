@@ -117,7 +117,7 @@ abstract class IntegrationTest extends FunctionalTestCase
         // during the tests we don't want the core to cache something in cache_core
         /* @var CacheManager $cacheManager */
         $cacheManager = GeneralUtility::makeInstance(CacheManager::class);
-        $coreCache = $cacheManager->getCache('cache_core');
+        $coreCache = $cacheManager->getCache('core');
         $coreCache->flush();
 
         $this->instancePath = $this->getInstancePath();
