@@ -1,5 +1,5 @@
 {
-  "name": "Non-Composer mode libs for EXT:solr",
+  "name": "non-composer-typo3-mode-libs-for/ext-solr",
   "description": "This file contains the wanted by EXT:solr libraries. Note: in replace defined libs are provided by TYPO3 source.",
   "config": {
     "platform": {
