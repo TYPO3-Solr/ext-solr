@@ -4,25 +4,25 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b47dd3517d919fcf6ff9dd80ed2642af",
+    "content-hash": "ac3a1db6b55742ec1d4182222a0620af",
     "packages": [
         {
             "name": "solarium/solarium",
-            "version": "6.0.4",
+            "version": "6.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/solariumphp/solarium.git",
-                "reference": "efdbb4c3cad33fbb8ac971f45405f5c1856b506b"
+                "reference": "80786c4e12db8062adac766b5f878ec652abe04e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/solariumphp/solarium/zipball/efdbb4c3cad33fbb8ac971f45405f5c1856b506b",
-                "reference": "efdbb4c3cad33fbb8ac971f45405f5c1856b506b",
+                "url": "https://api.github.com/repos/solariumphp/solarium/zipball/80786c4e12db8062adac766b5f878ec652abe04e",
+                "reference": "80786c4e12db8062adac766b5f878ec652abe04e",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
-                "php": "^7.2 || ^8.0",
+                "php": "^7.2",
                 "psr/event-dispatcher": "^1.0",
                 "psr/http-client": "^1.0",
                 "psr/http-factory": "^1.0",
@@ -30,13 +30,13 @@
             },
             "require-dev": {
                 "escapestudios/symfony2-coding-standard": "^3.11",
-                "guzzlehttp/guzzle": "^7.2",
+                "guzzlehttp/guzzle": "^6.5",
                 "nyholm/psr7": "^1.2",
-                "php-http/guzzle7-adapter": "^0.1",
+                "php-http/guzzle6-adapter": "^2.0",
                 "phpstan/extension-installer": "^1.0",
                 "phpstan/phpstan": "^0.12",
                 "phpstan/phpstan-phpunit": "^0.12",
-                "phpunit/phpunit": "^8.5 || ^9.4",
+                "phpunit/phpunit": "^8.0",
                 "roave/security-advisories": "dev-master",
                 "symfony/event-dispatcher": "^4.3 || ^5.0"
             },
@@ -63,7 +63,11 @@
                 "search",
                 "solr"
             ],
-            "time": "2020-11-05T17:28:49+00:00"
+            "support": {
+                "issues": "https://github.com/solariumphp/solarium/issues",
+                "source": "https://github.com/solariumphp/solarium/tree/6.0.3"
+            },
+            "time": "2020-10-14T09:59:29+00:00"
         }
     ],
     "packages-dev": [],
@@ -77,5 +81,5 @@
     "platform-overrides": {
         "php": "7.2"
     },
-    "plugin-api-version": "1.1.0"
+    "plugin-api-version": "2.1.0"
 }
