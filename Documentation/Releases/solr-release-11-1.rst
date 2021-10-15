@@ -339,5 +339,3 @@ https://shop.dkd.de/Produkte/Apache-Solr-fuer-TYPO3/
 or call:
 
 +49 (0)69 - 2475218 0
-
-
