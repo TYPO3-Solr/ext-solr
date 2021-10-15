@@ -189,7 +189,7 @@ class UrlFacetContainer implements \Countable
             $activeFacets = array_keys($activeFacets);
         }
         array_map(function($activeFacet) use (&$values, $facetName) {
-            $parts = explode(':', $activeFacet, 2);
+            $parts = explode(':', (string)$activeFacet, 2);
             if ($parts[0] === $facetName) {
                 $values[] = $parts[1];
             }
@@ -325,7 +325,7 @@ class UrlFacetContainer implements \Countable
         }
 
         $facetValues = array_filter($facetValues, function($facetNameValue) use ($facetName) {
-            $parts = explode(':', $facetNameValue, 2);
+            $parts = explode(':', (string)$facetNameValue, 2);
             return $parts[0] !== $facetName;
         }, $filterOptions);
 

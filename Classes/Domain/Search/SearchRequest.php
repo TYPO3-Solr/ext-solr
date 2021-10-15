@@ -554,15 +554,14 @@ class SearchRequest
 
     /**
      * Method to check if the query string is an empty string
-     * (also empty string or whitespaces only are handled as empty).
+     * (also whitespaces only are handled as empty).
      *
      * When no query string is set (null) the method returns false.
      * @return bool
      */
     public function getRawUserQueryIsEmptyString()
     {
-        $path = $this->prefixWithNamespace('q');
-        $query = $this->argumentsAccessor->get($path, null);
+        $query = $this->getRawUserQuery();
 
         if ($query === null) {
             return false;

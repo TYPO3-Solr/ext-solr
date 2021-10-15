@@ -225,6 +225,16 @@ class Faceting implements Modifier, SearchRequestAware
      */
     protected function getFiltersByFacetName(array $resultParameters, array $allFacets): array
     {
+        // validate $resultParameters['filter'] to be an array of string
+        if (!is_array($resultParameters['filter'])) {
+            return [];
+        }
+        foreach ($resultParameters['filter'] as $filter) {
+            if (!is_string($filter)) {
+                return [];
+            }
+        }
+
         // format for filter URL parameter:
         // tx_solr[filter]=$facetName0:$facetValue0,$facetName1:$facetValue1,$facetName2:$facetValue2
         $filters = array_map('rawurldecode', $resultParameters['filter']);
