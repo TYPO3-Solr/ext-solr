@@ -321,7 +321,7 @@ abstract class AbstractModuleController extends ActionController
         if (empty($solrCoreConnections)) {
             return;
         }
-        $this->selectedSolrCoreConnection = $solrCoreConnections[0];
+        $this->selectedSolrCoreConnection = array_shift($solrCoreConnections);
         $moduleData->setCore($this->selectedSolrCoreConnection->getAdminService()->getCorePath());
         $this->moduleDataStorageService->persistModuleData($moduleData);
     }
