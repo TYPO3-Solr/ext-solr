@@ -9,7 +9,7 @@
     "prepend-autoloader": false
   },
   "require": {
-    "solarium/solarium": "6.0.3"
+    "solarium/solarium": "6.1.4"
   },
   "replace": {
     "psr/event-dispatcher": "*",
