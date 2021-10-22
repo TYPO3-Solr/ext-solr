@@ -44,7 +44,7 @@ jobs:
         name: "Resolve branch name on push in branch of repository."
         if: github.event_name == 'push' && !startsWith(github.ref, 'refs/tags/')
         run: |
-          echo "BRANCH_NAME=$GITHUB_REF" >> $GITHUB_ENV
+          echo "BRANCH_NAME=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
       -
         # We want to pass tests before the tag/release can be pushed to TER.
         # This step resolves the branch name of the tag to use, to be able to collect proper build matrix values.
