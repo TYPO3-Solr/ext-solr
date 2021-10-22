@@ -12,7 +12,7 @@ DEFAULT_IMAGE_VOLUME_EXPORT_PATH="/var/solr"
 ## Local docker things.
 LOCAL_VOLUME_PATH=${HOME}"/solrcivolume"
 LOCAL_VOLUME_NAME="solrci-volume"
-LOCAL_IMAGE_NAME="solrci-image"
+LOCAL_IMAGE_NAME="solrci-image:latest"
 LOCAL_CONTAINER_NAME="solrci-container"
 
 ## In Schema configuration available solr cores
@@ -73,12 +73,9 @@ assertDockerVersionIsGtOrEq193 ()
   DOCKER_VERSION_MAJOR=$(echo "$DOCKER_VERSION"| cut -d'.' -f 1)
   local DOCKER_VERSION_MINOR
   DOCKER_VERSION_MINOR=$(echo "$DOCKER_VERSION"| cut -d'.' -f 2)
-  local DOCKER_VERSION_BUILD
-  DOCKER_VERSION_BUILD=$(echo "$DOCKER_VERSION"| cut -d'.' -f 3)
 
   if [ "${DOCKER_VERSION_MAJOR}" -ge 19 ] && \
-     [ "${DOCKER_VERSION_MINOR}" -ge 3 ]  && \
-     [ "${DOCKER_VERSION_BUILD}" -ge 0 ]; then
+     [ "${DOCKER_VERSION_MINOR}" -ge 3 ] ; then
       prettyPrintOrExitOnError 0
   else
     echo -en "${RED}"' ✘\n'"${NC}"
@@ -108,12 +105,6 @@ isPathOwnedBySolr ()
   done
 
   return $status;
-}
-
-build_image ()
-{
-  echo -n "Building docker image"
-  prettyPrintOrExitOnError $? "$(docker build -t $LOCAL_IMAGE_NAME -f Docker/SolrServer/Dockerfile . 2>&1)"
 }
 
 run_container ()
@@ -274,11 +265,7 @@ assertNecessaryPathsAreOwnedBySolr ()
 
 ### run the tests
 
-cleanUp
-
 assertDockerVersionIsGtOrEq193
-
-build_image
 
 assertVolumeExportHasNotBeenChanged
 
@@ -292,7 +279,5 @@ assertNecessaryPathsAreOwnedBySolr
 
 
 echo -e "${GREEN}"'\nAll checks passed successfully!\n'"${NC}"
-
-cleanUp
 
 exit 0
