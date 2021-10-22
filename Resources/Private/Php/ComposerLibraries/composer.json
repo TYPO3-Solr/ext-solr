@@ -3,7 +3,7 @@
   "description": "This file contains the wanted by EXT:solr libraries. Note: in replace defined libs are provided by TYPO3 source.",
   "config": {
     "platform": {
-      "php": "7.2"
+      "php": "7.4"
     },
     "classmap-authoritative": true,
     "prepend-autoloader": false
