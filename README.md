@@ -1,6 +1,6 @@
 # Apache Solr for TYPO3 CMS
 
-[![Build Status](https://travis-ci.com/TYPO3-Solr/ext-solr.svg?branch=main)](https://travis-ci.com/TYPO3-Solr/ext-solr)
+[![Build Status](https://github.com/TYPO3-Solr/ext-solr/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/TYPO3-Solr/ext-solr/actions?query=branch:main)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/TYPO3-Solr/ext-solr/badges/quality-score.png?b=main)](https://scrutinizer-ci.com/g/TYPO3-Solr/ext-solr/?branch=main)
 [![Code Coverage](https://scrutinizer-ci.com/g/TYPO3-Solr/ext-solr/badges/coverage.png?b=main)](https://scrutinizer-ci.com/g/TYPO3-Solr/ext-solr/?branch=main)
 [![Latest Stable Version](https://poser.pugx.org/apache-solr-for-typo3/solr/v/stable)](https://packagist.org/packages/apache-solr-for-typo3/solr)

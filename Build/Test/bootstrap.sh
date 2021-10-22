@@ -9,7 +9,7 @@ fi
 EXTENSION_ROOTPATH="$SCRIPTPATH/../../"
 SOLR_INSTALL_PATH="/opt/solr-tomcat/"
 
-DEFAULT_TYPO3_VERSION="^10.4"
+DEFAULT_TYPO3_VERSION="10"
 DEFAULT_PHP_CS_FIXER_VERSION="^2.16.1"
 DEFAULT_TYPO3_DATABASE_HOST="localhost"
 DEFAULT_TYPO3_DATABASE_NAME="test"
@@ -67,6 +67,11 @@ echo "Using database password: $TYPO3_DATABASE_PASSWORD"
 if [ -z $TYPO3_VERSION ]; then
   echo "Must set env var TYPO3_VERSION (e.g. dev-main or ^11.5)"
   exit 1
+fi
+
+# Use latest TYPO3 LTS stable version, if version number is compatible with get.typo3.org API
+if [[ $TYPO3_VERSION =~ ^[0-9]+$ ]] ; then
+  TYPO3_VERSION=$("${BASH_SOURCE%/*}/../Helpers/TYPO3_GET_LATEST_VERSION.sh" "$TYPO3_VERSION")
 fi
 
 if ! wget --version > /dev/null 2>&1
