@@ -218,6 +218,11 @@ When you follow this convention by writing date into a solr field you can render
 
 In this case the "fieldProcessingInstruction" "pageUidToHierarchy" is used to create the rootline for solr in the conventional way.
 
+Custom field processors can be registered with
+
+.. code-block:: php
+
+   $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['fieldProcessor']['yourFieldProcessor'] = ACustomFieldProcessor::class;
 
 Date Range
 ----------

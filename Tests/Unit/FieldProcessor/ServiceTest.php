@@ -120,4 +120,22 @@ class ServiceTest extends UnitTest
             'field was not processed with timestampToIsoDate'
         );
     }
+
+    /**
+     * @test
+     */
+    public function customFieldProcessorTurnsFooIntoBar()
+    {
+        $this->documentMock->setField('stringField', 'foo');
+        $configuration = ['stringField' => 'turnFooIntoBar'];
+
+        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['fieldProcessor']['turnFooIntoBar'] = TestFieldProcessor::class;
+
+        $this->service->processDocument($this->documentMock, $configuration);
+        self::assertEquals(
+            $this->documentMock['stringField'],
+            'bar',
+            'field was not processed with TestFieldProcessor'
+        );
+    }
 }
