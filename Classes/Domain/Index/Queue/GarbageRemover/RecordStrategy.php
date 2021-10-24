@@ -2,6 +2,8 @@
 
 namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\GarbageRemover;
 
+use TYPO3\CMS\Backend\Utility\BackendUtility;
+
 /***************************************************************
  *  Copyright notice
  *
@@ -34,10 +36,22 @@ class RecordStrategy extends AbstractStrategy  {
      *
      * @param string $table
      * @param int $uid
-     * @return mixed
      */
     protected function removeGarbageOfByStrategy($table, $uid)
     {
+        $languageField = $GLOBALS['TCA'][$table]['ctrl']['languageField'] ?? false;
+        $transOrigPointerField = $GLOBALS['TCA'][$table]['ctrl']['transOrigPointerField'] ?? false;
+        $isTableTranslatable = $languageField && $transOrigPointerField;
+
+        if ($isTableTranslatable) {
+            $record = BackendUtility::getRecord($table, $uid, implode(',', [$languageField, $transOrigPointerField]), '', false);
+            $isRecordATranslation = $record && $record[$languageField] > 0 && $record[$transOrigPointerField] > 0;
+            if ($isRecordATranslation) {
+                $this->deleteIndexDocuments($table, (int)$record[$transOrigPointerField], (int)$record[$languageField]);
+                return;
+            }
+        }
+
         $this->deleteInSolrAndRemoveFromIndexQueue($table, $uid);
     }
 }

@@ -78,7 +78,6 @@ abstract class AbstractStrategy
      *
      * @param string $table
      * @param int $uid
-     * @return mixed
      */
     abstract protected function removeGarbageOfByStrategy($table, $uid);
 
