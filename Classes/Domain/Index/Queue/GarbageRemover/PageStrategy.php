@@ -36,7 +36,6 @@ class PageStrategy extends AbstractStrategy {
     /**
      * @param string $table
      * @param int $uid
-     * @return mixed
      */
     protected function removeGarbageOfByStrategy($table, $uid)
     {
@@ -47,7 +46,6 @@ class PageStrategy extends AbstractStrategy {
 
         if ($table === 'pages') {
             $this->collectPageGarbageByPageChange($uid);
-            return;
         }
     }
 
