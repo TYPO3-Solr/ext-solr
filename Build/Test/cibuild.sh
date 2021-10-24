@@ -6,13 +6,13 @@ export TYPO3_PATH_WEB="$(pwd)/.Build/Web/"
 export TYPO3_PATH_PACKAGES="$(pwd)/.Build/vendor/"
 
 export TYPO3_BIN_DIR="$(pwd)/.Build/bin/"
-export COMPOSER_BIN_DIR="$HOME/.composer/vendor/bin"
+export COMPOSER_BIN_DIR="$(composer --global config home)/vendor/bin"
 
 # Add TYPO3_BIN_DIR and COMPOSER_BIN_DIR to $PATH
 export PATH="$TYPO3_BIN_DIR:$COMPOSER_BIN_DIR:$PATH"
 
 echo "Run PHP Lint"
-find . -name \*.php ! -path "./.Build/*" | parallel --gnu php -d display_errors=stderr -l {} > /dev/null \;
+find . -name \*.php ! -path "./.Build/*" 2>/dev/null | parallel --gnu php -d display_errors=stderr -l {} > /dev/null \;
 
 # use from vendor dir
 php-cs-fixer --version > /dev/null 2>&1
