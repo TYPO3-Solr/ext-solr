@@ -20,6 +20,7 @@ namespace ApacheSolrForTypo3\Solr\FieldProcessor;
 use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use Doctrine\DBAL\Exception as DBALException;
+use Exception;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -96,6 +97,18 @@ class Service
                     case 'uppercase':
                         $fieldValue = array_map('mb_strtoupper', $fieldValue);
                         break;
+                    default:
+                        $classReference = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['fieldProcessor'][$instruction] ?? false;
+                        if ($classReference) {
+                            $customFieldProcessor = GeneralUtility::makeInstance($classReference);
+                            if ($customFieldProcessor instanceof FieldProcessor) {
+                                $fieldValue = $customFieldProcessor->process($fieldValue);
+                            } else {
+                                throw new Exception('A FieldProcessor must implement the FieldProcessor interface', 1635082295);
+                            }
+                        } else {
+                            throw new Exception(sprintf('FieldProcessor %s is not implemented', $instruction), 1635082296);
+                        }
                 }
 
                 if ($isSingleValueField) {
