@@ -194,7 +194,7 @@ class SiteRepository
                     $typo3ManagedSolrSites[$rootPageId] = $typo3ManagedSolrSite;
                 }
 
-            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
                 if ($stopOnInvalidSite) {
                     throw $e;
                 }

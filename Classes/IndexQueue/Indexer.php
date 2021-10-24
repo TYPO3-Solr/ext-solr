@@ -25,7 +25,6 @@ use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
 use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
-use Exception;
 use RuntimeException;
 use Solarium\Exception\HttpException;
 use TYPO3\CMS\Core\Context\Context;
@@ -312,7 +311,7 @@ class Indexer extends AbstractIndexer
             $pageId = $this->getPageIdOfItem($item);
             $solrConfiguration = $this->frontendEnvironment->getSolrConfigurationFromPageId($pageId, $language);
             return $solrConfiguration->getIndexQueueFieldsConfigurationByConfigurationName($indexConfigurationName, []);
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             return [];
         }
     }

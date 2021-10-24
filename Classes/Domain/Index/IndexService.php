@@ -130,7 +130,7 @@ class IndexService
                 $this->emitSignal('beforeIndexItem', [$itemToIndex, $this->getContextTask(), $indexRunId]);
                 $this->indexItem($itemToIndex, $configurationToUse);
                 $this->emitSignal('afterIndexItem', [$itemToIndex, $this->getContextTask(), $indexRunId]);
-            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
                 $errors++;
                 $this->indexQueue->markItemAsFailed($itemToIndex, $e->getCode() . ': ' . $e->__toString());
                 $this->generateIndexingErrorLog($itemToIndex, $e);
@@ -213,7 +213,7 @@ class IndexService
             if ($itemChangedDateAfterIndex > $itemChangedDate && $itemChangedDateAfterIndex > time()) {
                 $this->indexQueue->setForcedChangeTimeByItem($item, $itemChangedDateAfterIndex);
             }
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             $this->restoreOriginalHttpHost($originalHttpHost);
             throw $e;
         }

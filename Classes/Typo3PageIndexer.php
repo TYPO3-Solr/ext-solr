@@ -131,7 +131,7 @@ class Typo3PageIndexer
 
         try {
             $this->initializeSolrConnection();
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             $this->logger->log(
                 SolrLogManager::ERROR,
                 $e->getMessage() . ' Error code: ' . $e->getCode()
@@ -438,7 +438,7 @@ class Typo3PageIndexer
             }
 
             $documentsAdded = true;
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             $this->logger->log(SolrLogManager::ERROR, $e->getMessage() . ' Error code: ' . $e->getCode());
 
             if ($this->configuration->getLoggingExceptions()) {

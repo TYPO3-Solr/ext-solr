@@ -103,7 +103,7 @@ class IndexAdministrationModuleController extends AbstractModuleController
             }
             $message = LocalizationUtility::translate('solr.backend.index_administration.index_emptied_all', 'Solr', [$this->selectedSite->getLabel(), implode(', ', $affectedCores)]);
             $this->addFlashMessage($message);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             $this->addFlashMessage(LocalizationUtility::translate('solr.backend.index_administration.error.on_empty_index', 'Solr', [$e->__toString()]), '', FlashMessage::ERROR);
         }
 

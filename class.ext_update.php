@@ -78,7 +78,7 @@ class ext_update {
             if ($migration->isNeeded()) {
                 try {
                     $this->messages[] = $migration->process();
-                } catch (\Exception $e) {
+                } catch (\Throwable $e) {
                     $this->messages[] = [FlashMessage::ERROR, 'Execution failed', $e->getMessage()];
                 }
             }

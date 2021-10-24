@@ -135,7 +135,7 @@ abstract class IntegrationTest extends FunctionalTestCase
         try {
             $this->importDataSet($this->getFixturePathByName($fixtureName));
             return;
-        } catch (\Exception $e) {}
+        } catch (\Throwable $e) {}
         $this->fail(sprintf('Can not import "%s" fixture.', $fixtureName));
     }
 
