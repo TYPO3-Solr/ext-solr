@@ -13,8 +13,6 @@ function SuggestController() {
 
             $form.find('.tx-solr-suggest-focus').focus();
 
-            jQuery.ajaxSetup({jsonp: "tx_solr[callback]"});
-
             // when no specific container found, use the form as container
             if ($searchBox.length === 0) {
                 $searchBox = $form;
@@ -32,6 +30,9 @@ function SuggestController() {
             $form.find('.tx-solr-suggest').devbridgeAutocomplete({
                 serviceUrl: $form.data('suggest'),
                 dataType: 'jsonp',
+                ajaxSettings: {
+                    jsonp: "tx_solr[callback]"
+                },
                 paramName: 'tx_solr[queryString]',
                 groupBy: 'category',
                 maxHeight: 1000,
