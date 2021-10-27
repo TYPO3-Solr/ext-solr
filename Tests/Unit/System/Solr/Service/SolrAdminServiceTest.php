@@ -53,7 +53,7 @@ class SolrAdminServiceTest extends UnitTest
      */
     protected $endpointMock;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->endpointMock = $this->getDumbMock(Endpoint::class);

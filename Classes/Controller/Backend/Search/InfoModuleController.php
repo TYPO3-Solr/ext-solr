@@ -30,12 +30,11 @@ use ApacheSolrForTypo3\Solr\Domain\Search\Statistics\StatisticsRepository;
 use ApacheSolrForTypo3\Solr\Domain\Search\ApacheSolrDocument\Repository;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\System\Validator\Path;
+use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Backend\Template\ModuleTemplate;
-use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Registry;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Mvc\Exception\StopActionException;
 use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
 
 /**
@@ -84,17 +83,18 @@ class InfoModuleController extends AbstractModuleController
      *
      * @return void
      */
-    public function indexAction()
+    public function indexAction(): ResponseInterface
     {
         if ($this->selectedSite === null) {
             $this->view->assign('can_not_proceed', true);
-            return;
+            return $this->htmlResponse(null);
         }
 
         $this->collectConnectionInfos();
         $this->collectStatistics();
         $this->collectIndexFieldsInfo();
         $this->collectIndexInspectorInfo();
+        return $this->htmlResponse();
     }
 
     /**
@@ -104,10 +104,11 @@ class InfoModuleController extends AbstractModuleController
      * @param int $languageUid
      * @return void
      */
-    public function documentsDetailsAction(string $type, int $uid, int $pageId, int $languageUid)
+    public function documentsDetailsAction(string $type, int $uid, int $pageId, int $languageUid): ResponseInterface
     {
         $documents = $this->apacheSolrDocumentRepository->findByTypeAndPidAndUidAndLanguageId($type, $uid, $pageId, $languageUid);
         $this->view->assign('documents', $documents);
+        return $this->htmlResponse();
     }
 
     /**

@@ -40,13 +40,15 @@ class IdBuilderTest extends UnitTest
      */
     protected $oldEncryptionKey;
 
-    public function setUp() {
+    public function setUp(): void
+    {
         $this->oldEncryptionKey = $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'];
         $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'] = 'testkey';
         parent::setUp();
     }
 
-    public function tearDown() {
+    public function tearDown(): void
+    {
         parent::tearDown();
         $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'] =  $this->oldEncryptionKey;
     }

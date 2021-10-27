@@ -42,7 +42,7 @@ class DateRangeUrlEncoderTest extends UnitTest
      */
     protected $rangeParser;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->rangeParser = GeneralUtility::makeInstance(DateRangeUrlDecoder::class);
     }
@@ -56,7 +56,7 @@ class DateRangeUrlEncoderTest extends UnitTest
         $actual = $this->rangeParser->decode('201001010000-201001312359');
         $this->assertEquals($expected, $actual);
     }
-    
+
     /**
      * @test
      */
@@ -66,7 +66,7 @@ class DateRangeUrlEncoderTest extends UnitTest
         $actual = $this->rangeParser->decode('-201001312359');
         $this->assertEquals($expected, $actual);
     }
-    
+
     /**
      * @test
      */

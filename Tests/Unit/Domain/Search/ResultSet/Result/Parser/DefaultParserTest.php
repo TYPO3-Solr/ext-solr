@@ -48,7 +48,7 @@ class DefaultParserTest extends UnitTest
      */
     protected $parser;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
         $this->parser = new DefaultResultParser();

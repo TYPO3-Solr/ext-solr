@@ -26,6 +26,8 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit;
 
 use Nimut\TestingFramework\TestCase\UnitTestCase;
 use PHPUnit\Framework\MockObject\MockObject;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Information\Typo3Version;
 
 /**
  * Base class for all unit tests in the solr project
@@ -95,7 +97,7 @@ abstract class UnitTest extends UnitTestCase
      */
     protected function skipInVersionBelow($version)
     {
-        if (version_compare(TYPO3_branch, $version, '<')) {
+        if (version_compare(GeneralUtility::makeInstance(Typo3Version::class)->getBranch(), $version, '<')) {
             $this->markTestSkipped('This test requires at least version ' . $version);
         }
     }

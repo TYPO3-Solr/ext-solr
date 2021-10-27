@@ -373,7 +373,7 @@ abstract class AbstractSolrService
      */
     protected function getMilliseconds()
     {
-        return GeneralUtility::milliseconds();
+        return round(microtime(true) * 1000);
     }
 
     /**

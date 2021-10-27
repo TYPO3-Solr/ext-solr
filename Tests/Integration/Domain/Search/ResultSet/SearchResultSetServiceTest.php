@@ -35,7 +35,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResult;
 
 class SearchResultSetServiceTest extends IntegrationTest
 {
-    public function setUp() {
+    public function setUp(): void {
         parent::setUp();
         $this->writeDefaultSolrTestSiteConfiguration();
     }
@@ -43,7 +43,7 @@ class SearchResultSetServiceTest extends IntegrationTest
     /**
      * Executed after each test. Emptys solr and checks if the index is empty
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->cleanUpSolrServerAndAssertEmpty();
         parent::tearDown();

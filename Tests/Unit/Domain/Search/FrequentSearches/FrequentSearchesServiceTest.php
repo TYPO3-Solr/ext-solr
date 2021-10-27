@@ -61,7 +61,7 @@ class FrequentSearchesServiceTest extends UnitTest
     /**
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         $this->tsfeMock = $this->getDumbMock(TypoScriptFrontendController::class);
         $this->statisticsRepositoryMock = $this->getDumbMock(StatisticsRepository::class );

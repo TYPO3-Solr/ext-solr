@@ -37,9 +37,9 @@
     "nimut/testing-framework": "^6.0.0"
   },
   "replace": {
+    "apache-solr-for-typo3/solrfluid": "*",
     "typo3-ter/solr": "self.version",
-    "typo3-ter/solrfluid": "*",
-    "apache-solr-for-typo3/solrfluid": "*"
+    "typo3-ter/solrfluid": "*"
   },
   "autoload": {
     "classmap": [

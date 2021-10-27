@@ -46,7 +46,7 @@ class SolrWriteServiceTest extends IntegrationTest
      * @return void
      * @throws NoSuchCacheException
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

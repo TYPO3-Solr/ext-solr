@@ -33,7 +33,7 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 class AbstractIndexerTest extends UnitTest
 {
 
-    public function setUp()
+    public function setUp(): void
     {
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['detectSerializedValue'] = [];
     }

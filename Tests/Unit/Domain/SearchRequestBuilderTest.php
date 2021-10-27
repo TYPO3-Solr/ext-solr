@@ -54,7 +54,7 @@ class SearchRequestBuilderTest extends UnitTest
     /**
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         $this->configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
         $this->sessionMock = $this->getDumbMock(FrontendUserSession::class);

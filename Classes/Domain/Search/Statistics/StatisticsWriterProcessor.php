@@ -30,6 +30,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSetProcessor;
 use ApacheSolrForTypo3\Solr\HtmlContentExtractor;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\Util;
+use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
@@ -223,6 +224,6 @@ class StatisticsWriterProcessor implements SearchResultSetProcessor
      */
     protected function getTime()
     {
-        return $GLOBALS['EXEC_TIME'];
+        return GeneralUtility::makeInstance(Context::class)->getPropertyFromAspect('date', 'timestamp');
     }
 }

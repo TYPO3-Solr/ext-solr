@@ -41,7 +41,7 @@ use function vsprintf;
 class ConnectionManagerTest extends IntegrationTest
 {
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->writeDefaultSolrTestSiteConfiguration();

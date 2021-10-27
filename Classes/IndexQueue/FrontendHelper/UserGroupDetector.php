@@ -25,14 +25,14 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
+use TYPO3\CMS\Core\Domain\Repository\PageRepository;
+use TYPO3\CMS\Core\Domain\Repository\PageRepositoryGetPageHookInterface;
+use TYPO3\CMS\Core\Domain\Repository\PageRepositoryGetPageOverlayHookInterface;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectPostInitHookInterface;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
-use TYPO3\CMS\Frontend\Page\PageRepository;
-use TYPO3\CMS\Frontend\Page\PageRepositoryGetPageHookInterface;
-use TYPO3\CMS\Frontend\Page\PageRepositoryGetPageOverlayHookInterface;
 
 /**
  * The UserGroupDetector is responsible to identify the fe_group references on records that are visible on the page (not the page itself).
