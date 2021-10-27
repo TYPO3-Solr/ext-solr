@@ -88,7 +88,7 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
     {
         $pageIndexingHookRegistration = PageIndexer::class;
 
-        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['pageIndexing'][__CLASS__] = $pageIndexingHookRegistration;
+        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['contentPostProc-all'][__CLASS__] = $pageIndexingHookRegistration . '->hook_indexContent';
 
         // indexes fields defined in plugin.tx_solr.index.queue.pages.fields
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageSubstitutePageDocument'][PageFieldMappingIndexer::class] = PageFieldMappingIndexer::class;
@@ -258,10 +258,11 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
      * Handles the indexing of the page content during post processing of a
      * generated page.
      *
+     * @param array $params unused
      * @param TypoScriptFrontendController $page TypoScript frontend
      * @noinspection PhpUnused
      */
-    public function hook_indexContent(TypoScriptFrontendController $page)
+    public function hook_indexContent($params, TypoScriptFrontendController $page)
     {
         $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, /** @scrutinizer ignore-type */ __CLASS__);
 
