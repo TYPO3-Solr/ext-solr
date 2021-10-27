@@ -15,6 +15,8 @@
 
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\Controller;
 
+use TYPO3\CMS\Core\Context\Context;
+use TYPO3\CMS\Core\Context\UserAspect;
 use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageFieldMappingIndexer;
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
 use ApacheSolrForTypo3\Solr\Controller\SearchController;
@@ -24,7 +26,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManager as ExtbaseConfigurationManager;
 use TYPO3\CMS\Extbase\Mvc\Exception\StopActionException;
 use TYPO3\CMS\Extbase\Mvc\Request;
-use TYPO3\CMS\Extbase\Mvc\Web\Response;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 use TYPO3\CMS\Extbase\Service\EnvironmentService;
@@ -55,12 +56,12 @@ class SearchControllerTest extends AbstractFrontendControllerTest
     protected $searchRequest;
 
     /**
-     * @var Response
+     * @var \TYPO3\CMS\Extbase\Mvc\Response
      */
     protected $searchResponse;
 
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
@@ -80,7 +81,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
     /**
      * Executed after each test. Emptys solr and checks if the index is empty
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->cleanUpSolrServerAndAssertEmpty();
         parent::tearDown();
@@ -1202,8 +1203,8 @@ class SearchControllerTest extends AbstractFrontendControllerTest
     protected function fakeBackendUserLoggedInInFrontend()
     {
         /** @var  $context \TYPO3\CMS\Core\Context\Context::class */
-        $context = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Context\Context::class);
-        $userAspect = $this->getMockBuilder(\TYPO3\CMS\Core\Context\UserAspect::class)->setMethods([])->getMock();
+        $context = GeneralUtility::makeInstance(Context::class);
+        $userAspect = $this->getMockBuilder(UserAspect::class)->setMethods([])->getMock();
         $userAspect->expects($this->any())->method('get')->with('isLoggedIn')->willReturn(true);
         $context->setAspect('backend.user', $userAspect);
     }

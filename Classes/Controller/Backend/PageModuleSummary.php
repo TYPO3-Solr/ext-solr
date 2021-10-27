@@ -26,6 +26,7 @@ namespace ApacheSolrForTypo3\Solr\Controller\Backend;
  ***************************************************************/
 
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Service\FlexFormService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
 use TYPO3\CMS\Fluid\View\StandaloneView;
@@ -92,7 +93,7 @@ class PageModuleSummary
         $this->pageLayoutView = $pObj;
 
         /** @var $service \TYPO3\CMS\Core\Service\FlexFormService::class */
-        $service = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Service\FlexFormService::class);
+        $service = GeneralUtility::makeInstance(FlexFormService::class);
         $this->flexformData = $service->convertFlexFormContentToArray($contentElement['pi_flexform']);
         $this->pluginContentElement = $contentElement;
     }
@@ -196,7 +197,7 @@ class PageModuleSummary
         if (!empty($label)) {
             $label = $this->getLanguageService()->sL($label);
         } else {
-            $label = sprintf($this->getLanguageService()->sL('LLL:EXT:lang/Resources/Private/Language/locallang_core.xlf:labels.noMatchingValue'), $this->pluginContentElement['list_type']);
+            $label = sprintf($this->getLanguageService()->sL('LLL:EXT:core/Resources/Private/Language/locallang_core.xlf:labels.noMatchingValue'), $this->pluginContentElement['list_type']);
         }
 
         return $this->pageLayoutView->linkEditContent(htmlspecialchars($label), $this->pluginContentElement);

@@ -41,7 +41,7 @@ class Typo3PageContentExtractorTest extends UnitTest
      */
     protected $typoScripConfigurationMock;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->typoScripConfigurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
         $this->typoScripConfigurationMock->expects($this->once())->method(

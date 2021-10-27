@@ -69,7 +69,7 @@ class IndexServiceTest extends UnitTest
     /**
      * @return void
      */
-    public function setUp() {
+    public function setUp(): void {
         $this->siteMock = $this->getDumbMock(Site::class);
         $this->queueMock = $this->getDumbMock(Queue::class);
         $this->dispatcherMock = $this->getDumbMock(Dispatcher::class);

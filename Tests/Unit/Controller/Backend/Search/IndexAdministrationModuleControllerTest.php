@@ -60,7 +60,7 @@ class IndexAdministrationModuleControllerTest extends UnitTest
     /**
      *
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

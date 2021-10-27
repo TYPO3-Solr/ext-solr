@@ -26,9 +26,9 @@ namespace ApacheSolrForTypo3\Solr\System\Configuration;
 
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\System\Records\SystemTemplate\SystemTemplateRepository;
+use TYPO3\CMS\Core\Domain\Repository\PageRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\RootlineUtility;
-use TYPO3\CMS\Frontend\Page\PageRepository;
 
 /**
  * This class is responsible to find the closest page id from the rootline where
@@ -56,7 +56,7 @@ class ConfigurationPageResolver
 
     /**
      * ConfigurationPageResolver constructor.
-     * @param PageRepository|null $pageRepository
+     * @param \TYPO3\CMS\Core\Domain\Repository\PageRepository|null $pageRepository
      * @param TwoLevelCache|null $twoLevelCache
      * @param SystemTemplateRepository $systemTemplateRepository
      */

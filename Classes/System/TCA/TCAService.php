@@ -25,6 +25,10 @@ namespace ApacheSolrForTypo3\Solr\System\TCA;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Context\Context;
+
 /**
  * Class to encapsulate TCA specific logic
  *
@@ -52,11 +56,13 @@ class TCAService
     }
 
     /**
-     * @return integer
+     * @return int
+     * @throws AspectNotFoundException
      */
-    protected function getTime()
+    protected function getTime(): int
     {
-        return isset($GLOBALS['EXEC_TIME']) ? $GLOBALS['EXEC_TIME'] : time();
+        return GeneralUtility::makeInstance(Context::class)
+                ->getPropertyFromAspect('date', 'timestamp') ?? time();
     }
 
     /**

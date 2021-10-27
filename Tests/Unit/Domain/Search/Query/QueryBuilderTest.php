@@ -74,7 +74,7 @@ class QueryBuilderTest extends UnitTest
      */
     protected $builder;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
         $this->loggerMock = $this->getDumbMock(SolrLogManager::class);

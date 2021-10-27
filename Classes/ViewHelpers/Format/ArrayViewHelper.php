@@ -28,11 +28,17 @@ class ArrayViewHelper extends AbstractViewHelper
     /**
      * Make sure values is a array else convert
      *
-     * @param string|array $value
      * @return array
      */
-    public function render($value)
+    public function render()
     {
+        $value = $this->arguments['value'];
         return (array)$value;
+    }
+
+    public function initializeArguments(): void
+    {
+        parent::initializeArguments();
+        $this->registerArgument('value', 'array|string', '', true);
     }
 }

@@ -27,6 +27,7 @@ namespace ApacheSolrForTypo3\Solr\Controller\Backend\Search;
 use ApacheSolrForTypo3\Solr\Backend\IndexingConfigurationSelectorField;
 use ApacheSolrForTypo3\Solr\Domain\Index\IndexService;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
+use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Backend\View\BackendTemplateView;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -94,17 +95,18 @@ class IndexQueueModuleController extends AbstractModuleController
      *
      * @return void
      */
-    public function indexAction()
+    public function indexAction(): ResponseInterface
     {
         if (!$this->canQueueSelectedSite()) {
             $this->view->assign('can_not_proceed', true);
-            return;
+            return $this->htmlResponse(null);
         }
 
         $statistics = $this->indexQueue->getStatisticsBySite($this->selectedSite);
         $this->view->assign('indexQueueInitializationSelector', $this->getIndexQueueInitializationSelector());
         $this->view->assign('indexqueue_statistics', $statistics);
         $this->view->assign('indexqueue_errors', $this->indexQueue->getErrorsBySite($this->selectedSite));
+        return $this->htmlResponse();
     }
 
     /**
@@ -231,7 +233,7 @@ class IndexQueueModuleController extends AbstractModuleController
      * @param int $indexQueueItemId
      * @return void
      */
-    public function showErrorAction(int $indexQueueItemId)
+    public function showErrorAction(int $indexQueueItemId): ResponseInterface
     {
         if (is_null($indexQueueItemId)) {
             // add a flash message and quit
@@ -239,11 +241,12 @@ class IndexQueueModuleController extends AbstractModuleController
             $severity = FlashMessage::ERROR;
             $this->addIndexQueueFlashMessage($label, $severity);
 
-            return;
+            return $this->htmlResponse(null);
         }
 
         $item = $this->indexQueue->getItem($indexQueueItemId);
         $this->view->assign('indexQueueItem', $item);
+        return $this->htmlResponse();
     }
 
     /**

@@ -1,6 +1,7 @@
 <?php
 namespace ApacheSolrForTypo3\Solr\Controller\Backend\Search;
 
+use Psr\Http\Message\ResponseInterface;
 /***************************************************************
  *  Copyright notice
  *
@@ -75,11 +76,12 @@ class IndexAdministrationModuleController extends AbstractModuleController
      *
      * @return void
      */
-    public function indexAction()
+    public function indexAction(): ResponseInterface
     {
         if ($this->selectedSite === null || empty($this->solrConnectionManager->getConnectionsBySite($this->selectedSite))) {
             $this->view->assign('can_not_proceed', true);
         }
+        return $this->htmlResponse();
     }
 
     /**
@@ -115,7 +117,7 @@ class IndexAdministrationModuleController extends AbstractModuleController
      *
      * @return void
      */
-    public function clearIndexQueueAction()
+    public function clearIndexQueueAction(): ResponseInterface
     {
         $this->indexQueue->deleteItemsBySite($this->selectedSite);
         $this->addFlashMessage(
@@ -123,6 +125,7 @@ class IndexAdministrationModuleController extends AbstractModuleController
                 [$this->selectedSite->getLabel()])
         );
         $this->redirectToReferrerModule();
+        return $this->htmlResponse();
     }
 
     /**

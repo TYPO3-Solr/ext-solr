@@ -2,6 +2,7 @@
 
 namespace ApacheSolrForTypo3\Solr\Controller;
 
+use Psr\Http\Message\ResponseInterface;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -37,7 +38,7 @@ class SuggestController extends AbstractBaseController
      * @param array $additionalFilters
      * @return string
      */
-    public function suggestAction($queryString, $callback = null, $additionalFilters = [])
+    public function suggestAction($queryString, $callback = null, $additionalFilters = []): ResponseInterface
     {
         // Get suggestions
         $rawQuery = htmlspecialchars(mb_strtolower(trim($queryString)));
@@ -62,9 +63,9 @@ class SuggestController extends AbstractBaseController
             $result = ['status' => false];
         }
         if ($callback) {
-            return htmlspecialchars($callback) . '(' . json_encode($result, JSON_UNESCAPED_SLASHES) . ')';
+            return $this->htmlResponse(htmlspecialchars($callback) . '(' . json_encode($result, JSON_UNESCAPED_SLASHES) . ')');
         }
-        return json_encode($result, JSON_UNESCAPED_SLASHES);
+        return $this->responseFactory->createJsonResponse(json_encode($result, JSON_UNESCAPED_SLASHES));
     }
 
 }

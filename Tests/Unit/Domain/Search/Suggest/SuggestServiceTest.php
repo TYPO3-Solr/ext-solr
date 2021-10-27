@@ -82,7 +82,7 @@ class SuggestServiceTest extends UnitTest
     /**
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         $this->tsfeMock = $this->getDumbMock(TypoScriptFrontendController::class);
         $this->searchResultSetServiceMock = $this->getDumbMock(SearchResultSetService::class);

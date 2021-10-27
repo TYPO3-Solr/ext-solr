@@ -68,7 +68,7 @@ class GarbageCollectorTest extends IntegrationTest
      */
     protected $indexer;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->writeDefaultSolrTestSiteConfiguration();

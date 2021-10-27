@@ -48,7 +48,7 @@ class SortingTest extends UnitTest
     /**
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         $this->resultSetMock = $this->getDumbMock(SearchResultSet::class);
 

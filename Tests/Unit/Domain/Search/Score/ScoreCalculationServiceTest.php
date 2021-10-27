@@ -41,7 +41,7 @@ class ScoreCalculationServiceTest extends UnitTest
     /**
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         $this->scoreCalculationService = new ScoreCalculationService();
     }

@@ -27,6 +27,7 @@
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageRendererResolver;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use ApacheSolrForTypo3\Solr\Migrations\RemoveSiteFromScheduler;
 
 /**
  * Update class for the extension manager.
@@ -50,7 +51,7 @@ class ext_update {
      * Constructor initializing all migrations
      */
     public function __construct() {
-        $this->migrators[] = new \ApacheSolrForTypo3\Solr\Migrations\RemoveSiteFromScheduler();
+        $this->migrators[] = new RemoveSiteFromScheduler();
     }
 
     /**

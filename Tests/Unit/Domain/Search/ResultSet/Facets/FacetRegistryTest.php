@@ -37,7 +37,7 @@ class FacetRegistryTest extends UnitTest
     /**
      * @return void
      */
-    public function setUp() {
+    public function setUp(): void {
         parent::setUp();
         $this->objectManagerMock = $this->getMockBuilder(ObjectManager::class)->disableOriginalConstructor()->getMock();
     }

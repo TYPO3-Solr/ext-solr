@@ -15,11 +15,12 @@ namespace ApacheSolrForTypo3\Solr\Controller;
  */
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
-use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrUnavailableException;
 use ApacheSolrForTypo3\Solr\Util;
+use Psr\Http\Message\ResponseInterface;
+use TYPO3\CMS\Extbase\Http\ForwardResponse;
+use TYPO3\CMS\Extbase\Mvc\Response;
 use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
-use TYPO3\CMS\Extbase\Mvc\Web\Response;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Fluid\View\TemplateView;
 
@@ -91,7 +92,7 @@ class SearchController extends AbstractBaseController
     /**
      * Results
      */
-    public function resultsAction()
+    public function resultsAction(): ResponseInterface
     {
         try {
             $arguments = (array)$this->request->getArguments();
@@ -118,12 +119,13 @@ class SearchController extends AbstractBaseController
         } catch (SolrUnavailableException $e) {
             $this->handleSolrUnavailable();
         }
+        return $this->htmlResponse();
     }
 
     /**
      * Form
      */
-    public function formAction()
+    public function formAction(): ResponseInterface
     {
 
         $values = [
@@ -134,12 +136,13 @@ class SearchController extends AbstractBaseController
         $values = $this->emitActionSignal(__CLASS__, __FUNCTION__, [$values]);
 
         $this->view->assignMultiple($values);
+        return $this->htmlResponse();
     }
 
     /**
      * Frequently Searched
      */
-    public function frequentlySearchedAction()
+    public function frequentlySearchedAction(): ResponseInterface
     {
         /** @var  $searchResultSet SearchResultSet */
         $searchResultSet = GeneralUtility::makeInstance(SearchResultSet::class);
@@ -158,6 +161,7 @@ class SearchController extends AbstractBaseController
         $values = $this->emitActionSignal(__CLASS__, __FUNCTION__, [$values]);
 
         $this->view->assignMultiple($values);
+        return $this->htmlResponse();
     }
 
     /**
@@ -165,7 +169,7 @@ class SearchController extends AbstractBaseController
      *
      * @param string $documentId
      */
-    public function detailAction($documentId = '')
+    public function detailAction($documentId = ''): ResponseInterface
     {
         try {
             $document = $this->searchService->getDocumentById($documentId);
@@ -173,17 +177,19 @@ class SearchController extends AbstractBaseController
         } catch (SolrUnavailableException $e) {
             $this->handleSolrUnavailable();
         }
+        return $this->htmlResponse();
     }
 
     /**
      * Rendered when no search is available.
      * @return string
      */
-    public function solrNotAvailableAction()
+    public function solrNotAvailableAction(): ResponseInterface
     {
         if ($this->response instanceof Response) {
             $this->response->setStatus(503);
         }
+        return $this->htmlResponse();
     }
 
     /**
@@ -194,7 +200,7 @@ class SearchController extends AbstractBaseController
     protected function handleSolrUnavailable()
     {
         parent::handleSolrUnavailable();
-        $this->forward('solrNotAvailable');
+        return new ForwardResponse('solrNotAvailable');
     }
 
     /**

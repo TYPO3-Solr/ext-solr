@@ -1,6 +1,7 @@
 <?php
 namespace ApacheSolrForTypo3\Solr\Tests\Integration;
 
+use TYPO3\CMS\Core\Information\Typo3Version;
 /***************************************************************
  *  Copyright notice
  *
@@ -107,7 +108,7 @@ abstract class IntegrationTest extends FunctionalTestCase
      * @return void
      * @throws NoSuchCacheException
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -250,7 +251,7 @@ abstract class IntegrationTest extends FunctionalTestCase
      */
     protected function getIsTYPO3VersionBelow($version)
     {
-        return version_compare(TYPO3_branch, $version, '<');
+        return version_compare(GeneralUtility::makeInstance(Typo3Version::class)->getBranch(), $version, '<');
     }
 
     /**

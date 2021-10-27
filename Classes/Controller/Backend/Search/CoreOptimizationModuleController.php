@@ -25,6 +25,7 @@ namespace ApacheSolrForTypo3\Solr\Controller\Backend\Search;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Utility\ManagedResourcesUtility;
+use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Backend\Template\ModuleTemplate;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -32,7 +33,7 @@ use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
 
 /**
  * Manage Synonyms and Stop words in Backend Module
- * @property \TYPO3\CMS\Extbase\Mvc\Web\Response $response
+ * @property \TYPO3\CMS\Extbase\Mvc\Response $response
  */
 class CoreOptimizationModuleController extends AbstractModuleController
 {
@@ -58,11 +59,11 @@ class CoreOptimizationModuleController extends AbstractModuleController
      *
      * @return void
      */
-    public function indexAction()
+    public function indexAction(): ResponseInterface
     {
         if ($this->selectedSolrCoreConnection === null) {
             $this->view->assign('can_not_proceed', true);
-            return;
+            return $this->htmlResponse(null);
         }
 
         $synonyms = [];
@@ -78,6 +79,7 @@ class CoreOptimizationModuleController extends AbstractModuleController
             'stopWords' => implode(PHP_EOL, $stopWords),
             'stopWordsCount' => count($stopWords)
         ]);
+        return $this->htmlResponse();
     }
 
     /**
@@ -119,7 +121,7 @@ class CoreOptimizationModuleController extends AbstractModuleController
      * @param string $fileFormat
      * @return void
      */
-    public function exportStopWordsAction($fileFormat = 'txt')
+    public function exportStopWordsAction($fileFormat = 'txt'): ResponseInterface
     {
         $coreAdmin = $this->selectedSolrCoreConnection->getAdminService();
         $this->exportFile(
@@ -127,6 +129,7 @@ class CoreOptimizationModuleController extends AbstractModuleController
             'stopwords',
             $fileFormat
         );
+        return $this->htmlResponse();
     }
 
     /**
@@ -135,11 +138,11 @@ class CoreOptimizationModuleController extends AbstractModuleController
      * @param string $fileFormat
      * @return string
      */
-    public function exportSynonymsAction($fileFormat = 'txt')
+    public function exportSynonymsAction($fileFormat = 'txt'): ResponseInterface
     {
         $coreAdmin = $this->selectedSolrCoreConnection->getAdminService();
         $synonyms = $coreAdmin->getSynonyms();
-        return $this->exportFile(ManagedResourcesUtility::exportSynonymsToTxt($synonyms), 'synonyms', $fileFormat);
+        return $this->htmlResponse($this->exportFile(ManagedResourcesUtility::exportSynonymsToTxt($synonyms), 'synonyms', $fileFormat));
     }
 
     /**
@@ -180,12 +183,13 @@ class CoreOptimizationModuleController extends AbstractModuleController
      * @param bool $replaceStopwords
      * @return void
      */
-    public function importStopWordListAction(array $stopwordsFileUpload, $replaceStopwords)
+    public function importStopWordListAction(array $stopwordsFileUpload, $replaceStopwords): ResponseInterface
     {
         $this->saveStopWordsAction(
             ManagedResourcesUtility::importStopwordsFromPlainTextContents($stopwordsFileUpload),
             $replaceStopwords
         );
+        return $this->htmlResponse();
     }
 
     /**

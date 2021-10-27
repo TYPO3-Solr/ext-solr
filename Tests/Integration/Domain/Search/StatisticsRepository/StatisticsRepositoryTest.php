@@ -26,6 +26,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Domain\Search\StatisticsRepo
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Statistics\StatisticsRepository;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
+use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class StatisticsRepositoryTest extends IntegrationTest
@@ -120,7 +121,7 @@ class StatisticsRepositoryTest extends IntegrationTest
         $statisticRecord = [
             'pid' => 317,
             'root_pid' => 1,
-            'tstamp' => $GLOBALS['EXEC_TIME'],
+            'tstamp' => GeneralUtility::makeInstance(Context::class)->getPropertyFromAspect('date', 'timestamp'),
             'language' => 0,
             'num_found' => 21,
             'suggestions_shown' => 0,

@@ -36,7 +36,7 @@ class RoutingServiceTest extends UnitTest
      */
     protected $site;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->site = new Site(
             'example',
