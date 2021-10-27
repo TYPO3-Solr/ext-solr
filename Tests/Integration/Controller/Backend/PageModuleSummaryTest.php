@@ -41,7 +41,7 @@ class PageModuleSummaryTest extends IntegrationTest
     /**
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $GLOBALS['LANG'] = $this->getMockBuilder(LanguageService::class)

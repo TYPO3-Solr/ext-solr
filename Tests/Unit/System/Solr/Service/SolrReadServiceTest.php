@@ -37,7 +37,6 @@ use Solarium\Core\Client\Request;
 use Solarium\Core\Client\Response;
 use Solarium\Exception\HttpException;
 use Solarium\QueryType\Ping\Query as PingQuery;
-use Solarium\QueryType\Select\Query\Query as SelectQuery;
 
 /**
  * Tests the ApacheSolrForTypo3\Solr\SolrService class
@@ -67,7 +66,8 @@ class SolrReadServiceTest extends UnitTest
      */
     protected $service;
 
-    public function setUp() {
+    public function setUp(): void
+    {
         parent::setUp();
         $this->responseMock = $this->getDumbMock(Response::class);
         $this->requestMock = $this->getDumbMock(Request::class);

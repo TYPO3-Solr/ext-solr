@@ -46,7 +46,7 @@ class NumericRangeUrlEncoderTest extends UnitTest
      */
     protected $rangeParser;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->rangeParser = GeneralUtility::makeInstance(NumericRangeUrlDecoder::class);
     }

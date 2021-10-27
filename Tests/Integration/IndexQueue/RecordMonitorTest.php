@@ -55,7 +55,7 @@ class RecordMonitorTest extends IntegrationTest
      */
     protected $indexQueue;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->writeDefaultSolrTestSiteConfiguration();
@@ -64,7 +64,7 @@ class RecordMonitorTest extends IntegrationTest
         $this->indexQueue = GeneralUtility::makeInstance(Queue::class);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->recordMonitor, $this->dataHandler, $this->indexQueue);
         parent::tearDown();

@@ -75,7 +75,7 @@ class PageIndexerTest extends UnitTest
      */
     protected $uriStrategyMock;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->pagesRepositoryMock = $this->getDumbMock(PagesRepository::class);
         $this->documentBuilderMock = $this->getDumbMock(Builder::class);

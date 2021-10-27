@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\IndexQueue;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\IndexQueue\AdditionalIndexQueueItemIndexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\Indexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
@@ -31,11 +32,15 @@ use ApacheSolrForTypo3\Solr\SolrService;
 use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
+use ApacheSolrForTypo3\Solr\Tests\Integration\IndexQueue\Helpers\DummyIndexer;
+use ApacheSolrForTypo3\Solr\Tests\Integration\IndexQueue\Helpers\DummyAdditionalIndexQueueItemIndexer;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
+use Psr\Http\Server\RequestHandlerInterface;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Http\ServerRequestFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Localization\LanguageService;
+use TYPO3\CMS\Core\Middleware\NormalizedParamsAttribute;
 
 /**
  * Testcase for the record indexer
@@ -58,7 +63,7 @@ class IndexerTest extends IntegrationTest
     /**
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->writeDefaultSolrTestSiteConfiguration();
@@ -75,13 +80,13 @@ class IndexerTest extends IntegrationTest
 
         $_SERVER['HTTP_HOST'] = 'test.local.typo3.org';
         $request = ServerRequestFactory::fromGlobals();
-        $handlerMock = $this->getMockBuilder( \Psr\Http\Server\RequestHandlerInterface::class)->getMock();
-        $normalizer = new \TYPO3\CMS\Core\Middleware\NormalizedParamsAttribute();
+        $handlerMock = $this->getMockBuilder( RequestHandlerInterface::class)->getMock();
+        $normalizer = new NormalizedParamsAttribute();
         $normalizer->process($request, $handlerMock);
 
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
         $this->cleanUpSolrServerAndAssertEmpty();
@@ -476,7 +481,7 @@ class IndexerTest extends IntegrationTest
     public function canGetAdditionalDocumentsInterfaceOnly()
     {
         $this->expectException(\InvalidArgumentException::class);
-        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['indexItemAddDocuments'][] = \ApacheSolrForTypo3\Solr\IndexQueue\AdditionalIndexQueueItemIndexer::class;
+        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['indexItemAddDocuments'][] = AdditionalIndexQueueItemIndexer::class;
         $document = new Document;
         $metaData = ['item_type' => 'pages'];
         $record = [];
@@ -490,7 +495,7 @@ class IndexerTest extends IntegrationTest
     public function canGetAdditionalDocumentsNotImplementingInterface()
     {
         $this->expectException(\UnexpectedValueException::class);
-        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['indexItemAddDocuments'][] = \ApacheSolrForTypo3\Solr\Tests\Integration\IndexQueue\Helpers\DummyIndexer::class;
+        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['indexItemAddDocuments'][] = DummyIndexer::class;
         $document = new Document;
         $metaData = ['item_type' => 'pages'];
         $record = [];
@@ -518,7 +523,7 @@ class IndexerTest extends IntegrationTest
      */
     public function canGetAdditionalDocuments()
     {
-        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['indexItemAddDocuments'][] = \ApacheSolrForTypo3\Solr\Tests\Integration\IndexQueue\Helpers\DummyAdditionalIndexQueueItemIndexer::class;
+        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['indexItemAddDocuments'][] = DummyAdditionalIndexQueueItemIndexer::class;
         $document = new Document;
         $metaData = ['item_type' => 'pages'];
         $record = [];

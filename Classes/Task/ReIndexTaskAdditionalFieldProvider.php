@@ -32,7 +32,7 @@ use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Scheduler\AdditionalFieldProviderInterface;
+use TYPO3\CMS\Scheduler\AbstractAdditionalFieldProvider;
 use TYPO3\CMS\Scheduler\Controller\SchedulerModuleController;
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
 use TYPO3\CMS\Scheduler\Task\Enumeration\Action;
@@ -42,9 +42,8 @@ use TYPO3\CMS\Scheduler\Task\Enumeration\Action;
  *
  * @author Christoph Moeller <support@network-publishing.de>
  */
-class ReIndexTaskAdditionalFieldProvider implements AdditionalFieldProviderInterface
+class ReIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldProvider
 {
-
     /**
      * Task information
      *
@@ -72,6 +71,7 @@ class ReIndexTaskAdditionalFieldProvider implements AdditionalFieldProviderInter
      * @var Site
      */
     protected $site = null;
+
     /**
      * SiteRepository
      *
@@ -94,14 +94,15 @@ class ReIndexTaskAdditionalFieldProvider implements AdditionalFieldProviderInter
 
     /**
      * @param array $taskInfo
-     * @param \TYPO3\CMS\Scheduler\Task\AbstractTask|NULL $task
-     * @param \TYPO3\CMS\Scheduler\Controller\SchedulerModuleController $schedulerModule
+     * @param AbstractTask|NULL $task
+     * @param SchedulerModuleController $schedulerModule
      */
     protected function initialize(
         array $taskInfo = [],
         AbstractTask $task = null,
         SchedulerModuleController $schedulerModule
-    ) {
+    )
+    {
         /** @var $task ReIndexTask */
         $this->taskInformation = $taskInfo;
         $this->task = $task;
@@ -156,7 +157,6 @@ class ReIndexTaskAdditionalFieldProvider implements AdditionalFieldProviderInter
 
         return $additionalFields;
     }
-
     protected function getIndexingConfigurationSelector()
     {
         $selectorMarkup = 'Please select a site first.';

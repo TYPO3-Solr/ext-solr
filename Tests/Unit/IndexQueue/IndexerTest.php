@@ -33,7 +33,7 @@ use ReflectionException;
 class IndexerTest extends UnitTest
 {
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
     }

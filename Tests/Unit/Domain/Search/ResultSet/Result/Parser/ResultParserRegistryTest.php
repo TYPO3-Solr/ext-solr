@@ -51,7 +51,7 @@ class ResultParserRegistryTest extends UnitTest
     /**
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         $this->configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
         $this->registry = new ResultParserRegistry($this->configurationMock);

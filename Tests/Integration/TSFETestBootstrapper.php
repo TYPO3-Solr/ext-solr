@@ -2,6 +2,8 @@
 
 namespace ApacheSolrForTypo3\Solr\Tests\Integration;
 
+use TYPO3\CMS\Core\Http\ImmediateResponseException;
+use TYPO3\CMS\Core\Localization\Locales;
 use ApacheSolrForTypo3\Solr\Util;
 use Composer\Autoload\ClassLoader;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
@@ -56,10 +58,6 @@ class TSFETestBootstrapper
         $TSFE = GeneralUtility::makeInstance(TypoScriptFrontendController::class, [], $pageId, 0, '', '', null, $MP);
         $TSFE->set_no_cache();
         $GLOBALS['TSFE'] = $TSFE;
-
-
-        EidUtility::initLanguage();
-        $TSFE->initFEuser();
         $TSFE->checkAlternativeIdMethods();
 
         $TSFE->id = $pageId;
@@ -67,7 +65,7 @@ class TSFETestBootstrapper
 
         try {
             $TSFE->determineId();
-        } catch (\TYPO3\CMS\Core\Http\ImmediateResponseException $e) {
+        } catch (ImmediateResponseException $e) {
             $result->addExceptions($e);
         }
 
@@ -78,7 +76,7 @@ class TSFETestBootstrapper
         // only needed for FrontendGroupRestriction.php
         $GLOBALS['TSFE']->gr_list =  $TSFE->gr_list;
         $TSFE->settingLanguage();
-        $TSFE->settingLocale();
+        Locales::setSystemLocaleFromSiteLanguage($TSFE->getLanguage());
 
         $result->setTsfe($TSFE);
 
@@ -132,7 +130,7 @@ class TSFETestBootstrapper
 
         try {
             $TSFE->determineId();
-        } catch (\TYPO3\CMS\Core\Http\ImmediateResponseException $e) {
+        } catch (ImmediateResponseException $e) {
             $result->addExceptions($e);
         }
 
@@ -143,7 +141,7 @@ class TSFETestBootstrapper
         // only needed for FrontendGroupRestriction.php
         $GLOBALS['TSFE']->gr_list =  $TSFE->gr_list;
         $TSFE->settingLanguage();
-        $TSFE->settingLocale();
+        Locales::setSystemLocaleFromSiteLanguage($TSFE->getLanguage());
 
         $result->setTsfe($TSFE);
 

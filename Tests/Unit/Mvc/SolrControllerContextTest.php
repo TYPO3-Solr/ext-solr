@@ -39,7 +39,7 @@ class SolrControllerContextTest extends UnitTest
      */
     protected $controllerContext = null;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->controllerContext = new SolrControllerContext();
     }

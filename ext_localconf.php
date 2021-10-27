@@ -1,5 +1,5 @@
 <?php
-defined('TYPO3_MODE') || die();
+defined('TYPO3') || die();
 
 # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
@@ -200,7 +200,7 @@ if (!function_exists('strptime')) {
     }
 
     if (!isset($GLOBALS['TYPO3_CONF_VARS']['LOG']['ApacheSolrForTypo3']['Solr']['writerConfiguration'])) {
-        $context = \TYPO3\CMS\Core\Utility\GeneralUtility::getApplicationContext();
+        $context = \TYPO3\CMS\Core\Core\Environment::getContext();
         if ($context->isProduction()) {
             $logLevel = \TYPO3\CMS\Core\Log\LogLevel::ERROR;
         } elseif ($context->isDevelopment()) {
@@ -220,43 +220,43 @@ if (!function_exists('strptime')) {
     # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
     \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-        'ApacheSolrForTypo3.solr',
+        'Solr',
         'pi_results',
         [
-            'Search' => 'results,form,detail'
+            \ApacheSolrForTypo3\Solr\Controller\SearchController::class => 'results,form,detail'
         ],
         [
-            'Search' => 'results'
+            \ApacheSolrForTypo3\Solr\Controller\SearchController::class => 'results'
         ]
     );
 
     \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-        'ApacheSolrForTypo3.solr',
+        'Solr',
         'pi_search',
         [
-            'Search' => 'form'
+            \ApacheSolrForTypo3\Solr\Controller\SearchController::class => 'form'
         ]
     );
 
     \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-        'ApacheSolrForTypo3.solr',
+        'Solr',
         'pi_frequentlySearched',
         [
-            'Search' => 'frequentlySearched'
+            \ApacheSolrForTypo3\Solr\Controller\SearchController::class => 'frequentlySearched'
         ],
         [
-            'Search' => 'frequentlySearched'
+            \ApacheSolrForTypo3\Solr\Controller\SearchController::class => 'frequentlySearched'
         ]
     );
 
     \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-        'ApacheSolrForTypo3.solr',
+        'Solr',
         'pi_suggest',
         [
-            'Suggest' => 'suggest'
+            \ApacheSolrForTypo3\Solr\Controller\SuggestController::class => 'suggest'
         ],
         [
-            'Suggest' => 'suggest'
+            \ApacheSolrForTypo3\Solr\Controller\SuggestController::class => 'suggest'
         ]
     );
 

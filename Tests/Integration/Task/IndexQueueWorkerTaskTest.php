@@ -32,7 +32,6 @@ use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Charset\CharsetConverter;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Lang\LanguageService;
 
 /**
  * TestCase to check if we can indexer from a index queue worker task into a solr server
@@ -54,7 +53,7 @@ class IndexQueueWorkerTest extends IntegrationTest
         'scheduler'
     ];
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->indexQueue = GeneralUtility::makeInstance(Queue::class);

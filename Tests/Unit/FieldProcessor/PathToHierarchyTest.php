@@ -38,7 +38,7 @@ class PathToHierarchyTest extends UnitTest
     /** @var PathToHierarchy */
     protected $processor;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->processor = new PathToHierarchy();
     }

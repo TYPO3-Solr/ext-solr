@@ -51,7 +51,7 @@ class SearchUriBuilderTest extends UnitTest
     /**
      * @return void
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->extBaseUriBuilderMock = $this->getDumbMock(UriBuilder::class);
         $this->routingServiceMock = $this->getDumbMock(RoutingService::class);

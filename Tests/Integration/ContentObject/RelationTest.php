@@ -29,10 +29,10 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\ContentObject;
 use ApacheSolrForTypo3\Solr\ContentObject\Relation;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use PHPUnit\Framework\MockObject\MockObject;
+use TYPO3\CMS\Core\Domain\Repository\PageRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
-use TYPO3\CMS\Frontend\Page\PageRepository;
 
 /**
  * Class RelationTest

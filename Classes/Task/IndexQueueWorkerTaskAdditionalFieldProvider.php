@@ -26,8 +26,10 @@ namespace ApacheSolrForTypo3\Solr\Task;
 
 use ApacheSolrForTypo3\Solr\Backend\SiteSelectorField;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
+use Exception;
+use LogicException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Scheduler\AdditionalFieldProviderInterface;
+use TYPO3\CMS\Scheduler\AbstractAdditionalFieldProvider;
 use TYPO3\CMS\Scheduler\Controller\SchedulerModuleController;
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
 use TYPO3\CMS\Scheduler\Task\Enumeration\Action;
@@ -37,9 +39,8 @@ use TYPO3\CMS\Scheduler\Task\Enumeration\Action;
  *
  * @author Ingo Renner <ingo@typo3.org>
  */
-class IndexQueueWorkerTaskAdditionalFieldProvider implements AdditionalFieldProviderInterface
+class IndexQueueWorkerTaskAdditionalFieldProvider extends AbstractAdditionalFieldProvider
 {
-
     /**
      * SiteRepository
      *
@@ -67,7 +68,8 @@ class IndexQueueWorkerTaskAdditionalFieldProvider implements AdditionalFieldProv
         array &$taskInfo,
         $task,
         SchedulerModuleController $schedulerModule
-    ) {
+    ): array
+    {
         /** @var $task IndexQueueWorkerTask */
         $additionalFields = [];
         $siteSelectorField = GeneralUtility::makeInstance(SiteSelectorField::class);
@@ -121,11 +123,13 @@ class IndexQueueWorkerTaskAdditionalFieldProvider implements AdditionalFieldProv
      * @param array $submittedData reference to the array containing the data submitted by the user
      * @param SchedulerModuleController $schedulerModule reference to the calling object (Scheduler's BE module)
      * @return bool True if validation was ok (or selected class is not relevant), FALSE otherwise
+     * @throws Exception
      */
     public function validateAdditionalFields(
         array &$submittedData,
         SchedulerModuleController $schedulerModule
-    ) {
+    ): bool
+    {
         $result = false;
 
         // validate site
@@ -165,12 +169,12 @@ class IndexQueueWorkerTaskAdditionalFieldProvider implements AdditionalFieldProv
      *
      * @param AbstractTask $task
      * @return boolean
-     * @throws \LogicException
+     * @throws LogicException
      */
-    protected function isTaskInstanceofIndexQueueWorkerTask($task)
+    protected function isTaskInstanceofIndexQueueWorkerTask(AbstractTask $task): bool
     {
-        if ((!is_null($task)) && (!($task instanceof IndexQueueWorkerTask))) {
-            throw new \LogicException(
+        if (!($task instanceof IndexQueueWorkerTask)) {
+            throw new LogicException(
                 '$task must be an instance of IndexQueueWorkerTask, '
                 .'other instances are not supported.', 1487499814
             );

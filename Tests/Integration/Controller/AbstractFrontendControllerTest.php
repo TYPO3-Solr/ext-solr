@@ -29,7 +29,7 @@ abstract class AbstractFrontendControllerTest  extends IntegrationTest {
     /**
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         $_SERVER['HTTP_HOST'] = 'testone.site';
         $_SERVER['REQUEST_URI'] = '/en/search/';

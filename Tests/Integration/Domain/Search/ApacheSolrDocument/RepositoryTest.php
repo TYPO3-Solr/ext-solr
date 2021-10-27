@@ -36,7 +36,7 @@ class ApacheSolrDocumentRepositoryTest extends IntegrationTest
      */
     protected $apacheSolrDocumentRepository;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -55,7 +55,7 @@ class ApacheSolrDocumentRepositoryTest extends IntegrationTest
     /**
      * Executed after each test. Emptys solr and checks if the index is empty
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->cleanUpSolrServerAndAssertEmpty();
         parent::tearDown();

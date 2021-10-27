@@ -42,7 +42,7 @@ class FormatServiceTest extends UnitTest
     /**
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         $this->formatService = new FormatService();
     }

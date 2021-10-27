@@ -52,7 +52,7 @@ class SuggestControllerTest extends AbstractFrontendControllerTest
      */
     protected $suggestResponse;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

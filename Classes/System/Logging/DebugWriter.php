@@ -26,6 +26,7 @@ namespace ApacheSolrForTypo3\Solr\System\Logging;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Util;
+use TYPO3\CMS\Core\Http\ApplicationType;
 use TYPO3\CMS\Core\Utility\DebugUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
@@ -89,7 +90,7 @@ class DebugWriter
     {
         $parameters = ['extKey' => 'solr', 'msg' => $message, 'level' => $level, 'data' => $data];
         $message = isset($parameters['msg']) ? $parameters['msg'] : '';
-        if (TYPO3_MODE === 'BE') {
+        if (ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend()) {
             DebugUtility::debug($parameters, $parameters['extKey'], 'DevLog ext:solr: ' . $message);
         } else {
             echo $message . ':<br/>';

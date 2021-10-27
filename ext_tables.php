@@ -1,6 +1,6 @@
 <?php
 
-defined('TYPO3_MODE') || die();
+defined('TYPO3') || die();
 
 (function () {
     if (TYPO3_MODE == 'BE') {
@@ -48,12 +48,12 @@ defined('TYPO3_MODE') || die();
         $treeComponentId = 'TYPO3/CMS/Backend/PageTree/PageTreeElement';
 
         \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
-            'ApacheSolrForTypo3.solr',
+            'Solr',
             'searchbackend',
             'Info',
             '',
             [
-                'Backend\\Search\\InfoModule' => 'index, switchSite, switchCore, documentsDetails',
+                \ApacheSolrForTypo3\Solr\Controller\Backend\Search\InfoModuleController::class => 'index, switchSite, switchCore, documentsDetails',
             ],
             [
                 'access' => 'user,group',
@@ -64,12 +64,12 @@ defined('TYPO3_MODE') || die();
         );
 
         \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
-            'ApacheSolrForTypo3.solr',
+            'Solr',
             'searchbackend',
             'CoreOptimization',
             '',
             [
-                'Backend\\Search\\CoreOptimizationModule' => 'index, addSynonyms, importSynonymList, deleteAllSynonyms, exportSynonyms, deleteSynonyms, saveStopWords, importStopWordList, exportStopWords, switchSite, switchCore'
+                \ApacheSolrForTypo3\Solr\Controller\Backend\Search\CoreOptimizationModuleController::class => 'index, addSynonyms, importSynonymList, deleteAllSynonyms, exportSynonyms, deleteSynonyms, saveStopWords, importStopWordList, exportStopWords, switchSite, switchCore'
             ],
             [
                 'access' => 'user,group',
@@ -80,12 +80,12 @@ defined('TYPO3_MODE') || die();
         );
 
         \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
-            'ApacheSolrForTypo3.solr',
+            'Solr',
             'searchbackend',
             'IndexQueue',
             '',
             [
-                'Backend\\Search\\IndexQueueModule' => 'index, initializeIndexQueue, requeueDocument, resetLogErrors, showError, doIndexingRun, switchSite'
+                \ApacheSolrForTypo3\Solr\Controller\Backend\Search\IndexQueueModuleController::class => 'index, initializeIndexQueue, requeueDocument, resetLogErrors, showError, doIndexingRun, switchSite'
             ],
             [
                 'access' => 'user,group',
@@ -96,12 +96,12 @@ defined('TYPO3_MODE') || die();
         );
 
         \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
-            'ApacheSolrForTypo3.solr',
+            'Solr',
             'searchbackend',
             'IndexAdministration',
             '',
             [
-                'Backend\\Search\\IndexAdministrationModule' => 'index, emptyIndex, clearIndexQueue, reloadIndexConfiguration, switchSite'
+                \ApacheSolrForTypo3\Solr\Controller\Backend\Search\IndexAdministrationModuleController::class => 'index, emptyIndex, clearIndexQueue, reloadIndexConfiguration, switchSite'
             ],
             [
                 'access' => 'user,group',

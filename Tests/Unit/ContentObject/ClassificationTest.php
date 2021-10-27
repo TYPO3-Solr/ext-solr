@@ -111,7 +111,7 @@ class ClassificationTest extends UnitTest
         $this->assertEquals($expected, $actual);
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         // fake a registered hook
         $GLOBALS['TYPO3_CONF_VARS']['FE']['ContentObjects'][Classification::CONTENT_OBJECT_NAME] = Classification::class;
@@ -123,7 +123,7 @@ class ClassificationTest extends UnitTest
             ->setConstructorArgs([$GLOBALS['TSFE']])->getMock();
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         unset($GLOBALS['TSFE']);
     }

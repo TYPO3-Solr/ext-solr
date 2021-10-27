@@ -13,7 +13,9 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
+use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 
 /**
  * Value object that represent a options facet.
@@ -101,7 +103,7 @@ abstract class AbstractFacet
      *
      * @param \TYPO3\CMS\Extbase\Object\ObjectManagerInterface $objectManager
      */
-    public function injectObjectManager(\TYPO3\CMS\Extbase\Object\ObjectManagerInterface $objectManager)
+    public function injectObjectManager(ObjectManagerInterface $objectManager)
     {
         $this->objectManager = $objectManager;
     }
