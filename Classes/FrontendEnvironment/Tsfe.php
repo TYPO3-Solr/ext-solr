@@ -12,6 +12,7 @@ use TYPO3\CMS\Core\Error\Http\ServiceUnavailableException;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Http\ImmediateResponseException;
 use TYPO3\CMS\Core\Localization\Locales;
+use TYPO3\CMS\Core\Routing\PageArguments;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\TypoScript\TemplateService;
@@ -63,7 +64,6 @@ class Tsfe implements SingletonInterface
      * @param $pageId
      * @param int $language
      * @throws AspectNotFoundException
-     * @throws ImmediateResponseException
      * @throws InternalServerErrorException
      * @throws ServiceUnavailableException
      * @throws SiteNotFoundException
@@ -100,11 +100,12 @@ class Tsfe implements SingletonInterface
         if (!isset($this->tsfeCache[$cacheId])) {
             $feUser = GeneralUtility::makeInstance(FrontendUserAuthentication::class);
 
+            /* @var PageArguments $pageArguments */
+            $pageArguments = GeneralUtility::makeInstance(PageArguments::class, $pageId, 0, []);
+
             /* @var TypoScriptFrontendController $globalsTSFE */
-            $globalsTSFE = GeneralUtility::makeInstance(TypoScriptFrontendController::class, $context, $site, $siteLanguage, null, $feUser);
+            $globalsTSFE = GeneralUtility::makeInstance(TypoScriptFrontendController::class, $context, $site, $siteLanguage, $pageArguments, $feUser);
             $GLOBALS['TSFE'] = $globalsTSFE;
-            $GLOBALS['TSFE']->id = $pageId;
-            $GLOBALS['TSFE']->type = 0;
 
             // for certain situations we need to trick TSFE into granting us
             // access to the page in any case to make getPageAndRootline() work
@@ -119,16 +120,17 @@ class Tsfe implements SingletonInterface
 
             // @extensionScannerIgnoreLine
             $GLOBALS['TSFE']->sys_page = GeneralUtility::makeInstance(PageRepository::class);
-            $GLOBALS['TSFE']->getPageAndRootlineWithDomain($pageId, $GLOBALS['TYPO3_REQUEST']);
+            //$GLOBALS['TSFE']->getPageAndRootlineWithDomain($pageId, $GLOBALS['TYPO3_REQUEST']);
 
             $template = GeneralUtility::makeInstance(TemplateService::class, $context);
             $GLOBALS['TSFE']->tmpl = $template;
             $context->setAspect('typoscript', GeneralUtility::makeInstance(TypoScriptAspect::class, true));
             $GLOBALS['TSFE']->no_cache = true;
+            $GLOBALS['TSFE']->determineId($GLOBALS['TYPO3_REQUEST']);
             $GLOBALS['TSFE']->tmpl->start($GLOBALS['TSFE']->rootLine);
             $GLOBALS['TSFE']->no_cache = false;
             $GLOBALS['TSFE']->getConfigArray();
-            $GLOBALS['TSFE']->settingLanguage();
+            //$GLOBALS['TSFE']->settingLanguage();
 
             $GLOBALS['TSFE']->newCObj();
             $GLOBALS['TSFE']->absRefPrefix = self::getAbsRefPrefixFromTSFE($GLOBALS['TSFE']);
