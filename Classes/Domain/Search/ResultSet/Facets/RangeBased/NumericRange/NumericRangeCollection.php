@@ -35,9 +35,9 @@ class NumericRangeCollection extends AbstractFacetItemCollection
 
     /**
      * @param int $position
-     * @return NumericRange
+     * @return ?NumericRange
      */
-    public function getByPosition($position)
+    public function getByPosition(int $position)
     {
         return parent::getByPosition($position);
     }

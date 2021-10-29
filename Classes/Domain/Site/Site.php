@@ -74,7 +74,7 @@ abstract class Site implements SiteInterface
      */
     public static function isRootPage($page)
     {
-        if ($page['is_siteroot']) {
+        if (($page['is_siteroot'] ?? null) == 1) {
             return true;
         }
 

@@ -218,7 +218,7 @@ class RequirementsServiceTest extends UnitTest
     /**
      * @test
      */
-    public function exceptionIsThrownForRequirementWithUnexistingFacet()
+    public function exceptionIsThrownForRequirementWithNotExistingFacet()
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Requirement for unexisting facet configured');

@@ -51,7 +51,7 @@ class OptionsFacetQueryBuilder extends DefaultFacetQueryBuilder implements Facet
             $jsonFacetOptions['sort'] = $sorting;
         }
 
-        if (is_array($facetConfiguration['metrics.'])) {
+        if (is_array($facetConfiguration['metrics.'] ?? null)) {
             foreach ($facetConfiguration['metrics.'] as $key => $value) {
                 $jsonFacetOptions['facet']['metrics_' . $key] = $value;
             }
@@ -87,7 +87,7 @@ class OptionsFacetQueryBuilder extends DefaultFacetQueryBuilder implements Facet
             }
         }
 
-        $isKeepAllOptionsActiveForSingleFacet = $facetConfiguration['keepAllOptionsOnSelection'] == 1;
+        $isKeepAllOptionsActiveForSingleFacet = ($facetConfiguration['keepAllOptionsOnSelection'] ?? null) == 1;
         if ($isKeepAllOptionsActiveForSingleFacet) {
             $excludeFields[] = $facetConfiguration['field'];
         }
@@ -139,7 +139,7 @@ class OptionsFacetQueryBuilder extends DefaultFacetQueryBuilder implements Facet
         if (isset($facetConfiguration['sortBy'])) {
             $sortingExpression = new SortingExpression();
             $sorting = $facetConfiguration['sortBy'];
-            $direction = $facetConfiguration['sortDirection'];
+            $direction = $facetConfiguration['sortDirection'] ?? null;
             return $sortingExpression->getForJsonFacet($sorting, $direction);
         }
         return '';

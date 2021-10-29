@@ -157,17 +157,17 @@ class Item
      */
     public function __construct(array $itemMetaData, array $fullRecord = [], IndexQueueIndexingPropertyRepository $indexQueueIndexingPropertyRepository = null, QueueItemRepository $queueItemRepository = null)
     {
-        $this->indexQueueUid = $itemMetaData['uid'];
-        $this->rootPageUid = $itemMetaData['root'];
-        $this->type = $itemMetaData['item_type'];
-        $this->recordUid = $itemMetaData['item_uid'];
+        $this->indexQueueUid = $itemMetaData['uid'] ?? null;
+        $this->rootPageUid = $itemMetaData['root'] ?? null;
+        $this->type = $itemMetaData['item_type'] ?? null;
+        $this->recordUid = $itemMetaData['item_uid'] ?? null;
         $this->mountPointIdentifier = (string) empty($itemMetaData['pages_mountidentifier']) ? '' : $itemMetaData['pages_mountidentifier'];
-        $this->changed = $itemMetaData['changed'];
-        $this->indexed = $itemMetaData['indexed'];
+        $this->changed = $itemMetaData['changed'] ?? null;
+        $this->indexed = $itemMetaData['indexed'] ?? null;
         $this->errors = (string) empty($itemMetaData['errors']) ? '' : $itemMetaData['errors'];
 
-        $this->indexingConfigurationName = $itemMetaData['indexing_configuration'];
-        $this->hasIndexingProperties = (boolean)$itemMetaData['has_indexing_properties'];
+        $this->indexingConfigurationName = $itemMetaData['indexing_configuration'] ?? '';
+        $this->hasIndexingProperties = (boolean)($itemMetaData['has_indexing_properties'] ?? false);
 
         if (!empty($fullRecord)) {
             $this->record = $fullRecord;

@@ -237,7 +237,7 @@ class Faceting extends AbstractDeactivatable implements ParameterBuilder
             $facetParameters[$additionalParameterKey] = $additionalParameterValue;
         }
 
-        if ($facetParameters['json.facet']) {
+        if (isset($facetParameters['json.facet']) && $facetParameters['json.facet']) {
             $facetParameters['json.facet'] = json_encode($facetParameters['json.facet']);
         }
 

@@ -92,21 +92,21 @@ class StatisticsWriterProcessor implements SearchResultSetProcessor
             'language' => Util::getLanguageUid(),
             // @extensionScannerIgnoreLine
             'num_found' => (int)$resultSet->getAllResultCount(),
-            'suggestions_shown' => is_object($response->spellcheck->suggestions) ? (int)get_object_vars($response->spellcheck->suggestions) : 0,
+            'suggestions_shown' => is_object($response->spellcheck->suggestions ?? null) ? (int)get_object_vars($response->spellcheck->suggestions) : 0,
             // @extensionScannerIgnoreLine
-            'time_total' => isset($response->debug->timing->time) ? $response->debug->timing->time : 0,
+            'time_total' => $response->debug->timing->time ?? 0,
             // @extensionScannerIgnoreLine
-            'time_preparation' => isset($response->debug->timing->prepare->time) ? $response->debug->timing->prepare->time : 0,
+            'time_preparation' => $response->debug->timing->prepare->time ?? 0,
             // @extensionScannerIgnoreLine
-            'time_processing' => isset($response->debug->timing->process->time) ? $response->debug->timing->process->time : 0,
-            'feuser_id' => (int)$TSFE->fe_user->user['uid'],
+            'time_processing' => $response->debug->timing->process->time ?? 0,
+            'feuser_id' => isset($TSFE->fe_user->user) ? (int)$TSFE->fe_user->user['uid'] ?? null : null,
             'cookie' => $TSFE->fe_user->id ?? '',
             'ip' => $this->applyIpMask((string)$this->getUserIp(), $ipMaskLength),
             'page' => (int)$page,
             'keywords' => $keywords,
             'filters' => serialize($filters),
             'sorting' => $sorting,
-            'parameters' => serialize($response->responseHeader->params)
+            'parameters' => isset($response->responseHeader->params) ? serialize($response->responseHeader->params) : ''
         ];
 
         $this->statisticsRepository->saveStatisticsRecord($statisticData);

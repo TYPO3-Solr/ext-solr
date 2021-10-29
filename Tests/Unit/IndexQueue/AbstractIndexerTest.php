@@ -59,8 +59,8 @@ class AbstractIndexerTest extends UnitTest
         $this->assertTrue(AbstractIndexer::isSerializedValue($indexingConfiguration, 'categories_stringM'), 'Response of SOLR_MULTIVALUE is expected to be serialized');
 
 
-        $this->assertFalse(AbstractIndexer::isSerializedValue($indexingConfiguration, 'category_stringM', 'Non configured fields should allways be unserialized'));
-        $this->assertFalse(AbstractIndexer::isSerializedValue($indexingConfiguration, 'notConfigured_stringM', 'Non configured fields should allways be unserialized'));
+        $this->assertFalse(AbstractIndexer::isSerializedValue($indexingConfiguration, 'category_stringM'), 'Non configured fields should allways be unserialized');
+        $this->assertFalse(AbstractIndexer::isSerializedValue($indexingConfiguration, 'notConfigured_stringM'), 'Non configured fields should allways be unserialized');
     }
 
     /**

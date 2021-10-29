@@ -39,7 +39,7 @@ class FlexFormUserFunctionsTest extends UnitTest
     {
         /** @var FlexFormUserFunctions $userFunc */
         $userFunc = $this->getMockBuilder(FlexFormUserFunctions::class)
-            ->setMethods(['getFieldNamesFromSolrMetaDataForPage', 'getConfiguredFacetsForPage'])->getMock();
+            ->onlyMethods(['getFieldNamesFromSolrMetaDataForPage', 'getConfiguredFacetsForPage'])->getMock();
 
         $userFunc->expects($this->once())->method('getFieldNamesFromSolrMetaDataForPage')->will($this->returnValue(['type', 'pid', 'uid']));
         $userFunc->expects($this->once())->method('getConfiguredFacetsForPage')->will($this->returnValue([]));
@@ -52,7 +52,7 @@ class FlexFormUserFunctionsTest extends UnitTest
 
         $userFunc->getFacetFieldsFromSchema($parentInformation);
         $this->assertCount(3, $parentInformation['items']);
-        $this->assertEquals(0, $parentInformation['items'][0][0]);
+        $this->assertEquals(0, $parentInformation['items'][0][0] ?? null);
     }
 
     /**

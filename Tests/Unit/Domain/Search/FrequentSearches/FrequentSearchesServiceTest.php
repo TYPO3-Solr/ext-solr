@@ -28,6 +28,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\FrequentSearches\FrequentSearchesServi
 use ApacheSolrForTypo3\Solr\Domain\Search\Statistics\StatisticsRepository;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Cache\Frontend\AbstractFrontend;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
@@ -64,16 +65,35 @@ class FrequentSearchesServiceTest extends UnitTest
     public function setUp(): void
     {
         $this->tsfeMock = $this->getDumbMock(TypoScriptFrontendController::class);
+        $this->tsfeMock->tmpl = new \stdClass();
+        $this->tsfeMock->tmpl->rootLine = [
+            0 => [
+                'uid' => 4711
+            ]
+        ];
         $this->statisticsRepositoryMock = $this->getDumbMock(StatisticsRepository::class );
         $this->cacheMock = $this->getDumbMock(AbstractFrontend::class);
         $this->configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
 
-        $this->frequentSearchesService = new FrequentSearchesService(
+        $this->frequentSearchesService = new class (
             $this->configurationMock,
             $this->cacheMock,
             $this->tsfeMock,
             $this->statisticsRepositoryMock
-        );
+        ) extends FrequentSearchesService {
+//            protected function getCacheIdentifier(array $frequentSearchConfiguration) : string {
+//                $identifier = 'frequentSearchesTags';
+//                if (isset($frequentSearchConfiguration['select.']['checkRootPageId']) && $frequentSearchConfiguration['select.']['checkRootPageId']) {
+//                    $identifier .= '_RP' . 4710;
+//                }
+//                if (isset($frequentSearchConfiguration['select.']['checkLanguage']) && $frequentSearchConfiguration['select.']['checkLanguage']) {
+//                    $identifier .= '_L' . 0;
+//                }
+//
+//                $identifier .= '_' . md5(serialize($frequentSearchConfiguration));
+//                return $identifier;
+//            }
+        };
     }
 
     /**

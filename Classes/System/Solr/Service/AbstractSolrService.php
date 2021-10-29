@@ -130,7 +130,8 @@ abstract class AbstractSolrService
      */
     public function getPrimaryEndpoint()
     {
-        return is_array($this->client->getEndpoints()) ? reset($this->client->getEndpoints()) : null;
+        $clientEndpoints = $this->client->getEndpoints();
+        return is_array($clientEndpoints) ? reset($clientEndpoints) : null;
     }
 
     /**

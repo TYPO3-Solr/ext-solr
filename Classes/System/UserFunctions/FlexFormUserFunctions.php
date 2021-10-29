@@ -49,7 +49,7 @@ class FlexFormUserFunctions
     public function getFacetFieldsFromSchema(array &$parentInformation)
     {
         $pageRecord = $parentInformation['flexParentDatabaseRow'];
-        $configuredFacets = $this->getConfiguredFacetsForPage($pageRecord['pid']);
+        $configuredFacets = $this->getConfiguredFacetsForPage($pageRecord['pid'] ?? null);
 
         if (!is_array($pageRecord)) {
             $parentInformation['items'] = [];
@@ -85,7 +85,7 @@ class FlexFormUserFunctions
                 // try to translate LLL: label or leave it unchanged
                 if (str_starts_with($label, 'LLL:') && $this->getTranslation($label) != '') {
                     $label = $this->getTranslation($label);
-                } elseif (!str_starts_with($label, 'LLL:') && $configuredFacet[0]['label.']) {
+                } elseif (!str_starts_with($label, 'LLL:') && ($configuredFacet[0]['label.'] ?? null)) {
                     $label = sprintf('cObject[...faceting.facets.%slabel]', array_keys($configuredFacets)[0]);
                 }
                 $label = sprintf('%s (Facet Label: "%s")', $value, $label);

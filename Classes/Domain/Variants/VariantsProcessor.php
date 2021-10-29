@@ -71,7 +71,7 @@ class VariantsProcessor implements SearchResultSetProcessor
     {
         $response = $resultSet->getResponse();
         // @extensionScannerIgnoreLine
-        if (!is_array($response->response->docs)) {
+        if (!is_array($response->response->docs ?? null)) {
             return $resultSet;
         }
 

@@ -114,13 +114,12 @@ class PageIndexer extends Indexer
         $solrConnections = parent::getSolrConnectionsByItem($item);
 
         $page = $item->getRecord();
-        // may use \TYPO3\CMS\Core\Utility\GeneralUtility::hideIfDefaultLanguage($page['l18n_cfg']) with TYPO3 4.6
-        if ($page['l18n_cfg'] & 1) {
+        if ((new PageTranslationVisibility((int)($page['l18n_cfg'] ?? 0)))->shouldBeHiddenInDefaultLanguage()) {
             // page is configured to hide the default translation -> remove Solr connection for default language
             unset($solrConnections[0]);
         }
 
-        if ((new PageTranslationVisibility((int)$page['l18n_cfg'] ?? 0))->shouldHideTranslationIfNoTranslatedRecordExists()) {
+        if ((new PageTranslationVisibility((int)($page['l18n_cfg'] ?? 0)))->shouldHideTranslationIfNoTranslatedRecordExists()) {
             $accessibleSolrConnections = [];
             if (isset($solrConnections[0])) {
                 $accessibleSolrConnections[0] = $solrConnections[0];

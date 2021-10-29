@@ -67,8 +67,8 @@ class FormatDate
     public function format($content, $conf)
     {
         // set default values
-        $inputFormat = $conf['inputFormat'] ?: 'Y-m-d\TH:i:s\Z';
-        $outputFormat = $conf['outputFormat'] ?: '';
+        $inputFormat = $conf['inputFormat'] ?? 'Y-m-d\TH:i:s\Z';
+        $outputFormat = $conf['outputFormat'] ?? '';
         return $this->formatService->format($content, $inputFormat, $outputFormat);
     }
 }

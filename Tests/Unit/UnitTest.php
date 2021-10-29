@@ -24,10 +24,10 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use Nimut\TestingFramework\TestCase\UnitTestCase;
 use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Information\Typo3Version;
+use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
  * Base class for all unit tests in the solr project
@@ -36,6 +36,7 @@ use TYPO3\CMS\Core\Information\Typo3Version;
  */
 abstract class UnitTest extends UnitTestCase
 {
+    protected $resetSingletonInstances = true;
 
     /**
      * Returns a mock class where every behaviour is mocked, just to full fill

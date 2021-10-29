@@ -71,7 +71,7 @@ class FacetCollection extends AbstractCollection
      * @param int $position
      * @return AbstractFacet
      */
-    public function getByPosition($position)
+    public function getByPosition(int $position)
     {
         return parent::getByPosition($position);
     }

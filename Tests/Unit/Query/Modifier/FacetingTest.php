@@ -249,8 +249,8 @@ class FacetingTest extends UnitTest
         $this->assertStringContainsString('true',  $queryParameter['facet'], 'Query string did not contain expected snipped');
 
         $jsonData = \json_decode($queryParameter['json.facet']);
-        $this->assertEmpty($jsonData->type->domain->excludeTags, 'Query string did not contain expected snipped');
-        $this->assertEmpty($jsonData->color->domain->excludeTags, 'Query string did not contain expected snipped');
+        $this->assertEmpty(($jsonData->type->domain->excludeTags ?? ''), 'Query string did not contain expected snipped');
+        $this->assertEmpty(($jsonData->color->domain->excludeTags ?? ''), 'Query string did not contain expected snipped');
     }
 
     /**

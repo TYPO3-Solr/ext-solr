@@ -382,7 +382,7 @@ class SearchUriBuilder
             ->fetchEnhancerByPageUid($pageUid);
         $enhancedRouting = count($routingConfigurations) > 0;
         $this->routingService->reset();
-        if ($enhancedRouting && is_array($routingConfigurations[0])) {
+        if ($enhancedRouting && is_array($routingConfigurations[0] ?? null)) {
             $this->routingService->fromRoutingConfiguration($routingConfigurations[0]);
         }
 

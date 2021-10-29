@@ -28,6 +28,7 @@ namespace ApacheSolrForTypo3\Solr\System\Cache;
  ***************************************************************/
 
 use TYPO3\CMS\Core\Cache\CacheManager;
+use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
 
@@ -56,7 +57,8 @@ class TwoLevelCache
 
     /**
      * @param string $cacheName
-     * @param FrontendInterface $secondaryCacheFrontend
+     * @param FrontendInterface|null $secondaryCacheFrontend
+     * @throws NoSuchCacheException
      */
     public function __construct(string $cacheName, FrontendInterface $secondaryCacheFrontend = null)
     {

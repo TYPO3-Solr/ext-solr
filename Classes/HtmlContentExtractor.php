@@ -248,7 +248,7 @@ class HtmlContentExtractor
                 $fieldName = $this->tagToFieldMapping[$tag];
                 $hasContentForFieldName = empty($result[$fieldName]);
                 $separator = ($hasContentForFieldName) ? '' : ' ';
-                $result[$fieldName] .= $separator . $matches[2][$key];
+                $result[$fieldName] = ($result[$fieldName] ?? '') . $separator . $matches[2][$key];
             }
         }
 
