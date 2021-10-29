@@ -26,6 +26,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\Cache;
 
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
 use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
 use TYPO3\CMS\Core\Cache\Frontend\VariableFrontend;
 use TYPO3\CMS\Core\Cache\Backend\BackendInterface;
@@ -89,26 +90,28 @@ class TwoLevelCacheTest extends UnitTest
 
     /**
      * @test
+     * @throws NoSuchCacheException
      */
     public function canHandleInvalidCacheIdentifierOnSet(): void
     {
         $cacheBackendMock = $this->createMock(BackendInterface::class);
         $cacheBackendMock->expects($this->once())->method('set');
         $variableFrontend = new VariableFrontend('TwoLevelCacheTest', $cacheBackendMock);
-        $this->inject($this->twoLevelCache, 'secondLevelCache', $variableFrontend);
+        $this->twoLevelCache = new TwoLevelCache('test', $variableFrontend);
 
         $this->twoLevelCache->set('I.Am.An.Invalid.Identifier-#ß%&!', 'dummyValue');
     }
 
     /**
      * @test
+     * @throws NoSuchCacheException
      */
     public function canHandleInvalidCacheIdentifierOnGet(): void
     {
         $cacheBackendMock = $this->createMock(BackendInterface::class);
         $cacheBackendMock->expects($this->once())->method('get');
         $variableFrontend = new VariableFrontend('TwoLevelCacheTest', $cacheBackendMock);
-        $this->inject($this->twoLevelCache, 'secondLevelCache', $variableFrontend);
+        $this->twoLevelCache = new TwoLevelCache('test', $variableFrontend);
 
         $this->assertFalse($this->twoLevelCache->get('I.Am.An.Invalid.Identifier-#ß%&!'));
     }

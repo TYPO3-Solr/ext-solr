@@ -85,7 +85,8 @@ class SolrAdminServiceTest extends UnitTest
      */
     public function getPluginsInformation()
     {
-        $fakePluginsResponse = new \stdClass();
+        $fakePluginsResponse = $this->getDumbMock(ResponseAdapter::class);
+        $fakePluginsResponse->responseHeader = null;
         $this->assertGetRequestIsTriggered('http://localhost:8983/solr/core_en/admin/plugins?wt=json', $fakePluginsResponse);
         $result = $this->adminService->getPluginsInformation();
         $this->assertSame($fakePluginsResponse, $result, 'Could not get expected result from getPluginsInformation');
@@ -96,7 +97,7 @@ class SolrAdminServiceTest extends UnitTest
      */
     public function getSystemInformation()
     {
-        $fakeSystemInformationResponse = new \stdClass();
+        $fakeSystemInformationResponse = $this->getDumbMock(ResponseAdapter::class);
         $this->assertGetRequestIsTriggered('http://localhost:8983/solr/core_en/admin/system?wt=json', $fakeSystemInformationResponse);
         $result = $this->adminService->getSystemInformation();
         $this->assertSame($fakeSystemInformationResponse, $result, 'Could not get expected result from getSystemInformation');
@@ -107,7 +108,7 @@ class SolrAdminServiceTest extends UnitTest
      */
     public function getSolrServerVersion()
     {
-        $fakeSystemInformationResponse = new \stdClass();
+        $fakeSystemInformationResponse = $this->getDumbMock(ResponseAdapter::class);
         $fakeSystemInformationResponse->lucene = new \stdClass();
         $fakeSystemInformationResponse->lucene->{'solr-spec-version'} = '6.2.1';
         $this->assertGetRequestIsTriggered('http://localhost:8983/solr/core_en/admin/system?wt=json', $fakeSystemInformationResponse);

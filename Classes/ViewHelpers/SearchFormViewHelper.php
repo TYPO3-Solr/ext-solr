@@ -56,7 +56,7 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
     public function __construct()
     {
         parent::__construct();
-        $this->frontendController = $GLOBALS['TSFE'];
+        $this->frontendController = $GLOBALS['TSFE'] ?? null;
     }
 
     /**
@@ -99,7 +99,7 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
      */
     public function render()
     {
-        $pageUid = $this->arguments['pageUid'];
+        $pageUid = $this->arguments['pageUid'] ?? null;
         if ($pageUid === null && !empty($this->getTypoScriptConfiguration()->getSearchTargetPage())) {
             $pageUid = $this->getTypoScriptConfiguration()->getSearchTargetPage();
         }
@@ -107,11 +107,11 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
         $uri = $this->buildUriFromPageUidAndArguments($pageUid);
 
         $this->tag->addAttribute('action', trim($uri));
-        if ($this->arguments['addSuggestUrl']) {
+        if (($this->arguments['addSuggestUrl'] ?? null)) {
             $this->tag->addAttribute('data-suggest', $this->getSuggestUrl($this->arguments['additionalFilters'], $pageUid));
         }
-        $this->tag->addAttribute('data-suggest-header', htmlspecialchars($this->arguments['suggestHeader']));
-        $this->tag->addAttribute('accept-charset', $this->frontendController->metaCharset);
+        $this->tag->addAttribute('data-suggest-header', htmlspecialchars($this->arguments['suggestHeader'] ?? ''));
+        $this->tag->addAttribute('accept-charset', $this->frontendController->metaCharset ?? null);
 
         // Get search term
         // @extensionScannerIgnoreLine

@@ -127,7 +127,7 @@ class ResultSetReconstitutionProcessor implements SearchResultSetProcessor
             $isResetOption = $field === 'relevance';
 
             // Allow stdWrap on label:
-            $labelHasSubConfiguration = is_array($sortingOptions['label.']);
+            $labelHasSubConfiguration = is_array($sortingOptions['label.'] ?? null);
             if ($labelHasSubConfiguration) {
                 $cObj = GeneralUtility::makeInstance(ContentObjectRenderer::class);
                 $label = $cObj->stdWrap($label, $sortingOptions['label.']);
@@ -136,7 +136,7 @@ class ResultSetReconstitutionProcessor implements SearchResultSetProcessor
             if ($isResetOption && !$hasSorting) {
                 $selected = true;
             }
-            
+
             $sorting = $this->getObjectManager()->get(Sorting::class, $resultSet, $sortingName, $field, $direction, $label, $selected, $isResetOption);
             $resultSet->addSorting($sorting);
         }
@@ -153,7 +153,7 @@ class ResultSetReconstitutionProcessor implements SearchResultSetProcessor
         //read the response
         $response = $resultSet->getResponse();
 
-        if (!is_array($response->spellcheck->suggestions)) {
+        if (!is_array($response->spellcheck->suggestions ?? null)) {
             return $resultSet;
         }
 

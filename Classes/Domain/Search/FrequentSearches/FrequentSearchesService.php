@@ -88,7 +88,7 @@ class FrequentSearchesService
         } else {
             $terms = $this->getFrequentSearchTermsFromStatistics($frequentSearchConfiguration);
 
-            if ($frequentSearchConfiguration['sortBy'] === 'hits') {
+            if (isset($frequentSearchConfiguration['sortBy']) && $frequentSearchConfiguration['sortBy'] === 'hits') {
                 arsort($terms);
             } else {
                 ksort($terms);
@@ -156,10 +156,10 @@ class FrequentSearchesService
         // Use configuration as cache identifier
         $identifier = 'frequentSearchesTags';
 
-        if ($frequentSearchConfiguration['select.']['checkRootPageId']) {
+        if (isset($frequentSearchConfiguration['select.']['checkRootPageId']) && $frequentSearchConfiguration['select.']['checkRootPageId']) {
             $identifier .= '_RP' . (int)$this->tsfe->tmpl->rootLine[0]['uid'];
         }
-        if ($frequentSearchConfiguration['select.']['checkLanguage']) {
+        if (isset($frequentSearchConfiguration['select.']['checkLanguage']) && $frequentSearchConfiguration['select.']['checkLanguage']) {
             $identifier .= '_L' . Util::getLanguageUid();
         }
 

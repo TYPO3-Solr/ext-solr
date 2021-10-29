@@ -56,7 +56,7 @@ class PageIndexerResponse
     {
         $responseData = json_decode($jsonEncodedResponse, true);
 
-        if (is_array($responseData['actionResults'])) {
+        if (is_array($responseData['actionResults'] ?? null)) {
             foreach ($responseData['actionResults'] as $action => $serializedActionResult) {
                 $responseData['actionResults'][$action] = unserialize($serializedActionResult);
             }

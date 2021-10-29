@@ -193,7 +193,7 @@ class SearchResultSetTest extends UnitTest
     {
         $this->configurationMock->expects($this->once())->method('getSearchQueryReturnFieldsAsArray')->willReturn(['*']);
 
-        $processSearchResponseBackup = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['afterSearch'];
+        $processSearchResponseBackup = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['afterSearch'] ?? null;
 
         $testProcessor = TestSearchResultSetProcessor::class;
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['afterSearch']['testProcessor'] = $testProcessor;

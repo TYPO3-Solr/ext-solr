@@ -386,7 +386,7 @@ class SearchResultSetService
     protected function modifyQuery(Query $query, SearchRequest $searchRequest, Search $search)
     {
         // hook to modify the search query
-        if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchQuery'])) {
+        if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchQuery'] ?? null)) {
             foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchQuery'] as $classReference) {
                 $queryModifier = $this->objectManager->get($classReference);
 
@@ -443,7 +443,7 @@ class SearchResultSetService
      */
     private function handleSearchHook($eventName, SearchResultSet $resultSet)
     {
-        if (!is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr'][$eventName])) {
+        if (!is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr'][$eventName] ?? null)) {
             return $resultSet;
         }
 

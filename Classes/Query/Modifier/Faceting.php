@@ -147,7 +147,7 @@ class Faceting implements Modifier, SearchRequestAware
     {
         $facetFilters = [];
 
-        if (!is_array($resultParameters['filter'])) {
+        if (!is_array($resultParameters['filter'] ?? null)) {
             return $facetFilters;
         }
 
@@ -157,7 +157,7 @@ class Faceting implements Modifier, SearchRequestAware
             $facetConfiguration = $allFacets[$facetName . '.'];
             $tag = $this->getFilterTag($facetConfiguration, $keepAllFacetsOnSelection);
             $filterParts = $this->getFilterParts($facetConfiguration, $facetName, $filterValues);
-            $operator = ($facetConfiguration['operator'] === 'OR') ? ' OR ' : ' AND ';
+            $operator = (($facetConfiguration['operator'] ?? null) === 'OR') ? ' OR ' : ' AND ';
             $facetFilters[$facetName] = $tag . '(' . implode($operator, $filterParts) . ')';
         }
 
@@ -175,7 +175,7 @@ class Faceting implements Modifier, SearchRequestAware
     protected function getFilterTag(array $facetConfiguration, bool $keepAllFacetsOnSelection): string
     {
         $tag = '';
-        if ($facetConfiguration['keepAllOptionsOnSelection'] == 1 || $facetConfiguration['addFieldAsTag'] == 1 || $keepAllFacetsOnSelection) {
+        if (($facetConfiguration['keepAllOptionsOnSelection'] ?? null) == 1 || ($facetConfiguration['addFieldAsTag'] ?? null) == 1 || $keepAllFacetsOnSelection) {
             $tag = '{!tag=' . addslashes($facetConfiguration['field']) . '}';
         }
 
@@ -204,7 +204,7 @@ class Faceting implements Modifier, SearchRequestAware
         }
 
         foreach ($filterValues as $filterValue) {
-            $filterOptions = $facetConfiguration[$facetConfiguration['type'] . '.'];
+            $filterOptions = isset($facetConfiguration['type']) ? $facetConfiguration[$facetConfiguration['type'] . '.'] : null;
             if (empty($filterOptions)) {
                 $filterOptions = [];
             }

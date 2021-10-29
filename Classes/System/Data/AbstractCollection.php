@@ -82,12 +82,12 @@ abstract class AbstractCollection implements \IteratorAggregate, \Countable, \Ar
 
     /**
      * @param int $position
-     * @return Object
+     * @return ?Object
      */
-    public function getByPosition($position)
+    public function getByPosition(int $position)
     {
         $keys = array_keys($this->data);
-        return isset($this->data[$keys[$position]]) ? $this->data[$keys[$position]] : null;
+        return $this->data[$keys[$position] ?? null] ?? null;
     }
 
     /**

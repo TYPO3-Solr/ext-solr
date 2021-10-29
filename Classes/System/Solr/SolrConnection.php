@@ -282,7 +282,7 @@ class SolrConnection
      */
     protected function getClient(string $endpointKey): Client
     {
-        if ($this->clients[$endpointKey]) {
+        if (isset($this->clients[$endpointKey])) {
             return $this->clients[$endpointKey];
         }
 

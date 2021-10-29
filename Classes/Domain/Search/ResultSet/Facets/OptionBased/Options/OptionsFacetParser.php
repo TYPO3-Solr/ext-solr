@@ -83,7 +83,7 @@ class OptionsFacetParser extends AbstractFacetParser
 
             $isOptionsActive = in_array($optionsValue, $optionsFromRequest);
             $label = $this->getLabelFromRenderingInstructions($optionsValue, $count, $facetName, $facetConfiguration);
-            $facet->addOption($this->objectManager->get(Option::class, $facet, $label, $optionsValue, $count, $isOptionsActive, $metricsFromSolrResponse[$optionsValue]));
+            $facet->addOption($this->objectManager->get(Option::class, $facet, $label, $optionsValue, $count, $isOptionsActive, ($metricsFromSolrResponse[$optionsValue] ?? null)));
         }
 
         // after all options have been created we apply a manualSortOrder if configured

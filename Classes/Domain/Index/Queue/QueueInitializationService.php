@@ -102,7 +102,7 @@ class QueueInitializationService {
             $initializationStatus[$indexingConfigurationName] = $this->applyInitialization($site, (string)$indexingConfigurationName);
         }
 
-        if (!is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessIndexQueueInitialization'])) {
+        if (!isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessIndexQueueInitialization'])) {
             return $initializationStatus;
         }
 

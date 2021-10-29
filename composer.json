@@ -35,7 +35,7 @@
   "require-dev": {
     "phpunit/phpunit": "^9.5",
     "phpspec/prophecy-phpunit":"*",
-    "nimut/testing-framework": "^6.0.0"
+    "typo3/testing-framework": "^6.12"
   },
   "replace": {
     "apache-solr-for-typo3/solrfluid": "*",

@@ -49,8 +49,8 @@ class IdBuilderTest extends UnitTest
 
     public function tearDown(): void
     {
+        $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'] = $this->oldEncryptionKey;
         parent::tearDown();
-        $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'] =  $this->oldEncryptionKey;
     }
 
     /**

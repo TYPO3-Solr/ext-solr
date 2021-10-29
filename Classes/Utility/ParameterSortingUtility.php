@@ -85,14 +85,14 @@ class ParameterSortingUtility
     }
 
     /**
-     * Since the sort operation did not differs between keys and values it is placed inside an own method
+     * Since the sort operation does not differ between keys and values it is placed inside an own method
      *
      * @param string $a
      * @param string $b
-     * @return bool
+     * @return int
      */
-    public static function sort(string $a, string $b): bool
+    public static function sort(string $a, string $b): int
     {
-        return strcmp($a, $b) > 0;
+        return strcmp($a, $b);
     }
 }

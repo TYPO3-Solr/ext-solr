@@ -76,7 +76,8 @@ class Search
     /**
      * Constructor
      *
-     * @param SolrConnection $solrConnection The Solr connection to use for searching
+     * @param SolrConnection|null $solrConnection The Solr connection to use for searching
+     * @throws NoSolrConnectionFoundException
      */
     public function __construct(SolrConnection $solrConnection = null)
     {
@@ -87,7 +88,7 @@ class Search
         if (is_null($solrConnection)) {
             /** @var $connectionManager ConnectionManager */
             $connectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
-            $this->solr = $connectionManager->getConnectionByPageId($GLOBALS['TSFE']->id, Util::getLanguageUid());
+            $this->solr = $connectionManager->getConnectionByPageId(($GLOBALS['TSFE']->id ?? null), Util::getLanguageUid());
         }
 
         $this->configuration = Util::getSolrConfiguration();

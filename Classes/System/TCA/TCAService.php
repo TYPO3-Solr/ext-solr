@@ -195,7 +195,7 @@ class TCAService
         if (isset($this->tca[$table]['ctrl']['enablecolumns']['fe_group'])) {
             $frontendGroupsField = $this->tca[$table]['ctrl']['enablecolumns']['fe_group'];
 
-            if ($record[$frontendGroupsField] == '') {
+            if (($record[$frontendGroupsField] ?? null) == '') {
                 $record[$frontendGroupsField] = '0';
             }
         }
@@ -208,9 +208,12 @@ class TCAService
      * @param array $record
      * @return mixed
      */
-    public function getTranslationOriginalUid($table, array $record)
+    public function getTranslationOriginalUid(string $table, array $record)
     {
-        return $record[$this->tca[$table]['ctrl']['transOrigPointerField']];
+        if (!isset($this->tca[$table]['ctrl']['transOrigPointerField'])) {
+            return null;
+        }
+        return $record[$this->tca[$table]['ctrl']['transOrigPointerField']] ?? null;
     }
 
     /**

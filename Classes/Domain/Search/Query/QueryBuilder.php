@@ -547,12 +547,12 @@ class QueryBuilder extends AbstractQueryBuilder {
                 continue;
             }
 
-            $filterIsArray = is_array($searchQueryFilters[$filterKey]);
+            $filterIsArray = isset($searchQueryFilters[$filterKey]) && is_array($searchQueryFilters[$filterKey]);
             if ($filterIsArray) {
                 continue;
             }
 
-            $hasSubConfiguration = is_array($searchQueryFilters[$filterKey . '.']);
+            $hasSubConfiguration = isset($searchQueryFilters[$filterKey . '.']) && is_array($searchQueryFilters[$filterKey . '.']);
             if ($hasSubConfiguration) {
                 $filter = $cObj->stdWrap($searchQueryFilters[$filterKey], $searchQueryFilters[$filterKey . '.']);
             }

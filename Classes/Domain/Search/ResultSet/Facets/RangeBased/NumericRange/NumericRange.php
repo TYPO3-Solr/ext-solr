@@ -55,7 +55,7 @@ class NumericRange extends AbstractRangeFacetItem
      * @param array $rangeCounts
      * @param bool $selected
      */
-    public function __construct(NumericRangeFacet $facet, $startRequested = null, $endRequested = null, $startInResponse = null, $endInResponse = null, $gap = '', $documentCount = 0, $rangeCounts, $selected = false)
+    public function __construct(NumericRangeFacet $facet, $startRequested = null, $endRequested = null, $startInResponse = null, $endInResponse = null, $gap = '', $documentCount = 0, array $rangeCounts = null, $selected = false)
     {
         $this->startInResponse = $startInResponse;
         $this->endInResponse = $endInResponse;

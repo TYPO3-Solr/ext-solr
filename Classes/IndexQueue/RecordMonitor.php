@@ -215,7 +215,7 @@ class RecordMonitor extends AbstractDataHandlerListener
         }
 
         // moving pages/records in LIVE workspace
-        if ($command === 'move' && $GLOBALS['BE_USER']->workspace == 0) {
+        if ($command === 'move' && ($GLOBALS['BE_USER']->workspace ?? null) == 0) {
             if ($table === 'pages') {
                 $this->applyPageChangesToQueue($uid);
             } else {

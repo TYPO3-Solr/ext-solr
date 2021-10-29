@@ -51,7 +51,7 @@ class DefaultResultParser extends AbstractResultParser {
         $resultSet->setAllResultCount($parsedData->response->numFound ?? 0);
 
         // @extensionScannerIgnoreLine
-        if (!is_array($parsedData->response->docs)) {
+        if (!is_array($parsedData->response->docs ?? null)) {
             return $resultSet;
         }
 
