@@ -326,8 +326,8 @@ class TCAServiceTest extends UnitTest
         $tcaService = new TCAService([]);
         $visibilityFields = $tcaService->getVisibilityAffectingFieldsByTable('pages');
 
-        $this->assertContains('doktype', $visibilityFields, 'Expected to have doktype as visibility affecting field as default for pages');
-        $this->assertContains('no_search', $visibilityFields, 'Expected to have no_search as visibility affecting field as default for pages');
+        $this->assertStringContainsString('doktype', $visibilityFields, 'Expected to have doktype as visibility affecting field as default for pages');
+        $this->assertStringContainsString('no_search', $visibilityFields, 'Expected to have no_search as visibility affecting field as default for pages');
     }
 
     /**
@@ -355,7 +355,7 @@ class TCAServiceTest extends UnitTest
 
         $tcaService = new TCAService($fakeTCA);
         $visibilityFields = $tcaService->getVisibilityAffectingFieldsByTable('tx_domain_model_faketable');
-        $this->assertContains('deleted', $visibilityFields, 'The deleted field should be retrieved as visibility affecting field');
+        $this->assertStringContainsString('deleted', $visibilityFields, 'The deleted field should be retrieved as visibility affecting field');
     }
 
     /**
@@ -375,7 +375,7 @@ class TCAServiceTest extends UnitTest
 
         $tcaService = new TCAService($fakeTCA);
         $visibilityFields = $tcaService->getVisibilityAffectingFieldsByTable('tx_domain_model_faketable');
-        $this->assertContains('fe_groups', $visibilityFields, 'The field fe_groups should be retrieved as visbility affecting field');
+        $this->assertStringContainsString('fe_groups', $visibilityFields, 'The field fe_groups should be retrieved as visbility affecting field');
     }
 
     /**

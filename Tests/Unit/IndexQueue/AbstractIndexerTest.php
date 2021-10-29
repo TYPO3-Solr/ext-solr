@@ -26,6 +26,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\IndexQueue;
 
 use ApacheSolrForTypo3\Solr\IndexQueue\AbstractIndexer;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use UnexpectedValueException;
 
 /**
  * @author Timo Hund <timo.hund@dkd.de>
@@ -69,8 +70,8 @@ class AbstractIndexerTest extends UnitTest
     {
         // register invalid detector
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['detectSerializedValue'][] = InvalidSerializedValueDetector::class;
-        $this->expectException(\UnexpectedValueException::class);
-        $this->expectExceptionMessageRegExp('/.*InvalidSerializedValueDetector must implement interface.*/');
+        $this->expectException(UnexpectedValueException::class);
+        $this->expectExceptionMessageMatches('/.*InvalidSerializedValueDetector must implement interface.*/');
 
         $indexingConfiguration = [
             'topic_stringM' => 'SOLR_CLASSIFICATION'

@@ -29,6 +29,7 @@ use ApacheSolrForTypo3\Solr\Access\RootlineElement;
 use ApacheSolrForTypo3\Solr\Domain\Index\PageIndexer\Helper\UriBuilder\AbstractUriStrategy;
 use ApacheSolrForTypo3\Solr\Domain\Index\PageIndexer\Helper\UriStrategyFactory;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
+use TYPO3\CMS\Core\Type\Bitmask\PageTranslationVisibility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -119,7 +120,7 @@ class PageIndexer extends Indexer
             unset($solrConnections[0]);
         }
 
-        if (GeneralUtility::hideIfNotTranslated($page['l18n_cfg'])) {
+        if ((new PageTranslationVisibility((int)$page['l18n_cfg'] ?? 0))->shouldHideTranslationIfNoTranslatedRecordExists()) {
             $accessibleSolrConnections = [];
             if (isset($solrConnections[0])) {
                 $accessibleSolrConnections[0] = $solrConnections[0];
