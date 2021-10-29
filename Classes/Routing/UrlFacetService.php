@@ -73,10 +73,10 @@ class UrlFacetService
      */
     protected function init(array $settings)
     {
-        if (is_array($settings['facet-' . $this->uriLocation]['replaceCharacters'])) {
+        if (is_array($settings['facet-' . $this->uriLocation]['replaceCharacters'] ?? null)) {
             $this->characterMap = $settings['facet-' . $this->uriLocation]['replaceCharacters'];
         }
-        if (is_array($settings['replaceCharacters'])) {
+        if (is_array($settings['replaceCharacters'] ?? null)) {
             $this->characterMap = $settings['replaceCharacters'];
         }
 

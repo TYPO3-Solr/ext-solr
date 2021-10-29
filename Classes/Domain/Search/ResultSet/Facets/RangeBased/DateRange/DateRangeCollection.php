@@ -36,9 +36,9 @@ class DateRangeCollection extends AbstractFacetItemCollection
 
     /**
      * @param int $position
-     * @return DateRange
+     * @return ?DateRange
      */
-    public function getByPosition($position)
+    public function getByPosition(int $position)
     {
         return parent::getByPosition($position);
     }

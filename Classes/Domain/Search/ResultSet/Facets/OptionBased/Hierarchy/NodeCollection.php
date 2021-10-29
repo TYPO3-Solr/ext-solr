@@ -37,7 +37,7 @@ class NodeCollection extends AbstractFacetItemCollection
      * @param int $position
      * @return Node
      */
-    public function getByPosition($position)
+    public function getByPosition(int $position)
     {
         return parent::getByPosition($position);
     }

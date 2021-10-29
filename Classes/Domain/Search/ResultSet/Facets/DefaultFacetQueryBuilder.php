@@ -32,7 +32,7 @@ class DefaultFacetQueryBuilder implements FacetQueryBuilderInterface {
         $facetParameters['facet.field'][] = $tags . $facetConfiguration['field'];
 
         $sortingExpression = new SortingExpression();
-        $facetSortExpression = $sortingExpression->getForFacet($facetConfiguration['sortBy']);
+        $facetSortExpression = $sortingExpression->getForFacet($facetConfiguration['sortBy'] ?? '');
         if (!empty($facetSortExpression)) {
             $facetParameters['f.' . $facetConfiguration['field'] . '.facet.sort'] = $facetSortExpression;
         }
@@ -55,7 +55,7 @@ class DefaultFacetQueryBuilder implements FacetQueryBuilderInterface {
             }
 
             return '{!ex=' . implode(',', $facets) . '}';
-        } elseif ($facetConfiguration['keepAllOptionsOnSelection'] == 1) {
+        } elseif (($facetConfiguration['keepAllOptionsOnSelection'] ?? null) == 1) {
             return '{!ex=' . $facetConfiguration['field'] . '}';
         }
 

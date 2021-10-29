@@ -46,7 +46,7 @@ class SchemaParser
     public function parseJson($jsonString)
     {
         $decodedResponse = json_decode($jsonString);
-        $schemaResponse = $decodedResponse->schema;
+        $schemaResponse = $decodedResponse->schema ?? null;
 
         $schema = GeneralUtility::makeInstance(Schema::class);
 

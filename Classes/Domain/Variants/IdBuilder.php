@@ -67,7 +67,7 @@ class IdBuilder
      */
     protected function applyHook($variantId, $systemHash, $type, $uid)
     {
-        if (!is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyVariantId'])) {
+        if (!is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyVariantId'] ?? null)) {
             return $variantId;
         }
 

@@ -135,10 +135,10 @@ class PageIndexerRequest
         }
 
         $this->parameters = (array)json_decode($jsonEncodedParameters, true);
-        $this->requestId = $this->parameters['requestId'];
+        $this->requestId = $this->parameters['requestId'] ?? null;
         unset($this->parameters['requestId']);
 
-        $actions = explode(',', $this->parameters['actions']);
+        $actions = explode(',', $this->parameters['actions'] ?? '');
         foreach ($actions as $action) {
             $this->addAction($action);
         }

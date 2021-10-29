@@ -243,17 +243,17 @@ abstract class AbstractIndexer
         $isSerialized = false;
 
         // SOLR_CLASSIFICATION - always returns serialized array
-        if ($indexingConfiguration[$solrFieldName] == Classification::CONTENT_OBJECT_NAME) {
+        if (($indexingConfiguration[$solrFieldName] ?? null) == Classification::CONTENT_OBJECT_NAME) {
             $isSerialized = true;
         }
 
         // SOLR_MULTIVALUE - always returns serialized array
-        if ($indexingConfiguration[$solrFieldName] == Multivalue::CONTENT_OBJECT_NAME) {
+        if (($indexingConfiguration[$solrFieldName] ?? null) == Multivalue::CONTENT_OBJECT_NAME) {
             $isSerialized = true;
         }
 
         // SOLR_RELATION - returns serialized array if multiValue option is set
-        if ($indexingConfiguration[$solrFieldName] == Relation::CONTENT_OBJECT_NAME && !empty($indexingConfiguration[$solrFieldName . '.']['multiValue'])) {
+        if (($indexingConfiguration[$solrFieldName] ?? null) == Relation::CONTENT_OBJECT_NAME && !empty($indexingConfiguration[$solrFieldName . '.']['multiValue'])) {
             $isSerialized = true;
         }
 

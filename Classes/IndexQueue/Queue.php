@@ -227,7 +227,8 @@ class Queue
      */
     protected function postProcessIndexQueueUpdateItem($itemType, $itemUid, $updateCount, $forcedChangeTime = 0)
     {
-        if (!is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessIndexQueueUpdateItem'])) {
+        if (!isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessIndexQueueUpdateItem'])
+            || !is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessIndexQueueUpdateItem'])) {
             return $updateCount;
         }
 

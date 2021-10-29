@@ -50,7 +50,7 @@ fi
 
 
 echo "Run unit tests"
-UNIT_BOOTSTRAP=".Build/vendor/nimut/testing-framework/res/Configuration/UnitTestsBootstrap.php"
+UNIT_BOOTSTRAP="Build/Test/UnitTestsBootstrap.php"
 .Build/bin/phpunit --colors -c Build/Test/UnitTests.xml --bootstrap=$UNIT_BOOTSTRAP --coverage-clover=coverage.unit.clover
 if [ $? -ne "0" ]; then
   echo "Error during running the unit tests please check and fix them"

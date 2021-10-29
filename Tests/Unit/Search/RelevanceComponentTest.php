@@ -69,7 +69,7 @@ class RelevanceComponentTest extends UnitTest
 
         $query = new Query();
         $query->setQuery('test');
-        $this->assertNull($this->getQueryParameters($query)['qs']);
+        $this->assertArrayNotHasKey('qs', $this->getQueryParameters($query));
 
         $relevanceComponent->setQuery($query);
         $relevanceComponent->initializeSearchComponent();
@@ -96,12 +96,12 @@ class RelevanceComponentTest extends UnitTest
 
         $query = new Query();
         $query->setQuery('test');
-        $this->assertNull($this->getQueryParameters($query)['qs']);
+        $this->assertArrayNotHasKey('qs', $this->getQueryParameters($query));
 
         $relevanceComponent->setQuery($query);
         $relevanceComponent->initializeSearchComponent();
 
-        $this->assertNull($this->getQueryParameters($query)['qs'], 'querySlop should still be null because phrase is disabled');
+        $this->assertArrayNotHasKey('qs', $this->getQueryParameters($query), 'querySlop should still be null because phrase is disabled');
     }
 
     /**
@@ -124,7 +124,7 @@ class RelevanceComponentTest extends UnitTest
 
         $query = new Query();
         $query->setQuery('test');
-        $this->assertNull($this->getQueryParameters($query)['ps']);
+        $this->assertArrayNotHasKey('ps', $this->getQueryParameters($query));
 
         $relevanceComponent->setQuery($query);
         $relevanceComponent->initializeSearchComponent();
@@ -151,12 +151,12 @@ class RelevanceComponentTest extends UnitTest
 
         $query = new Query();
         $query->setQuery('test');
-        $this->assertNull($this->getQueryParameters($query)['ps']);
+        $this->assertArrayNotHasKey('ps', $this->getQueryParameters($query));
 
         $relevanceComponent->setQuery($query);
         $relevanceComponent->initializeSearchComponent();
 
-        $this->assertNull($this->getQueryParameters($query)['ps'], 'PhraseSlop should be null, when phrase is disabled');
+        $this->assertArrayNotHasKey('ps', $this->getQueryParameters($query), 'PhraseSlop should be null, when phrase is disabled');
     }
 
     /**
@@ -179,7 +179,7 @@ class RelevanceComponentTest extends UnitTest
         $query = new Query();
         $query->setQuery('test');
 
-        $this->assertNull($this->getQueryParameters($query)['ps2']);
+        $this->assertArrayNotHasKey('ps2', $this->getQueryParameters($query));
 
         $relevanceComponent->setQuery($query);
         $relevanceComponent->initializeSearchComponent();
@@ -206,12 +206,12 @@ class RelevanceComponentTest extends UnitTest
 
         $query = new Query();
         $query->setQuery('test');
-        $this->assertNull($this->getQueryParameters($query)['ps2']);
+        $this->assertArrayNotHasKey('ps2', $this->getQueryParameters($query));
 
         $relevanceComponent->setQuery($query);
         $relevanceComponent->initializeSearchComponent();
 
-        $this->assertNull($this->getQueryParameters($query)['ps2'], 'ps2 parameter should be empty because bigramPhrases are disabled');
+        $this->assertArrayNotHasKey('ps2', $this->getQueryParameters($query), 'ps2 parameter should be empty because bigramPhrases are disabled');
     }
 
     /**
@@ -233,7 +233,7 @@ class RelevanceComponentTest extends UnitTest
 
         $query = new Query();
         $query->setQuery('test');
-        $this->assertNull($this->getQueryParameters($query)['ps3']);
+        $this->assertArrayNotHasKey('ps3', $this->getQueryParameters($query));
 
         $relevanceComponent->setQuery($query);
         $relevanceComponent->initializeSearchComponent();
@@ -260,12 +260,12 @@ class RelevanceComponentTest extends UnitTest
 
         $query = new Query();
         $query->setQuery('test');
-        $this->assertNull($this->getQueryParameters($query)['ps3']);
+        $this->assertArrayNotHasKey('ps3', $this->getQueryParameters($query));
 
         $relevanceComponent->setQuery($query);
         $relevanceComponent->initializeSearchComponent();
 
-        $this->assertNull($this->getQueryParameters($query)['ps3'], 'ps3 parameter should be empty because bigramPhrases are disabled');
+        $this->assertArrayNotHasKey('ps3', $this->getQueryParameters($query), 'ps3 parameter should be empty because bigramPhrases are disabled');
     }
 
 
@@ -285,7 +285,7 @@ class RelevanceComponentTest extends UnitTest
 
         $query = new Query();
         $query->setQuery('test');
-        $this->assertNull($this->getQueryParameters($query)['tie']);
+        $this->assertArrayNotHasKey('tie', $this->getQueryParameters($query));
 
         $relevanceComponent->setQuery($query);
         $relevanceComponent->initializeSearchComponent();
@@ -306,7 +306,7 @@ class RelevanceComponentTest extends UnitTest
 
         $query = new Query();
         $query->setQuery('test');
-        $this->assertNull($this->getQueryParameters($query)['bq']);
+        $this->assertArrayNotHasKey('bq', $this->getQueryParameters($query));
 
         $typoscriptConfiguration = $this->getTypoScriptConfigurationWithQueryConfiguration($searchConfiguration);
         $queryBuilder = new QueryBuilder($typoscriptConfiguration);
@@ -335,7 +335,7 @@ class RelevanceComponentTest extends UnitTest
 
         $query = new Query();
         $query->setQuery('test');
-        $this->assertNull($this->getQueryParameters($query)['bq']);
+        $this->assertArrayNotHasKey('bq', $this->getQueryParameters($query));
 
         $typoscriptConfiguration = $this->getTypoScriptConfigurationWithQueryConfiguration($searchConfiguration);
         $queryBuilder = new QueryBuilder($typoscriptConfiguration);
@@ -362,7 +362,7 @@ class RelevanceComponentTest extends UnitTest
 
         $query = new Query();
         $query->setQuery('test');
-        $this->assertNull($this->getQueryParameters($query)['bf']);
+        $this->assertArrayNotHasKey('bf', $this->getQueryParameters($query));
 
         $typoscriptConfiguration = $this->getTypoScriptConfigurationWithQueryConfiguration($searchConfiguration);
         $queryBuilder = new QueryBuilder($typoscriptConfiguration);
@@ -388,7 +388,7 @@ class RelevanceComponentTest extends UnitTest
 
         $query = new Query();
         $query->setQuery('test');
-        $this->assertNull($this->getQueryParameters($query)['mm']);
+        $this->assertArrayNotHasKey('mm', $this->getQueryParameters($query));
 
         $typoscriptConfiguration = $this->getTypoScriptConfigurationWithQueryConfiguration($searchConfiguration);
         $queryBuilder = new QueryBuilder($typoscriptConfiguration);

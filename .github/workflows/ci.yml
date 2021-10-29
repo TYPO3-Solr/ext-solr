@@ -163,7 +163,7 @@ jobs:
         run: |
           export CURRENT_TYPO3_VERSION_REFERNCE=$(./Build/Helpers/TYPO3_SOURCE_REFERENCE.sh "$TYPO3_VERSION" --short)
           export CURRENT_SOLARIUM_VERSION=$(cat composer.json | jq --raw-output '.require."solarium/solarium"')
-          export CI_BUILD_CACHE_KEY=${{ runner.os }}-2021.10.22_12:40_TYPO3:$TYPO3_VERSION@$CURRENT_TYPO3_VERSION_REFERNCE-SOLARIUM:$CURRENT_SOLARIUM_VERSION-PHP:${{ matrix.PHP }}
+          export CI_BUILD_CACHE_KEY=${{ runner.os }}-PHP:${{ matrix.PHP }}-TYPO3:$TYPO3_VERSION@$CURRENT_TYPO3_VERSION_REFERNCE-SOLARIUM:$CURRENT_SOLARIUM_VERSION
           echo "CI_BUILD_CACHE_KEY=$CI_BUILD_CACHE_KEY" >> $GITHUB_ENV
           echo "The key for actions/cache@v2 is \"$CI_BUILD_CACHE_KEY\""
       -

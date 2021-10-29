@@ -355,7 +355,7 @@ class SearchRequestTest extends UnitTest
 
         $request->removeAllGroupItemPages();
         $requestArguments = $request->getAsArray();
-        $this->assertNull($requestArguments['tx_solr']['groupPage'], 'Expected to have two group pages registered');
+        $this->assertArrayNotHasKey('groupPage', $requestArguments['tx_solr'], 'Expected to have two group pages registered');
     }
 
     /**

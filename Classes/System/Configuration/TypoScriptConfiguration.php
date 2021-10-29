@@ -2203,12 +2203,11 @@ class TypoScriptConfiguration
             $highestLimit = $groupingConfiguration['numberOfResultsPerGroup'];
         }
 
-        $configuredGroups = $groupingConfiguration['groups.'];
-        if (!is_array($configuredGroups)) {
+        if (!isset($groupingConfiguration['groups.']) || !is_array($groupingConfiguration['groups.'])) {
             return $highestLimit;
         }
 
-        foreach ($configuredGroups as $groupName => $groupConfiguration) {
+        foreach ($groupingConfiguration['groups.'] as $groupName => $groupConfiguration) {
             if (!empty($groupConfiguration['numberOfResultsPerGroup']) && $groupConfiguration['numberOfResultsPerGroup'] > $highestLimit) {
                 $highestLimit = $groupConfiguration['numberOfResultsPerGroup'];
             }
