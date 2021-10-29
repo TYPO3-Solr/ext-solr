@@ -1,4 +1,5 @@
-<phpunit
+<?xml version="1.0"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd"
 	backupGlobals="false"
 	backupStaticAttributes="false"
 	colors="true"
@@ -11,15 +12,14 @@
 	stopOnIncomplete="false"
 	stopOnSkipped="false"
 	verbose="false">
-
+	<coverage processUncoveredFiles="false">
+		<include>
+			<directory suffix=".php">../../Classes/</directory>
+		</include>
+	</coverage>
 	<testsuites>
 		<testsuite name="ext-solr-unit-tests">
 			<directory>../../Tests/Unit/</directory>
 		</testsuite>
 	</testsuites>
-	<filter>
-		<whitelist processUncoveredFilesFromWhitelist="false">
-			<directory suffix=".php">../../Classes/</directory>
-		</whitelist>
-	</filter>
 </phpunit>

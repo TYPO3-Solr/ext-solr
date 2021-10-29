@@ -28,7 +28,6 @@ use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\BigramPhraseFie
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Elevation;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Faceting;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\FieldCollapsing;
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Filters;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Grouping;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Highlighting;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Operator;
@@ -47,6 +46,7 @@ use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use Solarium\QueryType\Select\RequestBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use function str_starts_with;
 
 /**
  * @author Timo Hund <timo.hund@dkd.de>
@@ -456,7 +456,7 @@ class QueryBuilderTest extends UnitTest
         $queryParameters = $query->getQueryParameters();
         foreach ($queryParameters as $queryParameter => $value) {
             $this->assertTrue(
-                !GeneralUtility::isFirstPartOfStr($queryParameter, 'group'),
+                !str_starts_with($queryParameter, 'group'),
                 'Query already contains grouping parameter "' . $queryParameter . '"'
             );
         }
@@ -496,7 +496,7 @@ class QueryBuilderTest extends UnitTest
         $queryParameters = $this->getAllQueryParameters($query);
         foreach ($queryParameters as $queryParameter => $value) {
             $this->assertTrue(
-                !GeneralUtility::isFirstPartOfStr($queryParameter, 'group'),
+                !str_starts_with($queryParameter, 'group'),
                 'Query contains grouping parameter "' . $queryParameter . '"'
             );
         }
@@ -1201,7 +1201,7 @@ class QueryBuilderTest extends UnitTest
 
         $this->assertNull($queryParameters['enableElevation']);
         $this->assertNull($queryParameters['forceElevation']);
-        $this->assertNotContains('isElevated:[elevated]', $queryParameters['fl']);
+        $this->assertStringNotContainsString('isElevated:[elevated]', $queryParameters['fl']);
 
         // do we get the expected default values, when calling setQueryElevantion with no arguments?
 
@@ -1210,7 +1210,7 @@ class QueryBuilderTest extends UnitTest
         $queryParameters = $this->getAllQueryParameters($query);
         $this->assertSame('true', $queryParameters['enableElevation'], 'enabledElevation was not set after enabling elevation');
         $this->assertSame('true', $queryParameters['forceElevation'], 'forceElevation was not set after enabling elevation');
-        $this->assertContains('isElevated:[elevated]', $queryParameters['fl'], 'isElevated should be in the list of return fields');
+        $this->assertStringContainsString('isElevated:[elevated]', $queryParameters['fl'], 'isElevated should be in the list of return fields');
 
         // can we reset the elevantion?
         $elevation->setIsEnabled(false);

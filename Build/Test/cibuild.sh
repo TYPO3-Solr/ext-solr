@@ -61,28 +61,28 @@ fi
 # Map the travis and shell variable names to the expected
 # casing of the TYPO3 core.
 #
-if [ -n $TYPO3_DATABASE_NAME ]; then
+if [[ -n $TYPO3_DATABASE_NAME ]]; then
   export typo3DatabaseName=$TYPO3_DATABASE_NAME
 else
   echo "No environment variable TYPO3_DATABASE_NAME set. Please set it to run the integration tests."
   exit 1
 fi
 
-if [ -n $TYPO3_DATABASE_HOST ]; then
+if [[ -n $TYPO3_DATABASE_HOST ]]; then
   export typo3DatabaseHost=$TYPO3_DATABASE_HOST
 else
   echo "No environment variable TYPO3_DATABASE_HOST set. Please set it to run the integration tests."
   exit 1
 fi
 
-if [ -n $TYPO3_DATABASE_USERNAME ]; then
+if [[ -n $TYPO3_DATABASE_USERNAME ]]; then
   export typo3DatabaseUsername=$TYPO3_DATABASE_USERNAME
 else
   echo "No environment variable TYPO3_DATABASE_USERNAME set. Please set it to run the integration tests."
   exit 1
 fi
 
-if [ -n $TYPO3_DATABASE_PASSWORD ]; then
+if [[ -n $TYPO3_DATABASE_PASSWORD ]]; then
   export typo3DatabasePassword=$TYPO3_DATABASE_PASSWORD
 else
   echo "No environment variable TYPO3_DATABASE_PASSWORD set. Please set it to run the integration tests."

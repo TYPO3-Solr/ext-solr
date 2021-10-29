@@ -58,7 +58,7 @@ class DefaultFacetQueryBuilderTest extends UnitTest
         $defaultQueryBuilder = new DefaultFacetQueryBuilder();
         $result = $defaultQueryBuilder->build('color', $fakeConfiguration);
 
-        $this->assertNotContains('{!ex', $result['facet.field'][0]);
+        $this->assertStringNotContainsString('{!ex', $result['facet.field'][0]);
     }
 
 }

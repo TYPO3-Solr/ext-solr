@@ -18,6 +18,8 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\FacetRegistry;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\OptionsPackage;
 use ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets\TestPackage\TestPackage;
+use InvalidArgumentException;
+use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 
@@ -45,14 +47,14 @@ class FacetRegistryTest extends UnitTest
     /**
      * Initialize a RendererRegistry and mock createRendererInstance()
      *
-     * @param array $createsParserInstances
-     * @return \PHPUnit_Framework_MockObject_MockObject|FacetRegistry
+     * @param array $createsPackageInstances
+     * @return MockObject|FacetRegistry
      */
     protected function getTestFacetPackageRegistry(array $createsPackageInstances = [])
     {
-        /** @var $facetRegistry FacetRegistry */
+        /** @var $facetRegistry MockObject|FacetRegistry */
         $facetRegistry = $this->getMockBuilder(FacetRegistry::class)
-            ->setMethods(['createInstance'])
+            ->onlyMethods(['createInstance'])
             ->getMock();
 
         // @extensionScannerIgnoreLine
@@ -84,22 +86,22 @@ class FacetRegistryTest extends UnitTest
 
     /**
      * @test
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionCode 1462883324
      */
     public function registerParserClassThrowsExceptionIfClassDoesNotExist()
     {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionCode(1462883324);
         $facetParserRegistry = $this->getTestFacetPackageRegistry();
         $facetParserRegistry->registerPackage($this->getUniqueId(), 'unknown');
     }
 
     /**
      * @test
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionCode 1462883325
      */
     public function registerParserClassThrowsExceptionIfClassDoesNotImplementFacetPackageInterface()
     {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionCode(1462883325);
         $className = __CLASS__;
         $facetParserRegistry = $this->getTestFacetPackageRegistry();
         $facetParserRegistry->registerPackage($className, 'unknown');
