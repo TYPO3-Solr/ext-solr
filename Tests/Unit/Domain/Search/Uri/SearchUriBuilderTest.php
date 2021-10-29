@@ -76,7 +76,6 @@ class SearchUriBuilderTest extends UnitTest
         $expectedArguments = ['tx_solr' => ['filter' => ['###tx_solr:filter:0:foo###']]];
 
         $this->extBaseUriBuilderMock->expects($this->once())->method('setArguments')->with($expectedArguments)->will($this->returnValue($this->extBaseUriBuilderMock));
-        $this->extBaseUriBuilderMock->expects($this->once())->method('setUseCacheHash')->with(false)->will($this->returnValue($this->extBaseUriBuilderMock));
         $this->extBaseUriBuilderMock->expects($this->once())->method('reset')->with()->will($this->returnValue($this->extBaseUriBuilderMock));
 
         $previousRequest =  new SearchRequest([], 0, 0, $configurationMock);
@@ -94,10 +93,6 @@ class SearchUriBuilderTest extends UnitTest
         $this->extBaseUriBuilderMock->expects($this->once())
             ->method('setArguments')
             ->with($expectedArguments)
-            ->will($this->returnValue($this->extBaseUriBuilderMock));
-        $this->extBaseUriBuilderMock->expects($this->once())
-            ->method('setUseCacheHash')
-            ->with(false)
             ->will($this->returnValue($this->extBaseUriBuilderMock));
         $this->extBaseUriBuilderMock->expects($this->once())
             ->method('reset')
@@ -153,7 +148,6 @@ class SearchUriBuilderTest extends UnitTest
 
         $expectedArguments = ['tx_solr' => ['filter' => ['###tx_solr:filter:0:color###']]];
         $this->extBaseUriBuilderMock->expects($this->once())->method('setArguments')->with($expectedArguments)->will($this->returnValue($this->extBaseUriBuilderMock));
-        $this->extBaseUriBuilderMock->expects($this->once())->method('setUseCacheHash')->with(false)->will($this->returnValue($this->extBaseUriBuilderMock));
         $this->extBaseUriBuilderMock->expects($this->once())->method('reset')->with()->will($this->returnValue($this->extBaseUriBuilderMock));
         $this->extBaseUriBuilderMock->expects($this->once())->method('build')->will($this->returnValue(urlencode('/index.php?id=1&tx_solr[filter][0]=###tx_solr:filter:0###')));
 
@@ -201,7 +195,6 @@ class SearchUriBuilderTest extends UnitTest
             // we expect that the page uid from the configruation will be used to build the url with the uri builder
         $this->extBaseUriBuilderMock->expects($this->once())->method('setTargetPageUid')->with(4711)->will($this->returnValue($this->extBaseUriBuilderMock));
         $this->extBaseUriBuilderMock->expects($this->once())->method('setArguments')->with($expectedArguments)->will($this->returnValue($this->extBaseUriBuilderMock));
-        $this->extBaseUriBuilderMock->expects($this->once())->method('setUseCacheHash')->with(false)->will($this->returnValue($this->extBaseUriBuilderMock));
         $this->extBaseUriBuilderMock->expects($this->once())->method('reset')->with()->will($this->returnValue($this->extBaseUriBuilderMock));
         $this->extBaseUriBuilderMock->expects($this->once())->method('build')->will($this->returnValue($linkBuilderResult));
         $result = $this->searchUrlBuilder->getSetSortingUri($previousRequest, 'title', 'desc');
@@ -232,7 +225,6 @@ class SearchUriBuilderTest extends UnitTest
         // we expect that the filters are empty after remove
         $expectedArguments = ['tx_solr' => ['filter' => []]];
         $this->extBaseUriBuilderMock->expects($this->once())->method('setArguments')->with($expectedArguments)->will($this->returnValue($this->extBaseUriBuilderMock));
-        $this->extBaseUriBuilderMock->expects($this->once())->method('setUseCacheHash')->with(false)->will($this->returnValue($this->extBaseUriBuilderMock));
         $this->extBaseUriBuilderMock->expects($this->once())->method('reset')->with()->will($this->returnValue($this->extBaseUriBuilderMock));
         $this->searchUrlBuilder->getRemoveFacetValueUri($previousRequest, 'type', 'pages');
     }
@@ -262,7 +254,6 @@ class SearchUriBuilderTest extends UnitTest
         //@todo we need to refactor the request in ext:solr to cleanup empty arguments completely to assert  $expectedArguments = []
         $expectedArguments = ['tx_solr' => ['filter' => []]];
         $this->extBaseUriBuilderMock->expects($this->once())->method('setArguments')->with($expectedArguments)->will($this->returnValue($this->extBaseUriBuilderMock));
-        $this->extBaseUriBuilderMock->expects($this->once())->method('setUseCacheHash')->with(false)->will($this->returnValue($this->extBaseUriBuilderMock));
         $this->extBaseUriBuilderMock->expects($this->once())->method('reset')->with()->will($this->returnValue($this->extBaseUriBuilderMock));
         $this->searchUrlBuilder->getRemoveFacetUri($previousRequest, 'type');
     }
@@ -297,7 +288,6 @@ class SearchUriBuilderTest extends UnitTest
             0, 0, $configurationMock);
 
         $this->extBaseUriBuilderMock->expects($this->any())->method('setArguments')->will($this->returnValue($this->extBaseUriBuilderMock));
-        $this->extBaseUriBuilderMock->expects($this->any())->method('setUseCacheHash')->will($this->returnValue($this->extBaseUriBuilderMock));
         $this->extBaseUriBuilderMock->expects($this->once())->method('reset')->with()->will($this->returnValue($this->extBaseUriBuilderMock));
         $this->extBaseUriBuilderMock->expects($this->any())->method('build')->will($this->returnValue('/index.php?id=1&tx_solr[filter][0]=type:pages'));
 
@@ -342,7 +332,6 @@ class SearchUriBuilderTest extends UnitTest
         $groupItem = new GroupItem($group, 'pid:[0 to 5]', 12, 0, 32);
 
         $this->extBaseUriBuilderMock->expects($this->once())->method('setArguments')->with($expectedArguments)->will($this->returnValue($this->extBaseUriBuilderMock));
-        $this->extBaseUriBuilderMock->expects($this->once())->method('setUseCacheHash')->with(false)->will($this->returnValue($this->extBaseUriBuilderMock));
         $this->extBaseUriBuilderMock->expects($this->once())->method('reset')->with()->will($this->returnValue($this->extBaseUriBuilderMock));
         $this->extBaseUriBuilderMock->expects($this->once())->method('build')->will($this->returnValue($linkBuilderResult));
 
@@ -416,8 +405,6 @@ class SearchUriBuilderTest extends UnitTest
         $previousRequest =  new SearchRequest($queryParameters, 42, 0, $configurationMock);
         $this->extBaseUriBuilderMock->expects($this->any())->method('setArguments')->with($expectedQueryParameters)
             ->will($this->returnValue($this->extBaseUriBuilderMock));
-        $this->extBaseUriBuilderMock->expects($this->once())->method('setUseCacheHash')->with(false)
-            ->will($this->returnValue($this->extBaseUriBuilderMock));
         $this->extBaseUriBuilderMock->expects($this->once())->method('reset')->with()->will($this->returnValue($this->extBaseUriBuilderMock));
         $this->extBaseUriBuilderMock->expects($this->once())->method('build')->will($this->returnValue($linkBuilderResult));
         $this->searchUrlBuilder->injectRoutingService($routingServiceMock);
@@ -475,8 +462,6 @@ class SearchUriBuilderTest extends UnitTest
 
         $previousRequest =  new SearchRequest($queryParameters, 42, 0, $configurationMock);
         $this->extBaseUriBuilderMock->expects($this->any())->method('setArguments')->with($expectedQueryParameters)
-            ->will($this->returnValue($this->extBaseUriBuilderMock));
-        $this->extBaseUriBuilderMock->expects($this->once())->method('setUseCacheHash')->with(false)
             ->will($this->returnValue($this->extBaseUriBuilderMock));
         $this->extBaseUriBuilderMock->expects($this->once())->method('reset')->with()->will($this->returnValue($this->extBaseUriBuilderMock));
         $this->extBaseUriBuilderMock->expects($this->once())->method('build')->will($this->returnValue($linkBuilderResult));

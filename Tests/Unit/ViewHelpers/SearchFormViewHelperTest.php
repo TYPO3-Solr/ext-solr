@@ -77,7 +77,6 @@ class SearchFormViewHelperTest extends UnitTest
         $this->uriBuilderMock->expects($this->once())->method('setTargetPageUid')->with($pageUid)->willReturn($this->uriBuilderMock);
         $this->uriBuilderMock->expects($this->once())->method('setTargetPageType')->willReturn($this->uriBuilderMock);
         $this->uriBuilderMock->expects($this->once())->method('setNoCache')->willReturn($this->uriBuilderMock);
-        $this->uriBuilderMock->expects($this->once())->method('setUseCacheHash')->willReturn($this->uriBuilderMock);
         $this->uriBuilderMock->expects($this->once())->method('setArguments')->willReturn($this->uriBuilderMock);
         $this->uriBuilderMock->expects($this->once())->method('setCreateAbsoluteUri')->willReturn($this->uriBuilderMock);
         $this->uriBuilderMock->expects($this->once())->method('setAddQueryString')->willReturn($this->uriBuilderMock);
