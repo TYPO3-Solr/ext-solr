@@ -223,7 +223,7 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
     {
         $uriBuilder = $this->getControllerContext()->getUriBuilder();
         $pluginNamespace = $this->getTypoScriptConfiguration()->getSearchPluginNamespace();
-        $suggestUrl = $uriBuilder->reset()->setTargetPageUid($pageUid)->setTargetPageType($this->arguments['suggestPageType'])->setUseCacheHash(false)->setArguments([$pluginNamespace => ['additionalFilters' => $additionalFilters]])->build();
+        $suggestUrl = $uriBuilder->reset()->setTargetPageUid($pageUid)->setTargetPageType($this->arguments['suggestPageType'])->setArguments([$pluginNamespace => ['additionalFilters' => $additionalFilters]])->build();
 
         /* @var UrlHelper $urlService */
         $urlService = GeneralUtility::makeInstance(UrlHelper::class, $suggestUrl);
@@ -244,7 +244,6 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
             ->setTargetPageUid($pageUid)
             ->setTargetPageType($this->arguments['pageType'] ?? 0)
             ->setNoCache($this->arguments['noCache'] ?? false)
-            ->setUseCacheHash(!$this->arguments['noCacheHash'])
             ->setArguments($this->arguments['additionalParams'] ?? [])
             ->setCreateAbsoluteUri($this->arguments['absolute'] ?? false)
             ->setAddQueryString($this->arguments['addQueryString'] ?? false)
