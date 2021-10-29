@@ -85,7 +85,7 @@ defined('TYPO3') || die();
             'IndexQueue',
             '',
             [
-                \ApacheSolrForTypo3\Solr\Controller\Backend\Search\IndexQueueModuleController::class => 'index, initializeIndexQueue, requeueDocument, resetLogErrors, showError, doIndexingRun, switchSite'
+                \ApacheSolrForTypo3\Solr\Controller\Backend\Search\IndexQueueModuleController::class => 'index, initializeIndexQueue, requeueDocument, resetLogErrors, showError, doIndexingRun, switchSite, clearIndexQueue'
             ],
             [
                 'access' => 'user,group',
@@ -101,7 +101,7 @@ defined('TYPO3') || die();
             'IndexAdministration',
             '',
             [
-                \ApacheSolrForTypo3\Solr\Controller\Backend\Search\IndexAdministrationModuleController::class => 'index, emptyIndex, clearIndexQueue, reloadIndexConfiguration, switchSite'
+                \ApacheSolrForTypo3\Solr\Controller\Backend\Search\IndexAdministrationModuleController::class => 'index, emptyIndex, reloadIndexConfiguration, switchSite'
             ],
             [
                 'access' => 'user,group',

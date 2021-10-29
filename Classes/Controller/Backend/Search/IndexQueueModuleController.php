@@ -253,7 +253,6 @@ class IndexQueueModuleController extends AbstractModuleController
      * Indexes a few documents with the index service.
      * @return void
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
-     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
      */
     public function doIndexingRunAction()
     {
@@ -272,6 +271,22 @@ class IndexQueueModuleController extends AbstractModuleController
             LocalizationUtility::translate($label, 'Solr'),
             LocalizationUtility::translate('solr.backend.index_queue_module.flashmessage.index_manual', 'Solr'),
             $severity
+        );
+
+        $this->redirect('index');
+    }
+
+    /**
+     * Empties the Index Queue
+     *
+     * @return void
+     */
+    public function clearIndexQueueAction(): ResponseInterface
+    {
+        $this->indexQueue->deleteItemsBySite($this->selectedSite);
+        $this->addFlashMessage(
+            LocalizationUtility::translate('solr.backend.index_administration.success.queue_emptied', 'Solr',
+                [$this->selectedSite->getLabel()])
         );
 
         $this->redirect('index');
