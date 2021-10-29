@@ -364,7 +364,7 @@ class SearchUriBuilder
         } else {
             self::$missCount++;
             $this->uriBuilder->reset()->setTargetPageUid($pageUid);
-            $uriCacheTemplate = $this->uriBuilder->setArguments($structure)->setUseCacheHash(false)->build();
+            $uriCacheTemplate = $this->uriBuilder->setArguments($structure)->build();
 
             /* @var UrlHelper $urlHelper */
             $urlHelper = GeneralUtility::makeInstance(UrlHelper::class, $uriCacheTemplate);
