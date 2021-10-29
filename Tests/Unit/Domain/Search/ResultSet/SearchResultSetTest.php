@@ -206,8 +206,16 @@ class SearchResultSetTest extends UnitTest
         $fakeRequest = new SearchRequest(['tx_solr' => ['q' => 'my 4. search']]);
         $fakeRequest->setResultsPerPage(10);
 
-        $this->objectManagerMock->expects($this->at(0))->method('get')->with(SearchResultSet::class)->willReturn(new SearchResultSet());
-        $this->objectManagerMock->expects($this->at(1))->method('get')->with($testProcessor)->willReturn(new TestSearchResultSetProcessor());
+        $this->objectManagerMock
+            ->expects($this->exactly(2))
+            ->method('get')
+            ->withConsecutive(
+                [SearchResultSet::class],
+                [$testProcessor]
+            )->will($this->onConsecutiveCalls(
+                new SearchResultSet(),
+                new TestSearchResultSetProcessor()
+            ));
 
         $resultSet  = $this->searchResultSetService->search($fakeRequest);
 

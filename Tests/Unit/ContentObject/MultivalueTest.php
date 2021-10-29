@@ -93,7 +93,7 @@ class MultivalueTest extends UnitTest
         $GLOBALS['TSFE'] = $this->getDumbMock(TypoScriptFrontendController::class);
 
         $this->contentObject = $this->getMockBuilder(ContentObjectRenderer::class)
-            ->setMethods(['getResourceFactory', 'getEnvironmentVariable'])
+            ->setMethods(['getResourceFactory', 'getEnvironmentVariable', 'getRequest'])
             ->setConstructorArgs([$GLOBALS['TSFE']])->getMock();
     }
 

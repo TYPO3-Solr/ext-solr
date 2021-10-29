@@ -33,7 +33,8 @@
     "solarium/solarium": "6.1.4"
   },
   "require-dev": {
-    "phpunit/phpunit": "^7.5.6 || ^8",
+    "phpunit/phpunit": "^9.5",
+    "phpspec/prophecy-phpunit":"*",
     "nimut/testing-framework": "^6.0.0"
   },
   "replace": {

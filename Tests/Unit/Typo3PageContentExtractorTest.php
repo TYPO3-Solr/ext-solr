@@ -90,8 +90,8 @@ class Typo3PageContentExtractorTest extends UnitTest
 
         $actualResult = $contentExtractor->excludeContentByClass($content);
 
-        $this->assertContains('Was ein schöner Tag', $actualResult);
-        $this->assertNotContains('Remove me', $actualResult);
+        $this->assertStringContainsString('Was ein schöner Tag', $actualResult);
+        $this->assertStringNotContainsString('Remove me', $actualResult);
     }
 
     /**
@@ -106,8 +106,8 @@ class Typo3PageContentExtractorTest extends UnitTest
 
         $actualResult = $contentExtractor->excludeContentByClass($content);
 
-        $this->assertContains('100€', $actualResult);
-        $this->assertNotContains('Remove me', $actualResult);
+        $this->assertStringContainsString('100€', $actualResult);
+        $this->assertStringNotContainsString('Remove me', $actualResult);
     }
 
     public function canGetIndexableContentDataProvider() {
@@ -160,6 +160,6 @@ class Typo3PageContentExtractorTest extends UnitTest
         $contentExtractor->setConfiguration($this->typoScripConfigurationMock);
 
         $actualResult = $contentExtractor->getIndexableContent();
-        $this->assertContains($expectedResult, $actualResult);
+        $this->assertStringContainsString($expectedResult, $actualResult);
     }
 }

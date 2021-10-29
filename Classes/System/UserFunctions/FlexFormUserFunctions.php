@@ -19,6 +19,7 @@ use ApacheSolrForTypo3\Solr\FrontendEnvironment;
 use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
+use function str_starts_with;
 
 /**
  * This class contains all user functions for flexforms.
@@ -82,9 +83,9 @@ class FlexFormUserFunctions
                 $configuredFacet = array_values($configuredFacets);
                 $label = $configuredFacet[0]['label'];
                 // try to translate LLL: label or leave it unchanged
-                if (GeneralUtility::isFirstPartOfStr($label, 'LLL:') && $this->getTranslation($label) != '') {
+                if (str_starts_with($label, 'LLL:') && $this->getTranslation($label) != '') {
                     $label = $this->getTranslation($label);
-                } elseif (!GeneralUtility::isFirstPartOfStr($label, 'LLL:') && $configuredFacet[0]['label.']) {
+                } elseif (!str_starts_with($label, 'LLL:') && $configuredFacet[0]['label.']) {
                     $label = sprintf('cObject[...faceting.facets.%slabel]', array_keys($configuredFacets)[0]);
                 }
                 $label = sprintf('%s (Facet Label: "%s")', $value, $label);

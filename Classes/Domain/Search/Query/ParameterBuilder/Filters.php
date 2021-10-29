@@ -56,7 +56,7 @@ class Filters
     public function removeByPrefix($filterFieldName)
     {
         foreach ($this->filters as $key => $filterString) {
-            if (GeneralUtility::isFirstPartOfStr($filterString, $filterFieldName)) {
+            if (\str_starts_with($filterString, $filterFieldName)) {
                 unset($this->filters[$key]);
             }
         }

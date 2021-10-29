@@ -119,7 +119,7 @@ class ClassificationTest extends UnitTest
         $GLOBALS['TSFE'] = $this->getDumbMock(TypoScriptFrontendController::class);
 
         $this->contentObject = $this->getMockBuilder(ContentObjectRenderer::class)
-            ->setMethods(['getResourceFactory', 'getEnvironmentVariable'])
+            ->onlyMethods(['getResourceFactory', 'getEnvironmentVariable', 'getRequest'])
             ->setConstructorArgs([$GLOBALS['TSFE']])->getMock();
     }
 
