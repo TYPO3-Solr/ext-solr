@@ -175,7 +175,7 @@ abstract class AbstractDataHandlerListener
         if ($triggerConfigurationHasNoCurrentStateConfiguration) {
             return true;
         }
-        $diff = array_diff_assoc($triggerConfiguration['currentState'], $pageRecord);
+        $diff = array_diff_assoc($triggerConfiguration['currentState'], $pageRecord ?? []);
         return empty($diff);
     }
 

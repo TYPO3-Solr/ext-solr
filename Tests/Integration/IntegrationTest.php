@@ -1,6 +1,15 @@
 <?php
 namespace ApacheSolrForTypo3\Solr\Tests\Integration;
 
+use Doctrine\DBAL\Exception;
+use Doctrine\DBAL\Schema\SchemaException;
+use ReflectionObject;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Schema\Exception\StatementException;
+use TYPO3\CMS\Core\Database\Schema\Exception\UnexpectedSignalReturnValueTypeException;
+use TYPO3\CMS\Core\Error\Http\InternalServerErrorException;
+use TYPO3\CMS\Core\Error\Http\ServiceUnavailableException;
+use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Information\Typo3Version;
 /***************************************************************
  *  Copyright notice
@@ -29,13 +38,11 @@ use ApacheSolrForTypo3\Solr\Access\Rootline;
 use ApacheSolrForTypo3\Solr\Tests\Unit\Helper\FakeObjectManager;
 use ApacheSolrForTypo3\Solr\Typo3PageIndexer;
 use InvalidArgumentException;
-use Nimut\TestingFramework\Exception\Exception;
 use ReflectionClass;
 use ReflectionException;
 use RuntimeException;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Cache\CacheManager;
-use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\UserAspect;
@@ -47,12 +54,11 @@ use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\TimeTracker\TimeTracker;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use TYPO3\CMS\Frontend\Http\RequestHandler;
-use TYPO3\CMS\Frontend\Page\PageGenerator;
 use TYPO3\CMS\Core\Tests\Functional\SiteHandling\SiteBasedTestTrait;
+use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 use function getenv;
 
 /**
@@ -178,6 +184,7 @@ abstract class IntegrationTest extends FunctionalTestCase
     /**
      * @param string $fixtureName
      * @throws ReflectionException
+     * @throws Exception
      */
     protected function importDumpFromFixture($fixtureName)
     {
@@ -185,9 +192,9 @@ abstract class IntegrationTest extends FunctionalTestCase
         $dumpContent = str_replace(["\r", "\n"], '', $dumpContent);
         $queries = GeneralUtility::trimExplode(';', $dumpContent, true);
 
-        $connection = $this->getDatabaseConnection();
+        $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionByName(ConnectionPool::DEFAULT_CONNECTION_NAME);
         foreach ($queries as $query) {
-            $connection->exec($query);
+            $connection->executeStatement($query);
         }
     }
 
@@ -195,12 +202,15 @@ abstract class IntegrationTest extends FunctionalTestCase
      * Imports an ext_tables.sql definition as done by the install tool.
      *
      * @param string $fixtureName
+     * @throws Exception
      * @throws ReflectionException
+     * @throws SchemaException
+     * @throws StatementException
+     * @throws UnexpectedSignalReturnValueTypeException
      */
-    protected function importExtTablesDefinition($fixtureName)
+    protected function importExtTablesDefinition(string $fixtureName)
     {
         // create fake extension database table and TCA
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
 
         $schemaMigrationService = GeneralUtility::makeInstance(SchemaMigrator::class);
         $sqlReader = GeneralUtility::makeInstance(SqlReader::class);
@@ -257,12 +267,15 @@ abstract class IntegrationTest extends FunctionalTestCase
     /**
      * @param int $id
      * @param string $MP
-     * @param $language
+     * @param int $language
      * @return TypoScriptFrontendController
+     * @throws InternalServerErrorException
+     * @throws ServiceUnavailableException
+     * @throws SiteNotFoundException
      */
-    protected function getConfiguredTSFE($id = 1, $MP = '', $language = 0)
+    protected function getConfiguredTSFE(int $id = 1, string $MP = '', int $language = 0): TypoScriptFrontendController
     {
-            /** @var TSFETestBootstrapper $bootstrapper */
+        /* @var TSFETestBootstrapper $bootstrapper */
         $bootstrapper = GeneralUtility::makeInstance(TSFETestBootstrapper::class);
 
         $result = $bootstrapper->bootstrap($id, $MP, $language);
@@ -329,15 +342,13 @@ abstract class IntegrationTest extends FunctionalTestCase
     protected function assertSolrContainsDocumentCount($documentCount)
     {
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
-        $this->assertContains('"numFound":' . intval($documentCount), $solrContent, 'Solr contains unexpected amount of documents');
+        $this->assertStringContainsString('"numFound":' . intval($documentCount), $solrContent, 'Solr contains unexpected amount of documents');
     }
 
     /**
      * @param string $fixture
      * @param array $importPageIds
      * @param array $feUserGroupArray
-     * @throws Exception
-     * @throws ReflectionException
      */
     protected function indexPageIdsFromFixture($fixture, $importPageIds, $feUserGroupArray = [0])
     {
@@ -381,11 +392,14 @@ abstract class IntegrationTest extends FunctionalTestCase
     }
 
     /**
-     * @param integer $pageId
+     * @param int $pageId
      * @param array $feUserGroupArray
      * @return TypoScriptFrontendController
+     * @throws InternalServerErrorException
+     * @throws ServiceUnavailableException
+     * @throws SiteNotFoundException
      */
-    protected function fakeTSFE($pageId, $feUserGroupArray = [0])
+    protected function fakeTSFE(int $pageId, array $feUserGroupArray = [0]): TypoScriptFrontendController
     {
         $GLOBALS['TT'] = $this->getMockBuilder(TimeTracker::class)->disableOriginalConstructor()->getMock();
         $_SERVER['HTTP_HOST'] = 'test.local.typo3.org';
@@ -443,12 +457,11 @@ abstract class IntegrationTest extends FunctionalTestCase
      *
      * @return DataHandler
      */
-    protected function getDataHandler()
+    protected function getDataHandler(): DataHandler
     {
         $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageService::class);
-        /* @var DataHandler $dataHandler */
-        $dataHandler = GeneralUtility::makeInstance(DataHandler::class);
-        return $dataHandler;
+        /* @retrun  DataHandler */
+        return GeneralUtility::makeInstance(DataHandler::class);
     }
 
     /**
@@ -595,5 +608,32 @@ abstract class IntegrationTest extends FunctionalTestCase
         }
         $property->setAccessible(true);
         return $property->getValue($object);
+    }
+
+    /*
+        Nimut testing framework goodies, copied from https://github.com/Nimut/testing-framework
+     */
+
+    /**
+     * Helper function to call protected or private methods
+     *
+     * Copied from https://github.com/Nimut/testing-framework/blob/3d0573b23fe16157460b4e73e51e1cc0903ea35c/src/TestingFramework/TestCase/AbstractTestCase.php#L227-L245
+     *
+     * @param object $object The object to be invoked
+     * @param string $name the name of the method to call
+     * @return mixed
+     * @throws ReflectionException
+     */
+    protected function callInaccessibleMethod($object, $name)
+    {
+        // Remove first two arguments ($object and $name)
+        $arguments = func_get_args();
+        array_splice($arguments, 0, 2);
+
+        $reflectionObject = new ReflectionObject($object);
+        $reflectionMethod = $reflectionObject->getMethod($name);
+        $reflectionMethod->setAccessible(true);
+
+        return $reflectionMethod->invokeArgs($object, $arguments);
     }
 }

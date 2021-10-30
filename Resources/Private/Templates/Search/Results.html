@@ -59,7 +59,7 @@
 					<f:then>
 						<s:translate key="didYouMean">Did you mean</s:translate>
 						<f:for each="{resultSet.spellCheckingSuggestions}" as="suggestion">
-							<f:link.page additionalParams="{q:suggestion.suggestion}" noCacheHash="1">{suggestion.suggestion}</f:link.page>
+							<f:link.page additionalParams="{q:suggestion.suggestion}">{suggestion.suggestion}</f:link.page>
 						</f:for> ?
 					</f:then>
 				</f:if>

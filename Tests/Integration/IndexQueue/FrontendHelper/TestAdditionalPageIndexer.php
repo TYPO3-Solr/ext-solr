@@ -19,7 +19,7 @@ class TestAdditionalPageIndexer implements AdditionalPageIndexer {
         $secondDocument = clone $pageDocument;
 
         $id = $pageDocument['id'];
-        $copyId = $id['value'] . '-copy';
+        $copyId = $id . '-copy';
 
         $secondDocument->setField('id', $copyId);
         $secondDocument->setField('custom_stringS', 'additional text');

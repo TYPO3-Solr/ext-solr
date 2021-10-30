@@ -90,7 +90,7 @@ class ConnectionManagerTest extends IntegrationTest
             $solrService = $connectionManager->getConnectionByRootPageId($rootPageId, $languageID);
             $this->assertInstanceOf(SolrConnection::class, $solrService, vsprintf('Should find solr connection for root page "%s" and language "%s"', [$rootPageId, $languageID]));
             $this->assertEquals($expectedSolrHost, $solrService->getNode('read')->getHost(), vsprintf('Apache Solr host must be the same as configured.' .
-                ' Wrong connection is used. I expected "%s" as Host for "%s" Site with Root-Page ID "%".', [$expectedSolrHost, $siteName, $rootPageId]));
+                ' Wrong connection is used. I expected "%s" as Host for "%s" Site with Root-Page ID "%s".', [$expectedSolrHost, $siteName, $rootPageId]));
         }
     }
 
@@ -149,7 +149,7 @@ class ConnectionManagerTest extends IntegrationTest
             $solrService = $connectionManager->getConnectionByPageId($pageId, $languageID);
             $this->assertInstanceOf(SolrConnection::class, $solrService, vsprintf('Should find solr connection for page id "%s" and language "%s"', [$pageId, $languageID]));
             $this->assertEquals($expectedSolrHost, $solrService->getNode('read')->getHost(), vsprintf('Apache Solr host must be the same as configured.' .
-                ' Wrong connection is used. I expected "%s" as Host for "%s" Site with Root-Page ID "%".', [$expectedSolrHost, $siteName, $pageId]));
+                ' Wrong connection is used. I expected "%s" as Host for "%s" Site with Root-Page ID "%s".', [$expectedSolrHost, $siteName, $pageId]));
         }
     }
 

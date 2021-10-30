@@ -141,7 +141,7 @@ abstract class AbstractBaseController extends ActionController
         /** @var $controllerContext \ApacheSolrForTypo3\Solr\Mvc\Controller\SolrControllerContext */
         $controllerContext = $this->objectManager->get(SolrControllerContext::class);
         $controllerContext->setRequest($this->request);
-        $controllerContext->setResponse($this->response);
+//        $controllerContext->setResponse($this->response);
         if ($this->arguments !== null) {
             $controllerContext->setArguments($this->arguments);
         }

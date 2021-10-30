@@ -255,14 +255,14 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
     }
 
     /**
-     * Handles the indexing of the page content during post processing of a
+     * Handles the indexing of the page content during post-processing of a
      * generated page.
      *
      * @param array $params unused
      * @param TypoScriptFrontendController $page TypoScript frontend
      * @noinspection PhpUnused
      */
-    public function hook_indexContent($params, TypoScriptFrontendController $page)
+    public function hook_indexContent(array $params, TypoScriptFrontendController $page)
     {
         $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, /** @scrutinizer ignore-type */ __CLASS__);
 

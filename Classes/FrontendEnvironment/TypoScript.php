@@ -7,6 +7,7 @@ use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationPageResolver;
 use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use stdClass;
 use TYPO3\CMS\Core\Domain\Repository\PageRepository;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\TypoScript\TemplateService;
@@ -108,10 +109,11 @@ class TypoScript implements SingletonInterface
             /** @var $pageSelect PageRepository */
             $pageSelect = GeneralUtility::makeInstance(PageRepository::class);
             if (empty($GLOBALS['TSFE'])) {
-                $GLOBALS['TSFE'] = new \stdClass();
-                $GLOBALS['TSFE']->tmpl = new \stdClass();
+                $GLOBALS['TSFE'] = new stdClass();
+                $GLOBALS['TSFE']->tmpl = new stdClass();
                 $GLOBALS['TSFE']->tmpl->rootLine = $rootLine;
                 $GLOBALS['TSFE']->id = $pageId;
+                $GLOBALS['TSFE']->all = [];
                 $initializedTsfe = true;
             }
             $GLOBALS['TSFE']->sys_page = $pageSelect;

@@ -92,8 +92,8 @@ class SearchTest extends IntegrationTest
 
         $searchResponse = $searchInstance->search($query);
         $rawResponse = $searchResponse->getRawResponse();
-        $this->assertContains('"numFound":1', $rawResponse, 'Could not index document into solr');
-        $this->assertContains('"title":"Hello Search Test"', $rawResponse, 'Could not index document into solr');
+        $this->assertStringContainsString('"numFound":1', $rawResponse, 'Could not index document into solr');
+        $this->assertStringContainsString('"title":"Hello Search Test"', $rawResponse, 'Could not index document into solr');
     }
 
     /**
