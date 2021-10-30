@@ -219,7 +219,7 @@ assertAllCoresAreUp ()
   local iteration=0
   while true ; do
     ((iteration++))
-    if [ $iteration -gt 30 ] ; then
+    if [[ $iteration -gt 30 ]] ; then
       echo -ne "${RED}"'\nTimeout by pinging the cores.\n\n'"${NC}"
       cleanUp
       exit 1;

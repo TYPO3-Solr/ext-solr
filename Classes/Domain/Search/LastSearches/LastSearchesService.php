@@ -28,6 +28,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\LastSearches;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Session\FrontendUserSession;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use UnexpectedValueException;
 
 /**
  * The LastSearchesService is responsible to return the LastSearches from the session or database,
@@ -92,7 +93,7 @@ class LastSearchesService
      * Saves the keywords to the last searches in the database or session depending on the configuration.
      *
      * @param string $keywords
-     * @throws \UnexpectedValueException
+     * @throws UnexpectedValueException
      */
     public function addToLastSearches($keywords)
     {
@@ -105,7 +106,7 @@ class LastSearchesService
                 $this->lastSearchesRepository->add($keywords, (int)$this->configuration->getSearchLastSearchesLimit());
                 break;
             default:
-                throw new \UnexpectedValueException(
+                throw new UnexpectedValueException(
                     'Unknown mode for plugin.tx_solr.search.lastSearches.mode, valid modes are "user" or "global".',
                     1342456570
                 );

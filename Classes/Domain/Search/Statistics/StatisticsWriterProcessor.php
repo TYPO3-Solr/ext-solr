@@ -99,7 +99,7 @@ class StatisticsWriterProcessor implements SearchResultSetProcessor
             'time_preparation' => $response->debug->timing->prepare->time ?? 0,
             // @extensionScannerIgnoreLine
             'time_processing' => $response->debug->timing->process->time ?? 0,
-            'feuser_id' => isset($TSFE->fe_user->user) ? (int)$TSFE->fe_user->user['uid'] ?? null : null,
+            'feuser_id' => isset($TSFE->fe_user->user) ? (int)$TSFE->fe_user->user['uid'] ?? 0 : 0,
             'cookie' => $TSFE->fe_user->id ?? '',
             'ip' => $this->applyIpMask((string)$this->getUserIp(), $ipMaskLength),
             'page' => (int)$page,

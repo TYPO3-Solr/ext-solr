@@ -28,6 +28,7 @@ use ApacheSolrForTypo3\Solr\Controller\Backend\PageModuleSummary;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Backend\View\PageLayoutView;
+use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
 use TYPO3\CMS\Core\Localization\LanguageService;
 
 /**
@@ -40,6 +41,7 @@ class PageModuleSummaryTest extends IntegrationTest
 {
     /**
      * @return void
+     * @throws NoSuchCacheException
      */
     public function setUp(): void
     {
@@ -64,13 +66,13 @@ class PageModuleSummaryTest extends IntegrationTest
         $summary = new PageModuleSummary();
         $result = $summary->getSummary($data);
 
-        $this->assertContains('fakePluginLabel', $result, 'Summary did not contain plugin label');
-        $this->assertContains('>Filter appKey</td>', $result, 'Summary did not contain filter label');
-        $this->assertContains('<td>test</td>', $result, 'Summary did not contain filter value');
-        $this->assertContains('<td>sorting</td>', $result, 'Summary did not contain sorting');
-        $this->assertContains('<td>boostFunction</td>', $result, 'Summary did not contain boostFunction');
-        $this->assertContains('<td>boostQuery</td>', $result, 'Summary did not contain boostQuery');
-        $this->assertContains('<td>10</td>', $result, 'Summary did not contain resultsPerPage');
-        $this->assertContains('<td>myTemplateFile.html</td>', $result, 'Templatefile not in summary');
+        $this->assertStringContainsString('fakePluginLabel', $result, 'Summary did not contain plugin label');
+        $this->assertStringContainsString('>Filter appKey</td>', $result, 'Summary did not contain filter label');
+        $this->assertStringContainsString('<td>test</td>', $result, 'Summary did not contain filter value');
+        $this->assertStringContainsString('<td>sorting</td>', $result, 'Summary did not contain sorting');
+        $this->assertStringContainsString('<td>boostFunction</td>', $result, 'Summary did not contain boostFunction');
+        $this->assertStringContainsString('<td>boostQuery</td>', $result, 'Summary did not contain boostQuery');
+        $this->assertStringContainsString('<td>10</td>', $result, 'Summary did not contain resultsPerPage');
+        $this->assertStringContainsString('<td>myTemplateFile.html</td>', $result, 'Templatefile not in summary');
     }
 }

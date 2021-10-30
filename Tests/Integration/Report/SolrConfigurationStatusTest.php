@@ -51,7 +51,7 @@ class SolrConfigurationStatusTest extends IntegrationTest
     {
         $this->importDataSetFromFixture('can_get_green_solr_configuration_status_report.xml');
 
-            /** @var $solrConfigurationStatus  \ApacheSolrForTypo3\Solr\Report\SolrConfigurationStatus */
+            /** @var $solrConfigurationStatus  SolrConfigurationStatus */
         $solrConfigurationStatus = GeneralUtility::makeInstance(SolrConfigurationStatus::class);
         $violations = $solrConfigurationStatus->getStatus();
         $this->assertEmpty($violations, 'We did not get an empty response from the solr configuration status report! Something is wrong');
@@ -64,14 +64,14 @@ class SolrConfigurationStatusTest extends IntegrationTest
     {
         $this->importDataSetFromFixture('can_detect_missing_rootpage.xml');
 
-        /** @var $solrConfigurationStatus  \ApacheSolrForTypo3\Solr\Report\SolrConfigurationStatus */
+        /** @var $solrConfigurationStatus  SolrConfigurationStatus */
         $solrConfigurationStatus = GeneralUtility::makeInstance(SolrConfigurationStatus::class);
         $violations = $solrConfigurationStatus->getStatus();
 
         $this->assertCount(1, $violations, 'Asserting to contain only one violation.');
 
         $firstViolation = array_pop($violations);
-        $this->assertContains('No sites', $firstViolation->getValue(), 'Did not get a no sites found violation');
+        $this->assertStringContainsString('No sites', $firstViolation->getValue(), 'Did not get a no sites found violation');
     }
 
     /**
@@ -81,13 +81,13 @@ class SolrConfigurationStatusTest extends IntegrationTest
     {
         $this->importDataSetFromFixture('can_detect_indexing_disabled.xml');
 
-        /** @var $solrConfigurationStatus  \ApacheSolrForTypo3\Solr\Report\SolrConfigurationStatus */
+        /* @var SolrConfigurationStatus $solrConfigurationStatus   */
         $solrConfigurationStatus = GeneralUtility::makeInstance(SolrConfigurationStatus::class);
         $violations = $solrConfigurationStatus->getStatus();
 
         $this->assertCount(1, $violations, 'Asserting to contain only one violation.');
 
         $firstViolation = array_pop($violations);
-        $this->assertContains('Indexing is disabled', $firstViolation->getValue(), 'Did not get a no sites found violation');
+        $this->assertStringContainsString('Indexing is disabled', $firstViolation->getValue(), 'Did not get a no sites found violation');
     }
 }

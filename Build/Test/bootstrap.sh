@@ -10,7 +10,7 @@ EXTENSION_ROOTPATH="$SCRIPTPATH/../../"
 SOLR_INSTALL_PATH="/opt/solr-tomcat/"
 
 DEFAULT_TYPO3_VERSION="10"
-DEFAULT_PHP_CS_FIXER_VERSION="^2.16.1"
+DEFAULT_PHP_CS_FIXER_VERSION="^3.2.1"
 DEFAULT_TYPO3_DATABASE_HOST="localhost"
 DEFAULT_TYPO3_DATABASE_NAME="test"
 DEFAULT_TYPO3_DATABASE_USERNAME="root"
@@ -84,7 +84,6 @@ fi
 echo "Install build tools: "
 if ! composer global require \
   friendsofphp/php-cs-fixer:"$PHP_CS_FIXER_VERSION" \
-  namelesscoder/typo3-repository-client \
   sclable/xml-lint
 then
   echo "The build tools(php-cs-fixer, typo3-repository-client) could not be installed. Please fix this issue."
@@ -94,6 +93,8 @@ fi
 # Setup TYPO3 environment variables
 export TYPO3_PATH_PACKAGES="${EXTENSION_ROOTPATH}.Build/vendor/"
 export TYPO3_PATH_WEB="${EXTENSION_ROOTPATH}.Build/Web/"
+
+echo "Installing test environment"
 echo "Using extension path $EXTENSION_ROOTPATH"
 echo "Using package path $TYPO3_PATH_PACKAGES"
 echo "Using web path $TYPO3_PATH_WEB"
