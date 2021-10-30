@@ -22,6 +22,7 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
+use ReflectionException;
 use Solarium\Client;
 use Solarium\Core\Client\Adapter\Psr18Adapter;
 use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
@@ -73,14 +74,15 @@ class SolrWriteServiceTest extends IntegrationTest
 
     /**
      * @test
+     * @throws ReflectionException
      */
     public function canExtractByQuery()
     {
         $testFilePath = $this->getFixturePathByName('testpdf.pdf');
-            /** @var $extractQuery \ApacheSolrForTypo3\Solr\Domain\Search\Query\ExtractingQuery*/
+        /* @var ExtractingQuery $extractQuery */
         $extractQuery = GeneralUtility::makeInstance(ExtractingQuery::class, $testFilePath);
         $extractQuery->setExtractOnly(true);
         $response = $this->solrWriteService->extractByQuery($extractQuery);
-        $this->assertContains('PDF Test', $response[0], 'Could not extract text');
+        $this->assertStringContainsString('PDF Test', $response[0], 'Could not extract text');
     }
 }

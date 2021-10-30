@@ -1,4 +1,5 @@
-<phpunit
+<?xml version="1.0"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd"
 	backupGlobals="false"
 	backupStaticAttributes="false"
 	colors="true"
@@ -6,12 +7,16 @@
 	convertWarningsToExceptions="true"
 	forceCoversAnnotation="false"
 	processIsolation="true"
-	stopOnError="true"
-	stopOnFailure="true"
+	stopOnError="false"
+	stopOnFailure="false"
 	stopOnIncomplete="false"
 	stopOnSkipped="false"
 	verbose="false">
-
+	<coverage processUncoveredFiles="false">
+		<include>
+			<directory suffix=".php">../../Classes/</directory>
+		</include>
+	</coverage>
 	<testsuites>
 		<testsuite name="ext-solr-integration-tests">
 			<directory>../../Tests/Integration/</directory>
@@ -22,9 +27,4 @@
 			<group>frontend</group>
 		</exclude>
 	</groups>
-	<filter>
-		<whitelist processUncoveredFilesFromWhitelist="false">
-			<directory suffix=".php">../../Classes/</directory>
-		</whitelist>
-	</filter>
 </phpunit>

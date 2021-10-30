@@ -17,17 +17,21 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Controller;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use ApacheSolrForTypo3\Solr\Typo3PageIndexer;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
+use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
+use TYPO3\CMS\Core\Http\Response;
 use TYPO3\CMS\Core\Http\ServerRequestFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Request as ExtbaseRequest;
-use TYPO3\CMS\Extbase\Mvc\Web\Response;
+//use TYPO3\CMS\Extbase\Mvc\Web\Response;
 use TYPO3\CMS\Frontend\Http\RequestHandler;
-use TYPO3\CMS\Frontend\Page\PageGenerator;
+//use TYPO3\CMS\Frontend\Page\PageGenerator;
 
-abstract class AbstractFrontendControllerTest  extends IntegrationTest {
+abstract class AbstractFrontendControllerTest  extends IntegrationTest
+{
 
     /**
      * @return void
+     * @throws NoSuchCacheException
      */
     public function setUp(): void
     {
@@ -100,9 +104,6 @@ abstract class AbstractFrontendControllerTest  extends IntegrationTest {
      */
     protected function getPreparedResponse()
     {
-        /** @var $response Response */
-        $response = $this->objectManager->get(Response::class);
-
-        return $response;
+        return $this->objectManager->get(Response::class);
     }
 }

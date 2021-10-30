@@ -80,7 +80,6 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
         $this->registerArgument('pageType', 'integer', 'Type of the target page. See typolink.parameter', false, 0);
 
         $this->registerArgument('noCache', 'boolean', 'Set this to disable caching for the target page. You should not need this.', false, false);
-        $this->registerArgument('noCacheHash', 'boolean', 'Set this to supress the cHash query parameter created by TypoLink. You should not need this.', false, false);
         $this->registerArgument('section', 'string', 'The anchor to be added to the action URI (only active if $actionUri is not set)', false, '');
         $this->registerArgument('absolute', 'boolean', 'If set, the URI of the rendered link is absolute', false, false);
         $this->registerArgument('addQueryString', 'boolean', 'If set, the current query parameters will be kept in the URI', false, false);

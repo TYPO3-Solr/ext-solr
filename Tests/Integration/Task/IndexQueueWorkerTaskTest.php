@@ -29,12 +29,11 @@ use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\Task\IndexQueueWorkerTask;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
-use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
-use TYPO3\CMS\Core\Charset\CharsetConverter;
+use Exception;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * TestCase to check if we can indexer from a index queue worker task into a solr server
+ * TestCase to check if we can index from index queue worker task into a solr server
  *
  * @author Timo Schmidt
  */
@@ -49,7 +48,6 @@ class IndexQueueWorkerTest extends IntegrationTest
      * @var array
      */
     protected $coreExtensionsToLoad = [
-        'extensionmanager',
         'scheduler'
     ];
 
@@ -62,20 +60,21 @@ class IndexQueueWorkerTest extends IntegrationTest
 
     /**
      * @test
+     * @throws Exception
      */
     public function canGetAdditionalInformationFromTask()
     {
         $this->importDataSetFromFixture('can_trigger_frontend_calls_for_page_index.xml');
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $site = $siteRepository->getFirstAvailableSite();
-        /** @var $indexQueueQueueWorkerTask \ApacheSolrForTypo3\Solr\Task\IndexQueueWorkerTask */
+        /* @var IndexQueueWorkerTask $indexQueueQueueWorkerTask */
         $indexQueueQueueWorkerTask = GeneralUtility::makeInstance(IndexQueueWorkerTask::class);
         $indexQueueQueueWorkerTask->setDocumentsToIndexLimit(1);
         $indexQueueQueueWorkerTask->setRootPageId($site->getRootPageId());
 
         $additionalInformation = $indexQueueQueueWorkerTask->getAdditionalInformation();
 
-        $this->assertContains('Root Page ID: 1', $additionalInformation);
-        $this->assertContains('Site: page for testing', $additionalInformation);
+        $this->assertStringContainsString('Root Page ID: 1', $additionalInformation);
+        $this->assertStringContainsString('Site: page for testing', $additionalInformation);
     }
 }

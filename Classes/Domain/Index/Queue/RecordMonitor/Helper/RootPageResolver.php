@@ -122,7 +122,7 @@ class RootPageResolver implements SingletonInterface
         }
 
         $page = $this->getPageRecordByPageId($pageId);
-        if (empty($page)) {
+        if (empty($page)) { // @todo: 1636120156 See \ApacheSolrForTypo3\Solr\Tests\Integration\IndexQueue\FrontendHelper\PageIndexerTest::phpProcessDoesNotDieIfPageIsNotAvailable()
             throw new \InvalidArgumentException(
                 'The page for the given page ID \'' . $pageId
                 . '\' could not be found in the database and can therefore not be used as site root page.',

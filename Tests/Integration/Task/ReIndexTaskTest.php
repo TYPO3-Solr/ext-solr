@@ -29,7 +29,9 @@ use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\IndexQueue\Indexer;
 use ApacheSolrForTypo3\Solr\Task\ReIndexTask;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
+use Exception;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
+use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Localization\LanguageService;
 
@@ -54,12 +56,12 @@ class ReIndexTaskTest extends IntegrationTest
      * @var array
      */
     protected $coreExtensionsToLoad = [
-        'extensionmanager',
         'scheduler'
     ];
 
     /**
      * @return void
+     * @throws NoSuchCacheException
      */
     public function setUp(): void
     {
@@ -68,11 +70,11 @@ class ReIndexTaskTest extends IntegrationTest
         $this->task = GeneralUtility::makeInstance(ReIndexTask::class);
         $this->indexQueue = GeneralUtility::makeInstance(Queue::class);
 
-        /** @var $beUser  \TYPO3\CMS\Core\Authentication\BackendUserAuthentication */
+        /** @var BackendUserAuthentication $beUser */
         $beUser = GeneralUtility::makeInstance(BackendUserAuthentication::class);
         $GLOBALS['BE_USER'] = $beUser;
 
-        /** @var $languageService  \TYPO3\CMS\Core\Localization\LanguageService */
+        /* @var LanguageService $languageService */
         $languageService = GeneralUtility::makeInstance(LanguageService::class);
         $GLOBALS['LANG'] = $languageService;
     }
@@ -105,6 +107,7 @@ class ReIndexTaskTest extends IntegrationTest
 
     /**
      * @test
+     * @throws Exception
      */
     public function testIfTheQueueIsFilledAfterTaskWasRunning()
     {
@@ -122,6 +125,7 @@ class ReIndexTaskTest extends IntegrationTest
 
     /**
      * @test
+     * @throws Exception
      */
     public function testCanGetAdditionalInformationFromTask()
     {
@@ -134,12 +138,13 @@ class ReIndexTaskTest extends IntegrationTest
         $this->task->setIndexingConfigurationsToReIndex(['pages']);
         $additionalInformation = $this->task->getAdditionalInformation();
 
-        $this->assertContains('Indexing Configurations: pages', $additionalInformation);
-        $this->assertContains('Root Page ID: 1', $additionalInformation);
+        $this->assertStringContainsString('Indexing Configurations: pages', $additionalInformation);
+        $this->assertStringContainsString('Root Page ID: 1', $additionalInformation);
     }
 
     /**
      * @test
+     * @throws Exception
      */
     public function solrIsEmptyAfterCleanup()
     {
@@ -150,7 +155,7 @@ class ReIndexTaskTest extends IntegrationTest
         $site = $siteRepository->getFirstAvailableSite();
         $this->indexQueue->updateItem('pages', 1);
         $items = $this->indexQueue->getItems('pages', 1);
-        /** @var $indexer \ApacheSolrForTypo3\Solr\IndexQueue\Indexer */
+        /* @var Indexer $indexer */
         $indexer = GeneralUtility::makeInstance(Indexer::class);
         $indexer->index($items[0]);
         $this->waitToBeVisibleInSolr();

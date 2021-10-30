@@ -29,8 +29,11 @@ use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\IndexQueue\RecordMonitor;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
+use Doctrine\DBAL\Exception as DoctrineDBALException;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\TestingFramework\Core\Exception as TestingFrameworkCoreException;
 
 /**
  * Testcase for the record monitor
@@ -127,7 +130,7 @@ class RecordMonitorTest extends IntegrationTest
         $output = trim(ob_get_contents());
         ob_end_clean();
 
-        $this->assertNotContains('You have an error in your SQL syntax', $output,
+        $this->assertStringNotContainsString('You have an error in your SQL syntax', $output,
             'We expect no sql error during the update of a regular page root record');
 
         // we expect to have an index queue item now
@@ -178,6 +181,7 @@ class RecordMonitorTest extends IntegrationTest
 
     /**
      * @test
+     * @throws DoctrineDBALException
      */
     public function canQueueSubPagesWhenExtendToSubPagesWasSetAndHiddenFlagWasRemoved()
     {
@@ -187,8 +191,8 @@ class RecordMonitorTest extends IntegrationTest
         $this->assertEmptyIndexQueue();
 
         // simulate the database change and build a faked changeset
-        $connection = $this->getDatabaseConnection();
-        $connection->updateArray('pages', ['uid' => 1], ['hidden' => 0]);
+        $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionByName(ConnectionPool::DEFAULT_CONNECTION_NAME);
+        $connection->update('pages', ['hidden' => 0], ['uid' => 1]);
         $changeSet = ['hidden' => 0];
 
         $dataHandler = $this->dataHandler;
@@ -201,6 +205,7 @@ class RecordMonitorTest extends IntegrationTest
 
     /**
      * @test
+     * @throws DoctrineDBALException
      */
     public function canQueueSubPagesWhenHiddenFlagIsSetAndExtendToSubPagesFlagWasRemoved()
     {
@@ -210,8 +215,8 @@ class RecordMonitorTest extends IntegrationTest
         $this->assertEmptyIndexQueue();
 
         // simulate the database change and build a faked changeset
-        $connection = $this->getDatabaseConnection();
-        $connection->updateArray('pages', ['uid' => 1], ['extendToSubpages' => 0]);
+        $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionByName(ConnectionPool::DEFAULT_CONNECTION_NAME);
+        $connection->update('pages', ['extendToSubpages' => 0], ['uid' => 1]);
         $changeSet = ['extendToSubpages' => 0];
 
         $dataHandler = $this->dataHandler;
@@ -224,6 +229,7 @@ class RecordMonitorTest extends IntegrationTest
 
     /**
      * @test
+     * @throws DoctrineDBALException
      */
     public function canQueueSubPagesWhenHiddenAndExtendToSubPagesFlagsWereRemoved()
     {
@@ -233,8 +239,8 @@ class RecordMonitorTest extends IntegrationTest
         $this->assertEmptyIndexQueue();
 
         // simulate the database change and build a faked changeset
-        $connection = $this->getDatabaseConnection();
-        $connection->updateArray('pages', ['uid' => 1], ['extendToSubpages' => 0, 'hidden' => 0]);
+        $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionByName(ConnectionPool::DEFAULT_CONNECTION_NAME);
+        $connection->update('pages', ['extendToSubpages' => 0, 'hidden' => 0], ['uid' => 1]);
         $changeSet = ['extendToSubpages' => 0, 'hidden' => 0];
 
         $dataHandler = $this->dataHandler;
@@ -247,6 +253,7 @@ class RecordMonitorTest extends IntegrationTest
 
     /**
      * @test
+     * @throws DoctrineDBALException
      */
     public function queueIsNotFilledWhenItemIsSetToHidden()
     {
@@ -256,8 +263,8 @@ class RecordMonitorTest extends IntegrationTest
         $this->assertEmptyIndexQueue();
 
         // simulate the database change and build a faked changeset
-        $connection = $this->getDatabaseConnection();
-        $connection->updateArray('pages', ['uid' => 1], ['hidden' => 1]);
+        $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionByName(ConnectionPool::DEFAULT_CONNECTION_NAME);
+        $connection->update('pages', ['hidden' => 1], ['uid' => 1]);
 
         $changeSet = ['hidden' => 1];
 
@@ -331,8 +338,7 @@ class RecordMonitorTest extends IntegrationTest
 
         // there should be one item in the queue.
         $this->assertIndexQueueContainsItemAmount(1);
-        $this->recordMonitor->processDatamap_afterDatabaseOperations($status, $table, $uid, $fields,
-            $this->dataHandler);
+        $this->recordMonitor->processDatamap_afterDatabaseOperations($status, $table, $uid, $fields, $this->dataHandler);
 
         // the queue entry should be removed since the record itself does not exist
         $this->assertEmptyIndexQueue();
@@ -386,6 +392,7 @@ class RecordMonitorTest extends IntegrationTest
 
     /**
      * @test
+     * @throws DoctrineDBALException
      */
     public function canQueueUpdatePagesWithCustomPageType()
     {
@@ -395,8 +402,8 @@ class RecordMonitorTest extends IntegrationTest
         $this->assertEmptyIndexQueue();
 
         // simulate the database change and build a faked changeset
-        $connection = $this->getDatabaseConnection();
-        $connection->updateArray('pages', ['uid' => 8], ['hidden' => 0]);
+        $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionByName(ConnectionPool::DEFAULT_CONNECTION_NAME);
+        $connection->update('pages', ['hidden' => 0], ['uid' => 8]);
 
         $changeSet = ['hidden' => 0];
 
@@ -963,9 +970,10 @@ class RecordMonitorTest extends IntegrationTest
     }
 
     /**
-     * This testcase checks if we can create a new testpage on the root level without any errors.
+     * This testcase checks if we can create a new test-page on the root level without any errors.
      *
      * @test
+     * @throws TestingFrameworkCoreException
      */
     public function canCreateSiteOneRootLevel()
     {
@@ -974,7 +982,7 @@ class RecordMonitorTest extends IntegrationTest
 
         $this->assertIndexQueueContainsItemAmount(0);
         $dataHandler = $this->getDataHandler();
-        $dataHandler->start(['pages' => ['NEW' => ['hidden' => 0]]], []);
+        $dataHandler->start(['pages' => ['NEW' => ['hidden' => 0, 'pid' => 0]]], []);
         $dataHandler->process_datamap();
 
         // the item is outside a siteroot so we should not have any queue entry

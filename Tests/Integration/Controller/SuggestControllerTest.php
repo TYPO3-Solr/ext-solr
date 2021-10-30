@@ -80,10 +80,10 @@ class SuggestControllerTest extends AbstractFrontendControllerTest
         $this->suggestRequest->setArgument('callback', 'rand');
 
         $this->suggestController->processRequest($this->suggestRequest, $this->suggestResponse);
-        $result = $this->suggestResponse->getContent();
+        $result = $this->suggestResponse->getBody()->getContents();
 
         //we assume to get suggestions like Sweatshirt
-        $this->assertContains('suggestions":{"sweatshirts":2}', $result, 'Response did not contain sweatshirt suggestions');
+        $this->assertStringContainsString('suggestions":{"sweatshirts":2}', $result, 'Response did not contain sweatshirt suggestions');
     }
 
     /**
@@ -118,9 +118,9 @@ class SuggestControllerTest extends AbstractFrontendControllerTest
         $this->suggestRequest->setArgument('callback', 'rand');
 
         $this->suggestController->processRequest($this->suggestRequest, $this->suggestResponse);
-        $result = $this->suggestResponse->getContent();
+        $result = $this->suggestResponse->getBody()->getContents();
 
         //we assume to get suggestions like Sweatshirt
-        $this->assertContains($expected, $result, 'Response did not contain expected suggestions: ' . $expected);
+        $this->assertStringContainsString($expected, $result, 'Response did not contain expected suggestions: ' . $expected);
     }
 }
