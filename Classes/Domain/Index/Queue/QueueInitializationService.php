@@ -25,6 +25,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\IndexQueue\InitializationPostProcessor;
+use ApacheSolrForTypo3\Solr\IndexQueue\Initializer\AbstractInitializer;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -150,7 +151,7 @@ class QueueInitializationService {
     protected function executeInitializer(Site $site, $indexingConfigurationName, $initializerClass, $tableToIndex, $indexConfiguration): bool
     {
         $initializer = GeneralUtility::makeInstance($initializerClass);
-        /** @var $initializer \ApacheSolrForTypo3\Solr\IndexQueue\Initializer\AbstractInitializer */
+        /* @var AbstractInitializer $initializer */
         $initializer->setSite($site);
         $initializer->setType($tableToIndex);
         $initializer->setIndexingConfigurationName($indexingConfigurationName);

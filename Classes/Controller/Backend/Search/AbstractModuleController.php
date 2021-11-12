@@ -30,6 +30,8 @@ use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection as SolrCoreConnection;
 use ApacheSolrForTypo3\Solr\System\Mvc\Backend\Component\Exception\InvalidViewObjectNameException;
 use ApacheSolrForTypo3\Solr\System\Mvc\Backend\Service\ModuleDataStorageService;
+use Exception;
+use InvalidArgumentException;
 use TYPO3\CMS\Backend\Template\Components\Menu\Menu;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Backend\View\BackendTemplateView;
@@ -142,14 +144,14 @@ abstract class AbstractModuleController extends ActionController
 
         try {
             $this->selectedSite = $this->siteRepository->getSiteByPageId($this->selectedPageUID);
-        } catch (\InvalidArgumentException $exception) {
+        } catch (InvalidArgumentException $exception) {
             return;
         }
     }
 
     /**
      * @return bool
-     * @throws \Exception
+     * @throws Exception
      */
     protected function autoSelectFirstSiteAndRootPageWhenOnlyOneSiteIsAvailable(): bool
     {
@@ -196,7 +198,7 @@ abstract class AbstractModuleController extends ActionController
         $pageRecord = BackendUtility::readPageAccess($this->selectedSite->getRootPageId(), $permissionClause);
 
         if (false === $pageRecord) {
-            throw new \InvalidArgumentException(vsprintf('There is something wrong with permissions for page "%s" for backend user "%s".', [$this->selectedSite->getRootPageId(), $beUser->user['username']]), 1496146317);
+            throw new InvalidArgumentException(vsprintf('There is something wrong with permissions for page "%s" for backend user "%s".', [$this->selectedSite->getRootPageId(), $beUser->user['username']]), 1496146317);
         }
         $this->view->getModuleTemplate()->getDocHeaderComponent()->setMetaInformation($pageRecord);
     }

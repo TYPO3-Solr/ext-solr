@@ -143,16 +143,16 @@ class ArrayAccessor
      * @param $path
      * @return bool
      */
-    public function has($path)
+    public function has($path): bool
     {
         return $this->get($path) !== null;
     }
 
     /**
-     * @param $path
-     * @param $value
+     * @param string $path
+     * @param mixed $value
      */
-    public function set($path, $value)
+    public function set(string $path, $value)
     {
         $pathArray = $this->getPathAsArray($path);
         $pathSegmentCount = count($pathArray);
@@ -171,10 +171,10 @@ class ArrayAccessor
     }
 
     /**
-     * @param $pathArray
+     * @param array $pathArray
      * @param mixed $value
      */
-    protected function setDeepElementWithLoop($pathArray, $value)
+    protected function setDeepElementWithLoop(array $pathArray, $value)
     {
         $currentElement = &$this->data;
         foreach ($pathArray as $key => $pathSegment) {
@@ -196,7 +196,7 @@ class ArrayAccessor
     /**
      * @param string $path
      */
-    public function reset($path)
+    public function reset(string $path)
     {
         $pathArray = $this->getPathAsArray($path);
         $pathSegmentCount = count($pathArray);
@@ -217,7 +217,7 @@ class ArrayAccessor
     /**
      * @param array $pathArray
      */
-    protected function resetDeepElementWithLoop($pathArray)
+    protected function resetDeepElementWithLoop(array $pathArray)
     {
         $currentElement = &$this->data;
 

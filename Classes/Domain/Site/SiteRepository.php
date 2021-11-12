@@ -31,9 +31,12 @@ use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
 use ApacheSolrForTypo3\Solr\System\Util\SiteUtility;
+use Exception;
+use InvalidArgumentException;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Registry;
+use TYPO3\CMS\Core\Site\Entity\Site as CoreSite;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -85,7 +88,8 @@ class SiteRepository
      * @param TwoLevelCache|null $twoLevelCache
      * @param Registry|null $registry
      * @param SiteFinder|null $siteFinder
-     * @param ExtensionConfiguration| null
+     * @param ExtensionConfiguration|null $extensionConfiguration
+     * @param FrontendEnvironment|null $frontendEnvironment
      */
     public function __construct(
         RootPageResolver $rootPageResolver = null,
@@ -123,7 +127,7 @@ class SiteRepository
      * @param int $rootPageId Root page Id to get a Site object for.
      * @return SiteInterface Site for the given page Id.
      */
-    public function getSiteByRootPageId($rootPageId)
+    public function getSiteByRootPageId(int $rootPageId)
     {
         $cacheId = 'SiteRepository' . '_' . 'getSiteByPageId' . '_' . $rootPageId;
 
@@ -142,7 +146,7 @@ class SiteRepository
      * Returns the first available Site.
      *
      * @param bool $stopOnInvalidSite
-     * @throws \Exception
+     * @throws Exception
      * @return Site
      */
     public function getFirstAvailableSite($stopOnInvalidSite = false)
@@ -155,7 +159,7 @@ class SiteRepository
      * Gets all available TYPO3 sites with Solr configured.
      *
      * @param bool $stopOnInvalidSite
-     * @throws \Exception
+     * @throws Exception
      * @return Site[] An array of availablesites
      */
     public function getAvailableSites($stopOnInvalidSite = false)
@@ -176,7 +180,7 @@ class SiteRepository
     /**
      * @param bool $stopOnInvalidSite
      * @return array
-     * @throws \Exception
+     * @throws Exception
      */
     protected function getAvailableTYPO3ManagedSites(bool $stopOnInvalidSite): array
     {
@@ -194,7 +198,7 @@ class SiteRepository
                     $typo3ManagedSolrSites[$rootPageId] = $typo3ManagedSolrSite;
                 }
 
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 if ($stopOnInvalidSite) {
                     throw $e;
                 }
@@ -206,16 +210,19 @@ class SiteRepository
      /**
      * Creates an instance of the Site object.
      *
-     * @param integer $rootPageId
-     * @throws \InvalidArgumentException
+     * @param int $rootPageId
      * @return SiteInterface
+     * @throws InvalidArgumentException
      */
-    protected function buildSite($rootPageId)
+    protected function buildSite(int $rootPageId)
     {
-        if (empty($rootPageId)) {
-            throw new \InvalidArgumentException('Root page id can not be empty');
+        $rootPageRecord = BackendUtility::getRecord('pages', $rootPageId);
+        if (empty($rootPageRecord)) {
+            throw new InvalidArgumentException(
+                "The rootPageRecord for the given rootPageRecord ID '{$rootPageId}' could not be found in the database and can therefore not be used as site root rootPageRecord.",
+                1487326416
+            );
         }
-        $rootPageRecord = (array)BackendUtility::getRecord('pages', $rootPageId);
 
         $this->validateRootPageRecord($rootPageId, $rootPageRecord);
 
@@ -226,31 +233,23 @@ class SiteRepository
      * @param string $domain
      * @return string
      */
-    protected function getSiteHashForDomain($domain)
+    protected function getSiteHashForDomain(string $domain): string
     {
         /** @var $siteHashService SiteHashService */
         $siteHashService = GeneralUtility::makeInstance(SiteHashService::class);
-        $siteHash = $siteHashService->getSiteHashForDomain($domain);
-        return $siteHash;
+        return $siteHashService->getSiteHashForDomain($domain);
     }
 
     /**
      * @param int $rootPageId
      * @param array $rootPageRecord
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
-    protected function validateRootPageRecord($rootPageId, $rootPageRecord)
+    protected function validateRootPageRecord(int $rootPageId, array $rootPageRecord)
     {
-        if (empty($rootPageRecord)) {
-            throw new \InvalidArgumentException(
-                'The rootPageRecord for the given rootPageRecord ID \'' . $rootPageId . '\' could not be found in the database and can therefore not be used as site root rootPageRecord.',
-                1487326416
-            );
-        }
-
         if (!Site::isRootPage($rootPageRecord)) {
-            throw new \InvalidArgumentException(
-                'The rootPageRecord for the given rootPageRecord ID \'' . $rootPageId . '\' is not marked as root rootPageRecord and can therefore not be used as site root rootPageRecord.',
+            throw new InvalidArgumentException(
+                "The rootPageRecord for the given rootPageRecord ID '{$rootPageId}' is not marked as root rootPageRecord and can therefore not be used as site root rootPageRecord.",
                 1309272922
             );
         }
@@ -263,7 +262,7 @@ class SiteRepository
     protected function buildTypo3ManagedSite(array $rootPageRecord): ?Typo3ManagedSite
     {
         $solrConfiguration = $this->frontendEnvironment->getSolrConfigurationFromPageId($rootPageRecord['uid']);
-        /** @var \TYPO3\CMS\Core\Site\Entity\Site $typo3Site */
+        /* @var CoreSite $typo3Site */
         try {
             $typo3Site = $this->siteFinder->getSiteByPageId($rootPageRecord['uid']);
         } catch (SiteNotFoundException $e) {

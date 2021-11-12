@@ -7,8 +7,13 @@ use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationPageResolver;
 use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use RuntimeException;
 use stdClass;
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Domain\Repository\PageRepository;
+use TYPO3\CMS\Core\Error\Http\InternalServerErrorException;
+use TYPO3\CMS\Core\Error\Http\ServiceUnavailableException;
+use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\TypoScript\TemplateService;
 use TYPO3\CMS\Core\Utility\RootlineUtility;
@@ -25,12 +30,12 @@ class TypoScript implements SingletonInterface
      * Language usage may be disabled to get the default TypoScript
      * configuration.
      *
-     * @param int $pageId Id of the (root) page to get the Solr configuration from.
+     * @param int $pageId The page id of the (root) page to get the Solr configuration from.
      * @param string $path The TypoScript configuration path to retrieve.
      * @param int $language System language uid, optional, defaults to 0
      * @return TypoScriptConfiguration The Solr configuration for the requested tree.
      */
-    public function getConfigurationFromPageId($pageId, $path, $language = 0)
+    public function getConfigurationFromPageId(int $pageId, string $path, int $language = 0): TypoScriptConfiguration
     {
         $pageId = $this->getConfigurationPageIdToUse($pageId);
 
@@ -71,71 +76,39 @@ class TypoScript implements SingletonInterface
      * @param int $pageId
      * @return int
      */
-    private function getConfigurationPageIdToUse($pageId)
+    private function getConfigurationPageIdToUse(int $pageId): int
     {
         $extensionConfiguration = GeneralUtility::makeInstance(ExtensionConfiguration::class);
-        if ($extensionConfiguration->getIsUseConfigurationFromClosestTemplateEnabled()) {
-            /** @var $configurationPageResolve ConfigurationPageResolver */
+        $pageRecord = BackendUtility::getRecord('pages', $pageId);
+        $isSpacerOrSysfolder = ($pageRecord['doktype'] ?? null) == PageRepository::DOKTYPE_SPACER || ($pageRecord['doktype'] ?? null) == PageRepository::DOKTYPE_SYSFOLDER;
+        if ($extensionConfiguration->getIsUseConfigurationFromClosestTemplateEnabled() || $isSpacerOrSysfolder === true) {
+            /* @var ConfigurationPageResolver $configurationPageResolve */
             $configurationPageResolver = GeneralUtility::makeInstance(ConfigurationPageResolver::class);
-            $pageId = $configurationPageResolver->getClosestPageIdWithActiveTemplate($pageId);
-            return $pageId;
+            return $configurationPageResolver->getClosestPageIdWithActiveTemplate($pageId);
         }
         return $pageId;
     }
 
     /**
-     * builds an configuration array, containing the solr configuration.
+     * Builds a configuration array, containing the solr configuration.
      *
-     * @param integer $pageId
+     * @param int $pageId
      * @param string $path
-     * @param integer $language
+     * @param int $language
      * @return array
      */
-    protected function buildConfigurationArray($pageId, $path, $language)
+    protected function buildConfigurationArray(int $pageId, string $path, int $language): array
     {
-        if (is_int($language)) {
-            GeneralUtility::makeInstance(FrontendEnvironment::class)->changeLanguageContext((int)$pageId, (int)$language);
-        }
-        $rootlineUtility = GeneralUtility::makeInstance(RootlineUtility::class, $pageId);
+        /* @var Tsfe $tsfeManager */
+        $tsfeManager = GeneralUtility::makeInstance(Tsfe::class);
         try {
-            $rootLine = $rootlineUtility->get();
-        } catch (\RuntimeException $e) {
-            $rootLine = [];
+            $tsfe = $tsfeManager->getTsfeByPageIdAndLanguageId($pageId, $language);
+        } catch (InternalServerErrorException | ServiceUnavailableException | SiteNotFoundException $e) {
+            // @todo logging!
+            return [];
         }
-
-        $initializedTsfe = false;
-        $initializedPageSelect = false;
-        if (empty($GLOBALS['TSFE']->sys_page)) {
-            /** @var $pageSelect PageRepository */
-            $pageSelect = GeneralUtility::makeInstance(PageRepository::class);
-            if (empty($GLOBALS['TSFE'])) {
-                $GLOBALS['TSFE'] = new stdClass();
-                $GLOBALS['TSFE']->tmpl = new stdClass();
-                $GLOBALS['TSFE']->tmpl->rootLine = $rootLine;
-                $GLOBALS['TSFE']->id = $pageId;
-                $GLOBALS['TSFE']->all = [];
-                $initializedTsfe = true;
-            }
-            $GLOBALS['TSFE']->sys_page = $pageSelect;
-            $initializedPageSelect = true;
-        }
-
-        /** @var $tmpl TemplateService */
-        $tmpl = GeneralUtility::makeInstance(TemplateService::class);
-        $tmpl->tt_track = false; // Do not log time-performance information
-        $tmpl->start($rootLine); // This generates the constants/config + hierarchy info for the template.
-
-        $getConfigurationFromInitializedTSFEAndWriteToCache = $this->ext_getSetup($tmpl->setup, $path);
-        $configurationToUse = $getConfigurationFromInitializedTSFEAndWriteToCache[0];
-
-        if ($initializedPageSelect) {
-            $GLOBALS['TSFE']->sys_page = null;
-        }
-        if ($initializedTsfe) {
-            unset($GLOBALS['TSFE']);
-        }
-
-        return is_array($configurationToUse) ? $configurationToUse : [];
+        $getConfigurationFromInitializedTSFEAndWriteToCache = $this->ext_getSetup($tsfe->tmpl->setup, $path);
+        return $getConfigurationFromInitializedTSFEAndWriteToCache[0] ?? [];
     }
 
 
@@ -144,7 +117,7 @@ class TypoScript implements SingletonInterface
      * @param string $theKey
      * @return array
      */
-    public function ext_getSetup($theSetup, $theKey)
+    public function ext_getSetup(array $theSetup, string $theKey): array
     {
         $parts = explode('.', $theKey, 2);
         if ((string)$parts[0] !== '' && is_array($theSetup[$parts[0] . '.'])) {
@@ -168,7 +141,7 @@ class TypoScript implements SingletonInterface
      * @param string $typoScriptPath
      * @return TypoScriptConfiguration
      */
-    protected function buildTypoScriptConfigurationFromArray(array $configurationToUse, $pageId, $languageId, $typoScriptPath)
+    protected function buildTypoScriptConfigurationFromArray(array $configurationToUse, int $pageId, int $languageId, string $typoScriptPath): TypoScriptConfiguration
     {
         $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
         return $configurationManager->getTypoScriptConfiguration($configurationToUse, $pageId, $languageId, $typoScriptPath);
