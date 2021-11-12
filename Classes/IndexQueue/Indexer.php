@@ -18,8 +18,10 @@ use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\Domain\Search\ApacheSolrDocument\Builder;
 use ApacheSolrForTypo3\Solr\FieldProcessor\Service;
 use ApacheSolrForTypo3\Solr\FrontendEnvironment;
+use ApacheSolrForTypo3\Solr\FrontendEnvironment\Tsfe;
 use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
+use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationPageResolver;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
 use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
@@ -28,16 +30,18 @@ use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use Exception;
 use RuntimeException;
 use Solarium\Exception\HttpException;
-use TYPO3\CMS\Core\Context\Context;
+use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Context\LanguageAspect;
 use TYPO3\CMS\Core\Context\LanguageAspectFactory;
 use TYPO3\CMS\Core\Domain\Repository\PageRepository;
+use TYPO3\CMS\Core\Error\Http\InternalServerErrorException;
 use TYPO3\CMS\Core\Error\Http\ServiceUnavailableException;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
-use TYPO3\CMS\Core\Http\ImmediateResponseException;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\RootlineUtility;
+use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 /**
  * A general purpose indexer to be used for indexing of any kind of regular
@@ -165,11 +169,13 @@ class Indexer extends AbstractIndexer
      * @param Item $item An index queue item to index.
      * @param int $language The language to use.
      * @return bool TRUE if item was indexed successfully, FALSE on failure
+     * @throws AspectNotFoundException
      */
     protected function indexItem(Item $item, int $language = 0)
     {
         $itemIndexed = false;
         $documents = [];
+
 
         $itemDocument = $this->itemToDocument($item, $language);
         if (is_null($itemDocument)) {
@@ -211,8 +217,11 @@ class Indexer extends AbstractIndexer
      * @param Item $item The item to be indexed
      * @param int $language Language Id (sys_language.uid)
      * @return array|NULL The full record with fields of data to be used for indexing or NULL to prevent an item from being indexed
+     * @throws InternalServerErrorException
+     * @throws ServiceUnavailableException
+     * @throws SiteNotFoundException
      */
-    protected function getFullItemRecord(Item $item, int $language = 0)
+    protected function getFullItemRecord(Item $item, int $language = 0): ?array
     {
         $itemRecord = $this->getItemRecordOverlayed($item, $language);
 
@@ -224,55 +233,21 @@ class Indexer extends AbstractIndexer
     }
 
     /**
-     * Returns the overlayed item record.
+     * Returns the overlaid item record.
      *
      * @param Item $item
      * @param int $language
      * @return array|mixed|null
-     * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
+     * @throws InternalServerErrorException
+     * @throws ServiceUnavailableException
+     * @throws SiteNotFoundException
      */
     protected function getItemRecordOverlayed(Item $item, int $language): ?array
     {
         $itemRecord = $item->getRecord();
-
-        // Bugfix: This issue fixes a problem with the free mode temporary.
-        $languageField = $this->getLanguageFieldFromTable($item->getType());
-        if ($languageField !== null &&
-            (int)$itemRecord[$languageField] > 0 &&
-            (int)$itemRecord[$languageField] !== $language) {
-            return null;
-        }
-
-        if ($language > 0) {
-            // @TODO Information from the site configuration are required!
-            /* @var Context $context */
-            $context = GeneralUtility::makeInstance(Context::class);
-            /* @var LanguageAspect $languageAspect */
-            if ($context->hasAspect('language')) {
-                $languageAspect = $context->getAspect('language');
-                $languageAspect = new LanguageAspect(
-                    $languageAspect->getId(),
-                    (int)$language,
-                    $languageAspect->getOverlayType(),
-                    $languageAspect->getFallbackChain()
-                );
-            } else {
-                $languageAspect = new LanguageAspect(
-                    0,
-                    (int)$language
-                );
-            }
-
-            $context->setAspect('language', $languageAspect);
-            $page = GeneralUtility::makeInstance(PageRepository::class, $context);
-            $itemRecord = $page->getLanguageOverlay($item->getType(), $itemRecord);
-        }
-
-        if (!$itemRecord) {
-            $itemRecord = null;
-        }
-
-        return $itemRecord;
+        $pidToUse = $this->getPageIdOfItem($item);
+        return GeneralUtility::makeInstance(Tsfe::class)->getTsfeByPageIdAndLanguageId($pidToUse, $language)
+            ->sys_page->getLanguageOverlay($item->getType(), $itemRecord);
     }
 
     /**
@@ -306,7 +281,7 @@ class Indexer extends AbstractIndexer
      * @param string $indexConfigurationName
      * @return array
      */
-    protected function getFieldConfigurationFromItemRecordPage(Item $item, int $language, $indexConfigurationName): array
+    protected function getFieldConfigurationFromItemRecordPage(Item $item, int $language, string $indexConfigurationName): array
     {
         try {
             $pageId = $this->getPageIdOfItem($item);
@@ -324,9 +299,15 @@ class Indexer extends AbstractIndexer
     protected function getPageIdOfItem(Item $item): int
     {
         if ($item->getType() === 'pages') {
-            return (int)$item->getRecordUid();
+            return $item->getRecordUid();
         }
-        return (int)$item->getRecordPageId();
+        return $item->getRecordPageId();
+    }
+
+    protected function getContentObjectRendererForItemAndLanguage(Item $item, int $language): ContentObjectRenderer
+    {
+        $pageIdToUse = $this->getPageIdOfItem($item);
+        $contentObjectRenderer = GeneralUtility::makeInstance(ContentObjectRenderer::class);
     }
 
     /**
@@ -337,7 +318,7 @@ class Indexer extends AbstractIndexer
      * @param string $indexConfigurationName
      * @return array
      */
-    protected function getFieldConfigurationFromItemRootPage(Item $item, int $language, $indexConfigurationName)
+    protected function getFieldConfigurationFromItemRootPage(Item $item, int $language, string $indexConfigurationName): array
     {
         $solrConfiguration = $this->frontendEnvironment->getSolrConfigurationFromPageId($item->getRootPageUid(), $language);
 
@@ -371,24 +352,21 @@ class Indexer extends AbstractIndexer
      * @param Item $item An index queue item
      * @param int $language Language Id
      * @return Document|null The Solr document converted from the record
-     * @throws SiteNotFoundException
+     * @throws InternalServerErrorException
      * @throws ServiceUnavailableException
-     * @throws ImmediateResponseException
+     * @throws SiteNotFoundException
      */
     protected function itemToDocument(Item $item, int $language = 0): ?Document
     {
         $document = null;
-        if ($item->getType() === 'pages') {
-            $this->frontendEnvironment->initializeTsfe($item->getRecordUid(), $language);
-        } else {
-            $this->frontendEnvironment->initializeTsfe($item->getRootPageUid(), $language);
-        }
 
         $itemRecord = $this->getFullItemRecord($item, $language);
         if (!is_null($itemRecord)) {
             $itemIndexingConfiguration = $this->getItemTypeConfiguration($item, $language);
             $document = $this->getBaseDocument($item, $itemRecord);
-            $document = $this->addDocumentFieldsFromTyposcript($document, $itemIndexingConfiguration, $itemRecord);
+            $pidToUse = $this->getPageIdOfItem($item);
+            $tsfe = GeneralUtility::makeInstance(Tsfe::class)->getTsfeByPageIdAndLanguageId($pidToUse, $language);
+            $document = $this->addDocumentFieldsFromTyposcript($document, $itemIndexingConfiguration, $itemRecord, $tsfe);
         }
 
         return $document;
@@ -401,7 +379,7 @@ class Indexer extends AbstractIndexer
      * @param array $itemRecord The record to use to build the base document
      * @return Document A basic Solr document
      */
-    protected function getBaseDocument(Item $item, array $itemRecord)
+    protected function getBaseDocument(Item $item, array $itemRecord): Document
     {
         $type = $item->getType();
         $rootPageUid = $item->getRootPageUid();
@@ -536,8 +514,9 @@ class Indexer extends AbstractIndexer
      *
      * @param Item $item An index queue item
      * @return array An array of ApacheSolrForTypo3\Solr\System\Solr\SolrConnection connections, the array's keys are the sys_language_uid of the language of the connection
+     * @throws NoSolrConnectionFoundException
      */
-    protected function getSolrConnectionsByItem(Item $item)
+    protected function getSolrConnectionsByItem(Item $item): array
     {
         $solrConnections = [];
 

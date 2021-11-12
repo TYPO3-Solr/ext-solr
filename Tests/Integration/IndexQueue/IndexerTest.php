@@ -28,7 +28,6 @@ use ApacheSolrForTypo3\Solr\IndexQueue\AdditionalIndexQueueItemIndexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\Indexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
-use ApacheSolrForTypo3\Solr\SolrService;
 use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
@@ -83,7 +82,6 @@ class IndexerTest extends IntegrationTest
         $handlerMock = $this->getMockBuilder( RequestHandlerInterface::class)->getMock();
         $normalizer = new NormalizedParamsAttribute();
         $normalizer->process($request, $handlerMock);
-
     }
 
     public function tearDown(): void

@@ -54,7 +54,7 @@ class ExtensionConfiguration
      *
      * @return bool
      */
-    public function getIsUseConfigurationFromClosestTemplateEnabled()
+    public function getIsUseConfigurationFromClosestTemplateEnabled(): bool
     {
         return (bool)$this->getConfigurationOrDefaultValue('useConfigurationFromClosestTemplate', false);
     }
@@ -64,7 +64,7 @@ class ExtensionConfiguration
      *
      * @return bool
      */
-    public function getIsUseConfigurationTrackRecordsOutsideSiteroot()
+    public function getIsUseConfigurationTrackRecordsOutsideSiteroot(): bool
     {
         return (bool)$this->getConfigurationOrDefaultValue('useConfigurationTrackRecordsOutsideSiteroot', true);
     }
@@ -74,7 +74,7 @@ class ExtensionConfiguration
      *
      * @return bool
      */
-    public function getIsSelfSignedCertificatesEnabled()
+    public function getIsSelfSignedCertificatesEnabled(): bool
     {
         return (bool)$this->getConfigurationOrDefaultValue('allowSelfSignedCertificates', false);
     }
@@ -151,6 +151,4 @@ class ExtensionConfiguration
     {
         return $this->configuration[$key] ?? $defaultValue;
     }
-
-
 }

@@ -259,7 +259,7 @@ class IndexQueueModuleController extends AbstractModuleController
     {
         /** @var $indexService \ApacheSolrForTypo3\Solr\Domain\Index\IndexService */
         $indexService = GeneralUtility::makeInstance(IndexService::class, /** @scrutinizer ignore-type */ $this->selectedSite);
-        $indexWithoutErrors = $indexService->indexItems(10);
+        $indexWithoutErrors = $indexService->indexItems(1);
 
         $label = 'solr.backend.index_queue_module.flashmessage.success.index_manual';
         $severity = FlashMessage::OK;

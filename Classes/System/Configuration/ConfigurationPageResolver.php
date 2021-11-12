@@ -26,7 +26,7 @@ namespace ApacheSolrForTypo3\Solr\System\Configuration;
 
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\System\Records\SystemTemplate\SystemTemplateRepository;
-use TYPO3\CMS\Core\Domain\Repository\PageRepository;
+use RuntimeException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\RootlineUtility;
 
@@ -47,20 +47,14 @@ class ConfigurationPageResolver
     /**
      * @var TwoLevelCache
      */
-    protected $twoLevelCache;
-
-    /**
-     * @var TwoLevelCache
-     */
     protected $runtimeCache;
 
     /**
      * ConfigurationPageResolver constructor.
-     * @param \TYPO3\CMS\Core\Domain\Repository\PageRepository|null $pageRepository
      * @param TwoLevelCache|null $twoLevelCache
-     * @param SystemTemplateRepository $systemTemplateRepository
+     * @param SystemTemplateRepository|null $systemTemplateRepository
      */
-    public function __construct(PageRepository $pageRepository = null, TwoLevelCache $twoLevelCache = null, SystemTemplateRepository $systemTemplateRepository = null)
+    public function __construct(?TwoLevelCache $twoLevelCache = null, ?SystemTemplateRepository $systemTemplateRepository = null)
     {
         $this->runtimeCache = $twoLevelCache ?? GeneralUtility::makeInstance(TwoLevelCache::class, /** @scrutinizer ignore-type */ 'runtime');
         $this->systemTemplateRepository = $systemTemplateRepository ?? GeneralUtility::makeInstance(SystemTemplateRepository::class);
@@ -70,10 +64,10 @@ class ConfigurationPageResolver
      * This method fetches the rootLine and calculates the id of the closest template in the rootLine.
      * The result is stored in the runtime cache.
      *
-     * @param integer $startPageId
-     * @return integer
+     * @param int $startPageId
+     * @return int
      */
-    public function getClosestPageIdWithActiveTemplate($startPageId)
+    public function getClosestPageIdWithActiveTemplate(int $startPageId): int
     {
         if ($startPageId === 0) {
             return 0;
@@ -94,16 +88,16 @@ class ConfigurationPageResolver
     /**
      * This method fetches the rootLine and calculates the id of the closest template in the rootLine.
      *
-     * @param integer $startPageId
+     * @param int $startPageId
      * @return int
      */
-    protected function calculateClosestPageIdWithActiveTemplate($startPageId)
+    protected function calculateClosestPageIdWithActiveTemplate(int $startPageId): int
     {
-
+        /* @var RootlineUtility $rootlineUtility */
         $rootlineUtility = GeneralUtility::makeInstance(RootlineUtility::class, $startPageId);
         try {
             $rootline = $rootlineUtility->get();
-        } catch (\RuntimeException $e) {
+        } catch (RuntimeException $e) {
             return $startPageId;
         }
 

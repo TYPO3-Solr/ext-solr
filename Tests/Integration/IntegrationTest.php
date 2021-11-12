@@ -512,6 +512,12 @@ abstract class IntegrationTest extends FunctionalTestCase
             ],
             $this->buildErrorHandlingConfiguration('Fluid', [404])
         );
+//        // @todo: Import root pages for first and second site and uncomment following, to save configuration in test cases.
+//        //        The third site should be not fully configured.
+//        $this->setUpFrontendRootPage(1, [], [
+//            'constants' => '@import \'EXT:solr/Build/Test/Integration.constants.typoscript\'',
+//            'setup' => '@import \'EXT:solr/Build/Test/Integration.setup.typoscript\''
+//        ]);
 
         $this->writeSiteConfiguration(
             'integration_tree_two',

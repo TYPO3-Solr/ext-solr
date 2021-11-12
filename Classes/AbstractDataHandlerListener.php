@@ -43,7 +43,7 @@ abstract class AbstractDataHandlerListener
     /**
      * Reference to the configuration manager
      *
-     * @var \ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\ConfigurationAwareRecordService
+     * @var ConfigurationAwareRecordService
      */
     protected $configurationAwareRecordService;
 
@@ -65,7 +65,7 @@ abstract class AbstractDataHandlerListener
     /**
      * @return array
      */
-    protected function getAllRelevantFieldsForCurrentState()
+    protected function getAllRelevantFieldsForCurrentState(): array
     {
         $allCurrentStateFieldnames = [];
 
@@ -90,7 +90,7 @@ abstract class AbstractDataHandlerListener
      */
     protected function getSubPageIds($pageId)
     {
-        /** @var $queryGenerator \TYPO3\CMS\Core\Database\QueryGenerator */
+        /* @var QueryGenerator $queryGenerator */
         $queryGenerator = GeneralUtility::makeInstance(QueryGenerator::class);
 
         // here we retrieve only the subpages of this page because the permission clause is not evaluated
@@ -146,7 +146,7 @@ abstract class AbstractDataHandlerListener
      * @param array $changedFields
      * @return bool
      */
-    protected function isRecursiveUpdateRequired($pageId, $changedFields)
+    protected function isRecursiveUpdateRequired($pageId, $changedFields): bool
     {
         $fieldsForCurrentState = $this->getAllRelevantFieldsForCurrentState();
         $fieldListToRetrieve = implode(',', $fieldsForCurrentState);
