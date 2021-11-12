@@ -1,7 +1,6 @@
 <?php
 namespace ApacheSolrForTypo3\Solr\Controller\Backend\Search;
 
-use Psr\Http\Message\ResponseInterface;
 /***************************************************************
  *  Copyright notice
  *
@@ -28,11 +27,10 @@ use Psr\Http\Message\ResponseInterface;
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
-use ApacheSolrForTypo3\Solr\Util;
+use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Backend\Routing\UriBuilder as BackendUriBuilder;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Mvc\Web\ReferringRequest;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /**
@@ -109,6 +107,7 @@ class IndexAdministrationModuleController extends AbstractModuleController
             $this->addFlashMessage(LocalizationUtility::translate('solr.backend.index_administration.error.on_empty_index', 'Solr', [$e->__toString()]), '', FlashMessage::ERROR);
         }
 
+        /** @noinspection PhpUnhandledExceptionInspection */
         $this->redirect('index');
     }
 
@@ -124,6 +123,8 @@ class IndexAdministrationModuleController extends AbstractModuleController
             LocalizationUtility::translate('solr.backend.index_administration.success.queue_emptied', 'Solr',
                 [$this->selectedSite->getLabel()])
         );
+
+        /** @noinspection PhpUnhandledExceptionInspection */
         $this->redirectToReferrerModule();
         return $this->htmlResponse();
     }
@@ -140,7 +141,6 @@ class IndexAdministrationModuleController extends AbstractModuleController
         $solrServers = $this->solrConnectionManager->getConnectionsBySite($this->selectedSite);
 
         foreach ($solrServers as $solrServer) {
-            /* @var $solrServer SolrConnection */
             $coreAdmin = $solrServer->getAdminService();
             $coreReloaded = $coreAdmin->reloadCore()->getHttpStatus() === 200;
 
@@ -167,6 +167,7 @@ class IndexAdministrationModuleController extends AbstractModuleController
             );
         }
 
+        /** @noinspection PhpUnhandledExceptionInspection */
         $this->redirect('index');
     }
 
@@ -183,6 +184,7 @@ class IndexAdministrationModuleController extends AbstractModuleController
     {
         $wasFromQueue = $this->request->hasArgument('fromQueue');
         if (!$wasFromQueue) {
+            /** @noinspection PhpUnhandledExceptionInspection */
             $this->redirect('index');
             return;
         }
@@ -193,6 +195,7 @@ class IndexAdministrationModuleController extends AbstractModuleController
         $parameters =  ['id' => $this->selectedPageUID];
         $referringUri = $backendUriBuilder->buildUriFromRoute('searchbackend_SolrIndexqueue', $parameters);
 
+        /** @noinspection PhpUnhandledExceptionInspection */
         $this->redirectToUri($referringUri);
     }
 }

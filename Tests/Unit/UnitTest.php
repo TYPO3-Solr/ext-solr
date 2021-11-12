@@ -47,7 +47,7 @@ abstract class UnitTest extends UnitTestCase
      */
     protected function getDumbMock($className)
     {
-        return $this->getMockBuilder($className)->setMethods([])->disableOriginalConstructor()->getMock();
+        return $this->getMockBuilder($className)->disableOriginalConstructor()->getMock();
     }
 
     /**

@@ -34,7 +34,8 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 /**
  * Class FrontendOverlayService
  */
-class FrontendOverlayService {
+class FrontendOverlayService
+{
 
     /**
      * @var TCAService

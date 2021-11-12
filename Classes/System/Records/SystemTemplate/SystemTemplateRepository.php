@@ -47,7 +47,7 @@ class SystemTemplateRepository extends AbstractRepository
      * @param array $rootLine
      * @return int
      */
-    public function findOneClosestPageIdWithActiveTemplateByRootLine(array $rootLine)
+    public function findOneClosestPageIdWithActiveTemplateByRootLine(array $rootLine): int
     {
         $rootLinePageIds = [0];
         foreach ($rootLine as $rootLineItem) {
@@ -59,7 +59,9 @@ class SystemTemplateRepository extends AbstractRepository
         $result = $queryBuilder
             ->select('uid', 'pid')
             ->from($this->table)
-            ->where($queryBuilder->expr()->in('pid', $rootLinePageIds))
+            ->where(
+                $queryBuilder->expr()->in('pid', $rootLinePageIds)
+            )
             ->execute()->fetch();
 
         return isset($result['pid']) ? $result['pid'] : 0;

@@ -41,7 +41,7 @@ class ConfigurationPageResolverTest extends IntegrationTest
     {
         $this->importDataSetFromFixture('can_get_closest_template_page_id.xml');
 
-            /** @var $configurationPageIdResolver ConfigurationPageResolver */
+        /* @var ConfigurationPageResolver $configurationPageIdResolver */
         $configurationPageIdResolver = GeneralUtility::makeInstance(ConfigurationPageResolver::class);
 
         $pageIdWithActiveTypoScriptConfiguration = $configurationPageIdResolver->getClosestPageIdWithActiveTemplate(4);

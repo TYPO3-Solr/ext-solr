@@ -32,6 +32,7 @@ use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\TypoScript\Parser\TypoScriptParser;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
+use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * An abstract indexer class to collect a few common methods shared with other
@@ -47,20 +48,20 @@ abstract class AbstractIndexer
      *
      * @var string
      */
-    protected $type = '';
+    protected string $type = '';
 
     /**
      * Holds field names that are denied to overwrite in thy indexing configuration.
      *
      * @var array
      */
-    protected static $unAllowedOverrideFields = ['type'];
+    protected static array $unAllowedOverrideFields = ['type'];
 
     /**
      * @param string $solrFieldName
      * @return bool
      */
-    public static function isAllowedToOverrideField($solrFieldName)
+    public static function isAllowedToOverrideField(string $solrFieldName): bool
     {
         return !in_array($solrFieldName, static::$unAllowedOverrideFields);
     }
@@ -73,7 +74,8 @@ abstract class AbstractIndexer
      * @param array $data Record data
      * @return Document Modified document with added fields
      */
-    protected function addDocumentFieldsFromTyposcript(Document $document, array $indexingConfiguration, array $data) {
+    protected function addDocumentFieldsFromTyposcript(Document $document, array $indexingConfiguration, array $data, TypoScriptFrontendController $tsfe): Document
+    {
         $data = static::addVirtualContentFieldToRecord($document, $data);
 
         // mapping of record fields => solr document fields, resolving cObj
@@ -90,7 +92,7 @@ abstract class AbstractIndexer
                 );
             }
 
-            $fieldValue = $this->resolveFieldValue($indexingConfiguration, $solrFieldName, $data);
+            $fieldValue = $this->resolveFieldValue($indexingConfiguration, $solrFieldName, $data, $tsfe);
 
             if (is_array($fieldValue)) {
                 // multi value
@@ -133,15 +135,15 @@ abstract class AbstractIndexer
      * @param array $indexingConfiguration Indexing configuration as defined in plugin.tx_solr_index.queue.[indexingConfigurationName].fields
      * @param string $solrFieldName A Solr field name that is configured in the indexing configuration
      * @param array $data A record or item's data
+     * @param TypoScriptFrontendController $tsfe
      * @return string The resolved string value to be indexed
      */
     protected function resolveFieldValue(
-        array $indexingConfiguration,
-        $solrFieldName,
-        array $data
+        array  $indexingConfiguration,
+        string $solrFieldName,
+        array  $data,
+        TypoScriptFrontendController $tsfe
     ) {
-        $contentObject = GeneralUtility::makeInstance(ContentObjectRenderer::class);
-
         if (isset($indexingConfiguration[$solrFieldName . '.'])) {
             // configuration found => need to resolve a cObj
 
@@ -150,8 +152,8 @@ abstract class AbstractIndexer
             $backupWorkingDirectory = getcwd();
             chdir(Environment::getPublicPath() . '/');
 
-            $contentObject->start($data, $this->type);
-            $fieldValue = $contentObject->cObjGetSingle(
+            $tsfe->cObj->start($data, $this->type);
+            $fieldValue = $tsfe->cObj->cObjGetSingle(
                 $indexingConfiguration[$solrFieldName],
                 $indexingConfiguration[$solrFieldName . '.']
             );
@@ -163,23 +165,22 @@ abstract class AbstractIndexer
             ) {
                 $fieldValue = unserialize($fieldValue);
             }
-        } elseif (substr($indexingConfiguration[$solrFieldName], 0,
-                1) === '<'
+        } elseif (
+            substr($indexingConfiguration[$solrFieldName], 0, 1) === '<'
         ) {
             $referencedTsPath = trim(substr($indexingConfiguration[$solrFieldName],
                 1));
             $typoScriptParser = GeneralUtility::makeInstance(TypoScriptParser::class);
             // $name and $conf is loaded with the referenced values.
-            list($name, $conf) = $typoScriptParser->getVal($referencedTsPath,
-                $GLOBALS['TSFE']->tmpl->setup);
+            list($name, $conf) = $typoScriptParser->getVal($referencedTsPath, $GLOBALS['TSFE']->tmpl->setup);
 
             // need to change directory to make IMAGE content objects work in BE context
             // see http://blog.netzelf.de/lang/de/tipps-und-tricks/tslib_cobj-image-im-backend
             $backupWorkingDirectory = getcwd();
             chdir(Environment::getPublicPath() . '/');
 
-            $contentObject->start($data, $this->type);
-            $fieldValue = $contentObject->cObjGetSingle($name, $conf);
+            $tsfe->start($data, $this->type);
+            $fieldValue = $tsfe->cObjGetSingle($name, $conf);
 
             chdir($backupWorkingDirectory);
 

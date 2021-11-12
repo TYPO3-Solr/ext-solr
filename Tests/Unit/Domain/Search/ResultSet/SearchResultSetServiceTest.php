@@ -120,7 +120,7 @@ class SearchResultSetServiceTest extends UnitTest
     {
         $this->configurationMock->expects($this->any())->method('getSearchInitializeWithEmptyQuery')->willReturn(false);
         $this->configurationMock->expects($this->any())->method('getSearchShowResultsOfInitialEmptyQuery')->willReturn(false);
-        $this->configurationMock->expects($this->any())->method('getSearchInitializeWithQuery')->willReturn(false);
+        $this->configurationMock->expects($this->any())->method('getSearchInitializeWithQuery')->willReturn('');
         $this->configurationMock->expects($this->any())->method('getSearchShowResultsOfInitialQuery')->willReturn(false);
     }
 }

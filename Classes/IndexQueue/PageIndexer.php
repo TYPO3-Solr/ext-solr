@@ -29,6 +29,7 @@ use ApacheSolrForTypo3\Solr\Access\RootlineElement;
 use ApacheSolrForTypo3\Solr\Domain\Index\PageIndexer\Helper\UriBuilder\AbstractUriStrategy;
 use ApacheSolrForTypo3\Solr\Domain\Index\PageIndexer\Helper\UriStrategyFactory;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
+use RuntimeException;
 use TYPO3\CMS\Core\Type\Bitmask\PageTranslationVisibility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -109,7 +110,7 @@ class PageIndexer extends Indexer
      * @param Item $item An index queue item
      * @return array An array of ApacheSolrForTypo3\Solr\System\Solr\SolrConnection connections, the array's keys are the sys_language_uid of the language of the connection
      */
-    protected function getSolrConnectionsByItem(Item $item)
+    protected function getSolrConnectionsByItem(Item $item): array
     {
         $solrConnections = parent::getSolrConnectionsByItem($item);
 
@@ -236,7 +237,7 @@ class PageIndexer extends Indexer
      * @param Item $item Item to index
      * @param int $language The language id
      * @return string URL to send the index request to
-     * @throws \RuntimeException
+     * @throws RuntimeException
      */
     protected function getDataUrl(Item $item, $language = 0)
     {
@@ -282,12 +283,12 @@ class PageIndexer extends Indexer
      * a specific frontend user group.
      *
      * @param Item $item The index queue item representing the page.
-     * @param int $language The language to use.
-     * @param int $userGroup The frontend user group to use.
+     * @param ?int $language The language to use.
+     * @param ?int $userGroup The frontend user group to use.
      * @return PageIndexerResponse Page indexer response
-     * @throws \RuntimeException if indexing an item failed
+     * @throws RuntimeException if indexing an item failed
      */
-    protected function indexPage(Item $item, $language = 0, $userGroup = 0)
+    protected function indexPage(Item $item, ?int $language = 0, ?int $userGroup = 0): PageIndexerResponse
     {
         $accessRootline = $this->getAccessRootline($item, $language, $userGroup);
         $request = $this->buildBasePageIndexerRequest();
@@ -325,7 +326,7 @@ class PageIndexer extends Indexer
         if (!$indexActionResult['pageIndexed']) {
             $message = 'Failed indexing page Index Queue item: ' . $item->getIndexQueueUid() . ' url: ' . $indexRequestUrl;
 
-            throw new \RuntimeException($message, 1331837081);
+            throw new RuntimeException($message, 1331837081);
         }
 
         return $response;

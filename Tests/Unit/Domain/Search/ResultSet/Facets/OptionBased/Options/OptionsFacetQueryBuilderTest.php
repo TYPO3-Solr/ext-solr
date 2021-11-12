@@ -55,6 +55,12 @@ class OptionsFacetQueryBuilderTest extends UnitTest
         $configurationMock->expects($this->once())->method('getSearchFacetingFacetByName')->with('category')->will(
             $this->returnValue($fakeFacetConfiguration)
         );
+        $configurationMock->expects($this->any())->method('getSearchFacetingFacetLimit')->with(100)->will(
+            $this->returnValue(100)
+        );
+        $configurationMock->expects($this->any())->method('getSearchFacetingMinimumCount')->with(1)->will(
+            $this->returnValue(1)
+        );
 
         $builder = new OptionsFacetQueryBuilder();
         $facetParameters = $builder->build('category', $configurationMock);
@@ -63,7 +69,7 @@ class OptionsFacetQueryBuilderTest extends UnitTest
                 'category' => [
                     'type' => 'terms',
                     'field' => 'category',
-                    'limit' => -1,
+                    'limit' => 100,
                     'mincount' => 1,
                     'sort' => 'index desc',
                 ],
@@ -89,6 +95,9 @@ class OptionsFacetQueryBuilderTest extends UnitTest
         $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
         $configurationMock->expects($this->once())->method('getSearchFacetingFacetByName')->with('category')->will(
             $this->returnValue($fakeFacetConfiguration)
+        );
+        $configurationMock->expects($this->any())->method('getSearchFacetingMinimumCount')->with(1)->will(
+            $this->returnValue(1)
         );
 
         $builder = new OptionsFacetQueryBuilder();
@@ -126,6 +135,9 @@ class OptionsFacetQueryBuilderTest extends UnitTest
         $configurationMock->expects($this->any())->method('getSearchFacetingFacetLimit')->will(
             $this->returnValue(15)
         );
+        $configurationMock->expects($this->any())->method('getSearchFacetingMinimumCount')->with(1)->will(
+            $this->returnValue(1)
+        );
 
         $builder = new OptionsFacetQueryBuilder();
         $facetParameters = $builder->build('category', $configurationMock);
@@ -159,6 +171,9 @@ class OptionsFacetQueryBuilderTest extends UnitTest
         $configurationMock->expects($this->once())->method('getSearchFacetingFacetByName')->with('category')->will(
             $this->returnValue($fakeFacetConfiguration)
         );
+        $configurationMock->expects($this->any())->method('getSearchFacetingFacetLimit')->with(100)->will(
+            $this->returnValue(100)
+        );
 
         $builder = new OptionsFacetQueryBuilder();
         $facetParameters = $builder->build('category', $configurationMock);
@@ -167,7 +182,7 @@ class OptionsFacetQueryBuilderTest extends UnitTest
                 'category' => [
                     'type' => 'terms',
                     'field' => 'category',
-                    'limit' => -1,
+                    'limit' => 100,
                     'mincount' => 2,
                 ],
             ]
@@ -207,7 +222,10 @@ class OptionsFacetQueryBuilderTest extends UnitTest
         );
 
         $configurationMock->expects($this->any())->method('getSearchFacetingMinimumCount')->will(
-            $this->returnValue($configuredMinimumCount)
+            $this->returnValue($expectedMinimumCount)
+        );
+        $configurationMock->expects($this->any())->method('getSearchFacetingFacetLimit')->with(100)->will(
+            $this->returnValue(100)
         );
 
         $builder = new OptionsFacetQueryBuilder();
@@ -217,7 +235,7 @@ class OptionsFacetQueryBuilderTest extends UnitTest
                 'category' => [
                     'type' => 'terms',
                     'field' => 'category',
-                    'limit' => -1,
+                    'limit' => 100,
                     'mincount' => $expectedMinimumCount,
                 ],
             ]
@@ -246,6 +264,12 @@ class OptionsFacetQueryBuilderTest extends UnitTest
         $configurationMock->expects($this->once())->method('getSearchFacetingFacetByName')->with('category')->will(
             $this->returnValue($fakeFacetConfiguration)
         );
+        $configurationMock->expects($this->any())->method('getSearchFacetingFacetLimit')->with(100)->will(
+            $this->returnValue(100)
+        );
+        $configurationMock->expects($this->any())->method('getSearchFacetingMinimumCount')->with(1)->will(
+            $this->returnValue(1)
+        );
 
         $builder = new OptionsFacetQueryBuilder();
         $facetParameters = $builder->build('category', $configurationMock);
@@ -254,7 +278,7 @@ class OptionsFacetQueryBuilderTest extends UnitTest
                 'category' => [
                     'type' => 'terms',
                     'field' => 'category',
-                    'limit' => -1,
+                    'limit' => 100,
                     'mincount' => 1,
                     'facet' => [
                         'metrics_downloads' => 'sum(downloads_intS)',

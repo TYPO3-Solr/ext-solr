@@ -24,12 +24,14 @@ namespace ApacheSolrForTypo3\Solr;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use Exception;
+
 /**
  * Exception that is thrown when no Solr connection could be found.
  *
  * @author Ingo Renner <ingo@typo3.org>
  */
-class NoSolrConnectionFoundException extends \Exception
+class NoSolrConnectionFoundException extends Exception
 {
     protected $pageId;
 

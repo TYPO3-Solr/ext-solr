@@ -154,6 +154,7 @@ class Item
      * @param array $itemMetaData Metadata describing the item to index using the index queue. Is expected to contain a record from table tx_solr_indexqueue_item
      * @param array $fullRecord Optional full record for the item. If provided, can save some SQL queries.
      * @param IndexQueueIndexingPropertyRepository|null $indexQueueIndexingPropertyRepository
+     * @param QueueItemRepository|null $queueItemRepository
      */
     public function __construct(array $itemMetaData, array $fullRecord = [], IndexQueueIndexingPropertyRepository $indexQueueIndexingPropertyRepository = null, QueueItemRepository $queueItemRepository = null)
     {

@@ -42,7 +42,7 @@ abstract class AbstractSolrStatus implements StatusProviderInterface
      * @param array $variables
      * @return string
      */
-    protected function getRenderedReport($templateFilename = '', $variables = [])
+    protected function getRenderedReport(string $templateFilename = '', array $variables = []): string
     {
         $templatePath = 'EXT:solr/Resources/Private/Templates/Backend/Reports/' . $templateFilename;
         $standaloneView = $this->getFluidStandaloneViewWithTemplate($templatePath);
@@ -57,18 +57,11 @@ abstract class AbstractSolrStatus implements StatusProviderInterface
      * @param string $templatePath
      * @return StandaloneView
      */
-    private function getFluidStandaloneViewWithTemplate($templatePath = '')
+    private function getFluidStandaloneViewWithTemplate(string $templatePath = ''): StandaloneView
     {
         $standaloneView = GeneralUtility::makeInstance(StandaloneView::class);
         $standaloneView->setTemplatePathAndFilename(GeneralUtility::getFileAbsFileName($templatePath));
 
         return $standaloneView;
     }
-
-    /**
-     * Returns the status of an extension or (sub)system
-     *
-     * @return array An array of \TYPO3\CMS\Reports\Status objects
-     */
-    abstract public function getStatus();
 }

@@ -53,16 +53,16 @@ class ConfigurationManager implements SingletonInterface
     }
 
     /**
-     * Retrieves the TypoScriptConfiguration object from an configuration array, pageId, languageId and TypoScript
-     * path that is used in in the current context.
+     * Retrieves the TypoScriptConfiguration object from configuration array, pageId, languageId and TypoScript
+     * path that is used in the current context.
      *
-     * @param array $configurationArray
-     * @param int $contextPageId
+     * @param array|null $configurationArray
+     * @param int|null $contextPageId
      * @param int $contextLanguageId
      * @param string $contextTypoScriptPath
      * @return TypoScriptConfiguration
      */
-    public function getTypoScriptConfiguration(array $configurationArray = null, $contextPageId = null, $contextLanguageId = 0, $contextTypoScriptPath = '')
+    public function getTypoScriptConfiguration(array $configurationArray = null, int $contextPageId = null, int $contextLanguageId = 0, string $contextTypoScriptPath = ''): TypoScriptConfiguration
     {
         if ($configurationArray == null) {
             if (isset($this->typoScriptConfigurations['default'])) {
@@ -99,11 +99,11 @@ class ConfigurationManager implements SingletonInterface
     /**
      * This method is used to build the TypoScriptConfiguration.
      *
-     * @param array $configurationArray
+     * @param array|null $configurationArray
      * @param int|null $contextPageId
-     * @return object
+     * @return TypoScriptConfiguration
      */
-    protected function getTypoScriptConfigurationInstance(array $configurationArray = null, $contextPageId = null)
+    protected function getTypoScriptConfigurationInstance(array $configurationArray = null, int $contextPageId = null): TypoScriptConfiguration
     {
         return GeneralUtility::makeInstance(
             TypoScriptConfiguration::class,
