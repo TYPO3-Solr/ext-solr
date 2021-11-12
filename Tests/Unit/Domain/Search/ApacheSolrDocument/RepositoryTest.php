@@ -34,6 +34,7 @@ use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\System\Solr\Service\AbstractSolrService;
 use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
+use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use InvalidArgumentException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -123,9 +124,9 @@ class RepositoryTest extends UnitTest
     public function findByPageIdAndByLanguageIdReturnsResultFromSearch()
     {
 
-        $AbstractSolrServiceMock = $this->getDumbMock(AbstractSolrService::class);
+        $solrConnectionMock = $this->getDumbMock(SolrConnection::class);
         $solrConnectionManager = $this->getAccessibleMock(ConnectionManager::class, ['getConnectionByPageId'], [], '', false);
-        $solrConnectionManager->expects($this->any())->method('getConnectionByPageId')->will($this->returnValue($AbstractSolrServiceMock));
+        $solrConnectionManager->expects($this->any())->method('getConnectionByPageId')->will($this->returnValue($solrConnectionMock));
         $mockedSingletons = [ConnectionManager::class => $solrConnectionManager];
 
         $search = $this->getAccessibleMock(Search::class, ['search', 'getResultDocumentsEscaped'], [], '', false);

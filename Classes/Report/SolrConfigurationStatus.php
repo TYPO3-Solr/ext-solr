@@ -71,9 +71,9 @@ class SolrConfigurationStatus extends AbstractSolrStatus
      * Compiles a collection of configuration status checks.
      *
      * @return array
-     * @throws ImmediateResponseException
+     * @noinspection PhpMissingReturnTypeInspection
      */
-    public function getStatus(): array
+    public function getStatus()
     {
         $reports = [];
 
@@ -97,7 +97,7 @@ class SolrConfigurationStatus extends AbstractSolrStatus
      * Checks whether the "Use as Root Page" page property has been set for any
      * site.
      *
-     * @return NULL|Status An error status is returned if no root pages were found.
+     * @return null|Status An error status is returned if no root pages were found.
      */
     protected function getRootPageFlagStatus(): ?Status
     {
@@ -120,8 +120,7 @@ class SolrConfigurationStatus extends AbstractSolrStatus
      * Checks whether config.index_enable is set to 1, otherwise indexing will
      * not work.
      *
-     * @return NULL|Status An error status is returned for each site root page config.index_enable = 0.
-     * @throws ImmediateResponseException
+     * @return null|Status An error status is returned for each site root page config.index_enable = 0.
      */
     protected function getConfigIndexEnableStatus(): ?Status
     {
@@ -144,7 +143,6 @@ class SolrConfigurationStatus extends AbstractSolrStatus
      * Returns an array of rootPages where the indexing is off and EXT:solr is enabled.
      *
      * @return array
-     * @throws ImmediateResponseException
      */
     protected function getRootPagesWithIndexingOff(): array
     {
@@ -153,8 +151,7 @@ class SolrConfigurationStatus extends AbstractSolrStatus
 
         foreach ($rootPages as $rootPage) {
             try {
-                $this->initializeTSFE($rootPage);
-                $solrIsEnabledAndIndexingDisabled = $this->getIsSolrEnabled() && !$this->getIsIndexingEnabled();
+                $solrIsEnabledAndIndexingDisabled = $this->getIsSolrEnabled($rootPage['uid']) && !$this->getIsIndexingEnabled($rootPage['uid']);
                 if ($solrIsEnabledAndIndexingDisabled) {
                     $rootPagesWithIndexingOff[] = $rootPage;
                 }
@@ -184,52 +181,33 @@ class SolrConfigurationStatus extends AbstractSolrStatus
      *
      * @return array An array of (partial) root page records, containing the uid and title fields
      */
-    protected function getRootPages()
+    protected function getRootPages(): array
     {
         $pagesRepository = GeneralUtility::makeInstance(PagesRepository::class);
-
         return $pagesRepository->findAllRootPages();
     }
 
     /**
      * Checks if the solr plugin is enabled with plugin.tx_solr.enabled.
      *
+     * @param int $pageUid
      * @return bool
      */
-    protected function getIsSolrEnabled(): bool
+    protected function getIsSolrEnabled(int $pageUid): bool
     {
-        if (empty($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['enabled'])) {
-            return false;
-        }
-        return (bool)$GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['enabled'];
+        return $this->frontendEnvironment->getSolrConfigurationFromPageId($pageUid)->getEnabled();
     }
 
     /**
      * Checks if the indexing is enabled with config.index_enable
      *
+     * @param int $pageUid
      * @return bool
      */
-    protected function getIsIndexingEnabled(): bool
+    protected function getIsIndexingEnabled(int $pageUid): bool
     {
-        if (empty($GLOBALS['TSFE']->config['config']['index_enable'])) {
-            return false;
-        }
-
-        return (bool)$GLOBALS['TSFE']->config['config']['index_enable'];
-    }
-
-    /**
-     * Initializes TSFE via FrontendEnvironment.
-     *
-     * Purpose: Unit test mocking helper method.
-     *
-     * @param array $rootPageRecord
-     * @throws ImmediateResponseException
-     * @throws ServiceUnavailableException
-     * @throws SiteNotFoundException
-     */
-    protected function initializeTSFE(array $rootPageRecord)
-    {
-        $this->frontendEnvironment->initializeTsfe($rootPageRecord['uid']);
+        return (bool)$this->frontendEnvironment
+            ->getConfigurationFromPageId($pageUid)
+            ->getValueByPathOrDefaultValue('config.index_enable', false);
     }
 }

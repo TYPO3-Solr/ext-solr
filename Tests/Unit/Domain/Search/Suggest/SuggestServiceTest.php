@@ -39,6 +39,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\Suggest\SuggestService;
 use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
+use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -144,10 +145,12 @@ class SuggestServiceTest extends UnitTest
         $this->assertNoSearchWillBeTriggered();
         $fakeRequest = $this->getFakedSearchRequest('some');
 
-        $connectionManagerMock = $this->getDumbMock(ConnectionManager::class);
+        $solrConnectionMock = $this->getDumbMock(SolrConnection::class);
+        $connectionManagerMock = $this->getAccessibleMock(ConnectionManager::class, ['getConnectionByPageId'], [], '', false);
+        $connectionManagerMock->expects($this->any())->method('getConnectionByPageId')->will($this->returnValue($solrConnectionMock));
         GeneralUtility::setSingletonInstance(ConnectionManager::class, $connectionManagerMock);
 
-        $searchStub = new class extends Search implements SingletonInterface {
+        $searchStub = new class($this->getDumbMock(SolrConnection::class)) extends Search implements SingletonInterface {
             public static $suggestServiceTest;
             public function search(Query $query, $offset = 0, $limit = 10)
             {
@@ -158,6 +161,7 @@ class SuggestServiceTest extends UnitTest
         $searchStub::$suggestServiceTest = $this;
         GeneralUtility::setSingletonInstance(Search::class, $searchStub);
 
+        $this->tsfeMock->expects($this->any())->method('getRequestedId')->will($this->returnValue(7411));
         $suggestService = new SuggestService(
             $this->tsfeMock,
             $this->searchResultSetServiceMock,

@@ -98,10 +98,11 @@ class RecordMonitor extends AbstractDataHandlerListener
      * @param Queue|null $indexQueue
      * @param MountPagesUpdater|null $mountPageUpdater
      * @param TCAService|null $TCAService
-     * @param RootPageResolver $rootPageResolver
+     * @param RootPageResolver|null $rootPageResolver
      * @param PagesRepository|null $pagesRepository
      * @param SolrLogManager|null $solrLogManager
      * @param ConfigurationAwareRecordService|null $recordService
+     * @param FrontendEnvironment|null $frontendEnvironment
      */
     public function __construct(
         Queue $indexQueue = null,
@@ -175,6 +176,7 @@ class RecordMonitor extends AbstractDataHandlerListener
      * @param int $uid The record's uid
      * @param string $value
      * @param DataHandler $tceMain TYPO3 Core Engine parent object
+     * @throws NoPidException
      */
     public function processCmdmap_preProcess(
         $command,

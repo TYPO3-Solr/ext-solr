@@ -44,6 +44,7 @@ use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\TypoScript\TemplateService;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
+use UnexpectedValueException;
 
 /**
  * PHP Unit test for connection manager
@@ -117,16 +118,16 @@ class ConnectionManagerTest extends UnitTest
                 $this->pageRepositoryMock,
                 $this->siteRepositoryMock
             ])
-            ->setMethods(['getSolrConnectionForNodes'])
+            ->onlyMethods(['getSolrConnectionForNodes'])
             ->getMock();
     }
 
     /**
-     * Provides data for the connect test
+     * Provides data for the connection test
      *
      * @return array
      */
-    public function connectDataProvider()
+    public function connectDataProvider(): array
     {
         return [
             ['host' => 'localhost', 'port' => '', 'path' => '', 'scheme' => '', 'expectsException' => true, 'expectedConnectionString' => null],
@@ -182,7 +183,7 @@ class ConnectionManagerTest extends UnitTest
                 );
             })
         );
-        $exceptionOccured = false;
+        $exceptionOccurred = false;
         try {
             $readNode = ['host' => $host, 'port' => $port, 'path' => $path, 'scheme' => $scheme];
             $configuration['read'] = $readNode;
@@ -190,9 +191,9 @@ class ConnectionManagerTest extends UnitTest
 
             $solrService = $this->connectionManager->getConnectionFromConfiguration($configuration);
             $this->assertEquals($expectedConnectionString, $solrService->getReadService()->__toString());
-        } catch (\UnexpectedValueException $exception) {
-            $exceptionOccured = true;
+        } catch (UnexpectedValueException $exception) {
+            $exceptionOccurred = true;
         }
-        $this->assertEquals($expectsException, $exceptionOccured);
+        $this->assertEquals($expectsException, $exceptionOccurred);
     }
 }

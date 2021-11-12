@@ -30,8 +30,8 @@ use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository as PagesReposit
 use ApacheSolrForTypo3\Solr\System\Records\SystemLanguage\SystemLanguageRepository;
 use ApacheSolrForTypo3\Solr\System\Solr\Node;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
+use Exception;
 use InvalidArgumentException;
-use TYPO3\CMS\Core\Registry;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use function json_encode;
@@ -66,9 +66,9 @@ class ConnectionManager implements SingletonInterface
 
 
     /**
-     * @param SystemLanguageRepository $systemLanguageRepository
+     * @param SystemLanguageRepository|null $systemLanguageRepository
      * @param PagesRepositoryAtExtSolr|null $pagesRepositoryAtExtSolr
-     * @param SiteRepository $siteRepository
+     * @param SiteRepository|null $siteRepository
      */
     public function __construct(
         SystemLanguageRepository $systemLanguageRepository = null,
@@ -118,22 +118,20 @@ class ConnectionManager implements SingletonInterface
      * Gets a Solr connection for a page ID.
      *
      * @param int $pageId A page ID.
-     * @param int $language The language ID to get the connection for as the path may differ. Optional, defaults to 0.
-     * @param string $mount Comma list of MountPoint parameters
+     * @param ?int $language The language ID to get the connection for as the path may differ. Optional, defaults to 0.
+     * @param ?string $mount Comma list of MountPoint parameters
      * @return SolrConnection A solr connection.
      * @throws NoSolrConnectionFoundException
      */
-    public function getConnectionByPageId($pageId, $language = 0, $mount = '')
+    public function getConnectionByPageId(int $pageId, ?int $language = 0, ?string $mount = ''): SolrConnection
     {
         try {
             $site = $this->siteRepository->getSiteByPageId($pageId, $mount);
             $this->throwExceptionOnInvalidSite($site, 'No site for pageId ' . $pageId);
             $config = $site->getSolrConnectionConfiguration($language);
-            $solrConnection = $this->getConnectionFromConfiguration($config);
-            return $solrConnection;
+            return $this->getConnectionFromConfiguration($config);
         } catch(InvalidArgumentException $e) {
-            $noSolrConnectionException = $this->buildNoConnectionExceptionForPageAndLanguage($pageId, $language);
-            throw $noSolrConnectionException;
+            throw $this->buildNoConnectionExceptionForPageAndLanguage($pageId, $language);
         }
     }
 
@@ -141,22 +139,19 @@ class ConnectionManager implements SingletonInterface
      * Gets a Solr connection for a root page ID.
      *
      * @param int $pageId A root page ID.
-     * @param int $language The language ID to get the connection for as the path may differ. Optional, defaults to 0.
+     * @param ?int $language The language ID to get the connection for as the path may differ. Optional, defaults to 0.
      * @return SolrConnection A solr connection.
      * @throws NoSolrConnectionFoundException
      */
-    public function getConnectionByRootPageId($pageId, $language = 0)
+    public function getConnectionByRootPageId(int $pageId, ?int $language = 0): SolrConnection
     {
         try {
             $site = $this->siteRepository->getSiteByRootPageId($pageId);
             $this->throwExceptionOnInvalidSite($site, 'No site for pageId ' . $pageId);
             $config = $site->getSolrConnectionConfiguration($language);
-            $solrConnection = $this->getConnectionFromConfiguration($config);
-            return $solrConnection;
+            return $this->getConnectionFromConfiguration($config);
         } catch (InvalidArgumentException $e) {
-            /* @var NoSolrConnectionFoundException $noSolrConnectionException */
-            $noSolrConnectionException = $this->buildNoConnectionExceptionForPageAndLanguage($pageId, $language);
-            throw $noSolrConnectionException;
+            throw $this->buildNoConnectionExceptionForPageAndLanguage($pageId, $language);
         }
     }
 
@@ -164,9 +159,9 @@ class ConnectionManager implements SingletonInterface
      * Gets all connections found.
      *
      * @return SolrConnection[] An array of initialized ApacheSolrForTypo3\Solr\System\Solr\SolrConnection connections
-     * @throws NoSolrConnectionFoundException
+     * @throws Exception
      */
-    public function getAllConnections()
+    public function getAllConnections(): array
     {
         $solrConnections = [];
         foreach ($this->siteRepository->getAvailableSites() as $site) {
@@ -183,9 +178,8 @@ class ConnectionManager implements SingletonInterface
      *
      * @param Site $site A TYPO3 site
      * @return SolrConnection[] An array of Solr connection objects (ApacheSolrForTypo3\Solr\System\Solr\SolrConnection)
-     * @throws NoSolrConnectionFoundException
      */
-    public function getConnectionsBySite(Site $site)
+    public function getConnectionsBySite(Site $site): array
     {
         $connections = [];
 
@@ -197,10 +191,11 @@ class ConnectionManager implements SingletonInterface
     }
 
     /**
-     * Creates a human readable label from the connections' configuration.
+     * Creates a human-readable label from the connections' configuration.
      *
      * @param array $connection Connection configuration
      * @return string Connection label
+     * @todo Remove, since not used, or take used.
      */
     protected function buildConnectionLabel(array $connection)
     {
@@ -235,7 +230,7 @@ class ConnectionManager implements SingletonInterface
      * Throws a no connection exception when no site was passed.
      *
      * @param Site|null $site
-     * @param $message
+     * @param string $message
      * @throws NoSolrConnectionFoundException
      */
     protected function throwExceptionOnInvalidSite(?Site $site, string $message)

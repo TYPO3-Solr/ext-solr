@@ -28,15 +28,16 @@ use ApacheSolrForTypo3\Solr\Access\Rootline;
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\Domain\Index\PageIndexer\Helper\UriBuilder\AbstractUriStrategy;
 use ApacheSolrForTypo3\Solr\Domain\Search\ApacheSolrDocument\Builder;
+use ApacheSolrForTypo3\Solr\FrontendEnvironment;
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerResponse;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
-use ApacheSolrForTypo3\Solr\System\Url\UrlHelper;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
+use PHPUnit\Framework\MockObject\MockObject;
 
 class PageIndexerTest extends UnitTest
 {
@@ -75,6 +76,11 @@ class PageIndexerTest extends UnitTest
      */
     protected $uriStrategyMock;
 
+    /**
+     * @var MockObject|FrontendEnvironment
+     */
+    protected $frontendEnvironmentMock;
+
     public function setUp(): void
     {
         $this->pagesRepositoryMock = $this->getDumbMock(PagesRepository::class);
@@ -83,13 +89,14 @@ class PageIndexerTest extends UnitTest
         $this->connectionManagerMock = $this->getDumbMock(ConnectionManager::class);
         $this->pageIndexerRequestMock = $this->getDumbMock(PageIndexerRequest::class);
         $this->uriStrategyMock = $this->getDumbMock(AbstractUriStrategy::class);
+        $this->frontendEnvironmentMock = $this->getDumbMock(FrontendEnvironment::class);
     }
 
     /**
      * @param array $options
-     * @return PageIndexer
+     * @return PageIndexer|MockObject
      */
-    protected function getPageIndexerWithMockedDependencies($options = [])
+    protected function getPageIndexerWithMockedDependencies(array $options = [])
     {
         $pageIndexer = $this->getMockBuilder(PageIndexer::class)
             ->setConstructorArgs(
@@ -98,9 +105,10 @@ class PageIndexerTest extends UnitTest
                     $this->pagesRepositoryMock,
                     $this->documentBuilderMock,
                     $this->solrLogManagerMock,
-                    $this->connectionManagerMock
+                    $this->connectionManagerMock,
+                    $this->frontendEnvironmentMock
                 ])
-            ->setMethods(['getPageIndexerRequest', 'getAccessRootlineByPageId', 'getUriStrategy'])
+            ->onlyMethods(['getPageIndexerRequest', 'getAccessRootlineByPageId', 'getUriStrategy'])
             ->getMock();
         $pageIndexer->expects($this->any())->method('getPageIndexerRequest')->willReturn($this->pageIndexerRequestMock);
         $pageIndexer->expects($this->any())->method('getUriStrategy')->willReturn($this->uriStrategyMock);
@@ -124,10 +132,12 @@ class PageIndexerTest extends UnitTest
         $testUri = 'http://myfrontendurl.de/index.php?id=4711&L=0';
         $this->uriStrategyMock->expects($this->any())->method('getPageIndexingUriFromPageItemAndLanguageId')->willReturn($testUri);
 
-            /** @var $item Item */
+        /* @var Item|MockObject $item */
         $item = $this->getDumbMock(Item::class);
+        $item->expects($this->any())->method('getRootPageUid')->willReturn(88);
         $item->expects($this->any())->method('getRecordUid')->willReturn(4711);
         $item->expects($this->any())->method('getSite')->willReturn($siteMock);
+        $item->expects($this->any())->method('getIndexingConfigurationName')->willReturn('pages');
 
 
         $accessGroupResponse = $this->getDumbMock(PageIndexerResponse::class);

@@ -34,7 +34,6 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\Task\IndexQueueWorkerTask;
 use Solarium\Exception\HttpException;
-use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 
@@ -193,7 +192,6 @@ class IndexService
     protected function indexItem(Item $item, TypoScriptConfiguration $configuration)
     {
         $indexer = $this->getIndexerByItem($item->getIndexingConfigurationName(), $configuration);
-
         // Remember original http host value
         $originalHttpHost = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : null;
 
