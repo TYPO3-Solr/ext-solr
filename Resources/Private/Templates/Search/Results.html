@@ -90,13 +90,13 @@
 		<div class="row">
 			<div class="col-md-12">
 				<f:if condition="{resultSet.hasSearched}">
-					<s:widget.resultPaginate resultSet="{resultSet}">
-						<div data-start="{pagination.resultCountStart}" class="results-list list-group">
-							<f:for each="{documents}" as="document">
-								<f:render partial="Result/Document" section="Document" arguments="{resultSet:resultSet, document:document}" />
-							</f:for>
-						</div>
-					</s:widget.resultPaginate>
+					<f:render partial="Result/Pagination" section="Pagination" arguments="{resultSet: resultSet, pagination: pagination, currentPage: currentPage}"/>
+					<div data-start="{pagination.startRecordNumber}" class="results-list list-group">
+						<f:for each="{resultSet.searchResults}" as="document">
+							<f:render partial="Result/Document" section="Document" arguments="{resultSet: resultSet, document: document}" />
+						</f:for>
+					</div>
+					<f:render partial="Result/Pagination" section="Pagination" arguments="{resultSet: resultSet, pagination: pagination, currentPage: currentPage}"/>
 				</f:if>
 			</div>
 		</div>
@@ -112,16 +112,18 @@
 			</f:if>
 		</f:if>
 
+        <f:comment> <!-- @todo : Refactor widgets to new TYPO3 11.5 API https://github.com/TYPO3-Solr/ext-solr/issues/3091 -->
 		<div class="hidden-xs">
 			<f:if condition="{resultSet.usedSearchRequest.contextTypoScriptConfiguration.searchLastSearches}">
-				<f:render partial="Search/LastSearches" section="LastSearches" arguments="{resultSet:resultSet}" />
+                <f:render partial="Search/LastSearches" section="LastSearches" arguments="{resultSet:resultSet}" />
 			</f:if>
 		</div>
 		<div class="hidden-xs">
 			<f:if condition="{resultSet.usedSearchRequest.contextTypoScriptConfiguration.searchFrequentSearches}">
-				<f:render partial="Search/FrequentlySearched" section="FrequentlySearched" />
+                <f:render partial="Search/FrequentlySearched" section="FrequentlySearched" />
 			</f:if>
 		</div>
+        </f:comment>
 	</div>
 </f:section>
 

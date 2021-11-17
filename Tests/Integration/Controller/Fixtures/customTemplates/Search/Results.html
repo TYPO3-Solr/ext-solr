@@ -44,13 +44,13 @@
 			<f:if condition="{resultSet.allResultCount}">
 				<f:render partial="Result/PerPage" section="PerPage" arguments="{resultSet: resultSet}" />
 			</f:if>
-			<s:widget.resultPaginate resultSet="{resultSet}">
-				<ol start="{pagination.displayRangeStart}" class="results-list">
-					<f:for each="{documents}" as="document">
-						<f:render partial="Result/Document" section="Document" arguments="{resultSet:resultSet, document:document}" />
-					</f:for>
-				</ol>
-			</s:widget.resultPaginate>
+            <f:render partial="Result/Pagination" section="Pagination" arguments="{resultSet: resultSet, pagination: pagination, currentPage: currentPage}"/>
+            <ol start="{pagination.startRecordNumber}" class="results-list">
+                <f:for each="{resultSet.searchResults}" as="document">
+                    <f:render partial="Result/Document" section="Document" arguments="{resultSet:resultSet, document:document}" />
+                </f:for>
+            </ol>
+            <f:render partial="Result/Pagination" section="Pagination" arguments="{resultSet: resultSet, pagination: pagination, currentPage: currentPage}"/>
 		</f:if>
 
 	</div>
