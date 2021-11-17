@@ -541,6 +541,16 @@ results.resultsPerPageSwitchOptions
 
 Defines the shown options of possible results per page.
 
+results.maxPaginatorLinks
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+:Type: Integer
+:TS Path: plugin.tx_solr.search.results.maxPaginatorLinks
+:Since: 11.5
+:Default: 0
+
+Sets the number of shown page links in the paginator.
+
 results.showDocumentScoreAnalysis
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
