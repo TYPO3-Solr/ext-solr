@@ -194,6 +194,7 @@ plugin.tx_solr {
 
 			resultsPerPage = {$plugin.tx_solr.search.results.resultsPerPage}
 			resultsPerPageSwitchOptions = 10, 25, 50
+      maxPaginatorLinks = 0
 
 			showDocumentScoreAnalysis = 0
 		}
