@@ -9,14 +9,12 @@ The following part of the default template iterates over the results and renders
 
 .. code-block:: xml
 
-	<s:widget.resultPaginate resultSet="{resultSet}">
-		<ol start="{pagination.displayRangeStart}" class="results-list">
-			<f:for each="{documents}" as="document">
-				<f:render partial="Result/Document" section="Document"
-				 arguments="{resultSet:resultSet, document:document}" />
-			</f:for>
-		</ol>
-	</s:widget.resultPaginate>
+   <ol start="{pagination.displayRangeStart}" class="results-list">
+      <f:for each="{resultSet.searchResults}" as="document">
+         <f:render partial="Result/Document" section="Document"
+          arguments="{resultSet:resultSet, document:document}" />
+      </f:for>
+   </ol>
 
 This structure allows you to use e.g. the fluid if ViewHelper to render a result with a different partial, based on a field value.
 But as you see in the template above, by default the partial "Result/Document" is used.

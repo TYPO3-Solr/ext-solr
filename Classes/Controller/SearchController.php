@@ -15,6 +15,8 @@ namespace ApacheSolrForTypo3\Solr\Controller;
  */
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
+use ApacheSolrForTypo3\Solr\Pagination\ResultsPagination;
+use ApacheSolrForTypo3\Solr\Pagination\ResultsPaginator;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrUnavailableException;
 use ApacheSolrForTypo3\Solr\Util;
 use Psr\Http\Message\ResponseInterface;
@@ -106,11 +108,19 @@ class SearchController extends AbstractBaseController
             // to access it without passing it from partial to partial
             $this->controllerContext->setSearchResultSet($searchResultSet);
 
+            $currentPage = $this->request->hasArgument('page') ? (int)$this->request->getArgument('page') : 1;
+            $itemsPerPage = $searchResultSet->getUsedResultsPerPage();
+            $paginator = GeneralUtility::makeInstance(ResultsPaginator::class, $searchResultSet, $currentPage, $itemsPerPage);
+            $pagination = GeneralUtility::makeInstance(ResultsPagination::class, $paginator);
+            $pagination->setMaxPageNumbers((int)$this->typoScriptConfiguration->getMaxPaginatorLinks(0));
+
             $values = [
                 'additionalFilters' => $this->getAdditionalFilters(),
                 'resultSet' => $searchResultSet,
                 'pluginNamespace' => $this->typoScriptConfiguration->getSearchPluginNamespace(),
-                'arguments' => $arguments
+                'arguments' => $arguments,
+                'pagination' => $pagination,
+                'currentPage' => $currentPage,
             ];
 
             $values = $this->emitActionSignal(__CLASS__, __FUNCTION__, [$values]);

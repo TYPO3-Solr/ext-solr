@@ -1568,6 +1568,19 @@ class TypoScriptConfiguration
     }
 
     /**
+     * Returns the maximum number of links shown in the paginator.
+     *
+     * plugin.tx_solr.search.results.maxPaginatorLinks
+     *
+     * @param int $defaultIfEmpty
+     * @return int
+     */
+    public function getMaxPaginatorLinks($defaultIfEmpty = 0)
+    {
+        return (int)$this->getValueByPathOrDefaultValue('plugin.tx_solr.search.results.maxPaginatorLinks', $defaultIfEmpty);
+    }
+
+    /**
      * Returns the configured wrap for the resultHighlighting.
      *
      * plugin.tx_solr.search.results.resultsHighlighting.wrap
