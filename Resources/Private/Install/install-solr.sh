@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-clear
-
 SCRIPTPATH=$( cd $(dirname $0) ; pwd -P )
 EXTENSION_ROOTPATH="$SCRIPTPATH/../../../"
 
@@ -12,54 +10,11 @@ SOLR_HOST="127.0.0.1"
 SOLR_PORT=8983
 TESTING=0
 
-APACHE_MIRROR="http://mirror.dkd.de/apache/"
-APACHE_ARCHIVE="http://archive.apache.org/dist/"
+SOLR_CLOSER_URL="http://www.apache.org/dyn/closer.lua?filename=lucene/solr/$SOLR_VERSION/solr-$SOLR_VERSION.tgz&action=download"
+SOLR_ARCHIVE_URL="https://archive.apache.org/dist/lucene/solr/$SOLR_VERSION/solr-$SOLR_VERSION.tgz"
+SOLR_DIST_URL="https://www.apache.org/dist/lucene/solr/$SOLR_VERSION/solr-$SOLR_VERSION.tgz"
 
 # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
-
-progressfilt ()
-{
-	local flag=false c count cr=$'\r' nl=$'\n'
-	while IFS='' read -d '' -rn 1 c
-	do
-		if $flag
-		then
-			printf '%c' "$c"
-		else
-			if [[ $c != $cr && $c != $nl ]]
-			then
-				count=0
-			else
-				((count++))
-				if ((count > 1))
-				then
-					flag=true
-				fi
-			fi
-		fi
-	done
-}
-
-# check whether a given resource is available on a mirror
-# if the resource is found it will download from the mirror
-# it the resource is not found it will download from Apache archive
-apachedownload ()
-{
-	# test mirror
-	wget -q --spider "$APACHE_MIRROR$1"
-
-	if [ $? -eq "0" ]
-	then
-		# download from mirror
-		wget --progress=bar:force "$APACHE_MIRROR$1" 2>&1 | progressfilt
-	else
-		# download from archive
-		wget --progress=bar:force "$APACHE_ARCHIVE$1" 2>&1 | progressfilt
-	fi
-}
-
-# ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
-
 # color echo http://www.faqs.org/docs/abs/HTML/colorizing.html
 
 black="\033[30m"
@@ -89,6 +44,31 @@ cecho ()
 	tput sgr0
 
 	return
+}
+
+# ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
+
+apachedownload ()
+{
+  for url in $SOLR_CLOSER_URL $SOLR_ARCHIVE_URL $SOLR_DIST_URL; do
+    if [ -f "solr-$SOLR_VERSION.tgz" ]
+    then
+      break;
+    fi;
+
+    echo "downloading $url";
+    if wget -t 10 --max-redirect 5 --retry-connrefused -nv "$url" -O "solr-$SOLR_VERSION.tgz"
+    then
+      break;
+    else
+      rm -f "solr-$SOLR_VERSION.tgz";
+    fi;
+  done;
+
+  if [ ! -f "solr-$SOLR_VERSION.tgz" ]; then
+    cecho "Apache Solr binaries couldn't be downloaded. The installation can not proceed." $red
+    exit 1;
+  fi
 }
 
 # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -177,19 +157,6 @@ then
 	PASSALLCHECKS=0
 fi
 
-ping -c 1 mirror.dkd.de > /dev/null 2>&1
-CHECK=$?
-if [ $CHECK -ne "0" ]
-then
-	cecho "ERROR couldn't ping Apache download mirror, try again using wget" $yellow
-	wget -q --spider http://mirror.dkd.de/apache/
-	if [ $? -ne "0" ]
-	then
-		cecho "ERROR Also couldn't reach the Apache download mirror using wget. Please check your internet connection." $red
-		PASSALLCHECKS=0
-	fi
-fi
-
 tar --version > /dev/null 2>&1
 CHECK=$?
 if [ $CHECK -ne "0" ]
@@ -218,9 +185,9 @@ cecho "Getting Apache Solr $SOLR_VERSION" $green
 if [ ! -f downloads/solr-$SOLR_VERSION.tgz ]; then
 	cecho "Starting download" $green
 
-	mkdir downloads
+	mkdir -p downloads
 	cd downloads
-	apachedownload lucene/solr/$SOLR_VERSION/solr-$SOLR_VERSION.tgz
+	apachedownload
 	cd ..
 else
 	cecho "Restore from cache" $green
