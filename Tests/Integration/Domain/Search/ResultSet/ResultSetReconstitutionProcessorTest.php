@@ -32,6 +32,11 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\ResultSetReconstitutionProce
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
+use PHPUnit\Framework\MockObject\MockObject;
+use TYPO3\CMS\Core\Error\Http\InternalServerErrorException;
+use TYPO3\CMS\Core\Error\Http\ServiceUnavailableException;
+use TYPO3\CMS\Core\Exception\SiteNotFoundException;
+use TYPO3\TestingFramework\Core\Exception as TestingFrameworkCoreException;
 
 /**
  * Unit test case for the ObjectReconstitutionProcessor.
@@ -40,30 +45,17 @@ use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
  */
 class ResultSetReconstitutionProcessorTest extends IntegrationTest
 {
-    /**
-     * @param $fixtureFile
-     * @return SearchResultSet
-     */
-    protected function initializeSearchResultSetFromFakeResponse($fixtureFile)
-    {
-        $searchRequestMock = $this->getMockBuilder(SearchRequest::class)->getMock();
-
-        $fakeResponseJson = $this->getFixtureContentByName($fixtureFile);
-        $fakeResponse = new ResponseAdapter($fakeResponseJson);
-
-        $searchResultSet = new SearchResultSet();
-        $searchResultSet->setUsedSearchRequest($searchRequestMock);
-        $searchResultSet->setResponse($fakeResponse);
-
-        return $searchResultSet;
-    }
 
     /**
      * @test
+     *
+     * @throws TestingFrameworkCoreException
+     * @throws InternalServerErrorException
+     * @throws ServiceUnavailableException
+     * @throws SiteNotFoundException
      */
     public function canApplyRenderingInstructionsOnOptions()
     {
-        $this->importDataSetFromFixture('simple_site.xml');
         $this->writeDefaultSolrTestSiteConfiguration();
         $this->fakeTSFE(1);
 
@@ -111,10 +103,14 @@ class ResultSetReconstitutionProcessorTest extends IntegrationTest
 
     /**
      * @test
+     *
+     * @throws InternalServerErrorException
+     * @throws ServiceUnavailableException
+     * @throws SiteNotFoundException
+     * @throws TestingFrameworkCoreException
      */
     public function labelCanBeUsedAsCObject()
     {
-        $this->importDataSetFromFixture('simple_site.xml');
         $this->writeDefaultSolrTestSiteConfiguration();
         $this->fakeTSFE(1);
         $searchResultSet = $this->initializeSearchResultSetFromFakeResponse('fake_solr_response_with_multiple_fields_facets.json');
@@ -146,10 +142,28 @@ class ResultSetReconstitutionProcessorTest extends IntegrationTest
     }
 
     /**
+     * @param string $fixtureFile
+     * @return SearchResultSet
+     */
+    protected function initializeSearchResultSetFromFakeResponse(string $fixtureFile): SearchResultSet
+    {
+        $searchRequestMock = $this->getMockBuilder(SearchRequest::class)->getMock();
+
+        $fakeResponseJson = $this->getFixtureContentByName($fixtureFile);
+        $fakeResponse = new ResponseAdapter($fakeResponseJson);
+
+        $searchResultSet = new SearchResultSet();
+        $searchResultSet->setUsedSearchRequest($searchRequestMock);
+        $searchResultSet->setResponse($fakeResponse);
+
+        return $searchResultSet;
+    }
+
+    /**
      * @param array $facetConfiguration
      * @return array
      */
-    protected function getConfigurationArrayFromFacetConfigurationArray($facetConfiguration)
+    protected function getConfigurationArrayFromFacetConfigurationArray(array $facetConfiguration): array
     {
         $configuration = [];
         $configuration['plugin.']['tx_solr.']['search.']['faceting.'] = $facetConfiguration;
@@ -158,14 +172,17 @@ class ResultSetReconstitutionProcessorTest extends IntegrationTest
 
     /**
      * @param array $configuration
-     * @param $searchResultSet
+     * @param SearchResultSet $searchResultSet
      * @return ResultSetReconstitutionProcessor
      */
-    protected function getConfiguredReconstitutionProcessor($configuration, $searchResultSet)
+    protected function getConfiguredReconstitutionProcessor(array $configuration, SearchResultSet $searchResultSet): ResultSetReconstitutionProcessor
     {
         $typoScriptConfiguration = new TypoScriptConfiguration($configuration);
-        $searchResultSet->getUsedSearchRequest()->expects($this->any())->method('getContextTypoScriptConfiguration')->will($this->returnValue($typoScriptConfiguration));
-        $searchResultSet->getUsedSearchRequest()->expects($this->any())->method('getActiveFacetNames')->will($this->returnValue([]));
+
+        /* @var SearchRequest|MockObject $usedSearchRequestMock */
+        $usedSearchRequestMock = $searchResultSet->getUsedSearchRequest();
+        $usedSearchRequestMock->expects($this->any())->method('getContextTypoScriptConfiguration')->will($this->returnValue($typoScriptConfiguration));
+        $usedSearchRequestMock->expects($this->any())->method('getActiveFacetNames')->will($this->returnValue([]));
 
         $processor = new ResultSetReconstitutionProcessor();
         $fakeObjectManager = $this->getFakeObjectManager();
