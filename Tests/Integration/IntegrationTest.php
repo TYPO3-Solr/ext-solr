@@ -1,16 +1,6 @@
 <?php
 namespace ApacheSolrForTypo3\Solr\Tests\Integration;
 
-use Doctrine\DBAL\Exception;
-use Doctrine\DBAL\Schema\SchemaException;
-use ReflectionObject;
-use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Database\Schema\Exception\StatementException;
-use TYPO3\CMS\Core\Database\Schema\Exception\UnexpectedSignalReturnValueTypeException;
-use TYPO3\CMS\Core\Error\Http\InternalServerErrorException;
-use TYPO3\CMS\Core\Error\Http\ServiceUnavailableException;
-use TYPO3\CMS\Core\Exception\SiteNotFoundException;
-use TYPO3\CMS\Core\Information\Typo3Version;
 /***************************************************************
  *  Copyright notice
  *
@@ -37,9 +27,13 @@ use TYPO3\CMS\Core\Information\Typo3Version;
 use ApacheSolrForTypo3\Solr\Access\Rootline;
 use ApacheSolrForTypo3\Solr\Tests\Unit\Helper\FakeObjectManager;
 use ApacheSolrForTypo3\Solr\Typo3PageIndexer;
+use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Exception as DoctrineDBALException;
+use Doctrine\DBAL\Schema\SchemaException;
 use InvalidArgumentException;
 use ReflectionClass;
 use ReflectionException;
+use ReflectionObject;
 use RuntimeException;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Cache\CacheManager;
@@ -47,10 +41,17 @@ use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\UserAspect;
 use TYPO3\CMS\Core\Core\Environment;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Schema\Exception\StatementException;
+use TYPO3\CMS\Core\Database\Schema\Exception\UnexpectedSignalReturnValueTypeException;
 use TYPO3\CMS\Core\Database\Schema\SchemaMigrator;
 use TYPO3\CMS\Core\Database\Schema\SqlReader;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
+use TYPO3\CMS\Core\Error\Http\InternalServerErrorException;
+use TYPO3\CMS\Core\Error\Http\ServiceUnavailableException;
+use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Http\ServerRequest;
+use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\TimeTracker\TimeTracker;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -58,6 +59,7 @@ use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use TYPO3\CMS\Frontend\Http\RequestHandler;
 use TYPO3\CMS\Core\Tests\Functional\SiteHandling\SiteBasedTestTrait;
+use TYPO3\TestingFramework\Core\Exception as TestingFrameworkCoreException;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 use function getenv;
 
@@ -90,7 +92,7 @@ abstract class IntegrationTest extends FunctionalTestCase
     /**
      * @var array
      */
-    protected $testSolrCores = [
+    protected array $testSolrCores = [
         'core_en',
         'core_de',
         'core_dk'
@@ -111,8 +113,16 @@ abstract class IntegrationTest extends FunctionalTestCase
     protected $instancePath;
 
     /**
+     * If set to true in subclasses, the import of configured root pages will be skipped.
+     *
+     * @var bool
+     */
+    protected bool $skipImportRootPagesAndTemplatesForConfiguredSites = false;
+
+    /**
      * @return void
      * @throws NoSuchCacheException
+     * @throws DBALException
      */
     public function setUp(): void
     {
@@ -150,9 +160,8 @@ abstract class IntegrationTest extends FunctionalTestCase
      * Returns the absolute root path to the fixtures.
      *
      * @return string
-     * @throws ReflectionException
      */
-    protected function getFixtureRootPath()
+    protected function getFixtureRootPath(): string
     {
         return $this->getRuntimeDirectory() . '/Fixtures/';
     }
@@ -162,9 +171,8 @@ abstract class IntegrationTest extends FunctionalTestCase
      *
      * @param $fixtureName
      * @return string
-     * @throws ReflectionException
      */
-    protected function getFixturePathByName($fixtureName)
+    protected function getFixturePathByName($fixtureName): string
     {
         return $this->getFixtureRootPath() . $fixtureName;
     }
@@ -174,19 +182,17 @@ abstract class IntegrationTest extends FunctionalTestCase
      *
      * @param string $fixtureName
      * @return string
-     * @throws ReflectionException
      */
-    protected function getFixtureContentByName($fixtureName)
+    protected function getFixtureContentByName(string $fixtureName): string
     {
         return file_get_contents($this->getFixturePathByName($fixtureName));
     }
 
     /**
      * @param string $fixtureName
-     * @throws ReflectionException
-     * @throws Exception
+     * @throws DoctrineDBALException
      */
-    protected function importDumpFromFixture($fixtureName)
+    protected function importDumpFromFixture(string $fixtureName)
     {
         $dumpContent = $this->getFixtureContentByName($fixtureName);
         $dumpContent = str_replace(["\r", "\n"], '', $dumpContent);
@@ -202,8 +208,7 @@ abstract class IntegrationTest extends FunctionalTestCase
      * Imports an ext_tables.sql definition as done by the install tool.
      *
      * @param string $fixtureName
-     * @throws Exception
-     * @throws ReflectionException
+     * @throws DoctrineDBALException
      * @throws SchemaException
      * @throws StatementException
      * @throws UnexpectedSignalReturnValueTypeException
@@ -237,9 +242,8 @@ abstract class IntegrationTest extends FunctionalTestCase
      * Returns the directory on runtime.
      *
      * @return string
-     * @throws ReflectionException
      */
-    protected function getRuntimeDirectory()
+    protected function getRuntimeDirectory(): string
     {
         $rc = new ReflectionClass(get_class($this));
         return dirname($rc->getFileName());
@@ -248,7 +252,7 @@ abstract class IntegrationTest extends FunctionalTestCase
     /**
      * @param string $version
      */
-    protected function skipInVersionBelow($version)
+    protected function skipInVersionBelow(string $version)
     {
         if ($this->getIsTYPO3VersionBelow($version)) {
             $this->markTestSkipped('This test requires TYPO3 ' . $version . ' or greater.');
@@ -257,11 +261,11 @@ abstract class IntegrationTest extends FunctionalTestCase
 
     /**
      * @param string $version
-     * @return mixed
+     * @return bool
      */
-    protected function getIsTYPO3VersionBelow($version)
+    protected function getIsTYPO3VersionBelow(string $version): bool
     {
-        return version_compare(GeneralUtility::makeInstance(Typo3Version::class)->getBranch(), $version, '<');
+        return (bool)version_compare(GeneralUtility::makeInstance(Typo3Version::class)->getBranch(), $version, '<');
     }
 
     /**
@@ -272,6 +276,8 @@ abstract class IntegrationTest extends FunctionalTestCase
      * @throws InternalServerErrorException
      * @throws ServiceUnavailableException
      * @throws SiteNotFoundException
+     *
+     * @deprecated Do not try to set up and configure TSFE in any way by self.
      */
     protected function getConfiguredTSFE(int $id = 1, string $MP = '', int $language = 0): TypoScriptFrontendController
     {
@@ -283,10 +289,10 @@ abstract class IntegrationTest extends FunctionalTestCase
     }
 
     /**
-     * @param string $coreName
+     * @param string|null $coreName
      * @return void
      */
-    protected function cleanUpSolrServerAndAssertEmpty($coreName = 'core_en')
+    protected function cleanUpSolrServerAndAssertEmpty(?string $coreName = 'core_en')
     {
         $this->validateTestCoreName($coreName);
 
@@ -303,10 +309,10 @@ abstract class IntegrationTest extends FunctionalTestCase
     }
 
     /**
-     * @param string $coreName
+     * @param string|null $coreName
      * @return void
      */
-    protected function waitToBeVisibleInSolr($coreName = 'core_en')
+    protected function waitToBeVisibleInSolr(?string $coreName = 'core_en')
     {
         $this->validateTestCoreName($coreName);
         $url = $this->getSolrConnectionUriAuthority() . '/solr/' . $coreName . '/update?softCommit=true';
@@ -317,10 +323,10 @@ abstract class IntegrationTest extends FunctionalTestCase
      * @param string $coreName
      * @throws InvalidArgumentException
      */
-    protected function validateTestCoreName($coreName)
+    protected function validateTestCoreName(string $coreName)
     {
         if(!in_array($coreName, $this->testSolrCores)) {
-            throw new InvalidArgumentException('No valid testcore passed');
+            throw new InvalidArgumentException('No valid test core passed');
         }
     }
 
@@ -339,7 +345,7 @@ abstract class IntegrationTest extends FunctionalTestCase
      *
      * @param int $documentCount
      */
-    protected function assertSolrContainsDocumentCount($documentCount)
+    protected function assertSolrContainsDocumentCount(int $documentCount)
     {
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
         $this->assertStringContainsString('"numFound":' . intval($documentCount), $solrContent, 'Solr contains unexpected amount of documents');
@@ -348,9 +354,12 @@ abstract class IntegrationTest extends FunctionalTestCase
     /**
      * @param string $fixture
      * @param array $importPageIds
-     * @param array $feUserGroupArray
+     * @param array|null $feUserGroupArray
+     * @throws InternalServerErrorException
+     * @throws ServiceUnavailableException
+     * @throws SiteNotFoundException
      */
-    protected function indexPageIdsFromFixture($fixture, $importPageIds, $feUserGroupArray = [0])
+    protected function indexPageIdsFromFixture(string $fixture, array $importPageIds, array $feUserGroupArray = [0])
     {
         $this->importDataSetFromFixture($fixture);
         $this->indexPageIds($importPageIds, $feUserGroupArray);
@@ -359,9 +368,12 @@ abstract class IntegrationTest extends FunctionalTestCase
 
     /**
      * @param array $importPageIds
-     * @param array $feUserGroupArray
+     * @param array|null $feUserGroupArray
+     * @throws InternalServerErrorException
+     * @throws ServiceUnavailableException
+     * @throws SiteNotFoundException
      */
-    protected function indexPageIds($importPageIds, $feUserGroupArray = [0])
+    protected function indexPageIds(array $importPageIds, array $feUserGroupArray = [0])
     {
         foreach ($importPageIds as $importPageId) {
             $fakeTSFE = $this->fakeTSFE($importPageId, $feUserGroupArray);
@@ -381,7 +393,8 @@ abstract class IntegrationTest extends FunctionalTestCase
      * @param int $workspace
      * @return BackendUserAuthentication
      */
-    protected function fakeBEUser($isAdmin = 0, $workspace = 0) {
+    protected function fakeBEUser(int $isAdmin = 0, int $workspace = 0): BackendUserAuthentication
+    {
         /** @var $beUser  BackendUserAuthentication */
         $beUser = GeneralUtility::makeInstance(BackendUserAuthentication::class);
         $beUser->user['admin'] = $isAdmin;
@@ -398,6 +411,8 @@ abstract class IntegrationTest extends FunctionalTestCase
      * @throws InternalServerErrorException
      * @throws ServiceUnavailableException
      * @throws SiteNotFoundException
+     *
+     * @deprecated Do not try to set up and configure TSFE in any way by self.
      */
     protected function fakeTSFE(int $pageId, array $feUserGroupArray = [0]): TypoScriptFrontendController
     {
@@ -465,12 +480,24 @@ abstract class IntegrationTest extends FunctionalTestCase
     }
 
     /**
+     * Writes default site-config.yaml files for testing sites one, two and three.
+     * The records for root pages(incl. translations) and TypoScript templates will be imported by default.
+     *
+     * To skip the import of records for root pages, the property {@link skipImportRootPagesAndTemplatesForConfiguredSites} must be set to false.
+     *
+     * To add or override TypoScript setting please use following typo3/testing-framework methods:
+     * * {@link addTypoScriptToTemplateRecord()}
+     * * {@link setUpFrontendRootPage()}
+     *
      * @return void
+     * @throws TestingFrameworkCoreException
      */
     protected function writeDefaultSolrTestSiteConfiguration() {
         $solrConnectionInfo = $this->getSolrConnectionInfo();
         $this->writeDefaultSolrTestSiteConfigurationForHostAndPort($solrConnectionInfo['scheme'], $solrConnectionInfo['host'], $solrConnectionInfo['port']);
+        $this->importRootPagesAndTemplatesForConfiguredSites();
     }
+
 
 
     /**
@@ -479,12 +506,17 @@ abstract class IntegrationTest extends FunctionalTestCase
     protected static $lastSiteCreated = '';
 
     /**
-     * @param string $scheme
-     * @param string $host
-     * @param int $port
+     * @param string|null $scheme
+     * @param string|null $host
+     * @param int|null $port
+     * @param bool|null $disableDefaultLanguage
      * @return void
      */
-    protected function writeDefaultSolrTestSiteConfigurationForHostAndPort($scheme = 'http', $host = 'localhost', $port = 8999, $disableDefaultLanguage = false)
+    protected function writeDefaultSolrTestSiteConfigurationForHostAndPort(
+        string $scheme = 'http',
+        string $host = 'localhost',
+        int $port = 8999,
+        bool $disableDefaultLanguage = false)
     {
         $siteCreatedHash = md5($scheme . $host . $port . $disableDefaultLanguage);
         if (self::$lastSiteCreated === $siteCreatedHash) {
@@ -512,12 +544,6 @@ abstract class IntegrationTest extends FunctionalTestCase
             ],
             $this->buildErrorHandlingConfiguration('Fluid', [404])
         );
-//        // @todo: Import root pages for first and second site and uncomment following, to save configuration in test cases.
-//        //        The third site should be not fully configured.
-//        $this->setUpFrontendRootPage(1, [], [
-//            'constants' => '@import \'EXT:solr/Build/Test/Integration.constants.typoscript\'',
-//            'setup' => '@import \'EXT:solr/Build/Test/Integration.setup.typoscript\''
-//        ]);
 
         $this->writeSiteConfiguration(
             'integration_tree_two',
@@ -550,6 +576,27 @@ abstract class IntegrationTest extends FunctionalTestCase
         clearstatcache();
         usleep(500);
         self::$lastSiteCreated = $siteCreatedHash;
+    }
+
+    /**
+     * Imports the root pages and TypoScript templates for configured sites.
+     *
+     * Note: This method is executed by default.
+     *       The execution of this method call can be skipped for subclasses by setting
+     *       {@link skipImportRootPagesAndTemplatesForConfiguredSites} property to false.
+     *
+     * @throws TestingFrameworkCoreException
+     */
+    private function importRootPagesAndTemplatesForConfiguredSites(): void
+    {
+        if ($this->skipImportRootPagesAndTemplatesForConfiguredSites === true) {
+            return;
+        }
+        $rc = new ReflectionClass(self::class);
+        $path = dirname($rc->getFileName());
+        $this->importDataSet($path . '/Fixtures/sites_setup_and_data_set/01_integration_tree_one.xml');
+        $this->importDataSet($path . '/Fixtures/sites_setup_and_data_set/02_integration_tree_two.xml');
+        $this->importDataSet($path . '/Fixtures/sites_setup_and_data_set/03_integration_tree_three.xml');
     }
 
     /**
