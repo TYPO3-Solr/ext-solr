@@ -34,12 +34,15 @@ use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IndexQueue\Helpers\DummyIndexer;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IndexQueue\Helpers\DummyAdditionalIndexQueueItemIndexer;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
+use Doctrine\DBAL\DBALException;
 use Psr\Http\Server\RequestHandlerInterface;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
+use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
 use TYPO3\CMS\Core\Http\ServerRequestFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Middleware\NormalizedParamsAttribute;
+use TYPO3\TestingFramework\Core\Exception as TestingFrameworkCoreException;
 
 /**
  * Testcase for the record indexer
@@ -48,6 +51,7 @@ use TYPO3\CMS\Core\Middleware\NormalizedParamsAttribute;
  */
 class IndexerTest extends IntegrationTest
 {
+    protected bool $skipImportRootPagesAndTemplatesForConfiguredSites = true;
 
     /**
      * @var Queue
@@ -61,6 +65,9 @@ class IndexerTest extends IntegrationTest
 
     /**
      * @return void
+     * @throws TestingFrameworkCoreException
+     * @throws DBALException
+     * @throws NoSuchCacheException
      */
     public function setUp(): void
     {
@@ -69,11 +76,11 @@ class IndexerTest extends IntegrationTest
         $this->indexQueue = GeneralUtility::makeInstance(Queue::class);
         $this->indexer = GeneralUtility::makeInstance(Indexer::class);
 
-        /** @var $beUser  \TYPO3\CMS\Core\Authentication\BackendUserAuthentication */
+        /* @var BackendUserAuthentication $beUser */
         $beUser = GeneralUtility::makeInstance(BackendUserAuthentication::class);
         $GLOBALS['BE_USER'] = $beUser;
 
-        /** @var $languageService  \TYPO3\CMS\Core\Localization\LanguageService */
+        /* @var LanguageService $languageService */
         $languageService = GeneralUtility::makeInstance(LanguageService::class);
         $GLOBALS['LANG'] = $languageService;
 
@@ -123,7 +130,7 @@ class IndexerTest extends IntegrationTest
     /**
      * @return array
      */
-    public function getTranslatedRecordDataProvider()
+    public function getTranslatedRecordDataProvider(): array
     {
         return [
             'with_l_paramater' => ['can_index_custom_translated_record_with_l_param.xml'],
@@ -258,7 +265,8 @@ class IndexerTest extends IntegrationTest
     public function canIndexMultipleMMRelatedItems()
     {
         $this->cleanUpSolrServerAndAssertEmpty('core_en');
-        $this->writeDefaultSolrTestSiteConfiguration();
+
+//        $this->writeDefaultSolrTestSiteConfiguration();
 
         // create fake extension database table and TCA
         $this->importExtTablesDefinition('fake_extension2_table.sql');
