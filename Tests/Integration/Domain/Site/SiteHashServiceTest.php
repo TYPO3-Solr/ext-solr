@@ -26,7 +26,10 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Domain\Site;
 
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteHashService;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
+use Doctrine\DBAL\DBALException;
+use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\TestingFramework\Core\Exception as TestingFrameworkCoreException;
 
 /**
  * Testcase to check if the SiteHashService class works as expected.
@@ -38,6 +41,11 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class SiteHashServiceTest extends IntegrationTest
 {
 
+    /**
+     * @throws NoSuchCacheException
+     * @throws TestingFrameworkCoreException
+     * @throws DBALException
+     */
     public function setUp(): void {
         parent::setUp();
         $this->writeDefaultSolrTestSiteConfiguration();
@@ -46,7 +54,8 @@ class SiteHashServiceTest extends IntegrationTest
     /**
      * @return array
      */
-    public function canResolveSiteHashAllowedSitesDataProvider() {
+    public function canResolveSiteHashAllowedSitesDataProvider(): array
+    {
         return [
             'siteHashDisabled' => ['*', '*'],
             'allSitesInSystem' => ['__all', 'testone.site,testtwo.site'],
@@ -60,7 +69,6 @@ class SiteHashServiceTest extends IntegrationTest
      */
     public function canResolveSiteHashAllowedSites($allowedSitesConfiguration , $expectedAllowedSites)
     {
-        $this->importDataSetFromFixture('can_resolve_site_hash.xml');
         $siteHashService = GeneralUtility::makeInstance(SiteHashService::class);
         $allowedSites = $siteHashService->getAllowedSitesForPageIdAndAllowedSitesConfiguration(1, $allowedSitesConfiguration);
         $this->assertSame($expectedAllowedSites, $allowedSites, 'resolveSiteHashAllowedSites did not return expected allowed sites');
