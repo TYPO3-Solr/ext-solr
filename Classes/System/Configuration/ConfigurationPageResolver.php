@@ -26,9 +26,11 @@ namespace ApacheSolrForTypo3\Solr\System\Configuration;
 
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\System\Records\SystemTemplate\SystemTemplateRepository;
+use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use RuntimeException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\RootlineUtility;
+use function Webmozart\Assert\Tests\StaticAnalysis\null;
 
 /**
  * This class is responsible to find the closest page id from the rootline where
@@ -66,11 +68,12 @@ class ConfigurationPageResolver
      *
      * @param int $startPageId
      * @return int
+     * @throws DBALDriverException
      */
-    public function getClosestPageIdWithActiveTemplate(int $startPageId): int
+    public function getClosestPageIdWithActiveTemplate(int $startPageId): ?int
     {
         if ($startPageId === 0) {
-            return 0;
+            return null;
         }
 
         $cacheId = 'ConfigurationPageResolver' . '_' . 'getClosestPageIdWithActiveTemplate' . '_' . $startPageId;
@@ -90,8 +93,9 @@ class ConfigurationPageResolver
      *
      * @param int $startPageId
      * @return int
+     * @throws DBALDriverException
      */
-    protected function calculateClosestPageIdWithActiveTemplate(int $startPageId): int
+    protected function calculateClosestPageIdWithActiveTemplate(int $startPageId): ?int
     {
         /* @var RootlineUtility $rootlineUtility */
         $rootlineUtility = GeneralUtility::makeInstance(RootlineUtility::class, $startPageId);
@@ -103,9 +107,9 @@ class ConfigurationPageResolver
 
         $closestPageIdWithTemplate = $this->systemTemplateRepository->findOneClosestPageIdWithActiveTemplateByRootLine($rootline);
         if ($closestPageIdWithTemplate === 0) {
-            return $startPageId;
+            return null;
         }
 
-        return (int)$closestPageIdWithTemplate;
+        return $closestPageIdWithTemplate;
     }
 }

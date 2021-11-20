@@ -2,6 +2,7 @@
 namespace ApacheSolrForTypo3\Solr\FrontendEnvironment;
 
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationPageResolver;
+use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\LanguageAspectFactory;
@@ -37,23 +38,46 @@ class Tsfe implements SingletonInterface
     protected array $serverRequestCache = [];
 
     /**
+     * @var SiteFinder
+     */
+    protected SiteFinder $siteFinder;
+
+    /**
+     * Initializes isolated TypoScriptFrontendController for Indexing and backend actions.
+     *
+     * @param SiteFinder|null $siteFinder
+     */
+    public function __construct(?SiteFinder $siteFinder = null)
+    {
+        $this->siteFinder = $siteFinder ?? GeneralUtility::makeInstance(SiteFinder::class);
+    }
+
+    /**
      * Initializes the TSFE for a given page ID and language.
      *
      * @param int $pageId
      * @param int $language
-     * @throws SiteNotFoundException
+     *
+     * @param int|null $rootPageId
+     *
+     * @throws DBALDriverException
+     * @throws Exception\Exception
      * @throws InternalServerErrorException
      * @throws ServiceUnavailableException
+     * @throws SiteNotFoundException
+     *
+     * @todo: Move whole caching stuff from this method and let return TSFE.
      */
-    protected function initializeTsfe(int $pageId, int $language = 0)
+    protected function initializeTsfe(int $pageId, int $language = 0, ?int $rootPageId = null)
     {
-        $cacheIdentifier = $this->getCacheIdentifier($pageId, $language);
+        $cacheIdentifier = $this->getCacheIdentifier($pageId, $language, $rootPageId);
 
-        // Handle spacer and sys folders, since they are not accessible in frontend, and TSFE can not be fully initialized on them.
-        $pidToUse = $this->getPidToUseForTsfeInitialization($pageId);
+        // Handle spacer and sys-folders, since they are not accessible in frontend, and TSFE can not be fully initialized on them.
+        // Apart from this, the plugin.tx_solr.index.queue.[indexConfig].additionalPageIds is handled as well.
+        $pidToUse = $this->getPidToUseForTsfeInitialization($pageId, $rootPageId);
         if ($pidToUse !== $pageId) {
-            $this->initializeTsfe($pidToUse, $language);
-            $reusedCacheIdentifier = $this->getCacheIdentifier($pidToUse, $language);
+            $this->initializeTsfe($pidToUse, $language, $rootPageId);
+            $reusedCacheIdentifier = $this->getCacheIdentifier($pidToUse, $language, $rootPageId);
             $this->serverRequestCache[$cacheIdentifier] = $this->serverRequestCache[$reusedCacheIdentifier];
             $this->tsfeCache[$cacheIdentifier] = $this->tsfeCache[$reusedCacheIdentifier];
             return;
@@ -61,10 +85,7 @@ class Tsfe implements SingletonInterface
 
         /* @var Context $context */
         $context = clone (GeneralUtility::makeInstance(Context::class));
-
-        /* @var SiteFinder $siteFinder */
-        $siteFinder = GeneralUtility::makeInstance(SiteFinder::class);
-        $site = $siteFinder->getSiteByPageId($pageId);
+        $site = $this->siteFinder->getSiteByPageId($pageId);
         // $siteLanguage and $languageAspect takes the language id into account.
         //   See: $site->getLanguageById($language);
         //   Therefore the whole TSFE stack is initialized and must be used as is.
@@ -138,60 +159,73 @@ class Tsfe implements SingletonInterface
             $this->tsfeCache[$cacheIdentifier] = $globalsTSFE;
         }
 
-        // @todo: May be not right place for that action, on indexing a single item+id+lang is it more convenient.
+        // @todo: Not right place for that action, move on more convenient place: indexing a single item+id+lang.
         Locales::setSystemLocaleFromSiteLanguage($siteLanguage);
     }
 
     /**
      * Returns TypoScriptFrontendController with sand cast context.
      *
+     * @param int $pageId
+     * @param int $language
+     *
+     * @param int|null $rootPageId
+     *
+     * @return TypoScriptFrontendController
+     *
      * @throws InternalServerErrorException
-     * @throws SiteNotFoundException
      * @throws ServiceUnavailableException
+     * @throws SiteNotFoundException
+     * @throws DBALDriverException
+     * @throws Exception\Exception
      */
-    public function getTsfeByPageIdAndLanguageId(int $pageId, int $language = 0): TypoScriptFrontendController
+    public function getTsfeByPageIdAndLanguageId(int $pageId, int $language = 0, ?int $rootPageId = null): TypoScriptFrontendController
     {
-        $this->assureIsInitialized($pageId, $language);
-        return $this->tsfeCache[$this->getCacheIdentifier($pageId, $language)];
+        $this->assureIsInitialized($pageId, $language, $rootPageId);
+        return $this->tsfeCache[$this->getCacheIdentifier($pageId, $language, $rootPageId)];
     }
 
     /**
      * Returns TypoScriptFrontendController with sand cast context.
      *
-     * @throws InternalServerErrorException
-     * @throws SiteNotFoundException
-     * @throws ServiceUnavailableException
-     */
-    public function getServerRequestForTsfeByPageIdAndLanguageId(int $pageId, int $language = 0): ServerRequest
-    {
-        $this->assureIsInitialized($pageId, $language);
-        return $this->serverRequestCache[$this->getCacheIdentifier($pageId, $language)];
-    }
-
-    /**
-     * Returns TypoScriptFrontendController with sand cast context.
+     * @param int $pageId
+     * @param int $language
+     *
+     * @param int|null $rootPageId
+     *
+     * @return ServerRequest
      *
      * @throws InternalServerErrorException
-     * @throws SiteNotFoundException
      * @throws ServiceUnavailableException
+     * @throws SiteNotFoundException
+     * @throws DBALDriverException
+     * @throws Exception\Exception
+     * @noinspection PhpUnused
      */
-    public function getContextForTsfeByPageIdAndLanguageId(int $pageId, int $language = 0): ServerRequest
+    public function getServerRequestForTsfeByPageIdAndLanguageId(int $pageId, int $language = 0, ?int $rootPageId = null): ServerRequest
     {
-        $this->assureIsInitialized($pageId, $language);
-        return $this->serverRequestCache[$this->getCacheIdentifier($pageId, $language)];
+        $this->assureIsInitialized($pageId, $language, $rootPageId);
+        return $this->serverRequestCache[$this->getCacheIdentifier($pageId, $language, $rootPageId)];
     }
 
     /**
      * Initializes the TSFE, ServerRequest, Context if not already done.
      *
+     * @param int $pageId
+     * @param int $language
+     *
+     * @param int|null $rootPageId
+     *
+     * @throws DBALDriverException
      * @throws InternalServerErrorException
-     * @throws SiteNotFoundException
      * @throws ServiceUnavailableException
+     * @throws SiteNotFoundException
+     * @throws Exception\Exception
      */
-    protected function assureIsInitialized(int $pageId, int $language): void
+    protected function assureIsInitialized(int $pageId, int $language, ?int $rootPageId = null): void
     {
-        if (!isset($this->serverRequestCache[$this->getCacheIdentifier($pageId, $language)])) {
-            $this->initializeTsfe($pageId, $language);
+        if (!isset($this->serverRequestCache[$this->getCacheIdentifier($pageId, $language, $rootPageId)])) {
+            $this->initializeTsfe($pageId, $language, $rootPageId);
         }
     }
 
@@ -200,22 +234,36 @@ class Tsfe implements SingletonInterface
      *
      * @param int $pageId
      * @param int $language
+     *
+     * @param int|null $rootPageId
+     *
      * @return string
      */
-    protected function getCacheIdentifier(int $pageId, int $language): string
+    protected function getCacheIdentifier(int $pageId, int $language, ?int $rootPageId = null): string
     {
-        return $pageId . '|' . $language;
+        return 'root:' . ($rootPageId ?? 'null') . '|page:' . $pageId . '|lang:' . $language;
     }
 
     /**
      * The TSFE can not be initialized for Spacer and sys-folders.
      * See: "Spacer and sys folders is not accessible in frontend" on {@link \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController::getPageAndRootline()}
      *
+     * Note: The requested $pidToUse can be one of configured plugin.tx_solr.index.queue.[indexConfig].additionalPageIds.
+     *
      * @param int $pidToUse
+     *
+     * @param int|null $rootPageId
+     *
      * @return int
+     * @throws DBALDriverException
+     * @throws Exception\Exception
      */
-    protected function getPidToUseForTsfeInitialization(int $pidToUse): int
+    protected function getPidToUseForTsfeInitialization(int $pidToUse, ?int $rootPageId = null): ?int
     {
+        // handle plugin.tx_solr.index.queue.[indexConfig].additionalPageIds
+        if (isset($rootPageId) && !$this->isRequestedPageAPartOfRequestedSite($pidToUse)) {
+            return $rootPageId;
+        }
         $pageRecord = BackendUtility::getRecord('pages', $pidToUse);
         $isSpacerOrSysfolder = ($pageRecord['doktype'] ?? null) == PageRepository::DOKTYPE_SPACER || ($pageRecord['doktype'] ?? null) == PageRepository::DOKTYPE_SYSFOLDER;
         if ($isSpacerOrSysfolder === false) {
@@ -224,7 +272,36 @@ class Tsfe implements SingletonInterface
         /* @var ConfigurationPageResolver $configurationPageResolve */
         $configurationPageResolver = GeneralUtility::makeInstance(ConfigurationPageResolver::class);
         $pidToUse = $configurationPageResolver->getClosestPageIdWithActiveTemplate($pidToUse);
-        return $this->getPidToUseForTsfeInitialization($pidToUse);
+        if (!isset($pidToUse) && !isset($rootPageId)) {
+            throw new Exception\Exception(
+                "The closest page with active template to page \"$pidToUse\" could not be resolved and alternative rootPageId is not provided.",
+                1637339439
+            );
+        } else if (isset($rootPageId)) {
+            return $rootPageId;
+        }
+        return $this->getPidToUseForTsfeInitialization($pidToUse, $rootPageId);
+    }
+
+    /**
+     * Checks if the requested page belongs to site of given root page.
+     *
+     * @param int $pageId
+     * @param int|null $rootPageId
+     *
+     * @return bool
+     */
+    protected function isRequestedPageAPartOfRequestedSite(int $pageId, ?int $rootPageId = null): bool
+    {
+        if (!isset($rootPageId)) {
+            return false;
+        }
+        try {
+            $site = $this->siteFinder->getSiteByPageId($pageId);
+        } catch (SiteNotFoundException $e) {
+            return false;
+        }
+        return $rootPageId === $site->getRootPageId();
     }
 
     /**
