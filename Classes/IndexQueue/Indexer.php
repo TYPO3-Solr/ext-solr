@@ -21,7 +21,6 @@ use ApacheSolrForTypo3\Solr\FrontendEnvironment;
 use ApacheSolrForTypo3\Solr\FrontendEnvironment\Tsfe;
 use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
-use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationPageResolver;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
 use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
@@ -30,11 +29,7 @@ use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use Exception;
 use RuntimeException;
 use Solarium\Exception\HttpException;
-use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
-use TYPO3\CMS\Core\Context\LanguageAspect;
 use TYPO3\CMS\Core\Context\LanguageAspectFactory;
-use TYPO3\CMS\Core\Domain\Repository\PageRepository;
 use TYPO3\CMS\Core\Error\Http\InternalServerErrorException;
 use TYPO3\CMS\Core\Error\Http\ServiceUnavailableException;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
@@ -169,7 +164,9 @@ class Indexer extends AbstractIndexer
      * @param Item $item An index queue item to index.
      * @param int $language The language to use.
      * @return bool TRUE if item was indexed successfully, FALSE on failure
-     * @throws AspectNotFoundException
+     * @throws InternalServerErrorException
+     * @throws ServiceUnavailableException
+     * @throws SiteNotFoundException
      */
     protected function indexItem(Item $item, int $language = 0)
     {
@@ -241,12 +238,13 @@ class Indexer extends AbstractIndexer
      * @throws InternalServerErrorException
      * @throws ServiceUnavailableException
      * @throws SiteNotFoundException
+     * @throws \Doctrine\DBAL\Driver\Exception
      */
     protected function getItemRecordOverlayed(Item $item, int $language): ?array
     {
         $itemRecord = $item->getRecord();
         $pidToUse = $this->getPageIdOfItem($item);
-        return GeneralUtility::makeInstance(Tsfe::class)->getTsfeByPageIdAndLanguageId($pidToUse, $language)
+        return GeneralUtility::makeInstance(Tsfe::class)->getTsfeByPageIdAndLanguageId($pidToUse, $language, $item->getRootPageUid())
             ->sys_page->getLanguageOverlay($item->getType(), $itemRecord);
     }
 
@@ -285,7 +283,7 @@ class Indexer extends AbstractIndexer
     {
         try {
             $pageId = $this->getPageIdOfItem($item);
-            $solrConfiguration = $this->frontendEnvironment->getSolrConfigurationFromPageId($pageId, $language);
+            $solrConfiguration = $this->frontendEnvironment->getSolrConfigurationFromPageId($pageId, $language, $item->getRootPageUid());
             return $solrConfiguration->getIndexQueueFieldsConfigurationByConfigurationName($indexConfigurationName, []);
         } catch (Exception $e) {
             return [];
@@ -351,10 +349,13 @@ class Indexer extends AbstractIndexer
      *
      * @param Item $item An index queue item
      * @param int $language Language Id
+     *
      * @return Document|null The Solr document converted from the record
+     *
      * @throws InternalServerErrorException
      * @throws ServiceUnavailableException
      * @throws SiteNotFoundException
+     * @throws \Doctrine\DBAL\Driver\Exception
      */
     protected function itemToDocument(Item $item, int $language = 0): ?Document
     {
@@ -365,7 +366,7 @@ class Indexer extends AbstractIndexer
             $itemIndexingConfiguration = $this->getItemTypeConfiguration($item, $language);
             $document = $this->getBaseDocument($item, $itemRecord);
             $pidToUse = $this->getPageIdOfItem($item);
-            $tsfe = GeneralUtility::makeInstance(Tsfe::class)->getTsfeByPageIdAndLanguageId($pidToUse, $language);
+            $tsfe = GeneralUtility::makeInstance(Tsfe::class)->getTsfeByPageIdAndLanguageId($pidToUse, $language, $item->getRootPageUid());
             $document = $this->addDocumentFieldsFromTyposcript($document, $itemIndexingConfiguration, $itemRecord, $tsfe);
         }
 

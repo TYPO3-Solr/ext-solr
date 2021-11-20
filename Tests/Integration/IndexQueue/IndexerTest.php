@@ -29,7 +29,6 @@ use ApacheSolrForTypo3\Solr\IndexQueue\Indexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
-use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IndexQueue\Helpers\DummyIndexer;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IndexQueue\Helpers\DummyAdditionalIndexQueueItemIndexer;
@@ -596,10 +595,11 @@ class IndexerTest extends IntegrationTest
     /**
      * @param string $table
      * @param int $uid
-     * @return ResponseAdapter
+     * @return bool
      */
-    protected function addToQueueAndIndexRecord($table, $uid)
+    protected function addToQueueAndIndexRecord(string $table, int $uid): bool
     {
+        $result = false;
         // write an index queue item
         $this->indexQueue->updateItem($table, $uid);
 

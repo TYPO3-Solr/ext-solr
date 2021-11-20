@@ -109,13 +109,13 @@ class SiteRepository
     }
 
     /**
-     * Gets the Site for a specific page Id.
+     * Gets the Site for a specific page ID.
      *
-     * @param int $pageId The page Id to get a Site object for.
+     * @param int $pageId The page ID to get a Site object for.
      * @param string $mountPointIdentifier
-     * @return SiteInterface Site for the given page Id.
+     * @return SiteInterface Site for the given page ID.
      */
-    public function getSiteByPageId($pageId, $mountPointIdentifier = '')
+    public function getSiteByPageId(int $pageId, string $mountPointIdentifier = '')
     {
         $rootPageId = $this->rootPageResolver->getRootPageId($pageId, false, $mountPointIdentifier);
         return $this->getSiteByRootPageId($rootPageId);
