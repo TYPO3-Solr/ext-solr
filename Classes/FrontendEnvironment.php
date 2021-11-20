@@ -36,11 +36,12 @@ class FrontendEnvironment implements SingletonInterface
      * @param int $pageId
      * @param ?string $path
      * @param ?int $language
+     * @param int|null $rootPageId
      * @return TypoScriptConfiguration
      */
-    public function getConfigurationFromPageId(int $pageId, ?string $path = '', ?int $language = 0): TypoScriptConfiguration
+    public function getConfigurationFromPageId(int $pageId, ?string $path = '', ?int $language = 0, ?int $rootPageId = null): TypoScriptConfiguration
     {
-        return GeneralUtility::makeInstance(TypoScript::class)->getConfigurationFromPageId($pageId, $path, $language);
+        return GeneralUtility::makeInstance(TypoScript::class)->getConfigurationFromPageId($pageId, $path, $language, $rootPageId);
     }
 
     /**
@@ -63,10 +64,11 @@ class FrontendEnvironment implements SingletonInterface
      *
      * @param int $pageId
      * @param ?int $language
+     * @param int|null $rootPageId
      * @return TypoScriptConfiguration
      */
-    public function getSolrConfigurationFromPageId(int $pageId, ?int $language = 0): TypoScriptConfiguration
+    public function getSolrConfigurationFromPageId(int $pageId, ?int $language = 0, ?int $rootPageId = null): TypoScriptConfiguration
     {
-        return $this->getConfigurationFromPageId($pageId, '', $language);
+        return $this->getConfigurationFromPageId($pageId, '', $language, $rootPageId);
     }
 }

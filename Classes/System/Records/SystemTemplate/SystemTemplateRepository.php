@@ -26,6 +26,7 @@ namespace ApacheSolrForTypo3\Solr\System\Records\SystemTemplate;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\System\Records\AbstractRepository;
+use Doctrine\DBAL\Driver\Exception as DBALDriverException ;
 
 /**
  * SystemTemplateRepository to encapsulate the database access for records used in solr.
@@ -46,8 +47,9 @@ class SystemTemplateRepository extends AbstractRepository
      *
      * @param array $rootLine
      * @return int
+     * @throws DBALDriverException
      */
-    public function findOneClosestPageIdWithActiveTemplateByRootLine(array $rootLine): int
+    public function findOneClosestPageIdWithActiveTemplateByRootLine(array $rootLine): ?int
     {
         $rootLinePageIds = [0];
         foreach ($rootLine as $rootLineItem) {
@@ -62,8 +64,8 @@ class SystemTemplateRepository extends AbstractRepository
             ->where(
                 $queryBuilder->expr()->in('pid', $rootLinePageIds)
             )
-            ->execute()->fetch();
+            ->execute()->fetchAssociative();
 
-        return isset($result['pid']) ? $result['pid'] : 0;
+        return $result['pid'] ?? null;
     }
 }
