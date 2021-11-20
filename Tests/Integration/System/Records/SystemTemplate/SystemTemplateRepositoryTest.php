@@ -27,6 +27,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\System\Records\SystemTemplat
 
 use ApacheSolrForTypo3\Solr\System\Records\SystemTemplate\SystemTemplateRepository;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
+use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -37,6 +38,7 @@ class SystemTemplateRepositoryTest extends IntegrationTest
 
     /**
      * @test
+     * @throws DBALDriverException
      */
     public function canFindOneClosestPageIdWithActiveTemplateByRootLine()
     {

@@ -20,7 +20,6 @@ use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageIndexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerResponse;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
-use InvalidArgumentException;
 use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
 use TYPO3\CMS\Core\Error\Http\InternalServerErrorException;
 use TYPO3\CMS\Core\Error\Http\ServiceUnavailableException;

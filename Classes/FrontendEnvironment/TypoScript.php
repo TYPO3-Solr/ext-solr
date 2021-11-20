@@ -1,22 +1,14 @@
 <?php
 namespace ApacheSolrForTypo3\Solr\FrontendEnvironment;
 
-use ApacheSolrForTypo3\Solr\FrontendEnvironment;
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
-use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationPageResolver;
-use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
-use RuntimeException;
-use stdClass;
-use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Core\Domain\Repository\PageRepository;
+use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use TYPO3\CMS\Core\Error\Http\InternalServerErrorException;
 use TYPO3\CMS\Core\Error\Http\ServiceUnavailableException;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\SingletonInterface;
-use TYPO3\CMS\Core\TypoScript\TemplateService;
-use TYPO3\CMS\Core\Utility\RootlineUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class TypoScript implements SingletonInterface
@@ -33,25 +25,28 @@ class TypoScript implements SingletonInterface
      * @param int $pageId The page id of the (root) page to get the Solr configuration from.
      * @param string $path The TypoScript configuration path to retrieve.
      * @param int $language System language uid, optional, defaults to 0
+     * @param int|null $rootPageId
+     *
      * @return TypoScriptConfiguration The Solr configuration for the requested tree.
+     *
+     * @throws DBALDriverException
      */
-    public function getConfigurationFromPageId(int $pageId, string $path, int $language = 0): TypoScriptConfiguration
+    public function getConfigurationFromPageId(int $pageId, string $path, int $language = 0, ?int $rootPageId = null): TypoScriptConfiguration
     {
-        $pageId = $this->getConfigurationPageIdToUse($pageId);
-
         $cacheId = md5($pageId . '|' . $path . '|' . $language);
         if (isset($this->configurationObjectCache[$cacheId])) {
             return $this->configurationObjectCache[$cacheId];
         }
 
-        // If we're on UID 0, we cannot retrieve a configuration currently.
+        // If we're on UID 0, we cannot retrieve a configuration.
+        // TSFE can not be initialized for UID = 0
         // getRootline() below throws an exception (since #typo3-60 )
         // as UID 0 cannot have any parent rootline by design.
-        if ($pageId == 0) {
+        if ($pageId === 0 && $rootPageId === null) {
             return $this->configurationObjectCache[$cacheId] = $this->buildTypoScriptConfigurationFromArray([], $pageId, $language, $path);
         }
 
-        /** @var $cache TwoLevelCache */
+        /* @var TwoLevelCache $cache */
         $cache = GeneralUtility::makeInstance(TwoLevelCache::class, /** @scrutinizer ignore-type */ 'tx_solr_configuration');
         $configurationArray = $cache->get($cacheId);
 
@@ -70,32 +65,16 @@ class TypoScript implements SingletonInterface
     }
 
     /**
-     * This method retrieves the closest pageId where a configuration is located, when this
-     * feature is enabled.
-     *
-     * @param int $pageId
-     * @return int
-     */
-    private function getConfigurationPageIdToUse(int $pageId): int
-    {
-        $extensionConfiguration = GeneralUtility::makeInstance(ExtensionConfiguration::class);
-        $pageRecord = BackendUtility::getRecord('pages', $pageId);
-        $isSpacerOrSysfolder = ($pageRecord['doktype'] ?? null) == PageRepository::DOKTYPE_SPACER || ($pageRecord['doktype'] ?? null) == PageRepository::DOKTYPE_SYSFOLDER;
-        if ($extensionConfiguration->getIsUseConfigurationFromClosestTemplateEnabled() || $isSpacerOrSysfolder === true) {
-            /* @var ConfigurationPageResolver $configurationPageResolve */
-            $configurationPageResolver = GeneralUtility::makeInstance(ConfigurationPageResolver::class);
-            return $configurationPageResolver->getClosestPageIdWithActiveTemplate($pageId);
-        }
-        return $pageId;
-    }
-
-    /**
      * Builds a configuration array, containing the solr configuration.
      *
      * @param int $pageId
      * @param string $path
      * @param int $language
+     *
      * @return array
+     *
+     * @throws DBALDriverException
+     * @throws Exception\Exception
      */
     protected function buildConfigurationArray(int $pageId, string $path, int $language): array
     {
