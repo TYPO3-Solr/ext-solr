@@ -105,7 +105,6 @@ class QueueTest extends IntegrationTest
      */
     public function addingTheSameItemTwiceWillOnlyProduceOneQueueItem()
     {
-        $this->importDataSetFromFixture('adding_the_same_item_twice_will_only_produce_one_queue_item.xml');
         $this->assertEmptyQueue();
 
         $updateCount = $this->indexQueue->updateItem('pages', 1);
@@ -137,7 +136,6 @@ class QueueTest extends IntegrationTest
      */
     public function unExistingRecordIsNotAddedToTheQueue()
     {
-        $this->importDataSetFromFixture('unexisting_record_can_not_be_added_to_queue.xml');
         $this->assertEmptyQueue();
 
         // record does not exist in fixture
@@ -187,6 +185,27 @@ class QueueTest extends IntegrationTest
     public function canAddCustomPageTypeToTheQueue()
     {
         $this->importDataSetFromFixture('can_index_custom_page_type_with_own_configuration.xml');
+        $this->addTypoScriptToTemplateRecord(
+            1,
+            '
+            plugin.tx_solr.index.queue {
+                custom_page_type = 1
+                custom_page_type {
+                    initialization = ApacheSolrForTypo3\Solr\IndexQueue\Initializer\Page
+                    indexer = ApacheSolrForTypo3\Solr\IndexQueue\PageIndexer
+                    table = pages
+                    allowedPageTypes = 130
+                    additionalWhereClause = doktype = 130 AND no_search = 0
+
+                    fields {
+                        pagetype_stringS = TEXT
+                        pagetype_stringS {
+                            value = Custom Page Type
+                        }
+                    }
+                }
+           }'
+        );
         $site = $this->siteRepository->getFirstAvailableSite();
         $this->indexQueue->getInitializationService()->initializeBySiteAndIndexConfiguration($site, 'custom_page_type');
 

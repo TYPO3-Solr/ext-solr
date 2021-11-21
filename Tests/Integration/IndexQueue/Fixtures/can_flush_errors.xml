@@ -1,16 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <dataset>
-
-	<pages>
-		<uid>1</uid>
-		<is_siteroot>1</is_siteroot>
-	</pages>
-
-	<pages>
-		<uid>111</uid>
-		<is_siteroot>1</is_siteroot>
-	</pages>
-
 	<tx_solr_indexqueue_item>
 		<uid>4711</uid>
 		<root>1</root>

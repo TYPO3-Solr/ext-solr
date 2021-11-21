@@ -35,6 +35,13 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class SolrConfigurationStatusTest extends IntegrationTest
 {
+
+    /**
+     * @inheritdoc
+     * @todo: Remove unnecessary fixtures and remove that property as intended.
+     */
+    protected bool $skipImportRootPagesAndTemplatesForConfiguredSites = true;
+
     /**
      * @return void
      */

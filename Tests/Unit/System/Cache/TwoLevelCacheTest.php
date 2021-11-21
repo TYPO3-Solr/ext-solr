@@ -62,9 +62,7 @@ class TwoLevelCacheTest extends UnitTest
 
     /**
      * Cleanup
-     *
      * {@inheritDoc}
-     * @see \Nimut\TestingFramework\TestCase\UnitTestCase::tearDown()
      */
     protected function tearDown(): void
     {

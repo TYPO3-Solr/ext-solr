@@ -3,6 +3,7 @@ namespace ApacheSolrForTypo3\Solr\FrontendEnvironment;
 
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationPageResolver;
 use Doctrine\DBAL\Driver\Exception as DBALDriverException;
+use Throwable;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\LanguageAspectFactory;
@@ -13,7 +14,6 @@ use TYPO3\CMS\Core\Domain\Repository\PageRepository;
 use TYPO3\CMS\Core\Error\Http\InternalServerErrorException;
 use TYPO3\CMS\Core\Error\Http\ServiceUnavailableException;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
-use TYPO3\CMS\Core\Http\PropagateResponseException;
 use TYPO3\CMS\Core\Localization\Locales;
 use TYPO3\CMS\Core\Routing\PageArguments;
 use TYPO3\CMS\Core\SingletonInterface;
@@ -154,20 +154,19 @@ class Tsfe implements SingletonInterface
 
             try {
                 $globalsTSFE->determineId($serverRequest);
-            } /** @noinspection PhpRedundantCatchClauseInspection */ catch (PropagateResponseException $exception)
-            {
+                $globalsTSFE->tmpl->start($globalsTSFE->rootLine);
+                $globalsTSFE->no_cache = false;
+                $globalsTSFE->getConfigArray($serverRequest);
+
+                $globalsTSFE->newCObj($serverRequest);
+                $globalsTSFE->absRefPrefix = self::getAbsRefPrefixFromTSFE($globalsTSFE);
+                $globalsTSFE->calculateLinkVars([]);
+            } catch (Throwable $exception) {
+                // @todo: logging
                 $this->serverRequestCache[$cacheIdentifier] = null;
                 $this->tsfeCache[$cacheIdentifier] = null;
                 return;
             }
-
-            $globalsTSFE->tmpl->start($globalsTSFE->rootLine);
-            $globalsTSFE->no_cache = false;
-            $globalsTSFE->getConfigArray($serverRequest);
-
-            $globalsTSFE->newCObj($serverRequest);
-            $globalsTSFE->absRefPrefix = self::getAbsRefPrefixFromTSFE($globalsTSFE);
-            $globalsTSFE->calculateLinkVars([]);
 
             $this->tsfeCache[$cacheIdentifier] = $globalsTSFE;
         }
@@ -191,8 +190,6 @@ class Tsfe implements SingletonInterface
      * @throws SiteNotFoundException
      * @throws DBALDriverException
      * @throws Exception\Exception
-     *
-     * @todo : Call `$globalsTSFE->newCObj($serverRequest);` each time the TSFE requested. And then remove {@link getServerRequestForTsfeByPageIdAndLanguageId()} method.
      */
     public function getTsfeByPageIdAndLanguageId(int $pageId, int $language = 0, ?int $rootPageId = null): ?TypoScriptFrontendController
     {
@@ -239,8 +236,13 @@ class Tsfe implements SingletonInterface
      */
     protected function assureIsInitialized(int $pageId, int $language, ?int $rootPageId = null): void
     {
-        if(!array_key_exists($this->getCacheIdentifier($pageId, $language, $rootPageId), $this->serverRequestCache)) {
+        $cacheIdentifier = $this->getCacheIdentifier($pageId, $language, $rootPageId);
+        if(!array_key_exists($cacheIdentifier, $this->tsfeCache)) {
             $this->initializeTsfe($pageId, $language, $rootPageId);
+            return;
+        }
+        if ($this->tsfeCache[$cacheIdentifier] instanceof TypoScriptFrontendController) {
+            $this->tsfeCache[$cacheIdentifier]->newCObj($this->serverRequestCache[$cacheIdentifier]);
         }
     }
 

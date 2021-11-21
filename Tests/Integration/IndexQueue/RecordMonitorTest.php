@@ -112,7 +112,7 @@ class RecordMonitorTest extends IntegrationTest
      */
     public function canUpdateRootPageRecordWithoutSQLErrorFromMountPages()
     {
-        $this->importDataSetFromFixture('update_mount_point_is_updating_the_mount_point_correctly.xml');
+//        $this->importDataSetFromFixture('update_mount_point_is_updating_the_mount_point_correctly.xml');
 
         // we expect that the index queue is empty before we start
         $this->assertEmptyIndexQueue();
@@ -163,6 +163,20 @@ class RecordMonitorTest extends IntegrationTest
         $this->dataHandler->substNEWwithIDs = ['NEW566a9eac309d8193936351' => 8];
 
         $this->importDataSetFromFixture('new_non_pages_record_is_using_correct_configuration_name.xml');
+        $this->addTypoScriptToTemplateRecord(
+            1,
+            '
+            plugin.tx_solr.index {
+                queue {
+                    foo = 1
+                    foo {
+                        table = tx_fakeextension_domain_model_foo
+                        fields.title = title
+                    }
+                }
+            }
+            '
+        );
 
         // we expect that the index queue is empty before we start
         $this->assertEmptyIndexQueue();
@@ -192,13 +206,13 @@ class RecordMonitorTest extends IntegrationTest
 
         // simulate the database change and build a faked changeset
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionByName(ConnectionPool::DEFAULT_CONNECTION_NAME);
-        $connection->update('pages', ['hidden' => 0], ['uid' => 1]);
+        $connection->update('pages', ['hidden' => 0], ['uid' => 17]);
         $changeSet = ['hidden' => 0];
 
         $dataHandler = $this->dataHandler;
-        $this->recordMonitor->processDatamap_afterDatabaseOperations('update', 'pages', 1, $changeSet, $dataHandler);
+        $this->recordMonitor->processDatamap_afterDatabaseOperations('update', 'pages', 17, $changeSet, $dataHandler);
 
-        // we expect that all subpages of 1 and 1 its selft have been requeued but not more
+        // we expect that all subpages of 17 and 1 its selft have been requeued but not more
         // pages with uid 1, 10 and 100 should be in index, but 11 not
         $this->assertIndexQueueContainsItemAmount(3);
     }
@@ -216,13 +230,13 @@ class RecordMonitorTest extends IntegrationTest
 
         // simulate the database change and build a faked changeset
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionByName(ConnectionPool::DEFAULT_CONNECTION_NAME);
-        $connection->update('pages', ['extendToSubpages' => 0], ['uid' => 1]);
+        $connection->update('pages', ['extendToSubpages' => 0], ['uid' => 17]);
         $changeSet = ['extendToSubpages' => 0];
 
         $dataHandler = $this->dataHandler;
-        $this->recordMonitor->processDatamap_afterDatabaseOperations('update', 'pages', 1, $changeSet, $dataHandler);
+        $this->recordMonitor->processDatamap_afterDatabaseOperations('update', 'pages', 17, $changeSet, $dataHandler);
 
-        // we expect that all subpages of 1 have been requeued, but 1 not because it is still hidden
+        // we expect that all subpages of 17 have been requeued, but 1 not because it is still hidden
         // pages with uid 10 and 100 should be in index, but 11 not
         $this->assertIndexQueueContainsItemAmount(2);
     }
@@ -240,13 +254,13 @@ class RecordMonitorTest extends IntegrationTest
 
         // simulate the database change and build a faked changeset
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionByName(ConnectionPool::DEFAULT_CONNECTION_NAME);
-        $connection->update('pages', ['extendToSubpages' => 0, 'hidden' => 0], ['uid' => 1]);
+        $connection->update('pages', ['extendToSubpages' => 0, 'hidden' => 0], ['uid' => 17]);
         $changeSet = ['extendToSubpages' => 0, 'hidden' => 0];
 
         $dataHandler = $this->dataHandler;
-        $this->recordMonitor->processDatamap_afterDatabaseOperations('update', 'pages', 1, $changeSet, $dataHandler);
+        $this->recordMonitor->processDatamap_afterDatabaseOperations('update', 'pages', 17, $changeSet, $dataHandler);
 
-        // we expect that page 1 incl. subpages has been requeued
+        // we expect that page 17 incl. subpages has been requeued
         // pages with uid 10, 11 and 100 should be in index
         $this->assertIndexQueueContainsItemAmount(3);
     }
@@ -264,12 +278,12 @@ class RecordMonitorTest extends IntegrationTest
 
         // simulate the database change and build a faked changeset
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionByName(ConnectionPool::DEFAULT_CONNECTION_NAME);
-        $connection->update('pages', ['hidden' => 1], ['uid' => 1]);
+        $connection->update('pages', ['hidden' => 17], ['uid' => 1]);
 
         $changeSet = ['hidden' => 1];
 
         $dataHandler = $this->dataHandler;
-        $this->recordMonitor->processDatamap_afterDatabaseOperations('update', 'pages', 1, $changeSet, $dataHandler);
+        $this->recordMonitor->processDatamap_afterDatabaseOperations('update', 'pages', 17, $changeSet, $dataHandler);
 
         // we assert that the index queue is still empty because the page was only set to hidden
         $this->assertEmptyIndexQueue();
@@ -307,6 +321,20 @@ class RecordMonitorTest extends IntegrationTest
         ];
 
         $this->importDataSetFromFixture('exception_is_triggered_without_pid.xml');
+        $this->addTypoScriptToTemplateRecord(
+            1,
+            '
+            plugin.tx_solr.index {
+                queue {
+                    foo = 1
+                    foo {
+                        table = tx_fakeextension_domain_model_foo
+                        fields.title = title
+                    }
+                }
+            }
+            '
+        );
 
         // we expect that the index queue is empty before we start
         $this->assertEmptyIndexQueue();
@@ -351,6 +379,32 @@ class RecordMonitorTest extends IntegrationTest
     public function canUseCorrectIndexingConfigurationForANewCustomPageTypeRecord()
     {
         $this->importDataSetFromFixture('can_use_correct_indexing_configuration_for_a_new_custom_page_type_record.xml');
+        $this->addTypoScriptToTemplateRecord(
+            1,
+            '
+            plugin.tx_solr.index.queue {
+                pages {
+                    allowedPageTypes = 1,3,7
+                }
+
+                custom_page_type = 1
+                custom_page_type {
+                    initialization = ApacheSolrForTypo3\Solr\IndexQueue\Initializer\Page
+                    allowedPageTypes = 130
+                    indexer = ApacheSolrForTypo3\Solr\IndexQueue\PageIndexer
+                    table = pages
+                    additionalWhereClause = doktype = 130 AND no_search = 0
+
+                    fields {
+                        pagetype_stringS = TEXT
+                        pagetype_stringS {
+                            value = Custom Page Type
+                        }
+                    }
+                }
+            }
+            '
+        );
 
         // create faked tce main call data
         $status = 'new';
@@ -397,6 +451,27 @@ class RecordMonitorTest extends IntegrationTest
     public function canQueueUpdatePagesWithCustomPageType()
     {
         $this->importDataSetFromFixture('can_use_correct_indexing_configuration_for_a_new_custom_page_type_record.xml');
+        $this->addTypoScriptToTemplateRecord(
+            1,
+            '
+             plugin.tx_solr.index.queue {
+                custom_page_type = 1
+                custom_page_type {
+                    initialization = ApacheSolrForTypo3\Solr\IndexQueue\Initializer\Page
+                    allowedPageTypes = 130
+                    indexer = ApacheSolrForTypo3\Solr\IndexQueue\PageIndexer
+                    table = pages
+                    additionalWhereClause = doktype = 130 AND no_search = 0
+
+                    fields {
+                        pagetype_stringS = TEXT
+                        pagetype_stringS {
+                            value = Custom Page Type
+                        }
+                    }
+                }
+            }'
+        );
 
         // we expect that the index queue is empty before we start
         $this->assertEmptyIndexQueue();
@@ -520,7 +595,7 @@ class RecordMonitorTest extends IntegrationTest
 
         $status = 'update';
         $uid = 2;
-        $fields = ['title' => 'New Translated Rootpage', 'pid' => 1];
+        $fields = ['title' => 'New Translated Rootpage', 'pid' => 17];
         $table = 'pages';
 
         $this->recordMonitor->processDatamap_afterDatabaseOperations($status, $table, $uid, $fields,
@@ -580,6 +655,10 @@ class RecordMonitorTest extends IntegrationTest
     public function updateRootPageWithRecursiveUpdateFieldsConfiguredForTitle()
     {
         $this->importDataSetFromFixture('update_page_with_recursive_update_fields_configured.xml');
+        $this->addTypoScriptToTemplateRecord(
+            1,
+            'plugin.tx_solr.index.queue.pages.recursiveUpdateFields = title'
+        );
         $this->assertEmptyIndexQueue();
 
         $status = 'update';
@@ -601,6 +680,10 @@ class RecordMonitorTest extends IntegrationTest
     public function updateSubChildPageWithRecursiveUpdateFieldsConfiguredForTitle()
     {
         $this->importDataSetFromFixture('update_page_with_recursive_update_fields_configured.xml');
+        $this->addTypoScriptToTemplateRecord(
+            1,
+            'plugin.tx_solr.index.queue.pages.recursiveUpdateFields = title'
+        );
         $this->assertEmptyIndexQueue();
 
         $status = 'update';
@@ -622,6 +705,10 @@ class RecordMonitorTest extends IntegrationTest
     public function updateSubSubChildPageWithRecursiveUpdateFieldsConfiguredForTitle()
     {
         $this->importDataSetFromFixture('update_page_with_recursive_update_fields_configured.xml');
+        $this->addTypoScriptToTemplateRecord(
+            1,
+            'plugin.tx_solr.index.queue.pages.recursiveUpdateFields = title'
+        );
         $this->assertEmptyIndexQueue();
 
         $status = 'update';
@@ -643,6 +730,10 @@ class RecordMonitorTest extends IntegrationTest
     public function updateRootPageWithRecursiveUpdateFieldsConfiguredForDokType()
     {
         $this->importDataSetFromFixture('update_page_with_recursive_update_fields_configured.xml');
+        $this->addTypoScriptToTemplateRecord(
+            1,
+            'plugin.tx_solr.index.queue.pages.recursiveUpdateFields = doktype'
+        );
         $this->assertEmptyIndexQueue();
 
         $status = 'update';
@@ -664,6 +755,10 @@ class RecordMonitorTest extends IntegrationTest
     public function updateSubChildPageWithRecursiveUpdateFieldsConfiguredForDokType()
     {
         $this->importDataSetFromFixture('update_page_with_recursive_update_fields_configured.xml');
+        $this->addTypoScriptToTemplateRecord(
+            1,
+            'plugin.tx_solr.index.queue.pages.recursiveUpdateFields = doktype'
+        );
         $this->assertEmptyIndexQueue();
 
         $status = 'update';
@@ -685,6 +780,10 @@ class RecordMonitorTest extends IntegrationTest
     public function updateSubSubChildPageWithRecursiveUpdateFieldsConfiguredForDokType()
     {
         $this->importDataSetFromFixture('update_page_with_recursive_update_fields_configured.xml');
+        $this->addTypoScriptToTemplateRecord(
+            1,
+            'plugin.tx_solr.index.queue.pages.recursiveUpdateFields = doktype'
+        );
         $this->assertEmptyIndexQueue();
 
         $status = 'update';
@@ -790,6 +889,32 @@ class RecordMonitorTest extends IntegrationTest
         $GLOBALS['TCA']['tx_fakeextension_domain_model_foo'] = include($this->getFixturePathByName('fake_extension_tca.php'));
 
         $this->importDataSetFromFixture('update_record_outside_siteroot_with_additionalWhereClause.xml');
+        $this->addTypoScriptToTemplateRecord(
+            1,
+            '
+            plugin.tx_solr.index.queue {
+                foo = 1
+                foo {
+                    additionalPageIds = 2
+                    additionalWhereClause = uid=1
+                    table = tx_fakeextension_domain_model_foo
+                    fields.title = title
+                }
+            }'
+        );
+        $this->addTypoScriptToTemplateRecord(
+            111,
+            '
+            plugin.tx_solr.index.queue {
+                foo = 1
+                foo {
+                    additionalPageIds = 2
+                    additionalWhereClause = uid=2
+                    table = tx_fakeextension_domain_model_foo
+                    fields.title = title
+                }
+            }'
+        );
 
         $this->assertEmptyIndexQueue();
 
@@ -817,6 +942,20 @@ class RecordMonitorTest extends IntegrationTest
         $GLOBALS['TCA']['tx_fakeextension_domain_model_foo'] = include($this->getFixturePathByName('fake_extension_tca.php'));
 
         $this->importDataSetFromFixture('update_record_outside_siteroot.xml');
+        $this->addTypoScriptToTemplateRecord(
+            1,
+            '
+            plugin.tx_solr.index.queue {
+                foo = 1
+                foo {
+                    additionalPageIds = 2
+                    table = tx_fakeextension_domain_model_foo
+                    fields {
+                        title = title
+                    }
+                }
+            }'
+        );
 
         $this->assertEmptyIndexQueue();
 
@@ -845,6 +984,32 @@ class RecordMonitorTest extends IntegrationTest
         $GLOBALS['TCA']['tx_fakeextension_domain_model_foo'] = include($this->getFixturePathByName('fake_extension_tca.php'));
 
         $this->importDataSetFromFixture('update_record_outside_siteroot_from_two_sites.xml');
+        $this->addTypoScriptToTemplateRecord(
+            1,
+            '
+            plugin.tx_solr.index.queue {
+                foo = 1
+                foo {
+                    additionalPageIds = 3
+                    table = tx_fakeextension_domain_model_foo
+                    fields {
+                        title = title
+                    }
+                }
+            }'
+        );
+        $this->addTypoScriptToTemplateRecord(
+            111,
+            '
+            plugin.tx_solr.index.queue {
+                foo = 1
+                foo {
+                    additionalPageIds = 3
+                    table = tx_fakeextension_domain_model_foo
+                    fields.title = title
+                }
+            }'
+        );
 
         $this->assertEmptyIndexQueue();
 
@@ -873,6 +1038,30 @@ class RecordMonitorTest extends IntegrationTest
         $GLOBALS['TCA']['tx_fakeextension_domain_model_foo'] = include($this->getFixturePathByName('fake_extension_tca.php'));
 
         $this->importDataSetFromFixture('update_record_outside_siteroot_from_other_siteroot.xml');
+        $this->addTypoScriptToTemplateRecord(
+            1,
+            '
+            plugin.tx_solr.index.queue {
+                foo = 1
+                foo {
+                    additionalPageIds = 3
+                    table = tx_fakeextension_domain_model_foo
+                    fields.title = title
+                }
+            }'
+        );
+        $this->addTypoScriptToTemplateRecord(
+            111,
+            '
+            plugin.tx_solr.index.queue {
+                foo = 1
+                foo {
+                    additionalPageIds = 3
+                    table = tx_fakeextension_domain_model_foo
+                    fields.title = title
+                }
+            }'
+        );
 
         $this->assertEmptyIndexQueue();
 

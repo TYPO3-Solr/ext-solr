@@ -42,6 +42,13 @@ use TYPO3\CMS\Core\Localization\LanguageService;
  */
 class ReIndexTaskTest extends IntegrationTest
 {
+
+    /**
+     * @inheritdoc
+     * @todo: Remove unnecessary fixtures and remove that property as intended.
+     */
+    protected bool $skipImportRootPagesAndTemplatesForConfiguredSites = true;
+
     /**
      * @var ReIndexTask
      */
