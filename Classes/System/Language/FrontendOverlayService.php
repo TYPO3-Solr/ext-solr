@@ -27,7 +27,9 @@ namespace ApacheSolrForTypo3\Solr\System\Language;
 
 use ApacheSolrForTypo3\Solr\System\TCA\TCAService;
 use ApacheSolrForTypo3\Solr\Util;
+use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
@@ -43,9 +45,9 @@ class FrontendOverlayService
     protected $tcaService = null;
 
     /**
-     * @var TypoScriptFrontendController
+     * @var TypoScriptFrontendController|null
      */
-    protected $tsfe = null;
+    protected ?TypoScriptFrontendController $tsfe = null;
 
     /**
      * Relation constructor.
@@ -55,7 +57,7 @@ class FrontendOverlayService
     public function __construct(TCAService $tcaService = null, TypoScriptFrontendController $tsfe = null)
     {
         $this->tcaService = $tcaService ?? GeneralUtility::makeInstance(TCAService::class);
-        $this->tsfe = $tsfe ?? $GLOBALS['TSFE'];
+        $this->tsfe = $tsfe;
     }
 
     /**
@@ -64,16 +66,18 @@ class FrontendOverlayService
      * @param string $tableName
      * @param array $record
      * @return array
+     * @throws AspectNotFoundException
      */
-    public function getOverlay($tableName, $record)
+    public function getOverlay(string $tableName, array $record): ?array
     {
+        $currentLanguageUid = $this->tsfe->getContext()->getPropertyFromAspect('language', 'id');
         if ($tableName === 'pages') {
             // @extensionScannerIgnoreLine
-            return $this->tsfe->sys_page->getPageOverlay($record, Util::getLanguageUid());
+            return $this->tsfe->sys_page->getPageOverlay($record, $currentLanguageUid);
         }
 
         // @extensionScannerIgnoreLine
-        return $this->tsfe->sys_page->getRecordOverlay($tableName, $record, Util::getLanguageUid());
+        return $this->tsfe->sys_page->getRecordOverlay($tableName, $record, $currentLanguageUid);
     }
 
     /**
@@ -84,15 +88,17 @@ class FrontendOverlayService
      * @param string $field
      * @param int $uid
      * @return int
+     * @throws AspectNotFoundException
      */
-    public function getUidOfOverlay($table, $field, $uid)
+    public function getUidOfOverlay(string $table, string $field, int $uid): int
     {
+        $contextsLanguageId = $this->tsfe->getContext()->getPropertyFromAspect('language', 'id');
         // when no language is set at all we do not need to overlay
-        if (Util::getLanguageUid() === null) {
+        if ($contextsLanguageId === null) {
             return $uid;
         }
         // when no language is set we can return the passed recordUid
-        if (!(Util::getLanguageUid() > 0)) {
+        if (!($contextsLanguageId > 0)) {
             return $uid;
         }
 
@@ -104,8 +110,7 @@ class FrontendOverlayService
         }
 
         $overlayUid = $this->getLocalRecordUidFromOverlay($table, $record);
-        $uid = ($overlayUid !== 0) ? $overlayUid : $uid;
-        return $uid;
+        return ($overlayUid !== 0) ? $overlayUid : $uid;
     }
 
     /**
@@ -114,8 +119,9 @@ class FrontendOverlayService
      * @param string $localTableName
      * @param array $originalRecord
      * @return int
+     * @throws AspectNotFoundException
      */
-    protected function getLocalRecordUidFromOverlay($localTableName, $originalRecord)
+    protected function getLocalRecordUidFromOverlay(string $localTableName, array $originalRecord): int
     {
         $overlayRecord = $this->getOverlay($localTableName, $originalRecord);
 
@@ -136,10 +142,9 @@ class FrontendOverlayService
      */
     protected function getRecord($localTableName, $localRecordUid)
     {
-        /** @var QueryBuilder $queryBuilder */
+        /* @var QueryBuilder $queryBuilder */
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($localTableName);
 
-        $record = $queryBuilder->select('*')->from($localTableName)->where($queryBuilder->expr()->eq('uid', $localRecordUid))->execute()->fetch();
-        return $record;
+        return $queryBuilder->select('*')->from($localTableName)->where($queryBuilder->expr()->eq('uid', $localRecordUid))->execute()->fetch();
     }
 }

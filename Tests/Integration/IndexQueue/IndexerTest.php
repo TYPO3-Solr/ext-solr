@@ -329,7 +329,7 @@ class IndexerTest extends IntegrationTest
     }
 
     /**
-     * This testcase should check if we can queue an custom record with MM relations and respect the additionalWhere clause.
+     * This testcase should check if we can queue a custom record with MM relations and respect the additionalWhere clause.
      *
      * @test
      */
