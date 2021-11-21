@@ -302,12 +302,6 @@ class Indexer extends AbstractIndexer
         return $item->getRecordPageId();
     }
 
-    protected function getContentObjectRendererForItemAndLanguage(Item $item, int $language): ContentObjectRenderer
-    {
-        $pageIdToUse = $this->getPageIdOfItem($item);
-        $contentObjectRenderer = GeneralUtility::makeInstance(ContentObjectRenderer::class);
-    }
-
     /**
      * The method returns the field configuration of the items root page id (uid of the related root page).
      *
@@ -539,7 +533,7 @@ class Indexer extends AbstractIndexer
         $defaultLanguageUid = $this->getDefaultLanguageUid($item, $site->getRootPage(), $siteLanguages);
         $translationOverlays = $this->getTranslationOverlaysWithConfiguredSite((int)$pageId, $site, (array)$siteLanguages);
 
-        $defaultConnection = $this->connectionManager->getConnectionByPageId($rootPageId, $defaultLanguageUid, $item->getMountPointIdentifier());
+        $defaultConnection = $this->connectionManager->getConnectionByPageId($rootPageId, $defaultLanguageUid, $item->getMountPointIdentifier() ?? '');
         $translationConnections = $this->getConnectionsForIndexableLanguages($translationOverlays);
 
         if ($defaultLanguageUid == 0) {

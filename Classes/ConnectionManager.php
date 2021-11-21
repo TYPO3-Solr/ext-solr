@@ -123,7 +123,7 @@ class ConnectionManager implements SingletonInterface
      * @return SolrConnection A solr connection.
      * @throws NoSolrConnectionFoundException
      */
-    public function getConnectionByPageId(int $pageId, ?int $language = 0, ?string $mount = ''): SolrConnection
+    public function getConnectionByPageId(int $pageId, int $language = 0, string $mount = ''): SolrConnection
     {
         try {
             $site = $this->siteRepository->getSiteByPageId($pageId, $mount);
