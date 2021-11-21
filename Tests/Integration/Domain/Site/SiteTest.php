@@ -24,9 +24,10 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Domain\Site;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
+use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
+use InvalidArgumentException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -36,12 +37,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class SiteTest extends IntegrationTest
 {
-
-    /**
-     * @var Site
-     */
-    private $site;
-
     public function setUp(): void {
         parent::setUp();
         $this->writeDefaultSolrTestSiteConfiguration();
@@ -53,7 +48,7 @@ class SiteTest extends IntegrationTest
     public function canGetDefaultLanguage()
     {
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
-        $this->importDataSetFromFixture('can_get_default_language.xml');
+        /* @var Site $site */
         $site = $siteRepository->getFirstAvailableSite();
         $this->assertEquals(0, $site->getDefaultLanguage(), 'Could not get default language from site');
     }
@@ -62,23 +57,20 @@ class SiteTest extends IntegrationTest
      * @test
      */
     public function canCreateInstanceWithRootSiteUidOK() {
-        $this->importDataSetFromFixture('can_create_instance_with_root_site.xml');
-
-            /** @var $siteRepository SiteRepository */
+        /* @var SiteRepository $siteRepository */
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
-        $this->site = $siteRepository->getSiteByRootPageId(1);
-        $this->assertEquals(1, $this->site->getRootPageId());
+        $site = $siteRepository->getSiteByRootPageId(1);
+        $this->assertEquals(1, $site->getRootPageId());
     }
 
     /**
      * @test
      */
     public function canCreateInstanceWithRootSiteUidNOK() {
-        $this->importDataSetFromFixture('can_create_instance_with_root_site.xml');
-        $this->expectException(\InvalidArgumentException::class);
-        /** @var $siteRepository SiteRepository */
+        $this->expectException(InvalidArgumentException::class);
+        /* @var SiteRepository $siteRepository */
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
-        $this->site = $siteRepository->getSiteByRootPageId(2);
+        $site = $siteRepository->getSiteByRootPageId(2);
     }
 
     /**
@@ -86,11 +78,11 @@ class SiteTest extends IntegrationTest
      */
     public function canCreateInstanceWithNonRootSiteUidOK() {
         $this->importDataSetFromFixture('can_create_instance_with_non_root_site.xml');
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
 
-        /** @var $siteRepository SiteRepository */
+        /* @var SiteRepository $siteRepository */
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
-        $this->site = $siteRepository->getSiteByRootPageId(1);
+        $siteRepository->getSiteByRootPageId(151);
     }
 
     /**
@@ -98,11 +90,11 @@ class SiteTest extends IntegrationTest
      */
     public function canCreateInstanceWithNonRootSiteUidNOK() {
         $this->importDataSetFromFixture('can_create_instance_with_non_root_site.xml');
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
 
-        /** @var $siteRepository SiteRepository */
+        /* @var SiteRepository $siteRepository */
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
-        $this->site = $siteRepository->getSiteByRootPageId(2);
+        $siteRepository->getSiteByRootPageId(152);
     }
 
     /**
@@ -111,10 +103,10 @@ class SiteTest extends IntegrationTest
     public function canGetAvailableLanguageIds() {
         $this->importDataSetFromFixture('can_get_translations_for_root_site.xml');
 
-        /** @var $siteRepository SiteRepository */
+        /* @var SiteRepository $siteRepository */
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
-        $this->site = $siteRepository->getSiteByRootPageId(1);
-        $languageIds = $this->site->getAvailableLanguageIds();
+        $site = $siteRepository->getSiteByRootPageId(1);
+        $languageIds = $site->getAvailableLanguageIds();
 
         $this->assertEquals([0, 1, 2], $languageIds);
     }

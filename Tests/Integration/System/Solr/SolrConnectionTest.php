@@ -19,7 +19,6 @@ use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
-use GuzzleHttp\Client as GuzzleHttpClient;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
