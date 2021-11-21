@@ -20,6 +20,7 @@ use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 
@@ -146,6 +147,8 @@ class Util
     /**
      * Returns the current language ID from the active context.
      * @return int
+     * @throws AspectNotFoundException
+     * @todo: Remove all usages of this method for all usages in isolated/capsuled TSFE approach.
      */
     public static function getLanguageUid(): int
     {

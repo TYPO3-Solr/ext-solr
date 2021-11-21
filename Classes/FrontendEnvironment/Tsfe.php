@@ -191,6 +191,8 @@ class Tsfe implements SingletonInterface
      * @throws SiteNotFoundException
      * @throws DBALDriverException
      * @throws Exception\Exception
+     *
+     * @todo : Call `$globalsTSFE->newCObj($serverRequest);` each time the TSFE requested. And then remove {@link getServerRequestForTsfeByPageIdAndLanguageId()} method.
      */
     public function getTsfeByPageIdAndLanguageId(int $pageId, int $language = 0, ?int $rootPageId = null): ?TypoScriptFrontendController
     {
