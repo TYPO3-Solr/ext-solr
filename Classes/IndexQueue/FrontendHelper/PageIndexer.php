@@ -35,6 +35,7 @@ use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use ApacheSolrForTypo3\Solr\Typo3PageIndexer;
 use ApacheSolrForTypo3\Solr\Util;
 use Exception;
+use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Log\Logger;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
@@ -339,6 +340,7 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
      * @param Item $indexQueueItem
      * @return SolrConnection Solr server connection
      * @throws NoSolrConnectionFoundException
+     * @throws AspectNotFoundException
      */
     protected function getSolrConnection(Item $indexQueueItem)
     {

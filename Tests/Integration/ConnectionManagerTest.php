@@ -27,7 +27,6 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration;
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
-use Nimut\TestingFramework\Exception\Exception;
 use ReflectionException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use function vsprintf;
@@ -40,6 +39,12 @@ use function vsprintf;
  */
 class ConnectionManagerTest extends IntegrationTest
 {
+
+    /**
+     * @inheritdoc
+     * @todo: Remove unnecessary fixtures and remove that property as intended.
+     */
+    protected bool $skipImportRootPagesAndTemplatesForConfiguredSites = true;
 
     public function setUp(): void
     {
@@ -75,7 +80,6 @@ class ConnectionManagerTest extends IntegrationTest
      * @param string $siteName
      * @param string $expectedSolrHost
      * @throws NoSolrConnectionFoundException
-     * @throws Exception
      * @throws ReflectionException
      */
     public function canFindSolrConnectionsByRootPageId(int $rootPageId, string $siteName, string $expectedSolrHost)
@@ -134,7 +138,6 @@ class ConnectionManagerTest extends IntegrationTest
      * @param string $siteName
      * @param string $expectedSolrHost
      * @throws NoSolrConnectionFoundException
-     * @throws Exception
      * @throws ReflectionException
      */
     public function canFindSolrConnectionsByPageId(int $pageId, string $siteName, string $expectedSolrHost)

@@ -36,13 +36,13 @@ use TYPO3\CMS\Reports\Status;
  */
 class SiteHandlingStatusTest extends IntegrationTest
 {
+
     /**
      * @test
      */
     public function allStatusChecksShouldBeOkForFirstTestSite()
     {
         $this->writeDefaultSolrTestSiteConfiguration();
-        $this->importDataSetFromFixture('simple_site.xml');
 
         /** @var $siteHandlingStatus  siteHandlingStatus */
         $siteHandlingStatus = GeneralUtility::makeInstance(SiteHandlingStatus::class);
@@ -63,8 +63,9 @@ class SiteHandlingStatusTest extends IntegrationTest
         $this->mergeSiteConfiguration('integration_tree_one', [
             'base' => 'authorityOnly.example.com'
         ]);
-        $this->importDataSetFromFixture('simple_site.xml');
-
+        $this->mergeSiteConfiguration('integration_tree_two', [
+            'base' => 'authorityOnly.two.example.com'
+        ]);
 
         /** @var $siteHandlingStatus  SiteHandlingStatus */
         $siteHandlingStatus = GeneralUtility::makeInstance(SiteHandlingStatus::class);
@@ -86,8 +87,9 @@ class SiteHandlingStatusTest extends IntegrationTest
         $this->mergeSiteConfiguration('integration_tree_one', [
             'base' => '/'
         ]);
-        $this->importDataSetFromFixture('simple_site.xml');
-
+        $this->mergeSiteConfiguration('integration_tree_two', [
+            'base' => '/'
+        ]);
 
         /** @var $siteHandlingStatus  SiteHandlingStatus */
         $siteHandlingStatus = GeneralUtility::makeInstance(SiteHandlingStatus::class);
@@ -109,11 +111,15 @@ class SiteHandlingStatusTest extends IntegrationTest
 
         // mergeSiteConfiguration() do not work recursively
         $siteConfiguration = new SiteConfiguration($this->instancePath . '/typo3conf/sites/');
-        $configuration = $siteConfiguration->load('integration_tree_one');
-        $configuration['languages'][1]['base'] = 'authorityOnly.example.com';
 
-        $this->mergeSiteConfiguration('integration_tree_one', $configuration);
-        $this->importDataSetFromFixture('simple_site.xml');
+        $configuration1 = $siteConfiguration->load('integration_tree_one');
+        $configuration1['languages'][1]['base'] = 'authorityOnly.example.com';
+        $this->mergeSiteConfiguration('integration_tree_one', $configuration1);
+
+        $configuration2 = $siteConfiguration->load('integration_tree_two');
+        $configuration2['languages'][1]['base'] = 'authorityOnly.two.example.com';
+
+        $this->mergeSiteConfiguration('integration_tree_two', $configuration2);
 
         /** @var $siteHandlingStatus  SiteHandlingStatus */
         $siteHandlingStatus = GeneralUtility::makeInstance(SiteHandlingStatus::class);

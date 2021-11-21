@@ -1,16 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <dataset>
-
-    <pages>
-        <uid>1</uid>
-        <is_siteroot>1</is_siteroot>
-        <doktype>1</doktype>
-    </pages>
-    <pages>
-        <uid>111</uid>
-        <is_siteroot>1</is_siteroot>
-        <doktype>1</doktype>
-    </pages>
     <pages>
         <uid>3</uid>
         <pid>111</pid>

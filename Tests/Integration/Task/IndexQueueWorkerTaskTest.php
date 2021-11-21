@@ -37,8 +37,15 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author Timo Schmidt
  */
-class IndexQueueWorkerTest extends IntegrationTest
+class IndexQueueWorkerTaskTest extends IntegrationTest
 {
+
+    /**
+     * @inheritdoc
+     * @todo: Remove unnecessary fixtures and remove that property as intended.
+     */
+    protected bool $skipImportRootPagesAndTemplatesForConfiguredSites = true;
+
     /**
      * @var Queue
      */
