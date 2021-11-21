@@ -86,7 +86,7 @@ class TypoScript implements SingletonInterface
             // @todo logging!
             return [];
         }
-        $getConfigurationFromInitializedTSFEAndWriteToCache = $this->ext_getSetup($tsfe->tmpl->setup, $path);
+        $getConfigurationFromInitializedTSFEAndWriteToCache = $this->ext_getSetup($tsfe->tmpl->setup ?? [], $path);
         return $getConfigurationFromInitializedTSFEAndWriteToCache[0] ?? [];
     }
 
