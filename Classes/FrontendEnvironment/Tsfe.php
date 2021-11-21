@@ -13,6 +13,7 @@ use TYPO3\CMS\Core\Domain\Repository\PageRepository;
 use TYPO3\CMS\Core\Error\Http\InternalServerErrorException;
 use TYPO3\CMS\Core\Error\Http\ServiceUnavailableException;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
+use TYPO3\CMS\Core\Http\PropagateResponseException;
 use TYPO3\CMS\Core\Localization\Locales;
 use TYPO3\CMS\Core\Routing\PageArguments;
 use TYPO3\CMS\Core\SingletonInterface;
@@ -80,6 +81,9 @@ class Tsfe implements SingletonInterface
             $reusedCacheIdentifier = $this->getCacheIdentifier($pidToUse, $language, $rootPageId);
             $this->serverRequestCache[$cacheIdentifier] = $this->serverRequestCache[$reusedCacheIdentifier];
             $this->tsfeCache[$cacheIdentifier] = $this->tsfeCache[$reusedCacheIdentifier];
+//            if ($rootPageId === null) {
+//                // @Todo: Resolve and set TSFE object for $rootPageId.
+//            }
             return;
         }
 
@@ -147,7 +151,16 @@ class Tsfe implements SingletonInterface
             $globalsTSFE->tmpl = $template;
             $context->setAspect('typoscript', GeneralUtility::makeInstance(TypoScriptAspect::class, true));
             $globalsTSFE->no_cache = true;
-            $globalsTSFE->determineId($serverRequest);
+
+            try {
+                $globalsTSFE->determineId($serverRequest);
+            } /** @noinspection PhpRedundantCatchClauseInspection */ catch (PropagateResponseException $exception)
+            {
+                $this->serverRequestCache[$cacheIdentifier] = null;
+                $this->tsfeCache[$cacheIdentifier] = null;
+                return;
+            }
+
             $globalsTSFE->tmpl->start($globalsTSFE->rootLine);
             $globalsTSFE->no_cache = false;
             $globalsTSFE->getConfigArray($serverRequest);
@@ -179,7 +192,7 @@ class Tsfe implements SingletonInterface
      * @throws DBALDriverException
      * @throws Exception\Exception
      */
-    public function getTsfeByPageIdAndLanguageId(int $pageId, int $language = 0, ?int $rootPageId = null): TypoScriptFrontendController
+    public function getTsfeByPageIdAndLanguageId(int $pageId, int $language = 0, ?int $rootPageId = null): ?TypoScriptFrontendController
     {
         $this->assureIsInitialized($pageId, $language, $rootPageId);
         return $this->tsfeCache[$this->getCacheIdentifier($pageId, $language, $rootPageId)];
@@ -202,7 +215,7 @@ class Tsfe implements SingletonInterface
      * @throws Exception\Exception
      * @noinspection PhpUnused
      */
-    public function getServerRequestForTsfeByPageIdAndLanguageId(int $pageId, int $language = 0, ?int $rootPageId = null): ServerRequest
+    public function getServerRequestForTsfeByPageIdAndLanguageId(int $pageId, int $language = 0, ?int $rootPageId = null): ?ServerRequest
     {
         $this->assureIsInitialized($pageId, $language, $rootPageId);
         return $this->serverRequestCache[$this->getCacheIdentifier($pageId, $language, $rootPageId)];
@@ -224,7 +237,7 @@ class Tsfe implements SingletonInterface
      */
     protected function assureIsInitialized(int $pageId, int $language, ?int $rootPageId = null): void
     {
-        if (!isset($this->serverRequestCache[$this->getCacheIdentifier($pageId, $language, $rootPageId)])) {
+        if(!array_key_exists($this->getCacheIdentifier($pageId, $language, $rootPageId), $this->serverRequestCache)) {
             $this->initializeTsfe($pageId, $language, $rootPageId);
         }
     }
