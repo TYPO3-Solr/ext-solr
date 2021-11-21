@@ -1,16 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <dataset>
-
-	<pages>
-		<uid>1</uid>
-		<is_siteroot>1</is_siteroot>
-	</pages>
-
-	<pages>
-		<uid>2</uid>
-		<is_siteroot>1</is_siteroot>
-	</pages>
-
 	<tx_solr_indexqueue_item>
 		<uid>4711</uid>
 		<root>1</root>
@@ -29,7 +18,7 @@
 
 	<tx_solr_indexqueue_item>
 		<uid>4713</uid>
-		<root>2</root>
+		<root>111</root>
 		<item_type>pages</item_type>
 		<indexed>1489507800</indexed>
 		<errors>something bad happpend on site 2</errors>

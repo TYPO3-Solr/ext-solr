@@ -30,14 +30,17 @@ use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\System\Environment\CliEnvironment;
 use ApacheSolrForTypo3\Solr\System\Environment\WebRootAllReadyDefinedException;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
-use ApacheSolrForTypo3\Solr\Util;
-use Nimut\TestingFramework\Exception\Exception;
-use ReflectionException;
+use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Exception as DoctrineDBALException;
+use Doctrine\DBAL\Schema\SchemaException;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
 use TYPO3\CMS\Core\Core\Environment;
+use TYPO3\CMS\Core\Database\Schema\Exception\StatementException;
+use TYPO3\CMS\Core\Database\Schema\Exception\UnexpectedSignalReturnValueTypeException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Localization\LanguageService;
+use TYPO3\TestingFramework\Core\Exception as TestingFrameworkCoreException;
 
 /**
  * Testcase for the record indexer
@@ -46,6 +49,11 @@ use TYPO3\CMS\Core\Localization\LanguageService;
  */
 class IndexServiceTest extends IntegrationTest
 {
+    /**
+     * @inheritdoc
+     * @todo: Remove unnecessary fixtures and remove that property as intended.
+     */
+    protected bool $skipImportRootPagesAndTemplatesForConfiguredSites = true;
 
     /**
      * @var Queue
@@ -54,7 +62,10 @@ class IndexServiceTest extends IntegrationTest
 
     /**
      * @return void
+     *
+     * @throws DBALException
      * @throws NoSuchCacheException
+     * @throws TestingFrameworkCoreException
      */
     public function setUp(): void
     {
@@ -84,7 +95,7 @@ class IndexServiceTest extends IntegrationTest
         $this->indexQueue->updateItem($table, $uid, time());
     }
 
-    public function canResolveBaseAsPrefixDataProvider()
+    public function canResolveBaseAsPrefixDataProvider(): array
     {
         return [
             'absRefPrefixIsFoo' => [
@@ -96,12 +107,17 @@ class IndexServiceTest extends IntegrationTest
 
     /**
      * @dataProvider canResolveBaseAsPrefixDataProvider
+     *
      * @param string $absRefPrefix
      * @param string $expectedUrl
+     *
+     * @throws DoctrineDBALException
+     * @throws SchemaException
+     * @throws StatementException
+     * @throws TestingFrameworkCoreException
      * @throws WebRootAllReadyDefinedException
-     * @throws Exception
-     * @throws ReflectionException
-     * @throws \Exception
+     *
+     * @throws UnexpectedSignalReturnValueTypeException
      * @test
      */
     public function canResolveBaseAsPrefix($absRefPrefix, $expectedUrl)

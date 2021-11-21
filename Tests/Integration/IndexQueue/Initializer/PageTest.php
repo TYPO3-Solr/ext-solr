@@ -28,7 +28,6 @@ use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\IndexQueue\Initializer\Page;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
-use Exception;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -125,7 +124,7 @@ class PageTest extends IntegrationTest
         $this->assertEmptyQueue();
         $this->initializeAllPageIndexQueues();
 
-        $this->assertItemsInQueue(4);
+        $this->assertItemsInQueue(5);
 
             // @todo: verify, is this really as expected? since mount_pid_ol is not set
             // in the case when mount_pid_ol is set 4 pages get added
@@ -157,7 +156,7 @@ class PageTest extends IntegrationTest
         $this->importDataSetFromFixture('mounted_shared_non_root_page_from_different_tree_can_be_indexed.xml');
         $this->assertEmptyQueue();
         $this->initializeAllPageIndexQueues();
-        $this->assertItemsInQueue(2);
+        $this->assertItemsInQueue(3); // The root page of "testtwo.site aka integration_tree_two" is included.
 
         $this->assertTrue($this->indexQueue->containsItem('pages', 1));
         $this->assertTrue($this->indexQueue->containsItem('pages', 24));
@@ -189,7 +188,7 @@ class PageTest extends IntegrationTest
         $this->importDataSetFromFixture('mounted_shared_root_page_from_different_tree_can_be_indexed.xml');
         $this->assertEmptyQueue();
         $this->initializeAllPageIndexQueues();
-        $this->assertItemsInQueue(2);
+        $this->assertItemsInQueue(3); // The root page of "testtwo.site aka integration_tree_two" is included.
 
         $this->assertTrue($this->indexQueue->containsItem('pages', 1));
         // the mountpoint MUST NOT be in the queue,
@@ -217,7 +216,7 @@ class PageTest extends IntegrationTest
      *      |   |
      *      |   ——[14] Mount Point 1 (to [24] to show contents from)
      *      |
-     *      ——[ 2] Page2 (Root)
+     *      ——[ 111] Page2 (Root)
      *          |
      *          ——[34] Mount Point 2 (to [24] to show contents from)
      *
@@ -263,7 +262,7 @@ class PageTest extends IntegrationTest
         $this->assertEmptyQueue();
         $this->initializeAllPageIndexQueues();
 
-        $this->assertItemsInQueue(4);
+        $this->assertItemsInQueue(5); // The root page of "testtwo.site aka integration_tree_two" is included.
 
         $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);
         $flashMessageQueue = $flashMessageService->getMessageQueueByIdentifier('solr.queue.initializer');
@@ -276,7 +275,15 @@ class PageTest extends IntegrationTest
      * The initializer MUST ignore only the pages, which matching the `additionalWhereClause`,
      * and NOT the whole sub-tree of them, because The Record-Monitoring stack ignores the state of parents-tree
      * and adds the pages to the index queue anyway.
-     *
+     *     [0]
+     *      |
+     *      ——[ 1] Root of Testpage testone.site aka integration_tree_one      (included in index)
+     *      |    |
+     *      |    ——[2] No Search                                               (not included in index)
+     *      |       |
+     *      |       ——[3] 2-nd level Subpage                                   (included in index)
+     *      |
+     *      ——[ 111] Root of Testpage testtwo.site aka integration_tree_two    (included in index)
      * @test
      */
     public function initializerDoesNotIgnoreSubPagesOfRestrictedByAdditionalWhereClauseParents()
@@ -285,10 +292,10 @@ class PageTest extends IntegrationTest
         $this->assertEmptyQueue();
         $this->initializeAllPageIndexQueues();
 
-        $this->assertItemsInQueue(1);
+        $this->assertItemsInQueue(3); // The root page of "testtwo.site aka integration_tree_two" is included.
 
         $this->assertTrue(
-            $this->indexQueue->containsItem('pages', 2),
+            $this->indexQueue->containsItem('pages', 3),
             'The index queue does not contain the sub pages of restricted by additionalWhereClause page.' . PHP_EOL
             . 'The initializer MUST NOT ignore the sub pages of restricted pages.'
         );

@@ -47,6 +47,12 @@ class SearchTest extends IntegrationTest
 {
 
     /**
+     * @inheritdoc
+     * @todo: Remove unnecessary fixtures and remove that property as intended.
+     */
+    protected bool $skipImportRootPagesAndTemplatesForConfiguredSites = true;
+
+    /**
      * @var QueryBuilder
      */
     protected $queryBuilder;

@@ -24,12 +24,15 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Domain\Site;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Domain\Site\Exception\InvalidSiteConfigurationCombinationException;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
-use TYPO3\CMS\Core\Core\Bootstrap;
+use Doctrine\DBAL\DBALException;
+use Exception;
+use InvalidArgumentException;
+use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\TestingFramework\Core\Exception as TestingFrameworkCoreException;
 
 /**
  * Testcase to check if the SiteRepository class works as expected.
@@ -45,6 +48,9 @@ class SiteRepositoryTest extends IntegrationTest
 
     /**
      * @return void
+     * @throws NoSuchCacheException
+     * @throws TestingFrameworkCoreException
+     * @throws DBALException
      */
     public function setUp(): void
     {
@@ -55,26 +61,18 @@ class SiteRepositoryTest extends IntegrationTest
 
     /**
      * @test
+     * @throws Exception
      */
     public function canGetAllSites()
     {
-        $this->importDataSetFromFixture('can_get_all_sites.xml');
         $sites = $this->siteRepository->getAvailableSites();
-        $this->assertSame(1, count($sites), 'Expected to retrieve one site from fixture');
+        $this->assertSame(2, count($sites), 'Expected to retrieve two sites from default tests setup. Note: The third site is not enabled for EXT:solr.');
     }
 
     /**
      * @test
-     */
-    public function getAvailableSitesDoNotReturnSitesNotEnabled(): void
-    {
-        $this->importDataSetFromFixture('get_available_sites_do_not_return_sites_not_enabled.xml');
-        $sites = $this->siteRepository->getAvailableSites();
-        $this->assertSame(2, count($sites), 'Expected to retrieve two sites');
-    }
-
-    /**
-     * @test
+     * @throws TestingFrameworkCoreException
+     * @throws Exception
      */
     public function canGetAllPagesFromSite()
     {
@@ -88,7 +86,6 @@ class SiteRepositoryTest extends IntegrationTest
      */
     public function canGetSiteByRootPageIdExistingRoot()
     {
-        $this->importDataSetFromFixture('can_get_site_by_root_page_id.xml');
         $site = $this->siteRepository->getSiteByRootPageId(1);
         $this->assertContainsOnlyInstancesOf(Site::class, [$site], 'Could not retrieve site from root page');
     }
@@ -98,14 +95,14 @@ class SiteRepositoryTest extends IntegrationTest
      */
     public function canGetSiteByRootPageIdNonExistingRoot()
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
-        $this->importDataSetFromFixture('can_get_site_by_root_page_id.xml');
         $siteRepository->getSiteByRootPageId(42);
     }
 
     /**
      * @test
+     * @throws Exception
      */
     public function canGetSiteByPageIdExistingPage()
     {
@@ -116,16 +113,18 @@ class SiteRepositoryTest extends IntegrationTest
 
     /**
      * @test
+     * @throws TestingFrameworkCoreException
      */
     public function canGetSiteByPageIdNonExistingPage()
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->importDataSetFromFixture('can_get_site_by_page_id.xml');
         $this->siteRepository->getSiteByPageId(42);
     }
 
     /**
      * @test
+     * @throws TestingFrameworkCoreException
      */
     public function canGetSiteWithDomainFromSiteConfiguration()
     {

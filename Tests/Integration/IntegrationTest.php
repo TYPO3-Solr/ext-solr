@@ -492,7 +492,6 @@ abstract class IntegrationTest extends FunctionalTestCase
     protected function writeDefaultSolrTestSiteConfiguration() {
         $solrConnectionInfo = $this->getSolrConnectionInfo();
         $this->writeDefaultSolrTestSiteConfigurationForHostAndPort($solrConnectionInfo['scheme'], $solrConnectionInfo['host'], $solrConnectionInfo['port']);
-        $this->importRootPagesAndTemplatesForConfiguredSites();
     }
 
 
@@ -508,12 +507,13 @@ abstract class IntegrationTest extends FunctionalTestCase
      * @param int|null $port
      * @param bool|null $disableDefaultLanguage
      * @return void
+     * @throws TestingFrameworkCoreException
      */
     protected function writeDefaultSolrTestSiteConfigurationForHostAndPort(
-        string $scheme = 'http',
-        string $host = 'localhost',
-        int $port = 8999,
-        bool $disableDefaultLanguage = false)
+        ?string $scheme = 'http',
+        ?string $host = 'localhost',
+        ?int $port = 8999,
+        ?bool $disableDefaultLanguage = false)
     {
         $siteCreatedHash = md5($scheme . $host . $port . $disableDefaultLanguage);
         if (self::$lastSiteCreated === $siteCreatedHash) {
@@ -569,6 +569,8 @@ abstract class IntegrationTest extends FunctionalTestCase
         $this->mergeSiteConfiguration('integration_tree_two', $globalSolrSettings);
         // disable solr for site three
         $this->mergeSiteConfiguration('integration_tree_three', ['solr_enabled_read' => false]);
+
+        $this->importRootPagesAndTemplatesForConfiguredSites();
 
         clearstatcache();
         usleep(500);

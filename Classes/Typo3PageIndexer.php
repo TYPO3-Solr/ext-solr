@@ -33,6 +33,7 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
+use Exception;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
@@ -131,7 +132,7 @@ class Typo3PageIndexer
 
         try {
             $this->initializeSolrConnection();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->log(
                 SolrLogManager::ERROR,
                 $e->getMessage() . ' Error code: ' . $e->getCode()
@@ -163,7 +164,7 @@ class Typo3PageIndexer
     /**
      * Initializes the Solr server connection.
      *
-     * @throws    \Exception when no Solr connection can be established.
+     * @throws Exception when no Solr connection can be established.
      */
     protected function initializeSolrConnection()
     {
@@ -171,7 +172,7 @@ class Typo3PageIndexer
 
         // do not continue if no server is available
         if (!$solr->getWriteService()->ping()) {
-            throw new \Exception(
+            throw new Exception(
                 'No Solr instance available while trying to index a page.',
                 1234790825
             );
@@ -205,12 +206,12 @@ class Typo3PageIndexer
      * initialized by the constructor.
      *
      * @param SolrConnection $solrConnection Solr connection
-     * @throws \Exception if the Solr server cannot be reached
+     * @throws Exception if the Solr server cannot be reached
      */
     public function setSolrConnection(SolrConnection $solrConnection)
     {
         if (!$solrConnection->getWriteService()->ping()) {
-            throw new \Exception(
+            throw new Exception(
                 'Could not connect to Solr server.',
                 1323946472
             );
@@ -438,7 +439,7 @@ class Typo3PageIndexer
             }
 
             $documentsAdded = true;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->log(SolrLogManager::ERROR, $e->getMessage() . ' Error code: ' . $e->getCode());
 
             if ($this->configuration->getLoggingExceptions()) {

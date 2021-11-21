@@ -9,13 +9,16 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class TsfeTest extends IntegrationTest
 {
-
     /**
      * @test
      *
      */
     public function initializeTsfeWithNoDefaultPageAndPageErrorHandlerDoNotThrowAnError()
     {
+        $this->markTestSkipped("Since TSFE is isolated/capsuled, no exceptions are thrown or delegated to else where.
+        Other scenario is wanted for:
+        https://github.com/TYPO3-Solr/ext-solr/issues/2914
+        https://github.com/TYPO3-Solr/ext-solr/pull/2915/files");
         $this->expectException(RuntimeException::class);
         $this->importDataSetFromFixture('initialize_tsfe_with_no_default_page_and_page_error_handler_do_not_throw_an_error.xml');
 
@@ -48,9 +51,8 @@ class TsfeTest extends IntegrationTest
         $siteCreatedHash = md5($scheme . $host . $port . '0-PageErrorHandler');
         self::$lastSiteCreated = $siteCreatedHash;
 
-        $tsfe = GeneralUtility::makeInstance(Tsfe::class);
-        $tsfe->initializeTsfe(1);
-
+        $tsfeManager = GeneralUtility::makeInstance(Tsfe::class);
+        $tsfeManager->getTsfeByPageIdAndLanguageId(1);
     }
 
 }

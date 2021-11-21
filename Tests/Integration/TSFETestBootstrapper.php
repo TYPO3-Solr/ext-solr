@@ -9,6 +9,7 @@ use TYPO3\CMS\Core\Http\ImmediateResponseException;
 use TYPO3\CMS\Core\Localization\Locales;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
+use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Routing\PageArguments;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\TypoScript\TemplateService;
@@ -60,7 +61,11 @@ class TSFETestBootstrapper
         /* @var FrontendUserAuthentication $feUser */
         $feUser = GeneralUtility::makeInstance(FrontendUserAuthentication::class);
         $feUser->initializeUserSessionManager();
-        /* @var $TSFE TypoScriptFrontendController */
+
+        // reset PageRenderer instance, to avoid assigning old contents in current flow.
+        $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
+        $pageRenderer->setBodyContent('');
+        /* @var TypoScriptFrontendController $TSFE */
         $TSFE = GeneralUtility::makeInstance(TypoScriptFrontendController::class, $context, $site, $siteLanguage, $pageArguments, $feUser);
         $TSFE->set_no_cache('', true);
         $GLOBALS['TSFE'] = $TSFE;

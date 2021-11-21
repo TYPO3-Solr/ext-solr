@@ -28,7 +28,6 @@ use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\Controller\Backend\Search\IndexAdministrationModuleController;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
-use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -60,8 +59,6 @@ class IndexAdministrationModuleControllerTest extends IntegrationTest
      */
     public function testReloadIndexConfigurationAction()
     {
-        $this->importDataSetFromFixture('can_reload_index_configuration.xml');
-
         /** @var SiteRepository $siteRepository */
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $selectedSite = $siteRepository->getFirstAvailableSite();
@@ -77,15 +74,13 @@ class IndexAdministrationModuleControllerTest extends IntegrationTest
      */
     public function testEmptyIndexAction()
     {
-        $this->importDataSetFromFixture('can_reload_index_configuration.xml');
-
         /** @var SiteRepository $siteRepository */
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $selectedSite = $siteRepository->getFirstAvailableSite();
         $this->controller->setSelectedSite($selectedSite);
-        $this->controller->expects($this->once())
+        $this->controller->expects($this->atLeastOnce())
             ->method('addFlashMessage')
-            ->with('Index emptied for Site ", Root Page ID: 1" (core_en, core_de, core_da).', '', FlashMessage::OK);
+            ->with('Index emptied for Site "Root of Testpage testone.site aka integration_tree_one, Root Page ID: 1" (core_en, core_de, core_da).', '', FlashMessage::OK);
 
         $this->controller->emptyIndexAction();
     }

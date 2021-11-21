@@ -43,7 +43,6 @@ use TYPO3\CMS\Core\Localization\LanguageService;
  */
 class GarbageCollectorTest extends IntegrationTest
 {
-
     /**
      * @var RecordMonitor
      */
@@ -78,6 +77,19 @@ class GarbageCollectorTest extends IntegrationTest
         $this->indexQueue = GeneralUtility::makeInstance(Queue::class);
         $this->garbageCollector = GeneralUtility::makeInstance(GarbageCollector::class);
         $this->indexer = GeneralUtility::makeInstance(Indexer::class);
+    }
+
+    /**
+     * @todo:
+     */
+    public function tearDown(): void
+    {
+        unset($this->recordMonitor);
+        unset($this->dataHandler);
+        unset($this->indexQueue);
+        unset($this->garbageCollector);
+        unset($this->indexer);
+        parent::tearDown();
     }
 
     /**
@@ -131,14 +143,14 @@ class GarbageCollectorTest extends IntegrationTest
         $this->assertEmptyIndexQueue();
 
         $dataHandler = $this->dataHandler;
-        $this->recordMonitor->processDatamap_afterDatabaseOperations('update', 'pages', 1, [], $dataHandler);
+        $this->recordMonitor->processDatamap_afterDatabaseOperations('update', 'pages', 2, [], $dataHandler);
 
         // we expect that one item is now in the solr server
         $this->assertIndexQueryContainsItemAmount(1);
 
-        $this->garbageCollector->collectGarbage('pages', 1);
+        $this->garbageCollector->collectGarbage('pages', 2);
 
-        // finally we expect that the index is empty again
+        // finally, we expect that the index is empty again
         $this->assertEmptyIndexQueue();
     }
 
@@ -153,7 +165,7 @@ class GarbageCollectorTest extends IntegrationTest
         // we expect that the index queue is empty before we start
         $this->assertEmptyIndexQueue();
 
-        $this->indexQueue->updateItem('pages', 1);
+        $this->indexQueue->updateItem('pages', 2);
         $this->indexQueue->updateItem('pages', 10);
         $this->indexQueue->updateItem('pages', 100);
 
@@ -162,12 +174,12 @@ class GarbageCollectorTest extends IntegrationTest
 
         // simulate the database change and build a faked changeset
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionByName(ConnectionPool::DEFAULT_CONNECTION_NAME);
-        $connection->update('pages', ['hidden' => 1], ['uid' => 1]);
+        $connection->update('pages', ['hidden' => 1], ['uid' => 2]);
 
         $changeSet = ['hidden' => 1];
 
         $dataHandler = $this->dataHandler;
-        $this->garbageCollector->processDatamap_afterDatabaseOperations('update', 'pages', 1, $changeSet, $dataHandler);
+        $this->garbageCollector->processDatamap_afterDatabaseOperations('update', 'pages', 2, $changeSet, $dataHandler);
 
         // finally we expect that the index is empty again because the root page with "extendToSubPages" has been set to
         // hidden = 1
@@ -184,7 +196,7 @@ class GarbageCollectorTest extends IntegrationTest
         // we expect that the index queue is empty before we start
         $this->assertEmptyIndexQueue();
 
-        $this->indexQueue->updateItem('pages', 1);
+        $this->indexQueue->updateItem('pages', 2);
         $this->indexQueue->updateItem('pages', 10);
         $this->indexQueue->updateItem('pages', 11);
         $this->indexQueue->updateItem('pages', 12);
@@ -194,11 +206,11 @@ class GarbageCollectorTest extends IntegrationTest
 
         // simulate the database change and build a faked changeset
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionByName(ConnectionPool::DEFAULT_CONNECTION_NAME);
-        $connection->update('pages', ['hidden' => 1], ['uid' => 1]);
+        $connection->update('pages', ['hidden' => 1], ['uid' => 2]);
         $changeSet = ['hidden' => 1];
 
         $dataHandler = $this->dataHandler;
-        $this->garbageCollector->processDatamap_afterDatabaseOperations('update', 'pages', 1, $changeSet, $dataHandler);
+        $this->garbageCollector->processDatamap_afterDatabaseOperations('update', 'pages', 2, $changeSet, $dataHandler);
 
         // finally we expect that the index is empty again because the root page with "extendToSubPages" has been set to
         // hidden = 1
@@ -361,7 +373,7 @@ class GarbageCollectorTest extends IntegrationTest
         $this->cleanUpSolrServerAndAssertEmpty();
         $this->importDataSetFromFixture('does_not_remove_updated_content_element_with_not_set_endtime.xml');
 
-        $this->indexPageIds([1]);
+        $this->indexPageIds([2]);
 
         // we index a page with two content elements and expect solr contains the content of both
         $this->waitToBeVisibleInSolr();
@@ -393,11 +405,11 @@ class GarbageCollectorTest extends IntegrationTest
         $this->waitToBeVisibleInSolr();
 
         $this->assertIndexQueryContainsItemAmount(1);
-        $items = $this->indexQueue->getItems('pages', 1);
+        $items = $this->indexQueue->getItems('pages', 2);
         $this->assertSame(1, count($items));
 
         // we index this item
-        $this->indexPageIds([1]);
+        $this->indexPageIds([2]);
         $this->waitToBeVisibleInSolr();
 
         // now the content of the deletec content element should be gone
@@ -574,6 +586,17 @@ class GarbageCollectorTest extends IntegrationTest
         $GLOBALS['TCA']['tx_fakeextension_domain_model_foo'] = include($this->getFixturePathByName('fake_extension_tca.php'));
         $this->importDataSetFromFixture('can_delete_custom_record.xml');
 
+        $this->addTypoScriptToTemplateRecord(
+            1,
+'
+            plugin.tx_solr.index.queue {
+                foo = 1
+                foo {
+                    table = tx_fakeextension_domain_model_foo
+                    fields.title = title
+                }
+            }
+        ');
         $this->cleanUpSolrServerAndAssertEmpty();
         $this->fakeLanguageService();
 
@@ -621,7 +644,6 @@ class GarbageCollectorTest extends IntegrationTest
 
         return $result;
     }
-
 
     /**
      *
