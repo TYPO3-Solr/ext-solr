@@ -191,6 +191,8 @@ class Indexer extends AbstractIndexer
             $response = $this->solr->getWriteService()->addDocuments($documents);
             if ($response->getHttpStatus() == 200) {
                 $itemIndexed = true;
+            } else {
+                throw new Exception('Solr Response: ' . $response->getHttpStatusMessage(), 1637318787);
             }
         } catch (HttpException $e) {
             $response = new ResponseAdapter($e->getBody(), $httpStatus = 500, $e->getStatusMessage());
