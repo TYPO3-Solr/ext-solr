@@ -609,6 +609,9 @@ class RoutingService implements LoggerAwareInterface
         foreach ($queryParams[$this->getPluginNamespace()]['filter'] as $set) {
             $separator = $this->detectFacetAndValueSeparator((string)$set);
             [$facetName, $facetValuesString] = explode($separator, $set, 2);
+            if ($facetValuesString == null) {
+                continue;
+            }
             $facetValues = explode($this->urlFacetQueryService->getMultiValueSeparator(), $facetValuesString);
 
             /**
