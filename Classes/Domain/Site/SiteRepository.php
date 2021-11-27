@@ -31,14 +31,16 @@ use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
 use ApacheSolrForTypo3\Solr\System\Util\SiteUtility;
+use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use Exception;
 use InvalidArgumentException;
+use Throwable;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Registry;
 use TYPO3\CMS\Core\Site\Entity\Site as CoreSite;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * SiteRepository
@@ -207,12 +209,12 @@ class SiteRepository
         return $typo3ManagedSolrSites;
     }
 
-     /**
+    /**
      * Creates an instance of the Site object.
      *
      * @param int $rootPageId
      * @return SiteInterface
-     * @throws InvalidArgumentException
+     * @throws DBALDriverException
      */
     protected function buildSite(int $rootPageId)
     {
@@ -256,18 +258,21 @@ class SiteRepository
     }
 
     /**
+     * Builds a TYPO3 managed site with TypoScript configuration.
+     *
      * @param array $rootPageRecord
+     *
      * @return Typo3ManagedSite
+     *
+     * @throws DBALDriverException
      */
     protected function buildTypo3ManagedSite(array $rootPageRecord): ?Typo3ManagedSite
     {
-        $solrConfiguration = $this->frontendEnvironment->getSolrConfigurationFromPageId($rootPageRecord['uid']);
-        /* @var CoreSite $typo3Site */
-        try {
-            $typo3Site = $this->siteFinder->getSiteByPageId($rootPageRecord['uid']);
-        } catch (SiteNotFoundException $e) {
+        $typo3Site = $this->getTypo3Site($rootPageRecord['uid']);
+        if (!$typo3Site instanceof CoreSite) {
             return null;
         }
+
         $domain = $typo3Site->getBase()->getHost();
 
         $siteHash = $this->getSiteHashForDomain($domain);
@@ -276,6 +281,17 @@ class SiteRepository
         $availableLanguageIds = array_map(function($language) {
             return $language->getLanguageId();
         }, $typo3Site->getLanguages());
+
+        // Try to get first instantiable TSFE for one of site languages, to get TypoScript with `plugin.tx_solr.index.*`,
+        // to be able to collect indexing configuration,
+        // which are required for BE-Modules/CLI-Commands or RecordMonitor within BE/TCE-commands.
+        // If TSFE for none of languages can be initialized, then the Typo3ManagedSite object unusable at all,
+        // so the rest of the steps in this method are not necessary, and therefore the null will be returned.
+        $tsfeFactory = GeneralUtility::makeInstance(FrontendEnvironment\Tsfe::class);
+        $tsfeToUseForTypoScriptConfiguration = $tsfeFactory->getTsfeByPageIdAndLanguageFallbackChain($typo3Site->getRootPageId(), ...$availableLanguageIds);
+        if (!$tsfeToUseForTypoScriptConfiguration instanceof TypoScriptFrontendController) {
+            return null;
+        }
 
         $solrConnectionConfigurations = [];
 
@@ -314,6 +330,11 @@ class SiteRepository
             }
         }
 
+        $solrConfiguration = $this->frontendEnvironment->getSolrConfigurationFromPageId(
+            $rootPageRecord['uid'],
+            $tsfeToUseForTypoScriptConfiguration->getLanguage()->getLanguageId()
+        );
+
         return GeneralUtility::makeInstance(
             Typo3ManagedSite::class,
             /** @scrutinizer ignore-type */
@@ -335,6 +356,20 @@ class SiteRepository
             /** @scrutinizer ignore-type */
             $typo3Site
         );
+    }
+
+    /**
+     * Returns {@link \TYPO3\CMS\Core\Site\Entity\Site}.
+     *
+     * @param int $pageUid
+     * @return CoreSite|null
+     */
+    protected function getTypo3Site(int $pageUid): ?CoreSite
+    {
+        try {
+            return $this->siteFinder->getSiteByPageId($pageUid);
+        } catch (Throwable $e) {}
+        return null;
     }
 
 }

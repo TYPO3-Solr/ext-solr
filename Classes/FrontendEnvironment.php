@@ -14,11 +14,14 @@ namespace ApacheSolrForTypo3\Solr;
  * The TYPO3 project - inspiring people to share!
  */
 
+use ApacheSolrForTypo3\Solr\FrontendEnvironment\Tsfe;
 use ApacheSolrForTypo3\Solr\FrontendEnvironment\TypoScript;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use Doctrine\DBAL\Driver\Exception as DBALDriverException;
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * Class FrontendEnvironment is responsible for initializing/simulating the frontend in backend context
@@ -57,7 +60,22 @@ class FrontendEnvironment implements SingletonInterface
      */
     public function isAllowedPageType(array $pageRecord, ?string $configurationName = 'pages'): bool
     {
-        $configuration = $this->getConfigurationFromPageId($pageRecord['uid']);
+        // $pageRecord could come from DataHandler and with all columns. So we want to fetch it again.
+        $pageRecord = BackendUtility::getRecord('pages', $pageRecord['uid']);
+        $rootPageRecordUid = $pageRecord['uid'];
+        if (isset($pageRecord['sys_language_uid'])
+            && (int)$pageRecord['sys_language_uid'] > 0
+            && isset($pageRecord['l10n_parent'])
+            && (int)$pageRecord['l10n_parent'] > 0
+        ) {
+            $rootPageRecordUid = $pageRecord['l10n_parent'];
+        }
+
+        $tsfe = GeneralUtility::makeInstance(Tsfe::class)->getTsfeByPageIdIgnoringLanguage($rootPageRecordUid);
+        if (!$tsfe instanceof TypoScriptFrontendController) {
+            return false;
+        }
+        $configuration = $this->getConfigurationFromPageId($rootPageRecordUid, '', $tsfe->getLanguage()->getLanguageId());
         $allowedPageTypes = $configuration->getIndexQueueAllowedPageTypesArrayByConfigurationName($configurationName);
         return in_array($pageRecord['doktype'], $allowedPageTypes);
     }

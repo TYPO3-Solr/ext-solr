@@ -22,6 +22,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Context\UserAspect;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 use TYPO3\CMS\Core\Http\ServerRequest;
+use function Webmozart\Assert\Tests\StaticAnalysis\null;
 
 class Tsfe implements SingletonInterface
 {
@@ -61,8 +62,6 @@ class Tsfe implements SingletonInterface
      *
      * @throws DBALDriverException
      * @throws Exception\Exception
-     * @throws InternalServerErrorException
-     * @throws ServiceUnavailableException
      * @throws SiteNotFoundException
      *
      * @todo: Move whole caching stuff from this method and let return TSFE.
@@ -183,8 +182,6 @@ class Tsfe implements SingletonInterface
      *
      * @return TypoScriptFrontendController
      *
-     * @throws InternalServerErrorException
-     * @throws ServiceUnavailableException
      * @throws SiteNotFoundException
      * @throws DBALDriverException
      * @throws Exception\Exception
@@ -224,6 +221,33 @@ class Tsfe implements SingletonInterface
     }
 
     /**
+     * Returns TSFE for first initializable site language.
+     *
+     * Is usable for BE-Modules/CLI-Commands stack only, where the rendered TypoScript configuration
+     * of EXT:solr* stack is wanted and the language id does not matter.
+     *
+     * @param int $pageId
+     * @return TypoScriptFrontendController|null
+     */
+    public function getTsfeByPageIdIgnoringLanguage(int $pageId): ?TypoScriptFrontendController
+    {
+        try {
+            $typo3Site = $this->siteFinder->getSiteByPageId($pageId);
+        } catch (Throwable $e)
+        {
+            return null;
+        }
+        $availableLanguageIds = array_map(function($siteLanguage) {
+            return $siteLanguage->getLanguageId();
+        }, $typo3Site->getLanguages());
+
+        if (empty($availableLanguageIds)) {
+            return null;
+        }
+        return $this->getTsfeByPageIdAndLanguageFallbackChain($pageId, ...$availableLanguageIds);
+    }
+
+    /**
      * Returns TypoScriptFrontendController with sand cast context.
      *
      * @param int $pageId
@@ -233,8 +257,6 @@ class Tsfe implements SingletonInterface
      *
      * @return ServerRequest
      *
-     * @throws InternalServerErrorException
-     * @throws ServiceUnavailableException
      * @throws SiteNotFoundException
      * @throws DBALDriverException
      * @throws Exception\Exception
@@ -255,8 +277,6 @@ class Tsfe implements SingletonInterface
      * @param int|null $rootPageId
      *
      * @throws DBALDriverException
-     * @throws InternalServerErrorException
-     * @throws ServiceUnavailableException
      * @throws SiteNotFoundException
      * @throws Exception\Exception
      */

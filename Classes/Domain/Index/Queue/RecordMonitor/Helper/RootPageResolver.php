@@ -147,7 +147,7 @@ class RootPageResolver implements SingletonInterface
     }
 
     /**
-     * Determines the rootpage ID for a given page.
+     * Determines the root page ID for a given page.
      *
      * @param int $pageId A page ID somewhere in a tree.
      * @param bool $forceFallback Force the explicit detection and do not use the current frontend root line
