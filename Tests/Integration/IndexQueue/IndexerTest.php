@@ -133,8 +133,8 @@ class IndexerTest extends IntegrationTest
     {
         return [
             'with_l_paramater' => ['can_index_custom_translated_record_with_l_param.xml'],
-//            'without_l_paramater' => ['can_index_custom_translated_record_without_l_param.xml'],
-//            'without_l_paramater_and_content_fallback' => ['can_index_custom_translated_record_without_l_param_and_content_fallback.xml']
+            'without_l_paramater' => ['can_index_custom_translated_record_without_l_param.xml'],
+            'without_l_paramater_and_content_fallback' => ['can_index_custom_translated_record_without_l_param_and_content_fallback.xml']
         ];
     }
 
@@ -144,15 +144,6 @@ class IndexerTest extends IntegrationTest
      */
     public function testCanIndexTranslatedCustomRecord($fixture)
     {
-        /* See:
-         * https://github.com/TYPO3/typo3/blob/920e1ef40f392d7aa40becc4f0f7aa9103df03a6/typo3/sysext/frontend/Classes/Typolink/PageLinkBuilder.php#L650-L679
-         * https://github.com/TYPO3/typo3/blob/920e1ef40f392d7aa40becc4f0f7aa9103df03a6/typo3/sysext/frontend/Classes/Typolink/AbstractTypolinkBuilder.php#L58-L62
-         */
-        $this->markTestIncomplete(
-            'TYPO3 ignores configured language in TSFE/ServerRequest -> ContentObjectRenderer -> PageLinkBuilder. ' . PHP_EOL .
-            'Therefore the `&L={field:__solr_index_language}` for records is inescapably in indexing configuration.'
-        );
-
         $this->cleanUpSolrServerAndAssertEmpty('core_en');
         $this->cleanUpSolrServerAndAssertEmpty('core_de');
 
