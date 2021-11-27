@@ -27,6 +27,7 @@ namespace ApacheSolrForTypo3\Solr;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\GarbageRemover\StrategyFactory;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\System\TCA\TCAService;
+use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\SingletonInterface;
@@ -342,10 +343,11 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
 
     /**
      * Checks whether a page has a page type that can be indexed.
-     * Currently standard pages and mount pages can be indexed.
+     * Currently, standard pages and mount pages can be indexed.
      *
      * @param array $record A page record
      * @return bool TRUE if the page can be indexed according to its page type, FALSE otherwise
+     * @throws DBALDriverException
      */
     protected function isIndexablePageType(array $record)
     {
@@ -358,6 +360,7 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
      * @param string $table
      * @param array $record
      * @return bool
+     * @throws DBALDriverException
      */
     protected function getIsGarbageRecord($table, $record):bool
     {

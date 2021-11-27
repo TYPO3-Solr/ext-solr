@@ -107,9 +107,9 @@ class Typo3ManagedSite extends Site
      *
      * @return bool
      */
-    public function hasFreeModeLanguages(): bool
+    public function hasFreeContentModeLanguages(): bool
     {
-        return !empty($this->getFreeModeLanguages());
+        return !empty($this->getFreeContentModeLanguages());
     }
 
     /**
@@ -121,7 +121,7 @@ class Typo3ManagedSite extends Site
      *
      * @return array|null
      */
-    public function getFreeModeLanguages(): array
+    public function getFreeContentModeLanguages(): array
     {
         if (!empty($this->freeContentModeLanguages)) {
             return $this->freeContentModeLanguages;

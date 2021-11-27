@@ -30,7 +30,6 @@ use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use RuntimeException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\RootlineUtility;
-use function Webmozart\Assert\Tests\StaticAnalysis\null;
 
 /**
  * This class is responsible to find the closest page id from the rootline where
