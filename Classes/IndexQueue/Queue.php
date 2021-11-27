@@ -31,6 +31,7 @@ use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\RootPageReso
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\Statistic\QueueStatistic;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\Statistic\QueueStatisticsRepository;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
+use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\FrontendEnvironment;
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
@@ -195,7 +196,9 @@ class Queue
                 continue;
             }
 
-            $solrConfiguration = $this->frontendEnvironment->getSolrConfigurationFromPageId($rootPageId);
+            /* @var SiteRepository $siteRepository */
+            $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
+            $solrConfiguration = $siteRepository->getSiteByRootPageId($rootPageId)->getSolrConfiguration();
             $indexingConfiguration = $this->recordService->getIndexingConfigurationName($itemType, $itemUid, $solrConfiguration);
             if ($indexingConfiguration === null) {
                 continue;

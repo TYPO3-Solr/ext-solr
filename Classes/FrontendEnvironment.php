@@ -16,6 +16,7 @@ namespace ApacheSolrForTypo3\Solr;
 
 use ApacheSolrForTypo3\Solr\FrontendEnvironment\TypoScript;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -38,6 +39,7 @@ class FrontendEnvironment implements SingletonInterface
      * @param ?int $language
      * @param int|null $rootPageId
      * @return TypoScriptConfiguration
+     * @throws DBALDriverException
      */
     public function getConfigurationFromPageId(int $pageId, ?string $path = '', ?int $language = 0, ?int $rootPageId = null): TypoScriptConfiguration
     {
@@ -51,6 +53,7 @@ class FrontendEnvironment implements SingletonInterface
      * @param array $pageRecord
      * @param ?string $configurationName
      * @return bool
+     * @throws DBALDriverException
      */
     public function isAllowedPageType(array $pageRecord, ?string $configurationName = 'pages'): bool
     {
@@ -66,6 +69,7 @@ class FrontendEnvironment implements SingletonInterface
      * @param ?int $language
      * @param int|null $rootPageId
      * @return TypoScriptConfiguration
+     * @throws DBALDriverException
      */
     public function getSolrConfigurationFromPageId(int $pageId, ?int $language = 0, ?int $rootPageId = null): TypoScriptConfiguration
     {

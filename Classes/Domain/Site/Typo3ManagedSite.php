@@ -39,14 +39,19 @@ class Typo3ManagedSite extends Site
 {
 
     /**
-     * @var Typo3Site
+     * @var Typo3Site|null
      */
-    protected $typo3SiteObject;
+    protected ?Typo3Site $typo3SiteObject;
 
     /**
      * @var array
      */
-    protected $solrConnectionConfigurations;
+    protected array $solrConnectionConfigurations;
+
+    /**
+     * @var array
+     */
+    protected array $freeContentModeLanguages = [];
 
 
     public function __construct(
@@ -95,5 +100,43 @@ class Typo3ManagedSite extends Site
     public function getTypo3SiteObject(): Typo3Site
     {
         return $this->typo3SiteObject;
+    }
+
+    /**
+     * Checks if current TYPO3 site has languages
+     *
+     * @return bool
+     */
+    public function hasFreeModeLanguages(): bool
+    {
+        return !empty($this->getFreeModeLanguages());
+    }
+
+    /**
+     * Return all free content mode languages.
+     *
+     * Note: There is no "fallback type" nor "fallbacks" for default language 0
+     *       See "displayCond" on https://github.com/TYPO3/typo3/blob/1394a4cff5369df3f835dae254b3d4ada2f83c7b/typo3/sysext/backend/Configuration/SiteConfiguration/site_language.php#L403-L416
+     *           or https://review.typo3.org/c/Packages/TYPO3.CMS/+/56505/ for more information.
+     *
+     * @return array|null
+     */
+    public function getFreeModeLanguages(): array
+    {
+        if (!empty($this->freeContentModeLanguages)) {
+            return $this->freeContentModeLanguages;
+        }
+
+        if (!$this->typo3SiteObject instanceof Typo3Site) {
+            return false;
+        }
+
+        foreach ($this->availableLanguageIds as $languageId)
+        {
+            if ($languageId > 0 && $this->typo3SiteObject->getLanguageById($languageId)->getFallbackType() === 'free') {
+                $this->freeContentModeLanguages[$languageId] = $languageId;
+            }
+        }
+        return $this->freeContentModeLanguages;
     }
 }

@@ -11,8 +11,6 @@ use TYPO3\CMS\Core\Context\TypoScriptAspect;
 use TYPO3\CMS\Core\Context\VisibilityAspect;
 use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
 use TYPO3\CMS\Core\Domain\Repository\PageRepository;
-use TYPO3\CMS\Core\Error\Http\InternalServerErrorException;
-use TYPO3\CMS\Core\Error\Http\ServiceUnavailableException;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Localization\Locales;
 use TYPO3\CMS\Core\Routing\PageArguments;
@@ -195,6 +193,34 @@ class Tsfe implements SingletonInterface
     {
         $this->assureIsInitialized($pageId, $language, $rootPageId);
         return $this->tsfeCache[$this->getCacheIdentifier($pageId, $language, $rootPageId)];
+    }
+
+    /**
+     * Returns TypoScriptFrontendController for first available language id in fallback chain.
+     *
+     * Is usable for BE-Modules/CLI-Commands stack only, where the rendered TypoScript configuration
+     * of EXT:solr* stack is wanted and the language id does not matter.
+     *
+     * NOTE: This method MUST NOT be used on indexing context.
+     *
+     * @param int $pageId
+     * @param int ...$languageFallbackChain
+     * @return TypoScriptFrontendController|null
+     */
+    public function getTsfeByPageIdAndLanguageFallbackChain(int $pageId, int ...$languageFallbackChain): ?TypoScriptFrontendController
+    {
+        foreach ($languageFallbackChain as $languageId) {
+            try {
+                $tsfe = $this->getTsfeByPageIdAndLanguageId($pageId, $languageId);
+                if ($tsfe instanceof TypoScriptFrontendController) {
+                    return $tsfe;
+                }
+            } catch (Throwable $e) {
+                // no needs to log or do anything, the method MUST not return anything if it can't.
+                continue;
+            }
+        }
+        return null;
     }
 
     /**
