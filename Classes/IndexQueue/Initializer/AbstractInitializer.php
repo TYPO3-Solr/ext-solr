@@ -296,11 +296,11 @@ abstract class AbstractInitializer implements IndexQueueInitializer
                 $GLOBALS['TCA'][$this->type]['ctrl']['languageField'] . ' = -1'
             ];
             // all "free"-Mode languages for "non-pages"-records only
-            if ($this->type !== 'pages' && $this->site->hasFreeModeLanguages()) {
+            if ($this->type !== 'pages' && $this->site->hasFreeContentModeLanguages()) {
                 $conditions['languageField'][]
                     = $GLOBALS['TCA'][$this->type]['ctrl']['languageField']
                     . ' IN(/* free content mode */ '
-                        . implode(',', $this->site->getFreeModeLanguages())
+                        . implode(',', $this->site->getFreeContentModeLanguages())
                     . ')';
             }
 

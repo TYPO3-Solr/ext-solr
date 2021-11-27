@@ -18,7 +18,6 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\DateRange\
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\DateRange\DateRangeFacet;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use DateTime;
-use function Webmozart\Assert\Tests\StaticAnalysis\null;
 
 /**
  * Class DateRangeTest

@@ -382,7 +382,7 @@ class RecordMonitor extends AbstractDataHandlerListener
                     $this->removeFromIndexAndQueueWhenItemInQueue($recordTable, $recordUid);
                     return;
                 }
-            } catch ( \InvalidArgumentException $e) {
+            } catch (\InvalidArgumentException $e) {
                 $this->removeFromIndexAndQueueWhenItemInQueue($recordTable, $recordUid);
                 return;
             }
@@ -418,7 +418,8 @@ class RecordMonitor extends AbstractDataHandlerListener
                 $this->indexQueue->deleteItem('pages', $recordUid);
             }
 
-            if (!$site->hasFreeModeLanguages() || !in_array($record['sys_language_uid'], $site->getFreeModeLanguages())) {
+            // The pages localized record can not consist without l10n_parent, so apply "free-content-mode" on records only.
+            if ($recordTable === 'pages' || !$site->hasFreeContentModeLanguages() || !in_array($record['sys_language_uid'], $site->getFreeContentModeLanguages())) {
                 $recordUid = $this->tcaService->getTranslationOriginalUidIfTranslated($recordTable, $record, $recordUid);
             }
 
@@ -451,6 +452,14 @@ class RecordMonitor extends AbstractDataHandlerListener
     protected function getConfigurationPageId($recordTable, $recordPageId, $recordUid)
     {
         $rootPageId = $this->rootPageResolver->getRootPageId($recordPageId);
+        $rootPageRecord = BackendUtility::getRecord('pages', $rootPageId, '*');
+        if (isset($rootPageRecord['sys_language_uid'])
+            && (int)$rootPageRecord['sys_language_uid'] > 0
+            && isset($rootPageRecord['l10n_parent'])
+            && (int)$rootPageRecord['l10n_parent'] > 0
+        ) {
+            $rootPageId = $recordPageId = $rootPageRecord['l10n_parent'];
+        }
         if ($this->rootPageResolver->getIsRootPageId($rootPageId)) {
             return $recordPageId;
         }

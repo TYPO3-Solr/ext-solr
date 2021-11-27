@@ -278,7 +278,7 @@ class RecordMonitorTest extends IntegrationTest
 
         // simulate the database change and build a faked changeset
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionByName(ConnectionPool::DEFAULT_CONNECTION_NAME);
-        $connection->update('pages', ['hidden' => 17], ['uid' => 1]);
+        $connection->update('pages', ['hidden' => 1], ['uid' => 17]);
 
         $changeSet = ['hidden' => 1];
 
