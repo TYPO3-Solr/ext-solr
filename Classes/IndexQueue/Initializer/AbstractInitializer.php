@@ -29,6 +29,7 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue\Initializer;
 
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\QueueItemRepository;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
+use ApacheSolrForTypo3\Solr\Domain\Site\Typo3ManagedSite;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use Doctrine\DBAL\DBALException;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
@@ -48,7 +49,7 @@ abstract class AbstractInitializer implements IndexQueueInitializer
     /**
      * Site to initialize
      *
-     * @var Site
+     * @var Site|Typo3ManagedSite
      */
     protected $site;
 
@@ -289,11 +290,20 @@ abstract class AbstractInitializer implements IndexQueueInitializer
 
         if (BackendUtility::isTableLocalizable($this->type)) {
             $conditions['languageField'] = [
-                $GLOBALS['TCA'][$this->type]['ctrl']['languageField'] . ' = 0',
                 // default language
-                $GLOBALS['TCA'][$this->type]['ctrl']['languageField'] . ' = -1'
+                $GLOBALS['TCA'][$this->type]['ctrl']['languageField'] . ' = 0',
                 // all languages
+                $GLOBALS['TCA'][$this->type]['ctrl']['languageField'] . ' = -1'
             ];
+            // all "free"-Mode languages for "non-pages"-records only
+            if ($this->type !== 'pages' && $this->site->hasFreeModeLanguages()) {
+                $conditions['languageField'][]
+                    = $GLOBALS['TCA'][$this->type]['ctrl']['languageField']
+                    . ' IN(/* free content mode */ '
+                        . implode(',', $this->site->getFreeModeLanguages())
+                    . ')';
+            }
+
             if (isset($GLOBALS['TCA'][$this->type]['ctrl']['transOrigPointerField'])) {
                 $conditions['languageField'][] = $GLOBALS['TCA'][$this->type]['ctrl']['transOrigPointerField'] . ' = 0'; // translations without original language source
             }
