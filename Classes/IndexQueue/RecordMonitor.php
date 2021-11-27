@@ -28,6 +28,7 @@ use ApacheSolrForTypo3\Solr\AbstractDataHandlerListener;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\ConfigurationAwareRecordService;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\MountPagesUpdater;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\RootPageResolver;
+use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\FrontendEnvironment;
 use ApacheSolrForTypo3\Solr\GarbageCollector;
 use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
@@ -387,7 +388,9 @@ class RecordMonitor extends AbstractDataHandlerListener
             }
         }
         foreach ($rootPageIds as $configurationPageId) {
-            $solrConfiguration = $this->getSolrConfigurationFromPageId($configurationPageId);
+            $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
+            $site = $siteRepository->getSiteByPageId($configurationPageId);
+            $solrConfiguration = $site->getSolrConfiguration();
             $isMonitoredRecord = $solrConfiguration->getIndexQueueIsMonitoredTable($recordTable);
             if (!$isMonitoredRecord) {
                 // when it is a non monitored record, we can skip it.
@@ -415,9 +418,12 @@ class RecordMonitor extends AbstractDataHandlerListener
                 $this->indexQueue->deleteItem('pages', $recordUid);
             }
 
+            if (!$site->hasFreeModeLanguages() || !in_array($record['sys_language_uid'], $site->getFreeModeLanguages())) {
+                $recordUid = $this->tcaService->getTranslationOriginalUidIfTranslated($recordTable, $record, $recordUid);
+            }
+
             // only update/insert the item if we actually found a record
             $isLocalizedRecord = $this->tcaService->isLocalizedRecord($recordTable, $record);
-            $recordUid = $this->tcaService->getTranslationOriginalUidIfTranslated($recordTable, $record, $recordUid);
 
             if ($isLocalizedRecord && !$this->getIsTranslationParentRecordEnabled($recordTable, $recordUid)) {
                 // we have a localized record without a visible parent record. Nothing to do.

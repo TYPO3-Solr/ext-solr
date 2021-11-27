@@ -16,6 +16,7 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
 
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\Domain\Search\ApacheSolrDocument\Builder;
+use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\FieldProcessor\Service;
 use ApacheSolrForTypo3\Solr\FrontendEnvironment;
 use ApacheSolrForTypo3\Solr\FrontendEnvironment\Tsfe;
@@ -26,6 +27,7 @@ use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
 use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
+use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use Exception;
 use RuntimeException;
 use Solarium\Exception\HttpException;
@@ -36,7 +38,6 @@ use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\RootlineUtility;
-use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 /**
  * A general purpose indexer to be used for indexing of any kind of regular
@@ -49,9 +50,6 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
  */
 class Indexer extends AbstractIndexer
 {
-
-    # TODO change to singular $document instead of plural $documents
-
     /**
      * A Solr service instance to interact with the Solr server
      *
@@ -235,17 +233,53 @@ class Indexer extends AbstractIndexer
      * @param Item $item
      * @param int $language
      * @return array|mixed|null
-     * @throws InternalServerErrorException
-     * @throws ServiceUnavailableException
+     * @throws DBALDriverException
+     * @throws FrontendEnvironment\Exception\Exception
      * @throws SiteNotFoundException
-     * @throws \Doctrine\DBAL\Driver\Exception
      */
     protected function getItemRecordOverlayed(Item $item, int $language): ?array
     {
         $itemRecord = $item->getRecord();
+        $languageField = $GLOBALS['TCA'][$item->getType()]['ctrl']['languageField'] ?? null;
+        // skip "free content mode"-record for other languages, if item is a "free content mode"-record
+        if ($this->isAFreeContentModeItemRecord($item, $language)
+            && isset($languageField)
+            && (int)($itemRecord[$languageField] ?? null) !== $language
+        ) {
+            return null;
+        }
+        // skip fallback for "free content mode"-languages
+        if ($this->isLanguageInAFreeContentMode($item, $language)
+            && isset($languageField)
+            && (int)($itemRecord[$languageField] ?? null) !== $language
+        ) {
+            return null;
+        }
+
         $pidToUse = $this->getPageIdOfItem($item);
-        return GeneralUtility::makeInstance(Tsfe::class)->getTsfeByPageIdAndLanguageId($pidToUse, $language, $item->getRootPageUid())
+
+        return GeneralUtility::makeInstance(Tsfe::class)
+            ->getTsfeByPageIdAndLanguageId($pidToUse, $language, $item->getRootPageUid())
             ->sys_page->getLanguageOverlay($item->getType(), $itemRecord);
+    }
+
+    /**
+     * @param Item $item
+     * @param int $language
+     *
+     * @return bool
+     */
+    protected function isAFreeContentModeItemRecord(Item $item, int $language): bool
+    {
+        $languageField = $GLOBALS['TCA'][$item->getType()]['ctrl']['languageField'] ?? null;
+        $itemRecord = $item->getRecord();
+        if (isset($languageField)
+            && (int)($itemRecord[$languageField] ?? null) > 0
+            && $this->isLanguageInAFreeContentMode($item, (int)($itemRecord[$languageField] ?? null))
+        ) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -349,7 +383,7 @@ class Indexer extends AbstractIndexer
      * @throws InternalServerErrorException
      * @throws ServiceUnavailableException
      * @throws SiteNotFoundException
-     * @throws \Doctrine\DBAL\Driver\Exception
+     * @throws Exception
      */
     protected function itemToDocument(Item $item, int $language = 0): ?Document
     {
@@ -419,6 +453,9 @@ class Indexer extends AbstractIndexer
     {
         // needs to respect the TS settings for the page the item is on, conditions may apply
         $solrConfiguration = $this->frontendEnvironment->getSolrConfigurationFromPageId($item->getRootPageUid());
+
+        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
+        $solrConfiguration = $siteRepository->getSiteByPageId($item->getRootPageUid())->getSolrConfiguration();
         $fieldProcessingInstructions = $solrConfiguration->getIndexFieldProcessingInstructionsConfiguration();
 
         // same as in the FE indexer
@@ -729,5 +766,26 @@ class Indexer extends AbstractIndexer
         }
 
         return null;
+    }
+
+    /**
+     * Checks the given language, if it is in "free" mode.
+     *
+     * @param Item $item
+     * @param int $language
+     * @return bool
+     */
+    protected function isLanguageInAFreeContentMode(Item $item, int $language): bool
+    {
+        if ($language === 0) {
+            return false;
+        }
+        $typo3site = $item->getSite()->getTypo3SiteObject();
+        $typo3siteLanguage = $typo3site->getLanguageById($language);
+        $typo3siteLanguageFallbackType = $typo3siteLanguage->getFallbackType();
+        if ($typo3siteLanguageFallbackType === 'free') {
+            return true;
+        }
+        return false;
     }
 }
