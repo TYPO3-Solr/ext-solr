@@ -25,11 +25,11 @@ namespace ApacheSolrForTypo3\Solr\Controller\Backend\Search;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Api;
-use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\Domain\Search\Statistics\StatisticsRepository;
-use ApacheSolrForTypo3\Solr\Domain\Search\ApacheSolrDocument\Repository;
+use ApacheSolrForTypo3\Solr\Domain\Search\ApacheSolrDocument\Repository as ApacheSolrDocumentRepository;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\System\Validator\Path;
+use Exception;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Backend\Template\ModuleTemplate;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
@@ -42,15 +42,11 @@ use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
  */
 class InfoModuleController extends AbstractModuleController
 {
-    /**
-     * @var ConnectionManager
-     */
-    protected $solrConnectionManager;
 
     /**
-     * @var Repository
+     * @var ApacheSolrDocumentRepository
      */
-    protected $apacheSolrDocumentRepository;
+    protected ApacheSolrDocumentRepository $apacheSolrDocumentRepository;
 
     /**
      * Initializes the controller before invoking an action method.
@@ -58,15 +54,15 @@ class InfoModuleController extends AbstractModuleController
     protected function initializeAction()
     {
         parent::initializeAction();
-        $this->solrConnectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
-        $this->apacheSolrDocumentRepository = GeneralUtility::makeInstance(Repository::class);
-
+        $this->apacheSolrDocumentRepository = GeneralUtility::makeInstance(ApacheSolrDocumentRepository::class);
     }
+
     /**
      * Set up the doc header properly here
      *
      * @param ViewInterface $view
      * @return void
+     * @throws Exception
      */
     protected function initializeView(ViewInterface $view)
     {
@@ -196,7 +192,7 @@ class InfoModuleController extends AbstractModuleController
     }
 
     /**
-     * Gets Luke meta data for the currently selected core and provides a list
+     * Gets Luke metadata for the currently selected core and provides a list
      * of that data.
      *
      * @return void
@@ -285,7 +281,7 @@ class InfoModuleController extends AbstractModuleController
      *
      * @return array An array of field metrics
      */
-    protected function getFields(ResponseAdapter $lukeData, $limitNote)
+    protected function getFields(ResponseAdapter $lukeData, string $limitNote): array
     {
         $rows = [];
 
@@ -294,8 +290,8 @@ class InfoModuleController extends AbstractModuleController
             $rows[$name] = [
                 'name' => $name,
                 'type' => $field->type,
-                'docs' => isset($field->docs) ? $field->docs : 0,
-                'terms' => isset($field->distinct) ? $field->distinct : $limitNote
+                'docs' => $field->docs ?? 0,
+                'terms' => $field->distinct ?? $limitNote
             ];
         }
         ksort($rows);
@@ -311,15 +307,13 @@ class InfoModuleController extends AbstractModuleController
      *
      * @return array An array of core metrics
      */
-    protected function getCoreMetrics(ResponseAdapter $lukeData, array $fields)
+    protected function getCoreMetrics(ResponseAdapter $lukeData, array $fields): array
     {
-        $coreMetrics = [
+        return [
             'numberOfDocuments' => $lukeData->index->numDocs,
             'numberOfDeletedDocuments' => $lukeData->index->deletedDocs,
             'numberOfTerms' => $lukeData->index->numTerms,
             'numberOfFields' => count($fields)
         ];
-
-        return $coreMetrics;
     }
 }
