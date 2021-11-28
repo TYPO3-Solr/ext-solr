@@ -27,11 +27,13 @@ namespace ApacheSolrForTypo3\Solr\Controller\Backend\Search;
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
+use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection as SolrCoreConnection;
 use ApacheSolrForTypo3\Solr\System\Mvc\Backend\Component\Exception\InvalidViewObjectNameException;
 use ApacheSolrForTypo3\Solr\System\Mvc\Backend\Service\ModuleDataStorageService;
 use Exception;
 use InvalidArgumentException;
+use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Backend\Template\Components\Menu\Menu;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Backend\View\BackendTemplateView;
@@ -39,7 +41,7 @@ use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
-use TYPO3\CMS\Extbase\Mvc\View\NotFoundView;
+use TYPO3\CMS\Extbase\Mvc\Exception\StopActionException;
 use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
@@ -62,7 +64,7 @@ abstract class AbstractModuleController extends ActionController
      *
      * @var int
      */
-    protected $selectedPageUID;
+    protected int $selectedPageUID;
 
     /**
      * Holds the requested page UID because the selected page uid,
@@ -70,37 +72,42 @@ abstract class AbstractModuleController extends ActionController
      *
      * @var int
      */
-    protected $requestedPageUID;
+    protected int $requestedPageUID;
 
     /**
      * @var Site
      */
-    protected $selectedSite;
+    protected Site $selectedSite;
 
     /**
      * @var SiteRepository
      */
-    protected $siteRepository;
+    protected SiteRepository $siteRepository;
 
     /**
      * @var SolrCoreConnection
      */
-    protected $selectedSolrCoreConnection;
+    protected SolrCoreConnection $selectedSolrCoreConnection;
 
     /**
      * @var Menu
      */
-    protected $coreSelectorMenu = null;
+    protected ?Menu $coreSelectorMenu = null;
 
     /**
-     * @var ConnectionManager
+     * @var ConnectionManager|null
      */
-    protected $solrConnectionManager = null;
+    protected ?ConnectionManager $solrConnectionManager = null;
 
     /**
-     * @var ModuleDataStorageService
+     * @var ModuleDataStorageService|null
      */
-    protected $moduleDataStorageService = null;
+    protected ?ModuleDataStorageService $moduleDataStorageService = null;
+
+    /**
+     * @var Queue
+     */
+    protected Queue $indexQueue;
 
     /**
      * @param Site $selectedSite
@@ -124,6 +131,7 @@ abstract class AbstractModuleController extends ActionController
     protected function initializeAction()
     {
         parent::initializeAction();
+        $this->indexQueue = GeneralUtility::makeInstance(Queue::class);
         $this->solrConnectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
         $this->moduleDataStorageService = GeneralUtility::makeInstance(ModuleDataStorageService::class);
 
@@ -173,6 +181,7 @@ abstract class AbstractModuleController extends ActionController
      *
      * @param ViewInterface $view
      * @return void
+     * @throws Exception
      */
     protected function initializeView(ViewInterface $view)
     {
@@ -182,7 +191,7 @@ abstract class AbstractModuleController extends ActionController
         $selectOtherPage = count($sites) > 0 || $this->selectedPageUID < 1;
         $this->view->assign('showSelectOtherPage', $selectOtherPage);
         $this->view->assign('pageUID', $this->selectedPageUID);
-        if ($view instanceof NotFoundView || $this->selectedPageUID < 1) {
+        if ($this->selectedPageUID < 1) {
             return;
         }
         $this->view->getModuleTemplate()->addJavaScriptCode('mainJsFunctions', '
@@ -207,15 +216,11 @@ abstract class AbstractModuleController extends ActionController
      * Generates selector menu in backends doc header using selected page from page tree.
      *
      * @param string|null $uriToRedirectTo
+     * @throws InvalidViewObjectNameException
      */
     public function generateCoreSelectorMenuUsingPageTree(string $uriToRedirectTo = null)
     {
         if ($this->selectedPageUID < 1 || null === $this->selectedSite) {
-            return;
-        }
-
-        if ($this->view instanceof NotFoundView) {
-            $this->initializeSelectedSolrCoreConnection();
             return;
         }
 
@@ -270,12 +275,32 @@ abstract class AbstractModuleController extends ActionController
     }
 
     /**
+     * Empties the Index Queue
+     *
+     * @return void
+     * @throws StopActionException
+     *
+     * @noinspection PhpUnused Used in IndexQueue- and IndexAdministration- controllers
+     */
+    public function clearIndexQueueAction(): ResponseInterface
+    {
+        $this->indexQueue->deleteItemsBySite($this->selectedSite);
+        $this->addFlashMessage(
+            LocalizationUtility::translate('solr.backend.index_administration.success.queue_emptied', 'Solr',
+                [$this->selectedSite->getLabel()])
+        );
+
+        $this->redirect('index');
+    }
+
+    /**
      * Switches used core.
      *
      * Note: Does not check availability of core in site. All this stuff is done in the generation step.
      *
      * @param string $corePath
      * @param string $uriToRedirectTo
+     * @throws StopActionException
      */
     public function switchCoreAction(string $corePath, string $uriToRedirectTo)
     {

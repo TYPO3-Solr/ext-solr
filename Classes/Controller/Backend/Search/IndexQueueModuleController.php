@@ -29,8 +29,10 @@ use ApacheSolrForTypo3\Solr\Domain\Index\IndexService;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Backend\View\BackendTemplateView;
+use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Mvc\Exception\StopActionException;
 use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
@@ -60,7 +62,7 @@ class IndexQueueModuleController extends AbstractModuleController
     /**
      * @var Queue
      */
-    protected $indexQueue;
+    protected Queue $indexQueue;
 
     /**
      * Initializes the controller before invoking an action method.
@@ -210,16 +212,17 @@ class IndexQueueModuleController extends AbstractModuleController
      * @param int $uid
      *
      * @return void
+     * @throws StopActionException
      */
     public function requeueDocumentAction(string $type, int $uid)
     {
         $label = 'solr.backend.index_queue_module.flashmessage.error.single_item_not_requeued';
-        $severity = FlashMessage::ERROR;
+        $severity = AbstractMessage::ERROR;
 
         $updateCount = $this->indexQueue->updateItem($type, $uid, time());
         if ($updateCount > 0) {
             $label = 'solr.backend.index_queue_module.flashmessage.success.single_item_was_requeued';
-            $severity = FlashMessage::OK;
+            $severity = AbstractMessage::OK;
         }
 
         $this->addIndexQueueFlashMessage($label, $severity);
@@ -252,7 +255,7 @@ class IndexQueueModuleController extends AbstractModuleController
     /**
      * Indexes a few documents with the index service.
      * @return void
-     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
+     * @throws StopActionException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
      */
     public function doIndexingRunAction()

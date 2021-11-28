@@ -31,6 +31,7 @@ use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Backend\Routing\UriBuilder as BackendUriBuilder;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Mvc\Exception\StopActionException;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /**
@@ -44,12 +45,12 @@ class IndexAdministrationModuleController extends AbstractModuleController
     /**
      * @var Queue
      */
-    protected $indexQueue;
+    protected Queue $indexQueue;
 
     /**
      * @var ConnectionManager
      */
-    protected $solrConnectionManager = null;
+    protected ?ConnectionManager $solrConnectionManager = null;
 
     /**
      * @param ConnectionManager $solrConnectionManager
@@ -57,16 +58,6 @@ class IndexAdministrationModuleController extends AbstractModuleController
     public function setSolrConnectionManager(ConnectionManager $solrConnectionManager)
     {
         $this->solrConnectionManager = $solrConnectionManager;
-    }
-
-    /**
-     * Initializes the controller before invoking an action method.
-     */
-    protected function initializeAction()
-    {
-        parent::initializeAction();
-        $this->indexQueue = GeneralUtility::makeInstance(Queue::class);
-        $this->solrConnectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
     }
 
     /**
@@ -86,6 +77,7 @@ class IndexAdministrationModuleController extends AbstractModuleController
      * Empties the site's indexes.
      *
      * @return void
+     * @throws StopActionException
      */
     public function emptyIndexAction()
     {
@@ -112,27 +104,10 @@ class IndexAdministrationModuleController extends AbstractModuleController
     }
 
     /**
-     * Empties the Index Queue
-     *
-     * @return void
-     */
-    public function clearIndexQueueAction(): ResponseInterface
-    {
-        $this->indexQueue->deleteItemsBySite($this->selectedSite);
-        $this->addFlashMessage(
-            LocalizationUtility::translate('solr.backend.index_administration.success.queue_emptied', 'Solr',
-                [$this->selectedSite->getLabel()])
-        );
-
-        /** @noinspection PhpUnhandledExceptionInspection */
-        $this->redirectToReferrerModule();
-        return $this->htmlResponse();
-    }
-
-    /**
      * Reloads the site's Solr cores.
      *
      * @return void
+     * @throws StopActionException
      */
     public function reloadIndexConfigurationAction()
     {
@@ -169,33 +144,5 @@ class IndexAdministrationModuleController extends AbstractModuleController
 
         /** @noinspection PhpUnhandledExceptionInspection */
         $this->redirect('index');
-    }
-
-    /**
-     * Redirects to the referrer module index Action.
-     *
-     * Fluids <f:form VH can not make urls to other modules properly.
-     * The module name/key is not provided in the hidden fields __referrer by bulding form.
-     * So this is currently the single way to make it possible.
-     *
-     * @todo: remove this method if f:form works properly between backend modules.
-     */
-    protected function redirectToReferrerModule()
-    {
-        $wasFromQueue = $this->request->hasArgument('fromQueue');
-        if (!$wasFromQueue) {
-            /** @noinspection PhpUnhandledExceptionInspection */
-            $this->redirect('index');
-            return;
-        }
-
-        /* @var BackendUriBuilder $backendUriBuilder */
-        $backendUriBuilder = GeneralUtility::makeInstance(BackendUriBuilder::class);
-
-        $parameters =  ['id' => $this->selectedPageUID];
-        $referringUri = $backendUriBuilder->buildUriFromRoute('searchbackend_SolrIndexqueue', $parameters);
-
-        /** @noinspection PhpUnhandledExceptionInspection */
-        $this->redirectToUri($referringUri);
     }
 }
