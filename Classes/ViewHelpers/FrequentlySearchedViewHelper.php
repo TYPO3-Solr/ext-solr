@@ -1,5 +1,5 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\ViewHelpers\Widget\Controller;
+namespace ApacheSolrForTypo3\Solr\ViewHelpers;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -15,70 +15,80 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers\Widget\Controller;
  */
 
 use ApacheSolrForTypo3\Solr\Domain\Search\FrequentSearches\FrequentSearchesService;
-use ApacheSolrForTypo3\Solr\Widget\AbstractWidgetController;
-use Psr\Log\LoggerAwareInterface;
-use Psr\Log\LoggerAwareTrait;
+use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
 use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
+use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 
 /**
- * Class FrequentlySearchedController
+ * Class LastSearchesViewHelper
  *
- * @author Frans Saris <frans@beech.it>
- * @author Timo Hund <timo.hund@dkd.de>
+ * @author Rudy Gnodde <rudy.gnodde@beech.it>
  */
-class FrequentlySearchedController extends AbstractWidgetController implements LoggerAwareInterface
+class FrequentlySearchedViewHelper extends AbstractSolrViewHelper
 {
-    use LoggerAwareTrait;
+    /**
+     * @var bool
+     */
+    protected $escapeChildren = false;
+
+    /**
+     * @var bool
+     */
+    protected $escapeOutput = false;
+
+    /**
+     * @param array $arguments
+     * @param \Closure $renderChildrenClosure
+     * @param RenderingContextInterface $renderingContext
+     * @return mixed|void
+     */
+    public static function renderStatic(array $arguments, \Closure $renderChildrenClosure, RenderingContextInterface $renderingContext)
+    {
+        /** @var TypoScriptFrontendController $tsfe */
+        $tsfe = $GLOBALS['TSFE'];
+        $cache = self::getInitializedCache();
+        /** @var ConfigurationManager $configurationManager */
+        $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
+        $typoScriptConfiguration = $configurationManager->getTypoScriptConfiguration();
+        /* @var FrequentSearchesService $frequentSearchesService */
+        $frequentSearchesService = GeneralUtility::makeInstance(
+            FrequentSearchesService::class,
+            $typoScriptConfiguration,
+            $cache,
+            $tsfe
+        );
+
+        $frequentSearches = $frequentSearchesService->getFrequentSearchTerms();
+        $minimumSize = $typoScriptConfiguration->getSearchFrequentSearchesMinSize();
+        $maximumSize = $typoScriptConfiguration->getSearchFrequentSearchesMaxSize();
+
+        $templateVariableContainer = $renderingContext->getVariableProvider();
+        $templateVariableContainer->add('frequentSearches', self::enrichFrequentSearchesInfo($frequentSearches, $minimumSize, $maximumSize));
+        $output = $renderChildrenClosure();
+        $templateVariableContainer->remove('frequentSearches');
+        return $output;
+    }
 
     /**
      * Initializes the cache for this command.
      *
      * @return FrontendInterface|null
      */
-    protected function getInitializedCache(): ?FrontendInterface
+    protected static function getInitializedCache(): ?FrontendInterface
     {
         $cacheIdentifier = 'tx_solr';
         /* @var FrontendInterface $cacheInstance */
         try {
             $cacheInstance = GeneralUtility::makeInstance(CacheManager::class)->getCache($cacheIdentifier);
         } catch (NoSuchCacheException $exception) {
-            $this->logger->error('Getting cache failed: ' . $exception->getMessage());
             return null;
         }
 
         return $cacheInstance;
-    }
-
-    /**
-     * Last searches
-     */
-    public function indexAction()
-    {
-        $tsfe = $GLOBALS['TSFE'];
-        $cache = $this->getInitializedCache();
-        $configuration = $this->controllerContext->getTypoScriptConfiguration();
-
-        /* @var FrequentSearchesService $frequentSearchesService */
-        $frequentSearchesService = GeneralUtility::makeInstance(
-            FrequentSearchesService::class,
-            /** @scrutinizer ignore-type */ $configuration,
-            /** @scrutinizer ignore-type */ $cache,
-            /** @scrutinizer ignore-type */ $tsfe
-        );
-
-        $frequentSearches = $frequentSearchesService->getFrequentSearchTerms();
-        $minimumSize = $configuration->getSearchFrequentSearchesMinSize();
-        $maximumSize = $configuration->getSearchFrequentSearchesMaxSize();
-
-        $this->view->assign(
-            'contentArguments',
-            [
-                'frequentSearches' => $this->enrichFrequentSearchesInfo($frequentSearches, $minimumSize, $maximumSize)
-            ]
-        );
     }
 
     /**
@@ -89,7 +99,7 @@ class FrequentlySearchedController extends AbstractWidgetController implements L
      * @param int $maximumSize
      * @return array An array with content for the frequent terms markers
      */
-    protected function enrichFrequentSearchesInfo(array $frequentSearchTerms, int $minimumSize, int $maximumSize): array
+    protected static function enrichFrequentSearchesInfo(array $frequentSearchTerms, int $minimumSize, int $maximumSize): array
     {
         $frequentSearches = [];
         if (count($frequentSearchTerms)) {

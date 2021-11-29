@@ -112,7 +112,6 @@
 			</f:if>
 		</f:if>
 
-        <f:comment> <!-- @todo : Refactor widgets to new TYPO3 11.5 API https://github.com/TYPO3-Solr/ext-solr/issues/3091 -->
 		<div class="hidden-xs">
 			<f:if condition="{resultSet.usedSearchRequest.contextTypoScriptConfiguration.searchLastSearches}">
                 <f:render partial="Search/LastSearches" section="LastSearches" arguments="{resultSet:resultSet}" />
@@ -120,10 +119,9 @@
 		</div>
 		<div class="hidden-xs">
 			<f:if condition="{resultSet.usedSearchRequest.contextTypoScriptConfiguration.searchFrequentSearches}">
-                <f:render partial="Search/FrequentlySearched" section="FrequentlySearched" />
+                <f:render partial="Search/FrequentlySearched" section="FrequentlySearched" arguments="{resultSet:resultSet}" />
 			</f:if>
 		</div>
-        </f:comment>
 	</div>
 </f:section>
 
