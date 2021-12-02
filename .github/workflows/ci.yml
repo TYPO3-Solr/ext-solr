@@ -231,7 +231,8 @@ jobs:
       -
         name: Check tag
         run: |
-          if ! [[ ${{ github.ref }} =~ ^refs/tags/[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}$ ]]; then
+          TAGGED_VERSION=$(echo "${{ github.ref }}" | awk '{print tolower($0)}')
+          if ! [[ "$TAGGED_VERSION" =~ ^refs/tags/[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}((-pre)?-(alpha|beta|rc)(-?[0-9]{1,3})?)?$ ]]; then
             exit 1
           fi
       -
@@ -260,4 +261,8 @@ jobs:
           fi
           echo "Following message will be printed in TER as release description:"
           echo -e "$TER_COMMENT"
+          if ! composer extension-build; then
+            echo "Something went wrong on bulding EXT:solr for NON-Composer mode."
+            exit 1
+          fi
           php ~/.composer/vendor/bin/tailor ter:publish --comment "$TER_COMMENT" "$RELEASE_VERSION"
