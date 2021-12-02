@@ -15,13 +15,14 @@ Supported versions
 ------------------
 
 List of EXT:solr versions and the matching versions of Apache Solr and TYPO3 that are supported:
-
+None: Ø marked versions do not exist yet
 
 ========= ========== ========= =========== =============== ================== ============================= =============== =============== =================
        Basic components                Funding contribution extensions          Published funding contribution extensions         Solr configuration
 ------------------------------ ---------------------------------------------- --------------------------------------------- ---------------------------------
 TYPO3     EXT: solr  EXT:tika  EXT:solrfal EXT:solrconsole EXT:solrdebugtools EXT:solrfluidgrouping         EXT:solrmlt     Apache Solr     Configset
 ========= ========== ========= =========== =============== ================== ============================= =============== =============== =================
+11.5      11.5(ᾱ)    11.0(Ø)   11.0(Ø)     11.0(Ø)         11.0(Ø)            11.0(Ø)                       11.0(Ø)         8.9             ext_solr_11_5_0
 10.4      11.1       10.0      10.0        10.0            10.0               10.0                          10.0            8.9             ext_solr_11_1_0
 9.5-10.4  11.0       6.0       8.0         4.0             1.1.2              2.1                           3.1             8.5             ext_solr_11_0_0
 9.5       10.0       5.0       7.0         3.0             1.1.1              2.0                           3.0             8.2             ext_solr_10_0_0
