@@ -334,10 +334,11 @@ class Tsfe implements SingletonInterface
         }
         /* @var ConfigurationPageResolver $configurationPageResolve */
         $configurationPageResolver = GeneralUtility::makeInstance(ConfigurationPageResolver::class);
+        $askedPid = $pidToUse;
         $pidToUse = $configurationPageResolver->getClosestPageIdWithActiveTemplate($pidToUse);
         if (!isset($pidToUse) && !isset($rootPageId)) {
             throw new Exception\Exception(
-                "The closest page with active template to page \"$pidToUse\" could not be resolved and alternative rootPageId is not provided.",
+                "The closest page with active template to page \"$askedPid\" could not be resolved and alternative rootPageId is not provided.",
                 1637339439
             );
         } else if (isset($rootPageId)) {
