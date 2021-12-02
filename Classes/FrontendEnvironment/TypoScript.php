@@ -74,7 +74,6 @@ class TypoScript implements SingletonInterface
      * @return array
      *
      * @throws DBALDriverException
-     * @throws Exception\Exception
      */
     protected function buildConfigurationArray(int $pageId, string $path, int $language): array
     {
@@ -82,7 +81,7 @@ class TypoScript implements SingletonInterface
         $tsfeManager = GeneralUtility::makeInstance(Tsfe::class);
         try {
             $tsfe = $tsfeManager->getTsfeByPageIdAndLanguageId($pageId, $language);
-        } catch (InternalServerErrorException | ServiceUnavailableException | SiteNotFoundException $e) {
+        } catch (InternalServerErrorException | ServiceUnavailableException | SiteNotFoundException | Exception\Exception $e) {
             // @todo logging!
             return [];
         }

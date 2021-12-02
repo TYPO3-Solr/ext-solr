@@ -30,6 +30,7 @@ use ApacheSolrForTypo3\Solr\IndexQueue\Indexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\RecordMonitor;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
+use Throwable;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -116,6 +117,46 @@ class GarbageCollectorTest extends IntegrationTest
     {
         $this->assertEquals($amount, $this->indexQueue->getAllItemsCount(),
             'Index queue is empty and was expected to contain ' . (int) $amount . ' items.');
+    }
+
+    /**
+     * This test case checks the ability to update pages in BE or via TCE, which are outside any site root.
+     *
+     * @test
+     */
+    public function catUpdatePageOrSysFolderOutsideOfSiteRoot(): void
+    {
+        $this->importDataSetFromFixture('can_update_page_or_sys_folder_outside_of_site_root.xml');
+
+        try {
+            $this->garbageCollector->processDatamap_afterDatabaseOperations(
+                'update',
+                'pages',
+                444,
+                [
+                    'title' => 'Renamed: Simple Page outside any site root'
+                ],
+                $this->dataHandler
+            );
+            $this->assertTrue(true);
+        } catch (Throwable $e) {
+            $this->fail('Can not update a simple pages outside of site root. Following is thrown: ' . PHP_EOL . PHP_EOL . $e);
+        }
+
+        try {
+            $this->garbageCollector->processDatamap_afterDatabaseOperations(
+                'update',
+                'pages',
+                445,
+                [
+                    'title' => 'Renamed: Simple sys-folder outside any site root'
+                ],
+                $this->dataHandler
+            );
+            $this->assertTrue(true);
+        } catch (Throwable $e) {
+            $this->fail('Can not update a simple sys folder outside of site root. Following is thrown: ' . PHP_EOL . PHP_EOL . $e);
+        }
     }
 
     /**

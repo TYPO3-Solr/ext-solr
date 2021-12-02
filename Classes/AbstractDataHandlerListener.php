@@ -25,6 +25,7 @@ namespace ApacheSolrForTypo3\Solr;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\ConfigurationAwareRecordService;
+use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\QueryGenerator;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -114,8 +115,9 @@ abstract class AbstractDataHandlerListener
      * @param int $pageId
      * @param array $changedFields
      * @return bool
+     * @throws DBALDriverException
      */
-    protected function isRecursivePageUpdateRequired($pageId, $changedFields)
+    protected function isRecursivePageUpdateRequired(int $pageId, array $changedFields): bool
     {
         // First check RecursiveUpdateTriggerConfiguration
         $isRecursiveUpdateRequired = $this->isRecursiveUpdateRequired($pageId, $changedFields);
