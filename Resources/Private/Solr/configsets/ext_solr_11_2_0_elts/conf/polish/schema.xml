@@ -172,6 +172,34 @@
 			<filter class="solr.ManagedStopFilterFactory" managed="polish"/>
 
 			<filter class="solr.StempelPolishStemFilterFactory"/>
+			<filter class="solr.ASCIIFoldingFilterFactory" preserveOriginal="true"/>
+			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
+		</analyzer>
+		<analyzer type="query">
+			<tokenizer class="solr.StandardTokenizerFactory" />
+
+			<filter class="solr.LowerCaseFilterFactory"/>
+
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="polish" />
+			<filter class="solr.FlattenGraphFilterFactory"/>
+			<filter class="solr.ManagedStopFilterFactory" managed="polish"/>
+			<filter class="solr.ASCIIFoldingFilterFactory" preserveOriginal="true"/>
+
+			<filter class="solr.StempelPolishStemFilterFactory"/>
+			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
+		</analyzer>
+	</fieldType>
+
+	<!-- Setup simple analysis for more exact spell checking, considers non-ascii charaters as they are -->
+	<fieldType name="textSpellExact" class="solr.TextField" positionIncrementGap="100" omitNorms="true">
+		<analyzer type="index">
+			<tokenizer class="solr.StandardTokenizerFactory"/>
+
+			<filter class="solr.LowerCaseFilterFactory"/>
+
+			<filter class="solr.ManagedStopFilterFactory" managed="polish"/>
+
+			<filter class="solr.StempelPolishStemFilterFactory"/>
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
 		<analyzer type="query">
@@ -187,5 +215,4 @@
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
 	</fieldType>
-
 </schema>

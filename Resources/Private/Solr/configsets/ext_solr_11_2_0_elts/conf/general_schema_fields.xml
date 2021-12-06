@@ -170,6 +170,11 @@
 	<copyField source="subTitle" dest="spell" />
 	<copyField source="content"  dest="spell" />
 
+	<field name="spellExact" type="textSpellExact" indexed="true" stored="false" multiValued="true" />
+	<copyField source="title"    dest="spellExact" />
+	<copyField source="subTitle" dest="spellExact" />
+	<copyField source="content"  dest="spellExact" />
+
 	<field name="sortTitle" type="string" indexed="true" stored="false" docValues="true" />
 	<copyField source="title" dest="sortTitle" />
 
@@ -243,6 +248,8 @@
 
 	<dynamicField name="*_textSpellS" type="textSpell" indexed="true" stored="true" multiValued="false" />
 	<dynamicField name="*_textSpellM" type="textSpell" indexed="true" stored="true" multiValued="true" />
+	<dynamicField name="*_textSpellExactS" type="textSpellExact" indexed="true" stored="true" multiValued="false" />
+	<dynamicField name="*_textSpellExactM" type="textSpellExact" indexed="true" stored="true" multiValued="true" />
 
 	<dynamicField name="*_textEdgeNgramS" type="textEdgeNgram" indexed="true" stored="true" multiValued="false" />
 	<dynamicField name="*_textEdgeNgramM" type="textEdgeNgram" indexed="true" stored="true" multiValued="true" />
