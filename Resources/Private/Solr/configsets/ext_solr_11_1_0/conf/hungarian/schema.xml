@@ -10,7 +10,7 @@
 	status report - tx_solr_report_SchemaStatus - checking against this
 	name property, that status check must be updated as well.
 -->
-<schema name="tx_solr-11-1-0--20210721" version="1.6">
+<schema name="tx_solr-11-5-0--20211001" version="1.6">
 	<!-- attribute "name" is the name of this schema and is only used for display purposes.
 		Applications should change this to reflect the nature of the search collection.
 		version="1.4" is Solr's version number for the schema syntax and semantics.  It should
@@ -172,7 +172,7 @@
 			<filter class="solr.LowerCaseFilterFactory"/>
 
 			<filter class="solr.ManagedStopFilterFactory" managed="${solr.core.name}"/>
-			<filter class="solr.ASCIIFoldingFilterFactory"/>
+			<filter class="solr.ASCIIFoldingFilterFactory" preserveOriginal="true"/>
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
 		<analyzer type="query">
@@ -182,7 +182,28 @@
 
 			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="${solr.core.name}" />
 			<filter class="solr.ManagedStopFilterFactory" managed="${solr.core.name}"/>
-			<filter class="solr.ASCIIFoldingFilterFactory"/>
+			<filter class="solr.ASCIIFoldingFilterFactory" preserveOriginal="true"/>
+			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
+		</analyzer>
+	</fieldType>
+
+	<!-- Setup simple analysis for more exact spell checking, considers non-ascii charaters as they are -->
+	<fieldType name="textSpellExact" class="solr.TextField" positionIncrementGap="100" omitNorms="true">
+		<analyzer type="index">
+			<tokenizer class="solr.StandardTokenizerFactory"/>
+
+			<filter class="solr.LowerCaseFilterFactory"/>
+
+			<filter class="solr.ManagedStopFilterFactory" managed="${solr.core.name}"/>
+			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
+		</analyzer>
+		<analyzer type="query">
+			<tokenizer class="solr.StandardTokenizerFactory" />
+
+			<filter class="solr.LowerCaseFilterFactory"/>
+
+			<filter class="solr.ManagedSynonymGraphFilterFactory" managed="${solr.core.name}" />
+			<filter class="solr.ManagedStopFilterFactory" managed="${solr.core.name}"/>
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
 	</fieldType>
