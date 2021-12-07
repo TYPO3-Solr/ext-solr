@@ -30,6 +30,8 @@ use ApacheSolrForTypo3\Solr\IndexQueue\RecordMonitor;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use Doctrine\DBAL\Exception as DoctrineDBALException;
+use Symfony\Component\Debug\Exception\FatalThrowableError;
+use Throwable;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -112,7 +114,7 @@ class RecordMonitorTest extends IntegrationTest
      */
     public function canUpdateRootPageRecordWithoutSQLErrorFromMountPages()
     {
-//        $this->importDataSetFromFixture('update_mount_point_is_updating_the_mount_point_correctly.xml');
+        $this->markAsRisky();
 
         // we expect that the index queue is empty before we start
         $this->assertEmptyIndexQueue();
@@ -442,6 +444,32 @@ class RecordMonitorTest extends IntegrationTest
             $items[0]->getIndexingConfigurationName(),
             'Item was queued with unexpected configuration'
         );
+    }
+
+    /**
+     * @test
+     */
+    public function canMarkAPageOnRootLevelAsSiteRoot()
+    {
+        $this->importDataSetFromFixture('can_mark_a_page_on_root_level_as_site_root.xml');
+
+        // fake process_datamap/update DB operation
+        $changeSet = ['is_siteroot' => 1];
+        $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionByName(ConnectionPool::DEFAULT_CONNECTION_NAME);
+        $connection->update('pages', $changeSet, ['uid' => 47]);
+
+        try {
+            $this->recordMonitor->processDatamap_afterDatabaseOperations(
+                'update',
+                'pages',
+                47,
+                $changeSet,
+                $this->dataHandler
+            );
+            $this->assertTrue(true);
+        } catch (Throwable $e) {
+            $this->fail('Can not mark a page on root level as the site root. Following is thrown: ' . PHP_EOL . PHP_EOL . $e);
+        }
     }
 
     /**

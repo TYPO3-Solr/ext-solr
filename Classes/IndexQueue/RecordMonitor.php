@@ -28,6 +28,7 @@ use ApacheSolrForTypo3\Solr\AbstractDataHandlerListener;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\ConfigurationAwareRecordService;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\MountPagesUpdater;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\RootPageResolver;
+use ApacheSolrForTypo3\Solr\Domain\Site\SiteInterface;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\FrontendEnvironment;
 use ApacheSolrForTypo3\Solr\GarbageCollector;
@@ -390,6 +391,9 @@ class RecordMonitor extends AbstractDataHandlerListener
         foreach ($rootPageIds as $configurationPageId) {
             $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
             $site = $siteRepository->getSiteByPageId($configurationPageId);
+            if (!$site instanceof SiteInterface) {
+                continue;
+            }
             $solrConfiguration = $site->getSolrConfiguration();
             $isMonitoredRecord = $solrConfiguration->getIndexQueueIsMonitoredTable($recordTable);
             if (!$isMonitoredRecord) {
