@@ -124,7 +124,11 @@ class Page extends AbstractInitializer
     protected function initializeMountPointPages(): bool
     {
         $mountPointsInitialized = false;
-        $mountPoints = $this->pagesRepository->findAllMountPagesByWhereClause($this->buildPagesClause() . $this->buildTcaWhereClause() . ' AND doktype = 7 AND no_search = 0');
+        $mountPoints = $this->pagesRepository->findAllMountPagesByWhereClause(
+            $this->buildPagesClause()
+            . $this->buildTcaWhereClause()
+            . ' AND doktype = 7 AND no_search = 0'
+        );
 
         if (empty($mountPoints)) {
             return true;
