@@ -167,13 +167,13 @@ class IndexQueueWorkerTaskAdditionalFieldProvider extends AbstractAdditionalFiel
     /**
      * Check that a task is an instance of IndexQueueWorkerTask
      *
-     * @param AbstractTask $task
+     * @param ?AbstractTask $task
      * @return boolean
      * @throws LogicException
      */
-    protected function isTaskInstanceofIndexQueueWorkerTask(AbstractTask $task): bool
+    protected function isTaskInstanceofIndexQueueWorkerTask(?AbstractTask $task): bool
     {
-        if (!($task instanceof IndexQueueWorkerTask)) {
+        if ((!is_null($task)) && !($task instanceof IndexQueueWorkerTask)) {
             throw new LogicException(
                 '$task must be an instance of IndexQueueWorkerTask, '
                 .'other instances are not supported.', 1487499814

@@ -30,6 +30,7 @@ use ApacheSolrForTypo3\Solr\Backend\IndexingConfigurationSelectorField;
 use ApacheSolrForTypo3\Solr\Backend\SiteSelectorField;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
+use LogicException;
 use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Scheduler\AbstractAdditionalFieldProvider;
@@ -238,14 +239,13 @@ class ReIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldProvider
     /**
      * Check that a task is an instance of ReIndexTask
      *
-     * @param AbstractTask $task
+     * @param ?AbstractTask $task
      * @return boolean
-     * @throws \LogicException
      */
-    protected function isTaskInstanceofReIndexTask($task)
+    protected function isTaskInstanceofReIndexTask(?AbstractTask $task)
     {
         if ((!is_null($task)) && (!($task instanceof ReIndexTask))) {
-            throw new \LogicException(
+            throw new LogicException(
                 '$task must be an instance of ReIndexTask, '
                 . 'other instances are not supported.', 1487500366
             );
