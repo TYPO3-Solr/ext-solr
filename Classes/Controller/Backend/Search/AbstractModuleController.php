@@ -39,6 +39,7 @@ use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Backend\View\BackendTemplateView;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Messaging\AbstractMessage;
+use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Mvc\Exception\StopActionException;
@@ -75,9 +76,9 @@ abstract class AbstractModuleController extends ActionController
     protected int $requestedPageUID;
 
     /**
-     * @var Site
+     * @var ?Site
      */
-    protected Site $selectedSite;
+    protected ?Site $selectedSite;
 
     /**
      * @var SiteRepository
@@ -110,6 +111,11 @@ abstract class AbstractModuleController extends ActionController
     protected Queue $indexQueue;
 
     /**
+     * @var SiteFinder
+     */
+    protected SiteFinder $siteFinder;
+
+    /**
      * @param Site $selectedSite
      */
     public function setSelectedSite(Site $selectedSite)
@@ -127,6 +133,7 @@ abstract class AbstractModuleController extends ActionController
 
     /**
      * Initializes the controller and sets needed vars.
+     * @todo: Make DI for class properties.
      */
     protected function initializeAction()
     {
@@ -134,6 +141,7 @@ abstract class AbstractModuleController extends ActionController
         $this->indexQueue = GeneralUtility::makeInstance(Queue::class);
         $this->solrConnectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
         $this->moduleDataStorageService = GeneralUtility::makeInstance(ModuleDataStorageService::class);
+        $this->siteFinder = GeneralUtility::makeInstance(SiteFinder::class);
 
         $this->selectedPageUID = (int)GeneralUtility::_GP('id');
         if ($this->request->hasArgument('id')) {
@@ -163,7 +171,9 @@ abstract class AbstractModuleController extends ActionController
      */
     protected function autoSelectFirstSiteAndRootPageWhenOnlyOneSiteIsAvailable(): bool
     {
-        if (count($this->siteRepository->getAvailableSites()) == 1) {
+        $solrConfiguredSites = $this->siteRepository->getAvailableSites();
+        $availableSites = $this->siteFinder->getAllSites();
+        if (count($solrConfiguredSites) === 1 && count($availableSites) === 1) {
             $this->selectedSite = $this->siteRepository->getFirstAvailableSite();
 
             // we only overwrite the selected pageUid when no id was passed
