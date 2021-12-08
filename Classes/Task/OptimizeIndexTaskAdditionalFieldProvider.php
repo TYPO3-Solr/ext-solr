@@ -266,7 +266,7 @@ class OptimizeIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldPr
     /**
      * Check that a task is an instance of ReIndexTask
      *
-     * @param AbstractTask|null $task
+     * @param ?AbstractTask $task
      * @return boolean
      */
     protected function isTaskInstanceofOptimizeIndexTask(?AbstractTask $task): bool
