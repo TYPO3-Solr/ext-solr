@@ -12,7 +12,7 @@ Depending on the state of page properties the pages and or sub pages may be inde
 Behaviour
 =========
 
-.. figure:: ../../Images/Backend/PagePropertiesBehaviour.png
+.. figure:: ../Images/Backend/PagePropertiesBehaviour.png
    :alt: The Behaviour tab of the page properties
    :class: with-border
 

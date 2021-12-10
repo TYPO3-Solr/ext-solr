@@ -8,15 +8,6 @@ plugin.tx_solr {
 		layoutRootPath =
 	}
 
-	solr {
-		scheme = http
-		host = localhost
-		port = 8983
-		path = /solr/core_en/
-		username =
-		password =
-	}
-
 	search {
 		targetPage = 0
 
