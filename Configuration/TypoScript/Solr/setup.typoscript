@@ -8,24 +8,7 @@ plugin.tx_solr {
 		dateFormat.date = d.m.Y H:i
 	}
 
-	solr {
-        read {
-            scheme = {$plugin.tx_solr.solr.scheme}
-            host   = {$plugin.tx_solr.solr.host}
-            port   = {$plugin.tx_solr.solr.port}
-            path   = {$plugin.tx_solr.solr.path}
-            username = {$plugin.tx_solr.solr.username}
-            password = {$plugin.tx_solr.solr.password}
-        }
-        write {
-            scheme = {$plugin.tx_solr.solr.scheme}
-            host   = {$plugin.tx_solr.solr.host}
-            port   = {$plugin.tx_solr.solr.port}
-            path   = {$plugin.tx_solr.solr.path}
-            username = {$plugin.tx_solr.solr.username}
-            password = {$plugin.tx_solr.solr.password}
-        }
-	}
+	// solr.timeout = 0.0
 
 	index {
 		additionalFields {
@@ -137,7 +120,7 @@ plugin.tx_solr {
 				// @ slop = 1 will math "Hello World" and/or "Hello wonderful World"
 				// Note: this value is for implicit phrase searching(without double quotes)
 				slop = 0
-				
+
 				// The concept of query slop is similar to phrase.slop but it applies to the explicit phrase queries from the user and to match documents instead of boosting.
 				// Also if the user uses double quotes in the search term, then
 				// the query slop value is used and

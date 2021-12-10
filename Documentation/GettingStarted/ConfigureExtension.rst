@@ -48,24 +48,19 @@ Indexing wil only work if you allow content to be indexed by stating so in your 
         index_enable = 1
     }
 
-Site Handling or Legacy site mode
----------------------------------
+Site Handling
+-------------
 
-*There are two ways to setup EXT:Solr on your site.*
-
-.. tip::
-
-   The "Site Handling mode" is the preferred way for configuring current EXT:Solr and it is only usable,
-   if you are able to enable `new site handling feature <https://docs.typo3.org/m/typo3/reference-coreapi/9.5/en-us/ApiOverview/SiteHandling/Basics.html>`__ for all your sites.
+The "Site Handling mode" is the single way to configure Apache Solr connections since EXT:Solr 11.0 and it is only usable,
+if you are able to enable `new site handling feature <https://docs.typo3.org/m/typo3/reference-coreapi/9.5/en-us/ApiOverview/SiteHandling/Basics.html>`__ for all your sites.
 
 .. warning::
 
-   The "Legacy site mode" in EXT:solr 10.0 is kept for backwards compatibility for users, which have had upgraded to TYPO3 9.5 LTS
-   but do not want to use the `new site handling feature <https://docs.typo3.org/m/typo3/reference-coreapi/9.5/en-us/ApiOverview/SiteHandling/Basics.html>`__ currently.
+   The "Legacy site mode" in EXT:solr 11.0 was removed.
 
 
-Site Handling (recommended)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Site Handling
+~~~~~~~~~~~~~
 
 In TYPO3 9.5 the new backend module called "Sites" was introduced.
 This Module can be used to setup and configure the Apache Solr connections.
@@ -73,11 +68,11 @@ This Module can be used to setup and configure the Apache Solr connections.
     .. tip::
 
         Please refer to `official TYPO3 docs about site handling <https://docs.typo3.org/m/typo3/tutorial-getting-started/9.5/en-us/NextSteps/Integrators/Index.html#site-and-language-handling>`__, to setup your first site configuration.
-        
+
 .. warning::
 
    EXT:Solr needs a proper domain as base for the site. If the base is set to "/" or a similar relative path, the Indexing will throw an error, so please make sure that "base" is a fully qualified domain like "https://my.project.tld/"
-   
+
 
 Configure Solr Connections
 """"""""""""""""""""""""""
@@ -89,22 +84,12 @@ Configure Solr Connections
 
 .. tip::
 
-    All in sites config.yaml global defined thing for EXT:solr can be configured for each language differently by editing this file manually.
+    All in sites config.yaml global defined things for EXT:solr can be configured for each language differently by editing this file manually.
 
 **As first step the authority part of URI to Apache Solr machine must be configured.**
 
 .. image:: ../Images/GettingStarted/Site_handling_Setup_solr_01.jpg
 
-**The Corename(aka path to core) for each available language must be assigned respectively.**
+**The Core name(aka path to core) for each available language must be assigned respectively.**
 
 .. image:: ../Images/GettingStarted/Site_handling_Setup_solr_02.jpg
-
-Legacy site mode (not recommended)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. warning::
-
-   The ability to use this mode will be removed in EXT:solr 11.0.
-
-To follow the steps for this mode please refer to :doc:`Extension Configuration for legacy site mode <ConfigureExtensionLegacySiteMode>`
-

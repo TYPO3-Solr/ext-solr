@@ -91,16 +91,15 @@ Limitations of the site UI and yaml configuration
 
 There are the following known and wanted limitations:
 
-* It is **not** possible to configure a username and a password for the solr server with the UI. You still have the possibility to add that configuration in the yaml file, in that case make sure that this file is not readable from the web!. Another approach is to configure the usage from the environment variables. To configure a username the setting ```solr_username_read``` or ```solr_password_read```
-can be used in the yaml file.
+* It is **not** possible to configure a username and a password for the solr server with the UI. You still have the possibility to add that configuration in the yaml file,
+  in that case make sure that this file is not readable from the web!. Another approach is to configure the usage from the environment variables.
+  To configure a username the setting ```solr_username_read``` or ```solr_password_read``` can be used in the yaml file.
 
-* It is **not** possible to configure a different solr hostname with the UI. If you need that you can still configured that in the yaml file, by using the fallback mechanism.
-
-The fallback mechanism work like that:
-
-Each setting has the following structure ``solr_{$setting}_{$scope}"```. The scope can be read or write. Every setting can be overwritten for the scope *write*, if nothing is configured it will fallback to the *read* setting. Every setting can be defined on the language level, if it is not configured on the language level it fallsback to the global setting.
-
-Example:
+* It is **not** possible to configure a different solr hostname with the UI.
+  If you need that you can still configured that in the yaml file, by using the fallback mechanism.
+  The fallback mechanism work like that:
+  Each setting has the following structure ``solr_{$setting}_{$scope}"```. The scope can be read or write. Every setting can be overwritten for the scope *write*, if nothing is configured it will fallback to the *read* setting. Every setting can be defined on the language level, if it is not configured on the language level it fallsback to the global setting.
+  Following example shows that you are able to define the setting ```solr_host_read``` on the language level. Since this is a more advanced configuration and the user interface should be kept simple, this can only be configured in the yaml.:
 
 ::
 
@@ -144,9 +143,6 @@ Example:
     solr_scheme_read: http
     solr_use_write_connection: false
 
-::
-
-The example above shows that you are able to define the setting ```solr_host_read``` on the language level. Since this is a more advanced configuration and the user interface should be kept simple, this can only be configured in the yaml.
 
 Removed Code
 ============

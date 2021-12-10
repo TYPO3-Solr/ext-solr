@@ -7,9 +7,9 @@
 
 .. _start:
 
-================================
-Apache Solr for TYPO3 (EXT:solr)
-================================
+=====================================
+Apache Solr for TYPO3 (EXT:solr) ELTS
+=====================================
 
 .. only:: html
 
@@ -17,7 +17,7 @@ Apache Solr for TYPO3 (EXT:solr)
 		solr
 
 	:Version:
-		11.0.5
+		11.0.6
 
 	:Language:
 		en
@@ -29,8 +29,8 @@ Apache Solr for TYPO3 (EXT:solr)
 		search, full text, index, solr, lucene, fast, query, results
 
 	:Copyright:
-		2009-2019
-		2009-2019
+		2009-2021
+		2009-2021
 
 	:Author:
 		Ingo Renner, Markus Friedrich, Rafael Kähm, Timo Hund
