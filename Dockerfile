@@ -1,5 +1,5 @@
-FROM solr:7.6.0
-MAINTAINER Timo Hund <timo.hund@dkd.de>
+FROM solr:7.7.3
+MAINTAINER dkd Internet Services GmbH <solr-eb-support@dkd.de>
 ENV TERM linux
 
 RUN rm -fR /opt/solr/server/solr/*
