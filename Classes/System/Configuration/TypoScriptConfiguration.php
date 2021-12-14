@@ -189,7 +189,7 @@ class TypoScriptConfiguration
      * @param string $path
      * @param array $defaultValue
      * @return array
-     *@see getObjectByPath
+     * @see getObjectByPath()
      */
     public function getObjectByPathOrDefault(string $path, array $defaultValue = []): array
     {

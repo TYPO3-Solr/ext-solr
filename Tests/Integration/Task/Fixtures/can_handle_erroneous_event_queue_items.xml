@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataset>
+	<pages>
+		<uid>10</uid>
+		<pid>1</pid>
+		<doktype>1</doktype>
+		<title>Childpage</title>
+	</pages>
+	<tx_solr_eventqueue_item>
+		<uid>1</uid>
+		<tstamp>1641888246</tstamp>
+		<event>O:8:"stdClass":0:{}</event>
+	</tx_solr_eventqueue_item>
+</dataset>

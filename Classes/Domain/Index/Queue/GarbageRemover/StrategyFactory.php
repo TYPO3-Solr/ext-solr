@@ -1,5 +1,4 @@
 <?php
-
 namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\GarbageRemover;
 
 /***************************************************************
@@ -25,6 +24,8 @@ namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\GarbageRemover;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 /**
  * Class StrategyFactory
  */
@@ -34,9 +35,11 @@ class StrategyFactory {
      * @param string $table
      * @return PageStrategy|RecordStrategy
      */
-    public static function getByTable($table)
+    public static function getByTable($table): AbstractStrategy
     {
         $isPageRelated = in_array($table, ['tt_content','pages']);
-        return $isPageRelated ? new PageStrategy() : new RecordStrategy();
+        return $isPageRelated
+            ? GeneralUtility::makeInstance(PageStrategy::class)
+            : GeneralUtility::makeInstance(RecordStrategy::class);
     }
 }

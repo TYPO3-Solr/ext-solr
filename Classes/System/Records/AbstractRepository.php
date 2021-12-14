@@ -81,7 +81,7 @@ abstract class AbstractRepository
         return (int)$this->getQueryBuilder()
             ->count('*')
             ->from($this->table)
-            ->execute()->fetchColumn(0);
+            ->execute()->fetchColumn();
     }
 
     /**
