@@ -24,17 +24,16 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\IndexQueue;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\ConfigurationAwareRecordService;
-use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\MountPagesUpdater;
-use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\RootPageResolver;
-use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
-use ApacheSolrForTypo3\Solr\IndexQueue\RecordMonitor;
-use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
-use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
-use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
-use ApacheSolrForTypo3\Solr\System\TCA\TCAService;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use Psr\EventDispatcher\EventDispatcherInterface;
+use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
+use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
+use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\IndexQueue\RecordMonitor;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\VersionSwappedEvent;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordMovedEvent;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordUpdatedEvent;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\ContentElementDeletedEvent;
 
 /**
  * Testcase for the RecordMonitor class.
@@ -43,211 +42,203 @@ use TYPO3\CMS\Core\DataHandling\DataHandler;
  */
 class RecordMonitorTest extends UnitTest
 {
-
     /**
      * @var RecordMonitor
      */
     protected $recordMonitor;
 
     /**
-     * @var Queue
+     * @var EventDispatcherInterface|MockObject
      */
-    protected $queueMock;
-
-    /**
-     * @var MountPagesUpdater
-     */
-    protected $mountPageUpdaterMock;
-
-    /**
-     * @var TCAService
-     */
-    protected $tcaServiceMock;
-
-    /**
-     * @var RootPageResolver
-     */
-    protected $rootPageResolverMock;
-
-    /**
-     * @var PagesRepository
-     */
-    protected $pageRepositoryMock;
-
-    /**
-     * @var SolrLogManager
-     */
-    protected $logManagerMock;
-
-    /**
-     * @var ConfigurationAwareRecordService
-     */
-    protected $recordServiceMock;
+    protected $eventDispatcherMock;
 
     public function setUp(): void
     {
-        $this->queueMock = $this->getDumbMock(Queue::class);
-        $this->mountPageUpdaterMock = $this->getDumbMock(MountPagesUpdater::class);
-        $this->tcaServiceMock = $this->getDumbMock(TCAService::class);
-        $this->rootPageResolverMock = $this->getDumbMock(RootPageResolver::class);
-        $this->pageRepositoryMock = $this->getDumbMock(PagesRepository::class);
-        $this->logManagerMock = $this->getDumbMock(SolrLogManager::class);
-        $this->recordServiceMock = $this->getDumbMock(ConfigurationAwareRecordService::class);
+        $this->eventDispatcherMock = $this->createMock(EventDispatcherInterface::class);
+        $this->recordMonitor = new RecordMonitor($this->eventDispatcherMock);
 
-        $this->recordMonitor = $this->getMockBuilder(RecordMonitor::class)
-            ->setMethods(
-                [
-                     'isDraftRecord',
-                     'getSolrConfigurationFromPageId',
-                     'removeFromIndexAndQueueWhenItemInQueue',
-                     'getRecordPageId'
-                ]
-            )->setConstructorArgs([
-                $this->queueMock,
-                $this->mountPageUpdaterMock,
-                $this->tcaServiceMock,
-                $this->rootPageResolverMock,
-                $this->pageRepositoryMock,
-                $this->logManagerMock,
-                $this->recordServiceMock
-            ])
-            ->getMock();
+        $GLOBALS['BE_USER'] = $this->createMock(BackendUserAuthentication::class);
+        $GLOBALS['BE_USER']->workspace = 0;
+    }
+
+    public function tearDown(): void
+    {
+        unset($GLOBALS['BE_USER']);
+        parent::tearDown();
     }
 
     /**
      * @test
      */
-    public function processCmdmap_postProcessUpdatesQueueItemForVersionSwapOfEnabledPage()
+    public function processCmdmap_preProcessUHandlesDeletedContentElements(): void
+    {
+        $dispatchedEvent = null;
+        $this->eventDispatcherMock
+            ->expects($this->once())
+            ->method('dispatch')
+            ->will($this->returnCallback(function() use (&$dispatchedEvent) {
+                $dispatchedEvent = func_get_arg(0);
+            }));
+        $this->recordMonitor->processCmdmap_preProcess('delete', 'tt_content', 123);
+
+        $this->assertTrue($dispatchedEvent instanceof ContentElementDeletedEvent);
+        $this->assertEquals('tt_content', $dispatchedEvent->getTable());
+        $this->assertEquals(123, $dispatchedEvent->getUid());
+    }
+
+    /**
+     * @test
+     */
+    public function processCmdmap_preProcessIgnoresDraftWorkspace(): void
+    {
+        $GLOBALS['BE_USER']->workspace = 1;
+        $this->eventDispatcherMock
+            ->expects($this->never())
+            ->method('dispatch');
+        $this->recordMonitor->processCmdmap_preProcess('delete', 'tt_content', 123);
+    }
+
+    /**
+     * @test
+     */
+    public function processCmdmap_postProcessUpdatesQueueItemForVersionSwapOfPageRecord(): void
     {
         $dataHandlerMock = $this->getDumbMock(DataHandler::class);
 
-        $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
-        $this->recordMonitor->expects($this->once())->method('getSolrConfigurationFromPageId')->with(4711)->willReturn($configurationMock);
-        $this->recordMonitor->expects($this->never())->method('removeFromIndexAndQueueWhenItemInQueue');
-
-        $this->recordServiceMock->expects($this->once())->method('getRecord')->willReturn(['uid' => 4711, 'pid' => 999]);
-        $this->tcaServiceMock->expects($this->once())->method('isEnabledRecord')->willReturn(true);
-
-
-        $this->queueMock->expects($this->once())->method('updateItem')->with('pages', 4711);
+        $dispatchedEvent = null;
+        $this->eventDispatcherMock
+            ->expects($this->once())
+            ->method('dispatch')
+            ->will($this->returnCallback(function() use (&$dispatchedEvent) {
+                $dispatchedEvent = func_get_arg(0);
+            }));
         $this->recordMonitor->processCmdmap_postProcess('version', 'pages', 4711, ['action' => 'swap'], $dataHandlerMock);
+
+        $this->assertTrue($dispatchedEvent instanceof VersionSwappedEvent);
+        $this->assertEquals('pages', $dispatchedEvent->getTable());
+        $this->assertEquals(4711, $dispatchedEvent->getUid());
     }
 
     /**
      * @test
      */
-    public function processCmdmap_postProcessUpdatesQueueItemForVersionSwapOfEnabledRecord()
+    public function processCmdmap_postProcessUpdatesQueueItemForVersionSwapOfRecord(): void
     {
         $dataHandlerMock = $this->getDumbMock(DataHandler::class);
-        $dataHandlerMock->expects($this->once())->method('getPID')->willReturn(999);
 
-        $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
-        $configurationMock->expects($this->once())->method('getIndexQueueIsMonitoredTable')->willReturn(true);
-
-        $this->recordMonitor->expects($this->once())->method('getSolrConfigurationFromPageId')->with(999)->willReturn($configurationMock);
-        $this->recordMonitor->expects($this->never())->method('removeFromIndexAndQueueWhenItemInQueue');
-
-        $this->recordServiceMock->expects($this->once())->method('getRecord')->willReturn(['uid' => 888, 'pid' => 999]);
-
-        $this->tcaServiceMock->expects($this->once())->method('getTranslationOriginalUidIfTranslated')->willReturn(888);
-        $this->tcaServiceMock->expects($this->once())->method('isEnabledRecord')->willReturn(true);
-
-
-        $this->queueMock->expects($this->once())->method('updateItem')->with('tx_foo_bar', 888);
+        $dispatchedEvent = null;
+        $this->eventDispatcherMock
+            ->expects($this->once())
+            ->method('dispatch')
+            ->will($this->returnCallback(function() use (&$dispatchedEvent) {
+                $dispatchedEvent = func_get_arg(0);
+            }));
         $this->recordMonitor->processCmdmap_postProcess('version', 'tx_foo_bar', 888, ['action' => 'swap'], $dataHandlerMock);
+
+        $this->assertTrue($dispatchedEvent instanceof VersionSwappedEvent);
+        $this->assertEquals('tx_foo_bar', $dispatchedEvent->getTable());
+        $this->assertEquals(888, $dispatchedEvent->getUid());
     }
 
     /**
      * @test
      */
-    public function processCmdmap_postProcessRemovesQueueItemForVersionSwapOfDisabledPage()
+    public function processCmdmap_postProcessUpdatesQueueItemForMoveOfPageRecord(): void
     {
         $dataHandlerMock = $this->getDumbMock(DataHandler::class);
 
-        $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
-        $this->recordMonitor->expects($this->once())->method('getSolrConfigurationFromPageId')->with(4711)->willReturn($configurationMock);
+        $dispatchedEvent = null;
+        $this->eventDispatcherMock
+            ->expects($this->once())
+            ->method('dispatch')
+            ->will($this->returnCallback(function() use (&$dispatchedEvent) {
+                $dispatchedEvent = func_get_arg(0);
+            }));
+        $this->recordMonitor->processCmdmap_postProcess('move', 'pages', 4711, [], $dataHandlerMock);
 
-        $this->recordServiceMock->expects($this->once())->method('getRecord')->willReturn(['uid' => 4711, 'pid' => 999]);
-        $this->tcaServiceMock->expects($this->once())->method('isEnabledRecord')->willReturn(false);
-
-        $this->queueMock->expects($this->never())->method('updateItem');
-        $this->recordMonitor->expects($this->once())->method('removeFromIndexAndQueueWhenItemInQueue')->with('pages', 4711);
-
-        $this->recordMonitor->processCmdmap_postProcess('version', 'pages', 4711, ['action' => 'swap'], $dataHandlerMock);
+        $this->assertTrue($dispatchedEvent instanceof RecordMovedEvent);
+        $this->assertEquals('pages', $dispatchedEvent->getTable());
+        $this->assertEquals(4711, $dispatchedEvent->getUid());
     }
 
     /**
      * @test
      */
-    public function processCmdmap_postProcessRemovesQueueItemForVersionSwapOfDisabledRecord()
+    public function processCmdmap_postProcessUpdatesQueueItemForMoveOfPageRecordInDraftWorkspace(): void
     {
         $dataHandlerMock = $this->getDumbMock(DataHandler::class);
-        $dataHandlerMock->expects($this->once())->method('getPID')->willReturn(999);
+        $GLOBALS['BE_USER']->workspace = 1;
 
-        $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
-        $configurationMock->expects($this->once())->method('getIndexQueueIsMonitoredTable')->willReturn(true);
-
-        $this->recordMonitor->expects($this->once())->method('getSolrConfigurationFromPageId')->with(999)->willReturn($configurationMock);
-
-        $this->recordServiceMock->expects($this->once())->method('getRecord')->willReturn(['uid' => 888, 'pid' => 999]);
-
-        $this->tcaServiceMock->expects($this->once())->method('isEnabledRecord')->willReturn(false);
-
-        $this->queueMock->expects($this->never())->method('updateItem');
-        $this->recordMonitor->expects($this->once())->method('removeFromIndexAndQueueWhenItemInQueue')->with('tx_foo_bar', 888);
-        $this->recordMonitor->processCmdmap_postProcess('version', 'tx_foo_bar', 888, ['action' => 'swap'], $dataHandlerMock);
-    }
-
-    /**
-     * @test
-     */
-    public function processCmdmap_postProcessUpdatesQueueItemForMoveOfEnabledPage()
-    {
-        $dataHandlerMock = $this->getDumbMock(DataHandler::class);
-
-        $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
-        $this->recordMonitor->expects($this->once())->method('getSolrConfigurationFromPageId')->with(4711)->willReturn($configurationMock);
-        $this->recordMonitor->expects($this->never())->method('removeFromIndexAndQueueWhenItemInQueue');
-
-        $this->recordServiceMock->expects($this->once())->method('getRecord')->willReturn(['uid' => 4711, 'pid' => 999]);
-        $this->tcaServiceMock->expects($this->once())->method('isEnabledRecord')->willReturn(true);
-
-        $this->queueMock->expects($this->once())->method('updateItem')->with('pages', 4711);
+        $this->eventDispatcherMock
+            ->expects($this->never())
+            ->method('dispatch');
         $this->recordMonitor->processCmdmap_postProcess('move', 'pages', 4711, [], $dataHandlerMock);
     }
 
     /**
      * @test
      */
-    public function processCmdmap_postProcessRemovesQueueItemForMoveOfDisabledPage()
+    public function processCmdmap_postProcessUpdatesQueueItemForMoveOfRecord(): void
     {
         $dataHandlerMock = $this->getDumbMock(DataHandler::class);
 
-        $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
-        $this->recordMonitor->expects($this->once())->method('getSolrConfigurationFromPageId')->with(4711)->willReturn($configurationMock);
+        $dispatchedEvent = null;
+        $this->eventDispatcherMock
+            ->expects($this->once())
+            ->method('dispatch')
+            ->will($this->returnCallback(function() use (&$dispatchedEvent) {
+                $dispatchedEvent = func_get_arg(0);
+            }));
+        $this->recordMonitor->processCmdmap_postProcess('move', 'tx_foo_bar', 888, [], $dataHandlerMock);
 
-        $this->recordServiceMock->expects($this->once())->method('getRecord')->willReturn(['uid' => 4711, 'pid' => 999]);
-        $this->tcaServiceMock->expects($this->once())->method('isEnabledRecord')->willReturn(false);
-
-        $this->queueMock->expects($this->never())->method('updateItem');
-        $this->recordMonitor->expects($this->once())->method('removeFromIndexAndQueueWhenItemInQueue')->with('pages', 4711);
-
-        $this->recordMonitor->processCmdmap_postProcess('move', 'pages', 4711, [], $dataHandlerMock);
+        $this->assertTrue($dispatchedEvent instanceof RecordMovedEvent);
+        $this->assertEquals('tx_foo_bar', $dispatchedEvent->getTable());
+        $this->assertEquals(888, $dispatchedEvent->getUid());
     }
 
     /**
      * @test
      * For more infos, please refer https://github.com/TYPO3-Solr/ext-solr/pull/2836
      */
-    public function processDatamap_afterDatabaseOperationsUsesAlreadyResolvedNextAutoIncrementValueForNewStatus()
+    public function processDatamap_afterDatabaseOperationsUsesAlreadyResolvedNextAutoIncrementValueForNewStatus(): void
     {
         $dataHandlerMock = $this->getDumbMock(DataHandler::class);
-        $this->rootPageResolverMock->expects($this->once())->method('getAlternativeSiteRootPagesIds')->willReturn([]);
 
-        $this->recordMonitor->expects($this->once())
-            ->method('getRecordPageId')
-            ->with('new', 'tt_content', 4711, 4711, ['pid' => 1], $dataHandlerMock);
+        $dispatchedEvent = null;
+        $this->eventDispatcherMock
+            ->expects($this->once())
+            ->method('dispatch')
+            ->will($this->returnCallback(function() use (&$dispatchedEvent) {
+                $dispatchedEvent = func_get_arg(0);
+            }));
         $this->recordMonitor->processDatamap_afterDatabaseOperations('new', 'tt_content', 4711, ['pid' => 1], $dataHandlerMock);
+
+        $this->assertTrue($dispatchedEvent instanceof RecordUpdatedEvent);
+        $this->assertEquals('tt_content', $dispatchedEvent->getTable());
+        $this->assertEquals(4711, $dispatchedEvent->getUid());
     }
 
+    /**
+     * @test
+     * For more infos, please refer https://github.com/TYPO3-Solr/ext-solr/pull/2836
+     */
+    public function processDatamap_afterDatabaseOperationsUsesNotYetResolvedNextAutoIncrementValueForNewStatus(): void
+    {
+        $newId = 'NEW1';
+        $dataHandlerMock = $this->getDumbMock(DataHandler::class);
+        $dataHandlerMock->substNEWwithIDs[$newId] = 123;
+
+        $dispatchedEvent = null;
+        $this->eventDispatcherMock
+            ->expects($this->once())
+            ->method('dispatch')
+            ->will($this->returnCallback(function() use (&$dispatchedEvent) {
+                $dispatchedEvent = func_get_arg(0);
+            }));
+        $this->recordMonitor->processDatamap_afterDatabaseOperations('new', 'tt_content', $newId, ['pid' => 1], $dataHandlerMock);
+
+        $this->assertTrue($dispatchedEvent instanceof RecordUpdatedEvent);
+        $this->assertEquals('tt_content', $dispatchedEvent->getTable());
+        $this->assertEquals(123, $dispatchedEvent->getUid());
+    }
 }

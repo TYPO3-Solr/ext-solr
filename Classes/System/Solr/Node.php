@@ -14,6 +14,7 @@ namespace ApacheSolrForTypo3\Solr\System\Solr;
  * The TYPO3 project - inspiring people to share!
  */
 
+use UnexpectedValueException;
 use Solarium\Core\Client\Endpoint;
 
 /**
@@ -93,12 +94,12 @@ class Node extends Endpoint
      *
      * @param array  $configuration
      * @param string $name
-     * @throws |UnexpectedValueException
+     * @throws UnexpectedValueException
      */
     protected static function checkIfRequiredKeyIsSet(array $configuration, string $name)
     {
         if (empty($configuration[$name])) {
-            throw new \UnexpectedValueException('Required solr connection property ' . $name. ' is missing.');
+            throw new UnexpectedValueException('Required solr connection property ' . $name. ' is missing.');
         }
     }
 

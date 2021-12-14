@@ -143,6 +143,19 @@ class ExtensionConfiguration
     }
 
     /**
+     * Returns the desired monitoring type
+     * 0 - immediate
+     * 1 - delayed
+     * 2 - no monitoring
+     *
+     * @return int
+     */
+    public function getMonitoringType(): int
+    {
+        return (int)$this->getConfigurationOrDefaultValue('monitoringType', 0);
+    }
+
+    /**
      * @param string $key
      * @param mixed $defaultValue
      * @return mixed|null

@@ -26,7 +26,6 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\ConnectionManager;
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\Helper\QueryStringContainer;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\SuggestQuery;
@@ -268,7 +267,7 @@ class SuggestServiceTest extends UnitTest
     }
 
     /**
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return \PHPUnit\Framework\MockObject\MockObject
      */
     protected function getFakedSearchRequest($queryString)
     {

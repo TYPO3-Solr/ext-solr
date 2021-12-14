@@ -17,6 +17,9 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetParser;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\System\Solr\ParsingUtil;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\DateRange\DateRangeFacet;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\NumericRange\NumericRangeFacet;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacet;
 
 /**
  * Class AbstractRangeFacetParser
@@ -33,7 +36,7 @@ abstract class AbstractRangeFacetParser extends AbstractFacetParser
      * @param string $facetClass
      * @param string $facetItemClass
      * @param string $facetRangeCountClass
-     * @return AbstractRangeFacet|null
+     * @return AbstractFacet|null
      */
     protected function getParsedFacet(SearchResultSet $resultSet, $facetName, array $facetConfiguration, $facetClass, $facetItemClass, $facetRangeCountClass)
     {
@@ -44,6 +47,7 @@ abstract class AbstractRangeFacetParser extends AbstractFacetParser
 
         $valuesFromResponse = isset($response->facet_counts->facet_ranges->{$fieldName}) ? get_object_vars($response->facet_counts->facet_ranges->{$fieldName}) : [];
 
+        /** @var NumericRangeFacet|DateRangeFacet $facet */
         $facet = $this->objectManager->get(
             $facetClass,
             $resultSet,

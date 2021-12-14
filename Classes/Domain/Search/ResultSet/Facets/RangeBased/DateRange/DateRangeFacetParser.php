@@ -17,6 +17,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\Date
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\AbstractRangeFacetParser;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\System\Data\DateTime;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacet;
 
 /**
  * Class DateRangeFacetParser
@@ -45,7 +46,7 @@ class DateRangeFacetParser extends AbstractRangeFacetParser
      * @param SearchResultSet $resultSet
      * @param string $facetName
      * @param array $facetConfiguration
-     * @return DateRangeFacet|null
+     * @return AbstractFacet|null
      */
     public function parse(SearchResultSet $resultSet, $facetName, array $facetConfiguration)
     {

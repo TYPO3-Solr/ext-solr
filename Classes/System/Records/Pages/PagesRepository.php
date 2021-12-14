@@ -36,7 +36,6 @@ use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Database\Query\QueryHelper;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
-use TYPO3\CMS\Core\Database\QueryGenerator;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -348,6 +347,37 @@ class PagesRepository extends AbstractRepository
         $this->addDefaultLanguageUidConstraint($queryBuilder);
 
         return $queryBuilder->execute()->fetchAll();
+    }
+
+    /**
+     * Returns a specific page
+     *
+     * @param int $uid
+     * @param string $fields
+     * @param string $additionalWhereClause
+     * @param bool $useDeleteClause Use the deleteClause to check if a record is deleted (default TRUE)
+     * @return array|null
+     */
+    public function getPage(int $uid, string $fields = '*', string $additionalWhereClause = '', bool $useDeleteClause = true): ?array
+    {
+        if (!$uid > 0) {
+            return null;
+        }
+
+        return BackendUtility::getRecord($this->table, $uid, $fields, $additionalWhereClause, $useDeleteClause);
+    }
+
+    /**
+     * Returns an additional where clause considering the backend relevant pages enable fields
+     *
+     * Note: Currently just a wrapper for BEenableFields, but as this should only be used internally
+     * we should switch to the DefaultRestrictionHandler
+     *
+     * @param string $table The table from which to return enableFields WHERE clause. Table name must have a 'ctrl' section in $GLOBALS['TCA'].
+     */
+    public function getBackendEnableFields(): string
+    {
+        return BackendUtility::BEenableFields($this->table);
     }
 
     /**

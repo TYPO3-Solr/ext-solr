@@ -113,10 +113,26 @@ CREATE TABLE tx_solr_cache_tags (
 ) ENGINE=InnoDB;
 
 #
+# Table structure for table 'tx_solr_eventqueue_item'
+#
+CREATE TABLE tx_solr_eventqueue_item (
+	uid int(11) NOT NULL auto_increment,
+
+	tstamp int(11) DEFAULT '0' NOT NULL,
+	event longblob,
+	error tinyint(3) unsigned DEFAULT '0' NOT NULL,
+	error_message text,
+
+	PRIMARY KEY (uid),
+	KEY tstamp (tstamp),
+	KEY error (error),
+) ENGINE=InnoDB;
+
+#
 # Update size of entry_value for table 'sys_registry'
 #
 CREATE TABLE sys_registry (
-  entry_value longblob
+	entry_value longblob
 ) ENGINE=InnoDB;
 
 #

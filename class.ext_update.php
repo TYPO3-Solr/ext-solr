@@ -35,7 +35,7 @@ class ext_update
     protected $messages = [];
 
     /**
-     * @var \ApacheSolrForTypo3\Solrfal\Migrations\Migration[]
+     * @var \ApacheSolrForTypo3\Solr\Migrations\Migration[]
      */
     protected $migrators = [];
 
