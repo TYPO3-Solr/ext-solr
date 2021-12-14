@@ -16,6 +16,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\Nume
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\AbstractRangeFacetParser;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacet;
 
 /**
  * Class NumericRangeFacetParser
@@ -44,7 +45,7 @@ class NumericRangeFacetParser extends AbstractRangeFacetParser
      * @param SearchResultSet $resultSet
      * @param string $facetName
      * @param array $facetConfiguration
-     * @return NumericRangeFacet|null
+     * @return AbstractFacet|null
      */
     public function parse(SearchResultSet $resultSet, $facetName, array $facetConfiguration)
     {

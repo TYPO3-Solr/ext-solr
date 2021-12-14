@@ -169,4 +169,14 @@ class Util
         $context = GeneralUtility::makeInstance(Context::class);
         return $context->getPropertyFromAspect('frontend.user', 'groupIds');
     }
+
+    /**
+     * Returns the current execution time (formerly known as EXEC_TIME)
+     * @return int
+     */
+    public static function getExectionTime(): int
+    {
+        $context = GeneralUtility::makeInstance(Context::class);
+        return (int)$context->getPropertyFromAspect('date', 'timestamp');
+    }
 }

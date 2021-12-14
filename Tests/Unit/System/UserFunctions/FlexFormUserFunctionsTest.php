@@ -26,8 +26,6 @@ namespace ApacheSolrForTypo3\Solr\Test\System\Service;
 
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use ApacheSolrForTypo3\Solr\System\UserFunctions\FlexFormUserFunctions;
-use TYPO3\CMS\Extbase\Service\TypoScriptService;
-use TYPO3\CMS\Lang\LanguageService;
 
 /**
  * @author Timo Hund <timo.hund@dkd.de>

@@ -33,7 +33,6 @@ use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
-use Dkd\DkdReports\Reports\Status;
 use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 
 /**

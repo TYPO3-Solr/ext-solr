@@ -31,7 +31,6 @@ use ApacheSolrForTypo3\Solr\System\Records\SystemLanguage\SystemLanguageReposito
 use ApacheSolrForTypo3\Solr\System\Solr\Node;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use InvalidArgumentException;
-use TYPO3\CMS\Core\Registry;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use function json_encode;
