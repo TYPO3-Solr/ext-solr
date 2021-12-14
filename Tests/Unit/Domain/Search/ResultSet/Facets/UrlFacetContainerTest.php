@@ -28,7 +28,7 @@ class UrlFacetContainerTest extends UnitTest
     /**
      * Test data for index based url parameters
      *
-     * @var \string[][][]
+     * @var string[][][]
      */
     protected $indexParameters = [
         'tx_solr' => [
@@ -43,7 +43,7 @@ class UrlFacetContainerTest extends UnitTest
     /**
      * Test data for assoc based url parameters
      *
-     * @var \string[][][]
+     * @var string[][][]
      */
     protected $assocParameters = [
         'tx_solr' => [

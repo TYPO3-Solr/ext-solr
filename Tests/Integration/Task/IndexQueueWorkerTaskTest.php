@@ -29,17 +29,14 @@ use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\Task\IndexQueueWorkerTask;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
-use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
-use TYPO3\CMS\Core\Charset\CharsetConverter;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Lang\LanguageService;
 
 /**
  * TestCase to check if we can indexer from a index queue worker task into a solr server
  *
  * @author Timo Schmidt
  */
-class IndexQueueWorkerTest extends IntegrationTest
+class IndexQueueWorkerTaskTest extends IntegrationTest
 {
     /**
      * @var Queue

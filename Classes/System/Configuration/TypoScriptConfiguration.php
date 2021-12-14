@@ -189,7 +189,7 @@ class TypoScriptConfiguration
      * Gets the parent TypoScript Object from a given TypoScript path and if not present return
      * the default value
      *
-     * @see getObjectByPath
+     * @see getObjectByPath()
      * @param string $path
      * @param array $defaultValue
      * @return array

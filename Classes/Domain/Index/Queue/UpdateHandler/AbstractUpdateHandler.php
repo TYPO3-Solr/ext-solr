@@ -1,10 +1,10 @@
-<?php
-namespace ApacheSolrForTypo3\Solr;
+<?php declare(strict_types = 1);
+namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler;
 
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2015-2016 Timo Schmidt <timo.schmidt@dkd.de>
+ *  (c) 2021 Markus Friedrich <markus.friedrich@dkd.de>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -24,28 +24,59 @@ namespace ApacheSolrForTypo3\Solr;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\ConfigurationAwareRecordService;
-use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Core\Database\QueryGenerator;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Database\QueryGenerator;
+use TYPO3\CMS\Backend\Utility\BackendUtility;
+use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\ConfigurationAwareRecordService;
+use ApacheSolrForTypo3\Solr\FrontendEnvironment;
+use ApacheSolrForTypo3\Solr\System\TCA\TCAService;
 
 /**
- * Changes in TYPO3 have an impact on the solr content and are caught
- * by the GarbageCollector and RecordMonitor. Both act as a TCE Main Hook.
+ * Abstract update handler
  *
- * This base class is used to share functionality that are needed for both
- * to perform the changes in the data handler on the solr index.
- *
- * @author Timo Schmidt <timo.schmidt@dkd.de>
+ * Base class for Handling updates or deletions on potential
+ * relevant records
  */
-abstract class AbstractDataHandlerListener
+abstract class AbstractUpdateHandler
 {
     /**
-     * Reference to the configuration manager
+     * List of fields in the update field array that
+     * are required for processing
      *
-     * @var \ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\ConfigurationAwareRecordService
+     * Note: For pages all fields except l10n_diffsource are
+     *       kept, as additional fields can be configured in
+     *       TypoScript, see AbstractDataUpdateEvent->__sleep.
+     *
+     * @var array
      */
-    protected $configurationAwareRecordService;
+    protected static $requiredUpdatedFields = [];
+
+    /**
+     * Configuration used to check if recursive updates are required
+     *
+     * Update handlers may need to determine which update combination
+     * require a recursive change.
+     *
+     * The structure needs to be:
+     *
+     * [
+     *      [
+     *           'currentState' => ['fieldName1' => 'value1'],
+     *           'changeSet' => ['fieldName1' => 'value1']
+     *      ]
+     * ]
+     *
+     * When the all values of the currentState AND all values of the changeSet match, a recursive update
+     * will be triggered.
+     *
+     * @var array
+     */
+    protected $updateSubPagesRecursiveTriggerConfiguration = [];
+    /**
+     * @var ConfigurationAwareRecordService
+     */
+    protected $configurationAwareRecordService = null;
 
     /**
      * @var FrontendEnvironment
@@ -53,19 +84,56 @@ abstract class AbstractDataHandlerListener
     protected $frontendEnvironment = null;
 
     /**
-     * AbstractDataHandlerListener constructor.
-     * @param ConfigurationAwareRecordService|null $recordService
+     * @var TCAService
      */
-    public function __construct(ConfigurationAwareRecordService $recordService = null, FrontendEnvironment $frontendEnvironment = null)
+    protected $tcaService = null;
+
+    /**
+     * @var Queue
+     */
+    protected $indexQueue;
+
+    /**
+     * @param ConfigurationAwareRecordService $recordService
+     * @param FrontendEnvironment $frontendEnvironment
+     * @param TCAService $tcaService
+     */
+    public function __construct(
+        ConfigurationAwareRecordService $recordService,
+        FrontendEnvironment $frontendEnvironment,
+        TCAService $tcaService,
+        Queue $indexQueue
+    ) {
+        $this->configurationAwareRecordService = $recordService;
+        $this->frontendEnvironment = $frontendEnvironment;
+        $this->tcaService = $tcaService;
+        $this->indexQueue = $indexQueue;
+    }
+
+    /**
+     * Returns the required fields from the updated fields array
+     *
+     * @return array
+     */
+    public static function getRequiredUpdatedFields(): array
     {
-        $this->configurationAwareRecordService = $recordService ?? GeneralUtility::makeInstance(ConfigurationAwareRecordService::class);
-        $this->frontendEnvironment = $frontendEnvironment ?? GeneralUtility::makeInstance(FrontendEnvironment::class);
+        return static::$requiredUpdatedFields;
+    }
+
+    /**
+     * Add required update field
+     *
+     * @param string $field
+     */
+    public static function addRequiredUpdatedField(string $field): void
+    {
+        static::$requiredUpdatedFields[] = $field;
     }
 
     /**
      * @return array
      */
-    protected function getAllRelevantFieldsForCurrentState()
+    protected function getAllRelevantFieldsForCurrentState(): array
     {
         $allCurrentStateFieldnames = [];
 
@@ -76,7 +144,10 @@ abstract class AbstractDataHandlerListener
             }
 
             // we collect the currentState fields to return a unique list of all fields
-            $allCurrentStateFieldnames = array_merge($allCurrentStateFieldnames, array_keys($triggerConfiguration['currentState']));
+            $allCurrentStateFieldnames = array_merge(
+                $allCurrentStateFieldnames,
+                array_keys($triggerConfiguration['currentState'])
+            );
         }
 
         return array_unique($allCurrentStateFieldnames);
@@ -88,18 +159,15 @@ abstract class AbstractDataHandlerListener
      * @param int $pageId
      * @return array
      */
-    protected function getSubPageIds($pageId)
+    protected function getSubPageIds(int $pageId): array
     {
-        /** @var $queryGenerator \TYPO3\CMS\Core\Database\QueryGenerator */
-        $queryGenerator = GeneralUtility::makeInstance(QueryGenerator::class);
-
         // here we retrieve only the subpages of this page because the permission clause is not evaluated
         // on the root node.
         $permissionClause = ' 1 ' . BackendUtility::BEenableFields('pages');
-        $treePageIdList = $queryGenerator->getTreeList($pageId, 20, 0, $permissionClause);
+        $treePageIdList = (string)$this->getQueryGenerator()->getTreeList($pageId, 20, 0, $permissionClause);
         $treePageIds = array_map('intval', explode(',', $treePageIdList));
 
-            // the first one can be ignored because this is the page itself
+        // the first one can be ignored because this is the page itself
         array_shift($treePageIds);
 
         return $treePageIds;
@@ -112,28 +180,34 @@ abstract class AbstractDataHandlerListener
      * columns have explicitly been configured via plugin.tx_solr.index.queue.recursiveUpdateFields
      *
      * @param int $pageId
-     * @param array $changedFields
+     * @param array $updatedFields
      * @return bool
      */
-    protected function isRecursivePageUpdateRequired($pageId, $changedFields)
+    protected function isRecursivePageUpdateRequired(int $pageId, array $updatedFields): bool
     {
         // First check RecursiveUpdateTriggerConfiguration
-        $isRecursiveUpdateRequired = $this->isRecursiveUpdateRequired($pageId, $changedFields);
+        $isRecursiveUpdateRequired = $this->isRecursiveUpdateRequired($pageId, $updatedFields);
         // If RecursiveUpdateTriggerConfiguration is false => check if changeFields are part of recursiveUpdateFields
         if ($isRecursiveUpdateRequired === false) {
             $solrConfiguration = $this->frontendEnvironment->getSolrConfigurationFromPageId($pageId);
-            $indexQueueConfigurationName = $this->configurationAwareRecordService->getIndexingConfigurationName('pages', $pageId, $solrConfiguration);
+            $indexQueueConfigurationName = $this->configurationAwareRecordService->getIndexingConfigurationName(
+                'pages',
+                $pageId,
+                $solrConfiguration
+            );
             if ($indexQueueConfigurationName === null) {
                 return false;
             }
-            $updateFields = $solrConfiguration->getIndexQueueConfigurationRecursiveUpdateFields($indexQueueConfigurationName);
+            $updateFields = $solrConfiguration->getIndexQueueConfigurationRecursiveUpdateFields(
+                $indexQueueConfigurationName
+            );
 
             // Check if no additional fields have been defined and then skip recursive update
             if (empty($updateFields)) {
                 return false;
             }
             // If the recursiveUpdateFields configuration is not part of the $changedFields skip recursive update
-            if (!array_intersect_key($changedFields, $updateFields)) {
+            if (!array_intersect_key($updatedFields, $updateFields)) {
                 return false;
             }
         }
@@ -143,17 +217,17 @@ abstract class AbstractDataHandlerListener
 
     /**
      * @param int $pageId
-     * @param array $changedFields
+     * @param array $updatedFields
      * @return bool
      */
-    protected function isRecursiveUpdateRequired($pageId, $changedFields)
+    protected function isRecursiveUpdateRequired(int $pageId, array $updatedFields): bool
     {
         $fieldsForCurrentState = $this->getAllRelevantFieldsForCurrentState();
         $fieldListToRetrieve = implode(',', $fieldsForCurrentState);
         $page = BackendUtility::getRecord('pages', $pageId, $fieldListToRetrieve, '', false);
         foreach ($this->getUpdateSubPagesRecursiveTriggerConfiguration() as $triggerConfiguration) {
             $allCurrentStateFieldsMatch = $this->getAllCurrentStateFieldsMatch($triggerConfiguration, $page);
-            $allChangeSetValuesMatch = $this->getAllChangeSetValuesMatch($triggerConfiguration, $changedFields);
+            $allChangeSetValuesMatch = $this->getAllChangeSetValuesMatch($triggerConfiguration, $updatedFields);
 
             $aMatchingTriggerHasBeenFound = $allCurrentStateFieldsMatch && $allChangeSetValuesMatch;
             if ($aMatchingTriggerHasBeenFound) {
@@ -169,7 +243,7 @@ abstract class AbstractDataHandlerListener
      * @param array $pageRecord
      * @return bool
      */
-    protected function getAllCurrentStateFieldsMatch($triggerConfiguration, $pageRecord)
+    protected function getAllCurrentStateFieldsMatch(array $triggerConfiguration, array $pageRecord): bool
     {
         $triggerConfigurationHasNoCurrentStateConfiguration = !array_key_exists('currentState', $triggerConfiguration);
         if ($triggerConfigurationHasNoCurrentStateConfiguration) {
@@ -184,7 +258,7 @@ abstract class AbstractDataHandlerListener
      * @param array $changedFields
      * @return bool
      */
-    protected function getAllChangeSetValuesMatch($triggerConfiguration, $changedFields)
+    protected function getAllChangeSetValuesMatch(array $triggerConfiguration, array $changedFields): bool
     {
         $triggerConfigurationHasNoChangeSetStateConfiguration = !array_key_exists('changeSet', $triggerConfiguration);
         if ($triggerConfigurationHasNoChangeSetStateConfiguration) {
@@ -213,5 +287,16 @@ abstract class AbstractDataHandlerListener
      *
      * @return array
      */
-    abstract protected function getUpdateSubPagesRecursiveTriggerConfiguration();
+    protected function getUpdateSubPagesRecursiveTriggerConfiguration(): array
+    {
+        return $this->updateSubPagesRecursiveTriggerConfiguration;
+    }
+
+    /**
+     * @return QueryGenerator
+     */
+    protected function getQueryGenerator(): QueryGenerator
+    {
+        return GeneralUtility::makeInstance(QueryGenerator::class);
+    }
 }
