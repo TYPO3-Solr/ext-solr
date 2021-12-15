@@ -118,7 +118,7 @@ class SearchUriBuilder
 
         $arguments = $persistentAndFacetArguments + $additionalArguments;
 
-        $this->sortFilterParametersIfNecessary($previousSearchRequest, $arguments['tx_solr']['filter']);
+        $this->sortFilterParametersIfNecessary($previousSearchRequest, $arguments);
 
         $pageUid = $this->getTargetPageUidFromRequestConfiguration($previousSearchRequest);
         return $this->buildLinkWithInMemoryCache($pageUid, $arguments);
@@ -158,7 +158,7 @@ class SearchUriBuilder
         }
         $arguments = $persistentAndFacetArguments + $additionalArguments;
 
-        $this->sortFilterParametersIfNecessary($previousSearchRequest, $arguments['tx_solr']['filter']);
+        $this->sortFilterParametersIfNecessary($previousSearchRequest, $arguments);
 
         $pageUid = $this->getTargetPageUidFromRequestConfiguration($previousSearchRequest);
         return $this->buildLinkWithInMemoryCache($pageUid, $arguments);
@@ -182,7 +182,7 @@ class SearchUriBuilder
 
         $arguments = $persistentAndFacetArguments + $additionalArguments;
 
-        $this->sortFilterParametersIfNecessary($previousSearchRequest, $arguments['tx_solr']['filter']);
+        $this->sortFilterParametersIfNecessary($previousSearchRequest, $arguments);
 
         $pageUid = $this->getTargetPageUidFromRequestConfiguration($previousSearchRequest);
         return $this->buildLinkWithInMemoryCache($pageUid, $arguments);
@@ -205,7 +205,7 @@ class SearchUriBuilder
 
         $arguments = $persistentAndFacetArguments + $additionalArguments;
 
-        $this->sortFilterParametersIfNecessary($previousSearchRequest, $arguments['tx_solr']['filter']);
+        $this->sortFilterParametersIfNecessary($previousSearchRequest, $arguments);
 
         $pageUid = $this->getTargetPageUidFromRequestConfiguration($previousSearchRequest);
         return $this->buildLinkWithInMemoryCache($pageUid, $arguments);
@@ -261,7 +261,7 @@ class SearchUriBuilder
         );
         $arguments = $request->setRawQueryString($queryString)->getAsArray();
 
-        $this->sortFilterParametersIfNecessary($previousSearchRequest, $arguments['tx_solr']['filter']);
+        $this->sortFilterParametersIfNecessary($previousSearchRequest, $arguments);
 
         $pageUid = $this->getTargetPageUidFromRequestConfiguration($previousSearchRequest);
         return $this->buildLinkWithInMemoryCache($pageUid, $arguments);
@@ -503,13 +503,18 @@ class SearchUriBuilder
      *
      *
      * @param SearchRequest $searchRequest
-     * @param array|null $filterArguments
+     * @param array $arguments
      */
-    protected function sortFilterParametersIfNecessary(SearchRequest $searchRequest, ?array &$filterArguments)
+    protected function sortFilterParametersIfNecessary(SearchRequest $searchRequest, array &$arguments)
     {
-        if (is_array($filterArguments) && !empty($filterArguments) && $searchRequest->isActiveFacetsSorted()) {
-            ParameterSortingUtility::sortByType(
-                $filterArguments,
+        if (!$searchRequest->isActiveFacetsSorted()) {
+            return;
+        }
+
+        $pluginNameSpace = $searchRequest->getContextTypoScriptConfiguration()->getSearchPluginNamespace();
+        if (!empty($arguments[$pluginNameSpace]['filter']) && is_array($arguments[$pluginNameSpace]['filter'])) {
+            $arguments[$pluginNameSpace]['filter'] = ParameterSortingUtility::sortByType(
+                $arguments[$pluginNameSpace]['filter'],
                 $searchRequest->getActiveFacetsUrlParameterStyle()
             );
         }
