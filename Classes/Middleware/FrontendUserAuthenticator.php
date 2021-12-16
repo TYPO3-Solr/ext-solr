@@ -131,6 +131,7 @@ class FrontendUserAuthenticator implements MiddlewareInterface
         /* @noinspection PhpParamsInspection */
         $this->context->setAspect('frontend.user', GeneralUtility::makeInstance(UserAspect::class, $feUser, $groups));
         $request = $request->withAttribute('frontend.user', $feUser);
+        $feUser->start($request);
 
         return $request;
     }
