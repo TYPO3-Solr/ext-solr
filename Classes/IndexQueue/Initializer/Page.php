@@ -58,23 +58,6 @@ class Page extends AbstractInitializer
     protected $type = 'pages';
 
     /**
-     * @var PagesRepository
-     */
-    protected $pagesRepository;
-
-    /**
-     * Constructor, sets type and indexingConfigurationName to "pages".
-     *
-     * @param QueueItemRepository|null $queueItemRepository
-     * @param PagesRepository|null $pagesRepository
-     */
-    public function __construct(QueueItemRepository $queueItemRepository = null, PagesRepository $pagesRepository = null)
-    {
-        parent::__construct($queueItemRepository);
-        $this->pagesRepository = $pagesRepository ?? GeneralUtility::makeInstance(PagesRepository::class);
-    }
-
-    /**
      * Overrides the general setType() implementation, forcing type to "pages".
      *
      * @param string $type Type to initialize (ignored).

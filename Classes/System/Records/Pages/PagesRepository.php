@@ -27,8 +27,12 @@ namespace ApacheSolrForTypo3\Solr\System\Records\Pages;
 
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\System\Records\AbstractRepository;
+use Doctrine\DBAL\Driver\Exception as DBALDriverException;
+use PDO;
+use Throwable;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\Connection;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Database\Query\QueryHelper;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
@@ -144,26 +148,25 @@ class PagesRepository extends AbstractRepository
     /**
      * Generates a list of page IDs in this site.
      * Attentions:
-     * * Includes all page types except Deleted pages!
+     * * Includes all page types except deleted pages!
      *
      * @param int $rootPageId Page ID from where to start collection sub pages
      * @param string $initialPagesAdditionalWhereClause
      * @return array Array of pages (IDs) in this site
-     * @noinspection PhpArrayUsedOnlyForWriteInspection
+     * @throws DBALDriverException
      */
     public function findAllSubPageIdsByRootPage(
         int $rootPageId,
         string $initialPagesAdditionalWhereClause = ''
-    ) : array {
+    ) : array
+    {
 
         $cacheIdentifier = sha1('getPages' . (string)$rootPageId . $initialPagesAdditionalWhereClause);
         if ($this->transientVariableCache->get($cacheIdentifier) !== false) {
             return $this->transientVariableCache->get($cacheIdentifier);
         }
 
-        /* @var QueryGenerator $queryGenerator */
-        $queryGenerator = GeneralUtility::makeInstance(QueryGenerator::class);
-        $pageIdsList = $queryGenerator->getTreeList($rootPageId, 9999, 0, 'deleted = 0');
+        $pageIdsList = $this->getTreeList($rootPageId, 9999, 0, 'deleted = 0');
         $pageIds = GeneralUtility::intExplode(',', $pageIdsList);
 
         if (!empty($initialPagesAdditionalWhereClause)) {
@@ -181,6 +184,7 @@ class PagesRepository extends AbstractRepository
      * @param array $pageIds
      * @param string $initialPagesAdditionalWhereClause
      * @return array
+     * @throws DBALDriverException
      */
     protected function filterPageIdsByInitialPagesAdditionalWhereClause(
         array $pageIds,
@@ -206,28 +210,36 @@ class PagesRepository extends AbstractRepository
     }
 
     /**
+     * Finds all pages records in a site or given branch with no_search_sub_entries=1
+     *
      * @param int $rootPageId
-     * @param int $maxDepth
-     * @param string $initialPagesAdditionalWhereClause
+     *
      * @return array
+     * @throws DBALDriverException
+     * @deprecated since v11 and will be removed in v12. Use {@link findAllPagesWithinNoSearchSubEntriesMarkedPages()} instead.
      */
-    public function findAllPagesWithinNoSearchSubEntriesMarkedPagesByRootPage(
-        int $rootPageId,
-        int $maxDepth = 999,
-        string $initialPagesAdditionalWhereClause = ''
-    ): array
+    public function findAllPagesWithinNoSearchSubEntriesMarkedPagesByRootPage(int $rootPageId): array
     {
-        $wholePagetree = $this->findAllSubPageIdsByRootPage($rootPageId, $initialPagesAdditionalWhereClause);
+        trigger_error(
+            'Method ' . __METHOD__ . ' of class ' . __CLASS__ . ' is deprecated since v11 and will be removed in v12. Use PagesRepository::findAllPagesWithinNoSearchSubEntriesMarkedPages() instead.',
+            E_USER_DEPRECATED
+        );
+
+        $wholePageTree = $this->findAllSubPageIdsByRootPage($rootPageId);
 
         $queryBuilder = $this->getQueryBuilder();
         $queryBuilder->getRestrictions()->removeAll();
-        $noSearchSubEntriesEnabledPages = $queryBuilder
-            ->select('uid')
-            ->from($this->table)
-            ->where(
-                $queryBuilder->expr()->in('uid', $queryBuilder->createNamedParameter($wholePagetree, Connection::PARAM_INT_ARRAY)),
-                $queryBuilder->expr()->eq('no_search_sub_entries', $queryBuilder->createNamedParameter(1, \PDO::PARAM_INT))
-            )->execute()->fetchAll();
+        try {
+            $noSearchSubEntriesEnabledPages = $queryBuilder
+                ->select('uid')
+                ->from($this->table)
+                ->where(
+                    $queryBuilder->expr()->in('uid', $queryBuilder->createNamedParameter($wholePageTree, Connection::PARAM_INT_ARRAY)),
+                    $queryBuilder->expr()->eq('no_search_sub_entries', $queryBuilder->createNamedParameter(1, PDO::PARAM_INT))
+                )->execute()->fetchAllAssociative();
+        } catch (Throwable $e) {
+            return [];
+        }
 
         if (empty($noSearchSubEntriesEnabledPages)) {
             return [];
@@ -240,6 +252,33 @@ class PagesRepository extends AbstractRepository
 
         return $pageIds;
     }
+
+    /**
+     * Finds all PIDs within no_search_sub_entries=1 marked pages in all sites.
+     *
+     * @return array
+     */
+    public function findAllPagesWithinNoSearchSubEntriesMarkedPages(): array
+    {
+        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder->getRestrictions()->removeAll();
+        $pageIds = [];
+        try {
+            $noSearchSubEntriesEnabledPagesStatement = $queryBuilder
+                ->select('uid')
+                ->from($this->table)
+                ->where(
+                    $queryBuilder->expr()->eq('no_search_sub_entries', $queryBuilder->createNamedParameter(1, PDO::PARAM_INT))
+                )->execute();
+            while (($pageRow = $noSearchSubEntriesEnabledPagesStatement->fetchAssociative()) !== false) {
+                $pageIds = array_merge($pageIds, $this->findAllSubPageIdsByRootPage((int)$pageRow['uid']));
+            }
+        } catch (Throwable $e) {
+            return [];
+        }
+        return $pageIds;
+    }
+
 
     /**
      * Finds translation overlays by given page Id.
@@ -257,7 +296,7 @@ class PagesRepository extends AbstractRepository
             ->select('pid', 'l10n_parent', 'sys_language_uid')
             ->from('pages')
             ->add('where',
-                $queryBuilder->expr()->eq('l10n_parent', $queryBuilder->createNamedParameter($pageId, \PDO::PARAM_INT))
+                $queryBuilder->expr()->eq('l10n_parent', $queryBuilder->createNamedParameter($pageId, PDO::PARAM_INT))
                 . BackendUtility::BEenableFields('pages')
             )->execute()->fetchAll();
 
@@ -279,7 +318,7 @@ class PagesRepository extends AbstractRepository
             ->select('uid')
             ->from($this->table)
             ->add('where',
-                $queryBuilder->expr()->eq('content_from_pid', $queryBuilder->createNamedParameter($pageId, \PDO::PARAM_INT))
+                $queryBuilder->expr()->eq('content_from_pid', $queryBuilder->createNamedParameter($pageId, PDO::PARAM_INT))
             );
 
         $this->addDefaultLanguageUidConstraint($queryBuilder);
@@ -319,5 +358,59 @@ class PagesRepository extends AbstractRepository
     protected function addDefaultLanguageUidConstraint($queryBuilder)
     {
         $queryBuilder->andWhere($queryBuilder->expr()->eq('sys_language_uid', 0));
+    }
+
+    /**
+     * Recursively fetch all descendants of a given page
+     *
+     * Copied from {@link \TYPO3\CMS\Core\Database\QueryGenerator::getTreeList}, since it is deprecated and will be removed in TYPO3 12.
+     * See: https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/11.0/Deprecation-92080-DeprecatedQueryGeneratorAndQueryView.html
+     *
+     * @param int $id uid of the page
+     * @param int $depth
+     * @param int $begin
+     * @param string $permClause
+     * @return string comma separated list of descendant pages
+     * @throws DBALDriverException
+     * @noinspection Duplicates
+     */
+    protected function getTreeList(int $id, int $depth = 999, int $begin = 0, string $permClause = ''): string
+    {
+        if ($id < 0) {
+            $id = abs($id);
+        }
+        if ($begin === 0) {
+            $theList = $id;
+        } else {
+            $theList = '';
+        }
+        if ($id && $depth > 0) {
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('pages');
+            $queryBuilder->getRestrictions()->removeAll()->add(GeneralUtility::makeInstance(DeletedRestriction::class));
+            $queryBuilder->select('uid')
+                ->from('pages')
+                ->where(
+                    $queryBuilder->expr()->eq('pid', $queryBuilder->createNamedParameter($id, \PDO::PARAM_INT)),
+                    $queryBuilder->expr()->eq('sys_language_uid', 0)
+                )
+                ->orderBy('uid');
+            if ($permClause !== '') {
+                $queryBuilder->andWhere(QueryHelper::stripLogicalOperatorPrefix($permClause));
+            }
+            $statement = $queryBuilder->execute();
+            while ($row = $statement->fetchAssociative()) {
+                if ($begin <= 0) {
+                    $theList .= ',' . $row['uid'];
+                }
+                if ($depth > 1) {
+                    $theSubList = $this->getTreeList($row['uid'], $depth - 1, $begin - 1, $permClause);
+                    if (!empty($theList) && !empty($theSubList) && ($theSubList[0] !== ',')) {
+                        $theList .= ',';
+                    }
+                    $theList .= $theSubList;
+                }
+            }
+        }
+        return $theList;
     }
 }
