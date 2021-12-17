@@ -161,8 +161,9 @@ class SiteRepository
      * Gets all available TYPO3 sites with Solr configured.
      *
      * @param bool $stopOnInvalidSite
-     * @throws Exception
-     * @return Site[] An array of availablesites
+     * @return Site[] An array of available sites
+     * @throws DBALDriverException
+     * @throws Throwable
      */
     public function getAvailableSites($stopOnInvalidSite = false)
     {
@@ -182,7 +183,8 @@ class SiteRepository
     /**
      * @param bool $stopOnInvalidSite
      * @return array
-     * @throws Exception
+     * @throws DBALDriverException
+     * @throws Throwable
      */
     protected function getAvailableTYPO3ManagedSites(bool $stopOnInvalidSite): array
     {
@@ -262,11 +264,11 @@ class SiteRepository
      *
      * @param array $rootPageRecord
      *
-     * @return Typo3ManagedSite
+     * @return Site
      *
      * @throws DBALDriverException
      */
-    protected function buildTypo3ManagedSite(array $rootPageRecord): ?Typo3ManagedSite
+    protected function buildTypo3ManagedSite(array $rootPageRecord): ?Site
     {
         $typo3Site = $this->getTypo3Site($rootPageRecord['uid']);
         if (!$typo3Site instanceof CoreSite) {
@@ -285,7 +287,7 @@ class SiteRepository
         // Try to get first instantiable TSFE for one of site languages, to get TypoScript with `plugin.tx_solr.index.*`,
         // to be able to collect indexing configuration,
         // which are required for BE-Modules/CLI-Commands or RecordMonitor within BE/TCE-commands.
-        // If TSFE for none of languages can be initialized, then the Typo3ManagedSite object unusable at all,
+        // If TSFE for none of languages can be initialized, then the \ApacheSolrForTypo3\Solr\Domain\Site\Site object unusable at all,
         // so the rest of the steps in this method are not necessary, and therefore the null will be returned.
         $tsfeFactory = GeneralUtility::makeInstance(FrontendEnvironment\Tsfe::class);
         $tsfeToUseForTypoScriptConfiguration = $tsfeFactory->getTsfeByPageIdAndLanguageFallbackChain($typo3Site->getRootPageId(), ...$availableLanguageIds);
@@ -336,7 +338,7 @@ class SiteRepository
         );
 
         return GeneralUtility::makeInstance(
-            Typo3ManagedSite::class,
+            Site::class,
             /** @scrutinizer ignore-type */
             $solrConfiguration,
             /** @scrutinizer ignore-type */

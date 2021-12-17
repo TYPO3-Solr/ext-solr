@@ -78,7 +78,7 @@ abstract class AbstractModuleController extends ActionController
     /**
      * @var ?Site
      */
-    protected ?Site $selectedSite;
+    protected ?Site $selectedSite = null;
 
     /**
      * @var SiteRepository

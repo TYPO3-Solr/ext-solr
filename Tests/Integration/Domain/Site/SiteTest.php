@@ -50,7 +50,7 @@ class SiteTest extends IntegrationTest
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         /* @var Site $site */
         $site = $siteRepository->getFirstAvailableSite();
-        $this->assertEquals(0, $site->getDefaultLanguage(), 'Could not get default language from site');
+        $this->assertEquals(0, $site->getDefaultLanguageId(), 'Could not get default language from site');
     }
 
     /**
