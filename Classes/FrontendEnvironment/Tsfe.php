@@ -136,28 +136,28 @@ class Tsfe implements SingletonInterface
             /* @var PageArguments $pageArguments */
             $pageArguments = GeneralUtility::makeInstance(PageArguments::class, $pageId, 0, []);
 
-            /* @var TypoScriptFrontendController $globalsTSFE */
-            $globalsTSFE = GeneralUtility::makeInstance(TypoScriptFrontendController::class, $context, $site, $siteLanguage, $pageArguments, $feUser);
+            /* @var TypoScriptFrontendController $tsfe */
+            $tsfe = GeneralUtility::makeInstance(TypoScriptFrontendController::class, $context, $site, $siteLanguage, $pageArguments, $feUser);
 
             // @extensionScannerIgnoreLine
             /** Done in {@link \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController::settingLanguage} */
-            //$globalsTSFE->sys_page = GeneralUtility::makeInstance(PageRepository::class);
+            //$tsfe->sys_page = GeneralUtility::makeInstance(PageRepository::class);
 
-            $template = GeneralUtility::makeInstance(TemplateService::class, $context, null, $globalsTSFE);
+            $template = GeneralUtility::makeInstance(TemplateService::class, $context, null, $tsfe);
             $template->tt_track = false;
-            $globalsTSFE->tmpl = $template;
+            $tsfe->tmpl = $template;
             $context->setAspect('typoscript', GeneralUtility::makeInstance(TypoScriptAspect::class, true));
-            $globalsTSFE->no_cache = true;
+            $tsfe->no_cache = true;
 
             try {
-                $globalsTSFE->determineId($serverRequest);
-                $globalsTSFE->tmpl->start($globalsTSFE->rootLine);
-                $globalsTSFE->no_cache = false;
-                $globalsTSFE->getConfigArray($serverRequest);
+                $tsfe->determineId($serverRequest);
+                $serverRequest->withAttribute('frontend.controller', $tsfe);
+                $tsfe->no_cache = false;
+                $tsfe->getConfigArray($serverRequest);
 
-                $globalsTSFE->newCObj($serverRequest);
-                $globalsTSFE->absRefPrefix = self::getAbsRefPrefixFromTSFE($globalsTSFE);
-                $globalsTSFE->calculateLinkVars([]);
+                $tsfe->newCObj($serverRequest);
+                $tsfe->absRefPrefix = self::getAbsRefPrefixFromTSFE($tsfe);
+                $tsfe->calculateLinkVars([]);
             } catch (Throwable $exception) {
                 // @todo: logging
                 $this->serverRequestCache[$cacheIdentifier] = null;
@@ -165,7 +165,7 @@ class Tsfe implements SingletonInterface
                 return;
             }
 
-            $this->tsfeCache[$cacheIdentifier] = $globalsTSFE;
+            $this->tsfeCache[$cacheIdentifier] = $tsfe;
         }
 
         // @todo: Not right place for that action, move on more convenient place: indexing a single item+id+lang.
