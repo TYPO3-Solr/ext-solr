@@ -30,6 +30,7 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue\Initializer;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\QueueItemRepository;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
+use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
 use Doctrine\DBAL\DBALException;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -91,15 +92,21 @@ abstract class AbstractInitializer implements IndexQueueInitializer
     protected $queueItemRepository;
 
     /**
+     * @var PagesRepository
+     */
+    protected PagesRepository $pagesRepository;
+
+    /**
      * Constructor, prepares the flash message queue
      * @param QueueItemRepository|null $queueItemRepository
      */
-    public function __construct(QueueItemRepository $queueItemRepository = null)
+    public function __construct(QueueItemRepository $queueItemRepository = null, PagesRepository $pagesRepository = null)
     {
         $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, /** @scrutinizer ignore-type */ __CLASS__);
         $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);
         $this->flashMessageQueue = $flashMessageService->getMessageQueueByIdentifier('solr.queue.initializer');
         $this->queueItemRepository = $queueItemRepository ?? GeneralUtility::makeInstance(QueueItemRepository::class);
+        $this->pagesRepository = $pagesRepository ?? GeneralUtility::makeInstance(PagesRepository::class);
     }
 
     /**
@@ -257,7 +264,7 @@ abstract class AbstractInitializer implements IndexQueueInitializer
         $pages = array_merge($pages, $additionalPageIds);
         sort($pages, SORT_NUMERIC);
 
-        $pagesWithinNoSearchSubEntriesPages = $this->site->getPagesWithinNoSearchSubEntriesPages();
+        $pagesWithinNoSearchSubEntriesPages = $this->pagesRepository->findAllPagesWithinNoSearchSubEntriesMarkedPages();
         // @todo: log properly if $additionalPageIds are within $pagesWithinNoSearchSubEntriesPages
         return array_values(array_diff($pages, $pagesWithinNoSearchSubEntriesPages));
     }
