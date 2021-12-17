@@ -36,7 +36,7 @@ interface SiteInterface
      *
      * @return int The site's root page ID.
      */
-    public function getRootPageId();
+    public function getRootPageId(): int;
 
     /**
      * Gets available language id's for this site
@@ -51,7 +51,7 @@ interface SiteInterface
      *
      * @return string The site's label.
      */
-    public function getLabel();
+    public function getLabel(): string;
 
     /**
      * Gets the site's Solr TypoScript configuration (plugin.tx_solr.*)
@@ -67,7 +67,7 @@ interface SiteInterface
      *
      * @return int The site's default language.
      */
-    public function getDefaultLanguage();
+    public function getDefaultLanguageId(): int;
 
     /**
      * Generates a list of page IDs in this site.
@@ -96,15 +96,14 @@ interface SiteInterface
      *
      * @return string Site Hash.
      */
-    public function getSiteHash();
+    public function getSiteHash(): string;
 
     /**
-     * Gets the site's main domain. More specifically the first domain record in
-     * the site tree.
+     * Gets the site's main domain.
      *
      * @return string The site's main domain.
      */
-    public function getDomain();
+    public function getDomain(): string;
 
     /**
      * Gets the site's root page.

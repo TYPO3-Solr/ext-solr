@@ -26,7 +26,6 @@ namespace ApacheSolrForTypo3\Solr\Report;
 
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
-use ApacheSolrForTypo3\Solr\Domain\Site\Typo3ManagedSite;
 use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
 use Exception;
 use Psr\Http\Message\UriInterface;
@@ -86,7 +85,7 @@ class SiteHandlingStatus extends AbstractSolrStatus
 
         /* @var Site $site */
         foreach ($this->siteRepository->getAvailableSites() as $site) {
-            if (!($site instanceof Typo3ManagedSite)) {
+            if (!($site instanceof Site)) {
                 $reports[] = GeneralUtility::makeInstance(
                     Status::class,
                     /** @scrutinizer ignore-type */ self::TITLE_SITE_HANDLING_CONFIGURATION,

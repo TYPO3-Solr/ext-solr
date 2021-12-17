@@ -15,66 +15,191 @@ namespace ApacheSolrForTypo3\Solr\Domain\Site;
  * The TYPO3 project - inspiring people to share!
  */
 
-use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\ConfigurationAwareRecordService;
 use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
+use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Site\Entity\Site as Typo3Site;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Base Class for Typo3ManagedSite and LegacySite
+ * Class
  *
  * (c) 2011-2015 Ingo Renner <ingo@typo3.org>
  */
-abstract class Site implements SiteInterface
+class Site implements SiteInterface
 {
     /**
      * @var TypoScriptConfiguration
      */
-    protected $configuration;
+    protected TypoScriptConfiguration $configuration;
 
     /**
      * Root page record.
      *
      * @var array
      */
-    protected $rootPage = [];
+    protected array $rootPage = [];
     /**
      * @var string
      */
-    protected $domain;
+    protected string $domain;
 
     /**
      * @var string
      */
-    protected $siteHash;
+    protected string $siteHash;
 
     /**
      * @var PagesRepository
      */
-    protected $pagesRepository;
+    protected PagesRepository $pagesRepository;
 
     /**
      * @var int
      */
-    protected $defaultLanguageId = 0;
+    protected int $defaultLanguageId = 0;
 
     /**
      * @var int[] Available language ids
      */
-    protected $availableLanguageIds = [];
+    protected array $availableLanguageIds = [];
 
     /**
-     * Takes an pagerecord and checks whether the page is marked as root page.
+     * @var Typo3Site|null
+     */
+    protected ?Typo3Site $typo3SiteObject = null;
+
+    /**
+     * @var array
+     */
+    protected array $solrConnectionConfigurations = [];
+
+    /**
+     * @var array
+     */
+    protected array $freeContentModeLanguages = [];
+
+
+    /**
+     * Constructor of Site
      *
-     * @param array $page pagerecord
+     * @todo Use dependency injection instead.
+     *
+     * @param TypoScriptConfiguration $configuration
+     * @param array $page
+     * @param string $domain
+     * @param string $siteHash
+     * @param PagesRepository|null $pagesRepository
+     * @param int $defaultLanguageId
+     * @param array $availableLanguageIds
+     * @param array $solrConnectionConfigurations
+     * @param Typo3Site|null $typo3SiteObject
+     */
+    public function __construct(
+        TypoScriptConfiguration $configuration,
+        array $page,
+        string $domain,
+        string $siteHash,
+        PagesRepository $pagesRepository = null,
+        int $defaultLanguageId = 0,
+        array $availableLanguageIds = [],
+        array $solrConnectionConfigurations = [],
+        Typo3Site $typo3SiteObject = null
+    ) {
+        $this->configuration = $configuration;
+        $this->rootPage = $page;
+        $this->domain = $domain;
+        $this->siteHash = $siteHash;
+        $this->pagesRepository = $pagesRepository ?? GeneralUtility::makeInstance(PagesRepository::class);
+        $this->defaultLanguageId = $defaultLanguageId;
+        $this->availableLanguageIds = $availableLanguageIds;
+        $this->solrConnectionConfigurations = $solrConnectionConfigurations;
+        $this->typo3SiteObject = $typo3SiteObject;
+    }
+
+    /**
+     * @param int $language
+     * @return array
+     * @throws NoSolrConnectionFoundException
+     */
+    public function getSolrConnectionConfiguration(int $language = 0): array
+    {
+        if (!is_array($this->solrConnectionConfigurations[$language])) {
+            /* @var $noSolrConnectionException NoSolrConnectionFoundException */
+            $noSolrConnectionException = GeneralUtility::makeInstance(
+                NoSolrConnectionFoundException::class,
+                /** @scrutinizer ignore-type */  'Could not find a Solr connection for root page [' . $this->getRootPageId() . '] and language [' . $language . '].',
+                /** @scrutinizer ignore-type */ 1552491117
+            );
+            $noSolrConnectionException->setRootPageId($this->getRootPageId());
+            $noSolrConnectionException->setLanguageId($language);
+
+            throw $noSolrConnectionException;
+        }
+
+        return $this->solrConnectionConfigurations[$language];
+    }
+
+    /**
+     * Returns \TYPO3\CMS\Core\Site\Entity\Site
+     *
+     * @return Typo3Site
+     */
+    public function getTypo3SiteObject(): Typo3Site
+    {
+        return $this->typo3SiteObject;
+    }
+
+    /**
+     * Checks if current TYPO3 site has languages
+     *
+     * @return bool
+     */
+    public function hasFreeContentModeLanguages(): bool
+    {
+        return !empty($this->getFreeContentModeLanguages());
+    }
+
+    /**
+     * Return all free content mode languages.
+     *
+     * Note: There is no "fallback type" nor "fallbacks" for default language 0
+     *       See "displayCond" on https://github.com/TYPO3/typo3/blob/1394a4cff5369df3f835dae254b3d4ada2f83c7b/typo3/sysext/backend/Configuration/SiteConfiguration/site_language.php#L403-L416
+     *         or https://review.typo3.org/c/Packages/TYPO3.CMS/+/56505/ for more information.
+     *
+     * @return array|null
+     */
+    public function getFreeContentModeLanguages(): array
+    {
+        if (!empty($this->freeContentModeLanguages)) {
+            return $this->freeContentModeLanguages;
+        }
+
+        if (!$this->typo3SiteObject instanceof Typo3Site) {
+            return false;
+        }
+
+        foreach ($this->availableLanguageIds as $languageId)
+        {
+            if ($languageId > 0 && $this->typo3SiteObject->getLanguageById($languageId)->getFallbackType() === 'free') {
+                $this->freeContentModeLanguages[$languageId] = $languageId;
+            }
+        }
+        return $this->freeContentModeLanguages;
+    }
+
+    /**
+     * Takes a page record and checks whether the page is marked as root page.
+     *
+     * @param array $pageRecord page record
      * @return bool true if the page is marked as root page, false otherwise
      * @todo: move to SiteUtility?
      */
-    public static function isRootPage($page)
+    public static function isRootPage(array $pageRecord): bool
     {
-        if (($page['is_siteroot'] ?? null) == 1) {
+        if (($pageRecord['is_siteroot'] ?? null) == 1) {
             return true;
         }
 
@@ -86,7 +211,7 @@ abstract class Site implements SiteInterface
      *
      * @return int The site's root page ID.
      */
-    public function getRootPageId()
+    public function getRootPageId(): int
     {
         return (int)$this->rootPage['uid'];
     }
@@ -96,7 +221,8 @@ abstract class Site implements SiteInterface
      *
      * @return int[] array or language id's
      */
-    public function getAvailableLanguageIds(): array {
+    public function getAvailableLanguageIds(): array
+    {
         return $this->availableLanguageIds;
     }
 
@@ -106,7 +232,7 @@ abstract class Site implements SiteInterface
      *
      * @return string The site's label.
      */
-    public function getLabel()
+    public function getLabel(): string
     {
         $rootlineTitles = [];
         $rootLine = BackendUtility::BEgetRootLine($this->rootPage['uid']);
@@ -138,13 +264,14 @@ abstract class Site implements SiteInterface
      *
      * @return int The site's default language.
      */
-    public function getDefaultLanguage()
+    public function getDefaultLanguageId(): int
     {
         return $this->defaultLanguageId;
     }
 
     /**
      * @inheritDoc
+     * @throws DBALDriverException
      */
     public function getPages(
         ?int $pageId = null,
@@ -163,30 +290,6 @@ abstract class Site implements SiteInterface
     }
 
     /**
-     * @param int|null $rootPageId
-     * @return array
-     */
-    public function getPagesWithinNoSearchSubEntriesPages(int $rootPageId = null): array
-    {
-        if ($rootPageId === null) {
-            $rootPageId = (int)$this->rootPage['uid'];
-        }
-
-        /* @var ConfigurationAwareRecordService $configurationAwareRecordService */
-        $configurationAwareRecordService = GeneralUtility::makeInstance(ConfigurationAwareRecordService::class);
-        // Fetch configuration in order to be able to read initialPagesAdditionalWhereClause
-        $solrConfiguration = $this->getSolrConfiguration();
-        $indexQueueConfigurationName = $configurationAwareRecordService->getIndexingConfigurationName('pages', $this->rootPage['uid'], $solrConfiguration);
-        $initialPagesAdditionalWhereClause = $solrConfiguration->getInitialPagesAdditionalWhereClause($indexQueueConfigurationName);
-
-        return $this->pagesRepository->findAllPagesWithinNoSearchSubEntriesMarkedPagesByRootPage(
-            $rootPageId,
-            999,
-            $initialPagesAdditionalWhereClause
-        );
-    }
-
-    /**
      * Generates the site's unique Site Hash.
      *
      * The Site Hash is build from the site's main domain, the system encryption
@@ -195,28 +298,25 @@ abstract class Site implements SiteInterface
      *
      * @return string Site Hash.
      */
-    public function getSiteHash()
+    public function getSiteHash(): string
     {
         return $this->siteHash;
     }
 
     /**
-     * Gets the site's main domain. More specifically the first domain record in
-     * the site tree.
-     *
-     * @return string The site's main domain.
+     * @inheritDoc
      */
-    public function getDomain()
+    public function getDomain(): string
     {
         return $this->domain;
     }
 
     /**
-     * Gets the site's root page.
+     * Gets the site's root page record.
      *
      * @return array The site's root page.
      */
-    public function getRootPage()
+    public function getRootPage(): array
     {
         return $this->rootPage;
     }
@@ -226,7 +326,7 @@ abstract class Site implements SiteInterface
      *
      * @return string The site's root page's title
      */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->rootPage['title'];
     }
@@ -251,7 +351,8 @@ abstract class Site implements SiteInterface
     /**
      * @return array
      */
-    public function getAllSolrConnectionConfigurations(): array {
+    public function getAllSolrConnectionConfigurations(): array
+    {
         $configs = [];
         foreach ($this->getAvailableLanguageIds() as $languageId) {
             try {
@@ -265,10 +366,4 @@ abstract class Site implements SiteInterface
     {
         return !empty($this->getAllSolrConnectionConfigurations());
     }
-
-    /**
-     * @param int $language
-     * @return array
-     */
-    abstract public function getSolrConnectionConfiguration(int $language = 0): array;
 }
