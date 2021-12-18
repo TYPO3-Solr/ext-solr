@@ -160,7 +160,7 @@ jobs:
         with:
           php-version: ${{ matrix.PHP }}
           coverage: xdebug
-          tools: composer:v2
+          tools: composer:2.1.14
       -
         name: Resolve CI build cache key
         # CI_CACHE_VERSION is used and can be increased to be able to invalidate caches. For example if some composer dependencies added or removed in composer.json or

@@ -1,7 +1,23 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\System\Solr;
+
+/*
+ * This file is part of the TYPO3 CMS project.
+ *
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
+ *
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ *
+ * The TYPO3 project - inspiring people to share!
+ */
+
 use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use Countable;
+use stdClass;
 
 /**
  * In EXT:solr 9 we have switched from the SolrPhpClient to the solarium api.
@@ -14,54 +30,54 @@ use Countable;
  *
  * Search response
  *
- * @property \stdClass facet_counts
- * @property \stdClass facets
- * @property \stdClass spellcheck
- * @property \stdClass response
- * @property \stdClass responseHeader
- * @property \stdClass highlighting
- * @property \stdClass debug
- * @property \stdClass lucene
+ * @property stdClass facet_counts
+ * @property stdClass facets
+ * @property stdClass spellcheck
+ * @property stdClass response
+ * @property stdClass responseHeader
+ * @property stdClass highlighting
+ * @property stdClass debug
+ * @property stdClass lucene
  * @property string file
  * @property array file_metadata
  *
  * Luke response
  *
- * @property \stdClass index
- * @property \stdClass fields
+ * @property stdClass index
+ * @property stdClass fields
  */
 class ResponseAdapter implements Countable
 {
     /**
-     * @var string
+     * @var ?string
      */
-    protected $responseBody;
+    protected ?string $responseBody = null;
 
     /**
-     * @var \stdClass
+     * @var stdClass|null
      */
-    protected $data = null;
+    protected ?stdClass $data = null;
 
     /**
      * @var int
      */
-    protected $httpStatus = 200;
+    protected int $httpStatus = 200;
 
     /**
      * @var string
      */
-    protected $httpStatusMessage = '';
+    protected string $httpStatusMessage = '';
 
     /**
      * ResponseAdapter constructor.
      *
-     * @param string $responseBody
+     * @param string|null $responseBody
      * @param int $httpStatus
      * @param string $httpStatusMessage
      */
-    public function __construct($responseBody, $httpStatus = 500, $httpStatusMessage = '')
+    public function __construct(?string $responseBody, int $httpStatus = 500, string $httpStatusMessage = '')
     {
-        $this->data = json_decode($responseBody);
+        $this->data = json_decode($responseBody ?? '');
         $this->responseBody = $responseBody;
         $this->httpStatus = $httpStatus;
         $this->httpStatusMessage = $httpStatusMessage;
@@ -88,7 +104,7 @@ class ResponseAdapter implements Countable
      * @param string $key
      * @return mixed
      */
-    public function __get($key)
+    public function __get(string $key)
     {
         if (isset($this->data->$key)) {
             return $this->data->$key;
@@ -103,7 +119,7 @@ class ResponseAdapter implements Countable
      * @param string $key
      * @return boolean
      */
-    public function __isset($key)
+    public function __isset(string $key)
     {
         return isset($this->data->$key);
     }
@@ -117,9 +133,9 @@ class ResponseAdapter implements Countable
     }
 
     /**
-     * @return string
+     * @return ?string
      */
-    public function getRawResponse()
+    public function getRawResponse(): ?string
     {
         return $this->responseBody;
     }
@@ -143,8 +159,11 @@ class ResponseAdapter implements Countable
     /**
      * Counts the elements of
      */
-    public function count()
+    public function count(): int
     {
-        return count(get_object_vars($this->data));
+        if (null !== $this->data) {
+            return count(get_object_vars($this->data));
+        }
+        return 0;
     }
 }
