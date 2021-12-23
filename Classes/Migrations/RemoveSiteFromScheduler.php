@@ -75,7 +75,7 @@ class RemoveSiteFromScheduler implements Migration {
                     ->execute();
 
                 $migratedTaskCount += $updatedRows;
-            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
                 $failedTaskCount++;
                 $status = FlashMessage::ERROR;
             }

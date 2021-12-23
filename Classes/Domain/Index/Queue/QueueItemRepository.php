@@ -428,7 +428,7 @@ class QueueItemRepository extends AbstractRepository
             $queryBuilderForDeletingProperties->execute();
 
             $queryBuilderForDeletingItems->getConnection()->commit();
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             $queryBuilderForDeletingItems->getConnection()->rollback();
             throw $e;
         }

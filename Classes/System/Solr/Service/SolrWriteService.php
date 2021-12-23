@@ -39,7 +39,7 @@ class SolrWriteService extends AbstractSolrService
         try {
             $response = $this->createAndExecuteRequest($query);
             return [$response->file, (array)$response->file_metadata];
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             $param = $query->getRequestBuilder()->build($query)->getParams();
             $this->logger->log(
                 SolrLogManager::ERROR,
