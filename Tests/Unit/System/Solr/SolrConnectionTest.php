@@ -91,7 +91,7 @@ class SolrConnectionTest extends UnitTest
                 $streamFactory ?? $this->getDumbMock(StreamFactoryInterface::class),
                 $eventDispatcher ?? $this->getDumbMock(EventDispatcherInterface::class)
             );
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             // No exception will be ever happen, this is for saving up the lines in test cases.
         }
     }

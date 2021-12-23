@@ -154,7 +154,7 @@ class SolrStatus extends AbstractSolrStatus
     {
         try {
             $solrVersion = $this->formatSolrVersion($solr->getSolrServerVersion());
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             $this->responseStatus = Status::ERROR;
             $solrVersion = 'Error getting solr version: ' . $e->getMessage();
         }
@@ -174,7 +174,7 @@ class SolrStatus extends AbstractSolrStatus
             $accessFilterPluginStatus = GeneralUtility::makeInstance(AccessFilterPluginInstalledStatus::class);
             $accessFilterPluginVersion = $accessFilterPluginStatus->getInstalledPluginVersion($solrAdminService);
             $accessFilterMessage = $accessFilterPluginVersion;
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             $this->responseStatus = Status::ERROR;
             $accessFilterMessage = 'Error getting access filter: ' . $e->getMessage();
         }
@@ -209,7 +209,7 @@ class SolrStatus extends AbstractSolrStatus
     {
         try {
             $solrConfigMessage = $solrAdminService->getSolrconfigName();
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             $this->responseStatus = Status::ERROR;
             $solrConfigMessage = 'Error determining solr config: ' . $e->getMessage();
         }
@@ -227,7 +227,7 @@ class SolrStatus extends AbstractSolrStatus
     {
         try {
             $solrSchemaMessage = $solrAdminService->getSchema()->getName();
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             $this->responseStatus = Status::ERROR;
             $solrSchemaMessage = 'Error determining schema name: ' . $e->getMessage();
         }

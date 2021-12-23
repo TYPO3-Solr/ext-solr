@@ -34,7 +34,7 @@ use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use ApacheSolrForTypo3\Solr\Typo3PageIndexer;
 use ApacheSolrForTypo3\Solr\Util;
-use Exception;
+use Throwable;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Log\Logger;
 use TYPO3\CMS\Core\SingletonInterface;
@@ -309,7 +309,7 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
             foreach ($documentsSentToSolr as $document) {
                 $this->responseData['documentsSentToSolr'][] = (array)$document;
             }
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             if ($configuration->getLoggingExceptions()) {
                 $this->logger->log(
                     SolrLogManager::ERROR,

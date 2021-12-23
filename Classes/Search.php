@@ -191,7 +191,7 @@ class Search
             }
 
             $solrAvailable = true;
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             if ($this->configuration->getLoggingExceptions()) {
                 $this->logger->log(
                     SolrLogManager::ERROR,

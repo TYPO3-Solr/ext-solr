@@ -319,7 +319,7 @@ class Indexer extends AbstractIndexer
             $pageId = $this->getPageIdOfItem($item);
             $solrConfiguration = $this->frontendEnvironment->getSolrConfigurationFromPageId($pageId, $language, $item->getRootPageUid());
             return $solrConfiguration->getIndexQueueFieldsConfigurationByConfigurationName($indexConfigurationName, []);
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             return [];
         }
     }

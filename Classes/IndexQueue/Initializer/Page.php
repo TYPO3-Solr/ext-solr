@@ -36,7 +36,6 @@ use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
 use Doctrine\DBAL\ConnectionException;
 use Doctrine\DBAL\Exception as DBALException;
-use Exception;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -150,7 +149,7 @@ class Page extends AbstractInitializer
 
                 $databaseConnection->commit();
                 $mountPointsInitialized = true;
-            } catch (Exception $e) {
+            } catch (\Throwable $e) {
                 $databaseConnection->rollBack();
 
                 $this->logger->log(
