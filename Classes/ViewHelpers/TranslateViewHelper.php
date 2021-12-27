@@ -39,7 +39,10 @@ class TranslateViewHelper extends CoreTranslateViewHelper
     {
         $result = parent::render();
         $result = self::replaceTranslationPrefixesWithAtWithStringMarker($result);
-        $result = vsprintf($result, $this->arguments['arguments']);
+        if (is_array($this->arguments['arguments'])) {
+            $result = vsprintf($result, $this->arguments['arguments']);
+        }
+
         return $result;
     }
 
@@ -54,11 +57,13 @@ class TranslateViewHelper extends CoreTranslateViewHelper
      *
      * @return string|null
      */
-    public static function translateAndReplaceMarkers($id, $extensionName, $arguments, $languageKey, $alternativeLanguageKeys)
+    public static function translateAndReplaceMarkers($id, $extensionName = 'solr', $arguments = null, $languageKey = null, $alternativeLanguageKeys = null)
     {
         $result = LocalizationUtility::translate($id, $extensionName, $arguments, $languageKey, $alternativeLanguageKeys);
         $result = self::replaceTranslationPrefixesWithAtWithStringMarker($result);
-        $result = vsprintf($result, $arguments);
+        if (is_array($arguments)) {
+            $result = vsprintf($result, $arguments);
+        }
         return $result;
     }
 
