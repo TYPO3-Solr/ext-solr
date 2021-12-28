@@ -238,6 +238,10 @@ class UserGroupDetector extends AbstractFrontendHelper implements
             $frontendGroups[] = '0';
         }
 
+        // Index user groups first
+        sort($frontendGroups, SORT_NUMERIC);
+        $frontendGroups = array_reverse($frontendGroups);
+
         return $frontendGroups;
     }
 
