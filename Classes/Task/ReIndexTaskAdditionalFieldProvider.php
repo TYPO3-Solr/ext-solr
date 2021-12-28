@@ -99,8 +99,8 @@ class ReIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldProvider
      * @param SchedulerModuleController $schedulerModule
      */
     protected function initialize(
-        array $taskInfo = [],
-        AbstractTask $task = null,
+        array $taskInfo,
+        ?AbstractTask $task,
         SchedulerModuleController $schedulerModule
     )
     {
