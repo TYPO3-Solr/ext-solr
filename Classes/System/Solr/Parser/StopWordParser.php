@@ -56,12 +56,12 @@ class StopWordParser
     /**
      * @param string|array $stopWords
      * @return string
-     * @throws \Apache_Solr_InvalidArgumentException
+     * @throws \InvalidArgumentException
      */
     public function toJson($stopWords)
     {
         if (empty($stopWords)) {
-            throw new \Apache_Solr_InvalidArgumentException('Must provide stop word.');
+            throw new \InvalidArgumentException('Must provide stop word.');
         }
 
         if (is_string($stopWords)) {

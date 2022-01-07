@@ -62,12 +62,12 @@ class SynonymParser
      * @param string $baseWord
      * @param array $synonyms
      * @return string
-     * @throws \Apache_Solr_InvalidArgumentException
+     * @throws \InvalidArgumentException
      */
     public function toJson($baseWord, $synonyms)
     {
         if (empty($baseWord) || empty($synonyms)) {
-            throw new \Apache_Solr_InvalidArgumentException('Must provide base word and synonyms.');
+            throw new \InvalidArgumentException('Must provide base word and synonyms.');
         }
 
         return json_encode([$baseWord => $synonyms]);
