@@ -1,4 +1,4 @@
-﻿.. ==================================================
+.. ==================================================
 .. FOR YOUR INFORMATION
 .. --------------------------------------------------
 .. -*- coding: utf-8 -*- with BOM.
@@ -17,7 +17,7 @@ Apache Solr for TYPO3 (EXT:solr)
 		solr
 
 	:Version:
-		11.1.2
+		11.2.0
 
 	:Language:
 		en
@@ -29,14 +29,13 @@ Apache Solr for TYPO3 (EXT:solr)
 		search, full text, index, solr, lucene, fast, query, results
 
 	:Copyright:
-		2009-2019
-		2009-2019
+		2009-2022
 
 	:Author:
 		Ingo Renner, Markus Friedrich, Rafael Kähm, Timo Hund
 
 	:Email:
-		ingo@typo3.org
+		solr-eb-support@dkd.de
 
 	:License:
 		This document is published under the Open Content License
