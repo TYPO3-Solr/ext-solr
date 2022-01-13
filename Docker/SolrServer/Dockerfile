@@ -1,5 +1,5 @@
-FROM solr:8.9.0
-MAINTAINER Timo Hund <timo.hund@dkd.de>
+FROM solr:8.11.1
+MAINTAINER dkd Internet Service GmbH <solr-eb-support@dkd.de>
 ENV TERM linux
 
 USER root
