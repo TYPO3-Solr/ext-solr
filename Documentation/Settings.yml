@@ -4,10 +4,10 @@
 
 ---
 conf.py:
-  copyright: 2021
+  copyright: 2022
   project: Documentation for EXT:solr the Apache Solr integration for TYPO3
-  version: 11.1.2
-  release: 11.1.2
+  version: 11.2.0
+  release: 11.2.0
   extensions:
     - sphinx.ext.intersphinx
     - t3sphinx.ext.t3extras
