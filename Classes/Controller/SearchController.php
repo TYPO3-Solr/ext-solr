@@ -128,6 +128,7 @@ class SearchController extends AbstractBaseController
             $this->view->assignMultiple($values);
         } catch (SolrUnavailableException $e) {
             $this->handleSolrUnavailable();
+            return new ForwardResponse('solrNotAvailable');
         }
         return $this->htmlResponse();
     }
@@ -186,6 +187,7 @@ class SearchController extends AbstractBaseController
             $this->view->assign('document', $document);
         } catch (SolrUnavailableException $e) {
             $this->handleSolrUnavailable();
+            return new ForwardResponse('solrNotAvailable');
         }
         return $this->htmlResponse();
     }
@@ -200,17 +202,6 @@ class SearchController extends AbstractBaseController
             $this->response->setStatus(503);
         }
         return $this->htmlResponse();
-    }
-
-    /**
-     * Called when the solr server is unavailable.
-     *
-     * @return void
-     */
-    protected function handleSolrUnavailable()
-    {
-        parent::handleSolrUnavailable();
-        return new ForwardResponse('solrNotAvailable');
     }
 
     /**
