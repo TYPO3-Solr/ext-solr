@@ -156,9 +156,9 @@ class IndexService
      * Generates a message in the error log when an error occured.
      *
      * @param Item $itemToIndex
-     * @param \Exception  $e
+     * @param \Throwable $e
      */
-    protected function generateIndexingErrorLog(Item $itemToIndex, \Exception $e)
+    protected function generateIndexingErrorLog(Item $itemToIndex, \Throwable $e)
     {
         $message = 'Failed indexing Index Queue item ' . $itemToIndex->getIndexQueueUid();
         $data = ['code' => $e->getCode(), 'message' => $e->getMessage(), 'trace' => $e->getTraceAsString(), 'item' => (array)$itemToIndex];
