@@ -72,7 +72,7 @@ abstract class AbstractRangeFacetParser extends AbstractFacetParser
             $fromInResponse = $this->parseResponseValue($valuesFromResponse['start']);
             $toInResponse = $this->parseResponseValue($valuesFromResponse['end']);
 
-            if (preg_match('/(-?\d*?)-(-?\d*)/', $activeValue[0], $rawValues) == 1) {
+            if (isset($activeValue[0]) && preg_match('/(-?\d*?)-(-?\d*)/', $activeValue[0], $rawValues) == 1) {
                 $rawFrom = $rawValues[1];
                 $rawTo = $rawValues[2];
             } else {

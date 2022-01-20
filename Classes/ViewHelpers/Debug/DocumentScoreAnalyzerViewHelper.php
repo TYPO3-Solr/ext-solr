@@ -72,7 +72,13 @@ class DocumentScoreAnalyzerViewHelper extends AbstractSolrFrontendViewHelper
 
         /** @var $resultSet SearchResultSet */
         $resultSet = self::getUsedSearchResultSetFromRenderingContext($renderingContext);
-        $debugData = $resultSet->getUsedSearch()->getDebugResponse()->explain->{$document->getId()};
+        $debugData = '';
+        if (
+            null !== $resultSet->getUsedSearch()->getDebugResponse()
+            && !empty($resultSet->getUsedSearch()->getDebugResponse()->explain)
+        ) {
+            $debugData = $resultSet->getUsedSearch()->getDebugResponse()->explain->{$document->getId()} ?? '';
+        }
 
         /** @var $scoreService ScoreCalculationService */
         $scoreService = self::getScoreService();

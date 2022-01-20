@@ -173,7 +173,7 @@ class Relation extends AbstractContentObject
         $mmTableName = $localFieldTca['config']['MM'];
 
         // Remove the first option of foreignLabelField for recursion
-        if (strpos($this->configuration['foreignLabelField'], '.') !== false) {
+        if (strpos($this->configuration['foreignLabelField'] ?? '', '.') !== false) {
             $foreignTableLabelFieldArr = explode('.', $this->configuration['foreignLabelField']);
             unset($foreignTableLabelFieldArr[0]);
             $this->configuration['foreignLabelField'] = implode('.', $foreignTableLabelFieldArr);
@@ -189,7 +189,7 @@ class Relation extends AbstractContentObject
         $relatedRecords = $this->getRelatedRecords($foreignTableName, ...$selectUids);
         foreach ($relatedRecords as $record) {
             if (isset($foreignTableTca['columns'][$foreignTableLabelField]['config']['foreign_table'])
-                && $this->configuration['enableRecursiveValueResolution']
+                && !empty($this->configuration['enableRecursiveValueResolution'])
             ) {
                 if (strpos($this->configuration['foreignLabelField'], '.') !== false) {
                     $foreignTableLabelFieldArr = explode('.', $this->configuration['foreignLabelField']);
@@ -227,11 +227,11 @@ class Relation extends AbstractContentObject
         $foreignTableLabelField = $foreignTableTca['ctrl']['label'] ?? null;
 
         // when foreignLabelField is not enabled we can return directly
-        if (empty($this->configuration['foreignLabelField'] ?? null)) {
+        if (empty($this->configuration['foreignLabelField'])) {
             return $foreignTableLabelField;
         }
 
-        if (strpos($this->configuration['foreignLabelField'], '.') !== false) {
+        if (strpos($this->configuration['foreignLabelField'] ?? '', '.') !== false) {
             list($foreignTableLabelField) = explode('.', $this->configuration['foreignLabelField'], 2);
         } else {
             $foreignTableLabelField = $this->configuration['foreignLabelField'];

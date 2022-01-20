@@ -186,11 +186,13 @@ abstract class AbstractBaseController extends ActionController
             );
         }
 
-        $this->objectManager->get(ConfigurationService::class)
-            ->overrideConfigurationWithFlexFormSettings(
-                $this->contentObjectRenderer->data['pi_flexform'],
-                $this->typoScriptConfiguration
-            );
+        if (!empty($this->contentObjectRenderer->data['pi_flexform'])) {
+            $this->objectManager->get(ConfigurationService::class)
+                ->overrideConfigurationWithFlexFormSettings(
+                    $this->contentObjectRenderer->data['pi_flexform'],
+                    $this->typoScriptConfiguration
+                );
+        }
 
         parent::initializeAction();
         $this->typoScriptFrontendController = $GLOBALS['TSFE'];

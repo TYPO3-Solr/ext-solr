@@ -204,7 +204,7 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
     {
         $highestPriority = 0;
 
-        if (is_array($GLOBALS['T3_SERVICES']['auth'])) {
+        if (is_array($GLOBALS['T3_SERVICES']['auth'] ?? null)) {
             foreach ($GLOBALS['T3_SERVICES']['auth'] as $service) {
                 if ($service['priority'] > $highestPriority) {
                     $highestPriority = $service['priority'];

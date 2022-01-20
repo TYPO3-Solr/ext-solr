@@ -155,7 +155,7 @@ abstract class AbstractStrategy
      */
     protected function callPostProcessGarbageCollectorHook($table, $uid)
     {
-        if (!is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessGarbageCollector'])) {
+        if (!is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessGarbageCollector'] ?? null)) {
             return;
         }
 

@@ -918,7 +918,7 @@ class QueueItemRepository extends AbstractRepository
      */
     protected function hookPostProcessFetchRecordsForIndexQueueItem(string $table, array $uids, array &$tableRecords)
     {
-        if (!is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessFetchRecordsForIndexQueueItem'])) {
+        if (!is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessFetchRecordsForIndexQueueItem'] ?? null)) {
             return;
         }
         $params = ['table' => $table, 'uids' => $uids, 'tableRecords' => &$tableRecords];

@@ -119,7 +119,7 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
             $site
         );
 
-        if ((int)$page['uid'] === 0) {
+        if (empty($page['uid'])) {
             return $handler->handle($request);
         }
 
