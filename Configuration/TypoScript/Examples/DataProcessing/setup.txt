@@ -1,0 +1,8 @@
+plugin.tx_solr.search.results {
+    dataProcessing {
+        10 = MyNamespace\DataProcessing\MyDataProcessor 
+        10 {
+            my_option = my_value
+        }
+    }
+}
