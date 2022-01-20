@@ -270,7 +270,7 @@ abstract class AbstractIndexer
      */
     protected static function isSerializedResultFromRegisteredHook(array $indexingConfiguration, $solrFieldName)
     {
-        if (!is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['detectSerializedValue'])) {
+        if (!is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['detectSerializedValue'] ?? null)) {
             return false;
         }
 

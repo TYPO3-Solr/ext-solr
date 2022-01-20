@@ -189,7 +189,7 @@ class SearchResult extends Document
      */
     public function getContent()
     {
-        return $this->fields['content'];
+        return $this->fields['content'] ?? '';
     }
 
     /**
@@ -197,7 +197,7 @@ class SearchResult extends Document
      */
     public function getIsElevated()
     {
-        return $this->fields['isElevated'];
+        return $this->fields['isElevated'] ?? false;
     }
 
     /**
@@ -205,7 +205,7 @@ class SearchResult extends Document
      */
     public function getType()
     {
-        return $this->fields['type'];
+        return $this->fields['type'] ?? '';
     }
 
     /**
@@ -213,7 +213,7 @@ class SearchResult extends Document
      */
     public function getId()
     {
-        return $this->fields['id'];
+        return $this->fields['id'] ?? 0;
     }
 
     /**
@@ -221,7 +221,7 @@ class SearchResult extends Document
      */
     public function getScore()
     {
-        return $this->fields['score'];
+        return $this->fields['score'] ?? 0;
     }
 
     /**
@@ -229,7 +229,7 @@ class SearchResult extends Document
      */
     public function getUrl()
     {
-        return $this->fields['url'];
+        return $this->fields['url'] ?? '';
     }
 
     /**
@@ -237,6 +237,6 @@ class SearchResult extends Document
      */
     public function getTitle()
     {
-        return $this->fields['title'];
+        return $this->fields['title'] ?? '';
     }
 }

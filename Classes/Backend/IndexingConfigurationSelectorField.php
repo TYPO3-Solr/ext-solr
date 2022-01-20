@@ -180,6 +180,7 @@ class IndexingConfigurationSelectorField
     {
         $parameterArray = [
             'fieldChangeFunc' => [],
+            'itemFormElID' => $this->formElementName,
             'itemFormElName' => $this->formElementName,
             'itemFormElValue' => $selectedValues,
             'fieldConf' => ['config' => ['items' => $items]],
@@ -188,8 +189,11 @@ class IndexingConfigurationSelectorField
 
         $nodeFactory = GeneralUtility::makeInstance(NodeFactory::class);
         $options = [
-            'renderType' => 'selectCheckBox', 'table' => 'tx_solr_classes_backend_indexingconfigurationselector',
-            'fieldName' => 'additionalFields', 'databaseRow' => [], 'parameterArray' => $parameterArray
+            'type' => 'select', 'renderType' => 'selectCheckBox',
+            'table' => 'tx_solr_classes_backend_indexingconfigurationselector',
+            'tableName' => 'tx_solr_classes_backend_indexingconfigurationselector',
+            'fieldName' => 'additionalFields', 'databaseRow' => ['uid' => 0], 'parameterArray' => $parameterArray,
+            'processedTca' => ['columns' => ['additionalFields' => ['config' => ['type' => 'select']]]]
         ];
         $options['parameterArray']['fieldConf']['config']['items'] = $items;
         $options['parameterArray']['fieldTSConfig']['noMatchingValue_label'] = '';

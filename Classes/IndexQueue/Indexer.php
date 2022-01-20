@@ -480,7 +480,7 @@ class Indexer extends AbstractIndexer
     {
         $documents = [];
 
-        if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['indexItemAddDocuments'])) {
+        if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['indexItemAddDocuments'] ?? null)) {
             foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['indexItemAddDocuments'] as $classReference) {
                 if (!class_exists($classReference)) {
                     throw new \InvalidArgumentException('Class does not exits' . $classReference, 1490363487);
@@ -515,7 +515,7 @@ class Indexer extends AbstractIndexer
      */
     protected function preAddModifyDocuments(Item $item, int $language, array $documents)
     {
-        if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['preAddModifyDocuments'])) {
+        if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['preAddModifyDocuments'] ?? null)) {
             foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['preAddModifyDocuments'] as $classReference) {
                 $documentsModifier = GeneralUtility::makeInstance($classReference);
 

@@ -262,7 +262,7 @@ class Typo3PageIndexer
      */
     protected function applyIndexPagePostProcessors($pageDocument)
     {
-        if (!is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPagePostProcessPageDocument'])) {
+        if (!is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPagePostProcessPageDocument'] ?? null)) {
             return;
         }
 
@@ -326,7 +326,7 @@ class Typo3PageIndexer
      */
     protected function substitutePageDocument(Document $pageDocument)
     {
-        if (!is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageSubstitutePageDocument'])) {
+        if (!is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageSubstitutePageDocument'] ?? null)) {
             return $pageDocument;
         }
 
@@ -376,7 +376,7 @@ class Typo3PageIndexer
     {
         $documents = $existingDocuments;
 
-        if (!is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageAddDocuments'])) {
+        if (!is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageAddDocuments'] ?? null)) {
             return $documents;
         }
 

@@ -281,9 +281,9 @@ class InfoModuleController extends AbstractModuleController
     protected function getCoreMetrics(ResponseAdapter $lukeData, array $fields): array
     {
         return [
-            'numberOfDocuments' => $lukeData->index->numDocs,
-            'numberOfDeletedDocuments' => $lukeData->index->deletedDocs,
-            'numberOfTerms' => $lukeData->index->numTerms,
+            'numberOfDocuments' => $lukeData->index->numDocs ?? 0,
+            'numberOfDeletedDocuments' => $lukeData->index->deletedDocs ?? 0,
+            'numberOfTerms' => $lukeData->index->numTerms ?? 0,
             'numberOfFields' => count($fields)
         ];
     }

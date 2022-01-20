@@ -204,7 +204,7 @@ class Faceting implements Modifier, SearchRequestAware
         }
 
         foreach ($filterValues as $filterValue) {
-            $filterOptions = isset($facetConfiguration['type']) ? $facetConfiguration[$facetConfiguration['type'] . '.'] : null;
+            $filterOptions = isset($facetConfiguration['type']) ? ($facetConfiguration[$facetConfiguration['type'] . '.'] ?? null) : null;
             if (empty($filterOptions)) {
                 $filterOptions = [];
             }
