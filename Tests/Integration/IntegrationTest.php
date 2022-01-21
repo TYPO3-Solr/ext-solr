@@ -192,22 +192,6 @@ abstract class IntegrationTest extends FunctionalTestCase
     }
 
     /**
-     * @param string $fixtureName
-     * @throws DoctrineDBALException
-     */
-    protected function importDumpFromFixture(string $fixtureName)
-    {
-        $dumpContent = $this->getFixtureContentByName($fixtureName);
-        $dumpContent = str_replace(["\r", "\n"], '', $dumpContent);
-        $queries = GeneralUtility::trimExplode(';', $dumpContent, true);
-
-        $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionByName(ConnectionPool::DEFAULT_CONNECTION_NAME);
-        foreach ($queries as $query) {
-            $connection->executeStatement($query);
-        }
-    }
-
-    /**
      * Imports an ext_tables.sql definition as done by the install tool.
      *
      * @param string $fixtureName
