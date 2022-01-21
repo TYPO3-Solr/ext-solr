@@ -65,7 +65,7 @@ class SuggestController extends AbstractBaseController
         if ($callback) {
             return $this->htmlResponse(htmlspecialchars($callback) . '(' . json_encode($result, JSON_UNESCAPED_SLASHES) . ')');
         }
-        return $this->responseFactory->createJsonResponse(json_encode($result, JSON_UNESCAPED_SLASHES));
+        return $this->htmlResponse(json_encode($result, JSON_UNESCAPED_SLASHES));
     }
 
 }
