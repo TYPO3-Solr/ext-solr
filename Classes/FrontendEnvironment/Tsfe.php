@@ -22,7 +22,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Context\UserAspect;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 use TYPO3\CMS\Core\Http\ServerRequest;
-use function Webmozart\Assert\Tests\StaticAnalysis\null;
 
 class Tsfe implements SingletonInterface
 {

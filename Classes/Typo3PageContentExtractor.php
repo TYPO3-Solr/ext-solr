@@ -25,6 +25,7 @@ namespace ApacheSolrForTypo3\Solr;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
+use DOMDocument;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -96,7 +97,7 @@ class Typo3PageContentExtractor extends HtmlContentExtractor
             return $indexableContent;
         }
 
-        $doc = new \DOMDocument('1.0', 'UTF-8');
+        $doc = new DOMDocument('1.0', 'UTF-8');
         libxml_use_internal_errors(true);
         $doc->loadHTML('<?xml version="1.0" encoding="UTF-8"?>' . PHP_EOL . $indexableContent);
         $xpath = new \DOMXPath($doc);

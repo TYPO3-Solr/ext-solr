@@ -163,12 +163,13 @@ jobs:
           tools: composer:2.1.14
       -
         name: Resolve CI build cache key
-        # CI_CACHE_VERSION is used and can be increased to be able to invalidate caches. For example if some composer dependencies added or removed in composer.json or
+        # CI_CACHE_VERSION is used and can be increased to be able to invalidate caches.
+        #    For example if some composer dependencies added or removed in composer.json or
         #    in Build/Test/bootstrap.sh
         run: |
           export CURRENT_TYPO3_VERSION_REFERNCE=$(./Build/Helpers/TYPO3_SOURCE_REFERENCE.sh "$TYPO3_VERSION" --short)
           export CURRENT_SOLARIUM_VERSION=$(cat composer.json | jq --raw-output '.require."solarium/solarium"')
-          export CI_CACHE_VERSION="0"
+          export CI_CACHE_VERSION="2022.01.21@14:45"
           export CI_BUILD_CACHE_KEY=${{ runner.os }}-PHP:${{ matrix.PHP }}-TYPO3:$TYPO3_VERSION@$CURRENT_TYPO3_VERSION_REFERNCE-SOLARIUM:$CURRENT_SOLARIUM_VERSION-"CI_CACHE_VERSION:"$CI_CACHE_VERSION
           echo "COMPOSER_GLOBAL_REQUEREMENTS=$(composer config home)" >> $GITHUB_ENV
           echo "CI_BUILD_CACHE_KEY=$CI_BUILD_CACHE_KEY" >> $GITHUB_ENV
