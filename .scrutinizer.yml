@@ -65,7 +65,6 @@ build:
       tests:
         override:
           - php-scrutinizer-run
-        override:
           -
             command: phpcs-run
             use_website_config: false
