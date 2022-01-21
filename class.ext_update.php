@@ -13,10 +13,10 @@
  * The TYPO3 project - inspiring people to share!
  */
 
+use ApacheSolrForTypo3\Solr\Migrations\RemoveSiteFromScheduler;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageRendererResolver;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use ApacheSolrForTypo3\Solr\Migrations\RemoveSiteFromScheduler;
 
 /**
  * Update class for the extension manager.
@@ -42,7 +42,8 @@ class ext_update
     /**
      * Constructor initializing all migrations
      */
-    public function __construct() {
+    public function __construct()
+    {
         $this->migrators[] = new RemoveSiteFromScheduler();
     }
 
@@ -52,13 +53,14 @@ class ext_update
      *
      * @return bool
      */
-    public function access() {
+    public function access()
+    {
         foreach ($this->migrators as $migration) {
             if ($migration->isNeeded()) {
-                return TRUE;
+                return true;
             }
         }
-        return FALSE;
+        return false;
     }
 
     /**
@@ -66,7 +68,8 @@ class ext_update
      *
      * @return string
      */
-    public function main() {
+    public function main()
+    {
         foreach ($this->migrators as $migration) {
             if ($migration->isNeeded()) {
                 try {
@@ -84,14 +87,15 @@ class ext_update
      *
      * @return string
      */
-    protected function generateOutput() {
+    protected function generateOutput()
+    {
         $flashMessages = [];
         foreach ($this->messages as $messageItem) {
             /** @var \TYPO3\CMS\Core\Messaging\FlashMessage $flashMessage */
             $flashMessages[] = GeneralUtility::makeInstance(FlashMessage::class, $messageItem[2], $messageItem[1], $messageItem[0]);
         }
 
-            /** @var $resolver FlashMessageRendererResolver */
+        /** @var $resolver FlashMessageRendererResolver */
         $resolver = GeneralUtility::makeInstance(FlashMessageRendererResolver::class);
         $renderer = $resolver->resolve();
         return $renderer->render($flashMessages);

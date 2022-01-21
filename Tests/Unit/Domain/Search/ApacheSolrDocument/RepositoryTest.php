@@ -26,7 +26,6 @@ use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
-use InvalidArgumentException;
 use TypeError;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 

@@ -66,8 +66,7 @@ class NumericRangeFacetParserTest extends AbstractFacetParserTest
         array $facetConfiguration,
         array $filters,
         string $facetName
-    ): ?AbstractFacet
-    {
+    ): ?AbstractFacet {
         $searchResultSet = $this->initializeSearchResultSetFromFakeResponse(
             'fake_solr_response_with_numericRange_facet.json',
             $facetConfiguration,

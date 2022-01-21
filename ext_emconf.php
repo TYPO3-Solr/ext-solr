@@ -1,4 +1,5 @@
 <?php
+
 $EM_CONF[$_EXTKEY] = [
     'title' => 'Apache Solr for TYPO3 - Enterprise Search',
     'description' => 'Apache Solr for TYPO3 is the enterprise search server you were looking for with special features such as Faceted Search or Synonym Support and incredibly fast response times of results within milliseconds.',
@@ -11,7 +12,7 @@ $EM_CONF[$_EXTKEY] = [
     'constraints' => [
         'depends' => [
             'scheduler' => '',
-            'typo3' => '11.5.4-11.5.99'
+            'typo3' => '11.5.4-11.5.99',
         ],
         'conflicts' => [],
         'suggests' => [
@@ -20,10 +21,10 @@ $EM_CONF[$_EXTKEY] = [
     ],
     'autoload' => [
         'classmap' => [
-            'Resources/Private/Php/'
+            'Resources/Private/Php/',
         ],
         'psr-4' => [
-            'ApacheSolrForTypo3\\Solr\\' => 'Classes/'
-        ]
-    ]
+            'ApacheSolrForTypo3\\Solr\\' => 'Classes/',
+        ],
+    ],
 ];

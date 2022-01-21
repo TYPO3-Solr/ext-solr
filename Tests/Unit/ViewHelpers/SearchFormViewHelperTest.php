@@ -55,7 +55,7 @@ class SearchFormViewHelperTest extends UnitTest
             'getTemplateVariableContainer',
             'getSearchResultSet',
             'renderChildren',
-            'getIsSiteManagedSite'
+            'getIsSiteManagedSite',
         ])->getMock();
         $this->viewHelper->expects(self::any())->method('getControllerContext')->willReturn($controllerContextMock);
         $this->viewHelper->expects(self::any())->method('getTypoScriptConfiguration')->willReturn($this->typoScriptConfigurationMock);
