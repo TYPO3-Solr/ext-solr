@@ -16,15 +16,10 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Controller;
 
 use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageFieldMappingIndexer;
 use ApacheSolrForTypo3\Solr\Controller\SuggestController;
-use TYPO3\CMS\Core\TimeTracker\TimeTracker;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Mvc\Request;
-use TYPO3\CMS\Extbase\Mvc\Response;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
-use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
+use TYPO3\CMS\Core\Http\Response;
 
 /**
- * Integration testcase to test for the SuggestController
+ * Integration testcase to test for {@link SuggestController}
  *
  * @author Timo Hund
  * @copyright (c) 2018 Timo Hund <timo.hund@dkd.de>
@@ -32,55 +27,29 @@ use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
  */
 class SuggestControllerTest extends AbstractFrontendControllerTest
 {
-    /**
-     * @var ObjectManagerInterface The object manager
-     */
-    protected $objectManager;
-
-    /**
-     * @var SuggestController
-     */
-    protected $suggestController;
-
-    /**
-     * @var Request
-     */
-    protected $suggestRequest;
-
-    /**
-     * @var Response
-     */
-    protected $suggestResponse;
-
     public function setUp(): void
     {
         parent::setUp();
-
-        $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-
-        $GLOBALS['TT'] = $this->getMockBuilder(TimeTracker::class)->disableOriginalConstructor()->getMock();
-
-        $this->suggestController = $this->objectManager->get(SuggestController::class);
-        $this->suggestRequest = $this->getPreparedRequest('Suggest', 'suggest');
-        $this->suggestResponse = $this->getPreparedResponse();
-
+        $this->addTypoScriptToTemplateRecord(
+            1,
+            '
+            @import \'EXT:solr/Configuration/TypoScript/Examples/Suggest/setup.typoscript\'
+            '
+        );
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageSubstitutePageDocument'][PageFieldMappingIndexer::class] = PageFieldMappingIndexer::class;
     }
 
     /**
      * @test
+     *
+     * https://solr-ddev-site.ddev.site/content-examples/form-elements/search?type=7384&tx_solr[callback]=jQuery311041938492718528986_1642765952279&tx_solr%5BqueryString]=i&_=1642765952284
      */
     public function canDoABasicSuggest()
     {
-        $this->importDataSetFromFixture('can_render_suggest_controller.xml');
-        $GLOBALS['TSFE'] = $this->getConfiguredTSFE(1);
+        $this->importDataSetFromFixture('SearchAndSuggestControllerTest_indexing_data.xml');
         $this->indexPages([1, 2, 3, 4, 5, 6, 7, 8]);
 
-        $this->suggestRequest->setArgument('queryString', 'Sweat');
-        $this->suggestRequest->setArgument('callback', 'rand');
-
-        $this->suggestController->processRequest($this->suggestRequest, $this->suggestResponse);
-        $result = $this->suggestResponse->getBody()->getContents();
+        $result = (string)($this->executeFrontendSubRequestForSuggestQueryString('Sweat')->getBody());
 
         //we assume to get suggestions like Sweatshirt
         $this->assertStringContainsString('suggestions":{"sweatshirts":2}', $result, 'Response did not contain sweatshirt suggestions');
@@ -92,8 +61,15 @@ class SuggestControllerTest extends AbstractFrontendControllerTest
     public function canSuggestWithUriSpecialChars()
     {
         $this->importDataSetFromFixture('can_suggest_with_uri_special_chars.xml');
-        $GLOBALS['TSFE'] = $this->getConfiguredTSFE(1);
-        $this->indexPages([1, 2, 3, 4]);
+
+        $this->addTypoScriptToTemplateRecord(
+            1,
+            '
+			plugin.tx_solr.suggest.suggestField = title
+            '
+        );
+
+        $this->indexPages([1, 2, 3, 4, 5]);
 
         // @todo: add more variants
         // @TODO: Check why does solr return some/larg instead of some/large
@@ -114,13 +90,19 @@ class SuggestControllerTest extends AbstractFrontendControllerTest
 
     protected function expectSuggested(string $prefix, string $expected)
     {
-        $this->suggestRequest->setArgument('queryString', $prefix);
-        $this->suggestRequest->setArgument('callback', 'rand');
+        $result = (string)($this->executeFrontendSubRequestForSuggestQueryString($prefix)->getBody());
 
-        $this->suggestController->processRequest($this->suggestRequest, $this->suggestResponse);
-        $result = $this->suggestResponse->getBody()->getContents();
-
-        //we assume to get suggestions like Sweatshirt
+        //we assume to get suggestions like some/large/path
         $this->assertStringContainsString($expected, $result, 'Response did not contain expected suggestions: ' . $expected);
+    }
+
+    protected function executeFrontendSubRequestForSuggestQueryString(string $queryString): Response
+    {
+        return $this->executeFrontendSubRequest(
+            $this->getPreparedRequest(1)
+                ->withQueryParameter('type', '7384')
+                ->withQueryParameter('tx_solr[queryString]', $queryString)
+                ->withQueryParameter('tx_solr[callback]', 'rand')
+        );
     }
 }

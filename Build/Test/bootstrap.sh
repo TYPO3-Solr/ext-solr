@@ -109,6 +109,7 @@ if ! composer require --dev --update-with-dependencies --prefer-source \
   typo3/cms-backend:"$TYPO3_VERSION" \
   typo3/cms-recordlist:"$TYPO3_VERSION" \
   typo3/cms-fluid:"$TYPO3_VERSION" \
+  typo3/cms-fluid-styled-content:"$TYPO3_VERSION" \
   typo3/cms-frontend:"$TYPO3_VERSION" \
   typo3/cms-extbase:"$TYPO3_VERSION" \
   typo3/cms-reports:"$TYPO3_VERSION" \

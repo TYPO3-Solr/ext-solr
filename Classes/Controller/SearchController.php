@@ -127,7 +127,7 @@ class SearchController extends AbstractBaseController
 
             $this->view->assignMultiple($values);
         } catch (SolrUnavailableException $e) {
-            $this->handleSolrUnavailable();
+            return $this->handleSolrUnavailable();
         }
         return $this->htmlResponse();
     }
@@ -204,8 +204,6 @@ class SearchController extends AbstractBaseController
 
     /**
      * Called when the solr server is unavailable.
-     *
-     * @return void
      */
     protected function handleSolrUnavailable()
     {

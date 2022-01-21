@@ -28,6 +28,7 @@ use ApacheSolrForTypo3\Solr\Access\Rootline;
 use ApacheSolrForTypo3\Solr\Tests\Unit\Helper\FakeObjectManager;
 use ApacheSolrForTypo3\Solr\Typo3PageIndexer;
 use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use Doctrine\DBAL\Exception as DoctrineDBALException;
 use Doctrine\DBAL\Schema\SchemaException;
 use InvalidArgumentException;
@@ -72,6 +73,11 @@ abstract class IntegrationTest extends FunctionalTestCase
 {
 
     use SiteBasedTestTrait;
+
+    protected $coreExtensionsToLoad = [
+        'scheduler',
+        'fluid_styled_content'
+    ];
 
     /**
      * @var array
@@ -494,8 +500,6 @@ abstract class IntegrationTest extends FunctionalTestCase
         $this->writeDefaultSolrTestSiteConfigurationForHostAndPort($solrConnectionInfo['scheme'], $solrConnectionInfo['host'], $solrConnectionInfo['port']);
     }
 
-
-
     /**
      * @var string
      */
@@ -687,5 +691,29 @@ abstract class IntegrationTest extends FunctionalTestCase
         $reflectionMethod->setAccessible(true);
 
         return $reflectionMethod->invokeArgs($object, $arguments);
+    }
+
+    /**
+     * Adds TypoScript setup snippet to the existing template record
+     *
+     * @param int $pageId
+     * @param string $constants
+     * @throws DBALDriverException
+     */
+    protected function addTypoScriptConstantsToTemplateRecord(int $pageId, string $constants): void
+    {
+        $connection = $this->getConnectionPool()->getConnectionForTable('sys_template');
+        $statement = $connection->select(['*'], 'sys_template', ['pid' => $pageId, 'root' => 1]);
+        $template = $statement->fetchAssociative();
+
+        if (empty($template)) {
+            $this->fail('Cannot find root template on page with id: "' . $pageId . '"');
+        }
+        $updateFields['constants'] = $template['constants'] . LF . $constants;
+        $connection->update(
+            'sys_template',
+            $updateFields,
+            ['uid' => $template['uid']]
+        );
     }
 }

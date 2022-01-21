@@ -20,7 +20,8 @@
     "source": "https://github.com/TYPO3-Solr/ext-solr"
   },
   "require": {
-    "php": ">=7.4.0",
+    "php": "^7.4.0 || ^8.0",
+    "ext-dom": "*",
     "ext-json": "*",
     "typo3/cms-core": "^11.5.4",
     "typo3/cms-backend": "*",
@@ -35,7 +36,8 @@
   "require-dev": {
     "phpunit/phpunit": "^9.5",
     "phpspec/prophecy-phpunit":"*",
-    "typo3/testing-framework": "^6.12"
+    "typo3/testing-framework": "^6.12",
+    "typo3/cms-fluid-styled-content": "*"
   },
   "replace": {
     "apache-solr-for-typo3/solrfluid": "*",

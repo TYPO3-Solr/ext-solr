@@ -15,6 +15,7 @@ page.10 {
   }
 }
 
-page.10.wrap = <!--TYPO3SEARCH_begin--><html><body>|</body></html><!--TYPO3SEARCH_end-->
+page.10.wrap = <!--TYPO3SEARCH_begin-->|<!--TYPO3SEARCH_end-->
 
+@import 'EXT:fluid_styled_content/Configuration/TypoScript/setup.typoscript'
 @import 'EXT:solr/Configuration/TypoScript/Solr/setup.typoscript'
