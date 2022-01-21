@@ -41,10 +41,22 @@ class SuggestControllerTest extends AbstractFrontendControllerTest
 
     /**
      * @test
-     *
-     * https://solr-ddev-site.ddev.site/content-examples/form-elements/search?type=7384&tx_solr[callback]=jQuery311041938492718528986_1642765952279&tx_solr%5BqueryString]=i&_=1642765952284
      */
     public function canDoABasicSuggest()
+    {
+        $this->importDataSetFromFixture('SearchAndSuggestControllerTest_indexing_data.xml');
+        $this->indexPages([1, 2, 3, 4, 5, 6, 7, 8]);
+
+        $result = (string)($this->executeFrontendSubRequestForSuggestQueryString('Sweat', 'rand')->getBody());
+
+        //we assume to get suggestions like Sweatshirt
+        $this->assertStringContainsString('suggestions":{"sweatshirts":2}', $result, 'Response did not contain sweatshirt suggestions');
+    }
+
+    /**
+     * @test
+     */
+    public function canDoABasicSuggestWithoutCallback()
     {
         $this->importDataSetFromFixture('SearchAndSuggestControllerTest_indexing_data.xml');
         $this->indexPages([1, 2, 3, 4, 5, 6, 7, 8]);
@@ -90,19 +102,21 @@ class SuggestControllerTest extends AbstractFrontendControllerTest
 
     protected function expectSuggested(string $prefix, string $expected)
     {
-        $result = (string)($this->executeFrontendSubRequestForSuggestQueryString($prefix)->getBody());
+        $result = (string)($this->executeFrontendSubRequestForSuggestQueryString($prefix, 'rand')->getBody());
 
         //we assume to get suggestions like some/large/path
         $this->assertStringContainsString($expected, $result, 'Response did not contain expected suggestions: ' . $expected);
     }
 
-    protected function executeFrontendSubRequestForSuggestQueryString(string $queryString): Response
+    protected function executeFrontendSubRequestForSuggestQueryString(string $queryString, string $callback = null): Response
     {
-        return $this->executeFrontendSubRequest(
-            $this->getPreparedRequest(1)
-                ->withQueryParameter('type', '7384')
-                ->withQueryParameter('tx_solr[queryString]', $queryString)
-                ->withQueryParameter('tx_solr[callback]', 'rand')
-        );
+        $request = $this->getPreparedRequest(1)
+            ->withQueryParameter('type', '7384')
+            ->withQueryParameter('tx_solr[queryString]', $queryString);
+
+        if ($callback !== null) {
+            $request = $request->withQueryParameter('tx_solr[callback]', $callback);
+        }
+        return $this->executeFrontendSubRequest($request);
     }
 }

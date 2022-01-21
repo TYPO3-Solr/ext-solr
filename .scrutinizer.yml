@@ -11,12 +11,11 @@ tools:
   php_cpd:
     enabled: true
 
+  # we do this on GitHub-Actions via typo3/coding-standards
   php_code_sniffer:
-    enabled: true
-    config:
-      standard: TYPO3CMS
+    enabled: false
 
-  # we do this on travis
+  # we do this on GitHub-Actions
   php_cs_fixer:
     enabled: false
 
@@ -65,6 +64,3 @@ build:
       tests:
         override:
           - php-scrutinizer-run
-          -
-            command: phpcs-run
-            use_website_config: false
