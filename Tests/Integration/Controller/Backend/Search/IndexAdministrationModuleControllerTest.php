@@ -27,10 +27,20 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Controller\Backend\Search;
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\Controller\Backend\Search\IndexAdministrationModuleController;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
+use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
+use ApacheSolrForTypo3\Solr\System\Mvc\Backend\Service\ModuleDataStorageService;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
+use Doctrine\DBAL\Exception as DBALException;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
+use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
+use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
 use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
+use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
+use TYPO3\TestingFramework\Core\Exception as TestingFrameworkCoreException;
 
 /**
  * Class IndexAdministrationModuleControllerTest
@@ -43,15 +53,36 @@ class IndexAdministrationModuleControllerTest extends IntegrationTest
      */
     protected $controller;
 
+    /**
+     * @throws NotFoundExceptionInterface
+     * @throws DBALException
+     * @throws ContainerExceptionInterface
+     * @throws NoSuchCacheException
+     * @throws TestingFrameworkCoreException
+     */
     public function setUp(): void {
         parent::setUp();
         $GLOBALS['LANG'] = $this->getMockBuilder(LanguageService::class)->disableOriginalConstructor()->getMock();
 
         $this->writeDefaultSolrTestSiteConfiguration();
-        $connectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
 
-        $this->controller = $this->getMockBuilder(IndexAdministrationModuleController::class)->setMethods(['addFlashMessage', 'redirect'])->getMock();
-        $this->controller->setSolrConnectionManager($connectionManager);
+        $this->controller = $this->getMockBuilder(IndexAdministrationModuleController::class)
+            ->setConstructorArgs(
+                [
+                    'moduleTemplateFactory' => $this->getContainer()->get(ModuleTemplateFactory::class),
+                    'moduleDataStorageService' => GeneralUtility::makeInstance(ModuleDataStorageService::class),
+                    'siteRepository' => GeneralUtility::makeInstance(SiteRepository::class),
+                    'siteFinder' => GeneralUtility::makeInstance(SiteFinder::class),
+                    'solrConnectionManager' => GeneralUtility::makeInstance(ConnectionManager::class),
+                    'indexQueue' => GeneralUtility::makeInstance(Queue::class),
+                ])
+            ->onlyMethods(['addFlashMessage'])
+            ->getMock();
+        $uriBuilderMock = $this->getMockBuilder(UriBuilder::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['uriFor'])->getMock();
+        $uriBuilderMock->expects($this->any())->method('uriFor')->will($this->returnValue('index'));
+        $this->controller->injectUriBuilder($uriBuilderMock);
     }
 
     /**

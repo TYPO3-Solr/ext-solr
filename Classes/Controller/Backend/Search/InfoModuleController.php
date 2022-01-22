@@ -1,55 +1,42 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Controller\Backend\Search;
 
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2010-2017 dkd Internet Service GmbH <solr-support@dkd.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 
 use ApacheSolrForTypo3\Solr\Api;
 use ApacheSolrForTypo3\Solr\Domain\Search\Statistics\StatisticsRepository;
 use ApacheSolrForTypo3\Solr\Domain\Search\ApacheSolrDocument\Repository as ApacheSolrDocumentRepository;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\System\Validator\Path;
-use Exception;
 use Psr\Http\Message\ResponseInterface;
-use TYPO3\CMS\Backend\Template\ModuleTemplate;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Registry;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
 
 /**
  * Info Module
  */
 class InfoModuleController extends AbstractModuleController
 {
-
     /**
      * @var ApacheSolrDocumentRepository
      */
     protected ApacheSolrDocumentRepository $apacheSolrDocumentRepository;
 
     /**
-     * Initializes the controller before invoking an action method.
+     * @inheritDoc
      */
     protected function initializeAction()
     {
@@ -58,39 +45,23 @@ class InfoModuleController extends AbstractModuleController
     }
 
     /**
-     * Set up the doc header properly here
-     *
-     * @param ViewInterface $view
-     * @return void
-     * @throws Exception
-     */
-    protected function initializeView(ViewInterface $view)
-    {
-        parent::initializeView($view);
-
-        /* @var ModuleTemplate $module */ // holds the state of chosen tab
-        $module = GeneralUtility::makeInstance(ModuleTemplate::class);
-        $coreOptimizationTabs = $module->getDynamicTabMenu([], 'coreOptimization');
-        $this->view->assign('tabs', $coreOptimizationTabs);
-    }
-
-    /**
      * Index action, shows an overview of the state of the Solr index
      *
-     * @return void
+     * @return ResponseInterface
      */
     public function indexAction(): ResponseInterface
     {
         if ($this->selectedSite === null) {
             $this->view->assign('can_not_proceed', true);
-            return $this->htmlResponse(null);
+            return $this->getModuleTemplateResponse();
         }
 
         $this->collectConnectionInfos();
         $this->collectStatistics();
         $this->collectIndexFieldsInfo();
         $this->collectIndexInspectorInfo();
-        return $this->htmlResponse();
+
+        return $this->getModuleTemplateResponse();
     }
 
     /**
@@ -98,13 +69,13 @@ class InfoModuleController extends AbstractModuleController
      * @param int $uid
      * @param int $pageId
      * @param int $languageUid
-     * @return void
+     * @return ResponseInterface
      */
     public function documentsDetailsAction(string $type, int $uid, int $pageId, int $languageUid): ResponseInterface
     {
         $documents = $this->apacheSolrDocumentRepository->findByTypeAndPidAndUidAndLanguageId($type, $uid, $pageId, $languageUid);
         $this->view->assign('documents', $documents);
-        return $this->htmlResponse();
+        return $this->getModuleTemplateResponse();
     }
 
     /**
@@ -113,7 +84,7 @@ class InfoModuleController extends AbstractModuleController
      *
      * @return void
      */
-    protected function collectConnectionInfos()
+    protected function collectConnectionInfos(): void
     {
         $connectedHosts = [];
         $missingHosts = [];
@@ -157,7 +128,7 @@ class InfoModuleController extends AbstractModuleController
      *
      * @return void
      */
-    protected function collectStatistics()
+    protected function collectStatistics(): void
     {
         // TODO make time frame user adjustable, for now it's last 30 days
 
@@ -197,7 +168,7 @@ class InfoModuleController extends AbstractModuleController
      *
      * @return void
      */
-    protected function collectIndexFieldsInfo()
+    protected function collectIndexFieldsInfo(): void
     {
         $indexFieldsInfoByCorePaths = [];
 
@@ -250,7 +221,7 @@ class InfoModuleController extends AbstractModuleController
      *
      * @return void
      */
-    protected function collectIndexInspectorInfo()
+    protected function collectIndexInspectorInfo(): void
     {
         $solrCoreConnections = $this->solrConnectionManager->getConnectionsBySite($this->selectedSite);
         $documentsByCoreAndType = [];

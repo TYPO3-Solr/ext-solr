@@ -69,7 +69,7 @@ class RelationTest extends IntegrationTest
      *
      * @return array
      */
-    public function fixturesProviderForFallbackToPagesTableIfPagesLanguageOverlayTCAHasNoDefinitionForLocalColumn()
+    public function fixturesProviderForFallbackToPagesTableIfPagesLanguageOverlayTCAHasNoDefinitionForLocalColumn(): array
     {
         return [
             ['solr_relation_can_fallback_to_pages_table_if_no_tca_for_local_field.xml'],

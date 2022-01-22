@@ -1,39 +1,33 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Controller\Backend\Search;
 
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2010-2017 dkd Internet Service GmbH <solrs-support@dkd.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 
+use ApacheSolrForTypo3\Solr\System\Mvc\Backend\Component\Exception\InvalidViewObjectNameException;
 use ApacheSolrForTypo3\Solr\Utility\ManagedResourcesUtility;
+use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use Psr\Http\Message\ResponseInterface;
-use TYPO3\CMS\Backend\Template\ModuleTemplate;
+use Throwable;
+use TYPO3\CMS\Core\Http\RedirectResponse;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
+use TYPO3Fluid\Fluid\View\ViewInterface;
 
 /**
  * Manage Synonyms and Stop words in Backend Module
- * @property \TYPO3\CMS\Extbase\Mvc\Response $response
+ * @property ResponseInterface $response
  */
 class CoreOptimizationModuleController extends AbstractModuleController
 {
@@ -42,28 +36,31 @@ class CoreOptimizationModuleController extends AbstractModuleController
      *
      * @param ViewInterface $view
      * @return void
+     * @throws DBALDriverException
+     * @throws InvalidViewObjectNameException
+     * @throws Throwable
+     * @noinspection PhpUnused
      */
-    protected function initializeView(ViewInterface $view)
+    protected function initializeView($view)
     {
         parent::initializeView($view);
-
         $this->generateCoreSelectorMenuUsingPageTree();
-        /* @var ModuleTemplate $module */ // holds the state of chosen tab
-        $module = $this->objectManager->get(ModuleTemplate::class);
-        $coreOptimizationTabs = $module->getDynamicTabMenu([], 'coreOptimization');
+        $coreOptimizationTabs = $this->moduleTemplate->getDynamicTabMenu([], 'coreOptimization');
         $this->view->assign('tabs', $coreOptimizationTabs);
     }
 
     /**
      * Gets synonyms and stopwords for the currently selected core
      *
-     * @return void
+     * @return ResponseInterface
+     *
+     * @noinspection PhpUnused
      */
     public function indexAction(): ResponseInterface
     {
         if ($this->selectedSolrCoreConnection === null) {
             $this->view->assign('can_not_proceed', true);
-            return $this->htmlResponse(null);
+            return $this->getModuleTemplateResponse();
         }
 
         $synonyms = [];
@@ -79,7 +76,8 @@ class CoreOptimizationModuleController extends AbstractModuleController
             'stopWords' => implode(PHP_EOL, $stopWords),
             'stopWordsCount' => count($stopWords)
         ]);
-        return $this->htmlResponse();
+
+        return $this->getModuleTemplateResponse();
     }
 
     /**
@@ -88,9 +86,11 @@ class CoreOptimizationModuleController extends AbstractModuleController
      * @param string $baseWord
      * @param string $synonyms
      * @param bool $overrideExisting
-     * @return void
+     * @return ResponseInterface
+     *
+     * @noinspection PhpUnused
      */
-    public function addSynonymsAction(string $baseWord, string $synonyms, $overrideExisting)
+    public function addSynonymsAction(string $baseWord, string $synonyms, bool $overrideExisting): ResponseInterface
     {
         if (empty($baseWord) || empty($synonyms)) {
             $this->addFlashMessage(
@@ -114,45 +114,53 @@ class CoreOptimizationModuleController extends AbstractModuleController
             );
         }
 
-        $this->redirect('index');
+        return new RedirectResponse($this->uriBuilder->uriFor('index'), 303);
     }
 
     /**
      * @param string $fileFormat
-     * @return void
+     * @return ResponseInterface
+     *
+     * @noinspection PhpUnused
      */
-    public function exportStopWordsAction($fileFormat = 'txt'): ResponseInterface
+    public function exportStopWordsAction(string $fileFormat = 'txt'): ResponseInterface
     {
         $coreAdmin = $this->selectedSolrCoreConnection->getAdminService();
-        $this->exportFile(
+        return $this->exportFile(
             implode(PHP_EOL, $coreAdmin->getStopWords()),
             'stopwords',
             $fileFormat
         );
-        return $this->htmlResponse();
     }
 
     /**
      * Exports synonyms to a download file.
      *
      * @param string $fileFormat
-     * @return string
+     * @return ResponseInterface
+     *
+     * @noinspection PhpUnused
      */
-    public function exportSynonymsAction($fileFormat = 'txt'): ResponseInterface
+    public function exportSynonymsAction(string $fileFormat = 'txt'): ResponseInterface
     {
         $coreAdmin = $this->selectedSolrCoreConnection->getAdminService();
         $synonyms = $coreAdmin->getSynonyms();
-        return $this->htmlResponse($this->exportFile(ManagedResourcesUtility::exportSynonymsToTxt($synonyms), 'synonyms', $fileFormat));
+        return $this->exportFile(ManagedResourcesUtility::exportSynonymsToTxt($synonyms), 'synonyms', $fileFormat);
     }
 
     /**
      * @param array $synonymFileUpload
      * @param bool $overrideExisting
      * @param bool $deleteSynonymsBefore
-     * @return void
+     * @return ResponseInterface
+     *
+     * @noinspection PhpUnused
      */
-    public function importSynonymListAction(array $synonymFileUpload, $overrideExisting, $deleteSynonymsBefore)
-    {
+    public function importSynonymListAction(
+        array $synonymFileUpload,
+        bool $overrideExisting = false,
+        bool $deleteSynonymsBefore = false
+    ): ResponseInterface {
         if ($deleteSynonymsBefore) {
             $this->deleteAllSynonyms();
         }
@@ -174,30 +182,34 @@ class CoreOptimizationModuleController extends AbstractModuleController
         $this->addFlashMessage(
             $synonymCount . ' synonyms imported.'
         );
-        $this->redirect('index');
-
+        return new RedirectResponse($this->uriBuilder->uriFor('index'), 303);
     }
 
     /**
      * @param array $stopwordsFileUpload
      * @param bool $replaceStopwords
-     * @return void
+     *
+     * @return ResponseInterface
+     *
+     * @noinspection PhpUnused
      */
-    public function importStopWordListAction(array $stopwordsFileUpload, $replaceStopwords): ResponseInterface
+    public function importStopWordListAction(array $stopwordsFileUpload, bool $replaceStopwords): ResponseInterface
     {
         $this->saveStopWordsAction(
             ManagedResourcesUtility::importStopwordsFromPlainTextContents($stopwordsFileUpload),
             $replaceStopwords
         );
-        return $this->htmlResponse();
+        return new RedirectResponse($this->uriBuilder->uriFor('index'), 303);
     }
 
     /**
      * Delete complete synonym list
      *
-     * @return void
+     * @return ResponseInterface
+     *
+     * @noinspection PhpUnused
      */
-    public function deleteAllSynonymsAction()
+    public function deleteAllSynonymsAction(): ResponseInterface
     {
         $allSynonymsCouldBeDeleted = $this->deleteAllSynonyms();
 
@@ -217,15 +229,19 @@ class CoreOptimizationModuleController extends AbstractModuleController
                 FlashMessage::ERROR
             );
         }
-        $this->redirect('index');
+        return new RedirectResponse($this->uriBuilder->uriFor('index'), 303);
     }
 
     /**
      * Deletes a synonym mapping by its base word.
      *
      * @param string $baseWord Synonym mapping base word
+     *
+     * @return ResponseInterface
+     *
+     * @noinspection PhpUnused
      */
-    public function deleteSynonymsAction($baseWord)
+    public function deleteSynonymsAction(string $baseWord): ResponseInterface
     {
         $coreAdmin = $this->selectedSolrCoreConnection->getAdminService();
         $deleteResponse = $coreAdmin->deleteSynonym($baseWord);
@@ -245,7 +261,7 @@ class CoreOptimizationModuleController extends AbstractModuleController
             );
         }
 
-        $this->redirect('index');
+        return new RedirectResponse($this->uriBuilder->uriFor('index'), 303);
     }
 
     /**
@@ -253,9 +269,12 @@ class CoreOptimizationModuleController extends AbstractModuleController
      *
      * @param string $stopWords
      * @param bool $replaceStopwords
-     * @return void
+     *
+     * @return ResponseInterface
+     *
+     * @noinspection PhpUnused
      */
-    public function saveStopWordsAction(string $stopWords, $replaceStopwords = true)
+    public function saveStopWordsAction(string $stopWords, bool $replaceStopwords = true): ResponseInterface
     {
         // lowercase stopword before saving because terms get lowercased before stopword filtering
         $newStopWords = mb_strtolower($stopWords);
@@ -285,44 +304,29 @@ class CoreOptimizationModuleController extends AbstractModuleController
             );
         }
 
-        $this->redirect('index');
+        return new RedirectResponse($this->uriBuilder->uriFor('index'), 303);
     }
 
     /**
      * @param string $content
      * @param string $type
      * @param string $fileExtension
-     * @return string
+     *
+     * @return ResponseInterface
      */
-    protected function exportFile($content, $type = 'synonyms', $fileExtension = 'txt') : string
+    protected function exportFile(string $content, string $type = 'synonyms', string $fileExtension = 'txt'): ResponseInterface
     {
         $coreAdmin = $this->selectedSolrCoreConnection->getAdminService();
-
-        $this->response->setHeader('Content-type', 'text/plain', true);
-        $this->response->setHeader('Cache-control', 'public', true);
-        $this->response->setHeader('Content-Description', 'File transfer', true);
-        $this->response->setHeader(
-            'Content-disposition',
-            'attachment; filename =' . $type . '_' .
-            $coreAdmin->getPrimaryEndpoint()->getCore() . '.' . $fileExtension,
-            true
-        );
-
-        $this->response->setContent($content);
-        $this->sendFileResponse();
-    }
-
-    /**
-     * This method send the headers and content and does an exit, since without the exit TYPO3 produces and error.
-     * @return void
-     */
-    protected function sendFileResponse()
-    {
-        $this->response->sendHeaders();
-        $this->response->send();
-        $this->response->shutdown();
-
-        exit();
+        return  $this->responseFactory->createResponse()
+            ->withHeader('Content-Type', 'text/plain; charset=utf-8')
+            ->withHeader('Cache-control', 'public')
+            ->withHeader('Content-Description', 'File transfer')
+            ->withHeader('Content-Description', 'File transfer')
+            ->withHeader(
+                'Content-disposition',
+                'attachment; filename =' . $type . '_' . $coreAdmin->getPrimaryEndpoint()->getCore() . '.' . $fileExtension
+            )
+            ->withBody($this->streamFactory->createStream($content));
     }
 
     /**
@@ -330,7 +334,7 @@ class CoreOptimizationModuleController extends AbstractModuleController
      *
      * @return bool
      */
-    protected function deleteAllSynonyms() : bool
+    protected function deleteAllSynonyms(): bool
     {
         $coreAdmin = $this->selectedSolrCoreConnection->getAdminService();
         $synonyms = $coreAdmin->getSynonyms();
@@ -348,7 +352,7 @@ class CoreOptimizationModuleController extends AbstractModuleController
      * @param $stopwordsToRemove
      * @return bool
      */
-    protected function removeStopsWordsFromIndex($stopwordsToRemove) : bool
+    protected function removeStopsWordsFromIndex($stopwordsToRemove): bool
     {
         $wordsRemoved = true;
         $coreAdmin = $this->selectedSolrCoreConnection->getAdminService();
@@ -370,12 +374,12 @@ class CoreOptimizationModuleController extends AbstractModuleController
     }
 
     /**
-     * Delete synonym entry if selceted before
+     * Delete synonym entry if selected before
      * @param bool $overrideExisting
      * @param bool $deleteSynonymsBefore
      * @param string $baseWord
      */
-    protected function deleteExistingSynonym($overrideExisting, $deleteSynonymsBefore, $baseWord)
+    protected function deleteExistingSynonym(bool $overrideExisting, bool $deleteSynonymsBefore, string $baseWord)
     {
         $coreAdmin = $this->selectedSolrCoreConnection->getAdminService();
 
@@ -385,6 +389,5 @@ class CoreOptimizationModuleController extends AbstractModuleController
         ) {
             $coreAdmin->deleteSynonym($baseWord);
         }
-
     }
 }

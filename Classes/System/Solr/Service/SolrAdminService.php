@@ -31,6 +31,7 @@ use ApacheSolrForTypo3\Solr\System\Solr\Parser\StopWordParser;
 use ApacheSolrForTypo3\Solr\System\Solr\Parser\SynonymParser;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\System\Solr\Schema\Schema;
+use InvalidArgumentException;
 use Solarium\Client;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -208,7 +209,7 @@ class SolrAdminService extends AbstractSolrService
             $response = $this->_sendRawGet($solrconfigXmlUrl);
             $solrconfigXml = simplexml_load_string($response->getRawResponse());
             if ($solrconfigXml === false) {
-                throw new \InvalidArgumentException('No valid xml response from schema file: ' . $solrconfigXmlUrl);
+                throw new InvalidArgumentException('No valid xml response from schema file: ' . $solrconfigXmlUrl);
             }
             $this->solrconfigName = (string)$solrconfigXml->attributes()->name;
         }
@@ -294,15 +295,12 @@ class SolrAdminService extends AbstractSolrService
      * @param array $synonyms
      *
      * @return ResponseAdapter
-     *
-     * @throws \InvalidArgumentException If $baseWord or $synonyms are empty
      */
-    public function addSynonym($baseWord, array $synonyms)
+    public function addSynonym(string $baseWord, array $synonyms): ResponseAdapter
     {
         $this->initializeSynonymsUrl();
         $json = $this->synonymParser->toJson($baseWord, $synonyms);
-        $response = $this->_sendRawPost($this->_synonymsUrl, $json, 'application/json');
-        return $response;
+        return $this->_sendRawPost($this->_synonymsUrl, $json, 'application/json');
     }
 
     /**
@@ -310,17 +308,11 @@ class SolrAdminService extends AbstractSolrService
      *
      * @param string $baseWord
      * @return ResponseAdapter
-     * @throws \InvalidArgumentException
      */
-    public function deleteSynonym($baseWord)
+    public function deleteSynonym(string $baseWord): ResponseAdapter
     {
         $this->initializeSynonymsUrl();
-        if (empty($baseWord)) {
-            throw new \InvalidArgumentException('Must provide base word.');
-        }
-
-        $response = $this->_sendRawDelete($this->_synonymsUrl . '/' . rawurlencode(rawurlencode($baseWord)));
-        return $response;
+        return $this->_sendRawDelete($this->_synonymsUrl . '/' . rawurlencode(rawurlencode($baseWord)));
     }
 
     /**
@@ -328,7 +320,7 @@ class SolrAdminService extends AbstractSolrService
      *
      * @return array
      */
-    public function getStopWords()
+    public function getStopWords(): array
     {
         $this->initializeStopWordsUrl();
         $response = $this->_sendRawGet($this->_stopWordsUrl);
@@ -340,9 +332,9 @@ class SolrAdminService extends AbstractSolrService
      *
      * @param array|string $stopWords string for a single word, array for multiple words
      * @return ResponseAdapter
-     * @throws \InvalidArgumentException If $stopWords is empty
+     * @throws InvalidArgumentException If $stopWords is empty
      */
-    public function addStopWords($stopWords)
+    public function addStopWords($stopWords): ResponseAdapter
     {
         $this->initializeStopWordsUrl();
         $json = $this->stopWordParser->toJson($stopWords);
@@ -354,13 +346,13 @@ class SolrAdminService extends AbstractSolrService
      *
      * @param string $stopWord stop word to delete
      * @return ResponseAdapter
-     * @throws \InvalidArgumentException If $stopWords is empty
+     * @throws InvalidArgumentException If $stopWords is empty
      */
     public function deleteStopWord($stopWord)
     {
         $this->initializeStopWordsUrl();
         if (empty($stopWord)) {
-            throw new \InvalidArgumentException('Must provide stop word.');
+            throw new InvalidArgumentException('Must provide stop word.');
         }
 
         return $this->_sendRawDelete($this->_stopWordsUrl . '/' . rawurlencode(rawurlencode($stopWord)));
