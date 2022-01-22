@@ -880,13 +880,31 @@ class SearchControllerTest extends AbstractFrontendControllerTest
     }
 
     /**
+     * @return array
+     */
+    public function frontendWillRenderErrorMessageIfSolrNotAvailableDataProvider(): array
+    {
+        return [
+            ['action' => 'results', 'getArguments' =>['q' => '*']],
+            ['action' => 'detail', 'getArguments' =>['id' => 1]],
+        ];
+    }
+
+    /**
+     * @param string $action
+     * @param array $getArguments
+     * @dataProvider frontendWillRenderErrorMessageIfSolrNotAvailableDataProvider
      * @test
      * @group frontend
-     * @todo: See: https://github.com/TYPO3-Solr/ext-solr/issues/3158
+     *
+     * Notes:
+     *   Fits removed frontendWillRenderErrorMessageForSolrNotAvailableAction() test case as well.
+     *   Removed code: https://github.com/TYPO3-Solr/ext-solr/blob/03080d4d55eeb9d50b15348f445d23e57e34e461/Tests/Integration/Controller/SearchControllerTest.php#L729-L747
+     *
+     * @todo: See: https://github.com/TYPO3/testing-framework/issues/324
      */
-    public function frontendWillRenderErrorMessageForSolrNotAvailableAction()
+    public function frontendWillRenderErrorMessageIfSolrNotAvailable(string $action, array $getArguments)
     {
-        $this->markTestSkipped('Fulfill: Breaking: #92502 - Make Extbase handle PSR-7 responses only. See: https://github.com/TYPO3-Solr/ext-solr/issues/3158');
         $this->mergeSiteConfiguration(
             'integration_tree_one',
             [
@@ -898,51 +916,13 @@ class SearchControllerTest extends AbstractFrontendControllerTest
 
         $response = $this->executeFrontendSubRequest(
             $this->getPreparedRequest()
-                ->withQueryParameter('tx_solr[q]', '*')
+                ->withQueryParameter('tx_solr[action]', $action)
+                ->withQueryParameter('tx_solr[' . key($getArguments). ']', current($getArguments))
         );
 
-        $this->assertEquals('503 Service Unavailable', $response->getStatusCode());
         $this->assertStringContainsString("Search is currently not available.", (string)$response->getBody(), 'Response did not contain solr unavailable error message');
-    }
-
-    /**
-     * @return array
-     */
-    public function frontendWillForwardToErrorActionWhenSolrEndpointIsNotAvailableDataProvider(): array
-    {
-        return [
-            ['action' => 'results', 'getArguments' =>['q' => '*']],
-            ['action' => 'detail', 'getArguments' =>['id' => 1]],
-        ];
-    }
-
-    /**
-     * @param string $action
-     * @param array $getArguments
-     * @throws TestingFrameworkCoreException
-     * @throws InternalServerErrorException
-     * @throws ServiceUnavailableException
-     * @throws SiteNotFoundException
-     * @dataProvider frontendWillForwardToErrorActionWhenSolrEndpointIsNotAvailableDataProvider
-     * @test
-     * @group frontend
-     */
-    public function frontendWillForwardToErrorActionWhenSolrEndpointIsNotAvailable($action, $getArguments)
-    {
-        $this->markTestSkipped('Fulfill: Breaking: #92502 - Make Extbase handle PSR-7 responses only. See: https://github.com/TYPO3-Solr/ext-solr/issues/3158');
-        $this->applyUsingErrorControllerForCMS9andAbove();
-        // set a wrong port where no solr is running
-        $this->writeDefaultSolrTestSiteConfigurationForHostAndPort('http','localhost', 4711);
-        $this->expectException(StopActionException::class);
-        $this->expectExceptionMessage('forward');
-        $this->expectExceptionCode(1476045801);
-
-        $this->importDataSetFromFixture('can_render_error_message_when_solr_unavailable.xml');
-        $GLOBALS['TSFE'] = $this->getConfiguredTSFE(1);
-
-        $_GET = $getArguments;
-        $this->getPreparedRequest()->setControllerActionName($action);
-        $this->searchController->processRequest($this->getPreparedRequest(), $this->searchResponse);
+        $this->markTestIncomplete('The status code can not be checked currently. See: https://github.com/TYPO3/testing-framework/issues/324');
+        //$this->assertEquals(503, $response->getStatusCode());
     }
 
     /**

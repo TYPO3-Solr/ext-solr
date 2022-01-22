@@ -27,6 +27,8 @@ namespace ApacheSolrForTypo3\Solr\Backend;
 
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
+use Doctrine\DBAL\Driver\Exception as DBALDriverException;
+use Throwable;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -41,14 +43,16 @@ class SiteSelectorField
     /**
      * Creates a dropdown selector of available TYPO3 sites with Solr configured.
      *
-     * @param string $selectorName Name to be used in the select's name attribute
-     * @param Site $selectedSite Optional, currently selected site
+     * @param string $selectorName Name to be used in the selects name attribute
+     * @param Site|null $selectedSite Optional, currently selected site
      * @return string Site selector HTML code
+     * @throws DBALDriverException
+     * @throws Throwable
      */
     public function getAvailableSitesSelector(
-        $selectorName,
+        string $selectorName,
         Site $selectedSite = null
-    ) {
+    ): string {
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
 
         $sites = $siteRepository->getAvailableSites();

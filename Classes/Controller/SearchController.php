@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Controller;
 
 /*
@@ -20,11 +21,14 @@ use ApacheSolrForTypo3\Solr\Pagination\ResultsPaginator;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrUnavailableException;
 use ApacheSolrForTypo3\Solr\Util;
 use Psr\Http\Message\ResponseInterface;
+use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Extbase\Http\ForwardResponse;
-use TYPO3\CMS\Extbase\Mvc\Response;
-use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Mvc\Exception\NoSuchArgumentException;
+use TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException;
+use TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException;
 use TYPO3\CMS\Fluid\View\TemplateView;
+use TYPO3Fluid\Fluid\View\ViewInterface;
 
 /**
  * Class SearchController
@@ -65,15 +69,15 @@ class SearchController extends AbstractBaseController
     /**
      * @param ViewInterface $view
      */
-    public function initializeView(ViewInterface $view)
+    public function initializeView($view)
     {
-        if($view instanceof TemplateView) {
+        if ($view instanceof TemplateView) {
             $customTemplate = $this->getCustomTemplateFromConfiguration();
-            if($customTemplate === '') {
+            if ($customTemplate === '') {
                 return;
             }
 
-            if(strpos($customTemplate, 'EXT:') !== false) {
+            if (strpos($customTemplate, 'EXT:') !== false) {
                 $view->setTemplatePathAndFilename($customTemplate);
             } else {
                 $view->setTemplate($customTemplate);
@@ -84,20 +88,24 @@ class SearchController extends AbstractBaseController
     /**
      * @return string
      */
-    protected function getCustomTemplateFromConfiguration()
+    protected function getCustomTemplateFromConfiguration(): string
     {
         $templateKey = str_replace('Action', '', $this->actionMethodName);
-        $customTemplate = $this->typoScriptConfiguration->getViewTemplateByFileKey($templateKey);
-        return $customTemplate;
+        return $this->typoScriptConfiguration->getViewTemplateByFileKey($templateKey);
     }
 
     /**
      * Results
+     * @return ResponseInterface
+     * @throws AspectNotFoundException
+     * @throws NoSuchArgumentException
+     * @throws InvalidSlotException
+     * @throws InvalidSlotReturnException
      */
     public function resultsAction(): ResponseInterface
     {
         try {
-            $arguments = (array)$this->request->getArguments();
+            $arguments = $this->request->getArguments();
             $pageId = $this->typoScriptFrontendController->getRequestedId();
             $languageId = Util::getLanguageUid();
             $searchRequest = $this->getSearchRequestBuilder()->buildForSearch($arguments, $pageId, $languageId);
@@ -137,7 +145,6 @@ class SearchController extends AbstractBaseController
      */
     public function formAction(): ResponseInterface
     {
-
         $values = [
             'search' => $this->searchService->getSearch(),
             'additionalFilters' => $this->getAdditionalFilters(),
@@ -178,46 +185,45 @@ class SearchController extends AbstractBaseController
      * This action allows to render a detailView with data from solr.
      *
      * @param string $documentId
+     * @return ResponseInterface
      */
-    public function detailAction($documentId = ''): ResponseInterface
+    public function detailAction(string $documentId = ''): ResponseInterface
     {
         try {
             $document = $this->searchService->getDocumentById($documentId);
             $this->view->assign('document', $document);
         } catch (SolrUnavailableException $e) {
-            $this->handleSolrUnavailable();
+            return $this->handleSolrUnavailable();
         }
         return $this->htmlResponse();
     }
 
     /**
      * Rendered when no search is available.
-     * @return string
+     * @return ResponseInterface
      */
     public function solrNotAvailableAction(): ResponseInterface
     {
-        if ($this->response instanceof Response) {
-            $this->response->setStatus(503);
-        }
-        return $this->htmlResponse();
+        return $this->htmlResponse()
+            ->withStatus(503, self::STATUS_503_MESSAGE);
     }
 
     /**
      * Called when the solr server is unavailable.
      */
-    protected function handleSolrUnavailable()
+    protected function handleSolrUnavailable(): ResponseInterface
     {
-        parent::handleSolrUnavailable();
+        parent::logSolrUnavailable();
         return new ForwardResponse('solrNotAvailable');
     }
 
     /**
      * This method can be overwritten to add additionalFilters for the autosuggest.
-     * By default the suggest controller will apply the configured filters from the typoscript configuration.
+     * By default, suggest controller will apply the configured filters from the typoscript configuration.
      *
      * @return array
      */
-    protected function getAdditionalFilters()
+    protected function getAdditionalFilters(): array
     {
         return [];
     }

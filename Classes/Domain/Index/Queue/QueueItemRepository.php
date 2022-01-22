@@ -1,34 +1,31 @@
-<?php declare(strict_types = 1);
+<?php
+
+declare(strict_types=1);
+
 namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue;
 
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2010-2017 dkd Internet Service GmbH <solr-support@dkd.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Records\AbstractRepository;
-use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\ConnectionException;
+use Doctrine\DBAL\Exception as DBALException;
+use Doctrine\DBAL\Driver\Exception as DBALDriverException;
+use PDO;
+use Throwable;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Expression\CompositeExpression;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
@@ -58,7 +55,11 @@ class QueueItemRepository extends AbstractRepository
      */
     public function __construct(SolrLogManager $logManager = null)
     {
-        $this->logger = $logManager ?? GeneralUtility::makeInstance(SolrLogManager::class, /** @scrutinizer ignore-type */ __CLASS__);
+        $this->logger = $logManager ?? GeneralUtility::makeInstance(
+            SolrLogManager::class,
+            /** @scrutinizer ignore-type */
+            __CLASS__
+        );
     }
 
     /**
@@ -66,20 +67,29 @@ class QueueItemRepository extends AbstractRepository
      *
      * @param int $rootPageId The root page uid for which to get the last indexed row
      * @return array
+     *
+     * @throws DBALDriverException
+     *
+     * @throws \Doctrine\DBAL\DBALException
      */
-    public function findLastIndexedRow(int $rootPageId) : array
+    public function findLastIndexedRow(int $rootPageId): array
     {
         $queryBuilder = $this->getQueryBuilder();
-        $row = $queryBuilder
+        return $queryBuilder
             ->select('uid', 'indexed')
             ->from($this->table)
-            ->where($queryBuilder->expr()->eq('root', $rootPageId))
-            ->andWhere($queryBuilder->expr()->neq('indexed', 0))
+            ->where(
+                /** @scrutinizer ignore-type */
+                $queryBuilder->expr()->eq('root', $rootPageId)
+            )
+            ->andWhere(
+                /** @scrutinizer ignore-type */
+                $queryBuilder->expr()->neq('indexed', 0)
+            )
             ->orderBy('indexed', 'DESC')
             ->setMaxResults(1)
-            ->execute()->fetchAll();
-
-        return $row;
+            ->execute()
+            ->fetchAllAssociative();
     }
 
     /**
@@ -87,32 +97,37 @@ class QueueItemRepository extends AbstractRepository
      *
      * @param Site $site
      * @return array Error items for the current site's Index Queue
+     *
+     * @throws DBALDriverException
+     * @throws \Doctrine\DBAL\DBALException
      */
-    public function findErrorsBySite(Site $site) : array
+    public function findErrorsBySite(Site $site): array
     {
         $queryBuilder = $this->getQueryBuilder();
-        $errors = $queryBuilder
+        return $queryBuilder
             ->select('uid', 'item_type', 'item_uid', 'errors')
             ->from($this->table)
             ->andWhere(
+                /** @scrutinizer ignore-type */
                 $queryBuilder->expr()->notLike('errors', $queryBuilder->createNamedParameter('')),
                 $queryBuilder->expr()->eq('root', $site->getRootPageId())
             )
-            ->execute()->fetchAll();
-
-        return $errors;
+            ->execute()
+            ->fetchAllAssociative();
     }
 
     /**
      * Resets all the errors for all index queue items.
      *
      * @return int affected rows
+     *
+     * @throws \Doctrine\DBAL\DBALException
      */
-    public function flushAllErrors() : int
+    public function flushAllErrors(): int
     {
         $queryBuilder = $this->getQueryBuilder();
-        $affectedRows = $this->getPreparedFlushErrorQuery($queryBuilder)->execute();
-        return $affectedRows;
+        return (int)$this->getPreparedFlushErrorQuery($queryBuilder)
+            ->execute();
     }
 
     /**
@@ -120,16 +135,18 @@ class QueueItemRepository extends AbstractRepository
      *
      * @param Site $site
      * @return int
+     *
+     * @throws \Doctrine\DBAL\DBALException
      */
-    public function flushErrorsBySite(Site $site) : int
+    public function flushErrorsBySite(Site $site): int
     {
         $queryBuilder = $this->getQueryBuilder();
-        $affectedRows = $this->getPreparedFlushErrorQuery($queryBuilder)
+        return (int)$this->getPreparedFlushErrorQuery($queryBuilder)
             ->andWhere(
-                $queryBuilder->expr()->eq('root', (int)$site->getRootPageId())
+                /** @scrutinizer ignore-type */
+                $queryBuilder->expr()->eq('root', $site->getRootPageId())
             )
             ->execute();
-        return $affectedRows;
     }
 
     /**
@@ -137,29 +154,33 @@ class QueueItemRepository extends AbstractRepository
      *
      * @param Item $item
      * @return int affected rows
+     *
+     * @throws \Doctrine\DBAL\DBALException
      */
-    public function flushErrorByItem(Item $item) : int
+    public function flushErrorByItem(Item $item): int
     {
         $queryBuilder = $this->getQueryBuilder();
-        $affectedRows = $this->getPreparedFlushErrorQuery($queryBuilder)
+        return (int)$this->getPreparedFlushErrorQuery($queryBuilder)
             ->andWhere(
+                /** @scrutinizer ignore-type */
                 $queryBuilder->expr()->eq('uid', $item->getIndexQueueUid())
             )
             ->execute();
-        return $affectedRows;
     }
 
     /**
      * Initializes the QueryBuilder with a query the resets the error field for items that have an error.
      *
+     * @param QueryBuilder $queryBuilder
      * @return QueryBuilder
      */
-    private function getPreparedFlushErrorQuery(QueryBuilder $queryBuilder)
+    private function getPreparedFlushErrorQuery(QueryBuilder $queryBuilder): QueryBuilder
     {
         return $queryBuilder
             ->update($this->table)
             ->set('errors', '')
             ->where(
+                /** @scrutinizer ignore-type */
                 $queryBuilder->expr()->notLike('errors', $queryBuilder->createNamedParameter(''))
             );
     }
@@ -170,20 +191,30 @@ class QueueItemRepository extends AbstractRepository
      * @param string $itemType The item's type, usually a table name.
      * @param int $itemUid The item's uid, usually an integer uid, could be a
      *      different value for non-database-record types.
-     * @param string $indexingConfiguration The name of the related indexConfiguration
      * @param int $rootPageId The uid of the rootPage
      * @param int $changedTime The forced change time that should be used for updating
+     * @param string $indexingConfiguration The name of the related indexConfiguration
      * @return int affected rows
+     *
+     * @throws \Doctrine\DBAL\DBALException
      */
-    public function updateExistingItemByItemTypeAndItemUidAndRootPageId(string $itemType, int $itemUid, int $rootPageId, int $changedTime, string $indexingConfiguration = '') : int
-    {
+    public function updateExistingItemByItemTypeAndItemUidAndRootPageId(
+        string $itemType,
+        int $itemUid,
+        int $rootPageId,
+        int $changedTime,
+        string $indexingConfiguration = ''
+    ): int {
         $queryBuilder = $this->getQueryBuilder();
         $queryBuilder
             ->update($this->table)
             ->set('changed', $changedTime)
             ->andWhere(
+                /** @scrutinizer ignore-type */
                 $queryBuilder->expr()->eq('item_type', $queryBuilder->createNamedParameter($itemType)),
+                /** @scrutinizer ignore-type */
                 $queryBuilder->expr()->eq('item_uid', $itemUid),
+                /** @scrutinizer ignore-type */
                 $queryBuilder->expr()->eq('root', $rootPageId)
             );
 
@@ -191,7 +222,7 @@ class QueueItemRepository extends AbstractRepository
             $queryBuilder->set('indexing_configuration', $indexingConfiguration);
         }
 
-        return $queryBuilder->execute();
+        return (int)$queryBuilder->execute();
     }
 
     /**
@@ -205,11 +236,18 @@ class QueueItemRepository extends AbstractRepository
      * @param int $changedTime
      * @param string $indexingConfiguration The item's indexing configuration to use. Optional, overwrites existing / determined configuration.
      * @return int the number of inserted rows, which is typically 1
+     *
+     * @throws \Doctrine\DBAL\DBALException
      */
-    public function add(string $itemType, int $itemUid, int $rootPageId, int $changedTime, string $indexingConfiguration) : int
-    {
+    public function add(
+        string $itemType,
+        int $itemUid,
+        int $rootPageId,
+        int $changedTime,
+        string $indexingConfiguration
+    ): int {
         $queryBuilder = $this->getQueryBuilder();
-        return $queryBuilder
+        return (int)$queryBuilder
             ->insert($this->table)
             ->values([
                 'root' => $rootPageId,
@@ -220,7 +258,6 @@ class QueueItemRepository extends AbstractRepository
                 'indexing_configuration' => $indexingConfiguration
             ])
             ->execute();
-
     }
 
     /**
@@ -232,20 +269,37 @@ class QueueItemRepository extends AbstractRepository
      * @param array $itemUids
      * @param array $uids
      * @return int
+     *
+     * @throws DBALDriverException
+     * @throws \Doctrine\DBAL\DBALException
      */
-    public function countItems(array $sites = [], array $indexQueueConfigurationNames = [], array $itemTypes = [], array $itemUids = [], array $uids = []): int
-    {
+    public function countItems(
+        array $sites = [],
+        array $indexQueueConfigurationNames = [],
+        array $itemTypes = [],
+        array $itemUids = [],
+        array $uids = []
+    ): int {
         $rootPageIds = Site::getRootPageIdsFromSites($sites);
-        $indexQueueConfigurationList = implode(",", $indexQueueConfigurationNames);
-        $itemTypeList = implode(",", $itemTypes);
-        $itemUids = array_map("intval", $itemUids);
-        $uids = array_map("intval", $uids);
+        $indexQueueConfigurationList = implode(',', $indexQueueConfigurationNames);
+        $itemTypeList = implode(',', $itemTypes);
+        $itemUids = array_map('intval', $itemUids);
+        $uids = array_map('intval', $uids);
 
         $queryBuilderForCountingItems = $this->getQueryBuilder();
         $queryBuilderForCountingItems->count('uid')->from($this->table);
-        $queryBuilderForCountingItems = $this->addItemWhereClauses($queryBuilderForCountingItems, $rootPageIds, $indexQueueConfigurationList, $itemTypeList, $itemUids, $uids);
+        $queryBuilderForCountingItems = $this->addItemWhereClauses(
+            $queryBuilderForCountingItems,
+            $rootPageIds,
+            $indexQueueConfigurationList,
+            $itemTypeList,
+            $itemUids,
+            $uids
+        );
 
-        return (int)$queryBuilderForCountingItems->execute()->fetchColumn(0);
+        return (int)$queryBuilderForCountingItems
+            ->execute()
+            ->fetchOne();
     }
 
     /**
@@ -253,18 +307,24 @@ class QueueItemRepository extends AbstractRepository
      *
      * @param int $pageUid
      * @return int|null Timestamp of the most recent content element change or null if nothing is found.
+     *
+     * @throws DBALDriverException
+     * @throws \Doctrine\DBAL\DBALException
      */
-    public function getPageItemChangedTimeByPageUid(int $pageUid)
+    public function getPageItemChangedTimeByPageUid(int $pageUid): ?int
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tt_content');
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable('tt_content');
         $queryBuilder->getRestrictions()->removeAll();
         $pageContentLastChangedTime = $queryBuilder
             ->add('select', $queryBuilder->expr()->max('tstamp', 'changed_time'))
             ->from('tt_content')
             ->where(
+                /** @scrutinizer ignore-type */
                 $queryBuilder->expr()->eq('pid', $pageUid)
             )
-            ->execute()->fetch();
+            ->execute()
+            ->fetchAssociative();
 
         return $pageContentLastChangedTime['changed_time'];
     }
@@ -276,8 +336,11 @@ class QueueItemRepository extends AbstractRepository
      * @param string $itemType The item's type, usually a table name.
      * @param int $itemUid The item's uid
      * @return int Timestamp of the most recent content element change
+     *
+     * @throws DBALDriverException
+     * @throws \Doctrine\DBAL\DBALException
      */
-    public function getLocalizableItemChangedTime(string $itemType, int $itemUid) : int
+    public function getLocalizableItemChangedTime(string $itemType, int $itemUid): int
     {
         $localizedChangedTime = 0;
 
@@ -292,11 +355,13 @@ class QueueItemRepository extends AbstractRepository
                 ->add('select', $queryBuilder->expr()->max($timeStampField, 'changed_time'))
                 ->from($itemType)
                 ->orWhere(
+                    /** @scrutinizer ignore-type */
                     $queryBuilder->expr()->eq('uid', $itemUid),
                     $queryBuilder->expr()->eq($translationOriginalPointerField, $itemUid)
-                )->execute()->fetchColumn(0);
+                )
+                ->execute()
+                ->fetchOne();
         }
-
         return (int)$localizedChangedTime;
     }
 
@@ -307,12 +372,14 @@ class QueueItemRepository extends AbstractRepository
      * @param int $itemUid
      * @return QueryBuilder
      */
-    protected function getQueryBuilderForContainsMethods(string $itemType, int $itemUid) : QueryBuilder
+    protected function getQueryBuilderForContainsMethods(string $itemType, int $itemUid): QueryBuilder
     {
         $queryBuilder = $this->getQueryBuilder();
         return $queryBuilder->count('uid')->from($this->table)
             ->andWhere(
+                /** @scrutinizer ignore-type */
                 $queryBuilder->expr()->eq('item_type', $queryBuilder->createNamedParameter($itemType)),
+                /** @scrutinizer ignore-type */
                 $queryBuilder->expr()->eq('item_uid', $itemUid)
             );
     }
@@ -323,10 +390,15 @@ class QueueItemRepository extends AbstractRepository
      * @param string $itemType The item's type, usually a table name.
      * @param int $itemUid The item's uid
      * @return bool TRUE if the item is found in the queue, FALSE otherwise
+     *
+     * @throws \Doctrine\DBAL\DBALException
+     * @throws DBALDriverException
      */
-    public function containsItem(string $itemType, int $itemUid) : bool
+    public function containsItem(string $itemType, int $itemUid): bool
     {
-        return (bool)$this->getQueryBuilderForContainsMethods($itemType, $itemUid)->execute()->fetchColumn(0);
+        return (bool)$this->getQueryBuilderForContainsMethods($itemType, $itemUid)
+            ->execute()
+            ->fetchOne();
     }
 
     /**
@@ -336,13 +408,17 @@ class QueueItemRepository extends AbstractRepository
      * @param int $itemUid The item's uid
      * @param integer $rootPageId
      * @return bool TRUE if the item is found in the queue, FALSE otherwise
+     *
+     * @throws \Doctrine\DBAL\DBALException
+     * @throws DBALDriverException
      */
-    public function containsItemWithRootPageId(string $itemType, int $itemUid, int $rootPageId) : bool
+    public function containsItemWithRootPageId(string $itemType, int $itemUid, int $rootPageId): bool
     {
         $queryBuilder = $this->getQueryBuilderForContainsMethods($itemType, $itemUid);
         return (bool)$queryBuilder
-            ->andWhere($queryBuilder->expr()->eq('root', $rootPageId))
-            ->execute()->fetchColumn(0);
+            ->andWhere(/** @scrutinizer ignore-type */ $queryBuilder->expr()->eq('root', $rootPageId))
+            ->execute()
+            ->fetchOne();
     }
 
     /**
@@ -351,22 +427,29 @@ class QueueItemRepository extends AbstractRepository
      *
      * @param string $itemType The item's type, usually a table name.
      * @param int $itemUid The item's uid
-     * @return bool TRUE if the item is found in the queue and marked as
-     *      indexed, FALSE otherwise
+     * @return bool TRUE if the item is found in the queue and marked as indexed, FALSE otherwise
+     *
+     * @throws \Doctrine\DBAL\DBALException
+     * @throws DBALDriverException
      */
-    public function containsIndexedItem(string $itemType, int $itemUid) : bool
+    public function containsIndexedItem(string $itemType, int $itemUid): bool
     {
         $queryBuilder = $this->getQueryBuilderForContainsMethods($itemType, $itemUid);
         return (bool)$queryBuilder
-            ->andWhere($queryBuilder->expr()->gt('indexed', 0))
-            ->execute()->fetchColumn(0);
+            ->andWhere(/** @scrutinizer ignore-type */ $queryBuilder->expr()->gt('indexed', 0))
+            ->execute()
+            ->fetchOne();
     }
 
     /**
      * Removes an item from the Index Queue.
      *
      * @param string $itemType The type of the item to remove, usually a table name.
-     * @param int $itemUid The uid of the item to remove
+     * @param int|null $itemUid The uid of the item to remove
+     *
+     * @throws ConnectionException
+     * @throws Throwable
+     * @throws \Doctrine\DBAL\DBALException
      */
     public function deleteItem(string $itemType, int $itemUid = null)
     {
@@ -378,6 +461,10 @@ class QueueItemRepository extends AbstractRepository
      * Removes all items of a certain type from the Index Queue.
      *
      * @param string $itemType The type of items to remove, usually a table name.
+     *
+     * @throws ConnectionException
+     * @throws Throwable
+     * @throws \Doctrine\DBAL\DBALException
      */
     public function deleteItemsByType(string $itemType)
     {
@@ -390,7 +477,10 @@ class QueueItemRepository extends AbstractRepository
      *
      * @param Site $site The site to remove items for.
      * @param string $indexingConfigurationName Name of a specific indexing configuration
-     * @throws \Exception
+     *
+     * @throws ConnectionException
+     * @throws Throwable
+     * @throws \Doctrine\DBAL\DBALException
      */
     public function deleteItemsBySite(Site $site, string $indexingConfigurationName = '')
     {
@@ -406,10 +496,18 @@ class QueueItemRepository extends AbstractRepository
      * @param array $itemTypes
      * @param array $itemUids
      * @param array $uids
-     * @throws \Exception
+     *
+     * @throws ConnectionException
+     * @throws \Doctrine\DBAL\DBALException
+     * @throws Throwable
      */
-    public function deleteItems(array $sites = [], array $indexQueueConfigurationNames = [], array $itemTypes = [], array $itemUids = [], array $uids = [])
-    {
+    public function deleteItems(
+        array $sites = [],
+        array $indexQueueConfigurationNames = [],
+        array $itemTypes = [],
+        array $itemUids = [],
+        array $uids = []
+    ): void {
         $rootPageIds = Site::getRootPageIdsFromSites($sites);
         $indexQueueConfigurationList = implode(",", $indexQueueConfigurationNames);
         $itemTypeList = implode(",", $itemTypes);
@@ -428,7 +526,7 @@ class QueueItemRepository extends AbstractRepository
             $queryBuilderForDeletingProperties->execute();
 
             $queryBuilderForDeletingItems->getConnection()->commit();
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $queryBuilderForDeletingItems->getConnection()->rollback();
             throw $e;
         }
@@ -437,6 +535,7 @@ class QueueItemRepository extends AbstractRepository
     /**
      * Initializes the query builder to delete items in the index queue filtered by the passed arguments.
      *
+     * @param QueryBuilder $queryBuilderForDeletingItems
      * @param array $rootPageIds filter on a set of rootPageUids.
      * @param string $indexQueueConfigurationList
      * @param string $itemTypeList
@@ -444,27 +543,53 @@ class QueueItemRepository extends AbstractRepository
      * @param array $uids filter on a set of queue item uids
      * @return QueryBuilder
      */
-    private function addItemWhereClauses(QueryBuilder $queryBuilderForDeletingItems, array $rootPageIds, string $indexQueueConfigurationList, string $itemTypeList, array $itemUids, array $uids): QueryBuilder
-    {
-
+    private function addItemWhereClauses(
+        QueryBuilder $queryBuilderForDeletingItems,
+        array $rootPageIds,
+        string $indexQueueConfigurationList,
+        string $itemTypeList,
+        array $itemUids,
+        array $uids
+    ): QueryBuilder {
         if (!empty($rootPageIds)) {
-            $queryBuilderForDeletingItems->andWhere($queryBuilderForDeletingItems->expr()->in('root', $rootPageIds));
-        };
+            $queryBuilderForDeletingItems->andWhere(
+                /** @scrutinizer ignore-type */
+                $queryBuilderForDeletingItems->expr()->in('root', $rootPageIds)
+            );
+        }
 
         if (!empty($indexQueueConfigurationList)) {
-            $queryBuilderForDeletingItems->andWhere($queryBuilderForDeletingItems->expr()->in('indexing_configuration', $queryBuilderForDeletingItems->createNamedParameter($indexQueueConfigurationList)));
+            $queryBuilderForDeletingItems->andWhere(
+                /** @scrutinizer ignore-type */
+                $queryBuilderForDeletingItems->expr()->in(
+                    'indexing_configuration',
+                    $queryBuilderForDeletingItems->createNamedParameter($indexQueueConfigurationList)
+                )
+            );
         }
 
         if (!empty($itemTypeList)) {
-            $queryBuilderForDeletingItems->andWhere($queryBuilderForDeletingItems->expr()->in('item_type', $queryBuilderForDeletingItems->createNamedParameter($itemTypeList)));
+            $queryBuilderForDeletingItems->andWhere(
+                /** @scrutinizer ignore-type */
+                $queryBuilderForDeletingItems->expr()->in(
+                    'item_type',
+                    $queryBuilderForDeletingItems->createNamedParameter($itemTypeList)
+                )
+            );
         }
 
         if (!empty($itemUids)) {
-            $queryBuilderForDeletingItems->andWhere($queryBuilderForDeletingItems->expr()->in('item_uid', $itemUids));
+            $queryBuilderForDeletingItems->andWhere(
+                /** @scrutinizer ignore-type */
+                $queryBuilderForDeletingItems->expr()->in('item_uid', $itemUids)
+            );
         }
 
         if (!empty($uids)) {
-            $queryBuilderForDeletingItems->andWhere($queryBuilderForDeletingItems->expr()->in('uid', $uids));
+            $queryBuilderForDeletingItems->andWhere(
+                /** @scrutinizer ignore-type */
+                $queryBuilderForDeletingItems->expr()->in('uid', $uids)
+            );
         }
 
         return $queryBuilderForDeletingItems;
@@ -480,28 +605,48 @@ class QueueItemRepository extends AbstractRepository
      * @param array $itemUids
      * @param array $uids
      * @return QueryBuilder
+     *
+     * @throws DBALDriverException
+     * @throws \Doctrine\DBAL\DBALException
      */
-    private function buildQueryForPropertyDeletion(QueryBuilder $queryBuilderForDeletingItems, array $rootPageIds, string $indexQueueConfigurationList, string $itemTypeList, array $itemUids, array $uids): QueryBuilder
-    {
+    private function buildQueryForPropertyDeletion(
+        QueryBuilder $queryBuilderForDeletingItems,
+        array $rootPageIds,
+        string $indexQueueConfigurationList,
+        string $itemTypeList,
+        array $itemUids,
+        array $uids
+    ): QueryBuilder {
         $queryBuilderForSelectingProperties = $queryBuilderForDeletingItems->getConnection()->createQueryBuilder();
-        $queryBuilderForSelectingProperties->select('items.uid')->from('tx_solr_indexqueue_indexing_property', 'properties')->innerJoin(
-            'properties',
-            $this->table,
-            'items',
-            (string)$queryBuilderForSelectingProperties->expr()->andX(
-                $queryBuilderForSelectingProperties->expr()->eq('items.uid', $queryBuilderForSelectingProperties->quoteIdentifier('properties.item_id')),
-                empty($rootPageIds) ? '' : $queryBuilderForSelectingProperties->expr()->in('items.root', $rootPageIds),
-                empty($indexQueueConfigurationList) ? '' : $queryBuilderForSelectingProperties->expr()->in('items.indexing_configuration', $queryBuilderForSelectingProperties->createNamedParameter($indexQueueConfigurationList)),
-                empty($itemTypeList) ? '' : $queryBuilderForSelectingProperties->expr()->in('items.item_type', $queryBuilderForSelectingProperties->createNamedParameter($itemTypeList)),
-                empty($itemUids) ? '' : $queryBuilderForSelectingProperties->expr()->in('items.item_uid', $itemUids),
-                empty($uids) ? '' : $queryBuilderForSelectingProperties->expr()->in('items.uid', $uids)
+        $queryBuilderForSelectingProperties
+            ->select('items.uid')
+            ->from('tx_solr_indexqueue_indexing_property', 'properties')
+            ->innerJoin(
+                'properties',
+                $this->table,
+                'items',
+                (string)$queryBuilderForSelectingProperties->expr()->andX(
+                    $queryBuilderForSelectingProperties->expr()->eq('items.uid', $queryBuilderForSelectingProperties->quoteIdentifier('properties.item_id')),
+                    empty($rootPageIds) ? '' : $queryBuilderForSelectingProperties->expr()->in('items.root', $rootPageIds),
+                    empty($indexQueueConfigurationList) ? '' : $queryBuilderForSelectingProperties->expr()->in('items.indexing_configuration', $queryBuilderForSelectingProperties->createNamedParameter($indexQueueConfigurationList)),
+                    empty($itemTypeList) ? '' : $queryBuilderForSelectingProperties->expr()->in('items.item_type', $queryBuilderForSelectingProperties->createNamedParameter($itemTypeList)),
+                    empty($itemUids) ? '' : $queryBuilderForSelectingProperties->expr()->in('items.item_uid', $itemUids),
+                    empty($uids) ? '' : $queryBuilderForSelectingProperties->expr()->in('items.uid', $uids)
+                )
+            );
+        $propertyEntriesToDelete = implode(
+            ',',
+            array_column(
+                $queryBuilderForSelectingProperties
+                    ->execute()
+                    ->fetchAllAssociative(),
+                'uid'
             )
         );
-        $propertyEntriesToDelete = implode(',', array_column($queryBuilderForSelectingProperties->execute()->fetchAll(), 'uid'));
 
         $queryBuilderForDeletingProperties = $queryBuilderForDeletingItems->getConnection()->createQueryBuilder();
 
-        // make sure executing the propety deletion query doesn't fail if there are no properties to delete
+        // make sure executing the property deletion query doesn't fail if there are no properties to delete
         if (empty($propertyEntriesToDelete)) {
             $propertyEntriesToDelete = '0';
         }
@@ -516,9 +661,9 @@ class QueueItemRepository extends AbstractRepository
     /**
      * Removes all items from the Index Queue.
      *
-     * @return int The number of affected rows. For a truncate this is unreliable as theres no meaningful information.
+     * @return int The number of affected rows. For a truncate this is unreliable as there is no meaningful information.
      */
-    public function deleteAllItems()
+    public function deleteAllItems(): int
     {
         return $this->getQueryBuilder()->getConnection()->truncate($this->table);
     }
@@ -528,23 +673,25 @@ class QueueItemRepository extends AbstractRepository
      *
      * @param int $uid Index Queue item uid
      * @return Item|null The request Index Queue item or NULL if no item with $itemId was found
+     *
+     * @throws DBALDriverException
+     * @throws \Doctrine\DBAL\DBALException
      */
-    public function findItemByUid(int $uid)
+    public function findItemByUid(int $uid): ?Item
     {
         $queryBuilder = $this->getQueryBuilder();
         $indexQueueItemRecord = $queryBuilder
             ->select('*')
             ->from($this->table)
-            ->where($queryBuilder->expr()->eq('uid', $uid))
-            ->execute()->fetch();
+            ->where(/** @scrutinizer ignore-type */ $queryBuilder->expr()->eq('uid', $uid))
+            ->execute()
+            ->fetchAssociative();
 
         if (!isset($indexQueueItemRecord['uid'])) {
             return null;
         }
 
-        /** @var Item $item*/
-        $item = GeneralUtility::makeInstance(Item::class, /** @scrutinizer ignore-type */ $indexQueueItemRecord);
-        return $item;
+        return GeneralUtility::makeInstance(Item::class, /** @scrutinizer ignore-type */ $indexQueueItemRecord);
     }
 
     /**
@@ -553,12 +700,18 @@ class QueueItemRepository extends AbstractRepository
      * @param string $itemType item type, usually  the table name
      * @param int $itemUid item uid
      * @return Item[] An array of items matching $itemType and $itemUid
+     *
+     * @throws ConnectionException
+     * @throws DBALDriverException
+     * @throws Throwable
+     * @throws \Doctrine\DBAL\DBALException
      */
-    public function findItemsByItemTypeAndItemUid(string $itemType, int $itemUid) : array
+    public function findItemsByItemTypeAndItemUid(string $itemType, int $itemUid): array
     {
         $queryBuilder = $this->getQueryBuilder();
         $compositeExpression = $queryBuilder->expr()->andX(
-            $queryBuilder->expr()->eq('item_type', $queryBuilder->getConnection()->quote($itemType, \PDO::PARAM_STR)),
+            /** @scrutinizer ignore-type */
+            $queryBuilder->expr()->eq('item_type', $queryBuilder->getConnection()->quote($itemType, PDO::PARAM_STR)),
             $queryBuilder->expr()->eq('item_uid', $itemUid)
         );
         return $this->getItemsByCompositeExpression($compositeExpression, $queryBuilder);
@@ -566,14 +719,20 @@ class QueueItemRepository extends AbstractRepository
 
     /**
      * Returns a collection of items by CompositeExpression.
-     * D
      *
      * @param CompositeExpression|null $expression Optional expression to filter records.
      * @param QueryBuilder|null $queryBuilder QueryBuilder to use
      * @return array
+     *
+     * @throws ConnectionException
+     * @throws DBALDriverException
+     * @throws Throwable
+     * @throws \Doctrine\DBAL\DBALException
      */
-    protected function getItemsByCompositeExpression(CompositeExpression $expression = null, QueryBuilder $queryBuilder = null) : array
-    {
+    protected function getItemsByCompositeExpression(
+        CompositeExpression $expression = null,
+        QueryBuilder $queryBuilder = null
+    ): array {
         if (!$queryBuilder instanceof QueryBuilder) {
             $queryBuilder = $this->getQueryBuilder();
         }
@@ -583,7 +742,9 @@ class QueueItemRepository extends AbstractRepository
             $queryBuilder->where($expression);
         }
 
-        $indexQueueItemRecords = $queryBuilder->execute()->fetchAll();
+        $indexQueueItemRecords = $queryBuilder
+            ->execute()
+            ->fetchAllAssociative();
         return $this->getIndexQueueItemObjectsFromRecords($indexQueueItemRecords);
     }
 
@@ -591,14 +752,20 @@ class QueueItemRepository extends AbstractRepository
      * Returns all items in the queue.
      *
      * @return Item[] all Items from Queue without restrictions
+     *
+     * @throws ConnectionException
+     * @throws DBALDriverException
+     * @throws Throwable
+     * @throws \Doctrine\DBAL\DBALException
      */
-    public function findAll() : array
+    public function findAll(): array
     {
         $queryBuilder = $this->getQueryBuilder();
         $allRecords = $queryBuilder
             ->select('*')
             ->from($this->table)
-            ->execute()->fetchAll();
+            ->execute()
+            ->fetchAllAssociative();
         return $this->getIndexQueueItemObjectsFromRecords($allRecords);
     }
 
@@ -608,8 +775,13 @@ class QueueItemRepository extends AbstractRepository
      * @param Site $site TYPO3 site
      * @param int $limit Number of items to get from the queue
      * @return Item[] Items to index to the given solr server
+     *
+     * @throws ConnectionException
+     * @throws DBALDriverException
+     * @throws Throwable
+     * @throws \Doctrine\DBAL\DBALException
      */
-    public function findItemsToIndex(Site $site, int $limit = 50) : array
+    public function findItemsToIndex(Site $site, int $limit = 50): array
     {
         $queryBuilder = $this->getQueryBuilder();
         // determine which items to index with this run
@@ -617,16 +789,21 @@ class QueueItemRepository extends AbstractRepository
             ->select('*')
             ->from($this->table)
             ->andWhere(
+                /** @scrutinizer ignore-type */
                 $queryBuilder->expr()->eq('root', $site->getRootPageId()),
+                /** @scrutinizer ignore-type */
                 $queryBuilder->expr()->gt('changed', 'indexed'),
+                /** @scrutinizer ignore-type */
                 $queryBuilder->expr()->lte('changed', time()),
+                /** @scrutinizer ignore-type */
                 $queryBuilder->expr()->eq('errors', $queryBuilder->createNamedParameter(''))
             )
             ->orderBy('indexing_priority', 'DESC')
             ->addOrderBy('changed', 'DESC')
             ->addOrderBy('uid', 'DESC')
             ->setMaxResults($limit)
-            ->execute()->fetchAll();
+            ->execute()
+            ->fetchAllAssociative();
 
         return $this->getIndexQueueItemObjectsFromRecords($indexQueueItemRecords);
     }
@@ -642,9 +819,21 @@ class QueueItemRepository extends AbstractRepository
      * @param int $start
      * @param int $limit
      * @return array
+     *
+     * @throws ConnectionException
+     * @throws DBALDriverException
+     * @throws Throwable
+     * @throws \Doctrine\DBAL\DBALException
      */
-    public function findItems(array $sites = [], array $indexQueueConfigurationNames = [], array $itemTypes = [], array $itemUids = [], array $uids = [], $start = 0, $limit = 50): array
-    {
+    public function findItems(
+        array $sites = [],
+        array $indexQueueConfigurationNames = [],
+        array $itemTypes = [],
+        array $itemUids = [],
+        array $uids = [],
+        int   $start = 0,
+        int   $limit = 50
+    ): array {
         $rootPageIds = Site::getRootPageIdsFromSites($sites);
         $indexQueueConfigurationList = implode(",", $indexQueueConfigurationNames);
         $itemTypeList = implode(",", $itemTypes);
@@ -652,7 +841,10 @@ class QueueItemRepository extends AbstractRepository
         $uids = array_map("intval", $uids);
         $itemQueryBuilder = $this->getQueryBuilder()->select('*')->from($this->table);
         $itemQueryBuilder = $this->addItemWhereClauses($itemQueryBuilder, $rootPageIds, $indexQueueConfigurationList, $itemTypeList, $itemUids, $uids);
-        $itemRecords = $itemQueryBuilder->setFirstResult($start)->setMaxResults($limit)->execute()->fetchAll();
+        $itemRecords = $itemQueryBuilder->setFirstResult($start)
+            ->setMaxResults($limit)
+            ->execute()
+            ->fetchAllAssociative();
         return $this->getIndexQueueItemObjectsFromRecords($itemRecords);
     }
 
@@ -662,8 +854,13 @@ class QueueItemRepository extends AbstractRepository
      *
      * @param array $indexQueueItemRecords Array of plain index queue records
      * @return array Array of ApacheSolrForTypo3\Solr\IndexQueue\Item objects
+     *
+     * @throws ConnectionException
+     * @throws DBALDriverException
+     * @throws Throwable
+     * @throws \Doctrine\DBAL\DBALException
      */
-    protected function getIndexQueueItemObjectsFromRecords(array $indexQueueItemRecords) : array
+    protected function getIndexQueueItemObjectsFromRecords(array $indexQueueItemRecords): array
     {
         $tableRecords = $this->getAllQueueItemRecordsByUidsGroupedByTable($indexQueueItemRecords);
         return $this->getQueueItemObjectsByRecords($indexQueueItemRecords, $tableRecords);
@@ -674,8 +871,11 @@ class QueueItemRepository extends AbstractRepository
      *
      * @param array $indexQueueItemRecords
      * @return array
+     *
+     * @throws DBALDriverException
+     * @throws \Doctrine\DBAL\DBALException
      */
-    protected function getAllQueueItemRecordsByUidsGroupedByTable(array $indexQueueItemRecords) : array
+    protected function getAllQueueItemRecordsByUidsGroupedByTable(array $indexQueueItemRecords): array
     {
         $tableUids = [];
         $tableRecords = [];
@@ -693,10 +893,10 @@ class QueueItemRepository extends AbstractRepository
             $resultsFromRecordTable = $queryBuilderForRecordTable
                 ->select('*')
                 ->from($table)
-                ->where($queryBuilderForRecordTable->expr()->in('uid', $uidList))
+                ->where(/** @scrutinizer ignore-type */ $queryBuilderForRecordTable->expr()->in('uid', $uidList))
                 ->execute();
             $records = [];
-            while ($record = $resultsFromRecordTable->fetch()) {
+            while ($record = $resultsFromRecordTable->fetchAssociative()) {
                 $records[$record['uid']] = $record;
             }
 
@@ -733,16 +933,22 @@ class QueueItemRepository extends AbstractRepository
      * @param array $indexQueueItemRecords records from database
      * @param array $tableRecords
      * @return array
+     *
+     * @throws ConnectionException
+     * @throws Throwable
+     * @throws \Doctrine\DBAL\DBALException
      */
-    protected function getQueueItemObjectsByRecords(array $indexQueueItemRecords, array $tableRecords) : array
+    protected function getQueueItemObjectsByRecords(array $indexQueueItemRecords, array $tableRecords): array
     {
         $indexQueueItems = [];
         foreach ($indexQueueItemRecords as $indexQueueItemRecord) {
             if (isset($tableRecords[$indexQueueItemRecord['item_type']][$indexQueueItemRecord['item_uid']])) {
                 $indexQueueItems[] = GeneralUtility::makeInstance(
                     Item::class,
-                    /** @scrutinizer ignore-type */ $indexQueueItemRecord,
-                    /** @scrutinizer ignore-type */ $tableRecords[$indexQueueItemRecord['item_type']][$indexQueueItemRecord['item_uid']]
+                    /** @scrutinizer ignore-type */
+                    $indexQueueItemRecord,
+                    /** @scrutinizer ignore-type */
+                    $tableRecords[$indexQueueItemRecord['item_type']][$indexQueueItemRecord['item_uid']]
                 );
             } else {
                 $this->logger->log(
@@ -752,8 +958,10 @@ class QueueItemRepository extends AbstractRepository
                         $indexQueueItemRecord
                     ]
                 );
-                $this->deleteItem($indexQueueItemRecord['item_type'],
-                    $indexQueueItemRecord['item_uid']);
+                $this->deleteItem(
+                    $indexQueueItemRecord['item_type'],
+                    $indexQueueItemRecord['item_uid']
+                );
             }
         }
 
@@ -767,6 +975,8 @@ class QueueItemRepository extends AbstractRepository
      * @param int|Item $item Either the item's Index Queue uid or the complete item
      * @param string $errorMessage Error message
      * @return int affected rows
+     *
+     * @throws \Doctrine\DBAL\DBALException
      */
     public function markItemAsFailed($item, string $errorMessage = ''): int
     {
@@ -786,8 +996,10 @@ class QueueItemRepository extends AbstractRepository
      *
      * @param Item $item
      * @return int affected rows
+     *
+     * @throws \Doctrine\DBAL\DBALException
      */
-    public function updateIndexTimeByItem(Item $item) : int
+    public function updateIndexTimeByItem(Item $item): int
     {
         $queryBuilder = $this->getQueryBuilder();
         return (int)$queryBuilder
@@ -803,8 +1015,10 @@ class QueueItemRepository extends AbstractRepository
      * @param Item $item
      * @param int $changedTime
      * @return int affected rows
+     *
+     * @throws \Doctrine\DBAL\DBALException
      */
-    public function updateChangedTimeByItem(Item $item, int $changedTime) : int
+    public function updateChangedTimeByItem(Item $item, int $changedTime): int
     {
         $queryBuilder = $this->getQueryBuilder();
         return (int)$queryBuilder
@@ -821,21 +1035,27 @@ class QueueItemRepository extends AbstractRepository
      *
      * @param string $sqlStatement Native SQL statement
      * @return int The number of affected rows.
-     * @internal
+     *
      * @throws DBALException
+     * @internal
      */
-    public function initializeByNativeSQLStatement(string $sqlStatement) : int
+    public function initializeByNativeSQLStatement(string $sqlStatement): int
     {
-        return $this->getQueryBuilder()->getConnection()->exec($sqlStatement);
+        return $this->getQueryBuilder()
+            ->getConnection()
+            ->executeStatement($sqlStatement);
     }
 
     /**
-     * Retrieves an array of pageIds from mountPoints that allready have a queue entry.
+     * Retrieves an array of pageIds from mountPoints that already have a queue entry.
      *
      * @param string $identifier identifier of the mount point
-     * @return array pageIds from mountPoints that allready have a queue entry
+     * @return array pageIds from mountPoints that already have a queue entry
+     *
+     * @throws DBALDriverException
+     * @throws \Doctrine\DBAL\DBALException
      */
-    public function findPageIdsOfExistingMountPagesByMountIdentifier(string $identifier) : array
+    public function findPageIdsOfExistingMountPagesByMountIdentifier(string $identifier): array
     {
         $queryBuilder = $this->getQueryBuilder();
         $resultSet = $queryBuilder
@@ -850,7 +1070,7 @@ class QueueItemRepository extends AbstractRepository
             ->execute();
 
         $mountedPagesIdsWithQueueItems = [];
-        while ($record = $resultSet->fetch()) {
+        while ($record = $resultSet->fetchAssociative()) {
             if ($record['queueItemCount'] > 0) {
                 $mountedPagesIdsWithQueueItems[] = $record['item_uid'];
             }
@@ -860,27 +1080,34 @@ class QueueItemRepository extends AbstractRepository
     }
 
     /**
-     * Retrieves an array of items for mount destinations mathed by root page ID, Mount Identifier and a list of mounted page IDs.
+     * Retrieves an array of items for mount destinations matched by root page ID, Mount Identifier and a list of mounted page IDs.
      *
      * @param int $rootPid
      * @param string $identifier identifier of the mount point
      * @param array $mountedPids An array of mounted page IDs
      * @return array
+     *
+     * @throws DBALDriverException
+     * @throws \Doctrine\DBAL\DBALException
      */
-    public function findAllIndexQueueItemsByRootPidAndMountIdentifierAndMountedPids(int $rootPid, string $identifier, array $mountedPids) : array
-    {
+    public function findAllIndexQueueItemsByRootPidAndMountIdentifierAndMountedPids(
+        int $rootPid,
+        string $identifier,
+        array $mountedPids
+    ): array {
         $queryBuilder = $this->getQueryBuilder();
         return $queryBuilder
             ->select('*')
             ->from($this->table)
             ->where(
-                $queryBuilder->expr()->eq('root', $queryBuilder->createNamedParameter($rootPid, \PDO::PARAM_INT)),
+                $queryBuilder->expr()->eq('root', $queryBuilder->createNamedParameter($rootPid, PDO::PARAM_INT)),
                 $queryBuilder->expr()->eq('item_type', $queryBuilder->createNamedParameter('pages')),
                 $queryBuilder->expr()->in('item_uid', $mountedPids),
-                $queryBuilder->expr()->eq('has_indexing_properties', $queryBuilder->createNamedParameter(1, \PDO::PARAM_INT)),
+                $queryBuilder->expr()->eq('has_indexing_properties', $queryBuilder->createNamedParameter(1, PDO::PARAM_INT)),
                 $queryBuilder->expr()->eq('pages_mountidentifier', $queryBuilder->createNamedParameter($identifier))
             )
-            ->execute()->fetchAll();
+            ->execute()
+            ->fetchAllAssociative();
     }
 
     /**
@@ -889,15 +1116,22 @@ class QueueItemRepository extends AbstractRepository
      * @param int $itemUid
      * @param bool $hasIndexingPropertiesFlag
      * @return int number of affected rows, 1 on success
+     *
+     * @throws \Doctrine\DBAL\DBALException
      */
     public function updateHasIndexingPropertiesFlagByItemUid(int $itemUid, bool $hasIndexingPropertiesFlag): int
     {
         $queryBuilder = $this->getQueryBuilder();
-
-        return $queryBuilder
+        return (int)$queryBuilder
             ->update($this->table)
-            ->where($queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($itemUid, \PDO::PARAM_INT)))
-            ->set('has_indexing_properties', $queryBuilder->createNamedParameter($hasIndexingPropertiesFlag, \PDO::PARAM_INT), false)
-            ->execute();
+            ->where(
+                /** @scrutinizer ignore-type */
+                $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($itemUid, PDO::PARAM_INT))
+            )
+            ->set(
+                'has_indexing_properties',
+                $queryBuilder->createNamedParameter($hasIndexingPropertiesFlag, PDO::PARAM_INT),
+                false
+            )->execute();
     }
 }

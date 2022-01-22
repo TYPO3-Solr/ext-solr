@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\IndexQueue;
 
 /***************************************************************
@@ -96,8 +97,7 @@ class Queue
         QueueStatisticsRepository $queueStatisticsRepository = null,
         QueueInitializationService $queueInitializationService = null,
         FrontendEnvironment $frontendEnvironment = null
-    )
-    {
+    ) {
         $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, /** @scrutinizer ignore-type */ __CLASS__);
         $this->rootPageResolver = $rootPageResolver ?? GeneralUtility::makeInstance(RootPageResolver::class);
         $this->recordService = $recordService ?? GeneralUtility::makeInstance(ConfigurationAwareRecordService::class);
@@ -514,9 +514,9 @@ class Queue
      * Gets a single Index Queue item by its uid.
      *
      * @param int $itemId Index Queue item uid
-     * @return Item The request Index Queue item or NULL if no item with $itemId was found
+     * @return Item|null The request Index Queue item or NULL if no item with $itemId was found
      */
-    public function getItem($itemId)
+    public function getItem(int $itemId): ?Item
     {
         return $this->queueItemRepository->findItemByUid($itemId);
     }

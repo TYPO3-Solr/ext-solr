@@ -16,8 +16,7 @@ namespace ApacheSolrForTypo3\Solr\Backend;
  */
 
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
-use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
-use TYPO3\CMS\Backend\Form\Exception;
+use TYPO3\CMS\Backend\Form\Exception as BackendFormException;
 use TYPO3\CMS\Backend\Form\FormResultCompiler;
 use TYPO3\CMS\Backend\Form\NodeFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -34,28 +33,28 @@ class CoreSelectorField
      *
      * @var Site
      */
-    protected $site;
+    protected Site $site;
 
     /**
      * Form element name
      *
      * @var string
      */
-    protected $formElementName = 'tx_solr-index-optimize-core-selector';
+    protected string $formElementName = 'tx_solr-index-optimize-core-selector';
 
     /**
      * Selected values
      *
      * @var array
      */
-    protected $selectedValues = [];
+    protected array $selectedValues = [];
 
     /**
      * Constructor
      *
-     * @param Site|null $site The site to use to determine cores
+     * @param Site $site The site to use to determine cores
      */
-    public function __construct(Site $site = null)
+    public function __construct(Site $site)
     {
         $this->site = $site;
     }
@@ -103,11 +102,8 @@ class CoreSelectorField
     /**
      * Renders a field to select which cores to optimize.
      *
-     * Uses \TYPO3\CMS\Backend\Form\FormEngine.
-     *
      * @return string Markup for the select field
-     * @throws Exception
-     * @throws NoSolrConnectionFoundException
+     * @throws BackendFormException
      */
     public function render(): string
     {
@@ -130,7 +126,6 @@ class CoreSelectorField
      * Builds a map of language uids to corepaths to optimize.
      *
      * @return array language uids to core paths map
-     * @throws NoSolrConnectionFoundException
      */
     protected function getLanguageUidCoreMap(): array
     {
@@ -168,7 +163,7 @@ class CoreSelectorField
      * @param array $selectedValues
      *
      * @return string
-     * @throws Exception
+     * @throws BackendFormException
      */
     protected function renderSelectCheckbox(array $items, array $selectedValues): string
     {
@@ -190,9 +185,7 @@ class CoreSelectorField
         $formResultCompiler = GeneralUtility::makeInstance(FormResultCompiler::class);
         $formResultCompiler->mergeResult($selectCheckboxResult);
 
-        $formHtml = isset($selectCheckboxResult['html']) ? $selectCheckboxResult['html'] : '';
-        $content = $formResultCompiler->addCssFiles() . $formHtml . $formResultCompiler->printNeededJSFunctions();
-
-        return $content;
+        $formHtml = $selectCheckboxResult['html'] ?? '';
+        return $formResultCompiler->addCssFiles() . $formHtml . $formResultCompiler->printNeededJSFunctions();
     }
 }

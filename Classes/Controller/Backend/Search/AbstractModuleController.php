@@ -1,67 +1,52 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Controller\Backend\Search;
 
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2010-2017 dkd Internet Service GmbH <solr-support@dkd.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection as SolrCoreConnection;
-use ApacheSolrForTypo3\Solr\System\Mvc\Backend\Component\Exception\InvalidViewObjectNameException;
 use ApacheSolrForTypo3\Solr\System\Mvc\Backend\Service\ModuleDataStorageService;
-use Exception;
+use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
+use Throwable;
 use TYPO3\CMS\Backend\Template\Components\Menu\Menu;
+use TYPO3\CMS\Backend\Template\ModuleTemplate;
+use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Backend\View\BackendTemplateView;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
+use TYPO3\CMS\Core\Http\RedirectResponse;
 use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
-use TYPO3\CMS\Extbase\Mvc\Exception\StopActionException;
-use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
+use TYPO3\CMS\Extbase\Mvc\Exception\NoSuchArgumentException;
+use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
+use TYPO3Fluid\Fluid\View\ViewInterface;
 
 /**
  * Abstract Module
- *
- * @property BackendTemplateView $view
  */
 abstract class AbstractModuleController extends ActionController
 {
     /**
-     * Backend Template Container
-     *
-     * @var string
-     */
-    protected $defaultViewObjectName = BackendTemplateView::class;
-
-    /**
-     * In the pagetree selected page UID
+     * In the page-tree selected page UID
      *
      * @var int
      */
@@ -86,24 +71,24 @@ abstract class AbstractModuleController extends ActionController
     protected SiteRepository $siteRepository;
 
     /**
-     * @var SolrCoreConnection
+     * @var SolrCoreConnection|null
      */
-    protected SolrCoreConnection $selectedSolrCoreConnection;
+    protected ?SolrCoreConnection $selectedSolrCoreConnection = null;
 
     /**
-     * @var Menu
+     * @var Menu|null
      */
     protected ?Menu $coreSelectorMenu = null;
 
     /**
-     * @var ConnectionManager|null
+     * @var ConnectionManager
      */
-    protected ?ConnectionManager $solrConnectionManager = null;
+    protected ConnectionManager $solrConnectionManager;
 
     /**
-     * @var ModuleDataStorageService|null
+     * @var ModuleDataStorageService
      */
-    protected ?ModuleDataStorageService $moduleDataStorageService = null;
+    protected ModuleDataStorageService $moduleDataStorageService;
 
     /**
      * @var Queue
@@ -116,6 +101,50 @@ abstract class AbstractModuleController extends ActionController
     protected SiteFinder $siteFinder;
 
     /**
+     * @var ModuleTemplateFactory
+     */
+    protected ModuleTemplateFactory $moduleTemplateFactory;
+
+    /**
+     * @var ModuleTemplate
+     */
+    protected ModuleTemplate $moduleTemplate;
+
+    /**
+     * Constructor for dependency injection
+     */
+    public function __construct(
+        ModuleTemplateFactory $moduleTemplateFactory,
+        ModuleDataStorageService $moduleDataStorageService,
+        SiteRepository $siteRepository,
+        SiteFinder $siteFinder,
+        ConnectionManager $solrConnectionManager,
+        Queue $indexQueue,
+        ?int $selectedPageUID = null
+    ) {
+        $this->moduleTemplateFactory = $moduleTemplateFactory;
+        $this->moduleDataStorageService = $moduleDataStorageService;
+        $this->siteRepository = $siteRepository;
+        $this->siteFinder = $siteFinder;
+        $this->solrConnectionManager = $solrConnectionManager;
+        $this->indexQueue = $indexQueue;
+        $this->selectedPageUID = $selectedPageUID ?? (int)GeneralUtility::_GP('id');
+    }
+
+    /**
+     * Injects UriBuilder object.
+     *
+     * Purpose: Is already set in {@link processRequest} but wanted in PhpUnit
+     *
+     * @param UriBuilder $uriBuilder
+     * @return void
+     */
+    public function injectUriBuilder(UriBuilder $uriBuilder)
+    {
+        $this->uriBuilder = $uriBuilder;
+    }
+
+    /**
      * @param Site $selectedSite
      */
     public function setSelectedSite(Site $selectedSite)
@@ -124,26 +153,15 @@ abstract class AbstractModuleController extends ActionController
     }
 
     /**
-     * @param SiteRepository $siteRepository
-     */
-    public function injectSiteRepository(SiteRepository $siteRepository)
-    {
-        $this->siteRepository = $siteRepository;
-    }
-
-    /**
      * Initializes the controller and sets needed vars.
-     * @todo: Make DI for class properties.
+     * @throws DBALDriverException
+     * @throws Throwable
+     * @throws NoSuchArgumentException
      */
     protected function initializeAction()
     {
         parent::initializeAction();
-        $this->indexQueue = GeneralUtility::makeInstance(Queue::class);
-        $this->solrConnectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
-        $this->moduleDataStorageService = GeneralUtility::makeInstance(ModuleDataStorageService::class);
-        $this->siteFinder = GeneralUtility::makeInstance(SiteFinder::class);
-
-        $this->selectedPageUID = (int)GeneralUtility::_GP('id');
+        $this->moduleTemplate = $this->moduleTemplateFactory->create($this->request);
         if ($this->request->hasArgument('id')) {
             $this->selectedPageUID = (int)$this->request->getArgument('id');
         }
@@ -167,7 +185,8 @@ abstract class AbstractModuleController extends ActionController
 
     /**
      * @return bool
-     * @throws Exception
+     * @throws DBALDriverException
+     * @throws Throwable
      */
     protected function autoSelectFirstSiteAndRootPageWhenOnlyOneSiteIsAvailable(): bool
     {
@@ -191,11 +210,11 @@ abstract class AbstractModuleController extends ActionController
      *
      * @param ViewInterface $view
      * @return void
-     * @throws Exception
+     * @throws DBALDriverException
+     * @throws Throwable
      */
-    protected function initializeView(ViewInterface $view)
+    protected function initializeView($view)
     {
-        parent::initializeView($view);
         $sites = $this->siteRepository->getAvailableSites();
 
         $selectOtherPage = count($sites) > 0 || $this->selectedPageUID < 1;
@@ -204,8 +223,11 @@ abstract class AbstractModuleController extends ActionController
         if ($this->selectedPageUID < 1) {
             return;
         }
-        $this->view->getModuleTemplate()->addJavaScriptCode('mainJsFunctions', '
-                top.fsMod.recentIds["searchbackend"] = ' . (int)$this->selectedPageUID . ';'
+
+        $this->moduleTemplate->addJavaScriptCode(
+            'mainJsFunctions',
+            '
+                top.fsMod.recentIds["searchbackend"] = ' . $this->selectedPageUID . ';'
         );
         if (null === $this->selectedSite) {
             return;
@@ -219,14 +241,13 @@ abstract class AbstractModuleController extends ActionController
         if (false === $pageRecord) {
             throw new InvalidArgumentException(vsprintf('There is something wrong with permissions for page "%s" for backend user "%s".', [$this->selectedSite->getRootPageId(), $beUser->user['username']]), 1496146317);
         }
-        $this->view->getModuleTemplate()->getDocHeaderComponent()->setMetaInformation($pageRecord);
+        $this->moduleTemplate->getDocHeaderComponent()->setMetaInformation($pageRecord);
     }
 
     /**
      * Generates selector menu in backends doc header using selected page from page tree.
      *
      * @param string|null $uriToRedirectTo
-     * @throws InvalidViewObjectNameException
      */
     public function generateCoreSelectorMenuUsingPageTree(string $uriToRedirectTo = null)
     {
@@ -242,19 +263,10 @@ abstract class AbstractModuleController extends ActionController
      *
      * @param Site $site
      * @param string|null $uriToRedirectTo
-     * @throws InvalidViewObjectNameException
      */
     protected function generateCoreSelectorMenu(Site $site, string $uriToRedirectTo = null)
     {
-        if (!$this->view instanceof BackendTemplateView) {
-            throw new InvalidViewObjectNameException(vsprintf(
-                'The controller "%s" must use BackendTemplateView to be able to generate menu for backends docheader. \
-                Please set `protected $defaultViewObjectName = BackendTemplateView::class;` field in your controller.',
-                [static::class]), 1493804179);
-        }
-        $this->view->getModuleTemplate()->setFlashMessageQueue($this->controllerContext->getFlashMessageQueue());
-
-        $this->coreSelectorMenu = $this->view->getModuleTemplate()->getDocHeaderComponent()->getMenuRegistry()->makeMenu();
+        $this->coreSelectorMenu = $this->moduleTemplate->getDocHeaderComponent()->getMenuRegistry()->makeMenu();
         $this->coreSelectorMenu->setIdentifier('component_core_selector_menu');
 
         if (!isset($uriToRedirectTo)) {
@@ -267,7 +279,8 @@ abstract class AbstractModuleController extends ActionController
             $coreAdmin = $core->getAdminService();
             $menuItem = $this->coreSelectorMenu->makeMenuItem();
             $menuItem->setTitle($coreAdmin->getCorePath());
-            $uri = $this->uriBuilder->reset()->uriFor('switchCore',
+            $uri = $this->uriBuilder->reset()->uriFor(
+                'switchCore',
                 [
                     'corePath' => $coreAdmin->getCorePath(),
                     'uriToRedirectTo' => $uriToRedirectTo
@@ -281,26 +294,29 @@ abstract class AbstractModuleController extends ActionController
             $this->coreSelectorMenu->addMenuItem($menuItem);
         }
 
-        $this->view->getModuleTemplate()->getDocHeaderComponent()->getMenuRegistry()->addMenu($this->coreSelectorMenu);
+        $this->moduleTemplate->getDocHeaderComponent()->getMenuRegistry()->addMenu($this->coreSelectorMenu);
     }
 
     /**
      * Empties the Index Queue
      *
-     * @return void
-     * @throws StopActionException
+     * @return ResponseInterface
      *
      * @noinspection PhpUnused Used in IndexQueue- and IndexAdministration- controllers
      */
     public function clearIndexQueueAction(): ResponseInterface
     {
+
         $this->indexQueue->deleteItemsBySite($this->selectedSite);
         $this->addFlashMessage(
-            LocalizationUtility::translate('solr.backend.index_administration.success.queue_emptied', 'Solr',
-                [$this->selectedSite->getLabel()])
+            LocalizationUtility::translate(
+                'solr.backend.index_administration.success.queue_emptied',
+                'Solr',
+                [$this->selectedSite->getLabel()]
+            )
         );
 
-        $this->redirect('index');
+        return new RedirectResponse($this->uriBuilder->uriFor('index'), 303);
     }
 
     /**
@@ -310,9 +326,12 @@ abstract class AbstractModuleController extends ActionController
      *
      * @param string $corePath
      * @param string $uriToRedirectTo
-     * @throws StopActionException
+     *
+     * @return ResponseInterface
+     *
+     * @noinspection PhpUnused Used in IndexQueue- and IndexAdministration- controllers
      */
-    public function switchCoreAction(string $corePath, string $uriToRedirectTo)
+    public function switchCoreAction(string $corePath, string $uriToRedirectTo): ResponseInterface
     {
         $moduleData = $this->moduleDataStorageService->loadModuleData();
         $moduleData->setCore($corePath);
@@ -320,7 +339,19 @@ abstract class AbstractModuleController extends ActionController
         $this->moduleDataStorageService->persistModuleData($moduleData);
         $message = LocalizationUtility::translate('coreselector_switched_successfully', 'solr', [$corePath]);
         $this->addFlashMessage($message);
-        $this->redirectToUri($uriToRedirectTo);
+        return new RedirectResponse($uriToRedirectTo, 303);
+    }
+
+    /**
+     * Returns the Response for be module action.
+     *
+     * @return ResponseInterface
+     */
+    protected function getModuleTemplateResponse(): ResponseInterface
+    {
+
+        $this->moduleTemplate->setContent($this->view->render());
+        return $this->htmlResponse($this->moduleTemplate->renderContent());
     }
 
     /**

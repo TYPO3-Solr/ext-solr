@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\System\Configuration;
 
 /*
@@ -51,32 +52,35 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class TypoScriptConfiguration
 {
     /**
-     * @var ArrayAccessor|null
+     * @var ArrayAccessor
      */
-    protected ?ArrayAccessor $configurationAccess = null;
+    protected ArrayAccessor $configurationAccess;
 
     /**
      * Holds the pageId in which context the configuration was parsed
      * (normally $GLOBALS['TSFE']->id)
-     * @var ?int
+     * @var int
      */
-    protected ?int $contextPageId = 0;
+    protected int $contextPageId = 0;
 
     /**
-     * @var ?ContentObjectService
+     * @var ContentObjectService
      */
-    protected ?ContentObjectService $contentObjectService = null;
+    protected ContentObjectService $contentObjectService;
 
     /**
      * @param array $configuration
      * @param int|null $contextPageId
      * @param ContentObjectService|null $contentObjectService
      */
-    public function __construct(array $configuration, ?int $contextPageId = 0, ?ContentObjectService $contentObjectService = null)
-    {
+    public function __construct(
+        array $configuration,
+        int $contextPageId = null,
+        ContentObjectService $contentObjectService = null
+    ) {
         $this->configurationAccess = new ArrayAccessor($configuration, '.', true);
-        $this->contextPageId = $contextPageId;
-        $this->contentObjectService = $contentObjectService;
+        $this->contextPageId = $contextPageId ?? 0;
+        $this->contentObjectService = $contentObjectService ?? GeneralUtility::makeInstance(ContentObjectService::class);
     }
 
     /**
@@ -388,7 +392,7 @@ class TypoScriptConfiguration
     public function getIndexQueueTableNameOrFallbackToConfigurationName(string $configurationName = ''): string
     {
         $path = 'plugin.tx_solr.index.queue.' . $configurationName . '.table';
-        return $this->getValueByPathOrDefaultValue($path, $configurationName);
+        return (string)$this->getValueByPathOrDefaultValue($path, $configurationName);
     }
 
     /**
@@ -449,7 +453,7 @@ class TypoScriptConfiguration
     public function getIndexQueueIndexerByConfigurationName(string $configurationName, string $defaultIfEmpty = Indexer::class): string
     {
         $path = 'plugin.tx_solr.index.queue.' . $configurationName . '.indexer';
-        return $this->getValueByPathOrDefaultValue($path, $defaultIfEmpty);
+        return (string)$this->getValueByPathOrDefaultValue($path, $defaultIfEmpty);
     }
 
     /**
@@ -634,7 +638,7 @@ class TypoScriptConfiguration
     public function getIndexQueueInitializerClassByConfigurationName(string $configurationName, string $defaultIfEmpty = Record::class): string
     {
         $path = 'plugin.tx_solr.index.queue.' . $configurationName . '.initialization';
-        return $this->getValueByPathOrDefaultValue($path, $defaultIfEmpty);
+        return (string)$this->getValueByPathOrDefaultValue($path, $defaultIfEmpty);
     }
 
     /**
@@ -881,7 +885,7 @@ class TypoScriptConfiguration
     public function getValueByPathWithFallbackOrDefaultValueAndApplyStdWrap($path, $fallbackPath, $defaultIfBothIsEmpty)
     {
         $result = (string)$this->getValueByPathOrDefaultValue($path, '');
-        if($result !== '') {
+        if ($result !== '') {
             return $this->renderContentElementOfConfigured($path, $result);
         }
 
@@ -968,7 +972,7 @@ class TypoScriptConfiguration
      */
     public function getSearchVariantsField(string $defaultIfEmpty = 'variantId'): string
     {
-        return $this->getValueByPathOrDefaultValue('plugin.tx_solr.search.variants.variantField', $defaultIfEmpty);
+        return (string)$this->getValueByPathOrDefaultValue('plugin.tx_solr.search.variants.variantField', $defaultIfEmpty);
     }
 
     /**
@@ -1313,7 +1317,7 @@ class TypoScriptConfiguration
      */
     public function getSearchQueryQueryFields(string $defaultIfEmpty = ''): string
     {
-        return $this->getValueByPathOrDefaultValue('plugin.tx_solr.search.query.queryFields', $defaultIfEmpty);
+        return (string)$this->getValueByPathOrDefaultValue('plugin.tx_solr.search.query.queryFields', $defaultIfEmpty);
     }
 
     /**
@@ -1340,7 +1344,7 @@ class TypoScriptConfiguration
      */
     public function getSearchQueryPhraseFields(string $defaultIfEmpty = ''): string
     {
-        return $this->getValueByPathOrDefaultValue('plugin.tx_solr.search.query.phrase.fields', $defaultIfEmpty);
+        return (string)$this->getValueByPathOrDefaultValue('plugin.tx_solr.search.query.phrase.fields', $defaultIfEmpty);
     }
 
     /**
@@ -1367,7 +1371,7 @@ class TypoScriptConfiguration
      */
     public function getSearchQueryBigramPhraseFields(string $defaultIfEmpty = ''): string
     {
-        return $this->getValueByPathOrDefaultValue('plugin.tx_solr.search.query.bigramPhrase.fields', $defaultIfEmpty);
+        return (string)$this->getValueByPathOrDefaultValue('plugin.tx_solr.search.query.bigramPhrase.fields', $defaultIfEmpty);
     }
 
     /**
@@ -1394,7 +1398,7 @@ class TypoScriptConfiguration
      */
     public function getSearchQueryTrigramPhraseFields(string $defaultIfEmpty = ''): string
     {
-        return $this->getValueByPathOrDefaultValue('plugin.tx_solr.search.query.trigramPhrase.fields', $defaultIfEmpty);
+        return (string)$this->getValueByPathOrDefaultValue('plugin.tx_solr.search.query.trigramPhrase.fields', $defaultIfEmpty);
     }
 
     /**
@@ -1487,7 +1491,7 @@ class TypoScriptConfiguration
      */
     public function getSearchResultsHighlightingFields(string $defaultIfEmpty = ''): string
     {
-        return $this->getValueByPathOrDefaultValue('plugin.tx_solr.search.results.resultsHighlighting.highlightFields', $defaultIfEmpty);
+        return (string)$this->getValueByPathOrDefaultValue('plugin.tx_solr.search.results.resultsHighlighting.highlightFields', $defaultIfEmpty);
     }
 
     /**
@@ -1532,7 +1536,7 @@ class TypoScriptConfiguration
      */
     public function getSearchResultsHighlightingFragmentSeparator(string $defaultIfEmpty = '[...]'): string
     {
-        return $this->getValueByPathOrDefaultValue('plugin.tx_solr.search.results.resultsHighlighting.fragmentSeparator', $defaultIfEmpty);
+        return (string)$this->getValueByPathOrDefaultValue('plugin.tx_solr.search.results.resultsHighlighting.fragmentSeparator', $defaultIfEmpty);
     }
 
     /**
@@ -1590,7 +1594,7 @@ class TypoScriptConfiguration
      */
     public function getSearchResultsHighlightingWrap(string $defaultIfEmpty = ''): string
     {
-        return $this->getValueByPathOrDefaultValue('plugin.tx_solr.search.results.resultsHighlighting.wrap', $defaultIfEmpty);
+        return (string)$this->getValueByPathOrDefaultValue('plugin.tx_solr.search.results.resultsHighlighting.wrap', $defaultIfEmpty);
     }
 
     /**
@@ -1670,12 +1674,12 @@ class TypoScriptConfiguration
 
         // if we have a concrete setting, use it
         if ($specificShowWhenEmpty !== null) {
-            return $specificShowWhenEmpty;
+            return $this->getBool($specificShowWhenEmpty);
         }
 
         // no specific setting, check common setting
         $commonPath = 'plugin.tx_solr.search.faceting.showEmptyFacets';
-        return $this->getValueByPathOrDefaultValue($commonPath, $defaultIfEmpty);
+        return $this->getBool($this->getValueByPathOrDefaultValue($commonPath, $defaultIfEmpty));
     }
 
     /**
@@ -1817,7 +1821,7 @@ class TypoScriptConfiguration
      */
     public function getSearchFacetingSortBy(string $defaultIfEmpty = ''): string
     {
-        return $this->getValueByPathOrDefaultValue('plugin.tx_solr.search.faceting.sortBy', $defaultIfEmpty);
+        return (string)$this->getValueByPathOrDefaultValue('plugin.tx_solr.search.faceting.sortBy', $defaultIfEmpty);
     }
 
     /**
@@ -2091,7 +2095,7 @@ class TypoScriptConfiguration
      */
     public function getSearchPluginNamespace(string $defaultIfEmpty = 'tx_solr'): string
     {
-        return $this->getValueByPathOrDefaultValue('plugin.tx_solr.view.pluginNamespace', $defaultIfEmpty);
+        return (string)$this->getValueByPathOrDefaultValue('plugin.tx_solr.view.pluginNamespace', $defaultIfEmpty);
     }
 
     /**
@@ -2108,7 +2112,6 @@ class TypoScriptConfiguration
     {
         $enableQParameter = $this->getValueByPathOrDefaultValue('plugin.tx_solr.search.ignoreGlobalQParameter', $defaultIfEmpty);
         return $this->getBool($enableQParameter);
-
     }
 
     /**
@@ -2128,7 +2131,6 @@ class TypoScriptConfiguration
         }
 
         return GeneralUtility::trimExplode(',', $additionalPersistentArgumentNames, true);
-
     }
 
     /**
@@ -2259,9 +2261,7 @@ class TypoScriptConfiguration
         if ($configuration == null) {
             return $value;
         }
-        if ($this->contentObjectService === null) {
-            $this->contentObjectService = GeneralUtility::makeInstance(ContentObjectService::class);
-        }
+
         return $this->contentObjectService->renderSingleContentObject($value, $configuration);
     }
 }

@@ -1,28 +1,19 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr;
 
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2010-2015 Ingo Renner <ingo@typo3.org>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
@@ -30,8 +21,9 @@ use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository as PagesReposit
 use ApacheSolrForTypo3\Solr\System\Records\SystemLanguage\SystemLanguageRepository;
 use ApacheSolrForTypo3\Solr\System\Solr\Node;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
-use Exception;
+use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use InvalidArgumentException;
+use Throwable;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use function json_encode;
@@ -43,7 +35,6 @@ use function json_encode;
  */
 class ConnectionManager implements SingletonInterface
 {
-
     /**
      * @var array
      */
@@ -74,8 +65,7 @@ class ConnectionManager implements SingletonInterface
         SystemLanguageRepository $systemLanguageRepository = null,
         PagesRepositoryAtExtSolr $pagesRepositoryAtExtSolr = null,
         SiteRepository $siteRepository = null
-    )
-    {
+    ) {
         $this->systemLanguageRepository = $systemLanguageRepository ?? GeneralUtility::makeInstance(SystemLanguageRepository::class);
         $this->siteRepository           = $siteRepository ?? GeneralUtility::makeInstance(SiteRepository::class);
         $this->pagesRepositoryAtExtSolr = $pagesRepositoryAtExtSolr ?? GeneralUtility::makeInstance(PagesRepositoryAtExtSolr::class);
@@ -107,7 +97,7 @@ class ConnectionManager implements SingletonInterface
      */
     public function getConnectionFromConfiguration(array $config)
     {
-        if(empty($config['read']) && !empty($config['solrHost'])) {
+        if (empty($config['read']) && !empty($config['solrHost'])) {
             throw new InvalidArgumentException('Invalid registry data please re-initialize your solr connections');
         }
 
@@ -130,7 +120,7 @@ class ConnectionManager implements SingletonInterface
             $this->throwExceptionOnInvalidSite($site, 'No site for pageId ' . $pageId);
             $config = $site->getSolrConnectionConfiguration($language);
             return $this->getConnectionFromConfiguration($config);
-        } catch(InvalidArgumentException $e) {
+        } catch (InvalidArgumentException $e) {
             throw $this->buildNoConnectionExceptionForPageAndLanguage($pageId, $language);
         }
     }
@@ -148,7 +138,7 @@ class ConnectionManager implements SingletonInterface
         try {
             $site = $this->siteRepository->getSiteByRootPageId($pageId);
             $this->throwExceptionOnInvalidSite($site, 'No site for pageId ' . $pageId);
-            $config = $site->getSolrConnectionConfiguration($language);
+            $config = $site->getSolrConnectionConfiguration($language ?? 0);
             return $this->getConnectionFromConfiguration($config);
         } catch (InvalidArgumentException $e) {
             throw $this->buildNoConnectionExceptionForPageAndLanguage($pageId, $language);
@@ -159,7 +149,8 @@ class ConnectionManager implements SingletonInterface
      * Gets all connections found.
      *
      * @return SolrConnection[] An array of initialized ApacheSolrForTypo3\Solr\System\Solr\SolrConnection connections
-     * @throws Exception
+     * @throws DBALDriverException
+     * @throws Throwable
      */
     public function getAllConnections(): array
     {
