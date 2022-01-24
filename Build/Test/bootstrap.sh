@@ -84,7 +84,8 @@ fi
 echo "Install build tools: "
 if ! composer global require \
   friendsofphp/php-cs-fixer:"$PHP_CS_FIXER_VERSION" \
-  sclable/xml-lint
+  sclable/xml-lint \
+  scrutinizer/ocular
 then
   echo "The build tools(php-cs-fixer, typo3-repository-client) could not be installed. Please fix this issue."
   exit 1
