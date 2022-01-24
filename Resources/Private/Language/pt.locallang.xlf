@@ -4,11 +4,6 @@
 		<header/>
 		<body>
 
-			<trans-unit id="cache_initialize_solr_connections" xml:space="preserve">
-				<source>Initialize Solr connections</source>
-				<target>Inicializar conexões Solr</target>
-			</trans-unit>
-
 		<!-- Index Administration -->
 			<trans-unit id="solr.backend.index_administration.description" xml:space="preserve">
 				<source>The Index Administration Module is responsible for emptying the cores(deleting documents) on Solr Server and index queues in TYPO3 CMS. </source>
@@ -286,7 +281,7 @@
 				<source>Top Results</source>
 				<target>Top Results</target>
 			</trans-unit>
-			
+
 			<!-- From locallang.xlf -->
 			<trans-unit id="solr.backend.index_queue_module.description" xml:space="preserve">
 				<source>The Index Queue manages content indexing. Content enters the Index Queue by initialization below or when new content is created based on configuration. Items in the Index Queue are indexed newest changes first until all items in the queue have been indexed.</source>
