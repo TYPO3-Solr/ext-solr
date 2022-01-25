@@ -87,7 +87,7 @@ if ! composer global require \
   sclable/xml-lint \
   scrutinizer/ocular
 then
-  echo "The build tools(php-cs-fixer, typo3-repository-client) could not be installed. Please fix this issue."
+  echo "The build tools(friendsofphp/php-cs-fixer, sclable/xml-lint, scrutinizer/ocular) could not be installed. Please fix this issue."
   exit 1
 fi
 
