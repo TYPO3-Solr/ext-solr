@@ -255,4 +255,5 @@ jobs:
           fi
           echo "Following message will be printed in TER as release description:"
           echo -e "$TER_COMMENT"
+          composer extension-build
           php ~/.composer/vendor/bin/tailor ter:publish --comment "$TER_COMMENT" "$RELEASE_VERSION"
