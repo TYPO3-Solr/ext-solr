@@ -10,7 +10,7 @@ EXTENSION_ROOTPATH="$SCRIPTPATH/../../"
 SOLR_INSTALL_PATH="/opt/solr-tomcat/"
 
 DEFAULT_TYPO3_VERSION="10"
-DEFAULT_PHP_CS_FIXER_VERSION="^2.16.1"
+DEFAULT_PHP_CS_FIXER_VERSION="^3.2.1"
 DEFAULT_TYPO3_DATABASE_HOST="localhost"
 DEFAULT_TYPO3_DATABASE_NAME="test"
 DEFAULT_TYPO3_DATABASE_USERNAME="root"
@@ -84,34 +84,23 @@ fi
 echo "Install build tools: "
 if ! composer global require \
   friendsofphp/php-cs-fixer:"$PHP_CS_FIXER_VERSION" \
-  namelesscoder/typo3-repository-client \
-  sclable/xml-lint
+  sclable/xml-lint \
+  scrutinizer/ocular
 then
-  echo "The build tools(php-cs-fixer, typo3-repository-client) could not be installed. Please fix this issue."
+  echo "The build tools(friendsofphp/php-cs-fixer, sclable/xml-lint, scrutinizer/ocular) could not be installed. Please fix this issue."
   exit 1
 fi
 
 # Setup TYPO3 environment variables
 export TYPO3_PATH_PACKAGES="${EXTENSION_ROOTPATH}.Build/vendor/"
 export TYPO3_PATH_WEB="${EXTENSION_ROOTPATH}.Build/Web/"
+
+echo "Installing test environment"
 echo "Using extension path $EXTENSION_ROOTPATH"
 echo "Using package path $TYPO3_PATH_PACKAGES"
 echo "Using web path $TYPO3_PATH_WEB"
 
 # Install TYPO3 sources
-if [[ $TYPO3_VERSION = *"master"* ]]; then
-  composer config minimum-stability dev
-  TYPO3_MASTER_DEPENDENCIES='nimut/testing-framework:dev-master'
-fi
-
-# Temporary downgrades
-CURRENT_PHP_VERSION=$(php -r "echo PHP_VERSION;" | grep --only-matching --perl-regexp "7.\d+")
-if [[ ! $CURRENT_PHP_VERSION = *"7.2"* ]] && [[ $TYPO3_VERSION = *"10.4"* ]]; then
-  TYPO3_TEMPORARY_DOWNGRADES="doctrine/dbal:2.11.3"
-elif [[ $CURRENT_PHP_VERSION = *"7.2"* ]] && [[ $TYPO3_VERSION = *"10.4"* ]]; then
-  TYPO3_TEMPORARY_DOWNGRADES="doctrine/dbal:2.10.4"
-fi
-
 if ! composer require --dev --update-with-dependencies --prefer-source \
   typo3/cms-core:"$TYPO3_VERSION" \
   typo3/cms-backend:"$TYPO3_VERSION" \
@@ -122,7 +111,7 @@ if ! composer require --dev --update-with-dependencies --prefer-source \
   typo3/cms-reports:"$TYPO3_VERSION" \
   typo3/cms-scheduler:"$TYPO3_VERSION" \
   typo3/cms-tstemplate:"$TYPO3_VERSION" \
-  typo3/cms-install:"$TYPO3_VERSION" $TYPO3_TEMPORARY_DOWNGRADES $TYPO3_MASTER_DEPENDENCIES
+  typo3/cms-install:"$TYPO3_VERSION"
 then
   echo "The test environment could not be installed by composer as expected. Please fix this issue."
   exit 1
