@@ -158,7 +158,7 @@ class RootPageResolver implements SingletonInterface
     {
         /** @var Rootline $rootLine */
         $rootLine = GeneralUtility::makeInstance(Rootline::class);
-        $rootPageId = intval($pageId) ?: intval($GLOBALS['TSFE']->id);
+        $rootPageId = intval($pageId) || !isset($GLOBALS['TSFE']) ? intval($pageId) : intval($GLOBALS['TSFE']->id);
 
         // frontend
         if (!empty($GLOBALS['TSFE']->rootLine)) {
