@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "dde3af9d16393034d91b333e9f888074",
+    "content-hash": "4455141ae650942dcc2d0df9cc0adc43",
     "packages": [
         {
             "name": "solarium/solarium",
-            "version": "6.1.4",
+            "version": "6.2.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/solariumphp/solarium.git",
-                "reference": "6265dc4484c433325a3f71871ea8e2a2247d27fa"
+                "reference": "0f5c81eee5529556f349eaacfbf5ce3cfbb2be47"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/solariumphp/solarium/zipball/6265dc4484c433325a3f71871ea8e2a2247d27fa",
-                "reference": "6265dc4484c433325a3f71871ea8e2a2247d27fa",
+                "url": "https://api.github.com/repos/solariumphp/solarium/zipball/0f5c81eee5529556f349eaacfbf5ce3cfbb2be47",
+                "reference": "0f5c81eee5529556f349eaacfbf5ce3cfbb2be47",
                 "shasum": ""
             },
             "require": {
@@ -65,9 +65,9 @@
             ],
             "support": {
                 "issues": "https://github.com/solariumphp/solarium/issues",
-                "source": "https://github.com/solariumphp/solarium/tree/6.1.4"
+                "source": "https://github.com/solariumphp/solarium/tree/6.2.2"
             },
-            "time": "2021-07-06T10:45:42+00:00"
+            "time": "2022-01-20T17:45:10+00:00"
         }
     ],
     "packages-dev": [],
