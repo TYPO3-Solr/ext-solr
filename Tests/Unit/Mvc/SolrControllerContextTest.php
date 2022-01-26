@@ -1,5 +1,5 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Test\Mvc\ControllerContext;
+namespace ApacheSolrForTypo3\Solr\Tests\Unit\Mvc\ControllerContext;
 
 /***************************************************************
  *  Copyright notice

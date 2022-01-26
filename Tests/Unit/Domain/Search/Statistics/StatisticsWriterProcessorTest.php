@@ -34,7 +34,7 @@ use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
-use PHPUnit_Framework_MockObject_MockObject;
+use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
@@ -45,32 +45,32 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 class StatisticsWriterProcessorTest extends UnitTest
 {
     /**
-     * @var StatisticsRepository|PHPUnit_Framework_MockObject_MockObject
+     * @var StatisticsRepository|MockObject
      */
     protected $statisticsRepositoryMock;
 
     /**
-     * @var SiteRepository|PHPUnit_Framework_MockObject_MockObject
+     * @var SiteRepository|MockObject
      */
     protected $siteRepositoryMock;
 
     /**
-     * @var StatisticsWriterProcessor|PHPUnit_Framework_MockObject_MockObject
+     * @var StatisticsWriterProcessor|MockObject
      */
     protected $processor;
 
     /**
-     * @var TypoScriptConfiguration|PHPUnit_Framework_MockObject_MockObject
+     * @var TypoScriptConfiguration|MockObject
      */
     protected $typoScriptConfigurationMock;
 
     /**
-     * @var SearchRequest|PHPUnit_Framework_MockObject_MockObject
+     * @var SearchRequest|MockObject
      */
     protected $searchRequestMock;
 
     /**
-     * @var Query|PHPUnit_Framework_MockObject_MockObject
+     * @var Query|MockObject
      */
     protected $queryMock;
 
@@ -91,6 +91,7 @@ class StatisticsWriterProcessorTest extends UnitTest
      */
     public function canWriteExpectedStatisticsData()
     {
+        /* @var TypoScriptFrontendController $fakeTSFE */
         $fakeTSFE = $this->getDumbMock(TypoScriptFrontendController::class);
         $fakeTSFE->id = 888;
         $fakeTime = 100;

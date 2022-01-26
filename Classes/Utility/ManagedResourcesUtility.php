@@ -93,7 +93,7 @@ class ManagedResourcesUtility
         $lineParts = GeneralUtility::trimExplode('=>', $line, true);
 
         if (isset($lineParts[1])) {
-            $baseWord = mb_strtolower($lineParts[0]);
+            $baseWord = mb_strtolower($lineParts[0] ?? '');
             $synonyms = GeneralUtility::trimExplode(',', mb_strtolower($lineParts[1]), true);
         } else {
             $synonyms = GeneralUtility::trimExplode(',', mb_strtolower($lineParts[0]), true);

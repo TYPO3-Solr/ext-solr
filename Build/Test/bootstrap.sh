@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-if [[ ! -z ${BASH_SOURCE[0]} ]]; then
+if [[ -n ${BASH_SOURCE[0]} ]]; then
   SCRIPTPATH=$( cd $(dirname ${BASH_SOURCE[0]}) ; pwd -P )
 else
   SCRIPTPATH=$( cd $(dirname $0) ; pwd -P )
@@ -9,7 +9,7 @@ fi
 EXTENSION_ROOTPATH="$SCRIPTPATH/../../"
 SOLR_INSTALL_PATH="/opt/solr-tomcat/"
 
-DEFAULT_TYPO3_VERSION="10"
+DEFAULT_TYPO3_VERSION="^11.5"
 DEFAULT_PHP_CS_FIXER_VERSION="^3.2.1"
 DEFAULT_TYPO3_DATABASE_HOST="localhost"
 DEFAULT_TYPO3_DATABASE_NAME="test"

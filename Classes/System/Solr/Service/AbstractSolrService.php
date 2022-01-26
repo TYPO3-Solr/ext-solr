@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace ApacheSolrForTypo3\Solr\System\Solr\Service;
 
 /***************************************************************
@@ -100,7 +103,7 @@ abstract class AbstractSolrService
      */
     protected function _constructUrl($servlet, $params = [])
     {
-        $queryString = count($params) ? '?' . http_build_query($params, null, '&') : '';
+        $queryString = count($params) ? '?' . http_build_query($params, '', '&') : '';
         return $this->__toString() . $servlet . $queryString;
     }
 
@@ -407,12 +410,12 @@ abstract class AbstractSolrService
      * @param string $httpMethod
      * @return Request
      */
-    protected function buildSolariumRequestFromUrl(string $url, $httpMethod = Request::METHOD_GET): Request
+    protected function buildSolariumRequestFromUrl(string $url, string $httpMethod = Request::METHOD_GET): Request
     {
         $params = [];
-        parse_str(parse_url($url, PHP_URL_QUERY), $params);
+        parse_str(parse_url($url, PHP_URL_QUERY) ?? '', $params);
         $request = new Request();
-        $path = parse_url($url, PHP_URL_PATH);
+        $path = parse_url($url, PHP_URL_PATH) ?? '';
         $endpoint = $this->getPrimaryEndpoint();
         $api = $request->getApi() === Request::API_V1 ? 'solr' : 'api';
         $coreBasePath = $endpoint->getPath() . '/' . $api . '/' . $endpoint->getCore() . '/';

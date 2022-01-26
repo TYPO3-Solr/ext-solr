@@ -34,6 +34,7 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use Dkd\DkdReports\Reports\Status;
+use Exception;
 use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 
 /**
@@ -55,11 +56,6 @@ class IndexServiceTest extends UnitTest
      * @var Dispatcher
      */
     protected $dispatcherMock;
-
-    /**
-     * @var IndexService
-     */
-    protected $indexService;
 
     /**
      * @var SolrLogManager
@@ -87,7 +83,7 @@ class IndexServiceTest extends UnitTest
         // we create an IndexeService where indexItem is mocked to avoid real indexing in the unit test
         $indexService = $this->getMockBuilder(IndexService::class)
             ->setConstructorArgs([$this->siteMock, $this->queueMock, $this->dispatcherMock, $this->logManagerMock])
-            ->setMethods(['indexItem'])
+            ->onlyMethods(['indexItem'])
             ->getMock();
 
         // we fake an index queue with two items
@@ -141,13 +137,13 @@ class IndexServiceTest extends UnitTest
 
         $indexerMock = $this->getDumbMock(Indexer::class);
         $indexerMock->expects($this->exactly(2))->method('index')->willReturnCallback(function() {
-            throw new \Exception('unknowen error occured');
+            throw new Exception('unknowen error occured');
         });
         $indexService->expects($this->exactly(2))->method('getIndexerByItem')->willReturn($indexerMock);
 
         // we fake an index queue with two items
         $item1 = $this->getDumbMock(Item::class);
-        $item1->expects($this->once())->method('getSite')->willReturn($this->siteMock);
+        $item1->expects($this->any())->method('getSite')->willReturn($this->siteMock);
         $item2 = $this->getDumbMock(Item::class);
 
         $fakeItems = [$item1, $item2];
@@ -163,12 +159,12 @@ class IndexServiceTest extends UnitTest
     {
         $fakeConfiguration = $this->getDumbMock(TypoScriptConfiguration::class);
         $this->siteMock->expects($this->once())->method('getSolrConfiguration')->will($this->returnValue($fakeConfiguration));
-        $this->siteMock->expects($this->once())->method('getDomain')->willReturn('www.indextest.local');
+        $this->siteMock->expects($this->any())->method('getDomain')->willReturn('www.indextest.local');
 
         /** @var $indexService IndexService */
         $indexService = $this->getMockBuilder(IndexService::class)
             ->setConstructorArgs([$this->siteMock, $this->queueMock, $this->dispatcherMock, $this->logManagerMock])
-            ->setMethods(['getIndexerByItem'])
+            ->onlyMethods(['getIndexerByItem'])
             ->getMock();
 
         $indexerMock = $this->getDumbMock(Indexer::class);
@@ -177,7 +173,7 @@ class IndexServiceTest extends UnitTest
 
         // we fake an index queue with two items
         $item1 = $this->getDumbMock(Item::class);
-        $item1->expects($this->once())->method('getSite')->willReturn($this->siteMock);
+        $item1->expects($this->any())->method('getSite')->willReturn($this->siteMock);
         $item2 = $this->getDumbMock(Item::class);
 
         $fakeItems = [$item1, $item2];

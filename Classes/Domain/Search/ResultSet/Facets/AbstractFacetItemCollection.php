@@ -40,11 +40,11 @@ abstract class AbstractFacetItemCollection extends AbstractCollection
 
     /**
      * @param string $value
-     * @return AbstractFacetItem
+     * @return ?AbstractFacetItem
      */
-    public function getByValue($value)
+    public function getByValue(string $value): ?AbstractFacetItem
     {
-        return isset($this->data[$value]) ? $this->data[$value] : null;
+        return $this->data[$value] ?? null;
     }
 
     /**
@@ -52,7 +52,7 @@ abstract class AbstractFacetItemCollection extends AbstractCollection
      *
      * @return int
      */
-    public function getCount()
+    public function getCount(): int
     {
         return $this->count();
     }

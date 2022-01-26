@@ -54,7 +54,7 @@ class DocumentEscapeService {
      * @param Document[] $documents
      * @return Document[]
      */
-    public function applyHtmlSpecialCharsOnAllFields(array $documents)
+    public function applyHtmlSpecialCharsOnAllFields(array $documents): array
     {
         $trustedSolrFields = $this->typoScriptConfiguration->getSearchTrustedFieldsArray();
 
@@ -87,10 +87,10 @@ class DocumentEscapeService {
     {
         if (is_array($fieldValue)) {
             foreach ($fieldValue as $key => $fieldValueItem) {
-                $fieldValue[$key] = htmlspecialchars($fieldValueItem, null, null, false);
+                $fieldValue[$key] = htmlspecialchars($fieldValueItem,  ENT_COMPAT, 'UTF-8', false);
             }
         } else {
-            $fieldValue = htmlspecialchars($fieldValue, null, null, false);
+            $fieldValue = htmlspecialchars($fieldValue, ENT_COMPAT, 'UTF-8', false);
         }
 
         return $fieldValue;

@@ -40,7 +40,7 @@ class SortingExpression
      */
     public function getForFacet($sorting)
     {
-        $noSortingSet = $sorting !== 0 && $sorting !== FALSE && empty($sorting);
+        $noSortingSet = $sorting !== 0 && $sorting !== false && empty($sorting);
         $sortingIsCount = $sorting === 'count' || $sorting === 1 || $sorting === '1' || $sorting === TRUE;
         if ($noSortingSet) {
             return '';
@@ -62,7 +62,7 @@ class SortingExpression
     {
         $isMetricSorting = strpos($sorting, 'metrics_') === 0;
         $expression = $isMetricSorting ? $sorting : $this->getForFacet($sorting);
-        $direction = strtolower($direction);
+        $direction = strtolower($direction ?? '');
         if (!empty($direction) && in_array($direction, ['asc', 'desc'])) {
             $expression .= ' ' . $direction;
         }

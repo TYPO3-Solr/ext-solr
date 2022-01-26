@@ -136,15 +136,12 @@ class StatisticsWriterProcessor implements SearchResultSetProcessor
      * @param $string String to sanitize
      * @return string Sanitized string
      */
-    protected function sanitizeString($string)
+    protected function sanitizeString($string): string
     {
         // clean content
         $string = HtmlContentExtractor::cleanContent($string);
-        $string = html_entity_decode($string, ENT_QUOTES, 'UTF-8');
-        $string = filter_var(strip_tags($string), FILTER_SANITIZE_STRING); // after entity decoding we might have tags again
-        $string = trim($string);
-
-        return $string;
+        $string = htmlspecialchars(strip_tags($string), ENT_QUOTES, 'UTF-8'); // after entity decoding we might have tags again
+        return trim($string);
     }
 
     /**
