@@ -866,7 +866,12 @@ class SearchControllerTest extends AbstractFrontendControllerTest
     public function canSeeTheParsedQueryWhenABackendUserIsLoggedIn()
     {
         $this->importDataSetFromFixture('SearchAndSuggestControllerTest_indexing_data.xml');
-
+        $this->addTypoScriptToTemplateRecord(
+            1,
+            /* @lang typoScript */ '
+            plugin.tx_solr.enableDebugMode = 1
+            '
+        );
         $this->indexPages([1, 2]);
 
         $this->setUpBackendUserFromFixture(1);

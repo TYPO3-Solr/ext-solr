@@ -22,9 +22,4 @@
 			<directory>../../Tests/Integration/</directory>
 		</testsuite>
 	</testsuites>
-	<groups>
-		<exclude>
-			<group>frontend</group>
-		</exclude>
-	</groups>
 </phpunit>
