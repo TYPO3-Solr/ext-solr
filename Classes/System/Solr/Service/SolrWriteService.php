@@ -18,6 +18,7 @@ use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use Solarium\QueryType\Extract\Query;
 use Solarium\QueryType\Update\Result;
+use Throwable;
 
 /**
  * Class SolrWriteService
@@ -39,7 +40,7 @@ class SolrWriteService extends AbstractSolrService
         try {
             $response = $this->createAndExecuteRequest($query);
             return [$response->file, (array)$response->file_metadata];
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $param = $query->getRequestBuilder()->build($query)->getParams();
             $this->logger->log(
                 SolrLogManager::ERROR,

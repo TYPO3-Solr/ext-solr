@@ -222,12 +222,12 @@ class SolrAdminService extends AbstractSolrService
      *
      * @return string Solr version number
      */
-    public function getSolrServerVersion()
+    public function getSolrServerVersion(): string
     {
         $systemInformation = $this->getSystemInformation();
         // don't know why $systemInformation->lucene->solr-spec-version won't work
         $luceneInformation = (array)$systemInformation->lucene;
-        return $luceneInformation['solr-spec-version'];
+        return $luceneInformation['solr-spec-version'] ?? '';
     }
 
     /**
@@ -237,8 +237,7 @@ class SolrAdminService extends AbstractSolrService
      */
     public function reloadCore()
     {
-        $response = $this->reloadCoreByName($this->getPrimaryEndpoint()->getCore());
-        return $response;
+        return $this->reloadCoreByName($this->getPrimaryEndpoint()->getCore());
     }
 
     /**
@@ -250,8 +249,7 @@ class SolrAdminService extends AbstractSolrService
     public function reloadCoreByName($coreName)
     {
         $coreAdminReloadUrl = $this->_constructUrl(self::CORES_SERVLET) . '?action=reload&core=' . $coreName;
-        $response = $this->_sendRawGet($coreAdminReloadUrl);
-        return $response;
+        return $this->_sendRawGet($coreAdminReloadUrl);
     }
 
     /**

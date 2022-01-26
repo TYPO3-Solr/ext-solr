@@ -148,7 +148,7 @@ class TwoLevelCache
      *
      * @see \TYPO3\CMS\Core\Cache\Frontend\AbstractFrontend::isValidEntryIdentifier()
      *
-     * @param string $cacheEntryIdentifier
+     * @param string $cacheId
      * @return string
      */
     protected function sanitizeCacheId(string $cacheId): string

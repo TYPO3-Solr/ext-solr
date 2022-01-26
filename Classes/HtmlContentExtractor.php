@@ -142,7 +142,7 @@ class HtmlContentExtractor
      * @param string $content String to clean
      * @return string String cleaned from tags and special whitespace characters
      */
-    public static function cleanContent($content)
+    public static function cleanContent(string $content): string
     {
         $content = self::stripControlCharacters($content);
         // remove Javascript
@@ -159,9 +159,8 @@ class HtmlContentExtractor
 
         $content = self::stripUnicodeRanges($content);
         $content = preg_replace('/\s{2,}/u', ' ', $content);
-        $content = trim($content);
 
-        return $content;
+        return trim($content);
     }
 
     /**

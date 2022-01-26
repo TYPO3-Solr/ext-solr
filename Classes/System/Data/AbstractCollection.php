@@ -15,6 +15,10 @@ namespace ApacheSolrForTypo3\Solr\System\Data;
  * The TYPO3 project - inspiring people to share!
  */
 
+use ArrayIterator;
+use ReturnTypeWillChange;
+use Traversable;
+
 /**
  * Class AbstractCollection
  */
@@ -65,11 +69,11 @@ abstract class AbstractCollection implements \IteratorAggregate, \Countable, \Ar
     }
 
     /**
-     * @return \ArrayIterator|\Traversable
+     * @return Traversable
      */
-    public function getIterator()
+    public function getIterator(): Traversable
     {
-        return new \ArrayIterator($this->data);
+        return new ArrayIterator($this->data);
     }
 
     /**
@@ -99,7 +103,7 @@ abstract class AbstractCollection implements \IteratorAggregate, \Countable, \Ar
      * <p>
      * The return value is cast to an integer.
      */
-    public function count()
+    public function count(): int
     {
         return count($this->data);
     }
@@ -107,7 +111,7 @@ abstract class AbstractCollection implements \IteratorAggregate, \Countable, \Ar
     /**
      * @return int
      */
-    public function getCount()
+    public function getCount(): int
     {
         return $this->count();
     }
@@ -118,7 +122,7 @@ abstract class AbstractCollection implements \IteratorAggregate, \Countable, \Ar
      * @param mixed $offset
      * @return bool true on success or false on failure
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return array_key_exists($offset, $this->data);
     }
@@ -129,6 +133,7 @@ abstract class AbstractCollection implements \IteratorAggregate, \Countable, \Ar
      * @param mixed $offset
      * @return mixed
      */
+    #[ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         if ($this->offsetExists($offset)) {
@@ -145,7 +150,7 @@ abstract class AbstractCollection implements \IteratorAggregate, \Countable, \Ar
      * @param mixed $value
      * @return void
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         if ($offset === null) {
             $this->data[] = $value;
@@ -160,7 +165,7 @@ abstract class AbstractCollection implements \IteratorAggregate, \Countable, \Ar
      * @param mixed $offset
      * @return void
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         if ($this->offsetExists($offset)) {
             unset($this->data[$offset]);

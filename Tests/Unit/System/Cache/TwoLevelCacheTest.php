@@ -107,7 +107,7 @@ class TwoLevelCacheTest extends UnitTest
     public function canHandleInvalidCacheIdentifierOnGet(): void
     {
         $cacheBackendMock = $this->createMock(BackendInterface::class);
-        $cacheBackendMock->expects($this->once())->method('get');
+        $cacheBackendMock->expects($this->once())->method('get')->willReturn($this->returnValue(''));
         $variableFrontend = new VariableFrontend('TwoLevelCacheTest', $cacheBackendMock);
         $this->twoLevelCache = new TwoLevelCache('test', $variableFrontend);
 

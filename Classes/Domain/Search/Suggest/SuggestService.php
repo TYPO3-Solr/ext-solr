@@ -33,10 +33,12 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResultCollectio
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSetService;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
+use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
 use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Solr\ParsingUtil;
 use ApacheSolrForTypo3\Solr\Util;
+use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
@@ -159,8 +161,10 @@ class SuggestService {
      *
      * @param SuggestQuery $suggestQuery
      * @return array
+     * @throws NoSolrConnectionFoundException
+     * @throws AspectNotFoundException
      */
-    protected function getSolrSuggestions(SuggestQuery $suggestQuery) : array
+    protected function getSolrSuggestions(SuggestQuery $suggestQuery): array
     {
         $pageId = $this->tsfe->getRequestedId();
         $languageId = Util::getLanguageUid();
@@ -169,6 +173,9 @@ class SuggestService {
         $response = $search->search($suggestQuery, 0, 0);
 
         $rawResponse = $response->getRawResponse();
+        if (null === $rawResponse) {
+            return [];
+        }
         $results = json_decode($rawResponse);
         $suggestConfig = $this->typoScriptConfiguration->getObjectByPath('plugin.tx_solr.suggest.');
         $facetSuggestions = isset($suggestConfig['suggestField']) ? $results->facet_counts->facet_fields->{$suggestConfig['suggestField']} ?? [] : [];

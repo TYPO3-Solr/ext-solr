@@ -14,8 +14,7 @@ tools:
   # we do this on GitHub-Actions via typo3/coding-standards
   php_code_sniffer:
     enabled: false
-
-  # we do this on GitHub-Actions
+  # we do this on GitHub-Actions via typo3/coding-standards
   php_cs_fixer:
     enabled: false
 
@@ -38,10 +37,10 @@ tools:
     timeout: 2400
 
 checks:
-    php:
-        excluded_dependencies:
-            - typo3/cms-install
-        avoid_superglobals: false
+  php:
+    excluded_dependencies:
+      - typo3/cms-install
+    avoid_superglobals: false
 
 build_failure_conditions:
   - 'patches.label("Doc Comments").count > 10'
@@ -55,12 +54,10 @@ build_failure_conditions:
 build:
   environment:
     php:
-      version: 7.4.25
+      # We want to test with the smallest supported TYPO3 PHP version
+      version: 7.4
   nodes:
     analysis:
-      dependencies:
-        after:
-          - composer require --dev squizlabs/php_codesniffer:3.1.1
       tests:
         override:
           - php-scrutinizer-run

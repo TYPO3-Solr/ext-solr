@@ -172,12 +172,12 @@ class SearchRequest
     }
 
     /**
-     * Helper method to prefix an accessor with the arguments namespace.
+     * Helper method to prefix an accessor with the argument's namespace.
      *
      * @param string $path
      * @return string
      */
-    protected function prefixWithNamespace($path)
+    protected function prefixWithNamespace(string $path): string
     {
         return $this->argumentNameSpace . ':' . $path;
     }
@@ -351,7 +351,7 @@ class SearchRequest
      *
      * @return string
      */
-    public function getSorting()
+    public function getSorting(): string
     {
         $path = $this->prefixWithNamespace('sort');
         return $this->argumentsAccessor->get($path, '');
@@ -371,7 +371,7 @@ class SearchRequest
         }
 
         $parts = explode(' ', $sorting);
-        return isset($parts[$index]) ? $parts[$index] : null;
+        return $parts[$index] ?? null;
     }
 
     /**
@@ -389,9 +389,9 @@ class SearchRequest
      *
      * @return string
      */
-    public function getSortingDirection()
+    public function getSortingDirection(): string
     {
-        return mb_strtolower($this->getSortingPart(1));
+        return mb_strtolower($this->getSortingPart(1) ?? '');
     }
 
     /**

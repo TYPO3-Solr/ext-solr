@@ -9,16 +9,16 @@ TYPO3_BIN_DIR="$(pwd)/.Build/bin/"
 export TYPO3_BIN_DIR
 export PATH="$TYPO3_BIN_DIR:$PATH"
 
-COMPOSER_BIN_DIR="$(composer config home)/vendor/bin"
-export COMPOSER_BIN_DIR
-
-# Add COMPOSER_BIN_DIR to $PATH, if not present
-if [[ $PATH != *"$COMPOSER_BIN_DIR"* ]]; then
-  export PATH="$COMPOSER_BIN_DIR:$PATH"
+COMPOSERS_BIN_DIR="$(composer config home)/vendor/bin"
+# Add COMPOSERS_BIN_DIR to $PATH, if not present
+## Note: That is not https://getcomposer.org/doc/03-cli.md#composer-bin-dir
+##       avoid collisions on that.
+if [[ $PATH != *"$COMPOSERS_BIN_DIR"* ]]; then
+  export PATH="$COMPOSERS_BIN_DIR:$PATH"
 fi
 
 echo "PWD: $(pwd)"
-echo "COMPOSER_BIN_DIR: $COMPOSER_BIN_DIR"
+echo "COMPOSERS_BIN_DIR: $COMPOSERS_BIN_DIR"
 echo "PATH: $PATH"
 
 echo "Run PHP Lint"
