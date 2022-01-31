@@ -1,29 +1,22 @@
 <?php
 namespace ApacheSolrForTypo3\Solr\System\Configuration;
 
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2017- Timo Schmidt <timo.schmidt@dkd.de
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 
+use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
+use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration as CoreExtensionConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -42,12 +35,15 @@ class ExtensionConfiguration
 
     /**
      * ExtensionConfiguration constructor.
+     *
      * @param array $configurationToUse
+     * @throws ExtensionConfigurationExtensionNotConfiguredException
+     * @throws ExtensionConfigurationPathDoesNotExistException
      */
-    public function __construct($configurationToUse = [])
+    public function __construct(array $configurationToUse = [])
     {
         if (empty($configurationToUse)) {
-            $this->configuration = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Configuration\ExtensionConfiguration::class)->get('solr');
+            $this->configuration = GeneralUtility::makeInstance(CoreExtensionConfiguration::class)->get('solr');
         } else {
             $this->configuration = $configurationToUse;
         }
@@ -86,9 +82,9 @@ class ExtensionConfiguration
     /**
      * Get configuration for useConfigurationMonitorTables
      *
-     * @return array of tableName
+     * @return array of table names
      */
-    public function getIsUseConfigurationMonitorTables()
+    public function getIsUseConfigurationMonitorTables(): array
     {
         $monitorTables = [];
         $monitorTablesList = $this->getConfigurationOrDefaultValue('useConfigurationMonitorTables', '');
@@ -101,30 +97,60 @@ class ExtensionConfiguration
     }
 
     /**
-     * Get configuration for allowLegacySiteMode
+     * Returns a list of available/whitelisted EXT:solr plugin namespaces.
+     * Builds from "pluginNamespaces" extension configuration setting.
+     *
+     * @return array
+     */
+    public function getAvailablePluginNamespaces(): array
+    {
+        $pluginNamespacesList = 'tx_solr,' . $this->getConfigurationOrDefaultValue(
+                'pluginNamespaces'
+            );
+        return array_unique(GeneralUtility::trimExplode(',', $pluginNamespacesList));
+    }
+
+    /**
+     * Returns a list of cacheHash-excludedParameters matching the EXT:solr plugin namespaces.
+     *
+     * Builds from "pluginNamespaces" and takes "includeGlobalQParameterInCacheHash"
+     * extension configuration settings into account.
+     *
+     * @return array
+     */
+    public function getCacheHashExcludedParameters(): array
+    {
+        $pluginNamespaces = array_map(
+            function($pluginNamespace) {
+                return '^' . $pluginNamespace . '[';
+            },
+            $this->getAvailablePluginNamespaces()
+        );
+        if (false === $this->getIncludeGlobalQParameterInCacheHash()) {
+            $pluginNamespaces[] = 'q';
+        }
+        return array_combine($pluginNamespaces, $pluginNamespaces);
+    }
+
+    /**
+     * Returns the "includeGlobalQParameterInCacheHash" extension configuration setting.
      *
      * @return bool
      */
-    public function getIsAllowLegacySiteModeEnabled(): bool
+    public function getIncludeGlobalQParameterInCacheHash(): bool
     {
-        trigger_error('solr:deprecation: Method getIsAllowLegacySiteModeEnabled is deprecated since EXT:solr 11 and will be removed in 12. Since EXT:solr 10 legacy site handling is deprecated and was removed in EXT:solr 11.', E_USER_DEPRECATED);
-
-        //@todo throw exception if set to true and log deprecation
-        $legacyModeIsActive = $this->getConfigurationOrDefaultValue('allowLegacySiteMode', false);
-        if($legacyModeIsActive === true) {
-            throw new \InvalidArgumentException("Legacy mode is not supported anymore, please migrate your system to use sitehandling now!");
-        }
-
-        return false;
+        return (bool)$this->getConfigurationOrDefaultValue('includeGlobalQParameterInCacheHash', false);
     }
 
     /**
      * @param string $key
      * @param mixed $defaultValue
-     * @return mixed
+     * @return mixed|null
      */
-    protected function getConfigurationOrDefaultValue($key, $defaultValue)
+    protected function getConfigurationOrDefaultValue(string $key, $defaultValue = null)
     {
-        return isset($this->configuration[$key]) ? $this->configuration[$key] : $defaultValue;
+        return $this->configuration[$key] ?? $defaultValue;
     }
+
+
 }

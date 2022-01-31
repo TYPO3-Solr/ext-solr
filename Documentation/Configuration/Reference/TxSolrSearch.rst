@@ -7,7 +7,7 @@
 
 
 tx_solr.search
-===============
+==============
 
 The search section, you probably already guessed it, provides configuration options for the all things related to actually searching the index, setting query parameters, formatting and processing result documents and the result listing.
 
@@ -864,6 +864,31 @@ faceting.showEmptyFacets
 
 By setting this option to 1, you will allow rendering of empty facets. Usually, if a facet does not offer any options to filter a resultset of documents, the facet header will not be shown. Using this option allows the header still to be rendered when no filter options are provided.
 
+faceting.urlParameterStyle
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+:Type: Option/String (index or assoc)
+:TS Path: plugin.tx_solr.search.faceting.urlParameterStyle
+:Since: 11.1
+:Default: index
+:Note: On assoc, the setting faceting.urlParameterSort will be enabled and can not be disabled.
+
+Allows to change the url style of facets. This can be legacy index or more modern associative style.
+
+Index style: tx_solr[filter][0]=type:pages
+Associative style: tx_solr[filter][type:pages]=1
+
+faceting.urlParameterSort
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+:Type: Boolean
+:TS Path: plugin.tx_solr.search.faceting.urlParameterSort
+:Since: 11.1
+:Default: 0
+:Note: On faceting.urlParameterStyle = assoc, this setting can not be disabled.
+
+Allows to enable sorting of url parameters, so the single state of facets is associated with same url, no matter in which order the facets were selected
+
 faceting.facetLinkUrlParameters
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -1424,6 +1449,8 @@ variants.limit
 ~~~~~~~~~~~~~~
 
 Limit of expanded documents.
+
+Though this setting limits the returned variants, you still can get the number of existing variants, it's set in "document.variantsNumFound" (since EXT:solr 10)
 
 :Type: Integer
 :TS Path: plugin.tx_solr.search.variants.limit

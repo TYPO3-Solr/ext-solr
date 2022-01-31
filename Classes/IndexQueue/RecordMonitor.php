@@ -39,6 +39,7 @@ use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\MathUtility;
 
 /**
  * A class that monitors changes to records so that the changed record gets
@@ -132,10 +133,10 @@ class RecordMonitor extends AbstractDataHandlerListener
     }
 
     /**
-     * Holds the configuration when a recursive page queing should be triggered.
+     * Holds the configuration when a recursive page queuing should be triggered.
      *
      * Note: The SQL transaction is already committed, so the current state covers only "non"-changed fields.
-     * 
+     *
      * @var array
      * @return array
      */
@@ -158,7 +159,11 @@ class RecordMonitor extends AbstractDataHandlerListener
             'hiddenIsEnabledAndExtendToSubPagesWasRemoved' => [
                 'currentState' =>  ['hidden' => '1'],
                 'changeSet' => ['extendToSubpages' => '0']
-            ]
+            ],
+            // the field "no_search_sub_entries" of current page was set to 0
+            'no_search_sub_entriesFlagWasAdded' => [
+                'changeSet' => ['no_search_sub_entries' => '0']
+            ],
         ];
     }
 
@@ -260,7 +265,7 @@ class RecordMonitor extends AbstractDataHandlerListener
 
     /**
      * Add's a record to the queue if it is monitored and enabled, otherwise it removes the record from the queue.
-     * 
+     *
      * @param string $table
      * @param integer $uid
      * @param integer $pid
@@ -303,7 +308,7 @@ class RecordMonitor extends AbstractDataHandlerListener
             return;
         }
 
-        if ($status === 'new') {
+        if ($status === 'new' && !MathUtility::canBeInterpretedAsInteger($recordUid)) {
             $recordUid = $tceMain->substNEWwithIDs[$recordUid];
         }
         if ($this->isDraftRecord($table, $recordUid)) {
@@ -363,6 +368,7 @@ class RecordMonitor extends AbstractDataHandlerListener
         if ($recordTable === 'pages') {
             $configurationPageId = $this->getConfigurationPageId($recordTable, $recordPageId, $recordUid);
             if ($configurationPageId === 0) {
+                $this->mountPageUpdater->update($recordUid);
                 return;
             }
             $rootPageIds = [$configurationPageId];
@@ -391,6 +397,12 @@ class RecordMonitor extends AbstractDataHandlerListener
                 // TODO move this part to the garbage collector
                 // check if the item should be removed from the index because it no longer matches the conditions
                 $this->removeFromIndexAndQueueWhenItemInQueue($recordTable, $recordUid);
+
+                // Handle sub entries for pages, which are not in index queue.
+                if ($recordTable === 'pages' && $this->isRecursivePageUpdateRequired($recordUid, $fields)) {
+                    $treePageIds = $this->getSubPageIds($recordUid);
+                    $this->updatePageIdItems($treePageIds);
+                }
                 continue;
             }
             // Clear existing index queue items to prevent mount point duplicates.

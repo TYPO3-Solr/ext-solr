@@ -25,9 +25,8 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Access\Rootline;
+use ApacheSolrForTypo3\Solr\Tests\Unit\Helper\FakeObjectManager;
 use ApacheSolrForTypo3\Solr\Typo3PageIndexer;
-
-use ApacheSolrForTypo3\Solr\Util;
 use InvalidArgumentException;
 use Nimut\TestingFramework\Exception\Exception;
 use ReflectionClass;
@@ -265,12 +264,7 @@ abstract class IntegrationTest extends FunctionalTestCase
             /** @var TSFETestBootstrapper $bootstrapper */
         $bootstrapper = GeneralUtility::makeInstance(TSFETestBootstrapper::class);
 
-        if(Util::getIsTYPO3VersionBelow10()) {
-            // @todo this part can be dropped when TYPO3 9 support will be dropped
-            $result = $bootstrapper->legacyBootstrap($id, $MP, $language);
-        } else {
-            $result = $bootstrapper->bootstrap($id, $MP, $language);
-        }
+        $result = $bootstrapper->bootstrap($id, $MP, $language);
         return $result->getTsfe();
     }
 
@@ -402,14 +396,9 @@ abstract class IntegrationTest extends FunctionalTestCase
         $GLOBALS['TSFE'] = $fakeTSFE;
         $this->simulateFrontedUserGroups($feUserGroupArray);
 
-        #$fakeTSFE->preparePageContentGeneration();
-        if(Util::getIsTYPO3VersionBelow10()) {
-            PageGenerator::renderContent();
-        } else {
-            $request = $GLOBALS['TYPO3_REQUEST'];
-            $requestHandler = GeneralUtility::makeInstance(RequestHandler::class);
-            $requestHandler->handle($request);
-        }
+        $request = $GLOBALS['TYPO3_REQUEST'];
+        $requestHandler = GeneralUtility::makeInstance(RequestHandler::class);
+        $requestHandler->handle($request);
 
         return $fakeTSFE;
     }
@@ -507,9 +496,7 @@ abstract class IntegrationTest extends FunctionalTestCase
             [
                 $defaultLanguage, $german, $danish
             ],
-            [
-                $this->buildErrorHandlingConfiguration('Fluid', [404])
-            ]
+            $this->buildErrorHandlingConfiguration('Fluid', [404])
         );
 
         $this->writeSiteConfiguration(
@@ -518,9 +505,7 @@ abstract class IntegrationTest extends FunctionalTestCase
             [
                 $defaultLanguage, $german, $danish
             ],
-            [
-                $this->buildErrorHandlingConfiguration('Fluid', [404])
-            ]
+            $this->buildErrorHandlingConfiguration('Fluid', [404])
         );
 
         $this->writeSiteConfiguration(
@@ -589,11 +574,25 @@ abstract class IntegrationTest extends FunctionalTestCase
      */
     protected function getFakeObjectManager(): ObjectManagerInterface
     {
-        if(Util::getIsTYPO3VersionBelow10()) {
-            $fakeObjectManager = new \ApacheSolrForTypo3\Solr\Tests\Unit\Helper\LegacyFakeObjectManager();
-        } else {
-            $fakeObjectManager = new \ApacheSolrForTypo3\Solr\Tests\Unit\Helper\FakeObjectManager();
+        return new FakeObjectManager();
+    }
+
+    /**
+     * Returns inaccessible(private/protected/etc.) property from given object.
+     *
+     * @param object $object
+     * @param string $property
+     * @return ?mixed
+     */
+    protected function getInaccessiblePropertyFromObject(object $object, string $property)
+    {
+        $reflection = new ReflectionClass($object);
+        try {
+            $property = $reflection->getProperty($property);
+        } catch (ReflectionException $e) {
+            return null;
         }
-        return $fakeObjectManager;
+        $property->setAccessible(true);
+        return $property->getValue($object);
     }
 }

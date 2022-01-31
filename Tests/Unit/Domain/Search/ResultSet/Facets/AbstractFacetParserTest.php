@@ -16,13 +16,15 @@ namespace ApacheSolrForTypo3\Solr\Test\Domain\Search\ResultSet\Facets;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Faceting;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\UrlFacetContainer;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
+use ApacheSolrForTypo3\Solr\Tests\Unit\Helper\FakeObjectManager;
+use ApacheSolrForTypo3\Solr\System\Util\ArrayAccessor;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetParser;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
-use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -48,7 +50,9 @@ abstract class AbstractFacetParserTest extends UnitTest
         $usedQueryMock = $this->getMockBuilder(Query::class)->setMethods(['getFaceting'])->disableOriginalConstructor()->getMock();
         $usedQueryMock->expects($this->any())->method('getFaceting')->will($this->returnValue($facetingMock));
 
-        $searchRequestMock = $this->getMockBuilder(SearchRequest::class)->setMethods(['getActiveFacetNames', 'getContextTypoScriptConfiguration', 'getActiveFacets'])->getMock();
+        $searchRequestMock = $this->getMockBuilder(SearchRequest::class)
+            ->setMethods(['getActiveFacetNames', 'getContextTypoScriptConfiguration', 'getActiveFacets', 'getActiveFacetValuesByName'])
+            ->getMock();
 
         $fakeResponse = new ResponseAdapter($fakeResponseJson, 200);
 
@@ -57,21 +61,32 @@ abstract class AbstractFacetParserTest extends UnitTest
         $searchResultSet->setUsedSearchRequest($searchRequestMock);
         $searchResultSet->setResponse($fakeResponse);
 
+        $activeUrlFacets = new UrlFacetContainer(
+            new ArrayAccessor([ 'tx_solr' => ['filter' => $activeFilters] ])
+        );
         $configuration = [];
         $configuration['plugin.']['tx_solr.']['search.']['faceting.']['facets.'] = $facetConfiguration;
         $typoScriptConfiguration = new TypoScriptConfiguration($configuration);
-        $searchRequestMock->expects($this->any())->method('getContextTypoScriptConfiguration')->will($this->returnValue($typoScriptConfiguration));
+        $searchRequestMock->expects($this->any())
+            ->method('getContextTypoScriptConfiguration')
+            ->will($this->returnValue($typoScriptConfiguration));
 
-        $activeFacetNames = [];
-        $activeFacetValueMap = [];
-        foreach ($activeFilters as $filter) {
-            list($facetName, $value) = explode(':', $filter, 2);
-            $activeFacetNames[] = $facetName;
-            $activeFacetValueMap[] = $filter;
-        }
-
-        $searchRequestMock->expects($this->any())->method('getActiveFacetNames')->will($this->returnValue($activeFacetNames));
-        $searchRequestMock->expects($this->any())->method('getActiveFacets')->will($this->returnValue($activeFacetValueMap));
+        // Replace calls with own data bag
+        $searchRequestMock->expects($this->any())
+            ->method('getActiveFacetNames')
+            ->will($this->returnCallback(function() use ($activeUrlFacets) {
+                return $activeUrlFacets->getActiveFacetNames();
+            }));
+        $searchRequestMock->expects($this->any())
+            ->method('getActiveFacets')
+            ->will($this->returnCallback(function() use ($activeUrlFacets) {
+                return $activeUrlFacets->getActiveFacets();
+            }));
+        $searchRequestMock->expects($this->any())
+            ->method('getActiveFacetValuesByName')
+            ->will($this->returnCallback(function(string $facetName) use ($activeUrlFacets) {
+                return $activeUrlFacets->getActiveFacetValuesByName($facetName);
+            }));
 
         return $searchResultSet;
     }
@@ -85,11 +100,7 @@ abstract class AbstractFacetParserTest extends UnitTest
         $parser = GeneralUtility::makeInstance($className);
         // @extensionScannerIgnoreLine
 
-        if(Util::getIsTYPO3VersionBelow10()) {
-            $fakeObjectManager = new \ApacheSolrForTypo3\Solr\Tests\Unit\Helper\LegacyFakeObjectManager();
-        } else {
-            $fakeObjectManager = new \ApacheSolrForTypo3\Solr\Tests\Unit\Helper\FakeObjectManager();
-        }
+        $fakeObjectManager = new FakeObjectManager();
 
         $parser->injectObjectManager($fakeObjectManager);
 

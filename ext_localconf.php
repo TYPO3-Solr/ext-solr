@@ -95,6 +95,13 @@ if (!function_exists('strptime')) {
 
     // adding scheduler tasks
 
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][\ApacheSolrForTypo3\Solr\Task\OptimizeIndexTask::class] = [
+        'extension' => 'solr',
+        'title' => 'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:optimizeindex_title',
+        'description' => 'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:optimizeindex_description',
+        'additionalFields' => \ApacheSolrForTypo3\Solr\Task\OptimizeIndexTaskAdditionalFieldProvider::class
+    ];
+
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][\ApacheSolrForTypo3\Solr\Task\ReIndexTask::class] = [
         'extension' => 'solr',
         'title' => 'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:reindex_title',
@@ -168,6 +175,18 @@ if (!function_exists('strptime')) {
     /* @var \ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration $extensionConfiguration */
     $extensionConfiguration = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
         \ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration::class
+    );
+
+    // cacheHash handling
+    \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule(
+        $GLOBALS['TYPO3_CONF_VARS'],
+        [
+            'FE' => [
+                'cacheHash' => [
+                    'excludedParameters' => $extensionConfiguration->getCacheHashExcludedParameters()
+                ]
+            ]
+        ]
     );
 
     # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #

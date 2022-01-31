@@ -35,9 +35,13 @@ use ApacheSolrForTypo3\Solr\System\Solr\Node;
 use ApacheSolrForTypo3\Solr\System\Solr\Parser\SchemaParser;
 use ApacheSolrForTypo3\Solr\System\Solr\Parser\StopWordParser;
 use ApacheSolrForTypo3\Solr\System\Solr\Parser\SynonymParser;
-use ApacheSolrForTypo3\Solr\System\Solr\Service\SolrAdminService;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
+use Psr\EventDispatcher\EventDispatcherInterface;
+use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestFactoryInterface;
+use Psr\Http\Message\StreamFactoryInterface;
 use TYPO3\CMS\Core\Core\Environment;
+use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\TypoScript\TemplateService;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
@@ -76,6 +80,11 @@ class ConnectionManagerTest extends UnitTest
     protected $siteRepositoryMock;
 
     /**
+     * @var ConfigurationManager
+     */
+    protected $configurationManager;
+
+    /**
      * Set up the connection manager test
      *
      * @return void
@@ -103,7 +112,11 @@ class ConnectionManagerTest extends UnitTest
 
         $this->configurationManager = new ConfigurationManager();
         $this->connectionManager = $this->getMockBuilder(ConnectionManager::class)
-            ->setConstructorArgs([$this->languageRepositoryMock, $this->pageRepositoryMock, $this->siteRepositoryMock])
+            ->setConstructorArgs([
+                $this->languageRepositoryMock,
+                $this->pageRepositoryMock,
+                $this->siteRepositoryMock
+            ])
             ->setMethods(['getSolrConnectionForNodes'])
             ->getMock();
     }
@@ -143,12 +156,30 @@ class ConnectionManagerTest extends UnitTest
 
                 $readNode = Node::fromArray($readNode);
                 $writeNode = Node::fromArray($writeNode);
+                /* @var TypoScriptConfiguration $typoScriptConfigurationMock */
                 $typoScriptConfigurationMock = $self->getDumbMock(TypoScriptConfiguration::class);
+                /* @var SynonymParser $synonymsParserMock */
                 $synonymsParserMock = $self->getDumbMock(SynonymParser::class);
+                /* @var StopWordParser $stopWordParserMock */
                 $stopWordParserMock = $self->getDumbMock(StopWordParser::class);
+                /* @var SchemaParser $schemaParserMock */
                 $schemaParserMock = $self->getDumbMock(SchemaParser::class);
+                /* @var EventDispatcher $eventDispatcher */
+                $eventDispatcher = $self->getDumbMock(EventDispatcher::class);
 
-                return new SolrConnection($readNode, $writeNode, $typoScriptConfigurationMock, $synonymsParserMock, $stopWordParserMock, $schemaParserMock, $self->logManagerMock);
+                return new SolrConnection(
+                    $readNode,
+                    $writeNode,
+                    $typoScriptConfigurationMock,
+                    $synonymsParserMock,
+                    $stopWordParserMock,
+                    $schemaParserMock,
+                    $self->logManagerMock,
+                    $this->getDumbMock(ClientInterface::class),
+                    $this->getDumbMock(RequestFactoryInterface::class),
+                    $this->getDumbMock(StreamFactoryInterface::class),
+                    $this->getDumbMock(EventDispatcherInterface::class)
+                );
             })
         );
         $exceptionOccured = false;

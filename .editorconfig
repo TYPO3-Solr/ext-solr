@@ -28,3 +28,8 @@ indent_size = 2
 # XLF/XML-Files
 [*.{xlf,xml}]
 indent_style = tab
+
+# Bash scripts
+[*.sh]
+indent_style = space
+indent_size = 2

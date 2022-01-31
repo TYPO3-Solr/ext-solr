@@ -223,8 +223,15 @@ class SearchUriBuilderTest extends UnitTest
     public function addFacetUriRemovesPreviousGroupPage()
     {
         $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
-        $configurationMock->expects($this->any())->method('getSearchPluginNamespace')->will($this->returnValue('tx_solr'));
-        $configurationMock->expects($this->once())->method('getSearchTargetPage')->will($this->returnValue(1));
+        $configurationMock->expects($this->any())
+            ->method('getSearchPluginNamespace')
+            ->will($this->returnValue('tx_solr'));
+        $configurationMock->expects($this->once())
+            ->method('getSearchTargetPage')
+            ->will($this->returnValue(1));
+        $configurationMock->expects($this->any())
+            ->method('getSearchFacetingFacetLinkUrlParametersAsArray')
+            ->will($this->returnValue([]));
 
         $previousRequest =  new SearchRequest([
                 'tx_solr' => [

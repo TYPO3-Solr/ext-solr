@@ -1,28 +1,19 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Test\Domain\Search\ResultSet;
 
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2015-2016 Timo Hund <timo.hund@dkd.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
+
+namespace ApacheSolrForTypo3\Solr\Test\Domain\Search\ResultSet;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
@@ -34,12 +25,12 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\QueryGrou
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\ResultSetReconstitutionProcessor;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Tests\Unit\Helper\FakeObjectManager;
-use ApacheSolrForTypo3\Solr\Util;
 
 /**
  * Unit test case for the ObjectReconstitutionProcessor.
  *
  * @author Timo Hund <timo.hund@dkd.de>
+ * (c) 2015-2016 Timo Hund <timo.hund@dkd.de>
  */
 class ResultSetReconstitutionProcessorTest extends UnitTest
 {
@@ -1054,7 +1045,8 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
         $processor->process($searchResultSet);
 
         $this->assertEquals(1, $searchResultSet->getSortings()->getCount(), 'No sorting was created');
-        $this->assertFalse($searchResultSet->getSortings()->getHasSelected(), 'Expected that no selected sorting was present');
+        $this->assertEquals('relevance', $searchResultSet->getSortings()->getSelected()->getName());
+        $this->assertTrue($searchResultSet->getSortings()->getHasSelected(), 'The sorting by "relevance/score" is active but not marked as selected.');
     }
 
     /**
@@ -1111,7 +1103,7 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
      * @param $searchResultSet
      * @return ResultSetReconstitutionProcessor
      */
-    protected function getConfiguredReconstitutionProcessor($configuration, $searchResultSet)
+    protected function getConfiguredReconstitutionProcessor($configuration, $searchResultSet): ResultSetReconstitutionProcessor
     {
         $typoScriptConfiguration = new TypoScriptConfiguration($configuration);
         $searchResultSet->getUsedSearchRequest()->expects($this->any())->method('getContextTypoScriptConfiguration')->will($this->returnValue($typoScriptConfiguration));
@@ -1119,11 +1111,7 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
 
         $processor = new ResultSetReconstitutionProcessor();
 
-        if(Util::getIsTYPO3VersionBelow10()) {
-            $fakeObjectManager = new \ApacheSolrForTypo3\Solr\Tests\Unit\Helper\LegacyFakeObjectManager();
-        } else {
-            $fakeObjectManager = new \ApacheSolrForTypo3\Solr\Tests\Unit\Helper\FakeObjectManager();
-        }
+        $fakeObjectManager = new FakeObjectManager();
         $processor->setObjectManager($fakeObjectManager);
         return $processor;
     }

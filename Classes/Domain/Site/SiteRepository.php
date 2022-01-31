@@ -296,8 +296,7 @@ class SiteRepository
                             SiteUtility::getConnectionProperty($typo3Site, 'path', $languageUid, 'read', '/solr/') .
                             SiteUtility::getConnectionProperty($typo3Site, 'core', $languageUid, 'read', 'core_en') . '/' ,
                         'username' => SiteUtility::getConnectionProperty($typo3Site, 'username', $languageUid, 'read', ''),
-                        'password' => SiteUtility::getConnectionProperty($typo3Site, 'password', $languageUid, 'read', ''),
-                        'timeout' => SiteUtility::getConnectionProperty($typo3Site, 'timeout', $languageUid, 'read', 0)
+                        'password' => SiteUtility::getConnectionProperty($typo3Site, 'password', $languageUid, 'read', '')
                     ],
                     'write' => [
                         'scheme' => SiteUtility::getConnectionProperty($typo3Site, 'scheme', $languageUid, 'write', 'http'),
@@ -308,8 +307,7 @@ class SiteRepository
                             SiteUtility::getConnectionProperty($typo3Site, 'path', $languageUid, 'read', '/solr/') .
                             SiteUtility::getConnectionProperty($typo3Site, 'core', $languageUid, 'read', 'core_en') . '/' ,
                         'username' => SiteUtility::getConnectionProperty($typo3Site, 'username', $languageUid, 'write', ''),
-                        'password' => SiteUtility::getConnectionProperty($typo3Site, 'password', $languageUid, 'write', ''),
-                        'timeout' => SiteUtility::getConnectionProperty($typo3Site, 'timeout', $languageUid, 'write', 0)
+                        'password' => SiteUtility::getConnectionProperty($typo3Site, 'password', $languageUid, 'write', '')
                     ],
 
                     'language' => $languageUid

@@ -1,28 +1,18 @@
 <?php
 namespace ApacheSolrForTypo3\Solr\IndexQueue;
 
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2009-2015 Ingo Renner <ingo@typo3.org>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\Domain\Search\ApacheSolrDocument\Builder;
@@ -35,9 +25,15 @@ use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
 use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
+use Exception;
+use RuntimeException;
 use Solarium\Exception\HttpException;
+use TYPO3\CMS\Core\Context\Context;
+use TYPO3\CMS\Core\Context\LanguageAspect;
 use TYPO3\CMS\Core\Context\LanguageAspectFactory;
+use TYPO3\CMS\Core\Error\Http\ServiceUnavailableException;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
+use TYPO3\CMS\Core\Http\ImmediateResponseException;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\RootlineUtility;
@@ -50,6 +46,7 @@ use TYPO3\CMS\Frontend\Page\PageRepository;
  * category resolution in tt_news or file indexing.
  *
  * @author Ingo Renner <ingo@typo3.org>
+ * @copyright  (c) 2009-2015 Ingo Renner <ingo@typo3.org>
  */
 class Indexer extends AbstractIndexer
 {
@@ -146,7 +143,7 @@ class Indexer extends AbstractIndexer
         foreach ($solrConnections as $systemLanguageUid => $solrConnection) {
             $this->solr = $solrConnection;
 
-            if (!$this->indexItem($item, $systemLanguageUid)) {
+            if (!$this->indexItem($item, (int)$systemLanguageUid)) {
                 /*
                  * A single language voting for "not indexed" should make the whole
                  * item count as being not indexed, even if all other languages are
@@ -169,7 +166,7 @@ class Indexer extends AbstractIndexer
      * @param int $language The language to use.
      * @return bool TRUE if item was indexed successfully, FALSE on failure
      */
-    protected function indexItem(Item $item, $language = 0)
+    protected function indexItem(Item $item, int $language = 0)
     {
         $itemIndexed = false;
         $documents = [];
@@ -215,7 +212,7 @@ class Indexer extends AbstractIndexer
      * @param int $language Language Id (sys_language.uid)
      * @return array|NULL The full record with fields of data to be used for indexing or NULL to prevent an item from being indexed
      */
-    protected function getFullItemRecord(Item $item, $language = 0)
+    protected function getFullItemRecord(Item $item, int $language = 0)
     {
         $itemRecord = $this->getItemRecordOverlayed($item, $language);
 
@@ -231,15 +228,43 @@ class Indexer extends AbstractIndexer
      *
      * @param Item $item
      * @param int $language
-     * @param string|null $systemLanguageContentOverlay
      * @return array|mixed|null
+     * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
      */
-    protected function getItemRecordOverlayed(Item $item, $language)
+    protected function getItemRecordOverlayed(Item $item, int $language): ?array
     {
         $itemRecord = $item->getRecord();
 
+        // Bugfix: This issue fixes a problem with the free mode temporary.
+        $languageField = $this->getLanguageFieldFromTable($item->getType());
+        if ($languageField !== null &&
+            (int)$itemRecord[$languageField] > 0 &&
+            (int)$itemRecord[$languageField] !== $language) {
+            return null;
+        }
+
         if ($language > 0) {
-            $page = GeneralUtility::makeInstance(PageRepository::class);
+            // @TODO Information from the site configuration are required!
+            /* @var Context $context */
+            $context = GeneralUtility::makeInstance(Context::class);
+            /* @var LanguageAspect $languageAspect */
+            if ($context->hasAspect('language')) {
+                $languageAspect = $context->getAspect('language');
+                $languageAspect = new LanguageAspect(
+                    $languageAspect->getId(),
+                    (int)$language,
+                    $languageAspect->getOverlayType(),
+                    $languageAspect->getFallbackChain()
+                );
+            } else {
+                $languageAspect = new LanguageAspect(
+                    0,
+                    (int)$language
+                );
+            }
+
+            $context->setAspect('language', $languageAspect);
+            $page = GeneralUtility::makeInstance(PageRepository::class, $context);
             $itemRecord = $page->getLanguageOverlay($item->getType(), $itemRecord);
         }
 
@@ -255,17 +280,17 @@ class Indexer extends AbstractIndexer
      *
      * @param Item $item An index queue item
      * @param int $language Language ID
-     * @throws \RuntimeException
+     * @throws RuntimeException
      * @return array Configuration array from TypoScript
      */
-    protected function getItemTypeConfiguration(Item $item, $language = 0)
+    protected function getItemTypeConfiguration(Item $item, int $language = 0): array
     {
         $indexConfigurationName = $item->getIndexingConfigurationName();
         $fields = $this->getFieldConfigurationFromItemRecordPage($item, $language, $indexConfigurationName);
         if (!$this->isRootPageIdPartOfRootLine($item) || count($fields) === 0) {
             $fields = $this->getFieldConfigurationFromItemRootPage($item, $language, $indexConfigurationName);
             if (count($fields) === 0) {
-                throw new \RuntimeException('The item indexing configuration "' . $item->getIndexingConfigurationName() .
+                throw new RuntimeException('The item indexing configuration "' . $item->getIndexingConfigurationName() .
                     '" on root page uid ' . $item->getRootPageUid() . ' could not be found!', 1455530112);
             }
         }
@@ -281,13 +306,13 @@ class Indexer extends AbstractIndexer
      * @param string $indexConfigurationName
      * @return array
      */
-    protected function getFieldConfigurationFromItemRecordPage(Item $item, $language, $indexConfigurationName)
+    protected function getFieldConfigurationFromItemRecordPage(Item $item, int $language, $indexConfigurationName): array
     {
         try {
             $pageId = $this->getPageIdOfItem($item);
             $solrConfiguration = $this->frontendEnvironment->getSolrConfigurationFromPageId($pageId, $language);
             return $solrConfiguration->getIndexQueueFieldsConfigurationByConfigurationName($indexConfigurationName, []);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return [];
         }
     }
@@ -312,7 +337,7 @@ class Indexer extends AbstractIndexer
      * @param string $indexConfigurationName
      * @return array
      */
-    protected function getFieldConfigurationFromItemRootPage(Item $item, $language, $indexConfigurationName)
+    protected function getFieldConfigurationFromItemRootPage(Item $item, int $language, $indexConfigurationName)
     {
         $solrConfiguration = $this->frontendEnvironment->getSolrConfigurationFromPageId($item->getRootPageUid(), $language);
 
@@ -320,14 +345,16 @@ class Indexer extends AbstractIndexer
     }
 
     /**
-     * In case of additionalStoragePid config recordPageId can be outsite of siteroot.
+     * In case of additionalStoragePid config recordPageId can be outside of siteroot.
      * In that case we should not read TS config of foreign siteroot.
      *
+     * @param Item $item
      * @return bool
      */
-    protected function isRootPageIdPartOfRootLine(Item $item)
+    protected function isRootPageIdPartOfRootLine(Item $item): bool
     {
         $rootPageId = (int)$item->getRootPageUid();
+        $buildRootlineWithPid = $this->getPageIdOfItem($item);
         $rootlineUtility = GeneralUtility::makeInstance(RootlineUtility::class, $buildRootlineWithPid);
         $rootline = $rootlineUtility->get();
 
@@ -343,9 +370,12 @@ class Indexer extends AbstractIndexer
      *
      * @param Item $item An index queue item
      * @param int $language Language Id
-     * @return Document The Solr document converted from the record
+     * @return Document|null The Solr document converted from the record
+     * @throws SiteNotFoundException
+     * @throws ServiceUnavailableException
+     * @throws ImmediateResponseException
      */
-    protected function itemToDocument(Item $item, $language = 0)
+    protected function itemToDocument(Item $item, int $language = 0): ?Document
     {
         $document = null;
         if ($item->getType() === 'pages') {
@@ -436,7 +466,7 @@ class Indexer extends AbstractIndexer
      * @param Document $itemDocument The document representing the item for the given language.
      * @return Document[] array An array of additional Document objects to index.
      */
-    protected function getAdditionalDocuments(Item $item, $language, Document $itemDocument)
+    protected function getAdditionalDocuments(Item $item, int $language, Document $itemDocument)
     {
         $documents = [];
 
@@ -473,7 +503,7 @@ class Indexer extends AbstractIndexer
      * @param array $documents An array of documents to be indexed
      * @return array An array of modified documents
      */
-    protected function preAddModifyDocuments(Item $item, $language, array $documents)
+    protected function preAddModifyDocuments(Item $item, int $language, array $documents)
     {
         if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['preAddModifyDocuments'])) {
             foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['preAddModifyDocuments'] as $classReference) {
@@ -482,7 +512,7 @@ class Indexer extends AbstractIndexer
                 if ($documentsModifier instanceof PageIndexerDocumentsModifier) {
                     $documents = $documentsModifier->modifyDocuments($item, $language, $documents);
                 } else {
-                    throw new \RuntimeException(
+                    throw new RuntimeException(
                         'The class "' . get_class($documentsModifier)
                         . '" registered as document modifier in hook
 							preAddModifyDocuments must implement interface
@@ -603,14 +633,13 @@ class Indexer extends AbstractIndexer
         return $fallbackChain;
     }
 
-
     /**
      * @param Item $item An index queue item
      * @param array $rootPage
      * @param array $siteLanguages
      *
      * @return int
-     * @throws \RuntimeException
+     * @throws RuntimeException
      */
     protected function getDefaultLanguageUid(Item $item, array $rootPage, array $siteLanguages)
     {
@@ -622,7 +651,7 @@ class Indexer extends AbstractIndexer
             $defaultLanguageUid = $siteLanguages[min(array_keys($siteLanguages))];
         } elseif (($rootPage['l18n_cfg'] & 1) == 1 && count($siteLanguages) == 1) {
             $message = 'Root page ' . (int)$item->getRootPageUid() . ' is set to hide default translation, but no other language is configured!';
-            throw new \RuntimeException($message);
+            throw new RuntimeException($message);
         }
 
         return $defaultLanguageUid;
@@ -709,5 +738,22 @@ class Indexer extends AbstractIndexer
         }
 
         $this->logger->log($severity, $message, $logData);
+    }
+
+    /**
+     * Returns the language field from given table or null
+     *
+     * @param string $tableName
+     * @return string|null
+     */
+    protected function getLanguageFieldFromTable(string $tableName): ?string
+    {
+        $tableControl = $GLOBALS['TCA'][$tableName]['ctrl'] ?? [];
+
+        if (!empty($tableControl['languageField'])) {
+            return $tableControl['languageField'];
+        }
+
+        return null;
     }
 }

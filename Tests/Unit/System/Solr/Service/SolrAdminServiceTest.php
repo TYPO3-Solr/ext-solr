@@ -62,6 +62,7 @@ class SolrAdminServiceTest extends UnitTest
         $this->endpointMock->expects($this->any())->method('getPort')->willReturn(8983);
         $this->endpointMock->expects($this->any())->method('getPath')->willReturn('/solr');
         $this->endpointMock->expects($this->any())->method('getCore')->willReturn('core_en');
+        $this->endpointMock->expects($this->any())->method('getCoreBaseUri')->willReturn('http://localhost:8983/solr/core_en/');
 
         $this->clientMock = $this->getDumbMock(Client::class);
         $this->clientMock->expects($this->any())->method('getEndpoints')->willReturn([$this->endpointMock]);

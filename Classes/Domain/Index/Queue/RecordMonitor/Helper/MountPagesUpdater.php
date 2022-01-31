@@ -29,9 +29,9 @@ use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\IndexQueue\Initializer\Page;
 use ApacheSolrForTypo3\Solr\System\Page\Rootline;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
+use RuntimeException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\RootlineUtility;
-use TYPO3\CMS\Frontend\Page\PageRepository;
 
 /**
  * Extracted logic from the RecordMonitor to trigger mount page updates.
@@ -67,7 +67,7 @@ class MountPagesUpdater
         $rootlineUtility = GeneralUtility::makeInstance(RootlineUtility::class, $pageId);
         try {
             $rootLineArray = $rootlineUtility->get();
-        } catch (\RuntimeException $e) {
+        } catch (RuntimeException $e) {
             $rootLineArray = [];
         }
 
@@ -106,6 +106,7 @@ class MountPagesUpdater
         /** @var $pageInitializer Page */
         $pageInitializer = GeneralUtility::makeInstance(Page::class);
         $pageInitializer->setSite($mountingSite);
+        $pageInitializer->setIndexingConfigurationName('pages');
 
         $pageInitializer->initializeMountedPage($mountProperties, $mountedPageId);
     }

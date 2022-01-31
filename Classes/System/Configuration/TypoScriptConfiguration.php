@@ -1,31 +1,18 @@
 <?php
 namespace ApacheSolrForTypo3\Solr\System\Configuration;
 
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2016 Timo Schmidt <timo.schmidt@dkd.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *  A copy is found in the textfile GPL.txt and important notices to the license
- *  from the author is found in LICENSE.txt distributed with these scripts.
- *
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 
 use ApacheSolrForTypo3\Solr\IndexQueue\Indexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\Initializer\Record;
@@ -59,6 +46,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author Marc Bastian Heinrichs <mbh@mbh-software.de>
  * @author Timo Schmidt <timo.schmidt@dkd.de>
+ * @copyright (c) 2016 Timo Schmidt <timo.schmidt@dkd.de>
  */
 class TypoScriptConfiguration
 {
@@ -1065,7 +1053,7 @@ class TypoScriptConfiguration
      * @param int $defaultIfEmpty
      * @return int
      */
-    public function getSearchFrequentSearchesMinSize($defaultIfEmpty = 14)
+    public function getSearchFrequentSearchesMinSize($defaultIfEmpty = 14): int
     {
         $result = $this->getValueByPathOrDefaultValue('plugin.tx_solr.search.frequentSearches.minSize', $defaultIfEmpty);
         return (int)$result;
@@ -1079,7 +1067,7 @@ class TypoScriptConfiguration
      * @param int $defaultIfEmpty
      * @return int
      */
-    public function getSearchFrequentSearchesMaxSize($defaultIfEmpty = 32)
+    public function getSearchFrequentSearchesMaxSize($defaultIfEmpty = 32): int
     {
         $result = $this->getValueByPathOrDefaultValue('plugin.tx_solr.search.frequentSearches.maxSize', $defaultIfEmpty);
         return (int)$result;
@@ -1797,6 +1785,38 @@ class TypoScriptConfiguration
     public function getSearchFacetingFacetLimit($defaultIfEmpty = 100)
     {
         return (int)$this->getValueByPathOrDefaultValue('plugin.tx_solr.search.faceting.facetLimit', $defaultIfEmpty);
+    }
+
+    /**
+     * Return the configured url parameter style value for facets, used for building faceting parameters.
+     *
+     * plugin.tx_solr.search.faceting.urlParameterStyle
+     *
+     * @param string $defaultUrlParameterStyle
+     * @return string
+     */
+    public function getSearchFacetingUrlParameterStyle(string $defaultUrlParameterStyle = 'index'): string
+    {
+        return (string)$this->getValueByPathOrDefaultValue(
+            'plugin.tx_solr.search.faceting.urlParameterStyle',
+            $defaultUrlParameterStyle
+        );
+    }
+
+    /**
+     * Return the configuration if the URL parameters should be sorted.
+     *
+     * plugin.tx_solr.search.faceting.urlParameterSort
+     *
+     * @param bool $defaultUrlParameterSort
+     * @return bool
+     */
+    public function getSearchFacetingUrlParameterSort(bool $defaultUrlParameterSort = false): bool
+    {
+        return (bool)$this->getValueByPathOrDefaultValue(
+            'plugin.tx_solr.search.faceting.urlParameterSort',
+            $defaultUrlParameterSort
+        );
     }
 
     /**

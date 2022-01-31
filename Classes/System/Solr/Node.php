@@ -1,152 +1,77 @@
 <?php
 namespace ApacheSolrForTypo3\Solr\System\Solr;
 
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2009-2018 Timo Hund <timo.hund@dkd.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
+
+use Solarium\Core\Client\Endpoint;
 
 /**
  * Represent a server node of solr, in the most setups you would only have one, but sometimes
- * mulitple for reading and writing.
+ * multiple for reading and writing.
+ *
+ * @author Timo Hund <timo.hund@dkd.de>
+ * @copyright Copyright (c) 2009-2020 Timo Hund <timo.hund@dkd.de>
+ *
+ * @deprecated Class will removed with Ext:solr 12.x. Use class \Solarium\Core\Client\Endpoint instead.
  */
-class Node {
-
-    /**
-     * @var string
-     */
-    protected $scheme;
-
-    /**
-     * @var string
-     */
-    protected $host;
-
-    /**
-     * @var int
-     */
-    protected $port;
-
-    /**
-     * @var string
-     */
-    protected $path;
-
-    /**
-     * @var string
-     */
-    protected $username;
-
-    /**
-     * @var string
-     */
-    protected $password;
-
-    /**
-     * @var int
-     */
-    protected $timeout;
-
+class Node extends Endpoint
+{
     /**
      * Node constructor.
      * @param string $scheme
      * @param string $host
      * @param int $port
      * @param string $path
-     * @param string $username
-     * @param string $password
-     * @param int $timeout
+     * @param ?string $username
+     * @param ?string $password
      */
-    public function __construct(string $scheme = 'http', string $host = 'localhost', int $port = 8983, string $path = '/solr/core_en/', string $username, string $password, int $timeout = 0)
-    {
-        $this->scheme = $scheme;
-        $this->host = $host;
-        $this->port = $port;
-        $this->path = $path;
-        $this->username = $username;
-        $this->password = $password;
-        $this->timeout = $timeout;
+    public function __construct(
+        string $scheme = 'http',
+        string $host = 'localhost',
+        int $port = 8983,
+        string $path = '/solr/core_en/',
+        ?string $username = null,
+        ?string $password = null
+    ) {
+        $path = (string)$path;
+        $elements = explode('/', trim($path, '/'));
+        $coreName = (string)array_pop($elements);
+        // Remove API version
+        array_pop($elements);
+
+        // The path should always have the same format!
+        $path = trim(implode('/', $elements), '/');
+
+        $options = [
+            'scheme' => $scheme,
+            'host' => $host,
+            'port' => $port,
+            'path' => '/' . $path,
+            'collection' => null,
+            'core' => $coreName,
+            'leader' => false,
+        ];
+
+        parent::__construct($options);
+        $this->setAuthentication($username, $password);
     }
 
     /**
-     * @return string
-     */
-    public function getScheme(): string
-    {
-        return $this->scheme;
-    }
-
-    /**
-     * @return string
-     */
-    public function getHost(): string
-    {
-        return $this->host;
-    }
-
-    /**
-     * @return int
-     */
-    public function getPort(): int
-    {
-        return $this->port;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPath(): string
-    {
-        return $this->path;
-    }
-
-    /**
-     * @return string
-     */
-    public function getUsername(): string
-    {
-        return $this->username;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPassword(): string
-    {
-        return $this->password;
-    }
-
-    /**
-     * @return int
-     */
-    public function getTimeout(): int
-    {
-        return $this->timeout;
-    }
-
-    /**
-     * @param $configuration
+     * @param array $configuration
      * @return Node
      */
-    public static function fromArray($configuration)
+    public static function fromArray(array $configuration): Node
     {
         static::checkIfRequiredKeyIsSet($configuration, 'scheme');
         static::checkIfRequiredKeyIsSet($configuration, 'host');
@@ -160,8 +85,7 @@ class Node {
 
         $username = $configuration['username'] ?? '';
         $password = $configuration['password'] ?? '';
-        $timeout = $configuration['timeout'] ?? 0;
-        return new Node($scheme, $host, $port, $path, $username, $password, $timeout);
+        return new Node($scheme, $host, $port, $path, $username, $password);
     }
 
     /**
@@ -171,7 +95,7 @@ class Node {
      * @param string $name
      * @throws |UnexpectedValueException
      */
-    protected static function checkIfRequiredKeyIsSet(array $configuration, $name)
+    protected static function checkIfRequiredKeyIsSet(array $configuration, string $name)
     {
         if (empty($configuration[$name])) {
             throw new \UnexpectedValueException('Required solr connection property ' . $name. ' is missing.');
@@ -179,13 +103,29 @@ class Node {
     }
 
     /**
-     * Returns the core name from the configured path without the core name.
+     * @return string
+     */
+    public function getUsername(): string
+    {
+        return (string)$this->getOption('username');
+    }
+
+    /**
+     * @return string
+     */
+    public function getPassword(): string
+    {
+        return (string)$this->getOption('password');
+    }
+
+    /**
+     * Returns the path including api path.
      *
      * @return string
      */
-    public function getCoreBasePath()
+    public function getCoreBasePath(): string
     {
-        $pathWithoutLeadingAndTrailingSlashes = trim(trim($this->path), "/");
+        $pathWithoutLeadingAndTrailingSlashes = trim(trim($this->getPath()), "/");
         $pathWithoutLastSegment = substr($pathWithoutLeadingAndTrailingSlashes, 0, strrpos($pathWithoutLeadingAndTrailingSlashes, "/"));
         return ($pathWithoutLastSegment === '') ? '/' : '/' . $pathWithoutLastSegment . '/';
     }
@@ -194,33 +134,33 @@ class Node {
      * Returns the core name from the configured path.
      *
      * @return string
+     * @deprecated Will be remove with Ext:solr 12.x. Use method getCore() instead.
      */
-    public function getCoreName()
+    public function getCoreName(): string
     {
-        $paths = explode('/', trim($this->path, '/'));
-        return (string)array_pop($paths);
+        return $this->getCore();
     }
 
     /**
      * @return array
      */
-    public function getSolariumClientOptions()
+    public function getSolariumClientOptions(): array
     {
         return [
             'host' => $this->getHost(),
             'port' => $this->getPort(),
             'scheme' => $this->getScheme(),
-            'path' => $this->getCoreBasePath(),
-            'core' => $this->getCoreName(),
-            'timeout' => $this->getTimeout()
+            'path' => $this->getPath(),
+            'core' => $this->getCore()
         ];
     }
 
     /**
      * @return string
+     * @deprecated Will be removed with Ext:solr 12.x. Use methods getCoreBaseUri() for API version 1 instead
      */
-    public function __toString()
+    public function __toString(): string
     {
-        return $this->getScheme() . '://' . $this->getHost() . ':' . $this->getPort() . $this->getCoreBasePath() . $this->getCoreName() . '/';
+        return $this->getCoreBaseUri();
     }
 }

@@ -2,28 +2,18 @@
 
 namespace ApacheSolrForTypo3\Solr\Domain\Site;
 
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2011-2015 Ingo Renner <ingo@typo3.org>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\ConfigurationAwareRecordService;
 use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
@@ -33,7 +23,9 @@ use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Base Clas for Typo3ManagedSite and LegacySite
+ * Base Class for Typo3ManagedSite and LegacySite
+ *
+ * (c) 2011-2015 Ingo Renner <ingo@typo3.org>
  */
 abstract class Site implements SiteInterface
 {
@@ -130,9 +122,11 @@ abstract class Site implements SiteInterface
     /**
      * Gets the site's Solr TypoScript configuration (plugin.tx_solr.*)
      *
-     * @return  \ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration The Solr TypoScript configuration
+     * Purpose: Interface and Unit test mocking helper method.
+     *
+     * @return  TypoScriptConfiguration The Solr TypoScript configuration
      */
-    public function getSolrConfiguration()
+    public function getSolrConfiguration(): TypoScriptConfiguration
     {
         return $this->configuration;
     }
@@ -150,32 +144,47 @@ abstract class Site implements SiteInterface
     }
 
     /**
-     * Generates a list of page IDs in this site. Attention, this includes
-     * all page types! Deleted pages are not included.
-     *
-     * @param int|string $rootPageId Page ID from where to start collection sub pages
-     * @param int $maxDepth Maximum depth to descend into the site tree
-     * @return array Array of pages (IDs) in this site
+     * @inheritDoc
      */
-    public function getPages($rootPageId = 'SITE_ROOT', $maxDepth = 999)
+    public function getPages(
+        ?int $pageId = null,
+        ?string $indexQueueConfigurationName = null
+    ): array
     {
-        $pageIds = [];
-        if ($rootPageId === 'SITE_ROOT') {
+        $pageId = $pageId ?? (int)$this->rootPage['uid'];
+
+        $initialPagesAdditionalWhereClause = '';
+        // Fetch configuration in order to be able to read initialPagesAdditionalWhereClause
+        if ($indexQueueConfigurationName !== null) {
+            $solrConfiguration = $this->getSolrConfiguration();
+            $initialPagesAdditionalWhereClause = $solrConfiguration->getInitialPagesAdditionalWhereClause($indexQueueConfigurationName);
+        }
+        return $this->pagesRepository->findAllSubPageIdsByRootPage($pageId, $initialPagesAdditionalWhereClause);
+    }
+
+    /**
+     * @param int|null $rootPageId
+     * @return array
+     */
+    public function getPagesWithinNoSearchSubEntriesPages(int $rootPageId = null): array
+    {
+        if ($rootPageId === null) {
             $rootPageId = (int)$this->rootPage['uid'];
-            $pageIds[] = $rootPageId;
         }
 
+        /* @var ConfigurationAwareRecordService $configurationAwareRecordService */
         $configurationAwareRecordService = GeneralUtility::makeInstance(ConfigurationAwareRecordService::class);
         // Fetch configuration in order to be able to read initialPagesAdditionalWhereClause
         $solrConfiguration = $this->getSolrConfiguration();
         $indexQueueConfigurationName = $configurationAwareRecordService->getIndexingConfigurationName('pages', $this->rootPage['uid'], $solrConfiguration);
-        if ($indexQueueConfigurationName === null) {
-            return $pageIds;
-        }
         $initialPagesAdditionalWhereClause = $solrConfiguration->getInitialPagesAdditionalWhereClause($indexQueueConfigurationName);
-        return array_merge($pageIds, $this->pagesRepository->findAllSubPageIdsByRootPage($rootPageId, $maxDepth, $initialPagesAdditionalWhereClause));
-    }
 
+        return $this->pagesRepository->findAllPagesWithinNoSearchSubEntriesMarkedPagesByRootPage(
+            $rootPageId,
+            999,
+            $initialPagesAdditionalWhereClause
+        );
+    }
 
     /**
      * Generates the site's unique Site Hash.
@@ -241,7 +250,6 @@ abstract class Site implements SiteInterface
 
     /**
      * @return array
-     * @throws NoSolrConnectionFoundException
      */
     public function getAllSolrConnectionConfigurations(): array {
         $configs = [];
@@ -259,8 +267,8 @@ abstract class Site implements SiteInterface
     }
 
     /**
-     * @param int $languageId
+     * @param int $language
      * @return array
      */
-    abstract function getSolrConnectionConfiguration(int $language = 0): array;
+    abstract public function getSolrConnectionConfiguration(int $language = 0): array;
 }

@@ -179,9 +179,11 @@
     </sys_template>
     <pages>
         <uid>1</uid>
+        <pid>0</pid>
         <is_siteroot>1</is_siteroot>
         <doktype>1</doktype>
         <title>Products</title>
+        <author>John Doe</author>
     </pages>
     <pages>
         <uid>2</uid>
@@ -189,6 +191,7 @@
         <is_siteroot>0</is_siteroot>
         <doktype>1</doktype>
         <title>Woman Products</title>
+        <author>Jane Doe</author>
     </pages>
     <pages>
         <uid>3</uid>
@@ -196,6 +199,7 @@
         <is_siteroot>0</is_siteroot>
         <doktype>1</doktype>
         <title>Men Products</title>
+        <author>John Doe</author>
     </pages>
     <pages>
         <uid>4</uid>
@@ -203,6 +207,7 @@
         <is_siteroot>0</is_siteroot>
         <doktype>1</doktype>
         <title>Men Socks</title>
+        <author>John Doe</author>
     </pages>
     <pages>
         <uid>5</uid>
@@ -210,6 +215,7 @@
         <is_siteroot>0</is_siteroot>
         <doktype>1</doktype>
         <title>Men Jeans</title>
+        <author>John Doe</author>
     </pages>
     <pages>
         <uid>6</uid>
@@ -217,6 +223,7 @@
         <is_siteroot>0</is_siteroot>
         <doktype>1</doktype>
         <title>Woman Shoes</title>
+        <author>Jane Doe</author>
     </pages>
     <pages>
         <uid>7</uid>
@@ -224,6 +231,7 @@
         <is_siteroot>0</is_siteroot>
         <doktype>1</doktype>
         <title>Woman T-Shirts</title>
+        <author>Jane Doe</author>
     </pages>
     <pages>
         <uid>8</uid>
@@ -231,6 +239,7 @@
         <is_siteroot>0</is_siteroot>
         <doktype>1</doktype>
         <title>Men T-Shirts</title>
+        <author>John Doe</author>
     </pages>
     <pages>
         <uid>9</uid>
@@ -238,6 +247,7 @@
         <is_siteroot>0</is_siteroot>
         <doktype>1</doktype>
         <title>Men Sweatshirts</title>
+        <author>John Doe</author>
     </pages>
     <pages>
         <uid>10</uid>
@@ -245,6 +255,15 @@
         <is_siteroot>0</is_siteroot>
         <doktype>1</doktype>
         <title>Woman Sweatshirts</title>
+        <author>John Doe</author>
+    </pages>
+    <pages>
+        <uid>11</uid>
+        <pid>1</pid>
+        <is_siteroot>0</is_siteroot>
+        <doktype>1</doktype>
+        <title>Children Sweatshirts</title>
+        <author>Baby Doe</author>
     </pages>
 
     <tt_content>

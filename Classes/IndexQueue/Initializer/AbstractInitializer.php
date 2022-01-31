@@ -246,9 +246,9 @@ abstract class AbstractInitializer implements IndexQueueInitializer
      *
      * @return array A (sorted) array of page IDs in a site
      */
-    protected function getPages()
+    protected function getPages(): array
     {
-        $pages = $this->site->getPages();
+        $pages = $this->site->getPages(null, $this->indexingConfigurationName);
         $additionalPageIds = [];
         if (!empty($this->indexingConfiguration['additionalPageIds'])) {
             $additionalPageIds = GeneralUtility::intExplode(',', $this->indexingConfiguration['additionalPageIds']);
@@ -257,7 +257,9 @@ abstract class AbstractInitializer implements IndexQueueInitializer
         $pages = array_merge($pages, $additionalPageIds);
         sort($pages, SORT_NUMERIC);
 
-        return $pages;
+        $pagesWithinNoSearchSubEntriesPages = $this->site->getPagesWithinNoSearchSubEntriesPages();
+        // @todo: log properly if $additionalPageIds are within $pagesWithinNoSearchSubEntriesPages
+        return array_values(array_diff($pages, $pagesWithinNoSearchSubEntriesPages));
     }
 
     /**
@@ -301,7 +303,8 @@ abstract class AbstractInitializer implements IndexQueueInitializer
 
         if (!empty($GLOBALS['TCA'][$this->type]['ctrl']['versioningWS'])) {
             // versioning is enabled for this table: exclude draft workspace records
-            $conditions['versioningWS'] = 'pid != -1';
+            /* @see \TYPO3\CMS\Core\Database\Query\Restriction\WorkspaceRestriction::buildExpression */
+            $conditions['versioningWS'] = 't3ver_wsid = 0';
         }
 
         if (count($conditions)) {

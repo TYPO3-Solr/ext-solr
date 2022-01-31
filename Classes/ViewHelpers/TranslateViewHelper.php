@@ -58,7 +58,7 @@ class TranslateViewHelper extends CoreTranslateViewHelper
     {
         $result = LocalizationUtility::translate($id, $extensionName, $arguments, $languageKey, $alternativeLanguageKeys);
         $result = self::replaceTranslationPrefixesWithAtWithStringMarker($result);
-        $result = vsprintf($result, $arguments['arguments']);
+        $result = vsprintf($result, $arguments);
         return $result;
     }
 

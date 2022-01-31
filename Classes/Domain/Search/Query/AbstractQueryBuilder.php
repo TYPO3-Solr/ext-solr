@@ -212,7 +212,7 @@ abstract class AbstractQueryBuilder {
      */
     public function removeOperator()
     {
-        $this->queryToBuild->setQueryDefaultOperator(null);
+        $this->queryToBuild->setQueryDefaultOperator('');
         return $this;
     }
 
@@ -276,7 +276,7 @@ abstract class AbstractQueryBuilder {
      */
     public function removeAllBoostFunctions()
     {
-        $this->queryToBuild->getEDisMax()->setBoostFunctions(null);
+        $this->queryToBuild->getEDisMax()->setBoostFunctions('');
         return $this;
     }
 
@@ -300,7 +300,7 @@ abstract class AbstractQueryBuilder {
      */
     public function removeMinimumMatch()
     {
-        $this->queryToBuild->getEDisMax()->setMinimumMatch(null);
+        $this->queryToBuild->getEDisMax()->setMinimumMatch('');
         return $this;
     }
 

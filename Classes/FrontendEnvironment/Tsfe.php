@@ -2,8 +2,15 @@
 namespace ApacheSolrForTypo3\Solr\FrontendEnvironment;
 
 use TYPO3\CMS\Core\Context\Context;
+use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Context\LanguageAspectFactory;
+use TYPO3\CMS\Core\Context\TypoScriptAspect;
+use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
+use TYPO3\CMS\Core\Error\Http\InternalServerErrorException;
+use TYPO3\CMS\Core\Error\Http\ServiceUnavailableException;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
+use TYPO3\CMS\Core\Http\ImmediateResponseException;
+use TYPO3\CMS\Core\Localization\Locales;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\TypoScript\TemplateService;
@@ -14,7 +21,6 @@ use TYPO3\CMS\Frontend\Page\PageRepository;
 use TYPO3\CMS\Core\Context\UserAspect;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 use TYPO3\CMS\Core\Http\ServerRequest;
-use ApacheSolrForTypo3\Solr\Util;
 
 class Tsfe implements SingletonInterface
 {
@@ -23,8 +29,14 @@ class Tsfe implements SingletonInterface
 
     private $requestCache = [];
 
+    /**
+     * @param int $pageId
+     * @param int $language
+     * @throws AspectNotFoundException
+     */
     public function changeLanguageContext(int $pageId, int $language): void
     {
+        /* @var Context $context */
         $context = GeneralUtility::makeInstance(Context::class);
         if ($context->hasAspect('language')) {
             $hasRightLanguageId = $context->getPropertyFromAspect('language', 'id') === $language;
@@ -34,6 +46,7 @@ class Tsfe implements SingletonInterface
             }
         }
 
+        /* @var $siteFinder SiteFinder */
         $siteFinder = GeneralUtility::makeInstance(SiteFinder::class);
         try {
             $site = $siteFinder->getSiteByPageId($pageId);
@@ -49,9 +62,11 @@ class Tsfe implements SingletonInterface
      *
      * @param $pageId
      * @param int $language
+     * @throws AspectNotFoundException
+     * @throws ImmediateResponseException
+     * @throws InternalServerErrorException
+     * @throws ServiceUnavailableException
      * @throws SiteNotFoundException
-     * @throws \TYPO3\CMS\Core\Error\Http\ServiceUnavailableException
-     * @throws \TYPO3\CMS\Core\Http\ImmediateResponseException
      */
     public function initializeTsfe($pageId, $language = 0)
     {
@@ -65,35 +80,37 @@ class Tsfe implements SingletonInterface
         $context = GeneralUtility::makeInstance(Context::class);
         $this->changeLanguageContext((int)$pageId, (int)$language);
 
-        if (!isset($this->requestCache[$cacheId])) {
-            $siteFinder = GeneralUtility::makeInstance(SiteFinder::class);
-            $site = $siteFinder->getSiteByPageId($pageId);
-            $siteLanguage = $site->getLanguageById($language);
+        /* @var SiteFinder $siteFinder */
+        $siteFinder = GeneralUtility::makeInstance(SiteFinder::class);
+        $site = $siteFinder->getSiteByPageId($pageId);
+        $siteLanguage = $site->getLanguageById($language);
 
-                /** @var ServerRequest $request */
+        if (!isset($this->requestCache[$cacheId])) {
+            /* @var ServerRequest $request */
             $request = GeneralUtility::makeInstance(ServerRequest::class);
-            $request = $request->withAttribute('site', $site);
-            $this->requestCache[$cacheId] = $request->withAttribute('language', $siteLanguage);
+            $this->requestCache[$cacheId] = $request
+                ->withAttribute('site', $site)
+                ->withAttribute('language', $siteLanguage)
+                ->withAttribute('applicationType', SystemEnvironmentBuilder::REQUESTTYPE_FE)
+                ->withUri($site->getBase());
         }
         $GLOBALS['TYPO3_REQUEST'] = $this->requestCache[$cacheId];
 
 
         if (!isset($this->tsfeCache[$cacheId])) {
+            $feUser = GeneralUtility::makeInstance(FrontendUserAuthentication::class);
 
-            if (Util::getIsTYPO3VersionBelow10()) {
-                $GLOBALS['TSFE'] = GeneralUtility::makeInstance(TypoScriptFrontendController::class, [], $pageId, 0);
-            } else {
-                $GLOBALS['TSFE'] = GeneralUtility::makeInstance(TypoScriptFrontendController::class, $context, $site, $siteLanguage);
-                $GLOBALS['TSFE']->id = $pageId;
-                $GLOBALS['TSFE']->type = 0;
-            }
+            /* @var TypoScriptFrontendController $globalsTSFE */
+            $globalsTSFE = GeneralUtility::makeInstance(TypoScriptFrontendController::class, $context, $site, $siteLanguage, null, $feUser);
+            $GLOBALS['TSFE'] = $globalsTSFE;
+            $GLOBALS['TSFE']->id = $pageId;
+            $GLOBALS['TSFE']->type = 0;
 
             // for certain situations we need to trick TSFE into granting us
             // access to the page in any case to make getPageAndRootline() work
             // see http://forge.typo3.org/issues/42122
             $pageRecord = BackendUtility::getRecord('pages', $pageId, 'fe_group');
 
-            $feUser = GeneralUtility::makeInstance(FrontendUserAuthentication::class);
             $userGroups = [0, -1];
             if (!empty($pageRecord['fe_group'])) {
                 $userGroups = array_unique(array_merge($userGroups, explode(',', $pageRecord['fe_group'])));
@@ -106,7 +123,7 @@ class Tsfe implements SingletonInterface
 
             $template = GeneralUtility::makeInstance(TemplateService::class, $context);
             $GLOBALS['TSFE']->tmpl = $template;
-            $GLOBALS['TSFE']->forceTemplateParsing = true;
+            $context->setAspect('typoscript', GeneralUtility::makeInstance(TypoScriptAspect::class, true));
             $GLOBALS['TSFE']->no_cache = true;
             $GLOBALS['TSFE']->tmpl->start($GLOBALS['TSFE']->rootLine);
             $GLOBALS['TSFE']->no_cache = false;
@@ -121,7 +138,7 @@ class Tsfe implements SingletonInterface
         }
 
         $GLOBALS['TSFE'] = $this->tsfeCache[$cacheId];
-        $GLOBALS['TSFE']->settingLocale();
+        Locales::setSystemLocaleFromSiteLanguage($siteLanguage);
         $this->changeLanguageContext((int)$pageId, (int)$language);
     }
 

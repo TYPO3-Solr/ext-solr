@@ -43,7 +43,7 @@ class SchemaParserTest extends UnitTest
     {
         $parser = new SchemaParser();
         $schema = $parser->parseJson($this->getFixtureContentByName('schema.json'));
-        $this->assertSame('german', $schema->getLanguage(), 'Could not parser language from schema response');
+        $this->assertSame('core_de', $schema->getManagedResourceId(), 'Could not parse id of managed resources from schema response.');
     }
 
     /**
