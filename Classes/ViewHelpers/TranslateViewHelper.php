@@ -91,7 +91,7 @@ class TranslateViewHelper extends CoreTranslateViewHelper
      */
     protected static function replaceTranslationPrefixesWithAtWithStringMarker($result)
     {
-        if (strpos($result, '@') !== false) {
+        if (strpos((string)$result, '@') !== false) {
             $result = preg_replace('~\"?@[a-zA-Z]*\"?~', '%s', $result);
         }
         return $result;
