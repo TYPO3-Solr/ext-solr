@@ -23,15 +23,15 @@
     "php": "^7.4.0 || ^8.0",
     "ext-dom": "*",
     "ext-json": "*",
-    "typo3/cms-core": "^11.5.4",
+    "solarium/solarium": "6.2.3",
     "typo3/cms-backend": "*",
+    "typo3/cms-core": "^11.5.4",
     "typo3/cms-extbase": "*",
-    "typo3/cms-frontend": "*",
     "typo3/cms-fluid": "*",
+    "typo3/cms-frontend": "*",
     "typo3/cms-reports": "*",
     "typo3/cms-scheduler": "*",
-    "typo3/cms-tstemplate": "*",
-    "solarium/solarium": "6.2.2"
+    "typo3/cms-tstemplate": "*"
   },
   "require-dev": {
     "phpunit/phpunit": "^9.5",
@@ -69,7 +69,7 @@
       "[ -L .Build/Web/typo3conf/ext/solr ] || ln -snvf ../../../../. .Build/Web/typo3conf/ext/solr"
     ],
     "extension-create-libs": [
-      "@composer install -d Resources/Private/Php/ComposerLibraries"
+      "@composer req -d Resources/Private/Php/ComposerLibraries solarium/solarium:$(Build/Helpers/GET_LACAL_BACKAGE_VERSION_CONSTRAINT.sh solarium/solarium)"
     ],
     "extension-build": [
       "@extension-create-libs"
