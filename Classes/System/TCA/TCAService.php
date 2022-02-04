@@ -120,13 +120,13 @@ class TCAService
     /**
      * This method can be used to check if there is a configured key in
      *
-     * $GLOBALS['TCA']['mytable']['ctrl']['enablecolumns']
+     * $GLOBALS['TCA']['my_table']['ctrl']['enablecolumns']
      *
      * Example:
      *
-     * $GLOBALS['TCA']['mytable']]['ctrl']['enablecolumns']['fe_group'] = 'mygroupfield'
+     * $GLOBALS['TCA']['my_table']]['ctrl']['enablecolumns']['fe_group'] = 'mygroupfield'
      *
-     * ->isEnableColumn('mytable', 'fe_group') will return true, because 'mygroupfield' is
+     * ->isEnableColumn('my_table', 'fe_group') will return true, because 'mygroupfield' is
      * configured as column.
      *
      * @params string $table

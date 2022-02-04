@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets\OptionBased\QueryGroup;
 
 /*
@@ -14,10 +15,10 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets\Opti
  * The TYPO3 project - inspiring people to share!
  */
 
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\QueryGroup\Option;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\QueryGroup\QueryGroupFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
+use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 
 /**
  * Unit test for the QueryGroupFacet
@@ -35,7 +36,7 @@ class QueryGroupFacetTest extends UnitTest
     {
         $resultSetMock = $this->getDumbMock(SearchResultSet::class);
         $optionsFacet = new QueryGroupFacet($resultSetMock, 'myFacet', 'myFacetFieldName', 'myTitle');
-        $this->assertSame('myTitle', $optionsFacet->getLabel(), 'Could not get title from queryGroup facet');
+        self::assertSame('myTitle', $optionsFacet->getLabel(), 'Could not get title from queryGroup facet');
     }
 
     /**
@@ -47,14 +48,14 @@ class QueryGroupFacetTest extends UnitTest
         $queryGroupFacet = new QueryGroupFacet($resultSetMock, 'myFacet', 'myFacetFieldName', 'myTitle');
         $option = new Option($queryGroupFacet);
 
-            // before adding there should not be any facet present
+        // before adding there should not be any facet present
         // @extensionScannerIgnoreLine
-        $this->assertEquals(0, $queryGroupFacet->getOptions()->getCount());
+        self::assertEquals(0, $queryGroupFacet->getOptions()->getCount());
         $queryGroupFacet->addOption($option);
 
-            // now we should have 1 option present
+        // now we should have 1 option present
         // @extensionScannerIgnoreLine
-        $this->assertEquals(1, $queryGroupFacet->getOptions()->getCount());
+        self::assertEquals(1, $queryGroupFacet->getOptions()->getCount());
     }
 
     /**
@@ -65,7 +66,7 @@ class QueryGroupFacetTest extends UnitTest
         $resultSetMock = $this->getDumbMock(SearchResultSet::class);
         $queryGroupFacet = new QueryGroupFacet($resultSetMock, 'myFacet', 'myFacetFieldName', 'myTitle');
 
-        $this->assertEquals('Options', $queryGroupFacet->getPartialName());
+        self::assertEquals('Options', $queryGroupFacet->getPartialName());
     }
 
     /**
@@ -76,6 +77,6 @@ class QueryGroupFacetTest extends UnitTest
         $resultSetMock = $this->getDumbMock(SearchResultSet::class);
         $queryGroupFacet = new QueryGroupFacet($resultSetMock, 'myFacet', 'myFacetFieldName', 'myTitle', ['partialName' => 'MyPartial']);
 
-        $this->assertEquals('MyPartial', $queryGroupFacet->getPartialName());
+        self::assertEquals('MyPartial', $queryGroupFacet->getPartialName());
     }
 }

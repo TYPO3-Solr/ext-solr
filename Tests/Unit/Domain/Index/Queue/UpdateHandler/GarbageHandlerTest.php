@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\IndexQueue\UpdateHandler;
 
 /***************************************************************
@@ -24,13 +25,13 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\IndexQueue\UpdateHandler;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use Doctrine\DBAL\Result;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Database\Query\QueryBuilder;
-use TYPO3\CMS\Core\Database\Query\Restriction\QueryRestrictionContainerInterface;
-use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\GarbageHandler;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\GarbageRemover\PageStrategy;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\GarbageRemover\RecordStrategy;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\GarbageHandler;
+use Doctrine\DBAL\Result;
+use TYPO3\CMS\Core\Database\Query\QueryBuilder;
+use TYPO3\CMS\Core\Database\Query\Restriction\QueryRestrictionContainerInterface;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Testcase for the GarbageHandler class.
@@ -44,7 +45,7 @@ class GarbageHandlerTest extends AbstractUpdateHandlerTest
      */
     protected $garbageHandler;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->garbageHandler = new GarbageHandler(
@@ -86,7 +87,7 @@ class GarbageHandlerTest extends AbstractUpdateHandlerTest
         GeneralUtility::addInstance($strategy, $strategyMock);
 
         $strategyMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('removeGarbageOf')
             ->with(
                 $table,
@@ -101,7 +102,7 @@ class GarbageHandlerTest extends AbstractUpdateHandlerTest
     {
         $this->initGarbageCollectionExpectations(PageStrategy::class, 'pages', 123);
         $this->indexQueueMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('updateItem')
             ->with('pages', 123);
 
@@ -117,36 +118,36 @@ class GarbageHandlerTest extends AbstractUpdateHandlerTest
             'uid' => 789,
             'pid' => 1,
             'title' => 'dummy record to collect garbage for',
-            'hidden' => 1
+            'hidden' => 1,
         ];
 
         $this->initGarbageCollectionExpectations(RecordStrategy::class, 'tx_foo_bar', $dummyRecord['uid']);
 
         $GLOBALS['TCA']['tx_foo_bar'] = ['columns' => []];
         $this->tcaServiceMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('getVisibilityAffectingFieldsByTable')
             ->with('tx_foo_bar')
             ->willReturn('hidden,fe_group');
 
         $this->pagesRepositoryMock
-            ->expects($this->any())
+            ->expects(self::any())
             ->method('getPage')
             ->willReturn(['uid' => 1]);
         $this->inject($this->garbageHandler, 'pagesRepository', $this->pagesRepositoryMock);
 
         $resultMock = $this->createMock(Result::class);
-        $resultMock->expects($this->once())->method('fetchAssociative')->willReturn($dummyRecord);
+        $resultMock->expects(self::once())->method('fetchAssociative')->willReturn($dummyRecord);
         $queryBuilderMock = $this->createMock(QueryBuilder::class);
-        $queryBuilderMock->expects($this->once())->method('getRestrictions')->willReturn($this->createMock(QueryRestrictionContainerInterface::class));
-        $queryBuilderMock->expects($this->once())->method('select')->willReturn($queryBuilderMock);
-        $queryBuilderMock->expects($this->once())->method('from')->willReturn($queryBuilderMock);
-        $queryBuilderMock->expects($this->once())->method('where')->willReturn($queryBuilderMock);
-        $queryBuilderMock->expects($this->once())->method('executeQuery')->willReturn($resultMock);
+        $queryBuilderMock->expects(self::once())->method('getRestrictions')->willReturn($this->createMock(QueryRestrictionContainerInterface::class));
+        $queryBuilderMock->expects(self::once())->method('select')->willReturn($queryBuilderMock);
+        $queryBuilderMock->expects(self::once())->method('from')->willReturn($queryBuilderMock);
+        $queryBuilderMock->expects(self::once())->method('where')->willReturn($queryBuilderMock);
+        $queryBuilderMock->expects(self::once())->method('executeQuery')->willReturn($resultMock);
         $this->inject($this->garbageHandler, 'queryBuilders', ['tx_foo_bar' => $queryBuilderMock]);
 
         $this->tcaServiceMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('normalizeFrontendGroupField')
             ->with('tx_foo_bar', $dummyRecord)
             ->willReturn($dummyRecord);
@@ -164,7 +165,7 @@ class GarbageHandlerTest extends AbstractUpdateHandlerTest
             'pid' => 1,
             'title' => 'dummy record to collect garbage for',
             'hidden' => 1,
-            'extendToSubpages' => 1
+            'extendToSubpages' => 1,
         ];
 
         $this->initGarbageCollectionExpectations(PageStrategy::class, 'pages', 100);
@@ -173,35 +174,35 @@ class GarbageHandlerTest extends AbstractUpdateHandlerTest
 
         $GLOBALS['TCA']['pages'] = ['columns' => []];
         $this->tcaServiceMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('getVisibilityAffectingFieldsByTable')
             ->with('pages')
             ->willReturn('hidden,fe_group');
 
         $this->pagesRepositoryMock
-            ->expects($this->any())
+            ->expects(self::any())
             ->method('getPage')
             ->willReturn($dummyPageRecord);
         $this->inject($this->garbageHandler, 'pagesRepository', $this->pagesRepositoryMock);
 
         $resultMock = $this->createMock(Result::class);
-        $resultMock->expects($this->once())->method('fetchAssociative')->willReturn($dummyPageRecord);
+        $resultMock->expects(self::once())->method('fetchAssociative')->willReturn($dummyPageRecord);
         $queryBuilderMock = $this->createMock(QueryBuilder::class);
-        $queryBuilderMock->expects($this->once())->method('getRestrictions')->willReturn($this->createMock(QueryRestrictionContainerInterface::class));
-        $queryBuilderMock->expects($this->once())->method('select')->willReturn($queryBuilderMock);
-        $queryBuilderMock->expects($this->once())->method('from')->willReturn($queryBuilderMock);
-        $queryBuilderMock->expects($this->once())->method('where')->willReturn($queryBuilderMock);
-        $queryBuilderMock->expects($this->once())->method('executeQuery')->willReturn($resultMock);
+        $queryBuilderMock->expects(self::once())->method('getRestrictions')->willReturn($this->createMock(QueryRestrictionContainerInterface::class));
+        $queryBuilderMock->expects(self::once())->method('select')->willReturn($queryBuilderMock);
+        $queryBuilderMock->expects(self::once())->method('from')->willReturn($queryBuilderMock);
+        $queryBuilderMock->expects(self::once())->method('where')->willReturn($queryBuilderMock);
+        $queryBuilderMock->expects(self::once())->method('executeQuery')->willReturn($resultMock);
         $this->inject($this->garbageHandler, 'queryBuilders', ['pages' => $queryBuilderMock]);
 
         $this->tcaServiceMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('normalizeFrontendGroupField')
             ->with('pages', $dummyPageRecord)
             ->willReturn($dummyPageRecord);
 
         $this->queryGeneratorMock
-            ->expects($this->any())
+            ->expects(self::any())
             ->method('getTreeList')
             ->willReturn($dummyPageRecord['uid'] . ',100,200');
 
@@ -216,7 +217,7 @@ class GarbageHandlerTest extends AbstractUpdateHandlerTest
         $GLOBALS['TCA']['tx_foo_bar'] = ['columns' => []];
 
         $this->tcaServiceMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('getVisibilityAffectingFieldsByTable')
             ->with('tx_foo_bar')
             ->willReturn('hidden,fe_group');
@@ -224,16 +225,16 @@ class GarbageHandlerTest extends AbstractUpdateHandlerTest
         $dummyRecord = ['uid' => 123];
 
         $resultMock = $this->createMock(Result::class);
-        $resultMock->expects($this->once())->method('fetchAssociative')->willReturn($dummyRecord);
+        $resultMock->expects(self::once())->method('fetchAssociative')->willReturn($dummyRecord);
         $queryBuilderMock = $this->createMock(QueryBuilder::class);
-        $queryBuilderMock->expects($this->once())->method('getRestrictions')->willReturn($this->createMock(QueryRestrictionContainerInterface::class));
-        $queryBuilderMock->expects($this->once())->method('select')->willReturn($queryBuilderMock);
-        $queryBuilderMock->expects($this->once())->method('from')->willReturn($queryBuilderMock);
-        $queryBuilderMock->expects($this->once())->method('where')->willReturn($queryBuilderMock);
-        $queryBuilderMock->expects($this->once())->method('executeQuery')->willReturn($resultMock);
+        $queryBuilderMock->expects(self::once())->method('getRestrictions')->willReturn($this->createMock(QueryRestrictionContainerInterface::class));
+        $queryBuilderMock->expects(self::once())->method('select')->willReturn($queryBuilderMock);
+        $queryBuilderMock->expects(self::once())->method('from')->willReturn($queryBuilderMock);
+        $queryBuilderMock->expects(self::once())->method('where')->willReturn($queryBuilderMock);
+        $queryBuilderMock->expects(self::once())->method('executeQuery')->willReturn($resultMock);
         $this->inject($this->garbageHandler, 'queryBuilders', ['tx_foo_bar' => $queryBuilderMock]);
 
         $record = $this->garbageHandler->getRecordWithFieldRelevantForGarbageCollection('tx_foo_bar', 123);
-        $this->assertEquals($dummyRecord, $record);
+        self::assertEquals($dummyRecord, $record);
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets;
 
 /*
@@ -33,6 +34,6 @@ class DefaultUrlDecoderTest extends UnitTest
         $value = 'a + b';
         $encoder = new DefaultUrlDecoder();
         $encodedValue = $encoder->decode($value);
-        $this->assertSame('"a + b"', $encodedValue, 'Encode and decode does not produce initial value');
+        self::assertSame('"a + b"', $encodedValue, 'Encode and decode does not produce initial value');
     }
 }

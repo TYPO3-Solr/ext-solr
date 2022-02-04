@@ -1,13 +1,12 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Tests\Integration;
 
+namespace ApacheSolrForTypo3\Solr\Tests\Integration;
 
 use ApacheSolrForTypo3\Solr\GarbageCollectorPostProcessor;
 use TYPO3\CMS\Core\SingletonInterface;
 
 /**
  * Class TestGarbageCollectorPostProcessor
- * @package ApacheSolrForTypo3\Solr\Tests\Integration
  */
 class TestGarbageCollectorPostProcessor implements SingletonInterface, GarbageCollectorPostProcessor
 {
@@ -30,11 +29,10 @@ class TestGarbageCollectorPostProcessor implements SingletonInterface, GarbageCo
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function isHookWasCalled(): bool
     {
         return $this->hookWasCalled;
     }
 }
-

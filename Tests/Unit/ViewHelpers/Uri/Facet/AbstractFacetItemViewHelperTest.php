@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\ViewHelpers\Uri\Facet;
 
 /***************************************************************
@@ -24,11 +25,11 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\ViewHelpers\Uri\Facet;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\Option;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\OptionsFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
+use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 
 /**
  * @author Timo Hund <timo.hund@dkd.de>
@@ -42,7 +43,7 @@ abstract class AbstractFacetItemViewHelperTest extends UnitTest
     {
         $searchRequest = new SearchRequest();
         $searchResultSetMock = $this->getDumbMock(SearchResultSet::class);
-        $searchResultSetMock->expects($this->any())->method('getUsedSearchRequest')->will($this->returnValue($searchRequest));
+        $searchResultSetMock->expects(self::any())->method('getUsedSearchRequest')->willReturn($searchRequest);
 
         $facet = new OptionsFacet($searchResultSetMock, 'Color', 'color');
         $option = new Option($facet, 'Red', 'red', 4);

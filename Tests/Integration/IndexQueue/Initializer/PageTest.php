@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\IndexQueue\Initializer;
 
 /***************************************************************
@@ -48,10 +49,7 @@ class PageTest extends IntegrationTest
      */
     protected $indexQueue;
 
-    /**
-     * @return void
-     */
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->setUpBackendUserFromFixture(1);
@@ -68,12 +66,11 @@ class PageTest extends IntegrationTest
     protected function assertItemsInQueue($expectedAmount)
     {
         $itemCount = $this->indexQueue->getAllItemsCount();
-        $this->assertSame($itemCount, $expectedAmount, 'Indexqueue contains unexpected amount of items. Expected amount: ' . $expectedAmount);
+        self::assertSame($itemCount, $expectedAmount, 'Indexqueue contains unexpected amount of items. Expected amount: ' . $expectedAmount);
     }
 
     /**
      * Custom assertion to expect an empty queue.
-     * @return void
      */
     protected function assertEmptyQueue()
     {
@@ -82,8 +79,6 @@ class PageTest extends IntegrationTest
 
     /**
      * Initialize page index queue
-     *
-     * @return void
      */
     protected function initializeAllPageIndexQueues()
     {
@@ -91,7 +86,7 @@ class PageTest extends IntegrationTest
         /* @var $siteRepository SiteRepository */
         $sites = $siteRepository->getAvailableSites();
 
-        foreach($sites as $site) {
+        foreach ($sites as $site) {
             $this->pageInitializer->setIndexingConfigurationName('pages');
             $this->pageInitializer->setIndexingConfiguration(
                 $site->getSolrConfiguration()->getIndexQueueConfigurationByName('pages')
@@ -101,8 +96,6 @@ class PageTest extends IntegrationTest
             $this->pageInitializer->initialize();
         }
     }
-
-
 
     /**
      * In this testcase we check if the pages queue will be initialized as expected
@@ -126,13 +119,13 @@ class PageTest extends IntegrationTest
 
         $this->assertItemsInQueue(5);
 
-            // @todo: verify, is this really as expected? since mount_pid_ol is not set
-            // in the case when mount_pid_ol is set 4 pages get added
-        $this->assertTrue($this->indexQueue->containsItem('pages', 1));
-        $this->assertTrue($this->indexQueue->containsItem('pages', 10));
-        $this->assertTrue($this->indexQueue->containsItem('pages', 20));
+        // @todo: verify, is this really as expected? since mount_pid_ol is not set
+        // in the case when mount_pid_ol is set 4 pages get added
+        self::assertTrue($this->indexQueue->containsItem('pages', 1));
+        self::assertTrue($this->indexQueue->containsItem('pages', 10));
+        self::assertTrue($this->indexQueue->containsItem('pages', 20));
 
-        $this->assertFalse($this->indexQueue->containsItem('pages', 2));
+        self::assertFalse($this->indexQueue->containsItem('pages', 2));
     }
 
     /**
@@ -158,13 +151,13 @@ class PageTest extends IntegrationTest
         $this->initializeAllPageIndexQueues();
         $this->assertItemsInQueue(3); // The root page of "testtwo.site aka integration_tree_two" is included.
 
-        $this->assertTrue($this->indexQueue->containsItem('pages', 1));
-        $this->assertTrue($this->indexQueue->containsItem('pages', 24));
+        self::assertTrue($this->indexQueue->containsItem('pages', 1));
+        self::assertTrue($this->indexQueue->containsItem('pages', 24));
 
         $items = $this->indexQueue->getItems('pages', 24);
         $firstItem = $items[0];
 
-        $this->assertSame('24-14-1', $firstItem->getMountPointIdentifier());
+        self::assertSame('24-14-1', $firstItem->getMountPointIdentifier());
     }
 
     /**
@@ -190,16 +183,16 @@ class PageTest extends IntegrationTest
         $this->initializeAllPageIndexQueues();
         $this->assertItemsInQueue(3); // The root page of "testtwo.site aka integration_tree_two" is included.
 
-        $this->assertTrue($this->indexQueue->containsItem('pages', 1));
+        self::assertTrue($this->indexQueue->containsItem('pages', 1));
         // the mountpoint MUST NOT be in the queue,
         // because the page "[14] Mount Point" is set to overlay the content from mount source page.
-        $this->assertFalse($this->indexQueue->containsItem('pages', 14));
-        $this->assertTrue($this->indexQueue->containsItem('pages', 24));
+        self::assertFalse($this->indexQueue->containsItem('pages', 14));
+        self::assertTrue($this->indexQueue->containsItem('pages', 24));
 
         $items = $this->indexQueue->getItems('pages', 24);
         $firstItem = $items[0];
 
-        $this->assertSame('24-14-1', $firstItem->getMountPointIdentifier());
+        self::assertSame('24-14-1', $firstItem->getMountPointIdentifier());
     }
 
     /**
@@ -229,24 +222,24 @@ class PageTest extends IntegrationTest
         $this->initializeAllPageIndexQueues();
         $this->assertItemsInQueue(4);
 
-        $this->assertTrue($this->indexQueue->containsItem('pages', 1));
+        self::assertTrue($this->indexQueue->containsItem('pages', 1));
         // the mountpoint MUST NOT be in the queue,
         // because the page "[14] Mount Point" is set to overlay the content from mount source page.
-        $this->assertFalse($this->indexQueue->containsItem('pages', 14));
-        $this->assertTrue($this->indexQueue->containsItem('pages', 24));
+        self::assertFalse($this->indexQueue->containsItem('pages', 14));
+        self::assertTrue($this->indexQueue->containsItem('pages', 24));
 
-        $this->assertTrue($this->indexQueue->containsItem('pages', 111));
+        self::assertTrue($this->indexQueue->containsItem('pages', 111));
         // the mountpoint MUST NOT be in the queue,
         // because the page "[34] Mount Point" is set to overlay the content from mount source page.
-        $this->assertFalse($this->indexQueue->containsItem('pages', 34));
+        self::assertFalse($this->indexQueue->containsItem('pages', 34));
 
         $items = $this->indexQueue->getItems('pages', 24);
         $firstItem = $items[0];
 
-        $this->assertSame('24-14-1', $firstItem->getMountPointIdentifier());
+        self::assertSame('24-14-1', $firstItem->getMountPointIdentifier());
 
         $secondItem = $items[1];
-        $this->assertSame('24-34-1', $secondItem->getMountPointIdentifier());
+        self::assertSame('24-34-1', $secondItem->getMountPointIdentifier());
     }
 
     /**
@@ -266,7 +259,7 @@ class PageTest extends IntegrationTest
 
         $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);
         $flashMessageQueue = $flashMessageService->getMessageQueueByIdentifier('solr.queue.initializer');
-        $this->assertEquals(2, count($flashMessageQueue->getAllMessages()));
+        self::assertEquals(2, count($flashMessageQueue->getAllMessages()));
     }
 
     /**
@@ -294,7 +287,7 @@ class PageTest extends IntegrationTest
 
         $this->assertItemsInQueue(3); // The root page of "testtwo.site aka integration_tree_two" is included.
 
-        $this->assertTrue(
+        self::assertTrue(
             $this->indexQueue->containsItem('pages', 3),
             'The index queue does not contain the sub pages of restricted by additionalWhereClause page.' . PHP_EOL
             . 'The initializer MUST NOT ignore the sub pages of restricted pages.'

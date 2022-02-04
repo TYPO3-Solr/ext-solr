@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\Data;
 
 /***************************************************************
@@ -24,8 +25,8 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\Data;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use ApacheSolrForTypo3\Solr\System\Data\DateTime;
+use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 
 /**
  * @author Timo Hund <timo.hund@dkd.de>
@@ -37,8 +38,8 @@ class DateTimeTest extends UnitTest
      */
     public function testCanWrapDateTimeAndConvertToString()
     {
-        $proxy = new DateTime('2003-12-13T18:30:02Z', new \DateTimeZone("UTC"));
-        $this->assertSame('2003-12-13T18:30:02+0000', (string) $proxy);
+        $proxy = new DateTime('2003-12-13T18:30:02Z', new \DateTimeZone('UTC'));
+        self::assertSame('2003-12-13T18:30:02+0000', (string)$proxy);
     }
 
     /**
@@ -46,7 +47,7 @@ class DateTimeTest extends UnitTest
      */
     public function testCanDispatchCallToUnderlyingDateTime()
     {
-        $proxy = new DateTime('2003-12-13T18:30:02Z', new \DateTimeZone("UTC"));
-        $this->assertSame('2003-12-13T18:30:02+0000', $proxy->format(\DateTime::ISO8601));
+        $proxy = new DateTime('2003-12-13T18:30:02Z', new \DateTimeZone('UTC'));
+        self::assertSame('2003-12-13T18:30:02+0000', $proxy->format(\DateTime::ISO8601));
     }
 }

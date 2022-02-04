@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets\RangeBased\DateRange;
 
 /*
@@ -35,7 +36,7 @@ class DateRangeFacetParserTest extends AbstractFacetParserTest
                 'type' => 'dateRange',
                 'label' => 'Created',
                 'field' => 'created',
-            ]
+            ],
         ];
 
         $searchResultSet = $this->initializeSearchResultSetFromFakeResponse(
@@ -48,15 +49,15 @@ class DateRangeFacetParserTest extends AbstractFacetParserTest
         $parser = $this->getInitializedParser(DateRangeFacetParser::class);
 
         $facet = $parser->parse($searchResultSet, 'myCreated', $facetConfiguration['myCreated.']);
-        $this->assertInstanceOf(DateRangeFacet::class, $facet);
-        $this->assertSame($facet->getConfiguration(), $facetConfiguration['myCreated.'], 'Configuration was not passed to new facets');
-        $this->assertTrue($facet->getIsUsed());
+        self::assertInstanceOf(DateRangeFacet::class, $facet);
+        self::assertSame($facet->getConfiguration(), $facetConfiguration['myCreated.'], 'Configuration was not passed to new facets');
+        self::assertTrue($facet->getIsUsed());
 
-        $this->assertEquals('201506020000-201706020000', $facet->getRange()->getLabel());
-        $this->assertEquals(32, $facet->getRange()->getDocumentCount());
-        $this->assertCount(3, $facet->getRange()->getRangeCounts(), 'We expected that there are three count items attached');
+        self::assertEquals('201506020000-201706020000', $facet->getRange()->getLabel());
+        self::assertEquals(32, $facet->getRange()->getDocumentCount());
+        self::assertCount(3, $facet->getRange()->getRangeCounts(), 'We expected that there are three count items attached');
 
-        $this->assertSame($facet->getRange()->getEndInResponse()->format('Ymd'), '20170602');
-        $this->assertSame($facet->getRange()->getStartInResponse()->format('Ymd'), '20150602');
+        self::assertSame($facet->getRange()->getEndInResponse()->format('Ymd'), '20170602');
+        self::assertSame($facet->getRange()->getStartInResponse()->format('Ymd'), '20150602');
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\System\Records\SystemTemplate;
 
 /***************************************************************
@@ -47,12 +48,12 @@ class SystemTemplateRepositoryTest extends IntegrationTest
         $fakeRootLine = [
             ['uid' => 100],
             ['uid' => 33],
-            ['uid' => 8657]
+            ['uid' => 8657],
         ];
 
         /* @var $repository SystemTemplateRepository */
         $repository = GeneralUtility::makeInstance(SystemTemplateRepository::class);
         $closestPageIdWithActiveTemplate = $repository->findOneClosestPageIdWithActiveTemplateByRootLine($fakeRootLine);
-        $this->assertEquals(33, $closestPageIdWithActiveTemplate, 'Can not find closest page id with active template.');
+        self::assertEquals(33, $closestPageIdWithActiveTemplate, 'Can not find closest page id with active template.');
     }
 }

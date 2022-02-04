@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\System\Records\SystemCategory;
 
 /***************************************************************
@@ -42,9 +43,9 @@ class SystemCategoryRepositoryTest extends IntegrationTest
     {
         $this->importDataSetFromFixture('sys_category.xml');
 
-            /** @var $repository SystemCategoryRepository */
+        /** @var $repository SystemCategoryRepository */
         $repository = GeneralUtility::makeInstance(SystemCategoryRepository::class);
         $category = $repository->findOneByUid(2);
-        $this->assertSame('child', $category['title'], 'Can not retrieve system category by uid');
+        self::assertSame('child', $category['title'], 'Can not retrieve system category by uid');
     }
 }

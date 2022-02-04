@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\IndexQueue;
 
 /***************************************************************
@@ -30,17 +31,17 @@ use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
-use ApacheSolrForTypo3\Solr\Tests\Integration\IndexQueue\Helpers\DummyIndexer;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IndexQueue\Helpers\DummyAdditionalIndexQueueItemIndexer;
+use ApacheSolrForTypo3\Solr\Tests\Integration\IndexQueue\Helpers\DummyIndexer;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use Doctrine\DBAL\DBALException;
 use Psr\Http\Server\RequestHandlerInterface;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
 use TYPO3\CMS\Core\Http\ServerRequestFactory;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Middleware\NormalizedParamsAttribute;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Exception as TestingFrameworkCoreException;
 
 /**
@@ -63,12 +64,11 @@ class IndexerTest extends IntegrationTest
     protected $indexer;
 
     /**
-     * @return void
      * @throws TestingFrameworkCoreException
      * @throws DBALException
      * @throws NoSuchCacheException
      */
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->writeDefaultSolrTestSiteConfiguration();
@@ -85,12 +85,12 @@ class IndexerTest extends IntegrationTest
 
         $_SERVER['HTTP_HOST'] = 'test.local.typo3.org';
         $request = ServerRequestFactory::fromGlobals();
-        $handlerMock = $this->getMockBuilder( RequestHandlerInterface::class)->getMock();
+        $handlerMock = $this->createMock(RequestHandlerInterface::class);
         $normalizer = new NormalizedParamsAttribute();
         $normalizer->process($request, $handlerMock);
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         parent::tearDown();
         $this->cleanUpSolrServerAndAssertEmpty();
@@ -114,15 +114,15 @@ class IndexerTest extends IntegrationTest
 
         $result = $this->addToQueueAndIndexRecord('tx_fakeextension_domain_model_bar', 88);
 
-        $this->assertTrue($result, 'Indexing was not indicated to be successful');
+        self::assertTrue($result, 'Indexing was not indicated to be successful');
 
         // do we have the record in the index with the value from the mm relation?
         $this->waitToBeVisibleInSolr();
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
 
-        $this->assertStringContainsString('"category_stringM":["the tag"]', $solrContent, 'Did not find MM related tag');
-        $this->assertStringContainsString('"numFound":1', $solrContent, 'Could not index document into solr');
-        $this->assertStringContainsString('"title":"testnews"', $solrContent, 'Could not index document into solr');
+        self::assertStringContainsString('"category_stringM":["the tag"]', $solrContent, 'Did not find MM related tag');
+        self::assertStringContainsString('"numFound":1', $solrContent, 'Could not index document into solr');
+        self::assertStringContainsString('"title":"testnews"', $solrContent, 'Could not index document into solr');
         $this->cleanUpSolrServerAndAssertEmpty();
     }
 
@@ -134,7 +134,7 @@ class IndexerTest extends IntegrationTest
         return [
             'with_l_paramater' => ['can_index_custom_translated_record_with_l_param.xml'],
             'without_l_paramater' => ['can_index_custom_translated_record_without_l_param.xml'],
-            'without_l_paramater_and_content_fallback' => ['can_index_custom_translated_record_without_l_param_and_content_fallback.xml']
+            'without_l_paramater_and_content_fallback' => ['can_index_custom_translated_record_without_l_param_and_content_fallback.xml'],
         ];
     }
 
@@ -154,32 +154,32 @@ class IndexerTest extends IntegrationTest
         $this->importDataSetFromFixture($fixture);
 
         $result = $this->addToQueueAndIndexRecord('tx_fakeextension_domain_model_bar', 88);
-        $this->assertTrue($result, 'Indexing was not indicated to be successful');
+        self::assertTrue($result, 'Indexing was not indicated to be successful');
 
         $result = $this->addToQueueAndIndexRecord('tx_fakeextension_domain_model_bar', 777);
-        $this->assertTrue($result, 'Indexing was not indicated to be successful');
+        self::assertTrue($result, 'Indexing was not indicated to be successful');
 
         // do we have the record in the index with the value from the mm relation?
         $this->waitToBeVisibleInSolr('core_en');
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
-        $this->assertStringContainsString('"numFound":2', $solrContent, 'Could not index document into solr');
-        $this->assertStringContainsString('"title":"original"', $solrContent, 'Could not index document into solr');
-        $this->assertStringContainsString('"title":"original2"', $solrContent, 'Could not index document into solr');
-        $this->assertStringContainsString('"url":"http://testone.site/en/?tx_foo%5Buid%5D=88', $solrContent, 'Can not build typolink as expected');
-        $this->assertStringContainsString('"url":"http://testone.site/en/?tx_foo%5Buid%5D=777', $solrContent, 'Can not build typolink as expected');
+        self::assertStringContainsString('"numFound":2', $solrContent, 'Could not index document into solr');
+        self::assertStringContainsString('"title":"original"', $solrContent, 'Could not index document into solr');
+        self::assertStringContainsString('"title":"original2"', $solrContent, 'Could not index document into solr');
+        self::assertStringContainsString('"url":"http://testone.site/en/?tx_foo%5Buid%5D=88', $solrContent, 'Can not build typolink as expected');
+        self::assertStringContainsString('"url":"http://testone.site/en/?tx_foo%5Buid%5D=777', $solrContent, 'Can not build typolink as expected');
 
         $this->waitToBeVisibleInSolr('core_de');
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_de/select?q=*:*');
-        $this->assertStringContainsString('"numFound":2', $solrContent, 'Could not find translated record in solr document into solr');
+        self::assertStringContainsString('"numFound":2', $solrContent, 'Could not find translated record in solr document into solr');
         if ($fixture === 'can_index_custom_translated_record_without_l_param_and_content_fallback.xml') {
-            $this->assertStringContainsString('"title":"original"', $solrContent, 'Could not index  translated document into solr');
-            $this->assertStringContainsString('"title":"original2"', $solrContent, 'Could not index  translated document into solr');
+            self::assertStringContainsString('"title":"original"', $solrContent, 'Could not index  translated document into solr');
+            self::assertStringContainsString('"title":"original2"', $solrContent, 'Could not index  translated document into solr');
         } else {
-            $this->assertStringContainsString('"title":"translation"', $solrContent, 'Could not index  translated document into solr');
-            $this->assertStringContainsString('"title":"translation2"', $solrContent, 'Could not index  translated document into solr');
+            self::assertStringContainsString('"title":"translation"', $solrContent, 'Could not index  translated document into solr');
+            self::assertStringContainsString('"title":"translation2"', $solrContent, 'Could not index  translated document into solr');
         }
-        $this->assertStringContainsString('"url":"http://testone.site/de/?tx_foo%5Buid%5D=88', $solrContent, 'Can not build typolink as expected');
-        $this->assertStringContainsString('"url":"http://testone.site/de/?tx_foo%5Buid%5D=777', $solrContent, 'Can not build typolink as expected');
+        self::assertStringContainsString('"url":"http://testone.site/de/?tx_foo%5Buid%5D=88', $solrContent, 'Can not build typolink as expected');
+        self::assertStringContainsString('"url":"http://testone.site/de/?tx_foo%5Buid%5D=777', $solrContent, 'Can not build typolink as expected');
 
         $this->cleanUpSolrServerAndAssertEmpty('core_en');
         $this->cleanUpSolrServerAndAssertEmpty('core_de');
@@ -202,7 +202,7 @@ class IndexerTest extends IntegrationTest
 
         $result = $this->addToQueueAndIndexRecord('tx_fakeextension_domain_model_bar', 88);
 
-        $this->assertTrue($result, 'Indexing was not indicated to be successful');
+        self::assertTrue($result, 'Indexing was not indicated to be successful');
 
         // do we have the record in the index with the values from the mm relation?
         $this->waitToBeVisibleInSolr();
@@ -210,20 +210,19 @@ class IndexerTest extends IntegrationTest
         $solrContent = json_decode($solrContentJson, true);
         $solrContentResponse = $solrContent['response'];
 
-        $this->assertArrayHasKey('docs', $solrContentResponse, 'Did not find docs in solr response');
+        self::assertArrayHasKey('docs', $solrContentResponse, 'Did not find docs in solr response');
 
         $solrDocs = $solrContentResponse['docs'];
 
-        $this->assertCount(1, $solrDocs, 'Could not found index document into solr');
-        $this->assertIsArray($solrDocs[0]);
-        $this->assertEquals('testnews', (string)$solrDocs[0]['title'], 'Title of Solr document is not as expected.');
-        $this->assertArrayHasKey('category_stringM', $solrDocs[0], 'Did not find MM related tags.');
-        $this->assertCount(2, $solrDocs[0]['category_stringM'], 'Did not find all MM related tags.');
-        $this->assertSame(['the tag', 'another tag'], $solrDocs[0]['category_stringM']);
+        self::assertCount(1, $solrDocs, 'Could not found index document into solr');
+        self::assertIsArray($solrDocs[0]);
+        self::assertEquals('testnews', (string)$solrDocs[0]['title'], 'Title of Solr document is not as expected.');
+        self::assertArrayHasKey('category_stringM', $solrDocs[0], 'Did not find MM related tags.');
+        self::assertCount(2, $solrDocs[0]['category_stringM'], 'Did not find all MM related tags.');
+        self::assertSame(['the tag', 'another tag'], $solrDocs[0]['category_stringM']);
 
         $this->cleanUpSolrServerAndAssertEmpty();
     }
-
 
     /**
      * This testcase should check if we can queue an custom record with MM relations.
@@ -242,19 +241,19 @@ class IndexerTest extends IntegrationTest
         $this->importDataSetFromFixture('can_index_custom_translated_record_with_mm_relation.xml');
 
         $result = $this->addToQueueAndIndexRecord('tx_fakeextension_domain_model_bar', 88);
-        $this->assertTrue($result, 'Indexing was not indicated to be successful');
+        self::assertTrue($result, 'Indexing was not indicated to be successful');
 
         // do we have the record in the index with the value from the mm relation?
         $this->waitToBeVisibleInSolr('core_de');
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_de/select?q=*:*');
 
-        $this->assertStringContainsString('"category_stringM":["translated tag"]', $solrContent, 'Did not find MM related tag');
-        $this->assertStringContainsString('"numFound":1', $solrContent, 'Could not index document into solr');
-        $this->assertStringContainsString('"title":"translation"', $solrContent, 'Could not index document into solr');
+        self::assertStringContainsString('"category_stringM":["translated tag"]', $solrContent, 'Did not find MM related tag');
+        self::assertStringContainsString('"numFound":1', $solrContent, 'Could not index document into solr');
+        self::assertStringContainsString('"title":"translation"', $solrContent, 'Could not index document into solr');
 
         $this->cleanUpSolrServerAndAssertEmpty('core_en');
         $this->cleanUpSolrServerAndAssertEmpty('core_de');
-     }
+    }
 
     /**
      * This testcase should check if we can queue an custom record with multiple MM relations.
@@ -274,7 +273,7 @@ class IndexerTest extends IntegrationTest
         $this->importDataSetFromFixture('can_index_custom_record_with_multiple_mm_relations.xml');
 
         $result = $this->addToQueueAndIndexRecord('tx_fakeextension_domain_model_bar', 88);
-        $this->assertTrue($result, 'Indexing was not indicated to be successful');
+        self::assertTrue($result, 'Indexing was not indicated to be successful');
 
         // do we have the record in the index with the value from the mm relation?
         $this->waitToBeVisibleInSolr('core_en');
@@ -284,9 +283,9 @@ class IndexerTest extends IntegrationTest
         // @extensionScannerIgnoreLine
         $tags = $decodedSolrContent->response->docs[0]->tags_stringM;
 
-        $this->assertSame(['the tag', 'another tag'], $tags, $solrContent, 'Did not find MM related tags');
-        $this->assertStringContainsString('"numFound":1', $solrContent, 'Could not index document into solr');
-        $this->assertStringContainsString('"title":"testnews"', $solrContent, 'Could not index document into solr');
+        self::assertSame(['the tag', 'another tag'], $tags, $solrContent, 'Did not find MM related tags');
+        self::assertStringContainsString('"numFound":1', $solrContent, 'Could not index document into solr');
+        self::assertStringContainsString('"title":"testnews"', $solrContent, 'Could not index document into solr');
 
         $this->cleanUpSolrServerAndAssertEmpty('core_en');
     }
@@ -307,15 +306,15 @@ class IndexerTest extends IntegrationTest
         $this->importDataSetFromFixture('can_index_custom_record_with_mm_relationAndAdditionalWhere.xml');
 
         $result = $this->addToQueueAndIndexRecord('tx_fakeextension_domain_model_bar', 88);
-        $this->assertTrue($result, 'Indexing was not indicated to be successful');
+        self::assertTrue($result, 'Indexing was not indicated to be successful');
 
         // do we have the record in the index with the value from the mm relation?
         $this->waitToBeVisibleInSolr();
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
 
-        $this->assertStringContainsString('"category_stringM":["another tag"]', $solrContent, 'Did not find MM related tag');
-        $this->assertStringContainsString('"numFound":1', $solrContent, 'Could not index document into solr');
-        $this->assertStringContainsString('"title":"testnews"', $solrContent, 'Could not index document into solr');
+        self::assertStringContainsString('"category_stringM":["another tag"]', $solrContent, 'Did not find MM related tag');
+        self::assertStringContainsString('"numFound":1', $solrContent, 'Could not index document into solr');
+        self::assertStringContainsString('"title":"testnews"', $solrContent, 'Could not index document into solr');
         $this->cleanUpSolrServerAndAssertEmpty();
     }
 
@@ -329,14 +328,13 @@ class IndexerTest extends IntegrationTest
         $this->cleanUpSolrServerAndAssertEmpty('core_en');
         $this->cleanUpSolrServerAndAssertEmpty('core_de');
 
-
         // create fake extension database table and TCA
         $this->importExtTablesDefinition('fake_extension2_table.sql');
         $GLOBALS['TCA']['tx_fakeextension_domain_model_bar'] = include($this->getFixturePathByName('fake_extension2_bar_tca.php'));
         $this->importDataSetFromFixture('can_index_custom_translated_record_with_mm_relation_to_a_page.xml');
 
         $result = $this->addToQueueAndIndexRecord('tx_fakeextension_domain_model_bar', 88);
-        $this->assertTrue($result, 'Indexing was not indicated to be successful');
+        self::assertTrue($result, 'Indexing was not indicated to be successful');
 
         // do we have the record in the index with the value from the mm relation?
         $this->waitToBeVisibleInSolr('core_en');
@@ -345,8 +343,8 @@ class IndexerTest extends IntegrationTest
         $solrContentEn = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
         $solrContentDe = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_de/select?q=*:*');
 
-        $this->assertStringContainsString('"relatedPageTitles_stringM":["Related page"]', $solrContentEn, 'Can not find related page title');
-        $this->assertStringContainsString('"relatedPageTitles_stringM":["Translated related page"]', $solrContentDe, 'Can not find translated related page title');
+        self::assertStringContainsString('"relatedPageTitles_stringM":["Related page"]', $solrContentEn, 'Can not find related page title');
+        self::assertStringContainsString('"relatedPageTitles_stringM":["Translated related page"]', $solrContentDe, 'Can not find translated related page title');
 
         $this->cleanUpSolrServerAndAssertEmpty('core_en');
         $this->cleanUpSolrServerAndAssertEmpty('core_de');
@@ -368,18 +366,18 @@ class IndexerTest extends IntegrationTest
         $this->importDataSetFromFixture('can_index_custom_record_with_direct_relation.xml');
 
         $result = $this->addToQueueAndIndexRecord('tx_fakeextension_domain_model_bar', 111);
-        $this->assertTrue($result, 'Indexing was not indicated to be successful');
+        self::assertTrue($result, 'Indexing was not indicated to be successful');
 
         // do we have the record in the index with the value from the mm relation?
         $this->waitToBeVisibleInSolr();
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
 
-        $this->assertStringContainsString('"category_stringM":["the category"]', $solrContent, 'Did not find direct related category');
-        $this->assertStringContainsString('"numFound":1', $solrContent, 'Could not index document into solr');
-        $this->assertStringContainsString('"title":"testnews"', $solrContent, 'Could not index document into solr');
-        $this->assertStringContainsString('"sysCategoryId_stringM":["1"]', $solrContent, 'Uid of related sys_category couldn\'t be resolved by using "foreignLabelField"');
-        $this->assertStringContainsString('"sysCategory_stringM":["sys_category"]', $solrContent, 'Label of related sys_category couldn\'t be resolved by using "foreignLabelField" and "enableRecursiveValueResolution"');
-        $this->assertStringContainsString('"sysCategoryDescription_stringM":["sys_category description"]', $solrContent, 'Description of related sys_category couldn\'t be resolved by using "foreignLabelField" and "enableRecursiveValueResolution"');
+        self::assertStringContainsString('"category_stringM":["the category"]', $solrContent, 'Did not find direct related category');
+        self::assertStringContainsString('"numFound":1', $solrContent, 'Could not index document into solr');
+        self::assertStringContainsString('"title":"testnews"', $solrContent, 'Could not index document into solr');
+        self::assertStringContainsString('"sysCategoryId_stringM":["1"]', $solrContent, 'Uid of related sys_category couldn\'t be resolved by using "foreignLabelField"');
+        self::assertStringContainsString('"sysCategory_stringM":["sys_category"]', $solrContent, 'Label of related sys_category couldn\'t be resolved by using "foreignLabelField" and "enableRecursiveValueResolution"');
+        self::assertStringContainsString('"sysCategoryDescription_stringM":["sys_category description"]', $solrContent, 'Description of related sys_category couldn\'t be resolved by using "foreignLabelField" and "enableRecursiveValueResolution"');
         $this->cleanUpSolrServerAndAssertEmpty();
     }
 
@@ -399,28 +397,28 @@ class IndexerTest extends IntegrationTest
         $this->importDataSetFromFixture('can_index_custom_record_with_multiple_direct_relations.xml');
 
         $result = $this->addToQueueAndIndexRecord('tx_fakeextension_domain_model_bar', 111);
-        $this->assertTrue($result, 'Indexing was not indicated to be successful');
+        self::assertTrue($result, 'Indexing was not indicated to be successful');
 
         // do we have the record in the index with the value from the mm relation?
         $this->waitToBeVisibleInSolr();
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
         $decodedSolrContent = json_decode($solrContent);
 
-        $this->assertStringContainsString('"numFound":1', $solrContent, 'Could not index document into solr');
-        $this->assertStringContainsString('"title":"testnews"', $solrContent, 'Could not index document into solr');
+        self::assertStringContainsString('"numFound":1', $solrContent, 'Could not index document into solr');
+        self::assertStringContainsString('"title":"testnews"', $solrContent, 'Could not index document into solr');
 
         // @extensionScannerIgnoreLine
         $category_stringM = $decodedSolrContent->response->docs[0]->category_stringM;
-        $this->assertSame(['the category','the second category'], $category_stringM, 'Unexpected category_stringM value');
+        self::assertSame(['the category', 'the second category'], $category_stringM, 'Unexpected category_stringM value');
         // @extensionScannerIgnoreLine
         $sysCategoryId_stringM = $decodedSolrContent->response->docs[0]->sysCategoryId_stringM;
-        $this->assertSame(['1','2'], $sysCategoryId_stringM, 'Unexpected sysCategoryId_stringM value');
+        self::assertSame(['1', '2'], $sysCategoryId_stringM, 'Unexpected sysCategoryId_stringM value');
         // @extensionScannerIgnoreLine
         $sysCategory_stringM = $decodedSolrContent->response->docs[0]->sysCategory_stringM;
-        $this->assertSame(['sys_category','sys_category 2'], $sysCategory_stringM, 'Unexpected sysCategory_stringM value');
+        self::assertSame(['sys_category', 'sys_category 2'], $sysCategory_stringM, 'Unexpected sysCategory_stringM value');
         // @extensionScannerIgnoreLine
         $sysCategoryDescription_stringM = $decodedSolrContent->response->docs[0]->sysCategoryDescription_stringM;
-        $this->assertSame(['sys_category description','second sys_category description'], $sysCategoryDescription_stringM, 'Unexpected sysCategoryDescription_stringM value');
+        self::assertSame(['sys_category description', 'second sys_category description'], $sysCategoryDescription_stringM, 'Unexpected sysCategoryDescription_stringM value');
 
         $this->cleanUpSolrServerAndAssertEmpty();
     }
@@ -442,15 +440,15 @@ class IndexerTest extends IntegrationTest
         $this->importDataSetFromFixture('can_index_custom_record_with_direct_relationAndAdditionalWhere.xml');
 
         $result = $this->addToQueueAndIndexRecord('tx_fakeextension_domain_model_bar', 111);
-        $this->assertTrue($result, 'Indexing was not indicated to be successful');
+        self::assertTrue($result, 'Indexing was not indicated to be successful');
 
         // do we have the record in the index with the value from the mm relation?
         $this->waitToBeVisibleInSolr();
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
 
-        $this->assertStringContainsString('"category_stringM":["another category"]', $solrContent, 'Did not find direct related category');
-        $this->assertStringContainsString('"numFound":1', $solrContent, 'Could not index document into solr');
-        $this->assertStringContainsString('"title":"testnews"', $solrContent, 'Could not index document into solr');
+        self::assertStringContainsString('"category_stringM":["another category"]', $solrContent, 'Did not find direct related category');
+        self::assertStringContainsString('"numFound":1', $solrContent, 'Could not index document into solr');
+        self::assertStringContainsString('"title":"testnews"', $solrContent, 'Could not index document into solr');
         $this->cleanUpSolrServerAndAssertEmpty();
     }
 
@@ -468,15 +466,15 @@ class IndexerTest extends IntegrationTest
         $this->importDataSetFromFixture('can_index_custom_record_with_configuration_in_rootline.xml');
 
         $result = $this->addToQueueAndIndexRecord('tx_fakeextension_domain_model_bar', 111);
-        $this->assertTrue($result, 'Indexing was not indicated to be successful');
+        self::assertTrue($result, 'Indexing was not indicated to be successful');
 
         // do we have the record in the index with the value from the mm relation?
         $this->waitToBeVisibleInSolr();
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
 
-        $this->assertStringContainsString('"fieldFromRootLine_stringS":"TESTNEWS"', $solrContent, 'Did not find field configured in rootline');
-        $this->assertStringContainsString('"title":"testnews"', $solrContent, 'Could not index document into solr');
-        $this->assertStringContainsString('"numFound":1', $solrContent, 'Could not index document into solr');
+        self::assertStringContainsString('"fieldFromRootLine_stringS":"TESTNEWS"', $solrContent, 'Did not find field configured in rootline');
+        self::assertStringContainsString('"title":"testnews"', $solrContent, 'Could not index document into solr');
+        self::assertStringContainsString('"numFound":1', $solrContent, 'Could not index document into solr');
         $this->cleanUpSolrServerAndAssertEmpty();
     }
 
@@ -487,7 +485,7 @@ class IndexerTest extends IntegrationTest
     {
         $this->expectException(\InvalidArgumentException::class);
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['indexItemAddDocuments'][] = AdditionalIndexQueueItemIndexer::class;
-        $document = new Document;
+        $document = new Document();
         $metaData = ['item_type' => 'pages'];
         $record = [];
         $item = GeneralUtility::makeInstance(Item::class, $metaData, $record);
@@ -501,7 +499,7 @@ class IndexerTest extends IntegrationTest
     {
         $this->expectException(\UnexpectedValueException::class);
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['indexItemAddDocuments'][] = DummyIndexer::class;
-        $document = new Document;
+        $document = new Document();
         $metaData = ['item_type' => 'pages'];
         $record = [];
         $item = GeneralUtility::makeInstance(Item::class, $metaData, $record);
@@ -515,7 +513,7 @@ class IndexerTest extends IntegrationTest
     {
         $this->expectException(\InvalidArgumentException::class);
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['indexItemAddDocuments'][] = 'NonExistingClass';
-        $document = new Document;
+        $document = new Document();
         $metaData = ['item_type' => 'pages'];
         $record = [];
         $item = GeneralUtility::makeInstance(Item::class, $metaData, $record);
@@ -529,13 +527,13 @@ class IndexerTest extends IntegrationTest
     public function canGetAdditionalDocuments()
     {
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['indexItemAddDocuments'][] = DummyAdditionalIndexQueueItemIndexer::class;
-        $document = new Document;
+        $document = new Document();
         $metaData = ['item_type' => 'pages'];
         $record = [];
         $item = GeneralUtility::makeInstance(Item::class, $metaData, $record);
 
         $result = $this->callInaccessibleMethod($this->indexer, 'getAdditionalDocuments', $item, 0, $document);
-        $this->assertSame([], $result);
+        self::assertSame([], $result);
     }
 
     /**
@@ -553,14 +551,14 @@ class IndexerTest extends IntegrationTest
 
         $result = $this->addToQueueAndIndexRecord('tx_fakeextension_domain_model_bar', 111);
 
-        $this->assertTrue($result, 'Indexing was not indicated to be successful');
+        self::assertTrue($result, 'Indexing was not indicated to be successful');
 
         // do we have the record in the index with the value from the mm relation?
         $this->waitToBeVisibleInSolr();
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
 
-        $this->assertStringContainsString('"numFound":1', $solrContent, 'Could not index document into solr');
-        $this->assertStringContainsString('"title":"external testnews"', $solrContent, 'Could not index document into solr');
+        self::assertStringContainsString('"numFound":1', $solrContent, 'Could not index document into solr');
+        self::assertStringContainsString('"title":"external testnews"', $solrContent, 'Could not index document into solr');
         $this->cleanUpSolrServerAndAssertEmpty();
     }
 
@@ -579,16 +577,16 @@ class IndexerTest extends IntegrationTest
 
         $result = $this->addToQueueAndIndexRecord('tx_fakeextension_domain_model_bar', 1);
 
-        $this->assertTrue($result, 'Indexing was not indicated to be successful');
+        self::assertTrue($result, 'Indexing was not indicated to be successful');
 
         // do we have the record in the index with the value from the mm relation?
         $this->waitToBeVisibleInSolr();
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
-        $this->assertStringContainsString('"numFound":2', $solrContent, 'Could not index document into solr');
+        self::assertStringContainsString('"numFound":2', $solrContent, 'Could not index document into solr');
 
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*&fq=site:testone.site');
-        $this->assertStringContainsString('"numFound":1', $solrContent, 'Could not index document into solr');
-        $this->assertStringContainsString('"url":"http://testone.site/en/"', $solrContent, 'Item was indexed with false site UID');
+        self::assertStringContainsString('"numFound":1', $solrContent, 'Could not index document into solr');
+        self::assertStringContainsString('"url":"http://testone.site/en/"', $solrContent, 'Item was indexed with false site UID');
         $this->cleanUpSolrServerAndAssertEmpty();
     }
 
@@ -624,15 +622,15 @@ class IndexerTest extends IntegrationTest
             'item_type' => 'pages',
             'item_uid' => 1,
             'indexing_configuration' => '',
-            'has_indexing_properties' => false
+            'has_indexing_properties' => false,
         ];
         $item = new Item($itemMetaData);
 
         $result = $this->callInaccessibleMethod($this->indexer, 'getSolrConnectionsByItem', $item);
 
-        $this->assertInstanceOf(SolrConnection::class, $result[1], "Expect SolrConnection object in connection array item with key 1.");
-        $this->assertCount(1, $result, "Expect only one SOLR connection.");
-        $this->assertArrayNotHasKey(0, $result, "Expect, that there is no solr connection returned for default language,");
+        self::assertInstanceOf(SolrConnection::class, $result[1], 'Expect SolrConnection object in connection array item with key 1.');
+        self::assertCount(1, $result, 'Expect only one SOLR connection.');
+        self::assertArrayNotHasKey(0, $result, 'Expect, that there is no solr connection returned for default language,');
     }
 
     /**
@@ -648,16 +646,16 @@ class IndexerTest extends IntegrationTest
             'item_type' => 'pages',
             'item_uid' => 1,
             'indexing_configuration' => '',
-            'has_indexing_properties' => false
+            'has_indexing_properties' => false,
         ];
         $item = new Item($itemMetaData);
 
         $result = $this->callInaccessibleMethod($this->indexer, 'getSolrConnectionsByItem', $item);
 
-        $this->assertEmpty($result[0], 'Connection for default language was expected to be empty');
-        $this->assertInstanceOf(SolrConnection::class, $result[1], "Expect SolrConnection object in connection array item with key 1.");
-        $this->assertCount(1, $result, "Expect only one SOLR connection.");
-        $this->assertArrayNotHasKey(0, $result, "Expect, that there is no solr connection returned for default language,");
+        self::assertEmpty($result[0], 'Connection for default language was expected to be empty');
+        self::assertInstanceOf(SolrConnection::class, $result[1], 'Expect SolrConnection object in connection array item with key 1.');
+        self::assertCount(1, $result, 'Expect only one SOLR connection.');
+        self::assertArrayNotHasKey(0, $result, 'Expect, that there is no solr connection returned for default language,');
     }
 
     /**

@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Result\Parser;
 
 /***************************************************************
@@ -26,8 +27,6 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Result\Pars
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\Parser\ResultParserRegistry;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
-use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
-use ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Result\Parser\TestResultParser;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 
 /**
@@ -43,18 +42,10 @@ class ResultParserRegistryTest extends UnitTest
      */
     protected $registry;
 
-    /**
-     * @var TypoScriptConfiguration
-     */
-    protected $configurationMock;
-
-    /**
-     * @return void
-     */
-    public function setUp(): void
+    protected function setUp(): void
     {
-        $this->configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
-        $this->registry = new ResultParserRegistry($this->configurationMock);
+        $this->registry = new ResultParserRegistry();
+        parent::setUp();
     }
 
     /**
@@ -65,7 +56,7 @@ class ResultParserRegistryTest extends UnitTest
         $fakeResultSet = $this->getDumbMock(SearchResultSet::class);
         $this->registry->registerParser(TestResultParser::class, 200);
         $retrievedParser = $this->registry->getParser($fakeResultSet);
-        $this->assertInstanceOf(TestResultParser::class, $retrievedParser, 'Did not retrieve register custom parser with higher priority');
+        self::assertInstanceOf(TestResultParser::class, $retrievedParser, 'Did not retrieve register custom parser with higher priority');
     }
 
     /**
@@ -74,7 +65,7 @@ class ResultParserRegistryTest extends UnitTest
     public function hasParser()
     {
         $this->registry->registerParser(TestResultParser::class, 200);
-        $this->assertTrue($this->registry->hasParser(TestResultParser::class, 200), 'hasParser returned unexpected result for a parser that should exist');
-        $this->assertFalse($this->registry->hasParser('Fooo', 100), 'hasParser returned unexpected result for a parser that not should exist');
+        self::assertTrue($this->registry->hasParser(TestResultParser::class, 200), 'hasParser returned unexpected result for a parser that should exist');
+        self::assertFalse($this->registry->hasParser('Fooo', 100), 'hasParser returned unexpected result for a parser that not should exist');
     }
 }

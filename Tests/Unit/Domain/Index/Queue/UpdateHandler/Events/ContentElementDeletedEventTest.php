@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\IndexQueue\UpdateHandler\Events;
 
 /***************************************************************
@@ -42,7 +43,7 @@ class ContentElementDeletedEventTest extends AbstractDataUpdateEventTest
     public function canInitAndReturnFields(): void
     {
         $event = new ContentElementDeletedEvent(123, static::EVENT_TEST_TABLE, ['hidden' => 1]);
-        $this->assertEmpty($event->getFields());
+        self::assertEmpty($event->getFields());
     }
 
     /**
@@ -51,7 +52,7 @@ class ContentElementDeletedEventTest extends AbstractDataUpdateEventTest
     public function canForceTable(): void
     {
         $event = new ContentElementDeletedEvent(123, 'tx_foo_bar');
-        $this->assertEquals('tt_content', $event->getTable());
+        self::assertEquals('tt_content', $event->getTable());
     }
 
     /**
@@ -60,7 +61,7 @@ class ContentElementDeletedEventTest extends AbstractDataUpdateEventTest
     public function canIndicatePageUpdate(): void
     {
         $event = new ContentElementDeletedEvent(123);
-        $this->assertFalse($event->isPageUpdate());
+        self::assertFalse($event->isPageUpdate());
     }
 
     /**
@@ -69,6 +70,6 @@ class ContentElementDeletedEventTest extends AbstractDataUpdateEventTest
     public function canIndicateContentElementUpdate(): void
     {
         $event = new ContentElementDeletedEvent(123);
-        $this->assertTrue($event->isContentElementUpdate());
+        self::assertTrue($event->isContentElementUpdate());
     }
 }

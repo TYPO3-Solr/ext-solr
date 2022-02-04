@@ -1,11 +1,12 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\IndexQueue\FrontendHelper;
 
 use ApacheSolrForTypo3\Solr\AdditionalPageIndexer;
 use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 
-class TestAdditionalPageIndexer implements AdditionalPageIndexer {
-
+class TestAdditionalPageIndexer implements AdditionalPageIndexer
+{
 
     /**
      * Provides additional documents that should be indexed together with a page.

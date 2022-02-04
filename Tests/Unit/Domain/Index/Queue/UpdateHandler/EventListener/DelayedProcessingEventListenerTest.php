@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\IndexQueue\UpdateHandler\EventListener;
 
 /***************************************************************
@@ -24,12 +25,12 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\IndexQueue\UpdateHandler\EventListe
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\EventListener\DelayedProcessingEventListener;
-use ApacheSolrForTypo3\Solr\System\Records\Queue\EventQueueItemRepository;
-use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordUpdatedEvent;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\EventListener\Events\DelayedProcessingQueuingFinishedEvent;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\EventListener\AbstractBaseEventListener;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\EventListener\DelayedProcessingEventListener;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\EventListener\Events\DelayedProcessingQueuingFinishedEvent;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordUpdatedEvent;
+use ApacheSolrForTypo3\Solr\System\Records\Queue\EventQueueItemRepository;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Testcase for the DelayedProcessingEventListener
@@ -41,9 +42,10 @@ class DelayedProcessingEventListenerTest extends AbstractEventListenerTest
     /**
      * @test
      */
-    public function canHandleEvents(): void {
+    public function canHandleEvents(): void
+    {
         $this->extensionConfigurationMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('getMonitoringType')
             ->willReturn(1);
 
@@ -51,30 +53,31 @@ class DelayedProcessingEventListenerTest extends AbstractEventListenerTest
 
         $eventQueueItemRepositoryMock = $this->createMock(EventQueueItemRepository::class);
         $eventQueueItemRepositoryMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('addEventToQueue')
             ->with($event);
         GeneralUtility::setSingletonInstance(EventQueueItemRepository::class, $eventQueueItemRepositoryMock);
 
         $dispatchedEvent = null;
         $this->eventDispatcherMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('dispatch')
-            ->will($this->returnCallback(function() use (&$dispatchedEvent) {
+            ->willReturnCallback(function () use (&$dispatchedEvent) {
                 $dispatchedEvent = func_get_arg(0);
-            }));
+            });
 
         $this->listener->__invoke($event);
-        $this->assertTrue($dispatchedEvent instanceof DelayedProcessingQueuingFinishedEvent);
-        $this->assertEquals($event, $dispatchedEvent->getDataUpdateEvent());
+        self::assertTrue($dispatchedEvent instanceof DelayedProcessingQueuingFinishedEvent);
+        self::assertEquals($event, $dispatchedEvent->getDataUpdateEvent());
     }
 
     /**
      * @test
      */
-    public function canSkipEventHandlingIfDisabled(): void {
+    public function canSkipEventHandlingIfDisabled(): void
+    {
         $this->extensionConfigurationMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('getMonitoringType')
             ->willReturn(2);
 
@@ -82,12 +85,12 @@ class DelayedProcessingEventListenerTest extends AbstractEventListenerTest
 
         $eventQueueItemRepositoryMock = $this->createMock(EventQueueItemRepository::class);
         $eventQueueItemRepositoryMock
-            ->expects($this->never())
+            ->expects(self::never())
             ->method('addEventToQueue');
         GeneralUtility::setSingletonInstance(EventQueueItemRepository::class, $eventQueueItemRepositoryMock);
 
         $this->eventDispatcherMock
-            ->expects($this->never())
+            ->expects(self::never())
             ->method('dispatch');
 
         $this->listener->__invoke($event);

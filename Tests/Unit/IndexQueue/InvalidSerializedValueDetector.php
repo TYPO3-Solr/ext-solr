@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\IndexQueue;
 
 /***************************************************************
@@ -24,4 +25,6 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\IndexQueue;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-class InvalidSerializedValueDetector {}
+class InvalidSerializedValueDetector
+{
+}

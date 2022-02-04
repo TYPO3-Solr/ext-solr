@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Controller\Backend\Search;
 
 /*
@@ -36,8 +37,8 @@ class IndexAdministrationModuleControllerTest extends AbstractModuleControllerTe
 
     protected function setUp(): void
     {
-        parent::setUp();
         parent::setUpConcreteModuleController(IndexAdministrationModuleController::class);
+        parent::setUp();
     }
 
     /**
@@ -46,18 +47,18 @@ class IndexAdministrationModuleControllerTest extends AbstractModuleControllerTe
     public function testReloadIndexConfigurationAction()
     {
         $responseMock = $this->getDumbMock(ResponseAdapter::class);
-        $responseMock->expects($this->once())->method('getHttpStatus')->willReturn(200);
+        $responseMock->expects(self::once())->method('getHttpStatus')->willReturn(200);
 
         $writeEndpointMock = $this->getDumbMock(Endpoint::class);
         $adminServiceMock = $this->getDumbMock(SolrAdminService::class);
-        $adminServiceMock->expects($this->once())->method('reloadCore')->willReturn($responseMock);
-        $adminServiceMock->expects($this->once())->method('getPrimaryEndpoint')->willReturn($writeEndpointMock);
+        $adminServiceMock->expects(self::once())->method('reloadCore')->willReturn($responseMock);
+        $adminServiceMock->expects(self::once())->method('getPrimaryEndpoint')->willReturn($writeEndpointMock);
 
         $solrConnection = $this->getDumbMock(SolrConnection::class);
-        $solrConnection->expects($this->once())->method('getAdminService')->willReturn($adminServiceMock);
+        $solrConnection->expects(self::once())->method('getAdminService')->willReturn($adminServiceMock);
 
         $fakeConnections = [$solrConnection];
-        $this->connectionManagerMock->expects($this->once())
+        $this->connectionManagerMock->expects(self::once())
             ->method('getConnectionsBySite')
             ->with($this->selectedSiteMock)
             ->willReturn($fakeConnections);

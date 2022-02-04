@@ -38,23 +38,22 @@ class TypoScriptTest extends UnitTest
      */
     protected $typoScriptConfigurationDumpMock;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
-        parent::setUp();
         $this->typoScriptMock = $this->getMockBuilder(TypoScript::class)
             ->disableOriginalConstructor()
-            ->setMethods(
+            ->onlyMethods(
                 [
                     'buildConfigurationArray',
                     'buildTypoScriptConfigurationFromArray',
-                    'getConfigurationPageIdToUse'
                 ]
             )->getMock();
 
         $this->typoScriptConfigurationDumpMock = $this->getDumbMock(TypoScriptConfiguration::class);
+        parent::setUp();
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         GeneralUtility::resetSingletonInstances([]);
         unset(
@@ -99,7 +98,7 @@ class TypoScriptTest extends UnitTest
             $language
         );
 
-        $this->assertInstanceOf(TypoScriptConfiguration::class, $newConfiguration);
+        self::assertInstanceOf(TypoScriptConfiguration::class, $newConfiguration);
 
         // prepare second/cached call
         // pageRepository->getRootLine should be called only once
@@ -110,9 +109,8 @@ class TypoScriptTest extends UnitTest
             $language
         );
 
-        $this->assertInstanceOf(TypoScriptConfiguration::class, $cachedConfiguration);
+        self::assertInstanceOf(TypoScriptConfiguration::class, $cachedConfiguration);
 
-        $this->assertSame($newConfiguration, $cachedConfiguration);
+        self::assertSame($newConfiguration, $cachedConfiguration);
     }
-
 }

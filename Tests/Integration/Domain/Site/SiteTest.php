@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\Domain\Site;
 
 /***************************************************************
@@ -37,7 +38,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class SiteTest extends IntegrationTest
 {
-    public function setUp(): void {
+    protected function setUp(): void
+    {
         parent::setUp();
         $this->writeDefaultSolrTestSiteConfiguration();
     }
@@ -50,23 +52,25 @@ class SiteTest extends IntegrationTest
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         /* @var Site $site */
         $site = $siteRepository->getFirstAvailableSite();
-        $this->assertEquals(0, $site->getDefaultLanguageId(), 'Could not get default language from site');
+        self::assertEquals(0, $site->getDefaultLanguageId(), 'Could not get default language from site');
     }
 
     /**
      * @test
      */
-    public function canCreateInstanceWithRootSiteUidOK() {
+    public function canCreateInstanceWithRootSiteUidOK()
+    {
         /* @var SiteRepository $siteRepository */
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $site = $siteRepository->getSiteByRootPageId(1);
-        $this->assertEquals(1, $site->getRootPageId());
+        self::assertEquals(1, $site->getRootPageId());
     }
 
     /**
      * @test
      */
-    public function canCreateInstanceWithRootSiteUidNOK() {
+    public function canCreateInstanceWithRootSiteUidNOK()
+    {
         $this->expectException(InvalidArgumentException::class);
         /* @var SiteRepository $siteRepository */
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
@@ -76,7 +80,8 @@ class SiteTest extends IntegrationTest
     /**
      * @test
      */
-    public function canCreateInstanceWithNonRootSiteUidOK() {
+    public function canCreateInstanceWithNonRootSiteUidOK()
+    {
         $this->importDataSetFromFixture('can_create_instance_with_non_root_site.xml');
         $this->expectException(InvalidArgumentException::class);
 
@@ -88,7 +93,8 @@ class SiteTest extends IntegrationTest
     /**
      * @test
      */
-    public function canCreateInstanceWithNonRootSiteUidNOK() {
+    public function canCreateInstanceWithNonRootSiteUidNOK()
+    {
         $this->importDataSetFromFixture('can_create_instance_with_non_root_site.xml');
         $this->expectException(InvalidArgumentException::class);
 
@@ -100,7 +106,8 @@ class SiteTest extends IntegrationTest
     /**
      * @test
      */
-    public function canGetAvailableLanguageIds() {
+    public function canGetAvailableLanguageIds()
+    {
         $this->importDataSetFromFixture('can_get_translations_for_root_site.xml');
 
         /* @var SiteRepository $siteRepository */
@@ -108,6 +115,6 @@ class SiteTest extends IntegrationTest
         $site = $siteRepository->getSiteByRootPageId(1);
         $languageIds = $site->getAvailableLanguageIds();
 
-        $this->assertEquals([0, 1, 2], $languageIds);
+        self::assertEquals([0, 1, 2], $languageIds);
     }
 }

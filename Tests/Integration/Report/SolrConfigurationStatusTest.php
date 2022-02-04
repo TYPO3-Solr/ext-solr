@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\Report;
 
 /***************************************************************
@@ -42,10 +43,7 @@ class SolrConfigurationStatusTest extends IntegrationTest
      */
     protected bool $skipImportRootPagesAndTemplatesForConfiguredSites = true;
 
-    /**
-     * @return void
-     */
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->writeDefaultSolrTestSiteConfiguration();
@@ -58,10 +56,10 @@ class SolrConfigurationStatusTest extends IntegrationTest
     {
         $this->importDataSetFromFixture('can_get_green_solr_configuration_status_report.xml');
 
-            /** @var $solrConfigurationStatus  SolrConfigurationStatus */
+        /** @var $solrConfigurationStatus  SolrConfigurationStatus */
         $solrConfigurationStatus = GeneralUtility::makeInstance(SolrConfigurationStatus::class);
         $violations = $solrConfigurationStatus->getStatus();
-        $this->assertEmpty($violations, 'We did not get an empty response from the solr configuration status report! Something is wrong');
+        self::assertEmpty($violations, 'We did not get an empty response from the solr configuration status report! Something is wrong');
     }
 
     /**
@@ -75,10 +73,10 @@ class SolrConfigurationStatusTest extends IntegrationTest
         $solrConfigurationStatus = GeneralUtility::makeInstance(SolrConfigurationStatus::class);
         $violations = $solrConfigurationStatus->getStatus();
 
-        $this->assertCount(1, $violations, 'Asserting to contain only one violation.');
+        self::assertCount(1, $violations, 'Asserting to contain only one violation.');
 
         $firstViolation = array_pop($violations);
-        $this->assertStringContainsString('No sites', $firstViolation->getValue(), 'Did not get a no sites found violation');
+        self::assertStringContainsString('No sites', $firstViolation->getValue(), 'Did not get a no sites found violation');
     }
 
     /**
@@ -92,9 +90,9 @@ class SolrConfigurationStatusTest extends IntegrationTest
         $solrConfigurationStatus = GeneralUtility::makeInstance(SolrConfigurationStatus::class);
         $violations = $solrConfigurationStatus->getStatus();
 
-        $this->assertCount(1, $violations, 'Asserting to contain only one violation.');
+        self::assertCount(1, $violations, 'Asserting to contain only one violation.');
 
         $firstViolation = array_pop($violations);
-        $this->assertStringContainsString('Indexing is disabled', $firstViolation->getValue(), 'Did not get a no sites found violation');
+        self::assertStringContainsString('Indexing is disabled', $firstViolation->getValue(), 'Did not get a no sites found violation');
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\ContentObject;
 
 /***************************************************************
@@ -25,7 +26,6 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\ContentObject;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-
 use ApacheSolrForTypo3\Solr\ContentObject\Relation;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -49,9 +49,7 @@ class RelationTest extends IntegrationTest
     {
         $this->importDataSetFromFixture($fixtureName);
         /* @var TypoScriptFrontendController|MockObject $tsfe */
-        $GLOBALS['TSFE'] = $tsfe = $this->getMockBuilder(TypoScriptFrontendController::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $GLOBALS['TSFE'] = $tsfe = $this->createMock(TypoScriptFrontendController::class);
         $tsfe->sys_page = GeneralUtility::makeInstance(PageRepository::class);
         /* @var ContentObjectRenderer $contentObjectRendererMock */
         $contentObjectRendererMock = $this->getMockBuilder(ContentObjectRenderer::class)->setConstructorArgs([$GLOBALS['TSFE']])->getMock();
@@ -61,7 +59,7 @@ class RelationTest extends IntegrationTest
         $solrRelation = GeneralUtility::makeInstance(Relation::class, $contentObjectRendererMock);
         $actual = $solrRelation->render(['localField' => 'categories']);
 
-        $this->assertSame('Some Category', $actual, 'Can not fallback to table "pages" on non existent column configuration in TCA for table "pages_language_overlay".');
+        self::assertSame('Some Category', $actual, 'Can not fallback to table "pages" on non existent column configuration in TCA for table "pages_language_overlay".');
     }
 
     /**
@@ -73,7 +71,7 @@ class RelationTest extends IntegrationTest
     {
         return [
             ['solr_relation_can_fallback_to_pages_table_if_no_tca_for_local_field.xml'],
-            ['solr_relation_can_get_related_items_using_original_uid_if_sys_lang_overlay_has_no_tca.xml']
+            ['solr_relation_can_get_related_items_using_original_uid_if_sys_lang_overlay_has_no_tca.xml'],
         ];
     }
 }

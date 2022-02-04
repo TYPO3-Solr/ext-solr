@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\Query\Helper;
 
 /***************************************************************
@@ -57,7 +58,7 @@ class EscapeHelperTest extends UnitTest
             'numeric is kept' => ['input' => 42, 'expectedOutput' => 42],
             'combined quoted phrase' => ['input' => '"hello world" or planet', 'expectedOutput' => '"hello world" or planet'],
             'two combined quoted phrases' => ['input' => '"hello world" or "hello planet"', 'expectedOutput' => '"hello world" or "hello planet"'],
-            'combined quoted phrase mixed with escape character' => ['input' => '"hello world" or (planet)', 'expectedOutput' => '"hello world" or \(planet\)']
+            'combined quoted phrase mixed with escape character' => ['input' => '"hello world" or (planet)', 'expectedOutput' => '"hello world" or \(planet\)'],
         ];
     }
 
@@ -69,7 +70,6 @@ class EscapeHelperTest extends UnitTest
     {
         $escapeHelper = new EscapeService();
         $output = $escapeHelper::escape($input);
-        $this->assertSame($expectedOutput, $output, 'Query was not escaped as expected');
+        self::assertSame($expectedOutput, $output, 'Query was not escaped as expected');
     }
-
 }

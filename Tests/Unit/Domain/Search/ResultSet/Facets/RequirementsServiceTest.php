@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets;
 
 /*
@@ -32,7 +33,7 @@ class RequirementsServiceTest extends UnitTest
     {
         $facet = $this->getDumbMock(OptionsFacet::class);
         $service = new RequirementsService();
-        $this->assertTrue($service->getAllRequirementsMet($facet), 'Facet without any requirements should met all requirements');
+        self::assertTrue($service->getAllRequirementsMet($facet), 'Facet without any requirements should met all requirements');
     }
 
     /**
@@ -49,14 +50,14 @@ class RequirementsServiceTest extends UnitTest
             'requirements.' => [
                 'matchesColor' => [
                     'facet' => 'mycolor',
-                    'values' => 'red'
-                ]
-            ]
+                    'values' => 'red',
+                ],
+            ],
         ];
         $categoryFacet = new OptionsFacet($resultSet, 'mycategory', 'category_stringM', 'Category', $categoryConfig);
         $resultSet->addFacet($categoryFacet);
         $service = new RequirementsService();
-        $this->assertFalse($service->getAllRequirementsMet($categoryFacet), 'Requirement is not met');
+        self::assertFalse($service->getAllRequirementsMet($categoryFacet), 'Requirement is not met');
     }
 
     /**
@@ -78,14 +79,14 @@ class RequirementsServiceTest extends UnitTest
             'requirements.' => [
                 'matchesColor' => [
                     'facet' => 'mycolor',
-                    'values' => 'red,green'
-                ]
-            ]
+                    'values' => 'red,green',
+                ],
+            ],
         ];
         $categoryFacet = new OptionsFacet($resultSet, 'mycategory', 'category_stringM', 'Category', $categoryConfig);
         $resultSet->addFacet($categoryFacet);
         $service = new RequirementsService();
-        $this->assertTrue($service->getAllRequirementsMet($categoryFacet), 'Requirement should be met, because color option is present, but is indicated to not be met');
+        self::assertTrue($service->getAllRequirementsMet($categoryFacet), 'Requirement should be met, because color option is present, but is indicated to not be met');
     }
 
     /**
@@ -110,19 +111,19 @@ class RequirementsServiceTest extends UnitTest
             'requirements.' => [
                 'matchesColor' => [
                     'facet' => 'mycolor',
-                    'values' => 'red,green'
+                    'values' => 'red,green',
                 ],
                 'matchesSize' => [
                     'facet' => 'mysize',
-                    'values' => 'xl'
+                    'values' => 'xl',
                 ],
 
-            ]
+            ],
         ];
         $categoryFacet = new OptionsFacet($resultSet, 'mycategory', 'category_stringM', 'Category', $categoryConfig);
         $resultSet->addFacet($categoryFacet);
         $service = new RequirementsService();
-        $this->assertTrue($service->getAllRequirementsMet($categoryFacet), 'Requirement should be met, because color and size option is present, but is indicated to not be met');
+        self::assertTrue($service->getAllRequirementsMet($categoryFacet), 'Requirement should be met, because color and size option is present, but is indicated to not be met');
     }
 
     /**
@@ -144,19 +145,19 @@ class RequirementsServiceTest extends UnitTest
             'requirements.' => [
                 'matchesColor' => [
                     'facet' => 'mycolor',
-                    'values' => 'red,green'
+                    'values' => 'red,green',
                 ],
                 'matchesSize' => [
                     'facet' => 'mysize',
-                    'values' => 'xl'
+                    'values' => 'xl',
                 ],
 
-            ]
+            ],
         ];
         $categoryFacet = new OptionsFacet($resultSet, 'mycategory', 'category_stringM', 'Category', $categoryConfig);
         $resultSet->addFacet($categoryFacet);
         $service = new RequirementsService();
-        $this->assertFalse($service->getAllRequirementsMet($categoryFacet), 'Requirement should not be met since the matchesSize requirement is not met.');
+        self::assertFalse($service->getAllRequirementsMet($categoryFacet), 'Requirement should not be met since the matchesSize requirement is not met.');
     }
 
     /**
@@ -177,14 +178,14 @@ class RequirementsServiceTest extends UnitTest
             'requirements.' => [
                 'matchesColor' => [
                     'facet' => 'mycolor',
-                    'values' => 'blue,green'
-                ]
-            ]
+                    'values' => 'blue,green',
+                ],
+            ],
         ];
         $categoryFacet = new OptionsFacet($resultSet, 'mycategory', 'category_stringM', 'Category', $categoryConfig);
         $resultSet->addFacet($categoryFacet);
         $service = new RequirementsService();
-        $this->assertFalse($service->getAllRequirementsMet($categoryFacet), 'Requirement should not be met because the facet has not the require value');
+        self::assertFalse($service->getAllRequirementsMet($categoryFacet), 'Requirement should not be met because the facet has not the require value');
     }
 
     /**
@@ -205,14 +206,14 @@ class RequirementsServiceTest extends UnitTest
             'requirements.' => [
                 'matchesColor' => [
                     'facet' => 'mycolor',
-                    'values' => 'red,blue,green'
-                ]
-            ]
+                    'values' => 'red,blue,green',
+                ],
+            ],
         ];
         $categoryFacet = new OptionsFacet($resultSet, 'mycategory', 'category_stringM', 'Category', $categoryConfig);
         $resultSet->addFacet($categoryFacet);
         $service = new RequirementsService();
-        $this->assertFalse($service->getAllRequirementsMet($categoryFacet), 'Requirement should not be met because the required option is not selected');
+        self::assertFalse($service->getAllRequirementsMet($categoryFacet), 'Requirement should not be met because the required option is not selected');
     }
 
     /**
@@ -228,9 +229,9 @@ class RequirementsServiceTest extends UnitTest
             'requirements.' => [
                 'matchesColor' => [
                     'facet' => 'mycolor',
-                    'values' => 'red,green'
-                ]
-            ]
+                    'values' => 'red,green',
+                ],
+            ],
         ];
         $categoryFacet = new OptionsFacet($resultSet, 'mycategory', 'category_stringM', 'Category', $categoryConfig);
         $resultSet->addFacet($categoryFacet);
@@ -257,14 +258,13 @@ class RequirementsServiceTest extends UnitTest
                 'matchesColor' => [
                     'facet' => 'mycolor',
                     'values' => 'blue,green',
-                    'negate' => '1'
-                ]
-            ]
+                    'negate' => '1',
+                ],
+            ],
         ];
         $categoryFacet = new OptionsFacet($resultSet, 'mycategory', 'category_stringM', 'Category', $categoryConfig);
         $resultSet->addFacet($categoryFacet);
         $service = new RequirementsService();
-        $this->assertTrue($service->getAllRequirementsMet($categoryFacet), 'Requirement should be met because of negate but is not met');
+        self::assertTrue($service->getAllRequirementsMet($categoryFacet), 'Requirement should be met because of negate but is not met');
     }
-
 }

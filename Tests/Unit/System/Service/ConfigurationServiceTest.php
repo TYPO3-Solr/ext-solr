@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\Service;
 
 /***************************************************************
@@ -25,11 +26,11 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\Service;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use ApacheSolrForTypo3\Solr\System\Service\ConfigurationService;
+use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use TYPO3\CMS\Core\Service\FlexFormService;
 use TYPO3\CMS\Core\TypoScript\TypoScriptService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Service\FlexFormService;
 
 /**
  * @author Timo Hund <timo.hund@dkd.de>
@@ -44,7 +45,7 @@ class ConfigurationServiceTest extends UnitTest
     {
         return [
             'simpleInteger' => ['id', 4711, 'id:4711'],
-            'escapedString' => ['id', 'foo"bar', 'id:"foo\"bar"']
+            'escapedString' => ['id', 'foo"bar', 'id:"foo\"bar"'],
         ];
     }
 
@@ -59,25 +60,25 @@ class ConfigurationServiceTest extends UnitTest
                 [
                     'query' => [
                         'filter' => [
-                            ['field' => ['field' => $filterField, 'value' => $filterValue]]
-                        ]
-                    ]
-                ]
+                            ['field' => ['field' => $filterField, 'value' => $filterValue]],
+                        ],
+                    ],
+                ],
           ];
         $flexFormServiceMock = $this->getDumbMock(FlexFormService::class);
-        $flexFormServiceMock->expects($this->once())->method('convertflexFormContentToArray')->will($this->returnValue($fakeFlexFormArrayData));
+        $flexFormServiceMock->expects(self::once())->method('convertflexFormContentToArray')->willReturn($fakeFlexFormArrayData);
 
         $typoScriptConfiguration = new TypoScriptConfiguration(['plugin.' => ['tx_solr.' => []]]);
         $configurationService = new ConfigurationService();
         $configurationService->setFlexFormService($flexFormServiceMock);
         $configurationService->setTypoScriptService(GeneralUtility::makeInstance(TypoScriptService::class));
 
-        $this->assertEquals([], $typoScriptConfiguration->getSearchQueryFilterConfiguration());
+        self::assertEquals([], $typoScriptConfiguration->getSearchQueryFilterConfiguration());
 
-            // the passed flexform data is empty because the convertflexFormContentToArray retrieves tha faked converted data
+        // the passed flexform data is empty because the convertflexFormContentToArray retrieves tha faked converted data
         $configurationService->overrideConfigurationWithFlexFormSettings('foobar', $typoScriptConfiguration);
 
-            // the filter should be overwritten by the flexform
-        $this->assertEquals([$expectedFilterString], $typoScriptConfiguration->getSearchQueryFilterConfiguration());
+        // the filter should be overwritten by the flexform
+        self::assertEquals([$expectedFilterString], $typoScriptConfiguration->getSearchQueryFilterConfiguration());
     }
 }

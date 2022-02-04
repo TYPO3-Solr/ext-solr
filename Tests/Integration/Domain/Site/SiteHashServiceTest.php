@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\Domain\Site;
 
 /***************************************************************
@@ -46,7 +47,8 @@ class SiteHashServiceTest extends IntegrationTest
      * @throws TestingFrameworkCoreException
      * @throws DBALException
      */
-    public function setUp(): void {
+    protected function setUp(): void
+    {
         parent::setUp();
         $this->writeDefaultSolrTestSiteConfiguration();
     }
@@ -59,7 +61,7 @@ class SiteHashServiceTest extends IntegrationTest
         return [
             'siteHashDisabled' => ['*', '*'],
             'allSitesInSystem' => ['__all', 'testone.site,testtwo.site'],
-            'currentSiteOnly' => ['__current_site', 'testone.site']
+            'currentSiteOnly' => ['__current_site', 'testone.site'],
         ];
     }
 
@@ -67,10 +69,10 @@ class SiteHashServiceTest extends IntegrationTest
      * @dataProvider canResolveSiteHashAllowedSitesDataProvider
      * @test
      */
-    public function canResolveSiteHashAllowedSites($allowedSitesConfiguration , $expectedAllowedSites)
+    public function canResolveSiteHashAllowedSites($allowedSitesConfiguration, $expectedAllowedSites)
     {
         $siteHashService = GeneralUtility::makeInstance(SiteHashService::class);
         $allowedSites = $siteHashService->getAllowedSitesForPageIdAndAllowedSitesConfiguration(1, $allowedSitesConfiguration);
-        $this->assertSame($expectedAllowedSites, $allowedSites, 'resolveSiteHashAllowedSites did not return expected allowed sites');
+        self::assertSame($expectedAllowedSites, $allowedSites, 'resolveSiteHashAllowedSites did not return expected allowed sites');
     }
 }

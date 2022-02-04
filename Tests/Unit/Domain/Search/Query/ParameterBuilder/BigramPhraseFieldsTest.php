@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\Query\Parameter;
 
 /***************************************************************
@@ -38,6 +39,6 @@ class BigramPhraseFieldsTest extends UnitTest
     public function buildFromEmptyStringCreatesEmptyArrayOnBuild()
     {
         $bigramPhraseFields = BigramPhraseFields::fromString('');
-        $this->assertSame('', $bigramPhraseFields->toString());
+        self::assertSame('', $bigramPhraseFields->toString());
     }
 }

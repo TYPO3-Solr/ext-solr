@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\Solr\Parser;
 
 /***************************************************************
@@ -42,6 +43,6 @@ class StopWordParserTest extends UnitTest
     {
         $parser = new StopWordParser();
         $stopwords = $parser->parseJson($this->getFixtureContentByName('stopword.json'));
-        $this->assertSame(['badword'], $stopwords, 'Could not parser stopwords from stopwords response');
+        self::assertSame(['badword'], $stopwords, 'Could not parser stopwords from stopwords response');
     }
 }

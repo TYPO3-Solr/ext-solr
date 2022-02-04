@@ -1,4 +1,5 @@
 <?php
+
 namespace  ApacheSolrForTypo3\Solr\Tests\Unit\System\ContentObject;
 
 /***************************************************************
@@ -46,10 +47,11 @@ class ContentObjectServiceTest extends UnitTest
      */
     protected $contentObjectService;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->contentObjectRendererMock = $this->getDumbMock(ContentObjectRenderer::class);
         $this->contentObjectService = new ContentObjectService($this->contentObjectRendererMock);
+        parent::setUp();
     }
 
     /**
@@ -59,10 +61,10 @@ class ContentObjectServiceTest extends UnitTest
     {
         $fakeStdWrapConfiguration = [
             'field' => 'TEXT',
-            'field.' => ['value' => 'test']
+            'field.' => ['value' => 'test'],
         ];
 
-        $this->contentObjectRendererMock->expects($this->once())->method('cObjGetSingle')->with('TEXT',  ['value' => 'test']);
+        $this->contentObjectRendererMock->expects(self::once())->method('cObjGetSingle')->with('TEXT', ['value' => 'test']);
         $this->contentObjectService->renderSingleContentObjectByArrayAndKey($fakeStdWrapConfiguration, 'field');
     }
 
@@ -72,11 +74,11 @@ class ContentObjectServiceTest extends UnitTest
     public function renderSingleContentObjectByArrayAndKeyWillReturnNameWhenConfigIsNotAnArray()
     {
         $fakeStdWrapConfiguration = [
-            'field' => 'fooo'
+            'field' => 'fooo',
         ];
 
-        $this->contentObjectRendererMock->expects($this->never())->method('cObjGetSingle');
+        $this->contentObjectRendererMock->expects(self::never())->method('cObjGetSingle');
         $result = $this->contentObjectService->renderSingleContentObjectByArrayAndKey($fakeStdWrapConfiguration, 'field');
-        $this->assertSame('fooo', $result);
+        self::assertSame('fooo', $result);
     }
 }

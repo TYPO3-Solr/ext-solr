@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Sorting;
 
 /***************************************************************
@@ -24,9 +25,9 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Sorting;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Sorting\Sorting;
+use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 
 /**
  * Unit test case for the ObjectReconstitutionProcessor.
@@ -45,10 +46,7 @@ class SortingTest extends UnitTest
      */
     protected $resultSetMock;
 
-    /**
-     * @return void
-     */
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->resultSetMock = $this->getDumbMock(SearchResultSet::class);
 
@@ -59,6 +57,7 @@ class SortingTest extends UnitTest
         $selected = false;
         $isResetOption = false;
         $this->sorting = new Sorting($this->resultSetMock, $name, $field, $direction, $label, $selected, $isResetOption);
+        parent::setUp();
     }
 
     /**
@@ -75,7 +74,7 @@ class SortingTest extends UnitTest
      */
     public function canGetName()
     {
-        $this->assertSame('Price', $this->sorting->getName(), 'Could not get name from sorting');
+        self::assertSame('Price', $this->sorting->getName(), 'Could not get name from sorting');
     }
 
     /**
@@ -83,7 +82,7 @@ class SortingTest extends UnitTest
      */
     public function canGetLabel()
     {
-        $this->assertSame('the príce', $this->sorting->getLabel(), 'Could not get label from sorting');
+        self::assertSame('the príce', $this->sorting->getLabel(), 'Could not get label from sorting');
     }
 
     /**
@@ -91,7 +90,7 @@ class SortingTest extends UnitTest
      */
     public function canGetField()
     {
-        $this->assertSame('price_f', $this->sorting->getField(), 'Could not get field from sorting');
+        self::assertSame('price_f', $this->sorting->getField(), 'Could not get field from sorting');
     }
 
     /**
@@ -99,7 +98,7 @@ class SortingTest extends UnitTest
      */
     public function canGetDirection()
     {
-        $this->assertSame('asc', $this->sorting->getDirection(), 'Could not get direction');
+        self::assertSame('asc', $this->sorting->getDirection(), 'Could not get direction');
     }
 
     /**
@@ -107,10 +106,10 @@ class SortingTest extends UnitTest
      */
     public function canGetOppositeDirection()
     {
-        $this->assertSame('desc', $this->sorting->getOppositeDirection(), 'Could not get opposite direction');
+        self::assertSame('desc', $this->sorting->getOppositeDirection(), 'Could not get opposite direction');
 
         $descSorting = new Sorting($this->resultSetMock, 'Color', 'color_s', Sorting::DIRECTION_DESC, 'the color', false, false);
-        $this->assertSame('asc', $descSorting->getOppositeDirection(), 'Could not get opposite direction');
+        self::assertSame('asc', $descSorting->getOppositeDirection(), 'Could not get opposite direction');
     }
 
     /**
@@ -118,7 +117,7 @@ class SortingTest extends UnitTest
      */
     public function getGetIsAsDirection()
     {
-        $this->assertTrue($this->sorting->getIsAscDirection(), 'Sorting direction was not handled as ascending');
+        self::assertTrue($this->sorting->getIsAscDirection(), 'Sorting direction was not handled as ascending');
     }
 
     /**
@@ -126,7 +125,7 @@ class SortingTest extends UnitTest
      */
     public function getGetIsDescDirection()
     {
-        $this->assertFalse($this->sorting->getIsDescDirection(), 'Sorting should be indicated to not be descending');
+        self::assertFalse($this->sorting->getIsDescDirection(), 'Sorting should be indicated to not be descending');
     }
 
     /**
@@ -134,6 +133,6 @@ class SortingTest extends UnitTest
      */
     public function canGetIsResetOption()
     {
-        $this->assertFalse($this->sorting->getIsResetOption(), 'Sorting options should not be a reset option');
+        self::assertFalse($this->sorting->getIsResetOption(), 'Sorting options should not be a reset option');
     }
 }

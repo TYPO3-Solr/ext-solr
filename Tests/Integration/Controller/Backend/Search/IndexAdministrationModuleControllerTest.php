@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\Controller\Backend\Search;
 
 /***************************************************************
@@ -44,7 +45,6 @@ use TYPO3\TestingFramework\Core\Exception as TestingFrameworkCoreException;
 
 /**
  * Class IndexAdministrationModuleControllerTest
- * @package ApacheSolrForTypo3\Solr\Tests\Integration\Controller\Search
  */
 class IndexAdministrationModuleControllerTest extends IntegrationTest
 {
@@ -60,9 +60,10 @@ class IndexAdministrationModuleControllerTest extends IntegrationTest
      * @throws NoSuchCacheException
      * @throws TestingFrameworkCoreException
      */
-    public function setUp(): void {
+    protected function setUp(): void
+    {
         parent::setUp();
-        $GLOBALS['LANG'] = $this->getMockBuilder(LanguageService::class)->disableOriginalConstructor()->getMock();
+        $GLOBALS['LANG'] = $this->createMock(LanguageService::class);
 
         $this->writeDefaultSolrTestSiteConfiguration();
 
@@ -75,13 +76,14 @@ class IndexAdministrationModuleControllerTest extends IntegrationTest
                     'siteFinder' => GeneralUtility::makeInstance(SiteFinder::class),
                     'solrConnectionManager' => GeneralUtility::makeInstance(ConnectionManager::class),
                     'indexQueue' => GeneralUtility::makeInstance(Queue::class),
-                ])
+                ]
+            )
             ->onlyMethods(['addFlashMessage'])
             ->getMock();
         $uriBuilderMock = $this->getMockBuilder(UriBuilder::class)
             ->disableOriginalConstructor()
             ->onlyMethods(['uriFor'])->getMock();
-        $uriBuilderMock->expects($this->any())->method('uriFor')->will($this->returnValue('index'));
+        $uriBuilderMock->expects(self::any())->method('uriFor')->willReturn('index');
         $this->controller->injectUriBuilder($uriBuilderMock);
     }
 
@@ -94,7 +96,7 @@ class IndexAdministrationModuleControllerTest extends IntegrationTest
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $selectedSite = $siteRepository->getFirstAvailableSite();
         $this->controller->setSelectedSite($selectedSite);
-        $this->controller->expects($this->exactly(1))
+        $this->controller->expects(self::exactly(1))
             ->method('addFlashMessage')
             ->with('Core configuration reloaded (core_en, core_de, core_da).', '', FlashMessage::OK);
         $this->controller->reloadIndexConfigurationAction();
@@ -109,7 +111,7 @@ class IndexAdministrationModuleControllerTest extends IntegrationTest
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $selectedSite = $siteRepository->getFirstAvailableSite();
         $this->controller->setSelectedSite($selectedSite);
-        $this->controller->expects($this->atLeastOnce())
+        $this->controller->expects(self::atLeastOnce())
             ->method('addFlashMessage')
             ->with('Index emptied for Site "Root of Testpage testone.site aka integration_tree_one, Root Page ID: 1" (core_en, core_de, core_da).', '', FlashMessage::OK);
 

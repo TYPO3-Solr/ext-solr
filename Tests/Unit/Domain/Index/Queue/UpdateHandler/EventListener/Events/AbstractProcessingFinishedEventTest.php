@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\IndexQueue\UpdateHandler\EventListener\Events;
 
 /***************************************************************
@@ -24,9 +25,9 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\IndexQueue\UpdateHandler\EventListe
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
-use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordUpdatedEvent;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\EventListener\Events\ProcessingFinishedEventInterface;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordUpdatedEvent;
+use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 
 /**
  * Abstract testcase for the processing finished events
@@ -46,6 +47,6 @@ abstract class AbstractProcessingFinishedEventTest extends UnitTest
         $eventClass = static::EVENT_CLASS;
         $event = new $eventClass($processedEvent);
 
-        $this->assertEquals($processedEvent, $event->getDataUpdateEvent());
+        self::assertEquals($processedEvent, $event->getDataUpdateEvent());
     }
 }

@@ -204,13 +204,13 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
     /**
      * @return string
      */
-    protected function getQueryString()
+    protected function getQueryString(): string
     {
         $resultSet = $this->getSearchResultSet();
         if ($resultSet === null) {
             return '';
         }
-        return trim($this->getSearchResultSet()->getUsedSearchRequest()->getRawUserQuery());
+        return trim($this->getSearchResultSet()->getUsedSearchRequest()->getRawUserQuery() ?? '');
     }
 
     /**
@@ -226,9 +226,7 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
 
         /* @var UrlHelper $urlService */
         $urlService = GeneralUtility::makeInstance(UrlHelper::class, $suggestUrl);
-        $suggestUrl = $urlService->removeQueryParameter('cHash')->getUrl();
-
-        return $suggestUrl;
+        return $urlService->removeQueryParameter('cHash')->__toString();
     }
 
     /**

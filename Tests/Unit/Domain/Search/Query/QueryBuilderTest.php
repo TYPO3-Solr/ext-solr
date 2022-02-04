@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\Query;
 
 /***************************************************************
@@ -37,8 +38,8 @@ use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\ReturnFields;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Sorting;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Spellchecking;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\TrigramPhraseFields;
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\SearchQuery;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteHashService;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
@@ -74,12 +75,13 @@ class QueryBuilderTest extends UnitTest
      */
     protected $builder;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
         $this->loggerMock = $this->getDumbMock(SolrLogManager::class);
         $this->siteHashServiceMock = $this->getDumbMock(SiteHashService::class);
         $this->builder = new QueryBuilder($this->configurationMock, $this->loggerMock, $this->siteHashServiceMock);
+        parent::setUp();
     }
 
     /**
@@ -110,7 +112,7 @@ class QueryBuilderTest extends UnitTest
     public function buildSearchQueryPassesQueryString()
     {
         $query = $this->builder->buildSearchQuery('one');
-        $this->assertSame('one', (string)$query, 'Query has unexpected value, when casted to string');
+        self::assertSame('one', (string)$query, 'Query has unexpected value, when casted to string');
     }
 
     /**
@@ -119,8 +121,7 @@ class QueryBuilderTest extends UnitTest
     public function buildSearchQueryPassesDefaultPerPage()
     {
         $query = $this->builder->buildSearchQuery('one');
-        $this->assertSame(10, $query->getRows(), 'Query was not created with default perPage value');
-
+        self::assertSame(10, $query->getRows(), 'Query was not created with default perPage value');
     }
 
     /**
@@ -129,7 +130,7 @@ class QueryBuilderTest extends UnitTest
     public function buildSearchQueryPassesCustomPerPage()
     {
         $query = $this->builder->buildSearchQuery('one', 22);
-        $this->assertSame(22, $query->getRows(), 'Query was not created with default perPage value');
+        self::assertSame(22, $query->getRows(), 'Query was not created with default perPage value');
     }
 
     /**
@@ -137,9 +138,9 @@ class QueryBuilderTest extends UnitTest
      */
     public function buildSearchQueryInitializesQueryFieldsFromConfiguration()
     {
-        $this->configurationMock->expects($this->once())->method('getSearchQueryQueryFields')->willReturn('title^10, content^123');
+        $this->configurationMock->expects(self::once())->method('getSearchQueryQueryFields')->willReturn('title^10, content^123');
         $query = $this->builder->buildSearchQuery('foo');
-        $this->assertSame('title^10.0 content^123.0', $this->getAllQueryParameters($query)['qf'], 'The queryFields have not been initialized as expected');
+        self::assertSame('title^10.0 content^123.0', $this->getAllQueryParameters($query)['qf'], 'The queryFields have not been initialized as expected');
     }
 
     /**
@@ -147,11 +148,11 @@ class QueryBuilderTest extends UnitTest
      */
     public function buildSearchQueryInitializesTrigramPhraseFields()
     {
-        $this->configurationMock->expects($this->once())->method('getTrigramPhraseSearchIsEnabled')->willReturn(true);
+        $this->configurationMock->expects(self::once())->method('getTrigramPhraseSearchIsEnabled')->willReturn(true);
 
-        $this->configurationMock->expects($this->once())->method('getSearchQueryTrigramPhraseFields')->willReturn('content^10.0, title^10.0');
+        $this->configurationMock->expects(self::once())->method('getSearchQueryTrigramPhraseFields')->willReturn('content^10.0, title^10.0');
         $query = $this->builder->buildSearchQuery('trigram');
-        $this->assertSame('content^10.0 title^10.0', $this->getAllQueryParameters($query)['pf3'], 'The trigramPhraseFields have not been initialized as expected');
+        self::assertSame('content^10.0 title^10.0', $this->getAllQueryParameters($query)['pf3'], 'The trigramPhraseFields have not been initialized as expected');
     }
 
     /**
@@ -159,9 +160,9 @@ class QueryBuilderTest extends UnitTest
      */
     public function buildSearchIsSettingWildCardQueryOnInitializeWithEmptyQuery()
     {
-        $this->configurationMock->expects($this->once())->method('getSearchInitializeWithEmptyQuery')->willReturn(true);
+        $this->configurationMock->expects(self::once())->method('getSearchInitializeWithEmptyQuery')->willReturn(true);
         $query = $this->builder->buildSearchQuery('initializeWithEmpty');
-        $this->assertSame('*:*', $this->getAllQueryParameters($query)['q.alt'], 'The alterativeQuery has not been initialized as expected');
+        self::assertSame('*:*', $this->getAllQueryParameters($query)['q.alt'], 'The alterativeQuery has not been initialized as expected');
     }
 
     /**
@@ -169,9 +170,9 @@ class QueryBuilderTest extends UnitTest
      */
     public function buildSearchIsSettingWildCardQueryOnInitializeWithAllowEmptyQuery()
     {
-        $this->configurationMock->expects($this->once())->method('getSearchQueryAllowEmptyQuery')->willReturn(true);
+        $this->configurationMock->expects(self::once())->method('getSearchQueryAllowEmptyQuery')->willReturn(true);
         $query = $this->builder->buildSearchQuery('initializeWithEmpty');
-        $this->assertSame('*:*', $this->getAllQueryParameters($query)['q.alt'], 'The alterativeQuery has not been initialized as expected');
+        self::assertSame('*:*', $this->getAllQueryParameters($query)['q.alt'], 'The alterativeQuery has not been initialized as expected');
     }
 
     /**
@@ -179,9 +180,9 @@ class QueryBuilderTest extends UnitTest
      */
     public function buildSearchIsSettingQuerystringForConfiguredInitialQuery()
     {
-        $this->configurationMock->expects($this->exactly(2))->method('getSearchInitializeWithQuery')->willReturn('myinitialsearch');
+        $this->configurationMock->expects(self::exactly(2))->method('getSearchInitializeWithQuery')->willReturn('myinitialsearch');
         $query = $this->builder->buildSearchQuery('initializeWithEmpty');
-        $this->assertSame('myinitialsearch', $this->getAllQueryParameters($query)['q.alt'], 'The alterativeQuery has not been initialized from a configured initial query');
+        self::assertSame('myinitialsearch', $this->getAllQueryParameters($query)['q.alt'], 'The alterativeQuery has not been initialized from a configured initial query');
     }
 
     /**
@@ -189,13 +190,13 @@ class QueryBuilderTest extends UnitTest
      */
     public function buildSearchIsSettingConfiguredAdditionalFilters()
     {
-        $this->configurationMock->expects($this->any())->method('getSearchQueryFilterConfiguration')->willReturn(['noPage' => '-type:pages']);
+        $this->configurationMock->expects(self::any())->method('getSearchQueryFilterConfiguration')->willReturn(['noPage' => '-type:pages']);
         $query = $this->builder->buildSearchQuery('applies configured filters');
         $filterValue = $this->getAllQueryParameters($query)['fq'];
-        $filterArray = explode(" ", $filterValue);
+        $filterArray = explode(' ', $filterValue);
 
-        $this->assertCount(1, $filterArray, 'Unpexcted amount of filters for query');
-        $this->assertSame('-type:pages', $filterValue, 'First filter has unexpected value');
+        self::assertCount(1, $filterArray, 'Unpexcted amount of filters for query');
+        self::assertSame('-type:pages', $filterValue, 'First filter has unexpected value');
     }
 
     /**
@@ -204,7 +205,7 @@ class QueryBuilderTest extends UnitTest
     public function buildSearchIsSettingNoAlternativeQueryByDefault()
     {
         $query = $this->builder->buildSearchQuery('initializeWithEmpty');
-        $this->assertArrayNotHasKey('q.alt', $this->getAllQueryParameters($query), 'The alterativeQuery is not null when nothing was set');
+        self::assertArrayNotHasKey('q.alt', $this->getAllQueryParameters($query), 'The alterativeQuery is not null when nothing was set');
     }
 
     /**
@@ -219,8 +220,8 @@ class QueryBuilderTest extends UnitTest
 
         $query = $this->builder->startFrom($query)->useHighlighting($highlighting)->getQuery();
         $queryParameters = $this->getAllQueryParameters($query);
-        $this->assertSame('true', $queryParameters['hl'], 'Enable highlighting did not set the "hl" query parameter');
-        $this->assertSame(200, $queryParameters['hl.fragsize'], 'hl.fragsize was not set to the default value of 200');
+        self::assertSame('true', $queryParameters['hl'], 'Enable highlighting did not set the "hl" query parameter');
+        self::assertSame(200, $queryParameters['hl.fragsize'], 'hl.fragsize was not set to the default value of 200');
     }
 
     /**
@@ -235,13 +236,13 @@ class QueryBuilderTest extends UnitTest
 
         $query = $this->builder->startFrom($query)->useHighlighting($highlighting)->getQuery();
         $queryParameters = $this->getAllQueryParameters($query);
-        $this->assertSame('true', $queryParameters['hl'], 'Enable highlighting did not set the "hl" query parameter');
+        self::assertSame('true', $queryParameters['hl'], 'Enable highlighting did not set the "hl" query parameter');
 
         $highlighting->setIsEnabled(false);
         $query = $this->builder->startFrom($query)->useHighlighting($highlighting)->getQuery();
         $queryParameters = $this->getAllQueryParameters($query);
 
-        $this->assertArrayNotHasKey('hl', $queryParameters, 'Could not disable highlighting');
+        self::assertArrayNotHasKey('hl', $queryParameters, 'Could not disable highlighting');
     }
 
     /**
@@ -261,8 +262,8 @@ class QueryBuilderTest extends UnitTest
         $query = $this->builder->startFrom($query)->useHighlighting($highlighting)->getQuery();
         $queryParameters = $this->getAllQueryParameters($query);
 
-        $this->assertSame('true', $queryParameters['hl'], 'Enable highlighting did not set the "hl" query parameter');
-        $this->assertSame('title', $queryParameters['hl.fl'], 'Can set highlighting field list');
+        self::assertSame('true', $queryParameters['hl'], 'Enable highlighting did not set the "hl" query parameter');
+        self::assertSame('title', $queryParameters['hl.fl'], 'Can set highlighting field list');
     }
 
     /**
@@ -280,10 +281,10 @@ class QueryBuilderTest extends UnitTest
         $highlighting->setIsEnabled(true);
         $query = $this->builder->startFrom($query)->useHighlighting($highlighting)->getQuery();
         $queryParameters = $this->getAllQueryParameters($query);
-        $this->assertSame('[A]', $queryParameters['hl.tag.pre'], 'Can set highlighting hl.tag.pre');
-        $this->assertSame('[B]', $queryParameters['hl.tag.post'], 'Can set highlighting hl.tag.post');
-        $this->assertSame('[A]', $queryParameters['hl.simple.pre'], 'Can set highlighting hl.tag.pre');
-        $this->assertSame('[B]', $queryParameters['hl.simple.post'], 'Can set highlighting hl.tag.post');
+        self::assertSame('[A]', $queryParameters['hl.tag.pre'], 'Can set highlighting hl.tag.pre');
+        self::assertSame('[B]', $queryParameters['hl.tag.post'], 'Can set highlighting hl.tag.post');
+        self::assertSame('[A]', $queryParameters['hl.simple.pre'], 'Can set highlighting hl.tag.pre');
+        self::assertSame('[B]', $queryParameters['hl.simple.post'], 'Can set highlighting hl.tag.post');
     }
 
     /**
@@ -305,10 +306,10 @@ class QueryBuilderTest extends UnitTest
         $query = $this->builder->startFrom($query)->useHighlighting($highlighting)->getQuery();
         $queryParameters = $this->getAllQueryParameters($query);
 
-        $this->assertSame('[A]', $queryParameters['hl.simple.pre'], 'Can set highlighting field list');
-        $this->assertSame('[B]', $queryParameters['hl.simple.post'], 'Can set highlighting field list');
-        $this->assertEmpty($queryParameters['hl.tag.pre'], 'When the highlighting fragment size is to small hl.tag.pre should not be used because FastVectoreHighlighter will not be used');
-        $this->assertEmpty($queryParameters['hl.tag.post'], 'When the highlighting fragment size is to small hl.tag.post should not be used because FastVectoreHighlighter will not be used');
+        self::assertSame('[A]', $queryParameters['hl.simple.pre'], 'Can set highlighting field list');
+        self::assertSame('[B]', $queryParameters['hl.simple.post'], 'Can set highlighting field list');
+        self::assertEmpty($queryParameters['hl.tag.pre'], 'When the highlighting fragment size is to small hl.tag.pre should not be used because FastVectoreHighlighter will not be used');
+        self::assertEmpty($queryParameters['hl.tag.post'], 'When the highlighting fragment size is to small hl.tag.post should not be used because FastVectoreHighlighter will not be used');
     }
 
     /**
@@ -327,8 +328,8 @@ class QueryBuilderTest extends UnitTest
         $query = $this->builder->startFrom($query)->useHighlighting($highlighting)->getQuery();
         $queryParameters = $this->getAllQueryParameters($query);
 
-        $this->assertSame('true', $queryParameters['hl'], 'Enable highlighting did not set the "hl" query parameter');
-        $this->assertSame('true', $queryParameters['hl.useFastVectorHighlighter'], 'Enable highlighting did not set the "hl.useFastVectorHighlighter" query parameter');
+        self::assertSame('true', $queryParameters['hl'], 'Enable highlighting did not set the "hl" query parameter');
+        self::assertSame('true', $queryParameters['hl.useFastVectorHighlighter'], 'Enable highlighting did not set the "hl.useFastVectorHighlighter" query parameter');
     }
 
     /**
@@ -347,8 +348,8 @@ class QueryBuilderTest extends UnitTest
         $query = $this->builder->startFrom($query)->useHighlighting($highlighting)->getQuery();
         $queryParameters = $this->getAllQueryParameters($query);
 
-        $this->assertSame('true', $queryParameters['hl'], 'Enable highlighting did not set the "hl" query parameter');
-        $this->assertSame('false',$queryParameters['hl.useFastVectorHighlighter'], 'FastVectorHighlighter was disabled but still requested');
+        self::assertSame('true', $queryParameters['hl'], 'Enable highlighting did not set the "hl" query parameter');
+        self::assertSame('false', $queryParameters['hl.useFastVectorHighlighter'], 'FastVectorHighlighter was disabled but still requested');
     }
 
     /**
@@ -357,7 +358,7 @@ class QueryBuilderTest extends UnitTest
     public function canSetQueryString()
     {
         $query = $this->getInitializedTestSearchQuery('i like solr');
-        $this->assertSame('i like solr', $query->getQuery(), 'Can not set and get query string');
+        self::assertSame('i like solr', $query->getQuery(), 'Can not set and get query string');
     }
 
     /**
@@ -368,7 +369,7 @@ class QueryBuilderTest extends UnitTest
         $query = $this->getInitializedTestSearchQuery('i like solr');
         $query->setStart(10);
 
-        $this->assertSame(10, $query->getStart(), 'Can not set and get page');
+        self::assertSame(10, $query->getStart(), 'Can not set and get page');
     }
 
     /**
@@ -378,7 +379,7 @@ class QueryBuilderTest extends UnitTest
     {
         $query = $this->getInitializedTestSearchQuery();
         $queryParameters = $this->getAllQueryParameters($query);
-        $this->assertArrayNotHasKey('fq', $queryParameters, 'Query already contains filters after intialization.');
+        self::assertArrayNotHasKey('fq', $queryParameters, 'Query already contains filters after intialization.');
     }
 
     /**
@@ -390,7 +391,7 @@ class QueryBuilderTest extends UnitTest
         $queryBuilder = new QueryBuilder($this->configurationMock, $this->loggerMock);
         $queryBuilder->startFrom($query)->useUserAccessGroups([-1, 0]);
         $queryParameters = $this->getAllQueryParameters($query);
-        $this->assertSame('{!typo3access}-1,0', $queryParameters['fq'], 'Accessfilter was not applied');
+        self::assertSame('{!typo3access}-1,0', $queryParameters['fq'], 'Accessfilter was not applied');
     }
 
     /**
@@ -402,7 +403,7 @@ class QueryBuilderTest extends UnitTest
         $queryBuilder = new QueryBuilder($this->configurationMock, $this->loggerMock);
         $queryBuilder->startFrom($query)->useUserAccessGroups([]);
         $queryParameters = $this->getAllQueryParameters($query);
-        $this->assertSame('{!typo3access}0', $queryParameters['fq'], 'Changed accessfilter was not applied');
+        self::assertSame('{!typo3access}0', $queryParameters['fq'], 'Changed accessfilter was not applied');
     }
 
     /**
@@ -414,7 +415,7 @@ class QueryBuilderTest extends UnitTest
         $queryBuilder = new QueryBuilder($this->configurationMock, $this->loggerMock);
         $queryBuilder->startFrom($query)->useUserAccessGroups([5]);
         $queryParameters = $this->getAllQueryParameters($query);
-        $this->assertSame('{!typo3access}0,5', $queryParameters['fq'], 'Access filter was not applied as expected');
+        self::assertSame('{!typo3access}0,5', $queryParameters['fq'], 'Access filter was not applied as expected');
     }
 
     /**
@@ -426,7 +427,7 @@ class QueryBuilderTest extends UnitTest
         $queryBuilder = new QueryBuilder($this->configurationMock, $this->loggerMock);
         $queryBuilder->startFrom($query)->useUserAccessGroups([1, 1]);
         $queryParameters = $this->getAllQueryParameters($query);
-        $this->assertSame('{!typo3access}0,1', $queryParameters['fq'], 'Access filter was not applied as expected');
+        self::assertSame('{!typo3access}0,1', $queryParameters['fq'], 'Access filter was not applied as expected');
     }
 
     /**
@@ -439,7 +440,7 @@ class QueryBuilderTest extends UnitTest
         $queryBuilder->startFrom($query)->useUserAccessGroups([1])->useUserAccessGroups([2]);
         $queryParameters = $this->getAllQueryParameters($query);
 
-        $this->assertSame('{!typo3access}0,2', $queryParameters['fq'], 'Unexpected filter query');
+        self::assertSame('{!typo3access}0,2', $queryParameters['fq'], 'Unexpected filter query');
     }
 
     // TODO if user is in group -2 (logged in), disallow access to group -1
@@ -455,7 +456,7 @@ class QueryBuilderTest extends UnitTest
 
         $queryParameters = $query->getQueryParameters();
         foreach ($queryParameters as $queryParameter => $value) {
-            $this->assertTrue(
+            self::assertTrue(
                 !str_starts_with($queryParameter, 'group'),
                 'Query already contains grouping parameter "' . $queryParameter . '"'
             );
@@ -473,14 +474,14 @@ class QueryBuilderTest extends UnitTest
         $query = $this->builder->startFrom($query)->useGrouping($grouping)->getQuery();
         $queryParameters = $this->getAllQueryParameters($query);
 
-        $this->assertArrayHasKey('group', $queryParameters);
-        $this->assertEquals('true', $queryParameters['group']);
+        self::assertArrayHasKey('group', $queryParameters);
+        self::assertEquals('true', $queryParameters['group']);
 
-        $this->assertArrayHasKey('group.format', $queryParameters);
-        $this->assertEquals('grouped', $queryParameters['group.format']);
+        self::assertArrayHasKey('group.format', $queryParameters);
+        self::assertEquals('grouped', $queryParameters['group.format']);
 
-        $this->assertArrayHasKey('group.ngroups', $queryParameters);
-        $this->assertEquals('true', $queryParameters['group.ngroups']);
+        self::assertArrayHasKey('group.ngroups', $queryParameters);
+        self::assertEquals('true', $queryParameters['group.ngroups']);
 
         return $query;
     }
@@ -495,7 +496,7 @@ class QueryBuilderTest extends UnitTest
         $query = $this->builder->startFrom($query)->useGrouping($grouping)->getQuery();
         $queryParameters = $this->getAllQueryParameters($query);
         foreach ($queryParameters as $queryParameter => $value) {
-            $this->assertTrue(
+            self::assertTrue(
                 !str_starts_with($queryParameter, 'group'),
                 'Query contains grouping parameter "' . $queryParameter . '"'
             );
@@ -509,7 +510,7 @@ class QueryBuilderTest extends UnitTest
     {
         $query = $this->getInitializedTestSearchQuery('test');
         $query->getGrouping()->setNumberOfGroups(true);
-        $this->assertSame(true, $query->getGrouping()->getNumberOfGroups(), 'Could not set and get number of groups');
+        self::assertTrue($query->getGrouping()->getNumberOfGroups(), 'Could not set and get number of groups');
     }
 
     /**
@@ -518,9 +519,9 @@ class QueryBuilderTest extends UnitTest
     public function canAddGroupField()
     {
         $query = $this->getInitializedTestSearchQuery('test');
-        $this->assertSame([], $query->getGrouping()->getFields(), 'Unexpected default state of groupFields');
+        self::assertSame([], $query->getGrouping()->getFields(), 'Unexpected default state of groupFields');
         $query->getGrouping()->addField('category_s');
-        $this->assertSame(['category_s'], $query->getGrouping()->getFields(), 'groupFields has unexpected state after adding a group field');
+        self::assertSame(['category_s'], $query->getGrouping()->getFields(), 'groupFields has unexpected state after adding a group field');
     }
 
     /**
@@ -529,13 +530,13 @@ class QueryBuilderTest extends UnitTest
     public function canGetGroupSorting()
     {
         $query = $this->getInitializedTestSearchQuery('test');
-        $this->assertNull($query->getGrouping()->getSort(), 'By default getGroupSortings should return an empty array');
+        self::assertNull($query->getGrouping()->getSort(), 'By default getGroupSortings should return an empty array');
         $grouping = new Grouping(true);
         $grouping->addSorting('price_f');
         $grouping->addSorting('author_s');
         $query = $this->builder->startFrom($query)->useGrouping($grouping)->getQuery();
         $queryParameters = $this->getAllQueryParameters($query);
-        $this->assertSame('price_f author_s', $queryParameters['group.sort'], 'Can not get groupSortings after adding');
+        self::assertSame('price_f author_s', $queryParameters['group.sort'], 'Can not get groupSortings after adding');
     }
 
     /**
@@ -547,11 +548,11 @@ class QueryBuilderTest extends UnitTest
         $grouping = new Grouping(true);
         $grouping->addSorting('price_f');
         $grouping->addSorting('author_s');
-        $this->assertSame(1, $grouping->getResultsPerGroup());
+        self::assertSame(1, $grouping->getResultsPerGroup());
         $grouping->setResultsPerGroup(22);
         $query = $this->builder->startFrom($query)->useGrouping($grouping)->getQuery();
         $queryParameters = $this->getAllQueryParameters($query);
-        $this->assertSame(22, $queryParameters['group.limit'], 'Can not set number of results per group');
+        self::assertSame(22, $queryParameters['group.limit'], 'Can not set number of results per group');
     }
 
     /**
@@ -561,9 +562,9 @@ class QueryBuilderTest extends UnitTest
     {
         $query = $this->getInitializedTestSearchQuery('group test');
         $initialGroupQueries = $query->getGrouping()->getQueries();
-        $this->assertSame([], $initialGroupQueries, 'Group queries should be an empty array at the beginning');
+        self::assertSame([], $initialGroupQueries, 'Group queries should be an empty array at the beginning');
         $query->getGrouping()->addQuery('price:[* TO 500]');
-        $this->assertSame(['price:[* TO 500]'], $query->getGrouping()->getQueries(), 'Could not retrieve group queries after adding one');
+        self::assertSame(['price:[* TO 500]'], $query->getGrouping()->getQueries(), 'Could not retrieve group queries after adding one');
     }
 
     /**
@@ -579,7 +580,7 @@ class QueryBuilderTest extends UnitTest
         $queryParameters = $this->getAllQueryParameters($query);
         $expectedOutput = 'content^10.0 title^5.0';
         $output = $queryParameters['qf'];
-        $this->assertSame($output, $expectedOutput, 'Passed and retrieved query fields are not the same');
+        self::assertSame($output, $expectedOutput, 'Passed and retrieved query fields are not the same');
     }
 
     /**
@@ -594,7 +595,7 @@ class QueryBuilderTest extends UnitTest
         $queryParameters = $this->getAllQueryParameters($query);
         $expectedOutput = '';
         $output = $queryParameters['qf'];
-        $this->assertSame($output, $expectedOutput, 'Unexpected output from getQueryFieldsAsString when no configuration was passed');
+        self::assertSame($output, $expectedOutput, 'Unexpected output from getQueryFieldsAsString when no configuration was passed');
     }
 
     /**
@@ -605,15 +606,15 @@ class QueryBuilderTest extends UnitTest
         $query = $this->getInitializedTestSearchQuery();
         $queryParameters = $this->getAllQueryParameters($query);
 
-        $this->assertArrayNotHasKey('mm', $queryParameters);
+        self::assertArrayNotHasKey('mm', $queryParameters);
 
         $query = $this->builder->startFrom($query)->useMinimumMatch('2<-35%')->getQuery();
         $queryParameters = $this->getAllQueryParameters($query);
-        $this->assertSame('2<-35%', $queryParameters['mm']);
+        self::assertSame('2<-35%', $queryParameters['mm']);
 
         $query = $this->builder->startFrom($query)->removeMinimumMatch()->getQuery();
         $queryParameters = $this->getAllQueryParameters($query);
-        $this->assertEmpty($queryParameters['mm']);
+        self::assertEmpty($queryParameters['mm']);
     }
 
     /**
@@ -623,18 +624,18 @@ class QueryBuilderTest extends UnitTest
     {
         $query = $this->getInitializedTestSearchQuery();
         $queryParameters = $this->getAllQueryParameters($query);
-        $this->assertArrayNotHasKey('bf', $queryParameters);
+        self::assertArrayNotHasKey('bf', $queryParameters);
 
         $testBoostFunction = 'recip(ms(NOW,created),3.16e-11,1,1)';
         $query = $this->builder->startFrom($query)->useBoostFunction($testBoostFunction)->getQuery();
         $queryParameters = $this->getAllQueryParameters($query);
 
-        $this->assertSame($testBoostFunction, $queryParameters['bf'], 'bf queryParameter was not present after setting a boostFunction');
+        self::assertSame($testBoostFunction, $queryParameters['bf'], 'bf queryParameter was not present after setting a boostFunction');
 
         $query = $this->builder->startFrom($query)->removeAllBoostFunctions()->getQuery();
         $queryParameters = $this->getAllQueryParameters($query);
 
-        $this->assertEmpty($queryParameters['bf'], 'bf parameter should be null after reset');
+        self::assertEmpty($queryParameters['bf'], 'bf parameter should be null after reset');
     }
 
     /**
@@ -644,14 +645,14 @@ class QueryBuilderTest extends UnitTest
     {
         $query = $this->getInitializedTestSearchQuery();
         $queryParameters = $this->getAllQueryParameters($query);
-        $this->assertArrayNotHasKey('bq', $queryParameters);
+        self::assertArrayNotHasKey('bq', $queryParameters);
         $testBoostQuery = '(type:tt_news)^10';
         $query = $this->builder->startFrom($query)->useBoostQueries($testBoostQuery)->getQuery();
         $queryParameters = $this->getAllQueryParameters($query);
-        $this->assertSame($testBoostQuery, $queryParameters['bq'], 'bq queryParameter was not present after setting a boostQuery');
+        self::assertSame($testBoostQuery, $queryParameters['bq'], 'bq queryParameter was not present after setting a boostQuery');
         $query = $this->builder->startFrom($query)->removeAllBoostQueries()->getQuery();
         $queryParameters = $this->getAllQueryParameters($query);
-        $this->assertArrayNotHasKey('bq', $queryParameters, 'bq parameter should be null after reset');
+        self::assertArrayNotHasKey('bq', $queryParameters, 'bq parameter should be null after reset');
     }
 
     /**
@@ -665,7 +666,7 @@ class QueryBuilderTest extends UnitTest
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
         $query = $this->getInitializedTestSearchQuery('test', $fakeConfiguration);
         $queryParameters = $this->getAllQueryParameters($query);
-        $this->assertSame('abstract,price', $queryParameters['fl'], 'Did not parse returnsFields as expected');
+        self::assertSame('abstract,price', $queryParameters['fl'], 'Did not parse returnsFields as expected');
     }
 
     /**
@@ -677,7 +678,7 @@ class QueryBuilderTest extends UnitTest
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
         $query = $this->getInitializedTestSearchQuery('test', $fakeConfiguration);
         $queryParameters = $this->getAllQueryParameters($query);
-        $this->assertSame('*,score', $queryParameters['fl'], 'Did not parse returnsFields as expected');
+        self::assertSame('*,score', $queryParameters['fl'], 'Did not parse returnsFields as expected');
     }
 
     /**
@@ -692,7 +693,7 @@ class QueryBuilderTest extends UnitTest
         $returnFields->add('title');
         $this->builder->startFrom($query)->useReturnFields($returnFields);
         $queryParameters = $this->getAllQueryParameters($query);
-        $this->assertSame('url,title', $queryParameters['fl'], 'Added return field was not in the list of valid fields');
+        self::assertSame('url,title', $queryParameters['fl'], 'Added return field was not in the list of valid fields');
     }
 
     /**
@@ -702,13 +703,13 @@ class QueryBuilderTest extends UnitTest
     {
         $fakeConfigurationArray = [];
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
-        $initialReturnFieldList = ['title','content','url'];
+        $initialReturnFieldList = ['title', 'content', 'url'];
         $query = $this->getInitializedTestSearchQuery('test', $fakeConfiguration);
         $returnFields = ReturnFields::fromArray($initialReturnFieldList);
         $returnFields->remove('content');
         $this->builder->startFrom($query)->useReturnFields($returnFields);
         $queryParameters = $this->getAllQueryParameters($query);
-        $this->assertSame('title,url', $queryParameters['fl'], 'content was not remove from the fieldList');
+        self::assertSame('title,url', $queryParameters['fl'], 'content was not remove from the fieldList');
     }
 
     /**
@@ -721,7 +722,7 @@ class QueryBuilderTest extends UnitTest
         $faceting = new Faceting(true);
         $this->builder->startFrom($query)->useFaceting($faceting);
         $queryParameters = $this->getAllQueryParameters($query);
-        $this->assertSame('true', $queryParameters['facet'], 'Enable faceting did not set the "facet" query parameter');
+        self::assertSame('true', $queryParameters['facet'], 'Enable faceting did not set the "facet" query parameter');
     }
 
     /**
@@ -737,16 +738,16 @@ class QueryBuilderTest extends UnitTest
         $this->builder->startFrom($query)->useFaceting($faceting);
         $queryParameters = $this->getAllQueryParameters($query);
 
-        $this->assertSame('true', $queryParameters['facet'], 'Enable faceting did not set the "facet" query parameter');
-        $this->assertSame('lex', $queryParameters['f.title.facet.sort'], 'Facet sorting parameter should be lex');
+        self::assertSame('true', $queryParameters['facet'], 'Enable faceting did not set the "facet" query parameter');
+        self::assertSame('lex', $queryParameters['f.title.facet.sort'], 'Facet sorting parameter should be lex');
 
         $faceting = new Faceting(false);
         $faceting->addAdditionalParameter('f.title.facet.sort', 'lex');
         $this->builder->startFrom($query)->useFaceting($faceting);
 
         $queryParameters = $this->getAllQueryParameters($query);
-        $this->assertArrayNotHasKey('facet', $queryParameters, 'Facet argument should be null after reset');
-        $this->assertArrayNotHasKey('f.title.facet.sort', $queryParameters, 'Facet sorting parameter should also be removed after reset');
+        self::assertArrayNotHasKey('facet', $queryParameters, 'Facet argument should be null after reset');
+        self::assertArrayNotHasKey('f.title.facet.sort', $queryParameters, 'Facet sorting parameter should also be removed after reset');
     }
 
     /**
@@ -758,7 +759,7 @@ class QueryBuilderTest extends UnitTest
 
         $query = $this->getInitializedTestSearchQuery('test', $fakeConfiguration);
         $queryParameters = $query->getQueryParameters();
-        $this->assertArrayNotHasKey('facet.field', $queryParameters, 'facet.field query parameter was expected to be null after init.');
+        self::assertArrayNotHasKey('facet.field', $queryParameters, 'facet.field query parameter was expected to be null after init.');
 
         $faceting = Faceting::fromTypoScriptConfiguration($fakeConfiguration);
         // after adding a few facet fields we should be able to retrieve them
@@ -768,7 +769,7 @@ class QueryBuilderTest extends UnitTest
 
         $this->builder->startFrom($query)->useFaceting($faceting);
         $queryParameters = $this->getAllQueryParameters($query);
-        $this->assertSame(['color_s', 'price_f'], $queryParameters['facet.field'], 'facet.field should not be empty after adding a few fields.');
+        self::assertSame(['color_s', 'price_f'], $queryParameters['facet.field'], 'facet.field should not be empty after adding a few fields.');
     }
 
     /**
@@ -788,7 +789,7 @@ class QueryBuilderTest extends UnitTest
         $this->builder->startFrom($query)->useFaceting($faceting);
         $queryParameters = $this->getAllQueryParameters($query);
 
-        $this->assertSame(['lastname_s', 'role_s'], $queryParameters['facet.field'], 'Could not use setFields to pass facet fields');
+        self::assertSame(['lastname_s', 'role_s'], $queryParameters['facet.field'], 'Could not use setFields to pass facet fields');
     }
 
     /**
@@ -807,7 +808,7 @@ class QueryBuilderTest extends UnitTest
         $this->builder->startFrom($query)->useFaceting($faceting);
         $queryParameters = $this->getAllQueryParameters($query);
 
-        $this->assertSame(10, $queryParameters['facet.mincount'], 'Can not use facet.minimumCount from configuration');
+        self::assertSame(10, $queryParameters['facet.mincount'], 'Can not use facet.minimumCount from configuration');
     }
 
     /**
@@ -826,7 +827,7 @@ class QueryBuilderTest extends UnitTest
         $this->builder->startFrom($query)->useFaceting($faceting);
         $queryParameters = $this->getAllQueryParameters($query);
 
-        $this->assertSame('index', $queryParameters['facet.sort'], 'Can not use facet.sort from configuration');
+        self::assertSame('index', $queryParameters['facet.sort'], 'Can not use facet.sort from configuration');
     }
 
     /**
@@ -842,15 +843,15 @@ class QueryBuilderTest extends UnitTest
         $this->builder->startFrom($query)->useSpellchecking($spellchecking);
         $queryParameters = $this->getAllQueryParameters($query);
 
-        $this->assertSame('true', $queryParameters['spellcheck'], 'Enable spellchecking did not set the "spellcheck" query parameter');
+        self::assertSame('true', $queryParameters['spellcheck'], 'Enable spellchecking did not set the "spellcheck" query parameter');
 
         // can we unset it again?
         $spellchecking->setIsEnabled(false);
         $this->builder->startFrom($query)->useSpellchecking($spellchecking);
 
         $queryParameters = $this->getAllQueryParameters($query);
-        $this->assertArrayNotHasKey('spellcheck', $queryParameters, 'Disable spellchecking did not unset the "spellcheck" query parameter');
-        $this->assertArrayNotHasKey('spellcheck.maxCollationTries', $queryParameters, 'spellcheck.maxCollationTries was not unsetted');
+        self::assertArrayNotHasKey('spellcheck', $queryParameters, 'Disable spellchecking did not unset the "spellcheck" query parameter');
+        self::assertArrayNotHasKey('spellcheck.maxCollationTries', $queryParameters, 'spellcheck.maxCollationTries was not unsetted');
     }
 
     /**
@@ -860,8 +861,8 @@ class QueryBuilderTest extends UnitTest
     {
         /** @var $query \ApacheSolrForTypo3\Solr\Domain\Search\Query\SearchQuery */
         $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
-        $configurationMock->expects($this->once())->method('getObjectByPathOrDefault')->willReturn(['allowedSites' => '*']);
-        $this->siteHashServiceMock->expects($this->once())->method('getAllowedSitesForPageIdAndAllowedSitesConfiguration')->willReturn('*');
+        $configurationMock->expects(self::once())->method('getObjectByPathOrDefault')->willReturn(['allowedSites' => '*']);
+        $this->siteHashServiceMock->expects(self::once())->method('getAllowedSitesForPageIdAndAllowedSitesConfiguration')->willReturn('*');
 
         $builder = new QueryBuilder($configurationMock, $this->loggerMock, $this->siteHashServiceMock);
         $query = $builder->buildSearchQuery('');
@@ -869,7 +870,7 @@ class QueryBuilderTest extends UnitTest
         $query = $builder->startFrom($query)->useSiteHashFromTypoScript(4711)->getQuery();
         $queryParameters = $this->getAllQueryParameters($query);
 
-        $this->assertArrayNotHasKey('fq', $queryParameters, 'The filters should be empty when a wildcard sitehash was passed');
+        self::assertArrayNotHasKey('fq', $queryParameters, 'The filters should be empty when a wildcard sitehash was passed');
     }
 
     /**
@@ -879,10 +880,10 @@ class QueryBuilderTest extends UnitTest
     {
         /** @var $query \ApacheSolrForTypo3\Solr\Domain\Search\Query\SearchQuery */
         $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
-        $configurationMock->expects($this->once())->method('getObjectByPathOrDefault')->willReturn(['allowedSites' => 'site1.local']);
+        $configurationMock->expects(self::once())->method('getObjectByPathOrDefault')->willReturn(['allowedSites' => 'site1.local']);
 
-        $this->siteHashServiceMock->expects($this->once())->method('getAllowedSitesForPageIdAndAllowedSitesConfiguration')->willReturn('site1.local');
-        $this->siteHashServiceMock->expects($this->once())->method('getSiteHashForDomain')->willReturn('dsada43242342342');
+        $this->siteHashServiceMock->expects(self::once())->method('getAllowedSitesForPageIdAndAllowedSitesConfiguration')->willReturn('site1.local');
+        $this->siteHashServiceMock->expects(self::once())->method('getSiteHashForDomain')->willReturn('dsada43242342342');
 
         $builder = new QueryBuilder($configurationMock, $this->loggerMock, $this->siteHashServiceMock);
         $query = $builder->buildSearchQuery('');
@@ -890,7 +891,7 @@ class QueryBuilderTest extends UnitTest
         $query = $builder->startFrom($query)->useSiteHashFromTypoScript(4711)->getQuery();
         $queryParameters = $this->getAllQueryParameters($query);
 
-        $this->assertEquals('siteHash:"dsada43242342342"', $queryParameters['fq'], 'Unexpected siteHashFilter was added to the query');
+        self::assertEquals('siteHash:"dsada43242342342"', $queryParameters['fq'], 'Unexpected siteHashFilter was added to the query');
     }
 
     /**
@@ -910,9 +911,8 @@ class QueryBuilderTest extends UnitTest
         $builder->startFrom($query)->useSpellcheckingFromTypoScript();
 
         $queryParameters = $this->getAllQueryParameters($query);
-        $this->assertSame($input, $queryParameters['spellcheck.maxCollationTries'], 'Could not set spellcheck.maxCollationTries as expected');
+        self::assertSame($input, $queryParameters['spellcheck.maxCollationTries'], 'Could not set spellcheck.maxCollationTries as expected');
     }
-
 
     /**
      * @test
@@ -921,13 +921,13 @@ class QueryBuilderTest extends UnitTest
     {
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['variants'] = 1;
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['variants.'] = [
-            'variantField' => 'myField'
+            'variantField' => 'myField',
         ];
 
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
         $query = $this->getInitializedTestSearchQuery('test', $fakeConfiguration);
         $queryParameters = $this->getAllQueryParameters($query);
-        $this->assertSame('{!collapse field=myField}', $queryParameters['fq'], 'Collapse filter query was not created');
+        self::assertSame('{!collapse field=myField}', $queryParameters['fq'], 'Collapse filter query was not created');
     }
 
     /**
@@ -939,14 +939,14 @@ class QueryBuilderTest extends UnitTest
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['variants.'] = [
             'variantField' => 'variants',
             'expand' => true,
-            'limit' => 10
+            'limit' => 10,
         ];
 
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
         $query = $this->getInitializedTestSearchQuery('test', $fakeConfiguration);
         $queryParameters = $this->getAllQueryParameters($query);
-        $this->assertSame('true', $queryParameters['expand'], 'Expand argument of query was not set to true with configured expand');
-        $this->assertSame(10, $queryParameters['expand.rows'], 'Expand.rows argument of query was not set to true with configured expand.rows');
+        self::assertSame('true', $queryParameters['expand'], 'Expand argument of query was not set to true with configured expand');
+        self::assertSame(10, $queryParameters['expand.rows'], 'Expand.rows argument of query was not set to true with configured expand.rows');
     }
 
     /**
@@ -958,12 +958,12 @@ class QueryBuilderTest extends UnitTest
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['variants.'] = [
             'variantField' => 'variants',
             'expand' => false,
-            'limit' => 10
+            'limit' => 10,
         ];
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
         $query = $this->getInitializedTestSearchQuery('test', $fakeConfiguration);
         $queryParameters = $this->getAllQueryParameters($query);
-        $this->assertArrayNotHasKey('expand.rows', $queryParameters, 'Expand.rows should not be set when expand is set to false');
+        self::assertArrayNotHasKey('expand.rows', $queryParameters, 'Expand.rows should not be set when expand is set to false');
     }
 
     /**
@@ -974,7 +974,7 @@ class QueryBuilderTest extends UnitTest
         $fakeConfiguration = new TypoScriptConfiguration([]);
         $query = $this->getInitializedTestSearchQuery('test', $fakeConfiguration);
         $queryParameters = $this->getAllQueryParameters($query);
-        $this->assertArrayNotHasKey('fq', $queryParameters, 'No filter query should be generated when field collapsing is disbled');
+        self::assertArrayNotHasKey('fq', $queryParameters, 'No filter query should be generated when field collapsing is disbled');
     }
 
     /**
@@ -985,8 +985,8 @@ class QueryBuilderTest extends UnitTest
         $fakeConfiguration = new TypoScriptConfiguration([]);
         $query = $this->getInitializedTestSearchQuery('test', $fakeConfiguration);
 
-        $queryToString = (string) $query;
-        $this->assertSame('test', $queryToString, 'Could not convert query to string');
+        $queryToString = (string)$query;
+        self::assertSame('test', $queryToString, 'Could not convert query to string');
     }
 
     /**
@@ -1001,27 +1001,27 @@ class QueryBuilderTest extends UnitTest
 
         $this->builder->startFrom($query)->useFilter('foo:bar');
         $parameters = $this->getAllQueryParameters($query);
-        $this->assertSame('foo:bar', $parameters['fq'], 'Could not get filters from query object');
+        self::assertSame('foo:bar', $parameters['fq'], 'Could not get filters from query object');
 
         // can we remove the filter after adding?
         $this->builder->startFrom($query)->removeFilterByFieldName('foo');
         $parameters = $this->getAllQueryParameters($query);
-        $this->assertArrayNotHasKey('fq', $parameters, 'Could not remove filters from query object');
+        self::assertArrayNotHasKey('fq', $parameters, 'Could not remove filters from query object');
 
         // can we add a new filter
         $this->builder->startFrom($query)->useFilter('title:test');
         $parameters = $this->getAllQueryParameters($query);
-        $this->assertSame('title:test', $parameters['fq'], 'Could not get filters from query object');
+        self::assertSame('title:test', $parameters['fq'], 'Could not get filters from query object');
         $this->builder->startFrom($query)->removeFilterByFieldName('title');
 
         // can we remove the filter by name?
         $this->builder->startFrom($query)->useFilter('siteHash:xyz', 'siteHashFilter');
         $parameters = $this->getAllQueryParameters($query);
-        $this->assertSame('siteHash:xyz', $parameters['fq'], 'Could not get filters from query object');
+        self::assertSame('siteHash:xyz', $parameters['fq'], 'Could not get filters from query object');
         $this->builder->startFrom($query)->removeFilterByName('siteHashFilter');
 
         $parameters = $this->getAllQueryParameters($query);
-        $this->assertArrayNotHasKey('fq', $parameters, 'Could not remove filters from query object by filter key');
+        self::assertArrayNotHasKey('fq', $parameters, 'Could not remove filters from query object by filter key');
     }
 
     /**
@@ -1035,11 +1035,11 @@ class QueryBuilderTest extends UnitTest
         // can we add a filter?
         $this->builder->startFrom($query)->useFilter('foo:bar');
         $parameters = $this->getAllQueryParameters($query);
-        $this->assertSame('foo:bar', $parameters['fq'], 'Could not get filters from query object');
+        self::assertSame('foo:bar', $parameters['fq'], 'Could not get filters from query object');
 
         $this->builder->startFrom($query)->removeFilterByValue('foo:bar');
         $parameters = $this->getAllQueryParameters($query);
-        $this->assertArrayNotHasKey('fq', $parameters, 'Filters are not empty after removing the last one');
+        self::assertArrayNotHasKey('fq', $parameters, 'Filters are not empty after removing the last one');
     }
 
     /**
@@ -1053,7 +1053,7 @@ class QueryBuilderTest extends UnitTest
         // we add a filter with the same key twice and expect that only the first one is kept and not overwritten
         $this->builder->startFrom($query)->useFilter('foo:bar', 'test')->useFilter('foo:bla', 'test');
         $parameters = $this->getAllQueryParameters($query);
-        $this->assertSame('foo:bar', $parameters['fq'], 'Unexpected filter query was added');
+        self::assertSame('foo:bar', $parameters['fq'], 'Unexpected filter query was added');
     }
 
     /**
@@ -1064,16 +1064,16 @@ class QueryBuilderTest extends UnitTest
         $query = $this->getInitializedTestSearchQuery('test');
         $queryParameters = $this->getAllQueryParameters($query);
 
-        $this->assertArrayNotHasKey('qt', $queryParameters, 'The qt parameter was expected to be null');
+        self::assertArrayNotHasKey('qt', $queryParameters, 'The qt parameter was expected to be null');
 
         $this->builder->startFrom($query)->useQueryType('dismax');
         $queryParameters = $this->getAllQueryParameters($query);
-        $this->assertSame('dismax', $queryParameters['qt'], 'The qt parameter was expected to be dismax');
+        self::assertSame('dismax', $queryParameters['qt'], 'The qt parameter was expected to be dismax');
 
         //passing false as parameter should reset the query type
         $this->builder->startFrom($query)->removeQueryType();
         $queryParameters = $this->getAllQueryParameters($query);
-        $this->assertArrayNotHasKey('qt', $queryParameters, 'The qt parameter was expected to be null after reset');
+        self::assertArrayNotHasKey('qt', $queryParameters, 'The qt parameter was expected to be null after reset');
     }
 
     /**
@@ -1084,19 +1084,19 @@ class QueryBuilderTest extends UnitTest
         $query = $this->getInitializedTestSearchQuery('test');
 
         $queryParameters = $query->getQueryParameters();
-        $this->assertArrayNotHasKey('q.op', $queryParameters, 'The queryParameter q.op should be null because no operator was passed');
+        self::assertArrayNotHasKey('q.op', $queryParameters, 'The queryParameter q.op should be null because no operator was passed');
 
         $this->builder->startFrom($query)->useOperator(Operator::getOr());
         $queryParameters = $this->getAllQueryParameters($query);
-        $this->assertEquals(Operator::OPERATOR_OR, $queryParameters['q.op'], 'The queryParameter q.op should be OR');
+        self::assertEquals(Operator::OPERATOR_OR, $queryParameters['q.op'], 'The queryParameter q.op should be OR');
 
         $this->builder->startFrom($query)->useOperator(Operator::getAnd());
         $queryParameters = $this->getAllQueryParameters($query);
-        $this->assertEquals(Operator::OPERATOR_AND, $queryParameters['q.op'], 'The queryParameter q.op should be AND');
+        self::assertEquals(Operator::OPERATOR_AND, $queryParameters['q.op'], 'The queryParameter q.op should be AND');
 
         $this->builder->startFrom($query)->removeOperator();
         $queryParameters = $this->getAllQueryParameters($query);
-        $this->assertEmpty($queryParameters['q.op'], 'The queryParameter q.op should be null because operator was resetted');
+        self::assertEmpty($queryParameters['q.op'], 'The queryParameter q.op should be null because operator was resetted');
     }
 
     /**
@@ -1108,18 +1108,17 @@ class QueryBuilderTest extends UnitTest
         $query = $this->getInitializedTestSearchQuery('test');
         $queryParameters = $this->getAllQueryParameters($query);
 
-        $this->assertArrayNotHasKey('q.alt', $queryParameters, 'We expected that alternative query is initially null');
+        self::assertArrayNotHasKey('q.alt', $queryParameters, 'We expected that alternative query is initially null');
 
         // can we set it?
         $this->builder->startFrom($query)->useAlternativeQuery('alt query');
         $queryParameters = $this->getAllQueryParameters($query);
-        $this->assertEquals('alt query', $queryParameters['q.alt'], 'Could not get passed alternative query');
-
+        self::assertEquals('alt query', $queryParameters['q.alt'], 'Could not get passed alternative query');
 
         // can we reset it?
         $this->builder->startFrom($query)->removeAlternativeQuery();
         $queryParameters = $this->getAllQueryParameters($query);
-        $this->assertArrayNotHasKey('q.alt', $queryParameters, 'We expect alternative query is null after reset');
+        self::assertArrayNotHasKey('q.alt', $queryParameters, 'We expect alternative query is null after reset');
     }
 
     /**
@@ -1130,17 +1129,17 @@ class QueryBuilderTest extends UnitTest
         // check initial value
         $query = $this->getInitializedTestSearchQuery('test');
         $queryParameters = $query->getQueryParameters();
-        $this->assertArrayNotHasKey('omitHeader', $queryParameters, 'The queryParameter omitHeader should be null because it was not');
+        self::assertArrayNotHasKey('omitHeader', $queryParameters, 'The queryParameter omitHeader should be null because it was not');
 
         $this->builder->startFrom($query)->useOmitHeader();
 
         $queryParameters = $this->getAllQueryParameters($query);
-        $this->assertSame('true', $queryParameters['omitHeader'], 'The queryParameter omitHeader should be "true" because it was enabled');
+        self::assertSame('true', $queryParameters['omitHeader'], 'The queryParameter omitHeader should be "true" because it was enabled');
 
         $this->builder->startFrom($query)->useOmitHeader(false);
 
         $queryParameters = $this->getAllQueryParameters($query);
-        $this->assertSame('false',$queryParameters['omitHeader'], 'The queryParameter omitHeader should be null because it was resetted');
+        self::assertSame('false', $queryParameters['omitHeader'], 'The queryParameter omitHeader should be null because it was resetted');
     }
 
     /**
@@ -1151,17 +1150,17 @@ class QueryBuilderTest extends UnitTest
         // check initial value
         $query = $this->getInitializedTestSearchQuery('test');
         $queryParameters = $this->getAllQueryParameters($query);
-        $this->assertSame('*,score', $queryParameters['fl'], 'FieldList initially contained unexpected values');
+        self::assertSame('*,score', $queryParameters['fl'], 'FieldList initially contained unexpected values');
 
         // set from string
         $this->builder->startFrom($query)->useReturnFields(ReturnFields::fromString('content, title'));
         $queryParameters = $this->getAllQueryParameters($query);
-        $this->assertSame('content,title', $queryParameters['fl'], 'Can not set fieldList from string');
+        self::assertSame('content,title', $queryParameters['fl'], 'Can not set fieldList from string');
 
         // set from array
         $this->builder->startFrom($query)->useReturnFields(ReturnFields::fromArray(['content', 'title']));
         $queryParameters = $this->getAllQueryParameters($query);
-        $this->assertSame('content,title', $queryParameters['fl'], 'Can not set fieldList from array');
+        self::assertSame('content,title', $queryParameters['fl'], 'Can not set fieldList from array');
     }
 
     /**
@@ -1172,23 +1171,23 @@ class QueryBuilderTest extends UnitTest
         // check initial value
         $query = $this->getInitializedTestSearchQuery('test');
         $queryParameters = $this->getAllQueryParameters($query);
-        $this->assertArrayNotHasKey('sort', $queryParameters, 'Sorting should be null at the beginning');
+        self::assertArrayNotHasKey('sort', $queryParameters, 'Sorting should be null at the beginning');
 
         // can set a field and direction combination
         $this->builder->startFrom($query)->useSorting(Sorting::fromString('title desc'));
         $queryParameters = $this->getAllQueryParameters($query);
-        $this->assertSame('title desc', $queryParameters['sort'], 'Could not set sorting');
+        self::assertSame('title desc', $queryParameters['sort'], 'Could not set sorting');
 
         // can reset
         $this->builder->startFrom($query)->removeAllSortings();
         $queryParameters = $this->getAllQueryParameters($query);
-        $this->assertArrayNotHasKey('sort', $queryParameters, 'Sorting should be null after reset');
+        self::assertArrayNotHasKey('sort', $queryParameters, 'Sorting should be null after reset');
 
         // when relevance is getting passed it is the same as we have no
         // sorting because this is a "virtual" value
         $this->builder->startFrom($query)->useSorting(Sorting::fromString('relevance desc'));
         $queryParameters = $this->getAllQueryParameters($query);
-        $this->assertArrayNotHasKey('sort', $queryParameters, 'Sorting should be null after reset');
+        self::assertArrayNotHasKey('sort', $queryParameters, 'Sorting should be null after reset');
     }
 
     /**
@@ -1199,27 +1198,27 @@ class QueryBuilderTest extends UnitTest
         $query = $this->getInitializedTestSearchQuery('test');
         $queryParameters = $this->getAllQueryParameters($query);
 
-        $this->assertArrayNotHasKey('enableElevation', $queryParameters);
-        $this->assertArrayNotHasKey('forceElevation', $queryParameters);
-        $this->assertStringNotContainsString('isElevated:[elevated]', $queryParameters['fl']);
+        self::assertArrayNotHasKey('enableElevation', $queryParameters);
+        self::assertArrayNotHasKey('forceElevation', $queryParameters);
+        self::assertStringNotContainsString('isElevated:[elevated]', $queryParameters['fl']);
 
         // do we get the expected default values, when calling setQueryElevantion with no arguments?
 
         $elevation = new Elevation(true);
         $this->builder->startFrom($query)->useElevation($elevation);
         $queryParameters = $this->getAllQueryParameters($query);
-        $this->assertSame('true', $queryParameters['enableElevation'], 'enabledElevation was not set after enabling elevation');
-        $this->assertSame('true', $queryParameters['forceElevation'], 'forceElevation was not set after enabling elevation');
-        $this->assertStringContainsString('isElevated:[elevated]', $queryParameters['fl'], 'isElevated should be in the list of return fields');
+        self::assertSame('true', $queryParameters['enableElevation'], 'enabledElevation was not set after enabling elevation');
+        self::assertSame('true', $queryParameters['forceElevation'], 'forceElevation was not set after enabling elevation');
+        self::assertStringContainsString('isElevated:[elevated]', $queryParameters['fl'], 'isElevated should be in the list of return fields');
 
         // can we reset the elevantion?
         $elevation->setIsEnabled(false);
         $this->builder->startFrom($query)->useElevation($elevation);
         $queryParameters = $this->getAllQueryParameters($query);
 
-        $this->assertArrayNotHasKey('enableElevation', $queryParameters);
-        $this->assertArrayNotHasKey('forceElevation', $queryParameters);
-        $this->assertSame('*,score', $queryParameters['fl']);
+        self::assertArrayNotHasKey('enableElevation', $queryParameters);
+        self::assertArrayNotHasKey('forceElevation', $queryParameters);
+        self::assertSame('*,score', $queryParameters['fl']);
     }
 
     /**
@@ -1230,8 +1229,8 @@ class QueryBuilderTest extends UnitTest
         $query = $this->getInitializedTestSearchQuery('test');
         $queryParameters = $this->getAllQueryParameters($query);
 
-        $this->assertArrayNotHasKey('enableElevation', $queryParameters);
-        $this->assertArrayNotHasKey('forceElevation', $queryParameters);
+        self::assertArrayNotHasKey('enableElevation', $queryParameters);
+        self::assertArrayNotHasKey('forceElevation', $queryParameters);
 
         $elevation = new Elevation();
         $elevation->setIsEnabled(true);
@@ -1240,15 +1239,15 @@ class QueryBuilderTest extends UnitTest
         $this->builder->startFrom($query)->useElevation($elevation);
         $queryParameters = $this->getAllQueryParameters($query);
 
-        $this->assertSame('true', $queryParameters['enableElevation'], 'enabledElevation was not set after enabling elevation');
-        $this->assertSame('false', $queryParameters['forceElevation'], 'forceElevation was not false after forcing');
+        self::assertSame('true', $queryParameters['enableElevation'], 'enabledElevation was not set after enabling elevation');
+        self::assertSame('false', $queryParameters['forceElevation'], 'forceElevation was not false after forcing');
 
         $elevation->setIsEnabled(false);
         $this->builder->startFrom($query)->useElevation($elevation);
         $queryParameters = $this->getAllQueryParameters($query);
 
-        $this->assertArrayNotHasKey('enableElevation', $queryParameters);
-        $this->assertArrayNotHasKey('forceElevation', $queryParameters);
+        self::assertArrayNotHasKey('enableElevation', $queryParameters);
+        self::assertArrayNotHasKey('forceElevation', $queryParameters);
     }
 
     /**
@@ -1269,26 +1268,26 @@ class QueryBuilderTest extends UnitTest
         $queryBuilder = new QueryBuilder($this->configurationMock, $this->loggerMock);
         $query = $queryBuilder->newSearchQuery('hello world')
             ->useFilter('color:red')
-            ->useUserAccessGroups([1,2,3])
+            ->useUserAccessGroups([1, 2, 3])
             ->useFaceting($faceting)
             ->useReturnFields($returnFields)
             ->useFieldCollapsing($fieldCollapsing)
             ->getQuery();
 
         $parameters = $this->getAllQueryParameters($query);
-        $this->assertSame('title', $parameters['fl']);
+        self::assertSame('title', $parameters['fl']);
 
         $filterQueries = $parameters['fq'];
-        $this->assertCount(3, $filterQueries, 'Unexpected amount of filter queries created');
-        $this->assertSame('color:red', $parameters['fq'][0]);
-        $this->assertSame('{!typo3access}0,1,2,3', $parameters['fq'][1]);
-        $this->assertSame('{!collapse field=variantId}', $parameters['fq'][2]);
+        self::assertCount(3, $filterQueries, 'Unexpected amount of filter queries created');
+        self::assertSame('color:red', $parameters['fq'][0]);
+        self::assertSame('{!typo3access}0,1,2,3', $parameters['fq'][1]);
+        self::assertSame('{!collapse field=variantId}', $parameters['fq'][2]);
 
-        $this->assertSame('content', $parameters['facet.field'][0]);
-        $this->assertSame('type', $parameters['facet.field'][1]);
-        $this->assertSame('color', $parameters['facet.field'][2]);
+        self::assertSame('content', $parameters['facet.field'][0]);
+        self::assertSame('type', $parameters['facet.field'][1]);
+        self::assertSame('color', $parameters['facet.field'][2]);
 
-        $this->assertArrayNotHasKey('qf', $parameters, 'No query fields have been set');
+        self::assertArrayNotHasKey('qf', $parameters, 'No query fields have been set');
     }
 
     /**
@@ -1302,7 +1301,7 @@ class QueryBuilderTest extends UnitTest
 
         $parameters = $this->getAllQueryParameters($query);
         // the , delimiter is removed
-        $this->assertSame('content^100.0 title^10.0', $parameters['qf'], 'Can not set and get query fields');
+        self::assertSame('content^100.0 title^10.0', $parameters['qf'], 'Can not set and get query fields');
     }
 
     /**
@@ -1313,7 +1312,7 @@ class QueryBuilderTest extends UnitTest
         $query = $this->getInitializedTestSearchQuery('foo bar');
         $parameters = $this->getAllQueryParameters($query);
 
-        $this->assertEmpty($parameters['qf'], 'QueryFields are not empty by default');
+        self::assertEmpty($parameters['qf'], 'QueryFields are not empty by default');
 
         $queryFields = new QueryFields([]);
         $queryFields->set('content', 10);
@@ -1321,13 +1320,13 @@ class QueryBuilderTest extends UnitTest
 
         $this->builder->startFrom($query)->useQueryFields($queryFields);
         $parameters = $this->getAllQueryParameters($query);
-        $this->assertSame('content^10.0 title^11.0', $parameters['qf']);
+        self::assertSame('content^10.0 title^11.0', $parameters['qf']);
 
         // overwrite the boost of title
         $queryFields->set('title', 9);
         $this->builder->startFrom($query)->useQueryFields($queryFields);
         $parameters = $this->getAllQueryParameters($query);
-        $this->assertSame('content^10.0 title^9.0', $parameters['qf'], 'qf parameter not set in QueryParameters');
+        self::assertSame('content^10.0 title^9.0', $parameters['qf'], 'qf parameter not set in QueryParameters');
     }
 
     /**
@@ -1339,7 +1338,7 @@ class QueryBuilderTest extends UnitTest
         $this->builder->startFrom($query)->usePhraseFields(PhraseFields::fromString('content^100.0, title^10.0'));
         $parameters = $this->getAllQueryParameters($query);
         // the , delimiter is removed
-        $this->assertSame('content^100.0 title^10.0', $parameters['pf'], 'Can not set and get phrase fields');
+        self::assertSame('content^100.0 title^10.0', $parameters['pf'], 'Can not set and get phrase fields');
     }
 
     /**
@@ -1350,7 +1349,7 @@ class QueryBuilderTest extends UnitTest
         $query = $this->getInitializedTestSearchQuery('foo bar');
         $parameters = $this->getAllQueryParameters($query);
 
-        $this->assertArrayNotHasKey('pf', $parameters, 'Phrase Fields must be empty by default');
+        self::assertArrayNotHasKey('pf', $parameters, 'Phrase Fields must be empty by default');
 
         $phraseFields = new PhraseFields(true);
         $phraseFields->add('content', 10);
@@ -1358,14 +1357,14 @@ class QueryBuilderTest extends UnitTest
 
         $this->builder->startFrom($query)->usePhraseFields($phraseFields);
         $parameters = $this->getAllQueryParameters($query);
-        $this->assertSame('content^10.0 title^11.0', $parameters['pf']);
+        self::assertSame('content^10.0 title^11.0', $parameters['pf']);
 
         // overwrite the boost of title
         $phraseFields->add('title', 9);
         $this->builder->startFrom($query)->usePhraseFields($phraseFields);
         $parameters = $this->getAllQueryParameters($query);
 
-        $this->assertSame('content^10.0 title^9.0', $parameters['pf']);
+        self::assertSame('content^10.0 title^9.0', $parameters['pf']);
     }
 
     /**
@@ -1380,7 +1379,7 @@ class QueryBuilderTest extends UnitTest
         $phraseFields->add('title', 11);
         $this->builder->startFrom($query)->usePhraseFields($phraseFields);
         $parameters = $this->getAllQueryParameters($query);
-        $this->assertArrayNotHasKey('pf', $parameters, 'pf parameter must be empty(not set) if phrase search is disabled');
+        self::assertArrayNotHasKey('pf', $parameters, 'pf parameter must be empty(not set) if phrase search is disabled');
     }
 
     /**
@@ -1398,7 +1397,7 @@ class QueryBuilderTest extends UnitTest
         $phraseFields->add('title', 11);
         $this->builder->startFrom($query)->usePhraseFields($phraseFields);
         $parameters = $this->getAllQueryParameters($query);
-        $this->assertSame('content^10.0 title^11.0', $parameters['pf'], 'pf parameters must be set if phrase search is enabled');
+        self::assertSame('content^10.0 title^11.0', $parameters['pf'], 'pf parameters must be set if phrase search is enabled');
     }
 
     /**
@@ -1414,7 +1413,7 @@ class QueryBuilderTest extends UnitTest
         $query = $this->getInitializedTestSearchQuery('foo bar', $fakeConfiguration);
 
         $parameters = $this->getAllQueryParameters($query);
-        $this->assertSame('content^22.0 title^11.0', $parameters['pf'], 'pf parameters must be set if phrase search is enabled');
+        self::assertSame('content^22.0 title^11.0', $parameters['pf'], 'pf parameters must be set if phrase search is enabled');
     }
 
     /**
@@ -1428,7 +1427,7 @@ class QueryBuilderTest extends UnitTest
         $phraseFields->add('title', 11);
         $this->builder->startFrom($query)->useBigramPhraseFields($phraseFields);
         $parameters = $this->getAllQueryParameters($query);
-        $this->assertArrayNotHasKey('pf2', $parameters, 'pf2 parameter must be empty(not set) if phrase search is disabled');
+        self::assertArrayNotHasKey('pf2', $parameters, 'pf2 parameter must be empty(not set) if phrase search is disabled');
     }
 
     /**
@@ -1446,7 +1445,7 @@ class QueryBuilderTest extends UnitTest
         $phraseFields->add('title', 11);
         $this->builder->startFrom($query)->useBigramPhraseFields($phraseFields);
         $parameters = $this->getAllQueryParameters($query);
-        $this->assertSame('content^10.0 title^11.0', $parameters['pf2'], 'pf2 parameters must be set if bigram phrase search is enabled');
+        self::assertSame('content^10.0 title^11.0', $parameters['pf2'], 'pf2 parameters must be set if bigram phrase search is enabled');
     }
 
     /**
@@ -1462,7 +1461,7 @@ class QueryBuilderTest extends UnitTest
         $query = $this->getInitializedTestSearchQuery('foo bar', $fakeConfiguration);
 
         $parameters = $this->getAllQueryParameters($query);
-        $this->assertSame('content^12.0 title^14.0', $parameters['pf2'], 'pf2 parameters must be set if bigram phrase search is enabled');
+        self::assertSame('content^12.0 title^14.0', $parameters['pf2'], 'pf2 parameters must be set if bigram phrase search is enabled');
     }
 
     /**
@@ -1476,7 +1475,7 @@ class QueryBuilderTest extends UnitTest
         $phraseFields->add('title', 11);
         $this->builder->startFrom($query)->useTrigramPhraseFields($phraseFields);
         $parameters = $this->getAllQueryParameters($query);
-        $this->assertArrayNotHasKey('pf3', $parameters, 'pf3 parameter must be empty(not set) if phrase search is disabled');
+        self::assertArrayNotHasKey('pf3', $parameters, 'pf3 parameter must be empty(not set) if phrase search is disabled');
     }
 
     /**
@@ -1493,7 +1492,7 @@ class QueryBuilderTest extends UnitTest
         $trigram->add('title', 11);
         $this->builder->startFrom($query)->useTrigramPhraseFields($trigram);
         $parameters = $this->getAllQueryParameters($query);
-        $this->assertSame('content^10.0 title^11.0', $parameters['pf3'], 'pf3 parameters must be set if trigram phrase search is enabled');
+        self::assertSame('content^10.0 title^11.0', $parameters['pf3'], 'pf3 parameters must be set if trigram phrase search is enabled');
     }
 
     /**
@@ -1507,7 +1506,7 @@ class QueryBuilderTest extends UnitTest
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
         $query = $this->getInitializedTestSearchQuery('foo bar', $fakeConfiguration);
         $parameters = $this->getAllQueryParameters($query);
-        $this->assertSame('content^12.0 title^14.0', $parameters['pf3'], 'pf3 parameters must be set if trigram phrase search is enabled');
+        self::assertSame('content^12.0 title^14.0', $parameters['pf3'], 'pf3 parameters must be set if trigram phrase search is enabled');
     }
 
     /**
@@ -1518,19 +1517,19 @@ class QueryBuilderTest extends UnitTest
         $query = $this->getInitializedTestSearchQuery();
 
         $parameter = $this->getAllQueryParameters($query);
-        $this->assertArrayNotHasKey('debugQuery', $parameter, 'Debug query should be disabled by default');
-        $this->assertArrayNotHasKey('echoParams', $parameter, 'Debug query should be disabled by default');
+        self::assertArrayNotHasKey('debugQuery', $parameter, 'Debug query should be disabled by default');
+        self::assertArrayNotHasKey('echoParams', $parameter, 'Debug query should be disabled by default');
 
         $this->builder->startFrom($query)->useDebug(true);
         $parameter = $this->getAllQueryParameters($query);
 
-        $this->assertSame('true', $parameter['debugQuery'], 'Debug query should be disabled by default');
-        $this->assertSame('all', $parameter['echoParams'], 'Debug query should be disabled by default');
+        self::assertSame('true', $parameter['debugQuery'], 'Debug query should be disabled by default');
+        self::assertSame('all', $parameter['echoParams'], 'Debug query should be disabled by default');
 
         $this->builder->startFrom($query)->useDebug(false);
         $parameter = $this->getAllQueryParameters($query);
-        $this->assertArrayNotHasKey('debugQuery', $parameter, 'Can not unset debug mode');
-        $this->assertArrayNotHasKey('echoParams', $parameter, 'Can not unset debug mode');
+        self::assertArrayNotHasKey('debugQuery', $parameter, 'Can not unset debug mode');
+        self::assertArrayNotHasKey('echoParams', $parameter, 'Can not unset debug mode');
     }
 
     /**
@@ -1545,7 +1544,7 @@ class QueryBuilderTest extends UnitTest
         $grouping->addQuery('someField:someValue');
         $this->builder->startFrom($query)->useGrouping($grouping);
         $parameters = $this->getAllQueryParameters($query);
-        $this->assertSame(['price:[* TO 500]', 'someField:someValue'], $parameters['group.query'], 'Could not add group queries properly');
+        self::assertSame(['price:[* TO 500]', 'someField:someValue'], $parameters['group.query'], 'Could not add group queries properly');
     }
 
     /**
@@ -1559,7 +1558,7 @@ class QueryBuilderTest extends UnitTest
         $grouping->addSorting('title desc');
         $this->builder->startFrom($query)->useGrouping($grouping);
         $parameters = $this->getAllQueryParameters($query);
-        $this->assertSame('price_f title desc', $parameters['group.sort'], 'Could not add group sortings properly');
+        self::assertSame('price_f title desc', $parameters['group.sort'], 'Could not add group sortings properly');
     }
 
     /**
@@ -1573,7 +1572,7 @@ class QueryBuilderTest extends UnitTest
         $grouping->addField('category_s');
         $this->builder->startFrom($query)->useGrouping($grouping);
         $parameters = $this->getAllQueryParameters($query);
-        $this->assertSame(['price_f', 'category_s'], $parameters['group.field'], 'Could not add group fields properly');
+        self::assertSame(['price_f', 'category_s'], $parameters['group.field'], 'Could not add group fields properly');
     }
 
     /**
@@ -1587,26 +1586,26 @@ class QueryBuilderTest extends UnitTest
         $this->builder->startFrom($query)->useGrouping($grouping);
         $parameters = $this->getAllQueryParameters($query);
 
-        $this->assertSame($parameters['group'], 'true');
-        $this->assertSame($parameters['group.format'], 'grouped');
-        $this->assertSame($parameters['group.ngroups'], 'true');
+        self::assertSame($parameters['group'], 'true');
+        self::assertSame($parameters['group.format'], 'grouped');
+        self::assertSame($parameters['group.ngroups'], 'true');
 
         $grouping->addSorting('title desc');
         $this->builder->startFrom($query)->useGrouping($grouping);
         $parameters = $this->getAllQueryParameters($query);
 
-        $this->assertSame($parameters['group.sort'], 'title desc', 'Group sorting was not added');
-        $this->assertArrayNotHasKey('group.field', $parameters, 'No field was passed, so it should not be set');
-        $this->assertArrayNotHasKey('group.query', $parameters, 'No query was passed, so it should not be set');
+        self::assertSame($parameters['group.sort'], 'title desc', 'Group sorting was not added');
+        self::assertArrayNotHasKey('group.field', $parameters, 'No field was passed, so it should not be set');
+        self::assertArrayNotHasKey('group.query', $parameters, 'No query was passed, so it should not be set');
 
         $grouping->setIsEnabled(false);
         $this->builder->startFrom($query)->useGrouping($grouping);
         $parameters = $this->getAllQueryParameters($query);
 
-        $this->assertArrayNotHasKey('group.sort', $parameters, 'Grouping parameters should be removed');
-        $this->assertArrayNotHasKey('group', $parameters, 'Grouping parameters should be removed');
-        $this->assertArrayNotHasKey('group.format', $parameters, 'Grouping parameters should be removed');
-        $this->assertArrayNotHasKey('group.ngroups', $parameters, 'Grouping parameters should be removed');
+        self::assertArrayNotHasKey('group.sort', $parameters, 'Grouping parameters should be removed');
+        self::assertArrayNotHasKey('group', $parameters, 'Grouping parameters should be removed');
+        self::assertArrayNotHasKey('group.format', $parameters, 'Grouping parameters should be removed');
+        self::assertArrayNotHasKey('group.ngroups', $parameters, 'Grouping parameters should be removed');
     }
 
     /**
@@ -1615,20 +1614,20 @@ class QueryBuilderTest extends UnitTest
     public function canBuildSuggestQuery()
     {
         $this->configurationMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('getObjectByPathOrDefault')
             ->willReturn([
                 'suggestField' => 'spell',
-                'numberOfSuggestions' => 10
+                'numberOfSuggestions' => 10,
             ]);
         $this->builder = $this->getMockBuilder(QueryBuilder::class)
             ->setConstructorArgs([$this->configurationMock, $this->loggerMock])
-            ->setMethods(['useSiteHashFromTypoScript'])
+            ->onlyMethods(['useSiteHashFromTypoScript'])
             ->getMock();
 
         $suggestQuery = $this->builder->buildSuggestQuery('foo', [], 3232, '');
         $queryParameters = $this->getAllQueryParameters($suggestQuery);
-        $this->assertSame('foo', $queryParameters['facet.prefix'], 'Passed query string is not used as facet.prefix argument');
+        self::assertSame('foo', $queryParameters['facet.prefix'], 'Passed query string is not used as facet.prefix argument');
     }
 
     /**
@@ -1637,11 +1636,11 @@ class QueryBuilderTest extends UnitTest
     public function alternativeQueryIsWildCardQueryForSuggestQuery()
     {
         $this->configurationMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('getObjectByPathOrDefault')
             ->willReturn([
                 'suggestField' => 'spell',
-                'numberOfSuggestions' => 10
+                'numberOfSuggestions' => 10,
             ]);
         $this->builder = $this->getMockBuilder(QueryBuilder::class)
                                 ->setConstructorArgs([$this->configurationMock, $this->loggerMock])
@@ -1650,6 +1649,6 @@ class QueryBuilderTest extends UnitTest
 
         $suggestQuery = $this->builder->buildSuggestQuery('bar', [], 3232, '');
         $queryParameters = $this->getAllQueryParameters($suggestQuery);
-        $this->assertSame('*:*', $queryParameters['q.alt'], 'Alterntive query is not set to wildcard query by default');
+        self::assertSame('*:*', $queryParameters['q.alt'], 'Alterntive query is not set to wildcard query by default');
     }
 }

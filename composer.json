@@ -83,6 +83,20 @@
       "extension-key": "solr",
       "cms-package-dir": "{$vendor-dir}/typo3/cms",
       "web-dir": ".Build/Web"
+    },
+    "TYPO3-Solr": {
+      "version-matrix": {
+        "ext-tika": "^11.0",
+        "ext-solrfal": "^11.0",
+        "ext-solrconsole": "^11.0",
+        "ext-solrdebugtools": "^11.0",
+        "ext-solrfluidgrouping": "^11.0",
+        "ext-solrmlt": "^11.0",
+        "Apache-Solr": "8.11.1",
+        "configset": "ext_solr_11_5_0"
+      },
+      "ext-solrfal": {
+      }
     }
   }
 }

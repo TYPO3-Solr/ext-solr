@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\Solr\Parser;
 
 /***************************************************************
@@ -43,7 +44,7 @@ class SchemaParserTest extends UnitTest
     {
         $parser = new SchemaParser();
         $schema = $parser->parseJson($this->getFixtureContentByName('schema.json'));
-        $this->assertSame('core_de', $schema->getManagedResourceId(), 'Could not parse id of managed resources from schema response.');
+        self::assertSame('core_de', $schema->getManagedResourceId(), 'Could not parse id of managed resources from schema response.');
     }
 
     /**
@@ -53,7 +54,7 @@ class SchemaParserTest extends UnitTest
     {
         $parser = new SchemaParser();
         $schema = $parser->parseJson($this->getFixtureContentByName('schema.json'));
-        $this->assertSame('tx_solr-6-0-0--20161122', $schema->getName(), 'Could not parser name from schema response');
+        self::assertSame('tx_solr-6-0-0--20161122', $schema->getName(), 'Could not parser name from schema response');
     }
 
     /**
@@ -63,7 +64,6 @@ class SchemaParserTest extends UnitTest
     {
         $parser = new SchemaParser();
         $schema = $parser->parseJson('{}');
-        $this->assertInstanceOf(Schema::class, $schema, 'Can not get schema object from empty response');
+        self::assertInstanceOf(Schema::class, $schema, 'Can not get schema object from empty response');
     }
-
 }

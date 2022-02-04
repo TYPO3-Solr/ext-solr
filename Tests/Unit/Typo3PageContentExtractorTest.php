@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit;
 
 /***************************************************************
@@ -24,8 +25,8 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Typo3PageContentExtractor;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use ApacheSolrForTypo3\Solr\Typo3PageContentExtractor;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -41,12 +42,13 @@ class Typo3PageContentExtractorTest extends UnitTest
      */
     protected $typoScripConfigurationMock;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->typoScripConfigurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
-        $this->typoScripConfigurationMock->expects($this->once())->method(
+        $this->typoScripConfigurationMock->expects(self::once())->method(
             'getIndexQueuePagesExcludeContentByClassArray'
-        )->will($this->returnValue(['typo3-search-exclude']));
+        )->willReturn(['typo3-search-exclude']);
+        parent::setUp();
     }
 
     /**
@@ -60,7 +62,7 @@ class Typo3PageContentExtractorTest extends UnitTest
         $contentExtractor = GeneralUtility::makeInstance(Typo3PageContentExtractor::class, $content);
         $contentExtractor->setConfiguration($this->typoScripConfigurationMock);
         $actualResult = $contentExtractor->getIndexableContent();
-        $this->assertEquals($expectedResult, $actualResult);
+        self::assertEquals($expectedResult, $actualResult);
     }
 
     /**
@@ -75,7 +77,7 @@ class Typo3PageContentExtractorTest extends UnitTest
         $contentExtractor->setConfiguration($this->typoScripConfigurationMock);
 
         $actualResult = $contentExtractor->excludeContentByClass($content);
-        $this->assertEquals($expectedResult, $actualResult);
+        self::assertEquals($expectedResult, $actualResult);
     }
 
     /**
@@ -90,8 +92,8 @@ class Typo3PageContentExtractorTest extends UnitTest
 
         $actualResult = $contentExtractor->excludeContentByClass($content);
 
-        $this->assertStringContainsString('Was ein schöner Tag', $actualResult);
-        $this->assertStringNotContainsString('Remove me', $actualResult);
+        self::assertStringContainsString('Was ein schöner Tag', $actualResult);
+        self::assertStringNotContainsString('Remove me', $actualResult);
     }
 
     /**
@@ -106,49 +108,49 @@ class Typo3PageContentExtractorTest extends UnitTest
 
         $actualResult = $contentExtractor->excludeContentByClass($content);
 
-        $this->assertStringContainsString('100€', $actualResult);
-        $this->assertStringNotContainsString('Remove me', $actualResult);
+        self::assertStringContainsString('100€', $actualResult);
+        self::assertStringNotContainsString('Remove me', $actualResult);
     }
 
-    public function canGetIndexableContentDataProvider() {
+    public function canGetIndexableContentDataProvider()
+    {
         return [
             'can extract simple text' => [
                 'content' => '<p>Hello solr for TYPO3</p>',
-                'expectedResult' => 'Hello solr for TYPO3'
+                'expectedResult' => 'Hello solr for TYPO3',
             ],
             'can extract umlauts' => [
                 'content' => '<p>Heute ist ein sch&ouml;ner tag</p>',
-                'expectedResult' => 'Heute ist ein schöner tag'
+                'expectedResult' => 'Heute ist ein schöner tag',
             ],
             'can extract subtag content' => [
                 'content' => '<p>Heute ist ein <strong>sch&ouml;ner</strong> tag</p>',
-                'expectedResult' => 'Heute ist ein schöner tag'
+                'expectedResult' => 'Heute ist ein schöner tag',
             ],
             'removes inline styles' => [
                 'content' => '<style> body { background-color: linen; }</style><p>Heute ist ein <strong>sch&ouml;ner</strong> tag</p>',
-                'expectedResult' => 'Heute ist ein schöner tag'
+                'expectedResult' => 'Heute ist ein schöner tag',
             ],
             'removes a line break' => [
                 'content' => '<p>If <b>the value</b> is <br/> please contact me</p>',
-                'expectedResult' => 'If the value is please contact me'
+                'expectedResult' => 'If the value is please contact me',
             ],
             'keep less then character' => [
                 'content' => '<p>If <b>the value</b> is &lt;50 please contact me</p>',
-                'expectedResult' => 'If the value is <50 please contact me'
+                'expectedResult' => 'If the value is <50 please contact me',
             ],
             'keep escaped html' => [
                 'content' => '<em>this</em> is how to make &lt;b&gt;fat&lt;/b&gt;',
-                'expectedResult' => 'this is how to make <b>fat</b>'
+                'expectedResult' => 'this is how to make <b>fat</b>',
             ],
             'support chinese characters' => [
                 'content' => '媒体和投资者 新闻 财务报告 公司股票信息 概览',
-                'expectedResult' => '媒体和投资者 新闻 财务报告 公司股票信息 概览'
+                'expectedResult' => '媒体和投资者 新闻 财务报告 公司股票信息 概览',
             ],
         ];
     }
 
     /**
-     *
      * @dataProvider canGetIndexableContentDataProvider
      * @test
      */
@@ -160,6 +162,6 @@ class Typo3PageContentExtractorTest extends UnitTest
         $contentExtractor->setConfiguration($this->typoScripConfigurationMock);
 
         $actualResult = $contentExtractor->getIndexableContent();
-        $this->assertStringContainsString($expectedResult, $actualResult);
+        self::assertStringContainsString($expectedResult, $actualResult);
     }
 }

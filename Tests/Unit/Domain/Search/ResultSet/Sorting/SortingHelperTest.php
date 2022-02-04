@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Sorting;
 
 /***************************************************************
@@ -41,17 +42,17 @@ class SortingHelperTest extends UnitTest
         $sortConfiguration = [
             'relevance.' => ['field' => 'relevance', 'label' => 'Title'],
             'title.' => ['field' => 'sortTitle', 'label' => 'Title'],
-            'type.' => ['field' => 'type', 'label' => 'Type']
+            'type.' => ['field' => 'type', 'label' => 'Type'],
         ];
         $sorting = new SortingHelper($sortConfiguration);
         $sortField = $sorting->getSortFieldFromUrlParameter('title asc');
-        $this->assertSame('sortTitle asc', $sortField);
+        self::assertSame('sortTitle asc', $sortField);
 
         $sortField = $sorting->getSortFieldFromUrlParameter('title desc');
-        $this->assertSame('sortTitle desc', $sortField);
+        self::assertSame('sortTitle desc', $sortField);
 
         $sortField = $sorting->getSortFieldFromUrlParameter('title desc,type asc');
-        $this->assertSame('sortTitle desc, type asc', $sortField);
+        self::assertSame('sortTitle desc, type asc', $sortField);
     }
 
     /**

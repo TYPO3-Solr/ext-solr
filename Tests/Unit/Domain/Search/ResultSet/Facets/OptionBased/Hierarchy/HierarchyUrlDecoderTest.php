@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets\OptionBased\Hierarchy;
 
 /***************************************************************
@@ -30,7 +31,6 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- *
  * Testcase for query parser range
  * @author Markus Goldbach
  */
@@ -41,9 +41,10 @@ class HierarchyUrlEncoderTest extends UnitTest
      */
     protected $parser;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->parser = GeneralUtility::makeInstance(HierarchyUrlDecoder::class);
+        parent::setUp();
     }
 
     /**
@@ -54,7 +55,7 @@ class HierarchyUrlEncoderTest extends UnitTest
         $expected = '"2-sport/skateboarding/street/"';
         $actual = $this->parser->decode('/sport/skateboarding/street/');
 
-        $this->assertEquals($expected, $actual);
+        self::assertEquals($expected, $actual);
     }
 
     /**
@@ -65,7 +66,7 @@ class HierarchyUrlEncoderTest extends UnitTest
         $expected = '"2-sport/skateboarding\\\\/snowboarding/street/"';
         $actual = $this->parser->decode('/sport/skateboarding\/snowboarding/street/');
 
-        $this->assertEquals($expected, $actual);
+        self::assertEquals($expected, $actual);
     }
 
     /**
@@ -76,7 +77,7 @@ class HierarchyUrlEncoderTest extends UnitTest
         $expected = '"1-sport/skateboarding/"';
         $actual = $this->parser->decode('/sport/skateboarding/');
 
-        $this->assertEquals($expected, $actual);
+        self::assertEquals($expected, $actual);
     }
 
     /**
@@ -87,6 +88,6 @@ class HierarchyUrlEncoderTest extends UnitTest
         $expected = '"0-sport/"';
         $actual = $this->parser->decode('/sport/');
 
-        $this->assertEquals($expected, $actual);
+        self::assertEquals($expected, $actual);
     }
 }

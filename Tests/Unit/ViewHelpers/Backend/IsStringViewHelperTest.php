@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\ViewHelpers\Backend;
 
 /***************************************************************
@@ -41,13 +42,13 @@ class IsStringViewHelperTest extends UnitTest
     {
         $arguments = [
             'value' => 'givenString',
-            '__thenClosure' => function() { return 'thenResult'; },
-            '__elseClosures' => [function() { return 'elseResult'; }]
+            '__thenClosure' => function () { return 'thenResult'; },
+            '__elseClosures' => [function () { return 'elseResult'; }],
         ];
 
         $renderingContextMock = $this->getDumbMock(RenderingContextInterface::class);
-        $result = IsStringViewHelper::renderStatic($arguments, function(){}, $renderingContextMock);
-        $this->assertSame('thenResult', $result, 'thenClosure was not rendered');
+        $result = IsStringViewHelper::renderStatic($arguments, function () {}, $renderingContextMock);
+        self::assertSame('thenResult', $result, 'thenClosure was not rendered');
     }
 
     /**
@@ -57,12 +58,12 @@ class IsStringViewHelperTest extends UnitTest
     {
         $arguments = [
             'value' => ['givenStringInArray'],
-            '__thenClosure' => function() { return 'thenResult'; },
-            '__elseClosures' => [function() { return 'elseResult'; }]
+            '__thenClosure' => function () { return 'thenResult'; },
+            '__elseClosures' => [function () { return 'elseResult'; }],
         ];
 
         $renderingContextMock = $this->getDumbMock(RenderingContextInterface::class);
-        $result = IsStringViewHelper::renderStatic($arguments, function(){}, $renderingContextMock);
-        $this->assertSame('elseResult', $result, 'elseResult was not rendered');
+        $result = IsStringViewHelper::renderStatic($arguments, function () {}, $renderingContextMock);
+        self::assertSame('elseResult', $result, 'elseResult was not rendered');
     }
 }

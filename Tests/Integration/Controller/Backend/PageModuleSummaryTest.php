@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\Controller\Backend;
 
 /***************************************************************
@@ -26,7 +27,6 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Controller\Backend;
 
 use ApacheSolrForTypo3\Solr\Controller\Backend\PageModuleSummary;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
-use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Backend\View\PageLayoutView;
 use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
 use TYPO3\CMS\Core\Localization\LanguageService;
@@ -40,39 +40,38 @@ use TYPO3\CMS\Core\Localization\LanguageService;
 class PageModuleSummaryTest extends IntegrationTest
 {
     /**
-     * @return void
      * @throws NoSuchCacheException
      */
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
-        $GLOBALS['LANG'] = $this->getMockBuilder(LanguageService::class)
-            ->disableOriginalConstructor()->getMock();
+        $GLOBALS['LANG'] = $this->createMock(LanguageService::class);
     }
 
     /**
      * @test
      */
-    public function canGetSummary() {
+    public function canGetSummary()
+    {
         $flexFormData = $this->getFixtureContentByName('fakeFlexform.xml');
 
         $fakeRow = ['pi_flexform' => $flexFormData];
-        $pageLayoutViewMock = $this->getMockBuilder(PageLayoutView::class)->disableOriginalConstructor()->getMock();
-        $pageLayoutViewMock->expects($this->any())->method('linkEditContent')->will($this->returnValue('fakePluginLabel'));
+        $pageLayoutViewMock = $this->createMock(PageLayoutView::class);
+        $pageLayoutViewMock->expects(self::any())->method('linkEditContent')->willReturn('fakePluginLabel');
         $data = [
             'row' => $fakeRow,
-            'pObj' => $pageLayoutViewMock
+            'pObj' => $pageLayoutViewMock,
         ];
         $summary = new PageModuleSummary();
         $result = $summary->getSummary($data);
 
-        $this->assertStringContainsString('fakePluginLabel', $result, 'Summary did not contain plugin label');
-        $this->assertStringContainsString('>Filter appKey</td>', $result, 'Summary did not contain filter label');
-        $this->assertStringContainsString('<td>test</td>', $result, 'Summary did not contain filter value');
-        $this->assertStringContainsString('<td>sorting</td>', $result, 'Summary did not contain sorting');
-        $this->assertStringContainsString('<td>boostFunction</td>', $result, 'Summary did not contain boostFunction');
-        $this->assertStringContainsString('<td>boostQuery</td>', $result, 'Summary did not contain boostQuery');
-        $this->assertStringContainsString('<td>10</td>', $result, 'Summary did not contain resultsPerPage');
-        $this->assertStringContainsString('<td>myTemplateFile.html</td>', $result, 'Templatefile not in summary');
+        self::assertStringContainsString('fakePluginLabel', $result, 'Summary did not contain plugin label');
+        self::assertStringContainsString('>Filter appKey</td>', $result, 'Summary did not contain filter label');
+        self::assertStringContainsString('<td>test</td>', $result, 'Summary did not contain filter value');
+        self::assertStringContainsString('<td>sorting</td>', $result, 'Summary did not contain sorting');
+        self::assertStringContainsString('<td>boostFunction</td>', $result, 'Summary did not contain boostFunction');
+        self::assertStringContainsString('<td>boostQuery</td>', $result, 'Summary did not contain boostQuery');
+        self::assertStringContainsString('<td>10</td>', $result, 'Summary did not contain resultsPerPage');
+        self::assertStringContainsString('<td>myTemplateFile.html</td>', $result, 'Templatefile not in summary');
     }
 }

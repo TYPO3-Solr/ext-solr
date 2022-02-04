@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\IndexQueue\UpdateHandler\EventListener;
 
 /***************************************************************
@@ -24,20 +25,20 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\IndexQueue\UpdateHandler\EventListe
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\DataUpdateHandler;
-use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\GarbageHandler;
-use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\EventListener\ImmediateProcessingEventListener;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\EventListener\AbstractBaseEventListener;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\EventListener\Events\ProcessingFinishedEvent;
-use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\DataUpdateEventInterface;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\EventListener\ImmediateProcessingEventListener;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\ContentElementDeletedEvent;
-use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\VersionSwappedEvent;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\DataUpdateEventInterface;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\PageMovedEvent;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordDeletedEvent;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordGarbageCheckEvent;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordMovedEvent;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordUpdatedEvent;
-use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordDeletedEvent;
-use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\PageMovedEvent;
-use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordGarbageCheckEvent;
-use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\EventListener\AbstractBaseEventListener;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\VersionSwappedEvent;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\GarbageHandler;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Testcase for the ImmediateProcessingEventListener
@@ -46,6 +47,17 @@ use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\EventListener\Abstr
  */
 class ImmediateProcessingEventListenerTest extends AbstractEventListenerTest
 {
+    protected function setUp(): void
+    {
+        if (!class_exists('SolrUnitTestsInvalidDataUpdateEvent')) {
+            eval(
+                'use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\ContentElementDeletedEvent;'
+                . 'class SolrUnitTestsInvalidDataUpdateEvent extends ContentElementDeletedEvent {}'
+            );
+        }
+        parent::setUp();
+    }
+
     /**
      * @param string $eventClass
      * @param string $handlerClass
@@ -61,9 +73,8 @@ class ImmediateProcessingEventListenerTest extends AbstractEventListenerTest
         array $eventArguments,
         bool $eventHandled
     ): void {
-
         $this->extensionConfigurationMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('getMonitoringType')
             ->willReturn(0);
 
@@ -86,10 +97,9 @@ class ImmediateProcessingEventListenerTest extends AbstractEventListenerTest
         string $handlerClass,
         array $eventArguments,
         bool $eventHandled
-        ): void {
-
+    ): void {
         $this->extensionConfigurationMock
-            ->expects($this->any())
+            ->expects(self::any())
             ->method('getMonitoringType')
             ->willReturn(2);
 
@@ -116,22 +126,22 @@ class ImmediateProcessingEventListenerTest extends AbstractEventListenerTest
         $dispatchedEvent = null;
         if ($eventHandled) {
             $this->eventDispatcherMock
-                ->expects($this->once())
+                ->expects(self::once())
                 ->method('dispatch')
-                ->will($this->returnCallback(function() use (&$dispatchedEvent) {
+                ->willReturnCallback(function () use (&$dispatchedEvent) {
                     $dispatchedEvent = func_get_arg(0);
-                }));
+                });
         } else {
             $this->eventDispatcherMock
-                ->expects($this->never())
+                ->expects(self::never())
                 ->method('dispatch');
         }
 
         $this->listener->__invoke($event);
         if ($eventHandled) {
-            $this->assertTrue($dispatchedEvent instanceof ProcessingFinishedEvent);
-            $this->assertEquals($dispatchedEvent->getDataUpdateEvent(), $event);
-            $this->assertTrue($dispatchedEvent->getDataUpdateEvent()->isPropagationStopped());
+            self::assertTrue($dispatchedEvent instanceof ProcessingFinishedEvent);
+            self::assertEquals($dispatchedEvent->getDataUpdateEvent(), $event);
+            self::assertTrue($dispatchedEvent->getDataUpdateEvent()->isPropagationStopped());
         }
     }
 
@@ -142,13 +152,6 @@ class ImmediateProcessingEventListenerTest extends AbstractEventListenerTest
      */
     public function canHandleEventsDataProvider(): array
     {
-        if (!class_exists('SolrUnitTestsInvalidDataUpdateEvent')) {
-            eval(
-                'use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\ContentElementDeletedEvent;'
-                . 'class SolrUnitTestsInvalidDataUpdateEvent extends ContentElementDeletedEvent {}'
-            );
-        }
-
         return [
             [ContentElementDeletedEvent::class, DataUpdateHandler::class, [1], true],
             [VersionSwappedEvent::class, DataUpdateHandler::class, [1, 'pages'], true],
@@ -157,7 +160,7 @@ class ImmediateProcessingEventListenerTest extends AbstractEventListenerTest
             [RecordDeletedEvent::class, GarbageHandler::class, [1, 'pages'], true],
             [PageMovedEvent::class, GarbageHandler::class, [1], true],
             [RecordGarbageCheckEvent::class, GarbageHandler::class, [1, 'pages', ['hidden'], false], true],
-            ['SolrUnitTestsInvalidDataUpdateEvent', DataUpdateHandler::class, [1], false]
+            ['SolrUnitTestsInvalidDataUpdateEvent', DataUpdateHandler::class, [1], false],
         ];
     }
 

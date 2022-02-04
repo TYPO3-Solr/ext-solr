@@ -31,8 +31,8 @@ use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\TypoScript\Parser\TypoScriptParser;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
+use UnexpectedValueException;
 
 /**
  * An abstract indexer class to collect a few common methods shared with other
@@ -221,15 +221,10 @@ abstract class AbstractIndexer
      * @param string $solrFieldName Current field being indexed
      * @return bool TRUE if the value is expected to be serialized, FALSE otherwise
      */
-    public static function isSerializedValue(array $indexingConfiguration, $solrFieldName)
+    public static function isSerializedValue(array $indexingConfiguration, string $solrFieldName): bool
     {
-        $isSerialized = static::isSerializedResultFromRegisteredHook($indexingConfiguration, $solrFieldName);
-        if ($isSerialized === true) {
-            return $isSerialized;
-        }
-
-        $isSerialized = static::isSerializedResultFromCustomContentElement($indexingConfiguration, $solrFieldName);
-        return $isSerialized;
+        return static::isSerializedResultFromRegisteredHook($indexingConfiguration, $solrFieldName)
+            || static::isSerializedResultFromCustomContentElement($indexingConfiguration, $solrFieldName);
     }
 
     /**
@@ -239,7 +234,7 @@ abstract class AbstractIndexer
      * @param string $solrFieldName
      * @return bool
      */
-    protected static function isSerializedResultFromCustomContentElement(array $indexingConfiguration, $solrFieldName): bool
+    protected static function isSerializedResultFromCustomContentElement(array $indexingConfiguration, string $solrFieldName): bool
     {
         $isSerialized = false;
 
@@ -268,7 +263,7 @@ abstract class AbstractIndexer
      * @param string $solrFieldName
      * @return bool
      */
-    protected static function isSerializedResultFromRegisteredHook(array $indexingConfiguration, $solrFieldName)
+    protected static function isSerializedResultFromRegisteredHook(array $indexingConfiguration, string $solrFieldName): bool
     {
         if (!is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['detectSerializedValue'] ?? null)) {
             return false;
@@ -278,7 +273,7 @@ abstract class AbstractIndexer
             $serializedValueDetector = GeneralUtility::makeInstance($classReference);
             if (!$serializedValueDetector instanceof SerializedValueDetector) {
                 $message = get_class($serializedValueDetector) . ' must implement interface ' . SerializedValueDetector::class;
-                throw new \UnexpectedValueException($message, 1404471741);
+                throw new UnexpectedValueException($message, 1404471741);
             }
 
             $isSerialized = (boolean)$serializedValueDetector->isSerializedValue($indexingConfiguration, $solrFieldName);
@@ -286,6 +281,7 @@ abstract class AbstractIndexer
                 return true;
             }
         }
+        return false;
     }
 
     /**

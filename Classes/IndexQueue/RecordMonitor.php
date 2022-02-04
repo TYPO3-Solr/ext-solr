@@ -84,7 +84,7 @@ class RecordMonitor
      * @param string $command The command.
      * @param string $table The table the record belongs to
      * @param int $uid The record's uid
-     * @param string $value
+     * @param mixed $value
      */
     public function processCmdmap_postProcess($command, $table, $uid, $value): void
     {

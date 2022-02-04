@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Task;
 
 /***************************************************************
@@ -25,16 +26,16 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Task;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\EventListener\Events\DelayedProcessingFinishedEvent;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordUpdatedEvent;
+use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
+use ApacheSolrForTypo3\Solr\System\Records\Queue\EventQueueItemRepository;
+use ApacheSolrForTypo3\Solr\Task\EventQueueWorkerTask;
+use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Scheduler\Scheduler;
 use TYPO3\CMS\Scheduler\Execution;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
-use ApacheSolrForTypo3\Solr\Task\EventQueueWorkerTask;
-use ApacheSolrForTypo3\Solr\System\Records\Queue\EventQueueItemRepository;
-use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordUpdatedEvent;
-use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\EventListener\Events\DelayedProcessingFinishedEvent;
-use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
+use TYPO3\CMS\Scheduler\Scheduler;
 
 /**
  * Testcase for EventQueueWorkerTask
@@ -46,18 +47,19 @@ class EventQueueWorkerTaskTest extends UnitTest
     /**
      * @var EventQueueWorkerTask
      */
-    protected  $task;
+    protected $task;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         GeneralUtility::setSingletonInstance(Scheduler::class, $this->createMock(Scheduler::class));
         GeneralUtility::addInstance(Execution::class, $this->createMock(Execution::class));
 
         $this->task = new EventQueueWorkerTask();
         $this->task->setLimit(99);
+        parent::setUp();
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         GeneralUtility::purgeInstances();
         parent::tearDown();
@@ -80,38 +82,38 @@ class EventQueueWorkerTaskTest extends UnitTest
         $unserializedEvent = unserialize($serializedEvent);
         $queueItem = [
             'uid' => 10,
-            'event' => $serializedEvent
+            'event' => $serializedEvent,
         ];
 
         $eventQueueItemRepositoryMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('getEventQueueItems')
             ->with(99)
             ->willReturn([$queueItem]);
 
         $dispatchedEvents = [];
         $eventDispatcherMock
-            ->expects($this->exactly(2))
+            ->expects(self::exactly(2))
             ->method('dispatch')
-            ->will($this->returnCallback(function() use (&$dispatchedEvents) {
+            ->willReturnCallback(function () use (&$dispatchedEvents) {
                 $dispatchedEvents[] = func_get_arg(0);
-            }));
+            });
 
         $eventQueueItemRepositoryMock
-            ->expects($this->never())
+            ->expects(self::never())
             ->method('updateEventQueueItem');
 
         $eventQueueItemRepositoryMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('deleteEventQueueItems')
             ->with([10]);
 
         $this->task->execute();
 
         $unserializedEvent->setForceImmediateProcessing(true);
-        $this->assertCount(2, $dispatchedEvents);
-        $this->assertEquals($unserializedEvent, $dispatchedEvents[0]);
-        $this->assertTrue($dispatchedEvents[1] instanceof DelayedProcessingFinishedEvent);
+        self::assertCount(2, $dispatchedEvents);
+        self::assertEquals($unserializedEvent, $dispatchedEvents[0]);
+        self::assertTrue($dispatchedEvents[1] instanceof DelayedProcessingFinishedEvent);
     }
 
     /**
@@ -133,32 +135,32 @@ class EventQueueWorkerTaskTest extends UnitTest
         $unserializedEvent = unserialize($serializedEvent);
         $queueItem = [
             'uid' => 10,
-            'event' => $serializedEvent
+            'event' => $serializedEvent,
         ];
 
         $eventQueueItemRepositoryMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('getEventQueueItems')
             ->with(99)
             ->willReturn([$queueItem]);
 
         $eventDispatcherMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('dispatch')
             ->willThrowException(new \Exception('', 1641889238));
 
         $solrLogManagerMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('log')
-            ->with(SolrLogManager::ERROR, $this->anything(), $this->anything());
+            ->with(SolrLogManager::ERROR, self::anything(), self::anything());
 
         $eventQueueItemRepositoryMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('updateEventQueueItem')
             ->with(10, ['error' => 1, 'error_message' => '[1641889238]']);
 
         $eventQueueItemRepositoryMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('deleteEventQueueItems')
             ->with([]);
 

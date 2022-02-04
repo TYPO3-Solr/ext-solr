@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\IndexQueue\Helpers;
 
 /***************************************************************
@@ -43,7 +44,8 @@ class DummyAdditionalIndexQueueItemIndexer implements AdditionalIndexQueueItemIn
      *
      * @return Document[] An array of additional Apache Solr Document objects
      */
-    public function getAdditionalItemDocuments(Item $item, $language, Document $itemDocument) {
+    public function getAdditionalItemDocuments(Item $item, $language, Document $itemDocument)
+    {
         return [];
     }
 }

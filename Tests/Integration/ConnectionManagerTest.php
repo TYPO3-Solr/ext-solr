@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Integration;
 
 /***************************************************************
@@ -46,7 +47,7 @@ class ConnectionManagerTest extends IntegrationTest
      */
     protected bool $skipImportRootPagesAndTemplatesForConfiguredSites = true;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->writeDefaultSolrTestSiteConfiguration();
@@ -55,11 +56,11 @@ class ConnectionManagerTest extends IntegrationTest
     /**
      * @return array
      */
-    public function  canFindSolrConnectionsByRootPageIdDataProvider()
+    public function canFindSolrConnectionsByRootPageIdDataProvider()
     {
         return [
             ['rootPageId' => 1, 'siteName' => 'integration_tree_one', 'expectedSolrHost' => 'solr.testone.endpoint'],
-            ['rootPageId' => 111, 'siteName' => 'integration_tree_two', 'expectedSolrHost' => 'solr.testtwo.endpoint']
+            ['rootPageId' => 111, 'siteName' => 'integration_tree_two', 'expectedSolrHost' => 'solr.testtwo.endpoint'],
         ];
     }
 
@@ -90,23 +91,22 @@ class ConnectionManagerTest extends IntegrationTest
         /** @var $connectionManager ConnectionManager */
         $connectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
 
-        foreach ([0,1,2] as $languageID) {
+        foreach ([0, 1, 2] as $languageID) {
             $solrService = $connectionManager->getConnectionByRootPageId($rootPageId, $languageID);
-            $this->assertInstanceOf(SolrConnection::class, $solrService, vsprintf('Should find solr connection for root page "%s" and language "%s"', [$rootPageId, $languageID]));
-            $this->assertEquals($expectedSolrHost, $solrService->getNode('read')->getHost(), vsprintf('Apache Solr host must be the same as configured.' .
+            self::assertInstanceOf(SolrConnection::class, $solrService, vsprintf('Should find solr connection for root page "%s" and language "%s"', [$rootPageId, $languageID]));
+            self::assertEquals($expectedSolrHost, $solrService->getNode('read')->getHost(), vsprintf('Apache Solr host must be the same as configured.' .
                 ' Wrong connection is used. I expected "%s" as Host for "%s" Site with Root-Page ID "%s".', [$expectedSolrHost, $siteName, $rootPageId]));
         }
     }
 
-
     /**
      * @return array
      */
-    public function  canFindSolrConnectionsByPageIdDataProvider()
+    public function canFindSolrConnectionsByPageIdDataProvider()
     {
         return [
             ['pageId' => 11, 'siteName' => 'integration_tree_one', 'expectedSolrHost' => 'solr.testone.endpoint'],
-            ['ageId' => 21, 'siteName' => 'integration_tree_two', 'expectedSolrHost' => 'solr.testtwo.endpoint']
+            ['ageId' => 21, 'siteName' => 'integration_tree_two', 'expectedSolrHost' => 'solr.testtwo.endpoint'],
         ];
     }
 
@@ -148,10 +148,10 @@ class ConnectionManagerTest extends IntegrationTest
         /** @var $connectionManager ConnectionManager */
         $connectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
 
-        foreach ([0,1,2] as $languageID) {
+        foreach ([0, 1, 2] as $languageID) {
             $solrService = $connectionManager->getConnectionByPageId($pageId, $languageID);
-            $this->assertInstanceOf(SolrConnection::class, $solrService, vsprintf('Should find solr connection for page id "%s" and language "%s"', [$pageId, $languageID]));
-            $this->assertEquals($expectedSolrHost, $solrService->getNode('read')->getHost(), vsprintf('Apache Solr host must be the same as configured.' .
+            self::assertInstanceOf(SolrConnection::class, $solrService, vsprintf('Should find solr connection for page id "%s" and language "%s"', [$pageId, $languageID]));
+            self::assertEquals($expectedSolrHost, $solrService->getNode('read')->getHost(), vsprintf('Apache Solr host must be the same as configured.' .
                 ' Wrong connection is used. I expected "%s" as Host for "%s" Site with Root-Page ID "%s".', [$expectedSolrHost, $siteName, $pageId]));
         }
     }
@@ -176,10 +176,10 @@ class ConnectionManagerTest extends IntegrationTest
             'integration_tree_three',
             $this->buildSiteConfiguration(3, 'http://testthree.site/'),
             [
-                $defaultLanguage, $german, $danish
+                $defaultLanguage, $german, $danish,
             ],
             [
-                $this->buildErrorHandlingConfiguration('Fluid', [404])
+                $this->buildErrorHandlingConfiguration('Fluid', [404]),
             ]
         );
     }
@@ -259,9 +259,9 @@ class ConnectionManagerTest extends IntegrationTest
         $connectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
 
         $solrService = $connectionManager->getConnectionByPageId(24, 0, '24-14');
-        $this->assertInstanceOf(SolrConnection::class, $solrService, 'Should find solr connection for level 0 of mounted page.');
+        self::assertInstanceOf(SolrConnection::class, $solrService, 'Should find solr connection for level 0 of mounted page.');
 
         $solrService1 = $connectionManager->getConnectionByPageId(25, 0, '24-14');
-        $this->assertInstanceOf(SolrConnection::class, $solrService1, 'Should find solr connection for level 1 of mounted page.');
+        self::assertInstanceOf(SolrConnection::class, $solrService1, 'Should find solr connection for level 1 of mounted page.');
     }
 }

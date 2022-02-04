@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Task;
 
 /***************************************************************
@@ -40,14 +41,14 @@ class ReIndexTaskTest extends UnitTest
      */
     public function canGetErrorMessageInAdditionalInformationWhenSiteNotAvailable()
     {
-            /** @var $indexQueuerWorker ReIndexTask */
+        /** @var $indexQueuerWorker ReIndexTask */
         $indexQueuerWorker = $this->getMockBuilder(ReIndexTask::class)
             ->disableOriginalConstructor()
-            ->setMethods(['getSite'])
+            ->onlyMethods(['getSite'])
             ->getMock();
 
         $mesage = $indexQueuerWorker->getAdditionalInformation();
         $expectedMessage = 'Invalid site configuration for scheduler please re-create the task!';
-        $this->assertSame($expectedMessage, $mesage, 'Expect to get error message of non existing site');
+        self::assertSame($expectedMessage, $mesage, 'Expect to get error message of non existing site');
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\Query\ParameterBuilder;
 
 /***************************************************************
@@ -45,15 +46,14 @@ class GroupingTest extends UnitTest
                         'search.' => [
                             'grouping' => 1,
                             'grouping.' => [
-                                'sortBy' => 'title desc'
-                            ]
-                        ]
-                    ]
-                ]
+                                'sortBy' => 'title desc',
+                            ],
+                        ],
+                    ],
+                ],
             ]
         );
         $grouping = Grouping::fromTypoScriptConfiguration($typoScriptConfiguration);
-        $this->assertSame(['title desc'], $grouping->getSortings(), 'Could not set sortings from TypoScriptConfiguration');
+        self::assertSame(['title desc'], $grouping->getSortings(), 'Could not set sortings from TypoScriptConfiguration');
     }
-
 }

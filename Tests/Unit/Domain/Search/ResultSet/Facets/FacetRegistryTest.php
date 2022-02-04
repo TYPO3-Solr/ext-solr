@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets;
 
 /*
@@ -14,10 +15,10 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets;
  * The TYPO3 project - inspiring people to share!
  */
 
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\FacetRegistry;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\OptionsPackage;
 use ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets\TestPackage\TestPackage;
+use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use InvalidArgumentException;
 use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
@@ -36,12 +37,10 @@ class FacetRegistryTest extends UnitTest
      */
     protected $objectManagerMock;
 
-    /**
-     * @return void
-     */
-    public function setUp(): void {
+    protected function setUp(): void
+    {
+        $this->objectManagerMock = $this->createMock(ObjectManager::class);
         parent::setUp();
-        $this->objectManagerMock = $this->getMockBuilder(ObjectManager::class)->disableOriginalConstructor()->getMock();
     }
 
     /**
@@ -61,9 +60,9 @@ class FacetRegistryTest extends UnitTest
         $facetRegistry->injectObjectManager($this->objectManagerMock);
 
         if (!empty($createsPackageInstances)) {
-            $facetRegistry->expects($this->any())
+            $facetRegistry->expects(self::any())
                 ->method('createInstance')
-                ->will($this->returnValueMap($createsPackageInstances));
+                ->willReturnMap($createsPackageInstances);
         }
 
         return $facetRegistry;
@@ -81,7 +80,7 @@ class FacetRegistryTest extends UnitTest
         $facetRegistry = $this->getTestFacetPackageRegistry([[$packageClass, $packageObject]]);
         $facetRegistry->registerPackage($packageClass, $facetType);
 
-        $this->assertEquals($packageObject, $facetRegistry->getPackage($facetType));
+        self::assertEquals($packageObject, $facetRegistry->getPackage($facetType));
     }
 
     /**
@@ -114,7 +113,7 @@ class FacetRegistryTest extends UnitTest
     {
         $optionsFacetPackage = new OptionsPackage();
         $facetParserRegistry = $this->getTestFacetPackageRegistry([[OptionsPackage::class, $optionsFacetPackage]]);
-        $this->assertEquals($optionsFacetPackage, $facetParserRegistry->getPackage('unknownType'));
+        self::assertEquals($optionsFacetPackage, $facetParserRegistry->getPackage('unknownType'));
     }
 
     /**
@@ -128,6 +127,6 @@ class FacetRegistryTest extends UnitTest
         $facetParserRegistry = $this->getTestFacetPackageRegistry([[$packageClass, $packageObject]]);
         $facetParserRegistry->setDefaultPackage($packageClass);
 
-        $this->assertEquals($packageObject, $facetParserRegistry->getPackage('unknownType'));
+        self::assertEquals($packageObject, $facetParserRegistry->getPackage('unknownType'));
     }
 }

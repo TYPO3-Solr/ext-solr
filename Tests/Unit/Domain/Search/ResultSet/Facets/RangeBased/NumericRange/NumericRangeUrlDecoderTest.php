@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets\RangeBased\NumericRange;
 
 /***************************************************************
@@ -47,9 +48,10 @@ class NumericRangeUrlEncoderTest extends UnitTest
      */
     protected $rangeParser;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->rangeParser = GeneralUtility::makeInstance(NumericRangeUrlDecoder::class);
+        parent::setUp();
     }
 
     /**
@@ -62,7 +64,7 @@ class NumericRangeUrlEncoderTest extends UnitTest
         return [
             ['firstValue' => '50', 'secondValue' => '100', 'expected' => '[50 TO 100]'],
             ['firstValue' => '-10', 'secondValue' => '20', 'expected' => '[-10 TO 20]'],
-            ['firstValue' => '-10', 'secondValue' => '-5', 'expected' => '[-10 TO -5]']
+            ['firstValue' => '-10', 'secondValue' => '-5', 'expected' => '[-10 TO -5]'],
         ];
     }
 
@@ -75,20 +77,17 @@ class NumericRangeUrlEncoderTest extends UnitTest
      * @param string $firstValue
      * @param string $secondValue
      * @param string $expectedResult
-     * @return void
      */
     public function canParseRangeQuery(string $firstValue, string $secondValue, string $expectedResult)
     {
         $actual = $this->rangeParser->decode($firstValue . '-' . $secondValue);
-        $this->assertEquals($expectedResult, $actual);
+        self::assertEquals($expectedResult, $actual);
     }
 
     /**
      * Test the handling of invalid parameters
      *
      * @test
-     *
-     * @return void
      */
     public function canHandleInvalidParameters()
     {

@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\FrequentSearches;
 
 /***************************************************************
@@ -58,28 +59,20 @@ class FrequentSearchesServiceTest extends UnitTest
      */
     protected $statisticsRepositoryMock;
 
-    /**
-     * @return void
-     */
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->tsfeMock = $this->getDumbMock(TypoScriptFrontendController::class);
         $this->tsfeMock->tmpl = new \stdClass();
         $this->tsfeMock->tmpl->rootLine = [
             0 => [
-                'uid' => 4711
-            ]
+                'uid' => 4711,
+            ],
         ];
-        $this->statisticsRepositoryMock = $this->getDumbMock(StatisticsRepository::class );
+        $this->statisticsRepositoryMock = $this->getDumbMock(StatisticsRepository::class);
         $this->cacheMock = $this->getDumbMock(AbstractFrontend::class);
         $this->configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
 
-        $this->frequentSearchesService = new class (
-            $this->configurationMock,
-            $this->cacheMock,
-            $this->tsfeMock,
-            $this->statisticsRepositoryMock
-        ) extends FrequentSearchesService {
+        $this->frequentSearchesService = new class($this->configurationMock, $this->cacheMock, $this->tsfeMock, $this->statisticsRepositoryMock) extends FrequentSearchesService {
 //            protected function getCacheIdentifier(array $frequentSearchConfiguration) : string {
 //                $identifier = 'frequentSearchesTags';
 //                if (isset($frequentSearchConfiguration['select.']['checkRootPageId']) && $frequentSearchConfiguration['select.']['checkRootPageId']) {
@@ -93,6 +86,7 @@ class FrequentSearchesServiceTest extends UnitTest
 //                return $identifier;
 //            }
         };
+        parent::setUp();
     }
 
     /**
@@ -102,12 +96,12 @@ class FrequentSearchesServiceTest extends UnitTest
     {
         $fakeConfiguration = [];
         $expectedCacheIdentifier = 'frequentSearchesTags_' . md5(serialize($fakeConfiguration));
-        $this->configurationMock->expects($this->once())->method('getSearchFrequentSearchesConfiguration')->will($this->returnValue($fakeConfiguration));
+        $this->configurationMock->expects(self::once())->method('getSearchFrequentSearchesConfiguration')->willReturn($fakeConfiguration);
 
         $this->fakeCacheResult($expectedCacheIdentifier, ['term a']);
 
         $frequentTerms = $this->frequentSearchesService->getFrequentSearchTerms();
-        $this->assertSame('term a', $frequentTerms[0], 'Could not get frequent terms from service');
+        self::assertSame('term a', $frequentTerms[0], 'Could not get frequent terms from service');
     }
 
     /**
@@ -123,25 +117,25 @@ class FrequentSearchesServiceTest extends UnitTest
                 'FROM' => '',
                 'ADD_WHERE' => '',
                 'GROUP_BY' => '',
-                'ORDER_BY' => ''
+                'ORDER_BY' => '',
             ],
-            'limit'
+            'limit',
         ];
 
-        $this->configurationMock->expects($this->once())->method('getSearchFrequentSearchesConfiguration')->will($this->returnValue($fakeConfiguration));
+        $this->configurationMock->expects(self::once())->method('getSearchFrequentSearchesConfiguration')->willReturn($fakeConfiguration);
 
-        $this->statisticsRepositoryMock->expects($this->once())->method('getFrequentSearchTermsFromStatisticsByFrequentSearchConfiguration')->will($this->returnValue([
+        $this->statisticsRepositoryMock->expects(self::once())->method('getFrequentSearchTermsFromStatisticsByFrequentSearchConfiguration')->willReturn([
             [
                'search_term' => 'my search',
-                'hits' => 22
-            ]
-        ]));
+                'hits' => 22,
+            ],
+        ]);
 
-            //we fake that we have no frequent searches in the cache and therefore expect that the database will be queried
+        //we fake that we have no frequent searches in the cache and therefore expect that the database will be queried
         $this->fakeIdentifierNotInCache();
         $frequentTerms = $this->frequentSearchesService->getFrequentSearchTerms();
 
-        $this->assertSame($frequentTerms, ['my search' => 22], 'Could not retrieve frequent search terms');
+        self::assertSame($frequentTerms, ['my search' => 22], 'Could not retrieve frequent search terms');
     }
 
     /**
@@ -150,15 +144,12 @@ class FrequentSearchesServiceTest extends UnitTest
      */
     public function fakeCacheResult($identifier, $value)
     {
-        $this->cacheMock->expects($this->once())->method('has')->with($identifier)->will($this->returnValue(true));
-        $this->cacheMock->expects($this->once())->method('get')->will($this->returnValue($value));
+        $this->cacheMock->expects(self::once())->method('has')->with($identifier)->willReturn(true);
+        $this->cacheMock->expects(self::once())->method('get')->willReturn($value);
     }
 
-    /**
-     * @return void
-     */
     public function fakeIdentifierNotInCache()
     {
-        $this->cacheMock->expects($this->once())->method('has')->will($this->returnValue(false));
+        $this->cacheMock->expects(self::once())->method('has')->willReturn(false);
     }
 }
