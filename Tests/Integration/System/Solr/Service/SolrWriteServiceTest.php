@@ -44,10 +44,9 @@ class SolrWriteServiceTest extends IntegrationTest
     protected $solrWriteService;
 
     /**
-     * @return void
      * @throws NoSuchCacheException
      */
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -56,8 +55,7 @@ class SolrWriteServiceTest extends IntegrationTest
         $requestFactory = GeneralUtility::getContainer()->get(RequestFactoryInterface::class);
         $streamFactory = GeneralUtility::getContainer()->get(StreamFactoryInterface::class);
         /* @var EventDispatcher $eventDispatcher */
-        $eventDispatcher = $this->getMockBuilder(EventDispatcherInterface::class)
-            ->disableOriginalConstructor()->getMock();
+        $eventDispatcher = $this->createMock(EventDispatcherInterface::class);
         $adapter = new Psr18Adapter(
             $psr7Client,
             $requestFactory,
@@ -67,7 +65,7 @@ class SolrWriteServiceTest extends IntegrationTest
 
         $client->clearEndpoints();
         $solrConnectionInfo = $this->getSolrConnectionInfo();
-        $client->createEndpoint(['host' => $solrConnectionInfo['host'], 'port' => $solrConnectionInfo['port'], 'path' => '/', 'core' => 'core_en', 'key' => 'admin'] , true);
+        $client->createEndpoint(['host' => $solrConnectionInfo['host'], 'port' => $solrConnectionInfo['port'], 'path' => '/', 'core' => 'core_en', 'key' => 'admin'], true);
 
         $this->solrWriteService = GeneralUtility::makeInstance(SolrWriteService::class, $client);
     }
@@ -83,6 +81,6 @@ class SolrWriteServiceTest extends IntegrationTest
         $extractQuery = GeneralUtility::makeInstance(ExtractingQuery::class, $testFilePath);
         $extractQuery->setExtractOnly(true);
         $response = $this->solrWriteService->extractByQuery($extractQuery);
-        $this->assertStringContainsString('PDF Test', $response[0], 'Could not extract text');
+        self::assertStringContainsString('PDF Test', $response[0], 'Could not extract text');
     }
 }

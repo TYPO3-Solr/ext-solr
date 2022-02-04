@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit;
 
 /***************************************************************
@@ -24,8 +25,8 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use ApacheSolrForTypo3\Solr\Search\RelevanceComponent;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use Solarium\QueryType\Select\RequestBuilder;
@@ -58,9 +59,9 @@ class RelevanceComponentTest extends UnitTest
             'query.' => [
                 'phrase' => 1,
                 'phrase.' => [
-                    'querySlop' => 2
-                ]
-            ]
+                    'querySlop' => 2,
+                ],
+            ],
         ];
 
         $typoscriptConfiguration = $this->getTypoScriptConfigurationWithQueryConfiguration($searchConfiguration);
@@ -69,12 +70,12 @@ class RelevanceComponentTest extends UnitTest
 
         $query = new Query();
         $query->setQuery('test');
-        $this->assertArrayNotHasKey('qs', $this->getQueryParameters($query));
+        self::assertArrayNotHasKey('qs', $this->getQueryParameters($query));
 
         $relevanceComponent->setQuery($query);
         $relevanceComponent->initializeSearchComponent();
 
-        $this->assertSame(2, $this->getQueryParameters($query)['qs'], 'querySlop was not applied as qs parameter');
+        self::assertSame(2, $this->getQueryParameters($query)['qs'], 'querySlop was not applied as qs parameter');
     }
 
     /**
@@ -86,9 +87,9 @@ class RelevanceComponentTest extends UnitTest
             'query.' => [
                 'phrase' => 0,
                 'phrase.' => [
-                    'querySlop' => 2
-                ]
-            ]
+                    'querySlop' => 2,
+                ],
+            ],
         ];
         $typoscriptConfiguration = $this->getTypoScriptConfigurationWithQueryConfiguration($searchConfiguration);
         $queryBuilder = new QueryBuilder($typoscriptConfiguration);
@@ -96,12 +97,12 @@ class RelevanceComponentTest extends UnitTest
 
         $query = new Query();
         $query->setQuery('test');
-        $this->assertArrayNotHasKey('qs', $this->getQueryParameters($query));
+        self::assertArrayNotHasKey('qs', $this->getQueryParameters($query));
 
         $relevanceComponent->setQuery($query);
         $relevanceComponent->initializeSearchComponent();
 
-        $this->assertArrayNotHasKey('qs', $this->getQueryParameters($query), 'querySlop should still be null because phrase is disabled');
+        self::assertArrayNotHasKey('qs', $this->getQueryParameters($query), 'querySlop should still be null because phrase is disabled');
     }
 
     /**
@@ -113,9 +114,9 @@ class RelevanceComponentTest extends UnitTest
             'query.' => [
                 'phrase' => 1,
                 'phrase.' => [
-                    'slop' => 3
-                ]
-            ]
+                    'slop' => 3,
+                ],
+            ],
         ];
 
         $typoscriptConfiguration = $this->getTypoScriptConfigurationWithQueryConfiguration($searchConfiguration);
@@ -124,12 +125,12 @@ class RelevanceComponentTest extends UnitTest
 
         $query = new Query();
         $query->setQuery('test');
-        $this->assertArrayNotHasKey('ps', $this->getQueryParameters($query));
+        self::assertArrayNotHasKey('ps', $this->getQueryParameters($query));
 
         $relevanceComponent->setQuery($query);
         $relevanceComponent->initializeSearchComponent();
 
-        $this->assertSame(3, $this->getQueryParameters($query)['ps'], 'slop was not applied as qs parameter');
+        self::assertSame(3, $this->getQueryParameters($query)['ps'], 'slop was not applied as qs parameter');
     }
 
     /**
@@ -141,9 +142,9 @@ class RelevanceComponentTest extends UnitTest
             'query.' => [
                 'phrase' => 0,
                 'phrase.' => [
-                    'slop' => 3
-                ]
-            ]
+                    'slop' => 3,
+                ],
+            ],
         ];
         $typoscriptConfiguration = $this->getTypoScriptConfigurationWithQueryConfiguration($searchConfiguration);
         $queryBuilder = new QueryBuilder($typoscriptConfiguration);
@@ -151,12 +152,12 @@ class RelevanceComponentTest extends UnitTest
 
         $query = new Query();
         $query->setQuery('test');
-        $this->assertArrayNotHasKey('ps', $this->getQueryParameters($query));
+        self::assertArrayNotHasKey('ps', $this->getQueryParameters($query));
 
         $relevanceComponent->setQuery($query);
         $relevanceComponent->initializeSearchComponent();
 
-        $this->assertArrayNotHasKey('ps', $this->getQueryParameters($query), 'PhraseSlop should be null, when phrase is disabled');
+        self::assertArrayNotHasKey('ps', $this->getQueryParameters($query), 'PhraseSlop should be null, when phrase is disabled');
     }
 
     /**
@@ -168,9 +169,9 @@ class RelevanceComponentTest extends UnitTest
             'query.' => [
                 'bigramPhrase' => 1,
                 'bigramPhrase.' => [
-                    'slop' => 4
-                ]
-            ]
+                    'slop' => 4,
+                ],
+            ],
         ];
         $typoscriptConfiguration = $this->getTypoScriptConfigurationWithQueryConfiguration($searchConfiguration);
         $queryBuilder = new QueryBuilder($typoscriptConfiguration);
@@ -179,12 +180,12 @@ class RelevanceComponentTest extends UnitTest
         $query = new Query();
         $query->setQuery('test');
 
-        $this->assertArrayNotHasKey('ps2', $this->getQueryParameters($query));
+        self::assertArrayNotHasKey('ps2', $this->getQueryParameters($query));
 
         $relevanceComponent->setQuery($query);
         $relevanceComponent->initializeSearchComponent();
 
-        $this->assertSame(4, $this->getQueryParameters($query)['ps2'], 'slop was not applied as qs parameter');
+        self::assertSame(4, $this->getQueryParameters($query)['ps2'], 'slop was not applied as qs parameter');
     }
 
     /**
@@ -196,9 +197,9 @@ class RelevanceComponentTest extends UnitTest
             'query.' => [
                 'bigramPhrase' => 0,
                 'bigramPhrase.' => [
-                    'slop' => 4
-                ]
-            ]
+                    'slop' => 4,
+                ],
+            ],
         ];
         $typoscriptConfiguration = $this->getTypoScriptConfigurationWithQueryConfiguration($searchConfiguration);
         $queryBuilder = new QueryBuilder($typoscriptConfiguration);
@@ -206,12 +207,12 @@ class RelevanceComponentTest extends UnitTest
 
         $query = new Query();
         $query->setQuery('test');
-        $this->assertArrayNotHasKey('ps2', $this->getQueryParameters($query));
+        self::assertArrayNotHasKey('ps2', $this->getQueryParameters($query));
 
         $relevanceComponent->setQuery($query);
         $relevanceComponent->initializeSearchComponent();
 
-        $this->assertArrayNotHasKey('ps2', $this->getQueryParameters($query), 'ps2 parameter should be empty because bigramPhrases are disabled');
+        self::assertArrayNotHasKey('ps2', $this->getQueryParameters($query), 'ps2 parameter should be empty because bigramPhrases are disabled');
     }
 
     /**
@@ -223,9 +224,9 @@ class RelevanceComponentTest extends UnitTest
             'query.' => [
                 'trigramPhrase' => 1,
                 'trigramPhrase.' => [
-                    'slop' => 4
-                ]
-            ]
+                    'slop' => 4,
+                ],
+            ],
         ];
         $typoscriptConfiguration = $this->getTypoScriptConfigurationWithQueryConfiguration($searchConfiguration);
         $queryBuilder = new QueryBuilder($typoscriptConfiguration);
@@ -233,12 +234,12 @@ class RelevanceComponentTest extends UnitTest
 
         $query = new Query();
         $query->setQuery('test');
-        $this->assertArrayNotHasKey('ps3', $this->getQueryParameters($query));
+        self::assertArrayNotHasKey('ps3', $this->getQueryParameters($query));
 
         $relevanceComponent->setQuery($query);
         $relevanceComponent->initializeSearchComponent();
 
-        $this->assertSame(4, $this->getQueryParameters($query)['ps3'], 'slop was not applied as qs parameter');
+        self::assertSame(4, $this->getQueryParameters($query)['ps3'], 'slop was not applied as qs parameter');
     }
 
     /**
@@ -250,9 +251,9 @@ class RelevanceComponentTest extends UnitTest
             'query.' => [
                 'trigramPhrase' => 0,
                 'trigramPhrase.' => [
-                    'slop' => 4
-                ]
-            ]
+                    'slop' => 4,
+                ],
+            ],
         ];
         $typoscriptConfiguration = $this->getTypoScriptConfigurationWithQueryConfiguration($searchConfiguration);
         $queryBuilder = new QueryBuilder($typoscriptConfiguration);
@@ -260,14 +261,13 @@ class RelevanceComponentTest extends UnitTest
 
         $query = new Query();
         $query->setQuery('test');
-        $this->assertArrayNotHasKey('ps3', $this->getQueryParameters($query));
+        self::assertArrayNotHasKey('ps3', $this->getQueryParameters($query));
 
         $relevanceComponent->setQuery($query);
         $relevanceComponent->initializeSearchComponent();
 
-        $this->assertArrayNotHasKey('ps3', $this->getQueryParameters($query), 'ps3 parameter should be empty because bigramPhrases are disabled');
+        self::assertArrayNotHasKey('ps3', $this->getQueryParameters($query), 'ps3 parameter should be empty because bigramPhrases are disabled');
     }
-
 
     /**
      * @test
@@ -277,7 +277,7 @@ class RelevanceComponentTest extends UnitTest
         $searchConfiguration = [
             'query.' => [
                 'tieParameter' => '0.78',
-            ]
+            ],
         ];
         $typoscriptConfiguration = $this->getTypoScriptConfigurationWithQueryConfiguration($searchConfiguration);
         $queryBuilder = new QueryBuilder($typoscriptConfiguration);
@@ -285,12 +285,12 @@ class RelevanceComponentTest extends UnitTest
 
         $query = new Query();
         $query->setQuery('test');
-        $this->assertArrayNotHasKey('tie', $this->getQueryParameters($query));
+        self::assertArrayNotHasKey('tie', $this->getQueryParameters($query));
 
         $relevanceComponent->setQuery($query);
         $relevanceComponent->initializeSearchComponent();
 
-        $this->assertSame((float)'0.78', $this->getQueryParameters($query)['tie'], 'tieParameter was not applied as tie parameter');
+        self::assertSame((float)'0.78', $this->getQueryParameters($query)['tie'], 'tieParameter was not applied as tie parameter');
     }
 
     /**
@@ -301,12 +301,12 @@ class RelevanceComponentTest extends UnitTest
         $searchConfiguration = [
             'query.' => [
                 'boostQuery' => 'type:pages^100',
-            ]
+            ],
         ];
 
         $query = new Query();
         $query->setQuery('test');
-        $this->assertArrayNotHasKey('bq', $this->getQueryParameters($query));
+        self::assertArrayNotHasKey('bq', $this->getQueryParameters($query));
 
         $typoscriptConfiguration = $this->getTypoScriptConfigurationWithQueryConfiguration($searchConfiguration);
         $queryBuilder = new QueryBuilder($typoscriptConfiguration);
@@ -316,7 +316,7 @@ class RelevanceComponentTest extends UnitTest
         $relevanceComponent->setQuery($query);
         $relevanceComponent->initializeSearchComponent();
 
-        $this->assertSame('type:pages^100', $this->getQueryParameters($query)['bq'], 'Configured boostQuery was not applied');
+        self::assertSame('type:pages^100', $this->getQueryParameters($query)['bq'], 'Configured boostQuery was not applied');
     }
 
     /**
@@ -328,14 +328,14 @@ class RelevanceComponentTest extends UnitTest
             'query.' => [
                 'boostQuery.' => [
                     'type:pages^100',
-                    'type:tx_solr_file^400'
-                 ]
-            ]
+                    'type:tx_solr_file^400',
+                 ],
+            ],
         ];
 
         $query = new Query();
         $query->setQuery('test');
-        $this->assertArrayNotHasKey('bq', $this->getQueryParameters($query));
+        self::assertArrayNotHasKey('bq', $this->getQueryParameters($query));
 
         $typoscriptConfiguration = $this->getTypoScriptConfigurationWithQueryConfiguration($searchConfiguration);
         $queryBuilder = new QueryBuilder($typoscriptConfiguration);
@@ -345,8 +345,8 @@ class RelevanceComponentTest extends UnitTest
         $relevanceComponent->setQuery($query);
         $relevanceComponent->initializeSearchComponent();
 
-        $this->assertSame('type:pages^100', $this->getQueryParameters($query)['bq'][0], 'Configured boostQuery was not applied');
-        $this->assertSame('type:tx_solr_file^400', $this->getQueryParameters($query)['bq'][1], 'Configured boostQuery was not applied');
+        self::assertSame('type:pages^100', $this->getQueryParameters($query)['bq'][0], 'Configured boostQuery was not applied');
+        self::assertSame('type:tx_solr_file^400', $this->getQueryParameters($query)['bq'][1], 'Configured boostQuery was not applied');
     }
 
     /**
@@ -356,13 +356,13 @@ class RelevanceComponentTest extends UnitTest
     {
         $searchConfiguration = [
             'query.' => [
-                'boostFunction' => 'sum(clicks)^100'
-            ]
+                'boostFunction' => 'sum(clicks)^100',
+            ],
         ];
 
         $query = new Query();
         $query->setQuery('test');
-        $this->assertArrayNotHasKey('bf', $this->getQueryParameters($query));
+        self::assertArrayNotHasKey('bf', $this->getQueryParameters($query));
 
         $typoscriptConfiguration = $this->getTypoScriptConfigurationWithQueryConfiguration($searchConfiguration);
         $queryBuilder = new QueryBuilder($typoscriptConfiguration);
@@ -372,7 +372,7 @@ class RelevanceComponentTest extends UnitTest
         $relevanceComponent->setQuery($query);
         $relevanceComponent->initializeSearchComponent();
 
-        $this->assertSame('sum(clicks)^100', $this->getQueryParameters($query)['bf'], 'Configured boostFunction was not applied');
+        self::assertSame('sum(clicks)^100', $this->getQueryParameters($query)['bf'], 'Configured boostFunction was not applied');
     }
 
     /**
@@ -382,13 +382,13 @@ class RelevanceComponentTest extends UnitTest
     {
         $searchConfiguration = [
             'query.' => [
-                'minimumMatch' => '<1'
-            ]
+                'minimumMatch' => '<1',
+            ],
         ];
 
         $query = new Query();
         $query->setQuery('test');
-        $this->assertArrayNotHasKey('mm', $this->getQueryParameters($query));
+        self::assertArrayNotHasKey('mm', $this->getQueryParameters($query));
 
         $typoscriptConfiguration = $this->getTypoScriptConfigurationWithQueryConfiguration($searchConfiguration);
         $queryBuilder = new QueryBuilder($typoscriptConfiguration);
@@ -398,7 +398,7 @@ class RelevanceComponentTest extends UnitTest
         $relevanceComponent->setQuery($query);
         $relevanceComponent->initializeSearchComponent();
 
-        $this->assertSame('<1', $this->getQueryParameters($query)['mm'], 'Configured minimumMatch was not applied');
+        self::assertSame('<1', $this->getQueryParameters($query)['mm'], 'Configured minimumMatch was not applied');
     }
 
     /**
@@ -410,9 +410,9 @@ class RelevanceComponentTest extends UnitTest
         return new TypoScriptConfiguration([
             'plugin.' => [
                 'tx_solr.' => [
-                    'search.' => $searchConfiguration
-                ]
-            ]
+                    'search.' => $searchConfiguration,
+                ],
+            ],
         ]);
     }
 }

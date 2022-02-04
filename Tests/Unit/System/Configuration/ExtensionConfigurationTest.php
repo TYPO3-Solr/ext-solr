@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\Configuration;
 
 /***************************************************************
@@ -36,11 +37,10 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
  */
 class ExtensionConfigurationTest extends UnitTest
 {
-
-
-    public function setUp(): void
+    protected function setUp(): void
     {
         $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['solr'] = [];
+        parent::setUp();
     }
 
     /**
@@ -49,11 +49,11 @@ class ExtensionConfigurationTest extends UnitTest
     public function testGetIsUseConfigurationFromClosestTemplateEnabled()
     {
         $defaultConfiguration = new ExtensionConfiguration();
-        $this->assertFalse($defaultConfiguration->getIsUseConfigurationFromClosestTemplateEnabled());
+        self::assertFalse($defaultConfiguration->getIsUseConfigurationFromClosestTemplateEnabled());
         $configurationWithClosestTemplateEnabled = new ExtensionConfiguration(
             ['useConfigurationFromClosestTemplate' => 1]
         );
-        $this->assertTrue($configurationWithClosestTemplateEnabled->getIsUseConfigurationFromClosestTemplateEnabled());
+        self::assertTrue($configurationWithClosestTemplateEnabled->getIsUseConfigurationFromClosestTemplateEnabled());
     }
 
     /**
@@ -62,11 +62,11 @@ class ExtensionConfigurationTest extends UnitTest
     public function testIsGetUseConfigurationTrackRecordsOutsideSiterootEnabled()
     {
         $defaultConfiguration = new ExtensionConfiguration();
-        $this->assertTrue($defaultConfiguration->getIsUseConfigurationTrackRecordsOutsideSiteroot());
+        self::assertTrue($defaultConfiguration->getIsUseConfigurationTrackRecordsOutsideSiteroot());
         $configurationUseConfigurationTrackRecordsOutsideSiteroot = new ExtensionConfiguration(
             ['useConfigurationTrackRecordsOutsideSiteroot' => 0]
         );
-        $this->assertFalse($configurationUseConfigurationTrackRecordsOutsideSiteroot->getIsUseConfigurationTrackRecordsOutsideSiteroot());
+        self::assertFalse($configurationUseConfigurationTrackRecordsOutsideSiteroot->getIsUseConfigurationTrackRecordsOutsideSiteroot());
     }
 
     /**
@@ -75,13 +75,13 @@ class ExtensionConfigurationTest extends UnitTest
     public function testIsGetIsUseConfigurationMonitorTablesConfiguredKnownTable()
     {
         $defaultConfiguration = new ExtensionConfiguration();
-        $this->assertEquals([], $defaultConfiguration->getIsUseConfigurationMonitorTables());
+        self::assertEquals([], $defaultConfiguration->getIsUseConfigurationMonitorTables());
         $configurationUseConfigurationTrackRecordsOutsideSiteroot = new ExtensionConfiguration(
             ['useConfigurationMonitorTables' => 'pages, tt_content']
         );
         $tableList = $configurationUseConfigurationTrackRecordsOutsideSiteroot->getIsUseConfigurationMonitorTables();
         $result = in_array('pages', $tableList);
-        $this->assertTrue($result);
+        self::assertTrue($result);
     }
 
     /**
@@ -90,13 +90,13 @@ class ExtensionConfigurationTest extends UnitTest
     public function testIsGetIsUseConfigurationMonitorTablesConfiguredUnknownTable()
     {
         $defaultConfiguration = new ExtensionConfiguration();
-        $this->assertEquals([], $defaultConfiguration->getIsUseConfigurationMonitorTables());
+        self::assertEquals([], $defaultConfiguration->getIsUseConfigurationMonitorTables());
         $configurationUseConfigurationTrackRecordsOutsideSiteroot = new ExtensionConfiguration(
             ['useConfigurationMonitorTables' => 'pages, tt_content']
         );
         $tableList = $configurationUseConfigurationTrackRecordsOutsideSiteroot->getIsUseConfigurationMonitorTables();
         $result = in_array('unknowntable', $tableList);
-        $this->assertFalse($result);
+        self::assertFalse($result);
     }
 
     /**
@@ -105,12 +105,12 @@ class ExtensionConfigurationTest extends UnitTest
     public function testIsGetIsUseConfigurationMonitorTablesConfiguredEmptyList()
     {
         $defaultConfiguration = new ExtensionConfiguration();
-        $this->assertEquals([], $defaultConfiguration->getIsUseConfigurationMonitorTables());
+        self::assertEquals([], $defaultConfiguration->getIsUseConfigurationMonitorTables());
         $configurationUseConfigurationTrackRecordsOutsideSiteroot = new ExtensionConfiguration(
             ['useConfigurationMonitorTables' => '']
         );
         $tableList = $configurationUseConfigurationTrackRecordsOutsideSiteroot->getIsUseConfigurationMonitorTables();
-        $this->assertSame([], $tableList);
+        self::assertSame([], $tableList);
     }
 
     /**
@@ -119,10 +119,10 @@ class ExtensionConfigurationTest extends UnitTest
     public function testIsGetIsSelfSignedCertificatesEnabled()
     {
         $defaultConfiguration = new ExtensionConfiguration();
-        $this->assertFalse($defaultConfiguration->getIsSelfSignedCertificatesEnabled());
+        self::assertFalse($defaultConfiguration->getIsSelfSignedCertificatesEnabled());
         $configurationUseConfigurationAllowSelfSignedCertificates = new ExtensionConfiguration(
             ['allowSelfSignedCertificates' => 1]
         );
-        $this->assertTrue($configurationUseConfigurationAllowSelfSignedCertificates->getIsSelfSignedCertificatesEnabled());
+        self::assertTrue($configurationUseConfigurationAllowSelfSignedCertificates->getIsSelfSignedCertificatesEnabled());
     }
 }

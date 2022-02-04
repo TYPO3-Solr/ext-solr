@@ -166,7 +166,7 @@ class Indexer extends AbstractIndexer
      * @throws ServiceUnavailableException
      * @throws SiteNotFoundException
      */
-    protected function indexItem(Item $item, int $language = 0)
+    protected function indexItem(Item $item, int $language = 0): bool
     {
         $itemIndexed = false;
         $documents = [];

@@ -11,7 +11,6 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSetProcessor;
 class TestSearchResultSetProcessor implements SearchResultSetProcessor
 {
 
-
     /**
      * @param SearchResultSet $resultSet
      * @return SearchResultSet

@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Query\Modifier;
 
 /***************************************************************
@@ -24,8 +25,8 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Query\Modifier;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use ApacheSolrForTypo3\Solr\Query\Modifier\Elevation;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 
@@ -45,8 +46,8 @@ class ElevationTest extends UnitTest
         $query = $this->getDumbMock(Query::class);
 
         $queryBuilderMock = $this->getDumbMock(QueryBuilder::class);
-        $queryBuilderMock->expects($this->once())->method('startFrom')->willReturn($queryBuilderMock);
-        $queryBuilderMock->expects($this->once())->method('useElevationFromTypoScript')->willReturn($queryBuilderMock);
+        $queryBuilderMock->expects(self::once())->method('startFrom')->willReturn($queryBuilderMock);
+        $queryBuilderMock->expects(self::once())->method('useElevationFromTypoScript')->willReturn($queryBuilderMock);
 
         $modifier = new Elevation($queryBuilderMock);
         $modifier->modifyQuery($query);

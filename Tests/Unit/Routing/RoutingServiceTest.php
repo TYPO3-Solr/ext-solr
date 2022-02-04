@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -36,13 +37,14 @@ class RoutingServiceTest extends UnitTest
      */
     protected $site;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->site = new Site(
             'example',
             1,
             Yaml::parse($this->getFixtureContentByName('siteConfiguration.yaml'))
         );
+        parent::setUp();
     }
 
     /**
@@ -53,7 +55,7 @@ class RoutingServiceTest extends UnitTest
     {
         $routingService = new RoutingService([]);
 
-        $this->assertEquals(
+        self::assertEquals(
             ',',
             $routingService->getDefaultMultiValueSeparator()
         );
@@ -67,11 +69,11 @@ class RoutingServiceTest extends UnitTest
     {
         $routingService = new RoutingService(
             [
-                'multiValueSeparator' => '+'
+                'multiValueSeparator' => '+',
             ]
         );
 
-        $this->assertEquals(
+        self::assertEquals(
             '+',
             $routingService->getDefaultMultiValueSeparator()
         );
@@ -85,7 +87,7 @@ class RoutingServiceTest extends UnitTest
     {
         $routingService = new RoutingService([]);
 
-        $this->assertEquals(
+        self::assertEquals(
             'bar,buz,foo',
             $routingService->facetsToString(['foo', 'bar', 'buz'])
         );
@@ -99,11 +101,11 @@ class RoutingServiceTest extends UnitTest
     {
         $routingService = new RoutingService(
             [
-                'multiValueSeparator' => '+'
+                'multiValueSeparator' => '+',
             ]
         );
 
-        $this->assertEquals(
+        self::assertEquals(
             'bar+buz+foo',
             $routingService->facetsToString(['foo', 'bar', 'buz'])
         );
@@ -116,10 +118,10 @@ class RoutingServiceTest extends UnitTest
     public function canConvertStringToUriTest()
     {
         $routingService = new RoutingService();
-        $this->assertNotNull(
+        self::assertNotNull(
             $routingService->convertStringIntoUri('https://domain.example')
         );
-        $this->assertNotNull(
+        self::assertNotNull(
             $routingService->convertStringIntoUri('://domain.example')
         );
     }
@@ -154,8 +156,8 @@ class RoutingServiceTest extends UnitTest
                     'taste:sour,matcha',
                     'color:red',
                     'product:candy',
-                ]
-            ]
+                ],
+            ],
         ];
         /*
          * The order of the facet name based on their first appearance in the given filter array
@@ -166,13 +168,13 @@ class RoutingServiceTest extends UnitTest
                 'filter' => [
                     'color:green,red,yellow',
                     'taste:matcha,sour,sour°matcha',
-                    'product:candy,sweets'
-                ]
-            ]
+                    'product:candy,sweets',
+                ],
+            ],
         ];
 
-        $this->assertTrue($routingService->shouldConcatQueryParameters());
-        $this->assertEquals(
+        self::assertTrue($routingService->shouldConcatQueryParameters());
+        self::assertEquals(
             $expectedResult,
             $routingService->concatQueryParameter($queryParameters)
         );
@@ -191,9 +193,9 @@ class RoutingServiceTest extends UnitTest
                 'filter' => [
                     'color:green,red,yellow',
                     'product:candy,sweets',
-                    'taste:matcha,sour,sour°matcha'
-                ]
-            ]
+                    'taste:matcha,sour,sour°matcha',
+                ],
+            ],
         ];
 
         /*
@@ -209,13 +211,13 @@ class RoutingServiceTest extends UnitTest
                     'product:sweets',
                     'taste:matcha',
                     'taste:sour',
-                    'taste:sour,matcha'
-                ]
-            ]
+                    'taste:sour,matcha',
+                ],
+            ],
         ];
 
-        $this->assertTrue($routingService->shouldConcatQueryParameters());
-        $this->assertEquals(
+        self::assertTrue($routingService->shouldConcatQueryParameters());
+        self::assertEquals(
             $expectedResult,
             $routingService->inflateQueryParameter($filter)
         );
@@ -238,8 +240,8 @@ class RoutingServiceTest extends UnitTest
                     'taste:matcha',
                     'color:red',
                     'product:candy',
-                ]
-            ]
+                ],
+            ],
         ];
         /*
          * The order of the facet name based on their first appearance in the given filter array
@@ -248,13 +250,13 @@ class RoutingServiceTest extends UnitTest
         $expectedResult = [
             'color' => 'green,red,yellow',
             'taste' => 'matcha,sour',
-            'product' => 'candy,sweets'
+            'product' => 'candy,sweets',
         ];
 
-        $this->assertTrue($routingService->shouldMaskQueryParameter());
+        self::assertTrue($routingService->shouldMaskQueryParameter());
         $queryParameters = $routingService->concatQueryParameter($queryParameters);
 
-        $this->assertEquals(
+        self::assertEquals(
             $expectedResult,
             $routingService->maskQueryParameters($queryParameters)
         );
@@ -270,7 +272,7 @@ class RoutingServiceTest extends UnitTest
         $queryParameters = [
             'color' => 'green,red,yellow',
             'taste' => 'matcha,sour',
-            'product' => 'candy,sweets'
+            'product' => 'candy,sweets',
         ];
 
         /*
@@ -287,13 +289,13 @@ class RoutingServiceTest extends UnitTest
                     'taste:sour',
                     'product:candy',
                     'product:sweets',
-                ]
-            ]
+                ],
+            ],
         ];
-        $this->assertTrue($routingService->shouldMaskQueryParameter());
+        self::assertTrue($routingService->shouldMaskQueryParameter());
         $queryParameters = $routingService->unmaskQueryParameters($queryParameters);
 
-        $this->assertEquals(
+        self::assertEquals(
             $expectedResult,
             $routingService->inflateQueryParameter($queryParameters)
         );
@@ -313,18 +315,18 @@ class RoutingServiceTest extends UnitTest
         $newRequest = $routingService->addPathArgumentsToQuery(
             $request,
             [
-                'color' => 'filter-colorType'
+                'color' => 'filter-colorType',
             ],
             [
-                'color' => 'blue'
+                'color' => 'blue',
             ]
         );
 
-        $this->assertEquals(
+        self::assertEquals(
             [
                 'tx_solr' => [
-                    'filter' => ['colorType:blue']
-                ]
+                    'filter' => ['colorType:blue'],
+                ],
             ],
             $newRequest->getQueryParams()
         );
@@ -344,23 +346,22 @@ class RoutingServiceTest extends UnitTest
         $newRequest = $routingService->addPathArgumentsToQuery(
             $request,
             [
-                'color' => 'filter-colorType'
+                'color' => 'filter-colorType',
             ],
             [
-                'color' => 'green,blue'
+                'color' => 'green,blue',
             ]
         );
 
-        $this->assertEquals(
+        self::assertEquals(
             [
                 'tx_solr' => [
-                    'filter' => ['colorType:blue', 'colorType:green']
-                ]
+                    'filter' => ['colorType:blue', 'colorType:green'],
+                ],
             ],
             $newRequest->getQueryParams()
         );
     }
-
 
     /**
      * @test
@@ -378,10 +379,10 @@ class RoutingServiceTest extends UnitTest
         $request = $routingService->addPathArgumentsToQuery(
             $request,
             [
-                'color' => 'filter-colorType'
+                'color' => 'filter-colorType',
             ],
             [
-                'color' => 'green,blue'
+                'color' => 'green,blue',
             ]
         );
 
@@ -394,16 +395,16 @@ class RoutingServiceTest extends UnitTest
         $queryParams = $routingService->inflateQueryParameter($queryParams);
         $request = $request->withQueryParams($queryParams);
 
-        $this->assertEquals(
+        self::assertEquals(
             [
                 'tx_solr' => [
                     'filter' => [
                         'taste:sweet',
                         'taste:sour',
                         'colorType:blue',
-                        'colorType:green'
-                    ]
-                ]
+                        'colorType:green',
+                    ],
+                ],
             ],
             $request->getQueryParams()
         );

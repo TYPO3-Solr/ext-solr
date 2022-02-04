@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Access;
 
 /***************************************************************
@@ -45,71 +46,71 @@ class RootlineElementTest extends UnitTest
                 'expectedType' => RootlineElement::ELEMENT_TYPE_CONTENT,
                 'expectedGroups' => [0],
                 'expectedPageId' => null,
-                'expectedToString' => 'c:0'
+                'expectedToString' => 'c:0',
             ],
             'no_prefix' => [
                 'stringRepresentation' => '0',
                 'expectedType' => RootlineElement::ELEMENT_TYPE_CONTENT,
                 'expectedGroups' => [0],
                 'expectedPageId' => null,
-                'expectedToString' => 'c:0'
+                'expectedToString' => 'c:0',
             ],
             'no_prefix_restricted' => [
                 'stringRepresentation' => '1',
                 'expectedType' => RootlineElement::ELEMENT_TYPE_CONTENT,
                 'expectedGroups' => [1],
                 'expectedPageId' => null,
-                'expectedToString' => 'c:1'
+                'expectedToString' => 'c:1',
             ],
             'no_prefix_multiple' => [
                 'stringRepresentation' => '0,1,2',
                 'expectedType' => RootlineElement::ELEMENT_TYPE_CONTENT,
-                'expectedGroups' => [0,1,2],
+                'expectedGroups' => [0, 1, 2],
                 'expectedPageId' => null,
-                'expectedToString' => 'c:0,1,2'
+                'expectedToString' => 'c:0,1,2',
             ],
             'simpleContent' => [
                 'stringRepresentation' => 'c:0',
                 'expectedType' => RootlineElement::ELEMENT_TYPE_CONTENT,
                 'expectedGroups' => [0],
                 'expectedPageId' => null,
-                'expectedToString' => 'c:0'
+                'expectedToString' => 'c:0',
             ],
             'contentWithPermissionContent' => [
                 'stringRepresentation' => 'c:1,2',
                 'expectedType' => RootlineElement::ELEMENT_TYPE_CONTENT,
-                'expectedGroups' => [1,2],
+                'expectedGroups' => [1, 2],
                 'expectedPageId' => null,
-                'expectedToString' => 'c:1,2'
+                'expectedToString' => 'c:1,2',
             ],
             'record' => [
                 'stringRepresentation' => 'r:1,2',
                 'expectedType' => RootlineElement::ELEMENT_TYPE_RECORD,
-                'expectedGroups' => [1,2],
+                'expectedGroups' => [1, 2],
                 'expectedPageId' => null,
-                'expectedToString' => 'r:1,2'
+                'expectedToString' => 'r:1,2',
             ],
             'page' => [
                 'stringRepresentation' => '4711:0',
                 'expectedType' => RootlineElement::ELEMENT_TYPE_PAGE,
                 'expectedGroups' => [0],
                 'expectedPageId' => 4711,
-                'expectedToString' => '4711:0'
+                'expectedToString' => '4711:0',
             ],
             'pageList' => [
                 'stringRepresentation' => '4711:1,2',
                 'expectedType' => RootlineElement::ELEMENT_TYPE_PAGE,
-                'expectedGroups' => [1,2],
+                'expectedGroups' => [1, 2],
                 'expectedPageId' => 4711,
-                'expectedToString' => '4711:1,2'
+                'expectedToString' => '4711:1,2',
             ],
             'minusTwo' => [
                 'stringRepresentation' => 'c:-2',
                 'expectedType' => RootlineElement::ELEMENT_TYPE_CONTENT,
                 'expectedGroups' => [-2],
                 'expectedPageId' => null,
-                'expectedToString' => 'c:-2'
-            ]
+                'expectedToString' => 'c:-2',
+            ],
         ];
     }
 
@@ -127,11 +128,11 @@ class RootlineElementTest extends UnitTest
     {
         $rootLine = new RootlineElement($stringRepresentation);
 
-        $this->assertSame($expectedType, $rootLine->getType(), 'Unexpected type after parsing the RootlineElement');
-        $this->assertSame($expectedGroups, $rootLine->getGroups(), 'Unexpected groups after parsing the RootlineElement');
-        $this->assertSame($expectedPageId, $rootLine->getPageId(), 'Unexpected pageId after parsing the RootlineElement field');
+        self::assertSame($expectedType, $rootLine->getType(), 'Unexpected type after parsing the RootlineElement');
+        self::assertSame($expectedGroups, $rootLine->getGroups(), 'Unexpected groups after parsing the RootlineElement');
+        self::assertSame($expectedPageId, $rootLine->getPageId(), 'Unexpected pageId after parsing the RootlineElement field');
 
         // most of the times the to string value is the same
-        $this->assertSame($expectedToString, (string) $rootLine, 'Conversion to string is not returning expected result');
+        self::assertSame($expectedToString, (string)$rootLine, 'Conversion to string is not returning expected result');
     }
 }

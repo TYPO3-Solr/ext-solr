@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\TCA;
 
 /***************************************************************
@@ -26,6 +27,10 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\TCA;
 
 use ApacheSolrForTypo3\Solr\System\TCA\TCAService;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use DateTimeImmutable;
+use TYPO3\CMS\Core\Context\Context;
+use TYPO3\CMS\Core\Context\DateTimeAspect;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Testcase to test the TCAService.
@@ -40,23 +45,24 @@ class TCAServiceTest extends UnitTest
      *
      * @test
      */
-    public function getIsEnabledRecordDetectDeletedRecord() {
+    public function getIsEnabledRecordDetectDeletedRecord()
+    {
         $fakeTCA = [
             'pages' => [
                 'ctrl' => [
-                    'delete' => 'deleted'
-                ]
-            ]
+                    'delete' => 'deleted',
+                ],
+            ],
         ];
 
         $fakePageRecord = [
-            'deleted' => 1
+            'deleted' => 1,
         ];
 
         $tcaService = new TCAService($fakeTCA);
         $isVisible = $tcaService->isEnabledRecord('pages', $fakePageRecord);
 
-        $this->assertFalse($isVisible);
+        self::assertFalse($isVisible);
     }
 
     /**
@@ -64,23 +70,24 @@ class TCAServiceTest extends UnitTest
      *
      * @test
      */
-    public function getIsEnabledRecordDetectNonDeletedRecord() {
+    public function getIsEnabledRecordDetectNonDeletedRecord()
+    {
         $fakeTCA = [
             'pages' => [
                 'ctrl' => [
-                    'delete' => 'deleted'
-                ]
-            ]
+                    'delete' => 'deleted',
+                ],
+            ],
         ];
 
         $fakePageRecord = [
-            'title' => 'hello world'
+            'title' => 'hello world',
         ];
 
         $tcaService = new TCAService($fakeTCA);
         $isVisible = $tcaService->isEnabledRecord('pages', $fakePageRecord);
 
-        $this->assertTrue($isVisible);
+        self::assertTrue($isVisible);
     }
 
     /**
@@ -88,23 +95,24 @@ class TCAServiceTest extends UnitTest
      *
      * @test
      */
-    public function getIsEnabledRecordDetectsPageConfiguredWithNoSearch() {
+    public function getIsEnabledRecordDetectsPageConfiguredWithNoSearch()
+    {
         $fakeTCA = [
             'pages' => [
                 'ctrl' => [
-                    'delete' => 'deleted'
-                ]
-            ]
+                    'delete' => 'deleted',
+                ],
+            ],
         ];
 
         $fakePageRecord = [
-            'no_search' => 1
+            'no_search' => 1,
         ];
 
         $tcaService = new TCAService($fakeTCA);
         $isVisible = $tcaService->isEnabledRecord('pages', $fakePageRecord);
 
-        $this->assertFalse($isVisible);
+        self::assertFalse($isVisible);
     }
 
     /**
@@ -112,13 +120,14 @@ class TCAServiceTest extends UnitTest
      *
      * @test
      */
-    public function getIsEnabledRecordEmptyRecord() {
+    public function getIsEnabledRecordEmptyRecord()
+    {
         $fakeTCA = [
             'pages' => [
                 'ctrl' => [
-                    'delete' => 'deleted'
-                ]
-            ]
+                    'delete' => 'deleted',
+                ],
+            ],
         ];
 
         $fakePageRecord = [];
@@ -126,196 +135,208 @@ class TCAServiceTest extends UnitTest
         $tcaService = new TCAService($fakeTCA);
         $isVisible = $tcaService->isEnabledRecord('pages', $fakePageRecord);
 
-        $this->assertFalse($isVisible);
+        self::assertFalse($isVisible);
     }
 
     /**
      * @test
      */
-    public function isEndTimeInPastCanDetectedEndtimeThatIsInPast() {
+    public function isEndTimeInPastCanDetectedEndtimeThatIsInPast()
+    {
         $fakeTCA = [
             'pages' => [
                 'ctrl' => [
                     'enablecolumns' => [
-                        'endtime' => 'end'
-                    ]
-                ]
-            ]
+                        'endtime' => 'end',
+                    ],
+                ],
+            ],
         ];
 
-        $GLOBALS['EXEC_TIME'] = 1000;
+        GeneralUtility::makeInstance(Context::class)
+            ->setAspect('date', new DateTimeAspect(new DateTimeImmutable('@1000')));
         $fakePageRecord = [
-            'end' => 999
+            'end' => 999,
         ];
         $tcaService = new TCAService($fakeTCA);
         $isEndTimeInPast = $tcaService->isEndTimeInPast('pages', $fakePageRecord);
 
-        $this->assertTrue($isEndTimeInPast, 'Endtime in past was not detected as endtime in past');
+        self::assertTrue($isEndTimeInPast, 'Endtime in past was not detected as endtime in past');
     }
-
 
     /**
      * @test
      */
-    public function isEndTimeInPastCanDetectedEndtimeThatIsNotInPast() {
+    public function isEndTimeInPastCanDetectedEndtimeThatIsNotInPast()
+    {
         $fakeTCA = [
             'pages' => [
                 'ctrl' => [
                     'enablecolumns' => [
-                        'endtime' => 'end'
-                    ]
-                ]
-            ]
+                        'endtime' => 'end',
+                    ],
+                ],
+            ],
         ];
 
-        $GLOBALS['EXEC_TIME'] = 1000;
+        GeneralUtility::makeInstance(Context::class)
+            ->setAspect('date', new DateTimeAspect(new DateTimeImmutable('@1000')));
         $fakePageRecord = [
-            'end' => 1001
+            'end' => 1001,
         ];
         $tcaService = new TCAService($fakeTCA);
         $isEndTimeInPast = $tcaService->isEndTimeInPast('pages', $fakePageRecord);
 
-        $this->assertFalse($isEndTimeInPast, 'Endtime in future, was detected as endtime in past');
+        self::assertFalse($isEndTimeInPast, 'Endtime in future, was detected as endtime in past');
     }
 
     /**
      * @test
      */
-    public function isEndTimeInPastCanDetectedEndtimeIsEmpty(){
+    public function isEndTimeInPastCanDetectedEndtimeIsEmpty()
+    {
         $fakeTCA = [
             'pages' => [
                 'ctrl' => [
                     'enablecolumns' => [
-                        'endtime' => 'end'
-                    ]
-                ]
-            ]
+                        'endtime' => 'end',
+                    ],
+                ],
+            ],
         ];
 
-        $GLOBALS['EXEC_TIME'] = 1000;
+        GeneralUtility::makeInstance(Context::class)
+            ->setAspect('date', new DateTimeAspect(new DateTimeImmutable('@1000')));
         $fakePageRecord = [
-            'end' => 0
+            'end' => 0,
         ];
 
         $tcaService = new TCAService($fakeTCA);
         $isEndTimeInPast = $tcaService->isEndTimeInPast('pages', $fakePageRecord);
 
-        $this->assertFalse($isEndTimeInPast, 'Not set endtime(default 0), was detected as endtime in past.');
+        self::assertFalse($isEndTimeInPast, 'Not set endtime(default 0), was detected as endtime in past.');
     }
 
     /**
      * @test
      */
-    public function isStartTimeInFutureCanDetectedStartTimeInFuture() {
+    public function isStartTimeInFutureCanDetectedStartTimeInFuture()
+    {
         $fakeTCA = [
             'pages' => [
                 'ctrl' => [
                     'enablecolumns' => [
-                        'starttime' => 'start'
-                    ]
-                ]
-            ]
+                        'starttime' => 'start',
+                    ],
+                ],
+            ],
         ];
 
-        $GLOBALS['EXEC_TIME'] = 1000;
+        GeneralUtility::makeInstance(Context::class)
+            ->setAspect('date', new DateTimeAspect(new DateTimeImmutable('@1000')));
         $fakePageRecord = [
-            'start' => 1001
+            'start' => 1001,
         ];
         $tcaService = new TCAService($fakeTCA);
         $isStartTimeInFuture = $tcaService->isStartTimeInFuture('pages', $fakePageRecord);
 
-        $this->assertTrue($isStartTimeInFuture, 'Starttime in future was not detected as start time in future');
+        self::assertTrue($isStartTimeInFuture, 'Starttime in future was not detected as start time in future');
     }
 
     /**
      * @test
      */
-    public function isStartTimeInFutureCanDetectedStartTimeNotInFuture() {
+    public function isStartTimeInFutureCanDetectedStartTimeNotInFuture()
+    {
         $fakeTCA = [
             'pages' => [
                 'ctrl' => [
                     'enablecolumns' => [
-                        'starttime' => 'start'
-                    ]
-                ]
-            ]
+                        'starttime' => 'start',
+                    ],
+                ],
+            ],
         ];
 
-        $GLOBALS['EXEC_TIME'] = 1000;
+        GeneralUtility::makeInstance(Context::class)
+            ->setAspect('date', new DateTimeAspect(new DateTimeImmutable('@1000')));
         $fakePageRecord = [
-            'start' => 999
+            'start' => 999,
         ];
         $tcaService = new TCAService($fakeTCA);
         $isStartTimeInFuture = $tcaService->isStartTimeInFuture('pages', $fakePageRecord);
 
-        $this->assertFalse($isStartTimeInFuture, 'Start time in past was detected as starttime in future');
+        self::assertFalse($isStartTimeInFuture, 'Start time in past was detected as starttime in future');
     }
 
     /**
      * @test
      */
-    public function isHiddenCanDetectHiddenRecord() {
+    public function isHiddenCanDetectHiddenRecord()
+    {
         $fakeTCA = [
             'pages' => [
                 'ctrl' => [
                     'enablecolumns' => [
-                        'disabled' => 'hidden'
-                    ]
-                ]
-            ]
+                        'disabled' => 'hidden',
+                    ],
+                ],
+            ],
         ];
 
         $fakePageRecord = [
-            'hidden' => 1
+            'hidden' => 1,
         ];
         $tcaService = new TCAService($fakeTCA);
         $isHidden = $tcaService->isHidden('pages', $fakePageRecord);
 
-        $this->assertTrue($isHidden, 'Page was expected to be hidden');
+        self::assertTrue($isHidden, 'Page was expected to be hidden');
     }
 
     /**
      * @test
      */
-    public function isHiddenCanDetectNonHiddenRecord() {
+    public function isHiddenCanDetectNonHiddenRecord()
+    {
         $fakeTCA = [
             'pages' => [
                 'ctrl' => [
                     'enablecolumns' => [
-                        'disabled' => 'hidden'
-                    ]
-                ]
-            ]
+                        'disabled' => 'hidden',
+                    ],
+                ],
+            ],
         ];
 
         $fakePageRecord = [
-            'hidden' => 0
+            'hidden' => 0,
         ];
         $tcaService = new TCAService($fakeTCA);
         $isHidden = $tcaService->isHidden('pages', $fakePageRecord);
 
-        $this->assertFalse($isHidden, 'Page was not expected to be hidden');
+        self::assertFalse($isHidden, 'Page was not expected to be hidden');
     }
 
     /**
      * @test
      */
-    public function canNormalizeFrontendGroupField() {
+    public function canNormalizeFrontendGroupField()
+    {
         $fakeTCA = [
             'pages' => [
                 'ctrl' => [
                     'enablecolumns' => [
-                        'fe_group' => 'fe_groups'
-                    ]
-                ]
-            ]
+                        'fe_group' => 'fe_groups',
+                    ],
+                ],
+            ],
         ];
 
         $fakePageRecord = [];
         $tcaService = new TCAService($fakeTCA);
         $normalizedRecord = $tcaService->normalizeFrontendGroupField('pages', $fakePageRecord);
 
-        $this->assertSame($normalizedRecord['fe_groups'], '0', 'Empty fe_group field was not normalized to 0');
+        self::assertSame($normalizedRecord['fe_groups'], '0', 'Empty fe_group field was not normalized to 0');
     }
 
     /**
@@ -326,8 +347,8 @@ class TCAServiceTest extends UnitTest
         $tcaService = new TCAService([]);
         $visibilityFields = $tcaService->getVisibilityAffectingFieldsByTable('pages');
 
-        $this->assertStringContainsString('doktype', $visibilityFields, 'Expected to have doktype as visibility affecting field as default for pages');
-        $this->assertStringContainsString('no_search', $visibilityFields, 'Expected to have no_search as visibility affecting field as default for pages');
+        self::assertStringContainsString('doktype', $visibilityFields, 'Expected to have doktype as visibility affecting field as default for pages');
+        self::assertStringContainsString('no_search', $visibilityFields, 'Expected to have no_search as visibility affecting field as default for pages');
     }
 
     /**
@@ -337,7 +358,7 @@ class TCAServiceTest extends UnitTest
     {
         $tcaService = new TCAService([]);
         $visibilityFields = $tcaService->getVisibilityAffectingFieldsByTable('tx_domain_model_faketable');
-        $this->assertEquals('uid, pid', $visibilityFields, 'TCA Service should return uid and pid of visibility affecting fields for record table where no TCA is configured');
+        self::assertEquals('uid, pid', $visibilityFields, 'TCA Service should return uid and pid of visibility affecting fields for record table where no TCA is configured');
     }
 
     /**
@@ -348,14 +369,14 @@ class TCAServiceTest extends UnitTest
         $fakeTCA = [
             'tx_domain_model_faketable' => [
                 'ctrl' => [
-                    'delete' => 'deleted'
-                ]
-            ]
+                    'delete' => 'deleted',
+                ],
+            ],
         ];
 
         $tcaService = new TCAService($fakeTCA);
         $visibilityFields = $tcaService->getVisibilityAffectingFieldsByTable('tx_domain_model_faketable');
-        $this->assertStringContainsString('deleted', $visibilityFields, 'The deleted field should be retrieved as visibility affecting field');
+        self::assertStringContainsString('deleted', $visibilityFields, 'The deleted field should be retrieved as visibility affecting field');
     }
 
     /**
@@ -367,15 +388,15 @@ class TCAServiceTest extends UnitTest
             'tx_domain_model_faketable' => [
                 'ctrl' => [
                     'enablecolumns' => [
-                        'fe_group' => 'fe_groups'
-                    ]
-                ]
-            ]
+                        'fe_group' => 'fe_groups',
+                    ],
+                ],
+            ],
         ];
 
         $tcaService = new TCAService($fakeTCA);
         $visibilityFields = $tcaService->getVisibilityAffectingFieldsByTable('tx_domain_model_faketable');
-        $this->assertStringContainsString('fe_groups', $visibilityFields, 'The field fe_groups should be retrieved as visbility affecting field');
+        self::assertStringContainsString('fe_groups', $visibilityFields, 'The field fe_groups should be retrieved as visbility affecting field');
     }
 
     /**
@@ -386,16 +407,16 @@ class TCAServiceTest extends UnitTest
         $fakeTCA = [
             'tx_domain_model_faketable' => [
                 'ctrl' => [
-                    'transOrigPointerField' => 'l10n_parent'
-                ]
-            ]
+                    'transOrigPointerField' => 'l10n_parent',
+                ],
+            ],
         ];
 
         $tcaService = new TCAService($fakeTCA);
         $fakeRecord = ['l10n_parent' => 999];
 
         $l10nParentUid = $tcaService->getTranslationOriginalUid('tx_domain_model_faketable', $fakeRecord);
-        $this->assertSame(999, $l10nParentUid, 'l10nParentUid should be null when the data is not set in the record');
+        self::assertSame(999, $l10nParentUid, 'l10nParentUid should be null when the data is not set in the record');
     }
 
     /**
@@ -406,16 +427,16 @@ class TCAServiceTest extends UnitTest
         $fakeTCA = [
             'tx_domain_model_faketable' => [
                 'ctrl' => [
-                    'transOrigPointerField' => 'l10n_parent'
-                ]
-            ]
+                    'transOrigPointerField' => 'l10n_parent',
+                ],
+            ],
         ];
 
         $tcaService = new TCAService($fakeTCA);
         $fakeRecord = [];
 
         $l10nParentUid = $tcaService->getTranslationOriginalUid('tx_domain_model_faketable', $fakeRecord);
-        $this->assertNull($l10nParentUid, 'l10nParentUid should be null when the data is not set in the record');
+        self::assertNull($l10nParentUid, 'l10nParentUid should be null when the data is not set in the record');
     }
 
     /**
@@ -426,7 +447,7 @@ class TCAServiceTest extends UnitTest
         $tcaService = new TCAService([]);
         $fakeRecord = [];
         $l10nParentUid = $tcaService->getTranslationOriginalUid('tx_domain_model_faketable', $fakeRecord);
-        $this->assertNull($l10nParentUid, 'l10nParentUid should be null when the data is not set in the record');
+        self::assertNull($l10nParentUid, 'l10nParentUid should be null when the data is not set in the record');
     }
 
     /**
@@ -437,16 +458,16 @@ class TCAServiceTest extends UnitTest
         $fakeTCA = [
             'tx_domain_model_faketable' => [
                 'ctrl' => [
-                    'transOrigPointerField' => 'l10n_parent'
-                ]
-            ]
+                    'transOrigPointerField' => 'l10n_parent',
+                ],
+            ],
         ];
 
         $tcaService = new TCAService($fakeTCA);
 
-        $this->assertFalse($tcaService->isLocalizedRecord('tx_domain_model_faketable', ['l10n_parent' => 0]), 'Item with l10n_parent => 0 should not be indicated as translation');
-        $this->assertTrue($tcaService->isLocalizedRecord('tx_domain_model_faketable', ['l10n_parent' => 9999]), 'Item with l10n_parent => 9999 should be indicated as translation');
-        $this->assertFalse($tcaService->isLocalizedRecord('tx_domain_model_faketable_withouttca', ['l10n_parent' => 9999]), 'Item without tca should not be indicated as translation');
+        self::assertFalse($tcaService->isLocalizedRecord('tx_domain_model_faketable', ['l10n_parent' => 0]), 'Item with l10n_parent => 0 should not be indicated as translation');
+        self::assertTrue($tcaService->isLocalizedRecord('tx_domain_model_faketable', ['l10n_parent' => 9999]), 'Item with l10n_parent => 9999 should be indicated as translation');
+        self::assertFalse($tcaService->isLocalizedRecord('tx_domain_model_faketable_withouttca', ['l10n_parent' => 9999]), 'Item without tca should not be indicated as translation');
     }
 
     /**
@@ -457,15 +478,15 @@ class TCAServiceTest extends UnitTest
         $fakeTCA = [
             'tx_domain_model_faketable' => [
                 'ctrl' => [
-                    'transOrigPointerField' => 'l10n_parent'
-                ]
-            ]
+                    'transOrigPointerField' => 'l10n_parent',
+                ],
+            ],
         ];
 
         $tcaService = new TCAService($fakeTCA);
 
-        $this->assertSame(4711, $tcaService->getTranslationOriginalUidIfTranslated('tx_domain_model_faketable', ['l10n_parent' => 0], 4711), 'No translation, original uid should be returned');
-        $this->assertSame(9999, $tcaService->getTranslationOriginalUidIfTranslated('tx_domain_model_faketable', ['l10n_parent' => 9999], 4711), 'Valid translation, uid of parent should be returned');
-        $this->assertSame(4711,$tcaService->getTranslationOriginalUidIfTranslated('tx_domain_model_faketable_withouttca', ['l10n_parent' => 9999], 4711), 'No translation, original uid should be returned');
+        self::assertSame(4711, $tcaService->getTranslationOriginalUidIfTranslated('tx_domain_model_faketable', ['l10n_parent' => 0], 4711), 'No translation, original uid should be returned');
+        self::assertSame(9999, $tcaService->getTranslationOriginalUidIfTranslated('tx_domain_model_faketable', ['l10n_parent' => 9999], 4711), 'Valid translation, uid of parent should be returned');
+        self::assertSame(4711, $tcaService->getTranslationOriginalUidIfTranslated('tx_domain_model_faketable_withouttca', ['l10n_parent' => 9999], 4711), 'No translation, original uid should be returned');
     }
 }

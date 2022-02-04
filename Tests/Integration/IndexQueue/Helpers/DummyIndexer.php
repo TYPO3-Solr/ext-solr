@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\IndexQueue\Helpers;
 
 /***************************************************************
@@ -23,7 +24,6 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\IndexQueue\Helpers;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-
 
 /**
  * Class DummyIndexer for testing purpose

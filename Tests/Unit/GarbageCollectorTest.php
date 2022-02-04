@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\IndexQueue;
 
 /***************************************************************
@@ -24,18 +25,18 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\IndexQueue;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use Psr\EventDispatcher\EventDispatcherInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use TYPO3\CMS\Core\DataHandling\DataHandler;
-use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\PageMovedEvent;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordDeletedEvent;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordGarbageCheckEvent;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\GarbageHandler;
 use ApacheSolrForTypo3\Solr\GarbageCollector;
 use ApacheSolrForTypo3\Solr\System\TCA\TCAService;
-use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\GarbageHandler;
-use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordDeletedEvent;
-use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\PageMovedEvent;
-use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordGarbageCheckEvent;
+use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use PHPUnit\Framework\MockObject\MockObject;
+use Psr\EventDispatcher\EventDispatcherInterface;
+use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
+use TYPO3\CMS\Core\DataHandling\DataHandler;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Testcase for the GarbageCollector class.
@@ -64,7 +65,7 @@ class GarbageCollectorTest extends UnitTest
      */
     protected $garbageHandlerMock;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->eventDispatcherMock = $this->createMock(EventDispatcherInterface::class);
         $this->tcaServiceMock = $this->createMock(TCAService::class);
@@ -75,9 +76,10 @@ class GarbageCollectorTest extends UnitTest
 
         $GLOBALS['BE_USER'] = $this->createMock(BackendUserAuthentication::class);
         $GLOBALS['BE_USER']->workspace = 0;
+        parent::setUp();
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         unset($GLOBALS['BE_USER']);
         unset($GLOBALS['TCA']);
@@ -94,16 +96,16 @@ class GarbageCollectorTest extends UnitTest
 
         $dispatchedEvent = null;
         $this->eventDispatcherMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('dispatch')
-            ->will($this->returnCallback(function() use (&$dispatchedEvent) {
+            ->willReturnCallback(function () use (&$dispatchedEvent) {
                 $dispatchedEvent = func_get_arg(0);
-            }));
+            });
         $this->garbageCollector->processCmdmap_preProcess('delete', 'pages', 123, '', $dataHandlerMock);
 
-        $this->assertTrue($dispatchedEvent instanceof RecordDeletedEvent);
-        $this->assertEquals('pages', $dispatchedEvent->getTable());
-        $this->assertEquals(123, $dispatchedEvent->getUid());
+        self::assertTrue($dispatchedEvent instanceof RecordDeletedEvent);
+        self::assertEquals('pages', $dispatchedEvent->getTable());
+        self::assertEquals(123, $dispatchedEvent->getUid());
     }
 
     /**
@@ -115,7 +117,7 @@ class GarbageCollectorTest extends UnitTest
 
         $GLOBALS['BE_USER']->workspace = 1;
         $this->eventDispatcherMock
-            ->expects($this->never())
+            ->expects(self::never())
             ->method('dispatch');
         $this->garbageCollector->processCmdmap_preProcess('delete', 'pages', 123, '', $dataHandlerMock);
     }
@@ -129,17 +131,17 @@ class GarbageCollectorTest extends UnitTest
 
         $dispatchedEvent = null;
         $this->eventDispatcherMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('dispatch')
-            ->will($this->returnCallback(function() use (&$dispatchedEvent) {
+            ->willReturnCallback(function () use (&$dispatchedEvent) {
                 $dispatchedEvent = func_get_arg(0);
-            }));
+            });
 
         $this->garbageCollector->processCmdmap_postProcess('move', 'pages', 1011, '', $dataHandlerMock);
 
-        $this->assertTrue($dispatchedEvent instanceof PageMovedEvent);
-        $this->assertEquals('pages', $dispatchedEvent->getTable());
-        $this->assertEquals(1011, $dispatchedEvent->getUid());
+        self::assertTrue($dispatchedEvent instanceof PageMovedEvent);
+        self::assertEquals('pages', $dispatchedEvent->getTable());
+        self::assertEquals(1011, $dispatchedEvent->getUid());
     }
 
     /**
@@ -151,7 +153,7 @@ class GarbageCollectorTest extends UnitTest
 
         $GLOBALS['BE_USER']->workspace = 1;
         $this->eventDispatcherMock
-            ->expects($this->never())
+            ->expects(self::never())
             ->method('dispatch');
 
         $this->garbageCollector->processCmdmap_postProcess('move', 'pages', 1011, '', $dataHandlerMock);
@@ -167,11 +169,11 @@ class GarbageCollectorTest extends UnitTest
             'uid' => 123,
             'pid' => 1,
             'hidden' => 0,
-            'fe_group' => '1,2'
+            'fe_group' => '1,2',
         ];
 
         $this->tcaServiceMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('isEnableColumn')
             ->with(
                 'tx_foo_bar',
@@ -180,7 +182,7 @@ class GarbageCollectorTest extends UnitTest
             ->willReturn(true);
 
         $this->garbageHandlerMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('getRecordWithFieldRelevantForGarbageCollection')
             ->with(
                 'tx_foo_bar',
@@ -189,7 +191,7 @@ class GarbageCollectorTest extends UnitTest
             ->willReturn($dummyRecord);
 
         $this->tcaServiceMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('normalizeFrontendGroupField')
             ->with(
                 'tx_foo_bar',
@@ -204,7 +206,7 @@ class GarbageCollectorTest extends UnitTest
         $property->setAccessible(true);
         $trackedRecords = $property->getValue($this->garbageCollector);
 
-        $this->assertEquals($dummyRecord, $trackedRecords['tx_foo_bar'][123]);
+        self::assertEquals($dummyRecord, $trackedRecords['tx_foo_bar'][123]);
     }
 
     /**
@@ -218,18 +220,18 @@ class GarbageCollectorTest extends UnitTest
             'uid' => 123,
             'pid' => 1,
             'hidden' => 0,
-            'fe_group' => '1,2'
+            'fe_group' => '1,2',
         ];
         $trackedRecords = [
             'tx_foo_bar' => [
-                123 => $dummyRecord
-            ]
+                123 => $dummyRecord,
+            ],
         ];
         $this->inject($this->garbageCollector, 'trackedRecords', $trackedRecords);
         $dummyRecord['fe_group'] = '1';
 
         $this->garbageHandlerMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('getRecordWithFieldRelevantForGarbageCollection')
             ->with(
                 'tx_foo_bar',
@@ -239,11 +241,11 @@ class GarbageCollectorTest extends UnitTest
 
         $dispatchedEvent = null;
         $this->eventDispatcherMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('dispatch')
-            ->will($this->returnCallback(function() use (&$dispatchedEvent) {
+            ->willReturnCallback(function () use (&$dispatchedEvent) {
                 $dispatchedEvent = func_get_arg(0);
-            }));
+            });
 
         $this->garbageCollector->processDatamap_afterDatabaseOperations(
             'update',
@@ -253,10 +255,10 @@ class GarbageCollectorTest extends UnitTest
             $dataHandlerMock
         );
 
-        $this->assertTrue($dispatchedEvent instanceof RecordGarbageCheckEvent);
-        $this->assertEquals('tx_foo_bar', $dispatchedEvent->getTable());
-        $this->assertEquals(123, $dispatchedEvent->getUid());
-        $this->assertTrue($dispatchedEvent->frontendGroupsRemoved());
+        self::assertTrue($dispatchedEvent instanceof RecordGarbageCheckEvent);
+        self::assertEquals('tx_foo_bar', $dispatchedEvent->getTable());
+        self::assertEquals(123, $dispatchedEvent->getUid());
+        self::assertTrue($dispatchedEvent->frontendGroupsRemoved());
     }
 
     /**
@@ -265,7 +267,7 @@ class GarbageCollectorTest extends UnitTest
     public function collectGarbageTriggersGarbageCollection(): void
     {
         $this->garbageHandlerMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('collectGarbage')
             ->with(
                 'pages',

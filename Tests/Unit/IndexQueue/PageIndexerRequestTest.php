@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\IndexQueue;
 
 /***************************************************************
@@ -49,11 +50,11 @@ class PageIndexerRequestTest extends UnitTest
         $jsonEncodedParameters = json_encode([
             'item' => 1,
             'page' => 1,
-            'hash' => md5('1|1|' . $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'])
+            'hash' => md5('1|1|' . $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']),
         ]);
 
         $request = $this->getPageIndexerRequest($jsonEncodedParameters);
-        $this->assertTrue($request->isAuthenticated());
+        self::assertTrue($request->isAuthenticated());
     }
 
     /**
@@ -64,11 +65,11 @@ class PageIndexerRequestTest extends UnitTest
         $jsonEncodedParameters = json_encode([
             'item' => 1,
             'page' => 1,
-            'hash' => md5('invalid|invalid|invalid')
+            'hash' => md5('invalid|invalid|invalid'),
         ]);
 
         $request = $this->getPageIndexerRequest($jsonEncodedParameters);
-        $this->assertFalse($request->isAuthenticated());
+        self::assertFalse($request->isAuthenticated());
     }
 
     /**
@@ -78,11 +79,11 @@ class PageIndexerRequestTest extends UnitTest
     {
         $id = uniqid();
         $jsonEncodedParameters = json_encode([
-            'requestId' => $id
+            'requestId' => $id,
         ]);
 
         $request = $this->getPageIndexerRequest($jsonEncodedParameters);
-        $this->assertEquals($id, $request->getRequestId());
+        self::assertEquals($id, $request->getRequestId());
     }
 
     /**
@@ -101,9 +102,9 @@ class PageIndexerRequestTest extends UnitTest
         $response = $requestMock->send('http://7.6.local.typo3.org/about/typo3/');
         $indexPageResult = $response->getActionResult('indexPage');
 
-        $this->assertTrue(is_array($indexPageResult));
-        $this->assertSame(1, $indexPageResult['pageIndexed']);
-        $this->assertSame($response->getRequestId(), '581f76be71f60', 'Response did not contain expected requestId');
+        self::assertTrue(is_array($indexPageResult));
+        self::assertSame(1, $indexPageResult['pageIndexed']);
+        self::assertSame($response->getRequestId(), '581f76be71f60', 'Response did not contain expected requestId');
     }
 
     /**
@@ -147,10 +148,10 @@ class PageIndexerRequestTest extends UnitTest
     public function canSetTimeOutFromPHPConfiguration()
     {
         $initialTimeout = ini_get('default_socket_timeout');
-        ini_set('default_socket_timeout',122.5);
+        ini_set('default_socket_timeout', 122.5);
 
         $pageIndexerRequest = $this->getPageIndexerRequest();
-        $this->assertSame(122.5, $pageIndexerRequest->getTimeout());
+        self::assertSame(122.5, $pageIndexerRequest->getTimeout());
         ini_set('default_socket_timeout', $initialTimeout);
     }
 
@@ -175,7 +176,7 @@ class PageIndexerRequestTest extends UnitTest
     public function authenticationHeaderIsSetWhenUsernameAndPasswordHaveBeenPassed()
     {
         $requestFactoryMock = $this->getDumbMock(RequestFactory::class);
-        $requestFactoryMock->expects($this->once())->method('request')->willReturnCallback(function($url, $method, $options) {
+        $requestFactoryMock->expects(self::once())->method('request')->willReturnCallback(function ($url, $method, $options) {
             $this->assertSame(['bob', 'topsecret'], $options['auth'], 'Authentication options have not been set');
             $this->assertSame('GET', $method, 'Unexpected http method');
 
@@ -201,13 +202,13 @@ class PageIndexerRequestTest extends UnitTest
     public function canSetParameter()
     {
         $pageIndexerRequest = $this->getPageIndexerRequest();
-        $this->assertNull($pageIndexerRequest->getParameter('foo'), 'Parameter foo should be null when nothing was set');
+        self::assertNull($pageIndexerRequest->getParameter('foo'), 'Parameter foo should be null when nothing was set');
 
         $pageIndexerRequest->setParameter('foo', 'bar');
-        $this->assertSame('bar', $pageIndexerRequest->getParameter('foo'), 'Could not get parameter foo after setting it');
+        self::assertSame('bar', $pageIndexerRequest->getParameter('foo'), 'Could not get parameter foo after setting it');
 
         $pageIndexerRequest->setParameter('test', 4711);
-        $this->assertSame(4711, $pageIndexerRequest->getParameter('test'), 'Could not get parameter foo after setting it');
+        self::assertSame(4711, $pageIndexerRequest->getParameter('test'), 'Could not get parameter foo after setting it');
     }
 
     /**
@@ -220,7 +221,7 @@ class PageIndexerRequestTest extends UnitTest
         $itemMock = $this->getDumbMock(Item::class);
         $pageIndexerRequest->setIndexQueueItem($itemMock);
         $headers = $pageIndexerRequest->getHeaders();
-        $this->assertContains('User-Agent: TYPO3', $headers, 'Header should contain a proper User-Agent');
+        self::assertContains('User-Agent: TYPO3', $headers, 'Header should contain a proper User-Agent');
     }
 
     /**
@@ -246,12 +247,12 @@ class PageIndexerRequestTest extends UnitTest
         $solrLogManagerMock = $this->getDumbMock(SolrLogManager::class);
         $extensionConfigurationMock = $this->getDumbMock(ExtensionConfiguration::class);
         /** @var $requestMock PageIndexerRequest */
-        $requestMock = $this->getMockBuilder(PageIndexerRequest::class)->setMethods(['getUrl'])->setConstructorArgs([$testParameters, $solrLogManagerMock, $extensionConfigurationMock])->getMock();
+        $requestMock = $this->getMockBuilder(PageIndexerRequest::class)->onlyMethods(['getUrl'])->setConstructorArgs([$testParameters, $solrLogManagerMock, $extensionConfigurationMock])->getMock();
 
         $responseMock = $this->getFakedGuzzleResponse($fakeResponse);
 
         // we fake the response from a captured response json file
-        $requestMock->expects($this->once())->method('getUrl')->willReturn($responseMock);
+        $requestMock->expects(self::once())->method('getUrl')->willReturn($responseMock);
         return $requestMock;
     }
 
@@ -262,11 +263,11 @@ class PageIndexerRequestTest extends UnitTest
     protected function getFakedGuzzleResponse($fakeResponse): ResponseInterface
     {
         $bodyStream = $this->getDumbMock(StreamInterface::class);
-        $bodyStream->expects($this->any())->method('getContents')->willReturn($fakeResponse);
+        $bodyStream->expects(self::any())->method('getContents')->willReturn($fakeResponse);
 
         /** @var $responseMock  ResponseInterface */
         $responseMock = $this->getDumbMock(ResponseInterface::class);
-        $responseMock->expects($this->any())->method('getBody')->willReturn($bodyStream);
+        $responseMock->expects(self::any())->method('getBody')->willReturn($bodyStream);
         return $responseMock;
     }
 }

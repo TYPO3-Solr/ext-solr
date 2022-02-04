@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\ViewHelpers\Uri\Facet;
 
 /***************************************************************
@@ -24,11 +25,9 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\ViewHelpers\Uri\Facet;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-
 use ApacheSolrForTypo3\Solr\Domain\Search\Uri\SearchUriBuilder;
 use ApacheSolrForTypo3\Solr\ViewHelpers\Uri\Facet\SetFacetItemViewHelper;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
-
 
 /**
  * @author Timo Hund <timo.hund@dkd.de>
@@ -49,8 +48,8 @@ class SetFacetItemViewHelperTest extends AbstractFacetItemViewHelperTest
 
         $searchUriBuilderMock = $this->getDumbMock(SearchUriBuilder::class);
 
-            // we expected that the getSetFacetValueUri will be called on the searchUriBuilder in the end.
-        $searchUriBuilderMock->expects($this->once())->method('getSetFacetValueUri')->with($facet->getResultSet()->getUsedSearchRequest(), 'Color', 'red');
+        // we expected that the getSetFacetValueUri will be called on the searchUriBuilder in the end.
+        $searchUriBuilderMock->expects(self::once())->method('getSetFacetValueUri')->with($facet->getResultSet()->getUsedSearchRequest(), 'Color', 'red');
         $viewHelper->injectSearchUriBuilder($searchUriBuilderMock);
         // @extensionScannerIgnoreLine
         $viewHelper->setArguments(['facet' => $facet, 'facetItem' => $facet->getOptions()->getByPosition(0)]);

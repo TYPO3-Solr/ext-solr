@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\Highlight;
 
 /***************************************************************
@@ -32,7 +33,6 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
  */
 class SiteHighlighterUrlModifierTest extends UnitTest
 {
-
     public function canModifyDataProvider()
     {
         return [
@@ -41,31 +41,30 @@ class SiteHighlighterUrlModifierTest extends UnitTest
                 '',
                 false,
                 true,
-                'http://mywebsite.de/home/index.html?cHash=HHZUUUdfsdf&foo=bar'
+                'http://mywebsite.de/home/index.html?cHash=HHZUUUdfsdf&foo=bar',
             ],
             'cHashIsRemoved' => [
                 'http://mywebsite.de/home/index.html?cHash=HHZUUUdfsdf&foo=bar',
                 'hello world',
                 true,
                 false,
-                'http://mywebsite.de/home/index.html?foo=bar&sword_list%5B0%5D=hello&sword_list%5B1%5D=world&no_cache=1'
+                'http://mywebsite.de/home/index.html?foo=bar&sword_list%5B0%5D=hello&sword_list%5B1%5D=world&no_cache=1',
             ],
             'cHashIsKept' => [
                 'http://mywebsite.de/home/index.html?cHash=HHZUUUdfsdf&foo=bar',
                 'hello world',
                 true,
                 true,
-                'http://mywebsite.de/home/index.html?cHash=HHZUUUdfsdf&foo=bar&sword_list%5B0%5D=hello&sword_list%5B1%5D=world&no_cache=1'
+                'http://mywebsite.de/home/index.html?cHash=HHZUUUdfsdf&foo=bar&sword_list%5B0%5D=hello&sword_list%5B1%5D=world&no_cache=1',
             ],
             'fragmentIsKept' => [
                 'http://mywebsite.de/home/index.html?cHash=HHZUUUdfsdf&foo=bar#test',
                 'hello world',
                 true,
                 true,
-                'http://mywebsite.de/home/index.html?cHash=HHZUUUdfsdf&foo=bar&sword_list%5B0%5D=hello&sword_list%5B1%5D=world&no_cache=1#test'
-            ]
+                'http://mywebsite.de/home/index.html?cHash=HHZUUUdfsdf&foo=bar&sword_list%5B0%5D=hello&sword_list%5B1%5D=world&no_cache=1#test',
+            ],
         ];
-
     }
 
     /**
@@ -76,6 +75,6 @@ class SiteHighlighterUrlModifierTest extends UnitTest
     {
         $siteHighlightingModifier = new SiteHighlighterUrlModifier();
         $result = $siteHighlightingModifier->modify($inputUrl, $keywords, $no_cache, $keepCHash);
-        $this->assertSame($expectedResult, $result);
+        self::assertSame($expectedResult, $result);
     }
 }

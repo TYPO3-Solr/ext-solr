@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\ViewHelpers\Facet\Options\Group\Prefix;
 
 /***************************************************************
@@ -26,8 +27,8 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\ViewHelpers\Facet\Options\Group\Pre
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\OptionCollection;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\Option;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\OptionsFacet;
+use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use ApacheSolrForTypo3\Solr\ViewHelpers\Facet\Options\Group\Prefix\LabelPrefixesViewHelper;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\Variables\StandardVariableProvider;
@@ -44,16 +45,16 @@ class LabelPrefixesViewHelperTest extends UnitTest
     {
         $optionCollection = $this->getTestFacetOptionCollection();
 
-        $variableContainer = $this->getMockBuilder(StandardVariableProvider::class)->setMethods(['remove'])->getMock();
+        $variableContainer = $this->getMockBuilder(StandardVariableProvider::class)->onlyMethods(['remove'])->getMock();
         $renderingContextMock = $this->getDumbMock(RenderingContextInterface::class);
-        $renderingContextMock->expects($this->any())->method('getVariableProvider')->will($this->returnValue($variableContainer));
+        $renderingContextMock->expects(self::any())->method('getVariableProvider')->willReturn($variableContainer);
 
         $testArguments['options'] = $optionCollection;
         $testArguments['length'] = 1;
         LabelPrefixesViewHelper::renderStatic($testArguments, function () {}, $renderingContextMock);
-        $this->assertTrue($variableContainer->exists('prefixes'), 'Expected that prefixes has been set');
+        self::assertTrue($variableContainer->exists('prefixes'), 'Expected that prefixes has been set');
         $prefixes = $variableContainer->get('prefixes');
-        $this->assertSame(['r','p','l'], $prefixes, 'ViewHelper registers unexpected prefixes from passed options');
+        self::assertSame(['r', 'p', 'l'], $prefixes, 'ViewHelper registers unexpected prefixes from passed options');
     }
 
     /**
@@ -63,16 +64,16 @@ class LabelPrefixesViewHelperTest extends UnitTest
     {
         $optionCollection = $this->getTestFacetOptionCollection();
 
-        $variableContainer = $this->getMockBuilder(StandardVariableProvider::class)->setMethods(['remove'])->getMock();
+        $variableContainer = $this->getMockBuilder(StandardVariableProvider::class)->onlyMethods(['remove'])->getMock();
         $renderingContextMock = $this->getDumbMock(RenderingContextInterface::class);
-        $renderingContextMock->expects($this->any())->method('getVariableProvider')->will($this->returnValue($variableContainer));
+        $renderingContextMock->expects(self::any())->method('getVariableProvider')->willReturn($variableContainer);
 
         $testArguments['options'] = $optionCollection;
         $testArguments['length'] = 1;
         $testArguments['sortBy'] = 'alpha';
         LabelPrefixesViewHelper::renderStatic($testArguments, function () {}, $renderingContextMock);
         $prefixes = $variableContainer->get('prefixes');
-        $this->assertSame(['l','p','r'], $prefixes, 'ViewHelper registers unexpected prefixes from passed options');
+        self::assertSame(['l', 'p', 'r'], $prefixes, 'ViewHelper registers unexpected prefixes from passed options');
     }
 
     /**

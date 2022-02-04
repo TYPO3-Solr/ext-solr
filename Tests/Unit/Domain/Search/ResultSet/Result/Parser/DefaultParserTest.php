@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Result\Parser;
 
 /***************************************************************
@@ -48,10 +49,11 @@ class DefaultParserTest extends UnitTest
      */
     protected $parser;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
         $this->parser = new DefaultResultParser();
+        parent::setUp();
     }
 
     /**
@@ -59,14 +61,14 @@ class DefaultParserTest extends UnitTest
      */
     public function parseWillCreateResultCollectionFromSolrResponse()
     {
-        $fakeResultSet = $this->getMockBuilder(SearchResultSet::class)->setMethods(['getResponse'])->getMock();
+        $fakeResultSet = $this->getMockBuilder(SearchResultSet::class)->onlyMethods(['getResponse'])->getMock();
 
         $fakedSolrResponse = $this->getFixtureContentByName('fakeResponse.json');
         $fakeResponse = new ResponseAdapter($fakedSolrResponse);
 
-        $fakeResultSet->expects($this->once())->method('getResponse')->will($this->returnValue($fakeResponse));
+        $fakeResultSet->expects(self::once())->method('getResponse')->willReturn($fakeResponse);
         $parsedResultSet = $this->parser->parse($fakeResultSet, true);
-        $this->assertCount(3, $parsedResultSet->getSearchResults());
+        self::assertCount(3, $parsedResultSet->getSearchResults());
     }
 
     /**
@@ -74,14 +76,14 @@ class DefaultParserTest extends UnitTest
      */
     public function returnsResultSetWithResultCount()
     {
-        $fakeResultSet = $this->getMockBuilder(SearchResultSet::class)->setMethods(['getResponse'])->getMock();
+        $fakeResultSet = $this->getMockBuilder(SearchResultSet::class)->onlyMethods(['getResponse'])->getMock();
 
         $fakedSolrResponse = $this->getFixtureContentByName('fake_solr_response_with_query_fields_facets.json');
         $fakeResponse = new ResponseAdapter($fakedSolrResponse);
 
-        $fakeResultSet->expects($this->once())->method('getResponse')->will($this->returnValue($fakeResponse));
+        $fakeResultSet->expects(self::once())->method('getResponse')->willReturn($fakeResponse);
         $parsedResultSet = $this->parser->parse($fakeResultSet, true);
-        $this->assertSame(10, $parsedResultSet->getAllResultCount());
+        self::assertSame(10, $parsedResultSet->getAllResultCount());
     }
 
     /**
@@ -89,14 +91,14 @@ class DefaultParserTest extends UnitTest
      */
     public function parseWillSetMaximumScore()
     {
-        $fakeResultSet = $this->getMockBuilder(SearchResultSet::class)->setMethods(['getResponse'])->getMock();
+        $fakeResultSet = $this->getMockBuilder(SearchResultSet::class)->onlyMethods(['getResponse'])->getMock();
 
         $fakedSolrResponse = $this->getFixtureContentByName('fakeResponse.json');
         $fakeResponse = new ResponseAdapter($fakedSolrResponse);
 
-        $fakeResultSet->expects($this->once())->method('getResponse')->will($this->returnValue($fakeResponse));
+        $fakeResultSet->expects(self::once())->method('getResponse')->willReturn($fakeResponse);
         $parsedResultSet = $this->parser->parse($fakeResultSet, true);
-        $this->assertSame(3.1, $parsedResultSet->getMaximumScore());
+        self::assertSame(3.1, $parsedResultSet->getMaximumScore());
     }
 
     /**
@@ -105,12 +107,12 @@ class DefaultParserTest extends UnitTest
     public function canParseReturnsFalseWhenGroupingIsEnabled()
     {
         $requestMock = $this->getDumbMock(SearchRequest::class);
-        $requestMock->expects($this->any())->method('getContextTypoScriptConfiguration')->will($this->returnValue($this->configurationMock));
+        $requestMock->expects(self::any())->method('getContextTypoScriptConfiguration')->willReturn($this->configurationMock);
         $fakeResultSet = $this->getDumbMock(SearchResultSet::class);
-        $fakeResultSet->expects($this->any())->method('getUsedSearchRequest')->will($this->returnValue($requestMock));
+        $fakeResultSet->expects(self::any())->method('getUsedSearchRequest')->willReturn($requestMock);
 
-        $this->configurationMock->expects($this->once())->method('getSearchGrouping')->will($this->returnValue(true));
-        $this->assertFalse($this->parser->canParse($fakeResultSet));
+        $this->configurationMock->expects(self::once())->method('getSearchGrouping')->willReturn(true);
+        self::assertFalse($this->parser->canParse($fakeResultSet));
     }
 
     /**
@@ -119,13 +121,11 @@ class DefaultParserTest extends UnitTest
     public function canParseReturnsTrueWhenGroupingIsDisabled()
     {
         $requestMock = $this->getDumbMock(SearchRequest::class);
-        $requestMock->expects($this->any())->method('getContextTypoScriptConfiguration')->will($this->returnValue($this->configurationMock));
+        $requestMock->expects(self::any())->method('getContextTypoScriptConfiguration')->willReturn($this->configurationMock);
         $fakeResultSet = $this->getDumbMock(SearchResultSet::class);
-        $fakeResultSet->expects($this->any())->method('getUsedSearchRequest')->will($this->returnValue($requestMock));
+        $fakeResultSet->expects(self::any())->method('getUsedSearchRequest')->willReturn($requestMock);
 
-        $this->configurationMock->expects($this->once())->method('getSearchGrouping')->will($this->returnValue(false));
-        $this->assertTrue($this->parser->canParse($fakeResultSet));
+        $this->configurationMock->expects(self::once())->method('getSearchGrouping')->willReturn(false);
+        self::assertTrue($this->parser->canParse($fakeResultSet));
     }
-
-
 }

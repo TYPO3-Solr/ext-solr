@@ -1,5 +1,7 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\IndexQueue;
+
 use ApacheSolrForTypo3\Solr\IndexQueue\SerializedValueDetector;
 
 /***************************************************************
@@ -25,7 +27,8 @@ use ApacheSolrForTypo3\Solr\IndexQueue\SerializedValueDetector;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-class ValidSerializedValueDetector implements SerializedValueDetector {
+class ValidSerializedValueDetector implements SerializedValueDetector
+{
 
     /**
      * Uses a field's configuration to detect whether its value returned by a

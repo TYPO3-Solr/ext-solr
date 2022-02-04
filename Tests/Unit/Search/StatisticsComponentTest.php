@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit;
 
 /***************************************************************
@@ -40,24 +41,23 @@ class StatisticsComponentTest extends UnitTest
     public function canRegisterStatisticsComponents()
     {
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['afterSearch']['statistics']  = null;
-        $this->assertEmpty($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['afterSearch']['statistics'], 'Expected that no statistic component was registered');
-
+        self::assertEmpty($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['afterSearch']['statistics'], 'Expected that no statistic component was registered');
 
         $typoScriptConfiguration = new TypoScriptConfiguration([
             'plugin.' => [
                 'tx_solr.' => [
-                    'statistics' => 1
-                ]
-            ]
+                    'statistics' => 1,
+                ],
+            ],
         ]);
 
         $searchRequestMock = $this->getDumbMock(SearchRequest::class);
-        $searchRequestMock->expects($this->once())->method('getContextTypoScriptConfiguration')->willReturn($typoScriptConfiguration);
+        $searchRequestMock->expects(self::once())->method('getContextTypoScriptConfiguration')->willReturn($typoScriptConfiguration);
 
         $statisticsComponent = new StatisticsComponent();
         $statisticsComponent->setSearchRequest($searchRequestMock);
         $statisticsComponent->initializeSearchComponent();
-        $this->assertNotEmpty($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['afterSearch']['statistics'], 'Expected that a statistic component was registered');
+        self::assertNotEmpty($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['afterSearch']['statistics'], 'Expected that a statistic component was registered');
     }
 
     /**
@@ -71,18 +71,17 @@ class StatisticsComponentTest extends UnitTest
         $typoScriptConfiguration = new TypoScriptConfiguration([
             'plugin.' => [
                 'tx_solr.' => [
-                    'statistics' => 1
-                ]
-            ]
+                    'statistics' => 1,
+                ],
+            ],
         ]);
 
         $searchRequestMock = $this->getDumbMock(SearchRequest::class);
-        $searchRequestMock->expects($this->once())->method('getContextTypoScriptConfiguration')->willReturn($typoScriptConfiguration);
+        $searchRequestMock->expects(self::once())->method('getContextTypoScriptConfiguration')->willReturn($typoScriptConfiguration);
 
         $statisticsComponent = new StatisticsComponent();
         $statisticsComponent->setSearchRequest($searchRequestMock);
         $statisticsComponent->initializeSearchComponent();
-        $this->assertEquals($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['afterSearch']['statistics'], $className);
+        self::assertEquals($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['afterSearch']['statistics'], $className);
     }
-
 }

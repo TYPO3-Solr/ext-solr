@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\ContentObject;
 
 /***************************************************************
@@ -55,18 +56,18 @@ class ClassificationTest extends UnitTest
             'classes.' => [
                 [
                     'patterns' => 'TYPO3, joomla, core media',
-                    'class' => 'cms'
+                    'class' => 'cms',
                 ],
                 [
                     'patterns' => 'php, java, go, groovy',
-                    'class' => 'programming_language'
-                ]
-            ]
+                    'class' => 'programming_language',
+                ],
+            ],
         ];
 
         $actual = $this->contentObject->cObjGetSingle(Classification::CONTENT_OBJECT_NAME, $configuration);
         $expected = serialize(['cms']);
-        $this->assertEquals($expected, $actual);
+        self::assertEquals($expected, $actual);
     }
 
     /**
@@ -77,12 +78,12 @@ class ClassificationTest extends UnitTest
         return [
             'excludePatternShouldLeadToUnassignedClass' => [
                 'input' => 'from the beach i can see the waves',
-                'expectedOutput' => []
+                'expectedOutput' => [],
             ],
             'noMatchingExlucePatternLeadsToExpectedClass' => [
                 'input' => 'i saw a shark between the waves',
-                'expectedOutput' => ['ocean']
-            ]
+                'expectedOutput' => ['ocean'],
+            ],
         ];
     }
 
@@ -101,14 +102,14 @@ class ClassificationTest extends UnitTest
                 [
                     'matchPatterns' => 'waves',
                     'unmatchPatterns' => 'beach',
-                    'class' => 'ocean'
-                ]
-            ]
+                    'class' => 'ocean',
+                ],
+            ],
         ];
 
         $actual = $this->contentObject->cObjGetSingle(Classification::CONTENT_OBJECT_NAME, $configuration);
         $expected = serialize($expectedOutput);
-        $this->assertEquals($expected, $actual);
+        self::assertEquals($expected, $actual);
     }
 
     protected function setUp(): void
@@ -121,10 +122,12 @@ class ClassificationTest extends UnitTest
         $this->contentObject = $this->getMockBuilder(ContentObjectRenderer::class)
             ->onlyMethods(['getResourceFactory', 'getEnvironmentVariable', 'getRequest'])
             ->setConstructorArgs([$GLOBALS['TSFE']])->getMock();
+        parent::setUp();
     }
 
     protected function tearDown(): void
     {
         unset($GLOBALS['TSFE']);
+        parent::tearDown();
     }
 }

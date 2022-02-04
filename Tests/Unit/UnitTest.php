@@ -1,42 +1,39 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit;
 
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2010-2015 Timo Schmidt <timo.schmidt@dkd.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 
 use PHPUnit\Framework\MockObject\MockObject;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Information\Typo3Version;
+use ReflectionClass;
+use ReflectionException;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
  * Base class for all unit tests in the solr project
  *
- * @author Timo Schmidt
+ * @author Timo Hund
  */
 abstract class UnitTest extends UnitTestCase
 {
     protected $resetSingletonInstances = true;
+
+    protected function setUp(): void
+    {
+        date_default_timezone_set('Europe/Berlin');
+        parent::setUp();
+    }
 
     /**
      * Returns a mock class where every behaviour is mocked, just to full fill
@@ -45,9 +42,9 @@ abstract class UnitTest extends UnitTestCase
      * @param string $className
      * @return MockObject
      */
-    protected function getDumbMock($className)
+    protected function getDumbMock(string $className): MockObject
     {
-        return $this->getMockBuilder($className)->disableOriginalConstructor()->getMock();
+        return $this->createMock($className);
     }
 
     /**
@@ -55,7 +52,7 @@ abstract class UnitTest extends UnitTestCase
      *
      * @return string
      */
-    protected function getFixtureRootPath()
+    protected function getFixtureRootPath(): string
     {
         return $this->getRuntimeDirectory() . '/Fixtures/';
     }
@@ -66,7 +63,7 @@ abstract class UnitTest extends UnitTestCase
      * @param $fixtureName
      * @return string
      */
-    protected function getFixturePathByName($fixtureName)
+    protected function getFixturePathByName($fixtureName): string
     {
         return $this->getFixtureRootPath() . $fixtureName;
     }
@@ -77,7 +74,7 @@ abstract class UnitTest extends UnitTestCase
      * @param string $fixtureName
      * @return string
      */
-    protected function getFixtureContentByName($fixtureName)
+    protected function getFixtureContentByName($fixtureName): string
     {
         return file_get_contents($this->getFixturePathByName($fixtureName));
     }
@@ -89,18 +86,8 @@ abstract class UnitTest extends UnitTestCase
      */
     protected function getRuntimeDirectory()
     {
-        $rc = new \ReflectionClass(get_class($this));
+        $rc = new ReflectionClass(get_class($this));
         return dirname($rc->getFileName());
-    }
-
-    /**
-     * @param string $version
-     */
-    protected function skipInVersionBelow($version)
-    {
-        if (version_compare(GeneralUtility::makeInstance(Typo3Version::class)->getBranch(), $version, '<')) {
-            $this->markTestSkipped('This test requires at least version ' . $version);
-        }
     }
 
     /**
@@ -110,6 +97,7 @@ abstract class UnitTest extends UnitTestCase
      * @param string $name the name of the method to call
      * @param mixed $arguments
      * @return mixed
+     * @throws ReflectionException
      */
     protected function callInaccessibleMethod($object, $name, ...$arguments)
     {
@@ -128,7 +116,6 @@ abstract class UnitTest extends UnitTestCase
      * @param object $target The instance which needs the dependency
      * @param string $name Name of the property to be injected
      * @param mixed $dependency The dependency to inject – usually an object but can also be any other type
-     * @return void
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
      */

@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Index\Classification;
 
 /***************************************************************
@@ -50,16 +51,16 @@ class ClassificationServiceTest extends UnitTest
 
         $service = new ClassificationService();
         $matches = $service->getMatchingClassNames('I have a smartphone in my hand.', [$mobilePhoneClassification, $watchClassification]);
-        $this->assertSame(['mobilephone'], $matches, 'Unexpected matched classification');
+        self::assertSame(['mobilephone'], $matches, 'Unexpected matched classification');
 
         $matches = $service->getMatchingClassNames('I have a smartphone in my hand and a watch on my arm.', [$mobilePhoneClassification, $watchClassification]);
-        $this->assertSame(['mobilephone', 'watch'], $matches, 'Unexpected matched classification');
+        self::assertSame(['mobilephone', 'watch'], $matches, 'Unexpected matched classification');
 
         $matches = $service->getMatchingClassNames('I have nothing on my arm and in my hand.', [$mobilePhoneClassification, $watchClassification]);
-        $this->assertSame([], $matches, 'Unexpected matched classification');
+        self::assertSame([], $matches, 'Unexpected matched classification');
 
         $matches = $service->getMatchingClassNames('I like my SMARTPHONE.', [$mobilePhoneClassification, $watchClassification]);
-        $this->assertSame(['mobilephone'], $matches, 'Unexpected matched classification');
+        self::assertSame(['mobilephone'], $matches, 'Unexpected matched classification');
     }
 
     /**
@@ -74,13 +75,13 @@ class ClassificationServiceTest extends UnitTest
 
         $service = new ClassificationService();
         $matches = $service->getMatchingClassNames('', [$mobilePhoneClassification]);
-        $this->assertSame([], $matches, 'Nothing should match');
+        self::assertSame([], $matches, 'Nothing should match');
 
         $matches = $service->getMatchingClassNames('I have a smartphone in my hand.', [$mobilePhoneClassification]);
-        $this->assertSame(['mobilephone'], $matches, 'Wildcard not detected');
+        self::assertSame(['mobilephone'], $matches, 'Wildcard not detected');
 
         $matches = $service->getMatchingClassNames('smarthome is the future.', [$mobilePhoneClassification]);
-        $this->assertSame([], $matches, 'Unmatch pattern should remove assigned class');
+        self::assertSame([], $matches, 'Unmatch pattern should remove assigned class');
 
         $matchPatterns = ['\sh.nd\s'];
         $unMatchPatterns = [];
@@ -88,10 +89,10 @@ class ClassificationServiceTest extends UnitTest
         $testClassification = new Classification($matchPatterns, $unMatchPatterns, $mappedClass);
 
         $matches = $service->getMatchingClassNames('ein hund spring', [$testClassification]);
-        $this->assertSame(['test'], $matches, 'test class should assign');
+        self::assertSame(['test'], $matches, 'test class should assign');
         $matches = $service->getMatchingClassNames('eine hand klatscht', [$testClassification]);
-        $this->assertSame(['test'], $matches, 'test class should assign');
+        self::assertSame(['test'], $matches, 'test class should assign');
         $matches = $service->getMatchingClassNames('die hunde bellen', [$testClassification]);
-        $this->assertSame([], $matches, 'test class should assign');
+        self::assertSame([], $matches, 'test class should assign');
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets;
 
 /*
@@ -16,15 +17,15 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Faceting;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetParser;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\UrlFacetContainer;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
-use ApacheSolrForTypo3\Solr\Tests\Unit\Helper\FakeObjectManager;
 use ApacheSolrForTypo3\Solr\System\Util\ArrayAccessor;
+use ApacheSolrForTypo3\Solr\Tests\Unit\Helper\FakeObjectManager;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetParser;
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -45,13 +46,12 @@ abstract class AbstractFacetParserTest extends UnitTest
     {
         $fakeResponseJson = $this->getFixtureContentByName($fixtureFile);
 
-        $facetingMock = $this->getMockBuilder(Faceting::class)->setMethods(['getSorting'])->disableOriginalConstructor()->getMock();
-        $facetingMock->expects($this->any())->method('getSorting')->will($this->returnValue(''));
-        $usedQueryMock = $this->getMockBuilder(Query::class)->setMethods(['getFaceting'])->disableOriginalConstructor()->getMock();
-        $usedQueryMock->expects($this->any())->method('getFaceting')->will($this->returnValue($facetingMock));
+        $facetingMock = $this->getMockBuilder(Faceting::class)->onlyMethods(['getSorting'])->disableOriginalConstructor()->getMock();
+        $facetingMock->expects(self::any())->method('getSorting')->willReturn('');
+        $usedQueryMock = $this->getMockBuilder(Query::class)->onlyMethods([])->disableOriginalConstructor()->getMock();
 
         $searchRequestMock = $this->getMockBuilder(SearchRequest::class)
-            ->setMethods(['getActiveFacetNames', 'getContextTypoScriptConfiguration', 'getActiveFacets', 'getActiveFacetValuesByName'])
+            ->onlyMethods(['getActiveFacetNames', 'getContextTypoScriptConfiguration', 'getActiveFacets', 'getActiveFacetValuesByName'])
             ->getMock();
 
         $fakeResponse = new ResponseAdapter($fakeResponseJson, 200);
@@ -67,26 +67,26 @@ abstract class AbstractFacetParserTest extends UnitTest
         $configuration = [];
         $configuration['plugin.']['tx_solr.']['search.']['faceting.']['facets.'] = $facetConfiguration;
         $typoScriptConfiguration = new TypoScriptConfiguration($configuration);
-        $searchRequestMock->expects($this->any())
+        $searchRequestMock->expects(self::any())
             ->method('getContextTypoScriptConfiguration')
-            ->will($this->returnValue($typoScriptConfiguration));
+            ->willReturn($typoScriptConfiguration);
 
         // Replace calls with own data bag
-        $searchRequestMock->expects($this->any())
+        $searchRequestMock->expects(self::any())
             ->method('getActiveFacetNames')
-            ->will($this->returnCallback(function() use ($activeUrlFacets) {
+            ->willReturnCallback(function () use ($activeUrlFacets) {
                 return $activeUrlFacets->getActiveFacetNames();
-            }));
-        $searchRequestMock->expects($this->any())
+            });
+        $searchRequestMock->expects(self::any())
             ->method('getActiveFacets')
-            ->will($this->returnCallback(function() use ($activeUrlFacets) {
+            ->willReturnCallback(function () use ($activeUrlFacets) {
                 return $activeUrlFacets->getActiveFacets();
-            }));
-        $searchRequestMock->expects($this->any())
+            });
+        $searchRequestMock->expects(self::any())
             ->method('getActiveFacetValuesByName')
-            ->will($this->returnCallback(function(string $facetName) use ($activeUrlFacets) {
+            ->willReturnCallback(function (string $facetName) use ($activeUrlFacets) {
                 return $activeUrlFacets->getActiveFacetValuesByName($facetName);
-            }));
+            });
 
         return $searchResultSet;
     }

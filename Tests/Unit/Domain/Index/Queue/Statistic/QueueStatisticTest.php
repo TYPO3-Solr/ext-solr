@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Index\Queue\Statistic;
 
 /***************************************************************
@@ -36,25 +37,26 @@ class QueueStatisticTest extends UnitTest
     /**
      * @test
      */
-    public function canGetFailedPercentage() {
-            /** @var $statistic QueueStatistic */
+    public function canGetFailedPercentage()
+    {
+        /** @var $statistic QueueStatistic */
         $statistic = GeneralUtility::makeInstance(QueueStatistic::class);
         $statistic->setFailedCount(2);
         $statistic->setSuccessCount(1);
         $statistic->setPendingCount(1);
 
-        $this->assertSame(50.0, $statistic->getFailedPercentage(), 'Can not calculate failed percentage');
-        $this->assertSame(25.0, $statistic->getSuccessPercentage(), 'Can not calculate success percentage');
-        $this->assertSame(25.0, $statistic->getPendingPercentage(), 'Can not calculate pending percentage');
+        self::assertSame(50.0, $statistic->getFailedPercentage(), 'Can not calculate failed percentage');
+        self::assertSame(25.0, $statistic->getSuccessPercentage(), 'Can not calculate success percentage');
+        self::assertSame(25.0, $statistic->getPendingPercentage(), 'Can not calculate pending percentage');
     }
 
     /**
      * @test
      */
-    public function canGetZeroPercentagesWhenEmpty() {
+    public function canGetZeroPercentagesWhenEmpty()
+    {
         /** @var $statistic QueueStatistic */
         $statistic = GeneralUtility::makeInstance(QueueStatistic::class);
-        $this->assertSame(0.0, $statistic->getFailedPercentage(), 'Can not zero percent for empty');
+        self::assertSame(0.0, $statistic->getFailedPercentage(), 'Can not zero percent for empty');
     }
-
 }

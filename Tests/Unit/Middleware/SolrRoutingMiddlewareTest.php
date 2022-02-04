@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Middleware;
 
@@ -48,11 +49,11 @@ class SolrRoutingMiddlewareTest extends UnitTest
      */
     protected $responseOutputHandler;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->routingServiceMock = $this->getMockBuilder(RoutingService::class)
             ->disableOriginalConstructor()
-            ->setMethods(['getSiteMatcher', 'getSlugCandidateProvider', 'fetchEnhancerInSiteConfigurationByPageUid'])
+            ->onlyMethods(['getSiteMatcher', 'getSlugCandidateProvider', 'fetchEnhancerInSiteConfigurationByPageUid'])
             ->getMock();
 
         /* @see \TYPO3\CMS\Frontend\Tests\Unit\Middleware\PageResolverTest::setUp */
@@ -77,6 +78,8 @@ class SolrRoutingMiddlewareTest extends UnitTest
                 return $this->request;
             }
         };
+
+        parent::setUp();
     }
 
     /**
@@ -91,10 +94,10 @@ class SolrRoutingMiddlewareTest extends UnitTest
         );
         $siteMatcherMock = $this->getMockBuilder(SiteMatcher::class)
             ->disableOriginalConstructor()
-            ->setMethods(['matchRequest'])
+            ->onlyMethods(['matchRequest'])
             ->getMock();
 
-        $siteMatcherMock->expects($this->any())
+        $siteMatcherMock->expects(self::any())
             ->method('matchRequest')
             ->willReturn(
                 new SiteRouteResult(
@@ -103,26 +106,26 @@ class SolrRoutingMiddlewareTest extends UnitTest
                     new SiteLanguage(0, 'en_US', new Uri('https://domain.example/'), [])
                 )
             );
-        $this->routingServiceMock->expects($this->exactly(1))
+        $this->routingServiceMock->expects(self::exactly(1))
             ->method('getSiteMatcher')
             ->willReturn($siteMatcherMock);
 
         $pageSlugCandidateMock = $this->getMockBuilder(PageSlugCandidateProvider::class)
             ->disableOriginalConstructor()
-            ->setMethods(['getCandidatesForPath'])
+            ->onlyMethods(['getCandidatesForPath'])
             ->getMock();
-        $pageSlugCandidateMock->expects($this->atLeastOnce())
+        $pageSlugCandidateMock->expects(self::atLeastOnce())
             ->method('getCandidatesForPath')
             ->willReturn([['slug' => '/facet', 'uid' => '1']]);
-        $this->routingServiceMock->expects($this->atLeastOnce())
+        $this->routingServiceMock->expects(self::atLeastOnce())
             ->method('getSlugCandidateProvider')
             ->willReturn($pageSlugCandidateMock);
-        $this->routingServiceMock->expects($this->atLeastOnce())
+        $this->routingServiceMock->expects(self::atLeastOnce())
             ->method('fetchEnhancerInSiteConfigurationByPageUid')
             ->willReturn([]);
 
         $solrRoutingMiddleware = new SolrRoutingMiddleware();
-        $solrRoutingMiddleware->setLogger(New NullLogger());
+        $solrRoutingMiddleware->setLogger(new NullLogger());
         $solrRoutingMiddleware->injectRoutingService($this->routingServiceMock);
         $solrRoutingMiddleware->process(
             $serverRequest,
@@ -132,7 +135,7 @@ class SolrRoutingMiddlewareTest extends UnitTest
         /* @var Uri $uri */
         $uri = $request->getUri();
 
-        $this->assertEquals(
+        self::assertEquals(
             '/facet/bar,buz,foo',
             $uri->getPath()
         );

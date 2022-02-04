@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Access;
 
 /***************************************************************
@@ -43,7 +44,7 @@ class RootlineTest extends UnitTest
         return [
             'simple' => ['string' => 'c:0', 'expectedGroups' => [0]],
             'simpleOneGroup' => ['string' => 'c:1', 'expectedGroups' => [1]],
-            'mixed' => ['string' => '35:1/c:0', 'expectedGroups' => [0,1]]
+            'mixed' => ['string' => '35:1/c:0', 'expectedGroups' => [0, 1]],
         ];
     }
 
@@ -55,6 +56,6 @@ class RootlineTest extends UnitTest
     {
         $rootline = new Rootline($rootLineString);
         $groups = $rootline->getGroups();
-        $this->assertSame($expectedGroups, $groups);
+        self::assertSame($expectedGroups, $groups);
     }
 }

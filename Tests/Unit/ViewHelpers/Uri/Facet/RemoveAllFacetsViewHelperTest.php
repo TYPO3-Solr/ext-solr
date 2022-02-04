@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\ViewHelpers\Uri\Facet;
 
 /***************************************************************
@@ -24,8 +25,8 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\ViewHelpers\Uri\Facet;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
+use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Domain\Search\Uri\SearchUriBuilder;
 use ApacheSolrForTypo3\Solr\ViewHelpers\Uri\Facet\RemoveAllFacetsViewHelper;
 use TYPO3\CMS\Extbase\Mvc\Controller\ControllerContext;
@@ -46,25 +47,25 @@ class RemoveAllFacetsViewHelperTest extends AbstractFacetItemViewHelperTest
     {
         $mockedPreviousFakedRequest = $this->getDumbMock(SearchRequest::class);
         $searchResultSetMock = $this->getDumbMock(SearchResultSet::class);
-        $searchResultSetMock->expects($this->once())->method('getUsedSearchRequest')->will($this->returnValue($mockedPreviousFakedRequest));
+        $searchResultSetMock->expects(self::once())->method('getUsedSearchRequest')->willReturn($mockedPreviousFakedRequest);
 
         $uriBuilderMock = $this->getDumbMock(UriBuilder::class);
         $controllerContextMock = $this->getDumbMock(ControllerContext::class);
-        $controllerContextMock->expects($this->any())->method('getUriBuilder')->will($this->returnValue($uriBuilderMock));
+        $controllerContextMock->expects(self::any())->method('getUriBuilder')->willReturn($uriBuilderMock);
 
         $variableProvideMock = $this->getDumbMock(StandardVariableProvider::class);
-        $variableProvideMock->expects($this->once())->method('get')->with('resultSet')->will($this->returnValue($searchResultSetMock));
+        $variableProvideMock->expects(self::once())->method('get')->with('resultSet')->willReturn($searchResultSetMock);
         $renderContextMock = $this->getDumbMock(RenderingContext::class);
-        $renderContextMock->expects($this->any())->method('getVariableProvider')->will($this->returnValue($variableProvideMock));
-        $renderContextMock->expects($this->any())->method('getControllerContext')->will($this->returnValue($controllerContextMock));
+        $renderContextMock->expects(self::any())->method('getVariableProvider')->willReturn($variableProvideMock);
+        $renderContextMock->expects(self::any())->method('getControllerContext')->willReturn($controllerContextMock);
 
         $viewHelper = new RemoveAllFacetsViewHelper();
         $viewHelper->setRenderingContext($renderContextMock);
 
         $searchUriBuilderMock = $this->getDumbMock(SearchUriBuilder::class);
 
-            // we expected that the getRemoveAllFacetsUri will be called on the searchUriBuilder in the end.
-        $searchUriBuilderMock->expects($this->once())->method('getRemoveAllFacetsUri')->with($mockedPreviousFakedRequest);
+        // we expected that the getRemoveAllFacetsUri will be called on the searchUriBuilder in the end.
+        $searchUriBuilderMock->expects(self::once())->method('getRemoveAllFacetsUri')->with($mockedPreviousFakedRequest);
         $viewHelper->injectSearchUriBuilder($searchUriBuilderMock);
 
         $viewHelper->render();

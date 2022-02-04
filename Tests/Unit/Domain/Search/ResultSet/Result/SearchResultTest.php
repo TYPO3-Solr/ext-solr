@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Result;
 
 /***************************************************************
@@ -24,8 +25,8 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Result;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResult;
+use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 
 /**
  * Unit test case for the SearchResult.
@@ -39,7 +40,7 @@ class SearchResultTest extends UnitTest
      */
     protected $searchResult;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $fields = [
             'id' => 4711,
@@ -48,9 +49,10 @@ class SearchResultTest extends UnitTest
             'content' => 'foobar',
             'isElevated' => true,
             'url' => '://mytestdomain.com/test',
-            'type' => 'pages'
+            'type' => 'pages',
         ];
         $this->searchResult = new SearchResult($fields);
+        parent::setUp();
     }
 
     /**
@@ -58,7 +60,7 @@ class SearchResultTest extends UnitTest
      */
     public function canGetId()
     {
-        $this->assertSame(4711, $this->searchResult->getId(), 'Could not get id from searchResult');
+        self::assertSame(4711, $this->searchResult->getId(), 'Could not get id from searchResult');
     }
 
     /**
@@ -66,7 +68,7 @@ class SearchResultTest extends UnitTest
      */
     public function canGetScore()
     {
-        $this->assertSame(0.55, $this->searchResult->getScore(), 'Could not get score from searchResult');
+        self::assertSame(0.55, $this->searchResult->getScore(), 'Could not get score from searchResult');
     }
 
     /**
@@ -74,7 +76,7 @@ class SearchResultTest extends UnitTest
      */
     public function canGetContent()
     {
-        $this->assertSame('foobar', $this->searchResult->getContent(), 'Could not get content from searchResult');
+        self::assertSame('foobar', $this->searchResult->getContent(), 'Could not get content from searchResult');
     }
 
     /**
@@ -82,7 +84,7 @@ class SearchResultTest extends UnitTest
      */
     public function canGetType()
     {
-        $this->assertSame('pages', $this->searchResult->getType(), 'Could not get type from searchResult');
+        self::assertSame('pages', $this->searchResult->getType(), 'Could not get type from searchResult');
     }
 
     /**
@@ -90,7 +92,7 @@ class SearchResultTest extends UnitTest
      */
     public function canGetTitle()
     {
-        $this->assertSame('The title', $this->searchResult->getTitle(), 'Could not get title from searchResult');
+        self::assertSame('The title', $this->searchResult->getTitle(), 'Could not get title from searchResult');
     }
 
     /**
@@ -98,7 +100,7 @@ class SearchResultTest extends UnitTest
      */
     public function canGetUrl()
     {
-        $this->assertSame('://mytestdomain.com/test', $this->searchResult->getUrl(), 'Could not get url from searchResult');
+        self::assertSame('://mytestdomain.com/test', $this->searchResult->getUrl(), 'Could not get url from searchResult');
     }
 
     /**
@@ -106,7 +108,7 @@ class SearchResultTest extends UnitTest
      */
     public function canGetIsElevated()
     {
-        $this->assertSame(true, $this->searchResult->getIsElevated(), 'Could not get isElevated from searchResult');
+        self::assertTrue($this->searchResult->getIsElevated(), 'Could not get isElevated from searchResult');
     }
 
     /**
@@ -114,6 +116,6 @@ class SearchResultTest extends UnitTest
      */
     public function getOnUnexistingFieldReturnsNull()
     {
-        $this->assertNull($this->searchResult->getUnexistingField(), 'Calling getter for unexisting field does not return null');
+        self::assertNull($this->searchResult->getUnexistingField(), 'Calling getter for unexisting field does not return null');
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\IndexQueue;
 
 /***************************************************************
@@ -24,9 +25,9 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\IndexQueue;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
-use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -48,10 +49,7 @@ class QueueTest extends IntegrationTest
      */
     protected $siteRepository;
 
-    /**
-     * @return void
-     */
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->writeDefaultSolrTestSiteConfiguration();
@@ -67,12 +65,11 @@ class QueueTest extends IntegrationTest
     protected function assertItemsInQueue($expectedAmount)
     {
         $itemCount = $this->indexQueue->getAllItemsCount();
-        $this->assertSame($itemCount, $expectedAmount, 'Indexqueue contains unexpected amount of items. Expected amount: ' . $expectedAmount);
+        self::assertSame($itemCount, $expectedAmount, 'Indexqueue contains unexpected amount of items. Expected amount: ' . $expectedAmount);
     }
 
     /**
      * Custom assertion to expect an empty queue.
-     * @return void
      */
     protected function assertEmptyQueue()
     {
@@ -88,16 +85,16 @@ class QueueTest extends IntegrationTest
         $itemCount = $this->indexQueue->getAllItemsCount();
 
         $this->assertItemsInQueue(1);
-        $this->assertFalse($this->indexQueue->containsItem('pages', 1));
-        $this->assertTrue($this->indexQueue->containsItem('pages', 4711));
+        self::assertFalse($this->indexQueue->containsItem('pages', 1));
+        self::assertTrue($this->indexQueue->containsItem('pages', 4711));
 
         // after initialize the prefilled queue item should be lost and the root page should be added again
         $site = $this->siteRepository->getFirstAvailableSite();
         $this->indexQueue->getInitializationService()->initializeBySiteAndIndexConfiguration($site, 'pages');
 
         $this->assertItemsInQueue(1);
-        $this->assertTrue($this->indexQueue->containsItem('pages', 1));
-        $this->assertFalse($this->indexQueue->containsItem('pages', 4711));
+        self::assertTrue($this->indexQueue->containsItem('pages', 1));
+        self::assertFalse($this->indexQueue->containsItem('pages', 4711));
     }
 
     /**
@@ -108,11 +105,11 @@ class QueueTest extends IntegrationTest
         $this->assertEmptyQueue();
 
         $updateCount = $this->indexQueue->updateItem('pages', 1);
-        $this->assertSame(1, $updateCount);
+        self::assertSame(1, $updateCount);
         $this->assertItemsInQueue(1);
 
         $updateCount = $this->indexQueue->updateItem('pages', 1);
-        $this->assertSame(0, $updateCount);
+        self::assertSame(0, $updateCount);
         $this->assertItemsInQueue(1);
     }
 
@@ -154,11 +151,11 @@ class QueueTest extends IntegrationTest
         $this->importDataSetFromFixture('can_not_add_unallowed_pagetype.xml');
         $this->assertEmptyQueue();
 
-            // record does not exist in fixture
+        // record does not exist in fixture
         $updateCount = $this->indexQueue->updateItem('pages', 22);
-        $this->assertSame(0, $updateCount, 'Expected that no record was updated');
+        self::assertSame(0, $updateCount, 'Expected that no record was updated');
 
-            // queue should still be empty
+        // queue should still be empty
         $this->assertEmptyQueue();
     }
 
@@ -176,7 +173,6 @@ class QueueTest extends IntegrationTest
 
         $this->indexQueue->getInitializationService()->initializeBySiteAndIndexConfiguration($site, 'pages');
         $this->assertItemsInQueue(4);
-
     }
 
     /**
@@ -212,7 +208,7 @@ class QueueTest extends IntegrationTest
         $this->assertItemsInQueue(1);
 
         $queueItem = $this->indexQueue->getItem(1);
-        $this->assertEquals(
+        self::assertEquals(
             'custom_page_type',
             $queueItem->getIndexingConfigurationName(),
             'Item was queued with unexpected configuration'
@@ -228,8 +224,8 @@ class QueueTest extends IntegrationTest
         $site = $this->siteRepository->getFirstAvailableSite();
         $itemCount = $this->indexQueue->getStatisticsBySite($site)->getTotalCount();
 
-            // there are two items in the queue but only one for the site
-        $this->assertSame(1, $itemCount, 'Unexpected item count for the first site');
+        // there are two items in the queue but only one for the site
+        self::assertSame(1, $itemCount, 'Unexpected item count for the first site');
     }
 
     /**
@@ -241,12 +237,12 @@ class QueueTest extends IntegrationTest
         $site = $this->siteRepository->getFirstAvailableSite();
 
         $itemCount = $this->indexQueue->getStatisticsBySite($site)->getPendingCount();
-        $this->assertSame(1, $itemCount, 'Unexpected remaining item count for the first site');
+        self::assertSame(1, $itemCount, 'Unexpected remaining item count for the first site');
 
-            // when we update the item, no remaining item should be left
+        // when we update the item, no remaining item should be left
         $this->indexQueue->updateItem('pages', 1);
         $itemCount = $this->indexQueue->getStatisticsBySite($site)->getPendingCount();
-        $this->assertSame(0, $itemCount, 'After updating a remaining item no remaining item should be left');
+        self::assertSame(0, $itemCount, 'After updating a remaining item no remaining item should be left');
     }
 
     /**
@@ -268,18 +264,17 @@ class QueueTest extends IntegrationTest
             }
         }
 
+        $firstRootPage = $this->indexQueue->getItems('pages', 1);
+        $secondRootPage = $this->indexQueue->getItems('pages', 111);
 
-        $firstRootPage = $this->indexQueue->getItems('pages',1);
-        $secondRootPage = $this->indexQueue->getItems('pages',111);
+        self::assertCount(1, $firstRootPage);
+        self::assertCount(1, $secondRootPage);
 
-        $this->assertCount(1, $firstRootPage);
-        $this->assertCount(1, $secondRootPage);
+        $firstSubPage = $this->indexQueue->getItems('pages', 10);
+        $secondSubPage = $this->indexQueue->getItems('pages', 1111);
 
-        $firstSubPage = $this->indexQueue->getItems('pages',10);
-        $secondSubPage = $this->indexQueue->getItems('pages',1111);
-
-        $this->assertCount(1, $firstSubPage);
-        $this->assertCount(1, $secondSubPage);
+        self::assertCount(1, $firstSubPage);
+        self::assertCount(1, $secondSubPage);
 
         $this->assertItemsInQueue(4);
     }
@@ -294,9 +289,9 @@ class QueueTest extends IntegrationTest
 
         $site = $this->siteRepository->getSiteByPageId(111);
         $statistics = $this->indexQueue->getStatisticsBySite($site);
-        $this->assertSame(1, $statistics->getSuccessCount(), 'Can not get successful processed items from queue');
-        $this->assertSame(1, $statistics->getFailedCount(), 'Can not get failed processed items from queue');
-        $this->assertSame(1, $statistics->getPendingCount(), 'Can not get pending processed items from queue');
+        self::assertSame(1, $statistics->getSuccessCount(), 'Can not get successful processed items from queue');
+        self::assertSame(1, $statistics->getFailedCount(), 'Can not get failed processed items from queue');
+        self::assertSame(1, $statistics->getPendingCount(), 'Can not get pending processed items from queue');
     }
 
     /**
@@ -310,14 +305,14 @@ class QueueTest extends IntegrationTest
         $site = $this->siteRepository->getSiteByPageId(111);
         $statistics = $this->indexQueue->getStatisticsBySite($site, 'customIndexingConfigurationName');
 
-        $this->assertSame(1, $statistics->getSuccessCount(), 'Can not get successful processed custom items from queue');
-        $this->assertSame(1, $statistics->getFailedCount(), 'Can not get failed processed custom items from queue');
-        $this->assertSame(1, $statistics->getPendingCount(), 'Can not get pending processed custom items from queue');
+        self::assertSame(1, $statistics->getSuccessCount(), 'Can not get successful processed custom items from queue');
+        self::assertSame(1, $statistics->getFailedCount(), 'Can not get failed processed custom items from queue');
+        self::assertSame(1, $statistics->getPendingCount(), 'Can not get pending processed custom items from queue');
 
         $notExistingIndexingConfStatistic = $this->indexQueue->getStatisticsBySite($site, 'notExistingIndexingConfigurationName');
-        $this->assertSame(0, $notExistingIndexingConfStatistic->getSuccessCount(), 'Can not get successful processed items from queue for not existing indexing configuration');
-        $this->assertSame(0, $notExistingIndexingConfStatistic->getFailedCount(), 'Can not get failed processed items from queue for not existing indexing configuration');
-        $this->assertSame(0, $notExistingIndexingConfStatistic->getPendingCount(), 'Can not get pending processed items from queue for not existing indexing configuration');
+        self::assertSame(0, $notExistingIndexingConfStatistic->getSuccessCount(), 'Can not get successful processed items from queue for not existing indexing configuration');
+        self::assertSame(0, $notExistingIndexingConfStatistic->getFailedCount(), 'Can not get failed processed items from queue for not existing indexing configuration');
+        self::assertSame(0, $notExistingIndexingConfStatistic->getPendingCount(), 'Can not get pending processed items from queue for not existing indexing configuration');
     }
 
     /**
@@ -328,7 +323,7 @@ class QueueTest extends IntegrationTest
         $this->importDataSetFromFixture('can_get_last_index_time.xml');
         $this->assertItemsInQueue(3);
         $lastIndexTime = $this->indexQueue->getLastIndexTime(2);
-        $this->assertEquals($lastIndexTime, 0);
+        self::assertEquals($lastIndexTime, 0);
     }
 
     /**
@@ -339,7 +334,7 @@ class QueueTest extends IntegrationTest
         $this->importDataSetFromFixture('can_get_last_index_time.xml');
         $this->assertItemsInQueue(3);
         $lastIndexTime = $this->indexQueue->getLastIndexTime(1);
-        $this->assertEquals($lastIndexTime, 1489383800);
+        self::assertEquals($lastIndexTime, 1489383800);
     }
 
     /**
@@ -350,7 +345,7 @@ class QueueTest extends IntegrationTest
         $this->importDataSetFromFixture('can_get_last_indexed_item_id.xml');
         $this->assertItemsInQueue(3);
         $lastIndexedItemIdUid = $this->indexQueue->getLastIndexedItemId(2);
-        $this->assertEquals($lastIndexedItemIdUid, 0);
+        self::assertEquals($lastIndexedItemIdUid, 0);
     }
 
     /**
@@ -361,7 +356,7 @@ class QueueTest extends IntegrationTest
         $this->importDataSetFromFixture('can_get_last_indexed_item_id.xml');
         $this->assertItemsInQueue(3);
         $lastIndexedItemIdUid = $this->indexQueue->getLastIndexedItemId(1);
-        $this->assertEquals($lastIndexedItemIdUid, 4713);
+        self::assertEquals($lastIndexedItemIdUid, 4713);
     }
 
     /**
@@ -374,7 +369,7 @@ class QueueTest extends IntegrationTest
         $item = $this->indexQueue->getItem(4711);
         $this->indexQueue->markItemAsFailed($item);
         $processedItem = $this->indexQueue->getItem($item->getIndexQueueUid());
-        $this->assertEquals($processedItem->getErrors(), '1');
+        self::assertEquals($processedItem->getErrors(), '1');
     }
 
     /**
@@ -387,7 +382,7 @@ class QueueTest extends IntegrationTest
         $item = $this->indexQueue->getItem(4711);
         $this->indexQueue->markItemAsFailed($item, 'Error during indexing canMarkItemAsFailedWithItemAndMessage');
         $processedItem = $this->indexQueue->getItem($item->getIndexQueueUid());
-        $this->assertEquals($processedItem->getErrors(), 'Error during indexing canMarkItemAsFailedWithItemAndMessage');
+        self::assertEquals($processedItem->getErrors(), 'Error during indexing canMarkItemAsFailedWithItemAndMessage');
     }
 
     /**
@@ -399,7 +394,7 @@ class QueueTest extends IntegrationTest
         $this->assertItemsInQueue(3);
         $this->indexQueue->markItemAsFailed(4712);
         $item = $this->indexQueue->getItem(4712);
-        $this->assertEquals($item->getErrors(), '1');
+        self::assertEquals($item->getErrors(), '1');
     }
 
     /**
@@ -411,7 +406,7 @@ class QueueTest extends IntegrationTest
         $this->assertItemsInQueue(3);
         $this->indexQueue->markItemAsFailed(4712, 'Error during indexing canMarkItemAsFailedWithUidAndMessage');
         $item = $this->indexQueue->getItem(4712);
-        $this->assertEquals($item->getErrors(), 'Error during indexing canMarkItemAsFailedWithUidAndMessage');
+        self::assertEquals($item->getErrors(), 'Error during indexing canMarkItemAsFailedWithUidAndMessage');
     }
 
     /**
@@ -423,7 +418,7 @@ class QueueTest extends IntegrationTest
         $this->assertItemsInQueue(3);
         $this->indexQueue->markItemAsFailed(42, 'Error during indexing canMarkItemAsFailedWithUidAndMessage');
         $item = $this->indexQueue->getItem(42);
-        $this->assertEquals($item, null);
+        self::assertEquals($item, null);
     }
 
     /**
@@ -436,7 +431,7 @@ class QueueTest extends IntegrationTest
         $item = $this->indexQueue->getItem(42);
         $this->indexQueue->markItemAsFailed($item, 'Error during indexing canMarkItemAsFailedWithUidAndMessage');
         $processedItem = $this->indexQueue->getItem(42);
-        $this->assertEquals($processedItem, null);
+        self::assertEquals($processedItem, null);
     }
 
     /**
@@ -447,7 +442,7 @@ class QueueTest extends IntegrationTest
         $this->importDataSetFromFixture('can_update_index_time_by_item.xml');
         $this->assertItemsInQueue(3);
         $item = $this->indexQueue->getItem(42);
-        $this->assertEquals($item, null);
+        self::assertEquals($item, null);
     }
 
     /**
@@ -458,10 +453,10 @@ class QueueTest extends IntegrationTest
         $this->importDataSetFromFixture('can_update_index_time_by_item.xml');
         $this->assertItemsInQueue(3);
         $lastestUpdatedItem = $this->indexQueue->getLastIndexedItemId(1);
-        $this->assertEquals($lastestUpdatedItem, 4713);
+        self::assertEquals($lastestUpdatedItem, 4713);
         $this->indexQueue->updateIndexTimeByItem($this->indexQueue->getItem(4711));
         $lastestUpdatedItem = $this->indexQueue->getLastIndexedItemId(1);
-        $this->assertEquals($lastestUpdatedItem, 4711);
+        self::assertEquals($lastestUpdatedItem, 4711);
     }
 
     /**
@@ -477,16 +472,16 @@ class QueueTest extends IntegrationTest
         $firstSite = $siteRepository->getFirstAvailableSite();
 
         $errorsForFirstSite = $this->indexQueue->getErrorsBySite($firstSite);
-        $this->assertSame(2, count($errorsForFirstSite), 'Unexpected amount of errors for the first site');
+        self::assertSame(2, count($errorsForFirstSite), 'Unexpected amount of errors for the first site');
 
         $this->indexQueue->resetAllErrors();
 
         $errorsForFirstSite = $this->indexQueue->getErrorsBySite($firstSite);
-        $this->assertSame(0, count($errorsForFirstSite), 'Unexpected amount of errors for the first site after reset');
+        self::assertSame(0, count($errorsForFirstSite), 'Unexpected amount of errors for the first site after reset');
 
         $secondSite = $siteRepository->getSiteByPageId(111);
         $errorsForSecondSite = $this->indexQueue->getErrorsBySite($secondSite);
-        $this->assertSame(0, count($errorsForSecondSite), 'Unexpected amount of errors for the second site after reset');
+        self::assertSame(0, count($errorsForSecondSite), 'Unexpected amount of errors for the second site after reset');
     }
 
     /**
@@ -502,22 +497,23 @@ class QueueTest extends IntegrationTest
         $firstSite = $siteRepository->getFirstAvailableSite();
 
         $errorsForFirstSite = $this->indexQueue->getErrorsBySite($firstSite);
-        $this->assertSame(2, count($errorsForFirstSite), 'Unexpected amount of errors for the first site');
+        self::assertSame(2, count($errorsForFirstSite), 'Unexpected amount of errors for the first site');
 
         $this->indexQueue->resetErrorsBySite($firstSite);
 
         $errorsForFirstSite = $this->indexQueue->getErrorsBySite($firstSite);
-        $this->assertSame(0, count($errorsForFirstSite), 'Unexpected amount of errors for the first site after reset');
+        self::assertSame(0, count($errorsForFirstSite), 'Unexpected amount of errors for the first site after reset');
 
         $secondSite = $siteRepository->getSiteByPageId(111);
         $errorsForSecondSite = $this->indexQueue->getErrorsBySite($secondSite);
-        $this->assertSame(1, count($errorsForSecondSite), 'Unexpected amount of errors for the second site after reset');
+        self::assertSame(1, count($errorsForSecondSite), 'Unexpected amount of errors for the second site after reset');
     }
 
     /**
      * @test
      */
-    public function canFlushErrorByItem() {
+    public function canFlushErrorByItem()
+    {
         $this->importDataSetFromFixture('can_flush_error_by_item.xml');
         $this->assertItemsInQueue(4);
 
@@ -526,12 +522,12 @@ class QueueTest extends IntegrationTest
         $firstSite = $siteRepository->getFirstAvailableSite();
 
         $errorsForFirstSite = $this->indexQueue->getErrorsBySite($firstSite);
-        $this->assertSame(2, count($errorsForFirstSite), 'Unexpected amount of errors for the first site');
+        self::assertSame(2, count($errorsForFirstSite), 'Unexpected amount of errors for the first site');
 
         $item = $this->indexQueue->getItem(4714);
         $this->indexQueue->resetErrorByItem($item);
 
         $errorsForFirstSite = $this->indexQueue->getErrorsBySite($firstSite);
-        $this->assertSame(1, count($errorsForFirstSite), 'Unexpected amount of errors for the first site after resetting one item');
+        self::assertSame(1, count($errorsForFirstSite), 'Unexpected amount of errors for the first site after resetting one item');
     }
 }

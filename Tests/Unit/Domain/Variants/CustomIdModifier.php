@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Variants;
 
 /***************************************************************
@@ -26,13 +27,14 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Variants;
 
 use ApacheSolrForTypo3\Solr\Domain\Variants\IdModifier;
 
-class CustomIdModifier implements IdModifier {
+class CustomIdModifier implements IdModifier
+{
 
     /**
      * @param string $variantId
      * @param string $systemHash
      * @param string $type
-     * @param integer $uid
+     * @param int $uid
      * @return string
      */
     public function modifyVariantId($variantId, $systemHash, $type, $uid)

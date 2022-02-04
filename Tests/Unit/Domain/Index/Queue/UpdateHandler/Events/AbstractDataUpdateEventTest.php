@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\IndexQueue\UpdateHandler\Events;
 
 /***************************************************************
@@ -24,10 +25,10 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\IndexQueue\UpdateHandler\Events;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
-use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\AbstractDataUpdateEvent;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\DataUpdateHandler;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\AbstractDataUpdateEvent;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\GarbageHandler;
+use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 
 /**
  * Abstract testcase for the data update events
@@ -47,13 +48,13 @@ abstract class AbstractDataUpdateEventTest extends UnitTest
         $eventClass = static::EVENT_CLASS;
         $event = new $eventClass(123, static::EVENT_TEST_TABLE);
 
-        $this->assertEquals(123, $event->getUid());
-        $this->assertEquals(static::EVENT_TEST_TABLE, $event->getTable());
+        self::assertEquals(123, $event->getUid());
+        self::assertEquals(static::EVENT_TEST_TABLE, $event->getTable());
 
         // initial values
-        $this->assertEmpty($event->getFields());
-        $this->assertFalse($event->isPropagationStopped());
-        $this->assertFalse($event->isImmediateProcessingForced());
+        self::assertEmpty($event->getFields());
+        self::assertFalse($event->isPropagationStopped());
+        self::assertFalse($event->isImmediateProcessingForced());
 
         return $event;
     }
@@ -67,7 +68,7 @@ abstract class AbstractDataUpdateEventTest extends UnitTest
         $eventClass = static::EVENT_CLASS;
         $event = new $eventClass(123, static::EVENT_TEST_TABLE, $fields = ['hidden' => 1]);
 
-        $this->assertEquals($fields, $event->getFields());
+        self::assertEquals($fields, $event->getFields());
     }
 
     /**
@@ -78,12 +79,12 @@ abstract class AbstractDataUpdateEventTest extends UnitTest
         /** @var AbstractDataUpdateEvent $event */
         $eventClass = static::EVENT_CLASS;
         $event = new $eventClass(123, 'tx_foo_bar');
-        $this->assertFalse($event->isPageUpdate());
+        self::assertFalse($event->isPageUpdate());
 
         /** @var AbstractDataUpdateEvent $event */
         $eventClass = static::EVENT_CLASS;
         $event = new $eventClass(123, 'pages');
-        $this->assertTrue($event->isPageUpdate());
+        self::assertTrue($event->isPageUpdate());
     }
 
     /**
@@ -94,12 +95,12 @@ abstract class AbstractDataUpdateEventTest extends UnitTest
         /** @var AbstractDataUpdateEvent $event */
         $eventClass = static::EVENT_CLASS;
         $event = new $eventClass(123, 'tx_foo_bar');
-        $this->assertFalse($event->isContentElementUpdate());
+        self::assertFalse($event->isContentElementUpdate());
 
         /** @var AbstractDataUpdateEvent $event */
         $eventClass = static::EVENT_CLASS;
         $event = new $eventClass(123, 'tt_content');
-        $this->assertTrue($event->isContentElementUpdate());
+        self::assertTrue($event->isContentElementUpdate());
     }
 
     /**
@@ -111,11 +112,11 @@ abstract class AbstractDataUpdateEventTest extends UnitTest
         $eventClass = static::EVENT_CLASS;
         $event = new $eventClass(123, 'tx_foo_bar');
 
-        $this->assertFalse($event->isPropagationStopped());
+        self::assertFalse($event->isPropagationStopped());
         $event->setStopProcessing(true);
-        $this->assertTrue($event->isPropagationStopped());
+        self::assertTrue($event->isPropagationStopped());
         $event->setStopProcessing(false);
-        $this->assertFalse($event->isPropagationStopped());
+        self::assertFalse($event->isPropagationStopped());
     }
 
     /**
@@ -127,11 +128,11 @@ abstract class AbstractDataUpdateEventTest extends UnitTest
         $eventClass = static::EVENT_CLASS;
         $event = new $eventClass(123, 'tx_foo_bar');
 
-        $this->assertFalse($event->isImmediateProcessingForced());
+        self::assertFalse($event->isImmediateProcessingForced());
         $event->setForceImmediateProcessing(true);
-        $this->assertTrue($event->isImmediateProcessingForced());
+        self::assertTrue($event->isImmediateProcessingForced());
         $event->setForceImmediateProcessing(false);
-        $this->assertFalse($event->isImmediateProcessingForced());
+        self::assertFalse($event->isImmediateProcessingForced());
     }
 
     /**
@@ -143,7 +144,7 @@ abstract class AbstractDataUpdateEventTest extends UnitTest
             'uid' => 123,
             'pid' => 10,
             'title' => 'dummy title',
-            'l10n_diffsource' => 'dummy l10n_diffsource'
+            'l10n_diffsource' => 'dummy l10n_diffsource',
         ];
 
         /** @var AbstractDataUpdateEvent $event */
@@ -151,12 +152,12 @@ abstract class AbstractDataUpdateEventTest extends UnitTest
         $event = new $eventClass(123, 'pages', $fields);
 
         $properties = $event->__sleep();
-        $this->assertNotEmpty($properties);
+        self::assertNotEmpty($properties);
 
         /** @var AbstractDataUpdateEvent $processedEvent */
         $processedEvent = unserialize(serialize($event));
-        $this->assertIsObject($processedEvent);
-        $this->assertArrayNotHasKey('l10n_diffsource', $processedEvent->getFields());
+        self::assertIsObject($processedEvent);
+        self::assertArrayNotHasKey('l10n_diffsource', $processedEvent->getFields());
 
         if ($event->getFields() !== []) {
             $requiredUpdateFields = array_unique(array_merge(
@@ -165,16 +166,16 @@ abstract class AbstractDataUpdateEventTest extends UnitTest
             ));
 
             foreach ($requiredUpdateFields as $requiredUpdateField) {
-                $this->assertArrayHasKey($requiredUpdateField, $processedEvent->getFields());
+                self::assertArrayHasKey($requiredUpdateField, $processedEvent->getFields());
             }
 
             if ($event->getTable() === 'pages') {
                 $processedFields = $fields;
                 unset($processedFields['l10n_diffsource']);
-                $this->assertEquals($processedFields, $processedEvent->getFields());
+                self::assertEquals($processedFields, $processedEvent->getFields());
             }
 
-            $this->assertEquals(10, $processedEvent->getFields()['pid']);
+            self::assertEquals(10, $processedEvent->getFields()['pid']);
         }
     }
 }

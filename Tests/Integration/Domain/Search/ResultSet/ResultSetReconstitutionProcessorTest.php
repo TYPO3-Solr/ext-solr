@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\Domain\Search\ResultSet;
 
 /***************************************************************
@@ -24,12 +25,12 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Domain\Search\ResultSet;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
-use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\Option;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\OptionsFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\ResultSetReconstitutionProcessor;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
+use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -63,7 +64,7 @@ class ResultSetReconstitutionProcessorTest extends IntegrationTest
 
         // before the reconstitution of the domain object from the response we expect that no facets
         // are present
-        $this->assertEquals([], $searchResultSet->getFacets()->getArrayCopy());
+        self::assertEquals([], $searchResultSet->getFacets()->getArrayCopy());
 
         $facetConfiguration = [
             'facets.' => [
@@ -73,20 +74,20 @@ class ResultSetReconstitutionProcessorTest extends IntegrationTest
                     'renderingInstruction' => 'CASE',
                     'renderingInstruction.' => [
                         'key.' => [
-                            'field' => 'optionValue'
+                            'field' => 'optionValue',
                         ],
                         'page' => 'TEXT',
                         'page.' => [
-                            'value' => 'Pages'
+                            'value' => 'Pages',
                         ],
                         'event' => 'TEXT',
                         'event.' => [
-                            'value' => 'Events'
-                        ]
+                            'value' => 'Events',
+                        ],
 
-                    ]
-                ]
-            ]
+                    ],
+                ],
+            ],
         ];
 
         $configuration = $this->getConfigurationArrayFromFacetConfigurationArray($facetConfiguration);
@@ -98,7 +99,7 @@ class ResultSetReconstitutionProcessorTest extends IntegrationTest
 
         /** @var $option1 Option */ // @extensionScannerIgnoreLine
         $option1 = $facet->getOptions()->getByPosition(0);
-        $this->assertSame('Pages', $option1->getLabel(), 'Rendering instructions have not been applied on the facet options');
+        self::assertSame('Pages', $option1->getLabel(), 'Rendering instructions have not been applied on the facet options');
     }
 
     /**
@@ -117,7 +118,7 @@ class ResultSetReconstitutionProcessorTest extends IntegrationTest
 
         // before the reconstitution of the domain object from the response we expect that no facets
         // are present
-        $this->assertEquals([], $searchResultSet->getFacets()->getArrayCopy());
+        self::assertEquals([], $searchResultSet->getFacets()->getArrayCopy());
 
         $facetConfiguration = [
             'facets.' => [
@@ -125,11 +126,11 @@ class ResultSetReconstitutionProcessorTest extends IntegrationTest
                     'label' => 'TEXT',
                     'label.' => [
                         'value' => 'My Type with special rendering',
-                        'stdWrap.' => ['case' => 'upper']
+                        'stdWrap.' => ['case' => 'upper'],
                     ],
                     'field' => 'type_stringS',
-                ]
-            ]
+                ],
+            ],
         ];
 
         $configuration = $this->getConfigurationArrayFromFacetConfigurationArray($facetConfiguration);
@@ -138,7 +139,7 @@ class ResultSetReconstitutionProcessorTest extends IntegrationTest
 
         /** @var $facet OptionsFacet */
         $facet = $searchResultSet->getFacets()->getByPosition(0);
-        $this->assertSame('MY TYPE WITH SPECIAL RENDERING', $facet->getLabel(), 'Rendering instructions have not been applied on the facet options');
+        self::assertSame('MY TYPE WITH SPECIAL RENDERING', $facet->getLabel(), 'Rendering instructions have not been applied on the facet options');
     }
 
     /**
@@ -147,7 +148,7 @@ class ResultSetReconstitutionProcessorTest extends IntegrationTest
      */
     protected function initializeSearchResultSetFromFakeResponse(string $fixtureFile): SearchResultSet
     {
-        $searchRequestMock = $this->getMockBuilder(SearchRequest::class)->getMock();
+        $searchRequestMock = $this->createMock(SearchRequest::class);
 
         $fakeResponseJson = $this->getFixtureContentByName($fixtureFile);
         $fakeResponse = new ResponseAdapter($fakeResponseJson);
@@ -181,8 +182,8 @@ class ResultSetReconstitutionProcessorTest extends IntegrationTest
 
         /* @var SearchRequest|MockObject $usedSearchRequestMock */
         $usedSearchRequestMock = $searchResultSet->getUsedSearchRequest();
-        $usedSearchRequestMock->expects($this->any())->method('getContextTypoScriptConfiguration')->will($this->returnValue($typoScriptConfiguration));
-        $usedSearchRequestMock->expects($this->any())->method('getActiveFacetNames')->will($this->returnValue([]));
+        $usedSearchRequestMock->expects(self::any())->method('getContextTypoScriptConfiguration')->willReturn($typoScriptConfiguration);
+        $usedSearchRequestMock->expects(self::any())->method('getActiveFacetNames')->willReturn([]);
 
         $processor = new ResultSetReconstitutionProcessor();
         $fakeObjectManager = $this->getFakeObjectManager();

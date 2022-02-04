@@ -26,7 +26,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class SolrConnectionTest extends IntegrationTest
 {
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->writeDefaultSolrTestSiteConfiguration();
@@ -49,13 +49,12 @@ class SolrConnectionTest extends IntegrationTest
         );
         try {
             $solrConnection = $connectionManager->getConnectionByPageId($pageUid, 0);
-            $this->assertInstanceOf(SolrConnection::class, $solrConnection, $messageOnNoSolrConnectionFoundException);
+            self::assertInstanceOf(SolrConnection::class, $solrConnection, $messageOnNoSolrConnectionFoundException);
             return $solrConnection;
         } catch (NoSolrConnectionFoundException $exception) {
-            $this->fail($messageOnNoSolrConnectionFoundException);
+            self::fail($messageOnNoSolrConnectionFoundException);
         }
     }
-
 
     /**
      * @test
@@ -77,33 +76,33 @@ class SolrConnectionTest extends IntegrationTest
         $httpSettingsIgnoredMessage = 'The client for solarium does not get TYPO3 system configuration for HTTP. ' . PHP_EOL .
             'Please check why "%s" does not taken into account or are overridden.';
 
-        $this->assertEquals(
+        self::assertEquals(
             $GLOBALS['TYPO3_CONF_VARS']['HTTP']['connect_timeout'],
             $guzzleConfig['connect_timeout'],
             vsprintf(
                 $httpSettingsIgnoredMessage,
                 [
-                    '$GLOBALS[\'TYPO3_CONF_VARS\'][\'HTTP\'][\'connect_timeout\']'
+                    '$GLOBALS[\'TYPO3_CONF_VARS\'][\'HTTP\'][\'connect_timeout\']',
                 ]
             )
         );
-        $this->assertEquals(
+        self::assertEquals(
             $GLOBALS['TYPO3_CONF_VARS']['HTTP']['timeout'],
             $guzzleConfig['timeout'],
             vsprintf(
                 $httpSettingsIgnoredMessage,
                 [
-                    '$GLOBALS[\'TYPO3_CONF_VARS\'][\'HTTP\'][\'timeout\']'
+                    '$GLOBALS[\'TYPO3_CONF_VARS\'][\'HTTP\'][\'timeout\']',
                 ]
             )
         );
-        $this->assertEquals(
+        self::assertEquals(
             $GLOBALS['TYPO3_CONF_VARS']['HTTP']['headers']['User-Agent'],
             $guzzleConfig['headers']['User-Agent'],
             vsprintf(
                 $httpSettingsIgnoredMessage,
                 [
-                    '$GLOBALS[\'TYPO3_CONF_VARS\'][\'HTTP\'][\'headers\'][\'User-Agent\']'
+                    '$GLOBALS[\'TYPO3_CONF_VARS\'][\'HTTP\'][\'headers\'][\'User-Agent\']',
                 ]
             )
         );

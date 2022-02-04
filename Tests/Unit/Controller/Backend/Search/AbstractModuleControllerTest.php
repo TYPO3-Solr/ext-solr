@@ -50,7 +50,6 @@ abstract class AbstractModuleControllerTest extends UnitTest
      *
      * @param string $concreteModuleControllerClass
      * @param array $mockMethods
-     * @return void
      */
     protected function setUpConcreteModuleController(
         string $concreteModuleControllerClass,
@@ -66,17 +65,17 @@ abstract class AbstractModuleControllerTest extends UnitTest
                     'siteFinder' => $this->getDumbMock(SiteFinder::class),
                     'solrConnectionManager' => $this->connectionManagerMock = $this->getDumbMock(ConnectionManager::class),
                     'indexQueue' => $this->getDumbMock(Queue::class),
-                ])
+                ]
+            )
             ->onlyMethods($mockMethods)
             ->getMock();
         $uriBuilderMock = $this->getMockBuilder(UriBuilder::class)
             ->disableOriginalConstructor()
             ->onlyMethods(['uriFor'])->getMock();
-        $uriBuilderMock->expects($this->any())
+        $uriBuilderMock->expects(self::any())
             ->method('uriFor')
-            ->will($this->returnValue('index'));
+            ->willReturn('index');
         $this->controller->injectUriBuilder($uriBuilderMock);
         $this->controller->setSelectedSite($this->selectedSiteMock);
     }
-
 }

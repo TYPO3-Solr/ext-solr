@@ -121,7 +121,7 @@ class UrlHelper extends Uri
      * @param string $parameterName
      * @throws \InvalidArgumentException
      * @return UrlHelper
-     * @deprecated Will be removed with v12. Use withoutQueryParameter instead.
+     * @deprecated Will be removed with v12. Use {@link withoutQueryParameter} instead.
      */
     public function removeQueryParameter(string $parameterName): UrlHelper
     {

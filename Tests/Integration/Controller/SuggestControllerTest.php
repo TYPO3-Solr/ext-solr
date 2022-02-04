@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\Controller;
 
 /*
@@ -14,8 +15,8 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Controller;
  * The TYPO3 project - inspiring people to share!
  */
 
-use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageFieldMappingIndexer;
 use ApacheSolrForTypo3\Solr\Controller\SuggestController;
+use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageFieldMappingIndexer;
 use TYPO3\CMS\Core\Http\Response;
 
 /**
@@ -27,7 +28,7 @@ use TYPO3\CMS\Core\Http\Response;
  */
 class SuggestControllerTest extends AbstractFrontendControllerTest
 {
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->addTypoScriptToTemplateRecord(
@@ -50,7 +51,7 @@ class SuggestControllerTest extends AbstractFrontendControllerTest
         $result = (string)($this->executeFrontendSubRequestForSuggestQueryString('Sweat', 'rand')->getBody());
 
         //we assume to get suggestions like Sweatshirt
-        $this->assertStringContainsString('suggestions":{"sweatshirts":2}', $result, 'Response did not contain sweatshirt suggestions');
+        self::assertStringContainsString('suggestions":{"sweatshirts":2}', $result, 'Response did not contain sweatshirt suggestions');
     }
 
     /**
@@ -64,7 +65,7 @@ class SuggestControllerTest extends AbstractFrontendControllerTest
         $result = (string)($this->executeFrontendSubRequestForSuggestQueryString('Sweat')->getBody());
 
         //we assume to get suggestions like Sweatshirt
-        $this->assertStringContainsString('suggestions":{"sweatshirts":2}', $result, 'Response did not contain sweatshirt suggestions');
+        self::assertStringContainsString('suggestions":{"sweatshirts":2}', $result, 'Response did not contain sweatshirt suggestions');
     }
 
     /**
@@ -88,11 +89,11 @@ class SuggestControllerTest extends AbstractFrontendControllerTest
         $testCases = [
             [
                 'prefix' => 'Some/',
-                'expected' => 'suggestions":{"some/":1,"some/larg":1,"some/large/path":1}'
+                'expected' => 'suggestions":{"some/":1,"some/larg":1,"some/large/path":1}',
             ],
             [
                 'prefix' => 'Some/Large',
-                'expected' => 'suggestions":{"some/large/path":1}'
+                'expected' => 'suggestions":{"some/large/path":1}',
             ],
         ];
         foreach ($testCases as $testCase) {
@@ -105,7 +106,7 @@ class SuggestControllerTest extends AbstractFrontendControllerTest
         $result = (string)($this->executeFrontendSubRequestForSuggestQueryString($prefix, 'rand')->getBody());
 
         //we assume to get suggestions like some/large/path
-        $this->assertStringContainsString($expected, $result, 'Response did not contain expected suggestions: ' . $expected);
+        self::assertStringContainsString($expected, $result, 'Response did not contain expected suggestions: ' . $expected);
     }
 
     protected function executeFrontendSubRequestForSuggestQueryString(string $queryString, string $callback = null): Response

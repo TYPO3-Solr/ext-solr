@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\Service;
 
 /***************************************************************
@@ -24,8 +25,8 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\Service;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use ApacheSolrForTypo3\Solr\System\UserFunctions\FlexFormUserFunctions;
+use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 
 /**
  * @author Timo Hund <timo.hund@dkd.de>
@@ -41,18 +42,18 @@ class FlexFormUserFunctionsTest extends UnitTest
         $userFunc = $this->getMockBuilder(FlexFormUserFunctions::class)
             ->onlyMethods(['getFieldNamesFromSolrMetaDataForPage', 'getConfiguredFacetsForPage'])->getMock();
 
-        $userFunc->expects($this->once())->method('getFieldNamesFromSolrMetaDataForPage')->will($this->returnValue(['type', 'pid', 'uid']));
-        $userFunc->expects($this->once())->method('getConfiguredFacetsForPage')->will($this->returnValue([]));
+        $userFunc->expects(self::once())->method('getFieldNamesFromSolrMetaDataForPage')->willReturn(['type', 'pid', 'uid']);
+        $userFunc->expects(self::once())->method('getConfiguredFacetsForPage')->willReturn([]);
 
         $parentInformation = [
             'flexParentDatabaseRow' => [
-                'pid' => 4711
-            ]
+                'pid' => 4711,
+            ],
         ];
 
         $userFunc->getFacetFieldsFromSchema($parentInformation);
-        $this->assertCount(3, $parentInformation['items']);
-        $this->assertEquals(0, $parentInformation['items'][0][0] ?? null);
+        self::assertCount(3, $parentInformation['items']);
+        self::assertEquals(0, $parentInformation['items'][0][0] ?? null);
     }
 
     /**
@@ -62,25 +63,25 @@ class FlexFormUserFunctionsTest extends UnitTest
     {
         /** @var FlexFormUserFunctions $userFunc */
         $userFunc = $this->getMockBuilder(FlexFormUserFunctions::class)
-            ->setMethods(['getFieldNamesFromSolrMetaDataForPage', 'getConfiguredFacetsForPage'])->getMock();
+            ->onlyMethods(['getFieldNamesFromSolrMetaDataForPage', 'getConfiguredFacetsForPage'])->getMock();
 
-        $userFunc->expects($this->once())->method('getFieldNamesFromSolrMetaDataForPage')->will($this->returnValue(['type', 'pid', 'uid']));
-        $userFunc->expects($this->once())->method('getConfiguredFacetsForPage')->will($this->returnValue([
+        $userFunc->expects(self::once())->method('getFieldNamesFromSolrMetaDataForPage')->willReturn(['type', 'pid', 'uid']);
+        $userFunc->expects(self::once())->method('getConfiguredFacetsForPage')->willReturn([
             'myType.' => [
                 'field' => 'type',
-                'label' => 'The type'
-            ]
-        ]));
+                'label' => 'The type',
+            ],
+        ]);
 
         $parentInformation = [
             'flexParentDatabaseRow' => [
-                'pid' => 4711
-            ]
+                'pid' => 4711,
+            ],
         ];
 
         $userFunc->getFacetFieldsFromSchema($parentInformation);
-        $this->assertCount(3, $parentInformation['items']);
-        $this->assertEquals('type (Facet Label: "The type")', $parentInformation['items']['type'][0]);
+        self::assertCount(3, $parentInformation['items']);
+        self::assertEquals('type (Facet Label: "The type")', $parentInformation['items']['type'][0]);
     }
 
     /**
@@ -90,30 +91,31 @@ class FlexFormUserFunctionsTest extends UnitTest
     {
         /** @var FlexFormUserFunctions $flexFormUserFunctionsMock */
         $flexFormUserFunctionsMock = $this->getMockBuilder(FlexFormUserFunctions::class)
-            ->setMethods(['getFieldNamesFromSolrMetaDataForPage', 'getConfiguredFacetsForPage'])->getMock();
-        $flexFormUserFunctionsMock->expects($this->once())->method('getFieldNamesFromSolrMetaDataForPage')
-            ->will($this->returnValue(['some_field', 'someOther_field'])
-        );
+            ->onlyMethods(['getFieldNamesFromSolrMetaDataForPage', 'getConfiguredFacetsForPage'])->getMock();
+        $flexFormUserFunctionsMock->expects(self::once())->method('getFieldNamesFromSolrMetaDataForPage')
+            ->willReturn(
+                ['some_field', 'someOther_field']
+            );
 
-        $flexFormUserFunctionsMock->expects($this->once())->method('getConfiguredFacetsForPage')
-            ->will($this->returnValue([
+        $flexFormUserFunctionsMock->expects(self::once())->method('getConfiguredFacetsForPage')
+            ->willReturn([
                 'someFacet.' => [
                     'field' => 'some_field',
-                    'label' => 'TEXT'
+                    'label' => 'TEXT',
                 ],
                 'someOtherFacet.' => [
                     'field' => 'someOther_field',
-                    'label' => 'TEXT'
-                ]
-            ]));
+                    'label' => 'TEXT',
+                ],
+            ]);
 
         $parentInformation = [
             'flexParentDatabaseRow' => [
-                'pid' => 4711
-            ]
+                'pid' => 4711,
+            ],
         ];
         $flexFormUserFunctionsMock->getFacetFieldsFromSchema($parentInformation);
-        $this->assertCount(2, $parentInformation['items']);
+        self::assertCount(2, $parentInformation['items']);
     }
 
     /**
@@ -123,48 +125,47 @@ class FlexFormUserFunctionsTest extends UnitTest
     {
         /** @var FlexFormUserFunctions $flexFormUserFunctionsMock */
         $flexFormUserFunctionsMock = $this->getMockBuilder(FlexFormUserFunctions::class)
-            ->setMethods(['getFieldNamesFromSolrMetaDataForPage', 'getConfiguredFacetsForPage','getTranslation'])->getMock();
-        $flexFormUserFunctionsMock->expects($this->once())->method('getFieldNamesFromSolrMetaDataForPage')
-            ->will($this->returnValue(['some_field', 'someOther_field', 'someQuiteOther_field', 'uid', 'pid']));
+            ->onlyMethods(['getFieldNamesFromSolrMetaDataForPage', 'getConfiguredFacetsForPage', 'getTranslation'])->getMock();
+        $flexFormUserFunctionsMock->expects(self::once())->method('getFieldNamesFromSolrMetaDataForPage')
+            ->willReturn(['some_field', 'someOther_field', 'someQuiteOther_field', 'uid', 'pid']);
 
-        $flexFormUserFunctionsMock->expects($this->once())->method('getConfiguredFacetsForPage')
-            ->will($this->returnValue([
+        $flexFormUserFunctionsMock->expects(self::once())->method('getConfiguredFacetsForPage')
+            ->willReturn([
                 'someFacet.' => [
                     'field' => 'some_field',
-                    'label' => 'LLL:EXT:some_ext/locallang.xlf:existing_label'
+                    'label' => 'LLL:EXT:some_ext/locallang.xlf:existing_label',
                 ],
                 'someOtherFacet.' => [
                     'field' => 'someOther_field',
-                    'label' => 'LLL:EXT:some_ext/locallang.xlf:not_existing_label'
+                    'label' => 'LLL:EXT:some_ext/locallang.xlf:not_existing_label',
                 ],
                 'someQuiteOtherFacet.' => [
                     'field' => 'someQuiteOther_field',
-                    'label' => 'LLL:EXT:some_ext/locallang.xlf:not_existing_label'
-                ]
-            ]));
+                    'label' => 'LLL:EXT:some_ext/locallang.xlf:not_existing_label',
+                ],
+            ]);
 
-        $flexFormUserFunctionsMock->expects($this->any())->method('getTranslation')->will(
-            $this->returnCallback(function() {
+        $flexFormUserFunctionsMock->expects(self::any())->method('getTranslation')->willReturnCallback(
+            function () {
                 $args = func_get_args();
                 if ($args[0] === 'LLL:EXT:some_ext/locallang.xlf:existing_label') {
                     return 'Translated Facet';
                 }
                 return '';
-            })
+            }
         );
-
 
         $parentInformation = [
             'flexParentDatabaseRow' => [
-                'pid' => 4711
-            ]
+                'pid' => 4711,
+            ],
         ];
         $flexFormUserFunctionsMock->getFacetFieldsFromSchema($parentInformation);
 
-        $this->assertCount(5, $parentInformation['items']);
-        $this->assertEquals('some_field (Facet Label: "Translated Facet")', $parentInformation['items']['some_field'][0]);
-        $this->assertEquals('someOther_field (Facet Label: "LLL:EXT:some_ext/locallang.xlf:not_existing_label")', $parentInformation['items']['someOther_field'][0]);
-        $this->assertEquals('someQuiteOther_field (Facet Label: "LLL:EXT:some_ext/locallang.xlf:not_existing_label")', $parentInformation['items']['someQuiteOther_field'][0]);
+        self::assertCount(5, $parentInformation['items']);
+        self::assertEquals('some_field (Facet Label: "Translated Facet")', $parentInformation['items']['some_field'][0]);
+        self::assertEquals('someOther_field (Facet Label: "LLL:EXT:some_ext/locallang.xlf:not_existing_label")', $parentInformation['items']['someOther_field'][0]);
+        self::assertEquals('someQuiteOther_field (Facet Label: "LLL:EXT:some_ext/locallang.xlf:not_existing_label")', $parentInformation['items']['someQuiteOther_field'][0]);
     }
 
     /**
@@ -174,27 +175,27 @@ class FlexFormUserFunctionsTest extends UnitTest
     {
         /** @var FlexFormUserFunctions $flexFormUserFunctionsMock */
         $flexFormUserFunctionsMock = $this->getMockBuilder(FlexFormUserFunctions::class)
-            ->setMethods(['getFieldNamesFromSolrMetaDataForPage', 'getConfiguredFacetsForPage'])->getMock();
-        $flexFormUserFunctionsMock->expects($this->once())->method('getFieldNamesFromSolrMetaDataForPage')
-            ->will($this->returnValue(['some_field', 'someOther_field', 'someQuiteOther_field']));
+            ->onlyMethods(['getFieldNamesFromSolrMetaDataForPage', 'getConfiguredFacetsForPage'])->getMock();
+        $flexFormUserFunctionsMock->expects(self::once())->method('getFieldNamesFromSolrMetaDataForPage')
+            ->willReturn(['some_field', 'someOther_field', 'someQuiteOther_field']);
 
-        $flexFormUserFunctionsMock->expects($this->once())->method('getConfiguredFacetsForPage')
-            ->will($this->returnValue([
+        $flexFormUserFunctionsMock->expects(self::once())->method('getConfiguredFacetsForPage')
+            ->willReturn([
                 'someFacet.' => [
                     'field' => 'some_field',
                     'label' => 'TEXT',
-                    'label.' => 'LLL:EXT:some_ext/locallang.xlf:existing_label'
-                ]
-            ]));
+                    'label.' => 'LLL:EXT:some_ext/locallang.xlf:existing_label',
+                ],
+            ]);
         $parentInformation = [
             'flexParentDatabaseRow' => [
-                'pid' => 4711
-            ]
+                'pid' => 4711,
+            ],
         ];
         $flexFormUserFunctionsMock->getFacetFieldsFromSchema($parentInformation);
 
-        $this->assertCount(3, $parentInformation['items']);
-        $this->assertEquals('some_field (Facet Label: "cObject[...faceting.facets.someFacet.label]")', $parentInformation['items']['some_field'][0]);
+        self::assertCount(3, $parentInformation['items']);
+        self::assertEquals('some_field (Facet Label: "cObject[...faceting.facets.someFacet.label]")', $parentInformation['items']['some_field'][0]);
     }
 
     /**
@@ -204,21 +205,21 @@ class FlexFormUserFunctionsTest extends UnitTest
     {
         /** @var FlexFormUserFunctions $userFunc */
         $userFunc = $this->getMockBuilder(FlexFormUserFunctions::class)
-            ->setMethods(['getConfiguredFacetsForPage'])->getMock();
+            ->onlyMethods(['getConfiguredFacetsForPage'])->getMock();
 
-        $userFunc->expects($this->once())->method('getConfiguredFacetsForPage')->will($this->returnValue([
+        $userFunc->expects(self::once())->method('getConfiguredFacetsForPage')->willReturn([
             'myType.' => [
                 'field' => 'type',
-                'label' => 'The type'
-            ]
-        ]));
+                'label' => 'The type',
+            ],
+        ]);
 
         $parentInformation = [
-            'flexParentDatabaseRow' => null
+            'flexParentDatabaseRow' => null,
         ];
 
         $userFunc->getFacetFieldsFromSchema($parentInformation);
-        $this->assertCount(0, $parentInformation['items']);
+        self::assertCount(0, $parentInformation['items']);
     }
 
     /**
@@ -228,31 +229,30 @@ class FlexFormUserFunctionsTest extends UnitTest
     {
         /** @var FlexFormUserFunctions $userFunc */
         $userFunc = $this->getMockBuilder(FlexFormUserFunctions::class)
-            ->setMethods([
+            ->onlyMethods([
                 'getAvailableTemplateFromTypoScriptConfiguration',
-                'getConfigurationFromPageId'
+                'getConfigurationFromPageId',
             ])->getMock();
 
-        $userFunc->expects($this->once())->method('getAvailableTemplateFromTypoScriptConfiguration')
+        $userFunc->expects(self::once())->method('getAvailableTemplateFromTypoScriptConfiguration')
             ->with(4711, 'results')
-            ->will($this->returnValue([
+            ->willReturn([
             'myTemplate.' => [
                 'label' => 'MyCustomTemplate',
-                'file' => 'Results'
-            ]
-        ]));
+                'file' => 'Results',
+            ],
+        ]);
 
         $parentInformation = [
             'flexParentDatabaseRow' => [
                 'pid' => 4711,
             ],
-            'field' => 'view.templateFiles.results'
+            'field' => 'view.templateFiles.results',
         ];
 
         $userFunc->getAvailableTemplates($parentInformation);
 
         // we expect to get to options, the configured option and a default reset option
-        $this->assertCount(2, $parentInformation['items']);
+        self::assertCount(2, $parentInformation['items']);
     }
-
 }

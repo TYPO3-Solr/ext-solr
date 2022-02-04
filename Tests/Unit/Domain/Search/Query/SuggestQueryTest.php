@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\Query;
 
 /***************************************************************
@@ -24,12 +25,9 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\Query;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\Helper\EscapeService;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\SuggestQuery;
-use ApacheSolrForTypo3\Solr\Domain\Site\SiteHashService;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
-use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 
 /**
@@ -46,14 +44,14 @@ class SuggestQueryTest extends UnitTest
     {
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['variants'] = 1;
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['variants.'] = [
-            'variantField' => 'myField'
+            'variantField' => 'myField',
         ];
 
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
         $queryBuilder = new QueryBuilder($fakeConfiguration);
         $suggestQuery = $queryBuilder->newSuggestQuery('type')->getQuery();
 
-        $this->assertNull($suggestQuery->getFilterQuery('fieldCollapsing'), 'Collapsing should never be active for a suggest query, even when active');
+        self::assertNull($suggestQuery->getFilterQuery('fieldCollapsing'), 'Collapsing should never be active for a suggest query, even when active');
     }
 
     /**
@@ -67,6 +65,6 @@ class SuggestQueryTest extends UnitTest
         $queryBuilder = new QueryBuilder($fakeConfiguration);
         $queryBuilder->startFrom($suggestQuery)->useFilter('+type:pages');
         $queryParameters = $suggestQuery->getRequestBuilder()->build($suggestQuery)->getParams();
-        $this->assertSame('+type:pages', $queryParameters['fq'], 'Filter was not added to the suggest query parameters');
+        self::assertSame('+type:pages', $queryParameters['fq'], 'Filter was not added to the suggest query parameters');
     }
 }

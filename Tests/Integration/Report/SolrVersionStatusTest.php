@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\Report;
 
 /***************************************************************
@@ -35,10 +36,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class SolrVersionStatusTest extends IntegrationTest
 {
-    /**
-     * @return void
-     */
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->writeDefaultSolrTestSiteConfiguration();
@@ -54,6 +52,6 @@ class SolrVersionStatusTest extends IntegrationTest
         /** @var $solrVersionStatus  SolrVersionStatus */
         $solrVersionStatus = GeneralUtility::makeInstance(SolrVersionStatus::class);
         $violations = $solrVersionStatus->getStatus();
-        $this->assertEmpty($violations, 'We expect to get no violations against the test solr server');
+        self::assertEmpty($violations, 'We expect to get no violations against the test solr server');
     }
 }

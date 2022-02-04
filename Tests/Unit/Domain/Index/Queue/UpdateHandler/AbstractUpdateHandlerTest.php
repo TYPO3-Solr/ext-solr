@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\IndexQueue\UpdateHandler;
 
 /***************************************************************
@@ -24,16 +25,16 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\IndexQueue\UpdateHandler;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use PHPUnit\Framework\MockObject\MockObject;
-use TYPO3\CMS\Core\Database\QueryGenerator;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
-use ApacheSolrForTypo3\Solr\System\TCA\TCAService;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\ConfigurationAwareRecordService;
 use ApacheSolrForTypo3\Solr\FrontendEnvironment;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
+use ApacheSolrForTypo3\Solr\System\TCA\TCAService;
+use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use PHPUnit\Framework\MockObject\MockObject;
+use TYPO3\CMS\Core\Database\QueryGenerator;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Abstract testcase for the update handlers
@@ -77,7 +78,7 @@ abstract class AbstractUpdateHandlerTest extends UnitTest
      */
     protected $pagesRepositoryMock;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->recordServiceMock = $this->createMock(ConfigurationAwareRecordService::class);
         $this->frontendEnvironmentMock = $this->createMock(FrontendEnvironment::class);
@@ -87,18 +88,20 @@ abstract class AbstractUpdateHandlerTest extends UnitTest
 
         $this->typoScriptConfigurationMock = $this->createMock(TypoScriptConfiguration::class);
         $this->frontendEnvironmentMock
-            ->expects($this->any())
+            ->expects(self::any())
             ->method('getSolrConfigurationFromPageId')
             ->willReturn($this->typoScriptConfigurationMock);
 
         $this->queryGeneratorMock = $this->createMock(QueryGenerator::class);
 
         GeneralUtility::addInstance(QueryGenerator::class, $this->queryGeneratorMock);
+        parent::setUp();
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         GeneralUtility::purgeInstances();
         unset($GLOBALS['TCA']);
+        parent::tearDown();
     }
 }

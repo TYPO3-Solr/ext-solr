@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\Controller;
 
 /*
@@ -27,16 +28,14 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Exception as TestingFrameworkCoreException;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 
-
-abstract class AbstractFrontendControllerTest  extends IntegrationTest
+abstract class AbstractFrontendControllerTest extends IntegrationTest
 {
     /**
-     * @return void
      * @throws NoSuchCacheException
      * @throws DBALException
      * @throws TestingFrameworkCoreException
      */
-    public function setUp(): void
+    protected function setUp(): void
     {
         $_SERVER['HTTP_HOST'] = 'testone.site';
         $_SERVER['REQUEST_URI'] = '/en/search/';
@@ -46,9 +45,9 @@ abstract class AbstractFrontendControllerTest  extends IntegrationTest
     }
 
     /**
-     * Executed after each test. Emptys solr and checks if the index is empty
+     * Executed after each test. Empties solr and checks if the index is empty
      */
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         $this->cleanUpSolrServerAndAssertEmpty();
         parent::tearDown();
@@ -91,7 +90,6 @@ abstract class AbstractFrontendControllerTest  extends IntegrationTest
     {
         return (new InternalRequest('http://testone.site/'))->withPageId($pageId);
     }
-
 
     /**
      * @return Response

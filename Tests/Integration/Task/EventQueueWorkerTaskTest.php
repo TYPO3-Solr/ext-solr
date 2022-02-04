@@ -26,14 +26,14 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Task;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
-use TYPO3\CMS\Scheduler\Scheduler;
-use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
-use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
-use ApacheSolrForTypo3\Solr\Task\EventQueueWorkerTask;
-use ApacheSolrForTypo3\Solr\System\Records\Queue\EventQueueItemRepository;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordUpdatedEvent;
+use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
+use ApacheSolrForTypo3\Solr\System\Records\Queue\EventQueueItemRepository;
+use ApacheSolrForTypo3\Solr\Task\EventQueueWorkerTask;
+use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Scheduler\Scheduler;
 
 /**
  * Test case to check if the scheduler task EventQueueWorkerTask can process
@@ -48,7 +48,7 @@ class EventQueueWorkerTaskTest extends IntegrationTest
      */
     protected $coreExtensionsToLoad = [
         'extensionmanager',
-        'scheduler'
+        'scheduler',
     ];
 
     /**
@@ -61,7 +61,7 @@ class EventQueueWorkerTaskTest extends IntegrationTest
      */
     protected $indexQueue;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->writeDefaultSolrTestSiteConfiguration();
@@ -73,7 +73,7 @@ class EventQueueWorkerTaskTest extends IntegrationTest
         $extConf->set('solr', ['monitoringType' => 1]);
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         unset($this->indexQueue);
         unset($this->eventQueue);
@@ -96,8 +96,8 @@ class EventQueueWorkerTaskTest extends IntegrationTest
         $scheduler = GeneralUtility::makeInstance(Scheduler::class);
         $scheduler->executeTask($task);
 
-        $this->assertEquals(1, $this->indexQueue->getAllItemsCount());
-        $this->assertEmpty($this->eventQueue->getEventQueueItems(null, false));
+        self::assertEquals(1, $this->indexQueue->getAllItemsCount());
+        self::assertEmpty($this->eventQueue->getEventQueueItems(null, false));
     }
 
     /**
@@ -114,11 +114,11 @@ class EventQueueWorkerTaskTest extends IntegrationTest
         $scheduler = GeneralUtility::makeInstance(Scheduler::class);
         $scheduler->executeTask($task);
 
-        $this->assertEquals(0, $this->indexQueue->getAllItemsCount());
-        $this->assertEmpty($this->eventQueue->getEventQueueItems());
+        self::assertEquals(0, $this->indexQueue->getAllItemsCount());
+        self::assertEmpty($this->eventQueue->getEventQueueItems());
         $queueItems = $this->eventQueue->getEventQueueItems(null, false);
-        $this->assertEquals(1, count($queueItems));
-        $this->assertEquals(1, $queueItems[0]['error']);
-        $this->assertNotEmpty($queueItems[0]['error_message']);
+        self::assertEquals(1, count($queueItems));
+        self::assertEquals(1, $queueItems[0]['error']);
+        self::assertNotEmpty($queueItems[0]['error_message']);
     }
 }

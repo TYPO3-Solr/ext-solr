@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\ViewHelpers\Facet\Area;
 
 /***************************************************************
@@ -24,10 +25,10 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\ViewHelpers\Facet\Area;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\FacetCollection;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\OptionsFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
+use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use ApacheSolrForTypo3\Solr\ViewHelpers\Facet\Area\GroupViewHelper;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\Variables\StandardVariableProvider;
@@ -44,24 +45,23 @@ class GroupViewHelperTest extends UnitTest
     {
         $facetCollection = $this->getTestFacetCollection();
 
-        $variableContainer = $this->getMockBuilder(StandardVariableProvider::class)->setMethods(['remove'])->getMock();
+        $variableContainer = $this->getMockBuilder(StandardVariableProvider::class)->onlyMethods(['remove'])->getMock();
         $renderingContextMock = $this->getDumbMock(RenderingContextInterface::class);
-        $renderingContextMock->expects($this->any())->method('getVariableProvider')->will($this->returnValue($variableContainer));
+        $renderingContextMock->expects(self::any())->method('getVariableProvider')->willReturn($variableContainer);
 
         $testArguments['facets'] = $facetCollection;
         $testArguments['groupName'] = 'left';
 
         GroupViewHelper::renderStatic($testArguments, function () {}, $renderingContextMock);
-        $this->assertTrue($variableContainer->exists('areaFacets'), 'Expected that filteredFacets has been set');
+        self::assertTrue($variableContainer->exists('areaFacets'), 'Expected that filteredFacets has been set');
 
-            /** @var  $facetCollection FacetCollection */
+        /** @var  $facetCollection FacetCollection */
         $facetCollection = $variableContainer->get('areaFacets');
-        $this->assertEquals(2, $facetCollection->getCount());
+        self::assertEquals(2, $facetCollection->getCount());
 
         $facetKeys = array_keys($facetCollection->getArrayCopy());
-        $this->assertEquals(['color', 'brand'], $facetKeys);
+        self::assertEquals(['color', 'brand'], $facetKeys);
     }
-
 
     /**
      * @test
@@ -70,23 +70,23 @@ class GroupViewHelperTest extends UnitTest
     {
         $facetCollection = $this->getTestFacetCollection();
 
-        $variableContainer = $this->getMockBuilder(StandardVariableProvider::class)->setMethods(['remove'])->getMock();
+        $variableContainer = $this->getMockBuilder(StandardVariableProvider::class)->onlyMethods(['remove'])->getMock();
         $renderingContextMock = $this->getDumbMock(RenderingContextInterface::class);
-        $renderingContextMock->expects($this->any())->method('getVariableProvider')->will($this->returnValue($variableContainer));
+        $renderingContextMock->expects(self::any())->method('getVariableProvider')->willReturn($variableContainer);
 
-        $viewHelper = $this->getMockBuilder(GroupViewHelper::class)->setMethods(['renderChildren'])->getMock();
+        $viewHelper = $this->getMockBuilder(GroupViewHelper::class)->onlyMethods(['renderChildren'])->getMock();
         $viewHelper->setRenderingContext($renderingContextMock);
         $viewHelper->setArguments(['facets' => $facetCollection, 'groupName' => 'left']);
         $viewHelper->render();
 
-        $this->assertTrue($variableContainer->exists('areaFacets'), 'Expected that filteredFacets has been set');
+        self::assertTrue($variableContainer->exists('areaFacets'), 'Expected that filteredFacets has been set');
 
         /** @var  $facetCollection FacetCollection */
         $facetCollection = $variableContainer->get('areaFacets');
-        $this->assertEquals(2, $facetCollection->getCount());
+        self::assertEquals(2, $facetCollection->getCount());
 
         $facetKeys = array_keys($facetCollection->getArrayCopy());
-        $this->assertEquals(['color', 'brand'], $facetKeys);
+        self::assertEquals(['color', 'brand'], $facetKeys);
     }
 
     /**
