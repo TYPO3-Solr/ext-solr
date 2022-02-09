@@ -113,7 +113,7 @@ Apache Solr 8.9.0 support
 With EXT:solr 11.1 we support Apache Solr 8.9.0, the latest release of Apache Solr.
 
 To see what has changed in Apache Solr please read the release notes of Apache Solr:
-https://solr.apache.org/docs/8_8_2/changes/Changes.html
+https://solr.apache.org/docs/8_9_0/changes/Changes.html
 
 Map managed resources to core-name
 ----------------------------------
