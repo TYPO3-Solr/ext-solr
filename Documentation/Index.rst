@@ -1,4 +1,4 @@
-﻿.. ==================================================
+.. ==================================================
 .. FOR YOUR INFORMATION
 .. --------------------------------------------------
 .. -*- coding: utf-8 -*- with BOM.
@@ -7,9 +7,9 @@
 
 .. _start:
 
-================================
-Apache Solr for TYPO3 (EXT:solr)
-================================
+===========================================================
+Apache Solr for TYPO3 (EXT:solr 11.1) - no longer supported
+===========================================================
 
 .. only:: html
 
@@ -17,7 +17,7 @@ Apache Solr for TYPO3 (EXT:solr)
 		solr
 
 	:Version:
-		11.1.2
+		11.1.3
 
 	:Language:
 		en
@@ -29,8 +29,7 @@ Apache Solr for TYPO3 (EXT:solr)
 		search, full text, index, solr, lucene, fast, query, results
 
 	:Copyright:
-		2009-2019
-		2009-2019
+		2009-2022
 
 	:Author:
 		Ingo Renner, Markus Friedrich, Rafael Kähm, Timo Hund
@@ -47,6 +46,12 @@ Apache Solr for TYPO3 (EXT:solr)
 
 	The content of this document is related to TYPO3,
 	a GNU/GPL CMS/Framework available from `typo3.org <http://www.typo3.org/>`_.
+
+
+.. warning::
+
+  EXT:solr 11.1.x is no longer supported, please update to EXT:solr 11.2.x
+  or even EXT:solr 11.5.
 
 
 	**Table of Contents**
