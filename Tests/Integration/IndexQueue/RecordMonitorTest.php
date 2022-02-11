@@ -288,6 +288,7 @@ class RecordMonitorTest extends IntegrationTest
         $this->importDataSetFromFixture('new_non_pages_record_is_using_correct_configuration_name.xml');
         $this->addTypoScriptToTemplateRecord(
             1,
+            /* @lang TYPO3_TypoScript */
             '
             plugin.tx_solr.index {
                 queue {
@@ -563,6 +564,7 @@ class RecordMonitorTest extends IntegrationTest
         $this->importDataSetFromFixture('exception_is_triggered_without_pid.xml');
         $this->addTypoScriptToTemplateRecord(
             1,
+            /* @lang TYPO3_TypoScript */
             '
             plugin.tx_solr.index {
                 queue {
@@ -657,6 +659,7 @@ class RecordMonitorTest extends IntegrationTest
         $this->importDataSetFromFixture('can_use_correct_indexing_configuration_for_a_new_custom_page_type_record.xml');
         $this->addTypoScriptToTemplateRecord(
             1,
+            /* @lang TYPO3_TypoScript */
             '
             plugin.tx_solr.index.queue {
                 pages {
@@ -775,6 +778,7 @@ class RecordMonitorTest extends IntegrationTest
         $this->importDataSetFromFixture('can_use_correct_indexing_configuration_for_a_new_custom_page_type_record.xml');
         $this->addTypoScriptToTemplateRecord(
             1,
+            /* @lang TYPO3_TypoScript */
             '
              plugin.tx_solr.index.queue {
                 custom_page_type = 1
@@ -1136,6 +1140,7 @@ class RecordMonitorTest extends IntegrationTest
         $this->importDataSetFromFixture('update_page_with_recursive_update_fields_configured.xml');
         $this->addTypoScriptToTemplateRecord(
             1,
+            /* @lang TYPO3_TypoScript */
             'plugin.tx_solr.index.queue.pages.recursiveUpdateFields = title'
         );
         $this->assertEmptyIndexQueue();
@@ -1164,6 +1169,7 @@ class RecordMonitorTest extends IntegrationTest
         $this->importDataSetFromFixture('update_page_with_recursive_update_fields_configured.xml');
         $this->addTypoScriptToTemplateRecord(
             1,
+            /* @lang TYPO3_TypoScript */
             'plugin.tx_solr.index.queue.pages.recursiveUpdateFields = title'
         );
         $this->assertEmptyIndexQueue();
@@ -1221,6 +1227,7 @@ class RecordMonitorTest extends IntegrationTest
         $this->importDataSetFromFixture('update_page_with_recursive_update_fields_configured.xml');
         $this->addTypoScriptToTemplateRecord(
             1,
+            /* @lang TYPO3_TypoScript */
             'plugin.tx_solr.index.queue.pages.recursiveUpdateFields = title'
         );
         $this->assertEmptyIndexQueue();
@@ -1276,6 +1283,7 @@ class RecordMonitorTest extends IntegrationTest
         $this->importDataSetFromFixture('update_page_with_recursive_update_fields_configured.xml');
         $this->addTypoScriptToTemplateRecord(
             1,
+            /* @lang TYPO3_TypoScript */
             'plugin.tx_solr.index.queue.pages.recursiveUpdateFields = doktype'
         );
         $this->assertEmptyIndexQueue();
@@ -1304,6 +1312,7 @@ class RecordMonitorTest extends IntegrationTest
         $this->importDataSetFromFixture('update_page_with_recursive_update_fields_configured.xml');
         $this->addTypoScriptToTemplateRecord(
             1,
+            /* @lang TYPO3_TypoScript */
             'plugin.tx_solr.index.queue.pages.recursiveUpdateFields = doktype'
         );
         $this->assertEmptyIndexQueue();
@@ -1334,6 +1343,7 @@ class RecordMonitorTest extends IntegrationTest
         $this->importDataSetFromFixture('update_page_with_recursive_update_fields_configured.xml');
         $this->addTypoScriptToTemplateRecord(
             1,
+            /* @lang TYPO3_TypoScript */
             'plugin.tx_solr.index.queue.pages.recursiveUpdateFields = doktype'
         );
         $this->assertEmptyIndexQueue();
@@ -1530,6 +1540,7 @@ class RecordMonitorTest extends IntegrationTest
         $this->importDataSetFromFixture('update_record_outside_siteroot_with_additionalWhereClause.xml');
         $this->addTypoScriptToTemplateRecord(
             1,
+            /* @lang TYPO3_TypoScript */
             '
             plugin.tx_solr.index.queue {
                 foo = 1
@@ -1543,6 +1554,7 @@ class RecordMonitorTest extends IntegrationTest
         );
         $this->addTypoScriptToTemplateRecord(
             111,
+            /* @lang TYPO3_TypoScript */
             '
             plugin.tx_solr.index.queue {
                 foo = 1
@@ -1578,6 +1590,7 @@ class RecordMonitorTest extends IntegrationTest
         $this->importDataSetFromFixture('update_record_outside_siteroot.xml');
         $this->addTypoScriptToTemplateRecord(
             1,
+            /* @lang TYPO3_TypoScript */
             '
             plugin.tx_solr.index.queue {
                 foo = 1
@@ -1647,6 +1660,7 @@ class RecordMonitorTest extends IntegrationTest
         $this->importDataSetFromFixture('update_record_outside_siteroot_from_two_sites.xml');
         $this->addTypoScriptToTemplateRecord(
             1,
+            /* @lang TYPO3_TypoScript */
             '
             plugin.tx_solr.index.queue {
                 foo = 1
@@ -1661,6 +1675,7 @@ class RecordMonitorTest extends IntegrationTest
         );
         $this->addTypoScriptToTemplateRecord(
             111,
+            /* @lang TYPO3_TypoScript */
             '
             plugin.tx_solr.index.queue {
                 foo = 1
@@ -1700,6 +1715,7 @@ class RecordMonitorTest extends IntegrationTest
         $this->importDataSetFromFixture('update_record_outside_siteroot_from_other_siteroot.xml');
         $this->addTypoScriptToTemplateRecord(
             1,
+            /* @lang TYPO3_TypoScript */
             '
             plugin.tx_solr.index.queue {
                 foo = 1
@@ -1712,6 +1728,7 @@ class RecordMonitorTest extends IntegrationTest
         );
         $this->addTypoScriptToTemplateRecord(
             111,
+            /* @lang TYPO3_TypoScript */
             '
             plugin.tx_solr.index.queue {
                 foo = 1

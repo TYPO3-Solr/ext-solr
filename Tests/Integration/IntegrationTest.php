@@ -284,12 +284,13 @@ abstract class IntegrationTest extends FunctionalTestCase
 
     /**
      * @param string|null $coreName
+     * @return array|false
      */
     protected function waitToBeVisibleInSolr(?string $coreName = 'core_en')
     {
         $this->validateTestCoreName($coreName);
         $url = $this->getSolrConnectionUriAuthority() . '/solr/' . $coreName . '/update?softCommit=true';
-        get_headers($url);
+        return get_headers($url);
     }
 
     /**
@@ -475,7 +476,7 @@ abstract class IntegrationTest extends FunctionalTestCase
     /**
      * @var string
      */
-    protected static $lastSiteCreated = '';
+    protected static string $lastSiteCreated = '';
 
     /**
      * @param string|null $scheme
