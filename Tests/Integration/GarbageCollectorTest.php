@@ -799,7 +799,9 @@ class GarbageCollectorTest extends IntegrationTest
 
         $this->addTypoScriptToTemplateRecord(
             1,
-            'plugin.tx_solr.index.queue {
+            /* @lang TYPO3_TypoScript */
+            '
+            plugin.tx_solr.index.queue {
                 foo = 1
                 foo {
                     table = tx_fakeextension_domain_model_foo

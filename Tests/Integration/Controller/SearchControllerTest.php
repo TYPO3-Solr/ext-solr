@@ -65,6 +65,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $this->importDataSetFromFixture('default_search_results_plugin.xml');
         $this->addTypoScriptToTemplateRecord(
             1,
+            /* @lang TYPO3_TypoScript */
             '
             [page["uid"] == 2022]
             page.10 = RECORDS
@@ -128,6 +129,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $this->importDataSetFromFixture('SearchAndSuggestControllerTest_indexing_data.xml');
         $this->addTypoScriptToTemplateRecord(
             1,
+            /* @lang TYPO3_TypoScript */
             '
             plugin.tx_solr.search.results.resultsPerPageSwitchOptions = 5, 10, 25, 50
             plugin.tx_solr.search.results.resultsPerPage = 5'
@@ -179,6 +181,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $this->importDataSetFromFixture('SearchAndSuggestControllerTest_indexing_data.xml');
         $this->addTypoScriptToTemplateRecord(
             1,
+            /* @lang TYPO3_TypoScript */
             '
             plugin.tx_solr.search.spellchecking = 1
             '
@@ -205,6 +208,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $this->importDataSetFromFixture('SearchAndSuggestControllerTest_indexing_data.xml');
         $this->addTypoScriptToTemplateRecord(
             1,
+            /* @lang TYPO3_TypoScript */
             '
             plugin.tx_solr.search.spellchecking = 1
             plugin.tx_solr.search.spellchecking {
@@ -236,6 +240,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
 
         $this->addTypoScriptToTemplateRecord(
             1,
+            /* @lang TYPO3_TypoScript */
             '
             plugin.tx_solr.search.faceting = 1
             plugin.tx_solr.search.faceting.facets.type {
@@ -271,6 +276,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $this->importDataSetFromFixture('SearchAndSuggestControllerTest_indexing_data.xml');
         $this->addTypoScriptToTemplateRecord(
             1,
+            /* @lang TYPO3_TypoScript */
             '
             plugin.tx_solr.search {
                 initializeWithEmptyQuery = 1
@@ -301,6 +307,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $this->importDataSetFromFixture('SearchAndSuggestControllerTest_indexing_data.xml');
         $this->addTypoScriptToTemplateRecord(
             1,
+            /* @lang TYPO3_TypoScript */
             '
             plugin.tx_solr.search {
                 initializeWithEmptyQuery = 1
@@ -333,6 +340,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $this->importDataSetFromFixture('SearchAndSuggestControllerTest_indexing_data.xml');
         $this->addTypoScriptToTemplateRecord(
             1,
+            /* @lang TYPO3_TypoScript */
             '
             plugin.tx_solr.search {
                 initializeWithQuery = product
@@ -363,6 +371,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $this->importDataSetFromFixture('SearchAndSuggestControllerTest_indexing_data.xml');
         $this->addTypoScriptToTemplateRecord(
             1,
+            /* @lang TYPO3_TypoScript */
             '
             plugin.tx_solr.search {
                 initializeWithQuery = product
@@ -393,6 +402,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $this->importDataSetFromFixture('SearchAndSuggestControllerTest_indexing_data.xml');
         $this->addTypoScriptToTemplateRecord(
             1,
+            /* @lang TYPO3_TypoScript */
             '
             plugin.tx_solr.search {
                 faceting = 1
@@ -425,6 +435,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $this->importDataSetFromFixture('SearchAndSuggestControllerTest_indexing_data.xml');
         $this->addTypoScriptToTemplateRecord(
             1,
+            /* @lang TYPO3_TypoScript */
             '
             plugin.tx_solr.search {
                 faceting = 1
@@ -456,6 +467,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $this->importDataSetFromFixture('SearchAndSuggestControllerTest_indexing_data.xml');
         $this->addTypoScriptToTemplateRecord(
             1,
+            /* @lang TYPO3_TypoScript */
             '
             plugin.tx_solr.search.query.filter.__pageSections = 2,3
             '
@@ -486,6 +498,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $this->importDataSetFromFixture('SearchAndSuggestControllerTest_indexing_data.xml');
         $this->addTypoScriptToTemplateRecord(
             1,
+            /* @lang TYPO3_TypoScript */
             '
             plugin.tx_solr.search {
                 faceting = 1
@@ -536,6 +549,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $this->importDataSetFromFixture('SearchAndSuggestControllerTest_indexing_data.xml');
         $this->addTypoScriptToTemplateRecord(
             1,
+            /* @lang TYPO3_TypoScript */
             '
             plugin.tx_solr.search {
                 faceting = 1
@@ -592,6 +606,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $this->importDataSetFromFixture('SearchAndSuggestControllerTest_indexing_data.xml');
         $this->addTypoScriptToTemplateRecord(
             1,
+            /* @lang TYPO3_TypoScript */
             '
             plugin.tx_solr.search {
                 faceting = 1
@@ -647,6 +662,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $this->importDataSetFromFixture('SearchAndSuggestControllerTest_indexing_data.xml');
         $this->addTypoScriptToTemplateRecord(
             1,
+            /* @lang TYPO3_TypoScript */
             '
             plugin.tx_solr.search {
                 faceting = 1
@@ -705,7 +721,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
     {
         $this->addTypoScriptToTemplateRecord(
             1,
-            /* @lang typoScript */
+            /* @lang TYPO3_TypoScript */
             '
             plugin.tx_solr.search {
                 faceting = 1
@@ -790,7 +806,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
 
         $this->addTypoScriptToTemplateRecord(
             1,
-            /* @lang typoScript */
+            /* @lang TYPO3_TypoScript */
             '
             plugin.tx_solr {
                 index {
@@ -841,7 +857,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $this->importDataSetFromFixture('SearchAndSuggestControllerTest_indexing_data.xml');
         $this->addTypoScriptToTemplateRecord(
             1,
-            /* @lang typoScript */
+            /* @lang TYPO3_TypoScript */
             '
             plugin.tx_solr.search.faceting = 1
             plugin.tx_solr.search.faceting.facets.subtitle {
@@ -896,7 +912,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $this->importDataSetFromFixture('SearchAndSuggestControllerTest_indexing_data.xml');
         $this->addTypoScriptToTemplateRecord(
             1,
-            /* @lang typoScript */
+            /* @lang TYPO3_TypoScript */
             '
             plugin.tx_solr.enableDebugMode = 1
             '
@@ -974,7 +990,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $this->importDataSetFromFixture('SearchAndSuggestControllerTest_indexing_data.xml');
         $this->addTypoScriptToTemplateRecord(
             1,
-            /* @lang typoScript */
+            /* @lang TYPO3_TypoScript */
             '
             plugin.tx_solr.search.lastSearches = 1
             plugin.tx_solr.search.lastSearches {
@@ -1007,7 +1023,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $this->importDataSetFromFixture('SearchAndSuggestControllerTest_indexing_data.xml');
         $this->addTypoScriptToTemplateRecord(
             1,
-            /* @lang typoScript */
+            /* @lang TYPO3_TypoScript */
             '
             plugin.tx_solr.search.lastSearches = 1
             plugin.tx_solr.search.lastSearches {
@@ -1039,7 +1055,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $this->importDataSetFromFixture('SearchAndSuggestControllerTest_indexing_data.xml');
         $this->addTypoScriptToTemplateRecord(
             1,
-            /* @lang typoScript */
+            /* @lang TYPO3_TypoScript */
             '
             plugin.tx_solr.search.lastSearches = 1
             plugin.tx_solr.search.lastSearches {
@@ -1097,7 +1113,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $this->importDataSetFromFixture('SearchAndSuggestControllerTest_indexing_data.xml');
         $this->addTypoScriptToTemplateRecord(
             1,
-            /* @lang typoScript */
+            /* @lang TYPO3_TypoScript */
             '
             plugin.tx_solr.search.faceting = 1
             plugin.tx_solr.search.faceting.facets.myCreatedFacet {
@@ -1127,7 +1143,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $this->importDataSetFromFixture('SearchAndSuggestControllerTest_indexing_data.xml');
         $this->addTypoScriptToTemplateRecord(
             1,
-            /* @lang typoScript */
+            /* @lang TYPO3_TypoScript */
             '
             plugin.tx_solr.search.faceting = 1
             plugin.tx_solr.search.faceting.facets {
@@ -1165,7 +1181,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
 
         $this->addTypoScriptToTemplateRecord(
             1,
-            /* @lang typoScript */
+            /* @lang TYPO3_TypoScript */
             '
             plugin.tx_solr.search.faceting = 1
             plugin.tx_solr.search.faceting.facets {
@@ -1279,7 +1295,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
     {
         $this->addTypoScriptToTemplateRecord(
             1,
-            /* @lang typoScript */
+            /* @lang TYPO3_TypoScript */
             '
             plugin.tx_solr.view {
                 templateRootPaths.20 = EXT:solr/Tests/Integration/Controller/Fixtures/customTemplates/
@@ -1306,7 +1322,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
     {
         $this->addTypoScriptConstantsToTemplateRecord(
             1,
-            /* @lang typoScript */
+            /* @lang TYPO3_TypoScript */
             '
             plugin.tx_solr.view {
                 templateRootPath = EXT:solr/Tests/Integration/Controller/Fixtures/customTemplates/
@@ -1331,7 +1347,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
     {
         $this->addTypoScriptToTemplateRecord(
             1,
-            /* @lang typoScript */
+            /* @lang TYPO3_TypoScript */
             '
             plugin.tx_solr {
                 settings.foo.bar = mytestsetting
@@ -1360,7 +1376,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
     {
         $this->addTypoScriptToTemplateRecord(
             1,
-            /* @lang typoScript */
+            /* @lang TYPO3_TypoScript */
             '
             plugin.tx_solr.view.templateFiles {
                 results = EXT:solr/Tests/Integration/Controller/Fixtures/customTemplates/Search/MyResults.html

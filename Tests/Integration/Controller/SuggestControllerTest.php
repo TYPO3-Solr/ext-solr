@@ -33,6 +33,7 @@ class SuggestControllerTest extends AbstractFrontendControllerTest
         parent::setUp();
         $this->addTypoScriptToTemplateRecord(
             1,
+            /* @lang TYPO3_TypoScript */
             '
             @import \'EXT:solr/Configuration/TypoScript/Examples/Suggest/setup.typoscript\'
             '
@@ -77,6 +78,7 @@ class SuggestControllerTest extends AbstractFrontendControllerTest
 
         $this->addTypoScriptToTemplateRecord(
             1,
+            /* @lang TYPO3_TypoScript */
             '
 			plugin.tx_solr.suggest.suggestField = title
             '

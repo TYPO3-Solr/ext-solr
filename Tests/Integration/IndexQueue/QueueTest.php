@@ -173,6 +173,7 @@ class QueueTest extends IntegrationTest
         $this->importDataSetFromFixture('can_index_custom_page_type_with_own_configuration.xml');
         $this->addTypoScriptToTemplateRecord(
             1,
+            /* @lang TYPO3_TypoScript */
             '
             plugin.tx_solr.index.queue {
                 custom_page_type = 1
