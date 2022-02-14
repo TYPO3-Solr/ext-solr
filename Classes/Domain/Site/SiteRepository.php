@@ -304,8 +304,8 @@ class SiteRepository
                         'port' => (int)SiteUtility::getConnectionProperty($typo3Site, 'port', $languageUid, 'write', 8983),
                         // @todo: transform core to path
                         'path' =>
-                            SiteUtility::getConnectionProperty($typo3Site, 'path', $languageUid, 'read', '/solr/') .
-                            SiteUtility::getConnectionProperty($typo3Site, 'core', $languageUid, 'read', 'core_en') . '/' ,
+                            SiteUtility::getConnectionProperty($typo3Site, 'path', $languageUid, 'write', '/solr/') .
+                            SiteUtility::getConnectionProperty($typo3Site, 'core', $languageUid, 'write', 'core_en') . '/' ,
                         'username' => SiteUtility::getConnectionProperty($typo3Site, 'username', $languageUid, 'write', ''),
                         'password' => SiteUtility::getConnectionProperty($typo3Site, 'password', $languageUid, 'write', '')
                     ],
