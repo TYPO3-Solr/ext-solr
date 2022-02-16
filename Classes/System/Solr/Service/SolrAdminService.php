@@ -371,7 +371,7 @@ class SolrAdminService extends AbstractSolrService
      */
     protected function initializeSynonymsUrl()
     {
-        if (trim($this->_synonymsUrl) !== '') {
+        if (trim((string)$this->_synonymsUrl) !== '') {
             return;
         }
         $this->_synonymsUrl = $this->_constructUrl(self::SYNONYMS_SERVLET) . $this->getSchema()->getManagedResourceId();
@@ -382,7 +382,7 @@ class SolrAdminService extends AbstractSolrService
      */
     protected function initializeStopWordsUrl()
     {
-        if (trim($this->_stopWordsUrl) !== '') {
+        if (trim((string)$this->_stopWordsUrl) !== '') {
             return;
         }
 
