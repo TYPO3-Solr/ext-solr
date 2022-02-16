@@ -211,7 +211,7 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
         if ($resultSet === null) {
             return '';
         }
-        return trim($this->getSearchResultSet()->getUsedSearchRequest()->getRawUserQuery());
+        return trim((string)$this->getSearchResultSet()->getUsedSearchRequest()->getRawUserQuery());
     }
 
     /**
