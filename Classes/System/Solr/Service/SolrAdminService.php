@@ -34,6 +34,7 @@ use ApacheSolrForTypo3\Solr\System\Solr\Schema\Schema;
 use InvalidArgumentException;
 use Solarium\Client;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use function simplexml_load_string;
 
 /**
  * Class SolrAdminService
@@ -48,7 +49,6 @@ class SolrAdminService extends AbstractSolrService
     const SCHEMA_SERVLET = 'schema';
     const SYNONYMS_SERVLET = 'schema/analysis/synonyms/';
     const STOPWORDS_SERVLET = 'schema/analysis/stopwords/';
-
 
     /**
      * @var array
@@ -78,6 +78,7 @@ class SolrAdminService extends AbstractSolrService
      * @var string
      */
     protected $_synonymsUrl;
+
     /**
      * @var string
      */
@@ -361,7 +362,7 @@ class SolrAdminService extends AbstractSolrService
      */
     protected function initializeSynonymsUrl()
     {
-        if (trim($this->_synonymsUrl) !== '') {
+        if (trim($this->_synonymsUrl ?? '') !== '') {
             return;
         }
         $this->_synonymsUrl = $this->_constructUrl(self::SYNONYMS_SERVLET) . $this->getSchema()->getManagedResourceId();
@@ -372,7 +373,7 @@ class SolrAdminService extends AbstractSolrService
      */
     protected function initializeStopWordsUrl()
     {
-        if (trim($this->_stopWordsUrl) !== '') {
+        if (trim($this->_stopWordsUrl ?? '') !== '') {
             return;
         }
 

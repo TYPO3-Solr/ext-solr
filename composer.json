@@ -23,6 +23,7 @@
     "php": "^7.4.0 || ^8.0",
     "ext-dom": "*",
     "ext-json": "*",
+    "ext-simplexml": "*",
     "solarium/solarium": "6.2.3",
     "typo3/cms-backend": "*",
     "typo3/cms-core": "^11.5.4",
