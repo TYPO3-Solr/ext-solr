@@ -158,9 +158,12 @@ class RootPageResolver implements SingletonInterface
         bool $forceFallback = false,
         string $mountPointIdentifier = ''
     ): int {
+        if (0 === $pageId) {
+            return 0;
+        }
+
         /** @var Rootline $rootLine */
         $rootLine = GeneralUtility::makeInstance(Rootline::class);
-        $rootPageId = $pageId ?: (int)($GLOBALS['TSFE']->id);
 
         // frontend
         if (!empty($GLOBALS['TSFE']->rootLine)) {
@@ -168,7 +171,7 @@ class RootPageResolver implements SingletonInterface
         }
 
         // fallback, backend
-        if ($pageId != 0 && ($forceFallback || !$rootLine->getHasRootPage())) {
+        if ($forceFallback || !$rootLine->getHasRootPage()) {
             $rootlineUtility = GeneralUtility::makeInstance(RootlineUtility::class, $pageId, $mountPointIdentifier);
             try {
                 $rootLineArray = $rootlineUtility->get();
@@ -178,9 +181,7 @@ class RootPageResolver implements SingletonInterface
             $rootLine->setRootLineArray($rootLineArray);
         }
 
-        $rootPageFromRootLine = $rootLine->getRootPageId();
-
-        return $rootPageFromRootLine === 0 ? $rootPageId : $rootPageFromRootLine;
+        return $rootLine->getRootPageId() ?: $pageId;
     }
 
     /**
