@@ -1,7 +1,5 @@
 <?php
 
-namespace ApacheSolrForTypo3\Solr\Tests\Unit\Controller\Backend\Search;
-
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -14,6 +12,8 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Controller\Backend\Search;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+namespace ApacheSolrForTypo3\Solr\Tests\Unit\Controller\Backend\Search;
 
 use ApacheSolrForTypo3\Solr\Controller\Backend\Search\IndexQueueModuleController;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;

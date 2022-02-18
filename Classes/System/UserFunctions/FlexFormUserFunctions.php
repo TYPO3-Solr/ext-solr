@@ -1,5 +1,4 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\System\UserFunctions;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -13,6 +12,8 @@ namespace ApacheSolrForTypo3\Solr\System\UserFunctions;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+namespace ApacheSolrForTypo3\Solr\System\UserFunctions;
 
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\FrontendEnvironment;

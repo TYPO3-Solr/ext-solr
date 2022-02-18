@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
-
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -16,6 +14,8 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\AbstractQueryBuilder;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;

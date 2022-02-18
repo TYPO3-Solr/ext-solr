@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\Statistic;
-
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -16,6 +14,8 @@ namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\Statistic;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\Statistic;
 
 use ApacheSolrForTypo3\Solr\System\Records\AbstractRepository;
 use Doctrine\DBAL\Exception as DBALException;

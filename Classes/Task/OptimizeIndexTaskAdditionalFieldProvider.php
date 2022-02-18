@@ -1,7 +1,5 @@
 <?php
 
-namespace ApacheSolrForTypo3\Solr\Task;
-
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -14,6 +12,8 @@ namespace ApacheSolrForTypo3\Solr\Task;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+namespace ApacheSolrForTypo3\Solr\Task;
 
 use ApacheSolrForTypo3\Solr\Backend\CoreSelectorField;
 use ApacheSolrForTypo3\Solr\Backend\SiteSelectorField;

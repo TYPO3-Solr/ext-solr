@@ -1,5 +1,4 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\ViewHelpers\Uri\Result;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -13,6 +12,8 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers\Uri\Result;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+namespace ApacheSolrForTypo3\Solr\ViewHelpers\Uri\Result;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Highlight\SiteHighlighterUrlModifier;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;

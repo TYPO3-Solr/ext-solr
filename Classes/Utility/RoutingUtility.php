@@ -1,5 +1,5 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Utility;
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -13,6 +13,7 @@ namespace ApacheSolrForTypo3\Solr\Utility;
  * The TYPO3 project - inspiring people to share!
  */
 
+namespace ApacheSolrForTypo3\Solr\Utility;
 /**
  * This utility class contains several functions used inside of the middleware and enhancer for routing purposes
  *
