@@ -1,5 +1,4 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\NumericRange;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -14,11 +13,13 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\Nume
  * The TYPO3 project - inspiring people to share!
 */
 
+namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\NumericRange;
+
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\FacetQueryBuilderInterface;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 
-class NumericRangeFacetQueryBuilder implements FacetQueryBuilderInterface {
-
+class NumericRangeFacetQueryBuilder implements FacetQueryBuilderInterface
+{
     /**
      * @param string $facetName
      * @param TypoScriptConfiguration $configuration

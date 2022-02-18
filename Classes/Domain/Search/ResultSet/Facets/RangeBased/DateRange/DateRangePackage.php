@@ -1,5 +1,4 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\DateRange;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -14,13 +13,15 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\Date
  * The TYPO3 project - inspiring people to share!
  */
 
+namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\DateRange;
+
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetPackage;
 
 /**
  * Class DateRangePackage
  */
-class DateRangePackage extends AbstractFacetPackage {
-
+class DateRangePackage extends AbstractFacetPackage
+{
     /**
      * @return string
      */

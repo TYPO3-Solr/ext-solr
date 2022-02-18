@@ -1,13 +1,4 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Routing\Enhancer;
-
-use ApacheSolrForTypo3\Solr\Routing\RoutingService;
-use ApacheSolrForTypo3\Solr\Utility\RoutingUtility;
-use TYPO3\CMS\Core\Routing\Enhancer\AbstractEnhancer;
-use TYPO3\CMS\Core\Routing\Enhancer\RoutingEnhancerInterface;
-use TYPO3\CMS\Core\Routing\Route;
-use TYPO3\CMS\Core\Routing\RouteCollection;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -21,6 +12,16 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+namespace ApacheSolrForTypo3\Solr\Routing\Enhancer;
+
+use ApacheSolrForTypo3\Solr\Routing\RoutingService;
+use ApacheSolrForTypo3\Solr\Utility\RoutingUtility;
+use TYPO3\CMS\Core\Routing\Enhancer\AbstractEnhancer;
+use TYPO3\CMS\Core\Routing\Enhancer\RoutingEnhancerInterface;
+use TYPO3\CMS\Core\Routing\Route;
+use TYPO3\CMS\Core\Routing\RouteCollection;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class SolrFacetMaskAndCombineEnhancer extends AbstractEnhancer implements RoutingEnhancerInterface, SolrRouteEnhancerInterface
 {

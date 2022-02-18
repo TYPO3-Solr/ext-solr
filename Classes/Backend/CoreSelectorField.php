@@ -1,7 +1,5 @@
 <?php
 
-namespace ApacheSolrForTypo3\Solr\Backend;
-
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -14,6 +12,8 @@ namespace ApacheSolrForTypo3\Solr\Backend;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+namespace ApacheSolrForTypo3\Solr\Backend;
 
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use TYPO3\CMS\Backend\Form\Exception as BackendFormException;

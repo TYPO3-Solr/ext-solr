@@ -1,6 +1,4 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\ViewHelpers;
-
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -14,6 +12,9 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+namespace ApacheSolrForTypo3\Solr\ViewHelpers;
+
 
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;

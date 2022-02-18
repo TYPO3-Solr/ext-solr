@@ -1,5 +1,4 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -14,8 +13,11 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets;
  * The TYPO3 project - inspiring people to share!
 */
 
-class DefaultUrlDecoder implements FacetUrlDecoderInterface {
+namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets;
 
+
+class DefaultUrlDecoder implements FacetUrlDecoderInterface
+{
     /**
      * Parses the query filter from GET parameters in the URL and translates it
      * to a Lucene filter value.

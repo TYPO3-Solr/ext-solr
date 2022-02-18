@@ -1,9 +1,5 @@
 <?php
 
-namespace ApacheSolrForTypo3\Solr\Controller;
-
-use Psr\Http\Message\ResponseInterface;
-
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -16,6 +12,10 @@ use Psr\Http\Message\ResponseInterface;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+namespace ApacheSolrForTypo3\Solr\Controller;
+
+use Psr\Http\Message\ResponseInterface;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Suggest\SuggestService;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrUnavailableException;
