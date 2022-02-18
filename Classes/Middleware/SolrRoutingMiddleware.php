@@ -1,5 +1,4 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Middleware;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -13,6 +12,8 @@ namespace ApacheSolrForTypo3\Solr\Middleware;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+namespace ApacheSolrForTypo3\Solr\Middleware;
 
 use ApacheSolrForTypo3\Solr\Routing\RoutingService;
 use Psr\Http\Message\ResponseInterface;

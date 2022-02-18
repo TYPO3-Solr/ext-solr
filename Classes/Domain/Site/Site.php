@@ -1,7 +1,5 @@
 <?php
 
-namespace ApacheSolrForTypo3\Solr\Domain\Site;
-
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -14,6 +12,8 @@ namespace ApacheSolrForTypo3\Solr\Domain\Site;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+namespace ApacheSolrForTypo3\Solr\Domain\Site;
 
 use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;

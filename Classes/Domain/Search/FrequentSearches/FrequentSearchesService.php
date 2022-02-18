@@ -1,5 +1,6 @@
-<?php declare(strict_types = 1);
-namespace ApacheSolrForTypo3\Solr\Domain\Search\FrequentSearches;
+<?php
+
+declare(strict_types = 1);
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -13,6 +14,8 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\FrequentSearches;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+namespace ApacheSolrForTypo3\Solr\Domain\Search\FrequentSearches;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Statistics\StatisticsRepository;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;

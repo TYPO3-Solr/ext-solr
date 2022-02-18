@@ -1,5 +1,4 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Pagination;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -13,6 +12,8 @@ namespace ApacheSolrForTypo3\Solr\Pagination;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+namespace ApacheSolrForTypo3\Solr\Pagination;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use TYPO3\CMS\Core\Pagination\AbstractPaginator;

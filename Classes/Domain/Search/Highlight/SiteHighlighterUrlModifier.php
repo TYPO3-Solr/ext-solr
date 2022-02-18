@@ -1,5 +1,4 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Domain\Search\Highlight;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -23,6 +22,8 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Highlight;
  * @author Stefan Sprenger <stefan.sprenger@dkd.de>
  * @author Timo Hund <timo.hund@dkd.de>
  */
+
+namespace ApacheSolrForTypo3\Solr\Domain\Search\Highlight;
 
 use ApacheSolrForTypo3\Solr\System\Url\UrlHelper;
 use TYPO3\CMS\Core\Utility\GeneralUtility;

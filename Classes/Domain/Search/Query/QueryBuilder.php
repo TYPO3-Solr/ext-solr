@@ -1,5 +1,4 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Domain\Search\Query;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -13,6 +12,8 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Query;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+namespace ApacheSolrForTypo3\Solr\Domain\Search\Query;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\BigramPhraseFields;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Elevation;

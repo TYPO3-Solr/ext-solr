@@ -1,5 +1,4 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\ViewHelpers\Uri\Paginate;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -13,6 +12,8 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers\Uri\Paginate;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+namespace ApacheSolrForTypo3\Solr\ViewHelpers\Uri\Paginate;
 
 use ApacheSolrForTypo3\Solr\ViewHelpers\Uri\AbstractUriViewHelper;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;

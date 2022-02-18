@@ -1,5 +1,4 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\FieldProcessor;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -14,6 +13,7 @@ namespace ApacheSolrForTypo3\Solr\FieldProcessor;
  * The TYPO3 project - inspiring people to share!
  */
 
+namespace ApacheSolrForTypo3\Solr\FieldProcessor;
 
 use ApacheSolrForTypo3\Solr\FieldProcessor\CategoryUidToHierarchy;
 use ApacheSolrForTypo3\Solr\FieldProcessor\PageUidToHierarchy;

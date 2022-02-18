@@ -1,7 +1,5 @@
 <?php
 
-namespace ApacheSolrForTypo3\Solr\Controller;
-
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -14,6 +12,8 @@ namespace ApacheSolrForTypo3\Solr\Controller;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+namespace ApacheSolrForTypo3\Solr\Controller;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Pagination\ResultsPagination;

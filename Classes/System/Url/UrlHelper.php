@@ -1,5 +1,4 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\System\Url;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -13,6 +12,8 @@ namespace ApacheSolrForTypo3\Solr\System\Url;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+namespace ApacheSolrForTypo3\Solr\System\Url;
 
 use TYPO3\CMS\Core\Http\Uri;
 use TYPO3\CMS\Core\Utility\MathUtility;

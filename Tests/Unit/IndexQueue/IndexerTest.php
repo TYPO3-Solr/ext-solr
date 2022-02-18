@@ -1,7 +1,5 @@
 <?php
 
-namespace ApacheSolrForTypo3\Solr\Tests\Unit\IndexQueue;
-
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -14,6 +12,8 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\IndexQueue;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+namespace ApacheSolrForTypo3\Solr\Tests\Unit\IndexQueue;
 
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\Domain\Search\ApacheSolrDocument\Builder;

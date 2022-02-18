@@ -1,5 +1,4 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Widget;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -13,6 +12,8 @@ namespace ApacheSolrForTypo3\Solr\Widget;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+namespace ApacheSolrForTypo3\Solr\Widget;
 
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSetService;

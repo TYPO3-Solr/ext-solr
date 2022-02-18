@@ -1,5 +1,4 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -13,6 +12,8 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetParser;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
