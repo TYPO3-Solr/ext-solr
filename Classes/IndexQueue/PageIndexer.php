@@ -311,7 +311,7 @@ class PageIndexer extends Indexer
         if ($this->loggingEnabled) {
             $logSeverity = SolrLogManager::INFO;
             $logStatus = 'Info';
-            if ($indexActionResult['pageIndexed']) {
+            if (!empty($indexActionResult['pageIndexed'])) {
                 $logSeverity = SolrLogManager::NOTICE;
                 $logStatus = 'Success';
             }
@@ -331,7 +331,7 @@ class PageIndexer extends Indexer
             );
         }
 
-        if (!$indexActionResult['pageIndexed']) {
+        if (empty($indexActionResult['pageIndexed'])) {
             $message = 'Failed indexing page Index Queue item: ' . $item->getIndexQueueUid() . ' url: ' . $indexRequestUrl;
 
             throw new RuntimeException($message, 1331837081);
