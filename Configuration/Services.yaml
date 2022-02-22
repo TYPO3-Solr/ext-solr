@@ -14,3 +14,11 @@ services:
       - name: event.listener
         identifier: 'solr.routing.postenhanceduriprocessor-modifier'
         event: ApacheSolrForTypo3\Solr\Event\Routing\PostProcessUriEvent
+  ApacheSolrForTypo3\Solr\EventListener\EntityListener:
+    tags:
+      - name: event.listener
+        method: entityRemovedFromPersistence
+        event: TYPO3\CMS\Extbase\Event\Persistence\EntityRemovedFromPersistenceEvent
+      - name: event.listener
+        method: entityUpdatedInPersistence
+        event: TYPO3\CMS\Extbase\Event\Persistence\EntityUpdatedInPersistenceEvent
