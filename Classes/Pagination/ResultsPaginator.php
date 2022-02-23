@@ -14,6 +14,7 @@ namespace ApacheSolrForTypo3\Solr\Pagination;
  * The TYPO3 project - inspiring people to share!
  */
 
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Grouping\GroupItem;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use TYPO3\CMS\Core\Pagination\AbstractPaginator;
 
@@ -25,17 +26,17 @@ use TYPO3\CMS\Core\Pagination\AbstractPaginator;
 class ResultsPaginator extends AbstractPaginator
 {
     /**
-     * @var SearchResultSet
+     * @var SearchResultSet|GroupItem
      */
     protected $resultSet;
 
     /**
-     * @param SearchResultSet $resultSet
+     * @param SearchResultSet|GroupItem $resultSet
      * @param int $currentPageNumber
      * @param int $itemsPerPage
      */
     public function __construct(
-        SearchResultSet $resultSet,
+        $resultSet,
         int $currentPageNumber = 1,
         int $itemsPerPage = 10
     ) {
