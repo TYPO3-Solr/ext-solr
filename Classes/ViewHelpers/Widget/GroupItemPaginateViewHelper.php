@@ -68,6 +68,7 @@ class GroupItemPaginateViewHelper extends AbstractSolrViewHelper
 
         $paginator = new ResultsPaginator($this->arguments['groupItem'], $currentPage, $itemsPerPage);
         $pagination = new ResultsPagination($paginator);
+        $pagination->setMaxPageNumbers((int)$configuration['maximumNumberOfLinks']);
 
         $paginationView = $this->getTemplateObject();
         $paginationView->assignMultiple(
