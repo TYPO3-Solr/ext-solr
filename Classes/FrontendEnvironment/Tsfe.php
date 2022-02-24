@@ -148,6 +148,7 @@ class Tsfe implements SingletonInterface
             $context->setAspect('typoscript', GeneralUtility::makeInstance(TypoScriptAspect::class, true));
             $tsfe->no_cache = true;
 
+            $backedUpBackendUser = $GLOBALS['BE_USER'] ?? null;
             try {
                 $tsfe->determineId($serverRequest);
                 $serverRequest->withAttribute('frontend.controller', $tsfe);
@@ -161,7 +162,15 @@ class Tsfe implements SingletonInterface
                 // @todo: logging
                 $this->serverRequestCache[$cacheIdentifier] = null;
                 $this->tsfeCache[$cacheIdentifier] = null;
+                // Restore backend user, happens when initializeTsfe() is called from Backend context
+                if ($backedUpBackendUser) {
+                    $GLOBALS['BE_USER'] = $backedUpBackendUser;
+                }
                 return;
+            }
+            // Restore backend user, happens when initializeTsfe() is called from Backend context
+            if ($backedUpBackendUser) {
+                $GLOBALS['BE_USER'] = $backedUpBackendUser;
             }
 
             $this->tsfeCache[$cacheIdentifier] = $tsfe;
