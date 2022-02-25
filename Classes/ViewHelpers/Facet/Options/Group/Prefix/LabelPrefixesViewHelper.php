@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -17,6 +19,7 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers\Facet\Options\Group\Prefix;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\OptionCollection;
 use ApacheSolrForTypo3\Solr\ViewHelpers\AbstractSolrFrontendViewHelper;
+use Closure;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
@@ -43,21 +46,24 @@ class LabelPrefixesViewHelper extends AbstractSolrFrontendViewHelper
         $this->registerArgument('options', OptionCollection::class, 'The options where prefixed should be available', true);
         $this->registerArgument('length', 'int', 'The length of the prefixed that should be retrieved', false, 1);
         $this->registerArgument('sortBy', 'string', 'The sorting mode (count,alpha)', false, 'count');
-
     }
 
     /**
      * @param array $arguments
-     * @param \Closure $renderChildrenClosure
+     * @param Closure $renderChildrenClosure
      * @param RenderingContextInterface $renderingContext
      * @return string
+     * @noinspection PhpMissingReturnTypeInspection
      */
-    public static function renderStatic(array $arguments, \Closure $renderChildrenClosure, RenderingContextInterface $renderingContext)
-    {
+    public static function renderStatic(
+        array $arguments,
+        Closure $renderChildrenClosure,
+        RenderingContextInterface $renderingContext
+    ) {
         /** @var  $options OptionCollection */
         $options = $arguments['options'];
-        $length = isset($arguments['length']) ? $arguments['length'] : 1;
-        $sortBy = isset($arguments['sortBy']) ? $arguments['sortBy'] : 'count';
+        $length = $arguments['length'] ?? 1;
+        $sortBy = $arguments['sortBy'] ?? 'count';
         $prefixes = $options->getLowercaseLabelPrefixes($length);
 
         $prefixes = static::applySortBy($prefixes, $sortBy);
@@ -77,17 +83,13 @@ class LabelPrefixesViewHelper extends AbstractSolrFrontendViewHelper
      * @param string $sortBy
      * @return array
      */
-    protected static function applySortBy(array $prefixes, $sortBy): array
+    protected static function applySortBy(array $prefixes, string $sortBy = ''): array
     {
-        if($sortBy === 'count' || $sortBy === '')
-        {
-            return $prefixes;
-        }
-
-        if($sortBy === 'alpha')
-        {
+        if ($sortBy === 'alpha') {
             sort($prefixes);
             return $prefixes;
         }
+        // count is default
+        return $prefixes;
     }
 }

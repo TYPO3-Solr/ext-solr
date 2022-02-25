@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -23,10 +25,10 @@ use ApacheSolrForTypo3\Solr\System\Solr\Node;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use InvalidArgumentException;
+use function json_encode;
 use Throwable;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use function json_encode;
 
 /**
  * ConnectionManager is responsible to create SolrConnection objects.
@@ -38,23 +40,22 @@ class ConnectionManager implements SingletonInterface
     /**
      * @var array
      */
-    protected static $connections = [];
+    protected static array $connections = [];
 
     /**
      * @var SystemLanguageRepository
      */
-    protected $systemLanguageRepository;
+    protected SystemLanguageRepository $systemLanguageRepository;
 
     /**
      * @var PagesRepositoryAtExtSolr
      */
-    protected $pagesRepositoryAtExtSolr;
+    protected PagesRepositoryAtExtSolr $pagesRepositoryAtExtSolr;
 
     /**
      * @var SiteRepository
      */
-    protected $siteRepository;
-
+    protected SiteRepository $siteRepository;
 
     /**
      * @param SystemLanguageRepository|null $systemLanguageRepository
@@ -67,7 +68,7 @@ class ConnectionManager implements SingletonInterface
         SiteRepository $siteRepository = null
     ) {
         $this->systemLanguageRepository = $systemLanguageRepository ?? GeneralUtility::makeInstance(SystemLanguageRepository::class);
-        $this->siteRepository           = $siteRepository ?? GeneralUtility::makeInstance(SiteRepository::class);
+        $this->siteRepository = $siteRepository ?? GeneralUtility::makeInstance(SiteRepository::class);
         $this->pagesRepositoryAtExtSolr = $pagesRepositoryAtExtSolr ?? GeneralUtility::makeInstance(PagesRepositoryAtExtSolr::class);
     }
 
@@ -80,7 +81,7 @@ class ConnectionManager implements SingletonInterface
      */
     public function getSolrConnectionForNodes(array $readNodeConfiguration, array $writeNodeConfiguration)
     {
-        $connectionHash = md5(json_encode($readNodeConfiguration) .  json_encode($writeNodeConfiguration));
+        $connectionHash = md5(json_encode($readNodeConfiguration) . json_encode($writeNodeConfiguration));
         if (!isset(self::$connections[$connectionHash])) {
             $readNode = Node::fromArray($readNodeConfiguration);
             $writeNode = Node::fromArray($writeNodeConfiguration);
@@ -111,6 +112,7 @@ class ConnectionManager implements SingletonInterface
      * @param ?int $language The language ID to get the connection for as the path may differ. Optional, defaults to 0.
      * @param ?string $mount Comma list of MountPoint parameters
      * @return SolrConnection A solr connection.
+     * @throws DBALDriverException
      * @throws NoSolrConnectionFoundException
      */
     public function getConnectionByPageId(int $pageId, int $language = 0, string $mount = ''): SolrConnection
@@ -131,6 +133,7 @@ class ConnectionManager implements SingletonInterface
      * @param int $pageId A root page ID.
      * @param ?int $language The language ID to get the connection for as the path may differ. Optional, defaults to 0.
      * @return SolrConnection A solr connection.
+     * @throws DBALDriverException
      * @throws NoSolrConnectionFoundException
      */
     public function getConnectionByRootPageId(int $pageId, ?int $language = 0): SolrConnection
@@ -188,7 +191,7 @@ class ConnectionManager implements SingletonInterface
      * @return string Connection label
      * @todo Remove, since not used, or take used.
      */
-    protected function buildConnectionLabel(array $connection)
+    protected function buildConnectionLabel(array $connection): string
     {
         return $connection['rootPageTitle']
             . ' (pid: ' . $connection['rootPageUid']
@@ -197,7 +200,7 @@ class ConnectionManager implements SingletonInterface
             . $connection['read']['host'] . ':'
             . $connection['read']['port']
             . $connection['read']['path']
-            .' - Write node: '
+            . ' - Write node: '
             . $connection['write']['host'] . ':'
             . $connection['write']['port']
             . $connection['write']['path'];
@@ -241,13 +244,12 @@ class ConnectionManager implements SingletonInterface
     protected function buildNoConnectionException(string $message): NoSolrConnectionFoundException
     {
         /* @var NoSolrConnectionFoundException $noSolrConnectionException */
-        $noSolrConnectionException = GeneralUtility::makeInstance(
+        return GeneralUtility::makeInstance(
             NoSolrConnectionFoundException::class,
             /** @scrutinizer ignore-type */
             $message,
             /** @scrutinizer ignore-type */
             1575396474
         );
-        return $noSolrConnectionException;
     }
 }

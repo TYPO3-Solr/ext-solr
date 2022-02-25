@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -23,7 +25,6 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets;
  */
 interface FacetUrlDecoderInterface
 {
-
     /**
      * Parses the query filter from GET parameters in the URL and translates it
      * to a Lucene filter value.
@@ -32,5 +33,5 @@ interface FacetUrlDecoderInterface
      * @param array $configuration Facet configuration
      * @return string Value to be used in a Lucene filter
      */
-    public function decode($value, array $configuration = []);
+    public function decode(string $value, array $configuration = []): string;
 }

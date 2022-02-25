@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -44,12 +46,12 @@ class Site implements SiteInterface
     /**
      * @var string
      */
-    protected string $domain;
+    protected string $domain = '';
 
     /**
      * @var string
      */
-    protected string $siteHash;
+    protected string $siteHash = '';
 
     /**
      * @var PagesRepository
@@ -80,7 +82,6 @@ class Site implements SiteInterface
      * @var array
      */
     protected array $freeContentModeLanguages = [];
-
 
     /**
      * Constructor of Site
@@ -130,8 +131,10 @@ class Site implements SiteInterface
             /* @var $noSolrConnectionException NoSolrConnectionFoundException */
             $noSolrConnectionException = GeneralUtility::makeInstance(
                 NoSolrConnectionFoundException::class,
-                /** @scrutinizer ignore-type */  'Could not find a Solr connection for root page [' . $this->getRootPageId() . '] and language [' . $language . '].',
-                /** @scrutinizer ignore-type */ 1552491117
+                /** @scrutinizer ignore-type */
+                'Could not find a Solr connection for root page [' . $this->getRootPageId() . '] and language [' . $language . '].',
+                /** @scrutinizer ignore-type */
+                1552491117
             );
             $noSolrConnectionException->setRootPageId($this->getRootPageId());
             $noSolrConnectionException->setLanguageId($language);
@@ -178,11 +181,10 @@ class Site implements SiteInterface
         }
 
         if (!$this->typo3SiteObject instanceof Typo3Site) {
-            return false;
+            return [];
         }
 
-        foreach ($this->availableLanguageIds as $languageId)
-        {
+        foreach ($this->availableLanguageIds as $languageId) {
             if ($languageId > 0 && $this->typo3SiteObject->getLanguageById($languageId)->getFallbackType() === 'free') {
                 $this->freeContentModeLanguages[$languageId] = $languageId;
             }
@@ -227,7 +229,7 @@ class Site implements SiteInterface
     }
 
     /**
-     * Gets the site's label. The label is build from the the site title and root
+     * Gets the site's label. The label is build from the site title and root
      * page ID (uid).
      *
      * @return string The site's label.
@@ -276,8 +278,7 @@ class Site implements SiteInterface
     public function getPages(
         ?int $pageId = null,
         ?string $indexQueueConfigurationName = null
-    ): array
-    {
+    ): array {
         $pageId = $pageId ?? (int)$this->rootPage['uid'];
 
         $initialPagesAdditionalWhereClause = '';
@@ -328,7 +329,7 @@ class Site implements SiteInterface
      */
     public function getTitle(): string
     {
-        return $this->rootPage['title'];
+        return $this->rootPage['title'] ?? '';
     }
 
     /**
@@ -357,11 +358,15 @@ class Site implements SiteInterface
         foreach ($this->getAvailableLanguageIds() as $languageId) {
             try {
                 $configs[$languageId] = $this->getSolrConnectionConfiguration($languageId);
-            } catch (NoSolrConnectionFoundException $e) {}
+            } catch (NoSolrConnectionFoundException $e) {
+            }
         }
         return $configs;
     }
 
+    /**
+     * @return bool
+     */
     public function isEnabled(): bool
     {
         return !empty($this->getAllSolrConnectionConfigurations());

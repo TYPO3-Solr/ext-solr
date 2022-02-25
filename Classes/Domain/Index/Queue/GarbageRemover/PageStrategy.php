@@ -17,17 +17,16 @@ namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\GarbageRemover;
 
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 
-
 /**
  * Class PageStrategy
  */
-class PageStrategy extends AbstractStrategy {
-
+class PageStrategy extends AbstractStrategy
+{
     /**
      * @param string $table
      * @param int $uid
      */
-    protected function removeGarbageOfByStrategy($table, $uid)
+    protected function removeGarbageOfByStrategy(string $table, int $uid)
     {
         if ($table === 'tt_content') {
             $this->collectPageGarbageByContentChange($uid);
@@ -40,12 +39,12 @@ class PageStrategy extends AbstractStrategy {
     }
 
     /**
-     * Determines the relevant page id for an content element update. Deletes the page from solr and requeues the
+     * Determines the relevant page id for a content element update. Deletes the page from solr and requeues the
      * page for a reindex.
      *
      * @param int $ttContentUid
      */
-    protected function collectPageGarbageByContentChange($ttContentUid)
+    protected function collectPageGarbageByContentChange(int $ttContentUid)
     {
         $contentElement = BackendUtility::getRecord('tt_content', $ttContentUid, 'uid, pid', '', false);
         $this->deleteInSolrAndUpdateIndexQueue('pages', $contentElement['pid']);
@@ -56,10 +55,10 @@ class PageStrategy extends AbstractStrategy {
      *
      * @param int $uid
      */
-    protected function collectPageGarbageByPageChange($uid)
+    protected function collectPageGarbageByPageChange(int $uid)
     {
         $pageOverlay = BackendUtility::getRecord('pages', $uid, 'l10n_parent, sys_language_uid', '', false);
-        if (!empty($pageOverlay['l10n_parent']) && intval($pageOverlay['l10n_parent']) !== 0) {
+        if (!empty($pageOverlay['l10n_parent']) && (int)($pageOverlay['l10n_parent']) !== 0) {
             $this->deleteIndexDocuments('pages', (int)$pageOverlay['l10n_parent'], (int)$pageOverlay['sys_language_uid']);
         } else {
             $this->deleteInSolrAndRemoveFromIndexQueue('pages', $uid);

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -22,13 +24,12 @@ namespace ApacheSolrForTypo3\Solr;
  */
 interface GarbageCollectorPostProcessor
 {
-
     /**
-     * Post processing of garbage collector
+     * Post-processing of garbage collector
      *
      * @param string $table The record's table name.
      * @param int $uid The record's uid.
-     * @see \ApacheSolrForTypo3\Solr\GarbageCollector->collectGarbage()
+     * @see \ApacheSolrForTypo3\Solr\GarbageCollector::collectGarbage()
      */
-    public function postProcessGarbageCollector($table, $uid);
+    public function postProcessGarbageCollector(string $table, int $uid);
 }

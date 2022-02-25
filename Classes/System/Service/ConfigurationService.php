@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -16,10 +18,10 @@
 namespace ApacheSolrForTypo3\Solr\System\Service;
 
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use TYPO3\CMS\Core\Service\FlexFormService;
 use TYPO3\CMS\Core\TypoScript\TypoScriptService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
-use TYPO3\CMS\Core\Service\FlexFormService;
 
 /**
  * Service to ease work with configurations.
@@ -31,12 +33,12 @@ class ConfigurationService
     /**
      * @var FlexFormService
      */
-    protected $flexFormService;
+    protected FlexFormService $flexFormService;
 
     /**
      * @var TypoScriptService
      */
-    protected $typoScriptService;
+    protected TypoScriptService $typoScriptService;
 
     public function __construct()
     {
@@ -47,15 +49,15 @@ class ConfigurationService
     /**
      * @param FlexFormService $flexFormService
      */
-    public function setFlexFormService($flexFormService)
+    public function setFlexFormService(FlexFormService $flexFormService)
     {
         $this->flexFormService = $flexFormService;
     }
 
     /**
-     * @param \TYPO3\CMS\Core\TypoScript\TypoScriptService $typoScriptService
+     * @param TypoScriptService $typoScriptService
      */
-    public function setTypoScriptService($typoScriptService)
+    public function setTypoScriptService(TypoScriptService $typoScriptService)
     {
         $this->typoScriptService = $typoScriptService;
     }
@@ -65,10 +67,8 @@ class ConfigurationService
      *
      * @param string $flexFormData The raw data from database.
      * @param TypoScriptConfiguration $solrTypoScriptConfiguration
-     *
-     * @return void
      */
-    public function overrideConfigurationWithFlexFormSettings($flexFormData, TypoScriptConfiguration $solrTypoScriptConfiguration)
+    public function overrideConfigurationWithFlexFormSettings(string $flexFormData, TypoScriptConfiguration $solrTypoScriptConfiguration)
     {
         if (empty($flexFormData)) {
             return;
@@ -90,7 +90,7 @@ class ConfigurationService
      *
      * @return array
      */
-    protected function overrideFilter(array $flexFormConfiguration)
+    protected function overrideFilter(array $flexFormConfiguration): array
     {
         $filter = $this->getFilterFromFlexForm($flexFormConfiguration);
         unset($flexFormConfiguration['search']['query']['filter']);
@@ -117,7 +117,7 @@ class ConfigurationService
      *
      * @return array
      */
-    protected function getFilterFromFlexForm(array $flexFormConfiguration)
+    protected function getFilterFromFlexForm(array $flexFormConfiguration): array
     {
         $filterConfiguration = [];
         $filters = ObjectAccess::getPropertyPath($flexFormConfiguration, 'search.query.filter');

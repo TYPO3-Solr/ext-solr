@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -22,6 +24,8 @@ use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use ApacheSolrForTypo3\Solr\ViewHelpers\Document\HighlightResultViewHelper;
+use PHPUnit\Framework\MockObject\MockObject;
+use stdClass;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 
 /**
@@ -29,11 +33,10 @@ use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
  */
 class HighlightingResultViewHelperTest extends UnitTest
 {
-
     /**
      * @return array
      */
-    public function canRenderCreateHighlightSnippedDataProvider()
+    public function canRenderCreateHighlightSnippedDataProvider(): array
     {
         return [
             [
@@ -60,6 +63,7 @@ class HighlightingResultViewHelperTest extends UnitTest
      */
     public function canRenderCreateHighlightSnipped(array $input, $expectedOutput, $configuredWrap)
     {
+        /* @var RenderingContextInterface|MockObject $renderingContextMock */
         $renderingContextMock = $this->getDumbMock(RenderingContextInterface::class);
 
         $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
@@ -75,8 +79,8 @@ class HighlightingResultViewHelperTest extends UnitTest
             $configurationMock
         );
 
-        $fakeHighlightedContent = new \stdClass();
-        $fakeHighlightedContent->foo = new \stdClass();
+        $fakeHighlightedContent = new stdClass();
+        $fakeHighlightedContent->foo = new stdClass();
         $fakeHighlightedContent->foo->content = $input;
 
         $searchMock = $this->getDumbMock(Search::class);

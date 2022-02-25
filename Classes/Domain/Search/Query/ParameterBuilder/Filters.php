@@ -16,7 +16,7 @@
 namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
 
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use function str_starts_with;
 
 /**
  * The Filters ParameterProvider is responsible to build the solr query parameters
@@ -24,19 +24,17 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class Filters
 {
-
     /**
      * @var array
      */
-    protected $filters = [];
+    protected array $filters = [];
 
     /**
      * Removes a filter on a field
      *
      * @param string $filterFieldName The field name the filter should be removed for
-     * @return void
      */
-    public function removeByFieldName($filterFieldName)
+    public function removeByFieldName(string $filterFieldName)
     {
         $this->removeByPrefix($filterFieldName . ':');
     }
@@ -44,10 +42,10 @@ class Filters
     /**
      * @param string $filterFieldName
      */
-    public function removeByPrefix($filterFieldName)
+    public function removeByPrefix(string $filterFieldName)
     {
         foreach ($this->filters as $key => $filterString) {
-            if (\str_starts_with($filterString, $filterFieldName)) {
+            if (str_starts_with($filterString, $filterFieldName)) {
                 unset($this->filters[$key]);
             }
         }
@@ -58,17 +56,16 @@ class Filters
      *
      * @param string $name name of the filter
      */
-    public function removeByName($name)
+    public function removeByName(string $name)
     {
         unset($this->filters[$name]);
     }
-
 
     /**
      * @param string $filterString
      * @param string $name
      */
-    public function add($filterString, $name = '')
+    public function add(string $filterString, string $name = '')
     {
         if ($name !== '') {
             $this->filters[$name] = $filterString;
@@ -78,14 +75,14 @@ class Filters
     }
 
     /**
-     * Add's multiple filters to the filter collection.
+     * Adds multiple filters to the filter collection.
      *
      * @param array $filterArray
      * @return Filters
      */
-    public function addMultiple($filterArray)
+    public function addMultiple(array $filterArray): Filters
     {
-        foreach($filterArray as $key => $value) {
+        foreach ($filterArray as $key => $value) {
             if (!$this->hasWithName($key)) {
                 $this->add($value, $key);
             }
@@ -98,7 +95,7 @@ class Filters
      * @param string $name
      * @return bool
      */
-    public function hasWithName($name)
+    public function hasWithName(string $name): bool
     {
         return array_key_exists($name, $this->filters);
     }
@@ -110,7 +107,7 @@ class Filters
      *
      * @param string $filterString The filter to remove, in the form of field:value
      */
-    public function removeByValue($filterString)
+    public function removeByValue(string $filterString)
     {
         $key = array_search($filterString, $this->filters);
         if ($key === false) {
@@ -125,7 +122,7 @@ class Filters
      *
      * @return array Array of filters
      */
-    public function getValues()
+    public function getValues(): array
     {
         return $this->filters;
     }
@@ -133,8 +130,9 @@ class Filters
     /**
      * @param TypoScriptConfiguration $solrConfiguration
      * @return Filters
+     * @todo: Check why $solrConfiguration isn't used.
      */
-    public static function fromTypoScriptConfiguration(TypoScriptConfiguration $solrConfiguration)
+    public static function fromTypoScriptConfiguration(TypoScriptConfiguration $solrConfiguration): Filters
     {
         return new Filters();
     }
@@ -142,7 +140,7 @@ class Filters
     /**
      * @return Filters
      */
-    public static function getEmpty()
+    public static function getEmpty(): Filters
     {
         return new Filters();
     }

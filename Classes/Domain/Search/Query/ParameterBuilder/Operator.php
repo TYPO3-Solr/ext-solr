@@ -15,6 +15,8 @@
 
 namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
 
+use InvalidArgumentException;
+
 /**
  * The Operator ParameterProvider is responsible to build the solr query parameters
  * that are needed for the operator q.op.
@@ -27,7 +29,7 @@ class Operator extends AbstractDeactivatable
     /**
      * @var string
      */
-    protected $operator = 'AND';
+    protected string $operator = 'AND';
 
     /**
      * Faceting constructor.
@@ -35,8 +37,10 @@ class Operator extends AbstractDeactivatable
      * @param bool $isEnabled
      * @param string $operator
      */
-    public function __construct($isEnabled, $operator = Operator::OPERATOR_AND)
-    {
+    public function __construct(
+        bool $isEnabled,
+        string $operator = Operator::OPERATOR_AND
+    ) {
         $this->isEnabled = $isEnabled;
         $this->setOperator($operator);
     }
@@ -44,10 +48,10 @@ class Operator extends AbstractDeactivatable
     /**
      * @param string $operator
      */
-    public function setOperator($operator)
+    public function setOperator(string $operator)
     {
         if (!in_array($operator, [self::OPERATOR_AND, self::OPERATOR_OR])) {
-            throw new \InvalidArgumentException("Invalid operator");
+            throw new InvalidArgumentException('Invalid operator');
         }
 
         $this->operator = $operator;
@@ -89,7 +93,7 @@ class Operator extends AbstractDeactivatable
      * @param string $operator
      * @return Operator
      */
-    public static function fromString($operator)
+    public static function fromString(string $operator): Operator
     {
         return new Operator(true, $operator);
     }

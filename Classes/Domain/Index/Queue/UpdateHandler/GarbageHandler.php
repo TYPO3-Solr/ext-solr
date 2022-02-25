@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -17,9 +17,12 @@ declare(strict_types = 1);
 
 namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler;
 
-use Doctrine\DBAL\Driver\Exception as DBALDriverException;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\GarbageRemover\StrategyFactory;
+use Doctrine\DBAL\Driver\Exception as DBALDriverException;
+use PDO;
+use Throwable;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use UnexpectedValueException;
 
 /**
  * Garbage handler
@@ -40,24 +43,24 @@ class GarbageHandler extends AbstractUpdateHandler
      *
      * @var array
      */
-    protected $updateSubPagesRecursiveTriggerConfiguration = [
+    protected array $updateSubPagesRecursiveTriggerConfiguration = [
         // the current page has the field "extendToSubpages" enabled and the field "hidden" was set to 1
         // covers following scenarios:
         //   'currentState' =>  ['hidden' => '0', 'extendToSubpages' => '0|1'], 'changeSet' => ['hidden' => '1', (optional)'extendToSubpages' => '1']
         'extendToSubpageEnabledAndHiddenFlagWasAdded' => [
             'currentState' =>  ['extendToSubpages' => '1'],
-            'changeSet' => ['hidden' => '1']
+            'changeSet' => ['hidden' => '1'],
         ],
         // the current page has the field "hidden" enabled and the field "extendToSubpages" was set to 1
         // covers following scenarios:
         //   'currentState' =>  ['hidden' => '0|1', 'extendToSubpages' => '0'], 'changeSet' => [(optional)'hidden' => '1', 'extendToSubpages' => '1']
         'hiddenIsEnabledAndExtendToSubPagesWasAdded' => [
             'currentState' =>  ['hidden' => '1'],
-            'changeSet' => ['extendToSubpages' => '1']
+            'changeSet' => ['extendToSubpages' => '1'],
         ],
         // the field "no_search_sub_entries" of current page was set to 1
         'no_search_sub_entriesFlagWasAdded' => [
-            'changeSet' => ['no_search_sub_entries' => '1']
+            'changeSet' => ['no_search_sub_entries' => '1'],
         ],
     ];
 
@@ -67,10 +70,9 @@ class GarbageHandler extends AbstractUpdateHandler
      *
      * @param string $table The record's table name.
      * @param int $uid The record's uid.
-     * @throws \UnexpectedValueException if a hook object does not implement interface
-     *                                   \ApacheSolrForTypo3\Solr\GarbageCollectorPostProcessor
+     * @throws UnexpectedValueException if a hook object does not implement interface {@linkt \ApacheSolrForTypo3\Solr\GarbageCollectorPostProcessor::}
      */
-    public function collectGarbage($table, $uid): void
+    public function collectGarbage(string $table, int $uid): void
     {
         $garbageRemoverStrategy = StrategyFactory::getByTable($table);
         $garbageRemoverStrategy->removeGarbageOf($table, $uid);
@@ -95,12 +97,13 @@ class GarbageHandler extends AbstractUpdateHandler
     }
 
     /**
-     * Performs a record garbage check
+     * Performs record garbage check
      *
      * @param int $uid
      * @param string $table
      * @param array $updatedFields
      * @param bool $frontendGroupsRemoved
+     * @throws DBALDriverException
      */
     public function performRecordGarbageCheck(
         int $uid,
@@ -132,6 +135,7 @@ class GarbageHandler extends AbstractUpdateHandler
      * @param string $table
      * @param int $uid
      * @param array $updatedFields
+     * @throws DBALDriverException
      */
     protected function deleteSubEntriesWhenRecursiveTriggerIsRecognized(
         string $table,
@@ -192,9 +196,8 @@ class GarbageHandler extends AbstractUpdateHandler
         return (bool)$record['no_search'];
     }
 
-
     /**
-     * Check if a record is getting invisible due to changes in start or endtime. In addition it is checked that the related
+     * Check if a record is getting invisible due to changes in start or endtime. In addition, it is checked that the related
      * queue item was marked as indexed.
      *
      * @param string $table
@@ -203,11 +206,11 @@ class GarbageHandler extends AbstractUpdateHandler
      */
     protected function isInvisibleByStartOrEndtime(string $table, array $record): bool
     {
-        return (
+        return
             ($this->tcaService->isStartTimeInFuture($table, $record)
                 || $this->tcaService->isEndTimeInPast($table, $record))
             && $this->isRelatedQueueRecordMarkedAsIndexed($table, $record)
-        );
+        ;
     }
 
     /**
@@ -248,10 +251,10 @@ class GarbageHandler extends AbstractUpdateHandler
             $row = $queryBuilder
                 ->select(...GeneralUtility::trimExplode(',', $garbageCollectionRelevantFields, true))
                 ->from($table)
-                ->where($queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)))
+                ->where($queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($uid, PDO::PARAM_INT)))
                 ->executeQuery()
                 ->fetchAssociative();
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $row = false;
         }
 

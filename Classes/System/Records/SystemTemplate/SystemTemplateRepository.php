@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -16,19 +18,18 @@
 namespace ApacheSolrForTypo3\Solr\System\Records\SystemTemplate;
 
 use ApacheSolrForTypo3\Solr\System\Records\AbstractRepository;
-use Doctrine\DBAL\Driver\Exception as DBALDriverException ;
+use Doctrine\DBAL\Driver\Exception as DBALDriverException;
+use Doctrine\DBAL\Exception as DBALException;
 
 /**
  * SystemTemplateRepository to encapsulate the database access for records used in solr.
- *
  */
 class SystemTemplateRepository extends AbstractRepository
 {
-
     /**
      * @var string
      */
-    protected $table = 'sys_template';
+    protected string $table = 'sys_template';
 
     /**
      * Finds a first closest page id with active template.
@@ -38,6 +39,7 @@ class SystemTemplateRepository extends AbstractRepository
      * @param array $rootLine
      * @return int
      * @throws DBALDriverException
+     * @throws DBALException|\Doctrine\DBAL\DBALException
      */
     public function findOneClosestPageIdWithActiveTemplateByRootLine(array $rootLine): ?int
     {

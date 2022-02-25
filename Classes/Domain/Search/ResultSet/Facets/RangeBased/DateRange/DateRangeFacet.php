@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -33,12 +35,12 @@ class DateRangeFacet extends AbstractFacet
      * String
      * @var string
      */
-    protected static $type = self::TYPE_DATE_RANGE;
+    protected static string $type = self::TYPE_DATE_RANGE;
 
     /**
-     * @var DateRange
+     * @var DateRange|null
      */
-    protected $range;
+    protected ?DateRange $range = null;
 
     /**
      * OptionsFacet constructor
@@ -49,8 +51,13 @@ class DateRangeFacet extends AbstractFacet
      * @param string $label
      * @param array $configuration Facet configuration passed from typoscript
      */
-    public function __construct(SearchResultSet $resultSet, $name, $field, $label = '', array $configuration = [])
-    {
+    public function __construct(
+        SearchResultSet $resultSet,
+        string $name,
+        string $field,
+        string $label = '',
+        array $configuration = []
+    ) {
         parent::__construct($resultSet, $name, $field, $label, $configuration);
     }
 
@@ -65,18 +72,17 @@ class DateRangeFacet extends AbstractFacet
     /**
      * @return DateRange
      */
-    public function getRange()
+    public function getRange(): ?DateRange
     {
         return $this->range;
     }
-
 
     /**
      * Get facet partial name used for rendering the facet
      *
      * @return string
      */
-    public function getPartialName()
+    public function getPartialName(): string
     {
         return !empty($this->configuration['partialName']) ? $this->configuration['partialName'] : 'RangeDate.html';
     }
@@ -87,7 +93,7 @@ class DateRangeFacet extends AbstractFacet
      *
      * @return AbstractFacetItemCollection
      */
-    public function getAllFacetItems()
+    public function getAllFacetItems(): AbstractFacetItemCollection
     {
         return new DateRangeCollection([$this->range]);
     }

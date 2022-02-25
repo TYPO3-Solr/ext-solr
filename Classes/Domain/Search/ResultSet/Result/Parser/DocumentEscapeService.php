@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -22,18 +24,20 @@ use ApacheSolrForTypo3\Solr\Util;
 /**
  * Applies htmlspecialschars on documents of a solr response.
  */
-class DocumentEscapeService {
+class DocumentEscapeService
+{
 
     /**
      * @var TypoScriptConfiguration
      */
-    protected $typoScriptConfiguration = null;
+    protected TypoScriptConfiguration $typoScriptConfiguration;
 
     /**
      * DocumentEscapeService constructor.
      * @param TypoScriptConfiguration|null $typoScriptConfiguration
      */
-    public function __construct(TypoScriptConfiguration $typoScriptConfiguration = null) {
+    public function __construct(TypoScriptConfiguration $typoScriptConfiguration = null)
+    {
         $this->typoScriptConfiguration = $typoScriptConfiguration ?? Util::getSolrConfiguration();
     }
 
@@ -70,17 +74,17 @@ class DocumentEscapeService {
     /**
      * Applies htmlspecialchars on all items of an array of a single value.
      *
-     * @param $fieldValue
+     * @param mixed $fieldValue
      * @return array|string
      */
     protected function applyHtmlSpecialCharsOnSingleFieldValue($fieldValue)
     {
         if (is_array($fieldValue)) {
             foreach ($fieldValue as $key => $fieldValueItem) {
-                $fieldValue[$key] = htmlspecialchars($fieldValueItem,  ENT_COMPAT, 'UTF-8', false);
+                $fieldValue[$key] = htmlspecialchars((string)$fieldValueItem, ENT_COMPAT, 'UTF-8', false);
             }
         } else {
-            $fieldValue = htmlspecialchars($fieldValue, ENT_COMPAT, 'UTF-8', false);
+            $fieldValue = htmlspecialchars((string)$fieldValue, ENT_COMPAT, 'UTF-8', false);
         }
 
         return $fieldValue;

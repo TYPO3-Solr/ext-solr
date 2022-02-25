@@ -15,11 +15,11 @@
 
 namespace ApacheSolrForTypo3\Solr\Controller;
 
-use Psr\Http\Message\ResponseInterface;
-
 use ApacheSolrForTypo3\Solr\Domain\Search\Suggest\SuggestService;
+
 use ApacheSolrForTypo3\Solr\System\Solr\SolrUnavailableException;
 use ApacheSolrForTypo3\Solr\Util;
+use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 

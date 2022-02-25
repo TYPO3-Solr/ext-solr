@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -444,7 +446,7 @@ class QueryBuilderTest extends UnitTest
     {
         $query = $this->getInitializedTestSearchQuery();
 
-        $queryParameters = $query->getQueryParameters();
+        $queryParameters = $query->getParams();
         foreach ($queryParameters as $queryParameter => $value) {
             self::assertTrue(
                 !str_starts_with($queryParameter, 'group'),
@@ -748,7 +750,7 @@ class QueryBuilderTest extends UnitTest
         $fakeConfiguration = new TypoScriptConfiguration([]);
 
         $query = $this->getInitializedTestSearchQuery('test', $fakeConfiguration);
-        $queryParameters = $query->getQueryParameters();
+        $queryParameters = $query->getParams();
         self::assertArrayNotHasKey('facet.field', $queryParameters, 'facet.field query parameter was expected to be null after init.');
 
         $faceting = Faceting::fromTypoScriptConfiguration($fakeConfiguration);
@@ -1073,7 +1075,7 @@ class QueryBuilderTest extends UnitTest
     {
         $query = $this->getInitializedTestSearchQuery('test');
 
-        $queryParameters = $query->getQueryParameters();
+        $queryParameters = $query->getParams();
         self::assertArrayNotHasKey('q.op', $queryParameters, 'The queryParameter q.op should be null because no operator was passed');
 
         $this->builder->startFrom($query)->useOperator(Operator::getOr());
@@ -1118,7 +1120,7 @@ class QueryBuilderTest extends UnitTest
     {
         // check initial value
         $query = $this->getInitializedTestSearchQuery('test');
-        $queryParameters = $query->getQueryParameters();
+        $queryParameters = $query->getParams();
         self::assertArrayNotHasKey('omitHeader', $queryParameters, 'The queryParameter omitHeader should be null because it was not');
 
         $this->builder->startFrom($query)->useOmitHeader();

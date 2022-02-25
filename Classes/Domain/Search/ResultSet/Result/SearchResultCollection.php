@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -21,12 +23,12 @@ use ApacheSolrForTypo3\Solr\System\Data\AbstractCollection;
 /**
  * The SearchResultCollection contains the SearchResult object and related objects. e.g groups.
  */
-class SearchResultCollection extends AbstractCollection {
-
+class SearchResultCollection extends AbstractCollection
+{
     /**
      * @var GroupCollection
      */
-    protected $groups = null;
+    protected GroupCollection $groups;
 
     /**
      * SearchResultCollection constructor.

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -30,33 +32,33 @@ use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Sorting;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Sortings;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Spellchecking;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\TrigramPhraseFields;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
+use Closure;
+use Solarium\QueryType\Select\Query\Query as SolariumQuery;
 
 /**
- * The AbstractQueryBuilder contains all logic to initialize solr queries independent from TYPO3.
+ * The AbstractQueryBuilder contains all logic to initialize solr queries independent of TYPO3.
  */
-abstract class AbstractQueryBuilder {
-
+abstract class AbstractQueryBuilder
+{
     /**
-     * @var Query
+     * @var SolariumQuery|SearchQuery|SuggestQuery|null
      */
-    protected $queryToBuild = null;
+    protected ?SolariumQuery $queryToBuild;
 
     /**
-     * @param Query $query
+     * @param SolariumQuery $query
      * @return $this
      */
-    public function startFrom(Query $query)
+    public function startFrom(SolariumQuery $query): AbstractQueryBuilder
     {
         $this->queryToBuild = $query;
         return $this;
     }
 
     /**
-     * @return Query
+     * @return SolariumQuery|Query
      */
-    public function getQuery(): Query
+    public function getQuery(): SolariumQuery
     {
         return $this->queryToBuild;
     }
@@ -65,7 +67,7 @@ abstract class AbstractQueryBuilder {
      * @param bool $omitHeader
      * @return $this
      */
-    public function useOmitHeader($omitHeader = true)
+    public function useOmitHeader(bool $omitHeader = true): AbstractQueryBuilder
     {
         $this->queryToBuild->setOmitHeader($omitHeader);
 
@@ -78,10 +80,10 @@ abstract class AbstractQueryBuilder {
      * @param array $filterArray
      * @return $this
      */
-    public function useFilterArray(array $filterArray)
+    public function useFilterArray(array $filterArray): AbstractQueryBuilder
     {
         foreach ($filterArray as $key => $additionalFilter) {
-            $this->useFilter($additionalFilter, $key);
+            $this->useFilter($additionalFilter, (string)$key);
         }
 
         return $this;
@@ -93,7 +95,7 @@ abstract class AbstractQueryBuilder {
      * @param string $queryString
      * @return $this
      */
-    public function useQueryString($queryString)
+    public function useQueryString(string $queryString): AbstractQueryBuilder
     {
         $this->queryToBuild->setQuery($queryString);
         return $this;
@@ -105,7 +107,7 @@ abstract class AbstractQueryBuilder {
      * @param string $queryType
      * @return $this
      */
-    public function useQueryType(string $queryType)
+    public function useQueryType(string $queryType): AbstractQueryBuilder
     {
         $this->queryToBuild->addParam('qt', $queryType);
         return $this;
@@ -116,7 +118,7 @@ abstract class AbstractQueryBuilder {
      *
      * @return $this
      */
-    public function removeQueryType()
+    public function removeQueryType(): AbstractQueryBuilder
     {
         $this->queryToBuild->addParam('qt', null);
         return $this;
@@ -127,7 +129,7 @@ abstract class AbstractQueryBuilder {
      *
      * @return $this
      */
-    public function removeAllSortings()
+    public function removeAllSortings(): AbstractQueryBuilder
     {
         $this->queryToBuild->clearSorts();
         return $this;
@@ -139,7 +141,7 @@ abstract class AbstractQueryBuilder {
      * @param Sorting $sorting
      * @return $this
      */
-    public function useSorting(Sorting $sorting)
+    public function useSorting(Sorting $sorting): AbstractQueryBuilder
     {
         if (strpos($sorting->getFieldName(), 'relevance') !== false) {
             $this->removeAllSortings();
@@ -156,9 +158,9 @@ abstract class AbstractQueryBuilder {
      * @param Sortings $sortings
      * @return $this
      */
-    public function useSortings(Sortings $sortings)
+    public function useSortings(Sortings $sortings): AbstractQueryBuilder
     {
-        foreach($sortings->getSortings() as $sorting) {
+        foreach ($sortings->getSortings() as $sorting) {
             $this->useSorting($sorting);
         }
 
@@ -169,7 +171,7 @@ abstract class AbstractQueryBuilder {
      * @param int $resultsPerPage
      * @return $this
      */
-    public function useResultsPerPage($resultsPerPage)
+    public function useResultsPerPage(int $resultsPerPage): AbstractQueryBuilder
     {
         $this->queryToBuild->setRows($resultsPerPage);
         return $this;
@@ -179,7 +181,7 @@ abstract class AbstractQueryBuilder {
      * @param int $page
      * @return $this
      */
-    public function usePage($page)
+    public function usePage(int $page): AbstractQueryBuilder
     {
         $this->queryToBuild->setStart($page);
         return $this;
@@ -189,9 +191,9 @@ abstract class AbstractQueryBuilder {
      * @param Operator $operator
      * @return $this
      */
-    public function useOperator(Operator $operator)
+    public function useOperator(Operator $operator): AbstractQueryBuilder
     {
-        $this->queryToBuild->setQueryDefaultOperator( $operator->getOperator());
+        $this->queryToBuild->setQueryDefaultOperator($operator->getOperator());
         return $this;
     }
 
@@ -200,7 +202,7 @@ abstract class AbstractQueryBuilder {
      *
      * @return $this
      */
-    public function removeOperator()
+    public function removeOperator(): AbstractQueryBuilder
     {
         $this->queryToBuild->setQueryDefaultOperator('');
         return $this;
@@ -210,7 +212,7 @@ abstract class AbstractQueryBuilder {
      * @param Slops $slops
      * @return $this
      */
-    public function useSlops(Slops $slops)
+    public function useSlops(Slops $slops): AbstractQueryBuilder
     {
         return $slops->build($this);
     }
@@ -221,11 +223,11 @@ abstract class AbstractQueryBuilder {
      * @param string|array $boostQueries
      * @return $this
      */
-    public function useBoostQueries($boostQueries)
+    public function useBoostQueries($boostQueries): AbstractQueryBuilder
     {
         $boostQueryArray = [];
-        if(is_array($boostQueries)) {
-            foreach($boostQueries as $boostQuery) {
+        if (is_array($boostQueries)) {
+            foreach ($boostQueries as $boostQuery) {
                 $boostQueryArray[] = ['key' => md5($boostQuery), 'query' => $boostQuery];
             }
         } else {
@@ -241,7 +243,7 @@ abstract class AbstractQueryBuilder {
      *
      * @return $this
      */
-    public function removeAllBoostQueries()
+    public function removeAllBoostQueries(): AbstractQueryBuilder
     {
         $this->queryToBuild->getEDisMax()->clearBoostQueries();
         return $this;
@@ -253,7 +255,7 @@ abstract class AbstractQueryBuilder {
      * @param string $boostFunction
      * @return $this
      */
-    public function useBoostFunction(string $boostFunction)
+    public function useBoostFunction(string $boostFunction): AbstractQueryBuilder
     {
         $this->queryToBuild->getEDisMax()->setBoostFunctions($boostFunction);
         return $this;
@@ -264,12 +266,11 @@ abstract class AbstractQueryBuilder {
      *
      * @return $this
      */
-    public function removeAllBoostFunctions()
+    public function removeAllBoostFunctions(): AbstractQueryBuilder
     {
         $this->queryToBuild->getEDisMax()->setBoostFunctions('');
         return $this;
     }
-
 
     /**
      * Uses the passed minimumMatch(mm) for the query.
@@ -277,7 +278,7 @@ abstract class AbstractQueryBuilder {
      * @param string $minimumMatch
      * @return $this
      */
-    public function useMinimumMatch(string $minimumMatch)
+    public function useMinimumMatch(string $minimumMatch): AbstractQueryBuilder
     {
         $this->queryToBuild->getEDisMax()->setMinimumMatch($minimumMatch);
         return $this;
@@ -288,20 +289,19 @@ abstract class AbstractQueryBuilder {
      *
      * @return $this
      */
-    public function removeMinimumMatch()
+    public function removeMinimumMatch(): AbstractQueryBuilder
     {
         $this->queryToBuild->getEDisMax()->setMinimumMatch('');
         return $this;
     }
 
-
     /**
      * Applies the tie parameter to the query.
      *
-     * @param mixed $tie
+     * @param float $tie
      * @return $this
      */
-    public function useTieParameter($tie)
+    public function useTieParameter(float $tie): AbstractQueryBuilder
     {
         $this->queryToBuild->getEDisMax()->setTie($tie);
         return $this;
@@ -313,7 +313,7 @@ abstract class AbstractQueryBuilder {
      * @param QueryFields $queryFields
      * @return $this
      */
-    public function useQueryFields(QueryFields $queryFields)
+    public function useQueryFields(QueryFields $queryFields): AbstractQueryBuilder
     {
         return $queryFields->build($this);
     }
@@ -324,7 +324,7 @@ abstract class AbstractQueryBuilder {
      * @param ReturnFields $returnFields
      * @return $this
      */
-    public function useReturnFields(ReturnFields $returnFields)
+    public function useReturnFields(ReturnFields $returnFields): AbstractQueryBuilder
     {
         return $returnFields->build($this);
     }
@@ -336,12 +336,12 @@ abstract class AbstractQueryBuilder {
      * @param string $filterName
      * @return $this
      */
-    public function useFilter($filterString, $filterName = '')
+    public function useFilter(string $filterString, string $filterName = ''): AbstractQueryBuilder
     {
         $filterName = $filterName === '' ? $filterString : $filterName;
 
-        $nameWasPassedAndFilterIsAllreadySet = $filterName !== '' && $this->queryToBuild->getFilterQuery($filterName) !== null;
-        if($nameWasPassedAndFilterIsAllreadySet) {
+        $nameWasPassedAndFilterIsAlreadySet = $filterName !== '' && $this->queryToBuild->getFilterQuery($filterName) !== null;
+        if ($nameWasPassedAndFilterIsAlreadySet) {
             return $this;
         }
         $this->queryToBuild->addFilterQuery(['key' => $filterName, 'query' => $filterString]);
@@ -354,12 +354,12 @@ abstract class AbstractQueryBuilder {
      * @param string $fieldName
      * @return $this
      */
-    public function removeFilterByFieldName($fieldName)
+    public function removeFilterByFieldName(string $fieldName): AbstractQueryBuilder
     {
         return $this->removeFilterByFunction(
-            function($key, $query) use ($fieldName) {
+            function ($key, $query) use ($fieldName) {
                 $queryString = $query->getQuery();
-                $storedFieldName = substr($queryString,0, strpos($queryString, ":"));
+                $storedFieldName = substr($queryString, 0, strpos($queryString, ':'));
                 return $storedFieldName == $fieldName;
             }
         );
@@ -371,10 +371,10 @@ abstract class AbstractQueryBuilder {
      * @param string $name
      * @return $this
      */
-    public function removeFilterByName($name)
+    public function removeFilterByName(string $name): AbstractQueryBuilder
     {
         return $this->removeFilterByFunction(
-            function($key, $query) use ($name) {
+            function ($key, $query) use ($name) {
                 $key = $query->getKey();
                 return $key == $name;
             }
@@ -387,10 +387,10 @@ abstract class AbstractQueryBuilder {
      * @param string $value
      * @return $this
      */
-    public function removeFilterByValue($value)
+    public function removeFilterByValue(string $value): AbstractQueryBuilder
     {
         return $this->removeFilterByFunction(
-            function($key, $query) use ($value) {
+            function ($key, $query) use ($value) {
                 $query = $query->getQuery();
                 return $query == $value;
             }
@@ -398,15 +398,15 @@ abstract class AbstractQueryBuilder {
     }
 
     /**
-     * @param \Closure $filterFunction
+     * @param Closure $filterFunction
      * @return $this
      */
-    public function removeFilterByFunction($filterFunction)
+    public function removeFilterByFunction(Closure $filterFunction): AbstractQueryBuilder
     {
         $queries = $this->queryToBuild->getFilterQueries();
-        foreach($queries as $key =>  $query) {
+        foreach ($queries as $key =>  $query) {
             $canBeRemoved = $filterFunction($key, $query);
-            if($canBeRemoved) {
+            if ($canBeRemoved) {
                 unset($queries[$key]);
             }
         }
@@ -416,22 +416,22 @@ abstract class AbstractQueryBuilder {
     }
 
     /**
-     * Passes the alternative query to the Query
+     * Passes the alternative query to the SolariumQuery
      * @param string $query
      * @return $this
      */
-    public function useAlternativeQuery(string $query)
+    public function useAlternativeQuery(string $query): AbstractQueryBuilder
     {
         $this->queryToBuild->getEDisMax()->setQueryAlternative($query);
         return $this;
     }
 
     /**
-     * Remove the alternative query from the Query.
+     * Remove the alternative query from the SolariumQuery.
      *
      * @return $this
      */
-    public function removeAlternativeQuery()
+    public function removeAlternativeQuery(): AbstractQueryBuilder
     {
         $this->queryToBuild->getEDisMax()->setQueryAlternative(null);
         return $this;
@@ -443,7 +443,7 @@ abstract class AbstractQueryBuilder {
      * @param Faceting $faceting
      * @return $this
      */
-    public function useFaceting(Faceting $faceting)
+    public function useFaceting(Faceting $faceting): AbstractQueryBuilder
     {
         return $faceting->build($this);
     }
@@ -452,7 +452,7 @@ abstract class AbstractQueryBuilder {
      * @param FieldCollapsing $fieldCollapsing
      * @return $this
      */
-    public function useFieldCollapsing(FieldCollapsing $fieldCollapsing)
+    public function useFieldCollapsing(FieldCollapsing $fieldCollapsing): AbstractQueryBuilder
     {
         return $fieldCollapsing->build($this);
     }
@@ -463,7 +463,7 @@ abstract class AbstractQueryBuilder {
      * @param Grouping $grouping
      * @return $this
      */
-    public function useGrouping(Grouping $grouping)
+    public function useGrouping(Grouping $grouping): AbstractQueryBuilder
     {
         return $grouping->build($this);
     }
@@ -472,16 +472,16 @@ abstract class AbstractQueryBuilder {
      * @param Highlighting $highlighting
      * @return $this
      */
-    public function useHighlighting(Highlighting $highlighting)
+    public function useHighlighting(Highlighting $highlighting): AbstractQueryBuilder
     {
         return $highlighting->build($this);
     }
 
     /**
-     * @param boolean $debugMode
+     * @param bool $debugMode
      * @return $this
      */
-    public function useDebug($debugMode)
+    public function useDebug(bool $debugMode): AbstractQueryBuilder
     {
         if (!$debugMode) {
             $this->queryToBuild->addParam('debugQuery', null);
@@ -499,7 +499,7 @@ abstract class AbstractQueryBuilder {
      * @param Elevation $elevation
      * @return QueryBuilder
      */
-    public function useElevation(Elevation $elevation)
+    public function useElevation(Elevation $elevation): AbstractQueryBuilder
     {
         return $elevation->build($this);
     }
@@ -508,7 +508,7 @@ abstract class AbstractQueryBuilder {
      * @param Spellchecking $spellchecking
      * @return $this
      */
-    public function useSpellchecking(Spellchecking $spellchecking)
+    public function useSpellchecking(Spellchecking $spellchecking): AbstractQueryBuilder
     {
         return $spellchecking->build($this);
     }
@@ -519,7 +519,7 @@ abstract class AbstractQueryBuilder {
      * @param PhraseFields $phraseFields
      * @return $this
      */
-    public function usePhraseFields(PhraseFields $phraseFields)
+    public function usePhraseFields(PhraseFields $phraseFields): AbstractQueryBuilder
     {
         return $phraseFields->build($this);
     }
@@ -530,7 +530,7 @@ abstract class AbstractQueryBuilder {
      * @param BigramPhraseFields $bigramPhraseFields
      * @return $this
      */
-    public function useBigramPhraseFields(BigramPhraseFields $bigramPhraseFields)
+    public function useBigramPhraseFields(BigramPhraseFields $bigramPhraseFields): AbstractQueryBuilder
     {
         return $bigramPhraseFields->build($this);
     }
@@ -541,7 +541,7 @@ abstract class AbstractQueryBuilder {
      * @param TrigramPhraseFields $trigramPhraseFields
      * @return $this
      */
-    public function useTrigramPhraseFields(TrigramPhraseFields $trigramPhraseFields)
+    public function useTrigramPhraseFields(TrigramPhraseFields $trigramPhraseFields): AbstractQueryBuilder
     {
         return $trigramPhraseFields->build($this);
     }

@@ -80,6 +80,7 @@ then
   exit 1
 fi
 
+COMPOSER_NO_INTERACTION=1
 # Install build tools
 echo "Install build tools: "
 if ! composer global require \

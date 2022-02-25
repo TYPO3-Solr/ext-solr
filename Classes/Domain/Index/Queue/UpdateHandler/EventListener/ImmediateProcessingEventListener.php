@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -17,15 +17,17 @@ declare(strict_types = 1);
 
 namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\EventListener;
 
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\EventListener\Events\ProcessingFinishedEvent;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\ContentElementDeletedEvent;
-use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\VersionSwappedEvent;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\DataUpdateEventInterface;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\PageMovedEvent;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordDeletedEvent;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordGarbageCheckEvent;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordMovedEvent;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordUpdatedEvent;
-use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordDeletedEvent;
-use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\PageMovedEvent;
-use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordGarbageCheckEvent;
-use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\DataUpdateEventInterface;
-use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\EventListener\Events\ProcessingFinishedEvent;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\VersionSwappedEvent;
+use Doctrine\DBAL\Driver\Exception as DBALDriverException;
+use Throwable;
 
 /**
  * Event listener for immediate processing of
@@ -58,6 +60,7 @@ class ImmediateProcessingEventListener extends AbstractBaseEventListener
      * Determines the right method by event name
      *
      * @param DataUpdateEventInterface $event
+     * @return string
      */
     protected function getMethodNameByEvent(DataUpdateEventInterface $event): string
     {
@@ -70,6 +73,7 @@ class ImmediateProcessingEventListener extends AbstractBaseEventListener
      * Handles the deletion of a content element
      *
      * @param ContentElementDeletedEvent $event
+     * @noinspection PhpUnused
      */
     protected function handleContentElementDeletedEvent(ContentElementDeletedEvent $event): void
     {
@@ -80,6 +84,8 @@ class ImmediateProcessingEventListener extends AbstractBaseEventListener
      * Handles a version swap
      *
      * @param VersionSwappedEvent $event
+     * @throws DBALDriverException
+     * @noinspection PhpUnused
      */
     protected function handleVersionSwappedEvent(VersionSwappedEvent $event): void
     {
@@ -90,6 +96,8 @@ class ImmediateProcessingEventListener extends AbstractBaseEventListener
      * Handles moved records, including pages
      *
      * @param RecordMovedEvent $event
+     * @throws DBALDriverException
+     * @noinspection PhpUnused
      */
     protected function handleRecordMovedEvent(RecordMovedEvent $event): void
     {
@@ -104,6 +112,9 @@ class ImmediateProcessingEventListener extends AbstractBaseEventListener
      * Handles record updates
      *
      * @param RecordUpdatedEvent $event
+     * @throws DBALDriverException
+     * @throws Throwable
+     * @noinspection PhpUnused
      */
     protected function handleRecordUpdatedEvent(RecordUpdatedEvent $event): void
     {
@@ -120,6 +131,7 @@ class ImmediateProcessingEventListener extends AbstractBaseEventListener
      * Handles record deletion
      *
      * @param RecordDeletedEvent $event
+     * @noinspection PhpUnused
      */
     protected function handleRecordDeletedEvent(RecordDeletedEvent $event): void
     {
@@ -130,6 +142,7 @@ class ImmediateProcessingEventListener extends AbstractBaseEventListener
      * Handles a page movement
      *
      * @param PageMovedEvent $event
+     * @noinspection PhpUnused
      */
     protected function handlePageMovedEvent(PageMovedEvent $event): void
     {
@@ -140,6 +153,7 @@ class ImmediateProcessingEventListener extends AbstractBaseEventListener
      * Performs garbage checks
      *
      * @param RecordGarbageCheckEvent $event
+     * @noinspection PhpUnused
      */
     protected function handleRecordGarbageCheckEvent(RecordGarbageCheckEvent $event): void
     {

@@ -18,9 +18,10 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Hie
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetItemCollection;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Value object that represent a options facet.
+ * Value object that represent the options facet.
  *
  * @author Frans Saris <frans@beech.it>
  * @author Timo Hund <timo.hund@dkd.de>
@@ -33,22 +34,22 @@ class HierarchyFacet extends AbstractFacet
      * String
      * @var string
      */
-    protected static $type = self::TYPE_HIERARCHY;
+    protected static string $type = self::TYPE_HIERARCHY;
 
     /**
      * @var NodeCollection
      */
-    protected $childNodes;
+    protected NodeCollection $childNodes;
 
     /**
      * @var NodeCollection
      */
-    protected $allNodes;
+    protected NodeCollection $allNodes;
 
     /**
      * @var array
      */
-    protected $nodesByKey = [];
+    protected array $nodesByKey = [];
 
     /**
      * OptionsFacet constructor
@@ -59,8 +60,13 @@ class HierarchyFacet extends AbstractFacet
      * @param string $label
      * @param array $configuration Facet configuration passed from typoscript
      */
-    public function __construct(SearchResultSet $resultSet, $name, $field, $label = '', array $configuration = [])
-    {
+    public function __construct(
+        SearchResultSet $resultSet,
+        string $name,
+        string $field,
+        string $label = '',
+        array $configuration = []
+    ) {
         parent::__construct($resultSet, $name, $field, $label, $configuration);
         $this->childNodes = new NodeCollection();
         $this->allNodes = new NodeCollection();
@@ -77,7 +83,7 @@ class HierarchyFacet extends AbstractFacet
     /**
      * @return NodeCollection
      */
-    public function getChildNodes()
+    public function getChildNodes(): NodeCollection
     {
         return $this->childNodes;
     }
@@ -85,19 +91,34 @@ class HierarchyFacet extends AbstractFacet
     /**
      * Creates a new node on the right position with the right parent node.
      *
-     * @param string  $parentKey
+     * @param string|null $parentKey
      * @param string $key
      * @param string $label
      * @param string $value
-     * @param integer $count
-     * @param boolean $selected
+     * @param int $count
+     * @param bool $selected
      */
-    public function createNode($parentKey, $key, $label, $value, $count, $selected)
-    {
-        /** @var $parentNode Node|null */
-        $parentNode = isset($this->nodesByKey[$parentKey]) ? $this->nodesByKey[$parentKey] : null;
-        /** @var Node $node */
-        $node = $this->objectManager->get(Node::class, $this, $parentNode, $key, $label, $value, $count, $selected);
+    public function createNode(
+        ?string $parentKey,
+        string $key,
+        string $label,
+        string $value,
+        int $count,
+        bool $selected
+    ) {
+        /* @var $parentNode Node|null */
+        $parentNode = $this->nodesByKey[$parentKey] ?? null;
+        /* @var Node $node */
+        $node = GeneralUtility::makeInstance(
+            Node::class,
+            $this,
+            $parentNode,
+            $key,
+            $label,
+            $value,
+            $count,
+            $selected
+        );
         $this->nodesByKey[$key] = $node;
 
         if ($parentNode === null) {
@@ -114,7 +135,7 @@ class HierarchyFacet extends AbstractFacet
      *
      * @return string
      */
-    public function getPartialName()
+    public function getPartialName(): string
     {
         return !empty($this->configuration['partialName']) ? $this->configuration['partialName'] : 'Hierarchy';
     }
@@ -124,7 +145,7 @@ class HierarchyFacet extends AbstractFacet
      *
      * @return AbstractFacetItemCollection
      */
-    public function getAllFacetItems()
+    public function getAllFacetItems(): AbstractFacetItemCollection
     {
         return $this->allNodes;
     }

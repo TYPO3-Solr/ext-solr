@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -15,7 +17,8 @@
 
 namespace ApacheSolrForTypo3\Solr\Search;
 
-use ApacheSolrForTypo3\Solr\Search\SearchComponent;
+use InvalidArgumentException;
+use RuntimeException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -25,13 +28,12 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class SearchComponentManager
 {
-
     /**
      * Search component registry.
      *
      * @var array
      */
-    protected static $searchComponents = [];
+    protected static array $searchComponents = [];
 
     /**
      * Registers a search component.
@@ -40,8 +42,8 @@ class SearchComponentManager
      * @param string $componentClassName Component class
      */
     public static function registerSearchComponent(
-        $componentName,
-        $componentClassName
+        string $componentName,
+        string $componentClassName
     ) {
         self::$searchComponents[$componentName] = $componentClassName;
     }
@@ -51,7 +53,7 @@ class SearchComponentManager
      *
      * @return array An array of search component instances
      */
-    public function getSearchComponents()
+    public function getSearchComponents(): array
     {
         $searchComponents = [];
 
@@ -63,17 +65,17 @@ class SearchComponentManager
     }
 
     /**
-     * Instanciates a registered search component
+     * Instantiates a registered search component
      *
      * @param string $componentName Search component name
      * @return SearchComponent Instance of the requested search component
-     * @throws \InvalidArgumentException if $componentName is not a registered search component
-     * @throws \RuntimeException if the class registered for $componentName is not an implementation of ApacheSolrForTypo3\Solr\Search\SearchComponent
+     * @throws InvalidArgumentException if $componentName is not a registered search component
+     * @throws RuntimeException if the class registered for $componentName is not an implementation of ApacheSolrForTypo3\Solr\Search\SearchComponent
      */
-    public function getSearchComponent($componentName)
+    public function getSearchComponent(string $componentName): SearchComponent
     {
         if (!array_key_exists($componentName, self::$searchComponents)) {
-            throw new \InvalidArgumentException(
+            throw new InvalidArgumentException(
                 'No search component registered named ' . $componentName,
                 1343398440
             );
@@ -82,7 +84,7 @@ class SearchComponentManager
         $searchComponent = GeneralUtility::makeInstance(self::$searchComponents[$componentName]);
 
         if (!($searchComponent instanceof SearchComponent)) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 'Class ' . self::$searchComponents[$componentName] . ' must implement interface ' . SearchComponent::class,
                 1343398621
             );
@@ -96,7 +98,7 @@ class SearchComponentManager
      *
      * @param string $componentName Search component name
      */
-    public function removeSearchComponent($componentName)
+    public function removeSearchComponent(string $componentName)
     {
         if (!array_key_exists($componentName, self::$searchComponents)) {
             return;

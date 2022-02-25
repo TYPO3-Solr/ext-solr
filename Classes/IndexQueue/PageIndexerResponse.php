@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -15,6 +17,8 @@
 
 namespace ApacheSolrForTypo3\Solr\IndexQueue;
 
+use RuntimeException;
+
 /**
  * Index Queue Page Indexer response to provide data for requested actions.
  *
@@ -22,20 +26,19 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
  */
 class PageIndexerResponse
 {
-
     /**
      * Unique request ID.
      *
      * @var string
      */
-    protected $requestId = null;
+    protected string $requestId;
 
     /**
      * The actions' results as action => result pairs.
      *
      * @var array
      */
-    protected $results = [];
+    protected array $results = [];
 
     /**
      * Turns a JSON encoded result string back into its PHP representation.
@@ -43,7 +46,7 @@ class PageIndexerResponse
      * @param string $jsonEncodedResponse JSON encoded result string
      * @return array|bool An array of action => result pairs or FALSE if the response could not be decoded
      */
-    public static function getResultsFromJson($jsonEncodedResponse)
+    public static function getResultsFromJson(string $jsonEncodedResponse)
     {
         $responseData = json_decode($jsonEncodedResponse, true);
 
@@ -63,35 +66,25 @@ class PageIndexerResponse
      *
      * @param string $action The action name.
      * @param mixed $result The action's result.
-     * @throws \RuntimeException if $action is null
+     * @throws RuntimeException if $action is null
      */
-    public function addActionResult($action, $result)
+    public function addActionResult(string $action, $result)
     {
-        if (is_null($action)) {
-            throw new \RuntimeException(
-                'Attempt to provide a result without providing an action',
-                1294080509
-            );
-        }
-
         $this->results[$action] = $result;
     }
 
     /**
      * Gets the complete set of results or a specific action's results.
      *
-     * @param string $action Optional action name.
-     * @return array
+     * @param string|null $action Optional action name.
+     * @return mixed
      */
-    public function getActionResult($action = null)
+    public function getActionResult(?string $action = null)
     {
-        $result = $this->results;
-
-        if (!empty($action)) {
-            $result = $this->results[$action];
+        if (empty($action)) {
+            return $this->results;
         }
-
-        return $result;
+        return $this->results[$action];
     }
 
     /**
@@ -100,7 +93,7 @@ class PageIndexerResponse
      *
      * @return string The response content
      */
-    public function getContent()
+    public function getContent(): string
     {
         return $this->toJson();
     }
@@ -110,7 +103,7 @@ class PageIndexerResponse
      *
      * @return string JSON representation of the results.
      */
-    protected function toJson()
+    protected function toJson(): string
     {
         $serializedActionResults = [];
 
@@ -120,7 +113,7 @@ class PageIndexerResponse
 
         $responseData = [
             'requestId' => $this->requestId,
-            'actionResults' => $serializedActionResults
+            'actionResults' => $serializedActionResults,
         ];
 
         return json_encode($responseData);
@@ -131,7 +124,7 @@ class PageIndexerResponse
      *
      * @return string Request Id.
      */
-    public function getRequestId()
+    public function getRequestId(): string
     {
         return $this->requestId;
     }
@@ -140,9 +133,8 @@ class PageIndexerResponse
      * Sets the Id of the request this response belongs to.
      *
      * @param string $requestId Request Id.
-     * @return void
      */
-    public function setRequestId($requestId)
+    public function setRequestId(string $requestId)
     {
         $this->requestId = $requestId;
     }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -28,32 +30,32 @@ class ResultsPagination implements PaginationInterface
     /**
      * @var PaginatorInterface
      */
-    protected $paginator;
+    protected PaginatorInterface $paginator;
 
     /**
      * @var int
      */
-    protected $maxPageNumbers = 0;
+    protected int $maxPageNumbers = 0;
 
     /**
      * @var bool
      */
-    protected $hasMorePages = false;
+    protected bool $hasMorePages = false;
 
     /**
      * @var bool
      */
-    protected $hasLessPages = false;
+    protected bool $hasLessPages = false;
 
     /**
      * @var int
      */
-    protected $pageRangeFirst;
+    protected int $pageRangeFirst = 1;
 
     /**
      * @var int
      */
-    protected $pageRangeLast;
+    protected int $pageRangeLast = 1;
 
     /**
      * @param PaginatorInterface $paginator
@@ -198,8 +200,6 @@ class ResultsPagination implements PaginationInterface
 
     /**
      * Calculate page range
-     *
-     * @return void
      */
     protected function calculatePageRange(): void
     {

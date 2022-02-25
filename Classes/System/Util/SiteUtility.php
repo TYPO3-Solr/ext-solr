@@ -25,28 +25,26 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class SiteUtility
 {
-
-    /** @var array */
-    public static $languages = [];
+    /**
+     * @var array
+     */
+    public static array $languages = [];
 
     /**
      * Determines if the site where the page belongs to is managed with the TYPO3 site management.
      *
      * @param int $pageId
-     * @return boolean
+     * @return bool
      */
     public static function getIsSiteManagedSite(int $pageId): bool
     {
-
         $siteFinder = GeneralUtility::makeInstance(SiteFinder::class);
         try {
             /* @var SiteFinder $siteFinder */
-            $site = $siteFinder->getSiteByPageId($pageId);
+            return $siteFinder->getSiteByPageId($pageId) instanceof Site;
         } catch (SiteNotFoundException $e) {
-            return false;
         }
-
-        return $site instanceof Site;
+        return false;
     }
 
     /**
@@ -57,9 +55,9 @@ class SiteUtility
      * The configuration is done in the globals configuration of a site, and be extended in the language specific configuration
      * of a site.
      *
-     * Typically everything except the core name is configured on the global level and the core name differs for each language.
+     * Typically, everything except the core name is configured on the global level and the core name differs for each language.
      *
-     * In addition every property can be defined for the ```read``` and ```write``` scope.
+     * In addition, every property can be defined for the ```read``` and ```write``` scope.
      *
      * The convention for property keys is "solr_{propertyName}_{scope}". With the configuration "solr_host_read" you define the host
      * for the solr read connection.
@@ -68,11 +66,16 @@ class SiteUtility
      * @param string $property
      * @param int $languageId
      * @param string $scope
-     * @param string $defaultValue
-     * @return string
+     * @param mixed $defaultValue
+     * @return mixed
      */
-    public static function getConnectionProperty(Site $typo3Site, string $property, int $languageId, string $scope, string $defaultValue = null): string
-    {
+    public static function getConnectionProperty(
+        Site $typo3Site,
+        string $property,
+        int $languageId,
+        string $scope,
+        $defaultValue = null
+    ): string {
         $value = self::getConnectionPropertyOrFallback($typo3Site, $property, $languageId, $scope);
         if ($value === null) {
             return $defaultValue;
@@ -88,10 +91,14 @@ class SiteUtility
      * @param string $property
      * @param int $languageId
      * @param string $scope
-     * @return mixed
+     * @return string|bool|null
      */
-    protected static function getConnectionPropertyOrFallback(Site $typo3Site, string $property, int $languageId, string $scope)
-    {
+    protected static function getConnectionPropertyOrFallback(
+        Site $typo3Site,
+        string $property,
+        int $languageId,
+        string $scope
+    ) {
         if ($scope === 'write' && !self::writeConnectionIsEnabled($typo3Site, $languageId)) {
             $scope = 'read';
         }
@@ -174,7 +181,8 @@ class SiteUtility
     {
         if ($value === 'true') {
             return true;
-        } elseif ($value === 'false') {
+        }
+        if ($value === 'false') {
             return false;
         }
 

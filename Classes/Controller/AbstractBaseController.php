@@ -18,13 +18,13 @@ namespace ApacheSolrForTypo3\Solr\Controller;
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSetService;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequestBuilder;
+use ApacheSolrForTypo3\Solr\Mvc\Controller\SolrControllerContext;
 use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
 use ApacheSolrForTypo3\Solr\Search;
+use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager as SolrConfigurationManager;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
-use ApacheSolrForTypo3\Solr\Mvc\Controller\SolrControllerContext;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Service\ConfigurationService;
-use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager as SolrConfigurationManager;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\TypoScript\TypoScriptService;
@@ -92,7 +92,6 @@ abstract class AbstractBaseController extends ActionController
 
     /**
      * @param ConfigurationManagerInterface $configurationManager
-     * @return void
      */
     public function injectConfigurationManager(ConfigurationManagerInterface $configurationManager)
     {
@@ -205,8 +204,6 @@ abstract class AbstractBaseController extends ActionController
 
     /**
      * Inject settings of plugin.tx_solr
-     *
-     * @return void
      */
     protected function initializeSettings()
     {
@@ -258,8 +255,6 @@ abstract class AbstractBaseController extends ActionController
 
     /**
      * Called when the solr server is unavailable.
-     *
-     * @return void
      */
     protected function logSolrUnavailable()
     {

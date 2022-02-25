@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -16,6 +18,7 @@
 namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\Parser;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
+use InvalidArgumentException;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -32,21 +35,21 @@ class ResultParserRegistry implements SingletonInterface
      *
      * @var array
      */
-    protected $parsers = [
+    protected array $parsers = [
         100 => DefaultResultParser::class,
     ];
 
     /**
-     * @var AbstractResultParser[]
+     * @var AbstractResultParser[]|null
      */
-    protected $parserInstances;
+    protected ?array $parserInstances = null;
 
     /**
      * Get registered parser classNames
      *
      * @return array
      */
-    public function getParsers()
+    public function getParsers(): array
     {
         return $this->parsers;
     }
@@ -56,34 +59,34 @@ class ResultParserRegistry implements SingletonInterface
      *
      * @param string $className classname of the parser that should be used
      * @param int $priority higher priority means more important
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
-    public function registerParser($className, $priority)
+    public function registerParser(string $className, int $priority): void
     {
         // check if the class is available for TYPO3 before registering the driver
         if (!class_exists($className)) {
-            throw new \InvalidArgumentException('Class ' . $className . ' does not exist.', 1468863997);
+            throw new InvalidArgumentException('Class ' . $className . ' does not exist.', 1468863997);
         }
 
         if (!is_subclass_of($className, AbstractResultParser::class)) {
-            throw new \InvalidArgumentException('Parser ' . $className . ' needs to implement the AbstractResultParser.', 1468863998);
+            throw new InvalidArgumentException('Parser ' . $className . ' needs to implement the AbstractResultParser.', 1468863998);
         }
 
-        if (array_key_exists((int)$priority, $this->parsers)) {
-            throw new \InvalidArgumentException('There is already a parser registerd with priority ' . (int)$priority . '.', 1468863999);
+        if (array_key_exists($priority, $this->parsers)) {
+            throw new InvalidArgumentException('There is already a parser registered with priority ' . $priority . '.', 1468863999);
         }
 
-        $this->parsers[(int)$priority] = $className;
+        $this->parsers[$priority] = $className;
     }
 
     /**
-     * Method to check if a certain parser is allready registered
+     * Method to check if a certain parser is already registered
      *
      * @param string $className
      * @param int $priority
-     * @return boolean
+     * @return bool
      */
-    public function hasParser($className, $priority)
+    public function hasParser(string $className, int $priority): bool
     {
         if (empty($this->parsers[$priority])) {
             return false;
@@ -95,7 +98,7 @@ class ResultParserRegistry implements SingletonInterface
     /**
      * @return AbstractResultParser[]
      */
-    public function getParserInstances()
+    public function getParserInstances(): ?array
     {
         if ($this->parserInstances === null) {
             ksort($this->parsers);
@@ -111,9 +114,9 @@ class ResultParserRegistry implements SingletonInterface
      * @param SearchResultSet $resultSet
      * @return AbstractResultParser|null
      */
-    public function getParser(SearchResultSet $resultSet)
+    public function getParser(SearchResultSet $resultSet): ?AbstractResultParser
     {
-        /** @var AbstractResultParser $parser */
+        /* @var AbstractResultParser $parser */
         foreach ($this->getParserInstances() as $parser) {
             if ($parser->canParse($resultSet)) {
                 return $parser;
@@ -125,9 +128,11 @@ class ResultParserRegistry implements SingletonInterface
     /**
      * Create an instance of a certain parser class
      *
+     * @param string $className
      * @return AbstractResultParser
+     * @noinspection PhpIncompatibleReturnTypeInspection
      */
-    protected function createParserInstance($className)
+    protected function createParserInstance(string $className): AbstractResultParser
     {
         return GeneralUtility::makeInstance($className);
     }

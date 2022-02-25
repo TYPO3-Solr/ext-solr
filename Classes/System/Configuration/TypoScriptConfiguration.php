@@ -252,8 +252,8 @@ class TypoScriptConfiguration
     /**
      * Returns true when ext_solr is enabled
      *
-     * @param boolean $defaultIfEmpty
-     * @return boolean
+     * @param bool $defaultIfEmpty
+     * @return bool
      */
     public function getEnabled(bool $defaultIfEmpty = false): bool
     {
@@ -548,7 +548,6 @@ class TypoScriptConfiguration
         // For easier check later on we return an array by combining $recursiveUpdateFields
         return array_combine($recursiveUpdateFields, $recursiveUpdateFields);
     }
-
 
     /**
      * Retrieves and initialPagesAdditionalWhereClause where clause when configured or an empty string.
@@ -1299,8 +1298,6 @@ class TypoScriptConfiguration
 
     /**
      * Removes the pageSections filter setting.
-     *
-     * @return void
      */
     public function removeSearchQueryFilterForPageSections()
     {
@@ -1466,7 +1463,6 @@ class TypoScriptConfiguration
         return $this->getBool($isSiteHighlightingEnabled);
     }
 
-
     /**
      * Can be used to check if the highlighting is enabled
      *
@@ -1475,7 +1471,7 @@ class TypoScriptConfiguration
      * @param bool $defaultIfEmpty
      * @return bool
      */
-    public function getSearchResultsHighlighting(bool $defaultIfEmpty = false): bool
+    public function getIsSearchResultsHighlightingEnabled(bool $defaultIfEmpty = false): bool
     {
         $isHighlightingEnabled = $this->getValueByPathOrDefaultValue('plugin.tx_solr.search.results.resultsHighlighting', $defaultIfEmpty);
         return $this->getBool($isHighlightingEnabled);
@@ -1579,7 +1575,7 @@ class TypoScriptConfiguration
      * @param int $defaultIfEmpty
      * @return int
      */
-    public function getMaxPaginatorLinks($defaultIfEmpty = 0)
+    public function getMaxPaginatorLinks(int $defaultIfEmpty = 0): int
     {
         return (int)$this->getValueByPathOrDefaultValue('plugin.tx_solr.search.results.maxPaginatorLinks', $defaultIfEmpty);
     }
@@ -2141,7 +2137,7 @@ class TypoScriptConfiguration
      * @param bool $defaultIfEmpty
      * @return bool
      */
-    public function getSearchGrouping(bool $defaultIfEmpty = false): bool
+    public function getIsSearchGroupingEnabled(bool $defaultIfEmpty = false): bool
     {
         $groupingEnabled = $this->getValueByPathOrDefaultValue('plugin.tx_solr.search.grouping', $defaultIfEmpty);
         return $this->getBool($groupingEnabled);
@@ -2194,7 +2190,7 @@ class TypoScriptConfiguration
             return $highestLimit;
         }
 
-        foreach ($groupingConfiguration['groups.'] as $groupName => $groupConfiguration) {
+        foreach ($groupingConfiguration['groups.'] as $groupConfiguration) {
             if (!empty($groupConfiguration['numberOfResultsPerGroup']) && $groupConfiguration['numberOfResultsPerGroup'] > $highestLimit) {
                 $highestLimit = $groupConfiguration['numberOfResultsPerGroup'];
             }
@@ -2221,13 +2217,13 @@ class TypoScriptConfiguration
         $specificResultsPerGroup = $this->getValueByPathOrDefaultValue($specificPath, null);
 
         if ($specificResultsPerGroup !== null) {
-            return (int) $specificResultsPerGroup;
+            return (int)$specificResultsPerGroup;
         }
 
         $commonPath = 'plugin.tx_solr.search.grouping.numberOfResultsPerGroup';
         $commonValue = $this->getValueByPathOrDefaultValue($commonPath, null);
         if ($commonValue !== null) {
-            return (int) $commonValue;
+            return (int)$commonValue;
         }
 
         return $defaultIfEmpty;

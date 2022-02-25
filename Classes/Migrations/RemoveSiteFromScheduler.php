@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -15,6 +17,9 @@
 
 namespace ApacheSolrForTypo3\Solr\Migrations;
 
+use Doctrine\DBAL\Driver\Statement as DBALDriverStatement;
+use Doctrine\DBAL\Exception as DBALException;
+use Throwable;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -22,15 +27,17 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Removes the Site property from the SchedulerTask and set the rootPageId property.
  */
-class RemoveSiteFromScheduler implements Migration {
+class RemoveSiteFromScheduler implements Migration
+{
 
     /**
      * Called by the extension manager to determine if the update menu entry
-     * should by showed.
+     * should be showed.
      *
      * @return bool
+     * @throws DBALException|\Doctrine\DBAL\DBALException
      */
-    public function isNeeded()
+    public function isNeeded(): bool
     {
         $taskRows = $this->getTasksWithAssignedSite();
         $legacySchedulerTaskCount = $taskRows->rowCount();
@@ -41,13 +48,14 @@ class RemoveSiteFromScheduler implements Migration {
     /**
      * Main update function called by the extension manager.
      *
-     * @return string
+     * @return array
+     * @throws DBALException|\Doctrine\DBAL\DBALException
      */
-    public function process()
+    public function process(): array
     {
         $taskRows = $this->getTasksWithAssignedSite();
         $legacySchedulerTasks = $taskRows->fetchAll();
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable("tx_scheduler_task");
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_scheduler_task');
 
         $status = FlashMessage::OK;
         $title = 'Remove site from scheduler task';
@@ -65,32 +73,31 @@ class RemoveSiteFromScheduler implements Migration {
                     ->execute();
 
                 $migratedTaskCount += $updatedRows;
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 $failedTaskCount++;
                 $status = FlashMessage::ERROR;
             }
         }
 
-        $message = 'Migrated ' . (int)$migratedTaskCount . ' scheduler tasks! Update of ' . (int)$failedTaskCount . ' failed!';
+        $message = 'Migrated ' . (int)$migratedTaskCount . ' scheduler tasks! Update of ' . $failedTaskCount . ' failed!';
         return [$status, $title, $message];
     }
 
     /**
-     * @return \Doctrine\DBAL\Driver\Statement|int
+     * @return DBALDriverStatement|int
+     * @throws DBALException|\Doctrine\DBAL\DBALException
      */
     protected function getTasksWithAssignedSite()
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable("tx_scheduler_task");
-        $taskRows = $queryBuilder
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_scheduler_task');
+        return $queryBuilder
             ->select('uid', 'serialized_task_object')
-            ->from("tx_scheduler_task")
+            ->from('tx_scheduler_task')
             ->where(
                 $queryBuilder->expr()->andX(
                     $queryBuilder->expr()->like('serialized_task_object', "'%ApacheSolrForTypo3%'"),
                     $queryBuilder->expr()->like('serialized_task_object', "'%site\";O:28:\"%'")
                 )
             )->execute();
-
-        return $taskRows;
     }
 }

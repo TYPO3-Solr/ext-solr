@@ -1,4 +1,22 @@
 <?php
+
+// @todo: self::getAbsRefPrefixFromTSFE() returns false instead of string.
+//        Solve that issue and activate strict types.
+//declare(strict_types=1);
+
+/*
+ * This file is part of the TYPO3 CMS project.
+ *
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
+ *
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ *
+ * The TYPO3 project - inspiring people to share!
+ */
+
 namespace ApacheSolrForTypo3\Solr\FrontendEnvironment;
 
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationPageResolver;
@@ -8,24 +26,26 @@ use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\LanguageAspectFactory;
 use TYPO3\CMS\Core\Context\TypoScriptAspect;
+use TYPO3\CMS\Core\Context\UserAspect;
 use TYPO3\CMS\Core\Context\VisibilityAspect;
 use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
 use TYPO3\CMS\Core\Domain\Repository\PageRepository;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
+use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Localization\Locales;
 use TYPO3\CMS\Core\Routing\PageArguments;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\TypoScript\TemplateService;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Context\UserAspect;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
-use TYPO3\CMS\Core\Http\ServerRequest;
+use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
+/**
+ * Class Tsfe is a factory class for TSFE(TypoScriptFrontendController) objects.
+ */
 class Tsfe implements SingletonInterface
 {
-
     /**
      * @var TypoScriptFrontendController[]
      */
@@ -63,6 +83,7 @@ class Tsfe implements SingletonInterface
      * @throws Exception\Exception
      * @throws SiteNotFoundException
      *
+     *
      * @todo: Move whole caching stuff from this method and let return TSFE.
      */
     protected function initializeTsfe(int $pageId, int $language = 0, ?int $rootPageId = null)
@@ -84,7 +105,7 @@ class Tsfe implements SingletonInterface
         }
 
         /* @var Context $context */
-        $context = clone (GeneralUtility::makeInstance(Context::class));
+        $context = clone GeneralUtility::makeInstance(Context::class);
         $site = $this->siteFinder->getSiteByPageId($pageId);
         // $siteLanguage and $languageAspect takes the language id into account.
         //   See: $site->getLanguageById($language);
@@ -232,11 +253,10 @@ class Tsfe implements SingletonInterface
     {
         try {
             $typo3Site = $this->siteFinder->getSiteByPageId($pageId);
-        } catch (Throwable $e)
-        {
+        } catch (Throwable $e) {
             return null;
         }
-        $availableLanguageIds = array_map(function($siteLanguage) {
+        $availableLanguageIds = array_map(function ($siteLanguage) {
             return $siteLanguage->getLanguageId();
         }, $typo3Site->getLanguages());
 
@@ -282,7 +302,7 @@ class Tsfe implements SingletonInterface
     protected function assureIsInitialized(int $pageId, int $language, ?int $rootPageId = null): void
     {
         $cacheIdentifier = $this->getCacheIdentifier($pageId, $language, $rootPageId);
-        if(!array_key_exists($cacheIdentifier, $this->tsfeCache)) {
+        if (!array_key_exists($cacheIdentifier, $this->tsfeCache)) {
             $this->initializeTsfe($pageId, $language, $rootPageId);
             return;
         }
@@ -340,7 +360,8 @@ class Tsfe implements SingletonInterface
                 "The closest page with active template to page \"$askedPid\" could not be resolved and alternative rootPageId is not provided.",
                 1637339439
             );
-        } else if (isset($rootPageId)) {
+        }
+        if (isset($rootPageId)) {
             return $rootPageId;
         }
         return $this->getPidToUseForTsfeInitialization($pidToUse, $rootPageId);

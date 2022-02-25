@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -17,9 +19,11 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\FrequentSearches\FrequentSearchesService;
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
+use Closure;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
 use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
+use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException as AspectNotFoundExceptionAlias;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
@@ -43,11 +47,12 @@ class FrequentlySearchedViewHelper extends AbstractSolrViewHelper
 
     /**
      * @param array $arguments
-     * @param \Closure $renderChildrenClosure
+     * @param Closure $renderChildrenClosure
      * @param RenderingContextInterface $renderingContext
      * @return mixed|void
+     * @throws AspectNotFoundExceptionAlias
      */
-    public static function renderStatic(array $arguments, \Closure $renderChildrenClosure, RenderingContextInterface $renderingContext)
+    public static function renderStatic(array $arguments, Closure $renderChildrenClosure, RenderingContextInterface $renderingContext)
     {
         /** @var TypoScriptFrontendController $tsfe */
         $tsfe = $GLOBALS['TSFE'];
@@ -112,10 +117,10 @@ class FrequentlySearchedViewHelper extends AbstractSolrViewHelper
             foreach ($frequentSearchTerms as $term => $hits) {
                 $size = round($minimumSize + (($hits - $minimumHits) * $step));
                 $frequentSearches[] = [
-                    'q' => htmlspecialchars_decode($term),
+                    'q' => htmlspecialchars_decode((string)$term),
                     'hits' => $hits,
                     'style' => 'font-size: ' . $size . 'px', 'class' => 'tx-solr-frequent-term-' . $size,
-                    'size' => $size
+                    'size' => $size,
                 ];
             }
         }

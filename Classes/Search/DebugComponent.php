@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -15,8 +17,8 @@
 
 namespace ApacheSolrForTypo3\Solr\Search;
 
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequestAware;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -29,18 +31,17 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class DebugComponent extends AbstractComponent implements QueryAware, SearchRequestAware
 {
-
     /**
      * Solr query
      *
-     * @var Query
+     * @var Query|null
      */
-    protected $query;
+    protected ?Query $query = null;
 
     /**
-     * @var SearchRequest
+     * @var SearchRequest|null
      */
-    protected $seachRequest;
+    protected ?SearchRequest $searchRequest;
 
     /**
      * QueryBuilder
@@ -51,7 +52,7 @@ class DebugComponent extends AbstractComponent implements QueryAware, SearchRequ
 
     /**
      * AccessComponent constructor.
-     * @param QueryBuilder|null
+     * @param QueryBuilder|null $queryBuilder
      */
     public function __construct(QueryBuilder $queryBuilder = null)
     {
@@ -65,18 +66,17 @@ class DebugComponent extends AbstractComponent implements QueryAware, SearchRequ
      */
     public function setSearchRequest(SearchRequest $searchRequest)
     {
-        $this->seachRequest = $searchRequest;
+        $this->searchRequest = $searchRequest;
     }
 
     /**
      * Initializes the search component.
      *
      * Sets the debug query parameter
-     *
      */
     public function initializeSearchComponent()
     {
-        if ($this->seachRequest->getContextTypoScriptConfiguration()->getEnabledDebugMode()) {
+        if ($this->searchRequest->getContextTypoScriptConfiguration()->getEnabledDebugMode()) {
             $this->queryBuilder->startFrom($this->query)->useDebug(true);
         }
     }

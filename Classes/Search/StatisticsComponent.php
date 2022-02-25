@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -27,11 +29,10 @@ use ApacheSolrForTypo3\Solr\Query\Modifier\Statistics;
  */
 class StatisticsComponent extends AbstractComponent implements SearchRequestAware
 {
-
     /**
-     * @var SearchRequest
+     * @var SearchRequest|null
      */
-    protected $seachRequest;
+    protected ?SearchRequest $searchRequest = null;
 
     /**
      * Provides a component that is aware of the current SearchRequest
@@ -40,16 +41,15 @@ class StatisticsComponent extends AbstractComponent implements SearchRequestAwar
      */
     public function setSearchRequest(SearchRequest $searchRequest)
     {
-        $this->seachRequest = $searchRequest;
+        $this->searchRequest = $searchRequest;
     }
 
     /**
      * Initializes the search component.
-     *
      */
     public function initializeSearchComponent()
     {
-        $solrConfiguration = $this->seachRequest->getContextTypoScriptConfiguration();
+        $solrConfiguration = $this->searchRequest->getContextTypoScriptConfiguration();
 
         if ($solrConfiguration->getStatistics()) {
             if (empty($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['afterSearch']['statistics'])) {
@@ -61,5 +61,4 @@ class StatisticsComponent extends AbstractComponent implements SearchRequestAwar
             }
         }
     }
-
 }

@@ -18,8 +18,8 @@ declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue;
 
 use ApacheSolrForTypo3\Solr\System\Records\AbstractRepository;
-use Doctrine\DBAL\Exception as DBALException;
 use Doctrine\DBAL\Driver\Exception as DBALDriverException;
+use Doctrine\DBAL\Exception as DBALException;
 use PDO;
 
 /**
@@ -31,7 +31,7 @@ class IndexQueueIndexingPropertyRepository extends AbstractRepository
     /**
      * @var string
      */
-    protected $table = 'tx_solr_indexqueue_indexing_property';
+    protected string $table = 'tx_solr_indexqueue_indexing_property';
 
     /**
      * Removes existing indexing properties.

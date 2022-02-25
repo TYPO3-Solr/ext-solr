@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -26,22 +28,17 @@ class Group
     /**
      * @var string
      */
-    protected $groupName = '';
+    protected string $groupName = '';
 
     /**
      * @var int
      */
-    protected $resultsPerPage = 10;
+    protected int $resultsPerPage = 10;
 
     /**
      * @var GroupItemCollection
      */
-    protected $groupItems = null;
-
-    /**
-     * @var array
-     */
-    protected $groupConfiguration = [];
+    protected GroupItemCollection $groupItems;
 
     /**
      * Group constructor.

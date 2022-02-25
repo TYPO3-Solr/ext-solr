@@ -36,7 +36,7 @@ then
   echo "PHP CS Fixer not found, skipping PHP linting."
 else
   echo "Check PSR-2 compliance"
-  if ! php-cs-fixer fix --diff --verbose --dry-run --rules='{"function_declaration": {"closure_function_spacing": "none"}}' Classes
+  if ! php-cs-fixer fix --diff --verbose --dry-run Classes
   then
     echo "Some files are not PSR-2 compliant"
     echo "Please fix the files listed above"

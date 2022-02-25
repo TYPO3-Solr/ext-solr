@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -15,20 +17,23 @@
 
 namespace ApacheSolrForTypo3\Solr\System\Data;
 
+use ArrayAccess;
 use ArrayIterator;
+use Closure;
+use Countable;
+use IteratorAggregate;
 use ReturnTypeWillChange;
 use Traversable;
 
 /**
  * Class AbstractCollection
  */
-abstract class AbstractCollection implements \IteratorAggregate, \Countable, \ArrayAccess
+abstract class AbstractCollection implements IteratorAggregate, Countable, ArrayAccess
 {
-
     /**
      * @var array
      */
-    protected $data = [];
+    protected array $data = [];
 
     /**
      * @param array $data
@@ -39,22 +44,24 @@ abstract class AbstractCollection implements \IteratorAggregate, \Countable, \Ar
     }
 
     /**
-     * @return void
+     * Clears the collection data.
+     *
+     * @noinspection PhpUnused
      */
-    public function clean()
+    public function clean(): void
     {
         $this->data = [];
     }
 
     /**
-     * This method can be used to pass a closure to created a filtered copy.
-     * The closure get an collection item passed and needs to return true when the item should
+     * This method can be used to pass a closure to create a filtered copy.
+     * The closure get a collection item passed and needs to return true when the item should
      * be kept or false when it can be skipped.
      *
-     * @param callable $filter
+     * @param Closure $filter
      * @return AbstractCollection
      */
-    public function getFilteredCopy(\Closure $filter)
+    public function getFilteredCopy(Closure $filter): AbstractCollection
     {
         $copy = clone $this;
         $filteredData = [];
@@ -79,16 +86,16 @@ abstract class AbstractCollection implements \IteratorAggregate, \Countable, \Ar
     /**
      * @return array
      */
-    public function getArrayCopy()
+    public function getArrayCopy(): array
     {
         return $this->data;
     }
 
     /**
      * @param int $position
-     * @return ?Object
+     * @return ?object
      */
-    public function getByPosition(int $position)
+    public function getByPosition(int $position): ?object
     {
         $keys = array_keys($this->data);
         return $this->data[$keys[$position] ?? null] ?? null;
@@ -117,10 +124,7 @@ abstract class AbstractCollection implements \IteratorAggregate, \Countable, \Ar
     }
 
     /**
-     * Whether a offset exists
-     *
-     * @param mixed $offset
-     * @return bool true on success or false on failure
+     * @inheritDoc
      */
     public function offsetExists($offset): bool
     {
@@ -132,15 +136,15 @@ abstract class AbstractCollection implements \IteratorAggregate, \Countable, \Ar
      *
      * @param mixed $offset
      * @return mixed
+     * @noinspection PhpLanguageLevelInspection
      */
     #[ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         if ($this->offsetExists($offset)) {
             return $this->data[$offset];
-        } else {
-            return null;
         }
+        return null;
     }
 
     /**
@@ -148,7 +152,6 @@ abstract class AbstractCollection implements \IteratorAggregate, \Countable, \Ar
      *
      * @param mixed $offset
      * @param mixed $value
-     * @return void
      */
     public function offsetSet($offset, $value): void
     {
@@ -163,7 +166,6 @@ abstract class AbstractCollection implements \IteratorAggregate, \Countable, \Ar
      * Offset to unset
      *
      * @param mixed $offset
-     * @return void
      */
     public function offsetUnset($offset): void
     {

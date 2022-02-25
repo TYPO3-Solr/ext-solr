@@ -17,8 +17,8 @@ namespace ApacheSolrForTypo3\Solr\ContentObject;
 
 use ApacheSolrForTypo3\Solr\System\Language\FrontendOverlayService;
 use ApacheSolrForTypo3\Solr\System\TCA\TCAService;
-use Doctrine\DBAL\Exception as DBALException;
 use Doctrine\DBAL\Driver\Statement;
+use Doctrine\DBAL\Exception as DBALException;
 use ReflectionClass;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -98,7 +98,11 @@ class Relation extends AbstractContentObject
      *
      * @inheritDoc
      *
+     * @param array $conf
+     * @return string
      * @throws AspectNotFoundException
+     * @throws DBALException
+     * @noinspection PhpMissingReturnTypeInspection, because foreign source inheritance See {@link AbstractContentObject::render()}
      */
     public function render($conf = [])
     {
@@ -130,11 +134,12 @@ class Relation extends AbstractContentObject
      * @return array Array of related items, values already resolved from related records
      *
      * @throws AspectNotFoundException
+     * @throws DBALException
      */
     protected function getRelatedItems(ContentObjectRenderer $parentContentObject): array
     {
         list($table, $uid) = explode(':', $parentContentObject->currentRecord);
-        $uid = (int) $uid;
+        $uid = (int)$uid;
         $field = $this->configuration['localField'];
 
         if (!$this->tcaService->/** @scrutinizer ignore-call */ getHasConfigurationForField($table, $field)) {
@@ -203,12 +208,11 @@ class Relation extends AbstractContentObject
                 $contentObject->start($record, $foreignTableName);
 
                 return $this->getRelatedItems($contentObject);
-            } else {
-                if ($this->getLanguageUid() > 0) {
-                    $record = $this->frontendOverlayService->getOverlay($foreignTableName, $record);
-                }
-                $relatedItems[] = $record[$foreignTableLabelField];
             }
+            if ($this->getLanguageUid() > 0) {
+                $record = $this->frontendOverlayService->getOverlay($foreignTableName, $record);
+            }
+            $relatedItems[] = $record[$foreignTableLabelField];
         }
 
         return $relatedItems;
@@ -253,9 +257,9 @@ class Relation extends AbstractContentObject
      * @throws DBALException
      */
     protected function getRelatedItemsFromForeignTable(
-        string                $localTableName,
-        int                   $localRecordUid,
-        array                 $localFieldTca,
+        string $localTableName,
+        int $localRecordUid,
+        array $localFieldTca,
         ContentObjectRenderer $parentContentObject
     ): array {
         $relatedItems = [];
@@ -310,10 +314,10 @@ class Relation extends AbstractContentObject
      */
     protected function resolveRelatedValue(
         array $relatedRecord,
-        $foreignTableTca,
-        $foreignTableLabelField,
+        array $foreignTableTca,
+        string $foreignTableLabelField,
         ContentObjectRenderer $parentContentObject,
-        $foreignTableName = ''
+        string $foreignTableName = ''
     ): string {
         if ($this->getLanguageUid() > 0 && !empty($foreignTableName)) {
             $relatedRecord = $this->frontendOverlayService->getOverlay($foreignTableName, $relatedRecord);
@@ -367,7 +371,7 @@ class Relation extends AbstractContentObject
      * @param int ...$uids The uids to fetch from table.
      * @return array
      *
-     * @throws DBALException
+     * @throws \Doctrine\DBAL\DBALException
      */
     protected function getRelatedRecords(string $foreignTable, int ...$uids): array
     {

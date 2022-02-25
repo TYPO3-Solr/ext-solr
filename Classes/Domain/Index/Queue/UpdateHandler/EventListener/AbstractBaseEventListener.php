@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -17,13 +17,14 @@ declare(strict_types = 1);
 
 namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\EventListener;
 
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\DataUpdateHandler;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\EventListener\Events\ProcessingFinishedEventInterface;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\DataUpdateEventInterface;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\GarbageHandler;
+use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
+use InvalidArgumentException;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
-use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\DataUpdateHandler;
-use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\GarbageHandler;
-use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\DataUpdateEventInterface;
-use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\EventListener\Events\ProcessingFinishedEventInterface;
 
 /**
  * Base Event listener
@@ -35,18 +36,18 @@ abstract class AbstractBaseEventListener
     /**
      * @var ExtensionConfiguration
      */
-    private $extensionConfiguration;
+    private ExtensionConfiguration $extensionConfiguration;
 
     /**
      * @var EventDispatcherInterface
      */
-    private $eventDispatcher;
+    private EventDispatcherInterface $eventDispatcher;
 
     /**
      * Constructor
      *
      * @param ExtensionConfiguration $extensionConfiguration
-     * @param EventDispatcherInterface
+     * @param EventDispatcherInterface $eventDispatcher
      */
     public function __construct(
         ExtensionConfiguration $extensionConfiguration,
@@ -70,6 +71,7 @@ abstract class AbstractBaseEventListener
      * Returns the DataUpdateHandler
      *
      * @return DataUpdateHandler
+     * @noinspection PhpUnused
      */
     final protected function getDataUpdateHandler(): DataUpdateHandler
     {
@@ -80,6 +82,7 @@ abstract class AbstractBaseEventListener
      * Returns the GarbageHandler
      *
      * @return GarbageHandler
+     * @noinspection PhpUnused
      */
     final protected function getGarbageHandler(): GarbageHandler
     {
@@ -91,12 +94,13 @@ abstract class AbstractBaseEventListener
      *
      * @param string $eventClass
      * @param DataUpdateEventInterface $event
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
+     * @noinspection PhpUnused
      */
     final protected function dispatchEvent(string $eventClass, DataUpdateEventInterface $event): void
     {
         if (!is_subclass_of($eventClass, ProcessingFinishedEventInterface::class)) {
-            throw new \InvalidArgumentException(
+            throw new InvalidArgumentException(
                 'Data update event listener can only dispatch processing finished events ('
                 . ProcessingFinishedEventInterface::class . ')',
                 1639987620
@@ -112,9 +116,10 @@ abstract class AbstractBaseEventListener
      * Indicates if immediate monitoring is allowed
      *
      * @return bool
+     * @noinspection PhpUnused
      */
     protected function isProcessingEnabled(): bool
     {
-        return ($this->getMonitoringType() === static::MONITORING_TYPE);
+        return $this->getMonitoringType() === static::MONITORING_TYPE;
     }
 }

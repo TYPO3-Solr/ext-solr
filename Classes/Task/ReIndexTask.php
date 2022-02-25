@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -17,6 +19,10 @@ namespace ApacheSolrForTypo3\Solr\Task;
 
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
+use Doctrine\DBAL\ConnectionException as DBALConnectionException;
+use Doctrine\DBAL\Driver\Exception as DBALDriverException;
+use Doctrine\DBAL\Exception as DBALException;
+use Throwable;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -27,19 +33,25 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class ReIndexTask extends AbstractSolrTask
 {
-
     /**
      * Indexing configurations to re-initialize.
      *
      * @var array
      */
-    protected $indexingConfigurationsToReIndex = [];
+    protected array $indexingConfigurationsToReIndex = [];
 
     /**
      * Purges/commits all Solr indexes, initializes the Index Queue
      * and returns TRUE if the execution was successful
      *
      * @return bool Returns TRUE on success, FALSE on failure.
+     *
+     * @throws DBALConnectionException
+     * @throws DBALDriverException
+     * @throws DBALException
+     * @throws Throwable
+     *
+     * @noinspection PhpMissingReturnTypeInspection See {@link \TYPO3\CMS\Scheduler\Task\AbstractTask::execute()}
      */
     public function execute()
     {
@@ -47,20 +59,21 @@ class ReIndexTask extends AbstractSolrTask
         $cleanUpResult = $this->cleanUpIndex();
 
         // initialize for re-indexing
-            /** @var Queue $indexQueue */
+        /* @var Queue $indexQueue */
         $indexQueue = GeneralUtility::makeInstance(Queue::class);
         $indexQueueInitializationResults = $indexQueue->getInitializationService()
             ->initializeBySiteAndIndexConfigurations($this->getSite(), $this->indexingConfigurationsToReIndex);
 
-        return ($cleanUpResult && !in_array(false, $indexQueueInitializationResults));
+        return $cleanUpResult && !in_array(false, $indexQueueInitializationResults);
     }
 
     /**
      * Removes documents of the selected types from the index.
      *
      * @return bool TRUE if clean up was successful, FALSE on error
+     * @throws DBALDriverException
      */
-    protected function cleanUpIndex()
+    protected function cleanUpIndex(): bool
     {
         $cleanUpResult = true;
         $solrConfiguration = $this->getSite()->getSolrConfiguration();
@@ -78,11 +91,11 @@ class ReIndexTask extends AbstractSolrTask
             $solrServer->getWriteService()->deleteByQuery($deleteQuery);
 
             if (!$enableCommitsSetting) {
-                # Do not commit
+                // Do not commit
                 continue;
             }
 
-            $response = $solrServer->getWriteService()->commit(false, false, false);
+            $response = $solrServer->getWriteService()->commit(false, false);
             if ($response->getHttpStatus() != 200) {
                 $cleanUpResult = false;
                 break;
@@ -97,7 +110,7 @@ class ReIndexTask extends AbstractSolrTask
      *
      * @return array
      */
-    public function getIndexingConfigurationsToReIndex()
+    public function getIndexingConfigurationsToReIndex(): array
     {
         return $this->indexingConfigurationsToReIndex;
     }
@@ -119,6 +132,9 @@ class ReIndexTask extends AbstractSolrTask
      * This method should be implemented in most task classes
      *
      * @return string Information to display
+     *
+     * @throws DBALDriverException
+     * @noinspection PhpMissingReturnTypeInspection See {@link \TYPO3\CMS\Scheduler\Task\AbstractTask::getAdditionalInformation()}
      */
     public function getAdditionalInformation()
     {
@@ -129,8 +145,10 @@ class ReIndexTask extends AbstractSolrTask
 
         $information = 'Site: ' . $this->getSite()->getLabel();
         if (!empty($this->indexingConfigurationsToReIndex)) {
-            $information .= ', Indexing Configurations: ' . implode(', ',
-                    $this->indexingConfigurationsToReIndex);
+            $information .= ', Indexing Configurations: ' . implode(
+                ', ',
+                $this->indexingConfigurationsToReIndex
+            );
         }
 
         return $information;

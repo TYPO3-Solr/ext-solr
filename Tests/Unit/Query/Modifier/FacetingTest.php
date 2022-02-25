@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -15,17 +17,23 @@
 
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Query\Modifier;
 
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\FacetRegistry;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\InvalidFacetPackageException;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\InvalidQueryBuilderException;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\InvalidUrlDecoderException;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\UrlFacetContainer;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Query\Modifier\Faceting;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use PHPUnit\Framework\MockObject\MockObject;
 use Solarium\QueryType\Select\RequestBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
+use function json_decode;
 
 /**
  * Tests the ApacheSolrForTypo3\Solr\Query\Modifier\Faceting class
@@ -38,28 +46,40 @@ class FacetingTest extends UnitTest
      * @param TypoScriptConfiguration $fakeConfiguration
      * @param SearchRequest $fakeSearchRequest
      * @return array
+     * @throws InvalidFacetPackageException
+     * @throws InvalidQueryBuilderException
+     * @throws InvalidUrlDecoderException
      */
-    private function getQueryParametersFromExecutedFacetingModifier($fakeConfiguration, SearchRequest $fakeSearchRequest)
-    {
-        $fakeObjectManager = $this->getMockBuilder(ObjectManager::class)->disableOriginalConstructor()->onlyMethods(['get'])->getMock();
-        $fakeObjectManager->expects(self::any())->method('get')->willReturnCallback(function ($className) {
-            return new $className();
-        });
+    private function getQueryParametersFromExecutedFacetingModifier(
+        TypoScriptConfiguration $fakeConfiguration,
+        SearchRequest $fakeSearchRequest
+    ): array {
+        $fakeObjectManager = $this->getMockBuilder(ObjectManager::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['get'])
+            ->getMock();
+        $fakeObjectManager->expects(self::any())
+            ->method('get')
+            ->willReturnCallback(function ($className) {
+                return new $className();
+            });
 
         $facetRegistry = new FacetRegistry();
         // @extensionScannerIgnoreLine
         $facetRegistry->injectObjectManager($fakeObjectManager);
 
+        /* @var SolrLogManager|MockObject $solrLogManagerMock */
         $solrLogManagerMock = $this->getDumbMock(SolrLogManager::class);
 
-        /** @var $query \ApacheSolrForTypo3\Solr\Domain\Search\Query\Query */
+        /* @var Query $query */
         $queryBuilder = new QueryBuilder($fakeConfiguration, $solrLogManagerMock);
         $query = $queryBuilder->buildSearchQuery('test');
 
-        /** @var $facetModifier \ApacheSolrForTypo3\Solr\Query\Modifier\Faceting */
+        /* @var Faceting $facetModifier */
         $facetModifier = GeneralUtility::makeInstance(Faceting::class, $facetRegistry);
         $facetModifier->setSearchRequest($fakeSearchRequest);
-        $facetModifier->modifyQuery($query);
+        /** @noinspection PhpUnhandledExceptionInspection */
+        $query = $facetModifier->modifyQuery($query);
 
         $requestBuilder = new RequestBuilder();
 
@@ -78,6 +98,10 @@ class FacetingTest extends UnitTest
      *  }
      *
      * @test
+     *
+     * @throws InvalidFacetPackageException
+     * @throws InvalidQueryBuilderException
+     * @throws InvalidUrlDecoderException
      */
     public function testCanAddASimpleFacet()
     {
@@ -90,6 +114,7 @@ class FacetingTest extends UnitTest
         ];
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
 
+        /* @var SearchRequest|MockObject $fakeRequest */
         $fakeRequest = $this->getDumbMock(SearchRequest::class);
         $fakeRequest->expects(self::any())->method('getContextTypoScriptConfiguration')->willReturn($fakeConfiguration);
         $fakeRequest->expects(self::once())->method('getArguments')->willReturn([]);
@@ -112,6 +137,10 @@ class FacetingTest extends UnitTest
      *  }
      *
      * @test
+     *
+     * @throws InvalidFacetPackageException
+     * @throws InvalidQueryBuilderException
+     * @throws InvalidUrlDecoderException
      */
     public function testCanAddSortByIndexArgument()
     {
@@ -124,6 +153,8 @@ class FacetingTest extends UnitTest
             ],
         ];
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
+
+        /* @var SearchRequest|MockObject $fakeRequest */
         $fakeRequest = $this->getDumbMock(SearchRequest::class);
         $fakeRequest->expects(self::any())->method('getContextTypoScriptConfiguration')->willReturn($fakeConfiguration);
         $fakeRequest->expects(self::once())->method('getArguments')->willReturn([]);
@@ -144,6 +175,10 @@ class FacetingTest extends UnitTest
      *  }
      *
      * @test
+     *
+     * @throws InvalidFacetPackageException
+     * @throws InvalidQueryBuilderException
+     * @throws InvalidUrlDecoderException
      */
     public function testCanAddSortByCountArgument()
     {
@@ -156,6 +191,8 @@ class FacetingTest extends UnitTest
             ],
         ];
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
+
+        /* @var SearchRequest|MockObject $fakeRequest */
         $fakeRequest = $this->getDumbMock(SearchRequest::class);
         $fakeRequest->expects(self::any())->method('getContextTypoScriptConfiguration')->willReturn($fakeConfiguration);
         $fakeRequest->expects(self::once())->method('getArguments')->willReturn([]);
@@ -183,6 +220,10 @@ class FacetingTest extends UnitTest
      * }
      *
      * @test
+     *
+     * @throws InvalidFacetPackageException
+     * @throws InvalidQueryBuilderException
+     * @throws InvalidUrlDecoderException
      */
     public function testCanHandleKeepAllFacetsOnSelectionOnAllFacetWhenGloballyConfigured()
     {
@@ -199,6 +240,7 @@ class FacetingTest extends UnitTest
         ];
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
 
+        /* @var SearchRequest|MockObject $fakeRequest */
         $fakeRequest = $this->getDumbMock(SearchRequest::class);
         $fakeRequest->expects(self::once())->method('getArguments')->willReturn([]);
         $fakeRequest->expects(self::any())->method('getContextTypoScriptConfiguration')->willReturn($fakeConfiguration);
@@ -206,7 +248,7 @@ class FacetingTest extends UnitTest
         $queryParameter = $this->getQueryParametersFromExecutedFacetingModifier($fakeConfiguration, $fakeRequest);
         self::assertStringContainsString('true', $queryParameter['facet'], 'Query string did not contain expected snipped');
 
-        $jsonData = \json_decode($queryParameter['json.facet']);
+        $jsonData = json_decode($queryParameter['json.facet']);
         self::assertEquals('type,color', $jsonData->type->domain->excludeTags, 'Query string did not contain expected snipped');
         self::assertEquals('type,color', $jsonData->color->domain->excludeTags, 'Query string did not contain expected snipped');
     }
@@ -226,6 +268,10 @@ class FacetingTest extends UnitTest
      * }
      *
      * @test
+     *
+     * @throws InvalidFacetPackageException
+     * @throws InvalidQueryBuilderException
+     * @throws InvalidUrlDecoderException
      */
     public function testExcludeTagsAreEmptyWhenKeepAllFacetsOnSelectionIsNotSet()
     {
@@ -241,6 +287,7 @@ class FacetingTest extends UnitTest
         ];
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
 
+        /* @var SearchRequest|MockObject $fakeRequest */
         $fakeRequest = $this->getDumbMock(SearchRequest::class);
         $fakeRequest->expects(self::once())->method('getArguments')->willReturn([]);
         $fakeRequest->expects(self::any())->method('getContextTypoScriptConfiguration')->willReturn($fakeConfiguration);
@@ -248,7 +295,7 @@ class FacetingTest extends UnitTest
         $queryParameter = $this->getQueryParametersFromExecutedFacetingModifier($fakeConfiguration, $fakeRequest);
         self::assertStringContainsString('true', $queryParameter['facet'], 'Query string did not contain expected snipped');
 
-        $jsonData = \json_decode($queryParameter['json.facet']);
+        $jsonData = json_decode($queryParameter['json.facet']);
         self::assertEmpty(($jsonData->type->domain->excludeTags ?? ''), 'Query string did not contain expected snipped');
         self::assertEmpty(($jsonData->color->domain->excludeTags ?? ''), 'Query string did not contain expected snipped');
     }
@@ -270,6 +317,10 @@ class FacetingTest extends UnitTest
      * }
      *
      * @test
+     *
+     * @throws InvalidFacetPackageException
+     * @throws InvalidQueryBuilderException
+     * @throws InvalidUrlDecoderException
      */
     public function testCanHandleKeepAllOptionsOnSelectionForASingleFacet()
     {
@@ -286,12 +337,13 @@ class FacetingTest extends UnitTest
         ];
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
 
+        /* @var SearchRequest|MockObject $fakeRequest */
         $fakeRequest = $this->getDumbMock(SearchRequest::class);
         $fakeRequest->expects(self::once())->method('getArguments')->willReturn([]);
         $fakeRequest->expects(self::any())->method('getContextTypoScriptConfiguration')->willReturn($fakeConfiguration);
 
         $queryParameter = $this->getQueryParametersFromExecutedFacetingModifier($fakeConfiguration, $fakeRequest);
-        $jsonData = \json_decode($queryParameter['json.facet']);
+        $jsonData = json_decode($queryParameter['json.facet']);
         self::assertStringContainsString('true', $queryParameter['facet'], 'Query string did not contain expected snipped');
         self::assertEquals('type', $jsonData->type->domain->excludeTags, 'Query string did not contain expected snipped');
         self::assertEquals('color', $jsonData->color->field, 'Query string did not contain expected snipped');
@@ -299,6 +351,10 @@ class FacetingTest extends UnitTest
 
     /**
      * @test
+     *
+     * @throws InvalidFacetPackageException
+     * @throws InvalidQueryBuilderException
+     * @throws InvalidUrlDecoderException
      */
     public function testCanHandleCombinationOfKeepAllFacetsOnSelectionAndKeepAllOptionsOnSelection()
     {
@@ -318,6 +374,7 @@ class FacetingTest extends UnitTest
 
         $fakeArguments = ['filter' => [urlencode('color:red'), urlencode('type:product')]];
 
+        /* @var SearchRequest|MockObject $fakeRequest */
         $fakeRequest = $this->getDumbMock(SearchRequest::class);
         $fakeRequest->expects(self::once())->method('getArguments')->willReturn($fakeArguments);
         $fakeRequest->expects(self::any())->method('getContextTypoScriptConfiguration')->willReturn($fakeConfiguration);
@@ -325,7 +382,7 @@ class FacetingTest extends UnitTest
         $queryParameter = $this->getQueryParametersFromExecutedFacetingModifier($fakeConfiguration, $fakeRequest);
         self::assertStringContainsString('true', $queryParameter['facet'], 'Query string did not contain expected snipped');
 
-        $jsonData = \json_decode($queryParameter['json.facet']);
+        $jsonData = json_decode($queryParameter['json.facet']);
 
         self::assertEquals('type,color', $jsonData->type->domain->excludeTags, 'Query string did not contain expected snipped');
         self::assertEquals('type', $jsonData->type->field, 'Did not build json field properly');
@@ -336,6 +393,10 @@ class FacetingTest extends UnitTest
 
     /**
      * @test
+     *
+     * @throws InvalidFacetPackageException
+     * @throws InvalidQueryBuilderException
+     * @throws InvalidUrlDecoderException
      */
     public function testCanHandleCombinationOfKeepAllFacetsOnSelectionAndKeepAllOptionsOnSelectionAndCountAllFacetsForSelection()
     {
@@ -357,6 +418,7 @@ class FacetingTest extends UnitTest
 
         $fakeArguments = ['filter' => [urlencode('color:red'), urlencode('type:product')]];
 
+        /* @var SearchRequest|MockObject $fakeRequest */
         $fakeRequest = $this->getDumbMock(SearchRequest::class);
         $fakeRequest->expects(self::once())->method('getArguments')->willReturn($fakeArguments);
         $fakeRequest->expects(self::any())->method('getContextTypoScriptConfiguration')->willReturn($fakeConfiguration);
@@ -364,7 +426,7 @@ class FacetingTest extends UnitTest
         $queryParameter = $this->getQueryParametersFromExecutedFacetingModifier($fakeConfiguration, $fakeRequest);
         self::assertStringContainsString('true', $queryParameter['facet'], 'Query string did not contain expected snipped');
 
-        $jsonData = \json_decode($queryParameter['json.facet']);
+        $jsonData = json_decode($queryParameter['json.facet']);
 
         self::assertEquals('type', $jsonData->type->domain->excludeTags, 'Query string did not contain expected snipped');
         self::assertEquals('type', $jsonData->type->field, 'Did not build json field properly');
@@ -375,6 +437,10 @@ class FacetingTest extends UnitTest
 
     /**
      * @test
+     *
+     * @throws InvalidFacetPackageException
+     * @throws InvalidQueryBuilderException
+     * @throws InvalidUrlDecoderException
      */
     public function testCanAddQueryFilters()
     {
@@ -392,6 +458,8 @@ class FacetingTest extends UnitTest
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
 
         $fakeArguments = ['filter' => [urlencode('color:red'), urlencode('type:product')]];
+
+        /* @var SearchRequest|MockObject $fakeRequest */
         $fakeRequest = $this->getDumbMock(SearchRequest::class);
         $fakeRequest->expects(self::once())->method('getArguments')->willReturn($fakeArguments);
         $fakeRequest->expects(self::any())->method('getContextTypoScriptConfiguration')->willReturn($fakeConfiguration);
@@ -406,6 +474,10 @@ class FacetingTest extends UnitTest
 
     /**
      * @test
+     *
+     * @throws InvalidFacetPackageException
+     * @throws InvalidQueryBuilderException
+     * @throws InvalidUrlDecoderException
      */
     public function testCanAddQueryFiltersWithKeepAllOptionsOnSelectionFacet()
     {
@@ -423,6 +495,8 @@ class FacetingTest extends UnitTest
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
 
         $fakeArguments = ['filter' => [urlencode('color:red'), urlencode('type:product')]];
+
+        /* @var SearchRequest|MockObject $fakeRequest */
         $fakeRequest = $this->getDumbMock(SearchRequest::class);
         $fakeRequest->expects(self::once())->method('getArguments')->willReturn($fakeArguments);
         $fakeRequest->expects(self::any())->method('getContextTypoScriptConfiguration')->willReturn($fakeConfiguration);
@@ -437,6 +511,10 @@ class FacetingTest extends UnitTest
 
     /**
      * @test
+     *
+     * @throws InvalidFacetPackageException
+     * @throws InvalidQueryBuilderException
+     * @throws InvalidUrlDecoderException
      */
     public function testCanAddQueryFiltersWithGlobalKeepAllOptionsOnSelection()
     {
@@ -455,6 +533,7 @@ class FacetingTest extends UnitTest
 
         $fakeArguments = ['filter' => [urlencode('color:red'), urlencode('type:product')]];
 
+        /* @var SearchRequest|MockObject $fakeRequest */
         $fakeRequest = $this->getDumbMock(SearchRequest::class);
         $fakeRequest->expects(self::once())->method('getArguments')->willReturn($fakeArguments);
         $fakeRequest->expects(self::any())->method('getContextTypoScriptConfiguration')->willReturn($fakeConfiguration);
@@ -469,6 +548,10 @@ class FacetingTest extends UnitTest
 
     /**
      * @test
+     *
+     * @throws InvalidFacetPackageException
+     * @throws InvalidQueryBuilderException
+     * @throws InvalidUrlDecoderException
      */
     public function testCanAddExcludeTagWithAdditionalExcludeTagConfiguration()
     {
@@ -488,6 +571,7 @@ class FacetingTest extends UnitTest
 
         $fakeArguments = ['filter' => [urlencode('type:product')]];
 
+        /* @var SearchRequest|MockObject $fakeRequest */
         $fakeRequest = $this->getDumbMock(SearchRequest::class);
         $fakeRequest->expects(self::once())->method('getArguments')->willReturn($fakeArguments);
         $fakeRequest->expects(self::any())->method('getContextTypoScriptConfiguration')->willReturn($fakeConfiguration);
@@ -495,13 +579,17 @@ class FacetingTest extends UnitTest
         $queryParameter = $this->getQueryParametersFromExecutedFacetingModifier($fakeConfiguration, $fakeRequest);
         self::assertStringContainsString('true', $queryParameter['facet'], 'Query string did not contain expected snipped');
 
-        $jsonData = \json_decode($queryParameter['json.facet']);
+        $jsonData = json_decode($queryParameter['json.facet']);
         self::assertEquals('type,color', $jsonData->type->domain->excludeTags, 'Query string did not contain expected snipped');
         self::assertEquals('{!tag=type}(type:"product")', $queryParameter['fq'], 'Did not build filter query from color');
     }
 
     /**
      * @test
+     *
+     * @throws InvalidFacetPackageException
+     * @throws InvalidQueryBuilderException
+     * @throws InvalidUrlDecoderException
      */
     public function testCanAddQueryFiltersContainingPlusSign()
     {
@@ -529,7 +617,7 @@ class FacetingTest extends UnitTest
         ];
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
 
-        /* @var SearchRequest $fakeRequest */
+        /* @var SearchRequest|MockObject $fakeRequest */
         $fakeRequest = $this->getDumbMock(SearchRequest::class);
         $fakeRequest->expects(self::once())->method('getArguments')->willReturn($fakeArguments);
         $fakeRequest->expects(self::any())->method('getContextTypoScriptConfiguration')->willReturn($fakeConfiguration);
@@ -557,6 +645,8 @@ class FacetingTest extends UnitTest
         $typoScriptConfigurationMock->expects(self::once())
             ->method('getSearchFacetingUrlParameterStyle')
             ->willReturn(UrlFacetContainer::PARAMETER_STYLE_ASSOC);
+
+        /* @var SearchRequest|MockObject $searchRequestMock */
         $searchRequestMock = $this->getDumbMock(SearchRequest::class);
         $searchRequestMock->expects(self::once())
             ->method('getContextTypoScriptConfiguration')

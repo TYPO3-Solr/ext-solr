@@ -16,8 +16,8 @@
 namespace ApacheSolrForTypo3\Solr\Controller\Backend\Search;
 
 use ApacheSolrForTypo3\Solr\Api;
-use ApacheSolrForTypo3\Solr\Domain\Search\Statistics\StatisticsRepository;
 use ApacheSolrForTypo3\Solr\Domain\Search\ApacheSolrDocument\Repository as ApacheSolrDocumentRepository;
+use ApacheSolrForTypo3\Solr\Domain\Search\Statistics\StatisticsRepository;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\System\Validator\Path;
 use Psr\Http\Message\ResponseInterface;
@@ -81,8 +81,6 @@ class InfoModuleController extends AbstractModuleController
     /**
      * Checks whether the configured Solr server can be reached and provides a
      * flash message according to the result of the check.
-     *
-     * @return void
      */
     protected function collectConnectionInfos(): void
     {
@@ -119,14 +117,12 @@ class InfoModuleController extends AbstractModuleController
             'apiKey' => Api::getApiKey(),
             'connectedHosts' => $connectedHosts,
             'missingHosts' => $missingHosts,
-            'invalidPaths' => $invalidPaths
+            'invalidPaths' => $invalidPaths,
         ]);
     }
 
     /**
      * Index action, shows an overview of the state of the Solr index
-     *
-     * @return void
      */
     protected function collectStatistics(): void
     {
@@ -165,8 +161,6 @@ class InfoModuleController extends AbstractModuleController
     /**
      * Gets Luke metadata for the currently selected core and provides a list
      * of that data.
-     *
-     * @return void
      */
     protected function collectIndexFieldsInfo(): void
     {
@@ -177,7 +171,7 @@ class InfoModuleController extends AbstractModuleController
             $coreAdmin = $solrCoreConnection->getAdminService();
 
             $indexFieldsInfo = [
-                'corePath' => $coreAdmin->getCorePath()
+                'corePath' => $coreAdmin->getCorePath(),
             ];
             if ($coreAdmin->ping()) {
                 $lukeData = $coreAdmin->getLukeMetaData();
@@ -218,8 +212,6 @@ class InfoModuleController extends AbstractModuleController
 
     /**
      * Retrieves the information for the index inspector.
-     *
-     * @return void
      */
     protected function collectIndexInspectorInfo(): void
     {
@@ -240,7 +232,7 @@ class InfoModuleController extends AbstractModuleController
 
         $this->view->assignMultiple([
             'pageId' => $this->selectedPageUID,
-            'indexInspectorDocumentsByLanguageAndType' => $documentsByCoreAndType
+            'indexInspectorDocumentsByLanguageAndType' => $documentsByCoreAndType,
         ]);
     }
 
@@ -262,7 +254,7 @@ class InfoModuleController extends AbstractModuleController
                 'name' => $name,
                 'type' => $field->type,
                 'docs' => $field->docs ?? 0,
-                'terms' => $field->distinct ?? $limitNote
+                'terms' => $field->distinct ?? $limitNote,
             ];
         }
         ksort($rows);
@@ -284,7 +276,7 @@ class InfoModuleController extends AbstractModuleController
             'numberOfDocuments' => $lukeData->index->numDocs ?? 0,
             'numberOfDeletedDocuments' => $lukeData->index->deletedDocs ?? 0,
             'numberOfTerms' => $lukeData->index->numTerms ?? 0,
-            'numberOfFields' => count($fields)
+            'numberOfFields' => count($fields),
         ];
     }
 }

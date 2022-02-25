@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -26,10 +28,10 @@ use TYPO3\CMS\Reports\Status;
  */
 class FilterVarStatus extends AbstractSolrStatus
 {
-
     /**
      * Checks whether allow_url_fopen is enabled.
      *
+     * @noinspection PhpMissingReturnTypeInspection see {@link \TYPO3\CMS\Reports\StatusProviderInterface::getStatus()}
      */
     public function getStatus()
     {
@@ -46,7 +48,8 @@ class FilterVarStatus extends AbstractSolrStatus
 				More information is available at
 				<a href="https://bugs.php.net/bug.php?id=51192">php.net</a>.';
 
-            $reports[] = GeneralUtility::makeInstance(Status::class,
+            $reports[] = GeneralUtility::makeInstance(
+                Status::class,
                 'PHP filter_var() bug',
                 'Affected PHP version detected.',
                 $message,

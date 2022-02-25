@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -26,7 +28,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class TimestampToUtcIsoDate implements FieldProcessor
 {
-
     /**
      * Expects a timestamp and converts it to an ISO 8601 date in UTC as needed by Solr.
      *
@@ -36,7 +37,7 @@ class TimestampToUtcIsoDate implements FieldProcessor
      * @param array $values Array of values, an array because of multivalued fields
      * @return array Modified array of values
      */
-    public function process(array $values)
+    public function process(array $values): array
     {
         $results = [];
         /* @var FormatService $formatService */

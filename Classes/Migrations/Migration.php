@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -20,14 +22,13 @@ namespace ApacheSolrForTypo3\Solr\Migrations;
  */
 interface Migration
 {
-
     /**
-     * @return boolean
+     * @return bool
      */
-    public function isNeeded();
+    public function isNeeded(): bool;
 
     /**
      * @return array
      */
-    public function process();
+    public function process(): array;
 }

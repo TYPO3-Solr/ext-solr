@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -27,27 +29,26 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class PageIndexerRequestHandler implements SingletonInterface
 {
-
     /**
      * Index Queue page indexer request.
      *
      * @var PageIndexerRequest
      */
-    protected $request;
+    protected PageIndexerRequest $request;
 
     /**
      * Index Queue page indexer response.
      *
      * @var PageIndexerResponse
      */
-    protected $response;
+    protected PageIndexerResponse $response;
 
     /**
      * Index Queue page indexer frontend helper dispatcher.
      *
      * @var Dispatcher
      */
-    protected $dispatcher;
+    protected Dispatcher $dispatcher;
 
     /**
      * Constructor.
@@ -63,13 +64,10 @@ class PageIndexerRequestHandler implements SingletonInterface
         $this->response->setRequestId($this->request->getRequestId());
     }
 
-
     /**
      * Authenticates the request, runs the frontend helpers defined by the
      * request, and registers its own shutdown() method for execution at
      * hook_eofe in tslib/class.tslib_fe.php.
-     *
-     * @return void
      */
     public function run()
     {
@@ -79,8 +77,6 @@ class PageIndexerRequestHandler implements SingletonInterface
     /**
      * Completes the Index Queue page indexer request and returns the response
      * with the collected results.
-     *
-     * @return void
      */
     public function shutdown()
     {
@@ -92,7 +88,7 @@ class PageIndexerRequestHandler implements SingletonInterface
      *
      * @return PageIndexerRequest
      */
-    public function getRequest()
+    public function getRequest(): PageIndexerRequest
     {
         return $this->request;
     }
@@ -102,7 +98,7 @@ class PageIndexerRequestHandler implements SingletonInterface
      *
      * @return PageIndexerResponse
      */
-    public function getResponse()
+    public function getResponse(): PageIndexerResponse
     {
         return $this->response;
     }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -17,30 +19,36 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\SearchQuery;
 use ApacheSolrForTypo3\Solr\Search;
+use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\System\Solr\Service\SolrReadService;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
+use PHPUnit\Framework\MockObject\MockObject;
 
 class SearchTest extends UnitTest
 {
-
     /**
      * @var SolrConnection
      */
     protected $solrConnectionMock;
 
     /**
-     * @var SolrReadService
+     * @var SolrReadService|MockObject
      */
     protected $solrReadServiceMock;
 
     /**
      * @var Search
      */
-    protected $search;
+    protected Search $search;
 
     protected function setUp(): void
     {
-        $this->solrReadServiceMock = $this->getDumbMock(SolrReadService::class);
+//        $this->solrReadServiceMock = $this->getDumbMock(SolrReadService::class);
+        $this->solrReadServiceMock = $this->getMockBuilder(SolrReadService::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['search'])
+            ->getMock();
+
         $this->solrConnectionMock = $this->getDumbMock(SolrConnection::class);
         $this->solrConnectionMock->expects(self::any())->method('getReadService')->willReturn($this->solrReadServiceMock);
         $this->search = new Search($this->solrConnectionMock);
@@ -57,6 +65,7 @@ class SearchTest extends UnitTest
         $this->solrReadServiceMock->expects(self::once())->method('search')->willReturnCallback(
             function ($query) use ($limit) {
                 $this->assertSame($limit, $query->getRows(), 'Unexpected limit was passed');
+                return $this->getDumbMock(ResponseAdapter::class);
             }
         );
 
@@ -75,6 +84,7 @@ class SearchTest extends UnitTest
         $this->solrReadServiceMock->expects(self::once())->method('search')->willReturnCallback(
             function ($query) use ($limit) {
                 $this->assertSame($limit, $query->getRows(), 'Unexpected limit was passed');
+                return $this->getDumbMock(ResponseAdapter::class);
             }
         );
 

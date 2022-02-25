@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -20,15 +22,15 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Class StrategyFactory
  */
-class StrategyFactory {
-
+class StrategyFactory
+{
     /**
      * @param string $table
      * @return PageStrategy|RecordStrategy
      */
-    public static function getByTable($table): AbstractStrategy
+    public static function getByTable(string $table): AbstractStrategy
     {
-        $isPageRelated = in_array($table, ['tt_content','pages']);
+        $isPageRelated = in_array($table, ['tt_content', 'pages']);
         return $isPageRelated
             ? GeneralUtility::makeInstance(PageStrategy::class)
             : GeneralUtility::makeInstance(RecordStrategy::class);

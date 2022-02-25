@@ -16,12 +16,12 @@
 namespace ApacheSolrForTypo3\Solr\Controller\Backend;
 
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Backend\View\PageLayoutView;
+use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Service\FlexFormService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
 use TYPO3\CMS\Fluid\View\StandaloneView;
-use TYPO3\CMS\Core\Localization\LanguageService;
-use TYPO3\CMS\Backend\View\PageLayoutView;
 
 /**
  * Summary to display flexform settings in the page layout backend module.

@@ -27,6 +27,7 @@ use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use InvalidArgumentException;
+use TypeError;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -71,8 +72,7 @@ class RepositoryTest extends UnitTest
      */
     public function findByPageIdAndByLanguageIdThrowsInvalidArgumentExceptionIfPageIdIsNotSet()
     {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionCode(1487332926);
+        $this->expectException(TypeError::class);
         /* @var $apacheSolrDocumentRepository Repository */
         $apacheSolrDocumentRepository = GeneralUtility::makeInstance(Repository::class);
         $apacheSolrDocumentRepository->findByPageIdAndByLanguageId(null, 3);
@@ -83,8 +83,7 @@ class RepositoryTest extends UnitTest
      */
     public function findByPageIdAndByLanguageIdThrowsInvalidArgumentExceptionIfLanguageIdIsNotInteger()
     {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionCode(1487335178);
+        $this->expectException(TypeError::class);
         /* @var $apacheSolrDocumentRepository Repository */
         $apacheSolrDocumentRepository = GeneralUtility::makeInstance(Repository::class);
         $apacheSolrDocumentRepository->findByPageIdAndByLanguageId(1, 'Abc');

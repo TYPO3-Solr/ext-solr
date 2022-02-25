@@ -172,13 +172,16 @@ class CoreSelectorField
             'itemFormElName' => $this->formElementName,
             'itemFormElValue' => $selectedValues,
             'fieldConf' => ['config' => ['items' => $items]],
-            'fieldTSConfig' => ['noMatchingValue_label' => '']
+            'fieldTSConfig' => ['noMatchingValue_label' => ''],
         ];
 
         $nodeFactory = GeneralUtility::makeInstance(NodeFactory::class);
         $options = [
-            'renderType' => 'selectCheckBox', 'table' => 'tx_solr_classes_backend_coreselector',
-            'fieldName' => 'additionalFields', 'databaseRow' => [], 'parameterArray' => $parameterArray
+            'renderType' => 'selectCheckBox',
+            'table' => 'tx_solr_classes_backend_coreselector',
+            'fieldName' => 'additionalFields',
+            'databaseRow' => [],
+            'parameterArray' => $parameterArray,
         ];
 
         $selectCheckboxResult = $nodeFactory->create($options)->render();

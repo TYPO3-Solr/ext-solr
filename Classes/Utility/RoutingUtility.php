@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -14,8 +16,9 @@
  */
 
 namespace ApacheSolrForTypo3\Solr\Utility;
+
 /**
- * This utility class contains several functions used inside of the middleware and enhancer for routing purposes
+ * This utility class contains several functions used inside the middleware and enhancer for routing purposes
  *
  * @author Lars Tode <lars.tode@dkd.de>
  */

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -19,7 +21,11 @@ use ApacheSolrForTypo3\Solr\Access\Rootline;
 use ApacheSolrForTypo3\Solr\Access\RootlineElement;
 use ApacheSolrForTypo3\Solr\Domain\Index\PageIndexer\Helper\UriBuilder\AbstractUriStrategy;
 use ApacheSolrForTypo3\Solr\Domain\Index\PageIndexer\Helper\UriStrategyFactory;
+use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
+use Doctrine\DBAL\Driver\Exception as DBALDriverException;
+use Doctrine\DBAL\Exception as DBALException;
+use Exception;
 use RuntimeException;
 use TYPO3\CMS\Core\Type\Bitmask\PageTranslationVisibility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -28,8 +34,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * A special purpose indexer to index pages.
  *
  * In the case of pages we can't directly index the page records, we need to
- * retrieve the content that belongs to a page from tt_content, too. Also
- * plugins may be included on a page and thus may need to be executed.
+ * retrieve the content that belongs to a page from tt_content, too.
+ * Also, plugins may be included on a page and thus may need to be executed.
  *
  * @author Ingo Renner <ingo@typo3.org>
  */
@@ -40,8 +46,11 @@ class PageIndexer extends Indexer
      *
      * @param Item $item An index queue item
      * @return bool Whether indexing was successful
+     * @throws DBALDriverException
+     * @throws DBALException
+     * @throws NoSolrConnectionFoundException
      */
-    public function index(Item $item)
+    public function index(Item $item): bool
     {
         $this->setLogging($item);
 
@@ -61,7 +70,7 @@ class PageIndexer extends Indexer
             }
 
             foreach ($contentAccessGroups as $userGroup) {
-                $this->indexPage($item, $systemLanguageUid, $userGroup);
+                $this->indexPage($item, $systemLanguageUid, (int)$userGroup);
             }
         }
 
@@ -74,7 +83,7 @@ class PageIndexer extends Indexer
      * @param Item $item The page we want to index encapsulated in an index queue item
      * @return bool True if we can index this page, FALSE otherwise
      */
-    protected function isPageIndexable(Item $item)
+    protected function isPageIndexable(Item $item): bool
     {
 
         // TODO do we still need this?
@@ -100,6 +109,8 @@ class PageIndexer extends Indexer
      *
      * @param Item $item An index queue item
      * @return array An array of ApacheSolrForTypo3\Solr\System\Solr\SolrConnection connections, the array's keys are the sys_language_uid of the language of the connection
+     * @throws DBALDriverException
+     * @throws NoSolrConnectionFoundException
      */
     protected function getSolrConnectionsByItem(Item $item): array
     {
@@ -140,8 +151,10 @@ class PageIndexer extends Indexer
      * @param Item $item Index queue item representing the current page to get the user groups from
      * @param int $language The sys_language_uid language ID
      * @return array Array of user group IDs
+     * @throws DBALDriverException
+     * @throws DBALException
      */
-    protected function getAccessGroupsFromContent(Item $item, $language = 0)
+    protected function getAccessGroupsFromContent(Item $item, int $language = 0): array
     {
         static $accessGroupsCache;
 
@@ -169,7 +182,7 @@ class PageIndexer extends Indexer
                         'index request url' => $indexRequestUrl,
                         'request' => (array)$request,
                         'response' => (array)$response,
-                        'groups' => $groups
+                        'groups' => $groups,
                     ]
                 );
             }
@@ -186,7 +199,7 @@ class PageIndexer extends Indexer
      *
      * @return PageIndexerRequest Base page indexer request
      */
-    protected function buildBasePageIndexerRequest()
+    protected function buildBasePageIndexerRequest(): PageIndexerRequest
     {
         $request = $this->getPageIndexerRequest();
         $request->setParameter('loggingEnabled', $this->loggingEnabled);
@@ -214,7 +227,7 @@ class PageIndexer extends Indexer
     /**
      * @return PageIndexerRequest
      */
-    protected function getPageIndexerRequest()
+    protected function getPageIndexerRequest(): PageIndexerRequest
     {
         return GeneralUtility::makeInstance(PageIndexerRequest::class);
     }
@@ -222,29 +235,30 @@ class PageIndexer extends Indexer
     /**
      * Determines a page ID's URL.
      *
-     * Tries to find a domain record to use to build an URL for a given page ID
+     * Tries to find a domain record to use to build a URL for a given page ID
      * and then actually build and return the page URL.
      *
      * @param Item $item Item to index
      * @param int $language The language id
      * @return string URL to send the index request to
-     * @throws RuntimeException
+     * @throws DBALDriverException
+     * @throws DBALException
+     * @throws Exception
      */
-    protected function getDataUrl(Item $item, $language = 0)
+    protected function getDataUrl(Item $item, int $language = 0): string
     {
         $pageId = $item->getRecordUid();
         $strategy = $this->getUriStrategy($pageId);
         $mountPointParameter = $this->getMountPageDataUrlParameter($item);
-        $dataUrl = $strategy->getPageIndexingUriFromPageItemAndLanguageId($item, $language, $mountPointParameter, $this->options);
-
-        return $dataUrl;
+        return $strategy->getPageIndexingUriFromPageItemAndLanguageId($item, $language, $mountPointParameter, $this->options);
     }
 
     /**
      * @param int $pageId
      * @return AbstractUriStrategy
+     * @throws Exception
      */
-    protected function getUriStrategy($pageId)
+    protected function getUriStrategy(int $pageId): AbstractUriStrategy
     {
         return GeneralUtility::makeInstance(UriStrategyFactory::class)->getForPageId($pageId);
     }
@@ -254,9 +268,11 @@ class PageIndexer extends Indexer
      * is identified as being a mounted page, the &MP parameter is generated.
      *
      * @param Item $item Item to get an &MP URL parameter for
-     * @return string &MP URL parameter if $item is a mounted page
+     * @return string 'MP' URL parameter if $item is a mounted page
+     * @throws DBALDriverException
+     * @throws DBALException
      */
-    protected function getMountPageDataUrlParameter(Item $item)
+    protected function getMountPageDataUrlParameter(Item $item): string
     {
         if (!$item->hasIndexingProperty('isMountedPage')) {
             return '';
@@ -265,9 +281,9 @@ class PageIndexer extends Indexer
         return $item->getIndexingProperty('mountPageSource') . '-' . $item->getIndexingProperty('mountPageDestination');
     }
 
-    #
-    # Frontend User Groups Access
-    #
+    //
+    // Frontend User Groups Access
+    //
 
     /**
      * Creates a single Solr Document for a page in a specific language and for
@@ -277,7 +293,8 @@ class PageIndexer extends Indexer
      * @param ?int $language The language to use.
      * @param ?int $userGroup The frontend user group to use.
      * @return PageIndexerResponse Page indexer response
-     * @throws RuntimeException if indexing an item failed
+     * @throws DBALDriverException
+     * @throws DBALException
      */
     protected function indexPage(Item $item, ?int $language = 0, ?int $userGroup = 0): PageIndexerResponse
     {
@@ -309,7 +326,7 @@ class PageIndexer extends Indexer
                     'index request url' => $indexRequestUrl,
                     'request' => (array)$request,
                     'request headers' => $request->getHeaders(),
-                    'response' => (array)$response
+                    'response' => (array)$response,
                 ]
             );
         }
@@ -344,10 +361,12 @@ class PageIndexer extends Indexer
      *
      * @param Item $item Index queue item representing the current page
      * @param int $language The sys_language_uid language ID
-     * @param int $contentAccessGroup The user group to use for the content access rootline element. Optional, will be determined automatically if not set.
-     * @return string An Access Rootline.
+     * @param int|null $contentAccessGroup The user group to use for the content access rootline element. Optional, will be determined automatically if not set.
+     * @return mixed|Rootline An Access Rootline.
+     * @throws DBALDriverException
+     * @throws DBALException
      */
-    protected function getAccessRootline(Item $item, $language = 0, $contentAccessGroup = null)
+    protected function getAccessRootline(Item $item, int $language = 0, int $contentAccessGroup = null)
     {
         static $accessRootlineCache;
 
@@ -382,12 +401,11 @@ class PageIndexer extends Indexer
      * Returns the access rootLine for a certain pageId.
      *
      * @param int $pageId
-     * @param string $mountPointparameter
+     * @param string $mountPointParameter
      * @return Rootline
      */
-    protected function getAccessRootlineByPageId($pageId, $mountPointParameter)
+    protected function getAccessRootlineByPageId(int $pageId, string $mountPointParameter): Rootline
     {
         return Rootline::getAccessRootlineByPageId($pageId, $mountPointParameter);
     }
-
 }

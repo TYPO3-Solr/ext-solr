@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -15,9 +17,11 @@
 
 namespace ApacheSolrForTypo3\Solr\Search;
 
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use ApacheSolrForTypo3\Solr\Util;
+use Doctrine\DBAL\Driver\Exception as DBALDriverException;
+use Throwable;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -27,22 +31,21 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class AccessComponent extends AbstractComponent implements QueryAware
 {
-
     /**
      * Solr query
      *
-     * @var Query
+     * @var Query|null
      */
-    protected $query;
+    protected ?Query $query = null;
 
     /**
      * @var QueryBuilder
      */
-    protected $queryBuilder;
+    protected QueryBuilder $queryBuilder;
 
     /**
      * AccessComponent constructor.
-     * @param QueryBuilder|null
+     * @param QueryBuilder|null $queryBuilder
      */
     public function __construct(QueryBuilder $queryBuilder = null)
     {
@@ -51,6 +54,9 @@ class AccessComponent extends AbstractComponent implements QueryAware
 
     /**
      * Initializes the search component.
+     *
+     * @throws DBALDriverException
+     * @throws Throwable
      */
     public function initializeSearchComponent()
     {

@@ -22,22 +22,22 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
  * The FieldCollapsing ParameterProvider is responsible to build the solr query parameters
  * that are needed for the field collapsing.
  */
-class FieldCollapsing extends AbstractDeactivatable implements ParameterBuilder
+class FieldCollapsing extends AbstractDeactivatable implements ParameterBuilderInterface
 {
     /**
      * @var string
      */
-    protected $collapseFieldName = 'variantId';
+    protected string $collapseFieldName = 'variantId';
 
     /**
      * @var bool
      */
-    protected $expand = false;
+    protected bool $expand = false;
 
     /**
      * @var int
      */
-    protected $expandRowCount = 10;
+    protected int $expandRowCount = 10;
 
     /**
      * FieldCollapsing constructor.
@@ -46,8 +46,12 @@ class FieldCollapsing extends AbstractDeactivatable implements ParameterBuilder
      * @param bool $expand
      * @param int $expandRowCount
      */
-    public function __construct($isEnabled, $collapseFieldName = 'variantId', $expand = false, $expandRowCount = 10)
-    {
+    public function __construct(
+        bool $isEnabled,
+        string $collapseFieldName = 'variantId',
+        bool $expand = false,
+        int $expandRowCount = 10
+    ) {
         $this->isEnabled = $isEnabled;
         $this->collapseFieldName = $collapseFieldName;
         $this->expand = $expand;
@@ -71,7 +75,7 @@ class FieldCollapsing extends AbstractDeactivatable implements ParameterBuilder
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function getIsExpand(): bool
     {
@@ -79,7 +83,7 @@ class FieldCollapsing extends AbstractDeactivatable implements ParameterBuilder
     }
 
     /**
-     * @param boolean $expand
+     * @param bool $expand
      */
     public function setExpand(bool $expand)
     {
@@ -106,7 +110,7 @@ class FieldCollapsing extends AbstractDeactivatable implements ParameterBuilder
      * @param TypoScriptConfiguration $solrConfiguration
      * @return FieldCollapsing
      */
-    public static function fromTypoScriptConfiguration(TypoScriptConfiguration $solrConfiguration)
+    public static function fromTypoScriptConfiguration(TypoScriptConfiguration $solrConfiguration): FieldCollapsing
     {
         $isEnabled = $solrConfiguration->getSearchVariants();
         if (!$isEnabled) {
@@ -114,7 +118,7 @@ class FieldCollapsing extends AbstractDeactivatable implements ParameterBuilder
         }
 
         $collapseField = $solrConfiguration->getSearchVariantsField();
-        $expand = (bool)$solrConfiguration->getSearchVariantsExpand();
+        $expand = $solrConfiguration->getSearchVariantsExpand();
         $expandRows = $solrConfiguration->getSearchVariantsLimit();
 
         return new FieldCollapsing(true, $collapseField, $expand, $expandRows);
@@ -123,7 +127,7 @@ class FieldCollapsing extends AbstractDeactivatable implements ParameterBuilder
     /**
      * @return FieldCollapsing
      */
-    public static function getEmpty()
+    public static function getEmpty(): FieldCollapsing
     {
         return new FieldCollapsing(false);
     }
@@ -135,12 +139,12 @@ class FieldCollapsing extends AbstractDeactivatable implements ParameterBuilder
     public function build(AbstractQueryBuilder $parentBuilder): AbstractQueryBuilder
     {
         $query = $parentBuilder->getQuery();
-        if(!$this->getIsEnabled()) {
+        if (!$this->getIsEnabled()) {
             return $parentBuilder;
         }
 
-        $parentBuilder->useFilter('{!collapse field=' . $this->getCollapseFieldName(). '}', 'fieldCollapsing');
-        if($this->getIsExpand()) {
+        $parentBuilder->useFilter('{!collapse field=' . $this->getCollapseFieldName() . '}', 'fieldCollapsing');
+        if ($this->getIsExpand()) {
             $query->addParam('expand', 'true');
             $query->addParam('expand.rows', $this->getExpandRowCount());
         }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -15,16 +17,13 @@
 
 namespace ApacheSolrForTypo3\Solr\FieldProcessor;
 
-use ApacheSolrForTypo3\Solr\FieldProcessor\CategoryUidToHierarchy;
-use ApacheSolrForTypo3\Solr\FieldProcessor\PageUidToHierarchy;
-use ApacheSolrForTypo3\Solr\FieldProcessor\PathToHierarchy;
-use ApacheSolrForTypo3\Solr\FieldProcessor\TimestampToIsoDate;
-use ApacheSolrForTypo3\Solr\FieldProcessor\TimestampToUtcIsoDate;
 use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
+use Doctrine\DBAL\Driver\Exception as DBALDriverException;
+use Doctrine\DBAL\Exception as DBALException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Service class that modifies fields in a Apache Solr Document, used for
+ * Service class that modifies fields in an Apache Solr Document, used for
  * common field processing during indexing or resolving
  *
  * @author Daniel Poetzinger <poetzinger@aoemedia.de>
@@ -32,14 +31,16 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class Service
 {
-
     /**
      * Modifies a list of documents
      *
      * @param Document[] $documents
      * @param array $processingConfiguration
+     * @throws DBALDriverException
+     * @throws DBALException
      */
-    public function processDocuments(array $documents, array $processingConfiguration) {
+    public function processDocuments(array $documents, array $processingConfiguration)
+    {
         foreach ($documents as $document) {
             $this->processDocument($document, $processingConfiguration);
         }
@@ -50,8 +51,11 @@ class Service
      *
      * @param Document $document
      * @param array $processingConfiguration
+     * @throws DBALDriverException
+     * @throws DBALException
      */
-    public function processDocument(Document $document, array $processingConfiguration) {
+    public function processDocument(Document $document, array $processingConfiguration)
+    {
         foreach ($processingConfiguration as $fieldName => $instruction) {
             $fieldValue = $document[$fieldName] ?? false;
             $isSingleValueField = false;

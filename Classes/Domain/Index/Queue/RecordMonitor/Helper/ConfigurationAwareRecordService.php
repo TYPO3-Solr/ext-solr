@@ -32,12 +32,15 @@ class ConfigurationAwareRecordService
      * Retrieves the name of the Index Queue Configuration for a record.
      *
      * @param string $recordTable Table to read from
-     * @param int $recordUid Id of the record
+     * @param int $recordUid id of the record
      * @param TypoScriptConfiguration $solrConfiguration
      * @return string|null Name of indexing configuration
      */
-    public function getIndexingConfigurationName($recordTable, $recordUid, TypoScriptConfiguration $solrConfiguration)
-    {
+    public function getIndexingConfigurationName(
+        string $recordTable,
+        int $recordUid,
+        TypoScriptConfiguration $solrConfiguration
+    ): ?string {
         $name = null;
         $indexingConfigurations = $solrConfiguration->getEnabledIndexQueueConfigurationNames();
         foreach ($indexingConfigurations as $indexingConfigurationName) {
@@ -46,8 +49,12 @@ class ConfigurationAwareRecordService
                 continue;
             }
 
-            $record = $this->getRecordIfIndexConfigurationIsValid($recordTable, $recordUid,
-                $indexingConfigurationName, $solrConfiguration);
+            $record = $this->getRecordIfIndexConfigurationIsValid(
+                $recordTable,
+                $recordUid,
+                $indexingConfigurationName,
+                $solrConfiguration
+            );
             if (!empty($record)) {
                 $name = $indexingConfigurationName;
                 // FIXME currently returns after the first configuration match
@@ -63,17 +70,24 @@ class ConfigurationAwareRecordService
      * Indexing Queue configurations.
      *
      * @param string $recordTable Table to read from
-     * @param int $recordUid Id of the record
+     * @param int $recordUid id of the record
      * @param TypoScriptConfiguration $solrConfiguration
      * @return array Record if found, otherwise empty array
      */
-    public function getRecord($recordTable, $recordUid, TypoScriptConfiguration $solrConfiguration)
-    {
+    public function getRecord(
+        string $recordTable,
+        int $recordUid,
+        TypoScriptConfiguration $solrConfiguration
+    ): array {
         $record = [];
         $indexingConfigurations = $solrConfiguration->getEnabledIndexQueueConfigurationNames();
         foreach ($indexingConfigurations as $indexingConfigurationName) {
-            $record = $this->getRecordIfIndexConfigurationIsValid($recordTable, $recordUid,
-                $indexingConfigurationName, $solrConfiguration);
+            $record = $this->getRecordIfIndexConfigurationIsValid(
+                $recordTable,
+                $recordUid,
+                $indexingConfigurationName,
+                $solrConfiguration
+            );
             if (!empty($record)) {
                 // if we found a record which matches the conditions, we can continue
                 break;
@@ -84,25 +98,27 @@ class ConfigurationAwareRecordService
 
     /**
      * This method return the record array if the table is valid for this indexingConfiguration.
-     * Otherwise an empty array will be returned.
+     * Otherwise, an empty array will be returned.
      *
      * @param string $recordTable
-     * @param integer $recordUid
+     * @param int $recordUid
      * @param string $indexingConfigurationName
      * @param TypoScriptConfiguration $solrConfiguration
      * @return array
      */
-    protected function getRecordIfIndexConfigurationIsValid($recordTable, $recordUid, $indexingConfigurationName, TypoScriptConfiguration $solrConfiguration)
-    {
+    protected function getRecordIfIndexConfigurationIsValid(
+        string $recordTable,
+        int $recordUid,
+        string $indexingConfigurationName,
+        TypoScriptConfiguration $solrConfiguration
+    ): array {
         if (!$this->isValidTableForIndexConfigurationName($recordTable, $indexingConfigurationName, $solrConfiguration)) {
             return [];
         }
 
         $recordWhereClause = $solrConfiguration->getIndexQueueAdditionalWhereClauseByConfigurationName($indexingConfigurationName);
 
-        $row = $this->getRecordForIndexConfigurationIsValid($recordTable, $recordUid, $recordWhereClause);
-
-        return $row;
+        return $this->getRecordForIndexConfigurationIsValid($recordTable, $recordUid, $recordWhereClause);
     }
 
     /**
@@ -110,13 +126,16 @@ class ConfigurationAwareRecordService
      * or from cache
      *
      * @param string $recordTable
-     * @param integer $recordUid
+     * @param int $recordUid
      * @param string $recordWhereClause
      *
      * @return array
      */
-    protected function getRecordForIndexConfigurationIsValid($recordTable, $recordUid, $recordWhereClause)
-    {
+    protected function getRecordForIndexConfigurationIsValid(
+        string $recordTable,
+        int $recordUid,
+        string $recordWhereClause = ''
+    ): array {
         $cache = GeneralUtility::makeInstance(TwoLevelCache::class, /** @scrutinizer ignore-type */ 'runtime');
         $cacheId = md5('ConfigurationAwareRecordService' . ':' . 'getRecordIfIndexConfigurationIsValid' . ':' . $recordTable . ':' . $recordUid . ':' . $recordWhereClause);
 
@@ -128,7 +147,7 @@ class ConfigurationAwareRecordService
         $row = (array)BackendUtility::getRecord($recordTable, $recordUid, '*', $recordWhereClause);
         $cache->set($cacheId, $row);
 
-        return $row;
+        return $row ?? [];
     }
 
     /**
@@ -137,10 +156,13 @@ class ConfigurationAwareRecordService
      * @param string $recordTable
      * @param string $indexingConfigurationName
      * @param TypoScriptConfiguration $solrConfiguration
-     * @return boolean
+     * @return bool
      */
-    protected function isValidTableForIndexConfigurationName($recordTable, $indexingConfigurationName, TypoScriptConfiguration $solrConfiguration)
-    {
+    protected function isValidTableForIndexConfigurationName(
+        string $recordTable,
+        string $indexingConfigurationName,
+        TypoScriptConfiguration $solrConfiguration
+    ): bool {
         $tableToIndex = $solrConfiguration->getIndexQueueTableNameOrFallbackToConfigurationName($indexingConfigurationName);
 
         $isMatchingTable = ($tableToIndex === $recordTable);
@@ -150,27 +172,5 @@ class ConfigurationAwareRecordService
         }
 
         return false;
-    }
-
-    /**
-     * This method retrieves the parent pages record when the parent record is accessible
-     * through the recordWhereClause
-     *
-     * @param int $recordUid
-     * @param string $parentWhereClause
-     * @return array
-     */
-    protected function getPageOverlayRecordIfParentIsAccessible($recordUid, $parentWhereClause)
-    {
-        $overlayRecord = (array)BackendUtility::getRecord('pages', $recordUid, '*');
-        $overlayParentId = $overlayRecord['l10n_parent'];
-
-        $pageRecord = (array)BackendUtility::getRecord('pages', $overlayParentId, '*', $parentWhereClause);
-
-        if (empty($pageRecord)) {
-            return [];
-        }
-
-        return $overlayRecord;
     }
 }

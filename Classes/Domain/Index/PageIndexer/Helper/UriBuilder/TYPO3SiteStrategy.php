@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -20,7 +20,6 @@ namespace ApacheSolrForTypo3\Solr\Domain\Index\PageIndexer\Helper\UriBuilder;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
-use TYPO3\CMS\Core\Routing\InvalidRouteArgumentsException;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -34,15 +33,17 @@ class TYPO3SiteStrategy extends AbstractUriStrategy
     /**
      * @var SiteFinder
      */
-    protected $siteFinder = null;
+    protected SiteFinder $siteFinder;
 
     /**
      * TYPO3SiteStrategy constructor.
      * @param SolrLogManager|null $logger
      * @param SiteFinder|null $siteFinder
      */
-    public function __construct(SolrLogManager $logger = null, SiteFinder $siteFinder = null)
-    {
+    public function __construct(
+        SolrLogManager $logger = null,
+        SiteFinder $siteFinder = null
+    ) {
         parent::__construct($logger);
         $this->siteFinder = $siteFinder ?? GeneralUtility::makeInstance(SiteFinder::class);
     }
@@ -53,22 +54,23 @@ class TYPO3SiteStrategy extends AbstractUriStrategy
      * @param string $mountPointParameter
      * @return string
      * @throws SiteNotFoundException
-     * @throws InvalidRouteArgumentsException
      */
-    protected function buildPageIndexingUriFromPageItemAndLanguageId(Item $item, int $language = 0,  string $mountPointParameter = '')
-    {
+    protected function buildPageIndexingUriFromPageItemAndLanguageId(
+        Item $item,
+        int $language = 0,
+        string $mountPointParameter = ''
+    ): string {
         $site = $this->siteFinder->getSiteByPageId((int)$item->getRecordUid());
         $parameters = [];
 
         if ($language > 0) {
             $parameters['_language'] = $language;
-        };
+        }
 
         if ($mountPointParameter !== '') {
             $parameters['MP'] = $mountPointParameter;
         }
 
-        $pageIndexUri = (string)$site->getRouter()->generateUri($item->getRecord(), $parameters);
-        return $pageIndexUri;
+        return (string)$site->getRouter()->generateUri($item->getRecord(), $parameters);
     }
 }

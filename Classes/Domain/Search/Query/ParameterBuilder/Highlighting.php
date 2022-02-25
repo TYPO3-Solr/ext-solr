@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -16,7 +18,6 @@
 namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\AbstractQueryBuilder;
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -24,27 +25,27 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * The Highlighting ParameterProvider is responsible to build the solr query parameters
  * that are needed for the highlighting.
  */
-class Highlighting extends AbstractDeactivatable implements ParameterBuilder
+class Highlighting extends AbstractDeactivatable implements ParameterBuilderInterface
 {
     /**
      * @var int
      */
-    protected $fragmentSize = 200;
+    protected int $fragmentSize = 200;
 
     /**
      * @var string
      */
-    protected $highlightingFieldList = '';
+    protected string $highlightingFieldList = '';
 
     /**
      * @var string
      */
-    protected $prefix = '';
+    protected string $prefix = '';
 
     /**
      * @var string
      */
-    protected $postfix = '';
+    protected string $postfix = '';
 
     /**
      * Highlighting constructor.
@@ -55,8 +56,13 @@ class Highlighting extends AbstractDeactivatable implements ParameterBuilder
      * @param string $prefix
      * @param string $postfix
      */
-    public function __construct($isEnabled = false, $fragmentSize = 200, $highlightingFieldList = '', $prefix = '', $postfix = '')
-    {
+    public function __construct(
+        bool $isEnabled = false,
+        int $fragmentSize = 200,
+        string $highlightingFieldList = '',
+        string $prefix = '',
+        string $postfix = ''
+    ) {
         $this->isEnabled = $isEnabled;
         $this->fragmentSize = $fragmentSize;
         $this->highlightingFieldList = $highlightingFieldList;
@@ -131,19 +137,18 @@ class Highlighting extends AbstractDeactivatable implements ParameterBuilder
     /**
      * @return bool
      */
-    public function getUseFastVectorHighlighter()
+    public function getUseFastVectorHighlighter(): bool
     {
-        return ($this->fragmentSize >= 18);
+        return $this->fragmentSize >= 18;
     }
-
 
     /**
      * @param TypoScriptConfiguration $solrConfiguration
      * @return Highlighting
      */
-    public static function fromTypoScriptConfiguration(TypoScriptConfiguration $solrConfiguration)
+    public static function fromTypoScriptConfiguration(TypoScriptConfiguration $solrConfiguration): Highlighting
     {
-        $isEnabled = $solrConfiguration->getSearchResultsHighlighting();
+        $isEnabled = $solrConfiguration->getIsSearchResultsHighlightingEnabled();
         if (!$isEnabled) {
             return new Highlighting(false);
         }
@@ -151,21 +156,19 @@ class Highlighting extends AbstractDeactivatable implements ParameterBuilder
         $fragmentSize = $solrConfiguration->getSearchResultsHighlightingFragmentSize();
         $highlightingFields = $solrConfiguration->getSearchResultsHighlightingFields();
         $wrap = explode('|', $solrConfiguration->getSearchResultsHighlightingWrap());
-        $prefix = isset($wrap[0]) ? $wrap[0] : '';
-        $postfix = isset($wrap[1]) ? $wrap[1] : '';
+        $prefix = $wrap[0] ?? '';
+        $postfix = $wrap[1] ?? '';
 
-
-        return new Highlighting($isEnabled, $fragmentSize, $highlightingFields, $prefix, $postfix);
+        return new Highlighting(true, $fragmentSize, $highlightingFields, $prefix, $postfix);
     }
 
     /**
      * @return Highlighting
      */
-    public static function getEmpty()
+    public static function getEmpty(): Highlighting
     {
         return new Highlighting(false);
     }
-
 
     /**
      * @param AbstractQueryBuilder $parentBuilder
@@ -174,13 +177,13 @@ class Highlighting extends AbstractDeactivatable implements ParameterBuilder
     public function build(AbstractQueryBuilder $parentBuilder): AbstractQueryBuilder
     {
         $query = $parentBuilder->getQuery();
-        if(!$this->getIsEnabled()) {
+        if (!$this->getIsEnabled()) {
             $query->removeComponent($query->getHighlighting());
             return $parentBuilder;
         }
 
         $query->getHighlighting()->setFragSize($this->getFragmentSize());
-        $query->getHighlighting()->setFields(GeneralUtility::trimExplode(",", $this->getHighlightingFieldList()));
+        $query->getHighlighting()->setFields(GeneralUtility::trimExplode(',', $this->getHighlightingFieldList()));
 
         if ($this->getUseFastVectorHighlighter()) {
             $query->getHighlighting()->setUseFastVectorHighlighter(true);

@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -25,9 +25,9 @@ use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\DataUpdateEv
 abstract class AbstractProcessingFinishedEvent implements ProcessingFinishedEventInterface
 {
     /**
-     * The processed data update evetn
+     * The processed data update event
      */
-    private $dataUpdateEvent;
+    private DataUpdateEventInterface $dataUpdateEvent;
 
     /**
      * @param DataUpdateEventInterface $dataUpdateEvent

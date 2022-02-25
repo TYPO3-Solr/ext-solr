@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -32,12 +34,12 @@ class VariantsProcessor implements SearchResultSetProcessor
     /**
      * @var TypoScriptConfiguration
      */
-    protected $typoScriptConfiguration;
+    protected TypoScriptConfiguration $typoScriptConfiguration;
 
     /**
      * @var SearchResultBuilder
      */
-    protected $resultBuilder;
+    protected SearchResultBuilder $resultBuilder;
 
     /**
      * VariantsProcessor constructor.
@@ -57,7 +59,7 @@ class VariantsProcessor implements SearchResultSetProcessor
      * @param SearchResultSet $resultSet
      * @return SearchResultSet
      */
-    public function process(SearchResultSet $resultSet)
+    public function process(SearchResultSet $resultSet): SearchResultSet
     {
         $response = $resultSet->getResponse();
         // @extensionScannerIgnoreLine
@@ -98,8 +100,11 @@ class VariantsProcessor implements SearchResultSetProcessor
      * @param string $variantAccessKey
      * @param SearchResult $resultDocument
      */
-    protected function buildVariantDocumentAndAssignToParentResult(ResponseAdapter $response, $variantAccessKey, SearchResult $resultDocument)
-    {
+    protected function buildVariantDocumentAndAssignToParentResult(
+        ResponseAdapter $response,
+        string $variantAccessKey,
+        SearchResult $resultDocument
+    ) {
         foreach ($response->{'expanded'}->{$variantAccessKey}->{'docs'} as $variantDocumentArray) {
             $fields = get_object_vars($variantDocumentArray);
             $variantDocument = new SearchResult($fields);
@@ -111,5 +116,4 @@ class VariantsProcessor implements SearchResultSetProcessor
             $resultDocument->addVariant($variantSearchResult);
         }
     }
-
 }

@@ -22,8 +22,8 @@ use ApacheSolrForTypo3\Solr\System\Solr\SolrUnavailableException;
 use ApacheSolrForTypo3\Solr\Util;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
-use TYPO3\CMS\Extbase\Http\ForwardResponse;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Http\ForwardResponse;
 use TYPO3\CMS\Extbase\Mvc\Exception\NoSuchArgumentException;
 use TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException;
 use TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException;
@@ -52,9 +52,6 @@ class SearchController extends AbstractBaseController
         $this->mapGlobalQueryStringWhenEnabled();
     }
 
-    /**
-     * @return void
-     */
     protected function mapGlobalQueryStringWhenEnabled()
     {
         $query = GeneralUtility::_GET('q');
@@ -148,7 +145,7 @@ class SearchController extends AbstractBaseController
         $values = [
             'search' => $this->searchService->getSearch(),
             'additionalFilters' => $this->getAdditionalFilters(),
-            'pluginNamespace' => $this->typoScriptConfiguration->getSearchPluginNamespace()
+            'pluginNamespace' => $this->typoScriptConfiguration->getSearchPluginNamespace(),
         ];
         $values = $this->emitActionSignal(__CLASS__, __FUNCTION__, [$values]);
 
@@ -173,7 +170,7 @@ class SearchController extends AbstractBaseController
 
         $values = [
             'additionalFilters' => $this->getAdditionalFilters(),
-            'resultSet' => $searchResultSet
+            'resultSet' => $searchResultSet,
         ];
         $values = $this->emitActionSignal(__CLASS__, __FUNCTION__, [$values]);
 

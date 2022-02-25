@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -15,6 +17,7 @@
 
 namespace ApacheSolrForTypo3\Solr\Utility;
 
+use InvalidArgumentException;
 use TYPO3\CMS\Core\Http\Stream;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -23,16 +26,15 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class ManagedResourcesUtility
 {
-
     /**
      * Export synonyms in plain text format
      * @param array $synonyms
      * @return string
      */
-    public static function exportSynonymsToTxt(array $synonyms) : string
+    public static function exportSynonymsToTxt(array $synonyms): string
     {
         if (empty($synonyms)) {
-            throw new \InvalidArgumentException('Nothing to export!', 1502978329);
+            throw new InvalidArgumentException('Nothing to export!', 1502978329);
         }
 
         $contentLines = '';
@@ -47,7 +49,7 @@ class ManagedResourcesUtility
      * @param array $synonymFileUpload
      * @return array
      */
-    public static function importSynonymsFromPlainTextContents(array $synonymFileUpload) : array
+    public static function importSynonymsFromPlainTextContents(array $synonymFileUpload): array
     {
         $fileStream = new Stream($synonymFileUpload['tmp_name']);
 
@@ -66,7 +68,7 @@ class ManagedResourcesUtility
      * @param array $stopwordsFileUpload
      * @return string
      */
-    public static function importStopwordsFromPlainTextContents(array $stopwordsFileUpload) : string
+    public static function importStopwordsFromPlainTextContents(array $stopwordsFileUpload): string
     {
         $fileStream = new Stream($stopwordsFileUpload['tmp_name']);
 
@@ -79,7 +81,7 @@ class ManagedResourcesUtility
      * @param array $synonymList
      * @return array
      */
-    protected static function convertSynonymFileLineForImport($line, $synonymList) : array
+    protected static function convertSynonymFileLineForImport(string $line, array $synonymList): array
     {
         $lineParts = GeneralUtility::trimExplode('=>', $line, true);
 

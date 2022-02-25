@@ -36,12 +36,14 @@ class Content extends AbstractContentObject
      * Cleans content coming from a database field, removing HTML tags ...
      *
      * @inheritDoc
+     * @noinspection PhpMissingReturnTypeInspection, because foreign source inheritance See {@link AbstractContentObject::render()}
      */
     public function render($conf = [])
     {
         $contentExtractor = GeneralUtility::makeInstance(
             HtmlContentExtractor::class,
-            /** @scrutinizer ignore-type */ $this->getRawContent($this->cObj, $conf)
+            /** @scrutinizer ignore-type */
+            $this->getRawContent($this->cObj, $conf)
         );
 
         return $contentExtractor->getIndexableContent();
@@ -54,7 +56,7 @@ class Content extends AbstractContentObject
      * @param array $configuration content object configuration
      * @return string The raw content
      */
-    protected function getRawContent($contentObject, $configuration)
+    protected function getRawContent(ContentObjectRenderer $contentObject, array $configuration): string
     {
         $content = '';
         if (isset($configuration['value'])) {
@@ -63,7 +65,7 @@ class Content extends AbstractContentObject
         }
 
         if (!empty($configuration)) {
-            $content = $contentObject->stdWrap($content, $configuration);
+            $content = $contentObject->stdWrap($content, $configuration) ?? '';
         }
 
         return $content;

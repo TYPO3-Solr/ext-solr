@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -29,5 +31,5 @@ interface FacetQueryBuilderInterface
      * @param TypoScriptConfiguration $configuration
      * @return array
      */
-    public function build($facetName, TypoScriptConfiguration $configuration);
+    public function build(string $facetName, TypoScriptConfiguration $configuration): array;
 }

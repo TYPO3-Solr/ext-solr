@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -24,7 +26,6 @@ use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
  */
 interface QueryAware
 {
-
     /**
      * Provides the extension component with an instance of the current query.
      *

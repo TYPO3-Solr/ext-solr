@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -15,8 +17,6 @@
 
 namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets;
 
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
-
 /**
  * Abstract item that represent a value of a facet. E.g. an option or a node
  *
@@ -28,37 +28,42 @@ abstract class AbstractFacetItem
     /**
      * @var string
      */
-    protected $label = '';
+    protected string $label = '';
 
     /**
      * @var int
      */
-    protected $documentCount = 0;
+    protected int $documentCount = 0;
 
     /**
      * @var bool
      */
-    protected $selected = false;
+    protected bool $selected = false;
 
     /**
      * @var array
      */
-    protected $metrics = [];
+    protected array $metrics = [];
 
     /**
      * @var AbstractFacet
      */
-    protected $facet;
+    protected AbstractFacet $facet;
 
     /**
      * @param AbstractFacet $facet
      * @param string $label
      * @param int $documentCount
      * @param bool $selected
-     * @param array $metrics
+     * @param array|null $metrics
      */
-    public function __construct(AbstractFacet $facet, $label = '', $documentCount = 0, $selected = false, $metrics = [])
-    {
+    public function __construct(
+        AbstractFacet $facet,
+        string $label = '',
+        int $documentCount = 0,
+        bool $selected = false,
+        array $metrics = []
+    ) {
         $this->facet = $facet;
         $this->label = $label;
         $this->documentCount = $documentCount;
@@ -69,15 +74,15 @@ abstract class AbstractFacetItem
     /**
      * @return int
      */
-    public function getDocumentCount()
+    public function getDocumentCount(): int
     {
         return $this->documentCount;
     }
 
     /**
-     * @return \ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacet
+     * @return AbstractFacet
      */
-    public function getFacet()
+    public function getFacet(): AbstractFacet
     {
         return $this->facet;
     }
@@ -85,15 +90,15 @@ abstract class AbstractFacetItem
     /**
      * @return string
      */
-    public function getLabel()
+    public function getLabel(): string
     {
         return $this->label;
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
-    public function getSelected()
+    public function getSelected(): bool
     {
         return $this->selected;
     }
@@ -101,7 +106,7 @@ abstract class AbstractFacetItem
     /**
      * @return array
      */
-    public function getMetrics()
+    public function getMetrics(): array
     {
         return $this->metrics;
     }
@@ -109,10 +114,10 @@ abstract class AbstractFacetItem
     /**
      * @return string
      */
-    abstract public function getUriValue();
+    abstract public function getUriValue(): string;
 
     /**
      * @return string
      */
-    abstract function getCollectionKey();
+    abstract public function getCollectionKey(): string;
 }

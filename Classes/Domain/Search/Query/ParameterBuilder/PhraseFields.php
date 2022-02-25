@@ -21,15 +21,8 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 /**
  * The PhraseFields class
  */
-class PhraseFields extends AbstractFieldList implements ParameterBuilder
+class PhraseFields extends AbstractFieldList implements ParameterBuilderInterface
 {
-    /**
-     * Parameter key which should be used for Apache Solr URL query
-     *
-     * @var string
-     */
-    protected $parameterKey = 'pf';
-
     /**
      * Parses the string representation of the fieldList (e.g. content^100, title^10) to the object representation.
      *
@@ -37,7 +30,7 @@ class PhraseFields extends AbstractFieldList implements ParameterBuilder
      * @param string $delimiter
      * @return PhraseFields
      */
-    public static function fromString(string $fieldListString, string $delimiter = ',') : PhraseFields
+    public static function fromString(string $fieldListString, string $delimiter = ','): PhraseFields
     {
         return self::initializeFromString($fieldListString, $delimiter);
     }
@@ -46,14 +39,14 @@ class PhraseFields extends AbstractFieldList implements ParameterBuilder
      * @param TypoScriptConfiguration $solrConfiguration
      * @return PhraseFields
      */
-    public static function fromTypoScriptConfiguration(TypoScriptConfiguration $solrConfiguration)
+    public static function fromTypoScriptConfiguration(TypoScriptConfiguration $solrConfiguration): PhraseFields
     {
         $isEnabled = $solrConfiguration->getPhraseSearchIsEnabled();
         if (!$isEnabled) {
             return new PhraseFields(false);
         }
 
-        return self::fromString((string)$solrConfiguration->getSearchQueryPhraseFields());
+        return self::fromString($solrConfiguration->getSearchQueryPhraseFields());
     }
 
     /**
@@ -63,7 +56,7 @@ class PhraseFields extends AbstractFieldList implements ParameterBuilder
      * @param string $delimiter
      * @return PhraseFields
      */
-    protected static function initializeFromString(string $fieldListString, string $delimiter = ',') : PhraseFields
+    protected static function initializeFromString(string $fieldListString, string $delimiter = ','): PhraseFields
     {
         $fieldList = self::buildFieldList($fieldListString, $delimiter);
         return new PhraseFields(true, $fieldList);

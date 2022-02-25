@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -27,11 +29,9 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class PageIndexerInitialization
- * @package ApacheSolrForTypo3\Solr\Middleware
  */
 class PageIndexerInitialization implements MiddlewareInterface
 {
-
     /**
      * @param ServerRequestInterface $request
      * @param RequestHandlerInterface $handler
@@ -55,7 +55,7 @@ class PageIndexerInitialization implements MiddlewareInterface
                     'Invalid Index Queue Frontend Request detected!',
                     [
                         'page indexer request' => (array)$pageIndexerRequest,
-                        'index queue header' => $jsonEncodedParameters
+                        'index queue header' => $jsonEncodedParameters,
                     ]
                 );
                 return new JsonResponse(['error' => ['code' => 403, 'message' => 'Invalid Index Queue Request.']], 403);

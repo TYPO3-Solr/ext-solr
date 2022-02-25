@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -25,13 +27,13 @@ class NumericRangeFacetQueryBuilder implements FacetQueryBuilderInterface
      * @param TypoScriptConfiguration $configuration
      * @return array
      */
-    public function build($facetName, TypoScriptConfiguration $configuration)
+    public function build(string $facetName, TypoScriptConfiguration $configuration): array
     {
         $facetParameters = [];
         $facetConfiguration = $configuration->getSearchFacetingFacetByName($facetName);
 
         $tag = '';
-        if ($facetConfiguration['keepAllOptionsOnSelection'] == 1) {
+        if (true === (bool)($facetConfiguration['keepAllOptionsOnSelection'] ?? null)) {
             $tag = '{!ex=' . $facetConfiguration['field'] . '}';
         }
         $facetParameters['facet.range'][] = $tag . $facetConfiguration['field'];

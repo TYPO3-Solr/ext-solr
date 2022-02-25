@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -15,10 +17,13 @@
 
 namespace ApacheSolrForTypo3\Solr\System\Records\Queue;
 
-use ApacheSolrForTypo3\Solr\System\Records\AbstractRepository;
-use TYPO3\CMS\Core\SingletonInterface;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\DataUpdateEventInterface;
+use ApacheSolrForTypo3\Solr\System\Records\AbstractRepository;
 use ApacheSolrForTypo3\Solr\Util;
+use Doctrine\DBAL\Driver\Exception as DBALDriverException;
+use Doctrine\DBAL\Exception as DBALException;
+use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
+use TYPO3\CMS\Core\SingletonInterface;
 
 /**
  * EventQueueItemRepository to encapsulate the database access for the event queue items
@@ -28,12 +33,14 @@ class EventQueueItemRepository extends AbstractRepository implements SingletonIn
     /**
      * @var string
      */
-    protected $table = 'tx_solr_eventqueue_item';
+    protected string $table = 'tx_solr_eventqueue_item';
 
     /**
      * Add event to event queue
      *
      * @param DataUpdateEventInterface $event
+     * @throws DBALException|\Doctrine\DBAL\DBALException
+     * @throws AspectNotFoundException
      */
     public function addEventToQueue(DataUpdateEventInterface $event): void
     {
@@ -43,8 +50,8 @@ class EventQueueItemRepository extends AbstractRepository implements SingletonIn
         $queryBuilder
             ->insert($this->table)
             ->values([
-                'tstamp' => Util::getExectionTime(),
-                'event' => $serializedEvent
+                'tstamp' => Util::getExceptionTime(),
+                'event' => $serializedEvent,
 
             ])
             ->execute();
@@ -53,9 +60,11 @@ class EventQueueItemRepository extends AbstractRepository implements SingletonIn
     /**
      * Returns event queue items
      *
-     * @param int $limit
+     * @param int|null $limit
      * @param bool $excludeErroneousItems
      * @return array
+     * @throws DBALDriverException
+     * @throws DBALException|\Doctrine\DBAL\DBALException
      */
     public function getEventQueueItems(int $limit = null, bool $excludeErroneousItems = true): array
     {
@@ -72,7 +81,9 @@ class EventQueueItemRepository extends AbstractRepository implements SingletonIn
             $queryBuilder->andWhere($queryBuilder->expr()->eq('error', 0));
         }
 
-        return $queryBuilder->execute()->fetchAll();
+        return $queryBuilder
+            ->execute()
+            ->fetchAllAssociative();
     }
 
     /**
@@ -80,6 +91,7 @@ class EventQueueItemRepository extends AbstractRepository implements SingletonIn
      *
      * @param int $uid
      * @param array $data
+     * @throws DBALException|\Doctrine\DBAL\DBALException
      */
     public function updateEventQueueItem(int $uid, array $data): void
     {
@@ -94,7 +106,7 @@ class EventQueueItemRepository extends AbstractRepository implements SingletonIn
                 $queryBuilder->expr()->eq('uid', $uid)
             );
 
-        foreach($data as $column => $value) {
+        foreach ($data as $column => $value) {
             $queryBuilder->set($column, $value);
         }
 
@@ -105,6 +117,7 @@ class EventQueueItemRepository extends AbstractRepository implements SingletonIn
      * Deletes event queue items
      *
      * @param int[] $uids
+     * @throws DBALException|\Doctrine\DBAL\DBALException
      */
     public function deleteEventQueueItems(array $uids): void
     {
@@ -126,8 +139,10 @@ class EventQueueItemRepository extends AbstractRepository implements SingletonIn
      *
      * @param bool $excludeErroneousItems
      * @return int
+     * @throws DBALException|\Doctrine\DBAL\DBALException
+     * @throws DBALDriverException
      */
-    public function count($excludeErroneousItems = true): int
+    public function count(bool $excludeErroneousItems = true): int
     {
         $queryBuilder = $this->getQueryBuilder();
         $queryBuilder
@@ -138,6 +153,8 @@ class EventQueueItemRepository extends AbstractRepository implements SingletonIn
             $queryBuilder->andWhere($queryBuilder->expr()->eq('error', 0));
         }
 
-        return (int)$queryBuilder->execute()->fetchColumn();
+        return (int)$queryBuilder
+            ->execute()
+            ->fetchOne();
     }
 }

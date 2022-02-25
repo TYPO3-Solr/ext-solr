@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -15,9 +17,9 @@
 
 namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\NumericRange;
 
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\AbstractRangeFacetParser;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacet;
 
 /**
  * Class NumericRangeFacetParser
@@ -30,17 +32,17 @@ class NumericRangeFacetParser extends AbstractRangeFacetParser
     /**
      * @var string
      */
-    protected $facetClass = NumericRangeFacet::class;
+    protected string $facetClass = NumericRangeFacet::class;
 
     /**
      * @var string
      */
-    protected $facetItemClass = NumericRange::class;
+    protected string $facetItemClass = NumericRange::class;
 
     /**
      * @var string
      */
-    protected $facetRangeCountClass = NumericRangeCount::class;
+    protected string $facetRangeCountClass = NumericRangeCount::class;
 
     /**
      * @param SearchResultSet $resultSet
@@ -48,7 +50,7 @@ class NumericRangeFacetParser extends AbstractRangeFacetParser
      * @param array $facetConfiguration
      * @return AbstractFacet|null
      */
-    public function parse(SearchResultSet $resultSet, $facetName, array $facetConfiguration)
+    public function parse(SearchResultSet $resultSet, string $facetName, array $facetConfiguration): ?AbstractFacet
     {
         return $this->getParsedFacet(
             $resultSet,
@@ -59,21 +61,22 @@ class NumericRangeFacetParser extends AbstractRangeFacetParser
             $this->facetRangeCountClass
         );
     }
+
     /**
-     * @param mixed $rawValue
-     * @return mixed (numeric value)
+     * @param float|int|string|null $rawRequestValue
+     * @return float (numeric value)
      */
-    protected function parseRequestValue($rawValue)
+    protected function parseRequestValue($rawRequestValue): float
     {
-        return is_numeric($rawValue) ? $rawValue : 0;
+        return is_numeric($rawRequestValue) ? (float)$rawRequestValue : 0.0;
     }
 
     /**
-     * @param $rawValue
-     * @return mixed (numeric value)
+     * @param float|int|string|null $rawResponseValue
+     * @return float (numeric value)
      */
-    protected function parseResponseValue($rawValue)
+    protected function parseResponseValue($rawResponseValue): float
     {
-        return is_numeric($rawValue) ? $rawValue : 0;
+        return is_numeric($rawResponseValue) ? (float)$rawResponseValue : 0.0;
     }
 }

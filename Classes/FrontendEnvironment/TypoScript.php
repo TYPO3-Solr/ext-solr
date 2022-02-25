@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -30,14 +32,12 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class TypoScript implements SingletonInterface
 {
-
     /**
      * Holds the TypoScript values for given page-id language and TypoScript path.
      *
      * @var array
      */
     private array $configurationObjectCache = [];
-
 
     /**
      * Loads the TypoScript configuration for a given page-id and language.
@@ -53,8 +53,12 @@ class TypoScript implements SingletonInterface
      *
      * @throws DBALDriverException
      */
-    public function getConfigurationFromPageId(int $pageId, string $path, int $language = 0, ?int $rootPageId = null): TypoScriptConfiguration
-    {
+    public function getConfigurationFromPageId(
+        int $pageId,
+        string $path,
+        int $language = 0,
+        ?int $rootPageId = null
+    ): TypoScriptConfiguration {
         $cacheId = md5($pageId . '|' . $path . '|' . $language);
         if (isset($this->configurationObjectCache[$cacheId])) {
             return $this->configurationObjectCache[$cacheId];
@@ -71,7 +75,6 @@ class TypoScript implements SingletonInterface
         /* @var TwoLevelCache $cache */
         $cache = GeneralUtility::makeInstance(TwoLevelCache::class, /** @scrutinizer ignore-type */ 'tx_solr_configuration');
         $configurationArray = $cache->get($cacheId);
-
 
         if (!empty($configurationArray)) {
             // we have a cache hit and can return it.
@@ -111,7 +114,6 @@ class TypoScript implements SingletonInterface
         return $getConfigurationFromInitializedTSFEAndWriteToCache[0] ?? [];
     }
 
-
     /**
      * @param array $theSetup
      * @param string $theKey
@@ -146,5 +148,4 @@ class TypoScript implements SingletonInterface
         $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
         return $configurationManager->getTypoScriptConfiguration($configurationToUse, $pageId, $languageId, $typoScriptPath);
     }
-
 }

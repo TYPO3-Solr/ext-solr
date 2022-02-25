@@ -18,8 +18,8 @@ declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\Statistic;
 
 use ApacheSolrForTypo3\Solr\System\Records\AbstractRepository;
-use Doctrine\DBAL\Exception as DBALException;
 use Doctrine\DBAL\Driver\Exception as DBALDriverException;
+use Doctrine\DBAL\Exception as DBALException;
 use PDO;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\Exception\UnsupportedMethodException;
@@ -32,7 +32,7 @@ class QueueStatisticsRepository extends AbstractRepository
     /**
      * @var string
      */
-    protected $table = 'tx_solr_indexqueue_item';
+    protected string $table = 'tx_solr_indexqueue_item';
 
     /**
      * Extracts the number of pending, indexed and erroneous items from the
@@ -55,11 +55,11 @@ class QueueStatisticsRepository extends AbstractRepository
             ->add('select', vsprintf('(%s < %s) AS %s', [
                 $queryBuilder->quoteIdentifier('indexed'),
                 $queryBuilder->quoteIdentifier('changed'),
-                $queryBuilder->quoteIdentifier('pending')
+                $queryBuilder->quoteIdentifier('pending'),
             ]), true)
             ->add('select', vsprintf('(%s) AS %s', [
                 $queryBuilder->expr()->notLike('errors', $queryBuilder->createNamedParameter('')),
-                $queryBuilder->quoteIdentifier('failed')
+                $queryBuilder->quoteIdentifier('failed'),
             ]), true)
             ->add('select', $queryBuilder->expr()->count('*', 'count'), true)
             ->from($this->table)

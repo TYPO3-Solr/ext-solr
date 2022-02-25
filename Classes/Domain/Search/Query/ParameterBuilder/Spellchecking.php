@@ -22,13 +22,13 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
  * The Spellchecking ParameterProvider is responsible to build the solr query parameters
  * that are needed for the spellchecking.
  */
-class Spellchecking extends AbstractDeactivatable implements ParameterBuilder
+class Spellchecking extends AbstractDeactivatable implements ParameterBuilderInterface
 {
 
     /**
      * @var int
      */
-    protected $maxCollationTries = 0;
+    protected int $maxCollationTries = 0;
 
     /**
      * Spellchecking constructor.
@@ -36,8 +36,10 @@ class Spellchecking extends AbstractDeactivatable implements ParameterBuilder
      * @param bool $isEnabled
      * @param int $maxCollationTries
      */
-    public function __construct($isEnabled = false, int $maxCollationTries = 0)
-    {
+    public function __construct(
+        bool $isEnabled = false,
+        int $maxCollationTries = 0
+    ) {
         $this->isEnabled = $isEnabled;
         $this->maxCollationTries = $maxCollationTries;
     }
@@ -54,7 +56,7 @@ class Spellchecking extends AbstractDeactivatable implements ParameterBuilder
      * @param TypoScriptConfiguration $solrConfiguration
      * @return Spellchecking
      */
-    public static function fromTypoScriptConfiguration(TypoScriptConfiguration $solrConfiguration)
+    public static function fromTypoScriptConfiguration(TypoScriptConfiguration $solrConfiguration): Spellchecking
     {
         $isEnabled = $solrConfiguration->getSearchSpellchecking();
         if (!$isEnabled) {
@@ -63,13 +65,13 @@ class Spellchecking extends AbstractDeactivatable implements ParameterBuilder
 
         $maxCollationTries = $solrConfiguration->getSearchSpellcheckingNumberOfSuggestionsToTry();
 
-        return new Spellchecking($isEnabled, $maxCollationTries);
+        return new Spellchecking(true, $maxCollationTries);
     }
 
     /**
      * @return Spellchecking
      */
-    public static function getEmpty()
+    public static function getEmpty(): Spellchecking
     {
         return new Spellchecking(false);
     }

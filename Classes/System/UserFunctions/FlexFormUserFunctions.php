@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -17,10 +19,14 @@ namespace ApacheSolrForTypo3\Solr\System\UserFunctions;
 
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\FrontendEnvironment;
+use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
 use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
+use Doctrine\DBAL\Driver\Exception as DBALDriverException;
+use function str_starts_with;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
-use function str_starts_with;
 
 /**
  * This class contains all user functions for flexforms.
@@ -29,11 +35,10 @@ use function str_starts_with;
  */
 class FlexFormUserFunctions
 {
-
     /**
      * @var FrontendEnvironment
      */
-    protected $frontendEnvironment = null;
+    protected $frontendEnvironment;
 
     public function __construct(FrontendEnvironment $frontendEnvironment = null)
     {
@@ -44,12 +49,13 @@ class FlexFormUserFunctions
      * Provides all facet fields for a flexform select, enabling the editor to select one of them.
      *
      * @param array $parentInformation
-     *
-     * @return void
+     * @throws DBALDriverException
+     * @throws NoSolrConnectionFoundException
      */
     public function getFacetFieldsFromSchema(array &$parentInformation)
     {
         $pageRecord = $parentInformation['flexParentDatabaseRow'];
+        // @todo: Fix type hinting issue properly on whole call chain.
         $configuredFacets = $this->getConfiguredFacetsForPage($pageRecord['pid'] ?? null);
 
         if (!is_array($pageRecord)) {
@@ -66,18 +72,20 @@ class FlexFormUserFunctions
      *
      * @param array $configuredFacets
      * @param array $pageRecord
-     * @return mixed
+     * @return array
+     * @throws DBALDriverException
+     * @throws NoSolrConnectionFoundException
      */
-    protected function getParsedSolrFieldsFromSchema($configuredFacets, $pageRecord)
+    protected function getParsedSolrFieldsFromSchema(array $configuredFacets, array $pageRecord): array
     {
         $newItems = [];
 
-        array_map(function($fieldName) use (&$newItems, $configuredFacets) {
+        array_map(function ($fieldName) use (&$newItems, $configuredFacets) {
             $value = $fieldName;
             $label = $fieldName;
 
-            $facetNameFilter = function($facet) use ($fieldName) {
-                return ($facet['field'] === $fieldName);
+            $facetNameFilter = function ($facet) use ($fieldName) {
+                return $facet['field'] === $fieldName;
             };
             $configuredFacets = array_filter($configuredFacets, $facetNameFilter);
             if (!empty($configuredFacets)) {
@@ -102,11 +110,16 @@ class FlexFormUserFunctions
     /**
      * Retrieves the configured facets for a page.
      *
-     * @param integer $pid
+     * @param int|null $pid
      * @return array
+     * @throws DBALDriverException
+     * @todo: Fix type hinting properly
      */
-    protected function getConfiguredFacetsForPage($pid)
+    protected function getConfiguredFacetsForPage(?int $pid = null): ?array
     {
+        if (null === $pid) {
+            return null;
+        }
         $typoScriptConfiguration = $this->getConfigurationFromPageId($pid);
         return $typoScriptConfiguration->getSearchFacetingFacets();
     }
@@ -115,9 +128,9 @@ class FlexFormUserFunctions
      * Retrieves the translation with the LocalizationUtility.
      *
      * @param string $label
-     * @return null|string
+     * @return string|null
      */
-    protected function getTranslation($label)
+    protected function getTranslation(string $label): ?string
     {
         return LocalizationUtility::translate($label);
     }
@@ -127,31 +140,36 @@ class FlexFormUserFunctions
      *
      * @param array $pageRecord
      *
-     * @return \ApacheSolrForTypo3\Solr\System\Solr\SolrConnection
+     * @return SolrConnection
+     * @throws DBALDriverException
+     * @throws NoSolrConnectionFoundException
      */
-    protected function getConnection(array $pageRecord)
+    protected function getConnection(array $pageRecord): SolrConnection
     {
         return GeneralUtility::makeInstance(ConnectionManager::class)->getConnectionByPageId($pageRecord['pid'], $pageRecord['sys_language_uid']);
     }
 
     /**
-     * Retrieves all fieldnames that occure in the solr schema for one page.
+     * Retrieves all fieldnames that occurs in the solr schema for one page.
      *
      * @param array $pageRecord
      * @return array
+     * @throws DBALDriverException
+     * @throws NoSolrConnectionFoundException
      */
-    protected function getFieldNamesFromSolrMetaDataForPage(array $pageRecord)
+    protected function getFieldNamesFromSolrMetaDataForPage(array $pageRecord): array
     {
         return array_keys((array)$this->getConnection($pageRecord)->getAdminService()->getFieldsMetaData());
     }
 
     /**
      * @param array $parentInformation
+     * @throws DBALDriverException
      */
     public function getAvailableTemplates(array &$parentInformation)
     {
         $pageRecord = $parentInformation['flexParentDatabaseRow'];
-        if (!is_array($pageRecord) || !isset ($pageRecord['pid'])) {
+        if (!is_array($pageRecord) || !isset($pageRecord['pid'])) {
             $parentInformation['items'] = [];
             return;
         }
@@ -181,32 +199,37 @@ class FlexFormUserFunctions
 
     /**
      * @param array $parentInformation
-     * @return string
+     * @return string|string[]
      */
-    protected function getTypoScriptTemplateKeyFromFieldName(array &$parentInformation)
+    protected function getTypoScriptTemplateKeyFromFieldName(array $parentInformation)
     {
         $field = $parentInformation['field'];
         return str_replace('view.templateFiles.', '', $field);
     }
 
     /**
-     * @param $pid
-     * @return \ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration|array
+     * @param int|null $pid
+     * @return TypoScriptConfiguration|null
+     * @throws DBALDriverException
+     * @todo: Fix type hinting properly
      */
-    protected function getConfigurationFromPageId($pid)
+    protected function getConfigurationFromPageId(?int $pid = null): ?TypoScriptConfiguration
     {
-        $typoScriptConfiguration = $this->frontendEnvironment->getSolrConfigurationFromPageId($pid);
-        return $typoScriptConfiguration;
+        if (null === $pid) {
+            return null;
+        }
+        return $this->frontendEnvironment->getSolrConfigurationFromPageId($pid);
     }
 
     /**
      * Retrieves the configured templates from TypoScript.
      *
-     * @param integer $pageId
+     * @param int $pageId
      * @param string $templateKey
      * @return array
+     * @throws DBALDriverException
      */
-    protected function getAvailableTemplateFromTypoScriptConfiguration($pageId, $templateKey)
+    protected function getAvailableTemplateFromTypoScriptConfiguration(int $pageId, string $templateKey): array
     {
         $configuration = $this->getConfigurationFromPageId($pageId);
         return $configuration->getAvailableTemplatesByFileKey($templateKey);
@@ -218,13 +241,13 @@ class FlexFormUserFunctions
      * @param array $availableTemplates
      * @return array
      */
-    protected function buildSelectItemsFromAvailableTemplate($availableTemplates)
+    protected function buildSelectItemsFromAvailableTemplate(array $availableTemplates): array
     {
         $newItems = [];
         $newItems['Use Default'] = ['Use Default', null];
         foreach ($availableTemplates as $availableTemplate) {
-            $label = isset($availableTemplate['label']) ? $availableTemplate['label'] : '';
-            $value = isset($availableTemplate['file']) ? $availableTemplate['file'] : '';
+            $label = $availableTemplate['label'] ?? '';
+            $value = $availableTemplate['file'] ?? '';
             $newItems[$label] = [$label, $value];
         }
 

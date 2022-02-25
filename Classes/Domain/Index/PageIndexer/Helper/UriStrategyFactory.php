@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -20,6 +20,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Index\PageIndexer\Helper;
 use ApacheSolrForTypo3\Solr\Domain\Index\PageIndexer\Helper\UriBuilder\AbstractUriStrategy;
 use ApacheSolrForTypo3\Solr\Domain\Index\PageIndexer\Helper\UriBuilder\TYPO3SiteStrategy;
 use ApacheSolrForTypo3\Solr\System\Util\SiteUtility;
+use Exception;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -34,15 +35,15 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class UriStrategyFactory
 {
     /**
-     * @param integer $pageId
+     * @param int $pageId
      * @oaram array $overrideConfiguration
      * @return AbstractUriStrategy
-     * @throws \Exception
+     * @throws Exception
      */
     public function getForPageId(int $pageId): AbstractUriStrategy
     {
         if (!SiteUtility::getIsSiteManagedSite($pageId)) {
-            throw new \Exception('Site of page with uid ' . $pageId . ' is not a TYPO3 managed site');
+            throw new Exception('Site of page with uid ' . $pageId . ' is not a TYPO3 managed site');
         }
 
         return GeneralUtility::makeInstance(TYPO3SiteStrategy::class);

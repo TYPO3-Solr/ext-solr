@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -20,19 +22,21 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetPackage;
 /**
  * Class HierarchyPackage
  */
-class HierarchyPackage extends AbstractFacetPackage {
-
+class HierarchyPackage extends AbstractFacetPackage
+{
     /**
      * @return string
      */
-    public function getParserClassName() {
-        return (string)HierarchyFacetParser::class;
+    public function getParserClassName(): string
+    {
+        return HierarchyFacetParser::class;
     }
 
     /**
      * @return string
      */
-    public function getUrlDecoderClassName() {
-        return (string)HierarchyUrlDecoder::class;
+    public function getUrlDecoderClassName(): string
+    {
+        return HierarchyUrlDecoder::class;
     }
 }

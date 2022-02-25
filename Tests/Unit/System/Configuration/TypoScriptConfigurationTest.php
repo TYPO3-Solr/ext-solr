@@ -809,7 +809,7 @@ class TypoScriptConfigurationTest extends UnitTest
 
         $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
 
-        self::assertFalse($configuration->getSearchGrouping(), 'Expected grouping to be disabled');
+        self::assertFalse($configuration->getIsSearchGroupingEnabled(), 'Expected grouping to be disabled');
     }
 
     /**

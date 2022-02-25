@@ -66,9 +66,9 @@ class RootlineElement
     /**
      * Page Id for the element. NULL for the content type.
      *
-     * @var int
+     * @var int|null
      */
-    protected $pageId = null;
+    protected ?int $pageId = null;
 
     /**
      * Set of access groups assigned to the element.
@@ -116,7 +116,7 @@ class RootlineElement
                 );
             }
 
-            $this->pageId = intval($elementAccess[0]);
+            $this->pageId = (int)($elementAccess[0]);
             $elementGroups = $elementAccess[1];
         }
 

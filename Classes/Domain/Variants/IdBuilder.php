@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -15,6 +17,7 @@
 
 namespace ApacheSolrForTypo3\Solr\Domain\Variants;
 
+use InvalidArgumentException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -28,22 +31,20 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class IdBuilder
 {
-
     /**
      * This method is used to build a variantId.
      *
-     * By default the variantId is used
+     * By default, the variantId is used
      * @param string $type
-     * @param integer $uid
+     * @param int $uid
      * @return string
      */
-    public function buildFromTypeAndUid($type, $uid)
+    public function buildFromTypeAndUid(string $type, int $uid): string
     {
         $systemHash = $this->getSystemHash();
         $variantId = $systemHash . '/' . $type . '/' . $uid;
 
-        $variantId = $this->applyHook($variantId, $systemHash, $type, $uid);
-        return $variantId;
+        return $this->applyHook($variantId, $systemHash, $type, $uid);
     }
 
     /**
@@ -52,11 +53,15 @@ class IdBuilder
      * @param string $variantId
      * @param string $systemHash
      * @param string $type
-     * @param integer $uid
+     * @param int $uid
      * @return string
      */
-    protected function applyHook($variantId, $systemHash, $type, $uid)
-    {
+    protected function applyHook(
+        string $variantId,
+        string $systemHash,
+        string $type,
+        int $uid
+    ): string {
         if (!is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyVariantId'] ?? null)) {
             return $variantId;
         }
@@ -76,10 +81,10 @@ class IdBuilder
      *
      * @return string
      */
-    protected function getSystemHash()
+    protected function getSystemHash(): string
     {
         if (!isset($GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename'])) {
-            throw new \InvalidArgumentException("No sitename set in TYPO3_CONF_VARS|SYS|sitename");
+            throw new InvalidArgumentException('No sitename set in TYPO3_CONF_VARS|SYS|sitename');
         }
 
         $siteName = $GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename'];

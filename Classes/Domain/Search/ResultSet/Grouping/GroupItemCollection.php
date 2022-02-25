@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -20,4 +22,6 @@ use ApacheSolrForTypo3\Solr\System\Data\AbstractCollection;
 /**
  * The GroupItemCollection contains the GroupItem objects.
  */
-class GroupItemCollection extends AbstractCollection {}
+class GroupItemCollection extends AbstractCollection
+{
+}

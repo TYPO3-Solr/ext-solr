@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -25,7 +27,6 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
  */
 class ContentObjectService
 {
-
     /**
      * @var ContentObjectRenderer
      */
@@ -47,7 +48,7 @@ class ContentObjectService
      * @param array $conf
      * @return string
      */
-    public function renderSingleContentObject($name = '', $conf = [])
+    public function renderSingleContentObject(string $name = '', array $conf = []): string
     {
         return $this->contentObjectRenderer->cObjGetSingle($name, $conf);
     }
@@ -60,10 +61,10 @@ class ContentObjectService
      * @param string $key
      * @return string
      */
-    public function renderSingleContentObjectByArrayAndKey($array = [], $key = '')
+    public function renderSingleContentObjectByArrayAndKey(array $array = [], string $key = '')
     {
-        $name = isset($array[$key]) ? $array[$key] : [];
-        $conf = isset($array[$key . '.']) ? $array[$key . '.'] : '';
+        $name = $array[$key] ?? [];
+        $conf = $array[$key . '.'] ?? '';
 
         if (!is_array($conf)) {
             return $name;

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -16,6 +18,8 @@
 namespace ApacheSolrForTypo3\Solr\FieldProcessor;
 
 use ApacheSolrForTypo3\Solr\System\Records\SystemCategory\SystemCategoryRepository;
+use Doctrine\DBAL\Driver\Exception as DBALDriverException;
+use Doctrine\DBAL\Exception as DBALException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -66,14 +70,18 @@ class CategoryUidToHierarchy extends AbstractHierarchyProcessor implements Field
      *
      * @param array $values Array of values, an array because of multivalued fields
      * @return array Modified array of values
+     * @throws DBALDriverException
+     * @throws DBALException
      */
-    public function process(array $values)
+    public function process(array $values): array
     {
         $results = [];
 
         foreach ($values as $value) {
-            $results = array_merge($results,
-                $this->getSolrRootlineForCategoryId($value));
+            $results = array_merge(
+                $results,
+                $this->getSolrRootlineForCategoryId($value)
+            );
         }
 
         return $results;
@@ -84,13 +92,13 @@ class CategoryUidToHierarchy extends AbstractHierarchyProcessor implements Field
      *
      * @param int $categoryId Category ID to get a rootline as Solr hierarchy for
      * @return array Rootline as Solr hierarchy array
+     * @throws DBALDriverException
+     * @throws DBALException
      */
-    protected function getSolrRootlineForCategoryId($categoryId)
+    protected function getSolrRootlineForCategoryId(int $categoryId): array
     {
         $categoryIdRootline = $this->buildCategoryIdRootline($categoryId);
-        $solrRootline = $this->buildSolrHierarchyFromIdRootline($categoryIdRootline);
-
-        return $solrRootline;
+        return $this->buildSolrHierarchyFromIdRootline($categoryIdRootline);
     }
 
     /**
@@ -98,11 +106,13 @@ class CategoryUidToHierarchy extends AbstractHierarchyProcessor implements Field
      *
      * @param int $uid The category ID to build the rootline for
      * @return array Category ID rootline as array
+     * @throws DBALDriverException
+     * @throws DBALException
      */
-    protected function buildCategoryIdRootline($uid)
+    protected function buildCategoryIdRootline(int $uid): array
     {
         $rootlineIds = [];
-        $parentCategory = intval($uid);
+        $parentCategory = $uid;
 
         while ($parentCategory !== 0) {
             $rootlineIds[] = $parentCategory;
@@ -110,7 +120,7 @@ class CategoryUidToHierarchy extends AbstractHierarchyProcessor implements Field
             if ($childCategory === null) {
                 $parentCategory = 0;
             } else {
-                $parentCategory = intval($childCategory['parent']);
+                $parentCategory = (int)($childCategory['parent']);
             }
         }
         krsort($rootlineIds);

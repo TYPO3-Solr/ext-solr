@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -15,6 +17,7 @@
 
 namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Hierarchy;
 
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetItem;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetItemCollection;
 
 /**
@@ -27,19 +30,19 @@ class NodeCollection extends AbstractFacetItemCollection
 {
 
     /**
-     * @param Node $node
+     * @param AbstractFacetItem|null $item
      * @return NodeCollection
      */
-    public function add($node)
+    public function add(?AbstractFacetItem $item): AbstractFacetItemCollection
     {
-        return parent::add($node);
+        return parent::add($item);
     }
 
     /**
      * @param int $position
      * @return Node
      */
-    public function getByPosition(int $position)
+    public function getByPosition(int $position): ?object
     {
         return parent::getByPosition($position);
     }

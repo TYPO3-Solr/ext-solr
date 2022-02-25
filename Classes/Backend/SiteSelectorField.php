@@ -15,8 +15,8 @@
 
 namespace ApacheSolrForTypo3\Solr\Backend;
 
-use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
+use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use Throwable;
 use TYPO3\CMS\Core\Utility\GeneralUtility;

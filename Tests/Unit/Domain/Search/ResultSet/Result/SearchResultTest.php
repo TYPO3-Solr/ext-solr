@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -28,12 +30,12 @@ class SearchResultTest extends UnitTest
     /**
      * @var SearchResult
      */
-    protected $searchResult;
+    protected SearchResult $searchResult;
 
     protected function setUp(): void
     {
         $fields = [
-            'id' => 4711,
+            'id' => '4711',
             'title' => 'The title',
             'score' => 0.55,
             'content' => 'foobar',
@@ -50,7 +52,11 @@ class SearchResultTest extends UnitTest
      */
     public function canGetId()
     {
-        self::assertSame(4711, $this->searchResult->getId(), 'Could not get id from searchResult');
+        self::assertSame(
+            '4711',
+            $this->searchResult->getId(),
+            'Could not get id from searchResult'
+        );
     }
 
     /**
@@ -58,7 +64,11 @@ class SearchResultTest extends UnitTest
      */
     public function canGetScore()
     {
-        self::assertSame(0.55, $this->searchResult->getScore(), 'Could not get score from searchResult');
+        self::assertSame(
+            0.55,
+            $this->searchResult->getScore(),
+            'Could not get score from searchResult'
+        );
     }
 
     /**
@@ -66,7 +76,11 @@ class SearchResultTest extends UnitTest
      */
     public function canGetContent()
     {
-        self::assertSame('foobar', $this->searchResult->getContent(), 'Could not get content from searchResult');
+        self::assertSame(
+            'foobar',
+            $this->searchResult->getContent(),
+            'Could not get content from searchResult'
+        );
     }
 
     /**
@@ -74,7 +88,11 @@ class SearchResultTest extends UnitTest
      */
     public function canGetType()
     {
-        self::assertSame('pages', $this->searchResult->getType(), 'Could not get type from searchResult');
+        self::assertSame(
+            'pages',
+            $this->searchResult->getType(),
+            'Could not get type from searchResult'
+        );
     }
 
     /**
@@ -82,7 +100,11 @@ class SearchResultTest extends UnitTest
      */
     public function canGetTitle()
     {
-        self::assertSame('The title', $this->searchResult->getTitle(), 'Could not get title from searchResult');
+        self::assertSame(
+            'The title',
+            $this->searchResult->getTitle(),
+            'Could not get title from searchResult'
+        );
     }
 
     /**
@@ -90,7 +112,11 @@ class SearchResultTest extends UnitTest
      */
     public function canGetUrl()
     {
-        self::assertSame('://mytestdomain.com/test', $this->searchResult->getUrl(), 'Could not get url from searchResult');
+        self::assertSame(
+            '://mytestdomain.com/test',
+            $this->searchResult->getUrl(),
+            'Could not get url from searchResult'
+        );
     }
 
     /**
@@ -98,7 +124,10 @@ class SearchResultTest extends UnitTest
      */
     public function canGetIsElevated()
     {
-        self::assertTrue($this->searchResult->getIsElevated(), 'Could not get isElevated from searchResult');
+        self::assertTrue(
+            $this->searchResult->getIsElevated(),
+            'Could not get isElevated from searchResult'
+        );
     }
 
     /**
@@ -106,6 +135,10 @@ class SearchResultTest extends UnitTest
      */
     public function getOnUnexistingFieldReturnsNull()
     {
-        self::assertNull($this->searchResult->getUnexistingField(), 'Calling getter for unexisting field does not return null');
+        /** @noinspection PhpUndefinedMethodInspection */
+        self::assertNull(
+            $this->searchResult->getUnexistingField(),
+            'Calling getter for unexisting field does not return null'
+        );
     }
 }
