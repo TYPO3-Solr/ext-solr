@@ -9,7 +9,7 @@
     <div class="panel-heading">
         <h3 class="facet-label panel-title">
             <span class="glyphicon glyphicon-filter"></span>
-            <a data-toggle="collapse" data-parent="#facet-accordion{facet.name}" href="#facet{facet.name}">{facet.label}</a>
+            <a data-bs-toggle="collapse" data-bs-parent="#facet-accordion{facet.name}" href="#facet{facet.name}">{facet.label}</a>
         </h3>
     </div>
     <div class="facet-option-list facet-type-options fluidfacet panel-collapse collapse" data-facet-name="{facet.name}" data-facet-label="{facet.label}" id="facet{facet.name}">
@@ -18,7 +18,7 @@
             <!-- build tabs-->
             <ul class="nav nav-tabs prefixgroup-tabs" role="tablist">
                 <f:for each="{prefixes}" iteration="iteration"  as="prefix">
-                        <li role="presentation" class="{f:if(condition:'{iteration.index} == 0', then:'active')}"><a href="#tab_{prefix}" aria-controls="tab_{prefix}" role="tab" data-toggle="tab">{prefix}</a></li>
+                        <li role="presentation" class="{f:if(condition:'{iteration.index} == 0', then:'active')}"><a href="#tab_{prefix}" aria-controls="tab_{prefix}" role="tab" data-bs-toggle="tab">{prefix}</a></li>
                 </f:for>
              </ul>
 

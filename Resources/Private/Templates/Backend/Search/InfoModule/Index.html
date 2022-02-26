@@ -224,7 +224,7 @@
                     <h4 class="panel-title">
                         <f:if condition="{indexFieldsInfoForCore.coreMetrics.numberOfDocuments}">
                             <f:then>
-                                <a data-bs-toggle="collapse" data-parent="#index-fields_accordion" href="#collapse-core{iterator.index}">{indexFieldsInfoForCore.corePath}</a>
+                                <a data-bs-toggle="collapse" data-bs-parent="#index-fields_accordion" href="#collapse-core{iterator.index}">{indexFieldsInfoForCore.corePath}</a>
                                 <a href="#collapse-core{iterator.index}" title="Collapse table" class="pull-right" data-bs-toggle="collapse">
                                     <core:icon identifier="actions-view-list-expand" size="small"/><f:comment><!-- @todo: make Icon toggable between actions-view-list-collapse/actions-view-list-expand --></f:comment>
                                 </a>
