@@ -202,7 +202,7 @@ class Relation extends AbstractContentObject
                 $contentObject = GeneralUtility::makeInstance(ContentObjectRenderer::class);
                 $contentObject->start($record, $foreignTableName);
 
-                return $this->getRelatedItems($contentObject);
+                $relatedItems = array_merge($relatedItems, $this->getRelatedItems($contentObject));
             } else {
                 if ($this->getLanguageUid() > 0) {
                     $record = $this->frontendOverlayService->getOverlay($foreignTableName, $record);
