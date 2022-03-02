@@ -7,3 +7,4 @@
 /.styleci.yml export-ignore
 /Dockerfile export-ignore
 /CONTRIBUTING.md export-ignore
+/.github
