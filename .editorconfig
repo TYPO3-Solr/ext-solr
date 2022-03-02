@@ -52,6 +52,11 @@ indent_size = 2
 [*.{xlf,xml}]
 indent_style = tab
 
+# HTML-Files
+[*.html]
+indent_size = 2
+indent_style = tab
+
 # SQL-Files
 [*.sql]
 indent_style = tab

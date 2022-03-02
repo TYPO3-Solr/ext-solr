@@ -1,30 +1,36 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en"
-	  xmlns:f="http://typo3.org/ns/TYPO3/Fluid/ViewHelpers"
-	  xmlns:s="http://typo3.org/ns/ApacheSolrForTypo3/Solr/ViewHelpers"
-	  data-namespace-typo3-fluid="true"
+	xmlns:f="http://typo3.org/ns/TYPO3/Fluid/ViewHelpers"
+	xmlns:s="http://typo3.org/ns/ApacheSolrForTypo3/Solr/ViewHelpers"
+	data-namespace-typo3-fluid="true"
 >
 
 <f:section name="hierarchyTree">
 	<f:for each="{node.childNodes}" as="childNode" iteration="iteration">
-		<div class="facet-option{f:if(condition:'{iteration.index} > 9', then:' tx-solr-facet-hidden')} list-group-item" data-facet-item-value="{childNode.value}">
-			<a class="facet solr-ajaxified" href="{s:uri.facet.addFacetItem(facet: facet, facetItem: childNode)}">{childNode.label}</a>
-			<span class="facet-result-count badge">{childNode.documentCount}</span>
-		</div>
+		<li class="facet-option{f:if(condition:'{iteration.index} > 9', then:' tx-solr-facet-hidden')}" data-facet-item-value="{childNode.value}">
+			<a class="facet solr-ajaxified" href="{s:uri.facet.addFacetItem(facet: facet, facetItem: childNode)}">
+				{childNode.label}
+			</a>
+			<span class="facet-result-count badge bg-info">{childNode.documentCount}</span>
+		</li>
 		<f:if condition="{childNode.childNodes}">
-			<div class="list-group-item list-group"><f:render section="hierarchyTree" arguments="{node: childNode, facet: facet}" /></div>
+				<ul>
+					<f:render section="hierarchyTree" arguments="{node: childNode, facet: facet}" />
+				</ul>
 		</f:if>
 	</f:for>
 </f:section>
 
-<div class="panel">
-	<div class="panel-heading">
-		<h3 class="facet-label panel-title">
-			<span class="glyphicon glyphicon-filter"></span>
-			<a data-bs-toggle="collapse" data-bs-parent="#facet-accordion{facet.name}" href="#facet{facet.name}">{facet.label}</a>
-		</h3>
+<div class="card">
+	<div class="card-header facet-label">
+		<span class="bi bi-filter"></span>
+		<a data-bs-toggle="collapse" href="#facet{facet.name}">{facet.label}</a>
 	</div>
-	<div class="facet-option-list facet-type-hierarchy fluidfacet list-group panel-collapse collapse" data-facet-name="{facet.name}" data-facet-label="{facet.label}" id="facet{facet.name}">
-		<f:render section="hierarchyTree" arguments="{node: facet, facet: facet}" />
+
+	<div class="card-body facet-type-hierarchy fluidfacet collapse show"  data-facet-name="{facet.name}" data-facet-label="{facet.label}" id="facet{facet.name}">
+		<ul class="list-unstyled">
+			<f:render section="hierarchyTree" arguments="{node: facet, facet: facet}" />
+		</ul>
 	</div>
 </div>
+
 </html>

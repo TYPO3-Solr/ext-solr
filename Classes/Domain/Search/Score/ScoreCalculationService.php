@@ -51,21 +51,18 @@ class ScoreCalculationService
 
         foreach ($highScores as $highScore) {
             /** @var $highScore Score */
-            $scores[] = '
-				<td>+ ' . htmlspecialchars($highScore->getScore()) . '</td>
-				<td>' . htmlspecialchars($highScore->getFieldName()) . '</td>
-				<td>' . htmlspecialchars($highScore->getBoost()) . '</td>';
-
+            $scores[] =
+                '<td>+ ' . htmlspecialchars($highScore->getScore()) . '</td>'
+                . '<td>' . htmlspecialchars($highScore->getFieldName()) . '</td>'
+                . '<td>' . htmlspecialchars($highScore->getBoost()) . '</td>';
             $totalScore += $highScore->getScore();
         }
 
-        $content = '<table style="width: 100%; border: 1px solid #aaa; font-size: 11px; background-color: #eee;">
-			<tr style="border-bottom: 2px solid #aaa; font-weight: bold;"><td>Score</td><td>Field</td><td>Boost</td></tr><tr>'
-            . implode('</tr><tr>', $scores)
-            . '</tr>
-			<tr><td colspan="3"><hr style="border-top: 1px solid #aaa; height: 0; padding: 0; margin: 0;" /></td></tr>
-			<tr><td colspan="3">= ' . $totalScore . ' (Inaccurate analysis! Not all parts of the score have been taken into account.)</td></tr>
-			</table>';
+        $content = '<table class="table">'
+            . '<thead><tr><th>Score</th><th>Field</th><th>Boost</th></tr></thead>'
+            . '<tbody><tr>' . implode('</tr><tr>', $scores) . '</tbody></tr>'
+            . '<tfoot><tr><td colspan="3">= ' . $totalScore . ' (Inaccurate analysis! Not all parts of the score have been taken into account.)</td></tr></tfoot>'
+            . '</table>';
 
         return $content;
     }

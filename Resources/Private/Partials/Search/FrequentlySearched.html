@@ -1,33 +1,29 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en"
-	  xmlns:f="http://typo3.org/ns/TYPO3/Fluid/ViewHelpers"
-	  xmlns:s="http://typo3.org/ns/ApacheSolrForTypo3/Solr/ViewHelpers"
-      data-namespace-typo3-fluid="true"
+	xmlns:f="http://typo3.org/ns/TYPO3/Fluid/ViewHelpers"
+	xmlns:s="http://typo3.org/ns/ApacheSolrForTypo3/Solr/ViewHelpers"
+	data-namespace-typo3-fluid="true"
 >
 
 <f:section name="FrequentlySearched">
 
 <s:frequentlySearched>
 	<f:if condition="{frequentSearches}">
-		<div id="tx-solr-frequent-searches" class="secondaryContentSection panel">
-			<div class="panel-heading">
-				<h3 class="panel-title">
-					<span class="glyphicon glyphicon-fire"></span>
-					<a data-bs-toggle="collapse" data-bs-parent="#accordion" href="#frequendSearches"><s:translate key="frequentSearches">Frequently searched</s:translate></a>
-				</h3>
+		<div id="tx-solr-frequent-searches" class="secondaryContentSection card">
+			<div class="card-header">
+				<span class="bi bi-stars"></span>
+					<a data-bs-toggle="collapse" href="#frequendSearches">
+						<s:translate key="frequentSearches">Frequently searched</s:translate>
+				</a>
 			</div>
-			<div class="list-group panel-collapse collapse" id="frequendSearches">
-				<div class="panel-body">
-					<ul>
-						<f:for each="{frequentSearches}" as="searchedForInfo">
-							<li class="{searchedForInfo.class}">
-								<a href="{s:uri.search.startNewSearch(queryString: searchedForInfo.q)}" class="solr-ajaxified">{searchedForInfo.q}</a>
-							</li>
-						</f:for>
-					</ul>
-				</div>
-			</div>
-		</div>
 
+			<ul class="list-group list-group-flush collapse show" id="frequendSearches">
+				<f:for each="{frequentSearches}" as="searchedForInfo">
+					<li class="list-group-item {searchedForInfo.class}">
+						<a href="{s:uri.search.startNewSearch(queryString: searchedForInfo.q)}" class="solr-ajaxified">{searchedForInfo.q}</a>
+					</li>
+				</f:for>
+			</ul>
+		</div>
 	</f:if>
 </s:frequentlySearched>
 
