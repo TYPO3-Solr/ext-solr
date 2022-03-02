@@ -253,7 +253,11 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         )->getBody();
 
         self::assertStringContainsString('fluidfacet', $resultPage1, 'Could not find fluidfacet class that indicates the facet was rendered with fluid');
-        self::assertStringContainsString('pages</a> <span class="facet-result-count badge">', $resultPage1, 'Could not find facet option for pages');
+        self::assertEquals(
+            1,
+            preg_match('/<ul.*?data-facet-name="type".*?">.*?<li.*?data-facet-item-value="pages".*?>.*?<\/ul>/s', $resultPage1),
+            'Could not find facet option for pages'
+        );
     }
 
     /**
@@ -556,15 +560,27 @@ class SearchControllerTest extends AbstractFrontendControllerTest
                 ->withQueryParameter('tx_solr[q]', '*')
         )->getBody();
 
-        $subtitleMenPosition = strpos($resultPage1, '>men</a> <span class="facet-result-count badge">1</span>');
-        $subtitleWomanPosition =  strpos($resultPage1, '>woman</a> <span class="facet-result-count badge">3</span>');
-
-        self::assertGreaterThan(0, $subtitleMenPosition);
-        self::assertGreaterThan(0, $subtitleWomanPosition);
-        self::assertGreaterThan($subtitleMenPosition, $subtitleWomanPosition);
-
+        self::assertEquals(
+            1,
+            preg_match('/<ul.*?data-facet-name="subtitle".*?">.*?<li.*?data-facet-item-value="men".*?>.*?<span class="facet-result-count badge bg-info">1<\/span>.*?<\/li>/s', $resultPage1),
+            'Could not find count for "men"'
+        );
+        self::assertEquals(
+            1,
+            preg_match('/<ul.*?data-facet-name="subtitle".*?">.*?<li.*?data-facet-item-value="woman".*?>.*?<span class="facet-result-count badge bg-info">3<\/span>.*?<\/li>/s', $resultPage1),
+            'Could not find count for "woman"'
+        );
+        self::assertEquals(
+            1,
+            preg_match('/<ul.*?data-facet-name="subtitle".*?">.*?data-facet-item-value="men".*?data-facet-item-value="woman".*?<\/ul>/s', $resultPage1),
+            'Could not find facet options in the right order'
+        );
         self::assertStringContainsString('fluidfacet', $resultPage1, 'Could not find fluidfacet class that indicates the facet was rendered with fluid');
-        self::assertStringContainsString('pages</a> <span class="facet-result-count badge">', $resultPage1, 'Could not find facet option for pages');
+        self::assertEquals(
+            1,
+            preg_match('/<ul.*?data-facet-name="type".*?">.*?<li.*?data-facet-item-value="pages".*?>.*?<\/ul>/s', $resultPage1),
+            'Could not find facet option for pages'
+        );
     }
 
     /**
@@ -598,15 +614,28 @@ class SearchControllerTest extends AbstractFrontendControllerTest
                 ->withQueryParameter('tx_solr[q]', '*')
         )->getBody();
 
-        $subtitleMenPosition = strpos($resultPage1, '>men</a> <span class="facet-result-count badge">1</span>');
-        $subtitleWomanPosition =  strpos($resultPage1, '>woman</a> <span class="facet-result-count badge">3</span>');
-
-        self::assertGreaterThan(0, $subtitleMenPosition);
-        self::assertGreaterThan(0, $subtitleWomanPosition);
-        self::assertGreaterThan($subtitleWomanPosition, $subtitleMenPosition);
+        self::assertEquals(
+            1,
+            preg_match('/<ul.*?data-facet-name="subtitle".*?">.*?<li.*?data-facet-item-value="men".*?>.*?<span class="facet-result-count badge bg-info">1<\/span>.*?<\/li>/s', $resultPage1),
+            'Could not find count for "men"'
+        );
+        self::assertEquals(
+            1,
+            preg_match('/<ul.*?data-facet-name="subtitle".*?">.*?<li.*?data-facet-item-value="woman".*?>.*?<span class="facet-result-count badge bg-info">3<\/span>.*?<\/li>/s', $resultPage1),
+            'Could not find count for "woman"'
+        );
+        self::assertEquals(
+            1,
+            preg_match('/<ul.*?data-facet-name="subtitle".*?">.*?data-facet-item-value="woman".*?data-facet-item-value="men".*?<\/ul>/s', $resultPage1),
+            'Could not find facet options in the right order'
+        );
 
         self::assertStringContainsString('fluidfacet', $resultPage1, 'Could not find fluidfacet class that indicates the facet was rendered with fluid');
-        self::assertStringContainsString('pages</a> <span class="facet-result-count badge">', $resultPage1, 'Could not find facet option for pages');
+        self::assertEquals(
+            1,
+            preg_match('/<ul.*?data-facet-name="type".*?">.*?<li.*?data-facet-item-value="pages".*?>.*?<\/ul>/s', $resultPage1),
+            'Could not find facet option for pages'
+        );
     }
 
     /**
@@ -834,15 +863,28 @@ class SearchControllerTest extends AbstractFrontendControllerTest
                 ->withQueryParameter('tx_solr[q]', '*')
         )->getBody();
 
-        $subtitleMenPosition = strpos($resultPage1, '>men</a> <span class="facet-result-count badge">1</span>');
-        $subtitleWomanPosition =  strpos($resultPage1, '>woman</a> <span class="facet-result-count badge">3</span>');
-
-        self::assertGreaterThan(0, $subtitleMenPosition);
-        self::assertGreaterThan(0, $subtitleWomanPosition);
-        self::assertGreaterThan($subtitleMenPosition, $subtitleWomanPosition);
+        self::assertEquals(
+            1,
+            preg_match('/<ul.*?data-facet-name="subtitle".*?">.*?<li.*?data-facet-item-value="men".*?>.*?<span class="facet-result-count badge bg-info">1<\/span>.*?<\/li>/s', $resultPage1),
+            'Could not find count for "men"'
+        );
+        self::assertEquals(
+            1,
+            preg_match('/<ul.*?data-facet-name="subtitle".*?">.*?<li.*?data-facet-item-value="woman".*?>.*?<span class="facet-result-count badge bg-info">3<\/span>.*?<\/li>/s', $resultPage1),
+            'Could not find count for "woman"'
+        );
+        self::assertEquals(
+            1,
+            preg_match('/<ul.*?data-facet-name="subtitle".*?">.*?data-facet-item-value="men".*?data-facet-item-value="woman".*?<\/ul>/s', $resultPage1),
+            'Could not find facet options in the right order'
+        );
 
         self::assertStringContainsString('fluidfacet', $resultPage1, 'Could not find fluidfacet class that indicates the facet was rendered with fluid');
-        self::assertStringContainsString('pages</a> <span class="facet-result-count badge">', $resultPage1, 'Could not find facet option for pages');
+        self::assertEquals(
+            1,
+            preg_match('/<ul.*?data-facet-name="type".*?">.*?<li.*?data-facet-item-value="pages".*?>.*?<\/ul>/s', $resultPage1),
+            'Could not find facet option for pages'
+        );
     }
 
     /**
@@ -1342,8 +1384,12 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         if (strpos($content, $id) === false) {
             return '';
         }
+
+        libxml_use_internal_errors(true);
         $dom = new DOMDocument('1.0', 'UTF-8');
-        $dom->loadHTML('<?xml version="1.0" encoding="UTF-8"?>' . PHP_EOL . $content);
+        $dom->loadHTML($content);
+        libxml_use_internal_errors(false);
+
         return $dom->saveXML($dom->getElementById($id));
     }
 

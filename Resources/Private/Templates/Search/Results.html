@@ -1,13 +1,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en"
-	  xmlns:f="http://typo3.org/ns/TYPO3/Fluid/ViewHelpers"
-	  xmlns:s="http://typo3.org/ns/ApacheSolrForTypo3/Solr/ViewHelpers"
-      data-namespace-typo3-fluid="true"
+	xmlns:f="http://typo3.org/ns/TYPO3/Fluid/ViewHelpers"
+	xmlns:s="http://typo3.org/ns/ApacheSolrForTypo3/Solr/ViewHelpers"
+	data-namespace-typo3-fluid="true"
 >
 
 <f:layout name="Split"/>
 
 <f:section name="content">
-	<div id="tx-solr-search">
+	<div id="tx-solr-search" class="d-grid gap-3">
 
 		<div class="row">
 			<div class="tx-solr-search-form col-lg-8">
@@ -24,20 +24,26 @@
 			</div>
 		</div>
 
+		<f:if condition="{resultSet.facets.used -> f:count()}">
+			<div class="row">
+				<div class="col-md-12">
+					<f:render partial="Result/FacetsActive" section="FacetsActive" arguments="{resultSet:resultSet}" />
+				</div>
+			</div>
+		</f:if>
+
+		<s:debug.query>
+			<f:if condition="{parsedQuery}">
+				<div class="row">
+					<div class="hidden-xs col-md-12">
+						<div class="query-debug alert alert-info" role="alert"><strong>Parsed Query:</strong><br />{parsedQuery}</div>
+					</div>
+				</div>
+			</f:if>
+		</s:debug.query>
+
 		<div class="row">
 			<div class="col-md-12">
-				<f:render partial="Result/FacetsActive" section="FacetsActive" arguments="{resultSet:resultSet}" />
-			</div>
-		</div>
-		<div class="row">
-			<div class="hidden-xs col-md-12 query-debug">
-				<s:debug.query />
-			</div>
-		</div>
-
-		<div class="row searchinfo">
-			<div class="col-md-12">
-
 				<f:if condition="{resultSet.isAutoCorrected}">
 					<f:then>
 					<span class="searched-for">
@@ -81,16 +87,23 @@
 						</s:pageBrowserRange>
 					</span>
 				</f:if>
-				<f:if condition="{resultSet.allResultCount}">
-					<f:render partial="Result/PerPage" section="PerPage" arguments="{resultSet: resultSet}" />
-				</f:if>
 			</div>
 		</div>
 
 		<div class="row">
-			<div class="col-md-12">
+			<div class="col-md-12 d-grid gap-3">
 				<f:if condition="{resultSet.hasSearched}">
-					<f:render partial="Result/Pagination" section="Pagination" arguments="{resultSet: resultSet, pagination: pagination, currentPage: currentPage}"/>
+					<f:if condition="{resultSet.allResultCount}">
+							<div class="row">
+								<div class="col-8">
+									<f:render partial="Result/Pagination" section="Pagination" arguments="{resultSet: resultSet, pagination: pagination, currentPage: currentPage}"/>
+								</div>
+								<div class="col-4">
+									<f:render partial="Result/PerPage" section="PerPage" arguments="{resultSet: resultSet}" />
+								</div>
+							</div>
+					</f:if>
+
 					<div data-start="{pagination.startRecordNumber}" class="results-list list-group">
 						<f:for each="{resultSet.searchResults}" as="document">
 							<f:render partial="Result/Document" section="Document" arguments="{resultSet: resultSet, document: document}" />
@@ -105,7 +118,7 @@
 </f:section>
 
 <f:section name="extra">
-	<div id="tx-solr-search-functions">
+	<div id="tx-solr-search-functions" class="d-grid gap-3">
 		<f:if condition="{resultSet.hasSearched}">
 			<f:if condition="{resultSet.usedSearchRequest.contextTypoScriptConfiguration.searchFaceting}">
 				<f:render partial="Result/Facets" section="Facets" arguments="{resultSet:resultSet}" />
@@ -114,12 +127,12 @@
 
 		<div class="hidden-xs">
 			<f:if condition="{resultSet.usedSearchRequest.contextTypoScriptConfiguration.searchLastSearches}">
-                <f:render partial="Search/LastSearches" section="LastSearches" arguments="{resultSet:resultSet}" />
+				<f:render partial="Search/LastSearches" section="LastSearches" arguments="{resultSet:resultSet}" />
 			</f:if>
 		</div>
 		<div class="hidden-xs">
 			<f:if condition="{resultSet.usedSearchRequest.contextTypoScriptConfiguration.searchFrequentSearches}">
-                <f:render partial="Search/FrequentlySearched" section="FrequentlySearched" arguments="{resultSet:resultSet}" />
+				<f:render partial="Search/FrequentlySearched" section="FrequentlySearched" arguments="{resultSet:resultSet}" />
 			</f:if>
 		</div>
 	</div>

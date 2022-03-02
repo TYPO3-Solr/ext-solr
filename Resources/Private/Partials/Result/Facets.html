@@ -9,9 +9,9 @@
 		<s:facet.area.group groupName="main" facets="{resultSet.facets.available}">
 			<div class="facet-area-main">
 				<div class="solr-facets-available secondaryContentSection">
-					<div class="facets">
+					<div class="facets d-grid gap-3">
 						<f:for each="{areaFacets}" as="facet">
-							<div class="facet facet-type facet-type-{facet.type} panel-group" id="facet-accordion-{facet.name}">
+							<div class="facet facet-type facet-type-{facet.type}" id="facet-accordion-{facet.name}">
 								<f:render partial="Facets/{facet.partialName}" arguments="{resultSet:resultSet, facet:facet}"/>
 							</div>
 						</f:for>
