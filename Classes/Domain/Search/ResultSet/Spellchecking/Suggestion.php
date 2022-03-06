@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -23,41 +25,45 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Spellchecking;
  */
 class Suggestion
 {
+    /**
+     * @var string
+     */
+    protected string $suggestion = '';
 
     /**
      * @var string
      */
-    protected $suggestion = '';
-
-    /**
-     * @var string
-     */
-    protected $missSpelled = '';
+    protected string $missSpelled = '';
 
     /**
      * @var int
      */
-    protected $numFound = 1;
+    protected int $numFound = 1;
 
     /**
      * @var int
      */
-    protected $startOffset = 0;
+    protected int $startOffset = 0;
 
     /**
      * @var int
      */
-    protected $endOffset = 0;
+    protected int $endOffset = 0;
 
-     /**
-     * @param string $suggestion the suggested term
-     * @param string $missSpelled the misspelled original term
-     * @param int $numFound
-     * @param int $startOffset
-     * @param int $endOffset
-     */
-    public function __construct($suggestion = '', $missSpelled = '', $numFound = 1, $startOffset = 0, $endOffset = 0)
-    {
+    /**
+    * @param string $suggestion the suggested term
+    * @param string $missSpelled the misspelled original term
+    * @param int $numFound
+    * @param int $startOffset
+    * @param int $endOffset
+    */
+    public function __construct(
+        string $suggestion = '',
+        string $missSpelled = '',
+        int $numFound = 1,
+        int $startOffset = 0,
+        int $endOffset = 0
+    ) {
         $this->suggestion = $suggestion;
         $this->missSpelled = $missSpelled;
         $this->numFound = $numFound;
@@ -68,7 +74,7 @@ class Suggestion
     /**
      * @return int
      */
-    public function getEndOffset()
+    public function getEndOffset(): int
     {
         return $this->endOffset;
     }
@@ -76,7 +82,7 @@ class Suggestion
     /**
      * @return int
      */
-    public function getNumFound()
+    public function getNumFound(): int
     {
         return $this->numFound;
     }
@@ -84,7 +90,7 @@ class Suggestion
     /**
      * @return int
      */
-    public function getStartOffset()
+    public function getStartOffset(): int
     {
         return $this->startOffset;
     }
@@ -92,7 +98,7 @@ class Suggestion
     /**
      * @return string
      */
-    public function getSuggestion()
+    public function getSuggestion(): string
     {
         return $this->suggestion;
     }
@@ -100,7 +106,7 @@ class Suggestion
     /**
      * @return string
      */
-    public function getMissSpelled()
+    public function getMissSpelled(): string
     {
         return $this->missSpelled;
     }

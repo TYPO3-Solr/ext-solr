@@ -130,7 +130,7 @@ jobs:
         name: Mount RAMFS
         run: |
           sudo mkdir -p ${{ env.CI_BUILD_DIRECTORY }}
-          sudo mount -t tmpfs -o size=2048m none ${{ env.CI_BUILD_DIRECTORY }}
+          sudo mount -t tmpfs -o size=2560m none ${{ env.CI_BUILD_DIRECTORY }}
           sudo mkdir -p ${{ env.CI_BUILD_DIRECTORY }}/data-{solr,mysql} \
             && sudo chown $USER ${{ env.CI_BUILD_DIRECTORY }}/data-mysql \
             && sudo chown 8983:8983 ${{ env.CI_BUILD_DIRECTORY }}/data-solr
@@ -206,8 +206,8 @@ jobs:
       -
         name: Upload code coverage to Scrutinizer
         run: |
-          ocular code-coverage:upload --format=php-clover coverage.unit.clover
-          ocular code-coverage:upload --format=php-clover coverage.integration.clover
+          .Build/bin/ocular code-coverage:upload --format=php-clover coverage.unit.clover
+          .Build/bin/ocular code-coverage:upload --format=php-clover coverage.integration.clover
       -
         name: Clean up
         run: |

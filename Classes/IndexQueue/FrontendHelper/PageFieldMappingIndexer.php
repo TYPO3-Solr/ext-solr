@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -34,17 +36,17 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 class PageFieldMappingIndexer implements SubstitutePageIndexer
 {
     /**
-     * @var \ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration
+     * @var TypoScriptConfiguration
      */
-    protected $configuration;
+    protected TypoScriptConfiguration $configuration;
 
     /**
      * @var string
      */
-    protected $pageIndexingConfigurationName = 'pages';
+    protected string $pageIndexingConfigurationName = 'pages';
 
     /**
-     * @param TypoScriptConfiguration $configuration
+     * @param TypoScriptConfiguration|null $configuration
      */
     public function __construct(TypoScriptConfiguration $configuration = null)
     {
@@ -54,7 +56,7 @@ class PageFieldMappingIndexer implements SubstitutePageIndexer
     /**
      * @param string $pageIndexingConfigurationName
      */
-    public function setPageIndexingConfigurationName($pageIndexingConfigurationName)
+    public function setPageIndexingConfigurationName(string $pageIndexingConfigurationName)
     {
         $this->pageIndexingConfigurationName = $pageIndexingConfigurationName;
     }
@@ -65,19 +67,18 @@ class PageFieldMappingIndexer implements SubstitutePageIndexer
      * Uses the original document and adds fields as defined in
      * plugin.tx_solr.index.queue.pages.fields.
      *
-     * @param Document $pageDocument The original page document.
+     * @param Document $originalPageDocument The original page document.
      * @return Document A Apache Solr Document object that replace the default page document
      */
-    public function getPageDocument(Document $pageDocument)
+    public function getPageDocument(Document $originalPageDocument): Document
     {
-        $substitutePageDocument = clone $pageDocument;
+        $substitutePageDocument = clone $originalPageDocument;
 
-
-        $mappedFields = $this->getMappedFields($pageDocument);
+        $mappedFields = $this->getMappedFields($originalPageDocument);
         foreach ($mappedFields as $fieldName => $fieldValue) {
             if (isset($substitutePageDocument->{$fieldName})) {
                 // reset = overwrite, especially important to not make fields
-                // multi valued where they may not accept multiple values
+                // multivalued where they may not accept multiple values
                 unset($substitutePageDocument->{$fieldName});
             }
 
@@ -97,7 +98,7 @@ class PageFieldMappingIndexer implements SubstitutePageIndexer
      * @param Document $pageDocument The original page document.
      * @return array An array mapping field names to their values.
      */
-    protected function getMappedFields(Document $pageDocument)
+    protected function getMappedFields(Document $pageDocument): array
     {
         $fields = [];
 
@@ -120,12 +121,12 @@ class PageFieldMappingIndexer implements SubstitutePageIndexer
      * Resolves a field mapping to its value depending on its configuration.
      *
      * Allows to put the page record through cObj processing if wanted / needed.
-     * Otherwise the plain page record field value is used.
+     * Otherwise, the plain page record field value is used.
      *
      * @param string $solrFieldName The Solr field name to resolve the value from the item's record
-     * @return string The resolved string value to be indexed
+     * @return string|array The resolved string value to be indexed
      */
-    protected function resolveFieldValue($solrFieldName, Document $pageDocument)
+    protected function resolveFieldValue(string $solrFieldName, Document $pageDocument)
     {
         $pageRecord = $GLOBALS['TSFE']->page;
 

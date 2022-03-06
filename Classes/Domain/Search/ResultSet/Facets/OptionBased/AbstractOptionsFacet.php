@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -16,6 +18,7 @@
 namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacet;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetItemCollection;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 
 /**
@@ -26,11 +29,10 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
  */
 class AbstractOptionsFacet extends AbstractFacet
 {
-
     /**
      * @var OptionCollection
      */
-    protected $options;
+    protected OptionCollection $options;
 
     /**
      * OptionsFacet constructor
@@ -41,8 +43,13 @@ class AbstractOptionsFacet extends AbstractFacet
      * @param string $label
      * @param array $configuration Facet configuration passed from typoscript
      */
-    public function __construct(SearchResultSet $resultSet, $name, $field, $label = '', array $configuration = [])
-    {
+    public function __construct(
+        SearchResultSet $resultSet,
+        string $name,
+        string $field,
+        string $label = '',
+        array $configuration = []
+    ) {
         parent::__construct($resultSet, $name, $field, $label, $configuration);
         $this->options = new OptionCollection();
     }
@@ -50,7 +57,7 @@ class AbstractOptionsFacet extends AbstractFacet
     /**
      * @return OptionCollection
      */
-    public function getOptions()
+    public function getOptions(): OptionCollection
     {
         return $this->options;
     }
@@ -58,7 +65,7 @@ class AbstractOptionsFacet extends AbstractFacet
     /**
      * @param OptionCollection $options
      */
-    public function setOptions($options)
+    public function setOptions(OptionCollection $options)
     {
         $this->options = $options;
     }
@@ -76,7 +83,7 @@ class AbstractOptionsFacet extends AbstractFacet
      *
      * @return OptionCollection
      */
-    public function getAllFacetItems()
+    public function getAllFacetItems(): AbstractFacetItemCollection
     {
         return $this->options;
     }
@@ -86,7 +93,7 @@ class AbstractOptionsFacet extends AbstractFacet
      *
      * @return string
      */
-    public function getPartialName()
+    public function getPartialName(): string
     {
         return !empty($this->configuration['partialName']) ? $this->configuration['partialName'] : 'Options';
     }

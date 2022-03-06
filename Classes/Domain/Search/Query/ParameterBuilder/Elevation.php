@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -22,33 +24,36 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
  * The Elevation ParameterProvider is responsible to build the solr query parameters
  * that are needed for the elevation.
  */
-class Elevation extends AbstractDeactivatable implements ParameterBuilder
+class Elevation extends AbstractDeactivatable implements ParameterBuilderInterface
 {
     /**
      * @var bool
      */
-    protected $isForced = true;
+    protected bool $isForced = true;
 
     /**
      * @var bool
      */
-    protected $markElevatedResults = true;
+    protected bool $markElevatedResults = true;
 
     /**
      * Elevation constructor.
-     * @param boolean $isEnabled
-     * @param boolean $isForced
-     * @param boolean $markElevatedResults
+     * @param bool $isEnabled
+     * @param bool $isForced
+     * @param bool $markElevatedResults
      */
-    public function __construct($isEnabled = false, $isForced = true, $markElevatedResults = true)
-    {
+    public function __construct(
+        bool $isEnabled = false,
+        bool $isForced = true,
+        bool $markElevatedResults = true
+    ) {
         $this->isEnabled = $isEnabled;
         $this->isForced = $isForced;
         $this->markElevatedResults = $markElevatedResults;
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function getIsForced(): bool
     {
@@ -56,7 +61,7 @@ class Elevation extends AbstractDeactivatable implements ParameterBuilder
     }
 
     /**
-     * @param boolean $isForced
+     * @param bool $isForced
      */
     public function setIsForced(bool $isForced)
     {
@@ -64,7 +69,7 @@ class Elevation extends AbstractDeactivatable implements ParameterBuilder
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function getMarkElevatedResults(): bool
     {
@@ -72,7 +77,7 @@ class Elevation extends AbstractDeactivatable implements ParameterBuilder
     }
 
     /**
-     * @param boolean $markElevatedResults
+     * @param bool $markElevatedResults
      */
     public function setMarkElevatedResults(bool $markElevatedResults)
     {
@@ -83,7 +88,7 @@ class Elevation extends AbstractDeactivatable implements ParameterBuilder
      * @param TypoScriptConfiguration $solrConfiguration
      * @return Elevation
      */
-    public static function fromTypoScriptConfiguration(TypoScriptConfiguration $solrConfiguration)
+    public static function fromTypoScriptConfiguration(TypoScriptConfiguration $solrConfiguration): Elevation
     {
         $isEnabled = $solrConfiguration->getSearchElevation();
         if (!$isEnabled) {
@@ -98,7 +103,7 @@ class Elevation extends AbstractDeactivatable implements ParameterBuilder
     /**
      * @return Elevation
      */
-    public static function getEmpty()
+    public static function getEmpty(): Elevation
     {
         return new Elevation(false);
     }

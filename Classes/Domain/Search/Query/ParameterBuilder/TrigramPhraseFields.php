@@ -21,15 +21,8 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 /**
  * The TrigramPhraseFields class
  */
-class TrigramPhraseFields extends AbstractFieldList implements ParameterBuilder
+class TrigramPhraseFields extends AbstractFieldList implements ParameterBuilderInterface
 {
-    /**
-     * Parameter key which should be used for Apache Solr URL query
-     *
-     * @var string
-     */
-    protected $parameterKey = 'pf3';
-
     /**
      * Parses the string representation of the fieldList (e.g. content^100, title^10) to the object representation.
      *
@@ -37,7 +30,7 @@ class TrigramPhraseFields extends AbstractFieldList implements ParameterBuilder
      * @param string $delimiter
      * @return TrigramPhraseFields
      */
-    public static function fromString(string $fieldListString, string $delimiter = ',') : TrigramPhraseFields
+    public static function fromString(string $fieldListString, string $delimiter = ','): TrigramPhraseFields
     {
         return self::initializeFromString($fieldListString, $delimiter);
     }
@@ -46,14 +39,14 @@ class TrigramPhraseFields extends AbstractFieldList implements ParameterBuilder
      * @param TypoScriptConfiguration $solrConfiguration
      * @return TrigramPhraseFields
      */
-    public static function fromTypoScriptConfiguration(TypoScriptConfiguration $solrConfiguration)
+    public static function fromTypoScriptConfiguration(TypoScriptConfiguration $solrConfiguration): TrigramPhraseFields
     {
         $isEnabled = $solrConfiguration->getTrigramPhraseSearchIsEnabled();
         if (!$isEnabled) {
             return new TrigramPhraseFields(false);
         }
 
-        return self::fromString((string)$solrConfiguration->getSearchQueryTrigramPhraseFields());
+        return self::fromString($solrConfiguration->getSearchQueryTrigramPhraseFields());
     }
 
     /**
@@ -63,7 +56,7 @@ class TrigramPhraseFields extends AbstractFieldList implements ParameterBuilder
      * @param string $delimiter
      * @return TrigramPhraseFields
      */
-    protected static function initializeFromString(string $fieldListString, string $delimiter = ',') : TrigramPhraseFields
+    protected static function initializeFromString(string $fieldListString, string $delimiter = ','): TrigramPhraseFields
     {
         $fieldList = self::buildFieldList($fieldListString, $delimiter);
         return new TrigramPhraseFields(true, $fieldList);

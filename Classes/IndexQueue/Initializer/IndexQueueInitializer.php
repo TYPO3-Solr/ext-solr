@@ -37,14 +37,14 @@ interface IndexQueueInitializer
      *
      * @param string $type Type to initialize.
      */
-    public function setType($type);
+    public function setType(string $type);
 
     /**
      * Sets the name of the indexing configuration to initialize.
      *
      * @param string $indexingConfigurationName Indexing configuration name
      */
-    public function setIndexingConfigurationName($indexingConfigurationName);
+    public function setIndexingConfigurationName(string $indexingConfigurationName);
 
     /**
      * Sets the configuration for how to index a type of items.
@@ -59,5 +59,5 @@ interface IndexQueueInitializer
      *
      * @return bool TRUE if initialization was successful, FALSE on error.
      */
-    public function initialize();
+    public function initialize(): bool;
 }

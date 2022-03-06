@@ -30,7 +30,6 @@ use TYPO3\CMS\Core\Utility\RootlineUtility;
  */
 class MountPagesUpdater
 {
-
     /**
      * @var PagesRepository
      */
@@ -41,17 +40,18 @@ class MountPagesUpdater
      *
      * @param PagesRepository|null $pagesRepository
      */
-    public function __construct(PagesRepository $pagesRepository = null) {
+    public function __construct(PagesRepository $pagesRepository = null)
+    {
         $this->pagesRepository = $pagesRepository ?? GeneralUtility::makeInstance(PagesRepository::class);
     }
 
     /**
      * Handles updates of the Index Queue in case a newly created or changed
-     * page is part of a tree that is mounted into a another site.
+     * page is part of a tree that is mounted into another site.
      *
      * @param int $pageId Page Id (uid).
      */
-    public function update($pageId)
+    public function update(int $pageId)
     {
         // get the root line of the page, every parent page could be a Mount Page source
         $rootlineUtility = GeneralUtility::makeInstance(RootlineUtility::class, $pageId);
@@ -68,7 +68,7 @@ class MountPagesUpdater
             return;
         }
 
-        /** @var $rootLine Rootline */
+        /* @var Rootline $rootLine */
         $rootLine = GeneralUtility::makeInstance(Rootline::class, /** @scrutinizer ignore-type */ $rootLineArray);
         $rootLineParentPageIds = array_map('intval', $rootLine->getParentPageIds());
         $destinationMountProperties = $this->pagesRepository->findMountPointPropertiesByPageIdOrByRootLineParentPageIds($currentPageUid, $rootLineParentPageIds);
@@ -88,12 +88,12 @@ class MountPagesUpdater
      * @param int $mountedPageId ID (uid) of the mounted page.
      * @param array $mountProperties Array of mount point properties mountPageSource, mountPageDestination, and mountPageOverlayed
      */
-    protected function addPageToMountingSiteIndexQueue($mountedPageId, array $mountProperties)
+    protected function addPageToMountingSiteIndexQueue(int $mountedPageId, array $mountProperties)
     {
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $mountingSite = $siteRepository->getSiteByPageId($mountProperties['mountPageDestination']);
 
-        /** @var $pageInitializer Page */
+        /* @var Page $pageInitializer */
         $pageInitializer = GeneralUtility::makeInstance(Page::class);
         $pageInitializer->setSite($mountingSite);
         $pageInitializer->setIndexingConfigurationName('pages');

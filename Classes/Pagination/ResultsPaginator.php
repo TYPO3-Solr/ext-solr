@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -28,7 +30,7 @@ class ResultsPaginator extends AbstractPaginator
     /**
      * @var SearchResultSet
      */
-    protected $resultSet;
+    protected SearchResultSet $resultSet;
 
     /**
      * @param SearchResultSet $resultSet
@@ -86,5 +88,4 @@ class ResultsPaginator extends AbstractPaginator
     {
         return $this->resultSet->getAllResultCount();
     }
-
 }

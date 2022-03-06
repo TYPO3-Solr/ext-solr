@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -16,7 +18,7 @@
 namespace ApacheSolrForTypo3\Solr\Task;
 
 use ApacheSolrForTypo3\Solr\ConnectionManager;
-use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
+use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -32,15 +34,17 @@ class OptimizeIndexTask extends AbstractSolrTask
      *
      * @var array
      */
-    protected $coresToOptimizeIndex = [];
+    protected array $coresToOptimizeIndex = [];
 
     /**
      * Optimizes all Solr indexes for selected cores and returns TRUE if the execution was successful
      *
      * @return bool Returns TRUE on success, FALSE on failure.
-     * @throws NoSolrConnectionFoundException
+     * @throws DBALDriverException
      * @noinspection PhpMissingReturnTypeInspection
      * @noinspection PhpUnused
+     *
+     * @noinspection PhpMissingReturnTypeInspection See {@link \TYPO3\CMS\Scheduler\Task\AbstractTask::execute()}
      */
     public function execute()
     {
@@ -87,7 +91,8 @@ class OptimizeIndexTask extends AbstractSolrTask
      * This method should be implemented in most task classes
      *
      * @return string Information to display
-     * @noinspection PhpMissingReturnTypeInspection
+     * @throws DBALDriverException
+     * @noinspection PhpMissingReturnTypeInspection {@link \TYPO3\CMS\Scheduler\Task\AbstractTask::getAdditionalInformation()}
      */
     public function getAdditionalInformation()
     {

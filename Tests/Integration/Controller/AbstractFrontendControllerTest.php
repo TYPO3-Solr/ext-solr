@@ -23,7 +23,6 @@ use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
-use TYPO3\CMS\Core\Http\Response;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Exception as TestingFrameworkCoreException;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
@@ -89,13 +88,5 @@ abstract class AbstractFrontendControllerTest extends IntegrationTest
     protected function getPreparedRequest(int $pageId = 2022): InternalRequest
     {
         return (new InternalRequest('http://testone.site/'))->withPageId($pageId);
-    }
-
-    /**
-     * @return Response
-     */
-    protected function getPreparedResponse()
-    {
-        return $this->objectManager->get(Response::class);
     }
 }

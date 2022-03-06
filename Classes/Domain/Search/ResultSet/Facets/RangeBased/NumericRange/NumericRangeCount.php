@@ -37,7 +37,7 @@ class NumericRangeCount
 
     /**
      * @param float $rangeItem
-     * @param integer $documentCount
+     * @param int $documentCount
      */
     public function __construct($rangeItem, $documentCount)
     {

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -24,10 +26,8 @@ use ApacheSolrForTypo3\Solr\Domain\Search\LastSearches\LastSearchesWriterProcess
  */
 class LastSearchesComponent extends AbstractComponent
 {
-
     /**
      * Initializes the search component.
-     *
      */
     public function initializeSearchComponent()
     {

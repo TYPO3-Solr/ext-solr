@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -22,7 +24,6 @@ namespace ApacheSolrForTypo3\Solr\Search;
  */
 interface SearchComponent
 {
-
     /**
      * Provides the plugin's search configuration from plugin.tx_solr.search
      *
@@ -32,7 +33,6 @@ interface SearchComponent
 
     /**
      * Initializes the search component.
-     *
      */
     public function initializeSearchComponent();
 }

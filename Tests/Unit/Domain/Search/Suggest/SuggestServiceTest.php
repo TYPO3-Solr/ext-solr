@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -139,7 +141,7 @@ class SuggestServiceTest extends UnitTest
 
         $searchStub = new class($this->getDumbMock(SolrConnection::class)) extends Search implements SingletonInterface {
             public static $suggestServiceTest;
-            public function search(Query $query, $offset = 0, $limit = 10)
+            public function search(Query $query, $offset = 0, $limit = 10): ?ResponseAdapter
             {
                 return self::$suggestServiceTest->getMockBuilder(ResponseAdapter::class)
                     ->onlyMethods([])->disableOriginalConstructor()->getMock();
@@ -201,8 +203,8 @@ class SuggestServiceTest extends UnitTest
         $fakeRequest->expects(self::any())->method('getCopyForSubRequest')->willReturn($fakeRequest);
 
         $this->suggestService->expects(self::once())->method('getSolrSuggestions')->willReturn([
-            'type',
-            'typo',
+            'type' => 25,
+            'typo' => 5,
         ]);
 
         $fakeTopResults = $this->getDumbMock(SearchResultSet::class);

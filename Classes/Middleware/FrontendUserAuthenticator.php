@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -21,11 +22,11 @@ use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\AuthorizationService;
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequestHandler;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
-use ApacheSolrForTypo3\Solr\Util;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use TYPO3\CMS\Core\Authentication\Mfa\MfaRequiredException;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\UserAspect;
 use TYPO3\CMS\Core\Http\JsonResponse;
@@ -59,6 +60,7 @@ class FrontendUserAuthenticator implements MiddlewareInterface
      * @param ServerRequestInterface $request
      * @param RequestHandlerInterface $handler
      * @return ResponseInterface
+     * @throws MfaRequiredException
      * @noinspection PhpUnused
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
@@ -81,12 +83,11 @@ class FrontendUserAuthenticator implements MiddlewareInterface
                 'Invalid Index Queue Frontend Request detected!',
                 [
                     'page indexer request' => (array)$pageIndexerRequestHandler->getRequest(),
-                    'index queue header' => $jsonEncodedParameters
+                    'index queue header' => $jsonEncodedParameters,
                 ]
             );
 
             return new JsonResponse(['error' => ['code' => 403, 'message' => 'Invalid Index Queue Request.']], 403);
-
         }
         $request = $this->tryToAuthenticateFrontendUser($pageIndexerRequestHandler, $request);
 
@@ -100,6 +101,7 @@ class FrontendUserAuthenticator implements MiddlewareInterface
      * @param ServerRequestInterface $request
      * @return ServerRequestInterface
      * @noinspection PhpUnused
+     * @throws MfaRequiredException
      */
     protected function tryToAuthenticateFrontendUser(PageIndexerRequestHandler $handler, ServerRequestInterface $request): ServerRequestInterface
     {
@@ -115,7 +117,6 @@ class FrontendUserAuthenticator implements MiddlewareInterface
         /* @var FrontendUserAuthentication $feUser */
         $feUser = GeneralUtility::makeInstance(FrontendUserAuthentication::class);
         $feUser->user[$feUser->username_column] = AuthorizationService::SOLR_INDEXER_USERNAME;
-        /* @noinspection PhpParamsInspection */
         $this->context->setAspect('frontend.user', GeneralUtility::makeInstance(UserAspect::class, $feUser, $groups));
         $request = $request->withAttribute('frontend.user', $feUser);
         $feUser->start($request);
@@ -137,8 +138,6 @@ class FrontendUserAuthenticator implements MiddlewareInterface
             $stringAccessRootline = $handler->getRequest()->getParameter('accessRootline');
         }
 
-        /* @noinspection PhpIncompatibleReturnTypeInspection */
         return GeneralUtility::makeInstance(Rootline::class, /** @scrutinizer ignore-type */ $stringAccessRootline);
     }
-
 }

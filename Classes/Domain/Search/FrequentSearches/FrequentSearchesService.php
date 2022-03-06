@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -22,6 +22,7 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Cache\Frontend\AbstractFrontend;
 use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
+use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
@@ -34,28 +35,27 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
  */
 class FrequentSearchesService
 {
-
     /**
      * Instance of the caching frontend used to cache this command's output.
      *
-     * @var AbstractFrontend
+     * @var AbstractFrontend|null
      */
-    protected $cache;
+    protected ?AbstractFrontend $cache;
 
     /**
-     * @var TypoScriptFrontendController
+     * @var TypoScriptFrontendController|null
      */
-    protected $tsfe;
+    protected ?TypoScriptFrontendController $tsfe;
 
     /**
-     * @var StatisticsRepository
+     * @var StatisticsRepository|null
      */
-    protected $statisticsRepository;
+    protected ?StatisticsRepository $statisticsRepository;
 
     /**
      * @var TypoScriptConfiguration
      */
-    protected $configuration;
+    protected TypoScriptConfiguration $configuration;
 
     /**
      * @param TypoScriptConfiguration $typoscriptConfiguration
@@ -79,8 +79,9 @@ class FrequentSearchesService
      * Generates an array with terms and hits
      *
      * @return array Tags as array with terms and hits
+     * @throws AspectNotFoundException
      */
-    public function getFrequentSearchTerms() : array
+    public function getFrequentSearchTerms(): array
     {
         $frequentSearchConfiguration = $this->configuration->getSearchFrequentSearchesConfiguration();
 
@@ -99,7 +100,7 @@ class FrequentSearchesService
 
             $lifetime = null;
             if (isset($frequentSearchConfiguration['cacheLifetime'])) {
-                $lifetime = intval($frequentSearchConfiguration['cacheLifetime']);
+                $lifetime = (int)($frequentSearchConfiguration['cacheLifetime']);
             }
 
             if ($this->hasValidCache()) {
@@ -115,8 +116,9 @@ class FrequentSearchesService
      *
      * @param array $frequentSearchConfiguration
      * @return array Array of frequent search terms, keys are the terms, values are hits
+     * @throws AspectNotFoundException
      */
-    protected function getFrequentSearchTermsFromStatistics(array $frequentSearchConfiguration) : array
+    protected function getFrequentSearchTermsFromStatistics(array $frequentSearchConfiguration = []): array
     {
         $terms = [];
 
@@ -138,10 +140,6 @@ class FrequentSearchesService
         $frequentSearchTerms = $this->statisticsRepository
             ->getFrequentSearchTermsFromStatisticsByFrequentSearchConfiguration($frequentSearchConfiguration);
 
-        if (!is_array($frequentSearchTerms)) {
-            return $terms;
-        }
-
         foreach ($frequentSearchTerms as $term) {
             $cleanedTerm = html_entity_decode($term['search_term'], ENT_QUOTES, 'UTF-8');
             $terms[$cleanedTerm] = $term['hits'];
@@ -153,8 +151,9 @@ class FrequentSearchesService
     /**
      * @param array $frequentSearchConfiguration
      * @return string
+     * @throws AspectNotFoundException
      */
-    protected function getCacheIdentifier(array $frequentSearchConfiguration) : string
+    protected function getCacheIdentifier(array $frequentSearchConfiguration): string
     {
         // Use configuration as cache identifier
         $identifier = 'frequentSearchesTags';
@@ -177,6 +176,6 @@ class FrequentSearchesService
      */
     protected function hasValidCache(): bool
     {
-        return ($this->cache instanceof FrontendInterface);
+        return $this->cache instanceof FrontendInterface;
     }
 }

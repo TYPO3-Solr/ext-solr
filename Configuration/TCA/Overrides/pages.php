@@ -1,4 +1,5 @@
 <?php
+
 defined('TYPO3') or die();
 
 /**
@@ -17,13 +18,13 @@ defined('TYPO3') or die();
                     [
                         0 => '',
                         1 => '',
-                        'invertStateDisplay' => true
-                    ]
+                        'invertStateDisplay' => true,
+                    ],
                 ],
                 'behaviour' => [
-                    'allowLanguageSynchronization' => true
-                ]
-            ]
+                    'allowLanguageSynchronization' => true,
+                ],
+            ],
         ],
     ]
 );

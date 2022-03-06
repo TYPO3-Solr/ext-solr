@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -33,12 +35,12 @@ class NumericRangeFacet extends AbstractFacet
      * String
      * @var string
      */
-    protected static $type = self::TYPE_NUMERIC_RANGE;
+    protected static string $type = self::TYPE_NUMERIC_RANGE;
 
     /**
-     * @var NumericRange
+     * @var NumericRange|null
      */
-    protected $numericRange;
+    protected ?NumericRange $numericRange = null;
 
     /**
      * OptionsFacet constructor
@@ -49,8 +51,13 @@ class NumericRangeFacet extends AbstractFacet
      * @param string $label
      * @param array $configuration Facet configuration passed from typoscript
      */
-    public function __construct(SearchResultSet $resultSet, $name, $field, $label = '', array $configuration = [])
-    {
+    public function __construct(
+        SearchResultSet $resultSet,
+        string $name,
+        string $field,
+        string $label = '',
+        array $configuration = []
+    ) {
         parent::__construct($resultSet, $name, $field, $label, $configuration);
     }
 
@@ -65,18 +72,17 @@ class NumericRangeFacet extends AbstractFacet
     /**
      * @return NumericRange
      */
-    public function getRange()
+    public function getRange(): NumericRange
     {
         return $this->numericRange;
     }
-
 
     /**
      * Get facet partial name used for rendering the facet
      *
      * @return string
      */
-    public function getPartialName()
+    public function getPartialName(): string
     {
         return !empty($this->configuration['partialName']) ? $this->configuration['partialName'] : 'RangeNumeric.html';
     }
@@ -87,7 +93,7 @@ class NumericRangeFacet extends AbstractFacet
      *
      * @return AbstractFacetItemCollection
      */
-    public function getAllFacetItems()
+    public function getAllFacetItems(): AbstractFacetItemCollection
     {
         return new NumericRangeCollection([$this->numericRange]);
     }

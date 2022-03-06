@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -17,6 +19,8 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers\Uri\Paginate;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Grouping\GroupItem;
 use ApacheSolrForTypo3\Solr\ViewHelpers\Uri\AbstractUriViewHelper;
+use Closure;
+use TYPO3\CMS\Extbase\Object\Exception as ExtbaseObjectException;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 
 /**
@@ -27,7 +31,6 @@ use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
  */
 class GroupItemPageViewHelper extends AbstractUriViewHelper
 {
-
     /**
      * Initializes the arguments
      */
@@ -36,21 +39,22 @@ class GroupItemPageViewHelper extends AbstractUriViewHelper
         parent::initializeArguments();
         $this->registerArgument('page', 'int', 'The page', false, 0);
         $this->registerArgument('groupItem', GroupItem::class, 'The group item', true);
-
     }
 
     /**
      * @param array $arguments
-     * @param \Closure $renderChildrenClosure
+     * @param Closure $renderChildrenClosure
      * @param RenderingContextInterface $renderingContext
      * @return string
+     * @throws ExtbaseObjectException
+     *
+     * @noinspection PhpMissingReturnTypeInspection
      */
-    public static function renderStatic(array $arguments, \Closure $renderChildrenClosure, RenderingContextInterface $renderingContext)
+    public static function renderStatic(array $arguments, Closure $renderChildrenClosure, RenderingContextInterface $renderingContext)
     {
         $page = $arguments['page'];
         $groupItem = $arguments['groupItem'];
         $previousRequest = static::getUsedSearchRequestFromRenderingContext($renderingContext);
-        $uri = self::getSearchUriBuilder($renderingContext)->getResultGroupItemPageUri($previousRequest, $groupItem, (int)$page);
-        return $uri;
+        return self::getSearchUriBuilder($renderingContext)->getResultGroupItemPageUri($previousRequest, $groupItem, (int)$page);
     }
 }

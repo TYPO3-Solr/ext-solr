@@ -32,7 +32,7 @@ class OptionsFacet extends AbstractOptionsFacet
      * String
      * @var string
      */
-    protected static $type = self::TYPE_OPTIONS;
+    protected static string $type = self::TYPE_OPTIONS;
 
     /**
      * OptionsFacet constructor

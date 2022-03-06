@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -25,23 +27,24 @@ class DateRangePackage extends AbstractFacetPackage
     /**
      * @return string
      */
-    public function getParserClassName() {
-        return (string)DateRangeFacetParser::class;
+    public function getParserClassName(): string
+    {
+        return DateRangeFacetParser::class;
     }
 
     /**
      * @return string
      */
-    public function getQueryBuilderClassName()
+    public function getQueryBuilderClassName(): string
     {
-        return (string)DateRangeFacetQueryBuilder::class;
+        return DateRangeFacetQueryBuilder::class;
     }
 
     /**
      * @return string
      */
-    public function getUrlDecoderClassName()
+    public function getUrlDecoderClassName(): string
     {
-        return (string)DateRangeUrlDecoder::class;
+        return DateRangeUrlDecoder::class;
     }
 }

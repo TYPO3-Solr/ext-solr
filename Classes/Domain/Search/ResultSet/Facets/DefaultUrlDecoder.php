@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -15,7 +17,6 @@
 
 namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets;
 
-
 class DefaultUrlDecoder implements FacetUrlDecoderInterface
 {
     /**
@@ -26,7 +27,7 @@ class DefaultUrlDecoder implements FacetUrlDecoderInterface
      * @param array $configuration Facet configuration
      * @return string Value to be used in a Lucene filter
      */
-    public function decode($value, array $configuration = [])
+    public function decode(string $value, array $configuration = []): string
     {
         return '"' . addslashes($value) . '"';
     }

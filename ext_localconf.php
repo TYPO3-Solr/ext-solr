@@ -1,7 +1,8 @@
 <?php
+
 defined('TYPO3') || die();
 
-# ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
+// ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
 // Windows compatibility
 
@@ -11,7 +12,7 @@ if (!function_exists('strptime')) {
 
 (function () {
 
-    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
+    // ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
     // registering Index Queue page indexer helpers
     $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageSubstitutePageDocument'][\ApacheSolrForTypo3\Solr\AdditionalFieldsIndexer::class] = \ApacheSolrForTypo3\Solr\AdditionalFieldsIndexer::class;
 
@@ -25,14 +26,13 @@ if (!function_exists('strptime')) {
         \ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageIndexer::class
     );
 
-
-    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
+    // ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
     // page module plugin settings summary
 
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['cms/layout/class.tx_cms_layout.php']['list_type_Info']['solr_pi_results']['solr'] = \ApacheSolrForTypo3\Solr\Controller\Backend\PageModuleSummary::class . '->getSummary';
 
-    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
+    // ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
     // register search components
 
@@ -91,7 +91,7 @@ if (!function_exists('strptime')) {
         \ApacheSolrForTypo3\Solr\Search\ElevationComponent::class
     );
 
-    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
+    // ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
     // adding scheduler tasks
 
@@ -99,44 +99,44 @@ if (!function_exists('strptime')) {
         'extension' => 'solr',
         'title' => 'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:optimizeindex_title',
         'description' => 'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:optimizeindex_description',
-        'additionalFields' => \ApacheSolrForTypo3\Solr\Task\OptimizeIndexTaskAdditionalFieldProvider::class
+        'additionalFields' => \ApacheSolrForTypo3\Solr\Task\OptimizeIndexTaskAdditionalFieldProvider::class,
     ];
 
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][\ApacheSolrForTypo3\Solr\Task\ReIndexTask::class] = [
         'extension' => 'solr',
         'title' => 'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:reindex_title',
         'description' => 'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:reindex_description',
-        'additionalFields' => \ApacheSolrForTypo3\Solr\Task\ReIndexTaskAdditionalFieldProvider::class
+        'additionalFields' => \ApacheSolrForTypo3\Solr\Task\ReIndexTaskAdditionalFieldProvider::class,
     ];
 
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][\ApacheSolrForTypo3\Solr\Task\IndexQueueWorkerTask::class] = [
         'extension' => 'solr',
         'title' => 'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:indexqueueworker_title',
         'description' => 'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:indexqueueworker_description',
-        'additionalFields' => \ApacheSolrForTypo3\Solr\Task\IndexQueueWorkerTaskAdditionalFieldProvider::class
+        'additionalFields' => \ApacheSolrForTypo3\Solr\Task\IndexQueueWorkerTaskAdditionalFieldProvider::class,
     ];
 
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][\ApacheSolrForTypo3\Solr\Task\EventQueueWorkerTask::class] = [
         'extension' => 'solr',
         'title' => 'LLL:EXT:solr/Resources/Private/Language/locallang_be.xlf:task.eventQueueWorkerTask.title',
         'description' => 'LLL:EXT:solr/Resources/Private/Language/locallang_be.xlf:task.eventQueueWorkerTask.description',
-        'additionalFields' => \ApacheSolrForTypo3\Solr\Task\EventQueueWorkerTaskAdditionalFieldProvider::class
+        'additionalFields' => \ApacheSolrForTypo3\Solr\Task\EventQueueWorkerTaskAdditionalFieldProvider::class,
     ];
 
     if (!isset($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][\TYPO3\CMS\Scheduler\Task\TableGarbageCollectionTask::class]['options']['tables']['tx_solr_statistics'])) {
         $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][\TYPO3\CMS\Scheduler\Task\TableGarbageCollectionTask::class]['options']['tables']['tx_solr_statistics'] = [
             'dateField' => 'tstamp',
-            'expirePeriod' => 180
+            'expirePeriod' => 180,
         ];
     }
 
-    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
+    // ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
     // registering the eID scripts
     // TODO move to suggest form modifier
     $GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['tx_solr_api'] = 'EXT:solr/Classes/Eid/Api.php';
 
-    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
+    // ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
     // add custom Solr content objects
 
@@ -152,8 +152,7 @@ if (!function_exists('strptime')) {
     $GLOBALS['TYPO3_CONF_VARS']['FE']['ContentObjects'][\ApacheSolrForTypo3\Solr\ContentObject\Classification::CONTENT_OBJECT_NAME]
         = \ApacheSolrForTypo3\Solr\ContentObject\Classification::class;
 
-
-    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
+    // ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
     // Register cache for frequent searches
 
@@ -178,7 +177,7 @@ if (!function_exists('strptime')) {
         $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['tx_solr_configuration']['groups'] = ['all'];
     }
 
-    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
+    // ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
     /* @var \ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration $extensionConfiguration */
     $extensionConfiguration = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
         \ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration::class
@@ -190,13 +189,13 @@ if (!function_exists('strptime')) {
         [
             'FE' => [
                 'cacheHash' => [
-                    'excludedParameters' => $extensionConfiguration->getCacheHashExcludedParameters()
-                ]
-            ]
+                    'excludedParameters' => $extensionConfiguration->getCacheHashExcludedParameters(),
+                ],
+            ],
         ]
     );
 
-    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
+    // ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
     if (!isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['searchResultClassName '])) {
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['searchResultClassName '] = \ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResult::class;
@@ -218,22 +217,22 @@ if (!function_exists('strptime')) {
         $GLOBALS['TYPO3_CONF_VARS']['LOG']['ApacheSolrForTypo3']['Solr']['writerConfiguration'] = [
             $logLevel => [
                 \TYPO3\CMS\Core\Log\Writer\FileWriter::class => [
-                    'logFileInfix' => 'solr'
-                ]
+                    'logFileInfix' => 'solr',
+                ],
             ],
         ];
     }
 
-    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
+    // ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
     \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
         'Solr',
         'pi_results',
         [
-            \ApacheSolrForTypo3\Solr\Controller\SearchController::class => 'results,form,detail'
+            \ApacheSolrForTypo3\Solr\Controller\SearchController::class => 'results,form,detail',
         ],
         [
-            \ApacheSolrForTypo3\Solr\Controller\SearchController::class => 'results'
+            \ApacheSolrForTypo3\Solr\Controller\SearchController::class => 'results',
         ]
     );
 
@@ -241,7 +240,7 @@ if (!function_exists('strptime')) {
         'Solr',
         'pi_search',
         [
-            \ApacheSolrForTypo3\Solr\Controller\SearchController::class => 'form'
+            \ApacheSolrForTypo3\Solr\Controller\SearchController::class => 'form',
         ]
     );
 
@@ -249,10 +248,10 @@ if (!function_exists('strptime')) {
         'Solr',
         'pi_frequentlySearched',
         [
-            \ApacheSolrForTypo3\Solr\Controller\SearchController::class => 'frequentlySearched'
+            \ApacheSolrForTypo3\Solr\Controller\SearchController::class => 'frequentlySearched',
         ],
         [
-            \ApacheSolrForTypo3\Solr\Controller\SearchController::class => 'frequentlySearched'
+            \ApacheSolrForTypo3\Solr\Controller\SearchController::class => 'frequentlySearched',
         ]
     );
 
@@ -260,10 +259,10 @@ if (!function_exists('strptime')) {
         'Solr',
         'pi_suggest',
         [
-            \ApacheSolrForTypo3\Solr\Controller\SuggestController::class => 'suggest'
+            \ApacheSolrForTypo3\Solr\Controller\SuggestController::class => 'suggest',
         ],
         [
-            \ApacheSolrForTypo3\Solr\Controller\SuggestController::class => 'suggest'
+            \ApacheSolrForTypo3\Solr\Controller\SuggestController::class => 'suggest',
         ]
     );
 

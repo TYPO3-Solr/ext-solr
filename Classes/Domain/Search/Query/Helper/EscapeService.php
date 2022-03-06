@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -16,19 +18,19 @@
 namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\Helper;
 
 /**
- * The EscpaeService is responsible to escape the querystring as expected for Apache Solr.
+ * The EscapeService is responsible to escape the querystring as expected for Apache Solr.
  *
  * This class should have no dependencies since it only contains static functions
  *
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class EscapeService {
-
+class EscapeService
+{
     /**
      * Quote and escape search strings
      *
-     * @param string|int|double $string String to escape
-     * @return string|int|double The escaped/quoted string
+     * @param string|int|float $string String to escape
+     * @return string|int|float The escaped/quoted string
      */
     public static function escape($string)
     {
@@ -56,24 +58,23 @@ class EscapeService {
     /**
      * Applies trim and htmlspecialchars on the querystring to use it as output.
      *
-     * @param mixed $string
+     * @param string $string
      * @return string
      */
-    public static function clean($string): string
+    public static function clean(string $string): string
     {
         $string = trim($string);
-        $string = htmlspecialchars($string);
-        return $string;
+        return htmlspecialchars($string);
     }
 
     /**
      * This method is used to escape the content in the query string surrounded by quotes
-     * different then when it is not in a quoted context.
+     * different, then when it is not in a quoted context.
      *
      * @param string $string
      * @return string
      */
-    protected static function tokenizeByQuotesAndEscapeDependingOnContext($string)
+    protected static function tokenizeByQuotesAndEscapeDependingOnContext(string $string): string
     {
         $result = '';
         $quotesCount = substr_count($string, '"');
@@ -110,7 +111,7 @@ class EscapeService {
      * @param string $value Unescaped - "dirty" - string
      * @return string Escaped - "clean" - string
      */
-    protected static function escapePhrase($value)
+    protected static function escapePhrase(string $value): string
     {
         $pattern = '/("|\\\)/';
         $replace = '\\\$1';
@@ -124,7 +125,7 @@ class EscapeService {
      * @param string $value Unescaped - "dirty" - string
      * @return string Escaped - "clean" - string
      */
-    protected static function escapeSpecialCharacters($value)
+    protected static function escapeSpecialCharacters(string $value): string
     {
         // list taken from http://lucene.apache.org/core/4_4_0/queryparser/org/apache/lucene/queryparser/classic/package-summary.html#package_description
         // which mentions: + - && || ! ( ) { } [ ] ^ " ~ * ? : \ /

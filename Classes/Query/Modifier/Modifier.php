@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -17,7 +19,6 @@ namespace ApacheSolrForTypo3\Solr\Query\Modifier;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 
-
 /**
  * QueryModifier interface, allows to modify search queries
  *
@@ -25,12 +26,11 @@ use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
  */
 interface Modifier
 {
-
     /**
      * Modifies the given query and returns the modified query as result
      *
      * @param Query $query The query to modify
      * @return Query The modified query
      */
-    public function modifyQuery(Query $query);
+    public function modifyQuery(Query $query): Query;
 }

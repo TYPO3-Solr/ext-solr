@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -54,5 +56,5 @@ interface FrontendHelper
      *
      * @return array Collected data.
      */
-    public function getData();
+    public function getData(): array;
 }

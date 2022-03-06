@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -30,24 +32,22 @@ class SuggestQuery extends Query
     /**
      * @var array
      */
-    protected $configuration;
+    protected array $configuration;
 
     /**
      * @var string
      */
-    protected $prefix;
+    protected string $prefix;
 
     /**
      * SuggestQuery constructor.
      *
      * @param string $keywords
-     * @param TypoScriptConfiguration $solrConfiguration
+     * @param TypoScriptConfiguration|null $solrConfiguration
      */
-    public function __construct($keywords, $solrConfiguration = null)
+    public function __construct(string $keywords, TypoScriptConfiguration $solrConfiguration = null)
     {
         parent::__construct();
-        $keywords = (string)$keywords;
-
         $solrConfiguration = $solrConfiguration ?? Util::getSolrConfiguration();
 
         $this->setQuery($keywords);
@@ -66,7 +66,7 @@ class SuggestQuery extends Query
         }
 
         $this->getEDisMax()->setQueryAlternative('*:*');
-        $this->setFields(ReturnFields::fromString(($this->configuration['suggestField'] ?? null))->getValues());
+        $this->setFields(ReturnFields::fromString(($this->configuration['suggestField'] ?? ''))->getValues());
         $this->addParam('facet', 'on');
         $this->addParam('facet.prefix', $this->prefix);
         $this->addParam('facet.field', ($this->configuration['suggestField'] ?? null));

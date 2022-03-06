@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -17,6 +19,8 @@ namespace ApacheSolrForTypo3\Solr\Report;
 
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
+use Doctrine\DBAL\Driver\Exception as DBALDriverException;
+use Throwable;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Reports\Status;
 
@@ -28,10 +32,9 @@ use TYPO3\CMS\Reports\Status;
  */
 class SolrVersionStatus extends AbstractSolrStatus
 {
-
     /**
      * Required Solr version. The version that gets installed when using the
-     * provided install script EXT:solr/Resources/Private/Install/install-solr.sh
+     * provided install-script EXT:solr/Resources/Private/Install/install-solr.sh
      *
      * @var string
      */
@@ -40,6 +43,10 @@ class SolrVersionStatus extends AbstractSolrStatus
     /**
      * Compiles a version check against each configured Solr server.
      *
+     * @noinspection PhpMissingReturnTypeInspection see {@link \TYPO3\CMS\Reports\StatusProviderInterface::getStatus()}
+     *
+     * @throws DBALDriverException
+     * @throws Throwable
      */
     public function getStatus()
     {
@@ -51,13 +58,17 @@ class SolrVersionStatus extends AbstractSolrStatus
             /** @var $solrConnection SolrConnection */
             if (!$coreAdmin->ping()) {
                 $url = $coreAdmin->__toString();
-                $pingFailedMsg = 'Could not ping solr server, can not check version ' . (string)$url;
+                $pingFailedMsg = 'Could not ping solr server, can not check version ' . $url;
                 $status = GeneralUtility::makeInstance(
                     Status::class,
-                    /** @scrutinizer ignore-type */ 'Apache Solr Version',
-                    /** @scrutinizer ignore-type */ 'Not accessible',
-                    /** @scrutinizer ignore-type */ $pingFailedMsg,
-                    /** @scrutinizer ignore-type */ Status::ERROR
+                    /** @scrutinizer ignore-type */
+                    'Apache Solr Version',
+                    /** @scrutinizer ignore-type */
+                    'Not accessible',
+                    /** @scrutinizer ignore-type */
+                    $pingFailedMsg,
+                    /** @scrutinizer ignore-type */
+                    Status::ERROR
                 );
                 $reports[] = $status;
                 continue;
@@ -75,10 +86,14 @@ class SolrVersionStatus extends AbstractSolrStatus
             $report = $this->getRenderedReport('SolrVersionStatus.html', $variables);
             $status = GeneralUtility::makeInstance(
                 Status::class,
-                /** @scrutinizer ignore-type */ 'Apache Solr Version',
-                /** @scrutinizer ignore-type */ 'Outdated, Unsupported',
-                /** @scrutinizer ignore-type */ $report,
-                /** @scrutinizer ignore-type */ Status::ERROR
+                /** @scrutinizer ignore-type */
+                'Apache Solr Version',
+                /** @scrutinizer ignore-type */
+                'Outdated, Unsupported',
+                /** @scrutinizer ignore-type */
+                $report,
+                /** @scrutinizer ignore-type */
+                Status::ERROR
             );
 
             $reports[] = $status;
@@ -91,30 +106,28 @@ class SolrVersionStatus extends AbstractSolrStatus
      * Gets the clean Solr version in case of a custom build which may have
      * additional information in the version string.
      *
-     * @param string $solrVersion Unformatted Apache Solr version number as provided by Solr.
-     * @return string Clean Solr version number: mayor.minor.patchlevel
+     * @param string $solrVersion Unformatted Apache Solr version number a provided by Solr.
+     * @return string Clean Solr version number: mayor.minor.patch-level
      */
-    protected function getCleanSolrVersion($solrVersion)
+    protected function getCleanSolrVersion(string $solrVersion): string
     {
         $explodedSolrVersion = explode('.', $solrVersion);
 
-        $shortSolrVersion = $explodedSolrVersion[0]
+        return $explodedSolrVersion[0]
             . '.' . $explodedSolrVersion[1]
             . '.' . $explodedSolrVersion[2];
-
-        return $shortSolrVersion;
     }
 
     /**
-     * Formats the Apache Solr server version number. By default this is going
+     * Formats the Apache Solr server version number. By default, this is going
      * to be the simple major.minor.patch-level version. Custom Builds provide
-     * more information though, in case of custom builds, their complete
+     * more information though, in case of custom-builds, their complete
      * version will be added, too.
      *
-     * @param string $solrVersion Unformatted Apache Solr version number as provided by Solr.
-     * @return string formatted short version number, in case of custom builds followed by the complete version number
+     * @param string $solrVersion Unformatted Apache Solr version number a provided by Solr.
+     * @return string formatted short version number, in case of custom-builds followed by the complete version number
      */
-    protected function formatSolrVersion($solrVersion)
+    protected function formatSolrVersion(string $solrVersion): string
     {
         $shortSolrVersion = $this->getCleanSolrVersion($solrVersion);
         $formattedSolrVersion = $shortSolrVersion;

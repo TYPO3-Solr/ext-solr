@@ -16,16 +16,20 @@
 namespace ApacheSolrForTypo3\Solr\Domain\Index;
 
 use ApacheSolrForTypo3\Solr\ConnectionManager;
+use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\IndexQueue\Indexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
-use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\Task\IndexQueueWorkerTask;
+use RuntimeException;
 use Solarium\Exception\HttpException;
+use Throwable;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
+use TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException;
+use TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException;
 
 /**
  * Service to perform indexing operations
@@ -35,24 +39,19 @@ use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 class IndexService
 {
     /**
-     * @var TypoScriptConfiguration
-     */
-    protected $configuration;
-
-    /**
      * @var Site
      */
-    protected $site;
+    protected Site $site;
 
     /**
-     * @var IndexQueueWorkerTask
+     * @var IndexQueueWorkerTask|null
      */
-    protected $contextTask;
+    protected ?IndexQueueWorkerTask $contextTask = null;
 
     /**
      * @var Queue
      */
-    protected $indexQueue;
+    protected Queue $indexQueue;
 
     /**
      * @var Dispatcher
@@ -60,9 +59,9 @@ class IndexService
     protected $signalSlotDispatcher;
 
     /**
-     * @var \ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager
+     * @var SolrLogManager
      */
-    protected $logger = null;
+    protected SolrLogManager $logger;
 
     /**
      * IndexService constructor.
@@ -71,8 +70,12 @@ class IndexService
      * @param Dispatcher|null $dispatcher
      * @param SolrLogManager|null $solrLogManager
      */
-    public function __construct(Site $site, Queue $queue = null, Dispatcher $dispatcher = null, SolrLogManager $solrLogManager = null)
-    {
+    public function __construct(
+        Site $site,
+        Queue $queue = null,
+        Dispatcher $dispatcher = null,
+        SolrLogManager $solrLogManager = null
+    ) {
         $this->site = $site;
         $this->indexQueue = $queue ?? GeneralUtility::makeInstance(Queue::class);
         $this->signalSlotDispatcher = $dispatcher ?? GeneralUtility::makeInstance(Dispatcher::class);
@@ -80,17 +83,17 @@ class IndexService
     }
 
     /**
-     * @param \ApacheSolrForTypo3\Solr\Task\IndexQueueWorkerTask $contextTask
+     * @param IndexQueueWorkerTask $contextTask
      */
-    public function setContextTask($contextTask)
+    public function setContextTask(IndexQueueWorkerTask $contextTask)
     {
         $this->contextTask = $contextTask;
     }
 
     /**
-     * @return \ApacheSolrForTypo3\Solr\Task\IndexQueueWorkerTask
+     * @return IndexQueueWorkerTask
      */
-    public function getContextTask()
+    public function getContextTask(): ?IndexQueueWorkerTask
     {
         return $this->contextTask;
     }
@@ -100,8 +103,10 @@ class IndexService
      *
      * @param int $limit
      * @return bool
+     * @throws InvalidSlotException
+     * @throws InvalidSlotReturnException
      */
-    public function indexItems($limit)
+    public function indexItems(int $limit): bool
     {
         $errors     = 0;
         $indexRunId = uniqid();
@@ -119,7 +124,7 @@ class IndexService
                 $this->emitSignal('beforeIndexItem', [$itemToIndex, $this->getContextTask(), $indexRunId]);
                 $this->indexItem($itemToIndex, $configurationToUse);
                 $this->emitSignal('afterIndexItem', [$itemToIndex, $this->getContextTask(), $indexRunId]);
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 $errors++;
                 $this->indexQueue->markItemAsFailed($itemToIndex, $e->getCode() . ': ' . $e->__toString());
                 $this->generateIndexingErrorLog($itemToIndex, $e);
@@ -132,23 +137,23 @@ class IndexService
             $solrServers = GeneralUtility::makeInstance(ConnectionManager::class)->getConnectionsBySite($this->site);
             foreach ($solrServers as $solrServer) {
                 try {
-                    $solrServer->getWriteService()->commit(false, false, false);
+                    $solrServer->getWriteService()->commit(false, false);
                 } catch (HttpException $e) {
                     $errors++;
                 }
             }
         }
 
-        return ($errors === 0);
+        return $errors === 0;
     }
 
     /**
-     * Generates a message in the error log when an error occured.
+     * Generates a message in the error log when an error occurred.
      *
      * @param Item $itemToIndex
-     * @param \Throwable $e
+     * @param Throwable $e
      */
-    protected function generateIndexingErrorLog(Item $itemToIndex, \Throwable $e)
+    protected function generateIndexingErrorLog(Item $itemToIndex, Throwable $e)
     {
         $message = 'Failed indexing Index Queue item ' . $itemToIndex->getIndexQueueUid();
         $data = ['code' => $e->getCode(), 'message' => $e->getMessage(), 'trace' => $e->getTraceAsString(), 'item' => (array)$itemToIndex];
@@ -161,13 +166,15 @@ class IndexService
     }
 
     /**
-     * Builds an emits a singal for the IndexService.
+     * Builds an emits a signal for the IndexService.
      *
      * @param string $name
      * @param array $arguments
      * @return mixed
+     * @throws InvalidSlotException
+     * @throws InvalidSlotReturnException
      */
-    protected function emitSignal($name, $arguments)
+    protected function emitSignal(string $name, array $arguments = [])
     {
         return $this->signalSlotDispatcher->dispatch(__CLASS__, $name, $arguments);
     }
@@ -178,12 +185,13 @@ class IndexService
      * @param Item $item An index queue item to index
      * @param TypoScriptConfiguration $configuration
      * @return bool TRUE if the item was successfully indexed, FALSE otherwise
+     * @throws Throwable
      */
-    protected function indexItem(Item $item, TypoScriptConfiguration $configuration)
+    protected function indexItem(Item $item, TypoScriptConfiguration $configuration): bool
     {
         $indexer = $this->getIndexerByItem($item->getIndexingConfigurationName(), $configuration);
         // Remember original http host value
-        $originalHttpHost = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : null;
+        $originalHttpHost = $_SERVER['HTTP_HOST'] ?? null;
 
         $itemChangedDate = $item->getChanged();
         $itemChangedDateAfterIndex = 0;
@@ -201,7 +209,7 @@ class IndexService
             if ($itemChangedDateAfterIndex > $itemChangedDate && $itemChangedDateAfterIndex > time()) {
                 $this->indexQueue->setForcedChangeTimeByItem($item, $itemChangedDateAfterIndex);
             }
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $this->restoreOriginalHttpHost($originalHttpHost);
             throw $e;
         }
@@ -214,7 +222,7 @@ class IndexService
     /**
      * A factory method to get an indexer depending on an item's configuration.
      *
-     * By default all items are indexed using the default indexer
+     * By default, all items are indexed using the default indexer
      * (ApacheSolrForTypo3\Solr\IndexQueue\Indexer) coming with EXT:solr. Pages by default are
      * configured to be indexed through a dedicated indexer
      * (ApacheSolrForTypo3\Solr\IndexQueue\PageIndexer). In all other cases a dedicated indexer
@@ -224,14 +232,16 @@ class IndexService
      * @param TypoScriptConfiguration $configuration
      * @return Indexer
      */
-    protected function getIndexerByItem($indexingConfigurationName, TypoScriptConfiguration $configuration)
-    {
+    protected function getIndexerByItem(
+        string $indexingConfigurationName,
+        TypoScriptConfiguration $configuration
+    ): Indexer {
         $indexerClass = $configuration->getIndexQueueIndexerByConfigurationName($indexingConfigurationName);
         $indexerConfiguration = $configuration->getIndexQueueIndexerConfigurationByConfigurationName($indexingConfigurationName);
 
         $indexer = GeneralUtility::makeInstance($indexerClass, /** @scrutinizer ignore-type */ $indexerConfiguration);
         if (!($indexer instanceof Indexer)) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 'The indexer class "' . $indexerClass . '" for indexing configuration "' . $indexingConfigurationName . '" is not a valid indexer. Must be a subclass of ApacheSolrForTypo3\Solr\IndexQueue\Indexer.',
                 1260463206
             );
@@ -245,7 +255,7 @@ class IndexService
      *
      * @return float Indexing progress as a two decimal precision float. f.e. 44.87
      */
-    public function getProgress()
+    public function getProgress(): float
     {
         return $this->indexQueue->getStatisticsBySite($this->site)->getSuccessPercentage();
     }
@@ -255,7 +265,7 @@ class IndexService
      *
      * @return int
      */
-    public function getFailCount()
+    public function getFailCount(): int
     {
         return $this->indexQueue->getStatisticsBySite($this->site)->getFailedCount();
     }
@@ -276,14 +286,14 @@ class IndexService
     protected function initializeHttpServerEnvironment(Item $item)
     {
         static $hosts = [];
-        $rootpageId = $item->getRootPageUid();
-        $hostFound = !empty($hosts[$rootpageId]);
+        $rootPageId = $item->getRootPageUid();
+        $hostFound = !empty($hosts[$rootPageId]);
 
         if (!$hostFound) {
-            $hosts[$rootpageId] = $item->getSite()->getDomain();
+            $hosts[$rootPageId] = $item->getSite()->getDomain();
         }
 
-        $_SERVER['HTTP_HOST'] = $hosts[$rootpageId];
+        $_SERVER['HTTP_HOST'] = $hosts[$rootPageId];
 
         // needed since TYPO3 7.5
         GeneralUtility::flushInternalRuntimeCaches();
@@ -292,7 +302,7 @@ class IndexService
     /**
      * @param string|null $originalHttpHost
      */
-    protected function restoreOriginalHttpHost($originalHttpHost)
+    protected function restoreOriginalHttpHost(?string $originalHttpHost)
     {
         if (!is_null($originalHttpHost)) {
             $_SERVER['HTTP_HOST'] = $originalHttpHost;

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -29,32 +30,32 @@ class UrlFacetService
      *  - path
      *  - query
      *
-     * This are connected to the configuration
+     * These are connected to the configuration
      *
      * @var string
      */
-    protected $uriLocation = 'query';
+    protected string $uriLocation = 'query';
 
     /**
      * Mapping of characters
      *
      * @var array
      */
-    protected $characterMap = [];
+    protected array $characterMap = [];
 
     /**
      * Character to separate multi values
      *
      * @var string
      */
-    protected $multiValueSeparator = ',';
+    protected string $multiValueSeparator = ',';
 
     /**
      * Character to replace multi value separator a value contains it.
      *
      * @var string
      */
-    protected $multiValueEscapeCharacter = '°';
+    protected string $multiValueEscapeCharacter = '°';
 
     public function __construct(string $uriLocation, array $settings = [])
     {

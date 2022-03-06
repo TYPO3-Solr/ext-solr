@@ -53,12 +53,12 @@ class ItemTest extends UnitTest
     /**
      * @return array
      */
-    public function getStateDataProvider()
+    public function getStateDataProvider(): array
     {
         return [
-            'pending item' => [['item_type' => 'pages', 'indexed' => 3, 'changed' => '4'], Item::STATE_PENDING],
-            'indexed item' => [['item_type' => 'pages', 'indexed' => 5, 'changed' => '4'], Item::STATE_INDEXED],
-            'blocked item' => [['item_type' => 'pages', 'indexed' => 5, 'changed' => '4', 'errors' => 'Something bad happened'], Item::STATE_BLOCKED],
+            'pending item' => [['item_type' => 'pages', 'indexed' => 3, 'changed' => 4], Item::STATE_PENDING],
+            'indexed item' => [['item_type' => 'pages', 'indexed' => 5, 'changed' => 4], Item::STATE_INDEXED],
+            'blocked item' => [['item_type' => 'pages', 'indexed' => 5, 'changed' => 4, 'errors' => 'Something bad happened'], Item::STATE_BLOCKED],
         ];
     }
 

@@ -22,12 +22,11 @@ namespace ApacheSolrForTypo3\Solr\FieldProcessor;
  */
 interface FieldProcessor
 {
-
     /**
      * process method
      *
      * @param array $values Array of values, an array because of multivalued fields
      * @return array Modified array of values
      */
-    public function process(array $values);
+    public function process(array $values): array;
 }

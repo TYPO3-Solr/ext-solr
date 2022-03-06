@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -15,10 +17,12 @@
 
 namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\DateRange;
 
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\AbstractRangeFacetParser;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\System\Data\DateTime;
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacet;
+use DateTime as PhpDateTime;
+use Exception;
 
 /**
  * Class DateRangeFacetParser
@@ -31,17 +35,17 @@ class DateRangeFacetParser extends AbstractRangeFacetParser
     /**
      * @var string
      */
-    protected $facetClass = DateRangeFacet::class;
+    protected string $facetClass = DateRangeFacet::class;
 
     /**
      * @var string
      */
-    protected $facetItemClass = DateRange::class;
+    protected string $facetItemClass = DateRange::class;
 
     /**
      * @var string
      */
-    protected $facetRangeCountClass = DateRangeCount::class;
+    protected string $facetRangeCountClass = DateRangeCount::class;
 
     /**
      * @param SearchResultSet $resultSet
@@ -49,7 +53,7 @@ class DateRangeFacetParser extends AbstractRangeFacetParser
      * @param array $facetConfiguration
      * @return AbstractFacet|null
      */
-    public function parse(SearchResultSet $resultSet, $facetName, array $facetConfiguration)
+    public function parse(SearchResultSet $resultSet, string $facetName, array $facetConfiguration): ?AbstractFacet
     {
         return $this->getParsedFacet(
             $resultSet,
@@ -62,26 +66,27 @@ class DateRangeFacetParser extends AbstractRangeFacetParser
     }
 
     /**
-     * @param string $rawDate
+     * @param float|int|string|null $rawRequestValue
      * @return DateTime|null
+     * @throws Exception
      */
-    protected function parseRequestValue($rawDate)
+    protected function parseRequestValue($rawRequestValue): ?DateTime
     {
-        $rawDate = \DateTime::createFromFormat('Ymd', substr($rawDate, 0, 8));
-        if ($rawDate === false) {
+        $rawRequestValue = PhpDateTime::createFromFormat('Ymd', substr((string)$rawRequestValue, 0, 8));
+        if ($rawRequestValue === false) {
             return null;
         }
-        $date = new DateTime($rawDate->format(DateTime::ISO8601));
-        return $date;
+        return new DateTime($rawRequestValue->format(DateTime::ISO8601));
     }
 
     /**
-     * @param string $isoDateString
+     * @param float|int|string|null $rawResponseValue
      * @return DateTime
+     * @throws Exception
      */
-    protected function parseResponseValue($isoDateString)
+    protected function parseResponseValue($rawResponseValue): DateTime
     {
-        $rawDate = \DateTime::createFromFormat(\DateTime::ISO8601, $isoDateString);
+        $rawDate = PhpDateTime::createFromFormat(PhpDateTime::ISO8601, $rawResponseValue);
         return new DateTime($rawDate->format(DateTime::ISO8601));
     }
 }

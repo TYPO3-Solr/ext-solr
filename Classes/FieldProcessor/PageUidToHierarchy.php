@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -16,6 +18,7 @@
 namespace ApacheSolrForTypo3\Solr\FieldProcessor;
 
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
+use RuntimeException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\RootlineUtility;
 
@@ -24,7 +27,7 @@ use TYPO3\CMS\Core\Utility\RootlineUtility;
  *
  * Format of this field corresponds to http://wiki.apache.org/solr/HierarchicalFaceting
  *
- * Let's say we have a record indexed on page 111 which is a sub page like shown in this page tree:
+ * Let's say we have a record indexed on page 111 which is a sub-page like shown in this page tree:
  *
  * 1
  * |-10
@@ -46,7 +49,6 @@ use TYPO3\CMS\Core\Utility\RootlineUtility;
  */
 class PageUidToHierarchy extends AbstractHierarchyProcessor implements FieldProcessor
 {
-
     /**
      * Expects a page ID of a page. Returns a Solr hierarchy notation for the
      * rootline of the page ID.
@@ -54,19 +56,15 @@ class PageUidToHierarchy extends AbstractHierarchyProcessor implements FieldProc
      * @param array $values Array of values, an array because of multivalued fields
      * @return array Modified array of values
      */
-    public function process(array $values)
+    public function process(array $values): array
     {
         $results = [];
 
         foreach ($values as $value) {
+            $rootPageUidAndMountPoint = GeneralUtility::trimExplode(',', $value, true, 2);
             $results[] = $this->getSolrRootlineForPageId(
-                /** @scrutinizer ignore-type */
-                ...GeneralUtility::trimExplode(
-                    ',',
-                    $value,
-                    true,
-                    2
-                )
+                (int)$rootPageUidAndMountPoint[0],
+                $rootPageUidAndMountPoint[1] ?? ''
             );
         }
 
@@ -80,12 +78,10 @@ class PageUidToHierarchy extends AbstractHierarchyProcessor implements FieldProc
      * @param string $mountPoint The mount point parameter that will be used for building the rootline.
      * @return array Rootline as Solr hierarchy array
      */
-    protected function getSolrRootlineForPageId($pageId, $mountPoint = '')
+    protected function getSolrRootlineForPageId(int $pageId, string $mountPoint = ''): array
     {
         $pageIdRootline = $this->buildPageIdRootline($pageId, $mountPoint);
-        $solrRootline = $this->buildSolrHierarchyFromIdRootline($pageIdRootline);
-
-        return $solrRootline;
+        return $this->buildSolrHierarchyFromIdRootline($pageIdRootline);
     }
 
     /**
@@ -95,14 +91,14 @@ class PageUidToHierarchy extends AbstractHierarchyProcessor implements FieldProc
      * @param string $mountPoint The mount point parameter that will be passed to getRootline().
      * @return array Page Id rootline as array
      */
-    protected function buildPageIdRootline($pageId, $mountPoint = '')
+    protected function buildPageIdRootline(int $pageId, string $mountPoint = ''): array
     {
         $rootlinePageIds = [];
 
         $rootlineUtility = GeneralUtility::makeInstance(RootlineUtility::class, $pageId, $mountPoint);
         try {
             $rootline = $rootlineUtility->get();
-        } catch (\RuntimeException $e) {
+        } catch (RuntimeException $e) {
             $rootline = [];
         }
 

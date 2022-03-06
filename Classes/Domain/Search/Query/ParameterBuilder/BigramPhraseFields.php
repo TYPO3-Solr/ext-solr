@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -21,15 +23,8 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 /**
  * The BigramPhraseFields class
  */
-class BigramPhraseFields extends AbstractFieldList implements ParameterBuilder
+class BigramPhraseFields extends AbstractFieldList implements ParameterBuilderInterface
 {
-    /**
-     * Parameter key which should be used for Apache Solr URL query
-     *
-     * @var string
-     */
-    protected $parameterKey = 'pf2';
-
     /**
      * Parses the string representation of the fieldList (e.g. content^100, title^10) to the object representation.
      *
@@ -37,7 +32,7 @@ class BigramPhraseFields extends AbstractFieldList implements ParameterBuilder
      * @param string $delimiter
      * @return BigramPhraseFields
      */
-    public static function fromString(string $fieldListString, string $delimiter = ',') : BigramPhraseFields
+    public static function fromString(string $fieldListString, string $delimiter = ','): BigramPhraseFields
     {
         return self::initializeFromString($fieldListString, $delimiter);
     }
@@ -46,14 +41,14 @@ class BigramPhraseFields extends AbstractFieldList implements ParameterBuilder
      * @param TypoScriptConfiguration $solrConfiguration
      * @return BigramPhraseFields
      */
-    public static function fromTypoScriptConfiguration(TypoScriptConfiguration $solrConfiguration)
+    public static function fromTypoScriptConfiguration(TypoScriptConfiguration $solrConfiguration): BigramPhraseFields
     {
         $isEnabled = $solrConfiguration->getBigramPhraseSearchIsEnabled();
         if (!$isEnabled) {
             return new BigramPhraseFields(false);
         }
 
-        return self::fromString((string)$solrConfiguration->getSearchQueryBigramPhraseFields());
+        return self::fromString($solrConfiguration->getSearchQueryBigramPhraseFields());
     }
 
     /**
@@ -63,7 +58,7 @@ class BigramPhraseFields extends AbstractFieldList implements ParameterBuilder
      * @param string $delimiter
      * @return BigramPhraseFields
      */
-    protected static function initializeFromString(string $fieldListString, string $delimiter = ',') : BigramPhraseFields
+    protected static function initializeFromString(string $fieldListString, string $delimiter = ','): BigramPhraseFields
     {
         $fieldList = self::buildFieldList($fieldListString, $delimiter);
         return new BigramPhraseFields(true, $fieldList);

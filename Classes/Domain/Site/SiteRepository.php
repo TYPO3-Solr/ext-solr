@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -22,7 +24,6 @@ use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
 use ApacheSolrForTypo3\Solr\System\Util\SiteUtility;
 use Doctrine\DBAL\Driver\Exception as DBALDriverException;
-use Exception;
 use InvalidArgumentException;
 use Throwable;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
@@ -46,32 +47,32 @@ class SiteRepository
      *
      * @var RootPageResolver
      */
-    protected $rootPageResolver;
+    protected RootPageResolver $rootPageResolver;
 
     /**
      * @var TwoLevelCache
      */
-    protected $runtimeCache;
+    protected TwoLevelCache $runtimeCache;
 
     /**
      * @var Registry
      */
-    protected $registry;
+    protected Registry $registry;
 
     /**
      * @var SiteFinder
      */
-    protected $siteFinder;
+    protected SiteFinder $siteFinder;
 
     /**
      * @var ExtensionConfiguration
      */
-    protected $extensionConfiguration;
+    protected ExtensionConfiguration $extensionConfiguration;
 
     /**
      * @var FrontendEnvironment
      */
-    protected $frontendEnvironment = null;
+    protected FrontendEnvironment $frontendEnvironment;
 
     /**
      * SiteRepository constructor.
@@ -90,8 +91,7 @@ class SiteRepository
         SiteFinder $siteFinder = null,
         ExtensionConfiguration $extensionConfiguration = null,
         FrontendEnvironment $frontendEnvironment = null
-    )
-    {
+    ) {
         $this->rootPageResolver = $rootPageResolver ?? GeneralUtility::makeInstance(RootPageResolver::class);
         $this->runtimeCache = $twoLevelCache ?? GeneralUtility::makeInstance(TwoLevelCache::class, /** @scrutinizer ignore-type */'runtime');
         $this->registry = $registry ?? GeneralUtility::makeInstance(Registry::class);
@@ -106,6 +106,7 @@ class SiteRepository
      * @param int $pageId The page ID to get a Site object for.
      * @param string $mountPointIdentifier
      * @return SiteInterface Site for the given page ID.
+     * @throws DBALDriverException
      */
     public function getSiteByPageId(int $pageId, string $mountPointIdentifier = '')
     {
@@ -114,10 +115,11 @@ class SiteRepository
     }
 
     /**
-     * Gets the Site for a specific root page Id.
+     * Gets the Site for a specific root page-id.
      *
      * @param int $rootPageId Root page Id to get a Site object for.
-     * @return SiteInterface Site for the given page Id.
+     * @return SiteInterface Site for the given page-id.
+     * @throws DBALDriverException
      */
     public function getSiteByRootPageId(int $rootPageId)
     {
@@ -138,10 +140,11 @@ class SiteRepository
      * Returns the first available Site.
      *
      * @param bool $stopOnInvalidSite
-     * @throws Exception
-     * @return Site
+     * @return Site|null
+     * @throws DBALDriverException
+     * @throws Throwable
      */
-    public function getFirstAvailableSite($stopOnInvalidSite = false)
+    public function getFirstAvailableSite(bool $stopOnInvalidSite = false): ?Site
     {
         $sites = $this->getAvailableSites($stopOnInvalidSite);
         return array_shift($sites);
@@ -155,7 +158,7 @@ class SiteRepository
      * @throws DBALDriverException
      * @throws Throwable
      */
-    public function getAvailableSites($stopOnInvalidSite = false)
+    public function getAvailableSites(bool $stopOnInvalidSite = false): array
     {
         $cacheId = 'SiteRepository' . '_' . 'getAvailableSites';
 
@@ -167,7 +170,7 @@ class SiteRepository
         $sites = $this->getAvailableTYPO3ManagedSites($stopOnInvalidSite);
         $this->runtimeCache->set($cacheId, $sites);
 
-        return $sites;
+        return $sites ?? [];
     }
 
     /**
@@ -191,7 +194,6 @@ class SiteRepository
                 if ($typo3ManagedSolrSite->isEnabled()) {
                     $typo3ManagedSolrSites[$rootPageId] = $typo3ManagedSolrSite;
                 }
-
             } catch (Throwable $e) {
                 if ($stopOnInvalidSite) {
                     throw $e;
@@ -213,7 +215,7 @@ class SiteRepository
         $rootPageRecord = BackendUtility::getRecord('pages', $rootPageId);
         if (empty($rootPageRecord)) {
             throw new InvalidArgumentException(
-                "The rootPageRecord for the given rootPageRecord ID '{$rootPageId}' could not be found in the database and can therefore not be used as site root rootPageRecord.",
+                "The rootPageRecord for the given rootPageRecord ID '$rootPageId' could not be found in the database and can therefore not be used as site root rootPageRecord.",
                 1487326416
             );
         }
@@ -243,7 +245,7 @@ class SiteRepository
     {
         if (!Site::isRootPage($rootPageRecord)) {
             throw new InvalidArgumentException(
-                "The rootPageRecord for the given rootPageRecord ID '{$rootPageId}' is not marked as root rootPageRecord and can therefore not be used as site root rootPageRecord.",
+                "The rootPageRecord for the given rootPageRecord ID '$rootPageId' is not marked as root rootPageRecord and can therefore not be used as site root rootPageRecord.",
                 1309272922
             );
         }
@@ -270,7 +272,7 @@ class SiteRepository
         $siteHash = $this->getSiteHashForDomain($domain);
         $defaultLanguage = $typo3Site->getDefaultLanguage()->getLanguageId();
         $pageRepository = GeneralUtility::makeInstance(PagesRepository::class);
-        $availableLanguageIds = array_map(function($language) {
+        $availableLanguageIds = array_map(function ($language) {
             return $language->getLanguageId();
         }, $typo3Site->getLanguages());
 
@@ -303,7 +305,7 @@ class SiteRepository
                             SiteUtility::getConnectionProperty($typo3Site, 'path', $languageUid, 'read', '/solr/') .
                             SiteUtility::getConnectionProperty($typo3Site, 'core', $languageUid, 'read', 'core_en') . '/' ,
                         'username' => SiteUtility::getConnectionProperty($typo3Site, 'username', $languageUid, 'read', ''),
-                        'password' => SiteUtility::getConnectionProperty($typo3Site, 'password', $languageUid, 'read', '')
+                        'password' => SiteUtility::getConnectionProperty($typo3Site, 'password', $languageUid, 'read', ''),
                     ],
                     'write' => [
                         'scheme' => SiteUtility::getConnectionProperty($typo3Site, 'scheme', $languageUid, 'write', 'http'),
@@ -314,10 +316,10 @@ class SiteRepository
                             SiteUtility::getConnectionProperty($typo3Site, 'path', $languageUid, 'write', '/solr/') .
                             SiteUtility::getConnectionProperty($typo3Site, 'core', $languageUid, 'write', 'core_en') . '/' ,
                         'username' => SiteUtility::getConnectionProperty($typo3Site, 'username', $languageUid, 'write', ''),
-                        'password' => SiteUtility::getConnectionProperty($typo3Site, 'password', $languageUid, 'write', '')
+                        'password' => SiteUtility::getConnectionProperty($typo3Site, 'password', $languageUid, 'write', ''),
                     ],
 
-                    'language' => $languageUid
+                    'language' => $languageUid,
                 ];
             }
         }
@@ -360,8 +362,8 @@ class SiteRepository
     {
         try {
             return $this->siteFinder->getSiteByPageId($pageUid);
-        } catch (Throwable $e) {}
+        } catch (Throwable $e) {
+        }
         return null;
     }
-
 }

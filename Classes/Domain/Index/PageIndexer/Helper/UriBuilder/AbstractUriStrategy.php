@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -21,6 +21,7 @@ use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerDataUrlModifier;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Url\UrlHelper;
+use RuntimeException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -29,16 +30,17 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 abstract class AbstractUriStrategy
 {
     /**
-     * @var SolrLogManager|null|object
+     * @var SolrLogManager
      */
-    protected $logger;
+    protected SolrLogManager $logger;
 
     /**
      * AbstractUriStrategy constructor.
      * @param SolrLogManager|null $logger
      */
-    public function __construct(SolrLogManager $logger = null)
-    {
+    public function __construct(
+        SolrLogManager $logger = null
+    ) {
         $this->logger = $logger ?? GeneralUtility::makeInstance(SolrLogManager::class, /** @scrutinizer ignore-type */ __CLASS__);
     }
 
@@ -64,7 +66,7 @@ abstract class AbstractUriStrategy
             $urlHelper->setPort($overrideConfiguration['port']);
         }
 
-        // setting a path if TYPO3 is installed in a sub directory
+        // setting a path if TYPO3 is installed in a subdirectory
         if (!empty($overrideConfiguration['path'])) {
             $urlHelper->setPath($overrideConfiguration['path']);
         }
@@ -79,8 +81,12 @@ abstract class AbstractUriStrategy
      * @param array $options
      * @return string
      */
-    public function getPageIndexingUriFromPageItemAndLanguageId(Item $item, int $language = 0, string $mountPointParameter = '', $options = []): string
-    {
+    public function getPageIndexingUriFromPageItemAndLanguageId(
+        Item $item,
+        int $language = 0,
+        string $mountPointParameter = '',
+        array $options = []
+    ): string {
         $pageIndexUri = $this->buildPageIndexingUriFromPageItemAndLanguageId($item, $language, $mountPointParameter);
         $urlHelper = GeneralUtility::makeInstance(UrlHelper::class, $pageIndexUri);
         $overrideConfiguration = $options['frontendDataHelper.'] ?? [];
@@ -98,16 +104,15 @@ abstract class AbstractUriStrategy
                     'host' => $urlHelper->getHost(),
                     'path' => $urlHelper->getPath(),
                     'page ID' => $item->getRecordUid(),
-                    'indexer options' => $options
+                    'indexer options' => $options,
                 ]
             );
 
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 'Could not create a valid URL to get frontend data while trying to index a page. Created URL: ' . $dataUrl,
                 1311080805
             );
         }
-
 
         return $this->applyDataUrlModifier($item, $language, $dataUrl, $urlHelper);
     }
@@ -118,7 +123,11 @@ abstract class AbstractUriStrategy
      * @param string $mountPointParameter
      * @return mixed
      */
-    abstract protected function buildPageIndexingUriFromPageItemAndLanguageId(Item $item, int $language = 0, string $mountPointParameter = '');
+    abstract protected function buildPageIndexingUriFromPageItemAndLanguageId(
+        Item $item,
+        int $language = 0,
+        string $mountPointParameter = ''
+    );
 
     /**
      * @param Item $item
@@ -127,21 +136,26 @@ abstract class AbstractUriStrategy
      * @param UrlHelper $urlHelper
      * @return string
      */
-    protected function applyDataUrlModifier(Item $item, int $language, $dataUrl, UrlHelper $urlHelper):string
-    {
+    protected function applyDataUrlModifier(
+        Item $item,
+        int $language,
+        string $dataUrl,
+        UrlHelper $urlHelper
+    ): string {
         if (empty($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueuePageIndexer']['dataUrlModifier'])) {
             return $dataUrl;
         }
 
         $dataUrlModifier = GeneralUtility::makeInstance($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueuePageIndexer']['dataUrlModifier']);
         if (!$dataUrlModifier instanceof PageIndexerDataUrlModifier) {
-            throw new \RuntimeException($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueuePageIndexer']['dataUrlModifier'] . ' is not an implementation of ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerDataUrlModifier', 1290523345);
+            throw new RuntimeException($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueuePageIndexer']['dataUrlModifier'] . ' is not an implementation of ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerDataUrlModifier', 1290523345);
         }
 
-        return $dataUrlModifier->modifyDataUrl($dataUrl,
+        return $dataUrlModifier->modifyDataUrl(
+            $dataUrl,
             [
                 'item' => $item, 'scheme' => $urlHelper->getScheme(), 'host' => $urlHelper->getHost(),
-                'path' => $urlHelper->getPath(), 'pageId' => $item->getRecordUid(), 'language' => $language
+                'path' => $urlHelper->getPath(), 'pageId' => $item->getRecordUid(), 'language' => $language,
             ]
         );
     }

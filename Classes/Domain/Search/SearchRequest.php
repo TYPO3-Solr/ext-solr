@@ -1,6 +1,6 @@
 <?php
 
-namespace ApacheSolrForTypo3\Solr\Domain\Search;
+declare(strict_types=1);
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -14,6 +14,8 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+namespace ApacheSolrForTypo3\Solr\Domain\Search;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\UrlFacetContainer;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
@@ -38,14 +40,14 @@ class SearchRequest
     /**
      * @var string
      */
-    protected $id;
+    protected string $id;
 
     /**
      * Default namespace overwritten with the configured plugin namespace.
      *
      * @var string
      */
-    protected $argumentNameSpace = self::DEFAULT_PLUGIN_NAMESPACE;
+    protected string $argumentNameSpace = self::DEFAULT_PLUGIN_NAMESPACE;
 
     /**
      * Arguments that should be kept for sub requests.
@@ -54,26 +56,30 @@ class SearchRequest
      *
      * @var array
      */
-    protected $persistentArgumentsPaths = ['tx_solr:q', 'tx_solr:filter', 'tx_solr:sort'];
+    protected array $persistentArgumentsPaths = [
+        'tx_solr:q',
+        'tx_solr:filter',
+        'tx_solr:sort',
+    ];
 
     /**
      * @var bool
      */
-    protected $stateChanged = false;
+    protected bool $stateChanged = false;
 
     /**
-     * @var ArrayAccessor
+     * @var ArrayAccessor|null
      */
-    protected $argumentsAccessor;
+    protected ?ArrayAccessor $argumentsAccessor = null;
 
     /**
      * The sys_language_uid that was used in the context where the request was build.
-     * This could be different from the "L" parameter and and not relevant for urls,
+     * This could be different from the "L" parameter and not relevant for urls,
      * because typolink itself will handle it.
      *
      * @var int
      */
-    protected $contextSystemLanguageUid;
+    protected int $contextSystemLanguageUid = 0;
 
     /**
      * The page_uid that was used in the context where the request was build.
@@ -83,24 +89,24 @@ class SearchRequest
      *
      * @var int
      */
-    protected $contextPageUid;
+    protected int $contextPageUid;
 
     /**
-     * @var TypoScriptConfiguration
+     * @var TypoScriptConfiguration|null
      */
-    protected $contextTypoScriptConfiguration;
+    protected ?TypoScriptConfiguration $contextTypoScriptConfiguration;
 
     /**
-     * Container for all active facets inside of the URL(TYPO3/FE)
+     * Container for all active facets inside the URL(TYPO3/FE)
      *
-     * @var UrlFacetContainer
+     * @var UrlFacetContainer|null
      */
-    protected $activeFacetContainer;
+    protected ?UrlFacetContainer $activeFacetContainer;
 
     /**
      * @var array
      */
-    protected $persistedArguments = [];
+    protected array $persistedArguments = [];
 
     /**
      * @param array $argumentsArray
@@ -108,8 +114,12 @@ class SearchRequest
      * @param int $sysLanguageUid
      * @param TypoScriptConfiguration|null $typoScriptConfiguration
      */
-    public function __construct(array $argumentsArray = [], int $pageUid = 0, int $sysLanguageUid = 0, TypoScriptConfiguration $typoScriptConfiguration = null)
-    {
+    public function __construct(
+        array $argumentsArray = [],
+        int $pageUid = 0,
+        int $sysLanguageUid = 0,
+        TypoScriptConfiguration $typoScriptConfiguration = null
+    ) {
         $this->stateChanged = true;
         $this->persistedArguments = $argumentsArray;
         $this->contextPageUid = $pageUid;
@@ -138,7 +148,7 @@ class SearchRequest
     /**
      * @return string
      */
-    public function getId()
+    public function getId(): string
     {
         return $this->id;
     }
@@ -149,7 +159,7 @@ class SearchRequest
      * @param array $argumentsToMerge
      * @return SearchRequest
      */
-    public function mergeArguments(array $argumentsToMerge)
+    public function mergeArguments(array $argumentsToMerge): SearchRequest
     {
         ArrayUtility::mergeRecursiveWithOverrule(
             $this->persistedArguments,
@@ -175,7 +185,7 @@ class SearchRequest
     /**
      * @return array
      */
-    public function getActiveFacetNames()
+    public function getActiveFacetNames(): array
     {
         return $this->activeFacetContainer->getActiveFacetNames();
     }
@@ -185,7 +195,7 @@ class SearchRequest
      * @param string $facetName
      * @return array
      */
-    public function getActiveFacetValuesByName(string $facetName)
+    public function getActiveFacetValuesByName(string $facetName): array
     {
         return $this->activeFacetContainer->getActiveFacetValuesByName($facetName);
     }
@@ -193,13 +203,14 @@ class SearchRequest
     /**
      * @return array
      */
-    public function getActiveFacets()
+    public function getActiveFacets(): array
     {
         return $this->activeFacetContainer->getActiveFacets();
     }
 
     /**
      * Enable sorting of URL parameters
+     * @noinspection PhpUnused
      */
     public function sortActiveFacets(): void
     {
@@ -227,7 +238,7 @@ class SearchRequest
      *
      * @return int
      */
-    public function getActiveFacetCount()
+    public function getActiveFacetCount(): int
     {
         return $this->activeFacetContainer->count();
     }
@@ -236,8 +247,9 @@ class SearchRequest
      * @param array $activeFacets
      *
      * @return SearchRequest
+     * @noinspection PhpUnused
      */
-    protected function setActiveFacets($activeFacets = [])
+    protected function setActiveFacets(array $activeFacets = []): SearchRequest
     {
         $this->activeFacetContainer->setActiveFacets($activeFacets);
 
@@ -252,7 +264,7 @@ class SearchRequest
      *
      * @return SearchRequest
      */
-    public function addFacetValue(string $facetName, $facetValue)
+    public function addFacetValue(string $facetName, $facetValue): SearchRequest
     {
         $this->activeFacetContainer->addFacetValue($facetName, $facetValue);
 
@@ -272,7 +284,7 @@ class SearchRequest
      *
      * @return SearchRequest
      */
-    public function removeFacetValue(string $facetName, $facetValue)
+    public function removeFacetValue(string $facetName, $facetValue): SearchRequest
     {
         $this->activeFacetContainer->removeFacetValue($facetName, $facetValue);
         if ($this->activeFacetContainer->hasChanged()) {
@@ -290,7 +302,7 @@ class SearchRequest
      *
      * @return SearchRequest
      */
-    public function removeAllFacetValuesByName(string $facetName)
+    public function removeAllFacetValuesByName(string $facetName): SearchRequest
     {
         $this->activeFacetContainer->removeAllFacetValuesByName($facetName);
         if ($this->activeFacetContainer->hasChanged()) {
@@ -305,7 +317,7 @@ class SearchRequest
      *
      * @return SearchRequest
      */
-    public function removeAllFacets()
+    public function removeAllFacets(): SearchRequest
     {
         $this->activeFacetContainer->removeAllFacets();
         if ($this->activeFacetContainer->hasChanged()) {
@@ -330,7 +342,7 @@ class SearchRequest
     /**
      * @return bool
      */
-    public function getHasSorting()
+    public function getHasSorting(): bool
     {
         $path = $this->prefixWithNamespace('sort');
         return $this->argumentsAccessor->has($path);
@@ -353,7 +365,7 @@ class SearchRequest
      * @param int $index
      * @return string
      */
-    protected function getSortingPart($index)
+    protected function getSortingPart(int $index): ?string
     {
         $sorting = $this->getSorting();
         if ($sorting === '') {
@@ -369,7 +381,7 @@ class SearchRequest
      *
      * @return string
      */
-    public function getSortingName()
+    public function getSortingName(): ?string
     {
         return $this->getSortingPart(0);
     }
@@ -387,7 +399,7 @@ class SearchRequest
     /**
      * @return SearchRequest
      */
-    public function removeSorting()
+    public function removeSorting(): SearchRequest
     {
         $path = $this->prefixWithNamespace('sort');
         $this->argumentsAccessor->reset($path);
@@ -401,7 +413,7 @@ class SearchRequest
      *
      * @return SearchRequest
      */
-    public function setSorting($sortingName, $direction = 'asc')
+    public function setSorting(string $sortingName, string $direction = 'asc'): SearchRequest
     {
         $value = $sortingName . ' ' . $direction;
         $path = $this->prefixWithNamespace('sort');
@@ -416,7 +428,7 @@ class SearchRequest
      * @param int $page
      * @return SearchRequest
      */
-    public function setPage($page)
+    public function setPage(int $page): SearchRequest
     {
         $this->stateChanged = true;
         $path = $this->prefixWithNamespace('page');
@@ -433,7 +445,7 @@ class SearchRequest
      *
      * @return int|null
      */
-    public function getPage()
+    public function getPage(): ?int
     {
         $path = $this->prefixWithNamespace('page');
         return $this->argumentsAccessor->get($path);
@@ -484,14 +496,14 @@ class SearchRequest
     }
 
     /**
-     * Removes all non alphanumeric values from the groupItem value to have a valid array key.
+     * Removes all non-alphanumeric values from the groupItem value to have a valid array key.
      *
      * @param string $groupItemValue
      * @return string
      */
-    protected function getEscapedGroupItemValue(string $groupItemValue)
+    protected function getEscapedGroupItemValue(string $groupItemValue): string
     {
-        return preg_replace("/[^A-Za-z0-9]/", '', $groupItemValue);
+        return preg_replace('/[^A-Za-z0-9]/', '', $groupItemValue);
     }
 
     /**
@@ -499,13 +511,15 @@ class SearchRequest
      *
      * @return int
      */
-    public function getHighestGroupPage()
+    public function getHighestGroupPage(): int
     {
         $max = 1;
         $path = $this->prefixWithNamespace('groupPage');
         $groupPages = $this->argumentsAccessor->get($path, []);
         foreach ($groupPages as $groups) {
-            if (!is_array($groups)) continue;
+            if (!is_array($groups)) {
+                continue;
+            }
             foreach ($groups as $groupItemPage) {
                 if ($groupItemPage > $max) {
                     $max = $groupItemPage;
@@ -522,7 +536,7 @@ class SearchRequest
      * @param string $rawQueryString
      * @return SearchRequest
      */
-    public function setRawQueryString($rawQueryString)
+    public function setRawQueryString(string $rawQueryString = ''): SearchRequest
     {
         $this->stateChanged = true;
         $path = $this->prefixWithNamespace('q');
@@ -533,13 +547,13 @@ class SearchRequest
     /**
      * Returns the passed rawQueryString.
      *
-     * @return string|null
+     * @return string
      */
-    public function getRawUserQuery()
+    public function getRawUserQuery(): string
     {
         $path = $this->prefixWithNamespace('q');
-        $query = $this->argumentsAccessor->get($path, null);
-        return is_null($query) ? $query : (string)$query;
+        $query = $this->argumentsAccessor->get($path);
+        return (string)($query ?? '');
     }
 
     /**
@@ -549,10 +563,10 @@ class SearchRequest
      * When no query string is set (null) the method returns false.
      * @return bool
      */
-    public function getRawUserQueryIsEmptyString()
+    public function getRawUserQueryIsEmptyString(): bool
     {
         $path = $this->prefixWithNamespace('q');
-        $query = $this->argumentsAccessor->get($path, null);
+        $query = $this->argumentsAccessor->get($path);
 
         if ($query === null) {
             return false;
@@ -571,10 +585,10 @@ class SearchRequest
      *
      * @return bool
      */
-    public function getRawUserQueryIsNull()
+    public function getRawUserQueryIsNull(): bool
     {
         $path = $this->prefixWithNamespace('q');
-        $query = $this->argumentsAccessor->get($path, null);
+        $query = $this->argumentsAccessor->get($path);
         return $query === null;
     }
 
@@ -584,7 +598,7 @@ class SearchRequest
      * @param int $resultsPerPage
      * @return SearchRequest
      */
-    public function setResultsPerPage($resultsPerPage)
+    public function setResultsPerPage(int $resultsPerPage): SearchRequest
     {
         $path = $this->prefixWithNamespace('resultsPerPage');
         $this->argumentsAccessor->set($path, $resultsPerPage);
@@ -596,28 +610,28 @@ class SearchRequest
     /**
      * @return bool
      */
-    public function getStateChanged()
+    public function getStateChanged(): bool
     {
         return $this->stateChanged;
     }
 
     /**
      * Returns the passed resultsPerPage value
-     * @return int|null
+     * @return int
      */
-    public function getResultsPerPage()
+    public function getResultsPerPage(): int
     {
         $path = $this->prefixWithNamespace('resultsPerPage');
-        return $this->argumentsAccessor->get($path);
+        return (int)$this->argumentsAccessor->get($path);
     }
 
     /**
-     * Allows to set additional filters that are used on time and not transported during the request.
+     * Allows setting additional filters that are used on time and not transported during the request.
      *
      * @param array $additionalFilters
      * @return SearchRequest
      */
-    public function setAdditionalFilters($additionalFilters)
+    public function setAdditionalFilters(array $additionalFilters): SearchRequest
     {
         $path = $this->prefixWithNamespace('additionalFilters');
         $this->argumentsAccessor->set($path, $additionalFilters);
@@ -627,11 +641,11 @@ class SearchRequest
     }
 
     /**
-     * Retrieves the addtional filters that have been set
+     * Retrieves the additional filters that have been set
      *
      * @return array
      */
-    public function getAdditionalFilters()
+    public function getAdditionalFilters(): array
     {
         $path = $this->prefixWithNamespace('additionalFilters');
         return $this->argumentsAccessor->get($path, []);
@@ -640,7 +654,7 @@ class SearchRequest
     /**
      * @return int
      */
-    public function getContextSystemLanguageUid()
+    public function getContextSystemLanguageUid(): int
     {
         return $this->contextSystemLanguageUid;
     }
@@ -648,7 +662,7 @@ class SearchRequest
     /**
      * @return int
      */
-    public function getContextPageUid()
+    public function getContextPageUid(): int
     {
         return $this->contextPageUid;
     }
@@ -726,6 +740,7 @@ class SearchRequest
 
     /**
      * @return string
+     * @noinspection PhpUnused
      */
     public function getArgumentNamespace(): string
     {

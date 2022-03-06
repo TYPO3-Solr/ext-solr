@@ -31,12 +31,10 @@ class ConfigurationManager implements SingletonInterface
      *
      * @var array
      */
-    protected $typoScriptConfigurations = [];
+    protected array $typoScriptConfigurations = [];
 
     /**
      * Resets the state of the configuration manager.
-     *
-     * @return void
      */
     public function reset()
     {
@@ -98,8 +96,10 @@ class ConfigurationManager implements SingletonInterface
     {
         return GeneralUtility::makeInstance(
             TypoScriptConfiguration::class,
-            /** @scrutinizer ignore-type */ $configurationArray,
-            /** @scrutinizer ignore-type */ $contextPageId
+            /** @scrutinizer ignore-type */
+            $configurationArray,
+            /** @scrutinizer ignore-type */
+            $contextPageId
         );
     }
 }

@@ -15,7 +15,7 @@ class TestParser extends AbstractFacetParser
      * @param array $facetConfiguration
      * @return AbstractFacet|null
      */
-    public function parse(SearchResultSet $resultSet, $facetName, array $facetConfiguration)
+    public function parse(SearchResultSet $resultSet, string $facetName, array $facetConfiguration)
     {
         return new TestFacet($resultSet, $facetName, 'testField');
     }

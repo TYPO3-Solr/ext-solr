@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -33,7 +35,7 @@ class SearchResult extends Document
      *
      * @var string
      */
-    protected $variantFieldValue = '';
+    protected string $variantFieldValue = '';
 
     /**
      * Number of variants found
@@ -43,32 +45,31 @@ class SearchResult extends Document
      *
      * @var int
      */
-    protected $variantsNumFound = 0;
+    protected int $variantsNumFound = 0;
 
     /**
      * @var SearchResult[]
      */
-    protected $variants = [];
+    protected array $variants = [];
 
     /**
      * Indicates if an instance of this document is a variant (a sub document of another).
      *
      * @var bool
      */
-    protected $isVariant = false;
+    protected bool $isVariant = false;
 
     /**
      * References the parent document of the document is a variant.
      *
      * @var SearchResult|null
      */
-    protected $variantParent = null;
+    protected ?SearchResult $variantParent = null;
 
     /**
-     * @var GroupItem
+     * @var GroupItem|null
      */
-    protected $groupItem = null;
-
+    protected ?GroupItem $groupItem = null;
 
     /**
      * @return GroupItem
@@ -81,7 +82,7 @@ class SearchResult extends Document
     /**
      * @return bool
      */
-    public function getHasGroupItem()
+    public function getHasGroupItem(): bool
     {
         return $this->groupItem !== null;
     }
@@ -129,7 +130,7 @@ class SearchResult extends Document
     /**
      * @return SearchResult[]
      */
-    public function getVariants()
+    public function getVariants(): array
     {
         return $this->variants;
     }
@@ -145,7 +146,7 @@ class SearchResult extends Document
     /**
      * @return bool
      */
-    public function getIsVariant()
+    public function getIsVariant(): bool
     {
         return $this->isVariant;
     }
@@ -153,15 +154,15 @@ class SearchResult extends Document
     /**
      * @param bool $isVariant
      */
-    public function setIsVariant($isVariant)
+    public function setIsVariant(bool $isVariant)
     {
         $this->isVariant = $isVariant;
     }
 
     /**
-     * @return SearchResult
+     * @return SearchResult|null
      */
-    public function getVariantParent()
+    public function getVariantParent(): ?SearchResult
     {
         return $this->variantParent;
     }
@@ -177,15 +178,15 @@ class SearchResult extends Document
     /**
      * @return string
      */
-    public function getContent()
+    public function getContent(): string
     {
         return $this->fields['content'] ?? '';
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
-    public function getIsElevated()
+    public function getIsElevated(): bool
     {
         return $this->fields['isElevated'] ?? false;
     }
@@ -193,31 +194,32 @@ class SearchResult extends Document
     /**
      * @return string
      */
-    public function getType()
+    public function getType(): string
     {
         return $this->fields['type'] ?? '';
     }
 
     /**
-     * @return integer
+     * @return string
+     * Note: The id field on Apache Solr document is a string.
      */
-    public function getId()
+    public function getId(): string
     {
-        return $this->fields['id'] ?? 0;
+        return $this->fields['id'] ?? '';
     }
 
     /**
      * @return float
      */
-    public function getScore()
+    public function getScore(): float
     {
-        return $this->fields['score'] ?? 0;
+        return $this->fields['score'] ?? 0.0;
     }
 
     /**
      * @return string
      */
-    public function getUrl()
+    public function getUrl(): string
     {
         return $this->fields['url'] ?? '';
     }
@@ -225,7 +227,7 @@ class SearchResult extends Document
     /**
      * @return string
      */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->fields['title'] ?? '';
     }

@@ -17,13 +17,13 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue;
 
-use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
+use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Records\AbstractRepository;
 use Doctrine\DBAL\ConnectionException;
-use Doctrine\DBAL\Exception as DBALException;
 use Doctrine\DBAL\Driver\Exception as DBALDriverException;
+use Doctrine\DBAL\Exception as DBALException;
 use PDO;
 use Throwable;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -34,19 +34,18 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Class QueueItemRepository
  * Handles all CRUD operations to tx_solr_indexqueue_item table
- *
  */
 class QueueItemRepository extends AbstractRepository
 {
     /**
      * @var string
      */
-    protected $table = 'tx_solr_indexqueue_item';
+    protected string $table = 'tx_solr_indexqueue_item';
 
     /**
      * @var SolrLogManager
      */
-    protected $logger;
+    protected SolrLogManager $logger;
 
     /**
      * QueueItemRepository constructor.
@@ -69,8 +68,7 @@ class QueueItemRepository extends AbstractRepository
      * @return array
      *
      * @throws DBALDriverException
-     *
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws DBALException|\Doctrine\DBAL\DBALException
      */
     public function findLastIndexedRow(int $rootPageId): array
     {
@@ -99,7 +97,7 @@ class QueueItemRepository extends AbstractRepository
      * @return array Error items for the current site's Index Queue
      *
      * @throws DBALDriverException
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws DBALException|\Doctrine\DBAL\DBALException
      */
     public function findErrorsBySite(Site $site): array
     {
@@ -121,7 +119,7 @@ class QueueItemRepository extends AbstractRepository
      *
      * @return int affected rows
      *
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws DBALException|\Doctrine\DBAL\DBALException
      */
     public function flushAllErrors(): int
     {
@@ -136,7 +134,7 @@ class QueueItemRepository extends AbstractRepository
      * @param Site $site
      * @return int
      *
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws DBALException|\Doctrine\DBAL\DBALException
      */
     public function flushErrorsBySite(Site $site): int
     {
@@ -155,7 +153,7 @@ class QueueItemRepository extends AbstractRepository
      * @param Item $item
      * @return int affected rows
      *
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws DBALException|\Doctrine\DBAL\DBALException
      */
     public function flushErrorByItem(Item $item): int
     {
@@ -196,7 +194,7 @@ class QueueItemRepository extends AbstractRepository
      * @param string $indexingConfiguration The name of the related indexConfiguration
      * @return int affected rows
      *
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws DBALException|\Doctrine\DBAL\DBALException
      */
     public function updateExistingItemByItemTypeAndItemUidAndRootPageId(
         string $itemType,
@@ -237,7 +235,7 @@ class QueueItemRepository extends AbstractRepository
      * @param string $indexingConfiguration The item's indexing configuration to use. Optional, overwrites existing / determined configuration.
      * @return int the number of inserted rows, which is typically 1
      *
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws DBALException|\Doctrine\DBAL\DBALException
      */
     public function add(
         string $itemType,
@@ -255,7 +253,7 @@ class QueueItemRepository extends AbstractRepository
                 'item_uid' => $itemUid,
                 'changed' => $changedTime,
                 'errors' => '',
-                'indexing_configuration' => $indexingConfiguration
+                'indexing_configuration' => $indexingConfiguration,
             ])
             ->execute();
     }
@@ -271,7 +269,7 @@ class QueueItemRepository extends AbstractRepository
      * @return int
      *
      * @throws DBALDriverException
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws DBALException|\Doctrine\DBAL\DBALException
      */
     public function countItems(
         array $sites = [],
@@ -309,7 +307,7 @@ class QueueItemRepository extends AbstractRepository
      * @return int|null Timestamp of the most recent content element change or null if nothing is found.
      *
      * @throws DBALDriverException
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws DBALException|\Doctrine\DBAL\DBALException
      */
     public function getPageItemChangedTimeByPageUid(int $pageUid): ?int
     {
@@ -338,7 +336,7 @@ class QueueItemRepository extends AbstractRepository
      * @return int Timestamp of the most recent content element change
      *
      * @throws DBALDriverException
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws DBALException|\Doctrine\DBAL\DBALException
      */
     public function getLocalizableItemChangedTime(string $itemType, int $itemUid): int
     {
@@ -391,8 +389,8 @@ class QueueItemRepository extends AbstractRepository
      * @param int $itemUid The item's uid
      * @return bool TRUE if the item is found in the queue, FALSE otherwise
      *
-     * @throws \Doctrine\DBAL\DBALException
      * @throws DBALDriverException
+     * @throws DBALException|\Doctrine\DBAL\DBALException
      */
     public function containsItem(string $itemType, int $itemUid): bool
     {
@@ -406,11 +404,11 @@ class QueueItemRepository extends AbstractRepository
      *
      * @param string $itemType The item's type, usually a table name.
      * @param int $itemUid The item's uid
-     * @param integer $rootPageId
+     * @param int $rootPageId
      * @return bool TRUE if the item is found in the queue, FALSE otherwise
      *
-     * @throws \Doctrine\DBAL\DBALException
      * @throws DBALDriverException
+     * @throws DBALException|\Doctrine\DBAL\DBALException
      */
     public function containsItemWithRootPageId(string $itemType, int $itemUid, int $rootPageId): bool
     {
@@ -429,8 +427,8 @@ class QueueItemRepository extends AbstractRepository
      * @param int $itemUid The item's uid
      * @return bool TRUE if the item is found in the queue and marked as indexed, FALSE otherwise
      *
-     * @throws \Doctrine\DBAL\DBALException
      * @throws DBALDriverException
+     * @throws DBALException|\Doctrine\DBAL\DBALException
      */
     public function containsIndexedItem(string $itemType, int $itemUid): bool
     {
@@ -449,7 +447,7 @@ class QueueItemRepository extends AbstractRepository
      *
      * @throws ConnectionException
      * @throws Throwable
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws DBALException
      */
     public function deleteItem(string $itemType, int $itemUid = null)
     {
@@ -464,7 +462,7 @@ class QueueItemRepository extends AbstractRepository
      *
      * @throws ConnectionException
      * @throws Throwable
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws DBALException
      */
     public function deleteItemsByType(string $itemType)
     {
@@ -480,7 +478,7 @@ class QueueItemRepository extends AbstractRepository
      *
      * @throws ConnectionException
      * @throws Throwable
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws DBALException
      */
     public function deleteItemsBySite(Site $site, string $indexingConfigurationName = '')
     {
@@ -498,7 +496,7 @@ class QueueItemRepository extends AbstractRepository
      * @param array $uids
      *
      * @throws ConnectionException
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws DBALException
      * @throws Throwable
      */
     public function deleteItems(
@@ -509,10 +507,10 @@ class QueueItemRepository extends AbstractRepository
         array $uids = []
     ): void {
         $rootPageIds = Site::getRootPageIdsFromSites($sites);
-        $indexQueueConfigurationList = implode(",", $indexQueueConfigurationNames);
-        $itemTypeList = implode(",", $itemTypes);
-        $itemUids = array_map("intval", $itemUids);
-        $uids = array_map("intval", $uids);
+        $indexQueueConfigurationList = implode(',', $indexQueueConfigurationNames);
+        $itemTypeList = implode(',', $itemTypes);
+        $itemUids = array_map('intval', $itemUids);
+        $uids = array_map('intval', $uids);
 
         $queryBuilderForDeletingItems = $this->getQueryBuilder();
         $queryBuilderForDeletingItems->delete($this->table);
@@ -607,7 +605,7 @@ class QueueItemRepository extends AbstractRepository
      * @return QueryBuilder
      *
      * @throws DBALDriverException
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws DBALException|\Doctrine\DBAL\DBALException
      */
     private function buildQueryForPropertyDeletion(
         QueryBuilder $queryBuilderForDeletingItems,
@@ -675,7 +673,7 @@ class QueueItemRepository extends AbstractRepository
      * @return Item|null The request Index Queue item or NULL if no item with $itemId was found
      *
      * @throws DBALDriverException
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws DBALException|\Doctrine\DBAL\DBALException
      */
     public function findItemByUid(int $uid): ?Item
     {
@@ -704,7 +702,7 @@ class QueueItemRepository extends AbstractRepository
      * @throws ConnectionException
      * @throws DBALDriverException
      * @throws Throwable
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws DBALException
      */
     public function findItemsByItemTypeAndItemUid(string $itemType, int $itemUid): array
     {
@@ -727,7 +725,7 @@ class QueueItemRepository extends AbstractRepository
      * @throws ConnectionException
      * @throws DBALDriverException
      * @throws Throwable
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws DBALException
      */
     protected function getItemsByCompositeExpression(
         CompositeExpression $expression = null,
@@ -756,7 +754,7 @@ class QueueItemRepository extends AbstractRepository
      * @throws ConnectionException
      * @throws DBALDriverException
      * @throws Throwable
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws DBALException
      */
     public function findAll(): array
     {
@@ -779,7 +777,7 @@ class QueueItemRepository extends AbstractRepository
      * @throws ConnectionException
      * @throws DBALDriverException
      * @throws Throwable
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws DBALException
      */
     public function findItemsToIndex(Site $site, int $limit = 50): array
     {
@@ -823,7 +821,7 @@ class QueueItemRepository extends AbstractRepository
      * @throws ConnectionException
      * @throws DBALDriverException
      * @throws Throwable
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws DBALException
      */
     public function findItems(
         array $sites = [],
@@ -831,14 +829,14 @@ class QueueItemRepository extends AbstractRepository
         array $itemTypes = [],
         array $itemUids = [],
         array $uids = [],
-        int   $start = 0,
-        int   $limit = 50
+        int $start = 0,
+        int $limit = 50
     ): array {
         $rootPageIds = Site::getRootPageIdsFromSites($sites);
-        $indexQueueConfigurationList = implode(",", $indexQueueConfigurationNames);
-        $itemTypeList = implode(",", $itemTypes);
-        $itemUids = array_map("intval", $itemUids);
-        $uids = array_map("intval", $uids);
+        $indexQueueConfigurationList = implode(',', $indexQueueConfigurationNames);
+        $itemTypeList = implode(',', $itemTypes);
+        $itemUids = array_map('intval', $itemUids);
+        $uids = array_map('intval', $uids);
         $itemQueryBuilder = $this->getQueryBuilder()->select('*')->from($this->table);
         $itemQueryBuilder = $this->addItemWhereClauses($itemQueryBuilder, $rootPageIds, $indexQueueConfigurationList, $itemTypeList, $itemUids, $uids);
         $itemRecords = $itemQueryBuilder->setFirstResult($start)
@@ -858,7 +856,7 @@ class QueueItemRepository extends AbstractRepository
      * @throws ConnectionException
      * @throws DBALDriverException
      * @throws Throwable
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws DBALException
      */
     protected function getIndexQueueItemObjectsFromRecords(array $indexQueueItemRecords): array
     {
@@ -873,7 +871,7 @@ class QueueItemRepository extends AbstractRepository
      * @return array
      *
      * @throws DBALDriverException
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws DBALException|\Doctrine\DBAL\DBALException
      */
     protected function getAllQueueItemRecordsByUidsGroupedByTable(array $indexQueueItemRecords): array
     {
@@ -913,8 +911,6 @@ class QueueItemRepository extends AbstractRepository
      * @param string $table
      * @param array $uids
      * @param array $tableRecords
-     *
-     * @return void
      */
     protected function hookPostProcessFetchRecordsForIndexQueueItem(string $table, array $uids, array &$tableRecords)
     {
@@ -936,7 +932,7 @@ class QueueItemRepository extends AbstractRepository
      *
      * @throws ConnectionException
      * @throws Throwable
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws DBALException
      */
     protected function getQueueItemObjectsByRecords(array $indexQueueItemRecords, array $tableRecords): array
     {
@@ -955,7 +951,7 @@ class QueueItemRepository extends AbstractRepository
                     SolrLogManager::ERROR,
                     'Record missing for Index Queue item. Item removed.',
                     [
-                        $indexQueueItemRecord
+                        $indexQueueItemRecord,
                     ]
                 );
                 $this->deleteItem(
@@ -976,7 +972,7 @@ class QueueItemRepository extends AbstractRepository
      * @param string $errorMessage Error message
      * @return int affected rows
      *
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws DBALException|\Doctrine\DBAL\DBALException
      */
     public function markItemAsFailed($item, string $errorMessage = ''): int
     {
@@ -997,7 +993,7 @@ class QueueItemRepository extends AbstractRepository
      * @param Item $item
      * @return int affected rows
      *
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws DBALException|\Doctrine\DBAL\DBALException
      */
     public function updateIndexTimeByItem(Item $item): int
     {
@@ -1016,9 +1012,9 @@ class QueueItemRepository extends AbstractRepository
      * @param int $changedTime
      * @return int affected rows
      *
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws DBALException|\Doctrine\DBAL\DBALException
      */
-    public function updateChangedTimeByItem(Item $item, int $changedTime): int
+    public function updateChangedTimeByItem(Item $item, int $changedTime = 0): int
     {
         $queryBuilder = $this->getQueryBuilder();
         return (int)$queryBuilder
@@ -1053,7 +1049,7 @@ class QueueItemRepository extends AbstractRepository
      * @return array pageIds from mountPoints that already have a queue entry
      *
      * @throws DBALDriverException
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws DBALException|\Doctrine\DBAL\DBALException
      */
     public function findPageIdsOfExistingMountPagesByMountIdentifier(string $identifier): array
     {
@@ -1088,7 +1084,7 @@ class QueueItemRepository extends AbstractRepository
      * @return array
      *
      * @throws DBALDriverException
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws DBALException|\Doctrine\DBAL\DBALException
      */
     public function findAllIndexQueueItemsByRootPidAndMountIdentifierAndMountedPids(
         int $rootPid,
@@ -1117,7 +1113,7 @@ class QueueItemRepository extends AbstractRepository
      * @param bool $hasIndexingPropertiesFlag
      * @return int number of affected rows, 1 on success
      *
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws DBALException|\Doctrine\DBAL\DBALException
      */
     public function updateHasIndexingPropertiesFlagByItemUid(int $itemUid, bool $hasIndexingPropertiesFlag): int
     {

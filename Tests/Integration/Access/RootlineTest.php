@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\Access;
 
 use ApacheSolrForTypo3\Solr\Access\Rootline;
@@ -10,7 +12,6 @@ use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
  */
 class RootlineTest extends IntegrationTest
 {
-
     /**
      * @test
      */

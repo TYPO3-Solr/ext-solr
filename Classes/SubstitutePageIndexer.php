@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -25,12 +27,11 @@ use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
  */
 interface SubstitutePageIndexer
 {
-
     /**
      * returns a substitute document for the currently being indexed page
      *
      * @param Document $originalPageDocument The original page document.
      * @return Document returns an \ApacheSolrForTypo3\Solr\System\Solr\Document\Document object that replace the default page document
      */
-    public function getPageDocument(Document $originalPageDocument);
+    public function getPageDocument(Document $originalPageDocument): Document;
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -40,26 +42,21 @@ class UserGroupDetector extends AbstractFrontendHelper implements
     /**
      * This frontend helper's executed action.
      */
-    protected $action = 'findUserGroups';
+    protected string $action = 'findUserGroups';
 
     /**
      * Holds the original, unmodified TCA during user group detection
      *
      * @var array
      */
-    protected $originalTca = null;
+    protected array $originalTca;
 
     /**
      * Collects the usergroups used on a page.
      *
      * @var array
      */
-    protected $frontendGroups = [];
-
-    /**
-     * @var \ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager
-     */
-    protected $logger = null;
+    protected array $frontendGroups = [];
 
     // activation
 
@@ -89,11 +86,11 @@ class UserGroupDetector extends AbstractFrontendHelper implements
      * @param array $parameters
      * @param TypoScriptFrontendController $tsfe
      * @see \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController::checkEnableFields()
+     * @noinspection PhpUnusedParameterInspection
      */
     public function checkEnableFields(
-        $parameters,
-        /** @noinspection PhpUnusedParameterInspection */
-        $tsfe
+        array &$parameters,
+        TypoScriptFrontendController $tsfe
     ) {
         $parameters['row']['fe_group'] = '';
     }
@@ -104,12 +101,11 @@ class UserGroupDetector extends AbstractFrontendHelper implements
      *
      * @param array $parameters Parameters from frontend
      * @param TypoScriptFrontendController $parentObject TSFE object
+     * @noinspection PhpUnusedParameterInspection
      */
     public function deactivateTcaFrontendGroupEnableFields(
-        /** @noinspection PhpUnusedParameterInspection */
-        &$parameters,
-        /** @noinspection PhpUnusedParameterInspection */
-        $parentObject
+        array &$parameters,
+        TypoScriptFrontendController $parentObject
     ) {
         $this->originalTca = $GLOBALS['TCA'];
 
@@ -143,27 +139,29 @@ class UserGroupDetector extends AbstractFrontendHelper implements
      * Modifies page records so that when checking for access through fe groups
      * no groups or extendToSubpages flag is found and thus access is granted.
      *
-     * @param array $pageRecord Page record
-     * @param int $languageUid Overlay language ID
-     * @param PageRepository $parentObject Parent \TYPO3\CMS\Core\Domain\Repository\PageRepository object
+     * @param array $pageInput Page record
+     * @param int $lUid Overlay language ID
+     * @param PageRepository $parent Parent \TYPO3\CMS\Core\Domain\Repository\PageRepository object
      */
     public function getPageOverlay_preProcess(
-        &$pageRecord,
-        &$languageUid,
-        PageRepository $parentObject
+        &$pageInput,
+        &$lUid,
+        PageRepository $parent
     ) {
-        if (is_array($pageRecord)) {
-            $pageRecord['fe_group'] = '';
-            $pageRecord['extendToSubpages'] = '0';
+        if (!is_array($pageInput)) {
+            return;
         }
+        $pageInput['fe_group'] = '';
+        $pageInput['extendToSubpages'] = '0';
     }
 
     // execution
 
     /**
-     * Hook for post processing the initialization of ContentObjectRenderer
+     * Hook for post-processing the initialization of ContentObjectRenderer
      *
      * @param ContentObjectRenderer $parentObject parent content object
+     * @noinspection PhpParameterByRefIsNotUsedAsReferenceInspection
      */
     public function postProcessContentObjectInitialization(ContentObjectRenderer &$parentObject)
     {
@@ -177,12 +175,12 @@ class UserGroupDetector extends AbstractFrontendHelper implements
     }
 
     /**
-     * Tracks user groups access restriction applied to records.
+     * Tracks user groups access restriction applied to the records.
      *
      * @param array $record A record as an array of fieldname => fieldvalue mappings
      * @param string $table Table name the record belongs to
      */
-    protected function findFrontendGroups($record, $table)
+    protected function findFrontendGroups(array $record, string $table)
     {
         if ($this->originalTca[$table]['ctrl']['enablecolumns']['fe_group']) {
             $frontendGroups = $record[$this->originalTca[$table]['ctrl']['enablecolumns']['fe_group']];
@@ -214,11 +212,14 @@ class UserGroupDetector extends AbstractFrontendHelper implements
      *
      * @return array Array of user group IDs
      */
-    protected function getFrontendGroups()
+    protected function getFrontendGroups(): array
     {
         $frontendGroupsList = implode(',', $this->frontendGroups);
-        $frontendGroups = GeneralUtility::trimExplode(',', $frontendGroupsList,
-            true);
+        $frontendGroups = GeneralUtility::trimExplode(
+            ',',
+            $frontendGroupsList,
+            true
+        );
 
         // clean up: filter double groups
         $frontendGroups = array_unique($frontendGroups);
@@ -231,9 +232,7 @@ class UserGroupDetector extends AbstractFrontendHelper implements
 
         // Index user groups first
         sort($frontendGroups, SORT_NUMERIC);
-        $frontendGroups = array_reverse($frontendGroups);
-
-        return $frontendGroups;
+        return array_reverse($frontendGroups);
     }
 
     /**
@@ -241,7 +240,7 @@ class UserGroupDetector extends AbstractFrontendHelper implements
      *
      * @return array Array of user groups.
      */
-    public function getData()
+    public function getData(): array
     {
         return $this->getFrontendGroups();
     }

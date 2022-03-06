@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -15,8 +17,8 @@
 
 namespace ApacheSolrForTypo3\Solr\System\Solr;
 
-use UnexpectedValueException;
 use Solarium\Core\Client\Endpoint;
+use UnexpectedValueException;
 
 /**
  * Represent a server node of solr, in the most setups you would only have one, but sometimes
@@ -25,7 +27,7 @@ use Solarium\Core\Client\Endpoint;
  * @author Timo Hund <timo.hund@dkd.de>
  * @copyright Copyright (c) 2009-2020 Timo Hund <timo.hund@dkd.de>
  *
- * @deprecated Class will removed with Ext:solr 12.x. Use class \Solarium\Core\Client\Endpoint instead.
+ * @deprecated Class will be removed with Ext:solr 12.x. Use class \Solarium\Core\Client\Endpoint instead.
  */
 class Node extends Endpoint
 {
@@ -100,7 +102,7 @@ class Node extends Endpoint
     protected static function checkIfRequiredKeyIsSet(array $configuration, string $name)
     {
         if (empty($configuration[$name])) {
-            throw new UnexpectedValueException('Required solr connection property ' . $name. ' is missing.');
+            throw new UnexpectedValueException('Required solr connection property ' . $name . ' is missing.');
         }
     }
 
@@ -127,8 +129,8 @@ class Node extends Endpoint
      */
     public function getCoreBasePath(): string
     {
-        $pathWithoutLeadingAndTrailingSlashes = trim(trim($this->getPath()), "/");
-        $pathWithoutLastSegment = substr($pathWithoutLeadingAndTrailingSlashes, 0, strrpos($pathWithoutLeadingAndTrailingSlashes, "/"));
+        $pathWithoutLeadingAndTrailingSlashes = trim(trim($this->getPath()), '/');
+        $pathWithoutLastSegment = substr($pathWithoutLeadingAndTrailingSlashes, 0, strrpos($pathWithoutLeadingAndTrailingSlashes, '/'));
         return ($pathWithoutLastSegment === '') ? '/' : '/' . $pathWithoutLastSegment . '/';
     }
 
@@ -136,7 +138,7 @@ class Node extends Endpoint
      * Returns the core name from the configured path.
      *
      * @return string
-     * @deprecated Will be remove with Ext:solr 12.x. Use method getCore() instead.
+     * @deprecated Will be removed with Ext:solr 12.x. Use method getCore() instead.
      */
     public function getCoreName(): string
     {
@@ -153,7 +155,7 @@ class Node extends Endpoint
             'port' => $this->getPort(),
             'scheme' => $this->getScheme(),
             'path' => $this->getPath(),
-            'core' => $this->getCore()
+            'core' => $this->getCore(),
         ];
     }
 

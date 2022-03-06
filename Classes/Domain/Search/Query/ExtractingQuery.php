@@ -19,7 +19,6 @@ use Solarium\QueryType\Extract\Query as SolariumExtractQuery;
 
 /**
  * Specialized query for content extraction using Solr Cell
- *
  */
 class ExtractingQuery extends SolariumExtractQuery
 {
@@ -34,5 +33,4 @@ class ExtractingQuery extends SolariumExtractQuery
         $this->setFile($file);
         $this->addParam('extractFormat', 'text');
     }
-
 }

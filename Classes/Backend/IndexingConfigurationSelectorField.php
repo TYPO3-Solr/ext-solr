@@ -184,7 +184,7 @@ class IndexingConfigurationSelectorField
             'itemFormElName' => $this->formElementName,
             'itemFormElValue' => $selectedValues,
             'fieldConf' => ['config' => ['items' => $items]],
-            'fieldTSConfig' => ['noMatchingValue_label' => '']
+            'fieldTSConfig' => ['noMatchingValue_label' => ''],
         ];
 
         $nodeFactory = GeneralUtility::makeInstance(NodeFactory::class);
@@ -192,8 +192,10 @@ class IndexingConfigurationSelectorField
             'type' => 'select', 'renderType' => 'selectCheckBox',
             'table' => 'tx_solr_classes_backend_indexingconfigurationselector',
             'tableName' => 'tx_solr_classes_backend_indexingconfigurationselector',
-            'fieldName' => 'additionalFields', 'databaseRow' => ['uid' => 0], 'parameterArray' => $parameterArray,
-            'processedTca' => ['columns' => ['additionalFields' => ['config' => ['type' => 'select']]]]
+            'fieldName' => 'additionalFields',
+            'databaseRow' => ['uid' => 0],
+            'parameterArray' => $parameterArray,
+            'processedTca' => ['columns' => ['additionalFields' => ['config' => ['type' => 'select']]]],
         ];
         $options['parameterArray']['fieldConf']['config']['items'] = $items;
         $options['parameterArray']['fieldTSConfig']['noMatchingValue_label'] = '';

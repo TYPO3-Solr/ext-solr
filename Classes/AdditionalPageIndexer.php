@@ -25,7 +25,6 @@ use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
  */
 interface AdditionalPageIndexer
 {
-
     /**
      * Provides additional documents that should be indexed together with a page.
      *
@@ -33,5 +32,5 @@ interface AdditionalPageIndexer
      * @param array $allDocuments An array containing all the documents collected until here, including the page document
      * @return array An array of additional \ApacheSolrForTypo3\Solr\System\Solr\Document\Document objects
      */
-    public function getAdditionalPageDocuments(Document $pageDocument, array $allDocuments);
+    public function getAdditionalPageDocuments(Document $pageDocument, array $allDocuments): array;
 }

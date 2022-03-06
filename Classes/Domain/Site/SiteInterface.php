@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -20,7 +22,6 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 
 interface SiteInterface
 {
-
     /**
      * Gets the site's root page ID (uid).
      *
@@ -36,7 +37,7 @@ interface SiteInterface
     public function getAvailableLanguageIds(): array;
 
     /**
-     * Gets the site's label. The label is build from the the site title and root
+     * Gets the site's label. The label is build from the site title and root
      * page ID (uid).
      *
      * @return string The site's label.
@@ -96,19 +97,18 @@ interface SiteInterface
     public function getDomain(): string;
 
     /**
-     * Gets the site's root page.
+     * Gets the site's root page record.
      *
      * @return array The site's root page.
      */
-    public function getRootPage();
+    public function getRootPage(): array;
 
     /**
      * Gets the site's root page's title.
      *
      * @return string The site's root page's title
      */
-    public function getTitle();
-
+    public function getTitle(): string;
 
     /**
      * @param int $language

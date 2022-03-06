@@ -55,7 +55,7 @@ class SolrAdminServiceTest extends UnitTest
         $this->endpointMock->expects(self::any())->method('getCoreBaseUri')->willReturn('http://localhost:8983/solr/core_en/');
 
         $this->clientMock = $this->getDumbMock(Client::class);
-        $this->clientMock->expects(self::any())->method('getEndpoints')->willReturn([$this->endpointMock]);
+        $this->clientMock->expects(self::any())->method('getEndpoint')->willReturn($this->endpointMock);
         $this->adminService = $this->getMockBuilder(SolrAdminService::class)->setConstructorArgs([$this->clientMock])->onlyMethods(['_sendRawGet'])->getMock();
         parent::setUp();
     }
@@ -64,7 +64,7 @@ class SolrAdminServiceTest extends UnitTest
      */
     public function getLukeMetaDataIsSendingRequestToExpectedUrl()
     {
-        $fakedLukeResponse = [];
+        $fakedLukeResponse = $this->getDumbMock(ResponseAdapter::class);
         $this->assertGetRequestIsTriggered('http://localhost:8983/solr/core_en/admin/luke?numTerms=50&wt=json&fl=%2A', $fakedLukeResponse);
         $result = $this->adminService->getLukeMetaData(50);
 
@@ -125,7 +125,7 @@ class SolrAdminServiceTest extends UnitTest
      * @param string $url
      * @param mixed $fakeResponse
      */
-    protected function assertGetRequestIsTriggered($url, $fakeResponse)
+    protected function assertGetRequestIsTriggered(string $url, $fakeResponse)
     {
         $this->adminService->expects(self::once())->method('_sendRawGet')->with($url)->willReturn($fakeResponse);
     }

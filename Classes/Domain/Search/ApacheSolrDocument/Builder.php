@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -16,12 +18,14 @@
 namespace ApacheSolrForTypo3\Solr\Domain\Search\ApacheSolrDocument;
 
 use ApacheSolrForTypo3\Solr\Access\Rootline;
+use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\Domain\Variants\IdBuilder;
-use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use ApacheSolrForTypo3\Solr\Typo3PageContentExtractor;
 use ApacheSolrForTypo3\Solr\Util;
+use Doctrine\DBAL\Driver\Exception as DBALDriverException;
+use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
@@ -49,19 +53,25 @@ class Builder
     }
 
     /**
-     * This method can be used to build an Document from a TYPO3 page.
+     * This method can be used to build a Document from a TYPO3 page.
      *
      * @param TypoScriptFrontendController $page
      * @param string $url
      * @param Rootline $pageAccessRootline
      * @param string $mountPointParameter
      * @return Document|object
+     * @throws AspectNotFoundException
+     * @throws DBALDriverException
      */
-    public function fromPage(TypoScriptFrontendController $page, $url, Rootline $pageAccessRootline, $mountPointParameter): Document
-    {
-        /* @var $document Document */
+    public function fromPage(
+        TypoScriptFrontendController $page,
+        string $url,
+        Rootline $pageAccessRootline,
+        string $mountPointParameter = ''
+    ): Document {
+        /* @var Document $document */
         $document = GeneralUtility::makeInstance(Document::class);
-        $site = $this->getSiteByPageId($page->id);
+        $site = $this->getSiteByPageId((int)$page->id);
         $pageRecord = $page->page;
 
         $accessGroups = $this->getDocumentIdGroups($pageAccessRootline);
@@ -74,18 +84,18 @@ class Builder
         $document->setField('type', 'pages');
 
         // system fields
-        $document->setField('uid', $page->id);
+        $document->setField('uid', (int)$page->id);
         $document->setField('pid', $pageRecord['pid']);
 
         // variantId
-        $variantId = $this->variantIdBuilder->buildFromTypeAndUid('pages', $page->id);
+        $variantId = $this->variantIdBuilder->buildFromTypeAndUid('pages', (int)$page->id);
         $document->setField('variantId', $variantId);
 
         $document->setField('typeNum', $page->type);
         $document->setField('created', $pageRecord['crdate']);
         $document->setField('changed', $pageRecord['SYS_LASTCHANGED']);
 
-        $rootline = $this->getRootLineFieldValue($page->id, $mountPointParameter);
+        $rootline = $this->getRootLineFieldValue((int)$page->id, $mountPointParameter);
         $document->setField('rootline', $rootline);
 
         // access
@@ -110,7 +120,6 @@ class Builder
         return $document;
     }
 
-
     /**
      * Creates a Solr document with the basic / core fields set already.
      *
@@ -119,6 +128,7 @@ class Builder
      * @param int $rootPageUid
      * @param string $accessRootLine
      * @return Document
+     * @throws DBALDriverException
      */
     public function fromRecord(array $itemRecord, string $type, int $rootPageUid, string $accessRootLine): Document
     {
@@ -166,10 +176,12 @@ class Builder
     }
 
     /**
-     * @param TypoScriptFrontendController  $page
+     * @param TypoScriptFrontendController $frontendController
      * @param string $accessGroups
      * @param string $mountPointParameter
      * @return string
+     * @throws AspectNotFoundException
+     * @throws DBALDriverException
      */
     protected function getPageDocumentId(TypoScriptFrontendController $frontendController, string $accessGroups, string $mountPointParameter): string
     {
@@ -181,6 +193,7 @@ class Builder
      * @param int $rootPageId
      * @param int $recordUid
      * @return string
+     * @throws DBALDriverException
      */
     protected function getDocumentId(string $type, int $rootPageId, int $recordUid): string
     {
@@ -188,10 +201,11 @@ class Builder
     }
 
     /**
-     * @param integer $pageId
+     * @param int $pageId
      * @return Site
+     * @throws DBALDriverException
      */
-    protected function getSiteByPageId($pageId)
+    protected function getSiteByPageId(int $pageId): Site
     {
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         return $siteRepository->getSiteByPageId($pageId);
@@ -201,7 +215,7 @@ class Builder
      * @param string $pageContent
      * @return Typo3PageContentExtractor
      */
-    protected function getExtractorForPageContent($pageContent)
+    protected function getExtractorForPageContent(string $pageContent): Typo3PageContentExtractor
     {
         return GeneralUtility::makeInstance(Typo3PageContentExtractor::class, /** @scrutinizer ignore-type */ $pageContent);
     }
@@ -213,7 +227,7 @@ class Builder
      * @param string $mountPointParameter
      * @return string
      */
-    protected function getRootLineFieldValue($pageId, $mountPointParameter)
+    protected function getRootLineFieldValue(int $pageId, string $mountPointParameter = '')
     {
         $rootline = $pageId;
         if ($mountPointParameter !== '') {
@@ -229,7 +243,7 @@ class Builder
      * @param Rootline $pageAccessRootline
      * @return string A comma separated list of frontend user groups.
      */
-    protected function getDocumentIdGroups(Rootline $pageAccessRootline)
+    protected function getDocumentIdGroups(Rootline $pageAccessRootline): string
     {
         $groups = $pageAccessRootline->getGroups();
         $groups = Rootline::cleanGroupArray($groups);
@@ -238,9 +252,7 @@ class Builder
             $groups[] = 0;
         }
 
-        $groups = implode(',', $groups);
-
-        return $groups;
+        return implode(',', $groups);
     }
 
     /**
@@ -263,9 +275,9 @@ class Builder
      * @param Document $document
      * @param array $pageRecord
      */
-    protected function addEndtimeField(Document $document, $pageRecord)
+    protected function addEndtimeField(Document $document, array $pageRecord)
     {
-        if ($pageRecord['endtime']) {
+        if (isset($pageRecord['endtime']) && $pageRecord['endtime'] > 0) {
             $document->setField('endtime', $pageRecord['endtime']);
         }
     }
@@ -276,7 +288,7 @@ class Builder
      * @param Document $document
      * @param array $pageRecord
      */
-    protected function addKeywordsField(Document $document, $pageRecord)
+    protected function addKeywordsField(Document $document, array $pageRecord)
     {
         if (!isset($pageRecord['keywords'])) {
             return;
@@ -294,7 +306,7 @@ class Builder
      * @param Document $document
      * @param array $tagContent
      */
-    protected function addTagContentFields(Document  $document, $tagContent = [])
+    protected function addTagContentFields(Document $document, array $tagContent = [])
     {
         foreach ($tagContent as $fieldName => $fieldValue) {
             $document->setField($fieldName, $fieldValue);

@@ -15,6 +15,7 @@
 
 namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\QueryGroup;
 
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetParser;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
@@ -34,7 +35,7 @@ class QueryGroupFacetParser extends AbstractFacetParser
      * @param array $facetConfiguration
      * @return QueryGroupFacet|null
      */
-    public function parse(SearchResultSet $resultSet, $facetName, array $facetConfiguration)
+    public function parse(SearchResultSet $resultSet, string $facetName, array $facetConfiguration): ?AbstractFacet
     {
         $response = $resultSet->getResponse();
         $fieldName = $facetConfiguration['field'];
@@ -84,7 +85,6 @@ class QueryGroupFacetParser extends AbstractFacetParser
                 $facet->addOption($this->objectManager->get(Option::class, $facet, $label, $value, $count, $isOptionsActive));
             }
         }
-
 
         // after all options have been created we apply a manualSortOrder if configured
         // the sortBy (lex,..) is done by the solr server and triggered by the query, therefore it does not

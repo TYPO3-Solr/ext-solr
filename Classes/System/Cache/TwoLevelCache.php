@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -17,8 +19,8 @@ namespace ApacheSolrForTypo3\Solr\System\Cache;
 
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Provides a two level cache that uses an in memory cache as the first level cache and
@@ -31,17 +33,17 @@ class TwoLevelCache
     /**
      * @var string
      */
-    protected $cacheName = '';
+    protected string $cacheName = '';
 
     /**
      * @var array
      */
-    protected static $firstLevelCache = [];
+    protected static array $firstLevelCache = [];
 
     /**
      * @var FrontendInterface
      */
-    protected $secondLevelCache = null;
+    protected FrontendInterface $secondLevelCache;
 
     /**
      * @param string $cacheName

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -33,7 +35,6 @@ use UnexpectedValueException;
  */
 abstract class AbstractIndexer
 {
-
     /**
      * Holds the type of the data to be indexed, usually that is the table name.
      *
@@ -98,9 +99,8 @@ abstract class AbstractIndexer
         return $document;
     }
 
-
     /**
-     * Add's the content of the field 'content' from the solr document as virtual field __solr_content in the record,
+     * Adds the content of the field 'content' from the solr document as virtual field __solr_content in the record,
      * to have it available in typoscript.
      *
      * @param Document $document
@@ -120,7 +120,7 @@ abstract class AbstractIndexer
      * Resolves a field to its value depending on its configuration.
      *
      * This enables you to configure the indexer to put the item/record through
-     * cObj processing if wanted/needed. Otherwise the plain item/record value
+     * cObj processing if wanted/needed. Otherwise, the plain item/record value
      * is taken.
      *
      * @param array $indexingConfiguration Indexing configuration as defined in plugin.tx_solr_index.queue.[indexingConfigurationName].fields
@@ -130,9 +130,9 @@ abstract class AbstractIndexer
      * @return string The resolved string value to be indexed
      */
     protected function resolveFieldValue(
-        array  $indexingConfiguration,
+        array $indexingConfiguration,
         string $solrFieldName,
-        array  $data,
+        array $data,
         TypoScriptFrontendController $tsfe
     ) {
         if (isset($indexingConfiguration[$solrFieldName . '.'])) {
@@ -151,16 +151,20 @@ abstract class AbstractIndexer
 
             chdir($backupWorkingDirectory);
 
-            if ($this->isSerializedValue($indexingConfiguration,
-                $solrFieldName)
+            if ($this->isSerializedValue(
+                $indexingConfiguration,
+                $solrFieldName
+            )
             ) {
                 $fieldValue = unserialize($fieldValue);
             }
         } elseif (
             substr($indexingConfiguration[$solrFieldName], 0, 1) === '<'
         ) {
-            $referencedTsPath = trim(substr($indexingConfiguration[$solrFieldName],
-                1));
+            $referencedTsPath = trim(substr(
+                $indexingConfiguration[$solrFieldName],
+                1
+            ));
             $typoScriptParser = GeneralUtility::makeInstance(TypoScriptParser::class);
             // $name and $conf is loaded with the referenced values.
             list($name, $conf) = $typoScriptParser->getVal($referencedTsPath, $GLOBALS['TSFE']->tmpl->setup);
@@ -170,13 +174,15 @@ abstract class AbstractIndexer
             $backupWorkingDirectory = getcwd();
             chdir(Environment::getPublicPath() . '/');
 
-            $tsfe->start($data, $this->type);
-            $fieldValue = $tsfe->cObjGetSingle($name, $conf);
+            $tsfe->cObj->start($data, $this->type);
+            $fieldValue = $tsfe->cObj->cObjGetSingle($name, $conf);
 
             chdir($backupWorkingDirectory);
 
-            if ($this->isSerializedValue($indexingConfiguration,
-                $solrFieldName)
+            if ($this->isSerializedValue(
+                $indexingConfiguration,
+                $solrFieldName
+            )
             ) {
                 $fieldValue = unserialize($fieldValue);
             }
@@ -187,12 +193,17 @@ abstract class AbstractIndexer
         // detect and correct type for dynamic fields
 
         // find last underscore, substr from there, cut off last character (S/M)
-        $fieldType = substr($solrFieldName, strrpos($solrFieldName, '_') + 1,
-            -1);
+        $fieldType = substr(
+            $solrFieldName,
+            strrpos($solrFieldName, '_') + 1,
+            -1
+        );
         if (is_array($fieldValue)) {
             foreach ($fieldValue as $key => $value) {
-                $fieldValue[$key] = $this->ensureFieldValueType($value,
-                    $fieldType);
+                $fieldValue[$key] = $this->ensureFieldValueType(
+                    $value,
+                    $fieldType
+                );
             }
         } else {
             $fieldValue = $this->ensureFieldValueType($fieldValue, $fieldType);
@@ -282,17 +293,17 @@ abstract class AbstractIndexer
      * @param string $fieldType The dynamic field's type
      * @return mixed Returns the value in the correct format for the field type
      */
-    protected function ensureFieldValueType($value, $fieldType)
+    protected function ensureFieldValueType($value, string $fieldType)
     {
         switch ($fieldType) {
             case 'int':
             case 'tInt':
-                $value = intval($value);
+                $value = (int)$value;
                 break;
 
             case 'float':
             case 'tFloat':
-                $value = floatval($value);
+                $value = (float)$value;
                 break;
 
             // long and double do not exist in PHP

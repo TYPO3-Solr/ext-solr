@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -18,6 +20,7 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers\Document;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResult;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\ViewHelpers\AbstractSolrFrontendViewHelper;
+use Closure;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
@@ -50,12 +53,16 @@ class HighlightResultViewHelper extends AbstractSolrFrontendViewHelper
 
     /**
      * @param array $arguments
-     * @param \Closure $renderChildrenClosure
+     * @param Closure $renderChildrenClosure
      * @param RenderingContextInterface $renderingContext
      * @return string
+     * @noinspection PhpMissingReturnTypeInspection
      */
-    public static function renderStatic(array $arguments, \Closure $renderChildrenClosure, RenderingContextInterface $renderingContext)
-    {
+    public static function renderStatic(
+        array $arguments,
+        Closure $renderChildrenClosure,
+        RenderingContextInterface $renderingContext
+    ) {
         /** @var $resultSet SearchResultSet */
         $resultSet = $arguments['resultSet'];
         $fieldName = $arguments['fieldName'];
@@ -77,8 +84,7 @@ class HighlightResultViewHelper extends AbstractSolrFrontendViewHelper
         $content = call_user_func([$document, 'get' . $fieldName]);
         $highlightedContent = $resultSet->getUsedSearch()->getHighlightedContent();
         if (!empty($highlightedContent->{$document->getId()}->{$fieldName}[0])) {
-            $content = implode(' ' . $fragmentSeparator . ' ', $highlightedContent->{$document->getId()}->{$fieldName});
-            return $content;
+            return implode(' ' . $fragmentSeparator . ' ', $highlightedContent->{$document->getId()}->{$fieldName});
         }
         return $content;
     }
@@ -88,14 +94,14 @@ class HighlightResultViewHelper extends AbstractSolrFrontendViewHelper
      * @param $content
      * @return string
      */
-    protected static function escapeEverythingExceptAllowedTags(SearchResultSet $resultSet, $content)
+    protected static function escapeEverythingExceptAllowedTags(SearchResultSet $resultSet, $content): string
     {
         $wrap = $resultSet->getUsedSearchRequest()->getContextTypoScriptConfiguration()->getSearchResultsHighlightingWrap();
         if ($wrap === '') {
             return htmlspecialchars($content);
         }
 
-        $wrapParts = GeneralUtility::trimExplode("|", $wrap);
+        $wrapParts = GeneralUtility::trimExplode('|', $wrap);
         if (count($wrapParts) !== 2) {
             return htmlspecialchars($content);
         }
@@ -104,8 +110,6 @@ class HighlightResultViewHelper extends AbstractSolrFrontendViewHelper
         $substitutedContent = str_replace($wrapParts[1], '___highlight_end___', $substitutedContent);
         $output = htmlspecialchars($substitutedContent);
         $output = str_replace('___highlight_begin___', $wrapParts[0], $output);
-        $output = str_replace('___highlight_end___', $wrapParts[1], $output);
-
-        return $output;
+        return str_replace('___highlight_end___', $wrapParts[1], $output);
     }
 }

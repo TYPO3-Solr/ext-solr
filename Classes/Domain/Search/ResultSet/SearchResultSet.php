@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -28,101 +30,100 @@ use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 
 /**
- * The SearchResultSet is used to provided access to the \Apache_Solr_Response and
+ * The SearchResultSet is used to provide access to the Apache Solr Response and
  * other relevant information, like the used Query and Request objects.
  *
  * @author Timo Schmidt <timo.schmidt@dkd.de>
  */
 class SearchResultSet
 {
+    /**
+     * @var Query|null
+     */
+    protected ?Query $usedQuery = null;
 
     /**
-     * @var Query
+     * @var SearchRequest|null
      */
-    protected $usedQuery = null;
+    protected ?SearchRequest $usedSearchRequest = null;
 
     /**
-     * @var SearchRequest
+     * @var Search|null
      */
-    protected $usedSearchRequest = null;
-
-    /**
-     * @var Search
-     */
-    protected $usedSearch;
+    protected ?Search $usedSearch = null;
 
     /**
      * @var ResponseAdapter
      */
-    protected $response = null;
+    protected ResponseAdapter $response;
 
     /**
      * @var int
      */
-    protected $usedPage = 0;
+    protected int $usedPage = 0;
 
     /**
      * @var int
      */
-    protected $usedResultsPerPage = 0;
+    protected int $usedResultsPerPage = 0;
 
     /**
      * @var array
      */
-    protected $usedAdditionalFilters = [];
+    protected array $usedAdditionalFilters = [];
 
     /**
      * @var SearchResultCollection
      */
-    protected $searchResults = null;
+    protected SearchResultCollection $searchResults;
 
     /**
      * @var int
      */
-    protected $allResultCount = 0;
+    protected int $allResultCount = 0;
 
     /**
      * @var float
      */
-    protected $maximumScore = 0.0;
+    protected float $maximumScore = 0.0;
 
     /**
      * @var Suggestion[]
      */
-    protected $spellCheckingSuggestions = [];
+    protected array $spellCheckingSuggestions = [];
 
     /**
      * @var FacetCollection
      */
-    protected $facets = null;
+    protected FacetCollection $facets;
 
     /**
      * @var SortingCollection
      */
-    protected $sortings = null;
+    protected SortingCollection $sortings;
 
     /**
      * @var bool
      */
-    protected $isAutoCorrected = false;
+    protected bool $isAutoCorrected = false;
 
     /**
      * @var string
      */
-    protected $initialQueryString = '';
+    protected string $initialQueryString = '';
 
     /**
      * @var string
      */
-    protected $correctedQueryString = '';
+    protected string $correctedQueryString = '';
 
     /**
      * @var bool
      */
-    protected $hasSearched = false;
+    protected bool $hasSearched = false;
 
     /**
-     * @return \ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet
+     * Constructor for SearchResultSet
      */
     public function __construct()
     {
@@ -134,7 +135,7 @@ class SearchResultSet
     /**
      * @param int $allResultCount
      */
-    public function setAllResultCount($allResultCount)
+    public function setAllResultCount(int $allResultCount)
     {
         $this->allResultCount = $allResultCount;
     }
@@ -142,7 +143,7 @@ class SearchResultSet
     /**
      * @return int
      */
-    public function getAllResultCount()
+    public function getAllResultCount(): int
     {
         return $this->allResultCount;
     }
@@ -158,23 +159,23 @@ class SearchResultSet
     /**
      * @return bool
      */
-    public function getHasSpellCheckingSuggestions()
+    public function getHasSpellCheckingSuggestions(): bool
     {
         return count($this->spellCheckingSuggestions) > 0;
     }
 
     /**
-     * @param \ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Spellchecking\Suggestion[] $spellCheckingSuggestions
+     * @param Suggestion[] $spellCheckingSuggestions
      */
-    public function setSpellCheckingSuggestions($spellCheckingSuggestions)
+    public function setSpellCheckingSuggestions(array $spellCheckingSuggestions)
     {
         $this->spellCheckingSuggestions = $spellCheckingSuggestions;
     }
 
     /**
-     * @return \ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Spellchecking\Suggestion[]
+     * @return Suggestion[]
      */
-    public function getSpellCheckingSuggestions()
+    public function getSpellCheckingSuggestions(): array
     {
         return $this->spellCheckingSuggestions;
     }
@@ -182,7 +183,7 @@ class SearchResultSet
     /**
      * @return FacetCollection
      */
-    public function getFacets()
+    public function getFacets(): FacetCollection
     {
         return $this->facets;
     }
@@ -198,7 +199,7 @@ class SearchResultSet
     /**
      * @return float
      */
-    public function getMaximumScore()
+    public function getMaximumScore(): float
     {
         return $this->maximumScore;
     }
@@ -206,7 +207,7 @@ class SearchResultSet
     /**
      * @param float $maximumScore
      */
-    public function setMaximumScore($maximumScore)
+    public function setMaximumScore(float $maximumScore)
     {
         $this->maximumScore = $maximumScore;
     }
@@ -222,7 +223,7 @@ class SearchResultSet
     /**
      * @return SortingCollection
      */
-    public function getSortings()
+    public function getSortings(): SortingCollection
     {
         return $this->sortings;
     }
@@ -230,7 +231,7 @@ class SearchResultSet
     /**
      * @param ResponseAdapter $response
      */
-    public function setResponse($response)
+    public function setResponse(ResponseAdapter $response)
     {
         $this->response = $response;
     }
@@ -238,7 +239,7 @@ class SearchResultSet
     /**
      * @return ResponseAdapter
      */
-    public function getResponse()
+    public function getResponse(): ResponseAdapter
     {
         return $this->response;
     }
@@ -246,7 +247,7 @@ class SearchResultSet
     /**
      * @param array $usedAdditionalFilters
      */
-    public function setUsedAdditionalFilters($usedAdditionalFilters)
+    public function setUsedAdditionalFilters(array $usedAdditionalFilters)
     {
         $this->usedAdditionalFilters = $usedAdditionalFilters;
     }
@@ -254,7 +255,7 @@ class SearchResultSet
     /**
      * @return array
      */
-    public function getUsedAdditionalFilters()
+    public function getUsedAdditionalFilters(): array
     {
         return $this->usedAdditionalFilters;
     }
@@ -262,7 +263,7 @@ class SearchResultSet
     /**
      * @param Query $usedQuery
      */
-    public function setUsedQuery($usedQuery)
+    public function setUsedQuery(Query $usedQuery)
     {
         $this->usedQuery = $usedQuery;
     }
@@ -272,7 +273,7 @@ class SearchResultSet
      *
      * @return Query
      */
-    public function getUsedQuery()
+    public function getUsedQuery(): ?Query
     {
         return $this->usedQuery;
     }
@@ -280,7 +281,7 @@ class SearchResultSet
     /**
      * @param int $page
      */
-    public function setUsedPage($page)
+    public function setUsedPage(int $page)
     {
         $this->usedPage = $page;
     }
@@ -290,15 +291,15 @@ class SearchResultSet
      *
      * @return int
      */
-    public function getUsedPage()
+    public function getUsedPage(): int
     {
         return $this->usedPage;
     }
 
     /**
-     * @param \ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest $usedSearchRequest
+     * @param SearchRequest $usedSearchRequest
      */
-    public function setUsedSearchRequest($usedSearchRequest)
+    public function setUsedSearchRequest(SearchRequest $usedSearchRequest)
     {
         $this->usedSearchRequest = $usedSearchRequest;
     }
@@ -306,25 +307,25 @@ class SearchResultSet
     /**
      * Retrieves the SearchRequest that has been used to build this SearchResultSet.
      *
-     * @return \ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest
+     * @return SearchRequest
      */
-    public function getUsedSearchRequest()
+    public function getUsedSearchRequest(): ?SearchRequest
     {
         return $this->usedSearchRequest;
     }
 
     /**
-     * @param \ApacheSolrForTypo3\Solr\Search $usedSearch
+     * @param Search $usedSearch
      */
-    public function setUsedSearch($usedSearch)
+    public function setUsedSearch(Search $usedSearch)
     {
         $this->usedSearch = $usedSearch;
     }
 
     /**
-     * @return \ApacheSolrForTypo3\Solr\Search
+     * @return Search
      */
-    public function getUsedSearch()
+    public function getUsedSearch(): ?Search
     {
         return $this->usedSearch;
     }
@@ -332,7 +333,7 @@ class SearchResultSet
     /**
      * @param int $usedResultsPerPage
      */
-    public function setUsedResultsPerPage($usedResultsPerPage)
+    public function setUsedResultsPerPage(int $usedResultsPerPage)
     {
         $this->usedResultsPerPage = $usedResultsPerPage;
     }
@@ -340,7 +341,7 @@ class SearchResultSet
     /**
      * @return int
      */
-    public function getUsedResultsPerPage()
+    public function getUsedResultsPerPage(): int
     {
         return $this->usedResultsPerPage;
     }
@@ -348,7 +349,7 @@ class SearchResultSet
     /**
      * @return SearchResultCollection
      */
-    public function getSearchResults()
+    public function getSearchResults(): SearchResultCollection
     {
         return $this->searchResults;
     }
@@ -356,7 +357,7 @@ class SearchResultSet
     /**
      * @param SearchResultCollection $searchResults
      */
-    public function setSearchResults($searchResults)
+    public function setSearchResults(SearchResultCollection $searchResults)
     {
         $this->searchResults = $searchResults;
     }
@@ -370,17 +371,17 @@ class SearchResultSet
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
-    public function getIsAutoCorrected()
+    public function getIsAutoCorrected(): bool
     {
         return $this->isAutoCorrected;
     }
 
     /**
-     * @param boolean $wasAutoCorrected
+     * @param bool $wasAutoCorrected
      */
-    public function setIsAutoCorrected($wasAutoCorrected)
+    public function setIsAutoCorrected(bool $wasAutoCorrected)
     {
         $this->isAutoCorrected = $wasAutoCorrected;
     }
@@ -388,7 +389,7 @@ class SearchResultSet
     /**
      * @return string
      */
-    public function getInitialQueryString()
+    public function getInitialQueryString(): string
     {
         return $this->initialQueryString;
     }
@@ -396,7 +397,7 @@ class SearchResultSet
     /**
      * @param string $initialQueryString
      */
-    public function setInitialQueryString($initialQueryString)
+    public function setInitialQueryString(string $initialQueryString)
     {
         $this->initialQueryString = $initialQueryString;
     }
@@ -404,7 +405,7 @@ class SearchResultSet
     /**
      * @return string
      */
-    public function getCorrectedQueryString()
+    public function getCorrectedQueryString(): string
     {
         return $this->correctedQueryString;
     }
@@ -412,13 +413,13 @@ class SearchResultSet
     /**
      * @param string $correctedQueryString
      */
-    public function setCorrectedQueryString($correctedQueryString)
+    public function setCorrectedQueryString(string $correctedQueryString)
     {
         $this->correctedQueryString = $correctedQueryString;
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function getHasSearched(): bool
     {
@@ -426,7 +427,7 @@ class SearchResultSet
     }
 
     /**
-     * @param boolean $hasSearched
+     * @param bool $hasSearched
      */
     public function setHasSearched(bool $hasSearched)
     {

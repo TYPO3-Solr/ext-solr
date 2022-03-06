@@ -80,16 +80,7 @@ then
   exit 1
 fi
 
-# Install build tools
-echo "Install build tools: "
-if ! composer global require \
-  friendsofphp/php-cs-fixer:"$PHP_CS_FIXER_VERSION" \
-  sclable/xml-lint \
-  scrutinizer/ocular
-then
-  echo "The build tools(friendsofphp/php-cs-fixer, sclable/xml-lint, scrutinizer/ocular) could not be installed. Please fix this issue."
-  exit 1
-fi
+COMPOSER_NO_INTERACTION=1
 
 # Setup TYPO3 environment variables
 export TYPO3_PATH_PACKAGES="${EXTENSION_ROOTPATH}.Build/vendor/"
@@ -123,14 +114,3 @@ then
 fi
 
 mkdir -p $TYPO3_PATH_WEB/uploads $TYPO3_PATH_WEB/typo3temp
-
-if [[ $* != *--skip-solr-install* ]]; then
-  # Setup Solr Using our install script
-  echo "Setup Solr Using our install script: "
-  chmod 500 ${EXTENSION_ROOTPATH}Resources/Private/Install/install-solr.sh
-  if ! ${EXTENSION_ROOTPATH}Resources/Private/Install/install-solr.sh -d "$HOME/solr" -t
-  then
-    echo "Apache Solr server could not be installed or started. Please fix this issue."
-    exit 1
-  fi
-fi

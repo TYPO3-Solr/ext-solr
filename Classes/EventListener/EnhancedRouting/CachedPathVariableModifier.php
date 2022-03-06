@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -31,7 +32,7 @@ class CachedPathVariableModifier
     /**
      * @var RoutingService
      */
-    protected $routingService;
+    protected RoutingService $routingService;
 
     public function __invoke(BeforeProcessCachedVariablesEvent $event): void
     {

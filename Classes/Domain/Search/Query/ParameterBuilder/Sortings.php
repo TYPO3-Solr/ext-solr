@@ -26,15 +26,17 @@ class Sortings extends AbstractDeactivatable
     /**
      * @var array
      */
-    protected $sortings = [];
+    protected array $sortings = [];
 
     /**
      * Sortings constructor.
      * @param bool $isEnabled
      * @param array $sortings
      */
-    public function __construct($isEnabled = false, $sortings = [])
-    {
+    public function __construct(
+        bool $isEnabled = false,
+        array $sortings = []
+    ) {
         $this->isEnabled = $isEnabled;
         $this->setSortings($sortings);
     }
@@ -42,7 +44,7 @@ class Sortings extends AbstractDeactivatable
     /**
      * @return Sortings
      */
-    public static function getEmpty()
+    public static function getEmpty(): Sortings
     {
         return new Sortings(false);
     }
@@ -76,11 +78,11 @@ class Sortings extends AbstractDeactivatable
      * @param string $sortingsString
      * @return Sortings
      */
-    public static function fromString($sortingsString)
+    public static function fromString(string $sortingsString): Sortings
     {
-        $sortFields = GeneralUtility::trimExplode(',',$sortingsString);
+        $sortFields = GeneralUtility::trimExplode(',', $sortingsString);
         $sortings = [];
-        foreach($sortFields as $sortField) {
+        foreach ($sortFields as $sortField) {
             $sorting = Sorting::fromString($sortField);
             $sortings[] = $sorting;
         }

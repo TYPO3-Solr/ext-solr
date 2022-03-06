@@ -55,7 +55,7 @@ class SolrReadServiceTest extends UnitTest
     /**
      * @var SolrReadService
      */
-    protected $service;
+    protected SolrReadService $service;
 
     protected function setUp(): void
     {

@@ -25,11 +25,14 @@ use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrCommunicationException;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use ApacheSolrForTypo3\Solr\Util;
+use Exception;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class Repository
+ *
+ * Purpose: TYPO3 BE INFO module :: Index Documents tab
  */
 class Repository implements SingletonInterface
 {
@@ -37,32 +40,35 @@ class Repository implements SingletonInterface
     /**
      * Search
      *
-     * @var \ApacheSolrForTypo3\Solr\Search
+     * @var Search|null
      */
-    protected $search;
+    protected ?Search $search = null;
 
     /**
      * @var DocumentEscapeService
      */
-    protected $documentEscapeService = null;
+    protected DocumentEscapeService $documentEscapeService;
 
     /**
-     * @var TypoScriptConfiguration|null
+     * @var TypoScriptConfiguration
      */
-    protected $typoScriptConfiguration = null;
+    protected TypoScriptConfiguration $typoScriptConfiguration;
 
     /**
      * @var QueryBuilder
      */
-    protected $queryBuilder;
+    protected QueryBuilder $queryBuilder;
 
     /**
      * Repository constructor.
      * @param DocumentEscapeService|null $documentEscapeService
      * @param QueryBuilder|null $queryBuilder
      */
-    public function __construct(DocumentEscapeService $documentEscapeService = null, TypoScriptConfiguration $typoScriptConfiguration = null, QueryBuilder $queryBuilder = null)
-    {
+    public function __construct(
+        DocumentEscapeService $documentEscapeService = null,
+        TypoScriptConfiguration $typoScriptConfiguration = null,
+        QueryBuilder $queryBuilder = null
+    ) {
         $this->typoScriptConfiguration = $typoScriptConfiguration ?? Util::getSolrConfiguration();
         $this->documentEscapeService = $documentEscapeService ?? GeneralUtility::makeInstance(DocumentEscapeService::class, /** @scrutinizer ignore-type */ $typoScriptConfiguration);
         $this->queryBuilder = $queryBuilder ?? GeneralUtility::makeInstance(QueryBuilder::class, /** @scrutinizer ignore-type */ $this->typoScriptConfiguration);
@@ -71,8 +77,10 @@ class Repository implements SingletonInterface
     /**
      * Returns firs found \ApacheSolrForTypo3\Solr\System\Solr\Document\Document for current page by given language id.
      *
+     * @param $pageId
      * @param $languageId
      * @return Document|false
+     * @throws Exception
      */
     public function findOneByPageIdAndByLanguageId($pageId, $languageId)
     {
@@ -87,16 +95,15 @@ class Repository implements SingletonInterface
      * @param int $pageId
      * @param int $languageId
      * @return Document[]
+     * @throws Exception
      */
-    public function findByPageIdAndByLanguageId($pageId, $languageId)
+    public function findByPageIdAndByLanguageId(int $pageId, int $languageId): array
     {
         try {
             $this->initializeSearch($pageId, $languageId);
             $pageQuery = $this->queryBuilder->buildPageQuery($pageId);
             $response = $this->search->search($pageQuery, 0, 10000);
-        } catch (NoSolrConnectionFoundException $exception) {
-            return [];
-        } catch (SolrCommunicationException $exception) {
+        } catch (NoSolrConnectionFoundException|SolrCommunicationException $exception) {
             return [];
         }
         $data = $response->getParsedData();
@@ -110,16 +117,19 @@ class Repository implements SingletonInterface
      * @param int $pageId
      * @param int $languageId
      * @return Document[]|array
+     * @throws Exception
      */
-    public function findByTypeAndPidAndUidAndLanguageId($type, $uid, $pageId, $languageId): array
-    {
+    public function findByTypeAndPidAndUidAndLanguageId(
+        string $type,
+        int $uid,
+        int $pageId,
+        int $languageId
+    ): array {
         try {
             $this->initializeSearch($pageId, $languageId);
             $recordQuery = $this->queryBuilder->buildRecordQuery($type, $uid, $pageId);
             $response = $this->search->search($recordQuery, 0, 10000);
-        } catch (NoSolrConnectionFoundException $exception) {
-            return [];
-        } catch (SolrCommunicationException $exception) {
+        } catch (NoSolrConnectionFoundException|SolrCommunicationException $exception) {
             return [];
         }
         $data = $response->getParsedData();
@@ -130,17 +140,13 @@ class Repository implements SingletonInterface
     /**
      * Initializes Search for given language
      *
+     * @param int $pageId
      * @param int $languageId
+     * @throws NoSolrConnectionFoundException
      */
-    protected function initializeSearch($pageId, $languageId = 0)
+    protected function initializeSearch(int $pageId, int $languageId = 0)
     {
-        if (!is_int($pageId)) {
-            throw new \InvalidArgumentException('Invalid page ID = ' . $pageId, 1487332926);
-        }
-        if (!is_int($languageId)) { // @todo: Check if lang id is defined and present?
-            throw new \InvalidArgumentException('Invalid language ID = ' . $languageId, 1487335178);
-        }
-        /* @var $connectionManager ConnectionManager */
+        /* @var ConnectionManager $connectionManager */
         $connectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
         $solrConnection = $connectionManager->getConnectionByPageId($pageId, $languageId);
 
@@ -153,7 +159,7 @@ class Repository implements SingletonInterface
      * @param SolrConnection $solrConnection
      * @return Search
      */
-    protected function getSearch($solrConnection)
+    protected function getSearch(SolrConnection $solrConnection): Search
     {
         return  GeneralUtility::makeInstance(Search::class, /** @scrutinizer ignore-type */ $solrConnection);
     }

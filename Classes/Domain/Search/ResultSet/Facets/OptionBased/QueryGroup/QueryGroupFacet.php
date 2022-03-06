@@ -32,7 +32,7 @@ class QueryGroupFacet extends AbstractOptionsFacet
      * String
      * @var string
      */
-    protected static $type = self::TYPE_QUERY_GROUP;
+    protected static string $type = self::TYPE_QUERY_GROUP;
 
     /**
      * OptionsFacet constructor

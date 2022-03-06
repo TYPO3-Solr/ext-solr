@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -26,7 +28,7 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
  */
 class SortingExpressionTest extends UnitTest
 {
-    public function canBuildSortExpressionDataProvider()
+    public function canBuildSortExpressionDataProvider(): array
     {
         return [
             'byAlpha' => ['sorting' => 'alpha', 'direction' => '', 'isJson' => false, 'expectedResult' => 'index'],
@@ -68,24 +70,24 @@ class SortingExpressionTest extends UnitTest
             'byCountJsonSortAsc' => ['sorting' => 'count', 'direction' => 'asc', 'isJson' => true, 'expectedResult' => 'count asc'],
             'byCountJsonSortDesc' => ['sorting' => 'count', 'direction' => 'desc', 'isJson' => true, 'expectedResult' => 'count desc'],
 
-            'byMetricJsonSortAsc' => ['sorting' => 'metrics_neweset', 'direction' => 'asc', 'isJson' => true, 'expectedResult' => 'metrics_neweset asc'],
-            'byMetricJsonSortDesc' => ['sorting' => 'metrics_neweset', 'direction' => 'desc', 'isJson' => true, 'expectedResult' => 'metrics_neweset desc'],
+            'byMetricJsonSortAsc' => ['sorting' => 'metrics_newest', 'direction' => 'asc', 'isJson' => true, 'expectedResult' => 'metrics_newest asc'],
+            'byMetricJsonSortDesc' => ['sorting' => 'metrics_newest', 'direction' => 'desc', 'isJson' => true, 'expectedResult' => 'metrics_newest desc'],
         ];
     }
 
     /**
-     * @param string $sorting
+     * @param string|int|bool $sorting
      * @param string $direction
      * @param bool $isJson
      * @param string $expectedResult
      * @dataProvider canBuildSortExpressionDataProvider
      * @test
      */
-    public function canBuildSortExpression($sorting, $direction, $isJson, $expectedResult)
+    public function canBuildSortExpression($sorting, string $direction, bool $isJson, string $expectedResult)
     {
         $expression = new SortingExpression();
         if ($isJson) {
-            $result = $expression->getForJsonFacet($sorting, $direction);
+            $result = $expression->getForJsonFacet((string)$sorting, $direction);
         } else {
             $result = $expression->getForFacet($sorting);
         }

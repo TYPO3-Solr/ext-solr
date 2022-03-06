@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -26,14 +28,12 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
  */
 interface PageDocumentPostProcessor
 {
-
     /**
      * Allows Modification of the PageDocument
      * Can be used to trigger actions when all contextual variables of the pageDocument to be indexed are known
      *
      * @param Document $pageDocument the generated page document
      * @param TypoScriptFrontendController $page the page object with information about page id or language
-     * @return void
      */
     public function postProcessPageDocument(Document $pageDocument, TypoScriptFrontendController $page);
 }

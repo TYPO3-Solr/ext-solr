@@ -21,13 +21,12 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * The QueryFields class holds all information for the query which fields should be used to query (Solr qf parameter).
  */
-class QueryFields implements ParameterBuilder
+class QueryFields implements ParameterBuilderInterface
 {
-
     /**
      * @var array
      */
-    protected $queryFields = [];
+    protected array $queryFields = [];
 
     /**
      * QueryFields constructor.
@@ -43,9 +42,9 @@ class QueryFields implements ParameterBuilder
      * @param string $fieldName
      * @param float $boost
      */
-    public function set($fieldName, $boost = 1.0)
+    public function set(string $fieldName, float $boost = 1.0)
     {
-        $this->queryFields[$fieldName] = (float)$boost;
+        $this->queryFields[$fieldName] = $boost;
     }
 
     /**
@@ -54,7 +53,8 @@ class QueryFields implements ParameterBuilder
      * @param string $delimiter
      * @return string
      */
-    public function toString($delimiter = ' ') {
+    public function toString(string $delimiter = ' '): string
+    {
         $queryFieldString = '';
 
         foreach ($this->queryFields as $fieldName => $fieldBoost) {
@@ -77,7 +77,8 @@ class QueryFields implements ParameterBuilder
      * @param string $delimiter
      * @return QueryFields
      */
-    public static function fromString($queryFieldsString, $delimiter = ',') {
+    public static function fromString(string $queryFieldsString, string $delimiter = ','): QueryFields
+    {
         $fields = GeneralUtility::trimExplode($delimiter, $queryFieldsString, true);
         $queryFields = [];
 
@@ -86,7 +87,7 @@ class QueryFields implements ParameterBuilder
 
             $boost = 1.0;
             if (isset($fieldNameAndBoost[1])) {
-                $boost = floatval($fieldNameAndBoost[1]);
+                $boost = (float)($fieldNameAndBoost[1]);
             }
 
             $fieldName = $fieldNameAndBoost[0];

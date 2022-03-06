@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -18,8 +18,8 @@ declare(strict_types = 1);
 namespace ApacheSolrForTypo3\Solr\Query\Modifier;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Faceting as FacetingBuilder;
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\FacetRegistry;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\InvalidFacetPackageException;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\InvalidQueryBuilderException;
@@ -43,12 +43,12 @@ class Faceting implements Modifier, SearchRequestAware
     /**
      * @var FacetRegistry
      */
-    protected $facetRegistry = null;
+    protected FacetRegistry $facetRegistry;
 
     /**
-     * @var SearchRequest
+     * @var SearchRequest|null
      */
-    protected $searchRequest;
+    protected ?SearchRequest $searchRequest = null;
 
     /**
      * @param FacetRegistry $facetRegistry
@@ -85,7 +85,7 @@ class Faceting implements Modifier, SearchRequestAware
         $allFacets = $typoScriptConfiguration->getSearchFacetingFacets();
         $facetParameters = $this->buildFacetingParameters($allFacets, $typoScriptConfiguration);
         foreach ($facetParameters as $facetParameter => $value) {
-            if(strtolower($facetParameter) === 'facet.field') {
+            if (strtolower($facetParameter) === 'facet.field') {
                 $faceting->setFields($value);
             } else {
                 $faceting->addAdditionalParameter($facetParameter, $value);
@@ -93,9 +93,6 @@ class Faceting implements Modifier, SearchRequestAware
         }
 
         $searchArguments = $this->searchRequest->getArguments();
-        if (!is_array($searchArguments)) {
-            return $query;
-        }
 
         $keepAllFacetsOnSelection = $typoScriptConfiguration->getSearchFacetingKeepAllFacetsOnSelection();
         $facetFilters = $this->addFacetQueryFilters($searchArguments, $keepAllFacetsOnSelection, $allFacets);

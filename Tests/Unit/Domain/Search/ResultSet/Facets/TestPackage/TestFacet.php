@@ -7,13 +7,12 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetItemColl
 
 class TestFacet extends AbstractFacet
 {
-
     /**
      * The implementation of this method should return a "flatten" collection of all items.
      *
      * @return AbstractFacetItemCollection
      */
-    public function getAllFacetItems()
+    public function getAllFacetItems(): AbstractFacetItemCollection
     {
         // TODO: Implement getAllFacetItems() method.
     }

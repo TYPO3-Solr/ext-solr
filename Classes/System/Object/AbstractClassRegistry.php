@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -15,6 +17,8 @@
 
 namespace ApacheSolrForTypo3\Solr\System\Object;
 
+use InvalidArgumentException;
+use stdClass;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 
@@ -32,19 +36,19 @@ class AbstractClassRegistry implements SingletonInterface
      * Holds the mapping key => className
      * @var array
      */
-    protected $classMap = [];
+    protected array $classMap = [];
 
     /**
      * Name for the default implementation
      *
      * @var string
      */
-    protected $defaultClass = \stdClass::class;
+    protected string $defaultClass = stdClass::class;
 
     /**
-     * @var ObjectManagerInterface
+     * @var ObjectManagerInterface|null
      */
-    protected $objectManager;
+    protected ?ObjectManagerInterface $objectManager = null;
 
     /**
      * @param ObjectManagerInterface $objectManager
@@ -55,12 +59,12 @@ class AbstractClassRegistry implements SingletonInterface
     }
 
     /**
-     * Retrieves an instance for an registered type.
+     * Retrieves an instance for a registered type.
      *
      * @param string $type
      * @return object
      */
-    public function getInstance($type)
+    public function getInstance(string $type): object
     {
         $className = $this->resolveClassName($type);
         return $this->createInstance($className);
@@ -70,12 +74,11 @@ class AbstractClassRegistry implements SingletonInterface
      * @param string $type
      * @return string
      */
-    protected function resolveClassName($type)
+    protected function resolveClassName(string $type): string
     {
         $className = $this->defaultClass;
         if (isset($this->classMap[$type])) {
-            $className = $this->classMap[$type];
-            return $className;
+            return $this->classMap[$type];
         }
         return $className;
     }
@@ -86,7 +89,7 @@ class AbstractClassRegistry implements SingletonInterface
      * @param string $className
      * @return object
      */
-    protected function createInstance($className)
+    protected function createInstance(string $className): object
     {
         return $this->objectManager->get($className);
     }
@@ -98,14 +101,15 @@ class AbstractClassRegistry implements SingletonInterface
      * @param string $type
      * @param string $requiredBaseClass
      */
-    protected function register($className, $type, $requiredBaseClass) {
+    protected function register(string $className, string $type, string $requiredBaseClass): void
+    {
         // check if the class is available for TYPO3 before registering the driver
         if (!class_exists($className)) {
-            throw new \InvalidArgumentException('Class ' . $className . ' does not exist.', 1462883324);
+            throw new InvalidArgumentException('Class ' . $className . ' does not exist.', 1462883324);
         }
 
         if (!is_subclass_of($className, $requiredBaseClass)) {
-            throw new \InvalidArgumentException('Parser ' . $className . ' needs to extend the ' . $requiredBaseClass . '.', 1462883325);
+            throw new InvalidArgumentException('Parser ' . $className . ' needs to extend the ' . $requiredBaseClass . '.', 1462883325);
         }
 
         $this->classMap[$type] = $className;

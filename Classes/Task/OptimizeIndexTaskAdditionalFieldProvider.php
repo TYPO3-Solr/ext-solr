@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -20,8 +22,9 @@ use ApacheSolrForTypo3\Solr\Backend\SiteSelectorField;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
-use Exception;
+use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use LogicException;
+use Throwable;
 use TYPO3\CMS\Backend\Form\Exception as BackendFormException;
 use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
@@ -33,7 +36,7 @@ use TYPO3\CMS\Scheduler\Task\AbstractTask;
 use TYPO3\CMS\Scheduler\Task\Enumeration\Action;
 
 /**
- * Adds an additional field to specify the Solr server to initialize the index queue for
+ * Adds additional field to specify the Solr server to initialize the index queue for
  *
  * @author Jens Jacobsen <typo3@jens-jacobsen.de>
  */
@@ -44,47 +47,47 @@ class OptimizeIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldPr
      *
      * @var string
      */
-    protected $languageFile = 'LLL:EXT:solr/Resources/Private/Language/locallang.xlf';
+    protected string $languageFile = 'LLL:EXT:solr/Resources/Private/Language/locallang.xlf';
 
     /**
      * Task information
      *
      * @var array
      */
-    protected $taskInformation;
+    protected array $taskInformation = [];
 
     /**
      * Scheduler task
      *
      * @var AbstractTask|null
      */
-    protected $task = null;
+    protected ?AbstractTask $task = null;
 
     /**
      * Scheduler Module
      *
-     * @var SchedulerModuleController
+     * @var SchedulerModuleController|null
      */
-    protected $schedulerModule;
+    protected ?SchedulerModuleController $schedulerModule = null;
 
     /**
      * Selected site
      *
-     * @var Site
+     * @var Site|null
      */
-    protected $site = null;
+    protected ?Site $site = null;
 
     /**
      * SiteRepository
      *
-     * @var SiteRepository
+     * @var SiteRepository|null
      */
-    protected $siteRepository;
+    protected ?SiteRepository $siteRepository = null;
 
     /**
-     * @var PageRenderer
+     * @var PageRenderer|null
      */
-    protected $pageRenderer = null;
+    protected ?PageRenderer $pageRenderer = null;
 
     /**
      * ReIndexTaskAdditionalFieldProvider constructor.
@@ -100,13 +103,13 @@ class OptimizeIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldPr
      * @param SchedulerModuleController $schedulerModule
      * @param AbstractTask|null $task
      * @param array $taskInfo
+     * @throws DBALDriverException
      */
     protected function initialize(
         SchedulerModuleController $schedulerModule,
         AbstractTask $task = null,
         array $taskInfo = []
-    )
-    {
+    ) {
         /** @var $task ReIndexTask */
         $this->task = $task;
         $this->schedulerModule = $schedulerModule;
@@ -130,7 +133,9 @@ class OptimizeIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldPr
      *                        The array is multidimensional, keyed to the task class name and each field's id
      *                        For each field it provides an associative sub-array with the following:
      * @throws BackendFormException
+     * @throws DBALDriverException
      * @throws NoSolrConnectionFoundException
+     * @throws Throwable
      * @noinspection PhpParameterByRefIsNotUsedAsReferenceInspection
      * @noinspection PhpMissingReturnTypeInspection
      */
@@ -138,8 +143,7 @@ class OptimizeIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldPr
         array &$taskInfo,
         $task,
         SchedulerModuleController $schedulerModule
-    )
-    {
+    ) {
         $additionalFields = [];
 
         if (!$this->isTaskInstanceofOptimizeIndexTask($task)) {
@@ -153,14 +157,14 @@ class OptimizeIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldPr
             'code' => $siteSelectorField->getAvailableSitesSelector('tx_scheduler[site]', $this->site),
             'label' => $this->languageFile . ':field_site',
             'cshKey' => '',
-            'cshLabel' => ''
+            'cshLabel' => '',
         ];
 
         $additionalFields['cores'] = [
             'code' => $this->getCoreSelectorMarkup(),
             'label' => $this->languageFile . ':field_cores',
             'cshKey' => '',
-            'cshLabel' => ''
+            'cshLabel' => '',
         ];
 
         return $additionalFields;
@@ -195,15 +199,15 @@ class OptimizeIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldPr
      * @param array $submittedData reference to the array containing the data submitted by the user
      * @param SchedulerModuleController $schedulerModule reference to the calling object (Scheduler's BE module)
      * @return bool True if validation was ok (or selected class is not relevant), FALSE otherwise
-     * @throws Exception
+     * @throws DBALDriverException
+     * @throws Throwable
      * @noinspection PhpParameterByRefIsNotUsedAsReferenceInspection
      * @noinspection PhpMissingReturnTypeInspection
      */
     public function validateAdditionalFields(
         array &$submittedData,
         SchedulerModuleController $schedulerModule
-    )
-    {
+    ) {
         $result = true;
         // validate site
         $sites = $this->siteRepository->getAvailableSites();
@@ -234,8 +238,7 @@ class OptimizeIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldPr
     public function saveAdditionalFields(
         array $submittedData,
         AbstractTask $task
-    )
-    {
+    ) {
         /** @var $task OptimizeIndexTask */
         if (!$this->isTaskInstanceofOptimizeIndexTask($task)) {
             return;
@@ -267,14 +270,15 @@ class OptimizeIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldPr
      * Check that a task is an instance of ReIndexTask
      *
      * @param ?AbstractTask $task
-     * @return boolean
+     * @return bool
      */
     protected function isTaskInstanceofOptimizeIndexTask(?AbstractTask $task): bool
     {
         if ((!is_null($task)) && (!($task instanceof OptimizeIndexTask))) {
             throw new LogicException(
                 '$task must be an instance of OptimizeIndexTask, '
-                .'other instances are not supported.', 1624620844
+                . 'other instances are not supported.',
+                1624620844
             );
         }
         return true;

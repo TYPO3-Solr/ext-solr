@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -15,14 +17,18 @@
 
 namespace ApacheSolrForTypo3\Solr\Task;
 
-use Psr\EventDispatcher\EventDispatcherInterface;
-use TYPO3\CMS\Scheduler\Task\AbstractTask;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
-use ApacheSolrForTypo3\Solr\System\Records\Queue\EventQueueItemRepository;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\EventListener\Events\DelayedProcessingFinishedEvent;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\DataUpdateEventInterface;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
-use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\EventListener\Events\DelayedProcessingFinishedEvent;
+use ApacheSolrForTypo3\Solr\System\Records\Queue\EventQueueItemRepository;
+use Doctrine\DBAL\Driver\Exception as DBALDriverException;
+use Doctrine\DBAL\Exception as DBALException;
+use InvalidArgumentException;
+use Psr\EventDispatcher\EventDispatcherInterface;
+use Throwable;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
+use TYPO3\CMS\Scheduler\Task\AbstractTask;
 
 /**
  * A worker processing the queued data update events
@@ -38,21 +44,28 @@ final class EventQueueWorkerTask extends AbstractTask
      *
      * @var int
      */
-    protected $limit = self::DEFAULT_PROCESSING_LIMIT;
+    protected int $limit = self::DEFAULT_PROCESSING_LIMIT;
 
     /**
      * Works through the indexing queue and indexes the queued items into Solr.
      *
      * @return bool Returns TRUE on success, FALSE if no items were indexed or none were found.
+     *
+     * @throws DBALDriverException
+     * @throws DBALException|\Doctrine\DBAL\DBALException
+     * @noinspection PhpMissingReturnTypeInspection See {@link \TYPO3\CMS\Scheduler\Task\AbstractTask::execute()}
      */
-    public function execute(): bool
+    public function execute()
     {
-       $this->processEvents();
-       return true;
+        $this->processEvents();
+        return true;
     }
 
     /**
      * Process queued data update events
+     *
+     * @throws DBALDriverException
+     * @throws DBALException|\Doctrine\DBAL\DBALException
      */
     protected function processEvents(): void
     {
@@ -65,7 +78,7 @@ final class EventQueueWorkerTask extends AbstractTask
             try {
                 $event = unserialize($queueItem['event']);
                 if (!$event instanceof DataUpdateEventInterface) {
-                    throw new \InvalidArgumentException(
+                    throw new InvalidArgumentException(
                         'Unsupported event found: '
                             . (is_object($event) ? get_class($event) : (string)$event),
                         1639747163
@@ -80,7 +93,7 @@ final class EventQueueWorkerTask extends AbstractTask
                 $dispatcher->dispatch(
                     new DelayedProcessingFinishedEvent($event)
                 );
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 $this->getSolrLogManager()->log(
                     SolrLogManager::ERROR,
                     'Couldn\'t process queued event',
@@ -88,14 +101,14 @@ final class EventQueueWorkerTask extends AbstractTask
                         'eventQueueItemUid' => $queueItem['uid'],
                         'error' => $e->getMessage(),
                         'errorCode' => $e->getCode(),
-                        'errorFile' => $e->getFile() . ':' . $e->getLine()
+                        'errorFile' => $e->getFile() . ':' . $e->getLine(),
                     ]
                 );
                 $itemRepository->updateEventQueueItem(
                     $queueItem['uid'],
                     [
                         'error' => 1,
-                        'error_message' => $e->getMessage() . '[' . $e->getCode() . ']'
+                        'error_message' => $e->getMessage() . '[' . $e->getCode() . ']',
                     ]
                 );
             }
@@ -110,6 +123,8 @@ final class EventQueueWorkerTask extends AbstractTask
      * the scheduler's task overview list.
      *
      * @return string Information to display
+     * @throws DBALDriverException
+     * @throws DBALException|\Doctrine\DBAL\DBALException
      */
     public function getAdditionalInformation(): string
     {
@@ -140,7 +155,7 @@ final class EventQueueWorkerTask extends AbstractTask
     /**
      * Returns the limit
      *
-     * @param int $limit
+     * @return int
      */
     public function getLimit(): int
     {

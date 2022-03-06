@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -24,7 +26,6 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\FacetUrlDecoderInterf
  */
 class HierarchyUrlDecoder implements FacetUrlDecoderInterface
 {
-
     /**
      * Delimiter for hierarchies in the URL.
      *
@@ -35,13 +36,13 @@ class HierarchyUrlDecoder implements FacetUrlDecoderInterface
     /**
      * Parses the given hierarchy filter and returns a Solr filter query.
      *
-     * @param string $hierarchy The hierarchy filter query.
+     * @param string $value The hierarchy filter query.
      * @param array $configuration Facet configuration
      * @return string Lucene query language filter to be used for querying Solr
      */
-    public function decode($hierarchy, array $configuration = [])
+    public function decode(string $value, array $configuration = []): string
     {
-        $escapedHierarchy = HierarchyTool::substituteSlashes($hierarchy);
+        $escapedHierarchy = HierarchyTool::substituteSlashes($value);
 
         $escapedHierarchy = substr($escapedHierarchy, 1);
         $escapedHierarchy = rtrim($escapedHierarchy, '/');
@@ -50,6 +51,6 @@ class HierarchyUrlDecoder implements FacetUrlDecoderInterface
 
         $filterContent = HierarchyTool::unSubstituteSlashes($filterContent);
 
-        return '"' . str_replace("\\", "\\\\", $filterContent) . '"';
+        return '"' . str_replace('\\', '\\\\', $filterContent) . '"';
     }
 }

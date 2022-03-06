@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -18,11 +20,12 @@ namespace ApacheSolrForTypo3\Solr;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
-use TYPO3\CMS\Core\Context\Context;
+use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Utility class for tx_solr
@@ -32,7 +35,6 @@ use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
  */
 class Util
 {
-
     /**
      * Generates a document id for documents representing page records.
      *
@@ -42,32 +44,41 @@ class Util
      * @param string $accessGroups comma separated list of uids of groups that have access to that page
      * @param string $mountPointParameter The mount point parameter that is used to access the page.
      * @return string The document id for that page
+     * @throws DBALDriverException
      */
-    public static function getPageDocumentId($uid, $typeNum = 0, $language = 0, $accessGroups = '0,-1', $mountPointParameter = '')
-    {
+    public static function getPageDocumentId(
+        int $uid,
+        int $typeNum = 0,
+        int $language = 0,
+        string $accessGroups = '0,-1',
+        string $mountPointParameter = ''
+    ): string {
         $additionalParameters = $typeNum . '/' . $language . '/' . $accessGroups;
 
-        if ((string)$mountPointParameter !== '') {
+        if ($mountPointParameter !== '') {
             $additionalParameters = $mountPointParameter . '/' . $additionalParameters;
         }
 
-        $documentId = self::getDocumentId('pages', $uid, $uid, $additionalParameters);
-
-        return $documentId;
+        return self::getDocumentId('pages', $uid, $uid, $additionalParameters);
     }
 
     /**
      * Generates a document id in the form $siteHash/$type/$uid.
      *
-     * @param string $table The records table name
+     * @param string $table The record's table name
      * @param int $rootPageId The record's site root id
      * @param int $uid The record's uid
      * @param string $additionalIdParameters Additional ID parameters
      * @return string A document id
+     * @throws DBALDriverException
      */
-    public static function getDocumentId($table, $rootPageId, $uid, $additionalIdParameters = '')
-    {
-            /** @var SiteRepository $siteRepository */
+    public static function getDocumentId(
+        string $table,
+        int $rootPageId,
+        int $uid,
+        string $additionalIdParameters = ''
+    ): string {
+        /** @var SiteRepository $siteRepository */
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $site = $siteRepository->getSiteByPageId($rootPageId);
         $siteHash = $site->getSiteHash();
@@ -85,7 +96,7 @@ class Util
      *
      * @return TypoScriptConfiguration
      */
-    public static function getSolrConfiguration()
+    public static function getSolrConfiguration(): TypoScriptConfiguration
     {
         $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
         return $configurationManager->getTypoScriptConfiguration();
@@ -98,7 +109,7 @@ class Util
      * @param int $uid The record's uid
      * @return bool TRUE if the record is in a draft workspace, FALSE if it's a LIVE record
      */
-    public static function isDraftRecord($table, $uid)
+    public static function isDraftRecord(string $table, int $uid): bool
     {
         $isWorkspaceRecord = false;
 
@@ -132,7 +143,7 @@ class Util
      * @param array $needles
      * @return bool
      */
-    public static function containsOneOfTheStrings($haystack, array $needles)
+    public static function containsOneOfTheStrings(string $haystack, array $needles): bool
     {
         foreach ($needles as $needle) {
             $position = strpos($haystack, $needle);
@@ -158,6 +169,7 @@ class Util
 
     /**
      * @return string
+     * @throws AspectNotFoundException
      */
     public static function getFrontendUserGroupsList(): string
     {
@@ -166,6 +178,7 @@ class Util
 
     /**
      * @return array
+     * @throws AspectNotFoundException
      */
     public static function getFrontendUserGroups(): array
     {
@@ -176,8 +189,9 @@ class Util
     /**
      * Returns the current execution time (formerly known as EXEC_TIME)
      * @return int
+     * @throws AspectNotFoundException
      */
-    public static function getExectionTime(): int
+    public static function getExceptionTime(): int
     {
         $context = GeneralUtility::makeInstance(Context::class);
         return (int)$context->getPropertyFromAspect('date', 'timestamp');

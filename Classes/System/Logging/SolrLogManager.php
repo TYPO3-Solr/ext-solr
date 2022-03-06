@@ -15,7 +15,7 @@
 
 namespace ApacheSolrForTypo3\Solr\System\Logging;
 
-use ApacheSolrForTypo3\Solr\Util;
+use TYPO3\CMS\Core\Log\Logger;
 use TYPO3\CMS\Core\Log\LogLevel;
 use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -33,36 +33,36 @@ class SolrLogManager
     const NOTICE = LogLevel::NOTICE;
 
     /**
-     * @var \TYPO3\CMS\Core\Log\Logger
+     * @var Logger|null
      */
-    protected $logger = null;
+    protected ?Logger $logger = null;
 
     /**
      * @var DebugWriter
      */
-    protected $debugWriter = null;
+    protected $debugWriter;
 
     /**
      * @var string
      */
-    protected $className = '';
+    protected string $className = '';
 
     /**
      * SolrLogManager constructor.
      *
      * @param string $className
-     * @param DebugWriter $debugWriter
+     * @param DebugWriter|null $debugWriter
      */
-    public function __construct($className, DebugWriter $debugWriter = null)
+    public function __construct(string $className, DebugWriter $debugWriter = null)
     {
         $this->className = $className;
         $this->debugWriter = $debugWriter ?? GeneralUtility::makeInstance(DebugWriter::class);
     }
 
     /**
-     * @return \TYPO3\CMS\Core\Log\Logger
+     * @return Logger
      */
-    protected function getLogger()
+    protected function getLogger(): Logger
     {
         if ($this->logger === null) {
             $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger($this->className);
@@ -77,10 +77,8 @@ class SolrLogManager
      * @param int|string $level Log level. Value according to \TYPO3\CMS\Core\Log\LogLevel. Alternatively accepts a string.
      * @param string $message Log message.
      * @param array $data Additional data to log
-     *
-     * @return mixed
      */
-    public function log($level, $message, array $data = [])
+    public function log($level, string $message, array $data = [])
     {
         $this->getLogger()->log($level, $message, $data);
         $this->debugWriter->write($level, $message, $data);

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -15,6 +17,8 @@
 
 namespace ApacheSolrForTypo3\Solr\ViewHelpers\Backend\Security;
 
+use InvalidArgumentException;
+use RuntimeException;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractConditionViewHelper;
@@ -57,6 +61,7 @@ class IfHasAccessToModuleViewHelper extends AbstractConditionViewHelper
      *
      * @param null $arguments
      * @return bool
+     * @noinspection PhpMissingReturnTypeInspection
      */
     protected static function evaluateCondition($arguments = null)
     {
@@ -66,7 +71,7 @@ class IfHasAccessToModuleViewHelper extends AbstractConditionViewHelper
             $hasAccessToModule = $beUser->modAccess(
                 self::getModuleConfiguration(self::getModuleSignatureFromArguments($arguments))
             );
-        } catch (\RuntimeException $exception) {
+        } catch (RuntimeException $exception) {
             return false;
         }
         return $hasAccessToModule;
@@ -87,9 +92,9 @@ class IfHasAccessToModuleViewHelper extends AbstractConditionViewHelper
      * Resolves
      *
      * @param array $arguments
-     * @return mixed|string
+     * @return string
      */
-    protected static function getModuleSignatureFromArguments(array $arguments)
+    protected static function getModuleSignatureFromArguments(array $arguments): string
     {
         $moduleSignature = $arguments['signature'];
 
@@ -103,7 +108,7 @@ class IfHasAccessToModuleViewHelper extends AbstractConditionViewHelper
             $possibleErrorCode = 1496311010;
         }
         if (!isset($GLOBALS['TBE_MODULES']['_configuration'][$moduleSignature])) {
-            throw new \RuntimeException(vsprintf('Module with signature "%s" is not configured or couldn\'t be resolved. ' . $possibleErrorMessageAppendix, [$moduleSignature]), $possibleErrorCode);
+            throw new RuntimeException(vsprintf('Module with signature "%s" is not configured or couldn\'t be resolved. ' . $possibleErrorMessageAppendix, [$moduleSignature]), $possibleErrorCode);
         }
         return $moduleSignature;
     }
@@ -118,10 +123,11 @@ class IfHasAccessToModuleViewHelper extends AbstractConditionViewHelper
         parent::validateArguments();
 
         if (empty($this->arguments['signature'])
-            && (empty($this->arguments['extension']) || empty($this->arguments['main']) || empty($this->arguments['sub'])
+            && (
+                empty($this->arguments['extension']) || empty($this->arguments['main']) || empty($this->arguments['sub'])
             )
         ) {
-            throw new \InvalidArgumentException('ifHasAccessToModule view helper requires either "signature" or all three other arguments: "extension", "main" and "sub". Please set arguments properly.', 1496314352);
+            throw new InvalidArgumentException('ifHasAccessToModule view helper requires either "signature" or all three other arguments: "extension", "main" and "sub". Please set arguments properly.', 1496314352);
         }
     }
 }

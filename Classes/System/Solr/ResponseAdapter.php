@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -22,22 +24,22 @@ use stdClass;
 /**
  * In EXT:solr 9 we have switched from the SolrPhpClient to the solarium api.
  *
- * In many places of the code the class Apache_Solr_Response and the property Apache_Solr_Response::reponse is used.
+ * In many places of the code the class Apache_Solr_Response and the property Apache_Solr_Response::response is used.
  * To be able to refactor this we need to have a replacement for Apache_Solr_Response that behaves like the original class,
- * to keep the old code working. This allows us to drop the old code of SolrPhpClient and refactore the other parts step by step.
+ * to keep the old code working. This allows us to drop the old code of SolrPhpClient and refactor the other parts step by step.
  *
  * Class ResponseAdapter
  *
  * Search response
  *
- * @property stdClass facet_counts
- * @property stdClass facets
- * @property stdClass spellcheck
- * @property stdClass response
- * @property stdClass responseHeader
- * @property stdClass highlighting
- * @property stdClass debug
- * @property stdClass lucene
+ * @property stdClass|null facet_counts
+ * @property stdClass|null facets
+ * @property stdClass|null spellcheck
+ * @property stdClass|null response
+ * @property stdClass|null responseHeader
+ * @property stdClass|null highlighting
+ * @property stdClass|null debug
+ * @property stdClass|null lucene
  * @property string file
  * @property array file_metadata
  *
@@ -45,6 +47,7 @@ use stdClass;
  *
  * @property stdClass index
  * @property stdClass fields
+ * @property stdClass $plugins
  */
 class ResponseAdapter implements Countable
 {
@@ -84,7 +87,7 @@ class ResponseAdapter implements Countable
 
         // @extensionScannerIgnoreLine
         if (isset($this->data->response) && is_array($this->data->response->docs ?? null)) {
-            $documents = array();
+            $documents = [];
 
             // @extensionScannerIgnoreLine
             foreach ($this->data->response->docs as $originalDocument) {
@@ -117,7 +120,7 @@ class ResponseAdapter implements Countable
      * Magic function for isset function on parsed data
      *
      * @param string $key
-     * @return boolean
+     * @return bool
      */
     public function __isset(string $key)
     {

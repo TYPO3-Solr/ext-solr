@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -15,19 +17,19 @@
 
 namespace ApacheSolrForTypo3\Solr\IndexQueue;
 
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\ContentElementDeletedEvent;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordMovedEvent;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordUpdatedEvent;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\VersionSwappedEvent;
+use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
+use ApacheSolrForTypo3\Solr\Util;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
-use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
-use ApacheSolrForTypo3\Solr\Util;
-use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\ContentElementDeletedEvent;
-use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\VersionSwappedEvent;
-use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordMovedEvent;
-use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordUpdatedEvent;
 
 /**
- * A class that monitors changes to records so that the changed record gets
+ * A class that monitors changes to the records so that the changed record get
  * passed to the index queue to update the according index document.
  *
  * @author Ingo Renner <ingo@typo3.org>
@@ -37,7 +39,7 @@ class RecordMonitor
     /**
      * @var EventDispatcherInterface
      */
-    protected $eventDispatcher;
+    protected EventDispatcherInterface $eventDispatcher;
 
     /**
      * RecordMonitor constructor.
@@ -63,7 +65,7 @@ class RecordMonitor
     ): void {
         if ($command === 'delete' && $table === 'tt_content' && ($GLOBALS['BE_USER']->workspace ?? null) == 0) {
             $this->eventDispatcher->dispatch(
-                new ContentElementDeletedEvent((int)$uid)
+                new ContentElementDeletedEvent($uid)
             );
         }
     }
@@ -77,11 +79,12 @@ class RecordMonitor
      * @param int $uid The record's uid
      * @param mixed $value
      */
-    public function processCmdmap_postProcess($command, $table, $uid, $value): void
-    {
-        $uid = (int)$uid;
-        $table = (string)$table;
-
+    public function processCmdmap_postProcess(
+        $command,
+        $table,
+        $uid,
+        $value
+    ): void {
         if (Util::isDraftRecord($table, $uid)) {
             // skip workspaces: index only LIVE workspace
             return;
@@ -110,15 +113,18 @@ class RecordMonitor
      *
      * @param string $status Status of the current operation, 'new' or 'update'
      * @param string $table The table the record belongs to
-     * @param mixed $uid The record's uid, [integer] or [string] (like 'NEW...')
+     * @param int|string $uid The record's uid, [integer] or [string] (like 'NEW...')
      * @param array $fields The record's data
      * @param DataHandler $tceMain TYPO3 Core Engine parent object
-     * @return void
      */
-    public function processDatamap_afterDatabaseOperations($status, $table, $uid, array $fields, DataHandler $tceMain): void
-    {
+    public function processDatamap_afterDatabaseOperations(
+        string $status,
+        string $table,
+        $uid,
+        array $fields,
+        DataHandler $tceMain
+    ): void {
         $recordUid = $uid;
-        $table = (string)$table;
         if ($this->skipMonitoringOfTable($table)) {
             return;
         }

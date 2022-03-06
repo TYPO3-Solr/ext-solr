@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -18,7 +20,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\Nume
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\AbstractRangeFacetItem;
 
 /**
- * Value object that represent an option of a numric range facet.
+ * Value object that represent an option of a numeric range facet.
  *
  * @author Frans Saris <frans@beech.it>
  * @author Timo Hund <timo.hund@dkd.de>
@@ -26,24 +28,24 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\AbstractRa
 class NumericRange extends AbstractRangeFacetItem
 {
     /**
-     * @var float
+     * @var float|null
      */
-    protected $startRequested;
+    protected ?float $startRequested = null;
 
     /**
-     * @var float
+     * @var float|null
      */
-    protected $endRequested;
+    protected ?float $endRequested = null;
 
     /**
-     * @var float
+     * @var float|null
      */
-    protected $startInResponse;
+    protected ?float $startInResponse = null;
 
     /**
-     * @var float
+     * @var float|null
      */
-    protected $endInResponse;
+    protected ?float $endInResponse = null;
 
     /**
      * @param NumericRangeFacet $facet
@@ -53,11 +55,20 @@ class NumericRange extends AbstractRangeFacetItem
      * @param float|null $endInResponse
      * @param string $gap
      * @param int $documentCount
-     * @param array $rangeCounts
+     * @param array|null $rangeCounts
      * @param bool $selected
      */
-    public function __construct(NumericRangeFacet $facet, $startRequested = null, $endRequested = null, $startInResponse = null, $endInResponse = null, $gap = '', $documentCount = 0, array $rangeCounts = null, $selected = false)
-    {
+    public function __construct(
+        NumericRangeFacet $facet,
+        ?float $startRequested = null,
+        ?float $endRequested = null,
+        ?float $startInResponse = null,
+        ?float $endInResponse = null,
+        string $gap = '',
+        int $documentCount = 0,
+        ?array $rangeCounts = [],
+        bool $selected = false
+    ) {
         $this->startInResponse = $startInResponse;
         $this->endInResponse = $endInResponse;
         $this->startRequested = $startRequested;
@@ -70,14 +81,13 @@ class NumericRange extends AbstractRangeFacetItem
             $label = $this->getRangeString();
         }
 
-
         parent::__construct($facet, $label, $documentCount, $selected);
     }
 
     /**
      * @return string
      */
-    protected function getRangeString()
+    protected function getRangeString(): string
     {
         return $this->startRequested . '-' . $this->endRequested;
     }
@@ -85,9 +95,9 @@ class NumericRange extends AbstractRangeFacetItem
     /**
      * Retrieves the end date that was requested by the user for this facet.
      *
-     * @return float
+     * @return float|null
      */
-    public function getEndRequested()
+    public function getEndRequested(): ?float
     {
         return $this->endRequested;
     }
@@ -95,9 +105,9 @@ class NumericRange extends AbstractRangeFacetItem
     /**
      * Retrieves the start date that was requested by the used for the facet.
      *
-     * @return float
+     * @return float|null
      */
-    public function getStartRequested()
+    public function getStartRequested(): ?float
     {
         return $this->startRequested;
     }
@@ -105,9 +115,9 @@ class NumericRange extends AbstractRangeFacetItem
     /**
      * Retrieves the end date that was received from solr for this facet.
      *
-     * @return float
+     * @return float|null
      */
-    public function getEndInResponse()
+    public function getEndInResponse(): ?float
     {
         return $this->endInResponse;
     }
@@ -115,9 +125,9 @@ class NumericRange extends AbstractRangeFacetItem
     /**
      * Retrieves the start date that was received from solr for this facet.
      *
-     * @return float
+     * @return float|null
      */
-    public function getStartInResponse()
+    public function getStartInResponse(): ?float
     {
         return $this->startInResponse;
     }

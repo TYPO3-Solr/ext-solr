@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
@@ -10,12 +12,11 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSetProcessor;
  */
 class TestSearchResultSetProcessor implements SearchResultSetProcessor
 {
-
     /**
      * @param SearchResultSet $resultSet
      * @return SearchResultSet
      */
-    public function process(SearchResultSet $resultSet)
+    public function process(SearchResultSet $resultSet): SearchResultSet
     {
         foreach ($resultSet->getSearchResults() as $result) {
             $result->type = strtoupper($result->type);
