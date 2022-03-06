@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -22,13 +24,12 @@ namespace ApacheSolrForTypo3\Solr\Domain\Variants;
  */
 interface IdModifier
 {
-
     /**
      * @param string $variantId
      * @param string $systemHash
      * @param string $type
-     * @param integer $uid
+     * @param int $uid
      * @return string
      */
-    public function modifyVariantId($variantId, $systemHash, $type, $uid);
+    public function modifyVariantId(string $variantId, string $systemHash, string $type, int $uid): string;
 }

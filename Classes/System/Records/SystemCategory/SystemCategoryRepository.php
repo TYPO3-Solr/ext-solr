@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -16,6 +18,8 @@
 namespace ApacheSolrForTypo3\Solr\System\Records\SystemCategory;
 
 use ApacheSolrForTypo3\Solr\System\Records\AbstractRepository;
+use Doctrine\DBAL\Driver\Exception as DBALDriverException;
+use Doctrine\DBAL\Exception as DBALException;
 
 /**
  * Repository class for sys_category items of the TYPO3 system.
@@ -27,14 +31,17 @@ class SystemCategoryRepository extends AbstractRepository
     /**
      * @var string
      */
-    protected $table = 'sys_category';
+    protected string $table = 'sys_category';
 
     /**
      * @param int $uid
      * @param string $limitFields
-     * @return array
+     * @return array<string,mixed>|false
+     *
+     * @throws DBALDriverException
+     * @throws DBALException|\Doctrine\DBAL\DBALException
      */
-    public function findOneByUid($uid = 0, $limitFields = '*')
+    public function findOneByUid(int $uid = 0, string $limitFields = '*')
     {
         return $this->getOneRowByUid($limitFields, $uid);
     }

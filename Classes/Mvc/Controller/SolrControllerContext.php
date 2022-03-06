@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -27,16 +29,15 @@ use TYPO3\CMS\Extbase\Mvc\Controller\ControllerContext;
  */
 class SolrControllerContext extends ControllerContext
 {
+    /**
+     * @var TypoScriptConfiguration|null
+     */
+    protected ?TypoScriptConfiguration $typoScriptConfiguration = null;
 
     /**
-     * @var TypoScriptConfiguration
+     * @var SearchResultSet|null
      */
-    protected $typoScriptConfiguration;
-
-    /**
-     * @var SearchResultSet
-     */
-    protected $searchResultSet;
+    protected ?SearchResultSet $searchResultSet = null;
 
     /**
      * @param TypoScriptConfiguration $typoScriptConfiguration
@@ -47,9 +48,9 @@ class SolrControllerContext extends ControllerContext
     }
 
     /**
-     * @return TypoScriptConfiguration
+     * @return TypoScriptConfiguration|null
      */
-    public function getTypoScriptConfiguration()
+    public function getTypoScriptConfiguration(): ?TypoScriptConfiguration
     {
         return $this->typoScriptConfiguration;
     }
@@ -63,9 +64,9 @@ class SolrControllerContext extends ControllerContext
     }
 
     /**
-     * @return SearchResultSet
+     * @return SearchResultSet|null
      */
-    public function getSearchResultSet()
+    public function getSearchResultSet(): ?SearchResultSet
     {
         return $this->searchResultSet;
     }

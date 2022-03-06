@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -15,15 +17,16 @@
 
 namespace ApacheSolrForTypo3\Solr;
 
-use Psr\EventDispatcher\EventDispatcherInterface;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\PageMovedEvent;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordDeletedEvent;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordGarbageCheckEvent;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\GarbageHandler;
 use ApacheSolrForTypo3\Solr\System\TCA\TCAService;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\GarbageHandler;
-use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordDeletedEvent;
-use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\PageMovedEvent;
-use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordGarbageCheckEvent;
+use UnexpectedValueException;
 
 /**
  * Garbage Collector, removes related documents from the index when a record is
@@ -39,17 +42,17 @@ class GarbageCollector implements SingletonInterface
     /**
      * @var array
      */
-    protected $trackedRecords = [];
+    protected array $trackedRecords = [];
 
     /**
      * @var TCAService
      */
-    protected $tcaService;
+    protected TCAService $tcaService;
 
     /**
      * @var EventDispatcherInterface
      */
-    protected $eventDispatcher;
+    protected EventDispatcherInterface $eventDispatcher;
 
     /**
      * GarbageCollector constructor.
@@ -71,6 +74,8 @@ class GarbageCollector implements SingletonInterface
      * @param int $uid The record's uid
      * @param string $value Not used
      * @param DataHandler $tceMain TYPO3 Core Engine parent object, not used
+     * @noinspection PhpMissingParamTypeInspection
+     * @noinspection PhpUnusedParameterInspection
      */
     public function processCmdmap_preProcess($command, $table, $uid, $value, DataHandler $tceMain): void
     {
@@ -88,11 +93,11 @@ class GarbageCollector implements SingletonInterface
      *
      * @param string $table The record's table name.
      * @param int $uid The record's uid.
-     * @throws \UnexpectedValueException if a hook object does not implement interface \ApacheSolrForTypo3\Solr\GarbageCollectorPostProcessor
+     * @throws UnexpectedValueException if a hook object does not implement interface \ApacheSolrForTypo3\Solr\GarbageCollectorPostProcessor
      */
-    public function collectGarbage($table, $uid): void
+    public function collectGarbage(string $table, int $uid): void
     {
-        $this->getGarbageHandler()->collectGarbage((string)$table, (int)$uid);
+        $this->getGarbageHandler()->collectGarbage($table, $uid);
     }
 
     /**
@@ -103,8 +108,11 @@ class GarbageCollector implements SingletonInterface
      * @param int $uid The record's uid
      * @param string $value Not used
      * @param DataHandler $tceMain TYPO3 Core Engine parent object, not used
+     * @noinspection PhpMissingParamTypeInspection
+     * @noinspection PhpUnusedParameterInspection
      */
-    public function processCmdmap_postProcess($command, $table, $uid, $value, DataHandler $tceMain) {
+    public function processCmdmap_postProcess($command, $table, $uid, $value, DataHandler $tceMain)
+    {
         // workspaces: collect garbage only for LIVE workspace
         if ($command === 'move' && $table === 'pages' && ($GLOBALS['BE_USER']->workspace ?? null) == 0) {
             $this->eventDispatcher->dispatch(
@@ -122,6 +130,8 @@ class GarbageCollector implements SingletonInterface
      * @param string $table The table the record belongs to
      * @param mixed $uid The record's uid, [integer] or [string] (like 'NEW...')
      * @param DataHandler $tceMain TYPO3 Core Engine parent object, not used
+     * @noinspection PhpMissingParamTypeInspection
+     * @noinspection PhpUnusedParameterInspection
      */
     public function processDatamap_preProcessFieldArray($incomingFields, $table, $uid, DataHandler $tceMain): void
     {
@@ -164,6 +174,8 @@ class GarbageCollector implements SingletonInterface
      * @param mixed $uid The record's uid, [integer] or [string] (like 'NEW...')
      * @param array $fields The record's data, not used
      * @param DataHandler $tceMain TYPO3 Core Engine parent object, not used
+     * @noinspection PhpMissingParamTypeInspection
+     * @noinspection PhpUnusedParameterInspection
      */
     public function processDatamap_afterDatabaseOperations($status, $table, $uid, array $fields, DataHandler $tceMain): void
     {
@@ -195,7 +207,7 @@ class GarbageCollector implements SingletonInterface
     }
 
     /**
-     * Checks whether the a frontend group field exists for the record and if so
+     * Checks whether the frontend group field exists for the record and if so
      * whether groups have been removed from accessing the record thus making
      * the record invisible to at least some people.
      *

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -32,37 +34,38 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class AdditionalFieldsIndexer implements SubstitutePageIndexer
 {
-
     /**
      * @var TypoScriptConfiguration
      */
-    protected $configuration;
+    protected TypoScriptConfiguration $configuration;
 
     /**
      * @var array
      */
-    protected $additionalIndexingFields = [];
+    protected array $additionalIndexingFields = [];
 
     /**
      * @var array
      */
-    protected $additionalFieldNames = [];
+    protected array $additionalFieldNames = [];
 
     /**
      * @var ContentObjectService
      */
-    protected $contentObjectService = null;
+    protected ContentObjectService $contentObjectService;
 
     /**
-     * @param TypoScriptConfiguration $configuration
-     * @param ContentObjectService $contentObjectService
+     * @param TypoScriptConfiguration|null $configuration
+     * @param ContentObjectService|null $contentObjectService
      */
-    public function __construct(TypoScriptConfiguration $configuration = null, ContentObjectService $contentObjectService = null)
-    {
-        $this->configuration = $configuration === null ? Util::getSolrConfiguration() : $configuration;
+    public function __construct(
+        TypoScriptConfiguration $configuration = null,
+        ContentObjectService $contentObjectService = null
+    ) {
+        $this->configuration = $configuration ?? Util::getSolrConfiguration();
         $this->additionalIndexingFields = $this->configuration->getIndexAdditionalFieldsConfiguration();
         $this->additionalFieldNames = $this->configuration->getIndexMappedAdditionalFieldNames();
-        $this->contentObjectService = $contentObjectService === null ? GeneralUtility::makeInstance(ContentObjectService::class) : $contentObjectService;
+        $this->contentObjectService = $contentObjectService ?? GeneralUtility::makeInstance(ContentObjectService::class);
     }
 
     /**
@@ -71,16 +74,16 @@ class AdditionalFieldsIndexer implements SubstitutePageIndexer
      * Uses the original document and adds fields as defined in
      * plugin.tx_solr.index.additionalFields.
      *
-     * @param Document $pageDocument The original page document.
+     * @param Document $originalPageDocument The original page document.
      * @return Document A Apache Solr Document object that replace the default page document
      */
-    public function getPageDocument(Document $pageDocument)
+    public function getPageDocument(Document $originalPageDocument): Document
     {
-        $substitutePageDocument = clone $pageDocument;
+        $substitutePageDocument = clone $originalPageDocument;
         $additionalFields = $this->getAdditionalFields();
 
         foreach ($additionalFields as $fieldName => $fieldValue) {
-            if (!isset($pageDocument->{$fieldName})) {
+            if (!isset($originalPageDocument->{$fieldName})) {
                 // making sure we only _add_ new fields
                 $substitutePageDocument->setField($fieldName, $fieldValue);
             }
@@ -94,7 +97,7 @@ class AdditionalFieldsIndexer implements SubstitutePageIndexer
      *
      * @return array An array mapping additional field names to their values.
      */
-    protected function getAdditionalFields()
+    protected function getAdditionalFields(): array
     {
         $additionalFields = [];
 
@@ -111,7 +114,7 @@ class AdditionalFieldsIndexer implements SubstitutePageIndexer
      * @param string $fieldName The name of the field to get.
      * @return string The field's value.
      */
-    protected function getFieldValue($fieldName)
+    protected function getFieldValue(string $fieldName): string
     {
         return $this->contentObjectService->renderSingleContentObjectByArrayAndKey($this->additionalIndexingFields, $fieldName);
     }

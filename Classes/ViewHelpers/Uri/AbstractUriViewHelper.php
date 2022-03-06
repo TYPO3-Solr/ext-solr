@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -39,7 +41,7 @@ abstract class AbstractUriViewHelper extends AbstractSolrFrontendViewHelper
     /**
      * @var SearchUriBuilder
      */
-    protected static $searchUriBuilder;
+    protected static SearchUriBuilder $searchUriBuilder;
 
     /**
      * @param SearchUriBuilder $searchUriBuilder
@@ -76,7 +78,7 @@ abstract class AbstractUriViewHelper extends AbstractSolrFrontendViewHelper
     {
         $resultSet = static::getUsedSearchResultSetFromRenderingContext($renderingContext);
         if (!$resultSet instanceof SearchResultSet) {
-            throw new InvalidArgumentException("The variable resultSet need to be defined in the scope of " . static::class, 1642765491);
+            throw new InvalidArgumentException('The variable resultSet need to be defined in the scope of ' . static::class, 1642765491);
         }
 
         return $resultSet->getUsedSearchRequest();

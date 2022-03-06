@@ -15,9 +15,10 @@
 
 namespace ApacheSolrForTypo3\Solr\Domain\Search\LastSearches;
 
-use ApacheSolrForTypo3\Solr\Domain\Search\LastSearches\LastSearchesService;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSetProcessor;
+use Doctrine\DBAL\Driver\Exception as DBALDriverException;
+use Doctrine\DBAL\Exception as DBALException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -30,10 +31,13 @@ class LastSearchesWriterProcessor implements SearchResultSetProcessor
 
     /**
      * @param SearchResultSet $resultSet
+     *
+     * @throws DBALDriverException
+     * @throws DBALException|\Doctrine\DBAL\DBALException
      * @return SearchResultSet
      */
-    public function process(SearchResultSet $resultSet) {
-
+    public function process(SearchResultSet $resultSet): SearchResultSet
+    {
         if ($resultSet->getAllResultCount() === 0) {
             // when the search does not produce a result we do not store the last searches
             return $resultSet;
@@ -57,8 +61,12 @@ class LastSearchesWriterProcessor implements SearchResultSetProcessor
      * @param SearchResultSet $resultSet
      * @return LastSearchesService
      */
-    protected function getLastSearchesService(SearchResultSet $resultSet) {
-        return GeneralUtility::makeInstance(LastSearchesService::class,
-            /** @scrutinizer ignore-type */ $resultSet->getUsedSearchRequest()->getContextTypoScriptConfiguration());
+    protected function getLastSearchesService(SearchResultSet $resultSet): LastSearchesService
+    {
+        return GeneralUtility::makeInstance(
+            LastSearchesService::class,
+            /** @scrutinizer ignore-type */
+            $resultSet->getUsedSearchRequest()->getContextTypoScriptConfiguration()
+        );
     }
 }

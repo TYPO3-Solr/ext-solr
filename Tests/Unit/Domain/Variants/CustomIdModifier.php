@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -19,7 +21,6 @@ use ApacheSolrForTypo3\Solr\Domain\Variants\IdModifier;
 
 class CustomIdModifier implements IdModifier
 {
-
     /**
      * @param string $variantId
      * @param string $systemHash
@@ -27,7 +28,7 @@ class CustomIdModifier implements IdModifier
      * @param int $uid
      * @return string
      */
-    public function modifyVariantId($variantId, $systemHash, $type, $uid)
+    public function modifyVariantId(string $variantId, string $systemHash, string $type, int $uid): string
     {
         return 'mycustomid';
     }

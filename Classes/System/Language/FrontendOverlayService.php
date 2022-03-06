@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -16,6 +18,8 @@
 namespace ApacheSolrForTypo3\Solr\System\Language;
 
 use ApacheSolrForTypo3\Solr\System\TCA\TCAService;
+use Doctrine\DBAL\Driver\Exception as DBALDriverException;
+use Doctrine\DBAL\Exception as DBALException;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
@@ -27,11 +31,10 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
  */
 class FrontendOverlayService
 {
-
     /**
      * @var TCAService
      */
-    protected $tcaService = null;
+    protected $tcaService;
 
     /**
      * @var TypoScriptFrontendController|null
@@ -78,9 +81,15 @@ class FrontendOverlayService
      * @param int $uid
      * @return int
      * @throws AspectNotFoundException
+     * @throws DBALDriverException
+     * @throws DBALException
+     * @throws DBALException|\Doctrine\DBAL\DBALException
      */
-    public function getUidOfOverlay(string $table, string $field, int $uid): int
-    {
+    public function getUidOfOverlay(
+        string $table,
+        string $field,
+        int $uid
+    ): int {
         $contextsLanguageId = $this->tsfe->getContext()->getPropertyFromAspect('language', 'id');
         // when no language is set at all we do not need to overlay
         if ($contextsLanguageId === null) {
@@ -117,7 +126,8 @@ class FrontendOverlayService
         // when there is a _PAGES_OVERLAY_UID | _LOCALIZED_UID in the overlay, we return it
         if ($localTableName === 'pages' && isset($overlayRecord['_PAGES_OVERLAY_UID'])) {
             return (int)$overlayRecord['_PAGES_OVERLAY_UID'];
-        } elseif (isset($overlayRecord['_LOCALIZED_UID'])) {
+        }
+        if (isset($overlayRecord['_LOCALIZED_UID'])) {
             return (int)$overlayRecord['_LOCALIZED_UID'];
         }
 
@@ -125,15 +135,22 @@ class FrontendOverlayService
     }
 
     /**
-     * @param $localTableName
-     * @param $localRecordUid
+     * @param string $localTableName
+     * @param int $localRecordUid
      * @return mixed
+     * @throws DBALDriverException
+     * @throws DBALException|\Doctrine\DBAL\DBALException
      */
-    protected function getRecord($localTableName, $localRecordUid)
+    protected function getRecord(string $localTableName, int $localRecordUid)
     {
         /* @var QueryBuilder $queryBuilder */
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($localTableName);
 
-        return $queryBuilder->select('*')->from($localTableName)->where($queryBuilder->expr()->eq('uid', $localRecordUid))->execute()->fetch();
+        return $queryBuilder
+            ->select('*')
+            ->from($localTableName)
+            ->where($queryBuilder->expr()->eq('uid', $localRecordUid))
+            ->execute()
+            ->fetchAssociative();
     }
 }

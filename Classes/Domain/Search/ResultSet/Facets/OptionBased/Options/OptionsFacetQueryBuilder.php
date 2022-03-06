@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -27,14 +29,14 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
  *
  * @Todo: When we use json faceting for other facets some logic of this class can be moved to the base class.
  */
-class OptionsFacetQueryBuilder extends DefaultFacetQueryBuilder implements FacetQueryBuilderInterface {
-
+class OptionsFacetQueryBuilder extends DefaultFacetQueryBuilder implements FacetQueryBuilderInterface
+{
     /**
      * @param string $facetName
      * @param TypoScriptConfiguration $configuration
      * @return array
      */
-    public function build($facetName, TypoScriptConfiguration $configuration)
+    public function build(string $facetName, TypoScriptConfiguration $configuration): array
     {
         $facetParameters = [];
         $facetConfiguration = $configuration->getSearchFacetingFacetByName($facetName);
@@ -73,7 +75,7 @@ class OptionsFacetQueryBuilder extends DefaultFacetQueryBuilder implements Facet
      * @param TypoScriptConfiguration $configuration
      * @return string
      */
-    protected function buildExcludeTagsForJson(array $facetConfiguration, TypoScriptConfiguration $configuration)
+    protected function buildExcludeTagsForJson(array $facetConfiguration, TypoScriptConfiguration $configuration): string
     {
         $excludeFields = [];
 
@@ -115,7 +117,7 @@ class OptionsFacetQueryBuilder extends DefaultFacetQueryBuilder implements Facet
      * @param TypoScriptConfiguration $configuration
      * @return int
      */
-    protected function buildMincountForJson(array $facetConfiguration, TypoScriptConfiguration $configuration)
+    protected function buildMincountForJson(array $facetConfiguration, TypoScriptConfiguration $configuration): int
     {
         return $facetConfiguration['minimumCount'] ?? ($configuration->getSearchFacetingMinimumCount() ?? 1);
     }
@@ -124,12 +126,13 @@ class OptionsFacetQueryBuilder extends DefaultFacetQueryBuilder implements Facet
      * @param array $facetConfiguration
      * @return string
      */
-    protected function buildSortingForJson(array $facetConfiguration) {
+    protected function buildSortingForJson(array $facetConfiguration): string
+    {
         if (isset($facetConfiguration['sortBy'])) {
             $sortingExpression = new SortingExpression();
             $sorting = $facetConfiguration['sortBy'];
-            $direction = $facetConfiguration['sortDirection'] ?? null;
-            return $sortingExpression->getForJsonFacet($sorting, $direction);
+            $direction = $facetConfiguration['sortDirection'] ?? '';
+            return $sortingExpression->getForJsonFacet((string)$sorting, $direction);
         }
         return '';
     }

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -30,33 +31,33 @@ class BeforeProcessCachedVariablesEvent
      *
      * @var UriInterface
      */
-    protected $uri;
+    protected UriInterface $uri;
 
     /**
      * A list of router configurations, containing information how to process variables
      *
      * @var array
      */
-    protected $routerConfiguration = [];
+    protected array $routerConfiguration = [];
 
     /**
      * List of variable keys
      *
      * @var array
      */
-    protected $variableKeys = [];
+    protected array $variableKeys = [];
 
     /**
      * List of variable values
      *
      * @var array
      */
-    protected $variableValues = [];
+    protected array $variableValues = [];
 
     /**
      * BeforeReplaceVariableInCachedUrlEvent constructor.
      *
-     * @param UriInterface $variableKeys
+     * @param UriInterface $uri
      * @param array $routerConfiguration
      * @param array $variableKeys
      * @param array $variableValues

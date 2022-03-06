@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -16,9 +18,9 @@
 namespace ApacheSolrForTypo3\Solr\Search;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Sortings;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Sorting\SortingHelper;
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequestAware;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -32,29 +34,28 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class SortingComponent extends AbstractComponent implements QueryAware, SearchRequestAware
 {
-
     /**
      * Solr query
      *
-     * @var Query
+     * @var Query|null
      */
-    protected $query;
+    protected ?Query $query;
 
     /**
-     * @var SearchRequest
+     * @var SearchRequest|null
      */
-    protected $searchRequest;
+    protected ?SearchRequest $searchRequest;
 
     /**
      * QueryBuilder
      *
-     * @var QueryBuilder|object
+     * @var QueryBuilder
      */
-    protected $queryBuilder;
+    protected QueryBuilder $queryBuilder;
 
     /**
      * AccessComponent constructor.
-     * @param QueryBuilder|null
+     * @param QueryBuilder|null $queryBuilder
      */
     public function __construct(QueryBuilder $queryBuilder = null)
     {
@@ -76,7 +77,7 @@ class SortingComponent extends AbstractComponent implements QueryAware, SearchRe
         }
 
         $isSortingEnabled = !empty($this->searchConfiguration['sorting']) && ((int)$this->searchConfiguration['sorting']) === 1;
-        if(!$isSortingEnabled) {
+        if (!$isSortingEnabled) {
             return;
         }
 
@@ -86,7 +87,7 @@ class SortingComponent extends AbstractComponent implements QueryAware, SearchRe
             return;
         }
 
-        // a passed sorting has allways priority an overwrites the configured initial sorting
+        // a passed sorting has always priority an overwrites the configured initial sorting
         $this->query->clearSorts();
         /** @var $sortHelper SortingHelper */
         $sortHelper = GeneralUtility::makeInstance(SortingHelper::class, $this->searchConfiguration['sorting.']['options.']);
@@ -101,7 +102,7 @@ class SortingComponent extends AbstractComponent implements QueryAware, SearchRe
      * @param array $arguments
      * @return bool
      */
-    protected function hasValidSorting(array $arguments)
+    protected function hasValidSorting(array $arguments): bool
     {
         return !empty($arguments['sort']) && preg_match('/^([a-z0-9_]+ (asc|desc)[, ]*)*([a-z0-9_]+ (asc|desc))+$/i', $arguments['sort']);
     }

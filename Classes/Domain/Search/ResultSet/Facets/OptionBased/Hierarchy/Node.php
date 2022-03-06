@@ -37,7 +37,7 @@ class Node extends AbstractOptionFacetItem
     protected $parentNode;
 
     /**
-     * @var integer
+     * @var int
      */
     protected $depth;
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -20,11 +22,12 @@ use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 /**
  * Class AbstractFacetPackage
  */
-abstract class AbstractFacetPackage {
+abstract class AbstractFacetPackage
+{
     /**
-     * @var ObjectManagerInterface
+     * @var ObjectManagerInterface|null
      */
-    protected $objectManager;
+    protected ?ObjectManagerInterface $objectManager;
 
     /**
      * @param ObjectManagerInterface $objectManager
@@ -37,13 +40,13 @@ abstract class AbstractFacetPackage {
     /**
      * @return string
      */
-    abstract public function getParserClassName();
+    abstract public function getParserClassName(): string;
 
     /**
      * @return FacetParserInterface
      * @throws InvalidFacetPackageException
      */
-    public function getParser()
+    public function getParser(): FacetParserInterface
     {
         $parser = $this->objectManager->get($this->getParserClassName());
         if (!$parser instanceof FacetParserInterface) {
@@ -55,19 +58,20 @@ abstract class AbstractFacetPackage {
     /**
      * @return string
      */
-    public function getUrlDecoderClassName() {
-        return (string)DefaultUrlDecoder::class;
+    public function getUrlDecoderClassName(): string
+    {
+        return DefaultUrlDecoder::class;
     }
 
     /**
      * @throws InvalidUrlDecoderException
      * @return FacetUrlDecoderInterface
      */
-    public function getUrlDecoder()
+    public function getUrlDecoder(): FacetUrlDecoderInterface
     {
         $urlDecoder = $this->objectManager->get($this->getUrlDecoderClassName());
         if (!$urlDecoder instanceof FacetUrlDecoderInterface) {
-            throw new InvalidUrlDecoderException('Invalid urldecoder for package ' . __CLASS__);
+            throw new InvalidUrlDecoderException('Invalid url-decoder for package ' . __CLASS__);
         }
         return $urlDecoder;
     }
@@ -75,19 +79,20 @@ abstract class AbstractFacetPackage {
     /**
      * @return string
      */
-    public function getQueryBuilderClassName() {
-        return (string)DefaultFacetQueryBuilder::class;
+    public function getQueryBuilderClassName(): string
+    {
+        return DefaultFacetQueryBuilder::class;
     }
 
     /**
      * @throws InvalidQueryBuilderException
      * @return FacetQueryBuilderInterface
      */
-    public function getQueryBuilder()
+    public function getQueryBuilder(): FacetQueryBuilderInterface
     {
         $urlDecoder = $this->objectManager->get($this->getQueryBuilderClassName());
-        if(!$urlDecoder instanceof FacetQueryBuilderInterface) {
-            throw new InvalidQueryBuilderException('Invalid querybuilder for package ' . __CLASS__);
+        if (!$urlDecoder instanceof FacetQueryBuilderInterface) {
+            throw new InvalidQueryBuilderException('Invalid query-builder for package ' . __CLASS__);
         }
         return $urlDecoder;
     }

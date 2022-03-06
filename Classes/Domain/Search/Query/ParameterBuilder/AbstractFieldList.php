@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -25,18 +27,12 @@ abstract class AbstractFieldList extends AbstractDeactivatable
     /**
      * @var array
      */
-    protected $fieldList = [];
-
-    /**
-     * Parameter key which should be used for Apache Solr URL query
-     *
-     * @var string
-     */
-    protected $parameterKey = '';
+    protected array $fieldList = [];
 
     /**
      * FieldList parameter builder constructor.
      *
+     * @param $isEnabled
      * @param array $fieldList
      */
     public function __construct($isEnabled, array $fieldList = [])
@@ -50,7 +46,7 @@ abstract class AbstractFieldList extends AbstractDeactivatable
      * @param string $delimiter
      * @return array
      */
-    protected static function buildFieldList(string $fieldListString, string $delimiter):array
+    protected static function buildFieldList(string $fieldListString, string $delimiter): array
     {
         $fields = GeneralUtility::trimExplode($delimiter, $fieldListString, true);
         $fieldList = [];
@@ -60,7 +56,7 @@ abstract class AbstractFieldList extends AbstractDeactivatable
 
             $boost = 1.0;
             if (isset($fieldNameAndBoost[1])) {
-                $boost = floatval($fieldNameAndBoost[1]);
+                $boost = (float)($fieldNameAndBoost[1]);
             }
 
             $fieldName = $fieldNameAndBoost[0];
@@ -77,7 +73,7 @@ abstract class AbstractFieldList extends AbstractDeactivatable
      */
     public function add(string $fieldName, float $boost = 1.0): AbstractFieldList
     {
-        $this->fieldList[$fieldName] = (float)$boost;
+        $this->fieldList[$fieldName] = $boost;
         return $this;
     }
 
@@ -87,7 +83,7 @@ abstract class AbstractFieldList extends AbstractDeactivatable
      * @param string $delimiter
      * @return string
      */
-    public function toString(string $delimiter = ' ')
+    public function toString(string $delimiter = ' '): string
     {
         $fieldListString = '';
 

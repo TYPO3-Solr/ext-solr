@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -16,6 +18,7 @@
 namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\NumericRange;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\FacetUrlDecoderInterface;
+use InvalidArgumentException;
 
 /**
  * Parser to build Solr range queries from tx_solr[filter]
@@ -26,7 +29,6 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\FacetUrlDecoderInterf
  */
 class NumericRangeUrlDecoder implements FacetUrlDecoderInterface
 {
-
     /**
      * Delimiter for ranges in the URL.
      *
@@ -38,16 +40,16 @@ class NumericRangeUrlDecoder implements FacetUrlDecoderInterface
      * Parses the given range from a GET parameter and returns a Solr range
      * filter.
      *
-     * @param string $range The range filter from the URL.
+     * @param string $value The range filter from the URL.
      * @param array $configuration Facet configuration
      * @return string Lucene query language filter to be used for querying Solr
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
-    public function decode($range, array $configuration = [])
+    public function decode(string $value, array $configuration = []): string
     {
-        preg_match('/(-?\d*?)' . self::DELIMITER . '(-?\d*)/', $range, $filterParts);
+        preg_match('/(-?\d*?)' . self::DELIMITER . '(-?\d*)/', $value, $filterParts);
         if ($filterParts[1] == '' || $filterParts[2] == '') {
-            throw new \InvalidArgumentException(
+            throw new InvalidArgumentException(
                 'Invalid numeric range given',
                 1466062730
             );

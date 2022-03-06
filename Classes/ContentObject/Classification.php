@@ -47,10 +47,10 @@ class Classification extends AbstractContentObject
      * Returns mapped classes when the field matches on of the configured patterns ...
      *
      * @inheritDoc
+     * @noinspection PhpMissingReturnTypeInspection, because foreign source inheritance See {@link AbstractContentObject::render()}
      */
     public function render($conf = [])
     {
-
         if (!is_array($conf['classes.'])) {
             throw new InvalidArgumentException('No class configuration configured for SOLR_CLASSIFICATION object. Given configuration: ' . serialize($conf));
         }
@@ -80,15 +80,15 @@ class Classification extends AbstractContentObject
      * @param array $configuredMappedClasses
      * @return ClassificationItem[]
      */
-    protected function buildClassificationsFromConfiguration($configuredMappedClasses) : array
+    protected function buildClassificationsFromConfiguration(array $configuredMappedClasses): array
     {
         $classifications = [];
         foreach ($configuredMappedClasses as $class) {
-            if ( (empty($class['patterns']) && empty($class['matchPatterns'])) || empty($class['class'])) {
+            if ((empty($class['patterns']) && empty($class['matchPatterns'])) || empty($class['class'])) {
                 throw new InvalidArgumentException('A class configuration in SOLR_CLASSIFCATION needs to have a pattern and a class configured. Given configuration: ' . serialize($class));
             }
 
-                // @todo deprecate patterns configuration
+            // @todo deprecate patterns configuration
             $patterns = empty($class['patterns']) ? [] : GeneralUtility::trimExplode(',', $class['patterns']);
             $matchPatterns = empty($class['matchPatterns']) ? [] : GeneralUtility::trimExplode(',', $class['matchPatterns']);
             $matchPatterns = $matchPatterns + $patterns;
@@ -97,9 +97,12 @@ class Classification extends AbstractContentObject
             $className = $class['class'];
             $classifications[] = GeneralUtility::makeInstance(
                 ClassificationItem::class,
-                /** @scrutinizer ignore-type */ $matchPatterns,
-                /** @scrutinizer ignore-type */ $unMatchPatters,
-                /** @scrutinizer ignore-type */ $className
+                /** @scrutinizer ignore-type */
+                $matchPatterns,
+                /** @scrutinizer ignore-type */
+                $unMatchPatters,
+                /** @scrutinizer ignore-type */
+                $className
             );
         }
 

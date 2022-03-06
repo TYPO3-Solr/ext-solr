@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -17,6 +19,8 @@ namespace ApacheSolrForTypo3\Solr\Report;
 
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\System\Solr\Service\SolrAdminService;
+use Doctrine\DBAL\Driver\Exception as DBALDriverException;
+use Throwable;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Reports\Status;
 
@@ -28,7 +32,6 @@ use TYPO3\CMS\Reports\Status;
  */
 class AccessFilterPluginInstalledStatus extends AbstractSolrStatus
 {
-
     /**
      * Solr Access Filter plugin version.
      *
@@ -50,6 +53,10 @@ class AccessFilterPluginInstalledStatus extends AbstractSolrStatus
      * Solr server. Only adds an entry if the Access Filter Query Parser Plugin
      * is not configured.
      *
+     * @throws DBALDriverException
+     * @throws Throwable
+     *
+     * @noinspection PhpMissingReturnTypeInspection see {@link \TYPO3\CMS\Reports\StatusProviderInterface::getStatus()}
      */
     public function getStatus()
     {
@@ -79,9 +86,9 @@ class AccessFilterPluginInstalledStatus extends AbstractSolrStatus
      * Checks whether the Solr plugin is installed.
      *
      * @param SolrAdminService $adminService
-     * @return null|\TYPO3\CMS\Reports\Status
+     * @return Status|null
      */
-    protected function checkPluginInstallationStatus(SolrAdminService $adminService)
+    protected function checkPluginInstallationStatus(SolrAdminService $adminService): ?Status
     {
         if ($this->isPluginInstalled($adminService)) {
             return null;
@@ -92,20 +99,24 @@ class AccessFilterPluginInstalledStatus extends AbstractSolrStatus
         $report = $this->getRenderedReport('AccessFilterPluginInstalledStatusNotInstalled.html', $variables);
         return GeneralUtility::makeInstance(
             Status::class,
-            /** @scrutinizer ignore-type */ 'Access Filter Plugin',
-            /** @scrutinizer ignore-type */ 'Not Installed',
-            /** @scrutinizer ignore-type */ $report,
-            /** @scrutinizer ignore-type */ Status::WARNING
+            /** @scrutinizer ignore-type */
+            'Access Filter Plugin',
+            /** @scrutinizer ignore-type */
+            'Not Installed',
+            /** @scrutinizer ignore-type */
+            $report,
+            /** @scrutinizer ignore-type */
+            Status::WARNING
         );
     }
 
     /**
-     * Checks whether the Solr plugin version is up to date.
+     * Checks whether the Solr plugin version is up-to-date.
      *
      * @param SolrAdminService $adminService
-     * @return null|\TYPO3\CMS\Reports\Status
+     * @return Status|null
      */
-    protected function checkPluginVersion(SolrAdminService $adminService)
+    protected function checkPluginVersion(SolrAdminService $adminService): ?Status
     {
         if (!($this->isPluginInstalled($adminService) && $this->isPluginOutdated($adminService))) {
             return null;
@@ -117,10 +128,14 @@ class AccessFilterPluginInstalledStatus extends AbstractSolrStatus
 
         return GeneralUtility::makeInstance(
             Status::class,
-            /** @scrutinizer ignore-type */ 'Access Filter Plugin',
-            /** @scrutinizer ignore-type */ 'Outdated',
-            /** @scrutinizer ignore-type */ $report,
-            /** @scrutinizer ignore-type */ Status::WARNING
+            /** @scrutinizer ignore-type */
+            'Access Filter Plugin',
+            /** @scrutinizer ignore-type */
+            'Outdated',
+            /** @scrutinizer ignore-type */
+            $report,
+            /** @scrutinizer ignore-type */
+            Status::WARNING
         );
     }
 
@@ -131,7 +146,7 @@ class AccessFilterPluginInstalledStatus extends AbstractSolrStatus
      * @param SolrAdminService $adminService
      * @return bool True if the plugin is installed, FALSE otherwise.
      */
-    protected function isPluginInstalled(SolrAdminService $adminService)
+    protected function isPluginInstalled(SolrAdminService $adminService): bool
     {
         $accessFilterQueryParserPluginInstalled = false;
 
@@ -149,12 +164,10 @@ class AccessFilterPluginInstalledStatus extends AbstractSolrStatus
      * @param SolrAdminService $adminService
      * @return bool True if the plugin is outdated, FALSE if it meets the current version recommendation.
      */
-    protected function isPluginOutdated(SolrAdminService $adminService)
+    protected function isPluginOutdated(SolrAdminService $adminService): bool
     {
         $pluginVersion = $this->getInstalledPluginVersion($adminService);
-        $pluginVersionOutdated = version_compare($pluginVersion, self::RECOMMENDED_PLUGIN_VERSION, '<');
-
-        return $pluginVersionOutdated;
+        return version_compare($pluginVersion, self::RECOMMENDED_PLUGIN_VERSION, '<');
     }
 
     /**
@@ -163,7 +176,7 @@ class AccessFilterPluginInstalledStatus extends AbstractSolrStatus
      * @param SolrAdminService $adminService
      * @return string The installed plugin's version number.
      */
-    public function getInstalledPluginVersion(SolrAdminService $adminService)
+    public function getInstalledPluginVersion(SolrAdminService $adminService): string
     {
         $pluginsInformation = $adminService->getPluginsInformation();
 
@@ -173,8 +186,6 @@ class AccessFilterPluginInstalledStatus extends AbstractSolrStatus
         $rawVersion = $matches['version'][0] ?? '';
 
         $explodedRawVersion = explode('-', $rawVersion);
-        $version = $explodedRawVersion[0];
-
-        return $version;
+        return $explodedRawVersion[0] ?? '';
     }
 }

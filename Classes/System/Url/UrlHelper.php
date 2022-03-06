@@ -15,8 +15,8 @@
 
 namespace ApacheSolrForTypo3\Solr\System\Url;
 
+use InvalidArgumentException;
 use TYPO3\CMS\Core\Http\Uri;
-use TYPO3\CMS\Core\Utility\MathUtility;
 
 /**
  * Class UrlHelper
@@ -31,30 +31,22 @@ class UrlHelper extends Uri
      * @deprecated Will be removed with v12. Use withHost instead.
      * @see Uri::withHost()
      */
-    public function setHost(string $host)
+    public function setHost(string $host): UrlHelper
     {
         $this->host = $host;
         return $this;
     }
 
     /**
-     * @param string $port
+     * @param int $port
      * @return UrlHelper
      * @deprecated Will be removed with v12. Use withPort instead.
      * @see Uri::withPort()
      */
-    public function setPort(string $port)
+    public function setPort(int $port): UrlHelper
     {
-        if ($port !== '') {
-            if (MathUtility::canBeInterpretedAsInteger($port) === false) {
-                $argumentType = is_object($port) ? get_class($port) : gettype($port);
-                throw new \InvalidArgumentException('Invalid port "' . $argumentType . '" specified, must be an integer.', 1436717324);
-            }
-
-            $port = (int)$port;
-            if ($port < 1 || $port > 65535) {
-                throw new \InvalidArgumentException('Invalid port "' . $port . '" specified, must be a valid TCP/UDP port.', 1436717326);
-            }
+        if ($port < 1 || $port > 65535) {
+            throw new InvalidArgumentException('Invalid port "' . $port . '" specified, must be a valid TCP/UDP port.', 1436717326);
         }
 
         $this->port = $port;
@@ -67,7 +59,7 @@ class UrlHelper extends Uri
      * @deprecated Will be removed with v12. Use Uri::withScheme instead.
      * @see Uri::withScheme()
      */
-    public function setScheme(string $scheme)
+    public function setScheme(string $scheme): UrlHelper
     {
         $this->scheme = $this->sanitizeScheme($scheme);
         return $this;
@@ -79,18 +71,14 @@ class UrlHelper extends Uri
      * @deprecated Will be removed with v12. Use withPath instead.
      * @see Uri::withPath()
      */
-    public function setPath($path)
+    public function setPath(string $path): UrlHelper
     {
-        if (!is_string($path)) {
-            throw new \InvalidArgumentException('Invalid path provided. Must be of type string.', 1436717328);
-        }
-
         if (strpos($path, '?') !== false) {
-            throw new \InvalidArgumentException('Invalid path provided. Must not contain a query string.', 1436717330);
+            throw new InvalidArgumentException('Invalid path provided. Must not contain a query string.', 1436717330);
         }
 
         if (strpos($path, '#') !== false) {
-            throw new \InvalidArgumentException('Invalid path provided; must not contain a URI fragment', 1436717332);
+            throw new InvalidArgumentException('Invalid path provided; must not contain a URI fragment', 1436717332);
         }
         $this->path = $this->sanitizePath($path);
         return $this;
@@ -120,9 +108,9 @@ class UrlHelper extends Uri
 
     /**
      * @param string $parameterName
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      * @return UrlHelper
-     * @deprecated Will be removed with v12. Use {@link withoutQueryParameter} instead.
+     * @deprecated Will be removed with v12. Use {@link withoutQueryParameter()} instead.
      */
     public function removeQueryParameter(string $parameterName): UrlHelper
     {
@@ -163,9 +151,9 @@ class UrlHelper extends Uri
     /**
      * @param string $parameterName
      * @param mixed $value
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      * @return UrlHelper
-     * @deprecated Will be removed with v12. Use withQueryParameter instead.
+     * @deprecated Will be removed with v12. Use {@link withQueryParameter()} instead.
      */
     public function addQueryParameter(string $parameterName, $value): UrlHelper
     {
@@ -185,7 +173,7 @@ class UrlHelper extends Uri
 
     /**
      * @return string
-     * @deprecated Will be removed with v12. Use __toString() instead.
+     * @deprecated Will be removed with v12. Use {@link __toString()} instead.
      */
     public function getUrl(): string
     {

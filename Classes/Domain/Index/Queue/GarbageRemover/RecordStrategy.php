@@ -20,15 +20,15 @@ use TYPO3\CMS\Backend\Utility\BackendUtility;
 /**
  * Class RecordStrategy
  */
-class RecordStrategy extends AbstractStrategy  {
-
+class RecordStrategy extends AbstractStrategy
+{
     /**
      * Removes the garbage of a record.
      *
      * @param string $table
      * @param int $uid
      */
-    protected function removeGarbageOfByStrategy($table, $uid)
+    protected function removeGarbageOfByStrategy(string $table, int $uid)
     {
         $languageField = $GLOBALS['TCA'][$table]['ctrl']['languageField'] ?? false;
         $transOrigPointerField = $GLOBALS['TCA'][$table]['ctrl']['transOrigPointerField'] ?? false;

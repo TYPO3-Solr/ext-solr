@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -18,15 +20,15 @@ namespace ApacheSolrForTypo3\Solr\Report;
 use ApacheSolrForTypo3\Solr\FrontendEnvironment;
 use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
+use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use RuntimeException;
 use TYPO3\CMS\Core\Error\Http\ServiceUnavailableException;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
-use TYPO3\CMS\Core\Http\ImmediateResponseException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Reports\Status;
 
 /**
- * Provides an status report, which checks whether the configuration of the
+ * Provides a status report, which checks whether the configuration of the
  * extension is ok.
  *
  * @author Ingo Renner <ingo@typo3.org>
@@ -41,19 +43,17 @@ class SolrConfigurationStatus extends AbstractSolrStatus
     /**
      * @var FrontendEnvironment
      */
-    protected $frontendEnvironment = null;
+    protected $frontendEnvironment;
 
     /**
      * SolrConfigurationStatus constructor.
      * @param ExtensionConfiguration|null $extensionConfiguration
      * @param FrontendEnvironment|null $frontendEnvironment
-
      */
     public function __construct(
         ExtensionConfiguration $extensionConfiguration = null,
         FrontendEnvironment $frontendEnvironment = null
-    )
-    {
+    ) {
         $this->extensionConfiguration = $extensionConfiguration ?? GeneralUtility::makeInstance(ExtensionConfiguration::class);
         $this->frontendEnvironment = $frontendEnvironment ?? GeneralUtility::makeInstance(FrontendEnvironment::class);
     }
@@ -62,7 +62,10 @@ class SolrConfigurationStatus extends AbstractSolrStatus
      * Compiles a collection of configuration status checks.
      *
      * @return array
-     * @noinspection PhpMissingReturnTypeInspection
+     *
+     * @throws DBALDriverException
+     *
+     * @noinspection PhpMissingReturnTypeInspection see {@link \TYPO3\CMS\Reports\StatusProviderInterface::getStatus()}
      */
     public function getStatus()
     {
@@ -88,7 +91,7 @@ class SolrConfigurationStatus extends AbstractSolrStatus
      * Checks whether the "Use as Root Page" page property has been set for any
      * site.
      *
-     * @return null|Status An error status is returned if no root pages were found.
+     * @return Status|null An error status is returned if no root pages were found.
      */
     protected function getRootPageFlagStatus(): ?Status
     {
@@ -100,10 +103,14 @@ class SolrConfigurationStatus extends AbstractSolrStatus
         $report = $this->getRenderedReport('RootPageFlagStatus.html');
         return GeneralUtility::makeInstance(
             Status::class,
-            /** @scrutinizer ignore-type */ 'Sites',
-            /** @scrutinizer ignore-type */ 'No sites found',
-            /** @scrutinizer ignore-type */ $report,
-            /** @scrutinizer ignore-type */ Status::ERROR
+            /** @scrutinizer ignore-type */
+            'Sites',
+            /** @scrutinizer ignore-type */
+            'No sites found',
+            /** @scrutinizer ignore-type */
+            $report,
+            /** @scrutinizer ignore-type */
+            Status::ERROR
         );
     }
 
@@ -111,7 +118,8 @@ class SolrConfigurationStatus extends AbstractSolrStatus
      * Checks whether config.index_enable is set to 1, otherwise indexing will
      * not work.
      *
-     * @return null|Status An error status is returned for each site root page config.index_enable = 0.
+     * @return Status|null An error status is returned for each site root page config.index_enable = 0.
+     * @throws DBALDriverException
      */
     protected function getConfigIndexEnableStatus(): ?Status
     {
@@ -123,10 +131,14 @@ class SolrConfigurationStatus extends AbstractSolrStatus
         $report = $this->getRenderedReport('SolrConfigurationStatusIndexing.html', ['pages' => $rootPagesWithIndexingOff]);
         return GeneralUtility::makeInstance(
             Status::class,
-            /** @scrutinizer ignore-type */ 'Page Indexing',
-            /** @scrutinizer ignore-type */ 'Indexing is disabled',
-            /** @scrutinizer ignore-type */ $report,
-            /** @scrutinizer ignore-type */ Status::WARNING
+            /** @scrutinizer ignore-type */
+            'Page Indexing',
+            /** @scrutinizer ignore-type */
+            'Indexing is disabled',
+            /** @scrutinizer ignore-type */
+            $report,
+            /** @scrutinizer ignore-type */
+            Status::WARNING
         );
     }
 
@@ -134,6 +146,7 @@ class SolrConfigurationStatus extends AbstractSolrStatus
      * Returns an array of rootPages where the indexing is off and EXT:solr is enabled.
      *
      * @return array
+     * @throws DBALDriverException
      */
     protected function getRootPagesWithIndexingOff(): array
     {
@@ -183,6 +196,7 @@ class SolrConfigurationStatus extends AbstractSolrStatus
      *
      * @param int $pageUid
      * @return bool
+     * @throws DBALDriverException
      */
     protected function getIsSolrEnabled(int $pageUid): bool
     {
@@ -194,6 +208,7 @@ class SolrConfigurationStatus extends AbstractSolrStatus
      *
      * @param int $pageUid
      * @return bool
+     * @throws DBALDriverException
      */
     protected function getIsIndexingEnabled(int $pageUid): bool
     {

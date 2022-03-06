@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -22,31 +24,31 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
  * The Slops ParameterProvider is responsible to build the solr query parameters
  * that are needed for the several slop arguments.
  */
-class Slops implements ParameterBuilder
+class Slops implements ParameterBuilderInterface
 {
     const NO_SLOP = null;
 
     /**
      * The qs parameter
      *
-     * @var int
+     * @var int|null
      */
-    protected $querySlop = self::NO_SLOP;
+    protected ?int $querySlop = self::NO_SLOP;
 
     /**
-     * @var int
+     * @var int|null
      */
-    protected $phraseSlop = self::NO_SLOP;
+    protected ?int $phraseSlop = self::NO_SLOP;
 
     /**
-     * @var int
+     * @var int|null
      */
-    protected $bigramPhraseSlop = self::NO_SLOP;
+    protected ?int $bigramPhraseSlop = self::NO_SLOP;
 
     /**
-     * @var int
+     * @var int|null
      */
-    protected $trigramPhraseSlop = self::NO_SLOP;
+    protected ?int $trigramPhraseSlop = self::NO_SLOP;
 
     /**
      * Slops constructor.
@@ -55,8 +57,12 @@ class Slops implements ParameterBuilder
      * @param int|null $bigramPhraseSlop
      * @param int|null $trigramPhraseSlop
      */
-    public function __construct($querySlop = self::NO_SLOP, $phraseSlop = self::NO_SLOP, $bigramPhraseSlop = self::NO_SLOP, $trigramPhraseSlop = self::NO_SLOP)
-    {
+    public function __construct(
+        ?int $querySlop = self::NO_SLOP,
+        ?int $phraseSlop = self::NO_SLOP,
+        ?int $bigramPhraseSlop = self::NO_SLOP,
+        ?int $trigramPhraseSlop = self::NO_SLOP
+    ) {
         $this->querySlop = $querySlop;
         $this->phraseSlop = $phraseSlop;
         $this->bigramPhraseSlop = $bigramPhraseSlop;
@@ -64,7 +70,7 @@ class Slops implements ParameterBuilder
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function getHasQuerySlop()
     {
@@ -88,13 +94,12 @@ class Slops implements ParameterBuilder
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function getHasPhraseSlop()
     {
         return $this->phraseSlop !== null;
     }
-
 
     /**
      * @return int|null
@@ -113,7 +118,7 @@ class Slops implements ParameterBuilder
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function getHasBigramPhraseSlop()
     {
@@ -137,7 +142,7 @@ class Slops implements ParameterBuilder
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function getHasTrigramPhraseSlop()
     {

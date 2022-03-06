@@ -30,7 +30,7 @@ abstract class AbstractHierarchyProcessor
      * @return array Solr hierarchy
      * @see http://wiki.apache.org/solr/HierarchicalFaceting
      */
-    protected function buildSolrHierarchyFromIdRootline(array $idRootline)
+    protected function buildSolrHierarchyFromIdRootline(array $idRootline): array
     {
         $hierarchy = [];
 

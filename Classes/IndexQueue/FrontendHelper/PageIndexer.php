@@ -24,9 +24,10 @@ use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use ApacheSolrForTypo3\Solr\Typo3PageIndexer;
 use ApacheSolrForTypo3\Solr\Util;
+use Doctrine\DBAL\Driver\Exception as DBALDriverException;
+use Doctrine\DBAL\Exception as DBALException;
 use Throwable;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
-use TYPO3\CMS\Core\Log\Logger;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -48,26 +49,21 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
      *
      * @var string
      */
-    protected $action = 'indexPage';
+    protected string $action = 'indexPage';
 
     /**
      * the page currently being indexed.
      *
      * @var TypoScriptFrontendController
      */
-    protected $page;
+    protected TypoScriptFrontendController $page;
 
     /**
      * Response data
      *
      * @var array
      */
-    protected $responseData = [];
-
-    /**
-     * @var Logger
-     */
-    protected $logger = null;
+    protected array $responseData = [];
 
     /**
      * Activates a frontend helper by registering for hooks and other
@@ -93,19 +89,18 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
      * @return array Page indexed status.
      * @noinspection PhpUnused
      */
-    public function getData()
+    public function getData(): array
     {
         return $this->responseData;
     }
 
-    #
-    # Indexer authorisation for access restricted pages / content
-    #
+    //
+    // Indexer authorisation for access restricted pages / content
+    //
 
     /**
      * Fakes a logged in user to retrieve access restricted content.
      *
-     * @return void
      * @noinspection PhpUnused
      */
     public function authorizeFrontendUser()
@@ -129,7 +124,7 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
 
         $this->responseData['authorization'] = [
             'username' => $GLOBALS['TSFE']->fe_user->user['username'],
-            'usergroups' => $GLOBALS['TSFE']->fe_user->user['usergroup']
+            'usergroups' => $GLOBALS['TSFE']->fe_user->user['usergroup'],
         ];
     }
 
@@ -138,7 +133,7 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
      *
      * @return Rootline The access rootline to use for indexing.
      */
-    protected function getAccessRootline()
+    protected function getAccessRootline(): Rootline
     {
         $stringAccessRootline = '';
 
@@ -146,15 +141,12 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
             $stringAccessRootline = $this->request->getParameter('accessRootline');
         }
 
-        /** @noinspection PhpIncompatibleReturnTypeInspection */
         return GeneralUtility::makeInstance(Rootline::class, /** @scrutinizer ignore-type */ $stringAccessRootline);
     }
 
     /**
      * Registers an authentication service to authorize / grant the indexer to
      * access protected pages.
-     *
-     * @return void
      */
     protected function registerAuthorizationService()
     {
@@ -190,7 +182,7 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
      *
      * @return int Highest priority of all registered authentication service
      */
-    protected function getHighestAuthenticationServicePriority()
+    protected function getHighestAuthenticationServicePriority(): int
     {
         $highestPriority = 0;
 
@@ -205,9 +197,9 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
         return $highestPriority;
     }
 
-    #
-    # Indexing
-    #
+    //
+    // Indexing
+    //
 
     /**
      * Generates the current page's URL.
@@ -216,18 +208,18 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
      *
      * @return string URL of the current page.
      */
-    protected function generatePageUrl()
+    protected function generatePageUrl(): string
     {
         if ($this->request->getParameter('overridePageUrl')) {
             return $this->request->getParameter('overridePageUrl');
         }
 
-            /** @var $contentObject ContentObjectRenderer */
+        /** @var $contentObject ContentObjectRenderer */
         $contentObject = GeneralUtility::makeInstance(ContentObjectRenderer::class);
 
         $typolinkConfiguration = [
-            'parameter' => intval($this->page->id),
-            'linkAccessRestrictedPages' => '1'
+            'parameter' => (int)($this->page->id),
+            'linkAccessRestrictedPages' => '1',
         ];
 
         $language = GeneralUtility::_GET('L');
@@ -252,6 +244,7 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
      * @param array $params unused
      * @param TypoScriptFrontendController $page TypoScript frontend
      * @noinspection PhpUnused
+     * @noinspection PhpUnusedParameterInspection
      */
     public function hook_indexContent(array $params, TypoScriptFrontendController $page)
     {
@@ -292,7 +285,7 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
             $this->responseData['solrConnection'] = [
                 'rootPage' => $indexQueueItem->getRootPageUid(),
                 'sys_language_uid' => Util::getLanguageUid(),
-                'solr' => (string)$solrConnection->getNode('write')
+                'solr' => (string)$solrConnection->getNode('write'),
             ];
 
             $documentsSentToSolr = $indexer->getDocumentsSentToSolr();
@@ -305,7 +298,7 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
                     SolrLogManager::ERROR,
                     'Exception while trying to index page ' . $page->id,
                     [
-                        $e->__toString()
+                        $e->__toString(),
                     ]
                 );
             }
@@ -329,10 +322,11 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
      *
      * @param Item $indexQueueItem
      * @return SolrConnection Solr server connection
-     * @throws NoSolrConnectionFoundException
      * @throws AspectNotFoundException
+     * @throws NoSolrConnectionFoundException
+     * @throws DBALDriverException
      */
-    protected function getSolrConnection(Item $indexQueueItem)
+    protected function getSolrConnection(Item $indexQueueItem): SolrConnection
     {
         /** @var $connectionManager ConnectionManager */
         $connectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
@@ -346,9 +340,11 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
     /**
      * This method retrieves the item from the index queue, that is indexed in this request.
      *
-     * @return Item
+     * @return Item|null
+     * @throws DBALDriverException
+     * @throws DBALException|\Doctrine\DBAL\DBALException
      */
-    protected function getIndexQueueItem()
+    protected function getIndexQueueItem(): ?Item
     {
         /** @var $indexQueue Queue */
         $indexQueue = GeneralUtility::makeInstance(Queue::class);

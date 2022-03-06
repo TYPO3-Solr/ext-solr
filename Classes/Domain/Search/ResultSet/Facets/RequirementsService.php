@@ -59,7 +59,8 @@ class RequirementsService
      * @param array $requirement
      * @return bool
      */
-    protected function getRequirementMet(AbstractFacet $facet, $requirement = []) {
+    protected function getRequirementMet(AbstractFacet $facet, $requirement = [])
+    {
         $selectedItemValues = $this->getSelectedItemValues($facet, $requirement['facet']);
         $csvActiveFacetItemValues = implode(', ', $selectedItemValues);
         $requirementValues = GeneralUtility::trimExplode(',', $requirement['values']);
@@ -110,9 +111,9 @@ class RequirementsService
     /**
      * Negates the result when configured.
      *
-     * @param boolean $value
+     * @param bool $value
      * @param array $configuration
-     * @return boolean
+     * @return bool
      */
     protected function getNegationWhenConfigured($value, $configuration)
     {

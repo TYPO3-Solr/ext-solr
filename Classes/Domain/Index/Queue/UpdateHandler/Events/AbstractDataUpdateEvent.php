@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -17,9 +17,9 @@ declare(strict_types = 1);
 
 namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events;
 
-use Psr\EventDispatcher\StoppableEventInterface;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\DataUpdateHandler;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\GarbageHandler;
+use Psr\EventDispatcher\StoppableEventInterface;
 
 /**
  * Abstract data update event
@@ -31,48 +31,48 @@ abstract class AbstractDataUpdateEvent implements DataUpdateEventInterface, Stop
      *
      * @var int
      */
-    protected $uid;
+    protected int $uid;
 
     /**
      * Record table
      *
      * @var string
      */
-    protected $table;
+    protected string $table;
 
     /**
      * Updated record fields
      *
      * @var array
      */
-    protected $fields = [];
+    protected array $fields = [];
 
     /**
      * Flag indicating that propagation is stopped
      *
      * @var bool
      */
-    protected $stopProcessing = false;
+    protected bool $stopProcessing = false;
 
     /**
      * Flag indicating that immediate processing is forced
      *
      * @var bool
      */
-    protected $forceImmediateProcessing = false;
+    protected bool $forceImmediateProcessing = false;
 
     /**
      * Flag indicating that frontend groups were removed
      *
      * @var bool
      */
-    protected $frontendGroupsRemoved = false;
+    protected bool $frontendGroupsRemoved = false;
 
     /**
      * Constructor
      *
      * @param int $uid
-     * @param string $uid
+     * @param string $table
      * @param array $fields
      * @param bool $frontendGroupsRemoved
      */
@@ -160,7 +160,7 @@ abstract class AbstractDataUpdateEvent implements DataUpdateEventInterface, Stop
      *
      * If set, event propagation is stopped
      *
-     * @param bool $stopRendering
+     * @param bool $stopProcessing
      */
     final public function setStopProcessing(bool $stopProcessing): void
     {
@@ -174,7 +174,7 @@ abstract class AbstractDataUpdateEvent implements DataUpdateEventInterface, Stop
      */
     public function isPageUpdate(): bool
     {
-        return ($this->table === 'pages');
+        return $this->table === 'pages';
     }
 
     /**
@@ -184,7 +184,7 @@ abstract class AbstractDataUpdateEvent implements DataUpdateEventInterface, Stop
      */
     public function isContentElementUpdate(): bool
     {
-        return ($this->table === 'tt_content');
+        return $this->table === 'tt_content';
     }
 
     /**

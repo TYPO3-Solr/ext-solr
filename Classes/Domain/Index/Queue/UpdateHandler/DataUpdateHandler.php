@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -17,22 +17,26 @@ declare(strict_types = 1);
 
 namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler;
 
-use TYPO3\CMS\Core\DataHandling\DataHandler;
-use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use ApacheSolrForTypo3\Solr\FrontendEnvironment;
-use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
-use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\RootPageResolver;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\ConfigurationAwareRecordService;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\MountPagesUpdater;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\RootPageResolver;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteInterface;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
-use ApacheSolrForTypo3\Solr\System\TCA\TCAService;
+use ApacheSolrForTypo3\Solr\FrontendEnvironment;
+use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
-use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use ApacheSolrForTypo3\Solr\System\TCA\TCAService;
 use ApacheSolrForTypo3\Solr\Util;
-
+use Doctrine\DBAL\Driver\Exception as DBALDriverException;
+use Doctrine\DBAL\Exception as DBALException;
+use InvalidArgumentException;
+use Throwable;
+use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
+use TYPO3\CMS\Core\DataHandling\DataHandler;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Data update handler
@@ -52,7 +56,7 @@ class DataUpdateHandler extends AbstractUpdateHandler
      *
      * @var array
      */
-    protected static $requiredUpdatedFields = [
+    protected static array $requiredUpdatedFields = [
         'pid',
     ];
 
@@ -66,54 +70,54 @@ class DataUpdateHandler extends AbstractUpdateHandler
      *
      * @var array
      */
-    protected $updateSubPagesRecursiveTriggerConfiguration = [
+    protected array $updateSubPagesRecursiveTriggerConfiguration = [
         // the current page has the both fields "extendToSubpages" and "hidden" set from 1 to 0 => requeue subpages
         'HiddenAndExtendToSubpageWereDisabled' => [
             'changeSet' => [
                 'hidden' => '0',
-                'extendToSubpages' => '0'
-            ]
+                'extendToSubpages' => '0',
+            ],
         ],
         // the current page has the field "extendToSubpages" enabled and the field "hidden" was set to 0 => requeue subpages
         'extendToSubpageEnabledAndHiddenFlagWasRemoved' => [
             'currentState' =>  ['extendToSubpages' => '1'],
-            'changeSet' => ['hidden' => '0']
+            'changeSet' => ['hidden' => '0'],
         ],
         // the current page has the field "hidden" enabled and the field "extendToSubpages" was set to 0 => requeue subpages
         'hiddenIsEnabledAndExtendToSubPagesWasRemoved' => [
             'currentState' =>  ['hidden' => '1'],
-            'changeSet' => ['extendToSubpages' => '0']
+            'changeSet' => ['extendToSubpages' => '0'],
         ],
         // the field "no_search_sub_entries" of current page was set to 0
         'no_search_sub_entriesFlagWasAdded' => [
-            'changeSet' => ['no_search_sub_entries' => '0']
+            'changeSet' => ['no_search_sub_entries' => '0'],
         ],
     ];
 
     /**
      * @var MountPagesUpdater
      */
-    protected $mountPageUpdater;
+    protected MountPagesUpdater $mountPageUpdater;
 
     /**
      * @var RootPageResolver
      */
-    protected $rootPageResolver = null;
+    protected RootPageResolver $rootPageResolver;
 
     /**
-     * @var PagesRepository
+     * @var PagesRepository|null
      */
-    protected $pagesRepository;
+    protected ?PagesRepository $pagesRepository;
 
     /**
      * @var SolrLogManager
      */
-    protected $logger = null;
+    protected SolrLogManager $logger;
 
     /**
      * @var DataHandler
      */
-    protected $dataHandler;
+    protected DataHandler $dataHandler;
 
     /**
      * @param ConfigurationAwareRecordService $recordService
@@ -123,11 +127,11 @@ class DataUpdateHandler extends AbstractUpdateHandler
      * @param MountPagesUpdater $mountPageUpdater
      * @param RootPageResolver $rootPageResolver
      * @param PagesRepository $pagesRepository
-     * @param SolrLogManager $solrLogManager
      * @param DataHandler $dataHandler
+     * @param SolrLogManager|null $solrLogManager
      */
     public function __construct(
-        ConfigurationAwareRecordService $recordService ,
+        ConfigurationAwareRecordService $recordService,
         FrontendEnvironment $frontendEnvironment,
         TCAService $tcaService,
         Queue $indexQueue,
@@ -145,7 +149,8 @@ class DataUpdateHandler extends AbstractUpdateHandler
         $this->dataHandler = $dataHandler;
         $this->logger = $solrLogManager ?? GeneralUtility::makeInstance(
             SolrLogManager::class,
-            /** @scrutinizer ignore-type */ __CLASS__
+            /** @scrutinizer ignore-type */
+            __CLASS__
         );
     }
 
@@ -154,6 +159,8 @@ class DataUpdateHandler extends AbstractUpdateHandler
      *
      * @param int $uid
      * @param array $updatedFields
+     * @throws DBALDriverException
+     * @throws Throwable
      */
     public function handleContentElementUpdate(int $uid, array $updatedFields = []): void
     {
@@ -169,6 +176,10 @@ class DataUpdateHandler extends AbstractUpdateHandler
      * Handles the deletion of a content element
      *
      * @param int $uid
+     * @throws AspectNotFoundException
+     * @throws DBALDriverException
+     * @throws DBALException|\Doctrine\DBAL\DBALException
+     * @throws Throwable
      */
     public function handleContentElementDeletion(int $uid): void
     {
@@ -180,7 +191,7 @@ class DataUpdateHandler extends AbstractUpdateHandler
             return;
         }
 
-        $this->indexQueue->updateItem('pages', $pid, Util::getExectionTime());
+        $this->indexQueue->updateItem('pages', $pid, Util::getExceptionTime());
     }
 
     /**
@@ -188,18 +199,20 @@ class DataUpdateHandler extends AbstractUpdateHandler
      *
      * @param int $uid
      * @param array $updatedFields
+     * @throws DBALDriverException
+     * @throws Throwable
      */
     public function handlePageUpdate(int $uid, array $updatedFields = []): void
     {
         try {
-            if (isset($updatedFields['l10n_parent']) && intval($updatedFields['l10n_parent']) > 0) {
+            if (isset($updatedFields['l10n_parent']) && (int)($updatedFields['l10n_parent']) > 0) {
                 $pid = $updatedFields['l10n_parent'];
             } elseif ($this->rootPageResolver->getIsRootPageId($uid)) {
                 $pid = $uid;
             } else {
                 $pid = $updatedFields['pid'] ?? $this->getValidatedPid('pages', $uid);
             }
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $pid = null;
         }
 
@@ -216,6 +229,8 @@ class DataUpdateHandler extends AbstractUpdateHandler
      *
      * @param int $uid
      * @param string $table
+     * @throws DBALDriverException
+     * @throws Throwable
      */
     public function handleRecordUpdate(int $uid, string $table): void
     {
@@ -228,11 +243,14 @@ class DataUpdateHandler extends AbstractUpdateHandler
      *
      * @param int $uid
      * @param string $table
+     * @throws DBALDriverException
+     * @throws DBALException|\Doctrine\DBAL\DBALException
+     * @throws Throwable
      */
     public function handleVersionSwap(int $uid, string $table): void
     {
         $isPageRelatedRecord = ($table === 'tt_content' || $table === 'pages');
-        if($isPageRelatedRecord) {
+        if ($isPageRelatedRecord) {
             $uid = ($table === 'tt_content' ? $this->getValidatedPid($table, $uid) : $uid);
             if ($uid === null) {
                 return;
@@ -251,6 +269,9 @@ class DataUpdateHandler extends AbstractUpdateHandler
      * Handle page move
      *
      * @param int $uid
+     * @throws DBALDriverException
+     * @throws DBALException|\Doctrine\DBAL\DBALException
+     * @throws Throwable
      */
     public function handleMovedPage(int $uid): void
     {
@@ -262,6 +283,9 @@ class DataUpdateHandler extends AbstractUpdateHandler
      *
      * @param int $uid
      * @param string $table
+     * @throws DBALDriverException
+     * @throws DBALException|\Doctrine\DBAL\DBALException
+     * @throws Throwable
      */
     public function handleMovedRecord(int $uid, string $table): void
     {
@@ -278,6 +302,9 @@ class DataUpdateHandler extends AbstractUpdateHandler
      * from the queue.
      *
      * @param int $uid
+     * @throws DBALDriverException
+     * @throws DBALException|\Doctrine\DBAL\DBALException
+     * @throws Throwable
      */
     protected function applyPageChangesToQueue(int $uid): void
     {
@@ -297,6 +324,9 @@ class DataUpdateHandler extends AbstractUpdateHandler
      * @param string $table
      * @param int $uid
      * @param int $pid
+     * @throws DBALDriverException
+     * @throws DBALException|\Doctrine\DBAL\DBALException
+     * @throws Throwable
      */
     protected function applyRecordChangesToQueue(string $table, int $uid, int $pid): void
     {
@@ -320,7 +350,7 @@ class DataUpdateHandler extends AbstractUpdateHandler
      * Removes record from the index queue and from the solr index
      *
      * @param string $recordTable Name of table where the record lives
-     * @param int $recordUid Id of record
+     * @param int $recordUid id of record
      */
     protected function removeFromIndexAndQueue(string $recordTable, int $recordUid): void
     {
@@ -331,7 +361,9 @@ class DataUpdateHandler extends AbstractUpdateHandler
      * Removes record from the index queue and from the solr index when the item is in the queue.
      *
      * @param string $recordTable Name of table where the record lives
-     * @param int $recordUid Id of record
+     * @param int $recordUid id of record
+     * @throws DBALDriverException
+     * @throws DBALException|\Doctrine\DBAL\DBALException
      */
     protected function removeFromIndexAndQueueWhenItemInQueue(string $recordTable, int $recordUid): void
     {
@@ -343,8 +375,9 @@ class DataUpdateHandler extends AbstractUpdateHandler
     }
 
     /**
-     * @param $pageId
+     * @param int $pageId
      * @return TypoScriptConfiguration
+     * @throws DBALDriverException
      */
     protected function getSolrConfigurationFromPageId(int $pageId): TypoScriptConfiguration
     {
@@ -357,12 +390,14 @@ class DataUpdateHandler extends AbstractUpdateHandler
      * @param string $recordTable The table the record belongs to
      * @param int $recordUid
      * @return int[]
+     * @throws DBALDriverException
+     * @throws Throwable
      */
     protected function getRecordRootPageIds(string $recordTable, int $recordUid): array
     {
         try {
             $rootPageIds = $this->rootPageResolver->getResponsibleRootPageIds($recordTable, $recordUid);
-        } catch (\InvalidArgumentException $e) {
+        } catch (InvalidArgumentException $e) {
             $rootPageIds = [];
         }
 
@@ -378,10 +413,12 @@ class DataUpdateHandler extends AbstractUpdateHandler
      * @param int $uid
      * @param int $pid
      * @param array $updatedFields
+     * @throws DBALDriverException
+     * @throws Throwable
      */
     protected function processPageRecord(int $uid, int $pid, array $updatedFields = []): void
     {
-        $configurationPageId = $this->getConfigurationPageId('pages', (int)$pid, $uid);
+        $configurationPageId = $this->getConfigurationPageId('pages', $pid, $uid);
         if ($configurationPageId === 0) {
             $this->mountPageUpdater->update($uid);
             return;
@@ -406,6 +443,9 @@ class DataUpdateHandler extends AbstractUpdateHandler
      * @param string $recordTable
      * @param int $recordUid
      * @param array $rootPageIds
+     * @throws DBALDriverException
+     * @throws DBALException|\Doctrine\DBAL\DBALException
+     * @throws Throwable
      */
     protected function processRecord(string $recordTable, int $recordUid, array $rootPageIds): void
     {
@@ -467,11 +507,13 @@ class DataUpdateHandler extends AbstractUpdateHandler
      * @param int $recordPageId
      * @param int $recordUid
      * @return int
+     * @throws DBALDriverException
+     * @throws Throwable
      */
     protected function getConfigurationPageId(string $recordTable, int $recordPageId, int $recordUid): int
     {
         $rootPageId = $this->rootPageResolver->getRootPageId($recordPageId);
-        $rootPageRecord = $this->getPagesRepository()->getPage((int)$rootPageId);
+        $rootPageRecord = $this->getPagesRepository()->getPage($rootPageId);
         if (isset($rootPageRecord['sys_language_uid'])
             && (int)$rootPageRecord['sys_language_uid'] > 0
             && isset($rootPageRecord['l10n_parent'])
@@ -508,6 +550,9 @@ class DataUpdateHandler extends AbstractUpdateHandler
      * Applies the updateItem instruction on a collection of pageIds.
      *
      * @param array $treePageIds
+     * @throws DBALDriverException
+     * @throws DBALException|\Doctrine\DBAL\DBALException
+     * @throws Throwable
      */
     protected function updatePageIdItems(array $treePageIds): void
     {
@@ -521,10 +566,13 @@ class DataUpdateHandler extends AbstractUpdateHandler
      * page currently being updated.
      *
      * @param int $pageId UID of the page currently being updated
+     * @throws DBALDriverException
+     * @throws DBALException|\Doctrine\DBAL\DBALException
+     * @throws Throwable
      */
     protected function updateCanonicalPages(int $pageId): void
     {
-        $canonicalPages = $this->pagesRepository->findPageUidsWithContentsFromPid((int)$pageId);
+        $canonicalPages = $this->pagesRepository->findPageUidsWithContentsFromPid($pageId);
         foreach ($canonicalPages as $page) {
             $this->indexQueue->updateItem('pages', $page['uid']);
         }
@@ -546,7 +594,7 @@ class DataUpdateHandler extends AbstractUpdateHandler
             return null;
         }
 
-        return (int)$pid;
+        return $pid;
     }
 
     /**

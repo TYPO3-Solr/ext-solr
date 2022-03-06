@@ -46,6 +46,7 @@ class Multivalue extends AbstractContentObject
      * serialized form as content objects are expected to return strings.
      *
      * @inheritDoc
+     * @noinspection PhpMissingReturnTypeInspection, because foreign source inheritance See {@link AbstractContentObject::render()}
      */
     public function render($conf = [])
     {

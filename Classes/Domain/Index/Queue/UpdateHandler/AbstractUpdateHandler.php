@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -17,22 +17,23 @@ declare(strict_types = 1);
 
 namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler;
 
-use Doctrine\DBAL\Driver\Exception as DBALDriverException;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Database\QueryGenerator;
-use TYPO3\CMS\Core\Database\Query\QueryBuilder;
-use TYPO3\CMS\Core\Database\ConnectionPool;
-use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\ConfigurationAwareRecordService;
 use ApacheSolrForTypo3\Solr\FrontendEnvironment;
-use ApacheSolrForTypo3\Solr\System\TCA\TCAService;
+use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
+use ApacheSolrForTypo3\Solr\System\TCA\TCAService;
+use Doctrine\DBAL\Driver\Exception as DBALDriverException;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\QueryBuilder;
+use TYPO3\CMS\Core\Database\QueryGenerator;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Abstract update handler
  *
  * Base class for Handling updates or deletions on potential
  * relevant records
+ * @todo: Replace QueryGenerator
  */
 abstract class AbstractUpdateHandler
 {
@@ -46,7 +47,7 @@ abstract class AbstractUpdateHandler
      *
      * @var array
      */
-    protected static $requiredUpdatedFields = [];
+    protected static array $requiredUpdatedFields = [];
 
     /**
      * Configuration used to check if recursive updates are required
@@ -68,52 +69,54 @@ abstract class AbstractUpdateHandler
      *
      * @var array
      */
-    protected $updateSubPagesRecursiveTriggerConfiguration = [];
+    protected array $updateSubPagesRecursiveTriggerConfiguration = [];
+
     /**
      * @var ConfigurationAwareRecordService
      */
-    protected $configurationAwareRecordService = null;
+    protected ConfigurationAwareRecordService $configurationAwareRecordService;
 
     /**
      * @var FrontendEnvironment
      */
-    protected $frontendEnvironment = null;
+    protected FrontendEnvironment $frontendEnvironment;
 
     /**
      * @var TCAService
      */
-    protected $tcaService = null;
+    protected TCAService $tcaService;
 
     /**
      * @var Queue
      */
-    protected $indexQueue;
+    protected Queue $indexQueue;
 
     /**
-     * @var PagesRepository
+     * @var PagesRepository|null
      */
-    protected $pagesRepository = null;
+    protected ?PagesRepository $pagesRepository;
 
     /**
      * @var QueryBuilder[]
      */
-    protected $queryBuilders = [];
+    protected array $queryBuilders = [];
 
     /**
      * @param ConfigurationAwareRecordService $recordService
      * @param FrontendEnvironment $frontendEnvironment
      * @param TCAService $tcaService
+     * @param Queue $indexQueue
      */
     public function __construct(
         ConfigurationAwareRecordService $recordService,
         FrontendEnvironment $frontendEnvironment,
         TCAService $tcaService,
         Queue $indexQueue
-        ) {
-            $this->configurationAwareRecordService = $recordService;
-            $this->frontendEnvironment = $frontendEnvironment;
-            $this->tcaService = $tcaService;
-            $this->indexQueue = $indexQueue;
+    ) {
+        $this->configurationAwareRecordService = $recordService;
+        $this->frontendEnvironment = $frontendEnvironment;
+        $this->tcaService = $tcaService;
+        $this->indexQueue = $indexQueue;
     }
 
     /**
@@ -153,14 +156,14 @@ abstract class AbstractUpdateHandler
             $allCurrentStateFieldnames = array_merge(
                 $allCurrentStateFieldnames,
                 array_keys($triggerConfiguration['currentState'])
-                );
+            );
         }
 
         return array_unique($allCurrentStateFieldnames);
     }
 
     /**
-     * When the extend to subpages flag was set, we determine the affected subpages and return them.
+     * When the extend-to-subpages flag was set, we determine the affected subpages and return them.
      *
      * @param int $pageId
      * @return array
@@ -201,13 +204,13 @@ abstract class AbstractUpdateHandler
                 'pages',
                 $pageId,
                 $solrConfiguration
-                );
+            );
             if ($indexQueueConfigurationName === null) {
                 return false;
             }
             $updateFields = $solrConfiguration->getIndexQueueConfigurationRecursiveUpdateFields(
                 $indexQueueConfigurationName
-                );
+            );
 
             // Check if no additional fields have been defined and then skip recursive update
             if (empty($updateFields)) {

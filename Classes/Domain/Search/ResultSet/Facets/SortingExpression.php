@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -26,20 +28,20 @@ class SortingExpression
     /**
      * Return expression for facet sorting
      *
-     * @param string $sorting
+     * @param string|int|bool $sorting
      * @return string
      */
-    public function getForFacet($sorting)
+    public function getForFacet($sorting): string
     {
-        $noSortingSet = $sorting !== 0 && $sorting !== false && empty($sorting);
-        $sortingIsCount = $sorting === 'count' || $sorting === 1 || $sorting === '1' || $sorting === TRUE;
+        $noSortingSet = empty($sorting) && (int)$sorting !== 0 && (bool)$sorting !== false;
+        $sortingIsCount = $sorting === 'count' || $sorting === 1 || $sorting === '1' || $sorting === true;
         if ($noSortingSet) {
             return '';
-        } elseif ($sortingIsCount) {
-            return 'count';
-        } else {
-            return 'index';
         }
+        if ($sortingIsCount) {
+            return 'count';
+        }
+        return 'index';
     }
 
     /**
@@ -49,7 +51,7 @@ class SortingExpression
      * @param string $direction
      * @return string
      */
-    public function getForJsonFacet($sorting, $direction)
+    public function getForJsonFacet(string $sorting, string $direction): string
     {
         $isMetricSorting = strpos($sorting, 'metrics_') === 0;
         $expression = $isMetricSorting ? $sorting : $this->getForFacet($sorting);

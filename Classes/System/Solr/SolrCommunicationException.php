@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -15,20 +17,22 @@
 
 namespace ApacheSolrForTypo3\Solr\System\Solr;
 
+use RuntimeException;
+
 /**
  * This exception or a more specific one should be thrown when the is an error in the communication with the solr server.
  */
-class SolrCommunicationException extends \RuntimeException {
-
+class SolrCommunicationException extends RuntimeException
+{
     /**
-     * @var ResponseAdapter
+     * @var ResponseAdapter|null
      */
-    protected $solrResponse;
+    protected ?ResponseAdapter $solrResponse = null;
 
     /**
      * @return ResponseAdapter
      */
-    public function getSolrResponse(): ResponseAdapter
+    public function getSolrResponse(): ?ResponseAdapter
     {
         return $this->solrResponse;
     }

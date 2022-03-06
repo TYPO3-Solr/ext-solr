@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -15,18 +17,19 @@
 
 namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Sorting;
 
+use InvalidArgumentException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 /**
  * Class SortingHelper
  */
-class SortingHelper {
+class SortingHelper
+{
 
     /**
      * @var array
      */
-    protected $configuration = [];
+    protected array $configuration = [];
 
     /**
      * Constructor
@@ -46,21 +49,21 @@ class SortingHelper {
      *
      * @param string $urlParameters tx_solr[sort] URL parameter.
      * @return string The actual index field configured to sort by for the given sort option name
-     * @throws \InvalidArgumentException if the given sort option is not configured
+     * @throws InvalidArgumentException if the given sort option is not configured
      */
-    public function getSortFieldFromUrlParameter($urlParameters)
+    public function getSortFieldFromUrlParameter(string $urlParameters): string
     {
         $sortFields = [];
         $sortParameters = GeneralUtility::trimExplode(',', $urlParameters);
 
-        $removeTsKeyDot = function($sortingKey) { return trim($sortingKey, '.'); };
+        $removeTsKeyDot = function ($sortingKey) { return trim($sortingKey, '.'); };
         $configuredSortingName = array_map($removeTsKeyDot, array_keys($this->configuration));
 
         foreach ($sortParameters as $sortParameter) {
             list($sortOption, $sortDirection) = explode(' ', $sortParameter);
 
             if (!in_array($sortOption, $configuredSortingName)) {
-                throw new \InvalidArgumentException('No sorting configuration found for option name ' . $sortOption, 1316187644);
+                throw new InvalidArgumentException('No sorting configuration found for option name ' . $sortOption, 1316187644);
             }
 
             $sortField = $this->configuration[$sortOption . '.']['field'];

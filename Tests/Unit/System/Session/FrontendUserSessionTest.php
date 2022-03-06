@@ -35,7 +35,7 @@ class FrontendSessionTest extends UnitTest
     /**
      * @var FrontendUserSession
      */
-    protected $session;
+    protected FrontendUserSession $session;
 
     protected function setUp(): void
     {

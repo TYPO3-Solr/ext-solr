@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -17,6 +19,7 @@ namespace  ApacheSolrForTypo3\Solr\Tests\Unit\System\ContentObject;
 
 use ApacheSolrForTypo3\Solr\System\ContentObject\ContentObjectService;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 /**
@@ -28,18 +31,20 @@ class ContentObjectServiceTest extends UnitTest
 {
 
     /**
-     * @var ContentObjectRenderer
+     * @var ContentObjectRenderer|MockObject
      */
     protected $contentObjectRendererMock;
 
     /**
      * @var ContentObjectService
      */
-    protected $contentObjectService;
+    protected ContentObjectService $contentObjectService;
 
     protected function setUp(): void
     {
-        $this->contentObjectRendererMock = $this->getDumbMock(ContentObjectRenderer::class);
+        $this->contentObjectRendererMock = $this->getMockBuilder(ContentObjectRenderer::class)
+            ->onlyMethods(['cObjGetSingle'])
+            ->getMock();
         $this->contentObjectService = new ContentObjectService($this->contentObjectRendererMock);
         parent::setUp();
     }
@@ -54,7 +59,11 @@ class ContentObjectServiceTest extends UnitTest
             'field.' => ['value' => 'test'],
         ];
 
-        $this->contentObjectRendererMock->expects(self::once())->method('cObjGetSingle')->with('TEXT', ['value' => 'test']);
+        $this->contentObjectRendererMock
+            ->expects(self::once())
+            ->method('cObjGetSingle')
+            ->with('TEXT', ['value' => 'test'])
+            ->willReturn('test');
         $this->contentObjectService->renderSingleContentObjectByArrayAndKey($fakeStdWrapConfiguration, 'field');
     }
 

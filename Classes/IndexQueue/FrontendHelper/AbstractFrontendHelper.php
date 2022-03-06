@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -29,37 +31,36 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
  */
 abstract class AbstractFrontendHelper implements FrontendHelper
 {
-
     /**
      * Index Queue page indexer request.
      *
-     * @var PageIndexerRequest
+     * @var PageIndexerRequest|null
      */
-    protected $request;
+    protected ?PageIndexerRequest $request = null;
 
     /**
      * Index Queue page indexer response.
      *
-     * @var PageIndexerResponse
+     * @var PageIndexerResponse|null
      */
-    protected $response;
+    protected ?PageIndexerResponse $response = null;
 
     /**
      * The action a frontend helper executes.
      */
-    protected $action = null;
+    protected string $action;
 
     /**
-     * @var SolrLogManager
+     * @var SolrLogManager|null
      */
-    protected $logger = null;
+    protected ?SolrLogManager $logger = null;
 
     /**
      * Disables the frontend output for index queue requests.
      *
      * @param array $parameters Parameters from frontend
      */
-    public function disableFrontendOutput(&$parameters)
+    public function disableFrontendOutput(array &$parameters)
     {
         $parameters['enableOutput'] = false;
     }
@@ -69,11 +70,12 @@ abstract class AbstractFrontendHelper implements FrontendHelper
      *
      * @param array $parameters Parameters from frontend
      * @param TypoScriptFrontendController $parentObject TSFE object
+     * @noinspection PhpUnused
      */
     public function disableCaching(
         /** @noinspection PhpUnusedParameterInspection */
-        &$parameters,
-        $parentObject
+        array &$parameters,
+        TypoScriptFrontendController $parentObject
     ) {
         $parentObject->no_cache = true;
     }

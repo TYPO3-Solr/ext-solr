@@ -266,7 +266,7 @@ class DataUpdateHandlerTest extends AbstractUpdateHandlerTest
                 self::DUMMY_PAGE_ID,
                 1641472388
             )
-            ->willReturn(true);
+            ->willReturn(1);
 
         $this->dataUpdateHandler->handleContentElementDeletion(123);
     }

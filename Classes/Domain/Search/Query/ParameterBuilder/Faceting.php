@@ -26,9 +26,8 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
  * The Faceting ParameterProvider is responsible to build the solr query parameters
  * that are needed for the highlighting.
  */
-class Faceting extends AbstractDeactivatable implements ParameterBuilder
+class Faceting extends AbstractDeactivatable implements ParameterBuilderInterface
 {
-
     /**
      * @var string
      */
@@ -169,9 +168,10 @@ class Faceting extends AbstractDeactivatable implements ParameterBuilder
     }
 
     /**
-     * @param array $value
+     * @param string $key
+     * @param mixed $value
      */
-    public function addAdditionalParameter($key, $value)
+    public function addAdditionalParameter(string $key, $value)
     {
         $this->additionalParameters[$key] = $value;
     }
@@ -261,7 +261,7 @@ class Faceting extends AbstractDeactivatable implements ParameterBuilder
             $query->addParam('facet.sort', null);
 
             $params = $query->getParams();
-            foreach($params as $key => $value) {
+            foreach ($params as $key => $value) {
                 if (strpos($key, 'f.') !== false) {
                     $query->addParam($key, null);
                 }
@@ -272,7 +272,7 @@ class Faceting extends AbstractDeactivatable implements ParameterBuilder
 
         //@todo check of $this->queryToBuilder->getFacetSet() can be used
         $facetingParameters = $this->getFacetParameters();
-        foreach($facetingParameters as $key => $value) {
+        foreach ($facetingParameters as $key => $value) {
             $query->addParam($key, $value);
         }
 

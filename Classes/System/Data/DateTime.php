@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -15,16 +17,21 @@
 
 namespace ApacheSolrForTypo3\Solr\System\Data;
 
+use DateTime as PhpDateTime;
+use DateTimeZone;
+use Exception;
+
 /**
  * Class DateTime
  */
-class DateTime extends \DateTime
+class DateTime extends PhpDateTime
 {
     /**
      * @param string $time
-     * @param \DateTimeZone $timezone
+     * @param DateTimeZone|null $timezone
+     * @throws Exception
      */
-    public function __construct($time = 'now', \DateTimeZone $timezone = null)
+    public function __construct($time = 'now', DateTimeZone $timezone = null)
     {
         parent::__construct($time, $timezone);
     }
@@ -36,6 +43,6 @@ class DateTime extends \DateTime
      */
     public function __toString()
     {
-        return $this->format(\DateTime::ISO8601);
+        return $this->format(PhpDateTime::ISO8601);
     }
 }

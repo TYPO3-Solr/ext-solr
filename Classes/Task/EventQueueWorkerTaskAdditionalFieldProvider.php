@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -33,7 +35,7 @@ class EventQueueWorkerTaskAdditionalFieldProvider implements AdditionalFieldProv
      *
      * @param array $taskInfo reference to the array containing the info used in the add/edit form
      * @param AbstractTask $task when editing, reference to the current task object. Null when adding.
-     * @param SchedulerModuleController $schedulerModule : reference to the calling object (Scheduler's BE module)
+     * @param SchedulerModuleController $schedulerModule Reference to the calling object (Scheduler's BE module)
      * @return array Array containing all the information pertaining to the additional fields
      *                    The array is multidimensional, keyed to the task class name and each field's id
      *                    For each field it provides an associative sub-array with the following:
@@ -58,7 +60,7 @@ class EventQueueWorkerTaskAdditionalFieldProvider implements AdditionalFieldProv
             'code' => '<input type="number" class="form-control" name="tx_scheduler[solr_eventqueueworkertask_limit]" value="' . (int)$taskInfo['solr_eventqueueworkertask_limit'] . '" />',
             'label' => 'LLL:EXT:solr/Resources/Private/Language/locallang_be.xlf:task.eventQueueWorkerTask.limit',
             'cshKey' => '',
-            'cshLabel' => ''
+            'cshLabel' => '',
         ];
 
         return $additionalFields;

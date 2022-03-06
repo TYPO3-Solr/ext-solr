@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -20,25 +20,25 @@ namespace ApacheSolrForTypo3\Solr\Domain\Index\Classification;
 /**
  * Class Classification
  */
-class Classification {
-
+class Classification
+{
     /**
      * Array of regular expressions
      *
      * @var array
      */
-    protected $matchPatterns = [];
+    protected array $matchPatterns = [];
 
     /**
      * Array of regular expressions
      * @var array
      */
-    protected $unMatchPatterns = [];
+    protected array $unMatchPatterns = [];
 
     /**
      * @var string
      */
-    protected $mappedClass = '';
+    protected string $mappedClass;
 
     /**
      * Classification constructor.
@@ -46,8 +46,11 @@ class Classification {
      * @param array $unMatchPatterns
      * @param string $mappedClass
      */
-    public function __construct(array $matchPatterns = [], array $unMatchPatterns = [],string $mappedClass = '')
-    {
+    public function __construct(
+        array $matchPatterns = [],
+        array $unMatchPatterns = [],
+        string $mappedClass = ''
+    ) {
         $this->matchPatterns = $matchPatterns;
         $this->unMatchPatterns = $unMatchPatterns;
         $this->mappedClass = $mappedClass;

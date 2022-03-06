@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -23,21 +25,21 @@ use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 class ModuleData
 {
     /**
-     * @var Site
+     * @var Site|null
      */
-    protected $site = null;
+    protected ?Site $site;
 
     /**
      * @var string
      */
-    protected $core = '';
+    protected string $core = '';
 
     /**
      * Gets the site to work with.
      *
      * @return Site
      */
-    public function getSite()
+    public function getSite(): ?Site
     {
         return $this->site;
     }
@@ -46,7 +48,6 @@ class ModuleData
      * Sets the site to work with.
      *
      * @param Site $site
-     * @return void
      */
     public function setSite(Site $site)
     {
@@ -58,7 +59,7 @@ class ModuleData
      *
      * @return string Selected core name
      */
-    public function getCore()
+    public function getCore(): string
     {
         return $this->core;
     }
@@ -68,7 +69,7 @@ class ModuleData
      *
      * @param string $core Selected core name
      */
-    public function setCore($core)
+    public function setCore(string $core)
     {
         $this->core = $core;
     }

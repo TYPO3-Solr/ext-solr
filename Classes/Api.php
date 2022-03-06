@@ -31,7 +31,7 @@ class Api
      */
     public static function isValidApiKey($apiKey)
     {
-        return ($apiKey === self::getApiKey());
+        return $apiKey === self::getApiKey();
     }
 
     /**

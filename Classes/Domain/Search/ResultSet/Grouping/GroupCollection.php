@@ -20,32 +20,31 @@ use ApacheSolrForTypo3\Solr\System\Data\AbstractCollection;
 /**
  * The Group contains the Group objects.
  */
-class GroupCollection extends AbstractCollection {
-
+class GroupCollection extends AbstractCollection
+{
     /**
      * @param string $name
      * @return Group|null
      */
-    public function getByName($name)
+    public function getByName(string $name): ?Group
     {
         foreach ($this->data as $group) {
-            /** @var $group Group */
+            /* @var Group $group */
             if ($group->getGroupName() === $name) {
                 return $group;
             }
         }
-
         return null;
     }
 
     /**
      * @param string $name
-     * @return boolean
+     * @return bool
      */
-    public function getHasWithName($name): bool
+    public function getHasWithName(string $name): bool
     {
         foreach ($this->data as $group) {
-            /** @var $group Group */
+            /* @var Group $group */
             if ($group->getGroupName() === $name) {
                 return true;
             }
@@ -61,10 +60,9 @@ class GroupCollection extends AbstractCollection {
     {
         $names = [];
         foreach ($this->data as $group) {
-            /** @var $group Group */
+            /* @var Group $group */
             $names[] = $group->getGroupName();
         }
-
         return $names;
     }
 

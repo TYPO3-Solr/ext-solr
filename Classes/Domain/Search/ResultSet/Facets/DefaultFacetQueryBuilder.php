@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -24,7 +26,7 @@ class DefaultFacetQueryBuilder implements FacetQueryBuilderInterface
      * @param TypoScriptConfiguration $configuration
      * @return array
      */
-    public function build($facetName, TypoScriptConfiguration $configuration)
+    public function build(string $facetName, TypoScriptConfiguration $configuration): array
     {
         $facetParameters = [];
         $facetConfiguration = $configuration->getSearchFacetingFacetByName($facetName);
@@ -46,7 +48,7 @@ class DefaultFacetQueryBuilder implements FacetQueryBuilderInterface
      * @param TypoScriptConfiguration $configuration
      * @return string
      */
-    protected function buildExcludeTags(array $facetConfiguration, TypoScriptConfiguration $configuration)
+    protected function buildExcludeTags(array $facetConfiguration, TypoScriptConfiguration $configuration): string
     {
         // simple for now, may add overrides f.<field_name>.facet.* later
         if ($configuration->getSearchFacetingKeepAllFacetsOnSelection()) {
@@ -56,7 +58,8 @@ class DefaultFacetQueryBuilder implements FacetQueryBuilderInterface
             }
 
             return '{!ex=' . implode(',', $facets) . '}';
-        } elseif (($facetConfiguration['keepAllOptionsOnSelection'] ?? null) == 1) {
+        }
+        if (($facetConfiguration['keepAllOptionsOnSelection'] ?? null) == 1) {
             return '{!ex=' . $facetConfiguration['field'] . '}';
         }
 

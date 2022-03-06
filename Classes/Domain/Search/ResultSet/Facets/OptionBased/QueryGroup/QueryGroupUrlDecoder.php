@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -25,17 +27,16 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\FacetUrlDecoderInterf
  */
 class QueryGroupUrlDecoder implements FacetUrlDecoderInterface
 {
-
     /**
      * Parses the query filter from GET parameters in the URL and translates it
      * to a Lucene filter value.
      *
-     * @param string $filterValue the filter query from plugin
+     * @param string $value the filter query from plugin
      * @param array $configuration options set in a facet's configuration
      * @return string Value to be used in a Lucene filter
      */
-    public function decode($filterValue, array $configuration = [])
+    public function decode(string $value, array $configuration = []): string
     {
-        return $configuration[$filterValue . '.']['query'];
+        return $configuration[$value . '.']['query'];
     }
 }

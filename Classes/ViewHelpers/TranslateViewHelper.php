@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -17,8 +19,8 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers;
 
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Fluid\ViewHelpers\TranslateViewHelper as CoreTranslateViewHelper;
-use TYPO3Fluid\Fluid\Core\Parser\SyntaxTree\ViewHelperNode;
 use TYPO3Fluid\Fluid\Core\Compiler\TemplateCompiler;
+use TYPO3Fluid\Fluid\Core\Parser\SyntaxTree\ViewHelperNode;
 
 /**
  * Class TranslateViewHelper
@@ -35,6 +37,8 @@ class TranslateViewHelper extends CoreTranslateViewHelper
 
     /**
      * @return string|null
+     *
+     * @noinspection PhpMissingReturnTypeInspection
      */
     public function render()
     {
@@ -52,14 +56,19 @@ class TranslateViewHelper extends CoreTranslateViewHelper
      *
      * @param string $id Translation Key compatible to TYPO3 Flow
      * @param string $extensionName UpperCamelCased extension key (for example BlogExample)
-     * @param array $arguments Arguments to be replaced in the resulting string
-     * @param string $languageKey Language key to use for this translation
-     * @param string[] $alternativeLanguageKeys Alternative language keys if no translation does exist
+     * @param array|null $arguments Arguments to be replaced in the resulting string
+     * @param string|null $languageKey Language key to use for this translation
+     * @param string[]|null $alternativeLanguageKeys Alternative language keys if no translation does exist
      *
      * @return string|null
      */
-    public static function translateAndReplaceMarkers($id, $extensionName = 'solr', $arguments = null, $languageKey = null, $alternativeLanguageKeys = null)
-    {
+    public static function translateAndReplaceMarkers(
+        string $id,
+        string $extensionName = 'solr',
+        ?array $arguments = null,
+        ?string $languageKey = null,
+        ?array $alternativeLanguageKeys = null
+    ): ?string {
         $result = LocalizationUtility::translate($id, $extensionName, $arguments, $languageKey, $alternativeLanguageKeys);
         $result = self::replaceTranslationPrefixesWithAtWithStringMarker($result);
         if (is_array($arguments)) {
@@ -75,9 +84,16 @@ class TranslateViewHelper extends CoreTranslateViewHelper
      * @param ViewHelperNode $node
      * @param TemplateCompiler $compiler
      * @return string
+     *
+     * @noinspection PhpMissingReturnTypeInspection
      */
-    public function compile($argumentsName, $closureName, &$initializationPhpCode, ViewHelperNode $node, TemplateCompiler $compiler)
-    {
+    public function compile(
+        $argumentsName,
+        $closureName,
+        &$initializationPhpCode,
+        ViewHelperNode $node,
+        TemplateCompiler $compiler
+    ) {
         return sprintf(
             '\\%1$s::translateAndReplaceMarkers(%2$s[\'key\'] ?? %2$s[\'id\'], %2$s[\'extensionName\'] ?? $renderingContext->getControllerContext()->getRequest()->getControllerExtensionName(), %2$s[\'arguments\'], %2$s[\'languageKey\'], %2$s[\'alternativeLanguageKeys\']) ?? %2$s[\'default\'] ?? %3$s()',
             static::class,

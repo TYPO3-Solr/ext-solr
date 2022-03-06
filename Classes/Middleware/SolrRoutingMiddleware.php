@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -33,7 +35,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Middleware to create beautiful URLs for Solr
  *
  * How to use:
- * Inside of your extension create following file
+ * Inside your extension create following file
  * Configuration/RequestMiddlewares.php
  *
  * return [
@@ -59,24 +61,24 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
      *
      * @var string
      */
-    protected $namespace = 'tx_solr';
+    protected string $namespace = 'tx_solr';
 
     /**
      * Settings from enhancer configuration
      *
      * @var array
      */
-    protected $settings = [];
+    protected array $settings = [];
 
     /**
-     * @var SiteLanguage
+     * @var SiteLanguage|null
      */
-    protected $language = null;
+    protected ?SiteLanguage $language;
 
     /**
-     * @var RoutingService
+     * @var RoutingService|null
      */
-    protected $routingService;
+    protected ?RoutingService $routingService = null;
 
     /**
      * Inject the routing service.
@@ -141,7 +143,7 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
         [$slug, $parameters] = $this->extractParametersFromUriPath(
             $request->getUri(),
             $enhancerConfiguration['routePath'],
-            (string)$page['slug']
+            $page['slug'] ?? ''
         );
 
         /*
@@ -164,7 +166,7 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
         $uri = $request->getUri()->withPath(
             $this->getRoutingService()->cleanupHeadingSlash(
                 $this->language->getBase()->getPath() .
-                (string)$page['slug']
+                $page['slug'] ?? ''
             )
         );
         $request = $request->withUri($uri);
@@ -225,7 +227,7 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
     protected function extractParametersFromUriPath(UriInterface $uri, string $path, string $pageSlug): array
     {
         // URI get path returns the path with given language parameter
-        // The parameter pageSlug itself does not contains the language parameter.
+        // The parameter pageSlug itself does not contain the language parameter.
         $uriPath = $this->getRoutingService()->stripLanguagePrefixFromPath(
             $this->language,
             $uri->getPath()
@@ -234,11 +236,11 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
         if ($uriPath === $pageSlug) {
             return [
                 $pageSlug,
-                []
+                [],
             ];
         }
 
-        // Remove slug from URI path in order the ensure only the arguments left
+        // Remove slug from URI path in order to ensure only the arguments left
         if (mb_substr($uriPath, 0, mb_strlen($pageSlug) + 1) === $pageSlug . '/') {
             $length = mb_strlen($pageSlug) + 1;
             $uriPath = mb_substr($uriPath, $length, mb_strlen($uriPath) - $length);
@@ -255,7 +257,7 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
         $arguments = [];
         $process = true;
         /*
-         * Extract the slug elements, until the the amount of route elements reached
+         * Extract the slug elements, until the amount of route elements reached
          */
         do {
             if (count($uriElements) > count($routeElements)) {
@@ -288,7 +290,7 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
 
         return [
             implode('/', $slugElements),
-            $arguments
+            $arguments,
         ];
     }
 
@@ -322,7 +324,7 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
                             [
                                 $path,
                                 $this->language->getTwoLetterIsoCode(),
-                                $uri->getPath()
+                                $uri->getPath(),
                             ]
                         )
                     );
@@ -335,7 +337,7 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
                             'Could not resolve page by path "%1$s" and language "%2$s".',
                             [
                                 $uri->getPath(),
-                                $this->language->getTwoLetterIsoCode()
+                                $this->language->getTwoLetterIsoCode(),
                             ]
                         )
                     );
@@ -348,7 +350,7 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
                                 'Path "%1$s" -> slug "%2$s"',
                                 [
                                     $path,
-                                    $item['slug']
+                                    $item['slug'],
                                 ]
                             )
                         );
@@ -370,7 +372,7 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
                     }
                 }
             }
-        } while($scan);
+        } while ($scan);
         return $page;
     }
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -19,6 +21,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\DateRange\
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\DateRange\DateRangeFacet;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use DateTime;
+use Error;
 
 /**
  * Class DateRangeTest
@@ -27,6 +30,7 @@ class DateRangeTest extends UnitTest
 {
     /**
      * @test
+     * @noinspection PhpParamsInspection
      */
     public function canHandleHalfOpenDateRanges()
     {
@@ -37,10 +41,10 @@ class DateRangeTest extends UnitTest
             $dateTime,
             null,
             null,
-            null,
-            null,
+            '',
+            0,
             [],
-            null
+            false
         );
         $dateRangeOpenEnd = new DateRange(
             $this->getDumbMock(DateRangeFacet::class),
@@ -48,18 +52,19 @@ class DateRangeTest extends UnitTest
             null,
             null,
             null,
-            null,
-            null,
+            '',
+            0,
             [],
-            null
+            false
         );
 
         try {
             $dateRangeCollectionKeyOpenStart = $dateRangeOpenStart->getCollectionKey();
             $dateRangeCollectionKeyOpenEnd = $dateRangeOpenEnd->getCollectionKey();
-        } catch (\Error $error) {
+        } catch (Error $error) {
             self::fail(
-                'Can\'t handle half open date ranges. Please see: https://github.com/TYPO3-Solr/ext-solr/issues/2942 and error: ' . PHP_EOL .
+                'Can\'t handle half open date ranges.' . PHP_EOL .
+                ' Please see: https://github.com/TYPO3-Solr/ext-solr/issues/2942 and error: ' . PHP_EOL .
                 $error->getMessage() . ' in ' . $error->getFile() . ':' . $error->getLine()
             );
         }

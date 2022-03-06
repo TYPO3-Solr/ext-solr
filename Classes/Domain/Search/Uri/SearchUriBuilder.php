@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -22,9 +24,9 @@ use ApacheSolrForTypo3\Solr\Event\Routing\BeforeReplaceVariableInCachedUrlEvent;
 use ApacheSolrForTypo3\Solr\Event\Routing\PostProcessUriEvent;
 use ApacheSolrForTypo3\Solr\Routing\RoutingService;
 use ApacheSolrForTypo3\Solr\System\Url\UrlHelper;
+use ApacheSolrForTypo3\Solr\Utility\ParameterSortingUtility;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Core\Http\Uri;
-use ApacheSolrForTypo3\Solr\Utility\ParameterSortingUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 
@@ -34,7 +36,7 @@ use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
  * Responsibility:
  *
  * The SearchUriBuilder is responsible to build uris, that are used in the
- * searchContext. It can use the previous request with it's persistent
+ * searchContext. It can use the previous request with its persistent
  * arguments to build the url for a search sub request.
  *
  * @author Frans Saris <frans@beech.it>
@@ -42,41 +44,40 @@ use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
  */
 class SearchUriBuilder
 {
-
     /**
-     * @var UriBuilder
+     * @var UriBuilder|null
      */
-    protected $uriBuilder;
-
-    /**
-     * @var array
-     */
-    protected static $preCompiledLinks = [];
-
-    /**
-     * @var integer
-     */
-    protected static $hitCount;
-
-    /**
-     * @var integer
-     */
-    protected static $missCount;
+    protected ?UriBuilder $uriBuilder = null;
 
     /**
      * @var array
      */
-    protected static $additionalArgumentsCache = [];
+    protected static array $preCompiledLinks = [];
+
+    /**
+     * @var int
+     */
+    protected static int $hitCount = 0;
+
+    /**
+     * @var int
+     */
+    protected static int $missCount = 0;
+
+    /**
+     * @var array
+     */
+    protected static array $additionalArgumentsCache = [];
 
     /**
      * @var EventDispatcherInterface
      */
-    protected $eventDispatcher;
+    protected EventDispatcherInterface $eventDispatcher;
 
     /**
      * @var RoutingService
      */
-    protected $routingService;
+    protected RoutingService $routingService;
 
     /**
      * @param UriBuilder $uriBuilder
@@ -104,18 +105,17 @@ class SearchUriBuilder
 
     /**
      * @param SearchRequest $previousSearchRequest
-     * @param $facetName
-     * @param $facetValue
+     * @param string $facetName
+     * @param mixed $facetValue
      * @return string
      */
-    public function getAddFacetValueUri(SearchRequest $previousSearchRequest, $facetName, $facetValue): string
+    public function getAddFacetValueUri(SearchRequest $previousSearchRequest, string $facetName, $facetValue): string
     {
         $persistentAndFacetArguments = $previousSearchRequest
             ->getCopyForSubRequest()->removeAllGroupItemPages()->addFacetValue($facetName, $facetValue)
             ->getAsArray();
 
         $additionalArguments = $this->getAdditionalArgumentsFromRequestConfiguration($previousSearchRequest);
-        $additionalArguments = is_array($additionalArguments) ? $additionalArguments : [];
 
         $arguments = $persistentAndFacetArguments + $additionalArguments;
 
@@ -256,9 +256,12 @@ class SearchUriBuilder
         $request = GeneralUtility::makeInstance(
             SearchRequest::class,
             [],
-            /** @scrutinizer ignore-type */ $contextPageUid,
-            /** @scrutinizer ignore-type */ $contextSystemLanguage,
-            /** @scrutinizer ignore-type */ $contextConfiguration
+            /** @scrutinizer ignore-type */
+            $contextPageUid,
+            /** @scrutinizer ignore-type */
+            $contextSystemLanguage,
+            /** @scrutinizer ignore-type */
+            $contextConfiguration
         );
         $arguments = $request->setRawQueryString($queryString)->getAsArray();
 
@@ -372,11 +375,11 @@ class SearchUriBuilder
             self::$preCompiledLinks[$hash] = (string)$urlHelper;
         }
 
-        $keys = array_map(function($value) {
-            return urlencode($value);
+        $keys = array_map(function ($value) {
+            return urlencode((string)$value);
         }, array_keys($values));
-        $values = array_map(function($value) {
-            return urlencode($value);
+        $values = array_map(function ($value) {
+            return urlencode((string)$value);
         }, $values);
 
         $routingConfigurations = $this->routingService
@@ -408,7 +411,7 @@ class SearchUriBuilder
 
         $values = $variableEvent->getVariableValues();
         // Take care that everything is urlencoded!
-        $keys = array_map(function($value) {
+        $keys = array_map(function ($value) {
             // @TODO: With only PHP 8 support, replace this with str_contains()
             if (strpos($value, '###') === false) {
                 return $value;
@@ -429,8 +432,6 @@ class SearchUriBuilder
 
     /**
      * Flushes the internal in memory cache.
-     *
-     * @return void
      */
     public function flushInMemoryCache()
     {
@@ -468,12 +469,12 @@ class SearchUriBuilder
      * @param array $values
      * @param array $branch
      */
-    protected function getSubstitution(array &$structure, array  &$values, array $branch = []): void
+    protected function getSubstitution(array &$structure, array &$values, array $branch = []): void
     {
         /*
          * Adds information about the filter facet to the placeholder.
          *
-         * This feature allows to handle even placeholder in RouteEnhancer
+         * This feature allows the handle even placeholder in RouteEnhancer
          */
         $filter = false;
         if (count($branch) > 0 && $branch[count($branch) - 1] === 'filter') {
@@ -484,8 +485,11 @@ class SearchUriBuilder
             if (is_array($value)) {
                 $this->getSubstitution($value, $values, $branch);
             } else {
-                if ($filter) {
-                    [$facetType, $facetValue] = explode(':', $value);
+                // @todo: Refactor to multi-dimensional array.
+                // https://solr-ddev-site.ddev.site/content-examples/form-elements/search?tx_solr[filter][type:tx_news_domain_model_news]=1&tx_solr[q]=*
+                // https://solr-ddev-site.ddev.site/content-examples/form-elements/search?tx_solr[filter][0]=type:pages&tx_solr[q]=*
+                if ($filter && $value !== 1) {
+                    [$facetType] = explode(':', $value);
                     $branch[] = $facetType;
                 }
                 $path = '###' . implode(':', $branch) . '###';

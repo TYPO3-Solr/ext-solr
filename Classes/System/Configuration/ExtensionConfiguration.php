@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -32,7 +34,7 @@ class ExtensionConfiguration
      *
      * @var array
      */
-    protected $configuration = [];
+    protected array $configuration = [];
 
     /**
      * ExtensionConfiguration constructor.
@@ -106,8 +108,8 @@ class ExtensionConfiguration
     public function getAvailablePluginNamespaces(): array
     {
         $pluginNamespacesList = 'tx_solr,' . $this->getConfigurationOrDefaultValue(
-                'pluginNamespaces'
-            );
+            'pluginNamespaces'
+        );
         return array_unique(GeneralUtility::trimExplode(',', $pluginNamespacesList));
     }
 
@@ -122,15 +124,25 @@ class ExtensionConfiguration
     public function getCacheHashExcludedParameters(): array
     {
         $pluginNamespaces = array_map(
-            function($pluginNamespace) {
+            function ($pluginNamespace) {
                 return '^' . $pluginNamespace . '[';
             },
             $this->getAvailablePluginNamespaces()
         );
+        $enhancersRouteParts = array_map(
+            function ($pluginNamespace) {
+                // __ \TYPO3\CMS\Core\Routing\Enhancer\VariableProcessor::LEVEL_DELIMITER
+                return '^' . $pluginNamespace . '__';
+            },
+            $this->getAvailablePluginNamespaces()
+        );
+
+        $exclusions = array_merge($pluginNamespaces, $enhancersRouteParts);
+
         if (false === $this->getIncludeGlobalQParameterInCacheHash()) {
-            $pluginNamespaces[] = 'q';
+            $exclusions[] = 'q';
         }
-        return array_combine($pluginNamespaces, $pluginNamespaces);
+        return array_combine($exclusions, $exclusions);
     }
 
     /**

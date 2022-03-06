@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -19,19 +21,17 @@ use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 
 /**
- * ResponseProcessor interface, allows to process search responses.
+ * ResponseProcessor interface, allows processing search responses.
  *
  * @author Ingo Renner <ingo@typo3.org>
  */
 interface ResponseProcessor
 {
-
     /**
      * Processes a query and its response after searching for that query.
      *
      * @param Query $query The query that has been searched for.
      * @param ResponseAdapter $response The response for the last query.
-     * @return void
      */
     public function processResponse(
         Query $query,

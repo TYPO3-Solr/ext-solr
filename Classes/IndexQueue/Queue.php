@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -26,12 +28,16 @@ use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\FrontendEnvironment;
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
+use Doctrine\DBAL\ConnectionException;
+use Doctrine\DBAL\Driver\Exception as DBALDriverException;
+use Doctrine\DBAL\Exception as DBALException;
+use Throwable;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * The Indexing Queue. It allows us to decouple from frontend indexing and
- * reacting to changes faster.
+ * reacting to the changes faster.
  *
  * @author Ingo Renner <ingo@typo3.org>
  */
@@ -40,37 +46,37 @@ class Queue
     /**
      * @var RootPageResolver
      */
-    protected $rootPageResolver;
+    protected RootPageResolver $rootPageResolver;
 
     /**
      * @var ConfigurationAwareRecordService
      */
-    protected $recordService;
+    protected ConfigurationAwareRecordService $recordService;
 
     /**
-     * @var \ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager
+     * @var SolrLogManager
      */
-    protected $logger = null;
+    protected SolrLogManager $logger;
 
     /**
      * @var QueueItemRepository
      */
-    protected $queueItemRepository;
+    protected QueueItemRepository $queueItemRepository;
 
     /**
      * @var QueueStatisticsRepository
      */
-    protected $queueStatisticsRepository;
+    protected QueueStatisticsRepository $queueStatisticsRepository;
 
     /**
      * @var QueueInitializationService
      */
-    protected $queueInitializationService;
+    protected QueueInitializationService $queueInitializationService;
 
     /**
      * @var FrontendEnvironment
      */
-    protected $frontendEnvironment = null;
+    protected FrontendEnvironment $frontendEnvironment;
 
     /**
      * Queue constructor.
@@ -106,8 +112,10 @@ class Queue
      * @param int $rootPageId The root page uid for which to get
      *      the last indexed item id
      * @return int Timestamp of last index run.
+     * @throws DBALDriverException
+     * @throws DBALException|\Doctrine\DBAL\DBALException
      */
-    public function getLastIndexTime($rootPageId)
+    public function getLastIndexTime(int $rootPageId): int
     {
         $lastIndexTime = 0;
 
@@ -126,8 +134,10 @@ class Queue
      * @param int $rootPageId The root page uid for which to get
      *      the last indexed item id
      * @return int The last indexed item's ID.
+     * @throws DBALDriverException
+     * @throws DBALException|\Doctrine\DBAL\DBALException
      */
-    public function getLastIndexedItemId($rootPageId)
+    public function getLastIndexedItemId(int $rootPageId): int
     {
         $lastIndexedItemId = 0;
 
@@ -142,7 +152,7 @@ class Queue
     /**
      * @return QueueInitializationService
      */
-    public function getInitializationService()
+    public function getInitializationService(): QueueInitializationService
     {
         return $this->queueInitializationService;
     }
@@ -156,27 +166,31 @@ class Queue
      * The method creates or updates the index queue items for all related rootPageIds.
      *
      * @param string $itemType The item's type, usually a table name.
-     * @param string $itemUid The item's uid, usually an integer uid, could be a different value for non-database-record types.
+     * @param int|string $itemUid The item's uid, usually an integer uid, could be a different value for non-database-record types.
      * @param int $forcedChangeTime The change time for the item if set, otherwise value from getItemChangedTime() is used.
      * @return int Number of updated/created items
+     * @throws DBALDriverException
+     * @throws DBALException|\Doctrine\DBAL\DBALException
+     * @throws Throwable
      */
-    public function updateItem($itemType, $itemUid, $forcedChangeTime = 0)
+    public function updateItem(string $itemType, $itemUid, int $forcedChangeTime = 0): int
     {
         $updateCount = $this->updateOrAddItemForAllRelatedRootPages($itemType, $itemUid, $forcedChangeTime);
-        $updateCount = $this->postProcessIndexQueueUpdateItem($itemType, $itemUid, $updateCount, $forcedChangeTime);
-
-        return $updateCount;
+        return $this->postProcessIndexQueueUpdateItem($itemType, $itemUid, $updateCount, $forcedChangeTime);
     }
 
     /**
-     * Updates or add's the item for all relevant root pages.
+     * Updates or adds the item for all relevant root pages.
      *
      * @param string $itemType The item's type, usually a table name.
-     * @param string $itemUid The item's uid, usually an integer uid, could be a different value for non-database-record types.
+     * @param int|string $itemUid The item's uid, usually an integer uid, could be a different value for non-database-record types.
      * @param int $forcedChangeTime The change time for the item if set, otherwise value from getItemChangedTime() is used.
      * @return int
+     * @throws DBALDriverException
+     * @throws DBALException|\Doctrine\DBAL\DBALException
+     * @throws Throwable
      */
-    protected function updateOrAddItemForAllRelatedRootPages($itemType, $itemUid, $forcedChangeTime): int
+    protected function updateOrAddItemForAllRelatedRootPages(string $itemType, $itemUid, int $forcedChangeTime): int
     {
         $updateCount = 0;
         $rootPageIds = $this->rootPageResolver->getResponsibleRootPageIds($itemType, $itemUid);
@@ -210,16 +224,20 @@ class Queue
     }
 
     /**
-     * Executes the updateItem post processing hook.
+     * Executes the updateItem post-processing hook.
      *
      * @param string $itemType
-     * @param int $itemUid
+     * @param int|string $itemUid The item's uid, usually an integer uid, could be a different value for non-database-record types.
      * @param int $updateCount
      * @param int $forcedChangeTime
      * @return int
      */
-    protected function postProcessIndexQueueUpdateItem($itemType, $itemUid, $updateCount, $forcedChangeTime = 0)
-    {
+    protected function postProcessIndexQueueUpdateItem(
+        string $itemType,
+        $itemUid,
+        int $updateCount,
+        int $forcedChangeTime = 0
+    ): int {
         if (!is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessIndexQueueUpdateItem'] ?? null)) {
             return $updateCount;
         }
@@ -236,7 +254,7 @@ class Queue
      * @param string $classReference
      * @return object
      */
-    protected function getHookImplementation($classReference)
+    protected function getHookImplementation(string $classReference): object
     {
         return GeneralUtility::makeInstance($classReference);
     }
@@ -246,8 +264,10 @@ class Queue
      *
      * @param Site $site
      * @return array Error items for the current site's Index Queue
+     * @throws DBALDriverException
+     * @throws DBALException|\Doctrine\DBAL\DBALException
      */
-    public function getErrorsBySite(Site $site)
+    public function getErrorsBySite(Site $site): array
     {
         return $this->queueItemRepository->findErrorsBySite($site);
     }
@@ -256,6 +276,7 @@ class Queue
      * Resets all the errors for all index queue items.
      *
      * @return mixed
+     * @throws DBALException|\Doctrine\DBAL\DBALException
      */
     public function resetAllErrors()
     {
@@ -267,6 +288,7 @@ class Queue
      *
      * @param Site $site
      * @return mixed
+     * @throws DBALException|\Doctrine\DBAL\DBALException
      */
     public function resetErrorsBySite(Site $site)
     {
@@ -278,6 +300,7 @@ class Queue
      *
      * @param Item $item
      * @return mixed
+     * @throws DBALException|\Doctrine\DBAL\DBALException
      */
     public function resetErrorByItem(Item $item)
     {
@@ -290,15 +313,21 @@ class Queue
      * Not meant for public use.
      *
      * @param string $itemType The item's type, usually a table name.
-     * @param string $itemUid The item's uid, usually an integer uid, could be a
+     * @param int|string $itemUid The item's uid, usually an integer uid, could be a
      *      different value for non-database-record types.
      * @param string $indexingConfiguration The item's indexing configuration to use.
      *      Optional, overwrites existing / determined configuration.
-     * @param $rootPageId
+     * @param int $rootPageId
      * @return int
+     * @throws DBALDriverException
+     * @throws DBALException|\Doctrine\DBAL\DBALException
      */
-    private function addNewItem($itemType, $itemUid, $indexingConfiguration, $rootPageId)
-    {
+    private function addNewItem(
+        string $itemType,
+        $itemUid,
+        string $indexingConfiguration,
+        int $rootPageId
+    ): int {
         $additionalRecordFields = '';
         if ($itemType === 'pages') {
             $additionalRecordFields = ', doktype, uid';
@@ -319,13 +348,13 @@ class Queue
      * Get record to be added in addNewItem
      *
      * @param string $itemType The item's type, usually a table name.
-     * @param string $itemUid The item's uid, usually an integer uid, could be a
+     * @param int|string $itemUid The item's uid, usually an integer uid, could be a
      *      different value for non-database-record types.
      * @param string $additionalRecordFields for sql-query
      *
-     * @return array|NULL
+     * @return array|null
      */
-    protected function getRecordCached($itemType, $itemUid, $additionalRecordFields)
+    protected function getRecordCached(string $itemType, $itemUid, string $additionalRecordFields): ?array
     {
         $cache = GeneralUtility::makeInstance(TwoLevelCache::class, /** @scrutinizer ignore-type */ 'runtime');
         $cacheId = md5('Queue' . ':' . 'getRecordCached' . ':' . $itemType . ':' . $itemUid . ':' . 'pid' . $additionalRecordFields);
@@ -349,11 +378,13 @@ class Queue
      * of an item.
      *
      * @param string $itemType The item's table name.
-     * @param string $itemUid The item's uid, usually an integer uid, could be a
+     * @param int|string $itemUid The item's uid, usually an integer uid, could be a
      *      different value for non-database-record types.
      * @return int Timestamp of the item's changed time or future start time
+     * @throws DBALDriverException
+     * @throws DBALException|\Doctrine\DBAL\DBALException
      */
-    protected function getItemChangedTime($itemType, $itemUid)
+    protected function getItemChangedTime(string $itemType, $itemUid): int
     {
         $itemTypeHasStartTimeColumn = false;
         $changedTimeColumns = $GLOBALS['TCA'][$itemType]['ctrl']['tstamp'];
@@ -389,14 +420,12 @@ class Queue
         // if start time exists and start time is higher than last changed timestamp
         // then set changed to the future start time to make the item
         // indexed at a later time
-        $changedTime = max(
+        return (int)max(
             $itemChangedTime,
             $pageChangedTime,
             $localizationsChangedTime,
             $startTime
         );
-
-        return $changedTime;
     }
 
     /**
@@ -404,25 +433,29 @@ class Queue
      *
      * @param array $page Partial page record
      * @return int Timestamp of the most recent content element change
+     * @throws DBALDriverException
+     * @throws DBALException|\Doctrine\DBAL\DBALException
      */
-    protected function getPageItemChangedTime(array $page)
+    protected function getPageItemChangedTime(array $page): int
     {
         if (!empty($page['content_from_pid'])) {
             // canonical page, get the original page's last changed time
             return $this->queueItemRepository->getPageItemChangedTimeByPageUid((int)$page['content_from_pid']);
         }
-        return $this->queueItemRepository->getPageItemChangedTimeByPageUid((int)$page['uid']);
+        return $this->queueItemRepository->getPageItemChangedTimeByPageUid((int)$page['uid']) ?? 0;
     }
 
     /**
      * Checks whether the Index Queue contains a specific item.
      *
      * @param string $itemType The item's type, usually a table name.
-     * @param string $itemUid The item's uid, usually an integer uid, could be a
+     * @param int|string $itemUid The item's uid, usually an integer uid, could be a
      *      different value for non-database-record types.
      * @return bool TRUE if the item is found in the queue, FALSE otherwise
+     * @throws DBALDriverException
+     * @throws DBALException|\Doctrine\DBAL\DBALException
      */
-    public function containsItem($itemType, $itemUid)
+    public function containsItem(string $itemType, $itemUid): bool
     {
         return $this->queueItemRepository->containsItem($itemType, (int)$itemUid);
     }
@@ -431,14 +464,16 @@ class Queue
      * Checks whether the Index Queue contains a specific item.
      *
      * @param string $itemType The item's type, usually a table name.
-     * @param string $itemUid The item's uid, usually an integer uid, could be a
+     * @param int|string $itemUid The item's uid, usually an integer uid, could be a
      *      different value for non-database-record types.
-     * @param integer $rootPageId
+     * @param int $rootPageId
      * @return bool TRUE if the item is found in the queue, FALSE otherwise
+     * @throws DBALDriverException
+     * @throws DBALException|\Doctrine\DBAL\DBALException
      */
-    public function containsItemWithRootPageId($itemType, $itemUid, $rootPageId)
+    public function containsItemWithRootPageId(string $itemType, $itemUid, int $rootPageId): bool
     {
-        return $this->queueItemRepository->containsItemWithRootPageId($itemType, (int)$itemUid, (int)$rootPageId);
+        return $this->queueItemRepository->containsItemWithRootPageId($itemType, (int)$itemUid, $rootPageId);
     }
 
     /**
@@ -446,12 +481,14 @@ class Queue
      * marked as indexed.
      *
      * @param string $itemType The item's type, usually a table name.
-     * @param string $itemUid The item's uid, usually an integer uid, could be a
+     * @param int|string $itemUid The item's uid, usually an integer uid, could be a
      *      different value for non-database-record types.
      * @return bool TRUE if the item is found in the queue and marked as
      *      indexed, FALSE otherwise
+     * @throws DBALDriverException
+     * @throws DBALException|\Doctrine\DBAL\DBALException
      */
-    public function containsIndexedItem($itemType, $itemUid)
+    public function containsIndexedItem(string $itemType, $itemUid): bool
     {
         return $this->queueItemRepository->containsIndexedItem($itemType, (int)$itemUid);
     }
@@ -460,9 +497,12 @@ class Queue
      * Removes an item from the Index Queue.
      *
      * @param string $itemType The type of the item to remove, usually a table name.
-     * @param int $itemUid The uid of the item to remove
+     * @param int|string $itemUid The uid of the item to remove
+     * @throws ConnectionException
+     * @throws DBALException
+     * @throws Throwable
      */
-    public function deleteItem($itemType, $itemUid)
+    public function deleteItem(string $itemType, $itemUid)
     {
         $this->queueItemRepository->deleteItem($itemType, (int)$itemUid);
     }
@@ -471,8 +511,11 @@ class Queue
      * Removes all items of a certain type from the Index Queue.
      *
      * @param string $itemType The type of items to remove, usually a table name.
+     * @throws ConnectionException
+     * @throws DBALException
+     * @throws Throwable
      */
-    public function deleteItemsByType($itemType)
+    public function deleteItemsByType(string $itemType)
     {
         $this->queueItemRepository->deleteItemsByType($itemType);
     }
@@ -484,15 +527,17 @@ class Queue
      * @param Site $site The site to remove items for.
      * @param string $indexingConfigurationName Name of a specific indexing
      *      configuration
+     * @throws ConnectionException
+     * @throws \Doctrine\DBAL\DBALException
+     * @throws Throwable
      */
-    public function deleteItemsBySite(Site $site, $indexingConfigurationName = '')
+    public function deleteItemsBySite(Site $site, string $indexingConfigurationName = '')
     {
         $this->queueItemRepository->deleteItemsBySite($site, $indexingConfigurationName);
     }
 
     /**
      * Removes all items from the Index Queue.
-     *
      */
     public function deleteAllItems()
     {
@@ -504,6 +549,8 @@ class Queue
      *
      * @param int $itemId Index Queue item uid
      * @return Item|null The request Index Queue item or NULL if no item with $itemId was found
+     * @throws DBALDriverException
+     * @throws DBALException|\Doctrine\DBAL\DBALException
      */
     public function getItem(int $itemId): ?Item
     {
@@ -514,10 +561,14 @@ class Queue
      * Gets Index Queue items by type and uid.
      *
      * @param string $itemType item type, usually  the table name
-     * @param int $itemUid item uid
+     * @param int|string $itemUid item uid
      * @return Item[] An array of items matching $itemType and $itemUid
+     * @throws ConnectionException
+     * @throws DBALDriverException
+     * @throws DBALException
+     * @throws Throwable
      */
-    public function getItems($itemType, $itemUid)
+    public function getItems(string $itemType, $itemUid): array
     {
         return $this->queueItemRepository->findItemsByItemTypeAndItemUid($itemType, (int)$itemUid);
     }
@@ -526,8 +577,12 @@ class Queue
      * Returns all items in the queue.
      *
      * @return Item[] An array of items
+     * @throws ConnectionException
+     * @throws DBALDriverException
+     * @throws DBALException
+     * @throws Throwable
      */
-    public function getAllItems()
+    public function getAllItems(): array
     {
         return $this->queueItemRepository->findAll();
     }
@@ -536,8 +591,10 @@ class Queue
      * Returns the number of items for all queues.
      *
      * @return int
+     * @throws DBALDriverException
+     * @throws DBALException
      */
-    public function getAllItemsCount()
+    public function getAllItemsCount(): int
     {
         return $this->queueItemRepository->count();
     }
@@ -550,10 +607,16 @@ class Queue
      * @param string $indexingConfigurationName
      *
      * @return QueueStatistic
+     * @throws DBALDriverException
+     * @throws DBALException
      */
-    public function getStatisticsBySite(Site $site, $indexingConfigurationName = '')
+    public function getStatisticsBySite(Site $site, string $indexingConfigurationName = ''): QueueStatistic
     {
-        return $this->queueStatisticsRepository->findOneByRootPidAndOptionalIndexingConfigurationName($site->getRootPageId(), $indexingConfigurationName);
+        return $this->queueStatisticsRepository
+            ->findOneByRootPidAndOptionalIndexingConfigurationName(
+                $site->getRootPageId(),
+                $indexingConfigurationName
+            );
     }
 
     /**
@@ -562,8 +625,12 @@ class Queue
      * @param Site $site TYPO3 site
      * @param int $limit Number of items to get from the queue
      * @return Item[] Items to index to the given solr server
+     * @throws ConnectionException
+     * @throws DBALDriverException
+     * @throws DBALException
+     * @throws Throwable
      */
-    public function getItemsToIndex(Site $site, $limit = 50)
+    public function getItemsToIndex(Site $site, int $limit = 50): array
     {
         return $this->queueItemRepository->findItemsToIndex($site, $limit);
     }
@@ -574,8 +641,9 @@ class Queue
      *
      * @param int|Item $item Either the item's Index Queue uid or the complete item
      * @param string $errorMessage Error message
+     * @throws DBALException|\Doctrine\DBAL\DBALException
      */
-    public function markItemAsFailed($item, $errorMessage = '')
+    public function markItemAsFailed($item, string $errorMessage = '')
     {
         $this->queueItemRepository->markItemAsFailed($item, $errorMessage);
     }
@@ -584,6 +652,7 @@ class Queue
      * Sets the timestamp of when an item last has been indexed.
      *
      * @param Item $item
+     * @throws DBALException|\Doctrine\DBAL\DBALException
      */
     public function updateIndexTimeByItem(Item $item)
     {
@@ -595,8 +664,9 @@ class Queue
      *
      * @param Item $item
      * @param int $forcedChangeTime The change time for the item
+     * @throws DBALException|\Doctrine\DBAL\DBALException
      */
-    public function setForcedChangeTimeByItem(Item $item, $forcedChangeTime)
+    public function setForcedChangeTimeByItem(Item $item, int $forcedChangeTime = 0)
     {
         $this->queueItemRepository->updateChangedTimeByItem($item, $forcedChangeTime);
     }

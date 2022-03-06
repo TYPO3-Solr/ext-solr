@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -17,10 +17,10 @@ declare(strict_types = 1);
 
 namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\EventListener;
 
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\EventListener\Events\DelayedProcessingQueuingFinishedEvent;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\DataUpdateEventInterface;
 use ApacheSolrForTypo3\Solr\System\Records\Queue\EventQueueItemRepository;
-use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\EventListener\Events\DelayedProcessingQueuingFinishedEvent;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Event listener just queueing the data changes and stopping

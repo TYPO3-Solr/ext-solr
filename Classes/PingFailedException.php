@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -15,9 +17,13 @@
 
 namespace ApacheSolrForTypo3\Solr;
 
+use Exception;
+
 /**
  * Exception that is thrown when a ping fails
  *
  * @author Timo Schmidt <timo.schmidt@dkd.de>
  */
-class PingFailedException extends \Exception {}
+class PingFailedException extends Exception
+{
+}

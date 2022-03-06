@@ -27,57 +27,57 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 abstract class AbstractStrategy
 {
-
     /**
      * @var Queue
      */
-    protected $queue;
+    protected Queue $queue;
 
     /**
      * @var ConnectionManager
      */
-    protected $connectionManager;
+    protected ConnectionManager $connectionManager;
 
     /**
      * AbstractStrategy constructor.
      * @param Queue|null $queue
      * @param ConnectionManager|null $connectionManager
      */
-    public function __construct(Queue $queue = null, ConnectionManager $connectionManager = null)
-    {
+    public function __construct(
+        Queue $queue = null,
+        ConnectionManager $connectionManager = null
+    ) {
         $this->queue = $queue ?? GeneralUtility::makeInstance(Queue::class);
         $this->connectionManager = $connectionManager ?? GeneralUtility::makeInstance(ConnectionManager::class);
     }
 
     /**
-     * Call's the removal of the strategy and afterwards the garbagecollector post processing hook.
+     * Call's the removal of the strategy and afterwards the garbage-collector post-processing hook.
      *
      * @param string $table
      * @param int $uid
-     * @return mixed
      */
-    public function removeGarbageOf($table, $uid)
+    public function removeGarbageOf(string $table, int $uid)
     {
         $this->removeGarbageOfByStrategy($table, $uid);
         $this->callPostProcessGarbageCollectorHook($table, $uid);
     }
 
     /**
-     * A implementation of the GarbageCollection strategy is responsible to remove the garbage from
+     * An implementation of the GarbageCollection strategy is responsible to remove the garbage from
      * the indexqueue and from the solr server.
      *
      * @param string $table
      * @param int $uid
      */
-    abstract protected function removeGarbageOfByStrategy($table, $uid);
+    abstract protected function removeGarbageOfByStrategy(string $table, int $uid);
 
     /**
      * Deletes a document from solr and from the index queue.
      *
      * @param string $table
-     * @param integer $uid
+     * @param int $uid
      */
-    protected function deleteInSolrAndRemoveFromIndexQueue($table, $uid)
+    protected function deleteInSolrAndRemoveFromIndexQueue(string $table, int $uid)
     {
         $this->deleteIndexDocuments($table, $uid);
         $this->queue->deleteItem($table, $uid);
@@ -87,9 +87,9 @@ abstract class AbstractStrategy
      * Deletes a document from solr and updates the item in the index queue (e.g. on page content updates).
      *
      * @param string $table
-     * @param integer $uid
+     * @param int $uid
      */
-    protected function deleteInSolrAndUpdateIndexQueue($table, $uid)
+    protected function deleteInSolrAndUpdateIndexQueue(string $table, int $uid)
     {
         $this->deleteIndexDocuments($table, $uid);
         $this->queue->updateItem($table, $uid);
@@ -101,7 +101,7 @@ abstract class AbstractStrategy
      * @param string $table The record's table name.
      * @param int $uid The record's uid.
      */
-    protected function deleteIndexDocuments($table, $uid, $language = 0)
+    protected function deleteIndexDocuments(string $table, int $uid, int $language = 0)
     {
         // record can be indexed for multiple sites
         $indexQueueItems = $this->queue->getItems($table, $uid);
@@ -125,12 +125,19 @@ abstract class AbstractStrategy
      * @param int $uid
      * @param SolrConnection[] $solrConnections
      * @param string $siteHash
-     * @param boolean $enableCommitsSetting
+     * @param bool $enableCommitsSetting
      */
-    protected function deleteRecordInAllSolrConnections($table, $uid, $solrConnections, $siteHash, $enableCommitsSetting)
-    {
+    protected function deleteRecordInAllSolrConnections(
+        string $table,
+        int $uid,
+        array $solrConnections,
+        string $siteHash,
+        bool $enableCommitsSetting
+    ) {
         foreach ($solrConnections as $solr) {
-            $solr->getWriteService()->deleteByQuery('type:' . $table . ' AND uid:' . (int)$uid . ' AND siteHash:' . $siteHash);
+            $solr->getWriteService()->deleteByQuery(
+                'type:' . $table . ' AND uid:' . $uid . ' AND siteHash:' . $siteHash
+            );
             if ($enableCommitsSetting) {
                 $solr->getWriteService()->commit(false, false);
             }
@@ -138,12 +145,12 @@ abstract class AbstractStrategy
     }
 
     /**
-     * Calls the registered post processing hooks after the garbageCollection.
+     * Calls the registered post-processing hooks after the garbageCollection.
      *
      * @param string $table
      * @param int $uid
      */
-    protected function callPostProcessGarbageCollectorHook($table, $uid)
+    protected function callPostProcessGarbageCollectorHook(string $table, int $uid)
     {
         if (!is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessGarbageCollector'] ?? null)) {
             return;

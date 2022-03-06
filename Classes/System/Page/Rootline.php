@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -19,8 +21,8 @@ use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 
 /**
  * Rootline class. This class is used to perform operations on a rootline array.
- * The constructor requires an rootline array as an arguments (as you get it from
- * PageRepository::getRootline or TSFE->rootline.
+ * The constructor requires a rootline array as arguments (as you get it from
+ * PageRepository::getRootline or TSFE->rootline.)
  *
  * @author Timo Hund <timo.hund@dkd.de>
  */
@@ -29,7 +31,7 @@ class Rootline
     /**
      * @var array
      */
-    protected $rootLineArray = [];
+    protected array $rootLineArray = [];
 
     /**
      * Rootline constructor.
@@ -43,7 +45,7 @@ class Rootline
     /**
      * @return array
      */
-    public function getRootLineArray()
+    public function getRootLineArray(): array
     {
         return $this->rootLineArray;
     }
@@ -51,17 +53,17 @@ class Rootline
     /**
      * @param array $rootLineArray
      */
-    public function setRootLineArray($rootLineArray)
+    public function setRootLineArray(array $rootLineArray)
     {
         $this->rootLineArray = $rootLineArray;
     }
 
     /**
-     * Returns true if the rooline contains a root page.
+     * Returns true if the rootline contains a root page.
      *
-     * @return boolean
+     * @return bool
      */
-    public function getHasRootPage()
+    public function getHasRootPage(): bool
     {
         return $this->getRootPageId() !== 0;
     }
@@ -70,9 +72,9 @@ class Rootline
      * Returns the rootPageId as integer if a rootpage is given,
      * if non is given 0 will be returned
      *
-     * @return integer
+     * @return int
      */
-    public function getRootPageId()
+    public function getRootPageId(): int
     {
         $rootPageId = 0;
 
@@ -95,7 +97,7 @@ class Rootline
      *
      * @return array
      */
-    public function getParentPageIds()
+    public function getParentPageIds(): array
     {
         $rootLineParentPageIds = [];
         if (empty($this->rootLineArray)) {

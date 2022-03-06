@@ -23,7 +23,7 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
  */
 class SiteHighlighterUrlModifierTest extends UnitTest
 {
-    public function canModifyDataProvider()
+    public function canModifyDataProvider(): array
     {
         return [
             'nothingChangedWhenNoSearchWordPresent' => [

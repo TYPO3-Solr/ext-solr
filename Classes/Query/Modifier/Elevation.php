@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -15,8 +17,8 @@
 
 namespace ApacheSolrForTypo3\Solr\Query\Modifier;
 
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -26,7 +28,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class Elevation implements Modifier
 {
-
     /**
      * @var QueryBuilder
      */
@@ -47,9 +48,11 @@ class Elevation implements Modifier
      * @param Query $query The query to modify
      * @return Query The modified query with enabled elevation mode
      */
-    public function modifyQuery(Query $query)
+    public function modifyQuery(Query $query): Query
     {
-        $query = $this->queryBuilder->startFrom($query)->useElevationFromTypoScript()->getQuery();
-        return $query;
+        return $this->queryBuilder
+            ->startFrom($query)
+            ->useElevationFromTypoScript()
+            ->getQuery();
     }
 }

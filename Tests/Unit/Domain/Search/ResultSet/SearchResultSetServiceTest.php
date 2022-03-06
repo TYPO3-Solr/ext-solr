@@ -85,7 +85,7 @@ class SearchResultSetServiceTest extends UnitTest
     public function searchIsNotTriggeredWhenEmptySearchDisabledAndEmptyQueryWasPassed()
     {
         $searchRequest = new SearchRequest();
-        $searchRequest->setRawQueryString(null);
+        $searchRequest->setRawQueryString('');
         $this->assertAllInitialSearchesAreDisabled();
         $this->objectManagerMock->expects(self::once())->method('get')->with(SearchResultSet::class)->willReturn(new SearchResultSet());
         $resultSet = $this->searchResultSetService->search($searchRequest);

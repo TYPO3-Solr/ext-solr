@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -16,7 +18,6 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Result\Parser;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\Parser\AbstractResultParser;
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResultCollection;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 
 /**
@@ -26,22 +27,22 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
  */
 class TestResultParser extends AbstractResultParser
 {
-
     /**
      * @param SearchResultSet $resultSet
      * @param bool $useRawDocuments
-     * @return SearchResultCollection
+     * @return SearchResultSet
      */
-    public function parse(SearchResultSet $resultSet, bool $useRawDocuments = true)
+    public function parse(SearchResultSet $resultSet, bool $useRawDocuments = true): SearchResultSet
     {
         // TODO: Implement parse() method.
+        return $resultSet;
     }
 
     /**
      * @param SearchResultSet $resultSet
      * @return mixed
      */
-    public function canParse(SearchResultSet $resultSet)
+    public function canParse(SearchResultSet $resultSet): bool
     {
         return true;
     }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -23,14 +25,15 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * The DefaultResultParser is able to parse normal(ungroupd results)
  */
-class DefaultResultParser extends AbstractResultParser {
+class DefaultResultParser extends AbstractResultParser
+{
 
     /**
      * @param SearchResultSet $resultSet
      * @param bool $useRawDocuments
      * @return SearchResultSet
      */
-    public function parse(SearchResultSet $resultSet, bool $useRawDocuments = true)
+    public function parse(SearchResultSet $resultSet, bool $useRawDocuments = true): SearchResultSet
     {
         $searchResults = GeneralUtility::makeInstance(SearchResultCollection::class);
         $parsedData = $resultSet->getResponse()->getParsedData();
@@ -64,12 +67,11 @@ class DefaultResultParser extends AbstractResultParser {
      * @param SearchResultSet $resultSet
      * @return bool
      */
-    public function canParse(SearchResultSet $resultSet)
+    public function canParse(SearchResultSet $resultSet): bool
     {
-        // This parsers should not be used when grouping is enabled
+        // These parsers should not be used when grouping is enabled
         $configuration = $resultSet->getUsedSearchRequest()->getContextTypoScriptConfiguration();
-        if ($configuration instanceof TypoScriptConfiguration && $configuration->getSearchGrouping())
-        {
+        if ($configuration instanceof TypoScriptConfiguration && $configuration->getIsSearchGroupingEnabled()) {
             return false;
         }
 

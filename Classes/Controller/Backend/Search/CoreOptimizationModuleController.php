@@ -35,7 +35,6 @@ class CoreOptimizationModuleController extends AbstractModuleController
      * Set up the doc header properly here
      *
      * @param ViewInterface $view
-     * @return void
      * @throws DBALDriverException
      * @throws InvalidViewObjectNameException
      * @throws Throwable
@@ -74,7 +73,7 @@ class CoreOptimizationModuleController extends AbstractModuleController
         $this->view->assignMultiple([
             'synonyms' => $synonyms,
             'stopWords' => implode(PHP_EOL, $stopWords),
-            'stopWordsCount' => count($stopWords)
+            'stopWordsCount' => count($stopWords),
         ]);
 
         return $this->getModuleTemplateResponse();

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -20,12 +22,10 @@ use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Module data storage service. Used to store and retrieve module state (eg.
- * checkboxes, selections).
+ * Module data storage service. Used to store and retrieve module state (e.g. checkboxes, selections).
  */
 class ModuleDataStorageService implements SingletonInterface
 {
-
     /**
      * @var string
      */
@@ -36,12 +36,12 @@ class ModuleDataStorageService implements SingletonInterface
      *
      * @return ModuleData
      */
-    public function loadModuleData()
+    public function loadModuleData(): ModuleData
     {
         $moduleData = $GLOBALS['BE_USER']->getModuleData(self::KEY);
 
         $this->unsetModuleDataIfCanNotBeSerialized($moduleData);
-        if (empty($moduleData) || !$moduleData) {
+        if (empty($moduleData)) {
             $moduleData = GeneralUtility::makeInstance(ModuleData::class);
         } else {
             $moduleData = unserialize($moduleData);
@@ -54,7 +54,6 @@ class ModuleDataStorageService implements SingletonInterface
      * Persists serialized module data to user settings
      *
      * @param ModuleData $moduleData
-     * @return void
      */
     public function persistModuleData(ModuleData $moduleData)
     {

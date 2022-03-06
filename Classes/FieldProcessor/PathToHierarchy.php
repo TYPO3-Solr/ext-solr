@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -25,14 +27,13 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class PathToHierarchy implements FieldProcessor
 {
-
     /**
      * Expects a value like "some/hierarchy/value"
      *
      * @param array $values Array of values, an array because of multivalued fields
      * @return array Modified array of values
      */
-    public function process(array $values)
+    public function process(array $values): array
     {
         $results = [];
 
@@ -51,7 +52,7 @@ class PathToHierarchy implements FieldProcessor
      * @return array Solr hierarchy
      * @see http://wiki.apache.org/solr/HierarchicalFaceting
      */
-    protected function buildSolrHierarchyFromPath($path)
+    protected function buildSolrHierarchyFromPath(string $path): array
     {
         $hierarchy = [];
         $path = HierarchyTool::substituteSlashes($path);

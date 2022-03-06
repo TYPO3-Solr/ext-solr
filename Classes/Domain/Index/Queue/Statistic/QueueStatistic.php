@@ -15,28 +15,30 @@
 
 namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\Statistic;
 
+/**
+ * Class QueueStatistic is responsible for index queue metrics calculations.
+ */
 class QueueStatistic
 {
+    /**
+     * @var int
+     */
+    protected int $failedCount = 0;
 
     /**
      * @var int
      */
-    protected $failedCount = 0;
+    protected int $pendingCount = 0;
 
     /**
      * @var int
      */
-    protected $pendingCount = 0;
-
-    /**
-     * @var int
-     */
-    protected $successCount = 0;
+    protected int $successCount = 0;
 
     /**
      * @param int $failedCount
      */
-    public function setFailedCount($failedCount)
+    public function setFailedCount(int $failedCount)
     {
         $this->failedCount = $failedCount;
     }
@@ -44,15 +46,15 @@ class QueueStatistic
     /**
      * @return int
      */
-    public function getFailedCount()
+    public function getFailedCount(): int
     {
         return $this->failedCount;
     }
 
     /**
-     * @return float|int
+     * @return float
      */
-    public function getFailedPercentage()
+    public function getFailedPercentage(): float
     {
         return $this->getPercentage($this->getFailedCount());
     }
@@ -60,7 +62,7 @@ class QueueStatistic
     /**
      * @param int $pendingCount
      */
-    public function setPendingCount($pendingCount)
+    public function setPendingCount(int $pendingCount)
     {
         $this->pendingCount = $pendingCount;
     }
@@ -68,15 +70,15 @@ class QueueStatistic
     /**
      * @return int
      */
-    public function getPendingCount()
+    public function getPendingCount(): int
     {
         return $this->pendingCount;
     }
 
     /**
-     * @return float|int
+     * @return float
      */
-    public function getPendingPercentage()
+    public function getPendingPercentage(): float
     {
         return $this->getPercentage($this->getPendingCount());
     }
@@ -84,7 +86,7 @@ class QueueStatistic
     /**
      * @param int $successCount
      */
-    public function setSuccessCount($successCount)
+    public function setSuccessCount(int $successCount)
     {
         $this->successCount = $successCount;
     }
@@ -92,15 +94,15 @@ class QueueStatistic
     /**
      * @return int
      */
-    public function getSuccessCount()
+    public function getSuccessCount(): int
     {
         return $this->successCount;
     }
 
     /**
-     * @return float|int
+     * @return float
      */
-    public function getSuccessPercentage()
+    public function getSuccessPercentage(): float
     {
         return $this->getPercentage($this->getSuccessCount());
     }
@@ -108,21 +110,21 @@ class QueueStatistic
     /**
      * @return int
      */
-    public function getTotalCount()
+    public function getTotalCount(): int
     {
         return $this->pendingCount + $this->failedCount + $this->successCount;
     }
 
     /**
-     * @param integer $count
+     * @param int $count
      * @return float
      */
-    protected function getPercentage($count)
+    protected function getPercentage(int $count): float
     {
         $total = $this->getTotalCount();
         if ($total === 0) {
             return 0.0;
         }
-        return (float)round((100 / $total) * $count, 2);
+        return round((100 / $total) * $count, 2);
     }
 }

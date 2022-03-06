@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -46,7 +48,7 @@ class Statistics implements Modifier
      * @param Query $query The query to modify
      * @return Query The modified query with enabled debugging mode
      */
-    public function modifyQuery(Query $query)
+    public function modifyQuery(Query $query): Query
     {
         return $this->queryBuilder->startFrom($query)->useDebug(true)->getQuery();
     }

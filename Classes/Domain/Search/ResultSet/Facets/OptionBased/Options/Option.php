@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -33,8 +35,14 @@ class Option extends AbstractOptionFacetItem
      * @param bool $selected
      * @param array $metrics
      */
-    public function __construct(OptionsFacet $facet, $label = '', $value = '', $documentCount = 0, $selected = false, $metrics = [])
-    {
+    public function __construct(
+        OptionsFacet $facet,
+        string $label = '',
+        string $value = '',
+        int $documentCount = 0,
+        bool $selected = false,
+        array $metrics = []
+    ) {
         parent::__construct($facet, $label, $value, $documentCount, $selected, $metrics);
     }
 }

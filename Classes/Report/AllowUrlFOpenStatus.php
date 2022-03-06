@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -26,10 +28,11 @@ use TYPO3\CMS\Reports\Status;
  */
 class AllowUrlFOpenStatus extends AbstractSolrStatus
 {
-
     /**
      * Checks whether allow_url_fopen is enabled.
+     * @noinspection PhpMissingReturnTypeInspection
      *
+     * @noinspection PhpMissingReturnTypeInspection see {@link \TYPO3\CMS\Reports\StatusProviderInterface::getStatus()}
      */
     public function getStatus()
     {
@@ -49,10 +52,14 @@ class AllowUrlFOpenStatus extends AbstractSolrStatus
 
         $reports[] = GeneralUtility::makeInstance(
             Status::class,
-            /** @scrutinizer ignore-type */ 'allow_url_fopen',
-            /** @scrutinizer ignore-type */ $value,
-            /** @scrutinizer ignore-type */ $message,
-            /** @scrutinizer ignore-type */ $severity
+            /** @scrutinizer ignore-type */
+            'allow_url_fopen',
+            /** @scrutinizer ignore-type */
+            $value,
+            /** @scrutinizer ignore-type */
+            $message,
+            /** @scrutinizer ignore-type */
+            $severity
         );
 
         return $reports;

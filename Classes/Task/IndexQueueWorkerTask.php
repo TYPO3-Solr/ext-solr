@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -18,8 +20,12 @@ namespace ApacheSolrForTypo3\Solr\Task;
 use ApacheSolrForTypo3\Solr\Domain\Index\IndexService;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\System\Environment\CliEnvironment;
+use ApacheSolrForTypo3\Solr\System\Environment\WebRootAllReadyDefinedException;
+use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException;
+use TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException;
 use TYPO3\CMS\Scheduler\ProgressProviderInterface;
 
 /**
@@ -31,19 +37,26 @@ use TYPO3\CMS\Scheduler\ProgressProviderInterface;
 class IndexQueueWorkerTask extends AbstractSolrTask implements ProgressProviderInterface
 {
     /**
-     * @var int
+     * @var int|null
      */
-    protected $documentsToIndexLimit;
+    protected ?int $documentsToIndexLimit = null;
 
     /**
      * @var string
      */
-    protected $forcedWebRoot = '';
+    protected string $forcedWebRoot = '';
 
     /**
      * Works through the indexing queue and indexes the queued items into Solr.
      *
      * @return bool Returns TRUE on success, FALSE if no items were indexed or none were found.
+     *
+     * @throws DBALDriverException
+     * @throws InvalidSlotException
+     * @throws InvalidSlotReturnException
+     * @throws WebRootAllReadyDefinedException
+     *
+     * @noinspection PhpMissingReturnTypeInspection See {@link \TYPO3\CMS\Scheduler\Task\AbstractTask::execute()}
      */
     public function execute()
     {
@@ -66,9 +79,7 @@ class IndexQueueWorkerTask extends AbstractSolrTask implements ProgressProviderI
             $cliEnvironment->restore();
         }
 
-        $executionSucceeded = true;
-
-        return $executionSucceeded;
+        return true;
     }
 
     /**
@@ -79,7 +90,7 @@ class IndexQueueWorkerTask extends AbstractSolrTask implements ProgressProviderI
      *
      * @return string
      */
-    public function getWebRoot()
+    public function getWebRoot(): string
     {
         if ($this->forcedWebRoot !== '') {
             return $this->replaceWebRootMarkers($this->forcedWebRoot);
@@ -92,7 +103,7 @@ class IndexQueueWorkerTask extends AbstractSolrTask implements ProgressProviderI
      * @param string $webRoot
      * @return string
      */
-    protected function replaceWebRootMarkers($webRoot)
+    protected function replaceWebRootMarkers(string $webRoot): string
     {
         if (strpos($webRoot, '###PATH_typo3###') !== false) {
             $webRoot = str_replace('###PATH_typo3###', Environment::getPublicPath() . '/typo3/', $webRoot);
@@ -110,6 +121,9 @@ class IndexQueueWorkerTask extends AbstractSolrTask implements ProgressProviderI
      * the scheduler's task overview list.
      *
      * @return string Information to display
+     * @throws DBALDriverException
+     *
+     * @noinspection PhpMissingReturnTypeInspection {@link \TYPO3\CMS\Scheduler\Task\AbstractTask::getAdditionalInformation()}
      */
     public function getAdditionalInformation()
     {
@@ -121,7 +135,6 @@ class IndexQueueWorkerTask extends AbstractSolrTask implements ProgressProviderI
 
         $message = 'Site: ' . $site->getLabel();
 
-        /** @var $indexService \ApacheSolrForTypo3\Solr\Domain\Index\IndexService */
         $indexService = $this->getInitializedIndexService($site);
         $failedItemsCount = $indexService->getFailCount();
 
@@ -138,6 +151,8 @@ class IndexQueueWorkerTask extends AbstractSolrTask implements ProgressProviderI
      * Gets the indexing progress.
      *
      * @return float Indexing progress as a two decimal precision float. f.e. 44.87
+     * @throws DBALDriverException
+     * @noinspection PhpMissingReturnTypeInspection {@link \TYPO3\CMS\Scheduler\ProgressProviderInterface::getProgress()}
      */
     public function getProgress()
     {
@@ -146,16 +161,14 @@ class IndexQueueWorkerTask extends AbstractSolrTask implements ProgressProviderI
             return 0.0;
         }
 
-        /** @var $indexService \ApacheSolrForTypo3\Solr\Domain\Index\IndexService */
         $indexService = $this->getInitializedIndexService($site);
-
         return $indexService->getProgress();
     }
 
     /**
-     * @return mixed
+     * @return int|null
      */
-    public function getDocumentsToIndexLimit()
+    public function getDocumentsToIndexLimit(): ?int
     {
         return $this->documentsToIndexLimit;
     }
@@ -163,7 +176,7 @@ class IndexQueueWorkerTask extends AbstractSolrTask implements ProgressProviderI
     /**
      * @param int $limit
      */
-    public function setDocumentsToIndexLimit($limit)
+    public function setDocumentsToIndexLimit(int $limit)
     {
         $this->documentsToIndexLimit = $limit;
     }
@@ -171,7 +184,7 @@ class IndexQueueWorkerTask extends AbstractSolrTask implements ProgressProviderI
     /**
      * @param string $forcedWebRoot
      */
-    public function setForcedWebRoot($forcedWebRoot)
+    public function setForcedWebRoot(string $forcedWebRoot)
     {
         $this->forcedWebRoot = $forcedWebRoot;
     }
@@ -179,19 +192,19 @@ class IndexQueueWorkerTask extends AbstractSolrTask implements ProgressProviderI
     /**
      * @return string
      */
-    public function getForcedWebRoot()
+    public function getForcedWebRoot(): string
     {
         return $this->forcedWebRoot;
     }
 
     /**
-     * Returns the initialize IndexService instance.
+     * Returns the initialized IndexService instance.
      *
      * @param Site $site
      * @return IndexService
      * @internal param $Site
      */
-    protected function getInitializedIndexService(Site $site)
+    protected function getInitializedIndexService(Site $site): IndexService
     {
         $indexService = GeneralUtility::makeInstance(IndexService::class, /** @scrutinizer ignore-type */ $site);
         $indexService->setContextTask($this);

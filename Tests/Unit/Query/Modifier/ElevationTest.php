@@ -27,17 +27,19 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
  */
 class ElevationTest extends UnitTest
 {
-
     /**
      * @test
      */
-    public function canModifiyQuery()
+    public function canModifyQuery()
     {
         $query = $this->getDumbMock(Query::class);
 
-        $queryBuilderMock = $this->getDumbMock(QueryBuilder::class);
+        $queryBuilderMock = $this->getMockBuilder(QueryBuilder::class)
+            ->disableProxyingToOriginalMethods()
+            ->getMock();
         $queryBuilderMock->expects(self::once())->method('startFrom')->willReturn($queryBuilderMock);
         $queryBuilderMock->expects(self::once())->method('useElevationFromTypoScript')->willReturn($queryBuilderMock);
+        $queryBuilderMock->expects(self::once())->method('getQuery')->willReturn($query);
 
         $modifier = new Elevation($queryBuilderMock);
         $modifier->modifyQuery($query);

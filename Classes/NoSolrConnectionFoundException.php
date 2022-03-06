@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -24,39 +26,39 @@ use Exception;
  */
 class NoSolrConnectionFoundException extends Exception
 {
-    protected $pageId;
+    protected ?int $pageId = null;
 
-    protected $languageId;
+    protected ?int $languageId = null;
 
-    protected $rootPageId;
+    protected ?int $rootPageId = null;
 
-    public function getPageId()
+    public function getPageId(): ?int
     {
         return $this->pageId;
     }
 
     public function setPageId($pageId)
     {
-        $this->pageId = intval($pageId);
+        $this->pageId = (int)$pageId;
     }
 
-    public function getLanguageId()
+    public function getLanguageId(): ?int
     {
         return $this->languageId;
     }
 
-    public function setLanguageId($languageId)
+    public function setLanguageId(int $languageId)
     {
-        $this->languageId = intval($languageId);
+        $this->languageId = $languageId;
     }
 
-    public function getRootPageId()
+    public function getRootPageId(): ?int
     {
         return $this->rootPageId;
     }
 
-    public function setRootPageId($rootPageId)
+    public function setRootPageId(int $rootPageId)
     {
-        $this->rootPageId = intval($rootPageId);
+        $this->rootPageId = $rootPageId;
     }
 }

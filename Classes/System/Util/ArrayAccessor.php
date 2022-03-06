@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -26,39 +28,41 @@ namespace ApacheSolrForTypo3\Solr\System\Util;
  * $data = [];
  * $data['foo']['bar'] = 'bla';
  *
- * $accessor = new ArrayAccesor($data);
+ * $accessor = new ArrayAccessor($data);
  * $value = $accessor->get('foo.bar');
  *
  * echo $value;
  *
  * the example above will output "bla"
- *
  */
 class ArrayAccessor
 {
 
     /**
-     * @var array
+     * @var array|null
      */
-    protected $data;
+    protected ?array $data;
 
     /**
      * @var string
      */
-    protected $pathSeparator = ':';
+    protected string $pathSeparator = ':';
 
     /**
      * @var bool
      */
-    protected $includePathSeparatorInKeys = false;
+    protected bool $includePathSeparatorInKeys = false;
 
     /**
      * @param array $data
      * @param string $pathSeparator
      * @param bool $includePathSeparatorInKeys
      */
-    public function __construct(array $data = [], $pathSeparator = ':', $includePathSeparatorInKeys = false)
-    {
+    public function __construct(
+        array $data = [],
+        string $pathSeparator = ':',
+        bool $includePathSeparatorInKeys = false
+    ) {
         $this->data = $data;
         $this->pathSeparator = $pathSeparator;
         $this->includePathSeparatorInKeys = $includePathSeparatorInKeys;
@@ -75,17 +79,17 @@ class ArrayAccessor
     /**
      * @return array
      */
-    public function getData()
+    public function getData(): array
     {
         return $this->data;
     }
 
     /**
-     * @param $path
+     * @param string $path
      * @param mixed $defaultIfEmpty
      * @return mixed
      */
-    public function get($path, $defaultIfEmpty = null)
+    public function get(string $path, $defaultIfEmpty = null)
     {
         $pathArray = $this->getPathAsArray($path);
         $pathSegmentCount = count($pathArray);
@@ -106,10 +110,10 @@ class ArrayAccessor
     }
 
     /**
-     * @param $pathArray
-     * @return array|null
+     * @param array $pathArray
+     * @return mixed
      */
-    protected function getDeepElementWithLoop($pathArray)
+    protected function getDeepElementWithLoop(array $pathArray)
     {
         $currentElement = $this->data;
         foreach ($pathArray as $key => $pathSegment) {
@@ -131,10 +135,10 @@ class ArrayAccessor
     }
 
     /**
-     * @param $path
+     * @param string $path
      * @return bool
      */
-    public function has($path): bool
+    public function has(string $path): bool
     {
         return $this->get($path) !== null;
     }
@@ -216,6 +220,7 @@ class ArrayAccessor
             unset($pathArray[$key]);
             // if segments are left the item does not exist
             if (count($pathArray) === 0) {
+                /** @noinspection PhpUndefinedVariableInspection */
                 unset($currentElement[$pathSegment]);
                 // when the element is empty after unsetting the path segment, we can remove it completely
                 if (empty($currentElement)) {

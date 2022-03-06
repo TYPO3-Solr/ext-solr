@@ -101,7 +101,7 @@ class DefaultParserTest extends UnitTest
         $fakeResultSet = $this->getDumbMock(SearchResultSet::class);
         $fakeResultSet->expects(self::any())->method('getUsedSearchRequest')->willReturn($requestMock);
 
-        $this->configurationMock->expects(self::once())->method('getSearchGrouping')->willReturn(true);
+        $this->configurationMock->expects(self::once())->method('getIsSearchGroupingEnabled')->willReturn(true);
         self::assertFalse($this->parser->canParse($fakeResultSet));
     }
 
@@ -115,7 +115,7 @@ class DefaultParserTest extends UnitTest
         $fakeResultSet = $this->getDumbMock(SearchResultSet::class);
         $fakeResultSet->expects(self::any())->method('getUsedSearchRequest')->willReturn($requestMock);
 
-        $this->configurationMock->expects(self::once())->method('getSearchGrouping')->willReturn(false);
+        $this->configurationMock->expects(self::once())->method('getIsSearchGroupingEnabled')->willReturn(false);
         self::assertTrue($this->parser->canParse($fakeResultSet));
     }
 }

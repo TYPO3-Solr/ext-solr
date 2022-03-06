@@ -16,11 +16,11 @@
 namespace ApacheSolrForTypo3\Solr\Controller\Backend\Search;
 
 use ApacheSolrForTypo3\Solr\ConnectionManager;
-use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
+use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
-use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection as SolrCoreConnection;
 use ApacheSolrForTypo3\Solr\System\Mvc\Backend\Service\ModuleDataStorageService;
+use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection as SolrCoreConnection;
 use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
@@ -137,7 +137,6 @@ abstract class AbstractModuleController extends ActionController
      * Purpose: Is already set in {@link processRequest} but wanted in PhpUnit
      *
      * @param UriBuilder $uriBuilder
-     * @return void
      */
     public function injectUriBuilder(UriBuilder $uriBuilder)
     {
@@ -209,7 +208,6 @@ abstract class AbstractModuleController extends ActionController
      * Set up the doc header properly here
      *
      * @param ViewInterface $view
-     * @return void
      * @throws DBALDriverException
      * @throws Throwable
      */
@@ -283,7 +281,7 @@ abstract class AbstractModuleController extends ActionController
                 'switchCore',
                 [
                     'corePath' => $coreAdmin->getCorePath(),
-                    'uriToRedirectTo' => $uriToRedirectTo
+                    'uriToRedirectTo' => $uriToRedirectTo,
                 ]
             );
             $menuItem->setHref($uri);
@@ -306,7 +304,6 @@ abstract class AbstractModuleController extends ActionController
      */
     public function clearIndexQueueAction(): ResponseInterface
     {
-
         $this->indexQueue->deleteItemsBySite($this->selectedSite);
         $this->addFlashMessage(
             LocalizationUtility::translate(
@@ -349,7 +346,6 @@ abstract class AbstractModuleController extends ActionController
      */
     protected function getModuleTemplateResponse(): ResponseInterface
     {
-
         $this->moduleTemplate->setContent($this->view->render());
         return $this->htmlResponse($this->moduleTemplate->renderContent());
     }
@@ -357,7 +353,6 @@ abstract class AbstractModuleController extends ActionController
     /**
      * Initializes the solr core connection considerately to the components state.
      * Uses and persists default core connection if persisted core in Site does not exist.
-     *
      */
     private function initializeSelectedSolrCoreConnection()
     {

@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -20,15 +20,18 @@ namespace ApacheSolrForTypo3\Solr\Domain\Index\Classification;
 /**
  * Class ClassificationService
  */
-class ClassificationService {
+class ClassificationService
+{
 
     /**
      * @param string $stringToMatch
      * @param Classification[] $classifications
      * @return array
      */
-    public function getMatchingClassNames(string $stringToMatch, $classifications) : array
-    {
+    public function getMatchingClassNames(
+        string $stringToMatch,
+        array $classifications
+    ): array {
         $matchingClassification = [];
         foreach ($classifications as $classification) {
             $matchingClassification = $this->applyMatchPatterns($stringToMatch, $classification, $matchingClassification);
@@ -44,9 +47,11 @@ class ClassificationService {
      * @param $matchingClassification
      * @return array
      */
-    protected function applyMatchPatterns(string $stringToMatch, $classification, $matchingClassification): array
-    {
-        /** @var $classification Classification */
+    protected function applyMatchPatterns(
+        string $stringToMatch,
+        Classification $classification,
+        $matchingClassification
+    ): array {
         foreach ($classification->getMatchPatterns() as $matchPattern) {
             if (preg_match_all('~' . $matchPattern . '~ims', $stringToMatch) > 0) {
                 $matchingClassification[] = $classification->getMappedClass();
@@ -61,11 +66,13 @@ class ClassificationService {
      * @param string $stringToMatch
      * @param Classification $classification
      * @param $matchingClassification
-     * @param $messages
      * @return array
      */
-    protected function applyUnMatchPatterns(string $stringToMatch, $classification, $matchingClassification): array
-    {
+    protected function applyUnMatchPatterns(
+        string $stringToMatch,
+        Classification $classification,
+        $matchingClassification
+    ): array {
         foreach ($classification->getUnMatchPatterns() as $unMatchPattern) {
             if (preg_match_all('~' . $unMatchPattern . '~ims', $stringToMatch) > 0) {
                 // if we found one match, we do not need to check the other patterns

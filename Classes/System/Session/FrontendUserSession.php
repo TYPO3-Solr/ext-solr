@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -28,13 +28,13 @@ class FrontendUserSession
 {
 
     /**
-     * @var FrontendUserAuthentication
+     * @var FrontendUserAuthentication|null
      */
-    protected $feUser;
+    protected ?FrontendUserAuthentication $feUser;
 
     /**
      * FrontendUserSession constructor.
-     * @param FrontendUserAuthentication $feUser
+     * @param FrontendUserAuthentication|null $feUser
      */
     public function __construct(FrontendUserAuthentication $feUser = null)
     {
@@ -46,21 +46,21 @@ class FrontendUserSession
      */
     public function setPerPage(int $requestedPerPage)
     {
-        $this->feUser->setKey('ses', 'tx_solr_resultsPerPage', intval($requestedPerPage));
+        $this->feUser->setKey('ses', 'tx_solr_resultsPerPage', $requestedPerPage);
     }
 
     /**
      * @return int
      */
-    public function getPerPage() : int
+    public function getPerPage(): int
     {
         return (int)$this->feUser->getKey('ses', 'tx_solr_resultsPerPage');
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
-    public function getHasPerPage()
+    public function getHasPerPage(): bool
     {
         return $this->feUser->getKey('ses', 'tx_solr_resultsPerPage') !== null;
     }
@@ -68,7 +68,7 @@ class FrontendUserSession
     /**
      * @return array
      */
-    public function getLastSearches() : array
+    public function getLastSearches(): array
     {
         $result = $this->feUser->getKey('ses', 'tx_solr_lastSearches');
         return is_array($result) ? $result : [];
@@ -77,8 +77,8 @@ class FrontendUserSession
     /**
      * @param array $lastSearches
      */
-    public function setLastSearches(array $lastSearches)
+    public function setLastSearches(array $lastSearches): void
     {
-        return $this->feUser->setKey('ses', 'tx_solr_lastSearches', $lastSearches);
+        $this->feUser->setKey('ses', 'tx_solr_lastSearches', $lastSearches);
     }
 }

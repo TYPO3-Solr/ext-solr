@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -26,20 +28,16 @@ use TYPO3\CMS\Core\SingletonInterface;
  */
 class CliEnvironment implements SingletonInterface
 {
-
     /**
      * @var array
      */
-    protected $backupServerVariables = [];
+    protected array $backupServerVariables = [];
 
     /**
      * @var bool
      */
-    protected $isInitialized = false;
+    protected bool $isInitialized = false;
 
-    /**
-     * @return void
-     */
     public function backup()
     {
         $this->backupServerVariables = $_SERVER;
@@ -52,11 +50,15 @@ class CliEnvironment implements SingletonInterface
      * @param string $scriptFileName
      * @param string $phpSelf
      * @param string $scriptName
-     * @throws WebRootAllReadyDefinedException
      * @return bool
+     *@throws WebRootAllReadyDefinedException
      */
-    public function initialize($webRoot, $scriptFileName = '', $phpSelf = '/index.php', $scriptName = '/index.php')
-    {
+    public function initialize(
+        string $webRoot,
+        string $scriptFileName = '',
+        string $phpSelf = '/index.php',
+        string $scriptName = '/index.php'
+    ): bool {
         // if the environment has be initialized once, we do not need to initialize it twice.
         if ($this->isInitialized) {
             return false;
@@ -82,15 +84,12 @@ class CliEnvironment implements SingletonInterface
     /**
      * @return bool
      */
-    public function getIsInitialized()
+    public function getIsInitialized(): bool
     {
         return $this->isInitialized;
     }
 
-    /**
-     * @return void
-     */
-    public function restore()
+    public function restore(): void
     {
         $_SERVER = $this->backupServerVariables;
     }

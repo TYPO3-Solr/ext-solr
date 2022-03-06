@@ -30,5 +30,5 @@ interface SearchResultSetProcessor
      * @param SearchResultSet $resultSet
      * @return mixed
      */
-    public function process(SearchResultSet $resultSet);
+    public function process(SearchResultSet $resultSet): SearchResultSet;
 }

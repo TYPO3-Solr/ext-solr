@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -25,23 +27,24 @@ class QueryGroupPackage extends AbstractFacetPackage
     /**
      * @return string
      */
-    public function getParserClassName() {
-        return (string)QueryGroupFacetParser::class;
+    public function getParserClassName(): string
+    {
+        return QueryGroupFacetParser::class;
     }
 
     /**
      * @return string
      */
-    public function getQueryBuilderClassName()
+    public function getQueryBuilderClassName(): string
     {
-        return (string)QueryGroupFacetQueryBuilder::class;
+        return QueryGroupFacetQueryBuilder::class;
     }
 
     /**
      * @return string
      */
-    public function getUrlDecoderClassName()
+    public function getUrlDecoderClassName(): string
     {
-        return (string)QueryGroupUrlDecoder::class;
+        return QueryGroupUrlDecoder::class;
     }
 }
