@@ -182,8 +182,8 @@ class UserGroupDetector extends AbstractFrontendHelper implements
      */
     protected function findFrontendGroups(array $record, string $table)
     {
-        if ($this->originalTca[$table]['ctrl']['enablecolumns']['fe_group']) {
-            $frontendGroups = $record[$this->originalTca[$table]['ctrl']['enablecolumns']['fe_group']];
+        if (isset($this->originalTca[$table]['ctrl']['enablecolumns']['fe_group'])) {
+            $frontendGroups = $record[$this->originalTca[$table]['ctrl']['enablecolumns']['fe_group']] ?? null;
 
             if (empty($frontendGroups)) {
                 // default = public access
