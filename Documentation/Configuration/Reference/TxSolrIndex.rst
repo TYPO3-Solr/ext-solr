@@ -306,6 +306,8 @@ queue.[indexConfig].fields
 
 Mapping of Solr field names on the left side to database table field names or content objects on the right side. You must at least provide the title, content, and url fields. TYPO3 system fields like uid, pid, crdate, tstamp and so on are added automatically by the indexer depending on the TCA information of a table.
 
+You can also use a virtual field called :code:`__solr_content`, which holds the content of the current page.
+
 Example:
 
 .. code-block:: typoscript
