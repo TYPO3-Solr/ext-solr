@@ -63,7 +63,7 @@ abstract class AbstractUriStrategy
 
         // overwriting the port
         if (!empty($overrideConfiguration['port'])) {
-            $urlHelper->setPort($overrideConfiguration['port']);
+            $urlHelper->setPort((int)$overrideConfiguration['port']);
         }
 
         // setting a path if TYPO3 is installed in a subdirectory
