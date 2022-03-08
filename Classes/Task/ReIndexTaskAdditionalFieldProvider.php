@@ -222,7 +222,7 @@ class ReIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldProvider
             return;
         }
 
-        $task->setRootPageId($submittedData['site']);
+        $task->setRootPageId((int)$submittedData['site']);
 
         $indexingConfigurations = [];
         if (!empty($submittedData['indexingConfigurations'])) {
