@@ -653,3 +653,18 @@ The PHP class must have a certain structure, which is specified by the interface
            return $resultSet;
        }
    }
+
+**I want to use the page content for a dynamic field , how can i do that?**
+
+You can use a virtual field called :code:`__solr_content`, which holds the content of the current page.
+
+Example:
+
+::
+
+    plugin.tx_solr.index.queue.pages.fields {
+        content_textEdgeNgramS = SOLR_CONTENT
+        content_textEdgeNgramS {
+            field = __solr_content
+        }
+    }
