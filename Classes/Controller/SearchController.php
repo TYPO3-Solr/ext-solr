@@ -114,7 +114,7 @@ class SearchController extends AbstractBaseController
             $this->controllerContext->setSearchResultSet($searchResultSet);
 
             $currentPage = $this->request->hasArgument('page') ? (int)$this->request->getArgument('page') : 1;
-            $itemsPerPage = $searchResultSet->getUsedResultsPerPage();
+            $itemsPerPage = ($searchResultSet->getUsedResultsPerPage() ?: $this->typoScriptConfiguration->getSearchResultsPerPage(10));
             $paginator = GeneralUtility::makeInstance(ResultsPaginator::class, $searchResultSet, $currentPage, $itemsPerPage);
             $pagination = GeneralUtility::makeInstance(ResultsPagination::class, $paginator);
             $pagination->setMaxPageNumbers((int)$this->typoScriptConfiguration->getMaxPaginatorLinks(0));
