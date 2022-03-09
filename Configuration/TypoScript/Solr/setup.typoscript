@@ -8,25 +8,6 @@ plugin.tx_solr {
     dateFormat.date = d.m.Y H:i
   }
 
-  solr {
-    read {
-      scheme = {$plugin.tx_solr.solr.scheme}
-      host   = {$plugin.tx_solr.solr.host}
-      port   = {$plugin.tx_solr.solr.port}
-      path   = {$plugin.tx_solr.solr.path}
-      username = {$plugin.tx_solr.solr.username}
-      password = {$plugin.tx_solr.solr.password}
-    }
-    write {
-      scheme = {$plugin.tx_solr.solr.scheme}
-      host   = {$plugin.tx_solr.solr.host}
-      port   = {$plugin.tx_solr.solr.port}
-      path   = {$plugin.tx_solr.solr.path}
-      username = {$plugin.tx_solr.solr.username}
-      password = {$plugin.tx_solr.solr.password}
-    }
-  }
-
   index {
     additionalFields {
 
