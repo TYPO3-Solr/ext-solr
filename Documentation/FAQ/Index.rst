@@ -620,3 +620,51 @@ In your .env file:
 
 Refer to TYPO3 documentation:
 https://docs.typo3.org/m/typo3/reference-coreapi/master/en-us/ApiOverview/SiteHandling/UsingEnvVars.html#using-environment-variables-in-site-configuration
+
+**How can i register a custom statistic writer processor?**
+
+If the TypoScript option `plugin.tx_solr.statistics = 1` is activated, a StatisticsWriterProcessor is used by EXT:solr, which writes the queries into the database.
+
+If there are more requirements for the statistics or if you want to write the data into another system, you can register your own StatisticWriterProcessor in the ext_localconf.php of the extension:
+
+::
+
+    $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['afterSearch']['statistics'] = MyVendor/Namespace/Statistics/CustomStatisticsWriterProcessor::class;
+
+The PHP class must have a certain structure, which is specified by the interface.
+
+.. code-block:: php
+
+   namespace MyVendor\Namespace;
+
+   use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
+   use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSetProcessor;
+
+   class CustomStatisticsWriterProcessor implements SearchResultSetProcessor
+   {
+       /**
+        * @param SearchResultSet $resultSet
+        * @return SearchResultSet
+        */
+       public function process(SearchResultSet $resultSet) {
+
+           // your logic here
+
+           return $resultSet;
+       }
+   }
+
+**I want to use the page content for a dynamic field , how can i do that?**
+
+You can use a virtual field called :code:`__solr_content`, which holds the content of the current page.
+
+Example:
+
+::
+
+    plugin.tx_solr.index.queue.pages.fields {
+        content_textEdgeNgramS = SOLR_CONTENT
+        content_textEdgeNgramS {
+            field = __solr_content
+        }
+    }
