@@ -215,8 +215,8 @@ class ResultsPagination implements PaginationInterface
             if ($numberOfPages > $maxNumberOfLinks) {
                 $currentPage = $this->paginator->getCurrentPageNumber();
                 $pagesBeforeAndAfter = ($maxNumberOfLinks - 1) / 2;
-                $this->pageRangeFirst = $currentPage - floor($pagesBeforeAndAfter);
-                $this->pageRangeLast = $currentPage + ceil($pagesBeforeAndAfter);
+                $this->pageRangeFirst = (int)($currentPage - floor($pagesBeforeAndAfter));
+                $this->pageRangeLast = (int)($currentPage + ceil($pagesBeforeAndAfter));
 
                 if ($this->pageRangeFirst < 1) {
                     $this->pageRangeLast -= $this->pageRangeFirst - 1;
