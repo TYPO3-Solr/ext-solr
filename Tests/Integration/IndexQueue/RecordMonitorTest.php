@@ -1895,6 +1895,30 @@ class RecordMonitorTest extends IntegrationTest
     }
 
     /**
+     * Tests if updates on access restricted pages lead to index queue updates
+     *
+     * https://github.com/TYPO3-Solr/ext-solr/issues/3225
+     * @test
+     */
+    public function canQueueAccessRestrictedPageOnPageUpdate(): void
+    {
+        $this->importDataSetFromFixture('update_access_restricted_page.xml');
+        $this->assertEmptyIndexQueue();
+
+        $this->recordMonitor->processDatamap_afterDatabaseOperations(
+            'update',
+            'pages',
+            2,
+            [
+                'title' => 'Access restricted page',
+            ],
+            $this->dataHandler
+        );
+
+        $this->assertIndexQueueContainsItemAmount(1);
+    }
+
+    /**
      * Triggers event queue processing
      */
     protected function processEventQueue(): void
