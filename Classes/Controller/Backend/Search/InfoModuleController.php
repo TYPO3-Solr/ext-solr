@@ -150,7 +150,8 @@ class InfoModuleController extends AbstractModuleController
         $data = [];
         $chartData = $statisticsRepository->getQueriesOverTime($siteRootPageId, 30, 86400);
         foreach ($chartData as $bucket) {
-            $labels[] = strftime('%x', $bucket['timestamp']);
+            // @todo Replace deprecated strftime in php 8.1. Suppress warning for now
+            $labels[] = @strftime('%x', $bucket['timestamp']);
             $data[] = (int)$bucket['numQueries'];
         }
 
