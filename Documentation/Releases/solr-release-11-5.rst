@@ -6,7 +6,7 @@
 .. include:: ../Includes.txt
 
 
-.. _releases-11-1:
+.. _releases-11-5:
 
 ============================
 Apache Solr for TYPO3 11.5.0
@@ -15,12 +15,25 @@ Apache Solr for TYPO3 11.5.0
 We are happy to release EXT:solr 11.5.0.
 The focus of this release has been on TYPO3 11 LTS compatibility.
 
+#standwithukraine #nowar
+
 **Important**: This version is installable with TYPO3 11 LTS only and contains some breaking changes, see details below.
 
 New in this release
 ===================
 
-TBD
+Support of TYPO3 11 LTS
+-----------------------
+
+With EXT:solr 11.5 we provide the support of TYPO3 11 LTS.
+
+
+Bootstrap 5.1
+-------------
+
+The default templates provided by EXT:solr were adapted for Bootstrap 5.1.
+
+The templates are also prepared to display some icons with Bootstrap Icons, but the usage is optional and the icons are no longer provided with EXT:solr as the former Glyphicons were.
 
 Contributors
 ============
