@@ -33,8 +33,7 @@
     "typo3/cms-frontend": "*",
     "typo3/cms-reports": "*",
     "typo3/cms-scheduler": "*",
-    "typo3/cms-tstemplate": "*",
-    "bk2k/bootstrap-package": "^12.0"
+    "typo3/cms-tstemplate": "*"
   },
   "require-dev": {
     "typo3/coding-standards": ">=0.5.0",
