@@ -268,11 +268,9 @@ class SearchControllerTest extends AbstractFrontendControllerTest
     /**
      * @test
      * @group frontend
-     * @todo: https://github.com/TYPO3-Solr/ext-solr/issues/3150
      */
     public function canDoAnInitialEmptySearchWithoutResults()
     {
-        self::markTestSkipped('Something is wrong with refactored pagination. See https://github.com/TYPO3-Solr/ext-solr/issues/3150');
         $this->importDataSetFromFixture('SearchAndSuggestControllerTest_indexing_data.xml');
         $this->addTypoScriptToTemplateRecord(
             1,
