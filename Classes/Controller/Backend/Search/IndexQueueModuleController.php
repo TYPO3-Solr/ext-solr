@@ -120,7 +120,25 @@ class IndexQueueModuleController extends AbstractModuleController
         $indexingConfigurationsToInitialize = GeneralUtility::_POST('tx_solr-index-queue-initialization');
         if ((!empty($indexingConfigurationsToInitialize)) && (is_array($indexingConfigurationsToInitialize))) {
             // initialize selected indexing configuration
-            $initializedIndexingConfigurations = $this->indexQueue->getInitializationService()->initializeBySiteAndIndexConfigurations($this->selectedSite, $indexingConfigurationsToInitialize);
+            try {
+                $initializedIndexingConfigurations = $this->indexQueue->getInitializationService()->initializeBySiteAndIndexConfigurations($this->selectedSite, $indexingConfigurationsToInitialize);
+            } catch (\Throwable $e) {
+                $this->addFlashMessage(
+                    sprintf(
+                        LocalizationUtility::translate(
+                            'solr.backend.index_queue_module.flashmessage.initialize_failure',
+                            'Solr'
+                        ),
+                        $e->getMessage(),
+                        $e->getCode()
+                    ),
+                    LocalizationUtility::translate(
+                        'solr.backend.index_queue_module.flashmessage.initialize_failure.title',
+                        'Solr'
+                    ),
+                    FlashMessage::ERROR
+                );
+            }
         } else {
             $messageLabel = 'solr.backend.index_queue_module.flashmessage.initialize.no_selection';
             $titleLabel = 'solr.backend.index_queue_module.flashmessage.not_initialized.title';

@@ -208,6 +208,15 @@
 				<target>Top Treffer</target>
 			</trans-unit>
 
+			<trans-unit id="solr.backend.index_queue_module.flashmessage.initialize_failure.title" xml:space="preserve">
+				<source>Error occured while initializing</source>
+				<target>Beim Initialisieren ist ein Fehler aufgetreten</target>
+			</trans-unit>
+			<trans-unit id="solr.backend.index_queue_module.flashmessage.initialize_failure" xml:space="preserve">
+				<source>An error occurred while initializing the index queue: %1$s [%2$d]</source>
+				<target>Bei der Initialisierung der Index-Queue ist ein Fehler aufgetreten: %1$s [%2$d]</target>
+			</trans-unit>
+
 			<!-- From locallang_db.xlf -->
 			<trans-unit id="tt_content.list_type_pi_frequentsearches" xml:space="preserve" approved="yes">
 				<source>Search: Frequent Searches</source>
