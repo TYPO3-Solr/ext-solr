@@ -106,7 +106,7 @@ class ReIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldProvider
         $currentAction = $schedulerModule->getCurrentAction();
 
         if ($currentAction->equals(Action::EDIT)) {
-            $this->site = $this->siteRepository->getSiteByRootPageId($task->getRootPageId());
+            $this->site = $this->siteRepository->getSiteByRootPageId((int)$task->getRootPageId());
         }
     }
 
