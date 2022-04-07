@@ -41,7 +41,7 @@ class AddSearchWordListViewHelper extends AbstractSolrFrontendViewHelper
     {
         parent::initializeArguments();
         $this->registerArgument('url', 'string', 'The context searchResultSet', true);
-        $this->registerArgument('searchWords', 'string', 'The document to highlight', true);
+        $this->registerArgument('searchWords', 'string', 'The document to highlight', true, '');
         $this->registerArgument('addNoCache', 'boolean', 'Should no_cache=1 be added or not', false, true);
         $this->registerArgument('keepCHash', 'boolean', 'Should cHash be kept or not', false, false);
     }
@@ -67,7 +67,7 @@ class AddSearchWordListViewHelper extends AbstractSolrFrontendViewHelper
             return $url;
         }
 
-        $searchWords = $arguments['searchWords'];
+        $searchWords = $arguments['searchWords'] ?? '';
         $addNoCache = $arguments['addNoCache'];
         $keepCHash = $arguments['keepCHash'];
 
