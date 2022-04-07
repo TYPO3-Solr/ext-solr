@@ -123,8 +123,8 @@ class TypoScript implements SingletonInterface
     {
         $parts = explode('.', $theKey, 2);
         if ((string)$parts[0] !== '' && is_array($theSetup[$parts[0] . '.'])) {
-            if (trim($parts[1]) !== '') {
-                return $this->ext_getSetup($theSetup[$parts[0] . '.'], trim($parts[1]));
+            if (trim($parts[1] ?? '') !== '') {
+                return $this->ext_getSetup($theSetup[$parts[0] . '.'], trim($parts[1] ?? ''));
             }
             return [$theSetup[$parts[0] . '.'], $theSetup[$parts[0]]];
         }

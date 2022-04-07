@@ -104,6 +104,7 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
         if ($pageUid === null && !empty($this->getTypoScriptConfiguration()->getSearchTargetPage())) {
             $pageUid = $this->getTypoScriptConfiguration()->getSearchTargetPage();
         }
+        $pageUid = (int)$pageUid;
 
         $uri = $this->buildUriFromPageUidAndArguments($pageUid);
 
@@ -190,10 +191,10 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
      * When no speaking urls are active (e.g. with TYPO3 8 and no realurl) this information is passed as query parameter
      * and would get lost when it is only part of the query arguments in the action parameter of the form.
      *
-     * @param $pageId
+     * @param int $pageId
      * @return bool
      */
-    protected function getIsSiteManagedSite($pageId): bool
+    protected function getIsSiteManagedSite(int $pageId): bool
     {
         return SiteUtility::getIsSiteManagedSite($pageId);
     }
@@ -248,7 +249,7 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
         $uriBuilder = $this->getControllerContext()->getUriBuilder();
         return $uriBuilder
             ->reset()
-            ->setTargetPageUid($pageUid)
+            ->setTargetPageUid((int)$pageUid)
             ->setTargetPageType($this->arguments['pageType'] ?? 0)
             ->setNoCache($this->arguments['noCache'] ?? false)
             ->setArguments($this->arguments['additionalParams'] ?? [])
