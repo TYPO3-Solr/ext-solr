@@ -73,9 +73,8 @@ class SearchResultSetServiceTest extends UnitTest
         $this->searchMock = $this->getDumbMock(Search::class);
         $this->searchResultBuilderMock = $this->getDumbMock(SearchResultBuilder::class);
         $this->queryBuilderMock = $this->getDumbMock(QueryBuilder::class);
-        $this->searchResultSetService = new SearchResultSetService($this->configurationMock, $this->searchMock, $this->logManagerMock, $this->searchResultBuilderMock, $this->queryBuilderMock);
         $this->objectManagerMock = $this->createMock(ObjectManager::class);
-        $this->searchResultSetService->injectObjectManager($this->objectManagerMock);
+        $this->searchResultSetService = new SearchResultSetService($this->configurationMock, $this->searchMock, $this->logManagerMock, $this->searchResultBuilderMock, $this->queryBuilderMock, $this->objectManagerMock);
         parent::setUp();
     }
 

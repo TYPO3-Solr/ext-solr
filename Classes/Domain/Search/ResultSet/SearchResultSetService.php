@@ -40,6 +40,7 @@ use ApacheSolrForTypo3\Solr\System\Solr\SolrIncompleteResponseException;
 use Exception;
 use function get_class;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 use UnexpectedValueException;
 
@@ -94,7 +95,7 @@ class SearchResultSetService
     protected QueryBuilder $queryBuilder;
 
     /**
-     * @var ObjectManagerInterface
+     * @var ObjectManager
      */
     protected ObjectManagerInterface $objectManager;
 
@@ -104,27 +105,22 @@ class SearchResultSetService
      * @param SolrLogManager|null $solrLogManager
      * @param SearchResultBuilder|null $resultBuilder
      * @param QueryBuilder|null $queryBuilder
+     * @param ObjectManagerInterface|null $objectManager
      */
     public function __construct(
         TypoScriptConfiguration $configuration,
         Search $search,
-        SolrLogManager $solrLogManager = null,
-        SearchResultBuilder $resultBuilder = null,
-        QueryBuilder $queryBuilder = null
+        ?SolrLogManager $solrLogManager = null,
+        ?SearchResultBuilder $resultBuilder = null,
+        ?QueryBuilder $queryBuilder = null,
+        ?ObjectManagerInterface $objectManager = null
     ) {
         $this->search = $search;
         $this->typoScriptConfiguration = $configuration;
         $this->logger = $solrLogManager ?? GeneralUtility::makeInstance(SolrLogManager::class, /** @scrutinizer ignore-type */ __CLASS__);
         $this->searchResultBuilder = $resultBuilder ?? GeneralUtility::makeInstance(SearchResultBuilder::class);
         $this->queryBuilder = $queryBuilder ?? GeneralUtility::makeInstance(QueryBuilder::class, /** @scrutinizer ignore-type */ $configuration, /** @scrutinizer ignore-type */ $solrLogManager);
-    }
-
-    /**
-     * @param ObjectManagerInterface $objectManager
-     */
-    public function injectObjectManager(ObjectManagerInterface $objectManager)
-    {
-        $this->objectManager = $objectManager;
+        $this->objectManager = $objectManager ?? GeneralUtility::makeInstance(ObjectManager::class);
     }
 
     /**

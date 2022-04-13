@@ -88,12 +88,18 @@ class SearchResultSetTest extends UnitTest
         $this->escapeServiceMock = $this->getDumbMock(EscapeService::class);
         $this->escapeServiceMock->expects(self::any())->method('escape')->willReturnArgument(0);
 
+        $this->objectManagerMock = $this->createMock(ObjectManager::class);
         $this->searchResultSetService = $this->getMockBuilder(SearchResultSetService::class)
             ->onlyMethods(['getRegisteredSearchComponents'])
-            ->setConstructorArgs([$this->configurationMock, $this->searchMock, $this->solrLogManagerMock])
+            ->setConstructorArgs([
+                $this->configurationMock,
+                $this->searchMock,
+                $this->solrLogManagerMock,
+                null,
+                null,
+                $this->objectManagerMock,
+            ])
             ->getMock();
-        $this->objectManagerMock = $this->createMock(ObjectManager::class);
-        $this->searchResultSetService->injectObjectManager($this->objectManagerMock);
         parent::setUp();
     }
 
