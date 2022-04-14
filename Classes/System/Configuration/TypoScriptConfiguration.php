@@ -2213,7 +2213,7 @@ class TypoScriptConfiguration
      */
     public function getSearchGroupingResultLimit(string $groupName, ?int $defaultIfEmpty = 1): ?int
     {
-        $specificPath = 'plugin.tx_solr.search.grouping.groups.' . $groupName . 'numberOfResultsPerGroup';
+        $specificPath = 'plugin.tx_solr.search.grouping.groups.' . $groupName . '.numberOfResultsPerGroup';
         $specificResultsPerGroup = $this->getValueByPathOrDefaultValue($specificPath, null);
 
         if ($specificResultsPerGroup !== null) {
