@@ -17,7 +17,8 @@
     "issues": "https://github.com/TYPO3-Solr/ext-solr/issues",
     "forum": "https://talk.typo3.org",
     "slack": "https://typo3.slack.com/app_redirect?channel=C02FF05Q4",
-    "source": "https://github.com/TYPO3-Solr/ext-solr"
+    "source": "https://github.com/TYPO3-Solr/ext-solr",
+    "docs": "https://docs.typo3.org/p/apache-solr-for-typo3/solr/main/en-us/"
   },
   "require": {
     "php": ">=7.2.0",
