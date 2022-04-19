@@ -16,7 +16,7 @@ The **"Index Queue Worker"** task has the following custom properties:
 - **Number of documents to Index:** Here you can configure how many documents you want to index in one run. Depending on the performance of your system and the expected update time of the search you can choose a realistic number here.
 - **Forced webroot:** The scheduler task can be executed in the cli context, because no webserver is used there, TYPO3 is unable to detect your webroot. As assumption we use PATH_site as default here. When you need to configure something else, you can do it with this option. You can use the marker ###PATH_site### and ###PATH_typo3### to define relative pathes here, to be independent from the concrete instance.
 
-.. figure:: ../Images/Backend/solr-scheduler-index-worker.png
+.. figure:: /Images/Backend/solr-scheduler-index-worker.png
 
     The EXT:solr Index Queue Worker - Scheduler Task
 
@@ -31,7 +31,7 @@ The **Force Re-Indexing of a site** task has the following custom properties:
 - **Site**: Here you select the solr site, that you want to index with this task instance.
 - **Index Queue configurations to re-index**: Here you can limit the set of indexing configurations that should be Re-Indexed.
 
-.. figure:: ../Images/Backend/solr-scheduler-requeue.png
+.. figure:: /Images/Backend/solr-scheduler-requeue.png
 
     The EXT:solr Force Re-Indexing of a site - Scheduler Task
 
@@ -46,6 +46,6 @@ The **Optimize index of a site** task has the following custom properties:
 - **Site** : Here you select the solr site, that you want to index with this task instance.
 - **Cores to optimize index for** : Here you can select the cores that should be optimized by the task.
 
-.. figure:: ../Images/Backend/solr-scheduler-optimize.png
+.. figure:: /Images/Backend/solr-scheduler-optimize.png
 
     The EXT:solr Optimize index of a site - Scheduler Task

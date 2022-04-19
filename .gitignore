@@ -14,5 +14,6 @@ vendor
 /composer.lock
 .Build
 Documentation/_make
+/Documentation-GENERATED-temp/
 
 .php_cs.cache

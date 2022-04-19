@@ -5,7 +5,7 @@ Fluid Template Structure
 First we start with a short overview of the template structure. This is just to get an rought overview. The templates will be explained in
 detail in the template where they belong to:
 
-.. image:: ../Images/Frontend/Structure/template_structure.png
+.. image:: /Images/Frontend/Structure/template_structure.png
 
 * Layouts: Layouts that are used in the search and the faceting.
 * Partials:
