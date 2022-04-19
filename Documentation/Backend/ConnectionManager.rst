@@ -92,7 +92,7 @@ In EXT:solr all the configuration, including options affecting backend functions
 * On your site's root page set the flag Use as Root Page on the Behaviour tab.
 * Initialize the Solr connections through the clear cache menu
 
-.. figure:: ../Images/GettingStarted/typo3-initialize-connections.png
+.. figure:: /Images/GettingStarted/typo3-initialize-connections.png
 
     Initialize all solr connections
 

@@ -28,7 +28,7 @@ When you want to start the testrunner in your shell you need to bootstrap it onc
 
 The bootstrapper will prompt for some values:
 
-.. image:: ../Images/Development/ci_bootstrap.png
+.. image:: /Images/Development/ci_bootstrap.png
 
 
 When the boostrapper was finished successful the following was done:
@@ -50,5 +50,5 @@ When the test environment was boostrapped correctly you can start the test runne
 
 When everything is configured correctly all tests should run through and you should get a green bar:
 
-.. image:: ../Images/Development/ci_build.png
+.. image:: /Images/Development/ci_build.png
 
