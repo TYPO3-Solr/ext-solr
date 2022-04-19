@@ -74,9 +74,10 @@ Example:
     solr_scheme_read: http
     solr_use_write_connection: false
 
-::
-
-The example above shows that you are able to define the setting ```solr_host_read``` on the language level. Since this is a more advanced configuration and the user interface should be kept simple, this can only be configured in the yaml.
+The example above shows that you are able to define the setting
+``solr_host_read`` on the language level. Since this is a more advanced
+configuration and the user interface should be kept simple, this can only be
+configured in the yaml.
 
 Legacy Mode
 -----------
