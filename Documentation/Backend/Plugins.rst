@@ -8,4 +8,4 @@ EXT:solr provides the following plugin instances that can be configured in the b
 * Form plugin: **"Search: Form only"**
 * Frequent Searches plugin: **"Search: Frequent Searches"**
 
-.. image:: ../Images/Backend/plugin_instances.png
+.. image:: /Images/Backend/plugin_instances.png

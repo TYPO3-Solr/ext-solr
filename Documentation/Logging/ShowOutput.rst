@@ -23,7 +23,7 @@ To enable this features you need to:
 
 You can now see the written log in the frontend:
 
-.. figure:: ../Images/Logging/frontend-debug-output.png
+.. figure:: /Images/Logging/frontend-debug-output.png
 
     EXT:solr frontend debug output
 

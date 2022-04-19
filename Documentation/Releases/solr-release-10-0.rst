@@ -1,9 +1,4 @@
-.. ==================================================
-.. FOR YOUR INFORMATION
-.. --------------------------------------------------
-.. -*- coding: utf-8 -*- with BOM.
-
-.. include:: ../Includes.txt
+.. include:: /Includes.rst.txt
 
 
 .. _releases-10:
@@ -91,10 +86,16 @@ Limitations of the site UI and yaml configuration
 
 There are the following known and wanted limitations:
 
-* It is **not** possible to configure a username and a password for the solr server with the UI. You still have the possibility to add that configuration in the yaml file, in that case make sure that this file is not readable from the web!. Another approach is to configure the usage from the environment variables. To configure a username the setting ```solr_username_read``` or ```solr_password_read```
-can be used in the yaml file.
+*  It is **not** possible to configure a username and a password for the solr
+   server with the UI. You still have the possibility to add that configuration
+   in the yaml file, in that case make sure that this file is not readable from
+   the web!. Another approach is to configure the usage from the environment
+   variables. To configure a username the setting ``solr_username_read`` or
+   ``solr_password_read`` can be used in the yaml file.
 
-* It is **not** possible to configure a different solr hostname with the UI. If you need that you can still configured that in the yaml file, by using the fallback mechanism.
+*  It is **not** possible to configure a different solr hostname with the UI.
+   If you need that you can still configured that in the yaml file, by using the
+   fallback mechanism.
 
 The fallback mechanism work like that:
 
@@ -144,9 +145,10 @@ Example:
     solr_scheme_read: http
     solr_use_write_connection: false
 
-::
-
-The example above shows that you are able to define the setting ```solr_host_read``` on the language level. Since this is a more advanced configuration and the user interface should be kept simple, this can only be configured in the yaml.
+The example above shows that you are able to define the setting
+``solr_host_read`` on the language level. Since this is a more advanced
+configuration and the user interface should be kept simple, this can only be
+configured in the yaml.
 
 Removed Code
 ============

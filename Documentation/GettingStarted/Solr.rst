@@ -123,7 +123,7 @@ To check whether Solr is up and running head over to:
 
 You should see the web interface of Solr to run queries:
 
-.. figure:: ../Images/GettingStarted/solr-query-webinterface.png
+.. figure:: /Images/GettingStarted/solr-query-webinterface.png
 
 **Important**: The image ships a default cores for all languages. The data of the cores is stored on an exported volume. When you want to update the container, you can just start a new container using the data volume of the old container. But at the same time this has the limitation, that you should only use this image with the default cores! If you want to create custom cores with a different configuration please read the section "Advanced Docker Usage"
 

@@ -17,7 +17,7 @@ ResultSet
 
 The "SearchResultSet" is the main entity that you get passed to the view. It can be used to access all search related objects on your result page.
 
-.. figure:: ../Images/Development/uml_resultset.png
+.. figure:: /Images/Development/uml_resultset.png
 
     UML diagram of the SearchResutSet
 
@@ -44,7 +44,7 @@ The typoscript configuration **"partialName"** can be used to force the renderin
 
 For advanced use cases you can use the **"FacetRegistry"** to register your own facet type or overwrite the facet behaviour for a certain facet type.
 
-.. figure:: ../Images/Development/uml_facets.png
+.. figure:: /Images/Development/uml_facets.png
 
     UML diagram of the \*Facet classes
 
