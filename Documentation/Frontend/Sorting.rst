@@ -37,7 +37,7 @@ With the configuration above the possibility to sort by title is introduced. At 
 reset the sorting to sort by the natural solr relevance.
 
 
-.. figure:: ../Images/Frontend/Sorting/sorting_by_title_asc.png
+.. figure:: /Images/Frontend/Sorting/sorting_by_title_asc.png
 
     Search with sorting
 

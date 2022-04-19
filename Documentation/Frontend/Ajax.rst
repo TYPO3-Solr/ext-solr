@@ -7,7 +7,7 @@ To improve the use experience and the performance it is possible to load most of
 To activate the **"ajaxification"** you need to include the typoscript template **"Search - Ajaxify the searchresults with jQuery"**
 
 
-.. figure:: ../Images/Frontend/Ajax/typoscript_template.png
+.. figure:: /Images/Frontend/Ajax/typoscript_template.png
 
     Include EXT:solr ajaxify template
 

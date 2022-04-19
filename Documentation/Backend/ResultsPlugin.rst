@@ -75,7 +75,7 @@ This option is used to configure if the results of an initial query should be sh
 
 This flexform element allows you to define custom filters by selecting a solr field and a value:
 
-.. image:: ../Images/Backend/plugin_search_flexform_filter.png
+.. image:: /Images/Backend/plugin_search_flexform_filter.png
 
 
 +-----------------------------+--------------------------------------------------------+
