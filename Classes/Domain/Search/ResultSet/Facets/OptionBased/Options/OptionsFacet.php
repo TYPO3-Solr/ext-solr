@@ -17,6 +17,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Opt
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\AbstractOptionsFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
+use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 
 /**
  * Value object that represent a options facet.
@@ -42,9 +43,16 @@ class OptionsFacet extends AbstractOptionsFacet
      * @param string $field
      * @param string $label
      * @param array $configuration Facet configuration passed from typoscript
+     * @param ObjectManagerInterface $objectManager
      */
-    public function __construct(SearchResultSet $resultSet, $name, $field, $label = '', array $configuration = [])
-    {
-        parent::__construct($resultSet, $name, $field, $label, $configuration);
+    public function __construct(
+        SearchResultSet $resultSet,
+        $name,
+        $field,
+        $label = '',
+        array $configuration = [],
+        ObjectManagerInterface $objectManager = null
+    ) {
+        parent::__construct($resultSet, $name, $field, $label, $configuration, $objectManager);
     }
 }
