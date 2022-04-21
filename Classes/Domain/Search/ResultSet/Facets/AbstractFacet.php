@@ -16,6 +16,8 @@
 namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 
 /**
@@ -89,29 +91,22 @@ abstract class AbstractFacet
      * @param string $field
      * @param string $label
      * @param array $configuration Facet configuration passed from typoscript
+     * @param ObjectManager $objectManager
      */
     public function __construct(
         SearchResultSet $resultSet,
         string $name,
         string $field,
         string $label = '',
-        array $configuration = []
+        array $configuration = [],
+        ObjectManagerInterface $objectManager = null
     ) {
         $this->resultSet = $resultSet;
         $this->name = $name;
         $this->field = $field;
         $this->label = $label;
         $this->configuration = $configuration;
-    }
-
-    /**
-     * Injects the object manager
-     *
-     * @param ObjectManagerInterface $objectManager
-     */
-    public function injectObjectManager(ObjectManagerInterface $objectManager)
-    {
-        $this->objectManager = $objectManager;
+        $this->objectManager = $objectManager ?? GeneralUtility::makeInstance(ObjectManager::class);
     }
 
     /**

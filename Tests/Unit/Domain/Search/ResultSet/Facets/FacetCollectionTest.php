@@ -19,6 +19,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\FacetCollection;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\OptionsFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
  * Class FacetCollectionTest
@@ -35,9 +36,10 @@ class FacetCollectionTest extends UnitTest
     {
         $facetCollection = new FacetCollection();
         $resultSetMock = $this->getDumbMock(SearchResultSet::class);
+        $objectManagerMock = $this->createMock(ObjectManager::class);
 
-        $colorFacet = new OptionsFacet($resultSetMock, 'color', 'color_s', '', ['groupName' => 'left']);
-        $brandFacet = new OptionsFacet($resultSetMock, 'brand', 'brand_s', '', ['groupName' => 'left']);
+        $colorFacet = new OptionsFacet($resultSetMock, 'color', 'color_s', '', ['groupName' => 'left'], $objectManagerMock);
+        $brandFacet = new OptionsFacet($resultSetMock, 'brand', 'brand_s', '', ['groupName' => 'left'], $objectManagerMock);
         $facetCollection->addFacet($colorFacet);
         $facetCollection->addFacet($brandFacet);
 
@@ -52,9 +54,10 @@ class FacetCollectionTest extends UnitTest
     {
         $facetCollection = new FacetCollection();
         $resultSetMock = $this->getDumbMock(SearchResultSet::class);
+        $objectManagerMock = $this->createMock(ObjectManager::class);
 
-        $colorFacet = new OptionsFacet($resultSetMock, 'color', 'color_s', '', ['groupName' => 'left']);
-        $brandFacet = new OptionsFacet($resultSetMock, 'brand', 'brand_s', '', ['groupName' => 'left']);
+        $colorFacet = new OptionsFacet($resultSetMock, 'color', 'color_s', '', ['groupName' => 'left'], $objectManagerMock);
+        $brandFacet = new OptionsFacet($resultSetMock, 'brand', 'brand_s', '', ['groupName' => 'left'], $objectManagerMock);
         $facetCollection->addFacet($colorFacet);
         $facetCollection->addFacet($brandFacet);
 
@@ -69,9 +72,10 @@ class FacetCollectionTest extends UnitTest
     {
         $facetCollection = new FacetCollection();
         $resultSetMock = $this->getDumbMock(SearchResultSet::class);
+        $objectManagerMock = $this->createMock(ObjectManager::class);
 
-        $colorFacet = new OptionsFacet($resultSetMock, 'color', 'color_s', '', ['groupName' => 'top']);
-        $brandFacet = new OptionsFacet($resultSetMock, 'brand', 'brand_s', '', ['groupName' => 'left']);
+        $colorFacet = new OptionsFacet($resultSetMock, 'color', 'color_s', '', ['groupName' => 'top'], $objectManagerMock);
+        $brandFacet = new OptionsFacet($resultSetMock, 'brand', 'brand_s', '', ['groupName' => 'left'], $objectManagerMock);
         $facetCollection->addFacet($colorFacet);
         $facetCollection->addFacet($brandFacet);
 
@@ -87,9 +91,10 @@ class FacetCollectionTest extends UnitTest
     {
         $facetCollection = new FacetCollection();
         $resultSetMock = $this->getDumbMock(SearchResultSet::class);
+        $objectManagerMock = $this->createMock(ObjectManager::class);
 
-        $colorFacet = new OptionsFacet($resultSetMock, 'color', 'color_s', '', ['groupName' => 'top']);
-        $brandFacet = new OptionsFacet($resultSetMock, 'brand', 'brand_s', '', ['groupName' => 'left']);
+        $colorFacet = new OptionsFacet($resultSetMock, 'color', 'color_s', '', ['groupName' => 'top'], $objectManagerMock);
+        $brandFacet = new OptionsFacet($resultSetMock, 'brand', 'brand_s', '', ['groupName' => 'left'], $objectManagerMock);
         $facetCollection->addFacet($colorFacet);
         $facetCollection->addFacet($brandFacet);
 
