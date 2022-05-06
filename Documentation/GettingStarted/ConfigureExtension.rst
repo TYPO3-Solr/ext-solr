@@ -13,7 +13,7 @@ Extension Configuration
 
 Underlying settings can be found in the extension configuration, though the default settings are appropriate for most sites you should check and adapt this settings if necessary:
 
-.. image:: ../Images/GettingStarted/typo3-extension-manager.png
+.. image:: /Images/GettingStarted/typo3-extension-manager.png
 
 
 Static TypoScript
@@ -22,7 +22,7 @@ Static TypoScript
 The extension already comes with basic TypoScript configuration that will work for small pages out of the box. For now create or
 edit an existing TypoScript Template record in your page tree and add the provided static TypoScript:
 
-.. image:: ../Images/GettingStarted/typo3-include-static-typoscript.png
+.. image:: /Images/GettingStarted/typo3-include-static-typoscript.png
 
 .. _started-search-markers:
 
@@ -86,8 +86,8 @@ Configure Solr Connections
 
 **As first step the authority part of URI to Apache Solr machine must be configured.**
 
-.. image:: ../Images/GettingStarted/Site_handling_Setup_solr_01.png
+.. image:: /Images/GettingStarted/Site_handling_Setup_solr_01.png
 
 **The Corename(aka path to core) for each available language must be assigned respectively.**
 
-.. image:: ../Images/GettingStarted/Site_handling_Setup_solr_02.jpg
+.. image:: /Images/GettingStarted/Site_handling_Setup_solr_02.jpg

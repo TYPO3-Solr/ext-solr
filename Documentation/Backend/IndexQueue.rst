@@ -98,7 +98,7 @@ The typoscript constant "plugin.tx_news.settings.detailPid" is used to configure
 * The constant (*plugin.tx_news.settings.detailPid*) need to point to a valid news single page.
 * The page with the news single view, should be configured with *"Include in Search => Disable"* because indexing this page with the normal page indexing without a news id will produce an error page.
 
-.. figure:: ../Images/Backend/backend-disable-in-search.png
+.. figure:: /Images/Backend/backend-disable-in-search.png
 
     Include in Search - Disable
 
@@ -114,7 +114,7 @@ index queue configuration needs to contains "additionalPageIds" (e.g.: 'plugin.t
 
 Since the monitoring of changes in these records is expensive from performance perspective, you need to enable this feature in the extension configuration:
 
-.. figure:: ../Images/Backend/backend-record-outside-siteroot.png
+.. figure:: /Images/Backend/backend-record-outside-siteroot.png
 
     Enable tracking of records outside siteroot
 

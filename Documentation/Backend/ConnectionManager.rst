@@ -74,9 +74,10 @@ Example:
     solr_scheme_read: http
     solr_use_write_connection: false
 
-::
-
-The example above shows that you are able to define the setting ```solr_host_read``` on the language level. Since this is a more advanced configuration and the user interface should be kept simple, this can only be configured in the yaml.
+The example above shows that you are able to define the setting
+``solr_host_read`` on the language level. Since this is a more advanced
+configuration and the user interface should be kept simple, this can only be
+configured in the yaml.
 
 Legacy Mode
 -----------
@@ -92,7 +93,7 @@ In EXT:solr all the configuration, including options affecting backend functions
 * On your site's root page set the flag Use as Root Page on the Behaviour tab.
 * Initialize the Solr connections through the clear cache menu
 
-.. figure:: ../Images/GettingStarted/typo3-initialize-connections.png
+.. figure:: /Images/GettingStarted/typo3-initialize-connections.png
 
     Initialize all solr connections
 

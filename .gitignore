@@ -16,3 +16,7 @@ typo3_src
 uploads
 var
 vendor
+/composer.lock
+.Build
+Documentation/_make
+/Documentation-GENERATED-temp/

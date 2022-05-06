@@ -1,74 +1,74 @@
-.. ==================================================
-.. FOR YOUR INFORMATION
-.. --------------------------------------------------
-.. -*- coding: utf-8 -*- with BOM.
+﻿.. include:: /Includes.rst.txt
 
-.. include:: Includes.txt
+=====================
+Apache Solr for TYPO3
+=====================
 
-.. _start:
+:Extension key:
+   solr
 
-================================
-Apache Solr for TYPO3 (EXT:solr)
-================================
+:Package name:
+   apache-solr-for-typo3/solr
 
-.. only:: html
+:Version:
+   |release|
 
-	:Classification:
-		solr
+:Language:
+   en
 
-	:Version:
-		11.5.0-beta2
+:Author:
+   Ingo Renner, Markus Friedrich, Rafael Kähm, Timo Hund & Contributors
 
-	:Language:
-		en
+:License:
+   This document is published under the
+   `Open Publication License <https://www.opencontent.org/openpub/>`__.
 
-	:Description:
-		Apache Solr for TYPO3 - Enterprise search meets enterprise CMS
+:Rendered:
+   |today|
 
-	:Keywords:
-		search, full text, index, solr, lucene, fast, query, results
+----
 
-	:Copyright:
-		2009-2022
+A TYPO3 extension that integrates the `Apache Solr <https://solr.apache.org/>`__
+Enterprise Search Server into the TYPO3 CMS.
 
-	:Author:
-		Ingo Renner, Markus Friedrich, Rafael Kähm, Timo Hund
+This extension serves as a base module that covers the most frequently used
+functionalities.
 
-	:Email:
-		ingo@typo3.org
+Additional features can be obtained through the following free add-ons:
 
-	:License:
-		This document is published under the Open Content License
-		available from http://www.opencontent.org/opl.shtml
+1. `Apache Tika for TYPO3 <https://extensions.typo3.org/extension/tika>`__
+2. `Apache Solr for TYPO3 - More Like This <https://extensions.typo3.org/extension/solrmlt>`__
+3. `Apache Solr for TYPO3 - Grouping for fluid rendering <https://extensions.typo3.org/extension/solrfluidgrouping>`__
 
-	:Rendered:
-		|today|
+and many more by searching for "solr" in the TYPO3 Extension Repository (TER).
 
-	The content of this document is related to TYPO3,
-	a GNU/GPL CMS/Framework available from `typo3.org <http://www.typo3.org/>`_.
+----
 
-
-	**Table of Contents**
+**Table of Contents:**
 
 .. toctree::
-	:maxdepth: 3
-	:titlesonly:
-	:glob:
+   :maxdepth: 1
+   :titlesonly:
+   :glob:
 
-	Introduction/Index
-	GettingStarted/Index
-	Backend/Index
-	Frontend/Index
-	Routing/Index
-	Logging/Index
-	Solr/Index
-	Configuration/Index
-	Database/Index
-	Development/Index
-	FAQ/*
-	Appendix/*
-	Releases/Index
+   Introduction/Index
+   GettingStarted/Index
+   Backend/Index
+   Frontend/Index
+   Routing/Index
+   Logging/Index
+   Solr/Index
+   Configuration/Index
+   Database/Index
+   Development/Index
+   FAQ/Index
+   Appendix/*
+   Releases/Index
 
+.. Meta Menu
 
+.. toctree::
+   :hidden:
 
-
+   Sitemap
+   genindex

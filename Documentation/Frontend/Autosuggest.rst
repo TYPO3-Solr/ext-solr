@@ -25,7 +25,7 @@ If you want to configure an the autosuggest by example, you can include the typo
 
 When everything is configured the frontend will show you a drop down of suggestions when you are typing in the search field:
 
-.. figure:: ../Images/Frontend/Autosuggest/autosuggest.png
+.. figure:: /Images/Frontend/Autosuggest/autosuggest.png
 
     Autocomplete with jQuery
 

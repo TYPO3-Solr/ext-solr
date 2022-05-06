@@ -56,7 +56,8 @@ class QueryGroupFacetParser extends AbstractFacetParser
             $facetName,
             $fieldName,
             $label,
-            $facetConfiguration
+            $facetConfiguration,
+            $this->objectManager
         );
 
         $activeFacets = $resultSet->getUsedSearchRequest()->getActiveFacetNames();
