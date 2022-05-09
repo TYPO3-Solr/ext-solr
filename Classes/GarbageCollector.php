@@ -223,8 +223,8 @@ class GarbageCollector implements SingletonInterface
 
         $frontendGroupsField = $GLOBALS['TCA'][$table]['ctrl']['enablecolumns']['fe_group'];
 
-        $previousGroups = explode(',', (string)$this->trackedRecords[$table][$updatedRecord['uid']][$frontendGroupsField]);
-        $currentGroups = explode(',', (string)$updatedRecord[$frontendGroupsField]);
+        $previousGroups = GeneralUtility::intExplode(',', (string)$this->trackedRecords[$table][$updatedRecord['uid']][$frontendGroupsField]);
+        $currentGroups = GeneralUtility::intExplode(',', (string)$updatedRecord[$frontendGroupsField]);
         $removedGroups = array_diff($previousGroups, $currentGroups);
 
         return !empty($removedGroups);
