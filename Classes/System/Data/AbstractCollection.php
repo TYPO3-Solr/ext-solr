@@ -98,7 +98,7 @@ abstract class AbstractCollection implements IteratorAggregate, Countable, Array
     public function getByPosition(int $position): ?object
     {
         $keys = array_keys($this->data);
-        return $this->data[$keys[$position] ?? null] ?? null;
+        return $this->data[$keys[$position] ?? ''] ?? null;
     }
 
     /**
