@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -15,8 +17,9 @@
 
 namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Grouping;
 
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResult;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResultCollection;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
+use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 
 /**
  * Class GroupItem
@@ -24,37 +27,37 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResultCollectio
  * @author Frans Saris <frans@beech.it>
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class GroupItem
+class GroupItem extends SearchResultSet
 {
     /**
      * @var string
      */
-    protected $groupValue = '';
+    protected string $groupValue = '';
 
     /**
      * @var int
      */
-    protected $allResultCount = 0;
+    protected int $allResultCount = 0;
 
     /**
      * @var int
      */
-    protected $start = 0;
+    protected int $start = 0;
 
     /**
      * @var float
      */
-    protected $maximumScore = 0;
+    protected float $maximumScore = 0.0;
 
     /**
      * @var SearchResultCollection
      */
-    protected $searchResults;
+    protected SearchResultCollection $searchResults;
 
     /**
      * @var Group
      */
-    protected $group;
+    protected Group $group;
 
     /**
      * @param Group $group
@@ -62,15 +65,24 @@ class GroupItem
      * @param int $numFound
      * @param int $start
      * @param float $maxScore
+     * @param SearchRequest $usedSearchRequest
      */
-    public function __construct(Group $group, $groupValue, $numFound, $start, $maxScore)
-    {
+    public function __construct(
+        Group $group,
+        string $groupValue,
+        int $numFound,
+        int $start,
+        float $maxScore,
+        SearchRequest $usedSearchRequest
+    ) {
+        parent::__construct();
         $this->group = $group;
         $this->groupValue = $groupValue;
         $this->allResultCount = $numFound;
         $this->start = $start;
         $this->maximumScore = $maxScore;
         $this->searchResults = new SearchResultCollection();
+        $this->usedSearchRequest = $usedSearchRequest;
     }
 
     /**
@@ -78,19 +90,9 @@ class GroupItem
      *
      * @return string
      */
-    public function getGroupValue()
+    public function getGroupValue(): string
     {
         return $this->groupValue;
-    }
-
-    /**
-     * Get numFound
-     *
-     * @return int
-     */
-    public function getAllResultCount()
-    {
-        return $this->allResultCount;
     }
 
     /**
@@ -98,43 +100,9 @@ class GroupItem
      *
      * @return int
      */
-    public function getStart()
+    public function getStart(): int
     {
         return $this->start;
-    }
-
-    /**
-     * Get maxScore
-     *
-     * @return float
-     */
-    public function getMaximumScore()
-    {
-        return $this->maximumScore;
-    }
-
-    /**
-     * @return SearchResultCollection
-     */
-    public function getSearchResults(): SearchResultCollection
-    {
-        return $this->searchResults;
-    }
-
-    /**
-     * @param SearchResultCollection $searchResults
-     */
-    public function setSearchResults(SearchResultCollection $searchResults)
-    {
-        $this->searchResults = $searchResults;
-    }
-
-    /**
-     * @param SearchResult $searchResult
-     */
-    public function addSearchResult(SearchResult $searchResult)
-    {
-        $this->searchResults[] = $searchResult;
     }
 
     /**

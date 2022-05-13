@@ -333,7 +333,14 @@ class SearchUriBuilderTest extends UnitTest
         $previousRequest =  new SearchRequest([], 0, 0, $configurationMock);
 
         $group = new Group('smallPidRange', 5);
-        $groupItem = new GroupItem($group, 'pid:[0 to 5]', 12, 0, 32);
+        $groupItem = new GroupItem(
+            $group,
+            'pid:[0 to 5]',
+            12,
+            0,
+            32,
+            $previousRequest
+        );
 
         $this->extBaseUriBuilderMock->expects(self::once())->method('setArguments')->with($expectedArguments)->willReturn($this->extBaseUriBuilderMock);
         $this->extBaseUriBuilderMock->expects(self::once())->method('reset')->with()->willReturn($this->extBaseUriBuilderMock);

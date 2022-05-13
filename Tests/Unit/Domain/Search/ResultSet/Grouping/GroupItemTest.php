@@ -18,6 +18,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Grouping;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Grouping\Group;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Grouping\GroupItem;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResult;
+use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 
 /**
@@ -41,7 +42,14 @@ class GroupItemTest extends UnitTest
     protected function setUp(): void
     {
         $this->parentGroup = new Group('typeGroup');
-        $this->groupItem = new GroupItem($this->parentGroup, 'pages', 12, 1, 99);
+        $this->groupItem = new GroupItem(
+            $this->parentGroup,
+            'pages',
+            12,
+            1,
+            99,
+            $this->getDumbMock(SearchRequest::class)
+        );
         parent::setUp();
     }
 
@@ -50,7 +58,7 @@ class GroupItemTest extends UnitTest
      */
     public function canGetMaximumScore()
     {
-        self::assertSame(99, $this->groupItem->getMaximumScore(), 'Unexpected maximumScore');
+        self::assertSame(99.0, $this->groupItem->getMaximumScore(), 'Unexpected maximumScore');
     }
 
     /**
