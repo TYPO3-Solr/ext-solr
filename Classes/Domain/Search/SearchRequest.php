@@ -521,8 +521,8 @@ class SearchRequest
                 continue;
             }
             foreach ($groups as $groupItemPage) {
-                if ($groupItemPage > $max) {
-                    $max = $groupItemPage;
+                if ((int)$groupItemPage > $max) {
+                    $max = (int)$groupItemPage;
                 }
             }
         }
@@ -696,8 +696,9 @@ class SearchRequest
 
         // If the default of sorting parameter should be true, a modification of this condition is needed.
         // If instance of contextTypoScriptConfiguration is not TypoScriptConfiguration the sort should be enabled too
-        if ($this->contextTypoScriptConfiguration instanceof TypoScriptConfiguration &&
-                $this->contextTypoScriptConfiguration->getSearchFacetingUrlParameterSort(false)) {
+        if ($this->contextTypoScriptConfiguration instanceof TypoScriptConfiguration
+            && $this->contextTypoScriptConfiguration->getSearchFacetingUrlParameterSort()
+        ) {
             $this->activeFacetContainer->enableSort();
         }
 
