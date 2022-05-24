@@ -1,28 +1,19 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
 
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2017 <timo.hund@dkd.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
+
+namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\AbstractQueryBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -30,13 +21,12 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * The QueryFields class holds all information for the query which fields should be used to query (Solr qf parameter).
  */
-class QueryFields implements ParameterBuilder
+class QueryFields implements ParameterBuilderInterface
 {
-
     /**
      * @var array
      */
-    protected $queryFields = [];
+    protected array $queryFields = [];
 
     /**
      * QueryFields constructor.
@@ -52,9 +42,9 @@ class QueryFields implements ParameterBuilder
      * @param string $fieldName
      * @param float $boost
      */
-    public function set($fieldName, $boost = 1.0)
+    public function set(string $fieldName, float $boost = 1.0)
     {
-        $this->queryFields[$fieldName] = (float)$boost;
+        $this->queryFields[$fieldName] = $boost;
     }
 
     /**
@@ -63,7 +53,8 @@ class QueryFields implements ParameterBuilder
      * @param string $delimiter
      * @return string
      */
-    public function toString($delimiter = ' ') {
+    public function toString(string $delimiter = ' '): string
+    {
         $queryFieldString = '';
 
         foreach ($this->queryFields as $fieldName => $fieldBoost) {
@@ -86,7 +77,8 @@ class QueryFields implements ParameterBuilder
      * @param string $delimiter
      * @return QueryFields
      */
-    public static function fromString($queryFieldsString, $delimiter = ',') {
+    public static function fromString(string $queryFieldsString, string $delimiter = ','): QueryFields
+    {
         $fields = GeneralUtility::trimExplode($delimiter, $queryFieldsString, true);
         $queryFields = [];
 
@@ -95,7 +87,7 @@ class QueryFields implements ParameterBuilder
 
             $boost = 1.0;
             if (isset($fieldNameAndBoost[1])) {
-                $boost = floatval($fieldNameAndBoost[1]);
+                $boost = (float)($fieldNameAndBoost[1]);
             }
 
             $fieldName = $fieldNameAndBoost[0];

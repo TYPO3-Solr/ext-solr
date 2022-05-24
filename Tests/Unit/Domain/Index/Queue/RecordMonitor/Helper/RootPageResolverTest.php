@@ -1,34 +1,26 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Index\Queue\RecordMonitor\Helper;
 
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2017- Timo Hund <timo.hund@dkd.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
+
+namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Index\Queue\RecordMonitor\Helper;
 
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\ConfigurationAwareRecordService;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\RootPageResolver;
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use InvalidArgumentException;
+use PHPUnit\Framework\MockObject\MockObject;
 
 /**
  * @author Timo Hund <timo.hund@dkd.de>
@@ -50,10 +42,7 @@ class RootPageResolverTest extends UnitTest
      */
     protected $rootPageResolver;
 
-    /**
-     * @return void
-     */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->fakeDisabledCache();
 
@@ -64,7 +53,8 @@ class RootPageResolverTest extends UnitTest
         /** @var $rootPageResolver RootPageResolver */
         $this->rootPageResolver = $this->getMockBuilder(RootPageResolver::class)
             ->setConstructorArgs([$this->recordServiceMock, $this->cacheMock])
-            ->setMethods(['getIsRootPageId','getAlternativeSiteRootPagesIds', 'getRootPageIdByTableAndUid', 'getRecordPageId', 'getPageRecordByPageId'])->getMock();
+            ->onlyMethods(['getIsRootPageId', 'getAlternativeSiteRootPagesIds', 'getRootPageIdByTableAndUid', 'getRecordPageId', 'getPageRecordByPageId'])->getMock();
+        parent::setUp();
     }
 
     /**
@@ -72,16 +62,16 @@ class RootPageResolverTest extends UnitTest
      */
     public function getResponsibleRootPageIdsMergesRootLineAndTypoScriptReferences()
     {
-        $this->rootPageResolver->expects($this->once())->method('getRootPageIdByTableAndUid')->will($this->returnValue(222));
-        $this->rootPageResolver->expects($this->once())->method('getRecordPageId')->will($this->returnValue(111));
+        $this->rootPageResolver->expects(self::once())->method('getRootPageIdByTableAndUid')->willReturn(222);
+        $this->rootPageResolver->expects(self::once())->method('getRecordPageId')->willReturn(111);
 
-        $this->rootPageResolver->expects($this->once())->method('getIsRootPageId')->will($this->returnValue(true));
-        $this->rootPageResolver->expects($this->once())->method('getAlternativeSiteRootPagesIds')->will($this->returnValue([333,444]));
+        $this->rootPageResolver->expects(self::once())->method('getIsRootPageId')->willReturn(true);
+        $this->rootPageResolver->expects(self::once())->method('getAlternativeSiteRootPagesIds')->willReturn([333, 444]);
 
         $resolvedRootPages = $this->rootPageResolver->getResponsibleRootPageIds('pages', 41);
 
         $message = 'Root page resolver did not retrieve and merge root page ids from root line and typoscript references';
-        $this->assertEquals([222,333,444], $resolvedRootPages, $message);
+        self::assertEquals([222, 333, 444], $resolvedRootPages, $message);
     }
 
     /**
@@ -89,59 +79,61 @@ class RootPageResolverTest extends UnitTest
      */
     public function getResponsibleRootPageIdsIgnoresPageFromRootLineThatIsNoSiteRoot()
     {
-        $this->rootPageResolver->expects($this->once())->method('getRootPageIdByTableAndUid')->will($this->returnValue(222));
-        $this->rootPageResolver->expects($this->once())->method('getRecordPageId')->will($this->returnValue(111));
+        $this->rootPageResolver->expects(self::once())->method('getRootPageIdByTableAndUid')->willReturn(222);
+        $this->rootPageResolver->expects(self::once())->method('getRecordPageId')->willReturn(111);
 
-        $this->rootPageResolver->expects($this->once())->method('getIsRootPageId')->will($this->returnValue(false));
-        $this->rootPageResolver->expects($this->once())->method('getAlternativeSiteRootPagesIds')->will($this->returnValue([333,444]));
+        $this->rootPageResolver->expects(self::once())->method('getIsRootPageId')->willReturn(false);
+        $this->rootPageResolver->expects(self::once())->method('getAlternativeSiteRootPagesIds')->willReturn([333, 444]);
 
         $resolvedRootPages = $this->rootPageResolver->getResponsibleRootPageIds('pages', 41);
 
         $message = 'Root page resolver should only return rootPageIds from references';
-        $this->assertEquals([333,444], $resolvedRootPages, $message);
+        self::assertEquals([333, 444], $resolvedRootPages, $message);
     }
 
     /**
      * @test
      */
-    public function getIsRootPageIdWithPageIdZero() {
-        /** @var $rootPageResolver RootPageResolver */
-        $this->rootPageResolver = $this->getMockBuilder(RootPageResolver::class)
-            ->setConstructorArgs([$this->recordServiceMock, $this->cacheMock])->getMock();
-        $rootPage = $this->rootPageResolver->getIsRootPageId(0);
-        $this->assertEquals(false, $rootPage);
-    }
-
-    /**
-     * @test
-     */
-    public function getIsRootPageWithPageIdMinusOne() {
-        $this->rootPageResolver = $this->getMockBuilder(RootPageResolver::class)
-            ->setConstructorArgs([$this->recordServiceMock, $this->cacheMock])->getMock();
-        $rootPage = $this->rootPageResolver->getIsRootPageId(-1);
-        $this->assertEquals(false, $rootPage);
-    }
-
-    /**
-     * @test
-     */
-    public function getIsRootPageIdWithUnknownPageId() {
+    public function getIsRootPageIdWithPageIdZero()
+    {
+        /* @var RootPageResolver|MockObject $rootPageResolver */
         $this->rootPageResolver = $this->getMockBuilder(RootPageResolver::class)
             ->setConstructorArgs([$this->recordServiceMock, $this->cacheMock])
-            ->setMethods(['getPageRecordByPageId'])->getMock();
-        $this->rootPageResolver->expects($this->once())->method('getPageRecordByPageId')->willReturn(null);
-        $this->expectException(\InvalidArgumentException::class);
+            ->onlyMethods([])
+            ->getMock();
+        $rootPage = $this->rootPageResolver->getIsRootPageId(0);
+        self::assertFalse($rootPage);
+    }
+
+    /**
+     * @test
+     */
+    public function getIsRootPageWithPageIdMinusOne()
+    {
+        $this->rootPageResolver = $this->getMockBuilder(RootPageResolver::class)
+            ->setConstructorArgs([$this->recordServiceMock, $this->cacheMock])
+            ->onlyMethods([])
+            ->getMock();
+        $rootPage = $this->rootPageResolver->getIsRootPageId(-1);
+        self::assertFalse($rootPage);
+    }
+
+    /**
+     * @test
+     */
+    public function getIsRootPageIdWithUnknownPageId()
+    {
+        $this->rootPageResolver = $this->getMockBuilder(RootPageResolver::class)
+            ->setConstructorArgs([$this->recordServiceMock, $this->cacheMock])
+            ->onlyMethods(['getPageRecordByPageId'])->getMock();
+        $this->rootPageResolver->expects(self::once())->method('getPageRecordByPageId')->willReturn([]);
+        $this->expectException(InvalidArgumentException::class);
         $this->rootPageResolver->getIsRootPageId(42);
     }
 
-    /**
-     * @return void
-     */
     protected function fakeDisabledCache()
     {
         $this->cacheMock = $this->getDumbMock(TwoLevelCache::class);
-        $this->cacheMock->method('get')->will($this->returnValue(false));
+        $this->cacheMock->method('get')->willReturn(false);
     }
-
-
 }

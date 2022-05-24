@@ -1,38 +1,31 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\IndexQueue\Initializer;
 
-/***************************************************************
- *  Copyright notice
+declare(strict_types=1);
+
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2011-2015 Ingo Renner <ingo@typo3.org>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *  A copy is found in the textfile GPL.txt and important notices to the license
- *  from the author is found in LICENSE.txt distributed with these scripts.
- *
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
+
+namespace ApacheSolrForTypo3\Solr\IndexQueue\Initializer;
 
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\QueueItemRepository;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
-use Doctrine\DBAL\DBALException;
+use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
+use Doctrine\DBAL\Driver\Exception as DBALDriverException;
+use Doctrine\DBAL\Exception as DBALException;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Messaging\FlashMessageQueue;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -48,58 +41,66 @@ abstract class AbstractInitializer implements IndexQueueInitializer
     /**
      * Site to initialize
      *
-     * @var Site
+     * @var Site|null
      */
-    protected $site;
+    protected ?Site $site;
 
     /**
      * The type of items this initializer is handling.
      *
      * @var string
      */
-    protected $type;
+    protected string $type;
 
     /**
      * Index Queue configuration.
      *
      * @var array
      */
-    protected $indexingConfiguration;
+    protected array $indexingConfiguration = [];
 
     /**
      * Indexing configuration name.
      *
      * @var string
      */
-    protected $indexingConfigurationName;
+    protected string $indexingConfigurationName;
 
     /**
      * Flash message queue
      *
-     * @var \TYPO3\CMS\Core\Messaging\FlashMessageQueue
+     * @var FlashMessageQueue
      */
-    protected $flashMessageQueue;
+    protected FlashMessageQueue $flashMessageQueue;
 
     /**
-     * @var \ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager
+     * @var SolrLogManager
      */
-    protected $logger = null;
+    protected SolrLogManager $logger;
 
     /**
      * @var QueueItemRepository
      */
-    protected $queueItemRepository;
+    protected QueueItemRepository $queueItemRepository;
+
+    /**
+     * @var PagesRepository
+     */
+    protected PagesRepository $pagesRepository;
 
     /**
      * Constructor, prepares the flash message queue
      * @param QueueItemRepository|null $queueItemRepository
      */
-    public function __construct(QueueItemRepository $queueItemRepository = null)
-    {
+    public function __construct(
+        QueueItemRepository $queueItemRepository = null,
+        PagesRepository $pagesRepository = null
+    ) {
         $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, /** @scrutinizer ignore-type */ __CLASS__);
         $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);
         $this->flashMessageQueue = $flashMessageService->getMessageQueueByIdentifier('solr.queue.initializer');
         $this->queueItemRepository = $queueItemRepository ?? GeneralUtility::makeInstance(QueueItemRepository::class);
+        $this->pagesRepository = $pagesRepository ?? GeneralUtility::makeInstance(PagesRepository::class);
     }
 
     /**
@@ -117,7 +118,7 @@ abstract class AbstractInitializer implements IndexQueueInitializer
      *
      * @param string $type Type to initialize.
      */
-    public function setType($type)
+    public function setType(string $type)
     {
         $this->type = $type;
     }
@@ -137,9 +138,9 @@ abstract class AbstractInitializer implements IndexQueueInitializer
      *
      * @param string $indexingConfigurationName Indexing configuration name
      */
-    public function setIndexingConfigurationName($indexingConfigurationName)
+    public function setIndexingConfigurationName(string $indexingConfigurationName)
     {
-        $this->indexingConfigurationName = (string)$indexingConfigurationName;
+        $this->indexingConfigurationName = $indexingConfigurationName;
     }
 
     /**
@@ -147,8 +148,9 @@ abstract class AbstractInitializer implements IndexQueueInitializer
      * configuration.
      *
      * @return bool TRUE if initialization was successful, FALSE on error.
+     * @throws DBALDriverException
      */
-    public function initialize()
+    public function initialize(): bool
     {
         /** @var ConnectionPool $connectionPool */
         $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
@@ -169,7 +171,7 @@ abstract class AbstractInitializer implements IndexQueueInitializer
             } else {
                 // If tables are using distinct connections, start by fetching items matching criteria
                 $logData = ['query' => $fetchItemsQuery];
-                $items = $connectionPool->getConnectionForTable($this->type)->fetchAll($fetchItemsQuery);
+                $items = $connectionPool->getConnectionForTable($this->type)->fetchAllAssociative($fetchItemsQuery);
                 $logData['rows'] = count($items);
 
                 if (count($items)) {
@@ -189,23 +191,20 @@ abstract class AbstractInitializer implements IndexQueueInitializer
 
     /**
      * Builds the SELECT part of the Index Queue initialization query.
-     *
      */
-    protected function buildSelectStatement()
+    protected function buildSelectStatement(): string
     {
         $changedField = $GLOBALS['TCA'][$this->type]['ctrl']['tstamp'];
         if (!empty($GLOBALS['TCA'][$this->type]['ctrl']['enablecolumns']['starttime'])) {
             $changedField = 'GREATEST(' . $GLOBALS['TCA'][$this->type]['ctrl']['enablecolumns']['starttime'] . ',' . $GLOBALS['TCA'][$this->type]['ctrl']['tstamp'] . ')';
         }
-        $select = 'SELECT '
+        return 'SELECT '
             . '\'' . $this->site->getRootPageId() . '\' as root, '
             . '\'' . $this->type . '\' AS item_type, '
             . 'uid AS item_uid, '
             . '\'' . $this->indexingConfigurationName . '\' as indexing_configuration, '
             . $this->getIndexingPriority() . ' AS indexing_priority, '
             . $changedField . ' AS changed';
-
-        return $select;
     }
 
     // initialization query building
@@ -215,7 +214,7 @@ abstract class AbstractInitializer implements IndexQueueInitializer
      *
      * @return int Indexing priority
      */
-    protected function getIndexingPriority()
+    protected function getIndexingPriority(): int
     {
         $priority = 0;
 
@@ -230,9 +229,9 @@ abstract class AbstractInitializer implements IndexQueueInitializer
      * Builds a part of the WHERE clause of the Index Queue initialization
      * query. This part selects the limits items to be selected from the pages
      * in a site only, plus additional pages that may have been configured.
-     *
+     * @throws DBALDriverException
      */
-    protected function buildPagesClause()
+    protected function buildPagesClause(): string
     {
         $pages = $this->getPages();
         $pageIdField = ($this->type === 'pages') ? 'uid' : 'pid';
@@ -245,6 +244,7 @@ abstract class AbstractInitializer implements IndexQueueInitializer
      * configured.
      *
      * @return array A (sorted) array of page IDs in a site
+     * @throws DBALDriverException
      */
     protected function getPages(): array
     {
@@ -257,7 +257,7 @@ abstract class AbstractInitializer implements IndexQueueInitializer
         $pages = array_merge($pages, $additionalPageIds);
         sort($pages, SORT_NUMERIC);
 
-        $pagesWithinNoSearchSubEntriesPages = $this->site->getPagesWithinNoSearchSubEntriesPages();
+        $pagesWithinNoSearchSubEntriesPages = $this->pagesRepository->findAllPagesWithinNoSearchSubEntriesMarkedPages();
         // @todo: log properly if $additionalPageIds are within $pagesWithinNoSearchSubEntriesPages
         return array_values(array_diff($pages, $pagesWithinNoSearchSubEntriesPages));
     }
@@ -268,7 +268,7 @@ abstract class AbstractInitializer implements IndexQueueInitializer
      *
      * @return string Conditions to only add indexable items to the Index Queue
      */
-    protected function buildTcaWhereClause()
+    protected function buildTcaWhereClause(): string
     {
         $tcaWhereClause = '';
         $conditions = [];
@@ -289,16 +289,27 @@ abstract class AbstractInitializer implements IndexQueueInitializer
 
         if (BackendUtility::isTableLocalizable($this->type)) {
             $conditions['languageField'] = [
-                $GLOBALS['TCA'][$this->type]['ctrl']['languageField'] . ' = 0',
                 // default language
-                $GLOBALS['TCA'][$this->type]['ctrl']['languageField'] . ' = -1'
+                $GLOBALS['TCA'][$this->type]['ctrl']['languageField'] . ' = 0',
                 // all languages
+                $GLOBALS['TCA'][$this->type]['ctrl']['languageField'] . ' = -1',
             ];
+            // all "free"-Mode languages for "non-pages"-records only
+            if ($this->type !== 'pages' && $this->site->hasFreeContentModeLanguages()) {
+                $conditions['languageField'][]
+                    = $GLOBALS['TCA'][$this->type]['ctrl']['languageField']
+                    . ' IN(/* free content mode */ '
+                        . implode(',', $this->site->getFreeContentModeLanguages())
+                    . ')';
+            }
+
             if (isset($GLOBALS['TCA'][$this->type]['ctrl']['transOrigPointerField'])) {
                 $conditions['languageField'][] = $GLOBALS['TCA'][$this->type]['ctrl']['transOrigPointerField'] . ' = 0'; // translations without original language source
             }
-            $conditions['languageField'] = '(' . implode(' OR ',
-                    $conditions['languageField']) . ')';
+            $conditions['languageField'] = '(' . implode(
+                ' OR ',
+                $conditions['languageField']
+            ) . ')';
         }
 
         if (!empty($GLOBALS['TCA'][$this->type]['ctrl']['versioningWS'])) {
@@ -320,7 +331,7 @@ abstract class AbstractInitializer implements IndexQueueInitializer
      *
      * @return string Conditions to add items to the Index Queue based on TypoScript configuration
      */
-    protected function buildUserWhereClause()
+    protected function buildUserWhereClause(): string
     {
         $condition = '';
 

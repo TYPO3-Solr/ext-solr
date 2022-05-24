@@ -1,36 +1,34 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en"
-	  xmlns:f="http://typo3.org/ns/TYPO3/Fluid/ViewHelpers"
-	  xmlns:s="http://typo3.org/ns/ApacheSolrForTypo3/Solr/ViewHelpers"
-	  data-namespace-typo3-fluid="true"
-		>
+	xmlns:f="http://typo3.org/ns/TYPO3/Fluid/ViewHelpers"
+	xmlns:s="http://typo3.org/ns/ApacheSolrForTypo3/Solr/ViewHelpers"
+	data-namespace-typo3-fluid="true"
+>
 
-<div class="panel">
-	<div class="panel-heading">
-		<h3 class="facet-label panel-title">
-			<span class="glyphicon glyphicon-filter"></span>
-			<a data-toggle="collapse" data-parent="#facet-accordion{facet.name}" href="#facet{facet.name}">{facet.label}</a>
-		</h3>
-	</div>
+	<div class="card">
+		<div class="card-header facet-label">
+			<span class="bi bi-filter"></span>
+			<a data-bs-toggle="collapse" href="#facet{facet.name}">{facet.label}</a>
+		</div>
 
-	<div class="panel-collapse collapse" id="facet{facet.name}">
-		<div class="fluidfacet facet-type-numericRange-data"
-			data-facet-name="{facet.name}"
-			data-facet-label="{facet.label}"
-			data-range-min="{facet.range.startInResponse}"
-			data-range-max="{facet.range.endInResponse}"
-			data-range-min-selected="{facet.range.startRequested}"
-			data-range-max-selected="{facet.range.endRequested}"
-			data-range-gap="{facet.range.gap}"
-			data-facet-url="{s:uri.facet.setFacetItem(facet: facet, facetItemValue: '___FROM___-___TO___')}"
-		>
-		</div>
-		<div id="facet-{facet.name}-value">
-			<f:if condition="{facet.isUsed}">
-				<f:then>{facet.range.startRequested} - {facet.range.endRequested}</f:then>
-				<f:else>{facet.range.startInResponse} - {facet.range.endInResponse}</f:else>
-			</f:if>
+		<div class="card-body facet-type-numericRange fluidfacet collapse show" data-facet-name="{facet.name}" data-facet-label="{facet.label}" id="facet{facet.name}">
+			<div
+					class="ui-slider facet-type-numericRange-data"
+					data-facet-name="{facet.name}"
+					data-facet-label="{facet.label}"
+					data-range-min="{facet.range.startInResponse}"
+					data-range-max="{facet.range.endInResponse}"
+					data-range-min-selected="{facet.range.startRequested}"
+					data-range-max-selected="{facet.range.endRequested}"
+					data-range-gap="{facet.range.gap}"
+					data-facet-url="{s:uri.facet.setFacetItem(facet: facet, facetItemValue: '___FROM___-___TO___')}"
+			></div>
+			<div id="facet-{facet.name}-value">
+				<f:if condition="{facet.isUsed}">
+					<f:then>{facet.range.startRequested} - {facet.range.endRequested}</f:then>
+					<f:else>{facet.range.startInResponse} - {facet.range.endInResponse}</f:else>
+				</f:if>
+			</div>
 		</div>
 	</div>
-</div>
 
 </html>

@@ -1,13 +1,4 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Routing\Enhancer;
-
-use ApacheSolrForTypo3\Solr\Routing\RoutingService;
-use ApacheSolrForTypo3\Solr\Utility\RoutingUtility;
-use TYPO3\CMS\Core\Routing\Enhancer\AbstractEnhancer;
-use TYPO3\CMS\Core\Routing\Enhancer\RoutingEnhancerInterface;
-use TYPO3\CMS\Core\Routing\Route;
-use TYPO3\CMS\Core\Routing\RouteCollection;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -22,12 +13,22 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * The TYPO3 project - inspiring people to share!
  */
 
+namespace ApacheSolrForTypo3\Solr\Routing\Enhancer;
+
+use ApacheSolrForTypo3\Solr\Routing\RoutingService;
+use ApacheSolrForTypo3\Solr\Utility\RoutingUtility;
+use TYPO3\CMS\Core\Routing\Enhancer\AbstractEnhancer;
+use TYPO3\CMS\Core\Routing\Enhancer\RoutingEnhancerInterface;
+use TYPO3\CMS\Core\Routing\Route;
+use TYPO3\CMS\Core\Routing\RouteCollection;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 class SolrFacetMaskAndCombineEnhancer extends AbstractEnhancer implements RoutingEnhancerInterface, SolrRouteEnhancerInterface
 {
     /**
      * @var array
      */
-    protected $configuration;
+    protected array $configuration;
 
     /**
      * @var string
@@ -59,10 +60,14 @@ class SolrFacetMaskAndCombineEnhancer extends AbstractEnhancer implements Routin
      *
      * @param Route $defaultPageRoute
      * @param array $configuration
+     *
+     * @todo: Refactor to get cHash expected functionality.
+     *
      * @return Route
      */
     protected function getVariant(Route $defaultPageRoute, array $configuration): Route
     {
+        /** @noinspection DuplicatedCode copied from \TYPO3\CMS\Core\Routing\Enhancer\PluginEnhancer::getVariant() */
         $arguments = $configuration['_arguments'] ?? [];
         unset($configuration['_arguments']);
 
@@ -86,7 +91,7 @@ class SolrFacetMaskAndCombineEnhancer extends AbstractEnhancer implements Routin
     public function enhanceForGeneration(RouteCollection $collection, array $parameters): void
     {
         // No parameter for this namespace given, so this route does not fit the requirements
-        if (!is_array($parameters[$this->namespace])) {
+        if (!is_array($parameters[$this->namespace] ?? null)) {
             return;
         }
         /** @var Route $defaultPageRoute */
@@ -176,7 +181,7 @@ class SolrFacetMaskAndCombineEnhancer extends AbstractEnhancer implements Routin
                         $parameterValueNew = $facetValue;
                     }
                 }
-                if (is_array($parametersCombined[$parameterNameNew])) {
+                if (is_array($parametersCombined[$parameterNameNew] ?? null)) {
                     $parametersCombined[$parameterNameNew][] = $parameterValueNew;
                 } else {
                     $parametersCombined[$parameterNameNew] = $parameterValueNew;
@@ -196,8 +201,8 @@ class SolrFacetMaskAndCombineEnhancer extends AbstractEnhancer implements Routin
     /**
      * We need to convert our internal names by hand into hashes.
      *
-     * This needs to be done, because we not exactly configure a path inside of the site configuration.
-     * What we are configure is a placeholder contains information, what we should process
+     * This needs to be done, because we not exactly configure a path inside the site configuration.
+     * What we are configuring is a placeholder contains information, what we should process
      *
      * @param Route $route
      * @param array $parameters
@@ -212,11 +217,9 @@ class SolrFacetMaskAndCombineEnhancer extends AbstractEnhancer implements Routin
         $routeArguments = $route->getArguments();
         $pathTokens = $route->compile()->getTokens();
 
-        $keepVariables = [];
-
         $pathTokensCount = count($pathTokens);
         for ($i = 0; $i < $pathTokensCount; $i++) {
-            // wee only looking for variables
+            // we're only looking for variables
             if ($pathTokens[$i][0] !== 'variable') {
                 continue;
             }
@@ -242,7 +245,6 @@ class SolrFacetMaskAndCombineEnhancer extends AbstractEnhancer implements Routin
             }
 
             $parameters[$pathTokens[$i][3]] = $parameters[$parameterName];
-            $keepVariables[] = $pathTokens[$i][3];
             unset($parameters[$parameterName]);
         }
 
@@ -269,10 +271,10 @@ class SolrFacetMaskAndCombineEnhancer extends AbstractEnhancer implements Routin
 
         foreach ($deflatedParameters as $argumentKey => $argumentPath) {
             if (in_array($argumentKey, $variablesToHandle)) {
-                $mixedVariables[$argumentKey] = $deflatedParameters[$argumentKey];
+                $mixedVariables[$argumentKey] = $argumentPath;
             } else {
                 $elements = explode('__', $argumentKey);
-                $elements[] = $deflatedParameters[$argumentKey];
+                $elements[] = $argumentPath;
                 $data = $this->inflateQueryParams($elements);
 
                 $mixedVariables = array_merge_recursive($mixedVariables, $data);

@@ -1,37 +1,30 @@
 <?php
+
+/*
+ * This file is part of the TYPO3 CMS project.
+ *
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
+ *
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ *
+ * The TYPO3 project - inspiring people to share!
+ */
+
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\Task;
 
-/***************************************************************
- *  Copyright notice
- *
- *  (c) 2015 Timo Schmidt <timo.schmidt@dkd.de>
- *  All rights reserved
- *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
-
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
-use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\IndexQueue\Indexer;
+use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\Task\ReIndexTask;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
+use Exception;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
 use TYPO3\CMS\Core\Localization\LanguageService;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * TestCase to check if the index queue can be initialized by the ReIndex Task
@@ -40,6 +33,13 @@ use TYPO3\CMS\Core\Localization\LanguageService;
  */
 class ReIndexTaskTest extends IntegrationTest
 {
+
+    /**
+     * @inheritdoc
+     * @todo: Remove unnecessary fixtures and remove that property as intended.
+     */
+    protected bool $skipImportRootPagesAndTemplatesForConfiguredSites = true;
+
     /**
      * @var ReIndexTask
      */
@@ -54,44 +54,40 @@ class ReIndexTaskTest extends IntegrationTest
      * @var array
      */
     protected $coreExtensionsToLoad = [
-        'extensionmanager',
-        'scheduler'
+        'scheduler',
     ];
 
     /**
-     * @return void
+     * @throws NoSuchCacheException
      */
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->writeDefaultSolrTestSiteConfiguration();
         $this->task = GeneralUtility::makeInstance(ReIndexTask::class);
         $this->indexQueue = GeneralUtility::makeInstance(Queue::class);
 
-        /** @var $beUser  \TYPO3\CMS\Core\Authentication\BackendUserAuthentication */
+        /** @var BackendUserAuthentication $beUser */
         $beUser = GeneralUtility::makeInstance(BackendUserAuthentication::class);
         $GLOBALS['BE_USER'] = $beUser;
 
-        /** @var $languageService  \TYPO3\CMS\Core\Localization\LanguageService */
+        /* @var LanguageService $languageService */
         $languageService = GeneralUtility::makeInstance(LanguageService::class);
         $GLOBALS['LANG'] = $languageService;
     }
 
-    /**
-     * @return void
-     */
     protected function assertEmptyIndexQueue()
     {
-        $this->assertEquals(0, $this->indexQueue->getAllItemsCount(), 'Index queue is not empty as expected');
+        self::assertEquals(0, $this->indexQueue->getAllItemsCount(), 'Index queue is not empty as expected');
     }
 
-    /**
-     * @return void
-     */
     protected function assertNotEmptyIndexQueue()
     {
-        $this->assertGreaterThan(0, $this->indexQueue->getAllItemsCount(),
-            'Index queue is empty and was expected to be not empty.');
+        self::assertGreaterThan(
+            0,
+            $this->indexQueue->getAllItemsCount(),
+            'Index queue is empty and was expected to be not empty.'
+        );
     }
 
     /**
@@ -99,12 +95,16 @@ class ReIndexTaskTest extends IntegrationTest
      */
     protected function assertIndexQueryContainsItemAmount($amount)
     {
-        $this->assertEquals($amount, $this->indexQueue->getAllItemsCount(),
-            'Index queue is empty and was expected to contain ' . (int) $amount . ' items.');
+        self::assertEquals(
+            $amount,
+            $this->indexQueue->getAllItemsCount(),
+            'Index queue is empty and was expected to contain ' . (int)$amount . ' items.'
+        );
     }
 
     /**
      * @test
+     * @throws Exception
      */
     public function testIfTheQueueIsFilledAfterTaskWasRunning()
     {
@@ -122,6 +122,7 @@ class ReIndexTaskTest extends IntegrationTest
 
     /**
      * @test
+     * @throws Exception
      */
     public function testCanGetAdditionalInformationFromTask()
     {
@@ -134,12 +135,13 @@ class ReIndexTaskTest extends IntegrationTest
         $this->task->setIndexingConfigurationsToReIndex(['pages']);
         $additionalInformation = $this->task->getAdditionalInformation();
 
-        $this->assertContains('Indexing Configurations: pages', $additionalInformation);
-        $this->assertContains('Root Page ID: 1', $additionalInformation);
+        self::assertStringContainsString('Indexing Configurations: pages', $additionalInformation);
+        self::assertStringContainsString('Root Page ID: 1', $additionalInformation);
     }
 
     /**
      * @test
+     * @throws Exception
      */
     public function solrIsEmptyAfterCleanup()
     {
@@ -150,7 +152,7 @@ class ReIndexTaskTest extends IntegrationTest
         $site = $siteRepository->getFirstAvailableSite();
         $this->indexQueue->updateItem('pages', 1);
         $items = $this->indexQueue->getItems('pages', 1);
-        /** @var $indexer \ApacheSolrForTypo3\Solr\IndexQueue\Indexer */
+        /* @var Indexer $indexer */
         $indexer = GeneralUtility::makeInstance(Indexer::class);
         $indexer->index($items[0]);
         $this->waitToBeVisibleInSolr();

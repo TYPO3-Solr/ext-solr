@@ -1,5 +1,4 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Test\Domain\Search\ResultSet\Facets\OptionBased\Hierarchy;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -14,9 +13,11 @@ namespace ApacheSolrForTypo3\Solr\Test\Domain\Search\ResultSet\Facets\OptionBase
  * The TYPO3 project - inspiring people to share!
  */
 
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets\OptionBased\Hierarchy;
+
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Hierarchy\HierarchyFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Hierarchy\Node;
+use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 
 /**
  * Testcase to test the Node class
@@ -33,13 +34,13 @@ class NodeTest extends UnitTest
     {
         $facetMock = $this->getDumbMock(HierarchyFacet::class);
         $node = new Node($facetMock);
-        $this->assertFalse($node->getHasParentNode(), 'Node with unassigned parent node should not indicate that a parent node was assigned');
+        self::assertFalse($node->getHasParentNode(), 'Node with unassigned parent node should not indicate that a parent node was assigned');
 
         $facetMock = $this->getDumbMock(HierarchyFacet::class);
         $parentNode = new Node($facetMock);
         $node = new Node($facetMock, $parentNode);
-        $this->assertTrue($node->getHasParentNode(), 'Node with assigned parent node should indicate that');
-        $this->assertSame($parentNode, $node->getParentNode(), 'Node did not return assigend parent node');
+        self::assertTrue($node->getHasParentNode(), 'Node with assigned parent node should indicate that');
+        self::assertSame($parentNode, $node->getParentNode(), 'Node did not return assigend parent node');
     }
 
     /**
@@ -50,7 +51,7 @@ class NodeTest extends UnitTest
         $facetMock = $this->getDumbMock(HierarchyFacet::class);
         $node = new Node($facetMock);
 
-        $this->assertFalse($node->getHasChildNodeSelected(), 'Node without childnodes should not indicate that it as a selected child node');
+        self::assertFalse($node->getHasChildNodeSelected(), 'Node without childnodes should not indicate that it as a selected child node');
     }
 
     /**
@@ -64,7 +65,7 @@ class NodeTest extends UnitTest
         $childNode = new Node($facetMock, $node);
         $node->addChildNode($childNode);
 
-        $this->assertFalse($node->getHasChildNodeSelected(), 'Node with only unselected childnodes should not indicate that it has a selected child node');
+        self::assertFalse($node->getHasChildNodeSelected(), 'Node with only unselected childnodes should not indicate that it has a selected child node');
     }
 
     /**
@@ -78,6 +79,6 @@ class NodeTest extends UnitTest
         $selectedChildNode = new Node($facetMock, $node, '', '', '', 0, true);
         $node->addChildNode($selectedChildNode);
 
-        $this->assertTrue($node->getHasChildNodeSelected(), 'Node with selected child node should indicate that it has a selected child node');
+        self::assertTrue($node->getHasChildNodeSelected(), 'Node with selected child node should indicate that it has a selected child node');
     }
 }

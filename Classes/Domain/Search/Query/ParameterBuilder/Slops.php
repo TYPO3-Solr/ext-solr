@@ -1,29 +1,21 @@
 <?php
 
-namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
+declare(strict_types=1);
 
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2017 <timo.hund@dkd.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
+
+namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\AbstractQueryBuilder;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
@@ -32,31 +24,31 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
  * The Slops ParameterProvider is responsible to build the solr query parameters
  * that are needed for the several slop arguments.
  */
-class Slops implements ParameterBuilder
+class Slops implements ParameterBuilderInterface
 {
     const NO_SLOP = null;
 
     /**
      * The qs parameter
      *
-     * @var int
+     * @var int|null
      */
-    protected $querySlop = self::NO_SLOP;
+    protected ?int $querySlop = self::NO_SLOP;
 
     /**
-     * @var int
+     * @var int|null
      */
-    protected $phraseSlop = self::NO_SLOP;
+    protected ?int $phraseSlop = self::NO_SLOP;
 
     /**
-     * @var int
+     * @var int|null
      */
-    protected $bigramPhraseSlop = self::NO_SLOP;
+    protected ?int $bigramPhraseSlop = self::NO_SLOP;
 
     /**
-     * @var int
+     * @var int|null
      */
-    protected $trigramPhraseSlop = self::NO_SLOP;
+    protected ?int $trigramPhraseSlop = self::NO_SLOP;
 
     /**
      * Slops constructor.
@@ -65,8 +57,12 @@ class Slops implements ParameterBuilder
      * @param int|null $bigramPhraseSlop
      * @param int|null $trigramPhraseSlop
      */
-    public function __construct($querySlop = self::NO_SLOP, $phraseSlop = self::NO_SLOP, $bigramPhraseSlop = self::NO_SLOP, $trigramPhraseSlop = self::NO_SLOP)
-    {
+    public function __construct(
+        ?int $querySlop = self::NO_SLOP,
+        ?int $phraseSlop = self::NO_SLOP,
+        ?int $bigramPhraseSlop = self::NO_SLOP,
+        ?int $trigramPhraseSlop = self::NO_SLOP
+    ) {
         $this->querySlop = $querySlop;
         $this->phraseSlop = $phraseSlop;
         $this->bigramPhraseSlop = $bigramPhraseSlop;
@@ -74,7 +70,7 @@ class Slops implements ParameterBuilder
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function getHasQuerySlop()
     {
@@ -98,13 +94,12 @@ class Slops implements ParameterBuilder
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function getHasPhraseSlop()
     {
         return $this->phraseSlop !== null;
     }
-
 
     /**
      * @return int|null
@@ -123,7 +118,7 @@ class Slops implements ParameterBuilder
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function getHasBigramPhraseSlop()
     {
@@ -147,7 +142,7 @@ class Slops implements ParameterBuilder
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function getHasTrigramPhraseSlop()
     {

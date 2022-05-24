@@ -1,5 +1,4 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Test\Domain\Search\ResultSet\Facets\OptionBased\Hierarchy;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -14,10 +13,12 @@ namespace ApacheSolrForTypo3\Solr\Test\Domain\Search\ResultSet\Facets\OptionBase
  * The TYPO3 project - inspiring people to share!
  */
 
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Hierarchy\Node;
+namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets\OptionBased\Hierarchy;
+
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Hierarchy\HierarchyFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Hierarchy\HierarchyFacetParser;
-use ApacheSolrForTypo3\Solr\Test\Domain\Search\ResultSet\Facets\AbstractFacetParserTest;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Hierarchy\Node;
+use ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets\AbstractFacetParserTest;
 
 /**
  * Class HierarchyFacetParserTest
@@ -38,7 +39,7 @@ class HierarchyFacetParserTest extends AbstractFacetParserTest
                 'type' => 'hierarchy',
                 'label' => 'Rootline',
                 'field' => 'rootline',
-            ]
+            ],
         ];
 
         $searchResultSet = $this->initializeSearchResultSetFromFakeResponse(
@@ -49,15 +50,15 @@ class HierarchyFacetParserTest extends AbstractFacetParserTest
         /** @var $parser HierarchyFacetParser */
         $parser = $this->getInitializedParser(HierarchyFacetParser::class);
         $facet = $parser->parse($searchResultSet, 'pageHierarchy', $facetConfiguration['pageHierarchy.']);
-        $this->assertInstanceOf(HierarchyFacet::class, $facet);
+        self::assertInstanceOf(HierarchyFacet::class, $facet);
 
         // on the rootlevel there should only be one childNode
-        $this->assertSame(1, $facet->getChildNodes()->getCount());
-        $this->assertSame(8, $facet->getChildNodes()->getByPosition(0)->getChildNodes()->getCount());
+        self::assertSame(1, $facet->getChildNodes()->getCount());
+        self::assertSame(8, $facet->getChildNodes()->getByPosition(0)->getChildNodes()->getCount());
 
         $firstNode = $facet->getChildNodes()->getByPosition(0)->getChildNodes()->getByPosition(0);
-        $this->assertSame('/1/14/', $firstNode->getValue());
-        $this->assertSame('14', $firstNode->getKey());
+        self::assertSame('/1/14/', $firstNode->getValue());
+        self::assertSame('14', $firstNode->getKey());
     }
 
     /**
@@ -72,10 +73,10 @@ class HierarchyFacetParserTest extends AbstractFacetParserTest
                         'type' => 'hierarchy',
                         'label' => 'Rootline',
                         'field' => 'rootline',
-                        'sortBy' => 'count'
-                    ]
+                        'sortBy' => 'count',
+                    ],
                 ],
-                'fake_solr_response_with_deep_more_then_10_hierarchy_facet_sorted_by_count.json'
+                'fake_solr_response_with_deep_more_then_10_hierarchy_facet_sorted_by_count.json',
             ],
             'sortByIndex' => [
                 [
@@ -83,11 +84,11 @@ class HierarchyFacetParserTest extends AbstractFacetParserTest
                         'type' => 'hierarchy',
                         'label' => 'Rootline',
                         'field' => 'rootline',
-                        'sortBy' => 'index'
-                    ]
+                        'sortBy' => 'index',
+                    ],
                 ],
-                'fake_solr_response_with_deep_more_then_10_hierarchy_facet_sorted_by_index.json'
-            ]
+                'fake_solr_response_with_deep_more_then_10_hierarchy_facet_sorted_by_index.json',
+            ],
         ];
     }
 
@@ -106,9 +107,9 @@ class HierarchyFacetParserTest extends AbstractFacetParserTest
         $parser = $this->getInitializedParser(HierarchyFacetParser::class);
         $facet = $parser->parse($searchResultSet, 'pageHierarchy', $facetConfiguration['pageHierarchy.']);
 
-        $this->assertInstanceOf(HierarchyFacet::class, $facet);
+        self::assertInstanceOf(HierarchyFacet::class, $facet);
 
-        $this->assertSame(1, $facet->getChildNodes()->getCount(), 'The hierarchy facet is broken. Expected that no node has more than one child node.');
+        self::assertSame(1, $facet->getChildNodes()->getCount(), 'The hierarchy facet is broken. Expected that no node has more than one child node.');
         $this->assertNoNodeHasMoreThanOneChildInTheHierarchy($facet->getChildNodes()->getByPosition(0));
     }
 
@@ -119,7 +120,7 @@ class HierarchyFacetParserTest extends AbstractFacetParserTest
      */
     protected function assertNoNodeHasMoreThanOneChildInTheHierarchy(Node $node)
     {
-        $this->assertLessThanOrEqual(1, $node->getChildNodes()->getCount(), 'The hierarchy facet is broken. Expected that no node has more than one child node.');
+        self::assertLessThanOrEqual(1, $node->getChildNodes()->getCount(), 'The hierarchy facet is broken. Expected that no node has more than one child node.');
         if ($node->getChildNodes()->getCount() === 0) {
             return;
         }
@@ -129,25 +130,26 @@ class HierarchyFacetParserTest extends AbstractFacetParserTest
     /**
      * @test
      */
-    public function selectedOptionWithSlashInTitleOnHierarchicalFacetDoesNotBreakTheFacet() {
+    public function selectedOptionWithSlashInTitleOnHierarchicalFacetDoesNotBreakTheFacet()
+    {
         $facetConfiguration = [
             'type' => 'hierarchy',
             'label' => 'Category Hierarch By Title',
             'field' => 'categoryHierarchyByTitle_stringM',
             'sortBy' => 'alpha',
-            'keepAllOptionsOnSelection' => 1
+            'keepAllOptionsOnSelection' => 1,
         ];
         $searchResultSet = $this->initializeSearchResultSetFromFakeResponse(
             'fake_solr_response_with_hierachy_facet_with_slash_in_title.json',
-            $facetConfiguration
-            , ['categoryHierarchyByTitle:/folder2\/level1\//folder2\/level2\//']
+            $facetConfiguration,
+            ['categoryHierarchyByTitle:/folder2\/level1\//folder2\/level2\//']
         );
 
         /** @var $parser HierarchyFacetParser */
         $parser = $this->getInitializedParser(HierarchyFacetParser::class);
         $facet = $parser->parse($searchResultSet, 'categoryHierarchyByTitle', $facetConfiguration);
         // HierarchyFacetParser::getActiveFacetValuesFromRequest() must be aware about slashes in path segments
-        $this->assertSame(5, $facet->getAllFacetItems()->count(), 'Selected facet option is wrong parsed. The slash in Title leads to new facet option.');
+        self::assertSame(5, $facet->getAllFacetItems()->count(), 'Selected facet option is wrong parsed. The slash in Title leads to new facet option.');
 
         // each node has only one child node in fake response, parsing must be synchron with data.
         $this->assertNoNodeHasMoreThanOneChildInTheHierarchy($facet->getChildNodes()->getByPosition(0));
@@ -156,12 +158,12 @@ class HierarchyFacetParserTest extends AbstractFacetParserTest
         $optionValue = '/folder2\/level1\//folder2\/level2\//folder2\/level3/';
         $searchResultSet = $this->initializeSearchResultSetFromFakeResponse(
             'fake_solr_response_with_hierachy_facet_with_slash_in_title.json',
-            $facetConfiguration
-            , ['categoryHierarchyByTitle:' . $optionValue]
+            $facetConfiguration,
+            ['categoryHierarchyByTitle:' . $optionValue]
         );
         $facet = $parser->parse($searchResultSet, 'categoryHierarchyByTitle', $facetConfiguration);
 
-        $this->assertSame(1, $facet->getAllFacetItems()->getByValue($optionValue)->getChildNodes()->count(), 'Selected facet-option with slash in title/name breaks the Hierarchical facets.');
+        self::assertSame(1, $facet->getAllFacetItems()->getByValue($optionValue)->getChildNodes()->count(), 'Selected facet-option with slash in title/name breaks the Hierarchical facets.');
     }
 
     /**
@@ -174,7 +176,7 @@ class HierarchyFacetParserTest extends AbstractFacetParserTest
                 'type' => 'hierarchy',
                 'label' => 'Rootline',
                 'field' => 'rootline',
-            ]
+            ],
         ];
 
         $searchResultSet = $this->initializeSearchResultSetFromFakeResponse(
@@ -182,10 +184,10 @@ class HierarchyFacetParserTest extends AbstractFacetParserTest
             $facetConfiguration
         );
 
-            /** @var $parser HierarchyFacetParser */
+        /** @var $parser HierarchyFacetParser */
         $parser = $this->getInitializedParser(HierarchyFacetParser::class);
         $facet = $parser->parse($searchResultSet, 'pageHierarchy', $facetConfiguration['pageHierarchy.']);
-        $this->assertFalse($facet->getIsUsed());
+        self::assertFalse($facet->getIsUsed());
     }
 
     /**
@@ -198,7 +200,7 @@ class HierarchyFacetParserTest extends AbstractFacetParserTest
                 'type' => 'hierarchy',
                 'label' => 'Rootline',
                 'field' => 'rootline',
-            ]
+            ],
         ];
 
         $searchResultSet = $this->initializeSearchResultSetFromFakeResponse(
@@ -212,12 +214,12 @@ class HierarchyFacetParserTest extends AbstractFacetParserTest
         $facet = $parser->parse($searchResultSet, 'pageHierarchy', $facetConfiguration['pageHierarchy.']);
 
         $selectedFacetByUrl = $facet->getChildNodes()->getByPosition(0)->getChildNodes()->getByPosition(0);
-        $this->assertTrue($facet->getIsUsed());
+        self::assertTrue($facet->getIsUsed());
 
         $valueSelectedItem = $selectedFacetByUrl->getLabel();
-        $this->assertSame('14', $valueSelectedItem, 'Unexpected value for selected item');
+        self::assertSame('14', $valueSelectedItem, 'Unexpected value for selected item');
 
         $subItemCountOfSelectedFacet = $selectedFacetByUrl->getChildNodes()->count();
-        $this->assertSame(15, $subItemCountOfSelectedFacet, 'Expected to have 15 sub items below path /1/14/');
+        self::assertSame(15, $subItemCountOfSelectedFacet, 'Expected to have 15 sub items below path /1/14/');
     }
 }

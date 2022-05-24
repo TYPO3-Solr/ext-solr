@@ -1,28 +1,20 @@
 <?php
+
+/*
+ * This file is part of the TYPO3 CMS project.
+ *
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
+ *
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ *
+ * The TYPO3 project - inspiring people to share!
+ */
+
 namespace ApacheSolrForTypo3\Solr;
 
-/***************************************************************
- *  Copyright notice
- *
- *  (c) 2011-2015 Ingo Renner <ingo@typo3.org>
- *  All rights reserved
- *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 
 /**
@@ -32,7 +24,6 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
  */
 class HtmlContentExtractor
 {
-
     /**
      * Unicode ranges which should get stripped before sending a document to solr.
      * This is necessary if a document (PDF, etc.) contains unicode characters which
@@ -46,7 +37,7 @@ class HtmlContentExtractor
      * @see http://en.wikipedia.org/wiki/Unicode_block
      * @var array
      */
-    protected static $stripUnicodeRanges = [
+    protected static array $stripUnicodeRanges = [
         ['FFFD', 'FFFD'],
         // Replacement Character (�) @see http://en.wikipedia.org/wiki/Specials_%28Unicode_block%29
         ['E000', 'F8FF'],
@@ -56,18 +47,20 @@ class HtmlContentExtractor
         ['100000', '10FFFF'],
         // Supplementary Private Use Area (Plane 16)
     ];
+
     /**
      * The raw HTML markup content to extract clean content from.
      *
      * @var string
      */
-    protected $content;
+    protected string $content = '';
+
     /**
      * Mapping of HTML tags to Solr document fields.
      *
      * @var array
      */
-    protected $tagToFieldMapping = [
+    protected array $tagToFieldMapping = [
         'h1' => 'tagsH1',
         'h2' => 'tagsH2H3',
         'h3' => 'tagsH2H3',
@@ -83,27 +76,27 @@ class HtmlContentExtractor
     ];
 
     /**
-     * @var TypoScriptConfiguration
+     * @var TypoScriptConfiguration|null
      */
-    private $configuration;
+    protected ?TypoScriptConfiguration $configuration = null;
 
     /**
      * Constructor.
      *
      * @param string $content Content HTML markup
      */
-    public function __construct($content)
+    public function __construct(string $content)
     {
         // @extensionScannerIgnoreLine
         $this->content = $content;
     }
 
     /**
-     * @return TypoScriptConfiguration|array
+     * @return TypoScriptConfiguration
      */
-    protected function getConfiguration()
+    protected function getConfiguration(): TypoScriptConfiguration
     {
-        if ($this->configuration == null) {
+        if ($this->configuration === null) {
             $this->configuration = Util::getSolrConfiguration();
         }
 
@@ -126,13 +119,11 @@ class HtmlContentExtractor
      *
      * @return string Indexable, cleaned content ready for indexing.
      */
-    public function getIndexableContent()
+    public function getIndexableContent(): string
     {
         // @extensionScannerIgnoreLine
         $content = self::cleanContent($this->content);
-        $content = trim($content);
-
-        return $content;
+        return trim($content);
     }
 
     /**
@@ -142,14 +133,14 @@ class HtmlContentExtractor
      * @param string $content String to clean
      * @return string String cleaned from tags and special whitespace characters
      */
-    public static function cleanContent($content)
+    public static function cleanContent(string $content): string
     {
         $content = self::stripControlCharacters($content);
         // remove Javascript
-        $content = preg_replace('@<script[^>]*>.*?<\/script>@msi', '', $content);
+        $content = preg_replace('@<script[^>]*>.*?</script>@msi', '', $content);
 
         // remove internal CSS styles
-        $content = preg_replace('@<style[^>]*>.*?<\/style>@msi', '', $content);
+        $content = preg_replace('@<style[^>]*>.*?</style>@msi', '', $content);
 
         // prevents concatenated words when stripping tags afterwards
         $content = str_replace(['<', '>'], [' <', '> '], $content);
@@ -159,9 +150,8 @@ class HtmlContentExtractor
 
         $content = self::stripUnicodeRanges($content);
         $content = preg_replace('/\s{2,}/u', ' ', $content);
-        $content = trim($content);
 
-        return $content;
+        return trim($content);
     }
 
     /**
@@ -171,7 +161,7 @@ class HtmlContentExtractor
      * @return string the sanitized content
      * @see http://w3.org/International/questions/qa-forms-utf-8.html
      */
-    public static function stripControlCharacters($content)
+    public static function stripControlCharacters(string $content): string
     {
         // Printable utf-8 does not include any of these chars below x7F
         return preg_replace('@[\x00-\x08\x0B\x0C\x0E-\x1F]@', ' ', $content);
@@ -183,12 +173,11 @@ class HtmlContentExtractor
      * @param string $content Content to sanitize
      * @return string Sanitized content
      */
-    public static function stripUnicodeRanges($content)
+    public static function stripUnicodeRanges(string $content): string
     {
         foreach (self::$stripUnicodeRanges as $range) {
             $content = self::stripUnicodeRange($content, $range[0], $range[1]);
         }
-
         return $content;
     }
 
@@ -199,11 +188,15 @@ class HtmlContentExtractor
      * @param string $start Unicode range start character as uppercase hexadecimal string
      * @param string $end Unicode range end character as uppercase hexadecimal string
      * @return string Sanitized content
+     * @noinspection Annotator
      */
-    public static function stripUnicodeRange($content, $start, $end)
+    public static function stripUnicodeRange(string $content, string $start, string $end): string
     {
-        return preg_replace('/[\x{' . $start . '}-\x{' . $end . '}]/u', '',
-            $content);
+        return preg_replace(
+            '/[\x{' . $start . '}-\x{' . $end . '}]/u',
+            '',
+            $content
+        );
     }
 
     /**
@@ -211,7 +204,7 @@ class HtmlContentExtractor
      *
      * @return string Content marked for indexing.
      */
-    public function getContentMarkedForIndexing()
+    public function getContentMarkedForIndexing(): string
     {
         // @extensionScannerIgnoreLine
         return $this->content;
@@ -222,7 +215,7 @@ class HtmlContentExtractor
      *
      * @return array A mapping of Solr document field names to content found in defined tags.
      */
-    public function getTagContent()
+    public function getTagContent(): array
     {
         $result = [];
         $matches = [];
@@ -235,8 +228,10 @@ class HtmlContentExtractor
         );
 
         preg_match_all(
-            '@<(' . implode('|',
-                array_keys($this->tagToFieldMapping)) . ')[^>]*>(.*)</\1>@Ui',
+            '@<(' . implode(
+                '|',
+                array_keys($this->tagToFieldMapping)
+            ) . ')[^>]*>(.*)</\1>@Ui',
             $content,
             $matches
         );
@@ -248,7 +243,7 @@ class HtmlContentExtractor
                 $fieldName = $this->tagToFieldMapping[$tag];
                 $hasContentForFieldName = empty($result[$fieldName]);
                 $separator = ($hasContentForFieldName) ? '' : ' ';
-                $result[$fieldName] .= $separator . $matches[2][$key];
+                $result[$fieldName] = ($result[$fieldName] ?? '') . $separator . $matches[2][$key];
             }
         }
 

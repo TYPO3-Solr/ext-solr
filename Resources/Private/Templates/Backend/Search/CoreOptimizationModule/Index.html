@@ -4,15 +4,17 @@
 <f:layout name="Backend/WithPageTree"/>
 
 <f:section name="Main">
+    <f:be.pageRenderer includeCssFiles="{0: '{f:uri.resource(path:\'StyleSheets/Backend/InfoModule.css\')}'}"/>
+
     <div role="tabpanel">
         <ul class="nav nav-tabs t3js-tabs" role="tablist" id="tabs-tab" data-store-last-tab="1">
-            <li role="presentation" class="t3js-tabmenu-item  active">
-                <a href="#synonyms-tab" title="" aria-controls="synonyms-tab" role="tab" data-toggle="tab">
+            <li role="presentation" class="t3js-tabmenu-item nav-item">
+                <a href="#synonyms-tab" class="nav-link active" title="" aria-controls="synonyms-tab" role="tab" data-bs-toggle="tab">
                     Synonyms
                 </a>
             </li>
-            <li role="presentation" class="t3js-tabmenu-item ">
-                <a href="#stopwords-tab" title="" aria-controls="stopwords-tab" role="tab" data-toggle="tab">
+            <li role="presentation" class="t3js-tabmenu-item nav-item ">
+                <a href="#stopwords-tab" class="nav-link" title="" aria-controls="stopwords-tab" role="tab" data-bs-toggle="tab">
                     Stop Words
                 </a>
             </li>

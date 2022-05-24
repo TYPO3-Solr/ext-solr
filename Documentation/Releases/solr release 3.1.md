@@ -30,9 +30,9 @@ Our complete codebase is now namespaced and uses root namespace "ApacheSolrForTy
 
 For a long time we already had a small unit test suite. However, it was not kept up-to-date, tests weren't executed automatically and generally in a state that left room for improvement. Starting with this release we will focus on increasing test coverage and keeping them up-to-date.
 
-The unit test suite is now executed automatically for each Pull Request through Travis CI (https://travis-ci.org/TYPO3-Solr/ext-solr). Currently we run tests against TYPO3 version 6.2 LTS, 7.6 LTS, and dev-master with the same PHP versions as TYPO3 CMS, PHP 5.3-5.6.
+The unit test suite is now executed automatically for each Pull Request through Travis CI (https://travis-ci.org/TYPO3-Solr/ext-solr). Currently we run tests against TYPO3 version 6.2 LTS, 7.6 LTS, and dev-main with the same PHP versions as TYPO3 CMS, PHP 5.3-5.6.
 
-Additionally Travis CI also checks for PSR-2 compliance and will fail a PR in case the code does not fit that coding standard. 
+Additionally Travis CI also checks for PSR-2 compliance and will fail a PR in case the code does not fit that coding standard.
 
 In case a Pull Request is rejected by Travis CI you can follow the link to the build and inspect its output to see what needs to be fixed.
 

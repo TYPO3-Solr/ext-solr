@@ -1,31 +1,25 @@
 <?php
-namespace  ApacheSolrForTypo3\Solr\Tests\Unit\System\ContentObject;
 
-/***************************************************************
- *  Copyright notice
+declare(strict_types=1);
+
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2015-2017 Timo Hund <timo.hund@dkd.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
+
+namespace  ApacheSolrForTypo3\Solr\Tests\Unit\System\ContentObject;
 
 use ApacheSolrForTypo3\Solr\System\ContentObject\ContentObjectService;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 /**
@@ -37,18 +31,22 @@ class ContentObjectServiceTest extends UnitTest
 {
 
     /**
-     * @var ContentObjectRenderer
+     * @var ContentObjectRenderer|MockObject
      */
     protected $contentObjectRendererMock;
 
     /**
      * @var ContentObjectService
      */
-    protected $contentObjectService;
+    protected ContentObjectService $contentObjectService;
 
-    public function setUp() {
-        $this->contentObjectRendererMock = $this->getDumbMock(ContentObjectRenderer::class);
+    protected function setUp(): void
+    {
+        $this->contentObjectRendererMock = $this->getMockBuilder(ContentObjectRenderer::class)
+            ->onlyMethods(['cObjGetSingle'])
+            ->getMock();
         $this->contentObjectService = new ContentObjectService($this->contentObjectRendererMock);
+        parent::setUp();
     }
 
     /**
@@ -58,10 +56,14 @@ class ContentObjectServiceTest extends UnitTest
     {
         $fakeStdWrapConfiguration = [
             'field' => 'TEXT',
-            'field.' => ['value' => 'test']
+            'field.' => ['value' => 'test'],
         ];
 
-        $this->contentObjectRendererMock->expects($this->once())->method('cObjGetSingle')->with('TEXT',  ['value' => 'test']);
+        $this->contentObjectRendererMock
+            ->expects(self::once())
+            ->method('cObjGetSingle')
+            ->with('TEXT', ['value' => 'test'])
+            ->willReturn('test');
         $this->contentObjectService->renderSingleContentObjectByArrayAndKey($fakeStdWrapConfiguration, 'field');
     }
 
@@ -71,11 +73,11 @@ class ContentObjectServiceTest extends UnitTest
     public function renderSingleContentObjectByArrayAndKeyWillReturnNameWhenConfigIsNotAnArray()
     {
         $fakeStdWrapConfiguration = [
-            'field' => 'fooo'
+            'field' => 'fooo',
         ];
 
-        $this->contentObjectRendererMock->expects($this->never())->method('cObjGetSingle');
+        $this->contentObjectRendererMock->expects(self::never())->method('cObjGetSingle');
         $result = $this->contentObjectService->renderSingleContentObjectByArrayAndKey($fakeStdWrapConfiguration, 'field');
-        $this->assertSame('fooo', $result);
+        self::assertSame('fooo', $result);
     }
 }

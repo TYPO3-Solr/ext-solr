@@ -3,10 +3,6 @@
 	<file source-language="en" target-language="fr" datatype="plaintext" original="EXT:solr/Resources/Private/Language/locallang.xlf" date="2021-02-24T14:00:00Z" product-name="solr">
 		<header/>
 		<body>
-			<trans-unit id="cache_initialize_solr_connections" xml:space="preserve">
-				<source>Initialize Solr connections</source>
-				<target>Initialiser les connexions Solr</target>
-			</trans-unit>
 
 		<!-- Index Administration -->
 			<trans-unit id="solr.backend.index_administration.description" xml:space="preserve">
@@ -137,7 +133,7 @@
 			<trans-unit id="indexqueueworker_field_forcedWebRoot" xml:space="preserve">
 				<source>Forced webroot (only needed when webroot is not PATH_site)</source>
 				<target>Forced webroot (only needed when webroot is not PATH_site)</target>
-			</trans-unit>			
+			</trans-unit>
 			<trans-unit id="field_host" xml:space="preserve" approved="yes">
 				<source>Solr Host</source>
 				<target>Hôte Solr</target>
@@ -207,7 +203,7 @@
 			<trans-unit id="faceting_filter" xml:space="preserve">
 				<source>Filter</source>
 				<target>Filter</target>
-			</trans-unit>			
+			</trans-unit>
 			<trans-unit id="results_range" xml:space="preserve" approved="yes">
 				<source>Displaying results @resultsFrom to @resultsTo of @resultsTotal.</source>
 				<target>Affiche les résultats de @resultsFrom à @resultsTo sur @resultsTotal.</target>
@@ -291,7 +287,7 @@
 			<trans-unit id="suggest_header" xml:space="preserve">
 				<source>Top Results</source>
 				<target>Top Results</target>
-			</trans-unit>			
+			</trans-unit>
 
 			<!-- From locallang.xlf -->
 			<trans-unit id="solr.backend.index_queue_module.description" xml:space="preserve">

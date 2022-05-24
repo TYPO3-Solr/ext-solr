@@ -1,34 +1,26 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Test\Domain\Search\ResultSet\Facets\OptionBased\Options;
 
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2015-2016 Timo Hund <timo.hund@dkd.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResult;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets\OptionBased\Options;
+
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\Option;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\OptionsFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
+use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
  * Unit test for the OptionsFacet
@@ -37,6 +29,18 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
  */
 class OptionCollectionTest extends UnitTest
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+        GeneralUtility::setSingletonInstance(ObjectManager::class, $this->createMock(ObjectManager::class));
+    }
+
+    protected function tearDown(): void
+    {
+        GeneralUtility::purgeInstances();
+        parent::tearDown();
+    }
+
     /**
      * @test
      */
@@ -56,9 +60,9 @@ class OptionCollectionTest extends UnitTest
         // @extensionScannerIgnoreLine
         $sortedOptions = $facet->getOptions()->getManualSortedCopy(['yellow', 'blue']);
 
-        $this->assertSame($yellow, $sortedOptions->getByPosition(0), 'First sorted item was not yellow');
-        $this->assertSame($blue, $sortedOptions->getByPosition(1), 'First sorted item was not blue');
-        $this->assertSame($red, $sortedOptions->getByPosition(2), 'First sorted item was not blue');
+        self::assertSame($yellow, $sortedOptions->getByPosition(0), 'First sorted item was not yellow');
+        self::assertSame($blue, $sortedOptions->getByPosition(1), 'First sorted item was not blue');
+        self::assertSame($red, $sortedOptions->getByPosition(2), 'First sorted item was not blue');
     }
 
     /**
@@ -83,7 +87,7 @@ class OptionCollectionTest extends UnitTest
 
         // @extensionScannerIgnoreLine
         $labelPrefixes = $facet->getOptions()->getLowercaseLabelPrefixes(1);
-        $this->assertSame(['r','p','l'], $labelPrefixes, 'Can not get expected label prefixes');
+        self::assertSame(['r', 'p', 'l'], $labelPrefixes, 'Can not get expected label prefixes');
     }
 
     /**
@@ -108,11 +112,11 @@ class OptionCollectionTest extends UnitTest
 
         // @extensionScannerIgnoreLine
         $optionsStartingWithL = $facet->getOptions()->getByLowercaseLabelPrefix('l');
-        $this->assertCount(1, $optionsStartingWithL, 'Unexpected amount of options starting with l');
+        self::assertCount(1, $optionsStartingWithL, 'Unexpected amount of options starting with l');
 
         // @extensionScannerIgnoreLine
         $optionsStartingWithR = $facet->getOptions()->getByLowercaseLabelPrefix('r');
-        $this->assertCount(3, $optionsStartingWithR, 'Unexpected amount of options starting with r');
+        self::assertCount(3, $optionsStartingWithR, 'Unexpected amount of options starting with r');
     }
 
     /**
@@ -131,7 +135,7 @@ class OptionCollectionTest extends UnitTest
 
         // @extensionScannerIgnoreLine
         $optionsStartingWithO = $facet->getOptions()->getByLowercaseLabelPrefix('ø');
-        $this->assertCount(1, $optionsStartingWithO, 'Unexpected amount of options starting with ø');
+        self::assertCount(1, $optionsStartingWithO, 'Unexpected amount of options starting with ø');
     }
 
     /**
@@ -151,22 +155,21 @@ class OptionCollectionTest extends UnitTest
         $facet->addOption($yellow);
 
         // @extensionScannerIgnoreLine
-        $this->assertSame($yellow, $facet->getOptions()->getByValue('yellow'), 'Can not get option by value');
+        self::assertSame($yellow, $facet->getOptions()->getByValue('yellow'), 'Can not get option by value');
         // @extensionScannerIgnoreLine
-        $this->assertSame($blue, $facet->getOptions()->getByValue('blue'), 'Can not get option by value');
+        self::assertSame($blue, $facet->getOptions()->getByValue('blue'), 'Can not get option by value');
         // @extensionScannerIgnoreLine
-        $this->assertSame($red, $facet->getOptions()->getByValue('red'), 'Can not get option by value');
+        self::assertSame($red, $facet->getOptions()->getByValue('red'), 'Can not get option by value');
 
         // @extensionScannerIgnoreLine
         $sortedOptions = $facet->getOptions()->getManualSortedCopy(['yellow', 'blue']);
 
-        $this->assertSame($yellow, $sortedOptions->getByValue('yellow'), 'Can not get option by value');
-        $this->assertSame($blue, $sortedOptions->getByValue('blue'), 'Can not get option by value');
-        $this->assertSame($red, $sortedOptions->getByValue('red'), 'Can not get option by value');
+        self::assertSame($yellow, $sortedOptions->getByValue('yellow'), 'Can not get option by value');
+        self::assertSame($blue, $sortedOptions->getByValue('blue'), 'Can not get option by value');
+        self::assertSame($red, $sortedOptions->getByValue('red'), 'Can not get option by value');
 
-        $this->assertSame($yellow, $sortedOptions->getByPosition(0), 'First sorted item was not yellow');
-        $this->assertSame($blue, $sortedOptions->getByPosition(1), 'First sorted item was not blue');
-        $this->assertSame($red, $sortedOptions->getByPosition(2), 'First sorted item was not blue');
+        self::assertSame($yellow, $sortedOptions->getByPosition(0), 'First sorted item was not yellow');
+        self::assertSame($blue, $sortedOptions->getByPosition(1), 'First sorted item was not blue');
+        self::assertSame($red, $sortedOptions->getByPosition(2), 'First sorted item was not blue');
     }
 }
-

@@ -1,36 +1,33 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en"
-	  xmlns:f="http://typo3.org/ns/TYPO3/Fluid/ViewHelpers"
-	  xmlns:s="http://typo3.org/ns/ApacheSolrForTypo3/Solr/ViewHelpers"
-      data-namespace-typo3-fluid="true"
+	xmlns:f="http://typo3.org/ns/TYPO3/Fluid/ViewHelpers"
+	xmlns:s="http://typo3.org/ns/ApacheSolrForTypo3/Solr/ViewHelpers"
+	data-namespace-typo3-fluid="true"
 >
 
 <f:section name="LastSearches">
 
-<s:widget.lastSearches>
+<s:lastSearches>
 	<f:if condition="{lastSearches}">
 
-		<div id="tx-solr-lastsearches" class="secondaryContentSection panel">
-			<div class="panel-heading">
-				<h3 class="panel-title">
-					<span class="glyphicon glyphicon-time"></span>
-					<a data-toggle="collapse" data-parent="#accordion" href="#lastSearches">
-						<s:translate key="lastSearches">Last searches</s:translate>
-					</a>
-				</h3>
+		<div id="tx-solr-lastsearches" class="secondaryContentSection card">
+			<div class="card-header">
+				<span class="bi bi-clock-history"></span>
+				<a data-bs-toggle="collapse" href="#lastSearches">
+					<s:translate key="lastSearches">Last searches</s:translate>
+				</a>
 			</div>
-			<div class="list-group panel-collapse collapse" id="lastSearches">
-				<div class="panel-body">
-					<f:for each="{lastSearches}" as="searchedFor">
-						<li class="list-group-item">
-							<a href="{s:uri.search.startNewSearch(queryString: searchedFor)}" class="solr-ajaxified">{searchedFor}</a>
-						</li>
-					</f:for>
-				</div>
-			</div>
+
+			<ul class="list-group collapse show" id="lastSearches">
+				<f:for each="{lastSearches}" as="searchedFor">
+					<li class="list-group-item">
+						<a href="{s:uri.search.startNewSearch(queryString: searchedFor)}" class="solr-ajaxified">{searchedFor}</a>
+					</li>
+				</f:for>
+			</ul>
 		</div>
 
 	</f:if>
-</s:widget.lastSearches>
+</s:lastSearches>
 
 </f:section>
 

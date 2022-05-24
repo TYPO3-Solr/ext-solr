@@ -1,5 +1,4 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\System\DateTime;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -13,6 +12,8 @@ namespace ApacheSolrForTypo3\Solr\System\DateTime;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+namespace ApacheSolrForTypo3\Solr\System\DateTime;
 
 use DateTime;
 use DateTimeZone;
@@ -52,12 +53,12 @@ class FormatService
     /**
      * Converts a date from unix timestamp to ISO 8601 format.
      *
-     * @param int $timestamp unix timestamp
+     * @param ?int $timestamp unix timestamp
      * @return string the date in ISO 8601 format
      */
-    public function timestampToIso($timestamp)
+    public function timestampToIso(?int $timestamp = 0): string
     {
-        return date(self::SOLR_ISO_DATETIME_FORMAT, $timestamp);
+        return date(self::SOLR_ISO_DATETIME_FORMAT, $timestamp ?? 0);
     }
 
     /**
@@ -78,12 +79,12 @@ class FormatService
     /**
      * Converts a date from unix timestamp to ISO 8601 format in UTC timezone.
      *
-     * @param int $timestamp unix timestamp
+     * @param ?int $timestamp unix timestamp
      * @return string the date in ISO 8601 format
      */
-    public function timestampToUtcIso($timestamp)
+    public function timestampToUtcIso(?int $timestamp = 0): string
     {
-        return gmdate(self::SOLR_ISO_DATETIME_FORMAT, $timestamp);
+        return gmdate(self::SOLR_ISO_DATETIME_FORMAT, $timestamp ?? 0);
     }
 
     /**

@@ -1,30 +1,24 @@
 <?php
+
+/*
+ * This file is part of the TYPO3 CMS project.
+ *
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
+ *
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ *
+ * The TYPO3 project - inspiring people to share!
+ */
+
 namespace ApacheSolrForTypo3\Solr;
 
-/***************************************************************
- *  Copyright notice
- *
- *  (c) 2010-2015 Ingo Renner <ingo@typo3.org>
- *  All rights reserved
- *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
-
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
+use DOMDocument;
+use DOMXPath;
+use function libxml_use_internal_errors;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -36,18 +30,17 @@ class Typo3PageContentExtractor extends HtmlContentExtractor
 {
 
     /**
-     * @var \ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager
+     * @var SolrLogManager|null
      */
-    protected $logger = null;
+    protected ?SolrLogManager $logger;
 
     /**
      * Shortcut method to retrieve the raw content marked for indexing.
      *
      * @return string Content marked for indexing.
      */
-    public function getContentMarkedForIndexing()
+    public function getContentMarkedForIndexing(): string
     {
-        // @extensionScannerIgnoreLine
         return $this->extractContentMarkedForIndexing($this->content);
     }
 
@@ -58,10 +51,13 @@ class Typo3PageContentExtractor extends HtmlContentExtractor
      * @param string $html HTML markup with TYPO3SEARCH markers for content that should be indexed
      * @return string HTML markup found between TYPO3SEARCH markers
      */
-    protected function extractContentMarkedForIndexing($html)
+    protected function extractContentMarkedForIndexing(string $html): string
     {
-        preg_match_all('/<!--\s*?TYPO3SEARCH_begin\s*?-->.*?<!--\s*?TYPO3SEARCH_end\s*?-->/mis',
-            $html, $indexableContents);
+        preg_match_all(
+            '/<!--\s*?TYPO3SEARCH_begin\s*?-->.*?<!--\s*?TYPO3SEARCH_end\s*?-->/mis',
+            $html,
+            $indexableContents
+        );
         $indexableContent = implode('', $indexableContents[0]);
 
         $indexableContent = $this->excludeContentByClass($indexableContent);
@@ -80,7 +76,7 @@ class Typo3PageContentExtractor extends HtmlContentExtractor
      * @param string $indexableContent HTML markup
      * @return string HTML
      */
-    public function excludeContentByClass($indexableContent)
+    public function excludeContentByClass(string $indexableContent): string
     {
         if (empty(trim($indexableContent))) {
             return $indexableContent;
@@ -96,10 +92,10 @@ class Typo3PageContentExtractor extends HtmlContentExtractor
             return $indexableContent;
         }
 
-        $doc = new \DOMDocument('1.0', 'UTF-8');
+        $doc = new DOMDocument('1.0', 'UTF-8');
         libxml_use_internal_errors(true);
         $doc->loadHTML('<?xml version="1.0" encoding="UTF-8"?>' . PHP_EOL . $indexableContent);
-        $xpath = new \DOMXPath($doc);
+        $xpath = new DOMXPath($doc);
         foreach ($excludeClasses as $excludePart) {
             $elements = $xpath->query("//*[contains(@class,'" . $excludePart . "')]");
             if (count($elements) == 0) {
@@ -113,9 +109,7 @@ class Typo3PageContentExtractor extends HtmlContentExtractor
         $html = $doc->saveHTML($doc->documentElement->parentNode);
         // remove XML-Preamble, newlines and doctype
         $html = preg_replace('/(<\?xml[^>]+\?>|\r?\n|<!DOCTYPE.+?>)/imS', '', $html);
-        $html = str_replace(['<html>', '</html>', '<body>', '</body>'], ['', '', '', ''], $html);
-
-        return $html;
+        return str_replace(['<html>', '</html>', '<body>', '</body>'], ['', '', '', ''], $html);
     }
 
     /**
@@ -126,7 +120,7 @@ class Typo3PageContentExtractor extends HtmlContentExtractor
      *
      * @return string Indexable, cleaned content ready for indexing.
      */
-    public function getIndexableContent()
+    public function getIndexableContent(): string
     {
         // @extensionScannerIgnoreLine
         $content = $this->extractContentMarkedForIndexing($this->content);
@@ -134,9 +128,8 @@ class Typo3PageContentExtractor extends HtmlContentExtractor
         // clean content
         $content = self::cleanContent($content);
         $content = trim($content);
-        $content = preg_replace('!\s+!u', ' ', $content); // reduce multiple spaces to one space
-
-        return $content;
+        // reduce multiple spaces to one space and return
+        return preg_replace('!\s+!u', ' ', $content);
     }
 
     /**
@@ -145,7 +138,7 @@ class Typo3PageContentExtractor extends HtmlContentExtractor
      *
      * @return string the page's title
      */
-    public function getPageTitle()
+    public function getPageTitle(): string
     {
         $page = $GLOBALS['TSFE'];
 
@@ -157,7 +150,7 @@ class Typo3PageContentExtractor extends HtmlContentExtractor
             $pageTitle = $page->page['title'];
         }
 
-        return $pageTitle;
+        return $pageTitle ?? '';
     }
 
     /**
@@ -165,11 +158,8 @@ class Typo3PageContentExtractor extends HtmlContentExtractor
      *
      * @return string the page's body
      */
-    public function getPageBody()
+    public function getPageBody(): string
     {
-        // @extensionScannerIgnoreLine
-        $pageContent = $this->content;
-
-        return stristr($pageContent, '<body');
+        return stristr($this->content, '<body');
     }
 }

@@ -1,5 +1,6 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\ViewHelpers\Debug;
+
+declare(strict_types=1);
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -14,11 +15,15 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers\Debug;
  * The TYPO3 project - inspiring people to share!
  */
 
+namespace ApacheSolrForTypo3\Solr\ViewHelpers\Debug;
+
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResult;
-use ApacheSolrForTypo3\Solr\Domain\Search\Score\ScoreCalculationService;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
+use ApacheSolrForTypo3\Solr\Domain\Search\Score\ScoreCalculationService;
 use ApacheSolrForTypo3\Solr\ViewHelpers\AbstractSolrFrontendViewHelper;
+use Closure;
 use TYPO3\CMS\Core\Context\Context;
+use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
@@ -34,9 +39,9 @@ class DocumentScoreAnalyzerViewHelper extends AbstractSolrFrontendViewHelper
     use CompileWithRenderStatic;
 
     /**
-     * @var ScoreCalculationService
+     * @var ScoreCalculationService|null
      */
-    protected static $scoreService;
+    protected static ?ScoreCalculationService $scoreService = null;
 
     /**
      * @var bool
@@ -54,11 +59,13 @@ class DocumentScoreAnalyzerViewHelper extends AbstractSolrFrontendViewHelper
 
     /**
      * @param array $arguments
-     * @param \Closure $renderChildrenClosure
+     * @param Closure $renderChildrenClosure
      * @param RenderingContextInterface $renderingContext
      * @return string
+     * @throws AspectNotFoundException
+     * @noinspection PhpMissingReturnTypeInspection
      */
-    public static function renderStatic(array $arguments, \Closure $renderChildrenClosure, RenderingContextInterface $renderingContext)
+    public static function renderStatic(array $arguments, Closure $renderChildrenClosure, RenderingContextInterface $renderingContext)
     {
         $content = '';
         // only check whether a BE user is logged in, don't need to check
@@ -72,9 +79,14 @@ class DocumentScoreAnalyzerViewHelper extends AbstractSolrFrontendViewHelper
 
         /** @var $resultSet SearchResultSet */
         $resultSet = self::getUsedSearchResultSetFromRenderingContext($renderingContext);
-        $debugData = $resultSet->getUsedSearch()->getDebugResponse()->explain->{$document->getId()};
+        $debugData = '';
+        if (
+            null !== $resultSet->getUsedSearch()->getDebugResponse()
+            && !empty($resultSet->getUsedSearch()->getDebugResponse()->explain)
+        ) {
+            $debugData = $resultSet->getUsedSearch()->getDebugResponse()->explain->{$document->getId()} ?? '';
+        }
 
-        /** @var $scoreService ScoreCalculationService */
         $scoreService = self::getScoreService();
         $queryFields = $resultSet->getUsedSearchRequest()->getContextTypoScriptConfiguration()->getSearchQueryQueryFields();
         $content = $scoreService->getRenderedScores($debugData, $queryFields);
@@ -85,7 +97,7 @@ class DocumentScoreAnalyzerViewHelper extends AbstractSolrFrontendViewHelper
     /**
      * @return ScoreCalculationService
      */
-    protected static function getScoreService()
+    protected static function getScoreService(): ScoreCalculationService
     {
         if (isset(self::$scoreService)) {
             return self::$scoreService;

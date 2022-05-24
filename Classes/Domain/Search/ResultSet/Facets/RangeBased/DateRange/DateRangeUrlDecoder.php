@@ -1,5 +1,6 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\DateRange;
+
+declare(strict_types=1);
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -14,6 +15,8 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\Date
  * The TYPO3 project - inspiring people to share!
  */
 
+namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\DateRange;
+
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\FacetUrlDecoderInterface;
 use ApacheSolrForTypo3\Solr\System\DateTime\FormatService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -27,7 +30,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class DateRangeUrlDecoder implements FacetUrlDecoderInterface
 {
-
     /**
      * Delimiter for date parts in the URL.
      *
@@ -39,28 +41,27 @@ class DateRangeUrlDecoder implements FacetUrlDecoderInterface
      * Parses the given date range from a GET parameter and returns a Solr
      * date range filter.
      *
-     * @param string $dateRange The range filter query string from the query URL
+     * @param string $value The range filter query string from the query URL
      * @param array $configuration Facet configuration
      * @return string Lucene query language filter to be used for querying Solr
      */
-    public function decode($dateRange, array $configuration = [])
+    public function decode(string $value, array $configuration = []): string
     {
-        list($dateRangeStart, $dateRangeEnd) = explode(self::DELIMITER, $dateRange);
+        list($dateRangeStart, $dateRangeEnd) = explode(self::DELIMITER, $value);
 
         /* @var FormatService $formatService */
         $formatService = GeneralUtility::makeInstance(FormatService::class);
         $fromPart = '*';
-        if($dateRangeStart !== ''){
+        if ($dateRangeStart !== '') {
             $fromPart = $formatService->timestampToIso(strtotime($dateRangeStart));
         }
 
         $toPart = '*';
-        if($dateRangeEnd !== ''){
+        if ($dateRangeEnd !== '') {
             $dateRangeEnd .= '59'; // adding 59 seconds
             $toPart = $formatService->timestampToIso(strtotime($dateRangeEnd));
         }
 
-        $dateRangeFilter = '[' . $fromPart . ' TO ' . $toPart . ']';
-        return $dateRangeFilter;
+        return '[' . $fromPart . ' TO ' . $toPart . ']';
     }
 }

@@ -1,5 +1,4 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -14,15 +13,20 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet;
  * The TYPO3 project - inspiring people to share!
  */
 
+namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet;
+
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\FacetRegistry;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\InvalidFacetPackageException;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RequirementsService;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Sorting\Sorting;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Spellchecking\Suggestion;
+use stdClass;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
+use UnexpectedValueException;
 
 /**
  * This processor is used to transform the solr response into a
@@ -34,14 +38,14 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 class ResultSetReconstitutionProcessor implements SearchResultSetProcessor
 {
     /**
-     * @var ObjectManagerInterface
+     * @var ObjectManagerInterface|null
      */
-    protected $objectManager;
+    protected ?ObjectManagerInterface $objectManager = null;
 
     /**
      * @return ObjectManagerInterface
      */
-    public function getObjectManager()
+    public function getObjectManager(): ?ObjectManagerInterface
     {
         if ($this->objectManager === null) {
             $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
@@ -51,17 +55,18 @@ class ResultSetReconstitutionProcessor implements SearchResultSetProcessor
 
     /**
      * @param ObjectManagerInterface $objectManager
+     * Purpose: PhpUnit
+     * @todo: Replace with proper DI
      */
-    public function setObjectManager($objectManager)
+    public function setObjectManager(ObjectManagerInterface $objectManager)
     {
         $this->objectManager = $objectManager;
     }
 
-
     /**
      * @return FacetRegistry
      */
-    protected function getFacetRegistry()
+    protected function getFacetRegistry(): FacetRegistry
     {
         // @extensionScannerIgnoreLine
         return $this->getObjectManager()->get(FacetRegistry::class);
@@ -73,27 +78,22 @@ class ResultSetReconstitutionProcessor implements SearchResultSetProcessor
      *
      * @param SearchResultSet $resultSet
      * @return SearchResultSet
+     * @throws InvalidFacetPackageException
      */
-    public function process(SearchResultSet $resultSet)
+    public function process(SearchResultSet $resultSet): SearchResultSet
     {
-        if (!$resultSet instanceof SearchResultSet) {
-            return $resultSet;
-        }
-
         $resultSet = $this->parseSpellCheckingResponseIntoObjects($resultSet);
         $resultSet = $this->parseSortingIntoObjects($resultSet);
 
         // here we can reconstitute other domain objects from the solr response
-        $resultSet = $this->parseFacetsIntoObjects($resultSet);
-
-        return $resultSet;
+        return $this->parseFacetsIntoObjects($resultSet);
     }
 
     /**
      * @param SearchResultSet $resultSet
      * @return SearchResultSet
      */
-    protected function parseSortingIntoObjects(SearchResultSet $resultSet)
+    protected function parseSortingIntoObjects(SearchResultSet $resultSet): SearchResultSet
     {
         $configuration = $resultSet->getUsedSearchRequest()->getContextTypoScriptConfiguration();
         $hasSorting = $resultSet->getUsedSearchRequest()->getHasSorting();
@@ -127,7 +127,7 @@ class ResultSetReconstitutionProcessor implements SearchResultSetProcessor
             $isResetOption = $field === 'relevance';
 
             // Allow stdWrap on label:
-            $labelHasSubConfiguration = is_array($sortingOptions['label.']);
+            $labelHasSubConfiguration = is_array($sortingOptions['label.'] ?? null);
             if ($labelHasSubConfiguration) {
                 $cObj = GeneralUtility::makeInstance(ContentObjectRenderer::class);
                 $label = $cObj->stdWrap($label, $sortingOptions['label.']);
@@ -136,8 +136,18 @@ class ResultSetReconstitutionProcessor implements SearchResultSetProcessor
             if ($isResetOption && !$hasSorting) {
                 $selected = true;
             }
-            
-            $sorting = $this->getObjectManager()->get(Sorting::class, $resultSet, $sortingName, $field, $direction, $label, $selected, $isResetOption);
+
+            /** @noinspection PhpParamsInspection */
+            $sorting = $this->getObjectManager()->get(
+                Sorting::class,
+                $resultSet,
+                $sortingName,
+                $field,
+                $direction,
+                $label,
+                $selected,
+                $isResetOption
+            );
             $resultSet->addSorting($sorting);
         }
 
@@ -148,12 +158,12 @@ class ResultSetReconstitutionProcessor implements SearchResultSetProcessor
      * @param SearchResultSet $resultSet
      * @return SearchResultSet
      */
-    private function parseSpellCheckingResponseIntoObjects(SearchResultSet $resultSet)
+    private function parseSpellCheckingResponseIntoObjects(SearchResultSet $resultSet): SearchResultSet
     {
         //read the response
         $response = $resultSet->getResponse();
 
-        if (!is_array($response->spellcheck->suggestions)) {
+        if (!is_array($response->spellcheck->suggestions ?? null)) {
             return $resultSet;
         }
 
@@ -165,7 +175,7 @@ class ResultSetReconstitutionProcessor implements SearchResultSetProcessor
             }
 
             if ($misspelledTerm === '') {
-                throw new \UnexpectedValueException('No missspelled term before suggestion');
+                throw new UnexpectedValueException('No misspelled term before suggestion');
             }
 
             if (!is_object($suggestionData) && !is_array($suggestionData->suggestion)) {
@@ -177,28 +187,29 @@ class ResultSetReconstitutionProcessor implements SearchResultSetProcessor
                 //add it to the resultSet
                 $resultSet->addSpellCheckingSuggestion($suggestion);
             }
-
         }
 
         return $resultSet;
     }
 
     /**
-     * @param \stdClass $suggestionData
+     * @param stdClass $suggestionData
      * @param string $suggestedTerm
      * @param string $misspelledTerm
      * @return Suggestion
      */
-    private function createSuggestionFromResponseFragment($suggestionData, $suggestedTerm, $misspelledTerm)
-    {
-        $numFound = isset($suggestionData->numFound) ? $suggestionData->numFound : 0;
-        $startOffset = isset($suggestionData->startOffset) ? $suggestionData->startOffset : 0;
-        $endOffset = isset($suggestionData->endOffset) ? $suggestionData->endOffset : 0;
+    private function createSuggestionFromResponseFragment(
+        stdClass $suggestionData,
+        string $suggestedTerm,
+        string $misspelledTerm
+    ): Suggestion {
+        $numFound = $suggestionData->numFound ?? 0;
+        $startOffset = $suggestionData->startOffset ?? 0;
+        $endOffset = $suggestionData->endOffset ?? 0;
 
         // by now we avoid to use GeneralUtility::makeInstance, since we only create a value object
-        // and the usage might be a overhead.
-        $suggestion = new Suggestion($suggestedTerm, $misspelledTerm, $numFound, $startOffset, $endOffset);
-        return $suggestion;
+        // and the usage might be an overhead.
+        return new Suggestion($suggestedTerm, $misspelledTerm, $numFound, $startOffset, $endOffset);
     }
 
     /**
@@ -206,8 +217,9 @@ class ResultSetReconstitutionProcessor implements SearchResultSetProcessor
      *
      * @param SearchResultSet $resultSet
      * @return SearchResultSet
+     * @throws InvalidFacetPackageException
      */
-    private function parseFacetsIntoObjects(SearchResultSet $resultSet)
+    private function parseFacetsIntoObjects(SearchResultSet $resultSet): SearchResultSet
     {
         // Make sure we can access the facet configuration
         if (!$resultSet->getUsedSearchRequest() || !$resultSet->getUsedSearchRequest()->getContextTypoScriptConfiguration()) {
@@ -220,7 +232,6 @@ class ResultSetReconstitutionProcessor implements SearchResultSetProcessor
             return $resultSet;
         }
 
-        /** @var FacetRegistry $facetRegistry */
         $facetRegistry = $this->getFacetRegistry();
         $facetsConfiguration = $resultSet->getUsedSearchRequest()->getContextTypoScriptConfiguration()->getSearchFacetingFacets();
 
@@ -260,7 +271,7 @@ class ResultSetReconstitutionProcessor implements SearchResultSetProcessor
     /**
      * @return RequirementsService
      */
-    protected function getRequirementsService()
+    protected function getRequirementsService(): RequirementsService
     {
         // @extensionScannerIgnoreLine
         return $this->getObjectManager()->get(RequirementsService::class);

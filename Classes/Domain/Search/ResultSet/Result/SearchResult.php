@@ -1,29 +1,21 @@
 <?php
 
-namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result;
+declare(strict_types=1);
 
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2015-2016 Timo Schmidt <timo.schmidt@dkd.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
+
+namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Grouping\GroupItem;
 use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
@@ -43,7 +35,7 @@ class SearchResult extends Document
      *
      * @var string
      */
-    protected $variantFieldValue = '';
+    protected string $variantFieldValue = '';
 
     /**
      * Number of variants found
@@ -53,32 +45,31 @@ class SearchResult extends Document
      *
      * @var int
      */
-    protected $variantsNumFound = 0;
+    protected int $variantsNumFound = 0;
 
     /**
      * @var SearchResult[]
      */
-    protected $variants = [];
+    protected array $variants = [];
 
     /**
      * Indicates if an instance of this document is a variant (a sub document of another).
      *
      * @var bool
      */
-    protected $isVariant = false;
+    protected bool $isVariant = false;
 
     /**
      * References the parent document of the document is a variant.
      *
      * @var SearchResult|null
      */
-    protected $variantParent = null;
+    protected ?SearchResult $variantParent = null;
 
     /**
-     * @var GroupItem
+     * @var GroupItem|null
      */
-    protected $groupItem = null;
-
+    protected ?GroupItem $groupItem = null;
 
     /**
      * @return GroupItem
@@ -91,7 +82,7 @@ class SearchResult extends Document
     /**
      * @return bool
      */
-    public function getHasGroupItem()
+    public function getHasGroupItem(): bool
     {
         return $this->groupItem !== null;
     }
@@ -139,7 +130,7 @@ class SearchResult extends Document
     /**
      * @return SearchResult[]
      */
-    public function getVariants()
+    public function getVariants(): array
     {
         return $this->variants;
     }
@@ -155,7 +146,7 @@ class SearchResult extends Document
     /**
      * @return bool
      */
-    public function getIsVariant()
+    public function getIsVariant(): bool
     {
         return $this->isVariant;
     }
@@ -163,15 +154,15 @@ class SearchResult extends Document
     /**
      * @param bool $isVariant
      */
-    public function setIsVariant($isVariant)
+    public function setIsVariant(bool $isVariant)
     {
         $this->isVariant = $isVariant;
     }
 
     /**
-     * @return SearchResult
+     * @return SearchResult|null
      */
-    public function getVariantParent()
+    public function getVariantParent(): ?SearchResult
     {
         return $this->variantParent;
     }
@@ -187,56 +178,57 @@ class SearchResult extends Document
     /**
      * @return string
      */
-    public function getContent()
+    public function getContent(): string
     {
-        return $this->fields['content'];
+        return $this->fields['content'] ?? '';
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
-    public function getIsElevated()
+    public function getIsElevated(): bool
     {
-        return $this->fields['isElevated'];
+        return $this->fields['isElevated'] ?? false;
     }
 
     /**
      * @return string
      */
-    public function getType()
+    public function getType(): string
     {
-        return $this->fields['type'];
+        return $this->fields['type'] ?? '';
     }
 
     /**
-     * @return integer
+     * @return string
+     * Note: The id field on Apache Solr document is a string.
      */
-    public function getId()
+    public function getId(): string
     {
-        return $this->fields['id'];
+        return $this->fields['id'] ?? '';
     }
 
     /**
      * @return float
      */
-    public function getScore()
+    public function getScore(): float
     {
-        return $this->fields['score'];
+        return $this->fields['score'] ?? 0.0;
     }
 
     /**
      * @return string
      */
-    public function getUrl()
+    public function getUrl(): string
     {
-        return $this->fields['url'];
+        return $this->fields['url'] ?? '';
     }
 
     /**
      * @return string
      */
-    public function getTitle()
+    public function getTitle(): string
     {
-        return $this->fields['title'];
+        return $this->fields['title'] ?? '';
     }
 }

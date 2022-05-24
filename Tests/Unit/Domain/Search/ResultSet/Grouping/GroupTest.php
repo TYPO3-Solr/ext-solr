@@ -1,28 +1,19 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Grouping;
 
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2017 Timo Hund <timo.hund@dkd.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
+
+namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Grouping;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Grouping\Group;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Grouping\GroupItem;
@@ -43,11 +34,10 @@ class GroupTest extends UnitTest
     public function testCanGroupName()
     {
         $group = new Group('typeGroup');
-        $this->assertSame('typeGroup', $group->getGroupName(), 'Can not getGroupName from group');
+        self::assertSame('typeGroup', $group->getGroupName(), 'Can not getGroupName from group');
 
         $group->setGroupName('changedTypeGroup');
-        $this->assertSame('changedTypeGroup', $group->getGroupName(), 'Can not getGroupName from group');
-
+        self::assertSame('changedTypeGroup', $group->getGroupName(), 'Can not getGroupName from group');
     }
 
     /**
@@ -56,7 +46,7 @@ class GroupTest extends UnitTest
     public function canGetGroupItemsReturnEmptyCollection()
     {
         $group = new Group('typeGroup');
-        $this->assertSame(0, $group->getGroupItems()->getCount(), 'Can not get empty groupItem collection');
+        self::assertSame(0, $group->getGroupItems()->getCount(), 'Can not get empty groupItem collection');
     }
 
     /**
@@ -65,10 +55,10 @@ class GroupTest extends UnitTest
     public function canGetResultsPerPage()
     {
         $group = new Group('typeGroup', 22);
-        $this->assertSame(22, $group->getResultsPerPage(), 'Can not get results per page');
+        self::assertSame(22, $group->getResultsPerPage(), 'Can not get results per page');
 
         $group->setResultsPerPage(11);
-        $this->assertSame(11, $group->getResultsPerPage(), 'Can not get results per page');
+        self::assertSame(11, $group->getResultsPerPage(), 'Can not get results per page');
     }
 
     /**
@@ -83,7 +73,7 @@ class GroupTest extends UnitTest
 
         $group->setGroupItems($groupItems);
 
-        $this->assertSame($groupItems, $group->getGroupItems(), 'Can not get group items from group');
+        self::assertSame($groupItems, $group->getGroupItems(), 'Can not get group items from group');
     }
 
     /**
@@ -93,10 +83,10 @@ class GroupTest extends UnitTest
     {
         $group = new Group('typeGroup', 10);
 
-        $this->assertCount(0, $group->getGroupItems(), 'GroupItems are not empty from the beginning');
+        self::assertCount(0, $group->getGroupItems(), 'GroupItems are not empty from the beginning');
         $groupItem = new GroupItem($group, 'test', 12, 0, 22.0);
         $group->addGroupItem($groupItem);
 
-        $this->assertCount(1, $group->getGroupItems(), 'Unexpected group item count after adding a group');
+        self::assertCount(1, $group->getGroupItems(), 'Unexpected group item count after adding a group');
     }
 }

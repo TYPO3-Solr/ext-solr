@@ -1,28 +1,19 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Tests\Unit\ContentObject;
 
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2011-2015 Ingo Renner <ingo@typo3.org>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
+
+namespace ApacheSolrForTypo3\Solr\Tests\Unit\ContentObject;
 
 use ApacheSolrForTypo3\Solr\ContentObject\Classification;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
@@ -55,18 +46,18 @@ class ClassificationTest extends UnitTest
             'classes.' => [
                 [
                     'patterns' => 'TYPO3, joomla, core media',
-                    'class' => 'cms'
+                    'class' => 'cms',
                 ],
                 [
                     'patterns' => 'php, java, go, groovy',
-                    'class' => 'programming_language'
-                ]
-            ]
+                    'class' => 'programming_language',
+                ],
+            ],
         ];
 
         $actual = $this->contentObject->cObjGetSingle(Classification::CONTENT_OBJECT_NAME, $configuration);
         $expected = serialize(['cms']);
-        $this->assertEquals($expected, $actual);
+        self::assertEquals($expected, $actual);
     }
 
     /**
@@ -77,12 +68,12 @@ class ClassificationTest extends UnitTest
         return [
             'excludePatternShouldLeadToUnassignedClass' => [
                 'input' => 'from the beach i can see the waves',
-                'expectedOutput' => []
+                'expectedOutput' => [],
             ],
             'noMatchingExlucePatternLeadsToExpectedClass' => [
                 'input' => 'i saw a shark between the waves',
-                'expectedOutput' => ['ocean']
-            ]
+                'expectedOutput' => ['ocean'],
+            ],
         ];
     }
 
@@ -101,17 +92,17 @@ class ClassificationTest extends UnitTest
                 [
                     'matchPatterns' => 'waves',
                     'unmatchPatterns' => 'beach',
-                    'class' => 'ocean'
-                ]
-            ]
+                    'class' => 'ocean',
+                ],
+            ],
         ];
 
         $actual = $this->contentObject->cObjGetSingle(Classification::CONTENT_OBJECT_NAME, $configuration);
         $expected = serialize($expectedOutput);
-        $this->assertEquals($expected, $actual);
+        self::assertEquals($expected, $actual);
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         // fake a registered hook
         $GLOBALS['TYPO3_CONF_VARS']['FE']['ContentObjects'][Classification::CONTENT_OBJECT_NAME] = Classification::class;
@@ -119,12 +110,14 @@ class ClassificationTest extends UnitTest
         $GLOBALS['TSFE'] = $this->getDumbMock(TypoScriptFrontendController::class);
 
         $this->contentObject = $this->getMockBuilder(ContentObjectRenderer::class)
-            ->setMethods(['getResourceFactory', 'getEnvironmentVariable'])
+            ->onlyMethods(['getResourceFactory', 'getEnvironmentVariable', 'getRequest'])
             ->setConstructorArgs([$GLOBALS['TSFE']])->getMock();
+        parent::setUp();
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         unset($GLOBALS['TSFE']);
+        parent::tearDown();
     }
 }

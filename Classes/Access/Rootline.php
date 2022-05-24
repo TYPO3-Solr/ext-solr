@@ -1,32 +1,24 @@
 <?php
+
+/*
+ * This file is part of the TYPO3 CMS project.
+ *
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
+ *
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ *
+ * The TYPO3 project - inspiring people to share!
+ */
+
 namespace ApacheSolrForTypo3\Solr\Access;
 
-/***************************************************************
- *  Copyright notice
- *
- *  (c) 2011-2015 Ingo Renner <ingo@typo3.org>
- *  All rights reserved
- *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
-
+use RuntimeException;
+use TYPO3\CMS\Core\Domain\Repository\PageRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\RootlineUtility;
-use TYPO3\CMS\Frontend\Page\PageRepository;
 
 /**
  * "Access Rootline", represents all pages and specifically those setting
@@ -66,7 +58,6 @@ use TYPO3\CMS\Frontend\Page\PageRepository;
  */
 class Rootline
 {
-
     /**
      * Delimiter for page and content access right elements in the rootline.
      *
@@ -79,15 +70,15 @@ class Rootline
      *
      * @var array
      */
-    protected $rootlineElements = [];
+    protected array $rootlineElements = [];
 
     /**
      * Constructor, turns a string representation of an access rootline into an
      * object representation.
      *
-     * @param string $accessRootline Access Rootline String representation.
+     * @param string|null $accessRootline Access Rootline String representation.
      */
-    public function __construct($accessRootline = null)
+    public function __construct(string $accessRootline = null)
     {
         if (!is_null($accessRootline)) {
             $rawRootlineElements = explode(self::ELEMENT_DELIMITER, $accessRootline);
@@ -130,22 +121,22 @@ class Rootline
     }
 
     /**
-     * Gets the Access Rootline for a specific page Id.
+     * Gets the Access Rootline for a specific page id.
      *
-     * @param int $pageId The page Id to generate the Access Rootline for.
+     * @param int $pageId The page id to generate the Access Rootline for.
      * @param string $mountPointParameter The mount point parameter for generating the rootline.
-     * @return \ApacheSolrForTypo3\Solr\Access\Rootline Access Rootline for the given page Id.
+     * @return Rootline Access Rootline for the given page id.
      */
     public static function getAccessRootlineByPageId(
-        $pageId,
-        $mountPointParameter = ''
-    ) {
+        int $pageId,
+        string $mountPointParameter = ''
+    ): Rootline {
         /* @var Rootline $accessRootline */
         $accessRootline = GeneralUtility::makeInstance(Rootline::class);
         $rootlineUtility = GeneralUtility::makeInstance(RootlineUtility::class, $pageId, $mountPointParameter);
         try {
             $rootline = $rootlineUtility->get();
-        } catch (\RuntimeException $e) {
+        } catch (RuntimeException $e) {
             $rootline = [];
         }
         $rootline = array_reverse($rootline);
@@ -157,12 +148,13 @@ class Rootline
             ) {
                 $accessRootline->push(GeneralUtility::makeInstance(
                     RootlineElement::class,
-                    /** @scrutinizer ignore-type */ $pageRecord['uid'] . RootlineElement::PAGE_ID_GROUP_DELIMITER . $pageRecord['fe_group']
+                    /** @scrutinizer ignore-type */
+                    $pageRecord['uid'] . RootlineElement::PAGE_ID_GROUP_DELIMITER . $pageRecord['fe_group']
                 ));
             }
         }
 
-            /** @var  $pageSelector PageRepository */
+        /** @var  $pageSelector PageRepository */
         $pageSelector = GeneralUtility::makeInstance(PageRepository::class);
 
         // current page
@@ -170,7 +162,8 @@ class Rootline
         if ($currentPageRecord['fe_group']) {
             $accessRootline->push(GeneralUtility::makeInstance(
                 RootlineElement::class,
-                /** @scrutinizer ignore-type */ $currentPageRecord['uid'] . RootlineElement::PAGE_ID_GROUP_DELIMITER . $currentPageRecord['fe_group']
+                /** @scrutinizer ignore-type */
+                $currentPageRecord['uid'] . RootlineElement::PAGE_ID_GROUP_DELIMITER . $currentPageRecord['fe_group']
             ));
         }
 
@@ -194,11 +187,11 @@ class Rootline
     }
 
     /**
-     * Gets a the groups in the Access Rootline.
+     * Gets the groups in the Access Rootline.
      *
      * @return array An array of sorted, unique user group IDs required to access a page.
      */
-    public function getGroups()
+    public function getGroups(): array
     {
         $groups = [];
 
@@ -207,19 +200,17 @@ class Rootline
             $groups = array_merge($groups, $rootlineElementGroups);
         }
 
-        $groups = $this->cleanGroupArray($groups);
-
-        return $groups;
+        return $this->cleanGroupArray($groups);
     }
 
     /**
-     * Cleans an array of frontend user group IDs. Removes duplicates and sorts
+     * Cleans an array of frontend user group IDs. Removes the duplicates and sorts
      * the array.
      *
      * @param array $groups An array of frontend user group IDs
      * @return array An array of cleaned frontend user group IDs, unique, sorted.
      */
-    public static function cleanGroupArray(array $groups)
+    public static function cleanGroupArray(array $groups): array
     {
         $groups = array_unique($groups); // removes duplicates
         sort($groups, SORT_NUMERIC); // sort

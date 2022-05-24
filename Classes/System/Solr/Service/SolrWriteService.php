@@ -1,5 +1,6 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\System\Solr\Service;
+
+declare(strict_types=1);
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -14,10 +15,13 @@ namespace ApacheSolrForTypo3\Solr\System\Solr\Service;
  * The TYPO3 project - inspiring people to share!
  */
 
+namespace ApacheSolrForTypo3\Solr\System\Solr\Service;
+
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use Solarium\QueryType\Extract\Query;
 use Solarium\QueryType\Update\Result;
+use Throwable;
 
 /**
  * Class SolrWriteService
@@ -32,14 +36,14 @@ class SolrWriteService extends AbstractSolrService
      * Performs a content and meta data extraction request.
      *
      * @param Query $query An extraction query
-     * @return array An array containing the extracted content [0] and meta data [1]
+     * @return array An array containing the extracted content [0] and metadata [1]
      */
-    public function extractByQuery(Query $query)
+    public function extractByQuery(Query $query): array
     {
         try {
             $response = $this->createAndExecuteRequest($query);
-            return [$response->file, (array)$response->file_metadata];
-        } catch (\Exception $e) {
+            return [$response->file, $response->file_metadata];
+        } catch (Throwable $e) {
             $param = $query->getRequestBuilder()->build($query)->getParams();
             $this->logger->log(
                 SolrLogManager::ERROR,
@@ -49,7 +53,7 @@ class SolrWriteService extends AbstractSolrService
                     'parameters' => $param,
                     'file' => $query->getFile(),
                     'query url' => self::EXTRACT_SERVLET,
-                    'exception' => $e->getMessage()
+                    'exception' => $e->getMessage(),
                 ]
             );
         }
@@ -64,7 +68,7 @@ class SolrWriteService extends AbstractSolrService
      * @param string $type The type of documents to delete, usually a table name.
      * @param bool $commit Will commit immediately after deleting the documents if set, defaults to TRUE
      */
-    public function deleteByType($type, $commit = true)
+    public function deleteByType(string $type, bool $commit = true)
     {
         $this->deleteByQuery('type:' . trim($type));
 
@@ -74,12 +78,13 @@ class SolrWriteService extends AbstractSolrService
     }
 
     /**
-     * Create a delete document based on a query and submit it
+     * Create the delete-query, which is document based on a query and submit it
      *
      * @param string $rawQuery Expected to be utf-8 encoded
      * @return ResponseAdapter
      */
-    public function deleteByQuery($rawQuery) {
+    public function deleteByQuery(string $rawQuery): ResponseAdapter
+    {
         $query = $this->client->createUpdate();
         $query->addDeleteQuery($rawQuery);
         return $this->createAndExecuteRequest($query);
@@ -91,7 +96,7 @@ class SolrWriteService extends AbstractSolrService
      * @param array $documents Should be an array of \ApacheSolrForTypo3\Solr\System\Solr\Document\Document instances
      * @return ResponseAdapter
      */
-    public function addDocuments($documents)
+    public function addDocuments(array $documents): ResponseAdapter
     {
         $update = $this->client->createUpdate();
         $update->addDocuments($documents);
@@ -101,11 +106,11 @@ class SolrWriteService extends AbstractSolrService
     /**
      * Send a commit command.  Will be synchronous unless both wait parameters are set to false.
      *
-     * @param boolean $expungeDeletes Defaults to false, merge segments with deletes away
-     * @param boolean $waitSearcher Defaults to true, block until a new searcher is opened and registered as the main query searcher, making the changes visible
+     * @param bool $expungeDeletes Defaults to false, merge segments with deletes away
+     * @param bool $waitSearcher Defaults to true, block until a new searcher is opened and registered as the main query searcher, making the changes visible
      * @return ResponseAdapter
      */
-    public function commit($expungeDeletes = false, $waitSearcher = true)
+    public function commit(bool $expungeDeletes = false, bool $waitSearcher = true): ResponseAdapter
     {
         $update = $this->client->createUpdate();
         $update->addCommit(false, $waitSearcher, $expungeDeletes);
@@ -117,7 +122,7 @@ class SolrWriteService extends AbstractSolrService
      *
      * @return Result
      */
-    public function optimizeIndex()
+    public function optimizeIndex(): Result
     {
         $update = $this->client->createUpdate();
         $update->addOptimize(true, false, 5);

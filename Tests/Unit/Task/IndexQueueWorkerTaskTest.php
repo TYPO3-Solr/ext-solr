@@ -1,28 +1,19 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Tests\Unit\Task;
 
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2015-2016 Timo Schmidt <timo.schmidt@dkd.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
+
+namespace ApacheSolrForTypo3\Solr\Tests\Unit\Task;
 
 use ApacheSolrForTypo3\Solr\Task\IndexQueueWorkerTask;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
@@ -44,19 +35,19 @@ class IndexQueueWorkerTaskTest extends UnitTest
         /** @var $indexQueuerWorker IndexQueueWorkerTask */
         $indexQueuerWorker = $this->getMockBuilder(IndexQueueWorkerTask::class)
             ->disableOriginalConstructor()
-            ->setMethods(['execute'])
+            ->onlyMethods(['execute'])
             ->getMock();
 
         // by default the webroot should be Environment::getPublicPath()
-        $this->assertSame(Environment::getPublicPath() . '/', $indexQueuerWorker->getWebRoot(), 'Not using PATH_site as webroot');
+        self::assertSame(Environment::getPublicPath() . '/', $indexQueuerWorker->getWebRoot(), 'Not using PATH_site as webroot');
 
         // can we overwrite it?
         $indexQueuerWorker->setForcedWebRoot('/var/www/foobar.de/subdir');
-        $this->assertSame('/var/www/foobar.de/subdir', $indexQueuerWorker->getWebRoot(), 'Can not force a webroot');
+        self::assertSame('/var/www/foobar.de/subdir', $indexQueuerWorker->getWebRoot(), 'Can not force a webroot');
 
         // can we use a marker?
         $indexQueuerWorker->setForcedWebRoot('###PATH_site###../test/');
-        $this->assertSame(Environment::getPublicPath() . '/../test/', $indexQueuerWorker->getWebRoot(), 'Could not use a marker in forced webroot');
+        self::assertSame(Environment::getPublicPath() . '/../test/', $indexQueuerWorker->getWebRoot(), 'Could not use a marker in forced webroot');
     }
 
     /**
@@ -64,14 +55,14 @@ class IndexQueueWorkerTaskTest extends UnitTest
      */
     public function canGetErrorMessageInAdditionalInformationWhenSiteNotAvailable()
     {
-            /** @var $indexQueuerWorker IndexQueueWorkerTask */
+        /** @var $indexQueuerWorker IndexQueueWorkerTask */
         $indexQueuerWorker = $this->getMockBuilder(IndexQueueWorkerTask::class)
             ->disableOriginalConstructor()
-            ->setMethods(['getSite'])
+            ->onlyMethods(['getSite'])
             ->getMock();
 
         $mesage = $indexQueuerWorker->getAdditionalInformation();
         $expectedMessage = 'Invalid site configuration for scheduler please re-create the task!';
-        $this->assertSame($expectedMessage, $mesage, 'Expect to get error message of non existing site');
+        self::assertSame($expectedMessage, $mesage, 'Expect to get error message of non existing site');
     }
 }

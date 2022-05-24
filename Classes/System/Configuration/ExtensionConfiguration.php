@@ -1,5 +1,6 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\System\Configuration;
+
+declare(strict_types=1);
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -13,6 +14,8 @@ namespace ApacheSolrForTypo3\Solr\System\Configuration;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+namespace ApacheSolrForTypo3\Solr\System\Configuration;
 
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
@@ -31,7 +34,7 @@ class ExtensionConfiguration
      *
      * @var array
      */
-    protected $configuration = [];
+    protected array $configuration = [];
 
     /**
      * ExtensionConfiguration constructor.
@@ -54,7 +57,7 @@ class ExtensionConfiguration
      *
      * @return bool
      */
-    public function getIsUseConfigurationFromClosestTemplateEnabled()
+    public function getIsUseConfigurationFromClosestTemplateEnabled(): bool
     {
         return (bool)$this->getConfigurationOrDefaultValue('useConfigurationFromClosestTemplate', false);
     }
@@ -64,7 +67,7 @@ class ExtensionConfiguration
      *
      * @return bool
      */
-    public function getIsUseConfigurationTrackRecordsOutsideSiteroot()
+    public function getIsUseConfigurationTrackRecordsOutsideSiteroot(): bool
     {
         return (bool)$this->getConfigurationOrDefaultValue('useConfigurationTrackRecordsOutsideSiteroot', true);
     }
@@ -74,7 +77,7 @@ class ExtensionConfiguration
      *
      * @return bool
      */
-    public function getIsSelfSignedCertificatesEnabled()
+    public function getIsSelfSignedCertificatesEnabled(): bool
     {
         return (bool)$this->getConfigurationOrDefaultValue('allowSelfSignedCertificates', false);
     }
@@ -105,8 +108,8 @@ class ExtensionConfiguration
     public function getAvailablePluginNamespaces(): array
     {
         $pluginNamespacesList = 'tx_solr,' . $this->getConfigurationOrDefaultValue(
-                'pluginNamespaces'
-            );
+            'pluginNamespaces'
+        );
         return array_unique(GeneralUtility::trimExplode(',', $pluginNamespacesList));
     }
 
@@ -121,15 +124,25 @@ class ExtensionConfiguration
     public function getCacheHashExcludedParameters(): array
     {
         $pluginNamespaces = array_map(
-            function($pluginNamespace) {
+            function ($pluginNamespace) {
                 return '^' . $pluginNamespace . '[';
             },
             $this->getAvailablePluginNamespaces()
         );
+        $enhancersRouteParts = array_map(
+            function ($pluginNamespace) {
+                // __ \TYPO3\CMS\Core\Routing\Enhancer\VariableProcessor::LEVEL_DELIMITER
+                return '^' . $pluginNamespace . '__';
+            },
+            $this->getAvailablePluginNamespaces()
+        );
+
+        $exclusions = array_merge($pluginNamespaces, $enhancersRouteParts);
+
         if (false === $this->getIncludeGlobalQParameterInCacheHash()) {
-            $pluginNamespaces[] = 'q';
+            $exclusions[] = 'q';
         }
-        return array_combine($pluginNamespaces, $pluginNamespaces);
+        return array_combine($exclusions, $exclusions);
     }
 
     /**
@@ -143,6 +156,19 @@ class ExtensionConfiguration
     }
 
     /**
+     * Returns the desired monitoring type
+     * 0 - immediate
+     * 1 - delayed
+     * 2 - no monitoring
+     *
+     * @return int
+     */
+    public function getMonitoringType(): int
+    {
+        return (int)$this->getConfigurationOrDefaultValue('monitoringType', 0);
+    }
+
+    /**
      * @param string $key
      * @param mixed $defaultValue
      * @return mixed|null
@@ -151,6 +177,4 @@ class ExtensionConfiguration
     {
         return $this->configuration[$key] ?? $defaultValue;
     }
-
-
 }

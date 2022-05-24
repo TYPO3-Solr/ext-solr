@@ -1,28 +1,21 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper;
 
-/***************************************************************
- *  Copyright notice
+declare(strict_types=1);
+
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2011-2015 Ingo Renner <ingo@typo3.org>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
+
+namespace ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper;
 
 // TODO use/extend ApacheSolrForTypo3\Solr\IndexQueue\AbstractIndexer
 use ApacheSolrForTypo3\Solr\IndexQueue\AbstractIndexer;
@@ -43,17 +36,17 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 class PageFieldMappingIndexer implements SubstitutePageIndexer
 {
     /**
-     * @var \ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration
+     * @var TypoScriptConfiguration
      */
-    protected $configuration;
+    protected TypoScriptConfiguration $configuration;
 
     /**
      * @var string
      */
-    protected $pageIndexingConfigurationName = 'pages';
+    protected string $pageIndexingConfigurationName = 'pages';
 
     /**
-     * @param TypoScriptConfiguration $configuration
+     * @param TypoScriptConfiguration|null $configuration
      */
     public function __construct(TypoScriptConfiguration $configuration = null)
     {
@@ -63,7 +56,7 @@ class PageFieldMappingIndexer implements SubstitutePageIndexer
     /**
      * @param string $pageIndexingConfigurationName
      */
-    public function setPageIndexingConfigurationName($pageIndexingConfigurationName)
+    public function setPageIndexingConfigurationName(string $pageIndexingConfigurationName)
     {
         $this->pageIndexingConfigurationName = $pageIndexingConfigurationName;
     }
@@ -74,19 +67,18 @@ class PageFieldMappingIndexer implements SubstitutePageIndexer
      * Uses the original document and adds fields as defined in
      * plugin.tx_solr.index.queue.pages.fields.
      *
-     * @param Document $pageDocument The original page document.
+     * @param Document $originalPageDocument The original page document.
      * @return Document A Apache Solr Document object that replace the default page document
      */
-    public function getPageDocument(Document $pageDocument)
+    public function getPageDocument(Document $originalPageDocument): Document
     {
-        $substitutePageDocument = clone $pageDocument;
+        $substitutePageDocument = clone $originalPageDocument;
 
-
-        $mappedFields = $this->getMappedFields($pageDocument);
+        $mappedFields = $this->getMappedFields($originalPageDocument);
         foreach ($mappedFields as $fieldName => $fieldValue) {
             if (isset($substitutePageDocument->{$fieldName})) {
                 // reset = overwrite, especially important to not make fields
-                // multi valued where they may not accept multiple values
+                // multivalued where they may not accept multiple values
                 unset($substitutePageDocument->{$fieldName});
             }
 
@@ -106,7 +98,7 @@ class PageFieldMappingIndexer implements SubstitutePageIndexer
      * @param Document $pageDocument The original page document.
      * @return array An array mapping field names to their values.
      */
-    protected function getMappedFields(Document $pageDocument)
+    protected function getMappedFields(Document $pageDocument): array
     {
         $fields = [];
 
@@ -129,12 +121,12 @@ class PageFieldMappingIndexer implements SubstitutePageIndexer
      * Resolves a field mapping to its value depending on its configuration.
      *
      * Allows to put the page record through cObj processing if wanted / needed.
-     * Otherwise the plain page record field value is used.
+     * Otherwise, the plain page record field value is used.
      *
      * @param string $solrFieldName The Solr field name to resolve the value from the item's record
-     * @return string The resolved string value to be indexed
+     * @return string|array The resolved string value to be indexed
      */
-    protected function resolveFieldValue($solrFieldName, Document $pageDocument)
+    protected function resolveFieldValue(string $solrFieldName, Document $pageDocument)
     {
         $pageRecord = $GLOBALS['TSFE']->page;
 
@@ -144,7 +136,7 @@ class PageFieldMappingIndexer implements SubstitutePageIndexer
             $pageRecord = AbstractIndexer::addVirtualContentFieldToRecord($pageDocument, $pageRecord);
 
             // configuration found => need to resolve a cObj
-            $contentObject = GeneralUtility::makeInstance(ContentObjectRenderer::class);
+            $contentObject = GeneralUtility::makeInstance(ContentObjectRenderer::class, $GLOBALS['TSFE']);
             $contentObject->start($pageRecord, 'pages');
 
             $fieldValue = $contentObject->cObjGetSingle(

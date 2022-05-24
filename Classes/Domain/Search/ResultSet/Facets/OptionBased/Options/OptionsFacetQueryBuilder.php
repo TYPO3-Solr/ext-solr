@@ -1,5 +1,6 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options;
+
+declare(strict_types=1);
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -14,6 +15,8 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Opt
  * The TYPO3 project - inspiring people to share!
 */
 
+namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options;
+
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\DefaultFacetQueryBuilder;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\FacetQueryBuilderInterface;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\SortingExpression;
@@ -26,14 +29,14 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
  *
  * @Todo: When we use json faceting for other facets some logic of this class can be moved to the base class.
  */
-class OptionsFacetQueryBuilder extends DefaultFacetQueryBuilder implements FacetQueryBuilderInterface {
-
+class OptionsFacetQueryBuilder extends DefaultFacetQueryBuilder implements FacetQueryBuilderInterface
+{
     /**
      * @param string $facetName
      * @param TypoScriptConfiguration $configuration
      * @return array
      */
-    public function build($facetName, TypoScriptConfiguration $configuration)
+    public function build(string $facetName, TypoScriptConfiguration $configuration): array
     {
         $facetParameters = [];
         $facetConfiguration = $configuration->getSearchFacetingFacetByName($facetName);
@@ -51,7 +54,7 @@ class OptionsFacetQueryBuilder extends DefaultFacetQueryBuilder implements Facet
             $jsonFacetOptions['sort'] = $sorting;
         }
 
-        if (is_array($facetConfiguration['metrics.'])) {
+        if (is_array($facetConfiguration['metrics.'] ?? null)) {
             foreach ($facetConfiguration['metrics.'] as $key => $value) {
                 $jsonFacetOptions['facet']['metrics_' . $key] = $value;
             }
@@ -72,7 +75,7 @@ class OptionsFacetQueryBuilder extends DefaultFacetQueryBuilder implements Facet
      * @param TypoScriptConfiguration $configuration
      * @return string
      */
-    protected function buildExcludeTagsForJson(array $facetConfiguration, TypoScriptConfiguration $configuration)
+    protected function buildExcludeTagsForJson(array $facetConfiguration, TypoScriptConfiguration $configuration): string
     {
         $excludeFields = [];
 
@@ -87,7 +90,7 @@ class OptionsFacetQueryBuilder extends DefaultFacetQueryBuilder implements Facet
             }
         }
 
-        $isKeepAllOptionsActiveForSingleFacet = $facetConfiguration['keepAllOptionsOnSelection'] == 1;
+        $isKeepAllOptionsActiveForSingleFacet = ($facetConfiguration['keepAllOptionsOnSelection'] ?? null) == 1;
         if ($isKeepAllOptionsActiveForSingleFacet) {
             $excludeFields[] = $facetConfiguration['field'];
         }
@@ -104,15 +107,9 @@ class OptionsFacetQueryBuilder extends DefaultFacetQueryBuilder implements Facet
      * @param TypoScriptConfiguration $configuration
      * @return int
      */
-    protected function buildLimitForJson(array $facetConfiguration, TypoScriptConfiguration $configuration)
+    protected function buildLimitForJson(array $facetConfiguration, TypoScriptConfiguration $configuration): int
     {
-        if (isset($facetConfiguration['facetLimit'])) {
-            return (int)$facetConfiguration['facetLimit'];
-        } elseif (!is_null($configuration->getSearchFacetingFacetLimit()) && $configuration->getSearchFacetingFacetLimit() >= 0) {
-            return $configuration->getSearchFacetingFacetLimit();
-        } else {
-            return -1;
-        }
+        return $facetConfiguration['facetLimit'] ?? ($configuration->getSearchFacetingFacetLimit() ?? -1);
     }
 
     /**
@@ -120,27 +117,22 @@ class OptionsFacetQueryBuilder extends DefaultFacetQueryBuilder implements Facet
      * @param TypoScriptConfiguration $configuration
      * @return int
      */
-    protected function buildMincountForJson(array $facetConfiguration, TypoScriptConfiguration $configuration)
+    protected function buildMincountForJson(array $facetConfiguration, TypoScriptConfiguration $configuration): int
     {
-        if (isset($facetConfiguration['minimumCount'])) {
-            return (int)$facetConfiguration['minimumCount'];
-        } elseif (!is_null($configuration->getSearchFacetingMinimumCount()) && (int)$configuration->getSearchFacetingMinimumCount() >= 0) {
-            return $configuration->getSearchFacetingMinimumCount();
-        } else {
-            return 1;
-        }
+        return $facetConfiguration['minimumCount'] ?? ($configuration->getSearchFacetingMinimumCount() ?? 1);
     }
 
     /**
      * @param array $facetConfiguration
      * @return string
      */
-    protected function buildSortingForJson(array $facetConfiguration) {
+    protected function buildSortingForJson(array $facetConfiguration): string
+    {
         if (isset($facetConfiguration['sortBy'])) {
             $sortingExpression = new SortingExpression();
             $sorting = $facetConfiguration['sortBy'];
-            $direction = $facetConfiguration['sortDirection'];
-            return $sortingExpression->getForJsonFacet($sorting, $direction);
+            $direction = $facetConfiguration['sortDirection'] ?? '';
+            return $sortingExpression->getForJsonFacet((string)$sorting, $direction);
         }
         return '';
     }

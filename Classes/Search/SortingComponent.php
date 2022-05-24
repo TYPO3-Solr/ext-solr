@@ -1,33 +1,26 @@
 <?php
+
+declare(strict_types=1);
+
+/*
+ * This file is part of the TYPO3 CMS project.
+ *
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
+ *
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ *
+ * The TYPO3 project - inspiring people to share!
+ */
+
 namespace ApacheSolrForTypo3\Solr\Search;
 
-/***************************************************************
- *  Copyright notice
- *
- *  (c) 2012-2015 Ingo Renner <ingo@typo3.org>
- *  All rights reserved
- *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
-
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Sortings;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Sorting\SortingHelper;
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequestAware;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -41,29 +34,28 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class SortingComponent extends AbstractComponent implements QueryAware, SearchRequestAware
 {
-
     /**
      * Solr query
      *
-     * @var Query
+     * @var Query|null
      */
-    protected $query;
+    protected ?Query $query;
 
     /**
-     * @var SearchRequest
+     * @var SearchRequest|null
      */
-    protected $searchRequest;
+    protected ?SearchRequest $searchRequest;
 
     /**
      * QueryBuilder
      *
-     * @var QueryBuilder|object
+     * @var QueryBuilder
      */
-    protected $queryBuilder;
+    protected QueryBuilder $queryBuilder;
 
     /**
      * AccessComponent constructor.
-     * @param QueryBuilder|null
+     * @param QueryBuilder|null $queryBuilder
      */
     public function __construct(QueryBuilder $queryBuilder = null)
     {
@@ -85,7 +77,7 @@ class SortingComponent extends AbstractComponent implements QueryAware, SearchRe
         }
 
         $isSortingEnabled = !empty($this->searchConfiguration['sorting']) && ((int)$this->searchConfiguration['sorting']) === 1;
-        if(!$isSortingEnabled) {
+        if (!$isSortingEnabled) {
             return;
         }
 
@@ -95,7 +87,7 @@ class SortingComponent extends AbstractComponent implements QueryAware, SearchRe
             return;
         }
 
-        // a passed sorting has allways priority an overwrites the configured initial sorting
+        // a passed sorting has always priority an overwrites the configured initial sorting
         $this->query->clearSorts();
         /** @var $sortHelper SortingHelper */
         $sortHelper = GeneralUtility::makeInstance(SortingHelper::class, $this->searchConfiguration['sorting.']['options.']);
@@ -110,7 +102,7 @@ class SortingComponent extends AbstractComponent implements QueryAware, SearchRe
      * @param array $arguments
      * @return bool
      */
-    protected function hasValidSorting(array $arguments)
+    protected function hasValidSorting(array $arguments): bool
     {
         return !empty($arguments['sort']) && preg_match('/^([a-z0-9_]+ (asc|desc)[, ]*)*([a-z0-9_]+ (asc|desc))+$/i', $arguments['sort']);
     }

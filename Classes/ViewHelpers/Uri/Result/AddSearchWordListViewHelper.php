@@ -1,5 +1,6 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\ViewHelpers\Uri\Result;
+
+declare(strict_types=1);
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -14,9 +15,12 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers\Uri\Result;
  * The TYPO3 project - inspiring people to share!
  */
 
+namespace ApacheSolrForTypo3\Solr\ViewHelpers\Uri\Result;
+
 use ApacheSolrForTypo3\Solr\Domain\Search\Highlight\SiteHighlighterUrlModifier;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\ViewHelpers\AbstractSolrFrontendViewHelper;
+use Closure;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
@@ -37,28 +41,33 @@ class AddSearchWordListViewHelper extends AbstractSolrFrontendViewHelper
     {
         parent::initializeArguments();
         $this->registerArgument('url', 'string', 'The context searchResultSet', true);
-        $this->registerArgument('searchWords', 'string', 'The document to highlight', true);
+        $this->registerArgument('searchWords', 'string', 'The document to highlight', true, '');
         $this->registerArgument('addNoCache', 'boolean', 'Should no_cache=1 be added or not', false, true);
         $this->registerArgument('keepCHash', 'boolean', 'Should cHash be kept or not', false, false);
     }
 
     /**
      * @param array $arguments
-     * @param \Closure $renderChildrenClosure
+     * @param Closure $renderChildrenClosure
      * @param RenderingContextInterface $renderingContext
      * @return string
+     *
+     * @noinspection PhpMissingReturnTypeInspection
      */
-    public static function renderStatic(array $arguments, \Closure $renderChildrenClosure, RenderingContextInterface $renderingContext)
-    {
+    public static function renderStatic(
+        array $arguments,
+        Closure $renderChildrenClosure,
+        RenderingContextInterface $renderingContext
+    ) {
         $url = $arguments['url'];
 
-            /** @var $resultSet SearchResultSet */
+        /** @var $resultSet SearchResultSet */
         $resultSet = self::getUsedSearchResultSetFromRenderingContext($renderingContext);
         if (!$resultSet->getUsedSearchRequest()->getContextTypoScriptConfiguration()->getSearchResultsSiteHighlighting()) {
             return $url;
         }
 
-        $searchWords = $arguments['searchWords'];
+        $searchWords = $arguments['searchWords'] ?? '';
         $addNoCache = $arguments['addNoCache'];
         $keepCHash = $arguments['keepCHash'];
 

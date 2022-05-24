@@ -1,28 +1,21 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Test\Domain\Search\ResultSet\Facets;
 
-/***************************************************************
- *  Copyright notice
+declare(strict_types=1);
+
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2015-2016 Timo Hund <timo.hund@dkd.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
+
+namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\SortingExpression;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
@@ -35,7 +28,7 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
  */
 class SortingExpressionTest extends UnitTest
 {
-    public function canBuildSortExpressionDataProvider()
+    public function canBuildSortExpressionDataProvider(): array
     {
         return [
             'byAlpha' => ['sorting' => 'alpha', 'direction' => '', 'isJson' => false, 'expectedResult' => 'index'],
@@ -77,27 +70,27 @@ class SortingExpressionTest extends UnitTest
             'byCountJsonSortAsc' => ['sorting' => 'count', 'direction' => 'asc', 'isJson' => true, 'expectedResult' => 'count asc'],
             'byCountJsonSortDesc' => ['sorting' => 'count', 'direction' => 'desc', 'isJson' => true, 'expectedResult' => 'count desc'],
 
-            'byMetricJsonSortAsc' => ['sorting' => 'metrics_neweset', 'direction' => 'asc', 'isJson' => true, 'expectedResult' => 'metrics_neweset asc'],
-            'byMetricJsonSortDesc' => ['sorting' => 'metrics_neweset', 'direction' => 'desc', 'isJson' => true, 'expectedResult' => 'metrics_neweset desc'],
+            'byMetricJsonSortAsc' => ['sorting' => 'metrics_newest', 'direction' => 'asc', 'isJson' => true, 'expectedResult' => 'metrics_newest asc'],
+            'byMetricJsonSortDesc' => ['sorting' => 'metrics_newest', 'direction' => 'desc', 'isJson' => true, 'expectedResult' => 'metrics_newest desc'],
         ];
     }
 
     /**
-     * @param string $sorting
+     * @param string|int|bool $sorting
      * @param string $direction
-     * @param boolean $isJson
+     * @param bool $isJson
      * @param string $expectedResult
      * @dataProvider canBuildSortExpressionDataProvider
      * @test
      */
-    public function canBuildSortExpression($sorting, $direction, $isJson, $expectedResult)
+    public function canBuildSortExpression($sorting, string $direction, bool $isJson, string $expectedResult)
     {
         $expression = new SortingExpression();
         if ($isJson) {
-            $result = $expression->getForJsonFacet($sorting, $direction);
+            $result = $expression->getForJsonFacet((string)$sorting, $direction);
         } else {
             $result = $expression->getForFacet($sorting);
         }
-        $this->assertSame($expectedResult, $result, 'Unexpected expression for solr server');
+        self::assertSame($expectedResult, $result, 'Unexpected expression for solr server');
     }
 }

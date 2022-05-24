@@ -1,5 +1,6 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets;
+
+declare(strict_types=1);
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -13,7 +14,9 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets;
  *
  * The TYPO3 project - inspiring people to share!
  */
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetItem;
+
+namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets;
+
 use ApacheSolrForTypo3\Solr\System\Data\AbstractCollection;
 
 /**
@@ -25,10 +28,10 @@ use ApacheSolrForTypo3\Solr\System\Data\AbstractCollection;
 abstract class AbstractFacetItemCollection extends AbstractCollection
 {
     /**
-     * @param AbstractFacetItem $item
+     * @param AbstractFacetItem|null $item
      * @return AbstractFacetItemCollection
      */
-    public function add($item)
+    public function add(?AbstractFacetItem $item): AbstractFacetItemCollection
     {
         if ($item === null) {
             return $this;
@@ -40,11 +43,11 @@ abstract class AbstractFacetItemCollection extends AbstractCollection
 
     /**
      * @param string $value
-     * @return AbstractFacetItem
+     * @return ?AbstractFacetItem
      */
-    public function getByValue($value)
+    public function getByValue(string $value): ?AbstractFacetItem
     {
-        return isset($this->data[$value]) ? $this->data[$value] : null;
+        return $this->data[$value] ?? null;
     }
 
     /**
@@ -52,17 +55,17 @@ abstract class AbstractFacetItemCollection extends AbstractCollection
      *
      * @return int
      */
-    public function getCount()
+    public function getCount(): int
     {
         return $this->count();
     }
 
     /**
-     * @return AbstractFacetItemCollection
+     * @return AbstractCollection
      */
-    public function getSelected()
+    public function getSelected(): AbstractCollection
     {
-        return $this->getFilteredCopy(function(AbstractFacetItem $item) {
+        return $this->getFilteredCopy(function (AbstractFacetItem $item) {
             return $item->getSelected();
         });
     }
@@ -71,7 +74,7 @@ abstract class AbstractFacetItemCollection extends AbstractCollection
      * @param array $manualSorting
      * @return AbstractFacetItemCollection
      */
-    public function getManualSortedCopy(array $manualSorting)
+    public function getManualSortedCopy(array $manualSorting): AbstractFacetItemCollection
     {
         $result = clone $this;
         $copiedItems = $result->data;
@@ -92,7 +95,7 @@ abstract class AbstractFacetItemCollection extends AbstractCollection
     /**
      * @return AbstractFacetItemCollection
      */
-    public function getReversedOrderCopy()
+    public function getReversedOrderCopy(): AbstractFacetItemCollection
     {
         $result = clone $this;
         $result->data = array_reverse($result->data, true);

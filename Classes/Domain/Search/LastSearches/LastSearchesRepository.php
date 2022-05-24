@@ -1,45 +1,42 @@
 <?php
+
+/*
+ * This file is part of the TYPO3 CMS project.
+ *
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
+ *
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ *
+ * The TYPO3 project - inspiring people to share!
+ */
+
 namespace ApacheSolrForTypo3\Solr\Domain\Search\LastSearches;
 
-/***************************************************************
- *  Copyright notice
- *
- *  (c) 2010-2017 dkd Internet Service GmbH <solr-support@dkd.de>
- *  All rights reserved
- *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
-
 use ApacheSolrForTypo3\Solr\System\Records\AbstractRepository;
+use Doctrine\DBAL\Driver\Exception as DBALDriverException;
+use Doctrine\DBAL\Exception as DBALException;
+use InvalidArgumentException;
+use function json_encode;
 
 class LastSearchesRepository extends AbstractRepository
 {
     /**
      * @var string
      */
-    protected $table = 'tx_solr_last_searches';
+    protected string $table = 'tx_solr_last_searches';
 
     /**
      * Finds the last searched keywords from the database
      *
      * @param int $limit
      * @return array An array containing the last searches of the current user
+     * @throws DBALDriverException
+     * @throws DBALException|\Doctrine\DBAL\DBALException
      */
-    public function findAllKeywords($limit = 10) : array
+    public function findAllKeywords(int $limit = 10): array
     {
         $lastSearchesResultSet = $this->getLastSearchesResultSet($limit);
         if (empty($lastSearchesResultSet)) {
@@ -57,22 +54,26 @@ class LastSearchesRepository extends AbstractRepository
     /**
      * Returns all last searches
      *
-     * @param $limit
+     * @param int $limit
      * @return array
+     * @throws DBALException|\Doctrine\DBAL\DBALException
+     * @throws DBALDriverException
      */
-    protected function getLastSearchesResultSet($limit) : array
+    protected function getLastSearchesResultSet(int $limit): array
     {
         $queryBuilder = $this->getQueryBuilder();
         return $queryBuilder
             ->select('keywords')
             ->addSelectLiteral(
-                $queryBuilder->expr()->max('tstamp','maxtstamp')
+                $queryBuilder->expr()->max('tstamp', 'maxtstamp')
             )
             ->from($this->table)
             // There is no support for DISTINCT, a ->groupBy() has to be used instead.
             ->groupBy('keywords')
             ->orderBy('maxtstamp', 'DESC')
-            ->setMaxResults($limit)->execute()->fetchAll();
+            ->setMaxResults($limit)
+            ->execute()
+            ->fetchAllAssociative();
     }
 
     /**
@@ -80,7 +81,8 @@ class LastSearchesRepository extends AbstractRepository
      *
      * @param string $lastSearchesKeywords
      * @param int $lastSearchesLimit
-     * @return void
+     * @throws DBALDriverException
+     * @throws DBALException|\Doctrine\DBAL\DBALException
      */
     public function add(string $lastSearchesKeywords, int $lastSearchesLimit)
     {
@@ -89,7 +91,7 @@ class LastSearchesRepository extends AbstractRepository
         if ($nextSequenceId < $rowsCount) {
             $this->update([
                 'sequence_id' => $nextSequenceId,
-                'keywords' => $lastSearchesKeywords
+                'keywords' => $lastSearchesKeywords,
             ]);
             return;
         }
@@ -100,7 +102,7 @@ class LastSearchesRepository extends AbstractRepository
             ->values([
                 'sequence_id' => $nextSequenceId,
                 'keywords' => $lastSearchesKeywords,
-                'tstamp' => time()
+                'tstamp' => time(),
             ])
             ->execute();
     }
@@ -110,8 +112,10 @@ class LastSearchesRepository extends AbstractRepository
      *
      * @param int $lastSearchesLimit
      * @return int
+     * @throws DBALDriverException
+     * @throws DBALException|\Doctrine\DBAL\DBALException
      */
-    protected function resolveNextSequenceIdForGivenLimit(int $lastSearchesLimit) : int
+    protected function resolveNextSequenceIdForGivenLimit(int $lastSearchesLimit): int
     {
         $nextSequenceId = 0;
 
@@ -120,7 +124,8 @@ class LastSearchesRepository extends AbstractRepository
             ->from($this->table)
             ->orderBy('tstamp', 'DESC')
             ->setMaxResults(1)
-            ->execute()->fetch();
+            ->execute()
+            ->fetchAssociative();
 
         if (!empty($result)) {
             $nextSequenceId = ($result['sequence_id'] + 1) % $lastSearchesLimit;
@@ -133,8 +138,8 @@ class LastSearchesRepository extends AbstractRepository
      * Updates last searches row by using sequence_id from given $lastSearchesRow array
      *
      * @param array $lastSearchesRow
-     * @return void
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
+     * @throws DBALException|\Doctrine\DBAL\DBALException
      */
     protected function update(array $lastSearchesRow)
     {
@@ -150,7 +155,7 @@ class LastSearchesRepository extends AbstractRepository
             ->execute();
 
         if ($affectedRows < 1) {
-            throw new \InvalidArgumentException(vsprintf('By trying to update last searches row with values "%s" nothing was updated, make sure the given "sequence_id" exists in database.', [\json_encode($lastSearchesRow)]), 1502717923);
+            throw new InvalidArgumentException(vsprintf('By trying to update last searches row with values "%s" nothing was updated, make sure the given "sequence_id" exists in database.', [json_encode($lastSearchesRow)]), 1502717923);
         }
     }
 }

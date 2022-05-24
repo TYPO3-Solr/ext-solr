@@ -1,5 +1,6 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\QueryGroup;
+
+declare(strict_types=1);
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -14,33 +15,36 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Que
  * The TYPO3 project - inspiring people to share!
  */
 
+namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\QueryGroup;
+
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetPackage;
 
 /**
  * Class QueryGroupPackage
  */
-class QueryGroupPackage extends AbstractFacetPackage {
-
+class QueryGroupPackage extends AbstractFacetPackage
+{
     /**
      * @return string
      */
-    public function getParserClassName() {
-        return (string)QueryGroupFacetParser::class;
+    public function getParserClassName(): string
+    {
+        return QueryGroupFacetParser::class;
     }
 
     /**
      * @return string
      */
-    public function getQueryBuilderClassName()
+    public function getQueryBuilderClassName(): string
     {
-        return (string)QueryGroupFacetQueryBuilder::class;
+        return QueryGroupFacetQueryBuilder::class;
     }
 
     /**
      * @return string
      */
-    public function getUrlDecoderClassName()
+    public function getUrlDecoderClassName(): string
     {
-        return (string)QueryGroupUrlDecoder::class;
+        return QueryGroupUrlDecoder::class;
     }
 }

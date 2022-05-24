@@ -614,7 +614,7 @@ In your .env file:
 	SOLR_PORT=8983
 
 Refer to TYPO3 documentation:
-https://docs.typo3.org/m/typo3/reference-coreapi/master/en-us/ApiOverview/SiteHandling/UsingEnvVars.html#using-environment-variables-in-site-configuration
+https://docs.typo3.org/m/typo3/reference-coreapi/main/en-us/ApiOverview/SiteHandling/UsingEnvVars.html#using-environment-variables-in-site-configuration
 
 **How can i register a custom statistic writer processor?**
 

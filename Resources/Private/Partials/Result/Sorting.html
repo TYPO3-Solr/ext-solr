@@ -1,51 +1,55 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en"
-	  xmlns:f="http://typo3.org/ns/TYPO3/Fluid/ViewHelpers"
-	  xmlns:s="http://typo3.org/ns/ApacheSolrForTypo3/Solr/ViewHelpers"
-      data-namespace-typo3-fluid="true"
+	xmlns:f="http://typo3.org/ns/TYPO3/Fluid/ViewHelpers"
+	xmlns:s="http://typo3.org/ns/ApacheSolrForTypo3/Solr/ViewHelpers"
+	data-namespace-typo3-fluid="true"
 >
 
 <f:section name="Sorting">
-	<div id="tx-solr-sorting" class="secondaryContentSection dropdown">
-		<button class="btn btn-default dropdown-toggle" type="button" id="sortDropDown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-			<span class=" glyphicon glyphicon-sort"></span>
-			<s:translate key="sorting_sortBy">Sorting</s:translate>
-			<span class="caret"></span>
-		</button>
-		<ul class="dropdown-menu" aria-labelledby="sortDropDown">
-			<f:for each="{resultSet.sortings}" as="sorting">
+	<div id="tx-solr-sorting" class="secondaryContentSection">
 
-				<f:if condition="{sorting.isResetOption}">
-					<f:then>
-						<li class="{f:if(condition: '{sorting.selected}', then: 'active')}" >
-							<a href="{s:uri.sorting.removeSorting()}" class="solr-ajaxified">{sorting.label}</a>
-						</li>
-					</f:then>
 
-					<f:else>
-						<f:if condition="{sorting.selected}">
+		<div class="dropdown">
+			<a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+				<span class="bi bi-arrow-down-up"></span>
+				<s:translate key="sorting_sortBy">Sorting</s:translate>
+			</a>
+
+			<ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+				<f:for each="{resultSet.sortings}" as="sorting">
+					<li>
+						<f:if condition="{sorting.isResetOption}">
 							<f:then>
-								<li class="active">
-									<a href="{s:uri.sorting.setSorting(sortingName: sorting.name, sortingDirection: sorting.oppositeDirection)}" class="solr-ajaxified">
-										<f:if condition="{sorting.isAscDirection}">
-											<f:then><span class=" glyphicon glyphicon-arrow-up pull-right"></span></f:then>
-											<f:else><span class=" glyphicon glyphicon-arrow-down pull-right"></span></f:else>
-										</f:if>
-										<span>{sorting.label}</span>
-
-									</a>
-								</li>
+									<a
+										class="dropdown-item solr-ajaxified {f:if(condition: '{sorting.selected}', then: 'active')}"
+										href="{s:uri.sorting.removeSorting()}"
+									>{sorting.label}</a>
 							</f:then>
+
 							<f:else>
-								<li>
-									<a href="{s:uri.sorting.setSorting(sortingName: sorting.name, sortingDirection: sorting.direction)}" class="solr-ajaxified">{sorting.label}</a>
-								</li>
+								<f:if condition="{sorting.selected}">
+									<f:then>
+										<a
+											class="dropdown-item solr-ajaxified active d-flex justify-content-between"
+											href="{s:uri.sorting.setSorting(sortingName: sorting.name, sortingDirection: sorting.oppositeDirection)}"
+										>
+											{sorting.label}
+											<span class="bi bi-sort-{f:if(condition: '{sorting.isAscDirection}', then: 'up', else: 'down')}"></span>
+										</a>
+									</f:then>
+
+									<f:else>
+											<a
+												class="dropdown-item solr-ajaxified"
+												href="{s:uri.sorting.setSorting(sortingName: sorting.name, sortingDirection: sorting.direction)}"
+											>{sorting.label}</a>
+									</f:else>
+								</f:if>
 							</f:else>
 						</f:if>
-					</f:else>
-			</f:if>
-
-			</f:for>
-		</ul>
+					</li>
+				</f:for>
+			</ul>
+		</div>
 	</div>
 </f:section>
 

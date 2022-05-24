@@ -1,88 +1,83 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Task;
 
-/***************************************************************
- *  Copyright notice
+declare(strict_types=1);
+
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2011-2015 Christoph Moeller <support@network-publishing.de>
- *  (c) 2012-2015 Ingo Renner <ingo@typo3.org>
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  All rights reserved
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
+
+namespace ApacheSolrForTypo3\Solr\Task;
 
 use ApacheSolrForTypo3\Solr\Backend\IndexingConfigurationSelectorField;
 use ApacheSolrForTypo3\Solr\Backend\SiteSelectorField;
-use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
+use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
+use Doctrine\DBAL\Driver\Exception as DBALDriverException;
+use LogicException;
+use Throwable;
+use TYPO3\CMS\Backend\Form\Exception as BackendFormException;
 use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Scheduler\AdditionalFieldProviderInterface;
+use TYPO3\CMS\Scheduler\AbstractAdditionalFieldProvider;
 use TYPO3\CMS\Scheduler\Controller\SchedulerModuleController;
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
 use TYPO3\CMS\Scheduler\Task\Enumeration\Action;
 
 /**
- * Adds an additional field to specify the Solr server to initialize the index queue for
+ * Adds additional field to specify the Solr server to initialize the index queue for
  *
  * @author Christoph Moeller <support@network-publishing.de>
  */
-class ReIndexTaskAdditionalFieldProvider implements AdditionalFieldProviderInterface
+class ReIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldProvider
 {
-
     /**
      * Task information
      *
      * @var array
      */
-    protected $taskInformation;
+    protected array $taskInformation = [];
 
     /**
      * Scheduler task
      *
-     * @var AbstractTask|ReIndexTask|NULL
+     * @var AbstractTask|ReIndexTask|null
      */
-    protected $task = null;
+    protected ?AbstractTask $task;
 
     /**
      * Scheduler Module
      *
-     * @var SchedulerModuleController
+     * @var SchedulerModuleController|null
      */
-    protected $schedulerModule;
+    protected ?SchedulerModuleController $schedulerModule = null;
 
     /**
      * Selected site
      *
-     * @var Site
+     * @var Site|null
      */
-    protected $site = null;
+    protected ?Site $site = null;
+
     /**
      * SiteRepository
      *
      * @var SiteRepository
      */
-    protected $siteRepository;
+    protected SiteRepository $siteRepository;
 
     /**
-     * @var PageRenderer
+     * @var PageRenderer|null
      */
-    protected $pageRenderer = null;
+    protected ?PageRenderer $pageRenderer = null;
 
     /**
      * ReIndexTaskAdditionalFieldProvider constructor.
@@ -94,12 +89,13 @@ class ReIndexTaskAdditionalFieldProvider implements AdditionalFieldProviderInter
 
     /**
      * @param array $taskInfo
-     * @param \TYPO3\CMS\Scheduler\Task\AbstractTask|NULL $task
-     * @param \TYPO3\CMS\Scheduler\Controller\SchedulerModuleController $schedulerModule
+     * @param AbstractTask|null $task
+     * @param SchedulerModuleController $schedulerModule
+     * @throws DBALDriverException
      */
     protected function initialize(
-        array $taskInfo = [],
-        AbstractTask $task = null,
+        array $taskInfo,
+        ?AbstractTask $task,
         SchedulerModuleController $schedulerModule
     ) {
         /** @var $task ReIndexTask */
@@ -110,7 +106,7 @@ class ReIndexTaskAdditionalFieldProvider implements AdditionalFieldProviderInter
         $currentAction = $schedulerModule->getCurrentAction();
 
         if ($currentAction->equals(Action::EDIT)) {
-            $this->site = $this->siteRepository->getSiteByRootPageId($task->getRootPageId());
+            $this->site = $this->siteRepository->getSiteByRootPageId((int)$task->getRootPageId());
         }
     }
 
@@ -124,6 +120,10 @@ class ReIndexTaskAdditionalFieldProvider implements AdditionalFieldProviderInter
      * @return array Array containing all the information pertaining to the additional fields
      *                        The array is multidimensional, keyed to the task class name and each field's id
      *                        For each field it provides an associative sub-array with the following:
+     * @throws DBALDriverException
+     * @throws Throwable
+     * @noinspection PhpParameterByRefIsNotUsedAsReferenceInspection
+     * @noinspection PhpMissingReturnTypeInspection
      */
     public function getAdditionalFields(
         array &$taskInfo,
@@ -140,24 +140,29 @@ class ReIndexTaskAdditionalFieldProvider implements AdditionalFieldProviderInter
         $siteSelectorField = GeneralUtility::makeInstance(SiteSelectorField::class);
 
         $additionalFields['site'] = [
-            'code' => $siteSelectorField->getAvailableSitesSelector('tx_scheduler[site]',
-                $this->site),
+            'code' => $siteSelectorField->getAvailableSitesSelector(
+                'tx_scheduler[site]',
+                $this->site
+            ),
             'label' => 'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:field_site',
             'cshKey' => '',
-            'cshLabel' => ''
+            'cshLabel' => '',
         ];
 
         $additionalFields['indexingConfigurations'] = [
             'code' => $this->getIndexingConfigurationSelector(),
             'label' => 'Index Queue configurations to re-index',
             'cshKey' => '',
-            'cshLabel' => ''
+            'cshLabel' => '',
         ];
 
         return $additionalFields;
     }
 
-    protected function getIndexingConfigurationSelector()
+    /**
+     * @throws BackendFormException
+     */
+    protected function getIndexingConfigurationSelector(): string
     {
         $selectorMarkup = 'Please select a site first.';
         $this->getPageRenderer()->addCssFile('../typo3conf/ext/solr/Resources/Css/Backend/indexingconfigurationselectorfield.css');
@@ -171,9 +176,7 @@ class ReIndexTaskAdditionalFieldProvider implements AdditionalFieldProviderInter
         $selectorField->setFormElementName('tx_scheduler[indexingConfigurations]');
         $selectorField->setSelectedValues($this->task->getIndexingConfigurationsToReIndex());
 
-        $selectorMarkup = $selectorField->render();
-
-        return $selectorMarkup;
+        return $selectorField->render();
     }
 
     /**
@@ -183,6 +186,10 @@ class ReIndexTaskAdditionalFieldProvider implements AdditionalFieldProviderInter
      * @param array $submittedData reference to the array containing the data submitted by the user
      * @param SchedulerModuleController $schedulerModule reference to the calling object (Scheduler's BE module)
      * @return bool True if validation was ok (or selected class is not relevant), FALSE otherwise
+     * @throws DBALDriverException
+     * @throws Throwable
+     * @noinspection PhpParameterByRefIsNotUsedAsReferenceInspection
+     * @noinspection PhpMissingReturnTypeInspection
      */
     public function validateAdditionalFields(
         array &$submittedData,
@@ -215,7 +222,7 @@ class ReIndexTaskAdditionalFieldProvider implements AdditionalFieldProviderInter
             return;
         }
 
-        $task->setRootPageId($submittedData['site']);
+        $task->setRootPageId((int)$submittedData['site']);
 
         $indexingConfigurations = [];
         if (!empty($submittedData['indexingConfigurations'])) {
@@ -227,7 +234,7 @@ class ReIndexTaskAdditionalFieldProvider implements AdditionalFieldProviderInter
     /**
      * @return PageRenderer
      */
-    protected function getPageRenderer()
+    protected function getPageRenderer(): PageRenderer
     {
         if (!isset($this->pageRenderer)) {
             $this->pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
@@ -238,16 +245,16 @@ class ReIndexTaskAdditionalFieldProvider implements AdditionalFieldProviderInter
     /**
      * Check that a task is an instance of ReIndexTask
      *
-     * @param AbstractTask $task
-     * @return boolean
-     * @throws \LogicException
+     * @param ?AbstractTask $task
+     * @return bool
      */
-    protected function isTaskInstanceofReIndexTask($task)
+    protected function isTaskInstanceofReIndexTask(?AbstractTask $task): bool
     {
         if ((!is_null($task)) && (!($task instanceof ReIndexTask))) {
-            throw new \LogicException(
+            throw new LogicException(
                 '$task must be an instance of ReIndexTask, '
-                . 'other instances are not supported.', 1487500366
+                . 'other instances are not supported.',
+                1487500366
             );
         }
         return true;

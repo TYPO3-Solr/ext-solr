@@ -13,7 +13,6 @@ return [
         'origUid' => 't3_origuid',
         'editlock' => 'editlock',
         'type' => 'type',
-        'dividers2tabs' => true,
         'useColumnsForDefaultValues' => 'type',
         'languageField' => 'sys_language_uid',
         'transOrigPointerField' => 'l10n_parent',
@@ -24,35 +23,31 @@ return [
         'enablecolumns' => [
             'disabled' => 'hidden',
             'starttime' => 'starttime',
-            'endtime' => 'endtime'
+            'endtime' => 'endtime',
         ],
         'searchFields' => 'uid,title',
-    ],
-    'interface' => [
-        'showRecordFieldList' => 'cruser_id,pid,sys_language_uid,l10n_parent,l10n_diffsource,hidden,starttime,endtime,title'
     ],
     'columns' => [
         'sys_language_uid' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.language',
+            'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.language',
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'special' => 'languages',
                 'items' => [
                     [
-                        'LLL:EXT:lang/locallang_general.xlf:LGL.allLanguages',
+                        'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.allLanguages',
                         -1,
-                        'flags-multiple'
+                        'flags-multiple',
                     ],
                 ],
                 'default' => 0,
-            ]
+            ],
         ],
         'l10n_parent' => [
             'displayCond' => 'FIELD:sys_language_uid:>:0',
-            'exclude' => 1,
-            'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.l18n_parent',
+            'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.l18n_parent',
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
@@ -61,94 +56,92 @@ return [
                 ],
                 'foreign_table' => 'tx_fakeextension_domain_model_foo',
                 'foreign_table_where' => 'AND tx_fakeextension_domain_model_foo.pid=###CURRENT_PID### AND tx_fakeextension_domain_model_foo.sys_language_uid IN (-1,0)',
-                'showIconTable' => false
-            ]
+            ],
         ],
         'l10n_diffsource' => [
             'config' => [
                 'type' => 'passthrough',
-                'default' => ''
-            ]
+                'default' => '',
+            ],
         ],
         'hidden' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.hidden',
+            'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.hidden',
             'config' => [
                 'type' => 'check',
-                'default' => 0
-            ]
+                'default' => 0,
+            ],
         ],
         'cruser_id' => [
             'label' => 'cruser_id',
             'config' => [
-                'type' => 'passthrough'
-            ]
+                'type' => 'passthrough',
+            ],
         ],
         'pid' => [
             'label' => 'pid',
             'config' => [
-                'type' => 'passthrough'
-            ]
+                'type' => 'passthrough',
+            ],
         ],
         'crdate' => [
             'label' => 'crdate',
             'config' => [
                 'type' => 'passthrough',
-            ]
+            ],
         ],
         'tstamp' => [
             'label' => 'tstamp',
             'config' => [
                 'type' => 'passthrough',
-            ]
+            ],
         ],
         'sorting' => [
             'label' => 'sorting',
             'config' => [
                 'type' => 'passthrough',
-            ]
+            ],
         ],
         'starttime' => [
             'exclude' => 1,
-            'l10n_mode' => 'mergeIfNotBlank',
-            'label' => 'LLL:EXT:cms/locallang_ttc.xlf:starttime_formlabel',
+            'label' => 'LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:starttime_formlabel',
             'config' => [
                 'type' => 'input',
                 'size' => 8,
-                'max' => 20,
                 'eval' => 'datetime',
                 'default' => 0,
-            ]
+                'renderType' => 'inputDateTime',
+                ['behaviour' => ['allowLanguageSynchronization' => true]],
+            ],
         ],
         'endtime' => [
             'exclude' => 1,
-            'l10n_mode' => 'mergeIfNotBlank',
-            'label' => 'LLL:EXT:cms/locallang_ttc.xlf:endtime_formlabel',
+            'label' => 'LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:endtime_formlabel',
             'config' => [
                 'type' => 'input',
                 'size' => 8,
-                'max' => 20,
                 'eval' => 'datetime',
                 'default' => 0,
-            ]
+                'renderType' => 'inputDateTime',
+                ['behaviour' => ['allowLanguageSynchronization' => true]],
+            ],
         ],
         'title' => [
             'exclude' => 0,
             'l10n_mode' => 'prefixLangTitle',
-            'label' => 'LLL:EXT:cms/locallang_ttc.xlf:header_formlabel',
+            'label' => 'LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:header_formlabel',
             'config' => [
                 'type' => 'input',
                 'size' => 60,
                 'eval' => 'required',
-            ]
+            ],
         ],
         'editlock' => [
             'exclude' => 1,
-            'l10n_mode' => 'mergeIfNotBlank',
-            'label' => 'LLL:EXT:lang/locallang_tca.xlf:editlock',
+            'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_tca.xlf:editlock',
             'config' => [
-                'type' => 'check'
-            ]
+                'type' => 'check', ['behaviour' => ['allowLanguageSynchronization' => true]],
+            ],
         ],
         // mm relation
         'tags' => [
@@ -164,8 +157,7 @@ return [
                 'size' => '5',
                 'maxitems' => '200',
                 'minitems' => '0',
-                'show_thumbs' => '1'
-              ]
+              ],
         ],
         // mm relation to a page
         'page_relations' => [
@@ -200,7 +192,7 @@ return [
      ],
      'types' => [
         '0' => [
-            'showitem' => 'l10n_parent, l10n_diffsource,title,tags'
-        ]
-    ]
+            'showitem' => 'l10n_parent, l10n_diffsource,title,tags',
+        ],
+    ],
 ];

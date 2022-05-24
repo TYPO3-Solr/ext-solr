@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -28,14 +29,14 @@ class BeforeReplaceVariableInCachedUrlEvent
     /**
      * @var UriInterface
      */
-    protected $uri;
+    protected UriInterface $uri;
 
     /**
      * Routing is enabled
      *
      * @var bool
      */
-    protected $routing = false;
+    protected bool $routing = false;
 
     /**
      * BeforeReplaceVariableInCachedUrlEvent constructor.
@@ -63,7 +64,7 @@ class BeforeReplaceVariableInCachedUrlEvent
      *
      * @param UriInterface $uri
      */
-    public function replaceUri(UriInterface  $uri)
+    public function replaceUri(UriInterface $uri)
     {
         $this->uri = $uri;
     }

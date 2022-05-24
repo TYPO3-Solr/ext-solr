@@ -1,5 +1,6 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\DateRange;
+
+declare(strict_types=1);
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -14,33 +15,36 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\Date
  * The TYPO3 project - inspiring people to share!
  */
 
+namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\DateRange;
+
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetPackage;
 
 /**
  * Class DateRangePackage
  */
-class DateRangePackage extends AbstractFacetPackage {
-
+class DateRangePackage extends AbstractFacetPackage
+{
     /**
      * @return string
      */
-    public function getParserClassName() {
-        return (string)DateRangeFacetParser::class;
+    public function getParserClassName(): string
+    {
+        return DateRangeFacetParser::class;
     }
 
     /**
      * @return string
      */
-    public function getQueryBuilderClassName()
+    public function getQueryBuilderClassName(): string
     {
-        return (string)DateRangeFacetQueryBuilder::class;
+        return DateRangeFacetQueryBuilder::class;
     }
 
     /**
      * @return string
      */
-    public function getUrlDecoderClassName()
+    public function getUrlDecoderClassName(): string
     {
-        return (string)DateRangeUrlDecoder::class;
+        return DateRangeUrlDecoder::class;
     }
 }

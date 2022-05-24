@@ -1,28 +1,19 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Index\Queue\Statistic;
 
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2010-2016 Timo Hund
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
+
+namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Index\Queue\Statistic;
 
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\Statistic\QueueStatistic;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
@@ -36,25 +27,26 @@ class QueueStatisticTest extends UnitTest
     /**
      * @test
      */
-    public function canGetFailedPercentage() {
-            /** @var $statistic QueueStatistic */
+    public function canGetFailedPercentage()
+    {
+        /** @var $statistic QueueStatistic */
         $statistic = GeneralUtility::makeInstance(QueueStatistic::class);
         $statistic->setFailedCount(2);
         $statistic->setSuccessCount(1);
         $statistic->setPendingCount(1);
 
-        $this->assertSame(50.0, $statistic->getFailedPercentage(), 'Can not calculate failed percentage');
-        $this->assertSame(25.0, $statistic->getSuccessPercentage(), 'Can not calculate success percentage');
-        $this->assertSame(25.0, $statistic->getPendingPercentage(), 'Can not calculate pending percentage');
+        self::assertSame(50.0, $statistic->getFailedPercentage(), 'Can not calculate failed percentage');
+        self::assertSame(25.0, $statistic->getSuccessPercentage(), 'Can not calculate success percentage');
+        self::assertSame(25.0, $statistic->getPendingPercentage(), 'Can not calculate pending percentage');
     }
 
     /**
      * @test
      */
-    public function canGetZeroPercentagesWhenEmpty() {
+    public function canGetZeroPercentagesWhenEmpty()
+    {
         /** @var $statistic QueueStatistic */
         $statistic = GeneralUtility::makeInstance(QueueStatistic::class);
-        $this->assertSame(0.0, $statistic->getFailedPercentage(), 'Can not zero percent for empty');
+        self::assertSame(0.0, $statistic->getFailedPercentage(), 'Can not zero percent for empty');
     }
-
 }

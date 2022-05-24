@@ -2,12 +2,6 @@
 <dataset>
 
     <pages>
-        <uid>1</uid>
-        <is_siteroot>1</is_siteroot>
-        <doktype>1</doktype>
-        <title>Hello Solr</title>
-    </pages>
-    <pages>
         <uid>2</uid>
         <l10n_parent>1</l10n_parent>
         <sys_language_uid>1</sys_language_uid>

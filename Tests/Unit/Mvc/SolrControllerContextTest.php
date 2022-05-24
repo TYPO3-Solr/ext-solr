@@ -1,33 +1,24 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Test\Mvc\ControllerContext;
 
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2015-2016 Timo Hund <timo.hund@dkd.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 
-use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+namespace ApacheSolrForTypo3\Solr\Tests\Unit\Mvc\ControllerContext;
+
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Mvc\Controller\SolrControllerContext;
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 
 /**
  * @author Timo Hund <timo.hund@dkd.de>
@@ -37,11 +28,12 @@ class SolrControllerContextTest extends UnitTest
     /**
      * @var SolrControllerContext
      */
-    protected $controllerContext = null;
+    protected $controllerContext;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->controllerContext = new SolrControllerContext();
+        parent::setUp();
     }
 
     /**
@@ -52,7 +44,7 @@ class SolrControllerContextTest extends UnitTest
         /** @var TypoScriptConfiguration $typoScriptConfigurationMock */
         $typoScriptConfigurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
         $this->controllerContext->setTypoScriptConfiguration($typoScriptConfigurationMock);
-        $this->assertSame($this->controllerContext->getTypoScriptConfiguration(), $typoScriptConfigurationMock, 'Can not get and set TypoScriptConfiguration');
+        self::assertSame($this->controllerContext->getTypoScriptConfiguration(), $typoScriptConfigurationMock, 'Can not get and set TypoScriptConfiguration');
     }
 
     /**
@@ -62,6 +54,6 @@ class SolrControllerContextTest extends UnitTest
     {
         $searchResultSetMock = $this->getDumbMock(SearchResultSet::class);
         $this->controllerContext->setSearchResultSet($searchResultSetMock);
-        $this->assertSame($this->controllerContext->getSearchResultSet(), $searchResultSetMock, 'Can not get and set SearchResultSet');
+        self::assertSame($this->controllerContext->getSearchResultSet(), $searchResultSetMock, 'Can not get and set SearchResultSet');
     }
 }

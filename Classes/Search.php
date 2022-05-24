@@ -1,28 +1,21 @@
 <?php
-namespace ApacheSolrForTypo3\Solr;
 
-/***************************************************************
- *  Copyright notice
+declare(strict_types=1);
+
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2009-2015 Ingo Renner <ingo@typo3.org>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
+
+namespace ApacheSolrForTypo3\Solr;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
@@ -30,6 +23,11 @@ use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrCommunicationException;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
+use Doctrine\DBAL\Driver\Exception as DBALDriverException;
+use Exception;
+use stdClass;
+use Throwable;
+use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -39,44 +37,46 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class Search
 {
-
     /**
      * An instance of the Solr service
      *
-     * @var SolrConnection
+     * @var SolrConnection|null
      */
-    protected $solr = null;
+    protected ?SolrConnection $solr;
 
     /**
      * The search query
      *
-     * @var Query
+     * @var Query|null
      */
-    protected $query = null;
+    protected ?Query $query;
 
     /**
      * The search response
      *
-     * @var ResponseAdapter
+     * @var ResponseAdapter|null
      */
-    protected $response = null;
+    protected ?ResponseAdapter $response = null;
 
     /**
      * @var TypoScriptConfiguration
      */
-    protected $configuration;
+    protected TypoScriptConfiguration $configuration;
 
     // TODO Override __clone to reset $response and $hasSearched
 
     /**
-     * @var \ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager
+     * @var SolrLogManager
      */
-    protected $logger = null;
+    protected SolrLogManager $logger;
 
     /**
      * Constructor
      *
-     * @param SolrConnection $solrConnection The Solr connection to use for searching
+     * @param SolrConnection|null $solrConnection The Solr connection to use for searching
+     * @throws AspectNotFoundException
+     * @throws DBALDriverException
+     * @throws NoSolrConnectionFoundException
      */
     public function __construct(SolrConnection $solrConnection = null)
     {
@@ -87,7 +87,7 @@ class Search
         if (is_null($solrConnection)) {
             /** @var $connectionManager ConnectionManager */
             $connectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
-            $this->solr = $connectionManager->getConnectionByPageId($GLOBALS['TSFE']->id, Util::getLanguageUid());
+            $this->solr = $connectionManager->getConnectionByPageId(($GLOBALS['TSFE']->id ?? 0), Util::getLanguageUid());
         }
 
         $this->configuration = Util::getSolrConfiguration();
@@ -98,7 +98,7 @@ class Search
      *
      * @return SolrConnection Solr connection
      */
-    public function getSolrConnection()
+    public function getSolrConnection(): ?SolrConnection
     {
         return $this->solr;
     }
@@ -126,11 +126,10 @@ class Search
      *
      * @param Query $query The query with keywords, filters, and so on.
      * @param int $offset Result offset for pagination.
-     * @param int $limit Maximum number of results to return. If set to NULL, this value is taken from the query object.
+     * @param int|null $limit Maximum number of results to return. If set to NULL, this value is taken from the query object.
      * @return ResponseAdapter Solr response
-     * @throws \Exception
      */
-    public function search(Query $query, $offset = 0, $limit = 10)
+    public function search(Query $query, int $offset = 0, ?int $limit = null): ?ResponseAdapter
     {
         $this->query = $query;
 
@@ -142,16 +141,17 @@ class Search
         try {
             $response = $this->solr->getReadService()->search($query);
             if ($this->configuration->getLoggingQueryQueryString()) {
-                $this->logger->log(SolrLogManager::INFO,
+                $this->logger->log(
+                    SolrLogManager::INFO,
                     'Querying Solr, getting result',
                     [
                         'query string' => $query->getQuery(),
                         'query parameters' => $query->getRequestBuilder()->build($query)->getParams(),
-                        'response' => json_decode($response->getRawResponse(), true)
+                        'response' => json_decode($response->getRawResponse(), true),
                     ]
                 );
             }
-        }  catch (SolrCommunicationException $e) {
+        } catch (SolrCommunicationException $e) {
             if ($this->configuration->getLoggingExceptions()) {
                 $this->logger->log(
                     SolrLogManager::ERROR,
@@ -160,7 +160,7 @@ class Search
                         'exception' => $e->__toString(),
                         'query' => (array)$query,
                         'offset' => $offset,
-                        'limit' => $query->getRows()
+                        'limit' => $query->getRows(),
                     ]
                 );
             }
@@ -178,25 +178,24 @@ class Search
      *
      * @param bool $useCache Set to true if the cache should be used.
      * @return bool Returns TRUE on successful ping.
-     * @throws \Exception Throws an exception in case ping was not successful.
      */
-    public function ping($useCache = true)
+    public function ping(bool $useCache = true): bool
     {
         $solrAvailable = false;
 
         try {
             if (!$this->solr->getReadService()->ping($useCache)) {
-                throw new \Exception('Solr Server not responding.', 1237475791);
+                throw new Exception('Solr Server not responding.', 1237475791);
             }
 
             $solrAvailable = true;
-        } catch (\Exception $e) {
+        } catch (Throwable $e) {
             if ($this->configuration->getLoggingExceptions()) {
                 $this->logger->log(
                     SolrLogManager::ERROR,
                     'Exception while trying to ping the solr server',
                     [
-                        $e->__toString()
+                        $e->__toString(),
                     ]
                 );
             }
@@ -208,9 +207,9 @@ class Search
     /**
      * Gets the query object.
      *
-     * @return Query
+     * @return Query|null
      */
-    public function getQuery()
+    public function getQuery(): ?Query
     {
         return $this->query;
     }
@@ -218,24 +217,30 @@ class Search
     /**
      * Gets the Solr response
      *
-     * @return ResponseAdapter
+     * @return ResponseAdapter|null
      */
-    public function getResponse()
+    public function getResponse(): ?ResponseAdapter
     {
         return $this->response;
     }
 
-    public function getRawResponse()
+    /**
+     * @return string|null
+     */
+    public function getRawResponse(): ?string
     {
         return $this->response->getRawResponse();
     }
 
-    public function getResponseHeader()
+    /**
+     * @return stdClass|null
+     */
+    public function getResponseHeader(): ?stdClass
     {
         return $this->getResponse()->responseHeader;
     }
 
-    public function getResponseBody()
+    public function getResponseBody(): ?stdClass
     {
         // @extensionScannerIgnoreLine
         return $this->getResponse()->response;
@@ -246,7 +251,7 @@ class Search
      *
      * @return int Query time in milliseconds
      */
-    public function getQueryTime()
+    public function getQueryTime(): int
     {
         return $this->getResponseHeader()->QTime;
     }
@@ -256,7 +261,7 @@ class Search
      *
      * @return int Number of results per page
      */
-    public function getResultsPerPage()
+    public function getResultsPerPage(): int
     {
         return $this->getResponseHeader()->params->rows;
     }
@@ -266,21 +271,21 @@ class Search
      *
      * @return int Result offset
      */
-    public function getResultOffset()
+    public function getResultOffset(): int
     {
         // @extensionScannerIgnoreLine
         return $this->response->response->start;
     }
 
-    public function getDebugResponse()
+    public function getDebugResponse(): ?stdClass
     {
         // @extensionScannerIgnoreLine
         return $this->response->debug;
     }
 
-    public function getHighlightedContent()
+    public function getHighlightedContent(): ?stdClass
     {
-        $highlightedContent = false;
+        $highlightedContent = new stdClass();
 
         if ($this->response->highlighting) {
             $highlightedContent = $this->response->highlighting;

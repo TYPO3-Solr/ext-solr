@@ -1,28 +1,21 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\IndexQueue;
 
-/***************************************************************
- *  Copyright notice
+declare(strict_types=1);
+
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2010-2015 Ingo Renner <ingo@typo3.org>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
+
+namespace ApacheSolrForTypo3\Solr\IndexQueue;
 
 use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\Dispatcher;
 use TYPO3\CMS\Core\SingletonInterface;
@@ -36,27 +29,26 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class PageIndexerRequestHandler implements SingletonInterface
 {
-
     /**
      * Index Queue page indexer request.
      *
      * @var PageIndexerRequest
      */
-    protected $request;
+    protected PageIndexerRequest $request;
 
     /**
      * Index Queue page indexer response.
      *
      * @var PageIndexerResponse
      */
-    protected $response;
+    protected PageIndexerResponse $response;
 
     /**
      * Index Queue page indexer frontend helper dispatcher.
      *
      * @var Dispatcher
      */
-    protected $dispatcher;
+    protected Dispatcher $dispatcher;
 
     /**
      * Constructor.
@@ -71,14 +63,11 @@ class PageIndexerRequestHandler implements SingletonInterface
         $this->response = GeneralUtility::makeInstance(PageIndexerResponse::class);
         $this->response->setRequestId($this->request->getRequestId());
     }
-    
 
     /**
      * Authenticates the request, runs the frontend helpers defined by the
      * request, and registers its own shutdown() method for execution at
      * hook_eofe in tslib/class.tslib_fe.php.
-     *
-     * @return void
      */
     public function run()
     {
@@ -88,8 +77,6 @@ class PageIndexerRequestHandler implements SingletonInterface
     /**
      * Completes the Index Queue page indexer request and returns the response
      * with the collected results.
-     *
-     * @return void
      */
     public function shutdown()
     {
@@ -101,7 +88,7 @@ class PageIndexerRequestHandler implements SingletonInterface
      *
      * @return PageIndexerRequest
      */
-    public function getRequest()
+    public function getRequest(): PageIndexerRequest
     {
         return $this->request;
     }
@@ -111,7 +98,7 @@ class PageIndexerRequestHandler implements SingletonInterface
      *
      * @return PageIndexerResponse
      */
-    public function getResponse()
+    public function getResponse(): PageIndexerResponse
     {
         return $this->response;
     }

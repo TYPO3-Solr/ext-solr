@@ -1,5 +1,6 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\DateRange;
+
+declare(strict_types=1);
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -14,6 +15,9 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\Date
  * The TYPO3 project - inspiring people to share!
  */
 
+namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\DateRange;
+
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetItem;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetItemCollection;
 
 /**
@@ -26,19 +30,19 @@ class DateRangeCollection extends AbstractFacetItemCollection
 {
 
     /**
-     * @param DateRange $dateRange
+     * @param AbstractFacetItem|null $item
      * @return DateRangeCollection
      */
-    public function add($dateRange)
+    public function add(?AbstractFacetItem $item): AbstractFacetItemCollection
     {
-        return parent::add($dateRange);
+        return parent::add($item);
     }
 
     /**
      * @param int $position
-     * @return DateRange
+     * @return ?DateRange
      */
-    public function getByPosition($position)
+    public function getByPosition(int $position): ?object
     {
         return parent::getByPosition($position);
     }

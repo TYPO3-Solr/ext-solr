@@ -1,29 +1,19 @@
 <?php
 
-namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper;
+/*
+ * This file is part of the TYPO3 CMS project.
+ *
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
+ *
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ *
+ * The TYPO3 project - inspiring people to share!
+ */
 
-/***************************************************************
- *  Copyright notice
- *
- *  (c) 2015-2016 Timo Hund <timo.hund@dkd.de>
- *  All rights reserved
- *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper;
 
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\IndexQueue\Initializer\Page;
@@ -40,7 +30,6 @@ use TYPO3\CMS\Core\Utility\RootlineUtility;
  */
 class MountPagesUpdater
 {
-
     /**
      * @var PagesRepository
      */
@@ -51,17 +40,18 @@ class MountPagesUpdater
      *
      * @param PagesRepository|null $pagesRepository
      */
-    public function __construct(PagesRepository $pagesRepository = null) {
+    public function __construct(PagesRepository $pagesRepository = null)
+    {
         $this->pagesRepository = $pagesRepository ?? GeneralUtility::makeInstance(PagesRepository::class);
     }
 
     /**
      * Handles updates of the Index Queue in case a newly created or changed
-     * page is part of a tree that is mounted into a another site.
+     * page is part of a tree that is mounted into another site.
      *
      * @param int $pageId Page Id (uid).
      */
-    public function update($pageId)
+    public function update(int $pageId)
     {
         // get the root line of the page, every parent page could be a Mount Page source
         $rootlineUtility = GeneralUtility::makeInstance(RootlineUtility::class, $pageId);
@@ -78,7 +68,7 @@ class MountPagesUpdater
             return;
         }
 
-        /** @var $rootLine Rootline */
+        /* @var Rootline $rootLine */
         $rootLine = GeneralUtility::makeInstance(Rootline::class, /** @scrutinizer ignore-type */ $rootLineArray);
         $rootLineParentPageIds = array_map('intval', $rootLine->getParentPageIds());
         $destinationMountProperties = $this->pagesRepository->findMountPointPropertiesByPageIdOrByRootLineParentPageIds($currentPageUid, $rootLineParentPageIds);
@@ -98,12 +88,12 @@ class MountPagesUpdater
      * @param int $mountedPageId ID (uid) of the mounted page.
      * @param array $mountProperties Array of mount point properties mountPageSource, mountPageDestination, and mountPageOverlayed
      */
-    protected function addPageToMountingSiteIndexQueue($mountedPageId, array $mountProperties)
+    protected function addPageToMountingSiteIndexQueue(int $mountedPageId, array $mountProperties)
     {
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $mountingSite = $siteRepository->getSiteByPageId($mountProperties['mountPageDestination']);
 
-        /** @var $pageInitializer Page */
+        /* @var Page $pageInitializer */
         $pageInitializer = GeneralUtility::makeInstance(Page::class);
         $pageInitializer->setSite($mountingSite);
         $pageInitializer->setIndexingConfigurationName('pages');

@@ -1,29 +1,19 @@
 <?php
 
-namespace ApacheSolrForTypo3\Solr\Domain\Search\Score;
+/*
+ * This file is part of the TYPO3 CMS project.
+ *
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
+ *
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ *
+ * The TYPO3 project - inspiring people to share!
+ */
 
-/***************************************************************
- *  Copyright notice
- *
- *  (c) 2010-2015 Ingo Renner <ingo.renner@dkd.de>
- *  All rights reserved
- *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+namespace ApacheSolrForTypo3\Solr\Domain\Search\Score;
 
 /**
  * Provides the functionality to calculate scores and renders them in a minimalistic template.
@@ -61,21 +51,18 @@ class ScoreCalculationService
 
         foreach ($highScores as $highScore) {
             /** @var $highScore Score */
-            $scores[] = '
-				<td>+ ' . htmlspecialchars($highScore->getScore()) . '</td>
-				<td>' . htmlspecialchars($highScore->getFieldName()) . '</td>
-				<td>' . htmlspecialchars($highScore->getBoost()) . '</td>';
-
+            $scores[] =
+                '<td>+ ' . htmlspecialchars($highScore->getScore()) . '</td>'
+                . '<td>' . htmlspecialchars($highScore->getFieldName()) . '</td>'
+                . '<td>' . htmlspecialchars($highScore->getBoost()) . '</td>';
             $totalScore += $highScore->getScore();
         }
 
-        $content = '<table style="width: 100%; border: 1px solid #aaa; font-size: 11px; background-color: #eee;">
-			<tr style="border-bottom: 2px solid #aaa; font-weight: bold;"><td>Score</td><td>Field</td><td>Boost</td></tr><tr>'
-            . implode('</tr><tr>', $scores)
-            . '</tr>
-			<tr><td colspan="3"><hr style="border-top: 1px solid #aaa; height: 0; padding: 0; margin: 0;" /></td></tr>
-			<tr><td colspan="3">= ' . $totalScore . ' (Inaccurate analysis! Not all parts of the score have been taken into account.)</td></tr>
-			</table>';
+        $content = '<table class="table">'
+            . '<thead><tr><th>Score</th><th>Field</th><th>Boost</th></tr></thead>'
+            . '<tbody><tr>' . implode('</tr><tr>', $scores) . '</tbody></tr>'
+            . '<tfoot><tr><td colspan="3">= ' . $totalScore . ' (Inaccurate analysis! Not all parts of the score have been taken into account.)</td></tr></tfoot>'
+            . '</table>';
 
         return $content;
     }

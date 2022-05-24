@@ -6,11 +6,6 @@
 		</header>
 		<body>
 
-			<trans-unit id="cache_initialize_solr_connections" xml:space="preserve">
-				<source>Initialize Solr connections</source>
-				<target>Inicializar conexiones Solr</target>
-			</trans-unit>
-
 		<!-- Index Administration -->
 			<trans-unit id="solr.backend.index_administration.description" xml:space="preserve">
 				<source>The Index Administration Module is responsible for emptying the cores(deleting documents) on Solr Server and index queues in TYPO3 CMS. </source>
@@ -80,7 +75,7 @@
 			<!-- From ModuleAdministration/locallang.xlf //-->
 			<trans-unit id="mlang_labels_tablabel" xml:space="preserve">
 				<source>Apache Solr Search Administration</source>
-				<target>Administración de búsquedas de Apache Solr</target>				
+				<target>Administración de búsquedas de Apache Solr</target>
 			</trans-unit>
 			<trans-unit id="mlang_labels_tabdescr" xml:space="preserve">
 				<source>Allows you to manage Apache Solr from TYPO3.&lt;br /&gt;&lt;em&gt;Access for 'admin' users only!&lt;/em&gt;</source>

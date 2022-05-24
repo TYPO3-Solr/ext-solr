@@ -1,5 +1,6 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\ViewHelpers;
+
+declare(strict_types=1);
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -14,6 +15,9 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers;
  * The TYPO3 project - inspiring people to share!
  */
 
+namespace ApacheSolrForTypo3\Solr\ViewHelpers;
+
+use Closure;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
@@ -25,7 +29,6 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
  */
 class PageBrowserRangeViewHelper extends AbstractSolrFrontendViewHelper
 {
-
     use CompileWithRenderStatic;
 
     /**
@@ -41,12 +44,16 @@ class PageBrowserRangeViewHelper extends AbstractSolrFrontendViewHelper
 
     /**
      * @param array $arguments
-     * @param \Closure $renderChildrenClosure
+     * @param Closure $renderChildrenClosure
      * @param RenderingContextInterface $renderingContext
      * @return string
+     * @noinspection PhpMissingReturnTypeInspection
      */
-    public static function renderStatic(array $arguments, \Closure $renderChildrenClosure, RenderingContextInterface $renderingContext)
-    {
+    public static function renderStatic(
+        array $arguments,
+        Closure $renderChildrenClosure,
+        RenderingContextInterface $renderingContext
+    ) {
         $from = $arguments['from'];
         $to = $arguments['to'];
         $total = $arguments['total'];

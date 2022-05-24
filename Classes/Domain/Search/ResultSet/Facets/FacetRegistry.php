@@ -1,5 +1,6 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets;
+
+declare(strict_types=1);
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -14,12 +15,15 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets;
  * The TYPO3 project - inspiring people to share!
  */
 
+namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets;
+
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Hierarchy\HierarchyPackage;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\OptionsPackage;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\QueryGroup\QueryGroupPackage;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\DateRange\DateRangePackage;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\NumericRange\NumericRangePackage;
 use ApacheSolrForTypo3\Solr\System\Object\AbstractClassRegistry;
+use InvalidArgumentException;
 
 /**
  * Class FacetRegistry
@@ -34,7 +38,7 @@ class FacetRegistry extends AbstractClassRegistry
      *
      * @var array
      */
-    protected $classMap = [
+    protected array $classMap = [
         'options' => OptionsPackage::class,
         'hierarchy' => HierarchyPackage::class,
         'queryGroup' => QueryGroupPackage::class,
@@ -47,14 +51,14 @@ class FacetRegistry extends AbstractClassRegistry
      *
      * @var string
      */
-    protected $defaultClass = OptionsPackage::class;
+    protected string $defaultClass = OptionsPackage::class;
 
     /**
      * Get defaultParser
      *
      * @return string
      */
-    public function getDefaultPackage()
+    public function getDefaultPackage(): string
     {
         return $this->defaultClass;
     }
@@ -64,7 +68,7 @@ class FacetRegistry extends AbstractClassRegistry
      *
      * @param string $defaultPackageClassName
      */
-    public function setDefaultPackage($defaultPackageClassName)
+    public function setDefaultPackage(string $defaultPackageClassName)
     {
         $this->defaultClass = $defaultPackageClassName;
     }
@@ -74,7 +78,7 @@ class FacetRegistry extends AbstractClassRegistry
      *
      * @return array
      */
-    public function getPackages()
+    public function getPackages(): array
     {
         return $this->classMap;
     }
@@ -82,11 +86,11 @@ class FacetRegistry extends AbstractClassRegistry
     /**
      * @param string $className
      * @param string $type
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
-    public function registerPackage($className, $type)
+    public function registerPackage(string $className, string $type): void
     {
-        return $this->register($className, $type, AbstractFacetPackage::class);
+        $this->register($className, $type, AbstractFacetPackage::class);
     }
 
     /**
@@ -96,7 +100,7 @@ class FacetRegistry extends AbstractClassRegistry
      * @return AbstractFacetPackage
      * @throws InvalidFacetPackageException
      */
-    public function getPackage($type)
+    public function getPackage(string $type): AbstractFacetPackage
     {
         $instance = $this->getInstance($type);
         if (!$instance instanceof AbstractFacetPackage) {

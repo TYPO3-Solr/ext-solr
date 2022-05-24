@@ -1,5 +1,4 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -13,10 +12,16 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets;
+
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 
 /**
- * Value object that represent a options facet.
+ * Value object that represent the options facet.
  *
  * @author Frans Saris <frans@beech.it>
  * @author Timo Hund <timo.hund@dkd.de>
@@ -29,54 +34,54 @@ abstract class AbstractFacet
      * String
      * @var string
      */
-    protected static $type = self::TYPE_ABSTRACT;
+    protected static string $type = self::TYPE_ABSTRACT;
 
     /**
      * The resultSet where this facet belongs to.
      *
      * @var SearchResultSet
      */
-    protected $resultSet = null;
+    protected SearchResultSet $resultSet;
 
     /**
      * @var string
      */
-    protected $name;
+    protected string $name;
 
     /**
      * @var string
      */
-    protected $field;
+    protected string $field;
 
     /**
      * @var string
      */
-    protected $label;
+    protected string $label;
 
     /**
      * @var array
      */
-    protected $configuration;
-
-    /**
-     * @var boolean
-     */
-    protected $isAvailable = false;
+    protected array $configuration;
 
     /**
      * @var bool
      */
-    protected $isUsed = false;
+    protected bool $isAvailable = false;
 
     /**
      * @var bool
      */
-    protected $allRequirementsMet = true;
+    protected bool $isUsed = false;
 
     /**
-     * @var \TYPO3\CMS\Extbase\Object\ObjectManagerInterface
+     * @var bool
      */
-    protected $objectManager;
+    protected bool $allRequirementsMet = true;
+
+    /**
+     * @var ObjectManagerInterface
+     */
+    protected ObjectManagerInterface $objectManager;
 
     /**
      * AbstractFacet constructor.
@@ -86,24 +91,22 @@ abstract class AbstractFacet
      * @param string $field
      * @param string $label
      * @param array $configuration Facet configuration passed from typoscript
+     * @param ObjectManager $objectManager
      */
-    public function __construct(SearchResultSet $resultSet, $name, $field, $label = '', array $configuration = [])
-    {
+    public function __construct(
+        SearchResultSet $resultSet,
+        string $name,
+        string $field,
+        string $label = '',
+        array $configuration = [],
+        ObjectManagerInterface $objectManager = null
+    ) {
         $this->resultSet = $resultSet;
         $this->name = $name;
         $this->field = $field;
         $this->label = $label;
         $this->configuration = $configuration;
-    }
-
-    /**
-     * Injects the object manager
-     *
-     * @param \TYPO3\CMS\Extbase\Object\ObjectManagerInterface $objectManager
-     */
-    public function injectObjectManager(\TYPO3\CMS\Extbase\Object\ObjectManagerInterface $objectManager)
-    {
-        $this->objectManager = $objectManager;
+        $this->objectManager = $objectManager ?? GeneralUtility::makeInstance(ObjectManager::class);
     }
 
     /**
@@ -111,7 +114,7 @@ abstract class AbstractFacet
      *
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
@@ -121,7 +124,7 @@ abstract class AbstractFacet
      *
      * @return string
      */
-    public function getField()
+    public function getField(): string
     {
         return $this->field;
     }
@@ -129,7 +132,7 @@ abstract class AbstractFacet
     /**
      * @param string $label
      */
-    public function setLabel($label)
+    public function setLabel(string $label)
     {
         $this->label = $label;
     }
@@ -137,39 +140,39 @@ abstract class AbstractFacet
     /**
      * @return string
      */
-    public function getLabel()
+    public function getLabel(): string
     {
         return $this->label;
     }
 
     /**
-     * @param boolean $isAvailable
+     * @param bool $isAvailable
      */
-    public function setIsAvailable($isAvailable)
+    public function setIsAvailable(bool $isAvailable)
     {
         $this->isAvailable = $isAvailable;
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
-    public function getIsAvailable()
+    public function getIsAvailable(): bool
     {
         return $this->isAvailable;
     }
 
     /**
-     * @param boolean $isUsed
+     * @param bool $isUsed
      */
-    public function setIsUsed($isUsed)
+    public function setIsUsed(bool $isUsed)
     {
         $this->isUsed = $isUsed;
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
-    public function getIsUsed()
+    public function getIsUsed(): bool
     {
         return $this->isUsed;
     }
@@ -177,23 +180,23 @@ abstract class AbstractFacet
     /**
      * @return string
      */
-    public function getType()
+    public function getType(): string
     {
         return static::$type;
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
-    public function getAllRequirementsMet()
+    public function getAllRequirementsMet(): bool
     {
         return $this->allRequirementsMet;
     }
 
     /**
-     * @param boolean $allRequirementsMet
+     * @param bool $allRequirementsMet
      */
-    public function setAllRequirementsMet($allRequirementsMet)
+    public function setAllRequirementsMet(bool $allRequirementsMet)
     {
         $this->allRequirementsMet = $allRequirementsMet;
     }
@@ -201,7 +204,7 @@ abstract class AbstractFacet
     /**
      * @return SearchResultSet
      */
-    public function getResultSet()
+    public function getResultSet(): SearchResultSet
     {
         return $this->resultSet;
     }
@@ -209,9 +212,9 @@ abstract class AbstractFacet
     /**
      * Get configuration
      *
-     * @return mixed
+     * @return array
      */
-    public function getConfiguration()
+    public function getConfiguration(): array
     {
         return $this->configuration;
     }
@@ -221,7 +224,7 @@ abstract class AbstractFacet
      *
      * @return string
      */
-    public function getPartialName()
+    public function getPartialName(): string
     {
         return 'Default';
     }
@@ -229,31 +232,30 @@ abstract class AbstractFacet
     /**
      * @return string
      */
-    public function getGroupName()
+    public function getGroupName(): string
     {
-        return isset($this->configuration['groupName']) ? $this->configuration['groupName'] : 'main';
+        return $this->configuration['groupName'] ?? 'main';
     }
 
     /**
-     * Indicates if this facet should ne included in the available facets. When nothing is configured,
+     * Indicates if this facet should be included in the available facets. When nothing is configured,
      * the method return TRUE.
      *
-     * @return boolean
+     * @return bool
      */
-    public function getIncludeInAvailableFacets()
+    public function getIncludeInAvailableFacets(): bool
     {
         return ((int)$this->getFacetSettingOrDefaultValue('includeInAvailableFacets', 1)) === 1;
     }
 
     /**
-     * Indicates if this facets should be included in the used facets. When nothing is configured,
+     * Indicates if these facets should be included in the used facets. When nothing is configured,
      * the methods returns true.
      *
-     * @return boolean
+     * @return bool
      */
-    public function getIncludeInUsedFacets()
+    public function getIncludeInUsedFacets(): bool
     {
-
         return ((int)$this->getFacetSettingOrDefaultValue('includeInUsedFacets', 1)) === 1;
     }
 
@@ -262,7 +264,7 @@ abstract class AbstractFacet
      *
      * @return array
      */
-    public function getRequirements()
+    public function getRequirements(): array
     {
         return $this->getFacetSettingOrDefaultValue('requirements.', []);
     }
@@ -272,19 +274,19 @@ abstract class AbstractFacet
      *
      * @return AbstractFacetItemCollection
      */
-    abstract public function getAllFacetItems();
+    abstract public function getAllFacetItems(): AbstractFacetItemCollection;
 
     /**
      * @param string $key
      * @param mixed $defaultValue
      * @return mixed
      */
-    protected function getFacetSettingOrDefaultValue($key, $defaultValue)
+    protected function getFacetSettingOrDefaultValue(string $key, $defaultValue)
     {
         if (!isset($this->configuration[$key])) {
             return $defaultValue;
         }
 
-        return ($this->configuration[$key]);
+        return $this->configuration[$key];
     }
 }
