@@ -298,10 +298,10 @@ tools and infrastructure as the official TYPO3 documentation.
 Please look at the general information about TYPO3 documentation for
 more information:
 
-* [Directory and file structure](https://docs.typo3.org/m/typo3/docs-how-to-document/master/en-us/GeneralConventions/DirectoryFilenames.html)
+* [Directory and file structure](https://docs.typo3.org/m/typo3/docs-how-to-document/main/en-us/WritingDocForExtension/Index.html)
 * [How to contribute]()
-* [reStructuredText & sphinx](https://docs.typo3.org/m/typo3/docs-how-to-document/master/en-us/WritingReST/Index.html)
-* [Render documentation with Docker](https://docs.typo3.org/m/typo3/docs-how-to-document/master/en-us/RenderingDocs/Index.html)
+* [reStructuredText & sphinx](https://docs.typo3.org/m/typo3/docs-how-to-document/main/en-us/WritingReST/BasicRestSyntax.html)
+* [Render documentation with Docker](https://docs.typo3.org/m/typo3/docs-how-to-document/main/en-us/RenderingDocs/Quickstart.html)
 
 For issues and pull requests, please use the tag [DOCS] in your commit
 messages / PR title / issue title, e.g.:

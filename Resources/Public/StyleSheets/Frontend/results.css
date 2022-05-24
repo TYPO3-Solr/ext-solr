@@ -1,35 +1,5 @@
-.tx_solr .searchinfo {
-    margin-top: 20px;
-    margin-bottom: 10px;
-}
-
-.tx_solr .search-result {
-    margin-bottom: 10px;
-}
-
-.tx_solr .prefixgroup-tabs a {
-    padding-left: 1px!important;
-    padding-right: 2px!important;
-    font-size: smaller;
-}
-
-.tx_solr .btn-circle {
-    height: 24px;
-    text-align: center;
-    padding: 3px 3px;
-    font-size: 12px;
-    line-height: 1.42;
-    border-radius: 15px;
-    border-color: #ddd;
-}
-
-.tx_solr .facet-type-hierarchy .list-group-item {
-    padding-left: 10px!important;
-    padding-right: 0px!important;
-}
-
 .tx_solr .query-debug {
-    font-size: 12px;
+    font-size: 0.8rem;
 }
 
 .results-highlight {
@@ -38,17 +8,6 @@
 
 /* ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- */
 /* frequent searches */
-
-#tx-solr-frequent-searches ul {
-    padding-right: 10px;
-    padding-left: 0px!important;
-}
-
-#tx-solr-frequent-searches li {
-    list-style-type: none;
-    margin-right: 10px;
-    display: inline;
-}
 
 .tx-solr-frequent-term-14 {
     font-size: 14px;

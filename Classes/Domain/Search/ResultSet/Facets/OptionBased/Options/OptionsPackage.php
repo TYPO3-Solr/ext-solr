@@ -1,5 +1,6 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options;
+
+declare(strict_types=1);
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -14,24 +15,28 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Opt
  * The TYPO3 project - inspiring people to share!
  */
 
+namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options;
+
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetPackage;
 
 /**
  * Class OptionsPackage
  */
-class OptionsPackage extends AbstractFacetPackage {
-
+class OptionsPackage extends AbstractFacetPackage
+{
     /**
      * @return string
      */
-    public function getParserClassName() {
-        return (string)OptionsFacetParser::class;
+    public function getParserClassName(): string
+    {
+        return OptionsFacetParser::class;
     }
 
     /**
      * @return string
      */
-    public function getQueryBuilderClassName() {
-        return (string)OptionsFacetQueryBuilder::class;
+    public function getQueryBuilderClassName(): string
+    {
+        return OptionsFacetQueryBuilder::class;
     }
 }

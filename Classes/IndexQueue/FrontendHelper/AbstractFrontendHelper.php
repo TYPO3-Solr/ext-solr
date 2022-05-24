@@ -1,28 +1,21 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper;
 
-/***************************************************************
- *  Copyright notice
+declare(strict_types=1);
+
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2010-2015 Ingo Renner <ingo@typo3.org>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
+
+namespace ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper;
 
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerResponse;
@@ -38,37 +31,36 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
  */
 abstract class AbstractFrontendHelper implements FrontendHelper
 {
-
     /**
      * Index Queue page indexer request.
      *
-     * @var PageIndexerRequest
+     * @var PageIndexerRequest|null
      */
-    protected $request;
+    protected ?PageIndexerRequest $request = null;
 
     /**
      * Index Queue page indexer response.
      *
-     * @var PageIndexerResponse
+     * @var PageIndexerResponse|null
      */
-    protected $response;
+    protected ?PageIndexerResponse $response = null;
 
     /**
      * The action a frontend helper executes.
      */
-    protected $action = null;
+    protected string $action;
 
     /**
-     * @var SolrLogManager
+     * @var SolrLogManager|null
      */
-    protected $logger = null;
+    protected ?SolrLogManager $logger = null;
 
     /**
      * Disables the frontend output for index queue requests.
      *
      * @param array $parameters Parameters from frontend
      */
-    public function disableFrontendOutput(&$parameters)
+    public function disableFrontendOutput(array &$parameters)
     {
         $parameters['enableOutput'] = false;
     }
@@ -78,11 +70,12 @@ abstract class AbstractFrontendHelper implements FrontendHelper
      *
      * @param array $parameters Parameters from frontend
      * @param TypoScriptFrontendController $parentObject TSFE object
+     * @noinspection PhpUnused
      */
     public function disableCaching(
         /** @noinspection PhpUnusedParameterInspection */
-        &$parameters,
-        $parentObject
+        array &$parameters,
+        TypoScriptFrontendController $parentObject
     ) {
         $parentObject->no_cache = true;
     }

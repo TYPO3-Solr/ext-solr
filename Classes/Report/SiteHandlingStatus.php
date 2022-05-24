@@ -1,44 +1,37 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Report;
 
-/***************************************************************
- *  Copyright notice
+declare(strict_types=1);
+
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2019- dkd Internet Services GmbH (info@dkd.de)
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
+
+namespace ApacheSolrForTypo3\Solr\Report;
 
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
-use ApacheSolrForTypo3\Solr\Domain\Site\Typo3ManagedSite;
 use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
-use Exception;
+use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use Psr\Http\Message\UriInterface;
+use Throwable;
 use TYPO3\CMS\Core\Site\Entity\Site as Typo3Site;
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Reports\Status;
 
 /**
- * Provides an status report about current state of site handling configurations.
+ * Provides a status report about current state of site handling configurations.
  *
- * Following thigs are checked currently:
+ * Following things are checked currently:
  * * Entry Point[base] scheme expects -> http[s]
  * * Entry Point[base] authority expects -> [user-info@]host[:port]
  */
@@ -46,6 +39,9 @@ class SiteHandlingStatus extends AbstractSolrStatus
 {
     const TITLE_SITE_HANDLING_CONFIGURATION = 'Site handling configuration';
 
+    /**
+     * @var string
+     */
     const
         CSS_STATUS_NOTICE = 'notice',
         CSS_STATUS_INFO = 'info',
@@ -58,27 +54,32 @@ class SiteHandlingStatus extends AbstractSolrStatus
      *
      * @var SiteRepository
      */
-    protected $siteRepository = null;
+    protected $siteRepository;
 
     /**
      * @var ExtensionConfiguration
      */
-    protected $extensionConfiguration = null;
+    protected $extensionConfiguration;
 
     /**
      * SolrStatus constructor.
-     * @param ExtensionConfiguration $extensionConfiguration
+     * @param ExtensionConfiguration|null $extensionConfiguration
      * @param SiteRepository|null $siteRepository
      */
-    public function __construct(ExtensionConfiguration $extensionConfiguration = null, SiteRepository $siteRepository = null)
-    {
+    public function __construct(
+        ExtensionConfiguration $extensionConfiguration = null,
+        SiteRepository $siteRepository = null
+    ) {
         $this->extensionConfiguration = $extensionConfiguration ?? GeneralUtility::makeInstance(ExtensionConfiguration::class);
         $this->siteRepository = $siteRepository ?? GeneralUtility::makeInstance(SiteRepository::class);
     }
 
     /**
      * @return array
-     * @throws Exception
+     *
+     * @throws DBALDriverException
+     * @throws Throwable
+     * @noinspection PhpMissingReturnTypeInspection see {@link \TYPO3\CMS\Reports\StatusProviderInterface::getStatus()}
      */
     public function getStatus()
     {
@@ -86,13 +87,17 @@ class SiteHandlingStatus extends AbstractSolrStatus
 
         /* @var Site $site */
         foreach ($this->siteRepository->getAvailableSites() as $site) {
-            if (!($site instanceof Typo3ManagedSite)) {
+            if (!($site instanceof Site)) {
                 $reports[] = GeneralUtility::makeInstance(
                     Status::class,
-                    /** @scrutinizer ignore-type */ self::TITLE_SITE_HANDLING_CONFIGURATION,
-                    /** @scrutinizer ignore-type */ 'Something went wrong',
-                    /** @scrutinizer ignore-type */ vsprintf('The configured Site "%s" is not TYPO3 managed site. Please refer to TYPO3 site management docs and configure the site properly.', [$site->getLabel()]),
-                    /** @scrutinizer ignore-type */ Status::ERROR
+                    /** @scrutinizer ignore-type */
+                    self::TITLE_SITE_HANDLING_CONFIGURATION,
+                    /** @scrutinizer ignore-type */
+                    'Something went wrong',
+                    /** @scrutinizer ignore-type */
+                    vsprintf('The configured Site "%s" is not TYPO3 managed site. Please refer to TYPO3 site management docs and configure the site properly.', [$site->getLabel()]),
+                    /** @scrutinizer ignore-type */
+                    Status::ERROR
                 );
                 continue;
             }
@@ -111,7 +116,7 @@ class SiteHandlingStatus extends AbstractSolrStatus
     protected function generateValidationReportForSingleSite(Typo3Site $ypo3Site): Status
     {
         $variables = [
-            'identifier' => $ypo3Site->getIdentifier()
+            'identifier' => $ypo3Site->getIdentifier(),
         ];
         $globalPassedStateForThisSite = true;
 
@@ -121,9 +126,9 @@ class SiteHandlingStatus extends AbstractSolrStatus
                     'label' => 'Language: ' . $siteLanguage->getTitle(),
                     'message' => 'No checks: The language is disabled in site configuration.',
                     'CSSClassesFor' => [
-                        'tr' => self::CSS_STATUS_NOTICE
+                        'tr' => self::CSS_STATUS_NOTICE,
                     ],
-                    'passed' => true
+                    'passed' => true,
                 ];
                 continue;
             }
@@ -133,18 +138,21 @@ class SiteHandlingStatus extends AbstractSolrStatus
 
         $renderedReport = $this->getRenderedReport('SiteHandlingStatus.html', $variables);
         /* @var Status $status */
-        $status = GeneralUtility::makeInstance(
+        return GeneralUtility::makeInstance(
             Status::class,
-            /** @scrutinizer ignore-type */ sprintf('Site Identifier: "%s"', $ypo3Site->getIdentifier()),
-            /** @scrutinizer ignore-type */ '',
-            /** @scrutinizer ignore-type */ $renderedReport,
-            /** @scrutinizer ignore-type */ $globalPassedStateForThisSite == true ? Status::OK : Status::ERROR
+            /** @scrutinizer ignore-type */
+            sprintf('Site Identifier: "%s"', $ypo3Site->getIdentifier()),
+            /** @scrutinizer ignore-type */
+            '',
+            /** @scrutinizer ignore-type */
+            $renderedReport,
+            /** @scrutinizer ignore-type */
+            $globalPassedStateForThisSite == true ? Status::OK : Status::ERROR
         );
-        return $status;
     }
 
     /**
-     * Generates the validation result array for using them in standalone view as an table row.
+     * Generates the validation result array for using them in standalone view as a table row.
      *
      * @param SiteLanguage $siteLanguage
      * @return array
@@ -155,16 +163,25 @@ class SiteHandlingStatus extends AbstractSolrStatus
             'label' => 'Language: ' . $siteLanguage->getTitle(),
             'passed' => true,
             'CSSClassesFor' => [
-                'tr' => self::CSS_STATUS_OK
-            ]
+                'tr' => self::CSS_STATUS_OK,
+            ],
         ];
 
         if (!GeneralUtility::isValidUrl((string)$siteLanguage->getBase())) {
-            $validationResult['message'] = sprintf('Entry Point[base]="%s" is not valid URL. Following parts of defined URL are empty or invalid: "%s"', (string)$siteLanguage->getBase(), $this->fetchInvalidPartsOfUri($siteLanguage->getBase()));
+            $validationResult['message'] =
+                sprintf(
+                    'Entry Point[base]="%s" is not valid URL.'
+                    . ' Following parts of defined URL are empty or invalid: "%s"',
+                    $siteLanguage->getBase()->__toString(),
+                    $this->fetchInvalidPartsOfUri($siteLanguage->getBase())
+                );
             $validationResult['passed'] = false;
             $validationResult['CSSClassesFor']['tr'] = self::CSS_STATUS_ERROR;
         } else {
-            $validationResult['message'] = sprintf('Entry Point[base]="%s" is valid URL.', (string)$siteLanguage->getBase());
+            $validationResult['message'] = sprintf(
+                'Entry Point[base]="%s" is valid URL.',
+                $siteLanguage->getBase()->__toString()
+            );
         }
 
         return $validationResult;

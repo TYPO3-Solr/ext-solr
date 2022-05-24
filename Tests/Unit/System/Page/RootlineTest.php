@@ -1,28 +1,19 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\Page;
 
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2015-2016 Timo Schmidt <timo.hund@dkd.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
+
+namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\Page;
 
 use ApacheSolrForTypo3\Solr\System\Page\Rootline;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
@@ -38,58 +29,63 @@ class RootlineTest extends UnitTest
     /**
      * @test
      */
-    public function getRootPageIdReturnUidOfRootPage() {
+    public function getRootPageIdReturnUidOfRootPage()
+    {
         $testRootLineArray = [
-            ['uid' => 100,'pid' => 10, 'title' => 'level 2'],
-            ['uid' => 10,'pid' => 1, 'title' => 'level 1'],
-            ['uid' => 1,'pid' => 0, 'title' => 'rootpage', 'is_siteroot' => 1]
+            ['uid' => 100, 'pid' => 10, 'title' => 'level 2'],
+            ['uid' => 10, 'pid' => 1, 'title' => 'level 1'],
+            ['uid' => 1, 'pid' => 0, 'title' => 'rootpage', 'is_siteroot' => 1],
         ];
 
         $rootline = new Rootline($testRootLineArray);
-        $this->assertSame(1, $rootline->getRootPageId(), 'GetRootPageId does not return expected root page id');
+        self::assertSame(1, $rootline->getRootPageId(), 'GetRootPageId does not return expected root page id');
     }
 
     /**
      * @test
      */
-    public function getRootPageIdReturnsZeroWhenNoSiteRootIsPresent() {
+    public function getRootPageIdReturnsZeroWhenNoSiteRootIsPresent()
+    {
         $rootline = new Rootline([]);
-        $this->assertSame(0, $rootline->getRootPageId(), 'Expecting null when no rootline given');
+        self::assertSame(0, $rootline->getRootPageId(), 'Expecting null when no rootline given');
     }
 
     /**
      * @test
      */
-    public function getHasRootPageReturnsFalseOnEmptyRootLine() {
+    public function getHasRootPageReturnsFalseOnEmptyRootLine()
+    {
         $rootline = new Rootline([]);
-        $this->assertFalse($rootline->getHasRootPage(), 'Expecting false when no rootline given');
+        self::assertFalse($rootline->getHasRootPage(), 'Expecting false when no rootline given');
     }
 
     /**
      * @test
      */
-    public function getHasRootPageRturnsTrueWithGivenRootLine() {
+    public function getHasRootPageRturnsTrueWithGivenRootLine()
+    {
         $testRootLineArray = [
-            ['uid' => 100,'pid' => 10, 'title' => 'level 2'],
-            ['uid' => 10,'pid' => 1, 'title' => 'level 1'],
-            ['uid' => 1,'pid' => 0, 'title' => 'rootpage', 'is_siteroot' => 1]
+            ['uid' => 100, 'pid' => 10, 'title' => 'level 2'],
+            ['uid' => 10, 'pid' => 1, 'title' => 'level 1'],
+            ['uid' => 1, 'pid' => 0, 'title' => 'rootpage', 'is_siteroot' => 1],
         ];
 
         $rootline = new Rootline($testRootLineArray);
-        $this->assertTrue($rootline->getHasRootPage(), 'Expecting true when rootline with rootpage given');
+        self::assertTrue($rootline->getHasRootPage(), 'Expecting true when rootline with rootpage given');
     }
 
     /**
      * @test
      */
-    public function canGetParentPageIds() {
+    public function canGetParentPageIds()
+    {
         $testRootLineArray = [
-            ['uid' => 100,'pid' => 10, 'title' => 'level 2'],
-            ['uid' => 10,'pid' => 1, 'title' => 'level 1'],
-            ['uid' => 1,'pid' => 0, 'title' => 'rootpage', 'is_siteroot' => 1]
+            ['uid' => 100, 'pid' => 10, 'title' => 'level 2'],
+            ['uid' => 10, 'pid' => 1, 'title' => 'level 1'],
+            ['uid' => 1, 'pid' => 0, 'title' => 'rootpage', 'is_siteroot' => 1],
         ];
 
         $rootline = new Rootline($testRootLineArray);
-        $this->assertEquals([100,10,1], $rootline->getParentPageIds(), 'Expecting true when rootline with rootpage given');
+        self::assertEquals([100, 10, 1], $rootline->getParentPageIds(), 'Expecting true when rootline with rootpage given');
     }
 }

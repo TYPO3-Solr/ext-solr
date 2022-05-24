@@ -20,11 +20,14 @@ use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use PHPUnit\Framework\MockObject\MockObject;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class TypoScriptTest extends UnitTest
 {
+    use ProphecyTrait;
+
     /**
      * @var TypoScript
      */
@@ -35,23 +38,22 @@ class TypoScriptTest extends UnitTest
      */
     protected $typoScriptConfigurationDumpMock;
 
-    public function setUp()
+    protected function setUp(): void
     {
-        parent::setUp();
         $this->typoScriptMock = $this->getMockBuilder(TypoScript::class)
             ->disableOriginalConstructor()
-            ->setMethods(
+            ->onlyMethods(
                 [
                     'buildConfigurationArray',
                     'buildTypoScriptConfigurationFromArray',
-                    'getConfigurationPageIdToUse'
                 ]
             )->getMock();
 
         $this->typoScriptConfigurationDumpMock = $this->getDumbMock(TypoScriptConfiguration::class);
+        parent::setUp();
     }
 
-    public function tearDown()
+    protected function tearDown(): void
     {
         GeneralUtility::resetSingletonInstances([]);
         unset(
@@ -96,7 +98,7 @@ class TypoScriptTest extends UnitTest
             $language
         );
 
-        $this->assertInstanceOf(TypoScriptConfiguration::class, $newConfiguration);
+        self::assertInstanceOf(TypoScriptConfiguration::class, $newConfiguration);
 
         // prepare second/cached call
         // pageRepository->getRootLine should be called only once
@@ -107,9 +109,8 @@ class TypoScriptTest extends UnitTest
             $language
         );
 
-        $this->assertInstanceOf(TypoScriptConfiguration::class, $cachedConfiguration);
+        self::assertInstanceOf(TypoScriptConfiguration::class, $cachedConfiguration);
 
-        $this->assertSame($newConfiguration, $cachedConfiguration);
+        self::assertSame($newConfiguration, $cachedConfiguration);
     }
-
 }

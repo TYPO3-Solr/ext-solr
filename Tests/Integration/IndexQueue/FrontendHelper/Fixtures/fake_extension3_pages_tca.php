@@ -14,7 +14,7 @@ return [
                 'MM_opposite_field' => 'relations',
                 'MM_match_fields' => [
                     'tablenames' => 'pages',
-                    'fieldname' => 'page_relations'
+                    'fieldname' => 'page_relations',
                 ],
                 'size' => 10,
                 'autoSizeMax' => 30,
@@ -35,8 +35,8 @@ return [
                         'page_relations',
                     ],
                 ],
-                'readOnly' => true
-            ]
-        ]
-    ]
+                'readOnly' => true,
+            ],
+        ],
+    ],
 ];

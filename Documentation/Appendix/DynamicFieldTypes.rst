@@ -68,6 +68,8 @@ Extension               Type                                 Multivalue  Comment
 \*_textExactM           textExact                            Yes
 \*_textSpellS           textSpell                            No
 \*_textSpellM           textSpell                            Yes
+\*_textSpellExactS      textSpellExact                       No
+\*_textSpellExactM      textSpellExact                       Yes
 \*_phoneticS            Phonetic                             No
 \*_phoneticM            Phonetic                             Yes
 \*_point                point                                No

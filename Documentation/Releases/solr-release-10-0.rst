@@ -75,7 +75,7 @@ All Apache Solr connections must be stored in Site Handling "config.yaml" file f
 config.absRefPrefix
 """""""""""""""""""
 
-The `"config.absRefPrefix" <https://docs.typo3.org/m/typo3/reference-typoscript/master/en-us/Setup/Config/Index.html#absrefprefix />`_ is `obsolete <https://docs.typo3.org/c/typo3/cms-core/9.5/en-us/Changelog/9.4/Feature-86057-ImprovedTypolinkURLLinkGeneration.html />`_ and must be replaced with
+The `"config.absRefPrefix" <https://docs.typo3.org/m/typo3/reference-typoscript/main/en-us/Setup/Config/Index.html#absrefprefix />`_ is `obsolete <https://docs.typo3.org/c/typo3/cms-core/9.5/en-us/Changelog/9.4/Feature-86057-ImprovedTypolinkURLLinkGeneration.html />`_ and must be replaced with
 Site Handlings `"base" <https://docs.typo3.org/m/typo3/reference-coreapi/9.5/en-us/ApiOverview/SiteHandling/Basics.html#base />`_ or `"baseVariants" <https://docs.typo3.org/m/typo3/reference-coreapi/9.5/en-us/ApiOverview/SiteHandling/BaseVariants.html />`_ settings.
 
 

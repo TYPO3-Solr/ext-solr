@@ -1,33 +1,26 @@
 <?php
 
-namespace ApacheSolrForTypo3\Solr\Domain\Search\LastSearches;
+/*
+ * This file is part of the TYPO3 CMS project.
+ *
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
+ *
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ *
+ * The TYPO3 project - inspiring people to share!
+ */
 
-/***************************************************************
- *  Copyright notice
- *
- *  (c) 2015-2016 Timo Schmidt <timo.schmidt@dkd.de>
- *  All rights reserved
- *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+namespace ApacheSolrForTypo3\Solr\Domain\Search\LastSearches;
 
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Session\FrontendUserSession;
+use Doctrine\DBAL\Driver\Exception as DBALDriverException;
+use Doctrine\DBAL\Exception as DBALException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use UnexpectedValueException;
 
 /**
  * The LastSearchesService is responsible to return the LastSearches from the session or database,
@@ -37,29 +30,31 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class LastSearchesService
 {
-
     /**
      * @var TypoScriptConfiguration
      */
-    protected $configuration;
+    protected TypoScriptConfiguration $configuration;
 
     /**
      * @var FrontendUserSession
      */
-    protected $session;
+    protected FrontendUserSession $session;
 
     /**
      * @var LastSearchesRepository
      */
-    protected $lastSearchesRepository;
+    protected LastSearchesRepository $lastSearchesRepository;
 
     /**
      * @param TypoScriptConfiguration $typoscriptConfiguration
      * @param FrontendUserSession|null $session
      * @param LastSearchesRepository|null $lastSearchesRepository
      */
-    public function __construct(TypoScriptConfiguration $typoscriptConfiguration, FrontendUserSession $session = null, LastSearchesRepository $lastSearchesRepository = null)
-    {
+    public function __construct(
+        TypoScriptConfiguration $typoscriptConfiguration,
+        FrontendUserSession $session = null,
+        LastSearchesRepository $lastSearchesRepository = null
+    ) {
         $this->configuration = $typoscriptConfiguration;
         $this->session = $session ?? GeneralUtility::makeInstance(FrontendUserSession::class);
         $this->lastSearchesRepository = $lastSearchesRepository ?? GeneralUtility::makeInstance(LastSearchesRepository::class);
@@ -69,8 +64,10 @@ class LastSearchesService
      * Retrieves the last searches from the session or database depending on the configuration.
      *
      * @return array
+     * @throws DBALDriverException
+     * @throws DBALException|\Doctrine\DBAL\DBALException
      */
-    public function getLastSearches()
+    public function getLastSearches(): array
     {
         $lastSearchesKeywords = [];
         $mode   = $this->configuration->getSearchLastSearchesMode();
@@ -92,9 +89,10 @@ class LastSearchesService
      * Saves the keywords to the last searches in the database or session depending on the configuration.
      *
      * @param string $keywords
-     * @throws \UnexpectedValueException
+     * @throws DBALDriverException
+     * @throws DBALException|\Doctrine\DBAL\DBALException
      */
-    public function addToLastSearches($keywords)
+    public function addToLastSearches(string $keywords)
     {
         $mode = $this->configuration->getSearchLastSearchesMode();
         switch ($mode) {
@@ -102,10 +100,10 @@ class LastSearchesService
                 $this->storeKeywordsToSession($keywords);
                 break;
             case 'global':
-                $this->lastSearchesRepository->add($keywords, (int)$this->configuration->getSearchLastSearchesLimit());
+                $this->lastSearchesRepository->add($keywords, $this->configuration->getSearchLastSearchesLimit());
                 break;
             default:
-                throw new \UnexpectedValueException(
+                throw new UnexpectedValueException(
                     'Unknown mode for plugin.tx_solr.search.lastSearches.mode, valid modes are "user" or "global".',
                     1342456570
                 );
@@ -118,21 +116,18 @@ class LastSearchesService
      * @param int $limit
      * @return array An array containing the last searches of the current user
      */
-    protected function getLastSearchesFromSession($limit)
+    protected function getLastSearchesFromSession(int $limit): array
     {
         $lastSearches = $this->session->getLastSearches();
-        $lastSearches = array_slice(array_reverse(array_unique($lastSearches)), 0, $limit);
-
-        return $lastSearches;
+        return array_slice(array_reverse(array_unique($lastSearches)), 0, $limit);
     }
 
     /**
      * Stores the keywords from the current query to the user's session.
      *
      * @param string $keywords The current query's keywords
-     * @return void
      */
-    protected function storeKeywordsToSession($keywords)
+    protected function storeKeywordsToSession(string $keywords)
     {
         $currentLastSearches = $this->session->getLastSearches();
         $lastSearches = $currentLastSearches;

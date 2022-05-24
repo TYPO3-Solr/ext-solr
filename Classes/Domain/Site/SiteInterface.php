@@ -1,42 +1,33 @@
 <?php
 
-namespace ApacheSolrForTypo3\Solr\Domain\Site;
+declare(strict_types=1);
 
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2019 Frans Saris <frans.saris@beech.it> & Timo Hund <timo.hund@dkd.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
+
+namespace ApacheSolrForTypo3\Solr\Domain\Site;
 
 use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 
 interface SiteInterface
 {
-
     /**
      * Gets the site's root page ID (uid).
      *
      * @return int The site's root page ID.
      */
-    public function getRootPageId();
+    public function getRootPageId(): int;
 
     /**
      * Gets available language id's for this site
@@ -46,12 +37,12 @@ interface SiteInterface
     public function getAvailableLanguageIds(): array;
 
     /**
-     * Gets the site's label. The label is build from the the site title and root
+     * Gets the site's label. The label is build from the site title and root
      * page ID (uid).
      *
      * @return string The site's label.
      */
-    public function getLabel();
+    public function getLabel(): string;
 
     /**
      * Gets the site's Solr TypoScript configuration (plugin.tx_solr.*)
@@ -67,7 +58,7 @@ interface SiteInterface
      *
      * @return int The site's default language.
      */
-    public function getDefaultLanguage();
+    public function getDefaultLanguageId(): int;
 
     /**
      * Generates a list of page IDs in this site.
@@ -96,30 +87,28 @@ interface SiteInterface
      *
      * @return string Site Hash.
      */
-    public function getSiteHash();
+    public function getSiteHash(): string;
 
     /**
-     * Gets the site's main domain. More specifically the first domain record in
-     * the site tree.
+     * Gets the site's main domain.
      *
      * @return string The site's main domain.
      */
-    public function getDomain();
+    public function getDomain(): string;
 
     /**
-     * Gets the site's root page.
+     * Gets the site's root page record.
      *
      * @return array The site's root page.
      */
-    public function getRootPage();
+    public function getRootPage(): array;
 
     /**
      * Gets the site's root page's title.
      *
      * @return string The site's root page's title
      */
-    public function getTitle();
-
+    public function getTitle(): string;
 
     /**
      * @param int $language

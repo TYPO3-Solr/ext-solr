@@ -1,29 +1,19 @@
 <?php
 
-namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
+/*
+ * This file is part of the TYPO3 CMS project.
+ *
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
+ *
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ *
+ * The TYPO3 project - inspiring people to share!
+ */
 
-/***************************************************************
- *  Copyright notice
- *
- *  (c) 2017 <timo.hund@dkd.de>
- *  All rights reserved
- *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\AbstractQueryBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -32,13 +22,12 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * The ReturnFields class is responsible to hold a list of field names that should be returned from
  * solr.
  */
-class ReturnFields implements ParameterBuilder
+class ReturnFields implements ParameterBuilderInterface
 {
-
     /**
      * @var array
      */
-    protected $fieldList = [];
+    protected array $fieldList = [];
 
     /**
      * FieldList constructor.
@@ -56,7 +45,7 @@ class ReturnFields implements ParameterBuilder
      *
      * @param string $fieldName Name of a field to return in the result documents
      */
-    public function add($fieldName)
+    public function add(string $fieldName)
     {
         if (strpos($fieldName, '[') === false && strpos($fieldName, ']') === false && in_array('*', $this->fieldList)) {
             $this->fieldList = array_diff($this->fieldList, ['*']);
@@ -70,7 +59,7 @@ class ReturnFields implements ParameterBuilder
      *
      * @param string $fieldName Field to remove from the list of fields to return
      */
-    public function remove($fieldName)
+    public function remove(string $fieldName)
     {
         $key = array_search($fieldName, $this->fieldList);
 
@@ -83,7 +72,7 @@ class ReturnFields implements ParameterBuilder
      * @param string $delimiter
      * @return string
      */
-    public function toString($delimiter = ',')
+    public function toString(string $delimiter = ','): string
     {
         return implode($delimiter, $this->fieldList);
     }
@@ -93,7 +82,7 @@ class ReturnFields implements ParameterBuilder
      * @param string $delimiter
      * @return ReturnFields
      */
-    public static function fromString($fieldList, $delimiter = ',')
+    public static function fromString(string $fieldList, string $delimiter = ','): ReturnFields
     {
         $fieldListArray = GeneralUtility::trimExplode($delimiter, $fieldList);
         return static::fromArray($fieldListArray);
@@ -103,7 +92,7 @@ class ReturnFields implements ParameterBuilder
      * @param array $fieldListArray
      * @return ReturnFields
      */
-    public static function fromArray(array $fieldListArray)
+    public static function fromArray(array $fieldListArray): ReturnFields
     {
         return new ReturnFields($fieldListArray);
     }
@@ -111,7 +100,7 @@ class ReturnFields implements ParameterBuilder
     /**
      * @return array
      */
-    public function getValues()
+    public function getValues(): array
     {
         return array_unique(array_values($this->fieldList));
     }

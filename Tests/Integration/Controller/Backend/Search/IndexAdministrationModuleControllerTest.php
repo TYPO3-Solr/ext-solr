@@ -1,41 +1,40 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Tests\Integration\Controller\Backend\Search;
 
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2019 Timo Hund <timo.hund@dkd.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
+
+namespace ApacheSolrForTypo3\Solr\Tests\Integration\Controller\Backend\Search;
 
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\Controller\Backend\Search\IndexAdministrationModuleController;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
+use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
+use ApacheSolrForTypo3\Solr\System\Mvc\Backend\Service\ModuleDataStorageService;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
-use ApacheSolrForTypo3\Solr\Util;
+use Doctrine\DBAL\Exception as DBALException;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
+use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
+use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
 use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
+use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
+use TYPO3\TestingFramework\Core\Exception as TestingFrameworkCoreException;
 
 /**
  * Class IndexAdministrationModuleControllerTest
- * @package ApacheSolrForTypo3\Solr\Tests\Integration\Controller\Search
  */
 class IndexAdministrationModuleControllerTest extends IntegrationTest
 {
@@ -44,15 +43,38 @@ class IndexAdministrationModuleControllerTest extends IntegrationTest
      */
     protected $controller;
 
-    public function setUp() {
+    /**
+     * @throws NotFoundExceptionInterface
+     * @throws DBALException
+     * @throws ContainerExceptionInterface
+     * @throws NoSuchCacheException
+     * @throws TestingFrameworkCoreException
+     */
+    protected function setUp(): void
+    {
         parent::setUp();
-        $GLOBALS['LANG'] = $this->getMockBuilder(LanguageService::class)->disableOriginalConstructor()->getMock();
+        $GLOBALS['LANG'] = $this->createMock(LanguageService::class);
 
         $this->writeDefaultSolrTestSiteConfiguration();
-        $connectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
 
-        $this->controller = $this->getMockBuilder(IndexAdministrationModuleController::class)->setMethods(['addFlashMessage', 'redirect'])->getMock();
-        $this->controller->setSolrConnectionManager($connectionManager);
+        $this->controller = $this->getMockBuilder(IndexAdministrationModuleController::class)
+            ->setConstructorArgs(
+                [
+                    'moduleTemplateFactory' => $this->getContainer()->get(ModuleTemplateFactory::class),
+                    'moduleDataStorageService' => GeneralUtility::makeInstance(ModuleDataStorageService::class),
+                    'siteRepository' => GeneralUtility::makeInstance(SiteRepository::class),
+                    'siteFinder' => GeneralUtility::makeInstance(SiteFinder::class),
+                    'solrConnectionManager' => GeneralUtility::makeInstance(ConnectionManager::class),
+                    'indexQueue' => GeneralUtility::makeInstance(Queue::class),
+                ]
+            )
+            ->onlyMethods(['addFlashMessage'])
+            ->getMock();
+        $uriBuilderMock = $this->getMockBuilder(UriBuilder::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['uriFor'])->getMock();
+        $uriBuilderMock->expects(self::any())->method('uriFor')->willReturn('index');
+        $this->controller->injectUriBuilder($uriBuilderMock);
     }
 
     /**
@@ -60,13 +82,11 @@ class IndexAdministrationModuleControllerTest extends IntegrationTest
      */
     public function testReloadIndexConfigurationAction()
     {
-        $this->importDataSetFromFixture('can_reload_index_configuration.xml');
-
         /** @var SiteRepository $siteRepository */
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $selectedSite = $siteRepository->getFirstAvailableSite();
         $this->controller->setSelectedSite($selectedSite);
-        $this->controller->expects($this->exactly(1))
+        $this->controller->expects(self::exactly(1))
             ->method('addFlashMessage')
             ->with('Core configuration reloaded (core_en, core_de, core_da).', '', FlashMessage::OK);
         $this->controller->reloadIndexConfigurationAction();
@@ -77,15 +97,13 @@ class IndexAdministrationModuleControllerTest extends IntegrationTest
      */
     public function testEmptyIndexAction()
     {
-        $this->importDataSetFromFixture('can_reload_index_configuration.xml');
-
         /** @var SiteRepository $siteRepository */
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $selectedSite = $siteRepository->getFirstAvailableSite();
         $this->controller->setSelectedSite($selectedSite);
-        $this->controller->expects($this->once())
+        $this->controller->expects(self::atLeastOnce())
             ->method('addFlashMessage')
-            ->with('Index emptied for Site ", Root Page ID: 1" (core_en, core_de, core_da).', '', FlashMessage::OK);
+            ->with('Index emptied for Site "Root of Testpage testone.site aka integration_tree_one, Root Page ID: 1" (core_en, core_de, core_da).', '', FlashMessage::OK);
 
         $this->controller->emptyIndexAction();
     }

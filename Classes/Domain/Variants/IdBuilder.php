@@ -1,30 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * This file is part of the TYPO3 CMS project.
+ *
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
+ *
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ *
+ * The TYPO3 project - inspiring people to share!
+ */
+
 namespace ApacheSolrForTypo3\Solr\Domain\Variants;
 
-/***************************************************************
- *  Copyright notice
- *
- *  (c) 2017- Timo Hund <timo.hund@dkd.de>
- *  All rights reserved
- *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
-
+use InvalidArgumentException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -38,22 +31,20 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class IdBuilder
 {
-
     /**
      * This method is used to build a variantId.
      *
-     * By default the variantId is used
+     * By default, the variantId is used
      * @param string $type
-     * @param integer $uid
+     * @param int $uid
      * @return string
      */
-    public function buildFromTypeAndUid($type, $uid)
+    public function buildFromTypeAndUid(string $type, int $uid): string
     {
         $systemHash = $this->getSystemHash();
         $variantId = $systemHash . '/' . $type . '/' . $uid;
 
-        $variantId = $this->applyHook($variantId, $systemHash, $type, $uid);
-        return $variantId;
+        return $this->applyHook($variantId, $systemHash, $type, $uid);
     }
 
     /**
@@ -62,12 +53,16 @@ class IdBuilder
      * @param string $variantId
      * @param string $systemHash
      * @param string $type
-     * @param integer $uid
+     * @param int $uid
      * @return string
      */
-    protected function applyHook($variantId, $systemHash, $type, $uid)
-    {
-        if (!is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyVariantId'])) {
+    protected function applyHook(
+        string $variantId,
+        string $systemHash,
+        string $type,
+        int $uid
+    ): string {
+        if (!is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyVariantId'] ?? null)) {
             return $variantId;
         }
 
@@ -86,10 +81,10 @@ class IdBuilder
      *
      * @return string
      */
-    protected function getSystemHash()
+    protected function getSystemHash(): string
     {
         if (!isset($GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename'])) {
-            throw new \InvalidArgumentException("No sitename set in TYPO3_CONF_VARS|SYS|sitename");
+            throw new InvalidArgumentException('No sitename set in TYPO3_CONF_VARS|SYS|sitename');
         }
 
         $siteName = $GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename'];

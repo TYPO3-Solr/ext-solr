@@ -90,12 +90,12 @@ By now each site had one solr connection for reading and writing. In most of the
 Some setups require a more flexible approach:
 
 * E.g. when you want to clean a core and re-index that data your index is not complete for some time on the live site
-* When you want to do a master/slave setup for performance reasons(e.g. by using a slave node on the web server) this was not possible by now
+* When you want to do a primary/replica setup for performance reasons(e.g. by using a replica node on the web server) this was not possible by now
 
 With a separation of read and write connections this is now possible. With these building blocks you could e.g.
 
 * Index into a shadow core (that is the write core) and swap read and write core when your re-index is done
-* Install a slave server on your frontend server and index into a dedicated master node that act's as a solr master server
+* Install a replica server on your frontend server and index into a dedicated primary node that act's as a solr primary server
 
 The new setup can be configured like that:
 

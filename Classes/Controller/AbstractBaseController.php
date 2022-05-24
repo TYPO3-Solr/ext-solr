@@ -1,5 +1,4 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Controller;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -14,26 +13,34 @@ namespace ApacheSolrForTypo3\Solr\Controller;
  * The TYPO3 project - inspiring people to share!
  */
 
+namespace ApacheSolrForTypo3\Solr\Controller;
+
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSetService;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequestBuilder;
+use ApacheSolrForTypo3\Solr\Mvc\Controller\SolrControllerContext;
 use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
 use ApacheSolrForTypo3\Solr\Search;
+use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager as SolrConfigurationManager;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
-use ApacheSolrForTypo3\Solr\Mvc\Controller\SolrControllerContext;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Service\ConfigurationService;
-use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager as SolrConfigurationManager;
 use ApacheSolrForTypo3\Solr\Util;
+use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\TypoScript\TypoScriptService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
+use TYPO3\CMS\Extbase\Mvc\Controller\ControllerContext;
+use TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException;
+use TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * Class AbstractBaseController
+ *
+ * @property SolrControllerContext $controllerContext
  *
  * @author Frans Saris <frans@beech.it>
  * @author Timo Hund <timo.hund@dkd.de>
@@ -41,55 +48,50 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 abstract class AbstractBaseController extends ActionController
 {
     /**
-     * @var ContentObjectRenderer
+     * The HTTP code 503 message.
+     * @var string
      */
-    private $contentObjectRenderer;
+    protected const STATUS_503_MESSAGE = 'Apache Solr Server is not available.';
 
     /**
-     * @var TypoScriptFrontendController
+     * @var ContentObjectRenderer|null
      */
-    protected $typoScriptFrontendController;
+    private ?ContentObjectRenderer $contentObjectRenderer = null;
 
     /**
-     * @var \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface
+     * @var TypoScriptFrontendController|null
      */
-    protected $configurationManager;
+    protected ?TypoScriptFrontendController $typoScriptFrontendController = null;
 
     /**
-     * @var SolrConfigurationManager
+     * @var SolrConfigurationManager|null
      */
-    private $solrConfigurationManager;
+    private ?SolrConfigurationManager $solrConfigurationManager = null;
 
     /**
      * The configuration is private if you need it please get it from the controllerContext.
      *
-     * @var TypoScriptConfiguration
+     * @var TypoScriptConfiguration|null
      */
-    protected $typoScriptConfiguration;
+    protected ?TypoScriptConfiguration $typoScriptConfiguration = null;
 
     /**
-     * @var \ApacheSolrForTypo3\Solr\Mvc\Controller\SolrControllerContext
+     * @var SearchResultSetService|null
      */
-    protected $controllerContext;
+    protected ?SearchResultSetService $searchService = null;
 
     /**
-     * @var \ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSetService
+     * @var SearchRequestBuilder|null
      */
-    protected $searchService;
-
-    /**
-     * @var \ApacheSolrForTypo3\Solr\Domain\Search\SearchRequestBuilder
-     */
-    protected $searchRequestBuilder;
+    protected ?SearchRequestBuilder $searchRequestBuilder = null;
 
     /**
      * @var bool
      */
-    protected $resetConfigurationBeforeInitialize = true;
+    protected bool $resetConfigurationBeforeInitialize = true;
 
     /**
-     * @param \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface $configurationManager
-     * @return void
+     * @param ConfigurationManagerInterface $configurationManager
      */
     public function injectConfigurationManager(ConfigurationManagerInterface $configurationManager)
     {
@@ -99,17 +101,17 @@ abstract class AbstractBaseController extends ActionController
     }
 
     /**
-     * @param \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer $contentObjectRenderer
+     * @param ContentObjectRenderer $contentObjectRenderer
      */
-    public function setContentObjectRenderer($contentObjectRenderer)
+    public function setContentObjectRenderer(ContentObjectRenderer $contentObjectRenderer)
     {
         $this->contentObjectRenderer = $contentObjectRenderer;
     }
 
     /**
-     * @return \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer
+     * @return ContentObjectRenderer|null
      */
-    public function getContentObjectRenderer()
+    public function getContentObjectRenderer(): ?ContentObjectRenderer
     {
         return $this->contentObjectRenderer;
     }
@@ -123,9 +125,9 @@ abstract class AbstractBaseController extends ActionController
     }
 
     /**
-     * @param boolean $resetConfigurationBeforeInitialize
+     * @param bool $resetConfigurationBeforeInitialize
      */
-    public function setResetConfigurationBeforeInitialize($resetConfigurationBeforeInitialize)
+    public function setResetConfigurationBeforeInitialize(bool $resetConfigurationBeforeInitialize)
     {
         $this->resetConfigurationBeforeInitialize = $resetConfigurationBeforeInitialize;
     }
@@ -133,15 +135,15 @@ abstract class AbstractBaseController extends ActionController
     /**
      * Initialize the controller context
      *
-     * @return \TYPO3\CMS\Extbase\Mvc\Controller\ControllerContext ControllerContext to be passed to the view
+     * @return ControllerContext ControllerContext to be passed to the view
      * @api
      */
     protected function buildControllerContext()
     {
-        /** @var $controllerContext \ApacheSolrForTypo3\Solr\Mvc\Controller\SolrControllerContext */
+        /** @var $controllerContext SolrControllerContext */
         $controllerContext = $this->objectManager->get(SolrControllerContext::class);
         $controllerContext->setRequest($this->request);
-        $controllerContext->setResponse($this->response);
+//        $controllerContext->setResponse($this->response);
         if ($this->arguments !== null) {
             $controllerContext->setArguments($this->arguments);
         }
@@ -154,6 +156,7 @@ abstract class AbstractBaseController extends ActionController
 
     /**
      * Initialize action
+     * @throws AspectNotFoundException
      */
     protected function initializeAction()
     {
@@ -182,11 +185,13 @@ abstract class AbstractBaseController extends ActionController
             );
         }
 
-        $this->objectManager->get(ConfigurationService::class)
-            ->overrideConfigurationWithFlexFormSettings(
-                $this->contentObjectRenderer->data['pi_flexform'],
-                $this->typoScriptConfiguration
-            );
+        if (!empty($this->contentObjectRenderer->data['pi_flexform'])) {
+            $this->objectManager->get(ConfigurationService::class)
+                ->overrideConfigurationWithFlexFormSettings(
+                    $this->contentObjectRenderer->data['pi_flexform'],
+                    $this->typoScriptConfiguration
+                );
+        }
 
         parent::initializeAction();
         $this->typoScriptFrontendController = $GLOBALS['TSFE'];
@@ -199,8 +204,6 @@ abstract class AbstractBaseController extends ActionController
 
     /**
      * Inject settings of plugin.tx_solr
-     *
-     * @return void
      */
     protected function initializeSettings()
     {
@@ -216,28 +219,32 @@ abstract class AbstractBaseController extends ActionController
     /**
      * Initialize the Solr connection and
      * test the connection through a ping
+     * @throws AspectNotFoundException
      */
     protected function initializeSearch()
     {
-        /** @var \ApacheSolrForTypo3\Solr\ConnectionManager $solrConnection */
+        /** @var ConnectionManager $solrConnection */
         try {
             $solrConnection = $this->objectManager->get(ConnectionManager::class)->getConnectionByPageId($this->typoScriptFrontendController->id, Util::getLanguageUid(), $this->typoScriptFrontendController->MP);
             $search = $this->objectManager->get(Search::class, $solrConnection);
 
+            /** @noinspection PhpParamsInspection */
             $this->searchService = $this->objectManager->get(
                 SearchResultSetService::class,
-                /** @scrutinizer ignore-type */ $this->typoScriptConfiguration,
-                /** @scrutinizer ignore-type */ $search
+                /** @scrutinizer ignore-type */
+                $this->typoScriptConfiguration,
+                /** @scrutinizer ignore-type */
+                $search
             );
         } catch (NoSolrConnectionFoundException $e) {
-            $this->handleSolrUnavailable();
+            $this->logSolrUnavailable();
         }
     }
 
     /**
      * @return SearchRequestBuilder
      */
-    protected function getSearchRequestBuilder()
+    protected function getSearchRequestBuilder(): SearchRequestBuilder
     {
         if ($this->searchRequestBuilder === null) {
             $this->searchRequestBuilder = GeneralUtility::makeInstance(SearchRequestBuilder::class, /** @scrutinizer ignore-type */ $this->typoScriptConfiguration);
@@ -248,10 +255,8 @@ abstract class AbstractBaseController extends ActionController
 
     /**
      * Called when the solr server is unavailable.
-     *
-     * @return void
      */
-    protected function handleSolrUnavailable()
+    protected function logSolrUnavailable()
     {
         if ($this->typoScriptConfiguration->getLoggingExceptions()) {
             /** @var SolrLogManager $logger */
@@ -267,9 +272,11 @@ abstract class AbstractBaseController extends ActionController
      * @param string $signalName Name of the signal slot
      * @param array $signalArguments arguments for the signal slot
      *
-     * @return array
+     * @return array|mixed
+     * @throws InvalidSlotException
+     * @throws InvalidSlotReturnException
      */
-    protected function emitActionSignal($className, $signalName, array $signalArguments)
+    protected function emitActionSignal(string $className, string $signalName, array $signalArguments)
     {
         return $this->signalSlotDispatcher->dispatch($className, $signalName, $signalArguments)[0];
     }

@@ -13,18 +13,18 @@
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace ApacheSolrForTypo3\Solr\Test\Domain\Search\ResultSet;
+namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet;
 
-use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
-use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
-use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\Option;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\OptionsFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\QueryGroup\QueryGroupFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\ResultSetReconstitutionProcessor;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
+use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\Tests\Unit\Helper\FakeObjectManager;
+use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 
 /**
  * Unit test case for the ObjectReconstitutionProcessor.
@@ -61,14 +61,13 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
 
         // before the reconstitution of the domain object from the response we expect that no spelling suggestions
         // are present
-        $this->assertFalse($searchResultSet->getHasSpellCheckingSuggestions());
-
+        self::assertFalse($searchResultSet->getHasSpellCheckingSuggestions());
 
         $processor = new ResultSetReconstitutionProcessor();
         $processor->process($searchResultSet);
 
         // after the reconstitution they should be present
-        $this->assertTrue($searchResultSet->getHasSpellCheckingSuggestions());
+        self::assertTrue($searchResultSet->getHasSpellCheckingSuggestions());
     }
 
     /**
@@ -80,7 +79,7 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
 
         // before the reconstitution of the domain object from the response we expect that no facets
         // are present
-        $this->assertEquals([], $searchResultSet->getFacets()->getArrayCopy());
+        self::assertEquals([], $searchResultSet->getFacets()->getArrayCopy());
 
         $facetConfiguration = [
             'showEmptyFacets' => 1,
@@ -88,17 +87,16 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
                 'type.' => [
                     'label' => 'My Type',
                     'field' => 'type',
-                ]
-             ]
+                ],
+             ],
         ];
 
         $configuration = $this->getConfigurationArrayFromFacetConfigurationArray($facetConfiguration);
         $processor = $this->getConfiguredReconstitutionProcessor($configuration, $searchResultSet);
         $processor->process($searchResultSet);
         // after the reconstitution they should be 1 facet present
-        $this->assertCount(1, $searchResultSet->getFacets());
+        self::assertCount(1, $searchResultSet->getFacets());
     }
-
 
     /**
      * @test
@@ -109,16 +107,16 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
 
         // before the reconstitution of the domain object from the response we expect that no facets
         // are present
-        $this->assertEquals([], $searchResultSet->getFacets()->getArrayCopy());
+        self::assertEquals([], $searchResultSet->getFacets()->getArrayCopy());
 
         $facetConfiguration = [
             'showEmptyFacets' => 1,
             'facets.' => [
                 'type.' => [
                     'label' => 'My Type',
-                    'field' => 'type'
-                ]
-            ]
+                    'field' => 'type',
+                ],
+            ],
         ];
 
         $configuration = $this->getConfigurationArrayFromFacetConfigurationArray($facetConfiguration);
@@ -126,14 +124,14 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
         $processor->process($searchResultSet);
 
         // after the reconstitution they should be 1 facet present
-        $this->assertCount(1, $searchResultSet->getFacets());
+        self::assertCount(1, $searchResultSet->getFacets());
 
         /** @var $optionFacet OptionsFacet */
         $optionFacet = $searchResultSet->getFacets()->getByPosition(0);
         // @extensionScannerIgnoreLine
-        $this->assertSame('tx_myext_domain_model_mytype', $optionFacet->getOptions()->getByPosition(0)->getValue(), 'Custom type facet not found');
+        self::assertSame('tx_myext_domain_model_mytype', $optionFacet->getOptions()->getByPosition(0)->getValue(), 'Custom type facet not found');
         // @extensionScannerIgnoreLine
-        $this->assertSame(19, $optionFacet->getOptions()->getByPosition(0)->getDocumentCount(), 'Custom type facet count not correct');
+        self::assertSame(19, $optionFacet->getOptions()->getByPosition(0)->getDocumentCount(), 'Custom type facet count not correct');
     }
 
     /**
@@ -145,7 +143,7 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
 
         // before the reconstitution of the domain object from the response we expect that no facets
         // are present
-        $this->assertEquals([], $searchResultSet->getFacets()->getArrayCopy());
+        self::assertEquals([], $searchResultSet->getFacets()->getArrayCopy());
 
         $facetConfiguration = [
             'showEmptyFacets' => 1,
@@ -157,8 +155,8 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
                 'category.' => [
                     'label' => 'My Category',
                     'field' => 'category_stringM',
-                ]
-            ]
+                ],
+            ],
         ];
 
         $configuration = $this->getConfigurationArrayFromFacetConfigurationArray($facetConfiguration);
@@ -166,7 +164,7 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
         $processor->process($searchResultSet);
 
         // after the reconstitution they should be 2 facets present
-        $this->assertCount(2, $searchResultSet->getFacets());
+        self::assertCount(2, $searchResultSet->getFacets());
     }
 
     /**
@@ -178,7 +176,7 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
 
         // before the reconstitution of the domain object from the response we expect that no facets
         // are present
-        $this->assertEquals([], $searchResultSet->getFacets()->getArrayCopy());
+        self::assertEquals([], $searchResultSet->getFacets()->getArrayCopy());
 
         $facetConfiguration = [
             'showEmptyFacets' => 1,
@@ -186,25 +184,24 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
                 'type.' => [
                     'label' => 'My Type',
                     'field' => 'type_stringS',
-                    'excludeValues' => 'somethingelse, page, whatever'
-                ]
-            ]
+                    'excludeValues' => 'somethingelse, page, whatever',
+                ],
+            ],
         ];
 
         $configuration = $this->getConfigurationArrayFromFacetConfigurationArray($facetConfiguration);
         $processor = $this->getConfiguredReconstitutionProcessor($configuration, $searchResultSet);
         $processor->process($searchResultSet);
 
-        $this->assertCount(1, $searchResultSet->getFacets());
+        self::assertCount(1, $searchResultSet->getFacets());
 
-            /** @var $optionFacet OptionsFacet */
+        /** @var $optionFacet OptionsFacet */
         $optionFacet = $searchResultSet->getFacets()->getByPosition(0);
         // @extensionScannerIgnoreLine
-        $this->assertCount(1, $optionFacet->getOptions());
+        self::assertCount(1, $optionFacet->getOptions());
         // @extensionScannerIgnoreLine
-        $this->assertSame('event', $optionFacet->getOptions()->getByPosition(0)->getValue(), 'Skipping configured value not working as expected');
+        self::assertSame('event', $optionFacet->getOptions()->getByPosition(0)->getValue(), 'Skipping configured value not working as expected');
     }
-
 
     /**
      * @test
@@ -215,7 +212,7 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
 
         // before the reconstitution of the domain object from the response we expect that no facets
         // are present
-        $this->assertEquals([], $searchResultSet->getFacets()->getArrayCopy());
+        self::assertEquals([], $searchResultSet->getFacets()->getArrayCopy());
 
         $facetConfiguration = [
             'showEmptyFacets' => 1,
@@ -226,15 +223,15 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
                     'requirements.' => [
                         'categoryIsInternal.' => [
                             'facet' => 'myCategory',
-                            'values' => 'internal'
-                        ]
-                    ]
+                            'values' => 'internal',
+                        ],
+                    ],
                 ],
                 'myCategory.' => [
                     'label' => 'My Category',
                     'field' => 'category_stringM',
-                ]
-            ]
+                ],
+            ],
         ];
 
         $configuration = $this->getConfigurationArrayFromFacetConfigurationArray($facetConfiguration);
@@ -242,13 +239,12 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
         $processor->process($searchResultSet);
 
         // after the reconstitution they should be 1 facet present
-        $this->assertCount(2, $searchResultSet->getFacets());
+        self::assertCount(2, $searchResultSet->getFacets());
 
         $firstFacet = $searchResultSet->getFacets()->getByPosition(0);
-        $this->assertSame('myType', $firstFacet->getName(), 'Unexpected facet name for first facet');
-        $this->assertFalse($firstFacet->getAllRequirementsMet(), 'Unexpected state of allRequirementsMet');
+        self::assertSame('myType', $firstFacet->getName(), 'Unexpected facet name for first facet');
+        self::assertFalse($firstFacet->getAllRequirementsMet(), 'Unexpected state of allRequirementsMet');
     }
-
 
     /**
      * @test
@@ -256,15 +252,15 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
     public function canSetRequirementsMetToTrueOnFacetThatFullFillsARequirement()
     {
         $searchResultSet = $this->initializeSearchResultSetFromFakeResponse('fake_solr_response_with_used_facet.json');
-        $searchResultSet->getUsedSearchRequest()->expects($this->any())->method('getActiveFacetValuesByName')->will(
-            $this->returnCallback(function ($name) {
+        $searchResultSet->getUsedSearchRequest()->expects(self::any())->method('getActiveFacetValuesByName')->willReturnCallback(
+            function ($name) {
                 return $name == 'myType' ? ['pages'] : [];
-            })
+            }
         );
 
         // before the reconstitution of the domain object from the response we expect that no facets
         // are present
-        $this->assertEquals([], $searchResultSet->getFacets()->getArrayCopy());
+        self::assertEquals([], $searchResultSet->getFacets()->getArrayCopy());
 
         $facetConfiguration = [
             'showEmptyFacets' => 1,
@@ -279,11 +275,11 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
                     'requirements.' => [
                         'typeIsPage.' => [
                             'facet' => 'myType',
-                            'values' => 'pages'
-                        ]
-                    ]
-                ]
-            ]
+                            'values' => 'pages',
+                        ],
+                    ],
+                ],
+            ],
         ];
 
         $configuration = $this->getConfigurationArrayFromFacetConfigurationArray($facetConfiguration);
@@ -291,11 +287,11 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
         $processor->process($searchResultSet);
 
         // after the reconstitution they should be 1 facet present
-        $this->assertCount(2, $searchResultSet->getFacets());
+        self::assertCount(2, $searchResultSet->getFacets());
 
         $secondFacet = $searchResultSet->getFacets()->getByPosition(1);
-        $this->assertSame('myCategory', $secondFacet->getName(), 'Unexpected facet name for first facet');
-        $this->assertTrue($secondFacet->getAllRequirementsMet(), 'Unexpected state of allRequirementsMet');
+        self::assertSame('myCategory', $secondFacet->getName(), 'Unexpected facet name for first facet');
+        self::assertTrue($secondFacet->getAllRequirementsMet(), 'Unexpected state of allRequirementsMet');
     }
 
     /**
@@ -307,15 +303,15 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
 
         // before the reconstitution of the domain object from the response we expect that no facets
         // are present
-        $this->assertEquals([], $searchResultSet->getFacets()->getArrayCopy());
+        self::assertEquals([], $searchResultSet->getFacets()->getArrayCopy());
 
         $facetConfiguration = [
             'facets.' => [
                 'type.' => [
                     'label' => 'My Type',
                     'field' => 'type_stringS',
-                ]
-            ]
+                ],
+            ],
         ];
 
         $configuration = $this->getConfigurationArrayFromFacetConfigurationArray($facetConfiguration);
@@ -327,11 +323,11 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
 
         /** @var $option1 Option */ // @extensionScannerIgnoreLine
         $option1 = $optionFacet->getOptions()->getByPosition(0);
-        $this->assertSame('page', $option1->getValue());
+        self::assertSame('page', $option1->getValue());
 
         /** @var $option2 Option */ // @extensionScannerIgnoreLine
         $option2 = $optionFacet->getOptions()->getByPosition(1);
-        $this->assertSame('event', $option2->getValue());
+        self::assertSame('event', $option2->getValue());
     }
 
     /**
@@ -343,7 +339,7 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
 
         // before the reconstitution of the domain object from the response we expect that no facets
         // are present
-        $this->assertEquals([], $searchResultSet->getFacets()->getArrayCopy());
+        self::assertEquals([], $searchResultSet->getFacets()->getArrayCopy());
 
         $facetConfiguration = [
             'facets.' => [
@@ -351,8 +347,8 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
                     'reverseOrder' => 1,
                     'label' => 'My Type',
                     'field' => 'type_stringS',
-                ]
-            ]
+                ],
+            ],
         ];
 
         $configuration = $this->getConfigurationArrayFromFacetConfigurationArray($facetConfiguration);
@@ -364,13 +360,12 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
 
         /** @var $option1 Option */ // @extensionScannerIgnoreLine
         $option1 = $optionFacet->getOptions()->getByPosition(0);
-        $this->assertSame('event', $option1->getValue());
+        self::assertSame('event', $option1->getValue());
 
         /** @var $option2 Option */ // @extensionScannerIgnoreLine
         $option2 = $optionFacet->getOptions()->getByPosition(1);
-        $this->assertSame('page', $option2->getValue());
+        self::assertSame('page', $option2->getValue());
     }
-
 
     /**
      * @test
@@ -381,7 +376,7 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
 
         // before the reconstitution of the domain object from the response we expect that no facets
         // are present
-        $this->assertEquals([], $searchResultSet->getFacets()->getArrayCopy());
+        self::assertEquals([], $searchResultSet->getFacets()->getArrayCopy());
 
         $facetConfiguration = [
             'facets.' => [
@@ -389,8 +384,8 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
                     'manualSortOrder' => 'event,page',
                     'label' => 'My Type',
                     'field' => 'type_stringS',
-                ]
-            ]
+                ],
+            ],
         ];
 
         $configuration = $this->getConfigurationArrayFromFacetConfigurationArray($facetConfiguration);
@@ -402,11 +397,11 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
 
         /** @var $option1 Option */ // @extensionScannerIgnoreLine
         $option1 = $optionFacet->getOptions()->getByPosition(0);
-        $this->assertSame('event', $option1->getValue());
+        self::assertSame('event', $option1->getValue());
 
         /** @var $option2 Option */ // @extensionScannerIgnoreLine
         $option2 = $optionFacet->getOptions()->getByPosition(1);
-        $this->assertSame('page', $option2->getValue());
+        self::assertSame('page', $option2->getValue());
     }
 
     /**
@@ -418,7 +413,7 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
 
         // before the reconstitution of the domain object from the response we expect that no facets
         // are present
-        $this->assertEquals([], $searchResultSet->getFacets()->getArrayCopy());
+        self::assertEquals([], $searchResultSet->getFacets()->getArrayCopy());
 
         $facetConfiguration = [
             'showEmptyFacets' => 1,
@@ -429,13 +424,13 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
                 ],
                 'category.' => [
                     'label' => 'My Category',
-                    'field' => 'category_stringM'
+                    'field' => 'category_stringM',
                 ],
                 'category2.' => [
                     'label' => 'My Category again',
-                    'field' => 'category_stringM'
-                ]
-            ]
+                    'field' => 'category_stringM',
+                ],
+            ],
         ];
 
         $configuration = $this->getConfigurationArrayFromFacetConfigurationArray($facetConfiguration);
@@ -443,13 +438,12 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
         $processor->process($searchResultSet);
 
         // after the reconstitution they should be 1 facet present
-        $this->assertCount(3, $searchResultSet->getFacets());
+        self::assertCount(3, $searchResultSet->getFacets());
 
         /** @var OptionsFacet $facet */
         $facets = $searchResultSet->getFacets();
-        $this->assertCount(2, $facets->getByPosition(0)->getOptions());
+        self::assertCount(2, $facets->getByPosition(0)->getOptions());
     }
-
 
     /**
      * @test
@@ -457,16 +451,15 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
     public function canReconstituteUsedFacet()
     {
         $searchResultSet = $this->initializeSearchResultSetFromFakeResponse('fake_solr_response_with_used_facet.json');
-        $searchResultSet->getUsedSearchRequest()->expects($this->any())->method('getActiveFacetValuesByName')->will(
-            $this->returnCallback(function ($name) {
+        $searchResultSet->getUsedSearchRequest()->expects(self::any())->method('getActiveFacetValuesByName')->willReturnCallback(
+            function ($name) {
                 return $name == 'type' ? ['tx_solr_file'] : [];
-
-            })
+            }
         );
 
         // before the reconstitution of the domain object from the response we expect that no facets
         // are present
-        $this->assertEquals([], $searchResultSet->getFacets()->getArrayCopy());
+        self::assertEquals([], $searchResultSet->getFacets()->getArrayCopy());
 
         $facetConfiguration = [
             'showEmptyFacets' => 1,
@@ -477,9 +470,9 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
                 ],
                 'category.' => [
                     'label' => 'My Category',
-                    'field' => 'category'
-                ]
-            ]
+                    'field' => 'category',
+                ],
+            ],
         ];
 
         $configuration = $this->getConfigurationArrayFromFacetConfigurationArray($facetConfiguration);
@@ -487,19 +480,19 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
         $processor->process($searchResultSet);
 
         // after the reconstitution we should have two facets present
-        $this->assertCount(2, $searchResultSet->getFacets());
+        self::assertCount(2, $searchResultSet->getFacets());
 
         $facets = $searchResultSet->getFacets();
 
         /** @var OptionsFacet $facet1 */
         $facet1 = $facets->getByPosition(0);
-        $this->assertEquals('My Type', $facet1->getLabel());
-        $this->assertTrue($facet1->getIsUsed());
+        self::assertEquals('My Type', $facet1->getLabel());
+        self::assertTrue($facet1->getIsUsed());
 
         /** @var OptionsFacet $facet2 */
         $facet2 = $facets->getByPosition(1);
-        $this->assertEquals('My Category', $facet2->getLabel());
-        $this->assertFalse($facet2->getIsUsed());
+        self::assertEquals('My Category', $facet2->getLabel());
+        self::assertFalse($facet2->getIsUsed());
     }
 
     /**
@@ -508,16 +501,15 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
     public function canMarkUsedOptionAsSelected()
     {
         $searchResultSet = $this->initializeSearchResultSetFromFakeResponse('fake_solr_response_with_used_facet.json');
-        $searchResultSet->getUsedSearchRequest()->expects($this->any())->method('getActiveFacetValuesByName')->will(
-            $this->returnCallback(function ($name) {
+        $searchResultSet->getUsedSearchRequest()->expects(self::any())->method('getActiveFacetValuesByName')->willReturnCallback(
+            function ($name) {
                 return $name == 'type' ? ['tx_solr_file'] : [];
-
-            })
+            }
         );
 
         // before the reconstitution of the domain object from the response we expect that no facets
         // are present
-        $this->assertEquals([], $searchResultSet->getFacets()->getArrayCopy());
+        self::assertEquals([], $searchResultSet->getFacets()->getArrayCopy());
 
         $facetConfiguration = [
             'showEmptyFacets' => 1,
@@ -529,9 +521,9 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
                  // category is configured but not available
                 'category.' => [
                     'label' => 'My Category',
-                    'field' => 'category'
-                ]
-            ]
+                    'field' => 'category',
+                ],
+            ],
         ];
 
         $configuration = $this->getConfigurationArrayFromFacetConfigurationArray($facetConfiguration);
@@ -540,9 +532,9 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
 
         $facets = $searchResultSet->getFacets();
 
-        $this->assertCount(2, $facets, 'we have two facets at all');
-        $this->assertCount(1, $facets->getAvailable(), 'but only "type" is available');
-        $this->assertCount(1, $facets->getUsed(), 'and also "type" is the only used facet');
+        self::assertCount(2, $facets, 'we have two facets at all');
+        self::assertCount(1, $facets->getAvailable(), 'but only "type" is available');
+        self::assertCount(1, $facets->getUsed(), 'and also "type" is the only used facet');
     }
 
     /**
@@ -551,16 +543,15 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
     public function includeIsUsedFacetsCanBeSetToFalse()
     {
         $searchResultSet = $this->initializeSearchResultSetFromFakeResponse('fake_solr_response_with_used_facet.json');
-        $searchResultSet->getUsedSearchRequest()->expects($this->any())->method('getActiveFacetValuesByName')->will(
-            $this->returnCallback(function ($name) {
+        $searchResultSet->getUsedSearchRequest()->expects(self::any())->method('getActiveFacetValuesByName')->willReturnCallback(
+            function ($name) {
                 return $name == 'type' ? ['tx_solr_file'] : [];
-
-            })
+            }
         );
 
         // before the reconstitution of the domain object from the response we expect that no facets
         // are present
-        $this->assertEquals([], $searchResultSet->getFacets()->getArrayCopy());
+        self::assertEquals([], $searchResultSet->getFacets()->getArrayCopy());
 
         $facetConfiguration = [
             'showEmptyFacets' => 1,
@@ -568,9 +559,9 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
                 'type.' => [
                     'label' => 'My Type',
                     'field' => 'type',
-                    'includeInUsedFacets' => '0'
-                ]
-            ]
+                    'includeInUsedFacets' => '0',
+                ],
+            ],
         ];
 
         $configuration = $this->getConfigurationArrayFromFacetConfigurationArray($facetConfiguration);
@@ -579,8 +570,8 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
 
         $facets = $searchResultSet->getFacets();
 
-        $this->assertCount(1, $facets, 'we have one facets at all');
-        $this->assertCount(0, $facets->getUsed(), 'we should have 0 used facets because type has configuration includeInUsedFacets=0');
+        self::assertCount(1, $facets, 'we have one facets at all');
+        self::assertCount(0, $facets->getUsed(), 'we should have 0 used facets because type has configuration includeInUsedFacets=0');
     }
 
     /**
@@ -589,16 +580,15 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
     public function canGetConfiguredFacetNotInResponseAsUnavailableFacet()
     {
         $searchResultSet = $this->initializeSearchResultSetFromFakeResponse('fake_solr_response_with_used_facet.json');
-        $searchResultSet->getUsedSearchRequest()->expects($this->any())->method('getActiveFacetValuesByName')->will(
-            $this->returnCallback(function ($name) {
+        $searchResultSet->getUsedSearchRequest()->expects(self::any())->method('getActiveFacetValuesByName')->willReturnCallback(
+            function ($name) {
                 return $name == 'type' ? ['pages'] : [];
-
-            })
+            }
         );
 
         // before the reconstitution of the domain object from the response we expect that no facets
         // are present
-        $this->assertEquals([], $searchResultSet->getFacets()->getArrayCopy());
+        self::assertEquals([], $searchResultSet->getFacets()->getArrayCopy());
 
         $facetConfiguration = [
             'showEmptyFacets' => 1,
@@ -606,8 +596,8 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
                 'type.' => [
                     'label' => 'My Type',
                     'field' => 'type',
-                ]
-            ]
+                ],
+            ],
 
         ];
 
@@ -622,8 +612,8 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
 
         /** @var $firstOption Option */ // @extensionScannerIgnoreLine
         $firstOption = $facet1->getOptions()->getByPosition(0);
-        $this->assertEquals('pages', $firstOption->getValue());
-        $this->assertEquals(5, $firstOption->getDocumentCount());
+        self::assertEquals('pages', $firstOption->getValue());
+        self::assertEquals(5, $firstOption->getDocumentCount());
         $this->asserttrue($firstOption->getSelected());
     }
 
@@ -633,20 +623,18 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
     public function canGetTwoUsedFacetOptions()
     {
         $searchResultSet = $this->initializeSearchResultSetFromFakeResponse('fake_solr_response_with_two_used_facets.json');
-        $searchResultSet->getUsedSearchRequest()->expects($this->any())->method('getActiveFacetValuesByName')->will(
-            $this->returnCallback(function ($name) {
+        $searchResultSet->getUsedSearchRequest()->expects(self::any())->method('getActiveFacetValuesByName')->willReturnCallback(
+            function ($name) {
                 if ($name == 'mytitle') {
                     return ['jpeg', 'kasper"s'];
-                } else {
-                    return [];
                 }
-
-            })
+                return [];
+            }
         );
 
         // before the reconstitution of the domain object from the response we expect that no facets
         // are present
-        $this->assertEquals([], $searchResultSet->getFacets()->getArrayCopy());
+        self::assertEquals([], $searchResultSet->getFacets()->getArrayCopy());
 
         $facetConfiguration = [
             'showEmptyFacets' => 1,
@@ -654,8 +642,8 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
                 'mytitle.' => [
                     'label' => 'My Title',
                     'field' => 'title',
-                ]
-            ]
+                ],
+            ],
 
         ];
 
@@ -670,9 +658,9 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
 
         /** @var $firstOption Option */ // @extensionScannerIgnoreLine
         $firstOption = $facet1->getOptions()->getByPosition(0);
-        $this->assertEquals('jpeg', $firstOption->getValue());
-        $this->assertEquals(1, $firstOption->getDocumentCount());
-        $this->assertTrue($firstOption->getSelected());
+        self::assertEquals('jpeg', $firstOption->getValue());
+        self::assertEquals(1, $firstOption->getDocumentCount());
+        self::assertTrue($firstOption->getSelected());
     }
 
     /**
@@ -684,7 +672,7 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
 
         // before the reconstitution of the domain object from the response we expect that no facets
         // are present
-        $this->assertEquals([], $searchResultSet->getFacets()->getArrayCopy());
+        self::assertEquals([], $searchResultSet->getFacets()->getArrayCopy());
 
         $facetConfiguration = [
             'showEmptyFacets' => 0,
@@ -696,9 +684,9 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
                 // category is configured but not available
                 'category.' => [
                     'label' => 'My Category',
-                    'field' => 'category'
-                ]
-            ]
+                    'field' => 'category',
+                ],
+            ],
         ];
 
         $configuration = $this->getConfigurationArrayFromFacetConfigurationArray($facetConfiguration);
@@ -706,7 +694,7 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
         $processor->process($searchResultSet);
 
         $facets = $searchResultSet->getFacets();
-        $this->assertCount(1, $facets, 'we have two facets at all');
+        self::assertCount(1, $facets, 'we have two facets at all');
     }
 
     /**
@@ -718,7 +706,7 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
 
         // before the reconstitution of the domain object from the response we expect that no facets
         // are present
-        $this->assertEquals([], $searchResultSet->getFacets()->getArrayCopy());
+        self::assertEquals([], $searchResultSet->getFacets()->getArrayCopy());
 
         $facetConfiguration = [
             'facets.' => [
@@ -730,9 +718,9 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
                 'category.' => [
                     'label' => 'My Category',
                     'field' => 'category',
-                    'showEvenWhenEmpty' => 1
-                ]
-            ]
+                    'showEvenWhenEmpty' => 1,
+                ],
+            ],
         ];
 
         $configuration = $this->getConfigurationArrayFromFacetConfigurationArray($facetConfiguration);
@@ -740,7 +728,7 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
         $processor->process($searchResultSet);
 
         $facets = $searchResultSet->getFacets();
-        $this->assertCount(2, $facets, 'we have two facets at all');
+        self::assertCount(2, $facets, 'we have two facets at all');
     }
 
     /**
@@ -752,16 +740,16 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
 
         // before the reconstitution of the domain object from the response we expect that no facets
         // are present
-        $this->assertEquals([], $searchResultSet->getFacets()->getArrayCopy());
+        self::assertEquals([], $searchResultSet->getFacets()->getArrayCopy());
 
         $facetConfiguration = [
             'facets.' => [
                 'type.' => [
                     'label' => 'My Type',
                     'field' => 'type',
-                    'includeInAvailableFacets' => 0
-                ]
-            ]
+                    'includeInAvailableFacets' => 0,
+                ],
+            ],
         ];
 
         $configuration = $this->getConfigurationArrayFromFacetConfigurationArray($facetConfiguration);
@@ -769,8 +757,8 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
         $processor->process($searchResultSet);
 
         $facets = $searchResultSet->getFacets();
-        $this->assertCount(1, $facets, 'we have one facets at all');
-        $this->assertCount(0, $facets->getAvailable(), 'but non is available, the first is set to includeInAvailableFacets=0');
+        self::assertCount(1, $facets, 'we have one facets at all');
+        self::assertCount(0, $facets->getAvailable(), 'but non is available, the first is set to includeInAvailableFacets=0');
     }
 
     /**
@@ -782,16 +770,16 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
 
         // before the reconstitution of the domain object from the response we expect that no facets
         // are present
-        $this->assertEquals([], $searchResultSet->getFacets()->getArrayCopy());
+        self::assertEquals([], $searchResultSet->getFacets()->getArrayCopy());
 
         $facetConfiguration = [
             'facets.' => [
                 'type.' => [
                     'label' => 'My Type',
                     'field' => 'type',
-                    'includeInAvailableFacets' => 1
-                ]
-            ]
+                    'includeInAvailableFacets' => 1,
+                ],
+            ],
         ];
 
         $configuration = $this->getConfigurationArrayFromFacetConfigurationArray($facetConfiguration);
@@ -799,8 +787,8 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
         $processor->process($searchResultSet);
 
         $facets = $searchResultSet->getFacets();
-        $this->assertCount(1, $facets, 'we have one facets at all');
-        $this->assertCount(1, $facets->getAvailable(), 'but non is available, the first is set to includeInAvailableFacets=0');
+        self::assertCount(1, $facets, 'we have one facets at all');
+        self::assertCount(1, $facets->getAvailable(), 'but non is available, the first is set to includeInAvailableFacets=0');
     }
 
     /**
@@ -812,15 +800,15 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
 
         // before the reconstitution of the domain object from the response we expect that no facets
         // are present
-        $this->assertEquals([], $searchResultSet->getFacets()->getArrayCopy());
+        self::assertEquals([], $searchResultSet->getFacets()->getArrayCopy());
 
         $facetConfiguration = [
             'facets.' => [
                 'type.' => [
                     'label' => 'My Type with special rendering',
                     'field' => 'type_stringS',
-                ]
-            ]
+                ],
+            ],
         ];
 
         $configuration = $this->getConfigurationArrayFromFacetConfigurationArray($facetConfiguration);
@@ -829,7 +817,7 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
 
         /** @var $facet OptionsFacet */
         $facet = $searchResultSet->getFacets()->getByPosition(0);
-        $this->assertSame('My Type with special rendering', $facet->getLabel(), 'Could not get label for facet');
+        self::assertSame('My Type with special rendering', $facet->getLabel(), 'Could not get label for facet');
     }
 
     /**
@@ -841,7 +829,7 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
 
         // before the reconstitution of the domain object from the response we expect that no facets
         // are present
-        $this->assertEquals([], $searchResultSet->getFacets()->getArrayCopy());
+        self::assertEquals([], $searchResultSet->getFacets()->getArrayCopy());
 
         $facetConfiguration = [
             'facets.' => [
@@ -854,10 +842,10 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
                         'month' => ['query' => '[NOW/DAY-1MONTH TO NOW/DAY-7DAYS]'],
                         'halfYear' => ['query' => '[NOW/DAY-6MONTHS TO NOW/DAY-1MONTH]'],
                         'year' => ['query' => '[NOW/DAY-1YEAR TO NOW/DAY-6MONTHS]'],
-                        'old' => ['query' => '[* TO NOW/DAY-1YEAR]']
-                    ]
-                ]
-            ]
+                        'old' => ['query' => '[* TO NOW/DAY-1YEAR]'],
+                    ],
+                ],
+            ],
         ];
 
         $configuration = $this->getConfigurationArrayFromFacetConfigurationArray($facetConfiguration);
@@ -865,14 +853,14 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
         $processor->process($searchResultSet);
 
         $facets = $searchResultSet->getFacets();
-        $this->assertCount(1, $facets, 'Facet not created');
+        self::assertCount(1, $facets, 'Facet not created');
 
         /** @var QueryGroupFacet $facet */
         $facet = $facets->getByPosition(0);
-        $this->assertInstanceOf(QueryGroupFacet::class, $facet);
+        self::assertInstanceOf(QueryGroupFacet::class, $facet);
 
         // @extensionScannerIgnoreLine
-        $this->assertCount(3, $facet->getOptions());
+        self::assertCount(3, $facet->getOptions());
     }
 
     /**
@@ -884,7 +872,7 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
 
         // before the reconstitution of the domain object from the response we expect that no facets
         // are present
-        $this->assertEquals([], $searchResultSet->getFacets()->getArrayCopy());
+        self::assertEquals([], $searchResultSet->getFacets()->getArrayCopy());
 
         $facetConfiguration = [
             'facets.' => [
@@ -897,10 +885,10 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
                         'month' => ['query' => '[NOW/DAY-1MONTH TO NOW/DAY-7DAYS]'],
                         'halfYear' => ['query' => '[NOW/DAY-6MONTHS TO NOW/DAY-1MONTH]'],
                         'year' => ['query' => '[NOW/DAY-1YEAR TO NOW/DAY-6MONTHS]'],
-                        'old' => ['query' => '[* TO NOW/DAY-1YEAR]']
-                    ]
-                ]
-            ]
+                        'old' => ['query' => '[* TO NOW/DAY-1YEAR]'],
+                    ],
+                ],
+            ],
         ];
 
         $configuration = $this->getConfigurationArrayFromFacetConfigurationArray($facetConfiguration);
@@ -917,9 +905,9 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
         // @extensionScannerIgnoreLine
         $thirdValue = $facet->getOptions()->getByPosition(2)->getValue();
 
-        $this->assertSame('month', $firstValue, 'Could not get values in expected order from QueryGroupFacet');
-        $this->assertSame('halfYear', $secondValue, 'Could not get values in expected order from QueryGroupFacet');
-        $this->assertSame('old', $thirdValue, 'Could not get values in expected order from QueryGroupFacet');
+        self::assertSame('month', $firstValue, 'Could not get values in expected order from QueryGroupFacet');
+        self::assertSame('halfYear', $secondValue, 'Could not get values in expected order from QueryGroupFacet');
+        self::assertSame('old', $thirdValue, 'Could not get values in expected order from QueryGroupFacet');
     }
 
     /**
@@ -931,7 +919,7 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
 
         // before the reconstitution of the domain object from the response we expect that no facets
         // are present
-        $this->assertEquals([], $searchResultSet->getFacets()->getArrayCopy());
+        self::assertEquals([], $searchResultSet->getFacets()->getArrayCopy());
 
         $facetConfiguration = [
             'facets.' => [
@@ -945,10 +933,10 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
                         'month' => ['query' => '[NOW/DAY-1MONTH TO NOW/DAY-7DAYS]'],
                         'halfYear' => ['query' => '[NOW/DAY-6MONTHS TO NOW/DAY-1MONTH]'],
                         'year' => ['query' => '[NOW/DAY-1YEAR TO NOW/DAY-6MONTHS]'],
-                        'old' => ['query' => '[* TO NOW/DAY-1YEAR]']
-                    ]
-                ]
-            ]
+                        'old' => ['query' => '[* TO NOW/DAY-1YEAR]'],
+                    ],
+                ],
+            ],
         ];
 
         $configuration = $this->getConfigurationArrayFromFacetConfigurationArray($facetConfiguration);
@@ -965,9 +953,9 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
         // @extensionScannerIgnoreLine
         $thirdValue = $facet->getOptions()->getByPosition(2)->getValue();
 
-        $this->assertSame('halfYear', $firstValue, 'Could not get values in expected order from QueryGroupFacet');
-        $this->assertSame('month', $secondValue, 'Could not get values in expected order from QueryGroupFacet');
-        $this->assertSame('old', $thirdValue, 'Could not get values in expected order from QueryGroupFacet');
+        self::assertSame('halfYear', $firstValue, 'Could not get values in expected order from QueryGroupFacet');
+        self::assertSame('month', $secondValue, 'Could not get values in expected order from QueryGroupFacet');
+        self::assertSame('old', $thirdValue, 'Could not get values in expected order from QueryGroupFacet');
     }
 
     /**
@@ -979,7 +967,7 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
 
         // before the reconstitution of the domain object from the response we expect that no facets
         // are present
-        $this->assertEquals([], $searchResultSet->getFacets()->getArrayCopy());
+        self::assertEquals([], $searchResultSet->getFacets()->getArrayCopy());
 
         $facetConfiguration = [
             'facets.' => [
@@ -993,10 +981,10 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
                         'month' => ['query' => '[NOW/DAY-1MONTH TO NOW/DAY-7DAYS]'],
                         'halfYear' => ['query' => '[NOW/DAY-6MONTHS TO NOW/DAY-1MONTH]'],
                         'year' => ['query' => '[NOW/DAY-1YEAR TO NOW/DAY-6MONTHS]'],
-                        'old' => ['query' => '[* TO NOW/DAY-1YEAR]']
-                    ]
-                ]
-            ]
+                        'old' => ['query' => '[* TO NOW/DAY-1YEAR]'],
+                    ],
+                ],
+            ],
         ];
 
         $configuration = $this->getConfigurationArrayFromFacetConfigurationArray($facetConfiguration);
@@ -1013,9 +1001,9 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
         // @extensionScannerIgnoreLine
         $thirdValue = $facet->getOptions()->getByPosition(2)->getValue();
 
-        $this->assertSame('old', $firstValue, 'Could not get values in expected order from QueryGroupFacet');
-        $this->assertSame('halfYear', $secondValue, 'Could not get values in expected order from QueryGroupFacet');
-        $this->assertSame('month', $thirdValue, 'Could not get values in expected order from QueryGroupFacet');
+        self::assertSame('old', $firstValue, 'Could not get values in expected order from QueryGroupFacet');
+        self::assertSame('halfYear', $secondValue, 'Could not get values in expected order from QueryGroupFacet');
+        self::assertSame('month', $thirdValue, 'Could not get values in expected order from QueryGroupFacet');
     }
 
     /**
@@ -1033,20 +1021,20 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
                 'options.' => [
                     'relevance.' => [
                         'field' => 'relevance',
-                        'label' => 'Relevance'
-                    ]
-                ]
-            ]
+                        'label' => 'Relevance',
+                    ],
+                ],
+            ],
         ];
 
-        $searchResultSet->getUsedSearchRequest()->expects($this->any())->method('getHasSorting')->will($this->returnValue(false));
+        $searchResultSet->getUsedSearchRequest()->expects(self::any())->method('getHasSorting')->willReturn(false);
 
         $processor = $this->getConfiguredReconstitutionProcessor($configuration, $searchResultSet);
         $processor->process($searchResultSet);
 
-        $this->assertEquals(1, $searchResultSet->getSortings()->getCount(), 'No sorting was created');
-        $this->assertEquals('relevance', $searchResultSet->getSortings()->getSelected()->getName());
-        $this->assertTrue($searchResultSet->getSortings()->getHasSelected(), 'The sorting by "relevance/score" is active but not marked as selected.');
+        self::assertEquals(1, $searchResultSet->getSortings()->getCount(), 'No sorting was created');
+        self::assertEquals('relevance', $searchResultSet->getSortings()->getSelected()->getName());
+        self::assertTrue($searchResultSet->getSortings()->getHasSelected(), 'The sorting by "relevance/score" is active but not marked as selected.');
     }
 
     /**
@@ -1064,27 +1052,27 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
                 'options.' => [
                     'relevance.' => [
                         'field' => 'relevance',
-                        'label' => 'Relevance'
+                        'label' => 'Relevance',
                     ],
                     'title.' => [
                         'field' => 'sortTitle',
-                        'label' => 'Title'
-                    ]
+                        'label' => 'Title',
+                    ],
 
-                ]
-            ]
+                ],
+            ],
         ];
 
-        $searchResultSet->getUsedSearchRequest()->expects($this->any())->method('getHasSorting')->will($this->returnValue(true));
-        $searchResultSet->getUsedSearchRequest()->expects($this->any())->method('getSortingName')->will($this->returnValue('title'));
-        $searchResultSet->getUsedSearchRequest()->expects($this->any())->method('getSortingDirection')->will($this->returnValue('desc'));
+        $searchResultSet->getUsedSearchRequest()->expects(self::any())->method('getHasSorting')->willReturn(true);
+        $searchResultSet->getUsedSearchRequest()->expects(self::any())->method('getSortingName')->willReturn('title');
+        $searchResultSet->getUsedSearchRequest()->expects(self::any())->method('getSortingDirection')->willReturn('desc');
 
         $processor = $this->getConfiguredReconstitutionProcessor($configuration, $searchResultSet);
         $processor->process($searchResultSet);
 
-        $this->assertEquals(2, $searchResultSet->getSortings()->getCount(), 'Unexpected amount of sorting options have been created');
-        $this->assertTrue($searchResultSet->getSortings()->getHasSelected(), 'Expected that a selected sorting was present');
-        $this->assertSame('desc', $searchResultSet->getSortings()->getSelected()->getDirection(), 'Selected sorting as unexpected direction');
+        self::assertEquals(2, $searchResultSet->getSortings()->getCount(), 'Unexpected amount of sorting options have been created');
+        self::assertTrue($searchResultSet->getSortings()->getHasSelected(), 'Expected that a selected sorting was present');
+        self::assertSame('desc', $searchResultSet->getSortings()->getSelected()->getDirection(), 'Selected sorting as unexpected direction');
     }
 
     /**
@@ -1106,8 +1094,8 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
     protected function getConfiguredReconstitutionProcessor($configuration, $searchResultSet): ResultSetReconstitutionProcessor
     {
         $typoScriptConfiguration = new TypoScriptConfiguration($configuration);
-        $searchResultSet->getUsedSearchRequest()->expects($this->any())->method('getContextTypoScriptConfiguration')->will($this->returnValue($typoScriptConfiguration));
-        $searchResultSet->getUsedSearchRequest()->expects($this->any())->method('getActiveFacetNames')->will($this->returnValue([]));
+        $searchResultSet->getUsedSearchRequest()->expects(self::any())->method('getContextTypoScriptConfiguration')->willReturn($typoScriptConfiguration);
+        $searchResultSet->getUsedSearchRequest()->expects(self::any())->method('getActiveFacetNames')->willReturn([]);
 
         $processor = new ResultSetReconstitutionProcessor();
 

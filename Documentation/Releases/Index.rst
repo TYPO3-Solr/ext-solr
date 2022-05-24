@@ -16,3 +16,5 @@ Releases
    solr-release-10-0
    solr-release-11-0
    solr-release-11-1
+   solr-release-11-2
+   solr-release-11-5

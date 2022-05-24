@@ -1,5 +1,6 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\DateRange;
+
+declare(strict_types=1);
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -14,42 +15,42 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\Date
  * The TYPO3 project - inspiring people to share!
 */
 
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetItem;
+namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\DateRange;
+
 use DateTime;
 
 /**
- * Value object that represent an date range count. The count has a date and the count of documents
+ * Value object that represent a date range count. The count has a date and the count of documents
  *
  * @author Frans Saris <frans@beech.it>
  * @author Timo Hund <timo.hund@dkd.de>
  */
 class DateRangeCount
 {
-
     /**
      * @var DateTime
      */
-    protected $date;
+    protected DateTime $date;
 
     /**
      * @var int
      */
-    protected $documentCount = 0;
+    protected int $documentCount = 0;
 
     /**
-     * @param $date
-     * @param $documentCount
+     * @param DateTime $date
+     * @param int $documentCount
      */
-    public function __construct($date, $documentCount)
+    public function __construct(DateTime $date, int $documentCount = 0)
     {
         $this->date = $date;
         $this->documentCount = $documentCount;
     }
 
     /**
-     * @return \DateTime
+     * @return DateTime
      */
-    public function getDate()
+    public function getDate(): DateTime
     {
         return $this->date;
     }
@@ -57,7 +58,7 @@ class DateRangeCount
     /**
      * @return int
      */
-    public function getDocumentCount()
+    public function getDocumentCount(): int
     {
         return $this->documentCount;
     }

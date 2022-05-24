@@ -1,5 +1,4 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Test\Domain\Search\ResultSet\Facets;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -13,6 +12,8 @@ namespace ApacheSolrForTypo3\Solr\Test\Domain\Search\ResultSet\Facets;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\UrlFacetContainer;
 use ApacheSolrForTypo3\Solr\System\Util\ArrayAccessor;
@@ -28,7 +29,7 @@ class UrlFacetContainerTest extends UnitTest
     /**
      * Test data for index based url parameters
      *
-     * @var \string[][][]
+     * @var string[][][]
      */
     protected $indexParameters = [
         'tx_solr' => [
@@ -36,14 +37,14 @@ class UrlFacetContainerTest extends UnitTest
                 'type:pages',
                 'type:example',
                 'type:news',
-                'created:12345'
-            ]
-        ]
+                'created:12345',
+            ],
+        ],
     ];
     /**
      * Test data for assoc based url parameters
      *
-     * @var \string[][][]
+     * @var string[][][]
      */
     protected $assocParameters = [
         'tx_solr' => [
@@ -51,9 +52,9 @@ class UrlFacetContainerTest extends UnitTest
                 'type:pages' => 1,
                 'type:example' => 1,
                 'type:news' => 1,
-                'created:12345' => 1
-            ]
-        ]
+                'created:12345' => 1,
+            ],
+        ],
     ];
 
     /**
@@ -63,7 +64,7 @@ class UrlFacetContainerTest extends UnitTest
     {
         $urlFacetBack = new UrlFacetContainer(new ArrayAccessor($this->indexParameters));
         $urlFacetBack->enableSort();
-        $this->assertEquals(['example', 'news', 'pages'], $urlFacetBack->getActiveFacetValuesByName('type'));
+        self::assertEquals(['example', 'news', 'pages'], $urlFacetBack->getActiveFacetValuesByName('type'));
     }
 
     /**
@@ -76,7 +77,7 @@ class UrlFacetContainerTest extends UnitTest
             'tx_solr',
             'assoc'
         );
-        $this->assertEquals(['example', 'news', 'pages'], $urlFacetBack->getActiveFacetValuesByName('type'));
+        self::assertEquals(['example', 'news', 'pages'], $urlFacetBack->getActiveFacetValuesByName('type'));
     }
 
     /**
@@ -85,9 +86,9 @@ class UrlFacetContainerTest extends UnitTest
     public function canRemoveAllIndexFacetsParameter()
     {
         $urlFacetBack = new UrlFacetContainer(new ArrayAccessor($this->indexParameters));
-        $this->assertEquals(4, $urlFacetBack->count());
+        self::assertEquals(4, $urlFacetBack->count());
         $urlFacetBack->removeAllFacets();
-        $this->assertEquals(0, $urlFacetBack->count());
+        self::assertEquals(0, $urlFacetBack->count());
     }
 
     /**
@@ -100,9 +101,9 @@ class UrlFacetContainerTest extends UnitTest
             'tx_solr',
             'assoc'
         );
-        $this->assertEquals(4, $urlFacetBack->count());
+        self::assertEquals(4, $urlFacetBack->count());
         $urlFacetBack->removeAllFacets();
-        $this->assertEquals(0, $urlFacetBack->count());
+        self::assertEquals(0, $urlFacetBack->count());
     }
 
     /**
@@ -111,9 +112,9 @@ class UrlFacetContainerTest extends UnitTest
     public function canRemoveAllFacetsParameterByName()
     {
         $urlFacetBack = new UrlFacetContainer(new ArrayAccessor($this->indexParameters));
-        $this->assertEquals(4, $urlFacetBack->count());
+        self::assertEquals(4, $urlFacetBack->count());
         $urlFacetBack->removeAllFacetValuesByName('type');
-        $this->assertEquals(1, $urlFacetBack->count());
+        self::assertEquals(1, $urlFacetBack->count());
     }
 
     /**
@@ -126,9 +127,9 @@ class UrlFacetContainerTest extends UnitTest
             'tx_solr',
             'assoc'
         );
-        $this->assertEquals(4, $urlFacetBack->count());
+        self::assertEquals(4, $urlFacetBack->count());
         $urlFacetBack->removeAllFacetValuesByName('type');
-        $this->assertEquals(1, $urlFacetBack->count());
+        self::assertEquals(1, $urlFacetBack->count());
     }
 
     /**
@@ -137,9 +138,9 @@ class UrlFacetContainerTest extends UnitTest
     public function canRemoveASingleFacetParameterByName()
     {
         $urlFacetBack = new UrlFacetContainer(new ArrayAccessor($this->indexParameters));
-        $this->assertEquals(4, $urlFacetBack->count());
+        self::assertEquals(4, $urlFacetBack->count());
         $urlFacetBack->removeFacetValue('type', 'example');
-        $this->assertEquals(3, $urlFacetBack->count());
+        self::assertEquals(3, $urlFacetBack->count());
     }
 
     /**
@@ -153,7 +154,7 @@ class UrlFacetContainerTest extends UnitTest
             'assoc'
         );
         $urlFacetBack->removeFacetValue('type', 'example');
-        $this->assertEquals(3, $urlFacetBack->count());
+        self::assertEquals(3, $urlFacetBack->count());
     }
 
     /**
@@ -162,7 +163,7 @@ class UrlFacetContainerTest extends UnitTest
     public function keepOrderingOfIndexParameters()
     {
         $urlFacetBack = new UrlFacetContainer(new ArrayAccessor($this->indexParameters));
-        $this->assertEquals(['pages', 'example', 'news'], $urlFacetBack->getActiveFacetValuesByName('type'));
+        self::assertEquals(['pages', 'example', 'news'], $urlFacetBack->getActiveFacetValuesByName('type'));
     }
 
     /**
@@ -172,7 +173,7 @@ class UrlFacetContainerTest extends UnitTest
     {
         $urlFacetBack = new UrlFacetContainer(new ArrayAccessor($this->indexParameters));
         $urlFacetBack->enableSort();
-        $this->assertEquals(['example', 'news', 'pages'], $urlFacetBack->getActiveFacetValuesByName('type'));
+        self::assertEquals(['example', 'news', 'pages'], $urlFacetBack->getActiveFacetValuesByName('type'));
     }
 
     /**
@@ -185,7 +186,7 @@ class UrlFacetContainerTest extends UnitTest
             'tx_solr',
             'assoc'
         );
-        $this->assertNotEquals(
+        self::assertNotEquals(
             ['pages', 'example', 'news'],
             $urlFacetBack->getActiveFacetValuesByName('type')
         );
@@ -201,6 +202,6 @@ class UrlFacetContainerTest extends UnitTest
             'tx_solr',
             'assoc'
         );
-        $this->assertEquals(['example', 'news', 'pages'], $urlFacetBack->getActiveFacetValuesByName('type'));
+        self::assertEquals(['example', 'news', 'pages'], $urlFacetBack->getActiveFacetValuesByName('type'));
     }
 }

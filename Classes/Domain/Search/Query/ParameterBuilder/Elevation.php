@@ -1,28 +1,21 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
 
-/***************************************************************
- *  Copyright notice
+declare(strict_types=1);
+
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2018 <timo.hund@dkd.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
+
+namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\AbstractQueryBuilder;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
@@ -31,33 +24,36 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
  * The Elevation ParameterProvider is responsible to build the solr query parameters
  * that are needed for the elevation.
  */
-class Elevation extends AbstractDeactivatable implements ParameterBuilder
+class Elevation extends AbstractDeactivatable implements ParameterBuilderInterface
 {
     /**
      * @var bool
      */
-    protected $isForced = true;
+    protected bool $isForced = true;
 
     /**
      * @var bool
      */
-    protected $markElevatedResults = true;
+    protected bool $markElevatedResults = true;
 
     /**
      * Elevation constructor.
-     * @param boolean $isEnabled
-     * @param boolean $isForced
-     * @param boolean $markElevatedResults
+     * @param bool $isEnabled
+     * @param bool $isForced
+     * @param bool $markElevatedResults
      */
-    public function __construct($isEnabled = false, $isForced = true, $markElevatedResults = true)
-    {
+    public function __construct(
+        bool $isEnabled = false,
+        bool $isForced = true,
+        bool $markElevatedResults = true
+    ) {
         $this->isEnabled = $isEnabled;
         $this->isForced = $isForced;
         $this->markElevatedResults = $markElevatedResults;
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function getIsForced(): bool
     {
@@ -65,7 +61,7 @@ class Elevation extends AbstractDeactivatable implements ParameterBuilder
     }
 
     /**
-     * @param boolean $isForced
+     * @param bool $isForced
      */
     public function setIsForced(bool $isForced)
     {
@@ -73,7 +69,7 @@ class Elevation extends AbstractDeactivatable implements ParameterBuilder
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function getMarkElevatedResults(): bool
     {
@@ -81,7 +77,7 @@ class Elevation extends AbstractDeactivatable implements ParameterBuilder
     }
 
     /**
-     * @param boolean $markElevatedResults
+     * @param bool $markElevatedResults
      */
     public function setMarkElevatedResults(bool $markElevatedResults)
     {
@@ -92,7 +88,7 @@ class Elevation extends AbstractDeactivatable implements ParameterBuilder
      * @param TypoScriptConfiguration $solrConfiguration
      * @return Elevation
      */
-    public static function fromTypoScriptConfiguration(TypoScriptConfiguration $solrConfiguration)
+    public static function fromTypoScriptConfiguration(TypoScriptConfiguration $solrConfiguration): Elevation
     {
         $isEnabled = $solrConfiguration->getSearchElevation();
         if (!$isEnabled) {
@@ -107,7 +103,7 @@ class Elevation extends AbstractDeactivatable implements ParameterBuilder
     /**
      * @return Elevation
      */
-    public static function getEmpty()
+    public static function getEmpty(): Elevation
     {
         return new Elevation(false);
     }

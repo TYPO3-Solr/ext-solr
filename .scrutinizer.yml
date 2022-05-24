@@ -11,12 +11,10 @@ tools:
   php_cpd:
     enabled: true
 
+  # we do this on GitHub-Actions via typo3/coding-standards
   php_code_sniffer:
-    enabled: true
-    config:
-      standard: TYPO3CMS
-
-  # we do this on travis
+    enabled: false
+  # we do this on GitHub-Actions via typo3/coding-standards
   php_cs_fixer:
     enabled: false
 
@@ -39,16 +37,16 @@ tools:
     timeout: 2400
 
 checks:
-    php:
-        excluded_dependencies:
-            - typo3/cms-install
-        avoid_superglobals: false
+  php:
+    excluded_dependencies:
+      - typo3/cms-install
+    avoid_superglobals: false
 
 build_failure_conditions:
   - 'patches.label("Doc Comments").count > 10'
   - 'patches.label("Spacing").count > 15'
   - 'issues.label("coding-style").count > 10'
-  - 'issues.severity(>= MAJOR).count > 60'
+  - 'issues.severity(>= MAJOR).count > 260'
   - 'project.metric("scrutinizer.quality", < 8)'
   - 'project.metric_change("scrutinizer.test_coverage", < -0.10)'
 
@@ -56,16 +54,10 @@ build_failure_conditions:
 build:
   environment:
     php:
-      version: 7.2.8
+      # We want to test with the smallest supported TYPO3 PHP version
+      version: 7.4
   nodes:
     analysis:
-      dependencies:
-        after:
-          - composer require --dev squizlabs/php_codesniffer:3.1.1
       tests:
         override:
           - php-scrutinizer-run
-        override:
-          -
-            command: phpcs-run
-            use_website_config: false

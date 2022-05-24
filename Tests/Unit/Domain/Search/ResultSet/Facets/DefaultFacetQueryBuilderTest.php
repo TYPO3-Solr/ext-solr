@@ -1,5 +1,4 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Test\Domain\Search\ResultSet\Facets;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -13,6 +12,8 @@ namespace ApacheSolrForTypo3\Solr\Test\Domain\Search\ResultSet\Facets;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\DefaultFacetQueryBuilder;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
@@ -51,14 +52,13 @@ class DefaultFacetQueryBuilderTest extends UnitTest
             ],
             'color.' => [
                 'field' => 'color',
-            ]
+            ],
         ];
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
 
         $defaultQueryBuilder = new DefaultFacetQueryBuilder();
         $result = $defaultQueryBuilder->build('color', $fakeConfiguration);
 
-        $this->assertNotContains('{!ex', $result['facet.field'][0]);
+        self::assertStringNotContainsString('{!ex', $result['facet.field'][0]);
     }
-
 }

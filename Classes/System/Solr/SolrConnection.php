@@ -1,28 +1,21 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\System\Solr;
 
-/***************************************************************
- *  Copyright notice
+declare(strict_types=1);
+
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2009-2015 Ingo Renner <ingo@typo3.org>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
+
+namespace ApacheSolrForTypo3\Solr\System\Solr;
 
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
@@ -51,74 +44,74 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class SolrConnection
 {
     /**
-     * @var SolrAdminService
+     * @var SolrAdminService|null
      */
-    protected $adminService;
+    protected ?SolrAdminService $adminService = null;
 
     /**
-     * @var SolrReadService
+     * @var SolrReadService|null
      */
-    protected $readService;
+    protected ?SolrReadService $readService= null;
 
     /**
-     * @var SolrWriteService
+     * @var SolrWriteService|null
      */
-    protected $writeService;
+    protected ?SolrWriteService $writeService = null;
 
     /**
      * @var TypoScriptConfiguration
      */
-    protected $configuration;
+    protected TypoScriptConfiguration $configuration;
 
     /**
-     * @var SynonymParser
+     * @var SynonymParser|null
      */
-    protected $synonymParser = null;
+    protected ?SynonymParser $synonymParser = null;
 
     /**
-     * @var StopWordParser
+     * @var StopWordParser|null
      */
-    protected $stopWordParser = null;
+    protected ?StopWordParser $stopWordParser = null;
 
     /**
-     * @var SchemaParser
+     * @var SchemaParser|null
      */
-    protected $schemaParser = null;
+    protected ?SchemaParser $schemaParser = null;
 
     /**
      * @var Node[]
      */
-    protected $nodes = [];
+    protected array $nodes = [];
 
     /**
-     * @var SolrLogManager
+     * @var SolrLogManager|null
      */
-    protected $logger = null;
+    protected ?SolrLogManager $logger = null;
 
     /**
-     * @var ClientInterface[]
+     * @var ClientInterface|Client[]
      */
-    protected $clients = [];
+    protected array $clients = [];
 
     /**
      * @var ClientInterface
      */
-    protected $psr7Client;
+    protected ClientInterface $psr7Client;
 
     /**
      * @var RequestFactoryInterface
      */
-    protected $requestFactory;
+    protected RequestFactoryInterface $requestFactory;
 
     /**
      * @var StreamFactoryInterface
      */
-    protected $streamFactory;
+    protected StreamFactoryInterface $streamFactory;
 
     /**
      * @var EventDispatcherInterface
      */
-    protected $eventDispatcher;
+    protected EventDispatcherInterface $eventDispatcher;
 
     /**
      * Constructor
@@ -188,14 +181,21 @@ class SolrConnection
 
     /**
      * @return SolrAdminService
-     * @noinspection PhpIncompatibleReturnTypeInspection
      */
     protected function buildAdminService(): SolrAdminService
     {
         $endpointKey = 'admin';
         $client = $this->getClient($endpointKey);
         $this->initializeClient($client, $endpointKey);
-        return GeneralUtility::makeInstance(SolrAdminService::class, $client, $this->configuration, $this->logger, $this->synonymParser, $this->stopWordParser, $this->schemaParser);
+        return GeneralUtility::makeInstance(
+            SolrAdminService::class,
+            $client,
+            $this->configuration,
+            $this->logger,
+            $this->synonymParser,
+            $this->stopWordParser,
+            $this->schemaParser
+        );
     }
 
     /**
@@ -212,7 +212,6 @@ class SolrConnection
 
     /**
      * @return SolrReadService
-     * @noinspection PhpIncompatibleReturnTypeInspection
      */
     protected function buildReadService(): SolrReadService
     {
@@ -236,7 +235,6 @@ class SolrConnection
 
     /**
      * @return SolrWriteService
-     * @noinspection PhpIncompatibleReturnTypeInspection
      */
     protected function buildWriteService(): SolrWriteService
     {
@@ -282,7 +280,7 @@ class SolrConnection
      */
     protected function getClient(string $endpointKey): Client
     {
-        if ($this->clients[$endpointKey]) {
+        if (isset($this->clients[$endpointKey])) {
             return $this->clients[$endpointKey];
         }
 

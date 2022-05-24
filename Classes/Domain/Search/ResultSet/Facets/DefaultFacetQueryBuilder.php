@@ -1,5 +1,6 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets;
+
+declare(strict_types=1);
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -14,16 +15,18 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets;
  * The TYPO3 project - inspiring people to share!
 */
 
+namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets;
+
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 
-class DefaultFacetQueryBuilder implements FacetQueryBuilderInterface {
-
+class DefaultFacetQueryBuilder implements FacetQueryBuilderInterface
+{
     /**
      * @param string $facetName
      * @param TypoScriptConfiguration $configuration
      * @return array
      */
-    public function build($facetName, TypoScriptConfiguration $configuration)
+    public function build(string $facetName, TypoScriptConfiguration $configuration): array
     {
         $facetParameters = [];
         $facetConfiguration = $configuration->getSearchFacetingFacetByName($facetName);
@@ -32,7 +35,7 @@ class DefaultFacetQueryBuilder implements FacetQueryBuilderInterface {
         $facetParameters['facet.field'][] = $tags . $facetConfiguration['field'];
 
         $sortingExpression = new SortingExpression();
-        $facetSortExpression = $sortingExpression->getForFacet($facetConfiguration['sortBy']);
+        $facetSortExpression = $sortingExpression->getForFacet($facetConfiguration['sortBy'] ?? '');
         if (!empty($facetSortExpression)) {
             $facetParameters['f.' . $facetConfiguration['field'] . '.facet.sort'] = $facetSortExpression;
         }
@@ -45,7 +48,7 @@ class DefaultFacetQueryBuilder implements FacetQueryBuilderInterface {
      * @param TypoScriptConfiguration $configuration
      * @return string
      */
-    protected function buildExcludeTags(array $facetConfiguration, TypoScriptConfiguration $configuration)
+    protected function buildExcludeTags(array $facetConfiguration, TypoScriptConfiguration $configuration): string
     {
         // simple for now, may add overrides f.<field_name>.facet.* later
         if ($configuration->getSearchFacetingKeepAllFacetsOnSelection()) {
@@ -55,11 +58,11 @@ class DefaultFacetQueryBuilder implements FacetQueryBuilderInterface {
             }
 
             return '{!ex=' . implode(',', $facets) . '}';
-        } elseif ($facetConfiguration['keepAllOptionsOnSelection'] == 1) {
+        }
+        if (($facetConfiguration['keepAllOptionsOnSelection'] ?? null) == 1) {
             return '{!ex=' . $facetConfiguration['field'] . '}';
         }
 
         return '';
     }
 }
-

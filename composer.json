@@ -21,31 +21,36 @@
     "docs": "https://docs.typo3.org/p/apache-solr-for-typo3/solr/main/en-us/"
   },
   "require": {
-    "php": ">=7.4.0",
+    "php": "^7.4.0 || ^8.0",
+    "ext-dom": "*",
     "ext-json": "*",
-    "typo3/cms-core": "^11.5",
+    "ext-libxml": "*",
+    "ext-simplexml": "*",
+    "solarium/solarium": "6.2.3",
     "typo3/cms-backend": "*",
+    "typo3/cms-core": "^11.5.4",
     "typo3/cms-extbase": "*",
-    "typo3/cms-frontend": "*",
     "typo3/cms-fluid": "*",
+    "typo3/cms-frontend": "*",
     "typo3/cms-reports": "*",
     "typo3/cms-scheduler": "*",
-    "typo3/cms-tstemplate": "*",
-    "solarium/solarium": "6.1.4"
+    "typo3/cms-tstemplate": "*"
   },
   "require-dev": {
-    "phpunit/phpunit": "^7.5.6 || ^8",
-    "nimut/testing-framework": "^6.0.0"
+    "typo3/coding-standards": ">=0.5.0",
+    "phpunit/phpunit": "^9.5",
+    "phpspec/prophecy-phpunit":"*",
+    "typo3/testing-framework": "^6.12",
+    "typo3/cms-fluid-styled-content": "*",
+    "scrutinizer/ocular": "*",
+    "sclable/xml-lint": "*"
   },
   "replace": {
+    "apache-solr-for-typo3/solrfluid": "*",
     "typo3-ter/solr": "self.version",
-    "typo3-ter/solrfluid": "*",
-    "apache-solr-for-typo3/solrfluid": "*"
+    "typo3-ter/solrfluid": "*"
   },
   "autoload": {
-    "classmap": [
-      "Resources/Private/Php/"
-    ],
     "psr-4": {
       "ApacheSolrForTypo3\\Solr\\": "Classes/"
     }
@@ -56,7 +61,10 @@
       "TYPO3\\CMS\\Core\\Tests\\": ".Build/Web/typo3/sysext/core/Tests/"
     }
   },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
   "config": {
+    "allow-plugins": true,
     "vendor-dir": ".Build/vendor",
     "bin-dir": ".Build/bin"
   },
@@ -66,20 +74,56 @@
       "[ -L .Build/Web/typo3conf/ext/solr ] || ln -snvf ../../../../. .Build/Web/typo3conf/ext/solr"
     ],
     "extension-create-libs": [
-      "@composer install -d Resources/Private/Php/ComposerLibraries"
+      "@composer req -d Resources/Private/Php/ComposerLibraries solarium/solarium:$(Build/Helpers/GET_LACAL_PACKAGE_VERSION_CONSTRAINT.sh solarium/solarium)"
     ],
     "extension-build": [
       "@extension-create-libs"
+    ],
+    "tests:restore-git": "echo \"Retore composer.json to initial state:\" && git checkout composer.json",
+    "tests:env": [
+      "if [ -z ${TYPO3_VERSION+x} ]; then >&2 echo \"Can not proceed, because env var TYPO3_VERSION is not set\"; exit 1; else echo \"Setup test environment for TYPO3 ${TYPO3_VERSION}\"; fi",
+      "if [ \"${TYPO3_VERSION#*dev}\" != \"dev\" ]; then $COMPOSER_BINARY config minimum-stability dev; fi"
+    ],
+    "tests:setup": [
+      "@tests:env",
+      "@composer req --prefer-source --update-with-all-dependencies typo3/cms-core:${TYPO3_VERSION}",
+      "@tests:restore-git"
+    ],
+    "tests:unit": [
+      "phpunit --colors --config=Build/Test/UnitTests.xml --bootstrap=Build/Test/UnitTestsBootstrap.php"
+    ],
+    "tests:integration": [
+      "phpunit --colors --config=Build/Test/IntegrationTests.xml --bootstrap=.Build/Web/typo3conf/ext/solr/Build/Test/IntegrationTestsBootstrap.php"
+    ],
+    "t3:standards:fix": [
+      "php-cs-fixer fix"
+    ],
+    "lint:xlf": [
+      "xmllint Resources/Private/Language/ -p '*.xlf'"
     ]
   },
   "extra": {
     "branch-alias": {
-      "dev-main": "12.0.x-dev"
+      "dev-release-11.5.x": "11.5.x-dev"
     },
     "typo3/cms": {
       "extension-key": "solr",
       "cms-package-dir": "{$vendor-dir}/typo3/cms",
       "web-dir": ".Build/Web"
+    },
+    "TYPO3-Solr": {
+      "version-matrix": {
+        "ext-tika": "^11.0",
+        "ext-solrfal": "^11.0",
+        "ext-solrconsole": "^11.0",
+        "ext-solrdebugtools": "^11.0",
+        "ext-solrfluidgrouping": "^11.0",
+        "ext-solrmlt": "^11.0",
+        "Apache-Solr": "8.11.1",
+        "configset": "ext_solr_11_5_0"
+      },
+      "ext-solrfal": {
+      }
     }
   }
 }

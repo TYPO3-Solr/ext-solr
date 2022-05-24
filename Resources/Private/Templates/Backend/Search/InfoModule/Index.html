@@ -2,25 +2,27 @@
 <f:layout name="Backend/WithPageTree"/>
 
 <f:section name="Main">
+    <f:be.pageRenderer includeCssFiles="{0: '{f:uri.resource(path:\'StyleSheets/Backend/InfoModule.css\')}'}"/>
+
     <div role="tabpanel">
         <ul class="nav nav-tabs t3js-tabs" role="tablist" id="tabs-tab" data-store-last-tab="1">
-            <li role="presentation" class="t3js-tabmenu-item  active">
-                <a href="#connections-tab" title="" aria-controls="tab-1" role="tab" data-toggle="tab">
+            <li role="presentation" class="t3js-tabmenu-item nav-item">
+                <a href="#connections-tab" class="nav-link active" title="" aria-controls="tab-1" role="tab" data-bs-toggle="tab">
                     Connections
                 </a>
             </li>
-            <li role="presentation" class="t3js-tabmenu-item ">
-                <a href="#statistics-tab" title="" aria-controls="tab-3" role="tab" data-toggle="tab">
+            <li role="presentation" class="t3js-tabmenu-item nav-item ">
+                <a href="#statistics-tab" class="nav-link" title="" aria-controls="tab-3" role="tab" data-bs-toggle="tab">
                     Statistics
                 </a>
             </li>
-            <li role="presentation" class="t3js-tabmenu-item ">
-                <a href="#index_fields-tab" title="" aria-controls="tab-2" role="tab" data-toggle="tab">
+            <li role="presentation" class="t3js-tabmenu-item nav-item ">
+                <a href="#index_fields-tab" class="nav-link" title="" aria-controls="tab-2" role="tab" data-bs-toggle="tab">
                     Index Fields
                 </a>
             </li>
-            <li role="presentation" class="t3js-tabmenu-item">
-                <a href="#index_inspector-tab" title="" aria-controls="tab-2" role="tab" data-toggle="tab">
+            <li role="presentation" class="t3js-tabmenu-item nav-item">
+                <a href="#index_inspector-tab" class="nav-link" title="" aria-controls="tab-2" role="tab" data-bs-toggle="tab">
                     Index Documents
                 </a>
             </li>
@@ -222,7 +224,10 @@
                     <h4 class="panel-title">
                         <f:if condition="{indexFieldsInfoForCore.coreMetrics.numberOfDocuments}">
                             <f:then>
-                                <a data-toggle="collapse" data-parent="#index-fields_accordion" href="#collapse-core{iterator.index}">{indexFieldsInfoForCore.corePath}</a>
+                                <a data-bs-toggle="collapse" data-bs-parent="#index-fields_accordion" href="#collapse-core{iterator.index}">{indexFieldsInfoForCore.corePath}</a>
+                                <a href="#collapse-core{iterator.index}" title="Collapse table" class="pull-right" data-bs-toggle="collapse">
+                                    <core:icon identifier="actions-view-list-expand" size="small"/><f:comment><!-- @todo: make Icon toggable between actions-view-list-collapse/actions-view-list-expand --></f:comment>
+                                </a>
                             </f:then>
                             <f:else>
                                 <a>{indexFieldsInfoForCore.corePath} is empty!</a>
@@ -249,8 +254,8 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h3 class="panel-title">
-                        <a href="#panel-group3document-core-{currentCore.index}" data-toggle="collapse">{indexInspectorDocumentsByType.core.corepath}</a>
-                        <a href="#panel-group3document-core-{currentCore.index}" title="Collapse table" class="pull-right" data-toggle="collapse">
+                        <a href="#panel-group3document-core-{currentCore.index}" data-bs-toggle="collapse">{indexInspectorDocumentsByType.core.corepath}</a>
+                        <a href="#panel-group3document-core-{currentCore.index}" title="Collapse table" class="pull-right" data-bs-toggle="collapse">
                             <core:icon identifier="actions-view-list-expand" size="small"/><f:comment><!-- @todo: make Icon toggable between actions-view-list-collapse/actions-view-list-expand --></f:comment>
                         </a>
                     </h3>
@@ -273,8 +278,8 @@
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h3 class="panel-title">
-                    <a href="#panel-group4document-type-{currentCore.index}-{documentType}" data-toggle="collapse">Type: {documentType} ({f:count(subject: documents)})</a>
-                    <a href="#panel-group4document-type-{currentCore.index}-{documentType}" title="Collapse table" class="pull-right" data-toggle="collapse">
+                    <a href="#panel-group4document-type-{currentCore.index}-{documentType}" data-bs-toggle="collapse">Type: {documentType} ({f:count(subject: documents)})</a>
+                    <a href="#panel-group4document-type-{currentCore.index}-{documentType}" title="Collapse table" class="pull-right" data-bs-toggle="collapse">
                         <core:icon identifier="actions-view-list-expand" size="small"/><f:comment><!-- @todo: make Icon toggable between actions-view-list-collapse/actions-view-list-expand --></f:comment>
                     </a>
                 </h3>

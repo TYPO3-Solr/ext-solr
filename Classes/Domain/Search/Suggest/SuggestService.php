@@ -1,42 +1,38 @@
 <?php
 
-namespace ApacheSolrForTypo3\Solr\Domain\Search\Suggest;
+declare(strict_types=1);
 
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2017 Franz Saris <frans.saris@beech.it>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
+
+namespace ApacheSolrForTypo3\Solr\Domain\Search\Suggest;
 
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\SuggestQuery;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\InvalidFacetPackageException;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResult;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResultCollection;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSetService;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
+use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
 use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Solr\ParsingUtil;
 use ApacheSolrForTypo3\Solr\Util;
+use Exception;
+use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
@@ -46,40 +42,49 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
  * @author Frans Saris <frans.saris@beech.it>
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class SuggestService {
-
+class SuggestService
+{
     /**
      * @var TypoScriptFrontendController
      */
-    protected $tsfe;
+    protected TypoScriptFrontendController $tsfe;
 
     /**
      * @var SearchResultSetService
      */
-    protected $searchService;
+    protected SearchResultSetService $searchService;
 
     /**
      * @var TypoScriptConfiguration
      */
-    protected $typoScriptConfiguration;
+    protected TypoScriptConfiguration $typoScriptConfiguration;
 
     /**
      * @var QueryBuilder
      */
-    protected $queryBuilder;
+    protected QueryBuilder $queryBuilder;
 
     /**
      * SuggestService constructor.
      * @param TypoScriptFrontendController $tsfe
      * @param SearchResultSetService $searchResultSetService
+     * @param TypoScriptConfiguration $typoScriptConfiguration
      * @param QueryBuilder|null $queryBuilder
      */
-    public function __construct(TypoScriptFrontendController $tsfe, SearchResultSetService $searchResultSetService, TypoScriptConfiguration $typoScriptConfiguration, QueryBuilder $queryBuilder = null)
-    {
+    public function __construct(
+        TypoScriptFrontendController $tsfe,
+        SearchResultSetService $searchResultSetService,
+        TypoScriptConfiguration $typoScriptConfiguration,
+        QueryBuilder $queryBuilder = null
+    ) {
         $this->tsfe = $tsfe;
         $this->searchService = $searchResultSetService;
         $this->typoScriptConfiguration = $typoScriptConfiguration;
-        $this->queryBuilder = $queryBuilder ?? GeneralUtility::makeInstance(QueryBuilder::class, /** @scrutinizer ignore-type */ $typoScriptConfiguration);
+        $this->queryBuilder = $queryBuilder ?? GeneralUtility::makeInstance(
+            QueryBuilder::class,
+            /** @scrutinizer ignore-type */
+            $typoScriptConfiguration
+        );
     }
 
     /**
@@ -88,8 +93,11 @@ class SuggestService {
      * @param SearchRequest $searchRequest
      * @param array $additionalFilters
      * @return array
+     * @throws AspectNotFoundException
+     * @throws InvalidFacetPackageException
+     * @throws NoSolrConnectionFoundException
      */
-    public function getSuggestions(SearchRequest $searchRequest, array $additionalFilters = []) : array
+    public function getSuggestions(SearchRequest $searchRequest, array $additionalFilters = []): array
     {
         $requestId = (int)$this->tsfe->getRequestedId();
         $groupList = Util::getFrontendUserGroupsList();
@@ -119,8 +127,9 @@ class SuggestService {
      * @param array $suggestions
      * @param array $additionalFilters
      * @return array
+     * @throws InvalidFacetPackageException
      */
-    protected function addTopResultsToSuggestions(SearchRequest $searchRequest, $suggestions, array $additionalFilters) : array
+    protected function addTopResultsToSuggestions(SearchRequest $searchRequest, array $suggestions, array $additionalFilters): array
     {
         $maxDocuments = $this->typoScriptConfiguration->getSuggestNumberOfTopResults();
 
@@ -138,7 +147,7 @@ class SuggestService {
         }
 
         $suggestionKeys = array_keys($suggestions);
-        $bestSuggestion = reset($suggestionKeys);
+        $bestSuggestion = (string)reset($suggestionKeys);
         $bestSuggestionRequest = $searchRequest->getCopyForSubRequest();
         $bestSuggestionRequest->setRawQueryString($bestSuggestion);
         $bestSuggestionRequest->setResultsPerPage($maxDocuments);
@@ -159,8 +168,11 @@ class SuggestService {
      *
      * @param SuggestQuery $suggestQuery
      * @return array
+     * @throws NoSolrConnectionFoundException
+     * @throws AspectNotFoundException
+     * @throws Exception
      */
-    protected function getSolrSuggestions(SuggestQuery $suggestQuery) : array
+    protected function getSolrSuggestions(SuggestQuery $suggestQuery): array
     {
         $pageId = $this->tsfe->getRequestedId();
         $languageId = Util::getLanguageUid();
@@ -169,9 +181,12 @@ class SuggestService {
         $response = $search->search($suggestQuery, 0, 0);
 
         $rawResponse = $response->getRawResponse();
+        if (null === $rawResponse) {
+            return [];
+        }
         $results = json_decode($rawResponse);
         $suggestConfig = $this->typoScriptConfiguration->getObjectByPath('plugin.tx_solr.suggest.');
-        $facetSuggestions = $results->facet_counts->facet_fields->{$suggestConfig['suggestField']} ?? [];
+        $facetSuggestions = isset($suggestConfig['suggestField']) ? $results->facet_counts->facet_fields->{$suggestConfig['suggestField']} ?? [] : [];
         $facetSuggestions = ParsingUtil::getMapArrayFromFlatArray($facetSuggestions);
 
         return $facetSuggestions ?? [];
@@ -182,11 +197,14 @@ class SuggestService {
      *
      * @param SuggestQuery $suggestQuery
      * @param array $solrSuggestions
-     * @param integer $maxSuggestions
+     * @param int $maxSuggestions
      * @return array
      */
-    protected function getSuggestionArray(SuggestQuery $suggestQuery, $solrSuggestions, $maxSuggestions) : array
-    {
+    protected function getSuggestionArray(
+        SuggestQuery $suggestQuery,
+        array $solrSuggestions,
+        int $maxSuggestions
+    ): array {
         $queryString = $suggestQuery->getQuery();
         $suggestionCount = 0;
         $suggestions = [];
@@ -207,10 +225,10 @@ class SuggestService {
      *
      * @param array $documents
      * @param SearchResultCollection $documentsToAdd
-     * @param integer $maxDocuments
+     * @param int $maxDocuments
      * @return array
      */
-    protected function addDocumentsWhenLimitNotReached(array $documents, SearchResultCollection $documentsToAdd, int $maxDocuments)  : array
+    protected function addDocumentsWhenLimitNotReached(array $documents, SearchResultCollection $documentsToAdd, int $maxDocuments): array
     {
         $additionalTopResultsFields = $this->typoScriptConfiguration->getSuggestAdditionalTopResultsFields();
         /** @var SearchResult $document */
@@ -231,7 +249,7 @@ class SuggestService {
      * @param array $additionalTopResultsFields
      * @return array
      */
-    protected function getDocumentAsArray(SearchResult $document, $additionalTopResultsFields = []) : array
+    protected function getDocumentAsArray(SearchResult $document, array $additionalTopResultsFields = []): array
     {
         $fields = [
             'link' => $document->getUrl(),
@@ -251,26 +269,34 @@ class SuggestService {
      * Runs a search and returns the results.
      *
      * @param SearchRequest $searchRequest
-     * @return \ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet
+     * @return SearchResultSet
+     * @throws InvalidFacetPackageException
      */
-    protected function doASearch($searchRequest) : SearchResultSet
+    protected function doASearch(SearchRequest $searchRequest): SearchResultSet
     {
         return $this->searchService->search($searchRequest);
     }
 
     /**
-     * Creates an result array with the required fields.
+     * Creates a result array with the required fields.
      *
      * @param SearchRequest $searchRequest
      * @param array $suggestions
      * @param array $documents
-     * @param boolean $didASecondSearch
+     * @param bool $didASecondSearch
      * @return array
      */
-    protected function getResultArray(SearchRequest $searchRequest, $suggestions, $documents, $didASecondSearch) : array
-    {
-        return ['suggestions' => $suggestions, 'suggestion' => $searchRequest->getRawUserQuery(), 'documents' => $documents, 'didSecondSearch' => $didASecondSearch];
+    protected function getResultArray(
+        SearchRequest $searchRequest,
+        array $suggestions,
+        array $documents,
+        bool $didASecondSearch
+    ): array {
+        return [
+            'suggestions' => $suggestions,
+            'suggestion' => $searchRequest->getRawUserQuery(),
+            'documents' => $documents,
+            'didSecondSearch' => $didASecondSearch,
+        ];
     }
-
-
 }

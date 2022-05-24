@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataset>
+	<pages>
+		<uid>2022</uid>
+		<pid>1</pid>
+		<is_siteroot>0</is_siteroot>
+		<doktype>1</doktype>
+		<title>Search</title>
+		<subtitle>Apache Solr for TYPO3 search page</subtitle>
+	</pages>
+
+	<tt_content>
+		<uid>2022</uid>
+		<pid>2022</pid>
+		<frame_class>default</frame_class>
+		<CType>list</CType>
+		<list_type>solr_pi_results</list_type>
+		<sectionIndex>1</sectionIndex>
+		<colPos>0</colPos>
+	</tt_content>
+</dataset>

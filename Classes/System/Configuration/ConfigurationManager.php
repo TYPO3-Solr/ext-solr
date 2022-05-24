@@ -1,28 +1,19 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\System\Configuration;
 
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2010-2016 Timo Schmidt <timo.schmidt@dkd.de
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
+
+namespace ApacheSolrForTypo3\Solr\System\Configuration;
 
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -40,12 +31,10 @@ class ConfigurationManager implements SingletonInterface
      *
      * @var array
      */
-    protected $typoScriptConfigurations = [];
+    protected array $typoScriptConfigurations = [];
 
     /**
      * Resets the state of the configuration manager.
-     *
-     * @return void
      */
     public function reset()
     {
@@ -53,16 +42,16 @@ class ConfigurationManager implements SingletonInterface
     }
 
     /**
-     * Retrieves the TypoScriptConfiguration object from an configuration array, pageId, languageId and TypoScript
-     * path that is used in in the current context.
+     * Retrieves the TypoScriptConfiguration object from configuration array, pageId, languageId and TypoScript
+     * path that is used in the current context.
      *
-     * @param array $configurationArray
-     * @param int $contextPageId
+     * @param array|null $configurationArray
+     * @param int|null $contextPageId
      * @param int $contextLanguageId
      * @param string $contextTypoScriptPath
      * @return TypoScriptConfiguration
      */
-    public function getTypoScriptConfiguration(array $configurationArray = null, $contextPageId = null, $contextLanguageId = 0, $contextTypoScriptPath = '')
+    public function getTypoScriptConfiguration(array $configurationArray = null, int $contextPageId = null, int $contextLanguageId = 0, string $contextTypoScriptPath = ''): TypoScriptConfiguration
     {
         if ($configurationArray == null) {
             if (isset($this->typoScriptConfigurations['default'])) {
@@ -99,16 +88,18 @@ class ConfigurationManager implements SingletonInterface
     /**
      * This method is used to build the TypoScriptConfiguration.
      *
-     * @param array $configurationArray
+     * @param array|null $configurationArray
      * @param int|null $contextPageId
-     * @return object
+     * @return TypoScriptConfiguration
      */
-    protected function getTypoScriptConfigurationInstance(array $configurationArray = null, $contextPageId = null)
+    protected function getTypoScriptConfigurationInstance(array $configurationArray = null, int $contextPageId = null): TypoScriptConfiguration
     {
         return GeneralUtility::makeInstance(
             TypoScriptConfiguration::class,
-            /** @scrutinizer ignore-type */ $configurationArray,
-            /** @scrutinizer ignore-type */ $contextPageId
+            /** @scrutinizer ignore-type */
+            $configurationArray,
+            /** @scrutinizer ignore-type */
+            $contextPageId
         );
     }
 }

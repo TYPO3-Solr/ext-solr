@@ -1,28 +1,19 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Tests\Unit;
 
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2016 Markus Friedrich <markus.friedrich@dkd.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
+
+namespace ApacheSolrForTypo3\Solr\Tests\Unit;
 
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
@@ -44,6 +35,7 @@ use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\TypoScript\TemplateService;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
+use UnexpectedValueException;
 
 /**
  * PHP Unit test for connection manager
@@ -86,10 +78,8 @@ class ConnectionManagerTest extends UnitTest
 
     /**
      * Set up the connection manager test
-     *
-     * @return void
      */
-    public function setUp()
+    protected function setUp(): void
     {
         $TSFE = $this->getDumbMock(TypoScriptFrontendController::class);
         $GLOBALS['TSFE'] = $TSFE;
@@ -115,22 +105,23 @@ class ConnectionManagerTest extends UnitTest
             ->setConstructorArgs([
                 $this->languageRepositoryMock,
                 $this->pageRepositoryMock,
-                $this->siteRepositoryMock
+                $this->siteRepositoryMock,
             ])
-            ->setMethods(['getSolrConnectionForNodes'])
+            ->onlyMethods(['getSolrConnectionForNodes'])
             ->getMock();
+        parent::setUp();
     }
 
     /**
-     * Provides data for the connect test
+     * Provides data for the connection test
      *
      * @return array
      */
-    public function connectDataProvider()
+    public function connectDataProvider(): array
     {
         return [
             ['host' => 'localhost', 'port' => '', 'path' => '', 'scheme' => '', 'expectsException' => true, 'expectedConnectionString' => null],
-            ['host' => '127.0.0.1', 'port' => 8181, 'path' => '/solr/core_de/', 'scheme' => 'https', 'expectsException' => false, 'expectedConnectionString' => 'https://127.0.0.1:8181/solr/core_de/']
+            ['host' => '127.0.0.1', 'port' => 8181, 'path' => '/solr/core_de/', 'scheme' => 'https', 'expectsException' => false, 'expectedConnectionString' => 'https://127.0.0.1:8181/solr/core_de/'],
         ];
     }
 
@@ -146,14 +137,12 @@ class ConnectionManagerTest extends UnitTest
      * @param string $scheme
      * @param bool $expectsException
      * @param string $expectedConnectionString
-     * @return void
      */
     public function canConnect($host, $port, $path, $scheme, $expectsException, $expectedConnectionString)
     {
         $self = $this;
-        $this->connectionManager->expects($this->once())->method('getSolrConnectionForNodes')->will(
-            $this->returnCallback(function($readNode, $writeNode) use ($self) {
-
+        $this->connectionManager->expects(self::once())->method('getSolrConnectionForNodes')->willReturnCallback(
+            function ($readNode, $writeNode) use ($self) {
                 $readNode = Node::fromArray($readNode);
                 $writeNode = Node::fromArray($writeNode);
                 /* @var TypoScriptConfiguration $typoScriptConfigurationMock */
@@ -180,19 +169,19 @@ class ConnectionManagerTest extends UnitTest
                     $this->getDumbMock(StreamFactoryInterface::class),
                     $this->getDumbMock(EventDispatcherInterface::class)
                 );
-            })
+            }
         );
-        $exceptionOccured = false;
+        $exceptionOccurred = false;
         try {
             $readNode = ['host' => $host, 'port' => $port, 'path' => $path, 'scheme' => $scheme];
             $configuration['read'] = $readNode;
             $configuration['write'] = $readNode;
 
             $solrService = $this->connectionManager->getConnectionFromConfiguration($configuration);
-            $this->assertEquals($expectedConnectionString, $solrService->getReadService()->__toString());
-        } catch (\UnexpectedValueException $exception) {
-            $exceptionOccured = true;
+            self::assertEquals($expectedConnectionString, $solrService->getReadService()->__toString());
+        } catch (UnexpectedValueException $exception) {
+            $exceptionOccurred = true;
         }
-        $this->assertEquals($expectsException, $exceptionOccured);
+        self::assertEquals($expectsException, $exceptionOccurred);
     }
 }

@@ -1,5 +1,6 @@
 <?php
-defined('TYPO3_MODE') or die();
+
+defined('TYPO3') or die();
 
 /**
  * No Search for sub entries of page tree.
@@ -17,13 +18,13 @@ defined('TYPO3_MODE') or die();
                     [
                         0 => '',
                         1 => '',
-                        'invertStateDisplay' => true
-                    ]
+                        'invertStateDisplay' => true,
+                    ],
                 ],
                 'behaviour' => [
-                    'allowLanguageSynchronization' => true
-                ]
-            ]
+                    'allowLanguageSynchronization' => true,
+                ],
+            ],
         ],
     ]
 );
@@ -44,6 +45,6 @@ $GLOBALS['TCA']['pages']['palettes']['slimmed_miscellaneous'] = [
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes(
     'pages',
     '--palette--;;slimmed_miscellaneous',
-    (string)\TYPO3\CMS\Frontend\Page\PageRepository::DOKTYPE_SYSFOLDER,
+    (string)\TYPO3\CMS\Core\Domain\Repository\PageRepository::DOKTYPE_SYSFOLDER,
     'after:module'
 );

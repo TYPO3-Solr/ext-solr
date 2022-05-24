@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -18,11 +20,11 @@ namespace ApacheSolrForTypo3\Solr;
 use ApacheSolrForTypo3\Solr\FrontendEnvironment\Tsfe;
 use ApacheSolrForTypo3\Solr\FrontendEnvironment\TypoScript;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
-use TYPO3\CMS\Core\Error\Http\ServiceUnavailableException;
-use TYPO3\CMS\Core\Exception\SiteNotFoundException;
-use TYPO3\CMS\Core\Http\ImmediateResponseException;
+use Doctrine\DBAL\Driver\Exception as DBALDriverException;
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * Class FrontendEnvironment is responsible for initializing/simulating the frontend in backend context
@@ -33,55 +35,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class FrontendEnvironment implements SingletonInterface
 {
-
-    /**
-     * @var TypoScript
-     */
-    private $typoScript = null;
-
-    /**
-     * @var Tsfe
-     */
-    private $tsfe = null;
-
-    /**
-     * FrontendEnvironment constructor.
-     *
-     * @param Tsfe|null $tsfe
-     * @param TypoScript|null $typoScript
-     */
-    public function __construct(Tsfe $tsfe = null, TypoScript $typoScript = null)
-    {
-        $this->tsfe = $tsfe ?? GeneralUtility::makeInstance(Tsfe::class);
-        $this->typoScript = $typoScript ?? GeneralUtility::makeInstance(TypoScript::class);
-    }
-
-    /**
-     * Changes language context.
-     * Should be used in indexing context.
-     *
-     * @param int $pageId
-     * @param int $language
-     */
-    public function changeLanguageContext(int $pageId, int $language): void
-    {
-        $this->tsfe->changeLanguageContext($pageId, $language);
-    }
-
-    /**
-     * Initializes the TSFE for a given page ID and language.
-     *
-     * @param $pageId
-     * @param int $language
-     * @throws SiteNotFoundException
-     * @throws ServiceUnavailableException
-     * @throws ImmediateResponseException
-     */
-    public function initializeTsfe($pageId, $language = 0)
-    {
-        $this->tsfe->initializeTsfe($pageId, $language);
-    }
-
     /**
      * Loads the TypoScript configuration for a given page id and language.
      * Language usage may be disabled to get the default TypoScript
@@ -90,11 +43,13 @@ class FrontendEnvironment implements SingletonInterface
      * @param int $pageId
      * @param ?string $path
      * @param ?int $language
+     * @param int|null $rootPageId
      * @return TypoScriptConfiguration
+     * @throws DBALDriverException
      */
-    public function getConfigurationFromPageId($pageId, $path = '', $language = 0): TypoScriptConfiguration
+    public function getConfigurationFromPageId(int $pageId, ?string $path = '', ?int $language = 0, ?int $rootPageId = null): TypoScriptConfiguration
     {
-        return $this->typoScript->getConfigurationFromPageId($pageId, $path, $language);
+        return GeneralUtility::makeInstance(TypoScript::class)->getConfigurationFromPageId($pageId, $path, $language, $rootPageId);
     }
 
     /**
@@ -104,10 +59,26 @@ class FrontendEnvironment implements SingletonInterface
      * @param array $pageRecord
      * @param ?string $configurationName
      * @return bool
+     * @throws DBALDriverException
      */
-    public function isAllowedPageType(array $pageRecord, $configurationName = 'pages'): bool
+    public function isAllowedPageType(array $pageRecord, ?string $configurationName = 'pages'): bool
     {
-        $configuration = $this->getConfigurationFromPageId($pageRecord['uid'], '');
+        // $pageRecord could come from DataHandler and with all columns. So we want to fetch it again.
+        $pageRecord = BackendUtility::getRecord('pages', $pageRecord['uid']);
+        $rootPageRecordUid = $pageRecord['uid'];
+        if (isset($pageRecord['sys_language_uid'])
+            && (int)$pageRecord['sys_language_uid'] > 0
+            && isset($pageRecord['l10n_parent'])
+            && (int)$pageRecord['l10n_parent'] > 0
+        ) {
+            $rootPageRecordUid = $pageRecord['l10n_parent'];
+        }
+
+        $tsfe = GeneralUtility::makeInstance(Tsfe::class)->getTsfeByPageIdIgnoringLanguage($rootPageRecordUid);
+        if (!$tsfe instanceof TypoScriptFrontendController) {
+            return false;
+        }
+        $configuration = $this->getConfigurationFromPageId($rootPageRecordUid, '', $tsfe->getLanguage()->getLanguageId());
         $allowedPageTypes = $configuration->getIndexQueueAllowedPageTypesArrayByConfigurationName($configurationName);
         return in_array($pageRecord['doktype'], $allowedPageTypes);
     }
@@ -117,10 +88,12 @@ class FrontendEnvironment implements SingletonInterface
      *
      * @param int $pageId
      * @param ?int $language
+     * @param int|null $rootPageId
      * @return TypoScriptConfiguration
+     * @throws DBALDriverException
      */
-    public function getSolrConfigurationFromPageId($pageId, $language = 0): TypoScriptConfiguration
+    public function getSolrConfigurationFromPageId(int $pageId, ?int $language = 0, ?int $rootPageId = null): TypoScriptConfiguration
     {
-        return $this->getConfigurationFromPageId($pageId, '', $language);
+        return $this->getConfigurationFromPageId($pageId, '', $language, $rootPageId);
     }
 }

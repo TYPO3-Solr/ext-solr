@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataset>
+	<pages>
+		<uid>444</uid>
+		<pid>0</pid>
+		<is_siteroot>0</is_siteroot>
+		<doktype>1</doktype>
+		<title>Simple Page outside any site root</title>
+	</pages>
+	<pages>
+		<uid>445</uid>
+		<pid>0</pid>
+		<is_siteroot>0</is_siteroot>
+		<doktype>254</doktype>
+		<title>Simple sys-folder outside any site root</title>
+	</pages>
+</dataset>

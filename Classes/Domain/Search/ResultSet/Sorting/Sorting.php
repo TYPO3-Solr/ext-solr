@@ -1,8 +1,24 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * This file is part of the TYPO3 CMS project.
+ *
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
+ *
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ *
+ * The TYPO3 project - inspiring people to share!
+ */
+
 namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Sorting;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
+use InvalidArgumentException;
 
 /**
  * Class Sorting
@@ -16,37 +32,37 @@ class Sorting
     /**
      * @var array
      */
-    protected static $validDirections = [self::DIRECTION_DESC, self::DIRECTION_ASC];
+    protected static array $validDirections = [self::DIRECTION_DESC, self::DIRECTION_ASC];
 
     /**
      * @var string
      */
-    protected $name = '';
+    protected string $name = '';
 
     /**
      * @var string
      */
-    protected $field = '';
+    protected string $field = '';
 
     /**
      * @var string
      */
-    protected $direction = self::DIRECTION_ASC;
+    protected string $direction = self::DIRECTION_ASC;
 
     /**
      * @var string
      */
-    protected $label = '';
+    protected string $label = '';
 
     /**
      * @var bool
      */
-    protected $selected = false;
+    protected bool $selected = false;
 
     /**
      * @var bool
      */
-    protected $isResetOption = false;
+    protected bool $isResetOption = false;
 
     /**
      * @param SearchResultSet $resultSet
@@ -54,14 +70,21 @@ class Sorting
      * @param string $field
      * @param string $direction
      * @param string $label
-     * @param boolean $selected
-     * @param boolean $isResetOption
-     * @throws \InvalidArgumentException
+     * @param bool $selected
+     * @param bool $isResetOption
+     * @throws InvalidArgumentException
      */
-    public function __construct(SearchResultSet $resultSet, $name, $field, $direction, $label, $selected, $isResetOption)
-    {
+    public function __construct(
+        SearchResultSet $resultSet,
+        string $name,
+        string $field,
+        string $direction,
+        string $label,
+        bool $selected = false,
+        bool $isResetOption = false
+    ) {
         if (!self::getIsValidDirection($direction)) {
-            throw new \InvalidArgumentException("Invalid sorting direction");
+            throw new InvalidArgumentException('Invalid sorting direction');
         }
         $this->name = $name;
         $this->direction = $direction;
@@ -74,7 +97,7 @@ class Sorting
     /**
      * @return string
      */
-    public function getDirection()
+    public function getDirection(): string
     {
         return $this->direction;
     }
@@ -82,7 +105,7 @@ class Sorting
     /**
      * @return bool
      */
-    public function getIsAscDirection()
+    public function getIsAscDirection(): bool
     {
         return $this->direction === self::DIRECTION_ASC;
     }
@@ -90,7 +113,7 @@ class Sorting
     /**
      * @return bool
      */
-    public function getIsDescDirection()
+    public function getIsDescDirection(): bool
     {
         return $this->direction === self::DIRECTION_DESC;
     }
@@ -100,7 +123,7 @@ class Sorting
      *
      * @return string
      */
-    public function getOppositeDirection()
+    public function getOppositeDirection(): string
     {
         return self::getOppositeDirectionFromDirection($this->direction);
     }
@@ -108,7 +131,7 @@ class Sorting
     /**
      * @return string
      */
-    public function getField()
+    public function getField(): string
     {
         return $this->field;
     }
@@ -116,7 +139,7 @@ class Sorting
     /**
      * @return string
      */
-    public function getLabel()
+    public function getLabel(): string
     {
         return $this->label;
     }
@@ -124,15 +147,15 @@ class Sorting
     /**
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
-    public function getSelected()
+    public function getSelected(): bool
     {
         return $this->selected;
     }
@@ -141,7 +164,7 @@ class Sorting
      * @param string $direction
      * @return bool
      */
-    public static function getIsValidDirection($direction)
+    public static function getIsValidDirection(string $direction): bool
     {
         return in_array($direction, self::$validDirections);
     }
@@ -150,19 +173,18 @@ class Sorting
      * @param string $direction
      * @return string
      */
-    public static function getOppositeDirectionFromDirection($direction)
+    public static function getOppositeDirectionFromDirection(string $direction): string
     {
         if ($direction === self::DIRECTION_ASC) {
             return self::DIRECTION_DESC;
-        } else {
-            return self::DIRECTION_ASC;
         }
+        return self::DIRECTION_ASC;
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
-    public function getIsResetOption()
+    public function getIsResetOption(): bool
     {
         return $this->isResetOption;
     }

@@ -1,33 +1,26 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper;
 
-/***************************************************************
- *  Copyright notice
+declare(strict_types=1);
+
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2011-2015 Ingo Renner <ingo@typo3.org>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
+
+namespace ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper;
 
 use ApacheSolrForTypo3\Solr\Access\Rootline;
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequestHandler;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Authentication\AbstractAuthenticationService;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Authentication service to authorize the Index Queue page indexer to access
@@ -37,7 +30,6 @@ use TYPO3\CMS\Core\Authentication\AbstractAuthenticationService;
  */
 class AuthorizationService extends AbstractAuthenticationService
 {
-
     /**
      * User used when authenticating the page indexer for protected pages,
      * to allow the indexer to access and protected content. May also allow to
@@ -52,12 +44,12 @@ class AuthorizationService extends AbstractAuthenticationService
      *
      * @return array An array representing a frontend user.
      */
-    public function getUser()
+    public function getUser(): array
     {
         return [
             'uid' => 0,
             'username' => self::SOLR_INDEXER_USERNAME,
-            'authenticated' => true
+            'authenticated' => true,
         ];
     }
 
@@ -70,11 +62,11 @@ class AuthorizationService extends AbstractAuthenticationService
      * conduct other services that might be registered for "their opinion"
      * whether a user is authenticated.
      *
-     * @see \TYPO3\CMS\Core\Authentication\AbstractUserAuthentication::checkAuthentication()
      * @param array $user Array of user data
      * @return int Returns 200 to grant access for the page indexer.
+     *@see \TYPO3\CMS\Core\Authentication\AbstractUserAuthentication::checkAuthentication()
      */
-    public function authUser($user)
+    public function authUser(array $user): int
     {
         // shouldn't happen, but in case we get a regular user we just
         // pass it on to another (regular) auth service
@@ -93,16 +85,16 @@ class AuthorizationService extends AbstractAuthenticationService
      *
      * @param array $user Data of user.
      * @param array $knownGroups Group data array of already known groups. This is handy if you want select other related groups. Keys in this array are unique IDs of those groups.
-     * @return mixed Groups array, keys = uid which must be unique
+     * @return array Groups array, keys = uid which must be unique
      */
     public function getGroups(
-        $user,
+        array $user,
         /** @noinspection PhpUnusedParameterInspection */
-        $knownGroups
-    ) {
+        array $knownGroups = []
+    ): array {
         $groupData = [];
 
-            /** @var $requestHandler PageIndexerRequestHandler */
+        /** @var $requestHandler PageIndexerRequestHandler */
         $requestHandler = GeneralUtility::makeInstance(PageIndexerRequestHandler::class);
         $accessRootline = $requestHandler->getRequest()->getParameter('accessRootline');
 
@@ -116,7 +108,7 @@ class AuthorizationService extends AbstractAuthenticationService
                     'uid' => $groupId,
                     'pid' => 0,
                     'title' => '__SolrIndexerGroup__',
-                    'TSconfig' => ''
+                    'TSconfig' => '',
                 ];
             }
         }

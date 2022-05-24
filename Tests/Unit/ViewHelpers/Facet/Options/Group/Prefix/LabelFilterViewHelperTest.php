@@ -1,34 +1,25 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Test\ViewHelpers\Facet\Options\Group\Prefix;
 
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2017 Timo Hund <timo.hund@dkd.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
+
+namespace ApacheSolrForTypo3\Solr\Tests\Unit\ViewHelpers\Facet\Options\Group\Prefix;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\OptionCollection;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\Option;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\OptionsFacet;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use ApacheSolrForTypo3\Solr\ViewHelpers\Facet\Options\Group\Prefix\LabelFilterViewHelper;
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\OptionsFacet;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\Variables\StandardVariableProvider;
 
@@ -57,20 +48,20 @@ class LabelFilterViewHelperTest extends UnitTest
         $optionCollection->add($red);
         $optionCollection->add($royalGreen);
 
-        $variableContainer = $this->getMockBuilder(StandardVariableProvider::class)->setMethods(['remove'])->getMock();
+        $variableContainer = $this->getMockBuilder(StandardVariableProvider::class)->onlyMethods(['remove'])->getMock();
         $renderingContextMock = $this->getDumbMock(RenderingContextInterface::class);
-        $renderingContextMock->expects($this->any())->method('getVariableProvider')->will($this->returnValue($variableContainer));
+        $renderingContextMock->expects(self::any())->method('getVariableProvider')->willReturn($variableContainer);
 
         $testArguments['options'] = $optionCollection;
         $testArguments['prefix'] = 'p';
 
         LabelFilterViewHelper::renderStatic($testArguments, function () {}, $renderingContextMock);
-        $this->assertTrue($variableContainer->exists('filteredOptions'), 'Expected that filteredOptions has been set');
+        self::assertTrue($variableContainer->exists('filteredOptions'), 'Expected that filteredOptions has been set');
 
         /** @var  $optionCollection OptionCollection */
         $optionCollection = $variableContainer->get('filteredOptions');
-        $this->assertSame(1, $optionCollection->getCount());
-        $this->assertSame('Polar Blue', $optionCollection->getByPosition(0)->getLabel(), 'Filtered option has unexpected label');
+        self::assertSame(1, $optionCollection->getCount());
+        self::assertSame('Polar Blue', $optionCollection->getByPosition(0)->getLabel(), 'Filtered option has unexpected label');
     }
 
     /**
@@ -87,19 +78,19 @@ class LabelFilterViewHelperTest extends UnitTest
         $optionCollection->add($ben);
         $optionCollection->add($ole);
 
-        $variableContainer = $this->getMockBuilder(StandardVariableProvider::class)->setMethods(['remove'])->getMock();
+        $variableContainer = $this->getMockBuilder(StandardVariableProvider::class)->onlyMethods(['remove'])->getMock();
         $renderingContextMock = $this->getDumbMock(RenderingContextInterface::class);
-        $renderingContextMock->expects($this->any())->method('getVariableProvider')->will($this->returnValue($variableContainer));
+        $renderingContextMock->expects(self::any())->method('getVariableProvider')->willReturn($variableContainer);
 
         $testArguments['options'] = $optionCollection;
         $testArguments['prefix'] = 'ø';
 
         LabelFilterViewHelper::renderStatic($testArguments, function () {}, $renderingContextMock);
-        $this->assertTrue($variableContainer->exists('filteredOptions'), 'Expected that filteredOptions has been set');
+        self::assertTrue($variableContainer->exists('filteredOptions'), 'Expected that filteredOptions has been set');
 
         /** @var  $optionCollection OptionCollection */
         $optionCollection = $variableContainer->get('filteredOptions');
-        $this->assertSame(1, $optionCollection->getCount());
-        $this->assertSame('Øle', $optionCollection->getByPosition(0)->getLabel(), 'Filtered option has unexpected label');
+        self::assertSame(1, $optionCollection->getCount());
+        self::assertSame('Øle', $optionCollection->getByPosition(0)->getLabel(), 'Filtered option has unexpected label');
     }
 }

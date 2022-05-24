@@ -1,5 +1,6 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\NumericRange;
+
+declare(strict_types=1);
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -13,6 +14,10 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\Nume
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\NumericRange;
+
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetItem;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetItemCollection;
 
 /**
@@ -23,21 +28,20 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetItemColl
  */
 class NumericRangeCollection extends AbstractFacetItemCollection
 {
-
     /**
-     * @param NumericRange $numericRange
+     * @param ?AbstractFacetItem $item
      * @return NumericRangeCollection
      */
-    public function add($numericRange)
+    public function add(?AbstractFacetItem $item): AbstractFacetItemCollection
     {
-        return parent::add($numericRange);
+        return parent::add($item);
     }
 
     /**
      * @param int $position
-     * @return NumericRange
+     * @return ?NumericRange
      */
-    public function getByPosition($position)
+    public function getByPosition(int $position): ?object
     {
         return parent::getByPosition($position);
     }

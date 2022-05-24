@@ -1,5 +1,4 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Tests\Unit\Task;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -13,6 +12,8 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Task;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+namespace ApacheSolrForTypo3\Solr\Tests\Unit\Task;
 
 use ApacheSolrForTypo3\Solr\Task\OptimizeIndexTask;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
@@ -29,14 +30,14 @@ class OptimizeIndexTaskTest extends UnitTest
      */
     public function canGetErrorMessageInAdditionalInformationWhenSiteNotAvailable()
     {
-            /** @var $indexQueuerWorker OptimizeIndexTask */
+        /** @var $indexQueuerWorker OptimizeIndexTask */
         $indexQueuerWorker = $this->getMockBuilder(OptimizeIndexTask::class)
             ->disableOriginalConstructor()
-            ->setMethods(['getSite'])
+            ->onlyMethods(['getSite'])
             ->getMock();
 
         $message = $indexQueuerWorker->getAdditionalInformation();
         $expectedMessage = 'Invalid site configuration for scheduler please re-create the task!';
-        $this->assertSame($expectedMessage, $message, 'Expect to get error message of non existing site');
+        self::assertSame($expectedMessage, $message, 'Expect to get error message of non existing site');
     }
 }

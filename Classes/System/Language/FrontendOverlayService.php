@@ -1,50 +1,45 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * This file is part of the TYPO3 CMS project.
+ *
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
+ *
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ *
+ * The TYPO3 project - inspiring people to share!
+ */
+
 namespace ApacheSolrForTypo3\Solr\System\Language;
 
-/***************************************************************
- *  Copyright notice
- *
- *  (c) 2018 Timo Hund <timo.hund@dkd.de>
- *  All rights reserved
- *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
-
 use ApacheSolrForTypo3\Solr\System\TCA\TCAService;
-use ApacheSolrForTypo3\Solr\Util;
+use Doctrine\DBAL\Driver\Exception as DBALDriverException;
+use Doctrine\DBAL\Exception as DBALException;
+use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * Class FrontendOverlayService
  */
-class FrontendOverlayService {
-
+class FrontendOverlayService
+{
     /**
      * @var TCAService
      */
-    protected $tcaService = null;
+    protected $tcaService;
 
     /**
-     * @var TypoScriptFrontendController
+     * @var TypoScriptFrontendController|null
      */
-    protected $tsfe = null;
+    protected ?TypoScriptFrontendController $tsfe = null;
 
     /**
      * Relation constructor.
@@ -54,7 +49,7 @@ class FrontendOverlayService {
     public function __construct(TCAService $tcaService = null, TypoScriptFrontendController $tsfe = null)
     {
         $this->tcaService = $tcaService ?? GeneralUtility::makeInstance(TCAService::class);
-        $this->tsfe = $tsfe ?? $GLOBALS['TSFE'];
+        $this->tsfe = $tsfe;
     }
 
     /**
@@ -63,16 +58,18 @@ class FrontendOverlayService {
      * @param string $tableName
      * @param array $record
      * @return array
+     * @throws AspectNotFoundException
      */
-    public function getOverlay($tableName, $record)
+    public function getOverlay(string $tableName, array $record): ?array
     {
+        $currentLanguageUid = $this->tsfe->getContext()->getPropertyFromAspect('language', 'id');
         if ($tableName === 'pages') {
             // @extensionScannerIgnoreLine
-            return $this->tsfe->sys_page->getPageOverlay($record, Util::getLanguageUid());
+            return $this->tsfe->sys_page->getPageOverlay($record, $currentLanguageUid);
         }
 
         // @extensionScannerIgnoreLine
-        return $this->tsfe->sys_page->getRecordOverlay($tableName, $record, Util::getLanguageUid());
+        return $this->tsfe->sys_page->getRecordOverlay($tableName, $record, $currentLanguageUid);
     }
 
     /**
@@ -83,15 +80,23 @@ class FrontendOverlayService {
      * @param string $field
      * @param int $uid
      * @return int
+     * @throws AspectNotFoundException
+     * @throws DBALDriverException
+     * @throws DBALException
+     * @throws DBALException|\Doctrine\DBAL\DBALException
      */
-    public function getUidOfOverlay($table, $field, $uid)
-    {
+    public function getUidOfOverlay(
+        string $table,
+        string $field,
+        int $uid
+    ): int {
+        $contextsLanguageId = $this->tsfe->getContext()->getPropertyFromAspect('language', 'id');
         // when no language is set at all we do not need to overlay
-        if (Util::getLanguageUid() === null) {
+        if ($contextsLanguageId === null) {
             return $uid;
         }
         // when no language is set we can return the passed recordUid
-        if (!(Util::getLanguageUid() > 0)) {
+        if (!($contextsLanguageId > 0)) {
             return $uid;
         }
 
@@ -103,8 +108,7 @@ class FrontendOverlayService {
         }
 
         $overlayUid = $this->getLocalRecordUidFromOverlay($table, $record);
-        $uid = ($overlayUid !== 0) ? $overlayUid : $uid;
-        return $uid;
+        return ($overlayUid !== 0) ? $overlayUid : $uid;
     }
 
     /**
@@ -113,15 +117,17 @@ class FrontendOverlayService {
      * @param string $localTableName
      * @param array $originalRecord
      * @return int
+     * @throws AspectNotFoundException
      */
-    protected function getLocalRecordUidFromOverlay($localTableName, $originalRecord)
+    protected function getLocalRecordUidFromOverlay(string $localTableName, array $originalRecord): int
     {
         $overlayRecord = $this->getOverlay($localTableName, $originalRecord);
 
         // when there is a _PAGES_OVERLAY_UID | _LOCALIZED_UID in the overlay, we return it
         if ($localTableName === 'pages' && isset($overlayRecord['_PAGES_OVERLAY_UID'])) {
             return (int)$overlayRecord['_PAGES_OVERLAY_UID'];
-        } elseif (isset($overlayRecord['_LOCALIZED_UID'])) {
+        }
+        if (isset($overlayRecord['_LOCALIZED_UID'])) {
             return (int)$overlayRecord['_LOCALIZED_UID'];
         }
 
@@ -129,16 +135,22 @@ class FrontendOverlayService {
     }
 
     /**
-     * @param $localTableName
-     * @param $localRecordUid
+     * @param string $localTableName
+     * @param int $localRecordUid
      * @return mixed
+     * @throws DBALDriverException
+     * @throws DBALException|\Doctrine\DBAL\DBALException
      */
-    protected function getRecord($localTableName, $localRecordUid)
+    protected function getRecord(string $localTableName, int $localRecordUid)
     {
-        /** @var QueryBuilder $queryBuilder */
+        /* @var QueryBuilder $queryBuilder */
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($localTableName);
 
-        $record = $queryBuilder->select('*')->from($localTableName)->where($queryBuilder->expr()->eq('uid', $localRecordUid))->execute()->fetch();
-        return $record;
+        return $queryBuilder
+            ->select('*')
+            ->from($localTableName)
+            ->where($queryBuilder->expr()->eq('uid', $localRecordUid))
+            ->execute()
+            ->fetchAssociative();
     }
 }
