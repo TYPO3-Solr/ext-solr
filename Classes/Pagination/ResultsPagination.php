@@ -108,6 +108,26 @@ class ResultsPagination implements PaginationInterface
     }
 
     /**
+     * Get page range first
+     *
+     * @return int
+     */
+    public function getPageRangeFirst(): int
+    {
+        return $this->pageRangeFirst;
+    }
+
+    /**
+     * Get page range last
+     *
+     * @return int
+     */
+    public function getPageRangeLast(): int
+    {
+        return $this->pageRangeLast;
+    }
+
+    /**
      * Get previous page number
      *
      * @return int|null
