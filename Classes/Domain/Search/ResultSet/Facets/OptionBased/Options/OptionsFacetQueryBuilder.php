@@ -109,7 +109,7 @@ class OptionsFacetQueryBuilder extends DefaultFacetQueryBuilder implements Facet
      */
     protected function buildLimitForJson(array $facetConfiguration, TypoScriptConfiguration $configuration): int
     {
-        return $facetConfiguration['facetLimit'] ?? ($configuration->getSearchFacetingFacetLimit() ?? -1);
+        return (int)($facetConfiguration['facetLimit'] ?? ($configuration->getSearchFacetingFacetLimit() ?? -1));
     }
 
     /**
@@ -119,7 +119,7 @@ class OptionsFacetQueryBuilder extends DefaultFacetQueryBuilder implements Facet
      */
     protected function buildMincountForJson(array $facetConfiguration, TypoScriptConfiguration $configuration): int
     {
-        return $facetConfiguration['minimumCount'] ?? ($configuration->getSearchFacetingMinimumCount() ?? 1);
+        return (int)($facetConfiguration['minimumCount'] ?? ($configuration->getSearchFacetingMinimumCount() ?? 1));
     }
 
     /**
