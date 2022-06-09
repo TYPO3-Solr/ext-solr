@@ -281,9 +281,19 @@ class Indexer extends AbstractIndexer
     {
         $languageField = $GLOBALS['TCA'][$item->getType()]['ctrl']['languageField'] ?? null;
         $itemRecord = $item->getRecord();
-        return isset($languageField)
-            && (int)($itemRecord[$languageField] ?? null) > 0
-            && $this->isLanguageInAFreeContentMode($item, (int)($itemRecord[$languageField] ?? null));
+
+        $l10nParentField = $GLOBALS['TCA'][$item->getType()]['ctrl']['transOrigPointerField'] ?? null;
+        if (null === $languageField || null === $l10nParentField) {
+            return true;
+        }
+        $languageOfRecord = (int)($itemRecord[$languageField] ?? null);
+        $l10nParentRecordUid = (int)($itemRecord[$l10nParentField] ?? null);
+
+        if ($languageOfRecord > 0 && $l10nParentRecordUid === 0) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
