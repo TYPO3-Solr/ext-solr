@@ -242,7 +242,7 @@ class OptimizeIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldPr
         }
 
         $task->/** @scrutinizer ignore-call */
-            setRootPageId($submittedData['site']);
+            setRootPageId((int)$submittedData['site']);
 
         $cores = [];
         if (!empty($submittedData['cores'])) {

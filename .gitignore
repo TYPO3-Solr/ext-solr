@@ -16,4 +16,5 @@ vendor
 Documentation/_make
 /Documentation-GENERATED-temp/
 
-.php_cs.cache
+*.cache
+*.log
