@@ -130,10 +130,10 @@ class RecordMonitor
         }
 
         if ($status === 'new' && !MathUtility::canBeInterpretedAsInteger($recordUid)) {
-            if (isset($this->dh->substNEWwithIDs[$recordUid])) {
-                $recordUid = $this->dh->substNEWwithIDs[$recordUid];
+            if (isset($tceMain->substNEWwithIDs[$recordUid])) {
+                $recordUid = $tceMain->substNEWwithIDs[$recordUid];
             } else {
-                return; 
+                return;
             }
         }
         if (Util::isDraftRecord($table, (int)$recordUid)) {
