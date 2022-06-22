@@ -130,7 +130,11 @@ class RecordMonitor
         }
 
         if ($status === 'new' && !MathUtility::canBeInterpretedAsInteger($recordUid)) {
-            $recordUid = $tceMain->substNEWwithIDs[$recordUid];
+            if (isset($this->dh->substNEWwithIDs[$recordUid])) {
+                $recordUid = $this->dh->substNEWwithIDs[$recordUid];
+            } else {
+                return; 
+            }
         }
         if (Util::isDraftRecord($table, (int)$recordUid)) {
             // skip workspaces: index only LIVE workspace
