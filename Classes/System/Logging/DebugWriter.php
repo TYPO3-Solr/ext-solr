@@ -15,15 +15,17 @@
 
 namespace ApacheSolrForTypo3\Solr\System\Logging;
 
+use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Http\ApplicationType;
+use TYPO3\CMS\Core\Http\Request;
 use TYPO3\CMS\Core\Utility\DebugUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /**
  * The DebugWriter is used to write the devLog messages to the output of the page, or to the TYPO3 console in the
- * backend to provide a simple and lightweigt debugging possibility.
+ * backend to provide a simple and lightweight debugging possibility.
  *
  * @author Timo Hund <timo.hund@dkd.de>
  */
@@ -50,6 +52,11 @@ class DebugWriter
             return;
         }
 
+        $isPageIndexingRequest = $this->getIsPageIndexingRequest();
+        if ($isPageIndexingRequest) {
+            return;
+        }
+
         $this->writeDebugMessage($level, $message, $data);
     }
 
@@ -71,6 +78,14 @@ class DebugWriter
         return Util::getSolrConfiguration()->getLoggingDebugOutput();
     }
 
+    protected function getIsPageIndexingRequest(): bool
+    {
+        if (!($GLOBALS['TYPO3_REQUEST'] ?? null) instanceof Request) {
+            return false;
+        }
+        return $GLOBALS['TYPO3_REQUEST']->hasHeader(PageIndexerRequest::SOLR_INDEX_HEADER);
+    }
+
     /**
      * @param int|string $level Log level. Value according to \TYPO3\CMS\Core\Log\LogLevel. Alternatively accepts a string.
      * @param string $message Log message.
@@ -79,7 +94,7 @@ class DebugWriter
     protected function writeDebugMessage($level, $message, $data)
     {
         $parameters = ['extKey' => 'solr', 'msg' => $message, 'level' => $level, 'data' => $data];
-        $message = isset($parameters['msg']) ? $parameters['msg'] : '';
+        $message = $parameters['msg'] ?? '';
         if (ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend()) {
             DebugUtility::debug($parameters, $parameters['extKey'], 'DevLog ext:solr: ' . $message);
         } else {
