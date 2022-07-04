@@ -30,6 +30,7 @@ use TYPO3\CMS\Core\Context\UserAspect;
 use TYPO3\CMS\Core\Context\VisibilityAspect;
 use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
 use TYPO3\CMS\Core\Domain\Repository\PageRepository;
+use TYPO3\CMS\Core\Error\Http\InternalServerErrorException;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Localization\Locales;
@@ -191,7 +192,9 @@ class Tsfe implements SingletonInterface
                 if ($backedUpBackendUser) {
                     $GLOBALS['BE_USER'] = $backedUpBackendUser;
                 }
-                return;
+                if (!($exception instanceof InternalServerErrorException)) {
+                    return;
+                }
             }
             // Restore backend user, happens when initializeTsfe() is called from Backend context
             if ($backedUpBackendUser) {
