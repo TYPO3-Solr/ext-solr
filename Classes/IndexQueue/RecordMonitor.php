@@ -25,8 +25,10 @@ use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
 use ApacheSolrForTypo3\Solr\Util;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
+use TYPO3\CMS\Core\Exception\Page\PageNotFoundException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
+use TYPO3\CMS\Core\Utility\RootlineUtility;
 
 /**
  * A class that monitors changes to the records so that the changed record get
@@ -57,6 +59,7 @@ class RecordMonitor
      * @param string $command The command.
      * @param string $table The table the record belongs to
      * @param int $uid The record's uid
+     * @noinspection PhpMissingParamTypeInspection, because it is the TYPO3 core implementation.
      */
     public function processCmdmap_preProcess(
         $command,
@@ -78,6 +81,7 @@ class RecordMonitor
      * @param string $table The table the record belongs to
      * @param int $uid The record's uid
      * @param mixed $value
+     * @noinspection PhpMissingParamTypeInspection, because it is the TYPO3 core implementation.
      */
     public function processCmdmap_postProcess(
         $command,
@@ -129,6 +133,17 @@ class RecordMonitor
             return;
         }
 
+        $recordPid = $fields['pid'] ?? null;
+        if (is_null($recordPid) && MathUtility::canBeInterpretedAsInteger($recordUid)) {
+            $recordInfo = $tceMain->recordInfo($table, (int)$recordUid, 'pid');
+            if (!is_null($recordInfo)) {
+                $recordPid = $recordInfo['pid'] ?? null;
+            }
+        }
+        if (!is_null($recordPid) && $this->skipRecordByRootlineConfiguration((int)$recordPid)) {
+            return;
+        }
+
         if ($status === 'new' && !MathUtility::canBeInterpretedAsInteger($recordUid)) {
             if (isset($tceMain->substNEWwithIDs[$recordUid])) {
                 $recordUid = $tceMain->substNEWwithIDs[$recordUid];
@@ -167,5 +182,28 @@ class RecordMonitor
         }
 
         return !in_array($table, $configurationMonitorTables);
+    }
+
+    /**
+     * Check if at least one page in the record's rootline is configured to exclude sub-entries from indexing
+     *
+     * @param int $pid
+     * @return bool
+     */
+    protected function skipRecordByRootlineConfiguration(int $pid): bool
+    {
+        /** @var RootlineUtility $rootlineUtility */
+        $rootlineUtility = GeneralUtility::makeInstance(RootlineUtility::class, $pid);
+        try {
+            $rootline = $rootlineUtility->get();
+        } catch (PageNotFoundException $e) {
+            return true;
+        }
+        foreach ($rootline as $page) {
+            if ($page['no_search_sub_entries']) {
+                return true;
+            }
+        }
+        return false;
     }
 }
