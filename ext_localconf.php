@@ -277,6 +277,13 @@ if (!function_exists('strptime')) {
      */
     $GLOBALS['TYPO3_CONF_VARS']['SYS']['routing']['enhancers']['SolrFacetMaskAndCombineEnhancer'] =
         \ApacheSolrForTypo3\Solr\Routing\Enhancer\SolrFacetMaskAndCombineEnhancer::class;
+
+    // add solr field to rootline fields
+    if ($GLOBALS['TYPO3_CONF_VARS']['FE']['addRootLineFields'] === '') {
+        $GLOBALS['TYPO3_CONF_VARS']['FE']['addRootLineFields'] = 'no_search_sub_entries';
+    } else {
+        $GLOBALS['TYPO3_CONF_VARS']['FE']['addRootLineFields'] .= ',no_search_sub_entries';
+    }
 })();
 
 $isComposerMode = defined('TYPO3_COMPOSER_MODE') && TYPO3_COMPOSER_MODE;
