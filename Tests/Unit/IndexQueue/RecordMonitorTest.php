@@ -27,6 +27,7 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\RootlineUtility;
 
 /**
  * Testcase for the RecordMonitor class.
@@ -36,9 +37,9 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class RecordMonitorTest extends UnitTest
 {
     /**
-     * @var RecordMonitor
+     * @var RecordMonitor|null
      */
-    protected $recordMonitor;
+    protected ?RecordMonitor $recordMonitor;
 
     /**
      * @var EventDispatcherInterface|MockObject
@@ -56,12 +57,22 @@ class RecordMonitorTest extends UnitTest
             ExtensionConfiguration::class,
             $this->getDumbMock(ExtensionConfiguration::class)
         );
+
+        $rootlineUtilityMock = $this->getDumbMock(RootlineUtility::class);
+        $rootlineUtilityMock->method('get')->willReturn([]);
+        GeneralUtility::addInstance(
+            RootlineUtility::class,
+            $rootlineUtilityMock
+        );
         parent::setUp();
     }
 
     protected function tearDown(): void
     {
-        unset($GLOBALS['BE_USER']);
+        unset(
+            $GLOBALS['BE_USER'],
+            $this->recordMonitor
+        );
         GeneralUtility::purgeInstances();
         parent::tearDown();
     }
