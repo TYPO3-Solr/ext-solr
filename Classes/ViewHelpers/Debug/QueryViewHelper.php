@@ -54,10 +54,10 @@ class QueryViewHelper extends AbstractSolrFrontendViewHelper
         $content = '';
         $resultSet = self::getUsedSearchResultSetFromRenderingContext($renderingContext);
         $backendUserIsLoggedIn = GeneralUtility::makeInstance(Context::class)->getPropertyFromAspect('backend.user', 'isLoggedIn');
-        if (true === $backendUserIsLoggedIn && $resultSet && null !== $resultSet->getUsedSearch()) {
+        if ($backendUserIsLoggedIn === true && $resultSet && $resultSet->getUsedSearch() !== null) {
             if (
-                true === $resultSet->getHasSearched()
-                && null !== $resultSet->getUsedSearch()->getDebugResponse()
+                $resultSet->getHasSearched() === true
+                && $resultSet->getUsedSearch()->getDebugResponse() !== null
                 && !empty($resultSet->getUsedSearch()->getDebugResponse()->parsedquery)
             ) {
                 $renderingContext->getVariableProvider()->add('parsedQuery', $resultSet->getUsedSearch()->getDebugResponse()->parsedquery);
