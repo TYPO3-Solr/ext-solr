@@ -158,7 +158,7 @@ class RootPageResolver implements SingletonInterface
         bool $forceFallback = false,
         string $mountPointIdentifier = ''
     ): int {
-        if (0 === $pageId) {
+        if ($pageId === 0) {
             return 0;
         }
 

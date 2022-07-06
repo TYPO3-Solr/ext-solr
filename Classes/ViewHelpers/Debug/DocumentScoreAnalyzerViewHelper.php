@@ -81,7 +81,7 @@ class DocumentScoreAnalyzerViewHelper extends AbstractSolrFrontendViewHelper
         $resultSet = self::getUsedSearchResultSetFromRenderingContext($renderingContext);
         $debugData = '';
         if (
-            null !== $resultSet->getUsedSearch()->getDebugResponse()
+            $resultSet->getUsedSearch()->getDebugResponse() !== null
             && !empty($resultSet->getUsedSearch()->getDebugResponse()->explain)
         ) {
             $debugData = $resultSet->getUsedSearch()->getDebugResponse()->explain->{$document->getId()} ?? '';

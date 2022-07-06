@@ -139,7 +139,7 @@ class ExtensionConfiguration
 
         $exclusions = array_merge($pluginNamespaces, $enhancersRouteParts);
 
-        if (false === $this->getIncludeGlobalQParameterInCacheHash()) {
+        if ($this->getIncludeGlobalQParameterInCacheHash() === false) {
             $exclusions[] = 'q';
         }
         return array_combine($exclusions, $exclusions);

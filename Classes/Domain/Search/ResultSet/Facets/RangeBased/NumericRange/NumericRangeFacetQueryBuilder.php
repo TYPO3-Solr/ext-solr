@@ -33,7 +33,7 @@ class NumericRangeFacetQueryBuilder implements FacetQueryBuilderInterface
         $facetConfiguration = $configuration->getSearchFacetingFacetByName($facetName);
 
         $tag = '';
-        if (true === (bool)($facetConfiguration['keepAllOptionsOnSelection'] ?? null)) {
+        if ((bool)($facetConfiguration['keepAllOptionsOnSelection'] ?? null) === true) {
             $tag = '{!ex=' . $facetConfiguration['field'] . '}';
         }
         $facetParameters['facet.range'][] = $tag . $facetConfiguration['field'];

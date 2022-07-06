@@ -164,7 +164,7 @@ class ResponseAdapter implements Countable
      */
     public function count(): int
     {
-        if (null !== $this->data) {
+        if ($this->data !== null) {
             return count(get_object_vars($this->data));
         }
         return 0;

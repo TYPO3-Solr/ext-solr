@@ -452,7 +452,7 @@ class RoutingService implements LoggerAwareInterface
             return true;
         }
 
-        return isset($this->settings['query']['concat']) && true === (bool)$this->settings['query']['concat'];
+        return isset($this->settings['query']['concat']) && (bool)$this->settings['query']['concat'] === true;
     }
 
     /**

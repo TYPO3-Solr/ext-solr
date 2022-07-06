@@ -381,7 +381,7 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
      */
     protected function getRoutingService(): RoutingService
     {
-        if (null === $this->routingService) {
+        if ($this->routingService === null) {
             $this->routingService = GeneralUtility::makeInstance(
                 RoutingService::class,
                 $this->settings,

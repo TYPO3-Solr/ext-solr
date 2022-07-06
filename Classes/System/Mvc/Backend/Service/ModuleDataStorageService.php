@@ -71,8 +71,8 @@ class ModuleDataStorageService implements SingletonInterface
             $serializedModuleData = '';
             return;
         }
-        if (false !== strpos($serializedModuleData, 'ApacheSolrForTypo3\\Solr\\Domain\\Model\\ModuleData')
-            || false !== strpos($serializedModuleData, 'Tx_Solr_Site')) {
+        if (strpos($serializedModuleData, 'ApacheSolrForTypo3\\Solr\\Domain\\Model\\ModuleData') !== false
+            || strpos($serializedModuleData, 'Tx_Solr_Site') !== false) {
             $serializedModuleData = '';
         }
     }
