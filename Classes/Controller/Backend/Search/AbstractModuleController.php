@@ -227,7 +227,7 @@ abstract class AbstractModuleController extends ActionController
             '
                 top.fsMod.recentIds["searchbackend"] = ' . $this->selectedPageUID . ';'
         );
-        if (null === $this->selectedSite) {
+        if ($this->selectedSite === null) {
             return;
         }
 
@@ -236,7 +236,7 @@ abstract class AbstractModuleController extends ActionController
         $permissionClause = $beUser->getPagePermsClause(1);
         $pageRecord = BackendUtility::readPageAccess($this->selectedSite->getRootPageId(), $permissionClause);
 
-        if (false === $pageRecord) {
+        if ($pageRecord === false) {
             throw new InvalidArgumentException(vsprintf('There is something wrong with permissions for page "%s" for backend user "%s".', [$this->selectedSite->getRootPageId(), $beUser->user['username']]), 1496146317);
         }
         $this->moduleTemplate->getDocHeaderComponent()->setMetaInformation($pageRecord);
@@ -249,7 +249,7 @@ abstract class AbstractModuleController extends ActionController
      */
     public function generateCoreSelectorMenuUsingPageTree(string $uriToRedirectTo = null)
     {
-        if ($this->selectedPageUID < 1 || null === $this->selectedSite) {
+        if ($this->selectedPageUID < 1 || $this->selectedSite === null) {
             return;
         }
 

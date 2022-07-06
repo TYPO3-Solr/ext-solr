@@ -117,7 +117,7 @@ class FlexFormUserFunctions
      */
     protected function getConfiguredFacetsForPage(?int $pid = null): ?array
     {
-        if (null === $pid) {
+        if ($pid === null) {
             return null;
         }
         $typoScriptConfiguration = $this->getConfigurationFromPageId($pid);
@@ -215,7 +215,7 @@ class FlexFormUserFunctions
      */
     protected function getConfigurationFromPageId(?int $pid = null): ?TypoScriptConfiguration
     {
-        if (null === $pid) {
+        if ($pid === null) {
             return null;
         }
         return $this->frontendEnvironment->getSolrConfigurationFromPageId($pid);
