@@ -1,13 +1,14 @@
 .Build
 .buildpath
+*.cache
 .DS_Store
 .idea/
-.php_cs.cache
 .project/
 .settings/
 atlassian-ide-plugin.xml
 composer.lock
 Documentation/_make
+Documentation-GENERATED-temp
 index.php
 typo3
 typo3conf
@@ -16,7 +17,3 @@ typo3_src
 uploads
 var
 vendor
-/composer.lock
-.Build
-Documentation/_make
-/Documentation-GENERATED-temp/

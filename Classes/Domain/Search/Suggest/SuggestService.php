@@ -181,7 +181,7 @@ class SuggestService
         $response = $search->search($suggestQuery, 0, 0);
 
         $rawResponse = $response->getRawResponse();
-        if (null === $rawResponse) {
+        if ($rawResponse === null) {
             return [];
         }
         $results = json_decode($rawResponse);
