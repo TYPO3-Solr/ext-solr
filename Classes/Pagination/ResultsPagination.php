@@ -140,10 +140,7 @@ class ResultsPagination implements PaginationInterface
             return null;
         }
 
-        return $previousPage >= $this->getFirstPageNumber()
-            ? $previousPage
-            : null
-            ;
+        return $previousPage >= $this->getFirstPageNumber() ? $previousPage : null;
     }
 
     /**
