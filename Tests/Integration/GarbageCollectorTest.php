@@ -108,7 +108,7 @@ class GarbageCollectorTest extends IntegrationTest
             $this->indexer,
             $this->extensionConfiguration,
             $this->eventQueue
-            );
+        );
         parent::tearDown();
     }
 
