@@ -1,6 +1,6 @@
 <?php
 
-namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Index;
+namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Index\PageIndexer\Helper\UriBuilder;
 
 use ApacheSolrForTypo3\Solr\Domain\Index\PageIndexer\Helper\UriBuilder\TYPO3SiteStrategy;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
