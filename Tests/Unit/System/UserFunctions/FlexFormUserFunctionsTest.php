@@ -13,7 +13,7 @@
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\Service;
+namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\UserFunctions;
 
 use ApacheSolrForTypo3\Solr\System\UserFunctions\FlexFormUserFunctions;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
