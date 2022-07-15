@@ -305,11 +305,10 @@ abstract class AbstractIndexer
             case 'tFloat':
                 $value = (float)$value;
                 break;
-
-            // long and double do not exist in PHP
-            // simply make sure it somehow looks like a number
-            // <insert PHP rant here>
             case 'long':
+                // long and double do not exist in PHP
+                // simply make sure it somehow looks like a number
+                // <insert PHP rant here>
             case 'tLong':
                 // remove anything that's not a number or negative/minus sign
                 $value = preg_replace('/[^0-9\\-]/', '', $value);
@@ -327,8 +326,8 @@ abstract class AbstractIndexer
                 break;
 
             default:
-                // assume things are correct for non-dynamic fields
-        }
+            // assume things are correct for non-dynamic fields
+            }
 
         return $value;
     }

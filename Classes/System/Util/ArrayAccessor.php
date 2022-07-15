@@ -94,8 +94,8 @@ class ArrayAccessor
         $pathArray = $this->getPathAsArray($path);
         $pathSegmentCount = count($pathArray);
 
+        // direct access for small paths
         switch ($pathSegmentCount) {
-                // direct access for small paths
             case 1:
                 return $this->data[$pathArray[0]] ?? $defaultIfEmpty;
             case 2:
@@ -155,13 +155,13 @@ class ArrayAccessor
         switch ($pathSegmentCount) {
             // direct access for small paths
             case 1:
-               $this->data[$pathArray[0]] = $value;
-               return;
+                $this->data[$pathArray[0]] = $value;
+                return;
             case 2:
-               $this->data[$pathArray[0]][$pathArray[1]] = $value;
-               return;
+                $this->data[$pathArray[0]][$pathArray[1]] = $value;
+                return;
             default:
-               $this->setDeepElementWithLoop($pathArray, $value);
+                $this->setDeepElementWithLoop($pathArray, $value);
         }
     }
 
@@ -200,10 +200,10 @@ class ArrayAccessor
             // direct access for small paths
             case 1:
                 unset($this->data[$pathArray[0]]);
-                 return;
+                return;
             case 2:
                 unset($this->data[$pathArray[0]][$pathArray[1]]);
-                 return;
+                return;
             default:
                 $this->resetDeepElementWithLoop($pathArray);
         }

@@ -262,7 +262,7 @@ class SearchTest extends IntegrationTest
         self::assertSame(4, $parsedDatasByPhraseSlop[1]->response->docs[3]->getUid(), 'Bigram phrase slop setting does not work as expected. It does not boost "sloppy phrase" docs for slop=1.');
         // the docuemnt on position 3 and 4 have same score
         self::assertTrue(
-        // @extensionScannerIgnoreLine
+            // @extensionScannerIgnoreLine
             $parsedDatasByPhraseSlop[1]->response->docs[3]->getScore() === $parsedDatasByPhraseSlop[1]->response->docs[4]->getScore(),
             'Bigram phrase slop setting does not work as expected. It does not boost all "sloppy phrase" docs for slop=1.'
         );
@@ -273,7 +273,7 @@ class SearchTest extends IntegrationTest
         self::assertSame(6, $parsedDatasByPhraseSlop[2]->response->docs[5]->getUid(), 'Trigram phrase slop setting does not work as expected. The Phrase Slop value of 2 has no influence on boosts.');
         // the docuemnt on position 5 and 6 have same score
         self::assertTrue(
-        // @extensionScannerIgnoreLine
+            // @extensionScannerIgnoreLine
             $parsedDatasByPhraseSlop[2]->response->docs[5]->getScore() === $parsedDatasByPhraseSlop[2]->response->docs[6]->getScore(),
             'Bigram phrase slop setting does not work as expected. It does not boost all "sloppy phrase" docs for slop=2.'
         );

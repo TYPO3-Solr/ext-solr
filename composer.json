@@ -61,7 +61,7 @@
       "TYPO3\\CMS\\Core\\Tests\\": ".Build/Web/typo3/sysext/core/Tests/"
     }
   },
-  "minimum-stability": "dev",
+  "minimum-stability": "stable",
   "prefer-stable": true,
   "config": {
     "allow-plugins": true,
