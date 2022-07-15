@@ -13,12 +13,13 @@
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace ApacheSolrForTypo3\Solr\Tests\Unit;
+namespace ApacheSolrForTypo3\Solr\Tests\Unit\Search;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use ApacheSolrForTypo3\Solr\Search\RelevanceComponent;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use Solarium\QueryType\Select\RequestBuilder;
 
 /**

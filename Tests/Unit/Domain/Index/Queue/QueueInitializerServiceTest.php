@@ -13,7 +13,7 @@
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Index;
+namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Index\Queue;
 
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\QueueInitializationService;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;

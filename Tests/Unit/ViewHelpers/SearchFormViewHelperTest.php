@@ -13,7 +13,7 @@
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace ApacheSolrForTypo3\Solr\Tests\Unit\ViewHelpers\Facet\Options\Group\Prefix;
+namespace ApacheSolrForTypo3\Solr\Tests\Unit\ViewHelpers;
 
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;

@@ -13,7 +13,7 @@
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace ApacheSolrForTypo3\Solr\Tests\Unit\Query\FilterEncoder;
+namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets\RangeBased\DateRange;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\DateRange\DateRangeUrlDecoder;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
@@ -24,7 +24,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author Markus Goldbach
  */
-class DateRangeUrlEncoderTest extends UnitTest
+class DateRangeUrlDecoderTest extends UnitTest
 {
 
     /**
