@@ -1,5 +1,4 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Index;
 
 /***************************************************************
  *  Copyright notice
@@ -23,6 +22,8 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Index;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+
+namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Index\Queue;
 
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\QueueInitializationService;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;

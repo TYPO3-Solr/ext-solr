@@ -1,5 +1,4 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Test\ViewHelpers\Facet\Options\Group\Prefix;
 
 /***************************************************************
  *  Copyright notice
@@ -23,6 +22,8 @@ namespace ApacheSolrForTypo3\Solr\Test\ViewHelpers\Facet\Options\Group\Prefix;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+
+namespace ApacheSolrForTypo3\Solr\Tests\Unit\ViewHelpers;
 
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;

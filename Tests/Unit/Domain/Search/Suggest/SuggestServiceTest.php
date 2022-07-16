@@ -1,5 +1,4 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search;
 
 /***************************************************************
  *  Copyright notice
@@ -24,6 +23,8 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+
+namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\Suggest;
 
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;

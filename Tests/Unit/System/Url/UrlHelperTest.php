@@ -1,5 +1,4 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\Util;
 
 /***************************************************************
  *  Copyright notice
@@ -23,6 +22,8 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\Util;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+
+namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\Url;
 
 use ApacheSolrForTypo3\Solr\System\Url\UrlHelper;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
