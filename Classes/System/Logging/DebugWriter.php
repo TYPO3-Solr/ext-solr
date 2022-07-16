@@ -26,7 +26,7 @@
 namespace ApacheSolrForTypo3\Solr\System\Logging;
 
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
-use ApacheSolrForTypo3\Solr\Util;       
+use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Http\Request;
 use TYPO3\CMS\Core\Utility\DebugUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;

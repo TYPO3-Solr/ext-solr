@@ -1,5 +1,4 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Tests\Unit\IndexQueue;
 
 /***************************************************************
  *  Copyright notice
@@ -23,6 +22,9 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\IndexQueue;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+
+namespace ApacheSolrForTypo3\Solr\Tests\Unit;
+
 
 use Psr\EventDispatcher\EventDispatcherInterface;
 use PHPUnit\Framework\MockObject\MockObject;

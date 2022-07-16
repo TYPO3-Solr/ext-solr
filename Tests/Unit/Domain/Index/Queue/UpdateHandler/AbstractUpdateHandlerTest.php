@@ -1,5 +1,4 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Tests\Unit\IndexQueue\UpdateHandler;
 
 /***************************************************************
  *  Copyright notice
@@ -23,6 +22,8 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\IndexQueue\UpdateHandler;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+
+namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Index\Queue\UpdateHandler;
 
 use PHPUnit\Framework\MockObject\MockObject;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;

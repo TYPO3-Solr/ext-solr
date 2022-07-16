@@ -34,7 +34,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Testcase for query parser range
  * @author Markus Goldbach
  */
-class HierarchyUrlEncoderTest extends UnitTest
+class HierarchyUrlDecoderTest extends UnitTest
 {
     /**
      * @var HierarchyUrlDecoder

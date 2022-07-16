@@ -1,5 +1,4 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Test\System\Service;
 
 /***************************************************************
  *  Copyright notice
@@ -24,8 +23,10 @@ namespace ApacheSolrForTypo3\Solr\Test\System\Service;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\UserFunctions;
+
 use ApacheSolrForTypo3\Solr\System\UserFunctions\FlexFormUserFunctions;
+use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 
 /**
  * @author Timo Hund <timo.hund@dkd.de>
