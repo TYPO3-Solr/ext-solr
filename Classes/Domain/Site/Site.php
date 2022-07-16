@@ -127,7 +127,7 @@ class Site implements SiteInterface
      */
     public function getSolrConnectionConfiguration(int $language = 0): array
     {
-        if (!is_array($this->solrConnectionConfigurations[$language])) {
+        if (!is_array($this->solrConnectionConfigurations[$language] ?? null)) {
             /* @var $noSolrConnectionException NoSolrConnectionFoundException */
             $noSolrConnectionException = GeneralUtility::makeInstance(
                 NoSolrConnectionFoundException::class,
