@@ -53,9 +53,9 @@ class SearchResultSet
     protected ?Search $usedSearch = null;
 
     /**
-     * @var ResponseAdapter
+     * @var ?ResponseAdapter
      */
-    protected ResponseAdapter $response;
+    protected ?ResponseAdapter $response = null;
 
     /**
      * @var int
@@ -237,9 +237,9 @@ class SearchResultSet
     }
 
     /**
-     * @return ResponseAdapter
+     * @return ?ResponseAdapter
      */
-    public function getResponse(): ResponseAdapter
+    public function getResponse(): ?ResponseAdapter
     {
         return $this->response;
     }
