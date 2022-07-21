@@ -75,9 +75,9 @@ class SearchUriBuilder
     protected EventDispatcherInterface $eventDispatcher;
 
     /**
-     * @var RoutingService
+     * @var ?RoutingService
      */
-    protected RoutingService $routingService;
+    protected ?RoutingService $routingService = null;
 
     /**
      * @param UriBuilder $uriBuilder
