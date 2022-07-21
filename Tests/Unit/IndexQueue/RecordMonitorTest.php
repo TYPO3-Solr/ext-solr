@@ -24,16 +24,19 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\IndexQueue;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use Psr\EventDispatcher\EventDispatcherInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use TYPO3\CMS\Core\DataHandling\DataHandler;
-use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
-use ApacheSolrForTypo3\Solr\IndexQueue\RecordMonitor;
-use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\VersionSwappedEvent;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\ContentElementDeletedEvent;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordMovedEvent;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordUpdatedEvent;
-use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\ContentElementDeletedEvent;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\VersionSwappedEvent;
+use ApacheSolrForTypo3\Solr\IndexQueue\RecordMonitor;
+use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
+use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use PHPUnit\Framework\MockObject\MockObject;
+use Psr\EventDispatcher\EventDispatcherInterface;
+use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
+use TYPO3\CMS\Core\DataHandling\DataHandler;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\RootlineUtility;
 
 /**
  * Testcase for the RecordMonitor class.
@@ -43,7 +46,7 @@ use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\ContentEleme
 class RecordMonitorTest extends UnitTest
 {
     /**
-     * @var RecordMonitor
+     * @var RecordMonitor|null
      */
     protected $recordMonitor;
 
@@ -59,11 +62,27 @@ class RecordMonitorTest extends UnitTest
 
         $GLOBALS['BE_USER'] = $this->createMock(BackendUserAuthentication::class);
         $GLOBALS['BE_USER']->workspace = 0;
+        GeneralUtility::addInstance(
+            ExtensionConfiguration::class,
+            $this->getDumbMock(ExtensionConfiguration::class)
+        );
+
+        $rootlineUtilityMock = $this->getDumbMock(RootlineUtility::class);
+        $rootlineUtilityMock->method('get')->willReturn([]);
+        GeneralUtility::addInstance(
+            RootlineUtility::class,
+            $rootlineUtilityMock
+        );
+        parent::setUp();
     }
 
     public function tearDown(): void
     {
-        unset($GLOBALS['BE_USER']);
+        unset(
+            $GLOBALS['BE_USER'],
+            $this->recordMonitor
+        );
+        GeneralUtility::purgeInstances();
         parent::tearDown();
     }
 
