@@ -41,7 +41,7 @@ $GLOBALS['SiteConfiguration']['site']['columns']['solr_host_read'] = [
         'type' => 'input',
         'default' => 'localhost',
         'placeholder' => 'localhost',
-        'size' => 10,
+        'size' => 50,
     ],
     'displayCond' => 'FIELD:solr_enabled_read:=:1',
 ];
@@ -101,8 +101,8 @@ $GLOBALS['SiteConfiguration']['site']['columns']['solr_path_write'] = $GLOBALS['
 $GLOBALS['SiteConfiguration']['site']['columns']['solr_path_write']['config']['eval'] = '';
 $GLOBALS['SiteConfiguration']['site']['columns']['solr_path_write']['displayCond'] = 'FIELD:solr_use_write_connection:=:1';
 
-$GLOBALS['SiteConfiguration']['site']['palettes']['solr_read']['showitem'] = 'solr_scheme_read, solr_host_read, solr_port_read, solr_path_read';
-$GLOBALS['SiteConfiguration']['site']['palettes']['solr_write']['showitem'] = 'solr_scheme_write, solr_host_write, solr_port_write, solr_path_write';
+$GLOBALS['SiteConfiguration']['site']['palettes']['solr_read']['showitem'] = 'solr_scheme_read, solr_port_read, --linebreak--, solr_host_read, solr_path_read';
+$GLOBALS['SiteConfiguration']['site']['palettes']['solr_write']['showitem'] = 'solr_scheme_write, solr_port_write, --linebreak--, solr_host_write, solr_path_write';
 
 $GLOBALS['SiteConfiguration']['site']['types']['0']['showitem'] .= ',--div--;Solr,solr_enabled_read,--palette--;;solr_read, solr_use_write_connection,--palette--;;solr_write';
 
