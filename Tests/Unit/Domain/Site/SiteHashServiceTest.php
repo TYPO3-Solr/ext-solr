@@ -53,9 +53,11 @@ class SiteHashServiceTest extends UnitTest
         $siteB = $this->getDumbMock(Site::class);
         $siteB->expects(self::any())->method('getDomain')->willReturn('solrtestb.local');
         $allSites = [$siteA, $siteB];
+        $allSitesString = ('solrtesta.local,solrtestb.local');
 
         /** @var $siteHashServiceMock SiteHashService */
-        $siteHashServiceMock = $this->getMockBuilder(SiteHashService::class)->onlyMethods(['getAvailableSites', 'getSiteByPageId'])->getMock();
+        $siteHashServiceMock = $this->getMockBuilder(SiteHashService::class)->onlyMethods(['getDomainListOfAllSites', 'getAvailableSites', 'getSiteByPageId'])->getMock();
+        $siteHashServiceMock->expects(self::any())->method('getDomainListOfAllSites')->willReturn($allSitesString);
         $siteHashServiceMock->expects(self::any())->method('getAvailableSites')->willReturn($allSites);
         $siteHashServiceMock->expects(self::any())->method('getSiteByPageId')->willReturn($siteA);
 

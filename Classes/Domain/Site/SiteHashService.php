@@ -19,6 +19,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Site;
 
 use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use Throwable;
+use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -77,20 +78,19 @@ class SiteHashService
     }
 
     /**
-     * Returns a comma separated list of all domains from all sites.
+     * Returns a comma separated list with domains of all sites.
      *
      * @return string
-     * @throws DBALDriverException
      * @throws Throwable
      */
     protected function getDomainListOfAllSites(): string
     {
-        $sites = $this->getAvailableSites();
+        $siteFinder = GeneralUtility::makeInstance(SiteFinder::class);
+        $sites = $siteFinder->getAllSites();
         $domains = [];
         foreach ($sites as $site) {
-            $domains[] = $site->getDomain();
+            $domains[] = $site->getBase()->getHost();
         }
-
         return implode(',', $domains);
     }
 
