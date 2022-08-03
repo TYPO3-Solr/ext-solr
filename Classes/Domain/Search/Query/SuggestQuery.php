@@ -58,8 +58,8 @@ class SuggestQuery extends Query
         } else {
             $matches = [];
             preg_match('/^(:?(.* |))([^ ]+)$/', $keywords, $matches);
-            $fullKeywords = trim($matches[2]);
-            $partialKeyword = trim($matches[3]);
+            $fullKeywords = trim($matches[2] ?? '');
+            $partialKeyword = trim($matches[3] ?? '');
 
             $this->setQuery($fullKeywords);
             $this->prefix = $partialKeyword;

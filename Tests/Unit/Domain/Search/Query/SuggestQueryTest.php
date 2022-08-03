@@ -57,4 +57,19 @@ class SuggestQueryTest extends UnitTest
         $queryParameters = $suggestQuery->getRequestBuilder()->build($suggestQuery)->getParams();
         self::assertSame('+type:pages', $queryParameters['fq'], 'Filter was not added to the suggest query parameters');
     }
+
+    /**
+     * @test
+     */
+    public function testSuggestQueryDoesNotErrorOnEmptyKeywords()
+    {
+        $fakeConfiguration = new TypoScriptConfiguration([]);
+        $suggestQuery = new SuggestQuery(' ', $fakeConfiguration);
+
+        $queryBuilder = new QueryBuilder($fakeConfiguration);
+        $queryBuilder->startFrom($suggestQuery)->useFilter('+type:pages');
+        $queryParameters = $suggestQuery->getRequestBuilder()->build($suggestQuery)->getParams();
+        self::assertSame('', $queryParameters['q'], 'Query is expected to be empty, but is not');
+        self::assertSame('', $queryParameters['facet.prefix'], 'Facet prefix is expected to be empty, but is not');
+    }
 }
