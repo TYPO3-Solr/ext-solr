@@ -19,7 +19,6 @@ use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\SuggestQuery;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
-use TYPO3\CMS\Core\Utility\DebugUtility;
 
 /**
  * Tests the ApacheSolrForTypo3\Solr\SuggestQuery class
