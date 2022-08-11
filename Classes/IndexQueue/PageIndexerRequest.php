@@ -23,6 +23,7 @@ use Exception;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ServerException;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Log\LogLevel;
 use RuntimeException;
 use TYPO3\CMS\Core\Http\RequestFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -412,6 +413,24 @@ class PageIndexerRequest
             $response = $this->requestFactory->request($url, 'GET', $options);
         } catch (ClientException|ServerException $e) {
             $response = $e->getResponse();
+            if (isset($options['auth']['password'])) {
+                $options['auth']['password'] = '*****';
+            }
+            // Log with INFO severity because this is what configured for Testing & Development contexts
+            $this->logger->log(
+                LogLevel::INFO,
+                sprintf(
+                    'Exception while fetching \'%s\': [%d] "%s". HTTP status: %d"',
+                    $url,
+                    $e->getCode(),
+                    $e->getMessage(),
+                    $response->getStatusCode()
+                ),
+                [
+                    'HTTP headers' => $response->getHeaders(),
+                    'options' => $options,
+                ]
+            );
         }
         return $response;
     }
