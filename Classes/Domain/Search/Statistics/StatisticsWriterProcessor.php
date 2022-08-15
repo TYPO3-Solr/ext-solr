@@ -123,6 +123,8 @@ class StatisticsWriterProcessor implements SearchResultSetProcessor
     ): string {
         $keywords = $query->getQuery();
         $keywords = $this->sanitizeString($keywords);
+        // Ensure string does not exceed database field length
+        $keywords = substr($keywords, 0, 128);
         if ($lowerCaseQuery) {
             $keywords = mb_strtolower($keywords);
         }
