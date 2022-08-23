@@ -116,10 +116,10 @@ class SearchController extends AbstractBaseController
             $currentPage = $this->request->hasArgument('page') ? (int)$this->request->getArgument('page') : 1;
 
             // prevent currentPage < 1 (i.e for GET request like &tx_solr[page]=0)
-            if($currentPage < 1) { 
-                $currentPage = 1;    
+            if($currentPage < 1) {
+                $currentPage = 1;
             }
-            
+
             $itemsPerPage = ($searchResultSet->getUsedResultsPerPage() ?: $this->typoScriptConfiguration->getSearchResultsPerPage(10));
             $paginator = GeneralUtility::makeInstance(ResultsPaginator::class, $searchResultSet, $currentPage, $itemsPerPage);
             $pagination = GeneralUtility::makeInstance(ResultsPagination::class, $paginator);
