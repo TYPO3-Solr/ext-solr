@@ -37,7 +37,6 @@ use TYPO3\CMS\Extbase\Object\ObjectManager;
  */
 class SearchResultSetTest extends UnitTest
 {
-
     /**
      * @var TypoScriptConfiguration
      */

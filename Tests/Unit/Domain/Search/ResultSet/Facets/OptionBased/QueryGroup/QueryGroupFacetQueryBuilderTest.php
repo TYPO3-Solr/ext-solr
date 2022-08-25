@@ -26,13 +26,11 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
  */
 class QueryGroupFacetQueryBuilderTest extends UnitTest
 {
-
     /**
      * @test
      */
     public function canBuildQueryGroupFacetWithKeepAllOptionsOnSelection()
     {
-
         /**
          * queryGroup {
          *    keepAllOptionsOnSelection = 1
@@ -75,7 +73,6 @@ class QueryGroupFacetQueryBuilderTest extends UnitTest
      */
     public function canBuildQueryGroupFacetWithKeepAllFacetsOnSelection()
     {
-
         /**
          * faceting {
          *    keepAllFacetsOnSelection = 1
@@ -128,7 +125,6 @@ class QueryGroupFacetQueryBuilderTest extends UnitTest
      */
     public function canBuild()
     {
-
         /**
          * queryGroup {
          *    week {

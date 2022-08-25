@@ -36,7 +36,6 @@ use TYPO3\TestingFramework\Core\Exception as TestingFrameworkCoreException;
  */
 class ResultSetReconstitutionProcessorTest extends IntegrationTest
 {
-
     /**
      * @test
      *

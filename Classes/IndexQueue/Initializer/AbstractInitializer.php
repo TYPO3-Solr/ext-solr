@@ -37,7 +37,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 abstract class AbstractInitializer implements IndexQueueInitializer
 {
-
     /**
      * Site to initialize
      *

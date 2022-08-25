@@ -37,7 +37,6 @@ use Solarium\Core\Client\Endpoint;
  */
 class SolrConnectionTest extends UnitTest
 {
-
     /**
      * @param Node|null $readNode
      * @param Node|null $writeNode

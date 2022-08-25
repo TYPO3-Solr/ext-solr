@@ -20,7 +20,6 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Controller\Backend\Search;
  */
 class IndexQueueTestUpdateHandler
 {
-
     /**
      * @param string $type
      * @param int $uid

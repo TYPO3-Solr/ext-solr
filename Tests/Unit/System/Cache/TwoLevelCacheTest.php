@@ -29,7 +29,6 @@ use TYPO3\CMS\Core\Cache\Frontend\VariableFrontend;
  */
 class TwoLevelCacheTest extends UnitTest
 {
-
     /**
      * @var TwoLevelCache
      */

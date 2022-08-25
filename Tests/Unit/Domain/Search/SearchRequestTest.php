@@ -24,7 +24,6 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
  */
 class SearchRequestTest extends UnitTest
 {
-
     /**
      * @var SearchRequest
      */

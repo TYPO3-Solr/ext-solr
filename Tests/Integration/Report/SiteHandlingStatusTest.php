@@ -26,7 +26,6 @@ use TYPO3\CMS\Reports\Status;
  */
 class SiteHandlingStatusTest extends IntegrationTest
 {
-
     /**
      * @test
      */

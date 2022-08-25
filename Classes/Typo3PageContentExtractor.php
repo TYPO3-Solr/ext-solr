@@ -28,7 +28,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class Typo3PageContentExtractor extends HtmlContentExtractor
 {
-
     /**
      * @var SolrLogManager|null
      */

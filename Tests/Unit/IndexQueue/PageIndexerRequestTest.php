@@ -31,7 +31,6 @@ use TYPO3\CMS\Core\Http\RequestFactory;
  */
 class PageIndexerRequestTest extends UnitTest
 {
-
     /**
      * @test
      */

@@ -28,7 +28,6 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
  */
 class GroupItemTest extends UnitTest
 {
-
     /**
      * @var GroupItem
      */

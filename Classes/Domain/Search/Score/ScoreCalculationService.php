@@ -23,7 +23,6 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Score;
  */
 class ScoreCalculationService
 {
-
     /**
      * Renders an overview of how the score for a certain document has been
      * calculated.

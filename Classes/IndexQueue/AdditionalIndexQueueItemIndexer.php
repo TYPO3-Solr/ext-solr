@@ -25,7 +25,6 @@ use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
  */
 interface AdditionalIndexQueueItemIndexer
 {
-
     /**
      * Provides additional documents that should be indexed together with an Index Queue item.
      *

@@ -29,7 +29,6 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
  */
 class ContentObjectServiceTest extends UnitTest
 {
-
     /**
      * @var ContentObjectRenderer|MockObject
      */
