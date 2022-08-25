@@ -22,7 +22,6 @@ namespace ApacheSolrForTypo3\Solr\Search;
  */
 abstract class AbstractComponent implements SearchComponent
 {
-
     /**
      * Search configuration - plugin.tx_solr.search
      *

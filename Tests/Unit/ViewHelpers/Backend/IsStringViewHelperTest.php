@@ -24,7 +24,6 @@ use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
  */
 class IsStringViewHelperTest extends UnitTest
 {
-
     /**
      * @test
      */

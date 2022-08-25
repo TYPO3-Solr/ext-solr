@@ -25,7 +25,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class RootlineElement
 {
-
     /**
      * Page access rootline element.
      *

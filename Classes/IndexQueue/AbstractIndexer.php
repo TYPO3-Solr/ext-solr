@@ -326,8 +326,8 @@ abstract class AbstractIndexer
                 break;
 
             default:
-            // assume things are correct for non-dynamic fields
-            }
+                // assume things are correct for non-dynamic fields
+        }
 
         return $value;
     }

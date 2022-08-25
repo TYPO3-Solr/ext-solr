@@ -23,7 +23,6 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
  */
 class ItemTest extends UnitTest
 {
-
     /**
      * @test
      */

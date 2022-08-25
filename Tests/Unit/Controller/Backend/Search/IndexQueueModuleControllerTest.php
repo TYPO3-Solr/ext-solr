@@ -25,7 +25,6 @@ use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
  */
 class IndexQueueModuleControllerTest extends AbstractModuleControllerTest
 {
-
     /**
      * @var Queue
      */

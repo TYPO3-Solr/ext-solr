@@ -28,7 +28,6 @@ use Solarium\Core\Client\Endpoint;
  */
 class SolrAdminServiceTest extends UnitTest
 {
-
     /**
      * @var SolrAdminService
      */

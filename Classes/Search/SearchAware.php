@@ -24,7 +24,6 @@ use ApacheSolrForTypo3\Solr\Search;
  */
 interface SearchAware
 {
-
     /**
      * Provides the extension component with an instance of the currently
      * active search.

@@ -36,7 +36,6 @@ use Solarium\QueryType\Ping\Query as PingQuery;
  */
 class SolrReadServiceTest extends UnitTest
 {
-
     /**
      * @var Request
      */

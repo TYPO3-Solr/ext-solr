@@ -19,7 +19,6 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 abstract class AbstractSolrViewHelper extends AbstractViewHelper
 {
-
     /**
      * @var bool
      */

@@ -24,7 +24,6 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
  */
 class Spellchecking extends AbstractDeactivatable implements ParameterBuilderInterface
 {
-
     /**
      * @var int
      */

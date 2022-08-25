@@ -24,7 +24,6 @@ use ApacheSolrForTypo3\Solr\Domain\Site\Site;
  */
 interface InitializationPostProcessor
 {
-
     /**
      * Post process Index Queue initialization
      *

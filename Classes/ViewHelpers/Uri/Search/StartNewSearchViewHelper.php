@@ -26,7 +26,6 @@ use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
  */
 class StartNewSearchViewHelper extends AbstractUriViewHelper
 {
-
     /**
      * Initializes the arguments
      */

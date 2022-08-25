@@ -27,7 +27,6 @@ use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
  */
 class LastSearchesViewHelper extends AbstractSolrViewHelper
 {
-
     /**
      * @var bool
      */

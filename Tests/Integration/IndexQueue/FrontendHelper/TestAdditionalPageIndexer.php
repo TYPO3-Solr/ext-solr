@@ -22,7 +22,6 @@ use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 
 class TestAdditionalPageIndexer implements AdditionalPageIndexer
 {
-
     /**
      * Provides additional documents that should be indexed together with a page.
      *

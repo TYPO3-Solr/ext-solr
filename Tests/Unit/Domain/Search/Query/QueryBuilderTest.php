@@ -46,7 +46,6 @@ use function str_starts_with;
  */
 class QueryBuilderTest extends UnitTest
 {
-
     /**
      * @var TypoScriptConfiguration|MockObject
      */

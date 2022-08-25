@@ -26,7 +26,6 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractConditionViewHelper;
  */
 class IsStringViewHelper extends AbstractConditionViewHelper
 {
-
     /**
      * Initialize ViewHelper arguments
      *

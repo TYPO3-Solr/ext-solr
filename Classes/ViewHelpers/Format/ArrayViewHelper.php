@@ -25,7 +25,6 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
  */
 class ArrayViewHelper extends AbstractViewHelper
 {
-
     /**
      * Make sure values is a array else convert
      *

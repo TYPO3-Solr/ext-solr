@@ -38,7 +38,6 @@ class UserGroupDetector extends AbstractFrontendHelper implements
     PageRepositoryGetPageHookInterface,
     PageRepositoryGetPageOverlayHookInterface
 {
-
     /**
      * This frontend helper's executed action.
      */

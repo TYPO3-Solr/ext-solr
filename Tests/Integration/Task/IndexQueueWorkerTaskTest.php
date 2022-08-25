@@ -29,7 +29,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class IndexQueueWorkerTaskTest extends IntegrationTest
 {
-
     /**
      * @inheritdoc
      * @todo: Remove unnecessary fixtures and remove that property as intended.

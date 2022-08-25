@@ -26,7 +26,6 @@ use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
  */
 class FakeObjectManager implements ObjectManagerInterface
 {
-
     /**
      * Returns TRUE if an object with the given name is registered
      *

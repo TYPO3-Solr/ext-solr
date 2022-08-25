@@ -15,7 +15,6 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Task;
  */
 class IndexQueueDependencyFaker
 {
-
     /**
      * @var string
      */

@@ -23,6 +23,5 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue\Initializer;
  */
 class Record extends AbstractInitializer
 {
-
     // just the default behavior as in the abstract class
 }

@@ -24,7 +24,6 @@ use ApacheSolrForTypo3\Solr\IndexQueue\AbstractIndexer;
  */
 class AbstractIndexerTest extends UnitTest
 {
-
     /**
      * @test
      */

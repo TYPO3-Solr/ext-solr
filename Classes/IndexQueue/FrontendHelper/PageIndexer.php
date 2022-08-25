@@ -43,7 +43,6 @@ use UnexpectedValueException;
  */
 class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
 {
-
     /**
      * This frontend helper's executed action.
      *

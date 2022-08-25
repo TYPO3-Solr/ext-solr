@@ -22,7 +22,6 @@ namespace ApacheSolrForTypo3\Solr\FieldProcessor;
  */
 abstract class AbstractHierarchyProcessor
 {
-
     /**
      * Builds a Solr hierarchy from an array of uids that make up a rootline.
      *

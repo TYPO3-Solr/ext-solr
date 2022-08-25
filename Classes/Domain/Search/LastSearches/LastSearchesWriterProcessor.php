@@ -28,7 +28,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class LastSearchesWriterProcessor implements SearchResultSetProcessor
 {
-
     /**
      * @param SearchResultSet $resultSet
      *

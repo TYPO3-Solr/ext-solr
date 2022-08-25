@@ -26,7 +26,6 @@ use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
  */
 class RelevanceViewHelperTest extends UnitTest
 {
-
     /**
      * @test
      */

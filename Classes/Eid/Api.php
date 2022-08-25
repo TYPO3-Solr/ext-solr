@@ -26,7 +26,6 @@ if (!Api::isValidApiKey($apiKey)) {
     echo json_encode(['errorMessage' => 'Invalid API key']);
 } else {
     switch ($api) {
-
         case 'siteHash':
             include('SiteHash.php');
             break;
