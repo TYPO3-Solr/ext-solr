@@ -28,7 +28,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class QueueTest extends IntegrationTest
 {
-
     /**
      * @var Queue
      */

@@ -30,7 +30,6 @@ use function vsprintf;
  */
 class ConnectionManagerTest extends IntegrationTest
 {
-
     /**
      * @inheritdoc
      * @todo: Remove unnecessary fixtures and remove that property as intended.

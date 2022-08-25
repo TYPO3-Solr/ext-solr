@@ -27,7 +27,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class CliEnvironmentTest extends IntegrationTest
 {
-
     /**
      * @test
      */

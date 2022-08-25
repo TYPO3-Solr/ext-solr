@@ -29,7 +29,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class RemoveSiteFromScheduler implements Migration
 {
-
     /**
      * Called by the extension manager to determine if the update menu entry
      * should be showed.

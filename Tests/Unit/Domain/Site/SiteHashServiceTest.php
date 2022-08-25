@@ -28,7 +28,6 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
  */
 class SiteHashServiceTest extends UnitTest
 {
-
     /**
      * @return array
      */

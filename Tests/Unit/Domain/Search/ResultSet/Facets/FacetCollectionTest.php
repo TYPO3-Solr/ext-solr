@@ -28,7 +28,6 @@ use TYPO3\CMS\Extbase\Object\ObjectManager;
  */
 class FacetCollectionTest extends UnitTest
 {
-
     /**
      * @test
      */

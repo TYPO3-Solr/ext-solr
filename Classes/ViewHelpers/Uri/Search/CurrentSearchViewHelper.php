@@ -26,7 +26,6 @@ use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
  */
 class CurrentSearchViewHelper extends AbstractUriViewHelper
 {
-
     /**
      * @param array $arguments
      * @param \Closure $renderChildrenClosure

@@ -29,7 +29,6 @@ use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 
 abstract class AbstractModuleControllerTest extends UnitTest
 {
-
     /**
      * @var AbstractModuleController|MockObject
      */

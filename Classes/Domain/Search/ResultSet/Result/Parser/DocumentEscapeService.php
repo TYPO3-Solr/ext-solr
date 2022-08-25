@@ -26,7 +26,6 @@ use ApacheSolrForTypo3\Solr\Util;
  */
 class DocumentEscapeService
 {
-
     /**
      * @var TypoScriptConfiguration
      */

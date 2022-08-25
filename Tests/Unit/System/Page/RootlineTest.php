@@ -25,7 +25,6 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
  */
 class RootlineTest extends UnitTest
 {
-
     /**
      * @test
      */

@@ -28,7 +28,6 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetItemColl
  */
 class NodeCollection extends AbstractFacetItemCollection
 {
-
     /**
      * @param AbstractFacetItem|null $item
      * @return NodeCollection

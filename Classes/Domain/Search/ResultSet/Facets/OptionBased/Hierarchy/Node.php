@@ -25,7 +25,6 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\AbstractO
  */
 class Node extends AbstractOptionFacetItem
 {
-
     /**
      * @var NodeCollection
      */

@@ -28,7 +28,6 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetItemColl
  */
 class DateRangeCollection extends AbstractFacetItemCollection
 {
-
     /**
      * @param AbstractFacetItem|null $item
      * @return DateRangeCollection

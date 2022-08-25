@@ -28,7 +28,6 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
  */
 class RelationTest extends IntegrationTest
 {
-
     /**
      * @test
      *

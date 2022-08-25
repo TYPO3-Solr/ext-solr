@@ -23,7 +23,6 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
  */
 interface PageIndexerDocumentsModifier
 {
-
     /**
      * Modifies the given documents
      *

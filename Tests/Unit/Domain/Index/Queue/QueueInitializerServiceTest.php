@@ -27,7 +27,6 @@ use PHPUnit\Framework\MockObject\MockObject;
  */
 class QueueInitializerServiceTest extends UnitTest
 {
-
     /**
      * @test
      */

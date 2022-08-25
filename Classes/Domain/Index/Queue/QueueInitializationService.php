@@ -36,7 +36,6 @@ use UnexpectedValueException;
  */
 class QueueInitializationService
 {
-
     /**
      * @var Queue
      */

@@ -24,7 +24,6 @@ use ApacheSolrForTypo3\Solr\HtmlContentExtractor;
  */
 class HtmlContentExtractorTest extends UnitTest
 {
-
     /**
      * @test
      */

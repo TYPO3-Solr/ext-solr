@@ -37,7 +37,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class SolrWriteServiceTest extends IntegrationTest
 {
-
     /**
      * @var SolrWriteService
      */

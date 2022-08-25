@@ -36,7 +36,6 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
  */
 class PageIndexerTest extends IntegrationTest
 {
-
     /**
      * @inheritdoc
      * @todo: Remove unnecessary fixtures and remove that property as intended.

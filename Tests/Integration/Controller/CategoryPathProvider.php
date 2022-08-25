@@ -9,7 +9,6 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Controller;
  */
 class CategoryPathProvider
 {
-
     /**
      * Returns a list of paths concatenated with , only for testing
      * @return string

@@ -26,7 +26,6 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
  */
 class ServiceTest extends UnitTest
 {
-
     /**
      * @var Document
      */

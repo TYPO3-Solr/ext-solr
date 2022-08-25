@@ -22,7 +22,6 @@ namespace ApacheSolrForTypo3\Solr\System\Validator;
  */
 class Path
 {
-
     /**
      * Validate that a path is a valid Solr Path
      *

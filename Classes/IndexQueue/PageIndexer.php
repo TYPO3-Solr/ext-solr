@@ -85,7 +85,6 @@ class PageIndexer extends Indexer
      */
     protected function isPageIndexable(Item $item): bool
     {
-
         // TODO do we still need this?
         // shouldn't those be sorted out by the record monitor / garbage collector already?
 

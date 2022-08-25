@@ -22,7 +22,6 @@ namespace ApacheSolrForTypo3\Solr\Search;
  */
 interface FacetsModifier
 {
-
     /**
      * Modifies the given facets and returns the modified facets as array
      *

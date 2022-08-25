@@ -25,7 +25,6 @@ use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
  */
 class RemoveFacetViewHelperTest extends AbstractFacetItemViewHelperTest
 {
-
     /**
      * @test
      */

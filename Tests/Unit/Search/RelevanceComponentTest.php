@@ -29,7 +29,6 @@ use Solarium\QueryType\Select\RequestBuilder;
  */
 class RelevanceComponentTest extends UnitTest
 {
-
     /**
      * @param $query
      * @return array
