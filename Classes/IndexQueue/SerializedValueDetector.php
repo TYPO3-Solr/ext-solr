@@ -22,7 +22,6 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
  */
 interface SerializedValueDetector
 {
-
     /**
      * Uses a field's configuration to detect whether its value returned by a
      * content object is expected to be serialized and thus needs to be

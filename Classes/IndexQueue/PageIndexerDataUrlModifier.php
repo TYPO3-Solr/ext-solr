@@ -22,7 +22,6 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
  */
 interface PageIndexerDataUrlModifier
 {
-
     /**
      * Modifies the given data url
      *

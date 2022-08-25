@@ -10,7 +10,6 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
  */
 class TSFEBootstrapResult
 {
-
     /**
      * @var TypoScriptFrontendController
      */

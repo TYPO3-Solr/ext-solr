@@ -37,7 +37,6 @@ namespace ApacheSolrForTypo3\Solr\System\Util;
  */
 class ArrayAccessor
 {
-
     /**
      * @var array|null
      */

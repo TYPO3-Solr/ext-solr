@@ -24,7 +24,6 @@ use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
  */
 interface ResponseModifier
 {
-
     /**
      * Modifies the given response and returns the modified response as result
      *

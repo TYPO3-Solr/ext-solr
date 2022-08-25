@@ -26,7 +26,6 @@ use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
  */
 class RemoveSortingViewHelper extends AbstractUriViewHelper
 {
-
     /**
      * @param array $arguments
      * @param \Closure $renderChildrenClosure

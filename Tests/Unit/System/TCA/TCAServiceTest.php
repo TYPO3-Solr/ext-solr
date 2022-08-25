@@ -29,7 +29,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class TCAServiceTest extends UnitTest
 {
-
     /**
      * When a deleted record is passed (has 1 in the TCA deleted field, this should be detected).
      *

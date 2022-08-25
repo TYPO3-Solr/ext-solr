@@ -30,7 +30,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class SolrAdminServiceTest extends IntegrationTest
 {
-
     /**
      * @var SolrAdminService
      */

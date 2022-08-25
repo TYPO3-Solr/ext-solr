@@ -27,7 +27,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class Manager
 {
-
     /**
      * Frontend helper descriptions.
      *

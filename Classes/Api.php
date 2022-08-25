@@ -22,7 +22,6 @@ namespace ApacheSolrForTypo3\Solr;
  */
 class Api
 {
-
     /**
      * Checks whether a string is a valid API key.
      *

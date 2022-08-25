@@ -8,7 +8,6 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 
 class TestParser extends AbstractFacetParser
 {
-
     /**
      * @param SearchResultSet $resultSet
      * @param string $facetName

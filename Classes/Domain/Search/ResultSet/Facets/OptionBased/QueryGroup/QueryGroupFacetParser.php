@@ -28,7 +28,6 @@ use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
  */
 class QueryGroupFacetParser extends AbstractFacetParser
 {
-
     /**
      * @param SearchResultSet $resultSet
      * @param string $facetName

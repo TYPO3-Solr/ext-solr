@@ -25,7 +25,6 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
  */
 class IdBuilderTest extends UnitTest
 {
-
     /**
      * @var string
      */

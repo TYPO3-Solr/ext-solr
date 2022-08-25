@@ -26,7 +26,6 @@ use TYPO3\CMS\Core\Core\Environment;
  */
 class IndexQueueWorkerTaskTest extends UnitTest
 {
-
     /**
      * @test
      */

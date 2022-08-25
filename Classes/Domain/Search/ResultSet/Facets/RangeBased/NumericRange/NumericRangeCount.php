@@ -24,7 +24,6 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\Nume
 
 class NumericRangeCount
 {
-
     /**
      * @var float
      */

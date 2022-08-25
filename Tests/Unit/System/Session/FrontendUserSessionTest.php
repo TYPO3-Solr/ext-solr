@@ -26,7 +26,6 @@ use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
  */
 class FrontendUserSessionTest extends UnitTest
 {
-
     /**
      * @var FrontendUserAuthentication
      */

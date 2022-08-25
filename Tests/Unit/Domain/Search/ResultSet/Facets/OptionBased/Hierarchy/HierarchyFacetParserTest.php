@@ -28,7 +28,6 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets\AbstractFa
  */
 class HierarchyFacetParserTest extends AbstractFacetParserTest
 {
-
     /**
      * @test
      */

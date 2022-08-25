@@ -31,7 +31,6 @@ use TYPO3\TestingFramework\Core\Exception as TestingFrameworkCoreException;
  */
 class SiteHashServiceTest extends IntegrationTest
 {
-
     /**
      * @throws NoSuchCacheException
      * @throws TestingFrameworkCoreException

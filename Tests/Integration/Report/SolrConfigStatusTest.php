@@ -37,7 +37,6 @@ class SolrConfigStatusTest extends IntegrationTest
      */
     public function canGetAGreenSolrConfigStatusAgainstTestServer()
     {
-
         /** @var $schemaStatus  SolrConfigStatus */
         $schemaStatus = GeneralUtility::makeInstance(SolrConfigStatus::class);
         $violations = $schemaStatus->getStatus();

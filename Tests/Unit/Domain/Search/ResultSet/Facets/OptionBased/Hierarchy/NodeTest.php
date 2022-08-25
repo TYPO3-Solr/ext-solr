@@ -26,7 +26,6 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
  */
 class NodeTest extends UnitTest
 {
-
     /**
      * @test
      */

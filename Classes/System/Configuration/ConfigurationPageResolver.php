@@ -30,7 +30,6 @@ use TYPO3\CMS\Core\Utility\RootlineUtility;
  */
 class ConfigurationPageResolver
 {
-
     /**
      * @var SystemTemplateRepository
      */

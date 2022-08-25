@@ -10,7 +10,6 @@ use TYPO3\CMS\Core\SingletonInterface;
  */
 class TestGarbageCollectorPostProcessor implements SingletonInterface, GarbageCollectorPostProcessor
 {
-
     /**
      * @var bool
      */

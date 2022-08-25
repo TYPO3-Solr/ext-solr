@@ -39,7 +39,6 @@ use InvalidArgumentException;
  */
 class Faceting implements Modifier, SearchRequestAware
 {
-
     /**
      * @var FacetRegistry
      */

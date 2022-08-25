@@ -22,7 +22,6 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search;
  */
 interface SearchRequestAware
 {
-
     /**
      * Provides a component that is aware of the current SearchRequest
      *

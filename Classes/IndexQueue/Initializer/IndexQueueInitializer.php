@@ -24,7 +24,6 @@ use ApacheSolrForTypo3\Solr\Domain\Site\Site;
  */
 interface IndexQueueInitializer
 {
-
     /**
      * Sets the site for the initializer.
      *

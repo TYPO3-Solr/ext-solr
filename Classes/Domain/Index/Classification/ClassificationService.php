@@ -22,7 +22,6 @@ namespace ApacheSolrForTypo3\Solr\Domain\Index\Classification;
  */
 class ClassificationService
 {
-
     /**
      * @param string $stringToMatch
      * @param Classification[] $classifications

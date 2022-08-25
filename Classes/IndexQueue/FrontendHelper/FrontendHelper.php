@@ -27,7 +27,6 @@ use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerResponse;
  */
 interface FrontendHelper
 {
-
     /**
      * Activates a frontend helper by registering for hooks and other
      * resources required by the frontend helper to work.

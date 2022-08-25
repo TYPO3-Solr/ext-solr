@@ -27,7 +27,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class DefaultResultParser extends AbstractResultParser
 {
-
     /**
      * @param SearchResultSet $resultSet
      * @param bool $useRawDocuments
