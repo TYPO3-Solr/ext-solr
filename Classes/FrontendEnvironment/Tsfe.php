@@ -355,6 +355,9 @@ class Tsfe implements SingletonInterface
      */
     protected function getPidToUseForTsfeInitialization(int $pidToUse, ?int $rootPageId = null): ?int
     {
+        $incomingPidToUse = $pidToUse;
+        $incomingRootPageId = $rootPageId;
+
         // handle plugin.tx_solr.index.queue.[indexConfig].additionalPageIds
         if (isset($rootPageId) && !$this->isRequestedPageAPartOfRequestedSite($pidToUse)) {
             return $rootPageId;
@@ -377,6 +380,15 @@ class Tsfe implements SingletonInterface
         if (isset($rootPageId)) {
             return $rootPageId;
         }
+
+        // Check for recursion that can happen if the root page is a sysfolder with a typoscript template
+        if ($pidToUse === $incomingPidToUse && $rootPageId === $incomingRootPageId) {
+            throw new Exception\Exception(
+                "Infinite recursion detected while looking for the closest page with active template to page \"$askedPid\" . Please note that the page with active template (usually the root page of the current tree) MUST NOT be a sysfolder.",
+                1637339476
+            );
+        }
+
         return $this->getPidToUseForTsfeInitialization($pidToUse, $rootPageId);
     }
 
