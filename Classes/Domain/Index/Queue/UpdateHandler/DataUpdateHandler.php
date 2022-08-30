@@ -204,6 +204,9 @@ class DataUpdateHandler extends AbstractUpdateHandler
      */
     public function handlePageUpdate(int $uid, array $updatedFields = []): void
     {
+        if ($uid === 0) {
+            return;
+        }
         try {
             if (isset($updatedFields['l10n_parent']) && (int)($updatedFields['l10n_parent']) > 0) {
                 $pid = $updatedFields['l10n_parent'];
