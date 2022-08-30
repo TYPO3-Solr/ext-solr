@@ -4,12 +4,6 @@ defined('TYPO3') || die();
 
 // ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
-// Windows compatibility
-
-if (!function_exists('strptime')) {
-    require_once(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('solr') . 'Resources/Private/Php/strptime/strptime.php');
-}
-
 (function () {
     // ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
     // registering Index Queue page indexer helpers
