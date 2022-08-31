@@ -16,6 +16,7 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Middleware;
 
+use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
 use ApacheSolrForTypo3\Solr\Middleware\SolrRoutingMiddleware;
 use ApacheSolrForTypo3\Solr\Routing\RoutingService;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
@@ -90,7 +91,10 @@ class SolrRoutingMiddlewareTest extends UnitTest
     {
         $serverRequest = new ServerRequest(
             'GET',
-            'https://domain.example/facet/bar,buz,foo'
+            'https://domain.example/facet/bar,buz,foo',
+            [
+                PageIndexerRequest::SOLR_INDEX_HEADER => '1',
+            ]
         );
         $siteMatcherMock = $this->getMockBuilder(SiteMatcher::class)
             ->disableOriginalConstructor()
