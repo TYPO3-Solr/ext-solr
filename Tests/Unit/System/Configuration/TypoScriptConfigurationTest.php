@@ -15,6 +15,8 @@
 
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\Configuration;
 
+use ApacheSolrForTypo3\Solr\IndexQueue\Initializer\Record;
+use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 
@@ -316,7 +318,6 @@ class TypoScriptConfigurationTest extends SetUpUnitTestCase
                     'custom_one.' => [
                         'type' => 'tx_model_bar',
                     ],
-
                     'custom_two' => 1,
                     'custom_two.' => [
                         'type' => 'tx_model_news',
@@ -327,6 +328,54 @@ class TypoScriptConfigurationTest extends SetUpUnitTestCase
 
         $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
         self::assertEquals(['tx_model_news', 'custom_two'], $configuration->getIndexQueueConfigurationNamesByTableName('tx_model_news'));
+    }
+
+    /**
+     * @test
+     */
+    public function canGetIndexQueueInitializerClassByConfigurationName()
+    {
+        $fakeConfigurationArray['plugin.']['tx_solr.'] = [
+            'index.' => [
+                'queue.' => [
+                    'tx_model_news' => 1,
+                    'tx_model_news.' => [
+                    ],
+                    'custom_one' => 1,
+                    'custom_one.' => [
+                        'initialization' => 'CustomInitializer',
+                    ],
+                ],
+            ],
+        ];
+
+        $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
+        self::assertEquals(Record::class, $configuration->getIndexQueueInitializerClassByConfigurationName('tx_model_news'));
+        self::assertEquals('CustomInitializer', $configuration->getIndexQueueInitializerClassByConfigurationName('custom_one'));
+    }
+
+    /**
+     * @test
+     */
+    public function canGetIndexQueueClassByConfigurationName()
+    {
+        $fakeConfigurationArray['plugin.']['tx_solr.'] = [
+            'index.' => [
+                'queue.' => [
+                    'tx_model_news' => 1,
+                    'tx_model_news.' => [
+                    ],
+                    'custom_one' => 1,
+                    'custom_one.' => [
+                        'indexQueue' => 'CustomQueue',
+                    ],
+                ],
+            ],
+        ];
+
+        $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
+        self::assertEquals(Queue::class, $configuration->getIndexQueueClassByConfigurationName('tx_model_news'));
+        self::assertEquals('CustomQueue', $configuration->getIndexQueueClassByConfigurationName('custom_one'));
     }
 
     /**

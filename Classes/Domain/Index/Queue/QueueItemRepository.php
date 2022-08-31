@@ -20,6 +20,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\Event\IndexQueue\AfterRecordsForIndexQueueItemsHaveBeenRetrievedEvent;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
+use ApacheSolrForTypo3\Solr\IndexQueue\ItemInterface;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Records\AbstractRepository;
 use ApacheSolrForTypo3\Solr\System\Util\SiteUtility;
@@ -118,7 +119,7 @@ class QueueItemRepository extends AbstractRepository
     /**
      * Flushes the error for a single item.
      */
-    public function flushErrorByItem(Item $item): int
+    public function flushErrorByItem(ItemInterface $item): int
     {
         $queryBuilder = $this->getQueryBuilder();
         return $this->getPreparedFlushErrorQuery($queryBuilder)
@@ -751,7 +752,7 @@ class QueueItemRepository extends AbstractRepository
      * Marks an item as failed and causes the indexer to skip the item in the
      * next run.
      */
-    public function markItemAsFailed(Item|int|null $item, string $errorMessage = ''): int
+    public function markItemAsFailed(ItemInterface|int|null $item, string $errorMessage = ''): int
     {
         $itemUid = ($item instanceof Item) ? $item->getIndexQueueUid() : (int)$item;
         $errorMessage = empty($errorMessage) ? '1' : $errorMessage;
@@ -767,7 +768,7 @@ class QueueItemRepository extends AbstractRepository
     /**
      * Sets the timestamp of when an item last has been indexed.
      */
-    public function updateIndexTimeByItem(Item $item): int
+    public function updateIndexTimeByItem(ItemInterface $item): int
     {
         $queryBuilder = $this->getQueryBuilder();
         return $queryBuilder
@@ -780,7 +781,7 @@ class QueueItemRepository extends AbstractRepository
     /**
      * Sets the change timestamp of an item.
      */
-    public function updateChangedTimeByItem(Item $item, int $changedTime = 0): int
+    public function updateChangedTimeByItem(ItemInterface $item, int $changedTime = 0): int
     {
         $queryBuilder = $this->getQueryBuilder();
         return $queryBuilder

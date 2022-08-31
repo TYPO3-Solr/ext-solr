@@ -34,14 +34,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author Ingo Renner <ingo@typo3.org>
  */
-class Item
+class Item implements ItemInterface, MountPointAwareItemInterface
 {
-    public const STATE_BLOCKED = -1;
-
-    public const STATE_PENDING = 0;
-
-    public const STATE_INDEXED = 1;
-
     /**
      * The item's uid in the index queue (tx_solr_indexqueue_item.uid)
      */
@@ -95,6 +89,13 @@ class Item
     protected ?int $recordUid = null;
 
     /**
+     * The indexing priority
+     *
+     * @var int
+     */
+    protected int $indexingPriority = 0;
+
+    /**
      * The record itself
      */
     protected ?array $record = null;
@@ -136,6 +137,7 @@ class Item
 
         $this->indexingConfigurationName = $itemMetaData['indexing_configuration'] ?? '';
         $this->hasIndexingProperties = (bool)($itemMetaData['has_indexing_properties'] ?? false);
+        $this->indexingPriority = (int)($itemMetaData['indexing_priority'] ?? 0);
 
         if (!empty($fullRecord)) {
             $this->record = $fullRecord;
@@ -217,7 +219,7 @@ class Item
         return $this->type;
     }
 
-    public function setType($type): void
+    public function setType(string $type): void
     {
         $this->type = $type;
     }
@@ -266,7 +268,7 @@ class Item
     {
         $this->getRecord();
 
-        return $this->record['uid'];
+        return (int)$this->record['uid'];
     }
 
     /**
@@ -438,5 +440,13 @@ class Item
     {
         $this->loadIndexingProperties();
         return array_keys($this->indexingProperties);
+    }
+
+    /**
+     * Returns the index priority.
+     */
+    public function getIndexPriority(): int
+    {
+        return $this->indexingPriority;
     }
 }

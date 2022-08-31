@@ -19,6 +19,7 @@ use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\Domain\Site\Exception\UnexpectedTYPO3SiteInitializationException;
 use ApacheSolrForTypo3\Solr\GarbageCollectorPostProcessor;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
+use ApacheSolrForTypo3\Solr\IndexQueue\QueueInterface;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use Doctrine\DBAL\Exception as DBALException;
 use InvalidArgumentException;
@@ -31,12 +32,12 @@ use UnexpectedValueException;
  */
 abstract class AbstractStrategy
 {
-    protected Queue $queue;
+    protected QueueInterface $queue;
 
     protected ConnectionManager $connectionManager;
 
     public function __construct(
-        Queue $queue = null,
+        QueueInterface $queue = null,
         ConnectionManager $connectionManager = null,
     ) {
         $this->queue = $queue ?? GeneralUtility::makeInstance(Queue::class);

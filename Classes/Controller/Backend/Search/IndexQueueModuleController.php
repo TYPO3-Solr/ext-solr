@@ -17,8 +17,11 @@ namespace ApacheSolrForTypo3\Solr\Controller\Backend\Search;
 
 use ApacheSolrForTypo3\Solr\Backend\IndexingConfigurationSelectorField;
 use ApacheSolrForTypo3\Solr\Domain\Index\IndexService;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\QueueInitializationService;
 use ApacheSolrForTypo3\Solr\Domain\Site\Exception\UnexpectedTYPO3SiteInitializationException;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
+use ApacheSolrForTypo3\Solr\IndexQueue\QueueInterface;
+use ApacheSolrForTypo3\Solr\IndexQueue\QueueInitializationServiceAwareInterface;
 use Doctrine\DBAL\ConnectionException;
 use Doctrine\DBAL\Exception as DBALException;
 use Psr\Http\Message\ResponseInterface;
@@ -36,7 +39,7 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
  */
 class IndexQueueModuleController extends AbstractModuleController
 {
-    public function setIndexQueue(Queue $indexQueue): void
+    public function setIndexQueue(QueueInterface $indexQueue): void
     {
         $this->indexQueue = $indexQueue;
     }
@@ -107,7 +110,13 @@ class IndexQueueModuleController extends AbstractModuleController
         if ((!empty($indexingConfigurationsToInitialize)) && (is_array($indexingConfigurationsToInitialize))) {
             // initialize selected indexing configuration
             try {
-                $initializedIndexingConfigurations = $this->indexQueue->getInitializationService()->initializeBySiteAndIndexConfigurations($this->selectedSite, $indexingConfigurationsToInitialize);
+                if ($this->indexQueue instanceof QueueInitializationServiceAwareInterface) {
+                    $initializationService = $this->indexQueue->getQueueInitializationService();
+                } else {
+                    $initializationService = GeneralUtility::makeInstance(QueueInitializationService::class);
+                }
+                
+                $initializedIndexingConfigurations = $initializationService->initializeBySiteAndIndexConfigurations($this->selectedSite, $indexingConfigurationsToInitialize);
             } catch (Throwable $e) {
                 $this->addFlashMessage(
                     sprintf(

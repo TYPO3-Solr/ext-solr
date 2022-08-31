@@ -38,6 +38,7 @@ use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use TYPO3\CMS\Core\EventDispatcher\NoopEventDispatcher;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * @author Timo Hund <timo.hund@dkd.de>
@@ -50,7 +51,9 @@ class QueueInitializerServiceTest extends SetUpUnitTestCase
     public function allIndexConfigurationsAreUsedWhenWildcardIsPassed(): void
     {
         $queueMock = $this->createMock(Queue::class);
-        $service = $this->getMockBuilder(QueueInitializationService::class)->onlyMethods(['executeInitializer'])->setConstructorArgs([$queueMock, new NoopEventDispatcher()])->getMock();
+        GeneralUtility::addInstance(Queue::class, $queueMock);
+        GeneralUtility::addInstance(Queue::class, $queueMock);
+        $service = $this->getMockBuilder(QueueInitializationService::class)->onlyMethods(['executeInitializer'])->setConstructorArgs([new NoopEventDispatcher()])->getMock();
 
         $fakeTs = [
             'plugin.' => [

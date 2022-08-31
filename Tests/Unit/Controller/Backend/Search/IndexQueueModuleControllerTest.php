@@ -16,7 +16,6 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Controller\Backend\Search;
 
 use ApacheSolrForTypo3\Solr\Controller\Backend\Search\IndexQueueModuleController;
-use ApacheSolrForTypo3\Solr\Domain\Index\Queue\QueueInitializationService;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\QueueItemRepository;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\ConfigurationAwareRecordService;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\RootPageResolver;
@@ -57,7 +56,6 @@ class IndexQueueModuleControllerTest extends AbstractModuleController
                 $this->createMock(ConfigurationAwareRecordService::class),
                 $this->createMock(QueueItemRepository::class),
                 $this->createMock(QueueStatisticsRepository::class),
-                $this->createMock(QueueInitializationService::class),
                 $this->createMock(FrontendEnvironment::class),
                 $this->eventDispatcher,
             ])

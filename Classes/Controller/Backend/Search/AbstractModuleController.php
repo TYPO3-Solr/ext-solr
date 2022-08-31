@@ -20,6 +20,7 @@ use ApacheSolrForTypo3\Solr\Domain\Site\Exception\UnexpectedTYPO3SiteInitializat
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
+use ApacheSolrForTypo3\Solr\IndexQueue\QueueInterface;
 use ApacheSolrForTypo3\Solr\System\Mvc\Backend\Service\ModuleDataStorageService;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection as SolrCoreConnection;
 use Doctrine\DBAL\Exception as DBALException;
@@ -65,7 +66,7 @@ abstract class AbstractModuleController extends ActionController
         protected readonly SiteRepository $siteRepository,
         protected readonly SiteFinder $siteFinder,
         protected readonly ConnectionManager $solrConnectionManager,
-        protected Queue $indexQueue,
+        protected QueueInterface $indexQueue,
         protected ?int $selectedPageUID = null,
     ) {
         $this->selectedPageUID = $selectedPageUID ?? 0;
