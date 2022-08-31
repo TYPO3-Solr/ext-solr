@@ -16,6 +16,7 @@
 namespace ApacheSolrForTypo3\Solr\System\Configuration;
 
 use ApacheSolrForTypo3\Solr\IndexQueue\Indexer;
+use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\IndexQueue\Initializer\Record;
 use ApacheSolrForTypo3\Solr\System\ContentObject\ContentObjectService;
 use ApacheSolrForTypo3\Solr\System\Util\ArrayAccessor;
@@ -716,6 +717,20 @@ class TypoScriptConfiguration
     {
         $path = 'plugin.tx_solr.index.queue.' . $configurationName . '.indexingPriority';
         return (int)$this->getValueByPathOrDefaultValue($path, $defaultIfEmpty);
+    }
+
+    /**
+     * This method is used to retrieve the className of a queue initializer for a certain indexing configuration
+     *
+     * plugin.tx_solr.index.queue.<configurationName>.indexQueue
+     *
+     * @param string $configurationName
+     * @return string
+     */
+    public function getIndexQueueClassByConfigurationName(string $configurationName): string
+    {
+        $path = 'plugin.tx_solr.index.queue.' . $configurationName . '.indexQueue';
+        return (string)$this->getValueByPathOrDefaultValue($path, Queue::class);
     }
 
     /**

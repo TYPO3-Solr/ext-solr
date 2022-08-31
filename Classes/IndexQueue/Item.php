@@ -35,14 +35,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author Ingo Renner <ingo@typo3.org>
  */
-class Item
+class Item implements ItemInterface, MountPointAwareItemInterface
 {
-    const STATE_BLOCKED = -1;
-
-    const STATE_PENDING = 0;
-
-    const STATE_INDEXED = 1;
-
     /**
      * The item's uid in the index queue (tx_solr_indexqueue_item.uid)
      *
@@ -116,6 +110,13 @@ class Item
     protected ?int $recordUid = null;
 
     /**
+     * The indexing priority
+     *
+     * @var int
+     */
+    protected int $indexingPriority = 0;
+
+    /**
      * The record itself
      *
      * @var array
@@ -169,6 +170,7 @@ class Item
 
         $this->indexingConfigurationName = $itemMetaData['indexing_configuration'] ?? '';
         $this->hasIndexingProperties = (boolean)($itemMetaData['has_indexing_properties'] ?? false);
+        $this->indexingPriority = (int)($itemMetaData['indexing_priority'] ?? 0);
 
         if (!empty($fullRecord)) {
             $this->record = $fullRecord;
@@ -181,7 +183,7 @@ class Item
     /**
      * Getter for Index Queue UID
      *
-     * @return int
+     * @return int|null
      */
     public function getIndexQueueUid(): ?int
     {
@@ -201,7 +203,7 @@ class Item
     /**
      * Returns mount point identifier
      *
-     * @return string
+     * @return string|null
      */
     public function getMountPointIdentifier(): ?string
     {
@@ -233,6 +235,8 @@ class Item
     }
 
     /**
+     * Items state: pending, indexed, blocked
+     *
      * @return int
      */
     public function getState(): int
@@ -263,17 +267,17 @@ class Item
     /**
      * Returns the type/tablename of the queue record.
      *
-     * @return mixed|string
+     * @return string|null
      */
-    public function getType()
+    public function getType(): ?string
     {
         return $this->type;
     }
 
     /**
-     * @param $type
+     * @param string $type
      */
-    public function setType($type)
+    public function setType(string $type): void
     {
         $this->type = $type;
     }
@@ -281,9 +285,9 @@ class Item
     /**
      * Returns the name of the index configuration that was used to create this record.
      *
-     * @return mixed|string
+     * @return string
      */
-    public function getIndexingConfigurationName()
+    public function getIndexingConfigurationName(): string
     {
         return $this->indexingConfigurationName;
     }
@@ -291,7 +295,7 @@ class Item
     /**
      * @param string $indexingConfigurationName
      */
-    public function setIndexingConfigurationName(string $indexingConfigurationName)
+    public function setIndexingConfigurationName(string $indexingConfigurationName): void
     {
         $this->indexingConfigurationName = $indexingConfigurationName;
     }
@@ -299,9 +303,9 @@ class Item
     /**
      * Returns the timestamp when this queue item was changed.
      *
-     * @return int|mixed
+     * @return int|null
      */
-    public function getChanged()
+    public function getChanged(): ?int
     {
         return $this->changed;
     }
@@ -309,9 +313,9 @@ class Item
     /**
      * Returns the timestamp when this queue item was indexed.
      *
-     * @return int|mixed
+     * @return int|null
      */
-    public function getIndexed()
+    public function getIndexed(): ?int
     {
         return $this->indexed;
     }
@@ -321,7 +325,7 @@ class Item
      *
      * @param int $changed
      */
-    public function setChanged(int $changed)
+    public function setChanged(int $changed): void
     {
         $this->changed = $changed;
     }
@@ -329,13 +333,14 @@ class Item
     /**
      * Returns the uid of related record (item_uid).
      *
-     * @return mixed
+     * @return int The uid of the item record, usually an integer uid, could be a
+     *                    different value for non-database-record types.
      */
     public function getRecordUid()
     {
         $this->getRecord();
 
-        return $this->record['uid'];
+        return (int)$this->record['uid'];
     }
 
     /**
@@ -365,7 +370,7 @@ class Item
      *
      * @param array $record
      */
-    public function setRecord(array $record)
+    public function setRecord(array $record): void
     {
         $this->record = $record;
     }
@@ -386,7 +391,7 @@ class Item
      * Stores the indexing properties.
      * @throws DBALException|\Doctrine\DBAL\DBALException
      */
-    public function storeIndexingProperties()
+    public function storeIndexingProperties(): void
     {
         $this->indexQueueIndexingPropertyRepository->removeByRootPidAndIndexQueueUid((int)($this->rootPageUid), (int)($this->indexQueueUid));
 
@@ -408,7 +413,7 @@ class Item
     /**
      * Writes all indexing properties.
      */
-    protected function writeIndexingProperties()
+    protected function writeIndexingProperties(): void
     {
         $properties = [];
         foreach ($this->indexingProperties as $propertyKey => $propertyValue) {
@@ -444,7 +449,7 @@ class Item
      * @throws DBALDriverException
      * @throws DBALException
      */
-    public function loadIndexingProperties()
+    public function loadIndexingProperties(): void
     {
         if ($this->indexingPropertiesLoaded) {
             return;
@@ -471,7 +476,7 @@ class Item
      * @throws DBALDriverException
      * @throws DBALException
      */
-    public function setIndexingProperty(string $key, $value)
+    public function setIndexingProperty(string $key, $value): void
     {
         // make sure to not interfere with existing indexing properties
         $this->loadIndexingProperties();
@@ -539,5 +544,15 @@ class Item
         $this->loadIndexingProperties();
 
         return array_keys($this->indexingProperties);
+    }
+
+    /**
+     * Returns the index priority.
+     *
+     * @return int
+     */
+    public function getIndexPriority(): int
+    {
+        return $this->indexingPriority;
     }
 }

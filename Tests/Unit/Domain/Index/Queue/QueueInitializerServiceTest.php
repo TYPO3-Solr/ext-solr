@@ -21,6 +21,7 @@ use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use PHPUnit\Framework\MockObject\MockObject;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * @author Timo Hund <timo.hund@dkd.de>
@@ -33,8 +34,11 @@ class QueueInitializerServiceTest extends UnitTest
     public function allIndexConfigurationsAreUsedWhenWildcardIsPassed()
     {
         $queueMock = $this->getDumbMock(Queue::class);
+        GeneralUtility::addInstance(Queue::class, $queueMock);
+        GeneralUtility::addInstance(Queue::class, $queueMock);
+
         /* @var QueueInitializationService|MockObject $service */
-        $service = $this->getMockBuilder(QueueInitializationService::class)->onlyMethods(['executeInitializer'])->setConstructorArgs([$queueMock])->getMock();
+        $service = $this->getMockBuilder(QueueInitializationService::class)->onlyMethods(['executeInitializer'])->getMock();
 
         $fakeTs = [
             'plugin.' => [
