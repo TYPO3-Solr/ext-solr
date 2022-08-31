@@ -20,6 +20,7 @@ use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\IndexQueue\Indexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
+use ApacheSolrForTypo3\Solr\IndexQueue\QueueInterface;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\Task\IndexQueueWorkerTask;
@@ -48,9 +49,9 @@ class IndexService
     protected ?IndexQueueWorkerTask $contextTask = null;
 
     /**
-     * @var Queue
+     * @var QueueInterface
      */
-    protected Queue $indexQueue;
+    protected QueueInterface $indexQueue;
 
     /**
      * @var Dispatcher
@@ -71,7 +72,7 @@ class IndexService
      */
     public function __construct(
         Site $site,
-        Queue $queue = null,
+        QueueInterface $queue = null,
         Dispatcher $dispatcher = null,
         SolrLogManager $solrLogManager = null
     ) {

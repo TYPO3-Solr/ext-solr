@@ -18,6 +18,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\GarbageRemover;
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\GarbageCollectorPostProcessor;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
+use ApacheSolrForTypo3\Solr\IndexQueue\QueueInterface;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use InvalidArgumentException;
@@ -30,9 +31,9 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 abstract class AbstractStrategy
 {
     /**
-     * @var Queue
+     * @var QueueInterface
      */
-    protected Queue $queue;
+    protected QueueInterface $queue;
 
     /**
      * @var ConnectionManager
@@ -41,11 +42,11 @@ abstract class AbstractStrategy
 
     /**
      * AbstractStrategy constructor.
-     * @param Queue|null $queue
+     * @param QueueInterface|null $queue
      * @param ConnectionManager|null $connectionManager
      */
     public function __construct(
-        Queue $queue = null,
+        QueueInterface $queue = null,
         ConnectionManager $connectionManager = null
     ) {
         $this->queue = $queue ?? GeneralUtility::makeInstance(Queue::class);
