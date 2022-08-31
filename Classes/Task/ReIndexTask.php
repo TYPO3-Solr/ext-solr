@@ -18,7 +18,7 @@ declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\Task;
 
 use ApacheSolrForTypo3\Solr\ConnectionManager;
-use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\QueueInitializationService;
 use Doctrine\DBAL\ConnectionException as DBALConnectionException;
 use Doctrine\DBAL\Exception as DBALException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -53,9 +53,9 @@ class ReIndexTask extends AbstractSolrTask
         $cleanUpResult = $this->cleanUpIndex();
 
         // initialize for re-indexing
-        /** @var Queue $indexQueue */
-        $indexQueue = GeneralUtility::makeInstance(Queue::class);
-        $indexQueueInitializationResults = $indexQueue->getInitializationService()
+        /* @var QueueInitializationService $indexQueueInitializationService */
+        $indexQueueInitializationService = GeneralUtility::makeInstance(QueueInitializationService::class);
+        $indexQueueInitializationResults = $indexQueueInitializationService
             ->initializeBySiteAndIndexConfigurations($this->getSite(), $this->indexingConfigurationsToReIndex);
 
         return $cleanUpResult && !in_array(false, $indexQueueInitializationResults);

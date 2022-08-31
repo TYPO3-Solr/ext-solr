@@ -24,6 +24,7 @@ use ApacheSolrForTypo3\Solr\Event\Indexing\BeforeItemsAreIndexedEvent;
 use ApacheSolrForTypo3\Solr\IndexQueue\Indexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
+use ApacheSolrForTypo3\Solr\IndexQueue\QueueInterface;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\Task\IndexQueueWorkerTask;
@@ -45,7 +46,7 @@ class IndexService
 
     protected ?IndexQueueWorkerTask $contextTask = null;
 
-    protected Queue $indexQueue;
+    protected QueueInterface $indexQueue;
 
     protected EventDispatcherInterface $eventDispatcher;
 
@@ -53,7 +54,7 @@ class IndexService
 
     public function __construct(
         Site $site,
-        Queue $queue = null,
+        QueueInterface $queue = null,
         EventDispatcherInterface $eventDispatcher = null,
         SolrLogManager $solrLogManager = null,
     ) {

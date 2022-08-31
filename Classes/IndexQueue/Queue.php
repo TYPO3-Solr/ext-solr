@@ -41,7 +41,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author Ingo Renner <ingo@typo3.org>
  */
-class Queue
+class Queue implements QueueInterface, QueueInitializationServiceAwareInterface
 {
     protected RootPageResolver $rootPageResolver;
 
@@ -60,20 +60,18 @@ class Queue
     protected EventDispatcherInterface $eventDispatcher;
 
     public function __construct(
-        RootPageResolver $rootPageResolver = null,
-        ConfigurationAwareRecordService $recordService = null,
-        QueueItemRepository $queueItemRepository = null,
-        QueueStatisticsRepository $queueStatisticsRepository = null,
-        QueueInitializationService $queueInitializationService = null,
-        FrontendEnvironment $frontendEnvironment = null,
-        EventDispatcherInterface $eventDispatcher = null,
+        ?RootPageResolver $rootPageResolver = null,
+        ?ConfigurationAwareRecordService $recordService = null,
+        ?QueueItemRepository $queueItemRepository = null,
+        ?QueueStatisticsRepository $queueStatisticsRepository = null,
+        ?FrontendEnvironment $frontendEnvironment = null,
+        ?EventDispatcherInterface $eventDispatcher = null,
     ) {
         $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
         $this->rootPageResolver = $rootPageResolver ?? GeneralUtility::makeInstance(RootPageResolver::class);
         $this->recordService = $recordService ?? GeneralUtility::makeInstance(ConfigurationAwareRecordService::class);
         $this->queueItemRepository = $queueItemRepository ?? GeneralUtility::makeInstance(QueueItemRepository::class);
         $this->queueStatisticsRepository = $queueStatisticsRepository ??  GeneralUtility::makeInstance(QueueStatisticsRepository::class);
-        $this->queueInitializationService = $queueInitializationService ?? GeneralUtility::makeInstance(QueueInitializationService::class, $this);
         $this->frontendEnvironment = $frontendEnvironment ?? GeneralUtility::makeInstance(FrontendEnvironment::class);
         $this->eventDispatcher = $eventDispatcher ?? GeneralUtility::makeInstance(EventDispatcherInterface::class);
     }
@@ -113,12 +111,41 @@ class Queue
         return $lastIndexedItemId;
     }
 
+    public function setQueueInitializationService(QueueInitializationService $queueInitializationService): void
+    {
+        $this->queueInitializationService = $queueInitializationService;
+    }
+
     /**
      * Returns the QueueInitializationService
      */
+    public function getQueueInitializationService(): QueueInitializationService
+    {
+        if (!isset($this->queueInitializationService)) {
+            trigger_error(
+                'queueInitializationService is no longer initalized automatically, till EXT:solr supports DI'
+                . ' the QueueInitializationService has to be set manually, fallback will be removed in v13.',
+                E_USER_DEPRECATED
+            );
+            $this->queueInitializationService = GeneralUtility::makeInstance(QueueInitializationService::class);
+        }
+
+        return $this->queueInitializationService;
+    }
+
+    /**
+     * @deprecated Queue->getInitializationService is deprecated and will be removed in v12.
+     *             Use Queue->getQueueInitializationService instead or create a fresh instance.
+     */
     public function getInitializationService(): QueueInitializationService
     {
-        return $this->queueInitializationService;
+        trigger_error(
+            'Queue->getInitializationService is deprecated and will be removed in v13.'
+            . ' Use Queue->getQueueInitializationService instead or create a fresh instance.',
+            E_USER_DEPRECATED
+        );
+
+        return $this->getQueueInitializationService();
     }
 
     /**
@@ -134,11 +161,12 @@ class Queue
      */
     public function updateItem(
         string $itemType,
-        int $itemUid,
+        int|string $itemUid,
         int $forcedChangeTime = 0,
+        ?array $validLanguageUids = null
     ): int {
         $updateCount = $this->updateOrAddItemForAllRelatedRootPages($itemType, $itemUid, $forcedChangeTime);
-        $event = new AfterIndexQueueItemHasBeenMarkedForReindexingEvent($itemType, $itemUid, $forcedChangeTime, $updateCount);
+        $event = new AfterIndexQueueItemHasBeenMarkedForReindexingEvent($itemType, $itemUid, $forcedChangeTime, $updateCount, $validLanguageUids);
         $event = $this->eventDispatcher->dispatch($event);
         return $event->getUpdateCount();
     }
@@ -156,7 +184,7 @@ class Queue
     ): int {
         $updateCount = 0;
         try {
-            $rootPageIds = $this->rootPageResolver->getResponsibleRootPageIds($itemType, $itemUid);
+            $rootPageIds = $this->rootPageResolver->getResponsibleRootPageIds($itemType, (int)$itemUid);
         } catch (RootPageRecordNotFoundException $e) {
             $this->deleteItem($itemType, $itemUid);
             return 0;
@@ -184,8 +212,8 @@ class Queue
             $itemInQueueForRootPage = $this->containsItemWithRootPageId($itemType, $itemUid, $rootPageId, $indexingConfiguration);
             if ($itemInQueueForRootPage) {
                 // update changed time if that item is in the queue already
-                $changedTime = ($forcedChangeTime > 0) ? $forcedChangeTime : $this->getItemChangedTime($itemType, $itemUid);
-                $updatedRows = $this->queueItemRepository->updateExistingItemByItemTypeAndItemUidAndRootPageId($itemType, $itemUid, $rootPageId, $changedTime, $indexingConfiguration, $indexingPriority);
+                $changedTime = ($forcedChangeTime > 0) ? $forcedChangeTime : $this->getItemChangedTime($itemType, (int)$itemUid);
+                $updatedRows = $this->queueItemRepository->updateExistingItemByItemTypeAndItemUidAndRootPageId($itemType, (int)$itemUid, $rootPageId, $changedTime, $indexingConfiguration, $indexingPriority);
             } else {
                 // add the item since it's not in the queue yet
                 $updatedRows = $this->addNewItem($itemType, $itemUid, $indexingConfiguration, $rootPageId, $indexingPriority);
@@ -226,7 +254,7 @@ class Queue
     /**
      * Resets the error in the index queue for a specific item
      */
-    public function resetErrorByItem(Item $item): int
+    public function resetErrorByItem(ItemInterface $item): int
     {
         return $this->queueItemRepository->flushErrorByItem($item);
     }
@@ -249,15 +277,15 @@ class Queue
             $additionalRecordFields = ', doktype, uid';
         }
 
-        $record = $this->getRecordCached($itemType, $itemUid, $additionalRecordFields);
+        $record = $this->getRecordCached($itemType, (int)$itemUid, $additionalRecordFields);
 
         if (empty($record) || ($itemType === 'pages' && !$this->frontendEnvironment->isAllowedPageType($record, $indexingConfiguration))) {
             return 0;
         }
 
-        $changedTime = $this->getItemChangedTime($itemType, $itemUid);
+        $changedTime = $this->getItemChangedTime($itemType, (int)$itemUid);
 
-        return $this->queueItemRepository->add($itemType, $itemUid, $rootPageId, $changedTime, $indexingConfiguration, $indexingPriority);
+        return $this->queueItemRepository->add($itemType, (int)$itemUid, $rootPageId, $changedTime, $indexingConfiguration, $indexingPriority);
     }
 
     /**
@@ -269,7 +297,7 @@ class Queue
         string $additionalRecordFields,
     ): ?array {
         $cache = GeneralUtility::makeInstance(TwoLevelCache::class, 'runtime');
-        $cacheId = md5('Queue' . ':' . 'getRecordCached' . ':' . $itemType . ':' . $itemUid . ':' . 'pid' . $additionalRecordFields);
+        $cacheId = md5('Queue' . ':' . 'getRecordCached' . ':' . $itemType . ':' . (string)$itemUid . ':' . 'pid' . $additionalRecordFields);
 
         $record = $cache->get($cacheId);
         if (empty($record)) {
@@ -324,7 +352,7 @@ class Queue
             $pageChangedTime = $this->getPageItemChangedTime($record);
         }
 
-        $localizationsChangedTime = $this->queueItemRepository->getLocalizableItemChangedTime($itemType, (int)$itemUid);
+        $localizationsChangedTime = $this->queueItemRepository->getLocalizableItemChangedTime($itemType, $itemUid);
 
         // if start time exists and start time is higher than last changed timestamp
         // then set changed to the future start time to make the item
@@ -358,7 +386,7 @@ class Queue
      */
     public function containsItem(
         string $itemType,
-        int $itemUid,
+        int|string $itemUid,
     ): bool {
         return $this->queueItemRepository->containsItem($itemType, (int)$itemUid);
     }
@@ -370,7 +398,7 @@ class Queue
      */
     public function containsItemWithRootPageId(
         string $itemType,
-        int $itemUid,
+        int|string $itemUid,
         int $rootPageId,
         string $indexingConfiguration
     ): bool {
@@ -385,7 +413,7 @@ class Queue
      */
     public function containsIndexedItem(
         string $itemType,
-        int $itemUid,
+        int|string $itemUid,
     ): bool {
         return $this->queueItemRepository->containsIndexedItem($itemType, (int)$itemUid);
     }
@@ -397,7 +425,7 @@ class Queue
      */
     public function deleteItem(
         string $itemType,
-        int $itemUid,
+        int|string $itemUid,
     ): void {
         $this->queueItemRepository->deleteItem($itemType, (int)$itemUid);
     }
@@ -438,7 +466,7 @@ class Queue
      *
      * @throws DBALException
      */
-    public function getItem(int $itemId): ?Item
+    public function getItem(int|string $itemId): ?Item
     {
         return $this->queueItemRepository->findItemByUid($itemId);
     }
@@ -452,7 +480,7 @@ class Queue
      */
     public function getItems(
         string $itemType,
-        int $itemUid,
+        int|string $itemUid,
     ): array {
         return $this->queueItemRepository->findItemsByItemTypeAndItemUid($itemType, (int)$itemUid);
     }
@@ -509,24 +537,24 @@ class Queue
      * Marks an item as failed and causes the indexer to skip the item in the
      * next run.
      */
-    public function markItemAsFailed(Item|int|null $item, string $errorMessage = ''): void
+    public function markItemAsFailed(ItemInterface|int|null $item, string $errorMessage = ''): int
     {
-        $this->queueItemRepository->markItemAsFailed($item, $errorMessage);
+        return $this->queueItemRepository->markItemAsFailed($item, $errorMessage);
     }
 
     /**
      * Sets the timestamp of when an item last has been indexed.
      */
-    public function updateIndexTimeByItem(Item $item): void
+    public function updateIndexTimeByItem(ItemInterface $item): int
     {
-        $this->queueItemRepository->updateIndexTimeByItem($item);
+        return $this->queueItemRepository->updateIndexTimeByItem($item);
     }
 
     /**
      * Sets the change timestamp of an item.
      */
-    public function setForcedChangeTimeByItem(Item $item, int $forcedChangeTime = 0): void
+    public function setForcedChangeTimeByItem(ItemInterface $item, int $forcedChangeTime = 0): int
     {
-        $this->queueItemRepository->updateChangedTimeByItem($item, $forcedChangeTime);
+        return $this->queueItemRepository->updateChangedTimeByItem($item, $forcedChangeTime);
     }
 }

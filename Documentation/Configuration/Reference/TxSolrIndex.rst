@@ -224,6 +224,16 @@ Defines the type to index, which is usally the database table. Sometimes you may
 
 
 
+queue.[indexConfig].indexQueue
+------------------------------
+
+:Type: String
+:TS Path: plugin.tx_solr.index.queue.[indexConfig].indexQueue
+:Since: 11.6
+:Default:
+
+Class name of custom index queue implementation, falls back to the default index queue (ApacheSolrForTypo3\Solr\IndexQueue\Queue).
+
 queue.[indexConfig].initialization
 ----------------------------------
 

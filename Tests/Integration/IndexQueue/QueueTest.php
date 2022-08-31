@@ -15,6 +15,7 @@
 
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\IndexQueue;
 
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\QueueInitializationService;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
@@ -43,6 +44,7 @@ class QueueTest extends IntegrationTest
         parent::setUp();
         $this->writeDefaultSolrTestSiteConfiguration();
         $this->indexQueue = GeneralUtility::makeInstance(Queue::class);
+        $this->indexQueue->setQueueInitializationService(GeneralUtility::makeInstance(QueueInitializationService::class));
         $this->siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
     }
 
@@ -75,7 +77,7 @@ class QueueTest extends IntegrationTest
 
         // after initialize the prefilled queue item should be lost and the root page should be added again
         $site = $this->siteRepository->getFirstAvailableSite();
-        $this->indexQueue->getInitializationService()->initializeBySiteAndIndexConfiguration($site, 'pages');
+        $this->indexQueue->getQueueInitializationService()->initializeBySiteAndIndexConfiguration($site, 'pages');
 
         $this->assertItemsInQueue(1);
         self::assertTrue($this->indexQueue->containsItem('pages', 1));
@@ -152,10 +154,10 @@ class QueueTest extends IntegrationTest
         $this->assertEmptyQueue();
         $site = $this->siteRepository->getFirstAvailableSite();
 
-        $this->indexQueue->getInitializationService()->initializeBySiteAndIndexConfiguration($site, 'pages');
+        $this->indexQueue->getQueueInitializationService()->initializeBySiteAndIndexConfiguration($site, 'pages');
         $this->assertItemsInQueue(4);
 
-        $this->indexQueue->getInitializationService()->initializeBySiteAndIndexConfiguration($site, 'pages');
+        $this->indexQueue->getQueueInitializationService()->initializeBySiteAndIndexConfiguration($site, 'pages');
         $this->assertItemsInQueue(4);
     }
 
@@ -188,7 +190,7 @@ class QueueTest extends IntegrationTest
            }'
         );
         $site = $this->siteRepository->getFirstAvailableSite();
-        $this->indexQueue->getInitializationService()->initializeBySiteAndIndexConfiguration($site, 'custom_page_type');
+        $this->indexQueue->getQueueInitializationService()->initializeBySiteAndIndexConfiguration($site, 'custom_page_type');
 
         $this->assertItemsInQueue(1);
 
@@ -244,7 +246,7 @@ class QueueTest extends IntegrationTest
         if (is_array($availableSites)) {
             foreach ($availableSites as $site) {
                 if ($site instanceof Site) {
-                    $this->indexQueue->getInitializationService()->initializeBySiteAndIndexConfiguration($site);
+                    $this->indexQueue->getQueueInitializationService()->initializeBySiteAndIndexConfiguration($site);
                 }
             }
         }
