@@ -44,7 +44,7 @@ class QueueInitializerServiceTest extends UnitTest
                             'my_pages' => 1,
                             'my_pages.' => [
                                 'initialization' => 'MyPagesInitializer',
-                                'table' => 'pages',
+                                'type' => 'pages',
                                 'fields.' => [
                                     'title' => 'title',
                                 ],
@@ -52,7 +52,7 @@ class QueueInitializerServiceTest extends UnitTest
                             'my_news' => 1,
                             'my_news.' => [
                                 'initialization' => 'MyNewsInitializer',
-                                'table' => 'tx_news_domain_model_news',
+                                'type' => 'tx_news_domain_model_news',
                                 'fields.' => [
                                     'title' => 'title',
                                 ],

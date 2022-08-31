@@ -388,11 +388,49 @@ class TypoScriptConfiguration
      *
      * @param string $configurationName
      * @return string
+     * @deprecated queue.[indexConfig].table is deprecated and will be removed in v13. Use plugin.tx_solr.index.queue.[indexConfig].type instead
      */
     public function getIndexQueueTableNameOrFallbackToConfigurationName(string $configurationName = ''): string
     {
+        trigger_error(
+            'queue.[indexConfig].table is deprecated and will be removed in v13. Use plugin.tx_solr.index.queue.[indexConfig].type instead.',
+            E_USER_DEPRECATED
+        );
+
+        return $this->getIndexQueueTypeOrFallbackToConfigurationName($configurationName);
+    }
+
+    /**
+     * Returns the configured type for an indexing queue configuration (usally a db table) or
+     * the configurationName itself that is used by convention as type when no
+     * other type is present.
+     *
+     * plugin.tx_solr.index.queue.<configurationName>.type or configurationName
+     *
+     * @param string $configurationName
+     * @return string
+     */
+    public function getIndexQueueTypeOrFallbackToConfigurationName(string $configurationName = ''): string
+    {
+        $path = 'plugin.tx_solr.index.queue.' . $configurationName . '.type';
+        $type = $this->getValueByPath($path);
+        if (!is_null($type)) {
+            return (string)$type;
+        }
+
+        // TODO: Remove fallback to "table" in v13
         $path = 'plugin.tx_solr.index.queue.' . $configurationName . '.table';
-        return (string)$this->getValueByPathOrDefaultValue($path, $configurationName);
+        $type = $this->getValueByPath($path);
+        if (!is_null($type)) {
+            trigger_error(
+                'queue.[indexConfig].table is deprecated and will be removed in v13. Use plugin.tx_solr.index.queue.[indexConfig].type instead.',
+                E_USER_DEPRECATED
+            );
+
+            return (string)$type;
+        }
+
+        return $configurationName;
     }
 
     /**
@@ -422,7 +460,7 @@ class TypoScriptConfiguration
 
         $indexingConfigurations = $this->getEnabledIndexQueueConfigurationNames();
         foreach ($indexingConfigurations as $indexingConfigurationName) {
-            $monitoredTable = $this->getIndexQueueTableNameOrFallbackToConfigurationName($indexingConfigurationName);
+            $monitoredTable = $this->getIndexQueueTypeOrFallbackToConfigurationName($indexingConfigurationName);
             $monitoredTables[] = $monitoredTable;
         }
 
@@ -612,11 +650,8 @@ class TypoScriptConfiguration
                 continue;
             }
 
-            // when the configuration name equals the tableName we have a fallback
-            $hasTableNameAsConfigurationName = $configurationName == $tableName;
-            $hasTableAssignedInQueueConfiguration = isset($configuration[$configurationName . '.']['table']) &&
-                                                    $configuration[$configurationName . '.']['table'] == $tableName;
-            if ($hasTableNameAsConfigurationName || $hasTableAssignedInQueueConfiguration) {
+            $configuredType = $this->getIndexQueueTypeOrFallbackToConfigurationName($configurationName);
+            if ($configuredType === $tableName) {
                 $possibleConfigurations[] = $configurationName;
             }
         }
