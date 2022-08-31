@@ -142,18 +142,18 @@ class QueueInitializationService
         $this->queue->deleteItemsBySite($site, $indexingConfigurationName);
 
         $solrConfiguration = $site->getSolrConfiguration();
-        $tableToIndex = $solrConfiguration->getIndexQueueTableNameOrFallbackToConfigurationName($indexingConfigurationName);
+        $type = $solrConfiguration->getIndexQueueTypeOrFallbackToConfigurationName($indexingConfigurationName);
         $initializerClass = $solrConfiguration->getIndexQueueInitializerClassByConfigurationName($indexingConfigurationName);
         $indexConfiguration = $solrConfiguration->getIndexQueueConfigurationByName($indexingConfigurationName);
 
-        return $this->executeInitializer($site, $indexingConfigurationName, $initializerClass, $tableToIndex, $indexConfiguration);
+        return $this->executeInitializer($site, $indexingConfigurationName, $initializerClass, $type, $indexConfiguration);
     }
 
     /**
      * @param Site $site
      * @param string $indexingConfigurationName
      * @param string $initializerClass
-     * @param string $tableToIndex
+     * @param string $type
      * @param array $indexConfiguration
      * @return bool
      */
@@ -161,13 +161,13 @@ class QueueInitializationService
         Site $site,
         string $indexingConfigurationName,
         string $initializerClass,
-        string $tableToIndex,
+        string $type,
         array $indexConfiguration
     ): bool {
         $initializer = GeneralUtility::makeInstance($initializerClass);
         /* @var AbstractInitializer $initializer */
         $initializer->setSite($site);
-        $initializer->setType($tableToIndex);
+        $initializer->setType($type);
         $initializer->setIndexingConfigurationName($indexingConfigurationName);
         $initializer->setIndexingConfiguration($indexConfiguration);
 
