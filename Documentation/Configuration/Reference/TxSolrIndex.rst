@@ -188,13 +188,23 @@ queue.[indexConfig].table
 :Type: String
 :TS Path: plugin.tx_solr.index.queue.[indexConfig].table
 :Since: 2.0
+:Deprecated: 11.5.1
 
-Sometimes you may want to index records from a table with different configurations, f.e., to generate different single view URLs for tt_news records depending on their category or storage page ID. In these cases you can use a distinct name for the configuration and define the table explicitly.
+Defines the type to index, which is usally the database table. Setting the record type via 'table' is deprecated and will be removed in v13, use 'type' instead.
+
+queue.[indexConfig].type
+-------------------------
+
+:Type: String
+:TS Path: plugin.tx_solr.index.queue.[indexConfig].type
+:Since: 11.5.1
+
+Defines the type to index, which is usally the database table. Sometimes you may want to index records from a table with different configurations, f.e., to generate different single view URLs for tt_news records depending on their category or storage page ID. In these cases you can use a distinct name for the configuration and define the table explicitly.
 
 .. code-block:: typoscript
 
     plugin.tx_solr.index.queue.generalNews {
-      table = tt_news
+      type = tt_news
       fields.url = URL for the general news
       // more field configurations here ...
     }
@@ -208,7 +218,7 @@ Sometimes you may want to index records from a table with different configuratio
 
     // completely different configuration
     plugin.tx_solr.index.queue.productNews {
-      table = tt_news
+      type = tt_news
       fields.url = URL for the product news
     }
 

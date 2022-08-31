@@ -138,7 +138,7 @@ class IndexingConfigurationSelectorField
         $solrConfiguration = $this->site->getSolrConfiguration();
         $configurationNames = $solrConfiguration->getEnabledIndexQueueConfigurationNames();
         foreach ($configurationNames as $configurationName) {
-            $indexingTableMap[$configurationName] = $solrConfiguration->getIndexQueueTableNameOrFallbackToConfigurationName($configurationName);
+            $indexingTableMap[$configurationName] = $solrConfiguration->getIndexQueueTypeOrFallbackToConfigurationName($configurationName);
         }
 
         return $indexingTableMap;

@@ -112,6 +112,8 @@ class TypoScriptConfigurationTest extends UnitTest
 
     /**
      * @test
+     * @deprecated queue.[indexConfig].table is deprecated and will be removed in v13. As soon as setting is removed this
+     *             test must be removed too. For now this test ensures that 'table' and 'type' are supported.
      */
     public function canGetIndexQueueTableOrFallbackToConfigurationName()
     {
@@ -129,10 +131,40 @@ class TypoScriptConfigurationTest extends UnitTest
 
         $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
 
-        $customTableExpected = $configuration->getIndexQueueTableNameOrFallbackToConfigurationName('pages');
+        $customTableExpected = @$configuration->getIndexQueueTableNameOrFallbackToConfigurationName('pages');
+        self::assertSame($customTableExpected, 'pages', 'Can not fallback to configurationName');
+        $customTableExpected = $configuration->getIndexQueueTypeOrFallbackToConfigurationName('pages');
         self::assertSame($customTableExpected, 'pages', 'Can not fallback to configurationName');
 
-        $customTableExpected = $configuration->getIndexQueueTableNameOrFallbackToConfigurationName('custom');
+        $customTableExpected = @$configuration->getIndexQueueTableNameOrFallbackToConfigurationName('custom');
+        self::assertSame($customTableExpected, 'tx_model_custom', 'Usage of custom table tx_model_custom was expected');
+        $customTableExpected = @$configuration->getIndexQueueTypeOrFallbackToConfigurationName('custom');
+        self::assertSame($customTableExpected, 'tx_model_custom', 'Usage of custom table tx_model_custom was expected');
+    }
+
+    /**
+     * @test
+     */
+    public function canGetIndexQueueTypeOrFallbackToConfigurationName()
+    {
+        $fakeConfigurationArray['plugin.']['tx_solr.'] = [
+            'index.' => [
+                'queue.' => [
+                    'pages.' => [
+                    ],
+                    'custom.' => [
+                        'type' => 'tx_model_custom',
+                    ],
+                ],
+            ],
+        ];
+
+        $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
+
+        $customTableExpected = $configuration->getIndexQueueTypeOrFallbackToConfigurationName('pages');
+        self::assertSame($customTableExpected, 'pages', 'Can not fallback to configurationName');
+
+        $customTableExpected = $configuration->getIndexQueueTypeOrFallbackToConfigurationName('custom');
         self::assertSame($customTableExpected, 'tx_model_custom', 'Usage of custom table tx_model_custom was expected');
     }
 
@@ -148,7 +180,7 @@ class TypoScriptConfigurationTest extends UnitTest
                     'pages.' => [
                     ],
                     'custom.' => [
-                        'table' => 'tx_model_custom',
+                        'type' => 'tx_model_custom',
                     ],
                 ],
             ],
@@ -286,12 +318,12 @@ class TypoScriptConfigurationTest extends UnitTest
                     ],
                     'custom_one' => 1,
                     'custom_one.' => [
-                        'table' => 'tx_model_bar',
+                        'type' => 'tx_model_bar',
                     ],
 
                     'custom_two' => 1,
                     'custom_two.' => [
-                        'table' => 'tx_model_news',
+                        'type' => 'tx_model_news',
                     ],
                 ],
             ],
@@ -314,12 +346,12 @@ class TypoScriptConfigurationTest extends UnitTest
                     ],
                     'custom_one' => 1,
                     'custom_one.' => [
-                        'table' => 'tx_model_bar',
+                        'type' => 'tx_model_bar',
                     ],
 
                     'custom_two' => 1,
                     'custom_two.' => [
-                        'table' => 'tx_model_news',
+                        'type' => 'tx_model_news',
                     ],
                     'pages' => 1,
                     'pages.' => [],
@@ -345,12 +377,12 @@ class TypoScriptConfigurationTest extends UnitTest
                     ],
                     'custom_one' => 1,
                     'custom_one.' => [
-                        'table' => 'tx_model_bar',
+                        'type' => 'tx_model_bar',
                     ],
 
                     'custom_two' => 1,
                     'custom_two.' => [
-                        'table' => 'tx_model_news',
+                        'type' => 'tx_model_news',
                     ],
                     'pages' => 1,
                     'pages.' => [],

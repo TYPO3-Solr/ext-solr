@@ -163,7 +163,7 @@ class ConfigurationAwareRecordService
         string $indexingConfigurationName,
         TypoScriptConfiguration $solrConfiguration
     ): bool {
-        $tableToIndex = $solrConfiguration->getIndexQueueTableNameOrFallbackToConfigurationName($indexingConfigurationName);
+        $tableToIndex = $solrConfiguration->getIndexQueueTypeOrFallbackToConfigurationName($indexingConfigurationName);
 
         $isMatchingTable = ($tableToIndex === $recordTable);
 
