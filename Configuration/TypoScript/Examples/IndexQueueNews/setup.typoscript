@@ -3,7 +3,7 @@ plugin.tx_solr.index.queue {
 
 	news = 1
 	news {
-		table = tx_news_domain_model_news
+		type = tx_news_domain_model_news
 
 		fields {
 			abstract = teaser
@@ -18,7 +18,7 @@ plugin.tx_solr.index.queue {
 				field = datetime
 				date = d.m.Y H:i
 			}
-			
+
 			datetime_dateS = TEXT
 			datetime_dateS {
 				field = datetime

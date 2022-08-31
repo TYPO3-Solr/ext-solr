@@ -82,7 +82,7 @@ class ReIndexTask extends AbstractSolrTask
         $enableCommitsSetting = $solrConfiguration->getEnableCommits();
 
         foreach ($this->indexingConfigurationsToReIndex as $indexingConfigurationName) {
-            $type = $solrConfiguration->getIndexQueueTableNameOrFallbackToConfigurationName($indexingConfigurationName);
+            $type = $solrConfiguration->getIndexQueueTypeOrFallbackToConfigurationName($indexingConfigurationName);
             $typesToCleanUp[] = $type;
         }
 
