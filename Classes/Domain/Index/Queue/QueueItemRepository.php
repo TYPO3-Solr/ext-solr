@@ -19,6 +19,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue;
 
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
+use ApacheSolrForTypo3\Solr\IndexQueue\ItemInterface;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Records\AbstractRepository;
 use Doctrine\DBAL\ConnectionException;
@@ -145,12 +146,12 @@ class QueueItemRepository extends AbstractRepository
     /**
      * Flushes the error for a single item.
      *
-     * @param Item $item
+     * @param ItemInterface $item
      * @return int affected rows
      *
      * @throws DBALException|\Doctrine\DBAL\DBALException
      */
-    public function flushErrorByItem(Item $item): int
+    public function flushErrorByItem(ItemInterface $item): int
     {
         $queryBuilder = $this->getQueryBuilder();
         return (int)$this->getPreparedFlushErrorQuery($queryBuilder)
@@ -974,12 +975,12 @@ class QueueItemRepository extends AbstractRepository
     /**
      * Sets the timestamp of when an item last has been indexed.
      *
-     * @param Item $item
+     * @param ItemInterface $item
      * @return int affected rows
      *
      * @throws DBALException|\Doctrine\DBAL\DBALException
      */
-    public function updateIndexTimeByItem(Item $item): int
+    public function updateIndexTimeByItem(ItemInterface $item): int
     {
         $queryBuilder = $this->getQueryBuilder();
         return (int)$queryBuilder
@@ -992,13 +993,13 @@ class QueueItemRepository extends AbstractRepository
     /**
      * Sets the change timestamp of an item.
      *
-     * @param Item $item
+     * @param ItemInterface $item
      * @param int $changedTime
      * @return int affected rows
      *
      * @throws DBALException|\Doctrine\DBAL\DBALException
      */
-    public function updateChangedTimeByItem(Item $item, int $changedTime = 0): int
+    public function updateChangedTimeByItem(ItemInterface $item, int $changedTime = 0): int
     {
         $queryBuilder = $this->getQueryBuilder();
         return (int)$queryBuilder

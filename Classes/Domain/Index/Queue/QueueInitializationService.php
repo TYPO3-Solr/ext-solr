@@ -20,12 +20,13 @@ namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\IndexQueue\InitializationPostProcessor;
 use ApacheSolrForTypo3\Solr\IndexQueue\Initializer\AbstractInitializer;
-use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
+use ApacheSolrForTypo3\Solr\IndexQueue\QueueInterface;
 use Doctrine\DBAL\ConnectionException;
 use Doctrine\DBAL\Exception as DBALException;
 use Throwable;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use UnexpectedValueException;
+use ApacheSolrForTypo3\Solr\IndexQueue\QueueInitializationServiceAwareInterface;
 
 /**
  * The queue initialization service is responsible to run the initialization of the index queue for a combination of sites
@@ -36,17 +37,14 @@ use UnexpectedValueException;
  */
 class QueueInitializationService
 {
-    /**
-     * @var Queue
-     */
-    protected Queue $queue;
+    protected bool $clearQueueOnInitialization = true;
 
     /**
-     * QueueInitializationService constructor.
+     * @param bool $clearQueueOnInitialization
      */
-    public function __construct(Queue $queue)
+    public function setClearQueueOnInitialization(bool $clearQueueOnInitialization): void
     {
-        $this->queue = $queue;
+        $this->clearQueueOnInitialization = $clearQueueOnInitialization;
     }
 
     /**
@@ -138,10 +136,21 @@ class QueueInitializationService
      */
     protected function applyInitialization(Site $site, string $indexingConfigurationName): bool
     {
-        // clear queue
-        $this->queue->deleteItemsBySite($site, $indexingConfigurationName);
-
         $solrConfiguration = $site->getSolrConfiguration();
+
+        /** @var QueueInterface $queue */
+        $queue = GeneralUtility::makeInstance(
+            $solrConfiguration->getIndexQueueClassByConfigurationName($indexingConfigurationName)
+        );
+        if ($queue instanceof QueueInitializationServiceAwareInterface) {
+            $queue->setQueueInitializationService($this);
+        }
+
+        // clear queue
+        if ($this->clearQueueOnInitialization) {
+            $queue->deleteItemsBySite($site, $indexingConfigurationName);
+        }
+
         $type = $solrConfiguration->getIndexQueueTypeOrFallbackToConfigurationName($indexingConfigurationName);
         $initializerClass = $solrConfiguration->getIndexQueueInitializerClassByConfigurationName($indexingConfigurationName);
         $indexConfiguration = $solrConfiguration->getIndexQueueConfigurationByName($indexingConfigurationName);

@@ -19,6 +19,7 @@ use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
+use ApacheSolrForTypo3\Solr\IndexQueue\QueueInterface;
 use ApacheSolrForTypo3\Solr\System\Mvc\Backend\Service\ModuleDataStorageService;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection as SolrCoreConnection;
 use Doctrine\DBAL\Driver\Exception as DBALDriverException;
@@ -91,9 +92,9 @@ abstract class AbstractModuleController extends ActionController
     protected ModuleDataStorageService $moduleDataStorageService;
 
     /**
-     * @var Queue
+     * @var QueueInterface
      */
-    protected Queue $indexQueue;
+    protected QueueInterface $indexQueue;
 
     /**
      * @var SiteFinder

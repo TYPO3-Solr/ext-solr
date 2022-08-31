@@ -17,7 +17,10 @@ namespace ApacheSolrForTypo3\Solr\Controller\Backend\Search;
 
 use ApacheSolrForTypo3\Solr\Backend\IndexingConfigurationSelectorField;
 use ApacheSolrForTypo3\Solr\Domain\Index\IndexService;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\QueueInitializationService;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
+use ApacheSolrForTypo3\Solr\IndexQueue\QueueInterface;
+use ApacheSolrForTypo3\Solr\IndexQueue\QueueInitializationServiceAwareInterface;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Backend\Form\Exception as BackendFormException;
 use TYPO3\CMS\Core\Http\RedirectResponse;
@@ -34,9 +37,9 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 class IndexQueueModuleController extends AbstractModuleController
 {
     /**
-     * @var Queue
+     * @var QueueInterface
      */
-    protected Queue $indexQueue;
+    protected QueueInterface $indexQueue;
 
     /**
      * Initializes the controller before invoking an action method.
@@ -48,9 +51,9 @@ class IndexQueueModuleController extends AbstractModuleController
     }
 
     /**
-     * @param Queue $indexQueue
+     * @param QueueInterface $indexQueue
      */
-    public function setIndexQueue(Queue $indexQueue)
+    public function setIndexQueue(QueueInterface $indexQueue)
     {
         $this->indexQueue = $indexQueue;
     }
@@ -121,7 +124,13 @@ class IndexQueueModuleController extends AbstractModuleController
         if ((!empty($indexingConfigurationsToInitialize)) && (is_array($indexingConfigurationsToInitialize))) {
             // initialize selected indexing configuration
             try {
-                $initializedIndexingConfigurations = $this->indexQueue->getInitializationService()->initializeBySiteAndIndexConfigurations($this->selectedSite, $indexingConfigurationsToInitialize);
+                if ($this->indexQueue instanceof QueueInitializationServiceAwareInterface) {
+                    $initializationService = $this->indexQueue->getQueueInitializationService();
+                } else {
+                    $initializationService = GeneralUtility::makeInstance(QueueInitializationService::class);
+                }
+
+                $initializedIndexingConfigurations = $initializationService->initializeBySiteAndIndexConfigurations($this->selectedSite, $indexingConfigurationsToInitialize);
             } catch (\Throwable $e) {
                 $this->addFlashMessage(
                     sprintf(
