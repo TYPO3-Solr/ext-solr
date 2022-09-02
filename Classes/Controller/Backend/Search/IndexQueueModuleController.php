@@ -21,7 +21,6 @@ use ApacheSolrForTypo3\Solr\Domain\Index\Queue\QueueInitializationService;
 use ApacheSolrForTypo3\Solr\Domain\Site\Exception\UnexpectedTYPO3SiteInitializationException;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\IndexQueue\QueueInterface;
-use ApacheSolrForTypo3\Solr\IndexQueue\QueueInitializationServiceAwareInterface;
 use Doctrine\DBAL\ConnectionException;
 use Doctrine\DBAL\Exception as DBALException;
 use Psr\Http\Message\ResponseInterface;
@@ -35,10 +34,25 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 /**
  * Index Queue Module
  *
+ * @todo: Support all index queues in actions beside "initializeIndexQueueAction" and
+ *        "resetLogErrorsAction"
+ *
  * @author Ingo Renner <ingo@typo3.org>
  */
 class IndexQueueModuleController extends AbstractModuleController
 {
+    protected array $enabledIndexQueues;
+
+    protected function initializeAction(): void
+    {
+        parent::initializeAction();
+
+        $this->enabledIndexQueues = $this->getIndexQueues();
+        if (!empty($this->enabledIndexQueues)) {
+            $this->indexQueue = $this->enabledIndexQueues[Queue::class] ?? reset($this->enabledIndexQueues);
+        }
+    }
+
     public function setIndexQueue(QueueInterface $indexQueue): void
     {
         $this->indexQueue = $indexQueue;
@@ -74,6 +88,11 @@ class IndexQueueModuleController extends AbstractModuleController
         if ($this->selectedSite === null || empty($this->solrConnectionManager->getConnectionsBySite($this->selectedSite))) {
             return false;
         }
+
+        if (!isset($this->indexQueue)) {
+            return false;
+        }
+
         $enabledIndexQueueConfigurationNames = $this->selectedSite->getSolrConfiguration()->getEnabledIndexQueueConfigurationNames();
         if (empty($enabledIndexQueueConfigurationNames)) {
             return false;
@@ -108,31 +127,38 @@ class IndexQueueModuleController extends AbstractModuleController
 
         $indexingConfigurationsToInitialize = $this->request->getArgument('tx_solr-index-queue-initialization');
         if ((!empty($indexingConfigurationsToInitialize)) && (is_array($indexingConfigurationsToInitialize))) {
-            // initialize selected indexing configuration
-            try {
-                if ($this->indexQueue instanceof QueueInitializationServiceAwareInterface) {
-                    $initializationService = $this->indexQueue->getQueueInitializationService();
-                } else {
-                    $initializationService = GeneralUtility::makeInstance(QueueInitializationService::class);
-                }
-                
-                $initializedIndexingConfigurations = $initializationService->initializeBySiteAndIndexConfigurations($this->selectedSite, $indexingConfigurationsToInitialize);
-            } catch (Throwable $e) {
-                $this->addFlashMessage(
-                    sprintf(
+            $initializationService = GeneralUtility::makeInstance(QueueInitializationService::class);
+            foreach ($indexingConfigurationsToInitialize as $configurationToInitialize) {
+                $indexQueueClass = $this->selectedSite->getSolrConfiguration()->getIndexQueueClassByConfigurationName($configurationToInitialize);
+                $indexQueue = $this->enabledIndexQueues[$indexQueueClass];
+
+                try {
+                    $status = $initializationService->initializeBySiteAndIndexConfigurations($this->selectedSite, [$configurationToInitialize]);
+                    $initializedIndexingConfiguration = [
+                        'status' => $status[$configurationToInitialize],
+                        'statistic' => 0,
+                    ];
+                    if ($status[$configurationToInitialize] === true) {
+                        $initializedIndexingConfiguration['totalCount'] = $indexQueue->getStatisticsBySite($this->selectedSite, $configurationToInitialize)->getTotalCount();
+                    }
+                    $initializedIndexingConfigurations[$configurationToInitialize] = $initializedIndexingConfiguration;
+                } catch (Throwable $e) {
+                    $this->addFlashMessage(
+                        sprintf(
+                            LocalizationUtility::translate(
+                                'solr.backend.index_queue_module.flashmessage.initialize_failure',
+                                'Solr'
+                            ),
+                            $e->getMessage(),
+                            $e->getCode()
+                        ),
                         LocalizationUtility::translate(
-                            'solr.backend.index_queue_module.flashmessage.initialize_failure',
+                            'solr.backend.index_queue_module.flashmessage.initialize_failure.title',
                             'Solr'
                         ),
-                        $e->getMessage(),
-                        $e->getCode()
-                    ),
-                    LocalizationUtility::translate(
-                        'solr.backend.index_queue_module.flashmessage.initialize_failure.title',
-                        'Solr'
-                    ),
-                    ContextualFeedbackSeverity::ERROR
-                );
+                        ContextualFeedbackSeverity::ERROR
+                    );
+                }
             }
         } else {
             $messageLabel = 'solr.backend.index_queue_module.flashmessage.initialize.no_selection';
@@ -143,18 +169,37 @@ class IndexQueueModuleController extends AbstractModuleController
                 ContextualFeedbackSeverity::WARNING
             );
         }
+
         $messagesForConfigurations = [];
-        foreach (array_keys($initializedIndexingConfigurations) as $indexingConfigurationName) {
-            $itemCount = $this->indexQueue->getStatisticsBySite($this->selectedSite, $indexingConfigurationName)->getTotalCount();
-            $messagesForConfigurations[] = $indexingConfigurationName . ' (' . $itemCount . ' records)';
+        foreach ($initializedIndexingConfigurations as $indexingConfigurationName => $initializationData) {
+            if ($initializationData['status'] === true) {
+                $messagesForConfigurations[] = $indexingConfigurationName . ' (' . $initializationData['totalCount'] . ' records)';
+            } else {
+                $this->addFlashMessage(
+                    sprintf(
+                        LocalizationUtility::translate(
+                            'solr.backend.index_queue_module.flashmessage.initialize_failure',
+                            'Solr'
+                        ),
+                        $indexingConfigurationName,
+                        1662117020
+                    ),
+                    LocalizationUtility::translate(
+                        'solr.backend.index_queue_module.flashmessage.initialize_failure.title',
+                        'Solr'
+                    ),
+                    ContextualFeedbackSeverity::ERROR
+                );
+            }
         }
 
-        if (!empty($initializedIndexingConfigurations)) {
+        if (!empty($messagesForConfigurations)) {
             $messageLabel = 'solr.backend.index_queue_module.flashmessage.initialize.success';
             $titleLabel = 'solr.backend.index_queue_module.flashmessage.initialize.title';
             $this->addFlashMessage(
                 LocalizationUtility::translate($messageLabel, 'Solr', [implode(', ', $messagesForConfigurations)]),
-                LocalizationUtility::translate($titleLabel, 'Solr')
+                LocalizationUtility::translate($titleLabel, 'Solr'),
+                ContextualFeedbackSeverity::OK
             );
         }
 
@@ -168,16 +213,18 @@ class IndexQueueModuleController extends AbstractModuleController
      */
     public function resetLogErrorsAction(): ResponseInterface
     {
-        $resetResult = $this->indexQueue->resetAllErrors();
+        foreach ($this->enabledIndexQueues as $queue) {
+            $resetResult = $queue->resetAllErrors();
 
-        $label = 'solr.backend.index_queue_module.flashmessage.success.reset_errors';
-        $severity = ContextualFeedbackSeverity::OK;
-        if (!$resetResult) {
-            $label = 'solr.backend.index_queue_module.flashmessage.error.reset_errors';
-            $severity = ContextualFeedbackSeverity::ERROR;
+            $label = 'solr.backend.index_queue_module.flashmessage.success.reset_errors';
+            $severity = ContextualFeedbackSeverity::OK;
+            if (!$resetResult) {
+                $label = 'solr.backend.index_queue_module.flashmessage.error.reset_errors';
+                $severity = ContextualFeedbackSeverity::ERROR;
+            }
+
+            $this->addIndexQueueFlashMessage($label, $severity);
         }
-
-        $this->addIndexQueueFlashMessage($label, $severity);
 
         return new RedirectResponse($this->uriBuilder->uriFor('index'), 303);
     }
@@ -263,5 +310,22 @@ class IndexQueueModuleController extends AbstractModuleController
     protected function addIndexQueueFlashMessage(string $label, ContextualFeedbackSeverity $severity): void
     {
         $this->addFlashMessage(LocalizationUtility::translate($label, 'Solr'), LocalizationUtility::translate('solr.backend.index_queue_module.flashmessage.title', 'Solr'), $severity);
+    }
+
+    /**
+     * @return QueueInterface[]
+     */
+    protected function getIndexQueues(): array
+    {
+        $queues = [];
+        $configuration = $this->selectedSite->getSolrConfiguration();
+        foreach ($configuration->getEnabledIndexQueueConfigurationNames() as $indexingConfiguration) {
+            $indexQueueClass = $configuration->getIndexQueueClassByConfigurationName($indexingConfiguration);
+            if (!isset($queues[$indexQueueClass])) {
+                $queues[$indexQueueClass] = GeneralUtility::makeInstance($indexQueueClass);
+            }
+        }
+
+        return $queues;
     }
 }

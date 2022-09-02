@@ -29,6 +29,11 @@ use TYPO3\CMS\Extbase\Persistence\Generic\Exception\UnsupportedMethodException;
 class QueueStatisticsRepository extends AbstractRepository
 {
     protected string $table = 'tx_solr_indexqueue_item';
+    protected string $columnIndexed = 'indexed';
+    protected string $columnIndexingConfiguration = 'indexing_configuration';
+    protected string $columnChanged = 'changed';
+    protected string $columnErrors = 'errors';
+    protected string $columnRootpage = 'root';
 
     /**
      * Extracts the number of pending, indexed and erroneous items from the
@@ -43,23 +48,26 @@ class QueueStatisticsRepository extends AbstractRepository
         $queryBuilder = $this->getQueryBuilder();
         $queryBuilder
             ->add('select', vsprintf('(%s < %s) AS %s', [
-                $queryBuilder->quoteIdentifier('indexed'),
-                $queryBuilder->quoteIdentifier('changed'),
+                $queryBuilder->quoteIdentifier($this->columnIndexed),
+                $queryBuilder->quoteIdentifier($this->columnChanged),
                 $queryBuilder->quoteIdentifier('pending'),
             ]), true)
             ->add('select', vsprintf('(%s) AS %s', [
-                $queryBuilder->expr()->notLike('errors', $queryBuilder->createNamedParameter('')),
+                $queryBuilder->expr()->notLike($this->columnErrors, $queryBuilder->createNamedParameter('')),
                 $queryBuilder->quoteIdentifier('failed'),
             ]), true)
             ->add('select', $queryBuilder->expr()->count('*', 'count'), true)
             ->from($this->table)
             ->where(
-                $queryBuilder->expr()->eq('root', $queryBuilder->createNamedParameter($rootPid, PDO::PARAM_INT))
+                $queryBuilder->expr()->eq($this->columnRootpage, $queryBuilder->createNamedParameter($rootPid, PDO::PARAM_INT))
             )->groupBy('pending', 'failed');
 
         if (!empty($indexingConfigurationName)) {
             $queryBuilder->andWhere(
-                $queryBuilder->expr()->eq('indexing_configuration', $queryBuilder->createNamedParameter($indexingConfigurationName))
+                $queryBuilder->expr()->eq(
+                    $this->columnIndexingConfiguration,
+                    $queryBuilder->createNamedParameter($indexingConfigurationName)
+                )
             );
         }
 
