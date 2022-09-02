@@ -62,7 +62,7 @@ abstract class AbstractModuleController extends ActionController
     protected int $requestedPageUID;
 
     /**
-     * @var ?Site
+     * @var Site|null
      */
     protected ?Site $selectedSite = null;
 
