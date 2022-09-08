@@ -18,7 +18,7 @@ declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\NumericRange;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\FacetUrlDecoderInterface;
-use InvalidArgumentException;
+use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
 
 /**
  * Parser to build Solr range queries from tx_solr[filter]

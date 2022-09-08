@@ -15,7 +15,7 @@
 
 namespace ApacheSolrForTypo3\Solr\IndexQueue\Exception;
 
-use Exception;
+use ApacheSolrForTypo3\Solr\Exception;
 
 /**
  * Exception that is thrown on indexing process. Does not matter on which side, TYPO3 or Apache.

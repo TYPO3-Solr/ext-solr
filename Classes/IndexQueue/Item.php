@@ -21,8 +21,8 @@ use ApacheSolrForTypo3\Solr\Domain\Index\Queue\IndexQueueIndexingPropertyReposit
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\QueueItemRepository;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
+use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
 use Doctrine\DBAL\Exception as DBALException;
-use InvalidArgumentException;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 

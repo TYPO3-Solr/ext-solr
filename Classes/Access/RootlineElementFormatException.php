@@ -15,7 +15,7 @@
 
 namespace ApacheSolrForTypo3\Solr\Access;
 
-use InvalidArgumentException;
+use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
 
 /**
  * Signals a wrong format for the access definition of a page or the content.

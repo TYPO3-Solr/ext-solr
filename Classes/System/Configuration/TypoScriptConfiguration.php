@@ -16,12 +16,12 @@
 namespace ApacheSolrForTypo3\Solr\System\Configuration;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
+use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
 use ApacheSolrForTypo3\Solr\IndexQueue\Indexer;
-use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\IndexQueue\Initializer\Record;
+use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\System\ContentObject\ContentObjectService;
 use ApacheSolrForTypo3\Solr\System\Util\ArrayAccessor;
-use InvalidArgumentException;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 

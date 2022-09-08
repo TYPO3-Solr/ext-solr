@@ -19,8 +19,8 @@ namespace ApacheSolrForTypo3\Solr\Domain\Variants;
 
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\Event\Variants\AfterVariantIdWasBuiltEvent;
+use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
 use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
-use InvalidArgumentException;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
