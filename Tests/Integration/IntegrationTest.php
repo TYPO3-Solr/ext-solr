@@ -16,6 +16,7 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Integration;
 
 use ApacheSolrForTypo3\Solr\Access\Rootline;
+use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\Tests\Unit\Helper\FakeObjectManager;
 use ApacheSolrForTypo3\Solr\Typo3PageIndexer;
@@ -24,7 +25,6 @@ use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use Doctrine\DBAL\Exception as DoctrineDBALException;
 use Doctrine\DBAL\Schema\SchemaException;
 use function getenv;
-use InvalidArgumentException;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionObject;
