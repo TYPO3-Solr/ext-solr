@@ -411,16 +411,20 @@ class QueueItemRepository extends AbstractRepository
      * @param string $itemType The item's type, usually a table name.
      * @param int $itemUid The item's uid
      * @param int $rootPageId
+     * @param string $indexingConfiguration
      * @return bool TRUE if the item is found in the queue, FALSE otherwise
      *
      * @throws DBALDriverException
      * @throws DBALException|\Doctrine\DBAL\DBALException
      */
-    public function containsItemWithRootPageId(string $itemType, int $itemUid, int $rootPageId): bool
+    public function containsItemWithRootPageId(string $itemType, int $itemUid, int $rootPageId, string $indexingConfiguration): bool
     {
         $queryBuilder = $this->getQueryBuilderForContainsMethods($itemType, $itemUid);
         return (bool)$queryBuilder
-            ->andWhere(/** @scrutinizer ignore-type */ $queryBuilder->expr()->eq('root', $rootPageId))
+            ->andWhere(
+                $queryBuilder->expr()->eq('root', $rootPageId),
+                $queryBuilder->expr()->eq('indexing_configuration', $queryBuilder->createNamedParameter($indexingConfiguration))
+            )
             ->execute()
             ->fetchOne();
     }
