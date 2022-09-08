@@ -181,7 +181,7 @@ class Queue
                 continue;
             }
             $indexingPriority = $solrConfiguration->getIndexQueueIndexingPriorityByConfigurationName($indexingConfiguration);
-            $itemInQueueForRootPage = $this->containsItemWithRootPageId($itemType, $itemUid, $rootPageId);
+            $itemInQueueForRootPage = $this->containsItemWithRootPageId($itemType, $itemUid, $rootPageId, $indexingConfiguration);
             if ($itemInQueueForRootPage) {
                 // update changed time if that item is in the queue already
                 $changedTime = ($forcedChangeTime > 0) ? $forcedChangeTime : $this->getItemChangedTime($itemType, $itemUid);
@@ -372,8 +372,9 @@ class Queue
         string $itemType,
         int $itemUid,
         int $rootPageId,
+        string $indexingConfiguration
     ): bool {
-        return $this->queueItemRepository->containsItemWithRootPageId($itemType, (int)$itemUid, $rootPageId);
+        return $this->queueItemRepository->containsItemWithRootPageId($itemType, (int)$itemUid, $rootPageId, $indexingConfiguration);
     }
 
     /**

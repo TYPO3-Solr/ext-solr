@@ -311,11 +311,14 @@ class QueueItemRepository extends AbstractRepository
      *
      * @throws DBALException
      */
-    public function containsItemWithRootPageId(string $itemType, int $itemUid, int $rootPageId): bool
+    public function containsItemWithRootPageId(string $itemType, int $itemUid, int $rootPageId, string $indexingConfiguration): bool
     {
         $queryBuilder = $this->getQueryBuilderForContainsMethods($itemType, $itemUid);
         return (bool)$queryBuilder
-            ->andWhere($queryBuilder->expr()->eq('root', $rootPageId))
+            ->andWhere(
+                $queryBuilder->expr()->eq('root', $rootPageId),
+                $queryBuilder->expr()->eq('indexing_configuration', $queryBuilder->createNamedParameter($indexingConfiguration))
+            )
             ->executeQuery()
             ->fetchOne();
     }
