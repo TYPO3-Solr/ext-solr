@@ -53,7 +53,7 @@ class ReIndexTask extends AbstractSolrTask
         $cleanUpResult = $this->cleanUpIndex();
 
         // initialize for re-indexing
-        /* @var QueueInitializationService $indexQueueInitializationService */
+        /** @var QueueInitializationService $indexQueueInitializationService */
         $indexQueueInitializationService = GeneralUtility::makeInstance(QueueInitializationService::class);
         $indexQueueInitializationResults = $indexQueueInitializationService
             ->initializeBySiteAndIndexConfigurations($this->getSite(), $this->indexingConfigurationsToReIndex);

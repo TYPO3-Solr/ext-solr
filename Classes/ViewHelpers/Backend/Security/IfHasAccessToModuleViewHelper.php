@@ -17,7 +17,7 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\ViewHelpers\Backend\Security;
 
-use InvalidArgumentException;
+use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
 use RuntimeException;
 use TYPO3\CMS\Backend\Module\ModuleProvider;
 use TYPO3\CMS\Core\Utility\GeneralUtility;

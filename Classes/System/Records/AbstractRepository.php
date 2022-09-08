@@ -17,8 +17,8 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\System\Records;
 
+use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
 use Doctrine\DBAL\Exception as DBALException;
-use InvalidArgumentException;
 use RuntimeException;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;

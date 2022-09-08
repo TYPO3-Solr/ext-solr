@@ -15,7 +15,7 @@
 
 namespace ApacheSolrForTypo3\Solr\System\Environment;
 
-use Exception;
+use ApacheSolrForTypo3\Solr\Exception;
 
 /**
  * Exception that is thrown when a language file is needed, but not available.

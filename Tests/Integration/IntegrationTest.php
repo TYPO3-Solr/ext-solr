@@ -16,9 +16,9 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Integration;
 
 use ApacheSolrForTypo3\Solr\Access\Rootline;
+use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
-use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 use ReflectionClass;
 use ReflectionException;

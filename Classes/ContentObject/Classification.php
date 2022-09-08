@@ -17,7 +17,7 @@ namespace ApacheSolrForTypo3\Solr\ContentObject;
 
 use ApacheSolrForTypo3\Solr\Domain\Index\Classification\Classification as ClassificationItem;
 use ApacheSolrForTypo3\Solr\Domain\Index\Classification\ClassificationService;
-use InvalidArgumentException;
+use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\AbstractContentObject;
 
