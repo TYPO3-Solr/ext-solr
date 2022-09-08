@@ -19,9 +19,9 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Grouping\GroupItem;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
+use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
 use ApacheSolrForTypo3\Solr\Mvc\Controller\SolrControllerContext;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
-use InvalidArgumentException;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 
 /**

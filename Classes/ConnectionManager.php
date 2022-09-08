@@ -19,13 +19,13 @@ namespace ApacheSolrForTypo3\Solr;
 
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
+use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository as PagesRepositoryAtExtSolr;
 use ApacheSolrForTypo3\Solr\System\Records\SystemLanguage\SystemLanguageRepository;
 use ApacheSolrForTypo3\Solr\System\Solr\Node;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use ApacheSolrForTypo3\Solr\System\Util\SiteUtility;
 use Doctrine\DBAL\Driver\Exception as DBALDriverException;
-use InvalidArgumentException;
 use function json_encode;
 use Throwable;
 use TYPO3\CMS\Core\SingletonInterface;

@@ -18,15 +18,15 @@ declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue;
 
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
+use ApacheSolrForTypo3\Solr\Exception\Index\Queue\InvalidIndexQueueInitizalizationPostProcessorException;
 use ApacheSolrForTypo3\Solr\IndexQueue\InitializationPostProcessor;
 use ApacheSolrForTypo3\Solr\IndexQueue\Initializer\AbstractInitializer;
+use ApacheSolrForTypo3\Solr\IndexQueue\QueueInitializationServiceAwareInterface;
 use ApacheSolrForTypo3\Solr\IndexQueue\QueueInterface;
 use Doctrine\DBAL\ConnectionException;
 use Doctrine\DBAL\Exception as DBALException;
 use Throwable;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use UnexpectedValueException;
-use ApacheSolrForTypo3\Solr\IndexQueue\QueueInitializationServiceAwareInterface;
 
 /**
  * The queue initialization service is responsible to run the initialization of the index queue for a combination of sites
@@ -96,6 +96,7 @@ class QueueInitializationService
      * @throws ConnectionException
      * @throws Throwable
      * @throws DBALException
+     * @throws InvalidIndexQueueInitizalizationPostProcessorException
      */
     public function initializeBySiteAndIndexConfigurations(Site $site, array $indexingConfigurationNames): array
     {
@@ -116,7 +117,10 @@ class QueueInitializationService
             if ($indexQueueInitializationPostProcessor instanceof InitializationPostProcessor) {
                 $indexQueueInitializationPostProcessor->postProcessIndexQueueInitialization($site, $indexingConfigurationNames, $initializationStatus);
             } else {
-                throw new UnexpectedValueException(get_class($indexQueueInitializationPostProcessor) . ' must implement interface ' . InitializationPostProcessor::class, 1345815561);
+                throw new InvalidIndexQueueInitizalizationPostProcessorException(
+                    get_class($indexQueueInitializationPostProcessor) . ' must implement interface ' . InitializationPostProcessor::class,
+                    1345815561
+                );
             }
         }
 

@@ -15,10 +15,10 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets;
+namespace ApacheSolrForTypo3\Solr\Domain\Site\Exception;
 
 use ApacheSolrForTypo3\Solr\Exception;
 
-class InvalidUrlDecoderException extends Exception
+class InvalidSiteRootPageException extends Exception
 {
 }

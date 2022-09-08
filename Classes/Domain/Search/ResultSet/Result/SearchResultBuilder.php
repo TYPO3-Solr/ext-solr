@@ -17,8 +17,8 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result;
 
+use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
 use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
-use InvalidArgumentException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
