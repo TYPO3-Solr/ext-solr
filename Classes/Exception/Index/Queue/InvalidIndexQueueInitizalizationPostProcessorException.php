@@ -15,10 +15,13 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets;
+namespace ApacheSolrForTypo3\Solr\Exception\Index\Queue;
 
 use ApacheSolrForTypo3\Solr\Exception;
 
-class InvalidUrlDecoderException extends Exception
+/**
+ * Exception that is thrown if an index queue post processor is invalid.
+ */
+class InvalidIndexQueueInitizalizationPostProcessorException extends Exception
 {
 }

@@ -15,6 +15,8 @@
 
 namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets;
 
-class InvalidQueryBuilderException extends \Exception
+use ApacheSolrForTypo3\Solr\Exception;
+
+class InvalidQueryBuilderException extends Exception
 {
 }

@@ -16,6 +16,7 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Sorting;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Sorting\SortingHelper;
+use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 
 /**
@@ -49,7 +50,7 @@ class SortingHelperTest extends UnitTest
      */
     public function canThrowExceptionForUnconfiguredSorting()
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('No sorting configuration found for option name unconfigured');
         $sorting = new SortingHelper([]);
         $sorting->getSortFieldFromUrlParameter('unconfigured asc');

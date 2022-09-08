@@ -15,10 +15,10 @@
 
 namespace ApacheSolrForTypo3\Solr\Domain\Search\LastSearches;
 
+use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
 use ApacheSolrForTypo3\Solr\System\Records\AbstractRepository;
 use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use Doctrine\DBAL\Exception as DBALException;
-use InvalidArgumentException;
 use function json_encode;
 
 class LastSearchesRepository extends AbstractRepository
