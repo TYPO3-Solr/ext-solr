@@ -15,6 +15,7 @@
 
 namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets;
 
+use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -83,12 +84,13 @@ class RequirementsService
      *
      * @param string $facetNameToCheckRequirementsOn
      * @return AbstractFacetItem[]
+     * @throws InvalidArgumentException
      */
     protected function getSelectedItemValues(AbstractFacet $facet, $facetNameToCheckRequirementsOn)
     {
         $facetToCheckRequirements = $facet->getResultSet()->getFacets()->getByName($facetNameToCheckRequirementsOn)->getByPosition(0);
         if (!$facetToCheckRequirements instanceof AbstractFacet) {
-            throw new \InvalidArgumentException('Requirement for unexisting facet configured');
+            throw new InvalidArgumentException('Requirement for unexisting facet configured');
         }
 
         if (!$facetToCheckRequirements->getIsUsed()) {

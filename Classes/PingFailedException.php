@@ -17,8 +17,6 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr;
 
-use Exception;
-
 /**
  * Exception that is thrown when a ping fails
  *

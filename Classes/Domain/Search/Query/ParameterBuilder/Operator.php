@@ -15,7 +15,7 @@
 
 namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
 
-use InvalidArgumentException;
+use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
 
 /**
  * The Operator ParameterProvider is responsible to build the solr query parameters
