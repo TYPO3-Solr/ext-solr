@@ -220,7 +220,7 @@ class Queue
                 continue;
             }
             $indexingPriority = $solrConfiguration->getIndexQueueIndexingPriorityByConfigurationName($indexingConfiguration);
-            $itemInQueueForRootPage = $this->containsItemWithRootPageId($itemType, $itemUid, $rootPageId);
+            $itemInQueueForRootPage = $this->containsItemWithRootPageId($itemType, $itemUid, $rootPageId, $indexingConfiguration);
             if ($itemInQueueForRootPage) {
                 // update changed time if that item is in the queue already
                 $changedTime = ($forcedChangeTime > 0) ? $forcedChangeTime : $this->getItemChangedTime($itemType, $itemUid);
@@ -482,13 +482,14 @@ class Queue
      * @param int|string $itemUid The item's uid, usually an integer uid, could be a
      *      different value for non-database-record types.
      * @param int $rootPageId
+     * @param string $indexingConfiguration
      * @return bool TRUE if the item is found in the queue, FALSE otherwise
      * @throws DBALDriverException
      * @throws DBALException|\Doctrine\DBAL\DBALException
      */
-    public function containsItemWithRootPageId(string $itemType, $itemUid, int $rootPageId): bool
+    public function containsItemWithRootPageId(string $itemType, $itemUid, int $rootPageId, string $indexingConfiguration): bool
     {
-        return $this->queueItemRepository->containsItemWithRootPageId($itemType, (int)$itemUid, $rootPageId);
+        return $this->queueItemRepository->containsItemWithRootPageId($itemType, (int)$itemUid, $rootPageId, $indexingConfiguration);
     }
 
     /**
