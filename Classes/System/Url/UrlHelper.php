@@ -15,7 +15,7 @@
 
 namespace ApacheSolrForTypo3\Solr\System\Url;
 
-use InvalidArgumentException;
+use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
 use TYPO3\CMS\Core\Http\Uri;
 
 /**

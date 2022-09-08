@@ -18,6 +18,7 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers\Uri\Facet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetItem;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
+use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
 use ApacheSolrForTypo3\Solr\ViewHelpers\Uri\AbstractUriViewHelper;
 
 /**
@@ -44,7 +45,7 @@ abstract class AbstractValueViewHelper extends AbstractUriViewHelper
     /**
      * @param $arguments
      * @return string
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     protected static function getValueFromArguments($arguments)
     {
@@ -55,7 +56,7 @@ abstract class AbstractValueViewHelper extends AbstractUriViewHelper
         } elseif (isset($arguments['facetItemValue'])) {
             $facetValue = $arguments['facetItemValue'];
         } else {
-            throw new \InvalidArgumentException('No facetItem was passed, please pass either facetItem or facetItemValue');
+            throw new InvalidArgumentException('No facetItem was passed, please pass either facetItem or facetItemValue');
         }
 
         return $facetValue;
@@ -64,7 +65,7 @@ abstract class AbstractValueViewHelper extends AbstractUriViewHelper
     /**
      * @param $arguments
      * @return string
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     protected static function getNameFromArguments($arguments)
     {
@@ -75,7 +76,7 @@ abstract class AbstractValueViewHelper extends AbstractUriViewHelper
         } elseif (isset($arguments['facetName'])) {
             $facetName = $arguments['facetName'];
         } else {
-            throw new \InvalidArgumentException('No facet was passed, please pass either facet or facetName');
+            throw new InvalidArgumentException('No facet was passed, please pass either facet or facetName');
         }
 
         return $facetName;
@@ -84,7 +85,7 @@ abstract class AbstractValueViewHelper extends AbstractUriViewHelper
     /**
      * @param $arguments
      * @return string
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     protected static function getResultSetFromArguments($arguments)
     {
@@ -95,7 +96,7 @@ abstract class AbstractValueViewHelper extends AbstractUriViewHelper
         } elseif (isset($arguments['facetName'])) {
             $resultSet = $arguments['resultSet'];
         } else {
-            throw new \InvalidArgumentException('No facet was passed, please pass either facet or resultSet');
+            throw new InvalidArgumentException('No facet was passed, please pass either facet or resultSet');
         }
 
         return $resultSet;

@@ -18,7 +18,7 @@ declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\Parser;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
-use InvalidArgumentException;
+use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 

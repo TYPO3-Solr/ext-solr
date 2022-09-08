@@ -15,7 +15,7 @@
 
 namespace ApacheSolrForTypo3\Solr\System\Solr\Parser;
 
-use InvalidArgumentException;
+use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
 
 /**
  * Class to parse the stopwords from a solr response.

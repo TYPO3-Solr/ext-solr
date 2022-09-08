@@ -17,11 +17,11 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\System\Records\Pages;
 
+use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\System\Records\AbstractRepository;
 use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use Doctrine\DBAL\Exception as DBALException;
-use InvalidArgumentException;
 use PDO;
 use Throwable;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
