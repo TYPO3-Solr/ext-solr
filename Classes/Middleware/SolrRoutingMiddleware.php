@@ -14,6 +14,7 @@ namespace ApacheSolrForTypo3\Solr\Middleware;
  * The TYPO3 project - inspiring people to share!
  */
 
+use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
 use ApacheSolrForTypo3\Solr\Routing\RoutingService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -97,6 +98,10 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
+        if (!$request->hasHeader(PageIndexerRequest::SOLR_INDEX_HEADER)) {
+            return $handler->handle($request);
+        }
+
         /* @var SiteRouteResult $routeResult */
         $routeResult = $this->getRoutingService()
             ->getSiteMatcher()
