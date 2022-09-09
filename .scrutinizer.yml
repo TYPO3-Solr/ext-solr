@@ -59,13 +59,6 @@ build:
       version: 7.2.8
   nodes:
     analysis:
-      dependencies:
-        after:
-          - composer require --dev squizlabs/php_codesniffer:3.1.1
       tests:
         override:
           - php-scrutinizer-run
-        override:
-          -
-            command: phpcs-run
-            use_website_config: false
