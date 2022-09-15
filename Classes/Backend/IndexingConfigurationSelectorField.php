@@ -20,6 +20,7 @@ use TYPO3\CMS\Backend\Form\Exception as BackendFormException;
 use TYPO3\CMS\Backend\Form\FormResultCompiler;
 use TYPO3\CMS\Backend\Form\NodeFactory;
 use TYPO3\CMS\Core\Imaging\IconFactory;
+use TYPO3\CMS\Core\Imaging\IconRegistry;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -153,10 +154,19 @@ class IndexingConfigurationSelectorField
     protected function buildSelectorItems(array $tablesToIndex): array
     {
         $selectorItems = [];
+        $iconRegistry = GeneralUtility::makeInstance(IconRegistry::class);
         $iconFactory = GeneralUtility::makeInstance(IconFactory::class);
+        $defaultIcon = 'mimetypes-other-other';
 
         foreach ($tablesToIndex as $configurationName => $tableName) {
-            $icon = $iconFactory->mapRecordTypeToIconIdentifier($tableName, []);
+            if (isset($GLOBALS['TCA'][$tableName])) {
+                $icon = $iconFactory->mapRecordTypeToIconIdentifier($tableName, []);
+                if ($icon === $iconRegistry->getDefaultIconIdentifier() || !$iconRegistry->isRegistered($icon)) {
+                    $icon = $defaultIcon;
+                }
+            } else {
+                $icon = $defaultIcon;
+            }
 
             $labelTableName = '';
             if ($configurationName !== $tableName) {
