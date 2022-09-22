@@ -128,7 +128,7 @@ defined('TYPO3_MODE') || die();
 
     // registering the eID scripts
     // TODO move to suggest form modifier
-    $GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['tx_solr_api'] = 'EXT:solr/Classes/Eid/Api.php';
+    $GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['tx_solr_api'] = \ApacheSolrForTypo3\Solr\Eid\ApiEid::class . '::main';
 
     # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
