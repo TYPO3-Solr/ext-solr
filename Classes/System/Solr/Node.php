@@ -84,7 +84,7 @@ class Node extends Endpoint
 
         $scheme = $configuration['scheme'];
         $host = $configuration['host'];
-        $port = $configuration['port'];
+        $port = (int)$configuration['port'];
         $path = $configuration['path'];
 
         $username = $configuration['username'] ?? '';
