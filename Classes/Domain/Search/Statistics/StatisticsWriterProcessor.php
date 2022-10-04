@@ -21,11 +21,10 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSetProcessor;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\HtmlContentExtractor;
 use ApacheSolrForTypo3\Solr\Util;
-use function inet_pton;
-use function pack;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\IpAnonymizationUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
@@ -99,7 +98,7 @@ class StatisticsWriterProcessor implements SearchResultSetProcessor
             'time_processing' => $response->debug->timing->process->time ?? 0,
             'feuser_id' => isset($TSFE->fe_user->user) ? (int)$TSFE->fe_user->user['uid'] ?? 0 : 0,
             'cookie' => $TSFE->fe_user->id ?? '',
-            'ip' => $this->applyIpMask($this->getUserIp(), $ipMaskLength),
+            'ip' => IpAnonymizationUtility::anonymizeIp($this->getUserIp(), $ipMaskLength),
             'page' => $page,
             'keywords' => $keywords,
             'filters' => serialize($filters),
@@ -144,62 +143,6 @@ class StatisticsWriterProcessor implements SearchResultSetProcessor
         $string = HtmlContentExtractor::cleanContent($string);
         $string = htmlspecialchars(strip_tags($string), ENT_QUOTES); // after entity decoding we might have tags again
         return trim($string);
-    }
-
-    /**
-     * Internal function to mask portions of the visitor IP address
-     *
-     * @param string $ip IP address in network address format
-     * @param int $maskLength Number of octets to reset
-     * @return string
-     */
-    protected function applyIpMask(string $ip, int $maskLength): string
-    {
-        if (empty($ip) || $maskLength === 0) {
-            return $ip;
-        }
-
-        // IPv4 or mapped IPv4 in IPv6
-        if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
-            return $this->applyIpV4Mask($ip, $maskLength);
-        }
-
-        return $this->applyIpV6Mask($ip, $maskLength);
-    }
-
-    /**
-     * Apply a mask filter on the ip v4 address.
-     *
-     * @param string $ip
-     * @param int $maskLength
-     * @return string
-     */
-    protected function applyIpV4Mask(string $ip, int $maskLength): string
-    {
-        $i = strlen($ip);
-        if ($maskLength > $i) {
-            $maskLength = $i;
-        }
-
-        while ($maskLength-- > 0) {
-            $ip[--$i] = chr(0);
-        }
-        return $ip;
-    }
-
-    /**
-     * Apply a mask filter on the ip v6 address.
-     *
-     * @param string $ip
-     * @param int $maskLength
-     * @return string
-     */
-    protected function applyIpV6Mask(string $ip, int $maskLength): string
-    {
-        $masks = ['ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff', 'ffff:ffff:ffff:ffff::', 'ffff:ffff:ffff:0000::', 'ffff:ff00:0000:0000::'];
-        $packedAddress = inet_pton($masks[$maskLength]);
-        $binaryString = pack('a16', $packedAddress);
-        return (string)($ip & $binaryString);
     }
 
     /**
