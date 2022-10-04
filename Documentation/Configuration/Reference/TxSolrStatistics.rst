@@ -29,7 +29,7 @@ statistics.anonymizeIP
 :Since: 2.0
 :Default: 0
 
-Defines the number of octets of the IP address to anonymize in the statistics log records.
+Allowed values are 0 (masking disabled), 1 (mask host), 2 (mask host and subnet).
 
 statistics.addDebugData
 -----------------------
