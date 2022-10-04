@@ -75,6 +75,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $this->searchRequest = $this->getPreparedRequest();
         $this->searchResponse = $this->getPreparedResponse();
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageSubstitutePageDocument'][PageFieldMappingIndexer::class] = PageFieldMappingIndexer::class;
+        $_SERVER['REMOTE_ADDR'] = '192.168.1.1';
     }
 
     /**
@@ -83,6 +84,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
     public function tearDown()
     {
         $this->cleanUpSolrServerAndAssertEmpty();
+        unset($_SERVER['REMOTE_ADDR']);
         parent::tearDown();
     }
 
