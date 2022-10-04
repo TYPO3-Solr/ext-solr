@@ -23,7 +23,8 @@ use TYPO3\CMS\Extbase\Mvc\Request as ExtbaseRequest;
 use TYPO3\CMS\Extbase\Mvc\Web\Response;
 use TYPO3\CMS\Frontend\Http\RequestHandler;
 
-abstract class AbstractFrontendControllerTest  extends IntegrationTest {
+abstract class AbstractFrontendControllerTest  extends IntegrationTest
+{
 
     /**
      * @return void

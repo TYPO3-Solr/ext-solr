@@ -65,8 +65,14 @@ class SuggestControllerTest extends AbstractFrontendControllerTest
         $this->suggestResponse = $this->getPreparedResponse();
 
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageSubstitutePageDocument'][PageFieldMappingIndexer::class] = PageFieldMappingIndexer::class;
+        $_SERVER['REMOTE_ADDR'] = '192.168.1.1';
     }
 
+    public function tearDown()
+    {
+        unset($_SERVER['REMOTE_ADDR']);
+        parent::tearDown();
+    }
     /**
      * @test
      */
