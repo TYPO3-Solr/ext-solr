@@ -32,10 +32,21 @@ Required Interface: SubstitutePageIndexer
 indexPagePostProcessPageDocument
 --------------------------------
 
+This is deprecated in favor of preAddModifyDocuments.
+
 Registered classes can be used to post process a Solr document of a page.
 
 Registration with: $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPagePostProcessPageDocument']
 Required Interface: PageDocumentPostProcessor
+
+
+preAddModifyDocuments
+---------------------
+
+Registered classes can be used to process Solr documents (pages and records) before they are added to index.
+
+Registration with: $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['preAddModifyDocuments']
+Required Interface: PageIndexerDocumentsModifier
 
 
 Independent indexer
