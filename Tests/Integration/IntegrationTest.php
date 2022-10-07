@@ -16,6 +16,7 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Integration;
 
 use ApacheSolrForTypo3\Solr\Access\Rootline;
+use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\Tests\Unit\Helper\FakeObjectManager;
 use ApacheSolrForTypo3\Solr\Typo3PageIndexer;
 use Doctrine\DBAL\DBALException;
@@ -340,8 +341,13 @@ abstract class IntegrationTest extends FunctionalTestCase
         foreach ($importPageIds as $importPageId) {
             $fakeTSFE = $this->fakeTSFE($importPageId, $feUserGroupArray);
 
-            /** @var $pageIndexer Typo3PageIndexer */
+            /* @var Typo3PageIndexer $pageIndexer */
             $pageIndexer = GeneralUtility::makeInstance(Typo3PageIndexer::class, $fakeTSFE);
+            $indexQueueItemMock = $this->createMock(Item::class);
+            $indexQueueItemMock->expects(self::any())
+                ->method('getIndexingConfigurationName')
+                ->willReturn('pages');
+            $pageIndexer->setIndexQueueItem($indexQueueItemMock);
             $pageIndexer->setPageAccessRootline(Rootline::getAccessRootlineByPageId($importPageId));
             $pageIndexer->indexPage();
         }

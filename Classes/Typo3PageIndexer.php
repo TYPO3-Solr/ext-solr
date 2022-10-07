@@ -21,6 +21,7 @@ use ApacheSolrForTypo3\Solr\Access\Rootline;
 use ApacheSolrForTypo3\Solr\Domain\Search\ApacheSolrDocument\Builder;
 use ApacheSolrForTypo3\Solr\FieldProcessor\Service;
 use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageFieldMappingIndexer;
+use ApacheSolrForTypo3\Solr\IndexQueue\Indexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
@@ -258,6 +259,11 @@ class Typo3PageIndexer
         $documents[] = $pageDocument;
         $documents = $this->getAdditionalDocuments($pageDocument, $documents);
         $this->processDocuments($documents);
+        $documents = Indexer::preAddModifyDocuments(
+            $this->indexQueueItem,
+            $this->page->getLanguage()->getLanguageId(),
+            $documents
+        );
 
         $pageIndexed = $this->addDocumentsToSolrIndex($documents);
         $this->documentsSentToSolr = $documents;
@@ -268,6 +274,8 @@ class Typo3PageIndexer
     /**
      * Applies the configured post processors (indexPagePostProcessPageDocument)
      *
+     * @deprecated
+     *
      * @param Document $pageDocument
      */
     protected function applyIndexPagePostProcessors(Document $pageDocument)
@@ -275,6 +283,11 @@ class Typo3PageIndexer
         if (!is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPagePostProcessPageDocument'] ?? null)) {
             return;
         }
+
+        trigger_error(
+            "The hook indexPagePostProcessPageDocument has been superseded by \$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['preAddModifyDocuments']",
+            E_USER_DEPRECATED
+        );
 
         foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPagePostProcessPageDocument'] as $classReference) {
             $postProcessor = GeneralUtility::makeInstance($classReference);
