@@ -17,6 +17,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Controller;
 
 use ApacheSolrForTypo3\Solr\FrontendEnvironment\Exception\Exception as SolrFrontendEnvironmentException;
 use ApacheSolrForTypo3\Solr\FrontendEnvironment\Tsfe;
+use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use ApacheSolrForTypo3\Solr\Typo3PageIndexer;
 use Doctrine\DBAL\DBALException;
@@ -75,6 +76,11 @@ abstract class AbstractFrontendControllerTest extends IntegrationTest
 
             /* @var $pageIndexer Typo3PageIndexer */
             $pageIndexer = GeneralUtility::makeInstance(Typo3PageIndexer::class, $fakeTSFE);
+            $indexQueueItemMock = $this->createMock(Item::class);
+            $indexQueueItemMock->expects(self::any())
+                ->method('getIndexingConfigurationName')
+                ->willReturn('pages');
+            $pageIndexer->setIndexQueueItem($indexQueueItemMock);
             $pageIndexer->indexPage();
         }
         $this->waitToBeVisibleInSolr();

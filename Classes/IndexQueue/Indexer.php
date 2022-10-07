@@ -195,7 +195,7 @@ class Indexer extends AbstractIndexer
         $documents[] = $itemDocument;
         $documents = array_merge($documents, $this->getAdditionalDocuments($item, $language, $itemDocument));
         $documents = $this->processDocuments($item, $documents);
-        $documents = $this->preAddModifyDocuments($item, $language, $documents);
+        $documents = self::preAddModifyDocuments($item, $language, $documents);
 
         try {
             $response = $this->solr->getWriteService()->addDocuments($documents);
@@ -531,7 +531,7 @@ class Indexer extends AbstractIndexer
      * @param array $documents An array of documents to be indexed
      * @return array An array of modified documents
      */
-    protected function preAddModifyDocuments(Item $item, int $language, array $documents): array
+    public static function preAddModifyDocuments(Item $item, int $language, array $documents): array
     {
         if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['preAddModifyDocuments'] ?? null)) {
             foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['preAddModifyDocuments'] as $classReference) {

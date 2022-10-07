@@ -211,7 +211,7 @@ class PageIndexerTest extends IntegrationTest
      */
     public function canExecutePostProcessor()
     {
-        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPagePostProcessPageDocument']['TestPostProcessor'] = TestPostProcessor::class;
+        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['preAddModifyDocuments']['TestPageIndexerDocumentsModifier'] = TestPageIndexerDocumentsModifier::class;
 
         $this->importDataSetFromFixture('can_index_into_solr.xml');
         $this->executePageIndexer();
