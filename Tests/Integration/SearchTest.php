@@ -21,6 +21,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\QueryFields;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Slops;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\TrigramPhraseFields;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
+use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
@@ -71,8 +72,13 @@ class SearchTest extends IntegrationTest
         $fakeTSFE = $this->getConfiguredTSFE();
         $GLOBALS['TSFE'] = $fakeTSFE;
 
-        /** @var $pageIndexer \ApacheSolrForTypo3\Solr\Typo3PageIndexer */
+        /* @var Typo3PageIndexer $pageIndexer */
         $pageIndexer = GeneralUtility::makeInstance(Typo3PageIndexer::class, $fakeTSFE);
+        $indexQueueItemMock = $this->createMock(Item::class);
+        $indexQueueItemMock->expects(self::any())
+            ->method('getIndexingConfigurationName')
+            ->willReturn('pages');
+        $pageIndexer->setIndexQueueItem($indexQueueItemMock);
         $pageIndexer->indexPage();
 
         $this->waitToBeVisibleInSolr();
@@ -435,8 +441,13 @@ class SearchTest extends IntegrationTest
             $fakeTSFE = $this->getConfiguredTSFE($i);
             $GLOBALS['TSFE'] = $fakeTSFE;
 
-            /** @var $pageIndexer \ApacheSolrForTypo3\Solr\Typo3PageIndexer */
+            /* @var Typo3PageIndexer $pageIndexer */
             $pageIndexer = GeneralUtility::makeInstance(Typo3PageIndexer::class, $fakeTSFE);
+            $indexQueueItemMock = $this->createMock(Item::class);
+            $indexQueueItemMock->expects(self::any())
+                ->method('getIndexingConfigurationName')
+                ->willReturn('pages');
+            $pageIndexer->setIndexQueueItem($indexQueueItemMock);
             $pageIndexer->indexPage();
         }
         $this->waitToBeVisibleInSolr();
