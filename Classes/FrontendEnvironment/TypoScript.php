@@ -115,18 +115,23 @@ class TypoScript implements SingletonInterface
     }
 
     /**
+     * Adapted from TYPO3 core
+     * @see sysext:core/Classes/TypoScript/ExtendedTemplateService until TYPO3 v11
      * @param array $theSetup
      * @param string $theKey
      * @return array
      */
     public function ext_getSetup(array $theSetup, string $theKey): array
     {
+        // 'a.b.c' --> ['a', 'b.c']
         $parts = explode('.', $theKey, 2);
         if ((string)$parts[0] !== '' && is_array($theSetup[$parts[0] . '.'])) {
             if (trim($parts[1] ?? '') !== '') {
+                // Current path segment is a sub array, check it recursively by applying the rest of the key
                 return $this->ext_getSetup($theSetup[$parts[0] . '.'], trim($parts[1] ?? ''));
             }
-            return [$theSetup[$parts[0] . '.'], $theSetup[$parts[0]]];
+            // No further path to evaluate, return current setup and the value for the current path segment - if any
+            return [$theSetup[$parts[0] . '.'], $theSetup[$parts[0]] ?? ''];
         }
         if (trim($theKey) !== '') {
             return [[], $theSetup[$theKey]];
