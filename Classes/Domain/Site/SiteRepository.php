@@ -291,7 +291,9 @@ class SiteRepository
 
         foreach ($availableLanguageIds as $languageUid) {
             $solrEnabled = SiteUtility::getConnectionProperty($typo3Site, 'enabled', $languageUid, 'read', true);
-            if ($solrEnabled) {
+            $solrReadCore = SiteUtility::getConnectionProperty($typo3Site, 'core', $languageUid, 'read');
+            $solrWriteCore = SiteUtility::getConnectionProperty($typo3Site, 'core', $languageUid, 'write');
+            if ($solrEnabled && !empty($solrReadCore) && !empty($solrWriteCore)) {
                 $solrConnectionConfigurations[$languageUid] = [
                     'connectionKey' =>  $rootPageRecord['uid'] . '|' . $languageUid,
                     'rootPageTitle' => $rootPageRecord['title'],
@@ -303,7 +305,7 @@ class SiteRepository
                         // @todo: transform core to path
                         'path' =>
                             SiteUtility::getConnectionProperty($typo3Site, 'path', $languageUid, 'read', '/solr/') .
-                            SiteUtility::getConnectionProperty($typo3Site, 'core', $languageUid, 'read', 'core_en') . '/' ,
+                            $solrReadCore . '/' ,
                         'username' => SiteUtility::getConnectionProperty($typo3Site, 'username', $languageUid, 'read', ''),
                         'password' => SiteUtility::getConnectionProperty($typo3Site, 'password', $languageUid, 'read', ''),
                     ],
@@ -314,7 +316,7 @@ class SiteRepository
                         // @todo: transform core to path
                         'path' =>
                             SiteUtility::getConnectionProperty($typo3Site, 'path', $languageUid, 'write', '/solr/') .
-                            SiteUtility::getConnectionProperty($typo3Site, 'core', $languageUid, 'write', 'core_en') . '/' ,
+                            $solrWriteCore . '/' ,
                         'username' => SiteUtility::getConnectionProperty($typo3Site, 'username', $languageUid, 'write', ''),
                         'password' => SiteUtility::getConnectionProperty($typo3Site, 'password', $languageUid, 'write', ''),
                     ],
