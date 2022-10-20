@@ -17,6 +17,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\IndexQueue;
 
 use ApacheSolrForTypo3\Solr\IndexQueue\AbstractIndexer;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use UnexpectedValueException;
 
 /**
@@ -93,5 +94,50 @@ class AbstractIndexerTest extends UnitTest
         self::assertTrue(AbstractIndexer::isSerializedValue($indexingConfiguration, 'categories_stringM'), 'Every value should be treated as serialized by custom detector');
         self::assertTrue(AbstractIndexer::isSerializedValue($indexingConfiguration, 'category_stringM', 'Every value should be treated as serialized by custom detector'));
         self::assertTrue(AbstractIndexer::isSerializedValue($indexingConfiguration, 'notConfigured_stringM', 'Every value should be treated as serialized by custom detector'));
+    }
+
+    /**
+     * Test that field values can be resolved
+     * @test
+     * @dataProvider indexingDataProvider
+     */
+    public function resolveFieldValue(array $indexingConfiguration, string $solrFieldName, array $data, $expectedValue)
+    {
+        $subject = new class() extends AbstractIndexer {
+        };
+        $tsfe = $this->getDumbMock(TypoScriptFrontendController::class);
+        self::assertEquals(
+            $this->callInaccessibleMethod(
+                $subject,
+                'resolveFieldValue',
+                $indexingConfiguration,
+                $solrFieldName,
+                $data,
+                $tsfe
+            ),
+            $expectedValue
+        );
+    }
+
+    public function indexingDataProvider()
+    {
+        yield 'solr field defined as string' => [
+            ['solrFieldName_stringS' => 'solrFieldName'],
+            'solrFieldName_stringS',
+            ['solrFieldName' => 'test'],
+            'test',
+        ];
+        yield 'solr field defined as int' => [
+            ['solrFieldName_intS' => 'solrFieldName'],
+            'solrFieldName_intS',
+            ['solrFieldName' => 123],
+            123,
+        ];
+        yield 'solr field not defined' => [
+            ['solrFieldName_stringS' => 'solrFieldName'],
+            'solrFieldName_stringS',
+            [],
+            null,
+        ];
     }
 }
