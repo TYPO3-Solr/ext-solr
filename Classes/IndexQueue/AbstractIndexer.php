@@ -85,6 +85,9 @@ abstract class AbstractIndexer
             }
 
             $fieldValue = $this->resolveFieldValue($indexingConfiguration, $solrFieldName, $data, $tsfe);
+            if ($fieldValue === null) {
+                continue;
+            }
 
             if (is_array($fieldValue)) {
                 // multi value
@@ -127,7 +130,7 @@ abstract class AbstractIndexer
      * @param string $solrFieldName A Solr field name that is configured in the indexing configuration
      * @param array $data A record or item's data
      * @param TypoScriptFrontendController $tsfe
-     * @return string The resolved string value to be indexed
+     * @return string|null The resolved string value to be indexed; null if value could not be resolved
      */
     protected function resolveFieldValue(
         array $indexingConfiguration,
@@ -187,7 +190,13 @@ abstract class AbstractIndexer
                 $fieldValue = unserialize($fieldValue);
             }
         } else {
-            $fieldValue = $data[$indexingConfiguration[$solrFieldName]];
+            $indexingFieldName = $indexingConfiguration[$solrFieldName] ?? null;
+            if (empty($indexingFieldName) ||
+                !is_string($indexingFieldName) ||
+                !array_key_exists($indexingFieldName, $data)) {
+                return null;
+            }
+            $fieldValue = $data[$indexingFieldName];
         }
 
         // detect and correct type for dynamic fields
