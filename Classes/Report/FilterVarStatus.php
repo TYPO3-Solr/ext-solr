@@ -17,6 +17,7 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\Report;
 
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Reports\Status;
 
@@ -31,13 +32,13 @@ class FilterVarStatus extends AbstractSolrStatus
     /**
      * Checks whether allow_url_fopen is enabled.
      *
-     * @noinspection PhpMissingReturnTypeInspection see {@link \TYPO3\CMS\Reports\StatusProviderInterface::getStatus()}
+     * @return array
      */
-    public function getStatus()
+    public function getStatus(): array
     {
         $reports = [];
 
-        $validUrl = 'http://www.typo3-solr.com';
+        $validUrl = 'https://www.typo3-solr.com';
         if (!filter_var($validUrl, FILTER_VALIDATE_URL)) {
             $message = 'You are using a PHP version that is affected by a bug in
 				function filter_var(). This bug causes said function to
@@ -53,10 +54,18 @@ class FilterVarStatus extends AbstractSolrStatus
                 'PHP filter_var() bug',
                 'Affected PHP version detected.',
                 $message,
-                Status::ERROR
+                ContextualFeedbackSeverity::ERROR
             );
         }
 
         return $reports;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getLabel(): string
+    {
+        return 'solr/filter-var';
     }
 }

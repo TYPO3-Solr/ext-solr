@@ -20,6 +20,7 @@ namespace ApacheSolrForTypo3\Solr\Report;
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use Throwable;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Reports\Status;
 
@@ -49,12 +50,12 @@ class SolrConfigStatus extends AbstractSolrStatus
      * Solr server. Only adds an entry if a solrconfig other than the
      * recommended one was found.
      *
-     * @noinspection PhpMissingReturnTypeInspection see {@link \TYPO3\CMS\Reports\StatusProviderInterface::getStatus()}
+     * @return array
      *
      * @throws DBALDriverException
      * @throws Throwable
      */
-    public function getStatus()
+    public function getStatus(): array
     {
         $reports = [];
         $solrConnections = GeneralUtility::makeInstance(ConnectionManager::class)->getAllConnections();
@@ -74,7 +75,7 @@ class SolrConfigStatus extends AbstractSolrStatus
                     /** @scrutinizer ignore-type */
                     $report,
                     /** @scrutinizer ignore-type */
-                    Status::WARNING
+                    ContextualFeedbackSeverity::WARNING
                 );
 
                 $reports[] = $status;
@@ -82,5 +83,13 @@ class SolrConfigStatus extends AbstractSolrStatus
         }
 
         return $reports;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getLabel(): string
+    {
+        return 'solr/config';
     }
 }
