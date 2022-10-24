@@ -21,6 +21,7 @@ use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use Throwable;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Reports\Status;
 
@@ -50,12 +51,12 @@ class SchemaStatus extends AbstractSolrStatus
      * Solr server. Only adds an entry if a schema other than the
      * recommended one was found.
      *
+     * @return array
+     *
      * @throws DBALDriverException
      * @throws Throwable
-     *
-     * @noinspection PhpMissingReturnTypeInspection see {@link \TYPO3\CMS\Reports\StatusProviderInterface::getStatus()}
      */
-    public function getStatus()
+    public function getStatus(): array
     {
         $reports = [];
         /** @var $connectionManager ConnectionManager */
@@ -77,7 +78,7 @@ class SchemaStatus extends AbstractSolrStatus
                     /** @scrutinizer ignore-type */
                     $pingFailedMsg,
                     /** @scrutinizer ignore-type */
-                    Status::ERROR
+                    ContextualFeedbackSeverity::ERROR
                 );
                 $reports[] = $status;
                 continue;
@@ -96,12 +97,20 @@ class SchemaStatus extends AbstractSolrStatus
                     /** @scrutinizer ignore-type */
                     $report,
                     /** @scrutinizer ignore-type */
-                    Status::WARNING
+                    ContextualFeedbackSeverity::WARNING
                 );
                 $reports[] = $status;
             }
         }
 
         return $reports;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getLabel(): string
+    {
+        return 'solr/schema';
     }
 }
