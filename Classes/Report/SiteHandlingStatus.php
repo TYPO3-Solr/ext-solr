@@ -25,6 +25,7 @@ use Psr\Http\Message\UriInterface;
 use Throwable;
 use TYPO3\CMS\Core\Site\Entity\Site as Typo3Site;
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Reports\Status;
 
@@ -54,12 +55,12 @@ class SiteHandlingStatus extends AbstractSolrStatus
      *
      * @var SiteRepository
      */
-    protected $siteRepository;
+    protected SiteRepository $siteRepository;
 
     /**
      * @var ExtensionConfiguration
      */
-    protected $extensionConfiguration;
+    protected ExtensionConfiguration $extensionConfiguration;
 
     /**
      * SolrStatus constructor.
@@ -75,13 +76,14 @@ class SiteHandlingStatus extends AbstractSolrStatus
     }
 
     /**
+     * Verifies the site configuration.
+     *
      * @return array
      *
      * @throws DBALDriverException
      * @throws Throwable
-     * @noinspection PhpMissingReturnTypeInspection see {@link \TYPO3\CMS\Reports\StatusProviderInterface::getStatus()}
      */
-    public function getStatus()
+    public function getStatus(): array
     {
         $reports = [];
 
@@ -97,7 +99,7 @@ class SiteHandlingStatus extends AbstractSolrStatus
                     /** @scrutinizer ignore-type */
                     vsprintf('The configured Site "%s" is not TYPO3 managed site. Please refer to TYPO3 site management docs and configure the site properly.', [$site->getLabel()]),
                     /** @scrutinizer ignore-type */
-                    Status::ERROR
+                    ContextualFeedbackSeverity::ERROR
                 );
                 continue;
             }
@@ -147,8 +149,16 @@ class SiteHandlingStatus extends AbstractSolrStatus
             /** @scrutinizer ignore-type */
             $renderedReport,
             /** @scrutinizer ignore-type */
-            $globalPassedStateForThisSite == true ? Status::OK : Status::ERROR
+            $globalPassedStateForThisSite == true ? ContextualFeedbackSeverity::OK : ContextualFeedbackSeverity::ERROR
         );
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getLabel(): string
+    {
+        return 'solr/site-handling';
     }
 
     /**

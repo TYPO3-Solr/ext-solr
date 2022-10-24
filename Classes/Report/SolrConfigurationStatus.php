@@ -24,6 +24,7 @@ use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use RuntimeException;
 use TYPO3\CMS\Core\Error\Http\ServiceUnavailableException;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Reports\Status;
 
@@ -38,12 +39,12 @@ class SolrConfigurationStatus extends AbstractSolrStatus
     /**
      * @var ExtensionConfiguration
      */
-    protected $extensionConfiguration;
+    protected ExtensionConfiguration $extensionConfiguration;
 
     /**
      * @var FrontendEnvironment
      */
-    protected $frontendEnvironment;
+    protected FrontendEnvironment $frontendEnvironment;
 
     /**
      * SolrConfigurationStatus constructor.
@@ -64,10 +65,8 @@ class SolrConfigurationStatus extends AbstractSolrStatus
      * @return array
      *
      * @throws DBALDriverException
-     *
-     * @noinspection PhpMissingReturnTypeInspection see {@link \TYPO3\CMS\Reports\StatusProviderInterface::getStatus()}
      */
-    public function getStatus()
+    public function getStatus(): array
     {
         $reports = [];
 
@@ -85,6 +84,14 @@ class SolrConfigurationStatus extends AbstractSolrStatus
         }
 
         return $reports;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getLabel(): string
+    {
+        return 'solr/configuration';
     }
 
     /**
@@ -110,7 +117,7 @@ class SolrConfigurationStatus extends AbstractSolrStatus
             /** @scrutinizer ignore-type */
             $report,
             /** @scrutinizer ignore-type */
-            Status::ERROR
+            ContextualFeedbackSeverity::ERROR
         );
     }
 
@@ -138,7 +145,7 @@ class SolrConfigurationStatus extends AbstractSolrStatus
             /** @scrutinizer ignore-type */
             $report,
             /** @scrutinizer ignore-type */
-            Status::WARNING
+            ContextualFeedbackSeverity::WARNING
         );
     }
 
