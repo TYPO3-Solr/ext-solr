@@ -21,6 +21,7 @@ use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use Throwable;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Reports\Status;
 
@@ -43,12 +44,12 @@ class SolrVersionStatus extends AbstractSolrStatus
     /**
      * Compiles a version check against each configured Solr server.
      *
-     * @noinspection PhpMissingReturnTypeInspection see {@link \TYPO3\CMS\Reports\StatusProviderInterface::getStatus()}
+     * @return array
      *
      * @throws DBALDriverException
      * @throws Throwable
      */
-    public function getStatus()
+    public function getStatus(): array
     {
         $reports = [];
         $solrConnections = GeneralUtility::makeInstance(ConnectionManager::class)->getAllConnections();
@@ -68,7 +69,7 @@ class SolrVersionStatus extends AbstractSolrStatus
                     /** @scrutinizer ignore-type */
                     $pingFailedMsg,
                     /** @scrutinizer ignore-type */
-                    Status::ERROR
+                    ContextualFeedbackSeverity::ERROR
                 );
                 $reports[] = $status;
                 continue;
@@ -93,13 +94,21 @@ class SolrVersionStatus extends AbstractSolrStatus
                 /** @scrutinizer ignore-type */
                 $report,
                 /** @scrutinizer ignore-type */
-                Status::ERROR
+                ContextualFeedbackSeverity::ERROR
             );
 
             $reports[] = $status;
         }
 
         return $reports;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getLabel(): string
+    {
+        return 'solr/version';
     }
 
     /**
