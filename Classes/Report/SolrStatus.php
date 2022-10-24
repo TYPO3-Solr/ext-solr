@@ -23,6 +23,7 @@ use ApacheSolrForTypo3\Solr\PingFailedException;
 use ApacheSolrForTypo3\Solr\System\Solr\Service\SolrAdminService;
 use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use Throwable;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Reports\Status;
 
@@ -39,21 +40,21 @@ class SolrStatus extends AbstractSolrStatus
      *
      * @var SiteRepository
      */
-    protected $siteRepository;
+    protected SiteRepository $siteRepository;
 
     /**
      * Connection Manager
      *
      * @var ConnectionManager
      */
-    protected $connectionManager;
+    protected ConnectionManager $connectionManager;
 
     /**
      * Holds the response status
      *
-     * @var int
+     * @var ContextualFeedbackSeverity
      */
-    protected int $responseStatus = Status::OK;
+    protected ContextualFeedbackSeverity $responseStatus = ContextualFeedbackSeverity::OK;
 
     /**
      * Holds the response message build by the checks
@@ -76,12 +77,12 @@ class SolrStatus extends AbstractSolrStatus
     /**
      * Compiles a collection of status checks against each configured Solr server.
      *
+     * @return array
+     *
      * @throws DBALDriverException
      * @throws Throwable
-     *
-     * @noinspection PhpMissingReturnTypeInspection see {@link \TYPO3\CMS\Reports\StatusProviderInterface::getStatus()}
      */
-    public function getStatus()
+    public function getStatus(): array
     {
         $reports = [];
         foreach ($this->siteRepository->getAvailableSites() as $site) {
@@ -94,6 +95,14 @@ class SolrStatus extends AbstractSolrStatus
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public function getLabel(): string
+    {
+        return 'solr/status';
+    }
+
+    /**
      * Checks whether a Solr server is available and provides some information.
      *
      * @param array $solrConnection Solr connection parameters
@@ -102,7 +111,7 @@ class SolrStatus extends AbstractSolrStatus
     protected function getConnectionStatus(array $solrConnection): Status
     {
         $header = 'Your site has contacted the Apache Solr server.';
-        $this->responseStatus = Status::OK;
+        $this->responseStatus = ContextualFeedbackSeverity::OK;
 
         $solrAdmin = $this->connectionManager
             ->getSolrConnectionForNodes($solrConnection['read'], $solrConnection['write'])
@@ -114,7 +123,7 @@ class SolrStatus extends AbstractSolrStatus
         $configName = $this->checkSolrConfigName($solrAdmin);
         $schemaName = $this->checkSolrSchemaName($solrAdmin);
 
-        if ($this->responseStatus !== Status::OK) {
+        if ($this->responseStatus !== ContextualFeedbackSeverity::OK) {
             $header = 'Failed contacting the Solr server.';
         }
 
@@ -154,7 +163,7 @@ class SolrStatus extends AbstractSolrStatus
         try {
             $solrVersion = $this->formatSolrVersion($solr->getSolrServerVersion());
         } catch (Throwable $e) {
-            $this->responseStatus = Status::ERROR;
+            $this->responseStatus = ContextualFeedbackSeverity::ERROR;
             $solrVersion = 'Error getting solr version: ' . $e->getMessage();
         }
 
@@ -174,7 +183,7 @@ class SolrStatus extends AbstractSolrStatus
             $accessFilterPluginVersion = $accessFilterPluginStatus->getInstalledPluginVersion($solrAdminService);
             $accessFilterMessage = $accessFilterPluginVersion;
         } catch (Throwable $e) {
-            $this->responseStatus = Status::ERROR;
+            $this->responseStatus = ContextualFeedbackSeverity::ERROR;
             $accessFilterMessage = 'Error getting access filter: ' . $e->getMessage();
         }
         return $accessFilterMessage;
@@ -192,7 +201,7 @@ class SolrStatus extends AbstractSolrStatus
             $pingQueryTime = $solrAdminService->getPingRoundTripRuntime();
             $pingMessage = (int)$pingQueryTime . ' ms';
         } catch (PingFailedException $e) {
-            $this->responseStatus = Status::ERROR;
+            $this->responseStatus = ContextualFeedbackSeverity::ERROR;
             $pingMessage = 'Ping error: ' . $e->getMessage();
         }
         return $pingMessage;
@@ -209,7 +218,7 @@ class SolrStatus extends AbstractSolrStatus
         try {
             $solrConfigMessage = $solrAdminService->getSolrconfigName();
         } catch (Throwable $e) {
-            $this->responseStatus = Status::ERROR;
+            $this->responseStatus = ContextualFeedbackSeverity::ERROR;
             $solrConfigMessage = 'Error determining solr config: ' . $e->getMessage();
         }
 
@@ -227,7 +236,7 @@ class SolrStatus extends AbstractSolrStatus
         try {
             $solrSchemaMessage = $solrAdminService->getSchema()->getName();
         } catch (Throwable $e) {
-            $this->responseStatus = Status::ERROR;
+            $this->responseStatus = ContextualFeedbackSeverity::ERROR;
             $solrSchemaMessage = 'Error determining schema name: ' . $e->getMessage();
         }
 

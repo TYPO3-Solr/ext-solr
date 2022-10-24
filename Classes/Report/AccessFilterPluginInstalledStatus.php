@@ -21,6 +21,7 @@ use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\System\Solr\Service\SolrAdminService;
 use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use Throwable;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Reports\Status;
 
@@ -53,12 +54,12 @@ class AccessFilterPluginInstalledStatus extends AbstractSolrStatus
      * Solr server. Only adds an entry if the Access Filter Query Parser Plugin
      * is not configured.
      *
+     * @return array
+     *
      * @throws DBALDriverException
      * @throws Throwable
-     *
-     * @noinspection PhpMissingReturnTypeInspection see {@link \TYPO3\CMS\Reports\StatusProviderInterface::getStatus()}
      */
-    public function getStatus()
+    public function getStatus(): array
     {
         $reports = [];
         $solrConnections = GeneralUtility::makeInstance(ConnectionManager::class)->getAllConnections();
@@ -80,6 +81,14 @@ class AccessFilterPluginInstalledStatus extends AbstractSolrStatus
         }
 
         return $reports;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getLabel(): string
+    {
+        return 'solr/access-filter';
     }
 
     /**
@@ -106,7 +115,7 @@ class AccessFilterPluginInstalledStatus extends AbstractSolrStatus
             /** @scrutinizer ignore-type */
             $report,
             /** @scrutinizer ignore-type */
-            Status::WARNING
+            ContextualFeedbackSeverity::WARNING
         );
     }
 
@@ -135,7 +144,7 @@ class AccessFilterPluginInstalledStatus extends AbstractSolrStatus
             /** @scrutinizer ignore-type */
             $report,
             /** @scrutinizer ignore-type */
-            Status::WARNING
+            ContextualFeedbackSeverity::WARNING
         );
     }
 
