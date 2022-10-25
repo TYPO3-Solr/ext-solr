@@ -18,9 +18,11 @@ declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\ViewHelpers;
 
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
-use TYPO3\CMS\Fluid\ViewHelpers\TranslateViewHelper as CoreTranslateViewHelper;
 use TYPO3Fluid\Fluid\Core\Compiler\TemplateCompiler;
 use TYPO3Fluid\Fluid\Core\Parser\SyntaxTree\ViewHelperNode;
+use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
+use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
+use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
 /**
  * Class TranslateViewHelper
@@ -28,27 +30,60 @@ use TYPO3Fluid\Fluid\Core\Parser\SyntaxTree\ViewHelperNode;
  * @author Frans Saris <frans@beech.it>
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class TranslateViewHelper extends CoreTranslateViewHelper
+class TranslateViewHelper extends AbstractViewHelper
 {
+    use CompileWithRenderStatic;
     /**
      * @var bool
      */
     protected $escapeChildren = true;
 
     /**
-     * @return string|null
+     * Register required keys for translation
      *
-     * @noinspection PhpMissingReturnTypeInspection
+     * @see \TYPO3\CMS\Fluid\ViewHelpers\TranslateViewHelper::initializeArguments
+     * @return void
      */
-    public function render()
+    public function initializeArguments(): void
     {
-        $result = parent::render();
-        $result = self::replaceTranslationPrefixesWithAtWithStringMarker($result);
-        if (is_array($this->arguments['arguments'])) {
-            $result = vsprintf($result, $this->arguments['arguments']);
+        $this->registerArgument('key', 'string', 'Translation Key');
+        $this->registerArgument('id', 'string', 'Translation ID. Same as key.');
+        $this->registerArgument('default', 'string', 'If the given locallang key could not be found, this value is used. If this argument is not set, child nodes will be used to render the default');
+        $this->registerArgument('arguments', 'array', 'Arguments to be replaced in the resulting string', false, []);
+        $this->registerArgument('extensionName', 'string', 'UpperCamelCased extension key (for example BlogExample)');
+        $this->registerArgument('languageKey', 'string', 'Language key ("dk" for example) or "default" to use. If empty, use current language. Ignored in non-extbase context.');
+        $this->registerArgument('alternativeLanguageKeys', 'array', 'Alternative language keys if no translation does exist. Ignored in non-extbase context.');
+    }
+
+    /**
+     * Renders the label
+     *
+     * @param array $arguments
+     * @param \Closure $renderChildrenClosure
+     * @param RenderingContextInterface $renderingContext
+     * @return string
+     */
+    public static function renderStatic(
+        array $arguments,
+        \Closure $renderChildrenClosure,
+        RenderingContextInterface $renderingContext
+    ): string {
+        $result = self::translateAndReplaceMarkers(
+            (string)($arguments['key'] ?? $arguments['id']),
+            (string)($arguments['extensionName'] ?? 'tx_solr'),
+            $arguments['arguments'],
+            $arguments['languageKey'],
+            $arguments['alternativeLanguageKeys']
+        );
+        if ($result === null && isset($arguments['default'])) {
+            $result = $arguments['default'];
+            $result = self::replaceTranslationPrefixesWithAtWithStringMarker($result);
+            if (is_array($arguments['arguments'])) {
+                $result = vsprintf($result, $arguments['arguments']);
+            }
         }
 
-        return $result;
+        return (string)$result;
     }
 
     /**
@@ -69,7 +104,13 @@ class TranslateViewHelper extends CoreTranslateViewHelper
         ?string $languageKey = null,
         ?array $alternativeLanguageKeys = null
     ): ?string {
-        $result = LocalizationUtility::translate($id, $extensionName, $arguments, $languageKey, $alternativeLanguageKeys);
+        $result = LocalizationUtility::translate(
+            $id,
+            $extensionName,
+            $arguments,
+            $languageKey,
+            $alternativeLanguageKeys
+        );
         $result = self::replaceTranslationPrefixesWithAtWithStringMarker($result);
         if (is_array($arguments)) {
             $result = vsprintf($result, $arguments);
@@ -103,12 +144,12 @@ class TranslateViewHelper extends CoreTranslateViewHelper
     }
 
     /**
-     * @param $result
+     * @param mixed $result
      * @return mixed
      */
     protected static function replaceTranslationPrefixesWithAtWithStringMarker($result)
     {
-        if (strpos((string)$result, '@') !== false) {
+        if (str_contains((string)$result, '@')) {
             $result = preg_replace('~\"?@[a-zA-Z]*\"?~', '%s', $result);
         }
         return $result;
