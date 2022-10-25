@@ -9,7 +9,7 @@ fi
 EXTENSION_ROOTPATH="$SCRIPTPATH/../../"
 SOLR_INSTALL_PATH="/opt/solr-tomcat/"
 
-DEFAULT_TYPO3_VERSION="^11.5.14"
+DEFAULT_TYPO3_VERSION="^12.0.0"
 DEFAULT_PHP_CS_FIXER_VERSION="^3.2.1"
 DEFAULT_TYPO3_DATABASE_HOST="localhost"
 DEFAULT_TYPO3_DATABASE_NAME="test"
@@ -65,7 +65,7 @@ echo "Using database user: $TYPO3_DATABASE_USERNAME"
 echo "Using database password: $TYPO3_DATABASE_PASSWORD"
 
 if [ -z $TYPO3_VERSION ]; then
-  echo "Must set env var TYPO3_VERSION (e.g. dev-main or ^11.5)"
+  echo "Must set env var TYPO3_VERSION (e.g. dev-main or ^12.5)"
   exit 1
 fi
 
