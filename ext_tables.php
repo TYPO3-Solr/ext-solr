@@ -131,19 +131,6 @@ defined('TYPO3') || die();
             ]
         );
 
-        // registering reports
-        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['reports']['tx_reports']['status']['providers']['solr'] = [
-        \ApacheSolrForTypo3\Solr\Report\SiteHandlingStatus::class,
-        \ApacheSolrForTypo3\Solr\Report\SchemaStatus::class,
-        \ApacheSolrForTypo3\Solr\Report\SolrConfigStatus::class,
-        \ApacheSolrForTypo3\Solr\Report\SolrConfigurationStatus::class,
-        \ApacheSolrForTypo3\Solr\Report\SolrStatus::class,
-        \ApacheSolrForTypo3\Solr\Report\SolrVersionStatus::class,
-        \ApacheSolrForTypo3\Solr\Report\AccessFilterPluginInstalledStatus::class,
-        \ApacheSolrForTypo3\Solr\Report\AllowUrlFOpenStatus::class,
-        \ApacheSolrForTypo3\Solr\Report\FilterVarStatus::class,
-    ];
-
         // Register Context Sensitive Help (CSH) translation labels
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addLLrefForTCAdescr(
             'pages',
