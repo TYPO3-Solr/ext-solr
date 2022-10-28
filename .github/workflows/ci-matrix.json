@@ -4,6 +4,11 @@
     "TYPO3": [ "11", "11.5.x-dev" ]
   },
 
+  "task/3376-TYPO3_12_compatibility": {
+  	"PHP": [ "8.1" ],
+  	"TYPO3": [ "12", "dev-main" ]
+  },
+
   "release-11.5.x": {
     "PHP": [ "7.4", "8.0", "8.1" ],
     "TYPO3": [ "11", "11.5.x-dev" ]
