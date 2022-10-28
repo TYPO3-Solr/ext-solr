@@ -27,7 +27,7 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
  */
 abstract class UnitTest extends UnitTestCase
 {
-    protected $resetSingletonInstances = true;
+    protected bool $resetSingletonInstances = true;
 
     protected function setUp(): void
     {

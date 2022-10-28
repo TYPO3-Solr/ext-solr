@@ -41,7 +41,7 @@ class GarbageCollectorTest extends IntegrationTest
     /**
      * @var array
      */
-    protected $coreExtensionsToLoad = [
+    protected array $coreExtensionsToLoad = [
         'extensionmanager',
         'scheduler',
     ];
