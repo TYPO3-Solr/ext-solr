@@ -42,7 +42,6 @@ class TranslateViewHelper extends AbstractViewHelper
      * Register required keys for translation
      *
      * @see \TYPO3\CMS\Fluid\ViewHelpers\TranslateViewHelper::initializeArguments
-     * @return void
      */
     public function initializeArguments(): void
     {

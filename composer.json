@@ -21,14 +21,14 @@
     "docs": "https://docs.typo3.org/p/apache-solr-for-typo3/solr/main/en-us/"
   },
   "require": {
-    "php": "^7.4.0 || ^8.0",
+    "php": "^8.1",
     "ext-dom": "*",
     "ext-json": "*",
     "ext-libxml": "*",
     "ext-simplexml": "*",
     "solarium/solarium": "6.2.7",
     "typo3/cms-backend": "*",
-    "typo3/cms-core": "^12.0.0 || dev-main",
+    "typo3/cms-core": "^12",
     "typo3/cms-extbase": "*",
     "typo3/cms-fluid": "*",
     "typo3/cms-frontend": "*",
@@ -40,7 +40,7 @@
     "typo3/coding-standards": ">=0.5.0",
     "phpunit/phpunit": "^9.5",
     "phpspec/prophecy-phpunit":"*",
-    "typo3/testing-framework": "^6.12",
+    "typo3/testing-framework": "dev-main",
     "typo3/cms-fluid-styled-content": "*",
     "scrutinizer/ocular": "*",
     "sclable/xml-lint": "*"
@@ -58,7 +58,7 @@
   "autoload-dev": {
     "psr-4": {
       "ApacheSolrForTypo3\\Solr\\Tests\\": "Tests/",
-      "TYPO3\\CMS\\Core\\Tests\\": ".Build/Web/typo3/sysext/core/Tests/"
+      "TYPO3\\CMS\\Core\\Tests\\": ".Build/Web/vendor/typo3/cms-core/Tests/"
     }
   },
   "minimum-stability": "stable",
@@ -82,7 +82,7 @@
     "tests:restore-git": "echo \"Retore composer.json to initial state:\" && git checkout composer.json",
     "tests:env": [
       "if [ -z ${TYPO3_VERSION+x} ]; then >&2 echo \"Can not proceed, because env var TYPO3_VERSION is not set\"; exit 1; else echo \"Setup test environment for TYPO3 ${TYPO3_VERSION}\"; fi",
-      "if [ \"${TYPO3_VERSION#*dev}\" != \"dev\" ]; then $COMPOSER_BINARY config minimum-stability dev; fi"
+      "if [ $(echo $TYPO3_VERSION | grep -c dev) -eq 1 ]; then $COMPOSER_BINARY config minimum-stability dev; fi"
     ],
     "tests:setup": [
       "@tests:env",
