@@ -52,7 +52,7 @@ class ReIndexTaskTest extends IntegrationTest
     /**
      * @var array
      */
-    protected $coreExtensionsToLoad = [
+    protected array $coreExtensionsToLoad = [
         'scheduler',
     ];
 
