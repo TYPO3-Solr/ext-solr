@@ -64,7 +64,7 @@ abstract class IntegrationTest extends FunctionalTestCase
 {
     use SiteBasedTestTrait;
 
-    protected $coreExtensionsToLoad = [
+    protected array $coreExtensionsToLoad = [
         'scheduler',
         'fluid_styled_content',
     ];
@@ -81,7 +81,7 @@ abstract class IntegrationTest extends FunctionalTestCase
     /**
      * @var array
      */
-    protected $testExtensionsToLoad = [
+    protected array $testExtensionsToLoad = [
         'typo3conf/ext/solr',
     ];
 
@@ -97,16 +97,11 @@ abstract class IntegrationTest extends FunctionalTestCase
     /**
      * @var array
      */
-    protected $configurationToUseInTestInstance = [
+    protected array $configurationToUseInTestInstance = [
        'SYS' =>  [
            'exceptionalErrors' =>  E_WARNING | E_RECOVERABLE_ERROR | E_DEPRECATED | E_USER_DEPRECATED,
        ],
     ];
-
-    /**
-     * @var string
-     */
-    protected $instancePath;
 
     /**
      * If set to true in subclasses, the import of configured root pages will be skipped.
