@@ -43,7 +43,7 @@ else
     echo "Some files are not compliant to TYPO3 Coding Standards"
     echo "Please fix the files listed above."
     echo "Tip for auto fix: "
-    echo "  composer tests:setup && composer t3:standards:fix"
+    echo "  TYPO3_VERSION="${TYPO3_VERSION}" composer tests:setup && composer t3:standards:fix"
     exit 1
   else
     echo "The code is TYPO3 Coding Standards compliant! Great job!"
