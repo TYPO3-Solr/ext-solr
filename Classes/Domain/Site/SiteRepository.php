@@ -31,6 +31,7 @@ use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
 use ApacheSolrForTypo3\Solr\System\Util\SiteUtility;
+use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Registry;
@@ -262,7 +263,7 @@ class SiteRepository
      */
     protected function buildTypo3ManagedSite(array $rootPageRecord): ?Typo3ManagedSite
     {
-        $solrConfiguration = $this->frontendEnvironment->getSolrConfigurationFromPageId($rootPageRecord['uid']);
+        $solrConfiguration = $this->frontendEnvironment->getSolrConfigurationFromPageId($rootPageRecord['uid'], Util::getLanguageUid());
         /** @var \TYPO3\CMS\Core\Site\Entity\Site $typo3Site */
         try {
             $typo3Site = $this->siteFinder->getSiteByPageId($rootPageRecord['uid']);

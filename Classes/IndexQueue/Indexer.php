@@ -246,7 +246,7 @@ class Indexer extends AbstractIndexer
         if ($language > 0) {
             // @TODO Information from the site configuration are required!
             /* @var Context $context */
-            $context = GeneralUtility::makeInstance(Context::class);
+            $context = clone GeneralUtility::makeInstance(Context::class);
             /* @var LanguageAspect $languageAspect */
             if ($context->hasAspect('language')) {
                 $languageAspect = $context->getAspect('language');
