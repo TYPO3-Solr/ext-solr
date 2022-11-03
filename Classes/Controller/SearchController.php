@@ -105,8 +105,10 @@ class SearchController extends AbstractBaseController
             $arguments = $this->request->getArguments();
             $pageId = $this->typoScriptFrontendController->getRequestedId();
             $languageId = Util::getLanguageUid();
-            $searchRequest = $this->getSearchRequestBuilder()->buildForSearch($arguments, $pageId, $languageId);
 
+            $arguments = $this->emitActionSignal(__CLASS__, 'beforeSearch', [$arguments]);
+
+            $searchRequest = $this->getSearchRequestBuilder()->buildForSearch($arguments, $pageId, $languageId);
             $searchResultSet = $this->searchService->search($searchRequest);
 
             // we pass the search result set to the controller context, to have the possibility
