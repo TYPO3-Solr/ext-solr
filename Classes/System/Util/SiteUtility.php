@@ -68,9 +68,9 @@ class SiteUtility
      * The configuration is done in the globals configuration of a site, and be extended in the language specific configuration
      * of a site.
      *
-     * Typically everything except the core name is configured on the global level and the core name differs for each language.
+     * Typically, everything except the core name is configured on the global level and the core name differs for each language.
      *
-     * In addition every property can be defined for the ```read``` and ```write``` scope.
+     * In addition, every property can be defined for the ```read``` and ```write``` scope.
      *
      * The convention for property keys is "solr_{propertyName}_{scope}". With the configuration "solr_host_read" you define the host
      * for the solr read connection.
@@ -79,10 +79,10 @@ class SiteUtility
      * @param string $property
      * @param int $languageId
      * @param string $scope
-     * @param string $defaultValue
-     * @return string
+     * @param mixed $defaultValue
+     * @return mixed
      */
-    public static function getConnectionProperty(Site $typo3Site, string $property, int $languageId, string $scope, string $defaultValue = null): string
+    public static function getConnectionProperty(Site $typo3Site, string $property, int $languageId, string $scope, $defaultValue = null)
     {
         $value = self::getConnectionPropertyOrFallback($typo3Site, $property, $languageId, $scope);
         if ($value === null) {
