@@ -75,7 +75,7 @@ class SiteUtility
         int $languageId,
         string $scope,
         $defaultValue = null
-    ): string {
+    ) {
         $value = self::getConnectionPropertyOrFallback($typo3Site, $property, $languageId, $scope);
         if ($value === null) {
             return $defaultValue;
