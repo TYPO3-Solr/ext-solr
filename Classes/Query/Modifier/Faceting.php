@@ -241,8 +241,11 @@ class Faceting implements Modifier, SearchRequestAware
             $filters = array_keys($filters);
         }
         foreach ($filters as $filter) {
+            if (strpos((string)$filter, ':') === false) {
+                continue;
+            }
             // only split by the first colon to allow using colons in the filter value itself
-            list($filterFacetName, $filterValue) = explode(':', $filter, 2);
+            list($filterFacetName, $filterValue) = explode(':', (string)$filter, 2);
             if (in_array($filterFacetName, $configuredFacets)) {
                 $filtersByFacetName[$filterFacetName][] = $filterValue;
             }
