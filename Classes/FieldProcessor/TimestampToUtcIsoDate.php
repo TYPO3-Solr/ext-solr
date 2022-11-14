@@ -44,7 +44,7 @@ class TimestampToUtcIsoDate implements FieldProcessor
         $formatService = GeneralUtility::makeInstance(FormatService::class);
 
         foreach ($values as $timestamp) {
-            $results[] = $formatService->timestampToUtcIso($timestamp);
+            $results[] = $formatService->timestampToUtcIso((int)$timestamp);
         }
 
         return $results;
