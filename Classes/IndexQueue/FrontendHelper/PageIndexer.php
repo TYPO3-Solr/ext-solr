@@ -253,7 +253,7 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
         $configuration = Util::getSolrConfiguration();
 
         $logPageIndexed = $configuration->getLoggingIndexingPageIndexed();
-        if (!$this->page->config['config']['index_enable']) {
+        if (!$this->page->config['config']['index_enable'] ?? false) {
             if ($logPageIndexed) {
                 $this->logger->log(
                     SolrLogManager::ERROR,
