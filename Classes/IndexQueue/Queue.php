@@ -209,6 +209,10 @@ class Queue
 
             /* @var SiteRepository $siteRepository */
             $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
+            if ($siteRepository->getSiteByRootPageId($rootPageId) === null) {
+                continue;
+            }
+
             $solrConfiguration = $siteRepository->getSiteByRootPageId($rootPageId)->getSolrConfiguration();
             $indexingConfiguration = $this->recordService->getIndexingConfigurationName($itemType, $itemUid, $solrConfiguration);
             if ($indexingConfiguration === null) {
