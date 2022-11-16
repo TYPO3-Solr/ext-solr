@@ -150,7 +150,7 @@ class Relation extends AbstractContentObject
         $fieldTCA = $this->tcaService->getConfigurationForField($table, $field);
 
         if (isset($fieldTCA['config']['MM']) && trim($fieldTCA['config']['MM']) !== '') {
-            $relatedItems = $this->getRelatedItemsFromMMTable($table, $overlayUid, $fieldTCA);
+            $relatedItems = $this->getRelatedItemsFromMMTable($table, $overlayUid, $fieldTCA, $parentContentObject);
         } else {
             $relatedItems = $this->getRelatedItemsFromForeignTable($table, $overlayUid, $fieldTCA, $parentContentObject);
         }
@@ -169,8 +169,12 @@ class Relation extends AbstractContentObject
      * @throws AspectNotFoundException
      * @throws DBALException
      */
-    protected function getRelatedItemsFromMMTable(string $localTableName, int $localRecordUid, array $localFieldTca): array
-    {
+    protected function getRelatedItemsFromMMTable(
+        string $localTableName,
+        int $localRecordUid,
+        array $localFieldTca,
+        ContentObjectRenderer $parentContentObject
+    ): array {
         $relatedItems = [];
         $foreignTableName = $localFieldTca['config']['foreign_table'];
         $foreignTableTca = $this->tcaService->getTableConfiguration($foreignTableName);
@@ -192,6 +196,7 @@ class Relation extends AbstractContentObject
         }
 
         $relatedRecords = $this->getRelatedRecords($foreignTableName, ...$selectUids);
+        $backupData = $parentContentObject->data;
         foreach ($relatedRecords as $record) {
             if (isset($foreignTableTca['columns'][$foreignTableLabelField]['config']['foreign_table'])
                 && !empty($this->configuration['enableRecursiveValueResolution'])
@@ -212,8 +217,10 @@ class Relation extends AbstractContentObject
             if ($this->getLanguageUid() > 0) {
                 $record = $this->frontendOverlayService->getOverlay($foreignTableName, $record);
             }
-            $relatedItems[] = $record[$foreignTableLabelField];
+            $parentContentObject->data = $record;
+            $relatedItems[] = $parentContentObject->stdWrap($record[$foreignTableLabelField], $this->configuration);
         }
+        $parentContentObject->data = $backupData;
 
         return $relatedItems;
     }
