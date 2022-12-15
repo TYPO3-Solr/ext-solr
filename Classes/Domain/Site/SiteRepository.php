@@ -290,39 +290,9 @@ class SiteRepository
         $solrConnectionConfigurations = [];
 
         foreach ($availableLanguageIds as $languageUid) {
-            $solrEnabled = SiteUtility::getConnectionProperty($typo3Site, 'enabled', $languageUid, 'read', true);
-            $solrReadCore = SiteUtility::getConnectionProperty($typo3Site, 'core', $languageUid, 'read');
-            $solrWriteCore = SiteUtility::getConnectionProperty($typo3Site, 'core', $languageUid, 'write');
-            if ($solrEnabled && !empty($solrReadCore) && !empty($solrWriteCore)) {
-                $solrConnectionConfigurations[$languageUid] = [
-                    'connectionKey' =>  $rootPageRecord['uid'] . '|' . $languageUid,
-                    'rootPageTitle' => $rootPageRecord['title'],
-                    'rootPageUid' => $rootPageRecord['uid'],
-                    'read' => [
-                        'scheme' => SiteUtility::getConnectionProperty($typo3Site, 'scheme', $languageUid, 'read', 'http'),
-                        'host' => SiteUtility::getConnectionProperty($typo3Site, 'host', $languageUid, 'read', 'localhost'),
-                        'port' => (int)SiteUtility::getConnectionProperty($typo3Site, 'port', $languageUid, 'read', 8983),
-                        // @todo: transform core to path
-                        'path' =>
-                            SiteUtility::getConnectionProperty($typo3Site, 'path', $languageUid, 'read', '/solr/') .
-                            $solrReadCore . '/' ,
-                        'username' => SiteUtility::getConnectionProperty($typo3Site, 'username', $languageUid, 'read', ''),
-                        'password' => SiteUtility::getConnectionProperty($typo3Site, 'password', $languageUid, 'read', ''),
-                    ],
-                    'write' => [
-                        'scheme' => SiteUtility::getConnectionProperty($typo3Site, 'scheme', $languageUid, 'write', 'http'),
-                        'host' => SiteUtility::getConnectionProperty($typo3Site, 'host', $languageUid, 'write', 'localhost'),
-                        'port' => (int)SiteUtility::getConnectionProperty($typo3Site, 'port', $languageUid, 'write', 8983),
-                        // @todo: transform core to path
-                        'path' =>
-                            SiteUtility::getConnectionProperty($typo3Site, 'path', $languageUid, 'write', '/solr/') .
-                            $solrWriteCore . '/' ,
-                        'username' => SiteUtility::getConnectionProperty($typo3Site, 'username', $languageUid, 'write', ''),
-                        'password' => SiteUtility::getConnectionProperty($typo3Site, 'password', $languageUid, 'write', ''),
-                    ],
-
-                    'language' => $languageUid,
-                ];
+            $solrConnection = SiteUtility::getSolrConnectionConfiguration($typo3Site, $languageUid);
+            if ($solrConnection !== null) {
+                $solrConnectionConfigurations[$languageUid] = $solrConnection;
             }
         }
 

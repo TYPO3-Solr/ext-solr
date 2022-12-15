@@ -25,7 +25,6 @@ use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager as SolrCon
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Service\ConfigurationService;
-use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\TypoScript\TypoScriptService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -223,9 +222,12 @@ abstract class AbstractBaseController extends ActionController
      */
     protected function initializeSearch()
     {
-        /** @var ConnectionManager $solrConnection */
         try {
-            $solrConnection = $this->objectManager->get(ConnectionManager::class)->getConnectionByPageId($this->typoScriptFrontendController->id, Util::getLanguageUid(), $this->typoScriptFrontendController->MP);
+            $solrConnection = GeneralUtility::makeInstance(ConnectionManager::class)->getConnectionByTypo3Site(
+                $this->typoScriptFrontendController->getSite(),
+                $this->typoScriptFrontendController->getLanguage()->getLanguageId()
+            );
+
             $search = $this->objectManager->get(Search::class, $solrConnection);
 
             /** @noinspection PhpParamsInspection */

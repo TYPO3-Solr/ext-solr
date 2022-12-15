@@ -17,6 +17,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Query\Modifier;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
+use ApacheSolrForTypo3\Solr\Domain\Site\SiteHashService;
 use ApacheSolrForTypo3\Solr\Query\Modifier\Elevation;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 
@@ -35,6 +36,7 @@ class ElevationTest extends UnitTest
         $query = $this->getDumbMock(Query::class);
 
         $queryBuilderMock = $this->getMockBuilder(QueryBuilder::class)
+            ->setConstructorArgs([null, null, $this->createMock(SiteHashService::class)])
             ->disableProxyingToOriginalMethods()
             ->getMock();
         $queryBuilderMock->expects(self::once())->method('startFrom')->willReturn($queryBuilderMock);

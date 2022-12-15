@@ -16,8 +16,12 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Search;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
+use ApacheSolrForTypo3\Solr\Domain\Site\SiteHashService;
 use ApacheSolrForTypo3\Solr\Search\SortingComponent;
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 
 /**
@@ -51,7 +55,13 @@ class SortingComponentTest extends UnitTest
         $this->query->setQuery('');
         $this->searchRequestMock = $this->getDumbMock(SearchRequest::class);
 
-        $this->sortingComponent = new SortingComponent();
+        $queryBuilder = new QueryBuilder(
+            $this->createMock(TypoScriptConfiguration::class),
+            $this->createMock(SolrLogManager::class),
+            $this->createMock(SiteHashService::class)
+        );
+
+        $this->sortingComponent = new SortingComponent($queryBuilder);
         $this->sortingComponent->setQuery($this->query);
         $this->sortingComponent->setSearchRequest($this->searchRequestMock);
         parent::setUp();

@@ -84,6 +84,72 @@ class SiteUtility
     }
 
     /**
+     * Builds the Solr connection configuration
+     *
+     * @param Site $typo3Site
+     * @param int $languageUid
+     * @return array|null
+     */
+    public static function getSolrConnectionConfiguration(Site $typo3Site, int $languageUid): ?array
+    {
+        $solrEnabled = self::getConnectionProperty($typo3Site, 'enabled', $languageUid, 'read', true);
+        $solrReadCore = self::getConnectionProperty($typo3Site, 'core', $languageUid, 'read');
+        $solrWriteCore = self::getConnectionProperty($typo3Site, 'core', $languageUid, 'write');
+        if (!$solrEnabled || empty($solrReadCore) || empty($solrWriteCore)) {
+            return null;
+        }
+
+        $rootPageUid = $typo3Site->getRootPageId();
+        return [
+            'connectionKey' => $rootPageUid . '|' . $languageUid,
+            'rootPageUid' => $rootPageUid,
+            'read' => [
+                'scheme' => self::getConnectionProperty($typo3Site, 'scheme', $languageUid, 'read', 'http'),
+                'host' => self::getConnectionProperty($typo3Site, 'host', $languageUid, 'read', 'localhost'),
+                'port' => (int)self::getConnectionProperty($typo3Site, 'port', $languageUid, 'read', 8983),
+                // @todo: transform core to path
+                'path' =>
+                self::getConnectionProperty($typo3Site, 'path', $languageUid, 'read', '/solr/') .
+                $solrReadCore . '/' ,
+                'username' => self::getConnectionProperty($typo3Site, 'username', $languageUid, 'read', ''),
+                'password' => self::getConnectionProperty($typo3Site, 'password', $languageUid, 'read', ''),
+            ],
+            'write' => [
+                'scheme' => self::getConnectionProperty($typo3Site, 'scheme', $languageUid, 'write', 'http'),
+                'host' => self::getConnectionProperty($typo3Site, 'host', $languageUid, 'write', 'localhost'),
+                'port' => (int)self::getConnectionProperty($typo3Site, 'port', $languageUid, 'write', 8983),
+                // @todo: transform core to path
+                'path' =>
+                self::getConnectionProperty($typo3Site, 'path', $languageUid, 'write', '/solr/') .
+                $solrWriteCore . '/' ,
+                'username' => self::getConnectionProperty($typo3Site, 'username', $languageUid, 'write', ''),
+                'password' => self::getConnectionProperty($typo3Site, 'password', $languageUid, 'write', ''),
+            ],
+
+            'language' => $languageUid,
+        ];
+    }
+
+    /**
+     * Builds the Solr connection configuration for all languages of given TYPO3 site
+     *
+     * @param Site $typo3Site
+     * @return array
+     */
+    public static function getAllSolrConnectionConfigurations(Site $typo3Site): array
+    {
+        $connections = [];
+        foreach ($typo3Site->getLanguages() as $language) {
+            $connection = self::getSolrConnectionConfiguration($typo3Site, $language->getLanguageId());
+            if ($connection !== null) {
+                $connections[$language->getLanguageId()] = $connection;
+            }
+        }
+
+        return $connections;
+    }
+
+    /**
      * Resolves site configuration properties.
      * Language context properties have precedence over global settings.
      *

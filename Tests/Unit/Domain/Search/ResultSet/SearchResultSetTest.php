@@ -19,6 +19,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\Helper\EscapeService;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResult;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSetService;
@@ -63,11 +64,6 @@ class SearchResultSetTest extends UnitTest
     protected $queryMock;
 
     /**
-     * @var SiteHashService
-     */
-    protected $siteHashServiceMock;
-
-    /**
      * @var EscapeService
      */
     protected $escapeServiceMock;
@@ -83,9 +79,14 @@ class SearchResultSetTest extends UnitTest
         $this->searchMock = $this->getDumbMock(Search::class);
         $this->solrLogManagerMock = $this->getDumbMock(SolrLogManager::class);
 
-        $this->siteHashServiceMock = $this->getDumbMock(SiteHashService::class);
         $this->escapeServiceMock = $this->getDumbMock(EscapeService::class);
         $this->escapeServiceMock->expects(self::any())->method('escape')->willReturnArgument(0);
+
+        $queryBuilder = new QueryBuilder(
+            $this->configurationMock,
+            $this->solrLogManagerMock,
+            $this->createMock(SiteHashService::class)
+        );
 
         $this->objectManagerMock = $this->createMock(ObjectManager::class);
         $this->searchResultSetService = $this->getMockBuilder(SearchResultSetService::class)
@@ -95,7 +96,7 @@ class SearchResultSetTest extends UnitTest
                 $this->searchMock,
                 $this->solrLogManagerMock,
                 null,
-                null,
+                $queryBuilder,
                 $this->objectManagerMock,
             ])
             ->getMock();
