@@ -23,11 +23,13 @@ use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository as PagesReposit
 use ApacheSolrForTypo3\Solr\System\Records\SystemLanguage\SystemLanguageRepository;
 use ApacheSolrForTypo3\Solr\System\Solr\Node;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
+use ApacheSolrForTypo3\Solr\System\Util\SiteUtility;
 use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use InvalidArgumentException;
 use function json_encode;
 use Throwable;
 use TYPO3\CMS\Core\SingletonInterface;
+use TYPO3\CMS\Core\Site\Entity\Site as Typo3Site;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -124,6 +126,34 @@ class ConnectionManager implements SingletonInterface
             return $this->getConnectionFromConfiguration($config);
         } catch (InvalidArgumentException $e) {
             throw $this->buildNoConnectionExceptionForPageAndLanguage($pageId, $language);
+        }
+    }
+
+    /**
+     * Gets a Solr connection for a TYPO3 site and language
+     *
+     * @param Typo3Site $typo3Site
+     * @param int $languageUid
+     * @return SolrConnection A Solr connection.
+     * @throws NoSolrConnectionFoundException
+     */
+    public function getConnectionByTypo3Site(Typo3Site $typo3Site, int $languageUid = 0): SolrConnection
+    {
+        $config = SiteUtility::getSolrConnectionConfiguration($typo3Site, $languageUid);
+        if ($config === null) {
+            throw $this->buildNoConnectionExceptionForPageAndLanguage(
+                $typo3Site->getRootPageId(),
+                $languageUid
+            );
+        }
+
+        try {
+            return $this->getConnectionFromConfiguration($config);
+        } catch (InvalidArgumentException $e) {
+            throw $this->buildNoConnectionExceptionForPageAndLanguage(
+                $typo3Site->getRootPageId(),
+                $languageUid
+            );
         }
     }
 

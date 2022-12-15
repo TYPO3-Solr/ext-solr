@@ -25,6 +25,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\InvalidQueryBuilderEx
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\InvalidUrlDecoderException;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\UrlFacetContainer;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
+use ApacheSolrForTypo3\Solr\Domain\Site\SiteHashService;
 use ApacheSolrForTypo3\Solr\Query\Modifier\Faceting;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
@@ -72,8 +73,14 @@ class FacetingTest extends UnitTest
         $solrLogManagerMock = $this->getDumbMock(SolrLogManager::class);
 
         /* @var Query $query */
-        $queryBuilder = new QueryBuilder($fakeConfiguration, $solrLogManagerMock);
+        $queryBuilder = new QueryBuilder(
+            $fakeConfiguration,
+            $solrLogManagerMock,
+            $this->createMock(SiteHashService::class)
+        );
         $query = $queryBuilder->buildSearchQuery('test');
+
+        GeneralUtility::addInstance(SiteHashService::class, $this->createMock(SiteHashService::class));
 
         /* @var Faceting $facetModifier */
         $facetModifier = GeneralUtility::makeInstance(Faceting::class, $facetRegistry);
