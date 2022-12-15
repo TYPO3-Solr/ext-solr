@@ -55,7 +55,14 @@ class RepositoryTest extends UnitTest
     public function findOneByPageIdAndByLanguageIdReturnsFirstFoundDocument()
     {
         $apacheSolrDocumentCollection = [new Document(), new Document()];
-        $apacheSolrDocumentRepository = $this->getAccessibleMock(Repository::class, ['findByPageIdAndByLanguageId']);
+        $apacheSolrDocumentRepository = $this->getAccessibleMock(
+            Repository::class,
+            ['findByPageIdAndByLanguageId'],
+            [],
+            '',
+            false
+        );
+
         $apacheSolrDocumentRepository
             ->expects(self::exactly(1))
             ->method('findByPageIdAndByLanguageId')
@@ -93,7 +100,13 @@ class RepositoryTest extends UnitTest
     public function findByPageIdAndByLanguageIdReturnsEmptyCollectionIfConnectionToSolrServerCanNotBeEstablished()
     {
         /* @var $apacheSolrDocumentRepository Repository */
-        $apacheSolrDocumentRepository = $this->getAccessibleMock(Repository::class, ['initializeSearch']);
+        $apacheSolrDocumentRepository = $this->getAccessibleMock(
+            Repository::class,
+            ['initializeSearch'],
+            [],
+            '',
+            false
+        );
         $apacheSolrDocumentRepository
             ->expects(self::exactly(1))
             ->method('initializeSearch')

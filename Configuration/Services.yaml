@@ -25,6 +25,11 @@ services:
       $frontendEnvironment: '@ApacheSolrForTypo3\Solr\FrontendEnvironment'
       $tcaService: '@ApacheSolrForTypo3\Solr\System\TCA\TCAService'
       $indexQueue: '@ApacheSolrForTypo3\Solr\IndexQueue\Queue'
+
+  ApacheSolrForTypo3\Solr\Domain\Site\SiteHashService:
+    public: true
+    autowire: true
+
   ApacheSolrForTypo3\Solr\EventListener\EnhancedRouting\CachedUrlModifier:
     tags:
       - name: event.listener

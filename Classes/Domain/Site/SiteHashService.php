@@ -17,8 +17,11 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\Domain\Site;
 
+use ApacheSolrForTypo3\Solr\System\Util\SiteUtility;
 use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use Throwable;
+use TYPO3\CMS\Core\Exception\SiteNotFoundException;
+use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -30,6 +33,16 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class SiteHashService
 {
+    /**
+     * SiteFinder
+     */
+    protected SiteFinder $siteFinder;
+
+    public function __construct(SiteFinder $siteFinder)
+    {
+        $this->siteFinder = $siteFinder;
+    }
+
     /**
      * Resolves magic keywords in allowed sites configuration.
      * Supported keywords:
@@ -49,7 +62,7 @@ class SiteHashService
         ?string $allowedSitesConfiguration = ''
     ): string {
         if ($allowedSitesConfiguration === '__all') {
-            return  $this->getDomainListOfAllSites();
+            return $this->getDomainListOfAllSites();
         }
         if ($allowedSitesConfiguration === '*') {
             return '*';
@@ -85,10 +98,13 @@ class SiteHashService
      */
     protected function getDomainListOfAllSites(): string
     {
-        $sites = $this->getAvailableSites();
+        $sites = $this->siteFinder->getAllSites();
         $domains = [];
-        foreach ($sites as $site) {
-            $domains[] = $site->getDomain();
+        foreach ($sites as $typo3Site) {
+            $connections = SiteUtility::getAllSolrConnectionConfigurations($typo3Site);
+            if (!empty($connections)) {
+                $domains[] = $typo3Site->getBase()->getHost();
+            }
         }
 
         return implode(',', $domains);
@@ -104,7 +120,13 @@ class SiteHashService
      */
     protected function getDomainByPageIdAndReplaceMarkers(int $pageId, string $allowedSitesConfiguration): string
     {
-        $domainOfPage = $this->getSiteByPageId($pageId)->getDomain();
+        try {
+            $typo3Site = $this->siteFinder->getSiteByPageId($pageId);
+            $domainOfPage = $typo3Site->getBase()->getHost();
+        } catch (SiteNotFoundException $e) {
+            return '';
+        }
+
         $allowedSites = str_replace(['__solr_current_site', '__current_site'], $domainOfPage, $allowedSitesConfiguration);
         return (string)$allowedSites;
     }
@@ -113,18 +135,30 @@ class SiteHashService
      * @return Site[]
      * @throws DBALDriverException
      * @throws Throwable
+     * @deprecated since v11.5 and will be removed in v11.6, SiteHashService no longer requires/uses Solr sites
      */
     protected function getAvailableSites(): array
     {
+        trigger_error(
+            'SiteHashService no longer requires/uses Solr sites ' . __METHOD__ . ' of class ' . __CLASS__ . ' is deprecated since v11.5 and will be removed in v11.6. Use SiteFinder instead or initizalize own objects',
+            E_USER_DEPRECATED
+        );
+
         return $this->getSiteRepository()->getAvailableSites();
     }
 
     /**
      * @param int $pageId
      * @return SiteInterface
+     * @deprecated since v11.5 and will be removed in v11.6, SiteHashService no longer requires/uses Solr sites
      */
     protected function getSiteByPageId(int $pageId): SiteInterface
     {
+        trigger_error(
+            'SiteHashService no longer requires/uses Solr sites ' . __METHOD__ . ' of class ' . __CLASS__ . ' is deprecated since v11.5 and will be removed in v11.6. Use SiteFinder instead or initizalize own objects',
+            E_USER_DEPRECATED
+        );
+
         return $this->getSiteRepository()->getSiteByPageId($pageId);
     }
 
@@ -132,9 +166,15 @@ class SiteHashService
      * Get a reference to SiteRepository
      *
      * @return SiteRepository
+     * @deprecated since v11.5 and will be removed in v11.6, SiteHashService no longer requires/uses Solr sites
      */
     protected function getSiteRepository(): SiteRepository
     {
+        trigger_error(
+            'SiteHashService no longer requires/uses Solr sites ' . __METHOD__ . ' of class ' . __CLASS__ . ' is deprecated since v11.5 and will be removed in v11.6. Use SiteFinder instead or initizalize own objects',
+            E_USER_DEPRECATED
+        );
+
         return GeneralUtility::makeInstance(SiteRepository::class);
     }
 }

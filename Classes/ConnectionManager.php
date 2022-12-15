@@ -23,11 +23,13 @@ use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository as PagesReposit
 use ApacheSolrForTypo3\Solr\System\Records\SystemLanguage\SystemLanguageRepository;
 use ApacheSolrForTypo3\Solr\System\Solr\Node;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
+use ApacheSolrForTypo3\Solr\System\Util\SiteUtility;
 use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use InvalidArgumentException;
 use function json_encode;
 use Throwable;
 use TYPO3\CMS\Core\SingletonInterface;
+use TYPO3\CMS\Core\Site\Entity\Site as Typo3Site;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -128,6 +130,34 @@ class ConnectionManager implements SingletonInterface
     }
 
     /**
+     * Gets a Solr connection for a TYPO3 site and language
+     *
+     * @param Typo3Site $typo3Site
+     * @param int $languageUid
+     * @return SolrConnection A Solr connection.
+     * @throws NoSolrConnectionFoundException
+     */
+    public function getConnectionByTypo3Site(Typo3Site $typo3Site, int $languageUid = 0): SolrConnection
+    {
+        $config = SiteUtility::getSolrConnectionConfiguration($typo3Site, $languageUid);
+        if ($config === null) {
+            throw $this->buildNoConnectionExceptionForPageAndLanguage(
+                $typo3Site->getRootPageId(),
+                $languageUid
+            );
+        }
+
+        try {
+            return $this->getConnectionFromConfiguration($config);
+        } catch (InvalidArgumentException $e) {
+            throw $this->buildNoConnectionExceptionForPageAndLanguage(
+                $typo3Site->getRootPageId(),
+                $languageUid
+            );
+        }
+    }
+
+    /**
      * Gets a Solr connection for a root page ID.
      *
      * @param int $pageId A root page ID.
@@ -189,11 +219,16 @@ class ConnectionManager implements SingletonInterface
      *
      * @param array $connection Connection configuration
      * @return string Connection label
-     * @todo Remove, since not used, or take used.
+     * @deprecated since v11.5 and will be removed in v11.6, as unused since v11.0.0
      */
     protected function buildConnectionLabel(array $connection): string
     {
-        return $connection['rootPageTitle']
+        trigger_error(
+            'ConnectionManager->buildConnectionLabel is deprecated since v11.5 and will be removed in v11.6, as unsed since v11.0.0',
+            E_USER_DEPRECATED
+        );
+
+        return $connection['connectionKey']
             . ' (pid: ' . $connection['rootPageUid']
             . ', language: ' . $this->systemLanguageRepository->findOneLanguageTitleByLanguageId($connection['language'])
             . ') - Read node: '

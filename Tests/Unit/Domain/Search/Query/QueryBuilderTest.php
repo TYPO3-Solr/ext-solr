@@ -93,7 +93,7 @@ class QueryBuilderTest extends UnitTest
      */
     protected function getInitializedTestSearchQuery(string $queryString = '', TypoScriptConfiguration $fakeConfiguration = null): SearchQuery
     {
-        $builder = new QueryBuilder($fakeConfiguration, $this->loggerMock);
+        $builder = new QueryBuilder($fakeConfiguration, $this->loggerMock, $this->siteHashServiceMock);
         return $builder->buildSearchQuery($queryString);
     }
 
@@ -379,7 +379,7 @@ class QueryBuilderTest extends UnitTest
     public function addsCorrectAccessFilterForAnonymousUser()
     {
         $query = $this->getInitializedTestSearchQuery();
-        $queryBuilder = new QueryBuilder($this->configurationMock, $this->loggerMock);
+        $queryBuilder = new QueryBuilder($this->configurationMock, $this->loggerMock, $this->siteHashServiceMock);
         $queryBuilder->startFrom($query)->useUserAccessGroups([-1, 0]);
         $queryParameters = $this->getAllQueryParameters($query);
         self::assertSame('{!typo3access}-1,0', $queryParameters['fq'], 'Accessfilter was not applied');
@@ -391,7 +391,7 @@ class QueryBuilderTest extends UnitTest
     public function grantsAccessToGroupZeroIfNoGroupsProvided()
     {
         $query = $this->getInitializedTestSearchQuery();
-        $queryBuilder = new QueryBuilder($this->configurationMock, $this->loggerMock);
+        $queryBuilder = new QueryBuilder($this->configurationMock, $this->loggerMock, $this->siteHashServiceMock);
         $queryBuilder->startFrom($query)->useUserAccessGroups([]);
         $queryParameters = $this->getAllQueryParameters($query);
         self::assertSame('{!typo3access}0', $queryParameters['fq'], 'Changed accessfilter was not applied');
@@ -403,7 +403,7 @@ class QueryBuilderTest extends UnitTest
     public function grantsAccessToGroupZeroIfZeroNotProvided()
     {
         $query = $this->getInitializedTestSearchQuery();
-        $queryBuilder = new QueryBuilder($this->configurationMock, $this->loggerMock);
+        $queryBuilder = new QueryBuilder($this->configurationMock, $this->loggerMock, $this->siteHashServiceMock);
         $queryBuilder->startFrom($query)->useUserAccessGroups([5]);
         $queryParameters = $this->getAllQueryParameters($query);
         self::assertSame('{!typo3access}0,5', $queryParameters['fq'], 'Access filter was not applied as expected');
@@ -415,7 +415,7 @@ class QueryBuilderTest extends UnitTest
     public function filtersDuplicateAccessGroups()
     {
         $query = $this->getInitializedTestSearchQuery();
-        $queryBuilder = new QueryBuilder($this->configurationMock, $this->loggerMock);
+        $queryBuilder = new QueryBuilder($this->configurationMock, $this->loggerMock, $this->siteHashServiceMock);
         $queryBuilder->startFrom($query)->useUserAccessGroups([1, 1]);
         $queryParameters = $this->getAllQueryParameters($query);
         self::assertSame('{!typo3access}0,1', $queryParameters['fq'], 'Access filter was not applied as expected');
@@ -427,7 +427,7 @@ class QueryBuilderTest extends UnitTest
     public function allowsOnlyOneAccessFilter()
     {
         $query = $this->getInitializedTestSearchQuery();
-        $queryBuilder = new QueryBuilder($this->configurationMock, $this->loggerMock);
+        $queryBuilder = new QueryBuilder($this->configurationMock, $this->loggerMock, $this->siteHashServiceMock);
         $queryBuilder->startFrom($query)->useUserAccessGroups([1])->useUserAccessGroups([2]);
         $queryParameters = $this->getAllQueryParameters($query);
 
@@ -910,7 +910,7 @@ class QueryBuilderTest extends UnitTest
      */
     public function canUseConfiguredVariantsFieldWhenVariantsAreActive()
     {
-        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['variants'] = 1;
+        $fakeConfigurationArray = ['plugin.' => ['tx_solr.' => ['search.' => ['variants' => 1]]]];
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['variants.'] = [
             'variantField' => 'myField',
         ];
@@ -926,7 +926,7 @@ class QueryBuilderTest extends UnitTest
      */
     public function canUseConfiguredVariantsExpandAndRowCount()
     {
-        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['variants'] = 1;
+        $fakeConfigurationArray = ['plugin.' => ['tx_solr.' => ['search.' => ['variants' => 1]]]];
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['variants.'] = [
             'variantField' => 'variants',
             'expand' => true,
@@ -945,7 +945,7 @@ class QueryBuilderTest extends UnitTest
      */
     public function expandRowsIsNotSetWhenExpandIsInactive()
     {
-        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['variants'] = 1;
+        $fakeConfigurationArray = ['plugin.' => ['tx_solr.' => ['search.' => ['variants' => 1]]]];
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['variants.'] = [
             'variantField' => 'variants',
             'expand' => false,
@@ -1256,7 +1256,7 @@ class QueryBuilderTest extends UnitTest
 
         $fieldCollapsing = new FieldCollapsing(true);
 
-        $queryBuilder = new QueryBuilder($this->configurationMock, $this->loggerMock);
+        $queryBuilder = new QueryBuilder($this->configurationMock, $this->loggerMock, $this->siteHashServiceMock);
         $query = $queryBuilder->newSearchQuery('hello world')
             ->useFilter('color:red')
             ->useUserAccessGroups([1, 2, 3])
@@ -1612,7 +1612,7 @@ class QueryBuilderTest extends UnitTest
                 'numberOfSuggestions' => 10,
             ]);
         $this->builder = $this->getMockBuilder(QueryBuilder::class)
-            ->setConstructorArgs([$this->configurationMock, $this->loggerMock])
+            ->setConstructorArgs([$this->configurationMock, $this->loggerMock, $this->siteHashServiceMock])
             ->onlyMethods(['useSiteHashFromTypoScript'])
             ->getMock();
 
@@ -1634,7 +1634,7 @@ class QueryBuilderTest extends UnitTest
                 'numberOfSuggestions' => 10,
             ]);
         $this->builder = $this->getMockBuilder(QueryBuilder::class)
-                                ->setConstructorArgs([$this->configurationMock, $this->loggerMock])
+                                ->setConstructorArgs([$this->configurationMock, $this->loggerMock, $this->siteHashServiceMock])
                                 ->onlyMethods(['useSiteHashFromTypoScript'])
                                 ->getMock();
 

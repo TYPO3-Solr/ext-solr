@@ -15,9 +15,12 @@
 
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Site;
 
-use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteHashService;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use Psr\Http\Message\UriInterface;
+use TYPO3\CMS\Core\Site\Entity\Site;
+use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
+use TYPO3\CMS\Core\Site\SiteFinder;
 
 /**
  * Testcase to check if the SiteHashService class works as expected.
@@ -48,18 +51,34 @@ class SiteHashServiceTest extends UnitTest
      */
     public function canResolveSiteHashAllowedSites($allowedSitesConfiguration, $expectedAllowedSites)
     {
+        $siteLanguageMock = $this->createMock(SiteLanguage::class);
+        $siteLanguageMock->method('getLanguageId')->willReturn(0);
+
+        $siteConfiguration = ['solr_enabled_read' => 1, 'solr_core_read' => 'core_en'];
+
+        $baseAMock = $this->createMock(UriInterface::class);
+        $baseAMock->method('getHost')->willReturn('solrtesta.local');
         $siteA = $this->getDumbMock(Site::class);
-        $siteA->expects(self::any())->method('getDomain')->willReturn('solrtesta.local');
+        $siteA->method('getBase')->willReturn($baseAMock);
+        $siteA->method('getLanguages')->willReturn([$siteLanguageMock]);
+        $siteA->method('getConfiguration')->willReturn($siteConfiguration);
+
+        $baseBMock = $this->createMock(UriInterface::class);
+        $baseBMock->method('getHost')->willReturn('solrtestb.local');
         $siteB = $this->getDumbMock(Site::class);
-        $siteB->expects(self::any())->method('getDomain')->willReturn('solrtestb.local');
+        $siteB->method('getBase')->willReturn($baseBMock);
+        $siteB->method('getLanguages')->willReturn([$siteLanguageMock]);
+        $siteB->method('getConfiguration')->willReturn($siteConfiguration);
+
         $allSites = [$siteA, $siteB];
 
-        /** @var $siteHashServiceMock SiteHashService */
-        $siteHashServiceMock = $this->getMockBuilder(SiteHashService::class)->onlyMethods(['getAvailableSites', 'getSiteByPageId'])->getMock();
-        $siteHashServiceMock->expects(self::any())->method('getAvailableSites')->willReturn($allSites);
-        $siteHashServiceMock->expects(self::any())->method('getSiteByPageId')->willReturn($siteA);
+        $siteFinderMock = $this->createMock(SiteFinder::class);
+        $siteFinderMock->method('getAllSites')->willReturn($allSites);
+        $siteFinderMock->method('getSiteByPageId')->willReturn($siteA);
 
-        $allowedSites = $siteHashServiceMock->getAllowedSitesForPageIdAndAllowedSitesConfiguration(1, $allowedSitesConfiguration);
+        $siteHashService = new SiteHashService($siteFinderMock);
+
+        $allowedSites = $siteHashService->getAllowedSitesForPageIdAndAllowedSitesConfiguration(1, $allowedSitesConfiguration);
         self::assertSame($expectedAllowedSites, $allowedSites, 'resolveSiteHashAllowedSites did not return expected allowed sites');
     }
 
@@ -71,7 +90,7 @@ class SiteHashServiceTest extends UnitTest
         $oldKey = $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'];
         $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'] = 'testKey';
 
-        $service = new SiteHashService();
+        $service = new SiteHashService($this->createMock(SiteFinder::class));
         $hash1 = $service->getSiteHashForDomain('www.example.com');
         $hash2 = $service->getSiteHashForDomain('www.example.com');
 
