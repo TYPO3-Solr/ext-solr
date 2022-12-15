@@ -17,6 +17,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\Query;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\SuggestQuery;
+use ApacheSolrForTypo3\Solr\Domain\Site\SiteHashService;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 
@@ -38,7 +39,7 @@ class SuggestQueryTest extends UnitTest
         ];
 
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
-        $queryBuilder = new QueryBuilder($fakeConfiguration);
+        $queryBuilder = new QueryBuilder($fakeConfiguration, null, $this->createMock(SiteHashService::class));
         $suggestQuery = $queryBuilder->newSuggestQuery('type')->getQuery();
 
         self::assertNull($suggestQuery->getFilterQuery('fieldCollapsing'), 'Collapsing should never be active for a suggest query, even when active');
@@ -52,7 +53,7 @@ class SuggestQueryTest extends UnitTest
         $fakeConfiguration = new TypoScriptConfiguration([]);
         $suggestQuery = new SuggestQuery('typ', $fakeConfiguration);
 
-        $queryBuilder = new QueryBuilder($fakeConfiguration);
+        $queryBuilder = new QueryBuilder($fakeConfiguration, null, $this->createMock(SiteHashService::class));
         $queryBuilder->startFrom($suggestQuery)->useFilter('+type:pages');
         $queryParameters = $suggestQuery->getRequestBuilder()->build($suggestQuery)->getParams();
         self::assertSame('+type:pages', $queryParameters['fq'], 'Filter was not added to the suggest query parameters');
@@ -66,7 +67,7 @@ class SuggestQueryTest extends UnitTest
         $fakeConfiguration = new TypoScriptConfiguration([]);
         $suggestQuery = new SuggestQuery(' ', $fakeConfiguration);
 
-        $queryBuilder = new QueryBuilder($fakeConfiguration);
+        $queryBuilder = new QueryBuilder($fakeConfiguration, null, $this->createMock(SiteHashService::class));
         $queryBuilder->startFrom($suggestQuery)->useFilter('+type:pages');
         $queryParameters = $suggestQuery->getRequestBuilder()->build($suggestQuery)->getParams();
         self::assertSame('', $queryParameters['q'], 'Query is expected to be empty, but is not');

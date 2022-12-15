@@ -17,9 +17,11 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\Domain\Site;
 
+use ApacheSolrForTypo3\Solr\System\Util\SiteUtility;
 use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use Throwable;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Exception\SiteNotFoundException;
+use TYPO3\CMS\Core\Site\SiteFinder;
 
 /**
  * SiteHashService
@@ -30,6 +32,16 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class SiteHashService
 {
+    /**
+     * SiteFinder
+     */
+    protected SiteFinder $siteFinder;
+
+    public function __construct(SiteFinder $siteFinder)
+    {
+        $this->siteFinder = $siteFinder;
+    }
+
     /**
      * Resolves magic keywords in allowed sites configuration.
      * Supported keywords:
@@ -49,7 +61,7 @@ class SiteHashService
         ?string $allowedSitesConfiguration = ''
     ): string {
         if ($allowedSitesConfiguration === '__all') {
-            return  $this->getDomainListOfAllSites();
+            return $this->getDomainListOfAllSites();
         }
         if ($allowedSitesConfiguration === '*') {
             return '*';
@@ -85,10 +97,13 @@ class SiteHashService
      */
     protected function getDomainListOfAllSites(): string
     {
-        $sites = $this->getAvailableSites();
+        $sites = $this->siteFinder->getAllSites();
         $domains = [];
-        foreach ($sites as $site) {
-            $domains[] = $site->getDomain();
+        foreach ($sites as $typo3Site) {
+            $connections = SiteUtility::getAllSolrConnectionConfigurations($typo3Site);
+            if (!empty($connections)) {
+                $domains[] = $typo3Site->getBase()->getHost();
+            }
         }
 
         return implode(',', $domains);
@@ -104,37 +119,14 @@ class SiteHashService
      */
     protected function getDomainByPageIdAndReplaceMarkers(int $pageId, string $allowedSitesConfiguration): string
     {
-        $domainOfPage = $this->getSiteByPageId($pageId)->getDomain();
+        try {
+            $typo3Site = $this->siteFinder->getSiteByPageId($pageId);
+            $domainOfPage = $typo3Site->getBase()->getHost();
+        } catch (SiteNotFoundException $e) {
+            return '';
+        }
+
         $allowedSites = str_replace(['__solr_current_site', '__current_site'], $domainOfPage, $allowedSitesConfiguration);
         return (string)$allowedSites;
-    }
-
-    /**
-     * @return Site[]
-     * @throws DBALDriverException
-     * @throws Throwable
-     */
-    protected function getAvailableSites(): array
-    {
-        return $this->getSiteRepository()->getAvailableSites();
-    }
-
-    /**
-     * @param int $pageId
-     * @return SiteInterface
-     */
-    protected function getSiteByPageId(int $pageId): SiteInterface
-    {
-        return $this->getSiteRepository()->getSiteByPageId($pageId);
-    }
-
-    /**
-     * Get a reference to SiteRepository
-     *
-     * @return SiteRepository
-     */
-    protected function getSiteRepository(): SiteRepository
-    {
-        return GeneralUtility::makeInstance(SiteRepository::class);
     }
 }
