@@ -185,28 +185,6 @@ class ConnectionManager implements SingletonInterface
     }
 
     /**
-     * Creates a human-readable label from the connections' configuration.
-     *
-     * @param array $connection Connection configuration
-     * @return string Connection label
-     * @todo Remove, since not used, or take used.
-     */
-    protected function buildConnectionLabel(array $connection): string
-    {
-        return $connection['rootPageTitle']
-            . ' (pid: ' . $connection['rootPageUid']
-            . ', language: ' . $this->systemLanguageRepository->findOneLanguageTitleByLanguageId($connection['language'])
-            . ') - Read node: '
-            . $connection['read']['host'] . ':'
-            . $connection['read']['port']
-            . $connection['read']['path']
-            . ' - Write node: '
-            . $connection['write']['host'] . ':'
-            . $connection['write']['port']
-            . $connection['write']['path'];
-    }
-
-    /**
      * @param $pageId
      * @param $language
      * @return NoSolrConnectionFoundException
