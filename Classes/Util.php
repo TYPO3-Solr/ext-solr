@@ -114,7 +114,7 @@ class Util
         $isWorkspaceRecord = false;
 
         if ((ExtensionManagementUtility::isLoaded('workspaces')) && (BackendUtility::isTableWorkspaceEnabled($table))) {
-            $record = BackendUtility::getRecord($table, $uid, 'pid, t3ver_state');
+            $record = BackendUtility::getRecord($table, $uid, 'pid, t3ver_state', '', false);
 
             if ($record['pid'] == '-1' || $record['t3ver_state'] > 0) {
                 $isWorkspaceRecord = true;
