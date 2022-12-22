@@ -4,6 +4,39 @@
 .. _releases-11-5:
 
 ============================
+Apache Solr for TYPO3 11.5.1
+============================
+
+We are happy to publish EXT:solr 11.5.1 maintenance release.
+
+New in this release
+===================
+
+- [BUGFIX] Do not include removed strptime() by @dkd-kaehm in https://github.com/TYPO3-Solr/ext-solr/pull/3335
+- [BUGFIX:BP:11.5] Do not handle page updates on new page with uid 0 by @rr-it in https://github.com/TYPO3-Solr/ext-solr/pull/3344
+- [BUGFIX:BP:11.5] Shortcircuit work in SolrRoutingMiddleware by @christophlehmann in https://github.com/TYPO3-Solr/ext-solr/pull/3341
+- !!![TASK] Use preAddModifyDocuments  hook for pages by @christophlehmann in https://github.com/TYPO3-Solr/ext-solr/pull/3076
+- [BUGFIX] Fix array key access in ext_getSetup (Backport 11.5) by @saitho in https://github.com/TYPO3-Solr/ext-solr/pull/3361
+- [TASK:BP:11.5] Indexing configuration icon fallback by @dkd-friedrich in https://github.com/TYPO3-Solr/ext-solr/pull/3371
+- [BUGFIX:BP:11.5] Do not index missing fields by @dkd-friedrich in https://github.com/TYPO3-Solr/ext-solr/pull/3372
+- [TASK:BP:11.5] Introduce index queue type setting by @dkd-friedrich in https://github.com/TYPO3-Solr/ext-solr/pull/3370
+- [TASK:BP:11.5] Do not index language with unconfigured core by @christophlehmann in https://github.com/TYPO3-Solr/ext-solr/pull/3373
+- [BUGFIX] Make API eID script compatible with TYPO3 v11.5 by @peterkraume in https://github.com/TYPO3-Solr/ext-solr/pull/3350
+- [BUGFIX] Type-hinting for SiteUtility::getConnectionProperty() by @dkd-kaehm in https://github.com/TYPO3-Solr/ext-solr/pull/3396
+- [TASK:BP:11.5] Introduce generic EXT:solr exception by @dkd-friedrich in https://github.com/TYPO3-Solr/ext-solr/pull/3422
+- [BUGFIX:BP:11.5] Fix frontend Solr connection initialization by @dkd-friedrich in https://github.com/TYPO3-Solr/ext-solr/pull/3425
+- [ACTIONS:2022.12.22] Use fixed typo3/coding-standards 0.6.x < 0.7.0 for TYPO3 11.5 by @dkd-kaehm in https://github.com/TYPO3-Solr/ext-solr/pull/3429
+- [TASK:Security] Update jQuery and its plugin libs by @dkd-kaehm in https://github.com/TYPO3-Solr/ext-solr/pull/3428
+- [BUGFIX:P:11.5] Proper check for config.index_enable by @georgringer in https://github.com/TYPO3-Solr/ext-solr/pull/3433
+- [BUGFIX:P:11.5] Typecast $timestamp to int in TimestampToUtcIsoDate by @derhansen in https://github.com/TYPO3-Solr/ext-solr/pull/3434
+- [BUGFIX:P:11.5] prevent undefined array key warning if filter is empty by @achimfritz in https://github.com/TYPO3-Solr/ext-solr/pull/3435
+- [FEATURE] Add signal before search in resultsAction by @stat1x in https://github.com/TYPO3-Solr/ext-solr/pull/3392
+- [BUGFIX] Fix php warning undefined array key no_search_sub_entries by @DrWh0286 in https://github.com/TYPO3-Solr/ext-solr/pull/3381
+
+Please read the release notes:
+https://github.com/TYPO3-Solr/ext-solr/releases/tag/11.5.1
+
+============================
 Apache Solr for TYPO3 11.5.0
 ============================
 
@@ -287,20 +320,24 @@ awesome community. Here are the contributors to this release.
 * Nicola Widmer
 * Pascal Hofmair
 * Peter, CyberForum e.V
+* Peter Kraume
 * Philipp Kitzberger
 * Rafael Kähm
 * René Maas
 * Rudy Gnodde
+* rr-it
 * Sascha Egerer
 * Sebastian Hofer
 * Sebastian Michaelsen
 * Soren Malling
+* stat1x
 * Stefan Frömken
 * Stefano Kowalke
 * twojtylak
 * Thomas Löffler
 * Tobias Kretschmann
 * Tobias Schmidt
+* Torben Hansen
 
 
 Also a big thank you to our partners who have already concluded one of our new development participation packages such as Apache Solr EB for TYPO3 11 LTS (Feature), Apache Solr EB for TYPO3 10 LTS (Maintenance)
@@ -308,17 +345,24 @@ or Apache Solr EB for TYPO3 9 ELTS (Extended):
 
 * .hausformat GmbH
 * ACO Ahlmann SE & Co. KG
+* AgenturWebfox GmbH
+* Amedick & Sommer Neue Medien GmbH
 * avenit AG
 * b13 GmbH
+* Bytebetrieb GmbH & Co. KG
 * Cobytes B.V.
 * Connetation Web Engineering GmbH
+* cosmoblonde GmbH
+* creativ clicks GmbH
 * cyperfection GmbH
 * DVT - Daten-Verarbeitung-Tirol GmbH
 * Earlybird GmbH & Co KG
 * elancer-team GmbH
+* eulenblick Kommunikation und Werbung
 * FONDA GmbH
 * GFE Media GmbH
 * graphodata GmbH
+* Hirsch & Wölfl GmbH
 * Hochschule Niederrhein
 * i-fabrik GmbH
 * in2code GmbH
@@ -326,6 +370,7 @@ or Apache Solr EB for TYPO3 9 ELTS (Extended):
 * Intersim AG
 * IW Medien GmbH
 * Jochen Weiland
+* Kassenärztliche Vereinigung Rheinland-Pfalz
 * Kreis Euskirchen
 * Landeskriminalamt Thüringen
 * L.N. Schaffrath DigitalMedien GmbH
@@ -338,26 +383,35 @@ or Apache Solr EB for TYPO3 9 ELTS (Extended):
 * Neue Medien GmbH
 * NEW.EGO GmbH
 * novotegra GmbH
+* Overlap GmbH & Co KG
 * Pädagogische Hochschule Karlsruhe
 * peytz.dk
 * ProPotsdam GmbH
-* Provitex GmbH
 * Proud Nerds
-* rms. relationship marketing solutions GmbH
+* Provitex GmbH
+* queo GmbH
 * Québec.ca
+* rms. relationship marketing solutions GmbH
+* Sandstein Neue Medien GmbH
+* Schoene neue kinder GmbH
 * seam media group gmbh
 * SITE'NGO
+* Snowflake Productions GmbH
 * SOS Software Service GmbH
 * Stämpfli AG
 * Studio 9 GmbH
 * systime.dk
 * techniConcept Sàrl
 * TOUMORØ
+* Typoheads GmbH
+* UEBERBIT GmbH
+* visol digitale Dienstleistungen GmbH
 * WACON Internet GmbH
 * we.byte GmbH
 * wegewerk GmbH
 * werkraum Digitalmanufaktur GmbH
 * WIND Internet
+* zimmer7 GmbH
 
 How to Get Involved
 ===================
