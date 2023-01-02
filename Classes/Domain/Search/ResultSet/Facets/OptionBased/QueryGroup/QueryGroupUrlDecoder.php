@@ -37,6 +37,6 @@ class QueryGroupUrlDecoder implements FacetUrlDecoderInterface
      */
     public function decode(string $value, array $configuration = []): string
     {
-        return $configuration[$value . '.']['query'];
+        return $configuration[$value . '.']['query'] ?? '';
     }
 }
