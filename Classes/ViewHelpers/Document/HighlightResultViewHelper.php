@@ -63,21 +63,24 @@ class HighlightResultViewHelper extends AbstractSolrFrontendViewHelper
         Closure $renderChildrenClosure,
         RenderingContextInterface $renderingContext
     ) {
-        /** @var $resultSet SearchResultSet */
+        /* @var SearchResultSet $resultSet */
         $resultSet = $arguments['resultSet'];
         $fieldName = $arguments['fieldName'];
         $document = $arguments['document'];
-        $content = self::getHighlightedContent($resultSet, $document, $fieldName);
-        return self::escapeEverythingExceptAllowedTags($resultSet, $content);
+        $highlightedContent = self::getHighlightedContent($resultSet, $document, $fieldName);
+        if (is_string($highlightedContent)) {
+            return self::escapeEverythingExceptAllowedTags($resultSet, $highlightedContent);
+        }
+        return '';
     }
 
     /**
      * @param SearchResultSet $resultSet
-     * @param $document
-     * @param $fieldName
+     * @param SearchResult $document
+     * @param string $fieldName
      * @return mixed|string
      */
-    protected static function getHighlightedContent(SearchResultSet $resultSet, $document, $fieldName)
+    protected static function getHighlightedContent(SearchResultSet $resultSet, SearchResult $document, string $fieldName)
     {
         $fragmentSeparator = $resultSet->getUsedSearchRequest()->getContextTypoScriptConfiguration()->getSearchResultsHighlightingFragmentSeparator();
 
@@ -91,10 +94,10 @@ class HighlightResultViewHelper extends AbstractSolrFrontendViewHelper
 
     /**
      * @param SearchResultSet $resultSet
-     * @param $content
+     * @param string $content
      * @return string
      */
-    protected static function escapeEverythingExceptAllowedTags(SearchResultSet $resultSet, $content): string
+    protected static function escapeEverythingExceptAllowedTags(SearchResultSet $resultSet, string $content): string
     {
         $wrap = $resultSet->getUsedSearchRequest()->getContextTypoScriptConfiguration()->getSearchResultsHighlightingWrap();
         if ($wrap === '') {
