@@ -61,7 +61,7 @@ class FrontendEnvironment implements SingletonInterface
      * @return bool
      * @throws DBALDriverException
      */
-    public function isAllowedPageType(array $pageRecord, ?string $configurationName = 'pages'): bool
+    public function isAllowedPageType(array $pageRecord, ?string $configurationName = null): bool
     {
         // $pageRecord could come from DataHandler and with all columns. So we want to fetch it again.
         $pageRecord = BackendUtility::getRecord('pages', $pageRecord['uid']);
@@ -79,7 +79,13 @@ class FrontendEnvironment implements SingletonInterface
             return false;
         }
         $configuration = $this->getConfigurationFromPageId($rootPageRecordUid, '', $tsfe->getLanguage()->getLanguageId());
-        $allowedPageTypes = $configuration->getIndexQueueAllowedPageTypesArrayByConfigurationName($configurationName);
+        if ($configurationName !== null) {
+            $allowedPageTypes = $configuration->getIndexQueueAllowedPageTypesArrayByConfigurationName($configurationName);
+        } else {
+            // If the $configurationName is not provided,
+            // we will check if one of the configurations allow the pagetype to be indexed
+            $allowedPageTypes = $configuration->getAllIndexQueueAllowedPageTypesArray();
+        }
         return in_array($pageRecord['doktype'], $allowedPageTypes);
     }
 
