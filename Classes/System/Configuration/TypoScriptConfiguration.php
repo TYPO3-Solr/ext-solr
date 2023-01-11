@@ -360,6 +360,34 @@ class TypoScriptConfiguration
     }
 
     /**
+     * Returns an array of allowedPageTypes declared in all queue configurations.
+     *
+     * plugin.tx_solr.index.queue.*.allowedPageTypes
+     *
+     * @return array
+     */
+    public function getAllIndexQueueAllowedPageTypesArray(): array
+    {
+        $configuration = $this->configurationAccess->get('plugin.tx_solr.index.queue.');
+
+        if (!is_array($configuration)) {
+            return [];
+        }
+
+        $allowedPageTypes = [];
+        foreach ($configuration as $queueName => $queueConfiguration) {
+            if (is_array($queueConfiguration)
+                && !empty($queueConfiguration['allowedPageTypes'])
+                && $this->getIndexQueueConfigurationIsEnabled(rtrim($queueName, '.'))
+            ) {
+                $allowedPageTypes = array_merge($allowedPageTypes, GeneralUtility::trimExplode(',', $queueConfiguration['allowedPageTypes'], true));
+            }
+        }
+
+        return array_unique($allowedPageTypes);
+    }
+
+    /**
      * Returns the configured excludeContentByClass patterns as array.
      *
      * plugin.tx_solr.index.queue.pages.excludeContentByClass
