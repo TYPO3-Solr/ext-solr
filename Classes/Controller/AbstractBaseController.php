@@ -140,7 +140,7 @@ abstract class AbstractBaseController extends ActionController
     protected function buildControllerContext()
     {
         /** @var $controllerContext SolrControllerContext */
-        $controllerContext = $this->objectManager->get(SolrControllerContext::class);
+        $controllerContext = GeneralUtility::makeInstance(SolrControllerContext::class);
         $controllerContext->setRequest($this->request);
 //        $controllerContext->setResponse($this->response);
         if ($this->arguments !== null) {
@@ -164,7 +164,7 @@ abstract class AbstractBaseController extends ActionController
             $this->solrConfigurationManager->reset();
         }
         /** @var TypoScriptService $typoScriptService */
-        $typoScriptService = $this->objectManager->get(TypoScriptService::class);
+        $typoScriptService = GeneralUtility::makeInstance(TypoScriptService::class);
 
         // Merge settings done by typoscript with solrConfiguration plugin.tx_solr (obsolete when part of ext:solr)
         $frameWorkConfiguration = $this->configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
@@ -185,7 +185,7 @@ abstract class AbstractBaseController extends ActionController
         }
 
         if (!empty($this->contentObjectRenderer->data['pi_flexform'])) {
-            $this->objectManager->get(ConfigurationService::class)
+            GeneralUtility::makeInstance(ConfigurationService::class)
                 ->overrideConfigurationWithFlexFormSettings(
                     $this->contentObjectRenderer->data['pi_flexform'],
                     $this->typoScriptConfiguration
@@ -206,8 +206,7 @@ abstract class AbstractBaseController extends ActionController
      */
     protected function initializeSettings()
     {
-        /** @var $typoScriptService TypoScriptService */
-        $typoScriptService = $this->objectManager->get(TypoScriptService::class);
+        $typoScriptService = GeneralUtility::makeInstance(TypoScriptService::class);
 
         // Make sure plugin.tx_solr.settings are available in the view as {settings}
         $this->settings = $typoScriptService->convertTypoScriptArrayToPlainArray(
@@ -228,10 +227,10 @@ abstract class AbstractBaseController extends ActionController
                 $this->typoScriptFrontendController->getLanguage()->getLanguageId()
             );
 
-            $search = $this->objectManager->get(Search::class, $solrConnection);
+            $search = GeneralUtility::makeInstance(Search::class, $solrConnection);
 
             /** @noinspection PhpParamsInspection */
-            $this->searchService = $this->objectManager->get(
+            $this->searchService = GeneralUtility::makeInstance(
                 SearchResultSetService::class,
                 /** @scrutinizer ignore-type */
                 $this->typoScriptConfiguration,
