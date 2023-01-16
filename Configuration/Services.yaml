@@ -141,30 +141,30 @@ services:
         event: TYPO3\CMS\Frontend\Authentication\ModifyResolvedFrontendGroupsEvent
 
   # Reports: Status
-  ApacheSolrForTypo3\Solr\Report\SiteHandlingStatus::class:
+  ApacheSolrForTypo3\Solr\Report\SiteHandlingStatus:
     tags:
       - name: reports.status
-  ApacheSolrForTypo3\Solr\Report\SchemaStatus::class:
+  ApacheSolrForTypo3\Solr\Report\SchemaStatus:
     tags:
       - name: reports.status
-  ApacheSolrForTypo3\Solr\Report\SolrConfigStatus::class:
+  ApacheSolrForTypo3\Solr\Report\SolrConfigStatus:
     tags:
       - name: reports.status
-  ApacheSolrForTypo3\Solr\Report\SolrConfigurationStatus::class:
+  ApacheSolrForTypo3\Solr\Report\SolrConfigurationStatus:
     tags:
       - name: reports.status
-  ApacheSolrForTypo3\Solr\Report\SolrStatus::class:
+  ApacheSolrForTypo3\Solr\Report\SolrStatus:
     tags:
       - name: reports.status
-  ApacheSolrForTypo3\Solr\Report\SolrVersionStatus::class:
+  ApacheSolrForTypo3\Solr\Report\SolrVersionStatus:
     tags:
       - name: reports.status
-  ApacheSolrForTypo3\Solr\Report\AccessFilterPluginInstalledStatus::class:
+  ApacheSolrForTypo3\Solr\Report\AccessFilterPluginInstalledStatus:
     tags:
       - name: reports.status
-  ApacheSolrForTypo3\Solr\Report\AllowUrlFOpenStatus::class:
+  ApacheSolrForTypo3\Solr\Report\AllowUrlFOpenStatus:
     tags:
       - name: reports.status
-  ApacheSolrForTypo3\Solr\Report\FilterVarStatus::class:
+  ApacheSolrForTypo3\Solr\Report\FilterVarStatus:
     tags:
       - name: reports.status
