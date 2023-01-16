@@ -378,10 +378,10 @@ class DataUpdateHandlerTest extends AbstractUpdateHandlerTest
 
         $GLOBALS['TCA']['pages'] = ['columns' => []];
 
-        $this->queryGeneratorMock
+        $this->pagesRepositoryMock
             ->expects(self::any())
             ->method('getTreeList')
-            ->willReturn($dummyPageRecord['uid'] . ',100,200');
+            ->willReturn(implode(',', [$dummyPageRecord['uid'], 100, 200]));
 
         $this->pagesRepositoryMock
             ->expects(self::any())
