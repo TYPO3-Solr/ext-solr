@@ -31,8 +31,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Mvc\Controller\ControllerContext;
-use TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException;
-use TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
@@ -264,21 +262,5 @@ abstract class AbstractBaseController extends ActionController
             $logger = GeneralUtility::makeInstance(SolrLogManager::class, /** @scrutinizer ignore-type */ __CLASS__);
             $logger->log(SolrLogManager::ERROR, 'Solr server is not available');
         }
-    }
-
-    /**
-     * Emits signal for various actions
-     *
-     * @param string $className Name of the class containing the signal
-     * @param string $signalName Name of the signal slot
-     * @param array $signalArguments arguments for the signal slot
-     *
-     * @return array|mixed
-     * @throws InvalidSlotException
-     * @throws InvalidSlotReturnException
-     */
-    protected function emitActionSignal(string $className, string $signalName, array $signalArguments)
-    {
-        return $this->signalSlotDispatcher->dispatch($className, $signalName, $signalArguments)[0];
     }
 }
