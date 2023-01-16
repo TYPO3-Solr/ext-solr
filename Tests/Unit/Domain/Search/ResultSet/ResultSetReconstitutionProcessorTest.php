@@ -23,7 +23,6 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
-use ApacheSolrForTypo3\Solr\Tests\Unit\Helper\FakeObjectManager;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 
 /**
@@ -1098,9 +1097,6 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
         $searchResultSet->getUsedSearchRequest()->expects(self::any())->method('getActiveFacetNames')->willReturn([]);
 
         $processor = new ResultSetReconstitutionProcessor();
-
-        $fakeObjectManager = new FakeObjectManager();
-        $processor->setObjectManager($fakeObjectManager);
         return $processor;
     }
 }

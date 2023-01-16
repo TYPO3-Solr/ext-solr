@@ -17,26 +17,13 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets;
 
-use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class AbstractFacetPackage
  */
 abstract class AbstractFacetPackage
 {
-    /**
-     * @var ObjectManagerInterface|null
-     */
-    protected ?ObjectManagerInterface $objectManager;
-
-    /**
-     * @param ObjectManagerInterface $objectManager
-     */
-    public function setObjectManager(ObjectManagerInterface $objectManager)
-    {
-        $this->objectManager = $objectManager;
-    }
-
     /**
      * @return string
      */
@@ -48,7 +35,7 @@ abstract class AbstractFacetPackage
      */
     public function getParser(): FacetParserInterface
     {
-        $parser = $this->objectManager->get($this->getParserClassName());
+        $parser = GeneralUtility::makeInstance($this->getParserClassName());
         if (!$parser instanceof FacetParserInterface) {
             throw new InvalidFacetPackageException('Invalid parser for package ' . __CLASS__);
         }
@@ -69,7 +56,7 @@ abstract class AbstractFacetPackage
      */
     public function getUrlDecoder(): FacetUrlDecoderInterface
     {
-        $urlDecoder = $this->objectManager->get($this->getUrlDecoderClassName());
+        $urlDecoder = GeneralUtility::makeInstance($this->getUrlDecoderClassName());
         if (!$urlDecoder instanceof FacetUrlDecoderInterface) {
             throw new InvalidUrlDecoderException('Invalid url-decoder for package ' . __CLASS__);
         }
@@ -90,7 +77,7 @@ abstract class AbstractFacetPackage
      */
     public function getQueryBuilder(): FacetQueryBuilderInterface
     {
-        $urlDecoder = $this->objectManager->get($this->getQueryBuilderClassName());
+        $urlDecoder = GeneralUtility::makeInstance($this->getQueryBuilderClassName());
         if (!$urlDecoder instanceof FacetQueryBuilderInterface) {
             throw new InvalidQueryBuilderException('Invalid query-builder for package ' . __CLASS__);
         }

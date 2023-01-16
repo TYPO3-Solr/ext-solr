@@ -76,8 +76,7 @@ class OptionsFacetParser extends AbstractFacetParser
             $facetName,
             $fieldName,
             $label,
-            $facetConfiguration,
-            $this->objectManager
+            $facetConfiguration
         );
 
         $hasActiveOptions = count($optionsFromRequest) > 0;
