@@ -21,6 +21,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetParser;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\System\Solr\ParsingUtil;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class HierarchyFacetParser
@@ -49,8 +50,7 @@ class HierarchyFacetParser extends AbstractFacetParser
             return null;
         }
 
-        /** @var $facet HierarchyFacet */
-        $facet = $this->objectManager->get(HierarchyFacet::class, $resultSet, $facetName, $fieldName, $label, $facetConfiguration, $this->objectManager);
+        $facet = GeneralUtility::makeInstance(HierarchyFacet::class, $resultSet, $facetName, $fieldName, $label, $facetConfiguration);
 
         $hasActiveOptions = count($optionsFromRequest) > 0;
         $facet->setIsUsed($hasActiveOptions);

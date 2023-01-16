@@ -39,8 +39,6 @@ use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrIncompleteResponseException;
 use Exception;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
-use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 use UnexpectedValueException;
 
 use function get_class;
@@ -96,32 +94,24 @@ class SearchResultSetService
     protected QueryBuilder $queryBuilder;
 
     /**
-     * @var ObjectManager
-     */
-    protected ObjectManagerInterface $objectManager;
-
-    /**
      * @param TypoScriptConfiguration $configuration
      * @param Search $search
      * @param SolrLogManager|null $solrLogManager
      * @param SearchResultBuilder|null $resultBuilder
      * @param QueryBuilder|null $queryBuilder
-     * @param ObjectManagerInterface|null $objectManager
      */
     public function __construct(
         TypoScriptConfiguration $configuration,
         Search $search,
         ?SolrLogManager $solrLogManager = null,
         ?SearchResultBuilder $resultBuilder = null,
-        ?QueryBuilder $queryBuilder = null,
-        ?ObjectManagerInterface $objectManager = null
+        ?QueryBuilder $queryBuilder = null
     ) {
         $this->search = $search;
         $this->typoScriptConfiguration = $configuration;
         $this->logger = $solrLogManager ?? GeneralUtility::makeInstance(SolrLogManager::class, /** @scrutinizer ignore-type */ __CLASS__);
         $this->searchResultBuilder = $resultBuilder ?? GeneralUtility::makeInstance(SearchResultBuilder::class);
         $this->queryBuilder = $queryBuilder ?? GeneralUtility::makeInstance(QueryBuilder::class, /** @scrutinizer ignore-type */ $configuration, /** @scrutinizer ignore-type */ $solrLogManager);
-        $this->objectManager = $objectManager ?? GeneralUtility::makeInstance(ObjectManager::class);
     }
 
     /**
@@ -286,7 +276,7 @@ class SearchResultSetService
     {
         /** @var $resultSet SearchResultSet */
         $resultSetClass = $this->getResultSetClassName();
-        $resultSet = $this->objectManager->get($resultSetClass);
+        $resultSet = GeneralUtility::makeInstance($resultSetClass);
 
         $resultSet->setUsedSearchRequest($searchRequest);
         $resultSet->setUsedPage((int)$searchRequest->getPage());
@@ -392,7 +382,7 @@ class SearchResultSetService
         // hook to modify the search query
         if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchQuery'] ?? null)) {
             foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchQuery'] as $classReference) {
-                $queryModifier = $this->objectManager->get($classReference);
+                $queryModifier = GeneralUtility::makeInstance($classReference);
 
                 if ($queryModifier instanceof Modifier) {
                     if ($queryModifier instanceof SearchAware) {
@@ -453,7 +443,7 @@ class SearchResultSetService
         }
 
         foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr'][$eventName] as $classReference) {
-            $afterSearchProcessor = $this->objectManager->get($classReference);
+            $afterSearchProcessor = GeneralUtility::makeInstance($classReference);
             if ($afterSearchProcessor instanceof SearchResultSetProcessor) {
                 $afterSearchProcessor->process($resultSet);
             }
@@ -463,7 +453,7 @@ class SearchResultSetService
     }
 
     /**
-     * @return SearchResultSet
+     * @return SearchResultSet|null
      */
     public function getLastResultSet(): ?SearchResultSet
     {
@@ -495,9 +485,9 @@ class SearchResultSetService
     }
 
     /**
-     * @return mixed
+     * @return array
      */
-    protected function getRegisteredSearchComponents()
+    protected function getRegisteredSearchComponents(): array
     {
         return GeneralUtility::makeInstance(SearchComponentManager::class)->getSearchComponents();
     }

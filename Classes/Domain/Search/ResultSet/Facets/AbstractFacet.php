@@ -16,9 +16,6 @@
 namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
-use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 
 /**
  * Value object that represent the options facet.
@@ -79,11 +76,6 @@ abstract class AbstractFacet
     protected bool $allRequirementsMet = true;
 
     /**
-     * @var ObjectManagerInterface
-     */
-    protected ObjectManagerInterface $objectManager;
-
-    /**
      * AbstractFacet constructor.
      *
      * @param SearchResultSet $resultSet
@@ -91,22 +83,19 @@ abstract class AbstractFacet
      * @param string $field
      * @param string $label
      * @param array $configuration Facet configuration passed from typoscript
-     * @param ObjectManager $objectManager
      */
     public function __construct(
         SearchResultSet $resultSet,
         string $name,
         string $field,
         string $label = '',
-        array $configuration = [],
-        ObjectManagerInterface $objectManager = null
+        array $configuration = []
     ) {
         $this->resultSet = $resultSet;
         $this->name = $name;
         $this->field = $field;
         $this->label = $label;
         $this->configuration = $configuration;
-        $this->objectManager = $objectManager ?? GeneralUtility::makeInstance(ObjectManager::class);
     }
 
     /**

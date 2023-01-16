@@ -20,8 +20,6 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\O
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use ApacheSolrForTypo3\Solr\ViewHelpers\Facet\Area\GroupViewHelper;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\Variables\StandardVariableProvider;
 
@@ -88,7 +86,6 @@ class GroupViewHelperTest extends UnitTest
     {
         $facetCollection = new FacetCollection();
         $resultSetMock = $this->getDumbMock(SearchResultSet::class);
-        GeneralUtility::setSingletonInstance(ObjectManager::class, $this->createMock(ObjectManager::class));
 
         $colorFacet = new OptionsFacet($resultSetMock, 'color', 'color_s', '', ['groupName' => 'left']);
         $brandFacet = new OptionsFacet($resultSetMock, 'brand', 'brand_s', '', ['groupName' => 'left']);

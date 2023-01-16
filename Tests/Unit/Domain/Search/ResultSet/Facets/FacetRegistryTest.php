@@ -21,8 +21,6 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets\TestPackag
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use InvalidArgumentException;
 use PHPUnit\Framework\MockObject\MockObject;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
-use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 
 /**
  * Testcases for the Facet parser registry
@@ -32,17 +30,6 @@ use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
  */
 class FacetRegistryTest extends UnitTest
 {
-    /**
-     * @var ObjectManagerInterface
-     */
-    protected $objectManagerMock;
-
-    protected function setUp(): void
-    {
-        $this->objectManagerMock = $this->createMock(ObjectManager::class);
-        parent::setUp();
-    }
-
     /**
      * Initialize a RendererRegistry and mock createRendererInstance()
      *
@@ -55,9 +42,6 @@ class FacetRegistryTest extends UnitTest
         $facetRegistry = $this->getMockBuilder(FacetRegistry::class)
             ->onlyMethods(['createInstance'])
             ->getMock();
-
-        // @extensionScannerIgnoreLine
-        $facetRegistry->injectObjectManager($this->objectManagerMock);
 
         if (!empty($createsPackageInstances)) {
             $facetRegistry->expects(self::any())
