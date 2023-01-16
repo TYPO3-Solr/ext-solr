@@ -20,7 +20,6 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\Date
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetItemCollection;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
-use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 
 /**
  * Value object that represent a date range facet.
@@ -51,17 +50,15 @@ class DateRangeFacet extends AbstractFacet
      * @param string $field
      * @param string $label
      * @param array $configuration Facet configuration passed from typoscript
-     * @param ObjectManagerInterface $objectManager
      */
     public function __construct(
         SearchResultSet $resultSet,
         string $name,
         string $field,
         string $label = '',
-        array $configuration = [],
-        ObjectManagerInterface $objectManager = null
+        array $configuration = []
     ) {
-        parent::__construct($resultSet, $name, $field, $label, $configuration, $objectManager);
+        parent::__construct($resultSet, $name, $field, $label, $configuration);
     }
 
     /**
