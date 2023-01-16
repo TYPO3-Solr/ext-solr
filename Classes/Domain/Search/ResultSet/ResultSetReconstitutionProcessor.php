@@ -23,8 +23,6 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Sorting\Sorting;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Spellchecking\Suggestion;
 use stdClass;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
-use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use UnexpectedValueException;
 
@@ -38,38 +36,12 @@ use UnexpectedValueException;
 class ResultSetReconstitutionProcessor implements SearchResultSetProcessor
 {
     /**
-     * @var ObjectManagerInterface|null
-     */
-    protected ?ObjectManagerInterface $objectManager = null;
-
-    /**
-     * @return ObjectManagerInterface
-     */
-    public function getObjectManager(): ?ObjectManagerInterface
-    {
-        if ($this->objectManager === null) {
-            $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        }
-        return $this->objectManager;
-    }
-
-    /**
-     * @param ObjectManagerInterface $objectManager
-     * Purpose: PhpUnit
-     * @todo: Replace with proper DI
-     */
-    public function setObjectManager(ObjectManagerInterface $objectManager)
-    {
-        $this->objectManager = $objectManager;
-    }
-
-    /**
      * @return FacetRegistry
      */
     protected function getFacetRegistry(): FacetRegistry
     {
         // @extensionScannerIgnoreLine
-        return $this->getObjectManager()->get(FacetRegistry::class);
+        return GeneralUtility::makeInstance(FacetRegistry::class);
     }
 
     /**
@@ -138,7 +110,7 @@ class ResultSetReconstitutionProcessor implements SearchResultSetProcessor
             }
 
             /** @noinspection PhpParamsInspection */
-            $sorting = $this->getObjectManager()->get(
+            $sorting = GeneralUtility::makeInstance(
                 Sorting::class,
                 $resultSet,
                 $sortingName,
@@ -274,6 +246,6 @@ class ResultSetReconstitutionProcessor implements SearchResultSetProcessor
     protected function getRequirementsService(): RequirementsService
     {
         // @extensionScannerIgnoreLine
-        return $this->getObjectManager()->get(RequirementsService::class);
+        return GeneralUtility::makeInstance(RequirementsService::class);
     }
 }

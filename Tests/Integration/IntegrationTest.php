@@ -17,7 +17,6 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration;
 
 use ApacheSolrForTypo3\Solr\Access\Rootline;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
-use ApacheSolrForTypo3\Solr\Tests\Unit\Helper\FakeObjectManager;
 use ApacheSolrForTypo3\Solr\Typo3PageIndexer;
 use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Driver\Exception as DBALDriverException;
@@ -48,7 +47,6 @@ use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Tests\Functional\SiteHandling\SiteBasedTestTrait;
 use TYPO3\CMS\Core\TimeTracker\TimeTracker;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use TYPO3\CMS\Frontend\Http\RequestHandler;
 use TYPO3\TestingFramework\Core\Exception as TestingFrameworkCoreException;
@@ -599,14 +597,6 @@ abstract class IntegrationTest extends FunctionalTestCase
     {
         $solrConnectionInfo = $this->getSolrConnectionInfo();
         return $solrConnectionInfo['scheme'] . '://' . $solrConnectionInfo['host'] . ':' . $solrConnectionInfo['port'];
-    }
-
-    /**
-     * @return ObjectManagerInterface
-     */
-    protected function getFakeObjectManager(): ObjectManagerInterface
-    {
-        return new FakeObjectManager();
     }
 
     /**

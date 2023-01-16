@@ -33,7 +33,6 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use PHPUnit\Framework\MockObject\MockObject;
 use Solarium\QueryType\Select\RequestBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 use function json_decode;
 
@@ -56,19 +55,7 @@ class FacetingTest extends UnitTest
         TypoScriptConfiguration $fakeConfiguration,
         SearchRequest $fakeSearchRequest
     ): array {
-        $fakeObjectManager = $this->getMockBuilder(ObjectManager::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods(['get'])
-            ->getMock();
-        $fakeObjectManager->expects(self::any())
-            ->method('get')
-            ->willReturnCallback(function ($className) {
-                return new $className();
-            });
-
         $facetRegistry = new FacetRegistry();
-        // @extensionScannerIgnoreLine
-        $facetRegistry->injectObjectManager($fakeObjectManager);
 
         /* @var SolrLogManager|MockObject $solrLogManagerMock */
         $solrLogManagerMock = $this->getDumbMock(SolrLogManager::class);

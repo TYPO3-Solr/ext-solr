@@ -20,7 +20,6 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\O
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
  * Unit test for the OptionsFacet
@@ -30,12 +29,6 @@ use TYPO3\CMS\Extbase\Object\ObjectManager;
  */
 class OptionsFacetTest extends UnitTest
 {
-    protected function setUp(): void
-    {
-        parent::setUp();
-        GeneralUtility::setSingletonInstance(ObjectManager::class, $this->createMock(ObjectManager::class));
-    }
-
     protected function tearDown(): void
     {
         GeneralUtility::purgeInstances();

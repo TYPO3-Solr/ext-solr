@@ -17,14 +17,12 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResultBuilder;
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSetService;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
  * @author Timo Hund <timo.hund@dkd.de>
@@ -57,11 +55,6 @@ class SearchResultSetServiceTest extends UnitTest
     protected $searchResultBuilderMock;
 
     /**
-     * @var ObjectManager
-     */
-    protected $objectManagerMock;
-
-    /**
      * @var QueryBuilder
      */
     protected $queryBuilderMock;
@@ -73,8 +66,7 @@ class SearchResultSetServiceTest extends UnitTest
         $this->searchMock = $this->getDumbMock(Search::class);
         $this->searchResultBuilderMock = $this->getDumbMock(SearchResultBuilder::class);
         $this->queryBuilderMock = $this->getDumbMock(QueryBuilder::class);
-        $this->objectManagerMock = $this->createMock(ObjectManager::class);
-        $this->searchResultSetService = new SearchResultSetService($this->configurationMock, $this->searchMock, $this->logManagerMock, $this->searchResultBuilderMock, $this->queryBuilderMock, $this->objectManagerMock);
+        $this->searchResultSetService = new SearchResultSetService($this->configurationMock, $this->searchMock, $this->logManagerMock, $this->searchResultBuilderMock, $this->queryBuilderMock);
         parent::setUp();
     }
 
@@ -86,7 +78,6 @@ class SearchResultSetServiceTest extends UnitTest
         $searchRequest = new SearchRequest();
         $searchRequest->setRawQueryString('');
         $this->assertAllInitialSearchesAreDisabled();
-        $this->objectManagerMock->expects(self::once())->method('get')->with(SearchResultSet::class)->willReturn(new SearchResultSet());
         $resultSet = $this->searchResultSetService->search($searchRequest);
         self::assertFalse($resultSet->getHasSearched(), 'Search should not be executed when empty query string was passed');
     }
@@ -99,7 +90,6 @@ class SearchResultSetServiceTest extends UnitTest
         $searchRequest = new SearchRequest();
         $searchRequest->setRawQueryString('');
         $this->configurationMock->expects(self::once())->method('getSearchQueryAllowEmptyQuery')->willReturn(false);
-        $this->objectManagerMock->expects(self::once())->method('get')->with(SearchResultSet::class)->willReturn(new SearchResultSet());
         $resultSet = $this->searchResultSetService->search($searchRequest);
         self::assertFalse($resultSet->getHasSearched(), 'Search should not be executed when empty query string was passed');
     }
