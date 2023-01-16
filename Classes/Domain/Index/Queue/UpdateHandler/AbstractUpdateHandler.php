@@ -25,7 +25,6 @@ use ApacheSolrForTypo3\Solr\System\TCA\TCAService;
 use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
-use TYPO3\CMS\Core\Database\QueryGenerator;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -33,7 +32,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * Base class for Handling updates or deletions on potential
  * relevant records
- * @todo: Replace QueryGenerator
  */
 abstract class AbstractUpdateHandler
 {
@@ -173,7 +171,7 @@ abstract class AbstractUpdateHandler
         // here we retrieve only the subpages of this page because the permission clause is not evaluated
         // on the root node.
         $permissionClause = ' 1 ' . $this->getPagesRepository()->getBackendEnableFields();
-        $treePageIdList = (string)$this->getQueryGenerator()->getTreeList($pageId, 20, 0, $permissionClause);
+        $treePageIdList = $this->getPagesRepository()->getTreeList($pageId, 20, 0, $permissionClause);
         $treePageIds = array_map('intval', explode(',', $treePageIdList));
 
         // the first one can be ignored because this is the page itself
@@ -300,14 +298,6 @@ abstract class AbstractUpdateHandler
     protected function getUpdateSubPagesRecursiveTriggerConfiguration(): array
     {
         return $this->updateSubPagesRecursiveTriggerConfiguration;
-    }
-
-    /**
-     * @return QueryGenerator
-     */
-    protected function getQueryGenerator(): QueryGenerator
-    {
-        return GeneralUtility::makeInstance(QueryGenerator::class);
     }
 
     /**
