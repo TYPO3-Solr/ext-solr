@@ -20,11 +20,10 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Opt
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetParser;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
+use ApacheSolrForTypo3\Solr\Event\Parser\AfterFacetParsedEvent;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
-use TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException;
-use TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException;
 
 /**
  * Class OptionsFacetParser
@@ -32,16 +31,16 @@ use TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException;
 class OptionsFacetParser extends AbstractFacetParser
 {
     /**
-     * @var Dispatcher|null
+     * @var EventDispatcherInterface|null
      */
-    protected ?Dispatcher $dispatcher = null;
+    protected ?EventDispatcherInterface $eventDispatcher;
 
     /**
-     * @param Dispatcher $dispatcher
+     * @param EventDispatcherInterface $eventDispatcher
      */
-    public function injectDispatcher(Dispatcher $dispatcher)
+    public function injectEventDispatcher(EventDispatcherInterface $eventDispatcher)
     {
-        $this->dispatcher = $dispatcher;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
@@ -49,8 +48,6 @@ class OptionsFacetParser extends AbstractFacetParser
      * @param string $facetName
      * @param array $facetConfiguration
      * @return OptionsFacet|null
-     * @throws InvalidSlotException
-     * @throws InvalidSlotReturnException
      */
     public function parse(SearchResultSet $resultSet, string $facetName, array $facetConfiguration): ?AbstractFacet
     {
@@ -110,8 +107,11 @@ class OptionsFacetParser extends AbstractFacetParser
         $this->applyManualSortOrder($facet, $facetConfiguration);
         $this->applyReverseOrder($facet, $facetConfiguration);
 
-        if (!is_null($this->dispatcher)) {
-            $this->dispatcher->dispatch(__CLASS__, 'optionsParsed', [&$facet, $facetConfiguration]);
+        if (isset($this->eventDispatcher)) {
+            /* @var AfterFacetParsedEvent $afterFacetParsedEvent */
+            $afterFacetParsedEvent = $this->eventDispatcher
+                ->dispatch(new AfterFacetParsedEvent($facet, $facetConfiguration));
+            $facet = $afterFacetParsedEvent->getFacet();
         }
 
         return $facet;

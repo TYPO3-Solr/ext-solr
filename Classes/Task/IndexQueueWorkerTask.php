@@ -24,8 +24,6 @@ use ApacheSolrForTypo3\Solr\System\Environment\WebRootAllReadyDefinedException;
 use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException;
-use TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException;
 use TYPO3\CMS\Scheduler\ProgressProviderInterface;
 
 /**
@@ -52,8 +50,6 @@ class IndexQueueWorkerTask extends AbstractSolrTask implements ProgressProviderI
      * @return bool Returns TRUE on success, FALSE if no items were indexed or none were found.
      *
      * @throws DBALDriverException
-     * @throws InvalidSlotException
-     * @throws InvalidSlotReturnException
      * @throws WebRootAllReadyDefinedException
      *
      * @noinspection PhpMissingReturnTypeInspection See {@link \TYPO3\CMS\Scheduler\Task\AbstractTask::execute()}
