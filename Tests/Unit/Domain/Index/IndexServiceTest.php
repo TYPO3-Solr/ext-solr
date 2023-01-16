@@ -26,7 +26,7 @@ use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use Exception;
 use PHPUnit\Framework\MockObject\MockObject;
-use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
+use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 
 /**
  * @author Timo Hund <timo.hund@dkd.de>
@@ -44,9 +44,9 @@ class IndexServiceTest extends UnitTest
     protected $queueMock;
 
     /**
-     * @var Dispatcher
+     * @var EventDispatcher|MockObject
      */
-    protected $dispatcherMock;
+    protected EventDispatcher|MockObject $eventDispatcherMock;
 
     /**
      * @var SolrLogManager
@@ -57,7 +57,12 @@ class IndexServiceTest extends UnitTest
     {
         $this->siteMock = $this->getDumbMock(Site::class);
         $this->queueMock = $this->getDumbMock(Queue::class);
-        $this->dispatcherMock = $this->getDumbMock(Dispatcher::class);
+        $this->eventDispatcherMock = $this->getMockBuilder(EventDispatcher::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['dispatch'])
+            ->getMock();
+        $this->eventDispatcherMock->method('dispatch')
+            ->willReturnArgument(0);
         $this->logManagerMock = $this->getDumbMock(SolrLogManager::class);
         parent::setUp();
     }
@@ -65,7 +70,7 @@ class IndexServiceTest extends UnitTest
     /**
      * @test
      */
-    public function signalsAreTriggered()
+    public function eventsAreTriggered()
     {
         $fakeConfiguration = $this->getDumbMock(TypoScriptConfiguration::class);
         $this->siteMock = $this->getMockBuilder(Site::class)
@@ -76,7 +81,7 @@ class IndexServiceTest extends UnitTest
 
         // we create an IndexeService where indexItem is mocked to avoid real indexing in the unit test
         $indexService = $this->getMockBuilder(IndexService::class)
-            ->setConstructorArgs([$this->siteMock, $this->queueMock, $this->dispatcherMock, $this->logManagerMock])
+            ->setConstructorArgs([$this->siteMock, $this->queueMock, $this->eventDispatcherMock, $this->logManagerMock])
             ->onlyMethods(['indexItem'])
             ->getMock();
 
@@ -87,14 +92,14 @@ class IndexServiceTest extends UnitTest
         $this->fakeQueueItemContent($fakeItems);
 
         // we assert that 6 signals will be dispatched 1 at the beginning 1 before and after each items and 1 at the end.
-        $this->assertSignalsWillBeDispatched(6);
+        $this->assertEventsWillBeDispatched(6);
         $indexService->indexItems(2);
     }
 
     /**
      * @test
      */
-    public function testConfigurationIsNotFetchedWhenProgressIsCaluclated()
+    public function testConfigurationIsNotFetchedWhenProgressIsCalculated()
     {
         $this->siteMock->expects(self::never())->method('getSolrConfiguration');
 
@@ -103,7 +108,7 @@ class IndexServiceTest extends UnitTest
         $this->queueMock->expects(self::once())->method('getStatisticsBySite')->willReturn($statisticMock);
 
         $indexService = $this->getMockBuilder(IndexService::class)
-            ->setConstructorArgs([$this->siteMock, $this->queueMock, $this->dispatcherMock, $this->logManagerMock])
+            ->setConstructorArgs([$this->siteMock, $this->queueMock, $this->eventDispatcherMock, $this->logManagerMock])
             ->onlyMethods(['indexItem'])
             ->getMock();
 
@@ -126,7 +131,7 @@ class IndexServiceTest extends UnitTest
 
         /* @var IndexService|MockObject $indexService */
         $indexService = $this->getMockBuilder(IndexService::class)
-            ->setConstructorArgs([$this->siteMock, $this->queueMock, $this->dispatcherMock, $this->logManagerMock])
+            ->setConstructorArgs([$this->siteMock, $this->queueMock, $this->eventDispatcherMock, $this->logManagerMock])
             ->onlyMethods(['getIndexerByItem', 'restoreOriginalHttpHost'])
             ->getMock();
 
@@ -165,7 +170,7 @@ class IndexServiceTest extends UnitTest
 
         /* @var IndexService|MockObject $indexService  */
         $indexService = $this->getMockBuilder(IndexService::class)
-            ->setConstructorArgs([$this->siteMock, $this->queueMock, $this->dispatcherMock, $this->logManagerMock])
+            ->setConstructorArgs([$this->siteMock, $this->queueMock, $this->eventDispatcherMock, $this->logManagerMock])
             ->onlyMethods(['getIndexerByItem'])
             ->getMock();
 
@@ -200,8 +205,10 @@ class IndexServiceTest extends UnitTest
     /**
      * @param int $amount
      */
-    protected function assertSignalsWillBeDispatched($amount = 0)
+    protected function assertEventsWillBeDispatched(int $amount = 0)
     {
-        $this->dispatcherMock->expects(self::exactly($amount))->method('dispatch');
+        $this->eventDispatcherMock->expects(self::exactly($amount))
+            ->method('dispatch')
+            ->willReturnArgument(0);
     }
 }
