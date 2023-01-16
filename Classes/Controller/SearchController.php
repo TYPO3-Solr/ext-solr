@@ -16,6 +16,9 @@
 namespace ApacheSolrForTypo3\Solr\Controller;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
+use ApacheSolrForTypo3\Solr\Event\Search\AfterFrequentlySearchedEvent;
+use ApacheSolrForTypo3\Solr\Event\Search\AfterSearchEvent;
+use ApacheSolrForTypo3\Solr\Event\Search\FormEvent;
 use ApacheSolrForTypo3\Solr\Pagination\ResultsPagination;
 use ApacheSolrForTypo3\Solr\Pagination\ResultsPaginator;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrUnavailableException;
@@ -25,8 +28,6 @@ use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Http\ForwardResponse;
 use TYPO3\CMS\Extbase\Mvc\Exception\NoSuchArgumentException;
-use TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException;
-use TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException;
 use TYPO3\CMS\Fluid\View\TemplateView;
 use TYPO3Fluid\Fluid\View\ViewInterface;
 
@@ -96,8 +97,6 @@ class SearchController extends AbstractBaseController
      * @return ResponseInterface
      * @throws AspectNotFoundException
      * @throws NoSuchArgumentException
-     * @throws InvalidSlotException
-     * @throws InvalidSlotReturnException
      */
     public function resultsAction(): ResponseInterface
     {
@@ -129,16 +128,26 @@ class SearchController extends AbstractBaseController
             $pagination = GeneralUtility::makeInstance(ResultsPagination::class, $paginator);
             $pagination->setMaxPageNumbers((int)$this->typoScriptConfiguration->getMaxPaginatorLinks(0));
 
-            $values = [
-                'additionalFilters' => $this->getAdditionalFilters(),
-                'resultSet' => $searchResultSet,
-                'pluginNamespace' => $this->typoScriptConfiguration->getSearchPluginNamespace(),
-                'arguments' => $arguments,
-                'pagination' => $pagination,
-                'currentPage' => $currentPage,
-            ];
+            /* @var AfterSearchEvent $afterSearchEvent */
+            $afterSearchEvent = $this->eventDispatcher->dispatch(
+                new AfterSearchEvent(
+                    $searchResultSet,
+                    $this->getAdditionalFilters(),
+                    $this->typoScriptConfiguration->getSearchPluginNamespace(),
+                    $arguments,
+                    $pagination,
+                    $currentPage
+                )
+            );
 
-            $values = $this->emitActionSignal(__CLASS__, __FUNCTION__, [$values]);
+            $values = [
+                'additionalFilters' => $afterSearchEvent->getAdditionalFilters(),
+                'resultSet' => $afterSearchEvent->getResultSet(),
+                'pluginNamespace' => $afterSearchEvent->getPluginNamespace(),
+                'arguments' => $afterSearchEvent->getArguments(),
+                'pagination' => $afterSearchEvent->getPagination(),
+                'currentPage' => $afterSearchEvent->getCurrentPage(),
+            ];
 
             $this->view->assignMultiple($values);
         } catch (SolrUnavailableException $e) {
@@ -156,12 +165,19 @@ class SearchController extends AbstractBaseController
             return $this->handleSolrUnavailable();
         }
 
+        /* @var FormEvent $formEvent */
+        $formEvent = $this->eventDispatcher->dispatch(
+            new FormEvent(
+                $this->searchService->getSearch(),
+                $this->getAdditionalFilters(),
+                $this->typoScriptConfiguration->getSearchPluginNamespace()
+            )
+        );
         $values = [
-            'search' => $this->searchService->getSearch(),
-            'additionalFilters' => $this->getAdditionalFilters(),
-            'pluginNamespace' => $this->typoScriptConfiguration->getSearchPluginNamespace(),
+            'search' => $formEvent->getSearch(),
+            'additionalFilters' => $formEvent->getAdditionalFilters(),
+            'pluginNamespace' => $formEvent->getPluginNamespace(),
         ];
-        $values = $this->emitActionSignal(__CLASS__, __FUNCTION__, [$values]);
 
         $this->view->assignMultiple($values);
         return $this->htmlResponse();
@@ -169,6 +185,8 @@ class SearchController extends AbstractBaseController
 
     /**
      * Frequently Searched
+     *
+     * @return ResponseInterface
      */
     public function frequentlySearchedAction(): ResponseInterface
     {
@@ -182,12 +200,17 @@ class SearchController extends AbstractBaseController
 
         $this->controllerContext->setSearchResultSet($searchResultSet);
 
+        /* @var AfterFrequentlySearchedEvent $afterFrequentlySearchedEvent*/
+        $afterFrequentlySearchedEvent = $this->eventDispatcher->dispatch(
+            new AfterFrequentlySearchedEvent(
+                $searchResultSet,
+                $this->getAdditionalFilters()
+            )
+        );
         $values = [
-            'additionalFilters' => $this->getAdditionalFilters(),
-            'resultSet' => $searchResultSet,
+            'additionalFilters' => $afterFrequentlySearchedEvent->getAdditionalFilters(),
+            'resultSet' => $afterFrequentlySearchedEvent->getResultSet(),
         ];
-        $values = $this->emitActionSignal(__CLASS__, __FUNCTION__, [$values]);
-
         $this->view->assignMultiple($values);
         return $this->htmlResponse();
     }
@@ -215,6 +238,7 @@ class SearchController extends AbstractBaseController
 
     /**
      * Rendered when no search is available.
+     *
      * @return ResponseInterface
      */
     public function solrNotAvailableAction(): ResponseInterface
