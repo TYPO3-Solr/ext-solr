@@ -191,10 +191,10 @@ class GarbageHandlerTest extends AbstractUpdateHandlerTest
             ->with('pages', $dummyPageRecord)
             ->willReturn($dummyPageRecord);
 
-        $this->queryGeneratorMock
+        $this->pagesRepositoryMock
             ->expects(self::any())
             ->method('getTreeList')
-            ->willReturn($dummyPageRecord['uid'] . ',100,200');
+            ->willReturn(implode(',', [$dummyPageRecord['uid'], 100, 200]));
 
         $this->garbageHandler->performRecordGarbageCheck($dummyPageRecord['uid'], 'pages', ['hidden' => 1], true);
     }
