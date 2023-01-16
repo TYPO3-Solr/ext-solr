@@ -17,19 +17,23 @@ namespace ApacheSolrForTypo3\Solr\Domain\Index;
 
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
+use ApacheSolrForTypo3\Solr\Event\Indexing\AfterIndexItemEvent;
+use ApacheSolrForTypo3\Solr\Event\Indexing\AfterIndexItemsEvent;
+use ApacheSolrForTypo3\Solr\Event\Indexing\BeforeIndexItemEvent;
+use ApacheSolrForTypo3\Solr\Event\Indexing\BeforeIndexItemsEvent;
 use ApacheSolrForTypo3\Solr\IndexQueue\Indexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\Task\IndexQueueWorkerTask;
+use Doctrine\DBAL\ConnectionException;
+use Doctrine\DBAL\Driver\Exception;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use RuntimeException;
 use Solarium\Exception\HttpException;
 use Throwable;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
-use TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException;
-use TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException;
 
 /**
  * Service to perform indexing operations
@@ -54,9 +58,9 @@ class IndexService
     protected Queue $indexQueue;
 
     /**
-     * @var Dispatcher
+     * @var EventDispatcherInterface
      */
-    protected $signalSlotDispatcher;
+    protected EventDispatcherInterface $eventDispatcher;
 
     /**
      * @var SolrLogManager
@@ -67,18 +71,18 @@ class IndexService
      * IndexService constructor.
      * @param Site $site
      * @param Queue|null $queue
-     * @param Dispatcher|null $dispatcher
+     * @param EventDispatcherInterface|null $eventDispatcher
      * @param SolrLogManager|null $solrLogManager
      */
     public function __construct(
         Site $site,
         Queue $queue = null,
-        Dispatcher $dispatcher = null,
+        EventDispatcherInterface $eventDispatcher = null,
         SolrLogManager $solrLogManager = null
     ) {
         $this->site = $site;
         $this->indexQueue = $queue ?? GeneralUtility::makeInstance(Queue::class);
-        $this->signalSlotDispatcher = $dispatcher ?? GeneralUtility::makeInstance(Dispatcher::class);
+        $this->eventDispatcher = $eventDispatcher ?? GeneralUtility::makeInstance(EventDispatcherInterface::class);
         $this->logger = $solrLogManager ?? GeneralUtility::makeInstance(SolrLogManager::class, /** @scrutinizer ignore-type */ __CLASS__);
     }
 
@@ -91,7 +95,7 @@ class IndexService
     }
 
     /**
-     * @return IndexQueueWorkerTask
+     * @return IndexQueueWorkerTask|null
      */
     public function getContextTask(): ?IndexQueueWorkerTask
     {
@@ -103,8 +107,10 @@ class IndexService
      *
      * @param int $limit
      * @return bool
-     * @throws InvalidSlotException
-     * @throws InvalidSlotReturnException
+     * @throws Throwable
+     * @throws ConnectionException
+     * @throws Exception
+     * @throws \Doctrine\DBAL\Exception
      */
     public function indexItems(int $limit): bool
     {
@@ -116,14 +122,19 @@ class IndexService
         // get items to index
         $itemsToIndex = $this->indexQueue->getItemsToIndex($this->site, $limit);
 
-        $this->emitSignal('beforeIndexItems', [$itemsToIndex, $this->getContextTask(), $indexRunId]);
+        $beforeIndexItemsEvent = new BeforeIndexItemsEvent($itemsToIndex, $this->getContextTask(), $indexRunId);
+        $beforeIndexItemsEvent = $this->eventDispatcher->dispatch($beforeIndexItemsEvent);
+        $itemsToIndex = $beforeIndexItemsEvent->getItems();
 
         foreach ($itemsToIndex as $itemToIndex) {
             try {
                 // try indexing
-                $this->emitSignal('beforeIndexItem', [$itemToIndex, $this->getContextTask(), $indexRunId]);
+                $beforeIndexItemEvent = new BeforeIndexItemEvent($itemToIndex, $this->getContextTask(), $indexRunId);
+                $beforeIndexItemEvent = $this->eventDispatcher->dispatch($beforeIndexItemEvent);
+                $itemToIndex = $beforeIndexItemEvent->getItem();
                 $this->indexItem($itemToIndex, $configurationToUse);
-                $this->emitSignal('afterIndexItem', [$itemToIndex, $this->getContextTask(), $indexRunId]);
+                $afterIndexItemEvent = new AfterIndexItemEvent($itemToIndex, $this->getContextTask(), $indexRunId);
+                $this->eventDispatcher->dispatch($afterIndexItemEvent);
             } catch (Throwable $e) {
                 $errors++;
                 $this->indexQueue->markItemAsFailed($itemToIndex, $e->getCode() . ': ' . $e->__toString());
@@ -131,7 +142,8 @@ class IndexService
             }
         }
 
-        $this->emitSignal('afterIndexItems', [$itemsToIndex, $this->getContextTask(), $indexRunId]);
+        $afterIndexItemsEvent = new AfterIndexItemsEvent($itemsToIndex, $this->getContextTask(), $indexRunId);
+        $this->eventDispatcher->dispatch($afterIndexItemsEvent);
 
         if ($enableCommitsSetting && count($itemsToIndex) > 0) {
             $solrServers = GeneralUtility::makeInstance(ConnectionManager::class)->getConnectionsBySite($this->site);
@@ -163,20 +175,6 @@ class IndexService
             $message,
             $data
         );
-    }
-
-    /**
-     * Builds an emits a signal for the IndexService.
-     *
-     * @param string $name
-     * @param array $arguments
-     * @return mixed
-     * @throws InvalidSlotException
-     * @throws InvalidSlotReturnException
-     */
-    protected function emitSignal(string $name, array $arguments = [])
-    {
-        return $this->signalSlotDispatcher->dispatch(__CLASS__, $name, $arguments);
     }
 
     /**
