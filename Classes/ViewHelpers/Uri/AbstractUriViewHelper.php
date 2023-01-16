@@ -23,8 +23,6 @@ use ApacheSolrForTypo3\Solr\Domain\Search\Uri\SearchUriBuilder;
 use ApacheSolrForTypo3\Solr\ViewHelpers\AbstractSolrFrontendViewHelper;
 use InvalidArgumentException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\Exception as ExtbaseObjectException;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
@@ -54,13 +52,11 @@ abstract class AbstractUriViewHelper extends AbstractSolrFrontendViewHelper
     /**
      * @param RenderingContextInterface|null $renderingContext
      * @return SearchUriBuilder
-     * @throws ExtbaseObjectException
      */
     protected static function getSearchUriBuilder(RenderingContextInterface $renderingContext = null): SearchUriBuilder
     {
         if (!isset(self::$searchUriBuilder)) {
-            $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-            self::$searchUriBuilder = $objectManager->get(SearchUriBuilder::class);
+            self::$searchUriBuilder = GeneralUtility::makeInstance(SearchUriBuilder::class);
         }
 
         if ($renderingContext && method_exists($renderingContext, 'getControllerContext')) {
@@ -72,7 +68,7 @@ abstract class AbstractUriViewHelper extends AbstractSolrFrontendViewHelper
 
     /**
      * @param RenderingContextInterface $renderingContext
-     * @return mixed
+     * @return SearchRequest|null
      */
     protected static function getUsedSearchRequestFromRenderingContext(RenderingContextInterface $renderingContext): ?SearchRequest
     {

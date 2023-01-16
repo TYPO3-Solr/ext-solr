@@ -19,6 +19,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetParser;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class QueryGroupFacetParser
@@ -48,15 +49,13 @@ class QueryGroupFacetParser extends AbstractFacetParser
             return null;
         }
 
-        /** @var QueryGroupFacet $facet */
-        $facet = $this->objectManager->get(
+        $facet = GeneralUtility::makeInstance(
             QueryGroupFacet::class,
             $resultSet,
             $facetName,
             $fieldName,
             $label,
-            $facetConfiguration,
-            $this->objectManager
+            $facetConfiguration
         );
 
         $activeFacets = $resultSet->getUsedSearchRequest()->getActiveFacetNames();
@@ -82,7 +81,7 @@ class QueryGroupFacetParser extends AbstractFacetParser
                     $facetName,
                     $facetConfiguration
                 );
-                $facet->addOption($this->objectManager->get(Option::class, $facet, $label, $value, $count, $isOptionsActive));
+                $facet->addOption(GeneralUtility::makeInstance(Option::class, $facet, $label, $value, $count, $isOptionsActive));
             }
         }
 

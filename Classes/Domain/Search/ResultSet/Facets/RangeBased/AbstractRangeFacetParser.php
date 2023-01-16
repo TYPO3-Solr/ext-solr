@@ -65,8 +65,7 @@ abstract class AbstractRangeFacetParser extends AbstractFacetParser
             $facetName,
             $fieldName,
             $label,
-            $facetConfiguration,
-            $this->objectManager
+            $facetConfiguration
         );
 
         $facet->setIsAvailable(count($valuesFromResponse) > 0);
