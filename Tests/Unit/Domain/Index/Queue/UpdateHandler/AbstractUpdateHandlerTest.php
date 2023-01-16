@@ -23,7 +23,6 @@ use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
 use ApacheSolrForTypo3\Solr\System\TCA\TCAService;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use PHPUnit\Framework\MockObject\MockObject;
-use TYPO3\CMS\Core\Database\QueryGenerator;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -59,14 +58,9 @@ abstract class AbstractUpdateHandlerTest extends UnitTest
     protected $indexQueueMock;
 
     /**
-     * @var QueryGenerator|MockObject
-     */
-    protected $queryGeneratorMock;
-
-    /**
      * @var PagesRepository|MockObject
      */
-    protected $pagesRepositoryMock;
+    protected PagesRepository|MockObject $pagesRepositoryMock;
 
     protected function setUp(): void
     {
@@ -75,6 +69,7 @@ abstract class AbstractUpdateHandlerTest extends UnitTest
         $this->tcaServiceMock = $this->createMock(TCAService::class);
         $this->indexQueueMock = $this->createMock(Queue::class);
         $this->pagesRepositoryMock = $this->createMock(PagesRepository::class);
+        GeneralUtility::addInstance(PagesRepository::class, $this->pagesRepositoryMock);
 
         $this->typoScriptConfigurationMock = $this->createMock(TypoScriptConfiguration::class);
         $this->frontendEnvironmentMock
@@ -82,9 +77,6 @@ abstract class AbstractUpdateHandlerTest extends UnitTest
             ->method('getSolrConfigurationFromPageId')
             ->willReturn($this->typoScriptConfigurationMock);
 
-        $this->queryGeneratorMock = $this->createMock(QueryGenerator::class);
-
-        GeneralUtility::addInstance(QueryGenerator::class, $this->queryGeneratorMock);
         parent::setUp();
     }
 

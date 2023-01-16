@@ -420,7 +420,7 @@ class PagesRepository extends AbstractRepository
      * @throws DBALException|\Doctrine\DBAL\DBALException
      * @noinspection Duplicates
      */
-    protected function getTreeList(int $id, int $depth = 999, int $begin = 0, string $permClause = ''): string
+    public function getTreeList(int $id, int $depth = 999, int $begin = 0, string $permClause = ''): string
     {
         if ($id < 0) {
             $id = abs($id);
