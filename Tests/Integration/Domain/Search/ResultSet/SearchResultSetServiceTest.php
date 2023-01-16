@@ -272,7 +272,6 @@ class SearchResultSetServiceTest extends IntegrationTest
     protected function doSearchWithResultSetService($solrConnection, $typoScriptConfiguration, $queryString = '*')
     {
         $search = GeneralUtility::makeInstance(Search::class, $solrConnection);
-        $fakeObjectManager = $this->getFakeObjectManager();
 
         /** @var $searchResultsSetService SearchResultSetService */
         $searchResultSetService = GeneralUtility::makeInstance(
@@ -281,8 +280,7 @@ class SearchResultSetServiceTest extends IntegrationTest
             $search,
             null,
             null,
-            null,
-            $fakeObjectManager
+            null
         );
 
         /** @var $searchRequest SearchRequest */
