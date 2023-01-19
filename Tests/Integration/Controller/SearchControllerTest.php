@@ -1395,7 +1395,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
      */
     protected function getIdContent($content, $id)
     {
-        if (strpos($content, $id) === false) {
+        if (!str_contains($content, $id)) {
             return '';
         }
 

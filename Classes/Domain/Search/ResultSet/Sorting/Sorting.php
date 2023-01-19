@@ -25,9 +25,9 @@ use InvalidArgumentException;
  */
 class Sorting
 {
-    const DIRECTION_DESC = 'desc';
+    public const DIRECTION_DESC = 'desc';
 
-    const DIRECTION_ASC = 'asc';
+    public const DIRECTION_ASC = 'asc';
 
     /**
      * @var array

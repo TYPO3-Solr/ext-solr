@@ -38,12 +38,12 @@ use TYPO3\CMS\Reports\Status;
  */
 class SiteHandlingStatus extends AbstractSolrStatus
 {
-    const TITLE_SITE_HANDLING_CONFIGURATION = 'Site handling configuration';
+    public const TITLE_SITE_HANDLING_CONFIGURATION = 'Site handling configuration';
 
     /**
      * @var string
      */
-    const
+    public const
         CSS_STATUS_NOTICE = 'notice',
     CSS_STATUS_INFO = 'info',
     CSS_STATUS_OK = 'success',

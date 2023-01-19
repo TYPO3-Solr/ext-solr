@@ -26,7 +26,7 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
  */
 class Slops implements ParameterBuilderInterface
 {
-    const NO_SLOP = null;
+    public const NO_SLOP = null;
 
     /**
      * The qs parameter

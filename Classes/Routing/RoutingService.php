@@ -47,7 +47,7 @@ class RoutingService implements LoggerAwareInterface
     /**
      * Default plugin namespace
      */
-    const PLUGIN_NAMESPACE = 'tx_solr';
+    public const PLUGIN_NAMESPACE = 'tx_solr';
 
     /**
      * Settings from routing configuration
@@ -1110,14 +1110,14 @@ class RoutingService implements LoggerAwareInterface
         $queryKey = (string)$queryKey;
 
         $tmpQueryKey = $queryKey;
-        if (strpos($queryKey, '-') !== false) {
+        if (str_contains($queryKey, '-')) {
             [$tmpQueryKey, $filterName] = explode('-', $tmpQueryKey, 2);
         }
         if (!isset($queryParams[$tmpQueryKey])) {
             $queryParams[$tmpQueryKey] = [];
         }
 
-        if (strpos($queryKey, '-') !== false) {
+        if (str_contains($queryKey, '-')) {
             [$queryKey, $filterName] = explode('-', $queryKey, 2);
             // explode multiple values
             $values = $this->pathFacetStringToArray($parameters[$fieldName], false);
