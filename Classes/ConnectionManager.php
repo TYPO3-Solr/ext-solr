@@ -26,11 +26,12 @@ use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use ApacheSolrForTypo3\Solr\System\Util\SiteUtility;
 use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use InvalidArgumentException;
-use function json_encode;
 use Throwable;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Site\Entity\Site as Typo3Site;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+
+use function json_encode;
 
 /**
  * ConnectionManager is responsible to create SolrConnection objects.

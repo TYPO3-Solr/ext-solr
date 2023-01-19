@@ -29,7 +29,7 @@ class ModuleDataStorageService implements SingletonInterface
     /**
      * @var string
      */
-    const KEY = 'tx_solr';
+    public const KEY = 'tx_solr';
 
     /**
      * Loads module data for user settings or returns a fresh object initially
@@ -71,8 +71,8 @@ class ModuleDataStorageService implements SingletonInterface
             $serializedModuleData = '';
             return;
         }
-        if (strpos($serializedModuleData, 'ApacheSolrForTypo3\\Solr\\Domain\\Model\\ModuleData') !== false
-            || strpos($serializedModuleData, 'Tx_Solr_Site') !== false) {
+        if (str_contains($serializedModuleData, 'ApacheSolrForTypo3\\Solr\\Domain\\Model\\ModuleData')
+            || str_contains($serializedModuleData, 'Tx_Solr_Site')) {
             $serializedModuleData = '';
         }
     }

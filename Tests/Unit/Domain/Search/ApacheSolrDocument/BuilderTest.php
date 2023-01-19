@@ -31,7 +31,7 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
  */
 class BuilderTest extends UnitTest
 {
-    const FAKE_PAGE_RECORD = [
+    public const FAKE_PAGE_RECORD = [
         'pid' => 4710,
         'crdate' => 1635537721,
         'SYS_LASTCHANGED' => 1635537721,

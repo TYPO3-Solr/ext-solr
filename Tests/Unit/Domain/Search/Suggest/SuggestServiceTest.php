@@ -139,7 +139,7 @@ class SuggestServiceTest extends UnitTest
         $connectionManagerMock->expects(self::any())->method('getConnectionByPageId')->willReturn($solrConnectionMock);
         GeneralUtility::setSingletonInstance(ConnectionManager::class, $connectionManagerMock);
 
-        $searchStub = new class($this->getDumbMock(SolrConnection::class)) extends Search implements SingletonInterface {
+        $searchStub = new class ($this->getDumbMock(SolrConnection::class)) extends Search implements SingletonInterface {
             public static $suggestServiceTest;
             public function search(Query $query, $offset = 0, $limit = 10): ?ResponseAdapter
             {

@@ -30,7 +30,7 @@ use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
  */
 class DateRangeFacet extends AbstractFacet
 {
-    const TYPE_DATE_RANGE = 'dateRange';
+    public const TYPE_DATE_RANGE = 'dateRange';
 
     /**
      * String

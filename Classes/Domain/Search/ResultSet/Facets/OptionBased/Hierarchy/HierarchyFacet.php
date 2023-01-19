@@ -29,7 +29,7 @@ use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
  */
 class HierarchyFacet extends AbstractFacet
 {
-    const TYPE_HIERARCHY = 'hierarchy';
+    public const TYPE_HIERARCHY = 'hierarchy';
 
     /**
      * String

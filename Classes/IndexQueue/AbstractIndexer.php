@@ -287,7 +287,7 @@ abstract class AbstractIndexer
                 throw new UnexpectedValueException($message, 1404471741);
             }
 
-            $isSerialized = (boolean)$serializedValueDetector->isSerializedValue($indexingConfiguration, $solrFieldName);
+            $isSerialized = (bool)$serializedValueDetector->isSerializedValue($indexingConfiguration, $solrFieldName);
             if ($isSerialized) {
                 return true;
             }
