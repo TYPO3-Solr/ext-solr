@@ -16,6 +16,7 @@
 namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
 
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+
 use function str_starts_with;
 
 /**

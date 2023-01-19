@@ -23,8 +23,8 @@ use InvalidArgumentException;
  */
 class Operator extends AbstractDeactivatable
 {
-    const OPERATOR_AND = 'AND';
-    const OPERATOR_OR = 'OR';
+    public const OPERATOR_AND = 'AND';
+    public const OPERATOR_OR = 'OR';
 
     /**
      * @var string

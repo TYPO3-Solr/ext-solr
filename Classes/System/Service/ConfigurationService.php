@@ -132,11 +132,11 @@ class ConfigurationService
             $fieldName = $filter['field'];
             $fieldValue = $filter['value'];
 
-            if (!is_numeric($fieldValue) && strpos($fieldValue, '?') === false && strpos($fieldValue, '*') === false) {
+            if (!is_numeric($fieldValue) && !str_contains($fieldValue, '?') && !str_contains($fieldValue, '*')) {
                 $fieldValue = '"' . str_replace('"', '\"', $fieldValue) . '"';
             }
 
-            $filterConfiguration[] =  $fieldName . ':' . $fieldValue;
+            $filterConfiguration[] = $fieldName . ':' . $fieldValue;
         }
         return $filterConfiguration;
     }

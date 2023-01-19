@@ -37,7 +37,7 @@
     "typo3/cms-tstemplate": "*"
   },
   "require-dev": {
-    "typo3/coding-standards": "~0.6.1",
+    "typo3/coding-standards": "~0.7.1",
     "phpunit/phpunit": "^9.5",
     "phpspec/prophecy-phpunit":"*",
     "typo3/testing-framework": "dev-main",
