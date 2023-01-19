@@ -73,11 +73,11 @@ class UrlHelper extends Uri
      */
     public function setPath(string $path): UrlHelper
     {
-        if (strpos($path, '?') !== false) {
+        if (str_contains($path, '?')) {
             throw new InvalidArgumentException('Invalid path provided. Must not contain a query string.', 1436717330);
         }
 
-        if (strpos($path, '#') !== false) {
+        if (str_contains($path, '#')) {
             throw new InvalidArgumentException('Invalid path provided; must not contain a URI fragment', 1436717332);
         }
         $this->path = $this->sanitizePath($path);

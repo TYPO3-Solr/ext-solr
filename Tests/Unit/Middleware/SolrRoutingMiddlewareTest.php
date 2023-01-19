@@ -58,7 +58,7 @@ class SolrRoutingMiddlewareTest extends UnitTest
             ->getMock();
 
         /* @see \TYPO3\CMS\Frontend\Tests\Unit\Middleware\PageResolverTest::setUp */
-        $this->responseOutputHandler = new class() implements RequestHandlerInterface {
+        $this->responseOutputHandler = new class () implements RequestHandlerInterface {
             /**
              * @var ServerRequestInterface
              */

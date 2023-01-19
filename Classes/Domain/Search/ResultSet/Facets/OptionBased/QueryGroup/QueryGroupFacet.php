@@ -27,7 +27,7 @@ use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
  */
 class QueryGroupFacet extends AbstractOptionsFacet
 {
-    const TYPE_QUERY_GROUP = 'queryGroup';
+    public const TYPE_QUERY_GROUP = 'queryGroup';
 
     /**
      * String

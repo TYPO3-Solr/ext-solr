@@ -27,10 +27,10 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class SolrLogManager
 {
-    const WARNING = LogLevel::WARNING;
-    const ERROR = LogLevel::ERROR;
-    const INFO = LogLevel::INFO;
-    const NOTICE = LogLevel::NOTICE;
+    public const WARNING = LogLevel::WARNING;
+    public const ERROR = LogLevel::ERROR;
+    public const INFO = LogLevel::INFO;
+    public const NOTICE = LogLevel::NOTICE;
 
     /**
      * @var Logger|null

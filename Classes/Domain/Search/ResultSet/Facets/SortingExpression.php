@@ -53,7 +53,7 @@ class SortingExpression
      */
     public function getForJsonFacet(string $sorting, string $direction): string
     {
-        $isMetricSorting = strpos($sorting, 'metrics_') === 0;
+        $isMetricSorting = str_starts_with($sorting, 'metrics_');
         $expression = $isMetricSorting ? $sorting : $this->getForFacet($sorting);
         $direction = strtolower($direction ?? '');
         if (!empty($direction) && in_array($direction, ['asc', 'desc'])) {

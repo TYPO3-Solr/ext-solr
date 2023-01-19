@@ -28,7 +28,7 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
  */
 class Content extends AbstractContentObject
 {
-    const CONTENT_OBJECT_NAME = 'SOLR_CONTENT';
+    public const CONTENT_OBJECT_NAME = 'SOLR_CONTENT';
 
     /**
      * Executes the SOLR_CONTENT content object.

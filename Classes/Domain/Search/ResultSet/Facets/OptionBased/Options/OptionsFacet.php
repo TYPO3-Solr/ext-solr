@@ -27,7 +27,7 @@ use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
  */
 class OptionsFacet extends AbstractOptionsFacet
 {
-    const TYPE_OPTIONS = 'options';
+    public const TYPE_OPTIONS = 'options';
 
     /**
      * String

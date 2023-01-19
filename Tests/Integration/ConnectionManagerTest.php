@@ -20,6 +20,7 @@ use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use ReflectionException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 use function vsprintf;
 
 /**
