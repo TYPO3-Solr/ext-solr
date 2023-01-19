@@ -62,7 +62,7 @@ class FrequentSearchesServiceTest extends UnitTest
         $this->cacheMock = $this->getDumbMock(AbstractFrontend::class);
         $this->configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
 
-        $this->frequentSearchesService = new class($this->configurationMock, $this->cacheMock, $this->tsfeMock, $this->statisticsRepositoryMock) extends FrequentSearchesService {
+        $this->frequentSearchesService = new class ($this->configurationMock, $this->cacheMock, $this->tsfeMock, $this->statisticsRepositoryMock) extends FrequentSearchesService {
 //            protected function getCacheIdentifier(array $frequentSearchConfiguration) : string {
 //                $identifier = 'frequentSearchesTags';
 //                if (isset($frequentSearchConfiguration['select.']['checkRootPageId']) && $frequentSearchConfiguration['select.']['checkRootPageId']) {

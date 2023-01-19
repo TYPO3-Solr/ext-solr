@@ -171,7 +171,7 @@ class TCAService
 
         if (isset($this->tca[$table]['ctrl']['enablecolumns']['disabled'])) {
             $hiddenField = $this->tca[$table]['ctrl']['enablecolumns']['disabled'];
-            $hidden = (boolean)$record[$hiddenField];
+            $hidden = (bool)$record[$hiddenField];
         }
 
         return $hidden;

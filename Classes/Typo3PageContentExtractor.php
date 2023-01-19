@@ -18,8 +18,9 @@ namespace ApacheSolrForTypo3\Solr;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use DOMDocument;
 use DOMXPath;
-use function libxml_use_internal_errors;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+
+use function libxml_use_internal_errors;
 
 /**
  * Content extraction class for TYPO3 pages.

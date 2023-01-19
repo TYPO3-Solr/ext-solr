@@ -63,7 +63,7 @@ class Rootline
      *
      * @var string
      */
-    const ELEMENT_DELIMITER = '/';
+    public const ELEMENT_DELIMITER = '/';
 
     /**
      * Storage for access rootline elements

@@ -4,7 +4,14 @@ declare(strict_types=1);
 
 $config = \TYPO3\CodingStandards\CsFixerConfig::create();
 $config
-    ->addRules(['modernize_strpos' => false])
+    ->addRules(
+        [
+            'ordered_imports' => [
+                'imports_order' => ['class', 'function', 'const'],
+                'sort_algorithm' => 'alpha'
+            ]
+        ],
+    )
     ->getFinder()
     ->exclude([
         '.Build'

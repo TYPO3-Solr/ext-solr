@@ -35,7 +35,7 @@ class DateRangeUrlDecoder implements FacetUrlDecoderInterface
      *
      * @var string
      */
-    const DELIMITER = '-';
+    public const DELIMITER = '-';
 
     /**
      * Parses the given date range from a GET parameter and returns a Solr

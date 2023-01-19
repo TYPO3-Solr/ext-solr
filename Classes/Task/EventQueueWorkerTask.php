@@ -37,7 +37,7 @@ use TYPO3\CMS\Scheduler\Task\AbstractTask;
  */
 final class EventQueueWorkerTask extends AbstractTask
 {
-    const DEFAULT_PROCESSING_LIMIT = 100;
+    public const DEFAULT_PROCESSING_LIMIT = 100;
 
     /**
      * Processing limit, the number of events to process
