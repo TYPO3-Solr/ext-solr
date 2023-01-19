@@ -27,7 +27,7 @@ use DateTimeZone;
  */
 class FormatService
 {
-    const SOLR_ISO_DATETIME_FORMAT = 'Y-m-d\TH:i:s\Z';
+    public const SOLR_ISO_DATETIME_FORMAT = 'Y-m-d\TH:i:s\Z';
 
     /**
      * @see http://php.net/manual/de/function.date.php for formatting options

@@ -35,7 +35,7 @@ class SearchRequest
      *
      * @var string
      */
-    const DEFAULT_PLUGIN_NAMESPACE = 'tx_solr';
+    public const DEFAULT_PLUGIN_NAMESPACE = 'tx_solr';
 
     /**
      * @var string

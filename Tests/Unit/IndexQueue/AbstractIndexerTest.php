@@ -103,7 +103,7 @@ class AbstractIndexerTest extends UnitTest
      */
     public function resolveFieldValue(array $indexingConfiguration, string $solrFieldName, array $data, $expectedValue)
     {
-        $subject = new class() extends AbstractIndexer {
+        $subject = new class () extends AbstractIndexer {
         };
         $tsfe = $this->getDumbMock(TypoScriptFrontendController::class);
         self::assertEquals(

@@ -30,7 +30,7 @@ use Throwable;
  */
 class SolrWriteService extends AbstractSolrService
 {
-    const EXTRACT_SERVLET = 'update/extract';
+    public const EXTRACT_SERVLET = 'update/extract';
 
     /**
      * Performs a content and meta data extraction request.

@@ -30,12 +30,12 @@ class UrlFacetContainer implements \Countable
     /**
      * Parameters array has a numeric index
      */
-    const PARAMETER_STYLE_INDEX = 'index';
+    public const PARAMETER_STYLE_INDEX = 'index';
 
     /**
      * Parameters array uses combination of key and value as index
      */
-    const PARAMETER_STYLE_ASSOC = 'assoc';
+    public const PARAMETER_STYLE_ASSOC = 'assoc';
 
     /**
      * Used parameter style

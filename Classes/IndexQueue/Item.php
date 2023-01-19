@@ -37,11 +37,11 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class Item
 {
-    const STATE_BLOCKED = -1;
+    public const STATE_BLOCKED = -1;
 
-    const STATE_PENDING = 0;
+    public const STATE_PENDING = 0;
 
-    const STATE_INDEXED = 1;
+    public const STATE_INDEXED = 1;
 
     /**
      * The item's uid in the index queue (tx_solr_indexqueue_item.uid)
@@ -168,7 +168,7 @@ class Item
         $this->errors = (string)empty($itemMetaData['errors']) ? '' : $itemMetaData['errors'];
 
         $this->indexingConfigurationName = $itemMetaData['indexing_configuration'] ?? '';
-        $this->hasIndexingProperties = (boolean)($itemMetaData['has_indexing_properties'] ?? false);
+        $this->hasIndexingProperties = (bool)($itemMetaData['has_indexing_properties'] ?? false);
 
         if (!empty($fullRecord)) {
             $this->record = $fullRecord;

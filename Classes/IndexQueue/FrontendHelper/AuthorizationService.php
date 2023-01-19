@@ -37,7 +37,7 @@ class AuthorizationService extends AbstractAuthenticationService
      *
      * @var string
      */
-    const SOLR_INDEXER_USERNAME = '__SolrIndexerUser__';
+    public const SOLR_INDEXER_USERNAME = '__SolrIndexerUser__';
 
     /**
      * Gets a fake frontend user record to allow access to protected pages.
