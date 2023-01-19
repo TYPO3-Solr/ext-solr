@@ -262,7 +262,7 @@ class Faceting extends AbstractDeactivatable implements ParameterBuilderInterfac
 
             $params = $query->getParams();
             foreach ($params as $key => $value) {
-                if (strpos($key, 'f.') !== false) {
+                if (str_contains($key, 'f.')) {
                     $query->addParam($key, null);
                 }
             }

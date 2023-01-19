@@ -143,7 +143,7 @@ abstract class AbstractQueryBuilder
      */
     public function useSorting(Sorting $sorting): AbstractQueryBuilder
     {
-        if (strpos($sorting->getFieldName(), 'relevance') !== false) {
+        if (str_contains($sorting->getFieldName(), 'relevance')) {
             $this->removeAllSortings();
             return $this;
         }

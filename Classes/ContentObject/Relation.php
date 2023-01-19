@@ -178,7 +178,7 @@ class Relation extends AbstractContentObject
         $mmTableName = $localFieldTca['config']['MM'];
 
         // Remove the first option of foreignLabelField for recursion
-        if (strpos($this->configuration['foreignLabelField'] ?? '', '.') !== false) {
+        if (str_contains($this->configuration['foreignLabelField'] ?? '', '.')) {
             $foreignTableLabelFieldArr = explode('.', $this->configuration['foreignLabelField']);
             unset($foreignTableLabelFieldArr[0]);
             $this->configuration['foreignLabelField'] = implode('.', $foreignTableLabelFieldArr);
@@ -196,7 +196,7 @@ class Relation extends AbstractContentObject
             if (isset($foreignTableTca['columns'][$foreignTableLabelField]['config']['foreign_table'])
                 && !empty($this->configuration['enableRecursiveValueResolution'])
             ) {
-                if (strpos($this->configuration['foreignLabelField'], '.') !== false) {
+                if (str_contains($this->configuration['foreignLabelField'], '.')) {
                     $foreignTableLabelFieldArr = explode('.', $this->configuration['foreignLabelField']);
                     unset($foreignTableLabelFieldArr[0]);
                     $this->configuration['foreignLabelField'] = implode('.', $foreignTableLabelFieldArr);
@@ -235,7 +235,7 @@ class Relation extends AbstractContentObject
             return $foreignTableLabelField;
         }
 
-        if (strpos($this->configuration['foreignLabelField'] ?? '', '.') !== false) {
+        if (str_contains($this->configuration['foreignLabelField'] ?? '', '.')) {
             list($foreignTableLabelField) = explode('.', $this->configuration['foreignLabelField'], 2);
         } else {
             $foreignTableLabelField = $this->configuration['foreignLabelField'];
@@ -337,7 +337,7 @@ class Relation extends AbstractContentObject
             // adjust configuration for next level
             $this->configuration['localField'] = $foreignTableLabelField;
             $parentContentObject->data = $relatedRecord;
-            if (strpos($this->configuration['foreignLabelField'], '.') !== false) {
+            if (str_contains($this->configuration['foreignLabelField'], '.')) {
                 list(, $this->configuration['foreignLabelField']) = explode(
                     '.',
                     $this->configuration['foreignLabelField'],

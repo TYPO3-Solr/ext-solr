@@ -23,7 +23,6 @@ use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use Doctrine\DBAL\Exception as DoctrineDBALException;
 use Doctrine\DBAL\Schema\SchemaException;
-use function getenv;
 use InvalidArgumentException;
 use ReflectionClass;
 use ReflectionException;
@@ -54,6 +53,8 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use TYPO3\CMS\Frontend\Http\RequestHandler;
 use TYPO3\TestingFramework\Core\Exception as TestingFrameworkCoreException;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
+
+use function getenv;
 
 /**
  * Base class for all integration tests in the EXT:solr project
@@ -573,7 +574,7 @@ abstract class IntegrationTest extends FunctionalTestCase
     {
         error_reporting(error_reporting() & ~E_USER_DEPRECATED);
         set_error_handler(function ($id, $msg) {
-            if ($id === E_USER_DEPRECATED && strpos($msg, 'solr:deprecation: ') === 0) {
+            if ($id === E_USER_DEPRECATED && str_starts_with($msg, 'solr:deprecation: ')) {
                 $this->fail('Executed deprecated EXT:solr code: ' . $msg);
             }
         });

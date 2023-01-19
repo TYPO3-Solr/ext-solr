@@ -161,7 +161,7 @@ class SolrFacetMaskAndCombineEnhancer extends AbstractEnhancer implements Routin
                     $facetField = substr($facetField, 0, strlen($facetField) - 3);
 
                     $facetValue = null;
-                    if (strpos($facetField, '%3A') !== false) {
+                    if (str_contains($facetField, '%3A')) {
                         [$facetField, $facetValue] = explode('%3A', $facetField, 2);
                     }
 

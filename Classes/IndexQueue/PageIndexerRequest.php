@@ -35,7 +35,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class PageIndexerRequest
 {
-    const SOLR_INDEX_HEADER = 'X-Tx-Solr-Iq';
+    public const SOLR_INDEX_HEADER = 'X-Tx-Solr-Iq';
 
     /**
      * List of actions to perform during page rendering.

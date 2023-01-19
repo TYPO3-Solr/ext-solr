@@ -155,7 +155,7 @@ class OptionsFacetParser extends AbstractFacetParser
         foreach ($response->facets->{$facetName}->buckets as $bucket) {
             $bucketVariables = get_object_vars($bucket);
             foreach ($bucketVariables as $key => $value) {
-                if (strpos($key, 'metrics_') === 0) {
+                if (str_starts_with($key, 'metrics_')) {
                     $metricsKey = str_replace('metrics_', '', $key);
                     $metricsFromSolrResponse[$bucket->val][$metricsKey] = $value;
                 }

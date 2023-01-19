@@ -23,8 +23,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class Sorting extends AbstractDeactivatable
 {
-    const SORT_ASC = 'ASC';
-    const SORT_DESC = 'DESC';
+    public const SORT_ASC = 'ASC';
+    public const SORT_DESC = 'DESC';
 
     /**
      * @var string

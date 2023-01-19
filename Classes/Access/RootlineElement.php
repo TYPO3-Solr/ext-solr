@@ -30,28 +30,28 @@ class RootlineElement
      *
      * @var int
      */
-    const ELEMENT_TYPE_PAGE = 1;
+    public const ELEMENT_TYPE_PAGE = 1;
 
     /**
      * Content access rootline element.
      *
      * @var int
      */
-    const ELEMENT_TYPE_CONTENT = 2;
+    public const ELEMENT_TYPE_CONTENT = 2;
 
     /**
      * Record access rootline element.
      *
      * @var int
      */
-    const ELEMENT_TYPE_RECORD = 3;
+    public const ELEMENT_TYPE_RECORD = 3;
 
     /**
      * Delimiter between the page ID and the groups set for a page.
      *
      * @var string
      */
-    const PAGE_ID_GROUP_DELIMITER = ':';
+    public const PAGE_ID_GROUP_DELIMITER = ':';
 
     /**
      * Access type, either page (default) or content. Depending on the type,
