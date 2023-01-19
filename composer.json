@@ -70,6 +70,28 @@
     ],
     "extension-build": [
       "@extension-create-libs"
+    ],
+    "tests:restore-git": "echo \"Retore composer.json to initial state:\" && git checkout composer.json",
+    "tests:env": [
+      "if [ -z ${TYPO3_VERSION+x} ]; then >&2 echo \"Can not proceed, because env var TYPO3_VERSION is not set\"; exit 1; else echo \"Setup test environment for TYPO3 ${TYPO3_VERSION}\"; fi",
+      "if echo $TYPO3_VERSION | grep -q \"dev\"; then $COMPOSER_BINARY config minimum-stability dev; fi"
+    ],
+    "tests:setup": [
+      "@tests:env",
+      "@composer req --prefer-source --update-with-all-dependencies typo3/cms-core:${TYPO3_VERSION}",
+      "@tests:restore-git"
+    ],
+    "tests:unit": [
+      "phpunit --colors --config=Build/Test/UnitTests.xml --bootstrap=Build/Test/UnitTestsBootstrap.php"
+    ],
+    "tests:integration": [
+      "phpunit --colors --config=Build/Test/IntegrationTests.xml --bootstrap=.Build/Web/typo3conf/ext/solr/Build/Test/IntegrationTestsBootstrap.php"
+    ],
+    "t3:standards:fix": [
+      "php-cs-fixer fix"
+    ],
+    "lint:xlf": [
+      "xmllint Resources/Private/Language/ -p '*.xlf'"
     ]
   },
   "extra": {
