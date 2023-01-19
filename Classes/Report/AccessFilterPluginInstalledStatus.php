@@ -40,14 +40,14 @@ class AccessFilterPluginInstalledStatus extends AbstractSolrStatus
      *
      * @var string
      */
-    const RECOMMENDED_PLUGIN_VERSION = '3.0.0';
+    public const RECOMMENDED_PLUGIN_VERSION = '3.0.0';
 
     /**
      * The plugin's Java class name.
      *
      * @var string
      */
-    const PLUGIN_CLASS_NAME = 'org.typo3.solr.search.AccessFilterQParserPlugin';
+    public const PLUGIN_CLASS_NAME = 'org.typo3.solr.search.AccessFilterQParserPlugin';
 
     /**
      * Compiles a collection of solrconfig.xml checks against each configured

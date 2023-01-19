@@ -36,7 +36,7 @@ use TYPO3\CMS\Frontend\ContentObject\AbstractContentObject;
  */
 class Multivalue extends AbstractContentObject
 {
-    const CONTENT_OBJECT_NAME = 'SOLR_MULTIVALUE';
+    public const CONTENT_OBJECT_NAME = 'SOLR_MULTIVALUE';
 
     /**
      * Executes the SOLR_MULTIVALUE content object.

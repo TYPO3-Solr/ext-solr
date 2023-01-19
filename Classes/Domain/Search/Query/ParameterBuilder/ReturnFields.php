@@ -47,7 +47,7 @@ class ReturnFields implements ParameterBuilderInterface
      */
     public function add(string $fieldName)
     {
-        if (strpos($fieldName, '[') === false && strpos($fieldName, ']') === false && in_array('*', $this->fieldList)) {
+        if (!str_contains($fieldName, '[') && !str_contains($fieldName, ']') && in_array('*', $this->fieldList)) {
             $this->fieldList = array_diff($this->fieldList, ['*']);
         }
 

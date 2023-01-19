@@ -74,7 +74,7 @@ class SearchController extends AbstractBaseController
                 return;
             }
 
-            if (strpos($customTemplate, 'EXT:') !== false) {
+            if (str_contains($customTemplate, 'EXT:')) {
                 $view->setTemplatePathAndFilename($customTemplate);
             } else {
                 $view->setTemplate($customTemplate);

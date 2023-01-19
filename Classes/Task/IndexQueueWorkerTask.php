@@ -105,11 +105,11 @@ class IndexQueueWorkerTask extends AbstractSolrTask implements ProgressProviderI
      */
     protected function replaceWebRootMarkers(string $webRoot): string
     {
-        if (strpos($webRoot, '###PATH_typo3###') !== false) {
+        if (str_contains($webRoot, '###PATH_typo3###')) {
             $webRoot = str_replace('###PATH_typo3###', Environment::getPublicPath() . '/typo3/', $webRoot);
         }
 
-        if (strpos($webRoot, '###PATH_site###') !== false) {
+        if (str_contains($webRoot, '###PATH_site###')) {
             $webRoot = str_replace('###PATH_site###', Environment::getPublicPath() . '/', $webRoot);
         }
 

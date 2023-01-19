@@ -412,8 +412,7 @@ class SearchUriBuilder
         $values = $variableEvent->getVariableValues();
         // Take care that everything is urlencoded!
         $keys = array_map(function ($value) {
-            // @TODO: With only PHP 8 support, replace this with str_contains()
-            if (strpos($value, '###') === false) {
+            if (!str_contains($value, '###')) {
                 return $value;
             }
             return urlencode($value);

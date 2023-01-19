@@ -39,7 +39,7 @@ use TYPO3\CMS\Frontend\ContentObject\AbstractContentObject;
  */
 class Classification extends AbstractContentObject
 {
-    const CONTENT_OBJECT_NAME = 'SOLR_CLASSIFICATION';
+    public const CONTENT_OBJECT_NAME = 'SOLR_CLASSIFICATION';
 
     /**
      * Executes the SOLR_CLASSIFICATION content object.

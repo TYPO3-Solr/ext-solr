@@ -28,7 +28,7 @@ use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
  */
 abstract class AbstractFacet
 {
-    const TYPE_ABSTRACT = 'abstract';
+    public const TYPE_ABSTRACT = 'abstract';
 
     /**
      * String

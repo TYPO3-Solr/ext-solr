@@ -25,24 +25,25 @@ use ApacheSolrForTypo3\Solr\System\Solr\Parser\SynonymParser;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\System\Solr\Schema\Schema;
 use InvalidArgumentException;
-use function simplexml_load_string;
 use Solarium\Client;
 use stdClass;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+
+use function simplexml_load_string;
 
 /**
  * Class SolrAdminService
  */
 class SolrAdminService extends AbstractSolrService
 {
-    const PLUGINS_SERVLET = 'admin/plugins';
-    const LUKE_SERVLET = 'admin/luke';
-    const SYSTEM_SERVLET = 'admin/system';
-    const CORES_SERVLET = '../admin/cores';
-    const FILE_SERVLET = 'admin/file';
-    const SCHEMA_SERVLET = 'schema';
-    const SYNONYMS_SERVLET = 'schema/analysis/synonyms/';
-    const STOPWORDS_SERVLET = 'schema/analysis/stopwords/';
+    public const PLUGINS_SERVLET = 'admin/plugins';
+    public const LUKE_SERVLET = 'admin/luke';
+    public const SYSTEM_SERVLET = 'admin/system';
+    public const CORES_SERVLET = '../admin/cores';
+    public const FILE_SERVLET = 'admin/file';
+    public const SCHEMA_SERVLET = 'schema';
+    public const SYNONYMS_SERVLET = 'schema/analysis/synonyms/';
+    public const STOPWORDS_SERVLET = 'schema/analysis/stopwords/';
 
     /**
      * @var array

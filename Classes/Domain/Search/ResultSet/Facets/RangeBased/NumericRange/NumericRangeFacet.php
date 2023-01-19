@@ -30,7 +30,7 @@ use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
  */
 class NumericRangeFacet extends AbstractFacet
 {
-    const TYPE_NUMERIC_RANGE = 'numericRange';
+    public const TYPE_NUMERIC_RANGE = 'numericRange';
 
     /**
      * String
