@@ -22,26 +22,32 @@
   },
   "require": {
     "php": ">=7.2.0",
+    "ext-dom": "*",
     "ext-json": "*",
-    "typo3/cms-core": "^10.4.10",
+    "ext-libxml": "*",
+    "ext-simplexml": "*",
+    "solarium/solarium": "6.0.4",
     "typo3/cms-backend": "*",
+    "typo3/cms-core": "^10.4.10",
     "typo3/cms-extbase": "*",
-    "typo3/cms-frontend": "*",
     "typo3/cms-fluid": "*",
+    "typo3/cms-frontend": "*",
     "typo3/cms-reports": "*",
     "typo3/cms-scheduler": "*",
-    "typo3/cms-tstemplate": "*",
-    "solarium/solarium": "6.0.4"
+    "typo3/cms-tstemplate": "*"
   },
   "require-dev": {
+    "typo3/coding-standards": "~0.6.1",
     "phpunit/phpunit": "^8",
     "nimut/testing-framework": "^6.0.1",
+    "sclable/xml-lint": "*",
+    "scrutinizer/ocular": "*",
     "phpspec/prophecy": "^1.17"
   },
   "replace": {
+    "apache-solr-for-typo3/solrfluid": "*",
     "typo3-ter/solr": "self.version",
-    "typo3-ter/solrfluid": "*",
-    "apache-solr-for-typo3/solrfluid": "*"
+    "typo3-ter/solrfluid": "*"
   },
   "autoload": {
     "classmap": [
@@ -57,6 +63,7 @@
       "TYPO3\\CMS\\Core\\Tests\\": ".Build/Web/typo3/sysext/core/Tests/"
     }
   },
+  "prefer-stable": true,
   "config": {
     "allow-plugins": true,
     "vendor-dir": ".Build/vendor",
@@ -94,7 +101,7 @@
     ],
     "tests:integration": [
       "@tests:integration:be",
-      "tests:integration:fe"
+      "@tests:integration:fe"
     ],
     "t3:standards:fix": [
       "php-cs-fixer fix"
@@ -111,6 +118,20 @@
       "extension-key": "solr",
       "cms-package-dir": "{$vendor-dir}/typo3/cms",
       "web-dir": ".Build/Web"
+    },
+    "TYPO3-Solr": {
+      "version-matrix": {
+        "ext-tika": "^10.0",
+        "ext-solrfal": "^10.0",
+        "ext-solrconsole": "^10.0",
+        "ext-solrdebugtools": "^10.0",
+        "ext-solrfluidgrouping": "^10.0",
+        "ext-solrmlt": "^10.0",
+        "Apache-Solr": "8.11.1",
+        "configset": "ext_solr_11_2_0"
+      },
+      "ext-solrfal": {
+      }
     }
   }
 }
