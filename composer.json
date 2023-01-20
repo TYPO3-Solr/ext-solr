@@ -110,6 +110,12 @@
       "xmllint Resources/Private/Language/ -p '*.xlf'"
     ]
   },
+  "scripts-descriptions": {
+    "tests:unit": "Run unit tests",
+    "tests:integration": "Run all intgration tests",
+    "@tests:integration:be":  "Run integration tests for backend/indexing",
+    "@tests:integration:fe": "Run integration tests for frontend"
+  },
   "extra": {
     "branch-alias": {
       "dev-release-11.2.x": "11.2.x-dev"

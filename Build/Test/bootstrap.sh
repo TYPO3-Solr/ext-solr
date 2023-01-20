@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-if [[ ! -z ${BASH_SOURCE[0]} ]]; then
+if [[ -n ${BASH_SOURCE[0]} ]]; then
   SCRIPTPATH=$( cd $(dirname ${BASH_SOURCE[0]}) ; pwd -P )
 else
   SCRIPTPATH=$( cd $(dirname $0) ; pwd -P )
@@ -80,16 +80,7 @@ then
   exit 1
 fi
 
-# Install build tools
-echo "Install build tools: "
-if ! composer global require \
-  friendsofphp/php-cs-fixer:"$PHP_CS_FIXER_VERSION" \
-  sclable/xml-lint \
-  scrutinizer/ocular
-then
-  echo "The build tools(friendsofphp/php-cs-fixer, sclable/xml-lint, scrutinizer/ocular) could not be installed. Please fix this issue."
-  exit 1
-fi
+COMPOSER_NO_INTERACTION=1
 
 # Setup TYPO3 environment variables
 export TYPO3_PATH_PACKAGES="${EXTENSION_ROOTPATH}.Build/vendor/"
@@ -101,11 +92,16 @@ echo "Using package path $TYPO3_PATH_PACKAGES"
 echo "Using web path $TYPO3_PATH_WEB"
 
 # Install TYPO3 sources
+if [[ $TYPO3_VERSION = *"main"* ]]; then
+  composer config minimum-stability dev
+fi
+
 if ! composer require --dev --update-with-dependencies --prefer-source \
   typo3/cms-core:"$TYPO3_VERSION" \
   typo3/cms-backend:"$TYPO3_VERSION" \
   typo3/cms-recordlist:"$TYPO3_VERSION" \
   typo3/cms-fluid:"$TYPO3_VERSION" \
+  typo3/cms-fluid-styled-content:"$TYPO3_VERSION" \
   typo3/cms-frontend:"$TYPO3_VERSION" \
   typo3/cms-extbase:"$TYPO3_VERSION" \
   typo3/cms-reports:"$TYPO3_VERSION" \
