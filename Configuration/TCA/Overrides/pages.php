@@ -1,6 +1,6 @@
 <?php
 
-defined('TYPO3') or die();
+defined('TYPO3') or die('Access denied.');
 
 /**
  * No Search for sub entries of page tree.
