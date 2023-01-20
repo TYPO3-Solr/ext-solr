@@ -154,11 +154,11 @@ class Tsfe implements SingletonInterface
                 $userGroups = [0, -1];
             }
             $feUser->user = ['uid' => 0, 'username' => '', 'usergroup' => implode(',', $userGroups) ];
-            $feUser->fetchGroupData();
+            $feUser->fetchGroupData($serverRequest);
             $context->setAspect('frontend.user', GeneralUtility::makeInstance(UserAspect::class, $feUser, $userGroups));
 
             /* @var PageArguments $pageArguments */
-            $pageArguments = GeneralUtility::makeInstance(PageArguments::class, $pageId, 0, []);
+            $pageArguments = GeneralUtility::makeInstance(PageArguments::class, $pageId, '0', []);
 
             /* @var TypoScriptFrontendController $tsfe */
             $tsfe = GeneralUtility::makeInstance(TypoScriptFrontendController::class, $context, $site, $siteLanguage, $pageArguments, $feUser);
