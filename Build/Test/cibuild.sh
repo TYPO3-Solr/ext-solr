@@ -30,19 +30,26 @@ else
   echo "No syntax errors! Great job!"
 fi
 
-# use from vendor dir
-if ! php-cs-fixer --version > /dev/null 2>&1
+echo "Check compliance against TYPO3 Coding Standards"
+if ! .Build/bin/php-cs-fixer --version > /dev/null 2>&1
 then
-  echo "PHP CS Fixer not found, skipping PHP linting."
+  echo "TYPO3 https://github.com/TYPO3/coding-standards is not set properly."
+  echo "Please fix that asap to avoid unwanted changes in the future."
+  exit 1
 else
-  echo "Check PSR-2 compliance"
-  if ! php-cs-fixer fix --diff --verbose --dry-run --rules='{"function_declaration": {"closure_function_spacing": "none"}}' Classes
+  echo "TYPO3 Coding Standards compliance: See https://github.com/TYPO3/coding-standards"
+  if ! composer t3:standards:fix -- --diff --verbose --dry-run && rm .php-cs-fixer.cache
   then
-    echo "Some files are not PSR-2 compliant"
-    echo "Please fix the files listed above"
+    echo "Some files are not compliant to TYPO3 Coding Standards"
+    echo "Please fix the files listed above."
+    echo "Tip for auto fix: "
+    echo "  composer tests:setup && composer t3:standards:fix"
     exit 1
+  else
+    echo "The code is TYPO3 Coding Standards compliant! Great job!"
   fi
 fi
+echo -e "\n\n"
 
 echo "Run XML Lint"
 if ! xmllint --version > /dev/null 2>&1; then
@@ -50,7 +57,7 @@ if ! xmllint --version > /dev/null 2>&1; then
 else
   echo -e "\n\n"
   echo "Check syntax of XML files"
-  if ! xmllint Resources/Private/Language/ -p '*.xlf'
+  if ! composer lint:xlf
   then
     echo "Some XML files are not valid"
     echo "Please fix the files listed above"
