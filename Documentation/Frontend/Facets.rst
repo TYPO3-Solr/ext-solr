@@ -200,7 +200,7 @@ by writing and reading the facet options by a convention:
 
 .. code-block:: typoscript
 
-    [depth]-/Level1Label/Level2Label
+    [depth]-Level1Label/Level2Label/
 
 
 When you follow this convention by writing date into a solr field you can render it as hierarchical facet. As example you can check indexing configuration in EXT:solr (EXT:solr/Configuration/TypoScript/Solr/setup.typoscript)
