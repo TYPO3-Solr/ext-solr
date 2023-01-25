@@ -54,93 +54,23 @@ defined('TYPO3') or die('Access denied.');
             $svgProvider,
             ['source' => $extIconPath . 'InitSolrConnection.svg']
         );
+        // Icon: Indexe queue
+        $iconRegistry->registerIcon(
+            $modulePrefix . '-index-queue',
+            $svgProvider,
+            ['source' => $extIconPath . 'ModuleIndexQueue.svg']
+        );
+        // single connection - context menu
+        $iconRegistry->registerIcon(
+            $modulePrefix . '-info',
+            $svgProvider,
+            ['source' => $extIconPath . 'ModuleInfo.svg']
+        );
         // register plugin icon
         $iconRegistry->registerIcon(
             'extensions-solr-plugin-contentelement',
             $svgProvider,
             ['source' => $extIconPath . 'ContentElement.svg']
-        );
-
-        // Add Main module "APACHE SOLR".
-        // Acces to a main module is implicit, as soon as a user has access to at least one of its submodules. To make it possible, main module must be registered in that way and without any Actions!
-        ExtensionManagementUtility::addModule(
-            'searchbackend',
-            '',
-            '',
-            null,
-            [
-                'name' => 'searchbackend',
-                'labels' => 'LLL:EXT:solr/Resources/Private/Language/locallang_mod.xlf',
-                'iconIdentifier' => 'extensions-solr-module-main',
-            ]
-        );
-
-        $treeComponentId = 'TYPO3/CMS/Backend/PageTree/PageTreeElement';
-
-        ExtensionUtility::registerModule(
-            'Solr',
-            'searchbackend',
-            'Info',
-            '',
-            [
-                \ApacheSolrForTypo3\Solr\Controller\Backend\Search\InfoModuleController::class => 'index, switchSite, switchCore, documentsDetails',
-            ],
-            [
-                'access' => 'user,group',
-                'icon' => 'EXT:solr/Resources/Public/Images/Icons/ModuleInfo.svg',
-                'labels' => 'LLL:EXT:solr/Resources/Private/Language/locallang_mod_info.xlf',
-                'navigationComponentId' => $treeComponentId,
-            ]
-        );
-
-        ExtensionUtility::registerModule(
-            'Solr',
-            'searchbackend',
-            'CoreOptimization',
-            '',
-            [
-                \ApacheSolrForTypo3\Solr\Controller\Backend\Search\CoreOptimizationModuleController::class => 'index, addSynonyms, importSynonymList, deleteAllSynonyms, exportSynonyms, deleteSynonyms, saveStopWords, importStopWordList, exportStopWords, switchSite, switchCore',
-            ],
-            [
-                'access' => 'user,group',
-                'icon' => 'EXT:solr/Resources/Public/Images/Icons/ModuleCoreOptimization.svg',
-                'labels' => 'LLL:EXT:solr/Resources/Private/Language/locallang_mod_coreoptimize.xlf',
-                'navigationComponentId' => $treeComponentId,
-            ]
-        );
-
-        ExtensionUtility::registerModule(
-            'Solr',
-            'searchbackend',
-            'IndexQueue',
-            '',
-            [
-                \ApacheSolrForTypo3\Solr\Controller\Backend\Search\IndexQueueModuleController::class =>
-                    'index, initializeIndexQueue, clearIndexQueue, requeueDocument, resetLogErrors, showError, doIndexingRun, switchSite',
-            ],
-            [
-                'access' => 'user,group',
-                'icon' => 'EXT:solr/Resources/Public/Images/Icons/ModuleIndexQueue.svg',
-                'labels' => 'LLL:EXT:solr/Resources/Private/Language/locallang_mod_indexqueue.xlf',
-                'navigationComponentId' => $treeComponentId,
-            ]
-        );
-
-        ExtensionUtility::registerModule(
-            'Solr',
-            'searchbackend',
-            'IndexAdministration',
-            '',
-            [
-                IndexAdministrationModuleController::class =>
-                    'index, emptyIndex, clearIndexQueue, reloadIndexConfiguration, switchSite',
-            ],
-            [
-                'access' => 'user,group',
-                'icon' => 'EXT:solr/Resources/Public/Images/Icons/ModuleIndexAdministration.svg',
-                'labels' => 'LLL:EXT:solr/Resources/Private/Language/locallang_mod_indexadmin.xlf',
-                'navigationComponentId' => $treeComponentId,
-            ]
         );
 
         // Register Context Sensitive Help (CSH) translation labels
