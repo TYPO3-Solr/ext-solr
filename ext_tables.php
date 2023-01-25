@@ -1,14 +1,8 @@
 <?php
 
-use ApacheSolrForTypo3\Solr\Controller\Backend\Search\IndexAdministrationModuleController;
-use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Http\ApplicationType;
-use TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider;
-use TYPO3\CMS\Core\Imaging\IconRegistry;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
 
 defined('TYPO3') or die('Access denied.');
 
@@ -16,63 +10,6 @@ defined('TYPO3') or die('Access denied.');
     if (($GLOBALS['TYPO3_REQUEST'] ?? null) instanceof ServerRequestInterface
         && ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend()
     ) {
-        $modulePrefix = 'extensions-solr-module';
-        $svgProvider = SvgIconProvider::class;
-        /* @var ExtensionConfiguration $extensionConfiguration */
-        $extensionConfiguration = GeneralUtility::makeInstance(
-            ExtensionConfiguration::class
-        );
-
-        // register all module icons with extensions-solr-module-modulename
-        $extIconPath = 'EXT:solr/Resources/Public/Images/Icons/';
-        /* @var IconRegistry $iconRegistry */
-        $iconRegistry = GeneralUtility::makeInstance(IconRegistry::class);
-        $iconRegistry->registerIcon(
-            $modulePrefix . '-main',
-            $svgProvider,
-            ['source' => $extIconPath . 'ModuleSolrMain.svg']
-        );
-        $iconRegistry->registerIcon(
-            $modulePrefix . '-solr-core-optimization',
-            $svgProvider,
-            ['source' => $extIconPath . 'ModuleCoreOptimization.svg']
-        );
-        $iconRegistry->registerIcon(
-            $modulePrefix . '-index-administration',
-            $svgProvider,
-            ['source' => $extIconPath . 'ModuleIndexAdministration.svg']
-        );
-        // all connections
-        $iconRegistry->registerIcon(
-            $modulePrefix . '-initsolrconnections',
-            $svgProvider,
-            ['source' => $extIconPath . 'InitSolrConnections.svg']
-        );
-        // single connection - context menu
-        $iconRegistry->registerIcon(
-            $modulePrefix . '-initsolrconnection',
-            $svgProvider,
-            ['source' => $extIconPath . 'InitSolrConnection.svg']
-        );
-        // Icon: Indexe queue
-        $iconRegistry->registerIcon(
-            $modulePrefix . '-index-queue',
-            $svgProvider,
-            ['source' => $extIconPath . 'ModuleIndexQueue.svg']
-        );
-        // single connection - context menu
-        $iconRegistry->registerIcon(
-            $modulePrefix . '-info',
-            $svgProvider,
-            ['source' => $extIconPath . 'ModuleInfo.svg']
-        );
-        // register plugin icon
-        $iconRegistry->registerIcon(
-            'extensions-solr-plugin-contentelement',
-            $svgProvider,
-            ['source' => $extIconPath . 'ContentElement.svg']
-        );
-
         // Register Context Sensitive Help (CSH) translation labels
         ExtensionManagementUtility::addLLrefForTCAdescr(
             'pages',
