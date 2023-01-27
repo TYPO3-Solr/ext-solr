@@ -191,28 +191,31 @@ class Relation extends AbstractContentObject
             return $relatedItems;
         }
 
+        $contentObject = GeneralUtility::makeInstance(ContentObjectRenderer::class);
         $relatedRecords = $this->getRelatedRecords($foreignTableName, ...$selectUids);
         foreach ($relatedRecords as $record) {
+            $contentObject->start($record, $foreignTableName);
+
             if (isset($foreignTableTca['columns'][$foreignTableLabelField]['config']['foreign_table'])
                 && !empty($this->configuration['enableRecursiveValueResolution'])
             ) {
+                $this->configuration['localField'] = $foreignTableLabelField;
                 if (strpos($this->configuration['foreignLabelField'], '.') !== false) {
                     $foreignTableLabelFieldArr = explode('.', $this->configuration['foreignLabelField']);
                     unset($foreignTableLabelFieldArr[0]);
                     $this->configuration['foreignLabelField'] = implode('.', $foreignTableLabelFieldArr);
+                } else {
+                    unset($this->configuration['foreignLabelField']);
                 }
 
-                $this->configuration['localField'] = $foreignTableLabelField;
-
-                $contentObject = GeneralUtility::makeInstance(ContentObjectRenderer::class);
-                $contentObject->start($record, $foreignTableName);
-
-                return $this->getRelatedItems($contentObject);
+                $relatedItems = array_merge($relatedItems, $this->getRelatedItems($contentObject));
+                continue;
             }
             if ($this->getLanguageUid() > 0) {
                 $record = $this->frontendOverlayService->getOverlay($foreignTableName, $record);
             }
-            $relatedItems[] = $record[$foreignTableLabelField];
+
+            $relatedItems[] = $contentObject->stdWrap($record[$foreignTableLabelField] ?? '', $this->configuration) ?? '';
         }
 
         return $relatedItems;
@@ -266,31 +269,43 @@ class Relation extends AbstractContentObject
         $foreignTableName = $localFieldTca['config']['foreign_table'];
         $foreignTableTca = $this->tcaService->getTableConfiguration($foreignTableName);
         $foreignTableLabelField = $this->resolveForeignTableLabelField($foreignTableTca);
+        $localField = $this->configuration['localField'];
 
         /** @var $relationHandler RelationHandler */
         $relationHandler = GeneralUtility::makeInstance(RelationHandler::class);
+        if (!empty($localFieldTca['config']['MM'] ?? '')) {
+            $relationHandler->start(
+                '',
+                $foreignTableName,
+                $localFieldTca['config']['MM'],
+                $localRecordUid,
+                $localTableName,
+                $localFieldTca['config']
+            );
+        } else {
+            $itemList = $parentContentObject->data[$localField] ?? '';
+            $relationHandler->start($itemList, $foreignTableName, '', $localRecordUid, $localTableName, $localFieldTca['config']);
+        }
 
-        $itemList = $parentContentObject->data[$this->configuration['localField']] ?? '';
-
-        $relationHandler->start($itemList, $foreignTableName, '', $localRecordUid, $localTableName, $localFieldTca['config']);
         $selectUids = $relationHandler->tableArray[$foreignTableName];
-
         if (!is_array($selectUids) || count($selectUids) <= 0) {
             return $relatedItems;
         }
 
         $relatedRecords = $this->getRelatedRecords($foreignTableName, ...$selectUids);
-
         foreach ($relatedRecords as $relatedRecord) {
-            $resolveRelatedValue = $this->resolveRelatedValue(
+            $resolveRelatedValues = $this->resolveRelatedValue(
                 $relatedRecord,
                 $foreignTableTca,
                 $foreignTableLabelField,
                 $parentContentObject,
                 $foreignTableName
             );
-            if (!empty($resolveRelatedValue) || !$this->configuration['removeEmptyValues']) {
-                $relatedItems[] = $resolveRelatedValue;
+
+            foreach ($resolveRelatedValues as $resolveRelatedValue) {
+                if (!empty($resolveRelatedValue) || !$this->configuration['removeEmptyValues']) {
+                    $relatedItems[] = $resolveRelatedValue;
+                }
             }
         }
 
@@ -307,7 +322,7 @@ class Relation extends AbstractContentObject
      * @param ContentObjectRenderer $parentContentObject cObject
      * @param string $foreignTableName Related record table name
      *
-     * @return string
+     * @return array
      *
      * @throws AspectNotFoundException
      * @throws DBALException
@@ -318,12 +333,12 @@ class Relation extends AbstractContentObject
         string $foreignTableLabelField,
         ContentObjectRenderer $parentContentObject,
         string $foreignTableName = ''
-    ): string {
+    ): array {
         if ($this->getLanguageUid() > 0 && !empty($foreignTableName)) {
             $relatedRecord = $this->frontendOverlayService->getOverlay($foreignTableName, $relatedRecord);
         }
 
-        $value = $relatedRecord[$foreignTableLabelField];
+        $values = [$relatedRecord[$foreignTableLabelField]];
 
         if (
             !empty($foreignTableName)
@@ -354,14 +369,17 @@ class Relation extends AbstractContentObject
                 $foreignTableTca['columns'][$foreignTableLabelField],
                 $parentContentObject
             );
-            $value = array_pop($relatedItemsFromForeignTable);
+            $values = $relatedItemsFromForeignTable;
 
             // restore
             $this->configuration = $backupConfiguration;
             $parentContentObject->data = $backupRecord;
         }
+        foreach ($values as &$value) {
+            $value = $parentContentObject->stdWrap($value, $this->configuration) ?? '';
+        }
 
-        return $parentContentObject->stdWrap($value, $this->configuration) ?? '';
+        return $values;
     }
 
     /**
