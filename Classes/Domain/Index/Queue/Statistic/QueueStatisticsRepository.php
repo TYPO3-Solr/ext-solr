@@ -77,7 +77,7 @@ class QueueStatisticsRepository extends AbstractRepository
 
         return $this->buildQueueStatisticFromResultSet(
             $queryBuilder
-                ->execute()
+                ->executeQuery()
                 ->fetchAllAssociative()
         );
     }

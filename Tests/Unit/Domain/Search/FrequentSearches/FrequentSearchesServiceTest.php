@@ -19,6 +19,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\FrequentSearches\FrequentSearchesServi
 use ApacheSolrForTypo3\Solr\Domain\Search\Statistics\StatisticsRepository;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Core\Cache\Frontend\AbstractFrontend;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
@@ -45,7 +46,7 @@ class FrequentSearchesServiceTest extends UnitTest
     protected $configurationMock;
 
     /**
-     * @var StatisticsRepository|\PHPUnit\Framework\MockObject\MockObject
+     * @var StatisticsRepository|MockObject
      */
     protected $statisticsRepositoryMock;
 

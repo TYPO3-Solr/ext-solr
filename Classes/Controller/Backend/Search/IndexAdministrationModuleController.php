@@ -19,7 +19,7 @@ use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use Psr\Http\Message\ResponseInterface;
 use Throwable;
 use TYPO3\CMS\Core\Http\RedirectResponse;
-use TYPO3\CMS\Core\Messaging\FlashMessage;
+use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /**
@@ -62,7 +62,7 @@ class IndexAdministrationModuleController extends AbstractModuleController
             $message = LocalizationUtility::translate('solr.backend.index_administration.index_emptied_all', 'Solr', [$this->selectedSite->getLabel(), implode(', ', $affectedCores)]);
             $this->addFlashMessage($message);
         } catch (Throwable $e) {
-            $this->addFlashMessage(LocalizationUtility::translate('solr.backend.index_administration.error.on_empty_index', 'Solr', [$e->__toString()]), '', FlashMessage::ERROR);
+            $this->addFlashMessage(LocalizationUtility::translate('solr.backend.index_administration.error.on_empty_index', 'Solr', [$e->__toString()]), '', AbstractMessage::ERROR);
         }
 
         return new RedirectResponse($this->uriBuilder->uriFor('index'), 303);
@@ -90,7 +90,7 @@ class IndexAdministrationModuleController extends AbstractModuleController
                 $this->addFlashMessage(
                     'Failed to reload index configuration for core "' . $coreName . '"',
                     '',
-                    FlashMessage::ERROR
+                    AbstractMessage::ERROR
                 );
                 break;
             }
@@ -102,7 +102,7 @@ class IndexAdministrationModuleController extends AbstractModuleController
             $this->addFlashMessage(
                 'Core configuration reloaded (' . implode(', ', $reloadedCores) . ').',
                 '',
-                FlashMessage::OK
+                AbstractMessage::OK
             );
         }
 

@@ -8,7 +8,6 @@ return [
         'hideAtCopy' => true,
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
-        'cruser_id' => 'cruser_id',
         'versioningWS' => true,
         'origUid' => 't3_origuid',
         'editlock' => 'editlock',
@@ -32,17 +31,7 @@ return [
             'exclude' => 1,
             'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.language',
             'config' => [
-                'type' => 'select',
-                'renderType' => 'selectSingle',
-                'special' => 'languages',
-                'items' => [
-                    [
-                        'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.allLanguages',
-                        -1,
-                        'flags-multiple',
-                    ],
-                ],
-                'default' => 0,
+                'type' => 'language',
             ],
         ],
         'l10n_parent' => [
@@ -133,7 +122,7 @@ return [
             'config' => [
                 'type' => 'input',
                 'size' => 60,
-                'eval' => 'required',
+                'required' => true,
             ],
         ],
         'editlock' => [
@@ -148,7 +137,6 @@ return [
             'label' => 'Tags:',
             'config' => [
                 'type' => 'group',
-                'internal_type' => 'db',
                 'allowed' => 'tx_fakeextension_domain_model_mmrelated',
                 'MM' => 'tx_fakeextension_domain_model_related_mm',
                 //@todo is the really as needed in the typo3 core?

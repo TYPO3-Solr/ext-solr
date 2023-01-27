@@ -27,7 +27,7 @@ use Psr\Container\NotFoundExceptionInterface;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
 use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
 use TYPO3\CMS\Core\Localization\LanguageService;
-use TYPO3\CMS\Core\Messaging\FlashMessage;
+use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
@@ -79,6 +79,7 @@ class IndexAdministrationModuleControllerTest extends IntegrationTest
 
     /**
      * @test
+     * @doesNotPerformAssertions
      */
     public function testReloadIndexConfigurationAction()
     {
@@ -88,12 +89,13 @@ class IndexAdministrationModuleControllerTest extends IntegrationTest
         $this->controller->setSelectedSite($selectedSite);
         $this->controller->expects(self::exactly(1))
             ->method('addFlashMessage')
-            ->with('Core configuration reloaded (core_en, core_de, core_da).', '', FlashMessage::OK);
+            ->with('Core configuration reloaded (core_en, core_de, core_da).', '', AbstractMessage::OK);
         $this->controller->reloadIndexConfigurationAction();
     }
 
     /**
      * @test
+     * @doesNotPerformAssertions
      */
     public function testEmptyIndexAction()
     {
@@ -103,7 +105,7 @@ class IndexAdministrationModuleControllerTest extends IntegrationTest
         $this->controller->setSelectedSite($selectedSite);
         $this->controller->expects(self::atLeastOnce())
             ->method('addFlashMessage')
-            ->with('Index emptied for Site "Root of Testpage testone.site aka integration_tree_one, Root Page ID: 1" (core_en, core_de, core_da).', '', FlashMessage::OK);
+            ->with('Index emptied for Site "Root of Testpage testone.site aka integration_tree_one, Root Page ID: 1" (core_en, core_de, core_da).', '', AbstractMessage::OK);
 
         $this->controller->emptyIndexAction();
     }

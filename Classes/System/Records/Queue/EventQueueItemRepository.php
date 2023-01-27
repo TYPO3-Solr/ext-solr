@@ -52,9 +52,8 @@ class EventQueueItemRepository extends AbstractRepository implements SingletonIn
             ->values([
                 'tstamp' => Util::getExceptionTime(),
                 'event' => $serializedEvent,
-
             ])
-            ->execute();
+            ->executeStatement();
     }
 
     /**
@@ -82,7 +81,7 @@ class EventQueueItemRepository extends AbstractRepository implements SingletonIn
         }
 
         return $queryBuilder
-            ->execute()
+            ->executeQuery()
             ->fetchAllAssociative();
     }
 
@@ -110,7 +109,7 @@ class EventQueueItemRepository extends AbstractRepository implements SingletonIn
             $queryBuilder->set($column, $value);
         }
 
-        $queryBuilder->execute();
+        $queryBuilder->executeStatement();
     }
 
     /**
@@ -131,7 +130,7 @@ class EventQueueItemRepository extends AbstractRepository implements SingletonIn
             ->where(
                 $queryBuilder->expr()->in('uid', array_map('intval', $uids))
             )
-            ->execute();
+            ->executeStatement();
     }
 
     /**
@@ -154,7 +153,7 @@ class EventQueueItemRepository extends AbstractRepository implements SingletonIn
         }
 
         return (int)$queryBuilder
-            ->execute()
+            ->executeQuery()
             ->fetchOne();
     }
 }

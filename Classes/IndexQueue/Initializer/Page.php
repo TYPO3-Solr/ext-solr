@@ -26,6 +26,7 @@ use Throwable;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -179,7 +180,7 @@ class Page extends AbstractInitializer
                 FlashMessage::class,
                 'Property "Mounted page" must not be empty. Invalid Mount Page configuration for page ID ' . $mountPoint['uid'] . '.',
                 'Failed to initialize Mount Page tree. ',
-                FlashMessage::ERROR
+                AbstractMessage::ERROR
             );
             // @extensionScannerIgnoreLine
             $this->flashMessageQueue->addMessage($flashMessage);
@@ -196,7 +197,7 @@ class Page extends AbstractInitializer
                 . $mountPoint['mountPageSource']
                 . ' is not accessible in the frontend.',
                 'Failed to initialize Mount Page tree. ',
-                FlashMessage::ERROR
+                AbstractMessage::ERROR
             );
             // @extensionScannerIgnoreLine
             $this->flashMessageQueue->addMessage($flashMessage);

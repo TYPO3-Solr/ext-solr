@@ -73,7 +73,7 @@ class LastSearchesRepository extends AbstractRepository
             ->groupBy('keywords')
             ->orderBy('maxtstamp', 'DESC')
             ->setMaxResults($limit)
-            ->execute()
+            ->executeQuery()
             ->fetchAllAssociative();
     }
 
@@ -105,7 +105,7 @@ class LastSearchesRepository extends AbstractRepository
                 'keywords' => $lastSearchesKeywords,
                 'tstamp' => time(),
             ])
-            ->execute();
+            ->executeStatement();
     }
 
     /**
@@ -125,7 +125,7 @@ class LastSearchesRepository extends AbstractRepository
             ->from($this->table)
             ->orderBy('tstamp', 'DESC')
             ->setMaxResults(1)
-            ->execute()
+            ->executeQuery()
             ->fetchAssociative();
 
         if (!empty($result)) {
@@ -153,7 +153,7 @@ class LastSearchesRepository extends AbstractRepository
             )
             ->set('tstamp', time())
             ->set('keywords', $lastSearchesRow['keywords'])
-            ->execute();
+            ->executeStatement();
 
         if ($affectedRows < 1) {
             throw new InvalidArgumentException(vsprintf('By trying to update last searches row with values "%s" nothing was updated, make sure the given "sequence_id" exists in database.', [json_encode($lastSearchesRow)]), 1502717923);

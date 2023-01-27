@@ -32,6 +32,7 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
@@ -251,9 +252,10 @@ class SuggestServiceTest extends UnitTest
     }
 
     /**
-     * @return \PHPUnit\Framework\MockObject\MockObject
+     * @param string $queryString
+     * @return SearchRequest|MockObject
      */
-    protected function getFakedSearchRequest($queryString)
+    protected function getFakedSearchRequest(string $queryString): SearchRequest|MockObject
     {
         $fakeRequest = $this->getDumbMock(SearchRequest::class);
         $fakeRequest->expects(self::atLeastOnce())->method('getRawUserQuery')->willReturn($queryString);

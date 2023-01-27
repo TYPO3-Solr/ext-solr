@@ -49,7 +49,8 @@ class StatisticsRepository extends AbstractRepository
         $now = time();
         $timeStart = (int)($now - 86400 * $days); // 86400 seconds/day
         return $this->getPreparedQueryBuilderForSearchStatisticsAndTopKeywords($rootPageId, $timeStart, $limit)
-            ->execute()->fetchAllAssociative();
+            ->executeQuery()
+            ->fetchAllAssociative();
     }
 
     /**
@@ -138,7 +139,9 @@ class StatisticsRepository extends AbstractRepository
             $queryBuilder->andWhere($queryBuilder->expr()->gt('num_found', 0));
         }
 
-        return $queryBuilder->execute()->fetchAllAssociative();
+        return $queryBuilder
+            ->executeQuery()
+            ->fetchAllAssociative();
     }
 
     /**
@@ -170,7 +173,7 @@ class StatisticsRepository extends AbstractRepository
             )
             ->groupBy('bucket', 'timestamp')
             ->orderBy('bucket', 'ASC')
-            ->execute()
+            ->executeQuery()
             ->fetchAllAssociative();
     }
 
@@ -194,7 +197,7 @@ class StatisticsRepository extends AbstractRepository
             ->add('groupBy', $frequentSearchConfiguration['select.']['GROUP_BY'], true)
             ->add('orderBy', $frequentSearchConfiguration['select.']['ORDER_BY'])
             ->setMaxResults((int)$frequentSearchConfiguration['limit'])
-            ->execute()
+            ->executeQuery()
             ->fetchAllAssociative();
     }
 
@@ -207,7 +210,7 @@ class StatisticsRepository extends AbstractRepository
     public function saveStatisticsRecord(array $statisticsRecord)
     {
         $queryBuilder = $this->getQueryBuilder();
-        $queryBuilder->insert($this->table)->values($statisticsRecord)->execute();
+        $queryBuilder->insert($this->table)->values($statisticsRecord)->executeStatement();
     }
 
     /**
@@ -225,7 +228,7 @@ class StatisticsRepository extends AbstractRepository
             ->count('*')
             ->from($this->table)
             ->andWhere($queryBuilder->expr()->eq('root_pid', $rootPageId))
-            ->execute()
+            ->executeQuery()
             ->fetchOne();
     }
 }

@@ -48,7 +48,7 @@ class SystemLanguageRepository extends AbstractRepository implements SingletonIn
         $result = $queryBuilder->select('title')
             ->from($this->table)
             ->where($queryBuilder->expr()->eq('uid', $languageId))
-            ->execute()
+            ->executeQuery()
             ->fetchAssociative();
 
         if ($result == false && $languageId == 0) {
@@ -73,7 +73,7 @@ class SystemLanguageRepository extends AbstractRepository implements SingletonIn
         $queryBuilder->getRestrictions()->add(GeneralUtility::makeInstance(HiddenRestriction::class));
         $languageRecords = $queryBuilder->select('uid')
             ->from($this->table)
-            ->execute()
+            ->executeQuery()
             ->fetchAllAssociative();
 
         if ($languageRecords == false) {
