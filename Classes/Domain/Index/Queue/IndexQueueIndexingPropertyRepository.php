@@ -18,7 +18,6 @@ declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue;
 
 use ApacheSolrForTypo3\Solr\System\Records\AbstractRepository;
-use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use Doctrine\DBAL\Exception as DBALException;
 use PDO;
 
@@ -57,7 +56,7 @@ class IndexQueueIndexingPropertyRepository extends AbstractRepository
                     'item_id',
                     $queryBuilder->createNamedParameter($indexQueueUid, PDO::PARAM_INT)
                 )
-            )->execute();
+            )->executeStatement();
     }
 
     /**
@@ -76,7 +75,6 @@ class IndexQueueIndexingPropertyRepository extends AbstractRepository
      *
      * @param int $indexQueueUid
      * @return array list of records for searched index queue item
-     * @throws DBALDriverException
      * @throws DBALException
      */
     public function findAllByIndexQueueUid(int $indexQueueUid): array
@@ -91,8 +89,7 @@ class IndexQueueIndexingPropertyRepository extends AbstractRepository
                     'item_id',
                     $queryBuilder->createNamedParameter($indexQueueUid, PDO::PARAM_INT)
                 )
-            )
-            ->execute()
+            )->executeQuery()
             ->fetchAllAssociative();
     }
 }

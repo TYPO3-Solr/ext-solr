@@ -54,7 +54,7 @@ abstract class AbstractRepository
             ->select($fields)
             ->from($this->table)
             ->where($queryBuilder->expr()->eq('uid', $uid))
-            ->execute()
+            ->executeQuery()
             ->fetchAssociative();
     }
 
@@ -81,7 +81,7 @@ abstract class AbstractRepository
         return (int)$this->getQueryBuilder()
             ->count('*')
             ->from($this->table)
-            ->execute()
+            ->executeQuery()
             ->fetchOne();
     }
 

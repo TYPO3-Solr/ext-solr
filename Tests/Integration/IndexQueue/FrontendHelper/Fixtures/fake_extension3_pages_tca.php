@@ -8,7 +8,6 @@ return [
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectMultipleSideBySide',
-                'enableMultiSelectFilterTextfield' => true,
                 'foreign_table' => 'pages',
                 'MM' => 'tx_fakeextension3_pages_mm',
                 'MM_opposite_field' => 'relations',
@@ -28,7 +27,6 @@ return [
                 'type' => 'group',
                 'default' => '',
                 'allowed' => '*',
-                'internal_type' => 'db',
                 'MM' => 'tx_fakeextension3_pages_mm',
                 'MM_oppositeUsage' => [
                     'pages' => [
