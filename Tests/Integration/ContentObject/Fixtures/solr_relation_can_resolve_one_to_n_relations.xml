@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataset>
+	<pages>
+		<uid>1</uid>
+		<is_siteroot>1</is_siteroot>
+		<doktype>1</doktype>
+		<hidden>0</hidden>
+		<title>Root of Testpage testone.site aka integration_tree_one</title>
+	</pages>
+
+	<sys_category>
+		<uid>123</uid>
+		<pid>1</pid>
+		<title>Main category</title>
+		<description>This is the main category</description>
+		<sys_language_uid>0</sys_language_uid>
+	</sys_category>
+
+	<sys_category>
+		<uid>124</uid>
+		<pid>1</pid>
+		<title>Second category</title>
+		<description>This is the second category</description>
+		<parent>123</parent>
+		<sys_language_uid>0</sys_language_uid>
+	</sys_category>
+
+	<tx_fakeextension_domain_model_foo>
+		<uid>1</uid>
+		<pid>1</pid>
+		<title>First foo record</title>
+		<main_category>124</main_category>
+	</tx_fakeextension_domain_model_foo>
+
+	<tx_fakeextension_domain_model_foo>
+		<uid>2</uid>
+		<pid>1</pid>
+		<title>Second foo record</title>
+		<main_category>124</main_category>
+	</tx_fakeextension_domain_model_foo>
+
+	<tx_fakeextension_domain_model_foo>
+		<uid>3</uid>
+		<pid>1</pid>
+		<title>Third foo record</title>
+		<main_category>124</main_category>
+	</tx_fakeextension_domain_model_foo>
+
+	<tx_fakeextension_domain_model_foo>
+		<uid>4</uid>
+		<pid>1</pid>
+		<title>4th foo record</title>
+		<main_category>124</main_category>
+	</tx_fakeextension_domain_model_foo>
+
+	<tx_fakeextension_domain_model_bar>
+		<uid>10</uid>
+		<pid>1</pid>
+		<title>First bar record</title>
+		<main_category>125</main_category>
+		<mm_assignments>2</mm_assignments>
+		<inline_relation_parent_foo>1</inline_relation_parent_foo>
+	</tx_fakeextension_domain_model_bar>
+
+	<tx_fakeextension_domain_model_bar>
+		<uid>11</uid>
+		<pid>1</pid>
+		<title>Second bar record</title>
+		<main_category>125</main_category>
+		<mm_assignments>0</mm_assignments>
+		<inline_relation_parent_foo>2</inline_relation_parent_foo>
+	</tx_fakeextension_domain_model_bar>
+
+	<tx_fakeextension_domain_model_bar>
+		<uid>12</uid>
+		<pid>1</pid>
+		<title>Third bar record</title>
+		<main_category>125</main_category>
+		<mm_assignments>0</mm_assignments>
+		<inline_relation_parent_foo>2</inline_relation_parent_foo>
+	</tx_fakeextension_domain_model_bar>
+
+	<tx_fakeextension_foo_bar_mm>
+		<uid_local>3</uid_local>
+		<uid_foreign>10</uid_foreign>
+		<sorting>1</sorting>
+		<sorting_foreign>1</sorting_foreign>
+	</tx_fakeextension_foo_bar_mm>
+
+	<tx_fakeextension_foo_bar_mm>
+		<uid_local>4</uid_local>
+		<uid_foreign>10</uid_foreign>
+		<sorting>2</sorting>
+		<sorting_foreign>2</sorting_foreign>
+	</tx_fakeextension_foo_bar_mm>
+</dataset>
