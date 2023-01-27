@@ -21,7 +21,7 @@ use Doctrine\DBAL\Driver\Statement as DBALDriverStatement;
 use Doctrine\DBAL\Exception as DBALException;
 use Throwable;
 use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Messaging\FlashMessage;
+use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -56,7 +56,7 @@ class RemoveSiteFromScheduler implements Migration
         $legacySchedulerTasks = $taskRows->fetchAll();
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_scheduler_task');
 
-        $status = FlashMessage::OK;
+        $status = AbstractMessage::OK;
         $title = 'Remove site from scheduler task';
         $failedTaskCount = 0;
         $migratedTaskCount = 0;
@@ -69,12 +69,12 @@ class RemoveSiteFromScheduler implements Migration
                 $updatedRows = $queryBuilder->update('tx_scheduler_task')
                     ->where($queryBuilder->expr()->eq('uid', $uid))
                     ->set('serialized_task_object', $updatedTask)
-                    ->execute();
+                    ->executeStatement();
 
                 $migratedTaskCount += $updatedRows;
             } catch (Throwable $e) {
                 $failedTaskCount++;
-                $status = FlashMessage::ERROR;
+                $status = AbstractMessage::ERROR;
             }
         }
 
@@ -93,10 +93,10 @@ class RemoveSiteFromScheduler implements Migration
             ->select('uid', 'serialized_task_object')
             ->from('tx_scheduler_task')
             ->where(
-                $queryBuilder->expr()->andX(
+                $queryBuilder->expr()->and(
                     $queryBuilder->expr()->like('serialized_task_object', "'%ApacheSolrForTypo3%'"),
                     $queryBuilder->expr()->like('serialized_task_object', "'%site\";O:28:\"%'")
                 )
-            )->execute();
+            )->executeQuery();
     }
 }

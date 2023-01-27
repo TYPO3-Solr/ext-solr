@@ -150,7 +150,7 @@ class FrontendOverlayService
             ->select('*')
             ->from($localTableName)
             ->where($queryBuilder->expr()->eq('uid', $localRecordUid))
-            ->execute()
+            ->executeQuery()
             ->fetchAssociative();
     }
 }

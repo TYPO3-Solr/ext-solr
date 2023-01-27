@@ -21,7 +21,7 @@ use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use Psr\Http\Message\ResponseInterface;
 use Throwable;
 use TYPO3\CMS\Core\Http\RedirectResponse;
-use TYPO3\CMS\Core\Messaging\FlashMessage;
+use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3Fluid\Fluid\View\ViewInterface;
 
@@ -95,7 +95,7 @@ class CoreOptimizationModuleController extends AbstractModuleController
             $this->addFlashMessage(
                 'Please provide a base word and synonyms.',
                 'Missing parameter',
-                FlashMessage::ERROR
+                AbstractMessage::ERROR
             );
         } else {
             $baseWord = mb_strtolower($baseWord);
@@ -225,7 +225,7 @@ class CoreOptimizationModuleController extends AbstractModuleController
             $this->addFlashMessage(
                 'Failed to remove all synonyms.',
                 'An error occurred',
-                FlashMessage::ERROR
+                AbstractMessage::ERROR
             );
         }
         return new RedirectResponse($this->uriBuilder->uriFor('index'), 303);
@@ -256,7 +256,7 @@ class CoreOptimizationModuleController extends AbstractModuleController
             $this->addFlashMessage(
                 'Failed to remove synonym.',
                 'An error occurred',
-                FlashMessage::ERROR
+                AbstractMessage::ERROR
             );
         }
 
@@ -363,7 +363,7 @@ class CoreOptimizationModuleController extends AbstractModuleController
                 $this->addFlashMessage(
                     'Failed to remove stop word "' . $word . '".',
                     'An error occurred',
-                    FlashMessage::ERROR
+                    AbstractMessage::ERROR
                 );
                 break;
             }

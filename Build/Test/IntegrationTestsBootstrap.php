@@ -13,8 +13,10 @@
  * The TYPO3 project - inspiring people to share!
  */
 
+use TYPO3\TestingFramework\Core\Testbase;
+
 call_user_func(function () {
-    $testbase = new \TYPO3\TestingFramework\Core\Testbase();
+    $testbase = new Testbase();
     $testbase->defineOriginalRootPath();
     $testbase->createDirectory(ORIGINAL_ROOT . 'typo3temp/var/tests');
     $testbase->createDirectory(ORIGINAL_ROOT . 'typo3temp/var/transient');
