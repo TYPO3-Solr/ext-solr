@@ -17,8 +17,8 @@ namespace ApacheSolrForTypo3\Solr\ContentObject;
 
 use ApacheSolrForTypo3\Solr\System\Language\FrontendOverlayService;
 use ApacheSolrForTypo3\Solr\System\TCA\TCAService;
-use Doctrine\DBAL\Driver\Statement;
 use Doctrine\DBAL\Exception as DBALException;
+use Doctrine\DBAL\Result;
 use ReflectionClass;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -383,9 +383,9 @@ class Relation extends AbstractContentObject
         if (isset($this->configuration['additionalWhereClause'])) {
             $queryBuilder->andWhere($this->configuration['additionalWhereClause']);
         }
-        $statement = $queryBuilder->execute();
+        $queryResult = $queryBuilder->executeQuery();
 
-        return $this->sortByKeyInIN($statement, 'uid', ...$uids);
+        return $this->sortByKeyInIN($queryResult, 'uid', ...$uids);
     }
 
     /**
@@ -394,12 +394,13 @@ class Relation extends AbstractContentObject
      *   Example: SELECT * FROM a_table WHERE field_name IN (2, 3, 4) SORT BY FIELD(field_name, 2, 3, 4)
      *
      *
-     * @param Statement $statement
+     * @param Result $statement
      * @param string $columnName
      * @param array $arrayWithValuesForIN
      * @return array
+     * @throws DBALException
      */
-    protected function sortByKeyInIN(Statement $statement, string $columnName, ...$arrayWithValuesForIN): array
+    protected function sortByKeyInIN(Result $statement, string $columnName, ...$arrayWithValuesForIN): array
     {
         $records = [];
         while ($record = $statement->fetchAssociative()) {

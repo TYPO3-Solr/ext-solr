@@ -22,7 +22,6 @@ use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Backend\Form\Exception as BackendFormException;
 use TYPO3\CMS\Core\Http\RedirectResponse;
 use TYPO3\CMS\Core\Messaging\AbstractMessage;
-use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
@@ -136,7 +135,7 @@ class IndexQueueModuleController extends AbstractModuleController
                         'solr.backend.index_queue_module.flashmessage.initialize_failure.title',
                         'Solr'
                     ),
-                    FlashMessage::ERROR
+                    AbstractMessage::ERROR
                 );
             }
         } else {
@@ -145,7 +144,7 @@ class IndexQueueModuleController extends AbstractModuleController
             $this->addFlashMessage(
                 LocalizationUtility::translate($messageLabel, 'Solr'),
                 LocalizationUtility::translate($titleLabel, 'Solr'),
-                FlashMessage::WARNING
+                AbstractMessage::WARNING
             );
         }
         $messagesForConfigurations = [];
@@ -160,7 +159,7 @@ class IndexQueueModuleController extends AbstractModuleController
             $this->addFlashMessage(
                 LocalizationUtility::translate($messageLabel, 'Solr', [implode(', ', $messagesForConfigurations)]),
                 LocalizationUtility::translate($titleLabel, 'Solr'),
-                FlashMessage::OK
+                AbstractMessage::OK
             );
         }
 
@@ -177,10 +176,10 @@ class IndexQueueModuleController extends AbstractModuleController
         $resetResult = $this->indexQueue->resetAllErrors();
 
         $label = 'solr.backend.index_queue_module.flashmessage.success.reset_errors';
-        $severity = FlashMessage::OK;
+        $severity = AbstractMessage::OK;
         if (!$resetResult) {
             $label = 'solr.backend.index_queue_module.flashmessage.error.reset_errors';
-            $severity = FlashMessage::ERROR;
+            $severity = AbstractMessage::ERROR;
         }
 
         $this->addIndexQueueFlashMessage($label, $severity);
@@ -223,7 +222,7 @@ class IndexQueueModuleController extends AbstractModuleController
         if ($item === null) {
             // add a flash message and quit
             $label = 'solr.backend.index_queue_module.flashmessage.error.no_queue_item_for_queue_error';
-            $severity = FlashMessage::ERROR;
+            $severity = AbstractMessage::ERROR;
             $this->addIndexQueueFlashMessage($label, $severity);
 
             return new RedirectResponse($this->uriBuilder->uriFor('index'), 303);
@@ -244,10 +243,10 @@ class IndexQueueModuleController extends AbstractModuleController
         $indexWithoutErrors = $indexService->indexItems(1);
 
         $label = 'solr.backend.index_queue_module.flashmessage.success.index_manual';
-        $severity = FlashMessage::OK;
+        $severity = AbstractMessage::OK;
         if (!$indexWithoutErrors) {
             $label = 'solr.backend.index_queue_module.flashmessage.error.index_manual';
-            $severity = FlashMessage::ERROR;
+            $severity = AbstractMessage::ERROR;
         }
 
         $this->addFlashMessage(
