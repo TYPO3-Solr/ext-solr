@@ -24,5 +24,5 @@ page.includeJSFooterlibs {
 }
 
 page.includeCSS {
-    solr-ui = EXT:solr/Resources/Css/JQueryUi/jquery-ui.custom.css
+    solr-ui = EXT:solr/Resources/Public/Css/JQueryUi/jquery-ui.custom.css
 }
