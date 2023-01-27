@@ -268,7 +268,7 @@ in "Configuration/TypoScript/Examples/DateRange" you see that for the jQueryUi i
     }
 
     page.includeCSS {
-        solr-ui = EXT:solr/Resources/Css/JQueryUi/jquery-ui.custom.css
+        solr-ui = EXT:solr/Resources/Public/Css/JQueryUi/jquery-ui.custom.css
     }
 
 Numeric Range
