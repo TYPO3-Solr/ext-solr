@@ -19,6 +19,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Site;
 
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\RootPageResolver;
 use ApacheSolrForTypo3\Solr\FrontendEnvironment;
+use ApacheSolrForTypo3\Solr\FrontendEnvironment\Tsfe;
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
@@ -281,7 +282,7 @@ class SiteRepository
         // which are required for BE-Modules/CLI-Commands or RecordMonitor within BE/TCE-commands.
         // If TSFE for none of languages can be initialized, then the \ApacheSolrForTypo3\Solr\Domain\Site\Site object unusable at all,
         // so the rest of the steps in this method are not necessary, and therefore the null will be returned.
-        $tsfeFactory = GeneralUtility::makeInstance(FrontendEnvironment\Tsfe::class);
+        $tsfeFactory = GeneralUtility::makeInstance(Tsfe::class);
         $tsfeToUseForTypoScriptConfiguration = $tsfeFactory->getTsfeByPageIdAndLanguageFallbackChain($typo3Site->getRootPageId(), ...$availableLanguageIds);
         if (!$tsfeToUseForTypoScriptConfiguration instanceof TypoScriptFrontendController) {
             return null;

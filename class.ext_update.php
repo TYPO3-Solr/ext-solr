@@ -13,7 +13,9 @@
  * The TYPO3 project - inspiring people to share!
  */
 
+use ApacheSolrForTypo3\Solr\Migrations\Migration;
 use ApacheSolrForTypo3\Solr\Migrations\RemoveSiteFromScheduler;
+use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageRendererResolver;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -35,7 +37,7 @@ class ext_update
     protected $messages = [];
 
     /**
-     * @var \ApacheSolrForTypo3\Solr\Migrations\Migration[]
+     * @var Migration[]
      */
     protected $migrators = [];
 
@@ -75,7 +77,7 @@ class ext_update
                 try {
                     $this->messages[] = $migration->process();
                 } catch (\Throwable $e) {
-                    $this->messages[] = [FlashMessage::ERROR, 'Execution failed', $e->getMessage()];
+                    $this->messages[] = [AbstractMessage::ERROR, 'Execution failed', $e->getMessage()];
                 }
             }
         }
@@ -91,7 +93,7 @@ class ext_update
     {
         $flashMessages = [];
         foreach ($this->messages as $messageItem) {
-            /** @var \TYPO3\CMS\Core\Messaging\FlashMessage $flashMessage */
+            /** @var FlashMessage $flashMessage */
             $flashMessages[] = GeneralUtility::makeInstance(FlashMessage::class, $messageItem[2], $messageItem[1], $messageItem[0]);
         }
 

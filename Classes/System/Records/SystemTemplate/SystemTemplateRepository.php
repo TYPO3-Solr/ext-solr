@@ -56,7 +56,8 @@ class SystemTemplateRepository extends AbstractRepository
             ->where(
                 $queryBuilder->expr()->in('pid', $rootLinePageIds)
             )
-            ->execute()->fetchAssociative();
+            ->executeQuery()
+            ->fetchAssociative();
 
         return $result['pid'] ?? null;
     }
