@@ -80,7 +80,7 @@ class PagesRepository extends AbstractRepository
         $this->addDefaultLanguageUidConstraint($queryBuilder);
 
         return $queryBuilder
-            ->execute()
+            ->executeQuery()
             ->fetchAllAssociative();
     }
 
@@ -103,7 +103,7 @@ class PagesRepository extends AbstractRepository
         $queryBuilder->select('uid', 'uid AS mountPageDestination', 'mount_pid AS mountPageSource', 'mount_pid_ol AS mountPageOverlayed')->from($this->table);
         $queryBuilder = $this->addWhereClauseForMountpointDestinationProperties($queryBuilder, $mountedPageUid, $rootLineParentPageIds);
         return $queryBuilder
-            ->execute()
+            ->executeQuery()
             ->fetchAllAssociative();
     }
 
@@ -132,8 +132,8 @@ class PagesRepository extends AbstractRepository
             $queryBuilder->andWhere(
                 $queryBuilder->expr()->eq('doktype', 7),
                 $queryBuilder->expr()->eq('no_search', 0),
-                $queryBuilder->expr()->orX(
-                    $queryBuilder->expr()->andX(
+                $queryBuilder->expr()->or(
+                    $queryBuilder->expr()->and(
                         $queryBuilder->expr()->eq('mount_pid', $mountedPageUid),
                         $queryBuilder->expr()->eq('mount_pid_ol', 1)
                     ),
@@ -207,7 +207,7 @@ class PagesRepository extends AbstractRepository
 
         $queryBuilder->andWhere(QueryHelper::stripLogicalOperatorPrefix($initialPagesAdditionalWhereClause));
 
-        return $queryBuilder->execute()->fetchFirstColumn();
+        return $queryBuilder->executeQuery()->fetchFirstColumn();
     }
 
     /**
@@ -238,7 +238,9 @@ class PagesRepository extends AbstractRepository
                 ->where(
                     $queryBuilder->expr()->in('uid', $queryBuilder->createNamedParameter($wholePageTree, Connection::PARAM_INT_ARRAY)),
                     $queryBuilder->expr()->eq('no_search_sub_entries', $queryBuilder->createNamedParameter(1, PDO::PARAM_INT))
-                )->execute()->fetchAllAssociative();
+                )
+                ->executeQuery()
+                ->fetchAllAssociative();
         } catch (Throwable $e) {
             return [];
         }
@@ -271,7 +273,7 @@ class PagesRepository extends AbstractRepository
                 ->from($this->table)
                 ->where(
                     $queryBuilder->expr()->eq('no_search_sub_entries', $queryBuilder->createNamedParameter(1, PDO::PARAM_INT))
-                )->execute();
+                )->executeQuery();
             while (($pageRow = $noSearchSubEntriesEnabledPagesStatement->fetchAssociative()) !== false) {
                 $pageIds = array_merge($pageIds, $this->findAllSubPageIdsByRootPage((int)$pageRow['uid']));
             }
@@ -302,7 +304,7 @@ class PagesRepository extends AbstractRepository
                 'where',
                 $queryBuilder->expr()->eq('l10n_parent', $queryBuilder->createNamedParameter($pageId, PDO::PARAM_INT))
                 . BackendUtility::BEenableFields('pages')
-            )->execute()
+            )->executeQuery()
             ->fetchAllAssociative();
     }
 
@@ -331,7 +333,7 @@ class PagesRepository extends AbstractRepository
         $this->addDefaultLanguageUidConstraint($queryBuilder);
 
         return $queryBuilder
-            ->execute()
+            ->executeQuery()
             ->fetchAllAssociative();
     }
 
@@ -360,7 +362,7 @@ class PagesRepository extends AbstractRepository
         $this->addDefaultLanguageUidConstraint($queryBuilder);
 
         return $queryBuilder
-            ->execute()
+            ->executeQuery()
             ->fetchAllAssociative();
     }
 
@@ -443,7 +445,7 @@ class PagesRepository extends AbstractRepository
             if ($permClause !== '') {
                 $queryBuilder->andWhere(QueryHelper::stripLogicalOperatorPrefix($permClause));
             }
-            $statement = $queryBuilder->execute();
+            $statement = $queryBuilder->executeQuery();
             while ($row = $statement->fetchAssociative()) {
                 if ($begin <= 0) {
                     $theList .= ',' . $row['uid'];

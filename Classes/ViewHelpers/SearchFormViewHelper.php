@@ -113,7 +113,7 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
             $this->tag->addAttribute('data-suggest', $this->getSuggestUrl($this->arguments['additionalFilters'], $pageUid));
         }
         $this->tag->addAttribute('data-suggest-header', htmlspecialchars($this->arguments['suggestHeader'] ?? ''));
-        $this->tag->addAttribute('accept-charset', $this->frontendController->metaCharset ?? null);
+        $this->tag->addAttribute('accept-charset', 'utf-8' ?? null);
 
         // Get search term
         // @extensionScannerIgnoreLine

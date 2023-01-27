@@ -27,7 +27,7 @@ use LogicException;
 use Throwable;
 use TYPO3\CMS\Backend\Form\Exception as BackendFormException;
 use TYPO3\CMS\Core\Localization\LanguageService;
-use TYPO3\CMS\Core\Messaging\FlashMessage;
+use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Scheduler\AbstractAdditionalFieldProvider;
@@ -221,7 +221,7 @@ class OptimizeIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldPr
         ) {
             $this->addMessage(
                 $this->getLanguageService()->sL($this->languageFile . ':tasks.validate.invalidCores'),
-                FlashMessage::ERROR
+                AbstractMessage::ERROR
             );
             $result = false;
         }
