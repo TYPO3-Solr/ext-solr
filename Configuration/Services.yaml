@@ -7,6 +7,13 @@ services:
     resource: '../Classes/*'
     exclude: '../Classes/Eid/*'
 
+  backend_controller:
+    namespace: ApacheSolrForTypo3\Solr\Controller\Backend\Search\
+    resource: '../Classes/Controller/Backend/Search/*'
+    public: true
+    autowire: true
+    tags: ['backend.controller']
+
   ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\DataUpdateHandler:
     public: true
     arguments:
@@ -192,3 +199,9 @@ services:
   ApacheSolrForTypo3\Solr\Report\FilterVarStatus:
     tags:
       - name: reports.status
+
+  viewhelper_backend:
+    namespace: ApacheSolrForTypo3\Solr\ViewHelpers\Backend\
+    resource: '../Classes/ViewHelpers/Backend/*'
+    public: true
+    autowire: true
