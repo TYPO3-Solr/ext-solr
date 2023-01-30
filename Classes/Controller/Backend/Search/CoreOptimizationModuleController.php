@@ -40,7 +40,7 @@ class CoreOptimizationModuleController extends AbstractModuleController
      * @throws Throwable
      * @noinspection PhpUnused
      */
-    protected function initializeView($view)
+    protected function initializeView(ViewInterface $view)
     {
         parent::initializeView($view);
         $this->generateCoreSelectorMenuUsingPageTree();
