@@ -131,22 +131,6 @@ defined('TYPO3') || die();
 
     // ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
-    // add custom Solr content objects
-
-    $GLOBALS['TYPO3_CONF_VARS']['FE']['ContentObjects'][\ApacheSolrForTypo3\Solr\ContentObject\Multivalue::CONTENT_OBJECT_NAME]
-        = \ApacheSolrForTypo3\Solr\ContentObject\Multivalue::class;
-
-    $GLOBALS['TYPO3_CONF_VARS']['FE']['ContentObjects'][\ApacheSolrForTypo3\Solr\ContentObject\Content::CONTENT_OBJECT_NAME]
-        = \ApacheSolrForTypo3\Solr\ContentObject\Content::class;
-
-    $GLOBALS['TYPO3_CONF_VARS']['FE']['ContentObjects'][\ApacheSolrForTypo3\Solr\ContentObject\Relation::CONTENT_OBJECT_NAME]
-        = \ApacheSolrForTypo3\Solr\ContentObject\Relation::class;
-
-    $GLOBALS['TYPO3_CONF_VARS']['FE']['ContentObjects'][\ApacheSolrForTypo3\Solr\ContentObject\Classification::CONTENT_OBJECT_NAME]
-        = \ApacheSolrForTypo3\Solr\ContentObject\Classification::class;
-
-    // ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
-
     // Register cache for frequent searches
 
     if (!isset($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['tx_solr'])) {
