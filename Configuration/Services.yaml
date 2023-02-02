@@ -145,6 +145,25 @@ services:
         identifier: 'solr.index.pageIndexer.FrontendUserAuthenticator'
         event: TYPO3\CMS\Frontend\Authentication\ModifyResolvedFrontendGroupsEvent
 
+  ###  EXT:solr content objects
+  ApacheSolrForTypo3\Solr\ContentObject\Classification:
+    tags:
+      - name: frontend.contentobject
+        identifier: 'SOLR_CLASSIFICATION'
+  ApacheSolrForTypo3\Solr\ContentObject\Content:
+    tags:
+      - name: frontend.contentobject
+        identifier: 'SOLR_CONTENT'
+  ApacheSolrForTypo3\Solr\ContentObject\Multivalue:
+    tags:
+      - name: frontend.contentobject
+        identifier: 'SOLR_MULTIVALUE'
+  ApacheSolrForTypo3\Solr\ContentObject\Relation:
+    tags:
+      - name: frontend.contentobject
+        identifier: 'SOLR_RELATION'
+
+
   # Reports: Status
   ApacheSolrForTypo3\Solr\Report\SiteHandlingStatus:
     tags:

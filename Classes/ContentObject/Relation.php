@@ -73,15 +73,17 @@ class Relation extends AbstractContentObject
 
     /**
      * Relation constructor.
+     *
+     * @param ContentObjectRenderer|null $cObj
      * @param TCAService|null $tcaService
      * @param FrontendOverlayService|null $frontendOverlayService
      */
     public function __construct(
-        ContentObjectRenderer $cObj,
-        TCAService $tcaService = null,
-        FrontendOverlayService $frontendOverlayService = null
+        ?ContentObjectRenderer $cObj = null,
+        ?TCAService $tcaService = null,
+        ?FrontendOverlayService $frontendOverlayService = null
     ) {
-        parent::__construct($cObj);
+        $this->cObj = $cObj;
         $this->configuration['enableRecursiveValueResolution'] = 1;
         $this->configuration['removeEmptyValues'] = 1;
         $this->tcaService = $tcaService ?? GeneralUtility::makeInstance(TCAService::class);
