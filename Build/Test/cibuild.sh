@@ -9,6 +9,8 @@ TYPO3_BIN_DIR="$(pwd)/.Build/bin/"
 export TYPO3_BIN_DIR
 export PATH="$TYPO3_BIN_DIR:$PATH"
 
+EXIT_CODE=0
+
 COMPOSERS_BIN_DIR="$(composer config home)/vendor/bin"
 # Add COMPOSERS_BIN_DIR to $PATH, if not present
 ## Note: That is not https://getcomposer.org/doc/03-cli.md#composer-bin-dir
@@ -25,7 +27,8 @@ echo "Run PHP Lint"
 if ! find . -name \*.php ! -path "./.Build/*" 2>/dev/null | parallel --gnu php -d display_errors=stderr -l {} > /dev/null
 then
   echo "There are syntax errors, please check and fix them."
-  exit 1
+  EXIT_CODE=1
+  #exit 1
 else
   echo "No syntax errors! Great job!"
 fi
@@ -35,7 +38,8 @@ if ! .Build/bin/php-cs-fixer --version > /dev/null 2>&1
 then
   echo "TYPO3 https://github.com/TYPO3/coding-standards is not set properly."
   echo "Please fix that asap to avoid unwanted changes in the future."
-  exit 1
+  EXIT_CODE=2
+  #exit 1
 else
   echo "TYPO3 Coding Standards compliance: See https://github.com/TYPO3/coding-standards"
   if ! composer t3:standards:fix -- --diff --verbose --dry-run && rm .php-cs-fixer.cache
@@ -44,7 +48,8 @@ else
     echo "Please fix the files listed above."
     echo "Tip for auto fix: "
     echo "  TYPO3_VERSION="${TYPO3_VERSION}" composer tests:setup && composer t3:standards:fix"
-    exit 1
+    EXIT_CODE=3
+    #exit 1
   else
     echo "The code is TYPO3 Coding Standards compliant! Great job!"
   fi
@@ -61,7 +66,8 @@ else
   then
     echo "Some XML files are not valid"
     echo "Please fix the files listed above"
-    exit 1
+    EXIT_CODE=4
+    #exit 1
   fi
 fi
 
@@ -72,7 +78,8 @@ UNIT_BOOTSTRAP="Build/Test/UnitTestsBootstrap.php"
 if ! .Build/bin/phpunit --colors -c Build/Test/UnitTests.xml --bootstrap=$UNIT_BOOTSTRAP --coverage-clover=coverage.unit.clover
 then
   echo "Error during running the unit tests please check and fix them"
-  exit 1
+  EXIT_CODE=5
+  #exit 1
 fi
 
 #
@@ -113,5 +120,8 @@ INTEGRATION_BOOTSTRAP="Build/Test/IntegrationTestsBootstrap.php"
 if ! .Build/bin/phpunit --colors -c Build/Test/IntegrationTests.xml --bootstrap=$INTEGRATION_BOOTSTRAP --coverage-clover=coverage.integration.clover
 then
   echo "Error during running the integration tests please check and fix them"
-  exit 1
+  EXIT_CODE=6
+  #exit 1
 fi
+
+exit $EXIT_CODE
