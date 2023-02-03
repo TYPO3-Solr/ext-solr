@@ -40,7 +40,7 @@
     "typo3/coding-standards": "~0.7.1",
     "phpunit/phpunit": "^9.5",
     "phpspec/prophecy-phpunit":"*",
-    "typo3/testing-framework": "7.x-dev",
+    "typo3/testing-framework": "dev-7-composerinstaller5-fix",
     "typo3/cms-fluid-styled-content": "*",
     "scrutinizer/ocular": "*",
     "sclable/xml-lint": "*"
