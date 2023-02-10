@@ -14,6 +14,12 @@ services:
     autowire: true
     tags: ['backend.controller']
 
+  viewhelper_backend:
+    namespace: ApacheSolrForTypo3\Solr\ViewHelpers\Backend\
+    resource: '../Classes/ViewHelpers/Backend/*'
+    public: true
+    autowire: true
+
   ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\DataUpdateHandler:
     public: true
     arguments:
@@ -199,9 +205,3 @@ services:
   ApacheSolrForTypo3\Solr\Report\FilterVarStatus:
     tags:
       - name: reports.status
-
-  viewhelper_backend:
-    namespace: ApacheSolrForTypo3\Solr\ViewHelpers\Backend\
-    resource: '../Classes/ViewHelpers/Backend/*'
-    public: true
-    autowire: true

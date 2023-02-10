@@ -24,7 +24,7 @@ return [
         'extensionName' => 'Solr',
         'controllerActions' => [
             InfoModuleController::class => [
-                'index', 'switchSite', 'switchCore', 'documentsDetails'
+                'index', 'switchSite', 'switchCore', 'documentsDetails',
             ],
         ],
     ],
