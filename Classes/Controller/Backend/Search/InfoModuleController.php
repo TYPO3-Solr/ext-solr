@@ -51,6 +51,7 @@ class InfoModuleController extends AbstractModuleController
      */
     public function indexAction(): ResponseInterface
     {
+        $this->initializeAction();
         if ($this->selectedSite === null) {
             $this->view->assign('can_not_proceed', true);
             return $this->getModuleTemplateResponse();
