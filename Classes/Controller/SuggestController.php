@@ -46,6 +46,10 @@ class SuggestController extends AbstractBaseController
         // Get suggestions
         $rawQuery = htmlspecialchars(mb_strtolower(trim($queryString)));
 
+        if ($this->searchService === null) {
+            return $this->handleSolrUnavailable();
+        }
+
         try {
             /** @var SuggestService $suggestService */
             $suggestService = GeneralUtility::makeInstance(
@@ -66,13 +70,18 @@ class SuggestController extends AbstractBaseController
             $searchRequest = $this->getSearchRequestBuilder()->buildForSuggest($arguments, $rawQuery, $pageId, $languageId);
             $result = $suggestService->getSuggestions($searchRequest, $additionalFilters);
         } catch (SolrUnavailableException $e) {
-            $this->logSolrUnavailable();
-            $result = ['status' => false];
-            return $this->htmlResponse(json_encode($result, JSON_UNESCAPED_SLASHES))->withStatus(503, self::STATUS_503_MESSAGE);
+            return $this->handleSolrUnavailable();
         }
         if ($callback) {
             return $this->htmlResponse(htmlspecialchars($callback) . '(' . json_encode($result, JSON_UNESCAPED_SLASHES) . ')');
         }
         return $this->htmlResponse(json_encode($result, JSON_UNESCAPED_SLASHES));
+    }
+
+    private function handleSolrUnavailable(): ResponseInterface
+    {
+        $this->logSolrUnavailable();
+        $result = ['status' => false];
+        return $this->htmlResponse(json_encode($result, JSON_UNESCAPED_SLASHES))->withStatus(503, self::STATUS_503_MESSAGE);
     }
 }

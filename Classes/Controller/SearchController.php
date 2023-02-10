@@ -101,6 +101,10 @@ class SearchController extends AbstractBaseController
      */
     public function resultsAction(): ResponseInterface
     {
+        if ($this->searchService === null) {
+            return $this->handleSolrUnavailable();
+        }
+
         try {
             $arguments = $this->request->getArguments();
             $pageId = $this->typoScriptFrontendController->getRequestedId();
@@ -150,6 +154,10 @@ class SearchController extends AbstractBaseController
      */
     public function formAction(): ResponseInterface
     {
+        if ($this->searchService === null) {
+            return $this->handleSolrUnavailable();
+        }
+
         $values = [
             'search' => $this->searchService->getSearch(),
             'additionalFilters' => $this->getAdditionalFilters(),
@@ -194,6 +202,10 @@ class SearchController extends AbstractBaseController
      */
     public function detailAction(string $documentId = ''): ResponseInterface
     {
+        if ($this->searchService === null) {
+            return $this->handleSolrUnavailable();
+        }
+
         try {
             $document = $this->searchService->getDocumentById($documentId);
             $this->view->assign('document', $document);
