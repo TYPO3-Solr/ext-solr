@@ -31,6 +31,7 @@ use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Http\RedirectResponse;
+use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -46,13 +47,6 @@ use TYPO3Fluid\Fluid\View\ViewInterface;
 abstract class AbstractModuleController extends ActionController
 {
     /**
-     * In the page-tree selected page UID
-     *
-     * @var int
-     */
-    protected int $selectedPageUID;
-
-    /**
      * Holds the requested page UID because the selected page uid,
      * might be overwritten by the automatic site selection.
      *
@@ -66,11 +60,6 @@ abstract class AbstractModuleController extends ActionController
     protected ?Site $selectedSite = null;
 
     /**
-     * @var SiteRepository
-     */
-    protected SiteRepository $siteRepository;
-
-    /**
      * @var SolrCoreConnection|null
      */
     protected ?SolrCoreConnection $selectedSolrCoreConnection = null;
@@ -81,31 +70,6 @@ abstract class AbstractModuleController extends ActionController
     protected ?Menu $coreSelectorMenu = null;
 
     /**
-     * @var ConnectionManager
-     */
-    protected ConnectionManager $solrConnectionManager;
-
-    /**
-     * @var ModuleDataStorageService
-     */
-    protected ModuleDataStorageService $moduleDataStorageService;
-
-    /**
-     * @var Queue
-     */
-    protected Queue $indexQueue;
-
-    /**
-     * @var SiteFinder
-     */
-    protected SiteFinder $siteFinder;
-
-    /**
-     * @var ModuleTemplateFactory
-     */
-    protected ModuleTemplateFactory $moduleTemplateFactory;
-
-    /**
      * @var ModuleTemplate
      */
     protected ModuleTemplate $moduleTemplate;
@@ -114,20 +78,15 @@ abstract class AbstractModuleController extends ActionController
      * Constructor for dependency injection
      */
     public function __construct(
-        ModuleTemplateFactory $moduleTemplateFactory,
-        ModuleDataStorageService $moduleDataStorageService,
-        SiteRepository $siteRepository,
-        SiteFinder $siteFinder,
-        ConnectionManager $solrConnectionManager,
-        Queue $indexQueue,
-        ?int $selectedPageUID = null
+        protected readonly ModuleTemplateFactory $moduleTemplateFactory,
+        protected readonly IconFactory $iconFactory,
+        protected readonly ModuleDataStorageService $moduleDataStorageService,
+        protected readonly SiteRepository $siteRepository,
+        protected readonly SiteFinder $siteFinder,
+        protected readonly ConnectionManager $solrConnectionManager,
+        protected Queue $indexQueue,
+        protected ?int $selectedPageUID = null
     ) {
-        $this->moduleTemplateFactory = $moduleTemplateFactory;
-        $this->moduleDataStorageService = $moduleDataStorageService;
-        $this->siteRepository = $siteRepository;
-        $this->siteFinder = $siteFinder;
-        $this->solrConnectionManager = $solrConnectionManager;
-        $this->indexQueue = $indexQueue;
         $this->selectedPageUID = $selectedPageUID ?? (int)GeneralUtility::_GP('id');
     }
 
@@ -211,7 +170,7 @@ abstract class AbstractModuleController extends ActionController
      * @throws DBALDriverException
      * @throws Throwable
      */
-    protected function initializeView($view)
+    protected function initializeView(ViewInterface $view)
     {
         $sites = $this->siteRepository->getAvailableSites();
 
@@ -222,11 +181,13 @@ abstract class AbstractModuleController extends ActionController
             return;
         }
 
-        $this->moduleTemplate->addJavaScriptCode(
-            'mainJsFunctions',
-            '
-                top.fsMod.recentIds["searchbackend"] = ' . $this->selectedPageUID . ';'
-        );
+//        @todo: https://github.com/TYPO3-Solr/ext-solr/issues/3489
+//               Migrate following lines to TYPO3 12 conform way or remove them.
+//        $this->moduleTemplate->addJavaScriptCode(
+//            'mainJsFunctions',
+//            '
+//                top.fsMod.recentIds["searchbackend"] = ' . $this->selectedPageUID . ';'
+//        );
         if ($this->selectedSite === null) {
             return;
         }
