@@ -18,7 +18,6 @@ declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\System\UserFunctions;
 
 use ApacheSolrForTypo3\Solr\ConnectionManager;
-use ApacheSolrForTypo3\Solr\FrontendEnvironment;
 use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
 use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
@@ -26,6 +25,7 @@ use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use function str_starts_with;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /**
@@ -35,16 +35,6 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
  */
 class FlexFormUserFunctions
 {
-    /**
-     * @var FrontendEnvironment
-     */
-    protected $frontendEnvironment;
-
-    public function __construct(FrontendEnvironment $frontendEnvironment = null)
-    {
-        $this->frontendEnvironment = $frontendEnvironment ?? GeneralUtility::makeInstance(FrontendEnvironment::class);
-    }
-
     /**
      * Provides all facet fields for a flexform select, enabling the editor to select one of them.
      *
@@ -218,7 +208,11 @@ class FlexFormUserFunctions
         if ($pid === null) {
             return null;
         }
-        return $this->frontendEnvironment->getSolrConfigurationFromPageId($pid);
+
+        $configurationManager = GeneralUtility::makeInstance(ConfigurationManagerInterface::class);
+        $typoScript = $configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT);
+
+        return GeneralUtility::makeInstance(TypoScriptConfiguration::class, $typoScript);
     }
 
     /**
