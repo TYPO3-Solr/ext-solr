@@ -33,20 +33,6 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 class IndexQueueModuleController extends AbstractModuleController
 {
     /**
-     * @var Queue
-     */
-    protected Queue $indexQueue;
-
-    /**
-     * Initializes the controller before invoking an action method.
-     */
-    protected function initializeAction()
-    {
-        parent::initializeAction();
-        $this->indexQueue = GeneralUtility::makeInstance(Queue::class);
-    }
-
-    /**
      * @param Queue $indexQueue
      */
     public function setIndexQueue(Queue $indexQueue)
@@ -62,6 +48,7 @@ class IndexQueueModuleController extends AbstractModuleController
      */
     public function indexAction(): ResponseInterface
     {
+        $this->initializeAction();
         if (!$this->canQueueSelectedSite()) {
             $this->view->assign('can_not_proceed', true);
             return $this->getModuleTemplateResponse();
