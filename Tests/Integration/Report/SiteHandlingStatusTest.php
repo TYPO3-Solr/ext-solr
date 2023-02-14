@@ -1,28 +1,19 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Tests\Integration\Report;
 
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2017 Timo Hund <timo.hund@dkd.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
+
+namespace ApacheSolrForTypo3\Solr\Tests\Integration\Report;
 
 use ApacheSolrForTypo3\Solr\Report\SiteHandlingStatus;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
@@ -32,7 +23,6 @@ use TYPO3\CMS\Reports\Status;
 
 /**
  * Integration test for the site handling status report
- *
  */
 class SiteHandlingStatusTest extends IntegrationTest
 {
@@ -42,15 +32,14 @@ class SiteHandlingStatusTest extends IntegrationTest
     public function allStatusChecksShouldBeOkForFirstTestSite()
     {
         $this->writeDefaultSolrTestSiteConfiguration();
-        $this->importDataSetFromFixture('simple_site.xml');
 
         /** @var $siteHandlingStatus  siteHandlingStatus */
         $siteHandlingStatus = GeneralUtility::makeInstance(SiteHandlingStatus::class);
         $statusCollection = $siteHandlingStatus->getStatus();
 
-        foreach($statusCollection as $status) {
+        foreach ($statusCollection as $status) {
             /** @var $status Status */
-            $this->assertSame(Status::OK, $status->getSeverity(), 'Expected that all status checks for site handling configuration of first test site should be ok');
+            self::assertSame(Status::OK, $status->getSeverity(), 'Expected that all status checks for site handling configuration of first test site should be ok');
         }
     }
 
@@ -61,19 +50,20 @@ class SiteHandlingStatusTest extends IntegrationTest
     {
         $this->writeDefaultSolrTestSiteConfiguration();
         $this->mergeSiteConfiguration('integration_tree_one', [
-            'base' => 'authorityOnly.example.com'
+            'base' => 'authorityOnly.example.com',
         ]);
-        $this->importDataSetFromFixture('simple_site.xml');
-
+        $this->mergeSiteConfiguration('integration_tree_two', [
+            'base' => 'authorityOnly.two.example.com',
+        ]);
 
         /** @var $siteHandlingStatus  SiteHandlingStatus */
         $siteHandlingStatus = GeneralUtility::makeInstance(SiteHandlingStatus::class);
         $statusCollection = $siteHandlingStatus->getStatus();
 
-        foreach($statusCollection as $status) {
+        foreach ($statusCollection as $status) {
             /** @var $status Status */
-            $this->assertSame(Status::ERROR, $status->getSeverity(), 'Expected that status checks for site handling configuration should indicate an error if scheme in "Entry Point[base]" is not defined.');
-            $this->assertRegExp('~.*are empty or invalid\: &quot;scheme&quot;~', $status->getMessage());
+            self::assertSame(Status::ERROR, $status->getSeverity(), 'Expected that status checks for site handling configuration should indicate an error if scheme in "Entry Point[base]" is not defined.');
+            self::assertMatchesRegularExpression('~.*are empty or invalid\: &quot;scheme&quot;~', $status->getMessage());
         }
     }
 
@@ -84,19 +74,20 @@ class SiteHandlingStatusTest extends IntegrationTest
     {
         $this->writeDefaultSolrTestSiteConfiguration();
         $this->mergeSiteConfiguration('integration_tree_one', [
-            'base' => '/'
+            'base' => '/',
         ]);
-        $this->importDataSetFromFixture('simple_site.xml');
-
+        $this->mergeSiteConfiguration('integration_tree_two', [
+            'base' => '/',
+        ]);
 
         /** @var $siteHandlingStatus  SiteHandlingStatus */
         $siteHandlingStatus = GeneralUtility::makeInstance(SiteHandlingStatus::class);
         $statusCollection = $siteHandlingStatus->getStatus();
 
-        foreach($statusCollection as $status) {
+        foreach ($statusCollection as $status) {
             /** @var $status Status */
-            $this->assertSame(Status::ERROR, $status->getSeverity(), 'Expected that status checks for site handling configuration should indicate an error if authority in "Entry Point[base]" is not defined.');
-            $this->assertRegExp('~.*are empty or invalid\: &quot;scheme, host&quot;~', $status->getMessage());
+            self::assertSame(Status::ERROR, $status->getSeverity(), 'Expected that status checks for site handling configuration should indicate an error if authority in "Entry Point[base]" is not defined.');
+            self::assertMatchesRegularExpression('~.*are empty or invalid\: &quot;scheme, host&quot;~', $status->getMessage());
         }
     }
 
@@ -109,20 +100,24 @@ class SiteHandlingStatusTest extends IntegrationTest
 
         // mergeSiteConfiguration() do not work recursively
         $siteConfiguration = new SiteConfiguration($this->instancePath . '/typo3conf/sites/');
-        $configuration = $siteConfiguration->load('integration_tree_one');
-        $configuration['languages'][1]['base'] = 'authorityOnly.example.com';
 
-        $this->mergeSiteConfiguration('integration_tree_one', $configuration);
-        $this->importDataSetFromFixture('simple_site.xml');
+        $configuration1 = $siteConfiguration->load('integration_tree_one');
+        $configuration1['languages'][1]['base'] = 'authorityOnly.example.com';
+        $this->mergeSiteConfiguration('integration_tree_one', $configuration1);
+
+        $configuration2 = $siteConfiguration->load('integration_tree_two');
+        $configuration2['languages'][1]['base'] = 'authorityOnly.two.example.com';
+
+        $this->mergeSiteConfiguration('integration_tree_two', $configuration2);
 
         /** @var $siteHandlingStatus  SiteHandlingStatus */
         $siteHandlingStatus = GeneralUtility::makeInstance(SiteHandlingStatus::class);
         $statusCollection = $siteHandlingStatus->getStatus();
 
-        foreach($statusCollection as $status) {
+        foreach ($statusCollection as $status) {
             /** @var $status Status */
-            $this->assertSame(Status::ERROR, $status->getSeverity(), 'Expected that status checks for site handling configuration should indicate an error if authority in "Entry Point[base]" is not defined.');
-            $this->assertRegExp('~.*is not valid URL\. Following parts of defined URL are empty or invalid\: &quot;scheme&quot;~', $status->getMessage());
+            self::assertSame(Status::ERROR, $status->getSeverity(), 'Expected that status checks for site handling configuration should indicate an error if authority in "Entry Point[base]" is not defined.');
+            self::assertMatchesRegularExpression('~.*is not valid URL\. Following parts of defined URL are empty or invalid\: &quot;scheme&quot;~', $status->getMessage());
         }
     }
 }

@@ -1,59 +1,58 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Tests\Unit;
 
-/***************************************************************
- *  Copyright notice
+declare(strict_types=1);
+
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2018 Timo Hund <timo.hund@dkd.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
+
+namespace ApacheSolrForTypo3\Solr\Tests\Unit;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\SearchQuery;
 use ApacheSolrForTypo3\Solr\Search;
+use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\System\Solr\Service\SolrReadService;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
+use PHPUnit\Framework\MockObject\MockObject;
 
 class SearchTest extends UnitTest
 {
-
     /**
      * @var SolrConnection
      */
     protected $solrConnectionMock;
 
     /**
-     * @var SolrReadService
+     * @var SolrReadService|MockObject
      */
     protected $solrReadServiceMock;
 
     /**
      * @var Search
      */
-    protected $search;
+    protected Search $search;
 
-    public function setUp()
+    protected function setUp(): void
     {
-        parent::setUp();
-        $this->solrReadServiceMock = $this->getDumbMock(SolrReadService::class);
+//        $this->solrReadServiceMock = $this->getDumbMock(SolrReadService::class);
+        $this->solrReadServiceMock = $this->getMockBuilder(SolrReadService::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['search'])
+            ->getMock();
+
         $this->solrConnectionMock = $this->getDumbMock(SolrConnection::class);
-        $this->solrConnectionMock->expects($this->any())->method('getReadService')->willReturn($this->solrReadServiceMock);
+        $this->solrConnectionMock->expects(self::any())->method('getReadService')->willReturn($this->solrReadServiceMock);
         $this->search = new Search($this->solrConnectionMock);
+        parent::setUp();
     }
 
     /**
@@ -63,9 +62,10 @@ class SearchTest extends UnitTest
     {
         $query = new SearchQuery();
         $limit = 99;
-        $this->solrReadServiceMock->expects($this->once())->method('search')->willReturnCallback(
-            function($query) use ($limit) {
+        $this->solrReadServiceMock->expects(self::once())->method('search')->willReturnCallback(
+            function ($query) use ($limit) {
                 $this->assertSame($limit, $query->getRows(), 'Unexpected limit was passed');
+                return $this->getDumbMock(ResponseAdapter::class);
             }
         );
 
@@ -81,13 +81,13 @@ class SearchTest extends UnitTest
         $limit = 99;
         $query->setRows($limit);
 
-        $this->solrReadServiceMock->expects($this->once())->method('search')->willReturnCallback(
-            function($query) use ($limit) {
+        $this->solrReadServiceMock->expects(self::once())->method('search')->willReturnCallback(
+            function ($query) use ($limit) {
                 $this->assertSame($limit, $query->getRows(), 'Unexpected limit was passed');
+                return $this->getDumbMock(ResponseAdapter::class);
             }
         );
 
         $this->search->search($query, 0, null);
     }
-
 }

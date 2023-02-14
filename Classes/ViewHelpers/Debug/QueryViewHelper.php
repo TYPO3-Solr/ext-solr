@@ -1,5 +1,4 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\ViewHelpers\Debug;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -14,8 +13,12 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers\Debug;
  * The TYPO3 project - inspiring people to share!
  */
 
+namespace ApacheSolrForTypo3\Solr\ViewHelpers\Debug;
+
 use ApacheSolrForTypo3\Solr\ViewHelpers\AbstractSolrFrontendViewHelper;
+use Closure;
 use TYPO3\CMS\Core\Context\Context;
+use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
@@ -25,6 +28,8 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
  *
  * @author Frans Saris <frans@beech.it>
  * @author Timo Hund <timo.hund@dkd.de>
+ *
+ * @noinspection PhpUnused used in Fluid templates <s:debug.query />
  */
 class QueryViewHelper extends AbstractSolrFrontendViewHelper
 {
@@ -37,17 +42,32 @@ class QueryViewHelper extends AbstractSolrFrontendViewHelper
 
     /**
      * @param array $arguments
-     * @param \Closure $renderChildrenClosure
+     * @param Closure $renderChildrenClosure
      * @param RenderingContextInterface $renderingContext
      * @return string
+     * @throws AspectNotFoundException
+     * @noinspection PhpMissingReturnTypeInspection
+     * @noinspection PhpUnused
      */
-    public static function renderStatic(array $arguments, \Closure $renderChildrenClosure, RenderingContextInterface $renderingContext)
+    public static function renderStatic(array $arguments, Closure $renderChildrenClosure, RenderingContextInterface $renderingContext)
     {
         $content = '';
         $resultSet = self::getUsedSearchResultSetFromRenderingContext($renderingContext);
         $backendUserIsLoggedIn = GeneralUtility::makeInstance(Context::class)->getPropertyFromAspect('backend.user', 'isLoggedIn');
         if ($backendUserIsLoggedIn === true && $resultSet && $resultSet->getUsedSearch() !== null) {
-            $content = '<br><strong>Parsed Query:</strong><br>' . htmlspecialchars($resultSet->getUsedSearch()->getDebugResponse()->parsedquery);
+            if (
+                $resultSet->getHasSearched() === true
+                && $resultSet->getUsedSearch()->getDebugResponse() !== null
+                && !empty($resultSet->getUsedSearch()->getDebugResponse()->parsedquery)
+            ) {
+                $renderingContext->getVariableProvider()->add('parsedQuery', $resultSet->getUsedSearch()->getDebugResponse()->parsedquery);
+                $content = $renderChildrenClosure();
+                $renderingContext->getVariableProvider()->remove('parsedQuery');
+
+                if ($content === null) {
+                    $content = '<br><strong>Parsed Query:</strong><br>' . htmlspecialchars($resultSet->getUsedSearch()->getDebugResponse()->parsedquery);
+                }
+            }
         }
         return $content;
     }

@@ -1,7 +1,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en"
-	  xmlns:f="http://typo3.org/ns/TYPO3/Fluid/ViewHelpers"
-	  xmlns:s="http://typo3.org/ns/ApacheSolrForTypo3/Solr/ViewHelpers"
-      data-namespace-typo3-fluid="true"
+	xmlns:f="http://typo3.org/ns/TYPO3/Fluid/ViewHelpers"
+	xmlns:s="http://typo3.org/ns/ApacheSolrForTypo3/Solr/ViewHelpers"
+	data-namespace-typo3-fluid="true"
 >
 
 <f:section name="Document">
@@ -43,7 +43,11 @@
 					</ul>
 				</p>
 			</f:if>
-			<s:debug.documentScoreAnalyzer document="{document}" />
+
+			<f:variable name="documentScoreAnalyze"><s:debug.documentScoreAnalyzer document="{document}" /></f:variable>
+			<f:if condition="{documentScoreAnalyze}">
+				<div class="query-debug alert alert-info" role="alert"><f:format.raw>{documentScoreAnalyze}</f:format.raw></div>
+			</f:if>
 		</div>
 	</div>
 

@@ -1,170 +1,56 @@
 <?php
+
+declare(strict_types=1);
+
+/*
+ * This file is part of the TYPO3 CMS project.
+ *
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
+ *
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ *
+ * The TYPO3 project - inspiring people to share!
+ */
+
 namespace ApacheSolrForTypo3\Solr\IndexQueue;
 
-/***************************************************************
- *  Copyright notice
- *
- *  (c) 2009-2015 Ingo Renner <ingo@typo3.org>
- *  All rights reserved
- *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
-
-use ApacheSolrForTypo3\Solr\AbstractDataHandlerListener;
-use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\ConfigurationAwareRecordService;
-use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\MountPagesUpdater;
-use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\RootPageResolver;
-use ApacheSolrForTypo3\Solr\FrontendEnvironment;
-use ApacheSolrForTypo3\Solr\GarbageCollector;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\ContentElementDeletedEvent;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordMovedEvent;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordUpdatedEvent;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\VersionSwappedEvent;
 use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
-use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
-use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
-use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
-use ApacheSolrForTypo3\Solr\System\TCA\TCAService;
 use ApacheSolrForTypo3\Solr\Util;
-use TYPO3\CMS\Backend\Utility\BackendUtility;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
+use TYPO3\CMS\Core\Exception\Page\PageNotFoundException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
+use TYPO3\CMS\Core\Utility\RootlineUtility;
 
 /**
- * A class that monitors changes to records so that the changed record gets
+ * A class that monitors changes to the records so that the changed record get
  * passed to the index queue to update the according index document.
  *
  * @author Ingo Renner <ingo@typo3.org>
  */
-class RecordMonitor extends AbstractDataHandlerListener
+class RecordMonitor
 {
     /**
-     * Index Queue
-     *
-     * @var Queue
+     * @var EventDispatcherInterface
      */
-    protected $indexQueue;
-
-    /**
-     * Mount Page Updater
-     *
-     * @var MountPagesUpdater
-     */
-    protected $mountPageUpdater;
-
-    /**
-     * TCA Service
-     *
-     * @var TCAService
-     */
-    protected $tcaService;
-
-    /**
-     * RootPageResolver
-     *
-     * @var RootPageResolver
-     */
-    protected $rootPageResolver;
-
-    /**
-     * @var PagesRepository
-     */
-    protected $pagesRepository;
-
-    /**
-     * @var SolrLogManager
-     */
-    protected $logger = null;
-
-    /**
-     * @var FrontendEnvironment
-     */
-    protected $frontendEnvironment = null;
+    protected EventDispatcherInterface $eventDispatcher;
 
     /**
      * RecordMonitor constructor.
      *
-     * @param Queue|null $indexQueue
-     * @param MountPagesUpdater|null $mountPageUpdater
-     * @param TCAService|null $TCAService
-     * @param RootPageResolver $rootPageResolver
-     * @param PagesRepository|null $pagesRepository
-     * @param SolrLogManager|null $solrLogManager
-     * @param ConfigurationAwareRecordService|null $recordService
+     * @param EventDispatcherInterface|null $eventDispatcher
      */
-    public function __construct(
-        Queue $indexQueue = null,
-        MountPagesUpdater $mountPageUpdater = null,
-        TCAService $TCAService = null,
-        RootPageResolver $rootPageResolver = null,
-        PagesRepository $pagesRepository = null,
-        SolrLogManager $solrLogManager = null,
-        ConfigurationAwareRecordService $recordService = null,
-        FrontendEnvironment $frontendEnvironment = null
-    )
+    public function __construct(EventDispatcherInterface $eventDispatcher = null)
     {
-        parent::__construct($recordService);
-        $this->indexQueue = $indexQueue ?? GeneralUtility::makeInstance(Queue::class);
-        $this->mountPageUpdater = $mountPageUpdater ?? GeneralUtility::makeInstance(MountPagesUpdater::class);
-        $this->tcaService = $TCAService ?? GeneralUtility::makeInstance(TCAService::class);
-        $this->rootPageResolver = $rootPageResolver ?? GeneralUtility::makeInstance(RootPageResolver::class);
-        $this->pagesRepository = $pagesRepository ?? GeneralUtility::makeInstance(PagesRepository::class);
-        $this->logger = $solrLogManager ?? GeneralUtility::makeInstance(SolrLogManager::class, /** @scrutinizer ignore-type */ __CLASS__);
-        $this->frontendEnvironment = $frontendEnvironment ?? GeneralUtility::makeInstance(FrontendEnvironment::class);
-    }
-
-    /**
-     * @param SolrLogManager $logger
-     */
-    public function setLogger(SolrLogManager $logger)
-    {
-        $this->logger = $logger;
-    }
-
-    /**
-     * Holds the configuration when a recursive page queuing should be triggered.
-     *
-     * Note: The SQL transaction is already committed, so the current state covers only "non"-changed fields.
-     *
-     * @var array
-     * @return array
-     */
-    protected function getUpdateSubPagesRecursiveTriggerConfiguration()
-    {
-        return [
-            // the current page has the both fields "extendToSubpages" and "hidden" set from 1 to 0 => requeue subpages
-            'HiddenAndExtendToSubpageWereDisabled' => [
-                'changeSet' => [
-                    'hidden' => '0',
-                    'extendToSubpages' => '0'
-                ]
-            ],
-            // the current page has the field "extendToSubpages" enabled and the field "hidden" was set to 0 => requeue subpages
-            'extendToSubpageEnabledAndHiddenFlagWasRemoved' => [
-                'currentState' =>  ['extendToSubpages' => '1'],
-                'changeSet' => ['hidden' => '0']
-            ],
-            // the current page has the field "hidden" enabled and the field "extendToSubpages" was set to 0 => requeue subpages
-            'hiddenIsEnabledAndExtendToSubPagesWasRemoved' => [
-                'currentState' =>  ['hidden' => '1'],
-                'changeSet' => ['extendToSubpages' => '0']
-            ],
-            // the field "no_search_sub_entries" of current page was set to 0
-            'no_search_sub_entriesFlagWasAdded' => [
-                'changeSet' => ['no_search_sub_entries' => '0']
-            ],
-        ];
+        $this->eventDispatcher = $eventDispatcher ?? GeneralUtility::makeInstance(EventDispatcherInterface::class);
     }
 
     /**
@@ -173,21 +59,17 @@ class RecordMonitor extends AbstractDataHandlerListener
      * @param string $command The command.
      * @param string $table The table the record belongs to
      * @param int $uid The record's uid
-     * @param string $value
-     * @param DataHandler $tceMain TYPO3 Core Engine parent object
+     * @noinspection PhpMissingParamTypeInspection, because it is the TYPO3 core implementation.
      */
     public function processCmdmap_preProcess(
         $command,
         $table,
-        $uid,
-        /** @noinspection PhpUnusedParameterInspection */
-        $value,
-        DataHandler $tceMain
-    ) {
-        if ($command === 'delete' && $table === 'tt_content' && $GLOBALS['BE_USER']->workspace == 0) {
-            // skip workspaces: index only LIVE workspace
-            $pid = $this->getValidatedPid($tceMain, $table, $uid);
-            $this->indexQueue->updateItem('pages', $pid, time());
+        $uid
+    ): void {
+        if ($command === 'delete' && $table === 'tt_content' && ($GLOBALS['BE_USER']->workspace ?? null) == 0) {
+            $this->eventDispatcher->dispatch(
+                new ContentElementDeletedEvent($uid)
+            );
         }
     }
 
@@ -198,12 +80,16 @@ class RecordMonitor extends AbstractDataHandlerListener
      * @param string $command The command.
      * @param string $table The table the record belongs to
      * @param int $uid The record's uid
-     * @param string $value
-     * @param DataHandler $tceMain TYPO3 Core Engine parent object
+     * @param mixed $value
+     * @noinspection PhpMissingParamTypeInspection, because it is the TYPO3 core implementation.
      */
-    public function processCmdmap_postProcess($command, $table, $uid, $value, DataHandler $tceMain)
-    {
-        if ($this->isDraftRecord($table, $uid)) {
+    public function processCmdmap_postProcess(
+        $command,
+        $table,
+        $uid,
+        $value
+    ): void {
+        if (Util::isDraftRecord($table, $uid)) {
             // skip workspaces: index only LIVE workspace
             return;
         }
@@ -211,80 +97,16 @@ class RecordMonitor extends AbstractDataHandlerListener
         // track publish / swap events for records (workspace support)
         // command "version"
         if ($command === 'version' && $value['action'] === 'swap') {
-            $this->applyVersionSwap($table, $uid, $tceMain);
+            $this->eventDispatcher->dispatch(
+                new VersionSwappedEvent($uid, $table)
+            );
         }
 
         // moving pages/records in LIVE workspace
-        if ($command === 'move' && $GLOBALS['BE_USER']->workspace == 0) {
-            if ($table === 'pages') {
-                $this->applyPageChangesToQueue($uid);
-            } else {
-                $this->applyRecordChangesToQueue($table, $uid, $value);
-            }
-
-        }
-    }
-
-    /**
-     * Apply's version swap to the IndexQueue.
-     *
-     * @param string $table
-     * @param integer $uid
-     * @param DataHandler $tceMain
-     */
-    protected function applyVersionSwap($table, $uid, DataHandler $tceMain)
-    {
-        $isPageRelatedRecord = $table === 'tt_content' || $table === 'pages';
-        if($isPageRelatedRecord) {
-            $uid = $table === 'tt_content' ? $this->getValidatedPid($tceMain, $table, $uid) : $uid;
-            $this->applyPageChangesToQueue($uid);
-        } else {
-            $recordPageId = $this->getValidatedPid($tceMain, $table, $uid);
-            $this->applyRecordChangesToQueue($table, $uid, $recordPageId);
-        }
-    }
-
-    /**
-     * Add's a page to the queue and updates mounts, when it is enabled, otherwise ensure that the page is removed
-     * from the queue.
-     *
-     * @param integer $uid
-     */
-    protected function applyPageChangesToQueue($uid)
-    {
-        $solrConfiguration = $this->getSolrConfigurationFromPageId($uid);
-        $record = $this->configurationAwareRecordService->getRecord('pages', $uid, $solrConfiguration);
-        if (!empty($record) && $this->tcaService->isEnabledRecord('pages', $record)) {
-            $this->mountPageUpdater->update($uid);
-            $this->indexQueue->updateItem('pages', $uid);
-        } else {
-            // TODO should be moved to garbage collector
-            $this->removeFromIndexAndQueueWhenItemInQueue('pages', $uid);
-        }
-    }
-
-    /**
-     * Add's a record to the queue if it is monitored and enabled, otherwise it removes the record from the queue.
-     *
-     * @param string $table
-     * @param integer $uid
-     * @param integer $pid
-     */
-    protected function applyRecordChangesToQueue($table, $uid, $pid)
-    {
-        $solrConfiguration = $this->getSolrConfigurationFromPageId($pid);
-        $isMonitoredTable = $solrConfiguration->getIndexQueueIsMonitoredTable($table);
-
-        if ($isMonitoredTable) {
-            $record = $this->configurationAwareRecordService->getRecord($table, $uid, $solrConfiguration);
-
-            if (!empty($record) && $this->tcaService->isEnabledRecord($table, $record)) {
-                $uid = $this->tcaService->getTranslationOriginalUidIfTranslated($table, $record, $uid);
-                $this->indexQueue->updateItem($table, $uid);
-            } else {
-                // TODO should be moved to garbage collector
-                $this->removeFromIndexAndQueueWhenItemInQueue($table, $uid);
-            }
+        if ($command === 'move' && ($GLOBALS['BE_USER']->workspace ?? null) == 0) {
+            $this->eventDispatcher->dispatch(
+                new RecordMovedEvent($uid, $table)
+            );
         }
     }
 
@@ -295,41 +117,48 @@ class RecordMonitor extends AbstractDataHandlerListener
      *
      * @param string $status Status of the current operation, 'new' or 'update'
      * @param string $table The table the record belongs to
-     * @param mixed $uid The record's uid, [integer] or [string] (like 'NEW...')
+     * @param int|string $uid The record's uid, [integer] or [string] (like 'NEW...')
      * @param array $fields The record's data
      * @param DataHandler $tceMain TYPO3 Core Engine parent object
-     * @return void
      */
-    public function processDatamap_afterDatabaseOperations($status, $table, $uid, array $fields, DataHandler $tceMain) {
-        $recordTable = $table;
+    public function processDatamap_afterDatabaseOperations(
+        string $status,
+        string $table,
+        $uid,
+        array $fields,
+        DataHandler $tceMain
+    ): void {
         $recordUid = $uid;
-
         if ($this->skipMonitoringOfTable($table)) {
             return;
         }
 
-        if ($status === 'new' && !MathUtility::canBeInterpretedAsInteger($recordUid)) {
-            $recordUid = $tceMain->substNEWwithIDs[$recordUid];
+        $recordPid = $fields['pid'] ?? null;
+        if (is_null($recordPid) && MathUtility::canBeInterpretedAsInteger($recordUid)) {
+            $recordInfo = $tceMain->recordInfo($table, (int)$recordUid, 'pid');
+            if (!is_null($recordInfo)) {
+                $recordPid = $recordInfo['pid'] ?? null;
+            }
         }
-        if ($this->isDraftRecord($table, $recordUid)) {
+        if (!is_null($recordPid) && $this->skipRecordByRootlineConfiguration((int)$recordPid)) {
+            return;
+        }
+
+        if ($status === 'new' && !MathUtility::canBeInterpretedAsInteger($recordUid)) {
+            if (isset($tceMain->substNEWwithIDs[$recordUid])) {
+                $recordUid = $tceMain->substNEWwithIDs[$recordUid];
+            } else {
+                return;
+            }
+        }
+        if (Util::isDraftRecord($table, (int)$recordUid)) {
             // skip workspaces: index only LIVE workspace
             return;
         }
 
-        try {
-            $recordPageId = $this->getRecordPageId($status, $recordTable, $recordUid, $uid, $fields, $tceMain);
-
-            // when a content element changes we need to updated the page instead
-            if ($recordTable === 'tt_content') {
-                $recordTable = 'pages';
-                $recordUid = $recordPageId;
-            }
-
-            $this->processRecord($recordTable, $recordPageId, $recordUid, $fields);
-        } catch (NoPidException $e) {
-            $message = 'Record without valid pid was processed ' . $table . ':' . $uid;
-            $this->logger->log(SolrLogManager::WARNING, $message);
-        }
+        $this->eventDispatcher->dispatch(
+            new RecordUpdatedEvent((int)$recordUid, $table, $fields)
+        );
     }
 
     /**
@@ -338,7 +167,7 @@ class RecordMonitor extends AbstractDataHandlerListener
      * @param string $table
      * @return bool
      */
-    protected function skipMonitoringOfTable($table)
+    protected function skipMonitoringOfTable(string $table): bool
     {
         static $configurationMonitorTables;
 
@@ -356,257 +185,25 @@ class RecordMonitor extends AbstractDataHandlerListener
     }
 
     /**
-     * Process the record located in processDatamap_afterDatabaseOperations
+     * Check if at least one page in the record's rootline is configured to exclude sub-entries from indexing
      *
-     * @param string $recordTable The table the record belongs to
-     * @param int $recordPageId pageid
-     * @param mixed $recordUid The record's uid, [integer] or [string] (like 'NEW...')
-     * @param array $fields The record's data
-     */
-    protected function processRecord($recordTable, $recordPageId, $recordUid, $fields)
-    {
-        if ($recordTable === 'pages') {
-            $configurationPageId = $this->getConfigurationPageId($recordTable, $recordPageId, $recordUid);
-            if ($configurationPageId === 0) {
-                $this->mountPageUpdater->update($recordUid);
-                return;
-            }
-            $rootPageIds = [$configurationPageId];
-        } else {
-            try {
-                $rootPageIds = $this->rootPageResolver->getResponsibleRootPageIds($recordTable, $recordUid);
-                if (empty($rootPageIds)) {
-                    $this->removeFromIndexAndQueueWhenItemInQueue($recordTable, $recordUid);
-                    return;
-                }
-            } catch ( \InvalidArgumentException $e) {
-                $this->removeFromIndexAndQueueWhenItemInQueue($recordTable, $recordUid);
-                return;
-            }
-        }
-        foreach ($rootPageIds as $configurationPageId) {
-            $solrConfiguration = $this->getSolrConfigurationFromPageId($configurationPageId);
-            $isMonitoredRecord = $solrConfiguration->getIndexQueueIsMonitoredTable($recordTable);
-            if (!$isMonitoredRecord) {
-                // when it is a non monitored record, we can skip it.
-                continue;
-            }
-
-            $record = $this->configurationAwareRecordService->getRecord($recordTable, $recordUid, $solrConfiguration);
-            if (empty($record)) {
-                // TODO move this part to the garbage collector
-                // check if the item should be removed from the index because it no longer matches the conditions
-                $this->removeFromIndexAndQueueWhenItemInQueue($recordTable, $recordUid);
-
-                // Handle sub entries for pages, which are not in index queue.
-                if ($recordTable === 'pages' && $this->isRecursivePageUpdateRequired($recordUid, $fields)) {
-                    $treePageIds = $this->getSubPageIds($recordUid);
-                    $this->updatePageIdItems($treePageIds);
-                }
-                continue;
-            }
-            // Clear existing index queue items to prevent mount point duplicates.
-            // This needs to be done before the overlay handling, because handling an overlay record should
-            // not trigger a deletion.
-            $isTranslation = !empty($record['sys_language_uid']) && $record['sys_language_uid'] !== 0;
-            if ($recordTable === 'pages' && !$isTranslation) {
-                $this->indexQueue->deleteItem('pages', $recordUid);
-            }
-
-            // only update/insert the item if we actually found a record
-            $isLocalizedRecord = $this->tcaService->isLocalizedRecord($recordTable, $record);
-            $recordUid = $this->tcaService->getTranslationOriginalUidIfTranslated($recordTable, $record, $recordUid);
-
-            if ($isLocalizedRecord && !$this->getIsTranslationParentRecordEnabled($recordTable, $recordUid)) {
-                // we have a localized record without a visible parent record. Nothing to do.
-                continue;
-            }
-
-            if ($this->tcaService->isEnabledRecord($recordTable, $record)) {
-                $this->indexQueue->updateItem($recordTable, $recordUid);
-            }
-
-            if ($recordTable === 'pages') {
-                $this->doPagesPostUpdateOperations($fields, $recordUid);
-            }
-        }
-    }
-
-    /**
-     * This method is used to determine the pageId that should be used to retrieve the index queue configuration.
-     *
-     * @param string $recordTable
-     * @param integer $recordPageId
-     * @param integer $recordUid
-     * @return integer
-     */
-    protected function getConfigurationPageId($recordTable, $recordPageId, $recordUid)
-    {
-        $rootPageId = $this->rootPageResolver->getRootPageId($recordPageId);
-        if ($this->rootPageResolver->getIsRootPageId($rootPageId)) {
-            return $recordPageId;
-        }
-
-        $alternativeSiteRoots = $this->rootPageResolver->getAlternativeSiteRootPagesIds($recordTable, $recordUid, $recordPageId);
-        $lastRootPage = array_pop($alternativeSiteRoots);
-        return empty($lastRootPage) ? 0 : $lastRootPage;
-    }
-
-    /**
-     * Checks if the parent record of the translated record is enabled.
-     *
-     * @param string $recordTable
-     * @param integer $recordUid
+     * @param int $pid
      * @return bool
      */
-    protected function getIsTranslationParentRecordEnabled($recordTable, $recordUid)
+    protected function skipRecordByRootlineConfiguration(int $pid): bool
     {
-        $l10nParentRecord = (array)BackendUtility::getRecord($recordTable, $recordUid, '*', '', false);
-        return $this->tcaService->isEnabledRecord($recordTable, $l10nParentRecord);
-    }
-
-    /**
-     * Applies needed updates when a pages record was processed by the RecordMonitor.
-     *
-     * @param array $fields
-     * @param int $recordUid
-     */
-    protected function doPagesPostUpdateOperations(array $fields, $recordUid)
-    {
-        $this->updateCanonicalPages($recordUid);
-        $this->mountPageUpdater->update($recordUid);
-
-        if ($this->isRecursivePageUpdateRequired($recordUid, $fields)) {
-            $treePageIds = $this->getSubPageIds($recordUid);
-            $this->updatePageIdItems($treePageIds);
+        /** @var RootlineUtility $rootlineUtility */
+        $rootlineUtility = GeneralUtility::makeInstance(RootlineUtility::class, $pid);
+        try {
+            $rootline = $rootlineUtility->get();
+        } catch (PageNotFoundException $e) {
+            return true;
         }
-    }
-
-    /**
-     * Determines the recordPageId (pid) of a record.
-     *
-     * @param string $status
-     * @param string $recordTable
-     * @param int $recordUid
-     * @param int $originalUid
-     * @param array $fields
-     * @param DataHandler $tceMain
-     *
-     * @return int
-     */
-    protected function getRecordPageId($status, $recordTable, $recordUid, $originalUid, array $fields, DataHandler $tceMain)
-    {
-        if ($recordTable === 'pages' && isset($fields['l10n_parent']) && intval($fields['l10n_parent']) > 0) {
-            return $fields['l10n_parent'];
-        }
-
-        if ($status === 'update' && !isset($fields['pid'])) {
-            $recordPageId = $this->getValidatedPid($tceMain, $recordTable, $recordUid);
-            if (($recordTable === 'pages') && ($this->rootPageResolver->getIsRootPageId($recordUid))) {
-                $recordPageId = $originalUid;
+        foreach ($rootline as $page) {
+            if (isset($page['no_search_sub_entries']) && $page['no_search_sub_entries']) {
+                return true;
             }
-
-            return $recordPageId;
         }
-
-        return $fields['pid'];
-    }
-
-    /**
-     * Applies the updateItem instruction on a collection of pageIds.
-     *
-     * @param array $treePageIds
-     */
-    protected function updatePageIdItems(array $treePageIds)
-    {
-        foreach ($treePageIds as $treePageId) {
-            $this->indexQueue->updateItem('pages', $treePageId);
-        }
-    }
-
-    /**
-     * Removes record from the index queue and from the solr index
-     *
-     * @param string $recordTable Name of table where the record lives
-     * @param int $recordUid Id of record
-     */
-    protected function removeFromIndexAndQueue($recordTable, $recordUid)
-    {
-        $garbageCollector = GeneralUtility::makeInstance(GarbageCollector::class);
-        $garbageCollector->collectGarbage($recordTable, $recordUid);
-    }
-
-    /**
-     * Removes record from the index queue and from the solr index when the item is in the queue.
-     *
-     * @param string $recordTable Name of table where the record lives
-     * @param int $recordUid Id of record
-     */
-    protected function removeFromIndexAndQueueWhenItemInQueue($recordTable, $recordUid)
-    {
-        if (!$this->indexQueue->containsItem($recordTable, $recordUid)) {
-            return;
-        }
-
-        $this->removeFromIndexAndQueue($recordTable, $recordUid);
-    }
-
-    // Handle pages showing content from another page
-
-    /**
-     * Triggers Index Queue updates for other pages showing content from the
-     * page currently being updated.
-     *
-     * @param int $pageId UID of the page currently being updated
-     */
-    protected function updateCanonicalPages($pageId)
-    {
-        $canonicalPages = $this->pagesRepository->findPageUidsWithContentsFromPid((int)$pageId);
-        foreach ($canonicalPages as $page) {
-            $this->indexQueue->updateItem('pages', $page['uid']);
-        }
-    }
-
-    /**
-     * Retrieves the pid of a record and throws an exception when getPid returns false.
-     *
-     * @param DataHandler $tceMain
-     * @param string $table
-     * @param integer $uid
-     * @throws NoPidException
-     * @return integer
-     */
-    protected function getValidatedPid(DataHandler $tceMain, $table, $uid)
-    {
-        $pid = $tceMain->getPID($table, $uid);
-        if ($pid === false) {
-            throw new NoPidException('Pid should not be false');
-        }
-
-        $pid = intval($pid);
-        return $pid;
-    }
-
-    /**
-     * Checks if the record is a draft record.
-     *
-     * @param string $table
-     * @param int $uid
-     * @return bool
-     */
-    protected function isDraftRecord($table, $uid)
-    {
-        return Util::isDraftRecord($table, $uid);
-    }
-
-    /**
-     * @param $pageId
-     * @param bool $initializeTsfe
-     * @param int $language
-     * @return TypoScriptConfiguration
-     */
-    protected function getSolrConfigurationFromPageId($pageId)
-    {
-        return $this->frontendEnvironment->getSolrConfigurationFromPageId($pageId);
+        return false;
     }
 }

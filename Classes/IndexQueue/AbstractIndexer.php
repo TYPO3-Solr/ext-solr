@@ -1,28 +1,21 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\IndexQueue;
 
-/***************************************************************
- *  Copyright notice
+declare(strict_types=1);
+
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2012-2015 Ingo Renner <ingo@typo3.org>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
+
+namespace ApacheSolrForTypo3\Solr\IndexQueue;
 
 use ApacheSolrForTypo3\Solr\ContentObject\Classification;
 use ApacheSolrForTypo3\Solr\ContentObject\Multivalue;
@@ -31,7 +24,8 @@ use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\TypoScript\Parser\TypoScriptParser;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
+use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
+use UnexpectedValueException;
 
 /**
  * An abstract indexer class to collect a few common methods shared with other
@@ -41,26 +35,25 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
  */
 abstract class AbstractIndexer
 {
-
     /**
      * Holds the type of the data to be indexed, usually that is the table name.
      *
      * @var string
      */
-    protected $type = '';
+    protected string $type = '';
 
     /**
      * Holds field names that are denied to overwrite in thy indexing configuration.
      *
      * @var array
      */
-    protected static $unAllowedOverrideFields = ['type'];
+    protected static array $unAllowedOverrideFields = ['type'];
 
     /**
      * @param string $solrFieldName
      * @return bool
      */
-    public static function isAllowedToOverrideField($solrFieldName)
+    public static function isAllowedToOverrideField(string $solrFieldName): bool
     {
         return !in_array($solrFieldName, static::$unAllowedOverrideFields);
     }
@@ -73,7 +66,8 @@ abstract class AbstractIndexer
      * @param array $data Record data
      * @return Document Modified document with added fields
      */
-    protected function addDocumentFieldsFromTyposcript(Document $document, array $indexingConfiguration, array $data) {
+    protected function addDocumentFieldsFromTyposcript(Document $document, array $indexingConfiguration, array $data, TypoScriptFrontendController $tsfe): Document
+    {
         $data = static::addVirtualContentFieldToRecord($document, $data);
 
         // mapping of record fields => solr document fields, resolving cObj
@@ -90,7 +84,10 @@ abstract class AbstractIndexer
                 );
             }
 
-            $fieldValue = $this->resolveFieldValue($indexingConfiguration, $solrFieldName, $data);
+            $fieldValue = $this->resolveFieldValue($indexingConfiguration, $solrFieldName, $data, $tsfe);
+            if ($fieldValue === null) {
+                continue;
+            }
 
             if (is_array($fieldValue)) {
                 // multi value
@@ -105,9 +102,8 @@ abstract class AbstractIndexer
         return $document;
     }
 
-
     /**
-     * Add's the content of the field 'content' from the solr document as virtual field __solr_content in the record,
+     * Adds the content of the field 'content' from the solr document as virtual field __solr_content in the record,
      * to have it available in typoscript.
      *
      * @param Document $document
@@ -127,21 +123,21 @@ abstract class AbstractIndexer
      * Resolves a field to its value depending on its configuration.
      *
      * This enables you to configure the indexer to put the item/record through
-     * cObj processing if wanted/needed. Otherwise the plain item/record value
+     * cObj processing if wanted/needed. Otherwise, the plain item/record value
      * is taken.
      *
      * @param array $indexingConfiguration Indexing configuration as defined in plugin.tx_solr_index.queue.[indexingConfigurationName].fields
      * @param string $solrFieldName A Solr field name that is configured in the indexing configuration
      * @param array $data A record or item's data
-     * @return string The resolved string value to be indexed
+     * @param TypoScriptFrontendController $tsfe
+     * @return string|null The resolved string value to be indexed; null if value could not be resolved
      */
     protected function resolveFieldValue(
         array $indexingConfiguration,
-        $solrFieldName,
-        array $data
+        string $solrFieldName,
+        array $data,
+        TypoScriptFrontendController $tsfe
     ) {
-        $contentObject = GeneralUtility::makeInstance(ContentObjectRenderer::class);
-
         if (isset($indexingConfiguration[$solrFieldName . '.'])) {
             // configuration found => need to resolve a cObj
 
@@ -150,57 +146,73 @@ abstract class AbstractIndexer
             $backupWorkingDirectory = getcwd();
             chdir(Environment::getPublicPath() . '/');
 
-            $contentObject->start($data, $this->type);
-            $fieldValue = $contentObject->cObjGetSingle(
+            $tsfe->cObj->start($data, $this->type);
+            $fieldValue = $tsfe->cObj->cObjGetSingle(
                 $indexingConfiguration[$solrFieldName],
                 $indexingConfiguration[$solrFieldName . '.']
             );
 
             chdir($backupWorkingDirectory);
 
-            if ($this->isSerializedValue($indexingConfiguration,
-                $solrFieldName)
+            if ($this->isSerializedValue(
+                $indexingConfiguration,
+                $solrFieldName
+            )
             ) {
                 $fieldValue = unserialize($fieldValue);
             }
-        } elseif (substr($indexingConfiguration[$solrFieldName], 0,
-                1) === '<'
+        } elseif (
+            substr($indexingConfiguration[$solrFieldName], 0, 1) === '<'
         ) {
-            $referencedTsPath = trim(substr($indexingConfiguration[$solrFieldName],
-                1));
+            $referencedTsPath = trim(substr(
+                $indexingConfiguration[$solrFieldName],
+                1
+            ));
             $typoScriptParser = GeneralUtility::makeInstance(TypoScriptParser::class);
             // $name and $conf is loaded with the referenced values.
-            list($name, $conf) = $typoScriptParser->getVal($referencedTsPath,
-                $GLOBALS['TSFE']->tmpl->setup);
+            list($name, $conf) = $typoScriptParser->getVal($referencedTsPath, $GLOBALS['TSFE']->tmpl->setup);
 
             // need to change directory to make IMAGE content objects work in BE context
             // see http://blog.netzelf.de/lang/de/tipps-und-tricks/tslib_cobj-image-im-backend
             $backupWorkingDirectory = getcwd();
             chdir(Environment::getPublicPath() . '/');
 
-            $contentObject->start($data, $this->type);
-            $fieldValue = $contentObject->cObjGetSingle($name, $conf);
+            $tsfe->cObj->start($data, $this->type);
+            $fieldValue = $tsfe->cObj->cObjGetSingle($name, $conf);
 
             chdir($backupWorkingDirectory);
 
-            if ($this->isSerializedValue($indexingConfiguration,
-                $solrFieldName)
+            if ($this->isSerializedValue(
+                $indexingConfiguration,
+                $solrFieldName
+            )
             ) {
                 $fieldValue = unserialize($fieldValue);
             }
         } else {
-            $fieldValue = $data[$indexingConfiguration[$solrFieldName]];
+            $indexingFieldName = $indexingConfiguration[$solrFieldName] ?? null;
+            if (empty($indexingFieldName) ||
+                !is_string($indexingFieldName) ||
+                !array_key_exists($indexingFieldName, $data)) {
+                return null;
+            }
+            $fieldValue = $data[$indexingFieldName];
         }
 
         // detect and correct type for dynamic fields
 
         // find last underscore, substr from there, cut off last character (S/M)
-        $fieldType = substr($solrFieldName, strrpos($solrFieldName, '_') + 1,
-            -1);
+        $fieldType = substr(
+            $solrFieldName,
+            strrpos($solrFieldName, '_') + 1,
+            -1
+        );
         if (is_array($fieldValue)) {
             foreach ($fieldValue as $key => $value) {
-                $fieldValue[$key] = $this->ensureFieldValueType($value,
-                    $fieldType);
+                $fieldValue[$key] = $this->ensureFieldValueType(
+                    $value,
+                    $fieldType
+                );
             }
         } else {
             $fieldValue = $this->ensureFieldValueType($fieldValue, $fieldType);
@@ -220,15 +232,10 @@ abstract class AbstractIndexer
      * @param string $solrFieldName Current field being indexed
      * @return bool TRUE if the value is expected to be serialized, FALSE otherwise
      */
-    public static function isSerializedValue(array $indexingConfiguration, $solrFieldName)
+    public static function isSerializedValue(array $indexingConfiguration, string $solrFieldName): bool
     {
-        $isSerialized = static::isSerializedResultFromRegisteredHook($indexingConfiguration, $solrFieldName);
-        if ($isSerialized === true) {
-            return $isSerialized;
-        }
-
-        $isSerialized = static::isSerializedResultFromCustomContentElement($indexingConfiguration, $solrFieldName);
-        return $isSerialized;
+        return static::isSerializedResultFromRegisteredHook($indexingConfiguration, $solrFieldName)
+            || static::isSerializedResultFromCustomContentElement($indexingConfiguration, $solrFieldName);
     }
 
     /**
@@ -238,22 +245,22 @@ abstract class AbstractIndexer
      * @param string $solrFieldName
      * @return bool
      */
-    protected static function isSerializedResultFromCustomContentElement(array $indexingConfiguration, $solrFieldName): bool
+    protected static function isSerializedResultFromCustomContentElement(array $indexingConfiguration, string $solrFieldName): bool
     {
         $isSerialized = false;
 
         // SOLR_CLASSIFICATION - always returns serialized array
-        if ($indexingConfiguration[$solrFieldName] == Classification::CONTENT_OBJECT_NAME) {
+        if (($indexingConfiguration[$solrFieldName] ?? null) == Classification::CONTENT_OBJECT_NAME) {
             $isSerialized = true;
         }
 
         // SOLR_MULTIVALUE - always returns serialized array
-        if ($indexingConfiguration[$solrFieldName] == Multivalue::CONTENT_OBJECT_NAME) {
+        if (($indexingConfiguration[$solrFieldName] ?? null) == Multivalue::CONTENT_OBJECT_NAME) {
             $isSerialized = true;
         }
 
         // SOLR_RELATION - returns serialized array if multiValue option is set
-        if ($indexingConfiguration[$solrFieldName] == Relation::CONTENT_OBJECT_NAME && !empty($indexingConfiguration[$solrFieldName . '.']['multiValue'])) {
+        if (($indexingConfiguration[$solrFieldName] ?? null) == Relation::CONTENT_OBJECT_NAME && !empty($indexingConfiguration[$solrFieldName . '.']['multiValue'])) {
             $isSerialized = true;
         }
 
@@ -267,9 +274,9 @@ abstract class AbstractIndexer
      * @param string $solrFieldName
      * @return bool
      */
-    protected static function isSerializedResultFromRegisteredHook(array $indexingConfiguration, $solrFieldName)
+    protected static function isSerializedResultFromRegisteredHook(array $indexingConfiguration, string $solrFieldName): bool
     {
-        if (!is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['detectSerializedValue'])) {
+        if (!is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['detectSerializedValue'] ?? null)) {
             return false;
         }
 
@@ -277,7 +284,7 @@ abstract class AbstractIndexer
             $serializedValueDetector = GeneralUtility::makeInstance($classReference);
             if (!$serializedValueDetector instanceof SerializedValueDetector) {
                 $message = get_class($serializedValueDetector) . ' must implement interface ' . SerializedValueDetector::class;
-                throw new \UnexpectedValueException($message, 1404471741);
+                throw new UnexpectedValueException($message, 1404471741);
             }
 
             $isSerialized = (boolean)$serializedValueDetector->isSerializedValue($indexingConfiguration, $solrFieldName);
@@ -285,6 +292,7 @@ abstract class AbstractIndexer
                 return true;
             }
         }
+        return false;
     }
 
     /**
@@ -294,23 +302,22 @@ abstract class AbstractIndexer
      * @param string $fieldType The dynamic field's type
      * @return mixed Returns the value in the correct format for the field type
      */
-    protected function ensureFieldValueType($value, $fieldType)
+    protected function ensureFieldValueType($value, string $fieldType)
     {
         switch ($fieldType) {
             case 'int':
             case 'tInt':
-                $value = intval($value);
+                $value = (int)$value;
                 break;
 
             case 'float':
             case 'tFloat':
-                $value = floatval($value);
+                $value = (float)$value;
                 break;
-
-            // long and double do not exist in PHP
-            // simply make sure it somehow looks like a number
-            // <insert PHP rant here>
             case 'long':
+                // long and double do not exist in PHP
+                // simply make sure it somehow looks like a number
+                // <insert PHP rant here>
             case 'tLong':
                 // remove anything that's not a number or negative/minus sign
                 $value = preg_replace('/[^0-9\\-]/', '', $value);

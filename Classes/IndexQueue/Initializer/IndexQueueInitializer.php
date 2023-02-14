@@ -1,31 +1,19 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\IndexQueue\Initializer;
 
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2011-2015 Ingo Renner <ingo@typo3.org>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *  A copy is found in the textfile GPL.txt and important notices to the license
- *  from the author is found in LICENSE.txt distributed with these scripts.
- *
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
+
+namespace ApacheSolrForTypo3\Solr\IndexQueue\Initializer;
 
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 
@@ -36,7 +24,6 @@ use ApacheSolrForTypo3\Solr\Domain\Site\Site;
  */
 interface IndexQueueInitializer
 {
-
     /**
      * Sets the site for the initializer.
      *
@@ -49,14 +36,14 @@ interface IndexQueueInitializer
      *
      * @param string $type Type to initialize.
      */
-    public function setType($type);
+    public function setType(string $type);
 
     /**
      * Sets the name of the indexing configuration to initialize.
      *
      * @param string $indexingConfigurationName Indexing configuration name
      */
-    public function setIndexingConfigurationName($indexingConfigurationName);
+    public function setIndexingConfigurationName(string $indexingConfigurationName);
 
     /**
      * Sets the configuration for how to index a type of items.
@@ -71,5 +58,5 @@ interface IndexQueueInitializer
      *
      * @return bool TRUE if initialization was successful, FALSE on error.
      */
-    public function initialize();
+    public function initialize(): bool;
 }

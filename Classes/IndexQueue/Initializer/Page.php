@@ -1,42 +1,28 @@
 <?php
+
+/*
+ * This file is part of the TYPO3 CMS project.
+ *
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
+ *
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ *
+ * The TYPO3 project - inspiring people to share!
+ */
+
 namespace ApacheSolrForTypo3\Solr\IndexQueue\Initializer;
 
-/***************************************************************
- *  Copyright notice
- *
- *  (c) 2011-2015 Ingo Renner <ingo@typo3.org>
- *  All rights reserved
- *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *  A copy is found in the textfile GPL.txt and important notices to the license
- *  from the author is found in LICENSE.txt distributed with these scripts.
- *
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
-
-use ApacheSolrForTypo3\Solr\Domain\Index\Queue\QueueItemRepository;
-use ApacheSolrForTypo3\Solr\Domain\Site\SiteInterface;
-use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
-use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
 use Doctrine\DBAL\ConnectionException;
+use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use Doctrine\DBAL\Exception as DBALException;
-use Exception;
+use PDO;
+use Throwable;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -55,31 +41,14 @@ class Page extends AbstractInitializer
      * The type of items this initializer is handling.
      * @var string
      */
-    protected $type = 'pages';
-
-    /**
-     * @var PagesRepository
-     */
-    protected $pagesRepository;
-
-    /**
-     * Constructor, sets type and indexingConfigurationName to "pages".
-     *
-     * @param QueueItemRepository|null $queueItemRepository
-     * @param PagesRepository|null $pagesRepository
-     */
-    public function __construct(QueueItemRepository $queueItemRepository = null, PagesRepository $pagesRepository = null)
-    {
-        parent::__construct($queueItemRepository);
-        $this->pagesRepository = $pagesRepository ?? GeneralUtility::makeInstance(PagesRepository::class);
-    }
+    protected string $type = 'pages';
 
     /**
      * Overrides the general setType() implementation, forcing type to "pages".
      *
      * @param string $type Type to initialize (ignored).
      */
-    public function setType($type)
+    public function setType(string $type)
     {
         $this->type = 'pages';
     }
@@ -89,13 +58,17 @@ class Page extends AbstractInitializer
      * and mounted pages - no nested mount page structures though.
      *
      * @return bool TRUE if initialization was successful, FALSE on error.
+     * @throws ConnectionException
+     * @throws DBALDriverException
+     * @throws DBALException|\Doctrine\DBAL\DBALException
+     * @throws Throwable
      */
-    public function initialize()
+    public function initialize(): bool
     {
         $pagesInitialized = parent::initialize();
         $mountPagesInitialized = $this->initializeMountPointPages();
 
-        return ($pagesInitialized && $mountPagesInitialized);
+        return $pagesInitialized && $mountPagesInitialized;
     }
 
     /**
@@ -103,6 +76,8 @@ class Page extends AbstractInitializer
      *
      * @param array $mountProperties Array of mount point properties mountPageSource, mountPageDestination, and mountPageOverlayed
      * @param int $mountedPageId The ID of the mounted page
+     * @throws DBALDriverException
+     * @throws DBALException|\Doctrine\DBAL\DBALException
      */
     public function initializeMountedPage(array $mountProperties, int $mountedPageId)
     {
@@ -120,11 +95,18 @@ class Page extends AbstractInitializer
      *
      * @return bool TRUE if initialization of the Mount Pages was successful, FALSE otherwise
      * @throws ConnectionException
+     * @throws DBALDriverException
+     * @throws DBALException|\Doctrine\DBAL\DBALException
+     * @throws Throwable
      */
     protected function initializeMountPointPages(): bool
     {
         $mountPointsInitialized = false;
-        $mountPoints = $this->pagesRepository->findAllMountPagesByWhereClause($this->buildPagesClause() . $this->buildTcaWhereClause() . ' AND doktype = 7 AND no_search = 0');
+        $mountPoints = $this->pagesRepository->findAllMountPagesByWhereClause(
+            $this->buildPagesClause()
+            . $this->buildTcaWhereClause()
+            . ' AND doktype = 7 AND no_search = 0'
+        );
 
         if (empty($mountPoints)) {
             return true;
@@ -144,7 +126,7 @@ class Page extends AbstractInitializer
 
             // handling mount_pid_ol behavior
             if (!$mountPoint['mountPageOverlayed']) {
-                // Add page like a regular page, as only the sub tree is mounted.
+                // Add page like a regular page, as only the sub-tree is mounted.
                 // The page itself has its own content, which is handled like standard page.
                 $indexQueue = GeneralUtility::makeInstance(Queue::class);
                 $indexQueue->updateItem($this->type, $mountPoint['uid']);
@@ -163,14 +145,14 @@ class Page extends AbstractInitializer
 
                 $databaseConnection->commit();
                 $mountPointsInitialized = true;
-            } catch (Exception $e) {
+            } catch (Throwable $e) {
                 $databaseConnection->rollBack();
 
                 $this->logger->log(
                     SolrLogManager::ERROR,
                     'Index Queue initialization failed for mount pages',
                     [
-                        $e->__toString()
+                        $e->__toString(),
                     ]
                 );
                 break;
@@ -225,13 +207,13 @@ class Page extends AbstractInitializer
 
     /**
      * Checks whether the mounted page (mount page source) exists. That is,
-     * whether it accessible in the frontend. So the record must exist
+     * whether it is accessible in the frontend. So the record must exist
      * (deleted = 0) and must not be hidden (hidden = 0).
      *
      * @param int $mountedPageId Mounted page ID
      * @return bool TRUE if the page is accessible in the frontend, FALSE otherwise.
      */
-    protected function mountedPageExists($mountedPageId): bool
+    protected function mountedPageExists(int $mountedPageId): bool
     {
         $mountedPageExists = false;
 
@@ -249,6 +231,8 @@ class Page extends AbstractInitializer
      *
      * @param array $mountedPages An array of mounted page IDs
      * @param array $mountProperties Array with mount point properties (mountPageSource, mountPageDestination, mountPageOverlayed)
+     * @throws DBALDriverException
+     * @throws DBALException|\Doctrine\DBAL\DBALException
      */
     protected function addMountedPagesToIndexQueue(array $mountedPages, array $mountProperties)
     {
@@ -266,7 +250,7 @@ class Page extends AbstractInitializer
 
         $mountIdentifier = $this->getMountPointIdentifier($mountProperties);
         $initializationQuery = 'INSERT INTO tx_solr_indexqueue_item (root, item_type, item_uid, indexing_configuration, indexing_priority, changed, has_indexing_properties, pages_mountidentifier, errors) '
-            . $this->buildSelectStatement() . ', 1, ' . $connection->quote($mountIdentifier, \PDO::PARAM_STR) . ',""'
+            . $this->buildSelectStatement() . ', 1, ' . $connection->quote($mountIdentifier, PDO::PARAM_STR) . ',""'
             . 'FROM pages '
             . 'WHERE '
             . 'uid IN(' . implode(',', $mountedPagesThatNeedToBeAdded) . ') '
@@ -291,6 +275,8 @@ class Page extends AbstractInitializer
      *
      * @param array $mountPage An array with information about the root/destination Mount Page
      * @param array $mountedPages An array of mounted page IDs
+     * @throws DBALDriverException
+     * @throws DBALException|\Doctrine\DBAL\DBALException
      */
     protected function addIndexQueueItemIndexingProperties(array $mountPage, array $mountedPages)
     {
@@ -314,7 +300,7 @@ class Page extends AbstractInitializer
      * @param array $mountProperties Array with mount point properties (mountPageSource, mountPageDestination, mountPageOverlayed)
      * @return string String consisting of mountPageSource-mountPageDestination-mountPageOverlayed
      */
-    protected function getMountPointIdentifier(array $mountProperties)
+    protected function getMountPointIdentifier(array $mountProperties): string
     {
         return $mountProperties['mountPageSource']
         . '-' . $mountProperties['mountPageDestination']
@@ -328,6 +314,7 @@ class Page extends AbstractInitializer
      *
      * @param array $mountPage
      * @return array An array of page IDs in the mounted page tree
+     * @throws DBALDriverException
      */
     protected function resolveMountPageTree(array $mountPage): array
     {
@@ -337,7 +324,7 @@ class Page extends AbstractInitializer
 
         // Do not include $mountPageSourceId in tree, if the mount point is not set to overlay.
         if (!empty($mountPageTree) && !$mountPage['mountPageOverlayed']) {
-            $mountPageTree = array_diff($mountPageTree , [$mountPageSourceId]);
+            $mountPageTree = array_diff($mountPageTree, [$mountPageSourceId]);
         }
 
         return $mountPageTree;

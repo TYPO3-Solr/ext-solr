@@ -1,29 +1,19 @@
 <?php
 
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2015 Steffen Ritter <info@rs-websystems.de>
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  All rights reserved
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
- *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 
+use ApacheSolrForTypo3\Solr\Migrations\RemoveSiteFromScheduler;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageRendererResolver;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -31,9 +21,12 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Update class for the extension manager.
  *
- * @package TYPO3
+ * @author Steffen Ritter <info@rs-websystems.de>
+ *
+ * @noinspection PhpMultipleClassDeclarationsInspection
  */
-class ext_update {
+class ext_update
+{
     /**
      * Array of flash messages (params) array[][status,title,message]
      *
@@ -42,15 +35,16 @@ class ext_update {
     protected $messages = [];
 
     /**
-     * @var \ApacheSolrForTypo3\Solrfal\Migrations\Migration[]
+     * @var \ApacheSolrForTypo3\Solr\Migrations\Migration[]
      */
     protected $migrators = [];
 
     /**
      * Constructor initializing all migrations
      */
-    public function __construct() {
-        $this->migrators[] = new \ApacheSolrForTypo3\Solr\Migrations\RemoveSiteFromScheduler();
+    public function __construct()
+    {
+        $this->migrators[] = new RemoveSiteFromScheduler();
     }
 
     /**
@@ -59,13 +53,14 @@ class ext_update {
      *
      * @return bool
      */
-    public function access() {
+    public function access()
+    {
         foreach ($this->migrators as $migration) {
             if ($migration->isNeeded()) {
-                return TRUE;
+                return true;
             }
         }
-        return FALSE;
+        return false;
     }
 
     /**
@@ -73,12 +68,13 @@ class ext_update {
      *
      * @return string
      */
-    public function main() {
+    public function main()
+    {
         foreach ($this->migrators as $migration) {
             if ($migration->isNeeded()) {
                 try {
                     $this->messages[] = $migration->process();
-                } catch (\Exception $e) {
+                } catch (\Throwable $e) {
                     $this->messages[] = [FlashMessage::ERROR, 'Execution failed', $e->getMessage()];
                 }
             }
@@ -91,14 +87,15 @@ class ext_update {
      *
      * @return string
      */
-    protected function generateOutput() {
+    protected function generateOutput()
+    {
         $flashMessages = [];
         foreach ($this->messages as $messageItem) {
             /** @var \TYPO3\CMS\Core\Messaging\FlashMessage $flashMessage */
             $flashMessages[] = GeneralUtility::makeInstance(FlashMessage::class, $messageItem[2], $messageItem[1], $messageItem[0]);
         }
 
-            /** @var $resolver FlashMessageRendererResolver */
+        /** @var $resolver FlashMessageRendererResolver */
         $resolver = GeneralUtility::makeInstance(FlashMessageRendererResolver::class);
         $renderer = $resolver->resolve();
         return $renderer->render($flashMessages);

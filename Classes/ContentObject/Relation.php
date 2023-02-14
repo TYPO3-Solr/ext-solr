@@ -1,39 +1,33 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\ContentObject;
 
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2011-2015 Ingo Renner <ingo@typo3.org>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
+
+namespace ApacheSolrForTypo3\Solr\ContentObject;
 
 use ApacheSolrForTypo3\Solr\System\Language\FrontendOverlayService;
 use ApacheSolrForTypo3\Solr\System\TCA\TCAService;
-use ApacheSolrForTypo3\Solr\Util;
 use Doctrine\DBAL\Driver\Statement;
+use Doctrine\DBAL\Exception as DBALException;
+use ReflectionClass;
+use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Database\RelationHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\AbstractContentObject;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
+use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * A content object (cObj) to resolve relations between database records
@@ -44,8 +38,8 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
  * foreignLabelField: Usually the label field to retrieve from the related records is determined automatically using TCA, using this option the desired field can be specified explicitly
  * multiValue: whether to return related records suitable for a multi value field
  * singleValueGlue: when not using multiValue, the related records need to be concatenated using a glue string, by default this is ", ". Using this option a custom glue can be specified. The custom value must be wrapped by pipe (|) characters.
- * relationTableSortingField: field in an mm relation table to sort by, usually "sorting"
- * enableRecursiveValueResolution: if the specified remote table's label field is a relation to another table, the value will be resolve by following the relation recursively.
+ * relationTableSortingField: field in a mm relation table to sort by, usually "sorting"
+ * enableRecursiveValueResolution: if the specified remote table's label field is a relation to another table, the value will be resolved by following the relation recursively.
  * removeEmptyValues: Removes empty values when resolving relations, defaults to TRUE
  * removeDuplicateValues: Removes duplicate values
  *
@@ -53,47 +47,62 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
  */
 class Relation extends AbstractContentObject
 {
-    const CONTENT_OBJECT_NAME = 'SOLR_RELATION';
+    public const CONTENT_OBJECT_NAME = 'SOLR_RELATION';
 
     /**
      * Content object configuration
      *
      * @var array
      */
-    protected $configuration = [];
+    protected array $configuration = [];
 
     /**
      * @var TCAService
      */
-    protected $tcaService = null;
+    protected TCAService $tcaService;
 
     /**
      * @var FrontendOverlayService
      */
-    protected $frontendOverlayService = null;
+    protected FrontendOverlayService $frontendOverlayService;
+
+    /**
+     * @var TypoScriptFrontendController|null
+     */
+    protected ?TypoScriptFrontendController $typoScriptFrontendController = null;
 
     /**
      * Relation constructor.
      * @param TCAService|null $tcaService
      * @param FrontendOverlayService|null $frontendOverlayService
      */
-    public function __construct(ContentObjectRenderer $cObj, TCAService $tcaService = null, FrontendOverlayService $frontendOverlayService = null)
-    {
-        $this->cObj = $cObj;
+    public function __construct(
+        ContentObjectRenderer $cObj,
+        TCAService $tcaService = null,
+        FrontendOverlayService $frontendOverlayService = null
+    ) {
+        parent::__construct($cObj);
         $this->configuration['enableRecursiveValueResolution'] = 1;
         $this->configuration['removeEmptyValues'] = 1;
         $this->tcaService = $tcaService ?? GeneralUtility::makeInstance(TCAService::class);
-        $this->frontendOverlayService = $frontendOverlayService ?? GeneralUtility::makeInstance(FrontendOverlayService::class);
+        $this->typoScriptFrontendController = $this->getProtectedTsfeObjectFromContentObjectRenderer($cObj);
+        $this->frontendOverlayService = $frontendOverlayService ?? GeneralUtility::makeInstance(FrontendOverlayService::class, $this->tcaService, $this->typoScriptFrontendController);
     }
 
     /**
      * Executes the SOLR_RELATION content object.
      *
-     * Resolves relations between records. Currently supported relations are
+     * Resolves relations between records. Currently, supported relations are
      * TYPO3-style m:n relations.
      * May resolve single value and multi value relations.
      *
      * @inheritDoc
+     *
+     * @param array $conf
+     * @return string
+     * @throws AspectNotFoundException
+     * @throws DBALException
+     * @noinspection PhpMissingReturnTypeInspection, because foreign source inheritance See {@link AbstractContentObject::render()}
      */
     public function render($conf = [])
     {
@@ -121,19 +130,23 @@ class Relation extends AbstractContentObject
      * Gets the related items of the current record's configured field.
      *
      * @param ContentObjectRenderer $parentContentObject parent content object
+     *
      * @return array Array of related items, values already resolved from related records
+     *
+     * @throws AspectNotFoundException
+     * @throws DBALException
      */
-    protected function getRelatedItems(ContentObjectRenderer $parentContentObject)
+    protected function getRelatedItems(ContentObjectRenderer $parentContentObject): array
     {
         list($table, $uid) = explode(':', $parentContentObject->currentRecord);
-        $uid = (int) $uid;
+        $uid = (int)$uid;
         $field = $this->configuration['localField'];
 
-        if (!$this->tcaService->getHasConfigurationForField($table, $field)) {
+        if (!$this->tcaService->/** @scrutinizer ignore-call */ getHasConfigurationForField($table, $field)) {
             return [];
         }
 
-        $overlayUid = $this->frontendOverlayService->getUidOfOverlay($table, $field, $uid);
+        $overlayUid = $this->frontendOverlayService->/** @scrutinizer ignore-call */ getUidOfOverlay($table, $field, $uid);
         $fieldTCA = $this->tcaService->getConfigurationForField($table, $field);
 
         if (isset($fieldTCA['config']['MM']) && trim($fieldTCA['config']['MM']) !== '') {
@@ -146,14 +159,17 @@ class Relation extends AbstractContentObject
     }
 
     /**
-     * Gets the related items from a table using a n:m relation.
+     * Gets the related items from a table using the n:m relation.
      *
      * @param string $localTableName Local table name
      * @param int $localRecordUid Local record uid
      * @param array $localFieldTca The local table's TCA
      * @return array Array of related items, values already resolved from related records
+     *
+     * @throws AspectNotFoundException
+     * @throws DBALException
      */
-    protected function getRelatedItemsFromMMTable($localTableName, $localRecordUid, array $localFieldTca)
+    protected function getRelatedItemsFromMMTable(string $localTableName, int $localRecordUid, array $localFieldTca): array
     {
         $relatedItems = [];
         $foreignTableName = $localFieldTca['config']['foreign_table'];
@@ -162,7 +178,7 @@ class Relation extends AbstractContentObject
         $mmTableName = $localFieldTca['config']['MM'];
 
         // Remove the first option of foreignLabelField for recursion
-        if (strpos($this->configuration['foreignLabelField'], '.') !== false) {
+        if (strpos($this->configuration['foreignLabelField'] ?? '', '.') !== false) {
             $foreignTableLabelFieldArr = explode('.', $this->configuration['foreignLabelField']);
             unset($foreignTableLabelFieldArr[0]);
             $this->configuration['foreignLabelField'] = implode('.', $foreignTableLabelFieldArr);
@@ -175,29 +191,31 @@ class Relation extends AbstractContentObject
             return $relatedItems;
         }
 
+        $contentObject = GeneralUtility::makeInstance(ContentObjectRenderer::class);
         $relatedRecords = $this->getRelatedRecords($foreignTableName, ...$selectUids);
         foreach ($relatedRecords as $record) {
+            $contentObject->start($record, $foreignTableName);
+
             if (isset($foreignTableTca['columns'][$foreignTableLabelField]['config']['foreign_table'])
-                && $this->configuration['enableRecursiveValueResolution']
+                && !empty($this->configuration['enableRecursiveValueResolution'])
             ) {
+                $this->configuration['localField'] = $foreignTableLabelField;
                 if (strpos($this->configuration['foreignLabelField'], '.') !== false) {
                     $foreignTableLabelFieldArr = explode('.', $this->configuration['foreignLabelField']);
                     unset($foreignTableLabelFieldArr[0]);
                     $this->configuration['foreignLabelField'] = implode('.', $foreignTableLabelFieldArr);
+                } else {
+                    unset($this->configuration['foreignLabelField']);
                 }
 
-                $this->configuration['localField'] = $foreignTableLabelField;
-
-                $contentObject = GeneralUtility::makeInstance(ContentObjectRenderer::class);
-                $contentObject->start($record, $foreignTableName);
-
-                return $this->getRelatedItems($contentObject);
-            } else {
-                if (Util::getLanguageUid() > 0) {
-                    $record = $this->frontendOverlayService->getOverlay($foreignTableName, $record);
-                }
-                $relatedItems[] = $record[$foreignTableLabelField];
+                $relatedItems = array_merge($relatedItems, $this->getRelatedItems($contentObject));
+                continue;
             }
+            if ($this->getLanguageUid() > 0) {
+                $record = $this->frontendOverlayService->getOverlay($foreignTableName, $record);
+            }
+
+            $relatedItems[] = $contentObject->stdWrap($record[$foreignTableLabelField] ?? '', $this->configuration) ?? '';
         }
 
         return $relatedItems;
@@ -208,18 +226,19 @@ class Relation extends AbstractContentObject
      * and TypoScript configuration
      *
      * @param array $foreignTableTca The foreign table's TCA
-     * @return string The field to use for the related item's label
+     *
+     * @return string|null The field to use for the related item's label
      */
-    protected function resolveForeignTableLabelField(array $foreignTableTca)
+    protected function resolveForeignTableLabelField(array $foreignTableTca): ?string
     {
-        $foreignTableLabelField = $foreignTableTca['ctrl']['label'];
+        $foreignTableLabelField = $foreignTableTca['ctrl']['label'] ?? null;
 
         // when foreignLabelField is not enabled we can return directly
         if (empty($this->configuration['foreignLabelField'])) {
             return $foreignTableLabelField;
         }
 
-        if (strpos($this->configuration['foreignLabelField'], '.') !== false) {
+        if (strpos($this->configuration['foreignLabelField'] ?? '', '.') !== false) {
             list($foreignTableLabelField) = explode('.', $this->configuration['foreignLabelField'], 2);
         } else {
             $foreignTableLabelField = $this->configuration['foreignLabelField'];
@@ -236,42 +255,57 @@ class Relation extends AbstractContentObject
      * @param array $localFieldTca The local table's TCA
      * @param ContentObjectRenderer $parentContentObject parent content object
      * @return array Array of related items, values already resolved from related records
+     *
+     * @throws AspectNotFoundException
+     * @throws DBALException
      */
     protected function getRelatedItemsFromForeignTable(
-        $localTableName,
-        $localRecordUid,
+        string $localTableName,
+        int $localRecordUid,
         array $localFieldTca,
         ContentObjectRenderer $parentContentObject
-    ) {
+    ): array {
         $relatedItems = [];
         $foreignTableName = $localFieldTca['config']['foreign_table'];
         $foreignTableTca = $this->tcaService->getTableConfiguration($foreignTableName);
         $foreignTableLabelField = $this->resolveForeignTableLabelField($foreignTableTca);
+        $localField = $this->configuration['localField'];
 
-            /** @var $relationHandler RelationHandler */
+        /** @var $relationHandler RelationHandler */
         $relationHandler = GeneralUtility::makeInstance(RelationHandler::class);
+        if (!empty($localFieldTca['config']['MM'] ?? '')) {
+            $relationHandler->start(
+                '',
+                $foreignTableName,
+                $localFieldTca['config']['MM'],
+                $localRecordUid,
+                $localTableName,
+                $localFieldTca['config']
+            );
+        } else {
+            $itemList = $parentContentObject->data[$localField] ?? '';
+            $relationHandler->start($itemList, $foreignTableName, '', $localRecordUid, $localTableName, $localFieldTca['config']);
+        }
 
-        $itemList = $parentContentObject->data[$this->configuration['localField']] ?? '';
-
-        $relationHandler->start($itemList, $foreignTableName, '', $localRecordUid, $localTableName, $localFieldTca['config']);
         $selectUids = $relationHandler->tableArray[$foreignTableName];
-
         if (!is_array($selectUids) || count($selectUids) <= 0) {
             return $relatedItems;
         }
 
         $relatedRecords = $this->getRelatedRecords($foreignTableName, ...$selectUids);
-
         foreach ($relatedRecords as $relatedRecord) {
-            $resolveRelatedValue = $this->resolveRelatedValue(
+            $resolveRelatedValues = $this->resolveRelatedValue(
                 $relatedRecord,
                 $foreignTableTca,
                 $foreignTableLabelField,
                 $parentContentObject,
                 $foreignTableName
             );
-            if (!empty($resolveRelatedValue) || !$this->configuration['removeEmptyValues']) {
-                $relatedItems[] = $resolveRelatedValue;
+
+            foreach ($resolveRelatedValues as $resolveRelatedValue) {
+                if (!empty($resolveRelatedValue) || !$this->configuration['removeEmptyValues']) {
+                    $relatedItems[] = $resolveRelatedValue;
+                }
             }
         }
 
@@ -288,20 +322,23 @@ class Relation extends AbstractContentObject
      * @param ContentObjectRenderer $parentContentObject cObject
      * @param string $foreignTableName Related record table name
      *
-     * @return string
+     * @return array
+     *
+     * @throws AspectNotFoundException
+     * @throws DBALException
      */
     protected function resolveRelatedValue(
         array $relatedRecord,
-        $foreignTableTca,
-        $foreignTableLabelField,
+        array $foreignTableTca,
+        string $foreignTableLabelField,
         ContentObjectRenderer $parentContentObject,
-        $foreignTableName = ''
-    ) {
-        if (Util::getLanguageUid() > 0 && !empty($foreignTableName)) {
+        string $foreignTableName = ''
+    ): array {
+        if ($this->getLanguageUid() > 0 && !empty($foreignTableName)) {
             $relatedRecord = $this->frontendOverlayService->getOverlay($foreignTableName, $relatedRecord);
         }
 
-        $value = $relatedRecord[$foreignTableLabelField];
+        $values = [$relatedRecord[$foreignTableLabelField]];
 
         if (
             !empty($foreignTableName)
@@ -316,8 +353,11 @@ class Relation extends AbstractContentObject
             $this->configuration['localField'] = $foreignTableLabelField;
             $parentContentObject->data = $relatedRecord;
             if (strpos($this->configuration['foreignLabelField'], '.') !== false) {
-                list(, $this->configuration['foreignLabelField']) = explode('.',
-                    $this->configuration['foreignLabelField'], 2);
+                list(, $this->configuration['foreignLabelField']) = explode(
+                    '.',
+                    $this->configuration['foreignLabelField'],
+                    2
+                );
             } else {
                 $this->configuration['foreignLabelField'] = '';
             }
@@ -329,30 +369,35 @@ class Relation extends AbstractContentObject
                 $foreignTableTca['columns'][$foreignTableLabelField],
                 $parentContentObject
             );
-            $value = array_pop($relatedItemsFromForeignTable);
+            $values = $relatedItemsFromForeignTable;
 
             // restore
             $this->configuration = $backupConfiguration;
             $parentContentObject->data = $backupRecord;
         }
+        foreach ($values as &$value) {
+            $value = $parentContentObject->stdWrap($value, $this->configuration) ?? '';
+        }
 
-        return $parentContentObject->stdWrap($value, $this->configuration);
+        return $values;
     }
 
     /**
      * Return records via relation.
      *
      * @param string $foreignTable The table to fetch records from.
-     * @param int[] ...$uids The uids to fetch from table.
+     * @param int ...$uids The uids to fetch from table.
      * @return array
+     *
+     * @throws \Doctrine\DBAL\DBALException
      */
-    protected function getRelatedRecords($foreignTable, int ...$uids): array
+    protected function getRelatedRecords(string $foreignTable, int ...$uids): array
     {
         /** @var QueryBuilder $queryBuilder */
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($foreignTable);
         $queryBuilder->select('*')
             ->from($foreignTable)
-            ->where($queryBuilder->expr()->in('uid', $uids));
+            ->where(/** @scrutinizer ignore-type */ $queryBuilder->expr()->in('uid', $uids));
         if (isset($this->configuration['additionalWhereClause'])) {
             $queryBuilder->andWhere($this->configuration['additionalWhereClause']);
         }
@@ -372,14 +417,42 @@ class Relation extends AbstractContentObject
      * @param array $arrayWithValuesForIN
      * @return array
      */
-    protected function sortByKeyInIN(Statement $statement, string $columnName, ...$arrayWithValuesForIN) : array
+    protected function sortByKeyInIN(Statement $statement, string $columnName, ...$arrayWithValuesForIN): array
     {
         $records = [];
-        while ($record = $statement->fetch()) {
+        while ($record = $statement->fetchAssociative()) {
             $indexNumber = array_search($record[$columnName], $arrayWithValuesForIN);
             $records[$indexNumber] = $record;
         }
         ksort($records);
         return $records;
+    }
+
+    /**
+     * Returns current language id fetched from object properties chain TSFE->context->language aspect->id.
+     *
+     * @return int
+     * @throws AspectNotFoundException
+     */
+    protected function getLanguageUid(): int
+    {
+        return (int)$this->typoScriptFrontendController->/** @scrutinizer ignore-call */ getContext()->getPropertyFromAspect('language', 'id');
+    }
+
+    /**
+     * Returns inaccessible {@link ContentObjectRenderer::typoScriptFrontendController} via reflection.
+     *
+     * The TypoScriptFrontendController object must be delegated to the whole object aggregation on indexing stack,
+     * to be able to use Contexts properties and proceed indexing request.
+     *
+     * @param ContentObjectRenderer $cObj
+     * @return TypoScriptFrontendController|null
+     */
+    protected function getProtectedTsfeObjectFromContentObjectRenderer(ContentObjectRenderer $cObj): ?TypoScriptFrontendController
+    {
+        $reflection = new ReflectionClass($cObj);
+        $property = $reflection->getProperty('typoScriptFrontendController');
+        $property->setAccessible(true);
+        return $property->getValue($cObj);
     }
 }

@@ -1,7 +1,5 @@
 <?php
 
-namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets;
-
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -14,6 +12,8 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\System\Util\ArrayAccessor;
@@ -164,11 +164,11 @@ class UrlFacetContainer implements \Countable
         $facetNames = [];
 
         if ($this->parameterStyle === self::PARAMETER_STYLE_INDEX) {
-            array_map(function($activeFacet) use (&$facetNames) {
+            array_map(function ($activeFacet) use (&$facetNames) {
                 $facetNames[] = substr($activeFacet, 0, strpos($activeFacet, ':'));
             }, $activeFacets);
         } else {
-            array_map(function($activeFacet) use (&$facetNames) {
+            array_map(function ($activeFacet) use (&$facetNames) {
                 $facetNames[] = substr($activeFacet, 0, strpos($activeFacet, ':'));
             }, array_keys($activeFacets));
         }
@@ -188,7 +188,7 @@ class UrlFacetContainer implements \Countable
         if ($this->parameterStyle === self::PARAMETER_STYLE_ASSOC) {
             $activeFacets = array_keys($activeFacets);
         }
-        array_map(function($activeFacet) use (&$values, $facetName) {
+        array_map(function ($activeFacet) use (&$values, $facetName) {
             $parts = explode(':', $activeFacet, 2);
             if ($parts[0] === $facetName) {
                 $values[] = $parts[1];
@@ -324,7 +324,7 @@ class UrlFacetContainer implements \Countable
             $filterOptions = ARRAY_FILTER_USE_KEY;
         }
 
-        $facetValues = array_filter($facetValues, function($facetNameValue) use ($facetName) {
+        $facetValues = array_filter($facetValues, function ($facetNameValue) use ($facetName) {
             $parts = explode(':', $facetNameValue, 2);
             return $parts[0] !== $facetName;
         }, $filterOptions);
@@ -362,9 +362,8 @@ class UrlFacetContainer implements \Countable
 
         if ($this->parameterStyle === self::PARAMETER_STYLE_INDEX) {
             return in_array($facetNameAndValueToCheck, $this->getActiveFacets());
-        } else {
-            return isset($facetValues[$facetNameAndValueToCheck]) && (int)$facetValues[$facetNameAndValueToCheck] === 1;
         }
+        return isset($facetValues[$facetNameAndValueToCheck]) && (int)$facetValues[$facetNameAndValueToCheck] === 1;
     }
 
     /**

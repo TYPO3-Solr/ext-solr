@@ -1,5 +1,6 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets;
+
+declare(strict_types=1);
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -13,6 +14,8 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\AbstractOptionsFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
@@ -29,14 +32,14 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 abstract class AbstractFacetParser implements FacetParserInterface
 {
     /**
-     * @var ContentObjectRenderer
+     * @var ContentObjectRenderer|null
      */
-    protected static $reUseAbleContentObject;
+    protected static ?ContentObjectRenderer $reUseAbleContentObject = null;
 
     /**
-     * @var ObjectManagerInterface
+     * @var ObjectManagerInterface|null
      */
-    protected $objectManager;
+    protected ?ObjectManagerInterface $objectManager;
 
     /**
      * @param ObjectManagerInterface $objectManager
@@ -49,9 +52,9 @@ abstract class AbstractFacetParser implements FacetParserInterface
     /**
      * @return ContentObjectRenderer
      */
-    protected function getReUseAbleContentObject()
+    protected function getReUseAbleContentObject(): ContentObjectRenderer
     {
-        /** @var $contentObject ContentObjectRenderer */
+        /* @var ContentObjectRenderer $contentObject */
         if (self::$reUseAbleContentObject !== null) {
             return self::$reUseAbleContentObject;
         }
@@ -64,7 +67,7 @@ abstract class AbstractFacetParser implements FacetParserInterface
      * @param array $configuration
      * @return string
      */
-    protected function getPlainLabelOrApplyCObject($configuration)
+    protected function getPlainLabelOrApplyCObject(array $configuration): string
     {
         // when no label is configured we return an empty string
         if (!isset($configuration['label'])) {
@@ -82,13 +85,17 @@ abstract class AbstractFacetParser implements FacetParserInterface
 
     /**
      * @param mixed $value
-     * @param integer $count
+     * @param int $count
      * @param string $facetName
      * @param array $facetConfiguration
-     * @return string
+     * @return mixed
      */
-    protected function getLabelFromRenderingInstructions($value, $count, $facetName, $facetConfiguration)
-    {
+    protected function getLabelFromRenderingInstructions(
+        $value,
+        int $count,
+        string $facetName,
+        array $facetConfiguration
+    ) {
         $hasRenderingInstructions = isset($facetConfiguration['renderingInstruction']) && isset($facetConfiguration['renderingInstruction.']);
         if (!$hasRenderingInstructions) {
             return $value;
@@ -101,29 +108,27 @@ abstract class AbstractFacetParser implements FacetParserInterface
         );
     }
 
-
     /**
      * Retrieves the active facetValue for a facet from the search request.
      * @param SearchResultSet $resultSet
      * @param string $facetName
      * @return array
      */
-    protected function getActiveFacetValuesFromRequest(SearchResultSet $resultSet, $facetName)
+    protected function getActiveFacetValuesFromRequest(SearchResultSet $resultSet, string $facetName): array
     {
         $activeFacetValues = $resultSet->getUsedSearchRequest()->getActiveFacetValuesByName($facetName);
-        $activeFacetValues = is_array($activeFacetValues) ? $activeFacetValues : [];
-
-        return $activeFacetValues;
+        return is_array($activeFacetValues) ? $activeFacetValues : [];
     }
-
 
     /**
      * @param array $facetValuesFromSolrResponse
      * @param array $facetValuesFromSearchRequest
-     * @return mixed
+     * @return array
      */
-    protected function getMergedFacetValueFromSearchRequestAndSolrResponse($facetValuesFromSolrResponse, $facetValuesFromSearchRequest)
-    {
+    protected function getMergedFacetValueFromSearchRequestAndSolrResponse(
+        array $facetValuesFromSolrResponse,
+        array $facetValuesFromSearchRequest
+    ): array {
         $facetValueItemsToCreate = $facetValuesFromSolrResponse;
 
         foreach ($facetValuesFromSearchRequest as $valueFromRequest) {
@@ -140,8 +145,10 @@ abstract class AbstractFacetParser implements FacetParserInterface
      * @param array $facetConfiguration
      * @return AbstractOptionsFacet
      */
-    protected function applyManualSortOrder(AbstractOptionsFacet $facet, array $facetConfiguration)
-    {
+    protected function applyManualSortOrder(
+        AbstractOptionsFacet $facet,
+        array $facetConfiguration
+    ): AbstractOptionsFacet {
         if (!isset($facetConfiguration['manualSortOrder'])) {
             return $facet;
         }
@@ -161,7 +168,7 @@ abstract class AbstractFacetParser implements FacetParserInterface
      * @param array $facetConfiguration
      * @return AbstractOptionsFacet
      */
-    protected function applyReverseOrder(AbstractOptionsFacet $facet, array $facetConfiguration)
+    protected function applyReverseOrder(AbstractOptionsFacet $facet, array $facetConfiguration): AbstractOptionsFacet
     {
         if (empty($facetConfiguration['reverseOrder'])) {
             return $facet;
@@ -176,9 +183,9 @@ abstract class AbstractFacetParser implements FacetParserInterface
     /**
      * @param mixed $value
      * @param array $facetConfiguration
-     * @return boolean
+     * @return bool
      */
-    protected function getIsExcludedFacetValue($value, array $facetConfiguration)
+    protected function getIsExcludedFacetValue($value, array $facetConfiguration): bool
     {
         if (!isset($facetConfiguration['excludeValues'])) {
             return false;

@@ -1,38 +1,31 @@
 <?php
+
+declare(strict_types=1);
+
+/*
+ * This file is part of the TYPO3 CMS project.
+ *
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
+ *
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ *
+ * The TYPO3 project - inspiring people to share!
+ */
+
 namespace ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper;
 
-/***************************************************************
- *  Copyright notice
- *
- *  (c) 2010-2015 Ingo Renner <ingo@typo3.org>
- *  All rights reserved
- *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
-
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
+use TYPO3\CMS\Core\Domain\Repository\PageRepository;
+use TYPO3\CMS\Core\Domain\Repository\PageRepositoryGetPageHookInterface;
+use TYPO3\CMS\Core\Domain\Repository\PageRepositoryGetPageOverlayHookInterface;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectPostInitHookInterface;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
-use TYPO3\CMS\Frontend\Page\PageRepository;
-use TYPO3\CMS\Frontend\Page\PageRepositoryGetPageHookInterface;
-use TYPO3\CMS\Frontend\Page\PageRepositoryGetPageOverlayHookInterface;
 
 /**
  * The UserGroupDetector is responsible to identify the fe_group references on records that are visible on the page (not the page itself).
@@ -45,30 +38,24 @@ class UserGroupDetector extends AbstractFrontendHelper implements
     PageRepositoryGetPageHookInterface,
     PageRepositoryGetPageOverlayHookInterface
 {
-
     /**
      * This frontend helper's executed action.
      */
-    protected $action = 'findUserGroups';
+    protected string $action = 'findUserGroups';
 
     /**
      * Holds the original, unmodified TCA during user group detection
      *
      * @var array
      */
-    protected $originalTca = null;
+    protected array $originalTca;
 
     /**
      * Collects the usergroups used on a page.
      *
      * @var array
      */
-    protected $frontendGroups = [];
-
-    /**
-     * @var \ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager
-     */
-    protected $logger = null;
+    protected array $frontendGroups = [];
 
     // activation
 
@@ -98,11 +85,11 @@ class UserGroupDetector extends AbstractFrontendHelper implements
      * @param array $parameters
      * @param TypoScriptFrontendController $tsfe
      * @see \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController::checkEnableFields()
+     * @noinspection PhpUnusedParameterInspection
      */
     public function checkEnableFields(
-        $parameters,
-        /** @noinspection PhpUnusedParameterInspection */
-        $tsfe
+        array &$parameters,
+        TypoScriptFrontendController $tsfe
     ) {
         $parameters['row']['fe_group'] = '';
     }
@@ -113,12 +100,11 @@ class UserGroupDetector extends AbstractFrontendHelper implements
      *
      * @param array $parameters Parameters from frontend
      * @param TypoScriptFrontendController $parentObject TSFE object
+     * @noinspection PhpUnusedParameterInspection
      */
     public function deactivateTcaFrontendGroupEnableFields(
-        /** @noinspection PhpUnusedParameterInspection */
-        &$parameters,
-        /** @noinspection PhpUnusedParameterInspection */
-        $parentObject
+        array &$parameters,
+        TypoScriptFrontendController $parentObject
     ) {
         $this->originalTca = $GLOBALS['TCA'];
 
@@ -137,7 +123,7 @@ class UserGroupDetector extends AbstractFrontendHelper implements
      *
      * @param int $uid The page ID
      * @param bool $disableGroupAccessCheck If set, the check for group access is disabled. VERY rarely used
-     * @param PageRepository $parentObject parent \TYPO3\CMS\Frontend\Page\PageRepository object
+     * @param PageRepository $parentObject parent \TYPO3\CMS\Core\Domain\Repository\PageRepository object
      */
     public function getPage_preProcess(
         &$uid,
@@ -152,27 +138,29 @@ class UserGroupDetector extends AbstractFrontendHelper implements
      * Modifies page records so that when checking for access through fe groups
      * no groups or extendToSubpages flag is found and thus access is granted.
      *
-     * @param array $pageRecord Page record
-     * @param int $languageUid Overlay language ID
-     * @param PageRepository $parentObject Parent \TYPO3\CMS\Frontend\Page\PageRepository object
+     * @param array $pageInput Page record
+     * @param int $lUid Overlay language ID
+     * @param PageRepository $parent Parent \TYPO3\CMS\Core\Domain\Repository\PageRepository object
      */
     public function getPageOverlay_preProcess(
-        &$pageRecord,
-        &$languageUid,
-        PageRepository $parentObject
+        &$pageInput,
+        &$lUid,
+        PageRepository $parent
     ) {
-        if (is_array($pageRecord)) {
-            $pageRecord['fe_group'] = '';
-            $pageRecord['extendToSubpages'] = '0';
+        if (!is_array($pageInput)) {
+            return;
         }
+        $pageInput['fe_group'] = '';
+        $pageInput['extendToSubpages'] = '0';
     }
 
     // execution
 
     /**
-     * Hook for post processing the initialization of ContentObjectRenderer
+     * Hook for post-processing the initialization of ContentObjectRenderer
      *
      * @param ContentObjectRenderer $parentObject parent content object
+     * @noinspection PhpParameterByRefIsNotUsedAsReferenceInspection
      */
     public function postProcessContentObjectInitialization(ContentObjectRenderer &$parentObject)
     {
@@ -186,15 +174,15 @@ class UserGroupDetector extends AbstractFrontendHelper implements
     }
 
     /**
-     * Tracks user groups access restriction applied to records.
+     * Tracks user groups access restriction applied to the records.
      *
      * @param array $record A record as an array of fieldname => fieldvalue mappings
      * @param string $table Table name the record belongs to
      */
-    protected function findFrontendGroups($record, $table)
+    protected function findFrontendGroups(array $record, string $table)
     {
-        if ($this->originalTca[$table]['ctrl']['enablecolumns']['fe_group']) {
-            $frontendGroups = $record[$this->originalTca[$table]['ctrl']['enablecolumns']['fe_group']];
+        if (isset($this->originalTca[$table]['ctrl']['enablecolumns']['fe_group'])) {
+            $frontendGroups = $record[$this->originalTca[$table]['ctrl']['enablecolumns']['fe_group']] ?? null;
 
             if (empty($frontendGroups)) {
                 // default = public access
@@ -223,11 +211,14 @@ class UserGroupDetector extends AbstractFrontendHelper implements
      *
      * @return array Array of user group IDs
      */
-    protected function getFrontendGroups()
+    protected function getFrontendGroups(): array
     {
         $frontendGroupsList = implode(',', $this->frontendGroups);
-        $frontendGroups = GeneralUtility::trimExplode(',', $frontendGroupsList,
-            true);
+        $frontendGroups = GeneralUtility::trimExplode(
+            ',',
+            $frontendGroupsList,
+            true
+        );
 
         // clean up: filter double groups
         $frontendGroups = array_unique($frontendGroups);
@@ -238,7 +229,9 @@ class UserGroupDetector extends AbstractFrontendHelper implements
             $frontendGroups[] = '0';
         }
 
-        return $frontendGroups;
+        // Index user groups first
+        sort($frontendGroups, SORT_NUMERIC);
+        return array_reverse($frontendGroups);
     }
 
     /**
@@ -246,7 +239,7 @@ class UserGroupDetector extends AbstractFrontendHelper implements
      *
      * @return array Array of user groups.
      */
-    public function getData()
+    public function getData(): array
     {
         return $this->getFrontendGroups();
     }

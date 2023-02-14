@@ -1,28 +1,19 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
 
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2017 <timo.hund@dkd.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
+
+namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\AbstractQueryBuilder;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
@@ -31,33 +22,32 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
  * The Grouping ParameterProvider is responsible to build the solr query parameters
  * that are needed for the grouping.
  */
-class Grouping extends AbstractDeactivatable implements ParameterBuilder
+class Grouping extends AbstractDeactivatable implements ParameterBuilderInterface
 {
+    /**
+     * @var array
+     */
+    protected array $fields = [];
 
     /**
      * @var array
      */
-    protected $fields = [];
+    protected array $sortings = [];
 
     /**
      * @var array
      */
-    protected $sortings = [];
-
-    /**
-     * @var array
-     */
-    protected $queries = [];
+    protected array $queries = [];
 
     /**
      * @var int
      */
-    protected $numberOfGroups = 5;
+    protected int $numberOfGroups = 5;
 
     /**
      * @var int
      */
-    protected $resultsPerGroup = 1;
+    protected int $resultsPerGroup = 1;
 
     /**
      * Grouping constructor.
@@ -69,8 +59,14 @@ class Grouping extends AbstractDeactivatable implements ParameterBuilder
      * @param int $numberOfGroups
      * @param int $resultsPerGroup
      */
-    public function __construct($isEnabled, array $fields = [], array $sortings = [], array $queries = [], $numberOfGroups = 5, $resultsPerGroup = 1)
-    {
+    public function __construct(
+        bool $isEnabled,
+        array $fields = [],
+        array $sortings = [],
+        array $queries = [],
+        int $numberOfGroups = 5,
+        int $resultsPerGroup = 1
+    ) {
         $this->isEnabled = $isEnabled;
         $this->fields = $fields;
         $this->sortings = $sortings;
@@ -82,7 +78,7 @@ class Grouping extends AbstractDeactivatable implements ParameterBuilder
     /**
      * @return array
      */
-    public function getFields()
+    public function getFields(): array
     {
         return $this->fields;
     }
@@ -106,7 +102,7 @@ class Grouping extends AbstractDeactivatable implements ParameterBuilder
     /**
      * @return array
      */
-    public function getSortings()
+    public function getSortings(): array
     {
         return $this->sortings;
     }
@@ -114,7 +110,7 @@ class Grouping extends AbstractDeactivatable implements ParameterBuilder
     /**
      * @param string $sorting
      */
-    public function addSorting($sorting)
+    public function addSorting(string $sorting)
     {
         $this->sortings[] = $sorting;
     }
@@ -138,7 +134,7 @@ class Grouping extends AbstractDeactivatable implements ParameterBuilder
     /**
      * @param string $query
      */
-    public function addQuery($query)
+    public function addQuery(string $query)
     {
         $this->queries[] = $query;
     }
@@ -154,7 +150,7 @@ class Grouping extends AbstractDeactivatable implements ParameterBuilder
     /**
      * @return int
      */
-    public function getNumberOfGroups()
+    public function getNumberOfGroups(): int
     {
         return $this->numberOfGroups;
     }
@@ -162,7 +158,7 @@ class Grouping extends AbstractDeactivatable implements ParameterBuilder
     /**
      * @param int $numberOfGroups
      */
-    public function setNumberOfGroups($numberOfGroups)
+    public function setNumberOfGroups(int $numberOfGroups)
     {
         $this->numberOfGroups = $numberOfGroups;
     }
@@ -170,7 +166,7 @@ class Grouping extends AbstractDeactivatable implements ParameterBuilder
     /**
      * @return int
      */
-    public function getResultsPerGroup()
+    public function getResultsPerGroup(): int
     {
         return $this->resultsPerGroup;
     }
@@ -178,9 +174,9 @@ class Grouping extends AbstractDeactivatable implements ParameterBuilder
     /**
      * @param int $resultsPerGroup
      */
-    public function setResultsPerGroup($resultsPerGroup)
+    public function setResultsPerGroup(int $resultsPerGroup)
     {
-        $resultsPerGroup = max(intval($resultsPerGroup), 0);
+        $resultsPerGroup = max($resultsPerGroup, 0);
         $this->resultsPerGroup = $resultsPerGroup;
     }
 
@@ -188,10 +184,9 @@ class Grouping extends AbstractDeactivatable implements ParameterBuilder
      * @param TypoScriptConfiguration $solrConfiguration
      * @return Grouping
      */
-    public static function fromTypoScriptConfiguration(TypoScriptConfiguration $solrConfiguration)
+    public static function fromTypoScriptConfiguration(TypoScriptConfiguration $solrConfiguration): Grouping
     {
-        $isEnabled = $solrConfiguration->getSearchGrouping();
-        if (!$isEnabled) {
+        if (!$solrConfiguration->getIsSearchGroupingEnabled()) {
             return new Grouping(false);
         }
 
@@ -204,7 +199,7 @@ class Grouping extends AbstractDeactivatable implements ParameterBuilder
         $numberOfGroups = $solrConfiguration->getSearchGroupingNumberOfGroups();
         $sortBy = $solrConfiguration->getSearchGroupingSortBy();
 
-        foreach ($configuredGroups as $groupName => $groupConfiguration) {
+        foreach ($configuredGroups as $groupConfiguration) {
             if (isset($groupConfiguration['field'])) {
                 $fields[] = $groupConfiguration['field'];
             } elseif (isset($groupConfiguration['query'])) {
@@ -216,13 +211,13 @@ class Grouping extends AbstractDeactivatable implements ParameterBuilder
             $sortings[] = $sortBy;
         }
 
-        return new Grouping($isEnabled, $fields, $sortings, $queries, $numberOfGroups, $resultsPerGroup);
+        return new Grouping(true, $fields, $sortings, $queries, $numberOfGroups, $resultsPerGroup);
     }
 
     /**
      * @return Grouping
      */
-    public static function getEmpty()
+    public static function getEmpty(): Grouping
     {
         return new Grouping(false);
     }
@@ -234,7 +229,7 @@ class Grouping extends AbstractDeactivatable implements ParameterBuilder
     public function build(AbstractQueryBuilder $parentBuilder): AbstractQueryBuilder
     {
         $query = $parentBuilder->getQuery();
-        if(!$this->getIsEnabled()) {
+        if (!$this->getIsEnabled()) {
             $query->removeComponent($query->getGrouping());
             return $parentBuilder;
         }

@@ -1,28 +1,21 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Domain\Search\Query;
 
-/***************************************************************
- *  Copyright notice
+declare(strict_types=1);
+
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2017 <timo.hund@dkd.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
+
+namespace ApacheSolrForTypo3\Solr\Domain\Search\Query;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\BigramPhraseFields;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Elevation;
@@ -35,7 +28,6 @@ use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\PhraseFields;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\QueryFields;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\ReturnFields;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Slops;
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Sorting;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Sortings;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Spellchecking;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\TrigramPhraseFields;
@@ -45,36 +37,41 @@ use ApacheSolrForTypo3\Solr\FieldProcessor\PageUidToHierarchy;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\Util;
+use Doctrine\DBAL\Driver\Exception as DBALDriverException;
+use Solarium\QueryType\Select\Query\Query as SolariumSelectQuery;
+use Throwable;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 /**
  * The concrete QueryBuilder contains all TYPO3 specific initialization logic of solr queries, for TYPO3.
+ *
+ * @author Timo Hund <timo.hund@dkd.de>
  */
-class QueryBuilder extends AbstractQueryBuilder {
-
+class QueryBuilder extends AbstractQueryBuilder
+{
     /**
      * Additional filters, which will be added to the query, as well as to
      * suggest queries.
      *
      * @var array
      */
-    protected $additionalFilters = [];
+    protected array $additionalFilters = [];
 
     /**
      * @var TypoScriptConfiguration
      */
-    protected $typoScriptConfiguration = null;
+    protected TypoScriptConfiguration $typoScriptConfiguration;
 
     /**
      * @var SolrLogManager;
      */
-    protected $logger = null;
+    protected SolrLogManager $logger;
 
     /**
      * @var SiteHashService
      */
-    protected $siteHashService = null;
+    protected SiteHashService $siteHashService;
 
     /**
      * QueryBuilder constructor.
@@ -82,8 +79,11 @@ class QueryBuilder extends AbstractQueryBuilder {
      * @param SolrLogManager|null $solrLogManager
      * @param SiteHashService|null $siteHashService
      */
-    public function __construct(TypoScriptConfiguration $configuration = null, SolrLogManager $solrLogManager = null, SiteHashService $siteHashService = null)
-    {
+    public function __construct(
+        TypoScriptConfiguration $configuration = null,
+        SolrLogManager $solrLogManager = null,
+        SiteHashService $siteHashService = null
+    ) {
         $this->typoScriptConfiguration = $configuration ?? Util::getSolrConfiguration();
         $this->logger = $solrLogManager ?? GeneralUtility::makeInstance(SolrLogManager::class, /** @scrutinizer ignore-type */ __CLASS__);
         $this->siteHashService = $siteHashService ?? GeneralUtility::makeInstance(SiteHashService::class);
@@ -93,9 +93,9 @@ class QueryBuilder extends AbstractQueryBuilder {
      * @param string $queryString
      * @return QueryBuilder
      */
-    public function newSearchQuery($queryString): QueryBuilder
+    public function newSearchQuery(string $queryString): QueryBuilder
     {
-        $this->queryToBuild = $this->getSearchQueryInstance((string)$queryString);
+        $this->queryToBuild = $this->getSearchQueryInstance($queryString);
         return $this;
     }
 
@@ -103,7 +103,7 @@ class QueryBuilder extends AbstractQueryBuilder {
      * @param string $queryString
      * @return QueryBuilder
      */
-    public function newSuggestQuery($queryString): QueryBuilder
+    public function newSuggestQuery(string $queryString): QueryBuilder
     {
         $this->queryToBuild = $this->getSuggestQueryInstance($queryString);
         return $this;
@@ -116,15 +116,17 @@ class QueryBuilder extends AbstractQueryBuilder {
      * @param string|null $rawQuery
      * @param int $resultsPerPage
      * @param array $additionalFiltersFromRequest
-     * @return SearchQuery
+     * @return SolariumSelectQuery
      */
-    public function buildSearchQuery($rawQuery, $resultsPerPage = 10, array $additionalFiltersFromRequest = []) : SearchQuery
-    {
+    public function buildSearchQuery(
+        string $rawQuery = '',
+        int $resultsPerPage = 10,
+        array $additionalFiltersFromRequest = []
+    ): SolariumSelectQuery {
         if ($this->typoScriptConfiguration->getLoggingQuerySearchWords()) {
             $this->logger->log(SolrLogManager::INFO, 'Received search query', [$rawQuery]);
         }
 
-        /* @var $query SearchQuery */
         return $this->newSearchQuery($rawQuery)
                 ->useResultsPerPage($resultsPerPage)
                 ->useReturnFieldsFromTypoScript()
@@ -148,18 +150,19 @@ class QueryBuilder extends AbstractQueryBuilder {
      *
      * @param string $queryString
      * @param array $additionalFilters
-     * @param integer $requestedPageId
+     * @param int $requestedPageId
      * @param string $groupList
      * @return SuggestQuery
+     * @throws DBALDriverException
+     * @throws Throwable
      */
-    public function buildSuggestQuery(string $queryString, array $additionalFilters, int $requestedPageId, string $groupList) : SuggestQuery
+    public function buildSuggestQuery(string $queryString, array $additionalFilters, int $requestedPageId, string $groupList): SuggestQuery
     {
         $this->newSuggestQuery($queryString)
             ->useFiltersFromTypoScript()
             ->useSiteHashFromTypoScript($requestedPageId)
             ->useUserAccessGroups(explode(',', $groupList))
             ->useOmitHeader();
-
 
         if (!empty($additionalFilters)) {
             $this->useFilterArray($additionalFilters);
@@ -172,9 +175,11 @@ class QueryBuilder extends AbstractQueryBuilder {
      * Returns Query for Search which finds document for given page.
      * Note: The Connection is per language as recommended in ext-solr docs.
      *
-     * @return Query
+     * @param int $pageId
+     * @return SolariumSelectQuery
+     * @throws DBALDriverException
      */
-    public function buildPageQuery($pageId)
+    public function buildPageQuery(int $pageId): SolariumSelectQuery
     {
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $site = $siteRepository->getSiteByPageId($pageId);
@@ -192,9 +197,13 @@ class QueryBuilder extends AbstractQueryBuilder {
     /**
      * Returns a query for single record
      *
-     * @return Query
+     * @param string $type
+     * @param int $uid
+     * @param int $pageId
+     * @return SolariumSelectQuery|Query
+     * @throws DBALDriverException
      */
-    public function buildRecordQuery($type, $uid, $pageId): Query
+    public function buildRecordQuery(string $type, int $uid, int $pageId): SolariumSelectQuery
     {
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $site = $siteRepository->getSiteByPageId($pageId);
@@ -278,7 +287,7 @@ class QueryBuilder extends AbstractQueryBuilder {
             return $this;
         }
 
-        return $this->useTieParameter($searchConfiguration['query.']['tieParameter']);
+        return $this->useTieParameter((float)$searchConfiguration['query.']['tieParameter']);
     }
 
     /**
@@ -298,17 +307,17 @@ class QueryBuilder extends AbstractQueryBuilder {
      */
     public function useReturnFieldsFromTypoScript(): QueryBuilder
     {
-        $returnFieldsArray = (array)$this->typoScriptConfiguration->getSearchQueryReturnFieldsAsArray(['*', 'score']);
+        $returnFieldsArray = $this->typoScriptConfiguration->getSearchQueryReturnFieldsAsArray(['*', 'score']);
         return $this->useReturnFields(ReturnFields::fromArray($returnFieldsArray));
     }
-
-
 
     /**
      * Can be used to apply the allowed sites from plugin.tx_solr.search.query.allowedSites to the query.
      *
      * @param int $requestedPageId
      * @return QueryBuilder
+     * @throws DBALDriverException
+     * @throws Throwable
      */
     public function useSiteHashFromTypoScript(int $requestedPageId): QueryBuilder
     {
@@ -323,7 +332,7 @@ class QueryBuilder extends AbstractQueryBuilder {
      * @param string $allowedSites
      * @return QueryBuilder
      */
-    public function useSiteHashFromAllowedSites($allowedSites): QueryBuilder
+    public function useSiteHashFromAllowedSites(string $allowedSites): QueryBuilder
     {
         $isAnySiteAllowed = trim($allowedSites) === '*';
         if ($isAnySiteAllowed) {
@@ -424,6 +433,7 @@ class QueryBuilder extends AbstractQueryBuilder {
      * Applies the configured filters (page section and other from typoscript).
      *
      * @return QueryBuilder
+     * @todo: Method is widely used but {@link Filters::fromTypoScriptConfiguration()} does not take TypoScript into account
      */
     public function useFiltersFromTypoScript(): QueryBuilder
     {
@@ -434,7 +444,7 @@ class QueryBuilder extends AbstractQueryBuilder {
 
         $searchQueryFilters = $this->typoScriptConfiguration->getSearchQueryFilterConfiguration();
 
-        if (!is_array($searchQueryFilters) || count($searchQueryFilters) <= 0) {
+        if (count($searchQueryFilters) <= 0) {
             return $this;
         }
 
@@ -526,15 +536,15 @@ class QueryBuilder extends AbstractQueryBuilder {
      *
      * @return array
      */
-    public function getAdditionalFilters() : array
+    public function getAdditionalFilters(): array
     {
-        // when we've build the additionalFilter once, we could return them
+        // when we've built the additionalFilter once, we could return them
         if (count($this->additionalFilters) > 0) {
             return $this->additionalFilters;
         }
 
         $searchQueryFilters = $this->typoScriptConfiguration->getSearchQueryFilterConfiguration();
-        if (!is_array($searchQueryFilters) || count($searchQueryFilters) <= 0) {
+        if (count($searchQueryFilters) <= 0) {
             return [];
         }
 
@@ -547,12 +557,12 @@ class QueryBuilder extends AbstractQueryBuilder {
                 continue;
             }
 
-            $filterIsArray = is_array($searchQueryFilters[$filterKey]);
+            $filterIsArray = isset($searchQueryFilters[$filterKey]) && is_array($searchQueryFilters[$filterKey]);
             if ($filterIsArray) {
                 continue;
             }
 
-            $hasSubConfiguration = is_array($searchQueryFilters[$filterKey . '.']);
+            $hasSubConfiguration = isset($searchQueryFilters[$filterKey . '.']) && is_array($searchQueryFilters[$filterKey . '.']);
             if ($hasSubConfiguration) {
                 $filter = $cObj->stdWrap($searchQueryFilters[$filterKey], $searchQueryFilters[$filterKey . '.']);
             }
@@ -578,10 +588,8 @@ class QueryBuilder extends AbstractQueryBuilder {
      * @param string $rawQuery
      * @return SuggestQuery
      */
-    protected function getSuggestQueryInstance($rawQuery): SuggestQuery
+    protected function getSuggestQueryInstance(string $rawQuery): SuggestQuery
     {
-        $query = GeneralUtility::makeInstance(SuggestQuery::class, /** @scrutinizer ignore-type */ $rawQuery, /** @scrutinizer ignore-type */ $this->typoScriptConfiguration);
-
-        return $query;
+        return GeneralUtility::makeInstance(SuggestQuery::class, /** @scrutinizer ignore-type */ $rawQuery, /** @scrutinizer ignore-type */ $this->typoScriptConfiguration);
     }
 }

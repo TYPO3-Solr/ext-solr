@@ -1,42 +1,29 @@
 <?php
+
+/*
+ * This file is part of the TYPO3 CMS project.
+ *
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
+ *
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ *
+ * The TYPO3 project - inspiring people to share!
+ */
+
 namespace ApacheSolrForTypo3\Solr\Controller\Backend\Search;
 
-/***************************************************************
- *  Copyright notice
- *
- *  (c) 2010-2017 dkd Internet Service GmbH <solr-support@dkd.de>
- *  All rights reserved
- *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
-
 use ApacheSolrForTypo3\Solr\Api;
-use ApacheSolrForTypo3\Solr\ConnectionManager;
+use ApacheSolrForTypo3\Solr\Domain\Search\ApacheSolrDocument\Repository as ApacheSolrDocumentRepository;
 use ApacheSolrForTypo3\Solr\Domain\Search\Statistics\StatisticsRepository;
-use ApacheSolrForTypo3\Solr\Domain\Search\ApacheSolrDocument\Repository;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\System\Validator\Path;
-use TYPO3\CMS\Backend\Template\ModuleTemplate;
-use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
+use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Registry;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Mvc\Exception\StopActionException;
-use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
 
 /**
  * Info Module
@@ -44,57 +31,37 @@ use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
 class InfoModuleController extends AbstractModuleController
 {
     /**
-     * @var ConnectionManager
+     * @var ApacheSolrDocumentRepository
      */
-    protected $solrConnectionManager;
+    protected ApacheSolrDocumentRepository $apacheSolrDocumentRepository;
 
     /**
-     * @var Repository
-     */
-    protected $apacheSolrDocumentRepository;
-
-    /**
-     * Initializes the controller before invoking an action method.
+     * @inheritDoc
      */
     protected function initializeAction()
     {
         parent::initializeAction();
-        $this->solrConnectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
-        $this->apacheSolrDocumentRepository = GeneralUtility::makeInstance(Repository::class);
-
-    }
-    /**
-     * Set up the doc header properly here
-     *
-     * @param ViewInterface $view
-     * @return void
-     */
-    protected function initializeView(ViewInterface $view)
-    {
-        parent::initializeView($view);
-
-        /* @var ModuleTemplate $module */ // holds the state of chosen tab
-        $module = GeneralUtility::makeInstance(ModuleTemplate::class);
-        $coreOptimizationTabs = $module->getDynamicTabMenu([], 'coreOptimization');
-        $this->view->assign('tabs', $coreOptimizationTabs);
+        $this->apacheSolrDocumentRepository = GeneralUtility::makeInstance(ApacheSolrDocumentRepository::class);
     }
 
     /**
      * Index action, shows an overview of the state of the Solr index
      *
-     * @return void
+     * @return ResponseInterface
      */
-    public function indexAction()
+    public function indexAction(): ResponseInterface
     {
         if ($this->selectedSite === null) {
             $this->view->assign('can_not_proceed', true);
-            return;
+            return $this->getModuleTemplateResponse();
         }
 
         $this->collectConnectionInfos();
         $this->collectStatistics();
         $this->collectIndexFieldsInfo();
         $this->collectIndexInspectorInfo();
+
+        return $this->getModuleTemplateResponse();
     }
 
     /**
@@ -102,21 +69,20 @@ class InfoModuleController extends AbstractModuleController
      * @param int $uid
      * @param int $pageId
      * @param int $languageUid
-     * @return void
+     * @return ResponseInterface
      */
-    public function documentsDetailsAction(string $type, int $uid, int $pageId, int $languageUid)
+    public function documentsDetailsAction(string $type, int $uid, int $pageId, int $languageUid): ResponseInterface
     {
         $documents = $this->apacheSolrDocumentRepository->findByTypeAndPidAndUidAndLanguageId($type, $uid, $pageId, $languageUid);
         $this->view->assign('documents', $documents);
+        return $this->getModuleTemplateResponse();
     }
 
     /**
      * Checks whether the configured Solr server can be reached and provides a
      * flash message according to the result of the check.
-     *
-     * @return void
      */
-    protected function collectConnectionInfos()
+    protected function collectConnectionInfos(): void
     {
         $connectedHosts = [];
         $missingHosts = [];
@@ -151,16 +117,14 @@ class InfoModuleController extends AbstractModuleController
             'apiKey' => Api::getApiKey(),
             'connectedHosts' => $connectedHosts,
             'missingHosts' => $missingHosts,
-            'invalidPaths' => $invalidPaths
+            'invalidPaths' => $invalidPaths,
         ]);
     }
 
     /**
      * Index action, shows an overview of the state of the Solr index
-     *
-     * @return void
      */
-    protected function collectStatistics()
+    protected function collectStatistics(): void
     {
         // TODO make time frame user adjustable, for now it's last 30 days
 
@@ -186,7 +150,8 @@ class InfoModuleController extends AbstractModuleController
         $data = [];
         $chartData = $statisticsRepository->getQueriesOverTime($siteRootPageId, 30, 86400);
         foreach ($chartData as $bucket) {
-            $labels[] = strftime('%x', $bucket['timestamp']);
+            // @todo Replace deprecated strftime in php 8.1. Suppress warning for now
+            $labels[] = @strftime('%x', $bucket['timestamp']);
             $data[] = (int)$bucket['numQueries'];
         }
 
@@ -195,12 +160,10 @@ class InfoModuleController extends AbstractModuleController
     }
 
     /**
-     * Gets Luke meta data for the currently selected core and provides a list
+     * Gets Luke metadata for the currently selected core and provides a list
      * of that data.
-     *
-     * @return void
      */
-    protected function collectIndexFieldsInfo()
+    protected function collectIndexFieldsInfo(): void
     {
         $indexFieldsInfoByCorePaths = [];
 
@@ -209,7 +172,7 @@ class InfoModuleController extends AbstractModuleController
             $coreAdmin = $solrCoreConnection->getAdminService();
 
             $indexFieldsInfo = [
-                'corePath' => $coreAdmin->getCorePath()
+                'corePath' => $coreAdmin->getCorePath(),
             ];
             if ($coreAdmin->ping()) {
                 $lukeData = $coreAdmin->getLukeMetaData();
@@ -250,10 +213,8 @@ class InfoModuleController extends AbstractModuleController
 
     /**
      * Retrieves the information for the index inspector.
-     *
-     * @return void
      */
-    protected function collectIndexInspectorInfo()
+    protected function collectIndexInspectorInfo(): void
     {
         $solrCoreConnections = $this->solrConnectionManager->getConnectionsBySite($this->selectedSite);
         $documentsByCoreAndType = [];
@@ -272,7 +233,7 @@ class InfoModuleController extends AbstractModuleController
 
         $this->view->assignMultiple([
             'pageId' => $this->selectedPageUID,
-            'indexInspectorDocumentsByLanguageAndType' => $documentsByCoreAndType
+            'indexInspectorDocumentsByLanguageAndType' => $documentsByCoreAndType,
         ]);
     }
 
@@ -284,7 +245,7 @@ class InfoModuleController extends AbstractModuleController
      *
      * @return array An array of field metrics
      */
-    protected function getFields(ResponseAdapter $lukeData, $limitNote)
+    protected function getFields(ResponseAdapter $lukeData, string $limitNote): array
     {
         $rows = [];
 
@@ -293,8 +254,8 @@ class InfoModuleController extends AbstractModuleController
             $rows[$name] = [
                 'name' => $name,
                 'type' => $field->type,
-                'docs' => isset($field->docs) ? $field->docs : 0,
-                'terms' => isset($field->distinct) ? $field->distinct : $limitNote
+                'docs' => $field->docs ?? 0,
+                'terms' => $field->distinct ?? $limitNote,
             ];
         }
         ksort($rows);
@@ -310,15 +271,13 @@ class InfoModuleController extends AbstractModuleController
      *
      * @return array An array of core metrics
      */
-    protected function getCoreMetrics(ResponseAdapter $lukeData, array $fields)
+    protected function getCoreMetrics(ResponseAdapter $lukeData, array $fields): array
     {
-        $coreMetrics = [
-            'numberOfDocuments' => $lukeData->index->numDocs,
-            'numberOfDeletedDocuments' => $lukeData->index->deletedDocs,
-            'numberOfTerms' => $lukeData->index->numTerms,
-            'numberOfFields' => count($fields)
+        return [
+            'numberOfDocuments' => $lukeData->index->numDocs ?? 0,
+            'numberOfDeletedDocuments' => $lukeData->index->deletedDocs ?? 0,
+            'numberOfTerms' => $lukeData->index->numTerms ?? 0,
+            'numberOfFields' => count($fields),
         ];
-
-        return $coreMetrics;
     }
 }

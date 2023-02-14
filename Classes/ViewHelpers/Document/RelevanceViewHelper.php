@@ -1,5 +1,6 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\ViewHelpers\Document;
+
+declare(strict_types=1);
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -14,9 +15,12 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers\Document;
  * The TYPO3 project - inspiring people to share!
  */
 
+namespace ApacheSolrForTypo3\Solr\ViewHelpers\Document;
+
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResult;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\ViewHelpers\AbstractSolrFrontendViewHelper;
+use Closure;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
@@ -43,16 +47,19 @@ class RelevanceViewHelper extends AbstractSolrFrontendViewHelper
 
     /**
      * @param array $arguments
-     * @param \Closure $renderChildrenClosure
+     * @param Closure $renderChildrenClosure
      * @param RenderingContextInterface $renderingContext
      * @return string
      */
-    public static function renderStatic(array $arguments, \Closure $renderChildrenClosure, RenderingContextInterface $renderingContext)
-    {
+    public static function renderStatic(
+        array $arguments,
+        Closure $renderChildrenClosure,
+        RenderingContextInterface $renderingContext
+    ) {
         /** @var $document SearchResult */
         $document = $arguments['document'];
 
-            /** @var $resultSet SearchResultSet */
+        /** @var $resultSet SearchResultSet */
         $resultSet = $arguments['resultSet'];
 
         $maximumScore = $arguments['maximumScore'] ?? $resultSet->getMaximumScore();
@@ -63,10 +70,8 @@ class RelevanceViewHelper extends AbstractSolrFrontendViewHelper
         }
 
         $documentScore = $document->getScore();
-        $score = floatval($documentScore);
+        $score = $documentScore;
         $multiplier = 100 / $maximumScore;
-        $scorePercentage = round($score * $multiplier);
-        $content = $scorePercentage;
-        return $content;
+        return (string)round($score * $multiplier);
     }
 }

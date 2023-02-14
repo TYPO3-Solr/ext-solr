@@ -55,7 +55,7 @@ To setup an simple options facet you can use the following TypoScript snipped:
 By using this configuration you create an options facet on the solr field "type" with the name "contentType". This field represents the record type, that was
 indexed into solr. Shown in the frontend it will look like this:
 
-.. figure:: ../Images/Frontend/Facets/options_facet.png
+.. figure:: /Images/Frontend/Facets/options_facet.png
 
     Options Facet
 
@@ -128,7 +128,7 @@ The example above will generate an options facet with the output "week" (for ite
 
 The output in the frontend will look like this:
 
-.. figure:: ../Images/Frontend/Facets/queryGroup_facet.png
+.. figure:: /Images/Frontend/Facets/queryGroup_facet.png
 
     Solr queryGroup facet
 
@@ -170,7 +170,7 @@ With the following example you render a very simple rootline tree in TYPO3:
 The example above just shows a simple example tree that is just rendering the uid's of the rootline as a tree:
 
 
-.. figure:: ../Images/Frontend/Facets/hierarchy_facet.png
+.. figure:: /Images/Frontend/Facets/hierarchy_facet.png
 
     Hierachy facet
 
@@ -178,7 +178,7 @@ The example above just shows a simple example tree that is just rendering the ui
 A more complex example, that is rendering the pagetree with titles is shipped in the extension. You can use it by
 including the example TypoScript **"Search - (Example) Fluid hierarchy facet on the rootline field"**:
 
-.. figure:: ../Images/Frontend/Facets/hierarchy_rootline_facet.png
+.. figure:: /Images/Frontend/Facets/hierarchy_rootline_facet.png
 
     Hierachy rootline facet
 
@@ -218,6 +218,11 @@ When you follow this convention by writing date into a solr field you can render
 
 In this case the "fieldProcessingInstruction" "pageUidToHierarchy" is used to create the rootline for solr in the conventional way.
 
+Custom field processors can be registered with
+
+.. code-block:: php
+
+   $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['fieldProcessor']['yourFieldProcessor'] = ACustomFieldProcessor::class;
 
 Date Range
 ----------
@@ -247,7 +252,7 @@ configure a dateRange facet and load all required javascript files.
 
 When you include this template a date range facet will be shown in the frontend that we look like this:
 
-.. figure:: ../Images/Frontend/Facets/dateRange_facet.png
+.. figure:: /Images/Frontend/Facets/dateRange_facet.png
 
     EXT:solr dateRange facet
 
@@ -300,7 +305,7 @@ can be used to see the range slider with jQuery ui for the solr field pid by exa
 
 When you configure a facet on the pid field like this, the frontend will output the following facet:
 
-.. figure:: ../Images/Frontend/Facets/numericRange_facet.png
+.. figure:: /Images/Frontend/Facets/numericRange_facet.png
 
     Numeric range facet
 

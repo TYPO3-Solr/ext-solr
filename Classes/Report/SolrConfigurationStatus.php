@@ -1,41 +1,34 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Report;
 
-/***************************************************************
- *  Copyright notice
+declare(strict_types=1);
+
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2011-2015 Ingo Renner <ingo@typo3.org>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
+
+namespace ApacheSolrForTypo3\Solr\Report;
 
 use ApacheSolrForTypo3\Solr\FrontendEnvironment;
 use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
+use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use RuntimeException;
 use TYPO3\CMS\Core\Error\Http\ServiceUnavailableException;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
-use TYPO3\CMS\Core\Http\ImmediateResponseException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Reports\Status;
 
 /**
- * Provides an status report, which checks whether the configuration of the
+ * Provides a status report, which checks whether the configuration of the
  * extension is ok.
  *
  * @author Ingo Renner <ingo@typo3.org>
@@ -50,19 +43,17 @@ class SolrConfigurationStatus extends AbstractSolrStatus
     /**
      * @var FrontendEnvironment
      */
-    protected $frontendEnvironment = null;
+    protected $frontendEnvironment;
 
     /**
      * SolrConfigurationStatus constructor.
      * @param ExtensionConfiguration|null $extensionConfiguration
      * @param FrontendEnvironment|null $frontendEnvironment
-
      */
     public function __construct(
         ExtensionConfiguration $extensionConfiguration = null,
         FrontendEnvironment $frontendEnvironment = null
-    )
-    {
+    ) {
         $this->extensionConfiguration = $extensionConfiguration ?? GeneralUtility::makeInstance(ExtensionConfiguration::class);
         $this->frontendEnvironment = $frontendEnvironment ?? GeneralUtility::makeInstance(FrontendEnvironment::class);
     }
@@ -71,9 +62,12 @@ class SolrConfigurationStatus extends AbstractSolrStatus
      * Compiles a collection of configuration status checks.
      *
      * @return array
-     * @throws ImmediateResponseException
+     *
+     * @throws DBALDriverException
+     *
+     * @noinspection PhpMissingReturnTypeInspection see {@link \TYPO3\CMS\Reports\StatusProviderInterface::getStatus()}
      */
-    public function getStatus(): array
+    public function getStatus()
     {
         $reports = [];
 
@@ -97,7 +91,7 @@ class SolrConfigurationStatus extends AbstractSolrStatus
      * Checks whether the "Use as Root Page" page property has been set for any
      * site.
      *
-     * @return NULL|Status An error status is returned if no root pages were found.
+     * @return Status|null An error status is returned if no root pages were found.
      */
     protected function getRootPageFlagStatus(): ?Status
     {
@@ -109,10 +103,14 @@ class SolrConfigurationStatus extends AbstractSolrStatus
         $report = $this->getRenderedReport('RootPageFlagStatus.html');
         return GeneralUtility::makeInstance(
             Status::class,
-            /** @scrutinizer ignore-type */ 'Sites',
-            /** @scrutinizer ignore-type */ 'No sites found',
-            /** @scrutinizer ignore-type */ $report,
-            /** @scrutinizer ignore-type */ Status::ERROR
+            /** @scrutinizer ignore-type */
+            'Sites',
+            /** @scrutinizer ignore-type */
+            'No sites found',
+            /** @scrutinizer ignore-type */
+            $report,
+            /** @scrutinizer ignore-type */
+            Status::ERROR
         );
     }
 
@@ -120,8 +118,8 @@ class SolrConfigurationStatus extends AbstractSolrStatus
      * Checks whether config.index_enable is set to 1, otherwise indexing will
      * not work.
      *
-     * @return NULL|Status An error status is returned for each site root page config.index_enable = 0.
-     * @throws ImmediateResponseException
+     * @return Status|null An error status is returned for each site root page config.index_enable = 0.
+     * @throws DBALDriverException
      */
     protected function getConfigIndexEnableStatus(): ?Status
     {
@@ -133,10 +131,14 @@ class SolrConfigurationStatus extends AbstractSolrStatus
         $report = $this->getRenderedReport('SolrConfigurationStatusIndexing.html', ['pages' => $rootPagesWithIndexingOff]);
         return GeneralUtility::makeInstance(
             Status::class,
-            /** @scrutinizer ignore-type */ 'Page Indexing',
-            /** @scrutinizer ignore-type */ 'Indexing is disabled',
-            /** @scrutinizer ignore-type */ $report,
-            /** @scrutinizer ignore-type */ Status::WARNING
+            /** @scrutinizer ignore-type */
+            'Page Indexing',
+            /** @scrutinizer ignore-type */
+            'Indexing is disabled',
+            /** @scrutinizer ignore-type */
+            $report,
+            /** @scrutinizer ignore-type */
+            Status::WARNING
         );
     }
 
@@ -144,7 +146,7 @@ class SolrConfigurationStatus extends AbstractSolrStatus
      * Returns an array of rootPages where the indexing is off and EXT:solr is enabled.
      *
      * @return array
-     * @throws ImmediateResponseException
+     * @throws DBALDriverException
      */
     protected function getRootPagesWithIndexingOff(): array
     {
@@ -153,8 +155,7 @@ class SolrConfigurationStatus extends AbstractSolrStatus
 
         foreach ($rootPages as $rootPage) {
             try {
-                $this->initializeTSFE($rootPage);
-                $solrIsEnabledAndIndexingDisabled = $this->getIsSolrEnabled() && !$this->getIsIndexingEnabled();
+                $solrIsEnabledAndIndexingDisabled = $this->getIsSolrEnabled($rootPage['uid']) && !$this->getIsIndexingEnabled($rootPage['uid']);
                 if ($solrIsEnabledAndIndexingDisabled) {
                     $rootPagesWithIndexingOff[] = $rootPage;
                 }
@@ -184,52 +185,35 @@ class SolrConfigurationStatus extends AbstractSolrStatus
      *
      * @return array An array of (partial) root page records, containing the uid and title fields
      */
-    protected function getRootPages()
+    protected function getRootPages(): array
     {
         $pagesRepository = GeneralUtility::makeInstance(PagesRepository::class);
-
         return $pagesRepository->findAllRootPages();
     }
 
     /**
      * Checks if the solr plugin is enabled with plugin.tx_solr.enabled.
      *
+     * @param int $pageUid
      * @return bool
+     * @throws DBALDriverException
      */
-    protected function getIsSolrEnabled(): bool
+    protected function getIsSolrEnabled(int $pageUid): bool
     {
-        if (empty($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['enabled'])) {
-            return false;
-        }
-        return (bool)$GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['enabled'];
+        return $this->frontendEnvironment->getSolrConfigurationFromPageId($pageUid)->getEnabled();
     }
 
     /**
      * Checks if the indexing is enabled with config.index_enable
      *
+     * @param int $pageUid
      * @return bool
+     * @throws DBALDriverException
      */
-    protected function getIsIndexingEnabled(): bool
+    protected function getIsIndexingEnabled(int $pageUid): bool
     {
-        if (empty($GLOBALS['TSFE']->config['config']['index_enable'])) {
-            return false;
-        }
-
-        return (bool)$GLOBALS['TSFE']->config['config']['index_enable'];
-    }
-
-    /**
-     * Initializes TSFE via FrontendEnvironment.
-     *
-     * Purpose: Unit test mocking helper method.
-     *
-     * @param array $rootPageRecord
-     * @throws ImmediateResponseException
-     * @throws ServiceUnavailableException
-     * @throws SiteNotFoundException
-     */
-    protected function initializeTSFE(array $rootPageRecord)
-    {
-        $this->frontendEnvironment->initializeTsfe($rootPageRecord['uid']);
+        return (bool)$this->frontendEnvironment
+            ->getConfigurationFromPageId($pageUid)
+            ->getValueByPathOrDefaultValue('config.index_enable', false);
     }
 }

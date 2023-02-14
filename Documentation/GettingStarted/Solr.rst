@@ -12,23 +12,6 @@ Using Hosted-solr.com
 
 If you want to start simple and just create a solr core with a click. You can use hosted-solr.com. For a small fee you get your own solr core in seconds, configured to be used with EXT:solr.
 
-Shipped install script
-----------------------
-
-With the extension we ship and install script that can be used for a **development** context. It creates a solr server with a core for all languages.
-This script is located in "Resources/Private/Install" an it installs a configured solr server that is useable with EXT:solr.
-
-By default this script is not executable and you need to add the execute permissions to your user to run it.
-
-The example below shows how to install a solr server to /home/developer
-
-.. code-block:: bash
-
-    chmod u+x ./Resources/Private/Install/install-solr.sh
-    ./Resources/Private/Install/install-solr.sh -d /home/developer
-
-After running the script you are able to open a solr server with over the loopback address. Which means, when you want to access it from outside, you need to create an ssh tunnel.
-
 Docker
 ------
 
@@ -140,7 +123,7 @@ To check whether Solr is up and running head over to:
 
 You should see the web interface of Solr to run queries:
 
-.. figure:: ../Images/GettingStarted/solr-query-webinterface.png
+.. figure:: /Images/GettingStarted/solr-query-webinterface.png
 
 **Important**: The image ships a default cores for all languages. The data of the cores is stored on an exported volume. When you want to update the container, you can just start a new container using the data volume of the old container. But at the same time this has the limitation, that you should only use this image with the default cores! If you want to create custom cores with a different configuration please read the section "Advanced Docker Usage"
 
@@ -165,6 +148,23 @@ The following example shows how you can run our configuration with the official 
     sudo chown -R 8983:8983 ~/mysolr
     docker run -d -p 8983:8983 -v ~/mysolr:/var/solr/data solr:8.5
 
+
+Shipped install script (Not recommended)
+----------------------------------------
+
+With the extension we ship and install script that can be used for a **development** context or as inspiration for own deployments. It creates a solr server with a core for all languages.
+This script is located in "Resources/Private/Install" an it installs a configured solr server that is usable with EXT:solr.
+
+By default this script is not executable and you need to add the execute permissions to your user to run it.
+
+The example below shows how to install a solr server to /home/developer
+
+.. code-block:: bash
+
+    chmod u+x ./Resources/Private/Install/install-solr.sh
+    ./Resources/Private/Install/install-solr.sh -d /home/developer
+
+After running the script you are able to open a solr server with over the loopback address. Which means, when you want to access it from outside, you need to create an ssh tunnel.
 
 Other Setup
 -----------

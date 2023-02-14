@@ -14,21 +14,6 @@ There is following scenario:
        ——[14] Mount Point (to [24] to show contents from)
 -->
 
-
-    <sys_template>
-        <uid>1</uid>
-        <pid>1</pid>
-        <root>1</root>
-        <clear>3</clear>
-        <config>
-			<![CDATA[
-                @import 'EXT:solr/Configuration/TypoScript/Solr/setup.typoscript'
-				plugin.tx_solr.index.queue.pages = 1
-            ]]>
-        </config>
-        <sorting>100</sorting>
-    </sys_template>
-
     <!-- Shared Pages tree -->
     <pages>
         <uid>20</uid>
@@ -54,13 +39,7 @@ There is following scenario:
     </pages>
 
     <!-- Site tree -->
-    <pages>
-        <uid>1</uid>
-        <is_siteroot>1</is_siteroot>
-        <doktype>1</doktype>
-        <pid>0</pid>
-        <title>Page (Root)</title>
-    </pages>
+	<!-- Uses the root pages from default tests setup See: Ext:solr/Tests/Integration/Fixtures/sites_setup_and_data_set/01_integration_tree_one.xml -->
     <pages>
         <uid>14</uid>
         <pid>1</pid>

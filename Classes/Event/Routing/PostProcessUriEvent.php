@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -30,12 +31,12 @@ class PostProcessUriEvent
      *
      * @var array
      */
-    protected $routerConfiguration = [];
+    protected array $routerConfiguration = [];
 
     /**
      * @var UriInterface
      */
-    protected $uri;
+    protected UriInterface $uri;
 
     /**
      * BeforeReplaceVariableInCachedUrlEvent constructor.
@@ -62,7 +63,7 @@ class PostProcessUriEvent
      *
      * @param UriInterface $uri
      */
-    public function replaceUri(UriInterface  $uri)
+    public function replaceUri(UriInterface $uri)
     {
         $this->uri = $uri;
     }

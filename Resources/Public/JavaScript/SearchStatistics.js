@@ -1,7 +1,7 @@
 
 require([
   'jquery',
-  '../typo3conf/ext/solr/Resources/Public/JavaScript/Chart.js'
+  'TYPO3/CMS/Solr/Chart'
 ], function ($, Chart) {
 
   var ctx = $('#queriesOverTime');

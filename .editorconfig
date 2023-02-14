@@ -1,9 +1,10 @@
 # EditorConfig is awesome: http://EditorConfig.org
-# TYPO3 Standard: https://github.com/TYPO3/typo3/blob/master/.editorconfig
+# TYPO3 Standard: https://github.com/TYPO3/coding-standards
 
 # top-most EditorConfig file
 root = true
 
+# Unix-style newlines with a newline ending every file
 [*]
 charset = utf-8
 end_of_line = lf
@@ -12,12 +13,16 @@ indent_size = 4
 insert_final_newline = true
 trim_trailing_whitespace = true
 
-# JSON-Files
-[*.json]
+# TS/JS-Files
+[*.{ts,js}]
 indent_size = 2
 
+# JSON-Files
+[*.json]
+indent_style = tab
+
 # ReST-Files
-[*.rst]
+[*.{rst,rst.txt}]
 indent_size = 3
 max_line_length = 80
 
@@ -25,12 +30,40 @@ max_line_length = 80
 [*.{yaml,yml}]
 indent_size = 2
 
+# NEON-Files
+[*.neon]
+indent_size = 2
+indent_style = tab
+
+# package.json
+[package.json]
+indent_size = 2
+
+# composer.json (Reason: git history in composer.json)
+[composer.json]
+indent_size = 2
+indent_style = space
+
 # TypoScript
 [*.{typoscript,tsconfig}]
 indent_size = 2
 
 # XLF/XML-Files
 [*.{xlf,xml}]
+indent_style = tab
+
+# HTML-Files
+[*.html]
+indent_size = 2
+indent_style = tab
+
+# SQL-Files
+[*.sql]
+indent_style = tab
+indent_size = 2
+
+# .htaccess
+[{_.htaccess,.htaccess}]
 indent_style = tab
 
 # Bash scripts

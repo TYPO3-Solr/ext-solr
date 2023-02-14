@@ -1,5 +1,6 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\NumericRange;
+
+declare(strict_types=1);
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -14,33 +15,36 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\Nume
  * The TYPO3 project - inspiring people to share!
  */
 
+namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\NumericRange;
+
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetPackage;
 
 /**
  * Class NumericRangePackage
  */
-class NumericRangePackage extends AbstractFacetPackage {
-
+class NumericRangePackage extends AbstractFacetPackage
+{
     /**
      * @return string
      */
-    public function getParserClassName() {
-        return (string)NumericRangeFacetParser::class;
+    public function getParserClassName(): string
+    {
+        return NumericRangeFacetParser::class;
     }
 
     /**
      * @return string
      */
-    public function getQueryBuilderClassName()
+    public function getQueryBuilderClassName(): string
     {
-        return (string)NumericRangeFacetQueryBuilder::class;
+        return NumericRangeFacetQueryBuilder::class;
     }
 
     /**
      * @return string
      */
-    public function getUrlDecoderClassName()
+    public function getUrlDecoderClassName(): string
     {
-        return (string)NumericRangeUrlDecoder::class;
+        return NumericRangeUrlDecoder::class;
     }
 }

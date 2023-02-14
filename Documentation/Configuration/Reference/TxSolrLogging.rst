@@ -1,9 +1,4 @@
-.. ==================================================
-.. FOR YOUR INFORMATION
-.. --------------------------------------------------
-.. -*- coding: utf-8 -*- with BOM.
-
-.. include:: ../../Includes.txt
+.. include:: /Includes.rst.txt
 
 
 .. _conf-tx-solr-logging:
@@ -71,6 +66,17 @@ indexing.indexQueuePageIndexerGetData
 :Since: 2.0
 
 If enabled, the requested data will be logged. Request data includes item, url, parameters, headers, data, decodedData and report.
+
+indexing.pageIndexed
+--------------------
+
+:Type: Boolean
+:TS Path: plugin.tx_solr.logging.indexing.pageIndexed
+:Default: 0
+:Options: 0,1
+:Since: 2.0
+
+If enabled, it will be logged if a page was indexed successful or not. Additionally, an error is logged if indexing is disabled (via `config.index_enable`)
 
 query.filters
 -------------

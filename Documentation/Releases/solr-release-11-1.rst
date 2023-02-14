@@ -1,9 +1,4 @@
-.. ==================================================
-.. FOR YOUR INFORMATION
-.. --------------------------------------------------
-.. -*- coding: utf-8 -*- with BOM.
-
-.. include:: ../Includes.txt
+.. include:: /Includes.rst.txt
 
 
 .. _releases-11-1:
@@ -113,7 +108,7 @@ Apache Solr 8.9.0 support
 With EXT:solr 11.1 we support Apache Solr 8.9.0, the latest release of Apache Solr.
 
 To see what has changed in Apache Solr please read the release notes of Apache Solr:
-https://solr.apache.org/docs/8_8_2/changes/Changes.html
+https://solr.apache.org/docs/8_9_0/changes/Changes.html
 
 Map managed resources to core-name
 ----------------------------------
@@ -199,7 +194,7 @@ Beside the major changes we did several small improvements and bugfixes:
 * [DOCS] Fix TypoScript path for lastSearches in the docs .. __: https://github.com/TYPO3-Solr/ext-solr/commit/dddccfc6a27a6801b9eccf4b57c0c654e055b1df
 * [TASK] Remove mentions on \Apache_Solr_Document .. __: https://github.com/TYPO3-Solr/ext-solr/pull/2789
 * [BUGFIX] Correct Content-Type header for suggest response .. __: https://github.com/TYPO3-Solr/ext-solr/issues/2783
-* [DOCS] Use *_PORT variable for setting the port .. __: https://github.com/TYPO3-Solr/ext-solr/commit/4d264f28ef5a288039ae860015ee29013d8fcb8a
+* [DOCS] Use \*_PORT variable for setting the port .. __: https://github.com/TYPO3-Solr/ext-solr/commit/4d264f28ef5a288039ae860015ee29013d8fcb8a
 * [BUGFIX] Deprecated second parameter for BackendUserAuthentication->modAccess is used  .. __: https://github.com/TYPO3-Solr/ext-solr/issues/2746
 * [TASK] Add .editorconfig .. __: https://github.com/TYPO3-Solr/ext-solr/pull/2768
 * [TASK] Make sure HtmlContentExtractor::cleanContent() is UTF-8 safe .. __: https://github.com/TYPO3-Solr/ext-solr/issues/2513
@@ -224,7 +219,7 @@ Beside the major changes we did several small improvements and bugfixes:
 * [BUGFIX] Prevent SiteNotFoundException in reports module .. __: https://github.com/TYPO3-Solr/ext-solr/issues/2624
 * [FEATURE] Change FileWriter configuration to use logFileInfix .. __: https://github.com/TYPO3-Solr/ext-solr/issues/2626
 * [BUGFIX] Ensure to hand in PSR-7 Request to TSFE->getPageAndRootlineWithDomain .. __: https://github.com/TYPO3-Solr/ext-solr/issues/2640
-* ... See older commits, which are a part of prevous releases: https://github.com/TYPO3-Solr/ext-solr/commits/master?after=ec72de7f14c16ee985ab26b5b6791518e348de96+139&branch=master
+* ... See older commits, which are a part of prevous releases: https://github.com/TYPO3-Solr/ext-solr/commits/main?after=ec72de7f14c16ee985ab26b5b6791518e348de96+139&branch=main
 
 
 Contributors

@@ -1,5 +1,4 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\ViewHelpers\Format;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -14,6 +13,8 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers\Format;
  * The TYPO3 project - inspiring people to share!
  */
 
+namespace ApacheSolrForTypo3\Solr\ViewHelpers\Format;
+
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
@@ -24,15 +25,20 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
  */
 class ArrayViewHelper extends AbstractViewHelper
 {
-
     /**
      * Make sure values is a array else convert
      *
-     * @param string|array $value
      * @return array
      */
-    public function render($value)
+    public function render()
     {
+        $value = $this->arguments['value'];
         return (array)$value;
+    }
+
+    public function initializeArguments(): void
+    {
+        parent::initializeArguments();
+        $this->registerArgument('value', 'array|string', '', true);
     }
 }

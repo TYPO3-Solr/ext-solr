@@ -1,28 +1,19 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\ContentObject;
 
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2017 Timo Hund <timo.hund@dkd.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
+
+namespace ApacheSolrForTypo3\Solr\ContentObject;
 
 use ApacheSolrForTypo3\Solr\Domain\Index\Classification\Classification as ClassificationItem;
 use ApacheSolrForTypo3\Solr\Domain\Index\Classification\ClassificationService;
@@ -56,10 +47,10 @@ class Classification extends AbstractContentObject
      * Returns mapped classes when the field matches on of the configured patterns ...
      *
      * @inheritDoc
+     * @noinspection PhpMissingReturnTypeInspection, because foreign source inheritance See {@link AbstractContentObject::render()}
      */
     public function render($conf = [])
     {
-
         if (!is_array($conf['classes.'])) {
             throw new InvalidArgumentException('No class configuration configured for SOLR_CLASSIFICATION object. Given configuration: ' . serialize($conf));
         }
@@ -89,15 +80,15 @@ class Classification extends AbstractContentObject
      * @param array $configuredMappedClasses
      * @return ClassificationItem[]
      */
-    protected function buildClassificationsFromConfiguration($configuredMappedClasses) : array
+    protected function buildClassificationsFromConfiguration(array $configuredMappedClasses): array
     {
         $classifications = [];
         foreach ($configuredMappedClasses as $class) {
-            if ( (empty($class['patterns']) && empty($class['matchPatterns'])) || empty($class['class'])) {
+            if ((empty($class['patterns']) && empty($class['matchPatterns'])) || empty($class['class'])) {
                 throw new InvalidArgumentException('A class configuration in SOLR_CLASSIFCATION needs to have a pattern and a class configured. Given configuration: ' . serialize($class));
             }
 
-                // @todo deprecate patterns configuration
+            // @todo deprecate patterns configuration
             $patterns = empty($class['patterns']) ? [] : GeneralUtility::trimExplode(',', $class['patterns']);
             $matchPatterns = empty($class['matchPatterns']) ? [] : GeneralUtility::trimExplode(',', $class['matchPatterns']);
             $matchPatterns = $matchPatterns + $patterns;
@@ -106,9 +97,12 @@ class Classification extends AbstractContentObject
             $className = $class['class'];
             $classifications[] = GeneralUtility::makeInstance(
                 ClassificationItem::class,
-                /** @scrutinizer ignore-type */ $matchPatterns,
-                /** @scrutinizer ignore-type */ $unMatchPatters,
-                /** @scrutinizer ignore-type */ $className
+                /** @scrutinizer ignore-type */
+                $matchPatterns,
+                /** @scrutinizer ignore-type */
+                $unMatchPatters,
+                /** @scrutinizer ignore-type */
+                $className
             );
         }
 

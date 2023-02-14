@@ -1,28 +1,19 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Result;
 
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2015-2016 Timo Hund <timo.hund@dkd.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
+
+namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Result;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Grouping\Group;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Grouping\GroupCollection;
@@ -36,18 +27,15 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
  */
 class SearchResultCollectionTest extends UnitTest
 {
-
     /**
      * @var SearchResultCollection
      */
-    protected $searchResultCollection = null;
+    protected $searchResultCollection;
 
-    /**
-     * @return void
-     */
-    public function setUp()
+    protected function setUp(): void
     {
         $this->searchResultCollection = new SearchResultCollection();
+        parent::setUp();
     }
 
     /**
@@ -55,7 +43,7 @@ class SearchResultCollectionTest extends UnitTest
      */
     public function getHasGroupsReturnsFalseByDefault()
     {
-        $this->assertFalse($this->searchResultCollection->getHasGroups());
+        self::assertFalse($this->searchResultCollection->getHasGroups());
     }
 
     /**
@@ -65,7 +53,7 @@ class SearchResultCollectionTest extends UnitTest
     {
         $groupA = new Group('foo');
         $this->searchResultCollection->getGroups()->add($groupA);
-        $this->assertTrue($this->searchResultCollection->getHasGroups());
+        self::assertTrue($this->searchResultCollection->getHasGroups());
     }
 
     /**
@@ -75,6 +63,6 @@ class SearchResultCollectionTest extends UnitTest
     {
         $groupCollection = new GroupCollection();
         $this->searchResultCollection->setGroups($groupCollection);
-        $this->assertSame($groupCollection, $this->searchResultCollection->getGroups());
+        self::assertSame($groupCollection, $this->searchResultCollection->getGroups());
     }
 }

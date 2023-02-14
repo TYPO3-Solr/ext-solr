@@ -1,33 +1,31 @@
-<?php declare(strict_types = 1);
+<?php
+
+declare(strict_types=1);
+
+/*
+ * This file is part of the TYPO3 CMS project.
+ *
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
+ *
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ *
+ * The TYPO3 project - inspiring people to share!
+ */
+
 namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue;
 
-/***************************************************************
- *  Copyright notice
- *
- *  (c) 2010-2017 dkd Internet Service GmbH <solr-support@dkd.de>
- *  All rights reserved
- *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
-
-use ApacheSolrForTypo3\Solr\IndexQueue\InitializationPostProcessor;
-use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
+use ApacheSolrForTypo3\Solr\IndexQueue\InitializationPostProcessor;
+use ApacheSolrForTypo3\Solr\IndexQueue\Initializer\AbstractInitializer;
+use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
+use Doctrine\DBAL\ConnectionException;
+use Doctrine\DBAL\Exception as DBALException;
+use Throwable;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use UnexpectedValueException;
 
 /**
  * The queue initialization service is responsible to run the initialization of the index queue for a combination of sites
@@ -36,12 +34,12 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @author Timo Hund <timo.hund@dkd.de>
  * @author Ingo Renner <ingo.renner@dkd.de>
  */
-class QueueInitializationService {
-
+class QueueInitializationService
+{
     /**
      * @var Queue
      */
-    protected $queue;
+    protected Queue $queue;
 
     /**
      * QueueInitializationService constructor.
@@ -60,8 +58,11 @@ class QueueInitializationService {
      * @param string $indexingConfigurationName Name of a specific indexing configuration, when * is passed any is used
      * @return array An array of booleans, each representing whether the
      *      initialization for an indexing configuration was successful
+     * @throws ConnectionException
+     * @throws DBALException
+     * @throws Throwable
      */
-    public function initializeBySiteAndIndexConfiguration(Site $site, $indexingConfigurationName = '*'): array
+    public function initializeBySiteAndIndexConfiguration(Site $site, string $indexingConfigurationName = '*'): array
     {
         return $this->initializeBySiteAndIndexConfigurations($site, [$indexingConfigurationName]);
     }
@@ -72,11 +73,14 @@ class QueueInitializationService {
      * @param array $sites The array of sites to initialize
      * @param array $indexingConfigurationNames the array of index configurations to initialize.
      * @return array
+     * @throws ConnectionException
+     * @throws DBALException
+     * @throws Throwable
      */
     public function initializeBySitesAndConfigurations(array $sites, array $indexingConfigurationNames = ['*']): array
     {
         $initializationStatesBySiteId = [];
-        foreach($sites as $site) {
+        foreach ($sites as $site) {
             /** @var  Site $site */
             $initializationResult = $this->initializeBySiteAndIndexConfigurations($site, $indexingConfigurationNames);
             $initializationStatesBySiteId[$site->getRootPageId()] = $initializationResult;
@@ -91,6 +95,9 @@ class QueueInitializationService {
      * @param Site $site
      * @param array $indexingConfigurationNames if one of the names is a * (wildcard) all configurations are used,
      * @return array
+     * @throws ConnectionException
+     * @throws Throwable
+     * @throws DBALException
      */
     public function initializeBySiteAndIndexConfigurations(Site $site, array $indexingConfigurationNames): array
     {
@@ -102,7 +109,7 @@ class QueueInitializationService {
             $initializationStatus[$indexingConfigurationName] = $this->applyInitialization($site, (string)$indexingConfigurationName);
         }
 
-        if (!is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessIndexQueueInitialization'])) {
+        if (!isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessIndexQueueInitialization'])) {
             return $initializationStatus;
         }
 
@@ -111,7 +118,7 @@ class QueueInitializationService {
             if ($indexQueueInitializationPostProcessor instanceof InitializationPostProcessor) {
                 $indexQueueInitializationPostProcessor->postProcessIndexQueueInitialization($site, $indexingConfigurationNames, $initializationStatus);
             } else {
-                throw new \UnexpectedValueException(get_class($indexQueueInitializationPostProcessor) . ' must implement interface ' . InitializationPostProcessor::class, 1345815561);
+                throw new UnexpectedValueException(get_class($indexQueueInitializationPostProcessor) . ' must implement interface ' . InitializationPostProcessor::class, 1345815561);
             }
         }
 
@@ -125,38 +132,45 @@ class QueueInitializationService {
      * @param string $indexingConfigurationName name of a specific
      *      indexing configuration
      * @return bool TRUE if the initialization was successful, FALSE otherwise
+     * @throws ConnectionException
+     * @throws DBALException
+     * @throws Throwable
      */
-    protected function applyInitialization(Site $site, $indexingConfigurationName): bool
+    protected function applyInitialization(Site $site, string $indexingConfigurationName): bool
     {
         // clear queue
         $this->queue->deleteItemsBySite($site, $indexingConfigurationName);
 
         $solrConfiguration = $site->getSolrConfiguration();
-        $tableToIndex = $solrConfiguration->getIndexQueueTableNameOrFallbackToConfigurationName($indexingConfigurationName);
+        $type = $solrConfiguration->getIndexQueueTypeOrFallbackToConfigurationName($indexingConfigurationName);
         $initializerClass = $solrConfiguration->getIndexQueueInitializerClassByConfigurationName($indexingConfigurationName);
         $indexConfiguration = $solrConfiguration->getIndexQueueConfigurationByName($indexingConfigurationName);
 
-        return $this->executeInitializer($site, $indexingConfigurationName, $initializerClass, $tableToIndex, $indexConfiguration);
+        return $this->executeInitializer($site, $indexingConfigurationName, $initializerClass, $type, $indexConfiguration);
     }
 
     /**
      * @param Site $site
      * @param string $indexingConfigurationName
      * @param string $initializerClass
-     * @param string $tableToIndex
+     * @param string $type
      * @param array $indexConfiguration
      * @return bool
      */
-    protected function executeInitializer(Site $site, $indexingConfigurationName, $initializerClass, $tableToIndex, $indexConfiguration): bool
-    {
+    protected function executeInitializer(
+        Site $site,
+        string $indexingConfigurationName,
+        string $initializerClass,
+        string $type,
+        array $indexConfiguration
+    ): bool {
         $initializer = GeneralUtility::makeInstance($initializerClass);
-        /** @var $initializer \ApacheSolrForTypo3\Solr\IndexQueue\Initializer\AbstractInitializer */
+        /* @var AbstractInitializer $initializer */
         $initializer->setSite($site);
-        $initializer->setType($tableToIndex);
+        $initializer->setType($type);
         $initializer->setIndexingConfigurationName($indexingConfigurationName);
         $initializer->setIndexingConfiguration($indexConfiguration);
 
         return $initializer->initialize();
     }
-
 }

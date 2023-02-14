@@ -1,34 +1,26 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\System\Configuration;
 
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2010-2016 Timo Schmidt <timo.schmidt@dkd.de
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
+
+namespace ApacheSolrForTypo3\Solr\System\Configuration;
 
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\System\Records\SystemTemplate\SystemTemplateRepository;
+use Doctrine\DBAL\Driver\Exception as DBALDriverException;
+use RuntimeException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\RootlineUtility;
-use TYPO3\CMS\Frontend\Page\PageRepository;
 
 /**
  * This class is responsible to find the closest page id from the rootline where
@@ -38,7 +30,6 @@ use TYPO3\CMS\Frontend\Page\PageRepository;
  */
 class ConfigurationPageResolver
 {
-
     /**
      * @var SystemTemplateRepository
      */
@@ -47,20 +38,14 @@ class ConfigurationPageResolver
     /**
      * @var TwoLevelCache
      */
-    protected $twoLevelCache;
-
-    /**
-     * @var TwoLevelCache
-     */
     protected $runtimeCache;
 
     /**
      * ConfigurationPageResolver constructor.
-     * @param PageRepository|null $pageRepository
      * @param TwoLevelCache|null $twoLevelCache
-     * @param SystemTemplateRepository $systemTemplateRepository
+     * @param SystemTemplateRepository|null $systemTemplateRepository
      */
-    public function __construct(PageRepository $pageRepository = null, TwoLevelCache $twoLevelCache = null, SystemTemplateRepository $systemTemplateRepository = null)
+    public function __construct(?TwoLevelCache $twoLevelCache = null, ?SystemTemplateRepository $systemTemplateRepository = null)
     {
         $this->runtimeCache = $twoLevelCache ?? GeneralUtility::makeInstance(TwoLevelCache::class, /** @scrutinizer ignore-type */ 'runtime');
         $this->systemTemplateRepository = $systemTemplateRepository ?? GeneralUtility::makeInstance(SystemTemplateRepository::class);
@@ -70,13 +55,14 @@ class ConfigurationPageResolver
      * This method fetches the rootLine and calculates the id of the closest template in the rootLine.
      * The result is stored in the runtime cache.
      *
-     * @param integer $startPageId
-     * @return integer
+     * @param int $startPageId
+     * @return int
+     * @throws DBALDriverException
      */
-    public function getClosestPageIdWithActiveTemplate($startPageId)
+    public function getClosestPageIdWithActiveTemplate(int $startPageId): ?int
     {
         if ($startPageId === 0) {
-            return 0;
+            return null;
         }
 
         $cacheId = 'ConfigurationPageResolver' . '_' . 'getClosestPageIdWithActiveTemplate' . '_' . $startPageId;
@@ -94,24 +80,25 @@ class ConfigurationPageResolver
     /**
      * This method fetches the rootLine and calculates the id of the closest template in the rootLine.
      *
-     * @param integer $startPageId
+     * @param int $startPageId
      * @return int
+     * @throws DBALDriverException
      */
-    protected function calculateClosestPageIdWithActiveTemplate($startPageId)
+    protected function calculateClosestPageIdWithActiveTemplate(int $startPageId): ?int
     {
-
+        /* @var RootlineUtility $rootlineUtility */
         $rootlineUtility = GeneralUtility::makeInstance(RootlineUtility::class, $startPageId);
         try {
             $rootline = $rootlineUtility->get();
-        } catch (\RuntimeException $e) {
+        } catch (RuntimeException $e) {
             return $startPageId;
         }
 
         $closestPageIdWithTemplate = $this->systemTemplateRepository->findOneClosestPageIdWithActiveTemplateByRootLine($rootline);
         if ($closestPageIdWithTemplate === 0) {
-            return $startPageId;
+            return null;
         }
 
-        return (int)$closestPageIdWithTemplate;
+        return $closestPageIdWithTemplate;
     }
 }

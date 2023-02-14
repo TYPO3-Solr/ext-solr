@@ -1,5 +1,6 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\ViewHelpers\Uri;
+
+declare(strict_types=1);
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -14,11 +15,15 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers\Uri;
  * The TYPO3 project - inspiring people to share!
  */
 
+namespace ApacheSolrForTypo3\Solr\ViewHelpers\Uri;
+
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
+use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Domain\Search\Uri\SearchUriBuilder;
-use ApacheSolrForTypo3\Solr\Mvc\Controller\SolrControllerContext;
 use ApacheSolrForTypo3\Solr\ViewHelpers\AbstractSolrFrontendViewHelper;
+use InvalidArgumentException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Object\Exception as ExtbaseObjectException;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
@@ -36,7 +41,7 @@ abstract class AbstractUriViewHelper extends AbstractSolrFrontendViewHelper
     /**
      * @var SearchUriBuilder
      */
-    protected static $searchUriBuilder;
+    protected static SearchUriBuilder $searchUriBuilder;
 
     /**
      * @param SearchUriBuilder $searchUriBuilder
@@ -48,9 +53,10 @@ abstract class AbstractUriViewHelper extends AbstractSolrFrontendViewHelper
 
     /**
      * @param RenderingContextInterface|null $renderingContext
-     * @return SearchUriBuilder|object
+     * @return SearchUriBuilder
+     * @throws ExtbaseObjectException
      */
-    protected static function getSearchUriBuilder(RenderingContextInterface $renderingContext = null)
+    protected static function getSearchUriBuilder(RenderingContextInterface $renderingContext = null): SearchUriBuilder
     {
         if (!isset(self::$searchUriBuilder)) {
             $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
@@ -68,10 +74,11 @@ abstract class AbstractUriViewHelper extends AbstractSolrFrontendViewHelper
      * @param RenderingContextInterface $renderingContext
      * @return mixed
      */
-    protected static function getUsedSearchRequestFromRenderingContext(RenderingContextInterface $renderingContext) {
+    protected static function getUsedSearchRequestFromRenderingContext(RenderingContextInterface $renderingContext): ?SearchRequest
+    {
         $resultSet = static::getUsedSearchResultSetFromRenderingContext($renderingContext);
         if (!$resultSet instanceof SearchResultSet) {
-            throw new \InvalidArgumentException("The variable resultSet need to be defined in the scope of " . static::class);
+            throw new InvalidArgumentException('The variable resultSet need to be defined in the scope of ' . static::class, 1642765491);
         }
 
         return $resultSet->getUsedSearchRequest();

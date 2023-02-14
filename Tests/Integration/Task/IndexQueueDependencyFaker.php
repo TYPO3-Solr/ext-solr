@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\Task;
 
 /**
@@ -14,7 +15,6 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Task;
  */
 class IndexQueueDependencyFaker
 {
-
     /**
      * @var string
      */

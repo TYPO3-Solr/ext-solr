@@ -15,3 +15,6 @@ useConfigurationMonitorTables =
 
 # cat=basic/enable/40; type=boolean; label=Allow self signed certificates
 allowSelfSignedCertificates = 0
+
+# cat=basic/enable/50; type=options[LLL:EXT:solr/Resources/Private/Language/locallang_be.xlf:extConf.monitoringType.I.0=0,LLL:EXT:solr/Resources/Private/Language/locallang_be.xlf:extConf.monitoringType.I.1=1,LLL:EXT:solr/Resources/Private/Language/locallang_be.xlf:extConf.monitoringType.I.2=2]; label=LLL:EXT:solr/Resources/Private/Language/locallang_be.xlf:extConf.monitoringType
+monitoringType = 0

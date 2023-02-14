@@ -1,5 +1,4 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\ViewHelpers\Uri\Search;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -14,6 +13,8 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers\Uri\Search;
  * The TYPO3 project - inspiring people to share!
  */
 
+namespace ApacheSolrForTypo3\Solr\ViewHelpers\Uri\Search;
+
 use ApacheSolrForTypo3\Solr\ViewHelpers\Uri\AbstractUriViewHelper;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 
@@ -25,7 +26,6 @@ use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
  */
 class StartNewSearchViewHelper extends AbstractUriViewHelper
 {
-
     /**
      * Initializes the arguments
      */
@@ -45,7 +45,6 @@ class StartNewSearchViewHelper extends AbstractUriViewHelper
     {
         $queryString = $arguments['queryString'];
         $previousRequest = static::getUsedSearchRequestFromRenderingContext($renderingContext);
-        $uri = self::getSearchUriBuilder($renderingContext)->getNewSearchUri($previousRequest, $queryString);
-        return $uri;
+        return self::getSearchUriBuilder($renderingContext)->getNewSearchUri($previousRequest, $queryString);
     }
 }

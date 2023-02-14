@@ -22,6 +22,7 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
+use ReflectionException;
 use Solarium\Client;
 use Solarium\Core\Client\Adapter\Psr18Adapter;
 use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
@@ -36,17 +37,15 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class SolrWriteServiceTest extends IntegrationTest
 {
-
     /**
      * @var SolrWriteService
      */
     protected $solrWriteService;
 
     /**
-     * @return void
      * @throws NoSuchCacheException
      */
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -55,8 +54,7 @@ class SolrWriteServiceTest extends IntegrationTest
         $requestFactory = GeneralUtility::getContainer()->get(RequestFactoryInterface::class);
         $streamFactory = GeneralUtility::getContainer()->get(StreamFactoryInterface::class);
         /* @var EventDispatcher $eventDispatcher */
-        $eventDispatcher = $this->getMockBuilder(EventDispatcherInterface::class)
-            ->disableOriginalConstructor()->getMock();
+        $eventDispatcher = $this->createMock(EventDispatcherInterface::class);
         $adapter = new Psr18Adapter(
             $psr7Client,
             $requestFactory,
@@ -66,21 +64,22 @@ class SolrWriteServiceTest extends IntegrationTest
 
         $client->clearEndpoints();
         $solrConnectionInfo = $this->getSolrConnectionInfo();
-        $client->createEndpoint(['host' => $solrConnectionInfo['host'], 'port' => $solrConnectionInfo['port'], 'path' => '/', 'core' => 'core_en', 'key' => 'admin'] , true);
+        $client->createEndpoint(['host' => $solrConnectionInfo['host'], 'port' => $solrConnectionInfo['port'], 'path' => '/', 'core' => 'core_en', 'key' => 'admin'], true);
 
         $this->solrWriteService = GeneralUtility::makeInstance(SolrWriteService::class, $client);
     }
 
     /**
      * @test
+     * @throws ReflectionException
      */
     public function canExtractByQuery()
     {
         $testFilePath = $this->getFixturePathByName('testpdf.pdf');
-            /** @var $extractQuery \ApacheSolrForTypo3\Solr\Domain\Search\Query\ExtractingQuery*/
+        /* @var ExtractingQuery $extractQuery */
         $extractQuery = GeneralUtility::makeInstance(ExtractingQuery::class, $testFilePath);
         $extractQuery->setExtractOnly(true);
         $response = $this->solrWriteService->extractByQuery($extractQuery);
-        $this->assertContains('PDF Test', $response[0], 'Could not extract text');
+        self::assertStringContainsString('PDF Test', $response[0], 'Could not extract text');
     }
 }

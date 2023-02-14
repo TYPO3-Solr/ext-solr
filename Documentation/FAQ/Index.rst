@@ -1,9 +1,4 @@
-.. ==================================================
-.. FOR YOUR INFORMATION
-.. --------------------------------------------------
-.. -*- coding: utf-8 -*- with BOM.
-
-.. include:: ../Includes.txt
+.. include:: /Includes.rst.txt
 
 .. _faq-index:
 
@@ -619,7 +614,7 @@ In your .env file:
 	SOLR_PORT=8983
 
 Refer to TYPO3 documentation:
-https://docs.typo3.org/m/typo3/reference-coreapi/master/en-us/ApiOverview/SiteHandling/UsingEnvVars.html#using-environment-variables-in-site-configuration
+https://docs.typo3.org/m/typo3/reference-coreapi/main/en-us/ApiOverview/SiteHandling/UsingEnvVars.html#using-environment-variables-in-site-configuration
 
 **How can i register a custom statistic writer processor?**
 
@@ -653,3 +648,18 @@ The PHP class must have a certain structure, which is specified by the interface
            return $resultSet;
        }
    }
+
+**I want to use the page content for a dynamic field , how can i do that?**
+
+You can use a virtual field called :code:`__solr_content`, which holds the content of the current page.
+
+Example:
+
+::
+
+    plugin.tx_solr.index.queue.pages.fields {
+        content_textEdgeNgramS = SOLR_CONTENT
+        content_textEdgeNgramS {
+            field = __solr_content
+        }
+    }

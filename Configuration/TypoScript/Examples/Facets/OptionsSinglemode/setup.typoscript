@@ -1,6 +1,6 @@
 plugin.tx_solr.search.faceting = 1
 plugin.tx_solr.search.faceting.facets {
-    typeToggle {
+    typeSinglemode {
         label = Type Singlemode
         field = type
         partialName = OptionsSinglemode

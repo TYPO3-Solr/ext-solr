@@ -1,5 +1,4 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Controller;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -14,14 +13,22 @@ namespace ApacheSolrForTypo3\Solr\Controller;
  * The TYPO3 project - inspiring people to share!
  */
 
+namespace ApacheSolrForTypo3\Solr\Controller;
+
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
-use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
+use ApacheSolrForTypo3\Solr\Pagination\ResultsPagination;
+use ApacheSolrForTypo3\Solr\Pagination\ResultsPaginator;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrUnavailableException;
 use ApacheSolrForTypo3\Solr\Util;
-use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
-use TYPO3\CMS\Extbase\Mvc\Web\Response;
+use Psr\Http\Message\ResponseInterface;
+use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Http\ForwardResponse;
+use TYPO3\CMS\Extbase\Mvc\Exception\NoSuchArgumentException;
+use TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException;
+use TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException;
 use TYPO3\CMS\Fluid\View\TemplateView;
+use TYPO3Fluid\Fluid\View\ViewInterface;
 
 /**
  * Class SearchController
@@ -45,9 +52,6 @@ class SearchController extends AbstractBaseController
         $this->mapGlobalQueryStringWhenEnabled();
     }
 
-    /**
-     * @return void
-     */
     protected function mapGlobalQueryStringWhenEnabled()
     {
         $query = GeneralUtility::_GET('q');
@@ -62,15 +66,15 @@ class SearchController extends AbstractBaseController
     /**
      * @param ViewInterface $view
      */
-    public function initializeView(ViewInterface $view)
+    public function initializeView($view)
     {
-        if($view instanceof TemplateView) {
+        if ($view instanceof TemplateView) {
             $customTemplate = $this->getCustomTemplateFromConfiguration();
-            if($customTemplate === '') {
+            if ($customTemplate === '') {
                 return;
             }
 
-            if(strpos($customTemplate, 'EXT:') !== false) {
+            if (strpos($customTemplate, 'EXT:') !== false) {
                 $view->setTemplatePathAndFilename($customTemplate);
             } else {
                 $view->setTemplate($customTemplate);
@@ -81,20 +85,24 @@ class SearchController extends AbstractBaseController
     /**
      * @return string
      */
-    protected function getCustomTemplateFromConfiguration()
+    protected function getCustomTemplateFromConfiguration(): string
     {
         $templateKey = str_replace('Action', '', $this->actionMethodName);
-        $customTemplate = $this->typoScriptConfiguration->getViewTemplateByFileKey($templateKey);
-        return $customTemplate;
+        return $this->typoScriptConfiguration->getViewTemplateByFileKey($templateKey);
     }
 
     /**
      * Results
+     * @return ResponseInterface
+     * @throws AspectNotFoundException
+     * @throws NoSuchArgumentException
+     * @throws InvalidSlotException
+     * @throws InvalidSlotReturnException
      */
-    public function resultsAction()
+    public function resultsAction(): ResponseInterface
     {
         try {
-            $arguments = (array)$this->request->getArguments();
+            $arguments = $this->request->getArguments();
             $pageId = $this->typoScriptFrontendController->getRequestedId();
             $languageId = Util::getLanguageUid();
             $searchRequest = $this->getSearchRequestBuilder()->buildForSearch($arguments, $pageId, $languageId);
@@ -105,41 +113,56 @@ class SearchController extends AbstractBaseController
             // to access it without passing it from partial to partial
             $this->controllerContext->setSearchResultSet($searchResultSet);
 
+            $currentPage = $this->request->hasArgument('page') ? (int)$this->request->getArgument('page') : 1;
+
+            // prevent currentPage < 1 (i.e for GET request like &tx_solr[page]=0)
+            if ($currentPage < 1) {
+                $currentPage = 1;
+            }
+
+            $itemsPerPage = ($searchResultSet->getUsedResultsPerPage() ?: $this->typoScriptConfiguration->getSearchResultsPerPage(10));
+            $paginator = GeneralUtility::makeInstance(ResultsPaginator::class, $searchResultSet, $currentPage, $itemsPerPage);
+            $pagination = GeneralUtility::makeInstance(ResultsPagination::class, $paginator);
+            $pagination->setMaxPageNumbers((int)$this->typoScriptConfiguration->getMaxPaginatorLinks(0));
+
             $values = [
                 'additionalFilters' => $this->getAdditionalFilters(),
                 'resultSet' => $searchResultSet,
                 'pluginNamespace' => $this->typoScriptConfiguration->getSearchPluginNamespace(),
-                'arguments' => $arguments
+                'arguments' => $arguments,
+                'pagination' => $pagination,
+                'currentPage' => $currentPage,
             ];
 
             $values = $this->emitActionSignal(__CLASS__, __FUNCTION__, [$values]);
 
             $this->view->assignMultiple($values);
         } catch (SolrUnavailableException $e) {
-            $this->handleSolrUnavailable();
+            return $this->handleSolrUnavailable();
         }
+        return $this->htmlResponse();
     }
 
     /**
      * Form
      */
-    public function formAction()
+    public function formAction(): ResponseInterface
     {
-
         $values = [
             'search' => $this->searchService->getSearch(),
             'additionalFilters' => $this->getAdditionalFilters(),
-            'pluginNamespace' => $this->typoScriptConfiguration->getSearchPluginNamespace()
+            'pluginNamespace' => $this->typoScriptConfiguration->getSearchPluginNamespace(),
         ];
         $values = $this->emitActionSignal(__CLASS__, __FUNCTION__, [$values]);
 
         $this->view->assignMultiple($values);
+        return $this->htmlResponse();
     }
 
     /**
      * Frequently Searched
      */
-    public function frequentlySearchedAction()
+    public function frequentlySearchedAction(): ResponseInterface
     {
         /** @var  $searchResultSet SearchResultSet */
         $searchResultSet = GeneralUtility::makeInstance(SearchResultSet::class);
@@ -153,57 +176,57 @@ class SearchController extends AbstractBaseController
 
         $values = [
             'additionalFilters' => $this->getAdditionalFilters(),
-            'resultSet' => $searchResultSet
+            'resultSet' => $searchResultSet,
         ];
         $values = $this->emitActionSignal(__CLASS__, __FUNCTION__, [$values]);
 
         $this->view->assignMultiple($values);
+        return $this->htmlResponse();
     }
 
     /**
      * This action allows to render a detailView with data from solr.
      *
      * @param string $documentId
+     * @return ResponseInterface
      */
-    public function detailAction($documentId = '')
+    public function detailAction(string $documentId = ''): ResponseInterface
     {
         try {
             $document = $this->searchService->getDocumentById($documentId);
             $this->view->assign('document', $document);
         } catch (SolrUnavailableException $e) {
-            $this->handleSolrUnavailable();
+            return $this->handleSolrUnavailable();
         }
+        return $this->htmlResponse();
     }
 
     /**
      * Rendered when no search is available.
-     * @return string
+     * @return ResponseInterface
      */
-    public function solrNotAvailableAction()
+    public function solrNotAvailableAction(): ResponseInterface
     {
-        if ($this->response instanceof Response) {
-            $this->response->setStatus(503);
-        }
+        return $this->htmlResponse()
+            ->withStatus(503, self::STATUS_503_MESSAGE);
     }
 
     /**
      * Called when the solr server is unavailable.
-     *
-     * @return void
      */
-    protected function handleSolrUnavailable()
+    protected function handleSolrUnavailable(): ResponseInterface
     {
-        parent::handleSolrUnavailable();
-        $this->forward('solrNotAvailable');
+        parent::logSolrUnavailable();
+        return new ForwardResponse('solrNotAvailable');
     }
 
     /**
      * This method can be overwritten to add additionalFilters for the autosuggest.
-     * By default the suggest controller will apply the configured filters from the typoscript configuration.
+     * By default, suggest controller will apply the configured filters from the typoscript configuration.
      *
      * @return array
      */
-    protected function getAdditionalFilters()
+    protected function getAdditionalFilters(): array
     {
         return [];
     }

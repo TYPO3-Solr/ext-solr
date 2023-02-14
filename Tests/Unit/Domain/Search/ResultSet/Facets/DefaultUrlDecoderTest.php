@@ -1,5 +1,4 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Test\Domain\Search\ResultSet\Facets;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -14,6 +13,8 @@ namespace ApacheSolrForTypo3\Solr\Test\Domain\Search\ResultSet\Facets;
  * The TYPO3 project - inspiring people to share!
  */
 
+namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets;
+
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\DefaultUrlDecoder;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 
@@ -24,7 +25,6 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
  */
 class DefaultUrlDecoderTest extends UnitTest
 {
-
     /**
      * @test
      */
@@ -33,6 +33,6 @@ class DefaultUrlDecoderTest extends UnitTest
         $value = 'a + b';
         $encoder = new DefaultUrlDecoder();
         $encodedValue = $encoder->decode($value);
-        $this->assertSame('"a + b"', $encodedValue, 'Encode and decode does not produce initial value');
+        self::assertSame('"a + b"', $encodedValue, 'Encode and decode does not produce initial value');
     }
 }

@@ -2,24 +2,23 @@
 
 namespace ApacheSolrForTypo3\Solr\Tests\Integration;
 
+use Exception;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * Class TSFEBootstrapResult
- * @package ApacheSolrForTypo3\Solr\Tests\Integration
  */
 class TSFEBootstrapResult
 {
-
     /**
      * @var TypoScriptFrontendController
      */
-    protected $tsfe;
+    protected TypoScriptFrontendController $tsfe;
 
     /**
      * @var array
      */
-    protected $exceptions = [];
+    protected array $exceptions = [];
 
     /**
      * @return TypoScriptFrontendController
@@ -38,9 +37,9 @@ class TSFEBootstrapResult
     }
 
     /**
-     * @param \Exception $exception
+     * @param Exception $exception
      */
-    public function addExceptions(\Exception $exception)
+    public function addExceptions(Exception $exception)
     {
         $this->exceptions[] = $exception;
     }

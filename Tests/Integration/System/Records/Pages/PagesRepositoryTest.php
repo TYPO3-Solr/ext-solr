@@ -1,29 +1,19 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Tests\Integration\System\Records\Pages;
 
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2010-2017 dkd Internet Service GmbH <solr-eb-support@dkd.de>
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  All rights reserved
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
+
+namespace ApacheSolrForTypo3\Solr\Tests\Integration\System\Records\Pages;
 
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
@@ -34,13 +24,12 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class PagesRepositoryTest extends IntegrationTest
 {
-
     /**
      * @var PagesRepository
      */
     protected $repository;
 
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->repository = GeneralUtility::makeInstance(PagesRepository::class);
@@ -56,15 +45,15 @@ class PagesRepositoryTest extends IntegrationTest
         $expectedResult = [
             0 => [
                 'uid' => 1,
-                'title' => 'Products'
+                'title' => 'Products',
             ],
             1 => [
                 'uid' => 5,
-                'title' => 'Support'
-            ]
+                'title' => 'Support',
+            ],
         ];
         $result = $this->repository->findAllRootPages();
-        $this->assertEquals($expectedResult, $result);
+        self::assertEquals($expectedResult, $result);
     }
 
     /**
@@ -99,24 +88,23 @@ class PagesRepositoryTest extends IntegrationTest
                 'uid' => 14,
                 'mountPageDestination' => 14,
                 'mountPageSource' => 24,
-                'mountPageOverlayed' => 1
+                'mountPageOverlayed' => 1,
             ],
             [
                 'uid' => 34,
                 'mountPageDestination' => 34,
                 'mountPageSource' => 25,
-                'mountPageOverlayed' => 1
-            ]
+                'mountPageOverlayed' => 1,
+            ],
         ];
 
         $result = $this->repository->findMountPointPropertiesByPageIdOrByRootLineParentPageIds(24);
-        $this->assertSame([$expectedResult[0]], $result);
+        self::assertSame([$expectedResult[0]], $result);
 
-        $rootLine = [24,20];
+        $rootLine = [24, 20];
 
         // Page [14] has both pages [24] and [25], because mounting works recursive
         $result = $this->repository->findMountPointPropertiesByPageIdOrByRootLineParentPageIds(25, $rootLine);
-        $this->assertSame($expectedResult, $result);
-
+        self::assertSame($expectedResult, $result);
     }
 }

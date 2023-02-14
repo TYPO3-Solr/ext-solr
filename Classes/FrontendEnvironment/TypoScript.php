@@ -1,54 +1,80 @@
 <?php
+
+declare(strict_types=1);
+
+/*
+ * This file is part of the TYPO3 CMS project.
+ *
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
+ *
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ *
+ * The TYPO3 project - inspiring people to share!
+ */
+
 namespace ApacheSolrForTypo3\Solr\FrontendEnvironment;
 
-use ApacheSolrForTypo3\Solr\FrontendEnvironment;
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
-use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationPageResolver;
-use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use Doctrine\DBAL\Driver\Exception as DBALDriverException;
+use TYPO3\CMS\Core\Error\Http\InternalServerErrorException;
+use TYPO3\CMS\Core\Error\Http\ServiceUnavailableException;
+use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\SingletonInterface;
-use TYPO3\CMS\Core\TypoScript\TemplateService;
-use TYPO3\CMS\Core\Utility\RootlineUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Frontend\Page\PageRepository;
 
+/**
+ * Class TypoScript
+ */
 class TypoScript implements SingletonInterface
 {
-
-    private $configurationObjectCache = [];
-
+    /**
+     * Holds the TypoScript values for given page-id language and TypoScript path.
+     *
+     * @var array
+     */
+    private array $configurationObjectCache = [];
 
     /**
-     * Loads the TypoScript configuration for a given page id and language.
+     * Loads the TypoScript configuration for a given page-id and language.
      * Language usage may be disabled to get the default TypoScript
      * configuration.
      *
-     * @param int $pageId Id of the (root) page to get the Solr configuration from.
+     * @param int $pageId The page id of the (root) page to get the Solr configuration from.
      * @param string $path The TypoScript configuration path to retrieve.
      * @param int $language System language uid, optional, defaults to 0
+     * @param int|null $rootPageId
+     *
      * @return TypoScriptConfiguration The Solr configuration for the requested tree.
+     *
+     * @throws DBALDriverException
      */
-    public function getConfigurationFromPageId($pageId, $path, $language = 0)
-    {
-        $pageId = $this->getConfigurationPageIdToUse($pageId);
-
+    public function getConfigurationFromPageId(
+        int $pageId,
+        string $path,
+        int $language = 0,
+        ?int $rootPageId = null
+    ): TypoScriptConfiguration {
         $cacheId = md5($pageId . '|' . $path . '|' . $language);
         if (isset($this->configurationObjectCache[$cacheId])) {
             return $this->configurationObjectCache[$cacheId];
         }
 
-        // If we're on UID 0, we cannot retrieve a configuration currently.
+        // If we're on UID 0, we cannot retrieve a configuration.
+        // TSFE can not be initialized for UID = 0
         // getRootline() below throws an exception (since #typo3-60 )
         // as UID 0 cannot have any parent rootline by design.
-        if ($pageId == 0) {
+        if ($pageId === 0 && $rootPageId === null) {
             return $this->configurationObjectCache[$cacheId] = $this->buildTypoScriptConfigurationFromArray([], $pageId, $language, $path);
         }
 
-        /** @var $cache TwoLevelCache */
+        /* @var TwoLevelCache $cache */
         $cache = GeneralUtility::makeInstance(TwoLevelCache::class, /** @scrutinizer ignore-type */ 'tx_solr_configuration');
         $configurationArray = $cache->get($cacheId);
-
 
         if (!empty($configurationArray)) {
             // we have a cache hit and can return it.
@@ -64,92 +90,48 @@ class TypoScript implements SingletonInterface
     }
 
     /**
-     * This method retrieves the closest pageId where a configuration is located, when this
-     * feature is enabled.
+     * Builds a configuration array, containing the solr configuration.
      *
      * @param int $pageId
-     * @return int
-     */
-    private function getConfigurationPageIdToUse($pageId)
-    {
-        $extensionConfiguration = GeneralUtility::makeInstance(ExtensionConfiguration::class);
-        if ($extensionConfiguration->getIsUseConfigurationFromClosestTemplateEnabled()) {
-            /** @var $configurationPageResolve ConfigurationPageResolver */
-            $configurationPageResolver = GeneralUtility::makeInstance(ConfigurationPageResolver::class);
-            $pageId = $configurationPageResolver->getClosestPageIdWithActiveTemplate($pageId);
-            return $pageId;
-        }
-        return $pageId;
-    }
-
-    /**
-     * builds an configuration array, containing the solr configuration.
-     *
-     * @param integer $pageId
      * @param string $path
-     * @param integer $language
+     * @param int $language
+     *
      * @return array
+     *
+     * @throws DBALDriverException
      */
-    protected function buildConfigurationArray($pageId, $path, $language)
+    protected function buildConfigurationArray(int $pageId, string $path, int $language): array
     {
-        if (is_int($language)) {
-            GeneralUtility::makeInstance(FrontendEnvironment::class)->changeLanguageContext((int)$pageId, (int)$language);
-        }
-        $rootlineUtility = GeneralUtility::makeInstance(RootlineUtility::class, $pageId);
+        /* @var Tsfe $tsfeManager */
+        $tsfeManager = GeneralUtility::makeInstance(Tsfe::class);
         try {
-            $rootLine = $rootlineUtility->get();
-        } catch (\RuntimeException $e) {
-            $rootLine = [];
+            $tsfe = $tsfeManager->getTsfeByPageIdAndLanguageId($pageId, $language);
+        } catch (InternalServerErrorException | ServiceUnavailableException | SiteNotFoundException | Exception\Exception $e) {
+            // @todo logging!
+            return [];
         }
-
-        $initializedTsfe = false;
-        $initializedPageSelect = false;
-        if (empty($GLOBALS['TSFE']->sys_page)) {
-            /** @var $pageSelect PageRepository */
-            $pageSelect = GeneralUtility::makeInstance(PageRepository::class);
-            if (empty($GLOBALS['TSFE'])) {
-                $GLOBALS['TSFE'] = new \stdClass();
-                $GLOBALS['TSFE']->tmpl = new \stdClass();
-                $GLOBALS['TSFE']->tmpl->rootLine = $rootLine;
-                $GLOBALS['TSFE']->id = $pageId;
-                $initializedTsfe = true;
-            }
-            $GLOBALS['TSFE']->sys_page = $pageSelect;
-            $initializedPageSelect = true;
-        }
-
-        /** @var $tmpl TemplateService */
-        $tmpl = GeneralUtility::makeInstance(TemplateService::class);
-        $tmpl->tt_track = false; // Do not log time-performance information
-        $tmpl->start($rootLine); // This generates the constants/config + hierarchy info for the template.
-
-        $getConfigurationFromInitializedTSFEAndWriteToCache = $this->ext_getSetup($tmpl->setup, $path);
-        $configurationToUse = $getConfigurationFromInitializedTSFEAndWriteToCache[0];
-
-        if ($initializedPageSelect) {
-            $GLOBALS['TSFE']->sys_page = null;
-        }
-        if ($initializedTsfe) {
-            unset($GLOBALS['TSFE']);
-        }
-
-        return is_array($configurationToUse) ? $configurationToUse : [];
+        $getConfigurationFromInitializedTSFEAndWriteToCache = $this->ext_getSetup($tsfe->tmpl->setup ?? [], $path);
+        return $getConfigurationFromInitializedTSFEAndWriteToCache[0] ?? [];
     }
 
-
     /**
+     * Adapted from TYPO3 core
+     * @see sysext:core/Classes/TypoScript/ExtendedTemplateService until TYPO3 v11
      * @param array $theSetup
      * @param string $theKey
      * @return array
      */
-    public function ext_getSetup($theSetup, $theKey)
+    public function ext_getSetup(array $theSetup, string $theKey): array
     {
+        // 'a.b.c' --> ['a', 'b.c']
         $parts = explode('.', $theKey, 2);
         if ((string)$parts[0] !== '' && is_array($theSetup[$parts[0] . '.'])) {
-            if (trim($parts[1]) !== '') {
-                return $this->ext_getSetup($theSetup[$parts[0] . '.'], trim($parts[1]));
+            if (trim($parts[1] ?? '') !== '') {
+                // Current path segment is a sub array, check it recursively by applying the rest of the key
+                return $this->ext_getSetup($theSetup[$parts[0] . '.'], trim($parts[1] ?? ''));
             }
-            return [$theSetup[$parts[0] . '.'], $theSetup[$parts[0]]];
+            // No further path to evaluate, return current setup and the value for the current path segment - if any
+            return [$theSetup[$parts[0] . '.'], $theSetup[$parts[0]] ?? ''];
         }
         if (trim($theKey) !== '') {
             return [[], $theSetup[$theKey]];
@@ -166,10 +148,9 @@ class TypoScript implements SingletonInterface
      * @param string $typoScriptPath
      * @return TypoScriptConfiguration
      */
-    protected function buildTypoScriptConfigurationFromArray(array $configurationToUse, $pageId, $languageId, $typoScriptPath)
+    protected function buildTypoScriptConfigurationFromArray(array $configurationToUse, int $pageId, int $languageId, string $typoScriptPath): TypoScriptConfiguration
     {
         $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
         return $configurationManager->getTypoScriptConfiguration($configurationToUse, $pageId, $languageId, $typoScriptPath);
     }
-
 }

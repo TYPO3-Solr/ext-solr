@@ -3,10 +3,6 @@
 	<file source-language="en" target-language="ja" datatype="plaintext" original="EXT:solr/Resources/Private/Language/locallang.xlf" date="2021-02-24T13:40:00Z" product-name="solr">
 		<header/>
 		<body>
-			<trans-unit id="cache_initialize_solr_connections" xml:space="preserve">
-				<source>Initialize Solr connections</source>
-				<target>Solr接続を初期化する</target>
-			</trans-unit>
 
 		<!-- Index Administration -->
 			<trans-unit id="solr.backend.index_administration.description" xml:space="preserve">

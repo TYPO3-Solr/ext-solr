@@ -1,5 +1,6 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased;
+
+declare(strict_types=1);
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -14,6 +15,8 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased;
  * The TYPO3 project - inspiring people to share!
 */
 
+namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased;
+
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetItem;
 
 /**
@@ -24,21 +27,20 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetItem;
  */
 abstract class AbstractRangeFacetItem extends AbstractFacetItem
 {
-
     /**
      * @var array
      */
-    protected $rangeCounts;
+    protected array $rangeCounts = [];
 
     /**
      * @var string
      */
-    protected $gap;
+    protected string $gap = '';
 
     /**
      * @return string
      */
-    public function getUriValue()
+    public function getUriValue(): string
     {
         return $this->getRangeString();
     }
@@ -46,7 +48,7 @@ abstract class AbstractRangeFacetItem extends AbstractFacetItem
     /**
      * @return string
      */
-    public function getCollectionKey()
+    public function getCollectionKey(): string
     {
         return $this->getRangeString();
     }
@@ -54,7 +56,7 @@ abstract class AbstractRangeFacetItem extends AbstractFacetItem
     /**
      * @return array
      */
-    public function getRangeCounts()
+    public function getRangeCounts(): array
     {
         return $this->rangeCounts;
     }
@@ -62,7 +64,7 @@ abstract class AbstractRangeFacetItem extends AbstractFacetItem
     /**
      * @return string
      */
-    public function getGap()
+    public function getGap(): string
     {
         return $this->gap;
     }
@@ -70,5 +72,5 @@ abstract class AbstractRangeFacetItem extends AbstractFacetItem
     /**
      * @return string
      */
-    abstract protected function getRangeString();
+    abstract protected function getRangeString(): string;
 }

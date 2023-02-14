@@ -1,32 +1,27 @@
 <?php
+
+declare(strict_types=1);
+
+/*
+ * This file is part of the TYPO3 CMS project.
+ *
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
+ *
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ *
+ * The TYPO3 project - inspiring people to share!
+ */
+
 namespace ApacheSolrForTypo3\Solr\Task;
 
-/***************************************************************
- *  Copyright notice
- *
- *  (c) 2017 Timo Hund <timo.hund@dkd.de>
- *  All rights reserved
- *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
-
-use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
+use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
+use Doctrine\DBAL\Driver\Exception as DBALDriverException;
+use InvalidArgumentException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
 
@@ -34,23 +29,24 @@ use TYPO3\CMS\Scheduler\Task\AbstractTask;
  * Abstract scheduler task for solr scheduler tasks, contains the logic to
  * retrieve the site, avoids serialization of site, when scheduler task is saved.
  */
-abstract class AbstractSolrTask extends AbstractTask {
+abstract class AbstractSolrTask extends AbstractTask
+{
     /**
      * The site this task is supposed to initialize the index queue for.
      *
-     * @var Site
+     * @var Site|null
      */
-    protected $site;
+    protected ?Site $site = null;
 
     /**
      * The rootPageId of the site that should be reIndexed
      *
-     * @var integer
+     * @var string|int|null
      */
     protected $rootPageId;
 
     /**
-     * @return int
+     * @return string|int|null
      */
     public function getRootPageId()
     {
@@ -60,25 +56,26 @@ abstract class AbstractSolrTask extends AbstractTask {
     /**
      * @param int $rootPageId
      */
-    public function setRootPageId($rootPageId)
+    public function setRootPageId(int $rootPageId)
     {
         $this->rootPageId = $rootPageId;
     }
 
     /**
-     * @return Site
+     * @return Site|null
+     * @throws DBALDriverException
      */
-    public function getSite()
+    public function getSite(): ?Site
     {
         if (!is_null($this->site)) {
             return $this->site;
         }
 
         try {
-            /** @var $siteRepository SiteRepository */
+            /* @var SiteRepository $siteRepository */
             $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
-            $this->site = $siteRepository->getSiteByRootPageId($this->rootPageId);
-        } catch (\InvalidArgumentException $e) {
+            $this->site = $siteRepository->getSiteByRootPageId((int)$this->rootPageId);
+        } catch (InvalidArgumentException $e) {
             $logger = GeneralUtility::makeInstance(SolrLogManager::class, /** @scrutinizer ignore-type */ __CLASS__);
             $logger->log(SolrLogManager::ERROR, 'Scheduler task tried to get invalid site');
         }

@@ -1,6 +1,6 @@
-<?php declare(strict_types = 1);
+<?php
 
-namespace ApacheSolrForTypo3\Solr\Query\Modifier;
+declare(strict_types=1);
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -15,9 +15,11 @@ namespace ApacheSolrForTypo3\Solr\Query\Modifier;
  * The TYPO3 project - inspiring people to share!
  */
 
+namespace ApacheSolrForTypo3\Solr\Query\Modifier;
+
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Faceting as FacetingBuilder;
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\FacetRegistry;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\InvalidFacetPackageException;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\InvalidQueryBuilderException;
@@ -37,16 +39,15 @@ use InvalidArgumentException;
  */
 class Faceting implements Modifier, SearchRequestAware
 {
-
     /**
      * @var FacetRegistry
      */
-    protected $facetRegistry = null;
+    protected FacetRegistry $facetRegistry;
 
     /**
-     * @var SearchRequest
+     * @var SearchRequest|null
      */
-    protected $searchRequest;
+    protected ?SearchRequest $searchRequest = null;
 
     /**
      * @param FacetRegistry $facetRegistry
@@ -83,7 +84,7 @@ class Faceting implements Modifier, SearchRequestAware
         $allFacets = $typoScriptConfiguration->getSearchFacetingFacets();
         $facetParameters = $this->buildFacetingParameters($allFacets, $typoScriptConfiguration);
         foreach ($facetParameters as $facetParameter => $value) {
-            if(strtolower($facetParameter) === 'facet.field') {
+            if (strtolower($facetParameter) === 'facet.field') {
                 $faceting->setFields($value);
             } else {
                 $faceting->addAdditionalParameter($facetParameter, $value);
@@ -91,9 +92,6 @@ class Faceting implements Modifier, SearchRequestAware
         }
 
         $searchArguments = $this->searchRequest->getArguments();
-        if (!is_array($searchArguments)) {
-            return $query;
-        }
 
         $keepAllFacetsOnSelection = $typoScriptConfiguration->getSearchFacetingKeepAllFacetsOnSelection();
         $facetFilters = $this->addFacetQueryFilters($searchArguments, $keepAllFacetsOnSelection, $allFacets);
@@ -147,7 +145,7 @@ class Faceting implements Modifier, SearchRequestAware
     {
         $facetFilters = [];
 
-        if (!is_array($resultParameters['filter'])) {
+        if (!is_array($resultParameters['filter'] ?? null)) {
             return $facetFilters;
         }
 
@@ -157,7 +155,7 @@ class Faceting implements Modifier, SearchRequestAware
             $facetConfiguration = $allFacets[$facetName . '.'];
             $tag = $this->getFilterTag($facetConfiguration, $keepAllFacetsOnSelection);
             $filterParts = $this->getFilterParts($facetConfiguration, $facetName, $filterValues);
-            $operator = ($facetConfiguration['operator'] === 'OR') ? ' OR ' : ' AND ';
+            $operator = (($facetConfiguration['operator'] ?? null) === 'OR') ? ' OR ' : ' AND ';
             $facetFilters[$facetName] = $tag . '(' . implode($operator, $filterParts) . ')';
         }
 
@@ -175,7 +173,7 @@ class Faceting implements Modifier, SearchRequestAware
     protected function getFilterTag(array $facetConfiguration, bool $keepAllFacetsOnSelection): string
     {
         $tag = '';
-        if ($facetConfiguration['keepAllOptionsOnSelection'] == 1 || $facetConfiguration['addFieldAsTag'] == 1 || $keepAllFacetsOnSelection) {
+        if (($facetConfiguration['keepAllOptionsOnSelection'] ?? null) == 1 || ($facetConfiguration['addFieldAsTag'] ?? null) == 1 || $keepAllFacetsOnSelection) {
             $tag = '{!tag=' . addslashes($facetConfiguration['field']) . '}';
         }
 
@@ -204,7 +202,7 @@ class Faceting implements Modifier, SearchRequestAware
         }
 
         foreach ($filterValues as $filterValue) {
-            $filterOptions = $facetConfiguration[$facetConfiguration['type'] . '.'];
+            $filterOptions = isset($facetConfiguration['type']) ? ($facetConfiguration[$facetConfiguration['type'] . '.'] ?? null) : null;
             if (empty($filterOptions)) {
                 $filterOptions = [];
             }
@@ -239,6 +237,9 @@ class Faceting implements Modifier, SearchRequestAware
             $filters = array_keys($filters);
         }
         foreach ($filters as $filter) {
+            if (strpos($filter, ':') === false) {
+                continue;
+            }
             // only split by the first colon to allow using colons in the filter value itself
             list($filterFacetName, $filterValue) = explode(':', $filter, 2);
             if (in_array($filterFacetName, $configuredFacets)) {

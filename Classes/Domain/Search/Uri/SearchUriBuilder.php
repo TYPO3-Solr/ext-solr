@@ -1,5 +1,6 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Domain\Search\Uri;
+
+declare(strict_types=1);
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -14,6 +15,8 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Uri;
  * The TYPO3 project - inspiring people to share!
  */
 
+namespace ApacheSolrForTypo3\Solr\Domain\Search\Uri;
+
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Grouping\GroupItem;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Event\Routing\BeforeProcessCachedVariablesEvent;
@@ -21,9 +24,9 @@ use ApacheSolrForTypo3\Solr\Event\Routing\BeforeReplaceVariableInCachedUrlEvent;
 use ApacheSolrForTypo3\Solr\Event\Routing\PostProcessUriEvent;
 use ApacheSolrForTypo3\Solr\Routing\RoutingService;
 use ApacheSolrForTypo3\Solr\System\Url\UrlHelper;
+use ApacheSolrForTypo3\Solr\Utility\ParameterSortingUtility;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Core\Http\Uri;
-use ApacheSolrForTypo3\Solr\Utility\ParameterSortingUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 
@@ -33,7 +36,7 @@ use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
  * Responsibility:
  *
  * The SearchUriBuilder is responsible to build uris, that are used in the
- * searchContext. It can use the previous request with it's persistent
+ * searchContext. It can use the previous request with its persistent
  * arguments to build the url for a search sub request.
  *
  * @author Frans Saris <frans@beech.it>
@@ -41,41 +44,40 @@ use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
  */
 class SearchUriBuilder
 {
-
     /**
-     * @var UriBuilder
+     * @var UriBuilder|null
      */
-    protected $uriBuilder;
-
-    /**
-     * @var array
-     */
-    protected static $preCompiledLinks = [];
-
-    /**
-     * @var integer
-     */
-    protected static $hitCount;
-
-    /**
-     * @var integer
-     */
-    protected static $missCount;
+    protected ?UriBuilder $uriBuilder = null;
 
     /**
      * @var array
      */
-    protected static $additionalArgumentsCache = [];
+    protected static array $preCompiledLinks = [];
+
+    /**
+     * @var int
+     */
+    protected static int $hitCount = 0;
+
+    /**
+     * @var int
+     */
+    protected static int $missCount = 0;
+
+    /**
+     * @var array
+     */
+    protected static array $additionalArgumentsCache = [];
 
     /**
      * @var EventDispatcherInterface
      */
-    protected $eventDispatcher;
+    protected EventDispatcherInterface $eventDispatcher;
 
     /**
-     * @var RoutingService
+     * @var ?RoutingService
      */
-    protected $routingService;
+    protected ?RoutingService $routingService = null;
 
     /**
      * @param UriBuilder $uriBuilder
@@ -103,22 +105,21 @@ class SearchUriBuilder
 
     /**
      * @param SearchRequest $previousSearchRequest
-     * @param $facetName
-     * @param $facetValue
+     * @param string $facetName
+     * @param mixed $facetValue
      * @return string
      */
-    public function getAddFacetValueUri(SearchRequest $previousSearchRequest, $facetName, $facetValue): string
+    public function getAddFacetValueUri(SearchRequest $previousSearchRequest, string $facetName, $facetValue): string
     {
         $persistentAndFacetArguments = $previousSearchRequest
             ->getCopyForSubRequest()->removeAllGroupItemPages()->addFacetValue($facetName, $facetValue)
             ->getAsArray();
 
         $additionalArguments = $this->getAdditionalArgumentsFromRequestConfiguration($previousSearchRequest);
-        $additionalArguments = is_array($additionalArguments) ? $additionalArguments : [];
 
         $arguments = $persistentAndFacetArguments + $additionalArguments;
 
-        $this->sortFilterParametersIfNecessary($previousSearchRequest, $arguments['tx_solr']['filter']);
+        $this->sortFilterParametersIfNecessary($previousSearchRequest, $arguments);
 
         $pageUid = $this->getTargetPageUidFromRequestConfiguration($previousSearchRequest);
         return $this->buildLinkWithInMemoryCache($pageUid, $arguments);
@@ -158,7 +159,7 @@ class SearchUriBuilder
         }
         $arguments = $persistentAndFacetArguments + $additionalArguments;
 
-        $this->sortFilterParametersIfNecessary($previousSearchRequest, $arguments['tx_solr']['filter']);
+        $this->sortFilterParametersIfNecessary($previousSearchRequest, $arguments);
 
         $pageUid = $this->getTargetPageUidFromRequestConfiguration($previousSearchRequest);
         return $this->buildLinkWithInMemoryCache($pageUid, $arguments);
@@ -182,7 +183,7 @@ class SearchUriBuilder
 
         $arguments = $persistentAndFacetArguments + $additionalArguments;
 
-        $this->sortFilterParametersIfNecessary($previousSearchRequest, $arguments['tx_solr']['filter']);
+        $this->sortFilterParametersIfNecessary($previousSearchRequest, $arguments);
 
         $pageUid = $this->getTargetPageUidFromRequestConfiguration($previousSearchRequest);
         return $this->buildLinkWithInMemoryCache($pageUid, $arguments);
@@ -205,7 +206,7 @@ class SearchUriBuilder
 
         $arguments = $persistentAndFacetArguments + $additionalArguments;
 
-        $this->sortFilterParametersIfNecessary($previousSearchRequest, $arguments['tx_solr']['filter']);
+        $this->sortFilterParametersIfNecessary($previousSearchRequest, $arguments);
 
         $pageUid = $this->getTargetPageUidFromRequestConfiguration($previousSearchRequest);
         return $this->buildLinkWithInMemoryCache($pageUid, $arguments);
@@ -255,13 +256,16 @@ class SearchUriBuilder
         $request = GeneralUtility::makeInstance(
             SearchRequest::class,
             [],
-            /** @scrutinizer ignore-type */ $contextPageUid,
-            /** @scrutinizer ignore-type */ $contextSystemLanguage,
-            /** @scrutinizer ignore-type */ $contextConfiguration
+            /** @scrutinizer ignore-type */
+            $contextPageUid,
+            /** @scrutinizer ignore-type */
+            $contextSystemLanguage,
+            /** @scrutinizer ignore-type */
+            $contextConfiguration
         );
         $arguments = $request->setRawQueryString($queryString)->getAsArray();
 
-        $this->sortFilterParametersIfNecessary($previousSearchRequest, $arguments['tx_solr']['filter']);
+        $this->sortFilterParametersIfNecessary($previousSearchRequest, $arguments);
 
         $pageUid = $this->getTargetPageUidFromRequestConfiguration($previousSearchRequest);
         return $this->buildLinkWithInMemoryCache($pageUid, $arguments);
@@ -364,25 +368,25 @@ class SearchUriBuilder
         } else {
             self::$missCount++;
             $this->uriBuilder->reset()->setTargetPageUid($pageUid);
-            $uriCacheTemplate = $this->uriBuilder->setArguments($structure)->setUseCacheHash(false)->build();
+            $uriCacheTemplate = $this->uriBuilder->setArguments($structure)->build();
 
             /* @var UrlHelper $urlHelper */
             $urlHelper = GeneralUtility::makeInstance(UrlHelper::class, $uriCacheTemplate);
             self::$preCompiledLinks[$hash] = (string)$urlHelper;
         }
 
-        $keys = array_map(function($value) {
-            return urlencode($value);
+        $keys = array_map(function ($value) {
+            return urlencode((string)$value);
         }, array_keys($values));
-        $values = array_map(function($value) {
-            return urlencode($value);
+        $values = array_map(function ($value) {
+            return urlencode((string)$value);
         }, $values);
 
         $routingConfigurations = $this->routingService
             ->fetchEnhancerByPageUid($pageUid);
         $enhancedRouting = count($routingConfigurations) > 0;
         $this->routingService->reset();
-        if ($enhancedRouting && is_array($routingConfigurations[0])) {
+        if ($enhancedRouting && is_array($routingConfigurations[0] ?? null)) {
             $this->routingService->fromRoutingConfiguration($routingConfigurations[0]);
         }
 
@@ -407,7 +411,7 @@ class SearchUriBuilder
 
         $values = $variableEvent->getVariableValues();
         // Take care that everything is urlencoded!
-        $keys = array_map(function($value) {
+        $keys = array_map(function ($value) {
             // @TODO: With only PHP 8 support, replace this with str_contains()
             if (strpos($value, '###') === false) {
                 return $value;
@@ -428,8 +432,6 @@ class SearchUriBuilder
 
     /**
      * Flushes the internal in memory cache.
-     *
-     * @return void
      */
     public function flushInMemoryCache()
     {
@@ -467,12 +469,12 @@ class SearchUriBuilder
      * @param array $values
      * @param array $branch
      */
-    protected function getSubstitution(array &$structure, array  &$values, array $branch = []): void
+    protected function getSubstitution(array &$structure, array &$values, array $branch = []): void
     {
         /*
          * Adds information about the filter facet to the placeholder.
          *
-         * This feature allows to handle even placeholder in RouteEnhancer
+         * This feature allows the handle even placeholder in RouteEnhancer
          */
         $filter = false;
         if (count($branch) > 0 && $branch[count($branch) - 1] === 'filter') {
@@ -483,8 +485,11 @@ class SearchUriBuilder
             if (is_array($value)) {
                 $this->getSubstitution($value, $values, $branch);
             } else {
-                if ($filter) {
-                    [$facetType, $facetValue] = explode(':', $value);
+                // @todo: Refactor to multi-dimensional array.
+                // https://solr-ddev-site.ddev.site/content-examples/form-elements/search?tx_solr[filter][type:tx_news_domain_model_news]=1&tx_solr[q]=*
+                // https://solr-ddev-site.ddev.site/content-examples/form-elements/search?tx_solr[filter][0]=type:pages&tx_solr[q]=*
+                if ($filter && $value !== 1) {
+                    [$facetType] = explode(':', $value);
                     $branch[] = $facetType;
                 }
                 $path = '###' . implode(':', $branch) . '###';
@@ -503,13 +508,18 @@ class SearchUriBuilder
      *
      *
      * @param SearchRequest $searchRequest
-     * @param array|null $filterArguments
+     * @param array $arguments
      */
-    protected function sortFilterParametersIfNecessary(SearchRequest $searchRequest, ?array &$filterArguments)
+    protected function sortFilterParametersIfNecessary(SearchRequest $searchRequest, array &$arguments)
     {
-        if (is_array($filterArguments) && !empty($filterArguments) && $searchRequest->isActiveFacetsSorted()) {
-            ParameterSortingUtility::sortByType(
-                $filterArguments,
+        if (!$searchRequest->isActiveFacetsSorted()) {
+            return;
+        }
+
+        $pluginNameSpace = $searchRequest->getContextTypoScriptConfiguration()->getSearchPluginNamespace();
+        if (!empty($arguments[$pluginNameSpace]['filter']) && is_array($arguments[$pluginNameSpace]['filter'])) {
+            $arguments[$pluginNameSpace]['filter'] = ParameterSortingUtility::sortByType(
+                $arguments[$pluginNameSpace]['filter'],
                 $searchRequest->getActiveFacetsUrlParameterStyle()
             );
         }

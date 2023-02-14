@@ -1,52 +1,44 @@
 <?php
 
+/*
+ * This file is part of the TYPO3 CMS project.
+ *
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
+ *
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ *
+ * The TYPO3 project - inspiring people to share!
+ */
+
 namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\Statistic;
 
-/***************************************************************
- *  Copyright notice
- *
- *  (c) 2017 Timo Hund <timo.hund@dkd.de>
- *  All rights reserved
- *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
-
+/**
+ * Class QueueStatistic is responsible for index queue metrics calculations.
+ */
 class QueueStatistic
 {
+    /**
+     * @var int
+     */
+    protected int $failedCount = 0;
 
     /**
      * @var int
      */
-    protected $failedCount = 0;
+    protected int $pendingCount = 0;
 
     /**
      * @var int
      */
-    protected $pendingCount = 0;
-
-    /**
-     * @var int
-     */
-    protected $successCount = 0;
+    protected int $successCount = 0;
 
     /**
      * @param int $failedCount
      */
-    public function setFailedCount($failedCount)
+    public function setFailedCount(int $failedCount)
     {
         $this->failedCount = $failedCount;
     }
@@ -54,15 +46,15 @@ class QueueStatistic
     /**
      * @return int
      */
-    public function getFailedCount()
+    public function getFailedCount(): int
     {
         return $this->failedCount;
     }
 
     /**
-     * @return float|int
+     * @return float
      */
-    public function getFailedPercentage()
+    public function getFailedPercentage(): float
     {
         return $this->getPercentage($this->getFailedCount());
     }
@@ -70,7 +62,7 @@ class QueueStatistic
     /**
      * @param int $pendingCount
      */
-    public function setPendingCount($pendingCount)
+    public function setPendingCount(int $pendingCount)
     {
         $this->pendingCount = $pendingCount;
     }
@@ -78,15 +70,15 @@ class QueueStatistic
     /**
      * @return int
      */
-    public function getPendingCount()
+    public function getPendingCount(): int
     {
         return $this->pendingCount;
     }
 
     /**
-     * @return float|int
+     * @return float
      */
-    public function getPendingPercentage()
+    public function getPendingPercentage(): float
     {
         return $this->getPercentage($this->getPendingCount());
     }
@@ -94,7 +86,7 @@ class QueueStatistic
     /**
      * @param int $successCount
      */
-    public function setSuccessCount($successCount)
+    public function setSuccessCount(int $successCount)
     {
         $this->successCount = $successCount;
     }
@@ -102,15 +94,15 @@ class QueueStatistic
     /**
      * @return int
      */
-    public function getSuccessCount()
+    public function getSuccessCount(): int
     {
         return $this->successCount;
     }
 
     /**
-     * @return float|int
+     * @return float
      */
-    public function getSuccessPercentage()
+    public function getSuccessPercentage(): float
     {
         return $this->getPercentage($this->getSuccessCount());
     }
@@ -118,21 +110,21 @@ class QueueStatistic
     /**
      * @return int
      */
-    public function getTotalCount()
+    public function getTotalCount(): int
     {
         return $this->pendingCount + $this->failedCount + $this->successCount;
     }
 
     /**
-     * @param integer $count
+     * @param int $count
      * @return float
      */
-    protected function getPercentage($count)
+    protected function getPercentage(int $count): float
     {
         $total = $this->getTotalCount();
         if ($total === 0) {
             return 0.0;
         }
-        return (float)round((100 / $total) * $count, 2);
+        return round((100 / $total) * $count, 2);
     }
 }

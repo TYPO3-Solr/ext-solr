@@ -1,5 +1,6 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Hierarchy;
+
+declare(strict_types=1);
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -14,6 +15,9 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Hie
  * The TYPO3 project - inspiring people to share!
  */
 
+namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Hierarchy;
+
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetParser;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\System\Solr\ParsingUtil;
@@ -29,7 +33,7 @@ class HierarchyFacetParser extends AbstractFacetParser
      * @param array $facetConfiguration
      * @return HierarchyFacet|null
      */
-    public function parse(SearchResultSet $resultSet, $facetName, array $facetConfiguration)
+    public function parse(SearchResultSet $resultSet, string $facetName, array $facetConfiguration): ?AbstractFacet
     {
         $response = $resultSet->getResponse();
         $fieldName = $facetConfiguration['field'];
@@ -46,7 +50,7 @@ class HierarchyFacetParser extends AbstractFacetParser
         }
 
         /** @var $facet HierarchyFacet */
-        $facet = $this->objectManager->get(HierarchyFacet::class, $resultSet, $facetName, $fieldName, $label, $facetConfiguration);
+        $facet = $this->objectManager->get(HierarchyFacet::class, $resultSet, $facetName, $fieldName, $label, $facetConfiguration, $this->objectManager);
 
         $hasActiveOptions = count($optionsFromRequest) > 0;
         $facet->setIsUsed($hasActiveOptions);
@@ -84,12 +88,12 @@ class HierarchyFacetParser extends AbstractFacetParser
      * because lower nesting levels must be instantiated first, to serve as parents for higher nested levels.
      * See implementation of HierarchyFacet::createNode().
      *
-     * @param array $flatOptionsListForFacet
-     * @return void sorted list of facet options
+     * @param array $flatOptionsListForHierarchyFacet
+     * @return array
      */
-    protected function sortFacetOptionsInNaturalOrder(array $flatOptionsListForHierarchyFacet)
+    protected function sortFacetOptionsInNaturalOrder(array $flatOptionsListForHierarchyFacet): array
     {
-        uksort($flatOptionsListForHierarchyFacet, "strnatcmp");
+        uksort($flatOptionsListForHierarchyFacet, 'strnatcmp');
         return $flatOptionsListForHierarchyFacet;
     }
 
@@ -107,7 +111,7 @@ class HierarchyFacetParser extends AbstractFacetParser
      * @param array $facetConfiguration
      * @return bool
      */
-    protected function facetOptionsMustBeResorted(array $facetConfiguration)
+    protected function facetOptionsMustBeResorted(array $facetConfiguration): bool
     {
         if (isset($facetConfiguration['sortBy']) && $facetConfiguration['sortBy'] === 'index') {
             return true;
@@ -123,12 +127,12 @@ class HierarchyFacetParser extends AbstractFacetParser
      * @param string $path
      * @return array
      */
-    protected function getPathAsArray($path)
+    protected function getPathAsArray(string $path): array
     {
         $path = str_replace('\/', '@@@', $path);
-        $path = rtrim($path, "/");
+        $path = rtrim($path, '/');
         $segments = explode('/', $path);
-        return array_map(function($item) {
+        return array_map(function ($item) {
             return str_replace('@@@', '/', $item);
         }, $segments);
     }
@@ -139,7 +143,7 @@ class HierarchyFacetParser extends AbstractFacetParser
      * @param string $facetName
      * @return array
      */
-    protected function getActiveFacetValuesFromRequest(SearchResultSet $resultSet, $facetName)
+    protected function getActiveFacetValuesFromRequest(SearchResultSet $resultSet, string $facetName): array
     {
         $activeFacetValues = [];
         $values = $resultSet->getUsedSearchRequest()->getActiveFacetValuesByName($facetName);

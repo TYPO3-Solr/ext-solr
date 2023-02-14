@@ -1,4 +1,35 @@
 services:
+  _defaults:
+    autowire: false
+    autoconfigure: false
+
+  ApacheSolrForTypo3\Solr\:
+    resource: '../Classes/*'
+    exclude: '../Classes/Eid/*'
+
+  ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\DataUpdateHandler:
+    public: true
+    arguments:
+      $recordService: '@ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\ConfigurationAwareRecordService'
+      $frontendEnvironment: '@ApacheSolrForTypo3\Solr\FrontendEnvironment'
+      $tcaService: '@ApacheSolrForTypo3\Solr\System\TCA\TCAService'
+      $indexQueue: '@ApacheSolrForTypo3\Solr\IndexQueue\Queue'
+      $mountPageUpdater: '@ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\MountPagesUpdater'
+      $rootPageResolver: '@ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\RootPageResolver'
+      $pagesRepository: '@ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository'
+      $dataHandler: '@TYPO3\CMS\Core\DataHandling\DataHandler'
+  ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\GarbageHandler:
+    public: true
+    arguments:
+      $recordService: '@ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\ConfigurationAwareRecordService'
+      $frontendEnvironment: '@ApacheSolrForTypo3\Solr\FrontendEnvironment'
+      $tcaService: '@ApacheSolrForTypo3\Solr\System\TCA\TCAService'
+      $indexQueue: '@ApacheSolrForTypo3\Solr\IndexQueue\Queue'
+
+  ApacheSolrForTypo3\Solr\Domain\Site\SiteHashService:
+    public: true
+    autowire: true
+
   ApacheSolrForTypo3\Solr\EventListener\EnhancedRouting\CachedUrlModifier:
     tags:
       - name: event.listener
@@ -14,3 +45,102 @@ services:
       - name: event.listener
         identifier: 'solr.routing.postenhanceduriprocessor-modifier'
         event: ApacheSolrForTypo3\Solr\Event\Routing\PostProcessUriEvent
+  ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\EventListener\NoProcessingEventListener:
+    arguments:
+      $extensionConfiguration: '@ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration'
+      $eventDispatcher: '@Psr\EventDispatcher\EventDispatcherInterface'
+    tags:
+      - name: event.listener
+        identifier: 'solr.index.updatehandler.noprocessingeventlistener'
+        before: 'solr.index.updatehandler.immediateprocessingeventlistener,solr.index.updatehandler.delayedprocessingeventlistener'
+        event: ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\ContentElementDeletedEvent
+      - name: event.listener
+        identifier: 'solr.index.updatehandler.noprocessingeventlistener'
+        before: 'solr.index.updatehandler.immediateprocessingeventlistener,solr.index.updatehandler.delayedprocessingeventlistener'
+        event: ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordMovedEvent
+      - name: event.listener
+        identifier: 'solr.index.updatehandler.noprocessingeventlistener'
+        before: 'solr.index.updatehandler.immediateprocessingeventlistener,solr.index.updatehandler.delayedprocessingeventlistener'
+        event: ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordUpdatedEvent
+      - name: event.listener
+        identifier: 'solr.index.updatehandler.noprocessingeventlistener'
+        before: 'solr.index.updatehandler.immediateprocessingeventlistener,solr.index.updatehandler.delayedprocessingeventlistener'
+        event: ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\VersionSwappedEvent
+      - name: event.listener
+        identifier: 'solr.index.updatehandler.noprocessingeventlistener'
+        before: 'solr.index.updatehandler.immediateprocessingeventlistener,solr.index.updatehandler.delayedprocessingeventlistener'
+        event: ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordDeletedEvent
+      - name: event.listener
+        identifier: 'solr.index.updatehandler.noprocessingeventlistener'
+        before: 'solr.index.updatehandler.immediateprocessingeventlistener,solr.index.updatehandler.delayedprocessingeventlistener'
+        event: ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\PageMovedEvent
+      - name: event.listener
+        identifier: 'solr.index.updatehandler.noprocessingeventlistener'
+        before: 'solr.index.updatehandler.immediateprocessingeventlistener,solr.index.updatehandler.delayedprocessingeventlistener'
+        event: ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordGarbageCheckEvent
+  ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\EventListener\ImmediateProcessingEventListener:
+    arguments:
+      $extensionConfiguration: '@ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration'
+      $eventDispatcher: '@Psr\EventDispatcher\EventDispatcherInterface'
+    tags:
+      - name: event.listener
+        identifier: 'solr.index.updatehandler.immediateprocessingeventlistener'
+        before: 'solr.index.updatehandler.delayedprocessingeventlistener'
+        event: ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\ContentElementDeletedEvent
+      - name: event.listener
+        identifier: 'solr.index.updatehandler.immediateprocessingeventlistener'
+        before: 'solr.index.updatehandler.delayedprocessingeventlistener'
+        event: ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordMovedEvent
+      - name: event.listener
+        identifier: 'solr.index.updatehandler.immediateprocessingeventlistener'
+        before: 'solr.index.updatehandler.delayedprocessingeventlistener'
+        event: ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordUpdatedEvent
+      - name: event.listener
+        identifier: 'solr.index.updatehandler.immediateprocessingeventlistener'
+        before: 'solr.index.updatehandler.delayedprocessingeventlistener'
+        event: ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\VersionSwappedEvent
+      - name: event.listener
+        identifier: 'solr.index.updatehandler.immediateprocessingeventlistener'
+        before: 'solr.index.updatehandler.delayedprocessingeventlistener'
+        event: ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordDeletedEvent
+      - name: event.listener
+        identifier: 'solr.index.updatehandler.immediateprocessingeventlistener'
+        before: 'solr.index.updatehandler.delayedprocessingeventlistener'
+        event: ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\PageMovedEvent
+      - name: event.listener
+        identifier: 'solr.index.updatehandler.immediateprocessingeventlistener'
+        before: 'solr.index.updatehandler.delayedprocessingeventlistener'
+        event: ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordGarbageCheckEvent
+  ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\EventListener\DelayedProcessingEventListener:
+    arguments:
+      $extensionConfiguration: '@ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration'
+      $eventDispatcher: '@Psr\EventDispatcher\EventDispatcherInterface'
+    tags:
+      - name: event.listener
+        identifier: 'solr.index.updatehandler.delayedprocessingeventlistener'
+        event: ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\ContentElementDeletedEvent
+      - name: event.listener
+        identifier: 'solr.index.updatehandler.delayedprocessingeventlistener'
+        event: ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordMovedEvent
+      - name: event.listener
+        identifier: 'solr.index.updatehandler.delayedprocessingeventlistener'
+        event: ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordUpdatedEvent
+      - name: event.listener
+        identifier: 'solr.index.updatehandler.delayedprocessingeventlistener'
+        event: ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\VersionSwappedEvent
+      - name: event.listener
+        identifier: 'solr.index.updatehandler.delayedprocessingeventlistener'
+        event: ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordDeletedEvent
+      - name: event.listener
+        identifier: 'solr.index.updatehandler.delayedprocessingeventlistener'
+        event: ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\PageMovedEvent
+      - name: event.listener
+        identifier: 'solr.index.updatehandler.delayedprocessingeventlistener'
+        event: ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordGarbageCheckEvent
+
+  ### Indexing
+  ApacheSolrForTypo3\Solr\EventListener\PageIndexer\FrontendGroupsModifier:
+    tags:
+      - name: event.listener
+        identifier: 'solr.index.pageIndexer.FrontendUserAuthenticator'
+        event: TYPO3\CMS\Frontend\Authentication\ModifyResolvedFrontendGroupsEvent

@@ -1,29 +1,19 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Tests\Unit\Query\FilterEncoder;
 
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2010-2011 Markus Goldbach <markus.goldbach@dkd.de>
- *  (c) 2012-2015 Ingo Renner <ingo@typo3.org>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.     See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
+
+namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets\RangeBased\DateRange;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\DateRange\DateRangeUrlDecoder;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
@@ -34,17 +24,17 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author Markus Goldbach
  */
-class DateRangeUrlEncoderTest extends UnitTest
+class DateRangeUrlDecoderTest extends UnitTest
 {
-
     /**
      * @var DateRangeUrlDecoder
      */
     protected $rangeParser;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->rangeParser = GeneralUtility::makeInstance(DateRangeUrlDecoder::class);
+        parent::setUp();
     }
 
     /**
@@ -54,9 +44,9 @@ class DateRangeUrlEncoderTest extends UnitTest
     {
         $expected = '[2010-01-01T00:00:00Z TO 2010-01-31T23:59:59Z]';
         $actual = $this->rangeParser->decode('201001010000-201001312359');
-        $this->assertEquals($expected, $actual);
+        self::assertEquals($expected, $actual);
     }
-    
+
     /**
      * @test
      */
@@ -64,9 +54,9 @@ class DateRangeUrlEncoderTest extends UnitTest
     {
         $expected = '[* TO 2010-01-31T23:59:59Z]';
         $actual = $this->rangeParser->decode('-201001312359');
-        $this->assertEquals($expected, $actual);
+        self::assertEquals($expected, $actual);
     }
-    
+
     /**
      * @test
      */
@@ -74,6 +64,6 @@ class DateRangeUrlEncoderTest extends UnitTest
     {
         $expected = '[2010-01-01T00:00:00Z TO *]';
         $actual = $this->rangeParser->decode('201001010000-');
-        $this->assertEquals($expected, $actual);
+        self::assertEquals($expected, $actual);
     }
 }

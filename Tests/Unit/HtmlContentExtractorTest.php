@@ -1,28 +1,19 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Tests\Unit;
 
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2017 Timo Hund <timo.hund@dkd.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
+
+namespace ApacheSolrForTypo3\Solr\Tests\Unit;
 
 use ApacheSolrForTypo3\Solr\HtmlContentExtractor;
 
@@ -33,7 +24,6 @@ use ApacheSolrForTypo3\Solr\HtmlContentExtractor;
  */
 class HtmlContentExtractorTest extends UnitTest
 {
-
     /**
      * @test
      */
@@ -44,10 +34,10 @@ class HtmlContentExtractorTest extends UnitTest
 
         $expectedTagContent = [
             'tagsH1' => 'Level 1 headline',
-            'tagsH2H3' => 'Level 2 headline Level 3 headline'
+            'tagsH2H3' => 'Level 2 headline Level 3 headline',
         ];
 
-        $this->assertSame($expectedTagContent, $tagContent, 'Extractor did not retrieve expected tag content');
+        self::assertSame($expectedTagContent, $tagContent, 'Extractor did not retrieve expected tag content');
     }
 
     public function getIndexableContentDataProvider()
@@ -55,28 +45,28 @@ class HtmlContentExtractorTest extends UnitTest
         return [
             'unifyWhitespaces' => [
                 'websiteContent' => $this->getFixtureContentByName('fixture2.html'),
-                'exptectedIndexableContent' => 'Title Level 1 headline Hello World Level 2 headline Level 3 headline'
+                'exptectedIndexableContent' => 'Title Level 1 headline Hello World Level 2 headline Level 3 headline',
             ],
             'unifyTabs' => [
                 'websiteContent' => "Test\t\tTest",
-                'exptectedIndexableContent' => 'Test Test'
+                'exptectedIndexableContent' => 'Test Test',
             ],
             'removeScriptTags' => [
                 'websiteContent' => '<script>foo</script>Test',
-                'exptectedIndexableContent' => 'Test'
+                'exptectedIndexableContent' => 'Test',
             ],
             'decodeEntities' => [
                 'websiteContent' => 'B&auml;hm',
-                'exptectedIndexableContent' => 'Bähm'
+                'exptectedIndexableContent' => 'Bähm',
             ],
             'decodeSpaceEntities' => [
                 'websiteContent' => 'B&auml;hm&nbsp; Bum',
-                'exptectedIndexableContent' => 'Bähm Bum'
+                'exptectedIndexableContent' => 'Bähm Bum',
             ],
             'decodeSpaceUtf8Nbsp' => [
                 'websiteContent' => 'test <br/>afterNBSP',
-                'exptectedIndexableContent' => 'test afterNBSP'
-            ]
+                'exptectedIndexableContent' => 'test afterNBSP',
+            ],
         ];
     }
 
@@ -87,6 +77,6 @@ class HtmlContentExtractorTest extends UnitTest
     public function canUnifyWhitespacesInIndexableContent($websiteContent, $expectedIndexableContent)
     {
         $extractor = new HtmlContentExtractor($websiteContent);
-        $this->assertSame($expectedIndexableContent, $extractor->getIndexableContent(), 'Unexpected indexable content');
+        self::assertSame($expectedIndexableContent, $extractor->getIndexableContent(), 'Unexpected indexable content');
     }
 }

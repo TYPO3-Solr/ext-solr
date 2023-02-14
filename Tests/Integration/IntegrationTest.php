@@ -1,58 +1,59 @@
 <?php
+
+/*
+ * This file is part of the TYPO3 CMS project.
+ *
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
+ *
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ *
+ * The TYPO3 project - inspiring people to share!
+ */
+
 namespace ApacheSolrForTypo3\Solr\Tests\Integration;
 
-/***************************************************************
- *  Copyright notice
- *
- *  (c) 2010-2015 Timo Schmidt <timo.schmidt@dkd.de>
- *  All rights reserved
- *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
-
 use ApacheSolrForTypo3\Solr\Access\Rootline;
+use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\Tests\Unit\Helper\FakeObjectManager;
 use ApacheSolrForTypo3\Solr\Typo3PageIndexer;
+use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Driver\Exception as DBALDriverException;
+use Doctrine\DBAL\Exception as DoctrineDBALException;
+use Doctrine\DBAL\Schema\SchemaException;
+use function getenv;
 use InvalidArgumentException;
-use Nimut\TestingFramework\Exception\Exception;
 use ReflectionClass;
 use ReflectionException;
+use ReflectionObject;
 use RuntimeException;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Cache\CacheManager;
-use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\UserAspect;
 use TYPO3\CMS\Core\Core\Environment;
+use TYPO3\CMS\Core\Database\Schema\Exception\StatementException;
+use TYPO3\CMS\Core\Database\Schema\Exception\UnexpectedSignalReturnValueTypeException;
 use TYPO3\CMS\Core\Database\Schema\SchemaMigrator;
 use TYPO3\CMS\Core\Database\Schema\SqlReader;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
+use TYPO3\CMS\Core\Error\Http\InternalServerErrorException;
+use TYPO3\CMS\Core\Error\Http\ServiceUnavailableException;
+use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Http\ServerRequest;
+use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Localization\LanguageService;
+use TYPO3\CMS\Core\Tests\Functional\SiteHandling\SiteBasedTestTrait;
 use TYPO3\CMS\Core\TimeTracker\TimeTracker;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use TYPO3\CMS\Frontend\Http\RequestHandler;
-use TYPO3\CMS\Frontend\Page\PageGenerator;
-use TYPO3\CMS\Core\Tests\Functional\SiteHandling\SiteBasedTestTrait;
-use function getenv;
+use TYPO3\TestingFramework\Core\Exception as TestingFrameworkCoreException;
+use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 /**
  * Base class for all integration tests in the EXT:solr project
@@ -61,8 +62,12 @@ use function getenv;
  */
 abstract class IntegrationTest extends FunctionalTestCase
 {
-
     use SiteBasedTestTrait;
+
+    protected $coreExtensionsToLoad = [
+        'scheduler',
+        'fluid_styled_content',
+    ];
 
     /**
      * @var array
@@ -70,23 +75,23 @@ abstract class IntegrationTest extends FunctionalTestCase
     protected const LANGUAGE_PRESETS = [
         'EN' => ['id' => 0, 'title' => 'English', 'locale' => 'en_US.UTF8'],
         'DE' => ['id' => 1, 'title' => 'German', 'locale' => 'de_DE.UTF8', 'fallbackType' => 'fallback', 'fallbacks' => 'EN'],
-        'DA' => ['id' => 2, 'title' => 'Danish', 'locale' => 'da_DA.UTF8']
+        'DA' => ['id' => 2, 'title' => 'Danish', 'locale' => 'da_DA.UTF8'],
     ];
 
     /**
      * @var array
      */
     protected $testExtensionsToLoad = [
-        'typo3conf/ext/solr'
+        'typo3conf/ext/solr',
     ];
 
     /**
      * @var array
      */
-    protected $testSolrCores = [
+    protected array $testSolrCores = [
         'core_en',
         'core_de',
-        'core_dk'
+        'core_dk',
     ];
 
     /**
@@ -94,8 +99,8 @@ abstract class IntegrationTest extends FunctionalTestCase
      */
     protected $configurationToUseInTestInstance = [
        'SYS' =>  [
-           'exceptionalErrors' =>  E_WARNING | E_RECOVERABLE_ERROR | E_DEPRECATED | E_USER_DEPRECATED
-       ]
+           'exceptionalErrors' =>  E_WARNING | E_RECOVERABLE_ERROR | E_DEPRECATED | E_USER_DEPRECATED,
+       ],
     ];
 
     /**
@@ -104,10 +109,17 @@ abstract class IntegrationTest extends FunctionalTestCase
     protected $instancePath;
 
     /**
-     * @return void
-     * @throws NoSuchCacheException
+     * If set to true in subclasses, the import of configured root pages will be skipped.
+     *
+     * @var bool
      */
-    public function setUp()
+    protected bool $skipImportRootPagesAndTemplatesForConfiguredSites = false;
+
+    /**
+     * @throws NoSuchCacheException
+     * @throws DBALException
+     */
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -129,23 +141,19 @@ abstract class IntegrationTest extends FunctionalTestCase
      * Loads a Fixture from the Fixtures folder beside the current test case.
      *
      * @param $fixtureName
+     * @throws TestingFrameworkCoreException
      */
     protected function importDataSetFromFixture($fixtureName)
     {
-        try {
-            $this->importDataSet($this->getFixturePathByName($fixtureName));
-            return;
-        } catch (\Exception $e) {}
-        $this->fail(sprintf('Can not import "%s" fixture.', $fixtureName));
+        $this->importDataSet($this->getFixturePathByName($fixtureName));
     }
 
     /**
      * Returns the absolute root path to the fixtures.
      *
      * @return string
-     * @throws ReflectionException
      */
-    protected function getFixtureRootPath()
+    protected function getFixtureRootPath(): string
     {
         return $this->getRuntimeDirectory() . '/Fixtures/';
     }
@@ -155,9 +163,8 @@ abstract class IntegrationTest extends FunctionalTestCase
      *
      * @param $fixtureName
      * @return string
-     * @throws ReflectionException
      */
-    protected function getFixturePathByName($fixtureName)
+    protected function getFixturePathByName($fixtureName): string
     {
         return $this->getFixtureRootPath() . $fixtureName;
     }
@@ -167,39 +174,24 @@ abstract class IntegrationTest extends FunctionalTestCase
      *
      * @param string $fixtureName
      * @return string
-     * @throws ReflectionException
      */
-    protected function getFixtureContentByName($fixtureName)
+    protected function getFixtureContentByName(string $fixtureName): string
     {
         return file_get_contents($this->getFixturePathByName($fixtureName));
-    }
-
-    /**
-     * @param string $fixtureName
-     * @throws ReflectionException
-     */
-    protected function importDumpFromFixture($fixtureName)
-    {
-        $dumpContent = $this->getFixtureContentByName($fixtureName);
-        $dumpContent = str_replace(["\r", "\n"], '', $dumpContent);
-        $queries = GeneralUtility::trimExplode(';', $dumpContent, true);
-
-        $connection = $this->getDatabaseConnection();
-        foreach ($queries as $query) {
-            $connection->exec($query);
-        }
     }
 
     /**
      * Imports an ext_tables.sql definition as done by the install tool.
      *
      * @param string $fixtureName
-     * @throws ReflectionException
+     * @throws DoctrineDBALException
+     * @throws SchemaException
+     * @throws StatementException
+     * @throws UnexpectedSignalReturnValueTypeException
      */
-    protected function importExtTablesDefinition($fixtureName)
+    protected function importExtTablesDefinition(string $fixtureName)
     {
         // create fake extension database table and TCA
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
 
         $schemaMigrationService = GeneralUtility::makeInstance(SchemaMigrator::class);
         $sqlReader = GeneralUtility::makeInstance(SqlReader::class);
@@ -209,7 +201,7 @@ abstract class IntegrationTest extends FunctionalTestCase
 
         $updateResult = $schemaMigrationService->install($createTableStatements);
         $failedStatements = array_filter($updateResult);
-        $result = array();
+        $result = [];
         foreach ($failedStatements as $query => $error) {
             $result[] = 'Query "' . $query . '" returned "' . $error . '"';
         }
@@ -226,42 +218,36 @@ abstract class IntegrationTest extends FunctionalTestCase
      * Returns the directory on runtime.
      *
      * @return string
-     * @throws ReflectionException
      */
-    protected function getRuntimeDirectory()
+    protected function getRuntimeDirectory(): string
     {
-        $rc = new ReflectionClass(get_class($this));
+        $rc = new ReflectionClass(static::class);
         return dirname($rc->getFileName());
     }
 
     /**
      * @param string $version
+     * @return bool
      */
-    protected function skipInVersionBelow($version)
+    protected function getIsTYPO3VersionBelow(string $version): bool
     {
-        if ($this->getIsTYPO3VersionBelow($version)) {
-            $this->markTestSkipped('This test requires TYPO3 ' . $version . ' or greater.');
-        }
-    }
-
-    /**
-     * @param string $version
-     * @return mixed
-     */
-    protected function getIsTYPO3VersionBelow($version)
-    {
-        return version_compare(TYPO3_branch, $version, '<');
+        return (bool)version_compare(GeneralUtility::makeInstance(Typo3Version::class)->getBranch(), $version, '<');
     }
 
     /**
      * @param int $id
      * @param string $MP
-     * @param $language
+     * @param int $language
      * @return TypoScriptFrontendController
+     * @throws InternalServerErrorException
+     * @throws ServiceUnavailableException
+     * @throws SiteNotFoundException
+     *
+     * @deprecated Do not try to set up and configure TSFE in any way by self.
      */
-    protected function getConfiguredTSFE($id = 1, $MP = '', $language = 0)
+    protected function getConfiguredTSFE(int $id = 1, string $MP = '', int $language = 0): TypoScriptFrontendController
     {
-            /** @var TSFETestBootstrapper $bootstrapper */
+        /* @var TSFETestBootstrapper $bootstrapper */
         $bootstrapper = GeneralUtility::makeInstance(TSFETestBootstrapper::class);
 
         $result = $bootstrapper->bootstrap($id, $MP, $language);
@@ -269,17 +255,16 @@ abstract class IntegrationTest extends FunctionalTestCase
     }
 
     /**
-     * @param string $coreName
-     * @return void
+     * @param string|null $coreName
      */
-    protected function cleanUpSolrServerAndAssertEmpty($coreName = 'core_en')
+    protected function cleanUpSolrServerAndAssertEmpty(?string $coreName = 'core_en')
     {
         $this->validateTestCoreName($coreName);
 
         // cleanup the solr server
         $result = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/' . $coreName . '/update?stream.body=<delete><query>*:*</query></delete>&commit=true');
         if (strpos($result, '<int name="QTime">') == false) {
-            $this->fail('Could not empty solr test index');
+            self::fail('Could not empty solr test index');
         }
 
         // we wait to make sure the document will be deleted in solr
@@ -289,31 +274,29 @@ abstract class IntegrationTest extends FunctionalTestCase
     }
 
     /**
-     * @param string $coreName
-     * @return void
+     * @param string|null $coreName
+     * @return array|false
      */
-    protected function waitToBeVisibleInSolr($coreName = 'core_en')
+    protected function waitToBeVisibleInSolr(?string $coreName = 'core_en')
     {
         $this->validateTestCoreName($coreName);
         $url = $this->getSolrConnectionUriAuthority() . '/solr/' . $coreName . '/update?softCommit=true';
-        get_headers($url);
+        return get_headers($url);
     }
 
     /**
      * @param string $coreName
      * @throws InvalidArgumentException
      */
-    protected function validateTestCoreName($coreName)
+    protected function validateTestCoreName(string $coreName)
     {
-        if(!in_array($coreName, $this->testSolrCores)) {
-            throw new InvalidArgumentException('No valid testcore passed');
+        if (!in_array($coreName, $this->testSolrCores)) {
+            throw new InvalidArgumentException('No valid test core passed');
         }
     }
 
     /**
      * Assertion to check if the solr server is empty.
-     *
-     * @return void
      */
     protected function assertSolrIsEmpty()
     {
@@ -325,20 +308,21 @@ abstract class IntegrationTest extends FunctionalTestCase
      *
      * @param int $documentCount
      */
-    protected function assertSolrContainsDocumentCount($documentCount)
+    protected function assertSolrContainsDocumentCount(int $documentCount)
     {
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
-        $this->assertContains('"numFound":' . intval($documentCount), $solrContent, 'Solr contains unexpected amount of documents');
+        self::assertStringContainsString('"numFound":' . (int)$documentCount, $solrContent, 'Solr contains unexpected amount of documents');
     }
 
     /**
      * @param string $fixture
      * @param array $importPageIds
-     * @param array $feUserGroupArray
-     * @throws Exception
-     * @throws ReflectionException
+     * @param array|null $feUserGroupArray
+     * @throws InternalServerErrorException
+     * @throws ServiceUnavailableException
+     * @throws SiteNotFoundException
      */
-    protected function indexPageIdsFromFixture($fixture, $importPageIds, $feUserGroupArray = [0])
+    protected function indexPageIdsFromFixture(string $fixture, array $importPageIds, array $feUserGroupArray = [0])
     {
         $this->importDataSetFromFixture($fixture);
         $this->indexPageIds($importPageIds, $feUserGroupArray);
@@ -347,15 +331,23 @@ abstract class IntegrationTest extends FunctionalTestCase
 
     /**
      * @param array $importPageIds
-     * @param array $feUserGroupArray
+     * @param array|null $feUserGroupArray
+     * @throws InternalServerErrorException
+     * @throws ServiceUnavailableException
+     * @throws SiteNotFoundException
      */
-    protected function indexPageIds($importPageIds, $feUserGroupArray = [0])
+    protected function indexPageIds(array $importPageIds, array $feUserGroupArray = [0])
     {
         foreach ($importPageIds as $importPageId) {
             $fakeTSFE = $this->fakeTSFE($importPageId, $feUserGroupArray);
 
-            /** @var $pageIndexer Typo3PageIndexer */
+            /* @var Typo3PageIndexer $pageIndexer */
             $pageIndexer = GeneralUtility::makeInstance(Typo3PageIndexer::class, $fakeTSFE);
+            $indexQueueItemMock = $this->createMock(Item::class);
+            $indexQueueItemMock->expects(self::any())
+                ->method('getIndexingConfigurationName')
+                ->willReturn('pages');
+            $pageIndexer->setIndexQueueItem($indexQueueItemMock);
             $pageIndexer->setPageAccessRootline(Rootline::getAccessRootlineByPageId($importPageId));
             $pageIndexer->indexPage();
         }
@@ -369,7 +361,8 @@ abstract class IntegrationTest extends FunctionalTestCase
      * @param int $workspace
      * @return BackendUserAuthentication
      */
-    protected function fakeBEUser($isAdmin = 0, $workspace = 0) {
+    protected function fakeBEUser(int $isAdmin = 0, int $workspace = 0): BackendUserAuthentication
+    {
         /** @var $beUser  BackendUserAuthentication */
         $beUser = GeneralUtility::makeInstance(BackendUserAuthentication::class);
         $beUser->user['admin'] = $isAdmin;
@@ -380,13 +373,18 @@ abstract class IntegrationTest extends FunctionalTestCase
     }
 
     /**
-     * @param integer $pageId
+     * @param int $pageId
      * @param array $feUserGroupArray
      * @return TypoScriptFrontendController
+     * @throws InternalServerErrorException
+     * @throws ServiceUnavailableException
+     * @throws SiteNotFoundException
+     *
+     * @deprecated Do not try to set up and configure TSFE in any way by self.
      */
-    protected function fakeTSFE($pageId, $feUserGroupArray = [0])
+    protected function fakeTSFE(int $pageId, array $feUserGroupArray = [0]): TypoScriptFrontendController
     {
-        $GLOBALS['TT'] = $this->getMockBuilder(TimeTracker::class)->disableOriginalConstructor()->getMock();
+        $GLOBALS['TT'] = $this->createMock(TimeTracker::class);
         $_SERVER['HTTP_HOST'] = 'test.local.typo3.org';
         $_SERVER['REQUEST_URI'] = '/search.html';
 
@@ -410,8 +408,12 @@ abstract class IntegrationTest extends FunctionalTestCase
     {
         /** @var  $context Context::class */
         $context = GeneralUtility::makeInstance(Context::class);
-        $userAspect = $this->getMockBuilder(UserAspect::class)->setMethods([])->getMock();
-        $userAspect->expects($this->any())->method('get')->willReturnCallback(function($key) use($feUserGroupArray){
+        $userAspect = $this->getMockBuilder(UserAspect::class)
+            ->onlyMethods([
+                'get',
+                'getGroupIds',
+            ])->getMock();
+        $userAspect->expects(self::any())->method('get')->willReturnCallback(function ($key) use ($feUserGroupArray) {
             if ($key === 'groupIds') {
                 return $feUserGroupArray;
             }
@@ -424,7 +426,7 @@ abstract class IntegrationTest extends FunctionalTestCase
             $originalUserAspect = GeneralUtility::makeInstance(UserAspect::class);
             return $originalUserAspect->get($key);
         });
-        $userAspect->expects($this->any())->method('getGroupIds')->willReturn($feUserGroupArray);
+        $userAspect->expects(self::any())->method('getGroupIds')->willReturn($feUserGroupArray);
         /* @var UserAspect $userAspect */
         $context->setAspect('frontend.user', $userAspect);
     }
@@ -442,36 +444,49 @@ abstract class IntegrationTest extends FunctionalTestCase
      *
      * @return DataHandler
      */
-    protected function getDataHandler()
+    protected function getDataHandler(): DataHandler
     {
         $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageService::class);
-        /* @var DataHandler $dataHandler */
-        $dataHandler = GeneralUtility::makeInstance(DataHandler::class);
-        return $dataHandler;
+        /* @retrun  DataHandler */
+        return GeneralUtility::makeInstance(DataHandler::class);
     }
 
     /**
-     * @return void
+     * Writes default site-config.yaml files for testing sites one, two and three.
+     * The records for root pages(incl. translations) and TypoScript templates will be imported by default.
+     *
+     * To skip the import of records for root pages, the property {@link skipImportRootPagesAndTemplatesForConfiguredSites} must be set to false.
+     *
+     * To add or override TypoScript setting please use following typo3/testing-framework methods:
+     * * {@link addTypoScriptToTemplateRecord()}
+     * * {@link setUpFrontendRootPage()}
+     *
+     * @throws TestingFrameworkCoreException
      */
-    protected function writeDefaultSolrTestSiteConfiguration() {
+    protected function writeDefaultSolrTestSiteConfiguration()
+    {
         $solrConnectionInfo = $this->getSolrConnectionInfo();
         $this->writeDefaultSolrTestSiteConfigurationForHostAndPort($solrConnectionInfo['scheme'], $solrConnectionInfo['host'], $solrConnectionInfo['port']);
     }
 
-
     /**
      * @var string
      */
-    protected static $lastSiteCreated = '';
+    protected static string $lastSiteCreated = '';
 
     /**
-     * @param string $scheme
-     * @param string $host
-     * @param int $port
-     * @return void
+     * @param string|null $scheme
+     * @param string|null $host
+     * @param int|null $port
+     * @param bool|null $disableDefaultLanguage
+     * @throws TestingFrameworkCoreException
      */
-    protected function writeDefaultSolrTestSiteConfigurationForHostAndPort($scheme = 'http', $host = 'localhost', $port = 8999, $disableDefaultLanguage = false)
-    {
+    protected function writeDefaultSolrTestSiteConfigurationForHostAndPort(
+        ?string $scheme = 'http',
+        ?string $host = 'localhost',
+        ?int $port = 8999,
+        ?bool $disableDefaultLanguage = false
+    ) {
         $siteCreatedHash = md5($scheme . $host . $port . $disableDefaultLanguage);
         if (self::$lastSiteCreated === $siteCreatedHash) {
             return;
@@ -494,7 +509,7 @@ abstract class IntegrationTest extends FunctionalTestCase
             'integration_tree_one',
             $this->buildSiteConfiguration(1, 'http://testone.site/'),
             [
-                $defaultLanguage, $german, $danish
+                $defaultLanguage, $german, $danish,
             ],
             $this->buildErrorHandlingConfiguration('Fluid', [404])
         );
@@ -503,7 +518,7 @@ abstract class IntegrationTest extends FunctionalTestCase
             'integration_tree_two',
             $this->buildSiteConfiguration(111, 'http://testtwo.site/'),
             [
-                $defaultLanguage, $german, $danish
+                $defaultLanguage, $german, $danish,
             ],
             $this->buildErrorHandlingConfiguration('Fluid', [404])
         );
@@ -527,23 +542,44 @@ abstract class IntegrationTest extends FunctionalTestCase
         // disable solr for site three
         $this->mergeSiteConfiguration('integration_tree_three', ['solr_enabled_read' => false]);
 
+        $this->importRootPagesAndTemplatesForConfiguredSites();
+
         clearstatcache();
         usleep(500);
         self::$lastSiteCreated = $siteCreatedHash;
     }
 
     /**
+     * Imports the root pages and TypoScript templates for configured sites.
+     *
+     * Note: This method is executed by default.
+     *       The execution of this method call can be skipped for subclasses by setting
+     *       {@link skipImportRootPagesAndTemplatesForConfiguredSites} property to false.
+     *
+     * @throws TestingFrameworkCoreException
+     */
+    private function importRootPagesAndTemplatesForConfiguredSites(): void
+    {
+        if ($this->skipImportRootPagesAndTemplatesForConfiguredSites === true) {
+            return;
+        }
+        $rc = new ReflectionClass(self::class);
+        $path = dirname($rc->getFileName());
+        $this->importDataSet($path . '/Fixtures/sites_setup_and_data_set/01_integration_tree_one.xml');
+        $this->importDataSet($path . '/Fixtures/sites_setup_and_data_set/02_integration_tree_two.xml');
+        $this->importDataSet($path . '/Fixtures/sites_setup_and_data_set/03_integration_tree_three.xml');
+    }
+
+    /**
      * This method registers an error handler that fails the testcase when a E_USER_DEPRECATED error
      * is thrown with the prefix solr:deprecation
-     *
-     * @return void
      */
     protected function failWhenSolrDeprecationIsCreated(): void
     {
         error_reporting(error_reporting() & ~E_USER_DEPRECATED);
         set_error_handler(function ($id, $msg) {
             if ($id === E_USER_DEPRECATED && strpos($msg, 'solr:deprecation: ') === 0) {
-                $this->fail("Executed deprecated EXT:solr code: " . $msg);
+                $this->fail('Executed deprecated EXT:solr code: ' . $msg);
             }
         });
     }
@@ -594,5 +630,56 @@ abstract class IntegrationTest extends FunctionalTestCase
         }
         $property->setAccessible(true);
         return $property->getValue($object);
+    }
+
+    /*
+        Nimut testing framework goodies, copied from https://github.com/Nimut/testing-framework
+     */
+
+    /**
+     * Helper function to call protected or private methods
+     *
+     * Copied from https://github.com/Nimut/testing-framework/blob/3d0573b23fe16157460b4e73e51e1cc0903ea35c/src/TestingFramework/TestCase/AbstractTestCase.php#L227-L245
+     *
+     * @param object $object The object to be invoked
+     * @param string $name the name of the method to call
+     * @return mixed
+     * @throws ReflectionException
+     */
+    protected function callInaccessibleMethod($object, $name)
+    {
+        // Remove first two arguments ($object and $name)
+        $arguments = func_get_args();
+        array_splice($arguments, 0, 2);
+
+        $reflectionObject = new ReflectionObject($object);
+        $reflectionMethod = $reflectionObject->getMethod($name);
+        $reflectionMethod->setAccessible(true);
+
+        return $reflectionMethod->invokeArgs($object, $arguments);
+    }
+
+    /**
+     * Adds TypoScript setup snippet to the existing template record
+     *
+     * @param int $pageId
+     * @param string $constants
+     * @throws DBALDriverException
+     */
+    protected function addTypoScriptConstantsToTemplateRecord(int $pageId, string $constants): void
+    {
+        $connection = $this->getConnectionPool()->getConnectionForTable('sys_template');
+        $statement = $connection->select(['*'], 'sys_template', ['pid' => $pageId, 'root' => 1]);
+        $template = $statement->fetchAssociative();
+
+        if (empty($template)) {
+            self::fail('Cannot find root template on page with id: "' . $pageId . '"');
+        }
+        $updateFields['constants'] = $template['constants'] . LF . $constants;
+        $connection->update(
+            'sys_template',
+            $updateFields,
+            ['uid' => $template['uid']]
+        );
     }
 }

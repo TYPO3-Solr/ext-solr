@@ -1,5 +1,6 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\FieldProcessor;
+
+declare(strict_types=1);
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -14,6 +15,8 @@ namespace ApacheSolrForTypo3\Solr\FieldProcessor;
  * The TYPO3 project - inspiring people to share!
  */
 
+namespace ApacheSolrForTypo3\Solr\FieldProcessor;
+
 use ApacheSolrForTypo3\Solr\System\DateTime\FormatService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -25,7 +28,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class TimestampToUtcIsoDate implements FieldProcessor
 {
-
     /**
      * Expects a timestamp and converts it to an ISO 8601 date in UTC as needed by Solr.
      *
@@ -35,14 +37,14 @@ class TimestampToUtcIsoDate implements FieldProcessor
      * @param array $values Array of values, an array because of multivalued fields
      * @return array Modified array of values
      */
-    public function process(array $values)
+    public function process(array $values): array
     {
         $results = [];
         /* @var FormatService $formatService */
         $formatService = GeneralUtility::makeInstance(FormatService::class);
 
         foreach ($values as $timestamp) {
-            $results[] = $formatService->timestampToUtcIso($timestamp);
+            $results[] = $formatService->timestampToUtcIso((int)$timestamp);
         }
 
         return $results;

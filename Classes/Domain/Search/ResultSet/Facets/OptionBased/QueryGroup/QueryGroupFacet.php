@@ -1,5 +1,4 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\QueryGroup;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -14,8 +13,11 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Que
  * The TYPO3 project - inspiring people to share!
  */
 
+namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\QueryGroup;
+
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\AbstractOptionsFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
+use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 
 /**
  * Class QueryGroupFacet
@@ -31,7 +33,7 @@ class QueryGroupFacet extends AbstractOptionsFacet
      * String
      * @var string
      */
-    protected static $type = self::TYPE_QUERY_GROUP;
+    protected static string $type = self::TYPE_QUERY_GROUP;
 
     /**
      * OptionsFacet constructor
@@ -41,9 +43,16 @@ class QueryGroupFacet extends AbstractOptionsFacet
      * @param string $field
      * @param string $label
      * @param array $configuration Facet configuration passed from typoscript
+     * @param ObjectManagerInterface $objectManager
      */
-    public function __construct(SearchResultSet $resultSet, $name, $field, $label = '', array $configuration = [])
-    {
-        parent::__construct($resultSet, $name, $field, $label, $configuration);
+    public function __construct(
+        SearchResultSet $resultSet,
+        $name,
+        $field,
+        $label = '',
+        array $configuration = [],
+        ObjectManagerInterface $objectManager = null
+    ) {
+        parent::__construct($resultSet, $name, $field, $label, $configuration, $objectManager);
     }
 }

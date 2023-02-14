@@ -1,32 +1,23 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Test\ViewHelpers\Document;
 
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2015-2016 Timo Hund <timo.hund@dkd.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+namespace ApacheSolrForTypo3\Solr\Tests\Unit\ViewHelpers\Document;
+
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResult;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
+use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use ApacheSolrForTypo3\Solr\ViewHelpers\Document\RelevanceViewHelper;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 
@@ -35,26 +26,25 @@ use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
  */
 class RelevanceViewHelperTest extends UnitTest
 {
-
     /**
      * @test
      */
     public function canCalculateRelevance()
     {
         $resultSetMock = $this->getDumbMock(SearchResultSet::class);
-        $resultSetMock->expects($this->any())->method('getMaximumScore')->will($this->returnValue(5.5));
+        $resultSetMock->expects(self::any())->method('getMaximumScore')->willReturn(5.5);
 
         $documentMock = $this->getDumbMock(SearchResult::class);
-        $documentMock->expects($this->once())->method('getScore')->will($this->returnValue(0.55));
+        $documentMock->expects(self::once())->method('getScore')->willReturn(0.55);
 
         $arguments = [
             'resultSet' => $resultSetMock,
-            'document' => $documentMock
+            'document' => $documentMock,
         ];
         $renderingContextMock = $this->getDumbMock(RenderingContextInterface::class);
         $score = RelevanceViewHelper::renderStatic($arguments, function () {}, $renderingContextMock);
 
-        $this->assertEquals(10.0, $score, 'Unexpected score');
+        self::assertEquals(10.0, $score, 'Unexpected score');
     }
 
     /**
@@ -63,19 +53,19 @@ class RelevanceViewHelperTest extends UnitTest
     public function canCalculateRelevanceFromPassedMaximumScore()
     {
         $resultSetMock = $this->getDumbMock(SearchResultSet::class);
-        $resultSetMock->expects($this->never())->method('getMaximumScore');
+        $resultSetMock->expects(self::never())->method('getMaximumScore');
 
         $documentMock = $this->getDumbMock(SearchResult::class);
-        $documentMock->expects($this->once())->method('getScore')->will($this->returnValue(0.55));
+        $documentMock->expects(self::once())->method('getScore')->willReturn(0.55);
 
         $arguments = [
             'resultSet' => $resultSetMock,
             'document' => $documentMock,
-            'maximumScore' => 11
+            'maximumScore' => 11,
         ];
         $renderingContextMock = $this->getDumbMock(RenderingContextInterface::class);
         $score = RelevanceViewHelper::renderStatic($arguments, function () {}, $renderingContextMock);
 
-        $this->assertEquals(5.0, $score, 'Unexpected score');
+        self::assertEquals(5.0, $score, 'Unexpected score');
     }
 }

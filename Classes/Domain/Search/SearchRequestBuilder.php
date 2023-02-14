@@ -1,6 +1,6 @@
 <?php
 
-namespace ApacheSolrForTypo3\Solr\Domain\Search;
+declare(strict_types=1);
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -15,6 +15,8 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search;
  * The TYPO3 project - inspiring people to share!
  */
 
+namespace ApacheSolrForTypo3\Solr\Domain\Search;
+
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Session\FrontendUserSession;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -25,21 +27,20 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class SearchRequestBuilder
 {
-
     /**
      * @var TypoScriptConfiguration
      */
-    protected $typoScriptConfiguration;
+    protected TypoScriptConfiguration $typoScriptConfiguration;
 
     /**
      * @var FrontendUserSession
      */
-    protected $session = null;
+    protected FrontendUserSession $session;
 
     /**
      * SearchRequestBuilder constructor.
      * @param TypoScriptConfiguration $typoScriptConfiguration
-     * @param FrontendUserSession $frontendUserSession
+     * @param FrontendUserSession|null $frontendUserSession
      */
     public function __construct(TypoScriptConfiguration $typoScriptConfiguration, FrontendUserSession $frontendUserSession = null)
     {
@@ -53,16 +54,14 @@ class SearchRequestBuilder
      * @param int $languageId
      * @return SearchRequest
      */
-    public function buildForSearch(array $controllerArguments, $pageId, $languageId)
+    public function buildForSearch(array $controllerArguments, int $pageId, int $languageId): SearchRequest
     {
         $controllerArguments = $this->adjustPageArgumentToPositiveInteger($controllerArguments);
 
-        /** @var $searchRequest SearchRequest */
+        /* @var SearchRequest $searchRequest */
         $argumentsNamespace = $this->typoScriptConfiguration->getSearchPluginNamespace();
         $searchRequest = $this->getRequest([$argumentsNamespace => $controllerArguments], $pageId, $languageId);
-        $searchRequest = $this->applyPassedResultsPerPage($searchRequest);
-
-        return $searchRequest;
+        return $this->applyPassedResultsPerPage($searchRequest);
     }
 
     /**
@@ -109,7 +108,7 @@ class SearchRequestBuilder
      * @param SearchRequest $searchRequest
      * @return bool
      */
-    protected function shouldHideResultsFromInitialSearch(SearchRequest $searchRequest)
+    protected function shouldHideResultsFromInitialSearch(SearchRequest $searchRequest): bool
     {
         return ($this->typoScriptConfiguration->getSearchInitializeWithEmptyQuery() ||
             $this->typoScriptConfiguration->getSearchInitializeWithQuery()) &&
@@ -123,11 +122,10 @@ class SearchRequestBuilder
      * @param int $languageId
      * @return SearchRequest
      */
-    public function buildForFrequentSearches($pageId, $languageId)
+    public function buildForFrequentSearches(int $pageId, int $languageId): SearchRequest
     {
-        /** @var $searchRequest SearchRequest */
-        $searchRequest = $this->getRequest([], $pageId, $languageId);
-        return $searchRequest;
+        /* @var SearchRequest $searchRequest */
+        return $this->getRequest([], $pageId, $languageId);
     }
 
     /**
@@ -137,13 +135,24 @@ class SearchRequestBuilder
      * @param int $languageId
      * @return SearchRequest
      */
-    public function buildForSuggest(array $controllerArguments, $rawUserQuery, $pageId, $languageId)
-    {
+    public function buildForSuggest(
+        array $controllerArguments,
+        string $rawUserQuery,
+        int $pageId,
+        int $languageId
+    ): SearchRequest {
         $controllerArguments['page'] = 0;
         $controllerArguments['q'] = $rawUserQuery;
         $argumentsNamespace = $this->typoScriptConfiguration->getSearchPluginNamespace();
 
-        return $this->getRequest(['q' => $rawUserQuery, $argumentsNamespace => $controllerArguments], $pageId, $languageId);
+        return $this->getRequest(
+            [
+                'q' => $rawUserQuery,
+                $argumentsNamespace => $controllerArguments,
+            ],
+            $pageId,
+            $languageId
+        );
     }
 
     /**
@@ -158,24 +167,27 @@ class SearchRequestBuilder
     {
         return GeneralUtility::makeInstance(
             SearchRequest::class,
-            /** @scrutinizer ignore-type */ $requestArguments,
-            /** @scrutinizer ignore-type */ $pageId,
-            /** @scrutinizer ignore-type */ $languageId,
-            /** @scrutinizer ignore-type */ $this->typoScriptConfiguration
+            /** @scrutinizer ignore-type */
+            $requestArguments,
+            /** @scrutinizer ignore-type */
+            $pageId,
+            /** @scrutinizer ignore-type */
+            $languageId,
+            /** @scrutinizer ignore-type */
+            $this->typoScriptConfiguration
         );
     }
 
     /**
-     * This methods sets the page argument to an expected positive integer value in the arguments array.
+     * This method sets the page argument to an expected positive integer value in the arguments array.
      *
      * @param array $arguments
      * @return array
      */
     protected function adjustPageArgumentToPositiveInteger(array $arguments): array
     {
-        $page = isset($arguments['page']) ? intval($arguments['page']) : 0;
+        $page = isset($arguments['page']) ? (int)($arguments['page']) : 0;
         $arguments['page'] = max($page, 0);
-
         return $arguments;
     }
 }

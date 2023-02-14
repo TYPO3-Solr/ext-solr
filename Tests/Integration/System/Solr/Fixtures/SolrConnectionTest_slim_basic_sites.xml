@@ -20,32 +20,7 @@ There is following scenario:
       —— [32] Subpage 2 of Detached
 -->
 
-    <!-- Site tree for first site -->
-    <sys_template>
-        <uid>1</uid>
-        <pid>1</pid>
-        <root>1</root>
-        <clear>3</clear>
-        <config>
-            <![CDATA[
-                page = PAGE
-                page.typeNum = 0
-                page.bodyTag = <body>
-
-                plugin.tx_solr {
-                    enabled = 1
-                }
-            ]]>
-        </config>
-        <sorting>100</sorting>
-    </sys_template>
-    <pages>
-        <uid>1</uid>
-        <is_siteroot>1</is_siteroot>
-        <doktype>1</doktype>
-        <pid>0</pid>
-        <title>First site</title>
-    </pages>
+    <!-- Site tree for first site: Uses the root pages from default tests setup See: Ext:solr/Tests/Integration/Fixtures/sites_setup_and_data_set/01_integration_tree_one.xml -->
         <pages>
             <uid>11</uid>
             <pid>1</pid>
@@ -59,32 +34,7 @@ There is following scenario:
             <tsconfig_includes/>
         </pages>
 
-    <!-- Site tree for secod site -->
-    <sys_template>
-        <uid>111</uid>
-        <pid>111</pid>
-        <root>1</root>
-        <clear>3</clear>
-        <config>
-            <![CDATA[
-                page = PAGE
-                page.typeNum = 0
-                page.bodyTag = <body>
-
-                plugin.tx_solr {
-                    enabled = 1
-                }
-            ]]>
-        </config>
-        <sorting>100</sorting>
-    </sys_template>
-    <pages>
-        <uid>111</uid>
-        <is_siteroot>1</is_siteroot>
-        <doktype>1</doktype>
-        <pid>0</pid>
-        <title>Second site</title>
-    </pages>
+    <!-- Site tree for secod site: Uses the root pages from default tests setup See: Ext:solr/Tests/Integration/Fixtures/sites_setup_and_data_set/02_integration_tree_two.xml -->
         <pages>
             <uid>21</uid>
             <pid>111</pid>

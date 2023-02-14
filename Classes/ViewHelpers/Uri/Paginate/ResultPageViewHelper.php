@@ -1,5 +1,6 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\ViewHelpers\Uri\Paginate;
+
+declare(strict_types=1);
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -14,7 +15,11 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers\Uri\Paginate;
  * The TYPO3 project - inspiring people to share!
  */
 
+namespace ApacheSolrForTypo3\Solr\ViewHelpers\Uri\Paginate;
+
 use ApacheSolrForTypo3\Solr\ViewHelpers\Uri\AbstractUriViewHelper;
+use Closure;
+use TYPO3\CMS\Extbase\Object\Exception as ExtbaseObjectException;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 
 /**
@@ -25,7 +30,6 @@ use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
  */
 class ResultPageViewHelper extends AbstractUriViewHelper
 {
-
     /**
      * Initializes the arguments
      */
@@ -33,20 +37,21 @@ class ResultPageViewHelper extends AbstractUriViewHelper
     {
         parent::initializeArguments();
         $this->registerArgument('page', 'int', 'The page', false, 0);
-
     }
 
     /**
      * @param array $arguments
-     * @param \Closure $renderChildrenClosure
+     * @param Closure $renderChildrenClosure
      * @param RenderingContextInterface $renderingContext
      * @return string
+     * @throws ExtbaseObjectException
+     *
+     * @noinspection PhpMissingReturnTypeInspection
      */
-    public static function renderStatic(array $arguments, \Closure $renderChildrenClosure, RenderingContextInterface $renderingContext)
+    public static function renderStatic(array $arguments, Closure $renderChildrenClosure, RenderingContextInterface $renderingContext)
     {
         $page = $arguments['page'];
         $previousRequest = static::getUsedSearchRequestFromRenderingContext($renderingContext);
-        $uri = self::getSearchUriBuilder($renderingContext)->getResultPageUri($previousRequest, $page);
-        return $uri;
+        return self::getSearchUriBuilder($renderingContext)->getResultPageUri($previousRequest, $page);
     }
 }

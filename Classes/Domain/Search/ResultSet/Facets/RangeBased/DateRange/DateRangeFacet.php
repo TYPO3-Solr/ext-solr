@@ -1,5 +1,6 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\DateRange;
+
+declare(strict_types=1);
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -14,9 +15,12 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\Date
  * The TYPO3 project - inspiring people to share!
  */
 
+namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\DateRange;
+
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetItemCollection;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
+use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 
 /**
  * Value object that represent a date range facet.
@@ -32,12 +36,12 @@ class DateRangeFacet extends AbstractFacet
      * String
      * @var string
      */
-    protected static $type = self::TYPE_DATE_RANGE;
+    protected static string $type = self::TYPE_DATE_RANGE;
 
     /**
-     * @var DateRange
+     * @var DateRange|null
      */
-    protected $range;
+    protected ?DateRange $range = null;
 
     /**
      * OptionsFacet constructor
@@ -47,10 +51,17 @@ class DateRangeFacet extends AbstractFacet
      * @param string $field
      * @param string $label
      * @param array $configuration Facet configuration passed from typoscript
+     * @param ObjectManagerInterface $objectManager
      */
-    public function __construct(SearchResultSet $resultSet, $name, $field, $label = '', array $configuration = [])
-    {
-        parent::__construct($resultSet, $name, $field, $label, $configuration);
+    public function __construct(
+        SearchResultSet $resultSet,
+        string $name,
+        string $field,
+        string $label = '',
+        array $configuration = [],
+        ObjectManagerInterface $objectManager = null
+    ) {
+        parent::__construct($resultSet, $name, $field, $label, $configuration, $objectManager);
     }
 
     /**
@@ -64,18 +75,17 @@ class DateRangeFacet extends AbstractFacet
     /**
      * @return DateRange
      */
-    public function getRange()
+    public function getRange(): ?DateRange
     {
         return $this->range;
     }
-
 
     /**
      * Get facet partial name used for rendering the facet
      *
      * @return string
      */
-    public function getPartialName()
+    public function getPartialName(): string
     {
         return !empty($this->configuration['partialName']) ? $this->configuration['partialName'] : 'RangeDate.html';
     }
@@ -86,7 +96,7 @@ class DateRangeFacet extends AbstractFacet
      *
      * @return AbstractFacetItemCollection
      */
-    public function getAllFacetItems()
+    public function getAllFacetItems(): AbstractFacetItemCollection
     {
         return new DateRangeCollection([$this->range]);
     }

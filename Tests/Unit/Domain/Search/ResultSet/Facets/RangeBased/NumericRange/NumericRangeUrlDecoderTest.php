@@ -1,33 +1,23 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Test\Domain\Search\ResultSet\Facets\RangeBased\NumericRange;
 
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2010-2011 Markus Goldbach <markus.goldbach@dkd.de>
- *  (c) 2012-2015 Ingo Renner <ingo@typo3.org>
- *  (c) 2016 Markus Friedrich <markus.friedrich@dkd.de>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.     See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
+
+namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets\RangeBased\NumericRange;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\NumericRange\NumericRangeUrlDecoder;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use InvalidArgumentException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -37,7 +27,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @author Ingo Renner <ingo@typo3.org>
  * @author Markus Friedrich <markus.friedrich@dkd.de>
  */
-class NumericRangeUrlEncoderTest extends UnitTest
+class NumericRangeUrlDecoderTest extends UnitTest
 {
     /**
      * Parser to build Solr range queries
@@ -46,9 +36,10 @@ class NumericRangeUrlEncoderTest extends UnitTest
      */
     protected $rangeParser;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->rangeParser = GeneralUtility::makeInstance(NumericRangeUrlDecoder::class);
+        parent::setUp();
     }
 
     /**
@@ -56,12 +47,12 @@ class NumericRangeUrlEncoderTest extends UnitTest
      *
      * @return array
      */
-    public function rangeQueryParsingDataProvider()
+    public function rangeQueryParsingDataProvider(): array
     {
         return [
             ['firstValue' => '50', 'secondValue' => '100', 'expected' => '[50 TO 100]'],
             ['firstValue' => '-10', 'secondValue' => '20', 'expected' => '[-10 TO 20]'],
-            ['firstValue' => '-10', 'secondValue' => '-5', 'expected' => '[-10 TO -5]']
+            ['firstValue' => '-10', 'secondValue' => '-5', 'expected' => '[-10 TO -5]'],
         ];
     }
 
@@ -74,23 +65,21 @@ class NumericRangeUrlEncoderTest extends UnitTest
      * @param string $firstValue
      * @param string $secondValue
      * @param string $expectedResult
-     * @return void
      */
-    public function canParseRangeQuery($firstValue, $secondValue, $expectedResult)
+    public function canParseRangeQuery(string $firstValue, string $secondValue, string $expectedResult)
     {
         $actual = $this->rangeParser->decode($firstValue . '-' . $secondValue);
-        $this->assertEquals($expectedResult, $actual);
+        self::assertEquals($expectedResult, $actual);
     }
 
     /**
      * Test the handling of invalid parameters
      *
      * @test
-     * @expectedException \InvalidArgumentException
-     * @return void
      */
     public function canHandleInvalidParameters()
     {
+        $this->expectException(InvalidArgumentException::class);
         $this->rangeParser->decode('invalid-value');
     }
 }

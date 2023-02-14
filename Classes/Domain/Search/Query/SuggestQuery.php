@@ -1,5 +1,6 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Domain\Search\Query;
+
+declare(strict_types=1);
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -13,6 +14,8 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Query;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+namespace ApacheSolrForTypo3\Solr\Domain\Search\Query;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\ReturnFields;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
@@ -29,24 +32,22 @@ class SuggestQuery extends Query
     /**
      * @var array
      */
-    protected $configuration;
+    protected array $configuration;
 
     /**
      * @var string
      */
-    protected $prefix;
+    protected string $prefix;
 
     /**
      * SuggestQuery constructor.
      *
      * @param string $keywords
-     * @param TypoScriptConfiguration $solrConfiguration
+     * @param TypoScriptConfiguration|null $solrConfiguration
      */
-    public function __construct($keywords, $solrConfiguration = null)
+    public function __construct(string $keywords, TypoScriptConfiguration $solrConfiguration = null)
     {
         parent::__construct();
-        $keywords = (string)$keywords;
-
         $solrConfiguration = $solrConfiguration ?? Util::getSolrConfiguration();
 
         $this->setQuery($keywords);
@@ -57,19 +58,19 @@ class SuggestQuery extends Query
         } else {
             $matches = [];
             preg_match('/^(:?(.* |))([^ ]+)$/', $keywords, $matches);
-            $fullKeywords = trim($matches[2]);
-            $partialKeyword = trim($matches[3]);
+            $fullKeywords = trim($matches[2] ?? '');
+            $partialKeyword = trim($matches[3] ?? '');
 
             $this->setQuery($fullKeywords);
             $this->prefix = $partialKeyword;
         }
 
         $this->getEDisMax()->setQueryAlternative('*:*');
-        $this->setFields(ReturnFields::fromString($this->configuration['suggestField'])->getValues());
+        $this->setFields(ReturnFields::fromString(($this->configuration['suggestField'] ?? ''))->getValues());
         $this->addParam('facet', 'on');
         $this->addParam('facet.prefix', $this->prefix);
-        $this->addParam('facet.field', $this->configuration['suggestField']);
-        $this->addParam('facet.limit', $this->configuration['numberOfSuggestions']);
+        $this->addParam('facet.field', ($this->configuration['suggestField'] ?? null));
+        $this->addParam('facet.limit', ($this->configuration['numberOfSuggestions'] ?? null));
         $this->addParam('facet.mincount', 1);
         $this->addParam('facet.method', 'enum');
     }

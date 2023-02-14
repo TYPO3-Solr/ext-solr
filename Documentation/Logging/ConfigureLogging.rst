@@ -3,7 +3,7 @@ Configure Logging
 
 There are several options that can be configured with TypoScript:
 
-.. figure:: ../Images/Logging/logging-settings.png
+.. figure:: /Images/Logging/logging-settings.png
 
     EXT:solr logging settings
 

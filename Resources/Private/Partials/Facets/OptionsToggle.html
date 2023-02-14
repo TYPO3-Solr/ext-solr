@@ -1,41 +1,42 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en"
-      xmlns:f="http://typo3.org/ns/TYPO3/Fluid/ViewHelpers"
-      xmlns:s="http://typo3.org/ns/ApacheSolrForTypo3/Solr/ViewHelpers"
-      data-namespace-typo3-fluid="true"
+	xmlns:f="http://typo3.org/ns/TYPO3/Fluid/ViewHelpers"
+	xmlns:s="http://typo3.org/ns/ApacheSolrForTypo3/Solr/ViewHelpers"
+	data-namespace-typo3-fluid="true"
 >
 
-    <div class="panel">
-        <div class="panel-heading">
-            <h3 class="facet-label panel-title">
-                <span class="glyphicon glyphicon-filter"></span>
-                <a data-toggle="collapse" data-parent="#facet-accordion{facet.name}" href="#facet{facet.name}">{facet.label}</a>
-            </h3>
-        </div>
-        <div class="facet-option-list facet-type-options fluidfacet list-group panel-collapse collapse" data-facet-name="{facet.name}" data-facet-label="{facet.label}" id="facet{facet.name}">
-            <f:for each="{facet.options}" as="option" iteration="iteration">
-                <f:if condition="{option.selected}">
-                    <f:then>
-                        <div class="list-group-item facet-option{f:if(condition:'{iteration.index} > 9', then:' tx-solr-facet-hidden')}" data-facet-item-value="{option.value}">
-                            <a class="facet solr-ajaxified active" href="{s:uri.facet.removeFacetItem(facet: facet, facetItem: option)}">{option.label}</a>
-                            <span class="facet-result-count badge">{option.documentCount}</span>
-                        </div>
-                    </f:then>
-                    <f:else>
-                        <div class="list-group-item facet-option{f:if(condition:'{iteration.index} > 9', then:' tx-solr-facet-hidden')}" data-facet-item-value="{option.value}">
-                            <a class="facet solr-ajaxified" href="{s:uri.facet.addFacetItem(facet: facet, facetItem: option)}">{option.label}</a>
-                            <span class="facet-result-count badge">{option.documentCount}</span>
-                        </div>
-                    </f:else>
-                </f:if>
+	<f:variable name="facetOptionLimit">{f:if(condition: '{settings.faceting.limit}', then: '{settings.faceting.limit}', else: 10)}</f:variable>
 
-            </f:for>
-            <f:if condition="{facet.options -> f:count()} > 10">
-                <div class="list-group-item">
-                    <a href="#" class="tx-solr-facet-show-all" data-label-more="{s:translate(key:'faceting_showMore', extensionName:'solr')}" data-label-less="{s:translate(key:'faceting_showFewer', extensionName:'solr')}">
-                        <s:translate key="faceting_showMore" extensionName="solr">Show more</s:translate>
-                    </a>
-                </div>
-            </f:if>
-        </div>
-    </div>
+	<div class="card">
+		<div class="card-header facet-label">
+				<span class="bi bi-filter"></span>
+				<a data-bs-toggle="collapse" href="#facet{facet.name}">{facet.label}</a>
+		</div>
+
+		<ul class="list-group list-group-flush facet-option-list facet-type-options fluidfacet collapse show" data-facet-name="{facet.name}" data-facet-label="{facet.label}" id="facet{facet.name}">
+			<f:for each="{facet.options}" as="option" iteration="iteration">
+				<li class="list-group-item facet-option {f:if(condition:'!({iteration.index} < {facetOptionLimit})', then:' tx-solr-facet-hidden')}" data-facet-item-value="{option.value}">
+					<div class="d-flex justify-content-between">
+					<f:if condition="{option.selected}">
+						<f:then>
+							<f:variable name="facetOptionUri">{s:uri.facet.removeFacetItem(facet: facet, facetItem: option)}</f:variable>
+						</f:then>
+						<f:else>
+							<f:variable name="facetOptionUri">{s:uri.facet.addFacetItem(facet: facet, facetItem: option)}</f:variable>
+						</f:else>
+					</f:if>
+					<a class="facet solr-ajaxified" href="{facetOptionUri}">{option.label}</a> <span class="facet-result-count badge bg-info">{option.documentCount}</span>
+					</div>
+				</li>
+			</f:for>
+
+			<f:if condition="{facet.options -> f:count()} > {facetOptionLimit}">
+				<li class="list-group-item">
+					<a href="#" class="tx-solr-facet-show-all" data-label-more="{s:translate(key:'faceting_showMore', extensionName:'solr')}" data-label-less="{s:translate(key:'faceting_showFewer', extensionName:'solr')}">
+						<s:translate key="faceting_showMore" extensionName="solr">Show more</s:translate>
+					</a>
+				</li>
+			</f:if>
+		</ul>
+	</div>
+
 </html>

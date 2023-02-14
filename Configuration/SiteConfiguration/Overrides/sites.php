@@ -3,7 +3,6 @@
 /**
  * Global Solr Connection Settings
  */
-
 $GLOBALS['SiteConfiguration']['site']['columns']['solr_enabled_read'] = [
     'label' => 'Enable Solr for this site',
     'onChange' => 'reload',
@@ -14,9 +13,9 @@ $GLOBALS['SiteConfiguration']['site']['columns']['solr_enabled_read'] = [
         'items' => [
             [
                 0 => '',
-                1 => ''
-            ]
-        ]
+                1 => '',
+            ],
+        ],
     ],
 ];
 
@@ -28,12 +27,12 @@ $GLOBALS['SiteConfiguration']['site']['columns']['solr_scheme_read'] = [
         'valuePicker' => [
             'items' => [
                 [ 'http', 'http'],
-                [ 'https', 'https']
-            ]
+                [ 'https', 'https'],
+            ],
         ],
         'placeholder' => 'http',
     ],
-    'displayCond' => 'FIELD:solr_enabled_read:=:1'
+    'displayCond' => 'FIELD:solr_enabled_read:=:1',
 ];
 
 $GLOBALS['SiteConfiguration']['site']['columns']['solr_host_read'] = [
@@ -42,11 +41,10 @@ $GLOBALS['SiteConfiguration']['site']['columns']['solr_host_read'] = [
         'type' => 'input',
         'default' => 'localhost',
         'placeholder' => 'localhost',
-        'size' => 10
+        'size' => 50,
     ],
-    'displayCond' => 'FIELD:solr_enabled_read:=:1'
+    'displayCond' => 'FIELD:solr_enabled_read:=:1',
 ];
-
 
 $GLOBALS['SiteConfiguration']['site']['columns']['solr_port_read'] = [
     'label' => 'Port',
@@ -54,9 +52,9 @@ $GLOBALS['SiteConfiguration']['site']['columns']['solr_port_read'] = [
         'type' => 'input',
         'eval' => 'required',
         'size' => 5,
-        'default' => 8983
+        'default' => 8983,
     ],
-    'displayCond' => 'FIELD:solr_enabled_read:=:1'
+    'displayCond' => 'FIELD:solr_enabled_read:=:1',
 ];
 
 $GLOBALS['SiteConfiguration']['site']['columns']['solr_path_read'] = [
@@ -65,9 +63,9 @@ $GLOBALS['SiteConfiguration']['site']['columns']['solr_path_read'] = [
     'config' => [
         'type' => 'input',
         'eval' => 'trim',
-        'default' => '/'
+        'default' => '/',
     ],
-    'displayCond' => 'FIELD:solr_enabled_read:=:1'
+    'displayCond' => 'FIELD:solr_enabled_read:=:1',
 ];
 
 $GLOBALS['SiteConfiguration']['site']['columns']['solr_use_write_connection'] = [
@@ -80,11 +78,11 @@ $GLOBALS['SiteConfiguration']['site']['columns']['solr_use_write_connection'] = 
         'items' => [
             [
                 0 => '',
-                1 => ''
-            ]
-        ]
+                1 => '',
+            ],
+        ],
     ],
-    'displayCond' => 'FIELD:solr_enabled_read:=:1'
+    'displayCond' => 'FIELD:solr_enabled_read:=:1',
 ];
 
 // write TCA
@@ -103,12 +101,10 @@ $GLOBALS['SiteConfiguration']['site']['columns']['solr_path_write'] = $GLOBALS['
 $GLOBALS['SiteConfiguration']['site']['columns']['solr_path_write']['config']['eval'] = '';
 $GLOBALS['SiteConfiguration']['site']['columns']['solr_path_write']['displayCond'] = 'FIELD:solr_use_write_connection:=:1';
 
-
-$GLOBALS['SiteConfiguration']['site']['palettes']['solr_read']['showitem'] = 'solr_scheme_read, solr_host_read, solr_port_read, solr_path_read';
-$GLOBALS['SiteConfiguration']['site']['palettes']['solr_write']['showitem'] = 'solr_scheme_write, solr_host_write, solr_port_write, solr_path_write';
+$GLOBALS['SiteConfiguration']['site']['palettes']['solr_read']['showitem'] = 'solr_scheme_read, solr_port_read, --linebreak--, solr_host_read, solr_path_read';
+$GLOBALS['SiteConfiguration']['site']['palettes']['solr_write']['showitem'] = 'solr_scheme_write, solr_port_write, --linebreak--, solr_host_write, solr_path_write';
 
 $GLOBALS['SiteConfiguration']['site']['types']['0']['showitem'] .= ',--div--;Solr,solr_enabled_read,--palette--;;solr_read, solr_use_write_connection,--palette--;;solr_write';
-
 
 /**
  * Language specific core configuration
@@ -161,7 +157,7 @@ $GLOBALS['SiteConfiguration']['site_language']['columns']['solr_core_read'] = [
             ],
         ],
         'placeholder' => 'core_*',
-    ]
+    ],
 ];
 
 $GLOBALS['SiteConfiguration']['site_language']['types']['1']['showitem'] = str_replace(
