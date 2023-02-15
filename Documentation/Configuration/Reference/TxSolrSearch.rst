@@ -1151,6 +1151,17 @@ Using `faceting.facets.[facetName].manualSortOrder = Travel, Health` will result
     + Culture (179)
     + Automobile (99)
 
+faceting.facets.[facetName].manualSortOrderDelimiter
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+:Type: String
+:TS Path: plugin.tx_solr.search.faceting.facets.[facetName].manualSortOrderDelimiter
+:Since: 11.5
+:Default: ,
+
+Define an alternative delimiter instead of the default comma (`,`) for the manualSortOrder option.
+This is especially useful if the `,` is part of a facet option value.
+
 faceting.facets.[facetName].minimumCount
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
