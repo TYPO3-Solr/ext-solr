@@ -152,7 +152,8 @@ abstract class AbstractFacetParser implements FacetParserInterface
         if (!isset($facetConfiguration['manualSortOrder'])) {
             return $facet;
         }
-        $fields = GeneralUtility::trimExplode(',', $facetConfiguration['manualSortOrder']);
+        $delimiter = trim($facetConfiguration['manualSortOrderDelimiter'] ?? ',');
+        $fields = GeneralUtility::trimExplode($delimiter, $facetConfiguration['manualSortOrder']);
         // @extensionScannerIgnoreLine
         $sortedOptions = $facet->getOptions()->getManualSortedCopy($fields);
 
