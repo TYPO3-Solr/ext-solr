@@ -1152,7 +1152,7 @@ Using `faceting.facets.[facetName].manualSortOrder = Travel, Health` will result
     + Automobile (99)
 
 faceting.facets.[facetName].manualSortOrderDelimiter
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 :Type: String
 :TS Path: plugin.tx_solr.search.faceting.facets.[facetName].manualSortOrderDelimiter
