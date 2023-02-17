@@ -24,6 +24,7 @@ use ApacheSolrForTypo3\Solr\System\Mvc\Backend\Service\ModuleDataStorageService;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
+use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 
@@ -59,6 +60,7 @@ abstract class AbstractModuleControllerTest extends UnitTest
             ->setConstructorArgs(
                 [
                     'moduleTemplateFactory' => $this->getDumbMock(ModuleTemplateFactory::class),
+                    'iconFactory' => $this->getDumbMock(IconFactory::class),
                     'moduleDataStorageService' => $this->getDumbMock(ModuleDataStorageService::class),
                     'siteRepository' => $this->getDumbMock(SiteRepository::class),
                     'siteFinder' => $this->getDumbMock(SiteFinder::class),
