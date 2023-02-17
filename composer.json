@@ -28,7 +28,7 @@
     "ext-simplexml": "*",
     "solarium/solarium": "6.2.7",
     "typo3/cms-backend": "*",
-    "typo3/cms-core": "^12",
+    "typo3/cms-core": "12.*.*@dev",
     "typo3/cms-extbase": "*",
     "typo3/cms-fluid": "*",
     "typo3/cms-frontend": "*",
@@ -37,13 +37,14 @@
     "typo3/cms-tstemplate": "*"
   },
   "require-dev": {
-    "typo3/coding-standards": "~0.7.1",
-    "phpunit/phpunit": "^9.5",
+    "dg/bypass-finals": "^1.4",
     "phpspec/prophecy-phpunit":"*",
-    "typo3/testing-framework": "dev-7-composerinstaller5-fix",
-    "typo3/cms-fluid-styled-content": "*",
+    "phpunit/phpunit": "^9.5",
+    "sclable/xml-lint": "*",
     "scrutinizer/ocular": "*",
-    "sclable/xml-lint": "*"
+    "typo3/cms-fluid-styled-content": "*",
+    "typo3/coding-standards": "~0.7.1",
+    "typo3/testing-framework": "dev-7-composerinstaller5-fix"
   },
   "replace": {
     "apache-solr-for-typo3/solrfluid": "*",
