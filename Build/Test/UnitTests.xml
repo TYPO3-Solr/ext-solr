@@ -12,6 +12,9 @@
 	stopOnIncomplete="false"
 	stopOnSkipped="false"
 	verbose="false">
+	<extensions>
+		<extension class="\ApacheSolrForTypo3\Solr\Tests\PHPUnitExtensions\BypassFinals"/>
+	</extensions>
 	<coverage processUncoveredFiles="false">
 		<include>
 			<directory suffix=".php">../../Classes/</directory>
