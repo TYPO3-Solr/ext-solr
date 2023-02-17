@@ -14,6 +14,16 @@ services:
     autowire: true
     tags: ['backend.controller']
 
+  # BE modules, plugins
+  ApacheSolrForTypo3\Solr\Backend\SettingsPreviewOnPlugins:
+    arguments:
+      $flexFormService: '@TYPO3\CMS\Core\Service\FlexFormService'
+    tags:
+      - name: event.listener
+        identifier: 'solr.plugin.be.settings.preview'
+        event: TYPO3\CMS\Backend\View\Event\PageContentPreviewRenderingEvent
+  # END: BE modules
+
   viewhelper_backend:
     namespace: ApacheSolrForTypo3\Solr\ViewHelpers\Backend\
     resource: '../Classes/ViewHelpers/Backend/*'

@@ -1,4 +1,10 @@
-<table class="typo3-dblist" style="width:100%; {f:if(condition: hidden, then: 'hidden')}">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en"
+			xmlns:f="http://typo3.org/ns/TYPO3/Fluid/ViewHelpers"
+			xmlns:s="http://typo3.org/ns/ApacheSolrForTypo3/Solr/ViewHelpers"
+			data-namespace-typo3-fluid="true"
+>
+
+<table class="table" style="{f:if(condition: hidden, then: 'hidden')}">
 	<thead>
 		<tr>
 			<th colspan="2" style="padding-bottom: 0.5em;"><f:format.raw>{pluginLabel}</f:format.raw></th>
@@ -12,3 +18,5 @@
 		</tr>
 	</f:for>
 </table>
+
+</html>
