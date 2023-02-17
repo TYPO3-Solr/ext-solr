@@ -35,10 +35,12 @@ $pluginSignature = 'solr_pi_results';
     'pi_results',
     'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:tt_content.list_type_pi_results'
 );
+
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist'][$pluginSignature]
     = 'layout,select_key,pages,recursive';
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$pluginSignature]
     = 'pi_flexform';
+
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
     $pluginSignature,
     'FILE:EXT:solr/Configuration/FlexForms/Results.xml'

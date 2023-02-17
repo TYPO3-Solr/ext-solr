@@ -240,7 +240,7 @@ class RootPageResolver implements SingletonInterface
     protected function getRecordPageId(string $table, int $uid): int
     {
         $record = BackendUtility::getRecord($table, $uid, 'pid');
-        return $record['pid'] ? (int)$record['pid'] :  0;
+        return $record['pid'] ? (int)$record['pid'] : 0;
     }
 
     /**
