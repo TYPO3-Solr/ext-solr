@@ -22,6 +22,7 @@ use ApacheSolrForTypo3\Solr\Domain\Variants\IdBuilder;
 use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use ApacheSolrForTypo3\Solr\Typo3PageContentExtractor;
+use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
@@ -85,6 +86,7 @@ class BuilderTest extends UnitTest
      */
     public function canBuildApacheSolrDocumentFromEmptyPage()
     {
+        /* @var MockObject|TypoScriptFrontendController $fakePage */
         $fakePage = $this->getDumbMock(TypoScriptFrontendController::class);
         $fakeRootLine = $this->getDumbMock(Rootline::class);
         $fakeRootLine->expects(self::once())->method('getGroups')->willReturn([1]);
@@ -93,6 +95,7 @@ class BuilderTest extends UnitTest
         $this->fakeTagContent([]);
 
         $fakePage->page = self::FAKE_PAGE_RECORD;
+        $fakePage->id = 4711;
         $document = $this->documentBuilder->fromPage($fakePage, 'http://www.typo3-solr.com', $fakeRootLine, '');
 
         self::assertInstanceOf(Document::class, $document, 'Expect to get an ' . Document::class . ' back');
@@ -104,6 +107,7 @@ class BuilderTest extends UnitTest
      */
     public function canSetKeywordsForApacheSolrDocument()
     {
+        /* @var MockObject|TypoScriptFrontendController $fakePage */
         $fakePage = $this->getDumbMock(TypoScriptFrontendController::class);
         $fakeRootLine = $this->getDumbMock(Rootline::class);
         $fakeRootLine->expects(self::once())->method('getGroups')->willReturn([1]);
@@ -112,6 +116,7 @@ class BuilderTest extends UnitTest
         $this->fakeTagContent([]);
 
         $fakePage->page = array_merge(self::FAKE_PAGE_RECORD, ['keywords' => 'foo,bar']);
+        $fakePage->id = 4711;
         $document = $this->documentBuilder->fromPage($fakePage, 'http://www.typo3-solr.com', $fakeRootLine, '');
 
         self::assertSame($document['keywords'], ['foo', 'bar'], 'Could not set keywords from page document');
@@ -122,6 +127,7 @@ class BuilderTest extends UnitTest
      */
     public function canSetEndtimeForApacheSolrDocument()
     {
+        /* @var MockObject|TypoScriptFrontendController $fakePage */
         $fakePage = $this->getDumbMock(TypoScriptFrontendController::class);
         $fakeRootLine = $this->getDumbMock(Rootline::class);
         $fakeRootLine->expects(self::once())->method('getGroups')->willReturn([1]);
@@ -130,6 +136,7 @@ class BuilderTest extends UnitTest
         $this->fakeTagContent([]);
 
         $fakePage->page = array_merge(self::FAKE_PAGE_RECORD, ['endtime' => 1234]);
+        $fakePage->id = 4711;
         $document = $this->documentBuilder->fromPage($fakePage, 'http://www.typo3-solr.com', $fakeRootLine, '');
 
         self::assertSame($document['endtime'], 1234, 'Could not set endtime from page document');
@@ -140,6 +147,7 @@ class BuilderTest extends UnitTest
      */
     public function canSetTagFieldsForApacheSolrDocument()
     {
+        /* @var MockObject|TypoScriptFrontendController $fakePage */
         $fakePage = $this->getDumbMock(TypoScriptFrontendController::class);
         $fakeRootLine = $this->getDumbMock(Rootline::class);
         $fakeRootLine->expects(self::once())->method('getGroups')->willReturn([1]);
@@ -148,6 +156,7 @@ class BuilderTest extends UnitTest
         $this->fakeTagContent(['tagsH1' => 'Fake H1 content']);
 
         $fakePage->page = self::FAKE_PAGE_RECORD;
+        $fakePage->id = 4711;
         $document = $this->documentBuilder->fromPage($fakePage, 'http://www.typo3-solr.com', $fakeRootLine, '');
 
         self::assertSame($document['tagsH1'], 'Fake H1 content', 'Could not assign extracted h1 heading to solr document');
