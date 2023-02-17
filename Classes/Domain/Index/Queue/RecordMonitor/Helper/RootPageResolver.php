@@ -248,7 +248,7 @@ class RootPageResolver implements SingletonInterface
         if ($record === null) {
             return 0;
         }
-        return $record['pid'] ? (int)$record['pid'] :  0;
+        return $record['pid'] ? (int)$record['pid'] : 0;
     }
 
     /**
