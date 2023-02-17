@@ -21,12 +21,6 @@ defined('TYPO3') || die();
 
     // ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
-    // page module plugin settings summary
-
-    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['cms/layout/class.tx_cms_layout.php']['list_type_Info']['solr_pi_results']['solr'] = \ApacheSolrForTypo3\Solr\Controller\Backend\PageModuleSummary::class . '->getSummary';
-
-    // ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
-
     // register search components
 
     \ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
