@@ -101,7 +101,7 @@ class QueryGroupFacetParser extends AbstractFacetParser
      * @param string $fieldName
      * @return array
      */
-    protected function getRawOptions(ResponseAdapter $response, $fieldName)
+    protected function getRawOptions(ResponseAdapter $response, string $fieldName): array
     {
         $options = [];
 
@@ -129,7 +129,7 @@ class QueryGroupFacetParser extends AbstractFacetParser
      * @param array $facetConfiguration
      * @return string|null
      */
-    protected function getValueByQuery($query, array $facetConfiguration)
+    protected function getValueByQuery(string $query, array $facetConfiguration): ?string
     {
         $value = null;
         foreach ($facetConfiguration['queryGroup.'] as $valueKey => $config) {

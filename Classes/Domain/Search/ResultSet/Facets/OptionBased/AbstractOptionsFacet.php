@@ -30,11 +30,6 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 class AbstractOptionsFacet extends AbstractFacet
 {
     /**
-     * @var OptionCollection
-     */
-    protected OptionCollection $options;
-
-    /**
      * OptionsFacet constructor
      *
      * @param SearchResultSet $resultSet
@@ -42,16 +37,17 @@ class AbstractOptionsFacet extends AbstractFacet
      * @param string $field
      * @param string $label
      * @param array $configuration Facet configuration passed from typoscript
+     * @param OptionCollection $options
      */
     public function __construct(
         SearchResultSet $resultSet,
         string $name,
         string $field,
         string $label = '',
-        array $configuration = []
+        array $configuration = [],
+        protected OptionCollection $options = new OptionCollection(),
     ) {
         parent::__construct($resultSet, $name, $field, $label, $configuration);
-        $this->options = new OptionCollection();
     }
 
     /**
