@@ -48,7 +48,7 @@ class OptionCollection extends AbstractFacetItemCollection
      * @param string $filteredPrefix
      * @return AbstractFacetItemCollection|OptionCollection
      */
-    public function getByLowercaseLabelPrefix(string $filteredPrefix): OptionCollection
+    public function getByLowercaseLabelPrefix(string $filteredPrefix): AbstractFacetItemCollection|OptionCollection
     {
         /** @noinspection PhpIncompatibleReturnTypeInspection */
         return $this->getFilteredCopy(function (Option $option) use ($filteredPrefix) {
