@@ -34,33 +34,6 @@ abstract class AbstractFacet
     protected static string $type = self::TYPE_ABSTRACT;
 
     /**
-     * The resultSet where this facet belongs to.
-     *
-     * @var SearchResultSet
-     */
-    protected SearchResultSet $resultSet;
-
-    /**
-     * @var string
-     */
-    protected string $name;
-
-    /**
-     * @var string
-     */
-    protected string $field;
-
-    /**
-     * @var string
-     */
-    protected string $label;
-
-    /**
-     * @var array
-     */
-    protected array $configuration;
-
-    /**
      * @var bool
      */
     protected bool $isAvailable = false;
@@ -85,17 +58,12 @@ abstract class AbstractFacet
      * @param array $configuration Facet configuration passed from typoscript
      */
     public function __construct(
-        SearchResultSet $resultSet,
-        string $name,
-        string $field,
-        string $label = '',
-        array $configuration = []
+        protected SearchResultSet $resultSet,
+        protected string $name,
+        protected string $field,
+        protected string $label = '',
+        protected array $configuration = []
     ) {
-        $this->resultSet = $resultSet;
-        $this->name = $name;
-        $this->field = $field;
-        $this->label = $label;
-        $this->configuration = $configuration;
     }
 
     /**
@@ -121,7 +89,7 @@ abstract class AbstractFacet
     /**
      * @param string $label
      */
-    public function setLabel(string $label)
+    public function setLabel(string $label): void
     {
         $this->label = $label;
     }
@@ -137,7 +105,7 @@ abstract class AbstractFacet
     /**
      * @param bool $isAvailable
      */
-    public function setIsAvailable(bool $isAvailable)
+    public function setIsAvailable(bool $isAvailable): void
     {
         $this->isAvailable = $isAvailable;
     }
@@ -153,7 +121,7 @@ abstract class AbstractFacet
     /**
      * @param bool $isUsed
      */
-    public function setIsUsed(bool $isUsed)
+    public function setIsUsed(bool $isUsed): void
     {
         $this->isUsed = $isUsed;
     }
@@ -185,7 +153,7 @@ abstract class AbstractFacet
     /**
      * @param bool $allRequirementsMet
      */
-    public function setAllRequirementsMet(bool $allRequirementsMet)
+    public function setAllRequirementsMet(bool $allRequirementsMet): void
     {
         $this->allRequirementsMet = $allRequirementsMet;
     }
@@ -270,7 +238,7 @@ abstract class AbstractFacet
      * @param mixed $defaultValue
      * @return mixed
      */
-    protected function getFacetSettingOrDefaultValue(string $key, $defaultValue)
+    protected function getFacetSettingOrDefaultValue(string $key, mixed $defaultValue): mixed
     {
         if (!isset($this->configuration[$key])) {
             return $defaultValue;

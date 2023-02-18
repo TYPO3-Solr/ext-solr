@@ -39,7 +39,7 @@ class NodeCollection extends AbstractFacetItemCollection
 
     /**
      * @param int $position
-     * @return Node
+     * @return ?object Node
      */
     public function getByPosition(int $position): ?object
     {

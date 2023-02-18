@@ -96,8 +96,6 @@ abstract class AbstractFacetParserTest extends UnitTest
      */
     protected function getInitializedParser($className)
     {
-        $parser = GeneralUtility::makeInstance($className);
-
-        return $parser;
+        return GeneralUtility::makeInstance($className);
     }
 }

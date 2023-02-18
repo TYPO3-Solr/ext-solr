@@ -50,7 +50,13 @@ class AbstractOptionFacetItem extends AbstractFacetItem
         array $metrics = []
     ) {
         $this->value = $value;
-        parent::__construct($facet, $label, $documentCount, $selected, $metrics);
+        parent::__construct(
+            $facet,
+            $label,
+            $documentCount,
+            $selected,
+            $metrics,
+        );
     }
 
     /**

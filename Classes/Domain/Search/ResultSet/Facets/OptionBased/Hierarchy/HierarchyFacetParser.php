@@ -100,13 +100,13 @@ class HierarchyFacetParser extends AbstractFacetParser
     /**
      * Checks if options must be resorted.
      *
-     * Apache Solr facet.sort can be set globally or per facet.
+     * Apache Solr `facet.sort` can be set globally or per facet.
      * Relevant TypoScript paths:
-     * plugin.tx_solr.search.faceting.sortBy causes facet.sort Apache Solr parameter
+     * plugin.tx_solr.search.faceting.sortBy causes `facet.sort` Apache Solr parameter
      * plugin.tx_solr.search.faceting.facets.[facetName].sortBy causes f.<fieldname>.facet.sort parameter
      *
      * see: https://lucene.apache.org/solr/guide/6_6/faceting.html#Faceting-Thefacet.sortParameter
-     * see: https://wiki.apache.org/solr/SimpleFacetParameters#facet.sort : "This parameter can be specified on a per field basis."
+     * see: https://solr.apache.org/guide/6_6/faceting.html#Faceting-Thefacet.sortParameter : "This parameter can be specified on a per-field basis with the syntax of f.<fieldname>.facet.sort."
      *
      * @param array $facetConfiguration
      * @return bool
@@ -148,7 +148,7 @@ class HierarchyFacetParser extends AbstractFacetParser
         $activeFacetValues = [];
         $values = $resultSet->getUsedSearchRequest()->getActiveFacetValuesByName($facetName);
 
-        foreach (is_array($values) ? $values : [] as $valueFromRequest) {
+        foreach ($values as $valueFromRequest) {
             // Attach the 'depth' param again to the value
             if (!str_contains($valueFromRequest, '-')) {
                 $valueFromRequest = HierarchyTool::substituteSlashes($valueFromRequest);
