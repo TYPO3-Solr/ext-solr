@@ -149,7 +149,7 @@ class PageIndexerRequest
      *
      * @param string $action Action name.
      */
-    public function addAction(string $action)
+    public function addAction(string $action): void
     {
         $this->actions[] = $action;
     }
@@ -199,7 +199,7 @@ class PageIndexerRequest
      * @return array|bool
      * @throws Exception
      */
-    protected function getUrlAndDecodeResponse(string $url, PageIndexerResponse $response)
+    protected function getUrlAndDecodeResponse(string $url, PageIndexerResponse $response): bool|array
     {
         $headers = $this->getHeaders();
         $rawResponse = $this->getUrl($url, $headers, $this->timeout);
@@ -267,7 +267,7 @@ class PageIndexerRequest
      *
      * @param string $header HTTP header
      */
-    public function addHeader(string $header)
+    public function addHeader(string $header): void
     {
         $this->header[] = $header;
     }
@@ -333,9 +333,9 @@ class PageIndexerRequest
      * Gets a specific parameter's value.
      *
      * @param string $parameterName The parameter to retrieve.
-     * @return mixed|null NULL if a parameter was not set, or it's value otherwise.
+     * @return mixed NULL if a parameter was not set, or it's value otherwise.
      */
-    public function getParameter(string $parameterName)
+    public function getParameter(string $parameterName): mixed
     {
         return $this->parameters[$parameterName] ?? null;
     }
@@ -346,7 +346,7 @@ class PageIndexerRequest
      * @param string $parameter Parameter name
      * @param mixed $value Parameter value.
      */
-    public function setParameter(string $parameter, $value)
+    public function setParameter(string $parameter, mixed $value): void
     {
         if (is_bool($value)) {
             $value = $value ? '1' : '0';
@@ -361,7 +361,7 @@ class PageIndexerRequest
      * @param string $username username.
      * @param string $password password.
      */
-    public function setAuthorizationCredentials(string $username, string $password)
+    public function setAuthorizationCredentials(string $username, string $password): void
     {
         $this->username = $username;
         $this->password = $password;
@@ -372,7 +372,7 @@ class PageIndexerRequest
      *
      * @param Item $item Related Index Queue item.
      */
-    public function setIndexQueueItem(Item $item)
+    public function setIndexQueueItem(Item $item): void
     {
         $this->indexQueueItem = $item;
     }
@@ -392,7 +392,7 @@ class PageIndexerRequest
      *
      * @param float $timeout Timeout seconds
      */
-    public function setTimeout(float $timeout)
+    public function setTimeout(float $timeout): void
     {
         $this->timeout = $timeout;
     }
@@ -417,6 +417,7 @@ class PageIndexerRequest
                 $options['auth']['password'] = '*****';
             }
             // Log with INFO severity because this is what configured for Testing & Development contexts
+            /* @noinspection PhpUndefinedVariableInspection */
             $this->logger->log(
                 LogLevel::INFO,
                 sprintf(
