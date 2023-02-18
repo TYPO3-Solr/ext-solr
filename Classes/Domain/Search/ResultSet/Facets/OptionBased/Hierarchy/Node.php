@@ -18,7 +18,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Hie
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\AbstractOptionFacetItem;
 
 /**
- * Value object that represent an option of a options facet.
+ * Value object that represent an option of an options-facet.
  *
  * @author Frans Saris <frans@beech.it>
  * @author Timo Hund <timo.hund@dkd.de>
@@ -26,47 +26,43 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\AbstractO
 class Node extends AbstractOptionFacetItem
 {
     /**
-     * @var NodeCollection
-     */
-    protected $childNodes;
-
-    /**
-     * @var Node
-     */
-    protected $parentNode;
-
-    /**
      * @var int
      */
-    protected $depth;
-
-    /**
-     * @var string
-     */
-    protected $key;
+    protected int $depth;
 
     /**
      * @param HierarchyFacet $facet
-     * @param Node $parentNode
+     * @param Node|null $parentNode
      * @param string $key
      * @param string $label
      * @param string $value
      * @param int $documentCount
      * @param bool $selected
+     * @param NodeCollection $childNodes
      */
-    public function __construct(HierarchyFacet $facet, $parentNode = null, $key = '', $label = '', $value = '', $documentCount = 0, $selected = false)
-    {
-        parent::__construct($facet, $label, $value, $documentCount, $selected);
-        $this->value = $value;
-        $this->childNodes = new NodeCollection();
-        $this->parentNode = $parentNode;
-        $this->key = $key;
+    public function __construct(
+        HierarchyFacet $facet,
+        protected ?Node $parentNode = null,
+        protected string $key = '',
+        $label = '',
+        $value = '',
+        $documentCount = 0,
+        bool $selected = false,
+        protected NodeCollection $childNodes = new NodeCollection(),
+    ) {
+        parent::__construct(
+            $facet,
+            $label,
+            $value,
+            $documentCount,
+            $selected,
+        );
     }
 
     /**
      * @return string
      */
-    public function getKey()
+    public function getKey(): string
     {
         return $this->key;
     }
@@ -82,7 +78,7 @@ class Node extends AbstractOptionFacetItem
     /**
      * @return NodeCollection
      */
-    public function getChildNodes()
+    public function getChildNodes(): NodeCollection
     {
         return $this->childNodes;
     }
@@ -90,7 +86,7 @@ class Node extends AbstractOptionFacetItem
     /**
      * @return Node|null
      */
-    public function getParentNode()
+    public function getParentNode(): ?Node
     {
         return $this->parentNode;
     }
@@ -98,7 +94,7 @@ class Node extends AbstractOptionFacetItem
     /**
      * @return bool
      */
-    public function getHasParentNode()
+    public function getHasParentNode(): bool
     {
         return $this->parentNode !== null;
     }
@@ -106,7 +102,7 @@ class Node extends AbstractOptionFacetItem
     /**
      * @return bool
      */
-    public function getHasChildNodeSelected()
+    public function getHasChildNodeSelected(): bool
     {
         /** @var Node $childNode */
         foreach ($this->childNodes as $childNode) {

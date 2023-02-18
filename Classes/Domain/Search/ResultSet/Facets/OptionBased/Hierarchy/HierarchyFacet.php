@@ -37,16 +37,6 @@ class HierarchyFacet extends AbstractFacet
     protected static string $type = self::TYPE_HIERARCHY;
 
     /**
-     * @var NodeCollection
-     */
-    protected NodeCollection $childNodes;
-
-    /**
-     * @var NodeCollection
-     */
-    protected NodeCollection $allNodes;
-
-    /**
      * @var array
      */
     protected array $nodesByKey = [];
@@ -59,17 +49,19 @@ class HierarchyFacet extends AbstractFacet
      * @param string $field
      * @param string $label
      * @param array $configuration Facet configuration passed from typoscript
+     * @param NodeCollection $childNodes
+     * @param NodeCollection $allNodes
      */
     public function __construct(
         SearchResultSet $resultSet,
         string $name,
         string $field,
         string $label = '',
-        array $configuration = []
+        array $configuration = [],
+        protected NodeCollection $childNodes = new NodeCollection(),
+        protected NodeCollection $allNodes = new NodeCollection(),
     ) {
         parent::__construct($resultSet, $name, $field, $label, $configuration);
-        $this->childNodes = new NodeCollection();
-        $this->allNodes = new NodeCollection();
     }
 
     /**
