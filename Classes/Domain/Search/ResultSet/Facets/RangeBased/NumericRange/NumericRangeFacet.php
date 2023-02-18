@@ -19,7 +19,6 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\Nume
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetItemCollection;
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 
 /**
  * Value object that represent a date range facet.
@@ -41,25 +40,6 @@ class NumericRangeFacet extends AbstractFacet
      * @var NumericRange|null
      */
     protected ?NumericRange $numericRange = null;
-
-    /**
-     * OptionsFacet constructor
-     *
-     * @param SearchResultSet $resultSet
-     * @param string $name
-     * @param string $field
-     * @param string $label
-     * @param array $configuration Facet configuration passed from typoscript
-     */
-    public function __construct(
-        SearchResultSet $resultSet,
-        string $name,
-        string $field,
-        string $label = '',
-        array $configuration = []
-    ) {
-        parent::__construct($resultSet, $name, $field, $label, $configuration);
-    }
 
     /**
      * @param NumericRange $range

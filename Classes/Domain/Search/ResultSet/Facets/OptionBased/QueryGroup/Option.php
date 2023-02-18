@@ -31,9 +31,23 @@ class Option extends AbstractOptionFacetItem
      * @param string $value
      * @param int $documentCount
      * @param bool $selected
+     * @param array $metrics
      */
-    public function __construct(QueryGroupFacet $facet, $label = '', $value = '', $documentCount = 0, $selected = false)
-    {
-        parent::__construct($facet, $label, $value, $documentCount, $selected);
+    public function __construct(
+        QueryGroupFacet $facet,
+        string $label = '',
+        string $value = '',
+        int $documentCount = 0,
+        bool $selected = false,
+        array $metrics = [],
+    ) {
+        parent::__construct(
+            $facet,
+            $label,
+            $value,
+            $documentCount,
+            $selected,
+            $metrics,
+        );
     }
 }
