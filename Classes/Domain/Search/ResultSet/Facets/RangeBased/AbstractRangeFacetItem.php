@@ -17,6 +17,7 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased;
 
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetItem;
 
 /**
@@ -27,15 +28,23 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetItem;
  */
 abstract class AbstractRangeFacetItem extends AbstractFacetItem
 {
-    /**
-     * @var array
-     */
-    protected array $rangeCounts = [];
-
-    /**
-     * @var string
-     */
-    protected string $gap = '';
+    public function __construct(
+        protected AbstractFacet $facet,
+        protected string $label = '',
+        protected int $documentCount = 0,
+        protected bool $selected = false,
+        protected array $metrics = [],
+        protected array $rangeCounts = [],
+        protected string|int $gap = '',
+    ) {
+        parent::__construct(
+            $this->facet,
+            $this->label,
+            $this->documentCount,
+            $this->selected,
+            $this->metrics
+        );
+    }
 
     /**
      * @return string
@@ -66,7 +75,7 @@ abstract class AbstractRangeFacetItem extends AbstractFacetItem
      */
     public function getGap(): string
     {
-        return $this->gap;
+        return (string)$this->gap;
     }
 
     /**
