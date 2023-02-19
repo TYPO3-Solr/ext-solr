@@ -236,10 +236,7 @@ defined('TYPO3') || die();
             \ApacheSolrForTypo3\Solr\Controller\SuggestController::class => 'suggest',
         ]
     );
-
-    // add tsconfig
-    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPageTSConfig('@import \'EXT:solr/Configuration/TSconfig/Page/Mod/Wizards/NewContentElement.tsconfig\'');
-
+    
     // register the Fluid namespace 'solr' globally
     $GLOBALS['TYPO3_CONF_VARS']['SYS']['fluid']['namespaces']['solr'] = ['ApacheSolrForTypo3\\Solr\\ViewHelpers'];
 
