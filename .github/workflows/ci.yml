@@ -373,7 +373,7 @@ jobs:
         with:
           context: .
           file: ./Docker/SolrServer/Dockerfile
-          platforms: ${{ env.DOCKER_IMAGE_TAGS }}
+          platforms: ${{ env.DOCKER_PLATFORMS }}
           push: true
           tags: ${{ env.DOCKER_IMAGE_TAGS }}
       -
