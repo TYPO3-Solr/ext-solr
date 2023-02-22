@@ -173,14 +173,22 @@ class QueueItemRepository extends AbstractRepository
      * @param string $indexingConfiguration The name of the related indexConfiguration
      * @param int $rootPageId The uid of the rootPage
      * @param int $changedTime The forced change time that should be used for updating
+     * @param int $indexingPriority
      * @return int affected rows
      */
-    public function updateExistingItemByItemTypeAndItemUidAndRootPageId(string $itemType, int $itemUid, int $rootPageId, int $changedTime, string $indexingConfiguration = '') : int
-    {
+    public function updateExistingItemByItemTypeAndItemUidAndRootPageId(
+        string $itemType,
+        int $itemUid,
+        int $rootPageId,
+        int $changedTime,
+        string $indexingConfiguration = '',
+        int $indexingPriority = 0
+    ): int {
         $queryBuilder = $this->getQueryBuilder();
         $queryBuilder
             ->update($this->table)
             ->set('changed', $changedTime)
+            ->set('indexing_priority', $indexingPriority)
             ->andWhere(
                 $queryBuilder->expr()->eq('item_type', $queryBuilder->createNamedParameter($itemType)),
                 $queryBuilder->expr()->eq('item_uid', $itemUid),
@@ -204,10 +212,17 @@ class QueueItemRepository extends AbstractRepository
      * @param int $rootPageId
      * @param int $changedTime
      * @param string $indexingConfiguration The item's indexing configuration to use. Optional, overwrites existing / determined configuration.
+     * @param int $indexingPriority
      * @return int the number of inserted rows, which is typically 1
      */
-    public function add(string $itemType, int $itemUid, int $rootPageId, int $changedTime, string $indexingConfiguration) : int
-    {
+    public function add(
+        string $itemType,
+        int $itemUid,
+        int $rootPageId,
+        int $changedTime,
+        string $indexingConfiguration,
+        int $indexingPriority = 0
+    ): int {
         $queryBuilder = $this->getQueryBuilder();
         return $queryBuilder
             ->insert($this->table)
@@ -217,7 +232,8 @@ class QueueItemRepository extends AbstractRepository
                 'item_uid' => $itemUid,
                 'changed' => $changedTime,
                 'errors' => '',
-                'indexing_configuration' => $indexingConfiguration
+                'indexing_configuration' => $indexingConfiguration,
+                'indexing_priority' => $indexingPriority,
             ])
             ->execute();
 
