@@ -192,6 +192,7 @@ class QueueItemRepository extends AbstractRepository
      * @param int $rootPageId The uid of the rootPage
      * @param int $changedTime The forced change time that should be used for updating
      * @param string $indexingConfiguration The name of the related indexConfiguration
+     * @param int $indexingPriority
      * @return int affected rows
      *
      * @throws DBALException|\Doctrine\DBAL\DBALException
@@ -201,12 +202,14 @@ class QueueItemRepository extends AbstractRepository
         int $itemUid,
         int $rootPageId,
         int $changedTime,
-        string $indexingConfiguration = ''
+        string $indexingConfiguration = '',
+        int $indexingPriority = 0
     ): int {
         $queryBuilder = $this->getQueryBuilder();
         $queryBuilder
             ->update($this->table)
             ->set('changed', $changedTime)
+            ->set('indexing_priority', $indexingPriority)
             ->andWhere(
                 /** @scrutinizer ignore-type */
                 $queryBuilder->expr()->eq('item_type', $queryBuilder->createNamedParameter($itemType)),
@@ -233,6 +236,7 @@ class QueueItemRepository extends AbstractRepository
      * @param int $rootPageId
      * @param int $changedTime
      * @param string $indexingConfiguration The item's indexing configuration to use. Optional, overwrites existing / determined configuration.
+     * @param int $indexingPriority
      * @return int the number of inserted rows, which is typically 1
      *
      * @throws DBALException|\Doctrine\DBAL\DBALException
@@ -242,7 +246,8 @@ class QueueItemRepository extends AbstractRepository
         int $itemUid,
         int $rootPageId,
         int $changedTime,
-        string $indexingConfiguration
+        string $indexingConfiguration,
+        int $indexingPriority = 0
     ): int {
         $queryBuilder = $this->getQueryBuilder();
         return (int)$queryBuilder
@@ -254,6 +259,7 @@ class QueueItemRepository extends AbstractRepository
                 'changed' => $changedTime,
                 'errors' => '',
                 'indexing_configuration' => $indexingConfiguration,
+                'indexing_priority' => $indexingPriority,
             ])
             ->execute();
     }

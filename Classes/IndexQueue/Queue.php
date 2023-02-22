@@ -214,14 +214,15 @@ class Queue
             if ($indexingConfiguration === null) {
                 continue;
             }
+            $indexingPriority = $solrConfiguration->getIndexQueueIndexingPriorityByConfigurationName($indexingConfiguration);
             $itemInQueueForRootPage = $this->containsItemWithRootPageId($itemType, $itemUid, $rootPageId);
             if ($itemInQueueForRootPage) {
                 // update changed time if that item is in the queue already
                 $changedTime = ($forcedChangeTime > 0) ? $forcedChangeTime : $this->getItemChangedTime($itemType, $itemUid);
-                $updatedRows = $this->queueItemRepository->updateExistingItemByItemTypeAndItemUidAndRootPageId($itemType, $itemUid, $rootPageId, $changedTime, $indexingConfiguration);
+                $updatedRows = $this->queueItemRepository->updateExistingItemByItemTypeAndItemUidAndRootPageId($itemType, $itemUid, $rootPageId, $changedTime, $indexingConfiguration, $indexingPriority);
             } else {
                 // add the item since it's not in the queue yet
-                $updatedRows = $this->addNewItem($itemType, $itemUid, $indexingConfiguration, $rootPageId);
+                $updatedRows = $this->addNewItem($itemType, $itemUid, $indexingConfiguration, $rootPageId, $indexingPriority);
             }
 
             $updateCount += $updatedRows;
@@ -325,6 +326,7 @@ class Queue
      * @param string $indexingConfiguration The item's indexing configuration to use.
      *      Optional, overwrites existing / determined configuration.
      * @param int $rootPageId
+     * @param int $indexingPriority
      * @return int
      * @throws DBALDriverException
      * @throws DBALException|\Doctrine\DBAL\DBALException
@@ -333,7 +335,8 @@ class Queue
         string $itemType,
         $itemUid,
         string $indexingConfiguration,
-        int $rootPageId
+        int $rootPageId,
+        int $indexingPriority = 0
     ): int {
         $additionalRecordFields = '';
         if ($itemType === 'pages') {
@@ -348,7 +351,7 @@ class Queue
 
         $changedTime = $this->getItemChangedTime($itemType, $itemUid);
 
-        return $this->queueItemRepository->add($itemType, $itemUid, $rootPageId, $changedTime, $indexingConfiguration);
+        return $this->queueItemRepository->add($itemType, $itemUid, $rootPageId, $changedTime, $indexingConfiguration, $indexingPriority);
     }
 
     /**
