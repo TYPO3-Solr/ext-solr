@@ -145,7 +145,7 @@ class PagesRepository extends AbstractRepository
             return $this->transientVariableCache->get($cacheIdentifier);
         }
 
-        $pageIdsList = $this->getTreeList($rootPageId, 9999, 0, 'deleted = 0');
+        $pageIdsList = $this->getTreeList($rootPageId, 9999, 0, 'deleted = 0 ' . $initialPagesAdditionalWhereClause);
         $pageIds = GeneralUtility::intExplode(',', $pageIdsList);
 
         if (!empty($initialPagesAdditionalWhereClause)) {
