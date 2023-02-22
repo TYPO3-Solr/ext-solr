@@ -704,6 +704,21 @@ class TypoScriptConfiguration
     }
 
     /**
+    * Retrieves indexingPriority when configured or 0.
+    *
+    * plugin.tx_solr.index.queue.<configurationName>.indexingPriority
+    *
+    * @param string $configurationName
+    * @param int $defaultIfEmpty
+    * @return int
+    */
+    public function getIndexQueueIndexingPriorityByConfigurationName(string $configurationName, int $defaultIfEmpty = 0)
+    {
+        $path = 'plugin.tx_solr.index.queue.' . $configurationName . '.indexingPriority';
+        return (int)$this->getValueByPathOrDefaultValue($path, $defaultIfEmpty);
+    }
+
+    /**
      * Returns the _LOCAL_LANG configuration from the TypoScript.
      *
      * plugin.tx_solr._LOCAL_LANG.
