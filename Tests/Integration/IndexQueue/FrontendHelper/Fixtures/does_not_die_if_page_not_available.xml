@@ -1,15 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <dataset>
-
-    <sys_language>
-        <uid>1</uid>
-        <pid>0</pid>
-        <hidden>0</hidden>
-        <title>German</title>
-        <flag>de</flag>
-        <language_isocode>de</language_isocode>
-    </sys_language>
-
     <sys_template>
         <uid>1</uid>
         <pid>1</pid>

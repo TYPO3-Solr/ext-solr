@@ -21,7 +21,6 @@ use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
-use ApacheSolrForTypo3\Solr\System\Records\SystemLanguage\SystemLanguageRepository;
 use ApacheSolrForTypo3\Solr\System\Solr\Node;
 use ApacheSolrForTypo3\Solr\System\Solr\Parser\SchemaParser;
 use ApacheSolrForTypo3\Solr\System\Solr\Parser\StopWordParser;
@@ -55,11 +54,6 @@ class ConnectionManagerTest extends UnitTest
      * @var SolrLogManager
      */
     protected $logManagerMock;
-
-    /**
-     * @var SystemLanguageRepository
-     */
-    protected $languageRepositoryMock;
 
     /**
      * @var PagesRepository
@@ -96,14 +90,12 @@ class ConnectionManagerTest extends UnitTest
         $GLOBALS['TSFE']->tmpl->setup['config.']['tx_realurl_enable'] = '0';
 
         $this->logManagerMock = $this->getDumbMock(SolrLogManager::class);
-        $this->languageRepositoryMock = $this->getDumbMock(SystemLanguageRepository::class);
         $this->pageRepositoryMock = $this->getDumbMock(PagesRepository::class);
         $this->siteRepositoryMock = $this->getDumbMock(SiteRepository::class);
 
         $this->configurationManager = new ConfigurationManager();
         $this->connectionManager = $this->getMockBuilder(ConnectionManager::class)
             ->setConstructorArgs([
-                $this->languageRepositoryMock,
                 $this->pageRepositoryMock,
                 $this->siteRepositoryMock,
             ])
