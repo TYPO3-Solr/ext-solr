@@ -21,7 +21,6 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Mvc\Controller\SolrControllerContext;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use InvalidArgumentException;
-use TYPO3\CMS\Extbase\Mvc\Controller\ControllerContext;
 
 /**
  * Class AbstractSolrFrontendTagBasedViewHelper
@@ -53,10 +52,10 @@ abstract class AbstractSolrFrontendTagBasedViewHelper extends AbstractSolrTagBas
     }
 
     /**
-     * @return ControllerContext|SolrControllerContext
+     * @return SolrControllerContext
      * @throws InvalidArgumentException
      */
-    protected function getControllerContext(): ControllerContext
+    protected function getControllerContext(): SolrControllerContext
     {
         $controllerContext = null;
         if (method_exists($this->renderingContext, 'getControllerContext')) {

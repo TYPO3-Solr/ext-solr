@@ -1,5 +1,7 @@
 <?php
 
+/** @noinspection PhpUnhandledExceptionInspection */
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -18,7 +20,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\ViewHelpers;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use ApacheSolrForTypo3\Solr\ViewHelpers\SearchFormViewHelper;
-use TYPO3\CMS\Extbase\Mvc\Controller\ControllerContext;
+use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 use TYPO3Fluid\Fluid\Core\Variables\VariableProviderInterface;
 
@@ -27,37 +29,30 @@ use TYPO3Fluid\Fluid\Core\Variables\VariableProviderInterface;
  */
 class SearchFormViewHelperTest extends UnitTest
 {
-    /**
-     * @var SearchFormViewHelper
-     */
-    protected $viewHelper;
-
-    /**
-     * @var UriBuilder
-     */
-    protected $uriBuilderMock;
-
-    /**
-     * @var TypoScriptConfiguration
-     */
-    protected $typoScriptConfigurationMock;
+    protected MockObject|SearchFormViewHelper $viewHelper;
+    protected MockObject|UriBuilder $uriBuilderMock;
+    protected MockObject|TypoScriptConfiguration $typoScriptConfigurationMock;
 
     protected function setUp(): void
     {
         $this->uriBuilderMock = $this->getDumbMock(UriBuilder::class);
         $this->typoScriptConfigurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
-        $controllerContextMock = $this->getDumbMock(ControllerContext::class);
-        $controllerContextMock->expects(self::once())->method('getUriBuilder')->willReturn($this->uriBuilderMock);
 
-        $this->viewHelper = $this->getMockBuilder(SearchFormViewHelper::class)->onlyMethods([
-            'getControllerContext',
-            'getTypoScriptConfiguration',
-            'getTemplateVariableContainer',
-            'getSearchResultSet',
-            'renderChildren',
-            'getIsSiteManagedSite',
-        ])->getMock();
-        $this->viewHelper->expects(self::any())->method('getControllerContext')->willReturn($controllerContextMock);
+        $this->viewHelper = $this->getMockBuilder(SearchFormViewHelper::class)
+            ->setConstructorArgs(
+                [
+                    'uriBuilder' => $this->uriBuilderMock,
+                ]
+            )
+            ->onlyMethods([
+                'getControllerContext',
+                'getTypoScriptConfiguration',
+                'getTemplateVariableContainer',
+                'getSearchResultSet',
+                'renderChildren',
+                'getIsSiteManagedSite',
+            ])
+            ->getMock();
         $this->viewHelper->expects(self::any())->method('getTypoScriptConfiguration')->willReturn($this->typoScriptConfigurationMock);
         $this->viewHelper->expects(self::any())->method('getTemplateVariableContainer')->willReturn($this->getDumbMock(VariableProviderInterface::class));
         $this->viewHelper->expects(self::once())->method('renderChildren')->willReturn('');
@@ -68,7 +63,7 @@ class SearchFormViewHelperTest extends UnitTest
     /**
      * @param int $pageUid
      */
-    protected function assertUriIsBuildForPageUid($pageUid)
+    protected function assertUriIsBuildForPageUid(int $pageUid)
     {
         $this->uriBuilderMock->expects(self::any())->method('reset')->willReturn($this->uriBuilderMock);
         $this->uriBuilderMock->expects(self::once())->method('setTargetPageUid')->with($pageUid)->willReturn($this->uriBuilderMock);
@@ -78,7 +73,6 @@ class SearchFormViewHelperTest extends UnitTest
         $this->uriBuilderMock->expects(self::once())->method('setCreateAbsoluteUri')->willReturn($this->uriBuilderMock);
         $this->uriBuilderMock->expects(self::once())->method('setAddQueryString')->willReturn($this->uriBuilderMock);
         $this->uriBuilderMock->expects(self::once())->method('setArgumentsToBeExcludedFromQueryString')->willReturn($this->uriBuilderMock);
-        $this->uriBuilderMock->expects(self::once())->method('setAddQueryStringMethod')->willReturn($this->uriBuilderMock);
         $this->uriBuilderMock->expects(self::once())->method('setAddQueryString')->willReturn($this->uriBuilderMock);
         $this->uriBuilderMock->expects(self::once())->method('setSection')->willReturn($this->uriBuilderMock);
         $this->uriBuilderMock->expects(self::once())->method('build')->willReturn('index.php?id=' . $pageUid);

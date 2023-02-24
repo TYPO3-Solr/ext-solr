@@ -64,7 +64,6 @@ class FrontendUserSessionTest extends UnitTest
 
     /**
      * @test
-     * @doesNotPerformAssertions
      */
     public function canSetLastSearchesInSession()
     {
@@ -101,7 +100,6 @@ class FrontendUserSessionTest extends UnitTest
 
     /**
      * @test
-     * @doesNotPerformAssertions
      */
     public function canSetPerPageInSessionData()
     {

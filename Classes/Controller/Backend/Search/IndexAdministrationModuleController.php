@@ -54,7 +54,7 @@ class IndexAdministrationModuleController extends AbstractModuleController
             $solrServers = $this->solrConnectionManager->getConnectionsBySite($this->selectedSite);
             foreach ($solrServers as $solrServer) {
                 $writeService = $solrServer->getWriteService();
-                /* @var $solrServer SolrConnection */
+                /* @var SolrConnection $solrServer */
                 $writeService->deleteByQuery('siteHash:' . $siteHash);
                 $writeService->commit(false, false, false);
                 $affectedCores[] = $writeService->getPrimaryEndpoint()->getCore();
