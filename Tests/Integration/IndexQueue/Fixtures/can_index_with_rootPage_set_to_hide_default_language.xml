@@ -78,9 +78,4 @@
 		<doktype>1</doktype>
 		<is_siteroot>1</is_siteroot>
 	</pages>
-
-	<sys_language>
-		<uid>1</uid>
-		<title>English</title>
-	</sys_language>
 </dataset>
