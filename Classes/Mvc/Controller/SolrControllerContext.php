@@ -19,7 +19,8 @@ namespace ApacheSolrForTypo3\Solr\Mvc\Controller;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
-use TYPO3\CMS\Extbase\Mvc\Controller\ControllerContext;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 
 /**
  * Class SolrControllerContext
@@ -27,7 +28,7 @@ use TYPO3\CMS\Extbase\Mvc\Controller\ControllerContext;
  * @author Frans Saris <frans@beech.it>
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class SolrControllerContext extends ControllerContext
+class SolrControllerContext
 {
     /**
      * @var TypoScriptConfiguration|null
@@ -42,7 +43,7 @@ class SolrControllerContext extends ControllerContext
     /**
      * @param TypoScriptConfiguration $typoScriptConfiguration
      */
-    public function setTypoScriptConfiguration(TypoScriptConfiguration $typoScriptConfiguration)
+    public function setTypoScriptConfiguration(TypoScriptConfiguration $typoScriptConfiguration): void
     {
         $this->typoScriptConfiguration = $typoScriptConfiguration;
     }
@@ -58,7 +59,7 @@ class SolrControllerContext extends ControllerContext
     /**
      * @param SearchResultSet $searchResultSet
      */
-    public function setSearchResultSet(SearchResultSet $searchResultSet)
+    public function setSearchResultSet(SearchResultSet $searchResultSet): void
     {
         $this->searchResultSet = $searchResultSet;
     }
@@ -69,5 +70,10 @@ class SolrControllerContext extends ControllerContext
     public function getSearchResultSet(): ?SearchResultSet
     {
         return $this->searchResultSet;
+    }
+
+    public function getUriBuilder(): UriBuilder
+    {
+        return GeneralUtility::makeInstance(UriBuilder::class);
     }
 }
