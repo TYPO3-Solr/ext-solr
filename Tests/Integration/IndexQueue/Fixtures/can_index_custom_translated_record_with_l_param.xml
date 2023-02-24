@@ -102,14 +102,4 @@
         <sys_language_uid>1</sys_language_uid>
         <l10n_parent>777</l10n_parent>
     </tx_fakeextension_domain_model_bar>
-
-    <sys_language>
-        <uid>1</uid>
-        <pid>0</pid>
-        <hidden>0</hidden>
-        <title>German</title>
-        <flag>de</flag>
-        <language_isocode>de</language_isocode>
-        <sorting>128</sorting>
-    </sys_language>
 </dataset>

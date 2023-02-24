@@ -104,15 +104,6 @@
         <sorting_foreign>0</sorting_foreign>
     </tx_fakeextension3_pages_mm>
 
-    <sys_language>
-        <uid>1</uid>
-        <pid>0</pid>
-        <hidden>0</hidden>
-        <title>German</title>
-        <flag>de</flag>
-        <language_isocode>de</language_isocode>
-    </sys_language>
-
     <tx_solr_indexqueue_item>
         <uid>4711</uid>
         <root>1</root>
