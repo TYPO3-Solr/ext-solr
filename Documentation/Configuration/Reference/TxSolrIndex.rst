@@ -167,7 +167,6 @@ ID's that shouldn't be processed at all.
 If not configured the initializing the Index Queue will only consider records with the flag deleted = 0,
 otherwise the initialPagesAdditionalWhereClause will be appended to the deleted = 0.
 
-
 .. code-block:: typoscript
 
     // Filter away pages that are "spacer" and have no_search, hidden and nav_hide set to zero

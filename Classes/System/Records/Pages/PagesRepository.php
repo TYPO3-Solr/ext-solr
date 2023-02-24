@@ -149,7 +149,6 @@ class PagesRepository extends AbstractRepository
         $pageIdsList = $this->getTreeList($rootPageId, 9999, 0, $permClause);
         $pageIds = GeneralUtility::intExplode(',', $pageIdsList);
 
-
         if (!empty($initialPagesAdditionalWhereClause)) {
             $pageIds = $this->filterPageIdsByAdditionalWhereClause($pageIds, $initialPagesAdditionalWhereClause);
         }
