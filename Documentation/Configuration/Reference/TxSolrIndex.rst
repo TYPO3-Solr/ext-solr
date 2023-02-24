@@ -164,6 +164,9 @@ A WHERE clause that is used when initializing the Index Queue, limiting pages th
 This filter is applied **prior** to the plugin.tx_solr.index.queue.[indexConfig].additionalWhereClause
 filter and hence provides an even stronger filter mechanism - since it can be used to filter away page
 ID's that shouldn't be processed at all.
+If not configured the initializing the Index Queue will only consider records with the flag deleted = 0,
+otherwise the initialPagesAdditionalWhereClause will be appended to the deleted = 0.
+
 
 .. code-block:: typoscript
 
