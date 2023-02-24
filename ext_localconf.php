@@ -236,7 +236,7 @@ defined('TYPO3') || die();
             \ApacheSolrForTypo3\Solr\Controller\SuggestController::class => 'suggest',
         ]
     );
-    
+
     // register the Fluid namespace 'solr' globally
     $GLOBALS['TYPO3_CONF_VARS']['SYS']['fluid']['namespaces']['solr'] = ['ApacheSolrForTypo3\\Solr\\ViewHelpers'];
 

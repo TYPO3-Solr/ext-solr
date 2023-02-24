@@ -1,5 +1,7 @@
 <?php
 
+/** @noinspection PhpUnhandledExceptionInspection */
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -17,6 +19,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Report;
 
 use ApacheSolrForTypo3\Solr\Report\SolrConfigurationStatus;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Reports\Status;
 
 /**
@@ -29,7 +32,7 @@ class SolrConfigurationStatusTest extends UnitTest
     /**
      * @var SolrConfigurationStatus
      */
-    protected $report;
+    protected SolrConfigurationStatus $report;
 
     protected function setUp(): void
     {
@@ -89,6 +92,6 @@ class SolrConfigurationStatusTest extends UnitTest
 
         /** @var $firstState Status */
         $firstState = $states[0];
-        self::assertSame(Status::WARNING, $firstState->getSeverity(), 'Expected to have one violation');
+        self::assertSame(ContextualFeedbackSeverity::WARNING, $firstState->getSeverity(), 'Expected to have one violation');
     }
 }

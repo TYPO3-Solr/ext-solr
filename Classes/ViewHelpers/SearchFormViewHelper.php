@@ -22,7 +22,7 @@ use ApacheSolrForTypo3\Solr\System\Util\SiteUtility;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
+use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 use TYPO3Fluid\Fluid\Core\Variables\VariableProviderInterface;
 
 /**
@@ -39,11 +39,6 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
     protected $tagName = 'form';
 
     /**
-     * @var TypoScriptFrontendController
-     */
-    protected $frontendController;
-
-    /**
      * @var bool
      */
     protected $escapeChildren = true;
@@ -56,10 +51,10 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
     /**
      * Constructor
      */
-    public function __construct()
-    {
+    public function __construct(
+        protected readonly UriBuilder $uriBuilder
+    ) {
         parent::__construct();
-        $this->frontendController = $GLOBALS['TSFE'] ?? null;
     }
 
     /**
@@ -75,8 +70,8 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
         $this->registerTagAttribute('onsubmit', 'string', 'JavaScript: On submit of the form');
         $this->registerUniversalTagAttributes();
 
-        $this->registerArgument('pageUid', 'integer', 'When not set current page is used', false);
-        $this->registerArgument('additionalFilters', 'array', 'Additional filters', false);
+        $this->registerArgument('pageUid', 'integer', 'When not set current page is used');
+        $this->registerArgument('additionalFilters', 'array', 'Additional filters');
         $this->registerArgument('additionalParams', 'array', 'Query parameters to be attached to the resulting URI', false, []);
         $this->registerArgument('pageType', 'integer', 'Type of the target page. See typolink.parameter', false, 0);
 
@@ -85,7 +80,6 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
         $this->registerArgument('absolute', 'boolean', 'If set, the URI of the rendered link is absolute', false, false);
         $this->registerArgument('addQueryString', 'boolean', 'If set, the current query parameters will be kept in the URI', false, false);
         $this->registerArgument('argumentsToBeExcludedFromQueryString', 'array', 'arguments to be removed from the URI. Only active if $addQueryString = TRUE', false, []);
-        $this->registerArgument('addQueryStringMethod', 'string', 'Set which parameters will be kept. Only active if $addQueryString = TRUE', false);
         $this->registerArgument('addSuggestUrl', 'boolean', 'Indicates if suggestUrl should be rendered or not', false, true);
         $this->registerArgument('suggestHeader', 'string', 'The header for the top results', false, 'Top Results');
         $this->registerArgument('suggestPageType', 'integer', 'The page type that should be used for the suggest', false, 7384);
@@ -226,9 +220,8 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
      */
     protected function getSuggestUrl(?array $additionalFilters, int $pageUid): string
     {
-        $uriBuilder = $this->getControllerContext()->getUriBuilder();
         $pluginNamespace = $this->getTypoScriptConfiguration()->getSearchPluginNamespace();
-        $suggestUrl = $uriBuilder
+        $suggestUrl = $this->uriBuilder
             ->reset()
             ->setTargetPageUid($pageUid)
             ->setTargetPageType($this->arguments['suggestPageType'])
@@ -237,26 +230,24 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
 
         /* @var UrlHelper $urlService */
         $urlService = GeneralUtility::makeInstance(UrlHelper::class, $suggestUrl);
-        return $urlService->removeQueryParameter('cHash')->__toString();
+        return $urlService->withoutQueryParameter('cHash')->__toString();
     }
 
     /**
-     * @param int|null $pageUid
+     * @param int $pageUid
      * @return string
      */
-    protected function buildUriFromPageUidAndArguments($pageUid): string
+    protected function buildUriFromPageUidAndArguments(int $pageUid): string
     {
-        $uriBuilder = $this->getControllerContext()->getUriBuilder();
-        return $uriBuilder
+        return $this->uriBuilder
             ->reset()
-            ->setTargetPageUid((int)$pageUid)
+            ->setTargetPageUid($pageUid)
             ->setTargetPageType($this->arguments['pageType'] ?? 0)
             ->setNoCache($this->arguments['noCache'] ?? false)
             ->setArguments($this->arguments['additionalParams'] ?? [])
             ->setCreateAbsoluteUri($this->arguments['absolute'] ?? false)
             ->setAddQueryString($this->arguments['addQueryString'] ?? false)
             ->setArgumentsToBeExcludedFromQueryString($this->arguments['argumentsToBeExcludedFromQueryString'] ?? [])
-            ->setAddQueryStringMethod($this->arguments['addQueryStringMethod'] ?? '')
             ->setSection($this->arguments['section'] ?? '')
             ->build();
     }
