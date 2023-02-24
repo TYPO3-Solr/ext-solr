@@ -20,7 +20,6 @@ namespace ApacheSolrForTypo3\Solr;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository as PagesRepositoryAtExtSolr;
-use ApacheSolrForTypo3\Solr\System\Records\SystemLanguage\SystemLanguageRepository;
 use ApacheSolrForTypo3\Solr\System\Solr\Node;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use ApacheSolrForTypo3\Solr\System\Util\SiteUtility;
@@ -46,11 +45,6 @@ class ConnectionManager implements SingletonInterface
     protected static array $connections = [];
 
     /**
-     * @var SystemLanguageRepository
-     */
-    protected SystemLanguageRepository $systemLanguageRepository;
-
-    /**
      * @var PagesRepositoryAtExtSolr
      */
     protected PagesRepositoryAtExtSolr $pagesRepositoryAtExtSolr;
@@ -61,16 +55,13 @@ class ConnectionManager implements SingletonInterface
     protected SiteRepository $siteRepository;
 
     /**
-     * @param SystemLanguageRepository|null $systemLanguageRepository
      * @param PagesRepositoryAtExtSolr|null $pagesRepositoryAtExtSolr
      * @param SiteRepository|null $siteRepository
      */
     public function __construct(
-        SystemLanguageRepository $systemLanguageRepository = null,
         PagesRepositoryAtExtSolr $pagesRepositoryAtExtSolr = null,
         SiteRepository $siteRepository = null
     ) {
-        $this->systemLanguageRepository = $systemLanguageRepository ?? GeneralUtility::makeInstance(SystemLanguageRepository::class);
         $this->siteRepository = $siteRepository ?? GeneralUtility::makeInstance(SiteRepository::class);
         $this->pagesRepositoryAtExtSolr = $pagesRepositoryAtExtSolr ?? GeneralUtility::makeInstance(PagesRepositoryAtExtSolr::class);
     }
