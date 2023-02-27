@@ -79,6 +79,7 @@ class RootPageResolver implements SingletonInterface
      * @param int $uid
      * @return array
      * @throws DBALDriverException
+     * @throws InvalidArgumentException
      * @throws Throwable
      */
     public function getResponsibleRootPageIds(string $table, int $uid): array
@@ -100,6 +101,7 @@ class RootPageResolver implements SingletonInterface
      *
      * @param int $pageId Page ID
      * @return bool TRUE if the page is marked as root page, FALSE otherwise
+     * @throws InvalidArgumentException
      */
     public function getIsRootPageId(int $pageId): bool
     {
@@ -121,7 +123,9 @@ class RootPageResolver implements SingletonInterface
         }
 
         $page = $this->getPageRecordByPageId($pageId);
-        if (empty($page)) { // @todo: 1636120156 See \ApacheSolrForTypo3\Solr\Tests\Integration\IndexQueue\FrontendHelper\PageIndexerTest::phpProcessDoesNotDieIfPageIsNotAvailable()
+        if (empty($page)) {
+            // @todo: 1636120156 See \ApacheSolrForTypo3\Solr\Tests\Integration\IndexQueue\FrontendHelper\PageIndexerTest::phpProcessDoesNotDieIfPageIsNotAvailable()
+            //        Do we need an exception here or is it sufficient to just return false?
             throw new InvalidArgumentException(
                 'The page for the given page ID \'' . $pageId
                 . '\' could not be found in the database and can therefore not be used as site root page.',
@@ -192,6 +196,7 @@ class RootPageResolver implements SingletonInterface
      * @param int $uid
      * @return array
      * @throws DBALDriverException
+     * @throws InvalidArgumentException
      * @throws Throwable
      */
     protected function buildResponsibleRootPageIds(string $table, int $uid): array
