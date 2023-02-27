@@ -74,8 +74,7 @@ assertDockerVersionIsGtOrEq193 ()
   local DOCKER_VERSION_MINOR
   DOCKER_VERSION_MINOR=$(echo "$DOCKER_VERSION"| cut -d'.' -f 2)
 
-  if [ "${DOCKER_VERSION_MAJOR}" -ge 19 ] && \
-     [ "${DOCKER_VERSION_MINOR}" -ge 3 ] ; then
+  if { [ "${DOCKER_VERSION_MAJOR}" -eq 19 ] && [ "${DOCKER_VERSION_MINOR}" -ge 3 ]; } || [ "${DOCKER_VERSION_MAJOR}" -gt 19 ]; then
       prettyPrintOrExitOnError 0
   else
     echo -en "${RED}"' ✘\n'"${NC}"
@@ -178,7 +177,7 @@ getExpandedListOfPathsAsSudo ()
 
 assertVolumeExportHasNotBeenChanged ()
 {
-  echo -n "Check Dockerfile's VOLUME defintion has not been changed"
+  echo -n "Check Dockerfile's VOLUME definition has not been changed."
   local EXPORTED_VOLUME
   EXPORTED_VOLUME=$(docker image inspect --format='{{ range $a, $b := .Config.Volumes }}{{ printf "%s " $a }}{{end}}' $LOCAL_IMAGE_NAME)
   if [[ "$EXPORTED_VOLUME" == "$DEFAULT_IMAGE_VOLUME_EXPORT_PATH " ]]; then
