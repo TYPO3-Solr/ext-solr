@@ -57,7 +57,7 @@ class Node extends Endpoint
             'collection' => null,
             'core' => basename($path),
             'leader' => false,
-	];
+        ];
 
         parent::__construct($options);
         $this->setAuthentication($username, $password);
