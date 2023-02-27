@@ -716,6 +716,67 @@ class GarbageCollectorTest extends IntegrationTest
     }
 
     /**
+     * @test
+     */
+    public function canRemovePageWhenContentElementOnAlreadyDeletedPageIsDeleted(): void
+    {
+        $this->importDataSetFromFixture('can_handle_missing_page_on_deletion.xml');
+        $cmdMap = ['tt_content' => [321 => ['delete' => 1 ]]];
+
+        $this->dataHandler->start([], $cmdMap, $this->fakeBEUser(1));
+        $this->dataHandler->process_cmdmap();
+
+        self::assertEquals(1, $this->indexQueue->getAllItemsCount(), 'Queue item count not as expected');
+
+        // check queue directly as Queue wouldn't return invalid records
+        /** @var Connection $connection */
+        $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionByName(ConnectionPool::DEFAULT_CONNECTION_NAME);
+        $queueItemUid = $connection->select(['uid'], 'tx_solr_indexqueue_item')->fetchOne();
+        self::assertEquals(234, $queueItemUid);
+    }
+
+    /**
+     * @test
+     */
+    public function canRemovePageWhenContentElementOnNonExistingPageIsDeleted(): void
+    {
+        $this->importDataSetFromFixture('can_handle_missing_page_on_deletion.xml');
+        $cmdMap = ['tt_content' => [432 => ['delete' => 1 ]]];
+
+        $this->dataHandler->start([], $cmdMap, $this->fakeBEUser(1));
+        $this->dataHandler->process_cmdmap();
+
+        // check queue directly as Queue wouldn't return invalid records
+        /** @var Connection $connection */
+        $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionByName(ConnectionPool::DEFAULT_CONNECTION_NAME);
+        $queueItemUid = $connection->select(['uid'], 'tx_solr_indexqueue_item')->fetchOne();
+        self::assertEquals(123, $queueItemUid);
+    }
+
+    /**
+     * @test
+     */
+    public function canRemovePageWhenContentElementOnAlreadyDeletedSiteIsDeleted(): void
+    {
+        // simulate that site root is deleted
+        /** @var Connection $connection */
+        $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionByName(ConnectionPool::DEFAULT_CONNECTION_NAME);
+        self::assertEquals(1, $connection->update('pages', ['deleted' => 1], ['uid' => 1]));
+
+        $this->importDataSetFromFixture('can_handle_missing_page_on_deletion.xml');
+        $cmdMap = ['tt_content' => [321 => ['delete' => 1 ]]];
+
+        $this->dataHandler->start([], $cmdMap, $this->fakeBEUser(1));
+        $this->dataHandler->process_cmdmap();
+
+        // check queue directly as Queue wouldn't return invalid records
+        /** @var Connection $connection */
+        $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionByName(ConnectionPool::DEFAULT_CONNECTION_NAME);
+        $queueItemUid = $connection->select(['uid'], 'tx_solr_indexqueue_item')->fetchOne();
+        self::assertEquals(234, $queueItemUid);
+    }
+
+    /**
      * Prepares the test cases:
      * - canRemovePageWhenPageIsHidden
      * - canRemovePageWhenPageIsHiddenInDelayedProcessingMode

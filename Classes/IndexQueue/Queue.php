@@ -31,6 +31,7 @@ use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use Doctrine\DBAL\ConnectionException;
 use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use Doctrine\DBAL\Exception as DBALException;
+use InvalidArgumentException;
 use Throwable;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -193,7 +194,13 @@ class Queue
     protected function updateOrAddItemForAllRelatedRootPages(string $itemType, $itemUid, int $forcedChangeTime): int
     {
         $updateCount = 0;
-        $rootPageIds = $this->rootPageResolver->getResponsibleRootPageIds($itemType, $itemUid);
+        try {
+            $rootPageIds = $this->rootPageResolver->getResponsibleRootPageIds($itemType, $itemUid);
+        } catch (InvalidArgumentException $e) {
+            $this->deleteItem($itemType, $itemUid);
+            return 0;
+        }
+
         foreach ($rootPageIds as $rootPageId) {
             $skipInvalidRootPage = $rootPageId === 0;
             if ($skipInvalidRootPage) {
