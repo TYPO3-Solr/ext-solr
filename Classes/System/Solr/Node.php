@@ -48,24 +48,16 @@ class Node extends Endpoint
         ?string $username = null,
         ?string $password = null
     ) {
-        $path = (string)$path;
-        $elements = explode('/', trim($path, '/'));
-        $coreName = (string)array_pop($elements);
-        // Remove API version
-        array_pop($elements);
-
-        // The path should always have the same format!
-        $path = trim(implode('/', $elements), '/');
-
         $options = [
             'scheme' => $scheme,
             'host' => $host,
             'port' => $port,
-            'path' => '/' . $path,
+            'context' => dirname($path),
+            'path' => '/',
             'collection' => null,
-            'core' => $coreName,
+            'core' => basename($path),
             'leader' => false,
-        ];
+	];
 
         parent::__construct($options);
         $this->setAuthentication($username, $password);
