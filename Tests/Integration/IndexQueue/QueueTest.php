@@ -71,7 +71,6 @@ class QueueTest extends IntegrationTest
     public function preFilledQueueContainsRootPageAfterInitialize()
     {
         $this->importDataSetFromFixture('can_clear_queue_after_initialize.xml');
-        $itemCount = $this->indexQueue->getAllItemsCount();
 
         $this->assertItemsInQueue(1);
         self::assertFalse($this->indexQueue->containsItem('pages', 1));
@@ -125,7 +124,6 @@ class QueueTest extends IntegrationTest
         $this->assertEmptyQueue();
 
         // record does not exist in fixture
-        $this->expectException(\InvalidArgumentException::class);
         $this->indexQueue->updateItem('pages', 5);
 
         // queue should still be empty

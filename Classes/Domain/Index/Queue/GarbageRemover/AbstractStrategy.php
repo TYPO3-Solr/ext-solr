@@ -19,6 +19,7 @@ use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\GarbageCollectorPostProcessor;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
+use InvalidArgumentException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -106,7 +107,13 @@ abstract class AbstractStrategy
         // record can be indexed for multiple sites
         $indexQueueItems = $this->queue->getItems($table, $uid);
         foreach ($indexQueueItems as $indexQueueItem) {
-            $site = $indexQueueItem->getSite();
+            try {
+                $site = $indexQueueItem->getSite();
+            } catch (InvalidArgumentException $e) {
+                $this->queue->deleteItem($indexQueueItem->getType(), $indexQueueItem->getIndexQueueUid());
+                continue;
+            }
+
             $enableCommitsSetting = $site->getSolrConfiguration()->getEnableCommits();
             $siteHash = $site->getSiteHash();
             // a site can have multiple connections (cores / languages)
