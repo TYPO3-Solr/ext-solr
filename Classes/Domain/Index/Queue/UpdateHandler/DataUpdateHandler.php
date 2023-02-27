@@ -17,6 +17,7 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler;
 
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Exception\RootPageRecordNotFoundException;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\ConfigurationAwareRecordService;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\MountPagesUpdater;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\RootPageResolver;
@@ -31,7 +32,6 @@ use ApacheSolrForTypo3\Solr\System\TCA\TCAService;
 use ApacheSolrForTypo3\Solr\Util;
 use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use Doctrine\DBAL\Exception as DBALException;
-use InvalidArgumentException;
 use Throwable;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
@@ -215,7 +215,7 @@ class DataUpdateHandler extends AbstractUpdateHandler
             } else {
                 $pid = $updatedFields['pid'] ?? $this->getValidatedPid('pages', $uid);
             }
-        } catch (Throwable $e) {
+        } catch (RootPageRecordNotFoundException $e) {
             $pid = null;
         }
 
@@ -400,7 +400,7 @@ class DataUpdateHandler extends AbstractUpdateHandler
     {
         try {
             $rootPageIds = $this->rootPageResolver->getResponsibleRootPageIds($recordTable, $recordUid);
-        } catch (InvalidArgumentException $e) {
+        } catch (RootPageRecordNotFoundException $e) {
             $rootPageIds = [];
         }
 

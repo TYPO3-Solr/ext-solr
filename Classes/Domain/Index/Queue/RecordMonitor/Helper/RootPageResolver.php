@@ -17,13 +17,13 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper;
 
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Exception\RootPageRecordNotFoundException;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
 use ApacheSolrForTypo3\Solr\System\Page\Rootline;
 use Doctrine\DBAL\Driver\Exception as DBALDriverException;
-use InvalidArgumentException;
 use RuntimeException;
 use Throwable;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
@@ -79,7 +79,7 @@ class RootPageResolver implements SingletonInterface
      * @param int $uid
      * @return array
      * @throws DBALDriverException
-     * @throws InvalidArgumentException
+     * @throws RootPageRecordNotFoundException
      * @throws Throwable
      */
     public function getResponsibleRootPageIds(string $table, int $uid): array
@@ -101,7 +101,7 @@ class RootPageResolver implements SingletonInterface
      *
      * @param int $pageId Page ID
      * @return bool TRUE if the page is marked as root page, FALSE otherwise
-     * @throws InvalidArgumentException
+     * @throws RootPageRecordNotFoundException
      */
     public function getIsRootPageId(int $pageId): bool
     {
@@ -126,7 +126,7 @@ class RootPageResolver implements SingletonInterface
         if (empty($page)) {
             // @todo: 1636120156 See \ApacheSolrForTypo3\Solr\Tests\Integration\IndexQueue\FrontendHelper\PageIndexerTest::phpProcessDoesNotDieIfPageIsNotAvailable()
             //        Do we need an exception here or is it sufficient to just return false?
-            throw new InvalidArgumentException(
+            throw new RootPageRecordNotFoundException(
                 'The page for the given page ID \'' . $pageId
                 . '\' could not be found in the database and can therefore not be used as site root page.',
                 1487171426
@@ -196,7 +196,7 @@ class RootPageResolver implements SingletonInterface
      * @param int $uid
      * @return array
      * @throws DBALDriverException
-     * @throws InvalidArgumentException
+     * @throws RootPageRecordNotFoundException
      * @throws Throwable
      */
     protected function buildResponsibleRootPageIds(string $table, int $uid): array

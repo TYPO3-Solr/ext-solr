@@ -15,11 +15,11 @@
 
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Index\Queue\RecordMonitor\Helper;
 
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Exception\RootPageRecordNotFoundException;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\ConfigurationAwareRecordService;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\RootPageResolver;
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
-use InvalidArgumentException;
 use PHPUnit\Framework\MockObject\MockObject;
 
 /**
@@ -127,7 +127,7 @@ class RootPageResolverTest extends UnitTest
             ->setConstructorArgs([$this->recordServiceMock, $this->cacheMock])
             ->onlyMethods(['getPageRecordByPageId'])->getMock();
         $this->rootPageResolver->expects(self::once())->method('getPageRecordByPageId')->willReturn([]);
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(RootPageRecordNotFoundException::class);
         $this->rootPageResolver->getIsRootPageId(42);
     }
 
