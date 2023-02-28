@@ -147,6 +147,7 @@ class Node extends Endpoint
             'port' => $this->getPort(),
             'scheme' => $this->getScheme(),
             'path' => $this->getPath(),
+            'context' => $this->getContext(),
             'core' => $this->getCore(),
         ];
     }

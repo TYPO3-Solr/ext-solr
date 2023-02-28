@@ -158,8 +158,8 @@ class SolrConnectionTest extends UnitTest
     public function coreBasePathDataProvider(): array
     {
         return [
-            ['path' => '/solr/bla', 'expectedPath' => ''],
-            ['path' => '/somewherelese/solr/corename', 'expectedCoreBasePath' => '/somewherelese'],
+            ['path' => '/solr/bla', 'expectedPath' => 'solr'],
+            ['path' => '/somewherelese/solr/corename', 'expectedCoreBasePath' => 'somewherelese/solr'],
         ];
     }
 
@@ -174,7 +174,7 @@ class SolrConnectionTest extends UnitTest
         );
         $writeNode = $readNode;
         $solrService = $this->getSolrConnectionWithDummyConstructorArgs($readNode, $writeNode);
-        self::assertSame($expectedCoreBasePath, $solrService->getReadService()->getPrimaryEndpoint()->getPath());
+        self::assertSame($expectedCoreBasePath, $solrService->getReadService()->getPrimaryEndpoint()->getContext());
     }
 
     /**
@@ -183,7 +183,7 @@ class SolrConnectionTest extends UnitTest
     public function toStringContainsAllSegments()
     {
         $readNode = Node::fromArray(
-            ['host' => 'localhost', 'port' => 8080, 'path' => '/core_de/', 'scheme' => 'http', 'username' => '', 'password' => '']
+            ['host' => 'localhost', 'port' => 8080, 'path' => '/solr/core_de/', 'scheme' => 'http', 'username' => '', 'password' => '']
         );
         $writeNode = $readNode;
         $solrService = $this->getSolrConnectionWithDummyConstructorArgs($readNode, $writeNode);
