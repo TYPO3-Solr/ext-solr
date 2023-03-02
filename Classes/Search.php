@@ -49,7 +49,7 @@ class Search
      *
      * @var Query|null
      */
-    protected ?Query $query;
+    protected ?Query $query = null;
 
     /**
      * The search response
