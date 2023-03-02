@@ -17,10 +17,21 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\ContentObject;
 
 use ApacheSolrForTypo3\Solr\ContentObject\Relation;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
+use Doctrine\DBAL\Driver\Exception;
+use Doctrine\DBAL\Exception as DBALException;
+use Doctrine\DBAL\Schema\SchemaException;
+use PHPUnit\Framework\MockObject\MockObject;
+use Traversable;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
+use TYPO3\CMS\Core\Database\Schema\Exception\StatementException;
+use TYPO3\CMS\Core\Database\Schema\Exception\UnexpectedSignalReturnValueTypeException;
+use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
+use TYPO3\CMS\Frontend\ContentObject\Exception\ContentRenderingException;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
+use TYPO3\TestingFramework\Core\Exception as TestingFrameworkCoreException;
 
 /**
  * Class RelationTest
@@ -32,6 +43,12 @@ class RelationTest extends IntegrationTest
      *
      * @test
      * @dataProvider fixturesProviderForFallbackToPagesTableIfPagesLanguageOverlayTCAHasNoDefinitionForLocalColumn
+     *
+     * @throws Exception
+     * @throws DBALException
+     * @throws AspectNotFoundException
+     * @throws ContentRenderingException
+     * @throws TestingFrameworkCoreException
      */
     public function canFallbackToPagesTableIfPagesLanguageOverlayTCAHasNoDefinitionForLocalColumn(string $fixtureName): void
     {
@@ -45,9 +62,9 @@ class RelationTest extends IntegrationTest
     /**
      * Data provider for "canFallbackToPagesTableIfPagesLanguageOverlayTCAHasNoDefinitionForLocalColumn"
      *
-     * @return \Traversable
+     * @return Traversable
      */
-    public function fixturesProviderForFallbackToPagesTableIfPagesLanguageOverlayTCAHasNoDefinitionForLocalColumn(): \Traversable
+    public function fixturesProviderForFallbackToPagesTableIfPagesLanguageOverlayTCAHasNoDefinitionForLocalColumn(): Traversable
     {
         yield 'Can fallback to pages if no TCA for local field'
             => ['solr_relation_can_fallback_to_pages_table_if_no_tca_for_local_field.xml'];
@@ -61,6 +78,15 @@ class RelationTest extends IntegrationTest
      *
      * @test
      * @dataProvider canResolveOneToOneRelationDataProvider
+     *
+     * @throws AspectNotFoundException
+     * @throws ContentRenderingException
+     * @throws DBALException
+     * @throws Exception
+     * @throws TestingFrameworkCoreException
+     * @throws SchemaException
+     * @throws StatementException
+     * @throws UnexpectedSignalReturnValueTypeException
      */
     public function canResolveOneToOneRelation(string $expected, array $config): void
     {
@@ -75,9 +101,9 @@ class RelationTest extends IntegrationTest
     /**
      * Data provider for "canResolveOneToOneRelation"
      *
-     * @return \Traversable
+     * @return Traversable
      */
-    public function canResolveOneToOneRelationDataProvider(): \Traversable
+    public function canResolveOneToOneRelationDataProvider(): Traversable
     {
         yield 'Can resolve title of 1:1 relation' => [
             'Second category',
@@ -118,6 +144,15 @@ class RelationTest extends IntegrationTest
      *
      * @test
      * @dataProvider canResolveMToNRelationDataProvider
+     *
+     * @throws AspectNotFoundException
+     * @throws ContentRenderingException
+     * @throws DBALException
+     * @throws Exception
+     * @throws SchemaException
+     * @throws StatementException
+     * @throws TestingFrameworkCoreException
+     * @throws UnexpectedSignalReturnValueTypeException
      */
     public function canResolveMToNRelation(string $expected, string $table, int $recordUid, array $config): void
     {
@@ -134,9 +169,9 @@ class RelationTest extends IntegrationTest
     /**
      * Data provider for "canResolveMToNRelation"
      *
-     * @return \Traversable
+     * @return Traversable
      */
-    public function canResolveMToNRelationDataProvider(): \Traversable
+    public function canResolveMToNRelationDataProvider(): Traversable
     {
         yield 'Can resolve title of m:n relation and apply stdWrap' => [
             'pre:First bar record:post',
@@ -238,6 +273,15 @@ class RelationTest extends IntegrationTest
      *
      * @test
      * @dataProvider canResolveOneToNRelationDataProvider
+     *
+     * @throws AspectNotFoundException
+     * @throws ContentRenderingException
+     * @throws DBALException
+     * @throws Exception
+     * @throws SchemaException
+     * @throws StatementException
+     * @throws TestingFrameworkCoreException
+     * @throws UnexpectedSignalReturnValueTypeException
      */
     public function canResolveOneToNRelation(string $expected, string $table, int $recordUid, array $config): void
     {
@@ -254,9 +298,9 @@ class RelationTest extends IntegrationTest
     /**
      * Data provider for "canResolveOneToNRelation"
      *
-     * @return \Traversable
+     * @return Traversable
      */
-    public function canResolveOneToNRelationDataProvider(): \Traversable
+    public function canResolveOneToNRelationDataProvider(): Traversable
     {
         yield 'Can resolve title of single 1:n relation' => [
             'First bar record',
@@ -314,16 +358,20 @@ class RelationTest extends IntegrationTest
      * @param string $table
      * @param int $uid
      * @return Relation
+     *
+     * @throws ContentRenderingException
      */
     protected function getSolrRelation(string $table, int $uid): Relation
     {
         $tsfeMock = $this->createMock(TypoScriptFrontendController::class);
         $contentObjectRenderer = GeneralUtility::makeInstance(ContentObjectRenderer::class, $tsfeMock);
+        /* @var MockObject|ServerRequest $requestMock */
+        $requestMock = $this->createMock(ServerRequest::class);
         $contentObjectRenderer->start(
             BackendUtility::getRecord($table, $uid),
-            $table
+            $table,
+            $requestMock
         );
-
-        return GeneralUtility::makeInstance(Relation::class, $contentObjectRenderer);
+        return $contentObjectRenderer->getContentObject(Relation::CONTENT_OBJECT_NAME);
     }
 }

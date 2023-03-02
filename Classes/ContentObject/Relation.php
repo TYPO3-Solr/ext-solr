@@ -17,9 +17,9 @@ namespace ApacheSolrForTypo3\Solr\ContentObject;
 
 use ApacheSolrForTypo3\Solr\System\Language\FrontendOverlayService;
 use ApacheSolrForTypo3\Solr\System\TCA\TCAService;
+use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use Doctrine\DBAL\Exception as DBALException;
 use Doctrine\DBAL\Result;
-use ReflectionClass;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
@@ -27,7 +27,7 @@ use TYPO3\CMS\Core\Database\RelationHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\AbstractContentObject;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
+use TYPO3\CMS\Frontend\ContentObject\Exception\ContentRenderingException;
 
 /**
  * A content object (cObj) to resolve relations between database records
@@ -57,38 +57,20 @@ class Relation extends AbstractContentObject
     protected array $configuration = [];
 
     /**
-     * @var TCAService
+     * @var FrontendOverlayService|null
      */
-    protected TCAService $tcaService;
-
-    /**
-     * @var FrontendOverlayService
-     */
-    protected FrontendOverlayService $frontendOverlayService;
-
-    /**
-     * @var TypoScriptFrontendController|null
-     */
-    protected ?TypoScriptFrontendController $typoScriptFrontendController = null;
+    protected ?FrontendOverlayService $frontendOverlayService = null;
 
     /**
      * Relation constructor.
      *
-     * @param ContentObjectRenderer|null $cObj
-     * @param TCAService|null $tcaService
-     * @param FrontendOverlayService|null $frontendOverlayService
+     * @param TCAService $tcaService
      */
     public function __construct(
-        ?ContentObjectRenderer $cObj = null,
-        ?TCAService $tcaService = null,
-        ?FrontendOverlayService $frontendOverlayService = null
+        protected readonly TCAService $tcaService
     ) {
-        $this->cObj = $cObj;
         $this->configuration['enableRecursiveValueResolution'] = 1;
         $this->configuration['removeEmptyValues'] = 1;
-        $this->tcaService = $tcaService ?? GeneralUtility::makeInstance(TCAService::class);
-        $this->typoScriptFrontendController = $this->getProtectedTsfeObjectFromContentObjectRenderer($cObj);
-        $this->frontendOverlayService = $frontendOverlayService ?? GeneralUtility::makeInstance(FrontendOverlayService::class, $this->tcaService, $this->typoScriptFrontendController);
     }
 
     /**
@@ -102,7 +84,10 @@ class Relation extends AbstractContentObject
      *
      * @param array $conf
      * @return string
+     *
      * @throws AspectNotFoundException
+     * @throws ContentRenderingException
+     * @throws DBALDriverException
      * @throws DBALException
      * @noinspection PhpMissingReturnTypeInspection, because foreign source inheritance See {@link AbstractContentObject::render()}
      */
@@ -136,6 +121,8 @@ class Relation extends AbstractContentObject
      * @return array Array of related items, values already resolved from related records
      *
      * @throws AspectNotFoundException
+     * @throws ContentRenderingException
+     * @throws DBALDriverException
      * @throws DBALException
      */
     protected function getRelatedItems(ContentObjectRenderer $parentContentObject): array
@@ -144,11 +131,11 @@ class Relation extends AbstractContentObject
         $uid = (int)$uid;
         $field = $this->configuration['localField'];
 
-        if (!$this->tcaService->/** @scrutinizer ignore-call */ getHasConfigurationForField($table, $field)) {
+        if (!$this->tcaService->getHasConfigurationForField($table, $field)) {
             return [];
         }
 
-        $overlayUid = $this->frontendOverlayService->/** @scrutinizer ignore-call */ getUidOfOverlay($table, $field, $uid);
+        $overlayUid = $this->getFrontendOverlayService()->getUidOfOverlay($table, $field, $uid);
         $fieldTCA = $this->tcaService->getConfigurationForField($table, $field);
 
         if (isset($fieldTCA['config']['MM']) && trim($fieldTCA['config']['MM']) !== '') {
@@ -169,6 +156,8 @@ class Relation extends AbstractContentObject
      * @return array Array of related items, values already resolved from related records
      *
      * @throws AspectNotFoundException
+     * @throws ContentRenderingException
+     * @throws DBALDriverException
      * @throws DBALException
      */
     protected function getRelatedItemsFromMMTable(string $localTableName, int $localRecordUid, array $localFieldTca): array
@@ -214,7 +203,7 @@ class Relation extends AbstractContentObject
                 continue;
             }
             if ($this->getLanguageUid() > 0) {
-                $record = $this->frontendOverlayService->getOverlay($foreignTableName, $record);
+                $record = $this->getFrontendOverlayService()->getOverlay($foreignTableName, $record);
             }
 
             $relatedItems[] = $contentObject->stdWrap($record[$foreignTableLabelField] ?? '', $this->configuration) ?? '';
@@ -259,6 +248,7 @@ class Relation extends AbstractContentObject
      * @return array Array of related items, values already resolved from related records
      *
      * @throws AspectNotFoundException
+     * @throws ContentRenderingException
      * @throws DBALException
      */
     protected function getRelatedItemsFromForeignTable(
@@ -328,6 +318,7 @@ class Relation extends AbstractContentObject
      *
      * @throws AspectNotFoundException
      * @throws DBALException
+     * @throws ContentRenderingException
      */
     protected function resolveRelatedValue(
         array $relatedRecord,
@@ -337,7 +328,7 @@ class Relation extends AbstractContentObject
         string $foreignTableName = ''
     ): array {
         if ($this->getLanguageUid() > 0 && !empty($foreignTableName)) {
-            $relatedRecord = $this->frontendOverlayService->getOverlay($foreignTableName, $relatedRecord);
+            $relatedRecord = $this->getFrontendOverlayService()->getOverlay($foreignTableName, $relatedRecord);
         }
 
         $values = [$relatedRecord[$foreignTableLabelField]];
@@ -391,7 +382,7 @@ class Relation extends AbstractContentObject
      * @param int ...$uids The uids to fetch from table.
      * @return array
      *
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws DBALException
      */
     protected function getRelatedRecords(string $foreignTable, int ...$uids): array
     {
@@ -436,26 +427,30 @@ class Relation extends AbstractContentObject
      *
      * @return int
      * @throws AspectNotFoundException
+     * @throws ContentRenderingException
      */
     protected function getLanguageUid(): int
     {
-        return (int)$this->typoScriptFrontendController->/** @scrutinizer ignore-call */ getContext()->getPropertyFromAspect('language', 'id');
+        return (int)$this->getTypoScriptFrontendController()
+            ->getContext()
+            ->getPropertyFromAspect('language', 'id');
     }
 
     /**
-     * Returns inaccessible {@link ContentObjectRenderer::typoScriptFrontendController} via reflection.
+     * Returns and sets FrontendOverlayService instance to this object.
      *
-     * The TypoScriptFrontendController object must be delegated to the whole object aggregation on indexing stack,
-     * to be able to use Contexts properties and proceed indexing request.
-     *
-     * @param ContentObjectRenderer $cObj
-     * @return TypoScriptFrontendController|null
+     * @throws ContentRenderingException
      */
-    protected function getProtectedTsfeObjectFromContentObjectRenderer(ContentObjectRenderer $cObj): ?TypoScriptFrontendController
+    protected function getFrontendOverlayService(): FrontendOverlayService
     {
-        $reflection = new ReflectionClass($cObj);
-        $property = $reflection->getProperty('typoScriptFrontendController');
-        $property->setAccessible(true);
-        return $property->getValue($cObj);
+        if ($this->frontendOverlayService !== null) {
+            return $this->frontendOverlayService;
+        }
+
+        return $this->frontendOverlayService = GeneralUtility::makeInstance(
+            FrontendOverlayService::class,
+            $this->tcaService,
+            $this->getTypoScriptFrontendController()
+        );
     }
 }

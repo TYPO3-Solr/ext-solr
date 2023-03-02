@@ -83,7 +83,6 @@ class FrontendOverlayService
      * @throws AspectNotFoundException
      * @throws DBALDriverException
      * @throws DBALException
-     * @throws DBALException|\Doctrine\DBAL\DBALException
      */
     public function getUidOfOverlay(
         string $table,
