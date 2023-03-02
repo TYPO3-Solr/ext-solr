@@ -217,7 +217,7 @@ class TCAService
      * @param string $table
      * @param array $record
      * @param int $originalUid
-     * @return int
+     * @return int|null
      */
     public function getTranslationOriginalUidIfTranslated(string $table, array $record, int $originalUid): ?int
     {
