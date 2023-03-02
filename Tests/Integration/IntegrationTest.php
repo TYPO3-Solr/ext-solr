@@ -18,7 +18,6 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration;
 use ApacheSolrForTypo3\Solr\Access\Rootline;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\Typo3PageIndexer;
-use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use Doctrine\DBAL\Exception as DoctrineDBALException;
 use Doctrine\DBAL\Schema\SchemaException;
@@ -31,6 +30,7 @@ use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
 use TYPO3\CMS\Core\Context\Context;
+use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Context\UserAspect;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Database\Schema\Exception\StatementException;
@@ -111,7 +111,6 @@ abstract class IntegrationTest extends FunctionalTestCase
 
     /**
      * @throws NoSuchCacheException
-     * @throws DBALException
      */
     protected function setUp(): void
     {
@@ -175,7 +174,7 @@ abstract class IntegrationTest extends FunctionalTestCase
     }
 
     /**
-     * Imports an ext_tables.sql definition as done by the install tool.
+     * Imports an ext_tables.sql definition as done by the install-tool.
      *
      * @param string $fixtureName
      * @throws DoctrineDBALException
@@ -257,7 +256,7 @@ abstract class IntegrationTest extends FunctionalTestCase
 
         // cleanup the solr server
         $result = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/' . $coreName . '/update?stream.body=<delete><query>*:*</query></delete>&commit=true');
-        if (strpos($result, '<int name="QTime">') == false) {
+        if (!str_contains($result, '<int name="QTime">')) {
             self::fail('Could not empty solr test index');
         }
 
@@ -271,7 +270,7 @@ abstract class IntegrationTest extends FunctionalTestCase
      * @param string|null $coreName
      * @return array|false
      */
-    protected function waitToBeVisibleInSolr(?string $coreName = 'core_en')
+    protected function waitToBeVisibleInSolr(?string $coreName = 'core_en'): array|false
     {
         $this->validateTestCoreName($coreName);
         $url = $this->getSolrConnectionUriAuthority() . '/solr/' . $coreName . '/update?softCommit=true';
@@ -305,18 +304,23 @@ abstract class IntegrationTest extends FunctionalTestCase
     protected function assertSolrContainsDocumentCount(int $documentCount)
     {
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
-        self::assertStringContainsString('"numFound":' . (int)$documentCount, $solrContent, 'Solr contains unexpected amount of documents');
+        self::assertStringContainsString('"numFound":' . $documentCount, $solrContent, 'Solr contains unexpected amount of documents');
     }
 
     /**
      * @param string $fixture
      * @param array $importPageIds
      * @param array|null $feUserGroupArray
+     *
+     * @throws AspectNotFoundException
+     * @throws DBALDriverException
+     * @throws DoctrineDBALException
      * @throws InternalServerErrorException
      * @throws ServiceUnavailableException
      * @throws SiteNotFoundException
+     * @throws TestingFrameworkCoreException
      */
-    protected function indexPageIdsFromFixture(string $fixture, array $importPageIds, array $feUserGroupArray = [0])
+    protected function indexPageIdsFromFixture(string $fixture, array $importPageIds, ?array $feUserGroupArray = [0])
     {
         $this->importDataSetFromFixture($fixture);
         $this->indexPageIds($importPageIds, $feUserGroupArray);
@@ -326,11 +330,15 @@ abstract class IntegrationTest extends FunctionalTestCase
     /**
      * @param array $importPageIds
      * @param array|null $feUserGroupArray
+     *
+     * @throws DBALDriverException
+     * @throws DoctrineDBALException
      * @throws InternalServerErrorException
      * @throws ServiceUnavailableException
      * @throws SiteNotFoundException
+     * @throws AspectNotFoundException
      */
-    protected function indexPageIds(array $importPageIds, array $feUserGroupArray = [0])
+    protected function indexPageIds(array $importPageIds, ?array $feUserGroupArray = [0])
     {
         foreach ($importPageIds as $importPageId) {
             $fakeTSFE = $this->fakeTSFE($importPageId, $feUserGroupArray);
@@ -565,7 +573,7 @@ abstract class IntegrationTest extends FunctionalTestCase
     }
 
     /**
-     * This method registers an error handler that fails the testcase when a E_USER_DEPRECATED error
+     * This method registers an error handler that fails the testcase when an E_USER_DEPRECATED error
      * is thrown with the prefix solr:deprecation
      */
     protected function failWhenSolrDeprecationIsCreated(): void
@@ -604,9 +612,9 @@ abstract class IntegrationTest extends FunctionalTestCase
      *
      * @param object $object
      * @param string $property
-     * @return ?mixed
+     * @return mixed
      */
-    protected function getInaccessiblePropertyFromObject(object $object, string $property)
+    protected function getInaccessiblePropertyFromObject(object $object, string $property): mixed
     {
         $reflection = new ReflectionClass($object);
         try {
@@ -614,7 +622,6 @@ abstract class IntegrationTest extends FunctionalTestCase
         } catch (ReflectionException $e) {
             return null;
         }
-        $property->setAccessible(true);
         return $property->getValue($object);
     }
 
@@ -632,7 +639,7 @@ abstract class IntegrationTest extends FunctionalTestCase
      * @return mixed
      * @throws ReflectionException
      */
-    protected function callInaccessibleMethod($object, $name)
+    protected function callInaccessibleMethod(object $object, string $name): mixed
     {
         // Remove first two arguments ($object and $name)
         $arguments = func_get_args();
@@ -640,7 +647,6 @@ abstract class IntegrationTest extends FunctionalTestCase
 
         $reflectionObject = new ReflectionObject($object);
         $reflectionMethod = $reflectionObject->getMethod($name);
-        $reflectionMethod->setAccessible(true);
 
         return $reflectionMethod->invokeArgs($object, $arguments);
     }
@@ -650,7 +656,8 @@ abstract class IntegrationTest extends FunctionalTestCase
      *
      * @param int $pageId
      * @param string $constants
-     * @throws DBALDriverException
+     *
+     * @throws DoctrineDBALException
      */
     protected function addTypoScriptConstantsToTemplateRecord(int $pageId, string $constants): void
     {
