@@ -159,7 +159,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.PHP }}
-          coverage: xdebug
+          coverage: pcov
           tools: composer:2.1.14
       -
         name: Resolve CI build cache key
