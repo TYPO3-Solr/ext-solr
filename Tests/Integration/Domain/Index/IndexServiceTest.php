@@ -21,15 +21,15 @@ use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\System\Environment\CliEnvironment;
 use ApacheSolrForTypo3\Solr\System\Environment\WebRootAllReadyDefinedException;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
-use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\ConnectionException;
+use Doctrine\DBAL\Driver\Exception;
 use Doctrine\DBAL\Exception as DoctrineDBALException;
 use Doctrine\DBAL\Schema\SchemaException;
-use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
+use Throwable;
 use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Database\Schema\Exception\StatementException;
 use TYPO3\CMS\Core\Database\Schema\Exception\UnexpectedSignalReturnValueTypeException;
-use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Exception as TestingFrameworkCoreException;
 
@@ -47,12 +47,11 @@ class IndexServiceTest extends IntegrationTest
     protected bool $skipImportRootPagesAndTemplatesForConfiguredSites = true;
 
     /**
-     * @var Queue
+     * @var Queue|null
      */
-    protected $indexQueue;
+    protected ?Queue $indexQueue = null;
 
     /**
-     * @throws DBALException
      * @throws NoSuchCacheException
      * @throws TestingFrameworkCoreException
      */
@@ -62,22 +61,16 @@ class IndexServiceTest extends IntegrationTest
 
         $this->writeDefaultSolrTestSiteConfiguration();
         $this->indexQueue = GeneralUtility::makeInstance(Queue::class);
-
-        /** @var $beUser  BackendUserAuthentication */
-        $beUser = GeneralUtility::makeInstance(BackendUserAuthentication::class);
-        $GLOBALS['BE_USER'] = $beUser;
-
-        /** @var $languageService  LanguageService */
-        $languageService = GeneralUtility::makeInstance(LanguageService::class);
-
-        $GLOBALS['LANG'] = $languageService;
     }
 
     /**
      * @param string $table
      * @param int $uid
+     * @throws DoctrineDBALException
+     * @throws Exception
+     * @throws Throwable
      */
-    protected function addToIndexQueue($table, $uid): void
+    protected function addToIndexQueue(string $table, int $uid): void
     {
         // write an index queue item
         $this->indexQueue->updateItem($table, $uid, time());
@@ -103,12 +96,14 @@ class IndexServiceTest extends IntegrationTest
      * @throws SchemaException
      * @throws StatementException
      * @throws TestingFrameworkCoreException
-     * @throws WebRootAllReadyDefinedException
-     *
      * @throws UnexpectedSignalReturnValueTypeException
+     * @throws WebRootAllReadyDefinedException
+     * @throws ConnectionException
+     * @throws Exception
+     * @throws Throwable
      * @test
      */
-    public function canResolveBaseAsPrefix($absRefPrefix, $expectedUrl)
+    public function canResolveBaseAsPrefix(string $absRefPrefix, string $expectedUrl)
     {
         $this->cleanUpSolrServerAndAssertEmpty();
 
