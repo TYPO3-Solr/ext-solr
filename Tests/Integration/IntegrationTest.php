@@ -22,6 +22,7 @@ use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use Doctrine\DBAL\Exception as DoctrineDBALException;
 use Doctrine\DBAL\Schema\SchemaException;
 use InvalidArgumentException;
+use PHPUnit\Framework\MockObject\MockObject;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionObject;
@@ -41,6 +42,7 @@ use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Error\Http\InternalServerErrorException;
 use TYPO3\CMS\Core\Error\Http\ServiceUnavailableException;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
+use TYPO3\CMS\Core\Http\NormalizedParams;
 use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Localization\LanguageService;
@@ -396,7 +398,18 @@ abstract class IntegrationTest extends FunctionalTestCase
         $GLOBALS['TSFE'] = $fakeTSFE;
         $this->simulateFrontedUserGroups($feUserGroupArray);
 
+        /* @var MockObject|ServerRequest $request */
         $request = $GLOBALS['TYPO3_REQUEST'];
+        $request = $GLOBALS['TYPO3_REQUEST'] =
+            $request
+                ->withAttribute(
+                    'frontend.controller',
+                    $fakeTSFE
+                )->withAttribute(
+                    'normalizedParams',
+                    NormalizedParams::createFromRequest($request)
+                );
+
         $requestHandler = GeneralUtility::makeInstance(RequestHandler::class);
         $requestHandler->handle($request);
 
