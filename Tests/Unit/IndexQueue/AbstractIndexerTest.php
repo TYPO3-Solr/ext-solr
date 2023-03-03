@@ -33,7 +33,7 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 class AbstractIndexerTest extends UnitTest
 {
 
-    public function setUp()
+    protected function setUp(): void
     {
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['detectSerializedValue'] = [];
     }
@@ -70,7 +70,7 @@ class AbstractIndexerTest extends UnitTest
         // register invalid detector
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['detectSerializedValue'][] = InvalidSerializedValueDetector::class;
         $this->expectException(\UnexpectedValueException::class);
-        $this->expectExceptionMessageRegExp('/.*InvalidSerializedValueDetector must implement interface.*/');
+        $this->expectExceptionMessageMatches('/.*InvalidSerializedValueDetector must implement interface.*/');
 
         $indexingConfiguration = [
             'topic_stringM' => 'SOLR_CLASSIFICATION'

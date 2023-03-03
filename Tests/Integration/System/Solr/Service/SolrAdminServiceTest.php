@@ -49,7 +49,7 @@ class SolrAdminServiceTest extends IntegrationTest
      * @return void
      * @throws NoSuchCacheException
      */
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         /* @var EventDispatcher $eventDispatcher */

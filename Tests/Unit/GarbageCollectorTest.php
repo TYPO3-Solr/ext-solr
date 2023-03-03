@@ -66,7 +66,7 @@ class GarbageCollectorTest extends UnitTest
      */
     protected $garbageHandlerMock;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->eventDispatcherMock = $this->createMock(EventDispatcherInterface::class);
         $this->tcaServiceMock = $this->createMock(TCAService::class);

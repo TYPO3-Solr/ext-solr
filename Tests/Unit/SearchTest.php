@@ -47,7 +47,7 @@ class SearchTest extends UnitTest
      */
     protected $search;
 
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->solrReadServiceMock = $this->getDumbMock(SolrReadService::class);

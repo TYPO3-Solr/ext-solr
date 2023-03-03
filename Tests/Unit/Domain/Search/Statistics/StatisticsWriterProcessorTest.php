@@ -33,7 +33,6 @@ use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
-use PHPUnit_Framework_MockObject_MockObject;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
@@ -44,36 +43,36 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 class StatisticsWriterProcessorTest extends UnitTest
 {
     /**
-     * @var StatisticsRepository|PHPUnit_Framework_MockObject_MockObject
+     * @var StatisticsRepository|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $statisticsRepositoryMock;
 
     /**
-     * @var SiteRepository|PHPUnit_Framework_MockObject_MockObject
+     * @var SiteRepository|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $siteRepositoryMock;
 
     /**
-     * @var StatisticsWriterProcessor|PHPUnit_Framework_MockObject_MockObject
+     * @var StatisticsWriterProcessor|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $processor;
 
     /**
-     * @var TypoScriptConfiguration|PHPUnit_Framework_MockObject_MockObject
+     * @var TypoScriptConfiguration|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $typoScriptConfigurationMock;
 
     /**
-     * @var SearchRequest|PHPUnit_Framework_MockObject_MockObject
+     * @var SearchRequest|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $searchRequestMock;
 
     /**
-     * @var Query|PHPUnit_Framework_MockObject_MockObject
+     * @var Query|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $queryMock;
 
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->statisticsRepositoryMock = $this->getMockBuilder(StatisticsRepository::class)->setMethods(['saveStatisticsRecord'])->getMock();

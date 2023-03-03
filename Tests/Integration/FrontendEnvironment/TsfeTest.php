@@ -11,10 +11,10 @@ class TsfeTest extends IntegrationTest
 
     /**
      * @test
-     * @expectedException \RuntimeException
      */
     public function initializeTsfeWithNoDefaultPageAndPageErrorHandlerDoNotThrowAnError()
     {
+        $this->expectException(\RuntimeException::class);
         $this->importDataSetFromFixture('initialize_tsfe_with_no_default_page_and_page_error_handler_do_not_throw_an_error.xml');
 
         $defaultLanguage = $this->buildDefaultLanguageConfiguration('EN', '/en/');

@@ -50,7 +50,7 @@ class GroupItemTest extends UnitTest
     /**
      * @return void
      */
-    public function setUp()
+    protected function setUp(): void
     {
         $this->parentGroup = new Group('typeGroup');
         $this->groupItem = new GroupItem($this->parentGroup, 'pages', 12, 1, 99);

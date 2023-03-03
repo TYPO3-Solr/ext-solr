@@ -50,7 +50,7 @@ class IndexQueueModuleControllerTest extends UnitTest
     /**
      *
      */
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

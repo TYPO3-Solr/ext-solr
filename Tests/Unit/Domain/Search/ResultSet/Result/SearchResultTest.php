@@ -39,7 +39,7 @@ class SearchResultTest extends UnitTest
      */
     protected $searchResult;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $fields = [
             'id' => 4711,

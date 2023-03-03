@@ -34,7 +34,7 @@ class LastSearchesRepositoryTest extends UnitTest
      */
     protected $lastSearchesRepositoryMock;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->lastSearchesRepositoryMock = $this->getMockBuilder(LastSearchesRepository::class)->setMethods(['getLastSearchesResultSet'])->getMock();
     }

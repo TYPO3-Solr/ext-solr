@@ -46,7 +46,7 @@ class SolrWriteServiceTest extends IntegrationTest
      * @return void
      * @throws NoSuchCacheException
      */
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -81,6 +81,6 @@ class SolrWriteServiceTest extends IntegrationTest
         $extractQuery = GeneralUtility::makeInstance(ExtractingQuery::class, $testFilePath);
         $extractQuery->setExtractOnly(true);
         $response = $this->solrWriteService->extractByQuery($extractQuery);
-        $this->assertContains('PDF Test', $response[0], 'Could not extract text');
+        $this->assertStringContainsString('PDF Test', $response[0], 'Could not extract text');
     }
 }

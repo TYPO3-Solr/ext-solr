@@ -56,7 +56,7 @@ abstract class AbstractEventListenerTest extends UnitTest
      */
     protected $eventDispatcherMock;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->extensionConfigurationMock = $this->createMock(ExtensionConfiguration::class);
         $this->eventDispatcherMock = $this->createMock(EventDispatcherInterface::class);

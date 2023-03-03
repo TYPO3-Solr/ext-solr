@@ -48,7 +48,7 @@ class ServiceTest extends UnitTest
      */
     protected $service;
 
-    public function setUp()
+    protected function setUp(): void
     {
         date_default_timezone_set('Europe/Berlin');
         $this->documentMock = new Document();

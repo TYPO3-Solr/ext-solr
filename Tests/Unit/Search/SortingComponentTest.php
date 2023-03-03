@@ -55,7 +55,7 @@ class SortingComponentTest extends UnitTest
     /**
      * SortingComponentTest constructor.
      */
-    public function setUp()
+    protected function setUp(): void
     {
         $this->query = new Query();
         $this->query->setQuery('');

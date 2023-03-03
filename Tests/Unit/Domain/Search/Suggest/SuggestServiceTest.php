@@ -82,7 +82,7 @@ class SuggestServiceTest extends UnitTest
     /**
      * @return void
      */
-    public function setUp()
+    protected function setUp(): void
     {
         $this->tsfeMock = $this->getDumbMock(TypoScriptFrontendController::class);
         $this->searchResultSetServiceMock = $this->getDumbMock(SearchResultSetService::class);
@@ -264,7 +264,7 @@ class SuggestServiceTest extends UnitTest
     }
 
     /**
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return \PHPUnit\Framework\MockObject\MockObject
      */
     protected function getFakedSearchRequest($queryString)
     {

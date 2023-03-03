@@ -60,7 +60,7 @@ class BuilderTest extends UnitTest
      */
     protected $documentBuilder;
 
-    public function setUp() {
+    protected function setUp(): void {
         /** @var $variantIdBuilderMock */
         $this->variantIdBuilderMock = $this->getDumbMock(IdBuilder::class);
         $this->siteMock = $this->getDumbMock(Site::class);

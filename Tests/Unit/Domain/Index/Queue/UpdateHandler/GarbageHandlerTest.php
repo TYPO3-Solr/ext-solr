@@ -48,7 +48,7 @@ class GarbageHandlerTest extends AbstractUpdateHandlerTest
      */
     protected $garbageHandler;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->garbageHandler = new GarbageHandler(

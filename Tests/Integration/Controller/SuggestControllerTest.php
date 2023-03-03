@@ -52,7 +52,7 @@ class SuggestControllerTest extends AbstractFrontendControllerTest
      */
     protected $suggestResponse;
 
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -68,7 +68,7 @@ class SuggestControllerTest extends AbstractFrontendControllerTest
         $_SERVER['REMOTE_ADDR'] = '192.168.1.1';
     }
 
-    public function tearDown()
+    protected function tearDown(): void
     {
         unset($_SERVER['REMOTE_ADDR']);
         parent::tearDown();
@@ -89,7 +89,7 @@ class SuggestControllerTest extends AbstractFrontendControllerTest
         $result = $this->suggestResponse->getContent();
 
         //we assume to get suggestions like Sweatshirt
-        $this->assertContains('suggestions":{"sweatshirts":2}', $result, 'Response did not contain sweatshirt suggestions');
+        $this->assertStringContainsString('suggestions":{"sweatshirts":2}', $result, 'Response did not contain sweatshirt suggestions');
     }
 
     /**
@@ -127,6 +127,6 @@ class SuggestControllerTest extends AbstractFrontendControllerTest
         $result = $this->suggestResponse->getContent();
 
         //we assume to get suggestions like Sweatshirt
-        $this->assertContains($expected, $result, 'Response did not contain expected suggestions: ' . $expected);
+        $this->assertStringContainsString($expected, $result, 'Response did not contain expected suggestions: ' . $expected);
     }
 }

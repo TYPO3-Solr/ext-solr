@@ -54,14 +54,14 @@ class FrequentSearchesServiceTest extends UnitTest
     protected $configurationMock;
 
     /**
-     * @var StatisticsRepository|\PHPUnit_Framework_MockObject_MockObject
+     * @var StatisticsRepository|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $statisticsRepositoryMock;
 
     /**
      * @return void
      */
-    public function setUp()
+    protected function setUp(): void
     {
         $this->tsfeMock = $this->getDumbMock(TypoScriptFrontendController::class);
         $this->statisticsRepositoryMock = $this->getDumbMock(StatisticsRepository::class );

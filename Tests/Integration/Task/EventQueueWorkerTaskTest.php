@@ -61,7 +61,7 @@ class EventQueueWorkerTaskTest extends IntegrationTest
      */
     protected $indexQueue;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->writeDefaultSolrTestSiteConfiguration();

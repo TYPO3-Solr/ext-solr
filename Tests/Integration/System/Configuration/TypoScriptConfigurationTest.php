@@ -39,7 +39,7 @@ class TypoScriptConfigurationTest extends IntegrationTest
     /**
      * @return void
      */
-    public function setUp() {
+    protected function setUp(): void {
         $tsfe = $this->getMockBuilder(TypoScriptFrontendController::class)->setMethods([])->disableOriginalConstructor()->getMock();
         $tsfe->cObjectDepthCounter = 50;
         $GLOBALS['TSFE'] = $tsfe;
