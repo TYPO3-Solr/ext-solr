@@ -15,6 +15,7 @@
 
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\Domain\Search\ResultSet;
 
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\InvalidFacetPackageException;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\Option;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\OptionsFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\ResultSetReconstitutionProcessor;
@@ -39,10 +40,11 @@ class ResultSetReconstitutionProcessorTest extends IntegrationTest
     /**
      * @test
      *
-     * @throws TestingFrameworkCoreException
      * @throws InternalServerErrorException
      * @throws ServiceUnavailableException
      * @throws SiteNotFoundException
+     * @throws TestingFrameworkCoreException
+     * @throws InvalidFacetPackageException
      */
     public function canApplyRenderingInstructionsOnOptions()
     {
@@ -95,6 +97,7 @@ class ResultSetReconstitutionProcessorTest extends IntegrationTest
      * @test
      *
      * @throws InternalServerErrorException
+     * @throws InvalidFacetPackageException
      * @throws ServiceUnavailableException
      * @throws SiteNotFoundException
      * @throws TestingFrameworkCoreException
@@ -174,7 +177,6 @@ class ResultSetReconstitutionProcessorTest extends IntegrationTest
         $usedSearchRequestMock->expects(self::any())->method('getContextTypoScriptConfiguration')->willReturn($typoScriptConfiguration);
         $usedSearchRequestMock->expects(self::any())->method('getActiveFacetNames')->willReturn([]);
 
-        $processor = new ResultSetReconstitutionProcessor();
-        return $processor;
+        return new ResultSetReconstitutionProcessor();
     }
 }
