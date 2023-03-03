@@ -44,7 +44,8 @@ class IndexAdministrationModuleControllerTest extends IntegrationTest
      */
     protected $controller;
 
-    public function setUp() {
+    protected function setUp(): void
+    {
         parent::setUp();
         $GLOBALS['LANG'] = $this->getMockBuilder(LanguageService::class)->disableOriginalConstructor()->getMock();
 

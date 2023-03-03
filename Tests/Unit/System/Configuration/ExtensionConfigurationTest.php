@@ -38,7 +38,7 @@ class ExtensionConfigurationTest extends UnitTest
 {
 
 
-    public function setUp()
+    protected function setUp(): void
     {
         $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['solr'] = [];
     }

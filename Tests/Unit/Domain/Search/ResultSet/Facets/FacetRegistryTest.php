@@ -37,7 +37,7 @@ class FacetRegistryTest extends UnitTest
     /**
      * @return void
      */
-    public function setUp() {
+    protected function setUp(): void {
         parent::setUp();
         $this->objectManagerMock = $this->getMockBuilder(ObjectManager::class)->disableOriginalConstructor()->getMock();
     }
@@ -46,7 +46,7 @@ class FacetRegistryTest extends UnitTest
      * Initialize a RendererRegistry and mock createRendererInstance()
      *
      * @param array $createsParserInstances
-     * @return \PHPUnit_Framework_MockObject_MockObject|FacetRegistry
+     * @return \PHPUnit\Framework\MockObject\MockObject|FacetRegistry
      */
     protected function getTestFacetPackageRegistry(array $createsPackageInstances = [])
     {
@@ -84,22 +84,22 @@ class FacetRegistryTest extends UnitTest
 
     /**
      * @test
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionCode 1462883324
      */
     public function registerParserClassThrowsExceptionIfClassDoesNotExist()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionCode('1462883324');
         $facetParserRegistry = $this->getTestFacetPackageRegistry();
         $facetParserRegistry->registerPackage($this->getUniqueId(), 'unknown');
     }
 
     /**
      * @test
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionCode 1462883325
      */
     public function registerParserClassThrowsExceptionIfClassDoesNotImplementFacetPackageInterface()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionCode('1462883325');
         $className = __CLASS__;
         $facetParserRegistry = $this->getTestFacetPackageRegistry();
         $facetParserRegistry->registerPackage($className, 'unknown');

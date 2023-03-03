@@ -46,7 +46,7 @@ class NumericRangeUrlDecoderTest extends UnitTest
      */
     protected $rangeParser;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->rangeParser = GeneralUtility::makeInstance(NumericRangeUrlDecoder::class);
     }
@@ -86,11 +86,11 @@ class NumericRangeUrlDecoderTest extends UnitTest
      * Test the handling of invalid parameters
      *
      * @test
-     * @expectedException \InvalidArgumentException
      * @return void
      */
     public function canHandleInvalidParameters()
     {
+        $this->expectException(\InvalidArgumentException::class);
         $this->rangeParser->decode('invalid-value');
     }
 }

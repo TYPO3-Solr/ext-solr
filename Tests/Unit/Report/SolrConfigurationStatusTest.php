@@ -43,7 +43,7 @@ class SolrConfigurationStatusTest extends UnitTest
     protected $report;
 
 
-    public function setUp() {
+    protected function setUp(): void {
         $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['solr'] = [];
         // we mock the methods to external dependencies.
 

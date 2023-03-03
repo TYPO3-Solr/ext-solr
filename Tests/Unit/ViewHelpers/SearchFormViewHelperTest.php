@@ -52,7 +52,7 @@ class SearchFormViewHelperTest extends UnitTest
      */
     protected $typoScriptConfigurationMock;
 
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->uriBuilderMock = $this->getDumbMock(UriBuilder::class);

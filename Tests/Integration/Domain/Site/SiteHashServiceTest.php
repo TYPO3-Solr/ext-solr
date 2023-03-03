@@ -38,7 +38,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class SiteHashServiceTest extends IntegrationTest
 {
 
-    public function setUp() {
+    protected function setUp(): void {
         parent::setUp();
         $this->writeDefaultSolrTestSiteConfiguration();
     }

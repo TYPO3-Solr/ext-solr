@@ -67,7 +67,7 @@ class SolrReadServiceTest extends UnitTest
      */
     protected $service;
 
-    public function setUp() {
+    protected function setUp(): void {
         parent::setUp();
         $this->responseMock = $this->getDumbMock(Response::class);
         $this->requestMock = $this->getDumbMock(Request::class);

@@ -38,7 +38,7 @@ class ManagerTest extends UnitTest
      */
     protected $manager;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->manager = new Manager();
     }

@@ -55,7 +55,7 @@ class RecordMonitorTest extends UnitTest
      */
     protected $eventDispatcherMock;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->eventDispatcherMock = $this->createMock(EventDispatcherInterface::class);
         $this->recordMonitor = new RecordMonitor($this->eventDispatcherMock);

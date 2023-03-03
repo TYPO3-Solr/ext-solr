@@ -49,7 +49,7 @@ class SolrRoutingMiddlewareTest extends UnitTest
      */
     protected $responseOutputHandler;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->routingServiceMock = $this->getMockBuilder(RoutingService::class)
             ->disableOriginalConstructor()

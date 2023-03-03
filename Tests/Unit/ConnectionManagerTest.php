@@ -89,7 +89,7 @@ class ConnectionManagerTest extends UnitTest
      *
      * @return void
      */
-    public function setUp()
+    protected function setUp(): void
     {
         $TSFE = $this->getDumbMock(TypoScriptFrontendController::class);
         $GLOBALS['TSFE'] = $TSFE;

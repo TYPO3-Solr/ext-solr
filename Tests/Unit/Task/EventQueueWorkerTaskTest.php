@@ -48,7 +48,7 @@ class EventQueueWorkerTaskTest extends UnitTest
      */
     protected  $task;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         GeneralUtility::setSingletonInstance(Scheduler::class, $this->createMock(Scheduler::class));
         GeneralUtility::addInstance(Execution::class, $this->createMock(Execution::class));

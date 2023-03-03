@@ -73,11 +73,11 @@ class RepositoryTest extends UnitTest
 
     /**
      * @test
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionCode 1487332926
      */
     public function findByPageIdAndByLanguageIdThrowsInvalidArgumentExceptionIfPageIdIsNotSet()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionCode('1487332926');
         /* @var $apacheSolrDocumentRepository Repository */
         $apacheSolrDocumentRepository = GeneralUtility::makeInstance(Repository::class);
         $apacheSolrDocumentRepository->findByPageIdAndByLanguageId(null, 3);
@@ -85,11 +85,11 @@ class RepositoryTest extends UnitTest
 
     /**
      * @test
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionCode 1487335178
      */
     public function findByPageIdAndByLanguageIdThrowsInvalidArgumentExceptionIfLanguageIdIsNotInteger()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionCode('1487335178');
         /* @var $apacheSolrDocumentRepository Repository */
         $apacheSolrDocumentRepository = GeneralUtility::makeInstance(Repository::class);
         $apacheSolrDocumentRepository->findByPageIdAndByLanguageId(1, 'Abc');

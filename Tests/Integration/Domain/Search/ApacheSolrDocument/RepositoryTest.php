@@ -27,6 +27,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Domain\Search\ApacheSolrDocu
 use ApacheSolrForTypo3\Solr\Domain\Search\ApacheSolrDocument\Repository;
 use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
+use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class ApacheSolrDocumentRepositoryTest extends IntegrationTest
@@ -36,13 +37,14 @@ class ApacheSolrDocumentRepositoryTest extends IntegrationTest
      */
     protected $apacheSolrDocumentRepository;
 
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
         $this->writeDefaultSolrTestSiteConfiguration();
         $_SERVER['HTTP_HOST'] = 'testone.site';
         $_SERVER['REQUEST_URI'] = '/search.html';
+        $GLOBALS['BE_USER'] = GeneralUtility::makeInstance(BackendUserAuthentication::class);
         // trigger a search
         $this->indexPageIdsFromFixture('can_get_apacheSolrDocuments.xml', [1, 2, 3, 4, 5]);
 
@@ -55,7 +57,7 @@ class ApacheSolrDocumentRepositoryTest extends IntegrationTest
     /**
      * Executed after each test. Emptys solr and checks if the index is empty
      */
-    public function tearDown()
+    protected function tearDown(): void
     {
         $this->cleanUpSolrServerAndAssertEmpty();
         parent::tearDown();
@@ -68,7 +70,7 @@ class ApacheSolrDocumentRepositoryTest extends IntegrationTest
     {
         $apacheSolrDocumentsCollection = $this->apacheSolrDocumentRepository->findByPageIdAndByLanguageId(3, 0);
 
-        $this->assertInternalType('array', $apacheSolrDocumentsCollection, 'Repository did not get Document collection from pageId 3.');
+        $this->assertIsArray($apacheSolrDocumentsCollection, 'Repository did not get Document collection from pageId 3.');
         $this->assertNotEmpty($apacheSolrDocumentsCollection, 'Repository did not get apache solr documents from pageId 3.');
         $this->assertInstanceOf(Document::class, $apacheSolrDocumentsCollection[0], 'ApacheSolrDocumentRepository returned not an array of type Document.');
     }

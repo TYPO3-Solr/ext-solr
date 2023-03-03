@@ -56,7 +56,7 @@ class LastSearchesServiceTest extends UnitTest
     /**
      * @return void
      */
-    public function setUp()
+    protected function setUp(): void
     {
         $this->sessionMock = $this->getDumbMock(FrontendUserSession::class);
         $this->configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);

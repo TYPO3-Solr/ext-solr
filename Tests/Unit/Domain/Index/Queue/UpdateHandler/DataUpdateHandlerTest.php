@@ -81,7 +81,7 @@ class DataUpdateHandlerTest extends AbstractUpdateHandlerTest
      */
     protected $solrLogManagerMock;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 

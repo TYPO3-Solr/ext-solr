@@ -52,7 +52,7 @@ class PageTest extends IntegrationTest
     /**
      * @return void
      */
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->setUpBackendUserFromFixture(1);

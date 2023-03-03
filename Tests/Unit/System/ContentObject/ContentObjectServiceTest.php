@@ -46,7 +46,7 @@ class ContentObjectServiceTest extends UnitTest
      */
     protected $contentObjectService;
 
-    public function setUp() {
+    protected function setUp(): void {
         $this->contentObjectRendererMock = $this->getDumbMock(ContentObjectRenderer::class);
         $this->contentObjectService = new ContentObjectService($this->contentObjectRendererMock);
     }

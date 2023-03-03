@@ -106,7 +106,7 @@ abstract class IntegrationTest extends FunctionalTestCase
      * @return void
      * @throws NoSuchCacheException
      */
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -327,7 +327,7 @@ abstract class IntegrationTest extends FunctionalTestCase
     protected function assertSolrContainsDocumentCount($documentCount)
     {
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
-        $this->assertContains('"numFound":' . intval($documentCount), $solrContent, 'Solr contains unexpected amount of documents');
+        $this->assertStringContainsString('"numFound":' . intval($documentCount), $solrContent, 'Solr contains unexpected amount of documents');
     }
 
     /**

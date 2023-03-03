@@ -42,7 +42,7 @@ class SearchRequestTest extends UnitTest
     /**
      * @return void
      */
-    public function setUp()
+    protected function setUp(): void
     {
         $this->searchRequest = new SearchRequest();
     }

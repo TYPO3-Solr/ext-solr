@@ -41,7 +41,7 @@ class HierarchyUrlDecoderTest extends UnitTest
      */
     protected $parser;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->parser = GeneralUtility::makeInstance(HierarchyUrlDecoder::class);
     }

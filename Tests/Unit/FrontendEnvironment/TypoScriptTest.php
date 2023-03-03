@@ -35,7 +35,7 @@ class TypoScriptTest extends UnitTest
      */
     protected $typoScriptConfigurationDumpMock;
 
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->typoScriptMock = $this->getMockBuilder(TypoScript::class)
@@ -51,7 +51,7 @@ class TypoScriptTest extends UnitTest
         $this->typoScriptConfigurationDumpMock = $this->getDumbMock(TypoScriptConfiguration::class);
     }
 
-    public function tearDown()
+    protected function tearDown(): void
     {
         GeneralUtility::resetSingletonInstances([]);
         unset(

@@ -39,7 +39,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class QueueItemRepositoryTest extends IntegrationTest
 {
 
-    public function setUp() {
+    protected function setUp(): void {
         parent::setUp();
         $this->writeDefaultSolrTestSiteConfiguration();
     }

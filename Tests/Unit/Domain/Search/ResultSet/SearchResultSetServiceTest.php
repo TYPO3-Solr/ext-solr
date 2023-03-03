@@ -75,7 +75,7 @@ class SearchResultSetServiceTest extends UnitTest
      */
     protected $queryBuilderMock;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
         $this->logManagerMock = $this->getDumbMock(SolrLogManager::class);

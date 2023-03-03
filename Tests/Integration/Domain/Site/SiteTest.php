@@ -36,13 +36,13 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class SiteTest extends IntegrationTest
 {
-
     /**
      * @var Site
      */
     private $site;
 
-    public function setUp() {
+    protected function setUp(): void
+    {
         parent::setUp();
         $this->writeDefaultSolrTestSiteConfiguration();
     }
@@ -61,7 +61,8 @@ class SiteTest extends IntegrationTest
     /**
      * @test
      */
-    public function canCreateInstanceWithRootSiteUidOK() {
+    public function canCreateInstanceWithRootSiteUidOK()
+    {
         $this->importDataSetFromFixture('can_create_instance_with_root_site.xml');
 
             /** @var $siteRepository SiteRepository */
@@ -73,7 +74,8 @@ class SiteTest extends IntegrationTest
     /**
      * @test
      */
-    public function canCreateInstanceWithRootSiteUidNOK() {
+    public function canCreateInstanceWithRootSiteUidNOK()
+    {
         $this->importDataSetFromFixture('can_create_instance_with_root_site.xml');
         $this->expectException(\InvalidArgumentException::class);
         /** @var $siteRepository SiteRepository */
@@ -84,7 +86,8 @@ class SiteTest extends IntegrationTest
     /**
      * @test
      */
-    public function canCreateInstanceWithNonRootSiteUidOK() {
+    public function canCreateInstanceWithNonRootSiteUidOK()
+    {
         $this->importDataSetFromFixture('can_create_instance_with_non_root_site.xml');
         $this->expectException(\InvalidArgumentException::class);
 
@@ -96,7 +99,8 @@ class SiteTest extends IntegrationTest
     /**
      * @test
      */
-    public function canCreateInstanceWithNonRootSiteUidNOK() {
+    public function canCreateInstanceWithNonRootSiteUidNOK()
+    {
         $this->importDataSetFromFixture('can_create_instance_with_non_root_site.xml');
         $this->expectException(\InvalidArgumentException::class);
 
@@ -108,7 +112,8 @@ class SiteTest extends IntegrationTest
     /**
      * @test
      */
-    public function canGetAvailableLanguageIds() {
+    public function canGetAvailableLanguageIds()
+    {
         $this->importDataSetFromFixture('can_get_translations_for_root_site.xml');
 
         /** @var $siteRepository SiteRepository */

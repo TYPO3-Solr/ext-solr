@@ -72,7 +72,7 @@ abstract class AbstractUpdateHandlerTest extends UnitTest
      */
     protected $queryGeneratorMock;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->recordServiceMock = $this->createMock(ConfigurationAwareRecordService::class);
         $this->frontendEnvironmentMock = $this->createMock(FrontendEnvironment::class);

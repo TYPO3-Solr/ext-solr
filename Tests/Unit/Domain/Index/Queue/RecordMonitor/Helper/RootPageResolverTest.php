@@ -53,7 +53,7 @@ class RootPageResolverTest extends UnitTest
     /**
      * @return void
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->fakeDisabledCache();
 

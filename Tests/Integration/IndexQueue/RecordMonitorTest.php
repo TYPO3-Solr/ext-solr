@@ -83,7 +83,7 @@ class RecordMonitorTest extends IntegrationTest
      */
     protected $eventQueue;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->writeDefaultSolrTestSiteConfiguration();
@@ -193,7 +193,7 @@ class RecordMonitorTest extends IntegrationTest
         $output = trim(ob_get_contents());
         ob_end_clean();
 
-        $this->assertNotContains('You have an error in your SQL syntax', $output,
+        $this->assertStringNotContainsString('You have an error in your SQL syntax', $output,
             'We expect no sql error during the update of a regular page root record');
 
         // we expect to have an index queue item now
