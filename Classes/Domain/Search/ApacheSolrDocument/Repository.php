@@ -25,7 +25,7 @@ use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrCommunicationException;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use ApacheSolrForTypo3\Solr\Util;
-use Exception;
+use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -79,9 +79,10 @@ class Repository implements SingletonInterface
      * @param $pageId
      * @param $languageId
      * @return Document|false
-     * @throws Exception
+     *
+     * @throws DBALDriverException
      */
-    public function findOneByPageIdAndByLanguageId($pageId, $languageId)
+    public function findOneByPageIdAndByLanguageId($pageId, $languageId): Document|false
     {
         $documentCollection = $this->findByPageIdAndByLanguageId($pageId, $languageId);
         return reset($documentCollection);
@@ -94,7 +95,8 @@ class Repository implements SingletonInterface
      * @param int $pageId
      * @param int $languageId
      * @return Document[]
-     * @throws Exception
+     *
+     * @throws DBALDriverException
      */
     public function findByPageIdAndByLanguageId(int $pageId, int $languageId): array
     {
@@ -102,7 +104,7 @@ class Repository implements SingletonInterface
             $this->initializeSearch($pageId, $languageId);
             $pageQuery = $this->queryBuilder->buildPageQuery($pageId);
             $response = $this->search->search($pageQuery, 0, 10000);
-        } catch (NoSolrConnectionFoundException|SolrCommunicationException $exception) {
+        } catch (NoSolrConnectionFoundException|SolrCommunicationException) {
             return [];
         }
         $data = $response->getParsedData();
@@ -115,8 +117,9 @@ class Repository implements SingletonInterface
      * @param int $uid
      * @param int $pageId
      * @param int $languageId
-     * @return Document[]|array
-     * @throws Exception
+     * @return Document[]
+     *
+     * @throws DBALDriverException
      */
     public function findByTypeAndPidAndUidAndLanguageId(
         string $type,
@@ -128,7 +131,7 @@ class Repository implements SingletonInterface
             $this->initializeSearch($pageId, $languageId);
             $recordQuery = $this->queryBuilder->buildRecordQuery($type, $uid, $pageId);
             $response = $this->search->search($recordQuery, 0, 10000);
-        } catch (NoSolrConnectionFoundException|SolrCommunicationException $exception) {
+        } catch (NoSolrConnectionFoundException|SolrCommunicationException) {
             return [];
         }
         $data = $response->getParsedData();
@@ -141,6 +144,8 @@ class Repository implements SingletonInterface
      *
      * @param int $pageId
      * @param int $languageId
+     *
+     * @throws DBALDriverException
      * @throws NoSolrConnectionFoundException
      */
     protected function initializeSearch(int $pageId, int $languageId = 0)

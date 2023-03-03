@@ -1147,15 +1147,15 @@ class RoutingService implements LoggerAwareInterface
      */
     public function getSiteMatcher(): SiteMatcher
     {
-        return GeneralUtility::makeInstance(SiteMatcher::class, $this->getSiteFinder());
+        return GeneralUtility::makeInstance(SiteMatcher::class);
     }
 
     /**
      * Returns the site finder
      *
-     * @return SiteFinder|null
+     * @return SiteFinder
      */
-    protected function getSiteFinder(): ?SiteFinder
+    protected function getSiteFinder(): SiteFinder
     {
         return GeneralUtility::makeInstance(SiteFinder::class);
     }
