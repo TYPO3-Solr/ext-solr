@@ -33,6 +33,7 @@ use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
+use TYPO3\CMS\Frontend\Event\AfterCacheableContentIsGeneratedEvent;
 use UnexpectedValueException;
 
 /**
@@ -41,7 +42,7 @@ use UnexpectedValueException;
  *
  * @author Ingo Renner <ingo@typo3.org>
  */
-class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
+class PageIndexer extends AbstractFrontendHelper
 {
     /**
      * This frontend helper's executed action.
@@ -70,11 +71,9 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
      *
      * @noinspection PhpUnused
      */
-    public function activate()
+    public function activate(): void
     {
-        $pageIndexingHookRegistration = PageIndexer::class;
-
-        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['contentPostProc-all'][__CLASS__] = $pageIndexingHookRegistration . '->hook_indexContent';
+        $this->isActivated = true;
 
         // indexes fields defined in plugin.tx_solr.index.queue.pages.fields
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageSubstitutePageDocument'][PageFieldMappingIndexer::class] = PageFieldMappingIndexer::class;
@@ -91,40 +90,6 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
     public function getData(): array
     {
         return $this->responseData;
-    }
-
-    //
-    // Indexer authorisation for access restricted pages / content
-    //
-
-    /**
-     * Fakes a logged in user to retrieve access restricted content.
-     *
-     * @noinspection PhpUnused
-     */
-    public function authorizeFrontendUser()
-    {
-        $accessRootline = $this->getAccessRootline();
-        $stringAccessRootline = (string)$accessRootline;
-
-        if (empty($stringAccessRootline)) {
-            return;
-        }
-
-        if (!is_array($GLOBALS['TSFE']->fe_user->user)) {
-            $GLOBALS['TSFE']->fe_user->user = [];
-        }
-
-        $groups = $accessRootline->getGroups();
-        $groupList = implode(',', $groups);
-
-        $GLOBALS['TSFE']->fe_user->user['username'] = AuthorizationService::SOLR_INDEXER_USERNAME;
-        $GLOBALS['TSFE']->fe_user->user['usergroup'] = $groupList;
-
-        $this->responseData['authorization'] = [
-            'username' => $GLOBALS['TSFE']->fe_user->user['username'],
-            'usergroups' => $GLOBALS['TSFE']->fe_user->user['usergroup'],
-        ];
     }
 
     /**
@@ -217,7 +182,7 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
         $contentObject = GeneralUtility::makeInstance(ContentObjectRenderer::class);
 
         $typolinkConfiguration = [
-            'parameter' => (int)($this->page->id),
+            'parameter' => $this->page->id,
             'linkAccessRestrictedPages' => '1',
         ];
 
@@ -237,19 +202,19 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
     }
 
     /**
-     * Handles the indexing of the page content during post-processing of a
-     * generated page.
+     * Handles the indexing of the page content during AfterCacheableContentIsGeneratedEvent of a generated page.
      *
-     * @param array $params unused
-     * @param TypoScriptFrontendController $page TypoScript frontend
-     * @noinspection PhpUnused
-     * @noinspection PhpUnusedParameterInspection
+     * @param AfterCacheableContentIsGeneratedEvent $event
      */
-    public function hook_indexContent(array $params, TypoScriptFrontendController $page)
+    public function __invoke(AfterCacheableContentIsGeneratedEvent $event): void
     {
-        $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, /** @scrutinizer ignore-type */ __CLASS__);
+        if (!$this->isActivated) {
+            return;
+        }
 
-        $this->page = $page;
+        $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, self::class);
+
+        $this->page = $event->getController();
         $configuration = Util::getSolrConfiguration();
 
         $logPageIndexed = $configuration->getLoggingIndexingPageIndexed();
@@ -272,7 +237,7 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
             $solrConnection = $this->getSolrConnection($indexQueueItem);
 
             /** @var $indexer Typo3PageIndexer */
-            $indexer = GeneralUtility::makeInstance(Typo3PageIndexer::class, /** @scrutinizer ignore-type */ $page);
+            $indexer = GeneralUtility::makeInstance(Typo3PageIndexer::class, /** @scrutinizer ignore-type */ $this->page);
             $indexer->setSolrConnection($solrConnection);
             $indexer->setPageAccessRootline($this->getAccessRootline());
             $indexer->setPageUrl($this->generatePageUrl());
@@ -295,7 +260,7 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
             if ($configuration->getLoggingExceptions()) {
                 $this->logger->log(
                     SolrLogManager::ERROR,
-                    'Exception while trying to index page ' . $page->id,
+                    'Exception while trying to index page ' . $this->page->id,
                     [
                         $e->__toString(),
                     ]
@@ -341,7 +306,7 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
      *
      * @return Item|null
      * @throws DBALDriverException
-     * @throws DBALException|\Doctrine\DBAL\DBALException
+     * @throws DBALException
      */
     protected function getIndexQueueItem(): ?Item
     {
