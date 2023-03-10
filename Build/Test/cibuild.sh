@@ -117,7 +117,7 @@ fi
 echo -e "\n\n"
 echo "Run integration tests"
 INTEGRATION_BOOTSTRAP="Build/Test/IntegrationTestsBootstrap.php"
-if ! .Build/bin/phpunit --colors --testdox -c Build/Test/IntegrationTests.xml --bootstrap=$INTEGRATION_BOOTSTRAP --coverage-clover=coverage.integration.clover
+if ! .Build/bin/phpunit --colors -c Build/Test/IntegrationTests.xml --bootstrap=$INTEGRATION_BOOTSTRAP --coverage-clover=coverage.integration.clover
 then
   echo "Error during running the integration tests please check and fix them"
   EXIT_CODE=6
