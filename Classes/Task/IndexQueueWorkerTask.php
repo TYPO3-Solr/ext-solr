@@ -170,11 +170,11 @@ class IndexQueueWorkerTask extends AbstractSolrTask implements ProgressProviderI
     }
 
     /**
-     * @param int $limit
+     * @param int|string $limit
      */
-    public function setDocumentsToIndexLimit(int $limit)
+    public function setDocumentsToIndexLimit(int|string $limit)
     {
-        $this->documentsToIndexLimit = $limit;
+        $this->documentsToIndexLimit = (int)$limit;
     }
 
     /**
