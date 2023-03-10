@@ -27,6 +27,7 @@ use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\TimeTracker\TimeTracker;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
+use TYPO3\CMS\Frontend\Event\AfterCacheableContentIsGeneratedEvent;
 
 /**
  * Testcase to check if we can index page documents using the PageIndexer
@@ -385,6 +386,11 @@ class PageIndexerTest extends IntegrationTest
         $pageIndexer = GeneralUtility::makeInstance(PageIndexer::class);
         $pageIndexer->activate();
         $pageIndexer->processRequest($request, $response);
-        $pageIndexer->hook_indexContent([], $TSFE);
+        $pageIndexer->__invoke(new AfterCacheableContentIsGeneratedEvent(
+            $GLOBALS['TYPO3_REQUEST'],
+            $TSFE,
+            '',
+            false
+        ));
     }
 }
