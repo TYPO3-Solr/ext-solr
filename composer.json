@@ -94,7 +94,7 @@
       "phpunit --colors --config=Build/Test/UnitTests.xml --bootstrap=Build/Test/UnitTestsBootstrap.php"
     ],
     "tests:integration": [
-      "phpunit --colors --config=Build/Test/IntegrationTests.xml --bootstrap=Build/Test/IntegrationTestsBootstrap.php"
+      "phpunit --colors --testdox --config=Build/Test/IntegrationTests.xml --bootstrap=Build/Test/IntegrationTestsBootstrap.php"
     ],
     "t3:standards:fix": [
       "php-cs-fixer fix"
