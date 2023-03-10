@@ -20,8 +20,8 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper;
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerResponse;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
+use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * Index Queue page indexer frontend helper base class implementing common
@@ -29,7 +29,7 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
  *
  * @author Ingo Renner <ingo@typo3.org>
  */
-abstract class AbstractFrontendHelper implements FrontendHelper
+abstract class AbstractFrontendHelper implements FrontendHelper, SingletonInterface
 {
     /**
      * Index Queue page indexer request.
@@ -46,6 +46,13 @@ abstract class AbstractFrontendHelper implements FrontendHelper
     protected ?PageIndexerResponse $response = null;
 
     /**
+     * Singleton instance variable for indication of indexing request.
+     *
+     * @var bool
+     */
+    protected bool $isActivated = false;
+
+    /**
      * The action a frontend helper executes.
      */
     protected string $action;
@@ -56,31 +63,6 @@ abstract class AbstractFrontendHelper implements FrontendHelper
     protected ?SolrLogManager $logger = null;
 
     /**
-     * Disables the frontend output for index queue requests.
-     *
-     * @param array $parameters Parameters from frontend
-     */
-    public function disableFrontendOutput(array &$parameters)
-    {
-        $parameters['enableOutput'] = false;
-    }
-
-    /**
-     * Disables caching for page generation to get reliable results.
-     *
-     * @param array $parameters Parameters from frontend
-     * @param TypoScriptFrontendController $parentObject TSFE object
-     * @noinspection PhpUnused
-     */
-    public function disableCaching(
-        /** @noinspection PhpUnusedParameterInspection */
-        array &$parameters,
-        TypoScriptFrontendController $parentObject
-    ) {
-        $parentObject->no_cache = true;
-    }
-
-    /**
      * Starts the execution of a frontend helper.
      *
      * @param PageIndexerRequest $request Page indexer request
@@ -89,7 +71,7 @@ abstract class AbstractFrontendHelper implements FrontendHelper
     public function processRequest(
         PageIndexerRequest $request,
         PageIndexerResponse $response
-    ) {
+    ): void {
         $this->request = $request;
         $this->response = $response;
         $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, /** @scrutinizer ignore-type */ __CLASS__);
@@ -109,8 +91,9 @@ abstract class AbstractFrontendHelper implements FrontendHelper
      * Deactivates a frontend helper by unregistering from hooks and releasing
      * resources.
      */
-    public function deactivate()
+    public function deactivate(): void
     {
+        $this->isActivated = false;
         $this->response->addActionResult($this->action, $this->getData());
     }
 }
