@@ -35,7 +35,6 @@ use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use Doctrine\DBAL\Exception as DBALException;
 use InvalidArgumentException;
 use RuntimeException;
-use Solarium\Exception\HttpException;
 use Throwable;
 use TYPO3\CMS\Core\Context\LanguageAspectFactory;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
@@ -197,13 +196,9 @@ class Indexer extends AbstractIndexer
         $documents = $this->processDocuments($item, $documents);
         $documents = self::preAddModifyDocuments($item, $language, $documents);
 
-        try {
-            $response = $this->solr->getWriteService()->addDocuments($documents);
-            if ($response->getHttpStatus() == 200) {
-                $itemIndexed = true;
-            }
-        } catch (HttpException $e) {
-            $response = new ResponseAdapter($e->getBody(), 500, $e->getStatusMessage());
+        $response = $this->solr->getWriteService()->addDocuments($documents);
+        if ($response->getHttpStatus() === 200) {
+            $itemIndexed = true;
         }
 
         $this->log($item, $documents, $response);

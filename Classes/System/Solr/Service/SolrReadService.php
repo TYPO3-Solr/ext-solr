@@ -49,13 +49,14 @@ class SolrReadService extends AbstractSolrService
      */
     public function search(Query $query): ResponseAdapter
     {
-        try {
-            $request = $this->client->createRequest($query);
-            $response = $this->executeRequest($request);
+        $request = $this->client->createRequest($query);
+        $response = $this->executeRequest($request);
+
+        if ($response->getHttpStatus() === 200) {
             $this->hasSearched = true;
             $this->responseCache = $response;
-        } catch (HttpException $e) {
-            $this->handleErrorResponses($e);
+        } else {
+            $this->handleErrorResponse($response);
         }
         return $response;
     }
@@ -85,27 +86,44 @@ class SolrReadService extends AbstractSolrService
      *
      * @param HttpException $exception
      * @throws SolrCommunicationException
+     * @deprecated handleErrorResponses is deprecated and will be removed in v12, use handleErrorResponse() instead
      */
     protected function handleErrorResponses(HttpException $exception)
     {
-        $status = $exception->getCode();
-        $message = $exception->getStatusMessage();
-        $solrResponse = new ResponseAdapter($exception->getBody());
+        trigger_error(
+            'handleErrorResponses() is deprecated and will be removed in v12, use handleErrorResponse() instead',
+            E_USER_DEPRECATED
+        );
+
+        $solrResponse = new ResponseAdapter($exception->getBody(), $exception->getCode(), $exception->getStatusMessage());
+        $this->handleErrorResponse($solrResponse);
+    }
+
+    /**
+     * This method handles a failed Solr request and maps it to a meaningful exception.
+     *
+     * @return ResponseAdapter $response
+     * @throws SolrCommunicationException
+     */
+    protected function handleErrorResponse(ResponseAdapter $response): void
+    {
+        $status = $response->getHttpStatus();
+        $message = $response->getHttpStatusMessage();
 
         if ($status === 0 || $status === 502) {
             $e = new SolrUnavailableException('Solr Server not available: ' . $message, 1505989391);
-            $e->setSolrResponse($solrResponse);
+            $e->setSolrResponse($response);
             throw $e;
         }
 
         if ($status === 500) {
             $e = new SolrInternalServerErrorException('Internal Server error during search: ' . $message, 1505989897);
-            $e->setSolrResponse($solrResponse);
+            $e->setSolrResponse($response);
             throw $e;
         }
 
         $e = new SolrCommunicationException('Invalid query. Solr returned an error: ' . $status . ' ' . $message, 1293109870);
-        $e->setSolrResponse($solrResponse);
+        $e->setSolrResponse($response);
 
         throw $e;
     }

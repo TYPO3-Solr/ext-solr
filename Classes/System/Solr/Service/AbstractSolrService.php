@@ -397,7 +397,12 @@ abstract class AbstractSolrService
      */
     protected function executeRequest(Request $request): ResponseAdapter
     {
-        $result = $this->client->executeRequest($request);
+        try {
+            $result = $this->client->executeRequest($request);
+        } catch (HttpException $e) {
+            return new ResponseAdapter($e->getMessage(), $e->getCode(), $e->getStatusMessage());
+        }
+
         return new ResponseAdapter($result->getBody(), $result->getStatusCode(), $result->getStatusMessage());
     }
 

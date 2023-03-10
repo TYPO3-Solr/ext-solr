@@ -18,6 +18,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\GarbageRemover;
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\GarbageCollectorPostProcessor;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
+use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use InvalidArgumentException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -142,9 +143,26 @@ abstract class AbstractStrategy
         bool $enableCommitsSetting
     ) {
         foreach ($solrConnections as $solr) {
-            $solr->getWriteService()->deleteByQuery(
-                'type:' . $table . ' AND uid:' . $uid . ' AND siteHash:' . $siteHash
-            );
+            $query = 'type:' . $table . ' AND uid:' . $uid . ' AND siteHash:' . $siteHash;
+            $response = $solr->getWriteService()->deleteByQuery($query);
+
+            if ($response->getHttpStatus() !== 200) {
+                $logger = GeneralUtility::makeInstance(SolrLogManager::class, /** @scrutinizer ignore-type */ __CLASS__);
+                $logger->log(
+                    SolrLogManager::ERROR,
+                    'Couldn\'t delete index document',
+                    [
+                        'status' => $response->getHttpStatus(),
+                        'msg' => $response->getHttpStatusMessage(),
+                        'core' => $solr->getWriteService()->getCorePath(),
+                        'query' => $query,
+                    ]
+                );
+
+                // @todo: Ensure index is updated later on, e.g. via a new index queue status
+                continue;
+            }
+
             if ($enableCommitsSetting) {
                 $solr->getWriteService()->commit(false, false);
             }
