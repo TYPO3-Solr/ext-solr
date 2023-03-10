@@ -24,7 +24,6 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\Task\IndexQueueWorkerTask;
 use RuntimeException;
-use Solarium\Exception\HttpException;
 use Throwable;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
@@ -136,9 +135,8 @@ class IndexService
         if ($enableCommitsSetting && count($itemsToIndex) > 0) {
             $solrServers = GeneralUtility::makeInstance(ConnectionManager::class)->getConnectionsBySite($this->site);
             foreach ($solrServers as $solrServer) {
-                try {
-                    $solrServer->getWriteService()->commit(false, false);
-                } catch (HttpException $e) {
+                $response = $solrServer->getWriteService()->commit(false, false);
+                if ($response->getHttpStatus() !== 200) {
                     $errors++;
                 }
             }
