@@ -165,8 +165,13 @@ services:
   ApacheSolrForTypo3\Solr\EventListener\PageIndexer\FrontendGroupsModifier:
     tags:
       - name: event.listener
-        identifier: 'solr.index.pageIndexer.FrontendUserAuthenticator'
+        identifier: 'solr.index.PageIndexer.FrontendUserAuthenticator'
         event: TYPO3\CMS\Frontend\Authentication\ModifyResolvedFrontendGroupsEvent
+  ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageIndexer:
+    tags:
+      - name: event.listener
+        identifier: 'solr.index.FrontendHelper.PageIndexer.indexPageContentAfterCacheableContentIsGenerated'
+        event: TYPO3\CMS\Frontend\Event\AfterCacheableContentIsGeneratedEvent
 
   ###  EXT:solr content objects
   ApacheSolrForTypo3\Solr\ContentObject\Classification:

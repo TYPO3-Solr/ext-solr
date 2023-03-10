@@ -21,7 +21,6 @@ use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use TYPO3\CMS\Core\Domain\Repository\PageRepository;
 use TYPO3\CMS\Core\Domain\Repository\PageRepositoryGetPageHookInterface;
 use TYPO3\CMS\Core\Domain\Repository\PageRepositoryGetPageOverlayHookInterface;
-use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectPostInitHookInterface;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
@@ -33,7 +32,6 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
  * @author Ingo Renner <ingo@typo3.org>
  */
 class UserGroupDetector extends AbstractFrontendHelper implements
-    SingletonInterface,
     ContentObjectPostInitHookInterface,
     PageRepositoryGetPageHookInterface,
     PageRepositoryGetPageOverlayHookInterface
@@ -63,12 +61,10 @@ class UserGroupDetector extends AbstractFrontendHelper implements
      * Activates a frontend helper by registering for hooks and other
      * resources required by the frontend helper to work.
      */
-    public function activate()
+    public function activate(): void
     {
-        // register hooks
-        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['isOutputting'][__CLASS__] = UserGroupDetector::class . '->disableFrontendOutput';
-        // disable TSFE cache for TYPO3 v9
-        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['tslib_fe-PostProc'][__CLASS__] = UserGroupDetector::class . '->disableCaching';
+        $this->isActivated = true;
+
         $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['configArrayPostProc'][__CLASS__] = UserGroupDetector::class . '->deactivateTcaFrontendGroupEnableFields';
         $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['hook_checkEnableFields'][__CLASS__] = UserGroupDetector::class . '->checkEnableFields';
 
@@ -84,7 +80,7 @@ class UserGroupDetector extends AbstractFrontendHelper implements
      *
      * @param array $parameters
      * @param TypoScriptFrontendController $tsfe
-     * @see \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController::checkEnableFields()
+     * @see TypoScriptFrontendController::checkEnableFields
      * @noinspection PhpUnusedParameterInspection
      */
     public function checkEnableFields(

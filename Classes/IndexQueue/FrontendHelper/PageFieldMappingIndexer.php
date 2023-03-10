@@ -124,9 +124,9 @@ class PageFieldMappingIndexer implements SubstitutePageIndexer
      * Otherwise, the plain page record field value is used.
      *
      * @param string $solrFieldName The Solr field name to resolve the value from the item's record
-     * @return string|array The resolved string value to be indexed
+     * @return string|array The resolved value to be indexed
      */
-    protected function resolveFieldValue(string $solrFieldName, Document $pageDocument)
+    protected function resolveFieldValue(string $solrFieldName, Document $pageDocument): array|string
     {
         $pageRecord = $GLOBALS['TSFE']->page;
 

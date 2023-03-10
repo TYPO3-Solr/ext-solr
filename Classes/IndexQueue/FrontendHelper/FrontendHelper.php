@@ -31,13 +31,13 @@ interface FrontendHelper
      * Activates a frontend helper by registering for hooks and other
      * resources required by the frontend helper to work.
      */
-    public function activate();
+    public function activate(): void;
 
     /**
      * Deactivates a frontend helper by unregistering from hooks and releasing
      * resources.
      */
-    public function deactivate();
+    public function deactivate(): void;
 
     /**
      * Starts the execution of a frontend helper.
@@ -48,7 +48,7 @@ interface FrontendHelper
     public function processRequest(
         PageIndexerRequest $request,
         PageIndexerResponse $response
-    );
+    ): void;
 
     /**
      * Returns the collected data.
