@@ -25,6 +25,7 @@ use ApacheSolrForTypo3\Solr\FieldProcessor\Service;
 use ApacheSolrForTypo3\Solr\FrontendEnvironment;
 use ApacheSolrForTypo3\Solr\FrontendEnvironment\Exception\Exception as FrontendEnvironmentException;
 use ApacheSolrForTypo3\Solr\FrontendEnvironment\Tsfe;
+use ApacheSolrForTypo3\Solr\IndexQueue\Exception\IndexingException;
 use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
@@ -173,11 +174,11 @@ class Indexer extends AbstractIndexer
      * @throws DBALDriverException
      * @throws DBALException
      * @throws FrontendEnvironmentException
+     * @throws IndexingException
      * @throws SiteNotFoundException
      */
     protected function indexItem(Item $item, int $language = 0): bool
     {
-        $itemIndexed = false;
         $documents = [];
 
         $itemDocument = $this->itemToDocument($item, $language);
@@ -197,13 +198,17 @@ class Indexer extends AbstractIndexer
         $documents = self::preAddModifyDocuments($item, $language, $documents);
 
         $response = $this->solr->getWriteService()->addDocuments($documents);
-        if ($response->getHttpStatus() === 200) {
-            $itemIndexed = true;
+        if ($response->getHttpStatus() !== 200) {
+            $responseData = json_decode($response->getRawResponse() ?? '', true);
+            throw new IndexingException(
+                $response->getHttpStatusMessage() . ': ' . ($responseData['error']['msg'] ?? $response->getHttpStatus()),
+                1678693955
+            );
         }
 
         $this->log($item, $documents, $response);
 
-        return $itemIndexed;
+        return true;
     }
 
     /**
