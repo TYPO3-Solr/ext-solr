@@ -21,6 +21,7 @@ use ApacheSolrForTypo3\Solr\System\TCA\TCAService;
 use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use Doctrine\DBAL\Exception as DBALException;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
+use TYPO3\CMS\Core\Context\LanguageAspect;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -32,24 +33,12 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 class FrontendOverlayService
 {
     /**
-     * @var TCAService
+     * FrontendOverlayService constructor
      */
-    protected $tcaService;
-
-    /**
-     * @var TypoScriptFrontendController|null
-     */
-    protected ?TypoScriptFrontendController $tsfe = null;
-
-    /**
-     * Relation constructor.
-     * @param TCAService|null $tcaService
-     * @param TypoScriptFrontendController|null $tsfe
-     */
-    public function __construct(TCAService $tcaService = null, TypoScriptFrontendController $tsfe = null)
-    {
-        $this->tcaService = $tcaService ?? GeneralUtility::makeInstance(TCAService::class);
-        $this->tsfe = $tsfe;
+    public function __construct(
+        protected readonly TCAService $tcaService,
+        protected readonly TypoScriptFrontendController $tsfe
+    ) {
     }
 
     /**
@@ -57,19 +46,20 @@ class FrontendOverlayService
      *
      * @param string $tableName
      * @param array $record
-     * @return array
+     *
+     * @return array|null
+     *
      * @throws AspectNotFoundException
      */
     public function getOverlay(string $tableName, array $record): ?array
     {
-        $currentLanguageUid = $this->tsfe->getContext()->getPropertyFromAspect('language', 'id');
-        if ($tableName === 'pages') {
-            // @extensionScannerIgnoreLine
-            return $this->tsfe->sys_page->getPageOverlay($record, $currentLanguageUid);
-        }
+        /* @var LanguageAspect $currentLanguageAspect */
+        $currentLanguageAspect = $this->tsfe->getContext()->getAspect('language');
+//        if ($tableName === 'pages') {
+//            return $this->tsfe->sys_page->getPageOverlay($record, $currentLanguageAspect);
+//        }
 
-        // @extensionScannerIgnoreLine
-        return $this->tsfe->sys_page->getRecordOverlay($tableName, $record, $currentLanguageUid);
+        return $this->tsfe->sys_page->getLanguageOverlay($tableName, $record, $currentLanguageAspect);
     }
 
     /**
@@ -136,11 +126,12 @@ class FrontendOverlayService
     /**
      * @param string $localTableName
      * @param int $localRecordUid
-     * @return mixed
-     * @throws DBALDriverException
-     * @throws DBALException|\Doctrine\DBAL\DBALException
+     *
+     * @return array<string,mixed>|false
+     *
+     * @throws DBALException
      */
-    protected function getRecord(string $localTableName, int $localRecordUid)
+    protected function getRecord(string $localTableName, int $localRecordUid): array|false
     {
         /* @var QueryBuilder $queryBuilder */
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($localTableName);
