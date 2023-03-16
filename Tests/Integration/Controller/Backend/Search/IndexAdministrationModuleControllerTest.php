@@ -23,7 +23,7 @@ use ApacheSolrForTypo3\Solr\System\Mvc\Backend\Service\ModuleDataStorageService;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
 use TYPO3\CMS\Core\Imaging\IconFactory;
-use TYPO3\CMS\Core\Localization\LanguageService;
+use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -42,7 +42,7 @@ class IndexAdministrationModuleControllerTest extends IntegrationTest
     protected function setUp(): void
     {
         parent::setUp();
-        $GLOBALS['LANG'] = $this->createMock(LanguageService::class);
+        $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageServiceFactory::class)->create('default');
 
         $this->writeDefaultSolrTestSiteConfiguration();
 
