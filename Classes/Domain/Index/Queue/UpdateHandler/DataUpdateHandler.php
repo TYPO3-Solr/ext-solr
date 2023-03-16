@@ -191,7 +191,7 @@ class DataUpdateHandler extends AbstractUpdateHandler
             return;
         }
 
-        $this->indexQueue->updateItem('pages', $pid, Util::getExceptionTime());
+        $this->indexQueue->updateItem('pages', $pid, Util::getExecutionTime());
     }
 
     /**
