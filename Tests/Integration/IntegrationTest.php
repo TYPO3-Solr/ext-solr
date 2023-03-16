@@ -39,13 +39,14 @@ use TYPO3\CMS\Core\Database\Schema\Exception\UnexpectedSignalReturnValueTypeExce
 use TYPO3\CMS\Core\Database\Schema\SchemaMigrator;
 use TYPO3\CMS\Core\Database\Schema\SqlReader;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
+use TYPO3\CMS\Core\Error\Http\AbstractServerErrorException;
 use TYPO3\CMS\Core\Error\Http\InternalServerErrorException;
 use TYPO3\CMS\Core\Error\Http\ServiceUnavailableException;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Http\NormalizedParams;
 use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Information\Typo3Version;
-use TYPO3\CMS\Core\Localization\LanguageService;
+use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Tests\Functional\SiteHandling\SiteBasedTestTrait;
 use TYPO3\CMS\Core\TimeTracker\TimeTracker;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -136,6 +137,7 @@ abstract class IntegrationTest extends FunctionalTestCase
      * Loads a Fixture from the Fixtures folder beside the current test case.
      *
      * @param $fixtureName
+     *
      * @throws TestingFrameworkCoreException
      */
     protected function importDataSetFromFixture($fixtureName)
@@ -157,6 +159,7 @@ abstract class IntegrationTest extends FunctionalTestCase
      * Returns the absolute path to a fixture file.
      *
      * @param $fixtureName
+     *
      * @return string
      */
     protected function getFixturePathByName($fixtureName): string
@@ -168,6 +171,7 @@ abstract class IntegrationTest extends FunctionalTestCase
      * Returns the content of a fixture file.
      *
      * @param string $fixtureName
+     *
      * @return string
      */
     protected function getFixtureContentByName(string $fixtureName): string
@@ -179,6 +183,7 @@ abstract class IntegrationTest extends FunctionalTestCase
      * Imports an ext_tables.sql definition as done by the install-tool.
      *
      * @param string $fixtureName
+     *
      * @throws DoctrineDBALException
      * @throws SchemaException
      * @throws StatementException
@@ -222,6 +227,7 @@ abstract class IntegrationTest extends FunctionalTestCase
 
     /**
      * @param string $version
+     *
      * @return bool
      */
     protected function getIsTYPO3VersionBelow(string $version): bool
@@ -233,7 +239,10 @@ abstract class IntegrationTest extends FunctionalTestCase
      * @param int $id
      * @param string $MP
      * @param int $language
+     *
      * @return TypoScriptFrontendController
+     *
+     * @throws AbstractServerErrorException
      * @throws InternalServerErrorException
      * @throws ServiceUnavailableException
      * @throws SiteNotFoundException
@@ -270,6 +279,7 @@ abstract class IntegrationTest extends FunctionalTestCase
 
     /**
      * @param string|null $coreName
+     *
      * @return array|false
      */
     protected function waitToBeVisibleInSolr(?string $coreName = 'core_en'): array|false
@@ -281,6 +291,7 @@ abstract class IntegrationTest extends FunctionalTestCase
 
     /**
      * @param string $coreName
+     *
      * @throws InvalidArgumentException
      */
     protected function validateTestCoreName(string $coreName)
@@ -314,6 +325,7 @@ abstract class IntegrationTest extends FunctionalTestCase
      * @param array $importPageIds
      * @param array|null $feUserGroupArray
      *
+     * @throws AbstractServerErrorException
      * @throws AspectNotFoundException
      * @throws DBALDriverException
      * @throws DoctrineDBALException
@@ -333,12 +345,13 @@ abstract class IntegrationTest extends FunctionalTestCase
      * @param array $importPageIds
      * @param array|null $feUserGroupArray
      *
+     * @throws AbstractServerErrorException
+     * @throws AspectNotFoundException
      * @throws DBALDriverException
      * @throws DoctrineDBALException
      * @throws InternalServerErrorException
      * @throws ServiceUnavailableException
      * @throws SiteNotFoundException
-     * @throws AspectNotFoundException
      */
     protected function indexPageIds(array $importPageIds, ?array $feUserGroupArray = [0])
     {
@@ -363,6 +376,7 @@ abstract class IntegrationTest extends FunctionalTestCase
     /**
      * @param int $isAdmin
      * @param int $workspace
+     *
      * @return BackendUserAuthentication
      */
     protected function fakeBEUser(int $isAdmin = 0, int $workspace = 0): BackendUserAuthentication
@@ -379,7 +393,10 @@ abstract class IntegrationTest extends FunctionalTestCase
     /**
      * @param int $pageId
      * @param array $feUserGroupArray
+     *
      * @return TypoScriptFrontendController
+     *
+     * @throws AbstractServerErrorException
      * @throws InternalServerErrorException
      * @throws ServiceUnavailableException
      * @throws SiteNotFoundException
@@ -461,7 +478,7 @@ abstract class IntegrationTest extends FunctionalTestCase
      */
     protected function getDataHandler(): DataHandler
     {
-        $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageService::class);
+        $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageServiceFactory::class)->create('default');
         /* @retrun  DataHandler */
         return GeneralUtility::makeInstance(DataHandler::class);
     }
@@ -494,6 +511,7 @@ abstract class IntegrationTest extends FunctionalTestCase
      * @param string|null $host
      * @param int|null $port
      * @param bool|null $disableDefaultLanguage
+     *
      * @throws TestingFrameworkCoreException
      */
     protected function writeDefaultSolrTestSiteConfigurationForHostAndPort(
@@ -625,6 +643,7 @@ abstract class IntegrationTest extends FunctionalTestCase
      *
      * @param object $object
      * @param string $property
+     *
      * @return mixed
      */
     protected function getInaccessiblePropertyFromObject(object $object, string $property): mixed
@@ -649,7 +668,9 @@ abstract class IntegrationTest extends FunctionalTestCase
      *
      * @param object $object The object to be invoked
      * @param string $name the name of the method to call
+     *
      * @return mixed
+     *
      * @throws ReflectionException
      */
     protected function callInaccessibleMethod(object $object, string $name): mixed

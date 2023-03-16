@@ -26,7 +26,7 @@ use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
-use TYPO3\CMS\Core\Localization\LanguageService;
+use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Scheduler\Scheduler;
 
@@ -93,6 +93,8 @@ class GarbageCollectorTest extends IntegrationTest
         $this->extensionConfiguration = GeneralUtility::makeInstance(ExtensionConfiguration::class);
         $this->eventQueue = GeneralUtility::makeInstance(EventQueueItemRepository::class);
         $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['solr'] = [];
+        $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageServiceFactory::class)
+            ->create('default');
     }
 
     protected function tearDown(): void
@@ -872,7 +874,6 @@ class GarbageCollectorTest extends IntegrationTest
         );
 
         $this->cleanUpSolrServerAndAssertEmpty();
-        $this->fakeLanguageService();
 
         // we hide the seconde page
         $beUser = $this->fakeBEUser(1, 0);
@@ -911,16 +912,6 @@ class GarbageCollectorTest extends IntegrationTest
         }
 
         return $result;
-    }
-
-    /**
-     * Prepares a LanguageService object
-     */
-    protected function fakeLanguageService(): void
-    {
-        /** @var $languageService  \TYPO3\CMS\Core\Localization\LanguageService */
-        $languageService = GeneralUtility::makeInstance(LanguageService::class);
-        $GLOBALS['LANG'] = $languageService;
     }
 
     /**
