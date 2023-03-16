@@ -191,7 +191,7 @@ class Util
      * @return int
      * @throws AspectNotFoundException
      */
-    public static function getExceptionTime(): int
+    public static function getExecutionTime(): int
     {
         $context = GeneralUtility::makeInstance(Context::class);
         return (int)$context->getPropertyFromAspect('date', 'timestamp');

@@ -50,7 +50,7 @@ class EventQueueItemRepository extends AbstractRepository implements SingletonIn
         $queryBuilder
             ->insert($this->table)
             ->values([
-                'tstamp' => Util::getExceptionTime(),
+                'tstamp' => Util::getExecutionTime(),
                 'event' => $serializedEvent,
 
             ])
