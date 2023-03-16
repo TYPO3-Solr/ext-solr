@@ -7,8 +7,9 @@ use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Backend\View\Event\PageContentPreviewRenderingEvent;
 use TYPO3\CMS\Backend\View\PageLayoutContext;
-use TYPO3\CMS\Core\Localization\LanguageService;
+use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Service\FlexFormService;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * EXT:solr offers a summary in the BE on search plugins, that summarizes the extension
@@ -57,8 +58,8 @@ class SettingsPreviewOnPluginsTest extends IntegrationTest
 
     protected function setUp(): void
     {
-        $GLOBALS['LANG'] = $this->createMock(LanguageService::class);
         parent::setUp();
+        $GLOBALS['LANG'] = $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageServiceFactory::class)->create('default');
     }
 
     /**

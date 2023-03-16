@@ -23,7 +23,7 @@ use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use Exception;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
-use TYPO3\CMS\Core\Localization\LanguageService;
+use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -70,9 +70,7 @@ class ReIndexTaskTest extends IntegrationTest
         $beUser = GeneralUtility::makeInstance(BackendUserAuthentication::class);
         $GLOBALS['BE_USER'] = $beUser;
 
-        /* @var LanguageService $languageService */
-        $languageService = GeneralUtility::makeInstance(LanguageService::class);
-        $GLOBALS['LANG'] = $languageService;
+        $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageServiceFactory::class)->create('default');
     }
 
     protected function assertEmptyIndexQueue()
