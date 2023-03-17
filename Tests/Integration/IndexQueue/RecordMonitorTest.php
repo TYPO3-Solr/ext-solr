@@ -1864,6 +1864,8 @@ class RecordMonitorTest extends IntegrationTest
     public function canCreateSiteOneRootLevel(): void
     {
         $this->importDataSetFromFixture('can_create_new_page.xml');
+        // @todo: Remove after typo3/testing-framework is upgraded to TYPO3 12+ compatible version
+        $this->backendUserFixture = 'PACKAGE:apache-solr-for-typo3/solr/Tests/Integration/Fixtures/sites_setup_and_data_set/be_users.xml';
         $this->setUpBackendUserFromFixture(1);
 
         $this->assertIndexQueueContainsItemAmount(0);
@@ -1883,6 +1885,8 @@ class RecordMonitorTest extends IntegrationTest
     public function canCreateSubPageBelowSiteRoot(): void
     {
         $this->importDataSetFromFixture('can_create_new_page.xml');
+        // @todo: Remove after typo3/testing-framework is upgraded to TYPO3 12+ compatible version
+        $this->backendUserFixture = 'PACKAGE:apache-solr-for-typo3/solr/Tests/Integration/Fixtures/sites_setup_and_data_set/be_users.xml';
         $this->setUpBackendUserFromFixture(1);
 
         $this->assertIndexQueueContainsItemAmount(0);

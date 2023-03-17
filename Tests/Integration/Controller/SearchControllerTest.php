@@ -528,6 +528,8 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $this->indexPages([1, 2]);
 
         // fake that a backend user is logged in
+        // @todo: Remove after typo3/testing-framework is upgraded to TYPO3 12+ compatible version
+        $this->backendUserFixture = 'PACKAGE:apache-solr-for-typo3/solr/Tests/Integration/Fixtures/sites_setup_and_data_set/be_users.xml';
         $this->setUpBackendUserFromFixture(1);
         $resultPage1 = (string)$this->executeFrontendSubRequest(
             $this->getPreparedRequest()
@@ -917,6 +919,8 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         );
         $this->indexPages([1, 2]);
 
+        // @todo: Remove after typo3/testing-framework is upgraded to TYPO3 12+ compatible version
+        $this->backendUserFixture = 'PACKAGE:apache-solr-for-typo3/solr/Tests/Integration/Fixtures/sites_setup_and_data_set/be_users.xml';
         $this->setUpBackendUserFromFixture(1);
         $resultPage1 = (string)$this->executeFrontendSubRequest(
             $this->getPreparedRequest()
