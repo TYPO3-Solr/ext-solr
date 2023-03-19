@@ -24,8 +24,22 @@ plugin.tx_solr {
 		variants = 1
 	}
 
-	statistics = 1
-	statistics.anonymizeIP = 1
+  statistics = 1
+  statistics {
+    anonymizeIP = 1
+    topHits {
+      days = 30
+      limit = 5
+    }
+    noHits {
+      days = 30
+      limit = 5
+    }
+    queries {
+      days = 30
+      limit = 100
+    }
+  }
 
 	suggest = 1
 

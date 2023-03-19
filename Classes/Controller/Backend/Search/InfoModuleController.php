@@ -24,6 +24,7 @@ use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Registry;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 
 /**
  * Info Module
@@ -126,29 +127,53 @@ class InfoModuleController extends AbstractModuleController
      */
     protected function collectStatistics(): void
     {
-        // TODO make time frame user adjustable, for now it's last 30 days
+        $frameWorkConfiguration = $this->configurationManager->getConfiguration(
+            ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT,
+            'solr'
+        );
+        $statisticsConfig = $frameWorkConfiguration['plugin.']['tx_solr.']['statistics.'] ?? [];
+
+        $topHitsLimit = (int) ($statisticsConfig['topHits.']['limit'] ?? 5);
+        $noHitsLimit = (int) ($statisticsConfig['noHits.']['limit'] ?? 5);
+
+        $queriesDays = (int) ($statisticsConfig['queries.']['days'] ?? 30);
 
         $siteRootPageId = $this->selectedSite->getRootPageId();
         /* @var StatisticsRepository $statisticsRepository */
         $statisticsRepository = GeneralUtility::makeInstance(StatisticsRepository::class);
 
-        // @TODO: Do we want Typoscript constants to restrict the results?
         $this->view->assign(
             'top_search_phrases',
-            $statisticsRepository->getTopKeyWordsWithHits($siteRootPageId, 30, 5)
+            $statisticsRepository->getTopKeyWordsWithHits(
+                $siteRootPageId,
+                (int) ($statisticsConfig['topHits.']['days'] ?? 30),
+                $topHitsLimit
+            )
         );
         $this->view->assign(
             'top_search_phrases_without_hits',
-            $statisticsRepository->getTopKeyWordsWithoutHits($siteRootPageId, 30, 5)
+            $statisticsRepository->getTopKeyWordsWithoutHits(
+                $siteRootPageId,
+                (int) ($statisticsConfig['noHits.']['days'] ?? 30),
+                $noHitsLimit
+            )
         );
         $this->view->assign(
             'search_phrases_statistics',
-            $statisticsRepository->getSearchStatistics($siteRootPageId, 30, 100)
+            $statisticsRepository->getSearchStatistics(
+                $siteRootPageId,
+                $queriesDays,
+                (int) ($statisticsConfig['queries.']['limit'] ?? 100)
+            )
         );
 
         $labels = [];
         $data = [];
-        $chartData = $statisticsRepository->getQueriesOverTime($siteRootPageId, 30, 86400);
+        $chartData = $statisticsRepository->getQueriesOverTime(
+            $siteRootPageId,
+            $queriesDays,
+            86400
+        );
         foreach ($chartData as $bucket) {
             // @todo Replace deprecated strftime in php 8.1. Suppress warning for now
             $labels[] = @strftime('%x', $bucket['timestamp']);
@@ -157,6 +182,8 @@ class InfoModuleController extends AbstractModuleController
 
         $this->view->assign('queriesChartLabels', json_encode($labels));
         $this->view->assign('queriesChartData', json_encode($data));
+        $this->view->assign('topHitsLimit', $topHitsLimit);
+        $this->view->assign('noHitsLimit', $noHitsLimit);
     }
 
     /**

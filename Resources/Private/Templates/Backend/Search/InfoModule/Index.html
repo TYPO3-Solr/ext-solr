@@ -131,7 +131,9 @@
         <div class="row">
             <div class="col-md-12">
                 <h2>
-                    <f:translate key="solr.backend.search_statistics_module.top_search_phrases"/>
+									<f:format.printf arguments="{0: '{topHitsLimit}'}">
+										<f:translate key="solr.backend.search_statistics_module.top_search_phrases"/>
+									</f:format.printf>
                 </h2>
 
                 <ul>
@@ -151,7 +153,9 @@
         <div class="row section-with-header">
             <div class="col-md-12">
                 <h2>
-                    <f:translate key="solr.backend.search_statistics_module.top_search_phrases_without_hits"/>
+									<f:format.printf arguments="{0: '{noHitsLimit}'}">
+										<f:translate key="solr.backend.search_statistics_module.top_search_phrases_without_hits"/>
+									</f:format.printf>
                 </h2>
 
                 <ul>
