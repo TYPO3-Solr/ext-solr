@@ -133,10 +133,10 @@ class InfoModuleController extends AbstractModuleController
         );
         $statisticsConfig = $frameWorkConfiguration['plugin.']['tx_solr.']['statistics.'] ?? [];
 
-        $topHitsLimit = (int) ($statisticsConfig['topHits.']['limit'] ?? 5);
-        $noHitsLimit = (int) ($statisticsConfig['noHits.']['limit'] ?? 5);
+        $topHitsLimit = (int)($statisticsConfig['topHits.']['limit'] ?? 5);
+        $noHitsLimit = (int)($statisticsConfig['noHits.']['limit'] ?? 5);
 
-        $queriesDays = (int) ($statisticsConfig['queries.']['days'] ?? 30);
+        $queriesDays = (int)($statisticsConfig['queries.']['days'] ?? 30);
 
         $siteRootPageId = $this->selectedSite->getRootPageId();
         /* @var StatisticsRepository $statisticsRepository */
@@ -146,7 +146,7 @@ class InfoModuleController extends AbstractModuleController
             'top_search_phrases',
             $statisticsRepository->getTopKeyWordsWithHits(
                 $siteRootPageId,
-                (int) ($statisticsConfig['topHits.']['days'] ?? 30),
+                (int)($statisticsConfig['topHits.']['days'] ?? 30),
                 $topHitsLimit
             )
         );
@@ -154,7 +154,7 @@ class InfoModuleController extends AbstractModuleController
             'top_search_phrases_without_hits',
             $statisticsRepository->getTopKeyWordsWithoutHits(
                 $siteRootPageId,
-                (int) ($statisticsConfig['noHits.']['days'] ?? 30),
+                (int)($statisticsConfig['noHits.']['days'] ?? 30),
                 $noHitsLimit
             )
         );
@@ -163,7 +163,7 @@ class InfoModuleController extends AbstractModuleController
             $statisticsRepository->getSearchStatistics(
                 $siteRootPageId,
                 $queriesDays,
-                (int) ($statisticsConfig['queries.']['limit'] ?? 100)
+                (int)($statisticsConfig['queries.']['limit'] ?? 100)
             )
         );
 
