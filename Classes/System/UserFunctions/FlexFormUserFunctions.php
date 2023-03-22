@@ -181,7 +181,7 @@ class FlexFormUserFunctions
         $extensionConfiguration = GeneralUtility::makeInstance(ExtensionConfiguration::class);
         $namespaces = [];
         foreach ($extensionConfiguration->getAvailablePluginNamespaces() as $namespace) {
-            $label = $namespace === 'tx_solr' ? 'Default' : '';
+            $label = $namespace === 'tx_solr' ? 'Default' : $namespace;
             $namespaces[$namespace] = [$label, $namespace];
         }
         $parentInformation['items'] = $namespaces;
