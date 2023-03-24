@@ -87,7 +87,7 @@ class ApiEid
     protected function validateRequest(ServerRequestInterface $request): void
     {
         $params = $request->getQueryParams();
-        if (!Api::isValidApiKey($params['apiKey'])) {
+        if (!Api::isValidApiKey($params['apiKey'] ?? '')) {
             throw new ImmediateResponseException(
                 new JsonResponse(
                     ['errorMessage' => 'Invalid API key'],
@@ -97,7 +97,7 @@ class ApiEid
             );
         }
 
-        if ($params['api'] === null || !array_key_exists($params['api'], self::API_METHODS)) {
+        if (($params['api'] ?? null) === null || !array_key_exists($params['api'], self::API_METHODS)) {
             throw new ImmediateResponseException(
                 new JsonResponse(
                     [
