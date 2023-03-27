@@ -29,6 +29,8 @@ use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequestAware;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use InvalidArgumentException;
+use TYPO3\CMS\Core\Log\LogManager;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Modifies a query to add faceting parameters
@@ -155,8 +157,11 @@ class Faceting implements Modifier, SearchRequestAware
             $facetConfiguration = $allFacets[$facetName . '.'];
             $tag = $this->getFilterTag($facetConfiguration, $keepAllFacetsOnSelection);
             $filterParts = $this->getFilterParts($facetConfiguration, $facetName, $filterValues);
-            $operator = (($facetConfiguration['operator'] ?? null) === 'OR') ? ' OR ' : ' AND ';
-            $facetFilters[$facetName] = $tag . '(' . implode($operator, $filterParts) . ')';
+
+            if (!empty($filterParts)) {
+                $operator = (($facetConfiguration['operator'] ?? null) === 'OR') ? ' OR ' : ' AND ';
+                $facetFilters[$facetName] = $tag . '(' . implode($operator, $filterParts) . ')';
+            }
         }
 
         return $facetFilters;
@@ -208,7 +213,13 @@ class Faceting implements Modifier, SearchRequestAware
             }
 
             $filterValue = $filterEncoder->decode($filterValue, $filterOptions);
-            $filterParts[] = $facetConfiguration['field'] . ':' . $filterValue;
+            if (($facetConfiguration['field'] ?? '') !== '' && $filterValue !== '') {
+                $filterParts[] = $facetConfiguration['field'] . ':' . $filterValue;
+            } else {
+                /** @var $logger \TYPO3\CMS\Core\Log\Logger */
+                $logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
+                $logger->warning('Invalid filter options found, skipping.', ['facet' => $facetName, 'configuration' => $facetConfiguration]);
+            }
         }
 
         return $filterParts;
