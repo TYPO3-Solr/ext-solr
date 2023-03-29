@@ -26,6 +26,7 @@ use ApacheSolrForTypo3\Solr\Routing\RoutingService;
 use ApacheSolrForTypo3\Solr\System\Url\UrlHelper;
 use ApacheSolrForTypo3\Solr\Utility\ParameterSortingUtility;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Routing\Exception\InvalidParameterException;
 use TYPO3\CMS\Core\Http\Uri;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
@@ -368,11 +369,26 @@ class SearchUriBuilder
         } else {
             self::$missCount++;
             $this->uriBuilder->reset()->setTargetPageUid($pageUid);
-            $uriCacheTemplate = $this->uriBuilder->setArguments($structure)->build();
+            try {
+                $uriCacheTemplate = $this->uriBuilder->setArguments($structure)->build();
 
-            /* @var UrlHelper $urlHelper */
-            $urlHelper = GeneralUtility::makeInstance(UrlHelper::class, $uriCacheTemplate);
-            self::$preCompiledLinks[$hash] = (string)$urlHelper;
+                /** @var UrlHelper $urlHelper */
+                $urlHelper = GeneralUtility::makeInstance(UrlHelper::class, $uriCacheTemplate);
+                self::$preCompiledLinks[$hash] = (string)$urlHelper;
+            } catch (InvalidParameterException $exception) {
+                // the placeholders may result in an exception when route enhancers with requirements are active
+                // In this case, try to build the URL with original arguments
+                $hash = md5($pageUid . json_encode($arguments));
+                if (isset(self::$preCompiledLinks[$hash])) {
+                    self::$hitCount++;
+                    $uriCacheTemplate = self::$preCompiledLinks[$hash];
+                } else {
+                    $uriCacheTemplate = $this->uriBuilder->setArguments($arguments)->build();
+                    /** @var UrlHelper $urlHelper */
+                    $urlHelper = GeneralUtility::makeInstance(UrlHelper::class, $uriCacheTemplate);
+                    self::$preCompiledLinks[$hash] = (string)$urlHelper;
+                }
+            }
         }
 
         $keys = array_map(function ($value) {
