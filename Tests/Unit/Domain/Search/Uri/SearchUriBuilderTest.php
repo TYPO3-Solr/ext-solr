@@ -22,6 +22,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\Uri\SearchUriBuilder;
 use ApacheSolrForTypo3\Solr\Routing\RoutingService;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use Symfony\Component\Routing\Exception\InvalidParameterException;
 use Symfony\Component\Yaml\Yaml;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
@@ -476,6 +477,72 @@ class SearchUriBuilderTest extends UnitTest
             ->willReturn($this->extBaseUriBuilderMock);
         $this->extBaseUriBuilderMock->expects(self::once())->method('reset')->with()->willReturn($this->extBaseUriBuilderMock);
         $this->extBaseUriBuilderMock->expects(self::once())->method('build')->willReturn($linkBuilderResult);
+        $this->searchUrlBuilder->injectRoutingService($routingServiceMock);
+        $uri = $this->searchUrlBuilder->getResultPageUri($previousRequest, 0);
+        self::assertEquals($linkBuilderResult, $uri);
+    }
+
+    /**
+     * @test
+     */
+    public function uriErrorsResultInNonMappedProcessing(): void
+    {
+        $configuration = Yaml::parse($this->getFixtureContentByName('siteConfiguration.yaml'));
+        $routingServiceMock = $this->createMock(RoutingService::class);
+        $routingServiceMock->expects(self::any())
+            ->method('fetchEnhancerByPageUid')
+            ->willReturn($configuration['routeEnhancers']['example']);
+        $queryParameters = [
+            'tx_solr' => [
+                'filter' => [
+                    'type:pages',
+                    'color:green',
+                    'color:red',
+                    'color:yellow',
+                    'taste:matcha',
+                    'taste:sour',
+                    'product:candy',
+                    'product:sweets',
+                    'quantity:20',
+                ],
+            ],
+        ];
+        $subsitutedQueryParameters = [
+            'tx_solr' => [
+                'filter' => [
+                    '###tx_solr:filter:0:type###',
+                    '###tx_solr:filter:1:color###',
+                    '###tx_solr:filter:2:color###',
+                    '###tx_solr:filter:3:color###',
+                    '###tx_solr:filter:4:taste###',
+                    '###tx_solr:filter:5:taste###',
+                    '###tx_solr:filter:6:product###',
+                    '###tx_solr:filter:7:product###',
+                    '###tx_solr:filter:8:quantity###',
+                ],
+            ],
+        ];
+        $linkBuilderResult = '/index.php?id=42&color=' . urlencode('green,red,yellow') .
+            '&taste=' . urlencode('matcha,sour') .
+            '&product=' . urlencode('candy,sweets') .
+            '&' . urlencode('tx_solr[filter][0]') . '=' . urlencode('quantity:20');
+        $configurationMock = $this->createMock(TypoScriptConfiguration::class);
+        $configurationMock->expects(self::any())->method('getSearchPluginNamespace')->willReturn('tx_solr');
+        $configurationMock->expects(self::once())->method('getSearchTargetPage')->willReturn(42);
+
+        $previousRequest =  new SearchRequest($queryParameters, 42, 0, $configurationMock);
+        $this->extBaseUriBuilderMock->expects(self::any())->method('setArguments')
+            ->withConsecutive([$subsitutedQueryParameters], [$queryParameters])
+            ->willReturn($this->extBaseUriBuilderMock);
+        $this->extBaseUriBuilderMock->expects(self::once())->method('reset')->with()->willReturn($this->extBaseUriBuilderMock);
+        $buildCounter = 0;
+        $this->extBaseUriBuilderMock->expects(self::exactly(2))->method('build')
+            ->willReturnCallback(function () use ($linkBuilderResult, &$buildCounter) {
+                if (++$buildCounter === 1) {
+                    throw new InvalidParameterException('First call fails, should reprocess with regular arguments');
+                }
+                return $linkBuilderResult;
+            });
         $this->searchUrlBuilder->injectRoutingService($routingServiceMock);
         $uri = $this->searchUrlBuilder->getResultPageUri($previousRequest, 0);
         self::assertEquals($linkBuilderResult, $uri);
