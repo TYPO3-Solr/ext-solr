@@ -30,6 +30,7 @@ use TYPO3\CMS\Core\TypoScript\TypoScriptService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
+use TYPO3\CMS\Extbase\Mvc\Controller\Arguments;
 use TYPO3\CMS\Extbase\Mvc\Controller\ControllerContext;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
@@ -95,6 +96,7 @@ abstract class AbstractBaseController extends ActionController
         $this->configurationManager = $configurationManager;
         // @extensionScannerIgnoreLine
         $this->contentObjectRenderer = $this->configurationManager->getContentObject();
+        $this->arguments = GeneralUtility::makeInstance(Arguments::class);
     }
 
     /**

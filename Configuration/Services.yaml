@@ -7,6 +7,19 @@ services:
     resource: '../Classes/*'
     exclude: '../Classes/Eid/*'
 
+  controller:
+    namespace: ApacheSolrForTypo3\Solr\Controller\
+    resource: '../Classes/Controller/*'
+    public: true
+    autowire: true
+    shared: false
+
+  viewhelper:
+    namespace: ApacheSolrForTypo3\Solr\ViewHelpers\
+    resource: '../Classes/ViewHelpers/*'
+    public: true
+    autowire: true
+
   backend_controller:
     namespace: ApacheSolrForTypo3\Solr\Controller\Backend\Search\
     resource: '../Classes/Controller/Backend/Search/*'

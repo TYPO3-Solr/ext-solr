@@ -74,15 +74,17 @@ class TranslateViewHelper extends AbstractViewHelper
             $arguments['languageKey'],
             $arguments['alternativeLanguageKeys']
         );
+
         if ($result === null && isset($arguments['default'])) {
-            $result = $arguments['default'];
-            $result = self::replaceTranslationPrefixesWithAtWithStringMarker($result);
+            $result = self::replaceTranslationPrefixesWithAtWithStringMarker(
+                (string)($arguments['default'] ?? '')
+            );
             if (is_array($arguments['arguments'])) {
                 $result = vsprintf($result, $arguments['arguments']);
             }
         }
 
-        return (string)$result;
+        return $result ?? '';
     }
 
     /**
@@ -93,8 +95,6 @@ class TranslateViewHelper extends AbstractViewHelper
      * @param array|null $arguments Arguments to be replaced in the resulting string
      * @param string|null $languageKey Language key to use for this translation
      * @param string[]|null $alternativeLanguageKeys Alternative language keys if no translation does exist
-     *
-     * @return string|null
      */
     public static function translateAndReplaceMarkers(
         string $id,
@@ -102,7 +102,7 @@ class TranslateViewHelper extends AbstractViewHelper
         ?array $arguments = null,
         ?string $languageKey = null,
         ?array $alternativeLanguageKeys = null
-    ): ?string {
+    ): string {
         $result = LocalizationUtility::translate(
             $id,
             $extensionName,
@@ -110,10 +110,12 @@ class TranslateViewHelper extends AbstractViewHelper
             $languageKey,
             $alternativeLanguageKeys
         );
-        $result = self::replaceTranslationPrefixesWithAtWithStringMarker($result);
+
+        $result = self::replaceTranslationPrefixesWithAtWithStringMarker($result ?? '');
         if (is_array($arguments)) {
             $result = vsprintf($result, $arguments);
         }
+
         return $result;
     }
 
@@ -135,22 +137,19 @@ class TranslateViewHelper extends AbstractViewHelper
         TemplateCompiler $compiler
     ) {
         return sprintf(
-            '\\%1$s::translateAndReplaceMarkers(%2$s[\'key\'] ?? %2$s[\'id\'], %2$s[\'extensionName\'] ?? $renderingContext->getControllerContext()->getRequest()->getControllerExtensionName(), %2$s[\'arguments\'], %2$s[\'languageKey\'], %2$s[\'alternativeLanguageKeys\']) ?? %2$s[\'default\'] ?? %3$s()',
+            '\\%1$s::translateAndReplaceMarkers(%2$s[\'key\'] ?? %2$s[\'id\'], %2$s[\'extensionName\'] ?? $renderingContext->getRequest()->getControllerExtensionName(), %2$s[\'arguments\'], %2$s[\'languageKey\'], %2$s[\'alternativeLanguageKeys\']) ?? %2$s[\'default\'] ?? %3$s()',
             static::class,
             $argumentsName,
             $closureName
         );
     }
 
-    /**
-     * @param mixed $result
-     * @return mixed
-     */
-    protected static function replaceTranslationPrefixesWithAtWithStringMarker($result)
+    protected static function replaceTranslationPrefixesWithAtWithStringMarker(string $result): string
     {
-        if (str_contains((string)$result, '@')) {
-            $result = preg_replace('~\"?@[a-zA-Z]*\"?~', '%s', $result);
+        if (str_contains($result, '@')) {
+            $result = (string)preg_replace('~\"?@[a-zA-Z]*\"?~', '%s', $result);
         }
+
         return $result;
     }
 }
