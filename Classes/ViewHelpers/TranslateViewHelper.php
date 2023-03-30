@@ -72,7 +72,7 @@ class TranslateViewHelper extends AbstractViewHelper
             (string)($arguments['extensionName'] ?? 'tx_solr'),
             $arguments['arguments'],
             $arguments['languageKey'],
-            $arguments['alternativeLanguageKeys']
+            $arguments['alternativeLanguageKeys'] ?? []
         );
 
         if ($result === null && isset($arguments['default'])) {
@@ -101,7 +101,7 @@ class TranslateViewHelper extends AbstractViewHelper
         string $extensionName = 'solr',
         ?array $arguments = null,
         ?string $languageKey = null,
-        ?array $alternativeLanguageKeys = null
+        array $alternativeLanguageKeys = []
     ): string {
         $result = LocalizationUtility::translate(
             $id,
