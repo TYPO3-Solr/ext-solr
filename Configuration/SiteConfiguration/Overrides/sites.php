@@ -12,8 +12,9 @@ $GLOBALS['SiteConfiguration']['site']['columns']['solr_enabled_read'] = [
         'default' => 1,
         'items' => [
             [
-                0 => '',
-                1 => '',
+                'label' => '',
+                'labelChecked' => '',
+                'labelUnchecked' => '',
             ],
         ],
     ],
@@ -77,8 +78,9 @@ $GLOBALS['SiteConfiguration']['site']['columns']['solr_use_write_connection'] = 
         'default' => 0,
         'items' => [
             [
-                0 => '',
-                1 => '',
+                'label' => '',
+                'labelChecked' => '',
+                'labelUnchecked' => '',
             ],
         ],
     ],
