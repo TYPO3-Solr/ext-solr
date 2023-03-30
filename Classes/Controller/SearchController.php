@@ -19,6 +19,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Event\Search\AfterFrequentlySearchedEvent;
 use ApacheSolrForTypo3\Solr\Event\Search\AfterSearchEvent;
 use ApacheSolrForTypo3\Solr\Event\Search\FormEvent;
+use ApacheSolrForTypo3\Solr\Mvc\Variable\SolrVariableProvider;
 use ApacheSolrForTypo3\Solr\Pagination\ResultsPagination;
 use ApacheSolrForTypo3\Solr\Pagination\ResultsPaginator;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrUnavailableException;
@@ -64,12 +65,17 @@ class SearchController extends AbstractBaseController
         }
     }
 
-    /**
-     * @param ViewInterface $view
-     */
-    public function initializeView($view)
+    public function initializeView(ViewInterface $view): void
     {
         if ($view instanceof TemplateView) {
+            $variableProvider = GeneralUtility::makeInstance(SolrVariableProvider::class);
+            $variableProvider->setSource($view->getRenderingContext()->getVariableProvider()->getSource());
+            $view->getRenderingContext()->setVariableProvider($variableProvider);
+            $view->getRenderingContext()->getVariableProvider()->add(
+                'typoScriptConfiguration',
+                $this->typoScriptConfiguration
+            );
+
             $customTemplate = $this->getCustomTemplateFromConfiguration();
             if ($customTemplate === '') {
                 return;
@@ -114,7 +120,7 @@ class SearchController extends AbstractBaseController
 
             // we pass the search result set to the controller context, to have the possibility
             // to access it without passing it from partial to partial
-            $this->controllerContext->setSearchResultSet($searchResultSet);
+            $this->view->getRenderingContext()->getVariableProvider()->add('searchResultSet', $searchResultSet);
 
             $currentPage = $this->request->hasArgument('page') ? (int)$this->request->getArgument('page') : 1;
 
@@ -198,7 +204,7 @@ class SearchController extends AbstractBaseController
         $searchRequest = $this->getSearchRequestBuilder()->buildForFrequentSearches($pageId, $languageId);
         $searchResultSet->setUsedSearchRequest($searchRequest);
 
-        $this->controllerContext->setSearchResultSet($searchResultSet);
+        $this->view->getRenderingContext()->getVariableProvider()->add('searchResultSet', $searchResultSet);
 
         /* @var AfterFrequentlySearchedEvent $afterFrequentlySearchedEvent*/
         $afterFrequentlySearchedEvent = $this->eventDispatcher->dispatch(
