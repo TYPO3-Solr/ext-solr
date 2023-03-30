@@ -31,16 +31,11 @@ use InvalidArgumentException;
 abstract class AbstractSolrFrontendTagBasedViewHelper extends AbstractSolrTagBasedViewHelper
 {
     /**
-     * @var SolrControllerContext|null
-     */
-    protected ?SolrControllerContext $controllerContext = null;
-
-    /**
      * @return TypoScriptConfiguration
      */
     protected function getTypoScriptConfiguration(): TypoScriptConfiguration
     {
-        return $this->getControllerContext()->getTypoScriptConfiguration();
+        return $this->renderingContext->getVariableProvider()->get('typoScriptConfiguration');
     }
 
     /**
@@ -48,24 +43,6 @@ abstract class AbstractSolrFrontendTagBasedViewHelper extends AbstractSolrTagBas
      */
     protected function getSearchResultSet(): ?SearchResultSet
     {
-        return $this->getControllerContext()->getSearchResultSet();
-    }
-
-    /**
-     * @return SolrControllerContext
-     * @throws InvalidArgumentException
-     */
-    protected function getControllerContext(): SolrControllerContext
-    {
-        $controllerContext = null;
-        if (method_exists($this->renderingContext, 'getControllerContext')) {
-            $controllerContext = $this->renderingContext->getControllerContext();
-        }
-
-        if (!$controllerContext instanceof SolrControllerContext) {
-            throw new InvalidArgumentException('No valid SolrControllerContext found', 1512998673);
-        }
-
-        return $controllerContext;
+        return $this->renderingContext->getVariableProvider()->get('searchResultSet');
     }
 }
