@@ -20,12 +20,22 @@ services:
     public: true
     autowire: true
 
+  query_modifier:
+    namespace: ApacheSolrForTypo3\Solr\Query\Modifier\
+    resource: '../Classes/Query/Modifier/*'
+    public: true
+    autowire: true
+
   backend_controller:
     namespace: ApacheSolrForTypo3\Solr\Controller\Backend\Search\
     resource: '../Classes/Controller/Backend/Search/*'
     public: true
     autowire: true
     tags: ['backend.controller']
+
+  ApacheSolrForTypo3\Solr\Domain\Search\Uri\SearchUriBuilder:
+    public: true
+    autowire: true
 
   # BE modules, plugins
   ApacheSolrForTypo3\Solr\Backend\SettingsPreviewOnPlugins:

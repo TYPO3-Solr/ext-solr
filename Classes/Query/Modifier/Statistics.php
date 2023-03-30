@@ -19,7 +19,6 @@ namespace ApacheSolrForTypo3\Solr\Query\Modifier;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Enables tracking of detailed statistics
@@ -28,18 +27,11 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class Statistics implements Modifier
 {
-    /**
-     * @var QueryBuilder
-     */
-    protected $queryBuilder;
+    protected QueryBuilder $queryBuilder;
 
-    /**
-     * Elevation constructor.
-     * @param QueryBuilder|null $builder
-     */
-    public function __construct(QueryBuilder $builder = null)
+    public function __construct(QueryBuilder $queryBuilder)
     {
-        $this->queryBuilder = $builder ?? GeneralUtility::makeInstance(QueryBuilder::class);
+        $this->queryBuilder = $queryBuilder;
     }
 
     /**
