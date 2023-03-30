@@ -101,7 +101,7 @@ class TranslateViewHelper extends AbstractViewHelper
         string $extensionName = 'solr',
         ?array $arguments = null,
         ?string $languageKey = null,
-        array $alternativeLanguageKeys = []
+        ?array $alternativeLanguageKeys = []
     ): string {
         $result = LocalizationUtility::translate(
             $id,
