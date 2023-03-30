@@ -18,7 +18,6 @@ namespace ApacheSolrForTypo3\Solr\Controller;
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSetService;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequestBuilder;
-use ApacheSolrForTypo3\Solr\Mvc\Controller\SolrControllerContext;
 use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
 use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager as SolrConfigurationManager;
@@ -31,14 +30,11 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Mvc\Controller\Arguments;
-use TYPO3\CMS\Extbase\Mvc\Controller\ControllerContext;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * Class AbstractBaseController
- *
- * @property SolrControllerContext $controllerContext
  *
  * @author Frans Saris <frans@beech.it>
  * @author Timo Hund <timo.hund@dkd.de>
@@ -129,28 +125,6 @@ abstract class AbstractBaseController extends ActionController
     public function setResetConfigurationBeforeInitialize(bool $resetConfigurationBeforeInitialize)
     {
         $this->resetConfigurationBeforeInitialize = $resetConfigurationBeforeInitialize;
-    }
-
-    /**
-     * Initialize the controller context
-     *
-     * @return ControllerContext ControllerContext to be passed to the view
-     * @api
-     */
-    protected function buildControllerContext()
-    {
-        /** @var $controllerContext SolrControllerContext */
-        $controllerContext = GeneralUtility::makeInstance(SolrControllerContext::class);
-        $controllerContext->setRequest($this->request);
-//        $controllerContext->setResponse($this->response);
-        if ($this->arguments !== null) {
-            $controllerContext->setArguments($this->arguments);
-        }
-        $controllerContext->setUriBuilder($this->uriBuilder);
-
-        $controllerContext->setTypoScriptConfiguration($this->typoScriptConfiguration);
-
-        return $controllerContext;
     }
 
     /**
