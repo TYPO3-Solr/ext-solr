@@ -63,7 +63,7 @@ abstract class AbstractBaseController extends ActionController
     private ?SolrConfigurationManager $solrConfigurationManager = null;
 
     /**
-     * The configuration is private if you need it please get it from the controllerContext.
+     * The configuration is private if you need it please get it from the SolrVariableProvider of RenderingContext.
      *
      * @var TypoScriptConfiguration|null
      */
