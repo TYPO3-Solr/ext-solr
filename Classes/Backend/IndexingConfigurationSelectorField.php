@@ -173,7 +173,11 @@ class IndexingConfigurationSelectorField
                 $labelTableName = ' (' . $tableName . ')';
             }
 
-            $selectorItems[] = [$configurationName . $labelTableName, $configurationName, $icon];
+            $selectorItems[] = [
+                'label' => $configurationName . $labelTableName,
+                'value' => $configurationName,
+                'icon' => $icon,
+            ];
         }
 
         return $selectorItems;
