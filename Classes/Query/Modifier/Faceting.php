@@ -28,9 +28,6 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\UrlFacetContainer;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequestAware;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
-use InvalidArgumentException;
-use TYPO3\CMS\Core\Log\LogManager;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Modifies a query to add faceting parameters
@@ -41,28 +38,16 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class Faceting implements Modifier, SearchRequestAware
 {
-    /**
-     * @var FacetRegistry
-     */
     protected FacetRegistry $facetRegistry;
 
-    /**
-     * @var SearchRequest|null
-     */
     protected ?SearchRequest $searchRequest = null;
 
-    /**
-     * @param FacetRegistry $facetRegistry
-     */
     public function __construct(FacetRegistry $facetRegistry)
     {
         $this->facetRegistry = $facetRegistry;
     }
 
-    /**
-     * @param SearchRequest $searchRequest
-     */
-    public function setSearchRequest(SearchRequest $searchRequest)
+    public function setSearchRequest(SearchRequest $searchRequest): void
     {
         $this->searchRequest = $searchRequest;
     }
@@ -81,6 +66,10 @@ class Faceting implements Modifier, SearchRequestAware
     public function modifyQuery(Query $query): Query
     {
         $typoScriptConfiguration = $this->searchRequest->getContextTypoScriptConfiguration();
+        if ($typoScriptConfiguration instanceof TypoScriptConfiguration) {
+            return $query;
+        }
+
         $faceting = FacetingBuilder::fromTypoScriptConfiguration($typoScriptConfiguration);
 
         $allFacets = $typoScriptConfiguration->getSearchFacetingFacets();
@@ -106,29 +95,22 @@ class Faceting implements Modifier, SearchRequestAware
     /**
      * Delegates the parameter building to specialized functions depending on
      * the type of facet to add.
-     * @param $allFacets
-     * @param TypoScriptConfiguration $typoScriptConfiguration
-     * @return array
+     *
      * @throws InvalidFacetPackageException
      * @throws InvalidQueryBuilderException
      */
-    protected function buildFacetingParameters($allFacets, TypoScriptConfiguration $typoScriptConfiguration): array
+    protected function buildFacetingParameters(array $allFacets, TypoScriptConfiguration $typoScriptConfiguration): array
     {
         $facetParameters = [];
-
         foreach ($allFacets as $facetName => $facetConfiguration) {
             $facetName = substr($facetName, 0, -1);
             $type = $facetConfiguration['type'] ?? 'options';
             $facetParameterBuilder = $this->facetRegistry->getPackage($type)->getQueryBuilder();
 
-            if (is_null($facetParameterBuilder)) {
-                throw new InvalidArgumentException('No query build configured for facet ' . htmlspecialchars($facetName));
-            }
-
-            $facetParameters = array_merge_recursive($facetParameters, $facetParameterBuilder->build($facetName, $typoScriptConfiguration));
+            $facetParameters[] = $facetParameterBuilder->build($facetName, $typoScriptConfiguration);
         }
 
-        return $facetParameters;
+        return array_merge_recursive(...$facetParameters);
     }
 
     /**
@@ -178,7 +160,11 @@ class Faceting implements Modifier, SearchRequestAware
     protected function getFilterTag(array $facetConfiguration, bool $keepAllFacetsOnSelection): string
     {
         $tag = '';
-        if (($facetConfiguration['keepAllOptionsOnSelection'] ?? null) == 1 || ($facetConfiguration['addFieldAsTag'] ?? null) == 1 || $keepAllFacetsOnSelection) {
+        if (
+            (int)($facetConfiguration['keepAllOptionsOnSelection'] ?? 0) === 1
+            || (int)($facetConfiguration['addFieldAsTag'] ?? 0) === 1
+            || $keepAllFacetsOnSelection
+        ) {
             $tag = '{!tag=' . addslashes($facetConfiguration['field']) . '}';
         }
 
@@ -188,10 +174,6 @@ class Faceting implements Modifier, SearchRequestAware
     /**
      * This method is used to build the filter parts of the query.
      *
-     * @param array $facetConfiguration
-     * @param string $facetName
-     * @param array $filterValues
-     * @return array
      * @throws InvalidFacetPackageException
      * @throws InvalidUrlDecoderException
      */
@@ -201,10 +183,6 @@ class Faceting implements Modifier, SearchRequestAware
 
         $type = $facetConfiguration['type'] ?? 'options';
         $filterEncoder = $this->facetRegistry->getPackage($type)->getUrlDecoder();
-
-        if (is_null($filterEncoder)) {
-            throw new InvalidArgumentException('No encoder configured for facet ' . htmlspecialchars($facetName));
-        }
 
         foreach ($filterValues as $filterValue) {
             $filterOptions = isset($facetConfiguration['type']) ? ($facetConfiguration[$facetConfiguration['type'] . '.'] ?? null) : null;
@@ -227,10 +205,6 @@ class Faceting implements Modifier, SearchRequestAware
 
     /**
      * Groups facet values by facet name.
-     *
-     * @param array $resultParameters
-     * @param array $allFacets
-     * @return array
      */
     protected function getFiltersByFacetName(array $resultParameters, array $allFacets): array
     {
@@ -244,16 +218,22 @@ class Faceting implements Modifier, SearchRequestAware
         // filters for a certain facet/field
         // $filtersByFacetName look like ['name' =>  ['value1', 'value2'], 'fieldname2' => ['foo']]
         $filtersByFacetName = [];
-        if ($this->searchRequest->getContextTypoScriptConfiguration()->getSearchFacetingUrlParameterStyle() === UrlFacetContainer::PARAMETER_STYLE_ASSOC) {
+        if (
+            ($typoScriptConfiguration = $this->searchRequest->getContextTypoScriptConfiguration())
+            && $typoScriptConfiguration instanceof TypoScriptConfiguration
+            && $typoScriptConfiguration->getSearchFacetingUrlParameterStyle() === UrlFacetContainer::PARAMETER_STYLE_ASSOC
+        ) {
             $filters = array_keys($filters);
         }
+
         foreach ($filters as $filter) {
             if (!str_contains($filter, ':')) {
                 continue;
             }
+
             // only split by the first colon to allow using colons in the filter value itself
-            list($filterFacetName, $filterValue) = explode(':', $filter, 2);
-            if (in_array($filterFacetName, $configuredFacets)) {
+            [$filterFacetName, $filterValue] = explode(':', $filter, 2);
+            if (in_array($filterFacetName, $configuredFacets, true)) {
                 $filtersByFacetName[$filterFacetName][] = $filterValue;
             }
         }
@@ -264,7 +244,6 @@ class Faceting implements Modifier, SearchRequestAware
     /**
      * Gets the facets as configured through TypoScript
      *
-     * @param array $allFacets
      * @return array An array of facet names as specified in TypoScript
      */
     protected function getFacetNamesWithConfiguredField(array $allFacets): array
