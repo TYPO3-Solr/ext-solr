@@ -20,7 +20,6 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Grouping\GroupItem;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
-use InvalidArgumentException;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 
 /**
@@ -31,9 +30,6 @@ use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
  */
 abstract class AbstractSolrFrontendViewHelper extends AbstractSolrViewHelper
 {
-    /**
-     * @return TypoScriptConfiguration|null
-     */
     protected function getTypoScriptConfiguration(): ?TypoScriptConfiguration
     {
         return $this->renderingContext->getVariableProvider()->get('typoScriptConfiguration');
@@ -48,13 +44,12 @@ abstract class AbstractSolrFrontendViewHelper extends AbstractSolrViewHelper
     }
 
     /**
-     * @param RenderingContextInterface $renderingContext
      * @return SearchResultSet|GroupItem|null
      */
     protected static function getUsedSearchResultSetFromRenderingContext(
         RenderingContextInterface $renderingContext
     ) {
         return $renderingContext->getVariableProvider()->get('resultSet')
-            ?? $renderingContext->getControllerContext()->getSearchResultSet();
+            ?? $renderingContext->getVariableProvider()->get('searchResultSet');
     }
 }
