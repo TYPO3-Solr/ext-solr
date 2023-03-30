@@ -18,7 +18,6 @@ declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\ViewHelpers;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
-use ApacheSolrForTypo3\Solr\Mvc\Controller\SolrControllerContext;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use InvalidArgumentException;
 
