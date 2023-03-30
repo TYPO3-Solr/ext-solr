@@ -3,9 +3,9 @@
 [![TYPO3 11](https://img.shields.io/badge/TYPO3-11-orange.svg?style=flat-square)](https://get.typo3.org/version/11)
 [![Total Downloads](http://poser.pugx.org/apache-solr-for-typo3/solr/downloads)](https://packagist.org/packages/apache-solr-for-typo3/solr)
 [![Monthly Downloads](https://poser.pugx.org/apache-solr-for-typo3/solr/d/monthly)](https://packagist.org/packages/apache-solr-for-typo3/solr)
-[![Build Status](https://github.com/TYPO3-Solr/ext-solr/actions/workflows/ci.yml/badge.svg?branch=release-11.5.x)](https://github.com/TYPO3-Solr/ext-solr/actions?query=branch:release-11.5.x)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/TYPO3-Solr/ext-solr/badges/quality-score.png?b=release-11.5.x)](https://scrutinizer-ci.com/g/TYPO3-Solr/ext-solr/?branch=release-11.5.x)
-[![Code Coverage](https://scrutinizer-ci.com/g/TYPO3-Solr/ext-solr/badges/coverage.png?b=release-11.5.x)](https://scrutinizer-ci.com/g/TYPO3-Solr/ext-solr/?branch=release-11.5.x)
+[![Build Status](https://github.com/TYPO3-Solr/ext-solr/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/TYPO3-Solr/ext-solr/actions?query=branch:main)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/TYPO3-Solr/ext-solr/badges/quality-score.png?b=main)](https://scrutinizer-ci.com/g/TYPO3-Solr/ext-solr/?branch=main)
+[![Code Coverage](https://scrutinizer-ci.com/g/TYPO3-Solr/ext-solr/badges/coverage.png?b=main)](https://scrutinizer-ci.com/g/TYPO3-Solr/ext-solr/?branch=main)
 
 # Apache Solr for TYPO3 CMS
 
@@ -28,7 +28,7 @@ Further details including a comparison chart are provided at the program homepag
 |                  | URL                                                             |
 |------------------|-----------------------------------------------------------------|
 | **Repository:**  | https://github.com/TYPO3-Solr/ext-solr                          |
-| **Read online:** | https://docs.typo3.org/p/apache-solr-for-typo3/solr/11.5/en-us/ |
+| **Read online:** | https://docs.typo3.org/p/apache-solr-for-typo3/solr/main/en-us/ |
 | **TER:**         | https://extensions.typo3.org/extension/solr                     |
 | **Homepage:**    | https://www.typo3-solr.com/                                     |
 

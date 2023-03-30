@@ -2,11 +2,11 @@ name: build
 
 on:
   push:
-    branches: [ main, task/3376-TYPO3_12_compatibility, release-11.5.x, release-11.1.x, release-11.0.x ]
+    branches: [ main, release-12.0.x, release-11.5.x, release-11.2.x, task/*_compatibility ]
     tags:
       - "**"
   pull_request:
-    branches: [ main, task/3376-TYPO3_12_compatibility, release-11.5.x, release-11.1.x, release-11.0.x ]
+    branches: [ main, release-12.0.x, release-11.5.x, release-11.2.x, task/*_compatibility ]
 
 env:
   CI_BUILD_DIRECTORY: '/home/runner/work/ext-solr/ext-solr/.Build'
@@ -67,8 +67,8 @@ jobs:
           echo -e "matrix : "
           echo $matrix
           echo ::set-output name=matrix::$(echo $matrix)
-          >&2 echo -e "Example Annotation on error. Is visible in Actions wokflow view."
-          >&2 echo -e "Non-stable releases can not be published to TER. The tag 11.5.0-beta-1 is invalid for TER."
+          >&2 echo -e "Example Annotation on error. Is visible in Actions workflow view."
+          >&2 echo -e "Non-stable releases can not be published to TER. The tags containing beta-1 is invalid for TER."
       -
         name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
@@ -106,7 +106,6 @@ jobs:
       TYPO3_DATABASE_HOST: '127.0.0.1'
       TYPO3_DATABASE_USERNAME: 'root'
       TYPO3_DATABASE_PASSWORD: 'root'
-      PHP_CS_FIXER_VERSION: '^3.2.1'
       TYPO3_VERSION: ${{ matrix.TYPO3 }}
 
     name: TYPO3 ${{ matrix.TYPO3 }} on PHP ${{ matrix.PHP }}
@@ -162,7 +161,7 @@ jobs:
         with:
           php-version: ${{ matrix.PHP }}
           coverage: pcov
-          tools: composer:2.1.14
+          tools: composer:2.5.5
       -
         name: Resolve CI build cache key
         # CI_CACHE_VERSION is used and can be increased to be able to invalidate caches.
