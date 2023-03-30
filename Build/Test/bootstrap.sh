@@ -9,8 +9,7 @@ fi
 EXTENSION_ROOTPATH="$SCRIPTPATH/../../"
 SOLR_INSTALL_PATH="/opt/solr-tomcat/"
 
-DEFAULT_TYPO3_VERSION="^12.0.0"
-DEFAULT_PHP_CS_FIXER_VERSION="^3.2.1"
+DEFAULT_TYPO3_VERSION="^12.4"
 DEFAULT_TYPO3_DATABASE_HOST="localhost"
 DEFAULT_TYPO3_DATABASE_NAME="test"
 DEFAULT_TYPO3_DATABASE_USERNAME="root"
@@ -18,7 +17,6 @@ DEFAULT_TYPO3_DATABASE_PASSWORD="supersecret"
 
 if [[ $* == *--use-defaults* ]]; then
   export TYPO3_VERSION=$DEFAULT_TYPO3_VERSION
-  export PHP_CS_FIXER_VERSION=$DEFAULT_PHP_CS_FIXER_VERSION
   export TYPO3_DATABASE_HOST=$DEFAULT_TYPO3_DATABASE_HOST
   export TYPO3_DATABASE_NAME=$DEFAULT_TYPO3_DATABASE_NAME
   export TYPO3_DATABASE_USERNAME=$DEFAULT_TYPO3_DATABASE_USERNAME
@@ -30,11 +28,6 @@ if [[ $* == *--local* ]]; then
   read typo3Version
   if [ -z "$typo3Version" ]; then typo3Version=$DEFAULT_TYPO3_VERSION; fi
   export TYPO3_VERSION=$typo3Version
-
-  echo -n "Choose a php-cs-fixer version [defaults: " $DEFAULT_PHP_CS_FIXER_VERSION"] : "
-  read phpCSFixerVersion
-  if [ -z "$phpCSFixerVersion" ]; then phpCSFixerVersion=$DEFAULT_PHP_CS_FIXER_VERSION; fi
-  export PHP_CS_FIXER_VERSION=$phpCSFixerVersion
 
   echo -n "Choose a database hostname: [defaults: " $DEFAULT_TYPO3_DATABASE_HOST"] : "
   read typo3DbHost
@@ -58,14 +51,13 @@ if [[ $* == *--local* ]]; then
 fi
 
 echo "Using TYPO3 Version: $TYPO3_VERSION"
-echo "Using PHP-CS Fixer Version: $PHP_CS_FIXER_VERSION"
 echo "Using database host: $TYPO3_DATABASE_HOST"
 echo "Using database dbname: $TYPO3_DATABASE_NAME"
 echo "Using database user: $TYPO3_DATABASE_USERNAME"
 echo "Using database password: $TYPO3_DATABASE_PASSWORD"
 
 if [ -z $TYPO3_VERSION ]; then
-  echo "Must set env var TYPO3_VERSION (e.g. dev-main or ^12.5)"
+  echo "Must set env var TYPO3_VERSION (e.g. dev-main or ^12.4)"
   exit 1
 fi
 
@@ -94,6 +86,13 @@ echo "Using web path $TYPO3_PATH_WEB"
 if ! composer tests:setup
 then
   echo "The test environment could not be installed by composer as expected. Please fix this issue."
+  exit 1
+fi
+
+echo "Install third party tools globally:"
+if ! composer global require "sclable/xml-lint":"*" "scrutinizer/ocular":"*" && export PATH=$PATH:$(composer config --global home)/vendor/bin
+then
+  "The test environment could not be installed by composer as expected. Please fix this issue."
   exit 1
 fi
 
