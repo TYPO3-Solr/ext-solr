@@ -28,7 +28,7 @@
     "ext-simplexml": "*",
     "solarium/solarium": "6.2.7",
     "typo3/cms-backend": "*",
-    "typo3/cms-core": "12.*.*@dev",
+    "typo3/cms-core": "12.4.*@dev",
     "typo3/cms-extbase": "*",
     "typo3/cms-fluid": "*",
     "typo3/cms-frontend": "*",
@@ -40,8 +40,6 @@
     "dg/bypass-finals": "^1.4",
     "phpspec/prophecy-phpunit":"*",
     "phpunit/phpunit": "^9.5",
-    "sclable/xml-lint": "*",
-    "scrutinizer/ocular": "*",
     "typo3/cms-fluid-styled-content": "*",
     "typo3/coding-standards": "~0.7.1",
     "typo3/testing-framework": "dev-7-composerinstaller5-fix"
@@ -105,7 +103,7 @@
   },
   "extra": {
     "branch-alias": {
-      "dev-release-11.5.x": "11.5.x-dev"
+      "dev-main": "12.0.x-dev"
     },
     "typo3/cms": {
       "extension-key": "solr",
@@ -114,16 +112,20 @@
     },
     "TYPO3-Solr": {
       "version-matrix": {
-        "ext-tika": "^11.0",
-        "ext-solrfal": "^11.0",
-        "ext-solrconsole": "^11.0",
-        "ext-solrdebugtools": "^11.0",
-        "ext-solrfluidgrouping": "^11.0",
-        "ext-solrmlt": "^11.0",
+        "ext-tika": "^12.0",
+        "ext-solrfal": "^12.0",
+        "ext-solrconsole": "^12.0",
+        "ext-solrdebugtools": "^12.0",
+        "ext-solrfluidgrouping": "^12.0",
+        "ext-solrmlt": "^12.0",
         "Apache-Solr": "8.11.1",
-        "configset": "ext_solr_11_5_0"
+        "configset": "ext_solr_12_0_0"
       },
       "ext-solrfal": {
+      },
+      "stack-for-ci": {
+        "sclable/xml-lint": "*",
+        "scrutinizer/ocular": "*"
       }
     }
   }
