@@ -42,7 +42,7 @@ class PageTest extends IntegrationTest
     protected function setUp(): void
     {
         parent::setUp();
-        $this->importCSVDataSet('PACKAGE:apache-solr-for-typo3/solr/Tests/Integration/Fixtures/sites_setup_and_data_set/be_users.csv');
+        $this->importCSVDataSet(__DIR__ . '/../../Fixtures/sites_setup_and_data_set/be_users.csv');
         $GLOBALS['BE_USER'] = $this->setUpBackendUser(1);
         $this->writeDefaultSolrTestSiteConfiguration();
         $this->pageInitializer = GeneralUtility::makeInstance(Page::class);
