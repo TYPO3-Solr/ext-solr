@@ -29,16 +29,6 @@ Registered classes can be used to replace/substitute a Solr document of a page.
 Registration with: $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageSubstitutePageDocument']
 Required Interface: SubstitutePageIndexer
 
-indexPagePostProcessPageDocument
---------------------------------
-
-This is deprecated in favor of preAddModifyDocuments.
-
-Registered classes can be used to post process a Solr document of a page.
-
-Registration with: $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPagePostProcessPageDocument']
-Required Interface: PageDocumentPostProcessor
-
 
 preAddModifyDocuments
 ---------------------
