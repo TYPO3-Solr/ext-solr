@@ -124,13 +124,13 @@ class ExtensionConfiguration
     public function getCacheHashExcludedParameters(): array
     {
         $pluginNamespaces = array_map(
-            function ($pluginNamespace) {
+            static function ($pluginNamespace) {
                 return '^' . $pluginNamespace . '[';
             },
             $this->getAvailablePluginNamespaces()
         );
         $enhancersRouteParts = array_map(
-            function ($pluginNamespace) {
+            static function ($pluginNamespace) {
                 // __ \TYPO3\CMS\Core\Routing\Enhancer\VariableProcessor::LEVEL_DELIMITER
                 return '^' . $pluginNamespace . '__';
             },
