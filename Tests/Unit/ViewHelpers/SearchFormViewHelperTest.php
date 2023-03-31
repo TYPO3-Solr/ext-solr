@@ -45,7 +45,6 @@ class SearchFormViewHelperTest extends UnitTest
                 ]
             )
             ->onlyMethods([
-                'getControllerContext',
                 'getTypoScriptConfiguration',
                 'getTemplateVariableContainer',
                 'getSearchResultSet',
