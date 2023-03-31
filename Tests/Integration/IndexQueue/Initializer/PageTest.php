@@ -35,12 +35,6 @@ class PageTest extends IntegrationTest
     protected $pageInitializer;
 
     /**
-     * @inheritdoc
-     * @todo: Remove after typo3/testing-framework is upgraded to TYPO3 12+ compatible version
-     */
-    protected string $backendUserFixture = 'PACKAGE:apache-solr-for-typo3/solr/Tests/Integration/Fixtures/sites_setup_and_data_set/be_users.xml';
-
-    /**
      * @var Queue
      */
     protected $indexQueue;
@@ -48,7 +42,8 @@ class PageTest extends IntegrationTest
     protected function setUp(): void
     {
         parent::setUp();
-        $this->setUpBackendUserFromFixture(1);
+        $this->importCSVDataSet('PACKAGE:apache-solr-for-typo3/solr/Tests/Integration/Fixtures/sites_setup_and_data_set/be_users.csv');
+        $GLOBALS['BE_USER'] = $this->setUpBackendUser(1);
         $this->writeDefaultSolrTestSiteConfiguration();
         $this->pageInitializer = GeneralUtility::makeInstance(Page::class);
         $this->indexQueue = GeneralUtility::makeInstance(Queue::class);

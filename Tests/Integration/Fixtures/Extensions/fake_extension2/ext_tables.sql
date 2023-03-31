@@ -103,5 +103,17 @@ CREATE TABLE tx_fakeextension_domain_model_directrelated (
 	endtime int(11) DEFAULT '0' NOT NULL,
 	sorting int(11) DEFAULT '0' NOT NULL,
 	category varchar(128) DEFAULT '' NOT NULL,
+	category_label varchar(128) DEFAULT '' NOT NULL,
+	sys_category int(11) DEFAULT '0' NOT NULL,
 	PRIMARY KEY (uid)
+);
+
+CREATE TABLE tx_fakeextension_domain_model_related_pages_mm (
+   uid_local int(11) unsigned DEFAULT '0' NOT NULL,
+   uid_foreign int(11) unsigned DEFAULT '0' NOT NULL,
+   tablenames varchar(90) DEFAULT '' NOT NULL,
+   fieldname varchar(90) DEFAULT '' NOT NULL,
+   sorting int(11) unsigned DEFAULT '0' NOT NULL,
+   KEY uid_local (uid_local),
+   KEY uid_foreign (uid_foreign)
 );

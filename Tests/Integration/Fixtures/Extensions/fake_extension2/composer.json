@@ -1,0 +1,11 @@
+{
+  "name": "apache-solr-for-typo3/solr-fake-extension2",
+  "type": "typo3-cms-extension",
+  "description": "Fake Extension 2",
+  "license": "GPL-2.0-or-later",
+  "extra": {
+    "typo3/cms": {
+      "extension-key": "fake_extension2"
+    }
+  }
+}

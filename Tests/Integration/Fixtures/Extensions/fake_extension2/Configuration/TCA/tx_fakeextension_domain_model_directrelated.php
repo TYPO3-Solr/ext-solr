@@ -2,7 +2,7 @@
 
 return [
     'ctrl' => [
-        'title' => $ll . 'tx_fakeextension_domain_model_directrelated',
+        'title' => 'tx_fakeextension_domain_model_directrelated',
         'descriptionColumn' => 'category',
         'label' => 'category',
         'hideAtCopy' => true,
@@ -125,11 +125,35 @@ return [
                 'required' => true,
             ],
         ],
+        'category_label' => [
+            'exclude' => 0,
+            'l10n_mode' => 'prefixLangTitle',
+            'label' => 'LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:header_formlabel',
+            'config' => [
+                'type' => 'input',
+                'size' => 60,
+                'required' => true,
+            ],
+        ],
         'editlock' => [
             'exclude' => 1,
             'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_tca.xlf:editlock',
             'config' => [
                 'type' => 'check', ['behaviour' => ['allowLanguageSynchronization' => true]],
+            ],
+        ],
+        'sys_category' => [
+            'exclude' => 0,
+            'label' => 'sorting',
+            'config' => [
+                'type' => 'select',
+                'renderType' => 'selectSingle',
+                'foreign_table' => 'sys_category',
+                'foreign_table_where' => ' AND (sys_category.sys_language_uid = 0 OR sys_category.l10n_parent = 0)',
+                'size' => 1,
+                'minitems' => 0,
+                'maxitems' => 1,
+                ['behaviour' => ['allowLanguageSynchronization' => true]],
             ],
         ],
     ],
