@@ -16,14 +16,14 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\Solr\Parser;
 
 use ApacheSolrForTypo3\Solr\System\Solr\Parser\SynonymParser;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 
 /**
  * Testcase for StopWordParser
  *
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class SynonymParserTest extends UnitTest
+class SynonymParserTest extends SetUpUnitTestCase
 {
     /**
      * @test

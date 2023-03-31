@@ -17,14 +17,14 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\UrlFacetContainer;
 use ApacheSolrForTypo3\Solr\System\Util\ArrayAccessor;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 
 /**
  * Testcases for the url data bag
  *
  * @author Lars Tode <lars.tode@dkd.de>
  */
-class UrlFacetContainerTest extends UnitTest
+class UrlFacetContainerTest extends SetUpUnitTestCase
 {
     /**
      * Test data for index based url parameters

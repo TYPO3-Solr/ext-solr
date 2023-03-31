@@ -25,12 +25,7 @@ use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerDocumentsModifier;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
-use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
-use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
-use ApacheSolrForTypo3\Solr\System\Solr\Service\SolrWriteService;
-use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
-use InvalidArgumentException;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use PHPUnit\Framework\MockObject\MockBuilder;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
@@ -43,7 +38,7 @@ use UnexpectedValueException;
 /**
  * Class IndexerTest
  */
-class IndexerTest extends UnitTest
+class IndexerTest extends SetUpUnitTestCase
 {
     use ProphecyTrait;
 

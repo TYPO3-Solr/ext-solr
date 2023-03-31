@@ -17,14 +17,14 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets\Opti
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\OptionsFacetQueryBuilder;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 
 /**
  * Testcase for the dateRange queryBuilder
  *
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class OptionsFacetQueryBuilderTest extends UnitTest
+class OptionsFacetQueryBuilderTest extends SetUpUnitTestCase
 {
     /**
      * @test

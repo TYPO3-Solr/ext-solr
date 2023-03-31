@@ -16,12 +16,12 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Sorting;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Sorting\SortingHelper;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 
 /**
  * Class SortingHelperTest
  */
-class SortingHelperTest extends UnitTest
+class SortingHelperTest extends SetUpUnitTestCase
 {
     /**
      * @test

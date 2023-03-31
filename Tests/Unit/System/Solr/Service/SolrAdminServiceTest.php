@@ -17,7 +17,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\Solr\Service;
 
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\System\Solr\Service\SolrAdminService;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use Solarium\Client;
 use Solarium\Core\Client\Endpoint;
 
@@ -26,7 +26,7 @@ use Solarium\Core\Client\Endpoint;
  *
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class SolrAdminServiceTest extends UnitTest
+class SolrAdminServiceTest extends SetUpUnitTestCase
 {
     /**
      * @var SolrAdminService

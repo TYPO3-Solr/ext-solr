@@ -23,7 +23,7 @@ use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
  * @author Timo Hund <timo.hund@dkd.de>
  * @author Frans Saris <frans@beech.it>
  */
-class RemoveFacetViewHelperTest extends AbstractFacetItemViewHelperTest
+class RemoveFacetViewHelperTest extends SetUpFacetItemViewHelper
 {
     /**
      * @test

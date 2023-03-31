@@ -18,14 +18,14 @@ declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Result;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResult;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 
 /**
  * Unit test case for the SearchResult.
  *
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class SearchResultTest extends UnitTest
+class SearchResultTest extends SetUpUnitTestCase
 {
     /**
      * @var SearchResult

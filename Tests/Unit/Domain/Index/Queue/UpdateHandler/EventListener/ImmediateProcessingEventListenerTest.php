@@ -35,7 +35,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author Markus Friedrich <markus.friedrich@dkd.de>
  */
-class ImmediateProcessingEventListenerTest extends AbstractEventListenerTest
+class ImmediateProcessingEventListenerTest extends SetUpEventListener
 {
     protected function setUp(): void
     {

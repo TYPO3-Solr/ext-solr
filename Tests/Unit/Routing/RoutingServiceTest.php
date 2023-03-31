@@ -18,7 +18,7 @@ declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Routing;
 
 use ApacheSolrForTypo3\Solr\Routing\RoutingService;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use Psr\Log\NullLogger;
 use Symfony\Component\Yaml\Yaml;
 use TYPO3\CMS\Core\Http\ServerRequest;
@@ -30,7 +30,7 @@ use TYPO3\CMS\Core\Site\Entity\Site;
  *
  * @author Lars Tode <lars.tode@dkd.de>
  */
-class RoutingServiceTest extends UnitTest
+class RoutingServiceTest extends SetUpUnitTestCase
 {
     /**
      * @var Site

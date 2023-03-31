@@ -16,14 +16,14 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Task;
 
 use ApacheSolrForTypo3\Solr\Task\ReIndexTask;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 
 /**
  * Testcase for ReIndexTask
  *
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class ReIndexTaskTest extends UnitTest
+class ReIndexTaskTest extends SetUpUnitTestCase
 {
     /**
      * @test

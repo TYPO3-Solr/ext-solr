@@ -16,12 +16,12 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\Highlight;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Highlight\SiteHighlighterUrlModifier;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 
 /**
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class SiteHighlighterUrlModifierTest extends UnitTest
+class SiteHighlighterUrlModifierTest extends SetUpUnitTestCase
 {
     public function canModifyDataProvider(): array
     {

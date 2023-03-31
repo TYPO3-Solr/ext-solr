@@ -28,7 +28,7 @@ use Solarium\Core\Client\Endpoint;
  *
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class IndexAdministrationModuleControllerTest extends AbstractModuleControllerTest
+class IndexAdministrationModuleControllerTest extends AbstractModuleController
 {
     /**
      * @var ConnectionManager|MockObject

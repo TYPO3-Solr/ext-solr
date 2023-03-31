@@ -16,7 +16,7 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Site;
 
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteHashService;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use Psr\Http\Message\UriInterface;
 use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
@@ -29,7 +29,7 @@ use TYPO3\CMS\Core\Site\SiteFinder;
  *
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class SiteHashServiceTest extends UnitTest
+class SiteHashServiceTest extends SetUpUnitTestCase
 {
     /**
      * @return array

@@ -22,7 +22,7 @@ use ApacheSolrForTypo3\Solr\System\Solr\Service\SolrReadService;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrCommunicationException;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrInternalServerErrorException;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrUnavailableException;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use Solarium\Client;
 use Solarium\Core\Client\Request;
 use Solarium\Core\Client\Response;
@@ -34,7 +34,7 @@ use Solarium\QueryType\Ping\Query as PingQuery;
  *
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class SolrReadServiceTest extends UnitTest
+class SolrReadServiceTest extends SetUpUnitTestCase
 {
     /**
      * @var Request

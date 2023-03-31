@@ -16,14 +16,14 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Task;
 
 use ApacheSolrForTypo3\Solr\Task\OptimizeIndexTask;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 
 /**
  * Testcase for OptimizeIndexTask
  *
  * @author Jens Jacobsen <typo3@jens-jacobsen.de>
  */
-class OptimizeIndexTaskTest extends UnitTest
+class OptimizeIndexTaskTest extends SetUpUnitTestCase
 {
     /**
      * @test

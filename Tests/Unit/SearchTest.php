@@ -24,7 +24,7 @@ use ApacheSolrForTypo3\Solr\System\Solr\Service\SolrReadService;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use PHPUnit\Framework\MockObject\MockObject;
 
-class SearchTest extends UnitTest
+class SearchTest extends SetUpUnitTestCase
 {
     /**
      * @var SolrConnection

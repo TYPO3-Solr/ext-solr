@@ -28,7 +28,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author Markus Friedrich <markus.friedrich@dkd.de>
  */
-class GarbageHandlerTest extends AbstractUpdateHandlerTest
+class GarbageHandlerTest extends SetUpUpdateHandler
 {
     /**
      * @var GarbageHandler

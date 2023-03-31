@@ -22,7 +22,7 @@ use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordDelete
  *
  * @author Markus Friedrich <markus.friedrich@dkd.de>
  */
-class RecordDeletedEventTest extends AbstractDataUpdateEventTest
+class RecordDeletedEventTest extends SetUpDataUpdateEvent
 {
     protected const EVENT_CLASS = RecordDeletedEvent::class;
     protected const EVENT_TEST_TABLE = 'tx_foo_bar';

@@ -18,7 +18,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\FacetRegistry;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\OptionsPackage;
 use ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets\TestPackage\TestPackage;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use InvalidArgumentException;
 use PHPUnit\Framework\MockObject\MockObject;
 
@@ -28,7 +28,7 @@ use PHPUnit\Framework\MockObject\MockObject;
  * @author Frans Saris <frans@beech.it>
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class FacetRegistryTest extends UnitTest
+class FacetRegistryTest extends SetUpUnitTestCase
 {
     /**
      * Initialize a RendererRegistry and mock createRendererInstance()

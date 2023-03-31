@@ -18,7 +18,7 @@ declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\SortingExpression;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 
 /**
  * Unit test for the SortingExpression
@@ -26,7 +26,7 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
  * @author Timo Hund <timo.hund@dkd.de>
  * @author Jens Jacobsen <jens.jacobsen@ueberbit.de>
  */
-class SortingExpressionTest extends UnitTest
+class SortingExpressionTest extends SetUpUnitTestCase
 {
     public function canBuildSortExpressionDataProvider(): array
     {
