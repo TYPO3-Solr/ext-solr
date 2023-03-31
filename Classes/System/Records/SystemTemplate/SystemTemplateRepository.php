@@ -36,8 +36,6 @@ class SystemTemplateRepository extends AbstractRepository
      *
      * This method expects one startPageId, which must be inside the root line and does not check if it is one in the root line.
      *
-     * @param array $rootLine
-     * @return int
      * @throws DBALDriverException
      * @throws DBALException|\Doctrine\DBAL\DBALException
      */

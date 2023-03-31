@@ -113,11 +113,7 @@ class HierarchyFacetParser extends AbstractFacetParser
      */
     protected function facetOptionsMustBeResorted(array $facetConfiguration): bool
     {
-        if (isset($facetConfiguration['sortBy']) && $facetConfiguration['sortBy'] === 'index') {
-            return true;
-        }
-
-        return false;
+        return isset($facetConfiguration['sortBy']) && $facetConfiguration['sortBy'] === 'index';
     }
 
     /**

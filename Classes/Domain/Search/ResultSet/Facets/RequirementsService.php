@@ -35,7 +35,7 @@ class RequirementsService
     public function getAllRequirementsMet(AbstractFacet $facet)
     {
         $requirements = $facet->getRequirements();
-        if (!is_array($requirements) || count($requirements) === 0) {
+        if (count($requirements) === 0) {
             return true;
         }
 

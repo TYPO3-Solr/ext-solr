@@ -56,7 +56,7 @@ class IndexAdministrationModuleController extends AbstractModuleController
                 $writeService = $solrServer->getWriteService();
                 /* @var SolrConnection $solrServer */
                 $writeService->deleteByQuery('siteHash:' . $siteHash);
-                $writeService->commit(false, false, false);
+                $writeService->commit(false, false);
                 $affectedCores[] = $writeService->getPrimaryEndpoint()->getCore();
             }
             $message = LocalizationUtility::translate('solr.backend.index_administration.index_emptied_all', 'Solr', [$this->selectedSite->getLabel(), implode(', ', $affectedCores)]);

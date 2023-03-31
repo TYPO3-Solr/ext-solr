@@ -95,8 +95,6 @@ class Search
 
     /**
      * Gets the Solr connection used by this search.
-     *
-     * @return SolrConnection Solr connection
      */
     public function getSolrConnection(): ?SolrConnection
     {
@@ -127,7 +125,7 @@ class Search
      * @param Query $query The query with keywords, filters, and so on.
      * @param int $offset Result offset for pagination.
      * @param int|null $limit Maximum number of results to return. If set to NULL, this value is taken from the query object.
-     * @return ResponseAdapter Solr response
+     * @return ResponseAdapter|null Solr response
      */
     public function search(Query $query, int $offset = 0, ?int $limit = null): ?ResponseAdapter
     {

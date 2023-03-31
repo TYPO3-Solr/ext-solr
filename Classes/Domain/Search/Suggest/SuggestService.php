@@ -99,7 +99,7 @@ class SuggestService
      */
     public function getSuggestions(SearchRequest $searchRequest, array $additionalFilters = []): array
     {
-        $requestId = (int)$this->tsfe->getRequestedId();
+        $requestId = $this->tsfe->getRequestedId();
         $groupList = Util::getFrontendUserGroupsList();
 
         $suggestQuery = $this->queryBuilder->buildSuggestQuery($searchRequest->getRawUserQuery(), $additionalFilters, $requestId, $groupList);

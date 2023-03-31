@@ -361,9 +361,6 @@ class SearchRequest
 
     /**
      * Helper function to get the sorting configuration name or direction.
-     *
-     * @param int $index
-     * @return string
      */
     protected function getSortingPart(int $index): ?string
     {
@@ -378,8 +375,6 @@ class SearchRequest
 
     /**
      * Returns the sorting configuration name that is currently used.
-     *
-     * @return string
      */
     public function getSortingName(): ?string
     {
@@ -669,8 +664,6 @@ class SearchRequest
 
     /**
      * Get contextTypoScriptConfiguration
-     *
-     * @return TypoScriptConfiguration
      */
     public function getContextTypoScriptConfiguration(): ?TypoScriptConfiguration
     {

@@ -82,7 +82,7 @@ class CachedPathVariableModifier
                 $singleValues = [];
                 $index = 0;
                 foreach ($facets as $facet) {
-                    if (mb_strpos($facet, ':') !== false) {
+                    if (str_contains($facet, ':')) {
                         [$prefix, $value] = explode(
                             ':',
                             $facet,
@@ -126,7 +126,7 @@ class CachedPathVariableModifier
                 continue;
             }
             $element = $this->standardizeKey($element);
-            if (substr($element, 0, 3) !== '###') {
+            if (!str_starts_with($element, '###')) {
                 continue;
             }
 

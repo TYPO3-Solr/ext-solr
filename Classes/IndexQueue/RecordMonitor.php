@@ -135,7 +135,7 @@ class RecordMonitor
 
         $recordPid = $fields['pid'] ?? null;
         if (is_null($recordPid) && MathUtility::canBeInterpretedAsInteger($recordUid)) {
-            $recordInfo = $tceMain->recordInfo($table, (int)$recordUid, 'pid');
+            $recordInfo = $tceMain->recordInfo($table, (int)$recordUid);
             if (!is_null($recordInfo)) {
                 $recordPid = $recordInfo['pid'] ?? null;
             }

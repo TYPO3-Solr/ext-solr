@@ -241,7 +241,6 @@ class Indexer extends AbstractIndexer
      *
      * @param Item $item
      * @param int $language
-     * @return array|mixed|null
      * @throws DBALDriverException
      * @throws FrontendEnvironmentException
      * @throws SiteNotFoundException
@@ -289,11 +288,7 @@ class Indexer extends AbstractIndexer
         $languageOfRecord = (int)($itemRecord[$languageField] ?? null);
         $l10nParentRecordUid = (int)($itemRecord[$l10nParentField] ?? null);
 
-        if ($languageOfRecord > 0 && $l10nParentRecordUid === 0) {
-            return true;
-        }
-
-        return false;
+        return $languageOfRecord > 0 && $l10nParentRecordUid === 0;
     }
 
     /**
@@ -332,7 +327,7 @@ class Indexer extends AbstractIndexer
         try {
             $pageId = $this->getPageIdOfItem($item);
             $solrConfiguration = $this->frontendEnvironment->getSolrConfigurationFromPageId($pageId, $language, $item->getRootPageUid());
-            return $solrConfiguration->getIndexQueueFieldsConfigurationByConfigurationName($indexConfigurationName, []);
+            return $solrConfiguration->getIndexQueueFieldsConfigurationByConfigurationName($indexConfigurationName);
         } catch (Throwable $e) {
             return [];
         }
@@ -363,7 +358,7 @@ class Indexer extends AbstractIndexer
     {
         $solrConfiguration = $this->frontendEnvironment->getSolrConfigurationFromPageId($item->getRootPageUid(), $language);
 
-        return $solrConfiguration->getIndexQueueFieldsConfigurationByConfigurationName($indexConfigurationName, []);
+        return $solrConfiguration->getIndexQueueFieldsConfigurationByConfigurationName($indexConfigurationName);
     }
 
     /**
@@ -801,9 +796,7 @@ class Indexer extends AbstractIndexer
         $typo3site = $item->getSite()->getTypo3SiteObject();
         $typo3siteLanguage = $typo3site->getLanguageById($language);
         $typo3siteLanguageFallbackType = $typo3siteLanguage->getFallbackType();
-        if ($typo3siteLanguageFallbackType === 'free') {
-            return true;
-        }
-        return false;
+
+        return $typo3siteLanguageFallbackType === 'free';
     }
 }

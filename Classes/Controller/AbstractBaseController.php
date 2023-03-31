@@ -184,7 +184,7 @@ abstract class AbstractBaseController extends ActionController
 
         // Make sure plugin.tx_solr.settings are available in the view as {settings}
         $this->settings = $typoScriptService->convertTypoScriptArrayToPlainArray(
-            $this->typoScriptConfiguration->getObjectByPathOrDefault('plugin.tx_solr.settings.', [])
+            $this->typoScriptConfiguration->getObjectByPathOrDefault('plugin.tx_solr.settings.')
         );
     }
 

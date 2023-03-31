@@ -36,8 +36,6 @@ class ModuleData
 
     /**
      * Gets the site to work with.
-     *
-     * @return Site
      */
     public function getSite(): ?Site
     {
@@ -46,10 +44,8 @@ class ModuleData
 
     /**
      * Sets the site to work with.
-     *
-     * @param Site $site
      */
-    public function setSite(Site $site)
+    public function setSite(Site $site): void
     {
         $this->site = $site;
     }

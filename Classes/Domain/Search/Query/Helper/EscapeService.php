@@ -50,9 +50,7 @@ class EscapeService
             return static::escapeSpecialCharacters($string);
         }
 
-        $result = static::tokenizeByQuotesAndEscapeDependingOnContext($string);
-
-        return $result;
+        return static::tokenizeByQuotesAndEscapeDependingOnContext($string);
     }
 
     /**

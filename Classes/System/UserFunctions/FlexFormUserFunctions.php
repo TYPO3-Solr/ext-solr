@@ -102,7 +102,6 @@ class FlexFormUserFunctions
      * Retrieves the configured facets for a page.
      *
      * @param int|null $pid
-     * @return array
      * @throws DBALDriverException
      * @todo: Fix type hinting properly
      */

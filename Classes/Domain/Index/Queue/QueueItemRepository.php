@@ -138,7 +138,7 @@ class QueueItemRepository extends AbstractRepository
     public function flushErrorsBySite(Site $site): int
     {
         $queryBuilder = $this->getQueryBuilder();
-        return (int)$this->getPreparedFlushErrorQuery($queryBuilder)
+        return $this->getPreparedFlushErrorQuery($queryBuilder)
             ->andWhere(
                 /** @scrutinizer ignore-type */
                 $queryBuilder->expr()->eq('root', $site->getRootPageId())
@@ -157,7 +157,7 @@ class QueueItemRepository extends AbstractRepository
     public function flushErrorByItem(Item $item): int
     {
         $queryBuilder = $this->getQueryBuilder();
-        return (int)$this->getPreparedFlushErrorQuery($queryBuilder)
+        return $this->getPreparedFlushErrorQuery($queryBuilder)
             ->andWhere(
                 /** @scrutinizer ignore-type */
                 $queryBuilder->expr()->eq('uid', $item->getIndexQueueUid())
@@ -219,7 +219,7 @@ class QueueItemRepository extends AbstractRepository
             $queryBuilder->set('indexing_configuration', $indexingConfiguration);
         }
 
-        return (int)$queryBuilder->executeStatement();
+        return $queryBuilder->executeStatement();
     }
 
     /**
@@ -244,7 +244,7 @@ class QueueItemRepository extends AbstractRepository
         string $indexingConfiguration
     ): int {
         $queryBuilder = $this->getQueryBuilder();
-        return (int)$queryBuilder
+        return $queryBuilder
             ->insert($this->table)
             ->values([
                 'root' => $rootPageId,
@@ -978,7 +978,7 @@ class QueueItemRepository extends AbstractRepository
         $errorMessage = empty($errorMessage) ? '1' : $errorMessage;
 
         $queryBuilder = $this->getQueryBuilder();
-        return (int)$queryBuilder
+        return $queryBuilder
             ->update($this->table)
             ->set('errors', $errorMessage)
             ->where($queryBuilder->expr()->eq('uid', $itemUid))
@@ -996,7 +996,7 @@ class QueueItemRepository extends AbstractRepository
     public function updateIndexTimeByItem(Item $item): int
     {
         $queryBuilder = $this->getQueryBuilder();
-        return (int)$queryBuilder
+        return $queryBuilder
             ->update($this->table)
             ->set('indexed', time())
             ->where($queryBuilder->expr()->eq('uid', $item->getIndexQueueUid()))
@@ -1015,7 +1015,7 @@ class QueueItemRepository extends AbstractRepository
     public function updateChangedTimeByItem(Item $item, int $changedTime = 0): int
     {
         $queryBuilder = $this->getQueryBuilder();
-        return (int)$queryBuilder
+        return $queryBuilder
             ->update($this->table)
             ->set('changed', $changedTime)
             ->where($queryBuilder->expr()->eq('uid', $item->getIndexQueueUid()))
@@ -1116,7 +1116,7 @@ class QueueItemRepository extends AbstractRepository
     public function updateHasIndexingPropertiesFlagByItemUid(int $itemUid, bool $hasIndexingPropertiesFlag): int
     {
         $queryBuilder = $this->getQueryBuilder();
-        return (int)$queryBuilder
+        return $queryBuilder
             ->update($this->table)
             ->where(
                 /** @scrutinizer ignore-type */

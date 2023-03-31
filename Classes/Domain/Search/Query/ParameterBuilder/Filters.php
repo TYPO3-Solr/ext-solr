@@ -25,9 +25,6 @@ use function str_starts_with;
  */
 class Filters
 {
-    /**
-     * @var array
-     */
     protected array $filters = [];
 
     /**
@@ -35,15 +32,12 @@ class Filters
      *
      * @param string $filterFieldName The field name the filter should be removed for
      */
-    public function removeByFieldName(string $filterFieldName)
+    public function removeByFieldName(string $filterFieldName): void
     {
         $this->removeByPrefix($filterFieldName . ':');
     }
 
-    /**
-     * @param string $filterFieldName
-     */
-    public function removeByPrefix(string $filterFieldName)
+    public function removeByPrefix(string $filterFieldName): void
     {
         foreach ($this->filters as $key => $filterString) {
             if (str_starts_with($filterString, $filterFieldName)) {
@@ -57,16 +51,12 @@ class Filters
      *
      * @param string $name name of the filter
      */
-    public function removeByName(string $name)
+    public function removeByName(string $name): void
     {
         unset($this->filters[$name]);
     }
 
-    /**
-     * @param string $filterString
-     * @param string $name
-     */
-    public function add(string $filterString, string $name = '')
+    public function add(string $filterString, string $name = ''): void
     {
         if ($name !== '') {
             $this->filters[$name] = $filterString;
@@ -77,9 +67,6 @@ class Filters
 
     /**
      * Adds multiple filters to the filter collection.
-     *
-     * @param array $filterArray
-     * @return Filters
      */
     public function addMultiple(array $filterArray): Filters
     {
@@ -92,10 +79,6 @@ class Filters
         return $this;
     }
 
-    /**
-     * @param string $name
-     * @return bool
-     */
     public function hasWithName(string $name): bool
     {
         return array_key_exists($name, $this->filters);
@@ -108,7 +91,7 @@ class Filters
      *
      * @param string $filterString The filter to remove, in the form of field:value
      */
-    public function removeByValue(string $filterString)
+    public function removeByValue(string $filterString): void
     {
         $key = array_search($filterString, $this->filters);
         if ($key === false) {
@@ -129,20 +112,15 @@ class Filters
     }
 
     /**
-     * @param TypoScriptConfiguration $solrConfiguration
-     * @return Filters
      * @todo: Check why $solrConfiguration isn't used.
      */
     public static function fromTypoScriptConfiguration(TypoScriptConfiguration $solrConfiguration): Filters
     {
-        return new Filters();
+        return new self();
     }
 
-    /**
-     * @return Filters
-     */
     public static function getEmpty(): Filters
     {
-        return new Filters();
+        return new self();
     }
 }
