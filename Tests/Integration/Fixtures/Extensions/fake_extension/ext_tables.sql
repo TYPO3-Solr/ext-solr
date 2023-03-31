@@ -1,4 +1,3 @@
-DROP TABLE IF EXISTS tx_fakeextension_domain_model_foo;
 CREATE TABLE tx_fakeextension_domain_model_foo (
 	uid int(11) NOT NULL auto_increment,
 	pid int(11) DEFAULT '0' NOT NULL,
@@ -33,7 +32,6 @@ CREATE TABLE tx_fakeextension_domain_model_foo (
 	PRIMARY KEY (uid)
 );
 
-DROP TABLE IF EXISTS tx_fakeextension_domain_model_bar;
 CREATE TABLE tx_fakeextension_domain_model_bar (
 	uid int(11) NOT NULL auto_increment,
 	pid int(11) DEFAULT '0' NOT NULL,
@@ -68,7 +66,6 @@ CREATE TABLE tx_fakeextension_domain_model_bar (
 	PRIMARY KEY (uid)
 );
 
-DROP TABLE IF EXISTS tx_fakeextension_foo_bar_mm;
 CREATE TABLE tx_fakeextension_foo_bar_mm (
 	uid_local int(11) unsigned DEFAULT '0' NOT NULL,
 	uid_foreign int(11) unsigned DEFAULT '0' NOT NULL,

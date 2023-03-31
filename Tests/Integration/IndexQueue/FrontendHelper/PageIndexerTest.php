@@ -16,18 +16,16 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\IndexQueue\FrontendHelper;
 
 use ApacheSolrForTypo3\Solr\AdditionalFieldsIndexer;
-use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageIndexer;
+use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
-use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerResponse;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
+use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
-use TYPO3\CMS\Core\Error\Http\InternalServerErrorException;
-use TYPO3\CMS\Core\Error\Http\ServiceUnavailableException;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
-use TYPO3\CMS\Core\TimeTracker\TimeTracker;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
-use TYPO3\CMS\Frontend\Event\AfterCacheableContentIsGeneratedEvent;
+use TYPO3\CMS\Frontend\Page\CacheHashCalculator;
+use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 
 /**
  * Testcase to check if we can index page documents using the PageIndexer
@@ -37,6 +35,11 @@ use TYPO3\CMS\Frontend\Event\AfterCacheableContentIsGeneratedEvent;
  */
 class PageIndexerTest extends IntegrationTest
 {
+    protected array $testExtensionsToLoad = [
+        'typo3conf/ext/solr',
+        '../vendor/apache-solr-for-typo3/solr/Tests/Integration/Fixtures/Extensions/fake_extension3',
+    ];
+
     /**
      * @inheritdoc
      * @todo: Remove unnecessary fixtures and remove that property as intended.
@@ -112,17 +115,10 @@ class PageIndexerTest extends IntegrationTest
         $this->cleanUpSolrServerAndAssertEmpty('core_en');
         $this->cleanUpSolrServerAndAssertEmpty('core_de');
 
-        // create fake extension database table and TCA
-        $this->importExtTablesDefinition('fake_extension3_table.sql');
-
-        $additionalPageTca = include($this->getFixturePathByName('fake_extension3_pages_tca.php'));
-        $GLOBALS['TCA']['pages']['columns']['page_relations'] = $additionalPageTca['columns']['page_relations'];
-        $GLOBALS['TCA']['pages']['columns']['relations'] = $additionalPageTca['columns']['relations'];
-
         $this->importDataSetFromFixture('can_index_page_with_relation_to_page.xml');
 
-        $this->executePageIndexer(1, '', 0);
-        $this->executePageIndexer(1, '', 1);
+        $this->executePageIndexer(1, '/en/');
+        $this->executePageIndexer(1, '/de/');
 
         // do we have the record in the index with the value from the mm relation?
         $this->waitToBeVisibleInSolr('core_en');
@@ -130,11 +126,11 @@ class PageIndexerTest extends IntegrationTest
 
         $solrContentEn = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
         self::assertStringContainsString('"title":"Page"', $solrContentEn, 'Solr did not contain the english page');
-        self::assertStringNotContainsString('relatedPageTitles_stringM', $solrContentEn, 'There is no relation for the original, so ther should not be a related field');
+        self::assertStringNotContainsString('relatedPageTitles_stringM', $solrContentEn, 'There is no relation for the original, so there should not be a related field');
 
         $solrContentDe = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_de/select?q=*:*');
         self::assertStringContainsString('"title":"Seite"', $solrContentDe, 'Solr did not contain the translated page');
-        self::assertStringContainsString('"relatedPageTitles_stringM":["Verwante Seite"]', $solrContentDe, 'Did not get content of releated field');
+        self::assertStringContainsString('"relatedPageTitles_stringM":["Verwandte Seite"]', $solrContentDe, 'Did not get content of related field');
 
         $this->cleanUpSolrServerAndAssertEmpty('core_en');
         $this->cleanUpSolrServerAndAssertEmpty('core_de');
@@ -212,8 +208,6 @@ class PageIndexerTest extends IntegrationTest
      */
     public function canExecutePostProcessor()
     {
-        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['preAddModifyDocuments']['TestPageIndexerDocumentsModifier'] = TestPageIndexerDocumentsModifier::class;
-
         $this->importDataSetFromFixture('can_index_into_solr.xml');
         $this->executePageIndexer();
 
@@ -230,10 +224,8 @@ class PageIndexerTest extends IntegrationTest
      */
     public function canExecuteAdditionalPageIndexer()
     {
-        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageAddDocuments']['TestAdditionalPageIndexer'] = TestAdditionalPageIndexer::class;
-
         $this->importDataSetFromFixture('can_index_into_solr.xml');
-        $this->executePageIndexer();
+        $this->executePageIndexer(1, '/en/', ['additionalTestPageIndexer' => true]);
 
         // we wait to make sure the document will be available in solr
         $this->waitToBeVisibleInSolr();
@@ -267,7 +259,7 @@ class PageIndexerTest extends IntegrationTest
 
         $this->cleanUpSolrServerAndAssertEmpty();
         $this->importDataSetFromFixture('can_index_mounted_page.xml');
-        $this->executePageIndexer(24, '24-14');
+        $this->executePageIndexer(24, '/en/', ['MP' => '24-14']);
 
         // we wait to make sure the document will be available in solr
         $this->waitToBeVisibleInSolr();
@@ -297,12 +289,10 @@ class PageIndexerTest extends IntegrationTest
      */
     public function canIndexMultipleMountedPage()
     {
-        $GLOBALS['TYPO3_CONF_VARS']['FE']['enable_mount_pids'] = 1;
-
         $this->cleanUpSolrServerAndAssertEmpty();
         $this->importDataSetFromFixture('can_index_multiple_mounted_page.xml');
-        $this->executePageIndexer(44, '44-14');
-        $this->executePageIndexer(44, '44-24');
+        $this->executePageIndexer(44, '/en/', ['MP' => '44-14']);
+        $this->executePageIndexer(44, '/en/', ['MP' => '44-24']);
 
         // we wait to make sure the document will be available in solr
         $this->waitToBeVisibleInSolr();
@@ -358,39 +348,35 @@ class PageIndexerTest extends IntegrationTest
     }
 
     /**
-     * @param int $pageId
-     * @param string $MP
-     * @param int $languageId
-     * @throws InternalServerErrorException
-     * @throws ServiceUnavailableException
-     * @throws SiteNotFoundException
+     * Executes a Frontend request within the same PHP process (possible since TYPO3 v11).
      */
-    protected function executePageIndexer(int $pageId = 1, string $MP = '', int $languageId = 0)
+    protected function executePageIndexer(int $pageId = 1, string $siteLanguageBase = '/en/', $additionalQueryParams = [], string $domain = 'http://testone.site'): ResponseInterface
     {
-        $GLOBALS['TT'] = $this->createMock(TimeTracker::class);
+        $additionalQueryParams['id'] = $pageId;
+        $additionalQueryParams = array_filter($additionalQueryParams);
+        $queryString = http_build_query($additionalQueryParams, '', '&');
+        $cacheHash = GeneralUtility::makeInstance(CacheHashCalculator::class)->generateForParameters($queryString);
+        if ($cacheHash) {
+            $queryString .= '&cHash=' . $cacheHash;
+        }
+        $url = rtrim($domain, '/') . '/' . ltrim($siteLanguageBase, '/') . '?' . $queryString;
+        $request = new InternalRequest($url);
 
-        unset($GLOBALS['TSFE']);
+        // Now add the headers for item 4711 to the request
+        $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_solr_indexqueue_item');
+        $item = $connection->select(['*'], 'tx_solr_indexqueue_item', ['uid' => 4711])->fetchAssociative();
+        $indexerRequest = GeneralUtility::makeInstance(PageIndexerRequest::class);
+        $indexerRequest->setIndexQueueItem(new Item($item));
+        $indexerRequest->setParameter('item', 4711);
+        $indexerRequest->addAction('indexPage');
+        $headers = $indexerRequest->getHeaders();
 
-        $TSFE = $this->getConfiguredTSFE($pageId, $MP, $languageId);
-        $TSFE->cObj = GeneralUtility::makeInstance(ContentObjectRenderer::class);
-        $GLOBALS['TSFE'] = $TSFE;
-
-        /* @var PageIndexerRequest $request */
-        $request = GeneralUtility::makeInstance(PageIndexerRequest::class);
-        $request->setParameter('item', 4711);
-
-        /* @var PageIndexerResponse $request */
-        $response = GeneralUtility::makeInstance(PageIndexerResponse::class);
-
-        /* @var PageIndexer $pageIndexer */
-        $pageIndexer = GeneralUtility::makeInstance(PageIndexer::class);
-        $pageIndexer->activate();
-        $pageIndexer->processRequest($request, $response);
-        $pageIndexer->__invoke(new AfterCacheableContentIsGeneratedEvent(
-            $GLOBALS['TYPO3_REQUEST'],
-            $TSFE,
-            '',
-            false
-        ));
+        foreach ($headers as $header) {
+            [$headerName, $headerValue] = GeneralUtility::trimExplode(':', $header, true, 2);
+            $request = $request->withAddedHeader($headerName, $headerValue);
+        }
+        $response = $this->executeFrontendSubRequest($request);
+        $response->getBody()->rewind();
+        return $response;
     }
 }
