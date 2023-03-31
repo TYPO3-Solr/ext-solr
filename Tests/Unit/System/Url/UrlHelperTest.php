@@ -25,10 +25,7 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
  */
 class UrlHelperTest extends SetUpUnitTestCase
 {
-    /**
-     * @return array
-     */
-    public function removeQueryParameter()
+    public function withoutQueryParameter(): array
     {
         return [
             'cHash at the end' => [
@@ -59,14 +56,14 @@ class UrlHelperTest extends SetUpUnitTestCase
         ];
     }
     /**
-     * @dataProvider removeQueryParameter
+     * @dataProvider withoutQueryParameter
      * @test
      */
     public function testCanRemoveQueryParameter($input, $queryParameterToRemove, $expectedUrl)
     {
         $urlHelper = new UrlHelper($input);
-        $urlHelper->removeQueryParameter($queryParameterToRemove);
-        self::assertSame($expectedUrl, $urlHelper->getUrl(), 'Can not remove query parameter as expected');
+        $urlHelper = $urlHelper->withoutQueryParameter($queryParameterToRemove);
+        self::assertSame($expectedUrl, (string)$urlHelper, 'Can not remove query parameter as expected');
     }
 
     /**
@@ -91,47 +88,7 @@ class UrlHelperTest extends SetUpUnitTestCase
     public function testGetUrl($inputUrl, $expectedOutputUrl)
     {
         $urlHelper = new UrlHelper($inputUrl);
-        self::assertSame($expectedOutputUrl, $urlHelper->getUrl(), 'Can not get expected output url');
-    }
-
-    /**
-     * @test
-     */
-    public function testSetHost()
-    {
-        $urlHelper = new UrlHelper('http://www.google.de/test/index.php?foo=bar');
-        $urlHelper->setHost('www.test.de');
-        self::assertSame('http://www.test.de/test/index.php?foo=bar', $urlHelper->getUrl());
-    }
-
-    /**
-     * @test
-     */
-    public function testSetHostWithPort()
-    {
-        $urlHelper = new UrlHelper('http://www.google.de/test/index.php?foo=bar');
-        $urlHelper->setHost('www.test.de:8080');
-        self::assertSame('http://www.test.de:8080/test/index.php?foo=bar', $urlHelper->getUrl());
-    }
-
-    /**
-     * @test
-     */
-    public function testSetScheme()
-    {
-        $urlHelper = new UrlHelper('http://www.google.de/test/index.php?foo=bar');
-        $urlHelper->setScheme('https');
-        self::assertSame('https://www.google.de/test/index.php?foo=bar', $urlHelper->getUrl());
-    }
-
-    /**
-     * @test
-     */
-    public function testSetPath()
-    {
-        $urlHelper = new UrlHelper('http://www.google.de/one/two?foo=bar');
-        $urlHelper->setPath('/one/two');
-        self::assertSame('http://www.google.de/one/two?foo=bar', $urlHelper->getUrl());
+        self::assertSame($expectedOutputUrl, (string)$urlHelper, 'Can not get expected output url');
     }
 
     public function unmodifiedUrl()
@@ -149,7 +106,7 @@ class UrlHelperTest extends SetUpUnitTestCase
     public function testGetUnmodifiedUrl($uri)
     {
         $urlHelper = new UrlHelper($uri);
-        self::assertSame($uri, $urlHelper->getUrl(), 'Could not get unmodified url');
+        self::assertSame($uri, (string)$urlHelper, 'Could not get unmodified url');
     }
 
     /**

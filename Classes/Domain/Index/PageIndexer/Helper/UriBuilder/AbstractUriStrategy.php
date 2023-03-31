@@ -44,22 +44,22 @@ abstract class AbstractUriStrategy
     {
         // check whether we should use ssl / https
         if (!empty($overrideConfiguration['scheme'])) {
-            $urlHelper->setScheme($overrideConfiguration['scheme']);
+            $urlHelper = $urlHelper->withScheme($overrideConfiguration['scheme']);
         }
 
         // overwriting the host
         if (!empty($overrideConfiguration['host'])) {
-            $urlHelper->setHost($overrideConfiguration['host']);
+            $urlHelper = $urlHelper->withHost($overrideConfiguration['host']);
         }
 
         // overwriting the port
         if (!empty($overrideConfiguration['port'])) {
-            $urlHelper->setPort((int)$overrideConfiguration['port']);
+            $urlHelper = $urlHelper->withPort((int)$overrideConfiguration['port']);
         }
 
         // setting a path if TYPO3 is installed in a subdirectory
         if (!empty($overrideConfiguration['path'])) {
-            $urlHelper->setPath($overrideConfiguration['path']);
+            $urlHelper = $urlHelper->withPath($overrideConfiguration['path']);
         }
 
         return $urlHelper;
@@ -75,7 +75,7 @@ abstract class AbstractUriStrategy
         $urlHelper = GeneralUtility::makeInstance(UrlHelper::class, $pageIndexUri);
         $overrideConfiguration = $options['frontendDataHelper.'] ?? [];
         $urlHelper = $this->applyTypoScriptOverridesOnIndexingUrl($urlHelper, $overrideConfiguration);
-        $dataUrl = $urlHelper->getUrl();
+        $dataUrl = (string)$urlHelper;
 
         if (!GeneralUtility::isValidUrl($dataUrl)) {
             $this->logger->log(

@@ -218,8 +218,6 @@ class Typo3PageIndexer
         $pageDocument = $this->getPageDocument();
         $pageDocument = $this->substitutePageDocument($pageDocument);
 
-        $this->applyIndexPagePostProcessors($pageDocument);
-
         self::$pageSolrDocument = $pageDocument;
         $documents[] = $pageDocument;
         $documents = $this->getAdditionalDocuments($pageDocument, $documents);
@@ -234,32 +232,6 @@ class Typo3PageIndexer
         $this->documentsSentToSolr = $documents;
 
         return $pageIndexed;
-    }
-
-    /**
-     * Applies the configured post processors (indexPagePostProcessPageDocument)
-     *
-     * @deprecated
-     */
-    protected function applyIndexPagePostProcessors(Document $pageDocument): void
-    {
-        if (!is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPagePostProcessPageDocument'] ?? null)) {
-            return;
-        }
-
-        trigger_error(
-            "The hook indexPagePostProcessPageDocument has been superseded by \$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['preAddModifyDocuments']",
-            E_USER_DEPRECATED
-        );
-
-        foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPagePostProcessPageDocument'] as $classReference) {
-            $postProcessor = GeneralUtility::makeInstance($classReference);
-            if (!$postProcessor instanceof PageDocumentPostProcessor) {
-                throw new UnexpectedValueException(get_class($pageDocument) . ' must implement interface ' . PageDocumentPostProcessor::class, 1397739154);
-            }
-
-            $postProcessor->postProcessPageDocument($pageDocument, $this->page);
-        }
     }
 
     /**
@@ -279,9 +251,6 @@ class Typo3PageIndexer
 
         return $document;
     }
-
-    // Logging
-    // TODO replace by a central logger
 
     /**
      * Gets the mount point parameter that is used in the Frontend controller.
