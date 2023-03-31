@@ -65,7 +65,7 @@
         <is_siteroot>1</is_siteroot>
         <doktype>1</doktype>
         <title>Page</title>
-		<slug>/</slug>
+        <slug>/</slug>
     </pages>
 
     <pages>
@@ -73,7 +73,7 @@
         <pid>1</pid>
         <doktype>1</doktype>
         <title>Sub page</title>
-		<slug>/sub-page</slug>
+        <slug>/sub-page</slug>
     </pages>
 
     <sys_category_record_mm>
