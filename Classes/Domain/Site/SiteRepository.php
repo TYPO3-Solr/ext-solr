@@ -257,8 +257,6 @@ class SiteRepository
      *
      * @param array $rootPageRecord
      *
-     * @return Site
-     *
      * @throws DBALDriverException
      */
     protected function buildTypo3ManagedSite(array $rootPageRecord): ?Site

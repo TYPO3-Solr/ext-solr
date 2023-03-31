@@ -183,18 +183,16 @@ class UserGroupDetector extends AbstractFrontendHelper implements
             if (empty($frontendGroups)) {
                 // default = public access
                 $frontendGroups = 0;
-            } else {
-                if ($this->request->getParameter('loggingEnabled')) {
-                    $this->logger->log(
-                        SolrLogManager::INFO,
-                        'Access restriction found',
-                        [
-                            'groups' => $frontendGroups,
-                            'record' => $record,
-                            'record type' => $table,
-                        ]
-                    );
-                }
+            } elseif ($this->request->getParameter('loggingEnabled')) {
+                $this->logger->log(
+                    SolrLogManager::INFO,
+                    'Access restriction found',
+                    [
+                        'groups' => $frontendGroups,
+                        'record' => $record,
+                        'record type' => $table,
+                    ]
+                );
             }
 
             $this->frontendGroups[] = $frontendGroups;

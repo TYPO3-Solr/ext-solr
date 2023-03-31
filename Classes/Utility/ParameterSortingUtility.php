@@ -34,13 +34,10 @@ class ParameterSortingUtility
      */
     public static function sortByType(array &$parameters, string $type = 'index'): array
     {
-        switch ($type) {
-            case 'assoc':
-                return self::sortByIndex($parameters);
-            case 'index':
-            default:
-                return self::sortByValue($parameters);
-        }
+        return match ($type) {
+            'assoc' => self::sortByIndex($parameters),
+            default => self::sortByValue($parameters),
+        };
     }
 
     /**

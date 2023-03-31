@@ -149,7 +149,7 @@ class SiteHandlingStatus extends AbstractSolrStatus
             /** @scrutinizer ignore-type */
             $renderedReport,
             /** @scrutinizer ignore-type */
-            $globalPassedStateForThisSite == true ? ContextualFeedbackSeverity::OK : ContextualFeedbackSeverity::ERROR
+            $globalPassedStateForThisSite ? ContextualFeedbackSeverity::OK : ContextualFeedbackSeverity::ERROR
         );
     }
 

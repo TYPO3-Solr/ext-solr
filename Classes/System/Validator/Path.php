@@ -32,10 +32,6 @@ class Path
     {
         $path = trim($path);
 
-        if ((!empty($path)) && (preg_match('/^[^*?"<>|:#]*$/', $path))) {
-            return true;
-        }
-
-        return false;
+        return (!empty($path)) && (preg_match('/^[^*?"<>|:#]*$/', $path));
     }
 }

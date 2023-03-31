@@ -92,10 +92,8 @@ abstract class AbstractIndexer
             if (is_array($fieldValue)) {
                 // multi value
                 $document->setField($solrFieldName, $fieldValue);
-            } else {
-                if ($fieldValue !== '' && $fieldValue !== null) {
-                    $document->setField($solrFieldName, $fieldValue);
-                }
+            } elseif ($fieldValue !== '' && $fieldValue !== null) {
+                $document->setField($solrFieldName, $fieldValue);
             }
         }
 
@@ -162,7 +160,7 @@ abstract class AbstractIndexer
                 $fieldValue = unserialize($fieldValue);
             }
         } elseif (
-            substr($indexingConfiguration[$solrFieldName], 0, 1) === '<'
+            str_starts_with($indexingConfiguration[$solrFieldName], '<')
         ) {
             $referencedTsPath = trim(substr(
                 $indexingConfiguration[$solrFieldName],

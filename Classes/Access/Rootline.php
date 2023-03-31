@@ -97,7 +97,7 @@ class Rootline
      *
      * @param RootlineElement $rootlineElement Element to add.
      */
-    public function push(RootlineElement $rootlineElement)
+    public function push(RootlineElement $rootlineElement): void
     {
         $lastElementIndex = max(0, (count($this->rootlineElements) - 1));
 

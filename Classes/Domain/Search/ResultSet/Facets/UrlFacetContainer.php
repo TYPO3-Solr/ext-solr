@@ -205,7 +205,7 @@ class UrlFacetContainer implements \Countable
      */
     public function getActiveFacets(): array
     {
-        $path = $this->prefixWithNamespace('filter');
+        $path = $this->prefixWithNamespace();
         $pathValue = $this->argumentsAccessor->get($path, []);
 
         if (!is_array($pathValue)) {
@@ -242,7 +242,7 @@ class UrlFacetContainer implements \Countable
      */
     public function setActiveFacets(array $activeFacets = []): UrlFacetContainer
     {
-        $path = $this->prefixWithNamespace('filter');
+        $path = $this->prefixWithNamespace();
         $this->argumentsAccessor->set($path, $activeFacets);
 
         return $this;
@@ -298,10 +298,8 @@ class UrlFacetContainer implements \Countable
                     break;
                 }
             }
-        } else {
-            if (isset($facetValues[$facetValueToLookFor])) {
-                unset($facetValues[$facetValueToLookFor]);
-            }
+        } elseif (isset($facetValues[$facetValueToLookFor])) {
+            unset($facetValues[$facetValueToLookFor]);
         }
         $this->changed = true;
         $this->setActiveFacets($facetValues);
@@ -342,7 +340,7 @@ class UrlFacetContainer implements \Countable
      */
     public function removeAllFacets(): UrlFacetContainer
     {
-        $path = $this->prefixWithNamespace('filter');
+        $path = $this->prefixWithNamespace();
         $this->argumentsAccessor->reset($path);
         $this->changed = true;
         return $this;

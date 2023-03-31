@@ -155,7 +155,7 @@ class SolrFacetMaskAndCombineEnhancer extends AbstractEnhancer implements Routin
                 $parameterValueNew = $parameterValue;
 
                 // Placeholder for cached URIs (type is the last part of the parameter value)
-                if (substr($parameterValue, 0, 3) === '###') {
+                if (str_starts_with($parameterValue, '###')) {
                     $facetFieldElements = explode(':', $parameterValue);
                     $facetField = array_pop($facetFieldElements);
                     $facetField = substr($facetField, 0, strlen($facetField) - 3);

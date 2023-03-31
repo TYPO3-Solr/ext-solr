@@ -24,23 +24,14 @@ use RuntimeException;
  */
 class SolrCommunicationException extends RuntimeException
 {
-    /**
-     * @var ResponseAdapter|null
-     */
     protected ?ResponseAdapter $solrResponse = null;
 
-    /**
-     * @return ResponseAdapter
-     */
     public function getSolrResponse(): ?ResponseAdapter
     {
         return $this->solrResponse;
     }
 
-    /**
-     * @param ResponseAdapter $solrResponse
-     */
-    public function setSolrResponse(ResponseAdapter $solrResponse)
+    public function setSolrResponse(ResponseAdapter $solrResponse): void
     {
         $this->solrResponse = $solrResponse;
     }

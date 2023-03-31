@@ -40,7 +40,7 @@ class RemoveFacetItemViewHelper extends AbstractValueViewHelper
         $itemValue = self::getValueFromArguments($arguments);
         $resultSet = self::getResultSetFromArguments($arguments);
         $previousRequest = $resultSet->getUsedSearchRequest();
-        $uri = self::getSearchUriBuilder($renderingContext)->getRemoveFacetValueUri($previousRequest, $name, $itemValue);
-        return $uri;
+
+        return self::getSearchUriBuilder($renderingContext)->getRemoveFacetValueUri($previousRequest, $name, $itemValue);
     }
 }

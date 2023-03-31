@@ -57,13 +57,11 @@ class ScoreCalculationService
             $totalScore += $highScore->getScore();
         }
 
-        $content = '<table class="table">'
+        return '<table class="table">'
             . '<thead><tr><th>Score</th><th>Field</th><th>Boost</th></tr></thead>'
             . '<tbody><tr>' . implode('</tr><tr>', $scores) . '</tbody></tr>'
             . '<tfoot><tr><td colspan="3">= ' . $totalScore . ' (Inaccurate analysis! Not all parts of the score have been taken into account.)</td></tr></tfoot>'
             . '</table>';
-
-        return $content;
     }
 
     /**

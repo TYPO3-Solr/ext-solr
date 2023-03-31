@@ -208,7 +208,7 @@ class SolrAdminService extends AbstractSolrService
      * Gets the name of the solrconfig.xml file installed and in use on the Solr
      * server.
      *
-     * @return string Name of the active solrconfig.xml
+     * @return string|null Name of the active solrconfig.xml
      */
     public function getSolrconfigName(): ?string
     {

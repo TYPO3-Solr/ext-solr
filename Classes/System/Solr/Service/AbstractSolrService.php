@@ -115,9 +115,6 @@ abstract class AbstractSolrService
         return  $endpoint->getScheme() . '://' . $endpoint->getHost() . ':' . $endpoint->getPort() . $endpoint->getPath() . '/' . $endpoint->getCore() . '/';
     }
 
-    /**
-     * @return Endpoint|null
-     */
     public function getPrimaryEndpoint(): Endpoint
     {
         return $this->client->getEndpoint();
@@ -281,7 +278,7 @@ abstract class AbstractSolrService
             $logData['content'] = $contentSend;
         }
 
-        if (!empty($e)) {
+        if ($e !== null) {
             $logData['exception'] = $e->__toString();
             return $logData;
         }

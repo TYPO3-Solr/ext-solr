@@ -174,7 +174,7 @@ class TypoScriptConfiguration
      */
     public function getObjectByPath(string $path)
     {
-        if (substr($path, -1) !== '.') {
+        if (!str_ends_with($path, '.')) {
             $path = rtrim($path, '.');
             $path = substr($path, 0, strrpos($path, '.') + 1);
         }
@@ -583,14 +583,14 @@ class TypoScriptConfiguration
     {
         $tablesToIndex = [];
         $path = 'plugin.tx_solr.index.queue.';
-        $indexQueueConfiguration = $this->getObjectByPathOrDefault($path, []);
+        $indexQueueConfiguration = $this->getObjectByPathOrDefault($path);
         foreach ($indexQueueConfiguration as $configurationName => $indexingEnabled) {
-            if (substr($configurationName, -1) != '.' && $indexingEnabled) {
+            if (!str_ends_with($configurationName, '.') && $indexingEnabled) {
                 $tablesToIndex[] = $configurationName;
             }
         }
 
-        return count($tablesToIndex) == 0 ? $defaultIfEmpty : $tablesToIndex;
+        return count($tablesToIndex) === 0 ? $defaultIfEmpty : $tablesToIndex;
     }
 
     /**
@@ -669,11 +669,11 @@ class TypoScriptConfiguration
     public function getIndexQueueConfigurationNamesByTableName(string $tableName, array $defaultIfEmpty = []): array
     {
         $path = 'plugin.tx_solr.index.queue.';
-        $configuration = $this->getObjectByPathOrDefault($path, []);
+        $configuration = $this->getObjectByPathOrDefault($path);
         $possibleConfigurations = [];
 
         foreach ($configuration as $configurationName => $indexingEnabled) {
-            $isObject = substr($configurationName, -1) === '.';
+            $isObject = str_ends_with($configurationName, '.');
             if ($isObject || !$indexingEnabled) {
                 continue;
             }
@@ -2111,7 +2111,7 @@ class TypoScriptConfiguration
      */
     public function getAvailableTemplatesByFileKey(string $fileKey): array
     {
-        return $this->getObjectByPathOrDefault('plugin.tx_solr.view.templateFiles.' . $fileKey . '.availableTemplates.', []);
+        return $this->getObjectByPathOrDefault('plugin.tx_solr.view.templateFiles.' . $fileKey . '.availableTemplates.');
     }
 
     /**
@@ -2258,7 +2258,7 @@ class TypoScriptConfiguration
      */
     public function getSearchGroupingHighestGroupResultsLimit(?int $defaultIfEmpty = 1): int
     {
-        $groupingConfiguration = $this->getObjectByPathOrDefault('plugin.tx_solr.search.grouping.', []);
+        $groupingConfiguration = $this->getObjectByPathOrDefault('plugin.tx_solr.search.grouping.');
         $highestLimit = $defaultIfEmpty;
         if (!empty($groupingConfiguration['numberOfResultsPerGroup'])) {
             $highestLimit = $groupingConfiguration['numberOfResultsPerGroup'];
@@ -2284,10 +2284,6 @@ class TypoScriptConfiguration
      *
      * plugin.tx_solr.search.grouping.groups.<groupName>.numberOfResultsPerGroup if it is set otherwise
      * plugin.tx_solr.search.grouping.numberOfResultsPerGroup
-     *
-     * @param string $groupName
-     * @param ?int $defaultIfEmpty
-     * @return int
      */
     public function getSearchGroupingResultLimit(string $groupName, ?int $defaultIfEmpty = 1): ?int
     {

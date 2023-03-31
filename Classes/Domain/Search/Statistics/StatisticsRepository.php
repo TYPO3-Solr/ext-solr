@@ -37,9 +37,7 @@ class StatisticsRepository extends AbstractRepository
     /**
      * Fetches most popular search keys words from the table tx_solr_statistics
      *
-     * @param int $rootPageId
      * @param int $days number of days of history to query
-     * @param int $limit
      * @return mixed
      * @throws DBALDriverException
      * @throws DBALException|\Doctrine\DBAL\DBALException
@@ -47,7 +45,7 @@ class StatisticsRepository extends AbstractRepository
     public function getSearchStatistics(int $rootPageId, int $days = 30, int $limit = 10)
     {
         $now = time();
-        $timeStart = (int)($now - 86400 * $days); // 86400 seconds/day
+        $timeStart = $now - 86400 * $days; // 86400 seconds/day
         return $this->getPreparedQueryBuilderForSearchStatisticsAndTopKeywords($rootPageId, $timeStart, $limit)
             ->executeQuery()
             ->fetchAllAssociative();

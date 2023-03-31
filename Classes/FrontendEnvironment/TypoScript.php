@@ -125,7 +125,7 @@ class TypoScript implements SingletonInterface
     {
         // 'a.b.c' --> ['a', 'b.c']
         $parts = explode('.', $theKey, 2);
-        if ((string)$parts[0] !== '' && is_array($theSetup[$parts[0] . '.'])) {
+        if ($parts[0] !== '' && is_array($theSetup[$parts[0] . '.'])) {
             if (trim($parts[1] ?? '') !== '') {
                 // Current path segment is a sub array, check it recursively by applying the rest of the key
                 return $this->ext_getSetup($theSetup[$parts[0] . '.'], trim($parts[1] ?? ''));

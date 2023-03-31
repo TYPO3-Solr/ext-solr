@@ -37,10 +37,8 @@ class SynonymParser
             if (is_array($decodedResponse->{$baseWord})) {
                 $synonyms = $decodedResponse->{$baseWord};
             }
-        } else {
-            if (isset($decodedResponse->synonymMappings->managedMap)) {
-                $synonyms = (array)$decodedResponse->synonymMappings->managedMap;
-            }
+        } elseif (isset($decodedResponse->synonymMappings->managedMap)) {
+            $synonyms = (array)$decodedResponse->synonymMappings->managedMap;
         }
 
         return $synonyms;
