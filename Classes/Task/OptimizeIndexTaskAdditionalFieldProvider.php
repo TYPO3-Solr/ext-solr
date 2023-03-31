@@ -255,9 +255,6 @@ class OptimizeIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldPr
         setCoresToOptimizeIndex($cores);
     }
 
-    /**
-     * @return PageRenderer
-     */
     protected function getPageRenderer(): ?PageRenderer
     {
         if (!isset($this->pageRenderer)) {
@@ -268,9 +265,6 @@ class OptimizeIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldPr
 
     /**
      * Check that a task is an instance of ReIndexTask
-     *
-     * @param ?AbstractTask $task
-     * @return bool
      */
     protected function isTaskInstanceofOptimizeIndexTask(?AbstractTask $task): bool
     {
@@ -284,9 +278,6 @@ class OptimizeIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldPr
         return true;
     }
 
-    /**
-     * @return LanguageService
-     */
     protected function getLanguageService(): LanguageService
     {
         return $GLOBALS['LANG'];

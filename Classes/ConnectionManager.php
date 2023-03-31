@@ -103,8 +103,8 @@ class ConnectionManager implements SingletonInterface
      * Gets a Solr connection for a page ID.
      *
      * @param int $pageId A page ID.
-     * @param ?int $language The language ID to get the connection for as the path may differ. Optional, defaults to 0.
-     * @param ?string $mount Comma list of MountPoint parameters
+     * @param int $language The language ID to get the connection for as the path may differ. Optional, defaults to 0.
+     * @param string $mount Comma list of MountPoint parameters
      * @return SolrConnection A solr connection.
      * @throws DBALDriverException
      * @throws NoSolrConnectionFoundException

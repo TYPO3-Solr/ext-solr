@@ -66,7 +66,7 @@ class IndexingConfigurationSelectorField
      *
      * @param string $formElementName Form element name
      */
-    public function setFormElementName(string $formElementName)
+    public function setFormElementName(string $formElementName): void
     {
         $this->formElementName = $formElementName;
     }

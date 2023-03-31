@@ -171,8 +171,6 @@ class Site implements SiteInterface
      * Note: There is no "fallback type" nor "fallbacks" for default language 0
      *       See "displayCond" on https://github.com/TYPO3/typo3/blob/1394a4cff5369df3f835dae254b3d4ada2f83c7b/typo3/sysext/backend/Configuration/SiteConfiguration/site_language.php#L403-L416
      *         or https://review.typo3.org/c/Packages/TYPO3.CMS/+/56505/ for more information.
-     *
-     * @return array|null
      */
     public function getFreeContentModeLanguages(): array
     {
@@ -201,11 +199,7 @@ class Site implements SiteInterface
      */
     public static function isRootPage(array $pageRecord): bool
     {
-        if (($pageRecord['is_siteroot'] ?? null) == 1) {
-            return true;
-        }
-
-        return false;
+        return ($pageRecord['is_siteroot'] ?? null) == 1;
     }
 
     /**

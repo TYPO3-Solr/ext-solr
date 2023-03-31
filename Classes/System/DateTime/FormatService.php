@@ -36,9 +36,8 @@ class FormatService
      * @param string $outputFormat The output format, when nothing is passed
      * $GLOBALS['TYPO3_CONF_VARS']['SYS']['ddmmyy'] will be used or Y-m-d when nothing is configured
      * @param DateTimeZone|null $timezone
-     * @return \DateTime|string
      */
-    public function format($input = '', $inputFormat = 'Y-m-d\TH:i:s\Z', $outputFormat = '', $timezone = null)
+    public function format($input = '', $inputFormat = 'Y-m-d\TH:i:s\Z', $outputFormat = '', $timezone = null): string
     {
         if ($outputFormat === '') {
             // when no value was passed we us the TYPO3 configured or fallback to Y-m-d

@@ -95,7 +95,7 @@ class DebugWriter
         $parameters = ['extKey' => 'solr', 'msg' => $message, 'level' => $level, 'data' => $data];
         $message = $parameters['msg'] ?? '';
         if (ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend()) {
-            DebugUtility::debug($parameters, $parameters['extKey'], 'DevLog ext:solr: ' . $message);
+            DebugUtility::debug($parameters, $parameters['extKey']);
         } else {
             echo $message . ':<br/>';
             DebuggerUtility::var_dump($parameters);

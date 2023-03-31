@@ -51,7 +51,7 @@ class SuggestQuery extends Query
         $solrConfiguration = $solrConfiguration ?? Util::getSolrConfiguration();
 
         $this->setQuery($keywords);
-        $this->configuration = $solrConfiguration->getObjectByPathOrDefault('plugin.tx_solr.suggest.', []);
+        $this->configuration = $solrConfiguration->getObjectByPathOrDefault('plugin.tx_solr.suggest.');
 
         if (!empty($this->configuration['treatMultipleTermsAsSingleTerm'])) {
             $this->prefix = $keywords;

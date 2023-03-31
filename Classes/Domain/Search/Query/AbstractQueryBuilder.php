@@ -45,28 +45,17 @@ abstract class AbstractQueryBuilder
      */
     protected ?SolariumQuery $queryToBuild;
 
-    /**
-     * @param SolariumQuery $query
-     * @return $this
-     */
     public function startFrom(SolariumQuery $query): AbstractQueryBuilder
     {
         $this->queryToBuild = $query;
         return $this;
     }
 
-    /**
-     * @return SolariumQuery|Query
-     */
     public function getQuery(): SolariumQuery
     {
         return $this->queryToBuild;
     }
 
-    /**
-     * @param bool $omitHeader
-     * @return $this
-     */
     public function useOmitHeader(bool $omitHeader = true): AbstractQueryBuilder
     {
         $this->queryToBuild->setOmitHeader($omitHeader);
@@ -76,9 +65,6 @@ abstract class AbstractQueryBuilder
 
     /**
      * Uses an array of filters and applies them to the query.
-     *
-     * @param array $filterArray
-     * @return $this
      */
     public function useFilterArray(array $filterArray): AbstractQueryBuilder
     {
@@ -91,9 +77,6 @@ abstract class AbstractQueryBuilder
 
     /**
      * Applies the queryString that is used to search
-     *
-     * @param string $queryString
-     * @return $this
      */
     public function useQueryString(string $queryString): AbstractQueryBuilder
     {
@@ -103,9 +86,6 @@ abstract class AbstractQueryBuilder
 
     /**
      * Applies the passed queryType to the query.
-     *
-     * @param string $queryType
-     * @return $this
      */
     public function useQueryType(string $queryType): AbstractQueryBuilder
     {
@@ -115,8 +95,6 @@ abstract class AbstractQueryBuilder
 
     /**
      * Remove the queryType (qt) from the query.
-     *
-     * @return $this
      */
     public function removeQueryType(): AbstractQueryBuilder
     {
@@ -126,8 +104,6 @@ abstract class AbstractQueryBuilder
 
     /**
      * Can be used to remove all sortings from the query.
-     *
-     * @return $this
      */
     public function removeAllSortings(): AbstractQueryBuilder
     {
@@ -137,9 +113,6 @@ abstract class AbstractQueryBuilder
 
     /**
      * Applies the passed sorting to the query.
-     *
-     * @param Sorting $sorting
-     * @return $this
      */
     public function useSorting(Sorting $sorting): AbstractQueryBuilder
     {
@@ -154,9 +127,6 @@ abstract class AbstractQueryBuilder
 
     /**
      * Applies the passed sorting to the query.
-     *
-     * @param Sortings $sortings
-     * @return $this
      */
     public function useSortings(Sortings $sortings): AbstractQueryBuilder
     {
@@ -167,30 +137,18 @@ abstract class AbstractQueryBuilder
         return $this;
     }
 
-    /**
-     * @param int $resultsPerPage
-     * @return $this
-     */
     public function useResultsPerPage(int $resultsPerPage): AbstractQueryBuilder
     {
         $this->queryToBuild->setRows($resultsPerPage);
         return $this;
     }
 
-    /**
-     * @param int $page
-     * @return $this
-     */
     public function usePage(int $page): AbstractQueryBuilder
     {
         $this->queryToBuild->setStart($page);
         return $this;
     }
 
-    /**
-     * @param Operator $operator
-     * @return $this
-     */
     public function useOperator(Operator $operator): AbstractQueryBuilder
     {
         $this->queryToBuild->setQueryDefaultOperator($operator->getOperator());
@@ -199,8 +157,6 @@ abstract class AbstractQueryBuilder
 
     /**
      * Remove the default query operator.
-     *
-     * @return $this
      */
     public function removeOperator(): AbstractQueryBuilder
     {
@@ -208,10 +164,6 @@ abstract class AbstractQueryBuilder
         return $this;
     }
 
-    /**
-     * @param Slops $slops
-     * @return $this
-     */
     public function useSlops(Slops $slops): AbstractQueryBuilder
     {
         return $slops->build($this);
@@ -221,7 +173,6 @@ abstract class AbstractQueryBuilder
      * Uses the passed boostQuer(y|ies) for the query.
      *
      * @param string|array $boostQueries
-     * @return $this
      */
     public function useBoostQueries($boostQueries): AbstractQueryBuilder
     {
@@ -240,8 +191,6 @@ abstract class AbstractQueryBuilder
 
     /**
      * Removes all boost queries from the query.
-     *
-     * @return $this
      */
     public function removeAllBoostQueries(): AbstractQueryBuilder
     {
@@ -251,9 +200,6 @@ abstract class AbstractQueryBuilder
 
     /**
      * Uses the passed boostFunction for the query.
-     *
-     * @param string $boostFunction
-     * @return $this
      */
     public function useBoostFunction(string $boostFunction): AbstractQueryBuilder
     {
@@ -263,8 +209,6 @@ abstract class AbstractQueryBuilder
 
     /**
      * Removes all previously configured boost functions.
-     *
-     * @return $this
      */
     public function removeAllBoostFunctions(): AbstractQueryBuilder
     {
@@ -274,9 +218,6 @@ abstract class AbstractQueryBuilder
 
     /**
      * Uses the passed minimumMatch(mm) for the query.
-     *
-     * @param string $minimumMatch
-     * @return $this
      */
     public function useMinimumMatch(string $minimumMatch): AbstractQueryBuilder
     {
@@ -286,8 +227,6 @@ abstract class AbstractQueryBuilder
 
     /**
      * Remove any previous passed minimumMatch parameter.
-     *
-     * @return $this
      */
     public function removeMinimumMatch(): AbstractQueryBuilder
     {
@@ -297,9 +236,6 @@ abstract class AbstractQueryBuilder
 
     /**
      * Applies the tie parameter to the query.
-     *
-     * @param float $tie
-     * @return $this
      */
     public function useTieParameter(float $tie): AbstractQueryBuilder
     {
@@ -309,9 +245,6 @@ abstract class AbstractQueryBuilder
 
     /**
      * Applies custom QueryFields to the query.
-     *
-     * @param QueryFields $queryFields
-     * @return $this
      */
     public function useQueryFields(QueryFields $queryFields): AbstractQueryBuilder
     {
@@ -320,9 +253,6 @@ abstract class AbstractQueryBuilder
 
     /**
      * Applies custom ReturnFields to the query.
-     *
-     * @param ReturnFields $returnFields
-     * @return $this
      */
     public function useReturnFields(ReturnFields $returnFields): AbstractQueryBuilder
     {
@@ -331,10 +261,6 @@ abstract class AbstractQueryBuilder
 
     /**
      * Can be used to use a specific filter string in the solr query.
-     *
-     * @param string $filterString
-     * @param string $filterName
-     * @return $this
      */
     public function useFilter(string $filterString, string $filterName = ''): AbstractQueryBuilder
     {
@@ -350,9 +276,6 @@ abstract class AbstractQueryBuilder
 
     /**
      * Removes a filter by the fieldName.
-     *
-     * @param string $fieldName
-     * @return $this
      */
     public function removeFilterByFieldName(string $fieldName): AbstractQueryBuilder
     {
@@ -367,25 +290,18 @@ abstract class AbstractQueryBuilder
 
     /**
      * Removes a filter by the name of the filter (also known as key).
-     *
-     * @param string $name
-     * @return $this
      */
     public function removeFilterByName(string $name): AbstractQueryBuilder
     {
         return $this->removeFilterByFunction(
             function ($key, $query) use ($name) {
-                $key = $query->getKey();
-                return $key == $name;
+                return $query->getKey() === $name;
             }
         );
     }
 
     /**
      * Removes a filter by the filter value.
-     *
-     * @param string $value
-     * @return $this
      */
     public function removeFilterByValue(string $value): AbstractQueryBuilder
     {
@@ -397,14 +313,10 @@ abstract class AbstractQueryBuilder
         );
     }
 
-    /**
-     * @param Closure $filterFunction
-     * @return $this
-     */
     public function removeFilterByFunction(Closure $filterFunction): AbstractQueryBuilder
     {
         $queries = $this->queryToBuild->getFilterQueries();
-        foreach ($queries as $key =>  $query) {
+        foreach ($queries as $key => $query) {
             $canBeRemoved = $filterFunction($key, $query);
             if ($canBeRemoved) {
                 unset($queries[$key]);
@@ -417,8 +329,6 @@ abstract class AbstractQueryBuilder
 
     /**
      * Passes the alternative query to the SolariumQuery
-     * @param string $query
-     * @return $this
      */
     public function useAlternativeQuery(string $query): AbstractQueryBuilder
     {
@@ -428,8 +338,6 @@ abstract class AbstractQueryBuilder
 
     /**
      * Remove the alternative query from the SolariumQuery.
-     *
-     * @return $this
      */
     public function removeAlternativeQuery(): AbstractQueryBuilder
     {
@@ -439,19 +347,12 @@ abstract class AbstractQueryBuilder
 
     /**
      * Applies a custom Faceting configuration to the query.
-     *
-     * @param Faceting $faceting
-     * @return $this
      */
     public function useFaceting(Faceting $faceting): AbstractQueryBuilder
     {
         return $faceting->build($this);
     }
 
-    /**
-     * @param FieldCollapsing $fieldCollapsing
-     * @return $this
-     */
     public function useFieldCollapsing(FieldCollapsing $fieldCollapsing): AbstractQueryBuilder
     {
         return $fieldCollapsing->build($this);
@@ -459,28 +360,17 @@ abstract class AbstractQueryBuilder
 
     /**
      * Applies a custom initialized grouping to the query.
-     *
-     * @param Grouping $grouping
-     * @return $this
      */
     public function useGrouping(Grouping $grouping): AbstractQueryBuilder
     {
         return $grouping->build($this);
     }
 
-    /**
-     * @param Highlighting $highlighting
-     * @return $this
-     */
     public function useHighlighting(Highlighting $highlighting): AbstractQueryBuilder
     {
         return $highlighting->build($this);
     }
 
-    /**
-     * @param bool $debugMode
-     * @return $this
-     */
     public function useDebug(bool $debugMode): AbstractQueryBuilder
     {
         if (!$debugMode) {
@@ -495,19 +385,11 @@ abstract class AbstractQueryBuilder
         return $this;
     }
 
-    /**
-     * @param Elevation $elevation
-     * @return QueryBuilder
-     */
     public function useElevation(Elevation $elevation): AbstractQueryBuilder
     {
         return $elevation->build($this);
     }
 
-    /**
-     * @param Spellchecking $spellchecking
-     * @return $this
-     */
     public function useSpellchecking(Spellchecking $spellchecking): AbstractQueryBuilder
     {
         return $spellchecking->build($this);
@@ -515,9 +397,6 @@ abstract class AbstractQueryBuilder
 
     /**
      * Applies a custom configured PhraseFields to the query.
-     *
-     * @param PhraseFields $phraseFields
-     * @return $this
      */
     public function usePhraseFields(PhraseFields $phraseFields): AbstractQueryBuilder
     {
@@ -526,9 +405,6 @@ abstract class AbstractQueryBuilder
 
     /**
      * Applies a custom configured BigramPhraseFields to the query.
-     *
-     * @param BigramPhraseFields $bigramPhraseFields
-     * @return $this
      */
     public function useBigramPhraseFields(BigramPhraseFields $bigramPhraseFields): AbstractQueryBuilder
     {
@@ -537,9 +413,6 @@ abstract class AbstractQueryBuilder
 
     /**
      * Applies a custom configured TrigramPhraseFields to the query.
-     *
-     * @param TrigramPhraseFields $trigramPhraseFields
-     * @return $this
      */
     public function useTrigramPhraseFields(TrigramPhraseFields $trigramPhraseFields): AbstractQueryBuilder
     {

@@ -64,7 +64,7 @@ class CoreSelectorField
      *
      * @param string $formElementName Form element name
      */
-    public function setFormElementName(string $formElementName)
+    public function setFormElementName(string $formElementName): void
     {
         $this->formElementName = $formElementName;
     }
@@ -84,7 +84,7 @@ class CoreSelectorField
      *
      * @param array $selectedValues
      */
-    public function setSelectedValues(array $selectedValues)
+    public function setSelectedValues(array $selectedValues): void
     {
         $this->selectedValues = $selectedValues;
     }

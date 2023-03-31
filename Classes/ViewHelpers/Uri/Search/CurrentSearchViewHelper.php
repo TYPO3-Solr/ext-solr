@@ -35,7 +35,6 @@ class CurrentSearchViewHelper extends AbstractUriViewHelper
     public static function renderStatic(array $arguments, \Closure $renderChildrenClosure, RenderingContextInterface $renderingContext)
     {
         $previousRequest = static::getUsedSearchRequestFromRenderingContext($renderingContext);
-        $uri = self::getSearchUriBuilder($renderingContext)->getCurrentSearchUri($previousRequest);
-        return $uri;
+        return self::getSearchUriBuilder($renderingContext)->getCurrentSearchUri($previousRequest);
     }
 }

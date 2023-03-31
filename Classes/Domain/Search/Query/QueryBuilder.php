@@ -112,11 +112,6 @@ class QueryBuilder extends AbstractQueryBuilder
     /**
      * Initializes the Query object and SearchComponents and returns
      * the initialized query object, when a search should be executed.
-     *
-     * @param string|null $rawQuery
-     * @param int $resultsPerPage
-     * @param array $additionalFiltersFromRequest
-     * @return SolariumSelectQuery
      */
     public function buildSearchQuery(
         string $rawQuery = '',
@@ -197,10 +192,6 @@ class QueryBuilder extends AbstractQueryBuilder
     /**
      * Returns a query for single record
      *
-     * @param string $type
-     * @param int $uid
-     * @param int $pageId
-     * @return SolariumSelectQuery|Query
      * @throws DBALDriverException
      */
     public function buildRecordQuery(string $type, int $uid, int $pageId): SolariumSelectQuery
@@ -321,7 +312,7 @@ class QueryBuilder extends AbstractQueryBuilder
      */
     public function useSiteHashFromTypoScript(int $requestedPageId): QueryBuilder
     {
-        $queryConfiguration = $this->typoScriptConfiguration->getObjectByPathOrDefault('plugin.tx_solr.search.query.', []);
+        $queryConfiguration = $this->typoScriptConfiguration->getObjectByPathOrDefault('plugin.tx_solr.search.query.');
         $allowedSites = $this->siteHashService->getAllowedSitesForPageIdAndAllowedSitesConfiguration($requestedPageId, $queryConfiguration['allowedSites']);
         return $this->useSiteHashFromAllowedSites($allowedSites);
     }

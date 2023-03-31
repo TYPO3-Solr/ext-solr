@@ -71,19 +71,13 @@ class TCAService
      */
     public function isEnabledRecord(string $table, array $record): bool
     {
-        if (
-            (empty($record))
+        return !((empty($record))
             ||
             (isset($this->tca[$table]['ctrl']['enablecolumns']['disabled']) && !empty($record[$this->tca[$table]['ctrl']['enablecolumns']['disabled']]))
             ||
             (isset($this->tca[$table]['ctrl']['delete']) && !empty($record[$this->tca[$table]['ctrl']['delete']]))
             ||
-            ($table === 'pages' && !empty($record['no_search']))
-        ) {
-            return false;
-        }
-
-        return true;
+            ($table === 'pages' && !empty($record['no_search'])));
     }
 
     /**

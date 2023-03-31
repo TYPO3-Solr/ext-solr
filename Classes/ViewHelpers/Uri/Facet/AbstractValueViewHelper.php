@@ -34,11 +34,11 @@ abstract class AbstractValueViewHelper extends AbstractUriViewHelper
     public function initializeArguments()
     {
         parent::initializeArguments();
-        $this->registerArgument('facet', AbstractFacet::class, 'The facet', false, null);
-        $this->registerArgument('facetName', 'string', 'The facet name', false, null);
-        $this->registerArgument('facetItem', AbstractFacetItem::class, 'The facet item', false, null);
-        $this->registerArgument('facetItemValue', 'string', 'The facet item', false, null);
-        $this->registerArgument('resultSet', SearchResultSet::class, 'The result set', false, null);
+        $this->registerArgument('facet', AbstractFacet::class, 'The facet');
+        $this->registerArgument('facetName', 'string', 'The facet name');
+        $this->registerArgument('facetItem', AbstractFacetItem::class, 'The facet item');
+        $this->registerArgument('facetItemValue', 'string', 'The facet item');
+        $this->registerArgument('resultSet', SearchResultSet::class, 'The result set');
     }
 
     /**

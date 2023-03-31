@@ -32,7 +32,6 @@ class SettingsPreviewOnPlugins
 {
     protected array $pluginsTtContentRecord;
     private array $flexformData;
-
     protected array $settings = [];
 
     public function __construct(
@@ -102,10 +101,6 @@ class SettingsPreviewOnPlugins
         }
     }
 
-    /**
-     * @param string $settingName
-     * @param string $flexFormField
-     */
     protected function addSettingFromFlexForm(string $settingName, string $flexFormField): void
     {
         $value = $this->getFieldFromFlexform($flexFormField);
@@ -117,10 +112,6 @@ class SettingsPreviewOnPlugins
         $this->addSettingIfNotEmpty($settingName, (string)$value);
     }
 
-    /**
-     * @param string $settingName
-     * @param array $values
-     */
     protected function addSettingFromFlexFormArray(string $settingName, array $values): void
     {
         foreach ($values as $item) {
@@ -136,10 +127,6 @@ class SettingsPreviewOnPlugins
         }
     }
 
-    /**
-     * @param string $settingName
-     * @param string $value
-     */
     protected function addSettingIfNotEmpty(string $settingName, string $value): void
     {
         if (!empty($value)) {
@@ -161,8 +148,6 @@ class SettingsPreviewOnPlugins
 
     /**
      * Returns the plugin label
-     *
-     * @return string
      */
     protected function getPluginLabel(): string
     {
@@ -176,11 +161,6 @@ class SettingsPreviewOnPlugins
         return $label;
     }
 
-    /**
-     * Returns the language service
-     *
-     * @return LanguageService
-     */
     protected function getLanguageService(): LanguageService
     {
         return $GLOBALS['LANG'];

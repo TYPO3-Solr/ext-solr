@@ -100,9 +100,7 @@ class FrequentlySearchedViewHelper extends AbstractSolrViewHelper
     /**
      * Enrich the frequentSearches
      *
-     * @param array Frequent search terms as array with terms as keys and hits as the value
-     * @param int $minimumSize
-     * @param int $maximumSize
+     * @param array $frequentSearchTerms Frequent search terms as array with terms as keys and hits as the value
      * @return array An array with content for the frequent terms markers
      */
     protected static function enrichFrequentSearchesInfo(array $frequentSearchTerms, int $minimumSize, int $maximumSize): array
@@ -112,7 +110,7 @@ class FrequentlySearchedViewHelper extends AbstractSolrViewHelper
             $maximumHits = max(array_values($frequentSearchTerms));
             $minimumHits = min(array_values($frequentSearchTerms));
             $spread = $maximumHits - $minimumHits;
-            $step = ($spread == 0) ? 1 : ($maximumSize - $minimumSize) / $spread;
+            $step = ($spread === 0) ? 1 : ($maximumSize - $minimumSize) / $spread;
 
             foreach ($frequentSearchTerms as $term => $hits) {
                 $size = round($minimumSize + (($hits - $minimumHits) * $step));

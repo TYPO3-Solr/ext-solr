@@ -36,7 +36,7 @@ class Document extends SolariumDocument
      */
     public function __call(string $name, array $arguments)
     {
-        if (substr($name, 0, 3) == 'get') {
+        if (str_starts_with($name, 'get')) {
             $field = substr($name, 3);
             $field = strtolower($field[0]) . substr($field, 1);
             return $this->fields[$field] ?? null;
