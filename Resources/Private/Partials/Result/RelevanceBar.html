@@ -10,7 +10,7 @@
 	<f:variable name="relevance">{s:document.relevance(resultSet:resultSet, document:document)}</f:variable>
 
 <div class="relevance hidden-xs">
-	<s:translate key="relevance" />:
+	<f:translate key="relevance" extensionName="solr"/>:
 	<div class="progress">
 		<div class="progress-bar" role="progressbar" style="width: {relevance}%;" aria-valuenow="{relevance}" aria-valuemin="0" aria-valuemax="100">{relevance}%</div>
 	</div>

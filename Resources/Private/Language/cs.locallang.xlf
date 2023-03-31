@@ -200,32 +200,32 @@
 				<target>Filtr</target>
 			</trans-unit>
 			<trans-unit id="results_range" xml:space="preserve">
-				<source>Displaying results @resultsFrom to @resultsTo of @resultsTotal.</source>
-				<target>Ukaž výsledky @resultsFrom až @resultsTo z @resultsTotal.</target>
+				<source>Displaying results %s to %s of %s.</source>
+				<target>Ukaž výsledky %s až %s z %s.</target>
 			</trans-unit>
 			<trans-unit id="results_found" xml:space="preserve">
-				<source>Found @resultsTotal results in @resultsTime milliseconds.</source>
-				<target>Nalezeno @resultsTotal výsledků v @resultsTime milisekundách</target>
+				<source>Found %s results in %s milliseconds.</source>
+				<target>Nalezeno %s výsledků v %s milisekundách</target>
 			</trans-unit>
 			<trans-unit id="results_found.singular" xml:space="preserve">
-				<source>Found 1 result in @resultsTime milliseconds.</source>
-				<target>Najdi jeden výsledek z @resultsTime v milisekundách.</target>
+				<source>Found 1 result in %s milliseconds.</source>
+				<target>Najdi jeden výsledek z %s v milisekundách.</target>
 			</trans-unit>
 			<trans-unit id="results_searched_for" xml:space="preserve">
-				<source>Searched for &quot;@searchWord&quot;.</source>
-				<target>Hledáno pro "@searchWord".</target>
+				<source>Searched for &quot;%s&quot;.</source>
+				<target>Hledáno pro "%s".</target>
 			</trans-unit>
 			<trans-unit id="no_results_nothing_found" xml:space="preserve">
-				<source>Nothing found for &quot;@searchWord&quot;.</source>
-				<target>Nic nenalezeno pro "@searchWord".</target>
+				<source>Nothing found for &quot;%s&quot;.</source>
+				<target>Nic nenalezeno pro "%s".</target>
 			</trans-unit>
 			<trans-unit id="no_results_showing_results_suggestion" xml:space="preserve">
-				<source>Showing results for &quot;@suggestedWord&quot;.</source>
-				<target>Zobrazeny výsledky pro "@suggestedWord".</target>
+				<source>Showing results for &quot;%s&quot;.</source>
+				<target>Zobrazeny výsledky pro "%s".</target>
 			</trans-unit>
 			<trans-unit id="no_results_search_for_original" xml:space="preserve">
-				<source>Search instead for &quot;@searchWord&quot;.</source>
-				<target>Místo toho hledej „@searchWord“.</target>
+				<source>Search instead for &quot;%s&quot;.</source>
+				<target>Místo toho hledej „%s“.</target>
 			</trans-unit>
 			<trans-unit id="lastSearches" xml:space="preserve">
 				<source>Last searches</source>

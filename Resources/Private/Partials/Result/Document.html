@@ -12,7 +12,7 @@
 			data-document-url="{document.url}"
 		>
 		<f:if condition="{document.isElevated}">
-			<div class="results-elevated-label"><s:translate key="sponsored"/></div>
+			<div class="results-elevated-label"><f:translate key="sponsored" extensionName="solr"/></div>
 		</f:if>
 
 		<div class="row">
@@ -28,8 +28,8 @@
 			<p class="result-content">{s:document.highlightResult(resultSet:resultSet, document:document, fieldName:'content')}</p>
 			<f:if condition="{document.type} == 'tx_solr_file'">
 				<p>
-					<s:translate key="file_mimetype" />: {document.fileMimeType}<br />
-					<s:translate key="file_referenced" />:
+					<f:translate key="file_mimetype" extensionName="solr"/>: {document.fileMimeType}<br />
+					<f:translate key="file_referenced" extensionName="solr"/>:
 
 					<ul class="references">
 						<f:if condition="{document.fileReferenceUrl}">

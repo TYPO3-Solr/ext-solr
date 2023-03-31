@@ -174,25 +174,25 @@
 				<source>Filter</source>
 			</trans-unit>
 			<trans-unit id="results_range" xml:space="preserve">
-				<source>Displaying results @resultsFrom to @resultsTo of @resultsTotal.</source>
+				<source>Displaying results %s to %s of %s.</source>
 			</trans-unit>
 			<trans-unit id="results_found" xml:space="preserve">
-				<source>Found @resultsTotal results in @resultsTime milliseconds.</source>
+				<source>Found %s results in %s milliseconds.</source>
 			</trans-unit>
 			<trans-unit id="results_found.singular" xml:space="preserve">
-				<source>Found 1 result in @resultsTime milliseconds.</source>
+				<source>Found 1 result in %s milliseconds.</source>
 			</trans-unit>
 			<trans-unit id="results_searched_for" xml:space="preserve">
-				<source>Searched for &quot;@searchWord&quot;.</source>
+				<source>Searched for &quot;%s&quot;.</source>
 			</trans-unit>
 			<trans-unit id="no_results_nothing_found" xml:space="preserve">
-				<source>Nothing found for &quot;@searchWord&quot;.</source>
+				<source>Nothing found for &quot;%s&quot;.</source>
 			</trans-unit>
 			<trans-unit id="no_results_showing_results_suggestion" xml:space="preserve">
-				<source>Showing results for &quot;@suggestedWord&quot;.</source>
+				<source>Showing results for &quot;%s&quot;.</source>
 			</trans-unit>
 			<trans-unit id="no_results_search_for_original" xml:space="preserve">
-				<source>Search instead for &quot;@searchWord&quot;.</source>
+				<source>Search instead for &quot;%s&quot;.</source>
 			</trans-unit>
 			<trans-unit id="lastSearches" xml:space="preserve">
 				<source>Last searches</source>
