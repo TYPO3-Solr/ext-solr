@@ -12,7 +12,6 @@
 
                 page = PAGE
                 page.typeNum = 0
-                page.bodyTag = <body>
 
                 # very simple rendering
                 page.10 = CONTENT
@@ -66,6 +65,7 @@
         <is_siteroot>1</is_siteroot>
         <doktype>1</doktype>
         <title>Page</title>
+		<slug>/</slug>
     </pages>
     <pages>
         <uid>2</uid>
@@ -76,23 +76,26 @@
         <deleted>0</deleted>
         <title>Seite</title>
         <relations>1</relations>
+		<slug>/</slug>
     </pages>
 
     <pages>
         <uid>10</uid>
-        <pid>0</pid>
+        <pid>1</pid>
         <doktype>1</doktype>
         <title>Related page</title>
+		<slug>/related-page</slug>
     </pages>
     <pages>
         <uid>11</uid>
-        <pid>0</pid>
+        <pid>1</pid>
         <l10n_parent>10</l10n_parent>
         <sys_language_uid>1</sys_language_uid>
         <doktype>1</doktype>
         <hidden>0</hidden>
         <deleted>0</deleted>
-        <title>Verwante Seite</title>
+        <title>Verwandte Seite</title>
+		<slug>/verwandte-seite</slug>
     </pages>
 
     <tx_fakeextension3_pages_mm>

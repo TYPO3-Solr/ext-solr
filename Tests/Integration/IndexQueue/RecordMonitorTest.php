@@ -51,6 +51,11 @@ class RecordMonitorTest extends IntegrationTest
         'scheduler',
     ];
 
+    protected array $testExtensionsToLoad = [
+        'typo3conf/ext/solr',
+        '../vendor/apache-solr-for-typo3/solr/Tests/Integration/Fixtures/Extensions/fake_extension',
+    ];
+
     /**
      * @var RecordMonitor
      */
@@ -258,10 +263,6 @@ class RecordMonitorTest extends IntegrationTest
      */
     protected function prepareCanUseCorrectIndexingConfigurationForANewNonPagesRecord(): void
     {
-        // create fake extension database table and TCA
-        $this->importExtTablesDefinition('fake_extension_table.sql');
-        $GLOBALS['TCA']['tx_fakeextension_domain_model_foo'] = include($this->getFixturePathByName('fake_extension_tca.php'));
-
         // create faked tce main call data
         $status = 'new';
         $table = 'tx_fakeextension_domain_model_foo';
@@ -535,10 +536,6 @@ class RecordMonitorTest extends IntegrationTest
         GeneralUtility::addInstance(DataUpdateHandler::class, $dataUpdateHandler);
 
         // we expect that this exception is getting thrown, because a record without pid was updated
-
-        // create fake extension database table and TCA
-        $this->importExtTablesDefinition('fake_extension_table.sql');
-        $GLOBALS['TCA']['tx_fakeextension_domain_model_foo'] = include($this->getFixturePathByName('fake_extension_tca.php'));
 
         // create faked tce main call data
         $status = 'new';
@@ -1524,9 +1521,6 @@ class RecordMonitorTest extends IntegrationTest
      */
     protected function prepareUpdateRecordOutsideSiteRootWithAdditionalWhereClause(int $uid): void
     {
-        $this->importExtTablesDefinition('fake_extension_table.sql');
-        $GLOBALS['TCA']['tx_fakeextension_domain_model_foo'] = include($this->getFixturePathByName('fake_extension_tca.php'));
-
         $this->importDataSetFromFixture('update_record_outside_siteroot_with_additionalWhereClause.xml');
         $this->addTypoScriptToTemplateRecord(
             1,
@@ -1574,9 +1568,6 @@ class RecordMonitorTest extends IntegrationTest
      */
     public function updateRecordOutsideSiteRoot(): void
     {
-        $this->importExtTablesDefinition('fake_extension_table.sql');
-        $GLOBALS['TCA']['tx_fakeextension_domain_model_foo'] = include($this->getFixturePathByName('fake_extension_tca.php'));
-
         $this->importDataSetFromFixture('update_record_outside_siteroot.xml');
         $this->addTypoScriptToTemplateRecord(
             1,
@@ -1644,9 +1635,6 @@ class RecordMonitorTest extends IntegrationTest
      */
     protected function prepareUpdateRecordOutsideSiteRootReferencedInTwoSites(): void
     {
-        $this->importExtTablesDefinition('fake_extension_table.sql');
-        $GLOBALS['TCA']['tx_fakeextension_domain_model_foo'] = include($this->getFixturePathByName('fake_extension_tca.php'));
-
         $this->importDataSetFromFixture('update_record_outside_siteroot_from_two_sites.xml');
         $this->addTypoScriptToTemplateRecord(
             1,
@@ -1699,9 +1687,6 @@ class RecordMonitorTest extends IntegrationTest
      */
     public function updateRecordOutsideSiteRootLocatedInOtherSite(): void
     {
-        $this->importExtTablesDefinition('fake_extension_table.sql');
-        $GLOBALS['TCA']['tx_fakeextension_domain_model_foo'] = include($this->getFixturePathByName('fake_extension_tca.php'));
-
         $this->importDataSetFromFixture('update_record_outside_siteroot_from_other_siteroot.xml');
         $this->addTypoScriptToTemplateRecord(
             1,
@@ -1864,16 +1849,15 @@ class RecordMonitorTest extends IntegrationTest
     public function canCreateSiteOneRootLevel(): void
     {
         $this->importDataSetFromFixture('can_create_new_page.xml');
-        // @todo: Remove after typo3/testing-framework is upgraded to TYPO3 12+ compatible version
-        $this->backendUserFixture = 'PACKAGE:apache-solr-for-typo3/solr/Tests/Integration/Fixtures/sites_setup_and_data_set/be_users.xml';
-        $this->setUpBackendUserFromFixture(1);
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/sites_setup_and_data_set/be_users.csv');
+        $GLOBALS['BE_USER'] = $this->setUpBackendUser(1);
 
         $this->assertIndexQueueContainsItemAmount(0);
         $dataHandler = $this->getDataHandler();
-        $dataHandler->start(['pages' => ['NEW' => ['hidden' => 0, 'pid' => 0]]], []);
+        $dataHandler->start(['pages' => ['NEW' => ['hidden' => 0, 'pid' => 0, 'title' => 'new subpage']]], []);
         $dataHandler->process_datamap();
 
-        // the item is outside a siteroot so we should not have any queue entry
+        // the item is outside a siteroot, so we should not have any queue entry
         $this->assertIndexQueueContainsItemAmount(0);
     }
 
@@ -1885,9 +1869,8 @@ class RecordMonitorTest extends IntegrationTest
     public function canCreateSubPageBelowSiteRoot(): void
     {
         $this->importDataSetFromFixture('can_create_new_page.xml');
-        // @todo: Remove after typo3/testing-framework is upgraded to TYPO3 12+ compatible version
-        $this->backendUserFixture = 'PACKAGE:apache-solr-for-typo3/solr/Tests/Integration/Fixtures/sites_setup_and_data_set/be_users.xml';
-        $this->setUpBackendUserFromFixture(1);
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/sites_setup_and_data_set/be_users.csv');
+        $GLOBALS['BE_USER'] = $this->setUpBackendUser(1);
 
         $this->assertIndexQueueContainsItemAmount(0);
         $dataHandler = $this->getDataHandler();
