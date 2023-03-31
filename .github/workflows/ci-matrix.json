@@ -5,8 +5,8 @@
   },
 
   "task/3376-TYPO3_12_compatibility": {
-  	"PHP": [ "8.1" ],
-  	"TYPO3": [ "12", "dev-main" ]
+  	"PHP": [ "8.1", "8.2" ],
+  	"TYPO3": [ "12", "12.4.x-dev" ]
   },
 
   "release-11.5.x": {
