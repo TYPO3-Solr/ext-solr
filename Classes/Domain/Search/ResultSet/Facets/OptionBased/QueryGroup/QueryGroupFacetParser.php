@@ -115,7 +115,7 @@ class QueryGroupFacetParser extends AbstractFacetParser
             // and facet.range Solr does that on its own automatically
             $rawValue = preg_replace('/^\{!ex=[^\}]*\}(.*)/', '\\1', $rawValue);
 
-            list($field, $query) = explode(':', $rawValue, 2);
+            [$field, $query] = explode(':', $rawValue, 2);
             if ($field === $fieldName) {
                 $options[$query] = $count;
             }

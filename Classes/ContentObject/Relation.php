@@ -127,7 +127,7 @@ class Relation extends AbstractContentObject
      */
     protected function getRelatedItems(ContentObjectRenderer $parentContentObject): array
     {
-        list($table, $uid) = explode(':', $parentContentObject->currentRecord);
+        [$table, $uid] = explode(':', $parentContentObject->currentRecord);
         $uid = (int)$uid;
         $field = $this->configuration['localField'];
 
@@ -230,7 +230,7 @@ class Relation extends AbstractContentObject
         }
 
         if (str_contains($this->configuration['foreignLabelField'] ?? '', '.')) {
-            list($foreignTableLabelField) = explode('.', $this->configuration['foreignLabelField'], 2);
+            [$foreignTableLabelField] = explode('.', $this->configuration['foreignLabelField'], 2);
         } else {
             $foreignTableLabelField = $this->configuration['foreignLabelField'];
         }
@@ -346,7 +346,7 @@ class Relation extends AbstractContentObject
             $this->configuration['localField'] = $foreignTableLabelField;
             $parentContentObject->data = $relatedRecord;
             if (str_contains($this->configuration['foreignLabelField'], '.')) {
-                list(, $this->configuration['foreignLabelField']) = explode(
+                [, $this->configuration['foreignLabelField']] = explode(
                     '.',
                     $this->configuration['foreignLabelField'],
                     2
