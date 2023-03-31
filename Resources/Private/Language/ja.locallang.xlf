@@ -198,31 +198,31 @@
 				<target>Filter</target>
 			</trans-unit>
 			<trans-unit id="results_range" xml:space="preserve" approved="yes">
-				<source>Displaying results @resultsFrom to @resultsTo of @resultsTotal.</source>
-				<target>@resultsTotal の結果のうち、 @resultsFrom から @resultsTo までを表示します。</target>
+				<source>Displaying results %s to %s of %s.</source>
+				<target>%s の結果のうち、 %s から %s までを表示します。</target>
 			</trans-unit>
 			<trans-unit id="results_found" xml:space="preserve" approved="yes">
-				<source>Found @resultsTotal results in @resultsTime milliseconds.</source>
-				<target>@resultsTime ミリ秒で @resultsTotal の結果が見つかりました。</target>
+				<source>Found %s results in %s milliseconds.</source>
+				<target>%s ミリ秒で %s の結果が見つかりました。</target>
 			</trans-unit>
 			<trans-unit id="results_found.singular" xml:space="preserve" approved="yes">
-				<source>Found 1 results in @resultsTime milliseconds.</source>
-				<target>@resultsTime ミリ秒で 1 の結果が見つかりました。</target>
+				<source>Found 1 results in %s milliseconds.</source>
+				<target>%s ミリ秒で 1 の結果が見つかりました。</target>
 			</trans-unit>
 			<trans-unit id="results_searched_for" xml:space="preserve" approved="yes">
-				<source>Searched for &quot;@searchWord&quot;.</source>
-				<target>&quot;@searchWord&quot; を検索しました。</target>
+				<source>Searched for &quot;%s&quot;.</source>
+				<target>&quot;%s&quot; を検索しました。</target>
 			</trans-unit>
 			<trans-unit id="no_results_nothing_found" xml:space="preserve" approved="yes">
-				<source>Nothing found for &quot;@searchWord&quot;.</source>
-				<target>&quot;@searchWord&quot; が見つかりません。</target>
+				<source>Nothing found for &quot;%s&quot;.</source>
+				<target>&quot;%s&quot; が見つかりません。</target>
 			</trans-unit>
 			<trans-unit id="no_results_showing_results_suggestion" xml:space="preserve" approved="yes">
-				<source>Showing results for &quot;@suggestedWord&quot;.</source>
+				<source>Showing results for &quot;%s&quot;.</source>
 				<target></target>
 			</trans-unit>
 			<trans-unit id="no_results_search_for_original" xml:space="preserve" approved="yes">
-				<source>Search instead for &quot;@searchWord&quot;.</source>
+				<source>Search instead for &quot;%s&quot;.</source>
 				<target></target>
 			</trans-unit>
 			<trans-unit id="lastSearches" xml:space="preserve" approved="yes">

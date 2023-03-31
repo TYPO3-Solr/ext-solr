@@ -124,32 +124,32 @@
 				<target>Filtern</target>
 			</trans-unit>
 			<trans-unit id="results_range" xml:space="preserve" approved="yes">
-				<source>Displaying results @resultsFrom to @resultsTo of @resultsTotal.</source>
-				<target>Zeige Ergebnisse @resultsFrom bis @resultsTo von @resultsTotal.</target>
+				<source>Displaying results %s to %s of %s.</source>
+				<target>Zeige Ergebnisse %s bis %s von %s.</target>
 			</trans-unit>
 			<trans-unit id="results_found" xml:space="preserve" approved="yes">
-				<source>Found @resultsTotal results in @resultsTime milliseconds.</source>
-				<target>Es wurden @resultsTotal Ergebnisse in @resultsTime Millisekunden gefunden.</target>
+				<source>Found %s results in %s milliseconds.</source>
+				<target>Es wurden %s Ergebnisse in %s Millisekunden gefunden.</target>
 			</trans-unit>
 			<trans-unit id="results_found.singular" xml:space="preserve" approved="yes">
-				<source>Found 1 result in @resultsTime milliseconds.</source>
-				<target>Es wurde 1 Ergebnis in @resultsTime Millisekunden gefunden.</target>
+				<source>Found 1 result in %s milliseconds.</source>
+				<target>Es wurde 1 Ergebnis in %s Millisekunden gefunden.</target>
 			</trans-unit>
 			<trans-unit id="results_searched_for" xml:space="preserve" approved="yes">
-				<source>Searched for &quot;@searchWord&quot;.</source>
-				<target>Gesucht nach &quot;@searchWord&quot;.</target>
+				<source>Searched for &quot;%s&quot;.</source>
+				<target>Gesucht nach &quot;%s&quot;.</target>
 			</trans-unit>
 			<trans-unit id="no_results_nothing_found" xml:space="preserve" approved="yes">
-				<source>Nothing found for &quot;@searchWord&quot;.</source>
-				<target>Nichts gefunden für &quot;@searchWord&quot;.</target>
+				<source>Nothing found for &quot;%s&quot;.</source>
+				<target>Nichts gefunden für &quot;%s&quot;.</target>
 			</trans-unit>
 			<trans-unit id="no_results_showing_results_suggestion" xml:space="preserve" approved="yes">
-				<source>Showing results for &quot;@suggestedWord&quot;.</source>
-				<target>Ergebnisse für &quot;@suggestedWord&quot;.</target>
+				<source>Showing results for &quot;%s&quot;.</source>
+				<target>Ergebnisse für &quot;%s&quot;.</target>
 			</trans-unit>
 			<trans-unit id="no_results_search_for_original" xml:space="preserve" approved="yes">
-				<source>Search instead for &quot;@searchWord&quot;.</source>
-				<target>Stattdessen suchen nach &quot;@searchWord&quot;.</target>
+				<source>Search instead for &quot;%s&quot;.</source>
+				<target>Stattdessen suchen nach &quot;%s&quot;.</target>
 			</trans-unit>
 			<trans-unit id="lastSearches" xml:space="preserve" approved="yes">
 				<source>Last searches</source>
