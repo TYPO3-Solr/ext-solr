@@ -38,6 +38,11 @@ use TYPO3\TestingFramework\Core\Exception as TestingFrameworkCoreException;
  */
 class RelationTest extends IntegrationTest
 {
+    protected array $testExtensionsToLoad = [
+        'typo3conf/ext/solr',
+        '../vendor/apache-solr-for-typo3/solr/Tests/Integration/Fixtures/Extensions/fake_extension',
+    ];
+
     /**
      * @param string $fixtureName
      *
@@ -90,8 +95,6 @@ class RelationTest extends IntegrationTest
      */
     public function canResolveOneToOneRelation(string $expected, array $config): void
     {
-        $this->importExtTablesDefinition('fake_extension.sql');
-        $GLOBALS['TCA']['tx_fakeextension_domain_model_foo'] = include($this->getFixturePathByName('TCA/tx_fakeextension_domain_model_foo.php'));
         $this->importDataSetFromFixture('solr_relation_can_resolve_one_to_one_relations.xml');
 
         $solrRelation = $this->getSolrRelation('tx_fakeextension_domain_model_foo', 1);
@@ -156,9 +159,6 @@ class RelationTest extends IntegrationTest
      */
     public function canResolveMToNRelation(string $expected, string $table, int $recordUid, array $config): void
     {
-        $this->importExtTablesDefinition('fake_extension.sql');
-        $GLOBALS['TCA']['tx_fakeextension_domain_model_foo'] = include($this->getFixturePathByName('TCA/tx_fakeextension_domain_model_foo.php'));
-        $GLOBALS['TCA']['tx_fakeextension_domain_model_bar'] = include($this->getFixturePathByName('TCA/tx_fakeextension_domain_model_bar.php'));
         $this->importDataSetFromFixture('solr_relation_can_resolve_m_to_n_relations.xml');
 
         $solrRelation = $this->getSolrRelation($table, $recordUid);
@@ -285,9 +285,6 @@ class RelationTest extends IntegrationTest
      */
     public function canResolveOneToNRelation(string $expected, string $table, int $recordUid, array $config): void
     {
-        $this->importExtTablesDefinition('fake_extension.sql');
-        $GLOBALS['TCA']['tx_fakeextension_domain_model_foo'] = include($this->getFixturePathByName('TCA/tx_fakeextension_domain_model_foo.php'));
-        $GLOBALS['TCA']['tx_fakeextension_domain_model_bar'] = include($this->getFixturePathByName('TCA/tx_fakeextension_domain_model_bar.php'));
         $this->importDataSetFromFixture('solr_relation_can_resolve_one_to_n_relations.xml');
 
         $solrRelation = $this->getSolrRelation($table, $recordUid);

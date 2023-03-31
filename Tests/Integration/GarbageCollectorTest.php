@@ -46,6 +46,11 @@ class GarbageCollectorTest extends IntegrationTest
         'scheduler',
     ];
 
+    protected array $testExtensionsToLoad = [
+        'typo3conf/ext/solr',
+        '../vendor/apache-solr-for-typo3/solr/Tests/Integration/Fixtures/Extensions/fake_extension',
+    ];
+
     /**
      * @var RecordMonitor
      */
@@ -794,9 +799,6 @@ class GarbageCollectorTest extends IntegrationTest
     protected function prepareCanTriggerHookAfterRecordDeletion(): void
     {
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessGarbageCollector'][] = TestGarbageCollectorPostProcessor::class;
-
-        $this->importExtTablesDefinition('fake_extension_table.sql');
-        $GLOBALS['TCA']['tx_fakeextension_domain_model_foo'] = include($this->getFixturePathByName('fake_extension_tca.php'));
         $this->importDataSetFromFixture('can_delete_custom_record.xml');
 
         $this->addTypoScriptToTemplateRecord(

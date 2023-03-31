@@ -31,6 +31,9 @@ class TestAdditionalPageIndexer implements AdditionalPageIndexer
      */
     public function getAdditionalPageDocuments(Document $pageDocument, array $allDocuments): array
     {
+        if (!($_GET['additionalTestPageIndexer'] ?? false)) {
+            return [];
+        }
         $secondDocument = clone $pageDocument;
 
         $id = $pageDocument['id'];

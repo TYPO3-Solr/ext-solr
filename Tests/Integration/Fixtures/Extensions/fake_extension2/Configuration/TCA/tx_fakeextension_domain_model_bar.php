@@ -2,9 +2,9 @@
 
 return [
     'ctrl' => [
-        'title' => $ll . 'tx_fakeextension_domain_model_directrelated',
-        'descriptionColumn' => 'category',
-        'label' => 'category_label',
+        'title' => 'tx_fakeextension_domain_model_bar',
+        'descriptionColumn' => 'tag',
+        'label' => 'title',
         'hideAtCopy' => true,
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
@@ -24,7 +24,7 @@ return [
             'starttime' => 'starttime',
             'endtime' => 'endtime',
         ],
-        'searchFields' => 'uid,category',
+        'searchFields' => 'uid,title',
     ],
     'columns' => [
         'sys_language_uid' => [
@@ -115,7 +115,7 @@ return [
                 ['behaviour' => ['allowLanguageSynchronization' => true]],
             ],
         ],
-        'category_label' => [
+        'title' => [
             'exclude' => 0,
             'l10n_mode' => 'prefixLangTitle',
             'label' => 'LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:header_formlabel',
@@ -125,20 +125,6 @@ return [
                 'required' => true,
             ],
         ],
-        'sys_category' => [
-            'exclude' => 0,
-            'label' => 'sorting',
-            'config' => [
-                'type' => 'select',
-                'renderType' => 'selectSingle',
-                'foreign_table' => 'sys_category',
-                'foreign_table_where' => ' AND (sys_category.sys_language_uid = 0 OR sys_category.l10n_parent = 0)',
-                'size' => 1,
-                'minitems' => 0,
-                'maxitems' => 1,
-                ['behaviour' => ['allowLanguageSynchronization' => true]],
-            ],
-        ],
         'editlock' => [
             'exclude' => 1,
             'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_tca.xlf:editlock',
@@ -146,10 +132,52 @@ return [
                 'type' => 'check', ['behaviour' => ['allowLanguageSynchronization' => true]],
             ],
         ],
+        'tags' => [
+            'exclude' => 1,
+            'label' => 'Tags:',
+            'config' => [
+                'type' => 'group',
+                'allowed' => 'tx_fakeextension_domain_model_mmrelated',
+                'MM' => 'tx_fakeextension_domain_model_related_mm',
+                //@todo is the really as needed in the typo3 core?
+                'foreign_table' => 'tx_fakeextension_domain_model_mmrelated',
+                'size' => '5',
+                'maxitems' => '200',
+                'minitems' => '0',
+            ],
+        ],
+        'category' => [
+            'exclude' => 1,
+            'label' => 'Category',
+            'config' => [
+                'type' => 'inline',
+                'foreign_table' => 'tx_fakeextension_domain_model_directrelated',
+                'maxitems' => 10,
+                'appearance' => [
+                    'collapseAll' => 1,
+                    'expandSingle' => 1,
+                ],
+            ],
+        ],
+        // mm relation to a page
+        'page_relations' => [
+            'exclude' => 1,
+            'label' => 'Page relations',
+            'config' => [
+                'type' => 'select',
+                'renderType' => 'selectMultipleSideBySide',
+                'foreign_table' => 'pages',
+                'MM' => 'tx_fakeextension_domain_model_related_pages_mm',
+                'size' => 10,
+                'autoSizeMax' => 30,
+                'maxitems' => 9999,
+                'readOnly' => true,
+            ],
+        ],
     ],
     'types' => [
         '0' => [
-            'showitem' => 'l10n_parent, l10n_diffsource,category,sys_category',
+            'showitem' => 'l10n_parent, l10n_diffsource,title,tags',
         ],
     ],
 ];

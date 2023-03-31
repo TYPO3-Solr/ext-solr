@@ -2,9 +2,9 @@
 
 return [
     'ctrl' => [
-        'title' => $ll . 'tx_fakeextension_domain_model_bar',
+        'title' => 'tx_fakeextension_domain_model_mmrelated',
         'descriptionColumn' => 'tag',
-        'label' => 'title',
+        'label' => 'tag',
         'hideAtCopy' => true,
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
@@ -24,7 +24,7 @@ return [
             'starttime' => 'starttime',
             'endtime' => 'endtime',
         ],
-        'searchFields' => 'uid,title',
+        'searchFields' => 'uid,tag',
     ],
     'columns' => [
         'sys_language_uid' => [
@@ -115,7 +115,7 @@ return [
                 ['behaviour' => ['allowLanguageSynchronization' => true]],
             ],
         ],
-        'title' => [
+        'tag' => [
             'exclude' => 0,
             'l10n_mode' => 'prefixLangTitle',
             'label' => 'LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:header_formlabel',
@@ -132,37 +132,10 @@ return [
                 'type' => 'check', ['behaviour' => ['allowLanguageSynchronization' => true]],
             ],
         ],
-        'tags' => [
-            'exclude' => 1,
-            'label' => 'Tags:',
-            'config' => [
-                'type' => 'group',
-                'allowed' => 'tx_fakeextension_domain_model_mmrelated',
-                'MM' => 'tx_fakeextension_domain_model_related_mm',
-                //@todo is the really as needed in the typo3 core?
-                'foreign_table' => 'tx_fakeextension_domain_model_mmrelated',
-                'size' => '5',
-                'maxitems' => '200',
-                'minitems' => '0',
-              ],
-         ],
-        'category' => [
-            'exclude' => 1,
-            'label' => 'Category',
-            'config' => [
-                'type' => 'inline',
-                'foreign_table' => 'tx_fakeextension_domain_model_directrelated',
-                'maxitems' => 10,
-                'appearance' => [
-                    'collapseAll' => 1,
-                    'expandSingle' => 1,
-                ],
-            ],
-        ],
-     ],
-     'types' => [
+    ],
+    'types' => [
         '0' => [
-            'showitem' => 'l10n_parent, l10n_diffsource,title,tags',
+            'showitem' => 'l10n_parent, l10n_diffsource,tag',
         ],
     ],
 ];
