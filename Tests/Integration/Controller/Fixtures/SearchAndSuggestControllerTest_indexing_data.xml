@@ -7,6 +7,7 @@
         <doktype>1</doktype>
         <title>Socks</title>
         <subtitle>Men</subtitle>
+        <slug>/men/socks</slug>
     </pages>
     <pages>
         <uid>3</uid>
@@ -15,6 +16,7 @@
         <doktype>1</doktype>
         <title>Jeans</title>
         <subtitle>Men</subtitle>
+        <slug>/men/jeans</slug>
     </pages>
     <pages>
         <uid>4</uid>
@@ -23,6 +25,7 @@
         <doktype>1</doktype>
         <title>Shoes</title>
         <subtitle>Woman</subtitle>
+        <slug>/women/shoes</slug>
     </pages>
     <pages>
         <uid>5</uid>
@@ -31,6 +34,7 @@
         <doktype>1</doktype>
         <title>T-Shirts</title>
         <subtitle>Woman</subtitle>
+        <slug>/women/t-shirts</slug>
     </pages>
     <pages>
         <uid>6</uid>
@@ -39,7 +43,8 @@
         <doktype>1</doktype>
         <title>T-Shirts</title>
         <subtitle>Men</subtitle>
-    </pages>
+        <slug>/men/t-shirts</slug>
+	</pages>
     <pages>
         <uid>7</uid>
         <pid>1</pid>
@@ -47,6 +52,7 @@
         <doktype>1</doktype>
         <title>Sweatshirts</title>
         <subtitle>Men</subtitle>
+        <slug>/men/sweat-shirts</slug>
     </pages>
     <pages>
         <uid>8</uid>
@@ -55,6 +61,7 @@
         <doktype>1</doktype>
         <title>Sweatshirts</title>
         <subtitle>Woman</subtitle>
+		<slug>/woman/sweat-shirts</slug>
     </pages>
 
     <tt_content>

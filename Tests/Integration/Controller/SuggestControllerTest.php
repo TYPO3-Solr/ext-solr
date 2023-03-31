@@ -18,6 +18,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Controller;
 use ApacheSolrForTypo3\Solr\Controller\SuggestController;
 use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageFieldMappingIndexer;
 use TYPO3\CMS\Core\Http\Response;
+use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 
 /**
  * Integration testcase to test for {@link SuggestController}
@@ -28,6 +29,18 @@ use TYPO3\CMS\Core\Http\Response;
  */
 class SuggestControllerTest extends AbstractFrontendController
 {
+    protected array $configurationToUseInTestInstance = [
+        'EXTCONF' => [
+            'solr' => [
+                'Indexer' => [
+                    'indexPageSubstitutePageDocument' => [
+                        PageFieldMappingIndexer::class => PageFieldMappingIndexer::class,
+                    ],
+                ],
+            ],
+        ],
+    ];
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -35,10 +48,13 @@ class SuggestControllerTest extends AbstractFrontendController
             1,
             /* @lang TYPO3_TypoScript */
             '
+            config.index_enable = 1
+            page = PAGE
+            page.typeNum = 0
+            # include suggest feature
             @import \'EXT:solr/Configuration/TypoScript/Examples/Suggest/setup.typoscript\'
             '
         );
-        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageSubstitutePageDocument'][PageFieldMappingIndexer::class] = PageFieldMappingIndexer::class;
     }
 
     /**
@@ -51,7 +67,7 @@ class SuggestControllerTest extends AbstractFrontendController
 
         $result = (string)($this->executeFrontendSubRequestForSuggestQueryString('Sweat', 'rand')->getBody());
 
-        //we assume to get suggestions like Sweatshirt
+        // we assume to get suggestions like Sweatshirt
         self::assertStringContainsString('suggestions":{"sweatshirts":2}', $result, 'Response did not contain sweatshirt suggestions');
     }
 
@@ -114,7 +130,9 @@ class SuggestControllerTest extends AbstractFrontendController
 
     protected function executeFrontendSubRequestForSuggestQueryString(string $queryString, string $callback = null): Response
     {
-        $request = $this->getPreparedRequest(1)
+        $request = new InternalRequest('http://testone.site/en/');
+        $request = $request
+            ->withPageId(1)
             ->withQueryParameter('type', '7384')
             ->withQueryParameter('tx_solr[queryString]', $queryString);
 

@@ -92,8 +92,8 @@ class OptionsFacetParser extends AbstractFacetParser
                 GeneralUtility::makeInstance(
                     Option::class,
                     $facet,
-                    $label,
-                    $optionsValue,
+                    (string)$label,
+                    (string)$optionsValue,
                     $count,
                     $isOptionsActive,
                     ($metricsFromSolrResponse[$optionsValue] ?? [])
