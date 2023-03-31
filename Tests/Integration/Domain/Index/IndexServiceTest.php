@@ -46,6 +46,11 @@ class IndexServiceTest extends IntegrationTest
      */
     protected bool $skipImportRootPagesAndTemplatesForConfiguredSites = true;
 
+    protected array $testExtensionsToLoad = [
+        'typo3conf/ext/solr',
+        '../vendor/apache-solr-for-typo3/solr/Tests/Integration/Fixtures/Extensions/fake_extension2',
+    ];
+
     /**
      * @var Queue|null
      */
@@ -106,11 +111,6 @@ class IndexServiceTest extends IntegrationTest
     public function canResolveBaseAsPrefix(string $absRefPrefix, string $expectedUrl)
     {
         $this->cleanUpSolrServerAndAssertEmpty();
-
-        // create fake extension database table and TCA
-        $this->importExtTablesDefinition('fake_extension2_table.sql');
-        $GLOBALS['TCA']['tx_fakeextension_domain_model_bar'] = include($this->getFixturePathByName('fake_extension2_bar_tca.php'));
-        $GLOBALS['TCA']['tx_fakeextension_domain_model_directrelated'] = include($this->getFixturePathByName('fake_extension2_directrelated_tca.php'));
 
         $this->importDataSetFromFixture('can_index_custom_record_withBasePrefix_' . $absRefPrefix . '.xml');
 

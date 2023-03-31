@@ -20,13 +20,11 @@ use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\Typo3PageIndexer;
 use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use Doctrine\DBAL\Exception as DoctrineDBALException;
-use Doctrine\DBAL\Schema\SchemaException;
 use InvalidArgumentException;
 use PHPUnit\Framework\MockObject\MockObject;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionObject;
-use RuntimeException;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
@@ -34,10 +32,6 @@ use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Context\UserAspect;
 use TYPO3\CMS\Core\Core\Environment;
-use TYPO3\CMS\Core\Database\Schema\Exception\StatementException;
-use TYPO3\CMS\Core\Database\Schema\Exception\UnexpectedSignalReturnValueTypeException;
-use TYPO3\CMS\Core\Database\Schema\SchemaMigrator;
-use TYPO3\CMS\Core\Database\Schema\SqlReader;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Error\Http\AbstractServerErrorException;
 use TYPO3\CMS\Core\Error\Http\InternalServerErrorException;
@@ -45,7 +39,6 @@ use TYPO3\CMS\Core\Error\Http\ServiceUnavailableException;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Http\NormalizedParams;
 use TYPO3\CMS\Core\Http\ServerRequest;
-use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Tests\Functional\SiteHandling\SiteBasedTestTrait;
 use TYPO3\CMS\Core\TimeTracker\TimeTracker;
@@ -54,8 +47,6 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use TYPO3\CMS\Frontend\Http\RequestHandler;
 use TYPO3\TestingFramework\Core\Exception as TestingFrameworkCoreException;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
-
-use function getenv;
 
 /**
  * Base class for all integration tests in the EXT:solr project
@@ -180,41 +171,6 @@ abstract class IntegrationTest extends FunctionalTestCase
     }
 
     /**
-     * Imports an ext_tables.sql definition as done by the install-tool.
-     *
-     * @param string $fixtureName
-     *
-     * @throws DoctrineDBALException
-     * @throws SchemaException
-     * @throws StatementException
-     * @throws UnexpectedSignalReturnValueTypeException
-     */
-    protected function importExtTablesDefinition(string $fixtureName)
-    {
-        // create fake extension database table and TCA
-
-        $schemaMigrationService = GeneralUtility::makeInstance(SchemaMigrator::class);
-        $sqlReader = GeneralUtility::makeInstance(SqlReader::class);
-        $sqlCode = $this->getFixtureContentByName($fixtureName);
-
-        $createTableStatements = $sqlReader->getCreateTableStatementArray($sqlCode);
-
-        $updateResult = $schemaMigrationService->install($createTableStatements);
-        $failedStatements = array_filter($updateResult);
-        $result = [];
-        foreach ($failedStatements as $query => $error) {
-            $result[] = 'Query "' . $query . '" returned "' . $error . '"';
-        }
-
-        if (!empty($result)) {
-            throw new RuntimeException(implode("\n", $result), 1505058450);
-        }
-
-        $insertStatements = $sqlReader->getInsertStatementArray($sqlCode);
-        $schemaMigrationService->importStaticData($insertStatements);
-    }
-
-    /**
      * Returns the directory on runtime.
      *
      * @return string
@@ -223,16 +179,6 @@ abstract class IntegrationTest extends FunctionalTestCase
     {
         $rc = new ReflectionClass(static::class);
         return dirname($rc->getFileName());
-    }
-
-    /**
-     * @param string $version
-     *
-     * @return bool
-     */
-    protected function getIsTYPO3VersionBelow(string $version): bool
-    {
-        return (bool)version_compare(GeneralUtility::makeInstance(Typo3Version::class)->getBranch(), $version, '<');
     }
 
     /**
