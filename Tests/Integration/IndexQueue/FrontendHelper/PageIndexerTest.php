@@ -17,7 +17,6 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\IndexQueue\FrontendHelper;
 
 use ApacheSolrForTypo3\Solr\AdditionalFieldsIndexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
-use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
@@ -25,7 +24,6 @@ use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Page\CacheHashCalculator;
-use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 
 /**
  * Testcase to check if we can index page documents using the PageIndexer
@@ -73,7 +71,7 @@ class PageIndexerTest extends IntegrationTest
 
         $this->importDataSetFromFixture('can_index_into_solr.xml');
 
-        $this->executePageIndexer();
+        $this->indexQueuedPage();
 
         // we wait to make sure the document will be available in solr
         $this->waitToBeVisibleInSolr();
@@ -94,7 +92,7 @@ class PageIndexerTest extends IntegrationTest
 
         $this->importDataSetFromFixture('can_index_custom_pagetype_into_solr.xml');
 
-        $this->executePageIndexer();
+        $this->indexQueuedPage();
 
         // we wait to make sure the document will be available in solr
         $this->waitToBeVisibleInSolr();
@@ -117,8 +115,8 @@ class PageIndexerTest extends IntegrationTest
 
         $this->importDataSetFromFixture('can_index_page_with_relation_to_page.xml');
 
-        $this->executePageIndexer(1, '/en/');
-        $this->executePageIndexer(1, '/de/');
+        $this->indexQueuedPage(1, '/en/');
+        $this->indexQueuedPage(1, '/de/');
 
         // do we have the record in the index with the value from the mm relation?
         $this->waitToBeVisibleInSolr('core_en');
@@ -146,7 +144,7 @@ class PageIndexerTest extends IntegrationTest
         $this->cleanUpSolrServerAndAssertEmpty('core_en');
 
         $this->importDataSetFromFixture('can_index_page_with_relation_to_category.xml');
-        $this->executePageIndexer(10);
+        $this->indexQueuedPage(10);
 
         $this->waitToBeVisibleInSolr('core_en');
 
@@ -167,7 +165,7 @@ class PageIndexerTest extends IntegrationTest
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageSubstitutePageDocument']['ApacheSolrForTypo3\Solr\AdditionalFieldsIndexer'] = AdditionalFieldsIndexer::class;
 
         $this->importDataSetFromFixture('can_index_with_additional_fields_into_solr.xml');
-        $this->executePageIndexer();
+        $this->indexQueuedPage();
 
         // we wait to make sure the document will be available in solr
         $this->waitToBeVisibleInSolr();
@@ -190,7 +188,7 @@ class PageIndexerTest extends IntegrationTest
     public function canIndexPageIntoSolrWithAdditionalFieldsFromRootLine()
     {
         $this->importDataSetFromFixture('can_overwrite_configuration_in_rootline.xml');
-        $this->executePageIndexer(2);
+        $this->indexQueuedPage(2);
 
         // we wait to make sure the document will be available in solr
         $this->waitToBeVisibleInSolr();
@@ -209,7 +207,7 @@ class PageIndexerTest extends IntegrationTest
     public function canExecutePostProcessor()
     {
         $this->importDataSetFromFixture('can_index_into_solr.xml');
-        $this->executePageIndexer();
+        $this->indexQueuedPage();
 
         // we wait to make sure the document will be available in solr
         $this->waitToBeVisibleInSolr();
@@ -225,7 +223,7 @@ class PageIndexerTest extends IntegrationTest
     public function canExecuteAdditionalPageIndexer()
     {
         $this->importDataSetFromFixture('can_index_into_solr.xml');
-        $this->executePageIndexer(1, '/en/', ['additionalTestPageIndexer' => true]);
+        $this->indexQueuedPage(1, '/en/', ['additionalTestPageIndexer' => true]);
 
         // we wait to make sure the document will be available in solr
         $this->waitToBeVisibleInSolr();
@@ -259,7 +257,7 @@ class PageIndexerTest extends IntegrationTest
 
         $this->cleanUpSolrServerAndAssertEmpty();
         $this->importDataSetFromFixture('can_index_mounted_page.xml');
-        $this->executePageIndexer(24, '/en/', ['MP' => '24-14']);
+        $this->indexQueuedPage(24, '/en/', ['MP' => '24-14']);
 
         // we wait to make sure the document will be available in solr
         $this->waitToBeVisibleInSolr();
@@ -291,8 +289,8 @@ class PageIndexerTest extends IntegrationTest
     {
         $this->cleanUpSolrServerAndAssertEmpty();
         $this->importDataSetFromFixture('can_index_multiple_mounted_page.xml');
-        $this->executePageIndexer(44, '/en/', ['MP' => '44-14']);
-        $this->executePageIndexer(44, '/en/', ['MP' => '44-24']);
+        $this->indexQueuedPage(44, '/en/', ['MP' => '44-14']);
+        $this->indexQueuedPage(44, '/en/', ['MP' => '44-24']);
 
         // we wait to make sure the document will be available in solr
         $this->waitToBeVisibleInSolr();
@@ -320,7 +318,7 @@ class PageIndexerTest extends IntegrationTest
         $this->expectException(SiteNotFoundException::class);
 
         $this->importDataSetFromFixture('does_not_die_if_page_not_available.xml');
-        $this->executePageIndexer(1636120156);
+        $this->indexQueuedPage(1636120156);
     }
 
     /**
@@ -350,7 +348,7 @@ class PageIndexerTest extends IntegrationTest
     /**
      * Executes a Frontend request within the same PHP process (possible since TYPO3 v11).
      */
-    protected function executePageIndexer(int $pageId = 1, string $siteLanguageBase = '/en/', $additionalQueryParams = [], string $domain = 'http://testone.site'): ResponseInterface
+    protected function indexQueuedPage(int $pageId = 1, string $siteLanguageBase = '/en/', $additionalQueryParams = [], string $domain = 'http://testone.site'): ResponseInterface
     {
         $additionalQueryParams['id'] = $pageId;
         $additionalQueryParams = array_filter($additionalQueryParams);
@@ -360,23 +358,10 @@ class PageIndexerTest extends IntegrationTest
             $queryString .= '&cHash=' . $cacheHash;
         }
         $url = rtrim($domain, '/') . '/' . ltrim($siteLanguageBase, '/') . '?' . $queryString;
-        $request = new InternalRequest($url);
 
         // Now add the headers for item 4711 to the request
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_solr_indexqueue_item');
         $item = $connection->select(['*'], 'tx_solr_indexqueue_item', ['uid' => 4711])->fetchAssociative();
-        $indexerRequest = GeneralUtility::makeInstance(PageIndexerRequest::class);
-        $indexerRequest->setIndexQueueItem(new Item($item));
-        $indexerRequest->setParameter('item', 4711);
-        $indexerRequest->addAction('indexPage');
-        $headers = $indexerRequest->getHeaders();
-
-        foreach ($headers as $header) {
-            [$headerName, $headerValue] = GeneralUtility::trimExplode(':', $header, true, 2);
-            $request = $request->withAddedHeader($headerName, $headerValue);
-        }
-        $response = $this->executeFrontendSubRequest($request);
-        $response->getBody()->rewind();
-        return $response;
+        return $this->executePageIndexer($url, new Item($item));
     }
 }

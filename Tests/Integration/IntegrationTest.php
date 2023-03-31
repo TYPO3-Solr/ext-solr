@@ -28,7 +28,6 @@ use ReflectionClass;
 use ReflectionException;
 use ReflectionObject;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
-use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
@@ -649,7 +648,6 @@ abstract class IntegrationTest extends FunctionalTestCase
             ['uid' => $template['uid']]
         );
     }
-
 
     /**
      * @throws SiteNotFoundException
