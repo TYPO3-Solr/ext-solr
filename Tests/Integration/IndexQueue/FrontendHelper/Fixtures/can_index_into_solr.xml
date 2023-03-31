@@ -65,7 +65,7 @@
         <pid>0</pid>
         <is_siteroot>1</is_siteroot>
         <doktype>1</doktype>
-		<slug>/</slug>
+        <slug>/</slug>
         <title>hello solr</title>
         <subtitle>the subtitle</subtitle>
         <crdate>1449151778</crdate>
