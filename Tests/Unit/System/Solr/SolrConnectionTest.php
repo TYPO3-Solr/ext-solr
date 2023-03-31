@@ -22,7 +22,7 @@ use ApacheSolrForTypo3\Solr\System\Solr\Parser\SchemaParser;
 use ApacheSolrForTypo3\Solr\System\Solr\Parser\StopWordParser;
 use ApacheSolrForTypo3\Solr\System\Solr\Parser\SynonymParser;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
@@ -35,7 +35,7 @@ use Solarium\Core\Client\Endpoint;
  *
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class SolrConnectionTest extends UnitTest
+class SolrConnectionTest extends SetUpUnitTestCase
 {
     /**
      * @param Node|null $readNode

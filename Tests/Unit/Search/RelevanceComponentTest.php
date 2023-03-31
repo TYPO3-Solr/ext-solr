@@ -21,7 +21,7 @@ use ApacheSolrForTypo3\Solr\Domain\Site\SiteHashService;
 use ApacheSolrForTypo3\Solr\Search\RelevanceComponent;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use Solarium\QueryType\Select\RequestBuilder;
 
 /**
@@ -29,7 +29,7 @@ use Solarium\QueryType\Select\RequestBuilder;
  *
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class RelevanceComponentTest extends UnitTest
+class RelevanceComponentTest extends SetUpUnitTestCase
 {
     /**
      * @param $query

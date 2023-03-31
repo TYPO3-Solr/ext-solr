@@ -21,7 +21,7 @@ use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordUpdate
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\VersionSwappedEvent;
 use ApacheSolrForTypo3\Solr\IndexQueue\RecordMonitor;
 use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
@@ -34,7 +34,7 @@ use TYPO3\CMS\Core\Utility\RootlineUtility;
  *
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class RecordMonitorTest extends UnitTest
+class RecordMonitorTest extends SetUpUnitTestCase
 {
     /**
      * @var RecordMonitor|null

@@ -29,7 +29,7 @@ use ApacheSolrForTypo3\Solr\Domain\Site\SiteHashService;
 use ApacheSolrForTypo3\Solr\Query\Modifier\Faceting;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use PHPUnit\Framework\MockObject\MockObject;
 use Solarium\QueryType\Select\RequestBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -41,7 +41,7 @@ use function json_decode;
  *
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class FacetingTest extends UnitTest
+class FacetingTest extends SetUpUnitTestCase
 {
     /**
      * @param TypoScriptConfiguration $fakeConfiguration

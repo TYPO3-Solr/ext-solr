@@ -23,7 +23,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 
 /**
  * Unit test case for the ObjectReconstitutionProcessor.
@@ -31,7 +31,7 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
  * @author Timo Hund <timo.hund@dkd.de>
  * (c) 2015-2016 Timo Hund <timo.hund@dkd.de>
  */
-class ResultSetReconstitutionProcessorTest extends UnitTest
+class ResultSetReconstitutionProcessorTest extends SetUpUnitTestCase
 {
     /**
      * @param $fixtureFile

@@ -27,7 +27,7 @@ use TYPO3Fluid\Fluid\Core\Variables\StandardVariableProvider;
 /**
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class RemoveAllFacetsViewHelperTest extends AbstractFacetItemViewHelperTest
+class RemoveAllFacetsViewHelperTest extends SetUpFacetItemViewHelper
 {
     /**
      * @test

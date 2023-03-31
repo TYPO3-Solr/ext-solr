@@ -20,14 +20,14 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 
 /**
  * Unit test case for the SearchResult.
  *
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class DefaultParserTest extends UnitTest
+class DefaultParserTest extends SetUpUnitTestCase
 {
     /**
      * @var TypoScriptConfiguration

@@ -24,7 +24,7 @@ use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordUpdate
  *
  * @author Markus Friedrich <markus.friedrich@dkd.de>
  */
-class NoProcessingEventListenerTest extends AbstractEventListenerTest
+class NoProcessingEventListenerTest extends SetUpEventListener
 {
     /**
      * @test

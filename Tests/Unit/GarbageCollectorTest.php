@@ -32,7 +32,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author Markus Friedrich <markus.friedrich@dkd.de>
  */
-class GarbageCollectorTest extends UnitTest
+class GarbageCollectorTest extends SetUpUnitTestCase
 {
     /**
      * @var GarbageCollector

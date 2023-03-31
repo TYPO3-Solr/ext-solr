@@ -22,7 +22,7 @@ use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\ContentEleme
  *
  * @author Markus Friedrich <markus.friedrich@dkd.de>
  */
-class ContentElementDeletedEventTest extends AbstractDataUpdateEventTest
+class ContentElementDeletedEventTest extends SetUpDataUpdateEvent
 {
     protected const EVENT_CLASS = ContentElementDeletedEvent::class;
     protected const EVENT_TEST_TABLE = 'tt_content';

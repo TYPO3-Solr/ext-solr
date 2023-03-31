@@ -18,18 +18,17 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Index\Queue\UpdateHandler\Ev
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\DataUpdateHandler;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\AbstractDataUpdateEvent;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\GarbageHandler;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 
 /**
  * Abstract testcase for the data update events
  *
  * @author Markus Friedrich <markus.friedrich@dkd.de>
  */
-abstract class AbstractDataUpdateEventTest extends UnitTest
+abstract class SetUpDataUpdateEvent extends SetUpUnitTestCase
 {
     /**
-     * @return AbstractDataUpdateEventTest
-     *
+     * @return SetUpDataUpdateEvent
      * @test
      */
     public function canInitAndReturnBasicProperties(): AbstractDataUpdateEvent

@@ -17,14 +17,14 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\Solr\Parser;
 
 use ApacheSolrForTypo3\Solr\System\Solr\Parser\SchemaParser;
 use ApacheSolrForTypo3\Solr\System\Solr\Schema\Schema;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 
 /**
  * Testcase for the SchemaParser class.
  *
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class SchemaParserTest extends UnitTest
+class SchemaParserTest extends SetUpUnitTestCase
 {
     /**
      * @test

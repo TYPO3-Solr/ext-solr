@@ -18,7 +18,7 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Report;
 
 use ApacheSolrForTypo3\Solr\Report\SolrConfigurationStatus;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Reports\Status;
 
@@ -27,7 +27,7 @@ use TYPO3\CMS\Reports\Status;
  *
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class SolrConfigurationStatusTest extends UnitTest
+class SolrConfigurationStatusTest extends SetUpUnitTestCase
 {
     /**
      * @var SolrConfigurationStatus

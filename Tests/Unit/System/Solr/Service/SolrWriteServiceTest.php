@@ -16,7 +16,7 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\Solr\Service;
 
 use ApacheSolrForTypo3\Solr\System\Solr\Service\SolrWriteService;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use Solarium\Client;
 use Solarium\Core\Client\Response;
 use Solarium\QueryType\Update\Query\Query;
@@ -27,7 +27,7 @@ use Solarium\QueryType\Update\Result;
  *
  * @author Jens Jacobsen <typo3@jens-jacobsen.de>
  */
-class SolrWriteServiceTest extends UnitTest
+class SolrWriteServiceTest extends SetUpUnitTestCase
 {
     /**
      * @var Response

@@ -16,22 +16,22 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Controller\Backend\Search;
 
 use ApacheSolrForTypo3\Solr\ConnectionManager;
-use ApacheSolrForTypo3\Solr\Controller\Backend\Search\AbstractModuleController;
+use ApacheSolrForTypo3\Solr\Controller\Backend\Search\AbstractModuleController as ModuleController;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\System\Mvc\Backend\Service\ModuleDataStorageService;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
 use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 
-abstract class AbstractModuleControllerTest extends UnitTest
+abstract class AbstractModuleController extends SetUpUnitTestCase
 {
     /**
-     * @var AbstractModuleController|MockObject
+     * @var ModuleController|MockObject
      */
     protected $controller;
 

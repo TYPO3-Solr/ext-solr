@@ -16,14 +16,14 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\Util;
 
 use ApacheSolrForTypo3\Solr\System\Util\ArrayAccessor;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 
 /**
  * Testcase for the ArrayAccessor helper class.
  *
  * @author Timo Schmidt <timo.schmidt@dkd.de>
  */
-class ArrayAccessorTest extends UnitTest
+class ArrayAccessorTest extends SetUpUnitTestCase
 {
     /**
      * @test

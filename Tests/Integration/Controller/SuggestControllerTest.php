@@ -26,7 +26,7 @@ use TYPO3\CMS\Core\Http\Response;
  * @copyright (c) 2018 Timo Hund <timo.hund@dkd.de>
  * @group frontend
  */
-class SuggestControllerTest extends AbstractFrontendControllerTest
+class SuggestControllerTest extends AbstractFrontendController
 {
     protected function setUp(): void
     {

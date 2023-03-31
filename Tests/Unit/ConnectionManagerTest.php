@@ -41,7 +41,7 @@ use UnexpectedValueException;
  *
  * @author Markus Friedrich <markus.friedrich@dkd.de>
  */
-class ConnectionManagerTest extends UnitTest
+class ConnectionManagerTest extends SetUpUnitTestCase
 {
     /**
      * Connection manager
