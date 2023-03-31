@@ -170,7 +170,7 @@ abstract class AbstractIndexer
             ));
             $typoScriptParser = GeneralUtility::makeInstance(TypoScriptParser::class);
             // $name and $conf is loaded with the referenced values.
-            list($name, $conf) = $typoScriptParser->getVal($referencedTsPath, $GLOBALS['TSFE']->tmpl->setup);
+            [$name, $conf] = $typoScriptParser->getVal($referencedTsPath, $GLOBALS['TSFE']->tmpl->setup);
 
             // need to change directory to make IMAGE content objects work in BE context
             // see http://blog.netzelf.de/lang/de/tipps-und-tricks/tslib_cobj-image-im-backend

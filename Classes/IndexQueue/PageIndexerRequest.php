@@ -448,7 +448,7 @@ class PageIndexerRequest
         $finalHeaders = [];
 
         foreach ($headers as $header) {
-            list($name, $value) = explode(':', $header, 2);
+            [$name, $value] = explode(':', $header, 2);
             $finalHeaders[$name] = trim($value);
         }
 

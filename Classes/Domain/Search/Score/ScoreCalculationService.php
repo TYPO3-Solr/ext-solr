@@ -93,7 +93,7 @@ class ScoreCalculationService
 
         foreach ($scoreMatches[0] as $key => $value) {
             // split field from search term
-            list($field, $searchTerm) = explode(':', $scoreMatches[2][$key]);
+            [$field, $searchTerm] = explode(':', $scoreMatches[2][$key]);
 
             $currentScoreValue = $scoreMatches[1][$key];
 
