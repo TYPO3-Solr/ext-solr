@@ -22,7 +22,7 @@ use ApacheSolrForTypo3\Solr\HtmlContentExtractor;
  *
  * Timo Hund <timo.hund@dkd.de>
  */
-class HtmlContentExtractorTest extends UnitTest
+class HtmlContentExtractorTest extends SetUpUnitTestCase
 {
     /**
      * @test

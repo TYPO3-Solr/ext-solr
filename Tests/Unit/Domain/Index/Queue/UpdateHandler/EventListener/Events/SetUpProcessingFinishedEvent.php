@@ -17,14 +17,14 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Index\Queue\UpdateHandler\Ev
 
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\EventListener\Events\ProcessingFinishedEventInterface;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordUpdatedEvent;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 
 /**
  * Abstract testcase for the processing finished events
  *
  * @author Markus Friedrich <markus.friedrich@dkd.de>
  */
-abstract class AbstractProcessingFinishedEventTest extends UnitTest
+abstract class SetUpProcessingFinishedEvent extends SetUpUnitTestCase
 {
     /**
      * @test

@@ -37,7 +37,7 @@ use TYPO3Fluid\Fluid\View\Exception\InvalidTemplateResourceException;
  * (c) 2010-2015 Timo Hund <timo.hund@dkd.de>
  * @author Timo Hund
  */
-class SearchControllerTest extends AbstractFrontendControllerTest
+class SearchControllerTest extends AbstractFrontendController
 {
     /**
      * @var SearchController

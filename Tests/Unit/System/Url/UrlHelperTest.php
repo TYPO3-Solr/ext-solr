@@ -16,14 +16,14 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\Url;
 
 use ApacheSolrForTypo3\Solr\System\Url\UrlHelper;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 
 /**
  * Testcase to check the functionallity of the UrlHelper
  *
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class UrlHelperTest extends UnitTest
+class UrlHelperTest extends SetUpUnitTestCase
 {
     /**
      * @return array

@@ -24,7 +24,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author Ingo Renner <ingo@typo3.org>
  */
-class Typo3PageContentExtractorTest extends UnitTest
+class Typo3PageContentExtractorTest extends SetUpUnitTestCase
 {
     /**
      * @var TypoScriptConfiguration

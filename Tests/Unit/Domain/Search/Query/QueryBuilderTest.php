@@ -36,7 +36,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\Query\SearchQuery;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteHashService;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use PHPUnit\Framework\MockObject\MockObject;
 use Solarium\QueryType\Select\RequestBuilder;
 
@@ -45,7 +45,7 @@ use function str_starts_with;
 /**
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class QueryBuilderTest extends UnitTest
+class QueryBuilderTest extends SetUpUnitTestCase
 {
     /**
      * @var TypoScriptConfiguration|MockObject

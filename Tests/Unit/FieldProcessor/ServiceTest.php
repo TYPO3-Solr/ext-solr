@@ -17,14 +17,14 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\FieldProcessor;
 
 use ApacheSolrForTypo3\Solr\FieldProcessor\Service;
 use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 
 /**
  * tests the processing Service class
  *
  * @author Daniel Poetzinger <poetzinger@aoemedia.de>
  */
-class ServiceTest extends UnitTest
+class ServiceTest extends SetUpUnitTestCase
 {
     /**
      * @var Document

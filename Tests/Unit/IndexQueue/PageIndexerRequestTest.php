@@ -21,7 +21,7 @@ use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
 use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
@@ -33,7 +33,7 @@ use TYPO3\CMS\Core\Http\RequestFactory;
  *
  * @author Ingo Renner <ingo@typo3.org>
  */
-class PageIndexerRequestTest extends UnitTest
+class PageIndexerRequestTest extends SetUpUnitTestCase
 {
     /**
      * @test

@@ -16,14 +16,14 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\Configuration;
 
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 
 /**
  * Testcase to check if the configuration object can be used as expected
  *
  * @author Timo Schmidt <timo.schmidt@dkd.de>
  */
-class TypoScriptConfigurationTest extends UnitTest
+class TypoScriptConfigurationTest extends SetUpUnitTestCase
 {
     /**
      * @var TypoScriptConfiguration

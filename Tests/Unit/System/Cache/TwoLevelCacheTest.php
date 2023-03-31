@@ -16,7 +16,7 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\Cache;
 
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use TYPO3\CMS\Core\Cache\Backend\BackendInterface;
 use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
 use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
@@ -27,7 +27,7 @@ use TYPO3\CMS\Core\Cache\Frontend\VariableFrontend;
  *
  * @author Timo Schmidt <timo.schmidt@dkd.de>
  */
-class TwoLevelCacheTest extends UnitTest
+class TwoLevelCacheTest extends SetUpUnitTestCase
 {
     /**
      * @var TwoLevelCache

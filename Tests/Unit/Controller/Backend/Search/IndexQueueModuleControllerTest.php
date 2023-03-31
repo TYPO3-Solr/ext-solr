@@ -23,7 +23,7 @@ use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
  *
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class IndexQueueModuleControllerTest extends AbstractModuleControllerTest
+class IndexQueueModuleControllerTest extends AbstractModuleController
 {
     /**
      * @var Queue

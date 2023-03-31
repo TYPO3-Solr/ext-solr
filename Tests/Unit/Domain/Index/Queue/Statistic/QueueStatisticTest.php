@@ -16,13 +16,13 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Index\Queue\Statistic;
 
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\Statistic\QueueStatistic;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class QueueStatisticTest extends UnitTest
+class QueueStatisticTest extends SetUpUnitTestCase
 {
     /**
      * @test

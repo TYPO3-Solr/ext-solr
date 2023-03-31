@@ -19,14 +19,14 @@ use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteHashService;
 use ApacheSolrForTypo3\Solr\Query\Modifier\Elevation;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 
 /**
  * Tests the ApacheSolrForTypo3\Solr\Query\Modifier\Elevation class
  *
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class ElevationTest extends UnitTest
+class ElevationTest extends SetUpUnitTestCase
 {
     /**
      * @test

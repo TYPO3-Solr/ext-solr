@@ -23,7 +23,7 @@ use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordGarbag
  *
  * @author Markus Friedrich <markus.friedrich@dkd.de>
  */
-class RecordGarbageCheckEventTest extends AbstractDataUpdateEventTest
+class RecordGarbageCheckEventTest extends SetUpDataUpdateEvent
 {
     protected const EVENT_CLASS = RecordGarbageCheckEvent::class;
     protected const EVENT_TEST_TABLE = 'tx_foo_bar';

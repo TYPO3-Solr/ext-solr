@@ -16,14 +16,14 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Access;
 
 use ApacheSolrForTypo3\Solr\Access\RootlineElement;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 
 /**
  * Testcase to verify the functionality of the RootlineElement
  *
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class RootlineElementTest extends UnitTest
+class RootlineElementTest extends SetUpUnitTestCase
 {
     /**
      * @return array
