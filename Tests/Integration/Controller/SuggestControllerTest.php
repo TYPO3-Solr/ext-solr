@@ -17,6 +17,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Controller;
 
 use ApacheSolrForTypo3\Solr\Controller\SuggestController;
 use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageFieldMappingIndexer;
+use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use TYPO3\CMS\Core\Http\Response;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 
@@ -26,7 +27,7 @@ use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
  * @author Timo Hund
  * @group frontend
  */
-class SuggestControllerTest extends AbstractFrontendController
+class SuggestControllerTest extends IntegrationTest
 {
     protected array $configurationToUseInTestInstance = [
         'EXTCONF' => [
@@ -43,6 +44,7 @@ class SuggestControllerTest extends AbstractFrontendController
     protected function setUp(): void
     {
         parent::setUp();
+        $this->writeDefaultSolrTestSiteConfiguration();
         $this->addTypoScriptToTemplateRecord(
             1,
             /* @lang TYPO3_TypoScript */
@@ -54,6 +56,15 @@ class SuggestControllerTest extends AbstractFrontendController
             @import \'EXT:solr/Configuration/TypoScript/Examples/Suggest/setup.typoscript\'
             '
         );
+    }
+
+    /**
+     * Executed after each test. Empties solr and checks if the index is empty
+     */
+    protected function tearDown(): void
+    {
+        $this->cleanUpSolrServerAndAssertEmpty();
+        parent::tearDown();
     }
 
     /**

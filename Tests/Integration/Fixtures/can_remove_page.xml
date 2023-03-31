@@ -7,6 +7,7 @@
         <doktype>1</doktype>
         <hidden>0</hidden>
         <title>Test Childpage</title>
+        <slug>/test-childpage</slug>
     </pages>
 
     <tt_content>
