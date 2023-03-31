@@ -6,6 +6,7 @@
 		<is_siteroot>0</is_siteroot>
 		<doktype>1</doktype>
 		<title>Simple Page outside any site root</title>
+		<slug>/outside-any-site-root</slug>
 	</pages>
 	<pages>
 		<uid>445</uid>
@@ -13,5 +14,6 @@
 		<is_siteroot>0</is_siteroot>
 		<doktype>254</doktype>
 		<title>Simple sys-folder outside any site root</title>
+		<slug>/simple-sys-folder</slug>
 	</pages>
 </dataset>

@@ -7,6 +7,7 @@
         <sys_language_uid>1</sys_language_uid>
         <doktype>1</doktype>
         <title>Hello Translation</title>
+        <slug>/hello-translation</slug>
     </pages>
 
     <tx_solr_indexqueue_item>

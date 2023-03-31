@@ -17,11 +17,13 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration;
 
 use ApacheSolrForTypo3\Solr\Access\Rootline;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
+use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
 use ApacheSolrForTypo3\Solr\Typo3PageIndexer;
 use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use Doctrine\DBAL\Exception as DoctrineDBALException;
 use InvalidArgumentException;
 use PHPUnit\Framework\MockObject\MockObject;
+use Psr\Http\Message\ResponseInterface;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionObject;
@@ -32,6 +34,7 @@ use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Context\UserAspect;
 use TYPO3\CMS\Core\Core\Environment;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Domain\ConsumableString;
 use TYPO3\CMS\Core\Error\Http\AbstractServerErrorException;
@@ -41,12 +44,15 @@ use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Http\NormalizedParams;
 use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
+use TYPO3\CMS\Core\Site\Entity\Site;
+use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Tests\Functional\SiteHandling\SiteBasedTestTrait;
 use TYPO3\CMS\Core\TimeTracker\TimeTracker;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use TYPO3\CMS\Frontend\Http\RequestHandler;
 use TYPO3\TestingFramework\Core\Exception as TestingFrameworkCoreException;
+use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 /**
@@ -104,12 +110,6 @@ abstract class IntegrationTest extends FunctionalTestCase
 
         //this is needed by the TYPO3 core.
         chdir(Environment::getPublicPath() . '/');
-
-        // during the tests we don't want the core to cache something in cache_core
-        /* @var CacheManager $cacheManager */
-        $cacheManager = GeneralUtility::makeInstance(CacheManager::class);
-        $coreCache = $cacheManager->getCache('core');
-        $coreCache->flush();
 
         $this->instancePath = $this->getInstancePath();
 
@@ -648,5 +648,64 @@ abstract class IntegrationTest extends FunctionalTestCase
             $updateFields,
             ['uid' => $template['uid']]
         );
+    }
+
+
+    /**
+     * @throws SiteNotFoundException
+     */
+    protected function indexPages(array $importPageIds)
+    {
+        // Mark the pages as items to index
+        $siteFinder = GeneralUtility::makeInstance(SiteFinder::class);
+        foreach ($importPageIds as $importPageId) {
+            $site = $siteFinder->getSiteByPageId($importPageId);
+            $queueItem = $this->addPageToIndex($importPageId, $site);
+            $frontendUrl = $site->getRouter()->generateUri($importPageId);
+            $this->executePageIndexer($frontendUrl, $queueItem);
+        }
+        $this->waitToBeVisibleInSolr();
+    }
+
+    /**
+     * Adds a page to the queue (into DB table tx_solr_indexqueue_item) so it can
+     * be fetched via a frontend subrequest
+     */
+    protected function addPageToIndex(int $pageId, Site $site): Item
+    {
+        $queueItem = [
+            'root' => $site->getRootPageId(),
+            'item_type' => 'pages',
+            'item_uid' => $pageId,
+            'indexing_configuration' => 'pages',
+            'errors' => '',
+        ];
+        $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_solr_indexqueue_item');
+        $connection->insert('tx_solr_indexqueue_item', $queueItem);
+        $queueItem['uid'] = (int)$connection->lastInsertId();
+        return new Item($queueItem);
+    }
+
+    /**
+     * Executes a Frontend request within the same PHP process to trigger the indexing of a page.
+     */
+    protected function executePageIndexer(string $url, Item $item): ResponseInterface
+    {
+        $request = new InternalRequest($url);
+
+        // Now add the headers for item to the request
+        $indexerRequest = GeneralUtility::makeInstance(PageIndexerRequest::class);
+        $indexerRequest->setIndexQueueItem($item);
+        $indexerRequest->setParameter('item', $item->getIndexQueueUid());
+        $indexerRequest->addAction('indexPage');
+        $headers = $indexerRequest->getHeaders();
+
+        foreach ($headers as $header) {
+            [$headerName, $headerValue] = GeneralUtility::trimExplode(':', $header, true, 2);
+            $request = $request->withAddedHeader($headerName, $headerValue);
+        }
+        $response = $this->executeFrontendSubRequest($request);
+        $response->getBody()->rewind();
+        return $response;
     }
 }

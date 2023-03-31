@@ -6,6 +6,7 @@
 		<doktype>1</doktype>
 		<hidden>0</hidden>
 		<title>Testpage</title>
+		<slug>/testpage</slug>
 	</pages>
 
 	<tt_content>
