@@ -161,7 +161,7 @@ class UserGroupDetector extends AbstractFrontendHelper implements
     public function postProcessContentObjectInitialization(ContentObjectRenderer &$parentObject)
     {
         if (!empty($parentObject->currentRecord)) {
-            list($table) = explode(':', $parentObject->currentRecord);
+            [$table] = explode(':', $parentObject->currentRecord);
 
             if (!empty($table) && $table != 'pages') {
                 $this->findFrontendGroups($parentObject->data, $table);
