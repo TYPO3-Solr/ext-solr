@@ -91,7 +91,7 @@ class Classification extends AbstractContentObject
             // @todo deprecate patterns configuration
             $patterns = empty($class['patterns']) ? [] : GeneralUtility::trimExplode(',', $class['patterns']);
             $matchPatterns = empty($class['matchPatterns']) ? [] : GeneralUtility::trimExplode(',', $class['matchPatterns']);
-            $matchPatterns = $matchPatterns + $patterns;
+            $matchPatterns += $patterns;
             $unMatchPatters = empty($class['unmatchPatterns']) ? [] : GeneralUtility::trimExplode(',', $class['unmatchPatterns']);
 
             $className = $class['class'];

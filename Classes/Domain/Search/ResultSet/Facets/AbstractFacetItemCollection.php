@@ -86,7 +86,7 @@ abstract class AbstractFacetItemCollection extends AbstractCollection
             }
         }
         // in the end all items get appended that are not configured in the manual sort order
-        $sortedOptions = $sortedOptions + $copiedItems;
+        $sortedOptions += $copiedItems;
         $result->data = $sortedOptions;
 
         return $result;

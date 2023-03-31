@@ -46,10 +46,6 @@ class StatisticsWriterProcessor implements SearchResultSetProcessor
      */
     protected $siteRepository;
 
-    /**
-     * @param StatisticsRepository|null $statisticsRepository
-     * @param SiteRepository|null $siteRepository
-     */
     public function __construct(
         StatisticsRepository $statisticsRepository = null,
         SiteRepository $siteRepository = null
@@ -59,8 +55,6 @@ class StatisticsWriterProcessor implements SearchResultSetProcessor
     }
 
     /**
-     * @param SearchResultSet $resultSet
-     * @return SearchResultSet
      * @throws AspectNotFoundException
      */
     public function process(SearchResultSet $resultSet): SearchResultSet
@@ -111,11 +105,6 @@ class StatisticsWriterProcessor implements SearchResultSetProcessor
         return $resultSet;
     }
 
-    /**
-     * @param Query $query
-     * @param bool $lowerCaseQuery
-     * @return string
-     */
     protected function getProcessedKeywords(
         Query $query,
         bool $lowerCaseQuery = false
@@ -145,17 +134,11 @@ class StatisticsWriterProcessor implements SearchResultSetProcessor
         return trim($string);
     }
 
-    /**
-     * @return TypoScriptFrontendController
-     */
     protected function getTSFE(): ?TypoScriptFrontendController
     {
         return $GLOBALS['TSFE'];
     }
 
-    /**
-     * @return string
-     */
     protected function getUserIp(): string
     {
         return GeneralUtility::getIndpEnv('REMOTE_ADDR');

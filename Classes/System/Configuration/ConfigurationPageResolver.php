@@ -56,7 +56,6 @@ class ConfigurationPageResolver
      * The result is stored in the runtime cache.
      *
      * @param int $startPageId
-     * @return int
      * @throws DBALDriverException
      */
     public function getClosestPageIdWithActiveTemplate(int $startPageId): ?int
@@ -81,7 +80,6 @@ class ConfigurationPageResolver
      * This method fetches the rootLine and calculates the id of the closest template in the rootLine.
      *
      * @param int $startPageId
-     * @return int
      * @throws DBALDriverException
      */
     protected function calculateClosestPageIdWithActiveTemplate(int $startPageId): ?int

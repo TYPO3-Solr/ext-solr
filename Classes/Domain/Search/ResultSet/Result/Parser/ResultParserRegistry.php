@@ -96,7 +96,7 @@ class ResultParserRegistry implements SingletonInterface
     }
 
     /**
-     * @return AbstractResultParser[]
+     * @return array|null|AbstractResultParser[]
      */
     public function getParserInstances(): ?array
     {

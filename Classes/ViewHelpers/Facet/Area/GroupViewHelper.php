@@ -55,7 +55,7 @@ class GroupViewHelper extends AbstractSolrFrontendViewHelper
     {
         /** @var  $facets FacetCollection */
         $facets = $arguments['facets'];
-        $requiredGroup = isset($arguments['groupName']) ? $arguments['groupName'] : 'main';
+        $requiredGroup = $arguments['groupName'] ?? 'main';
         $filtered = $facets->getByGroupName($requiredGroup);
 
         $templateVariableProvider = $renderingContext->getVariableProvider();

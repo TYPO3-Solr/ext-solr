@@ -59,7 +59,6 @@ class Builder
      * @param string $url
      * @param Rootline $pageAccessRootline
      * @param string $mountPointParameter
-     * @return Document|object
      * @throws AspectNotFoundException
      * @throws DBALDriverException
      */

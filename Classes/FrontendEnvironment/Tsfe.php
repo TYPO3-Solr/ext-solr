@@ -211,13 +211,6 @@ class Tsfe implements SingletonInterface
     /**
      * Returns TypoScriptFrontendController with sand cast context.
      *
-     * @param int $pageId
-     * @param int $language
-     *
-     * @param int|null $rootPageId
-     *
-     * @return TypoScriptFrontendController
-     *
      * @throws SiteNotFoundException
      * @throws DBALDriverException
      * @throws Exception\Exception
@@ -285,13 +278,6 @@ class Tsfe implements SingletonInterface
     /**
      * Returns TypoScriptFrontendController with sand cast context.
      *
-     * @param int $pageId
-     * @param int $language
-     *
-     * @param int|null $rootPageId
-     *
-     * @return ServerRequest
-     *
      * @throws SiteNotFoundException
      * @throws DBALDriverException
      * @throws Exception\Exception
@@ -348,11 +334,6 @@ class Tsfe implements SingletonInterface
      *
      * Note: The requested $pidToUse can be one of configured plugin.tx_solr.index.queue.[indexConfig].additionalPageIds.
      *
-     * @param int $pidToUse
-     *
-     * @param int|null $rootPageId
-     *
-     * @return int
      * @throws DBALDriverException
      * @throws Exception\Exception
      */

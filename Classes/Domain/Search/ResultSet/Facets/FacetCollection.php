@@ -32,9 +32,6 @@ class FacetCollection extends AbstractCollection
         $this->data[$facet->getName()] = $facet;
     }
 
-    /**
-     * @return FacetCollection|AbstractCollection
-     */
     public function getUsed(): AbstractCollection
     {
         return $this->getFilteredCopy(
@@ -44,9 +41,6 @@ class FacetCollection extends AbstractCollection
         );
     }
 
-    /**
-     * @return FacetCollection|AbstractCollection
-     */
     public function getAvailable(): AbstractCollection
     {
         return $this->getFilteredCopy(
@@ -84,7 +78,7 @@ class FacetCollection extends AbstractCollection
 
     /**
      * @param int $position
-     * @return AbstractFacet
+     * @return AbstractFacet|object
      */
     public function getByPosition(int $position): ?object
     {

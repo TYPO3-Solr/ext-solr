@@ -180,8 +180,6 @@ class Item
 
     /**
      * Getter for Index Queue UID
-     *
-     * @return int
      */
     public function getIndexQueueUid(): ?int
     {
@@ -200,41 +198,27 @@ class Item
 
     /**
      * Returns mount point identifier
-     *
-     * @return string
      */
     public function getMountPointIdentifier(): ?string
     {
         return $this->mountPointIdentifier;
     }
 
-    /**
-     * @param int $uid
-     */
     public function setRootPageUid(int $uid)
     {
         $this->rootPageUid = $uid;
     }
 
-    /**
-     * @return string
-     */
     public function getErrors(): string
     {
         return $this->errors;
     }
 
-    /**
-     * @return bool
-     */
     public function getHasErrors(): bool
     {
         return trim($this->errors) !== '';
     }
 
-    /**
-     * @return int
-     */
     public function getState(): int
     {
         if ($this->getHasErrors()) {

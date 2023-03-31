@@ -54,21 +54,23 @@ class QueryViewHelper extends AbstractSolrFrontendViewHelper
         $content = '';
         $resultSet = self::getUsedSearchResultSetFromRenderingContext($renderingContext);
         $backendUserIsLoggedIn = GeneralUtility::makeInstance(Context::class)->getPropertyFromAspect('backend.user', 'isLoggedIn');
-        if ($backendUserIsLoggedIn === true && $resultSet && $resultSet->getUsedSearch() !== null) {
-            if (
-                $resultSet->getHasSearched() === true
-                && $resultSet->getUsedSearch()->getDebugResponse() !== null
-                && !empty($resultSet->getUsedSearch()->getDebugResponse()->parsedquery)
-            ) {
-                $renderingContext->getVariableProvider()->add('parsedQuery', $resultSet->getUsedSearch()->getDebugResponse()->parsedquery);
-                $content = $renderChildrenClosure();
-                $renderingContext->getVariableProvider()->remove('parsedQuery');
+        if (
+            $backendUserIsLoggedIn === true
+            && $resultSet
+            && $resultSet->getUsedSearch() !== null
+            && $resultSet->getHasSearched() === true
+            && $resultSet->getUsedSearch()->getDebugResponse() !== null
+            && !empty($resultSet->getUsedSearch()->getDebugResponse()->parsedquery)
+        ) {
+            $renderingContext->getVariableProvider()->add('parsedQuery', $resultSet->getUsedSearch()->getDebugResponse()->parsedquery);
+            $content = $renderChildrenClosure();
+            $renderingContext->getVariableProvider()->remove('parsedQuery');
 
-                if ($content === null) {
-                    $content = '<br><strong>Parsed Query:</strong><br>' . htmlspecialchars($resultSet->getUsedSearch()->getDebugResponse()->parsedquery);
-                }
+            if ($content === null) {
+                $content = '<br><strong>Parsed Query:</strong><br>' . htmlspecialchars($resultSet->getUsedSearch()->getDebugResponse()->parsedquery);
             }
         }
+
         return $content;
     }
 }

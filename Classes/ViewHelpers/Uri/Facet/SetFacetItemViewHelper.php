@@ -40,7 +40,7 @@ class SetFacetItemViewHelper extends AbstractValueViewHelper
         $itemValue = self::getValueFromArguments($arguments);
         $resultSet = self::getResultSetFromArguments($arguments);
         $previousRequest = $resultSet->getUsedSearchRequest();
-        $uri = self::getSearchUriBuilder($renderingContext)->getSetFacetValueUri($previousRequest, $name, $itemValue);
-        return $uri;
+
+        return self::getSearchUriBuilder($renderingContext)->getSetFacetValueUri($previousRequest, $name, $itemValue);
     }
 }

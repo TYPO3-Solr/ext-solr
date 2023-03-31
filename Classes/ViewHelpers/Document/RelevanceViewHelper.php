@@ -42,7 +42,7 @@ class RelevanceViewHelper extends AbstractSolrFrontendViewHelper
         parent::initializeArguments();
         $this->registerArgument('resultSet', SearchResultSet::class, 'The context searchResultSet', true);
         $this->registerArgument('document', SearchResult::class, 'The document to highlight', true);
-        $this->registerArgument('maximumScore', 'float', 'The maximum score that should be used for percentage calculation, if nothing is passed the maximum from the resultSet is used', false);
+        $this->registerArgument('maximumScore', 'float', 'The maximum score that should be used for percentage calculation, if nothing is passed the maximum from the resultSet is used');
     }
 
     /**
