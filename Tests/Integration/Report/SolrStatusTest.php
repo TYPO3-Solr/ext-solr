@@ -17,8 +17,8 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Report;
 
 use ApacheSolrForTypo3\Solr\Report\SolrStatus;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Reports\Status;
 
 /**
  * Integration test for the solr status report
@@ -34,13 +34,11 @@ class SolrStatusTest extends IntegrationTest
     {
         $this->writeDefaultSolrTestSiteConfiguration();
 
-        /** @var $solrStatus  SolrStatus */
         $solrStatus = GeneralUtility::makeInstance(SolrStatus::class);
         $statusCollection = $solrStatus->getStatus();
 
         foreach ($statusCollection as $status) {
-            /** @var $status Status */
-            self::assertSame(Status::OK, $status->getSeverity(), 'Expected that all status objects should be ok');
+            self::assertSame(ContextualFeedbackSeverity::OK, $status->getSeverity(), 'Expected that all status objects should be ok');
         }
     }
 
@@ -51,13 +49,11 @@ class SolrStatusTest extends IntegrationTest
     {
         $this->writeDefaultSolrTestSiteConfigurationForHostAndPort(null, 'invalid', 4711);
 
-        /** @var $solrStatus  SolrStatus */
         $solrStatus = GeneralUtility::makeInstance(SolrStatus::class);
         $statusCollection = $solrStatus->getStatus();
 
         foreach ($statusCollection as $status) {
-            /** @var $status Status */
-            self::assertSame(Status::ERROR, $status->getSeverity(), 'Expected that all status objects should indicate an error');
+            self::assertSame(ContextualFeedbackSeverity::ERROR, $status->getSeverity(), 'Expected that all status objects should indicate an error');
         }
     }
 }
