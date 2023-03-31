@@ -47,12 +47,14 @@ class ConfigurationManager implements SingletonInterface
      *
      * @param array|null $configurationArray
      * @param int|null $contextPageId
-     * @param int $contextLanguageId
      * @param string $contextTypoScriptPath
      * @return TypoScriptConfiguration
      */
-    public function getTypoScriptConfiguration(array $configurationArray = null, int $contextPageId = null, int $contextLanguageId = 0, string $contextTypoScriptPath = ''): TypoScriptConfiguration
-    {
+    public function getTypoScriptConfiguration(
+        array $configurationArray = null,
+        int $contextPageId = null,
+        string $contextTypoScriptPath = ''
+    ): TypoScriptConfiguration {
         if ($configurationArray == null) {
             if (isset($this->typoScriptConfigurations['default'])) {
                 $configurationArray = $this->typoScriptConfigurations['default'];
@@ -76,7 +78,7 @@ class ConfigurationManager implements SingletonInterface
             $contextPageId = $GLOBALS['TSFE']->id;
         }
 
-        $hash = md5(serialize($configurationArray)) . '-' . $contextPageId . '-' . $contextLanguageId . '-' . $contextTypoScriptPath;
+        $hash = md5(serialize($configurationArray)) . '-' . $contextPageId . '-' . $contextTypoScriptPath;
         if (isset($this->typoScriptConfigurations[$hash])) {
             return $this->typoScriptConfigurations[$hash];
         }

@@ -88,7 +88,7 @@ class TypoScriptConfiguration
      * @param mixed $value
      * @return bool
      */
-    protected function getBool($value): bool
+    protected function getBool(mixed $value): bool
     {
         return filter_var($value, FILTER_VALIDATE_BOOLEAN);
     }
@@ -936,23 +936,6 @@ class TypoScriptConfiguration
     {
         $result = $this->getValueByPathOrDefaultValue('plugin.tx_solr.enableDebugMode', $defaultIfEmpty);
         return $this->getBool($result);
-    }
-
-    /**
-     * @param $path
-     * @param $fallbackPath
-     * @param $defaultIfBothIsEmpty
-     * @return mixed
-     */
-    public function getValueByPathWithFallbackOrDefaultValueAndApplyStdWrap($path, $fallbackPath, $defaultIfBothIsEmpty)
-    {
-        $result = (string)$this->getValueByPathOrDefaultValue($path, '');
-        if ($result !== '') {
-            return $this->renderContentElementOfConfigured($path, $result);
-        }
-
-        $result = (string)$this->getValueByPathOrDefaultValue($fallbackPath, $defaultIfBothIsEmpty);
-        return $this->renderContentElementOfConfigured($fallbackPath, $result);
     }
 
     /**

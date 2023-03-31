@@ -24,7 +24,6 @@ use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\TypoScript\Parser\TypoScriptParser;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use UnexpectedValueException;
 
 /**
@@ -66,8 +65,11 @@ abstract class AbstractIndexer
      * @param array $data Record data
      * @return Document Modified document with added fields
      */
-    protected function addDocumentFieldsFromTyposcript(Document $document, array $indexingConfiguration, array $data, TypoScriptFrontendController $tsfe): Document
-    {
+    protected function addDocumentFieldsFromTyposcript(
+        Document $document,
+        array $indexingConfiguration,
+        array $data,
+    ): Document {
         $data = static::addVirtualContentFieldToRecord($document, $data);
 
         // mapping of record fields => solr document fields, resolving cObj
@@ -84,7 +86,7 @@ abstract class AbstractIndexer
                 );
             }
 
-            $fieldValue = $this->resolveFieldValue($indexingConfiguration, $solrFieldName, $data, $tsfe);
+            $fieldValue = $this->resolveFieldValue($indexingConfiguration, $solrFieldName, $data);
             if ($fieldValue === null) {
                 continue;
             }
@@ -129,15 +131,13 @@ abstract class AbstractIndexer
      * @param array $indexingConfiguration Indexing configuration as defined in plugin.tx_solr_index.queue.[indexingConfigurationName].fields
      * @param string $solrFieldName A Solr field name that is configured in the indexing configuration
      * @param array $data A record or item's data
-     * @param TypoScriptFrontendController $tsfe
-     * @return string|null The resolved string value to be indexed; null if value could not be resolved
+     * @return string|array|null The resolved string value to be indexed; null if value could not be resolved
      */
     protected function resolveFieldValue(
         array $indexingConfiguration,
         string $solrFieldName,
         array $data,
-        TypoScriptFrontendController $tsfe
-    ) {
+    ): mixed {
         if (isset($indexingConfiguration[$solrFieldName . '.'])) {
             // configuration found => need to resolve a cObj
 
@@ -146,8 +146,8 @@ abstract class AbstractIndexer
             $backupWorkingDirectory = getcwd();
             chdir(Environment::getPublicPath() . '/');
 
-            $tsfe->cObj->start($data, $this->type);
-            $fieldValue = $tsfe->cObj->cObjGetSingle(
+            $GLOBALS['TSFE']->cObj->start($data, $this->type);
+            $fieldValue = $GLOBALS['TSFE']->cObj->cObjGetSingle(
                 $indexingConfiguration[$solrFieldName],
                 $indexingConfiguration[$solrFieldName . '.']
             );
@@ -162,7 +162,7 @@ abstract class AbstractIndexer
                 $fieldValue = unserialize($fieldValue);
             }
         } elseif (
-            substr($indexingConfiguration[$solrFieldName], 0, 1) === '<'
+            str_starts_with($indexingConfiguration[$solrFieldName], '<')
         ) {
             $referencedTsPath = trim(substr(
                 $indexingConfiguration[$solrFieldName],
@@ -177,8 +177,8 @@ abstract class AbstractIndexer
             $backupWorkingDirectory = getcwd();
             chdir(Environment::getPublicPath() . '/');
 
-            $tsfe->cObj->start($data, $this->type);
-            $fieldValue = $tsfe->cObj->cObjGetSingle($name, $conf);
+            $GLOBALS['TSFE']->cObj->start($data, $this->type);
+            $fieldValue = $GLOBALS['TSFE']->cObj->cObjGetSingle($name, $conf);
 
             chdir($backupWorkingDirectory);
 
@@ -302,7 +302,7 @@ abstract class AbstractIndexer
      * @param string $fieldType The dynamic field's type
      * @return mixed Returns the value in the correct format for the field type
      */
-    protected function ensureFieldValueType($value, string $fieldType)
+    protected function ensureFieldValueType(mixed $value, string $fieldType): mixed
     {
         switch ($fieldType) {
             case 'int':

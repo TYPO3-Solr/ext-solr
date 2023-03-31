@@ -17,14 +17,12 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr;
 
-use ApacheSolrForTypo3\Solr\FrontendEnvironment\Tsfe;
 use ApacheSolrForTypo3\Solr\FrontendEnvironment\TypoScript;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * Class FrontendEnvironment is responsible for initializing/simulating the frontend in backend context
@@ -42,14 +40,16 @@ class FrontendEnvironment implements SingletonInterface
      *
      * @param int $pageId
      * @param ?string $path
-     * @param ?int $language
      * @param int|null $rootPageId
      * @return TypoScriptConfiguration
      * @throws DBALDriverException
      */
-    public function getConfigurationFromPageId(int $pageId, ?string $path = '', ?int $language = 0, ?int $rootPageId = null): TypoScriptConfiguration
-    {
-        return GeneralUtility::makeInstance(TypoScript::class)->getConfigurationFromPageId($pageId, $path, $language, $rootPageId);
+    public function getConfigurationFromPageId(
+        int $pageId,
+        ?string $path = '',
+        ?int $rootPageId = null
+    ): TypoScriptConfiguration {
+        return GeneralUtility::makeInstance(TypoScript::class)->getConfigurationFromPageId($pageId, $path, $rootPageId);
     }
 
     /**
@@ -74,11 +74,7 @@ class FrontendEnvironment implements SingletonInterface
             $rootPageRecordUid = $pageRecord['l10n_parent'];
         }
 
-        $tsfe = GeneralUtility::makeInstance(Tsfe::class)->getTsfeByPageIdIgnoringLanguage($rootPageRecordUid);
-        if (!$tsfe instanceof TypoScriptFrontendController) {
-            return false;
-        }
-        $configuration = $this->getConfigurationFromPageId($rootPageRecordUid, '', $tsfe->getLanguage()->getLanguageId());
+        $configuration = $this->getConfigurationFromPageId($rootPageRecordUid);
         if ($configurationName !== null) {
             $allowedPageTypes = $configuration->getIndexQueueAllowedPageTypesArrayByConfigurationName($configurationName);
         } else {
@@ -93,13 +89,14 @@ class FrontendEnvironment implements SingletonInterface
      * Returns TypoScriptConfiguration for desired page ID and language id.
      *
      * @param int $pageId
-     * @param ?int $language
      * @param int|null $rootPageId
      * @return TypoScriptConfiguration
      * @throws DBALDriverException
      */
-    public function getSolrConfigurationFromPageId(int $pageId, ?int $language = 0, ?int $rootPageId = null): TypoScriptConfiguration
-    {
-        return $this->getConfigurationFromPageId($pageId, '', $language, $rootPageId);
+    public function getSolrConfigurationFromPageId(
+        int $pageId,
+        ?int $rootPageId = null
+    ): TypoScriptConfiguration {
+        return $this->getConfigurationFromPageId($pageId, '', $rootPageId);
     }
 }
