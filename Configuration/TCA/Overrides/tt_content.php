@@ -1,8 +1,6 @@
 <?php
 
-if (!defined('TYPO3')) {
-    die('Access denied.');
-}
+defined('TYPO3') or die('Access denied.');
 
 // Register the plugins
 $pluginSignature = 'solr_pi_search';
