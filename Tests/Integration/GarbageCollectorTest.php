@@ -809,7 +809,8 @@ class GarbageCollectorTest extends IntegrationTest
         self::assertStringContainsString('"numFound":2', $solrContent, 'Expected to have two documents in the index');
 
         // we hide the second page
-        $beUser = $this->fakeBEUser(1, 0);
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/sites_setup_and_data_set/be_users.csv');
+        $beUser = $this->setUpBackendUser(1);
 
         $this->dataHandler->start($dataMap, $cmdMap, $beUser);
         $this->dataHandler->stripslashes_values = 0;

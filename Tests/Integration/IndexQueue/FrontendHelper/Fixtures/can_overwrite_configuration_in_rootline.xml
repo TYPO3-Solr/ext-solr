@@ -91,6 +91,7 @@
         <is_siteroot>1</is_siteroot>
         <doktype>1</doktype>
         <title>hello solr</title>
+        <slug>/</slug>
         <subtitle>the subtitle</subtitle>
         <crdate>1449151778</crdate>
         <tstamp>1449151778</tstamp>
@@ -102,6 +103,7 @@
         <is_siteroot>1</is_siteroot>
         <doktype>1</doktype>
         <title>hello subpage</title>
+        <slug>/hello-subpage</slug>
         <subtitle>the subpage subtitle</subtitle>
         <crdate>1449151778</crdate>
         <tstamp>1449151778</tstamp>

@@ -19,6 +19,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Controller;
 
 use ApacheSolrForTypo3\Solr\Controller\SearchController;
 use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageFieldMappingIndexer;
+use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use DOMDocument;
 use TYPO3\CMS\Core\Http\Response;
 use TYPO3\TestingFramework\Core\Exception as TestingFrameworkCoreException;
@@ -32,7 +33,7 @@ use TYPO3Fluid\Fluid\View\Exception\InvalidTemplateResourceException;
  * (c) 2010-2015 Timo Hund <timo.hund@dkd.de>
  * @author Timo Hund
  */
-class SearchControllerTest extends AbstractFrontendController
+class SearchControllerTest extends IntegrationTest
 {
     /**
      * @var SearchController
@@ -59,7 +60,17 @@ class SearchControllerTest extends AbstractFrontendController
     protected function setUp(): void
     {
         parent::setUp();
+        $this->writeDefaultSolrTestSiteConfiguration();
         $this->bootstrapSearchResultsPluginOnPage();
+    }
+
+    /**
+     * Executed after each test. Empties solr and checks if the index is empty
+     */
+    protected function tearDown(): void
+    {
+        $this->cleanUpSolrServerAndAssertEmpty();
+        parent::tearDown();
     }
 
     /**

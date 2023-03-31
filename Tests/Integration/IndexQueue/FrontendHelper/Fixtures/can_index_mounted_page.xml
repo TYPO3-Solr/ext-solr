@@ -81,6 +81,7 @@ There is following scenario:
         <mount_pid>0</mount_pid>
         <mount_pid_ol>0</mount_pid_ol>
         <title>Shared-Pages</title>
+        <slug>/</slug>
         <TSconfig/>
         <tsconfig_includes/>
     </pages>
@@ -92,6 +93,7 @@ There is following scenario:
             <mount_pid>0</mount_pid>
             <mount_pid_ol>0</mount_pid_ol>
             <title>FirstShared (Not root)</title>
+            <slug>/first-shared</slug>
             <TSconfig></TSconfig>
             <tsconfig_includes/>
         </pages>
@@ -109,6 +111,7 @@ There is following scenario:
         <doktype>1</doktype>
         <pid>0</pid>
         <title>Page (Root)</title>
+        <slug>/</slug>
     </pages>
         <pages>
             <uid>14</uid>
@@ -118,6 +121,7 @@ There is following scenario:
             <mount_pid>24</mount_pid>
             <mount_pid_ol>1</mount_pid_ol>
             <title>Mount Point</title>
+            <slug>/mount-point</slug>
             <TSconfig/>
             <content_from_pid>0</content_from_pid>
             <tsconfig_includes/>
