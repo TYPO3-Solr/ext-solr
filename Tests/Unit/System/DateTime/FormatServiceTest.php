@@ -16,14 +16,14 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\DateTime;
 
 use ApacheSolrForTypo3\Solr\System\DateTime\FormatService;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 
 /**
  * Testcase for FormatService
  *
  * @author Thomas Hohn <tho@systime.dk>
  */
-class FormatServiceTest extends UnitTest
+class FormatServiceTest extends SetUpUnitTestCase
 {
     /**
      * @var FormatService

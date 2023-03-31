@@ -17,14 +17,14 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets\Opti
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Hierarchy\HierarchyFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Hierarchy\Node;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 
 /**
  * Testcase to test the Node class
  *
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class NodeTest extends UnitTest
+class NodeTest extends SetUpUnitTestCase
 {
     /**
      * @test

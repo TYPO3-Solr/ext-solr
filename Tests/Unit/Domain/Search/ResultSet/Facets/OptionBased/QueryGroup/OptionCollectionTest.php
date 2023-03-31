@@ -18,7 +18,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets\Opti
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\QueryGroup\Option;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\QueryGroup\QueryGroupFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 
 /**
  * Unit test for the QueryGroupFacet options collection
@@ -26,7 +26,7 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
  * @author Timo Hund <timo.hund@dkd.de>
  * @author Frans Saris <frans@beech.it>
  */
-class OptionCollectionTest extends UnitTest
+class OptionCollectionTest extends SetUpUnitTestCase
 {
     /**
      * @test

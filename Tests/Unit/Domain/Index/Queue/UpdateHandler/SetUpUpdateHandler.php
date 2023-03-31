@@ -21,7 +21,7 @@ use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
 use ApacheSolrForTypo3\Solr\System\TCA\TCAService;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -30,7 +30,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author Markus Friedrich <markus.friedrich@dkd.de>
  */
-abstract class AbstractUpdateHandlerTest extends UnitTest
+abstract class SetUpUpdateHandler extends SetUpUnitTestCase
 {
     /**
      * @var ConfigurationAwareRecordService|MockObject

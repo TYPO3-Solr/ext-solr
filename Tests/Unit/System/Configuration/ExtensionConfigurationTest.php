@@ -16,7 +16,7 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\Configuration;
 
 use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 
 /**
  * Testcase to test the functionallity of the extension configuration that comes from
@@ -25,7 +25,7 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
  *
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class ExtensionConfigurationTest extends UnitTest
+class ExtensionConfigurationTest extends SetUpUnitTestCase
 {
     protected function setUp(): void
     {

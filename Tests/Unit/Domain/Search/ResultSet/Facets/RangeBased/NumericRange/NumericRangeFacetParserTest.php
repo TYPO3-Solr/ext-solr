@@ -20,14 +20,14 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets\Rang
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\NumericRange\NumericRangeFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\NumericRange\NumericRangeFacetParser;
-use ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets\AbstractFacetParserTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets\SetUpFacetParser;
 
 /**
  * Class DateRangeFacetParserTest
  *
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class NumericRangeFacetParserTest extends AbstractFacetParserTest
+class NumericRangeFacetParserTest extends SetUpFacetParser
 {
     /**
      * Returns a basic facet configuration

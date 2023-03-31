@@ -29,12 +29,12 @@ use ApacheSolrForTypo3\Solr\Search\SpellcheckingComponent;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 
 /**
  * @author Timo Schmidt <timo.schmidt@dkd.de>
  */
-class SearchResultSetTest extends UnitTest
+class SearchResultSetTest extends SetUpUnitTestCase
 {
     /**
      * @var TypoScriptConfiguration

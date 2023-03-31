@@ -18,7 +18,7 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\ViewHelpers;
 
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use ApacheSolrForTypo3\Solr\ViewHelpers\SearchFormViewHelper;
 use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
@@ -27,7 +27,7 @@ use TYPO3Fluid\Fluid\Core\Variables\VariableProviderInterface;
 /**
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class SearchFormViewHelperTest extends UnitTest
+class SearchFormViewHelperTest extends SetUpUnitTestCase
 {
     protected MockObject|SearchFormViewHelper $viewHelper;
     protected MockObject|UriBuilder $uriBuilderMock;

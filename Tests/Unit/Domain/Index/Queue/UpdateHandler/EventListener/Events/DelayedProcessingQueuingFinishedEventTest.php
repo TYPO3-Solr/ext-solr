@@ -22,7 +22,7 @@ use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\EventListener\Event
  *
  * @author Markus Friedrich <markus.friedrich@dkd.de>
  */
-class DelayedProcessingQueuingFinishedEventTest extends AbstractProcessingFinishedEventTest
+class DelayedProcessingQueuingFinishedEventTest extends SetUpProcessingFinishedEvent
 {
     protected const EVENT_CLASS = DelayedProcessingQueuingFinishedEvent::class;
 }

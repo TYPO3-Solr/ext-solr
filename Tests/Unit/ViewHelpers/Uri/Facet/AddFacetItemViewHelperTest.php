@@ -22,7 +22,7 @@ use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 /**
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class AddFacetItemViewHelperTest extends AbstractFacetItemViewHelperTest
+class AddFacetItemViewHelperTest extends SetUpFacetItemViewHelper
 {
     /**
      * @test

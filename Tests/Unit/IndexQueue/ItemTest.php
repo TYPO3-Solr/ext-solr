@@ -16,12 +16,12 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\IndexQueue;
 
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 
 /**
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class ItemTest extends UnitTest
+class ItemTest extends SetUpUnitTestCase
 {
     /**
      * @test

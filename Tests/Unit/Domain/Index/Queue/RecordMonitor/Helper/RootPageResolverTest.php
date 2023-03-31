@@ -18,14 +18,14 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Index\Queue\RecordMonitor\He
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\ConfigurationAwareRecordService;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\RootPageResolver;
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use InvalidArgumentException;
 use PHPUnit\Framework\MockObject\MockObject;
 
 /**
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class RootPageResolverTest extends UnitTest
+class RootPageResolverTest extends SetUpUnitTestCase
 {
     /**
      * @var TwoLevelCache

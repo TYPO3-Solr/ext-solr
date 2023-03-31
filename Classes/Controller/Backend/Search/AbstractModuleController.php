@@ -87,7 +87,7 @@ abstract class AbstractModuleController extends ActionController
         protected Queue $indexQueue,
         protected ?int $selectedPageUID = null
     ) {
-        $this->selectedPageUID = $selectedPageUID ?? (int)GeneralUtility::_GP('id');
+        $this->selectedPageUID = $selectedPageUID ?? 0;
     }
 
     /**
@@ -119,6 +119,7 @@ abstract class AbstractModuleController extends ActionController
     protected function initializeAction()
     {
         parent::initializeAction();
+
         $this->moduleTemplate = $this->moduleTemplateFactory->create($this->request);
         if ($this->request->hasArgument('id')) {
             $this->selectedPageUID = (int)$this->request->getArgument('id');

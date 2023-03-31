@@ -32,7 +32,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author Markus Friedrich <markus.friedrich@dkd.de>
  */
-class DataUpdateHandlerTest extends AbstractUpdateHandlerTest
+class DataUpdateHandlerTest extends SetUpUpdateHandler
 {
     private const DUMMY_PAGE_ID = 10;
 

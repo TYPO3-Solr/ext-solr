@@ -15,14 +15,14 @@
 
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\ViewHelpers\Backend;
 
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use ApacheSolrForTypo3\Solr\ViewHelpers\Backend\IsStringViewHelper;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 
 /**
  * Testcase for the IsStringViewHelper
  */
-class IsStringViewHelperTest extends UnitTest
+class IsStringViewHelperTest extends SetUpUnitTestCase
 {
     /**
      * @test

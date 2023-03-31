@@ -19,13 +19,13 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\O
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\OptionsFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * @author Timo Hund <timo.hund@dkd.de>
  */
-abstract class AbstractFacetItemViewHelperTest extends UnitTest
+abstract class SetUpFacetItemViewHelper extends SetUpUnitTestCase
 {
     protected function setUp(): void
     {

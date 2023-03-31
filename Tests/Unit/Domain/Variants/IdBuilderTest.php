@@ -16,14 +16,14 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Variants;
 
 use ApacheSolrForTypo3\Solr\Domain\Variants\IdBuilder;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 
 /**
  * Testcase to check if the IdBuilder can be used to build proper variantIds.
  *
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class IdBuilderTest extends UnitTest
+class IdBuilderTest extends SetUpUnitTestCase
 {
     /**
      * @var string

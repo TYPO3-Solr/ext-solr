@@ -18,14 +18,14 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Result;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Grouping\Group;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Grouping\GroupCollection;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResultCollection;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 
 /**
  * Unit test case for the SearchResultCollection.
  *
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class SearchResultCollectionTest extends UnitTest
+class SearchResultCollectionTest extends SetUpUnitTestCase
 {
     /**
      * @var SearchResultCollection

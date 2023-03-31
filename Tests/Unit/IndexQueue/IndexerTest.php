@@ -22,7 +22,7 @@ use ApacheSolrForTypo3\Solr\IndexQueue\Indexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use PHPUnit\Framework\MockObject\MockBuilder;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
@@ -31,7 +31,7 @@ use ReflectionClass;
 /**
  * Class IndexerTest
  */
-class IndexerTest extends UnitTest
+class IndexerTest extends SetUpUnitTestCase
 {
     use ProphecyTrait;
 

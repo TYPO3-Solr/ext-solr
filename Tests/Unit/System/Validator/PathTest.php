@@ -16,7 +16,7 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\Validator;
 
 use ApacheSolrForTypo3\Solr\System\Validator\Path;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -24,7 +24,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author Thomas Hohn <tho@systime.dk>
  */
-class PathTest extends UnitTest
+class PathTest extends SetUpUnitTestCase
 {
     /**
      * @test

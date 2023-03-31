@@ -16,14 +16,14 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\DefaultUrlDecoder;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 
 /**
  * Class DefaultUrlEncoderTest
  *
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class DefaultUrlDecoderTest extends UnitTest
+class DefaultUrlDecoderTest extends SetUpUnitTestCase
 {
     /**
      * @test

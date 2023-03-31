@@ -16,9 +16,9 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\LastSearches;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\LastSearches\LastSearchesRepository;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 
-class LastSearchesRepositoryTest extends UnitTest
+class LastSearchesRepositoryTest extends SetUpUnitTestCase
 {
     /**
      * @var LastSearchesRepository

@@ -16,7 +16,7 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\Util;
 
 use ApacheSolrForTypo3\Solr\System\Util\SiteUtility;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 
@@ -25,7 +25,7 @@ use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
  *
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class SiteUtilityTest extends UnitTest
+class SiteUtilityTest extends SetUpUnitTestCase
 {
     protected function tearDown(): void
     {

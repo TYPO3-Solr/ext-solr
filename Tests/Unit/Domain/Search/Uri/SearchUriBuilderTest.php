@@ -21,7 +21,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Domain\Search\Uri\SearchUriBuilder;
 use ApacheSolrForTypo3\Solr\Routing\RoutingService;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use Symfony\Component\Yaml\Yaml;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
@@ -31,7 +31,7 @@ use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
  *
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class SearchUriBuilderTest extends UnitTest
+class SearchUriBuilderTest extends SetUpUnitTestCase
 {
     /**
      * @var SearchUriBuilder

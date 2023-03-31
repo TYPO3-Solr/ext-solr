@@ -18,7 +18,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\ViewHelpers\Facet\Options\Group\Pre
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\OptionCollection;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\Option;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\OptionsFacet;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use ApacheSolrForTypo3\Solr\ViewHelpers\Facet\Options\Group\Prefix\LabelPrefixesViewHelper;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\Variables\StandardVariableProvider;
@@ -26,7 +26,7 @@ use TYPO3Fluid\Fluid\Core\Variables\StandardVariableProvider;
 /**
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class LabelPrefixesViewHelperTest extends UnitTest
+class LabelPrefixesViewHelperTest extends SetUpUnitTestCase
 {
     /**
      * @test
