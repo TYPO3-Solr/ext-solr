@@ -20,14 +20,9 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Controller;
 use ApacheSolrForTypo3\Solr\Controller\SearchController;
 use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageFieldMappingIndexer;
 use DOMDocument;
-use TYPO3\CMS\Core\Context\Context;
-use TYPO3\CMS\Core\Context\UserAspect;
 use TYPO3\CMS\Core\Http\Response;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Configuration\ConfigurationManager as ExtbaseConfigurationManager;
-use TYPO3\CMS\Extbase\Service\EnvironmentService;
-use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\TestingFramework\Core\Exception as TestingFrameworkCoreException;
+use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequestContext;
 use TYPO3Fluid\Fluid\View\Exception\InvalidTemplateResourceException;
 
@@ -49,15 +44,25 @@ class SearchControllerTest extends AbstractFrontendController
      */
     protected $searchResponse;
 
+    protected array $configurationToUseInTestInstance = [
+        'EXTCONF' => [
+            'solr' => [
+                'Indexer' => [
+                    'indexPageSubstitutePageDocument' => [
+                        PageFieldMappingIndexer::class => PageFieldMappingIndexer::class,
+                    ],
+                ],
+            ],
+        ],
+    ];
+
     protected function setUp(): void
     {
         parent::setUp();
         $this->bootstrapSearchResultsPluginOnPage();
-        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageSubstitutePageDocument'][PageFieldMappingIndexer::class] = PageFieldMappingIndexer::class;
     }
 
     /**
-     * @param int $pageId
      * @throws TestingFrameworkCoreException
      */
     protected function bootstrapSearchResultsPluginOnPage(): void
@@ -67,6 +72,7 @@ class SearchControllerTest extends AbstractFrontendController
             1,
             /* @lang TYPO3_TypoScript */
             '
+            config.index_enable = 1
             [page["uid"] == 2022]
             page.10 = RECORDS
             page.10 {
@@ -226,8 +232,8 @@ class SearchControllerTest extends AbstractFrontendController
                 ->withQueryParameter('tx_solr[q]', 'shoo')
         )->getBody();
 
-        self::assertStringContainsString('Nothing found for shoo', $resultPage1, 'Could not find nothing found message');
-        self::assertStringContainsString('Showing results for shoes', $resultPage1, 'Could not find correction message');
+        self::assertStringContainsString('Nothing found for &quot;shoo&quot;', $resultPage1, 'Could not find nothing found message');
+        self::assertStringContainsString('Showing results for &quot;shoes&quot;', $resultPage1, 'Could not find correction message');
     }
 
     /**
@@ -918,7 +924,7 @@ class SearchControllerTest extends AbstractFrontendController
         );
         $this->indexPages([1, 2]);
 
-        $this->importCSVDataSet(__DIR__ . '/../Integration/Fixtures/sites_setup_and_data_set/be_users.csv');
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/sites_setup_and_data_set/be_users.csv');
         $GLOBALS['BE_USER'] = $this->setUpBackendUser(1);
         $resultPage1 = (string)$this->executeFrontendSubRequest(
             $this->getPreparedRequest()
@@ -1446,34 +1452,8 @@ class SearchControllerTest extends AbstractFrontendController
         self::assertStringContainsString('ul class="pagination"', $content, 'Could not see pagination list');
     }
 
-    /**
-     * We fake in the frontend context, that a backend user is logged in.
-     */
-    protected function fakeBackendUserLoggedInInFrontend()
+    protected function getPreparedRequest(int $pageId = 2022): InternalRequest
     {
-        /** @var  $context \TYPO3\CMS\Core\Context\Context::class */
-        $context = GeneralUtility::makeInstance(Context::class);
-        $userAspect = $this->getMockBuilder(UserAspect::class)->onlyMethods([])->getMock();
-        $userAspect->expects(self::any())->method('get')->with('isLoggedIn')->willReturn(true);
-        $context->setAspect('backend.user', $userAspect);
-    }
-
-    /**
-     * In this method we initialize a few singletons with mocked classes to be able to generate links
-     * for the frontend in the testing context.
-     */
-    protected function fakeSingletonsForFrontendContext()
-    {
-        $environmentServiceMock = $this->getMockBuilder(EnvironmentService::class)->onlyMethods([])->disableOriginalConstructor()->getMock();
-        $environmentServiceMock->expects(self::any())->method('isEnvironmentInFrontendMode')->willReturn(true);
-        $environmentServiceMock->expects(self::any())->method('isEnvironmentInBackendMode')->willReturn(false);
-
-        $configurationManagerMock = $this->getMockBuilder(ExtbaseConfigurationManager::class)->onlyMethods(['getContentObject'])
-            ->setConstructorArgs([$this->getContainer()])->getMock();
-
-        $configurationManagerMock->expects(self::any())->method('getContentObject')->willReturn(GeneralUtility::makeInstance(ContentObjectRenderer::class));
-
-        GeneralUtility::setSingletonInstance(EnvironmentService::class, $environmentServiceMock);
-        GeneralUtility::setSingletonInstance(ExtbaseConfigurationManager::class, $configurationManagerMock);
+        return (new InternalRequest('http://testone.site/'))->withPageId($pageId);
     }
 }

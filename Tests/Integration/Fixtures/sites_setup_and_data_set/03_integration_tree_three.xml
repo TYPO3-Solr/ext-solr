@@ -23,5 +23,6 @@
 		<doktype>1</doktype>
 		<hidden>0</hidden>
 		<title>Root of Testpage testthree.site aka integration_tree_three</title>
+        <slug>/</slug>
 	</pages>
 </dataset>

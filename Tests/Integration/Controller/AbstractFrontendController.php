@@ -15,15 +15,15 @@
 
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\Controller;
 
-use ApacheSolrForTypo3\Solr\FrontendEnvironment\Exception\Exception as SolrFrontendEnvironmentException;
-use ApacheSolrForTypo3\Solr\FrontendEnvironment\Tsfe;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
+use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
-use ApacheSolrForTypo3\Solr\Typo3PageIndexer;
-use Doctrine\DBAL\DBALException;
-use Doctrine\DBAL\Driver\Exception as DBALDriverException;
+use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
+use TYPO3\CMS\Core\Site\Entity\Site;
+use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Exception as TestingFrameworkCoreException;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
@@ -32,14 +32,10 @@ abstract class AbstractFrontendController extends IntegrationTest
 {
     /**
      * @throws NoSuchCacheException
-     * @throws DBALException
      * @throws TestingFrameworkCoreException
      */
     protected function setUp(): void
     {
-        $_SERVER['HTTP_HOST'] = 'testone.site';
-        $_SERVER['REQUEST_URI'] = '/en/search/';
-
         parent::setUp();
         $this->writeDefaultSolrTestSiteConfiguration();
     }
@@ -54,45 +50,60 @@ abstract class AbstractFrontendController extends IntegrationTest
     }
 
     /**
-     * @param $importPageIds
-     * @throws SolrFrontendEnvironmentException
-     * @throws DBALDriverException
      * @throws SiteNotFoundException
      */
-    protected function indexPages($importPageIds)
+    protected function indexPages(array $importPageIds)
     {
-        /* @var Tsfe $tsfeFactory */
-        $tsfeFactory = GeneralUtility::makeInstance(Tsfe::class);
+        // Mark the pages as items to index
+        $siteFinder = GeneralUtility::makeInstance(SiteFinder::class);
         foreach ($importPageIds as $importPageId) {
-            $fakeTSFE = $tsfeFactory->getTsfeByPageIdAndLanguageId($importPageId);
-            $GLOBALS['TSFE'] = $fakeTSFE;
-            $fakeTSFE->newCObj();
-
-            $request = (new InternalRequest('http://testone.site/'))
-                ->withPageId($importPageId);
-
-            $response = $this->executeFrontendSubRequest($request);
-            $fakeTSFE->content = (string)$response->getBody();
-
-            /* @var $pageIndexer Typo3PageIndexer */
-            $pageIndexer = GeneralUtility::makeInstance(Typo3PageIndexer::class, $fakeTSFE);
-            $indexQueueItemMock = $this->createMock(Item::class);
-            $indexQueueItemMock->expects(self::any())
-                ->method('getIndexingConfigurationName')
-                ->willReturn('pages');
-            $pageIndexer->setIndexQueueItem($indexQueueItemMock);
-            $pageIndexer->indexPage();
+            $site = $siteFinder->getSiteByPageId($importPageId);
+            $queueItem = $this->addPageToIndex($importPageId, $site);
+            $frontendUrl = $site->getRouter()->generateUri($importPageId);
+            $this->executePageIndexer($frontendUrl, $queueItem);
         }
         $this->waitToBeVisibleInSolr();
-        unset($GLOBALS['TSFE']);
     }
 
     /**
-     * @param int $pageId
-     * @return InternalRequest
+     * Adds a page to the queue (into DB table tx_solr_indexqueue_item) so it can
+     * be fetched via a frontend subrequest
      */
-    protected function getPreparedRequest(int $pageId = 2022): InternalRequest
+    protected function addPageToIndex(int $pageId, Site $site): Item
     {
-        return (new InternalRequest('http://testone.site/'))->withPageId($pageId);
+        $queueItem = [
+            'root' => $site->getRootPageId(),
+            'item_type' => 'pages',
+            'item_uid' => $pageId,
+            'indexing_configuration' => 'pages',
+            'errors' => '',
+        ];
+        $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_solr_indexqueue_item');
+        $connection->insert('tx_solr_indexqueue_item', $queueItem);
+        $queueItem['uid'] = (int)$connection->lastInsertId();
+        return new Item($queueItem);
+    }
+
+    /**
+     * Executes a Frontend request within the same PHP process to trigger the indexing of a page.
+     */
+    protected function executePageIndexer(string $url, Item $item): ResponseInterface
+    {
+        $request = new InternalRequest($url);
+
+        // Now add the headers for item to the request
+        $indexerRequest = GeneralUtility::makeInstance(PageIndexerRequest::class);
+        $indexerRequest->setIndexQueueItem($item);
+        $indexerRequest->setParameter('item', $item->getIndexQueueUid());
+        $indexerRequest->addAction('indexPage');
+        $headers = $indexerRequest->getHeaders();
+
+        foreach ($headers as $header) {
+            [$headerName, $headerValue] = GeneralUtility::trimExplode(':', $header, true, 2);
+            $request = $request->withAddedHeader($headerName, $headerValue);
+        }
+        $response = $this->executeFrontendSubRequest($request);
+        $response->getBody()->rewind();
+        return $response;
     }
 }

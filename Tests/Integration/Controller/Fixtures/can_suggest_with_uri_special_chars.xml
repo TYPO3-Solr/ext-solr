@@ -6,6 +6,7 @@
 		<is_siteroot>1</is_siteroot>
 		<doktype>1</doktype>
 		<title>Uri Special Chars</title>
+        <slug>/uri-special-chars</slug>
 	</pages>
 
 	<pages>
@@ -14,6 +15,7 @@
 		<title>Some/</title>
 		<is_siteroot>0</is_siteroot>
 		<doktype>1</doktype>
+        <slug>/some</slug>
 	</pages>
 	<pages>
 		<uid>4</uid>
@@ -21,6 +23,7 @@
 		<title>Some/Large</title>
 		<is_siteroot>0</is_siteroot>
 		<doktype>1</doktype>
+        <slug>/some-large</slug>
 	</pages>
 
 	<pages>
@@ -29,5 +32,6 @@
 		<title>Some/Large/Path</title>
 		<is_siteroot>0</is_siteroot>
         <doktype>1</doktype>
+        <slug>/some-large-path</slug>
 	</pages>
 </dataset>

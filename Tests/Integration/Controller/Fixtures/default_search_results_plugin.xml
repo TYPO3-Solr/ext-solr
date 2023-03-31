@@ -7,6 +7,7 @@
 		<doktype>1</doktype>
 		<title>Search</title>
 		<subtitle>Apache Solr for TYPO3 search page</subtitle>
+		<slug>/search</slug>
 	</pages>
 
 	<tt_content>
