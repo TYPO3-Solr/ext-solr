@@ -23,5 +23,6 @@
 		<doktype>1</doktype>
 		<hidden>0</hidden>
 		<title>Root of Testpage testone.site aka integration_tree_one</title>
+        <slug>/</slug>
 	</pages>
 </dataset>

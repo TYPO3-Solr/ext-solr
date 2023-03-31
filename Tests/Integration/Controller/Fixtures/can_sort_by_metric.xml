@@ -7,6 +7,7 @@
         <doktype>1</doktype>
         <title>T-Shirts</title>
         <subtitle>Men</subtitle>
+        <slug>/men/t-shirts</slug>
     </pages>
     <!-- This is the page with the highest creation date, therefore pid 2 should be on the first position -->
     <pages>
@@ -17,6 +18,7 @@
         <doktype>1</doktype>
         <title>T-Shirts</title>
         <subtitle>Men</subtitle>
+        <slug>/men/t-shirts-1</slug>
     </pages>
     <pages>
         <uid>11</uid>
@@ -25,5 +27,6 @@
         <doktype>1</doktype>
         <title>T-Shirts</title>
         <subtitle>Men</subtitle>
+        <slug>/men/t-shirts-2</slug>
     </pages>
 </dataset>
