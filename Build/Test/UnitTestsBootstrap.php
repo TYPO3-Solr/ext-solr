@@ -27,7 +27,7 @@ use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Testbase;
 
-call_user_func(function () {
+call_user_func(static function () {
     $testbase = new Testbase();
 
     // These if's are for core testing (package typo3/cms) only. cms-composer-installer does
