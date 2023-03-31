@@ -10,12 +10,7 @@
 		<ul class="pagination">
 			<f:if condition="{pagination.previousPageNumber}">
 				<li class="page-item">
-					<a class="page-link solr-ajaxified" href="{s:uri.paginate.resultPage(page: pagination.previousPageNumber)}">
-						<f:if condition="{s:translate(key: 'paginate_previous')}">
-							<f:then><s:translate key="paginate_previous" /></f:then>
-							<f:else>&laquo;</f:else>
-						</f:if>
-					</a>
+					<a class="page-link solr-ajaxified" href="{s:uri.paginate.resultPage(page: pagination.previousPageNumber)}">&laquo;</a>
 				</li>
 			</f:if>
 
@@ -49,12 +44,7 @@
 
 			<f:if condition="{pagination.nextPageNumber}">
 				<li class="page-item">
-					<a class="page-link solr-ajaxified" href="{s:uri.paginate.resultPage(page: pagination.nextPageNumber)}">
-						<f:if condition="{s:translate(key: 'paginate_next')}">
-							<f:then><s:translate key="paginate_next" /></f:then>
-							<f:else>&raquo;</f:else>
-						</f:if>
-					</a>
+					<a class="page-link solr-ajaxified" href="{s:uri.paginate.resultPage(page: pagination.nextPageNumber)}">&raquo;</a>
 				</li>
 			</f:if>
 		</ul>

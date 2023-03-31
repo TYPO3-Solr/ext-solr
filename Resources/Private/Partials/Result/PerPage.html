@@ -8,7 +8,7 @@
 	<div id="results-per-page">
 		<form method="post" action="{s:uri.search.currentSearch()}">
 			<div class="input-group">
-				<label class="me-1"><s:translate key="results_per_page">Per page:</s:translate></label>
+				<label class="me-1"><f:translate key="results_per_page" extensionName="solr">Per page:</f:translate></label>
 				<select name="{resultSet.usedSearchRequest.argumentNameSpace}[resultsPerPage]" onchange="this.form.submit()" class="form-select">
 					<f:for each="{resultSet.usedSearchRequest.contextTypoScriptConfiguration.searchResultsPerPageSwitchOptionsAsArray}" as="availablePerPage">
 						<f:if condition="{availablePerPage}=={resultSet.usedResultsPerPage}">

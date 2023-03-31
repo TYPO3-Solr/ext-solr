@@ -7,7 +7,7 @@
 <f:section name="Form">
 
 	<div class="tx-solr-search-form">
-		<s:searchForm id="tx-solr-search-form-pi-results" additionalFilters="{additionalFilters}" suggestHeader="{s:translate(key:'suggest_header',default:'Top Results')}">
+		<s:searchForm id="tx-solr-search-form-pi-results" additionalFilters="{additionalFilters}" suggestHeader="{f:translate(key: 'suggest_header', default: 'Top Results', extensionName: 'solr')}">
 				<f:for each="{existingParameters}" key="name" as="value">
 					<f:form.hidden name="{pluginNamespace}{name}" value="{value}" />
 				</f:for>
@@ -21,7 +21,7 @@
 					<input type="text" class="tx-solr-q js-solr-q tx-solr-suggest tx-solr-suggest-focus form-control" name="{pluginNamespace}[q]" value="{q}" />
 					<button class="btn btn-primary tx-solr-submit" type="submit">
 							<span class="bi bi-search"></span>
-							<s:translate key="submit">Search</s:translate>
+							<f:translate key="submit" extensionName="solr">Search</f:translate>
 					</button>
 				</div>
 		</s:searchForm>
