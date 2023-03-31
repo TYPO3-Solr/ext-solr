@@ -59,9 +59,8 @@ class SearchController extends AbstractBaseController
         $query = GeneralUtility::_GET('q');
 
         $useGlobalQueryString = $query !== null && !$this->typoScriptConfiguration->getSearchIgnoreGlobalQParameter();
-
         if ($useGlobalQueryString) {
-            $this->request->setArgument('q', $query);
+            $this->request = $this->request->withArgument('q', $query);
         }
     }
 
