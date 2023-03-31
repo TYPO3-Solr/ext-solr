@@ -272,7 +272,7 @@ class Tsfe implements SingletonInterface
         } catch (Throwable $e) {
             return null;
         }
-        $availableLanguageIds = array_map(function ($siteLanguage) {
+        $availableLanguageIds = array_map(static function ($siteLanguage) {
             return $siteLanguage->getLanguageId();
         }, $typo3Site->getLanguages());
 
