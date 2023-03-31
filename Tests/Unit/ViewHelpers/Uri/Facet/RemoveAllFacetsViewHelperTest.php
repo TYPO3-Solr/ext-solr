@@ -20,6 +20,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Domain\Search\Uri\SearchUriBuilder;
 use ApacheSolrForTypo3\Solr\ViewHelpers\Uri\Facet\RemoveAllFacetsViewHelper;
 use PHPUnit\Framework\MockObject\MockObject;
+use TYPO3\CMS\Extbase\Mvc\Request;
 use TYPO3\CMS\Fluid\Core\Rendering\RenderingContext;
 use TYPO3Fluid\Fluid\Core\Variables\StandardVariableProvider;
 
@@ -31,17 +32,21 @@ class RemoveAllFacetsViewHelperTest extends AbstractFacetItemViewHelperTest
     /**
      * @test
      */
-    public function setFacetItemWillUseUriBuilderAsExpected()
+    public function setFacetItemWillUseUriBuilderAsExpected(): void
     {
         $mockedPreviousFakedRequest = $this->getDumbMock(SearchRequest::class);
+        $mockedControllerRequest = $this->getDumbMock(Request::class);
+
         $searchResultSetMock = $this->getDumbMock(SearchResultSet::class);
         $searchResultSetMock->expects(self::once())->method('getUsedSearchRequest')->willReturn($mockedPreviousFakedRequest);
 
         $variableProvideMock = $this->getDumbMock(StandardVariableProvider::class);
         $variableProvideMock->expects(self::once())->method('get')->with('resultSet')->willReturn($searchResultSetMock);
+
         /* @var MockObject|RenderingContext $renderContextMock */
         $renderContextMock = $this->getDumbMock(RenderingContext::class);
         $renderContextMock->expects(self::any())->method('getVariableProvider')->willReturn($variableProvideMock);
+        $renderContextMock->expects(self::any())->method('getRequest')->willReturn($mockedControllerRequest);
 
         $viewHelper = new RemoveAllFacetsViewHelper();
         $viewHelper->setRenderingContext($renderContextMock);
