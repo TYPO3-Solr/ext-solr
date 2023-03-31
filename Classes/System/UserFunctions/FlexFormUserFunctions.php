@@ -75,7 +75,7 @@ class FlexFormUserFunctions
             $value = $fieldName;
             $label = $fieldName;
 
-            $facetNameFilter = function ($facet) use ($fieldName) {
+            $facetNameFilter = static function ($facet) use ($fieldName) {
                 return $facet['field'] === $fieldName;
             };
             $configuredFacets = array_filter($configuredFacets, $facetNameFilter);
