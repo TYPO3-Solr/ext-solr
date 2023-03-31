@@ -4,7 +4,7 @@ defined('TYPO3') || die();
 
 // ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
-(function () {
+(static function () {
     // ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
     // registering Index Queue page indexer helpers
     $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageSubstitutePageDocument'][\ApacheSolrForTypo3\Solr\AdditionalFieldsIndexer::class] = \ApacheSolrForTypo3\Solr\AdditionalFieldsIndexer::class;
