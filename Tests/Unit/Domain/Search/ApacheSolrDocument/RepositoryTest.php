@@ -25,14 +25,14 @@ use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use TypeError;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Test cases for ApacheSolrDocumentRepository
  */
-class RepositoryTest extends UnitTest
+class RepositoryTest extends SetUpUnitTestCase
 {
     /**
      * @var Search

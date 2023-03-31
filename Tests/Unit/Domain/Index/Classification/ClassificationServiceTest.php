@@ -17,12 +17,12 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Index\Classification;
 
 use ApacheSolrForTypo3\Solr\Domain\Index\Classification\Classification;
 use ApacheSolrForTypo3\Solr\Domain\Index\Classification\ClassificationService;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 
 /**
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class ClassificationServiceTest extends UnitTest
+class ClassificationServiceTest extends SetUpUnitTestCase
 {
     /**
      * @test

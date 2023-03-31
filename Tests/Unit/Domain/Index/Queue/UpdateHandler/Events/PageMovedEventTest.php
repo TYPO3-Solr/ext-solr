@@ -22,7 +22,7 @@ use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\PageMovedEve
  *
  * @author Markus Friedrich <markus.friedrich@dkd.de>
  */
-class PageMovedEventTest extends AbstractDataUpdateEventTest
+class PageMovedEventTest extends SetUpDataUpdateEvent
 {
     protected const EVENT_CLASS = PageMovedEvent::class;
     protected const EVENT_TEST_TABLE = 'pages';

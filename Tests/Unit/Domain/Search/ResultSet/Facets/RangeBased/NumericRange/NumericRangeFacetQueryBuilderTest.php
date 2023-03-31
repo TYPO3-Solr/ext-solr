@@ -17,14 +17,14 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets\Rang
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\NumericRange\NumericRangeFacetQueryBuilder;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 
 /**
  * Testcase for the numericRange queryBuilder
  *
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class NumericRangeFacetQueryBuilderTest extends UnitTest
+class NumericRangeFacetQueryBuilderTest extends SetUpUnitTestCase
 {
     /**
      * @test

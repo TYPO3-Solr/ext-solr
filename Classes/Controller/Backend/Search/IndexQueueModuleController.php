@@ -32,10 +32,7 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
  */
 class IndexQueueModuleController extends AbstractModuleController
 {
-    /**
-     * @param Queue $indexQueue
-     */
-    public function setIndexQueue(Queue $indexQueue)
+    public function setIndexQueue(Queue $indexQueue): void
     {
         $this->indexQueue = $indexQueue;
     }
@@ -43,7 +40,6 @@ class IndexQueueModuleController extends AbstractModuleController
     /**
      * Lists the available indexing configurations
      *
-     * @return ResponseInterface
      * @throws BackendFormException
      */
     public function indexAction(): ResponseInterface

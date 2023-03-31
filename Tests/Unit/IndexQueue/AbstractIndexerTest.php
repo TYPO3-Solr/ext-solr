@@ -16,14 +16,14 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\IndexQueue;
 
 use ApacheSolrForTypo3\Solr\IndexQueue\AbstractIndexer;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use UnexpectedValueException;
 
 /**
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class AbstractIndexerTest extends UnitTest
+class AbstractIndexerTest extends SetUpUnitTestCase
 {
     protected function setUp(): void
     {

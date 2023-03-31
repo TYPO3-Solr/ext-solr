@@ -24,7 +24,7 @@ use ApacheSolrForTypo3\Solr\ContentObject\Classification;
  *
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class ClassificationTest extends AbstractContentObjectTest
+class ClassificationTest extends SetUpContentObject
 {
     protected function getTestableContentObjectClassName(): string
     {

@@ -18,7 +18,7 @@ declare(strict_types=1);
 namespace  ApacheSolrForTypo3\Solr\Tests\Unit\System\ContentObject;
 
 use ApacheSolrForTypo3\Solr\System\ContentObject\ContentObjectService;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
@@ -27,7 +27,7 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
  *
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class ContentObjectServiceTest extends UnitTest
+class ContentObjectServiceTest extends SetUpUnitTestCase
 {
     /**
      * @var ContentObjectRenderer|MockObject

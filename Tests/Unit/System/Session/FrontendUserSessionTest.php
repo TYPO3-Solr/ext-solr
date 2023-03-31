@@ -16,7 +16,7 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\Session;
 
 use ApacheSolrForTypo3\Solr\System\Session\FrontendUserSession;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 
 /**
@@ -24,7 +24,7 @@ use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
  *
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class FrontendUserSessionTest extends UnitTest
+class FrontendUserSessionTest extends SetUpUnitTestCase
 {
     /**
      * @var FrontendUserAuthentication

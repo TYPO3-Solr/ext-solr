@@ -19,7 +19,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Middleware;
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
 use ApacheSolrForTypo3\Solr\Middleware\SolrRoutingMiddleware;
 use ApacheSolrForTypo3\Solr\Routing\RoutingService;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use GuzzleHttp\Psr7\ServerRequest;
 use GuzzleHttp\Psr7\Uri;
 use Psr\Http\Message\ResponseInterface;
@@ -38,7 +38,7 @@ use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
  *
  * @author Lars Tode <lars.tode@dkd.de>
  */
-class SolrRoutingMiddlewareTest extends UnitTest
+class SolrRoutingMiddlewareTest extends SetUpUnitTestCase
 {
     /**
      * @var RoutingService

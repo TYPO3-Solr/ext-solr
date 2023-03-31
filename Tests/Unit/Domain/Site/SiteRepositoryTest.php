@@ -19,7 +19,7 @@ use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\RootPageReso
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use TYPO3\CMS\Core\Registry;
 use TYPO3\CMS\Core\Site\Entity\Site as CoreSite;
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
@@ -33,7 +33,7 @@ use TYPO3\CMS\Core\Site\SiteFinder;
  * @author Thomas Hohn <tho@systime.dk>
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class SiteRepositoryTest extends UnitTest
+class SiteRepositoryTest extends SetUpUnitTestCase
 {
     /**
      * @var TwoLevelCache

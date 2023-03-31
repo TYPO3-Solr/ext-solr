@@ -5,7 +5,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Index\PageIndexer\Helper\Uri
 use ApacheSolrForTypo3\Solr\Domain\Index\PageIndexer\Helper\UriBuilder\TYPO3SiteStrategy;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use Psr\Http\Message\UriInterface;
 use TYPO3\CMS\Core\Routing\RouterInterface;
 use TYPO3\CMS\Core\Site\Entity\Site;
@@ -15,7 +15,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Class SolrSiteStrategyTest
  */
-class TYPO3SiteStrategyTest extends UnitTest
+class TYPO3SiteStrategyTest extends SetUpUnitTestCase
 {
     /**
      * @test
