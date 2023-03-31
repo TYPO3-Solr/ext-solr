@@ -66,7 +66,7 @@ class Faceting implements Modifier, SearchRequestAware
     public function modifyQuery(Query $query): Query
     {
         $typoScriptConfiguration = $this->searchRequest->getContextTypoScriptConfiguration();
-        if ($typoScriptConfiguration instanceof TypoScriptConfiguration) {
+        if (!$typoScriptConfiguration instanceof TypoScriptConfiguration) {
             return $query;
         }
 
