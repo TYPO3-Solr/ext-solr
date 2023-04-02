@@ -16,6 +16,7 @@
 namespace ApacheSolrForTypo3\Solr\ViewHelpers\Uri\Search;
 
 use ApacheSolrForTypo3\Solr\ViewHelpers\Uri\AbstractUriViewHelper;
+use Closure;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 
 /**
@@ -27,22 +28,22 @@ use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 class StartNewSearchViewHelper extends AbstractUriViewHelper
 {
     /**
-     * Initializes the arguments
+     * @inheritdoc
      */
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         parent::initializeArguments();
         $this->registerArgument('queryString', 'string', 'The query string', false, '');
     }
 
     /**
-     * @param array $arguments
-     * @param \Closure $renderChildrenClosure
-     * @param RenderingContextInterface $renderingContext
-     * @return string
+     * Renders for starting the new search
      */
-    public static function renderStatic(array $arguments, \Closure $renderChildrenClosure, RenderingContextInterface $renderingContext)
-    {
+    public static function renderStatic(
+        array $arguments,
+        Closure $renderChildrenClosure,
+        RenderingContextInterface $renderingContext,
+    ) {
         $queryString = $arguments['queryString'];
         $previousRequest = static::getUsedSearchRequestFromRenderingContext($renderingContext);
         return self::getSearchUriBuilder($renderingContext)->getNewSearchUri($previousRequest, $queryString);

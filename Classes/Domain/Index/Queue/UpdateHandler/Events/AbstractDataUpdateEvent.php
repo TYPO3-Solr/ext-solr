@@ -28,53 +28,36 @@ abstract class AbstractDataUpdateEvent implements DataUpdateEventInterface, Stop
 {
     /**
      * Record uid
-     *
-     * @var int
      */
     protected int $uid;
 
     /**
      * Record table
-     *
-     * @var string
      */
     protected string $table;
 
     /**
      * Updated record fields
-     *
-     * @var array
      */
     protected array $fields = [];
 
     /**
      * Flag indicating that propagation is stopped
-     *
-     * @var bool
      */
     protected bool $stopProcessing = false;
 
     /**
      * Flag indicating that immediate processing is forced
-     *
-     * @var bool
      */
     protected bool $forceImmediateProcessing = false;
 
     /**
      * Flag indicating that frontend groups were removed
-     *
-     * @var bool
      */
     protected bool $frontendGroupsRemoved = false;
 
     /**
      * Constructor
-     *
-     * @param int $uid
-     * @param string $table
-     * @param array $fields
-     * @param bool $frontendGroupsRemoved
      */
     public function __construct(int $uid, string $table, array $fields = [], bool $frontendGroupsRemoved = false)
     {
@@ -88,8 +71,6 @@ abstract class AbstractDataUpdateEvent implements DataUpdateEventInterface, Stop
      * Cleans the event before serialisation
      * e.g. only required fields should be kept
      * in fields array
-     *
-     * @return array
      */
     public function __sleep(): array
     {
@@ -115,8 +96,6 @@ abstract class AbstractDataUpdateEvent implements DataUpdateEventInterface, Stop
 
     /**
      * Returns the uid of the updated record
-     *
-     * @return int
      */
     public function getUid(): int
     {
@@ -125,8 +104,6 @@ abstract class AbstractDataUpdateEvent implements DataUpdateEventInterface, Stop
 
     /**
      * Returns the table of the updated record
-     *
-     * @return string
      */
     public function getTable(): string
     {
@@ -135,8 +112,6 @@ abstract class AbstractDataUpdateEvent implements DataUpdateEventInterface, Stop
 
     /**
      * Returns the updated fields
-     *
-     * @return array
      */
     public function getFields(): array
     {
@@ -147,8 +122,7 @@ abstract class AbstractDataUpdateEvent implements DataUpdateEventInterface, Stop
      * Indicates if the event propagation is stopped
      * If stopped, it prevents other listeners from being called
      *
-     * {@inheritDoc}
-     * @see \Psr\EventDispatcher\StoppableEventInterface::isPropagationStopped()
+     * @see StoppableEventInterface::isPropagationStopped
      */
     final public function isPropagationStopped(): bool
     {
@@ -159,8 +133,6 @@ abstract class AbstractDataUpdateEvent implements DataUpdateEventInterface, Stop
      * Sets the stop rendering flag
      *
      * If set, event propagation is stopped
-     *
-     * @param bool $stopProcessing
      */
     final public function setStopProcessing(bool $stopProcessing): void
     {
@@ -169,8 +141,6 @@ abstract class AbstractDataUpdateEvent implements DataUpdateEventInterface, Stop
 
     /**
      * Indicates if event is a page update
-     *
-     * @return bool
      */
     public function isPageUpdate(): bool
     {
@@ -179,8 +149,6 @@ abstract class AbstractDataUpdateEvent implements DataUpdateEventInterface, Stop
 
     /**
      * Indicates if event is a content element update
-     *
-     * @return bool
      */
     public function isContentElementUpdate(): bool
     {
@@ -189,8 +157,6 @@ abstract class AbstractDataUpdateEvent implements DataUpdateEventInterface, Stop
 
     /**
      * Indicates if immediate processing is forced
-     *
-     * @return bool
      */
     final public function isImmediateProcessingForced(): bool
     {
@@ -199,8 +165,6 @@ abstract class AbstractDataUpdateEvent implements DataUpdateEventInterface, Stop
 
     /**
      * Sets the flag indicating if immediate processing is forced
-     *
-     * @param bool $forceImmediateProcessing
      */
     final public function setForceImmediateProcessing(bool $forceImmediateProcessing): void
     {
@@ -209,8 +173,6 @@ abstract class AbstractDataUpdateEvent implements DataUpdateEventInterface, Stop
 
     /**
      * Indicates the removal of frontend groups
-     *
-     * @return bool
      */
     final public function frontendGroupsRemoved(): bool
     {

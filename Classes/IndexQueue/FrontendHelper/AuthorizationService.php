@@ -34,8 +34,6 @@ class AuthorizationService extends AbstractAuthenticationService
      * User used when authenticating the page indexer for protected pages,
      * to allow the indexer to access and protected content. May also allow to
      * identify requests by the page indexer.
-     *
-     * @var string
      */
     public const SOLR_INDEXER_USERNAME = '__SolrIndexerUser__';
 
@@ -94,7 +92,7 @@ class AuthorizationService extends AbstractAuthenticationService
     ): array {
         $groupData = [];
 
-        /** @var $requestHandler PageIndexerRequestHandler */
+        /* @var PageIndexerRequestHandler $requestHandler */
         $requestHandler = GeneralUtility::makeInstance(PageIndexerRequestHandler::class);
         $accessRootline = $requestHandler->getRequest()->getParameter('accessRootline');
 

@@ -32,26 +32,14 @@ class SolrLogManager
     public const INFO = LogLevel::INFO;
     public const NOTICE = LogLevel::NOTICE;
 
-    /**
-     * @var Logger|null
-     */
     protected ?Logger $logger = null;
 
-    /**
-     * @var DebugWriter
-     */
-    protected $debugWriter;
+    protected DebugWriter $debugWriter;
 
-    /**
-     * @var string
-     */
     protected string $className = '';
 
     /**
      * SolrLogManager constructor.
-     *
-     * @param string $className
-     * @param DebugWriter|null $debugWriter
      */
     public function __construct(string $className, DebugWriter $debugWriter = null)
     {
@@ -59,9 +47,6 @@ class SolrLogManager
         $this->debugWriter = $debugWriter ?? GeneralUtility::makeInstance(DebugWriter::class);
     }
 
-    /**
-     * @return Logger
-     */
     protected function getLogger(): Logger
     {
         if ($this->logger === null) {
@@ -78,7 +63,7 @@ class SolrLogManager
      * @param string $message Log message.
      * @param array $data Additional data to log
      */
-    public function log($level, string $message, array $data = [])
+    public function log(int|string $level, string $message, array $data = []): void
     {
         $this->getLogger()->log($level, $message, $data);
         $this->debugWriter->write($level, $message, $data);

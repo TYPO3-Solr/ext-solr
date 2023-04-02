@@ -63,7 +63,7 @@ class ApacheSolrDocumentRepositoryTest extends IntegrationTest
 
         $this->waitToBeVisibleInSolr();
 
-        /* @var $apacheSolrDocumentRepository Repository */
+        /* @var Repository $apacheSolrDocumentRepository */
         $this->apacheSolrDocumentRepository = GeneralUtility::makeInstance(Repository::class);
     }
 

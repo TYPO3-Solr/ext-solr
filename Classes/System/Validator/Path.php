@@ -24,11 +24,8 @@ class Path
 {
     /**
      * Validate that a path is a valid Solr Path
-     *
-     * @param string $path
-     * @return bool
      */
-    public function isValidSolrPath($path)
+    public function isValidSolrPath(string $path): bool
     {
         $path = trim($path);
 

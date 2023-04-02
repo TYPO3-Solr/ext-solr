@@ -24,12 +24,5 @@ namespace ApacheSolrForTypo3\Solr\Domain\Variants;
  */
 interface IdModifier
 {
-    /**
-     * @param string $variantId
-     * @param string $systemHash
-     * @param string $type
-     * @param int $uid
-     * @return string
-     */
     public function modifyVariantId(string $variantId, string $systemHash, string $type, int $uid): string;
 }

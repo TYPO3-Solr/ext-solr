@@ -23,7 +23,6 @@ use ApacheSolrForTypo3\Solr\IndexQueue\Initializer\AbstractInitializer;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use Doctrine\DBAL\ConnectionException;
 use Doctrine\DBAL\Exception as DBALException;
-use Throwable;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use UnexpectedValueException;
 
@@ -36,14 +35,8 @@ use UnexpectedValueException;
  */
 class QueueInitializationService
 {
-    /**
-     * @var Queue
-     */
     protected Queue $queue;
 
-    /**
-     * QueueInitializationService constructor.
-     */
     public function __construct(Queue $queue)
     {
         $this->queue = $queue;
@@ -58,9 +51,9 @@ class QueueInitializationService
      * @param string $indexingConfigurationName Name of a specific indexing configuration, when * is passed any is used
      * @return array An array of booleans, each representing whether the
      *      initialization for an indexing configuration was successful
+     *
      * @throws ConnectionException
      * @throws DBALException
-     * @throws Throwable
      */
     public function initializeBySiteAndIndexConfiguration(Site $site, string $indexingConfigurationName = '*'): array
     {
@@ -72,16 +65,15 @@ class QueueInitializationService
      *
      * @param array $sites The array of sites to initialize
      * @param array $indexingConfigurationNames the array of index configurations to initialize.
-     * @return array
+     *
      * @throws ConnectionException
      * @throws DBALException
-     * @throws Throwable
      */
     public function initializeBySitesAndConfigurations(array $sites, array $indexingConfigurationNames = ['*']): array
     {
         $initializationStatesBySiteId = [];
         foreach ($sites as $site) {
-            /** @var  Site $site */
+            /* @var Site $site */
             $initializationResult = $this->initializeBySiteAndIndexConfigurations($site, $indexingConfigurationNames);
             $initializationStatesBySiteId[$site->getRootPageId()] = $initializationResult;
         }
@@ -90,13 +82,10 @@ class QueueInitializationService
     }
 
     /**
-     * Initializes a set index configurations for a given site.
+     * Initializes a set of index configurations for a given site.
+     * If one of the indexing configuration names is a * (wildcard) all configurations are used,
      *
-     * @param Site $site
-     * @param array $indexingConfigurationNames if one of the names is a * (wildcard) all configurations are used,
-     * @return array
      * @throws ConnectionException
-     * @throws Throwable
      * @throws DBALException
      */
     public function initializeBySiteAndIndexConfigurations(Site $site, array $indexingConfigurationNames): array
@@ -128,13 +117,9 @@ class QueueInitializationService
     /**
      * Initializes the Index Queue for a specific indexing configuration.
      *
-     * @param Site $site The site to initialize
-     * @param string $indexingConfigurationName name of a specific
-     *      indexing configuration
      * @return bool TRUE if the initialization was successful, FALSE otherwise
-     * @throws ConnectionException
+     *
      * @throws DBALException
-     * @throws Throwable
      */
     protected function applyInitialization(Site $site, string $indexingConfigurationName): bool
     {
@@ -150,12 +135,9 @@ class QueueInitializationService
     }
 
     /**
-     * @param Site $site
-     * @param string $indexingConfigurationName
-     * @param string $initializerClass
-     * @param string $type
-     * @param array $indexConfiguration
-     * @return bool
+     * Executes desired initializer
+     *
+     * @throws DBALException
      */
     protected function executeInitializer(
         Site $site,

@@ -27,10 +27,6 @@ use ApacheSolrForTypo3\Solr\System\Data\AbstractCollection;
  */
 abstract class AbstractFacetItemCollection extends AbstractCollection
 {
-    /**
-     * @param AbstractFacetItem|null $item
-     * @return AbstractFacetItemCollection
-     */
     public function add(?AbstractFacetItem $item): AbstractFacetItemCollection
     {
         if ($item === null) {
@@ -41,10 +37,6 @@ abstract class AbstractFacetItemCollection extends AbstractCollection
         return $this;
     }
 
-    /**
-     * @param string $value
-     * @return ?AbstractFacetItem
-     */
     public function getByValue(string $value): ?AbstractFacetItem
     {
         return $this->data[$value] ?? null;
@@ -52,8 +44,6 @@ abstract class AbstractFacetItemCollection extends AbstractCollection
 
     /**
      * Retrieves the count (with get prefixed to be usable in fluid).
-     *
-     * @return int
      */
     public function getCount(): int
     {
@@ -61,7 +51,7 @@ abstract class AbstractFacetItemCollection extends AbstractCollection
     }
 
     /**
-     * @return AbstractCollection
+     * Returns the selected facet item collection
      */
     public function getSelected(): AbstractCollection
     {
@@ -71,8 +61,7 @@ abstract class AbstractFacetItemCollection extends AbstractCollection
     }
 
     /**
-     * @param array $manualSorting
-     * @return AbstractFacetItemCollection
+     * Returns the manually sorted copy of given facet items.
      */
     public function getManualSortedCopy(array $manualSorting): AbstractFacetItemCollection
     {
@@ -93,7 +82,7 @@ abstract class AbstractFacetItemCollection extends AbstractCollection
     }
 
     /**
-     * @return AbstractFacetItemCollection
+     * Returns the manually reverse ordered copy of available facet items.
      */
     public function getReversedOrderCopy(): AbstractFacetItemCollection
     {

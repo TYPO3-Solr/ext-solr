@@ -30,8 +30,6 @@ class SearchComponentManager
 {
     /**
      * Search component registry.
-     *
-     * @var array
      */
     protected static array $searchComponents = [];
 
@@ -44,7 +42,7 @@ class SearchComponentManager
     public static function registerSearchComponent(
         string $componentName,
         string $componentClassName
-    ) {
+    ): void {
         self::$searchComponents[$componentName] = $componentClassName;
     }
 
@@ -68,7 +66,9 @@ class SearchComponentManager
      * Instantiates a registered search component
      *
      * @param string $componentName Search component name
+     *
      * @return SearchComponent Instance of the requested search component
+     *
      * @throws InvalidArgumentException if $componentName is not a registered search component
      * @throws RuntimeException if the class registered for $componentName is not an implementation of ApacheSolrForTypo3\Solr\Search\SearchComponent
      */
@@ -98,7 +98,7 @@ class SearchComponentManager
      *
      * @param string $componentName Search component name
      */
-    public function removeSearchComponent(string $componentName)
+    public function removeSearchComponent(string $componentName): void
     {
         if (!array_key_exists($componentName, self::$searchComponents)) {
             return;

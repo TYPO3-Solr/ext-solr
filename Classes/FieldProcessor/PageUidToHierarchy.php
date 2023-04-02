@@ -17,7 +17,7 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\FieldProcessor;
 
-use ApacheSolrForTypo3\Solr\Domain\Site\Site;
+use ApacheSolrForTypo3\Solr\System\Util\SiteUtility;
 use RuntimeException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\RootlineUtility;
@@ -54,6 +54,7 @@ class PageUidToHierarchy extends AbstractHierarchyProcessor implements FieldProc
      * rootline of the page ID.
      *
      * @param array $values Array of values, an array because of multivalued fields
+     *
      * @return array Modified array of values
      */
     public function process(array $values): array
@@ -76,6 +77,7 @@ class PageUidToHierarchy extends AbstractHierarchyProcessor implements FieldProc
      *
      * @param int $pageId Page ID to get a rootline as Solr hierarchy for
      * @param string $mountPoint The mount point parameter that will be used for building the rootline.
+     *
      * @return array Rootline as Solr hierarchy array
      */
     protected function getSolrRootlineForPageId(int $pageId, string $mountPoint = ''): array
@@ -89,6 +91,7 @@ class PageUidToHierarchy extends AbstractHierarchyProcessor implements FieldProc
      *
      * @param int $pageId The page Id to build the rootline for
      * @param string $mountPoint The mount point parameter that will be passed to getRootline().
+     *
      * @return array Page Id rootline as array
      */
     protected function buildPageIdRootline(int $pageId, string $mountPoint = ''): array
@@ -98,12 +101,12 @@ class PageUidToHierarchy extends AbstractHierarchyProcessor implements FieldProc
         $rootlineUtility = GeneralUtility::makeInstance(RootlineUtility::class, $pageId, $mountPoint);
         try {
             $rootline = $rootlineUtility->get();
-        } catch (RuntimeException $e) {
+        } catch (RuntimeException) {
             $rootline = [];
         }
 
         foreach ($rootline as $page) {
-            if (Site::isRootPage($page)) {
+            if (SiteUtility::isRootPage($page)) {
                 break;
             }
 

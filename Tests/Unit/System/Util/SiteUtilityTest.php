@@ -29,7 +29,7 @@ class SiteUtilityTest extends SetUpUnitTestCase
 {
     protected function tearDown(): void
     {
-        SiteUtility::$languages = [];
+        SiteUtility::reset();
         parent::tearDown();
     }
 

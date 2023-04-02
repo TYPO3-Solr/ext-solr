@@ -28,15 +28,11 @@ class PageIndexerResponse
 {
     /**
      * Unique request ID.
-     *
-     * @var string
      */
     protected string $requestId;
 
     /**
      * The actions' results as action => result pairs.
-     *
-     * @var array
      */
     protected array $results = [];
 
@@ -44,9 +40,9 @@ class PageIndexerResponse
      * Turns a JSON encoded result string back into its PHP representation.
      *
      * @param string $jsonEncodedResponse JSON encoded result string
-     * @return array|bool An array of action => result pairs or FALSE if the response could not be decoded
+     * @return array|null An array of action => result pairs or NULL if the response could not be decoded
      */
-    public static function getResultsFromJson(string $jsonEncodedResponse)
+    public static function getResultsFromJson(string $jsonEncodedResponse): ?array
     {
         $responseData = json_decode($jsonEncodedResponse, true);
 
@@ -54,8 +50,6 @@ class PageIndexerResponse
             foreach ($responseData['actionResults'] as $action => $serializedActionResult) {
                 $responseData['actionResults'][$action] = unserialize($serializedActionResult);
             }
-        } elseif (is_null($responseData)) {
-            $responseData = false;
         }
 
         return $responseData;
@@ -66,9 +60,10 @@ class PageIndexerResponse
      *
      * @param string $action The action name.
      * @param mixed $result The action's result.
+     *
      * @throws RuntimeException if $action is null
      */
-    public function addActionResult(string $action, $result)
+    public function addActionResult(string $action, mixed $result): void
     {
         $this->results[$action] = $result;
     }
@@ -76,10 +71,9 @@ class PageIndexerResponse
     /**
      * Gets the complete set of results or a specific action's results.
      *
-     * @param string|null $action Optional action name.
-     * @return mixed
+     * @return (string|int|array)[]|string|int|null
      */
-    public function getActionResult(?string $action = null)
+    public function getActionResult(?string $action = null): mixed
     {
         if (empty($action)) {
             return $this->results;
@@ -121,8 +115,6 @@ class PageIndexerResponse
 
     /**
      * Gets the Id of the request this response belongs to.
-     *
-     * @return string Request Id.
      */
     public function getRequestId(): string
     {
@@ -131,10 +123,8 @@ class PageIndexerResponse
 
     /**
      * Sets the Id of the request this response belongs to.
-     *
-     * @param string $requestId Request Id.
      */
-    public function setRequestId(string $requestId)
+    public function setRequestId(string $requestId): void
     {
         $this->requestId = $requestId;
     }

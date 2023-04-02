@@ -35,20 +35,14 @@ abstract class AbstractSolrFrontendViewHelper extends AbstractSolrViewHelper
         return $this->renderingContext->getVariableProvider()->get('typoScriptConfiguration');
     }
 
-    /**
-     * @return SearchResultSet|null
-     */
     protected function getSearchResultSet(): ?SearchResultSet
     {
         return $this->renderingContext->getVariableProvider()->get('searchResultSet');
     }
 
-    /**
-     * @return SearchResultSet|GroupItem|null
-     */
     protected static function getUsedSearchResultSetFromRenderingContext(
         RenderingContextInterface $renderingContext
-    ) {
+    ): SearchResultSet|GroupItem|null {
         return $renderingContext->getVariableProvider()->get('resultSet')
             ?? $renderingContext->getVariableProvider()->get('searchResultSet');
     }

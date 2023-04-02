@@ -24,40 +24,18 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
  */
 class Grouping extends AbstractDeactivatable implements ParameterBuilderInterface
 {
-    /**
-     * @var array
-     */
     protected array $fields = [];
 
-    /**
-     * @var array
-     */
     protected array $sortings = [];
 
-    /**
-     * @var array
-     */
     protected array $queries = [];
 
-    /**
-     * @var int
-     */
     protected int $numberOfGroups = 5;
 
-    /**
-     * @var int
-     */
     protected int $resultsPerGroup = 1;
 
     /**
      * Grouping constructor.
-     *
-     * @param bool $isEnabled
-     * @param array $fields
-     * @param array $sortings
-     * @param array $queries
-     * @param int $numberOfGroups
-     * @param int $resultsPerGroup
      */
     public function __construct(
         bool $isEnabled,
@@ -75,115 +53,72 @@ class Grouping extends AbstractDeactivatable implements ParameterBuilderInterfac
         $this->resultsPerGroup = $resultsPerGroup;
     }
 
-    /**
-     * @return array
-     */
     public function getFields(): array
     {
         return $this->fields;
     }
 
-    /**
-     * @param array $fields
-     */
-    public function setFields(array $fields)
+    public function setFields(array $fields): void
     {
         $this->fields = $fields;
     }
 
-    /**
-     * @param string $field
-     */
-    public function addField(string $field)
+    public function addField(string $field): void
     {
         $this->fields[] = $field;
     }
 
-    /**
-     * @return array
-     */
     public function getSortings(): array
     {
         return $this->sortings;
     }
 
-    /**
-     * @param string $sorting
-     */
-    public function addSorting(string $sorting)
+    public function addSorting(string $sorting): void
     {
         $this->sortings[] = $sorting;
     }
 
-    /**
-     * @param array $sortings
-     */
-    public function setSortings(array $sortings)
+    public function setSortings(array $sortings): void
     {
         $this->sortings = $sortings;
     }
 
-    /**
-     * @return array
-     */
     public function getQueries(): array
     {
         return $this->queries;
     }
 
-    /**
-     * @param string $query
-     */
-    public function addQuery(string $query)
+    public function addQuery(string $query): void
     {
         $this->queries[] = $query;
     }
 
-    /**
-     * @param array $queries
-     */
-    public function setQueries(array $queries)
+    public function setQueries(array $queries): void
     {
         $this->queries = $queries;
     }
 
-    /**
-     * @return int
-     */
     public function getNumberOfGroups(): int
     {
         return $this->numberOfGroups;
     }
 
-    /**
-     * @param int $numberOfGroups
-     */
-    public function setNumberOfGroups(int $numberOfGroups)
+    public function setNumberOfGroups(int $numberOfGroups): void
     {
         $this->numberOfGroups = $numberOfGroups;
     }
 
-    /**
-     * @return int
-     */
     public function getResultsPerGroup(): int
     {
         return $this->resultsPerGroup;
     }
 
-    /**
-     * @param int $resultsPerGroup
-     */
-    public function setResultsPerGroup(int $resultsPerGroup)
+    public function setResultsPerGroup(int $resultsPerGroup): void
     {
         $resultsPerGroup = max($resultsPerGroup, 0);
         $this->resultsPerGroup = $resultsPerGroup;
     }
 
-    /**
-     * @param TypoScriptConfiguration $solrConfiguration
-     * @return Grouping
-     */
     public static function fromTypoScriptConfiguration(TypoScriptConfiguration $solrConfiguration): Grouping
     {
         if (!$solrConfiguration->getIsSearchGroupingEnabled()) {
@@ -214,18 +149,11 @@ class Grouping extends AbstractDeactivatable implements ParameterBuilderInterfac
         return new Grouping(true, $fields, $sortings, $queries, $numberOfGroups, $resultsPerGroup);
     }
 
-    /**
-     * @return Grouping
-     */
     public static function getEmpty(): Grouping
     {
         return new Grouping(false);
     }
 
-    /**
-     * @param AbstractQueryBuilder $parentBuilder
-     * @return AbstractQueryBuilder
-     */
     public function build(AbstractQueryBuilder $parentBuilder): AbstractQueryBuilder
     {
         $query = $parentBuilder->getQuery();

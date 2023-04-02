@@ -17,7 +17,6 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\Domain\Site;
 
-use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 
 interface SiteInterface
@@ -61,7 +60,7 @@ interface SiteInterface
     public function getDefaultLanguageId(): int;
 
     /**
-     * Generates a list of page IDs in this site.
+     * Generates a list of page IDs in this site and returns it.
      *
      * Attentions:
      * * This includes all page types!
@@ -69,13 +68,14 @@ interface SiteInterface
      * * Uses the root page, if $pageId is not given
      * * Includes the given $pageId
      *
-     * @param int|null $pageId Page ID from where to start collection sub pages. Uses and includes the root page if none given.
+     * @param int|null $pageId Page ID from where to start collection sub-pages. Uses and includes the root page if none given.
      * @param string|null $indexQueueConfigurationName The name of index queue.
+     *
      * @return array Array of pages (IDs) in this site
      */
     public function getPages(
         ?int $pageId = null,
-        ?string $indexQueueConfigurationName = null
+        ?string $indexQueueConfigurationName = null,
     ): array;
 
     /**
@@ -84,8 +84,6 @@ interface SiteInterface
      * The Site Hash is build from the site's main domain, the system encryption
      * key, and the extension "tx_solr". These components are concatenated and
      * sha1-hashed.
-     *
-     * @return string Site Hash.
      */
     public function getSiteHash(): string;
 
@@ -101,7 +99,7 @@ interface SiteInterface
      *
      * @return array The site's root page.
      */
-    public function getRootPage(): array;
+    public function getRootPageRecord(): array;
 
     /**
      * Gets the site's root page's title.
@@ -111,17 +109,17 @@ interface SiteInterface
     public function getTitle(): string;
 
     /**
-     * @param int $language
-     * @return array
-     * @throws NoSolrConnectionFoundException
+     * Returns the Solr connection configuration for given language.
      */
     public function getSolrConnectionConfiguration(int $language = 0): array;
 
     /**
-     * @return array
-     * @throws NoSolrConnectionFoundException
+     * Returns all Solr connection configurations.
      */
     public function getAllSolrConnectionConfigurations(): array;
 
+    /**
+     * Returns the EXT:solr state configured in site.
+     */
     public function isEnabled(): bool;
 }

@@ -29,22 +29,10 @@ use ApacheSolrForTypo3\Solr\Util;
  */
 class SuggestQuery extends Query
 {
-    /**
-     * @var array
-     */
     protected array $configuration;
 
-    /**
-     * @var string
-     */
     protected string $prefix;
 
-    /**
-     * SuggestQuery constructor.
-     *
-     * @param string $keywords
-     * @param TypoScriptConfiguration|null $solrConfiguration
-     */
     public function __construct(string $keywords, TypoScriptConfiguration $solrConfiguration = null)
     {
         parent::__construct();

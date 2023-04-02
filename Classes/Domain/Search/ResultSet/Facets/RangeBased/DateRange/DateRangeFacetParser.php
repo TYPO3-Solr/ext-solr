@@ -32,26 +32,14 @@ use Exception;
  */
 class DateRangeFacetParser extends AbstractRangeFacetParser
 {
-    /**
-     * @var string
-     */
     protected string $facetClass = DateRangeFacet::class;
 
-    /**
-     * @var string
-     */
     protected string $facetItemClass = DateRange::class;
 
-    /**
-     * @var string
-     */
     protected string $facetRangeCountClass = DateRangeCount::class;
 
     /**
-     * @param SearchResultSet $resultSet
-     * @param string $facetName
-     * @param array $facetConfiguration
-     * @return AbstractFacet|null
+     * Parses/hydrates result set's response to date range facet object structure
      */
     public function parse(SearchResultSet $resultSet, string $facetName, array $facetConfiguration): ?AbstractFacet
     {
@@ -66,11 +54,11 @@ class DateRangeFacetParser extends AbstractRangeFacetParser
     }
 
     /**
-     * @param float|int|string|null $rawRequestValue
-     * @return DateTime|null
+     * Parses request value to date time object
+     *
      * @throws Exception
      */
-    protected function parseRequestValue($rawRequestValue): ?DateTime
+    protected function parseRequestValue(float|int|string|null $rawRequestValue): ?DateTime
     {
         $rawRequestValue = PhpDateTime::createFromFormat('Ymd', substr((string)$rawRequestValue, 0, 8));
         if ($rawRequestValue === false) {
@@ -80,11 +68,11 @@ class DateRangeFacetParser extends AbstractRangeFacetParser
     }
 
     /**
-     * @param float|int|string|null $rawResponseValue
-     * @return DateTime
+     *  Parses response value to date time
+     *
      * @throws Exception
      */
-    protected function parseResponseValue($rawResponseValue): DateTime
+    protected function parseResponseValue(float|int|string|null $rawResponseValue): DateTime
     {
         $rawDate = PhpDateTime::createFromFormat(PhpDateTime::ISO8601, $rawResponseValue);
         return new DateTime($rawDate->format(DateTime::ISO8601));

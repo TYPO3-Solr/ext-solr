@@ -25,21 +25,8 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\AbstractO
  */
 class Node extends AbstractOptionFacetItem
 {
-    /**
-     * @var int
-     */
     protected int $depth;
 
-    /**
-     * @param HierarchyFacet $facet
-     * @param Node|null $parentNode
-     * @param string $key
-     * @param string $label
-     * @param string $value
-     * @param int $documentCount
-     * @param bool $selected
-     * @param NodeCollection $childNodes
-     */
     public function __construct(
         HierarchyFacet $facet,
         protected ?Node $parentNode = null,
@@ -59,52 +46,34 @@ class Node extends AbstractOptionFacetItem
         );
     }
 
-    /**
-     * @return string
-     */
     public function getKey(): string
     {
         return $this->key;
     }
 
-    /**
-     * @param Node $node
-     */
-    public function addChildNode(Node $node)
+    public function addChildNode(Node $node): void
     {
         $this->childNodes->add($node);
     }
 
-    /**
-     * @return NodeCollection
-     */
     public function getChildNodes(): NodeCollection
     {
         return $this->childNodes;
     }
 
-    /**
-     * @return Node|null
-     */
     public function getParentNode(): ?Node
     {
         return $this->parentNode;
     }
 
-    /**
-     * @return bool
-     */
     public function getHasParentNode(): bool
     {
         return $this->parentNode !== null;
     }
 
-    /**
-     * @return bool
-     */
     public function getHasChildNodeSelected(): bool
     {
-        /** @var Node $childNode */
+        /* @var Node $childNode */
         foreach ($this->childNodes as $childNode) {
             if ($childNode->getSelected()) {
                 return true;

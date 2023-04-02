@@ -24,15 +24,10 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class ReturnFields implements ParameterBuilderInterface
 {
-    /**
-     * @var array
-     */
     protected array $fieldList = [];
 
     /**
      * FieldList constructor.
-     *
-     * @param array $fieldList
      */
     public function __construct(array $fieldList = [])
     {
@@ -45,7 +40,7 @@ class ReturnFields implements ParameterBuilderInterface
      *
      * @param string $fieldName Name of a field to return in the result documents
      */
-    public function add(string $fieldName)
+    public function add(string $fieldName): void
     {
         if (!str_contains($fieldName, '[') && !str_contains($fieldName, ']') && in_array('*', $this->fieldList)) {
             $this->fieldList = array_diff($this->fieldList, ['*']);
@@ -59,7 +54,7 @@ class ReturnFields implements ParameterBuilderInterface
      *
      * @param string $fieldName Field to remove from the list of fields to return
      */
-    public function remove(string $fieldName)
+    public function remove(string $fieldName): void
     {
         $key = array_search($fieldName, $this->fieldList);
 
@@ -68,47 +63,27 @@ class ReturnFields implements ParameterBuilderInterface
         }
     }
 
-    /**
-     * @param string $delimiter
-     * @return string
-     */
     public function toString(string $delimiter = ','): string
     {
         return implode($delimiter, $this->fieldList);
     }
 
-    /**
-     * @param string $fieldList
-     * @param string $delimiter
-     * @return ReturnFields
-     */
     public static function fromString(string $fieldList, string $delimiter = ','): ReturnFields
     {
         $fieldListArray = GeneralUtility::trimExplode($delimiter, $fieldList);
         return static::fromArray($fieldListArray);
     }
 
-    /**
-     * @param array $fieldListArray
-     * @return ReturnFields
-     */
     public static function fromArray(array $fieldListArray): ReturnFields
     {
         return new ReturnFields($fieldListArray);
     }
 
-    /**
-     * @return array
-     */
     public function getValues(): array
     {
         return array_unique(array_values($this->fieldList));
     }
 
-    /**
-     * @param AbstractQueryBuilder $parentBuilder
-     * @return AbstractQueryBuilder
-     */
     public function build(AbstractQueryBuilder $parentBuilder): AbstractQueryBuilder
     {
         $parentBuilder->getQuery()->setFields($this->getValues());

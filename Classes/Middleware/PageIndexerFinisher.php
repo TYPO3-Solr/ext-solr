@@ -32,11 +32,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class PageIndexerFinisher implements MiddlewareInterface
 {
-    /**
-     * @param ServerRequestInterface $request
-     * @param RequestHandlerInterface $handler
-     * @return ResponseInterface
-     */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $response = $handler->handle($request);

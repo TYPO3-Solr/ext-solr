@@ -30,10 +30,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class QueryGroupFacetParser extends AbstractFacetParser
 {
     /**
-     * @param SearchResultSet $resultSet
-     * @param string $facetName
-     * @param array $facetConfiguration
-     * @return QueryGroupFacet|null
+     * Parses group params for Apache Solr query
      */
     public function parse(SearchResultSet $resultSet, string $facetName, array $facetConfiguration): ?AbstractFacet
     {
@@ -96,10 +93,6 @@ class QueryGroupFacetParser extends AbstractFacetParser
 
     /**
      * Get raw query options
-     *
-     * @param ResponseAdapter $response
-     * @param string $fieldName
-     * @return array
      */
     protected function getRawOptions(ResponseAdapter $response, string $fieldName): array
     {
@@ -125,9 +118,7 @@ class QueryGroupFacetParser extends AbstractFacetParser
     }
 
     /**
-     * @param string $query
-     * @param array $facetConfiguration
-     * @return string|null
+     * Returns value from query
      */
     protected function getValueByQuery(string $query, array $facetConfiguration): ?string
     {

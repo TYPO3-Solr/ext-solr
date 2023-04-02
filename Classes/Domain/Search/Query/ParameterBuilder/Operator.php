@@ -26,16 +26,10 @@ class Operator extends AbstractDeactivatable
     public const OPERATOR_AND = 'AND';
     public const OPERATOR_OR = 'OR';
 
-    /**
-     * @var string
-     */
     protected string $operator = 'AND';
 
     /**
      * Faceting constructor.
-     *
-     * @param bool $isEnabled
-     * @param string $operator
      */
     public function __construct(
         bool $isEnabled,
@@ -45,10 +39,7 @@ class Operator extends AbstractDeactivatable
         $this->setOperator($operator);
     }
 
-    /**
-     * @param string $operator
-     */
-    public function setOperator(string $operator)
+    public function setOperator(string $operator): void
     {
         if (!in_array($operator, [self::OPERATOR_AND, self::OPERATOR_OR])) {
             throw new InvalidArgumentException('Invalid operator');
@@ -57,42 +48,26 @@ class Operator extends AbstractDeactivatable
         $this->operator = $operator;
     }
 
-    /**
-     * @return string
-     */
     public function getOperator(): string
     {
         return $this->operator;
     }
 
-    /**
-     * @return Operator
-     */
     public static function getEmpty(): Operator
     {
         return new Operator(false);
     }
 
-    /**
-     * @return Operator
-     */
     public static function getAnd(): Operator
     {
         return new Operator(true, static::OPERATOR_AND);
     }
 
-    /**
-     * @return Operator
-     */
     public static function getOr(): Operator
     {
         return new Operator(true, static::OPERATOR_OR);
     }
 
-    /**
-     * @param string $operator
-     * @return Operator
-     */
     public static function fromString(string $operator): Operator
     {
         return new Operator(true, $operator);

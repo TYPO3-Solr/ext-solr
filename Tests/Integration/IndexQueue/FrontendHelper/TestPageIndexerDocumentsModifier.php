@@ -16,7 +16,7 @@ class TestPageIndexerDocumentsModifier implements PageIndexerDocumentsModifier
      * @param Document[] $documents
      * @return array|void
      */
-    public function modifyDocuments(Item $item, int $language, array $documents)
+    public function modifyDocuments(Item $item, int $language, array $documents): array
     {
         foreach ($documents as $document) {
             $document->addField('postProcessorField_stringS', 'postprocessed');

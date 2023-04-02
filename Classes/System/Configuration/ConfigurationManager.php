@@ -26,17 +26,12 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class ConfigurationManager implements SingletonInterface
 {
-    /**
-     * TypoScript Configurations
-     *
-     * @var array
-     */
     protected array $typoScriptConfigurations = [];
 
     /**
      * Resets the state of the configuration manager.
      */
-    public function reset()
+    public function reset(): void
     {
         $this->typoScriptConfigurations = [];
     }
@@ -44,15 +39,13 @@ class ConfigurationManager implements SingletonInterface
     /**
      * Retrieves the TypoScriptConfiguration object from configuration array, pageId, languageId and TypoScript
      * path that is used in the current context.
-     *
-     * @param array|null $configurationArray
-     * @param int|null $contextPageId
-     * @param int $contextLanguageId
-     * @param string $contextTypoScriptPath
-     * @return TypoScriptConfiguration
      */
-    public function getTypoScriptConfiguration(array $configurationArray = null, int $contextPageId = null, int $contextLanguageId = 0, string $contextTypoScriptPath = ''): TypoScriptConfiguration
-    {
+    public function getTypoScriptConfiguration(
+        array $configurationArray = null,
+        int $contextPageId = null,
+        int $contextLanguageId = 0,
+        string $contextTypoScriptPath = '',
+    ): TypoScriptConfiguration {
         if ($configurationArray == null) {
             if (isset($this->typoScriptConfigurations['default'])) {
                 $configurationArray = $this->typoScriptConfigurations['default'];
@@ -85,13 +78,11 @@ class ConfigurationManager implements SingletonInterface
 
     /**
      * This method is used to build the TypoScriptConfiguration.
-     *
-     * @param array|null $configurationArray
-     * @param int|null $contextPageId
-     * @return TypoScriptConfiguration
      */
-    protected function getTypoScriptConfigurationInstance(array $configurationArray = null, int $contextPageId = null): TypoScriptConfiguration
-    {
+    protected function getTypoScriptConfigurationInstance(
+        array $configurationArray = null,
+        int $contextPageId = null,
+    ): TypoScriptConfiguration {
         return GeneralUtility::makeInstance(
             TypoScriptConfiguration::class,
             /** @scrutinizer ignore-type */

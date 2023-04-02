@@ -28,9 +28,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 class TestResultParser extends AbstractResultParser
 {
     /**
-     * @param SearchResultSet $resultSet
-     * @param bool $useRawDocuments
-     * @return SearchResultSet
+     * @inheritDoc
      */
     public function parse(SearchResultSet $resultSet, bool $useRawDocuments = true): SearchResultSet
     {
@@ -39,8 +37,7 @@ class TestResultParser extends AbstractResultParser
     }
 
     /**
-     * @param SearchResultSet $resultSet
-     * @return mixed
+     * @inheritDoc
      */
     public function canParse(SearchResultSet $resultSet): bool
     {

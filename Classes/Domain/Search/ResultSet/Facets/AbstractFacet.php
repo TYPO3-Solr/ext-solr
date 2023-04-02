@@ -27,49 +27,25 @@ abstract class AbstractFacet
 {
     public const TYPE_ABSTRACT = 'abstract';
 
-    /**
-     * String
-     * @var string
-     */
     protected static string $type = self::TYPE_ABSTRACT;
 
-    /**
-     * @var bool
-     */
     protected bool $isAvailable = false;
 
-    /**
-     * @var bool
-     */
     protected bool $isUsed = false;
 
-    /**
-     * @var bool
-     */
     protected bool $allRequirementsMet = true;
 
-    /**
-     * AbstractFacet constructor.
-     *
-     * @param SearchResultSet $resultSet
-     * @param string $name
-     * @param string $field
-     * @param string $label
-     * @param array $configuration Facet configuration passed from typoscript
-     */
     public function __construct(
         protected SearchResultSet $resultSet,
         protected string $name,
         protected string $field,
         protected string $label = '',
-        protected array $configuration = []
+        protected array $facetConfiguration = []
     ) {
     }
 
     /**
-     * Get name
-     *
-     * @return string
+     * Returns facet name
      */
     public function getName(): string
     {
@@ -77,9 +53,7 @@ abstract class AbstractFacet
     }
 
     /**
-     * Get solr field name
-     *
-     * @return string
+     * Returns Solr-Document's field name
      */
     public function getField(): string
     {
@@ -87,7 +61,7 @@ abstract class AbstractFacet
     }
 
     /**
-     * @param string $label
+     * Sets the label for facet
      */
     public function setLabel(string $label): void
     {
@@ -95,7 +69,7 @@ abstract class AbstractFacet
     }
 
     /**
-     * @return string
+     * Returns the label of facet
      */
     public function getLabel(): string
     {
@@ -103,7 +77,7 @@ abstract class AbstractFacet
     }
 
     /**
-     * @param bool $isAvailable
+     * Sets the "available" property of facet
      */
     public function setIsAvailable(bool $isAvailable): void
     {
@@ -111,7 +85,7 @@ abstract class AbstractFacet
     }
 
     /**
-     * @return bool
+     * Returns the "available" property of facet
      */
     public function getIsAvailable(): bool
     {
@@ -119,7 +93,7 @@ abstract class AbstractFacet
     }
 
     /**
-     * @param bool $isUsed
+     * Sets the "used" property of facet
      */
     public function setIsUsed(bool $isUsed): void
     {
@@ -127,7 +101,7 @@ abstract class AbstractFacet
     }
 
     /**
-     * @return bool
+     * Returns the "used" property of facet
      */
     public function getIsUsed(): bool
     {
@@ -135,7 +109,7 @@ abstract class AbstractFacet
     }
 
     /**
-     * @return string
+     * Returns the type of facet
      */
     public function getType(): string
     {
@@ -143,7 +117,7 @@ abstract class AbstractFacet
     }
 
     /**
-     * @return bool
+     * Returns the "allRequirementsMet" property of facet
      */
     public function getAllRequirementsMet(): bool
     {
@@ -151,7 +125,7 @@ abstract class AbstractFacet
     }
 
     /**
-     * @param bool $allRequirementsMet
+     * Sets the "allRequirementsMet" property of facet
      */
     public function setAllRequirementsMet(bool $allRequirementsMet): void
     {
@@ -159,7 +133,7 @@ abstract class AbstractFacet
     }
 
     /**
-     * @return SearchResultSet
+     * Returns {@link SearchResultSet}
      */
     public function getResultSet(): SearchResultSet
     {
@@ -167,19 +141,15 @@ abstract class AbstractFacet
     }
 
     /**
-     * Get configuration
-     *
-     * @return array
+     * Get configuration array of facet
      */
     public function getConfiguration(): array
     {
-        return $this->configuration;
+        return $this->facetConfiguration;
     }
 
     /**
      * Get facet partial name used for rendering the facet
-     *
-     * @return string
      */
     public function getPartialName(): string
     {
@@ -187,18 +157,17 @@ abstract class AbstractFacet
     }
 
     /**
-     * @return string
+     * Returns the "groupName" the facet belongs to.
+     * Is defined via "groupName" property in facet configuration
      */
     public function getGroupName(): string
     {
-        return $this->configuration['groupName'] ?? 'main';
+        return $this->facetConfiguration['groupName'] ?? 'main';
     }
 
     /**
      * Indicates if this facet should be included in the available facets. When nothing is configured,
      * the method return TRUE.
-     *
-     * @return bool
      */
     public function getIncludeInAvailableFacets(): bool
     {
@@ -208,8 +177,6 @@ abstract class AbstractFacet
     /**
      * Indicates if these facets should be included in the used facets. When nothing is configured,
      * the methods returns true.
-     *
-     * @return bool
      */
     public function getIncludeInUsedFacets(): bool
     {
@@ -218,8 +185,6 @@ abstract class AbstractFacet
 
     /**
      * Returns the configured requirements
-     *
-     * @return array
      */
     public function getRequirements(): array
     {
@@ -228,22 +193,18 @@ abstract class AbstractFacet
 
     /**
      * The implementation of this method should return a "flatten" collection of all items.
-     *
-     * @return AbstractFacetItemCollection
      */
     abstract public function getAllFacetItems(): AbstractFacetItemCollection;
 
     /**
-     * @param string $key
-     * @param mixed $defaultValue
-     * @return mixed
+     * Returns the facets setting/property value or default value.
      */
     protected function getFacetSettingOrDefaultValue(string $key, mixed $defaultValue): mixed
     {
-        if (!isset($this->configuration[$key])) {
+        if (!isset($this->facetConfiguration[$key])) {
             return $defaultValue;
         }
 
-        return $this->configuration[$key];
+        return $this->facetConfiguration[$key];
     }
 }

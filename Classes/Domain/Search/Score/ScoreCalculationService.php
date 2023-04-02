@@ -24,36 +24,31 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Score;
 class ScoreCalculationService
 {
     /**
-     * Renders an overview of how the score for a certain document has been
-     * calculated.
+     * Renders an overview in HTML of how the score for a certain document has been calculated by Apache Solr using debug data.
      *
      * @param string $solrDebugData debug data from the solr response
-     * @param string $queryFields
      * @return string The HTML showing the score analysis
      */
-    public function getRenderedScores($solrDebugData, $queryFields)
+    public function getRenderedScores(string $solrDebugData, string $queryFields): string
     {
         $highScores = $this->parseScores($solrDebugData, $queryFields);
         return $this->render($highScores);
     }
 
     /**
-     * Renders an array of score objects into an score output.
-     *
-     * @param array $highScores
-     * @return string
+     * Renders an array of score objects into a score output.
      */
-    public function render(array $highScores)
+    public function render(array $highScores): string
     {
         $scores = [];
         $totalScore = 0;
 
         foreach ($highScores as $highScore) {
-            /** @var $highScore Score */
+            /* @var Score $highScore */
             $scores[] =
-                '<td>+ ' . htmlspecialchars($highScore->getScore()) . '</td>'
+                '<td>+ ' . htmlspecialchars(number_format($highScore->getScore(), 9)) . '</td>'
                 . '<td>' . htmlspecialchars($highScore->getFieldName()) . '</td>'
-                . '<td>' . htmlspecialchars($highScore->getBoost()) . '</td>';
+                . '<td>' . htmlspecialchars(number_format($highScore->getBoost(), 9)) . '</td>';
             $totalScore += $highScore->getScore();
         }
 
@@ -67,11 +62,9 @@ class ScoreCalculationService
     /**
      * Parses the debugData and the queryFields into an array of score objects.
      *
-     * @param string $debugData
-     * @param string $queryFields
-     * @return array[] array of Score
+     * @return Score[] array of Score
      */
-    public function parseScores($debugData, $queryFields)
+    public function parseScores(string $debugData, string $queryFields): array
     {
         $highScores = [];
 
@@ -98,12 +91,12 @@ class ScoreCalculationService
             $scoreWasSetForFieldBefore = isset($highScores[$field]);
             $scoreIsHigher = false;
             if ($scoreWasSetForFieldBefore) {
-                /** @var  $previousScore Score */
+                /* @var Score $previousScore */
                 $previousScore = $highScores[$field];
                 $scoreIsHigher = $previousScore->getScore() < $currentScoreValue;
             }
 
-            // keep track of highest score per search term
+            // keep track of the highest score per search term
             if (!$scoreWasSetForFieldBefore || $scoreIsHigher) {
                 $pattern = '/' . preg_quote($field, '/') . '\^([\d.]*)/';
                 $boostMatches = [];

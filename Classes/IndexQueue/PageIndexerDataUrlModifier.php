@@ -29,5 +29,5 @@ interface PageIndexerDataUrlModifier
      * @param array $urlData An array of url data
      * @return string the final data url
      */
-    public function modifyDataUrl($pageUrl, array $urlData);
+    public function modifyDataUrl(string $pageUrl, array $urlData): string;
 }

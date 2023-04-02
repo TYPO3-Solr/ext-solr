@@ -25,9 +25,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class SortingHelper
 {
-    /**
-     * @var array
-     */
     protected array $configuration = [];
 
     /**

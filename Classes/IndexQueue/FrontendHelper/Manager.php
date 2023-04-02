@@ -29,17 +29,13 @@ class Manager
 {
     /**
      * Frontend helper descriptions.
-     *
-     * @var array
      */
-    protected static $frontendHelperRegistry = [];
+    protected static array $frontendHelperRegistry = [];
 
     /**
      * Instances of activated frontend helpers.
-     *
-     * @var array
      */
-    protected $activatedFrontendHelpers = [];
+    protected array $activatedFrontendHelpers = [];
 
     /**
      * Registers a frontend helper class for a certain action.
@@ -47,7 +43,7 @@ class Manager
      * @param string $action Action to register.
      * @param string $class Class to register for an action.
      */
-    public static function registerFrontendHelper($action, $class)
+    public static function registerFrontendHelper(string $action, string $class): void
     {
         self::$frontendHelperRegistry[$action] = $class;
     }
@@ -57,10 +53,9 @@ class Manager
      * instance of the helper.
      *
      * @param string $action The action to get a frontend helper for.
-     * @return FrontendHelper Index Queue page indexer frontend helper
-     * @throws RuntimeException if the class registered for an action is not an implementation of ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\FrontendHelper
+     * @return FrontendHelper|null Index Queue page indexer frontend helper
      */
-    public function resolveAction($action)
+    public function resolveAction(string $action): ?FrontendHelper
     {
         if (!array_key_exists($action, self::$frontendHelperRegistry)) {
             return null;
@@ -81,7 +76,7 @@ class Manager
      *
      * @return array Array of references to activated frontend helpers.
      */
-    public function getActivatedFrontendHelpers()
+    public function getActivatedFrontendHelpers(): array
     {
         return $this->activatedFrontendHelpers;
     }

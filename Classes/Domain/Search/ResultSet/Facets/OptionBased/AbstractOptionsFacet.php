@@ -29,55 +29,34 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
  */
 class AbstractOptionsFacet extends AbstractFacet
 {
-    /**
-     * OptionsFacet constructor
-     *
-     * @param SearchResultSet $resultSet
-     * @param string $name
-     * @param string $field
-     * @param string $label
-     * @param array $configuration Facet configuration passed from typoscript
-     * @param OptionCollection $options
-     */
     public function __construct(
         SearchResultSet $resultSet,
         string $name,
         string $field,
         string $label = '',
-        array $configuration = [],
+        array $facetConfiguration = [],
         protected OptionCollection $options = new OptionCollection(),
     ) {
-        parent::__construct($resultSet, $name, $field, $label, $configuration);
+        parent::__construct($resultSet, $name, $field, $label, $facetConfiguration);
     }
 
-    /**
-     * @return OptionCollection
-     */
     public function getOptions(): OptionCollection
     {
         return $this->options;
     }
 
-    /**
-     * @param OptionCollection $options
-     */
-    public function setOptions(OptionCollection $options)
+    public function setOptions(OptionCollection $options): void
     {
         $this->options = $options;
     }
 
-    /**
-     * @param AbstractOptionFacetItem $option
-     */
-    public function addOption(AbstractOptionFacetItem $option)
+    public function addOption(AbstractOptionFacetItem $option): void
     {
         $this->options->add($option);
     }
 
     /**
      * The implementation of this method should return a "flatten" collection of all items.
-     *
-     * @return OptionCollection
      */
     public function getAllFacetItems(): AbstractFacetItemCollection
     {
@@ -86,11 +65,9 @@ class AbstractOptionsFacet extends AbstractFacet
 
     /**
      * Get facet partial name used for rendering the facet
-     *
-     * @return string
      */
     public function getPartialName(): string
     {
-        return !empty($this->configuration['partialName']) ? $this->configuration['partialName'] : 'Options';
+        return !empty($this->facetConfiguration['partialName']) ? $this->facetConfiguration['partialName'] : 'Options';
     }
 }

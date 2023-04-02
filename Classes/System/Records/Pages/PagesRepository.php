@@ -19,13 +19,12 @@ namespace ApacheSolrForTypo3\Solr\System\Records\Pages;
 
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\System\Records\AbstractRepository;
-use Doctrine\DBAL\Driver\Exception as DBALDriverException;
+use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Exception as DBALException;
 use InvalidArgumentException;
 use PDO;
 use Throwable;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Database\Query\QueryHelper;
@@ -37,21 +36,10 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class PagesRepository extends AbstractRepository
 {
-    /**
-     * @var string
-     */
     protected string $table = 'pages';
 
-    /**
-     * @var TwoLevelCache
-     */
     protected TwoLevelCache $transientVariableCache;
 
-    /**
-     * PagesRepository constructor.
-     *
-     * @param TwoLevelCache|null $transientVariableCache
-     */
     public function __construct(TwoLevelCache $transientVariableCache = null)
     {
         $this->transientVariableCache = $transientVariableCache ?? GeneralUtility::makeInstance(TwoLevelCache::class, /** @scrutinizer ignore-type */ 'runtime');
@@ -62,8 +50,8 @@ class PagesRepository extends AbstractRepository
      * which usually is the case for pages with pid = 0.
      *
      * @return array An array of (partial) root page records, containing the uid and title fields
-     * @throws DBALException|\Doctrine\DBAL\DBALException
-     * @throws DBALDriverException
+     *
+     * @throws DBALException
      */
     public function findAllRootPages(): array
     {
@@ -87,11 +75,7 @@ class PagesRepository extends AbstractRepository
     /**
      * Finds the MountPointProperties array for mount points(destinations) by mounted page UID(source) or by the rootline array of mounted page.
      *
-     * @param int $mountedPageUid
-     * @param array $rootLineParentPageIds
-     * @return array
-     * @throws DBALException|\Doctrine\DBAL\DBALException
-     * @throws DBALDriverException
+     * @throws DBALException
      */
     public function findMountPointPropertiesByPageIdOrByRootLineParentPageIds(int $mountedPageUid, array $rootLineParentPageIds = []): array
     {
@@ -110,11 +94,6 @@ class PagesRepository extends AbstractRepository
     /**
      * This method builds the where clause for the mountpoint destinations. It retrieves all records where the mount_pid = $mountedPageUid or the mount_pid is
      * in the rootLineParentPageIds.
-     *
-     * @param QueryBuilder $queryBuilder
-     * @param int $mountedPageUid
-     * @param array $rootLineParentPageIds
-     * @return QueryBuilder
      */
     protected function addWhereClauseForMountpointDestinationProperties(
         QueryBuilder $queryBuilder,
@@ -153,10 +132,9 @@ class PagesRepository extends AbstractRepository
      * * Includes all page types except deleted pages!
      *
      * @param int $rootPageId Page ID from where to start collection sub-pages
-     * @param string $initialPagesAdditionalWhereClause
      * @return array Array of pages (IDs) in this site
-     * @throws DBALDriverException
-     * @throws DBALException|\Doctrine\DBAL\DBALException
+     *
+     * @throws DBALException
      */
     public function findAllSubPageIdsByRootPage(
         int $rootPageId,
@@ -182,11 +160,7 @@ class PagesRepository extends AbstractRepository
      * This method retrieves the pages ids from the current tree level a calls getPages recursive,
      * when the maxDepth has not been reached.
      *
-     * @param array $pageIds
-     * @param string $initialPagesAdditionalWhereClause
-     * @return array
-     * @throws DBALDriverException
-     * @throws DBALException|\Doctrine\DBAL\DBALException
+     * @throws DBALException
      */
     protected function filterPageIdsByInitialPagesAdditionalWhereClause(
         array $pageIds,
@@ -201,7 +175,7 @@ class PagesRepository extends AbstractRepository
             ->where(
                 $queryBuilder->expr()->in(
                     'uid',
-                    $queryBuilder->createNamedParameter($pageIds, Connection::PARAM_INT_ARRAY)
+                    $queryBuilder->createNamedParameter($pageIds, ArrayParameterType::INTEGER)
                 )
             );
 
@@ -211,56 +185,7 @@ class PagesRepository extends AbstractRepository
     }
 
     /**
-     * Finds all pages records in a site or given branch with no_search_sub_entries=1
-     *
-     * @param int $rootPageId
-     *
-     * @return array
-     * @throws DBALDriverException
-     * @throws DBALException|\Doctrine\DBAL\DBALException
-     * @deprecated since v11 and will be removed in v12. Use {@link findAllPagesWithinNoSearchSubEntriesMarkedPages()} instead.
-     */
-    public function findAllPagesWithinNoSearchSubEntriesMarkedPagesByRootPage(int $rootPageId): array
-    {
-        trigger_error(
-            'Method ' . __METHOD__ . ' of class ' . __CLASS__ . ' is deprecated since v11 and will be removed in v12. Use PagesRepository::findAllPagesWithinNoSearchSubEntriesMarkedPages() instead.',
-            E_USER_DEPRECATED
-        );
-
-        $wholePageTree = $this->findAllSubPageIdsByRootPage($rootPageId);
-
-        $queryBuilder = $this->getQueryBuilder();
-        $queryBuilder->getRestrictions()->removeAll();
-        try {
-            $noSearchSubEntriesEnabledPages = $queryBuilder
-                ->select('uid')
-                ->from($this->table)
-                ->where(
-                    $queryBuilder->expr()->in('uid', $queryBuilder->createNamedParameter($wholePageTree, Connection::PARAM_INT_ARRAY)),
-                    $queryBuilder->expr()->eq('no_search_sub_entries', $queryBuilder->createNamedParameter(1, PDO::PARAM_INT))
-                )
-                ->executeQuery()
-                ->fetchAllAssociative();
-        } catch (Throwable $e) {
-            return [];
-        }
-
-        if (empty($noSearchSubEntriesEnabledPages)) {
-            return [];
-        }
-
-        $pageIds = [];
-        foreach ($noSearchSubEntriesEnabledPages as $page) {
-            $pageIds = array_merge($pageIds, $this->findAllSubPageIdsByRootPage((int)$page['uid']));
-        }
-
-        return $pageIds;
-    }
-
-    /**
      * Finds all PIDs within no_search_sub_entries=1 marked pages in all sites.
-     *
-     * @return array
      */
     public function findAllPagesWithinNoSearchSubEntriesMarkedPages(): array
     {
@@ -277,7 +202,7 @@ class PagesRepository extends AbstractRepository
             while (($pageRow = $noSearchSubEntriesEnabledPagesStatement->fetchAssociative()) !== false) {
                 $pageIds = array_merge($pageIds, $this->findAllSubPageIdsByRootPage((int)$pageRow['uid']));
             }
-        } catch (Throwable $e) {
+        } catch (Throwable) {
             return [];
         }
         return $pageIds;
@@ -286,10 +211,7 @@ class PagesRepository extends AbstractRepository
     /**
      * Finds translation overlays by given page Id.
      *
-     * @param int $pageId
-     * @return array
-     * @throws DBALException|\Doctrine\DBAL\DBALException
-     * @throws DBALDriverException
+     * @throws DBALException
      */
     public function findTranslationOverlaysByPageId(int $pageId): array
     {
@@ -313,8 +235,8 @@ class PagesRepository extends AbstractRepository
      *
      * @param int $pageId UID of the page currently being updated
      * @return array with page Uids from pages, which are showing contents from given Page Id
-     * @throws DBALException|\Doctrine\DBAL\DBALException
-     * @throws DBALDriverException
+     *
+     * @throws DBALException
      */
     public function findPageUidsWithContentsFromPid(int $pageId): array
     {
@@ -340,10 +262,7 @@ class PagesRepository extends AbstractRepository
     /**
      * Finds all pages by given where clause
      *
-     * @param string $whereClause
-     * @return array
-     * @throws DBALException|\Doctrine\DBAL\DBALException
-     * @throws DBALDriverException
+     * @throws DBALException
      */
     public function findAllMountPagesByWhereClause(string $whereClause): array
     {
@@ -368,12 +287,6 @@ class PagesRepository extends AbstractRepository
 
     /**
      * Returns a specific page
-     *
-     * @param int $uid
-     * @param string $fields
-     * @param string $additionalWhereClause
-     * @param bool $useDeleteClause Use the deleteClause to check if a record is deleted (default TRUE)
-     * @return array|null
      */
     public function getPage(int $uid, string $fields = '*', string $additionalWhereClause = '', bool $useDeleteClause = true): ?array
     {
@@ -389,8 +302,6 @@ class PagesRepository extends AbstractRepository
      *
      * Note: Currently just a wrapper for BEenableFields, but as this should only be used internally
      * we should switch to the DefaultRestrictionHandler
-     *
-     * @return string
      */
     public function getBackendEnableFields(): string
     {
@@ -399,28 +310,19 @@ class PagesRepository extends AbstractRepository
 
     /**
      * Limits the pages to the sys_language_uid = 0 (default language)
-     *
-     * @param $queryBuilder
      */
-    protected function addDefaultLanguageUidConstraint($queryBuilder)
+    protected function addDefaultLanguageUidConstraint(QueryBuilder $queryBuilder): void
     {
         $queryBuilder->andWhere($queryBuilder->expr()->eq('sys_language_uid', 0));
     }
 
     /**
-     * Recursively fetch all descendants of a given page
+     * Recursively fetch all descendants of a given page and return them as comma separated list
      *
-     * Copied from {@link \TYPO3\CMS\Core\Database\QueryGenerator::getTreeList}, since it is deprecated and will be removed in TYPO3 12.
+     * Copied from {@link \TYPO3\CMS\Core\Database\QueryGenerator::getTreeList}, since it is deprecated and was removed in TYPO3 12.
      * See: https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/11.0/Deprecation-92080-DeprecatedQueryGeneratorAndQueryView.html
      *
-     * @param int $id uid of the page
-     * @param int $depth
-     * @param int $begin
-     * @param string $permClause
-     * @return string comma separated list of descendant pages
-     * @throws DBALDriverException
-     * @throws DBALException|\Doctrine\DBAL\DBALException
-     * @noinspection Duplicates
+     * @throws DBALException
      */
     public function getTreeList(int $id, int $depth = 999, int $begin = 0, string $permClause = ''): string
     {

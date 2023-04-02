@@ -30,21 +30,16 @@ class SpellcheckingComponent extends AbstractComponent implements QueryAware
 {
     /**
      * Solr query
-     *
-     * @var Query|null
      */
     protected ?Query $query = null;
 
     /**
      * QueryBuilder
-     *
-     * @var QueryBuilder
      */
     protected QueryBuilder $queryBuilder;
 
     /**
      * AccessComponent constructor.
-     * @param QueryBuilder|null $queryBuilder
      */
     public function __construct(QueryBuilder $queryBuilder = null)
     {
@@ -54,7 +49,7 @@ class SpellcheckingComponent extends AbstractComponent implements QueryAware
     /**
      * Initializes the search component.
      */
-    public function initializeSearchComponent()
+    public function initializeSearchComponent(): void
     {
         if ($this->searchConfiguration['spellchecking']) {
             $this->query = $this->queryBuilder->startFrom($this->query)->useSpellcheckingFromTypoScript()->getQuery();
@@ -66,7 +61,7 @@ class SpellcheckingComponent extends AbstractComponent implements QueryAware
      *
      * @param Query $query Current query
      */
-    public function setQuery(Query $query)
+    public function setQuery(Query $query): void
     {
         $this->query = $query;
     }

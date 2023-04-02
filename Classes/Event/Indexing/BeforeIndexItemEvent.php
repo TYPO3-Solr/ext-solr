@@ -27,23 +27,12 @@ use ApacheSolrForTypo3\Solr\Task\IndexQueueWorkerTask;
  */
 final class BeforeIndexItemEvent
 {
-    /**
-     * @var Item
-     */
     private Item $item;
 
-    /**
-     * @var IndexQueueWorkerTask|null
-     */
     private ?IndexQueueWorkerTask $task;
 
     private string $runId;
 
-    /**
-     * @param Item $item
-     * @param IndexQueueWorkerTask|null $task
-     * @param string $runId
-     */
     public function __construct(Item $item, ?IndexQueueWorkerTask $task, string $runId)
     {
         $this->item = $item;
@@ -51,33 +40,21 @@ final class BeforeIndexItemEvent
         $this->runId = $runId;
     }
 
-    /**
-     * @return Item
-     */
     public function getItem(): Item
     {
         return $this->item;
     }
 
-    /**
-     * @param Item $item
-     */
     public function setItem(Item $item): void
     {
         $this->item = $item;
     }
 
-    /**
-     * @return IndexQueueWorkerTask|null
-     */
     public function getTask(): ?IndexQueueWorkerTask
     {
         return $this->task;
     }
 
-    /**
-     * @return string
-     */
     public function getRunId(): string
     {
         return $this->runId;

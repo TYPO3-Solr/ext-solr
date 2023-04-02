@@ -29,12 +29,12 @@ class SearchTest extends SetUpUnitTestCase
     /**
      * @var SolrConnection
      */
-    protected $solrConnectionMock;
+    protected SolrConnection|MockObject $solrConnectionMock;
 
     /**
      * @var SolrReadService|MockObject
      */
-    protected $solrReadServiceMock;
+    protected SolrReadService|MockObject $solrReadServiceMock;
 
     /**
      * @var Search
@@ -43,7 +43,7 @@ class SearchTest extends SetUpUnitTestCase
 
     protected function setUp(): void
     {
-//        $this->solrReadServiceMock = $this->getDumbMock(SolrReadService::class);
+        //        $this->solrReadServiceMock = $this->getDumbMock(SolrReadService::class);
         $this->solrReadServiceMock = $this->getMockBuilder(SolrReadService::class)
             ->disableOriginalConstructor()
             ->onlyMethods(['search'])

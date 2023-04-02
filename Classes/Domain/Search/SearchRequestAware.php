@@ -24,8 +24,6 @@ interface SearchRequestAware
 {
     /**
      * Provides a component that is aware of the current SearchRequest
-     *
-     * @param SearchRequest $searchRequest
      */
     public function setSearchRequest(SearchRequest $searchRequest);
 }

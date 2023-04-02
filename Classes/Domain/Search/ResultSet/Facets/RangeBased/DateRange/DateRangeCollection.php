@@ -29,8 +29,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetItemColl
 class DateRangeCollection extends AbstractFacetItemCollection
 {
     /**
-     * @param AbstractFacetItem|null $item
-     * @return DateRangeCollection
+     * Adds facet item to the collection
      */
     public function add(?AbstractFacetItem $item): AbstractFacetItemCollection
     {
@@ -38,8 +37,7 @@ class DateRangeCollection extends AbstractFacetItemCollection
     }
 
     /**
-     * @param int $position
-     * @return ?DateRange
+     * Returns the {@link DateRange} if resolved/available in position
      */
     public function getByPosition(int $position): ?object
     {

@@ -19,7 +19,6 @@ use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\Task\IndexQueueWorkerTask;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
-use Exception;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -35,14 +34,8 @@ class IndexQueueWorkerTaskTest extends IntegrationTest
      */
     protected bool $skipImportRootPagesAndTemplatesForConfiguredSites = true;
 
-    /**
-     * @var Queue
-     */
     protected $indexQueue;
 
-    /**
-     * @var array
-     */
     protected array $coreExtensionsToLoad = [
         'scheduler',
     ];
@@ -56,7 +49,6 @@ class IndexQueueWorkerTaskTest extends IntegrationTest
 
     /**
      * @test
-     * @throws Exception
      */
     public function canGetAdditionalInformationFromTask()
     {

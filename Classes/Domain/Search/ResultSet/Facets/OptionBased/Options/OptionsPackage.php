@@ -24,17 +24,11 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetPackage;
  */
 class OptionsPackage extends AbstractFacetPackage
 {
-    /**
-     * @return string
-     */
     public function getParserClassName(): string
     {
         return OptionsFacetParser::class;
     }
 
-    /**
-     * @return string
-     */
     public function getQueryBuilderClassName(): string
     {
         return OptionsFacetQueryBuilder::class;

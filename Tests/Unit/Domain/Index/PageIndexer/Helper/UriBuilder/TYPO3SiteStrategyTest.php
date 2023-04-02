@@ -28,7 +28,7 @@ class TYPO3SiteStrategyTest extends SetUpUnitTestCase
         $itemMock->expects(self::any())->method('getRecordUid')->willReturn(55);
         $siteFinderMock = $this->getSiteFinderMock($pageRecord);
 
-        /** @var $loggerMock SolrLogManager */
+        /* @var SolrLogManager $loggerMock */
         $loggerMock = $this->getDumbMock(SolrLogManager::class);
 
         /** @var TYPO3SiteStrategy $typo3SiteStrategy */
@@ -47,7 +47,7 @@ class TYPO3SiteStrategyTest extends SetUpUnitTestCase
         $itemMock->expects(self::any())->method('getRecordUid')->willReturn(55);
         $siteFinderMock = $this->getSiteFinderMock($pageRecord);
 
-        /** @var $loggerMock SolrLogManager */
+        /* @var SolrLogManager $loggerMock */
         $loggerMock = $this->getDumbMock(SolrLogManager::class);
 
         /** @var TYPO3SiteStrategy $strategy */
@@ -67,7 +67,7 @@ class TYPO3SiteStrategyTest extends SetUpUnitTestCase
         $itemMock->expects(self::any())->method('getRecordUid')->willReturn(55);
         $siteFinderMock = $this->getSiteFinderMock($pageRecord);
 
-        /** @var $loggerMock SolrLogManager */
+        /* @var SolrLogManager $loggerMock */
         $loggerMock = $this->getDumbMock(SolrLogManager::class);
 
         /** @var TYPO3SiteStrategy $strategy */

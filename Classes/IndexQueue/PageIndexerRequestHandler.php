@@ -31,22 +31,16 @@ class PageIndexerRequestHandler implements SingletonInterface
 {
     /**
      * Index Queue page indexer request.
-     *
-     * @var PageIndexerRequest
      */
     protected PageIndexerRequest $request;
 
     /**
      * Index Queue page indexer response.
-     *
-     * @var PageIndexerResponse
      */
     protected PageIndexerResponse $response;
 
     /**
      * Index Queue page indexer frontend helper dispatcher.
-     *
-     * @var Dispatcher
      */
     protected Dispatcher $dispatcher;
 
@@ -54,7 +48,6 @@ class PageIndexerRequestHandler implements SingletonInterface
      * Constructor.
      *
      * Initializes request, response, and dispatcher.
-     * @param string|null $jsonEncodedParameters
      */
     public function __construct(string $jsonEncodedParameters = null)
     {
@@ -69,7 +62,7 @@ class PageIndexerRequestHandler implements SingletonInterface
      * request, and registers its own shutdown() method for execution at
      * hook_eofe in tslib/class.tslib_fe.php.
      */
-    public function run()
+    public function run(): void
     {
         $this->dispatcher->dispatch($this->request, $this->response);
     }
@@ -78,15 +71,13 @@ class PageIndexerRequestHandler implements SingletonInterface
      * Completes the Index Queue page indexer request and returns the response
      * with the collected results.
      */
-    public function shutdown()
+    public function shutdown(): void
     {
         $this->dispatcher->shutdown();
     }
 
     /**
      * Gets the Index Queue page indexer request.
-     *
-     * @return PageIndexerRequest
      */
     public function getRequest(): PageIndexerRequest
     {
@@ -95,8 +86,6 @@ class PageIndexerRequestHandler implements SingletonInterface
 
     /**
      * Gets the Index Queue page indexer response.
-     *
-     * @return PageIndexerResponse
      */
     public function getResponse(): PageIndexerResponse
     {

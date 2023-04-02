@@ -18,7 +18,6 @@ declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\System\Records\SystemCategory;
 
 use ApacheSolrForTypo3\Solr\System\Records\AbstractRepository;
-use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use Doctrine\DBAL\Exception as DBALException;
 
 /**
@@ -28,20 +27,14 @@ use Doctrine\DBAL\Exception as DBALException;
  */
 class SystemCategoryRepository extends AbstractRepository
 {
-    /**
-     * @var string
-     */
     protected string $table = 'sys_category';
 
     /**
-     * @param int $uid
-     * @param string $limitFields
-     * @return array<string,mixed>|false
+     * Finds one sys_category by UID
      *
-     * @throws DBALDriverException
-     * @throws DBALException|\Doctrine\DBAL\DBALException
+     * @throws DBALException
      */
-    public function findOneByUid(int $uid = 0, string $limitFields = '*')
+    public function findOneByUid(int $uid = 0, string $limitFields = '*'): array|bool
     {
         return $this->getOneRowByUid($limitFields, $uid);
     }

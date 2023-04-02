@@ -16,6 +16,7 @@
 namespace ApacheSolrForTypo3\Solr\ViewHelpers\Uri\Sorting;
 
 use ApacheSolrForTypo3\Solr\ViewHelpers\Uri\AbstractUriViewHelper;
+use Closure;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 
 /**
@@ -27,9 +28,9 @@ use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 class SetSortingViewHelper extends AbstractUriViewHelper
 {
     /**
-     * Initializes the arguments
+     * @inheritDoc
      */
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         parent::initializeArguments();
         $this->registerArgument('sortingName', 'string', 'The sortingName', true);
@@ -37,13 +38,13 @@ class SetSortingViewHelper extends AbstractUriViewHelper
     }
 
     /**
-     * @param array $arguments
-     * @param \Closure $renderChildrenClosure
-     * @param RenderingContextInterface $renderingContext
-     * @return string
+     * Renders URI for setting the sorting.
      */
-    public static function renderStatic(array $arguments, \Closure $renderChildrenClosure, RenderingContextInterface $renderingContext)
-    {
+    public static function renderStatic(
+        array $arguments,
+        Closure $renderChildrenClosure,
+        RenderingContextInterface $renderingContext,
+    ) {
         $sortingName = $arguments['sortingName'];
         $sortingDirection = $arguments['sortingDirection'];
         $previousRequest = static::getUsedSearchRequestFromRenderingContext($renderingContext);

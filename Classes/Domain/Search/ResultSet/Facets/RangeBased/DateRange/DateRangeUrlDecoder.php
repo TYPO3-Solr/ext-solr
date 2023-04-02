@@ -32,8 +32,6 @@ class DateRangeUrlDecoder implements FacetUrlDecoderInterface
 {
     /**
      * Delimiter for date parts in the URL.
-     *
-     * @var string
      */
     public const DELIMITER = '-';
 

@@ -205,7 +205,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
      */
     public function canEnableHighlighting()
     {
-        /** @var $query \ApacheSolrForTypo3\Solr\Domain\Search\Query\SearchQuery */
+        /* @var \ApacheSolrForTypo3\Solr\Domain\Search\Query\SearchQuery $query */
         $query = $this->getInitializedTestSearchQuery();
         $highlighting = new Highlighting();
         $highlighting->setIsEnabled(true);
@@ -221,7 +221,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
      */
     public function canDisableHighlighting()
     {
-        /** @var $query \ApacheSolrForTypo3\Solr\Domain\Search\Query\SearchQuery */
+        /* @var \ApacheSolrForTypo3\Solr\Domain\Search\Query\SearchQuery $query */
         $query = $this->getInitializedTestSearchQuery();
         $highlighting = new Highlighting();
         $highlighting->setIsEnabled(true);
@@ -709,7 +709,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
      */
     public function canEnableFaceting()
     {
-        /** @var $query \ApacheSolrForTypo3\Solr\Domain\Search\Query\SearchQuery */
+        /* @var \ApacheSolrForTypo3\Solr\Domain\Search\Query\SearchQuery $query */
         $query = $this->getInitializedTestSearchQuery();
         $faceting = new Faceting(true);
         $this->builder->startFrom($query)->useFaceting($faceting);
@@ -827,7 +827,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
      */
     public function canSetSpellChecking()
     {
-        /** @var $query \ApacheSolrForTypo3\Solr\Domain\Search\Query\SearchQuery */
+        /* @var \ApacheSolrForTypo3\Solr\Domain\Search\Query\SearchQuery $query */
         $query = $this->getInitializedTestSearchQuery();
 
         $spellchecking = Spellchecking::getEmpty();
@@ -851,7 +851,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
      */
     public function noSiteHashFilterIsSetWhenWildcardIsPassed()
     {
-        /** @var $query \ApacheSolrForTypo3\Solr\Domain\Search\Query\SearchQuery */
+        /* @var \ApacheSolrForTypo3\Solr\Domain\Search\Query\SearchQuery $query */
         $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
         $configurationMock->expects(self::once())->method('getObjectByPathOrDefault')->willReturn(['allowedSites' => '*']);
         $this->siteHashServiceMock->expects(self::once())->method('getAllowedSitesForPageIdAndAllowedSitesConfiguration')->willReturn('*');
@@ -870,7 +870,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
      */
     public function filterIsAddedWhenAllowedSiteIsPassed()
     {
-        /** @var $query \ApacheSolrForTypo3\Solr\Domain\Search\Query\SearchQuery */
+        /* @var \ApacheSolrForTypo3\Solr\Domain\Search\Query\SearchQuery $query */
         $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
         $configurationMock->expects(self::once())->method('getObjectByPathOrDefault')->willReturn(['allowedSites' => 'site1.local']);
 

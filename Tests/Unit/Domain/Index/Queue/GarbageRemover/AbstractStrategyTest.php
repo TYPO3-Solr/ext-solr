@@ -20,7 +20,7 @@ use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\System\Solr\Service\SolrWriteService;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use Traversable;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\AccessibleProxyTrait;
@@ -28,7 +28,7 @@ use TYPO3\TestingFramework\Core\AccessibleProxyTrait;
 /**
  * Abstract strategy tests
  */
-abstract class AbstractStrategyTest extends UnitTest
+abstract class AbstractStrategyTest extends SetUpUnitTestCase
 {
     /**
      * @var AbstractStrategy|AccessibleProxyTrait $subject

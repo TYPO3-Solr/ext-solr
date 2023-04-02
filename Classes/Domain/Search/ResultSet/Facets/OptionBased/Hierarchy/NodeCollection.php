@@ -17,7 +17,6 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Hierarchy;
 
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetItem;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetItemCollection;
 
 /**
@@ -28,21 +27,4 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetItemColl
  */
 class NodeCollection extends AbstractFacetItemCollection
 {
-    /**
-     * @param AbstractFacetItem|null $item
-     * @return NodeCollection
-     */
-    public function add(?AbstractFacetItem $item): AbstractFacetItemCollection
-    {
-        return parent::add($item);
-    }
-
-    /**
-     * @param int $position
-     * @return ?object Node
-     */
-    public function getByPosition(int $position): ?object
-    {
-        return parent::getByPosition($position);
-    }
 }

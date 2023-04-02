@@ -24,16 +24,10 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
  */
 class Spellchecking extends AbstractDeactivatable implements ParameterBuilderInterface
 {
-    /**
-     * @var int
-     */
     protected int $maxCollationTries = 0;
 
     /**
      * Spellchecking constructor.
-     *
-     * @param bool $isEnabled
-     * @param int $maxCollationTries
      */
     public function __construct(
         bool $isEnabled = false,
@@ -43,18 +37,11 @@ class Spellchecking extends AbstractDeactivatable implements ParameterBuilderInt
         $this->maxCollationTries = $maxCollationTries;
     }
 
-    /**
-     * @return int
-     */
     public function getMaxCollationTries(): int
     {
         return $this->maxCollationTries;
     }
 
-    /**
-     * @param TypoScriptConfiguration $solrConfiguration
-     * @return Spellchecking
-     */
     public static function fromTypoScriptConfiguration(TypoScriptConfiguration $solrConfiguration): Spellchecking
     {
         $isEnabled = $solrConfiguration->getSearchSpellchecking();
@@ -67,18 +54,11 @@ class Spellchecking extends AbstractDeactivatable implements ParameterBuilderInt
         return new Spellchecking(true, $maxCollationTries);
     }
 
-    /**
-     * @return Spellchecking
-     */
     public static function getEmpty(): Spellchecking
     {
         return new Spellchecking(false);
     }
 
-    /**
-     * @param AbstractQueryBuilder $parentBuilder
-     * @return AbstractQueryBuilder
-     */
     public function build(AbstractQueryBuilder $parentBuilder): AbstractQueryBuilder
     {
         $query = $parentBuilder->getQuery();

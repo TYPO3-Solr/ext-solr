@@ -35,9 +35,6 @@ class IdBuilder
      * This method is used to build a variantId.
      *
      * By default, the variantId is used
-     * @param string $type
-     * @param int $uid
-     * @return string
      */
     public function buildFromTypeAndUid(string $type, int $uid): string
     {
@@ -49,18 +46,12 @@ class IdBuilder
 
     /**
      * Applies configured postProcessing hooks to build a custom variantId.
-     *
-     * @param string $variantId
-     * @param string $systemHash
-     * @param string $type
-     * @param int $uid
-     * @return string
      */
     protected function applyHook(
         string $variantId,
         string $systemHash,
         string $type,
-        int $uid
+        int $uid,
     ): string {
         if (!is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyVariantId'] ?? null)) {
             return $variantId;
@@ -78,8 +69,6 @@ class IdBuilder
 
     /**
      * Returns a system unique hash.
-     *
-     * @return string
      */
     protected function getSystemHash(): string
     {

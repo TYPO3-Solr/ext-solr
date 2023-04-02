@@ -30,22 +30,16 @@ class CoreSelectorField
 {
     /**
      * Site used to determine cores
-     *
-     * @var Site
      */
     protected Site $site;
 
     /**
      * Form element name
-     *
-     * @var string
      */
     protected string $formElementName = 'tx_solr-index-optimize-core-selector';
 
     /**
      * Selected values
-     *
-     * @var array
      */
     protected array $selectedValues = [];
 
@@ -81,8 +75,6 @@ class CoreSelectorField
 
     /**
      * Sets the selected values.
-     *
-     * @param array $selectedValues
      */
     public function setSelectedValues(array $selectedValues): void
     {
@@ -91,8 +83,6 @@ class CoreSelectorField
 
     /**
      * Gets the selected values.
-     *
-     * @return array
      */
     public function getSelectedValues(): array
     {
@@ -159,10 +149,6 @@ class CoreSelectorField
     }
 
     /**
-     * @param array $items
-     * @param array $selectedValues
-     *
-     * @return string
      * @throws BackendFormException
      */
     protected function renderSelectCheckbox(array $items, array $selectedValues): string
@@ -175,6 +161,7 @@ class CoreSelectorField
             'fieldTSConfig' => ['noMatchingValue_label' => ''],
         ];
 
+        /* @var NodeFactory $nodeFactory */
         $nodeFactory = GeneralUtility::makeInstance(NodeFactory::class);
         $options = [
             'renderType' => 'selectCheckBox',

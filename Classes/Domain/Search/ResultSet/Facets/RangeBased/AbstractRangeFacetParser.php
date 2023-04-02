@@ -23,7 +23,6 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\DateRange\
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\NumericRange\NumericRangeFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\System\Solr\ParsingUtil;
-use DateTime;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -34,23 +33,14 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 abstract class AbstractRangeFacetParser extends AbstractFacetParser
 {
-    /**
-     * @param SearchResultSet $resultSet
-     * @param string $facetName
-     * @param array $facetConfiguration
-     * @param string $facetClass
-     * @param string $facetItemClass
-     * @param string $facetRangeCountClass
-     * @return AbstractFacet|null
-     */
     protected function getParsedFacet(
         SearchResultSet $resultSet,
         string $facetName,
         array $facetConfiguration,
         string $facetClass,
         string $facetItemClass,
-        string $facetRangeCountClass
-    ) {
+        string $facetRangeCountClass,
+    ): ?AbstractFacet {
         $fieldName = $facetConfiguration['field'];
         $label = $this->getPlainLabelOrApplyCObject($facetConfiguration);
         $activeValue = $this->getActiveFacetValuesFromRequest($resultSet, $facetName);
@@ -121,15 +111,7 @@ abstract class AbstractRangeFacetParser extends AbstractFacetParser
         return $facet;
     }
 
-    /**
-     * @param float|int|string|null $rawRequestValue
-     * @return mixed|float|int|DateTime|null
-     */
-    abstract protected function parseRequestValue($rawRequestValue);
+    abstract protected function parseRequestValue(float|int|string|null $rawRequestValue): mixed;
 
-    /**
-     * @param float|int|string|null $rawResponseValue
-     * @return mixed|float|int|DateTime|null
-     */
-    abstract protected function parseResponseValue($rawResponseValue);
+    abstract protected function parseResponseValue(float|int|string|null $rawResponseValue): mixed;
 }

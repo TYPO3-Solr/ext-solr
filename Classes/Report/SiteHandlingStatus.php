@@ -17,12 +17,11 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\Report;
 
+use ApacheSolrForTypo3\Solr\Domain\Site\Exception\UnexpectedTYPO3SiteInitializationException;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
-use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use Psr\Http\Message\UriInterface;
-use Throwable;
 use TYPO3\CMS\Core\Site\Entity\Site as Typo3Site;
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
@@ -40,9 +39,6 @@ class SiteHandlingStatus extends AbstractSolrStatus
 {
     public const TITLE_SITE_HANDLING_CONFIGURATION = 'Site handling configuration';
 
-    /**
-     * @var string
-     */
     public const
         CSS_STATUS_NOTICE = 'notice',
     CSS_STATUS_INFO = 'info',
@@ -50,23 +46,10 @@ class SiteHandlingStatus extends AbstractSolrStatus
     CSS_STATUS_WARNING = 'warning',
     CSS_STATUS_ERROR = 'danger';
 
-    /**
-     * Site Repository
-     *
-     * @var SiteRepository
-     */
     protected SiteRepository $siteRepository;
 
-    /**
-     * @var ExtensionConfiguration
-     */
     protected ExtensionConfiguration $extensionConfiguration;
 
-    /**
-     * SolrStatus constructor.
-     * @param ExtensionConfiguration|null $extensionConfiguration
-     * @param SiteRepository|null $siteRepository
-     */
     public function __construct(
         ExtensionConfiguration $extensionConfiguration = null,
         SiteRepository $siteRepository = null
@@ -78,10 +61,7 @@ class SiteHandlingStatus extends AbstractSolrStatus
     /**
      * Verifies the site configuration.
      *
-     * @return array
-     *
-     * @throws DBALDriverException
-     * @throws Throwable
+     * @throws UnexpectedTYPO3SiteInitializationException
      */
     public function getStatus(): array
     {
@@ -111,9 +91,6 @@ class SiteHandlingStatus extends AbstractSolrStatus
 
     /**
      * Renders validation results for desired typo3 site configuration.
-     *
-     * @param Typo3Site $ypo3Site
-     * @return Status
      */
     protected function generateValidationReportForSingleSite(Typo3Site $ypo3Site): Status
     {
@@ -163,9 +140,6 @@ class SiteHandlingStatus extends AbstractSolrStatus
 
     /**
      * Generates the validation result array for using them in standalone view as a table row.
-     *
-     * @param SiteLanguage $siteLanguage
-     * @return array
      */
     protected function generateValidationResultsForSingleSiteLanguage(SiteLanguage $siteLanguage): array
     {
@@ -198,8 +172,7 @@ class SiteHandlingStatus extends AbstractSolrStatus
     }
 
     /**
-     * @param UriInterface $uri
-     * @return string
+     * Fetches the invalid parts of given URI.
      */
     protected function fetchInvalidPartsOfUri(UriInterface $uri): string
     {

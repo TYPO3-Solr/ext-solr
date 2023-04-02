@@ -25,10 +25,8 @@ use UnexpectedValueException;
 class ParsingUtil
 {
     /**
-     * This method is used to covert a array structure with json.nl=flat to have it as return with json.nl=map.
+     * This method is used to covert an array structure with json.nl=flat to have it as return with json.nl=map.
      *
-     * @param array $options
-     * @return array
      * @throws UnexpectedValueException
      */
     public static function getMapArrayFromFlatArray(array $options): array

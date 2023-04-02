@@ -28,6 +28,9 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\UrlFacetContainer;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequestAware;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use TYPO3\CMS\Core\Log\Logger;
+use TYPO3\CMS\Core\Log\LogManager;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Modifies a query to add faceting parameters
@@ -57,6 +60,7 @@ class Faceting implements Modifier, SearchRequestAware
      * search.
      *
      * @param Query $query The query to modify
+     *
      * @return Query The modified query with faceting parameters
      *
      * @throws InvalidFacetPackageException
@@ -117,11 +121,6 @@ class Faceting implements Modifier, SearchRequestAware
      * Adds filters specified through HTTP GET as filter query parameters to
      * the Solr query.
      *
-     * @param array $resultParameters
-     * @param bool $keepAllFacetsOnSelection
-     * @param array|null $allFacets
-     * @return array
-     *
      * @throws InvalidFacetPackageException
      * @throws InvalidUrlDecoderException
      */
@@ -152,10 +151,6 @@ class Faceting implements Modifier, SearchRequestAware
     /**
      * Builds the tag part of the query depending on the keepAllOptionsOnSelection configuration or the global configuration
      * keepAllFacetsOnSelection.
-     *
-     * @param array $facetConfiguration
-     * @param bool $keepAllFacetsOnSelection
-     * @return string
      */
     protected function getFilterTag(array $facetConfiguration, bool $keepAllFacetsOnSelection): string
     {
@@ -194,7 +189,7 @@ class Faceting implements Modifier, SearchRequestAware
             if (($facetConfiguration['field'] ?? '') !== '' && $filterValue !== '') {
                 $filterParts[] = $facetConfiguration['field'] . ':' . $filterValue;
             } else {
-                /** @var $logger \TYPO3\CMS\Core\Log\Logger */
+                /* @var $logger Logger */
                 $logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
                 $logger->warning('Invalid filter options found, skipping.', ['facet' => $facetName, 'configuration' => $facetConfiguration]);
             }

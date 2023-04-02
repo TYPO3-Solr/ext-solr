@@ -20,7 +20,7 @@ namespace ApacheSolrForTypo3\Solr\Report;
 use ApacheSolrForTypo3\Solr\FrontendEnvironment;
 use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
-use Doctrine\DBAL\Driver\Exception as DBALDriverException;
+use Doctrine\DBAL\Exception as DBALException;
 use RuntimeException;
 use TYPO3\CMS\Core\Error\Http\ServiceUnavailableException;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
@@ -36,21 +36,10 @@ use TYPO3\CMS\Reports\Status;
  */
 class SolrConfigurationStatus extends AbstractSolrStatus
 {
-    /**
-     * @var ExtensionConfiguration
-     */
     protected ExtensionConfiguration $extensionConfiguration;
 
-    /**
-     * @var FrontendEnvironment
-     */
     protected FrontendEnvironment $frontendEnvironment;
 
-    /**
-     * SolrConfigurationStatus constructor.
-     * @param ExtensionConfiguration|null $extensionConfiguration
-     * @param FrontendEnvironment|null $frontendEnvironment
-     */
     public function __construct(
         ExtensionConfiguration $extensionConfiguration = null,
         FrontendEnvironment $frontendEnvironment = null
@@ -62,9 +51,7 @@ class SolrConfigurationStatus extends AbstractSolrStatus
     /**
      * Compiles a collection of configuration status checks.
      *
-     * @return array
-     *
-     * @throws DBALDriverException
+     * @throws DBALException
      */
     public function getStatus(): array
     {
@@ -95,10 +82,11 @@ class SolrConfigurationStatus extends AbstractSolrStatus
     }
 
     /**
-     * Checks whether the "Use as Root Page" page property has been set for any
-     * site.
+     * Checks whether the "Use as Root Page" page property has been set for any site.
      *
      * @return Status|null An error status is returned if no root pages were found.
+     *
+     * @throws DBALException
      */
     protected function getRootPageFlagStatus(): ?Status
     {
@@ -126,7 +114,8 @@ class SolrConfigurationStatus extends AbstractSolrStatus
      * not work.
      *
      * @return Status|null An error status is returned for each site root page config.index_enable = 0.
-     * @throws DBALDriverException
+     *
+     * @throws DBALException
      */
     protected function getConfigIndexEnableStatus(): ?Status
     {
@@ -152,8 +141,7 @@ class SolrConfigurationStatus extends AbstractSolrStatus
     /**
      * Returns an array of rootPages where the indexing is off and EXT:solr is enabled.
      *
-     * @return array
-     * @throws DBALDriverException
+     * @throws DBALException
      */
     protected function getRootPagesWithIndexingOff(): array
     {
@@ -166,7 +154,7 @@ class SolrConfigurationStatus extends AbstractSolrStatus
                 if ($solrIsEnabledAndIndexingDisabled) {
                     $rootPagesWithIndexingOff[] = $rootPage;
                 }
-            } catch (RuntimeException $rte) {
+            } catch (RuntimeException) {
                 $rootPagesWithIndexingOff[] = $rootPage;
             } catch (ServiceUnavailableException $sue) {
                 if ($sue->getCode() == 1294587218) {
@@ -191,6 +179,8 @@ class SolrConfigurationStatus extends AbstractSolrStatus
      * which usually is the case for pages with pid = 0.
      *
      * @return array An array of (partial) root page records, containing the uid and title fields
+     *
+     * @throws DBALException
      */
     protected function getRootPages(): array
     {
@@ -201,9 +191,7 @@ class SolrConfigurationStatus extends AbstractSolrStatus
     /**
      * Checks if the solr plugin is enabled with plugin.tx_solr.enabled.
      *
-     * @param int $pageUid
-     * @return bool
-     * @throws DBALDriverException
+     * @throws DBALException
      */
     protected function getIsSolrEnabled(int $pageUid): bool
     {
@@ -213,9 +201,7 @@ class SolrConfigurationStatus extends AbstractSolrStatus
     /**
      * Checks if the indexing is enabled with config.index_enable
      *
-     * @param int $pageUid
-     * @return bool
-     * @throws DBALDriverException
+     * @throws DBALException
      */
     protected function getIsIndexingEnabled(int $pageUid): bool
     {

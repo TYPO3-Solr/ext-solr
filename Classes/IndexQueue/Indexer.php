@@ -21,6 +21,7 @@ use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\Domain\Search\ApacheSolrDocument\Builder;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
+use ApacheSolrForTypo3\Solr\Exception as EXTSolrException;
 use ApacheSolrForTypo3\Solr\FieldProcessor\Service;
 use ApacheSolrForTypo3\Solr\FrontendEnvironment;
 use ApacheSolrForTypo3\Solr\FrontendEnvironment\Exception\Exception as FrontendEnvironmentException;
@@ -32,7 +33,6 @@ use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
 use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
-use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use Doctrine\DBAL\Exception as DBALException;
 use InvalidArgumentException;
 use RuntimeException;
@@ -57,83 +57,50 @@ class Indexer extends AbstractIndexer
 {
     /**
      * A Solr service instance to interact with the Solr server
-     *
-     * @var SolrConnection|null
      */
-    protected ?SolrConnection $solr;
+    protected ?SolrConnection $currentlyUsedSolrConnection;
 
-    /**
-     * @var ConnectionManager
-     */
     protected ConnectionManager $connectionManager;
 
     /**
      * Holds options for a specific indexer
-     *
-     * @var array
      */
     protected array $options = [];
 
-    /**
-     * To log or not to log... #Shakespeare
-     *
-     * @var bool
-     */
-    protected bool $loggingEnabled = false;
-
-    /**
-     * @var SolrLogManager
-     */
-    protected SolrLogManager $logger;
-
-    /**
-     * @var PagesRepository
-     */
     protected PagesRepository $pagesRepository;
 
-    /**
-     * @var Builder
-     */
     protected Builder $documentBuilder;
 
-    /**
-     * @var FrontendEnvironment
-     */
     protected FrontendEnvironment $frontendEnvironment;
 
     /**
-     * Constructor
-     *
-     * @param array $options array of indexer options
-     * @param PagesRepository|null $pagesRepository
-     * @param Builder|null $documentBuilder
-     * @param SolrLogManager|null $logger
-     * @param ConnectionManager|null $connectionManager
-     * @param FrontendEnvironment|null $frontendEnvironment
+     * To log or not to log... #Shakespeare
      */
+    protected bool $loggingEnabled = false;
+
+    protected SolrLogManager $logger;
+
     public function __construct(
         array $options = [],
         PagesRepository $pagesRepository = null,
         Builder $documentBuilder = null,
-        SolrLogManager $logger = null,
         ConnectionManager $connectionManager = null,
-        FrontendEnvironment $frontendEnvironment = null
+        FrontendEnvironment $frontendEnvironment = null,
+        SolrLogManager $logger = null,
     ) {
         $this->options = $options;
         $this->pagesRepository = $pagesRepository ?? GeneralUtility::makeInstance(PagesRepository::class);
         $this->documentBuilder = $documentBuilder ?? GeneralUtility::makeInstance(Builder::class);
-        $this->logger = $logger ?? GeneralUtility::makeInstance(SolrLogManager::class, /** @scrutinizer ignore-type */ __CLASS__);
         $this->connectionManager = $connectionManager ?? GeneralUtility::makeInstance(ConnectionManager::class);
         $this->frontendEnvironment = $frontendEnvironment ?? GeneralUtility::makeInstance(FrontendEnvironment::class);
+        $this->logger = $logger ?? GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
     }
 
     /**
-     * Indexes an item from the indexing queue.
+     * Indexes an item from the indexing queue and returns true when indexed, false when not
      *
-     * @param Item $item An index queue item
-     * @return bool returns true when indexed, false when not
-     * @throws DBALDriverException
      * @throws DBALException
+     * @throws EXTSolrException
      * @throws FrontendEnvironmentException
      * @throws NoSolrConnectionFoundException
      * @throws SiteNotFoundException
@@ -147,7 +114,7 @@ class Indexer extends AbstractIndexer
 
         $solrConnections = $this->getSolrConnectionsByItem($item);
         foreach ($solrConnections as $systemLanguageUid => $solrConnection) {
-            $this->solr = $solrConnection;
+            $this->currentlyUsedSolrConnection = $solrConnection;
 
             if (!$this->indexItem($item, (int)$systemLanguageUid)) {
                 /*
@@ -170,9 +137,11 @@ class Indexer extends AbstractIndexer
      *
      * @param Item $item An index queue item to index.
      * @param int $language The language to use.
+     *
      * @return bool TRUE if item was indexed successfully, FALSE on failure
-     * @throws DBALDriverException
+     *
      * @throws DBALException
+     * @throws EXTSolrException
      * @throws FrontendEnvironmentException
      * @throws IndexingException
      * @throws SiteNotFoundException
@@ -197,7 +166,7 @@ class Indexer extends AbstractIndexer
         $documents = $this->processDocuments($item, $documents);
         $documents = self::preAddModifyDocuments($item, $language, $documents);
 
-        $response = $this->solr->getWriteService()->addDocuments($documents);
+        $response = $this->currentlyUsedSolrConnection->getWriteService()->addDocuments($documents);
         if ($response->getHttpStatus() !== 200) {
             $responseData = json_decode($response->getRawResponse() ?? '', true);
             throw new IndexingException(
@@ -220,8 +189,10 @@ class Indexer extends AbstractIndexer
      *
      * @param Item $item The item to be indexed
      * @param int $language Language Id (sys_language.uid)
+     *
      * @return array|null The full record with fields of data to be used for indexing or NULL to prevent an item from being indexed
-     * @throws DBALDriverException
+     *
+     * @throws DBALException
      * @throws FrontendEnvironmentException
      * @throws SiteNotFoundException
      */
@@ -239,9 +210,7 @@ class Indexer extends AbstractIndexer
     /**
      * Returns the overlaid item record.
      *
-     * @param Item $item
-     * @param int $language
-     * @throws DBALDriverException
+     * @throws DBALException
      * @throws FrontendEnvironmentException
      * @throws SiteNotFoundException
      */
@@ -271,11 +240,6 @@ class Indexer extends AbstractIndexer
             ->sys_page->getLanguageOverlay($item->getType(), $itemRecord);
     }
 
-    /**
-     * @param Item $item
-     *
-     * @return bool
-     */
     protected function isAFreeContentModeItemRecord(Item $item): bool
     {
         $languageField = $GLOBALS['TCA'][$item->getType()]['ctrl']['languageField'] ?? null;
@@ -296,8 +260,10 @@ class Indexer extends AbstractIndexer
      *
      * @param Item $item An index queue item
      * @param int $language Language ID
+     *
      * @return array Configuration array from TypoScript
-     * @throws DBALDriverException
+     *
+     * @throws DBALException
      */
     protected function getItemTypeConfiguration(Item $item, int $language = 0): array
     {
@@ -316,11 +282,6 @@ class Indexer extends AbstractIndexer
 
     /**
      * The method retrieves the field configuration of the items record page id (pid).
-     *
-     * @param Item $item
-     * @param int $language
-     * @param string $indexConfigurationName
-     * @return array
      */
     protected function getFieldConfigurationFromItemRecordPage(Item $item, int $language, string $indexConfigurationName): array
     {
@@ -328,15 +289,11 @@ class Indexer extends AbstractIndexer
             $pageId = $this->getPageIdOfItem($item);
             $solrConfiguration = $this->frontendEnvironment->getSolrConfigurationFromPageId($pageId, $language, $item->getRootPageUid());
             return $solrConfiguration->getIndexQueueFieldsConfigurationByConfigurationName($indexConfigurationName);
-        } catch (Throwable $e) {
+        } catch (Throwable) {
             return [];
         }
     }
 
-    /**
-     * @param Item $item
-     * @return int
-     */
     protected function getPageIdOfItem(Item $item): int
     {
         if ($item->getType() === 'pages') {
@@ -348,11 +305,7 @@ class Indexer extends AbstractIndexer
     /**
      * The method returns the field configuration of the items root page id (uid of the related root page).
      *
-     * @param Item $item
-     * @param int $language
-     * @param string $indexConfigurationName
-     * @return array
-     * @throws DBALDriverException
+     * @throws DBALException
      */
     protected function getFieldConfigurationFromItemRootPage(Item $item, int $language, string $indexConfigurationName): array
     {
@@ -364,14 +317,12 @@ class Indexer extends AbstractIndexer
     /**
      * In case of additionalStoragePid config recordPageId can be outside siteroot.
      * In that case we should not read TS config of foreign siteroot.
-     *
-     * @param Item $item
-     * @return bool
      */
     protected function isRootPageIdPartOfRootLine(Item $item): bool
     {
         $rootPageId = (int)$item->getRootPageUid();
         $buildRootlineWithPid = $this->getPageIdOfItem($item);
+        /* @var RootlineUtility $rootlineUtility */
         $rootlineUtility = GeneralUtility::makeInstance(RootlineUtility::class, $buildRootlineWithPid);
         $rootline = $rootlineUtility->get();
 
@@ -390,9 +341,9 @@ class Indexer extends AbstractIndexer
      *
      * @return Document|null The Solr document converted from the record
      *
-     * @throws DBALDriverException
      * @throws FrontendEnvironmentException
      * @throws SiteNotFoundException
+     * @throws DBALException
      */
     protected function itemToDocument(Item $item, int $language = 0): ?Document
     {
@@ -415,7 +366,10 @@ class Indexer extends AbstractIndexer
      *
      * @param Item $item The item to index
      * @param array $itemRecord The record to use to build the base document
+     *
      * @return Document A basic Solr document
+     *
+     * @throws DBALException
      */
     protected function getBaseDocument(Item $item, array $itemRecord): Document
     {
@@ -429,9 +383,10 @@ class Indexer extends AbstractIndexer
      * Generates an Access Rootline for an item.
      *
      * @param Item $item Index Queue item to index.
-     * @return mixed|string The Access Rootline for the item
+     *
+     * @return string The Access Rootline for the item
      */
-    protected function getAccessRootline(Item $item)
+    protected function getAccessRootline(Item $item): string
     {
         $accessRestriction = '0';
         $itemRecord = $item->getRecord();
@@ -455,15 +410,17 @@ class Indexer extends AbstractIndexer
      * manipulating fields as defined in the field's configuration.
      *
      * @param Item $item An index queue item
-     * @param array $documents An array of \ApacheSolrForTypo3\Solr\System\Solr\Document\Document objects to manipulate.
+     * @param array $documents An array of {@link Document} objects to manipulate.
+     *
      * @return Document[] An array of manipulated Document objects.
-     * @throws DBALDriverException
+     *
      * @throws DBALException
+     * @throws EXTSolrException
      */
     protected function processDocuments(Item $item, array $documents): array
     {
-//        // needs to respect the TS settings for the page the item is on, conditions may apply
-//        $solrConfiguration = $this->frontendEnvironment->getSolrConfigurationFromPageId($item->getRootPageUid());
+        //        // needs to respect the TS settings for the page the item is on, conditions may apply
+        //        $solrConfiguration = $this->frontendEnvironment->getSolrConfigurationFromPageId($item->getRootPageUid());
 
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $solrConfiguration = $siteRepository->getSiteByPageId($item->getRootPageUid())->getSolrConfiguration();
@@ -485,6 +442,7 @@ class Indexer extends AbstractIndexer
      * @param Item $item The item currently being indexed.
      * @param int $language The language uid currently being indexed.
      * @param Document $itemDocument The document representing the item for the given language.
+     *
      * @return Document[] array An array of additional Document objects to index.
      */
     protected function getAdditionalDocuments(Item $item, int $language, Document $itemDocument): array
@@ -524,6 +482,7 @@ class Indexer extends AbstractIndexer
      * @param Item $item The item currently being indexed.
      * @param int $language The language uid of the documents
      * @param array $documents An array of documents to be indexed
+     *
      * @return array An array of modified documents
      */
     public static function preAddModifyDocuments(Item $item, int $language, array $documents): array
@@ -557,10 +516,10 @@ class Indexer extends AbstractIndexer
      * The connections include the default connection and connections to be used
      * for translations of an item.
      *
-     * @param Item $item An index queue item
-     * @return array An array of ApacheSolrForTypo3\Solr\System\Solr\SolrConnection connections, the array's keys are the sys_language_uid of the language of the connection
-     * @throws DBALDriverException
+     * @return SolrConnection[] An array of connections, the array's keys are the sys_language_uid of the language of the connection
+     *
      * @throws NoSolrConnectionFoundException
+     * @throws DBALException
      */
     protected function getSolrConnectionsByItem(Item $item): array
     {
@@ -581,7 +540,7 @@ class Indexer extends AbstractIndexer
             $siteLanguages[] = $solrConfiguration['language'];
         }
 
-        $defaultLanguageUid = $this->getDefaultLanguageUid($item, $site->getRootPage(), $siteLanguages);
+        $defaultLanguageUid = $this->getDefaultLanguageUid($item, $site->getRootPageRecord(), $siteLanguages);
         $translationOverlays = $this->getTranslationOverlaysWithConfiguredSite((int)$pageId, $site, $siteLanguages);
 
         $defaultConnection = $this->connectionManager->getConnectionByPageId($rootPageId, $defaultLanguageUid, $item->getMountPointIdentifier() ?? '');
@@ -598,10 +557,9 @@ class Indexer extends AbstractIndexer
     }
 
     /**
-     * @param int $pageId
-     * @param Site $site
-     * @param array $siteLanguages
-     * @return array
+     * Returns the translation overlay
+     *
+     * @throws DBALException
      */
     protected function getTranslationOverlaysWithConfiguredSite(int $pageId, Site $site, array $siteLanguages): array
     {
@@ -639,9 +597,7 @@ class Indexer extends AbstractIndexer
     }
 
     /**
-     * @param Site $site
-     * @param int $languageId
-     * @return array
+     * Returns the fallback order for sites language
      */
     protected function getFallbackOrder(Site $site, int $languageId): array
     {
@@ -651,28 +607,25 @@ class Indexer extends AbstractIndexer
             $site = $siteFinder->getSiteByRootPageId($site->getRootPageId());
             $languageAspect = LanguageAspectFactory::createFromSiteLanguage($site->getLanguageById($languageId));
             $fallbackChain = $languageAspect->getFallbackChain();
-        } catch (SiteNotFoundException $e) {
+        } catch (SiteNotFoundException) {
         }
         return $fallbackChain;
     }
 
     /**
-     * @param Item $item An index queue item
-     * @param array $rootPage
-     * @param array $siteLanguages
+     * Returns default language id for given root page record and available languages.
      *
-     * @return int
      * @throws RuntimeException
      */
-    protected function getDefaultLanguageUid(Item $item, array $rootPage, array $siteLanguages): int
+    protected function getDefaultLanguageUid(Item $item, array $rootPageRecord, array $siteLanguages): int
     {
         $defaultLanguageUid = 0;
-        if (($rootPage['l18n_cfg'] & 1) == 1 && count($siteLanguages) == 1 && $siteLanguages[min(array_keys($siteLanguages))] > 0) {
+        if (($rootPageRecord['l18n_cfg'] & 1) == 1 && count($siteLanguages) == 1 && $siteLanguages[min(array_keys($siteLanguages))] > 0) {
             $defaultLanguageUid = $siteLanguages[min(array_keys($siteLanguages))];
-        } elseif (($rootPage['l18n_cfg'] & 1) == 1 && count($siteLanguages) > 1) {
+        } elseif (($rootPageRecord['l18n_cfg'] & 1) == 1 && count($siteLanguages) > 1) {
             unset($siteLanguages[array_search('0', $siteLanguages)]);
             $defaultLanguageUid = $siteLanguages[min(array_keys($siteLanguages))];
-        } elseif (($rootPage['l18n_cfg'] & 1) == 1 && count($siteLanguages) == 1) {
+        } elseif (($rootPageRecord['l18n_cfg'] & 1) == 1 && count($siteLanguages) == 1) {
             $message = 'Root page ' . (int)$item->getRootPageUid() . ' is set to hide default translation, but no other language is configured!';
             throw new RuntimeException($message);
         }
@@ -681,12 +634,11 @@ class Indexer extends AbstractIndexer
     }
 
     /**
-     * Checks for which languages connections have been configured and returns
-     * these connections.
+     * Checks for which languages connections have been configured for translation overlays and returns these connections.
      *
-     * @param array $translationOverlays An array of translation overlays to check for configured connections.
-     * @return array An array of ApacheSolrForTypo3\Solr\System\Solr\SolrConnection connections.
-     * @throws DBALDriverException
+     * @return SolrConnection[]
+     *
+     * @throws DBALException
      */
     protected function getConnectionsForIndexableLanguages(array $translationOverlays): array
     {
@@ -699,7 +651,7 @@ class Indexer extends AbstractIndexer
             try {
                 $connection = $this->connectionManager->getConnectionByPageId($pageId, $languageId);
                 $connections[$languageId] = $connection;
-            } catch (NoSolrConnectionFoundException $e) {
+            } catch (NoSolrConnectionFoundException) {
                 // ignore the exception as we seek only those connections
                 // actually available
             }
@@ -716,10 +668,9 @@ class Indexer extends AbstractIndexer
     /**
      * Enables logging dependent on the configuration of the item's site
      *
-     * @param Item $item An item being indexed
-     * @throws DBALDriverException
+     * @throws DBALException
      */
-    protected function setLogging(Item $item)
+    protected function setLogging(Item $item): void
     {
         $solrConfiguration = $this->frontendEnvironment->getSolrConfigurationFromPageId($item->getRootPageUid());
         $this->loggingEnabled = $solrConfiguration->getLoggingIndexingQueueOperationsByConfigurationNameWithFallBack(
@@ -734,7 +685,7 @@ class Indexer extends AbstractIndexer
      * @param array $itemDocuments An array of Solr documents created from the item's data
      * @param ResponseAdapter $response The Solr response for the particular index document
      */
-    protected function log(Item $item, array $itemDocuments, ResponseAdapter $response)
+    protected function log(Item $item, array $itemDocuments, ResponseAdapter $response): void
     {
         if (!$this->loggingEnabled) {
             return;
@@ -765,28 +716,9 @@ class Indexer extends AbstractIndexer
     }
 
     /**
-     * Returns the language field from given table or null
-     *
-     * @param string $tableName
-     * @return string|null
-     */
-    protected function getLanguageFieldFromTable(string $tableName): ?string
-    {
-        $tableControl = $GLOBALS['TCA'][$tableName]['ctrl'] ?? [];
-
-        if (!empty($tableControl['languageField'])) {
-            return $tableControl['languageField'];
-        }
-
-        return null;
-    }
-
-    /**
      * Checks the given language, if it is in "free" mode.
      *
-     * @param Item $item
-     * @param int $language
-     * @return bool
+     * @throws DBALException
      */
     protected function isLanguageInAFreeContentMode(Item $item, int $language): bool
     {

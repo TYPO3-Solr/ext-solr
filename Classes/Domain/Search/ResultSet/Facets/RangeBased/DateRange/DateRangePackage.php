@@ -24,25 +24,16 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetPackage;
  */
 class DateRangePackage extends AbstractFacetPackage
 {
-    /**
-     * @return string
-     */
     public function getParserClassName(): string
     {
         return DateRangeFacetParser::class;
     }
 
-    /**
-     * @return string
-     */
     public function getQueryBuilderClassName(): string
     {
         return DateRangeFacetQueryBuilder::class;
     }
 
-    /**
-     * @return string
-     */
     public function getUrlDecoderClassName(): string
     {
         return DateRangeUrlDecoder::class;

@@ -62,25 +62,16 @@ abstract class IntegrationTest extends FunctionalTestCase
         'fluid_styled_content',
     ];
 
-    /**
-     * @var array
-     */
     protected const LANGUAGE_PRESETS = [
         'EN' => ['id' => 0, 'title' => 'English', 'locale' => 'en_US.UTF8'],
         'DE' => ['id' => 1, 'title' => 'German', 'locale' => 'de_DE.UTF8', 'fallbackType' => 'fallback', 'fallbacks' => 'EN'],
         'DA' => ['id' => 2, 'title' => 'Danish', 'locale' => 'da_DA.UTF8'],
     ];
 
-    /**
-     * @var array
-     */
     protected array $testExtensionsToLoad = [
         'typo3conf/ext/solr',
     ];
 
-    /**
-     * @var array
-     */
     protected array $testSolrCores = [
         'core_en',
         'core_de',
@@ -131,7 +122,7 @@ abstract class IntegrationTest extends FunctionalTestCase
      *
      * @throws TestingFrameworkCoreException
      */
-    protected function importDataSetFromFixture($fixtureName)
+    protected function importDataSetFromFixture($fixtureName): void
     {
         $this->importDataSet($this->getFixturePathByName($fixtureName));
     }
@@ -207,7 +198,7 @@ abstract class IntegrationTest extends FunctionalTestCase
     /**
      * @param string|null $coreName
      */
-    protected function cleanUpSolrServerAndAssertEmpty(?string $coreName = 'core_en')
+    protected function cleanUpSolrServerAndAssertEmpty(?string $coreName = 'core_en'): void
     {
         $this->validateTestCoreName($coreName);
 
@@ -240,7 +231,7 @@ abstract class IntegrationTest extends FunctionalTestCase
      *
      * @throws InvalidArgumentException
      */
-    protected function validateTestCoreName(string $coreName)
+    protected function validateTestCoreName(string $coreName): void
     {
         if (!in_array($coreName, $this->testSolrCores)) {
             throw new InvalidArgumentException('No valid test core passed');
@@ -250,7 +241,7 @@ abstract class IntegrationTest extends FunctionalTestCase
     /**
      * Assertion to check if the solr server is empty.
      */
-    protected function assertSolrIsEmpty()
+    protected function assertSolrIsEmpty(): void
     {
         $this->assertSolrContainsDocumentCount(0);
     }
@@ -260,7 +251,7 @@ abstract class IntegrationTest extends FunctionalTestCase
      *
      * @param int $documentCount
      */
-    protected function assertSolrContainsDocumentCount(int $documentCount)
+    protected function assertSolrContainsDocumentCount(int $documentCount): void
     {
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
         self::assertStringContainsString('"numFound":' . $documentCount, $solrContent, 'Solr contains unexpected amount of documents');
@@ -280,7 +271,7 @@ abstract class IntegrationTest extends FunctionalTestCase
      * @throws SiteNotFoundException
      * @throws TestingFrameworkCoreException
      */
-    protected function indexPageIdsFromFixture(string $fixture, array $importPageIds, ?array $feUserGroupArray = [0])
+    protected function indexPageIdsFromFixture(string $fixture, array $importPageIds, ?array $feUserGroupArray = [0]): void
     {
         $this->importDataSetFromFixture($fixture);
         $this->indexPageIds($importPageIds, $feUserGroupArray);
@@ -299,7 +290,7 @@ abstract class IntegrationTest extends FunctionalTestCase
      * @throws ServiceUnavailableException
      * @throws SiteNotFoundException
      */
-    protected function indexPageIds(array $importPageIds, ?array $feUserGroupArray = [0])
+    protected function indexPageIds(array $importPageIds, ?array $feUserGroupArray = [0]): void
     {
         foreach ($importPageIds as $importPageId) {
             $fakeTSFE = $this->fakeTSFE($importPageId, $feUserGroupArray);
@@ -327,7 +318,7 @@ abstract class IntegrationTest extends FunctionalTestCase
      */
     protected function fakeBEUser(int $isAdmin = 0, int $workspace = 0): BackendUserAuthentication
     {
-        /** @var $beUser  BackendUserAuthentication */
+        /* @var BackendUserAuthentication $beUser */
         $beUser = GeneralUtility::makeInstance(BackendUserAuthentication::class);
         $beUser->user['admin'] = $isAdmin;
         $beUser->workspace = $workspace;
@@ -382,7 +373,7 @@ abstract class IntegrationTest extends FunctionalTestCase
     /**
      * @param array $feUserGroupArray
      */
-    protected function simulateFrontedUserGroups(array $feUserGroupArray)
+    protected function simulateFrontedUserGroups(array $feUserGroupArray): void
     {
         /** @var  $context Context::class */
         $context = GeneralUtility::makeInstance(Context::class);
@@ -412,7 +403,7 @@ abstract class IntegrationTest extends FunctionalTestCase
     /**
      * Applies in CMS 9.2 introduced error handling.
      */
-    protected function applyUsingErrorControllerForCMS9andAbove()
+    protected function applyUsingErrorControllerForCMS9andAbove(): void
     {
         $GLOBALS['TYPO3_REQUEST'] = new ServerRequest();
     }
@@ -441,7 +432,7 @@ abstract class IntegrationTest extends FunctionalTestCase
      *
      * @throws TestingFrameworkCoreException
      */
-    protected function writeDefaultSolrTestSiteConfiguration()
+    protected function writeDefaultSolrTestSiteConfiguration(): void
     {
         $solrConnectionInfo = $this->getSolrConnectionInfo();
         $this->writeDefaultSolrTestSiteConfigurationForHostAndPort($solrConnectionInfo['scheme'], $solrConnectionInfo['host'], $solrConnectionInfo['port']);
@@ -464,8 +455,8 @@ abstract class IntegrationTest extends FunctionalTestCase
         ?string $scheme = 'http',
         ?string $host = 'localhost',
         ?int $port = 8999,
-        ?bool $disableDefaultLanguage = false
-    ) {
+        ?bool $disableDefaultLanguage = false,
+    ): void {
         $siteCreatedHash = md5($scheme . $host . $port . $disableDefaultLanguage);
         if (self::$lastSiteCreated === $siteCreatedHash) {
             return;

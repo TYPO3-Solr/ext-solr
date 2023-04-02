@@ -30,48 +30,31 @@ class NumericRangeFacet extends AbstractFacet
 {
     public const TYPE_NUMERIC_RANGE = 'numericRange';
 
-    /**
-     * String
-     * @var string
-     */
     protected static string $type = self::TYPE_NUMERIC_RANGE;
 
-    /**
-     * @var NumericRange|null
-     */
     protected ?NumericRange $numericRange = null;
 
-    /**
-     * @param NumericRange $range
-     */
-    public function setRange(NumericRange $range)
+    public function setRange(NumericRange $range): void
     {
         $this->numericRange = $range;
     }
 
-    /**
-     * @return NumericRange
-     */
     public function getRange(): NumericRange
     {
         return $this->numericRange;
     }
 
     /**
-     * Get facet partial name used for rendering the facet
-     *
-     * @return string
+     * @inheritDoc
      */
     public function getPartialName(): string
     {
-        return !empty($this->configuration['partialName']) ? $this->configuration['partialName'] : 'RangeNumeric.html';
+        return !empty($this->facetConfiguration['partialName']) ? $this->facetConfiguration['partialName'] : 'RangeNumeric.html';
     }
 
     /**
      * Since the DateRange contains only one or two items when return a collection with the range only to
      * allow to render the date range as other facet items.
-     *
-     * @return AbstractFacetItemCollection
      */
     public function getAllFacetItems(): AbstractFacetItemCollection
     {

@@ -21,44 +21,28 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Grouping\GroupCollection;
 use ApacheSolrForTypo3\Solr\System\Data\AbstractCollection;
 
 /**
- * The SearchResultCollection contains the SearchResult object and related objects. e.g groups.
+ * The SearchResultCollection contains the SearchResult object and related objects. e.g. groups.
  */
 class SearchResultCollection extends AbstractCollection
 {
-    /**
-     * @var GroupCollection
-     */
     protected GroupCollection $groups;
 
-    /**
-     * SearchResultCollection constructor.
-     * @param array $data
-     */
     public function __construct(array $data = [])
     {
         parent::__construct($data);
         $this->groups = new GroupCollection();
     }
 
-    /**
-     * @return GroupCollection
-     */
     public function getGroups(): GroupCollection
     {
         return $this->groups;
     }
 
-    /**
-     * @param GroupCollection $groups
-     */
-    public function setGroups(GroupCollection $groups)
+    public function setGroups(GroupCollection $groups): void
     {
         $this->groups = $groups;
     }
 
-    /**
-     * @return bool
-     */
     public function getHasGroups(): bool
     {
         return $this->groups->getCount() > 0;

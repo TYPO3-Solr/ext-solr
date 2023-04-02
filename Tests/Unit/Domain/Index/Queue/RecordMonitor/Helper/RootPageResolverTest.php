@@ -51,7 +51,7 @@ class RootPageResolverTest extends SetUpUnitTestCase
 
         $this->recordServiceMock = $this->getDumbMock(ConfigurationAwareRecordService::class);
 
-        /** @var $rootPageResolver RootPageResolver */
+        /* @var RootPageResolver $rootPageResolver */
         $this->rootPageResolver = $this->getMockBuilder(RootPageResolver::class)
             ->setConstructorArgs([$this->recordServiceMock, $this->cacheMock])
             ->onlyMethods(['getIsRootPageId', 'getAlternativeSiteRootPagesIds', 'getRootPageIdByTableAndUid', 'getRecordPageId', 'getPageRecordByPageId'])->getMock();

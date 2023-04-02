@@ -39,26 +39,14 @@ use UnexpectedValueException;
  */
 class GarbageCollector implements SingletonInterface
 {
-    /**
-     * @var array
-     */
     protected array $trackedRecords = [];
 
-    /**
-     * @var TCAService
-     */
     protected TCAService $tcaService;
 
-    /**
-     * @var EventDispatcherInterface
-     */
     protected EventDispatcherInterface $eventDispatcher;
 
     /**
      * GarbageCollector constructor.
-     *
-     * @param TCAService|null $TCAService
-     * @param EventDispatcherInterface|null $eventDispatcher
      */
     public function __construct(TCAService $TCAService = null, EventDispatcherInterface $eventDispatcher = null)
     {
@@ -108,10 +96,11 @@ class GarbageCollector implements SingletonInterface
      * @param int $uid The record's uid
      * @param string $value Not used
      * @param DataHandler $tceMain TYPO3 Core Engine parent object, not used
+     *
      * @noinspection PhpMissingParamTypeInspection
      * @noinspection PhpUnusedParameterInspection
      */
-    public function processCmdmap_postProcess($command, $table, $uid, $value, DataHandler $tceMain)
+    public function processCmdmap_postProcess($command, $table, $uid, $value, DataHandler $tceMain): void
     {
         // workspaces: collect garbage only for LIVE workspace
         if ($command === 'move' && $table === 'pages' && ($GLOBALS['BE_USER']->workspace ?? null) == 0) {
@@ -130,6 +119,7 @@ class GarbageCollector implements SingletonInterface
      * @param string $table The table the record belongs to
      * @param mixed $uid The record's uid, [integer] or [string] (like 'NEW...')
      * @param DataHandler $tceMain TYPO3 Core Engine parent object, not used
+     *
      * @noinspection PhpMissingParamTypeInspection
      * @noinspection PhpUnusedParameterInspection
      */
@@ -174,6 +164,7 @@ class GarbageCollector implements SingletonInterface
      * @param mixed $uid The record's uid, [integer] or [string] (like 'NEW...')
      * @param array $fields The record's data, not used
      * @param DataHandler $tceMain TYPO3 Core Engine parent object, not used
+     *
      * @noinspection PhpMissingParamTypeInspection
      * @noinspection PhpUnusedParameterInspection
      */
@@ -213,6 +204,7 @@ class GarbageCollector implements SingletonInterface
      *
      * @param string $table The table name.
      * @param array $updatedRecord An array with fields of the updated record that may affect visibility.
+     *
      * @return bool TRUE if frontend groups have been removed from access to the record, FALSE otherwise.
      */
     protected function hasFrontendGroupsRemoved(string $table, array $updatedRecord): bool
@@ -232,8 +224,6 @@ class GarbageCollector implements SingletonInterface
 
     /**
      * Returns the GarbageHandler
-     *
-     * @return GarbageHandler
      */
     protected function getGarbageHandler(): GarbageHandler
     {

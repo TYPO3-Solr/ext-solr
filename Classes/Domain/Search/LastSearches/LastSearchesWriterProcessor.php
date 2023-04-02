@@ -17,7 +17,6 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\LastSearches;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSetProcessor;
-use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use Doctrine\DBAL\Exception as DBALException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -29,11 +28,9 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class LastSearchesWriterProcessor implements SearchResultSetProcessor
 {
     /**
-     * @param SearchResultSet $resultSet
+     * Processes and returns {@link SearchResultSet} for last searches
      *
-     * @throws DBALDriverException
-     * @throws DBALException|\Doctrine\DBAL\DBALException
-     * @return SearchResultSet
+     * @throws DBALException
      */
     public function process(SearchResultSet $resultSet): SearchResultSet
     {
@@ -48,7 +45,7 @@ class LastSearchesWriterProcessor implements SearchResultSetProcessor
 
         $query = $resultSet->getUsedSearchRequest()->getRawUserQuery();
 
-        if (is_string($query)) {
+        if (!empty($query)) {
             $lastSearchesService = $this->getLastSearchesService($resultSet);
             $lastSearchesService->addToLastSearches($query);
         }
@@ -57,8 +54,7 @@ class LastSearchesWriterProcessor implements SearchResultSetProcessor
     }
 
     /**
-     * @param SearchResultSet $resultSet
-     * @return LastSearchesService
+     * Returns {@link LastSearchesService}
      */
     protected function getLastSearchesService(SearchResultSet $resultSet): LastSearchesService
     {

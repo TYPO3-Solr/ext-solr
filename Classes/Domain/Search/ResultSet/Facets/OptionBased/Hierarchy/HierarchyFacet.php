@@ -30,51 +30,27 @@ class HierarchyFacet extends AbstractFacet
 {
     public const TYPE_HIERARCHY = 'hierarchy';
 
-    /**
-     * String
-     * @var string
-     */
     protected static string $type = self::TYPE_HIERARCHY;
 
-    /**
-     * @var array
-     */
     protected array $nodesByKey = [];
 
-    /**
-     * OptionsFacet constructor
-     *
-     * @param SearchResultSet $resultSet
-     * @param string $name
-     * @param string $field
-     * @param string $label
-     * @param array $configuration Facet configuration passed from typoscript
-     * @param NodeCollection $childNodes
-     * @param NodeCollection $allNodes
-     */
     public function __construct(
         SearchResultSet $resultSet,
         string $name,
         string $field,
         string $label = '',
-        array $configuration = [],
+        array $facetConfiguration = [],
         protected NodeCollection $childNodes = new NodeCollection(),
         protected NodeCollection $allNodes = new NodeCollection(),
     ) {
-        parent::__construct($resultSet, $name, $field, $label, $configuration);
+        parent::__construct($resultSet, $name, $field, $label, $facetConfiguration);
     }
 
-    /**
-     * @param Node $node
-     */
-    public function addChildNode(Node $node)
+    public function addChildNode(Node $node): void
     {
         $this->childNodes->add($node);
     }
 
-    /**
-     * @return NodeCollection
-     */
     public function getChildNodes(): NodeCollection
     {
         return $this->childNodes;
@@ -82,13 +58,6 @@ class HierarchyFacet extends AbstractFacet
 
     /**
      * Creates a new node on the right position with the right parent node.
-     *
-     * @param string|null $parentKey
-     * @param string $key
-     * @param string $label
-     * @param string $value
-     * @param int $count
-     * @param bool $selected
      */
     public function createNode(
         ?string $parentKey,
@@ -96,9 +65,9 @@ class HierarchyFacet extends AbstractFacet
         string $label,
         string $value,
         int $count,
-        bool $selected
-    ) {
-        /* @var $parentNode Node|null */
+        bool $selected,
+    ): void {
+        /* @var Node|null $parentNode */
         $parentNode = $this->nodesByKey[$parentKey] ?? null;
         /* @var Node $node */
         $node = GeneralUtility::makeInstance(
@@ -124,8 +93,6 @@ class HierarchyFacet extends AbstractFacet
 
     /**
      * Get facet partial name used for rendering the facet
-     *
-     * @return string
      */
     public function getPartialName(): string
     {
@@ -134,8 +101,6 @@ class HierarchyFacet extends AbstractFacet
 
     /**
      * The implementation of this method should return a "flatten" collection of all items.
-     *
-     * @return AbstractFacetItemCollection
      */
     public function getAllFacetItems(): AbstractFacetItemCollection
     {

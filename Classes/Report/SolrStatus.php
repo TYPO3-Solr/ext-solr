@@ -18,10 +18,10 @@ declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\Report;
 
 use ApacheSolrForTypo3\Solr\ConnectionManager;
+use ApacheSolrForTypo3\Solr\Domain\Site\Exception\UnexpectedTYPO3SiteInitializationException;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\PingFailedException;
 use ApacheSolrForTypo3\Solr\System\Solr\Service\SolrAdminService;
-use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use Throwable;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -37,36 +37,26 @@ class SolrStatus extends AbstractSolrStatus
 {
     /**
      * Site Repository
-     *
-     * @var SiteRepository
      */
     protected SiteRepository $siteRepository;
 
     /**
      * Connection Manager
-     *
-     * @var ConnectionManager
      */
     protected ConnectionManager $connectionManager;
 
     /**
      * Holds the response status
-     *
-     * @var ContextualFeedbackSeverity
      */
     protected ContextualFeedbackSeverity $responseStatus = ContextualFeedbackSeverity::OK;
 
     /**
      * Holds the response message build by the checks
-     *
-     * @var string
      */
     protected string $responseMessage = '';
 
     /**
      * SolrStatus constructor.
-     * @param SiteRepository|null $siteRepository
-     * @param ConnectionManager|null $connectionManager
      */
     public function __construct(SiteRepository $siteRepository = null, ConnectionManager $connectionManager = null)
     {
@@ -77,10 +67,7 @@ class SolrStatus extends AbstractSolrStatus
     /**
      * Compiles a collection of status checks against each configured Solr server.
      *
-     * @return array
-     *
-     * @throws DBALDriverException
-     * @throws Throwable
+     * @throws UnexpectedTYPO3SiteInitializationException
      */
     public function getStatus(): array
     {
@@ -155,7 +142,6 @@ class SolrStatus extends AbstractSolrStatus
     /**
      * Checks the solr version and adds it to the report.
      *
-     * @param SolrAdminService $solr
      * @return string solr version
      */
     protected function checkSolrVersion(SolrAdminService $solr): string
@@ -172,9 +158,6 @@ class SolrStatus extends AbstractSolrStatus
 
     /**
      * Checks the access filter setup and adds it to the report.
-     *
-     * @param SolrAdminService $solrAdminService
-     * @return string
      */
     protected function checkAccessFilter(SolrAdminService $solrAdminService): string
     {
@@ -191,9 +174,6 @@ class SolrStatus extends AbstractSolrStatus
 
     /**
      * Checks the ping time and adds it to the report.
-     *
-     * @param SolrAdminService $solrAdminService
-     * @return string
      */
     protected function checkPingTime(SolrAdminService $solrAdminService): string
     {
@@ -209,9 +189,6 @@ class SolrStatus extends AbstractSolrStatus
 
     /**
      * Checks the solr config name and adds it to the report.
-     *
-     * @param SolrAdminService $solrAdminService
-     * @return string
      */
     protected function checkSolrConfigName(SolrAdminService $solrAdminService): string
     {
@@ -227,9 +204,6 @@ class SolrStatus extends AbstractSolrStatus
 
     /**
      * Checks the solr schema name and adds it to the report.
-     *
-     * @param SolrAdminService $solrAdminService
-     * @return string
      */
     protected function checkSolrSchemaName(SolrAdminService $solrAdminService): string
     {

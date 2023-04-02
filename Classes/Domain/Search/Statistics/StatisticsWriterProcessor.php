@@ -21,6 +21,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSetProcessor;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\HtmlContentExtractor;
 use ApacheSolrForTypo3\Solr\Util;
+use Doctrine\DBAL\Exception as DBALException;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -36,15 +37,9 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
  */
 class StatisticsWriterProcessor implements SearchResultSetProcessor
 {
-    /**
-     * @var StatisticsRepository
-     */
-    protected $statisticsRepository;
+    protected StatisticsRepository $statisticsRepository;
 
-    /**
-     * @var SiteRepository
-     */
-    protected $siteRepository;
+    protected SiteRepository $siteRepository;
 
     public function __construct(
         StatisticsRepository $statisticsRepository = null,
@@ -55,7 +50,10 @@ class StatisticsWriterProcessor implements SearchResultSetProcessor
     }
 
     /**
+     * Writes the statistics to statistics table.
+     *
      * @throws AspectNotFoundException
+     * @throws DBALException
      */
     public function process(SearchResultSet $resultSet): SearchResultSet
     {
@@ -122,9 +120,6 @@ class StatisticsWriterProcessor implements SearchResultSetProcessor
 
     /**
      * Sanitizes a string
-     *
-     * @param $string String to sanitize
-     * @return string Sanitized string
      */
     protected function sanitizeString(string $string): string
     {
@@ -145,10 +140,11 @@ class StatisticsWriterProcessor implements SearchResultSetProcessor
     }
 
     /**
-     * @return mixed
+     * Returns timestamp from TYPO3 core date aspect
+     *
      * @throws AspectNotFoundException
      */
-    protected function getTime()
+    protected function getTime(): int
     {
         return GeneralUtility::makeInstance(Context::class)->getPropertyFromAspect('date', 'timestamp');
     }

@@ -30,8 +30,6 @@ class NoProcessingEventListener extends AbstractBaseEventListener
     /**
      * Stops the event propagation if processing is configured
      * See EM_CONF -> monitoringType
-     *
-     * @param DataUpdateEventInterface $event
      */
     public function __invoke(DataUpdateEventInterface $event): void
     {

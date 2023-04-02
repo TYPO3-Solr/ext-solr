@@ -26,8 +26,6 @@ use TYPO3\CMS\Core\Http\Uri;
 class UrlHelper extends Uri
 {
     /**
-     * @param string $host
-     * @return UrlHelper
      * @deprecated Will be removed with v12. Use withHost instead.
      * @see Uri::withHost()
      */
@@ -38,8 +36,6 @@ class UrlHelper extends Uri
     }
 
     /**
-     * @param int $port
-     * @return UrlHelper
      * @deprecated Will be removed with v12. Use withPort instead.
      * @see Uri::withPort()
      */
@@ -54,8 +50,6 @@ class UrlHelper extends Uri
     }
 
     /**
-     * @param string $scheme
-     * @return UrlHelper
      * @deprecated Will be removed with v12. Use Uri::withScheme instead.
      * @see Uri::withScheme()
      */
@@ -66,8 +60,6 @@ class UrlHelper extends Uri
     }
 
     /**
-     * @param string $path
-     * @return UrlHelper
      * @deprecated Will be removed with v12. Use withPath instead.
      * @see Uri::withPath()
      */
@@ -86,9 +78,6 @@ class UrlHelper extends Uri
 
     /**
      * Remove a given parameter from the query and create a new instance.
-     *
-     * @param string $parameterName
-     * @return UrlHelper
      */
     public function withoutQueryParameter(string $parameterName): UrlHelper
     {
@@ -107,9 +96,7 @@ class UrlHelper extends Uri
     }
 
     /**
-     * @param string $parameterName
      * @throws InvalidArgumentException
-     * @return UrlHelper
      * @deprecated Will be removed with v12. Use {@link withoutQueryParameter()} instead.
      */
     public function removeQueryParameter(string $parameterName): UrlHelper
@@ -129,10 +116,6 @@ class UrlHelper extends Uri
 
     /**
      * Add a given parameter with value to the query and create a new instance.
-     *
-     * @param string $parameterName
-     * @param mixed $value
-     * @return UrlHelper
      */
     public function withQueryParameter(string $parameterName, $value): UrlHelper
     {
@@ -149,10 +132,7 @@ class UrlHelper extends Uri
     }
 
     /**
-     * @param string $parameterName
-     * @param mixed $value
      * @throws InvalidArgumentException
-     * @return UrlHelper
      * @deprecated Will be removed with v12. Use {@link withQueryParameter()} instead.
      */
     public function addQueryParameter(string $parameterName, $value): UrlHelper
@@ -172,7 +152,6 @@ class UrlHelper extends Uri
     }
 
     /**
-     * @return string
      * @deprecated Will be removed with v12. Use {@link __toString()} instead.
      */
     public function getUrl(): string

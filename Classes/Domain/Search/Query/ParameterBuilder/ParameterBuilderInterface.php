@@ -25,9 +25,5 @@ use ApacheSolrForTypo3\Solr\Domain\Search\Query\AbstractQueryBuilder;
  */
 interface ParameterBuilderInterface
 {
-    /**
-     * @param AbstractQueryBuilder $parentBuilder
-     * @return AbstractQueryBuilder
-     */
     public function build(AbstractQueryBuilder $parentBuilder): AbstractQueryBuilder;
 }

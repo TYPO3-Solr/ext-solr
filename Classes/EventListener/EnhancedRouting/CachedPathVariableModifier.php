@@ -26,12 +26,11 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Event listener to handle path elements containing placeholder
  *
  * @author Lars Tode <lars.tode@dkd.de>
+ *
+ * @noinspection PhpUnused Listener for {@link BeforeProcessCachedVariablesEvent}
  */
 class CachedPathVariableModifier
 {
-    /**
-     * @var RoutingService
-     */
     protected RoutingService $routingService;
 
     public function __invoke(BeforeProcessCachedVariablesEvent $event): void
@@ -112,9 +111,6 @@ class CachedPathVariableModifier
 
     /**
      * Extract path variables from URI
-     *
-     * @param UriInterface $uri
-     * @return array
      */
     protected function getPathVariablesFromUri(UriInterface $uri): array
     {
@@ -138,9 +134,6 @@ class CachedPathVariableModifier
 
     /**
      * Standardize a given string in order to reduce the amount of if blocks
-     *
-     * @param string $key
-     * @return string
      */
     protected function standardizeKey(string $key): string
     {
@@ -153,10 +146,6 @@ class CachedPathVariableModifier
 
     /**
      * Check if the variable is includes within the path variables
-     *
-     * @param string $variableName
-     * @param array $pathVariables
-     * @return bool
      */
     protected function containsPathVariable(string $variableName, array $pathVariables): bool
     {
