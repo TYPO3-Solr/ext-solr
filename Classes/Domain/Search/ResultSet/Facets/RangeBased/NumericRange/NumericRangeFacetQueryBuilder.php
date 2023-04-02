@@ -23,9 +23,7 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 class NumericRangeFacetQueryBuilder implements FacetQueryBuilderInterface
 {
     /**
-     * @param string $facetName
-     * @param TypoScriptConfiguration $configuration
-     * @return array
+     * Builds query parts for numeric range facet
      */
     public function build(string $facetName, TypoScriptConfiguration $configuration): array
     {

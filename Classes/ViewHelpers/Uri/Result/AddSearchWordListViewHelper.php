@@ -18,7 +18,6 @@ declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\ViewHelpers\Uri\Result;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Highlight\SiteHighlighterUrlModifier;
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\ViewHelpers\AbstractSolrFrontendViewHelper;
 use Closure;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -35,9 +34,9 @@ class AddSearchWordListViewHelper extends AbstractSolrFrontendViewHelper
     use CompileWithRenderStatic;
 
     /**
-     * Initializes the arguments
+     * @inheritdoc
      */
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         parent::initializeArguments();
         $this->registerArgument('url', 'string', 'The context searchResultSet', true);
@@ -47,12 +46,7 @@ class AddSearchWordListViewHelper extends AbstractSolrFrontendViewHelper
     }
 
     /**
-     * @param array $arguments
-     * @param Closure $renderChildrenClosure
-     * @param RenderingContextInterface $renderingContext
-     * @return string
-     *
-     * @noinspection PhpMissingReturnTypeInspection
+     * Renders URI for adding the search word list.
      */
     public static function renderStatic(
         array $arguments,
@@ -61,7 +55,6 @@ class AddSearchWordListViewHelper extends AbstractSolrFrontendViewHelper
     ) {
         $url = $arguments['url'];
 
-        /** @var $resultSet SearchResultSet */
         $resultSet = self::getUsedSearchResultSetFromRenderingContext($renderingContext);
         if (!$resultSet->getUsedSearchRequest()->getContextTypoScriptConfiguration()->getSearchResultsSiteHighlighting()) {
             return $url;
@@ -71,7 +64,7 @@ class AddSearchWordListViewHelper extends AbstractSolrFrontendViewHelper
         $addNoCache = $arguments['addNoCache'];
         $keepCHash = $arguments['keepCHash'];
 
-        /** @var $siteHighlighterUrlModifier SiteHighlighterUrlModifier */
+        /* @var SiteHighlighterUrlModifier $siteHighlighterUrlModifier */
         $siteHighlighterUrlModifier = GeneralUtility::makeInstance(SiteHighlighterUrlModifier::class);
 
         return $siteHighlighterUrlModifier->modify($url, $searchWords, $addNoCache, $keepCHash);

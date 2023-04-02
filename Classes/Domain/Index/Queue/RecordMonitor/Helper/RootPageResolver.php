@@ -17,15 +17,14 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper;
 
-use ApacheSolrForTypo3\Solr\Domain\Site\Site;
+use ApacheSolrForTypo3\Solr\Domain\Site\Exception\UnexpectedTYPO3SiteInitializationException;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
 use ApacheSolrForTypo3\Solr\System\Page\Rootline;
-use Doctrine\DBAL\Driver\Exception as DBALDriverException;
+use ApacheSolrForTypo3\Solr\System\Util\SiteUtility;
 use InvalidArgumentException;
 use RuntimeException;
-use Throwable;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -41,26 +40,12 @@ use TYPO3\CMS\Core\Utility\RootlineUtility;
  */
 class RootPageResolver implements SingletonInterface
 {
-    /**
-     * @var ConfigurationAwareRecordService
-     */
-    protected $recordService;
+    protected ConfigurationAwareRecordService $recordService;
 
-    /**
-     * @var TwoLevelCache
-     */
-    protected $runtimeCache;
+    protected TwoLevelCache $runtimeCache;
 
-    /**
-     * @var ExtensionConfiguration
-     */
-    protected $extensionConfiguration;
+    protected ExtensionConfiguration $extensionConfiguration;
 
-    /**
-     * RootPageResolver constructor.
-     * @param ConfigurationAwareRecordService|null $recordService
-     * @param TwoLevelCache|null $twoLevelCache
-     */
     public function __construct(
         ConfigurationAwareRecordService $recordService = null,
         TwoLevelCache $twoLevelCache = null
@@ -75,11 +60,7 @@ class RootPageResolver implements SingletonInterface
      * if the pid is references in another site with additionalPageIds and returning those rootPageIds as well.
      * The result is cached by the caching framework.
      *
-     * @param string $table
-     * @param int $uid
-     * @return array
-     * @throws DBALDriverException
-     * @throws Throwable
+     * @throws UnexpectedTYPO3SiteInitializationException
      */
     public function getResponsibleRootPageIds(string $table, int $uid): array
     {
@@ -97,9 +78,6 @@ class RootPageResolver implements SingletonInterface
 
     /**
      * Checks if the passed pageId is a root page.
-     *
-     * @param int $pageId Page ID
-     * @return bool TRUE if the page is marked as root page, FALSE otherwise
      */
     public function getIsRootPageId(int $pageId): bool
     {
@@ -129,16 +107,14 @@ class RootPageResolver implements SingletonInterface
             );
         }
 
-        $isSiteRoot = Site::isRootPage($page);
+        $isSiteRoot = SiteUtility::isRootPage($page);
         $this->runtimeCache->set($cacheId, $isSiteRoot);
 
         return $isSiteRoot;
     }
 
     /**
-     * @param int $pageId
-     * @param string $fieldList
-     * @return array
+     * Returns record of page for given conditions or empty array if nothing found.
      */
     protected function getPageRecordByPageId(int $pageId, string $fieldList = 'is_siteroot'): array
     {
@@ -147,11 +123,6 @@ class RootPageResolver implements SingletonInterface
 
     /**
      * Determines the root page ID for a given page.
-     *
-     * @param int $pageId A page ID somewhere in a tree.
-     * @param bool $forceFallback Force the explicit detection and do not use the current frontend root line
-     * @param string $mountPointIdentifier
-     * @return int The page's tree branch's root page ID
      */
     public function getRootPageId(
         int $pageId = 0,
@@ -162,7 +133,7 @@ class RootPageResolver implements SingletonInterface
             return 0;
         }
 
-        /** @var Rootline $rootLine */
+        /* @var Rootline $rootLine */
         $rootLine = GeneralUtility::makeInstance(Rootline::class);
 
         // frontend
@@ -172,10 +143,11 @@ class RootPageResolver implements SingletonInterface
 
         // fallback, backend
         if ($forceFallback || !$rootLine->getHasRootPage()) {
+            /* @var RootlineUtility $rootlineUtility */
             $rootlineUtility = GeneralUtility::makeInstance(RootlineUtility::class, $pageId, $mountPointIdentifier);
             try {
                 $rootLineArray = $rootlineUtility->get();
-            } catch (RuntimeException $e) {
+            } catch (RuntimeException) {
                 $rootLineArray = [];
             }
             $rootLine->setRootLineArray($rootLineArray);
@@ -188,11 +160,7 @@ class RootPageResolver implements SingletonInterface
      * This method determines the responsible site roots for a record by getting the rootPage of the record and checking
      * if the pid is references in another site with additionalPageIds and returning those rootPageIds as well.
      *
-     * @param string $table
-     * @param int $uid
-     * @return array
-     * @throws DBALDriverException
-     * @throws Throwable
+     * @throws UnexpectedTYPO3SiteInitializationException
      */
     protected function buildResponsibleRootPageIds(string $table, int $uid): array
     {
@@ -216,10 +184,6 @@ class RootPageResolver implements SingletonInterface
     /**
      * This method checks if the record is a pages record or another one and determines the rootPageId from the records
      * rootline.
-     *
-     * @param string $table
-     * @param int $uid
-     * @return int
      */
     protected function getRootPageIdByTableAndUid(string $table, int $uid): int
     {
@@ -232,10 +196,6 @@ class RootPageResolver implements SingletonInterface
 
     /**
      * Returns the pageId of the record or 0 when no valid record was found.
-     *
-     * @param string $table
-     * @param int $uid
-     * @return int
      */
     protected function getRecordPageId(string $table, int $uid): int
     {
@@ -248,12 +208,7 @@ class RootPageResolver implements SingletonInterface
      * configuration of another site, if so we return the rootPageId of this site.
      * The result is cached by the caching framework.
      *
-     * @param string $table
-     * @param int $uid
-     * @param int $recordPageId
-     * @return array
-     * @throws DBALDriverException
-     * @throws Throwable
+     * @throws UnexpectedTYPO3SiteInitializationException
      */
     public function getAlternativeSiteRootPagesIds(string $table, int $uid, int $recordPageId): array
     {
@@ -268,11 +223,7 @@ class RootPageResolver implements SingletonInterface
     /**
      * Retrieves an optimized array structure with the monitored pageId as key and the relevant site rootIds as value.
      *
-     * @param string $table
-     * @param int $uid
-     * @return array
-     * @throws DBALDriverException
-     * @throws Throwable
+     * @throws UnexpectedTYPO3SiteInitializationException
      */
     protected function getSiteRootsByObservedPageIds(string $table, int $uid): array
     {
@@ -292,11 +243,7 @@ class RootPageResolver implements SingletonInterface
      * This method builds an array with observer page id as key and rootPageIds as values to determine which root pages
      * are responsible for this record by referencing the pageId in additionalPageIds configuration.
      *
-     * @param string $table
-     * @param int $uid
-     * @return array
-     * @throws DBALDriverException
-     * @throws Throwable
+     * @throws UnexpectedTYPO3SiteInitializationException
      */
     protected function buildSiteRootsByObservedPageIds(string $table, int $uid): array
     {

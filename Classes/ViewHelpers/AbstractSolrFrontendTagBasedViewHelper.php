@@ -19,7 +19,6 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
-use InvalidArgumentException;
 
 /**
  * Class AbstractSolrFrontendTagBasedViewHelper
@@ -29,17 +28,11 @@ use InvalidArgumentException;
  */
 abstract class AbstractSolrFrontendTagBasedViewHelper extends AbstractSolrTagBasedViewHelper
 {
-    /**
-     * @return TypoScriptConfiguration
-     */
     protected function getTypoScriptConfiguration(): TypoScriptConfiguration
     {
         return $this->renderingContext->getVariableProvider()->get('typoScriptConfiguration');
     }
 
-    /**
-     * @return SearchResultSet|null
-     */
     protected function getSearchResultSet(): ?SearchResultSet
     {
         return $this->renderingContext->getVariableProvider()->get('searchResultSet');

@@ -18,14 +18,15 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\System\Util\ArrayAccessor;
 use ApacheSolrForTypo3\Solr\Utility\ParameterSortingUtility;
+use Countable;
 
 /**
- * Data bag for facets inside of an url
+ * Data bag for facets inside an url
  *
  * @author Lars Tode <lars.tode@dkd.de>
  * @api
  */
-class UrlFacetContainer implements \Countable
+class UrlFacetContainer implements Countable
 {
     /**
      * Parameters array has a numeric index
@@ -39,44 +40,26 @@ class UrlFacetContainer implements \Countable
 
     /**
      * Used parameter style
-     *
-     * @var string
      */
-    protected $parameterStyle = self::PARAMETER_STYLE_INDEX;
+    protected string $parameterStyle = self::PARAMETER_STYLE_INDEX;
 
     /**
      * Argument namespace as configures in TypoScript
-     *
-     * @var string
      */
-    protected $argumentNameSpace = 'tx_solr';
+    protected string $argumentNameSpace = 'tx_solr';
 
-    /**
-     * @var ArrayAccessor
-     */
-    protected $argumentsAccessor;
+    protected ArrayAccessor $argumentsAccessor;
 
     /**
      * Mark the data bag as changed
-     *
-     * @var bool
      */
-    protected $changed = false;
+    protected bool $changed = false;
 
     /**
      * Parameters should be sorted
-     *
-     * @var bool
      */
-    protected $sort = false;
+    protected bool $sort = false;
 
-    /**
-     * UrlFacetConstructor constructor.
-     *
-     * @param ArrayAccessor $argumentsAccessor
-     * @param string $argumentNameSpace
-     * @param string $parameterStyle
-     */
     public function __construct(
         ArrayAccessor $argumentsAccessor,
         string $argumentNameSpace = SearchRequest::DEFAULT_PLUGIN_NAMESPACE,
@@ -99,8 +82,6 @@ class UrlFacetContainer implements \Countable
 
     /**
      * Enable the sort of URL parameters
-     *
-     * @return $this
      */
     public function enableSort(): self
     {
@@ -111,8 +92,6 @@ class UrlFacetContainer implements \Countable
 
     /**
      * Disable the sort of URL parameters
-     *
-     * @return $this
      */
     public function disableSort(): self
     {
@@ -126,8 +105,6 @@ class UrlFacetContainer implements \Countable
 
     /**
      * Returns the information if the parameters are sorted
-     *
-     * @return bool
      */
     public function isSorted(): bool
     {
@@ -135,7 +112,7 @@ class UrlFacetContainer implements \Countable
     }
 
     /**
-     * @return string
+     * Returns current parameter style
      */
     public function getParameterStyle(): string
     {
@@ -143,10 +120,7 @@ class UrlFacetContainer implements \Countable
     }
 
     /**
-     * Helper method to prefix an accessor with the arguments namespace.
-     *
-     * @param string $path
-     * @return string
+     * Helper method to prefix an accessor with the argument's namespace.
      */
     protected function prefixWithNamespace(string $path = 'filter'): string
     {
@@ -155,8 +129,6 @@ class UrlFacetContainer implements \Countable
 
     /**
      * Returns the list of activate facet names
-     *
-     * @return array
      */
     public function getActiveFacetNames(): array
     {
@@ -178,8 +150,6 @@ class UrlFacetContainer implements \Countable
 
     /**
      * Returns all facet values for a certain facetName
-     * @param string $facetName
-     * @return array
      */
     public function getActiveFacetValuesByName(string $facetName): array
     {
@@ -200,8 +170,6 @@ class UrlFacetContainer implements \Countable
 
     /**
      * Returns the active facets
-     *
-     * @return array
      */
     public function getActiveFacets(): array
     {
@@ -225,8 +193,6 @@ class UrlFacetContainer implements \Countable
 
     /**
      * Returns the active count of facets
-     *
-     * @return int
      */
     public function count(): int
     {
@@ -235,10 +201,6 @@ class UrlFacetContainer implements \Countable
 
     /**
      * Sets and overwrite the active facets
-     *
-     * @param array $activeFacets
-     *
-     * @return UrlFacetContainer
      */
     public function setActiveFacets(array $activeFacets = []): UrlFacetContainer
     {
@@ -250,13 +212,8 @@ class UrlFacetContainer implements \Countable
 
     /**
      * Adds a facet value to the request.
-     *
-     * @param string $facetName
-     * @param mixed $facetValue
-     *
-     * @return UrlFacetContainer
      */
-    public function addFacetValue(string $facetName, $facetValue): UrlFacetContainer
+    public function addFacetValue(string $facetName, mixed $facetValue): UrlFacetContainer
     {
         if ($this->hasFacetValue($facetName, $facetValue)) {
             return $this;
@@ -277,13 +234,8 @@ class UrlFacetContainer implements \Countable
 
     /**
      * Removes a facet value from the request.
-     *
-     * @param string $facetName
-     * @param mixed $facetValue
-     *
-     * @return UrlFacetContainer
      */
-    public function removeFacetValue(string $facetName, $facetValue): UrlFacetContainer
+    public function removeFacetValue(string $facetName, mixed $facetValue): UrlFacetContainer
     {
         if (!$this->hasFacetValue($facetName, $facetValue)) {
             return $this;
@@ -309,10 +261,6 @@ class UrlFacetContainer implements \Countable
 
     /**
      * Removes all facet values from the request by a certain facet name
-     *
-     * @param string $facetName
-     *
-     * @return UrlFacetContainer
      */
     public function removeAllFacetValuesByName(string $facetName): UrlFacetContainer
     {
@@ -335,8 +283,6 @@ class UrlFacetContainer implements \Countable
 
     /**
      * Removes all active facets from the request.
-     *
-     * @return UrlFacetContainer
      */
     public function removeAllFacets(): UrlFacetContainer
     {
@@ -347,13 +293,9 @@ class UrlFacetContainer implements \Countable
     }
 
     /**
-     * Test if there is a active facet with a given value
-     *
-     * @param string $facetName
-     * @param mixed $facetValue
-     * @return bool
+     * Test if there is an active facet with a given value
      */
-    public function hasFacetValue(string $facetName, $facetValue): bool
+    public function hasFacetValue(string $facetName, mixed $facetValue): bool
     {
         $facetNameAndValueToCheck = $facetName . ':' . $facetValue;
         $facetValues = $this->getActiveFacets();
@@ -366,8 +308,6 @@ class UrlFacetContainer implements \Countable
 
     /**
      * Returns the information if the data bag has changes
-     *
-     * @return bool
      */
     public function hasChanged(): bool
     {
@@ -376,8 +316,6 @@ class UrlFacetContainer implements \Countable
 
     /**
      * Resets the internal change status by explicit acknowledge the change
-     *
-     * @return $this
      */
     public function acknowledgeChange(): UrlFacetContainer
     {

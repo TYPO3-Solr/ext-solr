@@ -18,11 +18,13 @@ namespace ApacheSolrForTypo3\Solr\Controller\Backend\Search;
 use ApacheSolrForTypo3\Solr\Api;
 use ApacheSolrForTypo3\Solr\Domain\Search\ApacheSolrDocument\Repository as ApacheSolrDocumentRepository;
 use ApacheSolrForTypo3\Solr\Domain\Search\Statistics\StatisticsRepository;
+use ApacheSolrForTypo3\Solr\Domain\Site\Exception\UnexpectedTYPO3SiteInitializationException;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\System\Validator\Path;
+use Doctrine\DBAL\Exception as DBALException;
 use Psr\Http\Message\ResponseInterface;
-use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Core\Registry;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -30,15 +32,12 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class InfoModuleController extends AbstractModuleController
 {
-    /**
-     * @var ApacheSolrDocumentRepository
-     */
     protected ApacheSolrDocumentRepository $apacheSolrDocumentRepository;
 
     /**
      * @inheritDoc
      */
-    protected function initializeAction()
+    protected function initializeAction(): void
     {
         parent::initializeAction();
         $this->apacheSolrDocumentRepository = GeneralUtility::makeInstance(ApacheSolrDocumentRepository::class);
@@ -47,7 +46,10 @@ class InfoModuleController extends AbstractModuleController
     /**
      * Index action, shows an overview of the state of the Solr index
      *
-     * @return ResponseInterface
+     * @throws UnexpectedTYPO3SiteInitializationException
+     * @throws DBALException
+     *
+     * @noinspection PhpUnused
      */
     public function indexAction(): ResponseInterface
     {
@@ -66,11 +68,9 @@ class InfoModuleController extends AbstractModuleController
     }
 
     /**
-     * @param string $type
-     * @param int $uid
-     * @param int $pageId
-     * @param int $languageUid
-     * @return ResponseInterface
+     * Renders the details of Apache Solr documents
+     *
+     * @noinspection PhpUnused
      */
     public function documentsDetailsAction(string $type, int $uid, int $pageId, int $languageUid): ResponseInterface
     {
@@ -123,7 +123,9 @@ class InfoModuleController extends AbstractModuleController
     }
 
     /**
-     * Index action, shows an overview of the state of the Solr index
+     * Returns the statistics
+     *
+     * @throws DBALException
      */
     protected function collectStatistics(): void
     {
@@ -204,7 +206,7 @@ class InfoModuleController extends AbstractModuleController
                 $this->addFlashMessage(
                     '',
                     'Unable to contact Apache Solr server: ' . $this->selectedSite->getLabel() . ' ' . $coreAdmin->getCorePath(),
-                    AbstractMessage::ERROR
+                    ContextualFeedbackSeverity::ERROR
                 );
             }
             $indexFieldsInfoByCorePaths[$coreAdmin->getCorePath()] = $indexFieldsInfo;

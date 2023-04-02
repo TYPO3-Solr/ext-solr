@@ -30,20 +30,13 @@ use Solarium\Exception\HttpException;
  */
 class SolrReadService extends AbstractSolrService
 {
-    /**
-     * @var bool
-     */
     protected bool $hasSearched = false;
 
-    /**
-     * @var ResponseAdapter|null
-     */
     protected ?ResponseAdapter $responseCache = null;
 
     /**
      * Performs a search.
      *
-     * @param Query $query
      * @return ResponseAdapter Solr response
      * @throws RuntimeException if Solr returns a HTTP status code other than 200
      */
@@ -83,7 +76,6 @@ class SolrReadService extends AbstractSolrService
     /**
      * This method maps the failed solr requests to a meaningful exception.
      *
-     * @param HttpException $exception
      * @throws SolrCommunicationException
      */
     protected function handleErrorResponses(HttpException $exception)

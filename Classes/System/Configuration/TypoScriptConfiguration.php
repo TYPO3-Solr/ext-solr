@@ -51,32 +51,20 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class TypoScriptConfiguration
 {
-    /**
-     * @var ArrayAccessor
-     */
     protected ArrayAccessor $configurationAccess;
 
     /**
      * Holds the pageId in which context the configuration was parsed
      * (normally $GLOBALS['TSFE']->id)
-     * @var int
      */
     protected int $contextPageId = 0;
 
-    /**
-     * @var ContentObjectService
-     */
     protected ContentObjectService $contentObjectService;
 
-    /**
-     * @param array $configuration
-     * @param int|null $contextPageId
-     * @param ContentObjectService|null $contentObjectService
-     */
     public function __construct(
         array $configuration,
         int $contextPageId = null,
-        ContentObjectService $contentObjectService = null
+        ContentObjectService $contentObjectService = null,
     ) {
         $this->configurationAccess = new ArrayAccessor($configuration, '.', true);
         $this->contextPageId = $contextPageId ?? 0;
@@ -85,10 +73,8 @@ class TypoScriptConfiguration
 
     /**
      * Checks if a value is 1, '1', 'true'
-     * @param mixed $value
-     * @return bool
      */
-    protected function getBool($value): bool
+    protected function getBool(mixed $value): bool
     {
         return filter_var($value, FILTER_VALIDATE_BOOLEAN);
     }
@@ -98,9 +84,6 @@ class TypoScriptConfiguration
      *
      * This can be very handy in the configuration when only keys should be taken into account
      * where the value is not a subconfiguration (typically a typoscript object path).
-     *
-     * @param $inputArray
-     * @return array
      */
     protected function getOnlyArrayKeysWhereValueIsNotAnArray($inputArray): array
     {
@@ -129,11 +112,9 @@ class TypoScriptConfiguration
      * Example: plugin.tx_solr.search.targetPage
      * returns $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['search.']['targetPage']
      *
-     * @param string $path TypoScript path
-     * @return mixed The TypoScript object defined by the given path
      * @throws InvalidArgumentException
      */
-    public function getValueByPath(string $path)
+    public function getValueByPath(string $path): mixed
     {
         return $this->configurationAccess->get($path);
     }
@@ -141,12 +122,8 @@ class TypoScriptConfiguration
     /**
      * This method can be used to get  a configuration value by path if it exists or return a
      * default value when it does not exist.
-     *
-     * @param string $path
-     * @param mixed $defaultValue
-     * @return mixed
      */
-    public function getValueByPathOrDefaultValue(string $path, $defaultValue)
+    public function getValueByPathOrDefaultValue(string $path, mixed $defaultValue): mixed
     {
         $value = $this->getValueByPath($path);
         if (is_null($value)) {
@@ -168,11 +145,9 @@ class TypoScriptConfiguration
      * returns $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['index.']['queue.']['tt_news.']['fields.']['content.']
      * which is a SOLR_CONTENT cObj.
      *
-     * @param string $path TypoScript path
-     * @return mixed The TypoScript object defined by the given path
      * @throws InvalidArgumentException
      */
-    public function getObjectByPath(string $path)
+    public function getObjectByPath(string $path): mixed
     {
         if (!str_ends_with($path, '.')) {
             $path = rtrim($path, '.');
@@ -186,16 +161,13 @@ class TypoScriptConfiguration
      * Gets the parent TypoScript Object from a given TypoScript path and if not present return
      * the default value
      *
-     * @param string $path
-     * @param array $defaultValue
-     * @return array
      * @see getObjectByPath()
      */
     public function getObjectByPathOrDefault(string $path, array $defaultValue = []): array
     {
         try {
             $object = $this->getObjectByPath($path);
-        } catch (InvalidArgumentException $e) {
+        } catch (InvalidArgumentException) {
             return $defaultValue;
         }
 
@@ -208,9 +180,6 @@ class TypoScriptConfiguration
 
     /**
      * Checks whether a given TypoScript path is valid.
-     *
-     * @param string $path TypoScript path
-     * @return bool TRUE if the path resolves, FALSE otherwise
      */
     public function isValidPath(string $path): bool
     {
@@ -227,11 +196,9 @@ class TypoScriptConfiguration
     /**
      * Merges a configuration with another configuration a
      *
-     * @param array $configurationToMerge
      * @param bool $addKeys If set to FALSE, keys that are NOT found in $original will not be set. Thus, only existing value can/will be overruled from overrule array.
      * @param bool $includeEmptyValues If set, values from $overrule will overrule if they are empty or zero.
      * @param bool $enableUnsetFeature If set, special values "__UNSET" can be used in overruled array in order to unset array keys in the original array.
-     * @return TypoScriptConfiguration
      */
     public function mergeSolrConfiguration(array $configurationToMerge, bool $addKeys = true, bool $includeEmptyValues = true, bool $enableUnsetFeature = true): TypoScriptConfiguration
     {
@@ -251,9 +218,6 @@ class TypoScriptConfiguration
 
     /**
      * Returns true when ext_solr is enabled
-     *
-     * @param bool $defaultIfEmpty
-     * @return bool
      */
     public function getEnabled(bool $defaultIfEmpty = false): bool
     {
@@ -266,9 +230,6 @@ class TypoScriptConfiguration
      * Returns the configured additionalFields configured for the indexing.
      *
      * plugin.tx_solr.index.additionalFields.
-     *
-     * @param array $defaultIfEmpty
-     * @return array
      */
     public function getIndexAdditionalFieldsConfiguration(array $defaultIfEmpty = []): array
     {
@@ -280,9 +241,6 @@ class TypoScriptConfiguration
      *
      * Returns all keys from
      * plugin.tx_solr.index.additionalFields.
-     *
-     * @param array $defaultIfEmpty
-     * @return array
      */
     public function getIndexMappedAdditionalFieldNames(array $defaultIfEmpty = []): array
     {
@@ -295,9 +253,6 @@ class TypoScriptConfiguration
      * Returns the fieldProcessingInstructions configuration array
      *
      * plugin.tx_solr.index.fieldProcessingInstructions.
-     *
-     * @param array $defaultIfEmpty
-     * @return array
      */
     public function getIndexFieldProcessingInstructionsConfiguration(array $defaultIfEmpty = []): array
     {
@@ -308,10 +263,6 @@ class TypoScriptConfiguration
      * Retrieves the indexing configuration array for an indexing queue by configuration name.
      *
      * plugin.tx_solr.index.queue.<configurationName>.
-     *
-     * @param string $configurationName
-     * @param array $defaultIfEmpty
-     * @return array
      */
     public function getIndexQueueConfigurationByName(string $configurationName, array $defaultIfEmpty = []): array
     {
@@ -323,10 +274,6 @@ class TypoScriptConfiguration
      * Returns an array of all additionalPageIds by index configuration name.
      *
      * plugin.tx_solr.index.queue.pages.additionalPageIds
-     *
-     * @param string $configurationName
-     * @param array $defaultIfEmpty
-     * @return array
      */
     public function getIndexQueueAdditionalPageIdsByConfigurationName(string $configurationName = 'pages', array $defaultIfEmpty = []): array
     {
@@ -343,10 +290,6 @@ class TypoScriptConfiguration
      * Returns an array of all allowedPageTypes.
      *
      * plugin.tx_solr.index.queue.pages.allowedPageTypes
-     *
-     * @param string $configurationName The configuration name of the queue to use.
-     * @param array $defaultIfEmpty
-     * @return array
      */
     public function getIndexQueueAllowedPageTypesArrayByConfigurationName(string $configurationName = 'pages', array $defaultIfEmpty = []): array
     {
@@ -363,8 +306,6 @@ class TypoScriptConfiguration
      * Returns an array of allowedPageTypes declared in all queue configurations.
      *
      * plugin.tx_solr.index.queue.*.allowedPageTypes
-     *
-     * @return array
      */
     public function getAllIndexQueueAllowedPageTypesArray(): array
     {
@@ -391,9 +332,6 @@ class TypoScriptConfiguration
      * Returns the configured excludeContentByClass patterns as array.
      *
      * plugin.tx_solr.index.queue.pages.excludeContentByClass
-     *
-     * @param array $defaultIfEmpty
-     * @return array
      */
     public function getIndexQueuePagesExcludeContentByClassArray(array $defaultIfEmpty = []): array
     {
@@ -414,8 +352,6 @@ class TypoScriptConfiguration
      *
      * plugin.tx_solr.index.queue.<configurationName>.table or configurationName
      *
-     * @param string $configurationName
-     * @return string
      * @deprecated queue.[indexConfig].table is deprecated and will be removed in v13. Use plugin.tx_solr.index.queue.[indexConfig].type instead
      */
     public function getIndexQueueTableNameOrFallbackToConfigurationName(string $configurationName = ''): string
@@ -429,14 +365,11 @@ class TypoScriptConfiguration
     }
 
     /**
-     * Returns the configured type for an indexing queue configuration (usally a db table) or
+     * Returns the configured type for an indexing queue configuration (usually a db table) or
      * the configurationName itself that is used by convention as type when no
      * other type is present.
      *
      * plugin.tx_solr.index.queue.<configurationName>.type or configurationName
-     *
-     * @param string $configurationName
-     * @return string
      */
     public function getIndexQueueTypeOrFallbackToConfigurationName(string $configurationName = ''): string
     {
@@ -465,10 +398,6 @@ class TypoScriptConfiguration
      * Returns the field configuration for a specific index queue.
      *
      * plugin.tx_solr.index.queue.<configurationName>.fields.
-     *
-     * @param string $configurationName
-     * @param array $defaultIfEmpty
-     * @return array
      */
     public function getIndexQueueFieldsConfigurationByConfigurationName(string $configurationName = '', array $defaultIfEmpty = []): array
     {
@@ -480,7 +409,7 @@ class TypoScriptConfiguration
      * Gets an array of tables configured for indexing by the Index Queue. Since the
      * record monitor must watch these tables for manipulation.
      *
-     * @return array Array of table names to be watched by the record monitor.
+     * @return string[] Array of table names to be watched by the record monitor.
      */
     public function getIndexQueueMonitoredTables(): array
     {
@@ -497,9 +426,6 @@ class TypoScriptConfiguration
 
     /**
      * This method can be used to check if a table is configured to be monitored by the record monitor.
-     *
-     * @param string $tableName
-     * @return bool
      */
     public function getIndexQueueIsMonitoredTable(string $tableName): bool
     {
@@ -511,10 +437,6 @@ class TypoScriptConfiguration
      * By default, "ApacheSolrForTypo3\Solr\IndexQueue\Indexer" will be returned.
      *
      * plugin.tx_solr.index.queue.<configurationName>.indexer
-     *
-     * @param string $configurationName
-     * @param string $defaultIfEmpty
-     * @return string
      */
     public function getIndexQueueIndexerByConfigurationName(string $configurationName, string $defaultIfEmpty = Indexer::class): string
     {
@@ -527,10 +449,6 @@ class TypoScriptConfiguration
      * By default, an empty array is returned.
      *
      * plugin.tx_solr.index.queue.<configurationName>.indexer.
-     *
-     * @param string $configurationName
-     * @param array $defaultIfEmpty
-     * @return array
      */
     public function getIndexQueueIndexerConfigurationByConfigurationName(string $configurationName, array $defaultIfEmpty = []): array
     {
@@ -543,10 +461,6 @@ class TypoScriptConfiguration
      *
      * Returns all keys from
      * plugin.tx_solr.index.queue.<configurationName>.fields.
-     *
-     * @param string $configurationName
-     * @param array $defaultIfEmpty
-     * @return array
      */
     public function getIndexQueueMappedFieldsByConfigurationName(string $configurationName = '', array $defaultIfEmpty = []): array
     {
@@ -559,10 +473,6 @@ class TypoScriptConfiguration
      * This method is used to check if an index queue configuration is enabled or not
      *
      * plugin.tx_solr.index.queue.<configurationName> = 1
-     *
-     * @param string $configurationName
-     * @param bool $defaultIfEmpty
-     * @return bool
      */
     public function getIndexQueueConfigurationIsEnabled(string $configurationName, bool $defaultIfEmpty = false): bool
     {
@@ -575,9 +485,6 @@ class TypoScriptConfiguration
      * Retrieves an array of enabled index queue configurations.
      *
      * plugin.tx_solr.index.queue.<configurationName>
-     *
-     * @param array $defaultIfEmpty
-     * @return array
      */
     public function getEnabledIndexQueueConfigurationNames(array $defaultIfEmpty = []): array
     {
@@ -598,10 +505,6 @@ class TypoScriptConfiguration
      * when some fields on that page are modified.
      *
      * plugin.tx_solr.index.queue.recursiveUpdateFields
-     *
-     * @param string $configurationName
-     * @param array $defaultIfEmpty
-     * @return array
      */
     public function getIndexQueueConfigurationRecursiveUpdateFields(string $configurationName, array $defaultIfEmpty = []): array
     {
@@ -619,9 +522,6 @@ class TypoScriptConfiguration
      * Retrieves and initialPagesAdditionalWhereClause where clause when configured or an empty string.
      *
      * plugin.tx_solr.index.queue.<configurationName>.initialPagesAdditionalWhereClause
-     *
-     * @param string $configurationName
-     * @return string
      */
     public function getInitialPagesAdditionalWhereClause(string $configurationName): string
     {
@@ -639,9 +539,6 @@ class TypoScriptConfiguration
      * Retrieves and additional where clause when configured or an empty string.
      *
      * plugin.tx_solr.index.queue.<configurationName>.additionalWhereClause
-     *
-     * @param string $configurationName
-     * @return string
      */
     public function getIndexQueueAdditionalWhereClauseByConfigurationName(string $configurationName): string
     {
@@ -661,10 +558,6 @@ class TypoScriptConfiguration
      * key a fallback for the table name.
      *
      * plugin.tx_solr.index.queue.<configurationName>.
-     *
-     * @param string $tableName
-     * @param array $defaultIfEmpty
-     * @return array
      */
     public function getIndexQueueConfigurationNamesByTableName(string $tableName, array $defaultIfEmpty = []): array
     {
@@ -692,10 +585,6 @@ class TypoScriptConfiguration
      * of returns the default initializer class, when noting is configured.
      *
      * plugin.tx_solr.index.queue.<configurationName>.initialization
-     *
-     * @param string $configurationName
-     * @param string $defaultIfEmpty
-     * @return string
      */
     public function getIndexQueueInitializerClassByConfigurationName(string $configurationName, string $defaultIfEmpty = Record::class): string
     {
@@ -704,23 +593,7 @@ class TypoScriptConfiguration
     }
 
     /**
-     * Returns the _LOCAL_LANG configuration from the TypoScript.
-     *
-     * plugin.tx_solr._LOCAL_LANG.
-     *
-     * @param array $defaultIfEmpty
-     * @return array
-     */
-    public function getLocalLangConfiguration(array $defaultIfEmpty = []): array
-    {
-        return $this->getObjectByPathOrDefault('plugin.tx_solr._LOCAL_LANG.', $defaultIfEmpty);
-    }
-
-    /**
      * When this is enabled the output of the devlog, will be printed as debug output.
-     *
-     * @param bool $defaultIfEmpty
-     * @return bool
      */
     public function getLoggingDebugOutput(bool $defaultIfEmpty = false): bool
     {
@@ -732,9 +605,6 @@ class TypoScriptConfiguration
      * Returns if query filters should be written to the log.
      *
      * plugin.tx_solr.logging.query.filters
-     *
-     * @param bool $defaultIfEmpty
-     * @return bool
      */
     public function getLoggingQueryFilters(bool $defaultIfEmpty = false): bool
     {
@@ -746,9 +616,6 @@ class TypoScriptConfiguration
      * Returns if the querystring should be logged or not.
      *
      * plugin.tx_solr.logging.query.queryString
-     *
-     * @param bool $defaultIfEmpty
-     * @return bool
      */
     public function getLoggingQueryQueryString(bool $defaultIfEmpty = false): bool
     {
@@ -760,9 +627,6 @@ class TypoScriptConfiguration
      * Returns if the searchWords should be logged or not.
      *
      * plugin.tx_solr.logging.query.searchWords
-     *
-     * @param bool $defaultIfEmpty
-     * @return bool
      */
     public function getLoggingQuerySearchWords(bool $defaultIfEmpty = false): bool
     {
@@ -774,9 +638,6 @@ class TypoScriptConfiguration
      * Returns if the rawGet requests should be logged or not.
      *
      * plugin.tx_solr.logging.query.rawGet
-     *
-     * @param bool $defaultIfEmpty
-     * @return bool
      */
     public function getLoggingQueryRawGet(bool $defaultIfEmpty = false): bool
     {
@@ -788,9 +649,6 @@ class TypoScriptConfiguration
      * Returns if the rawPost requests should be logged or not.
      *
      * plugin.tx_solr.logging.query.rawPost
-     *
-     * @param bool $defaultIfEmpty
-     * @return bool
      */
     public function getLoggingQueryRawPost(bool $defaultIfEmpty = false): bool
     {
@@ -802,9 +660,6 @@ class TypoScriptConfiguration
      * Returns if the rawDelete requests should be logged or not.
      *
      * plugin.tx_solr.logging.query.rawDelete
-     *
-     * @param bool $defaultIfEmpty
-     * @return bool
      */
     public function getLoggingQueryRawDelete(bool $defaultIfEmpty = false): bool
     {
@@ -816,9 +671,6 @@ class TypoScriptConfiguration
      * Returns if exceptions should be logged or not.
      *
      * plugin.tx_solr.logging.exceptions
-     *
-     * @param bool $defaultIfEmpty
-     * @return bool
      */
     public function getLoggingExceptions(bool $defaultIfEmpty = true): bool
     {
@@ -830,9 +682,6 @@ class TypoScriptConfiguration
      * Returns if indexing operations should be logged or not.
      *
      * plugin.tx_solr.logging.indexing
-     *
-     * @param bool $defaultIfEmpty
-     * @return bool
      */
     public function getLoggingIndexing(bool $defaultIfEmpty = false): bool
     {
@@ -844,9 +693,6 @@ class TypoScriptConfiguration
      * Returns if indexing queue operations should be logged or not.
      *
      * plugin.tx_solr.logging.indexing.queue
-     *
-     * @param bool $defaultIfEmpty
-     * @return bool
      */
     public function getLoggingIndexingQueue(bool $defaultIfEmpty = false): bool
     {
@@ -860,10 +706,6 @@ class TypoScriptConfiguration
      * fallback when the logging is enabled on queue or indexing level.
      *
      * plugin.tx_solr.logging.indexing.queue.<indexQueueConfiguration>
-     *
-     * @param string $indexQueueConfiguration
-     * @param bool $defaultIfEmpty
-     * @return bool
      */
     public function getLoggingIndexingQueueOperationsByConfigurationNameWithFallBack(string $indexQueueConfiguration, bool $defaultIfEmpty = false): bool
     {
@@ -886,9 +728,6 @@ class TypoScriptConfiguration
      * Returns if a log message should be written when a page was indexed.
      *
      * plugin.tx_solr.logging.indexing.pageIndexed
-     *
-     * @param bool $defaultIfEmpty
-     * @return bool
      */
     public function getLoggingIndexingPageIndexed(bool $defaultIfEmpty = false): bool
     {
@@ -900,9 +739,6 @@ class TypoScriptConfiguration
      * Returns if a log message should be written when the TYPO3 search markers are missing in the page.
      *
      * plugin.tx_solr.logging.indexing.missingTypo3SearchMarkers
-     *
-     * @param bool $defaultIfEmpty
-     * @return bool
      */
     public function getLoggingIndexingMissingTypo3SearchMarkers(bool $defaultIfEmpty = true): bool
     {
@@ -914,9 +750,6 @@ class TypoScriptConfiguration
      * Returns if the initialization of an indexqueue should be logged.
      *
      * plugin.tx_solr.logging.indexing.indexQueueInitialization
-     *
-     * @param bool $defaultIfEmpty
-     * @return bool
      */
     public function getLoggingIndexingIndexQueueInitialization(bool $defaultIfEmpty = false): bool
     {
@@ -928,9 +761,6 @@ class TypoScriptConfiguration
      * Indicates if the debug mode is enabled or not.
      *
      * plugin.tx_solr.enableDebugMode
-     *
-     * @param bool $defaultIfEmpty
-     * @return bool
      */
     public function getEnabledDebugMode(bool $defaultIfEmpty = false): bool
     {
@@ -939,19 +769,19 @@ class TypoScriptConfiguration
     }
 
     /**
-     * @param $path
-     * @param $fallbackPath
-     * @param $defaultIfBothIsEmpty
-     * @return mixed
+     * Returns the TypoScript by path or fallback path or the default value if both are empty.
      */
-    public function getValueByPathWithFallbackOrDefaultValueAndApplyStdWrap($path, $fallbackPath, $defaultIfBothIsEmpty)
-    {
+    public function getValueByPathWithFallbackOrDefaultValueAndApplyStdWrap(
+        string $path,
+        string $fallbackPath,
+        mixed $defaultValueIfBothIsEmpty
+    ): mixed {
         $result = (string)$this->getValueByPathOrDefaultValue($path, '');
         if ($result !== '') {
             return $this->renderContentElementOfConfigured($path, $result);
         }
 
-        $result = (string)$this->getValueByPathOrDefaultValue($fallbackPath, $defaultIfBothIsEmpty);
+        $result = (string)$this->getValueByPathOrDefaultValue($fallbackPath, $defaultValueIfBothIsEmpty);
         return $this->renderContentElementOfConfigured($fallbackPath, $result);
     }
 
@@ -959,9 +789,6 @@ class TypoScriptConfiguration
      * Retrieves the complete search configuration
      *
      * plugin.tx_solr.search.
-     *
-     * @param array $defaultIfEmpty
-     * @return array
      */
     public function getSearchConfiguration(array $defaultIfEmpty = []): array
     {
@@ -972,9 +799,6 @@ class TypoScriptConfiguration
      * Indicates if elevation should be used or not
      *
      * plugin.tx_solr.search.elevation
-     *
-     * @param bool $defaultIfEmpty
-     * @return bool
      */
     public function getSearchElevation(bool $defaultIfEmpty = false): bool
     {
@@ -986,9 +810,6 @@ class TypoScriptConfiguration
      * Indicates if elevated results should be marked
      *
      * plugin.tx_solr.search.elevation.markElevatedResults
-     *
-     * @param bool $defaultIfEmpty
-     * @return bool
      */
     public function getSearchElevationMarkElevatedResults(bool $defaultIfEmpty = true): bool
     {
@@ -999,10 +820,7 @@ class TypoScriptConfiguration
     /**
      * Indicates if elevation should be forced
      *
-     *plugin.tx_solr.search.elevation.forceElevation
-     *
-     * @param bool $defaultIfEmpty
-     * @return bool
+     * plugin.tx_solr.search.elevation.forceElevation
      */
     public function getSearchElevationForceElevation(bool $defaultIfEmpty = true): bool
     {
@@ -1014,9 +832,6 @@ class TypoScriptConfiguration
      * Indicates if collapsing on a certain field should be used to build variants or not.
      *
      * plugin.tx_solr.search.variants
-     *
-     * @param bool $defaultIfEmpty
-     * @return bool
      */
     public function getSearchVariants(bool $defaultIfEmpty = false): bool
     {
@@ -1028,9 +843,6 @@ class TypoScriptConfiguration
      * Indicates if collapsing on a certain field should be used or not
      *
      * plugin.tx_solr.search.variants.variantField
-     *
-     * @param string $defaultIfEmpty
-     * @return string
      */
     public function getSearchVariantsField(string $defaultIfEmpty = 'variantId'): string
     {
@@ -1041,9 +853,6 @@ class TypoScriptConfiguration
      * Indicates if expanding of collapsed items it activated.
      *
      * plugin.tx_solr.search.variants.expand
-     *
-     * @param bool $defaultIfEmpty
-     * @return bool
      */
     public function getSearchVariantsExpand(bool $defaultIfEmpty = false): bool
     {
@@ -1055,9 +864,6 @@ class TypoScriptConfiguration
      * Retrieves the number of elements that should be expanded.
      *
      * plugin.tx_solr.search.variants.limit
-     *
-     * @param int $defaultIfEmpty
-     * @return int
      */
     public function getSearchVariantsLimit(int $defaultIfEmpty = 10): int
     {
@@ -1069,9 +875,6 @@ class TypoScriptConfiguration
      * Indicates if frequent searches should be show or not.
      *
      * plugin.tx_solr.search.frequentSearches
-     *
-     * @param bool $defaultIfEmpty
-     * @return bool
      */
     public function getSearchFrequentSearches(bool $defaultIfEmpty = false): bool
     {
@@ -1083,9 +886,6 @@ class TypoScriptConfiguration
      * Returns the sub configuration of the frequentSearches
      *
      * plugin.tx_solr.search.frequentSearches.
-     *
-     * @param array $defaultIfEmpty
-     * @return array
      */
     public function getSearchFrequentSearchesConfiguration(array $defaultIfEmpty = []): array
     {
@@ -1096,9 +896,6 @@ class TypoScriptConfiguration
      * Retrieves the minimum font size that should be used for the frequentSearches.
      *
      * plugin.tx_solr.search.frequentSearches.minSize
-     *
-     * @param int $defaultIfEmpty
-     * @return int
      */
     public function getSearchFrequentSearchesMinSize(int $defaultIfEmpty = 14): int
     {
@@ -1110,9 +907,6 @@ class TypoScriptConfiguration
      * Retrieves the maximum font size that should be used for the frequentSearches.
      *
      * plugin.tx_solr.search.frequentSearches.minSize
-     *
-     * @param int $defaultIfEmpty
-     * @return int
      */
     public function getSearchFrequentSearchesMaxSize(int $defaultIfEmpty = 32): int
     {
@@ -1124,9 +918,6 @@ class TypoScriptConfiguration
      * Indicates if frequent searches should be show or not.
      *
      * plugin.tx_solr.search.frequentSearches.useLowercaseKeywords
-     *
-     * @param bool $defaultIfEmpty
-     * @return bool
      */
     public function getSearchFrequentSearchesUseLowercaseKeywords(bool $defaultIfEmpty = false): bool
     {
@@ -1138,9 +929,6 @@ class TypoScriptConfiguration
      * Returns the configuration if the search should be initialized with an empty query.
      *
      * plugin.tx_solr.search.initializeWithEmptyQuery
-     *
-     * @param bool $defaultIfEmpty
-     * @return bool
      */
     public function getSearchInitializeWithEmptyQuery(bool $defaultIfEmpty = false): bool
     {
@@ -1152,9 +940,6 @@ class TypoScriptConfiguration
      * Returns the configured initial query
      *
      * plugin.tx_solr.search.initializeWithQuery
-     *
-     * @param string $defaultIfEmpty
-     * @return string
      */
     public function getSearchInitializeWithQuery(string $defaultIfEmpty = ''): string
     {
@@ -1166,9 +951,6 @@ class TypoScriptConfiguration
      * Returns if the last searches should be displayed or not.
      *
      * plugin.tx_solr.search.lastSearches
-     *
-     * @param bool $defaultIfEmpty
-     * @return bool
      */
     public function getSearchLastSearches(bool $defaultIfEmpty = false): bool
     {
@@ -1180,9 +962,6 @@ class TypoScriptConfiguration
      * Returns the lastSearch mode. "user" for user specific
      *
      * plugin.tx_solr.search.lastSearches.mode
-     *
-     * @param string $defaultIfEmpty
-     * @return string
      */
     public function getSearchLastSearchesMode(string $defaultIfEmpty = 'user'): string
     {
@@ -1194,9 +973,6 @@ class TypoScriptConfiguration
      * Returns the lastSearch limit
      *
      * plugin.tx_solr.search.lastSearches.limit
-     *
-     * @param int $defaultIfEmpty
-     * @return int
      */
     public function getSearchLastSearchesLimit(int $defaultIfEmpty = 10): int
     {
@@ -1208,9 +984,6 @@ class TypoScriptConfiguration
      * Indicates if the results of an initial empty query should be shown or not.
      *
      * plugin.tx_solr.search.showResultsOfInitialEmptyQuery
-     *
-     * @param bool $defaultIfEmpty
-     * @return bool
      */
     public function getSearchShowResultsOfInitialEmptyQuery(bool $defaultIfEmpty = false): bool
     {
@@ -1222,9 +995,6 @@ class TypoScriptConfiguration
      * Indicates if the results of an initial search query should be shown.
      *
      * plugin.tx_solr.search.showResultsOfInitialQuery
-     *
-     * @param bool $defaultIfEmpty
-     * @return bool
      */
     public function getSearchShowResultsOfInitialQuery(bool $defaultIfEmpty = false): bool
     {
@@ -1236,9 +1006,6 @@ class TypoScriptConfiguration
      * Indicates if sorting was enabled or not.
      *
      * plugin.tx_solr.search.sorting
-     *
-     * @param bool $defaultIfEmpty
-     * @return bool
      */
     public function getSearchSorting(bool $defaultIfEmpty = false): bool
     {
@@ -1250,9 +1017,6 @@ class TypoScriptConfiguration
      * Returns the sorting options configurations.
      *
      * plugin.tx_solr.search.sorting.options.
-     *
-     * @param array $defaultIfEmpty
-     * @return array
      */
     public function getSearchSortingOptionsConfiguration(array $defaultIfEmpty = []): array
     {
@@ -1267,11 +1031,6 @@ class TypoScriptConfiguration
      * or
      *
      * plugin.tx_solr.search.sorting.defaultOrder
-     *
-     *
-     * @param string $sortOptionName
-     * @param string $defaultIfEmpty
-     * @return string
      */
     public function getSearchSortingDefaultOrderBySortOptionName(string $sortOptionName = '', string $defaultIfEmpty = 'asc'): string
     {
@@ -1291,9 +1050,6 @@ class TypoScriptConfiguration
 
     /**
      * Returns the trusted fields configured for the search that do not need to be escaped.
-     *
-     * @param array $defaultIfEmpty
-     * @return array
      */
     public function getSearchTrustedFieldsArray(array $defaultIfEmpty = ['url']): array
     {
@@ -1310,9 +1066,6 @@ class TypoScriptConfiguration
      * Indicates if the plugin arguments should be kept in the search form for a second submission.
      *
      * plugin.tx_solr.search.keepExistingParametersForNewSearches
-     *
-     * @param bool $defaultIfEmpty
-     * @return bool
      */
     public function getSearchKeepExistingParametersForNewSearches(bool $defaultIfEmpty = false): bool
     {
@@ -1324,9 +1077,6 @@ class TypoScriptConfiguration
      * Returns if an empty query is allowed on the query level.
      *
      * plugin.tx_solr.search.query.allowEmptyQuery
-     *
-     * @param string $defaultIfEmpty
-     * @return bool
      */
     public function getSearchQueryAllowEmptyQuery(string $defaultIfEmpty = ''): bool
     {
@@ -1338,9 +1088,6 @@ class TypoScriptConfiguration
      * Returns the filter configuration array
      *
      * plugin.tx_solr.search.query.filter.
-     *
-     * @param array $defaultIfEmpty
-     * @return array
      */
     public function getSearchQueryFilterConfiguration(array $defaultIfEmpty = []): array
     {
@@ -1351,10 +1098,8 @@ class TypoScriptConfiguration
      * Can be used to overwrite the filterConfiguration.
      *
      * plugin.tx_solr.search.query.filter.
-     *
-     * @param array $configuration
      */
-    public function setSearchQueryFilterConfiguration(array $configuration)
+    public function setSearchQueryFilterConfiguration(array $configuration): void
     {
         $this->configurationAccess->set('plugin.tx_solr.search.query.filter.', $configuration);
     }
@@ -1362,7 +1107,7 @@ class TypoScriptConfiguration
     /**
      * Removes the pageSections filter setting.
      */
-    public function removeSearchQueryFilterForPageSections()
+    public function removeSearchQueryFilterForPageSections(): void
     {
         $this->configurationAccess->reset('plugin.tx_solr.search.query.filter.__pageSections');
     }
@@ -1371,9 +1116,6 @@ class TypoScriptConfiguration
      * Returns the configured queryFields from TypoScript
      *
      * plugin.tx_solr.search.query.queryFields
-     *
-     * @param string $defaultIfEmpty
-     * @return string
      */
     public function getSearchQueryQueryFields(string $defaultIfEmpty = ''): string
     {
@@ -1384,9 +1126,6 @@ class TypoScriptConfiguration
      * This method is used to check if a phrase search is enabled or not
      *
      * plugin.tx_solr.search.query.phrase = 1
-     *
-     * @param bool $defaultIfEmpty
-     * @return bool
      */
     public function getPhraseSearchIsEnabled(bool $defaultIfEmpty = false): bool
     {
@@ -1398,9 +1137,6 @@ class TypoScriptConfiguration
      * Returns the configured phrase fields from TypoScript
      *
      * plugin.tx_solr.search.query.phrase.fields
-     *
-     * @param string $defaultIfEmpty
-     * @return string
      */
     public function getSearchQueryPhraseFields(string $defaultIfEmpty = ''): string
     {
@@ -1411,9 +1147,6 @@ class TypoScriptConfiguration
      * This method is used to check if a bigram phrase search is enabled or not
      *
      * plugin.tx_solr.search.query.bigramPhrase = 1
-     *
-     * @param bool $defaultIfEmpty
-     * @return bool
      */
     public function getBigramPhraseSearchIsEnabled(bool $defaultIfEmpty = false): bool
     {
@@ -1425,9 +1158,6 @@ class TypoScriptConfiguration
      * Returns the configured phrase fields from TypoScript
      *
      * plugin.tx_solr.search.query.bigramPhrase.fields
-     *
-     * @param string $defaultIfEmpty
-     * @return string
      */
     public function getSearchQueryBigramPhraseFields(string $defaultIfEmpty = ''): string
     {
@@ -1438,9 +1168,6 @@ class TypoScriptConfiguration
      * This method is used to check if a trigram phrase search is enabled or not
      *
      * plugin.tx_solr.search.query.trigramPhrase = 1
-     *
-     * @param bool $defaultIfEmpty
-     * @return bool
      */
     public function getTrigramPhraseSearchIsEnabled(bool $defaultIfEmpty = false): bool
     {
@@ -1452,9 +1179,6 @@ class TypoScriptConfiguration
      * Returns the configured trigram phrase fields from TypoScript
      *
      * plugin.tx_solr.search.query.trigramPhrase.fields
-     *
-     * @param string $defaultIfEmpty
-     * @return string
      */
     public function getSearchQueryTrigramPhraseFields(string $defaultIfEmpty = ''): string
     {
@@ -1465,9 +1189,6 @@ class TypoScriptConfiguration
      * Returns the configured returnFields as array.
      *
      * plugin.tx_solr.search.query.returnFields
-     *
-     * @param array $defaultIfEmpty
-     * @return array
      */
     public function getSearchQueryReturnFieldsAsArray(array $defaultIfEmpty = []): array
     {
@@ -1484,8 +1205,6 @@ class TypoScriptConfiguration
      * By default, the contextPageId will be used
      *
      * plugin.tx_solr.search.targetPage
-     *
-     * @return int
      */
     public function getSearchTargetPage(): int
     {
@@ -1502,9 +1221,6 @@ class TypoScriptConfiguration
      * Retrieves the targetPage configuration.
      *
      * plugin.tx_solr.search.targetPage.
-     *
-     * @param array $defaultIfEmpty
-     * @return array
      */
     public function getSearchTargetPageConfiguration(array $defaultIfEmpty = []): array
     {
@@ -1516,9 +1232,6 @@ class TypoScriptConfiguration
      * sword_list parameter is added to the results link.
      *
      * plugin.tx_solr.search.results.siteHighlighting
-     *
-     * @param bool $defaultIfEmpty
-     * @return bool
      */
     public function getSearchResultsSiteHighlighting(bool $defaultIfEmpty = true): bool
     {
@@ -1530,9 +1243,6 @@ class TypoScriptConfiguration
      * Can be used to check if the highlighting is enabled
      *
      * plugin.tx_solr.search.results.resultsHighlighting
-     *
-     * @param bool $defaultIfEmpty
-     * @return bool
      */
     public function getIsSearchResultsHighlightingEnabled(bool $defaultIfEmpty = false): bool
     {
@@ -1544,9 +1254,6 @@ class TypoScriptConfiguration
      * Returns the result highlighting fields.
      *
      * plugin.tx_solr.search.results.resultsHighlighting.highlightFields
-     *
-     * @param string $defaultIfEmpty
-     * @return string
      */
     public function getSearchResultsHighlightingFields(string $defaultIfEmpty = ''): string
     {
@@ -1557,9 +1264,6 @@ class TypoScriptConfiguration
      * Returns the result highlighting fields as array.
      *
      * plugin.tx_solr.search.results.resultsHighlighting.highlightFields
-     *
-     * @param array $defaultIfEmpty
-     * @return array
      */
     public function getSearchResultsHighlightingFieldsAsArray(array $defaultIfEmpty = []): array
     {
@@ -1576,9 +1280,6 @@ class TypoScriptConfiguration
      * Returns the fragmentSize for highlighted segments.
      *
      * plugin.tx_solr.search.results.resultsHighlighting.fragmentSize
-     *
-     * @param int $defaultIfEmpty
-     * @return int
      */
     public function getSearchResultsHighlightingFragmentSize(int $defaultIfEmpty = 200): int
     {
@@ -1589,9 +1290,6 @@ class TypoScriptConfiguration
      * Returns the fragmentSeparator for highlighted segments.
      *
      * plugin.tx_solr.search.results.resultsHighlighting.fragmentSeparator
-     *
-     * @param string $defaultIfEmpty
-     * @return string
      */
     public function getSearchResultsHighlightingFragmentSeparator(string $defaultIfEmpty = '[...]'): string
     {
@@ -1602,9 +1300,6 @@ class TypoScriptConfiguration
      * Returns the number of results that should be shown per page.
      *
      * plugin.tx_solr.search.results.resultsPerPage
-     *
-     * @param int $defaultIfEmpty
-     * @return int
      */
     public function getSearchResultsPerPage(int $defaultIfEmpty = 10): int
     {
@@ -1615,9 +1310,6 @@ class TypoScriptConfiguration
      * Returns the available options for the per page switch.
      *
      * plugin.tx_solr.search.results.resultsPerPageSwitchOptions
-     *
-     * @param array $defaultIfEmpty
-     * @return array
      */
     public function getSearchResultsPerPageSwitchOptionsAsArray(array $defaultIfEmpty = []): array
     {
@@ -1634,9 +1326,6 @@ class TypoScriptConfiguration
      * Returns the maximum number of links shown in the paginator.
      *
      * plugin.tx_solr.search.results.maxPaginatorLinks
-     *
-     * @param int $defaultIfEmpty
-     * @return int
      */
     public function getMaxPaginatorLinks(int $defaultIfEmpty = 0): int
     {
@@ -1647,9 +1336,6 @@ class TypoScriptConfiguration
      * Returns the configured wrap for the resultHighlighting.
      *
      * plugin.tx_solr.search.results.resultsHighlighting.wrap
-     *
-     * @param string $defaultIfEmpty
-     * @return string
      */
     public function getSearchResultsHighlightingWrap(string $defaultIfEmpty = ''): string
     {
@@ -1660,9 +1346,6 @@ class TypoScriptConfiguration
      * Indicates if spellchecking is enabled or not.
      *
      * plugin.tx_solr.search.spellchecking
-     *
-     * @param bool $defaultIfEmpty
-     * @return bool
      */
     public function getSearchSpellchecking(bool $defaultIfEmpty = false): bool
     {
@@ -1674,9 +1357,6 @@ class TypoScriptConfiguration
      * Returns the numberOfSuggestionsToTry that should be used for the spellchecking.
      *
      * plugin.tx_solr.search.spellchecking.numberOfSuggestionsToTry
-     *
-     * @param int $defaultIfEmpty
-     * @return int
      */
     public function getSearchSpellcheckingNumberOfSuggestionsToTry(int $defaultIfEmpty = 1): int
     {
@@ -1687,9 +1367,6 @@ class TypoScriptConfiguration
      * Indicates if a second search should be fired from the spellchecking suggestion if no results could be found.
      *
      * plugin.tx_solr.search.spellchecking.searchUsingSpellCheckerSuggestion
-     *
-     * @param bool $defaultIfEmpty
-     * @return bool
      */
     public function getSearchSpellcheckingSearchUsingSpellCheckerSuggestion(bool $defaultIfEmpty = false): bool
     {
@@ -1701,9 +1378,6 @@ class TypoScriptConfiguration
      * Indicates if faceting is enabled or not.
      *
      * plugin.tx_solr.search.faceting
-     *
-     * @param bool $defaultIfEmpty
-     * @return bool
      */
     public function getSearchFaceting(bool $defaultIfEmpty = false): bool
     {
@@ -1720,11 +1394,6 @@ class TypoScriptConfiguration
      * or
      *
      * plugin.tx_solr.search.faceting.showEmptyFacets
-     *
-     *
-     * @param string $facetName
-     * @param bool $defaultIfEmpty
-     * @return bool
      */
     public function getSearchFacetingShowEmptyFacetsByName(string $facetName = '', bool $defaultIfEmpty = false): bool
     {
@@ -1745,9 +1414,6 @@ class TypoScriptConfiguration
      * Returns the wrap for the faceting show all link
      *
      * plugin.tx_solr.search.faceting.showAllLink.wrap
-     *
-     * @param string $defaultIfEmpty
-     * @return string
      */
     public function getSearchFacetingShowAllLinkWrap(string $defaultIfEmpty = ''): string
     {
@@ -1758,9 +1424,6 @@ class TypoScriptConfiguration
      * Returns the link url parameters that should be added to a facet.
      *
      * plugin.tx_solr.search.faceting.facetLinkUrlParameters
-     *
-     * @param string $defaultIfEmpty
-     * @return string
      */
     public function getSearchFacetingFacetLinkUrlParameters(string $defaultIfEmpty = ''): string
     {
@@ -1771,9 +1434,6 @@ class TypoScriptConfiguration
      * Returns if the facetLinkUrlsParameters should be included in the reset link.
      *
      * plugin.tx_solr.search.faceting.facetLinkUrlParameters.useForFacetResetLinkUrl
-     *
-     * @param bool $defaultIfEmpty
-     * @return bool
      */
     public function getSearchFacetingFacetLinkUrlParametersUseForFacetResetLinkUrl(bool $defaultIfEmpty = true): bool
     {
@@ -1785,9 +1445,6 @@ class TypoScriptConfiguration
      * Returns the link url parameters that should be added to a facet as array.
      *
      * plugin.tx_solr.search.faceting.facetLinkUrlParameters
-     *
-     * @param array $defaultIfEmpty
-     * @return array
      */
     public function getSearchFacetingFacetLinkUrlParametersAsArray(array $defaultIfEmpty = []): array
     {
@@ -1803,9 +1460,6 @@ class TypoScriptConfiguration
      * Return the configured minimumCount value for facets.
      *
      * plugin.tx_solr.search.faceting.minimumCount
-     *
-     * @param int $defaultIfEmpty
-     * @return int
      */
     public function getSearchFacetingMinimumCount(int $defaultIfEmpty = 1): int
     {
@@ -1816,9 +1470,6 @@ class TypoScriptConfiguration
      * Return the configured limit value for facets, used for displaying.
      *
      * plugin.tx_solr.search.faceting.limit
-     *
-     * @param int $defaultIfEmpty
-     * @return int
      */
     public function getSearchFacetingLimit(int $defaultIfEmpty = 10): int
     {
@@ -1829,9 +1480,6 @@ class TypoScriptConfiguration
      * Return the configured limit value for facets, used for the response.
      *
      * plugin.tx_solr.search.faceting.facetLimit
-     *
-     * @param int $defaultIfEmpty
-     * @return int
      */
     public function getSearchFacetingFacetLimit(int $defaultIfEmpty = 100): int
     {
@@ -1842,9 +1490,6 @@ class TypoScriptConfiguration
      * Return the configured url parameter style value for facets, used for building faceting parameters.
      *
      * plugin.tx_solr.search.faceting.urlParameterStyle
-     *
-     * @param string $defaultUrlParameterStyle
-     * @return string
      */
     public function getSearchFacetingUrlParameterStyle(string $defaultUrlParameterStyle = 'index'): string
     {
@@ -1858,9 +1503,6 @@ class TypoScriptConfiguration
      * Return the configuration if the URL parameters should be sorted.
      *
      * plugin.tx_solr.search.faceting.urlParameterSort
-     *
-     * @param bool $defaultUrlParameterSort
-     * @return bool
      */
     public function getSearchFacetingUrlParameterSort(bool $defaultUrlParameterSort = false): bool
     {
@@ -1874,9 +1516,6 @@ class TypoScriptConfiguration
      * Return the configured faceting sortBy value.
      *
      * plugin.tx_solr.search.faceting.sortBy
-     *
-     * @param string $defaultIfEmpty
-     * @return string
      */
     public function getSearchFacetingSortBy(string $defaultIfEmpty = ''): string
     {
@@ -1889,9 +1528,6 @@ class TypoScriptConfiguration
      * (plugin.tx_solr.search.faceting.facets.<fieldName>.keepAllOptionsOnSelection)
      *
      * plugin.tx_solr.search.faceting.keepAllFacetsOnSelection
-     *
-     * @param bool $defaultIfEmpty
-     * @return bool
      */
     public function getSearchFacetingKeepAllFacetsOnSelection(bool $defaultIfEmpty = false): bool
     {
@@ -1904,9 +1540,6 @@ class TypoScriptConfiguration
      * plugin.tx_solr.search.faceting.keepAllFacetsOnSelection has been enabled
      *
      * plugin.tx_solr.search.faceting.countAllFacetsForSelection
-     *
-     * @param bool $defaultIfEmpty
-     * @return bool
      */
     public function getSearchFacetingCountAllFacetsForSelection(bool $defaultIfEmpty = false): bool
     {
@@ -1918,9 +1551,6 @@ class TypoScriptConfiguration
      * Returns the configured faceting configuration.
      *
      * plugin.tx_solr.search.faceting.facets
-     *
-     * @param array $defaultIfEmpty
-     * @return array
      */
     public function getSearchFacetingFacets(array $defaultIfEmpty = []): array
     {
@@ -1931,10 +1561,6 @@ class TypoScriptConfiguration
      * Returns the configuration of a single facet by facet name.
      *
      * plugin.tx_solr.search.faceting.facets.<facetName>
-     *
-     * @param string $facetName
-     * @param array $defaultIfEmpty
-     * @return array
      */
     public function getSearchFacetingFacetByName(string $facetName, array $defaultIfEmpty = []): array
     {
@@ -1945,9 +1571,6 @@ class TypoScriptConfiguration
      * Indicates if statistics is enabled or not.
      *
      * plugin.tx_solr.statistics
-     *
-     * @param bool $defaultIfEmpty
-     * @return bool
      */
     public function getStatistics(bool $defaultIfEmpty = false): bool
     {
@@ -1959,9 +1582,6 @@ class TypoScriptConfiguration
      * Indicates to which length an ip should be anonymized in the statistics
      *
      * plugin.tx_solr.statistics.anonymizeIP
-     *
-     * @param int $defaultIfEmpty
-     * @return int
      */
     public function getStatisticsAnonymizeIP(int $defaultIfEmpty = 0): int
     {
@@ -1973,9 +1593,6 @@ class TypoScriptConfiguration
      * Indicates if additional debug Data should be added to the statistics
      *
      * plugin.tx_solr.statistics.addDebugData
-     *
-     * @param bool $defaultIfEmpty
-     * @return bool
      */
     public function getStatisticsAddDebugData(bool $defaultIfEmpty = false): bool
     {
@@ -1987,9 +1604,6 @@ class TypoScriptConfiguration
      * Indicates if suggestion is enabled or not.
      *
      * plugin.tx_solr.suggest
-     *
-     * @param bool $defaultIfEmpty
-     * @return bool
      */
     public function getSuggest(bool $defaultIfEmpty = false): bool
     {
@@ -2001,9 +1615,6 @@ class TypoScriptConfiguration
      * Indicates if https should be used for the suggestions form.
      *
      * plugin.tx_solr.suggest.forceHttps
-     *
-     * @param bool $defaultIfEmpty
-     * @return bool
      */
     public function getSuggestForceHttps(bool $defaultIfEmpty = false): bool
     {
@@ -2015,9 +1626,6 @@ class TypoScriptConfiguration
      * Returns the allowed number of suggestions.
      *
      * plugin.tx_solr.suggest.numberOfSuggestions
-     *
-     * @param int $defaultIfEmpty
-     * @return int
      */
     public function getSuggestNumberOfSuggestions(int $defaultIfEmpty = 10): int
     {
@@ -2029,9 +1637,6 @@ class TypoScriptConfiguration
      * Indicates if the topResults should be shown or not
      *
      * plugin.tx_solr.suggest.showTopResults
-     *
-     * @param bool $defaultIfEmpty
-     * @return bool
      */
     public function getSuggestShowTopResults(bool $defaultIfEmpty = true): bool
     {
@@ -2043,9 +1648,6 @@ class TypoScriptConfiguration
      * Returns the configured number of top results to show
      *
      * plugin.tx_solr.suggest.numberOfTopResults
-     *
-     * @param int $defaultIfEmpty
-     * @return int
      */
     public function getSuggestNumberOfTopResults(int $defaultIfEmpty = 5): int
     {
@@ -2057,9 +1659,6 @@ class TypoScriptConfiguration
      * Returns additional fields for the top results
      *
      * plugin.tx_solr.suggest.additionalTopResultsFields
-     *
-     * @param array $defaultIfEmpty
-     * @return array
      */
     public function getSuggestAdditionalTopResultsFields(array $defaultIfEmpty = []): array
     {
@@ -2075,10 +1674,6 @@ class TypoScriptConfiguration
      * Returns the configured template for a specific template fileKey.
      *
      * plugin.tx_solr.view.templateFiles.<fileKey>
-     *
-     * @param string $fileKey
-     * @param string $defaultIfEmpty
-     * @return string
      */
     public function getViewTemplateByFileKey(string $fileKey, string $defaultIfEmpty = ''): string
     {
@@ -2090,39 +1685,10 @@ class TypoScriptConfiguration
      * Returns the configured available template files for the flexform.
      *
      * plugin.tx_solr.view.templateFiles.[fileKey].availableTemplates.
-     *
-     * @param string $fileKey
-     * @return array
      */
     public function getAvailableTemplatesByFileKey(string $fileKey): array
     {
         return $this->getObjectByPathOrDefault('plugin.tx_solr.view.templateFiles.' . $fileKey . '.availableTemplates.');
-    }
-
-    /**
-     * Returns the configuration of the crop view helper.
-     *
-     * plugin.tx_solr.viewHelpers.crop.
-     *
-     * @param array $defaultIfEmpty
-     * @return array
-     */
-    public function getViewHelpersCropConfiguration(array $defaultIfEmpty = []): array
-    {
-        return $this->getObjectByPathOrDefault('plugin.tx_solr.viewHelpers.crop.', $defaultIfEmpty);
-    }
-
-    /**
-     * Returns the configuration of the sorting view helper.
-     *
-     * plugin.tx_solr.viewHelpers.sortIndicator.
-     *
-     * @param array $defaultIfEmpty
-     * @return array
-     */
-    public function getViewHelpersSortIndicatorConfiguration(array $defaultIfEmpty = []): array
-    {
-        return $this->getObjectByPathOrDefault('plugin.tx_solr.viewHelpers.sortIndicator.', $defaultIfEmpty);
     }
 
     /**
@@ -2134,9 +1700,6 @@ class TypoScriptConfiguration
      * daemons autoCommit feature.
      *
      * plugin.tx_solr.index.enableCommits
-     *
-     * @param bool $defaultIfEmpty
-     * @return bool
      */
     public function getEnableCommits(bool $defaultIfEmpty = true): bool
     {
@@ -2148,9 +1711,6 @@ class TypoScriptConfiguration
      * Returns the url namespace that is used for the arguments.
      *
      * plugin.tx_solr.view.pluginNamespace
-     *
-     * @param string $defaultIfEmpty
-     * @return string
      */
     public function getSearchPluginNamespace(string $defaultIfEmpty = 'tx_solr'): string
     {
@@ -2163,9 +1723,6 @@ class TypoScriptConfiguration
      * Should be set to false, when multiple instance on the same page should have their querystring.
      *
      * plugin.tx_solr.search.ignoreGlobalQParameter
-     *
-     * @param bool $defaultIfEmpty
-     * @return bool
      */
     public function getSearchIgnoreGlobalQParameter(bool $defaultIfEmpty = false): bool
     {
@@ -2177,9 +1734,6 @@ class TypoScriptConfiguration
      * Returns the argument names, that should be added to the persistent arguments, as array.
      *
      * plugin.tx_solr.search.additionalPersistentArgumentNames
-     *
-     * @param array $defaultIfEmpty
-     * @return array
      */
     public function getSearchAdditionalPersistentArgumentNames(array $defaultIfEmpty = []): array
     {
@@ -2196,9 +1750,6 @@ class TypoScriptConfiguration
      * Method to check if grouping was enabled with typoscript.
      *
      * plugin.tx_solr.search.grouping
-     *
-     * @param bool $defaultIfEmpty
-     * @return bool
      */
     public function getIsSearchGroupingEnabled(bool $defaultIfEmpty = false): bool
     {
@@ -2210,9 +1761,6 @@ class TypoScriptConfiguration
      * Returns the configured numberOfGroups.
      *
      * plugin.tx_solr.search.grouping.numberOfGroups
-     *
-     * @param int $defaultIfEmpty
-     * @return int
      */
     public function getSearchGroupingNumberOfGroups(int $defaultIfEmpty = 5): int
     {
@@ -2223,9 +1771,6 @@ class TypoScriptConfiguration
      * Returns the sortBy configuration for the grouping.
      *
      * plugin.tx_solr.search.grouping.sortBy
-     *
-     * @param string $defaultIfEmpty
-     * @return string
      */
     public function getSearchGroupingSortBy(string $defaultIfEmpty = ''): string
     {
@@ -2237,9 +1782,6 @@ class TypoScriptConfiguration
      * for each group.
      *
      * plugin.tx_solr.search.grouping.
-     *
-     * @param ?int $defaultIfEmpty
-     * @return int
      */
     public function getSearchGroupingHighestGroupResultsLimit(?int $defaultIfEmpty = 1): int
     {
@@ -2292,23 +1834,16 @@ class TypoScriptConfiguration
      * Returns everything that is configured for the groups (plugin.tx_solr.search.grouping.groups.)
      *
      * plugin.tx_solr.search.grouping.groups.
-     *
-     * @param ?array $defaultIfEmpty
-     * @return array
      */
     public function getSearchGroupingGroupsConfiguration(?array $defaultIfEmpty = []): array
     {
         return $this->getObjectByPathOrDefault('plugin.tx_solr.search.grouping.groups.', $defaultIfEmpty);
     }
 
-    /*
+    /**
      * Applies the stdWrap if it is configured for the path, otherwise the unprocessed value will be returned.
-     *
-     * @param string $valuePath
-     * @param mixed $value
-     * @return mixed
      */
-    protected function renderContentElementOfConfigured($valuePath, $value)
+    protected function renderContentElementOfConfigured(string $valuePath, mixed $value): mixed
     {
         $configurationPath = $valuePath . '.';
         $configuration = $this->getObjectByPath($configurationPath);

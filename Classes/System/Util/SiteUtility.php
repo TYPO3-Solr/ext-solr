@@ -26,15 +26,20 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class SiteUtility
 {
     /**
-     * @var array
+     * In memory cache indexed by [<root-page-id>][<language-id>]
      */
-    public static array $languages = [];
+    private static array $languages = [];
+
+    /**
+     * @internal for unit tests tear down methods.
+     */
+    public static function reset(): void
+    {
+        self::$languages = [];
+    }
 
     /**
      * Determines if the site where the page belongs to is managed with the TYPO3 site management.
-     *
-     * @param int $pageId
-     * @return bool
      */
     public static function getIsSiteManagedSite(int $pageId): bool
     {
@@ -42,7 +47,7 @@ class SiteUtility
         try {
             /* @var SiteFinder $siteFinder */
             return $siteFinder->getSiteByPageId($pageId) instanceof Site;
-        } catch (SiteNotFoundException $e) {
+        } catch (SiteNotFoundException) {
         }
         return false;
     }
@@ -61,21 +66,14 @@ class SiteUtility
      *
      * The convention for property keys is "solr_{propertyName}_{scope}". With the configuration "solr_host_read" you define the host
      * for the solr read connection.
-     *
-     * @param Site $typo3Site
-     * @param string $property
-     * @param int $languageId
-     * @param string $scope
-     * @param mixed $defaultValue
-     * @return mixed
      */
     public static function getConnectionProperty(
         Site $typo3Site,
         string $property,
         int $languageId,
         string $scope,
-        $defaultValue = null
-    ) {
+        mixed $defaultValue = null,
+    ): string|int|bool|null {
         $value = self::getConnectionPropertyOrFallback($typo3Site, $property, $languageId, $scope);
         if ($value === null) {
             return $defaultValue;
@@ -85,10 +83,6 @@ class SiteUtility
 
     /**
      * Builds the Solr connection configuration
-     *
-     * @param Site $typo3Site
-     * @param int $languageUid
-     * @return array|null
      */
     public static function getSolrConnectionConfiguration(Site $typo3Site, int $languageUid): ?array
     {
@@ -132,9 +126,6 @@ class SiteUtility
 
     /**
      * Builds the Solr connection configuration for all languages of given TYPO3 site
-     *
-     * @param Site $typo3Site
-     * @return array
      */
     public static function getAllSolrConnectionConfigurations(Site $typo3Site): array
     {
@@ -152,20 +143,14 @@ class SiteUtility
     /**
      * Resolves site configuration properties.
      * Language context properties have precedence over global settings.
-     *
-     * @param Site $typo3Site
-     * @param string $property
-     * @param int $languageId
-     * @param string $scope
-     * @return string|bool|null
      */
     protected static function getConnectionPropertyOrFallback(
         Site $typo3Site,
         string $property,
         int $languageId,
-        string $scope
-    ) {
-        if ($scope === 'write' && !self::writeConnectionIsEnabled($typo3Site, $languageId)) {
+        string $scope,
+    ): string|int|bool|null {
+        if ($scope === 'write' && !self::isWriteConnectionEnabled($typo3Site, $languageId)) {
             $scope = 'read';
         }
 
@@ -177,7 +162,7 @@ class SiteUtility
 
         // try to find language specific setting if found return it
         $rootPageUid = $typo3Site->getRootPageId();
-        if (isset(self::$languages[$rootPageUid][$languageId]) === false) {
+        if (!isset(self::$languages[$rootPageUid][$languageId])) {
             self::$languages[$rootPageUid][$languageId] = $typo3Site->getLanguageById($languageId)->toArray();
         }
         $value = self::getValueOrFallback(self::$languages[$rootPageUid][$languageId], $keyToCheck, $fallbackKey);
@@ -193,15 +178,11 @@ class SiteUtility
     /**
      * Checks whether write connection is enabled.
      * Language context properties have precedence over global settings.
-     *
-     * @param Site $typo3Site
-     * @param int $languageId
-     * @return bool
      */
-    protected static function writeConnectionIsEnabled(Site $typo3Site, int $languageId): bool
+    protected static function isWriteConnectionEnabled(Site $typo3Site, int $languageId): bool
     {
         $rootPageUid = $typo3Site->getRootPageId();
-        if (isset(self::$languages[$rootPageUid][$languageId]) === false) {
+        if (!isset(self::$languages[$rootPageUid][$languageId])) {
             self::$languages[$rootPageUid][$languageId] = $typo3Site->getLanguageById($languageId)->toArray();
         }
         $value = self::getValueOrFallback(self::$languages[$rootPageUid][$languageId], 'solr_use_write_connection', 'solr_use_write_connection');
@@ -218,13 +199,13 @@ class SiteUtility
     }
 
     /**
-     * @param array $data
-     * @param string $keyToCheck
-     * @param string $fallbackKey
-     * @return string|bool|null
+     * Returns value of data by key or by fallback key if exists or null if not.
      */
-    protected static function getValueOrFallback(array $data, string $keyToCheck, string $fallbackKey)
-    {
+    protected static function getValueOrFallback(
+        array $data,
+        string $keyToCheck,
+        string $fallbackKey,
+    ): string|int|bool|null {
         $value = $data[$keyToCheck] ?? null;
         if ($value === '0' || $value === 0 || !empty($value)) {
             return self::evaluateConfigurationData($value);
@@ -239,11 +220,8 @@ class SiteUtility
      * Setting boolean values via environment variables
      * results in strings like 'false' that may be misinterpreted
      * thus we check for boolean values in strings.
-     *
-     * @param string|bool|null $value
-     * @return string|bool|null
      */
-    protected static function evaluateConfigurationData($value)
+    protected static function evaluateConfigurationData(string|bool|null $value): string|int|bool|null
     {
         if ($value === 'true') {
             return true;
@@ -253,5 +231,26 @@ class SiteUtility
         }
 
         return $value;
+    }
+
+    /**
+     * Takes a page record and checks whether the page is marked as root page.
+     */
+    public static function isRootPage(array $pageRecord): bool
+    {
+        return ($pageRecord['is_siteroot'] ?? null) == 1;
+    }
+
+    /**
+     * Retrieves the rootPageIds as an array from a set of sites.
+     */
+    public static function getRootPageIdsFromSites(array $sites): array
+    {
+        $rootPageIds = [];
+        foreach ($sites as $site) {
+            $rootPageIds[] = (int)$site->getRootPageId();
+        }
+
+        return $rootPageIds;
     }
 }

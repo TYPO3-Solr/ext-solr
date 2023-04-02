@@ -28,17 +28,6 @@ use DateTime;
  */
 class DateRange extends AbstractRangeFacetItem
 {
-    /**
-     * @param DateRangeFacet $facet
-     * @param DateTime|null $startRequested
-     * @param DateTime|null $endRequested
-     * @param DateTime|null $startInResponse
-     * @param DateTime|null $endInResponse
-     * @param string|int $gap
-     * @param int $documentCount
-     * @param array $rangeCounts
-     * @param bool $selected
-     */
     public function __construct(
         DateRangeFacet $facet,
         protected ?DateTime $startRequested = null,
@@ -66,9 +55,6 @@ class DateRange extends AbstractRangeFacetItem
         );
     }
 
-    /**
-     * @return string
-     */
     protected function getRangeString(): string
     {
         $from = $this->startRequested === null ? '' : $this->startRequested->format('Ymd') . '0000';
@@ -78,8 +64,6 @@ class DateRange extends AbstractRangeFacetItem
 
     /**
      * Retrieves the end date that was requested by the user for this facet.
-     *
-     * @return DateTime|null
      */
     public function getEndRequested(): ?DateTime
     {
@@ -88,8 +72,6 @@ class DateRange extends AbstractRangeFacetItem
 
     /**
      * Retrieves the start date that was requested by the used for the facet.
-     *
-     * @return DateTime|null
      */
     public function getStartRequested(): ?DateTime
     {
@@ -98,8 +80,6 @@ class DateRange extends AbstractRangeFacetItem
 
     /**
      * Retrieves the end date that was received from solr for this facet.
-     *
-     * @return DateTime|null
      */
     public function getEndInResponse(): ?DateTime
     {
@@ -108,8 +88,6 @@ class DateRange extends AbstractRangeFacetItem
 
     /**
      * Retrieves the start date that was received from solr for this facet.
-     *
-     * @return DateTime|null
      */
     public function getStartInResponse(): ?DateTime
     {

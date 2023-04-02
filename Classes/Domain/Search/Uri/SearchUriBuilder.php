@@ -74,9 +74,6 @@ class SearchUriBuilder
         $this->eventDispatcher = $eventDispatcher;
     }
 
-    /**
-     * @param mixed $facetValue
-     */
     public function getAddFacetValueUri(SearchRequest $previousSearchRequest, string $facetName, $facetValue): string
     {
         $persistentAndFacetArguments = $previousSearchRequest
@@ -193,7 +190,7 @@ class SearchUriBuilder
 
     public function getNewSearchUri(SearchRequest $previousSearchRequest, $queryString): string
     {
-        /** @var $request SearchRequest */
+        /* @var SearchRequest $request */
         $contextConfiguration = $previousSearchRequest->getContextTypoScriptConfiguration();
         $contextSystemLanguage = $previousSearchRequest->getContextSystemLanguageUid();
         $contextPageUid = $previousSearchRequest->getContextPageUid();

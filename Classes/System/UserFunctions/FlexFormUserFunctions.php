@@ -22,7 +22,7 @@ use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
 use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
-use Doctrine\DBAL\Driver\Exception as DBALDriverException;
+use Doctrine\DBAL\Exception as DBALException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
@@ -39,11 +39,10 @@ class FlexFormUserFunctions
     /**
      * Provides all facet fields for a flexform select, enabling the editor to select one of them.
      *
-     * @param array $parentInformation
-     * @throws DBALDriverException
      * @throws NoSolrConnectionFoundException
+     * @throws DBALException
      */
-    public function getFacetFieldsFromSchema(array &$parentInformation)
+    public function getFacetFieldsFromSchema(array &$parentInformation): void
     {
         $pageRecord = $parentInformation['flexParentDatabaseRow'];
         // @todo: Fix type hinting issue properly on whole call chain.
@@ -61,11 +60,8 @@ class FlexFormUserFunctions
     /**
      * This method parses the solr schema fields into the required format for the backend flexform.
      *
-     * @param array $configuredFacets
-     * @param array $pageRecord
-     * @return array
-     * @throws DBALDriverException
      * @throws NoSolrConnectionFoundException
+     * @throws DBALException
      */
     protected function getParsedSolrFieldsFromSchema(array $configuredFacets, array $pageRecord): array
     {
@@ -100,12 +96,8 @@ class FlexFormUserFunctions
 
     /**
      * Retrieves the configured facets for a page.
-     *
-     * @param int|null $pid
-     * @throws DBALDriverException
-     * @todo: Fix type hinting properly
      */
-    protected function getConfiguredFacetsForPage(?int $pid = null): ?array
+    protected function getConfiguredFacetsForPage(int $pid = null): ?array
     {
         if ($pid === null) {
             return null;
@@ -116,9 +108,6 @@ class FlexFormUserFunctions
 
     /**
      * Retrieves the translation with the LocalizationUtility.
-     *
-     * @param string $label
-     * @return string|null
      */
     protected function getTranslation(string $label): ?string
     {
@@ -128,11 +117,8 @@ class FlexFormUserFunctions
     /**
      * Get solr connection.
      *
-     * @param array $pageRecord
-     *
-     * @return SolrConnection
-     * @throws DBALDriverException
      * @throws NoSolrConnectionFoundException
+     * @throws DBALException
      */
     protected function getConnection(array $pageRecord): SolrConnection
     {
@@ -142,10 +128,8 @@ class FlexFormUserFunctions
     /**
      * Retrieves all fieldnames that occurs in the solr schema for one page.
      *
-     * @param array $pageRecord
-     * @return array
-     * @throws DBALDriverException
      * @throws NoSolrConnectionFoundException
+     * @throws DBALException
      */
     protected function getFieldNamesFromSolrMetaDataForPage(array $pageRecord): array
     {
@@ -153,10 +137,9 @@ class FlexFormUserFunctions
     }
 
     /**
-     * @param array $parentInformation
-     * @throws DBALDriverException
+     * Enriches the parents information with information from template
      */
-    public function getAvailableTemplates(array &$parentInformation)
+    public function getAvailableTemplates(array &$parentInformation): void
     {
         $pageRecord = $parentInformation['flexParentDatabaseRow'];
         if (!is_array($pageRecord) || !isset($pageRecord['pid'])) {
@@ -174,9 +157,11 @@ class FlexFormUserFunctions
     }
 
     /**
-     * @param array $parentInformation
+     * Enriches the parent information with available/configured plugin namespaces.
+     *
+     * @noinspection PhpUnused Used in {@link Configuration/FlexForms/Form.xml}
      */
-    public function getAvailablePluginNamespaces(array &$parentInformation)
+    public function getAvailablePluginNamespaces(array &$parentInformation): void
     {
         $extensionConfiguration = GeneralUtility::makeInstance(ExtensionConfiguration::class);
         $namespaces = [];
@@ -188,22 +173,18 @@ class FlexFormUserFunctions
     }
 
     /**
-     * @param array $parentInformation
-     * @return string|string[]
+     * Returns the template key from field name
      */
-    protected function getTypoScriptTemplateKeyFromFieldName(array $parentInformation)
+    protected function getTypoScriptTemplateKeyFromFieldName(array $parentInformation): array|string
     {
         $field = $parentInformation['field'];
         return str_replace('view.templateFiles.', '', $field);
     }
 
     /**
-     * @param int|null $pid
-     * @return TypoScriptConfiguration|null
-     * @throws DBALDriverException
-     * @todo: Fix type hinting properly
+     * Returns TypoScriptConfiguration if is available or can be resolved for given pid
      */
-    protected function getConfigurationFromPageId(?int $pid = null): ?TypoScriptConfiguration
+    protected function getConfigurationFromPageId(int $pid = null): ?TypoScriptConfiguration
     {
         if ($pid === null) {
             return null;
@@ -217,11 +198,6 @@ class FlexFormUserFunctions
 
     /**
      * Retrieves the configured templates from TypoScript.
-     *
-     * @param int $pageId
-     * @param string $templateKey
-     * @return array
-     * @throws DBALDriverException
      */
     protected function getAvailableTemplateFromTypoScriptConfiguration(int $pageId, string $templateKey): array
     {
@@ -231,9 +207,6 @@ class FlexFormUserFunctions
 
     /**
      * Returns the available templates as needed for the flexform.
-     *
-     * @param array $availableTemplates
-     * @return array
      */
     protected function buildSelectItemsFromAvailableTemplate(array $availableTemplates): array
     {

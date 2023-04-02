@@ -24,10 +24,6 @@ class SynonymParser
 {
     /**
      * Parse the solr synonyms response from a json string to an array.
-     *
-     * @param string $baseWord
-     * @param string $jsonString
-     * @return array
      */
     public function parseJson(string $baseWord, string $jsonString): array
     {
@@ -45,9 +41,7 @@ class SynonymParser
     }
 
     /**
-     * @param string $baseWord
-     * @param array $synonyms
-     * @return string
+     * Converts base-word and its synonyms to JSON string
      */
     public function toJson(string $baseWord, array $synonyms): string
     {

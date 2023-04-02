@@ -38,7 +38,7 @@ class SchemaStatusTest extends IntegrationTest
      */
     public function canGetAGrennSchemaStatusAgainstTestServer()
     {
-        /** @var $schemaStatus  SchemaStatus */
+        /* @var SchemaStatus $schemaStatus */
         $schemaStatus = GeneralUtility::makeInstance(SchemaStatus::class);
         $violations = $schemaStatus->getStatus();
 

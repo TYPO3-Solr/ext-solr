@@ -31,8 +31,6 @@ class AllowUrlFOpenStatus extends AbstractSolrStatus
 {
     /**
      * Checks whether allow_url_fopen is enabled.
-     *
-     * @return array
      */
     public function getStatus(): array
     {

@@ -18,7 +18,6 @@ declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\System\Records\SystemTemplate;
 
 use ApacheSolrForTypo3\Solr\System\Records\AbstractRepository;
-use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use Doctrine\DBAL\Exception as DBALException;
 
 /**
@@ -26,18 +25,13 @@ use Doctrine\DBAL\Exception as DBALException;
  */
 class SystemTemplateRepository extends AbstractRepository
 {
-    /**
-     * @var string
-     */
     protected string $table = 'sys_template';
 
     /**
      * Finds a first closest page id with active template.
-     *
      * This method expects one startPageId, which must be inside the root line and does not check if it is one in the root line.
      *
-     * @throws DBALDriverException
-     * @throws DBALException|\Doctrine\DBAL\DBALException
+     * @throws DBALException
      */
     public function findOneClosestPageIdWithActiveTemplateByRootLine(array $rootLine): ?int
     {

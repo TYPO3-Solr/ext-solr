@@ -51,7 +51,7 @@ class QueueTest extends IntegrationTest
      *
      * @param int $expectedAmount
      */
-    protected function assertItemsInQueue($expectedAmount)
+    protected function assertItemsInQueue(int $expectedAmount): void
     {
         $itemCount = $this->indexQueue->getAllItemsCount();
         self::assertSame($itemCount, $expectedAmount, 'Indexqueue contains unexpected amount of items. Expected amount: ' . $expectedAmount);
@@ -414,7 +414,7 @@ class QueueTest extends IntegrationTest
     /**
      * @test
      */
-    public function canMarkItemAsFailedNonexistingItem()
+    public function canMarkItemAsFailedNonExistingItem()
     {
         $this->importDataSetFromFixture('can_mark_item_as_failed.xml');
         $this->assertItemsInQueue(3);
@@ -457,7 +457,7 @@ class QueueTest extends IntegrationTest
         $this->importDataSetFromFixture('can_flush_errors.xml');
         $this->assertItemsInQueue(4);
 
-        /** @var $siteRepository SiteRepository */
+        /* @var SiteRepository $siteRepository */
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $firstSite = $siteRepository->getFirstAvailableSite();
 
@@ -482,7 +482,7 @@ class QueueTest extends IntegrationTest
         $this->importDataSetFromFixture('can_flush_errors.xml');
         $this->assertItemsInQueue(4);
 
-        /** @var $siteRepository SiteRepository */
+        /* @var SiteRepository $siteRepository */
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $firstSite = $siteRepository->getFirstAvailableSite();
 
@@ -507,7 +507,7 @@ class QueueTest extends IntegrationTest
         $this->importDataSetFromFixture('can_flush_error_by_item.xml');
         $this->assertItemsInQueue(4);
 
-        /** @var $siteRepository SiteRepository */
+        /* @var SiteRepository $siteRepository */
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $firstSite = $siteRepository->getFirstAvailableSite();
 

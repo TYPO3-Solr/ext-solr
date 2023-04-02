@@ -35,28 +35,16 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
  */
 class PageFieldMappingIndexer implements SubstitutePageIndexer
 {
-    /**
-     * @var TypoScriptConfiguration
-     */
     protected TypoScriptConfiguration $configuration;
 
-    /**
-     * @var string
-     */
     protected string $pageIndexingConfigurationName = 'pages';
 
-    /**
-     * @param TypoScriptConfiguration|null $configuration
-     */
     public function __construct(TypoScriptConfiguration $configuration = null)
     {
         $this->configuration = $configuration == null ? Util::getSolrConfiguration() : $configuration;
     }
 
-    /**
-     * @param string $pageIndexingConfigurationName
-     */
-    public function setPageIndexingConfigurationName(string $pageIndexingConfigurationName)
+    public function setPageIndexingConfigurationName(string $pageIndexingConfigurationName): void
     {
         $this->pageIndexingConfigurationName = $pageIndexingConfigurationName;
     }
@@ -68,6 +56,7 @@ class PageFieldMappingIndexer implements SubstitutePageIndexer
      * plugin.tx_solr.index.queue.pages.fields.
      *
      * @param Document $originalPageDocument The original page document.
+     *
      * @return Document A Apache Solr Document object that replace the default page document
      */
     public function getPageDocument(Document $originalPageDocument): Document
@@ -94,9 +83,11 @@ class PageFieldMappingIndexer implements SubstitutePageIndexer
     /**
      * Gets the mapped fields as an array mapping field names to values.
      *
-     * @throws InvalidFieldNameException
      * @param Document $pageDocument The original page document.
+     *
      * @return array An array mapping field names to their values.
+     *
+     * @throws InvalidFieldNameException
      */
     protected function getMappedFields(Document $pageDocument): array
     {
@@ -124,6 +115,7 @@ class PageFieldMappingIndexer implements SubstitutePageIndexer
      * Otherwise, the plain page record field value is used.
      *
      * @param string $solrFieldName The Solr field name to resolve the value from the item's record
+     *
      * @return string|array The resolved value to be indexed
      */
     protected function resolveFieldValue(string $solrFieldName, Document $pageDocument): array|string

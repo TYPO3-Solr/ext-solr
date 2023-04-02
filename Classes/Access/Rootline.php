@@ -60,15 +60,11 @@ class Rootline
 {
     /**
      * Delimiter for page and content access right elements in the rootline.
-     *
-     * @var string
      */
     public const ELEMENT_DELIMITER = '/';
 
     /**
      * Storage for access rootline elements
-     *
-     * @var array
      */
     protected array $rootlineElements = [];
 
@@ -85,7 +81,7 @@ class Rootline
             foreach ($rawRootlineElements as $rawRootlineElement) {
                 try {
                     $this->push(GeneralUtility::makeInstance(RootlineElement::class, /** @scrutinizer ignore-type */ $rawRootlineElement));
-                } catch (RootlineElementFormatException $e) {
+                } catch (RootlineElementFormatException) {
                     // just ignore the faulty element for now, might log this later
                 }
             }
@@ -136,7 +132,7 @@ class Rootline
         $rootlineUtility = GeneralUtility::makeInstance(RootlineUtility::class, $pageId, $mountPointParameter);
         try {
             $rootline = $rootlineUtility->get();
-        } catch (RuntimeException $e) {
+        } catch (RuntimeException) {
             $rootline = [];
         }
         $rootline = array_reverse($rootline);

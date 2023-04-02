@@ -57,6 +57,7 @@ class Faceting implements Modifier, SearchRequestAware
      * search.
      *
      * @param Query $query The query to modify
+     *
      * @return Query The modified query with faceting parameters
      *
      * @throws InvalidFacetPackageException
@@ -117,11 +118,6 @@ class Faceting implements Modifier, SearchRequestAware
      * Adds filters specified through HTTP GET as filter query parameters to
      * the Solr query.
      *
-     * @param array $resultParameters
-     * @param bool $keepAllFacetsOnSelection
-     * @param array|null $allFacets
-     * @return array
-     *
      * @throws InvalidFacetPackageException
      * @throws InvalidUrlDecoderException
      */
@@ -138,7 +134,7 @@ class Faceting implements Modifier, SearchRequestAware
         foreach ($filtersByFacetName as $facetName => $filterValues) {
             $facetConfiguration = $allFacets[$facetName . '.'];
             $tag = $this->getFilterTag($facetConfiguration, $keepAllFacetsOnSelection);
-            $filterParts = $this->getFilterParts($facetConfiguration, $facetName, $filterValues);
+            $filterParts = $this->getFilterParts($facetConfiguration, $filterValues);
             $operator = (($facetConfiguration['operator'] ?? null) === 'OR') ? ' OR ' : ' AND ';
             $facetFilters[$facetName] = $tag . '(' . implode($operator, $filterParts) . ')';
         }
@@ -149,10 +145,6 @@ class Faceting implements Modifier, SearchRequestAware
     /**
      * Builds the tag part of the query depending on the keepAllOptionsOnSelection configuration or the global configuration
      * keepAllFacetsOnSelection.
-     *
-     * @param array $facetConfiguration
-     * @param bool $keepAllFacetsOnSelection
-     * @return string
      */
     protected function getFilterTag(array $facetConfiguration, bool $keepAllFacetsOnSelection): string
     {
@@ -174,7 +166,7 @@ class Faceting implements Modifier, SearchRequestAware
      * @throws InvalidFacetPackageException
      * @throws InvalidUrlDecoderException
      */
-    protected function getFilterParts(array $facetConfiguration, string $facetName, array $filterValues): array
+    protected function getFilterParts(array $facetConfiguration, array $filterValues): array
     {
         $filterParts = [];
 

@@ -27,10 +27,6 @@ class ParameterSortingUtility
 {
     /**
      * Sort a list of parameters either by their key or value
-     *
-     * @param array $parameters
-     * @param string $type
-     * @return array
      */
     public static function sortByType(array &$parameters, string $type = 'index'): array
     {
@@ -42,11 +38,8 @@ class ParameterSortingUtility
 
     /**
      * Sort a list of parameters by their values
-     *
-     * @param array $parameters
-     * @return array
      */
-    public static function sortByValue(array &$parameters)
+    public static function sortByValue(array &$parameters): array
     {
         usort(
             $parameters,
@@ -57,11 +50,8 @@ class ParameterSortingUtility
 
     /**
      * Sort a list of parameters by their keys
-     *
-     * @param array $parameters
-     * @return array
      */
-    public static function sortByIndex(array &$parameters)
+    public static function sortByIndex(array &$parameters): array
     {
         uksort(
             $parameters,
@@ -73,10 +63,6 @@ class ParameterSortingUtility
 
     /**
      * Since the sort operation does not differ between keys and values it is placed inside an own method
-     *
-     * @param string $a
-     * @param string $b
-     * @return int
      */
     public static function sort(string $a, string $b): int
     {

@@ -26,8 +26,6 @@ interface ProcessingFinishedEventInterface
 {
     /**
      * Returns the processed data update event
-     *
-     * @return DataUpdateEventInterface
      */
     public function getDataUpdateEvent(): DataUpdateEventInterface;
 }

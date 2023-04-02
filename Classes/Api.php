@@ -28,7 +28,7 @@ class Api
      * @param string $apiKey API key to check for validity
      * @return bool TRUE if the API key is valid, FALSE otherwise
      */
-    public static function isValidApiKey($apiKey)
+    public static function isValidApiKey(string $apiKey): bool
     {
         return $apiKey === self::getApiKey();
     }
@@ -38,7 +38,7 @@ class Api
      *
      * @return string API key for this installation
      */
-    public static function getApiKey()
+    public static function getApiKey(): string
     {
         return sha1(
             $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'] .

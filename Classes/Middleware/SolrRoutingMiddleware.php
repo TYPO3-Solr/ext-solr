@@ -27,7 +27,6 @@ use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use TYPO3\CMS\Core\Routing\SiteRouteResult;
-use TYPO3\CMS\Core\Site\Entity\NullSite;
 use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -59,45 +58,29 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
 
     /**
      * Solr parameter key
-     *
-     * @var string
      */
     protected string $namespace = 'tx_solr';
 
     /**
      * Settings from enhancer configuration
-     *
-     * @var array
      */
     protected array $settings = [];
 
-    /**
-     * @var SiteLanguage|null
-     */
     protected ?SiteLanguage $language;
 
-    /**
-     * @var RoutingService|null
-     */
     protected ?RoutingService $routingService = null;
 
     /**
      * Inject the routing service.
      * Used in unit tests too
-     *
-     * @param RoutingService $routingService
      */
-    public function injectRoutingService(RoutingService $routingService)
+    public function injectRoutingService(RoutingService $routingService): void
     {
         $this->routingService = $routingService;
     }
 
     /**
      * Process the request
-     *
-     * @param ServerRequestInterface $request
-     * @param RequestHandlerInterface $handler
-     * @return ResponseInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
@@ -112,7 +95,7 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
 
         $site = $routeResult->getSite();
 
-        if ($site instanceof NullSite) {
+        if (!$site instanceof Site) {
             return $handler->handle($request);
         }
 
@@ -190,8 +173,6 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
 
     /**
      * Configures the middleware by enhancer configuration
-     *
-     * @param array $enhancerConfiguration
      */
     protected function configure(array $enhancerConfiguration): void
     {
@@ -202,10 +183,6 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
 
     /**
      * Retrieve the enhancer configuration for given site
-     *
-     * @param Site $site
-     * @param int $pageUid
-     * @return array|null
      */
     protected function getEnhancerConfiguration(Site $site, int $pageUid): ?array
     {
@@ -223,11 +200,6 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
 
     /**
      * Extract the slug and all arguments from path
-     *
-     * @param UriInterface $uri
-     * @param string $path
-     * @param string $pageSlug
-     * @return array
      */
     protected function extractParametersFromUriPath(UriInterface $uri, string $path, string $pageSlug): array
     {
@@ -301,10 +273,6 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
 
     /**
      * Retrieve the page uid to filter the route enhancer
-     *
-     * @param UriInterface $uri
-     * @param Site $site
-     * @return array
      */
     protected function retrievePageInformation(UriInterface $uri, Site $site): array
     {
@@ -328,7 +296,7 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
                             'Could not determine page for slug "%1$s" and language "%2$s". Given path "%3$s"',
                             [
                                 $path,
-                                $this->language->getTwoLetterIsoCode(),
+                                $this->language->getLocale()->getLanguageCode(),
                                 $uri->getPath(),
                             ]
                         )
@@ -342,7 +310,7 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
                             'Could not resolve page by path "%1$s" and language "%2$s".',
                             [
                                 $uri->getPath(),
-                                $this->language->getTwoLetterIsoCode(),
+                                $this->language->getLocale()->getLanguageCode(),
                             ]
                         )
                     );
@@ -381,9 +349,6 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
         return $page;
     }
 
-    /**
-     * @return RoutingService
-     */
     protected function getRoutingService(): RoutingService
     {
         if ($this->routingService === null) {

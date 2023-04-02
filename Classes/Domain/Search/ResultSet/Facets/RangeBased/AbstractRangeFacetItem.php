@@ -46,40 +46,25 @@ abstract class AbstractRangeFacetItem extends AbstractFacetItem
         );
     }
 
-    /**
-     * @return string
-     */
     public function getUriValue(): string
     {
         return $this->getRangeString();
     }
 
-    /**
-     * @return string
-     */
     public function getCollectionKey(): string
     {
         return $this->getRangeString();
     }
 
-    /**
-     * @return array
-     */
     public function getRangeCounts(): array
     {
         return $this->rangeCounts;
     }
 
-    /**
-     * @return string
-     */
     public function getGap(): string
     {
         return (string)$this->gap;
     }
 
-    /**
-     * @return string
-     */
     abstract protected function getRangeString(): string;
 }

@@ -24,14 +24,8 @@ use ApacheSolrForTypo3\Solr\Domain\Site\Site;
  */
 class ModuleData
 {
-    /**
-     * @var Site|null
-     */
     protected ?Site $site;
 
-    /**
-     * @var string
-     */
     protected string $core = '';
 
     /**
@@ -52,8 +46,6 @@ class ModuleData
 
     /**
      * Gets the name of the currently selected core
-     *
-     * @return string Selected core name
      */
     public function getCore(): string
     {
@@ -65,7 +57,7 @@ class ModuleData
      *
      * @param string $core Selected core name
      */
-    public function setCore(string $core)
+    public function setCore(string $core): void
     {
         $this->core = $core;
     }

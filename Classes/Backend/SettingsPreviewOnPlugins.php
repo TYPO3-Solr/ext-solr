@@ -31,7 +31,9 @@ use function str_starts_with;
 class SettingsPreviewOnPlugins
 {
     protected array $pluginsTtContentRecord;
+
     private array $flexformData;
+
     protected array $settings = [];
 
     public function __construct(
@@ -52,9 +54,6 @@ class SettingsPreviewOnPlugins
         $event->setPreviewContent($this->getPreviewContent());
     }
 
-    /**
-     * @return string
-     */
     protected function getPreviewContent(): string
     {
         $this->collectSummary();

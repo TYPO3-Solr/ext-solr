@@ -56,9 +56,6 @@ class NumericRange extends AbstractRangeFacetItem
         );
     }
 
-    /**
-     * @return string
-     */
     protected function getRangeString(): string
     {
         return $this->startRequested . '-' . $this->endRequested;
@@ -66,8 +63,6 @@ class NumericRange extends AbstractRangeFacetItem
 
     /**
      * Retrieves the end date that was requested by the user for this facet.
-     *
-     * @return float|null
      */
     public function getEndRequested(): ?float
     {
@@ -76,8 +71,6 @@ class NumericRange extends AbstractRangeFacetItem
 
     /**
      * Retrieves the start date that was requested by the used for the facet.
-     *
-     * @return float|null
      */
     public function getStartRequested(): ?float
     {
@@ -86,8 +79,6 @@ class NumericRange extends AbstractRangeFacetItem
 
     /**
      * Retrieves the end date that was received from solr for this facet.
-     *
-     * @return float|null
      */
     public function getEndInResponse(): ?float
     {
@@ -96,8 +87,6 @@ class NumericRange extends AbstractRangeFacetItem
 
     /**
      * Retrieves the start date that was received from solr for this facet.
-     *
-     * @return float|null
      */
     public function getStartInResponse(): ?float
     {

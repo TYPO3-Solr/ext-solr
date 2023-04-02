@@ -28,9 +28,7 @@ use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Http\Uri;
 use TYPO3\CMS\Core\Routing\PageSlugCandidateProvider;
 use TYPO3\CMS\Core\Routing\SiteMatcher;
-use TYPO3\CMS\Core\Site\Entity\NullSite;
 use TYPO3\CMS\Core\Site\Entity\Site;
-use TYPO3\CMS\Core\Site\Entity\SiteInterface;
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -265,7 +263,7 @@ class RoutingService implements LoggerAwareInterface
     public function shouldMaskQueryParameter(): bool
     {
         if (!isset($this->settings['query']['mask']) ||
-            !(bool)$this->settings['query']['mask']) {
+            !$this->settings['query']['mask']) {
             return false;
         }
 
@@ -709,11 +707,10 @@ class RoutingService implements LoggerAwareInterface
     public function fetchEnhancerByPageUid(int $pageUid): array
     {
         $site = $this->findSiteByUid($pageUid);
-        if ($site instanceof NullSite) {
+        if (!$site instanceof Site) {
             return [];
         }
 
-        /** @noinspection PhpParamsInspection */
         return $this->fetchEnhancerInSiteConfigurationByPageUid(
             $site,
             $pageUid
@@ -791,13 +788,13 @@ class RoutingService implements LoggerAwareInterface
     /**
      * Retrieve the site by given UID
      */
-    public function findSiteByUid(int $pageUid): SiteInterface
+    public function findSiteByUid(int $pageUid): ?Site
     {
         try {
             return $this->getSiteFinder()
                 ->getSiteByPageId($pageUid);
-        } catch (SiteNotFoundException $exception) {
-            return new NullSite();
+        } catch (SiteNotFoundException) {
+            return null;
         }
     }
 
@@ -823,7 +820,7 @@ class RoutingService implements LoggerAwareInterface
                 Uri::class,
                 $base
             );
-        } catch (InvalidArgumentException $argumentException) {
+        } catch (InvalidArgumentException) {
             return null;
         }
     }

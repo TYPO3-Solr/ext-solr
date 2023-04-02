@@ -33,7 +33,7 @@ class SystemCategoryRepositoryTest extends IntegrationTest
     {
         $this->importDataSetFromFixture('sys_category.xml');
 
-        /** @var $repository SystemCategoryRepository */
+        /* @var SystemCategoryRepository $repository */
         $repository = GeneralUtility::makeInstance(SystemCategoryRepository::class);
         $category = $repository->findOneByUid(2);
         self::assertSame('child', $category['title'], 'Can not retrieve system category by uid');

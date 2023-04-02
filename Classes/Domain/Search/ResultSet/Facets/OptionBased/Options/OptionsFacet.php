@@ -18,7 +18,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Opt
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\AbstractOptionsFacet;
 
 /**
- * Value object that represent a options facet.
+ * Value object that represent an options facet.
  *
  * @author Frans Saris <frans@beech.it>
  * @author Timo Hund <timo.hund@dkd.de>
@@ -27,9 +27,5 @@ class OptionsFacet extends AbstractOptionsFacet
 {
     public const TYPE_OPTIONS = 'options';
 
-    /**
-     * String
-     * @var string
-     */
     protected static string $type = self::TYPE_OPTIONS;
 }

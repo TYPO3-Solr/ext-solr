@@ -34,14 +34,6 @@ final class AfterSearchEvent
     private ResultsPagination $pagination;
     private int $currentPage;
 
-    /**
-     * @param SearchResultSet $resultSet
-     * @param array $additionalFilters
-     * @param string $pluginNamespace
-     * @param array $arguments
-     * @param ResultsPagination $pagination
-     * @param int $currentPage
-     */
     public function __construct(
         SearchResultSet $resultSet,
         array $additionalFilters,
@@ -58,49 +50,31 @@ final class AfterSearchEvent
         $this->currentPage = $currentPage;
     }
 
-    /**
-     * @return SearchResultSet
-     */
     public function getResultSet(): SearchResultSet
     {
         return $this->resultSet;
     }
 
-    /**
-     * @return array
-     */
     public function getAdditionalFilters(): array
     {
         return $this->additionalFilters;
     }
 
-    /**
-     * @return string
-     */
     public function getPluginNamespace(): string
     {
         return $this->pluginNamespace;
     }
 
-    /**
-     * @return array
-     */
     public function getArguments(): array
     {
         return $this->arguments;
     }
 
-    /**
-     * @return ResultsPagination
-     */
     public function getPagination(): ResultsPagination
     {
         return $this->pagination;
     }
 
-    /**
-     * @return int
-     */
     public function getCurrentPage(): int
     {
         return $this->currentPage;

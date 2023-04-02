@@ -25,20 +25,12 @@ class TrigramPhraseFields extends AbstractFieldList implements ParameterBuilderI
 {
     /**
      * Parses the string representation of the fieldList (e.g. content^100, title^10) to the object representation.
-     *
-     * @param string $fieldListString
-     * @param string $delimiter
-     * @return TrigramPhraseFields
      */
     public static function fromString(string $fieldListString, string $delimiter = ','): TrigramPhraseFields
     {
         return self::initializeFromString($fieldListString, $delimiter);
     }
 
-    /**
-     * @param TypoScriptConfiguration $solrConfiguration
-     * @return TrigramPhraseFields
-     */
     public static function fromTypoScriptConfiguration(TypoScriptConfiguration $solrConfiguration): TrigramPhraseFields
     {
         $isEnabled = $solrConfiguration->getTrigramPhraseSearchIsEnabled();
@@ -51,10 +43,6 @@ class TrigramPhraseFields extends AbstractFieldList implements ParameterBuilderI
 
     /**
      * Parses the string representation of the fieldList (e.g. content^100, title^10) to the object representation.
-     *
-     * @param string $fieldListString
-     * @param string $delimiter
-     * @return TrigramPhraseFields
      */
     protected static function initializeFromString(string $fieldListString, string $delimiter = ','): TrigramPhraseFields
     {
@@ -62,10 +50,6 @@ class TrigramPhraseFields extends AbstractFieldList implements ParameterBuilderI
         return new TrigramPhraseFields(true, $fieldList);
     }
 
-    /**
-     * @param AbstractQueryBuilder $parentBuilder
-     * @return AbstractQueryBuilder
-     */
     public function build(AbstractQueryBuilder $parentBuilder): AbstractQueryBuilder
     {
         $trigramPhraseFieldsString = $this->toString();

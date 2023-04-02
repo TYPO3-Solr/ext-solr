@@ -26,33 +26,21 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Debug search component
  *
- *
  * @author Ingo Renner <ingo@typo3.org>
  */
 class DebugComponent extends AbstractComponent implements QueryAware, SearchRequestAware
 {
     /**
      * Solr query
-     *
-     * @var Query|null
      */
     protected ?Query $query = null;
 
-    /**
-     * @var SearchRequest|null
-     */
     protected ?SearchRequest $searchRequest;
 
-    /**
-     * QueryBuilder
-     *
-     * @var QueryBuilder|object
-     */
-    protected $queryBuilder;
+    protected QueryBuilder $queryBuilder;
 
     /**
      * AccessComponent constructor.
-     * @param QueryBuilder|null $queryBuilder
      */
     public function __construct(QueryBuilder $queryBuilder = null)
     {
@@ -61,10 +49,8 @@ class DebugComponent extends AbstractComponent implements QueryAware, SearchRequ
 
     /**
      * Provides a component that is aware of the current SearchRequest
-     *
-     * @param SearchRequest $searchRequest
      */
-    public function setSearchRequest(SearchRequest $searchRequest)
+    public function setSearchRequest(SearchRequest $searchRequest): void
     {
         $this->searchRequest = $searchRequest;
     }
@@ -74,7 +60,7 @@ class DebugComponent extends AbstractComponent implements QueryAware, SearchRequ
      *
      * Sets the debug query parameter
      */
-    public function initializeSearchComponent()
+    public function initializeSearchComponent(): void
     {
         if ($this->searchRequest->getContextTypoScriptConfiguration()->getEnabledDebugMode()) {
             $this->queryBuilder->startFrom($this->query)->useDebug(true);
@@ -86,7 +72,7 @@ class DebugComponent extends AbstractComponent implements QueryAware, SearchRequ
      *
      * @param Query $query Current query
      */
-    public function setQuery(Query $query)
+    public function setQuery(Query $query): void
     {
         $this->query = $query;
     }

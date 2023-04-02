@@ -17,7 +17,7 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\Domain\Site\Exception;
 
-use Exception;
+use ApacheSolrForTypo3\Solr\Exception;
 
 class InvalidSiteConfigurationCombinationException extends Exception
 {

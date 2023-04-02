@@ -103,6 +103,8 @@ class SearchResultSet
 
     /**
      * @param Suggestion[] $spellCheckingSuggestions
+     *
+     * @noinspection PhpUnused Used in Fluid-Templates/Partials {resultSet.spellCheckingSuggestions}
      */
     public function setSpellCheckingSuggestions(array $spellCheckingSuggestions): void
     {
@@ -162,6 +164,9 @@ class SearchResultSet
         $this->usedAdditionalFilters = $usedAdditionalFilters;
     }
 
+    /**
+     * @noinspection PhpUnused Can be used in Fluid-Templates/Partials {resultSet.usedAdditionalFilters}
+     */
     public function getUsedAdditionalFilters(): array
     {
         return $this->usedAdditionalFilters;
@@ -187,6 +192,8 @@ class SearchResultSet
 
     /**
      * Retrieve the page argument that has been used to build this SearchResultSet.
+     *
+     * @noinspection PhpUnused Can be used in Fluid-Templates/Partials {resultSet.usedPage}
      */
     public function getUsedPage(): int
     {
@@ -241,6 +248,9 @@ class SearchResultSet
         $this->searchResults[] = $searchResult;
     }
 
+    /**
+     * @noinspection PhpUnused See: Fluid-Templates/Partials {resultSet.isAutoCorrected}
+     */
     public function getIsAutoCorrected(): bool
     {
         return $this->isAutoCorrected;
@@ -251,6 +261,9 @@ class SearchResultSet
         $this->isAutoCorrected = $wasAutoCorrected;
     }
 
+    /**
+     * @noinspection PhpUnused Used in Fluid-Templates/Partials {resultSet.initialQueryString}
+     */
     public function getInitialQueryString(): string
     {
         return $this->initialQueryString;
@@ -261,6 +274,9 @@ class SearchResultSet
         $this->initialQueryString = $initialQueryString;
     }
 
+    /**
+     * @noinspection PhpUnused Can be used in Fluid-Templates/Partials {resultSet.correctedQueryString}
+     */
     public function getCorrectedQueryString(): string
     {
         return $this->correctedQueryString;

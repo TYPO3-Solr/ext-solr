@@ -40,7 +40,7 @@ class SolrConnectionTest extends IntegrationTest
     {
         $this->importDataSetFromFixture('SolrConnectionTest_slim_basic_sites.xml');
 
-        /* @var $connectionManager ConnectionManager */
+        /* @var ConnectionManager $connectionManager */
         $connectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
 
         $messageOnNoSolrConnectionFoundException = vsprintf(

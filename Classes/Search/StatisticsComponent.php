@@ -29,17 +29,12 @@ use ApacheSolrForTypo3\Solr\Query\Modifier\Statistics;
  */
 class StatisticsComponent extends AbstractComponent implements SearchRequestAware
 {
-    /**
-     * @var SearchRequest|null
-     */
     protected ?SearchRequest $searchRequest = null;
 
     /**
      * Provides a component that is aware of the current SearchRequest
-     *
-     * @param SearchRequest $searchRequest
      */
-    public function setSearchRequest(SearchRequest $searchRequest)
+    public function setSearchRequest(SearchRequest $searchRequest): void
     {
         $this->searchRequest = $searchRequest;
     }
@@ -47,7 +42,7 @@ class StatisticsComponent extends AbstractComponent implements SearchRequestAwar
     /**
      * Initializes the search component.
      */
-    public function initializeSearchComponent()
+    public function initializeSearchComponent(): void
     {
         $solrConfiguration = $this->searchRequest->getContextTypoScriptConfiguration();
 

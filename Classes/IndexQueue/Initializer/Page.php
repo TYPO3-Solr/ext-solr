@@ -15,19 +15,19 @@
 
 namespace ApacheSolrForTypo3\Solr\IndexQueue\Initializer;
 
+use ApacheSolrForTypo3\Solr\Domain\Site\Exception\UnexpectedTYPO3SiteInitializationException;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use Doctrine\DBAL\ConnectionException;
-use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use Doctrine\DBAL\Exception as DBALException;
 use PDO;
 use Throwable;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -40,7 +40,6 @@ class Page extends AbstractInitializer
 {
     /**
      * The type of items this initializer is handling.
-     * @var string
      */
     protected string $type = 'pages';
 
@@ -49,20 +48,17 @@ class Page extends AbstractInitializer
      *
      * @param string $type Type to initialize (ignored).
      */
-    public function setType(string $type)
+    public function setType(string $type): void
     {
-        $this->type = 'pages';
     }
 
     /**
      * Initializes Index Queue page items for a site. Includes regular pages
      * and mounted pages - no nested mount page structures though.
      *
-     * @return bool TRUE if initialization was successful, FALSE on error.
      * @throws ConnectionException
-     * @throws DBALDriverException
-     * @throws DBALException|\Doctrine\DBAL\DBALException
-     * @throws Throwable
+     * @throws DBALException
+     * @throws UnexpectedTYPO3SiteInitializationException
      */
     public function initialize(): bool
     {
@@ -77,10 +73,10 @@ class Page extends AbstractInitializer
      *
      * @param array $mountProperties Array of mount point properties mountPageSource, mountPageDestination, and mountPageOverlayed
      * @param int $mountedPageId The ID of the mounted page
-     * @throws DBALDriverException
-     * @throws DBALException|\Doctrine\DBAL\DBALException
+     *
+     * @throws DBALException
      */
-    public function initializeMountedPage(array $mountProperties, int $mountedPageId)
+    public function initializeMountedPage(array $mountProperties, int $mountedPageId): void
     {
         $mountedPages = [$mountedPageId];
 
@@ -95,10 +91,10 @@ class Page extends AbstractInitializer
      * Mount Point.
      *
      * @return bool TRUE if initialization of the Mount Pages was successful, FALSE otherwise
+     *
      * @throws ConnectionException
-     * @throws DBALDriverException
-     * @throws DBALException|\Doctrine\DBAL\DBALException
-     * @throws Throwable
+     * @throws DBALException
+     * @throws UnexpectedTYPO3SiteInitializationException
      */
     protected function initializeMountPointPages(): bool
     {
@@ -119,7 +115,7 @@ class Page extends AbstractInitializer
         );
 
         foreach ($mountPoints as $mountPoint) {
-            if (!$this->validateMountPoint($mountPoint)) {
+            if (!$this->isMountPointValid($mountPoint)) {
                 continue;
             }
 
@@ -165,11 +161,8 @@ class Page extends AbstractInitializer
 
     /**
      * Checks whether a Mount Point page is properly configured.
-     *
-     * @param array $mountPoint A mount page
-     * @return bool TRUE if the Mount Page is OK, FALSE otherwise
      */
-    protected function validateMountPoint(array $mountPoint): bool
+    protected function isMountPointValid(array $mountPoint): bool
     {
         $isValidMountPage = true;
 
@@ -180,7 +173,7 @@ class Page extends AbstractInitializer
                 FlashMessage::class,
                 'Property "Mounted page" must not be empty. Invalid Mount Page configuration for page ID ' . $mountPoint['uid'] . '.',
                 'Failed to initialize Mount Page tree. ',
-                AbstractMessage::ERROR
+                ContextualFeedbackSeverity::ERROR
             );
             // @extensionScannerIgnoreLine
             $this->flashMessageQueue->addMessage($flashMessage);
@@ -197,7 +190,7 @@ class Page extends AbstractInitializer
                 . $mountPoint['mountPageSource']
                 . ' is not accessible in the frontend.',
                 'Failed to initialize Mount Page tree. ',
-                AbstractMessage::ERROR
+                ContextualFeedbackSeverity::ERROR
             );
             // @extensionScannerIgnoreLine
             $this->flashMessageQueue->addMessage($flashMessage);
@@ -210,9 +203,6 @@ class Page extends AbstractInitializer
      * Checks whether the mounted page (mount page source) exists. That is,
      * whether it is accessible in the frontend. So the record must exist
      * (deleted = 0) and must not be hidden (hidden = 0).
-     *
-     * @param int $mountedPageId Mounted page ID
-     * @return bool TRUE if the page is accessible in the frontend, FALSE otherwise.
      */
     protected function mountedPageExists(int $mountedPageId): bool
     {
@@ -232,10 +222,10 @@ class Page extends AbstractInitializer
      *
      * @param array $mountedPages An array of mounted page IDs
      * @param array $mountProperties Array with mount point properties (mountPageSource, mountPageDestination, mountPageOverlayed)
-     * @throws DBALDriverException
-     * @throws DBALException|\Doctrine\DBAL\DBALException
+     *
+     * @throws DBALException
      */
-    protected function addMountedPagesToIndexQueue(array $mountedPages, array $mountProperties)
+    protected function addMountedPagesToIndexQueue(array $mountedPages, array $mountProperties): void
     {
         $mountPointIdentifier = $this->getMountPointIdentifier($mountProperties);
         $mountPointPageIsWithExistingQueueEntry = $this->queueItemRepository->findPageIdsOfExistingMountPagesByMountIdentifier($mountPointIdentifier);
@@ -276,10 +266,10 @@ class Page extends AbstractInitializer
      *
      * @param array $mountPage An array with information about the root/destination Mount Page
      * @param array $mountedPages An array of mounted page IDs
-     * @throws DBALDriverException
-     * @throws DBALException|\Doctrine\DBAL\DBALException
+     *
+     * @throws DBALException
      */
-    protected function addIndexQueueItemIndexingProperties(array $mountPage, array $mountedPages)
+    protected function addIndexQueueItemIndexingProperties(array $mountPage, array $mountedPages): void
     {
         $mountIdentifier = $this->getMountPointIdentifier($mountPage);
         $mountPageItems = $this->queueItemRepository->findAllIndexQueueItemsByRootPidAndMountIdentifierAndMountedPids($this->site->getRootPageId(), $mountIdentifier, $mountedPages);
@@ -313,9 +303,7 @@ class Page extends AbstractInitializer
     /**
      * Gets all the pages from a mounted page tree.
      *
-     * @param array $mountPage
-     * @return array An array of page IDs in the mounted page tree
-     * @throws DBALDriverException
+     * @throws DBALException
      */
     protected function resolveMountPageTree(array $mountPage): array
     {

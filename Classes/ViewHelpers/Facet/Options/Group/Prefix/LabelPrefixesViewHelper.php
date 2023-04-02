@@ -32,15 +32,12 @@ class LabelPrefixesViewHelper extends AbstractSolrFrontendViewHelper
 {
     use CompileWithRenderStatic;
 
-    /**
-     * @var bool
-     */
     protected $escapeOutput = false;
 
     /**
      * Initializes the arguments
      */
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         parent::initializeArguments();
         $this->registerArgument('options', OptionCollection::class, 'The options where prefixed should be available', true);
@@ -49,10 +46,6 @@ class LabelPrefixesViewHelper extends AbstractSolrFrontendViewHelper
     }
 
     /**
-     * @param array $arguments
-     * @param Closure $renderChildrenClosure
-     * @param RenderingContextInterface $renderingContext
-     * @return string
      * @noinspection PhpMissingReturnTypeInspection
      */
     public static function renderStatic(
@@ -78,10 +71,6 @@ class LabelPrefixesViewHelper extends AbstractSolrFrontendViewHelper
 
     /**
      * Applies the configured sortBy.
-     *
-     * @param array $prefixes
-     * @param string $sortBy
-     * @return array
      */
     protected static function applySortBy(array $prefixes, string $sortBy = ''): array
     {

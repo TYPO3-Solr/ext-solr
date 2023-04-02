@@ -27,9 +27,5 @@ class QueryGroupFacet extends AbstractOptionsFacet
 {
     public const TYPE_QUERY_GROUP = 'queryGroup';
 
-    /**
-     * String
-     * @var string
-     */
     protected static string $type = self::TYPE_QUERY_GROUP;
 }

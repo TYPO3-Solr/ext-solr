@@ -30,5 +30,5 @@ interface ResponseModifier
      * @param ResponseAdapter $response The response to modify
      * @return ResponseAdapter The modified response
      */
-    public function modifyResponse(ResponseAdapter $response);
+    public function modifyResponse(ResponseAdapter $response): ResponseAdapter;
 }

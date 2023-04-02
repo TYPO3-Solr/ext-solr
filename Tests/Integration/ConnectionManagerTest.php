@@ -78,7 +78,7 @@ class ConnectionManagerTest extends IntegrationTest
         $this->mergeSiteConfiguration($siteName, ['solr_host_read' => $expectedSolrHost]);
         $this->importDataSetFromFixture('ConnectionManagerTest_basic_connections.xml');
 
-        /** @var $connectionManager ConnectionManager */
+        /* @var ConnectionManager $connectionManager */
         $connectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
 
         foreach ([0, 1, 2] as $languageID) {
@@ -135,7 +135,7 @@ class ConnectionManagerTest extends IntegrationTest
         $this->mergeSiteConfiguration($siteName, ['solr_host_read' => $expectedSolrHost]);
         $this->importDataSetFromFixture('ConnectionManagerTest_basic_connections.xml');
 
-        /** @var $connectionManager ConnectionManager */
+        /* @var ConnectionManager $connectionManager */
         $connectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
 
         foreach ([0, 1, 2] as $languageID) {
@@ -157,7 +157,7 @@ class ConnectionManagerTest extends IntegrationTest
      *      |
      *      —— [32] Subpage 2 of Detached
      */
-    protected function setupNotFullyConfiguredSite()
+    protected function setupNotFullyConfiguredSite(): void
     {
         $defaultLanguage = $this->buildDefaultLanguageConfiguration('EN', '/en/');
         $german = $this->buildLanguageConfiguration('DE', '/de/');
@@ -189,7 +189,7 @@ class ConnectionManagerTest extends IntegrationTest
         $this->setupNotFullyConfiguredSite();
 
         $this->expectException(NoSolrConnectionFoundException::class);
-        /** @var $connectionManager ConnectionManager */
+        /* @var ConnectionManager $connectionManager */
         $connectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
         $connectionManager->getConnectionByRootPageId(3);
 
@@ -216,7 +216,7 @@ class ConnectionManagerTest extends IntegrationTest
         $this->setupNotFullyConfiguredSite();
 
         $this->expectException(NoSolrConnectionFoundException::class);
-        /** @var $connectionManager ConnectionManager */
+        /* @var ConnectionManager $connectionManager */
         $connectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
         $connectionManager->getConnectionByPageId(31);
     }
@@ -245,7 +245,7 @@ class ConnectionManagerTest extends IntegrationTest
     {
         $this->importDataSetFromFixture('can_find_connection_for_mouted_page.xml');
 
-        /** @var $connectionManager ConnectionManager */
+        /* @var ConnectionManager $connectionManager */
         $connectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
 
         $solrService = $connectionManager->getConnectionByPageId(24, 0, '24-14');

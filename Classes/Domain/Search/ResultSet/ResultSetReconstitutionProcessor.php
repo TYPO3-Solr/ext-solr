@@ -35,9 +35,6 @@ use UnexpectedValueException;
  */
 class ResultSetReconstitutionProcessor implements SearchResultSetProcessor
 {
-    /**
-     * @return FacetRegistry
-     */
     protected function getFacetRegistry(): FacetRegistry
     {
         // @extensionScannerIgnoreLine
@@ -48,8 +45,6 @@ class ResultSetReconstitutionProcessor implements SearchResultSetProcessor
      * The implementation can be used to influence a SearchResultSet that is
      * created and processed in the SearchResultSetService.
      *
-     * @param SearchResultSet $resultSet
-     * @return SearchResultSet
      * @throws InvalidFacetPackageException
      */
     public function process(SearchResultSet $resultSet): SearchResultSet
@@ -62,8 +57,7 @@ class ResultSetReconstitutionProcessor implements SearchResultSetProcessor
     }
 
     /**
-     * @param SearchResultSet $resultSet
-     * @return SearchResultSet
+     * Parses/converts sortings from raw response into desired object structure.
      */
     protected function parseSortingIntoObjects(SearchResultSet $resultSet): SearchResultSet
     {
@@ -109,7 +103,6 @@ class ResultSetReconstitutionProcessor implements SearchResultSetProcessor
                 $selected = true;
             }
 
-            /** @noinspection PhpParamsInspection */
             $sorting = GeneralUtility::makeInstance(
                 Sorting::class,
                 $resultSet,
@@ -127,8 +120,7 @@ class ResultSetReconstitutionProcessor implements SearchResultSetProcessor
     }
 
     /**
-     * @param SearchResultSet $resultSet
-     * @return SearchResultSet
+     * Parses/converts spell-checking from raw response into desired object structure.
      */
     private function parseSpellCheckingResponseIntoObjects(SearchResultSet $resultSet): SearchResultSet
     {
@@ -165,15 +157,12 @@ class ResultSetReconstitutionProcessor implements SearchResultSetProcessor
     }
 
     /**
-     * @param stdClass $suggestionData
-     * @param string $suggestedTerm
-     * @param string $misspelledTerm
-     * @return Suggestion
+     * Creates and returns the suggestion from response fragment
      */
     private function createSuggestionFromResponseFragment(
         stdClass $suggestionData,
         string $suggestedTerm,
-        string $misspelledTerm
+        string $misspelledTerm,
     ): Suggestion {
         $numFound = $suggestionData->numFound ?? 0;
         $startOffset = $suggestionData->startOffset ?? 0;
@@ -187,8 +176,6 @@ class ResultSetReconstitutionProcessor implements SearchResultSetProcessor
     /**
      * Parse available facets into objects
      *
-     * @param SearchResultSet $resultSet
-     * @return SearchResultSet
      * @throws InvalidFacetPackageException
      */
     private function parseFacetsIntoObjects(SearchResultSet $resultSet): SearchResultSet
@@ -227,22 +214,19 @@ class ResultSetReconstitutionProcessor implements SearchResultSetProcessor
     }
 
     /**
-     * @param SearchResultSet $resultSet
+     * Applies the requirements to the result set
      */
-    protected function applyRequirements(SearchResultSet $resultSet)
+    protected function applyRequirements(SearchResultSet $resultSet): void
     {
         $requirementsService = $this->getRequirementsService();
         $facets = $resultSet->getFacets();
         foreach ($facets as $facet) {
-            /** @var $facet AbstractFacet */
+            /* @var AbstractFacet $facet */
             $requirementsMet = $requirementsService->getAllRequirementsMet($facet);
             $facet->setAllRequirementsMet($requirementsMet);
         }
     }
 
-    /**
-     * @return RequirementsService
-     */
     protected function getRequirementsService(): RequirementsService
     {
         // @extensionScannerIgnoreLine

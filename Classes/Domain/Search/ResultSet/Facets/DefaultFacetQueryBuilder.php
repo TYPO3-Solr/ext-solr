@@ -22,9 +22,7 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 class DefaultFacetQueryBuilder implements FacetQueryBuilderInterface
 {
     /**
-     * @param string $facetName
-     * @param TypoScriptConfiguration $configuration
-     * @return array
+     * Builds the facet query parts for facet by TypoScript configuration
      */
     public function build(string $facetName, TypoScriptConfiguration $configuration): array
     {
@@ -44,9 +42,7 @@ class DefaultFacetQueryBuilder implements FacetQueryBuilderInterface
     }
 
     /**
-     * @param array $facetConfiguration
-     * @param TypoScriptConfiguration $configuration
-     * @return string
+     * Builds exclude tags
      */
     protected function buildExcludeTags(array $facetConfiguration, TypoScriptConfiguration $configuration): string
     {

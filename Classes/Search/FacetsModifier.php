@@ -18,6 +18,8 @@ namespace ApacheSolrForTypo3\Solr\Search;
 /**
  * FacetsModifier interface, allows to modify facet fields and their counts.
  *
+ * @deprecated Will be removed in EXT:solr 12.x
+ *
  * @author Markus Goldbach <markus.goldbach@dkd.de>
  */
 interface FacetsModifier
@@ -25,8 +27,7 @@ interface FacetsModifier
     /**
      * Modifies the given facets and returns the modified facets as array
      *
-     * @param array $facets
      * @return array The facets with fields as array
      */
-    public function modifyFacets($facets);
+    public function modifyFacets(array $facets): array;
 }

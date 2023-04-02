@@ -31,7 +31,7 @@ use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Solr\ParsingUtil;
 use ApacheSolrForTypo3\Solr\Util;
-use Exception;
+use Doctrine\DBAL\Exception as DBALException;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
@@ -44,33 +44,14 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
  */
 class SuggestService
 {
-    /**
-     * @var TypoScriptFrontendController
-     */
     protected TypoScriptFrontendController $tsfe;
 
-    /**
-     * @var SearchResultSetService
-     */
     protected SearchResultSetService $searchService;
 
-    /**
-     * @var TypoScriptConfiguration
-     */
     protected TypoScriptConfiguration $typoScriptConfiguration;
 
-    /**
-     * @var QueryBuilder
-     */
     protected QueryBuilder $queryBuilder;
 
-    /**
-     * SuggestService constructor.
-     * @param TypoScriptFrontendController $tsfe
-     * @param SearchResultSetService $searchResultSetService
-     * @param TypoScriptConfiguration $typoScriptConfiguration
-     * @param QueryBuilder|null $queryBuilder
-     */
     public function __construct(
         TypoScriptFrontendController $tsfe,
         SearchResultSetService $searchResultSetService,
@@ -90,12 +71,10 @@ class SuggestService
     /**
      * Build an array structure of the suggestions.
      *
-     * @param SearchRequest $searchRequest
-     * @param array $additionalFilters
-     * @return array
      * @throws AspectNotFoundException
      * @throws InvalidFacetPackageException
      * @throws NoSolrConnectionFoundException
+     * @throws DBALException
      */
     public function getSuggestions(SearchRequest $searchRequest, array $additionalFilters = []): array
     {
@@ -123,10 +102,6 @@ class SuggestService
     /**
      * Determines the top results and adds them to the suggestions.
      *
-     * @param SearchRequest $searchRequest
-     * @param array $suggestions
-     * @param array $additionalFilters
-     * @return array
      * @throws InvalidFacetPackageException
      */
     protected function addTopResultsToSuggestions(SearchRequest $searchRequest, array $suggestions, array $additionalFilters): array
@@ -166,11 +141,9 @@ class SuggestService
     /**
      * Retrieves the suggestions from the solr server.
      *
-     * @param SuggestQuery $suggestQuery
-     * @return array
      * @throws NoSolrConnectionFoundException
      * @throws AspectNotFoundException
-     * @throws Exception
+     * @throws DBALException
      */
     protected function getSolrSuggestions(SuggestQuery $suggestQuery): array
     {
@@ -187,18 +160,11 @@ class SuggestService
         $results = json_decode($rawResponse);
         $suggestConfig = $this->typoScriptConfiguration->getObjectByPath('plugin.tx_solr.suggest.');
         $facetSuggestions = isset($suggestConfig['suggestField']) ? $results->facet_counts->facet_fields->{$suggestConfig['suggestField']} ?? [] : [];
-        $facetSuggestions = ParsingUtil::getMapArrayFromFlatArray($facetSuggestions);
-
-        return $facetSuggestions ?? [];
+        return ParsingUtil::getMapArrayFromFlatArray($facetSuggestions);
     }
 
     /**
      * Extracts the suggestions from solr as array.
-     *
-     * @param SuggestQuery $suggestQuery
-     * @param array $solrSuggestions
-     * @param int $maxSuggestions
-     * @return array
      */
     protected function getSuggestionArray(
         SuggestQuery $suggestQuery,
@@ -222,16 +188,14 @@ class SuggestService
 
     /**
      * Adds documents from a collection to the result collection as soon as the limit is not reached.
-     *
-     * @param array $documents
-     * @param SearchResultCollection $documentsToAdd
-     * @param int $maxDocuments
-     * @return array
      */
-    protected function addDocumentsWhenLimitNotReached(array $documents, SearchResultCollection $documentsToAdd, int $maxDocuments): array
-    {
+    protected function addDocumentsWhenLimitNotReached(
+        array $documents,
+        SearchResultCollection $documentsToAdd,
+        int $maxDocuments,
+    ): array {
         $additionalTopResultsFields = $this->typoScriptConfiguration->getSuggestAdditionalTopResultsFields();
-        /** @var SearchResult $document */
+        /* @var SearchResult $document */
         foreach ($documentsToAdd as $document) {
             $documents[] = $this->getDocumentAsArray($document, $additionalTopResultsFields);
             if (count($documents) >= $maxDocuments) {
@@ -244,10 +208,6 @@ class SuggestService
 
     /**
      * Creates an array representation of the result and returns it.
-     *
-     * @param SearchResult $document
-     * @param array $additionalTopResultsFields
-     * @return array
      */
     protected function getDocumentAsArray(SearchResult $document, array $additionalTopResultsFields = []): array
     {
@@ -268,8 +228,6 @@ class SuggestService
     /**
      * Runs a search and returns the results.
      *
-     * @param SearchRequest $searchRequest
-     * @return SearchResultSet
      * @throws InvalidFacetPackageException
      */
     protected function doASearch(SearchRequest $searchRequest): SearchResultSet
@@ -279,12 +237,6 @@ class SuggestService
 
     /**
      * Creates a result array with the required fields.
-     *
-     * @param SearchRequest $searchRequest
-     * @param array $suggestions
-     * @param array $documents
-     * @param bool $didASecondSearch
-     * @return array
      */
     protected function getResultArray(
         SearchRequest $searchRequest,

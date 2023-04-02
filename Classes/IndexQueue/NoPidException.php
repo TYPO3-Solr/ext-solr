@@ -15,11 +15,13 @@
 
 namespace ApacheSolrForTypo3\Solr\IndexQueue;
 
+use Exception;
+
 /**
  * This Exception is thrown when the RecordMonitor handles a record without a valid pid.
  *
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class NoPidException extends \Exception
+class NoPidException extends Exception
 {
 }

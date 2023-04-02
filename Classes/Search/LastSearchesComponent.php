@@ -29,7 +29,7 @@ class LastSearchesComponent extends AbstractComponent
     /**
      * Initializes the search component.
      */
-    public function initializeSearchComponent()
+    public function initializeSearchComponent(): void
     {
         if ($this->searchConfiguration['lastSearches']) {
             $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['afterSearch']['lastSearches'] = LastSearchesWriterProcessor::class;

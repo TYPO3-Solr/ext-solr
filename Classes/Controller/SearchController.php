@@ -15,6 +15,7 @@
 
 namespace ApacheSolrForTypo3\Solr\Controller;
 
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\InvalidFacetPackageException;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Event\Search\AfterFrequentlySearchedEvent;
 use ApacheSolrForTypo3\Solr\Event\Search\AfterSearchEvent;
@@ -28,7 +29,6 @@ use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Http\ForwardResponse;
-use TYPO3\CMS\Extbase\Mvc\Exception\NoSuchArgumentException;
 use TYPO3\CMS\Fluid\View\TemplateView;
 use TYPO3Fluid\Fluid\View\ViewInterface;
 
@@ -40,21 +40,18 @@ use TYPO3Fluid\Fluid\View\ViewInterface;
  */
 class SearchController extends AbstractBaseController
 {
-    /**
-     * @var TemplateView
-     */
     protected $view;
 
     /**
      * Provide search query in extbase arguments.
      */
-    protected function initializeAction()
+    protected function initializeAction(): void
     {
         parent::initializeAction();
         $this->mapGlobalQueryStringWhenEnabled();
     }
 
-    protected function mapGlobalQueryStringWhenEnabled()
+    protected function mapGlobalQueryStringWhenEnabled(): void
     {
         $query = GeneralUtility::_GET('q');
 
@@ -88,9 +85,6 @@ class SearchController extends AbstractBaseController
         }
     }
 
-    /**
-     * @return string
-     */
     protected function getCustomTemplateFromConfiguration(): string
     {
         $templateKey = str_replace('Action', '', $this->actionMethodName);
@@ -99,9 +93,11 @@ class SearchController extends AbstractBaseController
 
     /**
      * Results
-     * @return ResponseInterface
+     *
      * @throws AspectNotFoundException
-     * @throws NoSuchArgumentException
+     * @throws InvalidFacetPackageException
+     *
+     * @noinspection PhpUnused Is used by plugin.
      */
     public function resultsAction(): ResponseInterface
     {
@@ -155,7 +151,7 @@ class SearchController extends AbstractBaseController
             ];
 
             $this->view->assignMultiple($values);
-        } catch (SolrUnavailableException $e) {
+        } catch (SolrUnavailableException) {
             return $this->handleSolrUnavailable();
         }
         return $this->htmlResponse();
@@ -163,6 +159,8 @@ class SearchController extends AbstractBaseController
 
     /**
      * Form
+     *
+     * @noinspection PhpUnused Is used by plugin.
      */
     public function formAction(): ResponseInterface
     {
@@ -191,7 +189,9 @@ class SearchController extends AbstractBaseController
     /**
      * Frequently Searched
      *
-     * @return ResponseInterface
+     * @throws AspectNotFoundException
+     *
+     * @noinspection PhpUnused Is used by plugin.
      */
     public function frequentlySearchedAction(): ResponseInterface
     {
@@ -223,8 +223,7 @@ class SearchController extends AbstractBaseController
     /**
      * This action allows to render a detailView with data from solr.
      *
-     * @param string $documentId
-     * @return ResponseInterface
+     * @noinspection PhpUnused Is used by plugin.
      */
     public function detailAction(string $documentId = ''): ResponseInterface
     {
@@ -235,7 +234,7 @@ class SearchController extends AbstractBaseController
         try {
             $document = $this->searchService->getDocumentById($documentId);
             $this->view->assign('document', $document);
-        } catch (SolrUnavailableException $e) {
+        } catch (SolrUnavailableException) {
             return $this->handleSolrUnavailable();
         }
         return $this->htmlResponse();
@@ -244,7 +243,7 @@ class SearchController extends AbstractBaseController
     /**
      * Rendered when no search is available.
      *
-     * @return ResponseInterface
+     * @noinspection PhpUnused Is used by {@link self::handleSolrUnavailable()}
      */
     public function solrNotAvailableAction(): ResponseInterface
     {
@@ -262,10 +261,8 @@ class SearchController extends AbstractBaseController
     }
 
     /**
-     * This method can be overwritten to add additionalFilters for the autosuggest.
+     * This method can be overwritten to add additionalFilters for the auto-suggest.
      * By default, suggest controller will apply the configured filters from the typoscript configuration.
-     *
-     * @return array
      */
     protected function getAdditionalFilters(): array
     {

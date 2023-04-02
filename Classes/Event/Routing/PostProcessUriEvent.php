@@ -20,7 +20,7 @@ namespace ApacheSolrForTypo3\Solr\Event\Routing;
 use Psr\Http\Message\UriInterface;
 
 /**
- * This event is invoke after an uri was processed.
+ * This event is invoked after an uri was processed.
  *
  * @author Lars Tode <lars.tode@dkd.de>
  */
@@ -28,21 +28,13 @@ class PostProcessUriEvent
 {
     /**
      * The router configuration
-     *
-     * @var array
      */
     protected array $routerConfiguration = [];
 
-    /**
-     * @var UriInterface
-     */
     protected UriInterface $uri;
 
     /**
      * BeforeReplaceVariableInCachedUrlEvent constructor.
-     *
-     * @param UriInterface $uri
-     * @param array $routerConfiguration
      */
     public function __construct(UriInterface $uri, array $routerConfiguration)
     {
@@ -50,9 +42,6 @@ class PostProcessUriEvent
         $this->routerConfiguration = $routerConfiguration;
     }
 
-    /**
-     * @return UriInterface
-     */
     public function getUri(): UriInterface
     {
         return $this->uri;
@@ -60,17 +49,12 @@ class PostProcessUriEvent
 
     /**
      * Replace the URI inside of this event
-     *
-     * @param UriInterface $uri
      */
-    public function replaceUri(UriInterface $uri)
+    public function replaceUri(UriInterface $uri): void
     {
         $this->uri = $uri;
     }
 
-    /**
-     * @return bool
-     */
     public function hasRouting(): bool
     {
         return !empty($this->routerConfiguration);
@@ -78,8 +62,6 @@ class PostProcessUriEvent
 
     /**
      * Available router configurations
-     *
-     * @return array
      */
     public function getRouterConfiguration(): array
     {

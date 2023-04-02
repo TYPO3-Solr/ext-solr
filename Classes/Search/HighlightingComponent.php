@@ -30,19 +30,13 @@ class HighlightingComponent extends AbstractComponent implements QueryAware
 {
     /**
      * Solr query
-     *
-     * @var Query|null
      */
     protected ?Query $query = null;
 
-    /**
-     * @var QueryBuilder
-     */
     protected QueryBuilder $queryBuilder;
 
     /**
      * AccessComponent constructor.
-     * @param QueryBuilder|null $queryBuilder
      */
     public function __construct(QueryBuilder $queryBuilder = null)
     {
@@ -52,7 +46,7 @@ class HighlightingComponent extends AbstractComponent implements QueryAware
     /**
      * Initializes the search component.
      */
-    public function initializeSearchComponent()
+    public function initializeSearchComponent(): void
     {
         $this->query = $this->queryBuilder->startFrom($this->query)->useHighlightingFromTypoScript()->getQuery();
     }
@@ -62,7 +56,7 @@ class HighlightingComponent extends AbstractComponent implements QueryAware
      *
      * @param Query $query Current query
      */
-    public function setQuery(Query $query)
+    public function setQuery(Query $query): void
     {
         $this->query = $query;
     }

@@ -85,10 +85,10 @@ class ResultSetReconstitutionProcessorTest extends IntegrationTest
         $processor = $this->getConfiguredReconstitutionProcessor($configuration, $searchResultSet);
         $processor->process($searchResultSet);
 
-        /** @var $facet OptionsFacet */
+        /* @var OptionsFacet $facet */
         $facet = $searchResultSet->getFacets()->getByPosition(0);
 
-        /** @var $option1 Option */ // @extensionScannerIgnoreLine
+        /* @var Option $option1 */ // @extensionScannerIgnoreLine
         $option1 = $facet->getOptions()->getByPosition(0);
         self::assertSame('Pages', $option1->getLabel(), 'Rendering instructions have not been applied on the facet options');
     }
@@ -129,7 +129,7 @@ class ResultSetReconstitutionProcessorTest extends IntegrationTest
         $processor = $this->getConfiguredReconstitutionProcessor($configuration, $searchResultSet);
         $processor->process($searchResultSet);
 
-        /** @var $facet OptionsFacet */
+        /* @var OptionsFacet $facet */
         $facet = $searchResultSet->getFacets()->getByPosition(0);
         self::assertSame('MY TYPE WITH SPECIAL RENDERING', $facet->getLabel(), 'Rendering instructions have not been applied on the facet options');
     }

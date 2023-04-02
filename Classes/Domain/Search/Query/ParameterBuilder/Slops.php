@@ -29,34 +29,29 @@ class Slops implements ParameterBuilderInterface
     public const NO_SLOP = null;
 
     /**
-     * The qs parameter
-     *
-     * @var int|null
+     * Represents the Apache Solr parameter: qs
+     * See: https://solr.apache.org/guide/solr/latest/query-guide/dismax-query-parser.html#qs-query-phrase-slop-parameter
      */
     protected ?int $querySlop = self::NO_SLOP;
 
     /**
-     * @var int|null
+     * Represents the Apache Solr parameter: ps
+     * See: https://solr.apache.org/guide/solr/latest/query-guide/edismax-query-parser.html
      */
     protected ?int $phraseSlop = self::NO_SLOP;
 
     /**
-     * @var int|null
+     * Represents the Apache Solr parameter: ps2
+     * See: https://solr.apache.org/guide/solr/latest/query-guide/edismax-query-parser.html
      */
     protected ?int $bigramPhraseSlop = self::NO_SLOP;
 
     /**
-     * @var int|null
+     * Represents the Apache Solr parameter: ps3
+     * See: https://solr.apache.org/guide/solr/latest/query-guide/edismax-query-parser.html
      */
     protected ?int $trigramPhraseSlop = self::NO_SLOP;
 
-    /**
-     * Slops constructor.
-     * @param int|null $querySlop
-     * @param int|null $phraseSlop
-     * @param int|null $bigramPhraseSlop
-     * @param int|null $trigramPhraseSlop
-     */
     public function __construct(
         ?int $querySlop = self::NO_SLOP,
         ?int $phraseSlop = self::NO_SLOP,
@@ -69,107 +64,70 @@ class Slops implements ParameterBuilderInterface
         $this->trigramPhraseSlop = $trigramPhraseSlop;
     }
 
-    /**
-     * @return bool
-     */
-    public function getHasQuerySlop()
+    public function getHasQuerySlop(): bool
     {
         return $this->querySlop !== null;
     }
 
-    /**
-     * @return int|null
-     */
-    public function getQuerySlop()
+    public function getQuerySlop(): ?int
     {
         return $this->querySlop;
     }
 
-    /**
-     * @param int $querySlop
-     */
-    public function setQuerySlop(int $querySlop)
+    public function setQuerySlop(int $querySlop): void
     {
         $this->querySlop = $querySlop;
     }
 
-    /**
-     * @return bool
-     */
-    public function getHasPhraseSlop()
+    public function getHasPhraseSlop(): bool
     {
         return $this->phraseSlop !== null;
     }
 
-    /**
-     * @return int|null
-     */
-    public function getPhraseSlop()
+    public function getPhraseSlop(): ?int
     {
         return $this->phraseSlop;
     }
 
-    /**
-     * @param int $phraseSlop
-     */
-    public function setPhraseSlop(int $phraseSlop)
+    public function setPhraseSlop(int $phraseSlop): void
     {
         $this->phraseSlop = $phraseSlop;
     }
 
-    /**
-     * @return bool
-     */
-    public function getHasBigramPhraseSlop()
+    public function getHasBigramPhraseSlop(): bool
     {
         return $this->bigramPhraseSlop !== null;
     }
 
-    /**
-     * @return int|null
-     */
-    public function getBigramPhraseSlop()
+    public function getBigramPhraseSlop(): ?int
     {
         return $this->bigramPhraseSlop;
     }
 
-    /**
-     * @param int $bigramPhraseSlop
-     */
-    public function setBigramPhraseSlop(int $bigramPhraseSlop)
+    public function setBigramPhraseSlop(int $bigramPhraseSlop): void
     {
         $this->bigramPhraseSlop = $bigramPhraseSlop;
     }
 
-    /**
-     * @return bool
-     */
-    public function getHasTrigramPhraseSlop()
+    public function getHasTrigramPhraseSlop(): bool
     {
         return $this->trigramPhraseSlop !== null;
     }
 
-    /**
-     * @return int|null
-     */
-    public function getTrigramPhraseSlop()
+    public function getTrigramPhraseSlop(): ?int
     {
         return $this->trigramPhraseSlop;
     }
 
-    /**
-     * @param int $trigramPhraseSlop
-     */
-    public function setTrigramPhraseSlop(int $trigramPhraseSlop)
+    public function setTrigramPhraseSlop(int $trigramPhraseSlop): void
     {
         $this->trigramPhraseSlop = $trigramPhraseSlop;
     }
 
     /**
-     * @param TypoScriptConfiguration $solrConfiguration
-     * @return Slops
+     * Instantiates Slops from TypoScript configuration.
      */
-    public static function fromTypoScriptConfiguration(TypoScriptConfiguration $solrConfiguration)
+    public static function fromTypoScriptConfiguration(TypoScriptConfiguration $solrConfiguration): Slops
     {
         $searchConfiguration = $solrConfiguration->getSearchConfiguration();
         $querySlop = static::getQuerySlopFromConfiguration($searchConfiguration);
@@ -179,54 +137,34 @@ class Slops implements ParameterBuilderInterface
         return new Slops($querySlop, $phraseSlop, $bigramPhraseSlop, $trigramPhraseSlop);
     }
 
-    /**
-     * @param array $searchConfiguration
-     * @return int|null
-     */
-    protected static function getPhraseSlopFromConfiguration($searchConfiguration)
+    protected static function getPhraseSlopFromConfiguration(array $searchConfiguration): ?int
     {
         $phraseEnabled = !(empty($searchConfiguration['query.']['phrase']) || $searchConfiguration['query.']['phrase'] !== 1);
         $phraseSlopConfigured = !empty($searchConfiguration['query.']['phrase.']['slop']);
         return  ($phraseEnabled && $phraseSlopConfigured) ? $searchConfiguration['query.']['phrase.']['slop'] : self::NO_SLOP;
     }
 
-    /**
-     * @param array $searchConfiguration
-     * @return int|null
-     */
-    protected static function getQuerySlopFromConfiguration($searchConfiguration)
+    protected static function getQuerySlopFromConfiguration(array $searchConfiguration): ?int
     {
         $phraseEnabled = !(empty($searchConfiguration['query.']['phrase']) || $searchConfiguration['query.']['phrase'] !== 1);
         $querySlopConfigured = !empty($searchConfiguration['query.']['phrase.']['querySlop']);
         return ($phraseEnabled && $querySlopConfigured) ? $searchConfiguration['query.']['phrase.']['querySlop'] : self::NO_SLOP;
     }
 
-    /**
-     * @param array $searchConfiguration
-     * @return int|null
-     */
-    protected static function getBigramPhraseSlopFromConfiguration($searchConfiguration)
+    protected static function getBigramPhraseSlopFromConfiguration(array $searchConfiguration): ?int
     {
         $bigramPhraseEnabled = !empty($searchConfiguration['query.']['bigramPhrase']) && $searchConfiguration['query.']['bigramPhrase'] === 1;
         $bigramSlopConfigured = !empty($searchConfiguration['query.']['bigramPhrase.']['slop']);
         return ($bigramPhraseEnabled && $bigramSlopConfigured) ? $searchConfiguration['query.']['bigramPhrase.']['slop'] : self::NO_SLOP;
     }
 
-    /**
-     * @param array $searchConfiguration
-     * @return int|null
-     */
-    protected static function getTrigramPhraseSlopFromConfiguration($searchConfiguration)
+    protected static function getTrigramPhraseSlopFromConfiguration(array $searchConfiguration): ?int
     {
         $trigramPhraseEnabled = !empty($searchConfiguration['query.']['trigramPhrase']) && $searchConfiguration['query.']['trigramPhrase'] === 1;
         $trigramSlopConfigured = !empty($searchConfiguration['query.']['trigramPhrase.']['slop']);
         return ($trigramPhraseEnabled && $trigramSlopConfigured) ? $searchConfiguration['query.']['trigramPhrase.']['slop'] : self::NO_SLOP;
     }
 
-    /**
-     * @param AbstractQueryBuilder $parentBuilder
-     * @return AbstractQueryBuilder
-     */
     public function build(AbstractQueryBuilder $parentBuilder): AbstractQueryBuilder
     {
         $query = $parentBuilder->getQuery();

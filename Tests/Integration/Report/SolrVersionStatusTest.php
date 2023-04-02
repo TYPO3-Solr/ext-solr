@@ -39,7 +39,7 @@ class SolrVersionStatusTest extends IntegrationTest
     {
         $this->importDataSetFromFixture('can_check_solr_version_status.xml');
 
-        /** @var $solrVersionStatus  SolrVersionStatus */
+        /* @var SolrVersionStatus $solrVersionStatus */
         $solrVersionStatus = GeneralUtility::makeInstance(SolrVersionStatus::class);
         $violations = $solrVersionStatus->getStatus();
         self::assertEmpty($violations, 'We expect to get no violations against the test solr server');

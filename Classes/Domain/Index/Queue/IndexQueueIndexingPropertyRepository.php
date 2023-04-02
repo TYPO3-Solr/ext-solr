@@ -27,23 +27,15 @@ use PDO;
  */
 class IndexQueueIndexingPropertyRepository extends AbstractRepository
 {
-    /**
-     * @var string
-     */
     protected string $table = 'tx_solr_indexqueue_indexing_property';
 
     /**
      * Removes existing indexing properties.
-     *
-     * @param int $rootPid
-     * @param int $indexQueueUid
-     * @return int
-     * @throws DBALException
      */
     public function removeByRootPidAndIndexQueueUid(int $rootPid, int $indexQueueUid): int
     {
         $queryBuilder = $this->getQueryBuilder();
-        return (int)$queryBuilder
+        return $queryBuilder
             ->delete($this->table)
             ->where(
                 /** @scrutinizer ignore-type */
@@ -60,10 +52,7 @@ class IndexQueueIndexingPropertyRepository extends AbstractRepository
     }
 
     /**
-     * Inserts a list of given properties
-     *
-     * @param array $properties assoc array with column names as key
-     * @return int
+     * Inserts a list of given properties provided by $properties var as assoc array with column names as key
      */
     public function bulkInsert(array $properties): int
     {
@@ -71,10 +60,8 @@ class IndexQueueIndexingPropertyRepository extends AbstractRepository
     }
 
     /**
-     * Fetches a list of properties related to index queue item
+     * Fetches a list of properties related to index queue item uid
      *
-     * @param int $indexQueueUid
-     * @return array list of records for searched index queue item
      * @throws DBALException
      */
     public function findAllByIndexQueueUid(int $indexQueueUid): array

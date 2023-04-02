@@ -28,7 +28,7 @@ use TYPO3Fluid\Fluid\Core\Variables\VariableProviderInterface;
 class SolrVariableProvider extends StandardVariableProvider
 {
     /**
-     * @param array|\ArrayAccess $variables
+     * @inheritDoc
      */
     public function getScopeCopy($variables): VariableProviderInterface
     {
@@ -42,7 +42,7 @@ class SolrVariableProvider extends StandardVariableProvider
             $variables['typoScriptConfiguration'] = $this->variables['typoScriptConfiguration'];
         }
 
-        $className = get_class($this);
+        $className = static::class;
 
         return new $className($variables);
     }

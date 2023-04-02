@@ -25,10 +25,6 @@ class PhraseFields extends AbstractFieldList implements ParameterBuilderInterfac
 {
     /**
      * Parses the string representation of the fieldList (e.g. content^100, title^10) to the object representation.
-     *
-     * @param string $fieldListString
-     * @param string $delimiter
-     * @return PhraseFields
      */
     public static function fromString(string $fieldListString, string $delimiter = ','): PhraseFields
     {
@@ -36,8 +32,7 @@ class PhraseFields extends AbstractFieldList implements ParameterBuilderInterfac
     }
 
     /**
-     * @param TypoScriptConfiguration $solrConfiguration
-     * @return PhraseFields
+     * Instantiates PhraseFields from TypoScript configuration.
      */
     public static function fromTypoScriptConfiguration(TypoScriptConfiguration $solrConfiguration): PhraseFields
     {
@@ -51,10 +46,6 @@ class PhraseFields extends AbstractFieldList implements ParameterBuilderInterfac
 
     /**
      * Parses the string representation of the fieldList (e.g. content^100, title^10) to the object representation.
-     *
-     * @param string $fieldListString
-     * @param string $delimiter
-     * @return PhraseFields
      */
     protected static function initializeFromString(string $fieldListString, string $delimiter = ','): PhraseFields
     {
@@ -63,8 +54,7 @@ class PhraseFields extends AbstractFieldList implements ParameterBuilderInterfac
     }
 
     /**
-     * @param AbstractQueryBuilder $parentBuilder
-     * @return AbstractQueryBuilder
+     * Returns required PhraseFields query builder
      */
     public function build(AbstractQueryBuilder $parentBuilder): AbstractQueryBuilder
     {

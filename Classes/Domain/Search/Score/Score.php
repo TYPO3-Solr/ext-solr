@@ -22,68 +22,30 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Score;
  */
 class Score
 {
-    /**
-     * @var float
-     */
-    protected $score = 0.0;
-
-    /**
-     * @var string
-     */
-    protected $searchTerm = '';
-
-    /**
-     * @var float
-     */
-    protected $boost = 0.0;
-
-    /**
-     * @var string
-     */
-    protected $fieldName = '';
-
-    /**
-     * @param float $boost
-     * @param string $fieldName
-     * @param float $score
-     * @param string $searchTerm
-     */
-    public function __construct($boost, $fieldName, $score, $searchTerm)
-    {
-        $this->boost = $boost;
-        $this->fieldName = $fieldName;
-        $this->score = $score;
-        $this->searchTerm = $searchTerm;
+    public function __construct(
+        protected float $boost = 0.0,
+        protected string $fieldName = '',
+        protected float $score = 0.0,
+        protected string $searchTerm = '',
+    ) {
     }
 
-    /**
-     * @return float
-     */
-    public function getBoost()
+    public function getBoost(): float
     {
         return $this->boost;
     }
 
-    /**
-     * @return string
-     */
-    public function getFieldName()
+    public function getFieldName(): string
     {
         return $this->fieldName;
     }
 
-    /**
-     * @return float
-     */
-    public function getScore()
+    public function getScore(): float
     {
         return $this->score;
     }
 
-    /**
-     * @return string
-     */
-    public function getSearchTerm()
+    public function getSearchTerm(): string
     {
         return $this->searchTerm;
     }

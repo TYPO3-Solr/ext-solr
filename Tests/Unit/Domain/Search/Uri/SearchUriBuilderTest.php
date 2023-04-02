@@ -100,7 +100,7 @@ class SearchUriBuilderTest extends SetUpUnitTestCase
             ->method('build')
             ->with()
             ->willReturn($linkBuilderResult);
-        /* @var $configurationMock TypoScriptConfiguration */
+        /* @var TypoScriptConfiguration $configurationMock */
         $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
         $configurationMock->expects(self::any())
             ->method('getSearchPluginNamespace')

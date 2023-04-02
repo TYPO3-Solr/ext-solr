@@ -36,21 +36,21 @@ class QueryViewHelper extends AbstractSolrFrontendViewHelper
     use CompileWithRenderStatic;
 
     /**
-     * @var bool
+     * @inheritdoc
      */
     protected $escapeOutput = false;
 
     /**
-     * @param array $arguments
-     * @param Closure $renderChildrenClosure
-     * @param RenderingContextInterface $renderingContext
-     * @return string
+     * Renders the query.
+     *
      * @throws AspectNotFoundException
-     * @noinspection PhpMissingReturnTypeInspection
      * @noinspection PhpUnused
      */
-    public static function renderStatic(array $arguments, Closure $renderChildrenClosure, RenderingContextInterface $renderingContext)
-    {
+    public static function renderStatic(
+        array $arguments,
+        Closure $renderChildrenClosure,
+        RenderingContextInterface $renderingContext,
+    ) {
         $content = '';
         $resultSet = self::getUsedSearchResultSetFromRenderingContext($renderingContext);
         $backendUserIsLoggedIn = GeneralUtility::makeInstance(Context::class)->getPropertyFromAspect('backend.user', 'isLoggedIn');

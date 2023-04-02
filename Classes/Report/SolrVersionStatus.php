@@ -18,9 +18,8 @@ declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\Report;
 
 use ApacheSolrForTypo3\Solr\ConnectionManager;
+use ApacheSolrForTypo3\Solr\Domain\Site\Exception\UnexpectedTYPO3SiteInitializationException;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
-use Doctrine\DBAL\Driver\Exception as DBALDriverException;
-use Throwable;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Reports\Status;
@@ -36,18 +35,13 @@ class SolrVersionStatus extends AbstractSolrStatus
     /**
      * Required Solr version. The version that gets installed when using the
      * provided install-script EXT:solr/Resources/Private/Install/install-solr.sh
-     *
-     * @var string
      */
     public const REQUIRED_SOLR_VERSION = '8.11.1';
 
     /**
      * Compiles a version check against each configured Solr server.
      *
-     * @return array
-     *
-     * @throws DBALDriverException
-     * @throws Throwable
+     * @throws UnexpectedTYPO3SiteInitializationException
      */
     public function getStatus(): array
     {
@@ -56,7 +50,7 @@ class SolrVersionStatus extends AbstractSolrStatus
 
         foreach ($solrConnections as $solrConnection) {
             $coreAdmin = $solrConnection->getAdminService();
-            /** @var $solrConnection SolrConnection */
+            /* @var SolrConnection $solrConnection */
             if (!$coreAdmin->ping()) {
                 $url = $coreAdmin->__toString();
                 $pingFailedMsg = 'Could not ping solr server, can not check version ' . $url;

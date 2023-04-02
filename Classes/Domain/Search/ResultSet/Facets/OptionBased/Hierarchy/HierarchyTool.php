@@ -20,9 +20,6 @@ class HierarchyTool
     /**
      * Replaces all escaped slashes in a hierarchy path with @@@slash@@@ to afterwards
      * only have slashes in the content that are real path separators.
-     *
-     * @param string $pathWithContentSlashes
-     * @return string
      */
     public static function substituteSlashes(string $pathWithContentSlashes): string
     {
@@ -31,9 +28,6 @@ class HierarchyTool
 
     /**
      * Replaces @@@slash@@@ with \/ to have the path usable for solr again.
-     *
-     * @param string $pathWithReplacedContentSlashes
-     * @return string
      */
     public static function unSubstituteSlashes(string $pathWithReplacedContentSlashes): string
     {
