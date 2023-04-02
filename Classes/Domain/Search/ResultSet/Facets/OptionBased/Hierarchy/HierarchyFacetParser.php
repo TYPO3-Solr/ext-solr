@@ -28,12 +28,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class HierarchyFacetParser extends AbstractFacetParser
 {
-    /**
-     * @param SearchResultSet $resultSet
-     * @param string $facetName
-     * @param array $facetConfiguration
-     * @return HierarchyFacet|null
-     */
     public function parse(SearchResultSet $resultSet, string $facetName, array $facetConfiguration): ?AbstractFacet
     {
         $response = $resultSet->getResponse();
@@ -87,9 +81,6 @@ class HierarchyFacetParser extends AbstractFacetParser
      * Options must be sorted in natural order,
      * because lower nesting levels must be instantiated first, to serve as parents for higher nested levels.
      * See implementation of HierarchyFacet::createNode().
-     *
-     * @param array $flatOptionsListForHierarchyFacet
-     * @return array
      */
     protected function sortFacetOptionsInNaturalOrder(array $flatOptionsListForHierarchyFacet): array
     {
@@ -107,9 +98,6 @@ class HierarchyFacetParser extends AbstractFacetParser
      *
      * see: https://lucene.apache.org/solr/guide/6_6/faceting.html#Faceting-Thefacet.sortParameter
      * see: https://solr.apache.org/guide/6_6/faceting.html#Faceting-Thefacet.sortParameter : "This parameter can be specified on a per-field basis with the syntax of f.<fieldname>.facet.sort."
-     *
-     * @param array $facetConfiguration
-     * @return bool
      */
     protected function facetOptionsMustBeResorted(array $facetConfiguration): bool
     {
@@ -119,9 +107,6 @@ class HierarchyFacetParser extends AbstractFacetParser
     /**
      * This method is used to get the path array from a hierarchical facet. It substitutes escaped slashes to keep them
      * when they are used inside a facetValue.
-     *
-     * @param string $path
-     * @return array
      */
     protected function getPathAsArray(string $path): array
     {
@@ -135,9 +120,6 @@ class HierarchyFacetParser extends AbstractFacetParser
 
     /**
      * Retrieves the active facetValue for a facet from the search request.
-     * @param SearchResultSet $resultSet
-     * @param string $facetName
-     * @return array
      */
     protected function getActiveFacetValuesFromRequest(SearchResultSet $resultSet, string $facetName): array
     {

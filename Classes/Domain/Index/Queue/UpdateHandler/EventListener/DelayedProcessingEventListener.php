@@ -20,6 +20,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\EventListener
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\EventListener\Events\DelayedProcessingQueuingFinishedEvent;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\DataUpdateEventInterface;
 use ApacheSolrForTypo3\Solr\System\Records\Queue\EventQueueItemRepository;
+use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -34,7 +35,7 @@ class DelayedProcessingEventListener extends AbstractBaseEventListener
      * Queues the data update event for delayed processing and
      * stops propagation
      *
-     * @param DataUpdateEventInterface $event
+     * @throws AspectNotFoundException
      */
     public function __invoke(DataUpdateEventInterface $event): void
     {
@@ -49,8 +50,6 @@ class DelayedProcessingEventListener extends AbstractBaseEventListener
 
     /**
      * Return the EventQueueItemRepository
-     *
-     * @return EventQueueItemRepository
      */
     protected function getEventQueueItemRepository(): EventQueueItemRepository
     {

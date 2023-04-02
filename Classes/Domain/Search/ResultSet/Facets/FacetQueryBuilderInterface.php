@@ -26,10 +26,5 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
  */
 interface FacetQueryBuilderInterface
 {
-    /**
-     * @param string $facetName
-     * @param TypoScriptConfiguration $configuration
-     * @return array
-     */
     public function build(string $facetName, TypoScriptConfiguration $configuration): array;
 }

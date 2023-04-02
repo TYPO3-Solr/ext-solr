@@ -15,6 +15,8 @@
 
 namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\GarbageRemover;
 
+use ApacheSolrForTypo3\Solr\Domain\Site\Exception\UnexpectedTYPO3SiteInitializationException;
+use Doctrine\DBAL\Exception as DBALException;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 
 /**
@@ -23,10 +25,12 @@ use TYPO3\CMS\Backend\Utility\BackendUtility;
 class PageStrategy extends AbstractStrategy
 {
     /**
-     * @param string $table
-     * @param int $uid
+     * Removes the garbage of a page record.
+     *
+     * @throws DBALException
+     * @throws UnexpectedTYPO3SiteInitializationException
      */
-    protected function removeGarbageOfByStrategy(string $table, int $uid)
+    protected function removeGarbageOfByStrategy(string $table, int $uid): void
     {
         if ($table === 'tt_content') {
             $this->collectPageGarbageByContentChange($uid);
@@ -42,9 +46,10 @@ class PageStrategy extends AbstractStrategy
      * Determines the relevant page id for a content element update. Deletes the page from solr and requeues the
      * page for a reindex.
      *
-     * @param int $ttContentUid
+     * @throws DBALException
+     * @throws UnexpectedTYPO3SiteInitializationException
      */
-    protected function collectPageGarbageByContentChange(int $ttContentUid)
+    protected function collectPageGarbageByContentChange(int $ttContentUid): void
     {
         $contentElement = BackendUtility::getRecord('tt_content', $ttContentUid, 'uid, pid', '', false);
         $this->deleteInSolrAndUpdateIndexQueue('pages', $contentElement['pid']);
@@ -53,9 +58,9 @@ class PageStrategy extends AbstractStrategy
     /**
      * When a page was changed it is removed from the index and index queue.
      *
-     * @param int $uid
+     * @throws DBALException
      */
-    protected function collectPageGarbageByPageChange(int $uid)
+    protected function collectPageGarbageByPageChange(int $uid): void
     {
         $pageOverlay = BackendUtility::getRecord('pages', $uid, 'l10n_parent, sys_language_uid', '', false);
         if (!empty($pageOverlay['l10n_parent']) && (int)($pageOverlay['l10n_parent']) !== 0) {

@@ -20,11 +20,11 @@ use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
+use ApacheSolrForTypo3\Solr\System\Logging\DebugWriter;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use ApacheSolrForTypo3\Solr\Typo3PageIndexer;
 use ApacheSolrForTypo3\Solr\Util;
-use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use Doctrine\DBAL\Exception as DBALException;
 use Throwable;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
@@ -45,22 +45,16 @@ class PageIndexer extends AbstractFrontendHelper
 {
     /**
      * This frontend helper's executed action.
-     *
-     * @var string
      */
     protected string $action = 'indexPage';
 
     /**
      * the page currently being indexed.
-     *
-     * @var TypoScriptFrontendController
      */
     protected TypoScriptFrontendController $page;
 
     /**
      * Response data
-     *
-     * @var array
      */
     protected array $responseData = [];
 
@@ -111,7 +105,7 @@ class PageIndexer extends AbstractFrontendHelper
      * Registers an authentication service to authorize / grant the indexer to
      * access protected pages.
      */
-    protected function registerAuthorizationService()
+    protected function registerAuthorizationService(): void
     {
         $overrulingPriority = $this->getHighestAuthenticationServicePriority() + 1;
 
@@ -165,11 +159,8 @@ class PageIndexer extends AbstractFrontendHelper
     //
 
     /**
-     * Generates the current page's URL.
-     *
+     * Generates the current page's URL as string.
      * Uses the provided GET parameters, page id and language id.
-     *
-     * @return string URL of the current page.
      */
     protected function generatePageUrl(): string
     {
@@ -177,7 +168,7 @@ class PageIndexer extends AbstractFrontendHelper
             return $this->request->getParameter('overridePageUrl');
         }
 
-        /** @var $contentObject ContentObjectRenderer */
+        /* @var ContentObjectRenderer $contentObject */
         $contentObject = GeneralUtility::makeInstance(ContentObjectRenderer::class);
 
         $typolinkConfiguration = [
@@ -202,8 +193,6 @@ class PageIndexer extends AbstractFrontendHelper
 
     /**
      * Handles the indexing of the page content during AfterCacheableContentIsGeneratedEvent of a generated page.
-     *
-     * @param AfterCacheableContentIsGeneratedEvent $event
      */
     public function __invoke(AfterCacheableContentIsGeneratedEvent $event): void
     {
@@ -211,7 +200,7 @@ class PageIndexer extends AbstractFrontendHelper
             return;
         }
 
-        $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, self::class);
+        $this->logger = new SolrLogManager(__CLASS__, GeneralUtility::makeInstance(DebugWriter::class));
 
         $this->page = $event->getController();
         $configuration = Util::getSolrConfiguration();
@@ -235,7 +224,7 @@ class PageIndexer extends AbstractFrontendHelper
 
             $solrConnection = $this->getSolrConnection($indexQueueItem);
 
-            /** @var $indexer Typo3PageIndexer */
+            /* @var Typo3PageIndexer $indexer */
             $indexer = GeneralUtility::makeInstance(Typo3PageIndexer::class, /** @scrutinizer ignore-type */ $this->page);
             $indexer->setSolrConnection($solrConnection);
             $indexer->setPageAccessRootline($this->getAccessRootline());
@@ -283,15 +272,13 @@ class PageIndexer extends AbstractFrontendHelper
      * Gets the solr connection to use for indexing the page based on the
      * Index Queue item's properties.
      *
-     * @param Item $indexQueueItem
-     * @return SolrConnection Solr server connection
      * @throws AspectNotFoundException
      * @throws NoSolrConnectionFoundException
-     * @throws DBALDriverException
+     * @throws DBALException
      */
     protected function getSolrConnection(Item $indexQueueItem): SolrConnection
     {
-        /** @var $connectionManager ConnectionManager */
+        /* @var ConnectionManager $connectionManager */
         $connectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
 
         return $connectionManager->getConnectionByRootPageId(
@@ -303,13 +290,11 @@ class PageIndexer extends AbstractFrontendHelper
     /**
      * This method retrieves the item from the index queue, that is indexed in this request.
      *
-     * @return Item|null
-     * @throws DBALDriverException
      * @throws DBALException
      */
     protected function getIndexQueueItem(): ?Item
     {
-        /** @var $indexQueue Queue */
+        /* @var Queue $indexQueue */
         $indexQueue = GeneralUtility::makeInstance(Queue::class);
         return $indexQueue->getItem($this->request->getParameter('item'));
     }

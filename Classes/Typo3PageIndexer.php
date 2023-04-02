@@ -24,12 +24,11 @@ use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageFieldMappingIndexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\Indexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use ApacheSolrForTypo3\Solr\System\Logging\DebugWriter;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
-use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use Doctrine\DBAL\Exception as DBALException;
-use Exception;
 use RuntimeException;
 use Throwable;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
@@ -48,80 +47,48 @@ class Typo3PageIndexer
 {
     /**
      * ID of the current page's Solr document.
-     *
-     * @var string
      */
     protected static string $pageSolrDocumentId = '';
 
     /**
      * The Solr document generated for the current page.
-     *
-     * @var Document
      */
     protected static Document $pageSolrDocument;
 
     /**
      * The mount point parameter used in the Frontend controller.
-     *
-     * @var string
      */
     protected string $mountPointParameter = '';
 
     /**
      * Solr server connection.
-     *
-     * @var SolrConnection|null
      */
     protected ?SolrConnection $solrConnection = null;
 
     /**
      * Frontend page object (TSFE).
-     *
-     * @var TypoScriptFrontendController
      */
     protected TypoScriptFrontendController $page;
 
     /**
-     * Content extractor to extract content from TYPO3 pages
-     *
-     * @var Typo3PageContentExtractor
-     */
-    protected Typo3PageContentExtractor $contentExtractor;
-
-    /**
      * URL to be indexed as the page's URL
-     *
-     * @var string
      */
     protected string $pageUrl = '';
 
     /**
      * The page's access rootline
-     *
-     * @var Rootline
      */
     protected Rootline $pageAccessRootline;
 
     /**
      * Documents that have been sent to Solr
-     *
-     * @var array
      */
     protected array $documentsSentToSolr = [];
 
-    /**
-     * @var TypoScriptConfiguration
-     */
     protected TypoScriptConfiguration $configuration;
 
-    /**
-     * @var Item
-     */
     protected Item $indexQueueItem;
 
-    /**
-     * @var SolrLogManager
-     */
     protected SolrLogManager $logger;
 
     /**
@@ -131,7 +98,7 @@ class Typo3PageIndexer
      */
     public function __construct(TypoScriptFrontendController $page)
     {
-        $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, /** @scrutinizer ignore-type */ __CLASS__);
+        $this->logger = new SolrLogManager(__CLASS__, GeneralUtility::makeInstance(DebugWriter::class));
 
         $this->page = $page;
         $this->pageUrl = GeneralUtility::getIndpEnv('TYPO3_REQUEST_URL');
@@ -160,10 +127,7 @@ class Typo3PageIndexer
         $this->pageAccessRootline = GeneralUtility::makeInstance(Rootline::class, /** @scrutinizer ignore-type */ '');
     }
 
-    /**
-     * @param Item $indexQueueItem
-     */
-    public function setIndexQueueItem(Item $indexQueueItem)
+    public function setIndexQueueItem(Item $indexQueueItem): void
     {
         $this->indexQueueItem = $indexQueueItem;
     }
@@ -172,11 +136,11 @@ class Typo3PageIndexer
      * Initializes the Solr server connection.
      *
      * @throws AspectNotFoundException
-     * @throws DBALDriverException
-     * @throws NoSolrConnectionFoundException
+     * @throws DBALException
      * @throws Exception
+     * @throws NoSolrConnectionFoundException
      */
-    protected function initializeSolrConnection()
+    protected function initializeSolrConnection(): void
     {
         $solr = GeneralUtility::makeInstance(ConnectionManager::class)->getConnectionByPageId($this->page->id, Util::getLanguageUid());
 
@@ -218,7 +182,7 @@ class Typo3PageIndexer
      * @param SolrConnection $solrConnection Solr connection
      * @throws Exception if the Solr server cannot be reached
      */
-    public function setSolrConnection(SolrConnection $solrConnection)
+    public function setSolrConnection(SolrConnection $solrConnection): void
     {
         if (!$solrConnection->getWriteService()->ping()) {
             throw new Exception(
@@ -234,9 +198,10 @@ class Typo3PageIndexer
      * Indexes a page.
      *
      * @return bool TRUE after successfully indexing the page, FALSE on error
+     *
      * @throws AspectNotFoundException
-     * @throws DBALDriverException
      * @throws DBALException
+     * @throws Exception
      */
     public function indexPage(): bool
     {
@@ -275,10 +240,8 @@ class Typo3PageIndexer
      * Applies the configured post processors (indexPagePostProcessPageDocument)
      *
      * @deprecated
-     *
-     * @param Document $pageDocument
      */
-    protected function applyIndexPagePostProcessors(Document $pageDocument)
+    protected function applyIndexPagePostProcessors(Document $pageDocument): void
     {
         if (!is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPagePostProcessPageDocument'] ?? null)) {
             return;
@@ -303,7 +266,9 @@ class Typo3PageIndexer
      * Builds the Solr document for the current page.
      *
      * @return Document A document representing the page
+     *
      * @throws AspectNotFoundException
+     * @throws DBALException
      */
     protected function getPageDocument(): Document
     {
@@ -320,8 +285,6 @@ class Typo3PageIndexer
 
     /**
      * Gets the mount point parameter that is used in the Frontend controller.
-     *
-     * @return string
      */
     public function getMountPointParameter(): string
     {
@@ -332,10 +295,8 @@ class Typo3PageIndexer
 
     /**
      * Sets the mount point parameter that is used in the Frontend controller.
-     *
-     * @param string $mountPointParameter
      */
-    public function setMountPointParameter(string $mountPointParameter)
+    public function setMountPointParameter(string $mountPointParameter): void
     {
         $this->mountPointParameter = $mountPointParameter;
     }
@@ -375,8 +336,6 @@ class Typo3PageIndexer
 
     /**
      * Retrieves the indexConfigurationName from the related queueItem, or falls back to pages when no queue item set.
-     *
-     * @return string
      */
     protected function getIndexConfigurationNameForCurrentPage(): string
     {
@@ -421,10 +380,10 @@ class Typo3PageIndexer
      * care of manipulating fields as defined in the field's configuration.
      *
      * @param array $documents An array of documents to manipulate
-     * @throws DBALDriverException
      * @throws DBALException
+     * @throws Exception
      */
-    protected function processDocuments(array $documents)
+    protected function processDocuments(array $documents): void
     {
         $processingInstructions = $this->configuration->getIndexFieldProcessingInstructionsConfiguration();
         if (count($processingInstructions) > 0) {
@@ -486,7 +445,7 @@ class Typo3PageIndexer
      *
      * @param string $url The page's URL.
      */
-    public function setPageUrl(string $url)
+    public function setPageUrl(string $url): void
     {
         $this->pageUrl = $url;
     }
@@ -506,7 +465,7 @@ class Typo3PageIndexer
      *
      * @param Rootline $accessRootline The page's access rootline
      */
-    public function setPageAccessRootline(Rootline $accessRootline)
+    public function setPageAccessRootline(Rootline $accessRootline): void
     {
         $this->pageAccessRootline = $accessRootline;
     }

@@ -26,14 +26,10 @@ use ApacheSolrForTypo3\Solr\Util;
  */
 class DocumentEscapeService
 {
-    /**
-     * @var TypoScriptConfiguration
-     */
     protected TypoScriptConfiguration $typoScriptConfiguration;
 
     /**
      * DocumentEscapeService constructor.
-     * @param TypoScriptConfiguration|null $typoScriptConfiguration
      */
     public function __construct(TypoScriptConfiguration $typoScriptConfiguration = null)
     {
@@ -72,11 +68,8 @@ class DocumentEscapeService
 
     /**
      * Applies htmlspecialchars on all items of an array of a single value.
-     *
-     * @param mixed $fieldValue
-     * @return array|string
      */
-    protected function applyHtmlSpecialCharsOnSingleFieldValue($fieldValue)
+    protected function applyHtmlSpecialCharsOnSingleFieldValue(mixed $fieldValue): array|string
     {
         if (is_array($fieldValue)) {
             foreach ($fieldValue as $key => $fieldValueItem) {

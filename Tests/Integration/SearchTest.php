@@ -83,7 +83,7 @@ class SearchTest extends IntegrationTest
 
         $this->waitToBeVisibleInSolr();
 
-        /** @var $searchInstance \ApacheSolrForTypo3\Solr\Search */
+        /* @var \ApacheSolrForTypo3\Solr\Search $searchInstance */
         $searchInstance = GeneralUtility::makeInstance(Search::class);
 
         $query = $this->queryBuilder
@@ -104,7 +104,7 @@ class SearchTest extends IntegrationTest
     {
         $this->fillIndexForPhraseSearchTests();
 
-        /** @var $searchInstance \ApacheSolrForTypo3\Solr\Search */
+        /* @var \ApacheSolrForTypo3\Solr\Search $searchInstance */
         $searchInstance = GeneralUtility::makeInstance(Search::class);
 
         $query = $this->queryBuilder
@@ -137,7 +137,7 @@ class SearchTest extends IntegrationTest
     {
         $this->fillIndexForPhraseSearchTests();
 
-        /** @var $searchInstance \ApacheSolrForTypo3\Solr\Search */
+        /* @var \ApacheSolrForTypo3\Solr\Search $searchInstance */
         $searchInstance = GeneralUtility::makeInstance(Search::class);
 
         $query = $this->queryBuilder
@@ -208,7 +208,7 @@ class SearchTest extends IntegrationTest
     {
         $this->fillIndexForPhraseSearchTests('phrase_search_bigram.xml');
 
-        /** @var $searchInstance \ApacheSolrForTypo3\Solr\Search */
+        /* @var \ApacheSolrForTypo3\Solr\Search $searchInstance */
         $searchInstance = GeneralUtility::makeInstance(Search::class);
 
         $this->switchPhraseSearchFeature('bigramPhrase', 1);
@@ -293,7 +293,7 @@ class SearchTest extends IntegrationTest
     {
         $this->fillIndexForPhraseSearchTests('phrase_search_trigram.xml');
 
-        /** @var $searchInstance \ApacheSolrForTypo3\Solr\Search */
+        /* @var \ApacheSolrForTypo3\Solr\Search $searchInstance */
         $searchInstance = GeneralUtility::makeInstance(Search::class);
 
         $this->switchPhraseSearchFeature('trigramPhrase', 1);
@@ -373,7 +373,7 @@ class SearchTest extends IntegrationTest
     {
         $this->fillIndexForPhraseSearchTests();
 
-        /** @var $searchInstance \ApacheSolrForTypo3\Solr\Search */
+        /* @var \ApacheSolrForTypo3\Solr\Search $searchInstance */
         $searchInstance = GeneralUtility::makeInstance(Search::class);
 
         $query = $this->getSearchQueryForSolr();
@@ -395,7 +395,7 @@ class SearchTest extends IntegrationTest
     {
         $this->fillIndexForPhraseSearchTests();
 
-        /** @var $searchInstance \ApacheSolrForTypo3\Solr\Search */
+        /* @var \ApacheSolrForTypo3\Solr\Search $searchInstance */
         $searchInstance = GeneralUtility::makeInstance(Search::class);
 
         $query = $this->getSearchQueryForSolr();
@@ -473,7 +473,7 @@ class SearchTest extends IntegrationTest
         $overwriteConfiguration = [];
         $overwriteConfiguration['search.']['query.'][$feature] = $state;
 
-        /** @var $configurationManager ConfigurationManager */
+        /* @var ConfigurationManager $configurationManager */
         $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
         $configurationManager->getTypoScriptConfiguration()->mergeSolrConfiguration($overwriteConfiguration);
     }

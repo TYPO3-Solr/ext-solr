@@ -27,7 +27,6 @@ class ApiEid
 {
     /**
      * Globally required params
-     * @var array
      */
     protected const REQUIRED_PARAMS_GLOBAL = [
         'api',
@@ -36,8 +35,6 @@ class ApiEid
 
     /**
      * Available methods and params
-     *
-     * @var array
      */
     protected const API_METHODS = [
         'siteHash' => [
@@ -63,8 +60,6 @@ class ApiEid
     /**
      * Returns the site hash
      *
-     * @param ServerRequestInterface $request
-     * @return JsonResponse
      * @noinspection PhpUnused
      */
     protected function getSiteHashResponse(ServerRequestInterface $request): JsonResponse

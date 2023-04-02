@@ -18,10 +18,10 @@ declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\Task;
 
 use ApacheSolrForTypo3\Solr\Backend\SiteSelectorField;
+use ApacheSolrForTypo3\Solr\Domain\Site\Exception\UnexpectedTYPO3SiteInitializationException;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
-use Doctrine\DBAL\Driver\Exception as DBALDriverException;
+use Doctrine\DBAL\Exception as DBALException;
 use LogicException;
-use Throwable;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Scheduler\AbstractAdditionalFieldProvider;
 use TYPO3\CMS\Scheduler\Controller\SchedulerModuleController;
@@ -37,10 +37,8 @@ class IndexQueueWorkerTaskAdditionalFieldProvider extends AbstractAdditionalFiel
 {
     /**
      * SiteRepository
-     *
-     * @var SiteRepository
      */
-    protected $siteRepository;
+    protected SiteRepository $siteRepository;
 
     public function __construct()
     {
@@ -57,15 +55,16 @@ class IndexQueueWorkerTaskAdditionalFieldProvider extends AbstractAdditionalFiel
      * @return array Array containing all the information pertaining to the additional fields
      *                    The array is multidimensional, keyed to the task class name and each field's id
      *                    For each field it provides an associative sub-array with the following:
-     * @throws DBALDriverException
-     * @throws Throwable
+     *
+     * @throws DBALException
+     * @throws UnexpectedTYPO3SiteInitializationException
      */
     public function getAdditionalFields(
         array &$taskInfo,
         $task,
         SchedulerModuleController $schedulerModule
     ): array {
-        /** @var $task IndexQueueWorkerTask */
+        /* @var IndexQueueWorkerTask $task */
         $additionalFields = [];
         $siteSelectorField = GeneralUtility::makeInstance(SiteSelectorField::class);
 
@@ -119,9 +118,10 @@ class IndexQueueWorkerTaskAdditionalFieldProvider extends AbstractAdditionalFiel
      *
      * @param array $submittedData reference to the array containing the data submitted by the user
      * @param SchedulerModuleController $schedulerModule reference to the calling object (Scheduler's BE module)
+     *
      * @return bool True if validation was ok (or selected class is not relevant), FALSE otherwise
-     * @throws DBALDriverException
-     * @throws Throwable
+     *
+     * @throws UnexpectedTYPO3SiteInitializationException
      */
     public function validateAdditionalFields(
         array &$submittedData,
@@ -147,11 +147,13 @@ class IndexQueueWorkerTaskAdditionalFieldProvider extends AbstractAdditionalFiel
      *
      * @param array $submittedData array containing the data submitted by the user
      * @param AbstractTask|AbstractSolrTask|IndexQueueWorkerTask $task reference to the current task object
+     *
+     * @noinspection PhpDocSignatureInspection
      */
     public function saveAdditionalFields(
         array $submittedData,
         AbstractTask $task
-    ) {
+    ): void {
         if (!$this->isTaskInstanceofIndexQueueWorkerTask($task)) {
             return;
         }
@@ -164,8 +166,6 @@ class IndexQueueWorkerTaskAdditionalFieldProvider extends AbstractAdditionalFiel
     /**
      * Check that a task is an instance of IndexQueueWorkerTask
      *
-     * @param ?AbstractTask $task
-     * @return bool
      * @throws LogicException
      */
     protected function isTaskInstanceofIndexQueueWorkerTask(?AbstractTask $task): bool

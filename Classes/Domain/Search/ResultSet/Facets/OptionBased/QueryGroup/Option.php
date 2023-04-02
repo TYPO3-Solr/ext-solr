@@ -25,14 +25,6 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\AbstractO
  */
 class Option extends AbstractOptionFacetItem
 {
-    /**
-     * @param QueryGroupFacet $facet
-     * @param string $label
-     * @param string $value
-     * @param int $documentCount
-     * @param bool $selected
-     * @param array $metrics
-     */
     public function __construct(
         QueryGroupFacet $facet,
         string $label = '',

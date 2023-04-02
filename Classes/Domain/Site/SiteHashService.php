@@ -18,8 +18,6 @@ declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\Domain\Site;
 
 use ApacheSolrForTypo3\Solr\System\Util\SiteUtility;
-use Doctrine\DBAL\Driver\Exception as DBALDriverException;
-use Throwable;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Site\SiteFinder;
 
@@ -32,9 +30,6 @@ use TYPO3\CMS\Core\Site\SiteFinder;
  */
 class SiteHashService
 {
-    /**
-     * SiteFinder
-     */
     protected SiteFinder $siteFinder;
 
     public function __construct(SiteFinder $siteFinder)
@@ -53,8 +48,6 @@ class SiteHashService
      * @param int $pageId A page ID that is then resolved to the site it belongs to
      * @param string|null $allowedSitesConfiguration TypoScript setting for allowed sites
      * @return string List of allowed sites/domains, magic keywords resolved
-     * @throws DBALDriverException
-     * @throws Throwable
      */
     public function getAllowedSitesForPageIdAndAllowedSitesConfiguration(
         int $pageId,
@@ -72,10 +65,7 @@ class SiteHashService
     }
 
     /**
-     * Gets the site hash for a domain
-     *
-     * @param string $domain Domain to calculate the site hash for.
-     * @return string site hash for $domain
+     * Gets the site hash for a given domain
      */
     public function getSiteHashForDomain(string $domain): string
     {
@@ -90,10 +80,6 @@ class SiteHashService
 
     /**
      * Returns a comma separated list of all domains from all sites.
-     *
-     * @return string
-     * @throws DBALDriverException
-     * @throws Throwable
      */
     protected function getDomainListOfAllSites(): string
     {
@@ -112,17 +98,13 @@ class SiteHashService
     /**
      * Retrieves the domain of the site that belongs to the passed pageId and replaces their markers __solr_current_site
      * and __current_site.
-     *
-     * @param int $pageId
-     * @param string $allowedSitesConfiguration
-     * @return string
      */
     protected function getDomainByPageIdAndReplaceMarkers(int $pageId, string $allowedSitesConfiguration): string
     {
         try {
             $typo3Site = $this->siteFinder->getSiteByPageId($pageId);
             $domainOfPage = $typo3Site->getBase()->getHost();
-        } catch (SiteNotFoundException $e) {
+        } catch (SiteNotFoundException) {
             return '';
         }
 

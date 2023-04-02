@@ -31,13 +31,12 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * * A TYPO3 site managed with site management
  * * A TYPO3 site without site management where the url is build by EXT:solr with L and id param and information from the domain
  * record or solr specific configuration.
+ *
+ * @todo: Remove properly, because no NON-"site management" possible.
  */
 class UriStrategyFactory
 {
     /**
-     * @param int $pageId
-     * @oaram array $overrideConfiguration
-     * @return AbstractUriStrategy
      * @throws Exception
      */
     public function getForPageId(int $pageId): AbstractUriStrategy

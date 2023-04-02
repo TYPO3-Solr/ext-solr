@@ -23,35 +23,23 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class QueryFields implements ParameterBuilderInterface
 {
-    /**
-     * @var array
-     */
     protected array $queryFields = [];
 
     /**
      * QueryFields constructor.
-     *
-     * @param array $queryFields
      */
     public function __construct(array $queryFields = [])
     {
         $this->queryFields = $queryFields;
     }
 
-    /**
-     * @param string $fieldName
-     * @param float $boost
-     */
-    public function set(string $fieldName, float $boost = 1.0)
+    public function set(string $fieldName, float $boost = 1.0): void
     {
         $this->queryFields[$fieldName] = $boost;
     }
 
     /**
      * Creates the string representation
-     *
-     * @param string $delimiter
-     * @return string
      */
     public function toString(string $delimiter = ' '): string
     {
@@ -72,10 +60,6 @@ class QueryFields implements ParameterBuilderInterface
 
     /**
      * Parses the string representation of the queryFields (e.g. content^100, title^10) to the object representation.
-     *
-     * @param string $queryFieldsString
-     * @param string $delimiter
-     * @return QueryFields
      */
     public static function fromString(string $queryFieldsString, string $delimiter = ','): QueryFields
     {
@@ -97,10 +81,6 @@ class QueryFields implements ParameterBuilderInterface
         return new QueryFields($queryFields);
     }
 
-    /**
-     * @param AbstractQueryBuilder $parentBuilder
-     * @return AbstractQueryBuilder
-     */
     public function build(AbstractQueryBuilder $parentBuilder): AbstractQueryBuilder
     {
         $parentBuilder->getQuery()->getEDisMax()->setQueryFields($this->toString());

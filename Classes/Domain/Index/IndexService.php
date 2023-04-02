@@ -28,7 +28,7 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\Task\IndexQueueWorkerTask;
 use Doctrine\DBAL\ConnectionException;
-use Doctrine\DBAL\Driver\Exception;
+use Doctrine\DBAL\Exception as DBALException;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use RuntimeException;
 use Throwable;
@@ -41,43 +41,21 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class IndexService
 {
-    /**
-     * @var Site
-     */
     protected Site $site;
 
-    /**
-     * @var IndexQueueWorkerTask|null
-     */
     protected ?IndexQueueWorkerTask $contextTask = null;
 
-    /**
-     * @var Queue
-     */
     protected Queue $indexQueue;
 
-    /**
-     * @var EventDispatcherInterface
-     */
     protected EventDispatcherInterface $eventDispatcher;
 
-    /**
-     * @var SolrLogManager
-     */
     protected SolrLogManager $logger;
 
-    /**
-     * IndexService constructor.
-     * @param Site $site
-     * @param Queue|null $queue
-     * @param EventDispatcherInterface|null $eventDispatcher
-     * @param SolrLogManager|null $solrLogManager
-     */
     public function __construct(
         Site $site,
         Queue $queue = null,
         EventDispatcherInterface $eventDispatcher = null,
-        SolrLogManager $solrLogManager = null
+        SolrLogManager $solrLogManager = null,
     ) {
         $this->site = $site;
         $this->indexQueue = $queue ?? GeneralUtility::makeInstance(Queue::class);
@@ -85,17 +63,11 @@ class IndexService
         $this->logger = $solrLogManager ?? GeneralUtility::makeInstance(SolrLogManager::class, /** @scrutinizer ignore-type */ __CLASS__);
     }
 
-    /**
-     * @param IndexQueueWorkerTask $contextTask
-     */
-    public function setContextTask(IndexQueueWorkerTask $contextTask)
+    public function setContextTask(IndexQueueWorkerTask $contextTask): void
     {
         $this->contextTask = $contextTask;
     }
 
-    /**
-     * @return IndexQueueWorkerTask|null
-     */
     public function getContextTask(): ?IndexQueueWorkerTask
     {
         return $this->contextTask;
@@ -104,12 +76,8 @@ class IndexService
     /**
      * Indexes items from the Index Queue.
      *
-     * @param int $limit
-     * @return bool
-     * @throws Throwable
      * @throws ConnectionException
-     * @throws Exception
-     * @throws \Doctrine\DBAL\Exception
+     * @throws DBALException
      */
     public function indexItems(int $limit): bool
     {
@@ -159,11 +127,8 @@ class IndexService
 
     /**
      * Generates a message in the error log when an error occurred.
-     *
-     * @param Item $itemToIndex
-     * @param Throwable $e
      */
-    protected function generateIndexingErrorLog(Item $itemToIndex, Throwable $e)
+    protected function generateIndexingErrorLog(Item $itemToIndex, Throwable $e): void
     {
         $message = 'Failed indexing Index Queue item ' . $itemToIndex->getIndexQueueUid();
         $data = ['code' => $e->getCode(), 'message' => $e->getMessage(), 'trace' => $e->getTraceAsString(), 'item' => (array)$itemToIndex];
@@ -178,9 +143,8 @@ class IndexService
     /**
      * Indexes an item from the Index Queue.
      *
-     * @param Item $item An index queue item to index
-     * @param TypoScriptConfiguration $configuration
      * @return bool TRUE if the item was successfully indexed, FALSE otherwise
+     *
      * @throws Throwable
      */
     protected function indexItem(Item $item, TypoScriptConfiguration $configuration): bool
@@ -205,7 +169,7 @@ class IndexService
             if ($itemChangedDateAfterIndex > $itemChangedDate && $itemChangedDateAfterIndex > time()) {
                 $this->indexQueue->setForcedChangeTimeByItem($item, $itemChangedDateAfterIndex);
             }
-        } catch (Throwable $e) {
+        } catch (Throwable $e) { // @todo: wrap with EX:solr exception
             $this->restoreOriginalHttpHost($originalHttpHost);
             throw $e;
         }
@@ -223,10 +187,6 @@ class IndexService
      * configured to be indexed through a dedicated indexer
      * (ApacheSolrForTypo3\Solr\IndexQueue\PageIndexer). In all other cases a dedicated indexer
      * can be specified through TypoScript if needed.
-     *
-     * @param string $indexingConfigurationName Indexing configuration name.
-     * @param TypoScriptConfiguration $configuration
-     * @return Indexer
      */
     protected function getIndexerByItem(
         string $indexingConfigurationName,
@@ -247,9 +207,9 @@ class IndexService
     }
 
     /**
-     * Gets the indexing progress.
+     * Gets the indexing progress as a two decimal precision float. f.e. 44.87
      *
-     * @return float Indexing progress as a two decimal precision float. f.e. 44.87
+     * @throws DBALException
      */
     public function getProgress(): float
     {
@@ -259,7 +219,7 @@ class IndexService
     /**
      * Returns the amount of failed queue items for the current site.
      *
-     * @return int
+     * @throws DBALException
      */
     public function getFailCount(): int
     {
@@ -276,10 +236,9 @@ class IndexService
      * root page information we can determine the correct host although being
      * in a CLI environment.
      *
-     * @param Item $item Index Queue item to use to determine the host.
-     * @param
+     * @throws DBALException
      */
-    protected function initializeHttpServerEnvironment(Item $item)
+    protected function initializeHttpServerEnvironment(Item $item): void
     {
         static $hosts = [];
         $rootPageId = $item->getRootPageUid();
@@ -295,10 +254,7 @@ class IndexService
         GeneralUtility::flushInternalRuntimeCaches();
     }
 
-    /**
-     * @param string|null $originalHttpHost
-     */
-    protected function restoreOriginalHttpHost(?string $originalHttpHost)
+    protected function restoreOriginalHttpHost(?string $originalHttpHost): void
     {
         if (!is_null($originalHttpHost)) {
             $_SERVER['HTTP_HOST'] = $originalHttpHost;

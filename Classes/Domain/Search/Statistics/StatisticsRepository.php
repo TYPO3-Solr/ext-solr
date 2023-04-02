@@ -18,7 +18,6 @@ declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\Domain\Search\Statistics;
 
 use ApacheSolrForTypo3\Solr\System\Records\AbstractRepository;
-use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use Doctrine\DBAL\Exception as DBALException;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 
@@ -29,20 +28,14 @@ use TYPO3\CMS\Core\Database\Query\QueryBuilder;
  */
 class StatisticsRepository extends AbstractRepository
 {
-    /**
-     * @var string
-     */
     protected string $table = 'tx_solr_statistics';
 
     /**
      * Fetches most popular search keys words from the table tx_solr_statistics
      *
-     * @param int $days number of days of history to query
-     * @return mixed
-     * @throws DBALDriverException
-     * @throws DBALException|\Doctrine\DBAL\DBALException
+     * @throws DBALException
      */
-    public function getSearchStatistics(int $rootPageId, int $days = 30, int $limit = 10)
+    public function getSearchStatistics(int $rootPageId, int $days = 30, int $limit = 10): array
     {
         $now = time();
         $timeStart = $now - 86400 * $days; // 86400 seconds/day
@@ -55,12 +48,7 @@ class StatisticsRepository extends AbstractRepository
      * Returns prepared QueryBuilder for two purposes:
      * for getSearchStatistics() and getTopKeyWordsWithOrWithoutHits() methods
      *
-     * @param int $rootPageId
-     * @param int $timeStart
-     * @param int $limit
-     * @return QueryBuilder
-     * @throws DBALDriverException
-     * @throws DBALException|\Doctrine\DBAL\DBALException
+     * @throws DBALException
      */
     protected function getPreparedQueryBuilderForSearchStatisticsAndTopKeywords(int $rootPageId, int $timeStart, int $limit): QueryBuilder
     {
@@ -86,12 +74,7 @@ class StatisticsRepository extends AbstractRepository
     /**
      * Find Top search keywords with results
      *
-     * @param int $rootPageId
-     * @param int $days number of days of history to query
-     * @param int $limit
-     * @return array
-     * @throws DBALDriverException
-     * @throws DBALException|\Doctrine\DBAL\DBALException
+     * @throws DBALException
      */
     public function getTopKeyWordsWithHits(int $rootPageId, int $days = 30, int $limit = 10): array
     {
@@ -101,12 +84,7 @@ class StatisticsRepository extends AbstractRepository
     /**
      * Find Top search keywords without results
      *
-     * @param int $rootPageId
-     * @param int $days number of days of history to query
-     * @param int $limit
-     * @return array
-     * @throws DBALDriverException
-     * @throws DBALException|\Doctrine\DBAL\DBALException
+     * @throws DBALException
      */
     public function getTopKeyWordsWithoutHits(int $rootPageId, int $days = 30, int $limit = 10): array
     {
@@ -116,13 +94,7 @@ class StatisticsRepository extends AbstractRepository
     /**
      * Find Top search keywords with or without results
      *
-     * @param int $rootPageId
-     * @param int $days number of days of history to query
-     * @param int $limit
-     * @param bool $withoutHits
-     * @return array
-     * @throws DBALException|\Doctrine\DBAL\DBALException
-     * @throws DBALDriverException
+     * @throws DBALException
      */
     protected function getTopKeyWordsWithOrWithoutHits(int $rootPageId, int $days = 30, int $limit = 10, bool $withoutHits = false): array
     {
@@ -145,12 +117,7 @@ class StatisticsRepository extends AbstractRepository
     /**
      * Get number of queries over time
      *
-     * @param int $rootPageId
-     * @param int $days number of days of history to query
-     * @param int $bucketSeconds Seconds per bucket
-     * @return array [labels, data]
-     * @throws DBALException|\Doctrine\DBAL\DBALException
-     * @throws DBALDriverException
+     * @throws DBALException
      */
     public function getQueriesOverTime(int $rootPageId, int $days = 30, int $bucketSeconds = 3600): array
     {
@@ -176,12 +143,10 @@ class StatisticsRepository extends AbstractRepository
     }
 
     /**
-     * Returns a result set by given plugin.tx_solr.search.frequentSearches.select configuration.
+     * Returns an Array of frequent search terms, keys are the terms, values are hits of a result set by given
+     * plugin.tx_solr.search.frequentSearches.select configuration.
      *
-     * @param array $frequentSearchConfiguration
-     * @return array Array of frequent search terms, keys are the terms, values are hits
-     * @throws DBALException|\Doctrine\DBAL\DBALException
-     * @throws DBALDriverException
+     * @throws DBALException
      */
     public function getFrequentSearchTermsFromStatisticsByFrequentSearchConfiguration(array $frequentSearchConfiguration): array
     {
@@ -201,11 +166,8 @@ class StatisticsRepository extends AbstractRepository
 
     /**
      * Persists statistics record
-     *
-     * @param array $statisticsRecord
-     * @throws DBALException|\Doctrine\DBAL\DBALException
      */
-    public function saveStatisticsRecord(array $statisticsRecord)
+    public function saveStatisticsRecord(array $statisticsRecord): void
     {
         $queryBuilder = $this->getQueryBuilder();
         $queryBuilder->insert($this->table)->values($statisticsRecord)->executeStatement();
@@ -214,10 +176,7 @@ class StatisticsRepository extends AbstractRepository
     /**
      * Counts rows for specified site
      *
-     * @param int $rootPageId
-     * @return int
-     * @throws DBALDriverException
-     * @throws DBALException|\Doctrine\DBAL\DBALException
+     * @throws DBALException
      */
     public function countByRootPageId(int $rootPageId): int
     {

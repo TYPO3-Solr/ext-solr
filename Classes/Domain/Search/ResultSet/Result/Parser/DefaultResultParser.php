@@ -23,14 +23,12 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * The DefaultResultParser is able to parse normal(ungroupd results)
+ * The DefaultResultParser is able to parse normal(ungrouped results)
  */
 class DefaultResultParser extends AbstractResultParser
 {
     /**
-     * @param SearchResultSet $resultSet
-     * @param bool $useRawDocuments
-     * @return SearchResultSet
+     * @inheritDoc
      */
     public function parse(SearchResultSet $resultSet, bool $useRawDocuments = true): SearchResultSet
     {
@@ -63,8 +61,7 @@ class DefaultResultParser extends AbstractResultParser
     }
 
     /**
-     * @param SearchResultSet $resultSet
-     * @return bool
+     * @inheritDoc
      */
     public function canParse(SearchResultSet $resultSet): bool
     {

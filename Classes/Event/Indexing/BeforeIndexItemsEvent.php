@@ -32,18 +32,10 @@ final class BeforeIndexItemsEvent
      */
     private array $items;
 
-    /**
-     * @var IndexQueueWorkerTask|null
-     */
     private ?IndexQueueWorkerTask $task;
 
     private string $runId;
 
-    /**
-     * @param array $items
-     * @param IndexQueueWorkerTask|null $task
-     * @param string $runId
-     */
     public function __construct(array $items, ?IndexQueueWorkerTask $task, string $runId)
     {
         $this->items = $items;
@@ -67,17 +59,11 @@ final class BeforeIndexItemsEvent
         $this->items = $items;
     }
 
-    /**
-     * @return IndexQueueWorkerTask|null
-     */
     public function getTask(): ?IndexQueueWorkerTask
     {
         return $this->task;
     }
 
-    /**
-     * @return string
-     */
     public function getRunId(): string
     {
         return $this->runId;

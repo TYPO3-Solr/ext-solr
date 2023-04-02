@@ -20,6 +20,7 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers;
 use ApacheSolrForTypo3\Solr\Domain\Search\FrequentSearches\FrequentSearchesService;
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
 use Closure;
+use Doctrine\DBAL\Exception as DBALException;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
 use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
@@ -32,32 +33,33 @@ use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
  * Class LastSearchesViewHelper
  *
  * @author Rudy Gnodde <rudy.gnodde@beech.it>
+ *
+ * @noinspection PhpUnused
  */
 class FrequentlySearchedViewHelper extends AbstractSolrViewHelper
 {
     /**
-     * @var bool
+     * @inheritdoc
      */
     protected $escapeChildren = false;
 
     /**
-     * @var bool
+     * @inheritdoc
      */
     protected $escapeOutput = false;
 
     /**
-     * @param array $arguments
-     * @param Closure $renderChildrenClosure
-     * @param RenderingContextInterface $renderingContext
-     * @return mixed|void
+     * Renders frequently searches component.
+     *
      * @throws AspectNotFoundExceptionAlias
+     * @throws DBALException
      */
     public static function renderStatic(array $arguments, Closure $renderChildrenClosure, RenderingContextInterface $renderingContext)
     {
-        /** @var TypoScriptFrontendController $tsfe */
+        /* @var TypoScriptFrontendController $tsfe */
         $tsfe = $GLOBALS['TSFE'];
         $cache = self::getInitializedCache();
-        /** @var ConfigurationManager $configurationManager */
+        /* @var ConfigurationManager $configurationManager */
         $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
         $typoScriptConfiguration = $configurationManager->getTypoScriptConfiguration();
         /* @var FrequentSearchesService $frequentSearchesService */
@@ -81,8 +83,6 @@ class FrequentlySearchedViewHelper extends AbstractSolrViewHelper
 
     /**
      * Initializes the cache for this command.
-     *
-     * @return FrontendInterface|null
      */
     protected static function getInitializedCache(): ?FrontendInterface
     {
@@ -90,7 +90,7 @@ class FrequentlySearchedViewHelper extends AbstractSolrViewHelper
         /* @var FrontendInterface $cacheInstance */
         try {
             $cacheInstance = GeneralUtility::makeInstance(CacheManager::class)->getCache($cacheIdentifier);
-        } catch (NoSuchCacheException $exception) {
+        } catch (NoSuchCacheException) {
             return null;
         }
 

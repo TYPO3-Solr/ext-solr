@@ -17,7 +17,7 @@ namespace ApacheSolrForTypo3\Solr\System\Configuration;
 
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\System\Records\SystemTemplate\SystemTemplateRepository;
-use Doctrine\DBAL\Driver\Exception as DBALDriverException;
+use Doctrine\DBAL\Exception as DBALException;
 use RuntimeException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\RootlineUtility;
@@ -30,21 +30,10 @@ use TYPO3\CMS\Core\Utility\RootlineUtility;
  */
 class ConfigurationPageResolver
 {
-    /**
-     * @var SystemTemplateRepository
-     */
-    protected $systemTemplateRepository;
+    protected SystemTemplateRepository $systemTemplateRepository;
 
-    /**
-     * @var TwoLevelCache
-     */
-    protected $runtimeCache;
+    protected TwoLevelCache $runtimeCache;
 
-    /**
-     * ConfigurationPageResolver constructor.
-     * @param TwoLevelCache|null $twoLevelCache
-     * @param SystemTemplateRepository|null $systemTemplateRepository
-     */
     public function __construct(?TwoLevelCache $twoLevelCache = null, ?SystemTemplateRepository $systemTemplateRepository = null)
     {
         $this->runtimeCache = $twoLevelCache ?? GeneralUtility::makeInstance(TwoLevelCache::class, /** @scrutinizer ignore-type */ 'runtime');
@@ -55,8 +44,7 @@ class ConfigurationPageResolver
      * This method fetches the rootLine and calculates the id of the closest template in the rootLine.
      * The result is stored in the runtime cache.
      *
-     * @param int $startPageId
-     * @throws DBALDriverException
+     * @throws DBALException
      */
     public function getClosestPageIdWithActiveTemplate(int $startPageId): ?int
     {
@@ -79,8 +67,7 @@ class ConfigurationPageResolver
     /**
      * This method fetches the rootLine and calculates the id of the closest template in the rootLine.
      *
-     * @param int $startPageId
-     * @throws DBALDriverException
+     * @throws DBALException
      */
     protected function calculateClosestPageIdWithActiveTemplate(int $startPageId): ?int
     {
@@ -88,7 +75,7 @@ class ConfigurationPageResolver
         $rootlineUtility = GeneralUtility::makeInstance(RootlineUtility::class, $startPageId);
         try {
             $rootline = $rootlineUtility->get();
-        } catch (RuntimeException $e) {
+        } catch (RuntimeException) {
             return $startPageId;
         }
 

@@ -15,22 +15,10 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace ApacheSolrForTypo3\Solr\Search;
+namespace ApacheSolrForTypo3\Solr\Domain\Site\Exception;
 
-use ApacheSolrForTypo3\Solr\Query\Modifier\Elevation;
+use ApacheSolrForTypo3\Solr\Exception;
 
-/**
- * Elevation search component
- *
- * @author Ingo Renner <ingo@typo3.org>
- */
-class ElevationComponent extends AbstractComponent
+class UnexpectedTYPO3SiteInitializationException extends Exception
 {
-    /**
-     * Initializes the search component.
-     */
-    public function initializeSearchComponent(): void
-    {
-        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchQuery']['elevation'] = Elevation::class;
-    }
 }

@@ -29,15 +29,11 @@ class Document extends SolariumDocument
 {
     /**
      * Magic call method used to emulate getters as used by the template engine.
-     *
-     * @param string $name method name
-     * @param array $arguments method arguments
-     * @return mixed
      */
-    public function __call(string $name, array $arguments)
+    public function __call(string $methodName, array $arguments): mixed
     {
-        if (str_starts_with($name, 'get')) {
-            $field = substr($name, 3);
+        if (str_starts_with($methodName, 'get')) {
+            $field = substr($methodName, 3);
             $field = strtolower($field[0]) . substr($field, 1);
             return $this->fields[$field] ?? null;
         }
@@ -45,7 +41,7 @@ class Document extends SolariumDocument
     }
 
     /**
-     * @return array
+     * Returns the names of available first level fields
      */
     public function getFieldNames(): array
     {

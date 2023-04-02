@@ -25,26 +25,12 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Grouping;
  */
 class Group
 {
-    /**
-     * @var string
-     */
     protected string $groupName = '';
 
-    /**
-     * @var int
-     */
     protected int $resultsPerPage = 10;
 
-    /**
-     * @var GroupItemCollection
-     */
     protected GroupItemCollection $groupItems;
 
-    /**
-     * Group constructor.
-     * @param string $groupName
-     * @param int $resultsPerPage
-     */
     public function __construct(string $groupName, int $resultsPerPage = 10)
     {
         $this->groupName = $groupName;
@@ -52,58 +38,37 @@ class Group
         $this->resultsPerPage = $resultsPerPage;
     }
 
-    /**
-     * @return string
-     */
     public function getGroupName(): string
     {
         return $this->groupName;
     }
 
-    /**
-     * @param string $groupName
-     */
-    public function setGroupName(string $groupName)
+    public function setGroupName(string $groupName): void
     {
         $this->groupName = $groupName;
     }
 
-    /**
-     * @return GroupItemCollection
-     */
     public function getGroupItems(): GroupItemCollection
     {
         return $this->groupItems;
     }
 
-    /**
-     * @param GroupItemCollection $groupItems
-     */
-    public function setGroupItems(GroupItemCollection $groupItems)
+    public function setGroupItems(GroupItemCollection $groupItems): void
     {
         $this->groupItems = $groupItems;
     }
 
-    /**
-     * @param GroupItem $groupItem
-     */
-    public function addGroupItem(GroupItem $groupItem)
+    public function addGroupItem(GroupItem $groupItem): void
     {
         $this->groupItems[] = $groupItem;
     }
 
-    /**
-     * @return int
-     */
     public function getResultsPerPage(): int
     {
         return $this->resultsPerPage;
     }
 
-    /**
-     * @param int $resultsPerPage
-     */
-    public function setResultsPerPage(int $resultsPerPage)
+    public function setResultsPerPage(int $resultsPerPage): void
     {
         $this->resultsPerPage = $resultsPerPage;
     }

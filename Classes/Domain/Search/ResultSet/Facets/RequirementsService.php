@@ -15,6 +15,7 @@
 
 namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets;
 
+use InvalidArgumentException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -28,11 +29,8 @@ class RequirementsService
      * Checks if facet meets all requirements.
      *
      * Evaluates configuration in "plugin.tx_solr.search.faceting.facets.[facetName].requirements",
-     *
-     * @param AbstractFacet $facet
-     * @return bool true if facet might be rendered
      */
-    public function getAllRequirementsMet(AbstractFacet $facet)
+    public function getAllRequirementsMet(AbstractFacet $facet): bool
     {
         $requirements = $facet->getRequirements();
         if (count($requirements) === 0) {
@@ -54,13 +52,11 @@ class RequirementsService
 
     /**
      * Checks if a single requirement is met.
-     *
-     * @param AbstractFacet $facet
-     * @param array $requirement
-     * @return bool
      */
-    protected function getRequirementMet(AbstractFacet $facet, $requirement = [])
-    {
+    protected function getRequirementMet(
+        AbstractFacet $facet,
+        array $requirement = [],
+    ): bool {
         $selectedItemValues = $this->getSelectedItemValues($facet, $requirement['facet']);
         $csvActiveFacetItemValues = implode(', ', $selectedItemValues);
         $requirementValues = GeneralUtility::trimExplode(',', $requirement['values']);
@@ -81,14 +77,13 @@ class RequirementsService
     /**
      * Returns the active item values of a facet
      *
-     * @param string $facetNameToCheckRequirementsOn
      * @return AbstractFacetItem[]
      */
-    protected function getSelectedItemValues(AbstractFacet $facet, $facetNameToCheckRequirementsOn)
+    protected function getSelectedItemValues(AbstractFacet $facet, string $facetNameToCheckRequirementsOn): array
     {
         $facetToCheckRequirements = $facet->getResultSet()->getFacets()->getByName($facetNameToCheckRequirementsOn)->getByPosition(0);
         if (!$facetToCheckRequirements instanceof AbstractFacet) {
-            throw new \InvalidArgumentException('Requirement for unexisting facet configured');
+            throw new InvalidArgumentException('Requirement for unexisting facet configured');
         }
 
         if (!$facetToCheckRequirements->getIsUsed()) {
@@ -99,7 +94,7 @@ class RequirementsService
         $itemValues = [];
         $activeFacetItems = $facetToCheckRequirements->getAllFacetItems();
         foreach ($activeFacetItems as $item) {
-            /** @var AbstractFacetItem $item */
+            /* @var AbstractFacetItem $item */
             if ($item->getSelected()) {
                 $itemValues[] = $item->getUriValue();
             }
@@ -110,17 +105,13 @@ class RequirementsService
 
     /**
      * Negates the result when configured.
-     *
-     * @param bool $value
-     * @param array $configuration
-     * @return bool
      */
-    protected function getNegationWhenConfigured($value, $configuration)
+    protected function getNegationWhenConfigured(bool $value, array $configuration = null): bool
     {
         if (!is_array($configuration) || empty($configuration['negate']) || (bool)$configuration['negate'] === false) {
             return $value;
         }
 
-        return !((bool)$value);
+        return !($value);
     }
 }

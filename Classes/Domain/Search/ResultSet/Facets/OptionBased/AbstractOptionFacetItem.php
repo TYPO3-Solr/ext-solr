@@ -28,23 +28,12 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetItem;
  */
 class AbstractOptionFacetItem extends AbstractFacetItem
 {
-    /**
-     * @var string
-     */
-    protected string $value = '';
+    protected string|int $value = '';
 
-    /**
-     * @param AbstractFacet $facet
-     * @param string $label
-     * @param string $value
-     * @param int $documentCount
-     * @param bool $selected
-     * @param array $metrics
-     */
     public function __construct(
         AbstractFacet $facet,
         string $label = '',
-        string $value = '',
+        string|int $value = '',
         int $documentCount = 0,
         bool $selected = false,
         array $metrics = []
@@ -59,26 +48,17 @@ class AbstractOptionFacetItem extends AbstractFacetItem
         );
     }
 
-    /**
-     * @return string
-     */
-    public function getValue(): string
+    public function getValue(): string|int
     {
         return $this->value;
     }
 
-    /**
-     * @return string
-     */
-    public function getUriValue(): string
+    public function getUriValue(): string|int
     {
         return $this->getValue();
     }
 
-    /**
-     * @return string
-     */
-    public function getCollectionKey(): string
+    public function getCollectionKey(): string|int
     {
         return $this->getValue();
     }

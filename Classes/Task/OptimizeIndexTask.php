@@ -18,7 +18,7 @@ declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\Task;
 
 use ApacheSolrForTypo3\Solr\ConnectionManager;
-use Doctrine\DBAL\Driver\Exception as DBALDriverException;
+use Doctrine\DBAL\Exception as DBALException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -31,8 +31,6 @@ class OptimizeIndexTask extends AbstractSolrTask
 {
     /**
      * Cores to optimize.
-     *
-     * @var array
      */
     protected array $coresToOptimizeIndex = [];
 
@@ -40,10 +38,11 @@ class OptimizeIndexTask extends AbstractSolrTask
      * Optimizes all Solr indexes for selected cores and returns TRUE if the execution was successful
      *
      * @return bool Returns TRUE on success, FALSE on failure.
-     * @throws DBALDriverException
-     * @noinspection PhpMissingReturnTypeInspection
-     * @noinspection PhpUnused
      *
+     *
+     * @throws DBALException
+     *
+     * @noinspection PhpUnused
      * @noinspection PhpMissingReturnTypeInspection See {@link \TYPO3\CMS\Scheduler\Task\AbstractTask::execute()}
      */
     public function execute()
@@ -66,8 +65,6 @@ class OptimizeIndexTask extends AbstractSolrTask
 
     /**
      * Gets the cores to optimize.
-     *
-     * @return array
      */
     public function getCoresToOptimizeIndex(): array
     {
@@ -76,8 +73,6 @@ class OptimizeIndexTask extends AbstractSolrTask
 
     /**
      * Sets the cores to optimize.
-     *
-     * @param array $coresToOptimizeIndex
      */
     public function setCoresToOptimizeIndex(array $coresToOptimizeIndex): void
     {
@@ -91,7 +86,9 @@ class OptimizeIndexTask extends AbstractSolrTask
      * This method should be implemented in most task classes
      *
      * @return string Information to display
-     * @throws DBALDriverException
+     *
+     * @throws DBALException
+     *
      * @noinspection PhpMissingReturnTypeInspection {@link \TYPO3\CMS\Scheduler\Task\AbstractTask::getAdditionalInformation()}
      */
     public function getAdditionalInformation()

@@ -43,15 +43,11 @@ class UserGroupDetector extends AbstractFrontendHelper implements
 
     /**
      * Holds the original, unmodified TCA during user group detection
-     *
-     * @var array
      */
     protected array $originalTca;
 
     /**
      * Collects the usergroups used on a page.
-     *
-     * @var array
      */
     protected array $frontendGroups = [];
 
@@ -77,16 +73,15 @@ class UserGroupDetector extends AbstractFrontendHelper implements
     /**
      * Disables the group access check by resetting the fe_group field in the given page table row.
      * Will be called by the hook in the TypoScriptFrontendController in the checkEnableFields() method.
-     *
-     * @param array $parameters
-     * @param TypoScriptFrontendController $tsfe
      * @see TypoScriptFrontendController::checkEnableFields
+     *
      * @noinspection PhpUnusedParameterInspection
+     *               PhpUnused used in {@link self::activate()} "hook_checkEnableFields"
      */
     public function checkEnableFields(
         array &$parameters,
         TypoScriptFrontendController $tsfe
-    ) {
+    ): void {
         $parameters['row']['fe_group'] = '';
     }
 
@@ -94,14 +89,13 @@ class UserGroupDetector extends AbstractFrontendHelper implements
      * Deactivates the frontend user group fields in TCA so that no access
      * restrictions apply during page rendering.
      *
-     * @param array $parameters Parameters from frontend
-     * @param TypoScriptFrontendController $parentObject TSFE object
      * @noinspection PhpUnusedParameterInspection
+     *               PhpUnused used in {@link self::activate()} "configArrayPostProc"
      */
     public function deactivateTcaFrontendGroupEnableFields(
         array &$parameters,
         TypoScriptFrontendController $parentObject
-    ) {
+    ): void {
         $this->originalTca = $GLOBALS['TCA'];
 
         foreach ($GLOBALS['TCA'] as $tableName => $tableConfiguration) {
@@ -120,6 +114,8 @@ class UserGroupDetector extends AbstractFrontendHelper implements
      * @param int $uid The page ID
      * @param bool $disableGroupAccessCheck If set, the check for group access is disabled. VERY rarely used
      * @param PageRepository $parentObject parent \TYPO3\CMS\Core\Domain\Repository\PageRepository object
+     *
+     * @noinspection PhpMissingReturnTypeInspection
      */
     public function getPage_preProcess(
         &$uid,
@@ -137,6 +133,8 @@ class UserGroupDetector extends AbstractFrontendHelper implements
      * @param array $pageInput Page record
      * @param int $lUid Overlay language ID
      * @param PageRepository $parent Parent \TYPO3\CMS\Core\Domain\Repository\PageRepository object
+     *
+     * @noinspection PhpMissingReturnTypeInspection
      */
     public function getPageOverlay_preProcess(
         &$pageInput,
@@ -155,8 +153,8 @@ class UserGroupDetector extends AbstractFrontendHelper implements
     /**
      * Hook for post-processing the initialization of ContentObjectRenderer
      *
-     * @param ContentObjectRenderer $parentObject parent content object
      * @noinspection PhpParameterByRefIsNotUsedAsReferenceInspection
+     *               PhpMissingReturnTypeInspection
      */
     public function postProcessContentObjectInitialization(ContentObjectRenderer &$parentObject)
     {
@@ -175,7 +173,7 @@ class UserGroupDetector extends AbstractFrontendHelper implements
      * @param array $record A record as an array of fieldname => fieldvalue mappings
      * @param string $table Table name the record belongs to
      */
-    protected function findFrontendGroups(array $record, string $table)
+    protected function findFrontendGroups(array $record, string $table): void
     {
         if (isset($this->originalTca[$table]['ctrl']['enablecolumns']['fe_group'])) {
             $frontendGroups = $record[$this->originalTca[$table]['ctrl']['enablecolumns']['fe_group']] ?? null;
@@ -200,15 +198,12 @@ class UserGroupDetector extends AbstractFrontendHelper implements
     }
 
     /**
-     * Returns an array of user groups that have been tracked during page
-     * rendering.
-     *
-     * @return array Array of user group IDs
+     * Returns an array of user groups that have been tracked during page rendering.
      */
     protected function getFrontendGroups(): array
     {
         $frontendGroupsList = implode(',', $this->frontendGroups);
-        $frontendGroups = GeneralUtility::trimExplode(
+        $frontendGroups = GeneralUtility::intExplode(
             ',',
             $frontendGroupsList,
             true
@@ -220,7 +215,7 @@ class UserGroupDetector extends AbstractFrontendHelper implements
 
         if (empty($frontendGroups)) {
             // most likely an empty page with no content elements => public
-            $frontendGroups[] = '0';
+            $frontendGroups[] = 0;
         }
 
         // Index user groups first
@@ -230,8 +225,6 @@ class UserGroupDetector extends AbstractFrontendHelper implements
 
     /**
      * Returns the user groups found.
-     *
-     * @return array Array of user groups.
      */
     public function getData(): array
     {

@@ -26,21 +26,12 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
  */
 class Elevation extends AbstractDeactivatable implements ParameterBuilderInterface
 {
-    /**
-     * @var bool
-     */
     protected bool $isForced = true;
 
-    /**
-     * @var bool
-     */
     protected bool $markElevatedResults = true;
 
     /**
      * Elevation constructor.
-     * @param bool $isEnabled
-     * @param bool $isForced
-     * @param bool $markElevatedResults
      */
     public function __construct(
         bool $isEnabled = false,
@@ -52,42 +43,26 @@ class Elevation extends AbstractDeactivatable implements ParameterBuilderInterfa
         $this->markElevatedResults = $markElevatedResults;
     }
 
-    /**
-     * @return bool
-     */
     public function getIsForced(): bool
     {
         return $this->isForced;
     }
 
-    /**
-     * @param bool $isForced
-     */
-    public function setIsForced(bool $isForced)
+    public function setIsForced(bool $isForced): void
     {
         $this->isForced = $isForced;
     }
 
-    /**
-     * @return bool
-     */
     public function getMarkElevatedResults(): bool
     {
         return $this->markElevatedResults;
     }
 
-    /**
-     * @param bool $markElevatedResults
-     */
-    public function setMarkElevatedResults(bool $markElevatedResults)
+    public function setMarkElevatedResults(bool $markElevatedResults): void
     {
         $this->markElevatedResults = $markElevatedResults;
     }
 
-    /**
-     * @param TypoScriptConfiguration $solrConfiguration
-     * @return Elevation
-     */
     public static function fromTypoScriptConfiguration(TypoScriptConfiguration $solrConfiguration): Elevation
     {
         $isEnabled = $solrConfiguration->getSearchElevation();
@@ -100,18 +75,11 @@ class Elevation extends AbstractDeactivatable implements ParameterBuilderInterfa
         return new Elevation(true, $force, $markResults);
     }
 
-    /**
-     * @return Elevation
-     */
     public static function getEmpty(): Elevation
     {
         return new Elevation(false);
     }
 
-    /**
-     * @param AbstractQueryBuilder $parentBuilder
-     * @return AbstractQueryBuilder
-     */
     public function build(AbstractQueryBuilder $parentBuilder): AbstractQueryBuilder
     {
         $query = $parentBuilder->getQuery();

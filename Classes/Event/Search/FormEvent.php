@@ -30,11 +30,6 @@ final class FormEvent
     private array $additionalFilters;
     private string $pluginNamespace;
 
-    /**
-     * @param Search $search
-     * @param array $additionalFilters
-     * @param string $pluginNamespace
-     */
     public function __construct(Search $search, array $additionalFilters, string $pluginNamespace)
     {
         $this->search = $search;
@@ -42,25 +37,16 @@ final class FormEvent
         $this->pluginNamespace = $pluginNamespace;
     }
 
-    /**
-     * @return Search
-     */
     public function getSearch(): Search
     {
         return $this->search;
     }
 
-    /**
-     * @return array
-     */
     public function getAdditionalFilters(): array
     {
         return $this->additionalFilters;
     }
 
-    /**
-     * @return string
-     */
     public function getPluginNamespace(): string
     {
         return $this->pluginNamespace;

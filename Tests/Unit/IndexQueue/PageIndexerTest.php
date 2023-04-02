@@ -96,9 +96,9 @@ class PageIndexerTest extends SetUpUnitTestCase
                     $options,
                     $this->pagesRepositoryMock,
                     $this->documentBuilderMock,
-                    $this->solrLogManagerMock,
                     $this->connectionManagerMock,
                     $this->frontendEnvironmentMock,
+                    $this->solrLogManagerMock,
                 ]
             )
             ->onlyMethods(['getPageIndexerRequest', 'getAccessRootlineByPageId', 'getUriStrategy'])
@@ -120,7 +120,7 @@ class PageIndexerTest extends SetUpUnitTestCase
         ]);
 
         $siteMock->expects(self::any())->method('getRootPageId')->willReturn(88);
-        $siteMock->expects(self::any())->method('getRootPage')->willReturn(['l18n_cfg' => 0, 'title' => 'mysiteroot']);
+        $siteMock->expects(self::any())->method('getRootPageRecord')->willReturn(['l18n_cfg' => 0, 'title' => 'mysiteroot']);
 
         $testUri = 'http://myfrontendurl.de/index.php?id=4711&L=0';
         $this->uriStrategyMock->expects(self::any())->method('getPageIndexingUriFromPageItemAndLanguageId')->willReturn($testUri);

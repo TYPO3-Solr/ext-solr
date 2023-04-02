@@ -15,8 +15,9 @@
 
 namespace ApacheSolrForTypo3\Solr\Controller;
 
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\InvalidFacetPackageException;
 use ApacheSolrForTypo3\Solr\Domain\Search\Suggest\SuggestService;
-
+use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrUnavailableException;
 use ApacheSolrForTypo3\Solr\Util;
 use Psr\Http\Message\ResponseInterface;
@@ -35,11 +36,11 @@ class SuggestController extends AbstractBaseController
     /**
      * This method creates a suggest json response that can be used in a suggest layer.
      *
-     * @param string $queryString
-     * @param string|null $callback
-     * @param array|null $additionalFilters
-     * @return ResponseInterface
      * @throws AspectNotFoundException
+     * @throws InvalidFacetPackageException
+     * @throws NoSolrConnectionFoundException
+     *
+     * @noinspection PhpUnused
      */
     public function suggestAction(string $queryString, ?string $callback = null, ?array $additionalFilters = []): ResponseInterface
     {
@@ -51,7 +52,7 @@ class SuggestController extends AbstractBaseController
         }
 
         try {
-            /** @var SuggestService $suggestService */
+            /* @var SuggestService $suggestService */
             $suggestService = GeneralUtility::makeInstance(
                 SuggestService::class,
                 /** @scrutinizer ignore-type */
@@ -69,7 +70,7 @@ class SuggestController extends AbstractBaseController
 
             $searchRequest = $this->getSearchRequestBuilder()->buildForSuggest($arguments, $rawQuery, $pageId, $languageId);
             $result = $suggestService->getSuggestions($searchRequest, $additionalFilters);
-        } catch (SolrUnavailableException $e) {
+        } catch (SolrUnavailableException) {
             return $this->handleSolrUnavailable();
         }
         if ($callback) {

@@ -28,8 +28,6 @@ class ManagedResourcesUtility
 {
     /**
      * Export synonyms in plain text format
-     * @param array $synonyms
-     * @return string
      */
     public static function exportSynonymsToTxt(array $synonyms): string
     {
@@ -46,8 +44,6 @@ class ManagedResourcesUtility
 
     /**
      * Read plain text synonym file and import these synonyms
-     * @param array $synonymFileUpload
-     * @return array
      */
     public static function importSynonymsFromPlainTextContents(array $synonymFileUpload): array
     {
@@ -65,8 +61,6 @@ class ManagedResourcesUtility
 
     /**
      * Read plain text stopword file
-     * @param array $stopwordsFileUpload
-     * @return string
      */
     public static function importStopwordsFromPlainTextContents(array $stopwordsFileUpload): string
     {
@@ -77,9 +71,6 @@ class ManagedResourcesUtility
 
     /**
      * Convert synonym file line for import
-     * @param string $line
-     * @param array $synonymList
-     * @return array
      */
     protected static function convertSynonymFileLineForImport(string $line, array $synonymList): array
     {

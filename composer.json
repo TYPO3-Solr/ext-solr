@@ -25,6 +25,7 @@
     "ext-dom": "*",
     "ext-json": "*",
     "ext-libxml": "*",
+    "ext-pdo": "*",
     "ext-simplexml": "*",
     "solarium/solarium": "6.2.7",
     "typo3/cms-backend": "*",

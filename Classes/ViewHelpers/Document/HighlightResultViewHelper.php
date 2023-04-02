@@ -35,15 +35,12 @@ class HighlightResultViewHelper extends AbstractSolrFrontendViewHelper
 {
     use CompileWithRenderStatic;
 
-    /**
-     * @var bool
-     */
     protected $escapeOutput = false;
 
     /**
      * Initializes the arguments
      */
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         parent::initializeArguments();
         $this->registerArgument('resultSet', SearchResultSet::class, 'The context searchResultSet', true);
@@ -51,19 +48,12 @@ class HighlightResultViewHelper extends AbstractSolrFrontendViewHelper
         $this->registerArgument('fieldName', 'string', 'The fieldName', true);
     }
 
-    /**
-     * @param array $arguments
-     * @param Closure $renderChildrenClosure
-     * @param RenderingContextInterface $renderingContext
-     * @return string
-     * @noinspection PhpMissingReturnTypeInspection
-     */
     public static function renderStatic(
         array $arguments,
         Closure $renderChildrenClosure,
         RenderingContextInterface $renderingContext
-    ) {
-        /** @var $resultSet SearchResultSet */
+    ): string {
+        /* @var SearchResultSet $resultSet */
         $resultSet = $arguments['resultSet'];
         $fieldName = $arguments['fieldName'];
         $document = $arguments['document'];
@@ -71,12 +61,6 @@ class HighlightResultViewHelper extends AbstractSolrFrontendViewHelper
         return self::escapeEverythingExceptAllowedTags($resultSet, $content);
     }
 
-    /**
-     * @param SearchResultSet $resultSet
-     * @param $document
-     * @param $fieldName
-     * @return mixed|string
-     */
     protected static function getHighlightedContent(SearchResultSet $resultSet, $document, $fieldName)
     {
         $fragmentSeparator = $resultSet->getUsedSearchRequest()->getContextTypoScriptConfiguration()->getSearchResultsHighlightingFragmentSeparator();
@@ -89,11 +73,6 @@ class HighlightResultViewHelper extends AbstractSolrFrontendViewHelper
         return $content;
     }
 
-    /**
-     * @param SearchResultSet $resultSet
-     * @param $content
-     * @return string
-     */
     protected static function escapeEverythingExceptAllowedTags(SearchResultSet $resultSet, $content): string
     {
         $wrap = $resultSet->getUsedSearchRequest()->getContextTypoScriptConfiguration()->getSearchResultsHighlightingWrap();

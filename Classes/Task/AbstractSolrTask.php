@@ -20,7 +20,7 @@ namespace ApacheSolrForTypo3\Solr\Task;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
-use Doctrine\DBAL\Driver\Exception as DBALDriverException;
+use Doctrine\DBAL\Exception as DBALException;
 use InvalidArgumentException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
@@ -33,37 +33,28 @@ abstract class AbstractSolrTask extends AbstractTask
 {
     /**
      * The site this task is supposed to initialize the index queue for.
-     *
-     * @var Site|null
      */
     protected ?Site $site = null;
 
     /**
      * The rootPageId of the site that should be reIndexed
-     *
-     * @var string|int|null
      */
-    protected $rootPageId;
+    protected string|int|null $rootPageId = null;
 
-    /**
-     * @return string|int|null
-     */
-    public function getRootPageId()
+    public function getRootPageId(): string|int|null
     {
         return $this->rootPageId;
     }
 
-    /**
-     * @param int $rootPageId
-     */
-    public function setRootPageId(int $rootPageId)
+    public function setRootPageId(int $rootPageId): void
     {
         $this->rootPageId = $rootPageId;
     }
 
     /**
-     * @return Site|null
-     * @throws DBALDriverException
+     * Returns the site object
+     *
+     * @throws DBALException
      */
     public function getSite(): ?Site
     {
@@ -75,7 +66,7 @@ abstract class AbstractSolrTask extends AbstractTask
             /* @var SiteRepository $siteRepository */
             $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
             $this->site = $siteRepository->getSiteByRootPageId((int)$this->rootPageId);
-        } catch (InvalidArgumentException $e) {
+        } catch (InvalidArgumentException) {
             $logger = GeneralUtility::makeInstance(SolrLogManager::class, /** @scrutinizer ignore-type */ __CLASS__);
             $logger->log(SolrLogManager::ERROR, 'Scheduler task tried to get invalid site');
         }
@@ -84,7 +75,7 @@ abstract class AbstractSolrTask extends AbstractTask
     }
 
     /**
-     * @return array
+     * @return int[]|string[]
      */
     public function __sleep()
     {

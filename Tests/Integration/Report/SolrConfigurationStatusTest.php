@@ -45,7 +45,7 @@ class SolrConfigurationStatusTest extends IntegrationTest
     {
         $this->importDataSetFromFixture('can_get_green_solr_configuration_status_report.xml');
 
-        /** @var $solrConfigurationStatus  SolrConfigurationStatus */
+        /* @var SolrConfigurationStatus $solrConfigurationStatus */
         $solrConfigurationStatus = GeneralUtility::makeInstance(SolrConfigurationStatus::class);
         $violations = $solrConfigurationStatus->getStatus();
         self::assertEmpty($violations, 'We did not get an empty response from the solr configuration status report! Something is wrong');
@@ -58,7 +58,7 @@ class SolrConfigurationStatusTest extends IntegrationTest
     {
         $this->importDataSetFromFixture('can_detect_missing_rootpage.xml');
 
-        /** @var $solrConfigurationStatus  SolrConfigurationStatus */
+        /* @var SolrConfigurationStatus $solrConfigurationStatus */
         $solrConfigurationStatus = GeneralUtility::makeInstance(SolrConfigurationStatus::class);
         $violations = $solrConfigurationStatus->getStatus();
 

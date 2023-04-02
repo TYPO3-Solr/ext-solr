@@ -28,17 +28,11 @@ use TYPO3\CMS\Core\SingletonInterface;
  */
 class CliEnvironment implements SingletonInterface
 {
-    /**
-     * @var array
-     */
     protected array $backupServerVariables = [];
 
-    /**
-     * @var bool
-     */
     protected bool $isInitialized = false;
 
-    public function backup()
+    public function backup(): void
     {
         $this->backupServerVariables = $_SERVER;
     }
@@ -46,11 +40,6 @@ class CliEnvironment implements SingletonInterface
     /**
      * Initializes the frontend related server variables for the cli context.
      *
-     * @param string $webRoot
-     * @param string $scriptFileName
-     * @param string $phpSelf
-     * @param string $scriptName
-     * @return bool
      *@throws WebRootAllReadyDefinedException
      */
     public function initialize(
@@ -81,9 +70,6 @@ class CliEnvironment implements SingletonInterface
         return true;
     }
 
-    /**
-     * @return bool
-     */
     public function getIsInitialized(): bool
     {
         return $this->isInitialized;

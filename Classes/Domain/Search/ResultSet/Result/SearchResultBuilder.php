@@ -30,10 +30,6 @@ class SearchResultBuilder
     /**
      * This method is used to wrap the original solr document instance in an instance of the configured SearchResult
      * class.
-     *
-     * @param Document $originalDocument
-     * @throws InvalidArgumentException
-     * @return SearchResult
      */
     public function fromApacheSolrDocument(Document $originalDocument): SearchResult
     {
@@ -47,9 +43,6 @@ class SearchResultBuilder
         return $result;
     }
 
-    /**
-     * @return string
-     */
     protected function getResultClassName(): string
     {
         return $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['searchResultClassName '] ?? SearchResult::class;

@@ -30,17 +30,12 @@ class Dispatcher
 {
     /**
      * Frontend helper manager.
-     *
-     * @var Manager
      */
-    protected $frontendHelperManager;
+    protected Manager $frontendHelperManager;
 
-    /**
-     * Constructor
-     */
-    public function __construct()
+    public function __construct(Manager $frontendHelperManager = null)
     {
-        $this->frontendHelperManager = GeneralUtility::makeInstance(Manager::class);
+        $this->frontendHelperManager = $frontendHelperManager ?? GeneralUtility::makeInstance(Manager::class);
     }
 
     /**
@@ -53,7 +48,7 @@ class Dispatcher
     public function dispatch(
         PageIndexerRequest $request,
         PageIndexerResponse $response
-    ) {
+    ): void {
         $actions = $request->getActions();
 
         foreach ($actions as $action) {
@@ -66,12 +61,12 @@ class Dispatcher
     /**
      * Sends a shutdown signal to all activated frontend helpers.
      */
-    public function shutdown()
+    public function shutdown(): void
     {
         $frontendHelpers = $this->frontendHelperManager->getActivatedFrontendHelpers();
 
         foreach ($frontendHelpers as $frontendHelper) {
-            /** @var FrontendHelper $frontendHelper */
+            /* @var FrontendHelper $frontendHelper */
             $frontendHelper->deactivate();
         }
     }

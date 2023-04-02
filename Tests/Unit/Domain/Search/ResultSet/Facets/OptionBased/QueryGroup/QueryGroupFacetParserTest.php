@@ -100,7 +100,7 @@ class QueryGroupFacetParserTest extends SetUpFacetParser
             'fake_solr_response_with_query_fields_facets_and_used_facet.json',
             $facetConfiguration
         );
-        /** @var $parser QueryGroupFacetParser */
+        /* @var QueryGroupFacetParser $parser */
         $parser = $this->getInitializedParser(QueryGroupFacetParser::class);
         $facet = $parser->parse($searchResultSet, 'age', $facetConfiguration['age.']);
 
@@ -132,7 +132,7 @@ class QueryGroupFacetParserTest extends SetUpFacetParser
             $facetConfiguration
         );
 
-        /** @var $parser QueryGroupFacetParser */
+        /* @var QueryGroupFacetParser $parser */
         $parser = $this->getInitializedParser(QueryGroupFacetParser::class);
         $facet = $parser->parse($searchResultSet, 'age', $facetConfiguration['age.']);
 
@@ -164,7 +164,7 @@ class QueryGroupFacetParserTest extends SetUpFacetParser
             $facetConfiguration,
             ['age:week']
         );
-        /** @var $parser QueryGroupFacetParser */
+        /* @var QueryGroupFacetParser $parser */
         $parser = $this->getInitializedParser(QueryGroupFacetParser::class);
         $facet = $parser->parse($searchResultSet, 'age', $facetConfiguration['age.']);
 
@@ -196,7 +196,7 @@ class QueryGroupFacetParserTest extends SetUpFacetParser
             $facetConfiguration,
             ['age:week']
         );
-        /** @var $parser QueryGroupFacetParser */
+        /* @var QueryGroupFacetParser $parser */
         $parser = $this->getInitializedParser(QueryGroupFacetParser::class);
         /** @var QueryGroupFacet $facet */
         $facet = $parser->parse($searchResultSet, 'age', $facetConfiguration['age.']);

@@ -21,7 +21,8 @@ use ApacheSolrForTypo3\Solr\Domain\Index\IndexService;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\System\Environment\CliEnvironment;
 use ApacheSolrForTypo3\Solr\System\Environment\WebRootAllReadyDefinedException;
-use Doctrine\DBAL\Driver\Exception as DBALDriverException;
+use Doctrine\DBAL\ConnectionException;
+use Doctrine\DBAL\Exception as DBALException;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Scheduler\ProgressProviderInterface;
@@ -34,25 +35,19 @@ use TYPO3\CMS\Scheduler\ProgressProviderInterface;
  */
 class IndexQueueWorkerTask extends AbstractSolrTask implements ProgressProviderInterface
 {
-    /**
-     * @var int|null
-     */
     protected ?int $documentsToIndexLimit = null;
 
-    /**
-     * @var string
-     */
     protected string $forcedWebRoot = '';
 
     /**
-     * Works through the indexing queue and indexes the queued items into Solr.
+     * Works through the indexing queue and indexes the queued items into Solr and returns TRUE on success,
+     * FALSE if no items were indexed or none were found.
      *
-     * @return bool Returns TRUE on success, FALSE if no items were indexed or none were found.
-     *
-     * @throws DBALDriverException
      * @throws WebRootAllReadyDefinedException
+     * @throws ConnectionException
+     * @throws DBALException
      *
-     * @noinspection PhpMissingReturnTypeInspection See {@link \TYPO3\CMS\Scheduler\Task\AbstractTask::execute()}
+     * @noinspection PhpMissingReturnTypeInspection See {@link AbstractTask::execute()}
      */
     public function execute()
     {
@@ -83,8 +78,6 @@ class IndexQueueWorkerTask extends AbstractSolrTask implements ProgressProviderI
      * Since we need it for the TSFE related things we allow to set it
      * in the scheduler task and use the ###PATH_typo3### marker in the
      * setting to be able to define relative paths.
-     *
-     * @return string
      */
     public function getWebRoot(): string
     {
@@ -96,8 +89,7 @@ class IndexQueueWorkerTask extends AbstractSolrTask implements ProgressProviderI
     }
 
     /**
-     * @param string $webRoot
-     * @return string
+     * Replaces the markers containing in $webRoot string
      */
     protected function replaceWebRootMarkers(string $webRoot): string
     {
@@ -116,10 +108,9 @@ class IndexQueueWorkerTask extends AbstractSolrTask implements ProgressProviderI
      * Returns some additional information about indexing progress, shown in
      * the scheduler's task overview list.
      *
-     * @return string Information to display
-     * @throws DBALDriverException
+     * @throws DBALException
      *
-     * @noinspection PhpMissingReturnTypeInspection {@link \TYPO3\CMS\Scheduler\Task\AbstractTask::getAdditionalInformation()}
+     * @noinspection PhpMissingReturnTypeInspection {@link AbstractTask::getAdditionalInformation()}
      */
     public function getAdditionalInformation()
     {
@@ -144,11 +135,11 @@ class IndexQueueWorkerTask extends AbstractSolrTask implements ProgressProviderI
     }
 
     /**
-     * Gets the indexing progress.
+     * Gets the indexing progress as a two decimal precision float. f.e. 44.87
      *
-     * @return float Indexing progress as a two decimal precision float. f.e. 44.87
-     * @throws DBALDriverException
-     * @noinspection PhpMissingReturnTypeInspection {@link \TYPO3\CMS\Scheduler\ProgressProviderInterface::getProgress()}
+     * @throws DBALException
+     *
+     * @noinspection PhpMissingReturnTypeInspection {@link ProgressProviderInterface::getProgress}
      */
     public function getProgress()
     {
@@ -161,33 +152,21 @@ class IndexQueueWorkerTask extends AbstractSolrTask implements ProgressProviderI
         return $indexService->getProgress();
     }
 
-    /**
-     * @return int|null
-     */
     public function getDocumentsToIndexLimit(): ?int
     {
         return $this->documentsToIndexLimit;
     }
 
-    /**
-     * @param int|string $limit
-     */
-    public function setDocumentsToIndexLimit(int|string $limit)
+    public function setDocumentsToIndexLimit(int|string $limit): void
     {
         $this->documentsToIndexLimit = (int)$limit;
     }
 
-    /**
-     * @param string $forcedWebRoot
-     */
-    public function setForcedWebRoot(string $forcedWebRoot)
+    public function setForcedWebRoot(string $forcedWebRoot): void
     {
         $this->forcedWebRoot = $forcedWebRoot;
     }
 
-    /**
-     * @return string
-     */
     public function getForcedWebRoot(): string
     {
         return $this->forcedWebRoot;
@@ -195,10 +174,6 @@ class IndexQueueWorkerTask extends AbstractSolrTask implements ProgressProviderI
 
     /**
      * Returns the initialized IndexService instance.
-     *
-     * @param Site $site
-     * @return IndexService
-     * @internal param $Site
      */
     protected function getInitializedIndexService(Site $site): IndexService
     {

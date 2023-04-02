@@ -25,7 +25,12 @@ use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerDocumentsModifier;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
+use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
+use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
+use ApacheSolrForTypo3\Solr\System\Solr\Service\SolrWriteService;
+use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use InvalidArgumentException;
 use PHPUnit\Framework\MockObject\MockBuilder;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
@@ -74,7 +79,7 @@ class IndexerTest extends SetUpUnitTestCase
             ->expects(self::atLeastOnce())
             ->method('getWriteService')
             ->willReturn($writeServiceMock);
-        $indexer->_set('solr', $solrConnectionMock);
+        $indexer->_set('currentlyUsedSolrConnection', $solrConnectionMock);
 
         $itemMock = $this->createMock(Item::class);
         $itemDocumentMock = $this->createMock(Document::class);

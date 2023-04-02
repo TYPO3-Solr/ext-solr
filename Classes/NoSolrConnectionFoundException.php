@@ -37,7 +37,7 @@ class NoSolrConnectionFoundException extends Exception
         return $this->pageId;
     }
 
-    public function setPageId($pageId)
+    public function setPageId($pageId): void
     {
         $this->pageId = (int)$pageId;
     }
@@ -47,7 +47,7 @@ class NoSolrConnectionFoundException extends Exception
         return $this->languageId;
     }
 
-    public function setLanguageId(int $languageId)
+    public function setLanguageId(int $languageId): void
     {
         $this->languageId = $languageId;
     }
@@ -57,7 +57,7 @@ class NoSolrConnectionFoundException extends Exception
         return $this->rootPageId;
     }
 
-    public function setRootPageId(int $rootPageId)
+    public function setRootPageId(int $rootPageId): void
     {
         $this->rootPageId = $rootPageId;
     }

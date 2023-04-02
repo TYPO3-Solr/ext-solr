@@ -23,15 +23,10 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class Sortings extends AbstractDeactivatable
 {
-    /**
-     * @var array
-     */
     protected array $sortings = [];
 
     /**
      * Sortings constructor.
-     * @param bool $isEnabled
-     * @param array $sortings
      */
     public function __construct(
         bool $isEnabled = false,
@@ -41,9 +36,6 @@ class Sortings extends AbstractDeactivatable
         $this->setSortings($sortings);
     }
 
-    /**
-     * @return Sortings
-     */
     public static function getEmpty(): Sortings
     {
         return new Sortings(false);
@@ -57,26 +49,18 @@ class Sortings extends AbstractDeactivatable
         return $this->sortings;
     }
 
-    /**
-     * @param array $sortings
-     */
-    public function setSortings(array $sortings)
+    public function setSortings(array $sortings): void
     {
         $this->sortings = $sortings;
     }
 
-    /**
-     * @param Sorting $sorting
-     */
-    public function addSorting(Sorting $sorting)
+    public function addSorting(Sorting $sorting): void
     {
         $this->sortings[] = $sorting;
     }
 
     /**
-     * Parses a sortings representation "<fieldName> <direction>,<fieldName> <direction>"
-     * @param string $sortingsString
-     * @return Sortings
+     * Parses the sortings representation "<fieldName> <direction>,<fieldName> <direction>"
      */
     public static function fromString(string $sortingsString): Sortings
     {

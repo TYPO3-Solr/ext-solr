@@ -37,9 +37,8 @@ use ApacheSolrForTypo3\Solr\FieldProcessor\PageUidToHierarchy;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\Util;
-use Doctrine\DBAL\Driver\Exception as DBALDriverException;
+use Doctrine\DBAL\Exception as DBALException;
 use Solarium\QueryType\Select\Query\Query as SolariumSelectQuery;
-use Throwable;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
@@ -51,58 +50,32 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 class QueryBuilder extends AbstractQueryBuilder
 {
     /**
-     * Additional filters, which will be added to the query, as well as to
-     * suggest queries.
-     *
-     * @var array
+     * Additional filters, which will be added to the query, as well as to suggest queries.
      */
     protected array $additionalFilters = [];
 
-    /**
-     * @var TypoScriptConfiguration
-     */
     protected TypoScriptConfiguration $typoScriptConfiguration;
 
-    /**
-     * @var SolrLogManager;
-     */
     protected SolrLogManager $logger;
 
-    /**
-     * @var SiteHashService
-     */
     protected SiteHashService $siteHashService;
 
-    /**
-     * QueryBuilder constructor.
-     * @param TypoScriptConfiguration|null $configuration
-     * @param SolrLogManager|null $solrLogManager
-     * @param SiteHashService|null $siteHashService
-     */
     public function __construct(
         TypoScriptConfiguration $configuration = null,
         SolrLogManager $solrLogManager = null,
-        SiteHashService $siteHashService = null
+        SiteHashService $siteHashService = null,
     ) {
         $this->typoScriptConfiguration = $configuration ?? Util::getSolrConfiguration();
         $this->logger = $solrLogManager ?? GeneralUtility::makeInstance(SolrLogManager::class, /** @scrutinizer ignore-type */ __CLASS__);
         $this->siteHashService = $siteHashService ?? GeneralUtility::makeInstance(SiteHashService::class);
     }
 
-    /**
-     * @param string $queryString
-     * @return QueryBuilder
-     */
     public function newSearchQuery(string $queryString): QueryBuilder
     {
         $this->queryToBuild = $this->getSearchQueryInstance($queryString);
         return $this;
     }
 
-    /**
-     * @param string $queryString
-     * @return QueryBuilder
-     */
     public function newSuggestQuery(string $queryString): QueryBuilder
     {
         $this->queryToBuild = $this->getSuggestQueryInstance($queryString);
@@ -142,17 +115,13 @@ class QueryBuilder extends AbstractQueryBuilder
 
     /**
      * Builds a SuggestQuery with all applied filters.
-     *
-     * @param string $queryString
-     * @param array $additionalFilters
-     * @param int $requestedPageId
-     * @param string $groupList
-     * @return SuggestQuery
-     * @throws DBALDriverException
-     * @throws Throwable
      */
-    public function buildSuggestQuery(string $queryString, array $additionalFilters, int $requestedPageId, string $groupList): SuggestQuery
-    {
+    public function buildSuggestQuery(
+        string $queryString,
+        array $additionalFilters,
+        int $requestedPageId,
+        string $groupList,
+    ): SuggestQuery {
         $this->newSuggestQuery($queryString)
             ->useFiltersFromTypoScript()
             ->useSiteHashFromTypoScript($requestedPageId)
@@ -170,9 +139,7 @@ class QueryBuilder extends AbstractQueryBuilder
      * Returns Query for Search which finds document for given page.
      * Note: The Connection is per language as recommended in ext-solr docs.
      *
-     * @param int $pageId
-     * @return SolariumSelectQuery
-     * @throws DBALDriverException
+     * @throws DBALException
      */
     public function buildPageQuery(int $pageId): SolariumSelectQuery
     {
@@ -192,7 +159,7 @@ class QueryBuilder extends AbstractQueryBuilder
     /**
      * Returns a query for single record
      *
-     * @throws DBALDriverException
+     * @throws DBALException
      */
     public function buildRecordQuery(string $type, int $uid, int $pageId): SolariumSelectQuery
     {
@@ -209,18 +176,13 @@ class QueryBuilder extends AbstractQueryBuilder
             ->getQuery();
     }
 
-    /**
-     * @return QueryBuilder
-     */
-    public function useSlopsFromTypoScript(): QueryBuilder
+    public function useSlopsFromTypoScript(): AbstractQueryBuilder
     {
         return $this->useSlops(Slops::fromTypoScriptConfiguration($this->typoScriptConfiguration));
     }
 
     /**
      * Uses the configured boost queries from typoscript
-     *
-     * @return QueryBuilder
      */
     public function useBoostQueriesFromTypoScript(): QueryBuilder
     {
@@ -240,8 +202,6 @@ class QueryBuilder extends AbstractQueryBuilder
 
     /**
      * Uses the configured boostFunction from the typoscript configuration.
-     *
-     * @return QueryBuilder
      */
     public function useBoostFunctionFromTypoScript(): QueryBuilder
     {
@@ -255,8 +215,6 @@ class QueryBuilder extends AbstractQueryBuilder
 
     /**
      * Uses the configured minimumMatch from the typoscript configuration.
-     *
-     * @return QueryBuilder
      */
     public function useMinimumMatchFromTypoScript(): QueryBuilder
     {
@@ -268,9 +226,6 @@ class QueryBuilder extends AbstractQueryBuilder
         return $this;
     }
 
-    /**
-     * @return QueryBuilder
-     */
     public function useTieParameterFromTypoScript(): QueryBuilder
     {
         $searchConfiguration = $this->typoScriptConfiguration->getSearchConfiguration();
@@ -283,20 +238,16 @@ class QueryBuilder extends AbstractQueryBuilder
 
     /**
      * Applies the configured query fields from the typoscript configuration.
-     *
-     * @return QueryBuilder
      */
-    public function useQueryFieldsFromTypoScript(): QueryBuilder
+    public function useQueryFieldsFromTypoScript(): AbstractQueryBuilder
     {
         return $this->useQueryFields(QueryFields::fromString($this->typoScriptConfiguration->getSearchQueryQueryFields()));
     }
 
     /**
      * Applies the configured return fields from the typoscript configuration.
-     *
-     * @return QueryBuilder
      */
-    public function useReturnFieldsFromTypoScript(): QueryBuilder
+    public function useReturnFieldsFromTypoScript(): AbstractQueryBuilder
     {
         $returnFieldsArray = $this->typoScriptConfiguration->getSearchQueryReturnFieldsAsArray(['*', 'score']);
         return $this->useReturnFields(ReturnFields::fromArray($returnFieldsArray));
@@ -304,11 +255,6 @@ class QueryBuilder extends AbstractQueryBuilder
 
     /**
      * Can be used to apply the allowed sites from plugin.tx_solr.search.query.allowedSites to the query.
-     *
-     * @param int $requestedPageId
-     * @return QueryBuilder
-     * @throws DBALDriverException
-     * @throws Throwable
      */
     public function useSiteHashFromTypoScript(int $requestedPageId): QueryBuilder
     {
@@ -319,9 +265,6 @@ class QueryBuilder extends AbstractQueryBuilder
 
     /**
      * Can be used to apply a list of allowed sites to the query.
-     *
-     * @param string $allowedSites
-     * @return QueryBuilder
      */
     public function useSiteHashFromAllowedSites(string $allowedSites): QueryBuilder
     {
@@ -344,9 +287,6 @@ class QueryBuilder extends AbstractQueryBuilder
 
     /**
      * Can be used to filter the result on an applied list of user groups.
-     *
-     * @param array $groups
-     * @return QueryBuilder
      */
     public function useUserAccessGroups(array $groups): QueryBuilder
     {
@@ -362,8 +302,6 @@ class QueryBuilder extends AbstractQueryBuilder
 
     /**
      * Applies the configured initial query settings to set the alternative query for solr as required.
-     *
-     * @return QueryBuilder
      */
     public function useInitialQueryFromTypoScript(): QueryBuilder
     {
@@ -382,48 +320,38 @@ class QueryBuilder extends AbstractQueryBuilder
 
     /**
      * Applies the configured facets from the typoscript configuration on the query.
-     *
-     * @return QueryBuilder
      */
-    public function useFacetingFromTypoScript(): QueryBuilder
+    public function useFacetingFromTypoScript(): AbstractQueryBuilder
     {
         return $this->useFaceting(Faceting::fromTypoScriptConfiguration($this->typoScriptConfiguration));
     }
 
     /**
      * Applies the configured variants from the typoscript configuration on the query.
-     *
-     * @return QueryBuilder
      */
-    public function useVariantsFromTypoScript(): QueryBuilder
+    public function useVariantsFromTypoScript(): AbstractQueryBuilder
     {
         return $this->useFieldCollapsing(FieldCollapsing::fromTypoScriptConfiguration($this->typoScriptConfiguration));
     }
 
     /**
      * Applies the configured groupings from the typoscript configuration to the query.
-     *
-     * @return QueryBuilder
      */
-    public function useGroupingFromTypoScript(): QueryBuilder
+    public function useGroupingFromTypoScript(): AbstractQueryBuilder
     {
         return $this->useGrouping(Grouping::fromTypoScriptConfiguration($this->typoScriptConfiguration));
     }
 
     /**
      * Applies the configured highlighting from the typoscript configuration to the query.
-     *
-     * @return QueryBuilder
      */
-    public function useHighlightingFromTypoScript(): QueryBuilder
+    public function useHighlightingFromTypoScript(): AbstractQueryBuilder
     {
         return $this->useHighlighting(Highlighting::fromTypoScriptConfiguration($this->typoScriptConfiguration));
     }
 
     /**
      * Applies the configured filters (page section and other from typoscript).
-     *
-     * @return QueryBuilder
      * @todo: Method is widely used but {@link Filters::fromTypoScriptConfiguration()} does not take TypoScript into account
      */
     public function useFiltersFromTypoScript(): QueryBuilder
@@ -451,35 +379,28 @@ class QueryBuilder extends AbstractQueryBuilder
 
     /**
      * Applies the configured elevation from the typoscript configuration.
-     *
-     * @return QueryBuilder
      */
-    public function useElevationFromTypoScript(): QueryBuilder
+    public function useElevationFromTypoScript(): AbstractQueryBuilder
     {
         return $this->useElevation(Elevation::fromTypoScriptConfiguration($this->typoScriptConfiguration));
     }
 
     /**
      * Applies the configured spellchecking from the typoscript configuration.
-     *
-     * @return QueryBuilder
      */
-    public function useSpellcheckingFromTypoScript(): QueryBuilder
+    public function useSpellcheckingFromTypoScript(): AbstractQueryBuilder
     {
         return $this->useSpellchecking(Spellchecking::fromTypoScriptConfiguration($this->typoScriptConfiguration));
     }
 
     /**
      * Applies the passed pageIds as __pageSection filter.
-     *
-     * @param array $pageIds
-     * @return QueryBuilder
      */
     public function usePageSectionsFromPageIds(array $pageIds = []): QueryBuilder
     {
         $filters = [];
 
-        /** @var $processor PageUidToHierarchy */
+        /* @var PageUidToHierarchy $processor */
         $processor = GeneralUtility::makeInstance(PageUidToHierarchy::class);
         $hierarchies = $processor->process($pageIds);
 
@@ -494,38 +415,30 @@ class QueryBuilder extends AbstractQueryBuilder
 
     /**
      * Applies the configured phrase fields from the typoscript configuration to the query.
-     *
-     * @return QueryBuilder
      */
-    public function usePhraseFieldsFromTypoScript(): QueryBuilder
+    public function usePhraseFieldsFromTypoScript(): AbstractQueryBuilder
     {
         return $this->usePhraseFields(PhraseFields::fromTypoScriptConfiguration($this->typoScriptConfiguration));
     }
 
     /**
      * Applies the configured bigram phrase fields from the typoscript configuration to the query.
-     *
-     * @return QueryBuilder
      */
-    public function useBigramPhraseFieldsFromTypoScript(): QueryBuilder
+    public function useBigramPhraseFieldsFromTypoScript(): AbstractQueryBuilder
     {
         return $this->useBigramPhraseFields(BigramPhraseFields::fromTypoScriptConfiguration($this->typoScriptConfiguration));
     }
 
     /**
      * Applies the configured trigram phrase fields from the typoscript configuration to the query.
-     *
-     * @return QueryBuilder
      */
-    public function useTrigramPhraseFieldsFromTypoScript(): QueryBuilder
+    public function useTrigramPhraseFieldsFromTypoScript(): AbstractQueryBuilder
     {
         return $this->useTrigramPhraseFields(TrigramPhraseFields::fromTypoScriptConfiguration($this->typoScriptConfiguration));
     }
 
     /**
      * Retrieves the configuration filters from the TypoScript configuration, except the __pageSections filter.
-     *
-     * @return array
      */
     public function getAdditionalFilters(): array
     {
@@ -564,10 +477,6 @@ class QueryBuilder extends AbstractQueryBuilder
         return $this->additionalFilters;
     }
 
-    /**
-     * @param string $rawQuery
-     * @return SearchQuery
-     */
     protected function getSearchQueryInstance(string $rawQuery): SearchQuery
     {
         $query = GeneralUtility::makeInstance(SearchQuery::class);
@@ -575,10 +484,6 @@ class QueryBuilder extends AbstractQueryBuilder
         return $query;
     }
 
-    /**
-     * @param string $rawQuery
-     * @return SuggestQuery
-     */
     protected function getSuggestQueryInstance(string $rawQuery): SuggestQuery
     {
         return GeneralUtility::makeInstance(SuggestQuery::class, /** @scrutinizer ignore-type */ $rawQuery, /** @scrutinizer ignore-type */ $this->typoScriptConfiguration);

@@ -71,7 +71,7 @@ class BuilderTest extends SetUpUnitTestCase
         $this->siteMock = $this->getDumbMock(Site::class);
         $this->typo3PageExtractorMock = $this->getDumbMock(Typo3PageContentExtractor::class);
 
-        /** @var $documentBuilder Builder */
+        /* @var Builder $documentBuilder */
         $this->documentBuilder = $this->getMockBuilder(Builder::class)->setConstructorArgs([$this->variantIdBuilderMock ])->onlyMethods(
             ['getExtractorForPageContent', 'getSiteByPageId', 'getPageDocumentId', 'getDocumentId']
         )->getMock();

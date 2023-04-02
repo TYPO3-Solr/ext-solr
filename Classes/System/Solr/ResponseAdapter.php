@@ -51,33 +51,14 @@ use stdClass;
  */
 class ResponseAdapter implements Countable
 {
-    /**
-     * @var ?string
-     */
     protected ?string $responseBody = null;
 
-    /**
-     * @var stdClass|null
-     */
     protected ?stdClass $data = null;
 
-    /**
-     * @var int
-     */
     protected int $httpStatus = 200;
 
-    /**
-     * @var string
-     */
     protected string $httpStatusMessage = '';
 
-    /**
-     * ResponseAdapter constructor.
-     *
-     * @param string|null $responseBody
-     * @param int $httpStatus
-     * @param string $httpStatusMessage
-     */
     public function __construct(?string $responseBody, int $httpStatus = 500, string $httpStatusMessage = '')
     {
         $this->data = json_decode($responseBody ?? '');
@@ -103,9 +84,6 @@ class ResponseAdapter implements Countable
 
     /**
      * Magic get to expose the parsed data and to lazily load it
-     *
-     * @param string $key
-     * @return mixed
      */
     public function __get(string $key)
     {
@@ -118,9 +96,6 @@ class ResponseAdapter implements Countable
 
     /**
      * Magic function for isset function on parsed data
-     *
-     * @param string $key
-     * @return bool
      */
     public function __isset(string $key)
     {
@@ -128,15 +103,15 @@ class ResponseAdapter implements Countable
     }
 
     /**
-     * @return mixed
+     * Returns the data as an accessible stdClass if available.
      */
-    public function getParsedData()
+    public function getParsedData(): ?stdClass
     {
         return $this->data;
     }
 
     /**
-     * @return ?string
+     * Returns raw response body if available.
      */
     public function getRawResponse(): ?string
     {
@@ -144,7 +119,7 @@ class ResponseAdapter implements Countable
     }
 
     /**
-     * @return int
+     * Returns HTTP status code.
      */
     public function getHttpStatus(): int
     {
@@ -152,7 +127,7 @@ class ResponseAdapter implements Countable
     }
 
     /**
-     * @return string
+     * Returns HTTP status message.
      */
     public function getHttpStatusMessage(): string
     {
@@ -160,7 +135,7 @@ class ResponseAdapter implements Countable
     }
 
     /**
-     * Counts the elements of
+     * Counts the elements of data.
      */
     public function count(): int
     {

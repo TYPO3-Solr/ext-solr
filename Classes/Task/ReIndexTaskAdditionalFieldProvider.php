@@ -19,11 +19,11 @@ namespace ApacheSolrForTypo3\Solr\Task;
 
 use ApacheSolrForTypo3\Solr\Backend\IndexingConfigurationSelectorField;
 use ApacheSolrForTypo3\Solr\Backend\SiteSelectorField;
+use ApacheSolrForTypo3\Solr\Domain\Site\Exception\UnexpectedTYPO3SiteInitializationException;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
-use Doctrine\DBAL\Driver\Exception as DBALDriverException;
+use Doctrine\DBAL\Exception as DBALException;
 use LogicException;
-use Throwable;
 use TYPO3\CMS\Backend\Form\Exception as BackendFormException;
 use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -39,66 +39,40 @@ use TYPO3\CMS\Scheduler\Task\Enumeration\Action;
  */
 class ReIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldProvider
 {
-    /**
-     * Task information
-     *
-     * @var array
-     */
     protected array $taskInformation = [];
 
     /**
      * Scheduler task
-     *
-     * @var AbstractTask|ReIndexTask|null
      */
-    protected ?AbstractTask $task;
+    protected ?AbstractSolrTask $task;
 
-    /**
-     * Scheduler Module
-     *
-     * @var SchedulerModuleController|null
-     */
     protected ?SchedulerModuleController $schedulerModule = null;
 
     /**
      * Selected site
-     *
-     * @var Site|null
      */
     protected ?Site $site = null;
 
-    /**
-     * SiteRepository
-     *
-     * @var SiteRepository
-     */
     protected SiteRepository $siteRepository;
 
-    /**
-     * @var PageRenderer|null
-     */
     protected ?PageRenderer $pageRenderer = null;
 
-    /**
-     * ReIndexTaskAdditionalFieldProvider constructor.
-     */
     public function __construct()
     {
         $this->siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
     }
 
     /**
-     * @param array $taskInfo
-     * @param AbstractTask|null $task
-     * @param SchedulerModuleController $schedulerModule
-     * @throws DBALDriverException
+     * Initialize object
+     *
+     * @throws DBALException
      */
     protected function initialize(
         array $taskInfo,
-        ?AbstractTask $task,
+        ?AbstractSolrTask $task,
         SchedulerModuleController $schedulerModule
-    ) {
-        /** @var $task ReIndexTask */
+    ): void {
+        /* ReIndexTask @var $task  */
         $this->taskInformation = $taskInfo;
         $this->task = $task;
         $this->schedulerModule = $schedulerModule;
@@ -115,13 +89,17 @@ class ReIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldProvider
      * or editing a task.
      *
      * @param array $taskInfo reference to the array containing the info used in the add/edit form
-     * @param AbstractTask $task when editing, reference to the current task object. Null when adding.
+     * @param AbstractSolrTask $task when editing, reference to the current task object. Null when adding.
      * @param SchedulerModuleController $schedulerModule reference to the calling object (Scheduler's BE module)
+     *
      * @return array Array containing all the information pertaining to the additional fields
-     *                        The array is multidimensional, keyed to the task class name and each field's id
-     *                        For each field it provides an associative sub-array with the following:
-     * @throws DBALDriverException
-     * @throws Throwable
+     *               The array is multidimensional, keyed to the task class name and each field's id
+     *               For each field it provides an associative sub-array with the following:
+     *
+     * @throws BackendFormException
+     * @throws UnexpectedTYPO3SiteInitializationException
+     * @throws DBALException
+     *
      * @noinspection PhpParameterByRefIsNotUsedAsReferenceInspection
      * @noinspection PhpMissingReturnTypeInspection
      */
@@ -185,16 +163,18 @@ class ReIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldProvider
      *
      * @param array $submittedData reference to the array containing the data submitted by the user
      * @param SchedulerModuleController $schedulerModule reference to the calling object (Scheduler's BE module)
+     *
      * @return bool True if validation was ok (or selected class is not relevant), FALSE otherwise
-     * @throws DBALDriverException
-     * @throws Throwable
+     *
+     * @throws UnexpectedTYPO3SiteInitializationException
+     *
      * @noinspection PhpParameterByRefIsNotUsedAsReferenceInspection
      * @noinspection PhpMissingReturnTypeInspection
      */
     public function validateAdditionalFields(
         array &$submittedData,
         SchedulerModuleController $schedulerModule
-    ) {
+    ): bool {
         $result = false;
 
         // validate site
@@ -216,8 +196,8 @@ class ReIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldProvider
     public function saveAdditionalFields(
         array $submittedData,
         AbstractTask $task
-    ) {
-        /** @var $task ReIndexTask */
+    ): void {
+        /* @var ReIndexTask $task */
         if (!$this->isTaskInstanceofReIndexTask($task)) {
             return;
         }
@@ -231,9 +211,6 @@ class ReIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldProvider
         $task->setIndexingConfigurationsToReIndex($indexingConfigurations);
     }
 
-    /**
-     * @return PageRenderer
-     */
     protected function getPageRenderer(): PageRenderer
     {
         if (!isset($this->pageRenderer)) {
@@ -244,9 +221,6 @@ class ReIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldProvider
 
     /**
      * Check that a task is an instance of ReIndexTask
-     *
-     * @param ?AbstractTask $task
-     * @return bool
      */
     protected function isTaskInstanceofReIndexTask(?AbstractTask $task): bool
     {

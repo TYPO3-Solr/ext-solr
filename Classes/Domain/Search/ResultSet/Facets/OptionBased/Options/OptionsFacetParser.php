@@ -30,24 +30,15 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class OptionsFacetParser extends AbstractFacetParser
 {
-    /**
-     * @var EventDispatcherInterface|null
-     */
     protected ?EventDispatcherInterface $eventDispatcher;
 
-    /**
-     * @param EventDispatcherInterface $eventDispatcher
-     */
-    public function injectEventDispatcher(EventDispatcherInterface $eventDispatcher)
+    public function injectEventDispatcher(EventDispatcherInterface $eventDispatcher): void
     {
         $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
-     * @param SearchResultSet $resultSet
-     * @param string $facetName
-     * @param array $facetConfiguration
-     * @return OptionsFacet|null
+     * Parses/converts {@link SearchResultSet} to desired facet object structure
      */
     public function parse(SearchResultSet $resultSet, string $facetName, array $facetConfiguration): ?AbstractFacet
     {
@@ -66,7 +57,7 @@ class OptionsFacetParser extends AbstractFacetParser
             return null;
         }
 
-        /** @var $facet OptionsFacet */
+        /* @var OptionsFacet $facet */
         $facet = GeneralUtility::makeInstance(
             OptionsFacet::class,
             $resultSet,
@@ -92,8 +83,8 @@ class OptionsFacetParser extends AbstractFacetParser
                 GeneralUtility::makeInstance(
                     Option::class,
                     $facet,
-                    (string)$label,
-                    (string)$optionsValue,
+                    $label,
+                    $optionsValue,
                     $count,
                     $isOptionsActive,
                     ($metricsFromSolrResponse[$optionsValue] ?? [])
@@ -118,9 +109,7 @@ class OptionsFacetParser extends AbstractFacetParser
     }
 
     /**
-     * @param string $facetName
-     * @param ResponseAdapter $response
-     * @return array
+     * Converts Apache Solr Response to facets options array.
      */
     protected function getOptionsFromSolrResponse(string $facetName, ResponseAdapter $response): array
     {
@@ -139,9 +128,7 @@ class OptionsFacetParser extends AbstractFacetParser
     }
 
     /**
-     * @param string $facetName
-     * @param ResponseAdapter $response
-     * @return array
+     * Converts Apache Solr Response to facets metrics array.
      */
     protected function getMetricsFromSolrResponse(string $facetName, ResponseAdapter $response): array
     {

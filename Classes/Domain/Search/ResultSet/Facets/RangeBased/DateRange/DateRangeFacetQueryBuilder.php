@@ -23,9 +23,7 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 class DateRangeFacetQueryBuilder implements FacetQueryBuilderInterface
 {
     /**
-     * @param string $facetName
-     * @param TypoScriptConfiguration $configuration
-     * @return array
+     * Builds query parts for date-range facet
      */
     public function build(string $facetName, TypoScriptConfiguration $configuration): array
     {

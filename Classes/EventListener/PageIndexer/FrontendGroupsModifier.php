@@ -38,7 +38,6 @@ class FrontendGroupsModifier
     /**
      * Modifies the fe_groups of a user on X-Tx-Solr-Iq requests.
      *
-     * @param ModifyResolvedFrontendGroupsEvent $event
      * @throws PropagateResponseException
      */
     public function __invoke(ModifyResolvedFrontendGroupsEvent $event): void
@@ -94,9 +93,6 @@ class FrontendGroupsModifier
 
     /**
      * Resolves a logged in fe_groups to retrieve access restricted content.
-     *
-     * @param ServerRequestInterface $request
-     * @return array
      */
     protected function resolveFrontendUserGroups(ServerRequestInterface $request): array
     {
@@ -110,9 +106,6 @@ class FrontendGroupsModifier
 
     /**
      * Gets the access rootline as defined by the request.
-     *
-     * @param RequestInterface $request
-     * @return Rootline
      */
     protected function getAccessRootline(RequestInterface $request): Rootline
     {

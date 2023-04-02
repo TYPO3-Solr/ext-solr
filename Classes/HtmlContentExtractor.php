@@ -35,7 +35,6 @@ class HtmlContentExtractor
      * "Private Use Zones" or the "Private Use Area" (plane 15 + 16)
      *
      * @see http://en.wikipedia.org/wiki/Unicode_block
-     * @var array
      */
     protected static array $stripUnicodeRanges = [
         ['FFFD', 'FFFD'],
@@ -50,15 +49,11 @@ class HtmlContentExtractor
 
     /**
      * The raw HTML markup content to extract clean content from.
-     *
-     * @var string
      */
     protected string $content = '';
 
     /**
      * Mapping of HTML tags to Solr document fields.
-     *
-     * @var array
      */
     protected array $tagToFieldMapping = [
         'h1' => 'tagsH1',
@@ -75,9 +70,6 @@ class HtmlContentExtractor
         'a' => 'tagsA',
     ];
 
-    /**
-     * @var TypoScriptConfiguration|null
-     */
     protected ?TypoScriptConfiguration $configuration = null;
 
     /**
@@ -91,9 +83,6 @@ class HtmlContentExtractor
         $this->content = $content;
     }
 
-    /**
-     * @return TypoScriptConfiguration
-     */
     protected function getConfiguration(): TypoScriptConfiguration
     {
         if ($this->configuration === null) {
@@ -103,10 +92,7 @@ class HtmlContentExtractor
         return $this->configuration;
     }
 
-    /**
-     * @param TypoScriptConfiguration $configuration
-     */
-    public function setConfiguration(TypoScriptConfiguration $configuration)
+    public function setConfiguration(TypoScriptConfiguration $configuration): void
     {
         $this->configuration = $configuration;
     }
@@ -142,7 +128,7 @@ class HtmlContentExtractor
         // remove internal CSS styles
         $content = preg_replace('@<style[^>]*>.*?</style>@msi', '', $content);
 
-        // prevents concatenated words when stripping tags afterwards
+        // prevents concatenated words when stripping tags afterward
         $content = str_replace(['<', '>'], [' <', '> '], $content);
         $content = str_replace(["\t", "\n", "\r", '&nbsp;'], ' ', $content);
         $content = strip_tags($content);
@@ -188,7 +174,6 @@ class HtmlContentExtractor
      * @param string $start Unicode range start character as uppercase hexadecimal string
      * @param string $end Unicode range end character as uppercase hexadecimal string
      * @return string Sanitized content
-     * @noinspection Annotator
      */
     public static function stripUnicodeRange(string $content, string $start, string $end): string
     {

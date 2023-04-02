@@ -18,9 +18,8 @@ declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\Report;
 
 use ApacheSolrForTypo3\Solr\ConnectionManager;
+use ApacheSolrForTypo3\Solr\Domain\Site\Exception\UnexpectedTYPO3SiteInitializationException;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
-use Doctrine\DBAL\Driver\Exception as DBALDriverException;
-use Throwable;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Reports\Status;
@@ -41,8 +40,6 @@ class SchemaStatus extends AbstractSolrStatus
      * YYYYMMDD - The date the schema file was changed the last time
      *
      * Must be updated when changing the schema.
-     *
-     * @var string
      */
     public const RECOMMENDED_SCHEMA_VERSION = 'tx_solr-11-5-0--20211001';
 
@@ -51,21 +48,18 @@ class SchemaStatus extends AbstractSolrStatus
      * Solr server. Only adds an entry if a schema other than the
      * recommended one was found.
      *
-     * @return array
-     *
-     * @throws DBALDriverException
-     * @throws Throwable
+     * @throws UnexpectedTYPO3SiteInitializationException
      */
     public function getStatus(): array
     {
         $reports = [];
-        /** @var $connectionManager ConnectionManager */
+        /* @var ConnectionManager $connectionManager */
         $connectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
         $solrConnections = $connectionManager->getAllConnections();
 
         foreach ($solrConnections as $solrConnection) {
             $adminService = $solrConnection->getAdminService();
-            /** @var $solrConnection SolrConnection */
+            /* @var SolrConnection $solrConnection */
             if (!$adminService->ping()) {
                 $url = $adminService->__toString();
                 $pingFailedMsg = 'Could not ping solr server, can not check version ' . $url;

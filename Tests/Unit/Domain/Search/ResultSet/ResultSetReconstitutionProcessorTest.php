@@ -125,7 +125,7 @@ class ResultSetReconstitutionProcessorTest extends SetUpUnitTestCase
         // after the reconstitution they should be 1 facet present
         self::assertCount(1, $searchResultSet->getFacets());
 
-        /** @var $optionFacet OptionsFacet */
+        /* @var OptionsFacet $optionFacet */
         $optionFacet = $searchResultSet->getFacets()->getByPosition(0);
         // @extensionScannerIgnoreLine
         self::assertSame('tx_myext_domain_model_mytype', $optionFacet->getOptions()->getByPosition(0)->getValue(), 'Custom type facet not found');
@@ -194,7 +194,7 @@ class ResultSetReconstitutionProcessorTest extends SetUpUnitTestCase
 
         self::assertCount(1, $searchResultSet->getFacets());
 
-        /** @var $optionFacet OptionsFacet */
+        /* @var OptionsFacet $optionFacet */
         $optionFacet = $searchResultSet->getFacets()->getByPosition(0);
         // @extensionScannerIgnoreLine
         self::assertCount(1, $optionFacet->getOptions());
@@ -317,14 +317,14 @@ class ResultSetReconstitutionProcessorTest extends SetUpUnitTestCase
         $processor = $this->getConfiguredReconstitutionProcessor($configuration, $searchResultSet);
         $processor->process($searchResultSet);
 
-        /** @var $optionFacet OptionsFacet */
+        /* @var OptionsFacet $optionFacet */
         $optionFacet = $searchResultSet->getFacets()->getByPosition(0);
 
-        /** @var $option1 Option */ // @extensionScannerIgnoreLine
+        /* @var Option $option1 */ // @extensionScannerIgnoreLine
         $option1 = $optionFacet->getOptions()->getByPosition(0);
         self::assertSame('page', $option1->getValue());
 
-        /** @var $option2 Option */ // @extensionScannerIgnoreLine
+        /* @var Option $option2 */ // @extensionScannerIgnoreLine
         $option2 = $optionFacet->getOptions()->getByPosition(1);
         self::assertSame('event', $option2->getValue());
     }
@@ -354,14 +354,14 @@ class ResultSetReconstitutionProcessorTest extends SetUpUnitTestCase
         $processor = $this->getConfiguredReconstitutionProcessor($configuration, $searchResultSet);
         $processor->process($searchResultSet);
 
-        /** @var $optionFacet OptionsFacet */
+        /* @var OptionsFacet $optionFacet */
         $optionFacet = $searchResultSet->getFacets()->getByPosition(0);
 
-        /** @var $option1 Option */ // @extensionScannerIgnoreLine
+        /* @var Option $option1 */ // @extensionScannerIgnoreLine
         $option1 = $optionFacet->getOptions()->getByPosition(0);
         self::assertSame('event', $option1->getValue());
 
-        /** @var $option2 Option */ // @extensionScannerIgnoreLine
+        /* @var Option $option2 */ // @extensionScannerIgnoreLine
         $option2 = $optionFacet->getOptions()->getByPosition(1);
         self::assertSame('page', $option2->getValue());
     }
@@ -391,14 +391,14 @@ class ResultSetReconstitutionProcessorTest extends SetUpUnitTestCase
         $processor = $this->getConfiguredReconstitutionProcessor($configuration, $searchResultSet);
         $processor->process($searchResultSet);
 
-        /** @var $optionFacet OptionsFacet */
+        /* @var OptionsFacet $optionFacet */
         $optionFacet = $searchResultSet->getFacets()->getByPosition(0);
 
-        /** @var $option1 Option */ // @extensionScannerIgnoreLine
+        /* @var Option $option1 */ // @extensionScannerIgnoreLine
         $option1 = $optionFacet->getOptions()->getByPosition(0);
         self::assertSame('event', $option1->getValue());
 
-        /** @var $option2 Option */ // @extensionScannerIgnoreLine
+        /* @var Option $option2 */ // @extensionScannerIgnoreLine
         $option2 = $optionFacet->getOptions()->getByPosition(1);
         self::assertSame('page', $option2->getValue());
     }
@@ -609,7 +609,7 @@ class ResultSetReconstitutionProcessorTest extends SetUpUnitTestCase
         /** @var OptionsFacet $facet1 */
         $facet1 = $facets->getByPosition(0);
 
-        /** @var $firstOption Option */ // @extensionScannerIgnoreLine
+        /* @var Option $firstOption */ // @extensionScannerIgnoreLine
         $firstOption = $facet1->getOptions()->getByPosition(0);
         self::assertEquals('pages', $firstOption->getValue());
         self::assertEquals(5, $firstOption->getDocumentCount());
@@ -655,7 +655,7 @@ class ResultSetReconstitutionProcessorTest extends SetUpUnitTestCase
         /** @var OptionsFacet $facet1 */
         $facet1 = $facets->getByPosition(0);
 
-        /** @var $firstOption Option */ // @extensionScannerIgnoreLine
+        /* @var Option $firstOption */ // @extensionScannerIgnoreLine
         $firstOption = $facet1->getOptions()->getByPosition(0);
         self::assertEquals('jpeg', $firstOption->getValue());
         self::assertEquals(1, $firstOption->getDocumentCount());
@@ -814,7 +814,7 @@ class ResultSetReconstitutionProcessorTest extends SetUpUnitTestCase
         $processor = $this->getConfiguredReconstitutionProcessor($configuration, $searchResultSet);
         $processor->process($searchResultSet);
 
-        /** @var $facet OptionsFacet */
+        /* @var OptionsFacet $facet */
         $facet = $searchResultSet->getFacets()->getByPosition(0);
         self::assertSame('My Type with special rendering', $facet->getLabel(), 'Could not get label for facet');
     }

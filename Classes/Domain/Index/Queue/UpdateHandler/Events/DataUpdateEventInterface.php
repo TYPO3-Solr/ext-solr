@@ -26,43 +26,31 @@ interface DataUpdateEventInterface
      * Cleans the event before serialisation
      * e.g. only required fields should be kept
      * in fields array
-     *
-     * @return array
      */
     public function __sleep(): array;
 
     /**
      * Returns the uid of the updated record
-     *
-     * @return int
      */
     public function getUid(): int;
 
     /**
      * Returns the table of the updated record
-     *
-     * @return string
      */
     public function getTable(): string;
 
     /**
      * Returns the updated fields
-     *
-     * @return array
      */
     public function getFields(): array;
 
     /**
      * Indicates if record is a page
-     *
-     * @return bool
      */
     public function isPageUpdate(): bool;
 
     /**
      * Indicates if event is a content element update
-     *
-     * @return bool
      */
     public function isContentElementUpdate(): bool;
 
@@ -70,22 +58,16 @@ interface DataUpdateEventInterface
      * Sets the stop processing flag
      *
      * If set, event propagation is stopped
-     *
-     * @param bool $stopProcessing
      */
     public function setStopProcessing(bool $stopProcessing): void;
 
     /**
      * Indicates if immediate processing is forced
-     *
-     * @return bool
      */
     public function isImmediateProcessingForced(): bool;
 
     /**
      * Sets the flag indicating if immediate processing is forced
-     *
-     * @param bool $forceImmediateProcessing
      */
     public function setForceImmediateProcessing(bool $forceImmediateProcessing): void;
 }

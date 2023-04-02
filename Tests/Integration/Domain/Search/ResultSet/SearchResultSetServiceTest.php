@@ -65,7 +65,7 @@ class SearchResultSetServiceTest extends IntegrationTest
         $typoScriptConfiguration = Util::getSolrConfiguration();
 
         $search = GeneralUtility::makeInstance(Search::class, $solrConnection);
-        /** @var $searchResultsSetService SearchResultSetService */
+        /* @var SearchResultSetService $searchResultsSetService */
         $searchResultsSetService = GeneralUtility::makeInstance(SearchResultSetService::class, $typoScriptConfiguration, $search);
         $document = $searchResultsSetService->getDocumentById('002de2729efa650191f82900ea02a0a3189dfabb/pages/1/0/0/0');
 
@@ -273,7 +273,7 @@ class SearchResultSetServiceTest extends IntegrationTest
     {
         $search = GeneralUtility::makeInstance(Search::class, $solrConnection);
 
-        /** @var $searchResultsSetService SearchResultSetService */
+        /* @var SearchResultSetService $searchResultsSetService */
         $searchResultSetService = GeneralUtility::makeInstance(
             SearchResultSetService::class,
             $typoScriptConfiguration,
@@ -283,7 +283,7 @@ class SearchResultSetServiceTest extends IntegrationTest
             null
         );
 
-        /** @var $searchRequest SearchRequest */
+        /* @var SearchRequest $searchRequest */
         $searchRequest = GeneralUtility::makeInstance(SearchRequest::class, [], 0, 0, $typoScriptConfiguration);
         $searchRequest->setRawQueryString($queryString);
         $searchRequest->setResultsPerPage(10);

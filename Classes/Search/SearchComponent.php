@@ -26,13 +26,11 @@ interface SearchComponent
 {
     /**
      * Provides the plugin's search configuration from plugin.tx_solr.search
-     *
-     * @param array $configuration Configuration
      */
-    public function setSearchConfiguration(array $configuration);
+    public function setSearchConfiguration(array $configuration): void;
 
     /**
      * Initializes the search component.
      */
-    public function initializeSearchComponent();
+    public function initializeSearchComponent(): void;
 }

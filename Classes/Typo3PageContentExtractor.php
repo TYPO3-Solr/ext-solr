@@ -29,9 +29,6 @@ use function libxml_use_internal_errors;
  */
 class Typo3PageContentExtractor extends HtmlContentExtractor
 {
-    /**
-     * @var SolrLogManager|null
-     */
     protected ?SolrLogManager $logger;
 
     /**

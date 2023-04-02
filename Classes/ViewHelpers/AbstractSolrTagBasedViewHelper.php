@@ -21,13 +21,7 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractTagBasedViewHelper;
 
 abstract class AbstractSolrTagBasedViewHelper extends AbstractTagBasedViewHelper
 {
-    /**
-     * @var bool
-     */
     protected $escapeChildren = true;
 
-    /**
-     * @var bool
-     */
     protected $escapeOutput = true;
 }

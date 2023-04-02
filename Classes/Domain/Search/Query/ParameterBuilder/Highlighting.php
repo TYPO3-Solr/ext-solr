@@ -27,34 +27,16 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class Highlighting extends AbstractDeactivatable implements ParameterBuilderInterface
 {
-    /**
-     * @var int
-     */
     protected int $fragmentSize = 200;
 
-    /**
-     * @var string
-     */
     protected string $highlightingFieldList = '';
 
-    /**
-     * @var string
-     */
     protected string $prefix = '';
 
-    /**
-     * @var string
-     */
     protected string $postfix = '';
 
     /**
      * Highlighting constructor.
-     *
-     * @param bool $isEnabled
-     * @param int $fragmentSize
-     * @param string $highlightingFieldList
-     * @param string $prefix
-     * @param string $postfix
      */
     public function __construct(
         bool $isEnabled = false,
@@ -70,82 +52,51 @@ class Highlighting extends AbstractDeactivatable implements ParameterBuilderInte
         $this->postfix = $postfix;
     }
 
-    /**
-     * @return int
-     */
     public function getFragmentSize(): int
     {
         return $this->fragmentSize;
     }
 
-    /**
-     * @param int $fragmentSize
-     */
-    public function setFragmentSize(int $fragmentSize)
+    public function setFragmentSize(int $fragmentSize): void
     {
         $this->fragmentSize = $fragmentSize;
     }
 
-    /**
-     * @return string
-     */
     public function getHighlightingFieldList(): string
     {
         return $this->highlightingFieldList;
     }
 
-    /**
-     * @param string $highlightingFieldList
-     */
-    public function setHighlightingFieldList(string $highlightingFieldList)
+    public function setHighlightingFieldList(string $highlightingFieldList): void
     {
         $this->highlightingFieldList = $highlightingFieldList;
     }
 
-    /**
-     * @return string
-     */
     public function getPrefix(): string
     {
         return $this->prefix;
     }
 
-    /**
-     * @param string $prefix
-     */
-    public function setPrefix(string $prefix)
+    public function setPrefix(string $prefix): void
     {
         $this->prefix = $prefix;
     }
 
-    /**
-     * @return string
-     */
     public function getPostfix(): string
     {
         return $this->postfix;
     }
 
-    /**
-     * @param string $postfix
-     */
-    public function setPostfix(string $postfix)
+    public function setPostfix(string $postfix): void
     {
         $this->postfix = $postfix;
     }
 
-    /**
-     * @return bool
-     */
     public function getUseFastVectorHighlighter(): bool
     {
         return $this->fragmentSize >= 18;
     }
 
-    /**
-     * @param TypoScriptConfiguration $solrConfiguration
-     * @return Highlighting
-     */
     public static function fromTypoScriptConfiguration(TypoScriptConfiguration $solrConfiguration): Highlighting
     {
         $isEnabled = $solrConfiguration->getIsSearchResultsHighlightingEnabled();
@@ -162,18 +113,11 @@ class Highlighting extends AbstractDeactivatable implements ParameterBuilderInte
         return new Highlighting(true, $fragmentSize, $highlightingFields, $prefix, $postfix);
     }
 
-    /**
-     * @return Highlighting
-     */
     public static function getEmpty(): Highlighting
     {
         return new Highlighting(false);
     }
 
-    /**
-     * @param AbstractQueryBuilder $parentBuilder
-     * @return AbstractQueryBuilder
-     */
     public function build(AbstractQueryBuilder $parentBuilder): AbstractQueryBuilder
     {
         $query = $parentBuilder->getQuery();

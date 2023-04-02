@@ -33,7 +33,16 @@ services:
     autowire: true
     tags: ['backend.controller']
 
+  ApacheSolrForTypo3\Solr\Domain\Search\ApacheSolrDocument\Builder:
+    public: true
+    arguments:
+      $variantIdBuilder: '@ApacheSolrForTypo3\Solr\Domain\Variants\IdBuilder'
+
   ApacheSolrForTypo3\Solr\Domain\Search\Uri\SearchUriBuilder:
+    public: true
+    autowire: true
+
+  ApacheSolrForTypo3\Solr\Domain\Variants\IdBuilder:
     public: true
     autowire: true
 

@@ -20,7 +20,7 @@ namespace ApacheSolrForTypo3\Solr\Event\Parser;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacet;
 
 /**
- * This event is dispatched after an facet is parsed.
+ * This event is dispatched after a facet is parsed.
  *
  * @author Lars Tode <lars.tode@dkd.de>
  */
@@ -28,22 +28,14 @@ final class AfterFacetParsedEvent
 {
     /**
      * The facet that was processed
-     *
-     * @var AbstractFacet
      */
     private AbstractFacet $facet;
 
     /**
      * The configuration of the facet
-     *
-     * @var array
      */
     private array $facetConfiguration;
 
-    /**
-     * @param AbstractFacet $facet
-     * @param array $facetConfiguration
-     */
     public function __construct(AbstractFacet $facet, array $facetConfiguration)
     {
         $this->facet = $facet;
@@ -52,25 +44,17 @@ final class AfterFacetParsedEvent
 
     /**
      * Returns the class name of the facet
-     *
-     * @return string
      */
     public function getFacetType(): string
     {
         return get_class($this->facet);
     }
 
-    /**
-     * @return AbstractFacet
-     */
     public function getFacet(): AbstractFacet
     {
         return $this->facet;
     }
 
-    /**
-     * @return array
-     */
     public function getFacetConfiguration(): array
     {
         return $this->facetConfiguration;

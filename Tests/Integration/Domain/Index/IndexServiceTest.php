@@ -16,20 +16,16 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\Domain\Index;
 
 use ApacheSolrForTypo3\Solr\Domain\Index\IndexService;
+use ApacheSolrForTypo3\Solr\Domain\Site\Exception\UnexpectedTYPO3SiteInitializationException;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\System\Environment\CliEnvironment;
 use ApacheSolrForTypo3\Solr\System\Environment\WebRootAllReadyDefinedException;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use Doctrine\DBAL\ConnectionException;
-use Doctrine\DBAL\Driver\Exception;
 use Doctrine\DBAL\Exception as DoctrineDBALException;
-use Doctrine\DBAL\Schema\SchemaException;
-use Throwable;
 use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
 use TYPO3\CMS\Core\Core\Environment;
-use TYPO3\CMS\Core\Database\Schema\Exception\StatementException;
-use TYPO3\CMS\Core\Database\Schema\Exception\UnexpectedSignalReturnValueTypeException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Exception as TestingFrameworkCoreException;
 
@@ -51,9 +47,6 @@ class IndexServiceTest extends IntegrationTest
         '../vendor/apache-solr-for-typo3/solr/Tests/Integration/Fixtures/Extensions/fake_extension2',
     ];
 
-    /**
-     * @var Queue|null
-     */
     protected ?Queue $indexQueue = null;
 
     /**
@@ -69,11 +62,8 @@ class IndexServiceTest extends IntegrationTest
     }
 
     /**
-     * @param string $table
-     * @param int $uid
      * @throws DoctrineDBALException
-     * @throws Exception
-     * @throws Throwable
+     * @throws UnexpectedTYPO3SiteInitializationException
      */
     protected function addToIndexQueue(string $table, int $uid): void
     {
@@ -97,15 +87,13 @@ class IndexServiceTest extends IntegrationTest
      * @param string $absRefPrefix
      * @param string $expectedUrl
      *
-     * @throws DoctrineDBALException
-     * @throws SchemaException
-     * @throws StatementException
-     * @throws TestingFrameworkCoreException
-     * @throws UnexpectedSignalReturnValueTypeException
-     * @throws WebRootAllReadyDefinedException
+     *
      * @throws ConnectionException
-     * @throws Exception
-     * @throws Throwable
+     * @throws DoctrineDBALException
+     * @throws TestingFrameworkCoreException
+     * @throws UnexpectedTYPO3SiteInitializationException
+     * @throws WebRootAllReadyDefinedException
+     *
      * @test
      */
     public function canResolveBaseAsPrefix(string $absRefPrefix, string $expectedUrl)
@@ -118,7 +106,7 @@ class IndexServiceTest extends IntegrationTest
 
         $this->addToIndexQueue('tx_fakeextension_domain_model_bar', 111);
 
-        /** @var  $cliEnvironment CliEnvironment */
+        /* @var CliEnvironment $cliEnvironment */
         $cliEnvironment = GeneralUtility::makeInstance(CliEnvironment::class);
         $cliEnvironment->backup();
         $cliEnvironment->initialize(Environment::getPublicPath() . '/');
@@ -126,7 +114,7 @@ class IndexServiceTest extends IntegrationTest
         /* @var SiteRepository $siteRepository */
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $site = $siteRepository->getFirstAvailableSite();
-        /** @var $indexService IndexService */
+        /* @var IndexService $indexService */
         $indexService = GeneralUtility::makeInstance(IndexService::class, $site);
 
         // run the indexer

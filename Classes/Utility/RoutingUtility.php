@@ -31,7 +31,6 @@ class RoutingUtility
      * @see \TYPO3\CMS\Core\Routing\Enhancer\VariableProcessor::addHash
      *
      * @param string $value Deflated argument path
-     * @return string
      */
     public static function buildHash(string $value): string
     {
@@ -57,10 +56,6 @@ class RoutingUtility
      * This method based on the VariableProcessor since the logic is not public
      *
      * @see \TYPO3\CMS\Core\Routing\Enhancer\VariableProcessor
-     *
-     * @param string $parameterName
-     * @param string $namespace
-     * @return string
      */
     public static function deflateString(string $parameterName, string $namespace = 'tx_solr'): string
     {

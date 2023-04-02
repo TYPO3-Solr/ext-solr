@@ -24,25 +24,16 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetPackage;
  */
 class NumericRangePackage extends AbstractFacetPackage
 {
-    /**
-     * @return string
-     */
     public function getParserClassName(): string
     {
         return NumericRangeFacetParser::class;
     }
 
-    /**
-     * @return string
-     */
     public function getQueryBuilderClassName(): string
     {
         return NumericRangeFacetQueryBuilder::class;
     }
 
-    /**
-     * @return string
-     */
     public function getUrlDecoderClassName(): string
     {
         return NumericRangeUrlDecoder::class;

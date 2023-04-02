@@ -24,16 +24,10 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 abstract class AbstractFieldList extends AbstractDeactivatable
 {
-    /**
-     * @var array
-     */
     protected array $fieldList = [];
 
     /**
      * FieldList parameter builder constructor.
-     *
-     * @param $isEnabled
-     * @param array $fieldList
      */
     public function __construct($isEnabled, array $fieldList = [])
     {
@@ -41,11 +35,6 @@ abstract class AbstractFieldList extends AbstractDeactivatable
         $this->fieldList = $fieldList;
     }
 
-    /**
-     * @param string $fieldListString
-     * @param string $delimiter
-     * @return array
-     */
     protected static function buildFieldList(string $fieldListString, string $delimiter): array
     {
         $fields = GeneralUtility::trimExplode($delimiter, $fieldListString, true);
@@ -65,12 +54,6 @@ abstract class AbstractFieldList extends AbstractDeactivatable
         return $fieldList;
     }
 
-    /**
-     * @param string $fieldName
-     * @param float $boost
-     *
-     * @return AbstractFieldList
-     */
     public function add(string $fieldName, float $boost = 1.0): AbstractFieldList
     {
         $this->fieldList[$fieldName] = $boost;
@@ -79,9 +62,6 @@ abstract class AbstractFieldList extends AbstractDeactivatable
 
     /**
      * Creates the string representation
-     *
-     * @param string $delimiter
-     * @return string
      */
     public function toString(string $delimiter = ' '): string
     {

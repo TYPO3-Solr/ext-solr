@@ -20,6 +20,9 @@ use ApacheSolrForTypo3\Solr\System\Solr\Service\SolrAdminService;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use Solarium\Client;
 use Solarium\Core\Client\Endpoint;
+use stdClass;
+
+use function json_encode;
 
 /**
  * Tests the SolrAdminService class
@@ -76,7 +79,6 @@ class SolrAdminServiceTest extends SetUpUnitTestCase
     public function getPluginsInformation()
     {
         $fakePluginsResponse = $this->getDumbMock(ResponseAdapter::class);
-        $fakePluginsResponse->responseHeader = null;
         $this->assertGetRequestIsTriggered('http://localhost:8983/solr/core_en/admin/plugins?wt=json', $fakePluginsResponse);
         $result = $this->adminService->getPluginsInformation();
         self::assertSame($fakePluginsResponse, $result, 'Could not get expected result from getPluginsInformation');
@@ -98,9 +100,13 @@ class SolrAdminServiceTest extends SetUpUnitTestCase
      */
     public function getSolrServerVersion()
     {
-        $fakeSystemInformationResponse = $this->getDumbMock(ResponseAdapter::class);
-        $fakeSystemInformationResponse->lucene = new \stdClass();
-        $fakeSystemInformationResponse->lucene->{'solr-spec-version'} = '6.2.1';
+        $fakeRawResponse = new stdClass();
+        $fakeRawResponse->lucene = new stdClass();
+        $fakeRawResponse->lucene->{'solr-spec-version'} = '6.2.1';
+        $fakeSystemInformationResponse = new ResponseAdapter(
+            json_encode($fakeRawResponse),
+            200,
+        );
         $this->assertGetRequestIsTriggered('http://localhost:8983/solr/core_en/admin/system?wt=json', $fakeSystemInformationResponse);
         $result = $this->adminService->getSolrServerVersion();
         self::assertSame('6.2.1', $result, 'Can not get solr version from faked response');
@@ -124,7 +130,7 @@ class SolrAdminServiceTest extends SetUpUnitTestCase
      * @param string $url
      * @param mixed $fakeResponse
      */
-    protected function assertGetRequestIsTriggered(string $url, $fakeResponse)
+    protected function assertGetRequestIsTriggered(string $url, mixed $fakeResponse)
     {
         $this->adminService->expects(self::once())->method('_sendRawGet')->with($url)->willReturn($fakeResponse);
     }

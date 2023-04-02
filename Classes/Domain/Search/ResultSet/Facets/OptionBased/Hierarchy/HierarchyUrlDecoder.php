@@ -28,8 +28,6 @@ class HierarchyUrlDecoder implements FacetUrlDecoderInterface
 {
     /**
      * Delimiter for hierarchies in the URL.
-     *
-     * @var string
      */
     public const DELIMITER = '/';
 

@@ -28,27 +28,18 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class TCAService
 {
-    /**
-     * @var array
-     */
     protected array $tca = [];
 
-    /**
-     * @var array
-     */
     protected array $visibilityAffectingFields = [];
 
-    /**
-     * TCAService constructor.
-     * @param array|null $TCA
-     */
     public function __construct(array $TCA = null)
     {
         $this->tca = (array)($TCA ?? $GLOBALS['TCA']);
     }
 
     /**
-     * @return int
+     * Returns the current time from TYPO3 core aspect "date.timestamp"
+     *
      * @throws AspectNotFoundException
      */
     protected function getTime(): int
@@ -64,20 +55,16 @@ class TCAService
      *  - it is not hidden
      *  - it is not deleted
      *  - as a page it is not set to be excluded from search
-     *
-     * @param string $table The record's table name
-     * @param array $record The record to check
-     * @return bool TRUE if the record is enabled, FALSE otherwise
      */
-    public function isEnabledRecord(string $table, array $record): bool
+    public function isEnabledRecord(string $tableName, array $record): bool
     {
         return !((empty($record))
             ||
-            (isset($this->tca[$table]['ctrl']['enablecolumns']['disabled']) && !empty($record[$this->tca[$table]['ctrl']['enablecolumns']['disabled']]))
+            (isset($this->tca[$tableName]['ctrl']['enablecolumns']['disabled']) && !empty($record[$this->tca[$tableName]['ctrl']['enablecolumns']['disabled']]))
             ||
-            (isset($this->tca[$table]['ctrl']['delete']) && !empty($record[$this->tca[$table]['ctrl']['delete']]))
+            (isset($this->tca[$tableName]['ctrl']['delete']) && !empty($record[$this->tca[$tableName]['ctrl']['delete']]))
             ||
-            ($table === 'pages' && !empty($record['no_search'])));
+            ($tableName === 'pages' && !empty($record['no_search'])));
     }
 
     /**
@@ -85,17 +72,14 @@ class TCAService
      * determines a time is set and whether that time is in the past,
      * making the record invisible on the website.
      *
-     * @param string $table The table name.
-     * @param array $record An array with record fields that may affect visibility.
-     * @return bool True if the record's end time is in the past, FALSE otherwise.
      * @throws AspectNotFoundException
      */
-    public function isEndTimeInPast(string $table, array $record): bool
+    public function isEndTimeInPast(string $tableName, array $record): bool
     {
         $endTimeInPast = false;
 
-        if (isset($this->tca[$table]['ctrl']['enablecolumns']['endtime'])) {
-            $endTimeField = $this->tca[$table]['ctrl']['enablecolumns']['endtime'];
+        if (isset($this->tca[$tableName]['ctrl']['enablecolumns']['endtime'])) {
+            $endTimeField = $this->tca[$tableName]['ctrl']['enablecolumns']['endtime'];
             if ($record[$endTimeField] > 0) {
                 $endTimeInPast = $record[$endTimeField] < $this->getTime();
             }
@@ -115,17 +99,12 @@ class TCAService
      *
      * ->isEnableColumn('my_table', 'fe_group') will return true, because 'mygroupfield' is
      * configured as column.
-     *
-     * @params string $table
-     * @param string $table
-     * @param string $columnName
-     * @return bool
      */
-    public function isEnableColumn(string $table, string $columnName): bool
+    public function isEnableColumn(string $tableName, string $columnName): bool
     {
         return
-            isset($GLOBALS['TCA'][$table]['ctrl']['enablecolumns']) &&
-            array_key_exists($columnName, $GLOBALS['TCA'][$table]['ctrl']['enablecolumns'])
+            isset($GLOBALS['TCA'][$tableName]['ctrl']['enablecolumns']) &&
+            array_key_exists($columnName, $GLOBALS['TCA'][$tableName]['ctrl']['enablecolumns'])
         ;
     }
 
@@ -134,17 +113,14 @@ class TCAService
      * determines a time is set and whether that time is in the future,
      * making the record invisible on the website.
      *
-     * @param string $table The table name.
-     * @param array $record An array with record fields that may affect visibility.
-     * @return bool True if the record's start time is in the future, FALSE otherwise.
      * @throws AspectNotFoundException
      */
-    public function isStartTimeInFuture(string $table, array $record): bool
+    public function isStartTimeInFuture(string $tableName, array $record): bool
     {
         $startTimeInFuture = false;
 
-        if (isset($this->tca[$table]['ctrl']['enablecolumns']['starttime'])) {
-            $startTimeField = $this->tca[$table]['ctrl']['enablecolumns']['starttime'];
+        if (isset($this->tca[$tableName]['ctrl']['enablecolumns']['starttime'])) {
+            $startTimeField = $this->tca[$tableName]['ctrl']['enablecolumns']['starttime'];
             $startTimeInFuture = $record[$startTimeField] > $this->getTime();
         }
 
@@ -154,17 +130,13 @@ class TCAService
     /**
      * Checks whether a hidden field exists for the current table and if so
      * determines whether it is set on the current record.
-     *
-     * @param string $table The table name.
-     * @param array $record An array with record fields that may affect visibility.
-     * @return bool True if the record is hidden, FALSE otherwise.
      */
-    public function isHidden(string $table, array $record): bool
+    public function isHidden(string $tableName, array $record): bool
     {
         $hidden = false;
 
-        if (isset($this->tca[$table]['ctrl']['enablecolumns']['disabled'])) {
-            $hiddenField = $this->tca[$table]['ctrl']['enablecolumns']['disabled'];
+        if (isset($this->tca[$tableName]['ctrl']['enablecolumns']['disabled'])) {
+            $hiddenField = $this->tca[$tableName]['ctrl']['enablecolumns']['disabled'];
             $hidden = (bool)$record[$hiddenField];
         }
 
@@ -172,16 +144,12 @@ class TCAService
     }
 
     /**
-     * Makes sure that "empty" frontend group fields are always the same value.
-     *
-     * @param string $table The record's table name.
-     * @param array $record the record array.
-     * @return array The cleaned record
+     * Makes sure that "empty" frontend group fields are always the same value and returns cleaned record
      */
-    public function normalizeFrontendGroupField(string $table, array $record): array
+    public function normalizeFrontendGroupField(string $tableName, array $record): array
     {
-        if (isset($this->tca[$table]['ctrl']['enablecolumns']['fe_group'])) {
-            $frontendGroupsField = $this->tca[$table]['ctrl']['enablecolumns']['fe_group'];
+        if (isset($this->tca[$tableName]['ctrl']['enablecolumns']['fe_group'])) {
+            $frontendGroupsField = $this->tca[$tableName]['ctrl']['enablecolumns']['fe_group'];
 
             if (($record[$frontendGroupsField] ?? null) == '') {
                 $record[$frontendGroupsField] = '0';
@@ -192,42 +160,31 @@ class TCAService
     }
 
     /**
-     * @param string $table
-     * @param array $record
-     * @return int|null
+     * Returns the uid of original record
      */
-    public function getTranslationOriginalUid(string $table, array $record): ?int
+    public function getTranslationOriginalUid(string $tableName, array $record): ?int
     {
-        if (!isset($this->tca[$table]['ctrl']['transOrigPointerField'])) {
+        if (!isset($this->tca[$tableName]['ctrl']['transOrigPointerField'])) {
             return null;
         }
-        return $record[$this->tca[$table]['ctrl']['transOrigPointerField']] ?? null;
+        return $record[$this->tca[$tableName]['ctrl']['transOrigPointerField']] ?? null;
     }
 
     /**
      * Retrieves the uid that as marked as original if the record is a translation if not it returns the
      * originalUid.
-     *
-     * @param string $table
-     * @param array $record
-     * @param int $originalUid
-     * @return int|null
      */
-    public function getTranslationOriginalUidIfTranslated(string $table, array $record, int $originalUid): ?int
+    public function getTranslationOriginalUidIfTranslated(string $tableName, array $record, int $originalUid): ?int
     {
-        if (!$this->isLocalizedRecord($table, $record)) {
+        if (!$this->isLocalizedRecord($tableName, $record)) {
             return $originalUid;
         }
 
-        return $this->getTranslationOriginalUid($table, $record);
+        return $this->getTranslationOriginalUid($tableName, $record);
     }
 
     /**
      * Checks whether a record is a localization overlay.
-     *
-     * @param string $tableName The record's table name
-     * @param array $record The record to check
-     * @return bool TRUE if the record is a language overlay, FALSE otherwise
      */
     public function isLocalizedRecord(string $tableName, array $record): bool
     {
@@ -245,44 +202,37 @@ class TCAService
     }
 
     /**
-     * Compiles a list of visibility affecting fields of a table so that it can
-     * be used in SQL queries.
-     *
-     * @param string $table Table name to retrieve visibility affecting fields for
-     * @return string Comma separated list of field names that affect the visibility of a record on the website
+     * Compiles a list of fields affecting the visibility of a record on the website
+     * so that it can be used as comma separated list inside IN SQL queries.
      */
-    public function getVisibilityAffectingFieldsByTable(string $table): string
+    public function getVisibilityAffectingFieldsByTable(string $tableName): string
     {
-        if (isset($this->visibilityAffectingFields[$table])) {
-            return $this->visibilityAffectingFields[$table];
+        if (isset($this->visibilityAffectingFields[$tableName])) {
+            return $this->visibilityAffectingFields[$tableName];
         }
 
         // we always want to get the uid and pid, although they do not affect visibility
         $fields = ['uid', 'pid'];
-        if (isset($this->tca[$table]['ctrl']['enablecolumns'])) {
-            $fields = array_merge($fields, $this->tca[$table]['ctrl']['enablecolumns']);
+        if (isset($this->tca[$tableName]['ctrl']['enablecolumns'])) {
+            $fields = array_merge($fields, $this->tca[$tableName]['ctrl']['enablecolumns']);
         }
 
-        if (isset($this->tca[$table]['ctrl']['delete'])) {
-            $fields[] = $this->tca[$table]['ctrl']['delete'];
+        if (isset($this->tca[$tableName]['ctrl']['delete'])) {
+            $fields[] = $this->tca[$tableName]['ctrl']['delete'];
         }
 
-        if ($table === 'pages') {
+        if ($tableName === 'pages') {
             $fields[] = 'no_search';
             $fields[] = 'doktype';
         }
 
-        $this->visibilityAffectingFields[$table] = implode(', ', $fields);
+        $this->visibilityAffectingFields[$tableName] = implode(', ', $fields);
 
-        return $this->visibilityAffectingFields[$table];
+        return $this->visibilityAffectingFields[$tableName];
     }
 
     /**
      * Checks if TCA is available for column by table
-     *
-     * @param string $tableName
-     * @param string $fieldName
-     * @return bool
      */
     public function getHasConfigurationForField(string $tableName, string $fieldName): bool
     {
@@ -291,10 +241,6 @@ class TCAService
 
     /**
      * Returns the tca configuration for a certain field
-     *
-     * @param string $tableName
-     * @param string $fieldName
-     * @return array
      */
     public function getConfigurationForField(string $tableName, string $fieldName): array
     {
@@ -302,8 +248,7 @@ class TCAService
     }
 
     /**
-     * @param string $tableName
-     * @return array
+     * Returns the TCA configuration for given table
      */
     public function getTableConfiguration(string $tableName): array
     {

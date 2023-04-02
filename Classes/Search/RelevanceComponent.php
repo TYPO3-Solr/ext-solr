@@ -30,21 +30,16 @@ class RelevanceComponent extends AbstractComponent implements QueryAware
 {
     /**
      * Solr query
-     *
-     * @var Query|null
      */
     protected ?Query $query = null;
 
     /**
      * QueryBuilder
-     *
-     * @var QueryBuilder
      */
     protected QueryBuilder $queryBuilder;
 
     /**
      * AccessComponent constructor.
-     * @param QueryBuilder|null $queryBuilder
      */
     public function __construct(QueryBuilder $queryBuilder = null)
     {
@@ -56,7 +51,7 @@ class RelevanceComponent extends AbstractComponent implements QueryAware
      *
      * Sets minimum match, boost function, boost query and tie-breaker.
      */
-    public function initializeSearchComponent()
+    public function initializeSearchComponent(): void
     {
         $this->query = $this->queryBuilder
             ->startFrom($this->query)
@@ -73,7 +68,7 @@ class RelevanceComponent extends AbstractComponent implements QueryAware
      *
      * @param Query $query Current query
      */
-    public function setQuery(Query $query)
+    public function setQuery(Query $query): void
     {
         $this->query = $query;
     }
