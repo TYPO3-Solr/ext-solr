@@ -32,9 +32,7 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 class OptionsFacetQueryBuilder extends DefaultFacetQueryBuilder implements FacetQueryBuilderInterface
 {
     /**
-     * @param string $facetName
-     * @param TypoScriptConfiguration $configuration
-     * @return array
+     * Builds query parts for options facet
      */
     public function build(string $facetName, TypoScriptConfiguration $configuration): array
     {
@@ -71,9 +69,7 @@ class OptionsFacetQueryBuilder extends DefaultFacetQueryBuilder implements Facet
     }
 
     /**
-     * @param array $facetConfiguration
-     * @param TypoScriptConfiguration $configuration
-     * @return string
+     * Builds exclude tags for Apache Solr query
      */
     protected function buildExcludeTagsForJson(array $facetConfiguration, TypoScriptConfiguration $configuration): string
     {
@@ -103,9 +99,7 @@ class OptionsFacetQueryBuilder extends DefaultFacetQueryBuilder implements Facet
     }
 
     /**
-     * @param array $facetConfiguration
-     * @param TypoScriptConfiguration $configuration
-     * @return int
+     * Builds limit params for options facet
      */
     protected function buildLimitForJson(array $facetConfiguration, TypoScriptConfiguration $configuration): int
     {
@@ -113,9 +107,7 @@ class OptionsFacetQueryBuilder extends DefaultFacetQueryBuilder implements Facet
     }
 
     /**
-     * @param array $facetConfiguration
-     * @param TypoScriptConfiguration $configuration
-     * @return int
+     * Builds limit params for json facet
      */
     protected function buildMincountForJson(array $facetConfiguration, TypoScriptConfiguration $configuration): int
     {
@@ -123,8 +115,7 @@ class OptionsFacetQueryBuilder extends DefaultFacetQueryBuilder implements Facet
     }
 
     /**
-     * @param array $facetConfiguration
-     * @return string
+     * Builds sortings params for json facet
      */
     protected function buildSortingForJson(array $facetConfiguration): string
     {

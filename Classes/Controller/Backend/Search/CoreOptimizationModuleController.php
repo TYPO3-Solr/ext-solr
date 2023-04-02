@@ -15,13 +15,11 @@
 
 namespace ApacheSolrForTypo3\Solr\Controller\Backend\Search;
 
-use ApacheSolrForTypo3\Solr\System\Mvc\Backend\Component\Exception\InvalidViewObjectNameException;
+use ApacheSolrForTypo3\Solr\Domain\Site\Exception\UnexpectedTYPO3SiteInitializationException;
 use ApacheSolrForTypo3\Solr\Utility\ManagedResourcesUtility;
-use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use Psr\Http\Message\ResponseInterface;
-use Throwable;
 use TYPO3\CMS\Core\Http\RedirectResponse;
-use TYPO3\CMS\Core\Messaging\AbstractMessage;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3Fluid\Fluid\View\ViewInterface;
 
@@ -34,13 +32,11 @@ class CoreOptimizationModuleController extends AbstractModuleController
     /**
      * Set up the doc header properly here
      *
-     * @param ViewInterface $view
-     * @throws DBALDriverException
-     * @throws InvalidViewObjectNameException
-     * @throws Throwable
+     * @throws UnexpectedTYPO3SiteInitializationException
+     *
      * @noinspection PhpUnused
      */
-    protected function initializeView(ViewInterface $view)
+    protected function initializeView(ViewInterface $view): void
     {
         parent::initializeView($view);
         $this->generateCoreSelectorMenuUsingPageTree();
@@ -50,8 +46,6 @@ class CoreOptimizationModuleController extends AbstractModuleController
 
     /**
      * Gets synonyms and stopwords for the currently selected core
-     *
-     * @return ResponseInterface
      *
      * @noinspection PhpUnused
      */
@@ -82,11 +76,6 @@ class CoreOptimizationModuleController extends AbstractModuleController
     /**
      * Add synonyms to selected core
      *
-     * @param string $baseWord
-     * @param string $synonyms
-     * @param bool $overrideExisting
-     * @return ResponseInterface
-     *
      * @noinspection PhpUnused
      */
     public function addSynonymsAction(string $baseWord, string $synonyms, bool $overrideExisting): ResponseInterface
@@ -95,7 +84,7 @@ class CoreOptimizationModuleController extends AbstractModuleController
             $this->addFlashMessage(
                 'Please provide a base word and synonyms.',
                 'Missing parameter',
-                AbstractMessage::ERROR
+                ContextualFeedbackSeverity::ERROR
             );
         } else {
             $baseWord = mb_strtolower($baseWord);
@@ -117,9 +106,6 @@ class CoreOptimizationModuleController extends AbstractModuleController
     }
 
     /**
-     * @param string $fileFormat
-     * @return ResponseInterface
-     *
      * @noinspection PhpUnused
      */
     public function exportStopWordsAction(string $fileFormat = 'txt'): ResponseInterface
@@ -135,9 +121,6 @@ class CoreOptimizationModuleController extends AbstractModuleController
     /**
      * Exports synonyms to a download file.
      *
-     * @param string $fileFormat
-     * @return ResponseInterface
-     *
      * @noinspection PhpUnused
      */
     public function exportSynonymsAction(string $fileFormat = 'txt'): ResponseInterface
@@ -148,11 +131,6 @@ class CoreOptimizationModuleController extends AbstractModuleController
     }
 
     /**
-     * @param array $synonymFileUpload
-     * @param bool $overrideExisting
-     * @param bool $deleteSynonymsBefore
-     * @return ResponseInterface
-     *
      * @noinspection PhpUnused
      */
     public function importSynonymListAction(
@@ -185,11 +163,6 @@ class CoreOptimizationModuleController extends AbstractModuleController
     }
 
     /**
-     * @param array $stopwordsFileUpload
-     * @param bool $replaceStopwords
-     *
-     * @return ResponseInterface
-     *
      * @noinspection PhpUnused
      */
     public function importStopWordListAction(array $stopwordsFileUpload, bool $replaceStopwords): ResponseInterface
@@ -203,8 +176,6 @@ class CoreOptimizationModuleController extends AbstractModuleController
 
     /**
      * Delete complete synonym list
-     *
-     * @return ResponseInterface
      *
      * @noinspection PhpUnused
      */
@@ -225,7 +196,7 @@ class CoreOptimizationModuleController extends AbstractModuleController
             $this->addFlashMessage(
                 'Failed to remove all synonyms.',
                 'An error occurred',
-                AbstractMessage::ERROR
+                ContextualFeedbackSeverity::ERROR
             );
         }
         return new RedirectResponse($this->uriBuilder->uriFor('index'), 303);
@@ -235,8 +206,6 @@ class CoreOptimizationModuleController extends AbstractModuleController
      * Deletes a synonym mapping by its base word.
      *
      * @param string $baseWord Synonym mapping base word
-     *
-     * @return ResponseInterface
      *
      * @noinspection PhpUnused
      */
@@ -256,7 +225,7 @@ class CoreOptimizationModuleController extends AbstractModuleController
             $this->addFlashMessage(
                 'Failed to remove synonym.',
                 'An error occurred',
-                AbstractMessage::ERROR
+                ContextualFeedbackSeverity::ERROR
             );
         }
 
@@ -265,11 +234,6 @@ class CoreOptimizationModuleController extends AbstractModuleController
 
     /**
      * Saves the edited stop word list to Solr
-     *
-     * @param string $stopWords
-     * @param bool $replaceStopwords
-     *
-     * @return ResponseInterface
      *
      * @noinspection PhpUnused
      */
@@ -306,13 +270,6 @@ class CoreOptimizationModuleController extends AbstractModuleController
         return new RedirectResponse($this->uriBuilder->uriFor('index'), 303);
     }
 
-    /**
-     * @param string $content
-     * @param string $type
-     * @param string $fileExtension
-     *
-     * @return ResponseInterface
-     */
     protected function exportFile(string $content, string $type = 'synonyms', string $fileExtension = 'txt'): ResponseInterface
     {
         $coreAdmin = $this->selectedSolrCoreConnection->getAdminService();
@@ -330,8 +287,6 @@ class CoreOptimizationModuleController extends AbstractModuleController
 
     /**
      * Delete complete synonym list form solr
-     *
-     * @return bool
      */
     protected function deleteAllSynonyms(): bool
     {
@@ -348,8 +303,7 @@ class CoreOptimizationModuleController extends AbstractModuleController
     }
 
     /**
-     * @param $stopwordsToRemove
-     * @return bool
+     * Removes stop words from core/index.
      */
     protected function removeStopsWordsFromIndex($stopwordsToRemove): bool
     {
@@ -363,7 +317,7 @@ class CoreOptimizationModuleController extends AbstractModuleController
                 $this->addFlashMessage(
                     'Failed to remove stop word "' . $word . '".',
                     'An error occurred',
-                    AbstractMessage::ERROR
+                    ContextualFeedbackSeverity::ERROR
                 );
                 break;
             }
@@ -374,12 +328,12 @@ class CoreOptimizationModuleController extends AbstractModuleController
 
     /**
      * Delete synonym entry if selected before
-     * @param bool $overrideExisting
-     * @param bool $deleteSynonymsBefore
-     * @param string $baseWord
      */
-    protected function deleteExistingSynonym(bool $overrideExisting, bool $deleteSynonymsBefore, string $baseWord)
-    {
+    protected function deleteExistingSynonym(
+        bool $overrideExisting,
+        bool $deleteSynonymsBefore,
+        string $baseWord,
+    ): void {
         $coreAdmin = $this->selectedSolrCoreConnection->getAdminService();
 
         if (!$deleteSynonymsBefore &&

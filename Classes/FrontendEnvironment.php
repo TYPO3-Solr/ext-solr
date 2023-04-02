@@ -20,7 +20,7 @@ namespace ApacheSolrForTypo3\Solr;
 use ApacheSolrForTypo3\Solr\FrontendEnvironment\Tsfe;
 use ApacheSolrForTypo3\Solr\FrontendEnvironment\TypoScript;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
-use Doctrine\DBAL\Driver\Exception as DBALDriverException;
+use Doctrine\DBAL\Exception as DBALException;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -40,29 +40,29 @@ class FrontendEnvironment implements SingletonInterface
      * Language usage may be disabled to get the default TypoScript
      * configuration.
      *
-     * @param int $pageId
-     * @param ?string $path
-     * @param ?int $language
-     * @param int|null $rootPageId
-     * @return TypoScriptConfiguration
-     * @throws DBALDriverException
+     * @throws DBALException
      */
-    public function getConfigurationFromPageId(int $pageId, ?string $path = '', ?int $language = 0, ?int $rootPageId = null): TypoScriptConfiguration
-    {
-        return GeneralUtility::makeInstance(TypoScript::class)->getConfigurationFromPageId($pageId, $path, $language, $rootPageId);
+    public function getConfigurationFromPageId(
+        int $pageId,
+        ?string $path = '',
+        ?int $language = 0,
+        ?int $rootPageId = null,
+    ): TypoScriptConfiguration {
+        /* @var TypoScript $typoScript */
+        $typoScript = GeneralUtility::makeInstance(TypoScript::class);
+        return $typoScript->getConfigurationFromPageId($pageId, $path, $language, $rootPageId);
     }
 
     /**
      * Check whether the page record is within the configured allowed pages types(doktype) for indexing.
      * Uses TypoScript: plugin.tx_solr.index.queue.<queue name>.allowedPageTypes
      *
-     * @param array $pageRecord
-     * @param ?string $configurationName
-     * @return bool
-     * @throws DBALDriverException
+     * @throws DBALException
      */
-    public function isAllowedPageType(array $pageRecord, ?string $configurationName = null): bool
-    {
+    public function isAllowedPageType(
+        array $pageRecord,
+        ?string $configurationName = null,
+    ): bool {
         // $pageRecord could come from DataHandler and with all columns. So we want to fetch it again.
         $pageRecord = BackendUtility::getRecord('pages', $pageRecord['uid']);
         $rootPageRecordUid = $pageRecord['uid'];
@@ -83,7 +83,7 @@ class FrontendEnvironment implements SingletonInterface
             $allowedPageTypes = $configuration->getIndexQueueAllowedPageTypesArrayByConfigurationName($configurationName);
         } else {
             // If the $configurationName is not provided,
-            // we will check if one of the configurations allow the pagetype to be indexed
+            // we will check if one of the configurations allow the page type to be indexed
             $allowedPageTypes = $configuration->getAllIndexQueueAllowedPageTypesArray();
         }
         return in_array($pageRecord['doktype'], $allowedPageTypes);
@@ -92,14 +92,13 @@ class FrontendEnvironment implements SingletonInterface
     /**
      * Returns TypoScriptConfiguration for desired page ID and language id.
      *
-     * @param int $pageId
-     * @param ?int $language
-     * @param int|null $rootPageId
-     * @return TypoScriptConfiguration
-     * @throws DBALDriverException
+     * @throws DBALException
      */
-    public function getSolrConfigurationFromPageId(int $pageId, ?int $language = 0, ?int $rootPageId = null): TypoScriptConfiguration
-    {
+    public function getSolrConfigurationFromPageId(
+        int $pageId,
+        ?int $language = 0,
+        ?int $rootPageId = null,
+    ): TypoScriptConfiguration {
         return $this->getConfigurationFromPageId($pageId, '', $language, $rootPageId);
     }
 }

@@ -20,28 +20,21 @@ namespace ApacheSolrForTypo3\Solr\Event\Routing;
 use Psr\Http\Message\UriInterface;
 
 /**
- * This event will triggered before start to replace placeholder inside of cached URLs
+ * This event will be triggered before start to replace placeholder inside cached URLs
  *
  * @author Lars Tode <lars.tode@dkd.de>
  */
 class BeforeReplaceVariableInCachedUrlEvent
 {
-    /**
-     * @var UriInterface
-     */
     protected UriInterface $uri;
 
     /**
      * Routing is enabled
-     *
-     * @var bool
      */
     protected bool $routing = false;
 
     /**
      * BeforeReplaceVariableInCachedUrlEvent constructor.
-     * @param UriInterface $uri
-     * @param bool $routing
      */
     public function __construct(UriInterface $uri, bool $routing = false)
     {
@@ -51,8 +44,6 @@ class BeforeReplaceVariableInCachedUrlEvent
 
     /**
      * Returns the URI
-     *
-     * @return UriInterface
      */
     public function getUri(): UriInterface
     {
@@ -61,17 +52,12 @@ class BeforeReplaceVariableInCachedUrlEvent
 
     /**
      * Replace the URI object
-     *
-     * @param UriInterface $uri
      */
-    public function replaceUri(UriInterface $uri)
+    public function replaceUri(UriInterface $uri): void
     {
         $this->uri = $uri;
     }
 
-    /**
-     * @return bool
-     */
     public function hasRouting(): bool
     {
         return $this->routing;

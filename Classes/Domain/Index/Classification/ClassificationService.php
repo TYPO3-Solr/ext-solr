@@ -23,9 +23,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Index\Classification;
 class ClassificationService
 {
     /**
-     * @param string $stringToMatch
      * @param Classification[] $classifications
-     * @return array
      */
     public function getMatchingClassNames(
         string $stringToMatch,
@@ -40,12 +38,6 @@ class ClassificationService
         return array_values($matchingClassification);
     }
 
-    /**
-     * @param string $stringToMatch
-     * @param Classification $classification
-     * @param $matchingClassification
-     * @return array
-     */
     protected function applyMatchPatterns(
         string $stringToMatch,
         Classification $classification,
@@ -61,12 +53,6 @@ class ClassificationService
         return array_unique($matchingClassification);
     }
 
-    /**
-     * @param string $stringToMatch
-     * @param Classification $classification
-     * @param $matchingClassification
-     * @return array
-     */
     protected function applyUnMatchPatterns(
         string $stringToMatch,
         Classification $classification,

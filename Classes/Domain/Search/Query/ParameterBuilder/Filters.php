@@ -28,9 +28,7 @@ class Filters
     protected array $filters = [];
 
     /**
-     * Removes a filter on a field
-     *
-     * @param string $filterFieldName The field name the filter should be removed for
+     * Removes a filter on a field from field name the filter should be removed for
      */
     public function removeByFieldName(string $filterFieldName): void
     {
@@ -48,14 +46,15 @@ class Filters
 
     /**
      * Removes a filter based on name of filter array
-     *
-     * @param string $name name of the filter
      */
     public function removeByName(string $name): void
     {
         unset($this->filters[$name]);
     }
 
+    /**
+     * Adds filter. Named if name given, incremental if name not defined.
+     */
     public function add(string $filterString, string $name = ''): void
     {
         if ($name !== '') {
@@ -79,6 +78,9 @@ class Filters
         return $this;
     }
 
+    /**
+     * Checks if named filter exists.
+     */
     public function hasWithName(string $name): bool
     {
         return array_key_exists($name, $this->filters);
@@ -88,8 +90,6 @@ class Filters
      * Removes a filter by the filter value. The value has the following format:
      *
      * "fieldname:value"
-     *
-     * @param string $filterString The filter to remove, in the form of field:value
      */
     public function removeByValue(string $filterString): void
     {
@@ -103,8 +103,6 @@ class Filters
 
     /**
      * Gets all currently applied filters.
-     *
-     * @return array Array of filters
      */
     public function getValues(): array
     {
@@ -119,6 +117,9 @@ class Filters
         return new self();
     }
 
+    /**
+     * Returns new clean/empty instance of Filters.
+     */
     public static function getEmpty(): Filters
     {
         return new self();

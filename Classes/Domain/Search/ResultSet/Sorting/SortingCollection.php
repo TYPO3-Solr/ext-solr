@@ -9,15 +9,9 @@ use ApacheSolrForTypo3\Solr\System\Data\AbstractCollection;
  */
 class SortingCollection extends AbstractCollection
 {
-    /**
-     * @var Sorting
-     */
-    protected $selected;
+    protected ?Sorting $selected = null;
 
-    /**
-     * @param Sorting $sorting
-     */
-    public function addSorting(Sorting $sorting)
+    public function addSorting(Sorting $sorting): void
     {
         if ($sorting->getSelected()) {
             $this->selected = $sorting;
@@ -26,42 +20,26 @@ class SortingCollection extends AbstractCollection
         $this->data[$sorting->getName()] = $sorting;
     }
 
-    /**
-     * @param array $data
-     */
-    public function setData($data)
+    public function setData(array $data): void
     {
         $this->data = $data;
     }
-
-    /**
-     * @return array
-     */
-    public function getData()
+    public function getData(): array
     {
         return $this->data;
     }
 
-    /**
-     * @param Sorting $selected
-     */
-    protected function setSelected(Sorting $selected)
+    protected function setSelected(Sorting $selected): void
     {
         $this->selected = $selected;
     }
 
-    /**
-     * @return Sorting
-     */
-    public function getSelected()
+    public function getSelected(): ?Sorting
     {
         return $this->selected;
     }
 
-    /**
-     * @return bool
-     */
-    public function getHasSelected()
+    public function getHasSelected(): bool
     {
         return $this->selected !== null;
     }

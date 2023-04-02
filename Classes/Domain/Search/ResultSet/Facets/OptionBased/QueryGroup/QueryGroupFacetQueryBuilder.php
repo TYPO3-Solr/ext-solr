@@ -24,9 +24,7 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 class QueryGroupFacetQueryBuilder extends DefaultFacetQueryBuilder implements FacetQueryBuilderInterface
 {
     /**
-     * @param string $facetName
-     * @param TypoScriptConfiguration $configuration
-     * @return array
+     * Builds group query parts for query group facet
      */
     public function build(string $facetName, TypoScriptConfiguration $configuration): array
     {

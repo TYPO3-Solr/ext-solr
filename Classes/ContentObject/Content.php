@@ -34,9 +34,6 @@ class Content extends AbstractContentObject
      * Executes the SOLR_CONTENT content object.
      *
      * Cleans content coming from a database field, removing HTML tags ...
-     *
-     * @inheritDoc
-     * @noinspection PhpMissingReturnTypeInspection, because foreign source inheritance See {@link AbstractContentObject::render()}
      */
     public function render($conf = [])
     {

@@ -29,28 +29,28 @@ interface IndexQueueInitializer
      *
      * @param Site $site The site to initialize Index Queue items for.
      */
-    public function setSite(Site $site);
+    public function setSite(Site $site): void;
 
     /**
      * Set the type (usually a Db table name) of items to initialize.
      *
      * @param string $type Type to initialize.
      */
-    public function setType(string $type);
+    public function setType(string $type): void;
 
     /**
      * Sets the name of the indexing configuration to initialize.
      *
      * @param string $indexingConfigurationName Indexing configuration name
      */
-    public function setIndexingConfigurationName(string $indexingConfigurationName);
+    public function setIndexingConfigurationName(string $indexingConfigurationName): void;
 
     /**
      * Sets the configuration for how to index a type of items.
      *
      * @param array $indexingConfiguration Indexing configuration from TypoScript
      */
-    public function setIndexingConfiguration(array $indexingConfiguration);
+    public function setIndexingConfiguration(array $indexingConfiguration): void;
 
     /**
      * Initializes Index Queue items for a certain site and indexing

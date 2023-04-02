@@ -8,7 +8,6 @@ defined('TYPO3') or die('Access denied.');
 // ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
 (static function () {
-
     // ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
     // Registering RecordMonitor and GarbageCollector hooks.
 

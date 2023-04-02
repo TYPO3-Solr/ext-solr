@@ -17,7 +17,6 @@ namespace ApacheSolrForTypo3\Solr\ContentObject;
 
 use ApacheSolrForTypo3\Solr\System\Language\FrontendOverlayService;
 use ApacheSolrForTypo3\Solr\System\TCA\TCAService;
-use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use Doctrine\DBAL\Exception as DBALException;
 use Doctrine\DBAL\Result;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
@@ -51,21 +50,11 @@ class Relation extends AbstractContentObject
 
     /**
      * Content object configuration
-     *
-     * @var array
      */
     protected array $configuration = [];
 
-    /**
-     * @var FrontendOverlayService|null
-     */
     protected ?FrontendOverlayService $frontendOverlayService = null;
 
-    /**
-     * Relation constructor.
-     *
-     * @param TCAService $tcaService
-     */
     public function __construct(
         protected readonly TCAService $tcaService
     ) {
@@ -80,15 +69,10 @@ class Relation extends AbstractContentObject
      * TYPO3-style m:n relations.
      * May resolve single value and multi value relations.
      *
-     * @inheritDoc
-     *
-     * @param array $conf
-     * @return string
-     *
      * @throws AspectNotFoundException
      * @throws ContentRenderingException
-     * @throws DBALDriverException
      * @throws DBALException
+     *
      * @noinspection PhpMissingReturnTypeInspection, because foreign source inheritance See {@link AbstractContentObject::render()}
      */
     public function render($conf = [])
@@ -122,7 +106,6 @@ class Relation extends AbstractContentObject
      *
      * @throws AspectNotFoundException
      * @throws ContentRenderingException
-     * @throws DBALDriverException
      * @throws DBALException
      */
     protected function getRelatedItems(ContentObjectRenderer $parentContentObject): array
@@ -153,11 +136,11 @@ class Relation extends AbstractContentObject
      * @param string $localTableName Local table name
      * @param int $localRecordUid Local record uid
      * @param array $localFieldTca The local table's TCA
+     *
      * @return array Array of related items, values already resolved from related records
      *
      * @throws AspectNotFoundException
      * @throws ContentRenderingException
-     * @throws DBALDriverException
      * @throws DBALException
      */
     protected function getRelatedItemsFromMMTable(string $localTableName, int $localRecordUid, array $localFieldTca): array
@@ -245,6 +228,7 @@ class Relation extends AbstractContentObject
      * @param int $localRecordUid Local record uid
      * @param array $localFieldTca The local table's TCA
      * @param ContentObjectRenderer $parentContentObject parent content object
+     *
      * @return array Array of related items, values already resolved from related records
      *
      * @throws AspectNotFoundException
@@ -263,7 +247,7 @@ class Relation extends AbstractContentObject
         $foreignTableLabelField = $this->resolveForeignTableLabelField($foreignTableTca);
         $localField = $this->configuration['localField'];
 
-        /** @var $relationHandler RelationHandler */
+        /* @var RelationHandler $relationHandler */
         $relationHandler = GeneralUtility::makeInstance(RelationHandler::class);
         if (!empty($localFieldTca['config']['MM'] ?? '')) {
             $relationHandler->start(
@@ -313,8 +297,6 @@ class Relation extends AbstractContentObject
      * @param string $foreignTableLabelField Field name of the foreign label field
      * @param ContentObjectRenderer $parentContentObject cObject
      * @param string $foreignTableName Related record table name
-     *
-     * @return array
      *
      * @throws AspectNotFoundException
      * @throws DBALException
@@ -380,13 +362,12 @@ class Relation extends AbstractContentObject
      *
      * @param string $foreignTable The table to fetch records from.
      * @param int ...$uids The uids to fetch from table.
-     * @return array
      *
      * @throws DBALException
      */
     protected function getRelatedRecords(string $foreignTable, int ...$uids): array
     {
-        /** @var QueryBuilder $queryBuilder */
+        /* @var QueryBuilder $queryBuilder */
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($foreignTable);
         $queryBuilder->select('*')
             ->from($foreignTable)
@@ -404,11 +385,6 @@ class Relation extends AbstractContentObject
      *   Simulates MySqls ORDER BY FIELD(fieldname, COPY_OF_IN_FOR_WHERE)
      *   Example: SELECT * FROM a_table WHERE field_name IN (2, 3, 4) SORT BY FIELD(field_name, 2, 3, 4)
      *
-     *
-     * @param Result $statement
-     * @param string $columnName
-     * @param array $arrayWithValuesForIN
-     * @return array
      * @throws DBALException
      */
     protected function sortByKeyInIN(Result $statement, string $columnName, ...$arrayWithValuesForIN): array
@@ -425,7 +401,6 @@ class Relation extends AbstractContentObject
     /**
      * Returns current language id fetched from object properties chain TSFE->context->language aspect->id.
      *
-     * @return int
      * @throws AspectNotFoundException
      * @throws ContentRenderingException
      */

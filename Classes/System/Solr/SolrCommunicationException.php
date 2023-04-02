@@ -20,7 +20,7 @@ namespace ApacheSolrForTypo3\Solr\System\Solr;
 use RuntimeException;
 
 /**
- * This exception or a more specific one should be thrown when the is an error in the communication with the solr server.
+ * This exception or a more specific one should be thrown when there is an error in the communication with the solr server.
  */
 class SolrCommunicationException extends RuntimeException
 {

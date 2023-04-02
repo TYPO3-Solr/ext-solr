@@ -17,23 +17,14 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
 
 abstract class AbstractDeactivatable
 {
-    /**
-     * @var bool
-     */
     protected bool $isEnabled = false;
 
-    /**
-     * @return bool
-     */
     public function getIsEnabled(): bool
     {
         return $this->isEnabled;
     }
 
-    /**
-     * @param bool $isEnabled
-     */
-    public function setIsEnabled(bool $isEnabled)
+    public function setIsEnabled(bool $isEnabled): void
     {
         $this->isEnabled = $isEnabled;
     }

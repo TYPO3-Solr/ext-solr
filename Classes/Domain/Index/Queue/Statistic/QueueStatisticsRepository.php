@@ -18,7 +18,6 @@ declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\Statistic;
 
 use ApacheSolrForTypo3\Solr\System\Records\AbstractRepository;
-use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use Doctrine\DBAL\Exception as DBALException;
 use PDO;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -29,21 +28,12 @@ use TYPO3\CMS\Extbase\Persistence\Generic\Exception\UnsupportedMethodException;
  */
 class QueueStatisticsRepository extends AbstractRepository
 {
-    /**
-     * @var string
-     */
     protected string $table = 'tx_solr_indexqueue_item';
 
     /**
      * Extracts the number of pending, indexed and erroneous items from the
      * Index Queue.
      *
-     * @param int $rootPid
-     * @param string|null $indexingConfigurationName
-     *
-     * @return QueueStatistic
-     *
-     * @throws DBALDriverException
      * @throws DBALException
      */
     public function findOneByRootPidAndOptionalIndexingConfigurationName(
@@ -84,13 +74,10 @@ class QueueStatisticsRepository extends AbstractRepository
 
     /**
      * Instantiates and fills QueueStatistic with values
-     *
-     * @param array $indexQueueStatisticResultSet
-     * @return QueueStatistic
      */
     protected function buildQueueStatisticFromResultSet(array $indexQueueStatisticResultSet): QueueStatistic
     {
-        /* @var $statistic QueueStatistic */
+        /* @var QueueStatistic $statistic */
         $statistic = GeneralUtility::makeInstance(QueueStatistic::class);
         foreach ($indexQueueStatisticResultSet as $row) {
             if ($row['failed'] == 1) {
@@ -108,7 +95,6 @@ class QueueStatisticsRepository extends AbstractRepository
     /**
      * Don't use this method.
      *
-     * @return int
      * @throws UnsupportedMethodException
      */
     public function count(): int

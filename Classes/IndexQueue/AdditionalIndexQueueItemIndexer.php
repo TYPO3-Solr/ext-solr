@@ -33,5 +33,5 @@ interface AdditionalIndexQueueItemIndexer
      * @param Document $itemDocument The original item document.
      * @return Document[] array An array of additional Document objects
      */
-    public function getAdditionalItemDocuments(Item $item, $language, Document $itemDocument);
+    public function getAdditionalItemDocuments(Item $item, int $language, Document $itemDocument): array;
 }

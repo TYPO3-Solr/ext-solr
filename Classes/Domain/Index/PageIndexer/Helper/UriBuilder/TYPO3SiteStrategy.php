@@ -30,16 +30,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class TYPO3SiteStrategy extends AbstractUriStrategy
 {
-    /**
-     * @var SiteFinder
-     */
     protected SiteFinder $siteFinder;
 
-    /**
-     * TYPO3SiteStrategy constructor.
-     * @param SolrLogManager|null $logger
-     * @param SiteFinder|null $siteFinder
-     */
     public function __construct(
         SolrLogManager $logger = null,
         SiteFinder $siteFinder = null
@@ -49,18 +41,17 @@ class TYPO3SiteStrategy extends AbstractUriStrategy
     }
 
     /**
-     * @param Item $item
-     * @param int $language
-     * @param string $mountPointParameter
-     * @return string
+     * Builds and returns URI for page indexing from index queue item
+     * Handles "pages" type only.
+     *
      * @throws SiteNotFoundException
      */
     protected function buildPageIndexingUriFromPageItemAndLanguageId(
         Item $item,
         int $language = 0,
-        string $mountPointParameter = ''
+        string $mountPointParameter = '',
     ): string {
-        $site = $this->siteFinder->getSiteByPageId((int)$item->getRecordUid());
+        $site = $this->siteFinder->getSiteByPageId($item->getRecordUid());
         $parameters = [];
 
         if ($language > 0) {

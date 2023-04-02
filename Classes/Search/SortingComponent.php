@@ -36,26 +36,18 @@ class SortingComponent extends AbstractComponent implements QueryAware, SearchRe
 {
     /**
      * Solr query
-     *
-     * @var Query|null
      */
     protected ?Query $query;
 
-    /**
-     * @var SearchRequest|null
-     */
     protected ?SearchRequest $searchRequest;
 
     /**
      * QueryBuilder
-     *
-     * @var QueryBuilder
      */
     protected QueryBuilder $queryBuilder;
 
     /**
      * AccessComponent constructor.
-     * @param QueryBuilder|null $queryBuilder
      */
     public function __construct(QueryBuilder $queryBuilder = null)
     {
@@ -67,7 +59,7 @@ class SortingComponent extends AbstractComponent implements QueryAware, SearchRe
      *
      * Sets the sorting query parameters
      */
-    public function initializeSearchComponent()
+    public function initializeSearchComponent(): void
     {
         $this->queryBuilder->startFrom($this->query);
 
@@ -89,7 +81,7 @@ class SortingComponent extends AbstractComponent implements QueryAware, SearchRe
 
         // a passed sorting has always priority an overwrites the configured initial sorting
         $this->query->clearSorts();
-        /** @var $sortHelper SortingHelper */
+        /* @var SortingHelper $sortHelper */
         $sortHelper = GeneralUtility::makeInstance(SortingHelper::class, $this->searchConfiguration['sorting.']['options.']);
         $sortFields = $sortHelper->getSortFieldFromUrlParameter($arguments['sort']);
         $this->queryBuilder->useSortings(Sortings::fromString($sortFields));
@@ -98,9 +90,6 @@ class SortingComponent extends AbstractComponent implements QueryAware, SearchRe
 
     /**
      * Checks if the arguments array has a valid sorting.
-     *
-     * @param array $arguments
-     * @return bool
      */
     protected function hasValidSorting(array $arguments): bool
     {
@@ -112,15 +101,12 @@ class SortingComponent extends AbstractComponent implements QueryAware, SearchRe
      *
      * @param Query $query Current query
      */
-    public function setQuery(Query $query)
+    public function setQuery(Query $query): void
     {
         $this->query = $query;
     }
 
-    /**
-     * @param SearchRequest $searchRequest
-     */
-    public function setSearchRequest(SearchRequest $searchRequest)
+    public function setSearchRequest(SearchRequest $searchRequest): void
     {
         $this->searchRequest = $searchRequest;
     }

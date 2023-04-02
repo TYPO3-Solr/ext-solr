@@ -22,44 +22,26 @@ namespace ApacheSolrForTypo3\Solr\System\Solr\Schema;
  */
 class Schema
 {
-    /**
-     * @var string
-     */
-    protected $managedResourceId = 'core_en';
+    protected string $managedResourceId = 'core_en';
 
-    /**
-     * @var string
-     */
-    protected $name = '';
+    protected string $name = '';
 
-    /**
-     * @return string
-     */
     public function getManagedResourceId(): string
     {
         return $this->managedResourceId;
     }
 
-    /**
-     * @param string $managedResourceId
-     */
-    public function setManagedResourceId(string $managedResourceId)
+    public function setManagedResourceId(string $managedResourceId): void
     {
         $this->managedResourceId = $managedResourceId;
     }
 
-    /**
-     * @return string
-     */
     public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * @param string $name
-     */
-    public function setName(string $name)
+    public function setName(string $name): void
     {
         $this->name = $name;
     }

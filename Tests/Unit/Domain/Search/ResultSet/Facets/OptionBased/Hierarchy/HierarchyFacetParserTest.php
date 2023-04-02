@@ -46,7 +46,7 @@ class HierarchyFacetParserTest extends SetUpFacetParser
             $facetConfiguration
         );
 
-        /** @var $parser HierarchyFacetParser */
+        /* @var HierarchyFacetParser $parser */
         $parser = $this->getInitializedParser(HierarchyFacetParser::class);
         $facet = $parser->parse($searchResultSet, 'pageHierarchy', $facetConfiguration['pageHierarchy.']);
         self::assertInstanceOf(HierarchyFacet::class, $facet);
@@ -102,7 +102,7 @@ class HierarchyFacetParserTest extends SetUpFacetParser
             $facetConfiguration
         );
 
-        /** @var $parser HierarchyFacetParser */
+        /* @var HierarchyFacetParser $parser */
         $parser = $this->getInitializedParser(HierarchyFacetParser::class);
         $facet = $parser->parse($searchResultSet, 'pageHierarchy', $facetConfiguration['pageHierarchy.']);
 
@@ -144,7 +144,7 @@ class HierarchyFacetParserTest extends SetUpFacetParser
             ['categoryHierarchyByTitle:/folder2\/level1\//folder2\/level2\//']
         );
 
-        /** @var $parser HierarchyFacetParser */
+        /* @var HierarchyFacetParser $parser */
         $parser = $this->getInitializedParser(HierarchyFacetParser::class);
         $facet = $parser->parse($searchResultSet, 'categoryHierarchyByTitle', $facetConfiguration);
         // HierarchyFacetParser::getActiveFacetValuesFromRequest() must be aware about slashes in path segments
@@ -183,7 +183,7 @@ class HierarchyFacetParserTest extends SetUpFacetParser
             $facetConfiguration
         );
 
-        /** @var $parser HierarchyFacetParser */
+        /* @var HierarchyFacetParser $parser */
         $parser = $this->getInitializedParser(HierarchyFacetParser::class);
         $facet = $parser->parse($searchResultSet, 'pageHierarchy', $facetConfiguration['pageHierarchy.']);
         self::assertFalse($facet->getIsUsed());
@@ -208,7 +208,7 @@ class HierarchyFacetParserTest extends SetUpFacetParser
             ['pageHierarchy:/1/14/']
         );
 
-        /** @var $parser HierarchyFacetParser */
+        /* @var HierarchyFacetParser $parser */
         $parser = $this->getInitializedParser(HierarchyFacetParser::class);
         $facet = $parser->parse($searchResultSet, 'pageHierarchy', $facetConfiguration['pageHierarchy.']);
 

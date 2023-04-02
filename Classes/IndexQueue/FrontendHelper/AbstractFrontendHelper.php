@@ -33,22 +33,16 @@ abstract class AbstractFrontendHelper implements FrontendHelper, SingletonInterf
 {
     /**
      * Index Queue page indexer request.
-     *
-     * @var PageIndexerRequest|null
      */
     protected ?PageIndexerRequest $request = null;
 
     /**
      * Index Queue page indexer response.
-     *
-     * @var PageIndexerResponse|null
      */
     protected ?PageIndexerResponse $response = null;
 
     /**
      * Singleton instance variable for indication of indexing request.
-     *
-     * @var bool
      */
     protected bool $isActivated = false;
 
@@ -57,9 +51,6 @@ abstract class AbstractFrontendHelper implements FrontendHelper, SingletonInterf
      */
     protected string $action;
 
-    /**
-     * @var SolrLogManager|null
-     */
     protected ?SolrLogManager $logger = null;
 
     /**

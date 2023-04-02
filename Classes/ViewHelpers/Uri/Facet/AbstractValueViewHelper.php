@@ -19,6 +19,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetItem;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\ViewHelpers\Uri\AbstractUriViewHelper;
+use InvalidArgumentException;
 
 /**
  * Class AbstractValueViewHelper
@@ -29,9 +30,9 @@ use ApacheSolrForTypo3\Solr\ViewHelpers\Uri\AbstractUriViewHelper;
 abstract class AbstractValueViewHelper extends AbstractUriViewHelper
 {
     /**
-     * Initializes the arguments
+     * @inheritdoc
      */
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         parent::initializeArguments();
         $this->registerArgument('facet', AbstractFacet::class, 'The facet');
@@ -42,60 +43,54 @@ abstract class AbstractValueViewHelper extends AbstractUriViewHelper
     }
 
     /**
-     * @param $arguments
-     * @return string
-     * @throws \InvalidArgumentException
+     * Extracts and Returns value from given arguments.
      */
-    protected static function getValueFromArguments($arguments)
+    protected static function getValueFromArguments(array $arguments = []): string
     {
         if (isset($arguments['facetItem'])) {
-            /** @var  $facetItem AbstractFacetItem */
+            /* @var AbstractFacetItem $facetItem */
             $facetItem = $arguments['facetItem'];
             $facetValue = $facetItem->getUriValue();
         } elseif (isset($arguments['facetItemValue'])) {
             $facetValue = $arguments['facetItemValue'];
         } else {
-            throw new \InvalidArgumentException('No facetItem was passed, please pass either facetItem or facetItemValue');
+            throw new InvalidArgumentException('No facetItem was passed, please pass either facetItem or facetItemValue');
         }
 
         return $facetValue;
     }
 
     /**
-     * @param $arguments
-     * @return string
-     * @throws \InvalidArgumentException
+     * Extracts and returns name from arguments.
      */
-    protected static function getNameFromArguments($arguments)
+    protected static function getNameFromArguments(array $arguments = []): string
     {
         if (isset($arguments['facet'])) {
-            /** @var  $facet AbstractFacet */
+            /* @var AbstractFacet $facet */
             $facet = $arguments['facet'];
             $facetName = $facet->getName();
         } elseif (isset($arguments['facetName'])) {
             $facetName = $arguments['facetName'];
         } else {
-            throw new \InvalidArgumentException('No facet was passed, please pass either facet or facetName');
+            throw new InvalidArgumentException('No facet was passed, please pass either facet or facetName', 1680615971);
         }
 
         return $facetName;
     }
 
     /**
-     * @param $arguments
-     * @return string
-     * @throws \InvalidArgumentException
+     * Extracts and returns result-set from arguments.
      */
-    protected static function getResultSetFromArguments($arguments)
+    protected static function getResultSetFromArguments(array $arguments = []): SearchResultSet
     {
         if (isset($arguments['facet'])) {
-            /** @var  $facet AbstractFacet */
+            /* @var AbstractFacet $facet */
             $facet = $arguments['facet'];
             $resultSet = $facet->getResultSet();
         } elseif (isset($arguments['facetName'])) {
             $resultSet = $arguments['resultSet'];
         } else {
-            throw new \InvalidArgumentException('No facet was passed, please pass either facet or resultSet');
+            throw new InvalidArgumentException('No facet was passed, please pass either facet or resultSet');
         }
 
         return $resultSet;

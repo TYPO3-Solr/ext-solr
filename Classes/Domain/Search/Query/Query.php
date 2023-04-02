@@ -19,9 +19,6 @@ use Solarium\QueryType\Select\Query\Query as SolariumQuery;
 
 class Query extends SolariumQuery
 {
-    /**
-     * @return string
-     */
     public function __toString()
     {
         return $this->getQuery();

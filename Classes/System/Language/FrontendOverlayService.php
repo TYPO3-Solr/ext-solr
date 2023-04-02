@@ -18,7 +18,6 @@ declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\System\Language;
 
 use ApacheSolrForTypo3\Solr\System\TCA\TCAService;
-use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use Doctrine\DBAL\Exception as DBALException;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Context\LanguageAspect;
@@ -44,20 +43,15 @@ class FrontendOverlayService
     /**
      * Return the translated record
      *
-     * @param string $tableName
-     * @param array $record
-     *
-     * @return array|null
-     *
      * @throws AspectNotFoundException
      */
     public function getOverlay(string $tableName, array $record): ?array
     {
         /* @var LanguageAspect $currentLanguageAspect */
         $currentLanguageAspect = $this->tsfe->getContext()->getAspect('language');
-//        if ($tableName === 'pages') {
-//            return $this->tsfe->sys_page->getPageOverlay($record, $currentLanguageAspect);
-//        }
+        //        if ($tableName === 'pages') {
+        //            return $this->tsfe->sys_page->getPageOverlay($record, $currentLanguageAspect);
+        //        }
 
         return $this->tsfe->sys_page->getLanguageOverlay($tableName, $record, $currentLanguageAspect);
     }
@@ -66,12 +60,7 @@ class FrontendOverlayService
      * When the record has an overlay we retrieve the uid of the translated record,
      * to resolve the relations from the translation.
      *
-     * @param string $table
-     * @param string $field
-     * @param int $uid
-     * @return int
      * @throws AspectNotFoundException
-     * @throws DBALDriverException
      * @throws DBALException
      */
     public function getUidOfOverlay(
@@ -103,9 +92,6 @@ class FrontendOverlayService
     /**
      * This method retrieves the _PAGES_OVERLAY_UID or _LOCALIZED_UID from the localized record.
      *
-     * @param string $localTableName
-     * @param array $originalRecord
-     * @return int
      * @throws AspectNotFoundException
      */
     protected function getLocalRecordUidFromOverlay(string $localTableName, array $originalRecord): int
@@ -124,8 +110,7 @@ class FrontendOverlayService
     }
 
     /**
-     * @param string $localTableName
-     * @param int $localRecordUid
+     * Returns  the record from table by record uid.
      *
      * @return array<string,mixed>|false
      *

@@ -33,19 +33,10 @@ use TYPO3Fluid\Fluid\Core\Variables\VariableProviderInterface;
  */
 class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
 {
-    /**
-     * @var string
-     */
     protected $tagName = 'form';
 
-    /**
-     * @var bool
-     */
     protected $escapeChildren = true;
 
-    /**
-     * @var bool
-     */
     protected $escapeOutput = false;
 
     /**
@@ -60,7 +51,7 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
     /**
      * Initialize arguments.
      */
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         parent::initializeArguments();
         $this->registerTagAttribute('enctype', 'string', 'MIME type with which the form is submitted');
@@ -88,7 +79,6 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
     /**
      * Render search form tag
      *
-     * @return string
      * @throws AspectNotFoundException
      * @noinspection PhpMissingReturnTypeInspection
      */
@@ -140,8 +130,6 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
     /**
      * Get the existing search parameters in an array
      * Returns an empty array if search.keepExistingParametersForNewSearches is not set
-     *
-     * @return array
      */
     protected function getExistingSearchParameters(): array
     {
@@ -156,10 +144,6 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
 
     /**
      * Translate the multidimensional array of existing arguments into a flat array of name-value pairs for the input tags
-     *
-     * @param array $arguments
-     * @param string $nameAttributePrefix
-     * @return array
      */
     protected function translateSearchParametersToInputTagAttributes(
         array $arguments,
@@ -184,26 +168,17 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
      * When a site is managed with site management the language and the id are encoded in the path segment of the url.
      * When no speaking urls are active (e.g. with TYPO3 8 and no realurl) this information is passed as query parameter
      * and would get lost when it is only part of the query arguments in the action parameter of the form.
-     *
-     * @param int $pageId
-     * @return bool
      */
     protected function getIsSiteManagedSite(int $pageId): bool
     {
         return SiteUtility::getIsSiteManagedSite($pageId);
     }
 
-    /**
-     * @return VariableProviderInterface|null
-     */
     protected function getTemplateVariableContainer(): ?VariableProviderInterface
     {
         return $this->templateVariableContainer;
     }
 
-    /**
-     * @return string
-     */
     protected function getQueryString(): string
     {
         $resultSet = $this->getSearchResultSet();
@@ -213,11 +188,6 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
         return trim($this->getSearchResultSet()->getUsedSearchRequest()->getRawUserQuery() ?? '');
     }
 
-    /**
-     * @param array|null $additionalFilters
-     * @param int $pageUid
-     * @return string
-     */
     protected function getSuggestUrl(?array $additionalFilters, int $pageUid): string
     {
         $pluginNamespace = $this->getTypoScriptConfiguration()->getSearchPluginNamespace();
@@ -233,10 +203,6 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
         return $urlService->withoutQueryParameter('cHash')->__toString();
     }
 
-    /**
-     * @param int $pageUid
-     * @return string
-     */
     protected function buildUriFromPageUidAndArguments(int $pageUid): string
     {
         return $this->uriBuilder

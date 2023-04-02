@@ -1192,7 +1192,7 @@ class SearchControllerTest extends AbstractFrontendController
             plugin.tx_solr.search.faceting = 1
             plugin.tx_solr.search.faceting.facets {
                 pid {
-                    label = Content Type
+                    label = PID
                     field = pid
                     metrics {
                         newest = max(created)

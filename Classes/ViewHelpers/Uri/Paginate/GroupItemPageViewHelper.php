@@ -20,7 +20,6 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers\Uri\Paginate;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Grouping\GroupItem;
 use ApacheSolrForTypo3\Solr\ViewHelpers\Uri\AbstractUriViewHelper;
 use Closure;
-use TYPO3\CMS\Extbase\Object\Exception as ExtbaseObjectException;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 
 /**
@@ -32,9 +31,9 @@ use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 class GroupItemPageViewHelper extends AbstractUriViewHelper
 {
     /**
-     * Initializes the arguments
+     * @inheritdoc
      */
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         parent::initializeArguments();
         $this->registerArgument('page', 'int', 'The page', false, 0);
@@ -42,12 +41,6 @@ class GroupItemPageViewHelper extends AbstractUriViewHelper
     }
 
     /**
-     * @param array $arguments
-     * @param Closure $renderChildrenClosure
-     * @param RenderingContextInterface $renderingContext
-     * @return string
-     * @throws ExtbaseObjectException
-     *
      * @noinspection PhpMissingReturnTypeInspection
      */
     public static function renderStatic(array $arguments, Closure $renderChildrenClosure, RenderingContextInterface $renderingContext)

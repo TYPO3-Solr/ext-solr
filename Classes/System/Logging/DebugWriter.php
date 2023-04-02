@@ -39,7 +39,7 @@ class DebugWriter
      * @param string $message Log message.
      * @param array $data Additional data to log
      */
-    public function write($level, $message, $data = [])
+    public function write(int|string $level, string $message, array $data = []): void
     {
         $debugAllowedForIp = $this->getIsAllowedByDevIPMask();
         if (!$debugAllowedForIp) {
@@ -59,20 +59,15 @@ class DebugWriter
         $this->writeDebugMessage($level, $message, $data);
     }
 
-    /**
-     * @return bool
-     */
-    protected function getIsAllowedByDevIPMask()
+    protected function getIsAllowedByDevIPMask(): bool
     {
         return GeneralUtility::cmpIP(GeneralUtility::getIndpEnv('REMOTE_ADDR'), $GLOBALS['TYPO3_CONF_VARS']['SYS']['devIPmask']);
     }
 
     /**
      * Check if Logging via debugOutput has been configured
-     *
-     * @return bool
      */
-    protected function getIsDebugOutputEnabled()
+    protected function getIsDebugOutputEnabled(): bool
     {
         return Util::getSolrConfiguration()->getLoggingDebugOutput();
     }
@@ -86,14 +81,20 @@ class DebugWriter
     }
 
     /**
+     * Writes the debug to the output buffer.
+     *
      * @param int|string $level Log level. Value according to \TYPO3\CMS\Core\Log\LogLevel. Alternatively accepts a string.
      * @param string $message Log message.
      * @param array $data Additional data to log
      */
-    protected function writeDebugMessage($level, $message, $data)
+    protected function writeDebugMessage(int|string $level, string $message = '', array $data = []): void
     {
-        $parameters = ['extKey' => 'solr', 'msg' => $message, 'level' => $level, 'data' => $data];
-        $message = $parameters['msg'] ?? '';
+        $parameters = [
+            'extKey' => 'solr',
+            'msg' => $message,
+            'level' => $level,
+            'data' => $data,
+        ];
         if (ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend()) {
             DebugUtility::debug($parameters, $parameters['extKey']);
         } else {

@@ -87,7 +87,6 @@ class SuggestControllerTest extends AbstractFrontendController
 
     /**
      * @test
-     * @doesNotPerformAssertions
      */
     public function canSuggestWithUriSpecialChars()
     {

@@ -21,7 +21,6 @@ use ApacheSolrForTypo3\Solr\Domain\Index\Queue\QueueItemRepository;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
-use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use Doctrine\DBAL\Exception as DBALException;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -39,57 +38,37 @@ abstract class AbstractInitializer implements IndexQueueInitializer
 {
     /**
      * Site to initialize
-     *
-     * @var Site|null
      */
     protected ?Site $site;
 
     /**
      * The type of items this initializer is handling.
-     *
-     * @var string
      */
     protected string $type;
 
     /**
      * Index Queue configuration.
-     *
-     * @var array
      */
     protected array $indexingConfiguration = [];
 
     /**
      * Indexing configuration name.
-     *
-     * @var string
      */
     protected string $indexingConfigurationName;
 
     /**
      * Flash message queue
-     *
-     * @var FlashMessageQueue
      */
     protected FlashMessageQueue $flashMessageQueue;
 
-    /**
-     * @var SolrLogManager
-     */
     protected SolrLogManager $logger;
 
-    /**
-     * @var QueueItemRepository
-     */
     protected QueueItemRepository $queueItemRepository;
 
-    /**
-     * @var PagesRepository
-     */
     protected PagesRepository $pagesRepository;
 
     /**
      * Constructor, prepares the flash message queue
-     * @param QueueItemRepository|null $queueItemRepository
      */
     public function __construct(
         QueueItemRepository $queueItemRepository = null,
@@ -107,7 +86,7 @@ abstract class AbstractInitializer implements IndexQueueInitializer
      *
      * @param Site $site The site to initialize Index Queue items for.
      */
-    public function setSite(Site $site)
+    public function setSite(Site $site): void
     {
         $this->site = $site;
     }
@@ -117,7 +96,7 @@ abstract class AbstractInitializer implements IndexQueueInitializer
      *
      * @param string $type Type to initialize.
      */
-    public function setType(string $type)
+    public function setType(string $type): void
     {
         $this->type = $type;
     }
@@ -127,7 +106,7 @@ abstract class AbstractInitializer implements IndexQueueInitializer
      *
      * @param array $indexingConfiguration Indexing configuration from TypoScript
      */
-    public function setIndexingConfiguration(array $indexingConfiguration)
+    public function setIndexingConfiguration(array $indexingConfiguration): void
     {
         $this->indexingConfiguration = $indexingConfiguration;
     }
@@ -137,7 +116,7 @@ abstract class AbstractInitializer implements IndexQueueInitializer
      *
      * @param string $indexingConfigurationName Indexing configuration name
      */
-    public function setIndexingConfigurationName(string $indexingConfigurationName)
+    public function setIndexingConfigurationName(string $indexingConfigurationName): void
     {
         $this->indexingConfigurationName = $indexingConfigurationName;
     }
@@ -147,11 +126,12 @@ abstract class AbstractInitializer implements IndexQueueInitializer
      * configuration.
      *
      * @return bool TRUE if initialization was successful, FALSE on error.
-     * @throws DBALDriverException
+     *
+     * @throws DBALException
      */
     public function initialize(): bool
     {
-        /** @var ConnectionPool $connectionPool */
+        /* @var ConnectionPool $connectionPool */
         $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
 
         $fetchItemsQuery = $this->buildSelectStatement() . ', "" as errors '
@@ -228,7 +208,8 @@ abstract class AbstractInitializer implements IndexQueueInitializer
      * Builds a part of the WHERE clause of the Index Queue initialization
      * query. This part selects the limits items to be selected from the pages
      * in a site only, plus additional pages that may have been configured.
-     * @throws DBALDriverException
+     *
+     * @throws DBALException
      */
     protected function buildPagesClause(): string
     {
@@ -243,7 +224,8 @@ abstract class AbstractInitializer implements IndexQueueInitializer
      * configured.
      *
      * @return array A (sorted) array of page IDs in a site
-     * @throws DBALDriverException
+     *
+     * @throws DBALException
      */
     protected function getPages(): array
     {
@@ -395,10 +377,8 @@ abstract class AbstractInitializer implements IndexQueueInitializer
 
     /**
      * Writes the passed log data to the log.
-     *
-     * @param array $logData
      */
-    protected function logInitialization(array $logData)
+    protected function logInitialization(array $logData): void
     {
         if (!$this->site->getSolrConfiguration()->getLoggingIndexingIndexQueueInitialization()) {
             return;

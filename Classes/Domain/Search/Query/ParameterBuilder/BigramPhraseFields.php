@@ -27,20 +27,12 @@ class BigramPhraseFields extends AbstractFieldList implements ParameterBuilderIn
 {
     /**
      * Parses the string representation of the fieldList (e.g. content^100, title^10) to the object representation.
-     *
-     * @param string $fieldListString
-     * @param string $delimiter
-     * @return BigramPhraseFields
      */
     public static function fromString(string $fieldListString, string $delimiter = ','): BigramPhraseFields
     {
         return self::initializeFromString($fieldListString, $delimiter);
     }
 
-    /**
-     * @param TypoScriptConfiguration $solrConfiguration
-     * @return BigramPhraseFields
-     */
     public static function fromTypoScriptConfiguration(TypoScriptConfiguration $solrConfiguration): BigramPhraseFields
     {
         $isEnabled = $solrConfiguration->getBigramPhraseSearchIsEnabled();
@@ -53,10 +45,6 @@ class BigramPhraseFields extends AbstractFieldList implements ParameterBuilderIn
 
     /**
      * Parses the string representation of the fieldList (e.g. content^100, title^10) to the object representation.
-     *
-     * @param string $fieldListString
-     * @param string $delimiter
-     * @return BigramPhraseFields
      */
     protected static function initializeFromString(string $fieldListString, string $delimiter = ','): BigramPhraseFields
     {
@@ -64,10 +52,6 @@ class BigramPhraseFields extends AbstractFieldList implements ParameterBuilderIn
         return new BigramPhraseFields(true, $fieldList);
     }
 
-    /**
-     * @param AbstractQueryBuilder $parentBuilder
-     * @return AbstractQueryBuilder
-     */
     public function build(AbstractQueryBuilder $parentBuilder): AbstractQueryBuilder
     {
         $bigramPhraseFieldsString = $this->toString();

@@ -31,20 +31,12 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class VariantsProcessor implements SearchResultSetProcessor
 {
-    /**
-     * @var TypoScriptConfiguration
-     */
     protected TypoScriptConfiguration $typoScriptConfiguration;
 
-    /**
-     * @var SearchResultBuilder
-     */
     protected SearchResultBuilder $resultBuilder;
 
     /**
      * VariantsProcessor constructor.
-     * @param TypoScriptConfiguration $configuration
-     * @param SearchResultBuilder|null $resultBuilder
      */
     public function __construct(TypoScriptConfiguration $configuration, SearchResultBuilder $resultBuilder = null)
     {
@@ -55,9 +47,6 @@ class VariantsProcessor implements SearchResultSetProcessor
     /**
      * This method is used to add documents to the expanded documents of the SearchResult
      * when collapsing is configured.
-     *
-     * @param SearchResultSet $resultSet
-     * @return SearchResultSet
      */
     public function process(SearchResultSet $resultSet): SearchResultSet
     {
@@ -73,7 +62,7 @@ class VariantsProcessor implements SearchResultSetProcessor
 
         $variantsField = $this->typoScriptConfiguration->getSearchVariantsField();
         foreach ($resultSet->getSearchResults() as $resultDocument) {
-            /** @var $resultDocument SearchResult */
+            /* @var SearchResult $resultDocument */
             $variantId = $resultDocument[$variantsField] ?? null;
 
             // when there is no value in the collapsing field, we can return
@@ -95,22 +84,18 @@ class VariantsProcessor implements SearchResultSetProcessor
 
     /**
      * Build the SearchResult of the variant and assigns it to the parent result document.
-     *
-     * @param ResponseAdapter $response
-     * @param string $variantAccessKey
-     * @param SearchResult $resultDocument
      */
     protected function buildVariantDocumentAndAssignToParentResult(
         ResponseAdapter $response,
         string $variantAccessKey,
         SearchResult $resultDocument
-    ) {
+    ): void {
         foreach ($response->{'expanded'}->{$variantAccessKey}->{'docs'} as $variantDocumentArray) {
             $fields = get_object_vars($variantDocumentArray);
             $variantDocument = new SearchResult($fields);
 
             $variantSearchResult = $this->resultBuilder->fromApacheSolrDocument($variantDocument);
-            $variantSearchResult->setIsVariant(true);
+            $variantSearchResult->setIsVariant();
             $variantSearchResult->setVariantParent($resultDocument);
 
             $resultDocument->addVariant($variantSearchResult);

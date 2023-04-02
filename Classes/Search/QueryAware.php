@@ -31,5 +31,5 @@ interface QueryAware
      *
      * @param Query $query Current query
      */
-    public function setQuery(Query $query);
+    public function setQuery(Query $query): void;
 }

@@ -29,14 +29,10 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 abstract class AbstractUriStrategy
 {
-    /**
-     * @var SolrLogManager
-     */
     protected SolrLogManager $logger;
 
     /**
      * AbstractUriStrategy constructor.
-     * @param SolrLogManager|null $logger
      */
     public function __construct(
         SolrLogManager $logger = null
@@ -44,11 +40,6 @@ abstract class AbstractUriStrategy
         $this->logger = $logger ?? GeneralUtility::makeInstance(SolrLogManager::class, /** @scrutinizer ignore-type */ __CLASS__);
     }
 
-    /**
-     * @param UrlHelper $urlHelper
-     * @param array $overrideConfiguration
-     * @return UrlHelper
-     */
     protected function applyTypoScriptOverridesOnIndexingUrl(UrlHelper $urlHelper, array $overrideConfiguration = []): UrlHelper
     {
         // check whether we should use ssl / https
@@ -74,13 +65,6 @@ abstract class AbstractUriStrategy
         return $urlHelper;
     }
 
-    /**
-     * @param Item $item
-     * @param int $language
-     * @param string $mountPointParameter
-     * @param array $options
-     * @return string
-     */
     public function getPageIndexingUriFromPageItemAndLanguageId(
         Item $item,
         int $language = 0,
@@ -117,25 +101,12 @@ abstract class AbstractUriStrategy
         return $this->applyDataUrlModifier($item, $language, $dataUrl, $urlHelper);
     }
 
-    /**
-     * @param Item $item
-     * @param int $language
-     * @param string $mountPointParameter
-     * @return mixed
-     */
     abstract protected function buildPageIndexingUriFromPageItemAndLanguageId(
         Item $item,
         int $language = 0,
         string $mountPointParameter = ''
     );
 
-    /**
-     * @param Item $item
-     * @param int $language
-     * @param string $dataUrl
-     * @param UrlHelper $urlHelper
-     * @return string
-     */
     protected function applyDataUrlModifier(
         Item $item,
         int $language,

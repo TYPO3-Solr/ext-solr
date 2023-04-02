@@ -32,8 +32,6 @@ class SearchResult extends Document
      *
      * Value of Solr collapse field, which is defined via
      * TypoScript variable "variants.variantField"
-     *
-     * @var string
      */
     protected string $variantFieldValue = '';
 
@@ -41,9 +39,7 @@ class SearchResult extends Document
      * Number of variants found
      *
      * May differ from documents in variants as
-     * returned variants are limited by expand.rows
-     *
-     * @var int
+     * returned variants are limited by `expand.rows`
      */
     protected int $variantsNumFound = 0;
 
@@ -54,75 +50,53 @@ class SearchResult extends Document
 
     /**
      * Indicates if an instance of this document is a variant (a sub document of another).
-     *
-     * @var bool
      */
     protected bool $isVariant = false;
 
     /**
      * References the parent document of the document is a variant.
-     *
-     * @var SearchResult|null
      */
     protected ?SearchResult $variantParent = null;
 
     /**
-     * @var GroupItem|null
+     * The group item if available
      */
     protected ?GroupItem $groupItem = null;
 
     /**
-     * @return GroupItem
+     * Returns the group item if available
      */
-    public function getGroupItem(): GroupItem
+    public function getGroupItem(): ?GroupItem
     {
         return $this->groupItem;
     }
 
-    /**
-     * @return bool
-     */
     public function getHasGroupItem(): bool
     {
         return $this->groupItem !== null;
     }
 
-    /**
-     * @param GroupItem $group
-     */
-    public function setGroupItem(GroupItem $group)
+    public function setGroupItem(GroupItem $group): void
     {
         $this->groupItem = $group;
     }
 
-    /**
-     * @return string
-     */
     public function getVariantFieldValue(): string
     {
         return $this->variantFieldValue;
     }
 
-    /**
-     * @param string $variantFieldValue
-     */
-    public function setVariantFieldValue(string $variantFieldValue)
+    public function setVariantFieldValue(string $variantFieldValue): void
     {
         $this->variantFieldValue = $variantFieldValue;
     }
 
-    /**
-     * @return int
-     */
     public function getVariantsNumFound(): int
     {
         return $this->variantsNumFound;
     }
 
-    /**
-     * @param int $numFound
-     */
-    public function setVariantsNumFound(int $numFound)
+    public function setVariantsNumFound(int $numFound): void
     {
         $this->variantsNumFound = $numFound;
     }
@@ -135,72 +109,47 @@ class SearchResult extends Document
         return $this->variants;
     }
 
-    /**
-     * @param SearchResult $expandedResult
-     */
-    public function addVariant(SearchResult $expandedResult)
+    public function addVariant(SearchResult $expandedResult): void
     {
         $this->variants[] = $expandedResult;
     }
 
-    /**
-     * @return bool
-     */
     public function getIsVariant(): bool
     {
         return $this->isVariant;
     }
 
-    /**
-     * @param bool $isVariant
-     */
-    public function setIsVariant(bool $isVariant)
+    public function setIsVariant(bool $isVariant = true): void
     {
         $this->isVariant = $isVariant;
     }
 
-    /**
-     * @return SearchResult|null
-     */
     public function getVariantParent(): ?SearchResult
     {
         return $this->variantParent;
     }
 
-    /**
-     * @param SearchResult $variantParent
-     */
-    public function setVariantParent(SearchResult $variantParent)
+    public function setVariantParent(SearchResult $variantParent): void
     {
         $this->variantParent = $variantParent;
     }
 
-    /**
-     * @return string
-     */
     public function getContent(): string
     {
         return $this->fields['content'] ?? '';
     }
 
-    /**
-     * @return bool
-     */
     public function getIsElevated(): bool
     {
         return $this->fields['isElevated'] ?? false;
     }
 
-    /**
-     * @return string
-     */
     public function getType(): string
     {
         return $this->fields['type'] ?? '';
     }
 
     /**
-     * @return string
      * Note: The id field on Apache Solr document is a string.
      */
     public function getId(): string
@@ -208,25 +157,16 @@ class SearchResult extends Document
         return $this->fields['id'] ?? '';
     }
 
-    /**
-     * @return float
-     */
     public function getScore(): float
     {
         return $this->fields['score'] ?? 0.0;
     }
 
-    /**
-     * @return string
-     */
     public function getUrl(): string
     {
         return $this->fields['url'] ?? '';
     }
 
-    /**
-     * @return string
-     */
     public function getTitle(): string
     {
         return $this->fields['title'] ?? '';

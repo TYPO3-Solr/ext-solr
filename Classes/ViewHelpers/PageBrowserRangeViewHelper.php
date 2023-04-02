@@ -34,7 +34,7 @@ class PageBrowserRangeViewHelper extends AbstractSolrFrontendViewHelper
     /**
      * Initializes the arguments
      */
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         parent::initializeArguments();
         $this->registerArgument('from', 'string', 'from', false, 'from');
@@ -43,10 +43,6 @@ class PageBrowserRangeViewHelper extends AbstractSolrFrontendViewHelper
     }
 
     /**
-     * @param array $arguments
-     * @param Closure $renderChildrenClosure
-     * @param RenderingContextInterface $renderingContext
-     * @return string
      * @noinspection PhpMissingReturnTypeInspection
      */
     public static function renderStatic(

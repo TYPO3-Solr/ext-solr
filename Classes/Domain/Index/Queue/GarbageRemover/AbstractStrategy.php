@@ -16,12 +16,15 @@
 namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\GarbageRemover;
 
 use ApacheSolrForTypo3\Solr\ConnectionManager;
+use ApacheSolrForTypo3\Solr\Domain\Site\Exception\UnexpectedTYPO3SiteInitializationException;
 use ApacheSolrForTypo3\Solr\GarbageCollectorPostProcessor;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use InvalidArgumentException;
+use Doctrine\DBAL\Exception as DBALException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use UnexpectedValueException;
 
 /**
  * An implementation ob a garbage remover strategy is responsible to remove all garbage from the index queue and
@@ -29,24 +32,13 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 abstract class AbstractStrategy
 {
-    /**
-     * @var Queue
-     */
     protected Queue $queue;
 
-    /**
-     * @var ConnectionManager
-     */
     protected ConnectionManager $connectionManager;
 
-    /**
-     * AbstractStrategy constructor.
-     * @param Queue|null $queue
-     * @param ConnectionManager|null $connectionManager
-     */
     public function __construct(
         Queue $queue = null,
-        ConnectionManager $connectionManager = null
+        ConnectionManager $connectionManager = null,
     ) {
         $this->queue = $queue ?? GeneralUtility::makeInstance(Queue::class);
         $this->connectionManager = $connectionManager ?? GeneralUtility::makeInstance(ConnectionManager::class);
@@ -54,11 +46,8 @@ abstract class AbstractStrategy
 
     /**
      * Call's the removal of the strategy and afterwards the garbage-collector post-processing hook.
-     *
-     * @param string $table
-     * @param int $uid
      */
-    public function removeGarbageOf(string $table, int $uid)
+    public function removeGarbageOf(string $table, int $uid): void
     {
         $this->removeGarbageOfByStrategy($table, $uid);
         $this->callPostProcessGarbageCollectorHook($table, $uid);
@@ -67,19 +56,15 @@ abstract class AbstractStrategy
     /**
      * An implementation of the GarbageCollection strategy is responsible to remove the garbage from
      * the indexqueue and from the solr server.
-     *
-     * @param string $table
-     * @param int $uid
      */
-    abstract protected function removeGarbageOfByStrategy(string $table, int $uid);
+    abstract protected function removeGarbageOfByStrategy(string $table, int $uid): void;
 
     /**
      * Deletes a document from solr and from the index queue.
      *
-     * @param string $table
-     * @param int $uid
+     * @throws DBALException
      */
-    protected function deleteInSolrAndRemoveFromIndexQueue(string $table, int $uid)
+    protected function deleteInSolrAndRemoveFromIndexQueue(string $table, int $uid): void
     {
         $this->deleteIndexDocuments($table, $uid);
         $this->queue->deleteItem($table, $uid);
@@ -88,10 +73,10 @@ abstract class AbstractStrategy
     /**
      * Deletes a document from solr and updates the item in the index queue (e.g. on page content updates).
      *
-     * @param string $table
-     * @param int $uid
+     * @throws DBALException
+     * @throws UnexpectedTYPO3SiteInitializationException
      */
-    protected function deleteInSolrAndUpdateIndexQueue(string $table, int $uid)
+    protected function deleteInSolrAndUpdateIndexQueue(string $table, int $uid): void
     {
         $this->deleteIndexDocuments($table, $uid);
         $this->queue->updateItem($table, $uid);
@@ -100,10 +85,10 @@ abstract class AbstractStrategy
     /**
      * Deletes index documents for a given record identification.
      *
-     * @param string $table The record's table name.
-     * @param int $uid The record's uid.
+     *
+     * @throws DBALException
      */
-    protected function deleteIndexDocuments(string $table, int $uid, int $language = 0)
+    protected function deleteIndexDocuments(string $table, int $uid, int $language = 0): void
     {
         // record can be indexed for multiple sites
         $indexQueueItems = $this->queue->getItems($table, $uid);
@@ -128,20 +113,14 @@ abstract class AbstractStrategy
 
     /**
      * Deletes the record in all solr connections from that site.
-     *
-     * @param string $table
-     * @param int $uid
-     * @param SolrConnection[] $solrConnections
-     * @param string $siteHash
-     * @param bool $enableCommitsSetting
      */
     protected function deleteRecordInAllSolrConnections(
         string $table,
         int $uid,
         array $solrConnections,
         string $siteHash,
-        bool $enableCommitsSetting
-    ) {
+        bool $enableCommitsSetting,
+    ): void {
         foreach ($solrConnections as $solr) {
             $query = 'type:' . $table . ' AND uid:' . $uid . ' AND siteHash:' . $siteHash;
             $response = $solr->getWriteService()->deleteByQuery($query);
@@ -171,11 +150,8 @@ abstract class AbstractStrategy
 
     /**
      * Calls the registered post-processing hooks after the garbageCollection.
-     *
-     * @param string $table
-     * @param int $uid
      */
-    protected function callPostProcessGarbageCollectorHook(string $table, int $uid)
+    protected function callPostProcessGarbageCollectorHook(string $table, int $uid): void
     {
         if (!is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessGarbageCollector'] ?? null)) {
             return;
@@ -189,7 +165,7 @@ abstract class AbstractStrategy
             } else {
                 $message = get_class($garbageCollectorPostProcessor) . ' must implement interface ' .
                     GarbageCollectorPostProcessor::class;
-                throw new \UnexpectedValueException($message, 1345807460);
+                throw new UnexpectedValueException($message, 1345807460);
             }
         }
     }

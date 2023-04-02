@@ -46,7 +46,6 @@ class Classification extends AbstractContentObject
      *
      * Returns mapped classes when the field matches on of the configured patterns ...
      *
-     * @inheritDoc
      * @noinspection PhpMissingReturnTypeInspection, because foreign source inheritance See {@link AbstractContentObject::render()}
      */
     public function render($conf = [])
@@ -68,7 +67,7 @@ class Classification extends AbstractContentObject
             $data = $this->cObj->stdWrap($data, $conf);
         }
         $classifications = $this->buildClassificationsFromConfiguration($configuredMappedClasses);
-        /** @var $classificationService ClassificationService */
+        /* @var ClassificationService $classificationService */
         $classificationService = GeneralUtility::makeInstance(ClassificationService::class);
 
         return serialize($classificationService->getMatchingClassNames((string)$data, $classifications));
@@ -77,7 +76,6 @@ class Classification extends AbstractContentObject
     /**
      * Builds an array of Classification objects from the passed classification configuration.
      *
-     * @param array $configuredMappedClasses
      * @return ClassificationItem[]
      */
     protected function buildClassificationsFromConfiguration(array $configuredMappedClasses): array

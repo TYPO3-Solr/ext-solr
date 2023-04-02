@@ -18,8 +18,7 @@ declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\Report;
 
 use ApacheSolrForTypo3\Solr\ConnectionManager;
-use Doctrine\DBAL\Driver\Exception as DBALDriverException;
-use Throwable;
+use ApacheSolrForTypo3\Solr\Domain\Site\Exception\UnexpectedTYPO3SiteInitializationException;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Reports\Status;
@@ -40,8 +39,6 @@ class SolrConfigStatus extends AbstractSolrStatus
      * YYYYMMDD    - The date the config file was changed the last time
      *
      * Must be updated when changing the solrconfig.
-     *
-     * @var string
      */
     public const RECOMMENDED_SOLRCONFIG_VERSION = 'tx_solr-11-5-0--20211001';
 
@@ -50,10 +47,7 @@ class SolrConfigStatus extends AbstractSolrStatus
      * Solr server. Only adds an entry if a solrconfig other than the
      * recommended one was found.
      *
-     * @return array
-     *
-     * @throws DBALDriverException
-     * @throws Throwable
+     * @throws UnexpectedTYPO3SiteInitializationException
      */
     public function getStatus(): array
     {

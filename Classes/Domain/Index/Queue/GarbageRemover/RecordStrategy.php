@@ -15,6 +15,7 @@
 
 namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\GarbageRemover;
 
+use Doctrine\DBAL\Exception as DBALException;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 
 /**
@@ -25,10 +26,9 @@ class RecordStrategy extends AbstractStrategy
     /**
      * Removes the garbage of a record.
      *
-     * @param string $table
-     * @param int $uid
+     * @throws DBALException
      */
-    protected function removeGarbageOfByStrategy(string $table, int $uid)
+    protected function removeGarbageOfByStrategy(string $table, int $uid): void
     {
         $languageField = $GLOBALS['TCA'][$table]['ctrl']['languageField'] ?? false;
         $transOrigPointerField = $GLOBALS['TCA'][$table]['ctrl']['transOrigPointerField'] ?? false;

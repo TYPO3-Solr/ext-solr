@@ -24,27 +24,18 @@ class Classification
 {
     /**
      * Array of regular expressions
-     *
-     * @var array
      */
     protected array $matchPatterns = [];
 
     /**
      * Array of regular expressions
-     * @var array
      */
     protected array $unMatchPatterns = [];
 
-    /**
-     * @var string
-     */
     protected string $mappedClass;
 
     /**
      * Classification constructor.
-     * @param array $matchPatterns
-     * @param array $unMatchPatterns
-     * @param string $mappedClass
      */
     public function __construct(
         array $matchPatterns = [],
@@ -56,50 +47,32 @@ class Classification
         $this->mappedClass = $mappedClass;
     }
 
-    /**
-     * @return array
-     */
     public function getUnMatchPatterns(): array
     {
         return $this->unMatchPatterns;
     }
 
-    /**
-     * @param array $unMatchPatterns
-     */
-    public function setUnMatchPatterns(array $unMatchPatterns)
+    public function setUnMatchPatterns(array $unMatchPatterns): void
     {
         $this->unMatchPatterns = $unMatchPatterns;
     }
 
-    /**
-     * @return array
-     */
     public function getMatchPatterns(): array
     {
         return $this->matchPatterns;
     }
 
-    /**
-     * @param array $matchPatterns
-     */
-    public function setMatchPatterns(array $matchPatterns)
+    public function setMatchPatterns(array $matchPatterns): void
     {
         $this->matchPatterns = $matchPatterns;
     }
 
-    /**
-     * @return string
-     */
     public function getMappedClass(): string
     {
         return $this->mappedClass;
     }
 
-    /**
-     * @param string $mappedClass
-     */
-    public function setMappedClass(string $mappedClass)
+    public function setMappedClass(string $mappedClass): void
     {
         $this->mappedClass = $mappedClass;
     }

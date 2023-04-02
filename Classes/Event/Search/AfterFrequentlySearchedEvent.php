@@ -30,27 +30,17 @@ final class AfterFrequentlySearchedEvent
     private SearchResultSet $resultSet;
     private array $additionalFilters;
 
-    /**
-     * @param SearchResultSet $resultSet
-     * @param array $additionalFilters
-     */
     public function __construct(SearchResultSet $resultSet, array $additionalFilters)
     {
         $this->resultSet = $resultSet;
         $this->additionalFilters = $additionalFilters;
     }
 
-    /**
-     * @return SearchResultSet
-     */
     public function getResultSet(): SearchResultSet
     {
         return $this->resultSet;
     }
 
-    /**
-     * @return array
-     */
     public function getAdditionalFilters(): array
     {
         return $this->additionalFilters;

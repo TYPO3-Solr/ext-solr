@@ -34,30 +34,14 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class AdditionalFieldsIndexer implements SubstitutePageIndexer
 {
-    /**
-     * @var TypoScriptConfiguration
-     */
     protected TypoScriptConfiguration $configuration;
 
-    /**
-     * @var array
-     */
     protected array $additionalIndexingFields = [];
 
-    /**
-     * @var array
-     */
     protected array $additionalFieldNames = [];
 
-    /**
-     * @var ContentObjectService
-     */
     protected ContentObjectService $contentObjectService;
 
-    /**
-     * @param TypoScriptConfiguration|null $configuration
-     * @param ContentObjectService|null $contentObjectService
-     */
     public function __construct(
         TypoScriptConfiguration $configuration = null,
         ContentObjectService $contentObjectService = null
@@ -69,13 +53,7 @@ class AdditionalFieldsIndexer implements SubstitutePageIndexer
     }
 
     /**
-     * Returns a substitute document for the currently being indexed page.
-     *
-     * Uses the original document and adds fields as defined in
-     * plugin.tx_solr.index.additionalFields.
-     *
-     * @param Document $originalPageDocument The original page document.
-     * @return Document A Apache Solr Document object that replace the default page document
+     * Returns a substituted document for the currently being indexed page.
      */
     public function getPageDocument(Document $originalPageDocument): Document
     {
@@ -94,8 +72,6 @@ class AdditionalFieldsIndexer implements SubstitutePageIndexer
 
     /**
      * Gets the additional fields as an array mapping field names to values.
-     *
-     * @return array An array mapping additional field names to their values.
      */
     protected function getAdditionalFields(): array
     {
@@ -110,9 +86,6 @@ class AdditionalFieldsIndexer implements SubstitutePageIndexer
 
     /**
      * Uses the page's cObj instance to resolve the additional field's value.
-     *
-     * @param string $fieldName The name of the field to get.
-     * @return string The field's value.
      */
     protected function getFieldValue(string $fieldName): string
     {

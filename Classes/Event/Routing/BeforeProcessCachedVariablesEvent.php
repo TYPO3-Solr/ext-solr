@@ -20,7 +20,7 @@ namespace ApacheSolrForTypo3\Solr\Event\Routing;
 use Psr\Http\Message\UriInterface;
 
 /**
- * This event will triggered before process variable keys and values
+ * This event will be triggered before process variable keys and values
  *
  * @author Lars Tode <lars.tode@dkd.de>
  */
@@ -28,39 +28,26 @@ class BeforeProcessCachedVariablesEvent
 {
     /**
      * The uri, used to identify, what placeholder is part of the path and which one is part of the query
-     *
-     * @var UriInterface
      */
     protected UriInterface $uri;
 
     /**
      * A list of router configurations, containing information how to process variables
-     *
-     * @var array
      */
     protected array $routerConfiguration = [];
 
     /**
      * List of variable keys
-     *
-     * @var array
      */
     protected array $variableKeys = [];
 
     /**
      * List of variable values
-     *
-     * @var array
      */
     protected array $variableValues = [];
 
     /**
      * BeforeReplaceVariableInCachedUrlEvent constructor.
-     *
-     * @param UriInterface $uri
-     * @param array $routerConfiguration
-     * @param array $variableKeys
-     * @param array $variableValues
      */
     public function __construct(
         UriInterface $uri,
@@ -76,8 +63,6 @@ class BeforeProcessCachedVariablesEvent
 
     /**
      * Returns the variable keys
-     *
-     * @return array
      */
     public function getVariableKeys(): array
     {
@@ -87,7 +72,6 @@ class BeforeProcessCachedVariablesEvent
     /**
      * Sets the variable keys
      *
-     * @param array $variableKeys
      * @return $this
      */
     public function setVariableKeys(array $variableKeys): self
@@ -98,8 +82,6 @@ class BeforeProcessCachedVariablesEvent
 
     /**
      * Returns the variable values
-     *
-     * @return array
      */
     public function getVariableValues(): array
     {
@@ -109,7 +91,6 @@ class BeforeProcessCachedVariablesEvent
     /**
      * Sets the variable values
      *
-     * @param array $variableValues
      * @return $this
      */
     public function setVariableValues(array $variableValues): self
@@ -118,9 +99,6 @@ class BeforeProcessCachedVariablesEvent
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function hasRouting(): bool
     {
         return !empty($this->routerConfiguration);
@@ -128,8 +106,6 @@ class BeforeProcessCachedVariablesEvent
 
     /**
      * The URI containing placeholder
-     *
-     * @return UriInterface
      */
     public function getUri(): UriInterface
     {
@@ -138,8 +114,6 @@ class BeforeProcessCachedVariablesEvent
 
     /**
      * Available router configurations
-     *
-     * @return array
      */
     public function getRouterConfiguration(): array
     {

@@ -27,10 +27,8 @@ class ArrayViewHelper extends AbstractViewHelper
 {
     /**
      * Make sure values is a array else convert
-     *
-     * @return array
      */
-    public function render()
+    public function render(): array
     {
         $value = $this->arguments['value'];
         return (array)$value;

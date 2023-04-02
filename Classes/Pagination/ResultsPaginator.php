@@ -27,16 +27,8 @@ use TYPO3\CMS\Core\Pagination\AbstractPaginator;
  */
 class ResultsPaginator extends AbstractPaginator
 {
-    /**
-     * @var SearchResultSet
-     */
     protected SearchResultSet $resultSet;
 
-    /**
-     * @param SearchResultSet $resultSet
-     * @param int $currentPageNumber
-     * @param int $itemsPerPage
-     */
     public function __construct(
         SearchResultSet $resultSet,
         int $currentPageNumber = 1,
@@ -51,8 +43,6 @@ class ResultsPaginator extends AbstractPaginator
 
     /**
      * Get paginated items
-     *
-     * @return iterable
      */
     public function getPaginatedItems(): iterable
     {
@@ -61,9 +51,6 @@ class ResultsPaginator extends AbstractPaginator
 
     /**
      * Update paginated items
-     *
-     * @param int $itemsPerPage
-     * @param int $offset
      */
     public function updatePaginatedItems(int $itemsPerPage, int $offset): void
     {
@@ -71,8 +58,6 @@ class ResultsPaginator extends AbstractPaginator
 
     /**
      * Get amount of items on current page
-     *
-     * @return int
      */
     public function getAmountOfItemsOnCurrentPage(): int
     {
@@ -81,8 +66,6 @@ class ResultsPaginator extends AbstractPaginator
 
     /**
      * Get total amount of items
-     *
-     * @return int
      */
     public function getTotalAmountOfItems(): int
     {

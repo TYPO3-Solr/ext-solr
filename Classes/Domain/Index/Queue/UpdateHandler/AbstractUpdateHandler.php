@@ -22,7 +22,7 @@ use ApacheSolrForTypo3\Solr\FrontendEnvironment;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
 use ApacheSolrForTypo3\Solr\System\TCA\TCAService;
-use Doctrine\DBAL\Driver\Exception as DBALDriverException;
+use Doctrine\DBAL\Exception as DBALException;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -42,8 +42,6 @@ abstract class AbstractUpdateHandler
      * Note: For pages all fields except l10n_diffsource are
      *       kept, as additional fields can be configured in
      *       TypoScript, see AbstractDataUpdateEvent->__sleep.
-     *
-     * @var array
      */
     protected static array $requiredUpdatedFields = [];
 
@@ -64,34 +62,17 @@ abstract class AbstractUpdateHandler
      *
      * When the all values of the currentState AND all values of the changeSet match, a recursive update
      * will be triggered.
-     *
-     * @var array
      */
     protected array $updateSubPagesRecursiveTriggerConfiguration = [];
 
-    /**
-     * @var ConfigurationAwareRecordService
-     */
     protected ConfigurationAwareRecordService $configurationAwareRecordService;
 
-    /**
-     * @var FrontendEnvironment
-     */
     protected FrontendEnvironment $frontendEnvironment;
 
-    /**
-     * @var TCAService
-     */
     protected TCAService $tcaService;
 
-    /**
-     * @var Queue
-     */
     protected Queue $indexQueue;
 
-    /**
-     * @var PagesRepository|null
-     */
     protected ?PagesRepository $pagesRepository;
 
     /**
@@ -99,12 +80,6 @@ abstract class AbstractUpdateHandler
      */
     protected array $queryBuilders = [];
 
-    /**
-     * @param ConfigurationAwareRecordService $recordService
-     * @param FrontendEnvironment $frontendEnvironment
-     * @param TCAService $tcaService
-     * @param Queue $indexQueue
-     */
     public function __construct(
         ConfigurationAwareRecordService $recordService,
         FrontendEnvironment $frontendEnvironment,
@@ -119,8 +94,6 @@ abstract class AbstractUpdateHandler
 
     /**
      * Returns the required fields from the updated fields array
-     *
-     * @return array
      */
     public static function getRequiredUpdatedFields(): array
     {
@@ -129,8 +102,6 @@ abstract class AbstractUpdateHandler
 
     /**
      * Add required update field
-     *
-     * @param string $field
      */
     public static function addRequiredUpdatedField(string $field): void
     {
@@ -138,7 +109,7 @@ abstract class AbstractUpdateHandler
     }
 
     /**
-     * @return array
+     * Returns all relevant fields for current state
      */
     protected function getAllRelevantFieldsForCurrentState(): array
     {
@@ -163,8 +134,7 @@ abstract class AbstractUpdateHandler
     /**
      * When the extend-to-subpages flag was set, we determine the affected subpages and return them.
      *
-     * @param int $pageId
-     * @return array
+     * @throws DBALException
      */
     protected function getSubPageIds(int $pageId): array
     {
@@ -186,10 +156,7 @@ abstract class AbstractUpdateHandler
      * This can either be the case if some $changedFields are part of the RecursiveUpdateTriggerConfiguration or
      * columns have explicitly been configured via plugin.tx_solr.index.queue.recursiveUpdateFields
      *
-     * @param int $pageId
-     * @param array $updatedFields
-     * @return bool
-     * @throws DBALDriverException
+     * @throws DBALException
      */
     protected function isRecursivePageUpdateRequired(int $pageId, array $updatedFields): bool
     {
@@ -224,9 +191,7 @@ abstract class AbstractUpdateHandler
     }
 
     /**
-     * @param int $pageId
-     * @param array $updatedFields
-     * @return bool
+     * Checks whether recursive update is required
      */
     protected function isRecursiveUpdateRequired(int $pageId, array $updatedFields): bool
     {
@@ -247,9 +212,7 @@ abstract class AbstractUpdateHandler
     }
 
     /**
-     * @param array $triggerConfiguration
-     * @param array $pageRecord
-     * @return bool
+     * Returns all current state fields match
      */
     protected function getAllCurrentStateFieldsMatch(array $triggerConfiguration, array $pageRecord): bool
     {
@@ -262,9 +225,7 @@ abstract class AbstractUpdateHandler
     }
 
     /**
-     * @param array $triggerConfiguration
-     * @param array $changedFields
-     * @return bool
+     * Returns all change-set values match
      */
     protected function getAllChangeSetValuesMatch(array $triggerConfiguration, array $changedFields): bool
     {
@@ -292,17 +253,12 @@ abstract class AbstractUpdateHandler
      *
      * When the all values of the currentState AND all values of the changeSet match, a recursive update
      * will be triggered.
-     *
-     * @return array
      */
     protected function getUpdateSubPagesRecursiveTriggerConfiguration(): array
     {
         return $this->updateSubPagesRecursiveTriggerConfiguration;
     }
 
-    /**
-     * @return PagesRepository
-     */
     protected function getPagesRepository(): PagesRepository
     {
         if (!isset($this->pagesRepository)) {
@@ -314,9 +270,6 @@ abstract class AbstractUpdateHandler
 
     /**
      * Returns the prepared QueryBuilder for given table
-     *
-     * @param string $table
-     * @return QueryBuilder
      */
     protected function getQueryBuilderForTable(string $table): QueryBuilder
     {

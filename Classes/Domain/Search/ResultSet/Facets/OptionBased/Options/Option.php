@@ -20,25 +20,17 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Opt
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\AbstractOptionFacetItem;
 
 /**
- * Value object that represent an option of a options facet.
+ * Value object that represent an option of an options facet.
  *
  * @author Frans Saris <frans@beech.it>
  * @author Timo Hund <timo.hund@dkd.de>
  */
 class Option extends AbstractOptionFacetItem
 {
-    /**
-     * @param OptionsFacet $facet
-     * @param string $label
-     * @param string $value
-     * @param int $documentCount
-     * @param bool $selected
-     * @param array $metrics
-     */
     public function __construct(
         OptionsFacet $facet,
         string $label = '',
-        string $value = '',
+        string|int $value = '',
         int $documentCount = 0,
         bool $selected = false,
         array $metrics = []

@@ -32,22 +32,16 @@ class IndexingConfigurationSelectorField
 {
     /**
      * Site used to determine indexing configurations
-     *
-     * @var Site
      */
     protected Site $site;
 
     /**
      * Form element name
-     *
-     * @var string
      */
     protected string $formElementName = 'tx_solr-index-queue-indexing-configuration-selector';
 
     /**
      * Selected values
-     *
-     * @var array
      */
     protected array $selectedValues = [];
 
@@ -84,8 +78,6 @@ class IndexingConfigurationSelectorField
 
     /**
      * Sets the selected values.
-     *
-     * @param array $selectedValues
      */
     public function setSelectedValues(array $selectedValues): void
     {
@@ -95,7 +87,6 @@ class IndexingConfigurationSelectorField
     /**
      * Gets the selected values.
      *
-     * @return array
      * @noinspection PhpUnused
      */
     public function getSelectedValues(): array
@@ -154,6 +145,7 @@ class IndexingConfigurationSelectorField
     protected function buildSelectorItems(array $tablesToIndex): array
     {
         $selectorItems = [];
+        /* @var IconRegistry $iconRegistry */
         $iconRegistry = GeneralUtility::makeInstance(IconRegistry::class);
         $iconFactory = GeneralUtility::makeInstance(IconFactory::class);
         $defaultIcon = 'mimetypes-other-other';
@@ -184,10 +176,6 @@ class IndexingConfigurationSelectorField
     }
 
     /**
-     * @param array $items
-     * @param array|null $selectedValues
-     *
-     * @return string
      * @throws BackendFormException
      */
     protected function renderSelectCheckbox(array $items, ?array $selectedValues = []): string
@@ -201,6 +189,7 @@ class IndexingConfigurationSelectorField
             'fieldTSConfig' => ['noMatchingValue_label' => ''],
         ];
 
+        /* @var NodeFactory $nodeFactory */
         $nodeFactory = GeneralUtility::makeInstance(NodeFactory::class);
         $options = [
             'type' => 'select', 'renderType' => 'selectCheckBox',

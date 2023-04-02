@@ -16,6 +16,7 @@
 namespace ApacheSolrForTypo3\Solr\ViewHelpers\Uri\Sorting;
 
 use ApacheSolrForTypo3\Solr\ViewHelpers\Uri\AbstractUriViewHelper;
+use Closure;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 
 /**
@@ -27,15 +28,14 @@ use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 class RemoveSortingViewHelper extends AbstractUriViewHelper
 {
     /**
-     * @param array $arguments
-     * @param \Closure $renderChildrenClosure
-     * @param RenderingContextInterface $renderingContext
-     * @return string
+     * Renders URI fir removing the sorting
      */
-    public static function renderStatic(array $arguments, \Closure $renderChildrenClosure, RenderingContextInterface $renderingContext)
-    {
+    public static function renderStatic(
+        array $arguments,
+        Closure $renderChildrenClosure,
+        RenderingContextInterface $renderingContext,
+    ) {
         $previousRequest = static::getUsedSearchRequestFromRenderingContext($renderingContext);
-
         return self::getSearchUriBuilder($renderingContext)->getRemoveSortingUri($previousRequest);
     }
 }

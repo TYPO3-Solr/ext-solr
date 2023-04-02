@@ -17,10 +17,9 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\FieldProcessor;
 
+use ApacheSolrForTypo3\Solr\Exception as ExtSolrException;
 use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
-use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use Doctrine\DBAL\Exception as DBALException;
-use Exception;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -36,11 +35,11 @@ class Service
      * Modifies a list of documents
      *
      * @param Document[] $documents
-     * @param array $processingConfiguration
-     * @throws DBALDriverException
+     *
      * @throws DBALException
+     * @throws ExtSolrException
      */
-    public function processDocuments(array $documents, array $processingConfiguration)
+    public function processDocuments(array $documents, array $processingConfiguration): void
     {
         foreach ($documents as $document) {
             $this->processDocument($document, $processingConfiguration);
@@ -50,12 +49,10 @@ class Service
     /**
      * modifies a document according to the given configuration
      *
-     * @param Document $document
-     * @param array $processingConfiguration
-     * @throws DBALDriverException
      * @throws DBALException
+     * @throws ExtSolrException
      */
-    public function processDocument(Document $document, array $processingConfiguration)
+    public function processDocument(Document $document, array $processingConfiguration): void
     {
         foreach ($processingConfiguration as $fieldName => $instruction) {
             $fieldValue = $document[$fieldName] ?? false;
@@ -70,27 +67,27 @@ class Service
 
                 switch ($instruction) {
                     case 'timestampToUtcIsoDate':
-                        /** @var $processor TimestampToUtcIsoDate */
+                        /* @var TimestampToUtcIsoDate $processor */
                         $processor = GeneralUtility::makeInstance(TimestampToUtcIsoDate::class);
                         $fieldValue = $processor->process($fieldValue);
                         break;
                     case 'timestampToIsoDate':
-                        /** @var $processor TimestampToIsoDate */
+                        /* @var TimestampToIsoDate $processor */
                         $processor = GeneralUtility::makeInstance(TimestampToIsoDate::class);
                         $fieldValue = $processor->process($fieldValue);
                         break;
                     case 'pathToHierarchy':
-                        /** @var $processor PathToHierarchy */
+                        /* @var PathToHierarchy $processor */
                         $processor = GeneralUtility::makeInstance(PathToHierarchy::class);
                         $fieldValue = $processor->process($fieldValue);
                         break;
                     case 'pageUidToHierarchy':
-                        /** @var $processor PageUidToHierarchy */
+                        /* @var PageUidToHierarchy $processor */
                         $processor = GeneralUtility::makeInstance(PageUidToHierarchy::class);
                         $fieldValue = $processor->process($fieldValue);
                         break;
                     case 'categoryUidToHierarchy':
-                        /** @var $processor CategoryUidToHierarchy */
+                        /* @var CategoryUidToHierarchy $processor */
                         $processor = GeneralUtility::makeInstance(CategoryUidToHierarchy::class);
                         $fieldValue = $processor->process($fieldValue);
                         break;
@@ -104,10 +101,10 @@ class Service
                             if ($customFieldProcessor instanceof FieldProcessor) {
                                 $fieldValue = $customFieldProcessor->process($fieldValue);
                             } else {
-                                throw new Exception('A FieldProcessor must implement the FieldProcessor interface', 1635082295);
+                                throw new ExtSolrException('A FieldProcessor must implement the FieldProcessor interface', 1635082295);
                             }
                         } else {
-                            throw new Exception(sprintf('FieldProcessor %s is not implemented', $instruction), 1635082296);
+                            throw new ExtSolrException(sprintf('FieldProcessor %s is not implemented', $instruction), 1635082296);
                         }
                 }
 

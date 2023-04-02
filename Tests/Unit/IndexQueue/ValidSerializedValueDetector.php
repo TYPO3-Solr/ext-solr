@@ -28,7 +28,7 @@ class ValidSerializedValueDetector implements SerializedValueDetector
      * @param string $solrFieldName Current field being indexed
      * @return bool TRUE if the value is expected to be serialized, FALSE otherwise
      */
-    public function isSerializedValue(array $indexingConfiguration, $solrFieldName)
+    public function isSerializedValue(array $indexingConfiguration, string $solrFieldName): bool
     {
         return true;
     }

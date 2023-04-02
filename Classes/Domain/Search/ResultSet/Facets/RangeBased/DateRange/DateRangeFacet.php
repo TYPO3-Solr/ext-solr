@@ -30,27 +30,20 @@ class DateRangeFacet extends AbstractFacet
 {
     public const TYPE_DATE_RANGE = 'dateRange';
 
-    /**
-     * String
-     * @var string
-     */
     protected static string $type = self::TYPE_DATE_RANGE;
 
-    /**
-     * @var DateRange|null
-     */
     protected ?DateRange $range = null;
 
     /**
-     * @param DateRange $range
+     * Sets the data range to facet
      */
-    public function setRange(DateRange $range)
+    public function setRange(DateRange $range): void
     {
         $this->range = $range;
     }
 
     /**
-     * @return DateRange|null
+     * Returns the data range of facet if available, NULL if not.
      */
     public function getRange(): ?DateRange
     {
@@ -59,19 +52,15 @@ class DateRangeFacet extends AbstractFacet
 
     /**
      * Get facet partial name used for rendering the facet
-     *
-     * @return string
      */
     public function getPartialName(): string
     {
-        return !empty($this->configuration['partialName']) ? $this->configuration['partialName'] : 'RangeDate.html';
+        return !empty($this->facetConfiguration['partialName']) ? $this->facetConfiguration['partialName'] : 'RangeDate.html';
     }
 
     /**
      * Since the DateRange contains only one or two items when return a collection with the range only to
      * allow to render the date range as other facet items.
-     *
-     * @return AbstractFacetItemCollection
      */
     public function getAllFacetItems(): AbstractFacetItemCollection
     {

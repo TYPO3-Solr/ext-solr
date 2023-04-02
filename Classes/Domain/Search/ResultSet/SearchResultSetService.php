@@ -37,7 +37,6 @@ use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrIncompleteResponseException;
-use Exception;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use UnexpectedValueException;
 
@@ -51,55 +50,20 @@ use function get_class;
  */
 class SearchResultSetService
 {
-    /**
-     * Track, if the number of results per page has been changed by the current request
-     *
-     * @var bool
-     */
-    protected bool $resultsPerPageChanged = false;
-
-    /**
-     * @var Search
-     */
     protected Search $search;
 
-    /**
-     * @var SearchResultSet|null
-     */
     protected ?SearchResultSet $lastResultSet = null;
 
-    /**
-     * @var bool
-     */
-    protected bool $isSolrAvailable = false;
+    protected ?bool $isSolrAvailable = null;
 
-    /**
-     * @var TypoScriptConfiguration
-     */
     protected TypoScriptConfiguration $typoScriptConfiguration;
 
-    /**
-     * @var SolrLogManager
-     */
     protected SolrLogManager $logger;
 
-    /**
-     * @var SearchResultBuilder
-     */
     protected SearchResultBuilder $searchResultBuilder;
 
-    /**
-     * @var QueryBuilder
-     */
     protected QueryBuilder $queryBuilder;
 
-    /**
-     * @param TypoScriptConfiguration $configuration
-     * @param Search $search
-     * @param SolrLogManager|null $solrLogManager
-     * @param SearchResultBuilder|null $resultBuilder
-     * @param QueryBuilder|null $queryBuilder
-     */
     public function __construct(
         TypoScriptConfiguration $configuration,
         Search $search,
@@ -114,37 +78,28 @@ class SearchResultSetService
         $this->queryBuilder = $queryBuilder ?? GeneralUtility::makeInstance(QueryBuilder::class, /** @scrutinizer ignore-type */ $configuration, /** @scrutinizer ignore-type */ $solrLogManager);
     }
 
-    /**
-     * @param bool $useCache
-     * @return bool
-     * @throws Exception
-     */
     public function getIsSolrAvailable(bool $useCache = true): bool
     {
-        $this->isSolrAvailable = $this->search->ping($useCache);
+        if ($this->isSolrAvailable === null) {
+            $this->isSolrAvailable = $this->search->ping($useCache);
+        }
         return $this->isSolrAvailable;
     }
 
     /**
      * Retrieves the used search instance.
-     *
-     * @return Search
      */
     public function getSearch(): Search
     {
         return $this->search;
     }
 
-    /**
-     * @param Query $query
-     * @param SearchRequest $searchRequest
-     */
-    protected function initializeRegisteredSearchComponents(Query $query, SearchRequest $searchRequest)
+    protected function initializeRegisteredSearchComponents(Query $query, SearchRequest $searchRequest): void
     {
         $searchComponents = $this->getRegisteredSearchComponents();
 
         foreach ($searchComponents as $searchComponent) {
-            /** @var Search\SearchComponent $searchComponent */
+            /* @var Search\SearchComponent $searchComponent */
             $searchComponent->setSearchConfiguration($this->typoScriptConfiguration->getSearchConfiguration());
 
             if ($searchComponent instanceof QueryAware) {
@@ -159,9 +114,6 @@ class SearchResultSetService
         }
     }
 
-    /**
-     * @return string
-     */
     protected function getResultSetClassName(): string
     {
         return $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['searchResultSetClassName '] ?? SearchResultSet::class;
@@ -170,10 +122,7 @@ class SearchResultSetService
     /**
      * Performs a search and returns a SearchResultSet.
      *
-     * @param SearchRequest $searchRequest
-     * @return SearchResultSet
      * @throws Facets\InvalidFacetPackageException
-     * @throws Exception
      */
     public function search(SearchRequest $searchRequest): SearchResultSet
     {
@@ -212,7 +161,7 @@ class SearchResultSetService
 
         $resultSet->setUsedAdditionalFilters($this->queryBuilder->getAdditionalFilters());
 
-        /** @var $variantsProcessor VariantsProcessor */
+        /* @var VariantsProcessor $variantsProcessor */
         $variantsProcessor = GeneralUtility::makeInstance(
             VariantsProcessor::class,
             /** @scrutinizer ignore-type */
@@ -222,7 +171,7 @@ class SearchResultSetService
         );
         $variantsProcessor->process($resultSet);
 
-        /** @var $searchResultReconstitutionProcessor ResultSetReconstitutionProcessor */
+        /* @var ResultSetReconstitutionProcessor $searchResultReconstitutionProcessor */
         $searchResultReconstitutionProcessor = GeneralUtility::makeInstance(ResultSetReconstitutionProcessor::class);
         $searchResultReconstitutionProcessor->process($resultSet);
 
@@ -233,12 +182,10 @@ class SearchResultSetService
 
     /**
      * Uses the configured parser and retrieves the parsed search results.
-     *
-     * @param SearchResultSet $resultSet
      */
-    protected function getParsedSearchResults(SearchResultSet $resultSet)
+    protected function getParsedSearchResults(SearchResultSet $resultSet): void
     {
-        /** @var ResultParserRegistry $parserRegistry */
+        /* @var ResultParserRegistry $parserRegistry */
         $parserRegistry = GeneralUtility::makeInstance(ResultParserRegistry::class, /** @scrutinizer ignore-type */ $this->typoScriptConfiguration);
         $useRawDocuments = (bool)$this->typoScriptConfiguration->getValueByPathOrDefaultValue('plugin.tx_solr.features.useRawDocuments', false);
         $parserRegistry->getParser($resultSet)->parse($resultSet, $useRawDocuments);
@@ -247,9 +194,6 @@ class SearchResultSetService
     /**
      * Evaluates conditions on the request and configuration and returns true if no search should be triggered and an empty
      * SearchResultSet should be returned.
-     *
-     * @param SearchRequest $searchRequest
-     * @return bool
      */
     protected function shouldReturnEmptyResultSetWithoutExecutedSearch(SearchRequest $searchRequest): bool
     {
@@ -268,13 +212,10 @@ class SearchResultSetService
 
     /**
      * Initializes the SearchResultSet from the SearchRequest
-     *
-     * @param SearchRequest $searchRequest
-     * @return SearchResultSet
      */
     protected function getInitializedSearchResultSet(SearchRequest $searchRequest): SearchResultSet
     {
-        /** @var $resultSet SearchResultSet */
+        /* @var SearchResultSet $resultSet */
         $resultSetClass = $this->getResultSetClassName();
         $resultSet = GeneralUtility::makeInstance($resultSetClass);
 
@@ -288,10 +229,7 @@ class SearchResultSetService
     /**
      * Executes the search and builds a fake response for a current bug in Apache Solr 6.3
      *
-     * @param Query $query
-     * @param SearchRequest $searchRequest
-     * @return ResponseAdapter
-     * @throws Exception
+     * @throws SolrIncompleteResponseException
      */
     protected function doASearch(Query $query, SearchRequest $searchRequest): ResponseAdapter
     {
@@ -308,8 +246,8 @@ class SearchResultSetService
     }
 
     /**
-     * @param SearchResultSet $searchResultSet
-     * @return SearchResultSet
+     * Performs autocorrection if wanted
+     *
      * @throws Facets\InvalidFacetPackageException
      */
     protected function getAutoCorrection(SearchResultSet $searchResultSet): SearchResultSet
@@ -333,8 +271,7 @@ class SearchResultSetService
     }
 
     /**
-     * @param SearchResultSet $searchResultSet
-     * @return SearchResultSet
+     * Performs autocorrection
      *
      * @throws Facets\InvalidFacetPackageException
      */
@@ -374,8 +311,10 @@ class SearchResultSetService
      * @param Query $query The current query before it's being handed over to Solr.
      * @param SearchRequest $searchRequest The searchRequest, relevant in the current context
      * @param Search $search The search, relevant in the current context
-     * @throws UnexpectedValueException
+     *
      * @return Query The modified query that is actually going to be given to Solr.
+     *
+     * @throws UnexpectedValueException
      */
     protected function modifyQuery(Query $query, SearchRequest $searchRequest, Search $search): Query
     {
@@ -408,14 +347,10 @@ class SearchResultSetService
 
     /**
      * Retrieves a single document from solr by document id.
-     *
-     * @param string $documentId
-     * @return SearchResult
-     * @throws Exception
      */
     public function getDocumentById(string $documentId): SearchResult
     {
-        /* @var $query SearchQuery */
+        /* @var SearchQuery $query */
         $query = $this->queryBuilder->newSearchQuery($documentId)->useQueryFields(QueryFields::fromString('id'))->getQuery();
         $response = $this->search->search($query, 0, 1);
         $parsedData = $response->getParsedData();
@@ -431,10 +366,6 @@ class SearchResultSetService
 
     /**
      * This method is used to call the registered hooks during the search execution.
-     *
-     * @param string $eventName
-     * @param SearchResultSet $resultSet
-     * @return SearchResultSet
      */
     private function handleSearchHook(string $eventName, SearchResultSet $resultSet): SearchResultSet
     {
@@ -452,9 +383,6 @@ class SearchResultSetService
         return $resultSet;
     }
 
-    /**
-     * @return SearchResultSet|null
-     */
     public function getLastResultSet(): ?SearchResultSet
     {
         return $this->lastResultSet;
@@ -463,8 +391,6 @@ class SearchResultSetService
     /**
      * This method returns true when the last search was executed with an empty query
      * string or whitespaces only. When no search was triggered it will return false.
-     *
-     * @return bool
      */
     public function getLastSearchWasExecutedWithEmptyQueryString(): bool
     {
@@ -476,16 +402,13 @@ class SearchResultSetService
         return $wasEmptyQueryString;
     }
 
-    /**
-     * @return bool
-     */
     protected function getInitialSearchIsConfigured(): bool
     {
         return $this->typoScriptConfiguration->getSearchInitializeWithEmptyQuery() || $this->typoScriptConfiguration->getSearchShowResultsOfInitialEmptyQuery() || $this->typoScriptConfiguration->getSearchInitializeWithQuery() || $this->typoScriptConfiguration->getSearchShowResultsOfInitialQuery();
     }
 
     /**
-     * @return array
+     * Returns registered search components
      */
     protected function getRegisteredSearchComponents(): array
     {

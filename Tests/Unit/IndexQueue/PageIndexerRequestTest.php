@@ -144,10 +144,10 @@ class PageIndexerRequestTest extends SetUpUnitTestCase
     public function canSetTimeOutFromPHPConfiguration()
     {
         $initialTimeout = ini_get('default_socket_timeout');
-        ini_set('default_socket_timeout', 122.5);
+        ini_set('default_socket_timeout', 122);
 
         $pageIndexerRequest = $this->getPageIndexerRequest();
-        self::assertSame(122.5, $pageIndexerRequest->getTimeout());
+        self::assertSame(122.0, $pageIndexerRequest->getTimeout());
         ini_set('default_socket_timeout', $initialTimeout);
     }
 

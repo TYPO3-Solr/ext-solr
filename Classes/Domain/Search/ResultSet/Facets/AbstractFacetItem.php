@@ -25,13 +25,6 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets;
  */
 abstract class AbstractFacetItem
 {
-    /**
-     * @param AbstractFacet $facet
-     * @param string $label
-     * @param int $documentCount
-     * @param bool $selected
-     * @param array $metrics
-     */
     public function __construct(
         protected AbstractFacet $facet,
         protected string $label = '',
@@ -41,53 +34,32 @@ abstract class AbstractFacetItem
     ) {
     }
 
-    /**
-     * @return int
-     */
     public function getDocumentCount(): int
     {
         return $this->documentCount;
     }
 
-    /**
-     * @return AbstractFacet
-     */
     public function getFacet(): AbstractFacet
     {
         return $this->facet;
     }
 
-    /**
-     * @return string
-     */
     public function getLabel(): string
     {
         return $this->label;
     }
 
-    /**
-     * @return bool
-     */
     public function getSelected(): bool
     {
         return $this->selected;
     }
 
-    /**
-     * @return array
-     */
     public function getMetrics(): array
     {
         return $this->metrics;
     }
 
-    /**
-     * @return string
-     */
-    abstract public function getUriValue(): string;
+    abstract public function getUriValue(): string|int;
 
-    /**
-     * @return string
-     */
-    abstract public function getCollectionKey(): string;
+    abstract public function getCollectionKey(): string|int;
 }

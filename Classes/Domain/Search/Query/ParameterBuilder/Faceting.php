@@ -18,7 +18,6 @@ declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\AbstractQueryBuilder;
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\SortingExpression;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 
@@ -28,19 +27,10 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
  */
 class Faceting extends AbstractDeactivatable implements ParameterBuilderInterface
 {
-    /**
-     * @var string
-     */
     protected string $sorting = '';
 
-    /**
-     * @var int
-     */
     protected int $minCount = 1;
 
-    /**
-     * @var int
-     */
     protected int $limit = 10;
 
     /**
@@ -48,28 +38,15 @@ class Faceting extends AbstractDeactivatable implements ParameterBuilderInterfac
      */
     protected array $fields = [];
 
-    /**
-     * @var array
-     */
     protected array $additionalParameters = [];
 
-    /**
-     * Faceting constructor.
-     *
-     * @param bool $isEnabled
-     * @param string $sorting
-     * @param int $minCount
-     * @param int $limit
-     * @param array $fields
-     * @param array $additionalParameters
-     */
     public function __construct(
         bool $isEnabled,
         string $sorting = '',
         int $minCount = 1,
         int $limit = 10,
         array $fields = [],
-        array $additionalParameters = []
+        array $additionalParameters = [],
     ) {
         $this->isEnabled = $isEnabled;
         $this->sorting = $sorting;
@@ -79,50 +56,32 @@ class Faceting extends AbstractDeactivatable implements ParameterBuilderInterfac
         $this->additionalParameters = $additionalParameters;
     }
 
-    /**
-     * @return string
-     */
     public function getSorting(): string
     {
         return $this->sorting;
     }
 
-    /**
-     * @param string $sorting
-     */
-    public function setSorting(string $sorting)
+    public function setSorting(string $sorting): void
     {
         $this->sorting = $sorting;
     }
 
-    /**
-     * @return int
-     */
     public function getMinCount(): int
     {
         return $this->minCount;
     }
 
-    /**
-     * @param int $minCount
-     */
-    public function setMinCount(int $minCount)
+    public function setMinCount(int $minCount): void
     {
         $this->minCount = $minCount;
     }
 
-    /**
-     * @return int
-     */
     public function getLimit(): int
     {
         return $this->limit;
     }
 
-    /**
-     * @param int $limit
-     */
-    public function setLimit(int $limit)
+    public function setLimit(int $limit): void
     {
         $this->limit = $limit;
     }
@@ -138,49 +97,33 @@ class Faceting extends AbstractDeactivatable implements ParameterBuilderInterfac
     /**
      * @param string[] $fields
      */
-    public function setFields(array $fields)
+    public function setFields(array $fields): void
     {
         $this->fields = $fields;
     }
 
-    /**
-     * @param string $fieldName
-     */
-    public function addField(string $fieldName)
+    public function addField(string $fieldName): void
     {
         $this->fields[] = $fieldName;
     }
 
-    /**
-     * @return array
-     */
     public function getAdditionalParameters(): array
     {
         return $this->additionalParameters;
     }
 
-    /**
-     * @param array $additionalParameters
-     */
-    public function setAdditionalParameters(array $additionalParameters)
+    public function setAdditionalParameters(array $additionalParameters): void
     {
         $this->additionalParameters = $additionalParameters;
     }
 
-    /**
-     * @param string $key
-     * @param mixed $value
-     */
-    public function addAdditionalParameter(string $key, $value)
+    public function addAdditionalParameter(string $key, mixed $value): void
     {
         $this->additionalParameters[$key] = $value;
     }
 
     /**
      * Reads the facet sorting configuration and applies it to the queryParameters.
-     *
-     * @param array $facetParameters
-     * @return array
      */
     protected function applySorting(array $facetParameters): array
     {
@@ -194,10 +137,6 @@ class Faceting extends AbstractDeactivatable implements ParameterBuilderInterfac
         return $facetParameters;
     }
 
-    /**
-     * @param TypoScriptConfiguration $solrConfiguration
-     * @return Faceting
-     */
     public static function fromTypoScriptConfiguration(TypoScriptConfiguration $solrConfiguration): Faceting
     {
         $isEnabled = $solrConfiguration->getSearchFaceting();
@@ -212,9 +151,6 @@ class Faceting extends AbstractDeactivatable implements ParameterBuilderInterfac
         return new Faceting(true, $sorting, $minCount, $limit);
     }
 
-    /**
-     * @return Faceting
-     */
     public static function getEmpty(): Faceting
     {
         return new Faceting(false);
@@ -222,8 +158,6 @@ class Faceting extends AbstractDeactivatable implements ParameterBuilderInterfac
 
     /**
      * Retrieves all parameters that are required for faceting.
-     *
-     * @return array
      */
     protected function getFacetParameters(): array
     {
@@ -244,10 +178,6 @@ class Faceting extends AbstractDeactivatable implements ParameterBuilderInterfac
         return $this->applySorting($facetParameters);
     }
 
-    /**
-     * @param AbstractQueryBuilder $parentBuilder
-     * @return QueryBuilder
-     */
     public function build(AbstractQueryBuilder $parentBuilder): AbstractQueryBuilder
     {
         $query = $parentBuilder->getQuery();

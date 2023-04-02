@@ -24,8 +24,6 @@ class ContentElementDeletedEvent extends AbstractDataUpdateEvent
 {
     /**
      * Constructor
-     *
-     * @param int $uid
      */
     public function __construct(int $uid)
     {
