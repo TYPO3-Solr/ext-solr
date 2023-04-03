@@ -135,7 +135,10 @@ class SiteHandlingStatus extends AbstractSolrStatus
      */
     public function getLabel(): string
     {
-        return 'solr/site-handling';
+        if(!empty($this->getStatus())){
+            return 'solr/site-handling';
+        }
+        return '';
     }
 
     /**

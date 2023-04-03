@@ -68,6 +68,10 @@ class AllowUrlFOpenStatus extends AbstractSolrStatus
      */
     public function getLabel(): string
     {
-        return 'solr/allow-url-open';
+        if(!empty($this->getStatus())){
+            return 'solr/allow-url-open';
+        }
+        return '';
+            
     }
 }

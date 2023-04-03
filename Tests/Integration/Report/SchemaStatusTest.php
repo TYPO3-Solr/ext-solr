@@ -18,7 +18,6 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Report;
 use ApacheSolrForTypo3\Solr\Report\SchemaStatus;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Reports\Status;
 
 /**
  * Integration test for the schema status report

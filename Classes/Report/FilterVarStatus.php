@@ -64,6 +64,9 @@ class FilterVarStatus extends AbstractSolrStatus
      */
     public function getLabel(): string
     {
-        return 'solr/filter-var';
+        if(!empty($this->getStatus())){
+            return 'solr/filter-var';
+        }
+        return '';
     }
 }

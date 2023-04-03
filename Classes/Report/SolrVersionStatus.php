@@ -36,7 +36,7 @@ class SolrVersionStatus extends AbstractSolrStatus
      * Required Solr version. The version that gets installed when using the
      * provided install-script EXT:solr/Resources/Private/Install/install-solr.sh
      */
-    public const REQUIRED_SOLR_VERSION = '8.11.1';
+    public const REQUIRED_SOLR_VERSION = '8.11.2';
 
     /**
      * Compiles a version check against each configured Solr server.
@@ -102,7 +102,10 @@ class SolrVersionStatus extends AbstractSolrStatus
      */
     public function getLabel(): string
     {
-        return 'solr/version';
+        if(!empty($this->getStatus())){
+            return 'solr/version';
+        }
+        return '';
     }
 
     /**

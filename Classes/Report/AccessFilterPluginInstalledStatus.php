@@ -80,7 +80,10 @@ class AccessFilterPluginInstalledStatus extends AbstractSolrStatus
      */
     public function getLabel(): string
     {
-        return 'solr/access-filter';
+        if(!empty($this->getStatus())){
+            return 'solr/access-filter';
+        }
+        return '';    
     }
 
     /**

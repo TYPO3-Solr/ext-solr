@@ -105,6 +105,9 @@ class SchemaStatus extends AbstractSolrStatus
      */
     public function getLabel(): string
     {
-        return 'solr/schema';
+        if(!empty($this->getStatus())){
+            return 'solr/schema';
+        }
+        return '';    
     }
 }

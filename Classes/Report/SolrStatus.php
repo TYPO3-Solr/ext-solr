@@ -86,7 +86,10 @@ class SolrStatus extends AbstractSolrStatus
      */
     public function getLabel(): string
     {
-        return 'solr/status';
+        if(!empty($this->getStatus())){
+            return 'solr/status';
+        }
+        return '';
     }
 
     /**
