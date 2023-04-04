@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options;
 
 /*
@@ -19,19 +20,22 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetPackage;
 /**
  * Class OptionsPackage
  */
-class OptionsPackage extends AbstractFacetPackage {
+class OptionsPackage extends AbstractFacetPackage
+{
 
     /**
      * @return string
      */
-    public function getParserClassName() {
+    public function getParserClassName()
+    {
         return (string)OptionsFacetParser::class;
     }
 
     /**
      * @return string
      */
-    public function getQueryBuilderClassName() {
+    public function getQueryBuilderClassName()
+    {
         return (string)OptionsFacetQueryBuilder::class;
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
 
 /***************************************************************
@@ -87,9 +88,9 @@ class Sortings extends AbstractDeactivatable
      */
     public static function fromString($sortingsString)
     {
-        $sortFields = GeneralUtility::trimExplode(',',$sortingsString);
+        $sortFields = GeneralUtility::trimExplode(',', $sortingsString);
         $sortings = [];
-        foreach($sortFields as $sortField) {
+        foreach ($sortFields as $sortField) {
             $sorting = Sorting::fromString($sortField);
             $sortings[] = $sorting;
         }

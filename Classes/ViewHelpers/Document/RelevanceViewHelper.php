@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\ViewHelpers\Document;
 
 /*
@@ -52,7 +53,7 @@ class RelevanceViewHelper extends AbstractSolrFrontendViewHelper
         /** @var $document SearchResult */
         $document = $arguments['document'];
 
-            /** @var $resultSet SearchResultSet */
+        /** @var $resultSet SearchResultSet */
         $resultSet = $arguments['resultSet'];
 
         $maximumScore = $arguments['maximumScore'] ?? $resultSet->getMaximumScore();
@@ -63,7 +64,7 @@ class RelevanceViewHelper extends AbstractSolrFrontendViewHelper
         }
 
         $documentScore = $document->getScore();
-        $score = floatval($documentScore);
+        $score = (float)$documentScore;
         $multiplier = 100 / $maximumScore;
         $scorePercentage = round($score * $multiplier);
         $content = $scorePercentage;

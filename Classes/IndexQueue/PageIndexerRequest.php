@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\IndexQueue;
 
 /***************************************************************
@@ -26,9 +27,9 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
 
 use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
-use Psr\Http\Message\ResponseInterface;
-use GuzzleHttp\Exception\ServerException;
 use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\ServerException;
+use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Http\RequestFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -39,7 +40,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class PageIndexerRequest
 {
-
     const SOLR_INDEX_HEADER = 'X-Tx-Solr-Iq';
 
     /**
@@ -89,7 +89,7 @@ class PageIndexerRequest
      *
      * @var Item
      */
-    protected $indexQueueItem = null;
+    protected $indexQueueItem;
 
     /**
      * Request timeout in seconds
@@ -101,7 +101,7 @@ class PageIndexerRequest
     /**
      * @var \ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager
      */
-    protected $logger = null;
+    protected $logger;
 
     /**
      * @var ExtensionConfiguration
@@ -214,7 +214,7 @@ class PageIndexerRequest
                     'request url' => $url,
                     'request headers' => $headers,
                     'response headers' => $rawResponse->getHeaders(),
-                    'raw response body' => $rawResponse->getBody()->getContents()
+                    'raw response body' => $rawResponse->getBody()->getContents(),
                 ]
             );
 
@@ -244,7 +244,7 @@ class PageIndexerRequest
                 $itemId . '|' .
                 $pageId . '|' .
                 $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']
-            )
+            ),
         ];
 
         $indexerRequestData = array_merge($indexerRequestData, $this->parameters);

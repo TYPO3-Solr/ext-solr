@@ -26,16 +26,15 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\Parser;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResultBuilder;
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResultCollection;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
-use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * A ResultParser is responsible to create the result object structure from the \Apache_Solr_Response
  * and assign it to the SearchResultSet.
  */
-abstract class AbstractResultParser {
+abstract class AbstractResultParser
+{
 
     /**
      * @var SearchResultBuilder
@@ -52,7 +51,8 @@ abstract class AbstractResultParser {
      * @param SearchResultBuilder|null $resultBuilder
      * @param DocumentEscapeService|null $documentEscapeService
      */
-    public function __construct(SearchResultBuilder $resultBuilder = null, DocumentEscapeService $documentEscapeService = null) {
+    public function __construct(SearchResultBuilder $resultBuilder = null, DocumentEscapeService $documentEscapeService = null)
+    {
         $this->searchResultBuilder = $resultBuilder ?? GeneralUtility::makeInstance(SearchResultBuilder::class);
         $this->documentEscapeService = $documentEscapeService ?? GeneralUtility::makeInstance(DocumentEscapeService::class);
     }

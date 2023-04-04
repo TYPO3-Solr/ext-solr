@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Domain\Search\Uri;
 
 /*
@@ -21,9 +22,9 @@ use ApacheSolrForTypo3\Solr\Event\Routing\BeforeReplaceVariableInCachedUrlEvent;
 use ApacheSolrForTypo3\Solr\Event\Routing\PostProcessUriEvent;
 use ApacheSolrForTypo3\Solr\Routing\RoutingService;
 use ApacheSolrForTypo3\Solr\System\Url\UrlHelper;
+use ApacheSolrForTypo3\Solr\Utility\ParameterSortingUtility;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Core\Http\Uri;
-use ApacheSolrForTypo3\Solr\Utility\ParameterSortingUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 
@@ -53,12 +54,12 @@ class SearchUriBuilder
     protected static $preCompiledLinks = [];
 
     /**
-     * @var integer
+     * @var int
      */
     protected static $hitCount;
 
     /**
-     * @var integer
+     * @var int
      */
     protected static $missCount;
 
@@ -255,9 +256,12 @@ class SearchUriBuilder
         $request = GeneralUtility::makeInstance(
             SearchRequest::class,
             [],
-            /** @scrutinizer ignore-type */ $contextPageUid,
-            /** @scrutinizer ignore-type */ $contextSystemLanguage,
-            /** @scrutinizer ignore-type */ $contextConfiguration
+            /** @scrutinizer ignore-type */
+            $contextPageUid,
+            /** @scrutinizer ignore-type */
+            $contextSystemLanguage,
+            /** @scrutinizer ignore-type */
+            $contextConfiguration
         );
         $arguments = $request->setRawQueryString($queryString)->getAsArray();
 
@@ -371,10 +375,10 @@ class SearchUriBuilder
             self::$preCompiledLinks[$hash] = (string)$urlHelper;
         }
 
-        $keys = array_map(function($value) {
+        $keys = array_map(function ($value) {
             return urlencode($value);
         }, array_keys($values));
-        $values = array_map(function($value) {
+        $values = array_map(function ($value) {
             return urlencode($value);
         }, $values);
 
@@ -407,7 +411,7 @@ class SearchUriBuilder
 
         $values = $variableEvent->getVariableValues();
         // Take care that everything is urlencoded!
-        $keys = array_map(function($value) {
+        $keys = array_map(function ($value) {
             // @TODO: With only PHP 8 support, replace this with str_contains()
             if (strpos($value, '###') === false) {
                 return $value;
@@ -428,8 +432,6 @@ class SearchUriBuilder
 
     /**
      * Flushes the internal in memory cache.
-     *
-     * @return void
      */
     public function flushInMemoryCache()
     {
@@ -467,7 +469,7 @@ class SearchUriBuilder
      * @param array $values
      * @param array $branch
      */
-    protected function getSubstitution(array &$structure, array  &$values, array $branch = []): void
+    protected function getSubstitution(array &$structure, array &$values, array $branch = []): void
     {
         /*
          * Adds information about the filter facet to the placeholder.

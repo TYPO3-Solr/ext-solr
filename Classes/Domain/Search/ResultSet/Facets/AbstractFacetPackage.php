@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets;
 
 /*
@@ -18,7 +19,8 @@ use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 /**
  * Class AbstractFacetPackage
  */
-abstract class AbstractFacetPackage {
+abstract class AbstractFacetPackage
+{
     /**
      * @var ObjectManagerInterface
      */
@@ -53,7 +55,8 @@ abstract class AbstractFacetPackage {
     /**
      * @return string
      */
-    public function getUrlDecoderClassName() {
+    public function getUrlDecoderClassName()
+    {
         return (string)DefaultUrlDecoder::class;
     }
 
@@ -73,7 +76,8 @@ abstract class AbstractFacetPackage {
     /**
      * @return string
      */
-    public function getQueryBuilderClassName() {
+    public function getQueryBuilderClassName()
+    {
         return (string)DefaultFacetQueryBuilder::class;
     }
 
@@ -84,7 +88,7 @@ abstract class AbstractFacetPackage {
     public function getQueryBuilder()
     {
         $urlDecoder = $this->objectManager->get($this->getQueryBuilderClassName());
-        if(!$urlDecoder instanceof FacetQueryBuilderInterface) {
+        if (!$urlDecoder instanceof FacetQueryBuilderInterface) {
             throw new InvalidQueryBuilderException('Invalid querybuilder for package ' . __CLASS__);
         }
         return $urlDecoder;

@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr;
 
 /***************************************************************
@@ -31,9 +32,9 @@ use ApacheSolrForTypo3\Solr\System\Records\SystemLanguage\SystemLanguageReposito
 use ApacheSolrForTypo3\Solr\System\Solr\Node;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use InvalidArgumentException;
+use function json_encode;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use function json_encode;
 
 /**
  * ConnectionManager is responsible to create SolrConnection objects.
@@ -63,7 +64,6 @@ class ConnectionManager implements SingletonInterface
      */
     protected $siteRepository;
 
-
     /**
      * @param SystemLanguageRepository $systemLanguageRepository
      * @param PagesRepositoryAtExtSolr|null $pagesRepositoryAtExtSolr
@@ -73,8 +73,7 @@ class ConnectionManager implements SingletonInterface
         SystemLanguageRepository $systemLanguageRepository = null,
         PagesRepositoryAtExtSolr $pagesRepositoryAtExtSolr = null,
         SiteRepository $siteRepository = null
-    )
-    {
+    ) {
         $this->systemLanguageRepository = $systemLanguageRepository ?? GeneralUtility::makeInstance(SystemLanguageRepository::class);
         $this->siteRepository           = $siteRepository ?? GeneralUtility::makeInstance(SiteRepository::class);
         $this->pagesRepositoryAtExtSolr = $pagesRepositoryAtExtSolr ?? GeneralUtility::makeInstance(PagesRepositoryAtExtSolr::class);
@@ -89,7 +88,7 @@ class ConnectionManager implements SingletonInterface
      */
     public function getSolrConnectionForNodes(array $readNodeConfiguration, array $writeNodeConfiguration)
     {
-        $connectionHash = md5(json_encode($readNodeConfiguration) .  json_encode($writeNodeConfiguration));
+        $connectionHash = md5(json_encode($readNodeConfiguration) . json_encode($writeNodeConfiguration));
         if (!isset(self::$connections[$connectionHash])) {
             $readNode = Node::fromArray($readNodeConfiguration);
             $writeNode = Node::fromArray($writeNodeConfiguration);
@@ -106,7 +105,7 @@ class ConnectionManager implements SingletonInterface
      */
     public function getConnectionFromConfiguration(array $config)
     {
-        if(empty($config['read']) && !empty($config['solrHost'])) {
+        if (empty($config['read']) && !empty($config['solrHost'])) {
             throw new InvalidArgumentException('Invalid registry data please re-initialize your solr connections');
         }
 
@@ -130,7 +129,7 @@ class ConnectionManager implements SingletonInterface
             $config = $site->getSolrConnectionConfiguration($language);
             $solrConnection = $this->getConnectionFromConfiguration($config);
             return $solrConnection;
-        } catch(InvalidArgumentException $e) {
+        } catch (InvalidArgumentException $e) {
             $noSolrConnectionException = $this->buildNoConnectionExceptionForPageAndLanguage($pageId, $language);
             throw $noSolrConnectionException;
         }
@@ -210,7 +209,7 @@ class ConnectionManager implements SingletonInterface
             . $connection['read']['host'] . ':'
             . $connection['read']['port']
             . $connection['read']['path']
-            .' - Write node: '
+            . ' - Write node: '
             . $connection['write']['host'] . ':'
             . $connection['write']['port']
             . $connection['write']['path'];

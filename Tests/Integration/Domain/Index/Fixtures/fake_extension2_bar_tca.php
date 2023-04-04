@@ -24,12 +24,12 @@ return [
         'enablecolumns' => [
             'disabled' => 'hidden',
             'starttime' => 'starttime',
-            'endtime' => 'endtime'
+            'endtime' => 'endtime',
         ],
         'searchFields' => 'uid,title',
     ],
     'interface' => [
-        'showRecordFieldList' => 'cruser_id,pid,sys_language_uid,l10n_parent,l10n_diffsource,hidden,starttime,endtime,title'
+        'showRecordFieldList' => 'cruser_id,pid,sys_language_uid,l10n_parent,l10n_diffsource,hidden,starttime,endtime,title',
     ],
     'columns' => [
         'sys_language_uid' => [
@@ -43,11 +43,11 @@ return [
                     [
                         'LLL:EXT:lang/locallang_general.xlf:LGL.allLanguages',
                         -1,
-                        'flags-multiple'
+                        'flags-multiple',
                     ],
                 ],
                 'default' => 0,
-            ]
+            ],
         ],
         'l10n_parent' => [
             'displayCond' => 'FIELD:sys_language_uid:>:0',
@@ -61,52 +61,52 @@ return [
                 ],
                 'foreign_table' => 'tx_fakeextension_domain_model_foo',
                 'foreign_table_where' => 'AND tx_fakeextension_domain_model_foo.pid=###CURRENT_PID### AND tx_fakeextension_domain_model_foo.sys_language_uid IN (-1,0)',
-                'showIconTable' => false
-            ]
+                'showIconTable' => false,
+            ],
         ],
         'l10n_diffsource' => [
             'config' => [
                 'type' => 'passthrough',
-                'default' => ''
-            ]
+                'default' => '',
+            ],
         ],
         'hidden' => [
             'exclude' => 1,
             'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.hidden',
             'config' => [
                 'type' => 'check',
-                'default' => 0
-            ]
+                'default' => 0,
+            ],
         ],
         'cruser_id' => [
             'label' => 'cruser_id',
             'config' => [
-                'type' => 'passthrough'
-            ]
+                'type' => 'passthrough',
+            ],
         ],
         'pid' => [
             'label' => 'pid',
             'config' => [
-                'type' => 'passthrough'
-            ]
+                'type' => 'passthrough',
+            ],
         ],
         'crdate' => [
             'label' => 'crdate',
             'config' => [
                 'type' => 'passthrough',
-            ]
+            ],
         ],
         'tstamp' => [
             'label' => 'tstamp',
             'config' => [
                 'type' => 'passthrough',
-            ]
+            ],
         ],
         'sorting' => [
             'label' => 'sorting',
             'config' => [
                 'type' => 'passthrough',
-            ]
+            ],
         ],
         'starttime' => [
             'exclude' => 1,
@@ -118,7 +118,7 @@ return [
                 'max' => 20,
                 'eval' => 'datetime',
                 'default' => 0,
-            ]
+            ],
         ],
         'endtime' => [
             'exclude' => 1,
@@ -130,7 +130,7 @@ return [
                 'max' => 20,
                 'eval' => 'datetime',
                 'default' => 0,
-            ]
+            ],
         ],
         'title' => [
             'exclude' => 0,
@@ -140,15 +140,15 @@ return [
                 'type' => 'input',
                 'size' => 60,
                 'eval' => 'required',
-            ]
+            ],
         ],
         'editlock' => [
             'exclude' => 1,
             'l10n_mode' => 'mergeIfNotBlank',
             'label' => 'LLL:EXT:lang/locallang_tca.xlf:editlock',
             'config' => [
-                'type' => 'check'
-            ]
+                'type' => 'check',
+            ],
         ],
         'tags' => [
             'exclude' => 1,
@@ -163,8 +163,8 @@ return [
                 'size' => '5',
                 'maxitems' => '200',
                 'minitems' => '0',
-                'show_thumbs' => '1'
-              ]
+                'show_thumbs' => '1',
+              ],
          ],
         'category' => [
             'exclude' => 1,
@@ -178,11 +178,11 @@ return [
                     'expandSingle' => 1,
                 ],
             ],
-        ]
+        ],
      ],
      'types' => [
         '0' => [
-            'showitem' => 'l10n_parent, l10n_diffsource,title,tags'
-        ]
-    ]
+            'showitem' => 'l10n_parent, l10n_diffsource,title,tags',
+        ],
+    ],
 ];

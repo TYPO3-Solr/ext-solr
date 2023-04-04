@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\Middleware;
@@ -34,7 +35,6 @@ use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\AuthorizationService;
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequestHandler;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
-use ApacheSolrForTypo3\Solr\Util;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -94,12 +94,11 @@ class FrontendUserAuthenticator implements MiddlewareInterface
                 'Invalid Index Queue Frontend Request detected!',
                 [
                     'page indexer request' => (array)$pageIndexerRequestHandler->getRequest(),
-                    'index queue header' => $jsonEncodedParameters
+                    'index queue header' => $jsonEncodedParameters,
                 ]
             );
 
             return new JsonResponse(['error' => ['code' => 403, 'message' => 'Invalid Index Queue Request.']], 403);
-
         }
         $request = $this->tryToAuthenticateFrontendUser($pageIndexerRequestHandler, $request);
 
@@ -152,5 +151,4 @@ class FrontendUserAuthenticator implements MiddlewareInterface
         /* @noinspection PhpIncompatibleReturnTypeInspection */
         return GeneralUtility::makeInstance(Rootline::class, /** @scrutinizer ignore-type */ $stringAccessRootline);
     }
-
 }

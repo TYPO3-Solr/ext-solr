@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\ViewHelpers\Widget\Controller;
 
 /*
@@ -34,7 +35,7 @@ abstract class AbstractPaginateWidgetController extends AbstractWidgetController
         'insertBelow' => true,
         'maximumNumberOfLinks' => 10,
         'addQueryStringMethod' => '',
-        'templatePath' => ''
+        'templatePath' => '',
     ];
 
     /**
@@ -67,10 +68,8 @@ abstract class AbstractPaginateWidgetController extends AbstractWidgetController
      */
     protected $templatePath = '';
 
-    /**
-     * @return void
-     */
-    public function initializeAction() {
+    public function initializeAction()
+    {
         $configuration = is_array($this->widgetConfiguration['configuration']) ? $this->widgetConfiguration['configuration'] : [];
         ArrayUtility::mergeRecursiveWithOverrule($this->configuration, $configuration, false);
         $this->maximumNumberOfLinks = (int)$this->configuration['maximumNumberOfLinks'];
@@ -82,8 +81,6 @@ abstract class AbstractPaginateWidgetController extends AbstractWidgetController
     /**
      * If a certain number of links should be displayed, adjust before and after
      * amounts accordingly.
-     *
-     * @return void
      */
     protected function calculateDisplayRange()
     {

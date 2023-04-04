@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr;
 
 /***************************************************************
@@ -44,7 +45,7 @@ class NoSolrConnectionFoundException extends \Exception
 
     public function setPageId($pageId)
     {
-        $this->pageId = intval($pageId);
+        $this->pageId = (int)$pageId;
     }
 
     public function getLanguageId()
@@ -54,7 +55,7 @@ class NoSolrConnectionFoundException extends \Exception
 
     public function setLanguageId($languageId)
     {
-        $this->languageId = intval($languageId);
+        $this->languageId = (int)$languageId;
     }
 
     public function getRootPageId()
@@ -64,6 +65,6 @@ class NoSolrConnectionFoundException extends \Exception
 
     public function setRootPageId($rootPageId)
     {
-        $this->rootPageId = intval($rootPageId);
+        $this->rootPageId = (int)$rootPageId;
     }
 }

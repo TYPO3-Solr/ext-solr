@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\IndexQueue\Initializer;
 
 /***************************************************************
@@ -83,7 +84,7 @@ abstract class AbstractInitializer implements IndexQueueInitializer
     /**
      * @var \ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager
      */
-    protected $logger = null;
+    protected $logger;
 
     /**
      * @var QueueItemRepository
@@ -189,7 +190,6 @@ abstract class AbstractInitializer implements IndexQueueInitializer
 
     /**
      * Builds the SELECT part of the Index Queue initialization query.
-     *
      */
     protected function buildSelectStatement()
     {
@@ -230,7 +230,6 @@ abstract class AbstractInitializer implements IndexQueueInitializer
      * Builds a part of the WHERE clause of the Index Queue initialization
      * query. This part selects the limits items to be selected from the pages
      * in a site only, plus additional pages that may have been configured.
-     *
      */
     protected function buildPagesClause()
     {
@@ -291,14 +290,16 @@ abstract class AbstractInitializer implements IndexQueueInitializer
             $conditions['languageField'] = [
                 $GLOBALS['TCA'][$this->type]['ctrl']['languageField'] . ' = 0',
                 // default language
-                $GLOBALS['TCA'][$this->type]['ctrl']['languageField'] . ' = -1'
+                $GLOBALS['TCA'][$this->type]['ctrl']['languageField'] . ' = -1',
                 // all languages
             ];
             if (isset($GLOBALS['TCA'][$this->type]['ctrl']['transOrigPointerField'])) {
                 $conditions['languageField'][] = $GLOBALS['TCA'][$this->type]['ctrl']['transOrigPointerField'] . ' = 0'; // translations without original language source
             }
-            $conditions['languageField'] = '(' . implode(' OR ',
-                    $conditions['languageField']) . ')';
+            $conditions['languageField'] = '(' . implode(
+                ' OR ',
+                $conditions['languageField']
+            ) . ')';
         }
 
         if (!empty($GLOBALS['TCA'][$this->type]['ctrl']['versioningWS'])) {

@@ -1,4 +1,6 @@
-<?php declare(strict_types = 1);
+<?php
+
+declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\Domain\Search\FrequentSearches;
 
 /*
@@ -77,7 +79,7 @@ class FrequentSearchesService
      *
      * @return array Tags as array with terms and hits
      */
-    public function getFrequentSearchTerms() : array
+    public function getFrequentSearchTerms(): array
     {
         $frequentSearchConfiguration = $this->configuration->getSearchFrequentSearchesConfiguration();
 
@@ -96,7 +98,7 @@ class FrequentSearchesService
 
             $lifetime = null;
             if (isset($frequentSearchConfiguration['cacheLifetime'])) {
-                $lifetime = intval($frequentSearchConfiguration['cacheLifetime']);
+                $lifetime = (int)($frequentSearchConfiguration['cacheLifetime']);
             }
 
             if ($this->hasValidCache()) {
@@ -113,7 +115,7 @@ class FrequentSearchesService
      * @param array $frequentSearchConfiguration
      * @return array Array of frequent search terms, keys are the terms, values are hits
      */
-    protected function getFrequentSearchTermsFromStatistics(array $frequentSearchConfiguration) : array
+    protected function getFrequentSearchTermsFromStatistics(array $frequentSearchConfiguration): array
     {
         $terms = [];
 
@@ -151,7 +153,7 @@ class FrequentSearchesService
      * @param array $frequentSearchConfiguration
      * @return string
      */
-    protected function getCacheIdentifier(array $frequentSearchConfiguration) : string
+    protected function getCacheIdentifier(array $frequentSearchConfiguration): string
     {
         // Use configuration as cache identifier
         $identifier = 'frequentSearchesTags';
@@ -174,6 +176,6 @@ class FrequentSearchesService
      */
     protected function hasValidCache(): bool
     {
-        return ($this->cache instanceof FrontendInterface);
+        return $this->cache instanceof FrontendInterface;
     }
 }

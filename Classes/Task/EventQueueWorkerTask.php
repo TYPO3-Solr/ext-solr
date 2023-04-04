@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Task;
 
 /***************************************************************
@@ -25,14 +26,14 @@ namespace ApacheSolrForTypo3\Solr\Task;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use Psr\EventDispatcher\EventDispatcherInterface;
-use TYPO3\CMS\Scheduler\Task\AbstractTask;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
-use ApacheSolrForTypo3\Solr\System\Records\Queue\EventQueueItemRepository;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\EventListener\Events\DelayedProcessingFinishedEvent;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\DataUpdateEventInterface;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
-use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\EventListener\Events\DelayedProcessingFinishedEvent;
+use ApacheSolrForTypo3\Solr\System\Records\Queue\EventQueueItemRepository;
+use Psr\EventDispatcher\EventDispatcherInterface;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
+use TYPO3\CMS\Scheduler\Task\AbstractTask;
 
 /**
  * A worker processing the queued data update events
@@ -57,8 +58,8 @@ final class EventQueueWorkerTask extends AbstractTask
      */
     public function execute(): bool
     {
-       $this->processEvents();
-       return true;
+        $this->processEvents();
+        return true;
     }
 
     /**
@@ -98,14 +99,14 @@ final class EventQueueWorkerTask extends AbstractTask
                         'eventQueueItemUid' => $queueItem['uid'],
                         'error' => $e->getMessage(),
                         'errorCode' => $e->getCode(),
-                        'errorFile' => $e->getFile() . ':' . $e->getLine()
+                        'errorFile' => $e->getFile() . ':' . $e->getLine(),
                     ]
                 );
                 $itemRepository->updateEventQueueItem(
                     $queueItem['uid'],
                     [
                         'error' => 1,
-                        'error_message' => $e->getMessage() . '[' . $e->getCode() . ']'
+                        'error_message' => $e->getMessage() . '[' . $e->getCode() . ']',
                     ]
                 );
             }

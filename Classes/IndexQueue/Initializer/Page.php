@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\IndexQueue\Initializer;
 
 /***************************************************************
@@ -28,8 +29,6 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue\Initializer;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\QueueItemRepository;
-use ApacheSolrForTypo3\Solr\Domain\Site\SiteInterface;
-use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
@@ -95,7 +94,7 @@ class Page extends AbstractInitializer
         $pagesInitialized = parent::initialize();
         $mountPagesInitialized = $this->initializeMountPointPages();
 
-        return ($pagesInitialized && $mountPagesInitialized);
+        return $pagesInitialized && $mountPagesInitialized;
     }
 
     /**
@@ -170,7 +169,7 @@ class Page extends AbstractInitializer
                     SolrLogManager::ERROR,
                     'Index Queue initialization failed for mount pages',
                     [
-                        $e->__toString()
+                        $e->__toString(),
                     ]
                 );
                 break;
@@ -337,7 +336,7 @@ class Page extends AbstractInitializer
 
         // Do not include $mountPageSourceId in tree, if the mount point is not set to overlay.
         if (!empty($mountPageTree) && !$mountPage['mountPageOverlayed']) {
-            $mountPageTree = array_diff($mountPageTree , [$mountPageSourceId]);
+            $mountPageTree = array_diff($mountPageTree, [$mountPageSourceId]);
         }
 
         return $mountPageTree;

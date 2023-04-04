@@ -120,7 +120,6 @@ interface SiteInterface
      */
     public function getTitle();
 
-
     /**
      * @param int $language
      * @return array

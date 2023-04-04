@@ -1,5 +1,7 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\System\Solr;
+
 use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use Countable;
 
@@ -40,7 +42,7 @@ class ResponseAdapter implements Countable
     /**
      * @var \stdClass
      */
-    protected $data = null;
+    protected $data;
 
     /**
      * @var int
@@ -68,7 +70,7 @@ class ResponseAdapter implements Countable
 
         // @extensionScannerIgnoreLine
         if (isset($this->data->response) && is_array($this->data->response->docs)) {
-            $documents = array();
+            $documents = [];
 
             // @extensionScannerIgnoreLine
             foreach ($this->data->response->docs as $originalDocument) {
@@ -101,7 +103,7 @@ class ResponseAdapter implements Countable
      * Magic function for isset function on parsed data
      *
      * @param string $key
-     * @return boolean
+     * @return bool
      */
     public function __isset($key)
     {

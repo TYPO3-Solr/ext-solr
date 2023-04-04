@@ -25,8 +25,8 @@ namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
+use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
 use ApacheSolrForTypo3\Solr\System\Page\Rootline;
@@ -34,7 +34,6 @@ use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\RootlineUtility;
-use TYPO3\CMS\Frontend\Page\PageRepository;
 
 /**
  * RootPageResolver.
@@ -159,7 +158,7 @@ class RootPageResolver implements SingletonInterface
     {
         /** @var Rootline $rootLine */
         $rootLine = GeneralUtility::makeInstance(Rootline::class);
-        $rootPageId = intval($pageId) ?: intval($GLOBALS['TSFE']->id);
+        $rootPageId = (int)$pageId ?: (int)($GLOBALS['TSFE']->id);
 
         // frontend
         if (!empty($GLOBALS['TSFE']->rootLine)) {
@@ -182,13 +181,12 @@ class RootPageResolver implements SingletonInterface
         return $rootPageFromRootLine === 0 ? $rootPageId : $rootPageFromRootLine;
     }
 
-
     /**
      * This method determines the responsible site roots for a record by getting the rootPage of the record and checking
      * if the pid is references in another site with additionalPageIds and returning those rootPageIds as well.
      *
      * @param string $table
-     * @param integer $uid
+     * @param int $uid
      * @return array
      */
     protected function buildResponsibleRootPageIds($table, $uid)
@@ -223,18 +221,17 @@ class RootPageResolver implements SingletonInterface
         if ($table === 'pages') {
             $rootPageId = $this->getRootPageId($uid);
             return $rootPageId;
-        } else {
-            $recordPageId = $this->getRecordPageId($table, $uid);
-            $rootPageId = $this->getRootPageId($recordPageId, true);
-            return $rootPageId;
         }
+        $recordPageId = $this->getRecordPageId($table, $uid);
+        $rootPageId = $this->getRootPageId($recordPageId, true);
+        return $rootPageId;
     }
 
     /**
      * Returns the pageId of the record or 0 when no valid record was given.
      *
      * @param string $table
-     * @param integer $uid
+     * @param int $uid
      * @return mixed
      */
     protected function getRecordPageId($table, $uid)
@@ -267,7 +264,7 @@ class RootPageResolver implements SingletonInterface
      * Retrieves an optimized array structure we the monitored pageId as key and the relevant site rootIds as value.
      *
      * @param string $table
-     * @param integer $uid
+     * @param int $uid
      * @return array
      */
     protected function getSiteRootsByObservedPageIds($table, $uid)
@@ -289,7 +286,7 @@ class RootPageResolver implements SingletonInterface
      * are responsible for this record by referencing the pageId in additionalPageIds configuration.
      *
      * @param string $table
-     * @param integer $uid
+     * @param int $uid
      * @return array
      */
     protected function buildSiteRootsByObservedPageIds($table, $uid)

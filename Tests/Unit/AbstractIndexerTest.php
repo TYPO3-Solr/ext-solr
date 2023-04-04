@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit;
 
 /***************************************************************
@@ -39,7 +40,7 @@ class AbstractIndexerTest extends UnitTest
      */
     public function testTypeIsNotAllowedOverride()
     {
-        $this->assertFalse(AbstractIndexer::isAllowedToOverrideField('type'), 'Type is allowed to override');
-        $this->assertTrue(AbstractIndexer::isAllowedToOverrideField('test_stringS'), 'New dynamic fields was not indicated to be overrideable');
+        self::assertFalse(AbstractIndexer::isAllowedToOverrideField('type'), 'Type is allowed to override');
+        self::assertTrue(AbstractIndexer::isAllowedToOverrideField('test_stringS'), 'New dynamic fields was not indicated to be overrideable');
     }
 }

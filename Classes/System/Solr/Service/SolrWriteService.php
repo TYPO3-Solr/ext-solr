@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\System\Solr\Service;
 
 /*
@@ -49,7 +50,7 @@ class SolrWriteService extends AbstractSolrService
                     'parameters' => $param,
                     'file' => $query->getFile(),
                     'query url' => self::EXTRACT_SERVLET,
-                    'exception' => $e->getMessage()
+                    'exception' => $e->getMessage(),
                 ]
             );
         }
@@ -79,7 +80,8 @@ class SolrWriteService extends AbstractSolrService
      * @param string $rawQuery Expected to be utf-8 encoded
      * @return ResponseAdapter
      */
-    public function deleteByQuery($rawQuery) {
+    public function deleteByQuery($rawQuery)
+    {
         $query = $this->client->createUpdate();
         $query->addDeleteQuery($rawQuery);
         return $this->createAndExecuteRequest($query);
@@ -101,8 +103,8 @@ class SolrWriteService extends AbstractSolrService
     /**
      * Send a commit command.  Will be synchronous unless both wait parameters are set to false.
      *
-     * @param boolean $expungeDeletes Defaults to false, merge segments with deletes away
-     * @param boolean $waitSearcher Defaults to true, block until a new searcher is opened and registered as the main query searcher, making the changes visible
+     * @param bool $expungeDeletes Defaults to false, merge segments with deletes away
+     * @param bool $waitSearcher Defaults to true, block until a new searcher is opened and registered as the main query searcher, making the changes visible
      * @return ResponseAdapter
      */
     public function commit($expungeDeletes = false, $waitSearcher = true)

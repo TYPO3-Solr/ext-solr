@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
 
 /***************************************************************
@@ -46,7 +47,7 @@ class PhraseFields extends AbstractFieldList implements ParameterBuilder
      * @param string $delimiter
      * @return PhraseFields
      */
-    public static function fromString(string $fieldListString, string $delimiter = ',') : PhraseFields
+    public static function fromString(string $fieldListString, string $delimiter = ','): PhraseFields
     {
         return self::initializeFromString($fieldListString, $delimiter);
     }
@@ -72,7 +73,7 @@ class PhraseFields extends AbstractFieldList implements ParameterBuilder
      * @param string $delimiter
      * @return PhraseFields
      */
-    protected static function initializeFromString(string $fieldListString, string $delimiter = ',') : PhraseFields
+    protected static function initializeFromString(string $fieldListString, string $delimiter = ','): PhraseFields
     {
         $fieldList = self::buildFieldList($fieldListString, $delimiter);
         return new PhraseFields(true, $fieldList);

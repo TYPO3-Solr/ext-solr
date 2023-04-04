@@ -34,7 +34,7 @@ class SearchRequestBuilder
     /**
      * @var FrontendUserSession
      */
-    protected $session = null;
+    protected $session;
 
     /**
      * SearchRequestBuilder constructor.
@@ -158,10 +158,14 @@ class SearchRequestBuilder
     {
         return GeneralUtility::makeInstance(
             SearchRequest::class,
-            /** @scrutinizer ignore-type */ $requestArguments,
-            /** @scrutinizer ignore-type */ $pageId,
-            /** @scrutinizer ignore-type */ $languageId,
-            /** @scrutinizer ignore-type */ $this->typoScriptConfiguration
+            /** @scrutinizer ignore-type */
+            $requestArguments,
+            /** @scrutinizer ignore-type */
+            $pageId,
+            /** @scrutinizer ignore-type */
+            $languageId,
+            /** @scrutinizer ignore-type */
+            $this->typoScriptConfiguration
         );
     }
 
@@ -173,7 +177,7 @@ class SearchRequestBuilder
      */
     protected function adjustPageArgumentToPositiveInteger(array $arguments): array
     {
-        $page = isset($arguments['page']) ? intval($arguments['page']) : 0;
+        $page = isset($arguments['page']) ? (int)($arguments['page']) : 0;
         $arguments['page'] = max($page, 0);
 
         return $arguments;

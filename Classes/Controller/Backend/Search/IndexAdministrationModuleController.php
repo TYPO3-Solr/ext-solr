@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Controller\Backend\Search;
 
 /***************************************************************
@@ -27,11 +28,9 @@ namespace ApacheSolrForTypo3\Solr\Controller\Backend\Search;
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
-use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Backend\Routing\UriBuilder as BackendUriBuilder;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Mvc\Web\ReferringRequest;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /**
@@ -50,7 +49,7 @@ class IndexAdministrationModuleController extends AbstractModuleController
     /**
      * @var ConnectionManager
      */
-    protected $solrConnectionManager = null;
+    protected $solrConnectionManager;
 
     /**
      * @param ConnectionManager $solrConnectionManager
@@ -72,8 +71,6 @@ class IndexAdministrationModuleController extends AbstractModuleController
 
     /**
      * Index action, shows an overview of available index maintenance operations.
-     *
-     * @return void
      */
     public function indexAction()
     {
@@ -84,8 +81,6 @@ class IndexAdministrationModuleController extends AbstractModuleController
 
     /**
      * Empties the site's indexes.
-     *
-     * @return void
      */
     public function emptyIndexAction()
     {
@@ -112,23 +107,22 @@ class IndexAdministrationModuleController extends AbstractModuleController
 
     /**
      * Empties the Index Queue
-     *
-     * @return void
      */
     public function clearIndexQueueAction()
     {
         $this->indexQueue->deleteItemsBySite($this->selectedSite);
         $this->addFlashMessage(
-            LocalizationUtility::translate('solr.backend.index_administration.success.queue_emptied', 'Solr',
-                [$this->selectedSite->getLabel()])
+            LocalizationUtility::translate(
+                'solr.backend.index_administration.success.queue_emptied',
+                'Solr',
+                [$this->selectedSite->getLabel()]
+            )
         );
         $this->redirectToReferrerModule();
     }
 
     /**
      * Reloads the site's Solr cores.
-     *
-     * @return void
      */
     public function reloadIndexConfigurationAction()
     {

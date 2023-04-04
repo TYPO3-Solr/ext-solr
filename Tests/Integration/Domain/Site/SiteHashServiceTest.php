@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\Domain\Site;
 
 /***************************************************************
@@ -37,8 +38,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class SiteHashServiceTest extends IntegrationTest
 {
-
-    protected function setUp(): void {
+    protected function setUp(): void
+    {
         parent::setUp();
         $this->writeDefaultSolrTestSiteConfiguration();
     }
@@ -46,11 +47,12 @@ class SiteHashServiceTest extends IntegrationTest
     /**
      * @return array
      */
-    public function canResolveSiteHashAllowedSitesDataProvider() {
+    public function canResolveSiteHashAllowedSitesDataProvider()
+    {
         return [
             'siteHashDisabled' => ['*', '*'],
             'allSitesInSystem' => ['__all', 'testone.site,testtwo.site'],
-            'currentSiteOnly' => ['__current_site', 'testone.site']
+            'currentSiteOnly' => ['__current_site', 'testone.site'],
         ];
     }
 
@@ -58,11 +60,11 @@ class SiteHashServiceTest extends IntegrationTest
      * @dataProvider canResolveSiteHashAllowedSitesDataProvider
      * @test
      */
-    public function canResolveSiteHashAllowedSites($allowedSitesConfiguration , $expectedAllowedSites)
+    public function canResolveSiteHashAllowedSites($allowedSitesConfiguration, $expectedAllowedSites)
     {
         $this->importDataSetFromFixture('can_resolve_site_hash.xml');
         $siteHashService = GeneralUtility::makeInstance(SiteHashService::class);
         $allowedSites = $siteHashService->getAllowedSitesForPageIdAndAllowedSitesConfiguration(1, $allowedSitesConfiguration);
-        $this->assertSame($expectedAllowedSites, $allowedSites, 'resolveSiteHashAllowedSites did not return expected allowed sites');
+        self::assertSame($expectedAllowedSites, $allowedSites, 'resolveSiteHashAllowedSites did not return expected allowed sites');
     }
 }

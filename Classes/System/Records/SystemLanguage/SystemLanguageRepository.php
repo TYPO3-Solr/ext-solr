@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\System\Records\SystemLanguage;
 
 /***************************************************************
@@ -26,15 +27,12 @@ namespace ApacheSolrForTypo3\Solr\System\Records\SystemLanguage;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\System\Records\AbstractRepository;
-use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * SystemLanguageRepository to encapsulate the database access for records used in solr.
- *
  */
 class SystemLanguageRepository extends AbstractRepository implements SingletonInterface
 {
@@ -49,7 +47,7 @@ class SystemLanguageRepository extends AbstractRepository implements SingletonIn
      * @param int $languageId language ID
      * @return string Language name
      */
-    public function findOneLanguageTitleByLanguageId(int $languageId) : string
+    public function findOneLanguageTitleByLanguageId(int $languageId): string
     {
         $queryBuilder = $this->getQueryBuilder();
         $result = $queryBuilder->select('title')

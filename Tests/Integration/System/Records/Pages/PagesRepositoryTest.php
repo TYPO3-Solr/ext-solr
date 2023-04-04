@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\System\Records\Pages;
 
 /***************************************************************
@@ -56,15 +57,15 @@ class PagesRepositoryTest extends IntegrationTest
         $expectedResult = [
             0 => [
                 'uid' => 1,
-                'title' => 'Products'
+                'title' => 'Products',
             ],
             1 => [
                 'uid' => 5,
-                'title' => 'Support'
-            ]
+                'title' => 'Support',
+            ],
         ];
         $result = $this->repository->findAllRootPages();
-        $this->assertEquals($expectedResult, $result);
+        self::assertEquals($expectedResult, $result);
     }
 
     /**
@@ -99,24 +100,23 @@ class PagesRepositoryTest extends IntegrationTest
                 'uid' => 14,
                 'mountPageDestination' => 14,
                 'mountPageSource' => 24,
-                'mountPageOverlayed' => 1
+                'mountPageOverlayed' => 1,
             ],
             [
                 'uid' => 34,
                 'mountPageDestination' => 34,
                 'mountPageSource' => 25,
-                'mountPageOverlayed' => 1
-            ]
+                'mountPageOverlayed' => 1,
+            ],
         ];
 
         $result = $this->repository->findMountPointPropertiesByPageIdOrByRootLineParentPageIds(24);
-        $this->assertSame([$expectedResult[0]], $result);
+        self::assertSame([$expectedResult[0]], $result);
 
-        $rootLine = [24,20];
+        $rootLine = [24, 20];
 
         // Page [14] has both pages [24] and [25], because mounting works recursive
         $result = $this->repository->findMountPointPropertiesByPageIdOrByRootLineParentPageIds(25, $rootLine);
-        $this->assertSame($expectedResult, $result);
-
+        self::assertSame($expectedResult, $result);
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\System\Configuration;
 
 /***************************************************************
@@ -44,8 +45,6 @@ class ConfigurationManager implements SingletonInterface
 
     /**
      * Resets the state of the configuration manager.
-     *
-     * @return void
      */
     public function reset()
     {
@@ -107,8 +106,10 @@ class ConfigurationManager implements SingletonInterface
     {
         return GeneralUtility::makeInstance(
             TypoScriptConfiguration::class,
-            /** @scrutinizer ignore-type */ $configurationArray,
-            /** @scrutinizer ignore-type */ $contextPageId
+            /** @scrutinizer ignore-type */
+            $configurationArray,
+            /** @scrutinizer ignore-type */
+            $contextPageId
         );
     }
 }

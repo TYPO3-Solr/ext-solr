@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options;
 
 /*
@@ -26,7 +27,8 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
  *
  * @Todo: When we use json faceting for other facets some logic of this class can be moved to the base class.
  */
-class OptionsFacetQueryBuilder extends DefaultFacetQueryBuilder implements FacetQueryBuilderInterface {
+class OptionsFacetQueryBuilder extends DefaultFacetQueryBuilder implements FacetQueryBuilderInterface
+{
 
     /**
      * @param string $facetName
@@ -108,11 +110,11 @@ class OptionsFacetQueryBuilder extends DefaultFacetQueryBuilder implements Facet
     {
         if (isset($facetConfiguration['facetLimit'])) {
             return (int)$facetConfiguration['facetLimit'];
-        } elseif (!is_null($configuration->getSearchFacetingFacetLimit()) && $configuration->getSearchFacetingFacetLimit() >= 0) {
-            return $configuration->getSearchFacetingFacetLimit();
-        } else {
-            return -1;
         }
+        if (!is_null($configuration->getSearchFacetingFacetLimit()) && $configuration->getSearchFacetingFacetLimit() >= 0) {
+            return $configuration->getSearchFacetingFacetLimit();
+        }
+        return -1;
     }
 
     /**
@@ -124,18 +126,19 @@ class OptionsFacetQueryBuilder extends DefaultFacetQueryBuilder implements Facet
     {
         if (isset($facetConfiguration['minimumCount'])) {
             return (int)$facetConfiguration['minimumCount'];
-        } elseif (!is_null($configuration->getSearchFacetingMinimumCount()) && (int)$configuration->getSearchFacetingMinimumCount() >= 0) {
-            return $configuration->getSearchFacetingMinimumCount();
-        } else {
-            return 1;
         }
+        if (!is_null($configuration->getSearchFacetingMinimumCount()) && (int)$configuration->getSearchFacetingMinimumCount() >= 0) {
+            return $configuration->getSearchFacetingMinimumCount();
+        }
+        return 1;
     }
 
     /**
      * @param array $facetConfiguration
      * @return string
      */
-    protected function buildSortingForJson(array $facetConfiguration) {
+    protected function buildSortingForJson(array $facetConfiguration)
+    {
         if (isset($facetConfiguration['sortBy'])) {
             $sortingExpression = new SortingExpression();
             $sorting = $facetConfiguration['sortBy'];

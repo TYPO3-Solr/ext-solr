@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Search;
 
 /***************************************************************
@@ -24,7 +25,6 @@ namespace ApacheSolrForTypo3\Solr\Search;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Search\SearchComponent;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**

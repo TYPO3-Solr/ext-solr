@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets;
 
 /*
@@ -16,7 +17,8 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets;
 
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 
-class DefaultFacetQueryBuilder implements FacetQueryBuilderInterface {
+class DefaultFacetQueryBuilder implements FacetQueryBuilderInterface
+{
 
     /**
      * @param string $facetName
@@ -55,11 +57,11 @@ class DefaultFacetQueryBuilder implements FacetQueryBuilderInterface {
             }
 
             return '{!ex=' . implode(',', $facets) . '}';
-        } elseif ($facetConfiguration['keepAllOptionsOnSelection'] == 1) {
+        }
+        if ($facetConfiguration['keepAllOptionsOnSelection'] == 1) {
             return '{!ex=' . $facetConfiguration['field'] . '}';
         }
 
         return '';
     }
 }
-

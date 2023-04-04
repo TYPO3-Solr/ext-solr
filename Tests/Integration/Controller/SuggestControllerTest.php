@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\Controller;
 
 /*
@@ -14,8 +15,8 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Controller;
  * The TYPO3 project - inspiring people to share!
  */
 
-use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageFieldMappingIndexer;
 use ApacheSolrForTypo3\Solr\Controller\SuggestController;
+use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageFieldMappingIndexer;
 use TYPO3\CMS\Core\TimeTracker\TimeTracker;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Request;
@@ -89,7 +90,7 @@ class SuggestControllerTest extends AbstractFrontendControllerTest
         $result = $this->suggestResponse->getContent();
 
         //we assume to get suggestions like Sweatshirt
-        $this->assertStringContainsString('suggestions":{"sweatshirts":2}', $result, 'Response did not contain sweatshirt suggestions');
+        self::assertStringContainsString('suggestions":{"sweatshirts":2}', $result, 'Response did not contain sweatshirt suggestions');
     }
 
     /**
@@ -106,11 +107,11 @@ class SuggestControllerTest extends AbstractFrontendControllerTest
         $testCases = [
             [
                 'prefix' => 'Some/',
-                'expected' => 'suggestions":{"some/":1,"some/larg":1,"some/large/path":1}'
+                'expected' => 'suggestions":{"some/":1,"some/larg":1,"some/large/path":1}',
             ],
             [
                 'prefix' => 'Some/Large',
-                'expected' => 'suggestions":{"some/large/path":1}'
+                'expected' => 'suggestions":{"some/large/path":1}',
             ],
         ];
         foreach ($testCases as $testCase) {
@@ -127,6 +128,6 @@ class SuggestControllerTest extends AbstractFrontendControllerTest
         $result = $this->suggestResponse->getContent();
 
         //we assume to get suggestions like Sweatshirt
-        $this->assertStringContainsString($expected, $result, 'Response did not contain expected suggestions: ' . $expected);
+        self::assertStringContainsString($expected, $result, 'Response did not contain expected suggestions: ' . $expected);
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Test\ViewHelpers\Document;
 
 /***************************************************************
@@ -24,12 +25,12 @@ namespace ApacheSolrForTypo3\Solr\Test\ViewHelpers\Document;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResult;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResult;
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\ViewHelpers\Document\HighlightResultViewHelper;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 
@@ -42,26 +43,26 @@ class HighlightingResultViewHelperTest extends UnitTest
     /**
      * @return array
      */
-    public function canRenderCreateHighlightSnippedDataProvider() {
+    public function canRenderCreateHighlightSnippedDataProvider()
+    {
         return [
             [
-                ['hello <em>world</em>','hi <em>world</em>'],
+                ['hello <em>world</em>', 'hi <em>world</em>'],
                 'hello <em>world</em> ### hi <em>world</em>',
-                '<em>|</em>'
+                '<em>|</em>',
             ],
             [
-                ['hello <em>world</em>','hi <em>world</em> <h1>somethingelse</h1>'],
+                ['hello <em>world</em>', 'hi <em>world</em> <h1>somethingelse</h1>'],
                 'hello <em>world</em> ### hi <em>world</em> &lt;h1&gt;somethingelse&lt;/h1&gt;',
-                '<em>|</em>'
+                '<em>|</em>',
             ],
             [
-                ['hello <em>world</em>','hi <em>world</em> <h1>somethingelse</h1>'],
+                ['hello <em>world</em>', 'hi <em>world</em> <h1>somethingelse</h1>'],
                 'hello &lt;em&gt;world&lt;/em&gt; ### hi &lt;em&gt;world&lt;/em&gt; &lt;h1&gt;somethingelse&lt;/h1&gt;',
-                ' '
-            ]
+                ' ',
+            ],
         ];
     }
-
 
     /**
      * @dataProvider canRenderCreateHighlightSnippedDataProvider
@@ -72,50 +73,49 @@ class HighlightingResultViewHelperTest extends UnitTest
         $renderingContextMock = $this->getDumbMock(RenderingContextInterface::class);
 
         $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
-        $configurationMock->expects($this->once())->method('getSearchResultsHighlightingFragmentSeparator')->will(
-            $this->returnValue('###')
+        $configurationMock->expects(self::once())->method('getSearchResultsHighlightingFragmentSeparator')->willReturn(
+            '###'
         );
-        $configurationMock->expects($this->once())->method('getSearchResultsHighlightingWrap')->will(
-            $this->returnValue($configuredWrap)
+        $configurationMock->expects(self::once())->method('getSearchResultsHighlightingWrap')->willReturn(
+            $configuredWrap
         );
 
         $searchRequestMock = $this->getDumbMock(SearchRequest::class);
-        $searchRequestMock->expects($this->any())->method('getContextTypoScriptConfiguration')->will(
-            $this->returnValue($configurationMock)
+        $searchRequestMock->expects(self::any())->method('getContextTypoScriptConfiguration')->willReturn(
+            $configurationMock
         );
-
 
         $fakeHighlightedContent = new \stdClass();
         $fakeHighlightedContent->foo = new \stdClass();
         $fakeHighlightedContent->foo->content = $input;
 
         $searchMock = $this->getDumbMock(Search::class);
-        $searchMock->expects($this->once())->method('getHighlightedContent')->will(
-            $this->returnValue($fakeHighlightedContent)
+        $searchMock->expects(self::once())->method('getHighlightedContent')->willReturn(
+            $fakeHighlightedContent
         );
 
-
         $resultSetMock = $this->getDumbMock(SearchResultSet::class);
-        $resultSetMock->expects($this->any())->method('getUsedSearchRequest')->will($this->returnValue(
-           $searchRequestMock
-        ));
+        $resultSetMock->expects(self::any())->method('getUsedSearchRequest')->willReturn(
+            $searchRequestMock
+        );
 
-        $resultSetMock->expects($this->any())->method('getUsedSearch')->will($this->returnValue(
-           $searchMock
-        ));
+        $resultSetMock->expects(self::any())->method('getUsedSearch')->willReturn(
+            $searchMock
+        );
 
         $documentMock = $this->getDumbMock(SearchResult::class);
-        $documentMock->expects($this->any())->method('getId')->will($this->returnValue("foo"));
+        $documentMock->expects(self::any())->method('getId')->willReturn('foo');
 
         $viewHelper = new HighlightResultViewHelper();
         $viewHelper->setRenderingContext($renderingContextMock);
-        $viewHelper->setArguments([
+        $viewHelper->setArguments(
+            [
             'resultSet' => $resultSetMock,
             'document' => $documentMock,
-            'fieldName' => 'content']
+            'fieldName' => 'content', ]
         );
 
         $output = $viewHelper->render();
-        $this->assertSame($expectedOutput, $output);
+        self::assertSame($expectedOutput, $output);
     }
 }

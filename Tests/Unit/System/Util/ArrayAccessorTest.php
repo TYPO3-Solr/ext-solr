@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\Util;
 
 /***************************************************************
@@ -41,16 +42,16 @@ class ArrayAccessorTest extends UnitTest
     {
         $data = ['foo' => ['bla' => 1]];
         $arrayAccessor = new ArrayAccessor($data);
-        $this->assertSame(1, $arrayAccessor->get('foo:bla'));
+        self::assertSame(1, $arrayAccessor->get('foo:bla'));
 
         $data = [];
         $data['one']['two']['three']['four'] = 'test';
         $arrayAccessor = new ArrayAccessor($data);
-        $this->assertSame('test', $arrayAccessor->get('one:two:three:four'));
+        self::assertSame('test', $arrayAccessor->get('one:two:three:four'));
 
         $emptyArray = [];
         $arrayAccessor = new ArrayAccessor($emptyArray);
-        $this->assertSame(null, $arrayAccessor->get('one:two:three:four'));
+        self::assertNull($arrayAccessor->get('one:two:three:four'));
     }
 
     /**
@@ -61,13 +62,13 @@ class ArrayAccessorTest extends UnitTest
         // can set and get a simple value
         $arrayAccessor = new ArrayAccessor();
         $arrayAccessor->set('foo', 'bar');
-        $this->assertSame('bar', $arrayAccessor->get('foo'));
+        self::assertSame('bar', $arrayAccessor->get('foo'));
 
         $arrayAccessor->set('one:two:three', 'test');
-        $this->assertSame('test', $arrayAccessor->get('one:two:three'));
+        self::assertSame('test', $arrayAccessor->get('one:two:three'));
 
         $arrayAccessor->set('one:two:three', ['four' => 'test2']);
-        $this->assertSame('test2', $arrayAccessor->get('one:two:three:four'));
+        self::assertSame('test2', $arrayAccessor->get('one:two:three:four'));
     }
 
     /**
@@ -78,13 +79,13 @@ class ArrayAccessorTest extends UnitTest
         $data = ['one' => ['two' => ['a' => 111, 'b' => 222]]];
         // can set and get a simple value
         $arrayAccessor = new ArrayAccessor($data);
-        $this->assertSame(111, $arrayAccessor->get('one:two:a'));
-        $this->assertSame(222, $arrayAccessor->get('one:two:b'));
+        self::assertSame(111, $arrayAccessor->get('one:two:a'));
+        self::assertSame(222, $arrayAccessor->get('one:two:b'));
 
         $arrayAccessor->reset('one:two:a');
 
-        $this->assertSame(null, $arrayAccessor->get('one:two:a'));
-        $this->assertSame(222, $arrayAccessor->get('one:two:b'));
+        self::assertNull($arrayAccessor->get('one:two:a'));
+        self::assertSame(222, $arrayAccessor->get('one:two:b'));
     }
 
     /**
@@ -95,14 +96,14 @@ class ArrayAccessorTest extends UnitTest
         $data = ['one' => ['two' => ['a' => 111, 'b' => 222]]];
         // can set and get a simple value
         $arrayAccessor = new ArrayAccessor($data);
-        $this->assertSame(111, $arrayAccessor->get('one:two:a'));
-        $this->assertSame(222, $arrayAccessor->get('one:two:b'));
+        self::assertSame(111, $arrayAccessor->get('one:two:a'));
+        self::assertSame(222, $arrayAccessor->get('one:two:b'));
 
         $arrayAccessor->reset('one:two:a');
 
-        $this->assertSame(null, $arrayAccessor->get('one:two:a'));
-        $this->assertSame(222, $arrayAccessor->get('one:two:b'));
-        $this->assertSame(['b' => 222], $arrayAccessor->get('one:two'));
+        self::assertNull($arrayAccessor->get('one:two:a'));
+        self::assertSame(222, $arrayAccessor->get('one:two:b'));
+        self::assertSame(['b' => 222], $arrayAccessor->get('one:two'));
     }
 
     /**
@@ -113,20 +114,20 @@ class ArrayAccessorTest extends UnitTest
         $data = [
             'one' => [
                 'two' => ['a' => 111, 'b' => 222],
-                'three' => 333
-            ]
+                'three' => 333,
+            ],
         ];
         // can set and get a simple value
         $arrayAccessor = new ArrayAccessor($data);
-        $this->assertSame(111, $arrayAccessor->get('one:two:a'));
-        $this->assertSame(222, $arrayAccessor->get('one:two:b'));
+        self::assertSame(111, $arrayAccessor->get('one:two:a'));
+        self::assertSame(222, $arrayAccessor->get('one:two:b'));
 
         $arrayAccessor->reset('one:two');
 
-        $this->assertSame(null, $arrayAccessor->get('one:two:a'));
-        $this->assertSame(null, $arrayAccessor->get('one:two:b'));
-        $this->assertSame(null, $arrayAccessor->get('one:two'));
+        self::assertNull($arrayAccessor->get('one:two:a'));
+        self::assertNull($arrayAccessor->get('one:two:b'));
+        self::assertNull($arrayAccessor->get('one:two'));
 
-        $this->assertSame(333, $arrayAccessor->get('one:three'));
+        self::assertSame(333, $arrayAccessor->get('one:three'));
     }
 }

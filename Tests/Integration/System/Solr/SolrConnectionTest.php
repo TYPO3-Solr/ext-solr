@@ -51,13 +51,12 @@ class SolrConnectionTest extends IntegrationTest
         );
         try {
             $solrConnection = $connectionManager->getConnectionByPageId($pageUid, 0);
-            $this->assertInstanceOf(SolrConnection::class, $solrConnection, $messageOnNoSolrConnectionFoundException);
+            self::assertInstanceOf(SolrConnection::class, $solrConnection, $messageOnNoSolrConnectionFoundException);
             return $solrConnection;
         } catch (NoSolrConnectionFoundException $exception) {
-            $this->fail($messageOnNoSolrConnectionFoundException);
+            self::fail($messageOnNoSolrConnectionFoundException);
         }
     }
-
 
     /**
      * @test
@@ -77,7 +76,7 @@ class SolrConnectionTest extends IntegrationTest
             $httpClientAdapter,
             'httpClient'
         );
-        $this->assertInstanceOf(
+        self::assertInstanceOf(
             Client::class,
             $httpClientObject,
             vsprintf(
@@ -85,14 +84,14 @@ class SolrConnectionTest extends IntegrationTest
                 [
                     get_class($httpClientAdapter),
                     'httpClient',
-                    Client::class
+                    Client::class,
                 ]
             )
         );
 
         /* @var GuzzleHttpClient $guzzleHttpClientObject */
         $guzzleHttpClientObject = $this->getInaccessiblePropertyFromObject($httpClientObject, 'guzzle');
-        $this->assertInstanceOf(
+        self::assertInstanceOf(
             GuzzleHttpClient::class,
             $guzzleHttpClientObject,
             vsprintf(
@@ -100,7 +99,7 @@ class SolrConnectionTest extends IntegrationTest
                 [
                     Client::class,
                     'httpClient',
-                    GuzzleHttpClient::class
+                    GuzzleHttpClient::class,
                 ]
             )
         );
@@ -109,33 +108,33 @@ class SolrConnectionTest extends IntegrationTest
 
         $httpSettingsIgnoredMessage = 'The client for solarium does not get TYPO3 system configuration for HTTP. ' . PHP_EOL .
             'Please check why "%s" does not taken into account or are overridden.';
-        $this->assertEquals(
+        self::assertEquals(
             $GLOBALS['TYPO3_CONF_VARS']['HTTP']['connect_timeout'],
             $guzzleConfig['connect_timeout'],
             vsprintf(
                 $httpSettingsIgnoredMessage,
                 [
-                    '$GLOBALS[\'TYPO3_CONF_VARS\'][\'HTTP\'][\'connect_timeout\']'
+                    '$GLOBALS[\'TYPO3_CONF_VARS\'][\'HTTP\'][\'connect_timeout\']',
                 ]
             )
         );
-        $this->assertEquals(
+        self::assertEquals(
             $GLOBALS['TYPO3_CONF_VARS']['HTTP']['timeout'],
             $guzzleConfig['timeout'],
             vsprintf(
                 $httpSettingsIgnoredMessage,
                 [
-                    '$GLOBALS[\'TYPO3_CONF_VARS\'][\'HTTP\'][\'timeout\']'
+                    '$GLOBALS[\'TYPO3_CONF_VARS\'][\'HTTP\'][\'timeout\']',
                 ]
             )
         );
-        $this->assertEquals(
+        self::assertEquals(
             $GLOBALS['TYPO3_CONF_VARS']['HTTP']['headers']['User-Agent'],
             $guzzleConfig['headers']['User-Agent'],
             vsprintf(
                 $httpSettingsIgnoredMessage,
                 [
-                    '$GLOBALS[\'TYPO3_CONF_VARS\'][\'HTTP\'][\'headers\'][\'User-Agent\']'
+                    '$GLOBALS[\'TYPO3_CONF_VARS\'][\'HTTP\'][\'headers\'][\'User-Agent\']',
                 ]
             )
         );

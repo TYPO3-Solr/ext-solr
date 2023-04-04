@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\System\Environment;
 
 /***************************************************************
@@ -46,9 +47,6 @@ class CliEnvironment implements SingletonInterface
      */
     protected $isInitialized = false;
 
-    /**
-     * @return void
-     */
     public function backup()
     {
         $this->backupServerVariables = $_SERVER;
@@ -96,9 +94,6 @@ class CliEnvironment implements SingletonInterface
         return $this->isInitialized;
     }
 
-    /**
-     * @return void
-     */
     public function restore()
     {
         $_SERVER = $this->backupServerVariables;

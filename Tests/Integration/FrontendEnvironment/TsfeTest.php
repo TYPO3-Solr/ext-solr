@@ -1,6 +1,6 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Tests\Integration\FrontendEnvironment;
 
+namespace ApacheSolrForTypo3\Solr\Tests\Integration\FrontendEnvironment;
 
 use ApacheSolrForTypo3\Solr\FrontendEnvironment\Tsfe;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
@@ -48,7 +48,5 @@ class TsfeTest extends IntegrationTest
 
         $tsfe = GeneralUtility::makeInstance(Tsfe::class);
         $tsfe->initializeTsfe(1);
-
     }
-
 }

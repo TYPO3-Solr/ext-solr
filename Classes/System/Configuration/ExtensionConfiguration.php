@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\System\Configuration;
 
 /*
@@ -105,8 +106,8 @@ class ExtensionConfiguration
     public function getAvailablePluginNamespaces(): array
     {
         $pluginNamespacesList = 'tx_solr,' . $this->getConfigurationOrDefaultValue(
-                'pluginNamespaces'
-            );
+            'pluginNamespaces'
+        );
         return array_unique(GeneralUtility::trimExplode(',', $pluginNamespacesList));
     }
 
@@ -121,12 +122,12 @@ class ExtensionConfiguration
     public function getCacheHashExcludedParameters(): array
     {
         $pluginNamespaces = array_map(
-            function($pluginNamespace) {
+            function ($pluginNamespace) {
                 return '^' . $pluginNamespace . '[';
             },
             $this->getAvailablePluginNamespaces()
         );
-        if (false === $this->getIncludeGlobalQParameterInCacheHash()) {
+        if ($this->getIncludeGlobalQParameterInCacheHash() === false) {
             $pluginNamespaces[] = 'q';
         }
         return array_combine($pluginNamespaces, $pluginNamespaces);
@@ -164,6 +165,4 @@ class ExtensionConfiguration
     {
         return $this->configuration[$key] ?? $defaultValue;
     }
-
-
 }

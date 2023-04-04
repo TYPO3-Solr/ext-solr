@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Utility;
 
 /***************************************************************
@@ -38,7 +39,7 @@ class ManagedResourcesUtility
      * @param array $synonyms
      * @return string
      */
-    public static function exportSynonymsToTxt(array $synonyms) : string
+    public static function exportSynonymsToTxt(array $synonyms): string
     {
         if (empty($synonyms)) {
             throw new \InvalidArgumentException('Nothing to export!', 1502978329);
@@ -56,7 +57,7 @@ class ManagedResourcesUtility
      * @param array $synonymFileUpload
      * @return array
      */
-    public static function importSynonymsFromPlainTextContents(array $synonymFileUpload) : array
+    public static function importSynonymsFromPlainTextContents(array $synonymFileUpload): array
     {
         $fileStream = new Stream($synonymFileUpload['tmp_name']);
 
@@ -75,7 +76,7 @@ class ManagedResourcesUtility
      * @param array $stopwordsFileUpload
      * @return string
      */
-    public static function importStopwordsFromPlainTextContents(array $stopwordsFileUpload) : string
+    public static function importStopwordsFromPlainTextContents(array $stopwordsFileUpload): string
     {
         $fileStream = new Stream($stopwordsFileUpload['tmp_name']);
 
@@ -88,7 +89,7 @@ class ManagedResourcesUtility
      * @param array $synonymList
      * @return array
      */
-    protected static function convertSynonymFileLineForImport($line, $synonymList) : array
+    protected static function convertSynonymFileLineForImport($line, $synonymList): array
     {
         $lineParts = GeneralUtility::trimExplode('=>', $line, true);
 

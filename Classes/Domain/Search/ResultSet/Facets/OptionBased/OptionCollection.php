@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased;
 
 /*
@@ -48,8 +49,7 @@ class OptionCollection extends AbstractFacetItemCollection
      */
     public function getByLowercaseLabelPrefix($filteredPrefix)
     {
-        return $this->getFilteredCopy(function(Option $option) use ($filteredPrefix)
-        {
+        return $this->getFilteredCopy(function (Option $option) use ($filteredPrefix) {
             $filteredPrefixLength = mb_strlen($filteredPrefix);
             $currentPrefix = mb_substr(mb_strtolower($option->getLabel()), 0, $filteredPrefixLength);
 
@@ -61,7 +61,7 @@ class OptionCollection extends AbstractFacetItemCollection
      * @param int $length
      * @return array
      */
-    protected function getLabelPrefixes($length = 1) : array
+    protected function getLabelPrefixes($length = 1): array
     {
         $prefixes = [];
         foreach ($this->data as $option) {

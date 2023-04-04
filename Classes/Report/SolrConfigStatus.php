@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Report;
 
 /***************************************************************
@@ -54,7 +55,6 @@ class SolrConfigStatus extends AbstractSolrStatus
      * Compiles a collection of solrconfig version checks against each configured
      * Solr server. Only adds an entry if a solrconfig other than the
      * recommended one was found.
-     *
      */
     public function getStatus()
     {
@@ -69,10 +69,14 @@ class SolrConfigStatus extends AbstractSolrStatus
                 $report = $this->getRenderedReport('SolrConfigStatus.html', $variables);
                 $status = GeneralUtility::makeInstance(
                     Status::class,
-                    /** @scrutinizer ignore-type */ 'Solrconfig Version',
-                    /** @scrutinizer ignore-type */ 'Unsupported solrconfig.xml',
-                    /** @scrutinizer ignore-type */ $report,
-                    /** @scrutinizer ignore-type */ Status::WARNING
+                    /** @scrutinizer ignore-type */
+                    'Solrconfig Version',
+                    /** @scrutinizer ignore-type */
+                    'Unsupported solrconfig.xml',
+                    /** @scrutinizer ignore-type */
+                    $report,
+                    /** @scrutinizer ignore-type */
+                    Status::WARNING
                 );
 
                 $reports[] = $status;

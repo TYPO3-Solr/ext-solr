@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\ViewHelpers\Widget\Controller;
 
 /*
@@ -16,7 +17,6 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers\Widget\Controller;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 
-
 /**
  * Class ResultPaginateController
  *
@@ -31,9 +31,6 @@ class ResultPaginateController extends AbstractPaginateWidgetController
      */
     protected $resultSet;
 
-    /**
-     * @return void
-     */
     public function initializeAction()
     {
         parent::initializeAction();
@@ -59,14 +56,12 @@ class ResultPaginateController extends AbstractPaginateWidgetController
      * @param \ApacheSolrForTypo3\Solr\Mvc\Controller\SolrControllerContext $controllerContext
      * @return \ApacheSolrForTypo3\Solr\Mvc\Controller\SolrControllerContext
      */
-    protected function setActiveSearchResultSet($controllerContext) {
+    protected function setActiveSearchResultSet($controllerContext)
+    {
         $controllerContext->setSearchResultSet($this->resultSet);
         return $controllerContext;
     }
 
-    /**
-     * @return void
-     */
     public function indexAction()
     {
         // set current page

@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\IndexQueue;
 
 /***************************************************************
@@ -177,7 +178,7 @@ class PageIndexer extends Indexer
                         'index request url' => $indexRequestUrl,
                         'request' => (array)$request,
                         'response' => (array)$response,
-                        'groups' => $groups
+                        'groups' => $groups,
                     ]
                 );
             }
@@ -262,7 +263,7 @@ class PageIndexer extends Indexer
      * is identified as being a mounted page, the &MP parameter is generated.
      *
      * @param Item $item Item to get an &MP URL parameter for
-     * @return string &MP URL parameter if $item is a mounted page
+     * @return string&MP URL parameter if $item is a mounted page
      */
     protected function getMountPageDataUrlParameter(Item $item)
     {
@@ -273,9 +274,9 @@ class PageIndexer extends Indexer
         return $item->getIndexingProperty('mountPageSource') . '-' . $item->getIndexingProperty('mountPageDestination');
     }
 
-    #
-    # Frontend User Groups Access
-    #
+    //
+    // Frontend User Groups Access
+    //
 
     /**
      * Creates a single Solr Document for a page in a specific language and for
@@ -317,7 +318,7 @@ class PageIndexer extends Indexer
                     'index request url' => $indexRequestUrl,
                     'request' => (array)$request,
                     'request headers' => $request->getHeaders(),
-                    'response' => (array)$response
+                    'response' => (array)$response,
                 ]
             );
         }
@@ -397,5 +398,4 @@ class PageIndexer extends Indexer
     {
         return Rootline::getAccessRootlineByPageId($pageId, $mountPointParameter);
     }
-
 }

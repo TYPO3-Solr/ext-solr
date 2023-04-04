@@ -1,4 +1,6 @@
-<?php declare(strict_types = 1);
+<?php
+
+declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler;
 
 /***************************************************************
@@ -24,13 +26,13 @@ namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Database\QueryGenerator;
-use TYPO3\CMS\Backend\Utility\BackendUtility;
-use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\ConfigurationAwareRecordService;
 use ApacheSolrForTypo3\Solr\FrontendEnvironment;
+use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\System\TCA\TCAService;
+use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Database\QueryGenerator;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Abstract update handler
@@ -76,17 +78,17 @@ abstract class AbstractUpdateHandler
     /**
      * @var ConfigurationAwareRecordService
      */
-    protected $configurationAwareRecordService = null;
+    protected $configurationAwareRecordService;
 
     /**
      * @var FrontendEnvironment
      */
-    protected $frontendEnvironment = null;
+    protected $frontendEnvironment;
 
     /**
      * @var TCAService
      */
-    protected $tcaService = null;
+    protected $tcaService;
 
     /**
      * @var Queue

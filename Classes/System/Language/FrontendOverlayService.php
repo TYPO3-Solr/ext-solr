@@ -28,24 +28,25 @@ namespace ApacheSolrForTypo3\Solr\System\Language;
 use ApacheSolrForTypo3\Solr\System\TCA\TCAService;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
-use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 
 /**
  * Class FrontendOverlayService
  */
-class FrontendOverlayService {
+class FrontendOverlayService
+{
 
     /**
      * @var TCAService
      */
-    protected $tcaService = null;
+    protected $tcaService;
 
     /**
      * @var TypoScriptFrontendController
      */
-    protected $tsfe = null;
+    protected $tsfe;
 
     /**
      * Relation constructor.
@@ -122,7 +123,8 @@ class FrontendOverlayService {
         // when there is a _PAGES_OVERLAY_UID | _LOCALIZED_UID in the overlay, we return it
         if ($localTableName === 'pages' && isset($overlayRecord['_PAGES_OVERLAY_UID'])) {
             return (int)$overlayRecord['_PAGES_OVERLAY_UID'];
-        } elseif (isset($overlayRecord['_LOCALIZED_UID'])) {
+        }
+        if (isset($overlayRecord['_LOCALIZED_UID'])) {
             return (int)$overlayRecord['_LOCALIZED_UID'];
         }
 

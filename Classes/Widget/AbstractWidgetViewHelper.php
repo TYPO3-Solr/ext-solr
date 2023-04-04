@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Widget;
 
 /*
@@ -18,15 +19,14 @@ use ApacheSolrForTypo3\Solr\Mvc\Controller\SolrControllerContext;
 use ApacheSolrForTypo3\Solr\Widget\WidgetRequest as SolrFluidWidgetRequest;
 use TYPO3\CMS\Extbase\Mvc\Web\Response;
 use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
-use TYPO3Fluid\Fluid\Core\Parser\SyntaxTree\RootNode;
-use TYPO3Fluid\Fluid\Core\ViewHelper\ViewHelperInterface;
+use TYPO3\CMS\Extbase\Service\ExtensionService;
 use TYPO3\CMS\Fluid\Core\Widget\AbstractWidgetViewHelper as AbstractCoreWidgetViewHelper;
 use TYPO3\CMS\Fluid\Core\Widget\AjaxWidgetContextHolder;
 use TYPO3\CMS\Fluid\Core\Widget\Exception\MissingControllerException;
-use TYPO3\CMS\Fluid\Core\Widget\WidgetRequest as CoreWidgetRequest;
 use TYPO3\CMS\Fluid\Core\Widget\WidgetContext;
-use TYPO3\CMS\Extbase\Service\ExtensionService;
-
+use TYPO3\CMS\Fluid\Core\Widget\WidgetRequest as CoreWidgetRequest;
+use TYPO3Fluid\Fluid\Core\Parser\SyntaxTree\RootNode;
+use TYPO3Fluid\Fluid\Core\ViewHelper\ViewHelperInterface;
 
 /**
  * Class AbstractWidgetViewHelper
@@ -54,7 +54,7 @@ abstract class AbstractWidgetViewHelper extends AbstractCoreWidgetViewHelper imp
     /**
      * If set to TRUE, it is an AJAX widget.
      *
-     * @var boolean
+     * @var bool
      * @api
      */
     protected $ajaxWidget = false;
@@ -89,7 +89,6 @@ abstract class AbstractWidgetViewHelper extends AbstractCoreWidgetViewHelper imp
 
     /**
      * @param AjaxWidgetContextHolder $ajaxWidgetContextHolder
-     * @return void
      */
     public function injectAjaxWidgetContextHolder(AjaxWidgetContextHolder $ajaxWidgetContextHolder)
     {
@@ -98,7 +97,6 @@ abstract class AbstractWidgetViewHelper extends AbstractCoreWidgetViewHelper imp
 
     /**
      * @param ObjectManagerInterface $objectManager
-     * @return void
      */
     public function injectObjectManager(ObjectManagerInterface $objectManager)
     {
@@ -139,8 +137,6 @@ abstract class AbstractWidgetViewHelper extends AbstractCoreWidgetViewHelper imp
 
     /**
      * Initialize the Widget Context, before the Render method is called.
-     *
-     * @return void
      */
     private function initializeWidgetContext()
     {
@@ -154,7 +150,7 @@ abstract class AbstractWidgetViewHelper extends AbstractCoreWidgetViewHelper imp
         $this->widgetContext->setParentPluginName($pluginName);
         $pluginNamespace = $this->extensionService->getPluginNamespace($extensionName, $pluginName);
         $this->widgetContext->setParentPluginNamespace($pluginNamespace);
-        $this->widgetContext->setWidgetViewHelperClassName(get_class($this));
+        $this->widgetContext->setWidgetViewHelperClassName(static::class);
 
         if ($this->ajaxWidget === true) {
             $this->ajaxWidgetContextHolder->store($this->widgetContext);
@@ -166,7 +162,6 @@ abstract class AbstractWidgetViewHelper extends AbstractCoreWidgetViewHelper imp
      * rendered with <f:widget.renderChildren> lateron.
      *
      * @param array $childNodes The SyntaxTree Child nodes of this ViewHelper.
-     * @return void
      */
     public function setChildNodes(array $childNodes)
     {
@@ -199,11 +194,11 @@ abstract class AbstractWidgetViewHelper extends AbstractCoreWidgetViewHelper imp
     {
         if (!$this->controller instanceof AbstractWidgetController) {
             if (isset($this->controller)) {
-                throw new MissingControllerException('initiateSubRequest() can not be called if there is no valid controller extending TYPO3\\CMS\\Fluid\\Core\\Widget\\AbstractWidgetController. Got "' . get_class($this->controller) . '" in class "' . get_class($this) . '".', 1289422564);
+                throw new MissingControllerException('initiateSubRequest() can not be called if there is no valid controller extending TYPO3\\CMS\\Fluid\\Core\\Widget\\AbstractWidgetController. Got "' . get_class($this->controller) . '" in class "' . static::class . '".', 1289422564);
             }
-            throw new MissingControllerException('initiateSubRequest() can not be called if there is no controller inside $this->controller. Make sure to add a corresponding injectController method to your WidgetViewHelper class "' . get_class($this) . '".', 1284401632);
+            throw new MissingControllerException('initiateSubRequest() can not be called if there is no controller inside $this->controller. Make sure to add a corresponding injectController method to your WidgetViewHelper class "' . static::class . '".', 1284401632);
         }
-            /** @var $subRequest \ApacheSolrForTypo3\Solr\Widget\WidgetRequest */
+        /** @var $subRequest \ApacheSolrForTypo3\Solr\Widget\WidgetRequest */
         $subRequest = $this->objectManager->get(SolrFluidWidgetRequest::class);
         $subRequest->setWidgetContext($this->widgetContext);
 
@@ -217,7 +212,6 @@ abstract class AbstractWidgetViewHelper extends AbstractCoreWidgetViewHelper imp
      * Pass the arguments of the widget to the subrequest.
      *
      * @param CoreWidgetRequest $subRequest
-     * @return void
      */
     private function passArgumentsToSubRequest(CoreWidgetRequest $subRequest)
     {
@@ -237,7 +231,6 @@ abstract class AbstractWidgetViewHelper extends AbstractCoreWidgetViewHelper imp
      * in the URI as a namespace for the widget's arguments.
      *
      * @return string the widget identifier for this widget
-     * @return void
      * @todo clean up, and make it somehow more routing compatible.
      */
     private function initializeWidgetIdentifier()

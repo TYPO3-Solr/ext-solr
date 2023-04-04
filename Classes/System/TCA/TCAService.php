@@ -52,7 +52,7 @@ class TCAService
     }
 
     /**
-     * @return integer
+     * @return int
      */
     protected function getTime()
     {
@@ -129,10 +129,10 @@ class TCAService
      */
     public function isEnableColumn($table, $columnName)
     {
-        return (
+        return
             isset($GLOBALS['TCA'][$table]['ctrl']['enablecolumns']) &&
             array_key_exists($columnName, $GLOBALS['TCA'][$table]['ctrl']['enablecolumns'])
-        );
+        ;
     }
 
     /**
@@ -155,7 +155,6 @@ class TCAService
 
         return $startTimeInFuture;
     }
-
 
     /**
      * Checks whether a hidden field exists for the current table and if so
@@ -214,7 +213,7 @@ class TCAService
      * @param $table
      * @param array $record
      * @param $originalUid
-     * @return integer
+     * @return int
      */
     public function getTranslationOriginalUidIfTranslated($table, array $record, $originalUid)
     {
@@ -287,7 +286,7 @@ class TCAService
      * @param string $fieldName
      * @return bool
      */
-    public function getHasConfigurationForField(string $tableName, string $fieldName) : bool
+    public function getHasConfigurationForField(string $tableName, string $fieldName): bool
     {
         return isset($this->tca[$tableName]['columns'][$fieldName]);
     }
@@ -299,7 +298,7 @@ class TCAService
      * @param string $fieldName
      * @return array
      */
-    public function getConfigurationForField(string $tableName, string $fieldName) : array
+    public function getConfigurationForField(string $tableName, string $fieldName): array
     {
         return $this->tca[$tableName]['columns'][$fieldName] ?? [];
     }
@@ -308,7 +307,7 @@ class TCAService
      * @param string $tableName
      * @return array
      */
-    public function getTableConfiguration(string $tableName) : array
+    public function getTableConfiguration(string $tableName): array
     {
         return $this->tca[$tableName] ?? [];
     }

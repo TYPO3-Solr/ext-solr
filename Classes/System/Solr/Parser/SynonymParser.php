@@ -25,7 +25,6 @@ namespace ApacheSolrForTypo3\Solr\System\Solr\Parser;
  *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-
 /**
  * Class to parse the synonyms from a solr response.
  *

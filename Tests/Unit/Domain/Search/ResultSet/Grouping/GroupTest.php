@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Grouping;
 
 /***************************************************************
@@ -43,11 +44,10 @@ class GroupTest extends UnitTest
     public function testCanGroupName()
     {
         $group = new Group('typeGroup');
-        $this->assertSame('typeGroup', $group->getGroupName(), 'Can not getGroupName from group');
+        self::assertSame('typeGroup', $group->getGroupName(), 'Can not getGroupName from group');
 
         $group->setGroupName('changedTypeGroup');
-        $this->assertSame('changedTypeGroup', $group->getGroupName(), 'Can not getGroupName from group');
-
+        self::assertSame('changedTypeGroup', $group->getGroupName(), 'Can not getGroupName from group');
     }
 
     /**
@@ -56,7 +56,7 @@ class GroupTest extends UnitTest
     public function canGetGroupItemsReturnEmptyCollection()
     {
         $group = new Group('typeGroup');
-        $this->assertSame(0, $group->getGroupItems()->getCount(), 'Can not get empty groupItem collection');
+        self::assertSame(0, $group->getGroupItems()->getCount(), 'Can not get empty groupItem collection');
     }
 
     /**
@@ -65,10 +65,10 @@ class GroupTest extends UnitTest
     public function canGetResultsPerPage()
     {
         $group = new Group('typeGroup', 22);
-        $this->assertSame(22, $group->getResultsPerPage(), 'Can not get results per page');
+        self::assertSame(22, $group->getResultsPerPage(), 'Can not get results per page');
 
         $group->setResultsPerPage(11);
-        $this->assertSame(11, $group->getResultsPerPage(), 'Can not get results per page');
+        self::assertSame(11, $group->getResultsPerPage(), 'Can not get results per page');
     }
 
     /**
@@ -83,7 +83,7 @@ class GroupTest extends UnitTest
 
         $group->setGroupItems($groupItems);
 
-        $this->assertSame($groupItems, $group->getGroupItems(), 'Can not get group items from group');
+        self::assertSame($groupItems, $group->getGroupItems(), 'Can not get group items from group');
     }
 
     /**
@@ -93,10 +93,10 @@ class GroupTest extends UnitTest
     {
         $group = new Group('typeGroup', 10);
 
-        $this->assertCount(0, $group->getGroupItems(), 'GroupItems are not empty from the beginning');
+        self::assertCount(0, $group->getGroupItems(), 'GroupItems are not empty from the beginning');
         $groupItem = new GroupItem($group, 'test', 12, 0, 22.0);
         $group->addGroupItem($groupItem);
 
-        $this->assertCount(1, $group->getGroupItems(), 'Unexpected group item count after adding a group');
+        self::assertCount(1, $group->getGroupItems(), 'Unexpected group item count after adding a group');
     }
 }

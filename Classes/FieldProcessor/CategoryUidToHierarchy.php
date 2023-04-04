@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\FieldProcessor;
 
 /***************************************************************
@@ -80,8 +81,10 @@ class CategoryUidToHierarchy extends AbstractHierarchyProcessor implements Field
         $results = [];
 
         foreach ($values as $value) {
-            $results = array_merge($results,
-                $this->getSolrRootlineForCategoryId($value));
+            $results = array_merge(
+                $results,
+                $this->getSolrRootlineForCategoryId($value)
+            );
         }
 
         return $results;
@@ -110,7 +113,7 @@ class CategoryUidToHierarchy extends AbstractHierarchyProcessor implements Field
     protected function buildCategoryIdRootline($uid)
     {
         $rootlineIds = [];
-        $parentCategory = intval($uid);
+        $parentCategory = (int)$uid;
 
         while ($parentCategory !== 0) {
             $rootlineIds[] = $parentCategory;
@@ -118,7 +121,7 @@ class CategoryUidToHierarchy extends AbstractHierarchyProcessor implements Field
             if ($childCategory === null) {
                 $parentCategory = 0;
             } else {
-                $parentCategory = intval($childCategory['parent']);
+                $parentCategory = (int)($childCategory['parent']);
             }
         }
         krsort($rootlineIds);

@@ -25,7 +25,6 @@ namespace ApacheSolrForTypo3\Solr\System\Logging;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Log\LogLevel;
 use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -45,12 +44,12 @@ class SolrLogManager
     /**
      * @var \TYPO3\CMS\Core\Log\Logger
      */
-    protected $logger = null;
+    protected $logger;
 
     /**
      * @var DebugWriter
      */
-    protected $debugWriter = null;
+    protected $debugWriter;
 
     /**
      * @var string

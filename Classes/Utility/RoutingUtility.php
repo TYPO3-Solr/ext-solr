@@ -1,5 +1,7 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Utility;
+
 /*
  * This file is part of the TYPO3 CMS project.
  *

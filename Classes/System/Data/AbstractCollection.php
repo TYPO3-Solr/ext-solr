@@ -34,9 +34,6 @@ abstract class AbstractCollection implements \IteratorAggregate, \Countable, \Ar
         $this->data = $data;
     }
 
-    /**
-     * @return void
-     */
     public function clean()
     {
         $this->data = [];
@@ -82,7 +79,7 @@ abstract class AbstractCollection implements \IteratorAggregate, \Countable, \Ar
 
     /**
      * @param int $position
-     * @return Object
+     * @return object
      */
     public function getByPosition($position)
     {
@@ -133,9 +130,8 @@ abstract class AbstractCollection implements \IteratorAggregate, \Countable, \Ar
     {
         if ($this->offsetExists($offset)) {
             return $this->data[$offset];
-        } else {
-            return null;
         }
+        return null;
     }
 
     /**
@@ -143,7 +139,6 @@ abstract class AbstractCollection implements \IteratorAggregate, \Countable, \Ar
      *
      * @param mixed $offset
      * @param mixed $value
-     * @return void
      */
     public function offsetSet($offset, $value)
     {
@@ -158,7 +153,6 @@ abstract class AbstractCollection implements \IteratorAggregate, \Countable, \Ar
      * Offset to unset
      *
      * @param mixed $offset
-     * @return void
      */
     public function offsetUnset($offset)
     {

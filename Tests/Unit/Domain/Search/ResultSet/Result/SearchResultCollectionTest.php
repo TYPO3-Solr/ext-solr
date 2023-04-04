@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Result;
 
 /***************************************************************
@@ -40,11 +41,8 @@ class SearchResultCollectionTest extends UnitTest
     /**
      * @var SearchResultCollection
      */
-    protected $searchResultCollection = null;
+    protected $searchResultCollection;
 
-    /**
-     * @return void
-     */
     protected function setUp(): void
     {
         $this->searchResultCollection = new SearchResultCollection();
@@ -55,7 +53,7 @@ class SearchResultCollectionTest extends UnitTest
      */
     public function getHasGroupsReturnsFalseByDefault()
     {
-        $this->assertFalse($this->searchResultCollection->getHasGroups());
+        self::assertFalse($this->searchResultCollection->getHasGroups());
     }
 
     /**
@@ -65,7 +63,7 @@ class SearchResultCollectionTest extends UnitTest
     {
         $groupA = new Group('foo');
         $this->searchResultCollection->getGroups()->add($groupA);
-        $this->assertTrue($this->searchResultCollection->getHasGroups());
+        self::assertTrue($this->searchResultCollection->getHasGroups());
     }
 
     /**
@@ -75,6 +73,6 @@ class SearchResultCollectionTest extends UnitTest
     {
         $groupCollection = new GroupCollection();
         $this->searchResultCollection->setGroups($groupCollection);
-        $this->assertSame($groupCollection, $this->searchResultCollection->getGroups());
+        self::assertSame($groupCollection, $this->searchResultCollection->getGroups());
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Report;
 
 /***************************************************************
@@ -55,12 +56,11 @@ class SchemaStatus extends AbstractSolrStatus
      * Compiles a collection of schema version checks against each configured
      * Solr server. Only adds an entry if a schema other than the
      * recommended one was found.
-     *
      */
     public function getStatus()
     {
         $reports = [];
-            /** @var $connectionManager ConnectionManager */
+        /** @var $connectionManager ConnectionManager */
         $connectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
         $solrConnections = $connectionManager->getAllConnections();
 
@@ -72,10 +72,14 @@ class SchemaStatus extends AbstractSolrStatus
                 $pingFailedMsg = 'Could not ping solr server, can not check version ' . (string)$url;
                 $status = GeneralUtility::makeInstance(
                     Status::class,
-                    /** @scrutinizer ignore-type */ 'Apache Solr Version',
-                    /** @scrutinizer ignore-type */ 'Not accessible',
-                    /** @scrutinizer ignore-type */ $pingFailedMsg,
-                    /** @scrutinizer ignore-type */ Status::ERROR
+                    /** @scrutinizer ignore-type */
+                    'Apache Solr Version',
+                    /** @scrutinizer ignore-type */
+                    'Not accessible',
+                    /** @scrutinizer ignore-type */
+                    $pingFailedMsg,
+                    /** @scrutinizer ignore-type */
+                    Status::ERROR
                 );
                 $reports[] = $status;
                 continue;
@@ -87,10 +91,14 @@ class SchemaStatus extends AbstractSolrStatus
                 $report = $this->getRenderedReport('SchemaStatus.html', $variables);
                 $status = GeneralUtility::makeInstance(
                     Status::class,
-                    /** @scrutinizer ignore-type */ 'Schema Version',
-                    /** @scrutinizer ignore-type */ 'Unsupported Schema',
-                    /** @scrutinizer ignore-type */ $report,
-                    /** @scrutinizer ignore-type */ Status::WARNING
+                    /** @scrutinizer ignore-type */
+                    'Schema Version',
+                    /** @scrutinizer ignore-type */
+                    'Unsupported Schema',
+                    /** @scrutinizer ignore-type */
+                    $report,
+                    /** @scrutinizer ignore-type */
+                    Status::WARNING
                 );
                 $reports[] = $status;
             }

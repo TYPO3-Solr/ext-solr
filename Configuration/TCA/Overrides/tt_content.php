@@ -1,7 +1,7 @@
 <?php
 
-if (!defined ('TYPO3_MODE')) {
-    die ('Access denied.');
+if (!defined('TYPO3_MODE')) {
+    die('Access denied.');
 }
 
 // Register the plugins
@@ -20,7 +20,6 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$pluginSignat
     'FILE:EXT:solr/Configuration/FlexForms/Form.xml'
 );
 
-
 $pluginSignature = 'solr_pi_frequentlysearched';
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
     'solr',
@@ -29,7 +28,6 @@ $pluginSignature = 'solr_pi_frequentlysearched';
 );
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist'][$pluginSignature]
     = 'layout,select_key,pages,recursive';
-
 
 $pluginSignature = 'solr_pi_results';
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
@@ -45,4 +43,3 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$pluginSignat
     $pluginSignature,
     'FILE:EXT:solr/Configuration/FlexForms/Results.xml'
 );
-

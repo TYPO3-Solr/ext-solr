@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\System\Solr\Document;
 
 /*
@@ -37,9 +38,8 @@ class Document extends SolariumDocument
             $field = substr($name, 3);
             $field = strtolower($field[0]) . substr($field, 1);
             return $this->fields[$field] ?? null;
-        } else {
-            throw new RuntimeException('Call to undefined method. Supports magic getters only.', 1311006605);
         }
+        throw new RuntimeException('Call to undefined method. Supports magic getters only.', 1311006605);
     }
 
     /**

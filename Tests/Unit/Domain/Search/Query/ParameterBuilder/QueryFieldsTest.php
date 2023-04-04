@@ -42,7 +42,6 @@ class QueryFieldsTest extends UnitTest
         $queryFields = QueryFields::fromString($input, ',');
         $output = $queryFields->toString(',');
 
-        $this->assertSame($input, $output, 'Parsing QueryFields from and to string did not produce the same result');
+        self::assertSame($input, $output, 'Parsing QueryFields from and to string did not produce the same result');
     }
-
 }

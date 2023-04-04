@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Task;
 
 /***************************************************************
@@ -48,15 +49,15 @@ class IndexQueueWorkerTaskTest extends UnitTest
             ->getMock();
 
         // by default the webroot should be Environment::getPublicPath()
-        $this->assertSame(Environment::getPublicPath() . '/', $indexQueuerWorker->getWebRoot(), 'Not using PATH_site as webroot');
+        self::assertSame(Environment::getPublicPath() . '/', $indexQueuerWorker->getWebRoot(), 'Not using PATH_site as webroot');
 
         // can we overwrite it?
         $indexQueuerWorker->setForcedWebRoot('/var/www/foobar.de/subdir');
-        $this->assertSame('/var/www/foobar.de/subdir', $indexQueuerWorker->getWebRoot(), 'Can not force a webroot');
+        self::assertSame('/var/www/foobar.de/subdir', $indexQueuerWorker->getWebRoot(), 'Can not force a webroot');
 
         // can we use a marker?
         $indexQueuerWorker->setForcedWebRoot('###PATH_site###../test/');
-        $this->assertSame(Environment::getPublicPath() . '/../test/', $indexQueuerWorker->getWebRoot(), 'Could not use a marker in forced webroot');
+        self::assertSame(Environment::getPublicPath() . '/../test/', $indexQueuerWorker->getWebRoot(), 'Could not use a marker in forced webroot');
     }
 
     /**
@@ -64,7 +65,7 @@ class IndexQueueWorkerTaskTest extends UnitTest
      */
     public function canGetErrorMessageInAdditionalInformationWhenSiteNotAvailable()
     {
-            /** @var $indexQueuerWorker IndexQueueWorkerTask */
+        /** @var $indexQueuerWorker IndexQueueWorkerTask */
         $indexQueuerWorker = $this->getMockBuilder(IndexQueueWorkerTask::class)
             ->disableOriginalConstructor()
             ->setMethods(['getSite'])
@@ -72,6 +73,6 @@ class IndexQueueWorkerTaskTest extends UnitTest
 
         $mesage = $indexQueuerWorker->getAdditionalInformation();
         $expectedMessage = 'Invalid site configuration for scheduler please re-create the task!';
-        $this->assertSame($expectedMessage, $mesage, 'Expect to get error message of non existing site');
+        self::assertSame($expectedMessage, $mesage, 'Expect to get error message of non existing site');
     }
 }

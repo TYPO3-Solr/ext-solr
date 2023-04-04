@@ -25,7 +25,6 @@ namespace ApacheSolrForTypo3\Solr\System\Solr\Schema;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-
 /**
  * Object representation of the solr schema.
  *

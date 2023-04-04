@@ -130,7 +130,6 @@ class LastSearchesService
      * Stores the keywords from the current query to the user's session.
      *
      * @param string $keywords The current query's keywords
-     * @return void
      */
     protected function storeKeywordsToSession($keywords)
     {

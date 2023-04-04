@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\System\Configuration;
 
 /***************************************************************
@@ -30,39 +31,36 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
- *
  * @author Timo Hund <timo.hund@dkd.de>
  */
 class TypoScriptConfigurationTest extends IntegrationTest
 {
-
-    /**
-     * @return void
-     */
-    protected function setUp(): void {
+    protected function setUp(): void
+    {
         $tsfe = $this->getMockBuilder(TypoScriptFrontendController::class)->setMethods([])->disableOriginalConstructor()->getMock();
         $tsfe->cObjectDepthCounter = 50;
         $GLOBALS['TSFE'] = $tsfe;
         parent::setUp();
     }
 
-     /**
-     * @test
-     */
-    public function testCanUsePlainValuesFromConfiguration() {
+    /**
+    * @test
+    */
+    public function testCanUsePlainValuesFromConfiguration()
+    {
         $configuration = [
             'plugin.' => [
                 'tx_solr.' => [
                     'search.' =>[
-                        'sorting' => 1
-                    ]
-                ]
-            ]
+                        'sorting' => 1,
+                    ],
+                ],
+            ],
         ];
 
         /** @var $typoScriptConfiguration TypoScriptConfiguration */
         $typoScriptConfiguration = GeneralUtility::makeInstance(TypoScriptConfiguration::class, $configuration, 0);
         $sorting = $typoScriptConfiguration->getSearchSorting();
-        $this->assertTrue($sorting, 'Can not get sorting configuration from typoscript');
+        self::assertTrue($sorting, 'Can not get sorting configuration from typoscript');
     }
 }

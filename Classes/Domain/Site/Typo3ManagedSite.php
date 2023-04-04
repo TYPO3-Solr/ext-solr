@@ -28,9 +28,8 @@ namespace ApacheSolrForTypo3\Solr\Domain\Site;
 use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Site\Entity\Site as Typo3Site;
-
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class Typo3ManagedSite
@@ -48,11 +47,17 @@ class Typo3ManagedSite extends Site
      */
     protected $solrConnectionConfigurations;
 
-
     public function __construct(
         TypoScriptConfiguration $configuration,
-        array $page, $domain, $siteHash, PagesRepository $pagesRepository = null, $defaultLanguageId = 0, $availableLanguageIds = [], array $solrConnectionConfigurations = [], Typo3Site $typo3SiteObject = null)
-    {
+        array $page,
+        $domain,
+        $siteHash,
+        PagesRepository $pagesRepository = null,
+        $defaultLanguageId = 0,
+        $availableLanguageIds = [],
+        array $solrConnectionConfigurations = [],
+        Typo3Site $typo3SiteObject = null
+    ) {
         $this->configuration = $configuration;
         $this->rootPage = $page;
         $this->domain = $domain;
@@ -75,8 +80,10 @@ class Typo3ManagedSite extends Site
             /* @var $noSolrConnectionException NoSolrConnectionFoundException */
             $noSolrConnectionException = GeneralUtility::makeInstance(
                 NoSolrConnectionFoundException::class,
-                /** @scrutinizer ignore-type */  'Could not find a Solr connection for root page [' . $this->getRootPageId() . '] and language [' . $language . '].',
-                /** @scrutinizer ignore-type */ 1552491117
+                /** @scrutinizer ignore-type */
+                'Could not find a Solr connection for root page [' . $this->getRootPageId() . '] and language [' . $language . '].',
+                /** @scrutinizer ignore-type */
+                1552491117
             );
             $noSolrConnectionException->setRootPageId($this->getRootPageId());
             $noSolrConnectionException->setLanguageId($language);

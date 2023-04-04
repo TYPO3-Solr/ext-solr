@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Test\Domain\Search\ResultSet\Facets\RangeBased\NumericRange;
 
 /***************************************************************
@@ -46,19 +47,19 @@ class NumericRangeFacetQueryBuilderTest extends UnitTest
         $fakeFacetConfiguration = [
             'field' => 'price',
             'keepAllOptionsOnSelection' => 1,
-            'numericRange.' => ['start' => 1, 'end' => 100, 'gap' => 5]
+            'numericRange.' => ['start' => 1, 'end' => 100, 'gap' => 5],
         ];
         $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
-        $configurationMock->expects($this->once())->method('getSearchFacetingFacetByName')->with('testFacet')->will(
-            $this->returnValue($fakeFacetConfiguration)
+        $configurationMock->expects(self::once())->method('getSearchFacetingFacetByName')->with('testFacet')->willReturn(
+            $fakeFacetConfiguration
         );
 
         $builder = new NumericRangeFacetQueryBuilder();
         $facetParameters = $builder->build('testFacet', $configurationMock);
 
-        $this->assertSame($facetParameters['facet.range'][0], '{!ex=price}price', 'Could not apply keepAllOptionsOnSelection');
-        $this->assertSame($facetParameters['f.price.facet.range.start'], 1, 'Could not build range.start as expected');
-        $this->assertSame($facetParameters['f.price.facet.range.end'], 100, 'Could not build range.end as expected');
-        $this->assertSame($facetParameters['f.price.facet.range.gap'], 5, 'Could not build range.gap as epxected');
+        self::assertSame($facetParameters['facet.range'][0], '{!ex=price}price', 'Could not apply keepAllOptionsOnSelection');
+        self::assertSame($facetParameters['f.price.facet.range.start'], 1, 'Could not build range.start as expected');
+        self::assertSame($facetParameters['f.price.facet.range.end'], 100, 'Could not build range.end as expected');
+        self::assertSame($facetParameters['f.price.facet.range.gap'], 5, 'Could not build range.gap as epxected');
     }
 }

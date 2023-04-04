@@ -25,5 +25,6 @@ namespace ApacheSolrForTypo3\Solr\Domain\Site\Exception;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-
-class InvalidSiteConfigurationCombinationException extends \Exception {}
+class InvalidSiteConfigurationCombinationException extends \Exception
+{
+}

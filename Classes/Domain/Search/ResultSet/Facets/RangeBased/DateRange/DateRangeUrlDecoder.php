@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\DateRange;
 
 /*
@@ -50,12 +51,12 @@ class DateRangeUrlDecoder implements FacetUrlDecoderInterface
         /* @var FormatService $formatService */
         $formatService = GeneralUtility::makeInstance(FormatService::class);
         $fromPart = '*';
-        if($dateRangeStart !== ''){
+        if ($dateRangeStart !== '') {
             $fromPart = $formatService->timestampToIso(strtotime($dateRangeStart));
         }
 
         $toPart = '*';
-        if($dateRangeEnd !== ''){
+        if ($dateRangeEnd !== '') {
             $dateRangeEnd .= '59'; // adding 59 seconds
             $toPart = $formatService->timestampToIso(strtotime($dateRangeEnd));
         }

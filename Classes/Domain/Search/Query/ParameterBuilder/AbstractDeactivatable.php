@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
 
 /***************************************************************
@@ -23,21 +24,22 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-abstract class AbstractDeactivatable {
+abstract class AbstractDeactivatable
+{
 
     /**
      * @var bool
      */
     protected $isEnabled = false;
     /**
-     * @return boolean
+     * @return bool
      */
     public function getIsEnabled()
     {
         return $this->isEnabled;
     }
     /**
-     * @param boolean $isEnabled
+     * @param bool $isEnabled
      */
     public function setIsEnabled($isEnabled)
     {

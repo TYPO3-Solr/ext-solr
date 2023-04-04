@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
 
 /***************************************************************
@@ -46,7 +47,7 @@ class TrigramPhraseFields extends AbstractFieldList implements ParameterBuilder
      * @param string $delimiter
      * @return TrigramPhraseFields
      */
-    public static function fromString(string $fieldListString, string $delimiter = ',') : TrigramPhraseFields
+    public static function fromString(string $fieldListString, string $delimiter = ','): TrigramPhraseFields
     {
         return self::initializeFromString($fieldListString, $delimiter);
     }
@@ -72,7 +73,7 @@ class TrigramPhraseFields extends AbstractFieldList implements ParameterBuilder
      * @param string $delimiter
      * @return TrigramPhraseFields
      */
-    protected static function initializeFromString(string $fieldListString, string $delimiter = ',') : TrigramPhraseFields
+    protected static function initializeFromString(string $fieldListString, string $delimiter = ','): TrigramPhraseFields
     {
         $fieldList = self::buildFieldList($fieldListString, $delimiter);
         return new TrigramPhraseFields(true, $fieldList);

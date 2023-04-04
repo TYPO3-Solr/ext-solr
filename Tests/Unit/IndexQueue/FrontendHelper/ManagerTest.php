@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\IndexQueue\FrontendHelper;
 
 /***************************************************************
@@ -49,7 +50,7 @@ class ManagerTest extends UnitTest
     public function resolveActionReturnsNullWhenNoHandlerIsRegistered()
     {
         $handler = $this->manager->resolveAction('foo');
-        $this->assertNull($handler, 'Unregistered action should return null when it will be resolved');
+        self::assertNull($handler, 'Unregistered action should return null when it will be resolved');
     }
 
     /**

@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\Hooks\Backend\Toolbar;
 
 /***************************************************************
@@ -26,8 +27,8 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\Hooks\Backend\Toolbar;
 
 use ApacheSolrForTypo3\Solr\System\Hooks\Backend\Toolbar\ClearCacheActionsHook;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
-use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
+use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 
 /**
  * @author Timo Hund <timo.hund@dkd.de>
@@ -62,14 +63,14 @@ class ClearCacheActionsHookTest extends UnitTest
      */
     public function entryIsNotBuildForNormalUser()
     {
-        $this->backendUserMock->expects($this->once())->method('isAdmin')->willReturn(false);
+        $this->backendUserMock->expects(self::once())->method('isAdmin')->willReturn(false);
 
         $cacheActions = [];
         $optionValues = [];
         $this->hook->manipulateCacheActions($cacheActions, $optionValues);
 
-        $this->assertEmpty($cacheActions);
-        $this->assertEmpty($optionValues);
+        self::assertEmpty($cacheActions);
+        self::assertEmpty($optionValues);
     }
 
     /**
@@ -77,13 +78,13 @@ class ClearCacheActionsHookTest extends UnitTest
      */
     public function entryIsBuildWhenAdminIsLoggedIn()
     {
-        $this->backendUserMock->expects($this->once())->method('isAdmin')->willReturn(true);
-        $this->uriBuilderMock->expects($this->once())->method('buildUriFromRoute')->willReturn('myuri');
+        $this->backendUserMock->expects(self::once())->method('isAdmin')->willReturn(true);
+        $this->uriBuilderMock->expects(self::once())->method('buildUriFromRoute')->willReturn('myuri');
 
         $cacheActions = [];
         $optionValues = [];
         $this->hook->manipulateCacheActions($cacheActions, $optionValues);
 
-        $this->assertSame($cacheActions[0]['href'], 'myuri', 'Cache actions where not extended');
+        self::assertSame($cacheActions[0]['href'], 'myuri', 'Cache actions where not extended');
     }
 }

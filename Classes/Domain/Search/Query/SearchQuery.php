@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Domain\Search\Query;
 
 /***************************************************************
@@ -24,4 +25,6 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Query;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-class SearchQuery extends Query {}
+class SearchQuery extends Query
+{
+}

@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Widget;
 
 /*
@@ -16,12 +17,11 @@ namespace ApacheSolrForTypo3\Solr\Widget;
 
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSetService;
+use ApacheSolrForTypo3\Solr\Mvc\Controller\SolrControllerContext;
 use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
-use ApacheSolrForTypo3\Solr\Mvc\Controller\SolrControllerContext;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Util;
-use ApacheSolrForTypo3\Solr\Widget\WidgetRequest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Fluid\Core\Widget\AbstractWidgetController as CoreAbstractWidgetController;
 
@@ -108,8 +108,10 @@ class AbstractWidgetController extends CoreAbstractWidgetController
 
         return GeneralUtility::makeInstance(
             SearchResultSetService::class,
-            /** @scrutinizer ignore-type */ $typoScriptConfiguration,
-            /** @scrutinizer ignore-type */ $search
+            /** @scrutinizer ignore-type */
+            $typoScriptConfiguration,
+            /** @scrutinizer ignore-type */
+            $search
         );
     }
 }

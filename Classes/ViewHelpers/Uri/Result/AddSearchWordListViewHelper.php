@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\ViewHelpers\Uri\Result;
 
 /*
@@ -52,7 +53,7 @@ class AddSearchWordListViewHelper extends AbstractSolrFrontendViewHelper
     {
         $url = $arguments['url'];
 
-            /** @var $resultSet SearchResultSet */
+        /** @var $resultSet SearchResultSet */
         $resultSet = self::getUsedSearchResultSetFromRenderingContext($renderingContext);
         if (!$resultSet->getUsedSearchRequest()->getContextTypoScriptConfiguration()->getSearchResultsSiteHighlighting()) {
             return $url;

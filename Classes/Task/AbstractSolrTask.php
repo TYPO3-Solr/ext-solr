@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Task;
 
 /***************************************************************
@@ -24,8 +25,8 @@ namespace ApacheSolrForTypo3\Solr\Task;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
+use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
@@ -34,7 +35,8 @@ use TYPO3\CMS\Scheduler\Task\AbstractTask;
  * Abstract scheduler task for solr scheduler tasks, contains the logic to
  * retrieve the site, avoids serialization of site, when scheduler task is saved.
  */
-abstract class AbstractSolrTask extends AbstractTask {
+abstract class AbstractSolrTask extends AbstractTask
+{
     /**
      * The site this task is supposed to initialize the index queue for.
      *
@@ -45,7 +47,7 @@ abstract class AbstractSolrTask extends AbstractTask {
     /**
      * The rootPageId of the site that should be reIndexed
      *
-     * @var integer
+     * @var int
      */
     protected $rootPageId;
 

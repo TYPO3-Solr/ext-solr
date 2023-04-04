@@ -26,12 +26,12 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Sorting;
  ***************************************************************/
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 /**
  * Class SortingHelper
  */
-class SortingHelper {
+class SortingHelper
+{
 
     /**
      * @var array
@@ -63,7 +63,7 @@ class SortingHelper {
         $sortFields = [];
         $sortParameters = GeneralUtility::trimExplode(',', $urlParameters);
 
-        $removeTsKeyDot = function($sortingKey) { return trim($sortingKey, '.'); };
+        $removeTsKeyDot = function ($sortingKey) { return trim($sortingKey, '.'); };
         $configuredSortingName = array_map($removeTsKeyDot, array_keys($this->configuration));
 
         foreach ($sortParameters as $sortParameter) {

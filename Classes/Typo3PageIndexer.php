@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr;
 
 /***************************************************************
@@ -57,7 +58,7 @@ class Typo3PageIndexer
      *
      * @var Document
      */
-    protected static $pageSolrDocument = null;
+    protected static $pageSolrDocument;
     /**
      * The mount point parameter used in the Frontend controller.
      *
@@ -69,19 +70,19 @@ class Typo3PageIndexer
      *
      * @var SolrConnection
      */
-    protected $solrConnection = null;
+    protected $solrConnection;
     /**
      * Frontend page object (TSFE).
      *
      * @var TypoScriptFrontendController
      */
-    protected $page = null;
+    protected $page;
     /**
      * Content extractor to extract content from TYPO3 pages
      *
      * @var Typo3PageContentExtractor
      */
-    protected $contentExtractor = null;
+    protected $contentExtractor;
     /**
      * URL to be indexed as the page's URL
      *
@@ -93,7 +94,7 @@ class Typo3PageIndexer
      *
      * @var Rootline
      */
-    protected $pageAccessRootline = null;
+    protected $pageAccessRootline;
     /**
      * Documents that have been sent to Solr
      *
@@ -114,7 +115,7 @@ class Typo3PageIndexer
     /**
      * @var \ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager
      */
-    protected $logger = null;
+    protected $logger;
 
     /**
      * Constructor
@@ -143,7 +144,7 @@ class Typo3PageIndexer
                     SolrLogManager::ERROR,
                     'Exception while trying to index a page',
                     [
-                        $e->__toString()
+                        $e->__toString(),
                     ]
                 );
             }
@@ -183,7 +184,7 @@ class Typo3PageIndexer
     /**
      * Gets the current page's Solr document ID.
      *
-     * @return string|NULL The page's Solr document ID or NULL in case no document was generated yet.
+     * @return string|null The page's Solr document ID or NULL in case no document was generated yet.
      */
     public static function getPageSolrDocumentId()
     {
@@ -193,7 +194,7 @@ class Typo3PageIndexer
     /**
      * Gets the Solr document generated for the current page.
      *
-     * @return Document|NULL The page's Solr document or NULL if it has not been generated yet.
+     * @return Document|null The page's Solr document or NULL if it has not been generated yet.
      */
     public static function getPageSolrDocument()
     {
@@ -289,7 +290,6 @@ class Typo3PageIndexer
 
         return $document;
     }
-
 
     // Logging
     // TODO replace by a central logger

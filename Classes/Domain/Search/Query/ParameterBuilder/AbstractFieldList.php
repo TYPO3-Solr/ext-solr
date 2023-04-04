@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
 
 /***************************************************************
@@ -59,7 +60,7 @@ abstract class AbstractFieldList extends AbstractDeactivatable
      * @param string $delimiter
      * @return array
      */
-    protected static function buildFieldList(string $fieldListString, string $delimiter):array
+    protected static function buildFieldList(string $fieldListString, string $delimiter): array
     {
         $fields = GeneralUtility::trimExplode($delimiter, $fieldListString, true);
         $fieldList = [];
@@ -69,7 +70,7 @@ abstract class AbstractFieldList extends AbstractDeactivatable
 
             $boost = 1.0;
             if (isset($fieldNameAndBoost[1])) {
-                $boost = floatval($fieldNameAndBoost[1]);
+                $boost = (float)($fieldNameAndBoost[1]);
             }
 
             $fieldName = $fieldNameAndBoost[0];

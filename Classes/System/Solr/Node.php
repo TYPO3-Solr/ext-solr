@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\System\Solr;
 
 /*
@@ -14,8 +15,8 @@ namespace ApacheSolrForTypo3\Solr\System\Solr;
  * The TYPO3 project - inspiring people to share!
  */
 
-use UnexpectedValueException;
 use Solarium\Core\Client\Endpoint;
+use UnexpectedValueException;
 
 /**
  * Represent a server node of solr, in the most setups you would only have one, but sometimes
@@ -99,7 +100,7 @@ class Node extends Endpoint
     protected static function checkIfRequiredKeyIsSet(array $configuration, string $name)
     {
         if (empty($configuration[$name])) {
-            throw new UnexpectedValueException('Required solr connection property ' . $name. ' is missing.');
+            throw new UnexpectedValueException('Required solr connection property ' . $name . ' is missing.');
         }
     }
 
@@ -126,8 +127,8 @@ class Node extends Endpoint
      */
     public function getCoreBasePath(): string
     {
-        $pathWithoutLeadingAndTrailingSlashes = trim(trim($this->getPath()), "/");
-        $pathWithoutLastSegment = substr($pathWithoutLeadingAndTrailingSlashes, 0, strrpos($pathWithoutLeadingAndTrailingSlashes, "/"));
+        $pathWithoutLeadingAndTrailingSlashes = trim(trim($this->getPath()), '/');
+        $pathWithoutLastSegment = substr($pathWithoutLeadingAndTrailingSlashes, 0, strrpos($pathWithoutLeadingAndTrailingSlashes, '/'));
         return ($pathWithoutLastSegment === '') ? '/' : '/' . $pathWithoutLastSegment . '/';
     }
 
@@ -152,7 +153,7 @@ class Node extends Endpoint
             'port' => $this->getPort(),
             'scheme' => $this->getScheme(),
             'path' => $this->getPath(),
-            'core' => $this->getCore()
+            'core' => $this->getCore(),
         ];
     }
 

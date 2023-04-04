@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Middleware;
 
 /***************************************************************
@@ -34,12 +35,11 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use TYPO3\CMS\Core\Http\Response;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Http\Stream;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class PageIndexerFinisher
- * @package ApacheSolrForTypo3\Solr\Middleware
  */
 class PageIndexerFinisher implements MiddlewareInterface
 {
@@ -64,10 +64,9 @@ class PageIndexerFinisher implements MiddlewareInterface
             $body->write($content);
             $response = $response
                 ->withBody($body)
-                ->withHeader('Content-Length',  (string)strlen($content))
-                ->withHeader('Content-Type',  'application/json');
+                ->withHeader('Content-Length', (string)strlen($content))
+                ->withHeader('Content-Type', 'application/json');
         }
         return $response;
     }
-
 }

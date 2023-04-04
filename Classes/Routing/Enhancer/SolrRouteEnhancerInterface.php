@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Routing\Enhancer;
 
 /*
@@ -21,5 +22,4 @@ namespace ApacheSolrForTypo3\Solr\Routing\Enhancer;
  */
 interface SolrRouteEnhancerInterface
 {
-
 }

@@ -46,7 +46,8 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
  * @author Frans Saris <frans.saris@beech.it>
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class SuggestService {
+class SuggestService
+{
 
     /**
      * @var TypoScriptFrontendController
@@ -89,7 +90,7 @@ class SuggestService {
      * @param array $additionalFilters
      * @return array
      */
-    public function getSuggestions(SearchRequest $searchRequest, array $additionalFilters = []) : array
+    public function getSuggestions(SearchRequest $searchRequest, array $additionalFilters = []): array
     {
         $requestId = (int)$this->tsfe->getRequestedId();
         $groupList = Util::getFrontendUserGroupsList();
@@ -120,7 +121,7 @@ class SuggestService {
      * @param array $additionalFilters
      * @return array
      */
-    protected function addTopResultsToSuggestions(SearchRequest $searchRequest, $suggestions, array $additionalFilters) : array
+    protected function addTopResultsToSuggestions(SearchRequest $searchRequest, $suggestions, array $additionalFilters): array
     {
         $maxDocuments = $this->typoScriptConfiguration->getSuggestNumberOfTopResults();
 
@@ -160,7 +161,7 @@ class SuggestService {
      * @param SuggestQuery $suggestQuery
      * @return array
      */
-    protected function getSolrSuggestions(SuggestQuery $suggestQuery) : array
+    protected function getSolrSuggestions(SuggestQuery $suggestQuery): array
     {
         $pageId = $this->tsfe->getRequestedId();
         $languageId = Util::getLanguageUid();
@@ -182,10 +183,10 @@ class SuggestService {
      *
      * @param SuggestQuery $suggestQuery
      * @param array $solrSuggestions
-     * @param integer $maxSuggestions
+     * @param int $maxSuggestions
      * @return array
      */
-    protected function getSuggestionArray(SuggestQuery $suggestQuery, $solrSuggestions, $maxSuggestions) : array
+    protected function getSuggestionArray(SuggestQuery $suggestQuery, $solrSuggestions, $maxSuggestions): array
     {
         $queryString = $suggestQuery->getQuery();
         $suggestionCount = 0;
@@ -207,10 +208,10 @@ class SuggestService {
      *
      * @param array $documents
      * @param SearchResultCollection $documentsToAdd
-     * @param integer $maxDocuments
+     * @param int $maxDocuments
      * @return array
      */
-    protected function addDocumentsWhenLimitNotReached(array $documents, SearchResultCollection $documentsToAdd, int $maxDocuments)  : array
+    protected function addDocumentsWhenLimitNotReached(array $documents, SearchResultCollection $documentsToAdd, int $maxDocuments): array
     {
         $additionalTopResultsFields = $this->typoScriptConfiguration->getSuggestAdditionalTopResultsFields();
         /** @var SearchResult $document */
@@ -231,7 +232,7 @@ class SuggestService {
      * @param array $additionalTopResultsFields
      * @return array
      */
-    protected function getDocumentAsArray(SearchResult $document, $additionalTopResultsFields = []) : array
+    protected function getDocumentAsArray(SearchResult $document, $additionalTopResultsFields = []): array
     {
         $fields = [
             'link' => $document->getUrl(),
@@ -253,7 +254,7 @@ class SuggestService {
      * @param SearchRequest $searchRequest
      * @return \ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet
      */
-    protected function doASearch($searchRequest) : SearchResultSet
+    protected function doASearch($searchRequest): SearchResultSet
     {
         return $this->searchService->search($searchRequest);
     }
@@ -264,13 +265,11 @@ class SuggestService {
      * @param SearchRequest $searchRequest
      * @param array $suggestions
      * @param array $documents
-     * @param boolean $didASecondSearch
+     * @param bool $didASecondSearch
      * @return array
      */
-    protected function getResultArray(SearchRequest $searchRequest, $suggestions, $documents, $didASecondSearch) : array
+    protected function getResultArray(SearchRequest $searchRequest, $suggestions, $documents, $didASecondSearch): array
     {
         return ['suggestions' => $suggestions, 'suggestion' => $searchRequest->getRawUserQuery(), 'documents' => $documents, 'didSecondSearch' => $didASecondSearch];
     }
-
-
 }

@@ -74,7 +74,7 @@ class Slops implements ParameterBuilder
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function getHasQuerySlop()
     {
@@ -98,13 +98,12 @@ class Slops implements ParameterBuilder
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function getHasPhraseSlop()
     {
         return $this->phraseSlop !== null;
     }
-
 
     /**
      * @return int|null
@@ -123,7 +122,7 @@ class Slops implements ParameterBuilder
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function getHasBigramPhraseSlop()
     {
@@ -147,7 +146,7 @@ class Slops implements ParameterBuilder
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function getHasTrigramPhraseSlop()
     {

@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\Task;
 
 /***************************************************************
@@ -25,13 +26,13 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Task;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
-use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\IndexQueue\Indexer;
+use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\Task\ReIndexTask;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Localization\LanguageService;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * TestCase to check if the index queue can be initialized by the ReIndex Task
@@ -55,12 +56,9 @@ class ReIndexTaskTest extends IntegrationTest
      */
     protected $coreExtensionsToLoad = [
         'extensionmanager',
-        'scheduler'
+        'scheduler',
     ];
 
-    /**
-     * @return void
-     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -77,21 +75,18 @@ class ReIndexTaskTest extends IntegrationTest
         $GLOBALS['LANG'] = $languageService;
     }
 
-    /**
-     * @return void
-     */
     protected function assertEmptyIndexQueue()
     {
-        $this->assertEquals(0, $this->indexQueue->getAllItemsCount(), 'Index queue is not empty as expected');
+        self::assertEquals(0, $this->indexQueue->getAllItemsCount(), 'Index queue is not empty as expected');
     }
 
-    /**
-     * @return void
-     */
     protected function assertNotEmptyIndexQueue()
     {
-        $this->assertGreaterThan(0, $this->indexQueue->getAllItemsCount(),
-            'Index queue is empty and was expected to be not empty.');
+        self::assertGreaterThan(
+            0,
+            $this->indexQueue->getAllItemsCount(),
+            'Index queue is empty and was expected to be not empty.'
+        );
     }
 
     /**
@@ -99,8 +94,11 @@ class ReIndexTaskTest extends IntegrationTest
      */
     protected function assertIndexQueryContainsItemAmount($amount)
     {
-        $this->assertEquals($amount, $this->indexQueue->getAllItemsCount(),
-            'Index queue is empty and was expected to contain ' . (int) $amount . ' items.');
+        self::assertEquals(
+            $amount,
+            $this->indexQueue->getAllItemsCount(),
+            'Index queue is empty and was expected to contain ' . (int)$amount . ' items.'
+        );
     }
 
     /**
@@ -134,8 +132,8 @@ class ReIndexTaskTest extends IntegrationTest
         $this->task->setIndexingConfigurationsToReIndex(['pages']);
         $additionalInformation = $this->task->getAdditionalInformation();
 
-        $this->assertStringContainsString('Indexing Configurations: pages', $additionalInformation);
-        $this->assertStringContainsString('Root Page ID: 1', $additionalInformation);
+        self::assertStringContainsString('Indexing Configurations: pages', $additionalInformation);
+        self::assertStringContainsString('Root Page ID: 1', $additionalInformation);
     }
 
     /**

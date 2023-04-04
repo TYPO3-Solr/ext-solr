@@ -1,4 +1,6 @@
-<?php declare(strict_types = 1);
+<?php
+
+declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler;
 
 /***************************************************************
@@ -24,8 +26,8 @@ namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use TYPO3\CMS\Backend\Utility\BackendUtility;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\GarbageRemover\StrategyFactory;
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 
 /**
  * Garbage handler
@@ -52,18 +54,18 @@ class GarbageHandler extends AbstractUpdateHandler
         //   'currentState' =>  ['hidden' => '0', 'extendToSubpages' => '0|1'], 'changeSet' => ['hidden' => '1', (optional)'extendToSubpages' => '1']
         'extendToSubpageEnabledAndHiddenFlagWasAdded' => [
             'currentState' =>  ['extendToSubpages' => '1'],
-            'changeSet' => ['hidden' => '1']
+            'changeSet' => ['hidden' => '1'],
         ],
         // the current page has the field "hidden" enabled and the field "extendToSubpages" was set to 1
         // covers following scenarios:
         //   'currentState' =>  ['hidden' => '0|1', 'extendToSubpages' => '0'], 'changeSet' => [(optional)'hidden' => '1', 'extendToSubpages' => '1']
         'hiddenIsEnabledAndExtendToSubPagesWasAdded' => [
             'currentState' =>  ['hidden' => '1'],
-            'changeSet' => ['extendToSubpages' => '1']
+            'changeSet' => ['extendToSubpages' => '1'],
         ],
         // the field "no_search_sub_entries" of current page was set to 1
         'no_search_sub_entriesFlagWasAdded' => [
-            'changeSet' => ['no_search_sub_entries' => '1']
+            'changeSet' => ['no_search_sub_entries' => '1'],
         ],
     ];
 
@@ -196,7 +198,6 @@ class GarbageHandler extends AbstractUpdateHandler
         return (bool)$record['no_search'];
     }
 
-
     /**
      * Check if a record is getting invisible due to changes in start or endtime. In addition it is checked that the related
      * queue item was marked as indexed.
@@ -207,11 +208,11 @@ class GarbageHandler extends AbstractUpdateHandler
      */
     protected function isInvisibleByStartOrEndtime(string $table, array $record): bool
     {
-        return (
+        return
             ($this->tcaService->isStartTimeInFuture($table, $record)
                 || $this->tcaService->isEndTimeInPast($table, $record))
             && $this->isRelatedQueueRecordMarkedAsIndexed($table, $record)
-        );
+        ;
     }
 
     /**

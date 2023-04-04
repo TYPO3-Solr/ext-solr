@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Access;
 
 /***************************************************************
@@ -157,12 +158,13 @@ class Rootline
             ) {
                 $accessRootline->push(GeneralUtility::makeInstance(
                     RootlineElement::class,
-                    /** @scrutinizer ignore-type */ $pageRecord['uid'] . RootlineElement::PAGE_ID_GROUP_DELIMITER . $pageRecord['fe_group']
+                    /** @scrutinizer ignore-type */
+                    $pageRecord['uid'] . RootlineElement::PAGE_ID_GROUP_DELIMITER . $pageRecord['fe_group']
                 ));
             }
         }
 
-            /** @var  $pageSelector PageRepository */
+        /** @var  $pageSelector PageRepository */
         $pageSelector = GeneralUtility::makeInstance(PageRepository::class);
 
         // current page
@@ -170,7 +172,8 @@ class Rootline
         if ($currentPageRecord['fe_group']) {
             $accessRootline->push(GeneralUtility::makeInstance(
                 RootlineElement::class,
-                /** @scrutinizer ignore-type */ $currentPageRecord['uid'] . RootlineElement::PAGE_ID_GROUP_DELIMITER . $currentPageRecord['fe_group']
+                /** @scrutinizer ignore-type */
+                $currentPageRecord['uid'] . RootlineElement::PAGE_ID_GROUP_DELIMITER . $currentPageRecord['fe_group']
             ));
         }
 

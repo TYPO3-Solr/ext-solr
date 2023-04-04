@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\IndexQueue;
 
 /***************************************************************
@@ -58,7 +59,7 @@ class Queue
     /**
      * @var \ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager
      */
-    protected $logger = null;
+    protected $logger;
 
     /**
      * @var QueueItemRepository
@@ -78,7 +79,7 @@ class Queue
     /**
      * @var FrontendEnvironment
      */
-    protected $frontendEnvironment = null;
+    protected $frontendEnvironment;
 
     /**
      * Queue constructor.
@@ -95,8 +96,7 @@ class Queue
         QueueStatisticsRepository $queueStatisticsRepository = null,
         QueueInitializationService $queueInitializationService = null,
         FrontendEnvironment $frontendEnvironment = null
-    )
-    {
+    ) {
         $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, /** @scrutinizer ignore-type */ __CLASS__);
         $this->rootPageResolver = $rootPageResolver ?? GeneralUtility::makeInstance(RootPageResolver::class);
         $this->recordService = $recordService ?? GeneralUtility::makeInstance(ConfigurationAwareRecordService::class);
@@ -337,7 +337,7 @@ class Queue
      *      different value for non-database-record types.
      * @param string $additionalRecordFields for sql-query
      *
-     * @return array|NULL
+     * @return array|null
      */
     protected function getRecordCached($itemType, $itemUid, $additionalRecordFields)
     {
@@ -447,7 +447,7 @@ class Queue
      * @param string $itemType The item's type, usually a table name.
      * @param string $itemUid The item's uid, usually an integer uid, could be a
      *      different value for non-database-record types.
-     * @param integer $rootPageId
+     * @param int $rootPageId
      * @return bool TRUE if the item is found in the queue, FALSE otherwise
      */
     public function containsItemWithRootPageId($itemType, $itemUid, $rootPageId)
@@ -506,7 +506,6 @@ class Queue
 
     /**
      * Removes all items from the Index Queue.
-     *
      */
     public function deleteAllItems()
     {

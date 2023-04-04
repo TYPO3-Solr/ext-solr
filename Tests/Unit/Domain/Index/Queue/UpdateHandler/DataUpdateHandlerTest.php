@@ -25,22 +25,22 @@
 
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Index\Queue\UpdateHandler;
 
-use PHPUnit\Framework\MockObject\MockObject;
-use Doctrine\DBAL\Driver\Statement;
-use TYPO3\CMS\Core\DataHandling\DataHandler;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Context\Context;
-use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Database\Connection;
-use TYPO3\CMS\Core\Database\Query\QueryBuilder;
-use TYPO3\CMS\Core\Database\Query\Restriction\QueryRestrictionContainerInterface;
-use TYPO3\CMS\Core\Database\Query\Expression\ExpressionBuilder;
-use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
-use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\MountPagesUpdater;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\RootPageResolver;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\DataUpdateHandler;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\GarbageHandler;
+use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
+use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
+use Doctrine\DBAL\Driver\Statement;
+use PHPUnit\Framework\MockObject\MockObject;
+use TYPO3\CMS\Core\Context\Context;
+use TYPO3\CMS\Core\Database\Connection;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\Expression\ExpressionBuilder;
+use TYPO3\CMS\Core\Database\Query\QueryBuilder;
+use TYPO3\CMS\Core\Database\Query\Restriction\QueryRestrictionContainerInterface;
+use TYPO3\CMS\Core\DataHandling\DataHandler;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Testcase for the DataUpdateHandler class.
@@ -104,7 +104,7 @@ class DataUpdateHandlerTest extends AbstractUpdateHandlerTest
         );
 
         $this->dataHandlerMock
-            ->expects($this->any())
+            ->expects(self::any())
             ->method('getPID')
             ->willReturn(self::DUMMY_PAGE_ID);
     }
@@ -116,17 +116,17 @@ class DataUpdateHandlerTest extends AbstractUpdateHandlerTest
     protected function initRootPageResolverforValidDummyRootPage(): void
     {
         $this->rootPageResolverMock
-            ->expects($this->any())
+            ->expects(self::any())
             ->method('getRootPageId')
             ->willReturn(self::DUMMY_PAGE_ID);
 
         $this->rootPageResolverMock
-            ->expects($this->any())
+            ->expects(self::any())
             ->method('getIsRootPageId')
             ->willReturn(true);
 
         $this->rootPageResolverMock
-            ->expects($this->any())
+            ->expects(self::any())
             ->method('getResponsibleRootPageIds')
             ->willReturn([self::DUMMY_PAGE_ID]);
     }
@@ -140,16 +140,16 @@ class DataUpdateHandlerTest extends AbstractUpdateHandlerTest
         $dummyPageRecord = [
             'uid' => self::DUMMY_PAGE_ID,
             'title' => 'dummy page on which dummy ce is placed',
-            'sys_language_uid' => 0
+            'sys_language_uid' => 0,
         ];
 
         $this->mountPagesUpdaterMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('update')
             ->with($dummyPageRecord['uid']);
 
         $this->indexQueueMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('updateItem')
             ->with(
                 'pages',
@@ -157,7 +157,7 @@ class DataUpdateHandlerTest extends AbstractUpdateHandlerTest
             );
 
         $this->indexQueueMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('deleteItem')
             ->with(
                 'pages',
@@ -165,13 +165,13 @@ class DataUpdateHandlerTest extends AbstractUpdateHandlerTest
             );
 
         $this->typoScriptConfigurationMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('getIndexQueueIsMonitoredTable')
             ->with('pages')
             ->willReturn(true);
 
         $this->recordServiceMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('getRecord')
             ->with(
                 'pages',
@@ -181,7 +181,7 @@ class DataUpdateHandlerTest extends AbstractUpdateHandlerTest
             ->willReturn($dummyPageRecord);
 
         $this->tcaServiceMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('isLocalizedRecord')
             ->with(
                 'pages',
@@ -190,7 +190,7 @@ class DataUpdateHandlerTest extends AbstractUpdateHandlerTest
             ->willReturn(false);
 
         $this->tcaServiceMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('getTranslationOriginalUidIfTranslated')
             ->with(
                 'pages',
@@ -200,7 +200,7 @@ class DataUpdateHandlerTest extends AbstractUpdateHandlerTest
             ->willReturn($dummyPageRecord['uid']);
 
         $this->tcaServiceMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('isEnabledRecord')
             ->with(
                 'pages',
@@ -221,12 +221,12 @@ class DataUpdateHandlerTest extends AbstractUpdateHandlerTest
         $dummyPageRecord = [
             'uid' => self::DUMMY_PAGE_ID,
             'title' => 'invalid page on which dummy ce is placed',
-            'sys_language_uid' => 0
+            'sys_language_uid' => 0,
         ];
 
         $garbageHandlerMock = $this->createMock(GarbageHandler::class);
         $garbageHandlerMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('collectGarbage')
             ->with(
                 'pages',
@@ -235,12 +235,12 @@ class DataUpdateHandlerTest extends AbstractUpdateHandlerTest
         GeneralUtility::addInstance(GarbageHandler::class, $garbageHandlerMock);
 
         $this->mountPagesUpdaterMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('update')
             ->with($dummyPageRecord['uid']);
 
         $this->indexQueueMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('containsItem')
             ->with(
                 'pages',
@@ -249,13 +249,13 @@ class DataUpdateHandlerTest extends AbstractUpdateHandlerTest
             ->willReturn(true);
 
         $this->typoScriptConfigurationMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('getIndexQueueIsMonitoredTable')
             ->with('pages')
             ->willReturn(true);
 
         $this->recordServiceMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('getRecord')
             ->with(
                 'pages',
@@ -275,11 +275,11 @@ class DataUpdateHandlerTest extends AbstractUpdateHandlerTest
     {
         $this->initRootPageResolverforValidDummyRootPage();
         $contextMock = $this->createMock(Context::class);
-        $contextMock->expects($this->any())->method('getPropertyFromAspect')->willReturn(1641472388);
+        $contextMock->expects(self::any())->method('getPropertyFromAspect')->willReturn(1641472388);
         GeneralUtility::setSingletonInstance(Context::class, $contextMock);
 
         $this->indexQueueMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('updateItem')
             ->with(
                 'pages',
@@ -300,18 +300,18 @@ class DataUpdateHandlerTest extends AbstractUpdateHandlerTest
         $dummyPageRecord = [
             'uid' => self::DUMMY_PAGE_ID,
             'title' => 'dummy page to be processed',
-            'sys_language_uid' => 0
+            'sys_language_uid' => 0,
         ];
 
         $this->initBasicPageUpdateExpectations($dummyPageRecord);
 
         $this->mountPagesUpdaterMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('update')
             ->with($dummyPageRecord['uid']);
 
         $this->indexQueueMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('updateItem')
             ->with(
                 'pages',
@@ -330,7 +330,7 @@ class DataUpdateHandlerTest extends AbstractUpdateHandlerTest
     protected function initBasicPageUpdateExpectations(array $dummyPageRecord): void
     {
         $this->indexQueueMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('deleteItem')
             ->with(
                 'pages',
@@ -338,13 +338,13 @@ class DataUpdateHandlerTest extends AbstractUpdateHandlerTest
             );
 
         $this->typoScriptConfigurationMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('getIndexQueueIsMonitoredTable')
             ->with('pages')
             ->willReturn(true);
 
         $this->recordServiceMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('getRecord')
             ->with(
                 'pages',
@@ -354,7 +354,7 @@ class DataUpdateHandlerTest extends AbstractUpdateHandlerTest
             ->willReturn($dummyPageRecord);
 
         $this->tcaServiceMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('isLocalizedRecord')
             ->with(
                 'pages',
@@ -363,7 +363,7 @@ class DataUpdateHandlerTest extends AbstractUpdateHandlerTest
             ->willReturn(false);
 
         $this->tcaServiceMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('getTranslationOriginalUidIfTranslated')
             ->with(
                 'pages',
@@ -373,7 +373,7 @@ class DataUpdateHandlerTest extends AbstractUpdateHandlerTest
             ->willReturn($dummyPageRecord['uid']);
 
         $this->tcaServiceMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('isEnabledRecord')
             ->with(
                 'pages',
@@ -392,49 +392,49 @@ class DataUpdateHandlerTest extends AbstractUpdateHandlerTest
             'uid' => self::DUMMY_PAGE_ID,
             'title' => 'dummy page to be processed',
             'sys_language_uid' => 0,
-            'extendToSubpages' => 1
+            'extendToSubpages' => 1,
         ];
 
         $GLOBALS['TCA']['pages'] = ['columns' => []];
 
         $this->queryGeneratorMock
-            ->expects($this->any())
+            ->expects(self::any())
             ->method('getTreeList')
             ->willReturn($dummyPageRecord['uid'] . ',100,200');
 
         $statementMock = $this->createMock(Statement::class);
-        $statementMock->expects($this->once())->method('fetch')->willReturn($dummyPageRecord);
+        $statementMock->expects(self::once())->method('fetch')->willReturn($dummyPageRecord);
 
         $queryBuilderMock = $this->createMock(QueryBuilder::class);
-        $queryBuilderMock->expects($this->once())->method('getRestrictions')->willReturn($this->createMock(QueryRestrictionContainerInterface::class));
-        $queryBuilderMock->expects($this->once())->method('execute')->willReturn($statementMock);
+        $queryBuilderMock->expects(self::once())->method('getRestrictions')->willReturn($this->createMock(QueryRestrictionContainerInterface::class));
+        $queryBuilderMock->expects(self::once())->method('execute')->willReturn($statementMock);
 
         $connectionMock = $this->createMock(Connection::class);
-        $connectionMock->expects($this->any())->method('getExpressionBuilder')->willReturn($this->createMock(ExpressionBuilder::class));
+        $connectionMock->expects(self::any())->method('getExpressionBuilder')->willReturn($this->createMock(ExpressionBuilder::class));
 
         $connectionPoolMock = $this->createMock(ConnectionPool::class);
-        $connectionPoolMock->expects($this->once())->method('getQueryBuilderForTable')->willReturn($queryBuilderMock);
-        $connectionPoolMock->expects($this->once())->method('getConnectionForTable')->willReturn($connectionMock);
+        $connectionPoolMock->expects(self::once())->method('getQueryBuilderForTable')->willReturn($queryBuilderMock);
+        $connectionPoolMock->expects(self::once())->method('getConnectionForTable')->willReturn($connectionMock);
         GeneralUtility::addInstance(ConnectionPool::class, $connectionPoolMock);
         GeneralUtility::addInstance(ConnectionPool::class, $connectionPoolMock);
 
         $this->initBasicPageUpdateExpectations($dummyPageRecord);
 
         $this->indexQueueMock
-            ->expects($this->exactly(3))
+            ->expects(self::exactly(3))
             ->method('updateItem')
             ->withConsecutive(
                 [
                     'pages',
-                    $dummyPageRecord['uid']
+                    $dummyPageRecord['uid'],
                 ],
                 [
                     'pages',
-                    100
+                    100,
                 ],
                 [
                     'pages',
-                    200
+                    200,
                 ]
             );
 
@@ -452,11 +452,11 @@ class DataUpdateHandlerTest extends AbstractUpdateHandlerTest
         $dummyPageRecord = [
             'uid' => self::DUMMY_PAGE_ID,
             'title' => 'dummy page to be processed',
-            'sys_language_uid' => 0
+            'sys_language_uid' => 0,
         ];
 
         $this->rootPageResolverMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('getAlternativeSiteRootPagesIds')
             ->with(
                 'pages',
@@ -466,12 +466,12 @@ class DataUpdateHandlerTest extends AbstractUpdateHandlerTest
             ->willReturn([]);
 
         $this->mountPagesUpdaterMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('update')
             ->with($dummyPageRecord['uid']);
 
         $this->frontendEnvironmentMock
-            ->expects($this->never())
+            ->expects(self::never())
             ->method('getSolrConfigurationFromPageId');
 
         $this->dataUpdateHandler->handlePageUpdate($dummyPageRecord['uid']);
@@ -485,17 +485,17 @@ class DataUpdateHandlerTest extends AbstractUpdateHandlerTest
         $this->initRootPageResolverforValidDummyRootPage();
         $dummyRecord = [
             'uid' => 789,
-            'pid' => self::DUMMY_PAGE_ID
+            'pid' => self::DUMMY_PAGE_ID,
         ];
 
         $this->typoScriptConfigurationMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('getIndexQueueIsMonitoredTable')
             ->with('tx_foo_bar')
             ->willReturn(true);
 
         $this->recordServiceMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('getRecord')
             ->with(
                 'tx_foo_bar',
@@ -505,11 +505,11 @@ class DataUpdateHandlerTest extends AbstractUpdateHandlerTest
             ->willReturn($dummyRecord);
 
         $this->indexQueueMock
-            ->expects($this->never())
+            ->expects(self::never())
             ->method('deleteItem');
 
         $this->tcaServiceMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('isLocalizedRecord')
             ->with(
                 'tx_foo_bar',
@@ -518,7 +518,7 @@ class DataUpdateHandlerTest extends AbstractUpdateHandlerTest
             ->willReturn(false);
 
         $this->tcaServiceMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('getTranslationOriginalUidIfTranslated')
             ->with(
                 'tx_foo_bar',
@@ -528,7 +528,7 @@ class DataUpdateHandlerTest extends AbstractUpdateHandlerTest
             ->willReturn($dummyRecord['uid']);
 
         $this->tcaServiceMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('isEnabledRecord')
             ->with(
                 'tx_foo_bar',
@@ -537,7 +537,7 @@ class DataUpdateHandlerTest extends AbstractUpdateHandlerTest
             ->willReturn(true);
 
         $this->indexQueueMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('updateItem')
             ->with(
                 'tx_foo_bar',
@@ -558,12 +558,12 @@ class DataUpdateHandlerTest extends AbstractUpdateHandlerTest
         $this->initRootPageResolverforValidDummyRootPage();
         $dummyRecord = [
             'uid' => 789,
-            'pid' => self::DUMMY_PAGE_ID
+            'pid' => self::DUMMY_PAGE_ID,
         ];
 
         $garbageHandlerMock = $this->createMock(GarbageHandler::class);
         $garbageHandlerMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('collectGarbage')
             ->with(
                 'tx_foo_bar',
@@ -572,13 +572,13 @@ class DataUpdateHandlerTest extends AbstractUpdateHandlerTest
         GeneralUtility::addInstance(GarbageHandler::class, $garbageHandlerMock);
 
         $this->typoScriptConfigurationMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('getIndexQueueIsMonitoredTable')
             ->with('tx_foo_bar')
             ->willReturn(true);
 
         $this->recordServiceMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('getRecord')
             ->with(
                 'tx_foo_bar',
@@ -588,7 +588,7 @@ class DataUpdateHandlerTest extends AbstractUpdateHandlerTest
             ->willReturn([]);
 
         $this->indexQueueMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('containsItem')
             ->with(
                 'tx_foo_bar',
@@ -606,11 +606,11 @@ class DataUpdateHandlerTest extends AbstractUpdateHandlerTest
     {
         $dummyRecord = [
             'uid' => 789,
-            'pid' => self::DUMMY_PAGE_ID
+            'pid' => self::DUMMY_PAGE_ID,
         ];
 
         $this->rootPageResolverMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('getResponsibleRootPageIds')
             ->with(
                 'tx_foo_bar',
@@ -619,36 +619,36 @@ class DataUpdateHandlerTest extends AbstractUpdateHandlerTest
             ->willReturn([self::DUMMY_PAGE_ID, 20]);
 
         $this->typoScriptConfigurationMock
-            ->expects($this->exactly(2))
+            ->expects(self::exactly(2))
             ->method('getIndexQueueIsMonitoredTable')
             ->willReturn(true);
 
         $this->recordServiceMock
-            ->expects($this->exactly(2))
+            ->expects(self::exactly(2))
             ->method('getRecord')
             ->willReturn($dummyRecord);
 
         $this->indexQueueMock
-            ->expects($this->never())
+            ->expects(self::never())
             ->method('deleteItem');
 
         $this->tcaServiceMock
-            ->expects($this->exactly(2))
+            ->expects(self::exactly(2))
             ->method('isLocalizedRecord')
             ->willReturn(false);
 
         $this->tcaServiceMock
-            ->expects($this->exactly(2))
+            ->expects(self::exactly(2))
             ->method('getTranslationOriginalUidIfTranslated')
             ->willReturn($dummyRecord['uid']);
 
         $this->tcaServiceMock
-            ->expects($this->exactly(2))
+            ->expects(self::exactly(2))
             ->method('isEnabledRecord')
             ->willReturn(true);
 
         $this->indexQueueMock
-            ->expects($this->exactly(2))
+            ->expects(self::exactly(2))
             ->method('updateItem');
 
         $this->dataUpdateHandler->handleRecordUpdate($dummyRecord['uid'], 'tx_foo_bar');
@@ -663,11 +663,11 @@ class DataUpdateHandlerTest extends AbstractUpdateHandlerTest
         $dummyPageRecord = [
             'uid' => self::DUMMY_PAGE_ID,
             'title' => 'dummy page to be processed',
-            'sys_language_uid' => 0
+            'sys_language_uid' => 0,
         ];
 
         $this->recordServiceMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('getRecord')
             ->with(
                 'pages',
@@ -677,7 +677,7 @@ class DataUpdateHandlerTest extends AbstractUpdateHandlerTest
             ->willReturn($dummyPageRecord);
 
         $this->tcaServiceMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('isEnabledRecord')
             ->with(
                 'pages',
@@ -686,12 +686,12 @@ class DataUpdateHandlerTest extends AbstractUpdateHandlerTest
             ->willReturn(true);
 
         $this->mountPagesUpdaterMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('update')
             ->with($dummyPageRecord['uid']);
 
         $this->indexQueueMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('updateItem')
             ->with('pages', $dummyPageRecord['uid']);
 
@@ -708,11 +708,11 @@ class DataUpdateHandlerTest extends AbstractUpdateHandlerTest
         $dummyPageRecord = [
             'uid' => self::DUMMY_PAGE_ID,
             'title' => 'dummy page to be processed',
-            'sys_language_uid' => 0
+            'sys_language_uid' => 0,
         ];
 
         $this->recordServiceMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('getRecord')
             ->with(
                 'pages',
@@ -722,7 +722,7 @@ class DataUpdateHandlerTest extends AbstractUpdateHandlerTest
             ->willReturn($dummyPageRecord);
 
         $this->tcaServiceMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('isEnabledRecord')
             ->with(
                 'pages',
@@ -731,12 +731,12 @@ class DataUpdateHandlerTest extends AbstractUpdateHandlerTest
             ->willReturn(true);
 
         $this->mountPagesUpdaterMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('update')
             ->with($dummyPageRecord['uid']);
 
         $this->indexQueueMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('updateItem')
             ->with('pages', $dummyPageRecord['uid']);
 
@@ -752,11 +752,11 @@ class DataUpdateHandlerTest extends AbstractUpdateHandlerTest
         $dummyPageRecord = [
             'uid' => self::DUMMY_PAGE_ID,
             'title' => 'invalid dummy page to be processed',
-            'sys_language_uid' => 0
+            'sys_language_uid' => 0,
         ];
 
         $this->recordServiceMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('getRecord')
             ->with(
                 'pages',
@@ -766,7 +766,7 @@ class DataUpdateHandlerTest extends AbstractUpdateHandlerTest
             ->willReturn([]);
 
         $this->indexQueueMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('containsItem')
             ->with(
                 'pages',
@@ -776,7 +776,7 @@ class DataUpdateHandlerTest extends AbstractUpdateHandlerTest
 
         $garbageHandlerMock = $this->createMock(GarbageHandler::class);
         $garbageHandlerMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('collectGarbage')
             ->with(
                 'pages',
@@ -795,17 +795,17 @@ class DataUpdateHandlerTest extends AbstractUpdateHandlerTest
         $this->initRootPageResolverforValidDummyRootPage();
         $dummyRecord = [
             'uid' => 789,
-            'pid' => self::DUMMY_PAGE_ID
+            'pid' => self::DUMMY_PAGE_ID,
         ];
 
         $this->typoScriptConfigurationMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('getIndexQueueIsMonitoredTable')
             ->with('tx_foo_bar')
             ->willReturn(true);
 
         $this->recordServiceMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('getRecord')
             ->with(
                 'tx_foo_bar',
@@ -815,7 +815,7 @@ class DataUpdateHandlerTest extends AbstractUpdateHandlerTest
             ->willReturn($dummyRecord);
 
         $this->tcaServiceMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('isEnabledRecord')
             ->with(
                 'tx_foo_bar',
@@ -824,7 +824,7 @@ class DataUpdateHandlerTest extends AbstractUpdateHandlerTest
             ->willReturn(true);
 
         $this->tcaServiceMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('getTranslationOriginalUidIfTranslated')
             ->with(
                 'tx_foo_bar',
@@ -834,7 +834,7 @@ class DataUpdateHandlerTest extends AbstractUpdateHandlerTest
             ->willReturn($dummyRecord['uid']);
 
         $this->indexQueueMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('updateItem')
             ->with('tx_foo_bar', $dummyRecord['uid']);
 
@@ -849,17 +849,17 @@ class DataUpdateHandlerTest extends AbstractUpdateHandlerTest
         $this->initRootPageResolverforValidDummyRootPage();
         $dummyRecord = [
             'uid' => 789,
-            'pid' => self::DUMMY_PAGE_ID
+            'pid' => self::DUMMY_PAGE_ID,
         ];
 
         $this->typoScriptConfigurationMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('getIndexQueueIsMonitoredTable')
             ->with('tx_foo_bar')
             ->willReturn(true);
 
         $this->recordServiceMock
-        ->expects($this->once())
+        ->expects(self::once())
         ->method('getRecord')
         ->with(
             'tx_foo_bar',
@@ -869,7 +869,7 @@ class DataUpdateHandlerTest extends AbstractUpdateHandlerTest
         ->willReturn([]);
 
         $this->indexQueueMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('containsItem')
             ->with(
                 'tx_foo_bar',
@@ -879,7 +879,7 @@ class DataUpdateHandlerTest extends AbstractUpdateHandlerTest
 
         $garbageHandlerMock = $this->createMock(GarbageHandler::class);
         $garbageHandlerMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('collectGarbage')
             ->with(
                 'tx_foo_bar',
@@ -890,7 +890,6 @@ class DataUpdateHandlerTest extends AbstractUpdateHandlerTest
         $this->dataUpdateHandler->handleVersionSwap($dummyRecord['uid'], 'tx_foo_bar');
     }
 
-
     /**
      * @test
      */
@@ -900,11 +899,11 @@ class DataUpdateHandlerTest extends AbstractUpdateHandlerTest
         $dummyPageRecord = [
             'uid' => self::DUMMY_PAGE_ID,
             'title' => 'dummy page to be processed',
-            'sys_language_uid' => 0
+            'sys_language_uid' => 0,
         ];
 
         $this->recordServiceMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('getRecord')
             ->with(
                 'pages',
@@ -914,7 +913,7 @@ class DataUpdateHandlerTest extends AbstractUpdateHandlerTest
             ->willReturn($dummyPageRecord);
 
         $this->tcaServiceMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('isEnabledRecord')
             ->with(
                 'pages',
@@ -923,12 +922,12 @@ class DataUpdateHandlerTest extends AbstractUpdateHandlerTest
             ->willReturn(true);
 
         $this->mountPagesUpdaterMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('update')
             ->with($dummyPageRecord['uid']);
 
         $this->indexQueueMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('updateItem')
             ->with('pages', $dummyPageRecord['uid']);
 
@@ -943,17 +942,17 @@ class DataUpdateHandlerTest extends AbstractUpdateHandlerTest
         $this->initRootPageResolverforValidDummyRootPage();
         $dummyRecord = [
             'uid' => 789,
-            'pid' => self::DUMMY_PAGE_ID
+            'pid' => self::DUMMY_PAGE_ID,
         ];
 
         $this->typoScriptConfigurationMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('getIndexQueueIsMonitoredTable')
             ->with('tx_foo_bar')
             ->willReturn(true);
 
         $this->recordServiceMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('getRecord')
             ->with(
                 'tx_foo_bar',
@@ -963,7 +962,7 @@ class DataUpdateHandlerTest extends AbstractUpdateHandlerTest
             ->willReturn($dummyRecord);
 
         $this->tcaServiceMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('isEnabledRecord')
             ->with(
                 'tx_foo_bar',
@@ -972,7 +971,7 @@ class DataUpdateHandlerTest extends AbstractUpdateHandlerTest
             ->willReturn(true);
 
         $this->tcaServiceMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('getTranslationOriginalUidIfTranslated')
             ->with(
                 'tx_foo_bar',
@@ -982,7 +981,7 @@ class DataUpdateHandlerTest extends AbstractUpdateHandlerTest
             ->willReturn($dummyRecord['uid']);
 
         $this->indexQueueMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('updateItem')
             ->with('tx_foo_bar', $dummyRecord['uid']);
 

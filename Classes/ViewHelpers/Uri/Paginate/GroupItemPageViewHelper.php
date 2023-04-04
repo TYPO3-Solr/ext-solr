@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\ViewHelpers\Uri\Paginate;
 
 /*
@@ -35,7 +36,6 @@ class GroupItemPageViewHelper extends AbstractUriViewHelper
         parent::initializeArguments();
         $this->registerArgument('page', 'int', 'The page', false, 0);
         $this->registerArgument('groupItem', GroupItem::class, 'The group item', true);
-
     }
 
     /**

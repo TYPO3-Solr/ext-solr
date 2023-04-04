@@ -40,18 +40,17 @@ use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Sorting;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Sortings;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Spellchecking;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\TrigramPhraseFields;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 /**
  * The AbstractQueryBuilder contains all logic to initialize solr queries independent from TYPO3.
  */
-abstract class AbstractQueryBuilder {
+abstract class AbstractQueryBuilder
+{
 
     /**
      * @var Query
      */
-    protected $queryToBuild = null;
+    protected $queryToBuild;
 
     /**
      * @param Query $query
@@ -168,7 +167,7 @@ abstract class AbstractQueryBuilder {
      */
     public function useSortings(Sortings $sortings)
     {
-        foreach($sortings->getSortings() as $sorting) {
+        foreach ($sortings->getSortings() as $sorting) {
             $this->useSorting($sorting);
         }
 
@@ -201,7 +200,7 @@ abstract class AbstractQueryBuilder {
      */
     public function useOperator(Operator $operator)
     {
-        $this->queryToBuild->setQueryDefaultOperator( $operator->getOperator());
+        $this->queryToBuild->setQueryDefaultOperator($operator->getOperator());
         return $this;
     }
 
@@ -234,8 +233,8 @@ abstract class AbstractQueryBuilder {
     public function useBoostQueries($boostQueries)
     {
         $boostQueryArray = [];
-        if(is_array($boostQueries)) {
-            foreach($boostQueries as $boostQuery) {
+        if (is_array($boostQueries)) {
+            foreach ($boostQueries as $boostQuery) {
                 $boostQueryArray[] = ['key' => md5($boostQuery), 'query' => $boostQuery];
             }
         } else {
@@ -280,7 +279,6 @@ abstract class AbstractQueryBuilder {
         return $this;
     }
 
-
     /**
      * Uses the passed minimumMatch(mm) for the query.
      *
@@ -303,7 +301,6 @@ abstract class AbstractQueryBuilder {
         $this->queryToBuild->getEDisMax()->setMinimumMatch('');
         return $this;
     }
-
 
     /**
      * Applies the tie parameter to the query.
@@ -351,7 +348,7 @@ abstract class AbstractQueryBuilder {
         $filterName = $filterName === '' ? $filterString : $filterName;
 
         $nameWasPassedAndFilterIsAllreadySet = $filterName !== '' && $this->queryToBuild->getFilterQuery($filterName) !== null;
-        if($nameWasPassedAndFilterIsAllreadySet) {
+        if ($nameWasPassedAndFilterIsAllreadySet) {
             return $this;
         }
         $this->queryToBuild->addFilterQuery(['key' => $filterName, 'query' => $filterString]);
@@ -367,9 +364,9 @@ abstract class AbstractQueryBuilder {
     public function removeFilterByFieldName($fieldName)
     {
         return $this->removeFilterByFunction(
-            function($key, $query) use ($fieldName) {
+            function ($key, $query) use ($fieldName) {
                 $queryString = $query->getQuery();
-                $storedFieldName = substr($queryString,0, strpos($queryString, ":"));
+                $storedFieldName = substr($queryString, 0, strpos($queryString, ':'));
                 return $storedFieldName == $fieldName;
             }
         );
@@ -384,7 +381,7 @@ abstract class AbstractQueryBuilder {
     public function removeFilterByName($name)
     {
         return $this->removeFilterByFunction(
-            function($key, $query) use ($name) {
+            function ($key, $query) use ($name) {
                 $key = $query->getKey();
                 return $key == $name;
             }
@@ -400,7 +397,7 @@ abstract class AbstractQueryBuilder {
     public function removeFilterByValue($value)
     {
         return $this->removeFilterByFunction(
-            function($key, $query) use ($value) {
+            function ($key, $query) use ($value) {
                 $query = $query->getQuery();
                 return $query == $value;
             }
@@ -414,9 +411,9 @@ abstract class AbstractQueryBuilder {
     public function removeFilterByFunction($filterFunction)
     {
         $queries = $this->queryToBuild->getFilterQueries();
-        foreach($queries as $key =>  $query) {
+        foreach ($queries as $key =>  $query) {
             $canBeRemoved = $filterFunction($key, $query);
-            if($canBeRemoved) {
+            if ($canBeRemoved) {
                 unset($queries[$key]);
             }
         }
@@ -488,7 +485,7 @@ abstract class AbstractQueryBuilder {
     }
 
     /**
-     * @param boolean $debugMode
+     * @param bool $debugMode
      * @return $this
      */
     public function useDebug($debugMode)

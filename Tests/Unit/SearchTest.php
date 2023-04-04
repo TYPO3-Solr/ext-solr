@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit;
 
 /***************************************************************
@@ -52,7 +53,7 @@ class SearchTest extends UnitTest
         parent::setUp();
         $this->solrReadServiceMock = $this->getDumbMock(SolrReadService::class);
         $this->solrConnectionMock = $this->getDumbMock(SolrConnection::class);
-        $this->solrConnectionMock->expects($this->any())->method('getReadService')->willReturn($this->solrReadServiceMock);
+        $this->solrConnectionMock->expects(self::any())->method('getReadService')->willReturn($this->solrReadServiceMock);
         $this->search = new Search($this->solrConnectionMock);
     }
 
@@ -63,8 +64,8 @@ class SearchTest extends UnitTest
     {
         $query = new SearchQuery();
         $limit = 99;
-        $this->solrReadServiceMock->expects($this->once())->method('search')->willReturnCallback(
-            function($query) use ($limit) {
+        $this->solrReadServiceMock->expects(self::once())->method('search')->willReturnCallback(
+            function ($query) use ($limit) {
                 $this->assertSame($limit, $query->getRows(), 'Unexpected limit was passed');
             }
         );
@@ -81,13 +82,12 @@ class SearchTest extends UnitTest
         $limit = 99;
         $query->setRows($limit);
 
-        $this->solrReadServiceMock->expects($this->once())->method('search')->willReturnCallback(
-            function($query) use ($limit) {
+        $this->solrReadServiceMock->expects(self::once())->method('search')->willReturnCallback(
+            function ($query) use ($limit) {
                 $this->assertSame($limit, $query->getRows(), 'Unexpected limit was passed');
             }
         );
 
         $this->search->search($query, 0, null);
     }
-
 }

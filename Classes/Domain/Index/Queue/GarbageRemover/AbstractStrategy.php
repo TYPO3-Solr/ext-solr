@@ -86,7 +86,7 @@ abstract class AbstractStrategy
      * Deletes a document from solr and from the index queue.
      *
      * @param string $table
-     * @param integer $uid
+     * @param int $uid
      */
     protected function deleteInSolrAndRemoveFromIndexQueue($table, $uid)
     {
@@ -98,7 +98,7 @@ abstract class AbstractStrategy
      * Deletes a document from solr and updates the item in the index queue (e.g. on page content updates).
      *
      * @param string $table
-     * @param integer $uid
+     * @param int $uid
      */
     protected function deleteInSolrAndUpdateIndexQueue($table, $uid)
     {
@@ -136,7 +136,7 @@ abstract class AbstractStrategy
      * @param int $uid
      * @param SolrConnection[] $solrConnections
      * @param string $siteHash
-     * @param boolean $enableCommitsSetting
+     * @param bool $enableCommitsSetting
      */
     protected function deleteRecordInAllSolrConnections($table, $uid, $solrConnections, $siteHash, $enableCommitsSetting)
     {

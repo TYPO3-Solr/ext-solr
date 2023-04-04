@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\IndexQueue;
 
 /*
@@ -16,10 +17,10 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
 
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\Domain\Search\ApacheSolrDocument\Builder;
+use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\FieldProcessor\Service;
 use ApacheSolrForTypo3\Solr\FrontendEnvironment;
 use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
-use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
 use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
@@ -51,7 +52,7 @@ use TYPO3\CMS\Frontend\Page\PageRepository;
 class Indexer extends AbstractIndexer
 {
 
-    # TODO change to singular $document instead of plural $documents
+    // TODO change to singular $document instead of plural $documents
 
     /**
      * A Solr service instance to interact with the Solr server
@@ -82,7 +83,7 @@ class Indexer extends AbstractIndexer
     /**
      * @var SolrLogManager
      */
-    protected $logger = null;
+    protected $logger;
 
     /**
      * @var PagesRepository
@@ -97,7 +98,7 @@ class Indexer extends AbstractIndexer
     /**
      * @var FrontendEnvironment
      */
-    protected $frontendEnvironment = null;
+    protected $frontendEnvironment;
 
     /**
      * Constructor
@@ -116,8 +117,7 @@ class Indexer extends AbstractIndexer
         SolrLogManager $logger = null,
         ConnectionManager $connectionManager = null,
         FrontendEnvironment $frontendEnvironment = null
-    )
-    {
+    ) {
         $this->options = $options;
         $this->pagesRepository = $pagesRepository ?? GeneralUtility::makeInstance(PagesRepository::class);
         $this->documentBuilder = $documentBuilder ?? GeneralUtility::makeInstance(Builder::class);
@@ -210,7 +210,7 @@ class Indexer extends AbstractIndexer
      *
      * @param Item $item The item to be indexed
      * @param int $language Language Id (sys_language.uid)
-     * @return array|NULL The full record with fields of data to be used for indexing or NULL to prevent an item from being indexed
+     * @return array|null The full record with fields of data to be used for indexing or NULL to prevent an item from being indexed
      */
     protected function getFullItemRecord(Item $item, int $language = 0)
     {
@@ -302,7 +302,7 @@ class Indexer extends AbstractIndexer
      * The method retrieves the field configuration of the items record page id (pid).
      *
      * @param Item $item
-     * @param integer $language
+     * @param int $language
      * @param string $indexConfigurationName
      * @return array
      */
@@ -333,7 +333,7 @@ class Indexer extends AbstractIndexer
      * The method returns the field configuration of the items root page id (uid of the related root page).
      *
      * @param Item $item
-     * @param integer $language
+     * @param int $language
      * @param string $indexConfigurationName
      * @return array
      */
@@ -358,7 +358,7 @@ class Indexer extends AbstractIndexer
         $rootlineUtility = GeneralUtility::makeInstance(RootlineUtility::class, $buildRootlineWithPid);
         $rootline = $rootlineUtility->get();
 
-        $pageInRootline = array_filter($rootline, function($page) use ($rootPageId) {
+        $pageInRootline = array_filter($rootline, function ($page) use ($rootPageId) {
             return (int)$page['uid'] === $rootPageId;
         });
         return !empty($pageInRootline);
@@ -480,8 +480,10 @@ class Indexer extends AbstractIndexer
                     $additionalDocuments = $additionalIndexer->getAdditionalItemDocuments($item, $language, $itemDocument);
 
                     if (is_array($additionalDocuments)) {
-                        $documents = array_merge($documents,
-                            $additionalDocuments);
+                        $documents = array_merge(
+                            $documents,
+                            $additionalDocuments
+                        );
                     }
                 } else {
                     throw new \UnexpectedValueException(
@@ -601,7 +603,7 @@ class Indexer extends AbstractIndexer
                             $translationOverlay = [
                                 'pid' => $pageId,
                                 'sys_language_uid' => $languageId,
-                                'l10n_parent' => $pageId
+                                'l10n_parent' => $pageId,
                             ];
                             $translationOverlays[] = $translationOverlay;
                             continue 2;
@@ -619,7 +621,7 @@ class Indexer extends AbstractIndexer
      * @param int $pageId
      * @return array
      */
-    protected function getFallbackOrder(Site $site,  int $languageId, int $pageId): array
+    protected function getFallbackOrder(Site $site, int $languageId, int $pageId): array
     {
         $fallbackChain = [];
         $siteFinder = GeneralUtility::makeInstance(SiteFinder::class);
@@ -628,7 +630,6 @@ class Indexer extends AbstractIndexer
             $languageAspect = LanguageAspectFactory::createFromSiteLanguage($site->getLanguageById($languageId));
             $fallbackChain = $languageAspect->getFallbackChain();
         } catch (SiteNotFoundException $e) {
-
         }
         return $fallbackChain;
     }
@@ -693,7 +694,6 @@ class Indexer extends AbstractIndexer
      * Enables logging dependent on the configuration of the item's site
      *
      * @param Item $item An item being indexed
-     * @return    void
      */
     protected function setLogging(Item $item)
     {

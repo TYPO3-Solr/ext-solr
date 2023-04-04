@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
 
 /***************************************************************
@@ -180,7 +181,7 @@ class Grouping extends AbstractDeactivatable implements ParameterBuilder
      */
     public function setResultsPerGroup($resultsPerGroup)
     {
-        $resultsPerGroup = max(intval($resultsPerGroup), 0);
+        $resultsPerGroup = max((int)$resultsPerGroup, 0);
         $this->resultsPerGroup = $resultsPerGroup;
     }
 
@@ -234,7 +235,7 @@ class Grouping extends AbstractDeactivatable implements ParameterBuilder
     public function build(AbstractQueryBuilder $parentBuilder): AbstractQueryBuilder
     {
         $query = $parentBuilder->getQuery();
-        if(!$this->getIsEnabled()) {
+        if (!$this->getIsEnabled()) {
             $query->removeComponent($query->getGrouping());
             return $parentBuilder;
         }

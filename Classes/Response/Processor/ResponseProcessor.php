@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Response\Processor;
 
 /***************************************************************
@@ -43,7 +44,6 @@ interface ResponseProcessor
      *
      * @param Query $query The query that has been searched for.
      * @param ResponseAdapter $response The response for the last query.
-     * @return void
      */
     public function processResponse(
         Query $query,

@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets;
 
 /*
@@ -36,7 +37,7 @@ abstract class AbstractFacet
      *
      * @var SearchResultSet
      */
-    protected $resultSet = null;
+    protected $resultSet;
 
     /**
      * @var string
@@ -59,7 +60,7 @@ abstract class AbstractFacet
     protected $configuration;
 
     /**
-     * @var boolean
+     * @var bool
      */
     protected $isAvailable = false;
 
@@ -143,7 +144,7 @@ abstract class AbstractFacet
     }
 
     /**
-     * @param boolean $isAvailable
+     * @param bool $isAvailable
      */
     public function setIsAvailable($isAvailable)
     {
@@ -151,7 +152,7 @@ abstract class AbstractFacet
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function getIsAvailable()
     {
@@ -159,7 +160,7 @@ abstract class AbstractFacet
     }
 
     /**
-     * @param boolean $isUsed
+     * @param bool $isUsed
      */
     public function setIsUsed($isUsed)
     {
@@ -167,7 +168,7 @@ abstract class AbstractFacet
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function getIsUsed()
     {
@@ -183,7 +184,7 @@ abstract class AbstractFacet
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function getAllRequirementsMet()
     {
@@ -191,7 +192,7 @@ abstract class AbstractFacet
     }
 
     /**
-     * @param boolean $allRequirementsMet
+     * @param bool $allRequirementsMet
      */
     public function setAllRequirementsMet($allRequirementsMet)
     {
@@ -238,7 +239,7 @@ abstract class AbstractFacet
      * Indicates if this facet should ne included in the available facets. When nothing is configured,
      * the method return TRUE.
      *
-     * @return boolean
+     * @return bool
      */
     public function getIncludeInAvailableFacets()
     {
@@ -249,11 +250,10 @@ abstract class AbstractFacet
      * Indicates if this facets should be included in the used facets. When nothing is configured,
      * the methods returns true.
      *
-     * @return boolean
+     * @return bool
      */
     public function getIncludeInUsedFacets()
     {
-
         return ((int)$this->getFacetSettingOrDefaultValue('includeInUsedFacets', 1)) === 1;
     }
 
@@ -285,6 +285,6 @@ abstract class AbstractFacet
             return $defaultValue;
         }
 
-        return ($this->configuration[$key]);
+        return $this->configuration[$key];
     }
 }

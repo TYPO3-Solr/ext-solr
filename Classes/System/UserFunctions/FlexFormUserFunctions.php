@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\System\UserFunctions;
 
 /*
@@ -34,8 +35,6 @@ class FlexFormUserFunctions
      * Provides all facet fields for a flexform select, enabling the editor to select one of them.
      *
      * @param array $parentInformation
-     *
-     * @return void
      */
     public function getFacetFieldsFromSchema(array &$parentInformation)
     {
@@ -62,12 +61,12 @@ class FlexFormUserFunctions
     {
         $newItems = [];
 
-        array_map(function($fieldName) use (&$newItems, $configuredFacets) {
+        array_map(function ($fieldName) use (&$newItems, $configuredFacets) {
             $value = $fieldName;
             $label = $fieldName;
 
-            $facetNameFilter = function($facet) use ($fieldName) {
-                return ($facet['field'] === $fieldName);
+            $facetNameFilter = function ($facet) use ($fieldName) {
+                return $facet['field'] === $fieldName;
             };
             $configuredFacets = array_filter($configuredFacets, $facetNameFilter);
             if (!empty($configuredFacets)) {
@@ -92,7 +91,7 @@ class FlexFormUserFunctions
     /**
      * Retrieves the configured facets for a page.
      *
-     * @param integer $pid
+     * @param int $pid
      * @return array
      */
     protected function getConfiguredFacetsForPage($pid)
@@ -105,7 +104,7 @@ class FlexFormUserFunctions
      * Retrieves the translation with the LocalizationUtility.
      *
      * @param string $label
-     * @return null|string
+     * @return string|null
      */
     protected function getTranslation($label)
     {
@@ -143,7 +142,7 @@ class FlexFormUserFunctions
     public function getAvailableTemplates(array &$parentInformation)
     {
         $pageRecord = $parentInformation['flexParentDatabaseRow'];
-        if (!is_array($pageRecord) || !isset ($pageRecord['pid'])) {
+        if (!is_array($pageRecord) || !isset($pageRecord['pid'])) {
             $parentInformation['items'] = [];
             return;
         }
@@ -200,7 +199,7 @@ class FlexFormUserFunctions
     /**
      * Retrieves the configured templates from TypoScript.
      *
-     * @param integer $pageId
+     * @param int $pageId
      * @param string $templateKey
      * @return array
      */

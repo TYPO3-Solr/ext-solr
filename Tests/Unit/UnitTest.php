@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit;
 
 /***************************************************************
@@ -86,7 +87,7 @@ abstract class UnitTest extends UnitTestCase
      */
     protected function getRuntimeDirectory()
     {
-        $rc = new \ReflectionClass(get_class($this));
+        $rc = new \ReflectionClass(static::class);
         return dirname($rc->getFileName());
     }
 
@@ -96,7 +97,7 @@ abstract class UnitTest extends UnitTestCase
     protected function skipInVersionBelow($version)
     {
         if (version_compare(TYPO3_branch, $version, '<')) {
-            $this->markTestSkipped('This test requires at least version ' . $version);
+            self::markTestSkipped('This test requires at least version ' . $version);
         }
     }
 }

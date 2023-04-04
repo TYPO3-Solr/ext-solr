@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\NumericRange;
 
 /*
@@ -68,7 +69,6 @@ class NumericRangeFacet extends AbstractFacet
     {
         return $this->numericRange;
     }
-
 
     /**
      * Get facet partial name used for rendering the facet

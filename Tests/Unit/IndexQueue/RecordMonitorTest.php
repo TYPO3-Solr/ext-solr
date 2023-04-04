@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\IndexQueue;
 
 /***************************************************************
@@ -93,16 +94,16 @@ class RecordMonitorTest extends UnitTest
     {
         $dispatchedEvent = null;
         $this->eventDispatcherMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('dispatch')
-            ->will($this->returnCallback(function() use (&$dispatchedEvent) {
+            ->willReturnCallback(function () use (&$dispatchedEvent) {
                 $dispatchedEvent = func_get_arg(0);
-            }));
+            });
         $this->recordMonitor->processCmdmap_preProcess('delete', 'tt_content', 123);
 
-        $this->assertTrue($dispatchedEvent instanceof ContentElementDeletedEvent);
-        $this->assertEquals('tt_content', $dispatchedEvent->getTable());
-        $this->assertEquals(123, $dispatchedEvent->getUid());
+        self::assertTrue($dispatchedEvent instanceof ContentElementDeletedEvent);
+        self::assertEquals('tt_content', $dispatchedEvent->getTable());
+        self::assertEquals(123, $dispatchedEvent->getUid());
     }
 
     /**
@@ -112,7 +113,7 @@ class RecordMonitorTest extends UnitTest
     {
         $GLOBALS['BE_USER']->workspace = 1;
         $this->eventDispatcherMock
-            ->expects($this->never())
+            ->expects(self::never())
             ->method('dispatch');
         $this->recordMonitor->processCmdmap_preProcess('delete', 'tt_content', 123);
     }
@@ -126,16 +127,16 @@ class RecordMonitorTest extends UnitTest
 
         $dispatchedEvent = null;
         $this->eventDispatcherMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('dispatch')
-            ->will($this->returnCallback(function() use (&$dispatchedEvent) {
+            ->willReturnCallback(function () use (&$dispatchedEvent) {
                 $dispatchedEvent = func_get_arg(0);
-            }));
+            });
         $this->recordMonitor->processCmdmap_postProcess('version', 'pages', 4711, ['action' => 'swap'], $dataHandlerMock);
 
-        $this->assertTrue($dispatchedEvent instanceof VersionSwappedEvent);
-        $this->assertEquals('pages', $dispatchedEvent->getTable());
-        $this->assertEquals(4711, $dispatchedEvent->getUid());
+        self::assertTrue($dispatchedEvent instanceof VersionSwappedEvent);
+        self::assertEquals('pages', $dispatchedEvent->getTable());
+        self::assertEquals(4711, $dispatchedEvent->getUid());
     }
 
     /**
@@ -147,16 +148,16 @@ class RecordMonitorTest extends UnitTest
 
         $dispatchedEvent = null;
         $this->eventDispatcherMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('dispatch')
-            ->will($this->returnCallback(function() use (&$dispatchedEvent) {
+            ->willReturnCallback(function () use (&$dispatchedEvent) {
                 $dispatchedEvent = func_get_arg(0);
-            }));
+            });
         $this->recordMonitor->processCmdmap_postProcess('version', 'tx_foo_bar', 888, ['action' => 'swap'], $dataHandlerMock);
 
-        $this->assertTrue($dispatchedEvent instanceof VersionSwappedEvent);
-        $this->assertEquals('tx_foo_bar', $dispatchedEvent->getTable());
-        $this->assertEquals(888, $dispatchedEvent->getUid());
+        self::assertTrue($dispatchedEvent instanceof VersionSwappedEvent);
+        self::assertEquals('tx_foo_bar', $dispatchedEvent->getTable());
+        self::assertEquals(888, $dispatchedEvent->getUid());
     }
 
     /**
@@ -168,16 +169,16 @@ class RecordMonitorTest extends UnitTest
 
         $dispatchedEvent = null;
         $this->eventDispatcherMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('dispatch')
-            ->will($this->returnCallback(function() use (&$dispatchedEvent) {
+            ->willReturnCallback(function () use (&$dispatchedEvent) {
                 $dispatchedEvent = func_get_arg(0);
-            }));
+            });
         $this->recordMonitor->processCmdmap_postProcess('move', 'pages', 4711, [], $dataHandlerMock);
 
-        $this->assertTrue($dispatchedEvent instanceof RecordMovedEvent);
-        $this->assertEquals('pages', $dispatchedEvent->getTable());
-        $this->assertEquals(4711, $dispatchedEvent->getUid());
+        self::assertTrue($dispatchedEvent instanceof RecordMovedEvent);
+        self::assertEquals('pages', $dispatchedEvent->getTable());
+        self::assertEquals(4711, $dispatchedEvent->getUid());
     }
 
     /**
@@ -189,7 +190,7 @@ class RecordMonitorTest extends UnitTest
         $GLOBALS['BE_USER']->workspace = 1;
 
         $this->eventDispatcherMock
-            ->expects($this->never())
+            ->expects(self::never())
             ->method('dispatch');
         $this->recordMonitor->processCmdmap_postProcess('move', 'pages', 4711, [], $dataHandlerMock);
     }
@@ -203,16 +204,16 @@ class RecordMonitorTest extends UnitTest
 
         $dispatchedEvent = null;
         $this->eventDispatcherMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('dispatch')
-            ->will($this->returnCallback(function() use (&$dispatchedEvent) {
+            ->willReturnCallback(function () use (&$dispatchedEvent) {
                 $dispatchedEvent = func_get_arg(0);
-            }));
+            });
         $this->recordMonitor->processCmdmap_postProcess('move', 'tx_foo_bar', 888, [], $dataHandlerMock);
 
-        $this->assertTrue($dispatchedEvent instanceof RecordMovedEvent);
-        $this->assertEquals('tx_foo_bar', $dispatchedEvent->getTable());
-        $this->assertEquals(888, $dispatchedEvent->getUid());
+        self::assertTrue($dispatchedEvent instanceof RecordMovedEvent);
+        self::assertEquals('tx_foo_bar', $dispatchedEvent->getTable());
+        self::assertEquals(888, $dispatchedEvent->getUid());
     }
 
     /**
@@ -225,16 +226,16 @@ class RecordMonitorTest extends UnitTest
 
         $dispatchedEvent = null;
         $this->eventDispatcherMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('dispatch')
-            ->will($this->returnCallback(function() use (&$dispatchedEvent) {
+            ->willReturnCallback(function () use (&$dispatchedEvent) {
                 $dispatchedEvent = func_get_arg(0);
-            }));
+            });
         $this->recordMonitor->processDatamap_afterDatabaseOperations('new', 'tt_content', 4711, ['pid' => 1], $dataHandlerMock);
 
-        $this->assertTrue($dispatchedEvent instanceof RecordUpdatedEvent);
-        $this->assertEquals('tt_content', $dispatchedEvent->getTable());
-        $this->assertEquals(4711, $dispatchedEvent->getUid());
+        self::assertTrue($dispatchedEvent instanceof RecordUpdatedEvent);
+        self::assertEquals('tt_content', $dispatchedEvent->getTable());
+        self::assertEquals(4711, $dispatchedEvent->getUid());
     }
 
     /**
@@ -249,15 +250,15 @@ class RecordMonitorTest extends UnitTest
 
         $dispatchedEvent = null;
         $this->eventDispatcherMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('dispatch')
-            ->will($this->returnCallback(function() use (&$dispatchedEvent) {
+            ->willReturnCallback(function () use (&$dispatchedEvent) {
                 $dispatchedEvent = func_get_arg(0);
-            }));
+            });
         $this->recordMonitor->processDatamap_afterDatabaseOperations('new', 'tt_content', $newId, ['pid' => 1], $dataHandlerMock);
 
-        $this->assertTrue($dispatchedEvent instanceof RecordUpdatedEvent);
-        $this->assertEquals('tt_content', $dispatchedEvent->getTable());
-        $this->assertEquals(123, $dispatchedEvent->getUid());
+        self::assertTrue($dispatchedEvent instanceof RecordUpdatedEvent);
+        self::assertEquals('tt_content', $dispatchedEvent->getTable());
+        self::assertEquals(123, $dispatchedEvent->getUid());
     }
 }

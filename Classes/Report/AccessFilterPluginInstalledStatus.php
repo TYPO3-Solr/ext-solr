@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Report;
 
 /***************************************************************
@@ -58,7 +59,6 @@ class AccessFilterPluginInstalledStatus extends AbstractSolrStatus
      * Compiles a collection of solrconfig.xml checks against each configured
      * Solr server. Only adds an entry if the Access Filter Query Parser Plugin
      * is not configured.
-     *
      */
     public function getStatus()
     {
@@ -88,7 +88,7 @@ class AccessFilterPluginInstalledStatus extends AbstractSolrStatus
      * Checks whether the Solr plugin is installed.
      *
      * @param SolrAdminService $adminService
-     * @return null|\TYPO3\CMS\Reports\Status
+     * @return \TYPO3\CMS\Reports\Status|null
      */
     protected function checkPluginInstallationStatus(SolrAdminService $adminService)
     {
@@ -101,10 +101,14 @@ class AccessFilterPluginInstalledStatus extends AbstractSolrStatus
         $report = $this->getRenderedReport('AccessFilterPluginInstalledStatusNotInstalled.html', $variables);
         return GeneralUtility::makeInstance(
             Status::class,
-            /** @scrutinizer ignore-type */ 'Access Filter Plugin',
-            /** @scrutinizer ignore-type */ 'Not Installed',
-            /** @scrutinizer ignore-type */ $report,
-            /** @scrutinizer ignore-type */ Status::WARNING
+            /** @scrutinizer ignore-type */
+            'Access Filter Plugin',
+            /** @scrutinizer ignore-type */
+            'Not Installed',
+            /** @scrutinizer ignore-type */
+            $report,
+            /** @scrutinizer ignore-type */
+            Status::WARNING
         );
     }
 
@@ -112,7 +116,7 @@ class AccessFilterPluginInstalledStatus extends AbstractSolrStatus
      * Checks whether the Solr plugin version is up to date.
      *
      * @param SolrAdminService $adminService
-     * @return null|\TYPO3\CMS\Reports\Status
+     * @return \TYPO3\CMS\Reports\Status|null
      */
     protected function checkPluginVersion(SolrAdminService $adminService)
     {
@@ -126,10 +130,14 @@ class AccessFilterPluginInstalledStatus extends AbstractSolrStatus
 
         return GeneralUtility::makeInstance(
             Status::class,
-            /** @scrutinizer ignore-type */ 'Access Filter Plugin',
-            /** @scrutinizer ignore-type */ 'Outdated',
-            /** @scrutinizer ignore-type */ $report,
-            /** @scrutinizer ignore-type */ Status::WARNING
+            /** @scrutinizer ignore-type */
+            'Access Filter Plugin',
+            /** @scrutinizer ignore-type */
+            'Outdated',
+            /** @scrutinizer ignore-type */
+            $report,
+            /** @scrutinizer ignore-type */
+            Status::WARNING
         );
     }
 

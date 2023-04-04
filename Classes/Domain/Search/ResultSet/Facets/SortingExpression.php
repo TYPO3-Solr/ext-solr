@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets;
 
 /***************************************************************
@@ -40,15 +41,15 @@ class SortingExpression
      */
     public function getForFacet($sorting)
     {
-        $noSortingSet = $sorting !== 0 && $sorting !== FALSE && empty($sorting);
-        $sortingIsCount = $sorting === 'count' || $sorting === 1 || $sorting === '1' || $sorting === TRUE;
+        $noSortingSet = $sorting !== 0 && $sorting !== false && empty($sorting);
+        $sortingIsCount = $sorting === 'count' || $sorting === 1 || $sorting === '1' || $sorting === true;
         if ($noSortingSet) {
             return '';
-        } elseif ($sortingIsCount) {
-            return 'count';
-        } else {
-            return 'index';
         }
+        if ($sortingIsCount) {
+            return 'count';
+        }
+        return 'index';
     }
 
     /**

@@ -26,8 +26,8 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Index\Queue;
 
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\QueueInitializationService;
-use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
+use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 
@@ -43,7 +43,7 @@ class QueueInitializerServiceTest extends UnitTest
     public function allIndexConfigurationsAreUsedWhenWildcardIsPassed()
     {
         $queueMock = $this->getDumbMock(Queue::class);
-            /** @var QueueInitializationService $service */
+        /** @var QueueInitializationService $service */
         $service = $this->getMockBuilder(QueueInitializationService::class)->setMethods(['executeInitializer'])->setConstructorArgs([$queueMock])->getMock();
 
         $fakeTs = [
@@ -56,29 +56,29 @@ class QueueInitializerServiceTest extends UnitTest
                                 'initialization' => 'MyPagesInitializer',
                                 'table' => 'pages',
                                 'fields.' => [
-                                    'title' => 'title'
-                                ]
+                                    'title' => 'title',
+                                ],
                             ],
                             'my_news' => 1,
                             'my_news.' => [
                                 'initialization' => 'MyNewsInitializer',
                                 'table' => 'tx_news_domain_model_news',
                                 'fields.' => [
-                                    'title' => 'title'
-                                ]
-                            ]
-                        ]
-                    ]
-                ]
-            ]
+                                    'title' => 'title',
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
         ];
 
         $fakeConfiguration = new TypoScriptConfiguration($fakeTs);
 
         $siteMock = $this->getDumbMock(Site::class);
-        $siteMock->expects($this->any())->method('getSolrConfiguration')->willReturn($fakeConfiguration);
+        $siteMock->expects(self::any())->method('getSolrConfiguration')->willReturn($fakeConfiguration);
 
-        $service->expects($this->exactly(2))->method('executeInitializer')->withConsecutive(
+        $service->expects(self::exactly(2))->method('executeInitializer')->withConsecutive(
             [$siteMock, 'my_pages', 'MyPagesInitializer', 'pages', $fakeTs['plugin.']['tx_solr.']['index.']['queue.']['my_pages.']],
             [$siteMock, 'my_news', 'MyNewsInitializer', 'tx_news_domain_model_news', $fakeTs['plugin.']['tx_solr.']['index.']['queue.']['my_news.']]
         );

@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Controller\Backend\Search;
 
 /***************************************************************
@@ -40,7 +41,6 @@ class CoreOptimizationModuleController extends AbstractModuleController
      * Set up the doc header properly here
      *
      * @param ViewInterface $view
-     * @return void
      */
     protected function initializeView(ViewInterface $view)
     {
@@ -55,8 +55,6 @@ class CoreOptimizationModuleController extends AbstractModuleController
 
     /**
      * Gets synonyms and stopwords for the currently selected core
-     *
-     * @return void
      */
     public function indexAction()
     {
@@ -76,7 +74,7 @@ class CoreOptimizationModuleController extends AbstractModuleController
         $this->view->assignMultiple([
             'synonyms' => $synonyms,
             'stopWords' => implode(PHP_EOL, $stopWords),
-            'stopWordsCount' => count($stopWords)
+            'stopWordsCount' => count($stopWords),
         ]);
     }
 
@@ -86,7 +84,6 @@ class CoreOptimizationModuleController extends AbstractModuleController
      * @param string $baseWord
      * @param string $synonyms
      * @param bool $overrideExisting
-     * @return void
      */
     public function addSynonymsAction(string $baseWord, string $synonyms, $overrideExisting)
     {
@@ -117,7 +114,6 @@ class CoreOptimizationModuleController extends AbstractModuleController
 
     /**
      * @param string $fileFormat
-     * @return void
      */
     public function exportStopWordsAction($fileFormat = 'txt')
     {
@@ -146,7 +142,6 @@ class CoreOptimizationModuleController extends AbstractModuleController
      * @param array $synonymFileUpload
      * @param bool $overrideExisting
      * @param bool $deleteSynonymsBefore
-     * @return void
      */
     public function importSynonymListAction(array $synonymFileUpload, $overrideExisting, $deleteSynonymsBefore)
     {
@@ -172,13 +167,11 @@ class CoreOptimizationModuleController extends AbstractModuleController
             $synonymCount . ' synonyms imported.'
         );
         $this->redirect('index');
-
     }
 
     /**
      * @param array $stopwordsFileUpload
      * @param bool $replaceStopwords
-     * @return void
      */
     public function importStopWordListAction(array $stopwordsFileUpload, $replaceStopwords)
     {
@@ -190,8 +183,6 @@ class CoreOptimizationModuleController extends AbstractModuleController
 
     /**
      * Delete complete synonym list
-     *
-     * @return void
      */
     public function deleteAllSynonymsAction()
     {
@@ -249,7 +240,6 @@ class CoreOptimizationModuleController extends AbstractModuleController
      *
      * @param string $stopWords
      * @param bool $replaceStopwords
-     * @return void
      */
     public function saveStopWordsAction(string $stopWords, $replaceStopwords = true)
     {
@@ -290,7 +280,7 @@ class CoreOptimizationModuleController extends AbstractModuleController
      * @param string $fileExtension
      * @return string
      */
-    protected function exportFile($content, $type = 'synonyms', $fileExtension = 'txt') : string
+    protected function exportFile($content, $type = 'synonyms', $fileExtension = 'txt'): string
     {
         $coreAdmin = $this->selectedSolrCoreConnection->getAdminService();
 
@@ -310,7 +300,6 @@ class CoreOptimizationModuleController extends AbstractModuleController
 
     /**
      * This method send the headers and content and does an exit, since without the exit TYPO3 produces and error.
-     * @return void
      */
     protected function sendFileResponse()
     {
@@ -326,7 +315,7 @@ class CoreOptimizationModuleController extends AbstractModuleController
      *
      * @return bool
      */
-    protected function deleteAllSynonyms() : bool
+    protected function deleteAllSynonyms(): bool
     {
         $coreAdmin = $this->selectedSolrCoreConnection->getAdminService();
         $synonyms = $coreAdmin->getSynonyms();
@@ -344,7 +333,7 @@ class CoreOptimizationModuleController extends AbstractModuleController
      * @param $stopwordsToRemove
      * @return bool
      */
-    protected function removeStopsWordsFromIndex($stopwordsToRemove) : bool
+    protected function removeStopsWordsFromIndex($stopwordsToRemove): bool
     {
         $wordsRemoved = true;
         $coreAdmin = $this->selectedSolrCoreConnection->getAdminService();
@@ -381,6 +370,5 @@ class CoreOptimizationModuleController extends AbstractModuleController
         ) {
             $coreAdmin->deleteSynonym($baseWord);
         }
-
     }
 }

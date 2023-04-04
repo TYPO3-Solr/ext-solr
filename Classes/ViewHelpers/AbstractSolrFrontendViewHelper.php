@@ -1,6 +1,6 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\ViewHelpers;
 
+namespace ApacheSolrForTypo3\Solr\ViewHelpers;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -15,10 +15,9 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers;
  * The TYPO3 project - inspiring people to share!
  */
 
-use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Mvc\Controller\SolrControllerContext;
-use ApacheSolrForTypo3\Solr\ViewHelpers\AbstractSolrViewHelper;
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 
 /**

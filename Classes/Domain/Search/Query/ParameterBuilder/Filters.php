@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
 
 /***************************************************************
@@ -43,7 +44,6 @@ class Filters
      * Removes a filter on a field
      *
      * @param string $filterFieldName The field name the filter should be removed for
-     * @return void
      */
     public function removeByFieldName($filterFieldName)
     {
@@ -72,7 +72,6 @@ class Filters
         unset($this->filters[$name]);
     }
 
-
     /**
      * @param string $filterString
      * @param string $name
@@ -94,7 +93,7 @@ class Filters
      */
     public function addMultiple($filterArray)
     {
-        foreach($filterArray as $key => $value) {
+        foreach ($filterArray as $key => $value) {
             if (!$this->hasWithName($key)) {
                 $this->add($value, $key);
             }

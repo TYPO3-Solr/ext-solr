@@ -25,9 +25,9 @@
 
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Index\Queue\UpdateHandler\EventListener;
 
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\EventListener\AbstractBaseEventListener;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\EventListener\NoProcessingEventListener;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordUpdatedEvent;
-use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\EventListener\AbstractBaseEventListener;
 
 /**
  * Testcase for the NoProcessingEventListener
@@ -39,29 +39,31 @@ class NoProcessingEventListenerTest extends AbstractEventListenerTest
     /**
      * @test
      */
-    public function canHandleEvents(): void {
+    public function canHandleEvents(): void
+    {
         $this->extensionConfigurationMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('getMonitoringType')
             ->willReturn(2);
 
         $event = new RecordUpdatedEvent(123, 'tx_foo_bar');
         $this->listener->__invoke($event);
-        $this->assertTrue($event->isPropagationStopped());
+        self::assertTrue($event->isPropagationStopped());
     }
 
     /**
      * @test
      */
-    public function canSkipEventHandlingIfDisabled(): void {
+    public function canSkipEventHandlingIfDisabled(): void
+    {
         $this->extensionConfigurationMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('getMonitoringType')
             ->willReturn(0);
 
         $event = new RecordUpdatedEvent(123, 'tx_foo_bar');
         $this->listener->__invoke($event);
-        $this->assertFalse($event->isPropagationStopped());
+        self::assertFalse($event->isPropagationStopped());
     }
 
     /**

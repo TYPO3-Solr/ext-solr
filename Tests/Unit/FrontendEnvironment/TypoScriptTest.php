@@ -44,7 +44,7 @@ class TypoScriptTest extends UnitTest
                 [
                     'buildConfigurationArray',
                     'buildTypoScriptConfigurationFromArray',
-                    'getConfigurationPageIdToUse'
+                    'getConfigurationPageIdToUse',
                 ]
             )->getMock();
 
@@ -96,7 +96,7 @@ class TypoScriptTest extends UnitTest
             $language
         );
 
-        $this->assertInstanceOf(TypoScriptConfiguration::class, $newConfiguration);
+        self::assertInstanceOf(TypoScriptConfiguration::class, $newConfiguration);
 
         // prepare second/cached call
         // pageRepository->getRootLine should be called only once
@@ -107,9 +107,8 @@ class TypoScriptTest extends UnitTest
             $language
         );
 
-        $this->assertInstanceOf(TypoScriptConfiguration::class, $cachedConfiguration);
+        self::assertInstanceOf(TypoScriptConfiguration::class, $cachedConfiguration);
 
-        $this->assertSame($newConfiguration, $cachedConfiguration);
+        self::assertSame($newConfiguration, $cachedConfiguration);
     }
-
 }

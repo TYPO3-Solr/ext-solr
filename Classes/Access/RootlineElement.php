@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Access;
 
 /***************************************************************
@@ -77,7 +78,7 @@ class RootlineElement
      *
      * @var int
      */
-    protected $pageId = null;
+    protected $pageId;
 
     /**
      * Set of access groups assigned to the element.
@@ -125,7 +126,7 @@ class RootlineElement
                 );
             }
 
-            $this->pageId = intval($elementAccess[0]);
+            $this->pageId = (int)($elementAccess[0]);
             $elementGroups = $elementAccess[1];
         }
 

@@ -49,12 +49,12 @@ class SearchResultSet
     /**
      * @var Query
      */
-    protected $usedQuery = null;
+    protected $usedQuery;
 
     /**
      * @var SearchRequest
      */
-    protected $usedSearchRequest = null;
+    protected $usedSearchRequest;
 
     /**
      * @var Search
@@ -64,7 +64,7 @@ class SearchResultSet
     /**
      * @var ResponseAdapter
      */
-    protected $response = null;
+    protected $response;
 
     /**
      * @var int
@@ -84,7 +84,7 @@ class SearchResultSet
     /**
      * @var SearchResultCollection
      */
-    protected $searchResults = null;
+    protected $searchResults;
 
     /**
      * @var int
@@ -104,12 +104,12 @@ class SearchResultSet
     /**
      * @var FacetCollection
      */
-    protected $facets = null;
+    protected $facets;
 
     /**
      * @var SortingCollection
      */
-    protected $sortings = null;
+    protected $sortings;
 
     /**
      * @var bool
@@ -380,7 +380,7 @@ class SearchResultSet
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function getIsAutoCorrected()
     {
@@ -388,7 +388,7 @@ class SearchResultSet
     }
 
     /**
-     * @param boolean $wasAutoCorrected
+     * @param bool $wasAutoCorrected
      */
     public function setIsAutoCorrected($wasAutoCorrected)
     {
@@ -428,7 +428,7 @@ class SearchResultSet
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function getHasSearched(): bool
     {
@@ -436,7 +436,7 @@ class SearchResultSet
     }
 
     /**
-     * @param boolean $hasSearched
+     * @param bool $hasSearched
      */
     public function setHasSearched(bool $hasSearched)
     {

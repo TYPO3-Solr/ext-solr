@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Hierarchy;
 
 /***************************************************************
@@ -59,6 +60,6 @@ class HierarchyUrlDecoder implements FacetUrlDecoderInterface
 
         $filterContent = HierarchyTool::unSubstituteSlashes($filterContent);
 
-        return '"' . str_replace("\\", "\\\\", $filterContent) . '"';
+        return '"' . str_replace('\\', '\\\\', $filterContent) . '"';
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Report;
 
 /***************************************************************
@@ -50,19 +51,17 @@ class SolrConfigurationStatus extends AbstractSolrStatus
     /**
      * @var FrontendEnvironment
      */
-    protected $frontendEnvironment = null;
+    protected $frontendEnvironment;
 
     /**
      * SolrConfigurationStatus constructor.
      * @param ExtensionConfiguration|null $extensionConfiguration
      * @param FrontendEnvironment|null $frontendEnvironment
-
      */
     public function __construct(
         ExtensionConfiguration $extensionConfiguration = null,
         FrontendEnvironment $frontendEnvironment = null
-    )
-    {
+    ) {
         $this->extensionConfiguration = $extensionConfiguration ?? GeneralUtility::makeInstance(ExtensionConfiguration::class);
         $this->frontendEnvironment = $frontendEnvironment ?? GeneralUtility::makeInstance(FrontendEnvironment::class);
     }
@@ -97,7 +96,7 @@ class SolrConfigurationStatus extends AbstractSolrStatus
      * Checks whether the "Use as Root Page" page property has been set for any
      * site.
      *
-     * @return NULL|Status An error status is returned if no root pages were found.
+     * @return Status|null An error status is returned if no root pages were found.
      */
     protected function getRootPageFlagStatus(): ?Status
     {
@@ -109,10 +108,14 @@ class SolrConfigurationStatus extends AbstractSolrStatus
         $report = $this->getRenderedReport('RootPageFlagStatus.html');
         return GeneralUtility::makeInstance(
             Status::class,
-            /** @scrutinizer ignore-type */ 'Sites',
-            /** @scrutinizer ignore-type */ 'No sites found',
-            /** @scrutinizer ignore-type */ $report,
-            /** @scrutinizer ignore-type */ Status::ERROR
+            /** @scrutinizer ignore-type */
+            'Sites',
+            /** @scrutinizer ignore-type */
+            'No sites found',
+            /** @scrutinizer ignore-type */
+            $report,
+            /** @scrutinizer ignore-type */
+            Status::ERROR
         );
     }
 
@@ -120,7 +123,7 @@ class SolrConfigurationStatus extends AbstractSolrStatus
      * Checks whether config.index_enable is set to 1, otherwise indexing will
      * not work.
      *
-     * @return NULL|Status An error status is returned for each site root page config.index_enable = 0.
+     * @return Status|null An error status is returned for each site root page config.index_enable = 0.
      * @throws ImmediateResponseException
      */
     protected function getConfigIndexEnableStatus(): ?Status
@@ -133,10 +136,14 @@ class SolrConfigurationStatus extends AbstractSolrStatus
         $report = $this->getRenderedReport('SolrConfigurationStatusIndexing.html', ['pages' => $rootPagesWithIndexingOff]);
         return GeneralUtility::makeInstance(
             Status::class,
-            /** @scrutinizer ignore-type */ 'Page Indexing',
-            /** @scrutinizer ignore-type */ 'Indexing is disabled',
-            /** @scrutinizer ignore-type */ $report,
-            /** @scrutinizer ignore-type */ Status::WARNING
+            /** @scrutinizer ignore-type */
+            'Page Indexing',
+            /** @scrutinizer ignore-type */
+            'Indexing is disabled',
+            /** @scrutinizer ignore-type */
+            $report,
+            /** @scrutinizer ignore-type */
+            Status::WARNING
         );
     }
 

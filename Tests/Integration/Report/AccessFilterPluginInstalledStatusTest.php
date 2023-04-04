@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\Report;
 
 /***************************************************************
@@ -35,9 +36,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class AccessFilterPluginInstalledStatusTest extends IntegrationTest
 {
-    /**
-     * @return void
-     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -52,6 +50,6 @@ class AccessFilterPluginInstalledStatusTest extends IntegrationTest
         /** @var $accessFilterStatus  AccessFilterPluginInstalledStatus */
         $accessFilterStatus = GeneralUtility::makeInstance(AccessFilterPluginInstalledStatus::class);
         $violations = $accessFilterStatus->getStatus();
-        $this->assertEmpty($violations, 'We expect to get no violations against the test solr server ');
+        self::assertEmpty($violations, 'We expect to get no violations against the test solr server ');
     }
 }

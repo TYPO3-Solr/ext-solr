@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\Domain\Site;
 
 /***************************************************************
@@ -24,11 +25,9 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Domain\Site;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Domain\Site\Exception\InvalidSiteConfigurationCombinationException;
-use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
+use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
-use TYPO3\CMS\Core\Core\Bootstrap;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -43,9 +42,6 @@ class SiteRepositoryTest extends IntegrationTest
      */
     protected $siteRepository;
 
-    /**
-     * @return void
-     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -60,7 +56,7 @@ class SiteRepositoryTest extends IntegrationTest
     {
         $this->importDataSetFromFixture('can_get_all_sites.xml');
         $sites = $this->siteRepository->getAvailableSites();
-        $this->assertSame(1, count($sites), 'Expected to retrieve one site from fixture');
+        self::assertSame(1, count($sites), 'Expected to retrieve one site from fixture');
     }
 
     /**
@@ -70,7 +66,7 @@ class SiteRepositoryTest extends IntegrationTest
     {
         $this->importDataSetFromFixture('get_available_sites_do_not_return_sites_not_enabled.xml');
         $sites = $this->siteRepository->getAvailableSites();
-        $this->assertSame(2, count($sites), 'Expected to retrieve two sites');
+        self::assertSame(2, count($sites), 'Expected to retrieve two sites');
     }
 
     /**
@@ -80,7 +76,7 @@ class SiteRepositoryTest extends IntegrationTest
     {
         $this->importDataSetFromFixture('can_get_all_pages_from_sites.xml');
         $site = $this->siteRepository->getFirstAvailableSite();
-        $this->assertSame([1,2,21,22,3,30], $site->getPages(), 'Can not get all pages from site');
+        self::assertSame([1, 2, 21, 22, 3, 30], $site->getPages(), 'Can not get all pages from site');
     }
 
     /**
@@ -90,7 +86,7 @@ class SiteRepositoryTest extends IntegrationTest
     {
         $this->importDataSetFromFixture('can_get_site_by_root_page_id.xml');
         $site = $this->siteRepository->getSiteByRootPageId(1);
-        $this->assertContainsOnlyInstancesOf(Site::class, [$site], 'Could not retrieve site from root page');
+        self::assertContainsOnlyInstancesOf(Site::class, [$site], 'Could not retrieve site from root page');
     }
 
     /**
@@ -111,7 +107,7 @@ class SiteRepositoryTest extends IntegrationTest
     {
         $this->importDataSetFromFixture('can_get_site_by_page_id.xml');
         $site = $this->siteRepository->getSiteByPageId(2);
-        $this->assertContainsOnlyInstancesOf(Site::class, [$site], 'Could not retrieve site from page');
+        self::assertContainsOnlyInstancesOf(Site::class, [$site], 'Could not retrieve site from page');
     }
 
     /**
@@ -132,6 +128,6 @@ class SiteRepositoryTest extends IntegrationTest
         $this->importDataSetFromFixture('can_get_site_by_page_id.xml');
         $site = $this->siteRepository->getSiteByPageId(1);
         $domain = $site->getDomain();
-        $this->assertSame('testone.site', $domain, 'Can not configured domain with sys_domain record');
+        self::assertSame('testone.site', $domain, 'Can not configured domain with sys_domain record');
     }
 }

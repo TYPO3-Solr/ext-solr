@@ -48,7 +48,7 @@ class IndexQueueWorkerTaskTest extends IntegrationTest
      */
     protected $coreExtensionsToLoad = [
         'extensionmanager',
-        'scheduler'
+        'scheduler',
     ];
 
     protected function setUp(): void
@@ -73,7 +73,7 @@ class IndexQueueWorkerTaskTest extends IntegrationTest
 
         $additionalInformation = $indexQueueQueueWorkerTask->getAdditionalInformation();
 
-        $this->assertStringContainsString('Root Page ID: 1', $additionalInformation);
-        $this->assertStringContainsString('Site: page for testing', $additionalInformation);
+        self::assertStringContainsString('Root Page ID: 1', $additionalInformation);
+        self::assertStringContainsString('Site: page for testing', $additionalInformation);
     }
 }

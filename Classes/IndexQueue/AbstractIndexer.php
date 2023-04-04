@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\IndexQueue;
 
 /***************************************************************
@@ -73,7 +74,8 @@ abstract class AbstractIndexer
      * @param array $data Record data
      * @return Document Modified document with added fields
      */
-    protected function addDocumentFieldsFromTyposcript(Document $document, array $indexingConfiguration, array $data) {
+    protected function addDocumentFieldsFromTyposcript(Document $document, array $indexingConfiguration, array $data)
+    {
         $data = static::addVirtualContentFieldToRecord($document, $data);
 
         // mapping of record fields => solr document fields, resolving cObj
@@ -104,7 +106,6 @@ abstract class AbstractIndexer
 
         return $document;
     }
-
 
     /**
      * Add's the content of the field 'content' from the solr document as virtual field __solr_content in the record,
@@ -158,20 +159,29 @@ abstract class AbstractIndexer
 
             chdir($backupWorkingDirectory);
 
-            if ($this->isSerializedValue($indexingConfiguration,
-                $solrFieldName)
+            if ($this->isSerializedValue(
+                $indexingConfiguration,
+                $solrFieldName
+            )
             ) {
                 $fieldValue = unserialize($fieldValue);
             }
-        } elseif (substr($indexingConfiguration[$solrFieldName], 0,
-                1) === '<'
+        } elseif (substr(
+            $indexingConfiguration[$solrFieldName],
+            0,
+            1
+        ) === '<'
         ) {
-            $referencedTsPath = trim(substr($indexingConfiguration[$solrFieldName],
-                1));
+            $referencedTsPath = trim(substr(
+                $indexingConfiguration[$solrFieldName],
+                1
+            ));
             $typoScriptParser = GeneralUtility::makeInstance(TypoScriptParser::class);
             // $name and $conf is loaded with the referenced values.
-            list($name, $conf) = $typoScriptParser->getVal($referencedTsPath,
-                $GLOBALS['TSFE']->tmpl->setup);
+            list($name, $conf) = $typoScriptParser->getVal(
+                $referencedTsPath,
+                $GLOBALS['TSFE']->tmpl->setup
+            );
 
             // need to change directory to make IMAGE content objects work in BE context
             // see http://blog.netzelf.de/lang/de/tipps-und-tricks/tslib_cobj-image-im-backend
@@ -183,8 +193,10 @@ abstract class AbstractIndexer
 
             chdir($backupWorkingDirectory);
 
-            if ($this->isSerializedValue($indexingConfiguration,
-                $solrFieldName)
+            if ($this->isSerializedValue(
+                $indexingConfiguration,
+                $solrFieldName
+            )
             ) {
                 $fieldValue = unserialize($fieldValue);
             }
@@ -195,12 +207,17 @@ abstract class AbstractIndexer
         // detect and correct type for dynamic fields
 
         // find last underscore, substr from there, cut off last character (S/M)
-        $fieldType = substr($solrFieldName, strrpos($solrFieldName, '_') + 1,
-            -1);
+        $fieldType = substr(
+            $solrFieldName,
+            strrpos($solrFieldName, '_') + 1,
+            -1
+        );
         if (is_array($fieldValue)) {
             foreach ($fieldValue as $key => $value) {
-                $fieldValue[$key] = $this->ensureFieldValueType($value,
-                    $fieldType);
+                $fieldValue[$key] = $this->ensureFieldValueType(
+                    $value,
+                    $fieldType
+                );
             }
         } else {
             $fieldValue = $this->ensureFieldValueType($fieldValue, $fieldType);
@@ -299,17 +316,17 @@ abstract class AbstractIndexer
         switch ($fieldType) {
             case 'int':
             case 'tInt':
-                $value = intval($value);
+                $value = (int)$value;
                 break;
 
             case 'float':
             case 'tFloat':
-                $value = floatval($value);
+                $value = (float)$value;
                 break;
 
-            // long and double do not exist in PHP
-            // simply make sure it somehow looks like a number
-            // <insert PHP rant here>
+                // long and double do not exist in PHP
+                // simply make sure it somehow looks like a number
+                // <insert PHP rant here>
             case 'long':
             case 'tLong':
                 // remove anything that's not a number or negative/minus sign
@@ -328,8 +345,8 @@ abstract class AbstractIndexer
                 break;
 
             default:
-                // assume things are correct for non-dynamic fields
-        }
+            // assume things are correct for non-dynamic fields
+            }
 
         return $value;
     }

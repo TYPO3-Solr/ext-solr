@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Spellchecking;
 
 /*
@@ -48,13 +49,13 @@ class Suggestion
      */
     protected $endOffset = 0;
 
-     /**
-     * @param string $suggestion the suggested term
-     * @param string $missSpelled the misspelled original term
-     * @param int $numFound
-     * @param int $startOffset
-     * @param int $endOffset
-     */
+    /**
+    * @param string $suggestion the suggested term
+    * @param string $missSpelled the misspelled original term
+    * @param int $numFound
+    * @param int $startOffset
+    * @param int $endOffset
+    */
     public function __construct($suggestion = '', $missSpelled = '', $numFound = 1, $startOffset = 0, $endOffset = 0)
     {
         $this->suggestion = $suggestion;

@@ -25,16 +25,16 @@
 
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Index\Queue\UpdateHandler;
 
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\GarbageHandler;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\GarbageRemover\PageStrategy;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\GarbageRemover\RecordStrategy;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\GarbageHandler;
 use Doctrine\DBAL\Statement;
+use TYPO3\CMS\Core\Database\Connection;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\Expression\ExpressionBuilder;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Database\Query\Restriction\QueryRestrictionContainerInterface;
-use TYPO3\CMS\Core\Database\Connection;
-use TYPO3\CMS\Core\Database\Query\Expression\ExpressionBuilder;
-use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Testcase for the GarbageHandler class.
@@ -90,7 +90,7 @@ class GarbageHandlerTest extends AbstractUpdateHandlerTest
         GeneralUtility::addInstance($strategy, $strategyMock);
 
         $strategyMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('removeGarbageOf')
             ->with(
                 $table,
@@ -105,7 +105,7 @@ class GarbageHandlerTest extends AbstractUpdateHandlerTest
     {
         $this->initGarbageCollectionExpectations(PageStrategy::class, 'pages', 123);
         $this->indexQueueMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('updateItem')
             ->with('pages', 123);
 
@@ -120,34 +120,34 @@ class GarbageHandlerTest extends AbstractUpdateHandlerTest
         $dummyRecord = [
             'uid' => 789,
             'title' => 'dummy record to collect garbage for',
-            'hidden' => 1
+            'hidden' => 1,
         ];
 
         $this->initGarbageCollectionExpectations(RecordStrategy::class, 'tx_foo_bar', $dummyRecord['uid']);
 
         $GLOBALS['TCA']['tx_foo_bar'] = ['columns' => []];
         $this->tcaServiceMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('getVisibilityAffectingFieldsByTable')
             ->with('tx_foo_bar')
             ->willReturn('hidden,fe_group');
 
         $statementMock = $this->createMock(Statement::class);
-        $statementMock->expects($this->once())->method('fetch')->willReturn($dummyRecord);
+        $statementMock->expects(self::once())->method('fetch')->willReturn($dummyRecord);
 
         $queryBuilderMock = $this->createMock(QueryBuilder::class);
-        $queryBuilderMock->expects($this->once())->method('getRestrictions')->willReturn($this->createMock(QueryRestrictionContainerInterface::class));
-        $queryBuilderMock->expects($this->once())->method('execute')->willReturn($statementMock);
+        $queryBuilderMock->expects(self::once())->method('getRestrictions')->willReturn($this->createMock(QueryRestrictionContainerInterface::class));
+        $queryBuilderMock->expects(self::once())->method('execute')->willReturn($statementMock);
 
         $connectionMock = $this->createMock(Connection::class);
-        $connectionMock->expects($this->any())->method('getExpressionBuilder')->willReturn($this->createMock(ExpressionBuilder::class));
+        $connectionMock->expects(self::any())->method('getExpressionBuilder')->willReturn($this->createMock(ExpressionBuilder::class));
 
         $connectionPoolMock = $this->createMock(ConnectionPool::class);
-        $connectionPoolMock->expects($this->once())->method('getQueryBuilderForTable')->willReturn($queryBuilderMock);
+        $connectionPoolMock->expects(self::once())->method('getQueryBuilderForTable')->willReturn($queryBuilderMock);
         GeneralUtility::addInstance(ConnectionPool::class, $connectionPoolMock);
 
         $this->tcaServiceMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('normalizeFrontendGroupField')
             ->with('tx_foo_bar', $dummyRecord)
             ->willReturn($dummyRecord);
@@ -164,7 +164,7 @@ class GarbageHandlerTest extends AbstractUpdateHandlerTest
             'uid' => 789,
             'title' => 'dummy record to collect garbage for',
             'hidden' => 1,
-            'extendToSubpages' => 1
+            'extendToSubpages' => 1,
         ];
 
         $this->initGarbageCollectionExpectations(PageStrategy::class, 'pages', 100);
@@ -173,36 +173,36 @@ class GarbageHandlerTest extends AbstractUpdateHandlerTest
 
         $GLOBALS['TCA']['pages'] = ['columns' => []];
         $this->tcaServiceMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('getVisibilityAffectingFieldsByTable')
             ->with('pages')
             ->willReturn('hidden,fe_group');
 
         $statementMock = $this->createMock(Statement::class);
-        $statementMock->expects($this->exactly(2))->method('fetch')->willReturn($dummyPageRecord);
+        $statementMock->expects(self::exactly(2))->method('fetch')->willReturn($dummyPageRecord);
 
         $queryBuilderMock = $this->createMock(QueryBuilder::class);
-        $queryBuilderMock->expects($this->exactly(2))->method('getRestrictions')->willReturn($this->createMock(QueryRestrictionContainerInterface::class));
-        $queryBuilderMock->expects($this->exactly(2))->method('execute')->willReturn($statementMock);
+        $queryBuilderMock->expects(self::exactly(2))->method('getRestrictions')->willReturn($this->createMock(QueryRestrictionContainerInterface::class));
+        $queryBuilderMock->expects(self::exactly(2))->method('execute')->willReturn($statementMock);
 
         $connectionMock = $this->createMock(Connection::class);
-        $connectionMock->expects($this->any())->method('getExpressionBuilder')->willReturn($this->createMock(ExpressionBuilder::class));
+        $connectionMock->expects(self::any())->method('getExpressionBuilder')->willReturn($this->createMock(ExpressionBuilder::class));
 
         $connectionPoolMock = $this->createMock(ConnectionPool::class);
-        $connectionPoolMock->expects($this->exactly(2))->method('getQueryBuilderForTable')->willReturn($queryBuilderMock);
-        $connectionPoolMock->expects($this->once())->method('getConnectionForTable')->willReturn($connectionMock);
+        $connectionPoolMock->expects(self::exactly(2))->method('getQueryBuilderForTable')->willReturn($queryBuilderMock);
+        $connectionPoolMock->expects(self::once())->method('getConnectionForTable')->willReturn($connectionMock);
         GeneralUtility::addInstance(ConnectionPool::class, $connectionPoolMock);
         GeneralUtility::addInstance(ConnectionPool::class, $connectionPoolMock);
         GeneralUtility::addInstance(ConnectionPool::class, $connectionPoolMock);
 
         $this->tcaServiceMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('normalizeFrontendGroupField')
             ->with('pages', $dummyPageRecord)
             ->willReturn($dummyPageRecord);
 
         $this->queryGeneratorMock
-            ->expects($this->any())
+            ->expects(self::any())
             ->method('getTreeList')
             ->willReturn($dummyPageRecord['uid'] . ',100,200');
 
@@ -217,28 +217,28 @@ class GarbageHandlerTest extends AbstractUpdateHandlerTest
         $GLOBALS['TCA']['tx_foo_bar'] = ['columns' => []];
 
         $this->tcaServiceMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('getVisibilityAffectingFieldsByTable')
             ->with('tx_foo_bar')
             ->willReturn('hidden,fe_group');
 
         $dummyRecord = ['uid' => 123];
         $statementMock = $this->createMock(Statement::class);
-        $statementMock->expects($this->once())->method('fetch')->willReturn($dummyRecord);
+        $statementMock->expects(self::once())->method('fetch')->willReturn($dummyRecord);
 
         $queryBuilderMock = $this->createMock(QueryBuilder::class);
-        $queryBuilderMock->expects($this->once())->method('getRestrictions')->willReturn($this->createMock(QueryRestrictionContainerInterface::class));
-        $queryBuilderMock->expects($this->once())->method('execute')->willReturn($statementMock);
+        $queryBuilderMock->expects(self::once())->method('getRestrictions')->willReturn($this->createMock(QueryRestrictionContainerInterface::class));
+        $queryBuilderMock->expects(self::once())->method('execute')->willReturn($statementMock);
         $queryBuilderMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('select')
             ->with('hidden', 'fe_group');
 
         $connectionPoolMock = $this->createMock(ConnectionPool::class);
-        $connectionPoolMock->expects($this->once())->method('getQueryBuilderForTable')->willReturn($queryBuilderMock);
+        $connectionPoolMock->expects(self::once())->method('getQueryBuilderForTable')->willReturn($queryBuilderMock);
         GeneralUtility::addInstance(ConnectionPool::class, $connectionPoolMock);
 
         $record = $this->garbageHandler->getRecordWithFieldRelevantForGarbageCollection('tx_foo_bar', 123);
-        $this->assertEquals($dummyRecord, $record);
+        self::assertEquals($dummyRecord, $record);
     }
 }

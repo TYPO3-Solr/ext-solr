@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Controller\Backend\Search;
 
 /***************************************************************
@@ -82,7 +83,6 @@ class IndexQueueModuleController extends AbstractModuleController
      * Set up the doc header properly here
      *
      * @param ViewInterface $view
-     * @return void
      */
     protected function initializeView(ViewInterface $view)
     {
@@ -91,8 +91,6 @@ class IndexQueueModuleController extends AbstractModuleController
 
     /**
      * Lists the available indexing configurations
-     *
-     * @return void
      */
     public function indexAction()
     {
@@ -141,8 +139,6 @@ class IndexQueueModuleController extends AbstractModuleController
 
     /**
      * Initializes the Index Queue for selected indexing configurations
-     *
-     * @return void
      */
     public function initializeIndexQueueAction()
     {
@@ -182,8 +178,6 @@ class IndexQueueModuleController extends AbstractModuleController
 
     /**
      * Removes all errors in the index queue list. So that the items can be indexed again.
-     *
-     * @return void
      */
     public function resetLogErrorsAction()
     {
@@ -206,8 +200,6 @@ class IndexQueueModuleController extends AbstractModuleController
      *
      * @param string $type
      * @param int $uid
-     *
-     * @return void
      */
     public function requeueDocumentAction(string $type, int $uid)
     {
@@ -229,7 +221,6 @@ class IndexQueueModuleController extends AbstractModuleController
      * Shows the error message for one queue item.
      *
      * @param int $indexQueueItemId
-     * @return void
      */
     public function showErrorAction(int $indexQueueItemId)
     {
@@ -248,7 +239,6 @@ class IndexQueueModuleController extends AbstractModuleController
 
     /**
      * Indexes a few documents with the index service.
-     * @return void
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
      */

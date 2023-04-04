@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets\RenderingInstructions;
 
 /***************************************************************
@@ -27,7 +28,6 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets\Rend
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RenderingInstructions\FormatDate;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 
-
 /**
  * @author Timo Hund <timo.hund@dkd.de>
  */
@@ -41,7 +41,7 @@ class FormatDateTest extends UnitTest
     {
         $processingInstruction = new FormatDate();
         $result = $processingInstruction->format('2015-11-17T17:16:10Z', []);
-        $this->assertSame('17-11-15', $result, 'Could not format date with default format');
+        self::assertSame('17-11-15', $result, 'Could not format date with default format');
     }
 
     /**
@@ -51,7 +51,7 @@ class FormatDateTest extends UnitTest
     {
         $processingInstruction = new FormatDate();
         $result = $processingInstruction->format('2015-11-17T17:16:10Z', ['outputFormat' => 'd.m.Y']);
-        $this->assertSame('17.11.2015', $result, 'Could not format date with default format');
+        self::assertSame('17.11.2015', $result, 'Could not format date with default format');
     }
 
     /**
@@ -61,7 +61,7 @@ class FormatDateTest extends UnitTest
     {
         $processingInstruction = new FormatDate();
         $fiveDays = (60 * 60 * 24 * 5) - 1;
-        $result = $processingInstruction->format((string) $fiveDays, ['inputFormat' => 'U', 'outputFormat' => 'd.m.Y']);
-        $this->assertSame('05.01.1970', $result, 'Could not format date from timestamp');
+        $result = $processingInstruction->format((string)$fiveDays, ['inputFormat' => 'U', 'outputFormat' => 'd.m.Y']);
+        self::assertSame('05.01.1970', $result, 'Could not format date from timestamp');
     }
 }

@@ -1,4 +1,6 @@
-<?php declare(strict_types = 1);
+<?php
+
+declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\System\Session;
 
@@ -55,19 +57,19 @@ class FrontendUserSession
      */
     public function setPerPage(int $requestedPerPage)
     {
-        $this->feUser->setKey('ses', 'tx_solr_resultsPerPage', intval($requestedPerPage));
+        $this->feUser->setKey('ses', 'tx_solr_resultsPerPage', (int)$requestedPerPage);
     }
 
     /**
      * @return int
      */
-    public function getPerPage() : int
+    public function getPerPage(): int
     {
         return (int)$this->feUser->getKey('ses', 'tx_solr_resultsPerPage');
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function getHasPerPage()
     {
@@ -77,7 +79,7 @@ class FrontendUserSession
     /**
      * @return array
      */
-    public function getLastSearches() : array
+    public function getLastSearches(): array
     {
         $result = $this->feUser->getKey('ses', 'tx_solr_lastSearches');
         return is_array($result) ? $result : [];

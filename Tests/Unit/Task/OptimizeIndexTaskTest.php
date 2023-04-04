@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Task;
 
 /*
@@ -29,7 +30,7 @@ class OptimizeIndexTaskTest extends UnitTest
      */
     public function canGetErrorMessageInAdditionalInformationWhenSiteNotAvailable()
     {
-            /** @var $indexQueuerWorker OptimizeIndexTask */
+        /** @var $indexQueuerWorker OptimizeIndexTask */
         $indexQueuerWorker = $this->getMockBuilder(OptimizeIndexTask::class)
             ->disableOriginalConstructor()
             ->setMethods(['getSite'])
@@ -37,6 +38,6 @@ class OptimizeIndexTaskTest extends UnitTest
 
         $message = $indexQueuerWorker->getAdditionalInformation();
         $expectedMessage = 'Invalid site configuration for scheduler please re-create the task!';
-        $this->assertSame($expectedMessage, $message, 'Expect to get error message of non existing site');
+        self::assertSame($expectedMessage, $message, 'Expect to get error message of non existing site');
     }
 }

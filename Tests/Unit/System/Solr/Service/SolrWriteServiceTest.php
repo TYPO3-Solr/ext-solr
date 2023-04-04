@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\Solr\Service;
 
 /***************************************************************
@@ -58,12 +59,13 @@ class SolrWriteServiceTest extends UnitTest
      */
     protected $service;
 
-    protected function setUp(): void {
+    protected function setUp(): void
+    {
         parent::setUp();
         $this->responseMock = $this->getDumbMock(Response::class);
 
         $this->resultMock = $this->getDumbMock(Result::class);
-        $this->resultMock->expects($this->any())->method('getResponse')->willReturn($this->responseMock);
+        $this->resultMock->expects(self::any())->method('getResponse')->willReturn($this->responseMock);
         $this->clientMock = $this->getDumbMock(Client::class);
 
         $this->service = new SolrWriteService($this->clientMock);
@@ -74,11 +76,11 @@ class SolrWriteServiceTest extends UnitTest
      */
     public function canRunOptimizeIndex()
     {
-        $this->responseMock->expects($this->once())->method('getStatusCode')->willReturn(200);
-        $this->clientMock->expects($this->once())->method('createUpdate')->willReturn($this->getDumbMock(Query::class));
-        $this->clientMock->expects($this->once())->method('update')->willReturn($this->resultMock);
+        $this->responseMock->expects(self::once())->method('getStatusCode')->willReturn(200);
+        $this->clientMock->expects(self::once())->method('createUpdate')->willReturn($this->getDumbMock(Query::class));
+        $this->clientMock->expects(self::once())->method('update')->willReturn($this->resultMock);
 
         $result = $this->service->optimizeIndex();
-        $this->assertSame(200, $result->getResponse()->getStatusCode(), 'Expecting to get a 200 OK response');
+        self::assertSame(200, $result->getResponse()->getStatusCode(), 'Expecting to get a 200 OK response');
     }
 }

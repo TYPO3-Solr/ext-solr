@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Domain\Search\Query;
 
 /***************************************************************
@@ -35,7 +36,6 @@ use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\PhraseFields;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\QueryFields;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\ReturnFields;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Slops;
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Sorting;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Sortings;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Spellchecking;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\TrigramPhraseFields;
@@ -51,7 +51,8 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 /**
  * The concrete QueryBuilder contains all TYPO3 specific initialization logic of solr queries, for TYPO3.
  */
-class QueryBuilder extends AbstractQueryBuilder {
+class QueryBuilder extends AbstractQueryBuilder
+{
 
     /**
      * Additional filters, which will be added to the query, as well as to
@@ -64,17 +65,17 @@ class QueryBuilder extends AbstractQueryBuilder {
     /**
      * @var TypoScriptConfiguration
      */
-    protected $typoScriptConfiguration = null;
+    protected $typoScriptConfiguration;
 
     /**
      * @var SolrLogManager;
      */
-    protected $logger = null;
+    protected $logger;
 
     /**
      * @var SiteHashService
      */
-    protected $siteHashService = null;
+    protected $siteHashService;
 
     /**
      * QueryBuilder constructor.
@@ -118,7 +119,7 @@ class QueryBuilder extends AbstractQueryBuilder {
      * @param array $additionalFiltersFromRequest
      * @return SearchQuery
      */
-    public function buildSearchQuery($rawQuery, $resultsPerPage = 10, array $additionalFiltersFromRequest = []) : SearchQuery
+    public function buildSearchQuery($rawQuery, $resultsPerPage = 10, array $additionalFiltersFromRequest = []): SearchQuery
     {
         if ($this->typoScriptConfiguration->getLoggingQuerySearchWords()) {
             $this->logger->log(SolrLogManager::INFO, 'Received search query', [$rawQuery]);
@@ -148,18 +149,17 @@ class QueryBuilder extends AbstractQueryBuilder {
      *
      * @param string $queryString
      * @param array $additionalFilters
-     * @param integer $requestedPageId
+     * @param int $requestedPageId
      * @param string $groupList
      * @return SuggestQuery
      */
-    public function buildSuggestQuery(string $queryString, array $additionalFilters, int $requestedPageId, string $groupList) : SuggestQuery
+    public function buildSuggestQuery(string $queryString, array $additionalFilters, int $requestedPageId, string $groupList): SuggestQuery
     {
         $this->newSuggestQuery($queryString)
             ->useFiltersFromTypoScript()
             ->useSiteHashFromTypoScript($requestedPageId)
             ->useUserAccessGroups(explode(',', $groupList))
             ->useOmitHeader();
-
 
         if (!empty($additionalFilters)) {
             $this->useFilterArray($additionalFilters);
@@ -301,8 +301,6 @@ class QueryBuilder extends AbstractQueryBuilder {
         $returnFieldsArray = (array)$this->typoScriptConfiguration->getSearchQueryReturnFieldsAsArray(['*', 'score']);
         return $this->useReturnFields(ReturnFields::fromArray($returnFieldsArray));
     }
-
-
 
     /**
      * Can be used to apply the allowed sites from plugin.tx_solr.search.query.allowedSites to the query.
@@ -526,7 +524,7 @@ class QueryBuilder extends AbstractQueryBuilder {
      *
      * @return array
      */
-    public function getAdditionalFilters() : array
+    public function getAdditionalFilters(): array
     {
         // when we've build the additionalFilter once, we could return them
         if (count($this->additionalFilters) > 0) {

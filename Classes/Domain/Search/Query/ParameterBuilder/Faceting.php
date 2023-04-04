@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
 
 /***************************************************************
@@ -226,7 +227,8 @@ class Faceting extends AbstractDeactivatable implements ParameterBuilder
      *
      * @return array
      */
-    protected function getFacetParameters() {
+    protected function getFacetParameters()
+    {
         $facetParameters = [];
         $facetParameters['facet'] = 'true';
         $facetParameters['facet.mincount'] = $this->getMinCount();
@@ -262,7 +264,7 @@ class Faceting extends AbstractDeactivatable implements ParameterBuilder
             $query->addParam('facet.sort', null);
 
             $params = $query->getParams();
-            foreach($params as $key => $value) {
+            foreach ($params as $key => $value) {
                 if (strpos($key, 'f.') !== false) {
                     $query->addParam($key, null);
                 }
@@ -273,7 +275,7 @@ class Faceting extends AbstractDeactivatable implements ParameterBuilder
 
         //@todo check of $this->queryToBuilder->getFacetSet() can be used
         $facetingParameters = $this->getFacetParameters();
-        foreach($facetingParameters as $key => $value) {
+        foreach ($facetingParameters as $key => $value) {
             $query->addParam($key, $value);
         }
 

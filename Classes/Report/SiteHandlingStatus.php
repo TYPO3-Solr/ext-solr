@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Report;
 
 /***************************************************************
@@ -48,22 +49,22 @@ class SiteHandlingStatus extends AbstractSolrStatus
 
     const
         CSS_STATUS_NOTICE = 'notice',
-        CSS_STATUS_INFO = 'info',
-        CSS_STATUS_OK = 'success',
-        CSS_STATUS_WARNING = 'warning',
-        CSS_STATUS_ERROR = 'danger';
+    CSS_STATUS_INFO = 'info',
+    CSS_STATUS_OK = 'success',
+    CSS_STATUS_WARNING = 'warning',
+    CSS_STATUS_ERROR = 'danger';
 
     /**
      * Site Repository
      *
      * @var SiteRepository
      */
-    protected $siteRepository = null;
+    protected $siteRepository;
 
     /**
      * @var ExtensionConfiguration
      */
-    protected $extensionConfiguration = null;
+    protected $extensionConfiguration;
 
     /**
      * SolrStatus constructor.
@@ -89,10 +90,14 @@ class SiteHandlingStatus extends AbstractSolrStatus
             if (!($site instanceof Typo3ManagedSite)) {
                 $reports[] = GeneralUtility::makeInstance(
                     Status::class,
-                    /** @scrutinizer ignore-type */ self::TITLE_SITE_HANDLING_CONFIGURATION,
-                    /** @scrutinizer ignore-type */ 'Something went wrong',
-                    /** @scrutinizer ignore-type */ vsprintf('The configured Site "%s" is not TYPO3 managed site. Please refer to TYPO3 site management docs and configure the site properly.', [$site->getLabel()]),
-                    /** @scrutinizer ignore-type */ Status::ERROR
+                    /** @scrutinizer ignore-type */
+                    self::TITLE_SITE_HANDLING_CONFIGURATION,
+                    /** @scrutinizer ignore-type */
+                    'Something went wrong',
+                    /** @scrutinizer ignore-type */
+                    vsprintf('The configured Site "%s" is not TYPO3 managed site. Please refer to TYPO3 site management docs and configure the site properly.', [$site->getLabel()]),
+                    /** @scrutinizer ignore-type */
+                    Status::ERROR
                 );
                 continue;
             }
@@ -111,7 +116,7 @@ class SiteHandlingStatus extends AbstractSolrStatus
     protected function generateValidationReportForSingleSite(Typo3Site $ypo3Site): Status
     {
         $variables = [
-            'identifier' => $ypo3Site->getIdentifier()
+            'identifier' => $ypo3Site->getIdentifier(),
         ];
         $globalPassedStateForThisSite = true;
 
@@ -121,9 +126,9 @@ class SiteHandlingStatus extends AbstractSolrStatus
                     'label' => 'Language: ' . $siteLanguage->getTitle(),
                     'message' => 'No checks: The language is disabled in site configuration.',
                     'CSSClassesFor' => [
-                        'tr' => self::CSS_STATUS_NOTICE
+                        'tr' => self::CSS_STATUS_NOTICE,
                     ],
-                    'passed' => true
+                    'passed' => true,
                 ];
                 continue;
             }
@@ -135,10 +140,14 @@ class SiteHandlingStatus extends AbstractSolrStatus
         /* @var Status $status */
         $status = GeneralUtility::makeInstance(
             Status::class,
-            /** @scrutinizer ignore-type */ sprintf('Site Identifier: "%s"', $ypo3Site->getIdentifier()),
-            /** @scrutinizer ignore-type */ '',
-            /** @scrutinizer ignore-type */ $renderedReport,
-            /** @scrutinizer ignore-type */ $globalPassedStateForThisSite == true ? Status::OK : Status::ERROR
+            /** @scrutinizer ignore-type */
+            sprintf('Site Identifier: "%s"', $ypo3Site->getIdentifier()),
+            /** @scrutinizer ignore-type */
+            '',
+            /** @scrutinizer ignore-type */
+            $renderedReport,
+            /** @scrutinizer ignore-type */
+            $globalPassedStateForThisSite == true ? Status::OK : Status::ERROR
         );
         return $status;
     }
@@ -155,8 +164,8 @@ class SiteHandlingStatus extends AbstractSolrStatus
             'label' => 'Language: ' . $siteLanguage->getTitle(),
             'passed' => true,
             'CSSClassesFor' => [
-                'tr' => self::CSS_STATUS_OK
-            ]
+                'tr' => self::CSS_STATUS_OK,
+            ],
         ];
 
         if (!GeneralUtility::isValidUrl((string)$siteLanguage->getBase())) {

@@ -31,12 +31,13 @@ use ApacheSolrForTypo3\Solr\System\Data\AbstractCollection;
 /**
  * The SearchResultCollection contains the SearchResult object and related objects. e.g groups.
  */
-class SearchResultCollection extends AbstractCollection {
+class SearchResultCollection extends AbstractCollection
+{
 
     /**
      * @var GroupCollection
      */
-    protected $groups = null;
+    protected $groups;
 
     /**
      * SearchResultCollection constructor.

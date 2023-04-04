@@ -15,21 +15,39 @@ defined('TYPO3_MODE') || die();
         $extIconPath = 'EXT:solr/Resources/Public/Images/Icons/';
         /* @var \TYPO3\CMS\Core\Imaging\IconRegistry $iconRegistry */
         $iconRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Imaging\IconRegistry::class);
-        $iconRegistry->registerIcon($modulePrefix . '-main', $svgProvider,
-            ['source' => $extIconPath . 'ModuleSolrMain.svg']);
-        $iconRegistry->registerIcon($modulePrefix . '-solr-core-optimization', $svgProvider,
-            ['source' => $extIconPath . 'ModuleCoreOptimization.svg']);
-        $iconRegistry->registerIcon($modulePrefix . '-index-administration', $svgProvider,
-            ['source' => $extIconPath . 'ModuleIndexAdministration.svg']);
+        $iconRegistry->registerIcon(
+            $modulePrefix . '-main',
+            $svgProvider,
+            ['source' => $extIconPath . 'ModuleSolrMain.svg']
+        );
+        $iconRegistry->registerIcon(
+            $modulePrefix . '-solr-core-optimization',
+            $svgProvider,
+            ['source' => $extIconPath . 'ModuleCoreOptimization.svg']
+        );
+        $iconRegistry->registerIcon(
+            $modulePrefix . '-index-administration',
+            $svgProvider,
+            ['source' => $extIconPath . 'ModuleIndexAdministration.svg']
+        );
         // all connections
-        $iconRegistry->registerIcon($modulePrefix . '-initsolrconnections', $svgProvider,
-            ['source' => $extIconPath . 'InitSolrConnections.svg']);
+        $iconRegistry->registerIcon(
+            $modulePrefix . '-initsolrconnections',
+            $svgProvider,
+            ['source' => $extIconPath . 'InitSolrConnections.svg']
+        );
         // single connection - context menu
-        $iconRegistry->registerIcon($modulePrefix . '-initsolrconnection', $svgProvider,
-            ['source' => $extIconPath . 'InitSolrConnection.svg']);
+        $iconRegistry->registerIcon(
+            $modulePrefix . '-initsolrconnection',
+            $svgProvider,
+            ['source' => $extIconPath . 'InitSolrConnection.svg']
+        );
         // register plugin icon
-        $iconRegistry->registerIcon('extensions-solr-plugin-contentelement', $svgProvider,
-            ['source' => $extIconPath . 'ContentElement.svg']);
+        $iconRegistry->registerIcon(
+            'extensions-solr-plugin-contentelement',
+            $svgProvider,
+            ['source' => $extIconPath . 'ContentElement.svg']
+        );
 
         // Add Main module "APACHE SOLR".
         // Acces to a main module is implicit, as soon as a user has access to at least one of its submodules. To make it possible, main module must be registered in that way and without any Actions!
@@ -41,7 +59,7 @@ defined('TYPO3_MODE') || die();
             [
                 'name' => 'searchbackend',
                 'labels' => 'LLL:EXT:solr/Resources/Private/Language/locallang_mod.xlf',
-                'iconIdentifier' => 'extensions-solr-module-main'
+                'iconIdentifier' => 'extensions-solr-module-main',
             ]
         );
 
@@ -59,7 +77,7 @@ defined('TYPO3_MODE') || die();
                 'access' => 'user,group',
                 'icon' => 'EXT:solr/Resources/Public/Images/Icons/ModuleInfo.svg',
                 'labels' => 'LLL:EXT:solr/Resources/Private/Language/locallang_mod_info.xlf',
-                'navigationComponentId' => $treeComponentId
+                'navigationComponentId' => $treeComponentId,
             ]
         );
 
@@ -69,13 +87,13 @@ defined('TYPO3_MODE') || die();
             'CoreOptimization',
             '',
             [
-                'Backend\\Search\\CoreOptimizationModule' => 'index, addSynonyms, importSynonymList, deleteAllSynonyms, exportSynonyms, deleteSynonyms, saveStopWords, importStopWordList, exportStopWords, switchSite, switchCore'
+                'Backend\\Search\\CoreOptimizationModule' => 'index, addSynonyms, importSynonymList, deleteAllSynonyms, exportSynonyms, deleteSynonyms, saveStopWords, importStopWordList, exportStopWords, switchSite, switchCore',
             ],
             [
                 'access' => 'user,group',
                 'icon' => 'EXT:solr/Resources/Public/Images/Icons/ModuleCoreOptimization.svg',
                 'labels' => 'LLL:EXT:solr/Resources/Private/Language/locallang_mod_coreoptimize.xlf',
-                'navigationComponentId' => $treeComponentId
+                'navigationComponentId' => $treeComponentId,
             ]
         );
 
@@ -85,13 +103,13 @@ defined('TYPO3_MODE') || die();
             'IndexQueue',
             '',
             [
-                'Backend\\Search\\IndexQueueModule' => 'index, initializeIndexQueue, requeueDocument, resetLogErrors, showError, doIndexingRun, switchSite'
+                'Backend\\Search\\IndexQueueModule' => 'index, initializeIndexQueue, requeueDocument, resetLogErrors, showError, doIndexingRun, switchSite',
             ],
             [
                 'access' => 'user,group',
                 'icon' => 'EXT:solr/Resources/Public/Images/Icons/ModuleIndexQueue.svg',
                 'labels' => 'LLL:EXT:solr/Resources/Private/Language/locallang_mod_indexqueue.xlf',
-                'navigationComponentId' => $treeComponentId
+                'navigationComponentId' => $treeComponentId,
             ]
         );
 
@@ -101,18 +119,18 @@ defined('TYPO3_MODE') || die();
             'IndexAdministration',
             '',
             [
-                'Backend\\Search\\IndexAdministrationModule' => 'index, emptyIndex, clearIndexQueue, reloadIndexConfiguration, switchSite'
+                'Backend\\Search\\IndexAdministrationModule' => 'index, emptyIndex, clearIndexQueue, reloadIndexConfiguration, switchSite',
             ],
             [
                 'access' => 'user,group',
                 'icon' => 'EXT:solr/Resources/Public/Images/Icons/ModuleIndexAdministration.svg',
                 'labels' => 'LLL:EXT:solr/Resources/Private/Language/locallang_mod_indexadmin.xlf',
-                'navigationComponentId' => $treeComponentId
+                'navigationComponentId' => $treeComponentId,
             ]
         );
 
-    // registering reports
-    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['reports']['tx_reports']['status']['providers']['solr'] = [
+        // registering reports
+        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['reports']['tx_reports']['status']['providers']['solr'] = [
         \ApacheSolrForTypo3\Solr\Report\SiteHandlingStatus::class,
         \ApacheSolrForTypo3\Solr\Report\SchemaStatus::class,
         \ApacheSolrForTypo3\Solr\Report\SolrConfigStatus::class,
@@ -121,15 +139,15 @@ defined('TYPO3_MODE') || die();
         \ApacheSolrForTypo3\Solr\Report\SolrVersionStatus::class,
         \ApacheSolrForTypo3\Solr\Report\AccessFilterPluginInstalledStatus::class,
         \ApacheSolrForTypo3\Solr\Report\AllowUrlFOpenStatus::class,
-        \ApacheSolrForTypo3\Solr\Report\FilterVarStatus::class
+        \ApacheSolrForTypo3\Solr\Report\FilterVarStatus::class,
     ];
 
-    // Register Context Sensitive Help (CSH) translation labels
-    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addLLrefForTCAdescr(
-        'pages',
-        'EXT:solr/Resources/Private/Language/locallang_csh_pages.xlf'
-    );
-}
+        // Register Context Sensitive Help (CSH) translation labels
+        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addLLrefForTCAdescr(
+            'pages',
+            'EXT:solr/Resources/Private/Language/locallang_csh_pages.xlf'
+        );
+    }
 
     if ((TYPO3_MODE === 'BE') || (TYPO3_MODE === 'FE' && isset($_POST['TSFE_EDIT']))) {
         // the order of registering the garbage collector and the record monitor is important!
@@ -145,8 +163,7 @@ defined('TYPO3_MODE') || die();
     }
 })();
 
-
-# ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
+// ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
 $isComposerMode = defined('TYPO3_COMPOSER_MODE') && TYPO3_COMPOSER_MODE;
 if (!$isComposerMode) {

@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\ViewHelpers\Widget\Controller;
 
 /*
@@ -64,9 +65,12 @@ class FrequentlySearchedController extends AbstractWidgetController implements L
         /* @var FrequentSearchesService $frequentSearchesService */
         $frequentSearchesService = GeneralUtility::makeInstance(
             FrequentSearchesService::class,
-            /** @scrutinizer ignore-type */ $configuration,
-            /** @scrutinizer ignore-type */ $cache,
-            /** @scrutinizer ignore-type */ $tsfe
+            /** @scrutinizer ignore-type */
+            $configuration,
+            /** @scrutinizer ignore-type */
+            $cache,
+            /** @scrutinizer ignore-type */
+            $tsfe
         );
 
         $frequentSearches = $frequentSearchesService->getFrequentSearchTerms();
@@ -76,7 +80,7 @@ class FrequentlySearchedController extends AbstractWidgetController implements L
         $this->view->assign(
             'contentArguments',
             [
-                'frequentSearches' => $this->enrichFrequentSearchesInfo($frequentSearches, $minimumSize, $maximumSize)
+                'frequentSearches' => $this->enrichFrequentSearchesInfo($frequentSearches, $minimumSize, $maximumSize),
             ]
         );
     }
@@ -104,7 +108,7 @@ class FrequentlySearchedController extends AbstractWidgetController implements L
                     'q' => htmlspecialchars_decode($term),
                     'hits' => $hits,
                     'style' => 'font-size: ' . $size . 'px', 'class' => 'tx-solr-frequent-term-' . $size,
-                    'size' => $size
+                    'size' => $size,
                 ];
             }
         }

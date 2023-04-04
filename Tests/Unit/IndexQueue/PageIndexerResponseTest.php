@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\IndexQueue;
 
 /***************************************************************
@@ -47,7 +48,7 @@ class PageIndexerResponseTest extends UnitTest
         $request = GeneralUtility::makeInstance(PageIndexerResponse::class);
         $request->addActionResult($action, $result);
 
-        $this->assertEquals($result, $request->getActionResult($action));
+        self::assertEquals($result, $request->getActionResult($action));
     }
 
     /**
@@ -59,9 +60,9 @@ class PageIndexerResponseTest extends UnitTest
         $request->addActionResult('action1', 'result1');
         $request->addActionResult('action2', 'result2');
 
-        $this->assertEquals([
+        self::assertEquals([
             'action1' => 'result1',
-            'action2' => 'result2'
+            'action2' => 'result2',
         ], $request->getActionResult());
     }
 }

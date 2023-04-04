@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\System\Service;
 
 /*
@@ -15,10 +16,10 @@ namespace ApacheSolrForTypo3\Solr\System\Service;
  */
 
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use TYPO3\CMS\Core\Service\FlexFormService;
 use TYPO3\CMS\Core\TypoScript\TypoScriptService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
-use TYPO3\CMS\Core\Service\FlexFormService;
 
 /**
  * Service to ease work with configurations.
@@ -64,8 +65,6 @@ class ConfigurationService
      *
      * @param string $flexFormData The raw data from database.
      * @param TypoScriptConfiguration $solrTypoScriptConfiguration
-     *
-     * @return void
      */
     public function overrideConfigurationWithFlexFormSettings($flexFormData, TypoScriptConfiguration $solrTypoScriptConfiguration)
     {

@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\System\Records\SystemTemplate;
 
 /***************************************************************
@@ -29,7 +30,6 @@ use ApacheSolrForTypo3\Solr\System\Records\AbstractRepository;
 
 /**
  * SystemTemplateRepository to encapsulate the database access for records used in solr.
- *
  */
 class SystemTemplateRepository extends AbstractRepository
 {

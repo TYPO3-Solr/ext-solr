@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Hierarchy;
 
 /*
@@ -36,7 +37,7 @@ class Node extends AbstractOptionFacetItem
     protected $parentNode;
 
     /**
-     * @var integer
+     * @var int
      */
     protected $depth;
 

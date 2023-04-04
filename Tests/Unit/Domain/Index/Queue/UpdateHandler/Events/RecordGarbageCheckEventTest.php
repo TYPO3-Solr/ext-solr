@@ -45,11 +45,11 @@ class RecordGarbageCheckEventTest extends AbstractDataUpdateEventTest
      */
     public function canInitAndReturnBasicProperties(): AbstractDataUpdateEvent
     {
-       /** @var RecordGarbageCheckEvent $event */
+        /** @var RecordGarbageCheckEvent $event */
         $event = parent::canInitAndReturnBasicProperties();
 
         // initial values
-        $this->assertFalse($event->frontendGroupsRemoved());
+        self::assertFalse($event->frontendGroupsRemoved());
 
         return $event;
     }
@@ -60,6 +60,6 @@ class RecordGarbageCheckEventTest extends AbstractDataUpdateEventTest
     public function canInitAndReturnFrontendGroupsRemovedFlag(): void
     {
         $event = new RecordGarbageCheckEvent(123, 'tx_foo_bar', [], true);
-        $this->assertTrue($event->frontendGroupsRemoved());
+        self::assertTrue($event->frontendGroupsRemoved());
     }
 }

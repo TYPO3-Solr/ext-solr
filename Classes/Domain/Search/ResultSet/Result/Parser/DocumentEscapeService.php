@@ -32,18 +32,20 @@ use ApacheSolrForTypo3\Solr\Util;
 /**
  * Applies htmlspecialschars on documents of a solr response.
  */
-class DocumentEscapeService {
+class DocumentEscapeService
+{
 
     /**
      * @var TypoScriptConfiguration
      */
-    protected $typoScriptConfiguration = null;
+    protected $typoScriptConfiguration;
 
     /**
      * DocumentEscapeService constructor.
      * @param TypoScriptConfiguration|null $typoScriptConfiguration
      */
-    public function __construct(TypoScriptConfiguration $typoScriptConfiguration = null) {
+    public function __construct(TypoScriptConfiguration $typoScriptConfiguration = null)
+    {
         $this->typoScriptConfiguration = $typoScriptConfiguration ?? Util::getSolrConfiguration();
     }
 

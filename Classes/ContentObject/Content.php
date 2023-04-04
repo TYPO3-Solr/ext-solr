@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\ContentObject;
 
 /***************************************************************
@@ -50,7 +51,8 @@ class Content extends AbstractContentObject
     {
         $contentExtractor = GeneralUtility::makeInstance(
             HtmlContentExtractor::class,
-            /** @scrutinizer ignore-type */ $this->getRawContent($this->cObj, $conf)
+            /** @scrutinizer ignore-type */
+            $this->getRawContent($this->cObj, $conf)
         );
 
         return $contentExtractor->getIndexableContent();

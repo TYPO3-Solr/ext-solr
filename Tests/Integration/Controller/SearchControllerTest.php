@@ -15,9 +15,9 @@
 
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\Controller;
 
+use ApacheSolrForTypo3\Solr\Controller\SearchController;
 use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageFieldMappingIndexer;
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
-use ApacheSolrForTypo3\Solr\Controller\SearchController;
 use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\TimeTracker\TimeTracker;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -28,8 +28,8 @@ use TYPO3\CMS\Extbase\Mvc\Web\Response;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 use TYPO3\CMS\Extbase\Service\EnvironmentService;
-use TYPO3Fluid\Fluid\View\Exception\InvalidTemplateResourceException;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
+use TYPO3Fluid\Fluid\View\Exception\InvalidTemplateResourceException;
 
 /**
  * Integration testcase to test for the SearchController
@@ -58,7 +58,6 @@ class SearchControllerTest extends AbstractFrontendControllerTest
      * @var Response
      */
     protected $searchResponse;
-
 
     protected function setUp(): void
     {
@@ -101,7 +100,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
 
         $this->searchController->processRequest($this->searchRequest, $this->searchResponse);
         $content = $this->searchResponse->getContent();
-        $this->assertStringContainsString('id="tx-solr-search-form-pi-results"', $content, 'Response did not contain search css selector');
+        self::assertStringContainsString('id="tx-solr-search-form-pi-results"', $content, 'Response did not contain search css selector');
     }
 
     /**
@@ -118,9 +117,9 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $this->searchController->processRequest($this->searchRequest, $this->searchResponse);
         $result = $this->searchResponse->getContent();
 
-        $this->assertRegExp('/Found [0-9]+ results in [0-9]+ milliseconds/i',$result);
-        $this->assertStringContainsString('pages/3/0/0/0', $result, 'Could not find page 3 in result set');
-        $this->assertStringContainsString('pages/2/0/0/0', $result, 'Could not find page 2 in result set');
+        self::assertRegExp('/Found [0-9]+ results in [0-9]+ milliseconds/i', $result);
+        self::assertStringContainsString('pages/3/0/0/0', $result, 'Could not find page 3 in result set');
+        self::assertStringContainsString('pages/2/0/0/0', $result, 'Could not find page 2 in result set');
     }
 
     /**
@@ -140,7 +139,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $resultPage1 = $this->searchResponse->getContent();
 
         $this->assertPaginationVisible($resultPage1);
-        $this->assertStringContainsString('Displaying results 1 to 5 of 8', $resultPage1, 'Wrong result count indicated in template');
+        self::assertStringContainsString('Displaying results 1 to 5 of 8', $resultPage1, 'Wrong result count indicated in template');
     }
 
     /**
@@ -160,8 +159,8 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $this->searchController->processRequest($this->searchRequest, $this->searchResponse);
         $resultPage2 = $this->searchResponse->getContent();
 
-        $this->assertStringContainsString('pages/8/0/0/0', $resultPage2, 'Could not find page 8 in result set');
-        $this->assertStringContainsString('Displaying results 6 to 8 of 8', $resultPage2, 'Wrong result count indicated in template');
+        self::assertStringContainsString('pages/8/0/0/0', $resultPage2, 'Could not find page 8 in result set');
+        self::assertStringContainsString('Displaying results 6 to 8 of 8', $resultPage2, 'Wrong result count indicated in template');
     }
 
     /**
@@ -180,8 +179,8 @@ class SearchControllerTest extends AbstractFrontendControllerTest
 
         $this->searchController->processRequest($this->searchRequest, $this->searchResponse);
         $resultPage1 = $this->searchResponse->getContent();
-        $this->assertStringContainsString("Did you mean", $resultPage1, 'Could not find did you mean in response');
-        $this->assertStringContainsString("shoes", $resultPage1, 'Could not find shoes in response');
+        self::assertStringContainsString('Did you mean', $resultPage1, 'Could not find did you mean in response');
+        self::assertStringContainsString('shoes', $resultPage1, 'Could not find shoes in response');
     }
 
     /**
@@ -210,8 +209,8 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $this->searchController->processRequest($this->searchRequest, $this->searchResponse);
         $resultPage1 = $this->searchResponse->getContent();
 
-        $this->assertStringContainsString("Nothing found for shoo", $resultPage1, 'Could not find nothing found message');
-        $this->assertStringContainsString("Showing results for shoes", $resultPage1, 'Could not find correction message');
+        self::assertStringContainsString('Nothing found for shoo', $resultPage1, 'Could not find nothing found message');
+        self::assertStringContainsString('Showing results for shoes', $resultPage1, 'Could not find correction message');
     }
 
     /**
@@ -228,13 +227,13 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         //not in the content but we expect to get shoes suggested
         $_GET['q'] = '*';
 
-            // since we overwrite the configuration in the testcase from outside we want to avoid that it will be resetted
+        // since we overwrite the configuration in the testcase from outside we want to avoid that it will be resetted
         $this->searchController->setResetConfigurationBeforeInitialize(false);
         $this->searchController->processRequest($this->searchRequest, $this->searchResponse);
         $resultPage1 = $this->searchResponse->getContent();
 
-        $this->assertStringContainsString('fluidfacet', $resultPage1, 'Could not find fluidfacet class that indicates the facet was rendered with fluid');
-        $this->assertStringContainsString('pages</a> <span class="facet-result-count badge">', $resultPage1, 'Could not find facet option for pages');
+        self::assertStringContainsString('fluidfacet', $resultPage1, 'Could not find fluidfacet class that indicates the facet was rendered with fluid');
+        self::assertStringContainsString('pages</a> <span class="facet-result-count badge">', $resultPage1, 'Could not find facet option for pages');
     }
 
     /**
@@ -247,7 +246,6 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $GLOBALS['TSFE'] = $this->getConfiguredTSFE(1);
 
         $this->indexPages([1, 2, 3, 4, 5, 6, 7, 8]);
-
 
         // now we set the facet type for "type" facet to fluid and expect that we get a rendered facet
         $overwriteConfiguration = [];
@@ -262,8 +260,8 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $this->searchController->processRequest($this->searchRequest, $this->searchResponse);
         $resultPage1 = $this->searchResponse->getContent();
 
-        $this->assertStringContainsString('fluidfacet', $resultPage1, 'Could not find fluidfacet class that indicates the facet was rendered with fluid');
-        $this->assertStringNotContainsString('results-entry', $resultPage1, 'No results should be visible since showResultsOfInitialEmptyQuery was set to false');
+        self::assertStringContainsString('fluidfacet', $resultPage1, 'Could not find fluidfacet class that indicates the facet was rendered with fluid');
+        self::assertStringNotContainsString('results-entry', $resultPage1, 'No results should be visible since showResultsOfInitialEmptyQuery was set to false');
     }
 
     /**
@@ -276,7 +274,6 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $GLOBALS['TSFE'] = $this->getConfiguredTSFE(1);
 
         $this->indexPages([1, 2, 3, 4, 5, 6, 7, 8]);
-
 
         // now we set the facet type for "type" facet to fluid and expect that we get a rendered facet
         $overwriteConfiguration = [];
@@ -291,8 +288,8 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $this->searchController->processRequest($this->searchRequest, $this->searchResponse);
         $resultPage1 = $this->searchResponse->getContent();
 
-        $this->assertStringContainsString('fluidfacet', $resultPage1, 'Could not find fluidfacet class that indicates the facet was rendered with fluid');
-        $this->assertStringContainsString('results-entry', $resultPage1, 'Results should be visible since showResultsOfInitialEmptyQuery was set to true');
+        self::assertStringContainsString('fluidfacet', $resultPage1, 'Could not find fluidfacet class that indicates the facet was rendered with fluid');
+        self::assertStringContainsString('results-entry', $resultPage1, 'Results should be visible since showResultsOfInitialEmptyQuery was set to true');
     }
 
     /**
@@ -301,7 +298,6 @@ class SearchControllerTest extends AbstractFrontendControllerTest
      */
     public function canDoAnInitialSearchWithoutResults()
     {
-
         $this->importDataSetFromFixture('can_render_search_controller.xml');
         $GLOBALS['TSFE'] = $this->getConfiguredTSFE(1);
 
@@ -320,10 +316,9 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $this->searchController->processRequest($this->searchRequest, $this->searchResponse);
         $resultPage1 = $this->searchResponse->getContent();
 
-        $this->assertStringContainsString('fluidfacet', $resultPage1, 'fluidfacet should be generated since initializeWithQuery was configured with a query that should produce results');
-        $this->assertStringNotContainsString('results-entry', $resultPage1, 'No results should be visible since showResultsOfInitialQuery was set to false');
+        self::assertStringContainsString('fluidfacet', $resultPage1, 'fluidfacet should be generated since initializeWithQuery was configured with a query that should produce results');
+        self::assertStringNotContainsString('results-entry', $resultPage1, 'No results should be visible since showResultsOfInitialQuery was set to false');
     }
-
 
     /**
      * @test
@@ -349,8 +344,8 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $this->searchController->processRequest($this->searchRequest, $this->searchResponse);
         $resultPage1 = $this->searchResponse->getContent();
 
-        $this->assertStringContainsString('fluidfacet', $resultPage1, 'fluidfacet should be generated since initializeWithQuery was configured with a query that should produce results');
-        $this->assertStringContainsString('results-entry', $resultPage1, 'Results should be visible since showResultsOfInitialQuery was set to true');
+        self::assertStringContainsString('fluidfacet', $resultPage1, 'fluidfacet should be generated since initializeWithQuery was configured with a query that should produce results');
+        self::assertStringContainsString('results-entry', $resultPage1, 'Results should be visible since showResultsOfInitialQuery was set to true');
     }
 
     /**
@@ -372,8 +367,8 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $this->searchController->setResetConfigurationBeforeInitialize(false);
         $this->searchController->processRequest($this->searchRequest, $this->searchResponse);
         $resultPage1 = $this->searchResponse->getContent();
-        $this->assertStringContainsString('fluidfacet', $resultPage1, 'Could not find fluidfacet class that indicates the facet was rendered with fluid');
-        $this->assertStringContainsString('remove-facet-option', $resultPage1, 'No link to remove facet option found');
+        self::assertStringContainsString('fluidfacet', $resultPage1, 'Could not find fluidfacet class that indicates the facet was rendered with fluid');
+        self::assertStringContainsString('remove-facet-option', $resultPage1, 'No link to remove facet option found');
     }
 
     /**
@@ -396,7 +391,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $this->searchController->processRequest($this->searchRequest, $this->searchResponse);
         $resultPage1 = $this->searchResponse->getContent();
 
-        $this->assertStringContainsString('remove-facet-option', $resultPage1, 'No link to remove facet option found');
+        self::assertStringContainsString('remove-facet-option', $resultPage1, 'No link to remove facet option found');
     }
 
     /**
@@ -426,7 +421,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $resultPage1 = $this->searchResponse->getContent();
 
         // we should only find 2 results since a __pageSections filter should be applied
-        $this->assertStringContainsString('Found 2 results', $resultPage1, 'No link to remove facet option found');
+        self::assertStringContainsString('Found 2 results', $resultPage1, 'No link to remove facet option found');
     }
 
     /**
@@ -480,7 +475,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $this->searchController->processRequest($this->searchRequest, $this->searchResponse);
         $resultPage1 = $this->searchResponse->getContent();
 
-        $this->assertStringContainsString('document-score-analysis', $resultPage1, 'No score analysis in response');
+        self::assertStringContainsString('document-score-analysis', $resultPage1, 'No score analysis in response');
     }
 
     /**
@@ -492,7 +487,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $this->importDataSetFromFixture('can_render_search_controller.xml');
         $GLOBALS['TSFE'] = $this->getConfiguredTSFE(1);
 
-        $womanPages = [4,5,8];
+        $womanPages = [4, 5, 8];
         $menPages = [2];
         $this->indexPages($womanPages);
         $this->indexPages($menPages);
@@ -503,7 +498,6 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         // when we sort by lex "men" should appear before "woman" even when only one option is available
         $overwriteConfiguration = [];
         $overwriteConfiguration['search.']['faceting.']['facets.']['subtitle.']['sortBy'] = 'lex';
-
 
         /** @var $configurationManager ConfigurationManager */
         $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
@@ -517,12 +511,12 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $subtitleMenPosition = strpos($resultPage1, '>men</a> <span class="facet-result-count badge">1</span>');
         $subtitleWomanPosition =  strpos($resultPage1, '>woman</a> <span class="facet-result-count badge">3</span>');
 
-        $this->assertGreaterThan(0, $subtitleMenPosition);
-        $this->assertGreaterThan(0, $subtitleWomanPosition);
-        $this->assertGreaterThan($subtitleMenPosition, $subtitleWomanPosition);
+        self::assertGreaterThan(0, $subtitleMenPosition);
+        self::assertGreaterThan(0, $subtitleWomanPosition);
+        self::assertGreaterThan($subtitleMenPosition, $subtitleWomanPosition);
 
-        $this->assertStringContainsString('fluidfacet', $resultPage1, 'Could not find fluidfacet class that indicates the facet was rendered with fluid');
-        $this->assertStringContainsString('pages</a> <span class="facet-result-count badge">', $resultPage1, 'Could not find facet option for pages');
+        self::assertStringContainsString('fluidfacet', $resultPage1, 'Could not find fluidfacet class that indicates the facet was rendered with fluid');
+        self::assertStringContainsString('pages</a> <span class="facet-result-count badge">', $resultPage1, 'Could not find facet option for pages');
     }
 
     /**
@@ -534,7 +528,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $this->importDataSetFromFixture('can_render_search_controller.xml');
         $GLOBALS['TSFE'] = $this->getConfiguredTSFE(1);
 
-        $womanPages = [4,5,8];
+        $womanPages = [4, 5, 8];
         $menPages = [2];
         $this->indexPages($womanPages);
         $this->indexPages($menPages);
@@ -550,12 +544,12 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $subtitleMenPosition = strpos($resultPage1, '>men</a> <span class="facet-result-count badge">1</span>');
         $subtitleWomanPosition =  strpos($resultPage1, '>woman</a> <span class="facet-result-count badge">3</span>');
 
-        $this->assertGreaterThan(0, $subtitleMenPosition);
-        $this->assertGreaterThan(0, $subtitleWomanPosition);
-        $this->assertGreaterThan($subtitleWomanPosition, $subtitleMenPosition);
+        self::assertGreaterThan(0, $subtitleMenPosition);
+        self::assertGreaterThan(0, $subtitleWomanPosition);
+        self::assertGreaterThan($subtitleWomanPosition, $subtitleMenPosition);
 
-        $this->assertStringContainsString('fluidfacet', $resultPage1, 'Could not find fluidfacet class that indicates the facet was rendered with fluid');
-        $this->assertStringContainsString('pages</a> <span class="facet-result-count badge">', $resultPage1, 'Could not find facet option for pages');
+        self::assertStringContainsString('fluidfacet', $resultPage1, 'Could not find fluidfacet class that indicates the facet was rendered with fluid');
+        self::assertStringContainsString('pages</a> <span class="facet-result-count badge">', $resultPage1, 'Could not find facet option for pages');
     }
 
     /**
@@ -577,9 +571,9 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $this->searchController->processRequest($this->searchRequest, $this->searchResponse);
         $resultPage1 = $this->searchResponse->getContent();
 
-        $this->assertStringContainsString('Small (1 &amp; 2)', $resultPage1, 'Response did not contain expected small option of query facet');
-        $this->assertStringContainsString('Medium (2 to 5)', $resultPage1, 'Response did not contain expected medium option of query facet');
-        $this->assertStringContainsString('Large (5 to *)', $resultPage1, 'Response did not contain expected large option of query facet');
+        self::assertStringContainsString('Small (1 &amp; 2)', $resultPage1, 'Response did not contain expected small option of query facet');
+        self::assertStringContainsString('Medium (2 to 5)', $resultPage1, 'Response did not contain expected medium option of query facet');
+        self::assertStringContainsString('Large (5 to *)', $resultPage1, 'Response did not contain expected large option of query facet');
     }
 
     /**
@@ -602,12 +596,11 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $this->searchController->processRequest($this->searchRequest, $this->searchResponse);
         $resultPage1 = $this->searchResponse->getContent();
 
-        $this->assertStringContainsString('Found 8 results', $resultPage1, 'Assert to find 8 results without faceting');
-        $this->assertStringContainsString('facet-type-hierarchy', $resultPage1, 'Did not render hierarchy facet in the response');
-        $this->assertStringContainsString('data-facet-item-value="/1/2/"', $resultPage1, 'Hierarchy facet item did not contain expected data item');
+        self::assertStringContainsString('Found 8 results', $resultPage1, 'Assert to find 8 results without faceting');
+        self::assertStringContainsString('facet-type-hierarchy', $resultPage1, 'Did not render hierarchy facet in the response');
+        self::assertStringContainsString('data-facet-item-value="/1/2/"', $resultPage1, 'Hierarchy facet item did not contain expected data item');
 
-        $this->assertStringContainsString('tx_solr%5Bfilter%5D%5B0%5D=pageHierarchy%3A%2F1%2F2%2F&amp;tx_solr%5Bq%5D=%2A', $resultPage1, 'Result page did not contain hierarchical facet link');
-
+        self::assertStringContainsString('tx_solr%5Bfilter%5D%5B0%5D=pageHierarchy%3A%2F1%2F2%2F&amp;tx_solr%5Bq%5D=%2A', $resultPage1, 'Result page did not contain hierarchical facet link');
     }
 
     /**
@@ -631,10 +624,10 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $this->searchController->processRequest($this->searchRequest, $this->searchResponse);
         $resultPage1 = $this->searchResponse->getContent();
 
-        $this->assertStringContainsString('Found 1 result', $resultPage1, 'Assert to only find one result after faceting');
-        $this->assertStringContainsString('facet-type-hierarchy', $resultPage1, 'Did not render hierarchy facet in the response');
-        $this->assertStringContainsString('data-facet-item-value="/1/2/"', $resultPage1, 'Hierarchy facet item did not contain expected data item');
-        $this->assertStringContainsString('tx_solr%5Bfilter%5D%5B0%5D=pageHierarchy%3A%2F1%2F2%2F&amp;tx_solr%5Bq%5D=%2A', $resultPage1, 'Result page did not contain hierarchical facet link');
+        self::assertStringContainsString('Found 1 result', $resultPage1, 'Assert to only find one result after faceting');
+        self::assertStringContainsString('facet-type-hierarchy', $resultPage1, 'Did not render hierarchy facet in the response');
+        self::assertStringContainsString('data-facet-item-value="/1/2/"', $resultPage1, 'Hierarchy facet item did not contain expected data item');
+        self::assertStringContainsString('tx_solr%5Bfilter%5D%5B0%5D=pageHierarchy%3A%2F1%2F2%2F&amp;tx_solr%5Bq%5D=%2A', $resultPage1, 'Result page did not contain hierarchical facet link');
     }
 
     /**
@@ -649,7 +642,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $this->indexPages([1, 2, 3]);
         // we should have 3 documents in solr
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
-        $this->assertStringContainsString('"numFound":3', $solrContent, 'Could not index document into solr');
+        self::assertStringContainsString('"numFound":3', $solrContent, 'Could not index document into solr');
 
         // but when we facet on the categoryPaths:/Men/Shoes \/ Socks/ we should only have one result since the others
         // do not have the category assigned
@@ -661,7 +654,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $this->searchController->processRequest($this->searchRequest, $this->searchResponse);
         $resultPage1 = $this->searchResponse->getContent();
 
-        $this->assertStringContainsString('Found 1 result', $resultPage1, 'Assert to only find one result after faceting');
+        self::assertStringContainsString('Found 1 result', $resultPage1, 'Assert to only find one result after faceting');
     }
 
     /**
@@ -673,7 +666,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $this->importDataSetFromFixture('can_render_search_controller.xml');
         $GLOBALS['TSFE'] = $this->getConfiguredTSFE(1);
 
-        $womanPages = [4,5,8];
+        $womanPages = [4, 5, 8];
         $menPages = [2];
         $this->indexPages($womanPages);
         $this->indexPages($menPages);
@@ -684,7 +677,6 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         // when we sort by lex "men" should appear before "woman" even when only one option is available
         $overwriteConfiguration = [];
         $overwriteConfiguration['search.']['faceting.']['facets.']['subtitle.']['manualSortOrder'] = 'men, woman';
-
 
         /** @var $configurationManager ConfigurationManager */
         $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
@@ -698,14 +690,13 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $subtitleMenPosition = strpos($resultPage1, '>men</a> <span class="facet-result-count badge">1</span>');
         $subtitleWomanPosition =  strpos($resultPage1, '>woman</a> <span class="facet-result-count badge">3</span>');
 
-        $this->assertGreaterThan(0, $subtitleMenPosition);
-        $this->assertGreaterThan(0, $subtitleWomanPosition);
-        $this->assertGreaterThan($subtitleMenPosition, $subtitleWomanPosition);
+        self::assertGreaterThan(0, $subtitleMenPosition);
+        self::assertGreaterThan(0, $subtitleWomanPosition);
+        self::assertGreaterThan($subtitleMenPosition, $subtitleWomanPosition);
 
-        $this->assertStringContainsString('fluidfacet', $resultPage1, 'Could not find fluidfacet class that indicates the facet was rendered with fluid');
-        $this->assertStringContainsString('pages</a> <span class="facet-result-count badge">', $resultPage1, 'Could not find facet option for pages');
+        self::assertStringContainsString('fluidfacet', $resultPage1, 'Could not find fluidfacet class that indicates the facet was rendered with fluid');
+        self::assertStringContainsString('pages</a> <span class="facet-result-count badge">', $resultPage1, 'Could not find facet option for pages');
     }
-
 
     /**
      * @test
@@ -726,7 +717,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $this->searchController->processRequest($this->searchRequest, $this->searchResponse);
         $resultPage1 = $this->searchResponse->getContent();
 
-        $this->assertStringContainsString('Parsed Query:', $resultPage1, 'No parsed query in response');
+        self::assertStringContainsString('Parsed Query:', $resultPage1, 'No parsed query in response');
     }
 
     /**
@@ -738,7 +729,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $this->applyUsingErrorControllerForCMS9andAbove();
 
         // set a wrong port where no solr is running
-        $this->writeDefaultSolrTestSiteConfigurationForHostAndPort('http','localhost', 4711);
+        $this->writeDefaultSolrTestSiteConfigurationForHostAndPort('http', 'localhost', 4711);
         $this->importDataSetFromFixture('can_render_error_message_when_solr_unavailable.xml');
         $GLOBALS['TSFE'] = $this->getConfiguredTSFE(1);
 
@@ -746,8 +737,8 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $this->searchController->processRequest($this->searchRequest, $this->searchResponse);
         $resultPage1 = $this->searchResponse->getContent();
 
-        $this->assertEquals('503 Service Unavailable', $this->searchResponse->getStatus());
-        $this->assertStringContainsString("Search is currently not available.", $resultPage1, 'Response did not contain solr unavailable error message');
+        self::assertEquals('503 Service Unavailable', $this->searchResponse->getStatus());
+        self::assertStringContainsString('Search is currently not available.', $resultPage1, 'Response did not contain solr unavailable error message');
     }
 
     /**
@@ -772,7 +763,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
     {
         $this->applyUsingErrorControllerForCMS9andAbove();
         // set a wrong port where no solr is running
-        $this->writeDefaultSolrTestSiteConfigurationForHostAndPort('http','localhost', 4711);
+        $this->writeDefaultSolrTestSiteConfigurationForHostAndPort('http', 'localhost', 4711);
         $this->expectException(StopActionException::class);
         $this->expectExceptionMessage('forward');
         $this->expectExceptionCode(1476045801);
@@ -805,7 +796,6 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $this->searchController->processRequest($searchRequest2, $searchResponse2);
         $resultPage2 = $this->searchResponse->getContent();
 
-
         $this->assertContainerByIdContains('>shoe</a>', $resultPage2, 'tx-solr-lastsearches');
     }
 
@@ -827,10 +817,9 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $this->searchController->processRequest($this->searchRequest, $this->searchResponse);
 
         $resultPage = $this->searchResponse->getContent();
-        $this->assertStringContainsString("Displaying results 1 to 8 of 8", $resultPage, '');
+        self::assertStringContainsString('Displaying results 1 to 8 of 8', $resultPage, '');
         $this->assertContainerByIdContains('<option selected="selected" value="10">10</option>', $resultPage, 'results-per-page');
     }
-
 
     /**
      * @test
@@ -914,7 +903,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $_GET['q'] = '*';
         $this->searchController->processRequest($this->searchRequest, $this->searchResponse);
 
-        $this->assertStringContainsString('Displaying results 1 to 4 of 4', $this->searchResponse->getContent());
+        self::assertStringContainsString('Displaying results 1 to 4 of 4', $this->searchResponse->getContent());
     }
 
     /**
@@ -932,7 +921,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $overwriteConfiguration['search.']['faceting.']['facets.']['myCreatedFacet.'] = [
             'label' => 'Created Between',
             'field' => 'created',
-            'type' => 'dateRange'
+            'type' => 'dateRange',
         ];
 
         /** @var $configurationManager ConfigurationManager */
@@ -943,7 +932,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         //not in the content but we expect to get shoes suggested
         $_GET['q'] = '*';
         $this->searchController->processRequest($this->searchRequest, $this->searchResponse);
-        $this->assertStringContainsString('facet-type-dateRange', $this->searchResponse->getContent());
+        self::assertStringContainsString('facet-type-dateRange', $this->searchResponse->getContent());
     }
 
     /**
@@ -971,9 +960,8 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         //not in the content but we expect to get shoes suggested
         $_GET['q'] = '*';
         $this->searchController->processRequest($this->searchRequest, $this->searchResponse);
-        $this->assertStringContainsString('id="facetmyType"', $this->searchResponse->getContent());
-        $this->assertStringContainsString('id="facettype"', $this->searchResponse->getContent());
-
+        self::assertStringContainsString('id="facetmyType"', $this->searchResponse->getContent());
+        self::assertStringContainsString('id="facettype"', $this->searchResponse->getContent());
     }
 
     /**
@@ -998,10 +986,10 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $pid1OptionPosition = strpos($content, $pid1Option);
         $pid2OptionPosition = strpos($content, $pid2Option);
 
-        $this->assertGreaterThan(0, $pid1OptionPosition, 'Pid 1 option does not appear in the content');
-        $this->assertGreaterThan(0, $pid2OptionPosition, 'Pid 2 option does not appear in the content');
+        self::assertGreaterThan(0, $pid1OptionPosition, 'Pid 1 option does not appear in the content');
+        self::assertGreaterThan(0, $pid2OptionPosition, 'Pid 2 option does not appear in the content');
         $isPid2OptionBefore1Option = $pid2OptionPosition < $pid1OptionPosition;
-        $this->assertTrue($isPid2OptionBefore1Option);
+        self::assertTrue($isPid2OptionBefore1Option);
     }
 
     /**
@@ -1013,12 +1001,12 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $this->importDataSetFromFixture('can_render_search_controller.xml');
         $GLOBALS['TSFE'] = $this->getConfiguredTSFE(1);
 
-        $formRequest = $this->getPreparedRequest('Search','form');
+        $formRequest = $this->getPreparedRequest('Search', 'form');
         $formResponse = $this->getPreparedResponse();
         $this->searchController->processRequest($formRequest, $formResponse);
 
         $formContent = $formResponse->getContent();
-        $this->assertStringContainsString('<div class="tx-solr-search-form">', $formContent);
+        self::assertStringContainsString('<div class="tx-solr-search-form">', $formContent);
     }
 
     /**
@@ -1056,7 +1044,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $this->indexPages([1, 2]);
 
         $this->searchController->processRequest($request, $this->searchResponse);
-        $this->assertStringContainsString("Products", $this->searchResponse->getContent());
+        self::assertStringContainsString('Products', $this->searchResponse->getContent());
     }
 
     /**
@@ -1071,7 +1059,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $GLOBALS['TSFE'] = $this->getConfiguredTSFE(1);
 
         $this->searchController->processRequest($request, $this->searchResponse);
-        $this->assertStringContainsString('id="tx-solr-search-form-pi-results"', $this->searchResponse->getContent());
+        self::assertStringContainsString('id="tx-solr-search-form-pi-results"', $this->searchResponse->getContent());
     }
 
     /**
@@ -1091,8 +1079,8 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $this->searchController->processRequest($this->searchRequest, $this->searchResponse);
         $result = $this->searchResponse->getContent();
 
-        $this->assertStringContainsString('Custom Integration Test Search Templatepath', $result, 'Can not overwrite template path');
-        $this->assertStringContainsString('Custom Integration Test Pagination Templatepath', $result, 'Can not overwrite template path');
+        self::assertStringContainsString('Custom Integration Test Search Templatepath', $result, 'Can not overwrite template path');
+        self::assertStringContainsString('Custom Integration Test Pagination Templatepath', $result, 'Can not overwrite template path');
     }
 
     /**
@@ -1107,7 +1095,6 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $GLOBALS['TSFE'] = $this->getConfiguredTSFE(1);
         $this->indexPages([1, 2, 3, 4, 5, 6, 7, 8]);
 
-
         $overwriteConfiguration = [];
         $overwriteConfiguration['settings.']['foo.']['bar'] = 'mytestsetting';
 
@@ -1120,7 +1107,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $this->searchController->processRequest($this->searchRequest, $this->searchResponse);
         $result = $this->searchResponse->getContent();
 
-        $this->assertStringContainsString('mytestsetting', $result, 'Can not output passed test setting');
+        self::assertStringContainsString('mytestsetting', $result, 'Can not output passed test setting');
     }
 
     /**
@@ -1139,9 +1126,8 @@ class SearchControllerTest extends AbstractFrontendControllerTest
         $this->searchController->processRequest($this->searchRequest, $this->searchResponse);
         $result = $this->searchResponse->getContent();
 
-        $this->assertStringContainsString('Custom Integration Test Search Template entry Template', $result, 'Can not set entry template file name in typoscript');
+        self::assertStringContainsString('Custom Integration Test Search Template entry Template', $result, 'Can not set entry template file name in typoscript');
     }
-
 
     /**
      * @param string $content
@@ -1168,7 +1154,7 @@ class SearchControllerTest extends AbstractFrontendControllerTest
     protected function assertContainerByIdContains($expectedToContain, $content, $id)
     {
         $containerContent = $this->getIdContent($content, $id);
-        $this->assertStringContainsString($expectedToContain, $containerContent, 'Failed asserting that container with id ' . $id .' contains ' . $expectedToContain);
+        self::assertStringContainsString($expectedToContain, $containerContent, 'Failed asserting that container with id ' . $id . ' contains ' . $expectedToContain);
     }
 
     /**
@@ -1181,9 +1167,8 @@ class SearchControllerTest extends AbstractFrontendControllerTest
     protected function assertContainerByIdNotContains($expectedToContain, $content, $id)
     {
         $containerContent = $this->getIdContent($content, $id);
-        $this->assertStringNotContainsString($expectedToContain, $containerContent, 'Failed asserting that container with id ' . $id .' not contains ' . $expectedToContain);
+        self::assertStringNotContainsString($expectedToContain, $containerContent, 'Failed asserting that container with id ' . $id . ' not contains ' . $expectedToContain);
     }
-
 
     /**
      * Assertion to check if the pagination markup is present in the response.
@@ -1192,39 +1177,36 @@ class SearchControllerTest extends AbstractFrontendControllerTest
      */
     protected function assertPaginationVisible($content)
     {
-        $this->assertStringContainsString('class="solr-pagination"', $content, 'No pagination container visible');
-        $this->assertStringContainsString('ul class="pagination"', $content, 'Could not see pagination list');
+        self::assertStringContainsString('class="solr-pagination"', $content, 'No pagination container visible');
+        self::assertStringContainsString('ul class="pagination"', $content, 'Could not see pagination list');
     }
 
     /**
      * We fake in the frontend context, that a backend user is logged in.
-     *
-     * @return void
      */
     protected function fakeBackendUserLoggedInInFrontend()
     {
         /** @var  $context \TYPO3\CMS\Core\Context\Context::class */
         $context = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Context\Context::class);
         $userAspect = $this->getMockBuilder(\TYPO3\CMS\Core\Context\UserAspect::class)->setMethods([])->getMock();
-        $userAspect->expects($this->any())->method('get')->with('isLoggedIn')->willReturn(true);
+        $userAspect->expects(self::any())->method('get')->with('isLoggedIn')->willReturn(true);
         $context->setAspect('backend.user', $userAspect);
     }
 
     /**
      * In this method we initialize a few singletons with mocked classes to be able to generate links
      * for the frontend in the testing context.
-     * @return void
      */
     protected function fakeSingletonsForFrontendContext()
     {
         $environmentServiceMock = $this->getMockBuilder(EnvironmentService::class)->setMethods([])->disableOriginalConstructor()->getMock();
-        $environmentServiceMock->expects($this->any())->method('isEnvironmentInFrontendMode')->willReturn(true);
-        $environmentServiceMock->expects($this->any())->method('isEnvironmentInBackendMode')->willReturn(false);
+        $environmentServiceMock->expects(self::any())->method('isEnvironmentInFrontendMode')->willReturn(true);
+        $environmentServiceMock->expects(self::any())->method('isEnvironmentInBackendMode')->willReturn(false);
 
         $configurationManagerMock = $this->getMockBuilder(ExtbaseConfigurationManager::class)->setMethods(['getContentObject'])
             ->setConstructorArgs([$this->objectManager, $environmentServiceMock])->getMock();
 
-        $configurationManagerMock->expects($this->any())->method('getContentObject')->willReturn(GeneralUtility::makeInstance(ContentObjectRenderer::class));
+        $configurationManagerMock->expects(self::any())->method('getContentObject')->willReturn(GeneralUtility::makeInstance(ContentObjectRenderer::class));
 
         GeneralUtility::setSingletonInstance(EnvironmentService::class, $environmentServiceMock);
         GeneralUtility::setSingletonInstance(ExtbaseConfigurationManager::class, $configurationManagerMock);

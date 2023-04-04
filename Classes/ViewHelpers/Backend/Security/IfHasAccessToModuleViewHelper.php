@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\ViewHelpers\Backend\Security;
 
 /***************************************************************
@@ -127,7 +128,8 @@ class IfHasAccessToModuleViewHelper extends AbstractConditionViewHelper
         parent::validateArguments();
 
         if (empty($this->arguments['signature'])
-            && (empty($this->arguments['extension']) || empty($this->arguments['main']) || empty($this->arguments['sub'])
+            && (
+                empty($this->arguments['extension']) || empty($this->arguments['main']) || empty($this->arguments['sub'])
             )
         ) {
             throw new \InvalidArgumentException('ifHasAccessToModule view helper requires either "signature" or all three other arguments: "extension", "main" and "sub". Please set arguments properly.', 1496314352);

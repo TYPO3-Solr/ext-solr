@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper;
 
 /***************************************************************
@@ -26,8 +27,8 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper;
 
 use ApacheSolrForTypo3\Solr\Access\Rootline;
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequestHandler;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Authentication\AbstractAuthenticationService;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Authentication service to authorize the Index Queue page indexer to access
@@ -57,7 +58,7 @@ class AuthorizationService extends AbstractAuthenticationService
         return [
             'uid' => 0,
             'username' => self::SOLR_INDEXER_USERNAME,
-            'authenticated' => true
+            'authenticated' => true,
         ];
     }
 
@@ -102,7 +103,7 @@ class AuthorizationService extends AbstractAuthenticationService
     ) {
         $groupData = [];
 
-            /** @var $requestHandler PageIndexerRequestHandler */
+        /** @var $requestHandler PageIndexerRequestHandler */
         $requestHandler = GeneralUtility::makeInstance(PageIndexerRequestHandler::class);
         $accessRootline = $requestHandler->getRequest()->getParameter('accessRootline');
 
@@ -116,7 +117,7 @@ class AuthorizationService extends AbstractAuthenticationService
                     'uid' => $groupId,
                     'pid' => 0,
                     'title' => '__SolrIndexerGroup__',
-                    'TSconfig' => ''
+                    'TSconfig' => '',
                 ];
             }
         }

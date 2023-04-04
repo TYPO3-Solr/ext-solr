@@ -55,7 +55,7 @@ abstract class AbstractRepository
         return $queryBuilder
             ->select($fields)
             ->from($this->table)
-            ->where($queryBuilder->expr()->eq('uid', intval($uid)))
+            ->where($queryBuilder->expr()->eq('uid', (int)$uid))
             ->execute()->fetch();
     }
 
@@ -76,7 +76,7 @@ abstract class AbstractRepository
      *
      * @return int
      */
-    public function count() : int
+    public function count(): int
     {
         return (int)$this->getQueryBuilder()
             ->count('*')
@@ -92,7 +92,7 @@ abstract class AbstractRepository
      * @param string[] ...$tableNames
      * @return Connection
      */
-    public function getConnectionForAllInTransactionInvolvedTables(string ...$tableNames) : Connection
+    public function getConnectionForAllInTransactionInvolvedTables(string ...$tableNames): Connection
     {
         if (empty($tableNames) || count($tableNames) < 2) {
             throw new \InvalidArgumentException(__METHOD__ . ' requires at least 2 table names.', 1504801512);
@@ -100,9 +100,12 @@ abstract class AbstractRepository
 
         if (!$this->isConnectionForAllTablesTheSame(...$tableNames)) {
             throw new \RuntimeException(
-                vsprintf('The tables "%s" using different database connections. Transaction needs same database connection ' .
-                    'for all tables, please reconfigure the database settings for involved tables properly.', [implode('", "', $tableNames)]
-                ), 1504866142
+                vsprintf(
+                    'The tables "%s" using different database connections. Transaction needs same database connection ' .
+                    'for all tables, please reconfigure the database settings for involved tables properly.',
+                    [implode('", "', $tableNames)]
+                ),
+                1504866142
             );
         }
         return GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable(array_shift($tableNames));
@@ -114,7 +117,7 @@ abstract class AbstractRepository
      * @param string[] ...$tableNames
      * @return bool
      */
-    protected function isConnectionForAllTablesTheSame(string ...$tableNames) : bool
+    protected function isConnectionForAllTablesTheSame(string ...$tableNames): bool
     {
         /** @var ConnectionPool $connectionPool */
         $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);

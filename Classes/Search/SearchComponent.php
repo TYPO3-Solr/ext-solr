@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Search;
 
 /***************************************************************
@@ -44,7 +45,6 @@ interface SearchComponent
 
     /**
      * Initializes the search component.
-     *
      */
     public function initializeSearchComponent();
 }

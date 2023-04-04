@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Test\Domain\Search\ResultSet\Facets;
 
 /*
@@ -51,14 +52,13 @@ class DefaultFacetQueryBuilderTest extends UnitTest
             ],
             'color.' => [
                 'field' => 'color',
-            ]
+            ],
         ];
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
 
         $defaultQueryBuilder = new DefaultFacetQueryBuilder();
         $result = $defaultQueryBuilder->build('color', $fakeConfiguration);
 
-        $this->assertStringNotContainsString('{!ex', $result['facet.field'][0]);
+        self::assertStringNotContainsString('{!ex', $result['facet.field'][0]);
     }
-
 }

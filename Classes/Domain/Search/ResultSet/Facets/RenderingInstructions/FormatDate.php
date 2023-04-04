@@ -46,7 +46,7 @@ class FormatDate
     /**
      * @var FormatService
      */
-    protected $formatService = null;
+    protected $formatService;
 
     /**
      * FormatDate constructor.

@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Grouping;
 
 /***************************************************************
@@ -47,9 +48,6 @@ class GroupItemTest extends UnitTest
      */
     protected $parentGroup;
 
-    /**
-     * @return void
-     */
     protected function setUp(): void
     {
         $this->parentGroup = new Group('typeGroup');
@@ -61,7 +59,7 @@ class GroupItemTest extends UnitTest
      */
     public function canGetMaximumScore()
     {
-        $this->assertSame(99, $this->groupItem->getMaximumScore(), 'Unexpected maximumScore');
+        self::assertSame(99, $this->groupItem->getMaximumScore(), 'Unexpected maximumScore');
     }
 
     /**
@@ -69,7 +67,7 @@ class GroupItemTest extends UnitTest
      */
     public function canGetStart()
     {
-        $this->assertSame(1, $this->groupItem->getStart(), 'Unexpected start');
+        self::assertSame(1, $this->groupItem->getStart(), 'Unexpected start');
     }
 
     /**
@@ -77,7 +75,7 @@ class GroupItemTest extends UnitTest
      */
     public function canGetNumFound()
     {
-        $this->assertSame(12, $this->groupItem->getAllResultCount(), 'Unexpected numFound');
+        self::assertSame(12, $this->groupItem->getAllResultCount(), 'Unexpected numFound');
     }
 
     /**
@@ -85,7 +83,7 @@ class GroupItemTest extends UnitTest
      */
     public function canGetGroupValue()
     {
-        $this->assertSame('pages', $this->groupItem->getGroupValue(), 'Unexpected groupValue');
+        self::assertSame('pages', $this->groupItem->getGroupValue(), 'Unexpected groupValue');
     }
 
     /**
@@ -93,7 +91,7 @@ class GroupItemTest extends UnitTest
      */
     public function canGetGroup()
     {
-        $this->assertSame($this->parentGroup, $this->groupItem->getGroup(), 'Unexpected parentGroup');
+        self::assertSame($this->parentGroup, $this->groupItem->getGroup(), 'Unexpected parentGroup');
     }
 
     /**
@@ -101,11 +99,11 @@ class GroupItemTest extends UnitTest
      */
     public function canGetSearchResults()
     {
-        $this->assertSame(0, $this->groupItem->getSearchResults()->getCount());
+        self::assertSame(0, $this->groupItem->getSearchResults()->getCount());
 
         $searchResult = $this->getDumbMock(SearchResult::class);
         $this->groupItem->addSearchResult($searchResult);
 
-        $this->assertSame(1, $this->groupItem->getSearchResults()->getCount());
+        self::assertSame(1, $this->groupItem->getSearchResults()->getCount());
     }
 }

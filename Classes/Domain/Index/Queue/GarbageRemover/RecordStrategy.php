@@ -27,7 +27,8 @@ namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\GarbageRemover;
 /**
  * Class RecordStrategy
  */
-class RecordStrategy extends AbstractStrategy  {
+class RecordStrategy extends AbstractStrategy
+{
 
     /**
      * Removes the garbage of a record.

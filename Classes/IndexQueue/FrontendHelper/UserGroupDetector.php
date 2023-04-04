@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper;
 
 /***************************************************************
@@ -56,7 +57,7 @@ class UserGroupDetector extends AbstractFrontendHelper implements
      *
      * @var array
      */
-    protected $originalTca = null;
+    protected $originalTca;
 
     /**
      * Collects the usergroups used on a page.
@@ -68,7 +69,7 @@ class UserGroupDetector extends AbstractFrontendHelper implements
     /**
      * @var \ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager
      */
-    protected $logger = null;
+    protected $logger;
 
     // activation
 
@@ -226,8 +227,11 @@ class UserGroupDetector extends AbstractFrontendHelper implements
     protected function getFrontendGroups()
     {
         $frontendGroupsList = implode(',', $this->frontendGroups);
-        $frontendGroups = GeneralUtility::trimExplode(',', $frontendGroupsList,
-            true);
+        $frontendGroups = GeneralUtility::trimExplode(
+            ',',
+            $frontendGroupsList,
+            true
+        );
 
         // clean up: filter double groups
         $frontendGroups = array_unique($frontendGroups);

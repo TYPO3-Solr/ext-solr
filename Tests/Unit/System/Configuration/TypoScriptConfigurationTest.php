@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\Configuration;
 
 /***************************************************************
@@ -40,9 +41,6 @@ class TypoScriptConfigurationTest extends UnitTest
      */
     protected $configuration;
 
-    /**
-     * @return void
-     */
     protected function setUp(): void
     {
         $fakeConfigurationArray = [];
@@ -57,7 +55,7 @@ class TypoScriptConfigurationTest extends UnitTest
     public function canGetValueByPath()
     {
         $testPath = 'plugin.tx_solr.index.queue.tt_news.fields.content';
-        $this->assertSame('SOLR_CONTENT', $this->configuration->getValueByPath($testPath), 'Could not get configuration value by path');
+        self::assertSame('SOLR_CONTENT', $this->configuration->getValueByPath($testPath), 'Could not get configuration value by path');
     }
 
     /**
@@ -68,10 +66,10 @@ class TypoScriptConfigurationTest extends UnitTest
         $testPath = 'plugin.tx_solr.index.queue.tt_news.fields.content';
         $expectedResult = [
             'content' => 'SOLR_CONTENT',
-            'content.' => ['field' => 'bodytext']
+            'content.' => ['field' => 'bodytext'],
         ];
 
-        $this->assertSame($expectedResult, $this->configuration->getObjectByPath($testPath), 'Could not get configuration object by path');
+        self::assertSame($expectedResult, $this->configuration->getObjectByPath($testPath), 'Could not get configuration object by path');
     }
 
     /**
@@ -86,19 +84,19 @@ class TypoScriptConfigurationTest extends UnitTest
                     'facets.' => [
                         'color.' => [],
                         'type.' => [
-                            'showEvenWhenEmpty' => true
-                        ]
-                    ]
-                ]
-            ]
+                            'showEvenWhenEmpty' => true,
+                        ],
+                    ],
+                ],
+            ],
         ];
 
         $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
         $showEmptyType = $configuration->getSearchFacetingShowEmptyFacetsByName('type');
-        $this->assertTrue($showEmptyType);
+        self::assertTrue($showEmptyType);
 
         $showEmptyColor = $configuration->getSearchFacetingShowEmptyFacetsByName('color');
-        $this->assertTrue($showEmptyColor);
+        self::assertTrue($showEmptyColor);
 
         $fakeConfigurationArray['plugin.']['tx_solr.'] = [
             'search.' => [
@@ -106,20 +104,20 @@ class TypoScriptConfigurationTest extends UnitTest
                     'facets.' => [
                         'color.' => [],
                         'type.' => [
-                            'showEvenWhenEmpty' => true
-                        ]
-                    ]
-                ]
-            ]
+                            'showEvenWhenEmpty' => true,
+                        ],
+                    ],
+                ],
+            ],
         ];
 
         $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
 
         $showEmptyType = $configuration->getSearchFacetingShowEmptyFacetsByName('type');
-        $this->assertTrue($showEmptyType);
+        self::assertTrue($showEmptyType);
 
         $showEmptyColor = $configuration->getSearchFacetingShowEmptyFacetsByName('color');
-        $this->assertFalse($showEmptyColor);
+        self::assertFalse($showEmptyColor);
     }
 
     /**
@@ -133,19 +131,19 @@ class TypoScriptConfigurationTest extends UnitTest
                     'pages.' => [
                     ],
                     'custom.' => [
-                        'table' => 'tx_model_custom'
-                    ]
-                ]
-            ]
+                        'table' => 'tx_model_custom',
+                    ],
+                ],
+            ],
         ];
 
         $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
 
         $customTableExpected = $configuration->getIndexQueueTableNameOrFallbackToConfigurationName('pages');
-        $this->assertSame($customTableExpected, 'pages', 'Can not fallback to configurationName');
+        self::assertSame($customTableExpected, 'pages', 'Can not fallback to configurationName');
 
         $customTableExpected = $configuration->getIndexQueueTableNameOrFallbackToConfigurationName('custom');
-        $this->assertSame($customTableExpected, 'tx_model_custom', 'Usage of custom table tx_model_custom was expected');
+        self::assertSame($customTableExpected, 'tx_model_custom', 'Usage of custom table tx_model_custom was expected');
     }
 
     /**
@@ -160,24 +158,24 @@ class TypoScriptConfigurationTest extends UnitTest
                     'pages.' => [
                     ],
                     'custom.' => [
-                        'table' => 'tx_model_custom'
-                    ]
-                ]
-            ]
+                        'table' => 'tx_model_custom',
+                    ],
+                ],
+            ],
         ];
 
         $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
         $enabledIndexQueueNames = $configuration->getEnabledIndexQueueConfigurationNames();
 
-        $this->assertCount(1, $enabledIndexQueueNames, 'Retrieved unexpected amount of index queue configurations');
-        $this->assertContains('pages', $enabledIndexQueueNames, 'Pages was no enabled index queue configuration');
+        self::assertCount(1, $enabledIndexQueueNames, 'Retrieved unexpected amount of index queue configurations');
+        self::assertContains('pages', $enabledIndexQueueNames, 'Pages was no enabled index queue configuration');
 
         $fakeConfigurationArray['plugin.']['tx_solr.']['index.']['queue.']['custom'] = 1;
         $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
         $enabledIndexQueueNames = $configuration->getEnabledIndexQueueConfigurationNames();
 
-        $this->assertCount(2, $enabledIndexQueueNames, 'Retrieved unexpected amount of index queue configurations');
-        $this->assertContains('custom', $enabledIndexQueueNames, 'Pages was no enabled index queue configuration');
+        self::assertCount(2, $enabledIndexQueueNames, 'Retrieved unexpected amount of index queue configurations');
+        self::assertContains('custom', $enabledIndexQueueNames, 'Pages was no enabled index queue configuration');
     }
 
     /**
@@ -190,17 +188,17 @@ class TypoScriptConfigurationTest extends UnitTest
                 'queue.' => [
                     'pages' => 1,
                     'pages.' => [
-                        'recursiveUpdateFields' => ''
+                        'recursiveUpdateFields' => '',
                     ],
                     'custom.' => [
-                        'recursiveUpdateFields' => ''
-                    ]
-                ]
-            ]
+                        'recursiveUpdateFields' => '',
+                    ],
+                ],
+            ],
         ];
         $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
-        $this->assertEquals([], $configuration->getIndexQueueConfigurationRecursiveUpdateFields('pages'));
-        $this->assertEquals([], $configuration->getIndexQueueConfigurationRecursiveUpdateFields('custom'));
+        self::assertEquals([], $configuration->getIndexQueueConfigurationRecursiveUpdateFields('pages'));
+        self::assertEquals([], $configuration->getIndexQueueConfigurationRecursiveUpdateFields('custom'));
 
         $fakeConfigurationArray['plugin.']['tx_solr.'] = [
             'index.' => [
@@ -209,30 +207,30 @@ class TypoScriptConfigurationTest extends UnitTest
                     'pages.' => [
                     ],
                     'custom.' => [
-                    ]
-                ]
-            ]
+                    ],
+                ],
+            ],
         ];
         $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
-        $this->assertEquals([], $configuration->getIndexQueueConfigurationRecursiveUpdateFields('pages'));
-        $this->assertEquals([], $configuration->getIndexQueueConfigurationRecursiveUpdateFields('custom'));
+        self::assertEquals([], $configuration->getIndexQueueConfigurationRecursiveUpdateFields('pages'));
+        self::assertEquals([], $configuration->getIndexQueueConfigurationRecursiveUpdateFields('custom'));
 
         $fakeConfigurationArray['plugin.']['tx_solr.'] = [
             'index.' => [
                 'queue.' => [
                     'pages' => 1,
                     'pages.' => [
-                        'recursiveUpdateFields' => 'title, subtitle'
+                        'recursiveUpdateFields' => 'title, subtitle',
                     ],
                     'custom.' => [
-                        'recursiveUpdateFields' => 'title, subtitle'
-                    ]
-                ]
-            ]
+                        'recursiveUpdateFields' => 'title, subtitle',
+                    ],
+                ],
+            ],
         ];
         $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
-        $this->assertEquals(['title' => 'title', 'subtitle' => 'subtitle'], $configuration->getIndexQueueConfigurationRecursiveUpdateFields('pages'));
-        $this->assertEquals(['title' => 'title', 'subtitle' => 'subtitle'], $configuration->getIndexQueueConfigurationRecursiveUpdateFields('custom'));
+        self::assertEquals(['title' => 'title', 'subtitle' => 'subtitle'], $configuration->getIndexQueueConfigurationRecursiveUpdateFields('pages'));
+        self::assertEquals(['title' => 'title', 'subtitle' => 'subtitle'], $configuration->getIndexQueueConfigurationRecursiveUpdateFields('custom'));
     }
 
     /**
@@ -247,17 +245,17 @@ class TypoScriptConfigurationTest extends UnitTest
                     'pages.' => [
                     ],
                     'custom.' => [
-                        'initialPagesAdditionalWhereClause' => '1=1'
-                    ]
-                ]
-            ]
+                        'initialPagesAdditionalWhereClause' => '1=1',
+                    ],
+                ],
+            ],
         ];
 
         $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
 
-        $this->assertEquals('', $configuration->getInitialPagesAdditionalWhereClause('pages'));
-        $this->assertEquals('1=1', $configuration->getInitialPagesAdditionalWhereClause('custom'));
-        $this->assertEquals('', $configuration->getInitialPagesAdditionalWhereClause('notconfigured'));
+        self::assertEquals('', $configuration->getInitialPagesAdditionalWhereClause('pages'));
+        self::assertEquals('1=1', $configuration->getInitialPagesAdditionalWhereClause('custom'));
+        self::assertEquals('', $configuration->getInitialPagesAdditionalWhereClause('notconfigured'));
     }
 
     /**
@@ -272,17 +270,17 @@ class TypoScriptConfigurationTest extends UnitTest
                     'pages.' => [
                     ],
                     'custom.' => [
-                        'additionalWhereClause' => '1=1'
-                    ]
-                ]
-            ]
+                        'additionalWhereClause' => '1=1',
+                    ],
+                ],
+            ],
         ];
 
         $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
 
-        $this->assertEquals('', $configuration->getIndexQueueAdditionalWhereClauseByConfigurationName('pages'));
-        $this->assertEquals(' AND 1=1', $configuration->getIndexQueueAdditionalWhereClauseByConfigurationName('custom'));
-        $this->assertEquals('', $configuration->getIndexQueueAdditionalWhereClauseByConfigurationName('notconfigured'));
+        self::assertEquals('', $configuration->getIndexQueueAdditionalWhereClauseByConfigurationName('pages'));
+        self::assertEquals(' AND 1=1', $configuration->getIndexQueueAdditionalWhereClauseByConfigurationName('custom'));
+        self::assertEquals('', $configuration->getIndexQueueAdditionalWhereClauseByConfigurationName('notconfigured'));
     }
 
     /**
@@ -298,19 +296,19 @@ class TypoScriptConfigurationTest extends UnitTest
                     ],
                     'custom_one' => 1,
                     'custom_one.' => [
-                        'table' => 'tx_model_bar'
+                        'table' => 'tx_model_bar',
                     ],
 
                     'custom_two' => 1,
                     'custom_two.' => [
-                        'table' => 'tx_model_news'
-                    ]
-                ]
-            ]
+                        'table' => 'tx_model_news',
+                    ],
+                ],
+            ],
         ];
 
         $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
-        $this->assertEquals(['tx_model_news', 'custom_two'], $configuration->getIndexQueueConfigurationNamesByTableName('tx_model_news'));
+        self::assertEquals(['tx_model_news', 'custom_two'], $configuration->getIndexQueueConfigurationNamesByTableName('tx_model_news'));
     }
 
     /**
@@ -326,22 +324,22 @@ class TypoScriptConfigurationTest extends UnitTest
                     ],
                     'custom_one' => 1,
                     'custom_one.' => [
-                        'table' => 'tx_model_bar'
+                        'table' => 'tx_model_bar',
                     ],
 
                     'custom_two' => 1,
                     'custom_two.' => [
-                        'table' => 'tx_model_news'
+                        'table' => 'tx_model_news',
                     ],
                     'pages' => 1,
-                    'pages.' => []
-                ]
-            ]
+                    'pages.' => [],
+                ],
+            ],
         ];
 
         $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
         $monitoredTables =  $configuration->getIndexQueueMonitoredTables();
-        $this->assertEquals(['tx_model_news', 'tx_model_bar', 'pages'], $monitoredTables);
+        self::assertEquals(['tx_model_news', 'tx_model_bar', 'pages'], $monitoredTables);
     }
 
     /**
@@ -357,26 +355,26 @@ class TypoScriptConfigurationTest extends UnitTest
                     ],
                     'custom_one' => 1,
                     'custom_one.' => [
-                        'table' => 'tx_model_bar'
+                        'table' => 'tx_model_bar',
                     ],
 
                     'custom_two' => 1,
                     'custom_two.' => [
-                        'table' => 'tx_model_news'
+                        'table' => 'tx_model_news',
                     ],
                     'pages' => 1,
-                    'pages.' => []
-                ]
-            ]
+                    'pages.' => [],
+                ],
+            ],
         ];
 
         $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
 
-        $this->assertFalse($configuration->getIndexQueueIsMonitoredTable('tx_mycustom_table2'), 'tx_mycustom_table2 was not expected to be monitored');
+        self::assertFalse($configuration->getIndexQueueIsMonitoredTable('tx_mycustom_table2'), 'tx_mycustom_table2 was not expected to be monitored');
 
-        $this->assertTrue($configuration->getIndexQueueIsMonitoredTable('pages'), 'pages was expected to be monitored');
-        $this->assertTrue($configuration->getIndexQueueIsMonitoredTable('tx_model_bar'), 'tx_model_bar was expected to be monitored');
-        $this->assertTrue($configuration->getIndexQueueIsMonitoredTable('tx_model_news'), 'tx_model_news was expected to be monitored');
+        self::assertTrue($configuration->getIndexQueueIsMonitoredTable('pages'), 'pages was expected to be monitored');
+        self::assertTrue($configuration->getIndexQueueIsMonitoredTable('tx_model_bar'), 'tx_model_bar was expected to be monitored');
+        self::assertTrue($configuration->getIndexQueueIsMonitoredTable('tx_model_news'), 'tx_model_news was expected to be monitored');
     }
 
     /**
@@ -388,17 +386,21 @@ class TypoScriptConfigurationTest extends UnitTest
             'logging.' => [
                 'indexing.' => [
                     'queue.' => [
-                        'pages' => 1
-                    ]
-                ]
-            ]
+                        'pages' => 1,
+                    ],
+                ],
+            ],
         ];
 
         $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
-        $this->assertTrue($configuration->getLoggingIndexingQueueOperationsByConfigurationNameWithFallBack('pages'),
-            'Wrong logging state for pages index queue');
-        $this->assertFalse($configuration->getLoggingIndexingQueueOperationsByConfigurationNameWithFallBack('tt_content'),
-            'Wrong logging state for tt_content index queue');
+        self::assertTrue(
+            $configuration->getLoggingIndexingQueueOperationsByConfigurationNameWithFallBack('pages'),
+            'Wrong logging state for pages index queue'
+        );
+        self::assertFalse(
+            $configuration->getLoggingIndexingQueueOperationsByConfigurationNameWithFallBack('tt_content'),
+            'Wrong logging state for tt_content index queue'
+        );
     }
 
     /**
@@ -411,17 +413,21 @@ class TypoScriptConfigurationTest extends UnitTest
                 'indexing' => 1,
                 'indexing.' => [
                     'queue.' => [
-                        'pages' => 0
-                    ]
-                ]
-            ]
+                        'pages' => 0,
+                    ],
+                ],
+            ],
         ];
 
         $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
-        $this->assertTrue($configuration->getLoggingIndexingQueueOperationsByConfigurationNameWithFallBack('pages'),
-            'Wrong logging state for pages index queue');
-        $this->assertTrue($configuration->getLoggingIndexingQueueOperationsByConfigurationNameWithFallBack('tt_content'),
-            'Wrong logging state for tt_content index queue');
+        self::assertTrue(
+            $configuration->getLoggingIndexingQueueOperationsByConfigurationNameWithFallBack('pages'),
+            'Wrong logging state for pages index queue'
+        );
+        self::assertTrue(
+            $configuration->getLoggingIndexingQueueOperationsByConfigurationNameWithFallBack('tt_content'),
+            'Wrong logging state for tt_content index queue'
+        );
     }
 
     /**
@@ -434,17 +440,17 @@ class TypoScriptConfigurationTest extends UnitTest
                 'queue.' => [
                     'pages.' => [
                         'fields.' => [
-                            'sortSubTitle_stringS' => 'subtitle'
-                        ]
-                    ]
-                ]
-            ]
+                            'sortSubTitle_stringS' => 'subtitle',
+                        ],
+                    ],
+                ],
+            ],
         ];
 
         $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
 
         $retrievedConfiguration = $configuration->getIndexQueueFieldsConfigurationByConfigurationName('pages');
-        $this->assertEquals(['sortSubTitle_stringS' => 'subtitle'], $retrievedConfiguration);
+        self::assertEquals(['sortSubTitle_stringS' => 'subtitle'], $retrievedConfiguration);
     }
 
     /**
@@ -459,17 +465,17 @@ class TypoScriptConfigurationTest extends UnitTest
                         'fields.' => [
                             'sortSubTitle_stringS' => 'subtitle',
                             'subTitle_stringM' => 'subtitle',
-                            'fooShouldBeSkipped.' => []
-                        ]
-                    ]
-                ]
-            ]
+                            'fooShouldBeSkipped.' => [],
+                        ],
+                    ],
+                ],
+            ],
         ];
 
         $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
 
         $mappedFieldNames = $configuration->getIndexQueueMappedFieldsByConfigurationName('pages');
-        $this->assertEquals(['sortSubTitle_stringS', 'subTitle_stringM'], $mappedFieldNames);
+        self::assertEquals(['sortSubTitle_stringS', 'subTitle_stringM'], $mappedFieldNames);
     }
 
     /**
@@ -480,15 +486,15 @@ class TypoScriptConfigurationTest extends UnitTest
         $fakeConfigurationArray['plugin.']['tx_solr.'] = [
             'index.' => [
                 'additionalFields.' => [
-                    'additional_sortSubTitle_stringS' => 'subtitle'
-                ]
-            ]
+                    'additional_sortSubTitle_stringS' => 'subtitle',
+                ],
+            ],
         ];
 
         $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
 
         $retrievedConfiguration = $configuration->getIndexAdditionalFieldsConfiguration();
-        $this->assertEquals(['additional_sortSubTitle_stringS' => 'subtitle'], $retrievedConfiguration);
+        self::assertEquals(['additional_sortSubTitle_stringS' => 'subtitle'], $retrievedConfiguration);
     }
 
     /**
@@ -499,15 +505,15 @@ class TypoScriptConfigurationTest extends UnitTest
         $fakeConfigurationArray['plugin.']['tx_solr.'] = [
             'index.' => [
                 'additionalFields.' => [
-                    'additional_sortSubTitle_stringS' => 'subtitle'
-                ]
-            ]
+                    'additional_sortSubTitle_stringS' => 'subtitle',
+                ],
+            ],
         ];
 
         $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
 
         $retrievedConfiguration = $configuration->getIndexMappedAdditionalFieldNames();
-        $this->assertEquals(['additional_sortSubTitle_stringS'], $retrievedConfiguration);
+        self::assertEquals(['additional_sortSubTitle_stringS'], $retrievedConfiguration);
     }
 
     /**
@@ -519,14 +525,14 @@ class TypoScriptConfigurationTest extends UnitTest
             'index.' => [
                 'queue.' => [
                     'pages.' => [
-                        'indexer' => 'Foobar'
-                    ]
-                ]
-            ]
+                        'indexer' => 'Foobar',
+                    ],
+                ],
+            ],
         ];
         $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
         $configuredIndexer = $configuration->getIndexQueueIndexerByConfigurationName('pages');
-        $this->assertSame('Foobar', $configuredIndexer, 'Retrieved unexpected indexer from typoscript configuration');
+        self::assertSame('Foobar', $configuredIndexer, 'Retrieved unexpected indexer from typoscript configuration');
     }
 
     /**
@@ -539,14 +545,14 @@ class TypoScriptConfigurationTest extends UnitTest
                 'queue.' => [
                     'pages.' => [
                         'indexer' => 'Foobar',
-                        'indexer.' => ['configuration' => 'test']
-                    ]
-                ]
-            ]
+                        'indexer.' => ['configuration' => 'test'],
+                    ],
+                ],
+            ],
         ];
         $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
         $configuredIndexer = $configuration->getIndexQueueIndexerConfigurationByConfigurationName('pages');
-        $this->assertSame(['configuration' => 'test'], $configuredIndexer, 'Retrieved unexpected indexer configuration from typoscript configuration');
+        self::assertSame(['configuration' => 'test'], $configuredIndexer, 'Retrieved unexpected indexer configuration from typoscript configuration');
     }
 
     /**
@@ -558,14 +564,14 @@ class TypoScriptConfigurationTest extends UnitTest
             'index.' => [
                 'queue.' => [
                     'pages.' => [
-                        'excludeContentByClass' => 'excludeClass'
-                    ]
-                ]
-            ]
+                        'excludeContentByClass' => 'excludeClass',
+                    ],
+                ],
+            ],
         ];
         $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
         $excludeClasses = $configuration->getIndexQueuePagesExcludeContentByClassArray();
-        $this->assertEquals(['excludeClass'], $excludeClasses, 'Can not get exclude patterns from configuration');
+        self::assertEquals(['excludeClass'], $excludeClasses, 'Can not get exclude patterns from configuration');
     }
 
     /**
@@ -574,9 +580,9 @@ class TypoScriptConfigurationTest extends UnitTest
     public function canSetSearchQueryFilterConfiguration()
     {
         $configuration = new TypoScriptConfiguration([]);
-        $this->assertEquals([], $configuration->getSearchQueryFilterConfiguration());
+        self::assertEquals([], $configuration->getSearchQueryFilterConfiguration());
         $configuration->setSearchQueryFilterConfiguration(['foo']);
-        $this->assertEquals(['foo'], $configuration->getSearchQueryFilterConfiguration());
+        self::assertEquals(['foo'], $configuration->getSearchQueryFilterConfiguration());
     }
 
     /**
@@ -588,17 +594,17 @@ class TypoScriptConfigurationTest extends UnitTest
             'search.' => [
                 'query.' => [
                     'filter.' => [
-                        '__pageSections' => '1,2,3'
-                    ]
-                ]
-            ]
+                        '__pageSections' => '1,2,3',
+                    ],
+                ],
+            ],
         ];
 
         $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
-        $this->assertEquals(['__pageSections' => '1,2,3'], $configuration->getSearchQueryFilterConfiguration());
+        self::assertEquals(['__pageSections' => '1,2,3'], $configuration->getSearchQueryFilterConfiguration());
 
         $configuration->removeSearchQueryFilterForPageSections();
-        $this->assertEquals([], $configuration->getSearchQueryFilterConfiguration());
+        self::assertEquals([], $configuration->getSearchQueryFilterConfiguration());
     }
 
     /**
@@ -610,17 +616,17 @@ class TypoScriptConfigurationTest extends UnitTest
             'search.' => [
                 'query.' => [
                     'filter.' => [
-                        'type:pages', '__pageSections' => '1,2,3'
-                    ]
-                ]
-            ]
+                        'type:pages', '__pageSections' => '1,2,3',
+                    ],
+                ],
+            ],
         ];
 
         $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
-        $this->assertEquals(['type:pages', '__pageSections' => '1,2,3'], $configuration->getSearchQueryFilterConfiguration());
+        self::assertEquals(['type:pages', '__pageSections' => '1,2,3'], $configuration->getSearchQueryFilterConfiguration());
 
         $configuration->removeSearchQueryFilterForPageSections();
-        $this->assertEquals(['type:pages'], $configuration->getSearchQueryFilterConfiguration());
+        self::assertEquals(['type:pages'], $configuration->getSearchQueryFilterConfiguration());
     }
 
     /**
@@ -631,12 +637,12 @@ class TypoScriptConfigurationTest extends UnitTest
         $fakeConfigurationArray['plugin.']['tx_solr.'] = [
             'search.' => [
                 'query.' => [
-                ]
-            ]
+                ],
+            ],
         ];
 
         $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
-        $this->assertEquals([], $configuration->GetSearchQueryReturnFieldsAsArray());
+        self::assertEquals([], $configuration->GetSearchQueryReturnFieldsAsArray());
     }
 
     /**
@@ -647,13 +653,13 @@ class TypoScriptConfigurationTest extends UnitTest
         $fakeConfigurationArray['plugin.']['tx_solr.'] = [
             'search.' => [
                 'query.' => [
-                    'returnFields' => 'foo, bar'
-                ]
-            ]
+                    'returnFields' => 'foo, bar',
+                ],
+            ],
         ];
 
         $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
-        $this->assertEquals(['foo', 'bar'], $configuration->GetSearchQueryReturnFieldsAsArray());
+        self::assertEquals(['foo', 'bar'], $configuration->GetSearchQueryReturnFieldsAsArray());
     }
 
     /**
@@ -668,17 +674,17 @@ class TypoScriptConfigurationTest extends UnitTest
                     'options.' => [
                         'title.' => [
                             'field' => 'title',
-                            'label' => 'Titel'
-                        ]
-                    ]
-                ]
-            ]
+                            'label' => 'Titel',
+                        ],
+                    ],
+                ],
+            ],
         ];
 
         $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
 
         $retrievedSorting = $configuration->getSearchSortingDefaultOrderBySortOptionName('title');
-        $this->assertEquals('desc', $retrievedSorting);
+        self::assertEquals('desc', $retrievedSorting);
     }
 
     /**
@@ -694,17 +700,17 @@ class TypoScriptConfigurationTest extends UnitTest
                         'title.' => [
                             'defaultOrder' => 'asc',
                             'field' => 'title',
-                            'label' => 'Titel'
-                        ]
-                    ]
-                ]
-            ]
+                            'label' => 'Titel',
+                        ],
+                    ],
+                ],
+            ],
         ];
 
         $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
 
         $retrievedSorting = $configuration->getSearchSortingDefaultOrderBySortOptionName('title');
-        $this->assertEquals('asc', $retrievedSorting);
+        self::assertEquals('asc', $retrievedSorting);
     }
 
     /**
@@ -719,17 +725,17 @@ class TypoScriptConfigurationTest extends UnitTest
                         'title.' => [
                             'defaultOrder' => 'DESC',
                             'field' => 'title',
-                            'label' => 'Titel'
-                        ]
-                    ]
-                ]
-            ]
+                            'label' => 'Titel',
+                        ],
+                    ],
+                ],
+            ],
         ];
 
         $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
 
         $retrievedSorting = $configuration->getSearchSortingDefaultOrderBySortOptionName('title');
-        $this->assertEquals('desc', $retrievedSorting);
+        self::assertEquals('desc', $retrievedSorting);
     }
 
     /**
@@ -744,21 +750,21 @@ class TypoScriptConfigurationTest extends UnitTest
                     'groups.' => [
                         'typeGroup.' => [
                             'field' => 'type',
-                            'numberOfResultsPerGroup' => 5
+                            'numberOfResultsPerGroup' => 5,
                         ],
                         'priceGroup.' => [
                             'field' => 'price',
-                            'numberOfResultsPerGroup' => 2
-                        ]
-                    ]
-                ]
-            ]
+                            'numberOfResultsPerGroup' => 2,
+                        ],
+                    ],
+                ],
+            ],
         ];
 
         $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
 
         $highestResultsPerGroup = $configuration->getSearchGroupingHighestGroupResultsLimit();
-        $this->assertEquals(5, $highestResultsPerGroup, 'Can not get highest result per group value');
+        self::assertEquals(5, $highestResultsPerGroup, 'Can not get highest result per group value');
     }
 
     /**
@@ -773,21 +779,21 @@ class TypoScriptConfigurationTest extends UnitTest
                     'groups.' => [
                         'typeGroup.' => [
                             'field' => 'type',
-                            'numberOfResultsPerGroup' => 5
+                            'numberOfResultsPerGroup' => 5,
                         ],
                         'priceGroup.' => [
                             'field' => 'price',
-                            'numberOfResultsPerGroup' => 2
-                        ]
-                    ]
-                ]
-            ]
+                            'numberOfResultsPerGroup' => 2,
+                        ],
+                    ],
+                ],
+            ],
         ];
 
         $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
 
         $highestResultsPerGroup = $configuration->getSearchGroupingHighestGroupResultsLimit();
-        $this->assertEquals(8, $highestResultsPerGroup, 'Can not get highest result per group value');
+        self::assertEquals(8, $highestResultsPerGroup, 'Can not get highest result per group value');
     }
 
     /**
@@ -803,16 +809,16 @@ class TypoScriptConfigurationTest extends UnitTest
                     'groups.' => [
                         'typeGroup.' => [
                             'field' => 'type',
-                            'numberOfResultsPerGroup' => 5
-                        ]
-                    ]
-                ]
-            ]
+                            'numberOfResultsPerGroup' => 5,
+                        ],
+                    ],
+                ],
+            ],
         ];
 
         $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
 
-        $this->assertFalse($configuration->getSearchGrouping(), 'Expected grouping to be disabled');
+        self::assertFalse($configuration->getSearchGrouping(), 'Expected grouping to be disabled');
     }
 
     /**
@@ -821,7 +827,7 @@ class TypoScriptConfigurationTest extends UnitTest
     public function getSearchAdditionalPersistentArgumentNamesReturnsEmptyArrayWhenNothingIsConfigured()
     {
         $configuration = new TypoScriptConfiguration([]);
-        $this->assertSame([], $configuration->getSearchAdditionalPersistentArgumentNames(), 'Expected to get an empty array, when nothing configured');
+        self::assertSame([], $configuration->getSearchAdditionalPersistentArgumentNames(), 'Expected to get an empty array, when nothing configured');
     }
 
     /**
@@ -832,10 +838,10 @@ class TypoScriptConfigurationTest extends UnitTest
         $fakeConfigurationArray['plugin.']['tx_solr.'] = [
             'search.' => [
                 'additionalPersistentArgumentNames' => 'customA, customB',
-            ]
+            ],
         ];
 
         $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
-        $this->assertSame(['customA','customB'], $configuration->getSearchAdditionalPersistentArgumentNames(), 'Can not get configured custom parameters');
+        self::assertSame(['customA', 'customB'], $configuration->getSearchAdditionalPersistentArgumentNames(), 'Can not get configured custom parameters');
     }
 }

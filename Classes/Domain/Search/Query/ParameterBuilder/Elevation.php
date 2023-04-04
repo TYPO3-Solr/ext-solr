@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
 
 /***************************************************************
@@ -45,9 +46,9 @@ class Elevation extends AbstractDeactivatable implements ParameterBuilder
 
     /**
      * Elevation constructor.
-     * @param boolean $isEnabled
-     * @param boolean $isForced
-     * @param boolean $markElevatedResults
+     * @param bool $isEnabled
+     * @param bool $isForced
+     * @param bool $markElevatedResults
      */
     public function __construct($isEnabled = false, $isForced = true, $markElevatedResults = true)
     {
@@ -57,7 +58,7 @@ class Elevation extends AbstractDeactivatable implements ParameterBuilder
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function getIsForced(): bool
     {
@@ -65,7 +66,7 @@ class Elevation extends AbstractDeactivatable implements ParameterBuilder
     }
 
     /**
-     * @param boolean $isForced
+     * @param bool $isForced
      */
     public function setIsForced(bool $isForced)
     {
@@ -73,7 +74,7 @@ class Elevation extends AbstractDeactivatable implements ParameterBuilder
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function getMarkElevatedResults(): bool
     {
@@ -81,7 +82,7 @@ class Elevation extends AbstractDeactivatable implements ParameterBuilder
     }
 
     /**
-     * @param boolean $markElevatedResults
+     * @param bool $markElevatedResults
      */
     public function setMarkElevatedResults(bool $markElevatedResults)
     {

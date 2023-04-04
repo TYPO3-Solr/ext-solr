@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr;
 
 /***************************************************************
@@ -45,21 +46,21 @@ class Search
      *
      * @var SolrConnection
      */
-    protected $solr = null;
+    protected $solr;
 
     /**
      * The search query
      *
      * @var Query
      */
-    protected $query = null;
+    protected $query;
 
     /**
      * The search response
      *
      * @var ResponseAdapter
      */
-    protected $response = null;
+    protected $response;
 
     /**
      * @var TypoScriptConfiguration
@@ -71,7 +72,7 @@ class Search
     /**
      * @var \ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager
      */
-    protected $logger = null;
+    protected $logger;
 
     /**
      * Constructor
@@ -142,16 +143,17 @@ class Search
         try {
             $response = $this->solr->getReadService()->search($query);
             if ($this->configuration->getLoggingQueryQueryString()) {
-                $this->logger->log(SolrLogManager::INFO,
+                $this->logger->log(
+                    SolrLogManager::INFO,
                     'Querying Solr, getting result',
                     [
                         'query string' => $query->getQuery(),
                         'query parameters' => $query->getRequestBuilder()->build($query)->getParams(),
-                        'response' => json_decode($response->getRawResponse(), true)
+                        'response' => json_decode($response->getRawResponse(), true),
                     ]
                 );
             }
-        }  catch (SolrCommunicationException $e) {
+        } catch (SolrCommunicationException $e) {
             if ($this->configuration->getLoggingExceptions()) {
                 $this->logger->log(
                     SolrLogManager::ERROR,
@@ -160,7 +162,7 @@ class Search
                         'exception' => $e->__toString(),
                         'query' => (array)$query,
                         'offset' => $offset,
-                        'limit' => $query->getRows()
+                        'limit' => $query->getRows(),
                     ]
                 );
             }
@@ -196,7 +198,7 @@ class Search
                     SolrLogManager::ERROR,
                     'Exception while trying to ping the solr server',
                     [
-                        $e->__toString()
+                        $e->__toString(),
                     ]
                 );
             }

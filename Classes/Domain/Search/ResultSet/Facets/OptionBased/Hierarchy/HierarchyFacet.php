@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Hierarchy;
 
 /*
@@ -88,8 +89,8 @@ class HierarchyFacet extends AbstractFacet
      * @param string $key
      * @param string $label
      * @param string $value
-     * @param integer $count
-     * @param boolean $selected
+     * @param int $count
+     * @param bool $selected
      */
     public function createNode($parentKey, $key, $label, $value, $count, $selected)
     {

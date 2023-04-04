@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\Solr\Service;
 
 /***************************************************************
@@ -37,7 +38,6 @@ use Solarium\Core\Client\Request;
 use Solarium\Core\Client\Response;
 use Solarium\Exception\HttpException;
 use Solarium\QueryType\Ping\Query as PingQuery;
-use Solarium\QueryType\Select\Query\Query as SelectQuery;
 
 /**
  * Tests the ApacheSolrForTypo3\Solr\SolrService class
@@ -67,13 +67,14 @@ class SolrReadServiceTest extends UnitTest
      */
     protected $service;
 
-    protected function setUp(): void {
+    protected function setUp(): void
+    {
         parent::setUp();
         $this->responseMock = $this->getDumbMock(Response::class);
         $this->requestMock = $this->getDumbMock(Request::class);
         $this->clientMock = $this->getDumbMock(Client::class);
-        $this->clientMock->expects($this->any())->method('createRequest')->willReturn($this->requestMock);
-        $this->clientMock->expects($this->any())->method('executeRequest')->willReturn($this->responseMock);
+        $this->clientMock->expects(self::any())->method('createRequest')->willReturn($this->requestMock);
+        $this->clientMock->expects(self::any())->method('executeRequest')->willReturn($this->responseMock);
 
         $this->service = new SolrReadService($this->clientMock);
     }
@@ -84,8 +85,8 @@ class SolrReadServiceTest extends UnitTest
     public function pingIsOnlyDoingOnePingCallWhenCacheIsEnabled()
     {
         // we fake a 200 OK response and expect that
-        $this->responseMock->expects($this->once())->method('getStatusCode')->willReturn(200);
-        $this->clientMock->expects($this->once())->method('createPing')->willReturn($this->getDumbMock(PingQuery::class));
+        $this->responseMock->expects(self::once())->method('getStatusCode')->willReturn(200);
+        $this->clientMock->expects(self::once())->method('createPing')->willReturn($this->getDumbMock(PingQuery::class));
         $this->service->ping();
         $this->service->ping();
     }
@@ -96,8 +97,8 @@ class SolrReadServiceTest extends UnitTest
     public function pingIsOnlyDoingManyPingCallsWhenCacheIsDisabled()
     {
         // we fake a 200 OK response and expect that
-        $this->responseMock->expects($this->exactly(2))->method('getStatusCode')->willReturn(200);
-        $this->clientMock->expects($this->exactly(2))->method('createPing')->willReturn($this->getDumbMock(PingQuery::class));
+        $this->responseMock->expects(self::exactly(2))->method('getStatusCode')->willReturn(200);
+        $this->clientMock->expects(self::exactly(2))->method('createPing')->willReturn($this->getDumbMock(PingQuery::class));
         $this->service->ping(false);
         $this->service->ping(false);
     }
@@ -107,15 +108,15 @@ class SolrReadServiceTest extends UnitTest
      */
     public function searchMethodIsTriggeringGetRequest()
     {
-        $this->responseMock->expects($this->once())->method('getStatusCode')->willReturn(200);
-        $this->clientMock->expects($this->once())->method('createRequest')->willReturn($this->getDumbMock(Request::class));
+        $this->responseMock->expects(self::once())->method('getStatusCode')->willReturn(200);
+        $this->clientMock->expects(self::once())->method('createRequest')->willReturn($this->getDumbMock(Request::class));
 
         $searchQuery = new SearchQuery();
         $searchQuery->setQuery('foo');
         $result = $this->service->search($searchQuery);
 
-        $this->assertSame(200, $result->getHttpStatus(), 'Expecting to get a 200 OK response');
-        $this->assertTrue($this->service->hasSearched(), 'hasSearch indicates that no search was triggered');
+        self::assertSame(200, $result->getHttpStatus(), 'Expecting to get a 200 OK response');
+        self::assertTrue($this->service->hasSearched(), 'hasSearch indicates that no search was triggered');
     }
 
     /**
@@ -126,7 +127,7 @@ class SolrReadServiceTest extends UnitTest
         return [
             'Communication error' => ['exceptionClass' => SolrUnavailableException::class, 0],
             'Internal Server eror' => ['expcetionClass' => SolrInternalServerErrorException::class, 500],
-            'Other unspecific error' => ['expcetionClass' => SolrCommunicationException::class, 555]
+            'Other unspecific error' => ['expcetionClass' => SolrCommunicationException::class, 555],
         ];
     }
 
@@ -138,10 +139,10 @@ class SolrReadServiceTest extends UnitTest
      */
     public function searchThrowsExpectedExceptionForStatusCode($exceptionClass, $statusCode)
     {
-        $this->responseMock->expects($this->any())->method('getStatusCode')->willReturn($statusCode);
-        $this->clientMock->expects($this->once())->method('createRequest')->willReturn($this->getDumbMock(Request::class));
+        $this->responseMock->expects(self::any())->method('getStatusCode')->willReturn($statusCode);
+        $this->clientMock->expects(self::once())->method('createRequest')->willReturn($this->getDumbMock(Request::class));
 
-        $this->clientMock->expects($this->once())->method('executeRequest')->willReturnCallback(function() use ($statusCode) {
+        $this->clientMock->expects(self::once())->method('executeRequest')->willReturnCallback(function () use ($statusCode) {
             throw new HttpException('Solr error', $statusCode);
         });
         $searchQuery = new SearchQuery();

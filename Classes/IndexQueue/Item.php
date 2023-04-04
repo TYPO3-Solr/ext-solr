@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\IndexQueue;
 
 /***************************************************************
@@ -26,8 +27,8 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
 
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\IndexQueueIndexingPropertyRepository;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\QueueItemRepository;
-use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
+use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -161,10 +162,10 @@ class Item
         $this->rootPageUid = $itemMetaData['root'];
         $this->type = $itemMetaData['item_type'];
         $this->recordUid = $itemMetaData['item_uid'];
-        $this->mountPointIdentifier = (string) empty($itemMetaData['pages_mountidentifier']) ? '' : $itemMetaData['pages_mountidentifier'];
+        $this->mountPointIdentifier = (string)empty($itemMetaData['pages_mountidentifier']) ? '' : $itemMetaData['pages_mountidentifier'];
         $this->changed = $itemMetaData['changed'];
         $this->indexed = $itemMetaData['indexed'];
-        $this->errors = (string) empty($itemMetaData['errors']) ? '' : $itemMetaData['errors'];
+        $this->errors = (string)empty($itemMetaData['errors']) ? '' : $itemMetaData['errors'];
 
         $this->indexingConfigurationName = $itemMetaData['indexing_configuration'];
         $this->hasIndexingProperties = (boolean)$itemMetaData['has_indexing_properties'];
@@ -180,7 +181,7 @@ class Item
     /**
      * Getter for Index Queue UID
      *
-     * @return integer
+     * @return int
      */
     public function getIndexQueueUid()
     {
@@ -208,11 +209,11 @@ class Item
     }
 
     /**
-     * @param integer $uid
+     * @param int $uid
      */
     public function setRootPageUid($uid)
     {
-        $this->rootPageUid = intval($uid);
+        $this->rootPageUid = (int)$uid;
     }
 
     /**
@@ -224,7 +225,7 @@ class Item
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function getHasErrors()
     {
@@ -321,7 +322,7 @@ class Item
      */
     public function setChanged($changed)
     {
-        $this->changed = intval($changed);
+        $this->changed = (int)$changed;
     }
 
     /**
@@ -382,11 +383,10 @@ class Item
 
     /**
      * Stores the indexing properties.
-     *
      */
     public function storeIndexingProperties()
     {
-        $this->indexQueueIndexingPropertyRepository->removeByRootPidAndIndexQueueUid(intval($this->rootPageUid), intval($this->indexQueueUid));
+        $this->indexQueueIndexingPropertyRepository->removeByRootPidAndIndexQueueUid((int)($this->rootPageUid), (int)($this->indexQueueUid));
 
         if ($this->hasIndexingProperties()) {
             $this->writeIndexingProperties();
@@ -414,7 +414,7 @@ class Item
                 'root' => $this->rootPageUid,
                 'item_id' => $this->indexQueueUid,
                 'property_key' => $propertyKey,
-                'property_value' => $propertyValue
+                'property_value' => $propertyValue,
             ];
         }
         if (empty($properties)) {
@@ -443,7 +443,7 @@ class Item
             return;
         }
 
-        $indexingProperties = $this->indexQueueIndexingPropertyRepository->findAllByIndexQueueUid(intval($this->indexQueueUid));
+        $indexingProperties = $this->indexQueueIndexingPropertyRepository->findAllByIndexQueueUid((int)($this->indexQueueUid));
         $this->indexingPropertiesLoaded = true;
         if (empty($indexingProperties)) {
             return;

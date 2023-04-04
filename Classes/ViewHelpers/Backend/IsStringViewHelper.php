@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\ViewHelpers\Backend;
 
 /***************************************************************
@@ -24,7 +25,6 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers\Backend;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractConditionViewHelper;
 
 /**
@@ -35,8 +35,6 @@ class IsStringViewHelper extends AbstractConditionViewHelper
 
     /**
      * Initialize ViewHelper arguments
-     *
-     * @return void
      */
     public function initializeArguments()
     {
@@ -52,6 +50,6 @@ class IsStringViewHelper extends AbstractConditionViewHelper
      */
     protected static function evaluateCondition($arguments = null)
     {
-        return (isset($arguments['value']) && is_string($arguments['value']));
+        return isset($arguments['value']) && is_string($arguments['value']);
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Controller\Backend\Search;
 
 /***************************************************************
@@ -26,16 +27,14 @@ namespace ApacheSolrForTypo3\Solr\Controller\Backend\Search;
 
 use ApacheSolrForTypo3\Solr\Api;
 use ApacheSolrForTypo3\Solr\ConnectionManager;
-use ApacheSolrForTypo3\Solr\Domain\Search\Statistics\StatisticsRepository;
 use ApacheSolrForTypo3\Solr\Domain\Search\ApacheSolrDocument\Repository;
+use ApacheSolrForTypo3\Solr\Domain\Search\Statistics\StatisticsRepository;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\System\Validator\Path;
 use TYPO3\CMS\Backend\Template\ModuleTemplate;
-use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Registry;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Mvc\Exception\StopActionException;
 use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
 
 /**
@@ -61,13 +60,11 @@ class InfoModuleController extends AbstractModuleController
         parent::initializeAction();
         $this->solrConnectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
         $this->apacheSolrDocumentRepository = GeneralUtility::makeInstance(Repository::class);
-
     }
     /**
      * Set up the doc header properly here
      *
      * @param ViewInterface $view
-     * @return void
      */
     protected function initializeView(ViewInterface $view)
     {
@@ -81,8 +78,6 @@ class InfoModuleController extends AbstractModuleController
 
     /**
      * Index action, shows an overview of the state of the Solr index
-     *
-     * @return void
      */
     public function indexAction()
     {
@@ -102,7 +97,6 @@ class InfoModuleController extends AbstractModuleController
      * @param int $uid
      * @param int $pageId
      * @param int $languageUid
-     * @return void
      */
     public function documentsDetailsAction(string $type, int $uid, int $pageId, int $languageUid)
     {
@@ -113,8 +107,6 @@ class InfoModuleController extends AbstractModuleController
     /**
      * Checks whether the configured Solr server can be reached and provides a
      * flash message according to the result of the check.
-     *
-     * @return void
      */
     protected function collectConnectionInfos()
     {
@@ -151,14 +143,12 @@ class InfoModuleController extends AbstractModuleController
             'apiKey' => Api::getApiKey(),
             'connectedHosts' => $connectedHosts,
             'missingHosts' => $missingHosts,
-            'invalidPaths' => $invalidPaths
+            'invalidPaths' => $invalidPaths,
         ]);
     }
 
     /**
      * Index action, shows an overview of the state of the Solr index
-     *
-     * @return void
      */
     protected function collectStatistics()
     {
@@ -197,8 +187,6 @@ class InfoModuleController extends AbstractModuleController
     /**
      * Gets Luke meta data for the currently selected core and provides a list
      * of that data.
-     *
-     * @return void
      */
     protected function collectIndexFieldsInfo()
     {
@@ -209,7 +197,7 @@ class InfoModuleController extends AbstractModuleController
             $coreAdmin = $solrCoreConnection->getAdminService();
 
             $indexFieldsInfo = [
-                'corePath' => $coreAdmin->getCorePath()
+                'corePath' => $coreAdmin->getCorePath(),
             ];
             if ($coreAdmin->ping()) {
                 $lukeData = $coreAdmin->getLukeMetaData();
@@ -250,8 +238,6 @@ class InfoModuleController extends AbstractModuleController
 
     /**
      * Retrieves the information for the index inspector.
-     *
-     * @return void
      */
     protected function collectIndexInspectorInfo()
     {
@@ -272,7 +258,7 @@ class InfoModuleController extends AbstractModuleController
 
         $this->view->assignMultiple([
             'pageId' => $this->selectedPageUID,
-            'indexInspectorDocumentsByLanguageAndType' => $documentsByCoreAndType
+            'indexInspectorDocumentsByLanguageAndType' => $documentsByCoreAndType,
         ]);
     }
 
@@ -294,7 +280,7 @@ class InfoModuleController extends AbstractModuleController
                 'name' => $name,
                 'type' => $field->type,
                 'docs' => isset($field->docs) ? $field->docs : 0,
-                'terms' => isset($field->distinct) ? $field->distinct : $limitNote
+                'terms' => isset($field->distinct) ? $field->distinct : $limitNote,
             ];
         }
         ksort($rows);
@@ -316,7 +302,7 @@ class InfoModuleController extends AbstractModuleController
             'numberOfDocuments' => $lukeData->index->numDocs,
             'numberOfDeletedDocuments' => $lukeData->index->deletedDocs,
             'numberOfTerms' => $lukeData->index->numTerms,
-            'numberOfFields' => count($fields)
+            'numberOfFields' => count($fields),
         ];
 
         return $coreMetrics;
