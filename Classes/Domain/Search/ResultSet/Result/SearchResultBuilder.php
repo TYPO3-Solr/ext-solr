@@ -32,7 +32,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * The SearchResultBuilder is responsible to build a SearchResult object from an \ApacheSolrForTypo3\Solr\System\Solr\Document\Document
  * and should use a different class as SearchResult if configured.
  */
-class SearchResultBuilder {
+class SearchResultBuilder
+{
 
     /**
      * This method is used to wrap the original solr document instance in an instance of the configured SearchResult
@@ -44,7 +45,6 @@ class SearchResultBuilder {
      */
     public function fromApacheSolrDocument(Document $originalDocument)
     {
-
         $searchResultClassName = $this->getResultClassName();
         $result = GeneralUtility::makeInstance($searchResultClassName, /** @scrutinizer ignore-type */ $originalDocument->getFields() ?? []);
 

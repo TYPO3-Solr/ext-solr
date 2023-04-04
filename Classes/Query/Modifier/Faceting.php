@@ -1,4 +1,6 @@
-<?php declare(strict_types = 1);
+<?php
+
+declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\Query\Modifier;
 
@@ -16,8 +18,8 @@ namespace ApacheSolrForTypo3\Solr\Query\Modifier;
  */
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Faceting as FacetingBuilder;
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\FacetRegistry;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\InvalidFacetPackageException;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\InvalidQueryBuilderException;
@@ -41,7 +43,7 @@ class Faceting implements Modifier, SearchRequestAware
     /**
      * @var FacetRegistry
      */
-    protected $facetRegistry = null;
+    protected $facetRegistry;
 
     /**
      * @var SearchRequest
@@ -83,7 +85,7 @@ class Faceting implements Modifier, SearchRequestAware
         $allFacets = $typoScriptConfiguration->getSearchFacetingFacets();
         $facetParameters = $this->buildFacetingParameters($allFacets, $typoScriptConfiguration);
         foreach ($facetParameters as $facetParameter => $value) {
-            if(strtolower($facetParameter) === 'facet.field') {
+            if (strtolower($facetParameter) === 'facet.field') {
                 $faceting->setFields($value);
             } else {
                 $faceting->addAdditionalParameter($facetParameter, $value);

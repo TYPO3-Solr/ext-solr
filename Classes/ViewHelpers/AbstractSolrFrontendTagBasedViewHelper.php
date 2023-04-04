@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\ViewHelpers;
 
 /*
@@ -14,10 +15,9 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers;
  * The TYPO3 project - inspiring people to share!
  */
 
-use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Mvc\Controller\SolrControllerContext;
-use ApacheSolrForTypo3\Solr\ViewHelpers\AbstractSolrTagBasedViewHelper;
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 
 /**
  * Class AbstractSolrFrontendTagBasedViewHelper

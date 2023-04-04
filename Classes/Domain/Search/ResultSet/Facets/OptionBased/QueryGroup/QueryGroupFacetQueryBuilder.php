@@ -1,5 +1,7 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\QueryGroup;
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -17,7 +19,8 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\DefaultFacetQueryBuil
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\FacetQueryBuilderInterface;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 
-class QueryGroupFacetQueryBuilder extends DefaultFacetQueryBuilder implements FacetQueryBuilderInterface {
+class QueryGroupFacetQueryBuilder extends DefaultFacetQueryBuilder implements FacetQueryBuilderInterface
+{
 
     /**
      * @param string $facetName

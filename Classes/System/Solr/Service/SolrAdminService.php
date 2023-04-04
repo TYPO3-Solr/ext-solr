@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\System\Solr\Service;
 
 /***************************************************************
@@ -48,13 +49,12 @@ class SolrAdminService extends AbstractSolrService
     const SYNONYMS_SERVLET = 'schema/analysis/synonyms/';
     const STOPWORDS_SERVLET = 'schema/analysis/stopwords/';
 
-
     /**
      * @var array
      */
     protected $lukeData = [];
 
-    protected $systemData = null;
+    protected $systemData;
 
     protected $pluginsData = [];
 
@@ -66,7 +66,7 @@ class SolrAdminService extends AbstractSolrService
     /**
      * @var SchemaParser
      */
-    protected $schemaParser = null;
+    protected $schemaParser;
 
     /**
      * @var Schema
@@ -85,12 +85,12 @@ class SolrAdminService extends AbstractSolrService
     /**
      * @var SynonymParser
      */
-    protected $synonymParser = null;
+    protected $synonymParser;
 
     /**
      * @var StopWordParser
      */
-    protected $stopWordParser = null;
+    protected $stopWordParser;
 
     /**
      * Constructor
@@ -109,8 +109,7 @@ class SolrAdminService extends AbstractSolrService
         SynonymParser $synonymParser = null,
         StopWordParser $stopWordParser = null,
         SchemaParser $schemaParser = null
-    )
-    {
+    ) {
         parent::__construct($client, $typoScriptConfiguration);
 
         $this->synonymParser = $synonymParser ?? GeneralUtility::makeInstance(SynonymParser::class);
@@ -168,7 +167,8 @@ class SolrAdminService extends AbstractSolrService
     {
         if (!isset($this->lukeData[$numberOfTerms])) {
             $lukeUrl = $this->_constructUrl(
-                self::LUKE_SERVLET, ['numTerms' => $numberOfTerms, 'wt' => 'json', 'fl' => '*']
+                self::LUKE_SERVLET,
+                ['numTerms' => $numberOfTerms, 'wt' => 'json', 'fl' => '*']
             );
 
             $this->lukeData[$numberOfTerms] = $this->_sendRawGet($lukeUrl);
@@ -366,9 +366,6 @@ class SolrAdminService extends AbstractSolrService
         return $this->_sendRawDelete($this->_stopWordsUrl . '/' . rawurlencode(rawurlencode($stopWord)));
     }
 
-    /**
-     * @return void
-     */
     protected function initializeSynonymsUrl()
     {
         if (trim($this->_synonymsUrl) !== '') {
@@ -377,9 +374,6 @@ class SolrAdminService extends AbstractSolrService
         $this->_synonymsUrl = $this->_constructUrl(self::SYNONYMS_SERVLET) . $this->getSchema()->getManagedResourceId();
     }
 
-    /**
-     * @return void
-     */
     protected function initializeStopWordsUrl()
     {
         if (trim($this->_stopWordsUrl) !== '') {

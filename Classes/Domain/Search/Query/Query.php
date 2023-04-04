@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Domain\Search\Query;
 
 /***************************************************************
@@ -26,14 +27,16 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Query;
 
 use Solarium\QueryType\Select\Query\Query as SolariumQuery;
 
-class Query extends SolariumQuery {
+class Query extends SolariumQuery
+{
 
     /**
      * Returns the query parameters that should be used.
      *
      * @return array
      */
-    public function getQueryParameters() {
+    public function getQueryParameters()
+    {
         return $this->getParams();
     }
 

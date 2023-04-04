@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
 
 /***************************************************************
@@ -25,7 +26,6 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\AbstractQueryBuilder;
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -142,9 +142,8 @@ class Highlighting extends AbstractDeactivatable implements ParameterBuilder
      */
     public function getUseFastVectorHighlighter()
     {
-        return ($this->fragmentSize >= 18);
+        return $this->fragmentSize >= 18;
     }
-
 
     /**
      * @param TypoScriptConfiguration $solrConfiguration
@@ -163,7 +162,6 @@ class Highlighting extends AbstractDeactivatable implements ParameterBuilder
         $prefix = isset($wrap[0]) ? $wrap[0] : '';
         $postfix = isset($wrap[1]) ? $wrap[1] : '';
 
-
         return new Highlighting($isEnabled, $fragmentSize, $highlightingFields, $prefix, $postfix);
     }
 
@@ -175,7 +173,6 @@ class Highlighting extends AbstractDeactivatable implements ParameterBuilder
         return new Highlighting(false);
     }
 
-
     /**
      * @param AbstractQueryBuilder $parentBuilder
      * @return AbstractQueryBuilder
@@ -183,13 +180,13 @@ class Highlighting extends AbstractDeactivatable implements ParameterBuilder
     public function build(AbstractQueryBuilder $parentBuilder): AbstractQueryBuilder
     {
         $query = $parentBuilder->getQuery();
-        if(!$this->getIsEnabled()) {
+        if (!$this->getIsEnabled()) {
             $query->removeComponent($query->getHighlighting());
             return $parentBuilder;
         }
 
         $query->getHighlighting()->setFragSize($this->getFragmentSize());
-        $query->getHighlighting()->setFields(GeneralUtility::trimExplode(",", $this->getHighlightingFieldList()));
+        $query->getHighlighting()->setFields(GeneralUtility::trimExplode(',', $this->getHighlightingFieldList()));
 
         if ($this->getUseFastVectorHighlighter()) {
             $query->getHighlighting()->setUseFastVectorHighlighter(true);

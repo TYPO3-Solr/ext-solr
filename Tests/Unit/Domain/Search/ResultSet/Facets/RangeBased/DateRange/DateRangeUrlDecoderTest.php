@@ -55,7 +55,7 @@ class DateRangeUrlDecoderTest extends UnitTest
     {
         $expected = '[2010-01-01T00:00:00Z TO 2010-01-31T23:59:59Z]';
         $actual = $this->rangeParser->decode('201001010000-201001312359');
-        $this->assertEquals($expected, $actual);
+        self::assertEquals($expected, $actual);
     }
 
     /**
@@ -65,7 +65,7 @@ class DateRangeUrlDecoderTest extends UnitTest
     {
         $expected = '[* TO 2010-01-31T23:59:59Z]';
         $actual = $this->rangeParser->decode('-201001312359');
-        $this->assertEquals($expected, $actual);
+        self::assertEquals($expected, $actual);
     }
 
     /**
@@ -75,6 +75,6 @@ class DateRangeUrlDecoderTest extends UnitTest
     {
         $expected = '[2010-01-01T00:00:00Z TO *]';
         $actual = $this->rangeParser->decode('201001010000-');
-        $this->assertEquals($expected, $actual);
+        self::assertEquals($expected, $actual);
     }
 }

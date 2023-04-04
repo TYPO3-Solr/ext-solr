@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\System\Records\Queue;
 
 /***************************************************************
@@ -25,10 +26,10 @@ namespace ApacheSolrForTypo3\Solr\System\Records\Queue;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\System\Records\AbstractRepository;
-use TYPO3\CMS\Core\SingletonInterface;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\DataUpdateEventInterface;
+use ApacheSolrForTypo3\Solr\System\Records\AbstractRepository;
 use ApacheSolrForTypo3\Solr\Util;
+use TYPO3\CMS\Core\SingletonInterface;
 
 /**
  * EventQueueItemRepository to encapsulate the database access for the event queue items
@@ -54,7 +55,7 @@ class EventQueueItemRepository extends AbstractRepository implements SingletonIn
             ->insert($this->table)
             ->values([
                 'tstamp' => Util::getExectionTime(),
-                'event' => $serializedEvent
+                'event' => $serializedEvent,
 
             ])
             ->execute();
@@ -104,7 +105,7 @@ class EventQueueItemRepository extends AbstractRepository implements SingletonIn
                 $queryBuilder->expr()->eq('uid', $uid)
             );
 
-        foreach($data as $column => $value) {
+        foreach ($data as $column => $value) {
             $queryBuilder->set($column, $value);
         }
 

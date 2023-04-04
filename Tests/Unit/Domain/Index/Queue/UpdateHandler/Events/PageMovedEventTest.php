@@ -43,7 +43,7 @@ class PageMovedEventTest extends AbstractDataUpdateEventTest
     public function canInitAndReturnFields(): void
     {
         $event = new PageMovedEvent(123, static::EVENT_TEST_TABLE, ['hidden' => 1]);
-        $this->assertEmpty($event->getFields());
+        self::assertEmpty($event->getFields());
     }
 
     /**
@@ -52,7 +52,7 @@ class PageMovedEventTest extends AbstractDataUpdateEventTest
     public function canForceTable(): void
     {
         $event = new PageMovedEvent(123, 'tx_foo_bar');
-        $this->assertEquals('pages', $event->getTable());
+        self::assertEquals('pages', $event->getTable());
     }
 
     /**
@@ -61,7 +61,7 @@ class PageMovedEventTest extends AbstractDataUpdateEventTest
     public function canIndicatePageUpdate(): void
     {
         $event = new PageMovedEvent(123);
-        $this->assertTrue($event->isPageUpdate());
+        self::assertTrue($event->isPageUpdate());
     }
 
     /**
@@ -70,6 +70,6 @@ class PageMovedEventTest extends AbstractDataUpdateEventTest
     public function canIndicateContentElementUpdate(): void
     {
         $event = new PageMovedEvent(123);
-        $this->assertFalse($event->isContentElementUpdate());
+        self::assertFalse($event->isContentElementUpdate());
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\IndexQueue;
 
 /***************************************************************
@@ -37,7 +38,7 @@ class PageIndexerResponse
      *
      * @var string
      */
-    protected $requestId = null;
+    protected $requestId;
 
     /**
      * The actions' results as action => result pairs.
@@ -129,7 +130,7 @@ class PageIndexerResponse
 
         $responseData = [
             'requestId' => $this->requestId,
-            'actionResults' => $serializedActionResults
+            'actionResults' => $serializedActionResults,
         ];
 
         return json_encode($responseData);
@@ -149,7 +150,6 @@ class PageIndexerResponse
      * Sets the Id of the request this response belongs to.
      *
      * @param string $requestId Request Id.
-     * @return void
      */
     public function setRequestId($requestId)
     {

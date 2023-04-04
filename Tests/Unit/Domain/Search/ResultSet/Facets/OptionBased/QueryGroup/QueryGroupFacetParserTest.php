@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Test\Domain\Search\ResultSet\Facets\OptionBased\QueryGroup;
 
 /*
@@ -14,16 +15,15 @@ namespace ApacheSolrForTypo3\Solr\Test\Domain\Search\ResultSet\Facets\OptionBase
  * The TYPO3 project - inspiring people to share!
  */
 
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\QueryGroup\Option;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\QueryGroup\QueryGroupFacet;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\QueryGroup\QueryGroupFacetParser;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\UrlFacetContainer;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\System\Util\ArrayAccessor;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\QueryGroup\Option;
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\QueryGroup\QueryGroupFacet;
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\QueryGroup\QueryGroupFacetParser;
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Test\Domain\Search\ResultSet\Facets\AbstractFacetParserTest;
 
 /**
@@ -53,25 +53,25 @@ class QueryGroupFacetParserTest extends AbstractFacetParserTest
         $configuration = [];
         $configuration['plugin.']['tx_solr.']['search.']['faceting.']['facets.'] = $facetConfiguration;
         $typoScriptConfiguration = new TypoScriptConfiguration($configuration);
-        $searchRequestMock->expects($this->any())
+        $searchRequestMock->expects(self::any())
             ->method('getContextTypoScriptConfiguration')
-            ->will($this->returnValue($typoScriptConfiguration));
+            ->willReturn($typoScriptConfiguration);
 
         $activeUrlFacets = new UrlFacetContainer(
             new ArrayAccessor([ 'tx_solr' => ['filter' => $activeFilters] ])
         );
 
-        $searchRequestMock->expects($this->any())
+        $searchRequestMock->expects(self::any())
             ->method('getActiveFacetNames')
-            ->will($this->returnCallback(function() use ($activeUrlFacets) {
+            ->willReturnCallback(function () use ($activeUrlFacets) {
                 return $activeUrlFacets->getActiveFacetNames();
-            }));
+            });
 
-        $searchRequestMock->expects($this->any())
+        $searchRequestMock->expects(self::any())
             ->method('getHasFacetValue')
-            ->will($this->returnCallback(function(string $facetName, $facetValue) use ($activeUrlFacets) {
+            ->willReturnCallback(function (string $facetName, $facetValue) use ($activeUrlFacets) {
                 return $activeUrlFacets->hasFacetValue($facetName, $facetValue);
-            }));
+            });
 
         return $searchResultSet;
     }
@@ -91,9 +91,9 @@ class QueryGroupFacetParserTest extends AbstractFacetParserTest
                     'month' => ['query' => '[NOW/DAY-1MONTH TO NOW/DAY-7DAYS]'],
                     'halfYear' => ['query' => '[NOW/DAY-6MONTHS TO NOW/DAY-1MONTH]'],
                     'year' => ['query' => '[NOW/DAY-1YEAR TO NOW/DAY-6MONTHS]'],
-                    'old' => ['query' => '[* TO NOW/DAY-1YEAR]']
-                ]
-            ]
+                    'old' => ['query' => '[* TO NOW/DAY-1YEAR]'],
+                ],
+            ],
         ];
 
         $searchResultSet = $this->initializeSearchResultSetFromFakeResponse(
@@ -104,7 +104,7 @@ class QueryGroupFacetParserTest extends AbstractFacetParserTest
         $parser = $this->getInitializedParser(QueryGroupFacetParser::class);
         $facet = $parser->parse($searchResultSet, 'age', $facetConfiguration['age.']);
 
-        $this->assertInstanceOf(QueryGroupFacet::class, $facet);
+        self::assertInstanceOf(QueryGroupFacet::class, $facet);
     }
 
     /**
@@ -122,9 +122,9 @@ class QueryGroupFacetParserTest extends AbstractFacetParserTest
                     'month' => ['query' => '[NOW/DAY-1MONTH TO NOW/DAY-7DAYS]'],
                     'halfYear' => ['query' => '[NOW/DAY-6MONTHS TO NOW/DAY-1MONTH]'],
                     'year' => ['query' => '[NOW/DAY-1YEAR TO NOW/DAY-6MONTHS]'],
-                    'old' => ['query' => '[* TO NOW/DAY-1YEAR]']
-                ]
-            ]
+                    'old' => ['query' => '[* TO NOW/DAY-1YEAR]'],
+                ],
+            ],
         ];
 
         $searchResultSet = $this->initializeSearchResultSetFromFakeResponse(
@@ -132,11 +132,11 @@ class QueryGroupFacetParserTest extends AbstractFacetParserTest
             $facetConfiguration
         );
 
-         /** @var $parser QueryGroupFacetParser */
+        /** @var $parser QueryGroupFacetParser */
         $parser = $this->getInitializedParser(QueryGroupFacetParser::class);
         $facet = $parser->parse($searchResultSet, 'age', $facetConfiguration['age.']);
 
-        $this->assertFalse($facet->getIsUsed());
+        self::assertFalse($facet->getIsUsed());
     }
 
     /**
@@ -154,9 +154,9 @@ class QueryGroupFacetParserTest extends AbstractFacetParserTest
                     'month' => ['query' => '[NOW/DAY-1MONTH TO NOW/DAY-7DAYS]'],
                     'halfYear' => ['query' => '[NOW/DAY-6MONTHS TO NOW/DAY-1MONTH]'],
                     'year' => ['query' => '[NOW/DAY-1YEAR TO NOW/DAY-6MONTHS]'],
-                    'old' => ['query' => '[* TO NOW/DAY-1YEAR]']
-                ]
-            ]
+                    'old' => ['query' => '[* TO NOW/DAY-1YEAR]'],
+                ],
+            ],
         ];
 
         $searchResultSet = $this->initializeSearchResultSetFromFakeResponse(
@@ -168,7 +168,7 @@ class QueryGroupFacetParserTest extends AbstractFacetParserTest
         $parser = $this->getInitializedParser(QueryGroupFacetParser::class);
         $facet = $parser->parse($searchResultSet, 'age', $facetConfiguration['age.']);
 
-        $this->assertTrue($facet->getIsUsed());
+        self::assertTrue($facet->getIsUsed());
     }
 
     /**
@@ -186,9 +186,9 @@ class QueryGroupFacetParserTest extends AbstractFacetParserTest
                     'month' => ['query' => '[NOW/DAY-1MONTH TO NOW/DAY-7DAYS]'],
                     'halfYear' => ['query' => '[NOW/DAY-6MONTHS TO NOW/DAY-1MONTH]'],
                     'year' => ['query' => '[NOW/DAY-1YEAR TO NOW/DAY-6MONTHS]'],
-                    'old' => ['query' => '[* TO NOW/DAY-1YEAR]']
-                ]
-            ]
+                    'old' => ['query' => '[* TO NOW/DAY-1YEAR]'],
+                ],
+            ],
         ];
 
         $searchResultSet = $this->initializeSearchResultSetFromFakeResponse(
@@ -204,9 +204,9 @@ class QueryGroupFacetParserTest extends AbstractFacetParserTest
         /** @var Option $option */ // @extensionScannerIgnoreLine
         foreach ($facet->getOptions() as $option) {
             if ($option->getValue() === 'week') {
-                $this->assertTrue($option->getSelected(), 'Option ' . $option->getValue() . ' isn\'t active');
+                self::assertTrue($option->getSelected(), 'Option ' . $option->getValue() . ' isn\'t active');
             } else {
-                $this->assertFalse((bool)$option->getSelected(), 'Option ' . $option->getValue() . ' is active but was not expected to be');
+                self::assertFalse((bool)$option->getSelected(), 'Option ' . $option->getValue() . ' is active but was not expected to be');
             }
         }
     }

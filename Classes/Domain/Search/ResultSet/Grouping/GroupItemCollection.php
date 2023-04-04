@@ -30,4 +30,6 @@ use ApacheSolrForTypo3\Solr\System\Data\AbstractCollection;
 /**
  * The GroupItemCollection contains the GroupItem objects.
  */
-class GroupItemCollection extends AbstractCollection {}
+class GroupItemCollection extends AbstractCollection
+{
+}

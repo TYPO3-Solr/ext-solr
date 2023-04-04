@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Search;
 
 /***************************************************************
@@ -36,7 +37,6 @@ class LastSearchesComponent extends AbstractComponent
 
     /**
      * Initializes the search component.
-     *
      */
     public function initializeSearchComponent()
     {

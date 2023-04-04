@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Report;
 
 /***************************************************************
@@ -45,14 +46,14 @@ class SolrStatus extends AbstractSolrStatus
      *
      * @var SiteRepository
      */
-    protected $siteRepository = null;
+    protected $siteRepository;
 
     /**
      * Connection Manager
      *
      * @var ConnectionManager
      */
-    protected $connectionManager = null;
+    protected $connectionManager;
 
     /**
      * Holds the response status
@@ -68,7 +69,6 @@ class SolrStatus extends AbstractSolrStatus
      */
     protected $responseMessage = '';
 
-
     /**
      * SolrStatus constructor.
      * @param SiteRepository|null $siteRepository
@@ -82,7 +82,6 @@ class SolrStatus extends AbstractSolrStatus
 
     /**
      * Compiles a collection of status checks against each configured Solr server.
-     *
      */
     public function getStatus()
     {
@@ -129,16 +128,20 @@ class SolrStatus extends AbstractSolrStatus
             'pingTime' => $pingTime,
             'configName' => $configName,
             'schemaName' => $schemaName,
-            'accessFilter' => $accessFilter
+            'accessFilter' => $accessFilter,
         ];
 
         $report = $this->getRenderedReport('SolrStatus.html', $variables);
         return GeneralUtility::makeInstance(
             Status::class,
-            /** @scrutinizer ignore-type */ 'Apache Solr',
-            /** @scrutinizer ignore-type */ '',
-            /** @scrutinizer ignore-type */ $report,
-            /** @scrutinizer ignore-type */ $this->responseStatus
+            /** @scrutinizer ignore-type */
+            'Apache Solr',
+            /** @scrutinizer ignore-type */
+            '',
+            /** @scrutinizer ignore-type */
+            $report,
+            /** @scrutinizer ignore-type */
+            $this->responseStatus
         );
     }
 

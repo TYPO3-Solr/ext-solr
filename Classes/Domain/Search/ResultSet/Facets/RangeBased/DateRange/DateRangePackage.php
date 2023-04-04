@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\DateRange;
 
 /*
@@ -19,12 +20,14 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetPackage;
 /**
  * Class DateRangePackage
  */
-class DateRangePackage extends AbstractFacetPackage {
+class DateRangePackage extends AbstractFacetPackage
+{
 
     /**
      * @return string
      */
-    public function getParserClassName() {
+    public function getParserClassName()
+    {
         return (string)DateRangeFacetParser::class;
     }
 

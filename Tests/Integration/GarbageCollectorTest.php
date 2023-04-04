@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Integration;
 
 /***************************************************************
@@ -24,18 +25,18 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use TYPO3\CMS\Core\DataHandling\DataHandler;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Localization\LanguageService;
-use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
-use TYPO3\CMS\Scheduler\Scheduler;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\GarbageCollector;
 use ApacheSolrForTypo3\Solr\IndexQueue\Indexer;
-use ApacheSolrForTypo3\Solr\IndexQueue\RecordMonitor;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
+use ApacheSolrForTypo3\Solr\IndexQueue\RecordMonitor;
 use ApacheSolrForTypo3\Solr\System\Records\Queue\EventQueueItemRepository;
 use ApacheSolrForTypo3\Solr\Task\EventQueueWorkerTask;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
+use TYPO3\CMS\Core\DataHandling\DataHandler;
+use TYPO3\CMS\Core\Localization\LanguageService;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Scheduler\Scheduler;
 
 /**
  * This testcase is used to check if the GarbageCollector can delete garbage from the
@@ -50,7 +51,7 @@ class GarbageCollectorTest extends IntegrationTest
      */
     protected $coreExtensionsToLoad = [
         'extensionmanager',
-        'scheduler'
+        'scheduler',
     ];
 
     /**
@@ -101,7 +102,6 @@ class GarbageCollectorTest extends IntegrationTest
         $this->eventQueue = GeneralUtility::makeInstance(EventQueueItemRepository::class);
     }
 
-
     public function tearDown(): void
     {
         GeneralUtility::purgeInstances();
@@ -118,21 +118,18 @@ class GarbageCollectorTest extends IntegrationTest
         parent::tearDown();
     }
 
-    /**
-     * @return void
-     */
     protected function assertEmptyIndexQueue(): void
     {
-        $this->assertEquals(0, $this->indexQueue->getAllItemsCount(), 'Index queue is not empty as expected');
+        self::assertEquals(0, $this->indexQueue->getAllItemsCount(), 'Index queue is not empty as expected');
     }
 
-    /**
-     * @return void
-     */
     protected function assertNotEmptyIndexQueue(): void
     {
-        $this->assertGreaterThan(0, $this->indexQueue->getAllItemsCount(),
-            'Index queue is empty and was expected to be not empty.');
+        self::assertGreaterThan(
+            0,
+            $this->indexQueue->getAllItemsCount(),
+            'Index queue is empty and was expected to be not empty.'
+        );
     }
 
     /**
@@ -141,19 +138,16 @@ class GarbageCollectorTest extends IntegrationTest
     protected function assertIndexQueueContainsItemAmount($amount): void
     {
         $itemsInQueue = $this->indexQueue->getAllItemsCount();
-        $this->assertEquals(
+        self::assertEquals(
             $amount,
             $itemsInQueue,
             'Index queue contains ' . $itemsInQueue . ' but was expected to contain ' . $amount . ' items.'
         );
     }
 
-    /**
-     * @return void
-     */
     protected function assertEmptyEventQueue(): void
     {
-        $this->assertEquals(0, $this->eventQueue->count(), 'Event queue is not empty as expected');
+        self::assertEquals(0, $this->eventQueue->count(), 'Event queue is not empty as expected');
     }
 
     /**
@@ -162,7 +156,7 @@ class GarbageCollectorTest extends IntegrationTest
     protected function assertEventQueueContainsItemAmount(int $amount): void
     {
         $itemsInQueue = $this->eventQueue->count();
-        $this->assertEquals(
+        self::assertEquals(
             $amount,
             $itemsInQueue,
             'Event queue contains ' . $itemsInQueue . ' but was expected to contain ' . $amount . ' items.'
@@ -351,7 +345,7 @@ class GarbageCollectorTest extends IntegrationTest
         // we expect the is one item in the indexQueue
         $this->assertIndexQueueContainsItemAmount(1);
         $items = $this->indexQueue->getItems('pages', 1);
-        $this->assertSame(1, count($items));
+        self::assertSame(1, count($items));
 
         // we index this item
         $this->indexPageIds([1]);
@@ -359,8 +353,8 @@ class GarbageCollectorTest extends IntegrationTest
 
         // now the content of the deletec content element should be gone
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
-        $this->assertStringNotContainsString('will be removed!', $solrContent, 'solr did not remove deleted content');
-        $this->assertStringContainsString('will stay!', $solrContent, 'solr did not contain rendered page content');
+        self::assertStringNotContainsString('will be removed!', $solrContent, 'solr did not remove deleted content');
+        self::assertStringContainsString('will stay!', $solrContent, 'solr did not contain rendered page content');
     }
 
     /**
@@ -393,8 +387,8 @@ class GarbageCollectorTest extends IntegrationTest
         $this->waitToBeVisibleInSolr();
 
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
-        $this->assertStringContainsString('will be removed!', $solrContent, 'solr did not contain rendered page content');
-        $this->assertStringContainsString('will stay!', $solrContent, 'solr did not contain rendered page content');
+        self::assertStringContainsString('will be removed!', $solrContent, 'solr did not contain rendered page content');
+        self::assertStringContainsString('will stay!', $solrContent, 'solr did not contain rendered page content');
 
         // we delete the second content element
         $beUser = $this->fakeBEUser(1, 0);
@@ -421,7 +415,7 @@ class GarbageCollectorTest extends IntegrationTest
         // we expect the is one item in the indexQueue
         $this->assertIndexQueueContainsItemAmount(1);
         $items = $this->indexQueue->getItems('pages', 1);
-        $this->assertSame(1, count($items));
+        self::assertSame(1, count($items));
 
         // we index this item
         $this->indexPageIds([1]);
@@ -429,8 +423,8 @@ class GarbageCollectorTest extends IntegrationTest
 
         // now the content of the deletec content element should be gone
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
-        $this->assertStringNotContainsString('will be removed!', $solrContent, 'solr did not remove hidden content');
-        $this->assertStringContainsString('will stay!', $solrContent, 'solr did not contain rendered page content');
+        self::assertStringNotContainsString('will be removed!', $solrContent, 'solr did not remove hidden content');
+        self::assertStringContainsString('will stay!', $solrContent, 'solr did not contain rendered page content');
     }
 
     /**
@@ -446,9 +440,9 @@ class GarbageCollectorTest extends IntegrationTest
         $this->assertIndexQueueContainsItemAmount(1);
         $this->processEventQueue();
         $this->assertIndexQueueContainsItemAmount(1);
-        $this->assertNull($this->indexQueue->getItem(4711));
+        self::assertNull($this->indexQueue->getItem(4711));
         $item = $this->indexQueue->getAllItems()[0];
-        $this->assertGreaterThan(1449151778, $item->getChanged());
+        self::assertGreaterThan(1449151778, $item->getChanged());
         $this->assertEmptyEventQueue();
     }
 
@@ -468,7 +462,7 @@ class GarbageCollectorTest extends IntegrationTest
         // we expect the is one item in the indexQueue
         $this->assertIndexQueueContainsItemAmount(1);
         $items = $this->indexQueue->getItems('pages', 1);
-        $this->assertSame(1, count($items));
+        self::assertSame(1, count($items));
 
         // we index this item
         $this->indexPageIds([1]);
@@ -476,8 +470,8 @@ class GarbageCollectorTest extends IntegrationTest
 
         // now the content of the deletec content element should be gone
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
-        $this->assertStringNotContainsString('will be removed!', $solrContent, 'solr did not remove content hidden by endtime in past');
-        $this->assertStringContainsString('will stay!', $solrContent, 'solr did not contain rendered page content');
+        self::assertStringNotContainsString('will be removed!', $solrContent, 'solr did not remove content hidden by endtime in past');
+        self::assertStringContainsString('will stay!', $solrContent, 'solr did not contain rendered page content');
     }
 
     /**
@@ -494,9 +488,9 @@ class GarbageCollectorTest extends IntegrationTest
         $this->assertIndexQueueContainsItemAmount(1);
         $this->processEventQueue();
         $this->assertIndexQueueContainsItemAmount(1);
-        $this->assertNull($this->indexQueue->getItem(4711));
+        self::assertNull($this->indexQueue->getItem(4711));
         $item = $this->indexQueue->getAllItems()[0];
-        $this->assertGreaterThan(1449151778, $item->getChanged());
+        self::assertGreaterThan(1449151778, $item->getChanged());
         $this->assertEmptyEventQueue();
     }
 
@@ -510,13 +504,13 @@ class GarbageCollectorTest extends IntegrationTest
 
         // document should stay in the index, because endtime was not in past but empty
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
-        $this->assertStringContainsString('will stay! still present after update!', $solrContent, 'solr did not contain rendered page content, which is needed for test.');
+        self::assertStringContainsString('will stay! still present after update!', $solrContent, 'solr did not contain rendered page content, which is needed for test.');
 
         $this->waitToBeVisibleInSolr();
 
         $this->assertIndexQueueContainsItemAmount(1);
         $items = $this->indexQueue->getItems('pages', 1);
-        $this->assertSame(1, count($items));
+        self::assertSame(1, count($items));
 
         // we index this item
         $this->indexPageIds([1]);
@@ -524,7 +518,7 @@ class GarbageCollectorTest extends IntegrationTest
 
         // now the content of the deletec content element should be gone
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
-        $this->assertStringContainsString('Updated! Will stay after update!', $solrContent, 'solr did not remove content hidden by endtime in past');
+        self::assertStringContainsString('Updated! Will stay after update!', $solrContent, 'solr did not remove content hidden by endtime in past');
     }
 
     /**
@@ -540,9 +534,9 @@ class GarbageCollectorTest extends IntegrationTest
         $this->assertIndexQueueContainsItemAmount(1);
         $this->processEventQueue();
         $this->assertIndexQueueContainsItemAmount(1);
-        $this->assertNull($this->indexQueue->getItem(4711));
+        self::assertNull($this->indexQueue->getItem(4711));
         $item = $this->indexQueue->getAllItems()[0];
-        $this->assertGreaterThan(1449151778, $item->getChanged());
+        self::assertGreaterThan(1449151778, $item->getChanged());
         $this->assertEmptyEventQueue();
     }
 
@@ -562,7 +556,7 @@ class GarbageCollectorTest extends IntegrationTest
         // we expect the is one item in the indexQueue
         $this->assertIndexQueueContainsItemAmount(1);
         $items = $this->indexQueue->getItems('pages', 1);
-        $this->assertSame(1, count($items));
+        self::assertSame(1, count($items));
 
         // we index this item
         $this->indexPageIds([1]);
@@ -570,8 +564,8 @@ class GarbageCollectorTest extends IntegrationTest
 
         // now the content of the deletec content element should be gone
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
-        $this->assertStringNotContainsString('will be removed!', $solrContent, 'solr did not remove content hidden by starttime in future');
-        $this->assertStringContainsString('will stay!', $solrContent, 'solr did not contain rendered page content');
+        self::assertStringNotContainsString('will be removed!', $solrContent, 'solr did not remove content hidden by starttime in future');
+        self::assertStringContainsString('will stay!', $solrContent, 'solr did not contain rendered page content');
     }
 
     /**
@@ -588,9 +582,9 @@ class GarbageCollectorTest extends IntegrationTest
         $this->assertIndexQueueContainsItemAmount(1);
         $this->processEventQueue();
         $this->assertIndexQueueContainsItemAmount(1);
-        $this->assertNull($this->indexQueue->getItem(4711));
+        self::assertNull($this->indexQueue->getItem(4711));
         $item = $this->indexQueue->getAllItems()[0];
-        $this->assertGreaterThan(1449151778, $item->getChanged());
+        self::assertGreaterThan(1449151778, $item->getChanged());
         $this->assertEmptyEventQueue();
     }
 
@@ -621,9 +615,9 @@ class GarbageCollectorTest extends IntegrationTest
 
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
         if ($fixture === 'can_remove_content_element.xml') {
-            $this->assertStringContainsString('will be removed!', $solrContent, 'solr did not contain rendered page content');
+            self::assertStringContainsString('will be removed!', $solrContent, 'solr did not contain rendered page content');
         }
-        $this->assertStringContainsString('will stay!', $solrContent, 'solr did not contain required page or content element content');
+        self::assertStringContainsString('will stay!', $solrContent, 'solr did not contain required page or content element content');
 
         // we hide the second content element
         $beUser = $this->fakeBEUser(1, 0);
@@ -650,7 +644,7 @@ class GarbageCollectorTest extends IntegrationTest
         $site = $siteRepository->getFirstAvailableSite();
         $items = $this->indexQueue->getItemsToIndex($site);
         $pages = [];
-        foreach($items as $item) {
+        foreach ($items as $item) {
             $pages[] = $item->getRecordUid();
         }
         $this->indexPageIds($pages);
@@ -658,9 +652,9 @@ class GarbageCollectorTest extends IntegrationTest
 
         // now only one document should be left with the content of the first content element
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
-        $this->assertStringNotContainsString('will be removed!', $solrContent, 'solr did not remove content from hidden page');
-        $this->assertStringContainsString('will stay!', $solrContent, 'solr did not contain rendered page content');
-        $this->assertStringContainsString('"numFound":1', $solrContent, 'Expected to have two documents in the index');
+        self::assertStringNotContainsString('will be removed!', $solrContent, 'solr did not remove content from hidden page');
+        self::assertStringContainsString('will stay!', $solrContent, 'solr did not contain rendered page content');
+        self::assertStringContainsString('"numFound":1', $solrContent, 'Expected to have two documents in the index');
     }
 
     /**
@@ -695,7 +689,7 @@ class GarbageCollectorTest extends IntegrationTest
         $site = $siteRepository->getFirstAvailableSite();
         $items = $this->indexQueue->getItemsToIndex($site);
         $pages = [];
-        foreach($items as $item) {
+        foreach ($items as $item) {
             $pages[] = $item->getRecordUid();
         }
         $this->indexPageIds($pages);
@@ -703,9 +697,9 @@ class GarbageCollectorTest extends IntegrationTest
 
         // now only one document should be left with the content of the first content element
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
-        $this->assertStringNotContainsString('will be removed!', $solrContent, 'solr did not remove content from deleted page');
-        $this->assertStringContainsString('will stay!', $solrContent, 'solr did not contain rendered page content');
-        $this->assertStringContainsString('"numFound":1', $solrContent, 'Expected to have two documents in the index');
+        self::assertStringNotContainsString('will be removed!', $solrContent, 'solr did not remove content from deleted page');
+        self::assertStringContainsString('will stay!', $solrContent, 'solr did not contain rendered page content');
+        self::assertStringContainsString('"numFound":1', $solrContent, 'Expected to have two documents in the index');
     }
 
     /**
@@ -739,15 +733,15 @@ class GarbageCollectorTest extends IntegrationTest
         $this->cleanUpSolrServerAndAssertEmpty();
         $this->importDataSetFromFixture('can_remove_page.xml');
 
-        $this->indexPageIds([1,2]);
+        $this->indexPageIds([1, 2]);
 
         // we index two pages and check that both are visible
         $this->waitToBeVisibleInSolr();
 
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
-        $this->assertStringContainsString('will be removed!', $solrContent, 'solr did not contain rendered page content');
-        $this->assertStringContainsString('will stay!', $solrContent, 'solr did not contain rendered page content');
-        $this->assertStringContainsString('"numFound":2', $solrContent, 'Expected to have two documents in the index');
+        self::assertStringContainsString('will be removed!', $solrContent, 'solr did not contain rendered page content');
+        self::assertStringContainsString('will stay!', $solrContent, 'solr did not contain rendered page content');
+        self::assertStringContainsString('"numFound":2', $solrContent, 'Expected to have two documents in the index');
 
         // we hide the second page
         $beUser = $this->fakeBEUser(1, 0);
@@ -768,12 +762,12 @@ class GarbageCollectorTest extends IntegrationTest
         $this->waitToBeVisibleInSolr();
         $this->assertSolrIsEmpty();
 
-            // since our hook is a singleton we check here if it was called.
-            /** @var TestGarbageCollectorPostProcessor $hook */
+        // since our hook is a singleton we check here if it was called.
+        /** @var TestGarbageCollectorPostProcessor $hook */
         $hook = GeneralUtility::makeInstance(TestGarbageCollectorPostProcessor::class);
-        $this->assertTrue($hook->isHookWasCalled());
+        self::assertTrue($hook->isHookWasCalled());
 
-            // reset the hooks
+        // reset the hooks
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessGarbageCollector'] = [];
     }
 
@@ -788,9 +782,9 @@ class GarbageCollectorTest extends IntegrationTest
         $this->extensionConfiguration->set('solr', 'monitoringType', 1);
         $this->prepareCanTriggerHookAfterRecordDeletion();
         $this->assertEventQueueContainsItemAmount(1);
-        $this->assertFalse($hook->isHookWasCalled());
+        self::assertFalse($hook->isHookWasCalled());
         $this->processEventQueue();
-        $this->assertTrue($hook->isHookWasCalled());
+        self::assertTrue($hook->isHookWasCalled());
     }
 
     /**

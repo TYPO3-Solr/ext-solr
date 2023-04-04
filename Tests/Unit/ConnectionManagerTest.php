@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit;
 
 /***************************************************************
@@ -86,8 +87,6 @@ class ConnectionManagerTest extends UnitTest
 
     /**
      * Set up the connection manager test
-     *
-     * @return void
      */
     protected function setUp(): void
     {
@@ -115,7 +114,7 @@ class ConnectionManagerTest extends UnitTest
             ->setConstructorArgs([
                 $this->languageRepositoryMock,
                 $this->pageRepositoryMock,
-                $this->siteRepositoryMock
+                $this->siteRepositoryMock,
             ])
             ->setMethods(['getSolrConnectionForNodes'])
             ->getMock();
@@ -130,7 +129,7 @@ class ConnectionManagerTest extends UnitTest
     {
         return [
             ['host' => 'localhost', 'port' => '', 'path' => '', 'scheme' => '', 'expectsException' => true, 'expectedConnectionString' => null],
-            ['host' => '127.0.0.1', 'port' => 8181, 'path' => '/solr/core_de/', 'scheme' => 'https', 'expectsException' => false, 'expectedConnectionString' => 'https://127.0.0.1:8181/solr/core_de/']
+            ['host' => '127.0.0.1', 'port' => 8181, 'path' => '/solr/core_de/', 'scheme' => 'https', 'expectsException' => false, 'expectedConnectionString' => 'https://127.0.0.1:8181/solr/core_de/'],
         ];
     }
 
@@ -146,14 +145,12 @@ class ConnectionManagerTest extends UnitTest
      * @param string $scheme
      * @param bool $expectsException
      * @param string $expectedConnectionString
-     * @return void
      */
     public function canConnect($host, $port, $path, $scheme, $expectsException, $expectedConnectionString)
     {
         $self = $this;
-        $this->connectionManager->expects($this->once())->method('getSolrConnectionForNodes')->will(
-            $this->returnCallback(function($readNode, $writeNode) use ($self) {
-
+        $this->connectionManager->expects(self::once())->method('getSolrConnectionForNodes')->willReturnCallback(
+            function ($readNode, $writeNode) use ($self) {
                 $readNode = Node::fromArray($readNode);
                 $writeNode = Node::fromArray($writeNode);
                 /* @var TypoScriptConfiguration $typoScriptConfigurationMock */
@@ -180,7 +177,7 @@ class ConnectionManagerTest extends UnitTest
                     $this->getDumbMock(StreamFactoryInterface::class),
                     $this->getDumbMock(EventDispatcherInterface::class)
                 );
-            })
+            }
         );
         $exceptionOccured = false;
         try {
@@ -189,10 +186,10 @@ class ConnectionManagerTest extends UnitTest
             $configuration['write'] = $readNode;
 
             $solrService = $this->connectionManager->getConnectionFromConfiguration($configuration);
-            $this->assertEquals($expectedConnectionString, $solrService->getReadService()->__toString());
+            self::assertEquals($expectedConnectionString, $solrService->getReadService()->__toString());
         } catch (\UnexpectedValueException $exception) {
             $exceptionOccured = true;
         }
-        $this->assertEquals($expectsException, $exceptionOccured);
+        self::assertEquals($expectsException, $exceptionOccured);
     }
 }

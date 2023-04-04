@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
 
 /***************************************************************
@@ -23,7 +24,6 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-
 
 /**
  * The Operator ParameterProvider is responsible to build the solr query parameters
@@ -57,7 +57,7 @@ class Operator extends AbstractDeactivatable
     public function setOperator($operator)
     {
         if (!in_array($operator, [self::OPERATOR_AND, self::OPERATOR_OR])) {
-            throw new \InvalidArgumentException("Invalid operator");
+            throw new \InvalidArgumentException('Invalid operator');
         }
 
         $this->operator = $operator;

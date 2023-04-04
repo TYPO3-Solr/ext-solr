@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\System\Mvc\Backend;
 
 /***************************************************************
@@ -34,7 +35,7 @@ class ModuleData
     /**
      * @var Site
      */
-    protected $site = null;
+    protected $site;
 
     /**
      * @var string
@@ -55,7 +56,6 @@ class ModuleData
      * Sets the site to work with.
      *
      * @param Site $site
-     * @return void
      */
     public function setSite(Site $site)
     {

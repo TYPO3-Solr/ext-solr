@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Backend;
 
 /***************************************************************
@@ -190,13 +191,13 @@ class IndexingConfigurationSelectorField
             'itemFormElName' => $this->formElementName,
             'itemFormElValue' => $selectedValues,
             'fieldConf' => ['config' => ['items' => $items]],
-            'fieldTSConfig' => ['noMatchingValue_label' => '']
+            'fieldTSConfig' => ['noMatchingValue_label' => ''],
         ];
 
         $nodeFactory = GeneralUtility::makeInstance(NodeFactory::class);
         $options = [
             'renderType' => 'selectCheckBox', 'table' => 'tx_solr_classes_backend_indexingconfigurationselector',
-            'fieldName' => 'additionalFields', 'databaseRow' => [], 'parameterArray' => $parameterArray
+            'fieldName' => 'additionalFields', 'databaseRow' => [], 'parameterArray' => $parameterArray,
         ];
         $options['parameterArray']['fieldConf']['config']['items'] = $items;
         $options['parameterArray']['fieldTSConfig']['noMatchingValue_label'] = '';

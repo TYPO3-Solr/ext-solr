@@ -76,7 +76,7 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
     /**
      * @var Logger
      */
-    protected $logger = null;
+    protected $logger;
 
     /**
      * Activates a frontend helper by registering for hooks and other
@@ -107,14 +107,13 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
         return $this->responseData;
     }
 
-    #
-    # Indexer authorisation for access restricted pages / content
-    #
+    //
+    // Indexer authorisation for access restricted pages / content
+    //
 
     /**
      * Fakes a logged in user to retrieve access restricted content.
      *
-     * @return void
      * @noinspection PhpUnused
      */
     public function authorizeFrontendUser()
@@ -138,7 +137,7 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
 
         $this->responseData['authorization'] = [
             'username' => $GLOBALS['TSFE']->fe_user->user['username'],
-            'usergroups' => $GLOBALS['TSFE']->fe_user->user['usergroup']
+            'usergroups' => $GLOBALS['TSFE']->fe_user->user['usergroup'],
         ];
     }
 
@@ -162,8 +161,6 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
     /**
      * Registers an authentication service to authorize / grant the indexer to
      * access protected pages.
-     *
-     * @return void
      */
     protected function registerAuthorizationService()
     {
@@ -214,9 +211,9 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
         return $highestPriority;
     }
 
-    #
-    # Indexing
-    #
+    //
+    // Indexing
+    //
 
     /**
      * Generates the current page's URL.
@@ -231,12 +228,12 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
             return $this->request->getParameter('overridePageUrl');
         }
 
-            /** @var $contentObject ContentObjectRenderer */
+        /** @var $contentObject ContentObjectRenderer */
         $contentObject = GeneralUtility::makeInstance(ContentObjectRenderer::class);
 
         $typolinkConfiguration = [
-            'parameter' => intval($this->page->id),
-            'linkAccessRestrictedPages' => '1'
+            'parameter' => (int)($this->page->id),
+            'linkAccessRestrictedPages' => '1',
         ];
 
         $language = GeneralUtility::_GET('L');
@@ -300,7 +297,7 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
             $this->responseData['solrConnection'] = [
                 'rootPage' => $indexQueueItem->getRootPageUid(),
                 'sys_language_uid' => Util::getLanguageUid(),
-                'solr' => (string)$solrConnection->getNode('write')
+                'solr' => (string)$solrConnection->getNode('write'),
             ];
 
             $documentsSentToSolr = $indexer->getDocumentsSentToSolr();
@@ -313,7 +310,7 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
                     SolrLogManager::ERROR,
                     'Exception while trying to index page ' . $page->id,
                     [
-                        $e->__toString()
+                        $e->__toString(),
                     ]
                 );
             }

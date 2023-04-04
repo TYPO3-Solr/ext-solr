@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\NumericRange;
 
 /*
@@ -17,7 +18,8 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\Nume
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\FacetQueryBuilderInterface;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 
-class NumericRangeFacetQueryBuilder implements FacetQueryBuilderInterface {
+class NumericRangeFacetQueryBuilder implements FacetQueryBuilderInterface
+{
 
     /**
      * @param string $facetName

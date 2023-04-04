@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\ContentObject;
 
 /***************************************************************
@@ -57,11 +58,11 @@ class MultivalueTest extends UnitTest
             Multivalue::CONTENT_OBJECT_NAME,
             [
                 'field' => 'list',
-                'separator' => ','
+                'separator' => ',',
             ]
         );
 
-        $this->assertEquals($expected, $actual);
+        self::assertEquals($expected, $actual);
     }
 
     /**
@@ -78,11 +79,11 @@ class MultivalueTest extends UnitTest
             Multivalue::CONTENT_OBJECT_NAME,
             [
                 'value' => $list,
-                'separator' => ','
+                'separator' => ',',
             ]
         );
 
-        $this->assertEquals($expected, $actual);
+        self::assertEquals($expected, $actual);
     }
 
     protected function setUp(): void

@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\Helper;
 
 /***************************************************************
@@ -31,13 +32,14 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\Helper;
  *
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class EscapeService {
+class EscapeService
+{
 
     /**
      * Quote and escape search strings
      *
-     * @param string|int|double $string String to escape
-     * @return string|int|double The escaped/quoted string
+     * @param string|int|float $string String to escape
+     * @return string|int|float The escaped/quoted string
      */
     public static function escape($string)
     {

@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\ViewHelpers\Debug;
 
 /*
@@ -15,8 +16,8 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers\Debug;
  */
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResult;
-use ApacheSolrForTypo3\Solr\Domain\Search\Score\ScoreCalculationService;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
+use ApacheSolrForTypo3\Solr\Domain\Search\Score\ScoreCalculationService;
 use ApacheSolrForTypo3\Solr\ViewHelpers\AbstractSolrFrontendViewHelper;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Utility\GeneralUtility;

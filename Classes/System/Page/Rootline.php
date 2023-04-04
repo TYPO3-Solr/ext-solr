@@ -69,7 +69,7 @@ class Rootline
     /**
      * Returns true if the rooline contains a root page.
      *
-     * @return boolean
+     * @return bool
      */
     public function getHasRootPage()
     {
@@ -80,7 +80,7 @@ class Rootline
      * Returns the rootPageId as integer if a rootpage is given,
      * if non is given 0 will be returned
      *
-     * @return integer
+     * @return int
      */
     public function getRootPageId()
     {

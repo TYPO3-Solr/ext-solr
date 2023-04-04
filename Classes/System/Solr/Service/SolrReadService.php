@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\System\Solr\Service;
 
 /***************************************************************
@@ -45,7 +46,7 @@ class SolrReadService extends AbstractSolrService
     /**
      * @var ResponseAdapter
      */
-    protected $responseCache = null;
+    protected $responseCache;
 
     /**
      * Performs a search.

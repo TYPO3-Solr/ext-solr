@@ -33,9 +33,6 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
  */
 class PageIndexerTest extends IntegrationTest
 {
-    /**
-     * @return void
-     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -66,10 +63,10 @@ class PageIndexerTest extends IntegrationTest
         $this->waitToBeVisibleInSolr();
 
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
-        $this->assertStringContainsString('"numFound":1', $solrContent, 'Could not index document into solr');
-        $this->assertStringContainsString('"title":"hello solr"', $solrContent, 'Could not index document into solr');
-        $this->assertStringContainsString('"sortSubTitle_stringS":"the subtitle"', $solrContent, 'Document does not contain subtitle');
-        $this->assertStringContainsString('"custom_stringS":"my text"', $solrContent, 'Document does not contains value build with typoscript');
+        self::assertStringContainsString('"numFound":1', $solrContent, 'Could not index document into solr');
+        self::assertStringContainsString('"title":"hello solr"', $solrContent, 'Could not index document into solr');
+        self::assertStringContainsString('"sortSubTitle_stringS":"the subtitle"', $solrContent, 'Document does not contain subtitle');
+        self::assertStringContainsString('"custom_stringS":"my text"', $solrContent, 'Document does not contains value build with typoscript');
     }
 
     /**
@@ -87,9 +84,9 @@ class PageIndexerTest extends IntegrationTest
         $this->waitToBeVisibleInSolr();
 
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
-        $this->assertStringContainsString('"numFound":1', $solrContent, 'Could not index document into solr');
-        $this->assertStringContainsString('"title":"hello solr"', $solrContent, 'Could not index document into solr');
-        $this->assertStringContainsString('"custom_stringS":"my text from custom page type"', $solrContent, 'Document does not contains value build with typoscript');
+        self::assertStringContainsString('"numFound":1', $solrContent, 'Could not index document into solr');
+        self::assertStringContainsString('"title":"hello solr"', $solrContent, 'Could not index document into solr');
+        self::assertStringContainsString('"custom_stringS":"my text from custom page type"', $solrContent, 'Document does not contains value build with typoscript');
     }
 
     /**
@@ -119,12 +116,12 @@ class PageIndexerTest extends IntegrationTest
         $this->waitToBeVisibleInSolr('core_de');
 
         $solrContentEn = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
-        $this->assertStringContainsString('"title":"Page"', $solrContentEn, 'Solr did not contain the english page');
-        $this->assertStringNotContainsString('relatedPageTitles_stringM', $solrContentEn, 'There is no relation for the original, so ther should not be a related field');
+        self::assertStringContainsString('"title":"Page"', $solrContentEn, 'Solr did not contain the english page');
+        self::assertStringNotContainsString('relatedPageTitles_stringM', $solrContentEn, 'There is no relation for the original, so ther should not be a related field');
 
         $solrContentDe = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_de/select?q=*:*');
-        $this->assertStringContainsString('"title":"Seite"', $solrContentDe, 'Solr did not contain the translated page');
-        $this->assertStringContainsString('"relatedPageTitles_stringM":["Verwante Seite"]', $solrContentDe, 'Did not get content of releated field');
+        self::assertStringContainsString('"title":"Seite"', $solrContentDe, 'Solr did not contain the translated page');
+        self::assertStringContainsString('"relatedPageTitles_stringM":["Verwante Seite"]', $solrContentDe, 'Did not get content of releated field');
 
         $this->cleanUpSolrServerAndAssertEmpty('core_en');
         $this->cleanUpSolrServerAndAssertEmpty('core_de');
@@ -145,8 +142,8 @@ class PageIndexerTest extends IntegrationTest
         $this->waitToBeVisibleInSolr('core_en');
 
         $solrContentEn = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
-        $this->assertStringContainsString('"title":"Sub page"', $solrContentEn, 'Solr did not contain the english page');
-        $this->assertStringContainsString('"categories_stringM":["Test"]', $solrContentEn, 'There is no relation for the original, so ther should not be a related field');
+        self::assertStringContainsString('"title":"Sub page"', $solrContentEn, 'Solr did not contain the english page');
+        self::assertStringContainsString('"categories_stringM":["Test"]', $solrContentEn, 'There is no relation for the original, so ther should not be a related field');
 
         $this->cleanUpSolrServerAndAssertEmpty('core_en');
     }
@@ -157,7 +154,7 @@ class PageIndexerTest extends IntegrationTest
     public function canIndexPageIntoSolrWithAdditionalFields()
     {
         //@todo additional fields indexer requires the hook to be activated which is normally done in ext_localconf.php
-            // this needs to be unified with the PageFieldMappingIndexer registration.
+        // this needs to be unified with the PageFieldMappingIndexer registration.
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageSubstitutePageDocument']['ApacheSolrForTypo3\Solr\AdditionalFieldsIndexer'] = AdditionalFieldsIndexer::class;
 
         $this->importDataSetFromFixture('can_index_with_additional_fields_into_solr.xml');
@@ -168,14 +165,14 @@ class PageIndexerTest extends IntegrationTest
 
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
 
-            // field values from index.queue.pages.fields.
-        $this->assertStringContainsString('"numFound":1', $solrContent, 'Could not index document into solr');
-        $this->assertStringContainsString('"title":"hello solr"', $solrContent, 'Could not index document into solr');
-        $this->assertStringContainsString('"sortSubTitle_stringS":"the subtitle"', $solrContent, 'Document does not contain subtitle');
+        // field values from index.queue.pages.fields.
+        self::assertStringContainsString('"numFound":1', $solrContent, 'Could not index document into solr');
+        self::assertStringContainsString('"title":"hello solr"', $solrContent, 'Could not index document into solr');
+        self::assertStringContainsString('"sortSubTitle_stringS":"the subtitle"', $solrContent, 'Document does not contain subtitle');
 
-            // field values from index.additionalFields
-        $this->assertStringContainsString('"additional_sortSubTitle_stringS":"subtitle"', $solrContent, 'Document does not contains value from index.additionFields');
-        $this->assertStringContainsString('"additional_custom_stringS":"my text"', $solrContent, 'Document does not contains value from index.additionFields');
+        // field values from index.additionalFields
+        self::assertStringContainsString('"additional_sortSubTitle_stringS":"subtitle"', $solrContent, 'Document does not contains value from index.additionFields');
+        self::assertStringContainsString('"additional_custom_stringS":"my text"', $solrContent, 'Document does not contains value from index.additionFields');
     }
 
     /**
@@ -192,9 +189,9 @@ class PageIndexerTest extends IntegrationTest
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
 
         // field values from index.queue.pages.fields.
-        $this->assertStringContainsString('"numFound":1', $solrContent, 'Could not index document into solr');
-        $this->assertStringContainsString('"title":"hello subpage"', $solrContent, 'Could not index subpage with custom field configuration into solr');
-        $this->assertStringContainsString('"additional_stringS":"from rootline"', $solrContent, 'Document does not contain custom field from rootline');
+        self::assertStringContainsString('"numFound":1', $solrContent, 'Could not index document into solr');
+        self::assertStringContainsString('"title":"hello subpage"', $solrContent, 'Could not index subpage with custom field configuration into solr');
+        self::assertStringContainsString('"additional_stringS":"from rootline"', $solrContent, 'Document does not contain custom field from rootline');
     }
 
     /**
@@ -211,8 +208,8 @@ class PageIndexerTest extends IntegrationTest
         $this->waitToBeVisibleInSolr();
 
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
-        $this->assertStringContainsString('"numFound":1', $solrContent, 'Could not index document into solr');
-        $this->assertStringContainsString('"postProcessorField_stringS":"postprocessed"', $solrContent, 'Field from post processor was not added');
+        self::assertStringContainsString('"numFound":1', $solrContent, 'Could not index document into solr');
+        self::assertStringContainsString('"postProcessorField_stringS":"postprocessed"', $solrContent, 'Field from post processor was not added');
     }
 
     /**
@@ -229,9 +226,9 @@ class PageIndexerTest extends IntegrationTest
         $this->waitToBeVisibleInSolr();
 
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
-        $this->assertStringContainsString('"numFound":2', $solrContent, 'Could not index document into solr');
-        $this->assertStringContainsString('"custom_stringS":"my text"', $solrContent, 'Field from post processor was not added');
-        $this->assertStringContainsString('"custom_stringS":"additional text"', $solrContent, 'Field from post processor was not added');
+        self::assertStringContainsString('"numFound":2', $solrContent, 'Could not index document into solr');
+        self::assertStringContainsString('"custom_stringS":"my text"', $solrContent, 'Field from post processor was not added');
+        self::assertStringContainsString('"custom_stringS":"additional text"', $solrContent, 'Field from post processor was not added');
     }
 
     /**
@@ -263,7 +260,7 @@ class PageIndexerTest extends IntegrationTest
         $this->waitToBeVisibleInSolr();
 
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
-        $this->assertStringContainsString('"title":"FirstShared (Not root)"', $solrContent, 'Could not find content from mounted page in solr');
+        self::assertStringContainsString('"title":"FirstShared (Not root)"', $solrContent, 'Could not find content from mounted page in solr');
     }
 
     /**
@@ -299,10 +296,10 @@ class PageIndexerTest extends IntegrationTest
 
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
 
-        $this->assertStringContainsString('"numFound":2', $solrContent, 'Unexpected amount of documents in the core');
+        self::assertStringContainsString('"numFound":2', $solrContent, 'Unexpected amount of documents in the core');
 
-        $this->assertStringContainsString('/pages/44/44-14/', $solrContent, 'Could not find document of first mounted page');
-        $this->assertStringContainsString('/pages/44/44-24/', $solrContent, 'Could not find document of second mounted page');
+        self::assertStringContainsString('/pages/44/44-14/', $solrContent, 'Could not find document of first mounted page');
+        self::assertStringContainsString('/pages/44/44-24/', $solrContent, 'Could not find document of second mounted page');
     }
 
     /**
@@ -326,7 +323,7 @@ class PageIndexerTest extends IntegrationTest
      */
     protected function registerShutdownFunctionToPrintExplanationOf404HandlingOnCMSIfDieIsCalled()
     {
-        register_shutdown_function(function() {
+        register_shutdown_function(function () {
             // prompt only after phpProcessDoesNotDieIfPageIsNotAvailable() test case
             if ($this->getName() !== 'phpProcessDoesNotDieIfPageIsNotAvailable') {
                 return;

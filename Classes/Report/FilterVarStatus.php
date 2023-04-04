@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Report;
 
 /***************************************************************
@@ -38,7 +39,6 @@ class FilterVarStatus extends AbstractSolrStatus
 
     /**
      * Checks whether allow_url_fopen is enabled.
-     *
      */
     public function getStatus()
     {
@@ -55,7 +55,8 @@ class FilterVarStatus extends AbstractSolrStatus
 				More information is available at
 				<a href="https://bugs.php.net/bug.php?id=51192">php.net</a>.';
 
-            $reports[] = GeneralUtility::makeInstance(Status::class,
+            $reports[] = GeneralUtility::makeInstance(
+                Status::class,
                 'PHP filter_var() bug',
                 'Affected PHP version detected.',
                 $message,

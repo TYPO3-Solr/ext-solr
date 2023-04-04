@@ -58,7 +58,7 @@ class OptimizeIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldPr
      *
      * @var AbstractTask|null
      */
-    protected $task = null;
+    protected $task;
 
     /**
      * Scheduler Module
@@ -72,7 +72,7 @@ class OptimizeIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldPr
      *
      * @var Site
      */
-    protected $site = null;
+    protected $site;
 
     /**
      * SiteRepository
@@ -84,7 +84,7 @@ class OptimizeIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldPr
     /**
      * @var PageRenderer
      */
-    protected $pageRenderer = null;
+    protected $pageRenderer;
 
     /**
      * ReIndexTaskAdditionalFieldProvider constructor.
@@ -105,8 +105,7 @@ class OptimizeIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldPr
         SchedulerModuleController $schedulerModule,
         AbstractTask $task = null,
         array $taskInfo = []
-    )
-    {
+    ) {
         /** @var $task ReIndexTask */
         $this->task = $task;
         $this->schedulerModule = $schedulerModule;
@@ -138,8 +137,7 @@ class OptimizeIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldPr
         array &$taskInfo,
         $task,
         SchedulerModuleController $schedulerModule
-    )
-    {
+    ) {
         $additionalFields = [];
 
         if (!$this->isTaskInstanceofOptimizeIndexTask($task)) {
@@ -153,14 +151,14 @@ class OptimizeIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldPr
             'code' => $siteSelectorField->getAvailableSitesSelector('tx_scheduler[site]', $this->site),
             'label' => $this->languageFile . ':field_site',
             'cshKey' => '',
-            'cshLabel' => ''
+            'cshLabel' => '',
         ];
 
         $additionalFields['cores'] = [
             'code' => $this->getCoreSelectorMarkup(),
             'label' => $this->languageFile . ':field_cores',
             'cshKey' => '',
-            'cshLabel' => ''
+            'cshLabel' => '',
         ];
 
         return $additionalFields;
@@ -202,8 +200,7 @@ class OptimizeIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldPr
     public function validateAdditionalFields(
         array &$submittedData,
         SchedulerModuleController $schedulerModule
-    )
-    {
+    ) {
         $result = true;
         // validate site
         $sites = $this->siteRepository->getAvailableSites();
@@ -234,8 +231,7 @@ class OptimizeIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldPr
     public function saveAdditionalFields(
         array $submittedData,
         AbstractTask $task
-    )
-    {
+    ) {
         /** @var $task OptimizeIndexTask */
         if (!$this->isTaskInstanceofOptimizeIndexTask($task)) {
             return;
@@ -267,14 +263,15 @@ class OptimizeIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldPr
      * Check that a task is an instance of ReIndexTask
      *
      * @param AbstractTask|null $task
-     * @return boolean
+     * @return bool
      */
     protected function isTaskInstanceofOptimizeIndexTask(?AbstractTask $task): bool
     {
         if ((!is_null($task)) && (!($task instanceof OptimizeIndexTask))) {
             throw new LogicException(
                 '$task must be an instance of OptimizeIndexTask, '
-                .'other instances are not supported.', 1624620844
+                . 'other instances are not supported.',
+                1624620844
             );
         }
         return true;

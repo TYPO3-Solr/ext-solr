@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -62,7 +63,7 @@ class PostProcessUriEvent
      *
      * @param UriInterface $uri
      */
-    public function replaceUri(UriInterface  $uri)
+    public function replaceUri(UriInterface $uri)
     {
         $this->uri = $uri;
     }

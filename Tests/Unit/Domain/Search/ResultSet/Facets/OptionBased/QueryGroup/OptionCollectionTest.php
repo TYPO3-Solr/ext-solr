@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Test\Domain\Search\ResultSet\Facets\OptionBased\QueryGroup;
 
 /*
@@ -14,10 +15,10 @@ namespace ApacheSolrForTypo3\Solr\Test\Domain\Search\ResultSet\Facets\OptionBase
  * The TYPO3 project - inspiring people to share!
  */
 
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\QueryGroup\Option;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\QueryGroup\QueryGroupFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
+use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 
 /**
  * Unit test for the QueryGroupFacet options collection
@@ -46,8 +47,8 @@ class OptionCollectionTest extends UnitTest
         // @extensionScannerIgnoreLine
         $sortedOptions = $facet->getOptions()->getManualSortedCopy(['1year', '1month']);
 
-        $this->assertSame($year, $sortedOptions->getByPosition(0), 'First sorted item was not 1year');
-        $this->assertSame($month, $sortedOptions->getByPosition(1), 'Second item was not 1month');
-        $this->assertSame($week, $sortedOptions->getByPosition(2), 'Third item was not 1week');
+        self::assertSame($year, $sortedOptions->getByPosition(0), 'First sorted item was not 1year');
+        self::assertSame($month, $sortedOptions->getByPosition(1), 'Second item was not 1month');
+        self::assertSame($week, $sortedOptions->getByPosition(2), 'Third item was not 1week');
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Test\ViewHelpers\Document;
 
 /***************************************************************
@@ -24,9 +25,9 @@ namespace ApacheSolrForTypo3\Solr\Test\ViewHelpers\Document;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResult;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
+use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use ApacheSolrForTypo3\Solr\ViewHelpers\Document\RelevanceViewHelper;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 
@@ -42,19 +43,19 @@ class RelevanceViewHelperTest extends UnitTest
     public function canCalculateRelevance()
     {
         $resultSetMock = $this->getDumbMock(SearchResultSet::class);
-        $resultSetMock->expects($this->any())->method('getMaximumScore')->will($this->returnValue(5.5));
+        $resultSetMock->expects(self::any())->method('getMaximumScore')->willReturn(5.5);
 
         $documentMock = $this->getDumbMock(SearchResult::class);
-        $documentMock->expects($this->once())->method('getScore')->will($this->returnValue(0.55));
+        $documentMock->expects(self::once())->method('getScore')->willReturn(0.55);
 
         $arguments = [
             'resultSet' => $resultSetMock,
-            'document' => $documentMock
+            'document' => $documentMock,
         ];
         $renderingContextMock = $this->getDumbMock(RenderingContextInterface::class);
         $score = RelevanceViewHelper::renderStatic($arguments, function () {}, $renderingContextMock);
 
-        $this->assertEquals(10.0, $score, 'Unexpected score');
+        self::assertEquals(10.0, $score, 'Unexpected score');
     }
 
     /**
@@ -63,19 +64,19 @@ class RelevanceViewHelperTest extends UnitTest
     public function canCalculateRelevanceFromPassedMaximumScore()
     {
         $resultSetMock = $this->getDumbMock(SearchResultSet::class);
-        $resultSetMock->expects($this->never())->method('getMaximumScore');
+        $resultSetMock->expects(self::never())->method('getMaximumScore');
 
         $documentMock = $this->getDumbMock(SearchResult::class);
-        $documentMock->expects($this->once())->method('getScore')->will($this->returnValue(0.55));
+        $documentMock->expects(self::once())->method('getScore')->willReturn(0.55);
 
         $arguments = [
             'resultSet' => $resultSetMock,
             'document' => $documentMock,
-            'maximumScore' => 11
+            'maximumScore' => 11,
         ];
         $renderingContextMock = $this->getDumbMock(RenderingContextInterface::class);
         $score = RelevanceViewHelper::renderStatic($arguments, function () {}, $renderingContextMock);
 
-        $this->assertEquals(5.0, $score, 'Unexpected score');
+        self::assertEquals(5.0, $score, 'Unexpected score');
     }
 }

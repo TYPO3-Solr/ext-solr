@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Test\ViewHelpers\Uri\Facet;
 
 /***************************************************************
@@ -34,7 +35,6 @@ use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 class AddFacetItemViewHelperTest extends AbstractFacetItemViewHelperTest
 {
 
-
     /**
      * @test
      */
@@ -48,8 +48,8 @@ class AddFacetItemViewHelperTest extends AbstractFacetItemViewHelperTest
 
         $searchUriBuilderMock = $this->getDumbMock(SearchUriBuilder::class);
 
-            // we expected that the getAddFacetOptionUri will be called on the searchUriBuilder in the end.
-        $searchUriBuilderMock->expects($this->once())->method('getAddFacetValueUri')->with($facet->getResultSet()->getUsedSearchRequest(), 'Color', 'red');
+        // we expected that the getAddFacetOptionUri will be called on the searchUriBuilder in the end.
+        $searchUriBuilderMock->expects(self::once())->method('getAddFacetValueUri')->with($facet->getResultSet()->getUsedSearchRequest(), 'Color', 'red');
         $viewHelper->injectSearchUriBuilder($searchUriBuilderMock);
         // @extensionScannerIgnoreLine
         $viewHelper->setArguments(['facet' => $facet, 'facetItem' => $facet->getOptions()->getByPosition(0)]);

@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr;
 
 /***************************************************************
@@ -59,7 +60,7 @@ class AdditionalFieldsIndexer implements SubstitutePageIndexer
     /**
      * @var ContentObjectService
      */
-    protected $contentObjectService = null;
+    protected $contentObjectService;
 
     /**
      * @param TypoScriptConfiguration $configuration

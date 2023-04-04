@@ -56,8 +56,12 @@ class ConfigurationAwareRecordService
                 continue;
             }
 
-            $record = $this->getRecordIfIndexConfigurationIsValid($recordTable, $recordUid,
-                $indexingConfigurationName, $solrConfiguration);
+            $record = $this->getRecordIfIndexConfigurationIsValid(
+                $recordTable,
+                $recordUid,
+                $indexingConfigurationName,
+                $solrConfiguration
+            );
             if (!empty($record)) {
                 $name = $indexingConfigurationName;
                 // FIXME currently returns after the first configuration match
@@ -82,8 +86,12 @@ class ConfigurationAwareRecordService
         $record = [];
         $indexingConfigurations = $solrConfiguration->getEnabledIndexQueueConfigurationNames();
         foreach ($indexingConfigurations as $indexingConfigurationName) {
-            $record = $this->getRecordIfIndexConfigurationIsValid($recordTable, $recordUid,
-                $indexingConfigurationName, $solrConfiguration);
+            $record = $this->getRecordIfIndexConfigurationIsValid(
+                $recordTable,
+                $recordUid,
+                $indexingConfigurationName,
+                $solrConfiguration
+            );
             if (!empty($record)) {
                 // if we found a record which matches the conditions, we can continue
                 break;
@@ -97,7 +105,7 @@ class ConfigurationAwareRecordService
      * Otherwise an empty array will be returned.
      *
      * @param string $recordTable
-     * @param integer $recordUid
+     * @param int $recordUid
      * @param string $indexingConfigurationName
      * @param TypoScriptConfiguration $solrConfiguration
      * @return array
@@ -120,7 +128,7 @@ class ConfigurationAwareRecordService
      * or from cache
      *
      * @param string $recordTable
-     * @param integer $recordUid
+     * @param int $recordUid
      * @param string $recordWhereClause
      *
      * @return array
@@ -147,7 +155,7 @@ class ConfigurationAwareRecordService
      * @param string $recordTable
      * @param string $indexingConfigurationName
      * @param TypoScriptConfiguration $solrConfiguration
-     * @return boolean
+     * @return bool
      */
     protected function isValidTableForIndexConfigurationName($recordTable, $indexingConfigurationName, TypoScriptConfiguration $solrConfiguration)
     {

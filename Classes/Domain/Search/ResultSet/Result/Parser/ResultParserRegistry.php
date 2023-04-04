@@ -92,7 +92,7 @@ class ResultParserRegistry implements SingletonInterface
      *
      * @param string $className
      * @param int $priority
-     * @return boolean
+     * @return bool
      */
     public function hasParser($className, $priority)
     {

@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\Solr\Parser;
 
 /***************************************************************
@@ -41,7 +42,7 @@ class SynonymParserTest extends UnitTest
     public function canParseSynonyms()
     {
         $parser = new SynonymParser();
-        $synonyms = $parser->parseJson('foo',$this->getFixtureContentByName('synonym.json'));
-        $this->assertSame(['bar'], $synonyms, 'Could not parser synonyms from synonyms response');
+        $synonyms = $parser->parseJson('foo', $this->getFixtureContentByName('synonym.json'));
+        self::assertSame(['bar'], $synonyms, 'Could not parser synonyms from synonyms response');
     }
 }

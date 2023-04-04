@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\NumericRange;
 
 /*
@@ -68,7 +69,6 @@ class NumericRange extends AbstractRangeFacetItem
         if ($startRequested !== null && $endRequested !== null) {
             $label = $this->getRangeString();
         }
-
 
         parent::__construct($facet, $label, $documentCount, $selected);
     }

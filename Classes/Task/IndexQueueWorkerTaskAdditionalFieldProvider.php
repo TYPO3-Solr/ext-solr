@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Task;
 
 /***************************************************************
@@ -90,25 +91,27 @@ class IndexQueueWorkerTaskAdditionalFieldProvider implements AdditionalFieldProv
         }
 
         $additionalFields['site'] = [
-            'code' => $siteSelectorField->getAvailableSitesSelector('tx_scheduler[site]',
-                $taskInfo['site']),
+            'code' => $siteSelectorField->getAvailableSitesSelector(
+                'tx_scheduler[site]',
+                $taskInfo['site']
+            ),
             'label' => 'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:field_site',
             'cshKey' => '',
-            'cshLabel' => ''
+            'cshLabel' => '',
         ];
 
         $additionalFields['documentsToIndexLimit'] = [
             'code' => '<input type="number" class="form-control" name="tx_scheduler[documentsToIndexLimit]" value="' . htmlspecialchars($taskInfo['documentsToIndexLimit']) . '" />',
             'label' => 'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:indexqueueworker_field_documentsToIndexLimit',
             'cshKey' => '',
-            'cshLabel' => ''
+            'cshLabel' => '',
         ];
 
         $additionalFields['forcedWebRoot'] = [
             'code' => '<input type="text" class="form-control" name="tx_scheduler[forcedWebRoot]" value="' . htmlspecialchars($taskInfo['forcedWebRoot']) . '" />',
             'label' => 'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:indexqueueworker_field_forcedWebRoot',
             'cshKey' => '',
-            'cshLabel' => ''
+            'cshLabel' => '',
         ];
 
         return $additionalFields;
@@ -135,7 +138,7 @@ class IndexQueueWorkerTaskAdditionalFieldProvider implements AdditionalFieldProv
         }
 
         // escape limit
-        $submittedData['documentsToIndexLimit'] = intval($submittedData['documentsToIndexLimit']);
+        $submittedData['documentsToIndexLimit'] = (int)($submittedData['documentsToIndexLimit']);
 
         return $result;
     }
@@ -164,7 +167,7 @@ class IndexQueueWorkerTaskAdditionalFieldProvider implements AdditionalFieldProv
      * Check that a task is an instance of IndexQueueWorkerTask
      *
      * @param AbstractTask $task
-     * @return boolean
+     * @return bool
      * @throws \LogicException
      */
     protected function isTaskInstanceofIndexQueueWorkerTask($task)
@@ -172,7 +175,8 @@ class IndexQueueWorkerTaskAdditionalFieldProvider implements AdditionalFieldProv
         if ((!is_null($task)) && (!($task instanceof IndexQueueWorkerTask))) {
             throw new \LogicException(
                 '$task must be an instance of IndexQueueWorkerTask, '
-                .'other instances are not supported.', 1487499814
+                . 'other instances are not supported.',
+                1487499814
             );
         }
         return true;

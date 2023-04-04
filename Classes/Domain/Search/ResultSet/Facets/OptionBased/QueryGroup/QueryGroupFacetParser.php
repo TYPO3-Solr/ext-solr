@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\QueryGroup;
 
 /*
@@ -83,7 +84,6 @@ class QueryGroupFacetParser extends AbstractFacetParser
                 $facet->addOption($this->objectManager->get(Option::class, $facet, $label, $value, $count, $isOptionsActive));
             }
         }
-
 
         // after all options have been created we apply a manualSortOrder if configured
         // the sortBy (lex,..) is done by the solr server and triggered by the query, therefore it does not

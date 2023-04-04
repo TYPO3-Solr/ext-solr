@@ -30,7 +30,8 @@ use ApacheSolrForTypo3\Solr\System\Data\AbstractCollection;
 /**
  * The Group contains the Group objects.
  */
-class GroupCollection extends AbstractCollection {
+class GroupCollection extends AbstractCollection
+{
 
     /**
      * @param string $name
@@ -50,7 +51,7 @@ class GroupCollection extends AbstractCollection {
 
     /**
      * @param string $name
-     * @return boolean
+     * @return bool
      */
     public function getHasWithName($name): bool
     {

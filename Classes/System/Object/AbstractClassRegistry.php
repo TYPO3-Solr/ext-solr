@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\System\Object;
 
 /*
@@ -97,7 +98,8 @@ class AbstractClassRegistry implements SingletonInterface
      * @param string $type
      * @param string $requiredBaseClass
      */
-    protected function register($className, $type, $requiredBaseClass) {
+    protected function register($className, $type, $requiredBaseClass)
+    {
         // check if the class is available for TYPO3 before registering the driver
         if (!class_exists($className)) {
             throw new \InvalidArgumentException('Class ' . $className . ' does not exist.', 1462883324);
@@ -110,4 +112,3 @@ class AbstractClassRegistry implements SingletonInterface
         $this->classMap[$type] = $className;
     }
 }
-

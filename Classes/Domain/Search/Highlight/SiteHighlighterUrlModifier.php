@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Domain\Search\Highlight;
 
 /*
@@ -30,20 +31,22 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Class SiteHighlighterUrlModifier
  */
-class SiteHighlighterUrlModifier {
+class SiteHighlighterUrlModifier
+{
 
     /**
      * @param string $url
      * @param string $searchWords
-     * @param boolean $addNoCache
-     * @param boolean $keepCHash
+     * @param bool $addNoCache
+     * @param bool $keepCHash
      * @return string
      */
-    public function modify($url, $searchWords, $addNoCache = true, $keepCHash = false) {
+    public function modify($url, $searchWords, $addNoCache = true, $keepCHash = false)
+    {
         $searchWords = str_replace('&quot;', '', $searchWords);
         $searchWords = GeneralUtility::trimExplode(' ', $searchWords, true);
 
-            /** @var UrlHelper $urlHelper */
+        /** @var UrlHelper $urlHelper */
         $urlHelper = GeneralUtility::makeInstance(UrlHelper::class, /** @scrutinizer ignore-type */ $url);
         $urlHelper->addQueryParameter('sword_list', $searchWords);
 

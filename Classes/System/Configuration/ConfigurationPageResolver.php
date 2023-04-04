@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\System\Configuration;
 
 /***************************************************************
@@ -70,8 +71,8 @@ class ConfigurationPageResolver
      * This method fetches the rootLine and calculates the id of the closest template in the rootLine.
      * The result is stored in the runtime cache.
      *
-     * @param integer $startPageId
-     * @return integer
+     * @param int $startPageId
+     * @return int
      */
     public function getClosestPageIdWithActiveTemplate($startPageId)
     {
@@ -94,12 +95,11 @@ class ConfigurationPageResolver
     /**
      * This method fetches the rootLine and calculates the id of the closest template in the rootLine.
      *
-     * @param integer $startPageId
+     * @param int $startPageId
      * @return int
      */
     protected function calculateClosestPageIdWithActiveTemplate($startPageId)
     {
-
         $rootlineUtility = GeneralUtility::makeInstance(RootlineUtility::class, $startPageId);
         try {
             $rootline = $rootlineUtility->get();

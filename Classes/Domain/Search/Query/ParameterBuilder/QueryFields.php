@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
 
 /***************************************************************
@@ -63,7 +64,8 @@ class QueryFields implements ParameterBuilder
      * @param string $delimiter
      * @return string
      */
-    public function toString($delimiter = ' ') {
+    public function toString($delimiter = ' ')
+    {
         $queryFieldString = '';
 
         foreach ($this->queryFields as $fieldName => $fieldBoost) {
@@ -86,7 +88,8 @@ class QueryFields implements ParameterBuilder
      * @param string $delimiter
      * @return QueryFields
      */
-    public static function fromString($queryFieldsString, $delimiter = ',') {
+    public static function fromString($queryFieldsString, $delimiter = ',')
+    {
         $fields = GeneralUtility::trimExplode($delimiter, $queryFieldsString, true);
         $queryFields = [];
 
@@ -95,7 +98,7 @@ class QueryFields implements ParameterBuilder
 
             $boost = 1.0;
             if (isset($fieldNameAndBoost[1])) {
-                $boost = floatval($fieldNameAndBoost[1]);
+                $boost = (float)($fieldNameAndBoost[1]);
             }
 
             $fieldName = $fieldNameAndBoost[0];

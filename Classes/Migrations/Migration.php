@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Migrations;
 
 /***************************************************************
@@ -34,7 +35,7 @@ interface Migration
 {
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function isNeeded();
 

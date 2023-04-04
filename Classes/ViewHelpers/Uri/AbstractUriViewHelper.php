@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\ViewHelpers\Uri;
 
 /*
@@ -16,7 +17,6 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers\Uri;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Domain\Search\Uri\SearchUriBuilder;
-use ApacheSolrForTypo3\Solr\Mvc\Controller\SolrControllerContext;
 use ApacheSolrForTypo3\Solr\ViewHelpers\AbstractSolrFrontendViewHelper;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
@@ -68,10 +68,11 @@ abstract class AbstractUriViewHelper extends AbstractSolrFrontendViewHelper
      * @param RenderingContextInterface $renderingContext
      * @return mixed
      */
-    protected static function getUsedSearchRequestFromRenderingContext(RenderingContextInterface $renderingContext) {
+    protected static function getUsedSearchRequestFromRenderingContext(RenderingContextInterface $renderingContext)
+    {
         $resultSet = static::getUsedSearchResultSetFromRenderingContext($renderingContext);
         if (!$resultSet instanceof SearchResultSet) {
-            throw new \InvalidArgumentException("The variable resultSet need to be defined in the scope of " . static::class);
+            throw new \InvalidArgumentException('The variable resultSet need to be defined in the scope of ' . static::class);
         }
 
         return $resultSet->getUsedSearchRequest();

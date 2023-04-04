@@ -52,9 +52,6 @@ class SearchRequestBuilderTest extends UnitTest
      */
     protected $searchRequestBuilder;
 
-    /**
-     * @return void
-     */
     protected function setUp(): void
     {
         $this->configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
@@ -67,19 +64,19 @@ class SearchRequestBuilderTest extends UnitTest
      */
     public function testPageIsResettedWhenValidResultsPerPageValueWasPassed()
     {
-        $this->configurationMock->expects($this->once())->method('getSearchResultsPerPageSwitchOptionsAsArray')
-            ->will($this->returnValue([10, 25]));
-        $this->configurationMock->expects($this->any())->method('getSearchPluginNamespace')
-            ->will($this->returnValue(SearchRequest::DEFAULT_PLUGIN_NAMESPACE));
+        $this->configurationMock->expects(self::once())->method('getSearchResultsPerPageSwitchOptionsAsArray')
+            ->willReturn([10, 25]);
+        $this->configurationMock->expects(self::any())->method('getSearchPluginNamespace')
+            ->willReturn(SearchRequest::DEFAULT_PLUGIN_NAMESPACE);
         $this->assertPerPageInSessionWillBeChanged();
 
         $requestArguments = [
             'q' => 'test',
             'resultsPerPage' => 25,
-            'page' => 5 // pagination page
+            'page' => 5, // pagination page
         ];
         $request = $this->searchRequestBuilder->buildForSearch($requestArguments, 0, 0);
-        $this->assertSame($request->getPage(), null, 'Page was not resetted.');
+        self::assertSame($request->getPage(), null, 'Page was not resetted.');
     }
 
     /**
@@ -87,27 +84,21 @@ class SearchRequestBuilderTest extends UnitTest
      */
     public function testPerPageValueIsNotSetInSession()
     {
-        $this->configurationMock->expects($this->once())->method('getSearchResultsPerPageSwitchOptionsAsArray')
-            ->will($this->returnValue([10, 25]));
+        $this->configurationMock->expects(self::once())->method('getSearchResultsPerPageSwitchOptionsAsArray')
+            ->willReturn([10, 25]);
         $this->assertPerPageInSessionWillNotBeChanged();
 
         $requestArguments = ['q' => 'test', 'page' => 3];
         $this->searchRequestBuilder->buildForSearch($requestArguments, 0, 0);
     }
 
-    /**
-     * @return void
-     */
     private function assertPerPageInSessionWillBeChanged()
     {
-        $this->sessionMock->expects($this->once())->method('setPerPage');
+        $this->sessionMock->expects(self::once())->method('setPerPage');
     }
 
-    /**
-     * @return void
-     */
     private function assertPerPageInSessionWillNotBeChanged()
     {
-        $this->sessionMock->expects($this->never())->method('setPerPage');
+        $this->sessionMock->expects(self::never())->method('setPerPage');
     }
 }

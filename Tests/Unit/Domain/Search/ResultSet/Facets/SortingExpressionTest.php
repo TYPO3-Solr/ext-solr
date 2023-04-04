@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Test\Domain\Search\ResultSet\Facets;
 
 /***************************************************************
@@ -85,7 +86,7 @@ class SortingExpressionTest extends UnitTest
     /**
      * @param string $sorting
      * @param string $direction
-     * @param boolean $isJson
+     * @param bool $isJson
      * @param string $expectedResult
      * @dataProvider canBuildSortExpressionDataProvider
      * @test
@@ -98,6 +99,6 @@ class SortingExpressionTest extends UnitTest
         } else {
             $result = $expression->getForFacet($sorting);
         }
-        $this->assertSame($expectedResult, $result, 'Unexpected expression for solr server');
+        self::assertSame($expectedResult, $result, 'Unexpected expression for solr server');
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper;
 
 /***************************************************************
@@ -56,12 +57,12 @@ abstract class AbstractFrontendHelper implements FrontendHelper
     /**
      * The action a frontend helper executes.
      */
-    protected $action = null;
+    protected $action;
 
     /**
      * @var SolrLogManager
      */
-    protected $logger = null;
+    protected $logger;
 
     /**
      * Disables the frontend output for index queue requests.

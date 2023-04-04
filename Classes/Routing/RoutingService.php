@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -281,7 +282,6 @@ class RoutingService implements LoggerAwareInterface
                 if ($this->isPathArgument((string)$facetName)) {
                     $queryValues[$i] = $facetValue;
                 }
-
             }
             $queryValues[$i] = $this->urlFacetPathService->applyCharacterMap($queryValues[$i]);
         }
@@ -466,7 +466,7 @@ class RoutingService implements LoggerAwareInterface
         $self = $this;
         return array_filter(
             $this->settings['query']['map'],
-            function($value) use ($self) {
+            function ($value) use ($self) {
                 return !$self->isCoreParameter($value);
             }
         );
@@ -844,7 +844,8 @@ class RoutingService implements LoggerAwareInterface
     {
         if (mb_substr($slug, 0, 1) !== '/') {
             return '/' . $slug;
-        } else if (mb_substr($slug, 0, 2) === '//') {
+        }
+        if (mb_substr($slug, 0, 2) === '//') {
             return mb_substr($slug, 1, mb_strlen($slug) - 1);
         }
 

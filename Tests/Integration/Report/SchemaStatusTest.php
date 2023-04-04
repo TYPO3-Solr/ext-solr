@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\Report;
 
 /***************************************************************
@@ -36,9 +37,6 @@ use TYPO3\CMS\Reports\Status;
  */
 class SchemaStatusTest extends IntegrationTest
 {
-    /**
-     * @return void
-     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -54,6 +52,6 @@ class SchemaStatusTest extends IntegrationTest
         $schemaStatus = GeneralUtility::makeInstance(SchemaStatus::class);
         $violations = $schemaStatus->getStatus();
 
-        $this->assertEmpty($violations, 'We expect to get no violations against the test solr server');
+        self::assertEmpty($violations, 'We expect to get no violations against the test solr server');
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\ViewHelpers;
 
 /*
@@ -19,7 +20,6 @@ use ApacheSolrForTypo3\Solr\System\Util\SiteUtility;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
-
 
 /**
  * Class SearchFormViewHelper
@@ -61,8 +61,6 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
 
     /**
      * Initialize arguments.
-     *
-     * @return void
      */
     public function initializeArguments()
     {
@@ -89,7 +87,6 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
         $this->registerArgument('addSuggestUrl', 'boolean', 'Indicates if suggestUrl should be rendered or not', false, true);
         $this->registerArgument('suggestHeader', 'string', 'The header for the top results', false, 'Top Results');
         $this->registerArgument('suggestPageType', 'integer', 'The page type that should be used for the suggest', false, 7384);
-
     }
 
     /**
@@ -187,7 +184,7 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
      * When no speaking urls are active (e.g. with TYPO3 8 and no realurl) this information is passed as query parameter
      * and would get lost when it is only part of the query arguments in the action parameter of the form.
      *
-     * @return boolean
+     * @return bool
      */
     protected function getIsSiteManagedSite($pageId)
     {
@@ -215,7 +212,7 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
     }
 
     /**
-     * @param NULL|array $additionalFilters
+     * @param array|null $additionalFilters
      * @param int $pageUid
      * @return string
      */

@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\IndexQueue;
 
 /***************************************************************
@@ -71,14 +72,11 @@ class PageIndexerRequestHandler implements SingletonInterface
         $this->response = GeneralUtility::makeInstance(PageIndexerResponse::class);
         $this->response->setRequestId($this->request->getRequestId());
     }
-    
 
     /**
      * Authenticates the request, runs the frontend helpers defined by the
      * request, and registers its own shutdown() method for execution at
      * hook_eofe in tslib/class.tslib_fe.php.
-     *
-     * @return void
      */
     public function run()
     {
@@ -88,8 +86,6 @@ class PageIndexerRequestHandler implements SingletonInterface
     /**
      * Completes the Index Queue page indexer request and returns the response
      * with the collected results.
-     *
-     * @return void
      */
     public function shutdown()
     {

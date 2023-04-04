@@ -25,8 +25,8 @@ namespace ApacheSolrForTypo3\Solr\Backend;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
+use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**

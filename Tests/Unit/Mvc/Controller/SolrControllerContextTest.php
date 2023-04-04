@@ -25,10 +25,10 @@
 
 namespace ApacheSolrForTypo3\Solr\Test\Unit\Mvc\Controller;
 
-use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Mvc\Controller\SolrControllerContext;
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 
 /**
  * @author Timo Hund <timo.hund@dkd.de>
@@ -38,7 +38,7 @@ class SolrControllerContextTest extends UnitTest
     /**
      * @var SolrControllerContext
      */
-    protected $controllerContext = null;
+    protected $controllerContext;
 
     protected function setUp(): void
     {
@@ -53,7 +53,7 @@ class SolrControllerContextTest extends UnitTest
         /** @var TypoScriptConfiguration $typoScriptConfigurationMock */
         $typoScriptConfigurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
         $this->controllerContext->setTypoScriptConfiguration($typoScriptConfigurationMock);
-        $this->assertSame($this->controllerContext->getTypoScriptConfiguration(), $typoScriptConfigurationMock, 'Can not get and set TypoScriptConfiguration');
+        self::assertSame($this->controllerContext->getTypoScriptConfiguration(), $typoScriptConfigurationMock, 'Can not get and set TypoScriptConfiguration');
     }
 
     /**
@@ -63,6 +63,6 @@ class SolrControllerContextTest extends UnitTest
     {
         $searchResultSetMock = $this->getDumbMock(SearchResultSet::class);
         $this->controllerContext->setSearchResultSet($searchResultSetMock);
-        $this->assertSame($this->controllerContext->getSearchResultSet(), $searchResultSetMock, 'Can not get and set SearchResultSet');
+        self::assertSame($this->controllerContext->getSearchResultSet(), $searchResultSetMock, 'Can not get and set SearchResultSet');
     }
 }

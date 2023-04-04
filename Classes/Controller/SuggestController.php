@@ -46,11 +46,15 @@ class SuggestController extends AbstractBaseController
             /** @var SuggestService $suggestService */
             $suggestService = GeneralUtility::makeInstance(
                 SuggestService::class,
-                /** @scrutinizer ignore-type */ $this->typoScriptFrontendController,
-                /** @scrutinizer ignore-type */ $this->searchService,
-                /** @scrutinizer ignore-type */ $this->typoScriptConfiguration);
+                /** @scrutinizer ignore-type */
+                $this->typoScriptFrontendController,
+                /** @scrutinizer ignore-type */
+                $this->searchService,
+                /** @scrutinizer ignore-type */
+                $this->typoScriptConfiguration
+            );
 
-            $additionalFilters = is_array($additionalFilters) ? array_map("htmlspecialchars", $additionalFilters) : [];
+            $additionalFilters = is_array($additionalFilters) ? array_map('htmlspecialchars', $additionalFilters) : [];
             $pageId = $this->typoScriptFrontendController->getRequestedId();
             $languageId = Util::getLanguageUid();
             $arguments = (array)$this->request->getArguments();
@@ -66,5 +70,4 @@ class SuggestController extends AbstractBaseController
         }
         return json_encode($result, JSON_UNESCAPED_SLASHES);
     }
-
 }

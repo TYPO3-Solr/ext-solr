@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\Controller;
 
 /*
@@ -23,17 +24,12 @@ use TYPO3\CMS\Extbase\Mvc\Request as ExtbaseRequest;
 use TYPO3\CMS\Extbase\Mvc\Web\Response;
 use TYPO3\CMS\Frontend\Http\RequestHandler;
 
-abstract class AbstractFrontendControllerTest  extends IntegrationTest
+abstract class AbstractFrontendControllerTest extends IntegrationTest
 {
-
-    /**
-     * @return void
-     */
     protected function setUp(): void
     {
         $_SERVER['HTTP_HOST'] = 'testone.site';
         $_SERVER['REQUEST_URI'] = '/en/search/';
-
 
         parent::setUp();
         $this->writeDefaultSolrTestSiteConfiguration();
@@ -93,7 +89,6 @@ abstract class AbstractFrontendControllerTest  extends IntegrationTest
 
         return $request;
     }
-
 
     /**
      * @return Response

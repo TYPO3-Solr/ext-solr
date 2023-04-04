@@ -77,7 +77,7 @@ class SiteRepository
     /**
      * @var FrontendEnvironment
      */
-    protected $frontendEnvironment = null;
+    protected $frontendEnvironment;
 
     /**
      * SiteRepository constructor.
@@ -86,7 +86,7 @@ class SiteRepository
      * @param TwoLevelCache|null $twoLevelCache
      * @param Registry|null $registry
      * @param SiteFinder|null $siteFinder
-     * @param ExtensionConfiguration| null
+     * @param ExtensionConfiguration|null
      */
     public function __construct(
         RootPageResolver $rootPageResolver = null,
@@ -95,8 +95,7 @@ class SiteRepository
         SiteFinder $siteFinder = null,
         ExtensionConfiguration $extensionConfiguration = null,
         FrontendEnvironment $frontendEnvironment = null
-    )
-    {
+    ) {
         $this->rootPageResolver = $rootPageResolver ?? GeneralUtility::makeInstance(RootPageResolver::class);
         $this->runtimeCache = $twoLevelCache ?? GeneralUtility::makeInstance(TwoLevelCache::class, /** @scrutinizer ignore-type */'runtime');
         $this->registry = $registry ?? GeneralUtility::makeInstance(Registry::class);
@@ -194,7 +193,6 @@ class SiteRepository
                 if ($typo3ManagedSolrSite->isEnabled()) {
                     $typo3ManagedSolrSites[$rootPageId] = $typo3ManagedSolrSite;
                 }
-
             } catch (\Exception $e) {
                 if ($stopOnInvalidSite) {
                     throw $e;
@@ -204,13 +202,13 @@ class SiteRepository
         return $typo3ManagedSolrSites;
     }
 
-     /**
-     * Creates an instance of the Site object.
-     *
-     * @param integer $rootPageId
-     * @throws \InvalidArgumentException
-     * @return SiteInterface
-     */
+    /**
+    * Creates an instance of the Site object.
+    *
+    * @param int $rootPageId
+    * @throws \InvalidArgumentException
+    * @return SiteInterface
+    */
     protected function buildSite($rootPageId)
     {
         if (empty($rootPageId)) {
@@ -275,7 +273,7 @@ class SiteRepository
         $siteHash = $this->getSiteHashForDomain($domain);
         $defaultLanguage = $typo3Site->getDefaultLanguage()->getLanguageId();
         $pageRepository = GeneralUtility::makeInstance(PagesRepository::class);
-        $availableLanguageIds = array_map(function($language) {
+        $availableLanguageIds = array_map(function ($language) {
             return $language->getLanguageId();
         }, $typo3Site->getLanguages());
 
@@ -297,7 +295,7 @@ class SiteRepository
                             SiteUtility::getConnectionProperty($typo3Site, 'path', $languageUid, 'read', '/solr/') .
                             SiteUtility::getConnectionProperty($typo3Site, 'core', $languageUid, 'read', 'core_en') . '/' ,
                         'username' => SiteUtility::getConnectionProperty($typo3Site, 'username', $languageUid, 'read', ''),
-                        'password' => SiteUtility::getConnectionProperty($typo3Site, 'password', $languageUid, 'read', '')
+                        'password' => SiteUtility::getConnectionProperty($typo3Site, 'password', $languageUid, 'read', ''),
                     ],
                     'write' => [
                         'scheme' => SiteUtility::getConnectionProperty($typo3Site, 'scheme', $languageUid, 'write', 'http'),
@@ -308,10 +306,10 @@ class SiteRepository
                             SiteUtility::getConnectionProperty($typo3Site, 'path', $languageUid, 'write', '/solr/') .
                             SiteUtility::getConnectionProperty($typo3Site, 'core', $languageUid, 'write', 'core_en') . '/' ,
                         'username' => SiteUtility::getConnectionProperty($typo3Site, 'username', $languageUid, 'write', ''),
-                        'password' => SiteUtility::getConnectionProperty($typo3Site, 'password', $languageUid, 'write', '')
+                        'password' => SiteUtility::getConnectionProperty($typo3Site, 'password', $languageUid, 'write', ''),
                     ],
 
-                    'language' => $languageUid
+                    'language' => $languageUid,
                 ];
             }
         }
@@ -338,5 +336,4 @@ class SiteRepository
             $typo3Site
         );
     }
-
 }

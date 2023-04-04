@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr;
 
 /***************************************************************
@@ -38,7 +39,7 @@ class Typo3PageContentExtractor extends HtmlContentExtractor
     /**
      * @var \ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager
      */
-    protected $logger = null;
+    protected $logger;
 
     /**
      * Shortcut method to retrieve the raw content marked for indexing.
@@ -60,8 +61,11 @@ class Typo3PageContentExtractor extends HtmlContentExtractor
      */
     protected function extractContentMarkedForIndexing($html)
     {
-        preg_match_all('/<!--\s*?TYPO3SEARCH_begin\s*?-->.*?<!--\s*?TYPO3SEARCH_end\s*?-->/mis',
-            $html, $indexableContents);
+        preg_match_all(
+            '/<!--\s*?TYPO3SEARCH_begin\s*?-->.*?<!--\s*?TYPO3SEARCH_end\s*?-->/mis',
+            $html,
+            $indexableContents
+        );
         $indexableContent = implode('', $indexableContents[0]);
 
         $indexableContent = $this->excludeContentByClass($indexableContent);

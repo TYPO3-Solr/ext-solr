@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper;
 
 /***************************************************************
@@ -45,7 +46,6 @@ class Dispatcher
 
     /**
      * Constructor
-     *
      */
     public function __construct()
     {
@@ -74,8 +74,6 @@ class Dispatcher
 
     /**
      * Sends a shutdown signal to all activated frontend helpers.
-     *
-     * @return void
      */
     public function shutdown()
     {

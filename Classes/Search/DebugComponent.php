@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Search;
 
 /***************************************************************
@@ -24,8 +25,8 @@ namespace ApacheSolrForTypo3\Solr\Search;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequestAware;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -81,7 +82,6 @@ class DebugComponent extends AbstractComponent implements QueryAware, SearchRequ
      * Initializes the search component.
      *
      * Sets the debug query parameter
-     *
      */
     public function initializeSearchComponent()
     {

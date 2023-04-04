@@ -1,4 +1,6 @@
-<?php declare(strict_types = 1);
+<?php
+
+declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\Domain\Index\Classification;
 
 /***************************************************************
@@ -24,11 +26,11 @@ namespace ApacheSolrForTypo3\Solr\Domain\Index\Classification;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-
 /**
  * Class Classification
  */
-class Classification {
+class Classification
+{
 
     /**
      * Array of regular expressions
@@ -54,7 +56,7 @@ class Classification {
      * @param array $unMatchPatterns
      * @param string $mappedClass
      */
-    public function __construct(array $matchPatterns = [], array $unMatchPatterns = [],string $mappedClass = '')
+    public function __construct(array $matchPatterns = [], array $unMatchPatterns = [], string $mappedClass = '')
     {
         $this->matchPatterns = $matchPatterns;
         $this->unMatchPatterns = $unMatchPatterns;

@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Controller;
 
 /*
@@ -15,12 +16,11 @@ namespace ApacheSolrForTypo3\Solr\Controller;
  */
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
-use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrUnavailableException;
 use ApacheSolrForTypo3\Solr\Util;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
 use TYPO3\CMS\Extbase\Mvc\Web\Response;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Fluid\View\TemplateView;
 
 /**
@@ -45,9 +45,6 @@ class SearchController extends AbstractBaseController
         $this->mapGlobalQueryStringWhenEnabled();
     }
 
-    /**
-     * @return void
-     */
     protected function mapGlobalQueryStringWhenEnabled()
     {
         $query = GeneralUtility::_GET('q');
@@ -64,13 +61,13 @@ class SearchController extends AbstractBaseController
      */
     public function initializeView(ViewInterface $view)
     {
-        if($view instanceof TemplateView) {
+        if ($view instanceof TemplateView) {
             $customTemplate = $this->getCustomTemplateFromConfiguration();
-            if($customTemplate === '') {
+            if ($customTemplate === '') {
                 return;
             }
 
-            if(strpos($customTemplate, 'EXT:') !== false) {
+            if (strpos($customTemplate, 'EXT:') !== false) {
                 $view->setTemplatePathAndFilename($customTemplate);
             } else {
                 $view->setTemplate($customTemplate);
@@ -111,7 +108,7 @@ class SearchController extends AbstractBaseController
                 'additionalFilters' => $this->getAdditionalFilters(),
                 'resultSet' => $searchResultSet,
                 'pluginNamespace' => $this->typoScriptConfiguration->getSearchPluginNamespace(),
-                'arguments' => $arguments
+                'arguments' => $arguments,
             ];
 
             $values = $this->emitActionSignal(__CLASS__, __FUNCTION__, [$values]);
@@ -127,11 +124,10 @@ class SearchController extends AbstractBaseController
      */
     public function formAction()
     {
-
         $values = [
             'search' => $this->searchService->getSearch(),
             'additionalFilters' => $this->getAdditionalFilters(),
-            'pluginNamespace' => $this->typoScriptConfiguration->getSearchPluginNamespace()
+            'pluginNamespace' => $this->typoScriptConfiguration->getSearchPluginNamespace(),
         ];
         $values = $this->emitActionSignal(__CLASS__, __FUNCTION__, [$values]);
 
@@ -155,7 +151,7 @@ class SearchController extends AbstractBaseController
 
         $values = [
             'additionalFilters' => $this->getAdditionalFilters(),
-            'resultSet' => $searchResultSet
+            'resultSet' => $searchResultSet,
         ];
         $values = $this->emitActionSignal(__CLASS__, __FUNCTION__, [$values]);
 
@@ -190,8 +186,6 @@ class SearchController extends AbstractBaseController
 
     /**
      * Called when the solr server is unavailable.
-     *
-     * @return void
      */
     protected function handleSolrUnavailable()
     {

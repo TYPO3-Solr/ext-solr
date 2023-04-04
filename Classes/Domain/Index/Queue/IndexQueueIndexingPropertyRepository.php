@@ -1,4 +1,6 @@
-<?php declare(strict_types = 1);
+<?php
+
+declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue;
 
 /***************************************************************
@@ -44,7 +46,7 @@ class IndexQueueIndexingPropertyRepository extends AbstractRepository
      * @param int $indexQueueUid
      * @return int
      */
-    public function removeByRootPidAndIndexQueueUid(int $rootPid, int $indexQueueUid) : int
+    public function removeByRootPidAndIndexQueueUid(int $rootPid, int $indexQueueUid): int
     {
         $queryBuider = $this->getQueryBuilder();
         return $queryBuider
@@ -61,7 +63,7 @@ class IndexQueueIndexingPropertyRepository extends AbstractRepository
      * @param array $properties assoc array with column names as key
      * @return int
      */
-    public function bulkInsert(array $properties) : int
+    public function bulkInsert(array $properties): int
     {
         return $this->getQueryBuilder()->getConnection()->bulkInsert($this->table, $properties, ['root', 'item_id', 'property_key', 'property_value']);
     }
@@ -72,7 +74,7 @@ class IndexQueueIndexingPropertyRepository extends AbstractRepository
      * @param int $indexQueueUid
      * @return array list of records for searched index queue item
      */
-    public function findAllByIndexQueueUid(int $indexQueueUid) : array
+    public function findAllByIndexQueueUid(int $indexQueueUid): array
     {
         $queryBuider = $this->getQueryBuilder();
         return $queryBuider

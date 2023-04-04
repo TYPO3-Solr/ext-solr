@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Test\Domain\Search\ResultSet\Facets\RangeBased\DateRange;
 
 /***************************************************************
@@ -46,19 +47,19 @@ class DateRangeFacetQueryBuilderTest extends UnitTest
         $fakeFacetConfiguration = [
             'field' => 'created',
             'keepAllOptionsOnSelection' => 1,
-            'dateRange.' => ['start' => 'NOW/DAY-2YEAR', 'end' => 'NOW/DAY+2YEAR', 'gap' => '+1DAY']
+            'dateRange.' => ['start' => 'NOW/DAY-2YEAR', 'end' => 'NOW/DAY+2YEAR', 'gap' => '+1DAY'],
         ];
         $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
-        $configurationMock->expects($this->once())->method('getSearchFacetingFacetByName')->with('testFacet')->will(
-            $this->returnValue($fakeFacetConfiguration)
+        $configurationMock->expects(self::once())->method('getSearchFacetingFacetByName')->with('testFacet')->willReturn(
+            $fakeFacetConfiguration
         );
 
         $builder = new DateRangeFacetQueryBuilder();
         $facetParameters = $builder->build('testFacet', $configurationMock);
 
-        $this->assertSame($facetParameters['facet.range'][0], '{!ex=created}created', 'Could not apply keepAllOptionsOnSelection');
-        $this->assertSame($facetParameters['f.created.facet.range.start'], 'NOW/DAY-2YEAR', 'Could not build range.start as expected');
-        $this->assertSame($facetParameters['f.created.facet.range.end'], 'NOW/DAY+2YEAR', 'Could not build range.end as expected');
-        $this->assertSame($facetParameters['f.created.facet.range.gap'], '+1DAY', 'Could not build range.gap as epxected');
+        self::assertSame($facetParameters['facet.range'][0], '{!ex=created}created', 'Could not apply keepAllOptionsOnSelection');
+        self::assertSame($facetParameters['f.created.facet.range.start'], 'NOW/DAY-2YEAR', 'Could not build range.start as expected');
+        self::assertSame($facetParameters['f.created.facet.range.end'], 'NOW/DAY+2YEAR', 'Could not build range.end as expected');
+        self::assertSame($facetParameters['f.created.facet.range.gap'], '+1DAY', 'Could not build range.gap as epxected');
     }
 }

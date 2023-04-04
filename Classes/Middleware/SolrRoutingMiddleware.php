@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Middleware;
 
 /*
@@ -71,7 +72,7 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
     /**
      * @var SiteLanguage
      */
-    protected $language = null;
+    protected $language;
 
     /**
      * @var RoutingService
@@ -238,7 +239,7 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
         if ($uriPath === $pageSlug) {
             return [
                 $pageSlug,
-                []
+                [],
             ];
         }
 
@@ -292,7 +293,7 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
 
         return [
             implode('/', $slugElements),
-            $arguments
+            $arguments,
         ];
     }
 
@@ -326,7 +327,7 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
                             [
                                 $path,
                                 $this->language->getTwoLetterIsoCode(),
-                                $uri->getPath()
+                                $uri->getPath(),
                             ]
                         )
                     );
@@ -339,7 +340,7 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
                             'Could resolve page by path "%1$s" and language "%2$s".',
                             [
                                 $uri->getPath(),
-                                $this->language->getTwoLetterIsoCode()
+                                $this->language->getTwoLetterIsoCode(),
                             ]
                         )
                     );
@@ -352,7 +353,7 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
                                 'Path "%1$s" -> slug "%2$s"',
                                 [
                                     $path,
-                                    $item['slug']
+                                    $item['slug'],
                                 ]
                             )
                         );
@@ -374,7 +375,7 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
                     }
                 }
             }
-        } while($scan);
+        } while ($scan);
         return $page;
     }
 
@@ -383,7 +384,7 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
      */
     protected function getRoutingService(): RoutingService
     {
-        if (null === $this->routingService) {
+        if ($this->routingService === null) {
             $this->routingService = GeneralUtility::makeInstance(
                 RoutingService::class,
                 $this->settings,

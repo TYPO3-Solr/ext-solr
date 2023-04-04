@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Domain\Search\ApacheSolrDocument;
 
 /***************************************************************
@@ -27,7 +28,6 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ApacheSolrDocument;
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\Parser\DocumentEscapeService;
-use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
 use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
@@ -54,12 +54,12 @@ class Repository implements SingletonInterface
     /**
      * @var DocumentEscapeService
      */
-    protected $documentEscapeService = null;
+    protected $documentEscapeService;
 
     /**
      * @var TypoScriptConfiguration|null
      */
-    protected $typoScriptConfiguration = null;
+    protected $typoScriptConfiguration;
 
     /**
      * @var QueryBuilder

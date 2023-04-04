@@ -1,4 +1,6 @@
-<?php declare(strict_types = 1);
+<?php
+
+declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\EventListener;
 
 /***************************************************************
@@ -24,10 +26,10 @@ namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\EventListener
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\EventListener\Events\DelayedProcessingQueuingFinishedEvent;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\DataUpdateEventInterface;
 use ApacheSolrForTypo3\Solr\System\Records\Queue\EventQueueItemRepository;
-use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\EventListener\Events\DelayedProcessingQueuingFinishedEvent;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Event listener just queueing the data changes and stopping

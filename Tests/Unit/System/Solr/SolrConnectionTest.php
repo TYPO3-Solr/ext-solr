@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\Solr;
 
 /***************************************************************
@@ -32,20 +33,15 @@ use ApacheSolrForTypo3\Solr\System\Solr\Parser\StopWordParser;
 use ApacheSolrForTypo3\Solr\System\Solr\Parser\SynonymParser;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Solarium\Client;
-use Solarium\Core\Client\Adapter\TimeoutAwareInterface;
 use Solarium\Core\Client\Endpoint;
-use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 
 /**
  * Class SolrConnectionTest
- * @package ApacheSolrForTypo3\Solr\Tests\Unit\System\Solr
  */
 class SolrConnectionTest extends UnitTest
 {
@@ -105,7 +101,7 @@ class SolrConnectionTest extends UnitTest
         $endpointMock = $this->getDumbMock(Endpoint::class);
         /* @var Client $clientMock */
         $clientMock = $this->getDumbMock(Client::class);
-        $clientMock->expects($this->any())->method('getEndpoints')->willReturn([$endpointMock]);
+        $clientMock->expects(self::any())->method('getEndpoints')->willReturn([$endpointMock]);
 
         $readNode = Node::fromArray(
             ['host' => 'localhost', 'port' => 8080, 'path' => '/solr/core_en/', 'scheme' => 'https', 'username' => '', 'password' => '']
@@ -114,7 +110,7 @@ class SolrConnectionTest extends UnitTest
         $connection = $this->getSolrConnectionWithDummyConstructorArgs($readNode, $writeNode);
         $connection->setClient($clientMock, 'admin');
 
-        $endpointMock->expects($this->never())->method('setAuthentication');
+        $endpointMock->expects(self::never())->method('setAuthentication');
         $connection->getAdminService();
     }
 
@@ -125,7 +121,7 @@ class SolrConnectionTest extends UnitTest
     {
         $endpointMock = $this->getDumbMock(Endpoint::class);
         $clientMock = $this->getDumbMock(Client::class);
-        $clientMock->expects($this->any())->method('getEndpoints')->willReturn([$endpointMock]);
+        $clientMock->expects(self::any())->method('getEndpoints')->willReturn([$endpointMock]);
 
         $readNode = Node::fromArray(
             ['host' => 'localhost', 'port' => 8080, 'path' => '/solr/core_en/', 'scheme' => 'https', 'username' => 'foo', 'password' => 'bar']
@@ -134,7 +130,7 @@ class SolrConnectionTest extends UnitTest
         $connection = $this->getSolrConnectionWithDummyConstructorArgs($readNode, $writeNode);
         $connection->setClient($clientMock, 'admin');
 
-        $endpointMock->expects($this->once())->method('setAuthentication');
+        $endpointMock->expects(self::once())->method('setAuthentication');
         $connection->getAdminService();
     }
 
@@ -145,7 +141,7 @@ class SolrConnectionTest extends UnitTest
     {
         return [
             ['path' => '/solr/bla', 'expectedName' => 'bla'],
-            ['path' => '/somewherelese/solr/corename', 'expectedName' => 'corename']
+            ['path' => '/somewherelese/solr/corename', 'expectedName' => 'corename'],
         ];
     }
 
@@ -161,7 +157,7 @@ class SolrConnectionTest extends UnitTest
         );
         $writeNode = $readNode;
         $solrService = $this->getSolrConnectionWithDummyConstructorArgs($readNode, $writeNode, $fakeConfiguration);
-        $this->assertSame($expectedCoreName, $solrService->getReadService()->getPrimaryEndpoint()->getCore());
+        self::assertSame($expectedCoreName, $solrService->getReadService()->getPrimaryEndpoint()->getCore());
     }
 
     /**
@@ -171,7 +167,7 @@ class SolrConnectionTest extends UnitTest
     {
         return [
             ['path' => '/solr/bla', 'expectedPath' => ''],
-            ['path' => '/somewherelese/solr/corename', 'expectedCoreBasePath' => '/somewherelese']
+            ['path' => '/somewherelese/solr/corename', 'expectedCoreBasePath' => '/somewherelese'],
         ];
     }
 
@@ -186,7 +182,7 @@ class SolrConnectionTest extends UnitTest
         );
         $writeNode = $readNode;
         $solrService = $this->getSolrConnectionWithDummyConstructorArgs($readNode, $writeNode);
-        $this->assertSame($expectedCoreBasePath, $solrService->getReadService()->getPrimaryEndpoint()->getPath());
+        self::assertSame($expectedCoreBasePath, $solrService->getReadService()->getPrimaryEndpoint()->getPath());
     }
 
     /**
@@ -199,6 +195,6 @@ class SolrConnectionTest extends UnitTest
         );
         $writeNode = $readNode;
         $solrService = $this->getSolrConnectionWithDummyConstructorArgs($readNode, $writeNode);
-        $this->assertSame('http://localhost:8080/solr/core_de/', (string) $solrService->getNode('read'), 'Could not get string representation of connection');
+        self::assertSame('http://localhost:8080/solr/core_de/', (string)$solrService->getNode('read'), 'Could not get string representation of connection');
     }
 }

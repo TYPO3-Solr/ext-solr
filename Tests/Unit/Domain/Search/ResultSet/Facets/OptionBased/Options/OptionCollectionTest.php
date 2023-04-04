@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Test\Domain\Search\ResultSet\Facets\OptionBased\Options;
 
 /***************************************************************
@@ -24,11 +25,10 @@ namespace ApacheSolrForTypo3\Solr\Test\Domain\Search\ResultSet\Facets\OptionBase
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResult;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\Option;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\OptionsFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
+use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 
 /**
  * Unit test for the OptionsFacet
@@ -56,9 +56,9 @@ class OptionCollectionTest extends UnitTest
         // @extensionScannerIgnoreLine
         $sortedOptions = $facet->getOptions()->getManualSortedCopy(['yellow', 'blue']);
 
-        $this->assertSame($yellow, $sortedOptions->getByPosition(0), 'First sorted item was not yellow');
-        $this->assertSame($blue, $sortedOptions->getByPosition(1), 'First sorted item was not blue');
-        $this->assertSame($red, $sortedOptions->getByPosition(2), 'First sorted item was not blue');
+        self::assertSame($yellow, $sortedOptions->getByPosition(0), 'First sorted item was not yellow');
+        self::assertSame($blue, $sortedOptions->getByPosition(1), 'First sorted item was not blue');
+        self::assertSame($red, $sortedOptions->getByPosition(2), 'First sorted item was not blue');
     }
 
     /**
@@ -83,7 +83,7 @@ class OptionCollectionTest extends UnitTest
 
         // @extensionScannerIgnoreLine
         $labelPrefixes = $facet->getOptions()->getLowercaseLabelPrefixes(1);
-        $this->assertSame(['r','p','l'], $labelPrefixes, 'Can not get expected label prefixes');
+        self::assertSame(['r', 'p', 'l'], $labelPrefixes, 'Can not get expected label prefixes');
     }
 
     /**
@@ -108,11 +108,11 @@ class OptionCollectionTest extends UnitTest
 
         // @extensionScannerIgnoreLine
         $optionsStartingWithL = $facet->getOptions()->getByLowercaseLabelPrefix('l');
-        $this->assertCount(1, $optionsStartingWithL, 'Unexpected amount of options starting with l');
+        self::assertCount(1, $optionsStartingWithL, 'Unexpected amount of options starting with l');
 
         // @extensionScannerIgnoreLine
         $optionsStartingWithR = $facet->getOptions()->getByLowercaseLabelPrefix('r');
-        $this->assertCount(3, $optionsStartingWithR, 'Unexpected amount of options starting with r');
+        self::assertCount(3, $optionsStartingWithR, 'Unexpected amount of options starting with r');
     }
 
     /**
@@ -131,7 +131,7 @@ class OptionCollectionTest extends UnitTest
 
         // @extensionScannerIgnoreLine
         $optionsStartingWithO = $facet->getOptions()->getByLowercaseLabelPrefix('ø');
-        $this->assertCount(1, $optionsStartingWithO, 'Unexpected amount of options starting with ø');
+        self::assertCount(1, $optionsStartingWithO, 'Unexpected amount of options starting with ø');
     }
 
     /**
@@ -151,22 +151,21 @@ class OptionCollectionTest extends UnitTest
         $facet->addOption($yellow);
 
         // @extensionScannerIgnoreLine
-        $this->assertSame($yellow, $facet->getOptions()->getByValue('yellow'), 'Can not get option by value');
+        self::assertSame($yellow, $facet->getOptions()->getByValue('yellow'), 'Can not get option by value');
         // @extensionScannerIgnoreLine
-        $this->assertSame($blue, $facet->getOptions()->getByValue('blue'), 'Can not get option by value');
+        self::assertSame($blue, $facet->getOptions()->getByValue('blue'), 'Can not get option by value');
         // @extensionScannerIgnoreLine
-        $this->assertSame($red, $facet->getOptions()->getByValue('red'), 'Can not get option by value');
+        self::assertSame($red, $facet->getOptions()->getByValue('red'), 'Can not get option by value');
 
         // @extensionScannerIgnoreLine
         $sortedOptions = $facet->getOptions()->getManualSortedCopy(['yellow', 'blue']);
 
-        $this->assertSame($yellow, $sortedOptions->getByValue('yellow'), 'Can not get option by value');
-        $this->assertSame($blue, $sortedOptions->getByValue('blue'), 'Can not get option by value');
-        $this->assertSame($red, $sortedOptions->getByValue('red'), 'Can not get option by value');
+        self::assertSame($yellow, $sortedOptions->getByValue('yellow'), 'Can not get option by value');
+        self::assertSame($blue, $sortedOptions->getByValue('blue'), 'Can not get option by value');
+        self::assertSame($red, $sortedOptions->getByValue('red'), 'Can not get option by value');
 
-        $this->assertSame($yellow, $sortedOptions->getByPosition(0), 'First sorted item was not yellow');
-        $this->assertSame($blue, $sortedOptions->getByPosition(1), 'First sorted item was not blue');
-        $this->assertSame($red, $sortedOptions->getByPosition(2), 'First sorted item was not blue');
+        self::assertSame($yellow, $sortedOptions->getByPosition(0), 'First sorted item was not yellow');
+        self::assertSame($blue, $sortedOptions->getByPosition(1), 'First sorted item was not blue');
+        self::assertSame($red, $sortedOptions->getByPosition(2), 'First sorted item was not blue');
     }
 }
-

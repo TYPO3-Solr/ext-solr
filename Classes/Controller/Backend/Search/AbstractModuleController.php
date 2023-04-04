@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Controller\Backend\Search;
 
 /***************************************************************
@@ -25,11 +26,11 @@ namespace ApacheSolrForTypo3\Solr\Controller\Backend\Search;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\ConnectionManager;
-use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
-use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection as SolrCoreConnection;
+use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\System\Mvc\Backend\Component\Exception\InvalidViewObjectNameException;
 use ApacheSolrForTypo3\Solr\System\Mvc\Backend\Service\ModuleDataStorageService;
+use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection as SolrCoreConnection;
 use TYPO3\CMS\Backend\Template\Components\Menu\Menu;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Backend\View\BackendTemplateView;
@@ -88,17 +89,17 @@ abstract class AbstractModuleController extends ActionController
     /**
      * @var Menu
      */
-    protected $coreSelectorMenu = null;
+    protected $coreSelectorMenu;
 
     /**
      * @var ConnectionManager
      */
-    protected $solrConnectionManager = null;
+    protected $solrConnectionManager;
 
     /**
      * @var ModuleDataStorageService
      */
-    protected $moduleDataStorageService = null;
+    protected $moduleDataStorageService;
 
     /**
      * @param Site $selectedSite
@@ -170,7 +171,6 @@ abstract class AbstractModuleController extends ActionController
      * Set up the doc header properly here
      *
      * @param ViewInterface $view
-     * @return void
      */
     protected function initializeView(ViewInterface $view)
     {
@@ -183,10 +183,12 @@ abstract class AbstractModuleController extends ActionController
         if ($view instanceof NotFoundView || $this->selectedPageUID < 1) {
             return;
         }
-        $this->view->getModuleTemplate()->addJavaScriptCode('mainJsFunctions', '
+        $this->view->getModuleTemplate()->addJavaScriptCode(
+            'mainJsFunctions',
+            '
                 top.fsMod.recentIds["searchbackend"] = ' . (int)$this->selectedPageUID . ';'
         );
-        if (null === $this->selectedSite) {
+        if ($this->selectedSite === null) {
             return;
         }
 
@@ -195,7 +197,7 @@ abstract class AbstractModuleController extends ActionController
         $permissionClause = $beUser->getPagePermsClause(1);
         $pageRecord = BackendUtility::readPageAccess($this->selectedSite->getRootPageId(), $permissionClause);
 
-        if (false === $pageRecord) {
+        if ($pageRecord === false) {
             throw new \InvalidArgumentException(vsprintf('There is something wrong with permissions for page "%s" for backend user "%s".', [$this->selectedSite->getRootPageId(), $beUser->user['username']]), 1496146317);
         }
         $this->view->getModuleTemplate()->getDocHeaderComponent()->setMetaInformation($pageRecord);
@@ -208,7 +210,7 @@ abstract class AbstractModuleController extends ActionController
      */
     public function generateCoreSelectorMenuUsingPageTree(string $uriToRedirectTo = null)
     {
-        if ($this->selectedPageUID < 1 || null === $this->selectedSite) {
+        if ($this->selectedPageUID < 1 || $this->selectedSite === null) {
             return;
         }
 
@@ -233,7 +235,8 @@ abstract class AbstractModuleController extends ActionController
             throw new InvalidViewObjectNameException(vsprintf(
                 'The controller "%s" must use BackendTemplateView to be able to generate menu for backends docheader. \
                 Please set `protected $defaultViewObjectName = BackendTemplateView::class;` field in your controller.',
-                [static::class]), 1493804179);
+                [static::class]
+            ), 1493804179);
         }
         $this->view->getModuleTemplate()->setFlashMessageQueue($this->controllerContext->getFlashMessageQueue());
 
@@ -250,10 +253,11 @@ abstract class AbstractModuleController extends ActionController
             $coreAdmin = $core->getAdminService();
             $menuItem = $this->coreSelectorMenu->makeMenuItem();
             $menuItem->setTitle($coreAdmin->getCorePath());
-            $uri = $this->uriBuilder->reset()->uriFor('switchCore',
+            $uri = $this->uriBuilder->reset()->uriFor(
+                'switchCore',
                 [
                     'corePath' => $coreAdmin->getCorePath(),
-                    'uriToRedirectTo' => $uriToRedirectTo
+                    'uriToRedirectTo' => $uriToRedirectTo,
                 ]
             );
             $menuItem->setHref($uri);
@@ -289,7 +293,6 @@ abstract class AbstractModuleController extends ActionController
     /**
      * Initializes the solr core connection considerately to the components state.
      * Uses and persists default core connection if persisted core in Site does not exist.
-     *
      */
     private function initializeSelectedSolrCoreConnection()
     {

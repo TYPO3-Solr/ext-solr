@@ -96,7 +96,8 @@ abstract class Site implements SiteInterface
      *
      * @return int[] array or language id's
      */
-    public function getAvailableLanguageIds(): array {
+    public function getAvailableLanguageIds(): array
+    {
         return $this->availableLanguageIds;
     }
 
@@ -149,8 +150,7 @@ abstract class Site implements SiteInterface
     public function getPages(
         ?int $pageId = null,
         ?string $indexQueueConfigurationName = null
-    ): array
-    {
+    ): array {
         $pageId = $pageId ?? (int)$this->rootPage['uid'];
 
         $initialPagesAdditionalWhereClause = '';
@@ -251,12 +251,14 @@ abstract class Site implements SiteInterface
     /**
      * @return array
      */
-    public function getAllSolrConnectionConfigurations(): array {
+    public function getAllSolrConnectionConfigurations(): array
+    {
         $configs = [];
         foreach ($this->getAvailableLanguageIds() as $languageId) {
             try {
                 $configs[$languageId] = $this->getSolrConnectionConfiguration($languageId);
-            } catch (NoSolrConnectionFoundException $e) {}
+            } catch (NoSolrConnectionFoundException $e) {
+            }
         }
         return $configs;
     }

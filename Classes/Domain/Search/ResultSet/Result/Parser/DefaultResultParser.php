@@ -33,7 +33,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * The DefaultResultParser is able to parse normal(ungroupd results)
  */
-class DefaultResultParser extends AbstractResultParser {
+class DefaultResultParser extends AbstractResultParser
+{
 
     /**
      * @param SearchResultSet $resultSet
@@ -78,8 +79,7 @@ class DefaultResultParser extends AbstractResultParser {
     {
         // This parsers should not be used when grouping is enabled
         $configuration = $resultSet->getUsedSearchRequest()->getContextTypoScriptConfiguration();
-        if ($configuration instanceof TypoScriptConfiguration && $configuration->getSearchGrouping())
-        {
+        if ($configuration instanceof TypoScriptConfiguration && $configuration->getSearchGrouping()) {
             return false;
         }
 

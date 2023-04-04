@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets;
 
 /*
@@ -14,7 +15,8 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets;
  * The TYPO3 project - inspiring people to share!
 */
 
-class DefaultUrlDecoder implements FacetUrlDecoderInterface {
+class DefaultUrlDecoder implements FacetUrlDecoderInterface
+{
 
     /**
      * Parses the query filter from GET parameters in the URL and translates it

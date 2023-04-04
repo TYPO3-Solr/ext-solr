@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Search;
 
 /***************************************************************
@@ -54,7 +55,6 @@ class StatisticsComponent extends AbstractComponent implements SearchRequestAwar
 
     /**
      * Initializes the search component.
-     *
      */
     public function initializeSearchComponent()
     {
@@ -68,5 +68,4 @@ class StatisticsComponent extends AbstractComponent implements SearchRequestAwar
             }
         }
     }
-
 }

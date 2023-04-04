@@ -43,7 +43,6 @@ class SolrWriteServiceTest extends IntegrationTest
     protected $solrWriteService;
 
     /**
-     * @return void
      * @throws NoSuchCacheException
      */
     protected function setUp(): void
@@ -66,7 +65,7 @@ class SolrWriteServiceTest extends IntegrationTest
 
         $client->clearEndpoints();
         $solrConnectionInfo = $this->getSolrConnectionInfo();
-        $client->createEndpoint(['host' => $solrConnectionInfo['host'], 'port' => $solrConnectionInfo['port'], 'path' => '/', 'core' => 'core_en', 'key' => 'admin'] , true);
+        $client->createEndpoint(['host' => $solrConnectionInfo['host'], 'port' => $solrConnectionInfo['port'], 'path' => '/', 'core' => 'core_en', 'key' => 'admin'], true);
 
         $this->solrWriteService = GeneralUtility::makeInstance(SolrWriteService::class, $client);
     }
@@ -77,10 +76,10 @@ class SolrWriteServiceTest extends IntegrationTest
     public function canExtractByQuery()
     {
         $testFilePath = $this->getFixturePathByName('testpdf.pdf');
-            /** @var $extractQuery \ApacheSolrForTypo3\Solr\Domain\Search\Query\ExtractingQuery*/
+        /** @var $extractQuery \ApacheSolrForTypo3\Solr\Domain\Search\Query\ExtractingQuery*/
         $extractQuery = GeneralUtility::makeInstance(ExtractingQuery::class, $testFilePath);
         $extractQuery->setExtractOnly(true);
         $response = $this->solrWriteService->extractByQuery($extractQuery);
-        $this->assertStringContainsString('PDF Test', $response[0], 'Could not extract text');
+        self::assertStringContainsString('PDF Test', $response[0], 'Could not extract text');
     }
 }

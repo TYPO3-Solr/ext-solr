@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet;
 
 /***************************************************************
@@ -68,7 +69,7 @@ class SearchResultSetServiceTest extends UnitTest
     /**
      * @var ObjectManager
      */
-    protected $objectManagerMock = null;
+    protected $objectManagerMock;
 
     /**
      * @var QueryBuilder
@@ -95,9 +96,9 @@ class SearchResultSetServiceTest extends UnitTest
         $searchRequest = new SearchRequest();
         $searchRequest->setRawQueryString(null);
         $this->assertAllInitialSearchesAreDisabled();
-        $this->objectManagerMock->expects($this->once())->method('get')->with(SearchResultSet::class)->willReturn(new SearchResultSet());
+        $this->objectManagerMock->expects(self::once())->method('get')->with(SearchResultSet::class)->willReturn(new SearchResultSet());
         $resultSet = $this->searchResultSetService->search($searchRequest);
-        $this->assertFalse($resultSet->getHasSearched(), 'Search should not be executed when empty query string was passed');
+        self::assertFalse($resultSet->getHasSearched(), 'Search should not be executed when empty query string was passed');
     }
 
     /**
@@ -106,21 +107,18 @@ class SearchResultSetServiceTest extends UnitTest
     public function searchIsNotTriggeredWhenEmptyQueryWasPassedAndEmptySearchWasDisabled()
     {
         $searchRequest = new SearchRequest();
-        $searchRequest->setRawQueryString("");
-        $this->configurationMock->expects($this->once())->method('getSearchQueryAllowEmptyQuery')->willReturn(false);
-        $this->objectManagerMock->expects($this->once())->method('get')->with(SearchResultSet::class)->willReturn(new SearchResultSet());
+        $searchRequest->setRawQueryString('');
+        $this->configurationMock->expects(self::once())->method('getSearchQueryAllowEmptyQuery')->willReturn(false);
+        $this->objectManagerMock->expects(self::once())->method('get')->with(SearchResultSet::class)->willReturn(new SearchResultSet());
         $resultSet = $this->searchResultSetService->search($searchRequest);
-        $this->assertFalse($resultSet->getHasSearched(), 'Search should not be executed when empty query string was passed');
+        self::assertFalse($resultSet->getHasSearched(), 'Search should not be executed when empty query string was passed');
     }
 
-    /**
-     * @return void
-     */
     protected function assertAllInitialSearchesAreDisabled()
     {
-        $this->configurationMock->expects($this->any())->method('getSearchInitializeWithEmptyQuery')->willReturn(false);
-        $this->configurationMock->expects($this->any())->method('getSearchShowResultsOfInitialEmptyQuery')->willReturn(false);
-        $this->configurationMock->expects($this->any())->method('getSearchInitializeWithQuery')->willReturn(false);
-        $this->configurationMock->expects($this->any())->method('getSearchShowResultsOfInitialQuery')->willReturn(false);
+        $this->configurationMock->expects(self::any())->method('getSearchInitializeWithEmptyQuery')->willReturn(false);
+        $this->configurationMock->expects(self::any())->method('getSearchShowResultsOfInitialEmptyQuery')->willReturn(false);
+        $this->configurationMock->expects(self::any())->method('getSearchInitializeWithQuery')->willReturn(false);
+        $this->configurationMock->expects(self::any())->method('getSearchShowResultsOfInitialQuery')->willReturn(false);
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\ViewHelpers\Uri\Paginate;
 
 /*
@@ -33,7 +34,6 @@ class ResultPageViewHelper extends AbstractUriViewHelper
     {
         parent::initializeArguments();
         $this->registerArgument('page', 'int', 'The page', false, 0);
-
     }
 
     /**

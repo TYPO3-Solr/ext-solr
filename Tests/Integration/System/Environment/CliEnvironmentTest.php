@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\System\Environment;
 
 /***************************************************************
@@ -42,13 +43,13 @@ class CliEnvironmentTest extends IntegrationTest
      */
     public function canInitialize()
     {
-        $this->assertFalse(defined('TYPO3_PATH_WEB'));
+        self::assertFalse(defined('TYPO3_PATH_WEB'));
 
         $cliEnvironment = new CliEnvironment();
         $cliEnvironment->initialize('/var/www');
 
-        $this->assertTrue(defined('TYPO3_PATH_WEB'));
-        $this->assertEquals('/var/www', TYPO3_PATH_WEB);
+        self::assertTrue(defined('TYPO3_PATH_WEB'));
+        self::assertEquals('/var/www', TYPO3_PATH_WEB);
 
         $cliEnvironment->restore();
     }
@@ -59,7 +60,7 @@ class CliEnvironmentTest extends IntegrationTest
     public function canNotInitializeTwiceWithTwoInstances()
     {
         $this->expectException(WebRootAllReadyDefinedException::class);
-        $this->assertFalse(defined('TYPO3_PATH_WEB'));
+        self::assertFalse(defined('TYPO3_PATH_WEB'));
 
         $cliEnvironment = new CliEnvironment();
         $cliEnvironment->initialize('/var/www');
@@ -81,7 +82,7 @@ class CliEnvironmentTest extends IntegrationTest
         // the second init should return false because an initialization was allready done before
         $secondInit = $cliEnvironment->initialize('/var/www2');
 
-        $this->assertTrue($firstInit);
-        $this->assertFalse($secondInit);
+        self::assertTrue($firstInit);
+        self::assertFalse($secondInit);
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\FieldProcessor;
 
 /***************************************************************
@@ -68,10 +69,16 @@ class PageUidToHierarchy extends AbstractHierarchyProcessor implements FieldProc
         $results = [];
 
         foreach ($values as $value) {
-            list($rootPageUid, $mountPoint) = GeneralUtility::trimExplode(',',
-                $value, true, 2);
-            $results[] = $this->getSolrRootlineForPageId($rootPageUid,
-                $mountPoint);
+            list($rootPageUid, $mountPoint) = GeneralUtility::trimExplode(
+                ',',
+                $value,
+                true,
+                2
+            );
+            $results[] = $this->getSolrRootlineForPageId(
+                $rootPageUid,
+                $mountPoint
+            );
         }
 
         return $results;

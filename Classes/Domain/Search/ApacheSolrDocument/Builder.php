@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Domain\Search\ApacheSolrDocument;
 
 /***************************************************************
@@ -25,9 +26,9 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ApacheSolrDocument;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Access\Rootline;
+use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\Domain\Variants\IdBuilder;
-use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use ApacheSolrForTypo3\Solr\Typo3PageContentExtractor;
 use ApacheSolrForTypo3\Solr\Util;
@@ -119,7 +120,6 @@ class Builder
         return $document;
     }
 
-
     /**
      * Creates a Solr document with the basic / core fields set already.
      *
@@ -197,7 +197,7 @@ class Builder
     }
 
     /**
-     * @param integer $pageId
+     * @param int $pageId
      * @return Site
      */
     protected function getSiteByPageId($pageId)
@@ -303,7 +303,7 @@ class Builder
      * @param Document $document
      * @param array $tagContent
      */
-    protected function addTagContentFields(Document  $document, $tagContent = [])
+    protected function addTagContentFields(Document $document, $tagContent = [])
     {
         foreach ($tagContent as $fieldName => $fieldValue) {
             $document->setField($fieldName, $fieldValue);

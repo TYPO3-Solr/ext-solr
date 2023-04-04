@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper;
 
 /***************************************************************
@@ -80,7 +81,6 @@ class PageFieldMappingIndexer implements SubstitutePageIndexer
     public function getPageDocument(Document $pageDocument)
     {
         $substitutePageDocument = clone $pageDocument;
-
 
         $mappedFields = $this->getMappedFields($pageDocument);
         foreach ($mappedFields as $fieldName => $fieldValue) {

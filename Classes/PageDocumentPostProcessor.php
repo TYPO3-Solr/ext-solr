@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr;
 
 /***************************************************************
@@ -45,7 +46,6 @@ interface PageDocumentPostProcessor
      *
      * @param Document $pageDocument the generated page document
      * @param TypoScriptFrontendController $page the page object with information about page id or language
-     * @return void
      */
     public function postProcessPageDocument(Document $pageDocument, TypoScriptFrontendController $page);
 }

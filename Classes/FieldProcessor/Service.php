@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\FieldProcessor;
 
 /*
@@ -14,12 +15,6 @@ namespace ApacheSolrForTypo3\Solr\FieldProcessor;
  * The TYPO3 project - inspiring people to share!
  */
 
-
-use ApacheSolrForTypo3\Solr\FieldProcessor\CategoryUidToHierarchy;
-use ApacheSolrForTypo3\Solr\FieldProcessor\PageUidToHierarchy;
-use ApacheSolrForTypo3\Solr\FieldProcessor\PathToHierarchy;
-use ApacheSolrForTypo3\Solr\FieldProcessor\TimestampToIsoDate;
-use ApacheSolrForTypo3\Solr\FieldProcessor\TimestampToUtcIsoDate;
 use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -39,7 +34,8 @@ class Service
      * @param Document[] $documents
      * @param array $processingConfiguration
      */
-    public function processDocuments(array $documents, array $processingConfiguration) {
+    public function processDocuments(array $documents, array $processingConfiguration)
+    {
         foreach ($documents as $document) {
             $this->processDocument($document, $processingConfiguration);
         }
@@ -51,7 +47,8 @@ class Service
      * @param Document $document
      * @param array $processingConfiguration
      */
-    public function processDocument(Document $document, array $processingConfiguration) {
+    public function processDocument(Document $document, array $processingConfiguration)
+    {
         foreach ($processingConfiguration as $fieldName => $instruction) {
             $fieldValue = $document[$fieldName] ?? false;
             $isSingleValueField = false;

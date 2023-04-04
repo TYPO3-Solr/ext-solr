@@ -121,5 +121,4 @@ class VariantsProcessor implements SearchResultSetProcessor
             $resultDocument->addVariant($variantSearchResult);
         }
     }
-
 }

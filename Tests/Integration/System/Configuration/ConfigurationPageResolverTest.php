@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\System\Configuration;
 
 /***************************************************************
@@ -41,10 +42,10 @@ class ConfigurationPageResolverTest extends IntegrationTest
     {
         $this->importDataSetFromFixture('can_get_closest_template_page_id.xml');
 
-            /** @var $configurationPageIdResolver ConfigurationPageResolver */
+        /** @var $configurationPageIdResolver ConfigurationPageResolver */
         $configurationPageIdResolver = GeneralUtility::makeInstance(ConfigurationPageResolver::class);
 
         $pageIdWithActiveTypoScriptConfiguration = $configurationPageIdResolver->getClosestPageIdWithActiveTemplate(4);
-        $this->assertSame(2, $pageIdWithActiveTypoScriptConfiguration, 'Could not resolve expected page id with active typoscript configuration');
+        self::assertSame(2, $pageIdWithActiveTypoScriptConfiguration, 'Could not resolve expected page id with active typoscript configuration');
     }
 }

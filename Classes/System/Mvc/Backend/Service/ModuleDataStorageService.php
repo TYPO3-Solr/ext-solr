@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\System\Mvc\Backend\Service;
 
 /***************************************************************
@@ -63,7 +64,6 @@ class ModuleDataStorageService implements SingletonInterface
      * Persists serialized module data to user settings
      *
      * @param ModuleData $moduleData
-     * @return void
      */
     public function persistModuleData(ModuleData $moduleData)
     {
@@ -81,8 +81,8 @@ class ModuleDataStorageService implements SingletonInterface
             $serializedModuleData = '';
             return;
         }
-        if (false !== strpos($serializedModuleData, 'ApacheSolrForTypo3\\Solr\\Domain\\Model\\ModuleData')
-            || false !== strpos($serializedModuleData, 'Tx_Solr_Site')) {
+        if (strpos($serializedModuleData, 'ApacheSolrForTypo3\\Solr\\Domain\\Model\\ModuleData') !== false
+            || strpos($serializedModuleData, 'Tx_Solr_Site') !== false) {
             $serializedModuleData = '';
         }
     }

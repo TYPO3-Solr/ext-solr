@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr;
 
 /***************************************************************
@@ -24,15 +25,15 @@ namespace ApacheSolrForTypo3\Solr;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use Psr\EventDispatcher\EventDispatcherInterface;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\PageMovedEvent;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordDeletedEvent;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordGarbageCheckEvent;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\GarbageHandler;
 use ApacheSolrForTypo3\Solr\System\TCA\TCAService;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\GarbageHandler;
-use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordDeletedEvent;
-use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\PageMovedEvent;
-use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordGarbageCheckEvent;
 
 /**
  * Garbage Collector, removes related documents from the index when a record is
@@ -113,7 +114,8 @@ class GarbageCollector implements SingletonInterface
      * @param string $value Not used
      * @param DataHandler $tceMain TYPO3 Core Engine parent object, not used
      */
-    public function processCmdmap_postProcess($command, $table, $uid, $value, DataHandler $tceMain) {
+    public function processCmdmap_postProcess($command, $table, $uid, $value, DataHandler $tceMain)
+    {
         // workspaces: collect garbage only for LIVE workspace
         if ($command === 'move' && $table === 'pages' && $GLOBALS['BE_USER']->workspace == 0) {
             $this->eventDispatcher->dispatch(

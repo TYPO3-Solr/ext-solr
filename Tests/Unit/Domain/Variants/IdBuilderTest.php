@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Variants;
 
 /***************************************************************
@@ -40,7 +41,8 @@ class IdBuilderTest extends UnitTest
      */
     protected $oldEncryptionKey;
 
-    protected function setUp(): void {
+    protected function setUp(): void
+    {
         $this->oldEncryptionKey = $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'];
         $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'] = 'testkey';
         parent::setUp();
@@ -59,7 +61,7 @@ class IdBuilderTest extends UnitTest
     {
         $build = new IdBuilder();
         $variantId = $build->buildFromTypeAndUid('pages', 4711);
-        $this->assertSame('e99b3552a0451f1a2e7aca4ac06ccaba063393de/pages/4711', $variantId);
+        self::assertSame('e99b3552a0451f1a2e7aca4ac06ccaba063393de/pages/4711', $variantId);
     }
 
     /**
@@ -73,7 +75,7 @@ class IdBuilderTest extends UnitTest
         $variantId = $build->buildFromTypeAndUid('pages', 4711);
 
         // the variantId should be overwritten by the custom modifier
-        $this->assertSame('mycustomid', $variantId);
+        self::assertSame('mycustomid', $variantId);
 
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyVariantId'] = [];
     }

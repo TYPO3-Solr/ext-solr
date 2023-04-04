@@ -25,10 +25,9 @@ namespace ApacheSolrForTypo3\Solr\System\Hooks\Backend\Toolbar;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Backend\Toolbar\ClearCacheActionsHookInterface;
-use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -76,7 +75,7 @@ class ClearCacheActionsHook implements ClearCacheActionsHookInterface
             'id' => 'clearSolrConnectionCache',
             'title' => 'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:cache_initialize_solr_connections',
             'href' => $href,
-            'iconIdentifier' => 'extensions-solr-module-initsolrconnections'
+            'iconIdentifier' => 'extensions-solr-module-initsolrconnections',
         ];
     }
 }

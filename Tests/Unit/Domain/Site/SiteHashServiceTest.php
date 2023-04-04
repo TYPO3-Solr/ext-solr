@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Site;
 
 /***************************************************************
@@ -24,8 +25,8 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Site;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Domain\Site\SiteHashService;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
+use ApacheSolrForTypo3\Solr\Domain\Site\SiteHashService;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 
 /**
@@ -41,13 +42,14 @@ class SiteHashServiceTest extends UnitTest
     /**
      * @return array
      */
-    public function canResolveSiteHashAllowedSitesDataProvider() {
+    public function canResolveSiteHashAllowedSitesDataProvider()
+    {
         return [
             'siteHashDisabled' => ['*', '*'],
             'allSitesInSystem' => ['__all', 'solrtesta.local,solrtestb.local'],
             'currentSiteOnly' => ['__current_site', 'solrtesta.local'],
             'emptyIsFallingBackToCurrentSiteOnly' => ['', 'solrtesta.local'],
-            'nullIsFallingBackToCurrentSiteOnly' => [null, 'solrtesta.local']
+            'nullIsFallingBackToCurrentSiteOnly' => [null, 'solrtesta.local'],
         ];
     }
 
@@ -55,21 +57,21 @@ class SiteHashServiceTest extends UnitTest
      * @dataProvider canResolveSiteHashAllowedSitesDataProvider
      * @test
      */
-    public function canResolveSiteHashAllowedSites($allowedSitesConfiguration , $expectedAllowedSites)
+    public function canResolveSiteHashAllowedSites($allowedSitesConfiguration, $expectedAllowedSites)
     {
         $siteA = $this->getDumbMock(Site::class);
-        $siteA->expects($this->any())->method('getDomain')->will($this->returnValue('solrtesta.local'));
+        $siteA->expects(self::any())->method('getDomain')->willReturn('solrtesta.local');
         $siteB = $this->getDumbMock(Site::class);
-        $siteB->expects($this->any())->method('getDomain')->will($this->returnValue('solrtestb.local'));
+        $siteB->expects(self::any())->method('getDomain')->willReturn('solrtestb.local');
         $allSites = [$siteA, $siteB];
 
-            /** @var $siteHashServiceMock SiteHashService */
-        $siteHashServiceMock = $this->getMockBuilder(SiteHashService::class)->setMethods(['getAvailableSites','getSiteByPageId'])->getMock();
-        $siteHashServiceMock->expects($this->any())->method('getAvailableSites')->will($this->returnValue($allSites));
-        $siteHashServiceMock->expects($this->any())->method('getSiteByPageId')->will($this->returnValue($siteA));
+        /** @var $siteHashServiceMock SiteHashService */
+        $siteHashServiceMock = $this->getMockBuilder(SiteHashService::class)->setMethods(['getAvailableSites', 'getSiteByPageId'])->getMock();
+        $siteHashServiceMock->expects(self::any())->method('getAvailableSites')->willReturn($allSites);
+        $siteHashServiceMock->expects(self::any())->method('getSiteByPageId')->willReturn($siteA);
 
         $allowedSites = $siteHashServiceMock->getAllowedSitesForPageIdAndAllowedSitesConfiguration(1, $allowedSitesConfiguration);
-        $this->assertSame($expectedAllowedSites, $allowedSites, 'resolveSiteHashAllowedSites did not return expected allowed sites');
+        self::assertSame($expectedAllowedSites, $allowedSites, 'resolveSiteHashAllowedSites did not return expected allowed sites');
     }
 
     /**
@@ -84,8 +86,8 @@ class SiteHashServiceTest extends UnitTest
         $hash1 = $service->getSiteHashForDomain('www.example.com');
         $hash2 = $service->getSiteHashForDomain('www.example.com');
 
-        $this->assertEquals('3f91984c5c353933cc82d3659dbb08e392b7d541', $hash1);
-        $this->assertEquals('3f91984c5c353933cc82d3659dbb08e392b7d541', $hash2);
+        self::assertEquals('3f91984c5c353933cc82d3659dbb08e392b7d541', $hash1);
+        self::assertEquals('3f91984c5c353933cc82d3659dbb08e392b7d541', $hash2);
         $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'] = $oldKey;
     }
 }

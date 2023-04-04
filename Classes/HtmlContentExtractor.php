@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr;
 
 /***************************************************************
@@ -202,8 +203,11 @@ class HtmlContentExtractor
      */
     public static function stripUnicodeRange($content, $start, $end)
     {
-        return preg_replace('/[\x{' . $start . '}-\x{' . $end . '}]/u', '',
-            $content);
+        return preg_replace(
+            '/[\x{' . $start . '}-\x{' . $end . '}]/u',
+            '',
+            $content
+        );
     }
 
     /**
@@ -235,8 +239,10 @@ class HtmlContentExtractor
         );
 
         preg_match_all(
-            '@<(' . implode('|',
-                array_keys($this->tagToFieldMapping)) . ')[^>]*>(.*)</\1>@Ui',
+            '@<(' . implode(
+                '|',
+                array_keys($this->tagToFieldMapping)
+            ) . ')[^>]*>(.*)</\1>@Ui',
             $content,
             $matches
         );

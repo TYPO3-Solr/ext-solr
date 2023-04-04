@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet;
 
 /*
@@ -56,7 +57,6 @@ class ResultSetReconstitutionProcessor implements SearchResultSetProcessor
     {
         $this->objectManager = $objectManager;
     }
-
 
     /**
      * @return FacetRegistry
@@ -136,7 +136,7 @@ class ResultSetReconstitutionProcessor implements SearchResultSetProcessor
             if ($isResetOption && !$hasSorting) {
                 $selected = true;
             }
-            
+
             $sorting = $this->getObjectManager()->get(Sorting::class, $resultSet, $sortingName, $field, $direction, $label, $selected, $isResetOption);
             $resultSet->addSorting($sorting);
         }
@@ -177,7 +177,6 @@ class ResultSetReconstitutionProcessor implements SearchResultSetProcessor
                 //add it to the resultSet
                 $resultSet->addSpellCheckingSuggestion($suggestion);
             }
-
         }
 
         return $resultSet;

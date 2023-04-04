@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\DateRange;
 
 /*
@@ -70,7 +71,6 @@ class DateRange extends AbstractRangeFacetItem
             $label = $this->getRangeString();
         }
 
-
         parent::__construct($facet, $label, $documentCount, $selected);
     }
 
@@ -79,8 +79,8 @@ class DateRange extends AbstractRangeFacetItem
      */
     protected function getRangeString()
     {
-        $from = null === $this->startRequested ? '' : $this->startRequested->format('Ymd') . '0000';
-        $till = null === $this->endRequested ? '' : $this->endRequested->format('Ymd') . '0000';
+        $from = $this->startRequested === null ? '' : $this->startRequested->format('Ymd') . '0000';
+        $till = $this->endRequested === null ? '' : $this->endRequested->format('Ymd') . '0000';
         return $from . '-' . $till;
     }
 

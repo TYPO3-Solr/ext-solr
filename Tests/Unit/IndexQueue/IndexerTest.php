@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\IndexQueue;
 
 /*
@@ -26,13 +27,11 @@ use PHPUnit\Framework\MockObject\MockBuilder;
 use ReflectionClass;
 use ReflectionException;
 
-
 /**
  * Class IndexerTest
  */
 class IndexerTest extends UnitTest
 {
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -53,7 +52,7 @@ class IndexerTest extends UnitTest
 
         $indexer = $this->getMockBuilderForIndexer([], null, null, null, null, $frontendEnvironment->reveal())
             ->setMethods([
-                'getFullItemRecord'
+                'getFullItemRecord',
             ])
             ->getMock();
 
@@ -61,7 +60,6 @@ class IndexerTest extends UnitTest
         $itemToDocumentReflectionMethod = $indexerReflection->getMethod('itemToDocument');
         $itemToDocumentReflectionMethod->setAccessible(true);
         $itemToDocumentReflectionMethod->invokeArgs($indexer, [$item->reveal()]);
-
     }
 
     /**
@@ -89,7 +87,7 @@ class IndexerTest extends UnitTest
             $documentBuilder ?? $this->getDumbMock(Builder::class),
             $logger ?? $this->getDumbMock(SolrLogManager::class),
             $connectionManager ?? $this->getDumbMock(ConnectionManager::class),
-            $frontendEnvironment ?? $this->getDumbMock(FrontendEnvironment::class)
+            $frontendEnvironment ?? $this->getDumbMock(FrontendEnvironment::class),
         ]);
     }
 }

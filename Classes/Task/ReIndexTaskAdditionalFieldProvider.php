@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Task;
 
 /***************************************************************
@@ -28,8 +29,8 @@ namespace ApacheSolrForTypo3\Solr\Task;
 
 use ApacheSolrForTypo3\Solr\Backend\IndexingConfigurationSelectorField;
 use ApacheSolrForTypo3\Solr\Backend\SiteSelectorField;
-use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
+use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Scheduler\AdditionalFieldProviderInterface;
@@ -55,9 +56,9 @@ class ReIndexTaskAdditionalFieldProvider implements AdditionalFieldProviderInter
     /**
      * Scheduler task
      *
-     * @var AbstractTask|ReIndexTask|NULL
+     * @var AbstractTask|ReIndexTask|null
      */
-    protected $task = null;
+    protected $task;
 
     /**
      * Scheduler Module
@@ -71,7 +72,7 @@ class ReIndexTaskAdditionalFieldProvider implements AdditionalFieldProviderInter
      *
      * @var Site
      */
-    protected $site = null;
+    protected $site;
     /**
      * SiteRepository
      *
@@ -82,7 +83,7 @@ class ReIndexTaskAdditionalFieldProvider implements AdditionalFieldProviderInter
     /**
      * @var PageRenderer
      */
-    protected $pageRenderer = null;
+    protected $pageRenderer;
 
     /**
      * ReIndexTaskAdditionalFieldProvider constructor.
@@ -94,7 +95,7 @@ class ReIndexTaskAdditionalFieldProvider implements AdditionalFieldProviderInter
 
     /**
      * @param array $taskInfo
-     * @param \TYPO3\CMS\Scheduler\Task\AbstractTask|NULL $task
+     * @param \TYPO3\CMS\Scheduler\Task\AbstractTask|null $task
      * @param \TYPO3\CMS\Scheduler\Controller\SchedulerModuleController $schedulerModule
      */
     protected function initialize(
@@ -140,18 +141,20 @@ class ReIndexTaskAdditionalFieldProvider implements AdditionalFieldProviderInter
         $siteSelectorField = GeneralUtility::makeInstance(SiteSelectorField::class);
 
         $additionalFields['site'] = [
-            'code' => $siteSelectorField->getAvailableSitesSelector('tx_scheduler[site]',
-                $this->site),
+            'code' => $siteSelectorField->getAvailableSitesSelector(
+                'tx_scheduler[site]',
+                $this->site
+            ),
             'label' => 'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:field_site',
             'cshKey' => '',
-            'cshLabel' => ''
+            'cshLabel' => '',
         ];
 
         $additionalFields['indexingConfigurations'] = [
             'code' => $this->getIndexingConfigurationSelector(),
             'label' => 'Index Queue configurations to re-index',
             'cshKey' => '',
-            'cshLabel' => ''
+            'cshLabel' => '',
         ];
 
         return $additionalFields;
@@ -239,7 +242,7 @@ class ReIndexTaskAdditionalFieldProvider implements AdditionalFieldProviderInter
      * Check that a task is an instance of ReIndexTask
      *
      * @param AbstractTask $task
-     * @return boolean
+     * @return bool
      * @throws \LogicException
      */
     protected function isTaskInstanceofReIndexTask($task)
@@ -247,7 +250,8 @@ class ReIndexTaskAdditionalFieldProvider implements AdditionalFieldProviderInter
         if ((!is_null($task)) && (!($task instanceof ReIndexTask))) {
             throw new \LogicException(
                 '$task must be an instance of ReIndexTask, '
-                . 'other instances are not supported.', 1487500366
+                . 'other instances are not supported.',
+                1487500366
             );
         }
         return true;

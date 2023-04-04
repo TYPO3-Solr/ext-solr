@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Domain\Search\LastSearches;
 
 /***************************************************************
@@ -39,7 +40,7 @@ class LastSearchesRepository extends AbstractRepository
      * @param int $limit
      * @return array An array containing the last searches of the current user
      */
-    public function findAllKeywords($limit = 10) : array
+    public function findAllKeywords($limit = 10): array
     {
         $lastSearchesResultSet = $this->getLastSearchesResultSet($limit);
         if (empty($lastSearchesResultSet)) {
@@ -60,13 +61,13 @@ class LastSearchesRepository extends AbstractRepository
      * @param $limit
      * @return array
      */
-    protected function getLastSearchesResultSet($limit) : array
+    protected function getLastSearchesResultSet($limit): array
     {
         $queryBuilder = $this->getQueryBuilder();
         return $queryBuilder
             ->select('keywords')
             ->addSelectLiteral(
-                $queryBuilder->expr()->max('tstamp','maxtstamp')
+                $queryBuilder->expr()->max('tstamp', 'maxtstamp')
             )
             ->from($this->table)
             // There is no support for DISTINCT, a ->groupBy() has to be used instead.
@@ -80,7 +81,6 @@ class LastSearchesRepository extends AbstractRepository
      *
      * @param string $lastSearchesKeywords
      * @param int $lastSearchesLimit
-     * @return void
      */
     public function add(string $lastSearchesKeywords, int $lastSearchesLimit)
     {
@@ -89,7 +89,7 @@ class LastSearchesRepository extends AbstractRepository
         if ($nextSequenceId < $rowsCount) {
             $this->update([
                 'sequence_id' => $nextSequenceId,
-                'keywords' => $lastSearchesKeywords
+                'keywords' => $lastSearchesKeywords,
             ]);
             return;
         }
@@ -100,7 +100,7 @@ class LastSearchesRepository extends AbstractRepository
             ->values([
                 'sequence_id' => $nextSequenceId,
                 'keywords' => $lastSearchesKeywords,
-                'tstamp' => time()
+                'tstamp' => time(),
             ])
             ->execute();
     }
@@ -111,7 +111,7 @@ class LastSearchesRepository extends AbstractRepository
      * @param int $lastSearchesLimit
      * @return int
      */
-    protected function resolveNextSequenceIdForGivenLimit(int $lastSearchesLimit) : int
+    protected function resolveNextSequenceIdForGivenLimit(int $lastSearchesLimit): int
     {
         $nextSequenceId = 0;
 
@@ -133,7 +133,6 @@ class LastSearchesRepository extends AbstractRepository
      * Updates last searches row by using sequence_id from given $lastSearchesRow array
      *
      * @param array $lastSearchesRow
-     * @return void
      * @throws \InvalidArgumentException
      */
     protected function update(array $lastSearchesRow)

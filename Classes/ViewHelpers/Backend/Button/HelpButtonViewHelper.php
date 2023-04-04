@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\ViewHelpers\Backend\Button;
 
 /***************************************************************
@@ -27,12 +28,11 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers\Backend\Button;
 use ApacheSolrForTypo3\Solr\ViewHelpers\AbstractSolrViewHelper;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
-use TYPO3Fluid\Fluid\Core\ViewHelper\ViewHelperInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
+use TYPO3Fluid\Fluid\Core\ViewHelper\ViewHelperInterface;
 
 /**
  * View helper to return a help button
- *
  */
 class HelpButtonViewHelper extends AbstractSolrViewHelper implements ViewHelperInterface
 {
@@ -43,8 +43,6 @@ class HelpButtonViewHelper extends AbstractSolrViewHelper implements ViewHelperI
      */
     protected $escapeOutput = false;
 
-    /**
-     */
     public function initializeArguments()
     {
         $this->registerArgument('title', 'string', 'Title', true);
@@ -63,7 +61,7 @@ class HelpButtonViewHelper extends AbstractSolrViewHelper implements ViewHelperI
     {
         return BackendUtility::wrapInHelp('', '', '', [
             'title' => $arguments['title'],
-            'description' => $arguments['description']
+            'description' => $arguments['description'],
         ]);
     }
 }

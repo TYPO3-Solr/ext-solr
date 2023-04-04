@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Test\Domain\Search\ResultSet\Facets\RangeBased\NumericRange;
 
 /*
@@ -14,7 +15,6 @@ namespace ApacheSolrForTypo3\Solr\Test\Domain\Search\ResultSet\Facets\RangeBased
  * The TYPO3 project - inspiring people to share!
  */
 
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\NumericRange\NumericRange;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\NumericRange\NumericRangeFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\NumericRange\NumericRangeFacetParser;
 use ApacheSolrForTypo3\Solr\Test\Domain\Search\ResultSet\Facets\AbstractFacetParserTest;
@@ -42,12 +42,12 @@ class NumericRangeFacetParserTest extends AbstractFacetParserTest
                 'label' => 'Pids',
                 'field' => 'pid',
                 'numericRange.' => [
-                    'start' => (int) $start,
-                    'end' => (int) $end,
-                    'gap' => (int) $gap
+                    'start' => (int)$start,
+                    'end' => (int)$end,
+                    'gap' => (int)$gap,
 
-                ]
-            ]
+                ],
+            ],
         ];
     }
 
@@ -81,19 +81,19 @@ class NumericRangeFacetParserTest extends AbstractFacetParserTest
         $facetConfiguration = $this->getPageIdFacetConfiguration();
         $facet = $this->getNumericRangeFacet($facetConfiguration, ['myPids:10-98'], 'myPids');
 
-        $this->assertInstanceOf(NumericRangeFacet::class, $facet);
-        $this->assertSame($facet->getConfiguration(), $facetConfiguration['myPids.'], 'Configuration was not passed to new facets');
-        $this->assertTrue($facet->getIsUsed());
+        self::assertInstanceOf(NumericRangeFacet::class, $facet);
+        self::assertSame($facet->getConfiguration(), $facetConfiguration['myPids.'], 'Configuration was not passed to new facets');
+        self::assertTrue($facet->getIsUsed());
 
-        $this->assertEquals('10-98', $facet->getRange()->getLabel());
-        $this->assertEquals(25, $facet->getRange()->getDocumentCount());
-        $this->assertCount(4, $facet->getRange()->getRangeCounts(), 'We expected that there are four count items attached');
+        self::assertEquals('10-98', $facet->getRange()->getLabel());
+        self::assertEquals(25, $facet->getRange()->getDocumentCount());
+        self::assertCount(4, $facet->getRange()->getRangeCounts(), 'We expected that there are four count items attached');
 
-        $this->assertSame($facet->getRange()->getEndInResponse(), 100);
-        $this->assertSame($facet->getRange()->getStartInResponse(), -100);
-        $this->assertSame($facet->getRange()->getGap(), 2);
-        $this->assertSame((int) $facet->getRange()->getStartRequested(), 10);
-        $this->assertSame((int) $facet->getRange()->getEndRequested(), 98);
+        self::assertSame($facet->getRange()->getEndInResponse(), 100);
+        self::assertSame($facet->getRange()->getStartInResponse(), -100);
+        self::assertSame($facet->getRange()->getGap(), 2);
+        self::assertSame((int)$facet->getRange()->getStartRequested(), 10);
+        self::assertSame((int)$facet->getRange()->getEndRequested(), 98);
     }
 
     /**
@@ -109,8 +109,8 @@ class NumericRangeFacetParserTest extends AbstractFacetParserTest
         $facetConfiguration = $this->getPageIdFacetConfiguration();
         $facet = $this->getNumericRangeFacet($facetConfiguration, ['myPids:' . $startRequested . '-' . $endRequested], 'myPids');
 
-        $this->assertSame((int) $facet->getRange()->getStartRequested(), $startRequested);
-        $this->assertSame((int) $facet->getRange()->getEndRequested(), $endRequested);
+        self::assertSame((int)$facet->getRange()->getStartRequested(), $startRequested);
+        self::assertSame((int)$facet->getRange()->getEndRequested(), $endRequested);
     }
 
     /**
@@ -123,16 +123,16 @@ class NumericRangeFacetParserTest extends AbstractFacetParserTest
         return [
             [
                 'startRequested' => 10,
-                'endRequested' => 98
+                'endRequested' => 98,
             ],
             [
                 'startRequested' => -10,
-                'endRequested' => 98
+                'endRequested' => 98,
             ],
             [
                 'startRequested' => -50,
-                'endRequested' => -1
-            ]
+                'endRequested' => -1,
+            ],
         ];
     }
 }

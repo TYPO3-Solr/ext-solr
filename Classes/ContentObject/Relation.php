@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\ContentObject;
 
 /***************************************************************
@@ -65,12 +66,12 @@ class Relation extends AbstractContentObject
     /**
      * @var TCAService
      */
-    protected $tcaService = null;
+    protected $tcaService;
 
     /**
      * @var FrontendOverlayService
      */
-    protected $frontendOverlayService = null;
+    protected $frontendOverlayService;
 
     /**
      * Relation constructor.
@@ -126,7 +127,7 @@ class Relation extends AbstractContentObject
     protected function getRelatedItems(ContentObjectRenderer $parentContentObject)
     {
         list($table, $uid) = explode(':', $parentContentObject->currentRecord);
-        $uid = (int) $uid;
+        $uid = (int)$uid;
         $field = $this->configuration['localField'];
 
         if (!$this->tcaService->getHasConfigurationForField($table, $field)) {
@@ -192,12 +193,11 @@ class Relation extends AbstractContentObject
                 $contentObject->start($record, $foreignTableName);
 
                 return $this->getRelatedItems($contentObject);
-            } else {
-                if (Util::getLanguageUid() > 0) {
-                    $record = $this->frontendOverlayService->getOverlay($foreignTableName, $record);
-                }
-                $relatedItems[] = $record[$foreignTableLabelField];
             }
+            if (Util::getLanguageUid() > 0) {
+                $record = $this->frontendOverlayService->getOverlay($foreignTableName, $record);
+            }
+            $relatedItems[] = $record[$foreignTableLabelField];
         }
 
         return $relatedItems;
@@ -248,7 +248,7 @@ class Relation extends AbstractContentObject
         $foreignTableTca = $this->tcaService->getTableConfiguration($foreignTableName);
         $foreignTableLabelField = $this->resolveForeignTableLabelField($foreignTableTca);
 
-            /** @var $relationHandler RelationHandler */
+        /** @var $relationHandler RelationHandler */
         $relationHandler = GeneralUtility::makeInstance(RelationHandler::class);
 
         $itemList = $parentContentObject->data[$this->configuration['localField']] ?? '';
@@ -316,8 +316,11 @@ class Relation extends AbstractContentObject
             $this->configuration['localField'] = $foreignTableLabelField;
             $parentContentObject->data = $relatedRecord;
             if (strpos($this->configuration['foreignLabelField'], '.') !== false) {
-                list(, $this->configuration['foreignLabelField']) = explode('.',
-                    $this->configuration['foreignLabelField'], 2);
+                list(, $this->configuration['foreignLabelField']) = explode(
+                    '.',
+                    $this->configuration['foreignLabelField'],
+                    2
+                );
             } else {
                 $this->configuration['foreignLabelField'] = '';
             }
@@ -372,7 +375,7 @@ class Relation extends AbstractContentObject
      * @param array $arrayWithValuesForIN
      * @return array
      */
-    protected function sortByKeyInIN(Statement $statement, string $columnName, ...$arrayWithValuesForIN) : array
+    protected function sortByKeyInIN(Statement $statement, string $columnName, ...$arrayWithValuesForIN): array
     {
         $records = [];
         while ($record = $statement->fetch()) {

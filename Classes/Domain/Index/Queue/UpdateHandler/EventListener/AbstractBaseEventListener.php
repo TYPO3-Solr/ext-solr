@@ -1,4 +1,6 @@
-<?php declare(strict_types = 1);
+<?php
+
+declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\EventListener;
 
 /***************************************************************
@@ -24,13 +26,13 @@ namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\EventListener
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\DataUpdateHandler;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\EventListener\Events\ProcessingFinishedEventInterface;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\DataUpdateEventInterface;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\GarbageHandler;
+use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
-use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\DataUpdateHandler;
-use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\GarbageHandler;
-use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\DataUpdateEventInterface;
-use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\EventListener\Events\ProcessingFinishedEventInterface;
 
 /**
  * Base Event listener
@@ -122,6 +124,6 @@ abstract class AbstractBaseEventListener
      */
     protected function isProcessingEnabled(): bool
     {
-        return ($this->getMonitoringType() === static::MONITORING_TYPE);
+        return $this->getMonitoringType() === static::MONITORING_TYPE;
     }
 }

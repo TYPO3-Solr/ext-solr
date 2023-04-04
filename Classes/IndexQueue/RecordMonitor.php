@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\IndexQueue;
 
 /***************************************************************
@@ -126,7 +127,6 @@ class RecordMonitor
      * @param mixed $uid The record's uid, [integer] or [string] (like 'NEW...')
      * @param array $fields The record's data
      * @param DataHandler $tceMain TYPO3 Core Engine parent object
-     * @return void
      */
     public function processDatamap_afterDatabaseOperations($status, $table, $uid, array $fields, DataHandler $tceMain): void
     {

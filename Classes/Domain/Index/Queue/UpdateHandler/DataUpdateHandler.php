@@ -1,4 +1,6 @@
-<?php declare(strict_types = 1);
+<?php
+
+declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler;
 
 /***************************************************************
@@ -24,19 +26,19 @@ namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use TYPO3\CMS\Core\DataHandling\DataHandler;
-use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use ApacheSolrForTypo3\Solr\FrontendEnvironment;
-use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
-use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\RootPageResolver;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\ConfigurationAwareRecordService;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\MountPagesUpdater;
-use ApacheSolrForTypo3\Solr\System\TCA\TCAService;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\RootPageResolver;
+use ApacheSolrForTypo3\Solr\FrontendEnvironment;
+use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
-use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use ApacheSolrForTypo3\Solr\System\TCA\TCAService;
 use ApacheSolrForTypo3\Solr\Util;
+use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\DataHandling\DataHandler;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Data update handler
@@ -75,22 +77,22 @@ class DataUpdateHandler extends AbstractUpdateHandler
         'HiddenAndExtendToSubpageWereDisabled' => [
             'changeSet' => [
                 'hidden' => '0',
-                'extendToSubpages' => '0'
-            ]
+                'extendToSubpages' => '0',
+            ],
         ],
         // the current page has the field "extendToSubpages" enabled and the field "hidden" was set to 0 => requeue subpages
         'extendToSubpageEnabledAndHiddenFlagWasRemoved' => [
             'currentState' =>  ['extendToSubpages' => '1'],
-            'changeSet' => ['hidden' => '0']
+            'changeSet' => ['hidden' => '0'],
         ],
         // the current page has the field "hidden" enabled and the field "extendToSubpages" was set to 0 => requeue subpages
         'hiddenIsEnabledAndExtendToSubPagesWasRemoved' => [
             'currentState' =>  ['hidden' => '1'],
-            'changeSet' => ['extendToSubpages' => '0']
+            'changeSet' => ['extendToSubpages' => '0'],
         ],
         // the field "no_search_sub_entries" of current page was set to 0
         'no_search_sub_entriesFlagWasAdded' => [
-            'changeSet' => ['no_search_sub_entries' => '0']
+            'changeSet' => ['no_search_sub_entries' => '0'],
         ],
     ];
 
@@ -102,7 +104,7 @@ class DataUpdateHandler extends AbstractUpdateHandler
     /**
      * @var RootPageResolver
      */
-    protected $rootPageResolver = null;
+    protected $rootPageResolver;
 
     /**
      * @var PagesRepository
@@ -112,7 +114,7 @@ class DataUpdateHandler extends AbstractUpdateHandler
     /**
      * @var SolrLogManager
      */
-    protected $logger = null;
+    protected $logger;
 
     /**
      * @var DataHandler
@@ -131,7 +133,7 @@ class DataUpdateHandler extends AbstractUpdateHandler
      * @param DataHandler $dataHandler
      */
     public function __construct(
-        ConfigurationAwareRecordService $recordService ,
+        ConfigurationAwareRecordService $recordService,
         FrontendEnvironment $frontendEnvironment,
         TCAService $tcaService,
         Queue $indexQueue,
@@ -149,7 +151,8 @@ class DataUpdateHandler extends AbstractUpdateHandler
         $this->dataHandler = $dataHandler;
         $this->logger = $solrLogManager ?? GeneralUtility::makeInstance(
             SolrLogManager::class,
-            /** @scrutinizer ignore-type */ __CLASS__
+            /** @scrutinizer ignore-type */
+            __CLASS__
         );
     }
 
@@ -199,7 +202,7 @@ class DataUpdateHandler extends AbstractUpdateHandler
             return;
         }
         try {
-            if (isset($updatedFields['l10n_parent']) && intval($updatedFields['l10n_parent']) > 0) {
+            if (isset($updatedFields['l10n_parent']) && (int)($updatedFields['l10n_parent']) > 0) {
                 $pid = $updatedFields['l10n_parent'];
             } elseif ($this->rootPageResolver->getIsRootPageId($uid)) {
                 $pid = $uid;
@@ -239,7 +242,7 @@ class DataUpdateHandler extends AbstractUpdateHandler
     public function handleVersionSwap(int $uid, string $table): void
     {
         $isPageRelatedRecord = ($table === 'tt_content' || $table === 'pages');
-        if($isPageRelatedRecord) {
+        if ($isPageRelatedRecord) {
             $uid = ($table === 'tt_content' ? $this->getValidatedPid($table, $uid) : $uid);
             if ($uid === null) {
                 return;

@@ -72,13 +72,12 @@ class SearchResult extends Document
      *
      * @var SearchResult|null
      */
-    protected $variantParent = null;
+    protected $variantParent;
 
     /**
      * @var GroupItem
      */
-    protected $groupItem = null;
-
+    protected $groupItem;
 
     /**
      * @return GroupItem
@@ -193,7 +192,7 @@ class SearchResult extends Document
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function getIsElevated()
     {
@@ -209,7 +208,7 @@ class SearchResult extends Document
     }
 
     /**
-     * @return integer
+     * @return int
      */
     public function getId()
     {

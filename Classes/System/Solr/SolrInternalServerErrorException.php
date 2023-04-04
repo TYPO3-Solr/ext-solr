@@ -28,4 +28,6 @@ namespace ApacheSolrForTypo3\Solr\System\Solr;
 /**
  * This exception is used when the solr an 500 internal server error is thrown by the solr server
  */
-class SolrInternalServerErrorException extends SolrCommunicationException {}
+class SolrInternalServerErrorException extends SolrCommunicationException
+{
+}

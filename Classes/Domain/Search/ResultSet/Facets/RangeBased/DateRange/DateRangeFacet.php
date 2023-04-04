@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\DateRange;
 
 /*
@@ -68,7 +69,6 @@ class DateRangeFacet extends AbstractFacet
     {
         return $this->range;
     }
-
 
     /**
      * Get facet partial name used for rendering the facet

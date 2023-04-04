@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\System\Configuration;
 
 /*
@@ -53,7 +54,7 @@ class TypoScriptConfiguration
     /**
      * @var \ApacheSolrForTypo3\Solr\System\Util\ArrayAccessor|null
      */
-    protected $configurationAccess = null;
+    protected $configurationAccess;
 
     /**
      * Holds the pageId in which context the configuration was parsed
@@ -64,7 +65,7 @@ class TypoScriptConfiguration
     /**
      * @var ContentObjectService
      */
-    protected $contentObjectService = null;
+    protected $contentObjectService;
 
     /**
      * @param array $configuration
@@ -131,8 +132,10 @@ class TypoScriptConfiguration
     public function getValueByPath($path)
     {
         if (!is_string($path)) {
-            throw new InvalidArgumentException('Parameter $path is not a string',
-                1325623321);
+            throw new InvalidArgumentException(
+                'Parameter $path is not a string',
+                1325623321
+            );
         }
         return $this->configurationAccess->get($path);
     }
@@ -255,8 +258,8 @@ class TypoScriptConfiguration
     /**
      * Returns true when ext_solr is enabled
      *
-     * @param boolean $defaultIfEmpty
-     * @return boolean
+     * @param bool $defaultIfEmpty
+     * @return bool
      */
     public function getEnabled($defaultIfEmpty = false)
     {
@@ -558,7 +561,6 @@ class TypoScriptConfiguration
         // For easier check later on we return an array by combining $recursiveUpdateFields
         return array_combine($recursiveUpdateFields, $recursiveUpdateFields);
     }
-
 
     /**
      * Retrieves and initialPagesAdditionalWhereClause where clause when configured or an empty string.
@@ -913,7 +915,7 @@ class TypoScriptConfiguration
     public function getValueByPathWithFallbackOrDefaultValueAndApplyStdWrap($path, $fallbackPath, $defaultIfBothIsEmpty)
     {
         $result = (string)$this->getValueByPathOrDefaultValue($path, '');
-        if($result !== '') {
+        if ($result !== '') {
             return $this->renderContentElementOfConfigured($path, $result);
         }
 
@@ -1331,8 +1333,6 @@ class TypoScriptConfiguration
 
     /**
      * Removes the pageSections filter setting.
-     *
-     * @return void
      */
     public function removeSearchQueryFilterForPageSections()
     {
@@ -1499,14 +1499,13 @@ class TypoScriptConfiguration
         return $this->getBool($isSiteHightlightingEnabled);
     }
 
-
     /**
      * Can be used to check if the highlighting is enabled
      *
      * plugin.tx_solr.search.results.resultsHighlighting
      *
-     * @param boolean $defaultIfEmpty
-     * @return boolean
+     * @param bool $defaultIfEmpty
+     * @return bool
      */
     public function getSearchResultsHighlighting($defaultIfEmpty = false)
     {
@@ -2138,7 +2137,6 @@ class TypoScriptConfiguration
     {
         $enableQParameter = $this->getValueByPathOrDefaultValue('plugin.tx_solr.search.ignoreGlobalQParameter', $defaultIfEmpty);
         return $this->getBool($enableQParameter);
-
     }
 
     /**
@@ -2158,7 +2156,6 @@ class TypoScriptConfiguration
         }
 
         return GeneralUtility::trimExplode(',', $additionalPersistentArgumentNames, true);
-
     }
 
     /**
@@ -2250,13 +2247,13 @@ class TypoScriptConfiguration
         $specificResultsPerGroup = $this->getValueByPathOrDefaultValue($specificPath, null);
 
         if ($specificResultsPerGroup !== null) {
-            return (int) $specificResultsPerGroup;
+            return (int)$specificResultsPerGroup;
         }
 
         $commonPath = 'plugin.tx_solr.search.grouping.numberOfResultsPerGroup';
         $commonValue = $this->getValueByPathOrDefaultValue($commonPath, null);
         if ($commonValue !== null) {
-            return (int) $commonValue;
+            return (int)$commonValue;
         }
 
         return $defaultIfEmpty;

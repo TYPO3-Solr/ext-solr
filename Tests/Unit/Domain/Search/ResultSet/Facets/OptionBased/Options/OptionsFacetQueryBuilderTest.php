@@ -53,8 +53,8 @@ class OptionsFacetQueryBuilderTest extends UnitTest
             'sortDirection' => 'desc',
         ];
         $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
-        $configurationMock->expects($this->once())->method('getSearchFacetingFacetByName')->with('category')->will(
-            $this->returnValue($fakeFacetConfiguration)
+        $configurationMock->expects(self::once())->method('getSearchFacetingFacetByName')->with('category')->willReturn(
+            $fakeFacetConfiguration
         );
 
         $builder = new OptionsFacetQueryBuilder();
@@ -68,12 +68,11 @@ class OptionsFacetQueryBuilderTest extends UnitTest
                     'mincount' => 1,
                     'sort' => 'index desc',
                 ],
-            ]
+            ],
         ];
 
-        $this->assertSame($expectedFacetParameters, $facetParameters, 'Can not build facet parameters as expected');
+        self::assertSame($expectedFacetParameters, $facetParameters, 'Can not build facet parameters as expected');
     }
-
 
     /**
      * @test
@@ -88,8 +87,8 @@ class OptionsFacetQueryBuilderTest extends UnitTest
             'facetLimit' => 20,
         ];
         $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
-        $configurationMock->expects($this->once())->method('getSearchFacetingFacetByName')->with('category')->will(
-            $this->returnValue($fakeFacetConfiguration)
+        $configurationMock->expects(self::once())->method('getSearchFacetingFacetByName')->with('category')->willReturn(
+            $fakeFacetConfiguration
         );
 
         $builder = new OptionsFacetQueryBuilder();
@@ -102,10 +101,10 @@ class OptionsFacetQueryBuilderTest extends UnitTest
                     'limit' => 20,
                     'mincount' => 1,
                 ],
-            ]
+            ],
         ];
 
-        $this->assertSame($expectedFacetParameters, $facetParameters, 'Can not build facet parameters as expected');
+        self::assertSame($expectedFacetParameters, $facetParameters, 'Can not build facet parameters as expected');
     }
 
     /**
@@ -117,15 +116,15 @@ class OptionsFacetQueryBuilderTest extends UnitTest
          * limit
          */
         $fakeFacetConfiguration = [
-            'field' => 'category'
+            'field' => 'category',
         ];
         $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
-        $configurationMock->expects($this->once())->method('getSearchFacetingFacetByName')->with('category')->will(
-            $this->returnValue($fakeFacetConfiguration)
+        $configurationMock->expects(self::once())->method('getSearchFacetingFacetByName')->with('category')->willReturn(
+            $fakeFacetConfiguration
         );
 
-        $configurationMock->expects($this->any())->method('getSearchFacetingFacetLimit')->will(
-            $this->returnValue(15)
+        $configurationMock->expects(self::any())->method('getSearchFacetingFacetLimit')->willReturn(
+            15
         );
 
         $builder = new OptionsFacetQueryBuilder();
@@ -138,10 +137,10 @@ class OptionsFacetQueryBuilderTest extends UnitTest
                     'limit' => 15,
                     'mincount' => 1,
                 ],
-            ]
+            ],
         ];
 
-        $this->assertSame($expectedFacetParameters, $facetParameters, 'Can not build facet parameters as expected');
+        self::assertSame($expectedFacetParameters, $facetParameters, 'Can not build facet parameters as expected');
     }
 
     /**
@@ -157,8 +156,8 @@ class OptionsFacetQueryBuilderTest extends UnitTest
             'minimumCount' => 2,
         ];
         $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
-        $configurationMock->expects($this->once())->method('getSearchFacetingFacetByName')->with('category')->will(
-            $this->returnValue($fakeFacetConfiguration)
+        $configurationMock->expects(self::once())->method('getSearchFacetingFacetByName')->with('category')->willReturn(
+            $fakeFacetConfiguration
         );
 
         $builder = new OptionsFacetQueryBuilder();
@@ -171,10 +170,10 @@ class OptionsFacetQueryBuilderTest extends UnitTest
                     'limit' => -1,
                     'mincount' => 2,
                 ],
-            ]
+            ],
         ];
 
-        $this->assertSame($expectedFacetParameters, $facetParameters, 'Can not build facet parameters as expected');
+        self::assertSame($expectedFacetParameters, $facetParameters, 'Can not build facet parameters as expected');
     }
 
     /**
@@ -200,15 +199,15 @@ class OptionsFacetQueryBuilderTest extends UnitTest
          * mincount = 2
          */
         $fakeFacetConfiguration = [
-            'field' => 'category'
+            'field' => 'category',
         ];
         $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
-        $configurationMock->expects($this->once())->method('getSearchFacetingFacetByName')->with('category')->will(
-            $this->returnValue($fakeFacetConfiguration)
+        $configurationMock->expects(self::once())->method('getSearchFacetingFacetByName')->with('category')->willReturn(
+            $fakeFacetConfiguration
         );
 
-        $configurationMock->expects($this->any())->method('getSearchFacetingMinimumCount')->will(
-            $this->returnValue($configuredMinimumCount)
+        $configurationMock->expects(self::any())->method('getSearchFacetingMinimumCount')->willReturn(
+            $configuredMinimumCount
         );
 
         $builder = new OptionsFacetQueryBuilder();
@@ -221,10 +220,10 @@ class OptionsFacetQueryBuilderTest extends UnitTest
                     'limit' => -1,
                     'mincount' => $expectedMinimumCount,
                 ],
-            ]
+            ],
         ];
 
-        $this->assertSame($expectedFacetParameters, $facetParameters, 'Can not build facet parameters as expected');
+        self::assertSame($expectedFacetParameters, $facetParameters, 'Can not build facet parameters as expected');
     }
 
     /**
@@ -244,8 +243,8 @@ class OptionsFacetQueryBuilderTest extends UnitTest
             ],
         ];
         $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
-        $configurationMock->expects($this->once())->method('getSearchFacetingFacetByName')->with('category')->will(
-            $this->returnValue($fakeFacetConfiguration)
+        $configurationMock->expects(self::once())->method('getSearchFacetingFacetByName')->with('category')->willReturn(
+            $fakeFacetConfiguration
         );
 
         $builder = new OptionsFacetQueryBuilder();
@@ -261,9 +260,9 @@ class OptionsFacetQueryBuilderTest extends UnitTest
                         'metrics_downloads' => 'sum(downloads_intS)',
                     ],
                 ],
-            ]
+            ],
         ];
 
-        $this->assertSame($expectedFacetParameters, $facetParameters, 'Can not build facet parameters as expected');
+        self::assertSame($expectedFacetParameters, $facetParameters, 'Can not build facet parameters as expected');
     }
 }

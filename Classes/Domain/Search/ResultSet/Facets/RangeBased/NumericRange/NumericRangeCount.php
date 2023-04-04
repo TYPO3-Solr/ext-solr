@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\NumericRange;
 
 /*
@@ -35,7 +36,7 @@ class NumericRangeCount
 
     /**
      * @param float $rangeItem
-     * @param integer $documentCount
+     * @param int $documentCount
      */
     public function __construct($rangeItem, $documentCount)
     {

@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Routing\Enhancer;
 
 use ApacheSolrForTypo3\Solr\Routing\RoutingService;

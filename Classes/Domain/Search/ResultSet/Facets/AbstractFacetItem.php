@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets;
 
 /*
@@ -13,7 +14,6 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets;
  *
  * The TYPO3 project - inspiring people to share!
  */
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 
 /**
  * Abstract item that represent a value of a facet. E.g. an option or a node
@@ -89,7 +89,7 @@ abstract class AbstractFacetItem
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function getSelected()
     {
@@ -112,5 +112,5 @@ abstract class AbstractFacetItem
     /**
      * @return string
      */
-    abstract function getCollectionKey();
+    abstract public function getCollectionKey();
 }

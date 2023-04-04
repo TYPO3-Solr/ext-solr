@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\System\Solr\Service;
 
 /***************************************************************
@@ -46,7 +47,6 @@ class SolrAdminServiceTest extends IntegrationTest
     protected $solrAdminService;
 
     /**
-     * @return void
      * @throws NoSuchCacheException
      */
     protected function setUp(): void
@@ -63,7 +63,7 @@ class SolrAdminServiceTest extends IntegrationTest
         );
         $client->clearEndpoints();
         $solrConnectionInfo = $this->getSolrConnectionInfo();
-        $client->createEndpoint(['host' => $solrConnectionInfo['host'], 'port' => $solrConnectionInfo['port'], 'path' => '/', 'core' => 'core_en', 'key' => 'admin'] , true);
+        $client->createEndpoint(['host' => $solrConnectionInfo['host'], 'port' => $solrConnectionInfo['port'], 'path' => '/', 'core' => 'core_en', 'key' => 'admin'], true);
 
         $this->solrAdminService = GeneralUtility::makeInstance(SolrAdminService::class, $client);
     }
@@ -98,20 +98,20 @@ class SolrAdminServiceTest extends IntegrationTest
         $this->solrAdminService->reloadCore();
 
         $synonymsBeforeAdd = $this->solrAdminService->getSynonyms($baseWord);
-        $this->assertEquals([], $synonymsBeforeAdd, 'Synonyms was not empty');
+        self::assertEquals([], $synonymsBeforeAdd, 'Synonyms was not empty');
 
         $this->solrAdminService->addSynonym($baseWord, $synonyms);
         $this->solrAdminService->reloadCore();
 
         $synonymsAfterAdd = $this->solrAdminService->getSynonyms($baseWord);
 
-        $this->assertEquals($synonyms, $synonymsAfterAdd, 'Could not retrieve synonym after adding');
+        self::assertEquals($synonyms, $synonymsAfterAdd, 'Could not retrieve synonym after adding');
 
         $this->solrAdminService->deleteSynonym($baseWord);
         $this->solrAdminService->reloadCore();
 
         $synonymsAfterRemove = $this->solrAdminService->getSynonyms($baseWord);
-        $this->assertEquals([], $synonymsAfterRemove, 'Synonym was not removed');
+        self::assertEquals([], $synonymsAfterRemove, 'Synonym was not removed');
     }
 
     /**
@@ -121,7 +121,7 @@ class SolrAdminServiceTest extends IntegrationTest
     {
         return [
             'normal' => ['stopword' => 'badword'],
-            'umlaut' => ['stopword' => 'frühaufsteher']
+            'umlaut' => ['stopword' => 'frühaufsteher'],
         ];
     }
 
@@ -133,20 +133,20 @@ class SolrAdminServiceTest extends IntegrationTest
     {
         $stopWords = $this->solrAdminService->getStopWords();
 
-        $this->assertNotContains($stopWord, $stopWords, 'Stopwords are not empty after initializing');
+        self::assertNotContains($stopWord, $stopWords, 'Stopwords are not empty after initializing');
 
         $this->solrAdminService->addStopWords($stopWord);
         $this->solrAdminService->reloadCore();
 
         $stopWordsAfterAdd = $this->solrAdminService->getStopWords();
 
-        $this->assertContains($stopWord, $stopWordsAfterAdd, 'Stopword was not added');
+        self::assertContains($stopWord, $stopWordsAfterAdd, 'Stopword was not added');
 
         $this->solrAdminService->deleteStopWord($stopWord);
         $this->solrAdminService->reloadCore();
 
         $stopWordsAfterDelete = $this->solrAdminService->getStopWords();
-        $this->assertNotContains($stopWord, $stopWordsAfterDelete, 'Stopwords are not empty after removing');
+        self::assertNotContains($stopWord, $stopWordsAfterDelete, 'Stopwords are not empty after removing');
     }
 
     /**
@@ -157,7 +157,7 @@ class SolrAdminServiceTest extends IntegrationTest
     public function containsDefaultStopWord()
     {
         $stopWordsInSolr = $this->solrAdminService->getStopWords();
-        $this->assertContains('and', $stopWordsInSolr, 'Default stopword and was not present');
+        self::assertContains('and', $stopWordsInSolr, 'Default stopword and was not present');
     }
 
     /**
@@ -166,7 +166,7 @@ class SolrAdminServiceTest extends IntegrationTest
     public function canGetSystemInformation()
     {
         $informationResponse = $this->solrAdminService->getSystemInformation();
-        $this->assertSame(200, $informationResponse->getHttpStatus(), 'Could not get information response from solr server');
+        self::assertSame(200, $informationResponse->getHttpStatus(), 'Could not get information response from solr server');
     }
 
     /**
@@ -175,8 +175,8 @@ class SolrAdminServiceTest extends IntegrationTest
     public function canGetPingRoundtrimRunTime()
     {
         $pingRuntime = $this->solrAdminService->getPingRoundTripRuntime();
-        $this->assertGreaterThan(0, $pingRuntime, 'Ping runtime should be larger then 0');
-        $this->assertTrue(is_double($pingRuntime),'Ping runtime should be an integer');
+        self::assertGreaterThan(0, $pingRuntime, 'Ping runtime should be larger then 0');
+        self::assertTrue(is_float($pingRuntime), 'Ping runtime should be an integer');
     }
 
     /**
@@ -186,7 +186,7 @@ class SolrAdminServiceTest extends IntegrationTest
     {
         $solrServerVersion = $this->solrAdminService->getSolrServerVersion();
         $isVersionHigherSix = version_compare('6.0.0', $solrServerVersion, '<');
-        $this->assertTrue($isVersionHigherSix, 'Expecting to run on version larger then 6.0.0');
+        self::assertTrue($isVersionHigherSix, 'Expecting to run on version larger then 6.0.0');
     }
 
     /**
@@ -195,7 +195,7 @@ class SolrAdminServiceTest extends IntegrationTest
     public function canReloadCore()
     {
         $result = $this->solrAdminService->reloadCore();
-        $this->assertSame(200, $result->getHttpStatus(), 'Reload core did not responde with a 200 ok status');
+        self::assertSame(200, $result->getHttpStatus(), 'Reload core did not responde with a 200 ok status');
     }
 
     /**
@@ -204,8 +204,8 @@ class SolrAdminServiceTest extends IntegrationTest
     public function canGetPluginsInformation()
     {
         $result = $this->solrAdminService->getPluginsInformation();
-        $this->assertSame(0, $result->responseHeader->status);
-        $this->assertSame(2, count($result));
+        self::assertSame(0, $result->responseHeader->status);
+        self::assertSame(2, count($result));
     }
 
     /**
@@ -224,9 +224,9 @@ class SolrAdminServiceTest extends IntegrationTest
         );
         $client->clearEndpoints();
         $solrConnectionInfo = $this->getSolrConnectionInfo();
-        $client->createEndpoint(['host' => $solrConnectionInfo['host'], 'port' => $solrConnectionInfo['port'], 'path' => '/', 'core' => 'core_de', 'key' => 'admin'] , true);
+        $client->createEndpoint(['host' => $solrConnectionInfo['host'], 'port' => $solrConnectionInfo['port'], 'path' => '/', 'core' => 'core_de', 'key' => 'admin'], true);
 
         $this->solrAdminService = GeneralUtility::makeInstance(SolrAdminService::class, $client);
-        $this->assertSame("core_de", $this->solrAdminService->getSchema()->getManagedResourceId(), "Could not get the id of managed resources from core.");
+        self::assertSame('core_de', $this->solrAdminService->getSchema()->getManagedResourceId(), 'Could not get the id of managed resources from core.');
     }
 }

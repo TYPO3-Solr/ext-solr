@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Test\Domain\Search\ResultSet\Facets\RangeBased\DateRange;
 
 /*
@@ -18,7 +19,6 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\DateRange\
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\DateRange\DateRangeFacet;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use DateTime;
-use function Webmozart\Assert\Tests\StaticAnalysis\null;
 
 /**
  * Class DateRangeTest
@@ -58,15 +58,13 @@ class DateRangeTest extends UnitTest
         try {
             $dateRangeCollectionKeyOpenStart = $dateRangeOpenStart->getCollectionKey();
             $dateRangeCollectionKeyOpenEnd = $dateRangeOpenEnd->getCollectionKey();
-
         } catch (\Error $error) {
-            $this->fail(
+            self::fail(
                 'Can\'t handle half open date ranges. Please see: https://github.com/TYPO3-Solr/ext-solr/issues/2942 and error: ' . PHP_EOL .
                 $error->getMessage() . ' in ' . $error->getFile() . ':' . $error->getLine()
             );
         }
-        $this->assertEquals('-202107200000', $dateRangeCollectionKeyOpenStart);
-        $this->assertEquals('202107200000-', $dateRangeCollectionKeyOpenEnd);
+        self::assertEquals('-202107200000', $dateRangeCollectionKeyOpenStart);
+        self::assertEquals('202107200000-', $dateRangeCollectionKeyOpenEnd);
     }
-
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\System\Solr;
 
 /***************************************************************
@@ -73,17 +74,17 @@ class SolrConnection
     /**
      * @var SynonymParser
      */
-    protected $synonymParser = null;
+    protected $synonymParser;
 
     /**
      * @var StopWordParser
      */
-    protected $stopWordParser = null;
+    protected $stopWordParser;
 
     /**
      * @var SchemaParser
      */
-    protected $schemaParser = null;
+    protected $schemaParser;
 
     /**
      * @var Node[]
@@ -93,7 +94,7 @@ class SolrConnection
     /**
      * @var SolrLogManager
      */
-    protected $logger = null;
+    protected $logger;
 
     /**
      * @var ClientInterface[]

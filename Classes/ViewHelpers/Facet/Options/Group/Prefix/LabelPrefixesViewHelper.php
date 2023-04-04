@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\ViewHelpers\Facet\Options\Group\Prefix;
 
 /***************************************************************
@@ -52,7 +53,6 @@ class LabelPrefixesViewHelper extends AbstractSolrFrontendViewHelper
         $this->registerArgument('options', OptionCollection::class, 'The options where prefixed should be available', true);
         $this->registerArgument('length', 'int', 'The length of the prefixed that should be retrieved', false, 1);
         $this->registerArgument('sortBy', 'string', 'The sorting mode (count,alpha)', false, 'count');
-
     }
 
     /**
@@ -88,13 +88,11 @@ class LabelPrefixesViewHelper extends AbstractSolrFrontendViewHelper
      */
     protected static function applySortBy(array $prefixes, $sortBy): array
     {
-        if($sortBy === 'count' || $sortBy === '')
-        {
+        if ($sortBy === 'count' || $sortBy === '') {
             return $prefixes;
         }
 
-        if($sortBy === 'alpha')
-        {
+        if ($sortBy === 'alpha') {
             sort($prefixes);
             return $prefixes;
         }

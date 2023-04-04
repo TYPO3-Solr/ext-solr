@@ -1,4 +1,6 @@
-<?php declare(strict_types = 1);
+<?php
+
+declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\Domain\Index\PageIndexer\Helper\UriBuilder;
 
@@ -40,7 +42,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 abstract class AbstractUriStrategy
 {
     /**
-     * @var SolrLogManager|null|object
+     * @var SolrLogManager|object|null
      */
     protected $logger;
 
@@ -109,7 +111,7 @@ abstract class AbstractUriStrategy
                     'host' => $urlHelper->getHost(),
                     'path' => $urlHelper->getPath(),
                     'page ID' => $item->getRecordUid(),
-                    'indexer options' => $options
+                    'indexer options' => $options,
                 ]
             );
 
@@ -118,7 +120,6 @@ abstract class AbstractUriStrategy
                 1311080805
             );
         }
-
 
         return $this->applyDataUrlModifier($item, $language, $dataUrl, $urlHelper);
     }
@@ -138,7 +139,7 @@ abstract class AbstractUriStrategy
      * @param UrlHelper $urlHelper
      * @return string
      */
-    protected function applyDataUrlModifier(Item $item, int $language, $dataUrl, UrlHelper $urlHelper):string
+    protected function applyDataUrlModifier(Item $item, int $language, $dataUrl, UrlHelper $urlHelper): string
     {
         if (empty($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueuePageIndexer']['dataUrlModifier'])) {
             return $dataUrl;
@@ -149,10 +150,11 @@ abstract class AbstractUriStrategy
             throw new \RuntimeException($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueuePageIndexer']['dataUrlModifier'] . ' is not an implementation of ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerDataUrlModifier', 1290523345);
         }
 
-        return $dataUrlModifier->modifyDataUrl($dataUrl,
+        return $dataUrlModifier->modifyDataUrl(
+            $dataUrl,
             [
                 'item' => $item, 'scheme' => $urlHelper->getScheme(), 'host' => $urlHelper->getHost(),
-                'path' => $urlHelper->getPath(), 'pageId' => $item->getRecordUid(), 'language' => $language
+                'path' => $urlHelper->getPath(), 'pageId' => $item->getRecordUid(), 'language' => $language,
             ]
         );
     }

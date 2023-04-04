@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\Domain\Site;
 
 /***************************************************************
@@ -24,8 +25,8 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Domain\Site;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
+use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -55,7 +56,7 @@ class SiteTest extends IntegrationTest
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $this->importDataSetFromFixture('can_get_default_language.xml');
         $site = $siteRepository->getFirstAvailableSite();
-        $this->assertEquals(0, $site->getDefaultLanguage(), 'Could not get default language from site');
+        self::assertEquals(0, $site->getDefaultLanguage(), 'Could not get default language from site');
     }
 
     /**
@@ -65,10 +66,10 @@ class SiteTest extends IntegrationTest
     {
         $this->importDataSetFromFixture('can_create_instance_with_root_site.xml');
 
-            /** @var $siteRepository SiteRepository */
+        /** @var $siteRepository SiteRepository */
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $this->site = $siteRepository->getSiteByRootPageId(1);
-        $this->assertEquals(1, $this->site->getRootPageId());
+        self::assertEquals(1, $this->site->getRootPageId());
     }
 
     /**
@@ -121,6 +122,6 @@ class SiteTest extends IntegrationTest
         $this->site = $siteRepository->getSiteByRootPageId(1);
         $languageIds = $this->site->getAvailableLanguageIds();
 
-        $this->assertEquals([0, 1, 2], $languageIds);
+        self::assertEquals([0, 1, 2], $languageIds);
     }
 }

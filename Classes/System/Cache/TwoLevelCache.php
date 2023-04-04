@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\System\Cache;
 
 /***************************************************************
@@ -28,8 +29,8 @@ namespace ApacheSolrForTypo3\Solr\System\Cache;
  ***************************************************************/
 
 use TYPO3\CMS\Core\Cache\CacheManager;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Provides a two level cache that uses an in memory cache as the first level cache and
@@ -52,7 +53,7 @@ class TwoLevelCache
     /**
      * @var FrontendInterface
      */
-    protected $secondLevelCache = null;
+    protected $secondLevelCache;
 
     /**
      * @param string $cacheName

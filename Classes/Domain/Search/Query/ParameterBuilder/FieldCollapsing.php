@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
 
 /***************************************************************
@@ -80,7 +81,7 @@ class FieldCollapsing extends AbstractDeactivatable implements ParameterBuilder
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function getIsExpand(): bool
     {
@@ -88,7 +89,7 @@ class FieldCollapsing extends AbstractDeactivatable implements ParameterBuilder
     }
 
     /**
-     * @param boolean $expand
+     * @param bool $expand
      */
     public function setExpand(bool $expand)
     {
@@ -144,12 +145,12 @@ class FieldCollapsing extends AbstractDeactivatable implements ParameterBuilder
     public function build(AbstractQueryBuilder $parentBuilder): AbstractQueryBuilder
     {
         $query = $parentBuilder->getQuery();
-        if(!$this->getIsEnabled()) {
+        if (!$this->getIsEnabled()) {
             return $parentBuilder;
         }
 
-        $parentBuilder->useFilter('{!collapse field=' . $this->getCollapseFieldName(). '}', 'fieldCollapsing');
-        if($this->getIsExpand()) {
+        $parentBuilder->useFilter('{!collapse field=' . $this->getCollapseFieldName() . '}', 'fieldCollapsing');
+        if ($this->getIsExpand()) {
             $query->addParam('expand', 'true');
             $query->addParam('expand.rows', $this->getExpandRowCount());
         }

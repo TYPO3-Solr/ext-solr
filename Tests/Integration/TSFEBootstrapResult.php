@@ -6,7 +6,6 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * Class TSFEBootstrapResult
- * @package ApacheSolrForTypo3\Solr\Tests\Integration
  */
 class TSFEBootstrapResult
 {

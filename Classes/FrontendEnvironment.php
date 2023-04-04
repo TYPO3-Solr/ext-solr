@@ -37,12 +37,12 @@ class FrontendEnvironment implements SingletonInterface
     /**
      * @var TypoScript
      */
-    private $typoScript = null;
+    private $typoScript;
 
     /**
      * @var Tsfe
      */
-    private $tsfe = null;
+    private $tsfe;
 
     /**
      * FrontendEnvironment constructor.

@@ -1,4 +1,6 @@
-<?php declare(strict_types = 1);
+<?php
+
+declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\Domain\Index\PageIndexer\Helper;
 
@@ -45,7 +47,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class UriStrategyFactory
 {
     /**
-     * @param integer $pageId
+     * @param int $pageId
      * @oaram array $overrideConfiguration
      * @return AbstractUriStrategy
      * @throws \Exception

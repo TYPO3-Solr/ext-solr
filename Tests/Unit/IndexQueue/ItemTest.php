@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\IndexQueue;
 
 /***************************************************************
@@ -43,7 +44,7 @@ class ItemTest extends UnitTest
         $item = new Item($metaData, $record);
 
         $errors = $item->getErrors();
-        $this->assertSame('error during index', $errors, 'Can not get errors from queue item');
+        self::assertSame('error during index', $errors, 'Can not get errors from queue item');
     }
 
     /**
@@ -56,7 +57,7 @@ class ItemTest extends UnitTest
         $item = new Item($metaData, $record);
 
         $type = $item->getType();
-        $this->assertSame('pages', $type, 'Can not get type from queue item');
+        self::assertSame('pages', $type, 'Can not get type from queue item');
     }
 
     /**
@@ -67,7 +68,7 @@ class ItemTest extends UnitTest
         return [
             'pending item' => [['item_type' => 'pages', 'indexed' => 3, 'changed' => '4'], Item::STATE_PENDING],
             'indexed item' => [['item_type' => 'pages', 'indexed' => 5, 'changed' => '4'], Item::STATE_INDEXED],
-            'blocked item' => [['item_type' => 'pages', 'indexed' => 5, 'changed' => '4', 'errors' => 'Something bad happened'], Item::STATE_BLOCKED]
+            'blocked item' => [['item_type' => 'pages', 'indexed' => 5, 'changed' => '4', 'errors' => 'Something bad happened'], Item::STATE_BLOCKED],
         ];
     }
 
@@ -78,7 +79,7 @@ class ItemTest extends UnitTest
     public function canGetState($metaData, $expectedState)
     {
         $item = new Item($metaData, []);
-        $this->assertSame($expectedState, $item->getState(), 'Can not get state from item as expected');
+        self::assertSame($expectedState, $item->getState(), 'Can not get state from item as expected');
     }
 
     /**
@@ -87,10 +88,10 @@ class ItemTest extends UnitTest
     public function testHasErrors()
     {
         $item = new Item([], []);
-        $this->assertFalse($item->getHasErrors(), 'Expected that item without any data has no errors');
+        self::assertFalse($item->getHasErrors(), 'Expected that item without any data has no errors');
 
         $item = new Item(['errors' => 'something is broken'], []);
-        $this->assertTrue($item->getHasErrors(), 'Item with errors was not indicated to have errors');
+        self::assertTrue($item->getHasErrors(), 'Item with errors was not indicated to have errors');
     }
 
     /**
@@ -99,9 +100,9 @@ class ItemTest extends UnitTest
     public function testHasIndexingProperties()
     {
         $item = new Item([], []);
-        $this->assertFalse($item->hasIndexingProperties(), 'Expected that empty item should not have any indexing properties');
+        self::assertFalse($item->hasIndexingProperties(), 'Expected that empty item should not have any indexing properties');
 
         $item = new Item(['has_indexing_properties' => true], []);
-        $this->assertTrue($item->hasIndexingProperties(), 'Item with proper meta data should have indexing properties');
+        self::assertTrue($item->hasIndexingProperties(), 'Item with proper meta data should have indexing properties');
     }
 }

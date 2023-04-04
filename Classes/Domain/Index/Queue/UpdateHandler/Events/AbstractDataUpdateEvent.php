@@ -1,4 +1,6 @@
-<?php declare(strict_types = 1);
+<?php
+
+declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events;
 
 /***************************************************************
@@ -24,9 +26,9 @@ namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use Psr\EventDispatcher\StoppableEventInterface;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\DataUpdateHandler;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\GarbageHandler;
+use Psr\EventDispatcher\StoppableEventInterface;
 
 /**
  * Abstract data update event
@@ -181,7 +183,7 @@ abstract class AbstractDataUpdateEvent implements DataUpdateEventInterface, Stop
      */
     public function isPageUpdate(): bool
     {
-        return ($this->table === 'pages');
+        return $this->table === 'pages';
     }
 
     /**
@@ -191,7 +193,7 @@ abstract class AbstractDataUpdateEvent implements DataUpdateEventInterface, Stop
      */
     public function isContentElementUpdate(): bool
     {
-        return ($this->table === 'tt_content');
+        return $this->table === 'tt_content';
     }
 
     /**

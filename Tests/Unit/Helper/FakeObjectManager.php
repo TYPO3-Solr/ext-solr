@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Helper;
 
 /***************************************************************
@@ -32,8 +33,6 @@ use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
  * This class is a light weight fake object manager that just dispatches the creation
  * of an object to GeneralUtitlity::makeInstance. When the object contains a method,
  * injectObjectManager it injects the object manager into the instance.
- *
- * @package ApacheSolrForTypo3\Solr\Tests\Unit\Helper
  */
 class FakeObjectManager implements ObjectManagerInterface
 {
@@ -46,7 +45,7 @@ class FakeObjectManager implements ObjectManagerInterface
      */
     public function isRegistered(string $objectName): bool
     {
-        throw new InvalidArgumentException("Not implemented in the FakeObjectManager");
+        throw new InvalidArgumentException('Not implemented in the FakeObjectManager');
     }
 
     /**
@@ -78,7 +77,7 @@ class FakeObjectManager implements ObjectManagerInterface
      */
     public function getEmptyObject(string $className): object
     {
-        throw new InvalidArgumentException("Not implemented in the FakeObjectManager");
+        throw new InvalidArgumentException('Not implemented in the FakeObjectManager');
     }
 
     /**
@@ -89,6 +88,6 @@ class FakeObjectManager implements ObjectManagerInterface
      */
     public function getScope(string $objectName): int
     {
-        throw new InvalidArgumentException("Not implemented in the FakeObjectManager");
+        throw new InvalidArgumentException('Not implemented in the FakeObjectManager');
     }
 }

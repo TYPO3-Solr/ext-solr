@@ -1,4 +1,6 @@
-<?php declare(strict_types = 1);
+<?php
+
+declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue;
 
 /***************************************************************
@@ -24,9 +26,9 @@ namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\IndexQueue\InitializationPostProcessor;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
-use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -36,7 +38,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @author Timo Hund <timo.hund@dkd.de>
  * @author Ingo Renner <ingo.renner@dkd.de>
  */
-class QueueInitializationService {
+class QueueInitializationService
+{
 
     /**
      * @var Queue
@@ -76,7 +79,7 @@ class QueueInitializationService {
     public function initializeBySitesAndConfigurations(array $sites, array $indexingConfigurationNames = ['*']): array
     {
         $initializationStatesBySiteId = [];
-        foreach($sites as $site) {
+        foreach ($sites as $site) {
             /** @var  Site $site */
             $initializationResult = $this->initializeBySiteAndIndexConfigurations($site, $indexingConfigurationNames);
             $initializationStatesBySiteId[$site->getRootPageId()] = $initializationResult;
@@ -158,5 +161,4 @@ class QueueInitializationService {
 
         return $initializer->initialize();
     }
-
 }

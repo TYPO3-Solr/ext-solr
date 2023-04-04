@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\System\Solr;
 
 /***************************************************************
@@ -27,7 +28,8 @@ namespace ApacheSolrForTypo3\Solr\System\Solr;
 /**
  * This exception or a more specific one should be thrown when the is an error in the communication with the solr server.
  */
-class SolrCommunicationException extends \RuntimeException {
+class SolrCommunicationException extends \RuntimeException
+{
 
     /**
      * @var ResponseAdapter

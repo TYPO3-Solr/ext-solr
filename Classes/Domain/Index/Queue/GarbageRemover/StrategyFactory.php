@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\GarbageRemover;
 
 /***************************************************************
@@ -29,7 +30,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Class StrategyFactory
  */
-class StrategyFactory {
+class StrategyFactory
+{
 
     /**
      * @param string $table
@@ -37,7 +39,7 @@ class StrategyFactory {
      */
     public static function getByTable($table): AbstractStrategy
     {
-        $isPageRelated = in_array($table, ['tt_content','pages']);
+        $isPageRelated = in_array($table, ['tt_content', 'pages']);
         return $isPageRelated
             ? GeneralUtility::makeInstance(PageStrategy::class)
             : GeneralUtility::makeInstance(RecordStrategy::class);

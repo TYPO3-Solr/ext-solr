@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Hierarchy;
 
 /*
@@ -85,11 +86,10 @@ class HierarchyFacetParser extends AbstractFacetParser
      * See implementation of HierarchyFacet::createNode().
      *
      * @param array $flatOptionsListForFacet
-     * @return void sorted list of facet options
      */
     protected function sortFacetOptionsInNaturalOrder(array $flatOptionsListForHierarchyFacet)
     {
-        uksort($flatOptionsListForHierarchyFacet, "strnatcmp");
+        uksort($flatOptionsListForHierarchyFacet, 'strnatcmp');
         return $flatOptionsListForHierarchyFacet;
     }
 
@@ -126,9 +126,9 @@ class HierarchyFacetParser extends AbstractFacetParser
     protected function getPathAsArray($path)
     {
         $path = str_replace('\/', '@@@', $path);
-        $path = rtrim($path, "/");
+        $path = rtrim($path, '/');
         $segments = explode('/', $path);
-        return array_map(function($item) {
+        return array_map(function ($item) {
             return str_replace('@@@', '/', $item);
         }, $segments);
     }

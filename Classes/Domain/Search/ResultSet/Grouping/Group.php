@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Grouping;
 
 /***************************************************************
@@ -45,7 +46,7 @@ class Group
     /**
      * @var GroupItemCollection
      */
-    protected $groupItems = null;
+    protected $groupItems;
 
     /**
      * @var array

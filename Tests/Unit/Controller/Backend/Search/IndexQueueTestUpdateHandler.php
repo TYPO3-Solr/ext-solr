@@ -1,11 +1,12 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Controller\Backend\Search;
 
 /**
  * Class IndexQueueTestUpdateHandler
- * @package ApacheSolrForTypo3\Solr\Tests\Unit\Controller\Backend\Search
  */
-class IndexQueueTestUpdateHandler {
+class IndexQueueTestUpdateHandler
+{
 
     /**
      * @param string $type

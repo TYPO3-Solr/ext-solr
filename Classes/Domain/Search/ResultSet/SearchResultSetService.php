@@ -26,12 +26,12 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\QueryFields;
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\SearchQuery;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\Parser\ResultParserRegistry;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResult;
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResultCollection;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResultBuilder;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequestAware;
 use ApacheSolrForTypo3\Solr\Domain\Variants\VariantsProcessor;
@@ -46,8 +46,6 @@ use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrIncompleteResponseException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResultBuilder;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 
 /**
@@ -74,10 +72,10 @@ class SearchResultSetService
     /**
      * @var SearchResultSet
      */
-    protected $lastResultSet = null;
+    protected $lastResultSet;
 
     /**
-     * @var boolean
+     * @var bool
      */
     protected $isSolrAvailable = false;
 
@@ -89,7 +87,7 @@ class SearchResultSetService
     /**
      * @var SolrLogManager
      */
-    protected $logger = null;
+    protected $logger;
 
     /**
      * @var SearchResultBuilder
@@ -225,8 +223,10 @@ class SearchResultSetService
         /** @var $variantsProcessor VariantsProcessor */
         $variantsProcessor = GeneralUtility::makeInstance(
             VariantsProcessor::class,
-            /** @scrutinizer ignore-type */ $this->typoScriptConfiguration,
-            /** @scrutinizer ignore-type */ $this->searchResultBuilder
+            /** @scrutinizer ignore-type */
+            $this->typoScriptConfiguration,
+            /** @scrutinizer ignore-type */
+            $this->searchResultBuilder
         );
         $variantsProcessor->process($resultSet);
 
@@ -280,7 +280,7 @@ class SearchResultSetService
      * @param SearchRequest $searchRequest
      * @return SearchResultSet
      */
-    protected function getInitializedSearchResultSet(SearchRequest $searchRequest):SearchResultSet
+    protected function getInitializedSearchResultSet(SearchRequest $searchRequest): SearchResultSet
     {
         /** @var $resultSet SearchResultSet */
         $resultSetClass = $this->getResultSetClassName();
@@ -307,7 +307,7 @@ class SearchResultSetService
         $offSet = $offsetMultiplier * (int)$searchRequest->getResultsPerPage();
 
         $response = $this->search->search($query, $offSet, null);
-        if($response === null) {
+        if ($response === null) {
             throw new SolrIncompleteResponseException('The response retrieved from solr was incomplete', 1505989678);
         }
 
@@ -428,7 +428,7 @@ class SearchResultSetService
         $resultDocument = isset($parsedData->response->docs[0]) ? $parsedData->response->docs[0] : null;
 
         if (!$resultDocument instanceof Document) {
-            throw new \UnexpectedValueException("Response did not contain a valid Document object");
+            throw new \UnexpectedValueException('Response did not contain a valid Document object');
         }
 
         return $this->searchResultBuilder->fromApacheSolrDocument($resultDocument);

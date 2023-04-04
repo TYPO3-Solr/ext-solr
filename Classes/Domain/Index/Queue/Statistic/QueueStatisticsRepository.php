@@ -1,4 +1,6 @@
-<?php declare(strict_types = 1);
+<?php
+
+declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\Statistic;
 
 /***************************************************************
@@ -54,11 +56,11 @@ class QueueStatisticsRepository extends AbstractRepository
             ->add('select', vsprintf('(%s < %s) AS %s', [
                 $queryBuilder->quoteIdentifier('indexed'),
                 $queryBuilder->quoteIdentifier('changed'),
-                $queryBuilder->quoteIdentifier('pending')
+                $queryBuilder->quoteIdentifier('pending'),
             ]), true)
             ->add('select', vsprintf('(%s) AS %s', [
                 $queryBuilder->expr()->notLike('errors', $queryBuilder->createNamedParameter('')),
-                $queryBuilder->quoteIdentifier('failed')
+                $queryBuilder->quoteIdentifier('failed'),
             ]), true)
             ->add('select', $queryBuilder->expr()->count('*', 'count'), true)
             ->from($this->table)

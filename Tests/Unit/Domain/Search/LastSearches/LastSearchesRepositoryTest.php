@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\LastSearches;
 
 /***************************************************************
@@ -48,9 +49,9 @@ class LastSearchesRepositoryTest extends UnitTest
             ['keywords' => 'test'],
             ['keywords' => 'test 2'],
             ['keywords' => '&#34;test X&#34;'],
-            ['keywords' => '&#x0027;test Y&#x0027;']
+            ['keywords' => '&#x0027;test Y&#x0027;'],
         ];
-        $this->lastSearchesRepositoryMock->method('getLastSearchesResultSet')->will($this->returnValue($givenKeywords));
+        $this->lastSearchesRepositoryMock->method('getLastSearchesResultSet')->willReturn($givenKeywords);
 
         $lastSearches = $this->lastSearchesRepositoryMock->findAllKeywords();
 
@@ -58,9 +59,9 @@ class LastSearchesRepositoryTest extends UnitTest
             'test',
             'test 2',
             '"test X"',
-            '\'test Y\''
+            '\'test Y\'',
         ];
 
-        $this->assertSame($expectedDecotedLastSearches, $lastSearches);
+        self::assertSame($expectedDecotedLastSearches, $lastSearches);
     }
 }

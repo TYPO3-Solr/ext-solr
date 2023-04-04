@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\System\Records\SystemLanguage;
 
 /***************************************************************
@@ -31,7 +32,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * SystemLanguageRepository to encapsulate the database access for records used in solr.
- *
  */
 class SystemLanguageRepositoryTest extends IntegrationTest
 {
@@ -45,7 +45,7 @@ class SystemLanguageRepositoryTest extends IntegrationTest
         /* @var $repository SystemLanguageRepository */
         $repository = GeneralUtility::makeInstance(SystemLanguageRepository::class);
         $languageTitle = $repository->findOneLanguageTitleByLanguageId(1);
-        $this->assertEquals('English', $languageTitle);
+        self::assertEquals('English', $languageTitle);
     }
 
     /**
@@ -56,7 +56,7 @@ class SystemLanguageRepositoryTest extends IntegrationTest
         /* @var $repository SystemLanguageRepository */
         $repository = GeneralUtility::makeInstance(SystemLanguageRepository::class);
         $languageTitle = $repository->findOneLanguageTitleByLanguageId(0);
-        $this->assertEquals('default', $languageTitle);
+        self::assertEquals('default', $languageTitle);
     }
 
     /**
@@ -71,6 +71,6 @@ class SystemLanguageRepositoryTest extends IntegrationTest
         $systemLanguages = $repository->findSystemLanguages();
 
         $expectedLangueages = [0, 1, 2, 3];
-        $this->assertSame($expectedLangueages, $systemLanguages);
+        self::assertSame($expectedLangueages, $systemLanguages);
     }
 }

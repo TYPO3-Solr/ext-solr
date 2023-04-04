@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\Domain\Index;
 
 /***************************************************************
@@ -30,14 +31,13 @@ use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\System\Environment\CliEnvironment;
 use ApacheSolrForTypo3\Solr\System\Environment\WebRootAllReadyDefinedException;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
-use ApacheSolrForTypo3\Solr\Util;
 use Nimut\TestingFramework\Exception\Exception;
 use ReflectionException;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
 use TYPO3\CMS\Core\Core\Environment;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Localization\LanguageService;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Testcase for the record indexer
@@ -53,7 +53,6 @@ class IndexServiceTest extends IntegrationTest
     protected $indexQueue;
 
     /**
-     * @return void
      * @throws NoSuchCacheException
      */
     protected function setUp(): void
@@ -76,7 +75,6 @@ class IndexServiceTest extends IntegrationTest
     /**
      * @param string $table
      * @param int $uid
-     * @return void
      */
     protected function addToIndexQueue($table, $uid): void
     {
@@ -90,7 +88,7 @@ class IndexServiceTest extends IntegrationTest
             'absRefPrefixIsFoo' => [
                 'absRefPrefix' => 'foo',
                 'expectedUrl' => '/foo/en/?tx_ttnews%5Btt_news%5D=111&cHash=a14e458509b71459d1edaafd1d5a84a1',
-            ]
+            ],
         ];
     }
 
@@ -138,8 +136,8 @@ class IndexServiceTest extends IntegrationTest
         // do we have the record in the index with the value from the mm relation?
         $this->waitToBeVisibleInSolr();
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
-        $this->assertStringContainsString('"numFound":1', $solrContent, 'Could not index document into solr');
-        $this->assertStringContainsString('"url":"' . $expectedUrl, $solrContent, 'Generated unexpected url with absRefPrefix = auto');
+        self::assertStringContainsString('"numFound":1', $solrContent, 'Could not index document into solr');
+        self::assertStringContainsString('"url":"' . $expectedUrl, $solrContent, 'Generated unexpected url with absRefPrefix = auto');
         $this->cleanUpSolrServerAndAssertEmpty();
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Query\Modifier;
 
 /***************************************************************
@@ -28,7 +29,6 @@ namespace ApacheSolrForTypo3\Solr\Query\Modifier;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
-
 
 /**
  * QueryModifier interface, allows to modify search queries

@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\ViewHelpers\Widget\Controller;
 
 /*
@@ -34,7 +35,8 @@ class LastSearchesController extends AbstractWidgetController
         $typoScriptConfiguration = $this->controllerContext->getTypoScriptConfiguration();
         $lastSearchesService = GeneralUtility::makeInstance(
             LastSearchesService::class,
-            /** @scrutinizer ignore-type */ $typoScriptConfiguration
+            /** @scrutinizer ignore-type */
+            $typoScriptConfiguration
         );
         $this->view->assign('contentArguments', ['lastSearches' => $lastSearchesService->getLastSearches()]);
     }

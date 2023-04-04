@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\System\Solr;
 
 /**
@@ -16,12 +17,12 @@ class ParsingUtil
     {
         $keyValueMap = [];
         $valueFromKeyNode = -1;
-        foreach($options as $key => $value) {
+        foreach ($options as $key => $value) {
             $isKeyNode = (($key % 2) == 0);
             if ($isKeyNode) {
                 $valueFromKeyNode = $value;
             } else {
-                if($valueFromKeyNode == -1) {
+                if ($valueFromKeyNode == -1) {
                     throw new \UnexpectedValueException('No optionValue before count value');
                 }
                 //we have a countNode

@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\System\Solr\Service;
 
 /***************************************************************
@@ -53,12 +54,12 @@ abstract class AbstractSolrService
     /**
      * @var \ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager
      */
-    protected $logger = null;
+    protected $logger;
 
     /**
      * @var Client
      */
-    protected $client = null;
+    protected $client;
 
     /**
      * SolrReadService constructor.
@@ -78,7 +79,7 @@ abstract class AbstractSolrService
     public function getCorePath()
     {
         $endpoint = $this->getPrimaryEndpoint();
-        return is_null($endpoint) ? '' : $endpoint->getPath() .'/'. $endpoint->getCore();
+        return is_null($endpoint) ? '' : $endpoint->getPath() . '/' . $endpoint->getCore();
     }
 
     /**
@@ -122,7 +123,7 @@ abstract class AbstractSolrService
             return $endpoint->getCoreBaseUri();
         } catch (\Exception $exception) {
         }
-        return  $endpoint->getScheme(). '://' . $endpoint->getHost() . ':' . $endpoint->getPort() . $endpoint->getPath() . '/' . $endpoint->getCore() . '/';
+        return  $endpoint->getScheme() . '://' . $endpoint->getHost() . ':' . $endpoint->getPort() . $endpoint->getPath() . '/' . $endpoint->getCore() . '/';
     }
 
     /**
@@ -165,7 +166,7 @@ abstract class AbstractSolrService
      */
     protected function _sendRawPost($url, $rawPost, $contentType = 'text/xml; charset=UTF-8')
     {
-        $initializeRequest = function(Request $request) use ($rawPost, $contentType) {
+        $initializeRequest = function (Request $request) use ($rawPost, $contentType) {
             $request->setRawData($rawPost);
             $request->addHeader('Content-Type: ' . $contentType);
             return $request;
@@ -194,7 +195,7 @@ abstract class AbstractSolrService
         $url = $this->reviseUrl($url);
         try {
             $request = $this->buildSolariumRequestFromUrl($url, $method);
-            if($initializeRequest !== null) {
+            if ($initializeRequest !== null) {
                 $request = $initializeRequest($request);
             }
             $response = $this->executeRequest($request);
@@ -204,7 +205,7 @@ abstract class AbstractSolrService
         }
 
         if ($this->configuration->getLoggingQueryRawPost() || $response->getHttpStatus() != 200) {
-            $message = 'Querying Solr using '.$method;
+            $message = 'Querying Solr using ' . $method;
             $this->writeLog($logSeverity, $message, $url, $response, $exception, $body);
         }
 
@@ -248,7 +249,7 @@ abstract class AbstractSolrService
     /**
      * Build the log data and writes the message to the log
      *
-     * @param integer $logSeverity
+     * @param int $logSeverity
      * @param string $message
      * @param string $url
      * @param ResponseAdapter $solrResponse
@@ -281,13 +282,12 @@ abstract class AbstractSolrService
         if (!empty($e)) {
             $logData['exception'] = $e->__toString();
             return $logData;
-        } else {
-            // trigger data parsing
-            // @extensionScannerIgnoreLine
-            $solrResponse->response;
-            $logData['response data'] = print_r($solrResponse, true);
-            return $logData;
         }
+        // trigger data parsing
+        // @extensionScannerIgnoreLine
+        $solrResponse->response;
+        $logData['response data'] = print_r($solrResponse, true);
+        return $logData;
     }
 
     /**
@@ -299,7 +299,7 @@ abstract class AbstractSolrService
      *
      * Also does not report the time, see https://forge.typo3.org/issues/64551
      *
-     * @param boolean $useCache indicates if the ping result should be cached in the instance or not
+     * @param bool $useCache indicates if the ping result should be cached in the instance or not
      * @return bool TRUE if Solr can be reached, FALSE if not
      */
     public function ping($useCache = true)
@@ -310,14 +310,14 @@ abstract class AbstractSolrService
             return false;
         }
 
-        return ($httpResponse->getHttpStatus() === 200);
+        return $httpResponse->getHttpStatus() === 200;
     }
 
     /**
      * Call the /admin/ping servlet, can be used to get the runtime of a ping request.
      *
-     * @param boolean $useCache indicates if the ping result should be cached in the instance or not
-     * @return double runtime in milliseconds
+     * @param bool $useCache indicates if the ping result should be cached in the instance or not
+     * @return float runtime in milliseconds
      * @throws \ApacheSolrForTypo3\Solr\PingFailedException
      */
     public function getPingRoundTripRuntime($useCache = true)
@@ -346,7 +346,7 @@ abstract class AbstractSolrService
     /**
      * Performs a ping request and returns the result.
      *
-     * @param boolean $useCache indicates if the ping result should be cached in the instance or not
+     * @param bool $useCache indicates if the ping result should be cached in the instance or not
      * @return ResponseAdapter
      */
     protected function performPingRequest($useCache = true)
@@ -369,7 +369,7 @@ abstract class AbstractSolrService
     /**
      * Returns the current time in milliseconds.
      *
-     * @return double
+     * @return float
      */
     protected function getMilliseconds()
     {

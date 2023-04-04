@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Test\ViewHelpers\Uri\Facet;
 
 /***************************************************************
@@ -48,8 +49,8 @@ class RemoveFacetViewHelperTest extends AbstractFacetItemViewHelperTest
 
         $searchUriBuilderMock = $this->getDumbMock(SearchUriBuilder::class);
 
-            // we expected that the getRemoveFacetValueUri will be called on the searchUriBuilder in the end.
-        $searchUriBuilderMock->expects($this->once())->method('getRemoveFacetUri')->with($facet->getResultSet()->getUsedSearchRequest(), 'Color');
+        // we expected that the getRemoveFacetValueUri will be called on the searchUriBuilder in the end.
+        $searchUriBuilderMock->expects(self::once())->method('getRemoveFacetUri')->with($facet->getResultSet()->getUsedSearchRequest(), 'Color');
         $viewHelper->injectSearchUriBuilder($searchUriBuilderMock);
         // @extensionScannerIgnoreLine
         $viewHelper->setArguments(['facet' => $facet, 'facetItem' => $facet->getOptions()->getByPosition(0)]);

@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\ViewHelpers;
 
 /*
@@ -25,7 +26,6 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
  */
 class PageBrowserRangeViewHelper extends AbstractSolrFrontendViewHelper
 {
-
     use CompileWithRenderStatic;
 
     /**

@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\FrontendEnvironment;
 
 use ApacheSolrForTypo3\Solr\FrontendEnvironment;
@@ -9,15 +10,13 @@ use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\TypoScript\TemplateService;
-use TYPO3\CMS\Core\Utility\RootlineUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\RootlineUtility;
 use TYPO3\CMS\Frontend\Page\PageRepository;
 
 class TypoScript implements SingletonInterface
 {
-
     private $configurationObjectCache = [];
-
 
     /**
      * Loads the TypoScript configuration for a given page id and language.
@@ -48,7 +47,6 @@ class TypoScript implements SingletonInterface
         /** @var $cache TwoLevelCache */
         $cache = GeneralUtility::makeInstance(TwoLevelCache::class, /** @scrutinizer ignore-type */ 'tx_solr_configuration');
         $configurationArray = $cache->get($cacheId);
-
 
         if (!empty($configurationArray)) {
             // we have a cache hit and can return it.
@@ -85,9 +83,9 @@ class TypoScript implements SingletonInterface
     /**
      * builds an configuration array, containing the solr configuration.
      *
-     * @param integer $pageId
+     * @param int $pageId
      * @param string $path
-     * @param integer $language
+     * @param int $language
      * @return array
      */
     protected function buildConfigurationArray($pageId, $path, $language)
@@ -136,7 +134,6 @@ class TypoScript implements SingletonInterface
         return is_array($configurationToUse) ? $configurationToUse : [];
     }
 
-
     /**
      * @param array $theSetup
      * @param string $theKey
@@ -171,5 +168,4 @@ class TypoScript implements SingletonInterface
         $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
         return $configurationManager->getTypoScriptConfiguration($configurationToUse, $pageId, $languageId, $typoScriptPath);
     }
-
 }

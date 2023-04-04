@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Hierarchy;
 
 /*
@@ -19,19 +20,22 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetPackage;
 /**
  * Class HierarchyPackage
  */
-class HierarchyPackage extends AbstractFacetPackage {
+class HierarchyPackage extends AbstractFacetPackage
+{
 
     /**
      * @return string
      */
-    public function getParserClassName() {
+    public function getParserClassName()
+    {
         return (string)HierarchyFacetParser::class;
     }
 
     /**
      * @return string
      */
-    public function getUrlDecoderClassName() {
+    public function getUrlDecoderClassName()
+    {
         return (string)HierarchyUrlDecoder::class;
     }
 }

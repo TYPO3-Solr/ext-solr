@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets;
 
 /***************************************************************
@@ -24,4 +25,6 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-class InvalidFacetPackageException extends \Exception {}
+class InvalidFacetPackageException extends \Exception
+{
+}

@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets;
 
 /*
@@ -13,7 +14,6 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets;
  *
  * The TYPO3 project - inspiring people to share!
  */
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetItem;
 use ApacheSolrForTypo3\Solr\System\Data\AbstractCollection;
 
 /**
@@ -62,7 +62,7 @@ abstract class AbstractFacetItemCollection extends AbstractCollection
      */
     public function getSelected()
     {
-        return $this->getFilteredCopy(function(AbstractFacetItem $item) {
+        return $this->getFilteredCopy(function (AbstractFacetItem $item) {
             return $item->getSelected();
         });
     }

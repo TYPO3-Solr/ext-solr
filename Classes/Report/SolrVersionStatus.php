@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Report;
 
 /***************************************************************
@@ -49,7 +50,6 @@ class SolrVersionStatus extends AbstractSolrStatus
 
     /**
      * Compiles a version check against each configured Solr server.
-     *
      */
     public function getStatus()
     {
@@ -64,10 +64,14 @@ class SolrVersionStatus extends AbstractSolrStatus
                 $pingFailedMsg = 'Could not ping solr server, can not check version ' . (string)$url;
                 $status = GeneralUtility::makeInstance(
                     Status::class,
-                    /** @scrutinizer ignore-type */ 'Apache Solr Version',
-                    /** @scrutinizer ignore-type */ 'Not accessible',
-                    /** @scrutinizer ignore-type */ $pingFailedMsg,
-                    /** @scrutinizer ignore-type */ Status::ERROR
+                    /** @scrutinizer ignore-type */
+                    'Apache Solr Version',
+                    /** @scrutinizer ignore-type */
+                    'Not accessible',
+                    /** @scrutinizer ignore-type */
+                    $pingFailedMsg,
+                    /** @scrutinizer ignore-type */
+                    Status::ERROR
                 );
                 $reports[] = $status;
                 continue;
@@ -85,10 +89,14 @@ class SolrVersionStatus extends AbstractSolrStatus
             $report = $this->getRenderedReport('SolrVersionStatus.html', $variables);
             $status = GeneralUtility::makeInstance(
                 Status::class,
-                /** @scrutinizer ignore-type */ 'Apache Solr Version',
-                /** @scrutinizer ignore-type */ 'Outdated, Unsupported',
-                /** @scrutinizer ignore-type */ $report,
-                /** @scrutinizer ignore-type */ Status::ERROR
+                /** @scrutinizer ignore-type */
+                'Apache Solr Version',
+                /** @scrutinizer ignore-type */
+                'Outdated, Unsupported',
+                /** @scrutinizer ignore-type */
+                $report,
+                /** @scrutinizer ignore-type */
+                Status::ERROR
             );
 
             $reports[] = $status;

@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased;
 
 /*
@@ -14,12 +15,12 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased;
  * The TYPO3 project - inspiring people to share!
  */
 
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetParser;
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
-use ApacheSolrForTypo3\Solr\System\Solr\ParsingUtil;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\DateRange\DateRangeFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\NumericRange\NumericRangeFacet;
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacet;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
+use ApacheSolrForTypo3\Solr\System\Solr\ParsingUtil;
 
 /**
  * Class AbstractRangeFacetParser

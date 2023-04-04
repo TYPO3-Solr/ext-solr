@@ -25,11 +25,11 @@
 
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Index\Queue\UpdateHandler\EventListener;
 
-use Psr\EventDispatcher\EventDispatcherInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
-use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\EventListener\AbstractBaseEventListener;
+use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
+use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use PHPUnit\Framework\MockObject\MockObject;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -39,7 +39,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 abstract class AbstractEventListenerTest extends UnitTest
 {
-    private const MONITORING_TYPES_TO_TEST = [0,1,2,99];
+    private const MONITORING_TYPES_TO_TEST = [0, 1, 2, 99];
 
     /**
      * @var AbstractBaseEventListener
@@ -81,12 +81,12 @@ abstract class AbstractEventListenerTest extends UnitTest
     public function canIndicateActiveMonitoring(): void
     {
         $this->extensionConfigurationMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('getMonitoringType')
             ->willReturn($this->getMonitoringType());
 
         $status = $this->callInaccessibleMethod($this->listener, 'isProcessingEnabled');
-        $this->assertTrue($status);
+        self::assertTrue($status);
     }
 
     /**
@@ -98,12 +98,12 @@ abstract class AbstractEventListenerTest extends UnitTest
     public function canIndicateInactiveMonitoring(int $currentType): void
     {
         $this->extensionConfigurationMock
-        ->expects($this->once())
+        ->expects(self::once())
         ->method('getMonitoringType')
         ->willReturn($currentType);
 
         $status = $this->callInaccessibleMethod($this->listener, 'isProcessingEnabled');
-        $this->assertFalse($status);
+        self::assertFalse($status);
     }
 
     /**

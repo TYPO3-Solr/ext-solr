@@ -501,7 +501,7 @@ class SearchRequest
      */
     protected function getEscapedGroupItemValue(string $groupItemValue)
     {
-        return preg_replace("/[^A-Za-z0-9]/", '', $groupItemValue);
+        return preg_replace('/[^A-Za-z0-9]/', '', $groupItemValue);
     }
 
     /**
@@ -515,7 +515,9 @@ class SearchRequest
         $path = $this->prefixWithNamespace('groupPage');
         $groupPages = $this->argumentsAccessor->get($path, []);
         foreach ($groupPages as $groups) {
-            if (!is_array($groups)) continue;
+            if (!is_array($groups)) {
+                continue;
+            }
             foreach ($groups as $groupItemPage) {
                 if ($groupItemPage > $max) {
                     $max = $groupItemPage;

@@ -4,17 +4,16 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration;
 
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
+use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Routing\PageArguments;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\TypoScript\TemplateService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
-use TYPO3\CMS\Core\Http\ServerRequest;
 
 /**
  * Class TSFETestBootstrapper
- * @package ApacheSolrForTypo3\Solr\Tests\Integration
  */
 class TSFETestBootstrapper
 {

@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
 
 /***************************************************************
@@ -46,7 +47,7 @@ class BigramPhraseFields extends AbstractFieldList implements ParameterBuilder
      * @param string $delimiter
      * @return BigramPhraseFields
      */
-    public static function fromString(string $fieldListString, string $delimiter = ',') : BigramPhraseFields
+    public static function fromString(string $fieldListString, string $delimiter = ','): BigramPhraseFields
     {
         return self::initializeFromString($fieldListString, $delimiter);
     }
@@ -72,7 +73,7 @@ class BigramPhraseFields extends AbstractFieldList implements ParameterBuilder
      * @param string $delimiter
      * @return BigramPhraseFields
      */
-    protected static function initializeFromString(string $fieldListString, string $delimiter = ',') : BigramPhraseFields
+    protected static function initializeFromString(string $fieldListString, string $delimiter = ','): BigramPhraseFields
     {
         $fieldList = self::buildFieldList($fieldListString, $delimiter);
         return new BigramPhraseFields(true, $fieldList);

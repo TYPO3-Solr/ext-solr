@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Grouping;
 
 /***************************************************************
@@ -50,9 +51,8 @@ class GroupCollectionTest extends UnitTest
         $groupCollection[] = $groupB;
         $groupCollection[] = $groupC;
 
-        $this->assertSame($groupB, $groupCollection->getByName('color'), 'Could not get groupByName');
-        $this->assertNull($groupCollection->getByName('unexisting'), 'Could not get groupByName');
-
+        self::assertSame($groupB, $groupCollection->getByName('color'), 'Could not get groupByName');
+        self::assertNull($groupCollection->getByName('unexisting'), 'Could not get groupByName');
     }
 
     /**
@@ -69,7 +69,7 @@ class GroupCollectionTest extends UnitTest
         $groupCollection[] = $groupB;
         $groupCollection[] = $groupC;
 
-        $this->assertSame(['type','color','price'], $groupCollection->getGroupNames(), 'Could not get groupNames');
+        self::assertSame(['type', 'color', 'price'], $groupCollection->getGroupNames(), 'Could not get groupNames');
     }
 
     /**
@@ -81,8 +81,7 @@ class GroupCollectionTest extends UnitTest
         $groupCollection = new GroupCollection();
         $groupCollection[] = $groupA;
 
-        $this->assertTrue($groupCollection->getHasWithName('price'), 'Item that should be in GroupCollection does not occure in GroupCollection');
-        $this->assertFalse($groupCollection->getHasWithName('nonexisting'), 'Unexisting GroupCollection item was indicated to exist in the collection');
+        self::assertTrue($groupCollection->getHasWithName('price'), 'Item that should be in GroupCollection does not occure in GroupCollection');
+        self::assertFalse($groupCollection->getHasWithName('nonexisting'), 'Unexisting GroupCollection item was indicated to exist in the collection');
     }
-
 }

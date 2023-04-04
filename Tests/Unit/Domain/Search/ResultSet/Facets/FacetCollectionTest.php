@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Test\Domain\Search\ResultSet\Facets;
 
 /*
@@ -14,10 +15,10 @@ namespace ApacheSolrForTypo3\Solr\Test\Domain\Search\ResultSet\Facets;
  * The TYPO3 project - inspiring people to share!
  */
 
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\FacetCollection;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\OptionsFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
+use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 
 /**
  * Class FacetCollectionTest
@@ -40,8 +41,8 @@ class FacetCollectionTest extends UnitTest
         $facetCollection->addFacet($colorFacet);
         $facetCollection->addFacet($brandFacet);
 
-        $this->assertEquals($colorFacet, $facetCollection['color']);
-        $this->assertEquals($brandFacet, $facetCollection['brand']);
+        self::assertEquals($colorFacet, $facetCollection['color']);
+        self::assertEquals($brandFacet, $facetCollection['brand']);
     }
 
     /**
@@ -57,8 +58,8 @@ class FacetCollectionTest extends UnitTest
         $facetCollection->addFacet($colorFacet);
         $facetCollection->addFacet($brandFacet);
 
-        $this->assertEquals($colorFacet, $facetCollection->getByPosition(0));
-        $this->assertEquals($brandFacet, $facetCollection->getByPosition(1));
+        self::assertEquals($colorFacet, $facetCollection->getByPosition(0));
+        self::assertEquals($brandFacet, $facetCollection->getByPosition(1));
     }
 
     /**
@@ -75,8 +76,8 @@ class FacetCollectionTest extends UnitTest
         $facetCollection->addFacet($brandFacet);
 
         $leftFacetCollection = $facetCollection->getByGroupName('left');
-        $this->assertEquals(1, $leftFacetCollection->count());
-        $this->assertEquals($brandFacet, $leftFacetCollection['brand']);
+        self::assertEquals(1, $leftFacetCollection->count());
+        self::assertEquals($brandFacet, $leftFacetCollection['brand']);
     }
 
     /**
@@ -93,7 +94,7 @@ class FacetCollectionTest extends UnitTest
         $facetCollection->addFacet($brandFacet);
 
         $leftFacetCollection = $facetCollection->getByGroupName('left');
-        $this->assertEquals(1, $leftFacetCollection->count());
-        $this->assertEquals($brandFacet, $leftFacetCollection->getByPosition(0));
+        self::assertEquals(1, $leftFacetCollection->count());
+        self::assertEquals($brandFacet, $leftFacetCollection->getByPosition(0));
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options;
 
 /*
@@ -17,7 +18,6 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Opt
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetParser;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 
 /**
@@ -92,7 +92,7 @@ class OptionsFacetParser extends AbstractFacetParser
         $this->applyManualSortOrder($facet, $facetConfiguration);
         $this->applyReverseOrder($facet, $facetConfiguration);
 
-        if(!is_null($this->dispatcher)) {
+        if (!is_null($this->dispatcher)) {
             $this->dispatcher->dispatch(__CLASS__, 'optionsParsed', [&$facet, $facetConfiguration]);
         }
 

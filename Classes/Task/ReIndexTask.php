@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Task;
 
 /***************************************************************
@@ -58,12 +59,12 @@ class ReIndexTask extends AbstractSolrTask
         $cleanUpResult = $this->cleanUpIndex();
 
         // initialize for re-indexing
-            /** @var Queue $indexQueue */
+        /** @var Queue $indexQueue */
         $indexQueue = GeneralUtility::makeInstance(Queue::class);
         $indexQueueInitializationResults = $indexQueue->getInitializationService()
             ->initializeBySiteAndIndexConfigurations($this->getSite(), $this->indexingConfigurationsToReIndex);
 
-        return ($cleanUpResult && !in_array(false, $indexQueueInitializationResults));
+        return $cleanUpResult && !in_array(false, $indexQueueInitializationResults);
     }
 
     /**
@@ -89,7 +90,7 @@ class ReIndexTask extends AbstractSolrTask
             $solrServer->getWriteService()->deleteByQuery($deleteQuery);
 
             if (!$enableCommitsSetting) {
-                # Do not commit
+                // Do not commit
                 continue;
             }
 
@@ -140,8 +141,10 @@ class ReIndexTask extends AbstractSolrTask
 
         $information = 'Site: ' . $this->getSite()->getLabel();
         if (!empty($this->indexingConfigurationsToReIndex)) {
-            $information .= ', Indexing Configurations: ' . implode(', ',
-                    $this->indexingConfigurationsToReIndex);
+            $information .= ', Indexing Configurations: ' . implode(
+                ', ',
+                $this->indexingConfigurationsToReIndex
+            );
         }
 
         return $information;

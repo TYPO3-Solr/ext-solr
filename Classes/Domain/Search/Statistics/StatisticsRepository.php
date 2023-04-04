@@ -1,4 +1,6 @@
-<?php declare(strict_types = 1);
+<?php
+
+declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\Domain\Search\Statistics;
 
 /***************************************************************
@@ -66,7 +68,7 @@ class StatisticsRepository extends AbstractRepository
      * @param int $limit
      * @return QueryBuilder
      */
-    protected function getPreparedQueryBuilderForSearchStatisticsAndTopKeywords(int $rootPageId, int $timeStart, int $limit) : QueryBuilder
+    protected function getPreparedQueryBuilderForSearchStatisticsAndTopKeywords(int $rootPageId, int $timeStart, int $limit): QueryBuilder
     {
         $countRows = $this->countByRootPageId($rootPageId);
         $queryBuilder = $this->getQueryBuilder();
@@ -97,7 +99,7 @@ class StatisticsRepository extends AbstractRepository
      * @param int $limit
      * @return array
      */
-    public function getTopKeyWordsWithHits(int $rootPageId, int $days = 30, int $limit = 10) : array
+    public function getTopKeyWordsWithHits(int $rootPageId, int $days = 30, int $limit = 10): array
     {
         return $this->getTopKeyWordsWithOrWithoutHits($rootPageId, $days, $limit, false);
     }
@@ -110,7 +112,7 @@ class StatisticsRepository extends AbstractRepository
      * @param int $limit
      * @return array
      */
-    public function getTopKeyWordsWithoutHits(int $rootPageId, int $days = 30, int $limit = 10) : array
+    public function getTopKeyWordsWithoutHits(int $rootPageId, int $days = 30, int $limit = 10): array
     {
         return $this->getTopKeyWordsWithOrWithoutHits($rootPageId, $days, $limit, true);
     }
@@ -124,7 +126,7 @@ class StatisticsRepository extends AbstractRepository
      * @param bool $withoutHits
      * @return array
      */
-    protected function getTopKeyWordsWithOrWithoutHits(int $rootPageId, int $days = 30, int $limit = 10, bool $withoutHits = false) : array
+    protected function getTopKeyWordsWithOrWithoutHits(int $rootPageId, int $days = 30, int $limit = 10, bool $withoutHits = false): array
     {
         $now = time();
         $timeStart = $now - 86400 * $days; // 86400 seconds/day
@@ -148,10 +150,10 @@ class StatisticsRepository extends AbstractRepository
      * @param int $bucketSeconds Seconds per bucket
      * @return array [labels, data]
      */
-    public function getQueriesOverTime(int $rootPageId, int $days = 30, int $bucketSeconds = 3600) : array
+    public function getQueriesOverTime(int $rootPageId, int $days = 30, int $bucketSeconds = 3600): array
     {
         $now = time();
-        $timeStart = $now - 86400 * intval($days); // 86400 seconds/day
+        $timeStart = $now - 86400 * (int)$days; // 86400 seconds/day
 
         $queryBuilder = $this->getQueryBuilder();
         $result = $queryBuilder
@@ -178,7 +180,7 @@ class StatisticsRepository extends AbstractRepository
      * @param array $frequentSearchConfiguration
      * @return array Array of frequent search terms, keys are the terms, values are hits
      */
-    public function getFrequentSearchTermsFromStatisticsByFrequentSearchConfiguration(array $frequentSearchConfiguration) : array
+    public function getFrequentSearchTermsFromStatisticsByFrequentSearchConfiguration(array $frequentSearchConfiguration): array
     {
         $queryBuilder = $this->getQueryBuilder();
         $resultSet = $queryBuilder
@@ -199,7 +201,6 @@ class StatisticsRepository extends AbstractRepository
      * Persists statistics record
      *
      * @param array $statisticsRecord
-     * @return void
      */
     public function saveStatisticsRecord(array $statisticsRecord)
     {

@@ -27,11 +27,11 @@ namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\GarbageRemover;
 
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 
-
 /**
  * Class PageStrategy
  */
-class PageStrategy extends AbstractStrategy {
+class PageStrategy extends AbstractStrategy
+{
 
     /**
      * @param string $table
@@ -71,7 +71,7 @@ class PageStrategy extends AbstractStrategy {
     protected function collectPageGarbageByPageChange($uid)
     {
         $pageOverlay = BackendUtility::getRecord('pages', $uid, 'l10n_parent, sys_language_uid', '', false);
-        if (!empty($pageOverlay['l10n_parent']) && intval($pageOverlay['l10n_parent']) !== 0) {
+        if (!empty($pageOverlay['l10n_parent']) && (int)($pageOverlay['l10n_parent']) !== 0) {
             $this->deleteIndexDocuments('pages', (int)$pageOverlay['l10n_parent'], (int)$pageOverlay['sys_language_uid']);
         } else {
             $this->deleteInSolrAndRemoveFromIndexQueue('pages', $uid);

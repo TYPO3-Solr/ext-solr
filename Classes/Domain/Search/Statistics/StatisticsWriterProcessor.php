@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Domain\Search\Statistics;
 
 /***************************************************************
@@ -27,8 +28,8 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Statistics;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSetProcessor;
-use ApacheSolrForTypo3\Solr\HtmlContentExtractor;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
+use ApacheSolrForTypo3\Solr\HtmlContentExtractor;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\IpAnonymizationUtility;
@@ -67,7 +68,8 @@ class StatisticsWriterProcessor implements SearchResultSetProcessor
      * @param SearchResultSet $resultSet
      * @return SearchResultSet
      */
-    public function process(SearchResultSet $resultSet) {
+    public function process(SearchResultSet $resultSet)
+    {
         $searchRequest = $resultSet->getUsedSearchRequest();
         $response = $resultSet->getResponse();
         $configuration = $searchRequest->getContextTypoScriptConfiguration();
@@ -106,7 +108,7 @@ class StatisticsWriterProcessor implements SearchResultSetProcessor
             'keywords' => $keywords,
             'filters' => serialize($filters),
             'sorting' => $sorting,
-            'parameters' => serialize($response->responseHeader->params)
+            'parameters' => serialize($response->responseHeader->params),
         ];
 
         $this->statisticsRepository->saveStatisticsRecord($statisticData);
@@ -116,7 +118,7 @@ class StatisticsWriterProcessor implements SearchResultSetProcessor
 
     /**
      * @param Query $query
-     * @param boolean $lowerCaseQuery
+     * @param bool $lowerCaseQuery
      * @return string
      */
     protected function getProcessedKeywords(Query $query, $lowerCaseQuery = false)

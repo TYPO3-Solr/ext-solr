@@ -25,7 +25,6 @@ namespace ApacheSolrForTypo3\Solr\System\Util;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\SiteFinder;
@@ -44,11 +43,10 @@ class SiteUtility
      * Determines if the site where the page belongs to is managed with the TYPO3 site management.
      *
      * @param int $pageId
-     * @return boolean
+     * @return bool
      */
     public static function getIsSiteManagedSite(int $pageId): bool
     {
-
         $siteFinder = GeneralUtility::makeInstance(SiteFinder::class);
         try {
             /* @var SiteFinder $siteFinder */
@@ -185,7 +183,8 @@ class SiteUtility
     {
         if ($value === 'true') {
             return true;
-        } elseif ($value === 'false') {
+        }
+        if ($value === 'false') {
             return false;
         }
 

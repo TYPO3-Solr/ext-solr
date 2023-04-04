@@ -1,4 +1,6 @@
-<?php declare(strict_types = 1);
+<?php
+
+declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\Domain\Index\PageIndexer\Helper\UriBuilder;
 
@@ -45,7 +47,7 @@ class TYPO3SiteStrategy extends AbstractUriStrategy
     /**
      * @var SiteFinder
      */
-    protected $siteFinder = null;
+    protected $siteFinder;
 
     /**
      * TYPO3SiteStrategy constructor.
@@ -66,14 +68,14 @@ class TYPO3SiteStrategy extends AbstractUriStrategy
      * @throws SiteNotFoundException
      * @throws InvalidRouteArgumentsException
      */
-    protected function buildPageIndexingUriFromPageItemAndLanguageId(Item $item, int $language = 0,  string $mountPointParameter = '')
+    protected function buildPageIndexingUriFromPageItemAndLanguageId(Item $item, int $language = 0, string $mountPointParameter = '')
     {
         $site = $this->siteFinder->getSiteByPageId((int)$item->getRecordUid());
         $parameters = [];
 
         if ($language > 0) {
             $parameters['_language'] = $language;
-        };
+        }
 
         if ($mountPointParameter !== '') {
             $parameters['MP'] = $mountPointParameter;

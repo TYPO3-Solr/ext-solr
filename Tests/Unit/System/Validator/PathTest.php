@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\Validator;
 
 /***************************************************************
@@ -43,7 +44,7 @@ class PathTest extends UnitTest
         $path = GeneralUtility::makeInstance(Path::class);
         $isValidPath = $path->isValidSolrPath('/sorl/core_da');
 
-        $this->assertTrue($isValidPath);
+        self::assertTrue($isValidPath);
     }
 
     /**
@@ -54,7 +55,7 @@ class PathTest extends UnitTest
         $path = GeneralUtility::makeInstance(Path::class);
         $isValidPath = $path->isValidSolrPath('');
 
-        $this->assertFalse($isValidPath);
+        self::assertFalse($isValidPath);
     }
 
     /**
@@ -65,7 +66,7 @@ class PathTest extends UnitTest
         $path = GeneralUtility::makeInstance(Path::class);
         $isValidPath = $path->isValidSolrPath('/sorl/#/core_da');
 
-        $this->assertFalse($isValidPath);
+        self::assertFalse($isValidPath);
     }
 
     /**
@@ -76,7 +77,6 @@ class PathTest extends UnitTest
         $path = GeneralUtility::makeInstance(Path::class);
         $isValidPath = $path->isValidSolrPath('/sorl/core_da?bogus');
 
-        $this->assertFalse($isValidPath);
+        self::assertFalse($isValidPath);
     }
-
 }

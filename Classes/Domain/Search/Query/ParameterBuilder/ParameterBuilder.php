@@ -33,8 +33,8 @@ use ApacheSolrForTypo3\Solr\Domain\Search\Query\AbstractQueryBuilder;
  *
  * Interface ParameterProvider
  */
-interface ParameterBuilder {
-
+interface ParameterBuilder
+{
 
     /**
      * @param AbstractQueryBuilder $parentBuilder

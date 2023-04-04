@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\System\Records\Pages;
 
 /***************************************************************
@@ -78,7 +79,6 @@ class PagesRepository extends AbstractRepository
                 $queryBuilder->expr()->eq('is_siteroot', 1)
             );
 
-
         $this->addDefaultLanguageUidConstraint($queryBuilder);
 
         return $queryBuilder->execute()->fetchAll();
@@ -91,7 +91,7 @@ class PagesRepository extends AbstractRepository
      * @param array $rootLineParentPageIds
      * @return array
      */
-    public function findMountPointPropertiesByPageIdOrByRootLineParentPageIds(int $mountedPageUid, array $rootLineParentPageIds = []) : array
+    public function findMountPointPropertiesByPageIdOrByRootLineParentPageIds(int $mountedPageUid, array $rootLineParentPageIds = []): array
     {
         if (array_filter($rootLineParentPageIds, 'is_int') !== $rootLineParentPageIds) {
             throw new \InvalidArgumentException('Given $rootLineParentPageIds array is not valid. Allowed only the arrays with the root line page UIDs as integers.', 1502459711);
@@ -113,7 +113,7 @@ class PagesRepository extends AbstractRepository
      * @param array $rootLineParentPageIds
      * @return QueryBuilder
      */
-    protected function addWhereClauseForMountpointDestinationProperties(QueryBuilder $queryBuilder, $mountedPageUid, array $rootLineParentPageIds) : QueryBuilder
+    protected function addWhereClauseForMountpointDestinationProperties(QueryBuilder $queryBuilder, $mountedPageUid, array $rootLineParentPageIds): QueryBuilder
     {
         if (empty($rootLineParentPageIds)) {
             $queryBuilder->andWhere(
@@ -154,8 +154,7 @@ class PagesRepository extends AbstractRepository
     public function findAllSubPageIdsByRootPage(
         int $rootPageId,
         string $initialPagesAdditionalWhereClause = ''
-    ) : array {
-
+    ): array {
         $cacheIdentifier = sha1('getPages' . (string)$rootPageId . $initialPagesAdditionalWhereClause);
         if ($this->transientVariableCache->get($cacheIdentifier) !== false) {
             return $this->transientVariableCache->get($cacheIdentifier);
@@ -186,7 +185,6 @@ class PagesRepository extends AbstractRepository
         array $pageIds,
         string $initialPagesAdditionalWhereClause
     ): array {
-
         $queryBuilder = $this->getQueryBuilder();
         $queryBuilder->getRestrictions()->removeAll()->add(GeneralUtility::makeInstance(DeletedRestriction::class));
 
@@ -215,8 +213,7 @@ class PagesRepository extends AbstractRepository
         int $rootPageId,
         int $maxDepth = 999,
         string $initialPagesAdditionalWhereClause = ''
-    ): array
-    {
+    ): array {
         $wholePagetree = $this->findAllSubPageIdsByRootPage($rootPageId, $initialPagesAdditionalWhereClause);
 
         $queryBuilder = $this->getQueryBuilder();
@@ -247,7 +244,7 @@ class PagesRepository extends AbstractRepository
      * @param int $pageId
      * @return array
      */
-    public function findTranslationOverlaysByPageId(int $pageId) : array
+    public function findTranslationOverlaysByPageId(int $pageId): array
     {
         $queryBuilder = $this->getQueryBuilder();
         $queryBuilder->getRestrictions()->removeAll();
@@ -256,11 +253,11 @@ class PagesRepository extends AbstractRepository
         return $queryBuilder
             ->select('pid', 'l10n_parent', 'sys_language_uid')
             ->from('pages')
-            ->add('where',
+            ->add(
+                'where',
                 $queryBuilder->expr()->eq('l10n_parent', $queryBuilder->createNamedParameter($pageId, \PDO::PARAM_INT))
                 . BackendUtility::BEenableFields('pages')
             )->execute()->fetchAll();
-
     }
 
     /**
@@ -269,7 +266,7 @@ class PagesRepository extends AbstractRepository
      * @param int $pageId UID of the page currently being updated
      * @return array with page Uids from pages, which are showing contents from given Page Id
      */
-    public function findPageUidsWithContentsFromPid(int $pageId) : array
+    public function findPageUidsWithContentsFromPid(int $pageId): array
     {
         $queryBuilder = $this->getQueryBuilder();
         $queryBuilder->getRestrictions()->removeAll();
@@ -278,7 +275,8 @@ class PagesRepository extends AbstractRepository
         $queryBuilder
             ->select('uid')
             ->from($this->table)
-            ->add('where',
+            ->add(
+                'where',
                 $queryBuilder->expr()->eq('content_from_pid', $queryBuilder->createNamedParameter($pageId, \PDO::PARAM_INT))
             );
 
@@ -293,7 +291,7 @@ class PagesRepository extends AbstractRepository
      * @param string $whereClause
      * @return array
      */
-    public function findAllMountPagesByWhereClause(string $whereClause) : array
+    public function findAllMountPagesByWhereClause(string $whereClause): array
     {
         $queryBuilder = $this->getQueryBuilder();
         $queryBuilder->getRestrictions()->removeAll();
@@ -302,7 +300,8 @@ class PagesRepository extends AbstractRepository
                 'uid',
                 'mount_pid AS mountPageSource',
                 'uid AS mountPageDestination',
-                'mount_pid_ol AS mountPageOverlayed')
+                'mount_pid_ol AS mountPageOverlayed'
+            )
             ->from($this->table)
             ->add('where', $whereClause);
 
