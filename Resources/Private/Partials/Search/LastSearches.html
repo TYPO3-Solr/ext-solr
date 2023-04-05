@@ -20,7 +20,7 @@
 			<ul class="list-group collapse show" id="lastSearches">
 				<f:for each="{lastSearches}" as="searchedFor">
 					<li class="list-group-item">
-						<a href="{s:uri.search.startNewSearch(queryString: searchedFor)}" class="solr-ajaxified">{searchedFor}</a>
+						<a href="{s:uri.search.startNewSearch(queryString: searchedFor)}" class="solr-ajaxified"><f:format.htmlentities>{searchedFor}</f:format.htmlentities></a>
 					</li>
 				</f:for>
 			</ul>
