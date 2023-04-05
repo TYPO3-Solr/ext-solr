@@ -19,7 +19,7 @@
 			<ul class="list-group list-group-flush collapse show" id="frequendSearches">
 				<f:for each="{frequentSearches}" as="searchedForInfo">
 					<li class="list-group-item {searchedForInfo.class}">
-						<a href="{s:uri.search.startNewSearch(queryString: searchedForInfo.q)}" class="solr-ajaxified">{searchedForInfo.q}</a>
+						<a href="{s:uri.search.startNewSearch(queryString: searchedForInfo.q)}" class="solr-ajaxified"><f:format.htmlentities>{searchedForInfo.q}</f:format.htmlentities></a>
 					</li>
 				</f:for>
 			</ul>
