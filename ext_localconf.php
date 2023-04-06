@@ -1,10 +1,25 @@
 <?php
 
+use ApacheSolrForTypo3\Solr\GarbageCollector;
+use ApacheSolrForTypo3\Solr\IndexQueue\RecordMonitor;
+
 defined('TYPO3') or die('Access denied.');
 
 // ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
 (static function () {
+
+    // ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
+    // Registering RecordMonitor and GarbageCollector hooks.
+
+    // hooking into TCE Main to monitor record updates that may require deleting documents from the index
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass'][] = GarbageCollector::class;
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = GarbageCollector::class;
+
+    // hooking into TCE Main to monitor record updates that may require reindexing by the index queue
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass'][] = RecordMonitor::class;
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = RecordMonitor::class;
+
     // ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
     // registering Index Queue page indexer helpers
     $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageSubstitutePageDocument'][\ApacheSolrForTypo3\Solr\AdditionalFieldsIndexer::class] = \ApacheSolrForTypo3\Solr\AdditionalFieldsIndexer::class;
