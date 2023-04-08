@@ -24,7 +24,6 @@ use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
 use ApacheSolrForTypo3\Solr\System\Page\Rootline;
 use ApacheSolrForTypo3\Solr\System\Util\SiteUtility;
-use InvalidArgumentException;
 use RuntimeException;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\SingletonInterface;

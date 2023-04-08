@@ -20,9 +20,8 @@ use ApacheSolrForTypo3\Solr\Domain\Site\Exception\UnexpectedTYPO3SiteInitializat
 use ApacheSolrForTypo3\Solr\GarbageCollectorPostProcessor;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
-use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
-use InvalidArgumentException;
 use Doctrine\DBAL\Exception as DBALException;
+use InvalidArgumentException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use UnexpectedValueException;
 

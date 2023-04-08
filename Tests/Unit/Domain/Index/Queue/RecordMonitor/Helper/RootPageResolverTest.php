@@ -20,7 +20,6 @@ use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\Configuratio
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\RootPageResolver;
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
-use InvalidArgumentException;
 use PHPUnit\Framework\MockObject\MockObject;
 
 /**
