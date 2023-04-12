@@ -201,15 +201,20 @@ class Queue
             return 0;
         }
 
+        /* @var SiteRepository $siteRepository */
+        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         foreach ($rootPageIds as $rootPageId) {
             $skipInvalidRootPage = $rootPageId === 0;
             if ($skipInvalidRootPage) {
                 continue;
             }
 
-            /* @var SiteRepository $siteRepository */
-            $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
-            $solrConfiguration = $siteRepository->getSiteByRootPageId($rootPageId)->getSolrConfiguration();
+            $site = $siteRepository->getSiteByRootPageId($rootPageId);
+            if ($site === null) {
+                continue;
+            }
+
+            $solrConfiguration = $site->getSolrConfiguration();
             $indexingConfiguration = $this->recordService->getIndexingConfigurationName($itemType, $itemUid, $solrConfiguration);
             if ($indexingConfiguration === null) {
                 continue;
