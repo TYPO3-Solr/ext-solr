@@ -219,7 +219,6 @@ Beside the major changes we did several small improvements and bugfixes:
 * [BUGFIX] Prevent SiteNotFoundException in reports module .. __: https://github.com/TYPO3-Solr/ext-solr/issues/2624
 * [FEATURE] Change FileWriter configuration to use logFileInfix .. __: https://github.com/TYPO3-Solr/ext-solr/issues/2626
 * [BUGFIX] Ensure to hand in PSR-7 Request to TSFE->getPageAndRootlineWithDomain .. __: https://github.com/TYPO3-Solr/ext-solr/issues/2640
-* ... See older commits, which are a part of prevous releases: https://github.com/TYPO3-Solr/ext-solr/commits/main?after=ec72de7f14c16ee985ab26b5b6791518e348de96+139&branch=main
 
 
 Contributors
