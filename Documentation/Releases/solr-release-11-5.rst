@@ -3,14 +3,49 @@
 
 .. _releases-11-5:
 
+==========================
+Apache Solr for TYPO3 11.5
+==========================
+
+Apache Solr for TYPO3 11.5.2
 ============================
+
+This is a maintenance release for TYPO3 11.5, containing:
+
+- [BUGFIX:BP:11.5] Fix error when indexing pages with field processing instruction categoryUidToHierarchy by @dkd-kaehm in `#3462 <https://github.com/TYPO3-Solr/ext-solr/pull/3462>`__
+- [BUGFIX:BP:11.5] Custom doktype is deleted from solr after saving with custom queue configuration by @dkd-friedrich in `#3468 <https://github.com/TYPO3-Solr/ext-solr/pull/3468>`__
+- [BUGFIX:BP:11.5] Don't use minimum-stability dev on TYPO3 stable in build/CI by @dkd-kaehm in `#3464 <https://github.com/TYPO3-Solr/ext-solr/pull/3464>`__
+- [BUGFIX:BP:11.5] Fix value resolution in SOLR_RELATION by @dkd-friedrich in `#3484 <https://github.com/TYPO3-Solr/ext-solr/pull/3484>`__
+- [FEATURE:P:11.5] Add new option manualSortOrderDelimiter for facets by @dkd-kaehm in `#3494 <https://github.com/TYPO3-Solr/ext-solr/pull/3494>`__
+- [BUGFIX:P:11.5] Casting after check by @dkd-kaehm in `#3495 <https://github.com/TYPO3-Solr/ext-solr/pull/3495>`__
+- [TASK] Docker version check on docker image build by @dkd-kaehm in `#3525 <https://github.com/TYPO3-Solr/ext-solr/pull/3525>`__
+- [BUGFIX:P:11.5] Use ConfigurationManager to get typscript in plugin FlexForm by @dkd-kaehm in `#3496 <https://github.com/TYPO3-Solr/ext-solr/pull/3496>`__
+- [BUGFIX:P:11.5] Exception on search plugin if no Solr connection is configured by @dkd-kaehm in `#3498 <https://github.com/TYPO3-Solr/ext-solr/pull/3498>`__
+- [BUGFIX:BP:11.5] Fix handling of non existing pages on deletions by @dkd-friedrich in `#3520 <https://github.com/TYPO3-Solr/ext-solr/pull/3520>`__
+- [TASK:BP:11] Verify the record before accessing the pid by @3l73 in `#3537 <https://github.com/TYPO3-Solr/ext-solr/pull/3537>`__
+- [TASK:BP:11.5] Handle Solr connection exception by @dkd-friedrich in `#3542 <https://github.com/TYPO3-Solr/ext-solr/pull/3542>`__
+- [BUGFIX:BP:11.5] Fix Solr response handling during indexing by @dkd-friedrich in `#3544 <https://github.com/TYPO3-Solr/ext-solr/pull/3544>`__
+- [BUGFIX:BP:11.5] Use plugin namespace as label for flexforms by @dkd-friedrich in `#3552 <https://github.com/TYPO3-Solr/ext-solr/pull/3552>`__
+- [BUGFIX:BP:11.5] Respect indexingPriority in QueueItemRepository by @dkd-friedrich in `#3556 <https://github.com/TYPO3-Solr/ext-solr/pull/3556>`__
+- [BUGFIX:BP:11.5] add empty string as fallback by @dkd-friedrich in `#3559 <https://github.com/TYPO3-Solr/ext-solr/pull/3559>`__
+- [BUGFIX:BP:11.5] use siteLanguage TypoScript object to get language id by @dkd-friedrich in `#3554 <https://github.com/TYPO3-Solr/ext-solr/pull/3554>`__
+- [BUGFIX:BP:11.5] Sanitize frequent and last searches output by @dkd-friedrich in `#3591 <https://github.com/TYPO3-Solr/ext-solr/pull/3591>`__
+- [BUGFIX:BP:11.5] changed from always picking the 0 array value to pic… by @dkd-friedrich in `#3593 <https://github.com/TYPO3-Solr/ext-solr/pull/3593>`__
+- [BUGFIX:BP:11.5] Avoid getSolrConfiguration() on null by @dkd-friedrich in `#3599 <https://github.com/TYPO3-Solr/ext-solr/pull/3599>`__
+- [TASK:BP:11.5] Disable sql handler by @dkd-friedrich in `#3603 <https://github.com/TYPO3-Solr/ext-solr/pull/3603>`__
+- [BUGFIX:BP:11.5] Avoid PHP 8 warning when page indexing fails by @dkd-friedrich in `#3609 <https://github.com/TYPO3-Solr/ext-solr/pull/3609>`__
+- [BUGFIX:BP:11.5] Ensure record exists before asserting if draft by @dkd-friedrich in `#3610 <https://github.com/TYPO3-Solr/ext-solr/pull/3610>`__
+- [BUGFIX:BP:11.5] Fix usage of null coalescing operator by @dkd-friedrich in `#3611 <https://github.com/TYPO3-Solr/ext-solr/pull/3611>`__
+- [BUGFIX:BP:11.5] return empty string for renderStatic if there is no content … by @dkd-friedrich in `#3612 <https://github.com/TYPO3-Solr/ext-solr/pull/3612>`__
+
+
 Apache Solr for TYPO3 11.5.1
 ============================
 
-We are happy to publish EXT:solr 11.5.1 maintenance release.
+We are happy to publish EXT:solr 11.5.1 maintenance release
 
 New in this release
-===================
+-------------------
 
 - [BUGFIX] Do not include removed strptime() by @dkd-kaehm in https://github.com/TYPO3-Solr/ext-solr/pull/3335
 - [BUGFIX:BP:11.5] Do not handle page updates on new page with uid 0 by @rr-it in https://github.com/TYPO3-Solr/ext-solr/pull/3344
@@ -48,10 +83,10 @@ The focus of this release has been on TYPO3 11 LTS compatibility.
 **Important**: This version is installable with TYPO3 11 LTS on v11.5.14+ only and contains some breaking changes, see details below.
 
 New in this release
-===================
+-------------------
 
 Support of TYPO3 11 LTS
------------------------
+~~~~~~~~~~~~~~~~~~~~~~~
 
 With EXT:solr 11.5 we provide the support of TYPO3 11 LTS.
 
@@ -59,7 +94,7 @@ Please note that we require at least TYPO3 11.5.14, as this version contains som
 
 
 Bootstrap 5.1
--------------
+~~~~~~~~~~~~~
 
 The default templates provided by EXT:solr were adapted for Bootstrap 5.1.
 
@@ -67,7 +102,7 @@ The templates are also prepared to display some icons with Bootstrap Icons, but 
 
 
 Custom field processors
------------------------
+~~~~~~~~~~~~~~~~~~~~~~~
 
 fieldProcessingInstructions can be used for processing values during indexing, e.g. timestampToIsoDate or uppercase. Now you can register and use your own field processors via:
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['fieldProcessor']['yourFieldProcessor'] = ACustomFieldProcessor::class;
@@ -75,7 +110,7 @@ $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['fieldProcessor']['yourFieldProce
 Custom processors have to implement interface ApacheSolrForTypo3\Solr\FieldProcessor\FieldProcessor.
 
 N-Gram Filter for strings
--------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Provides a new field type and dynamic fields for strings
 with enabled Edge-N-Gram filter.
@@ -85,7 +120,7 @@ Now the following fields can be used:
 - *_stringEdgeNgramM
 
 Improve and Fix TSFE Initialization
------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The initialization of TSFE within indexing and Backends modules contexts is refactored.
 
@@ -103,7 +138,7 @@ Note: Since TYPO3 11 LTS does not allow to instantiate TSFE for sys folders and 
       the initialization of TSFE will be done for first and closest page(not spacer or folder) within the site rootline.
 
 Get "free content mode" working
--------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 In previous releases of EXT:solr the language handling for "free-content-mode" inconsistent.
 The behavior of "free-content-mode" related records varied in RecordMonitor, Initializing and Indexing contexts,
@@ -113,13 +148,13 @@ This change brings the RecordMonitor, Initializing and Indexing contexts for "fr
 into the same line, so the "free-content-mode" records are processed the same way.
 
 Make pageRangeFirst and pageRangeLast accessible in fluid
----------------------------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 With these two additional getters it is possible to access the variables
 in fluid templates. See: `#3254 <https://github.com/TYPO3-Solr/ext-solr/issues/3254>`_
 
 Add custom field processors
----------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Custom field processors can be registered with
 
@@ -127,12 +162,12 @@ Custom field processors can be registered with
    $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['fieldProcessor']['yourFieldProcessor'] = ACustomFieldProcessor::class;
 
 And many more
--------------
+~~~~~~~~~~~~~
 
 Please see the list of changes below or `the full changelog: <https://github.com/TYPO3-Solr/ext-solr/compare/c0a3e62053e1c929c914d25ced1fef3d9868d4f9...11.5.0>`_.
 
 The list of all changes:
-========================
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 - [TASK] Prepare schemas for EXT:solr 11.5.x `c0a3e6205 <https://github.com/TYPO3-Solr/ext-solr/commit/c0a3e6205>`_
 - [TASK] Provide N-Gram Filter for strings `13b90a996 <https://github.com/TYPO3-Solr/ext-solr/commit/13b90a996>`_
@@ -258,7 +293,7 @@ The list of all changes:
 - [BUGFIX] change detection of free mode records `eb87e83ba <https://github.com/TYPO3-Solr/ext-solr/commit/eb87e83ba>`_
 - [BUGFIX] Avoid yoda-style conditions in PHP `48e52dbd0 <https://github.com/TYPO3-Solr/ext-solr/commit/48e52dbd0>`_
 - [TASK] Sync with new TYPO3 coding standards `b15838961 <https://github.com/TYPO3-Solr/ext-solr/commit/b15838961>`_
--  [TASK] Sync with EXT:solrfluidgrouping for TYPO3 11.5 `1ef155471 <https://github.com/TYPO3-Solr/ext-solr/commit/1ef155471>`_
+- [TASK] Sync with EXT:solrfluidgrouping for TYPO3 11.5 `1ef155471 <https://github.com/TYPO3-Solr/ext-solr/commit/1ef155471>`_
 - Update GarbageCollector.php `eab5887f1 <https://github.com/TYPO3-Solr/ext-solr/commit/eab5887f1>`_
 - [BUGFIX] AbstractSolrTask::setRootPageId(): Argument #1 () must be of type int, string given `506b540e4 <https://github.com/TYPO3-Solr/ext-solr/commit/506b540e4>`_
 - Silence DebugWriter for PageIndexerRequest `56203dfa0 <https://github.com/TYPO3-Solr/ext-solr/commit/56203dfa0>`_
