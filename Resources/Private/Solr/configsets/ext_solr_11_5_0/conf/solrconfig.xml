@@ -363,6 +363,7 @@
 		</arr>
 	</requestHandler>
 
+	<requestHandler name="/sql" class="solr.NotFoundRequestHandler"/>
 
 	<searchComponent
 		name="clusteringComponent"
