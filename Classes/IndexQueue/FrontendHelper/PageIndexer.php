@@ -292,6 +292,7 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
                 $this->responseData['documentsSentToSolr'][] = (array)$document;
             }
         } catch (Throwable $e) {
+            $this->responseData['pageIndexed'] = false;
             if ($configuration->getLoggingExceptions()) {
                 $this->logger->log(
                     SolrLogManager::ERROR,
