@@ -99,9 +99,14 @@ class InfoModuleController extends AbstractModuleController
             return;
         }
 
+        $alreadyListedConnections = [];
         foreach ($connections as $connection) {
             $coreAdmin = $connection->getAdminService();
             $coreUrl = (string)$coreAdmin;
+            if (in_array($coreUrl, $alreadyListedConnections)) {
+                continue;
+            }
+            $alreadyListedConnections[] = $coreUrl;
 
             if ($coreAdmin->ping()) {
                 $connectedHosts[] = $coreUrl;
@@ -246,8 +251,17 @@ class InfoModuleController extends AbstractModuleController
     {
         $solrCoreConnections = $this->solrConnectionManager->getConnectionsBySite($this->selectedSite);
         $documentsByCoreAndType = [];
+        $alreadyListedCores = [];
         foreach ($solrCoreConnections as $languageId => $solrCoreConnection) {
             $coreAdmin = $solrCoreConnection->getAdminService();
+
+            // Do not list cores twice when multiple languages use the same core
+            $url = (string)$coreAdmin;
+            if (in_array($url, $alreadyListedCores)) {
+                continue;
+            }
+            $alreadyListedCores[] = $url;
+
             $documents = $this->apacheSolrDocumentRepository->findByPageIdAndByLanguageId($this->selectedPageUID, $languageId);
 
             $documentsByType = [];
