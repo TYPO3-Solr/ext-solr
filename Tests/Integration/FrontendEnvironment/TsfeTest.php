@@ -19,7 +19,7 @@ class TsfeTest extends IntegrationTest
         https://github.com/TYPO3-Solr/ext-solr/issues/2914
         https://github.com/TYPO3-Solr/ext-solr/pull/2915/files');
         $this->expectException(RuntimeException::class);
-        $this->importDataSetFromFixture('initialize_tsfe_with_no_default_page_and_page_error_handler_do_not_throw_an_error.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/initialize_tsfe_with_no_default_page_and_page_error_handler_do_not_throw_an_error.csv');
 
         $defaultLanguage = $this->buildDefaultLanguageConfiguration('EN', '/en/');
         $defaultLanguage['solr_core_read'] = 'core_en';

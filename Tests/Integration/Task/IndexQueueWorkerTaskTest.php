@@ -52,7 +52,7 @@ class IndexQueueWorkerTaskTest extends IntegrationTest
      */
     public function canGetAdditionalInformationFromTask()
     {
-        $this->importDataSetFromFixture('can_trigger_frontend_calls_for_page_index.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/can_trigger_frontend_calls_for_page_index.csv');
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $site = $siteRepository->getFirstAvailableSite();
         /* @var IndexQueueWorkerTask $indexQueueQueueWorkerTask */

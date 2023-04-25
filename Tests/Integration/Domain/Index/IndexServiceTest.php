@@ -100,7 +100,7 @@ class IndexServiceTest extends IntegrationTest
     {
         $this->cleanUpSolrServerAndAssertEmpty();
 
-        $this->importDataSetFromFixture('can_index_custom_record_withBasePrefix_' . $absRefPrefix . '.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/can_index_custom_record_withBasePrefix_' . $absRefPrefix . '.csv');
 
         $this->mergeSiteConfiguration('integration_tree_one', ['base' => '/' . $absRefPrefix . '/']);
 

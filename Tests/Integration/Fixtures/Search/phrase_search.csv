@@ -1,0 +1,64 @@
+"pages",,,,,,,
+,"uid","pid","is_siteroot","doktype","hidden","slug","title"
+,1,0,1,1,0,"/","World Hello Search Test"
+,2,1,0,1,0,"/improve","Hello you can improve the precision by using phrase configuration World"
+,3,1,0,1,0,"/hello-phrase-search-world","Hello phrase search World"
+,4,1,0,1,0,"/hello-test-wonderful-world","Hello Test wonderful World"
+,5,1,0,1,0,"/hello-wonderful-test-world","Hello wonderful Test World"
+,6,1,0,1,0,"/bigram-phrases","Bigraming phrases strip down the sentence to the two-word combinations."
+,7,1,0,1,0,"/trigram-phrases","Trigraming phrases strip down the sentence to triplets phrases"
+,8,1,0,1,0,"/difference-to-bi-is-tri","Difference to bi is tri, which means building of triplets phrases."
+,9,1,0,1,0,"/hello-solr-wolrd","Hello Solr Wolrd"
+,10,1,0,1,0,"/hello-test-wolrd","Hello Test Wolrd"
+,11,1,0,1,0,"/test-hello-solr-world","Test Hello Solr World"
+,12,1,0,1,0,"/test-hello-search-world","Test Hello Search World"
+,13,1,0,1,0,"/hello-the-test-search-world","Hello the Test Search World"
+,14,1,0,1,0,"/hello-world-for-phrase-searching","Hello World for phrase searching"
+,15,1,0,1,0,"/about","Solr is blazing-fast and open source enterprise search platform built on Apache Lucene"
+"sys_template",,,,,,,
+,"uid","pid","root","clear","sorting","constants","config",
+,1,1,1,3,100,"","
+page = PAGE
+page.typeNum = 0
+
+plugin.tx_solr {
+    search.query.phrase = 1
+    enabled = 1
+
+    index {
+        fieldProcessingInstructions {
+            changed = timestampToIsoDate
+            created = timestampToIsoDate
+            endtime = timestampToUtcIsoDate
+            rootline = pageUidToHierarchy
+        }
+
+        queue {
+
+            // mapping tableName.fields.SolrFieldName => TableFieldName (+ cObj processing)
+
+            pages = 1
+            pages {
+                initialization = ApacheSolrForTypo3\Solr\IndexQueue\Initializer\Page
+
+                // allowed page types (doktype) when indexing pages
+                allowedPageTypes = 1,7
+
+                indexingPriority = 0
+
+                indexer = ApacheSolrForTypo3\Solr\IndexQueue\PageIndexer
+                indexer {
+                    // add options for the indexer here
+                }
+
+                // Only index standard pages and mount points that are not overlayed.
+                additionalWhereClause = (doktype = 1 OR (doktype=7 AND mount_pid_ol=0)) AND no_search = 0
+
+                fields {
+                    sortSubTitle_stringS = subtitle
+                }
+            }
+
+        }
+    }
+}",

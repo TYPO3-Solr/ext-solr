@@ -1,0 +1,11 @@
+"pages",
+,"uid","pid","is_siteroot","doktype","slug","title"
+,1,0,1,1,"/","Rootpage"
+,2,1,0,1,"/subpage","Subpage with template"
+,3,2,0,1,"/subsubpage","Subsubpage with deleted template"
+,4,3,0,1,"/subsubsubpage","Subsubsubpage",
+"sys_template",
+,"uid","pid","root","clear","sorting","deleted","config"
+,1,1,1,3,100,0,""
+,2,2,0,3,100,0,""
+,3,3,0,3,100,1,""

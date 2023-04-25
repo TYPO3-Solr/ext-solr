@@ -538,11 +538,9 @@ abstract class IntegrationTest extends FunctionalTestCase
         if ($this->skipImportRootPagesAndTemplatesForConfiguredSites === true) {
             return;
         }
-        $rc = new ReflectionClass(self::class);
-        $path = dirname($rc->getFileName());
-        $this->importDataSet($path . '/Fixtures/sites_setup_and_data_set/01_integration_tree_one.xml');
-        $this->importDataSet($path . '/Fixtures/sites_setup_and_data_set/02_integration_tree_two.xml');
-        $this->importDataSet($path . '/Fixtures/sites_setup_and_data_set/03_integration_tree_three.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/sites_setup_and_data_set/01_integration_tree_one.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/sites_setup_and_data_set/02_integration_tree_two.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/sites_setup_and_data_set/03_integration_tree_three.csv');
     }
 
     /**

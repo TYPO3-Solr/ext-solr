@@ -29,7 +29,7 @@ class ConfigurationPageResolverTest extends IntegrationTest
      */
     public function canGetClosestPageIdWithActiveTemplate()
     {
-        $this->importDataSetFromFixture('can_get_closest_template_page_id.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/can_get_closest_template_page_id.csv');
 
         /* @var ConfigurationPageResolver $configurationPageIdResolver */
         $configurationPageIdResolver = GeneralUtility::makeInstance(ConfigurationPageResolver::class);
