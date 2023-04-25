@@ -31,8 +31,7 @@ class CategoryUidToHierarchyTest extends IntegrationTest
      */
     public function canConvertToCategoryIdToHierarchy()
     {
-        $this->importDataSetFromFixture('sys_category.xml');
-        /* @var CategoryUidToHierarchy $processor */
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/sys_category.csv');
         $processor = GeneralUtility::makeInstance(CategoryUidToHierarchy::class);
         $result = $processor->process([2]);
         $expectedResult = ['0-1/', '1-1/2/'];

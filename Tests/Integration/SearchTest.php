@@ -66,7 +66,7 @@ class SearchTest extends IntegrationTest
      */
     public function canSearchForADocument()
     {
-        $this->importDataSetFromFixture('can_search.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Search/can_search.csv');
 
         $GLOBALS['TT'] = $this->createMock(TimeTracker::class);
         $fakeTSFE = $this->getConfiguredTSFE();
@@ -102,6 +102,7 @@ class SearchTest extends IntegrationTest
      */
     public function implicitPhraseSearchingBoostsDocsWithOccurringPhrase()
     {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Search/phrase_search.csv');
         $this->fillIndexForPhraseSearchTests();
 
         /* @var \ApacheSolrForTypo3\Solr\Search $searchInstance */
@@ -135,6 +136,7 @@ class SearchTest extends IntegrationTest
      */
     public function implicitPhraseSearchSloppyPhraseBoostCanBeAdjustedByPhraseSlop()
     {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Search/phrase_search.csv');
         $this->fillIndexForPhraseSearchTests();
 
         /* @var \ApacheSolrForTypo3\Solr\Search $searchInstance */
@@ -206,7 +208,8 @@ class SearchTest extends IntegrationTest
      */
     public function implicitPhraseSearchSloppyPhraseBoostCanBeAdjustedByBigramPhraseSlop()
     {
-        $this->fillIndexForPhraseSearchTests('phrase_search_bigram.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Search/phrase_search_bigram.csv');
+        $this->fillIndexForPhraseSearchTests();
 
         /* @var \ApacheSolrForTypo3\Solr\Search $searchInstance */
         $searchInstance = GeneralUtility::makeInstance(Search::class);
@@ -291,7 +294,8 @@ class SearchTest extends IntegrationTest
      */
     public function implicitPhraseSearchSloppyPhraseBoostCanBeAdjustedByTrigramPhraseSlop()
     {
-        $this->fillIndexForPhraseSearchTests('phrase_search_trigram.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Search/phrase_search_trigram.csv');
+        $this->fillIndexForPhraseSearchTests();
 
         /* @var \ApacheSolrForTypo3\Solr\Search $searchInstance */
         $searchInstance = GeneralUtility::makeInstance(Search::class);
@@ -371,6 +375,7 @@ class SearchTest extends IntegrationTest
      */
     public function explicitPhraseSearchMatchesMorePrecise()
     {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Search/phrase_search.csv');
         $this->fillIndexForPhraseSearchTests();
 
         /* @var \ApacheSolrForTypo3\Solr\Search $searchInstance */
@@ -393,6 +398,7 @@ class SearchTest extends IntegrationTest
      */
     public function explicitPhraseSearchPrecisionCanBeAdjustedByQuerySlop()
     {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Search/phrase_search.csv');
         $this->fillIndexForPhraseSearchTests();
 
         /* @var \ApacheSolrForTypo3\Solr\Search $searchInstance */
@@ -429,13 +435,8 @@ class SearchTest extends IntegrationTest
         self::assertSame(7, $parsedData->response->numFound, 'Found wrong number of decuments by explicit phrase search query.');
     }
 
-    /**
-     * @param string $fixture
-     */
-    protected function fillIndexForPhraseSearchTests(string $fixture = 'phrase_search.xml')
+    protected function fillIndexForPhraseSearchTests()
     {
-        $this->importDataSetFromFixture($fixture);
-
         $GLOBALS['TT'] = $this->createMock(TimeTracker::class);
         for ($i = 1; $i <= 15; $i++) {
             $fakeTSFE = $this->getConfiguredTSFE($i);

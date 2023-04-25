@@ -32,9 +32,6 @@ use TYPO3\CMS\Scheduler\Scheduler;
  */
 class EventQueueWorkerTaskTest extends IntegrationTest
 {
-    /**
-     * @var array
-     */
     protected array $coreExtensionsToLoad = [
         'extensionmanager',
         'scheduler',
@@ -62,20 +59,12 @@ class EventQueueWorkerTaskTest extends IntegrationTest
         $extConf->set('solr', ['monitoringType' => 1]);
     }
 
-    protected function tearDown(): void
-    {
-        unset($this->indexQueue);
-        unset($this->eventQueue);
-        unset($GLOBALS['TYPO3_CONF_VARS']);
-        parent::tearDown();
-    }
-
     /**
      * @test
      */
     public function canProcessEventQueueItems(): void
     {
-        $this->importDataSetFromFixture('can_process_event_queue.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/can_process_event_queue.csv');
         $this->eventQueue->addEventToQueue(new RecordUpdatedEvent(1, 'tt_content'));
 
         /** @var EventQueueWorkerTask $task */
@@ -94,7 +83,7 @@ class EventQueueWorkerTaskTest extends IntegrationTest
      */
     public function canHandleErroneousEventQueueItems(): void
     {
-        $this->importDataSetFromFixture('can_handle_erroneous_event_queue_items.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/can_handle_erroneous_event_queue_items.csv');
 
         /** @var EventQueueWorkerTask $task */
         $task = GeneralUtility::makeInstance(EventQueueWorkerTask::class);

@@ -30,11 +30,6 @@ use TYPO3\CMS\Core\Error\Http\ServiceUnavailableException;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\TestingFramework\Core\Exception as TestingFrameworkCoreException;
 
-/**
- * Unit test case for the ObjectReconstitutionProcessor.
- *
- * @author Timo Hund <timo.hund@dkd.de>
- */
 class ResultSetReconstitutionProcessorTest extends IntegrationTest
 {
     /**
