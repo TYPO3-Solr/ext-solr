@@ -23,6 +23,7 @@ use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use Exception;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -105,7 +106,7 @@ class ReIndexTaskTest extends IntegrationTest
      */
     public function testIfTheQueueIsFilledAfterTaskWasRunning()
     {
-        $this->importDataSetFromFixture('can_reindex_task_fill_queue.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/can_reindex_task_fill_queue.csv');
         $this->assertEmptyIndexQueue();
 
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
@@ -123,7 +124,7 @@ class ReIndexTaskTest extends IntegrationTest
      */
     public function testCanGetAdditionalInformationFromTask()
     {
-        $this->importDataSetFromFixture('can_reindex_task_fill_queue.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/can_reindex_task_fill_queue.csv');
         $this->assertEmptyIndexQueue();
 
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
@@ -142,7 +143,7 @@ class ReIndexTaskTest extends IntegrationTest
      */
     public function solrIsEmptyAfterCleanup()
     {
-        $this->importDataSetFromFixture('can_reindex_task_fill_queue.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/can_reindex_task_fill_queue.csv');
 
         // fill the solr
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);

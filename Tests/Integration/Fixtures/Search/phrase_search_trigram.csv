@@ -1,0 +1,67 @@
+"pages",,,,,,,
+,"uid","pid","is_siteroot","doktype","hidden","slug","title"
+# 100% matching
+,1,0,1,1,0,"/","Awesome Trigram Phrase Search"
+# trigram phrase slop = 0
+,2,1,0,1,0,"/dump-sentence","This is some dump sentence to match Awesome Trigram Phrase"
+,3,1,0,1,0,"/match-trigram-phrase-search","This is some dump sentence to match Trigram Phrase Search"
+# trigram phrase slop = 1
+,4,1,0,1,0,"/slop-1-trigram-phrase","This is some dump sentence to match slop 1 Awesome gag Trigram Phrase"
+,5,1,0,1,0,"/slop-1-trigram-phrase-gag-search","This is some dump sentence to match slop 1 Trigram Phrase gag Search"
+# trigram phrase slop = 2
+,6,1,0,1,0,"/slop-2-trigram-gag-gag-phrase","This is some dump sentence to match slop 2 Awesome gag gag Trigram Phrase"
+,7,1,0,1,0,"/slop-2-phrase-gag-gag-search","This is some dump sentence to match slop 2 Trigram Phrase gag gag Search"
+,8,1,0,1,0,"/no-docs-match","This is some dump sentence to match no docs"
+,9,1,0,1,0,"/no-match","This is some dump sentence to match nothing"
+,10,1,0,1,0,"/bphrase-disabled","To disable BPhrase set it to 0."
+,11,1,0,1,0,"/match-phrase-only","This is some dump sentence to match Phrase only"
+,12,1,0,1,0,"/match-search-only","This is some dump sentence to match Search only"
+,13,1,0,1,0,"/match-trigram-only","This is some dump sentence to match Trigram only"
+,14,1,0,1,0,"/match-awesome-only","This is some dump sentence to match Awesome only"
+,15,1,0,1,0,"/trigram-gag-gag-gag-gag-phrase","Trigram gag gag gag gag Phrase gag gag gag gag Search is fascinating feature."
+"sys_template",,,,,,,
+,"uid","pid","root","clear","sorting","constants","config",
+,1,1,1,3,100,"","
+page = PAGE
+page.typeNum = 0
+
+plugin.tx_solr {
+    search.query.trigramPhrase = 1
+    enabled = 1
+
+    index {
+        fieldProcessingInstructions {
+            changed = timestampToIsoDate
+            created = timestampToIsoDate
+            endtime = timestampToUtcIsoDate
+            rootline = pageUidToHierarchy
+        }
+
+        queue {
+
+            // mapping tableName.fields.SolrFieldName => TableFieldName (+ cObj processing)
+
+            pages = 1
+            pages {
+                initialization = ApacheSolrForTypo3\Solr\IndexQueue\Initializer\Page
+
+                // allowed page types (doktype) when indexing pages
+                allowedPageTypes = 1,7
+
+                indexingPriority = 0
+
+                indexer = ApacheSolrForTypo3\Solr\IndexQueue\PageIndexer
+                indexer {
+                    // add options for the indexer here
+                }
+
+                // Only index standard pages and mount points that are not overlayed.
+                additionalWhereClause = (doktype = 1 OR (doktype=7 AND mount_pid_ol=0)) AND no_search = 0
+
+                fields {
+                    sortSubTitle_stringS = subtitle
+                }
+            }
+        }
+    }
+}"

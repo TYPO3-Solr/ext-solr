@@ -1,0 +1,26 @@
+"pages",
+,"uid","pid","is_siteroot","doktype","slug","title","author"
+,9,3,0,1,"/men/sweatshirts","Men Sweatshirts","John Doe"
+,10,2,0,1,"/women/sweatshirts","Woman Sweatshirts","John Doe"
+,11,1,0,1,"/children/sweatshirts","Children Sweatshirts","Baby Doe"
+"sys_template",
+,"uid","pid","root","clear","sorting","config"
+,2,1,1,3,50,"
+page = PAGE
+page.typeNum = 0
+
+plugin.tx_solr {
+    enabled = 1
+
+    index {
+        // assigns processing instructions to Solr fields during indexing, Solr field = processing instruction
+        fieldProcessingInstructions {
+            changed = timestampToIsoDate
+            created = timestampToIsoDate
+            endtime = timestampToUtcIsoDate
+            rootline = pageUidToHierarchy
+            pageHierarchy_stringM = pathToHierarchy
+        }
+
+    }
+}"

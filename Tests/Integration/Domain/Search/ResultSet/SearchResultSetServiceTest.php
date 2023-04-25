@@ -26,12 +26,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class SearchResultSetServiceTest extends IntegrationTest
 {
-    /**
-     * @inheritdoc
-     * @todo: Remove unnecessary fixtures and remove that property as intended.
-     */
-    protected bool $skipImportRootPagesAndTemplatesForConfiguredSites = true;
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -53,7 +47,8 @@ class SearchResultSetServiceTest extends IntegrationTest
     public function canGetDocumentById()
     {
         // trigger a search
-        $this->indexPageIdsFromFixture('can_get_searchResultSet.xml', [1, 2, 3, 4, 5]);
+        $this->importCSVDataSet(__DIR__ . '/../../../Controller/Fixtures/indexing_data.csv');
+        $this->indexPageIds([1, 2, 3, 4, 5]);
 
         $this->waitToBeVisibleInSolr();
 
@@ -69,7 +64,7 @@ class SearchResultSetServiceTest extends IntegrationTest
         $searchResultsSetService = GeneralUtility::makeInstance(SearchResultSetService::class, $typoScriptConfiguration, $search);
         $document = $searchResultsSetService->getDocumentById('002de2729efa650191f82900ea02a0a3189dfabb/pages/1/0/0/0');
 
-        self::assertSame($document->getTitle(), 'Products', 'Could not get document from solr by id');
+        self::assertSame($document->getTitle(), 'Root of Testpage testone.site aka integration_tree_one', 'Could not get document from solr by id');
     }
 
     /**
@@ -77,7 +72,9 @@ class SearchResultSetServiceTest extends IntegrationTest
      */
     public function canGetVariants()
     {
-        $this->indexPageIdsFromFixture('can_get_searchResultSet.xml', [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+        $this->importCSVDataSet(__DIR__ . '/../../../Controller/Fixtures/indexing_data.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/can_get_searchResultSet.csv');
+        $this->indexPageIds([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
 
         $this->waitToBeVisibleInSolr();
         $solrConnection = GeneralUtility::makeInstance(ConnectionManager::class)->getConnectionByPageId(1, 0, 0);
@@ -105,14 +102,14 @@ class SearchResultSetServiceTest extends IntegrationTest
         $firstResult = $searchResults[0];
         self::assertSame(0, count($firstResult->getVariants()));
 
-        // We assume that the second result (pid=1) has 1 variant.
+        // We assume that the second result (pid=1) has 6 variants.
         $secondResult = $searchResults[1];
-        self::assertSame(1, count($secondResult->getVariants()));
+        self::assertSame(6, count($secondResult->getVariants()));
 
-        // We assume that the third result (pid=3) has 3 variants.
+        // We assume that the third result (pid=3) has no variants.
         $thirdResult = $searchResults[2];
-        self::assertSame(3, count($thirdResult->getVariants()));
-        self::assertSame('Men Socks', $thirdResult->getTitle());
+        self::assertSame(0, count($thirdResult->getVariants()));
+        self::assertSame('Men Sweatshirts', $thirdResult->getTitle());
 
         // And every variant is indicated to be a variant.
         foreach ($thirdResult->getVariants() as $variant) {
@@ -125,7 +122,9 @@ class SearchResultSetServiceTest extends IntegrationTest
      */
     public function canGetCaseSensitiveVariants()
     {
-        $this->indexPageIdsFromFixture('can_get_searchResultSet.xml', [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]);
+        $this->importCSVDataSet(__DIR__ . '/../../../Controller/Fixtures/indexing_data.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/can_get_searchResultSet.csv');
+        $this->indexPageIds([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]);
 
         $this->waitToBeVisibleInSolr();
         $solrConnection = GeneralUtility::makeInstance(ConnectionManager::class)->getConnectionByPageId(1, 0, 0);
@@ -154,7 +153,7 @@ class SearchResultSetServiceTest extends IntegrationTest
         $searchResults = $this->doSearchWithResultSetService($solrConnection, $typoScriptConfiguration);
         self::assertSame(3, count($searchResults), 'There should be three results at all');
 
-        // We assume that the first result has 2 variants.
+        // We assume that the first result has 6 variants.
         /* @var SearchResult $firstResult */
         $firstResult = $searchResults[0];
         self::assertSame(2, count($firstResult->getVariants()));
@@ -195,7 +194,8 @@ class SearchResultSetServiceTest extends IntegrationTest
      */
     public function canGetZeroResultsWithVariantsOnEmptyIndex()
     {
-        $this->importDataSetFromFixture('can_get_searchResultSet.xml');
+        $this->importCSVDataSet(__DIR__ . '/../../../Controller/Fixtures/indexing_data.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/can_get_searchResultSet.csv');
         $this->fakeTsfe(1);
 
         $solrConnection = GeneralUtility::makeInstance(ConnectionManager::class)->getConnectionByPageId(1, 0, 0);
@@ -257,7 +257,8 @@ class SearchResultSetServiceTest extends IntegrationTest
      */
     protected function importFrontendRestrictedPageScenario()
     {
-        $this->indexPageIdsFromFixture('fe_user_page.xml', [1, 2, 3], [1]);
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/fe_user_page.csv');
+        $this->indexPageIds([1, 2, 3], [1]);
         $this->waitToBeVisibleInSolr();
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
         self::assertStringContainsString('"numFound":3', $solrContent);

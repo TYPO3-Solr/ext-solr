@@ -24,7 +24,6 @@ use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
  * Integration testcase to test for {@link SuggestController}
  *
  * @author Timo Hund
- * @copyright (c) 2018 Timo Hund <timo.hund@dkd.de>
  * @group frontend
  */
 class SuggestControllerTest extends AbstractFrontendController
@@ -62,7 +61,7 @@ class SuggestControllerTest extends AbstractFrontendController
      */
     public function canDoABasicSuggest()
     {
-        $this->importDataSetFromFixture('SearchAndSuggestControllerTest_indexing_data.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
         $this->indexPages([1, 2, 3, 4, 5, 6, 7, 8]);
 
         $result = (string)($this->executeFrontendSubRequestForSuggestQueryString('Sweat', 'rand')->getBody());
@@ -76,12 +75,12 @@ class SuggestControllerTest extends AbstractFrontendController
      */
     public function canDoABasicSuggestWithoutCallback()
     {
-        $this->importDataSetFromFixture('SearchAndSuggestControllerTest_indexing_data.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
         $this->indexPages([1, 2, 3, 4, 5, 6, 7, 8]);
 
         $result = (string)($this->executeFrontendSubRequestForSuggestQueryString('Sweat')->getBody());
 
-        //we assume to get suggestions like Sweatshirt
+        // we assume to get suggestions like Sweatshirt
         self::assertStringContainsString('suggestions":{"sweatshirts":2}', $result, 'Response did not contain sweatshirt suggestions');
     }
 
@@ -90,7 +89,7 @@ class SuggestControllerTest extends AbstractFrontendController
      */
     public function canSuggestWithUriSpecialChars()
     {
-        $this->importDataSetFromFixture('can_suggest_with_uri_special_chars.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/suggest_with_uri_special_chars.csv');
 
         $this->addTypoScriptToTemplateRecord(
             1,

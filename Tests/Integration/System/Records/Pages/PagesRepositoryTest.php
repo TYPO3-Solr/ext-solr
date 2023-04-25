@@ -20,7 +20,7 @@ use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Integration tes for PagesRepository.
+ * Integration tests for PagesRepository.
  */
 class PagesRepositoryTest extends IntegrationTest
 {
@@ -40,7 +40,7 @@ class PagesRepositoryTest extends IntegrationTest
      */
     public function canFindAllRootPages()
     {
-        $this->importDataSetFromFixture('pages.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/pages.csv');
 
         $expectedResult = [
             0 => [
@@ -75,13 +75,13 @@ class PagesRepositoryTest extends IntegrationTest
      * |   |
      * |   ——[24] FirstShared
      * |       |
-     * |       ——[25] first sub page from FirstShared
+     * |       ——[25] first subpage from FirstShared
      * |       |
-     * |       ——[26] second sub page from FirstShared
+     * |       ——[26] second subpage from FirstShared
      */
     public function canfindMountPointPagesByRootLineParentPageIdsIfMountedPagesIsOutsideOfTheSite()
     {
-        $this->importDataSetFromFixture('can_find_mout_pages_in_rootline.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/can_find_mount_pages_in_rootline.csv');
 
         $expectedResult = [
             [

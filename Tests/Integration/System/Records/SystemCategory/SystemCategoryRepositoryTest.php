@@ -31,7 +31,7 @@ class SystemCategoryRepositoryTest extends IntegrationTest
      */
     public function canFindOneByParentCategory()
     {
-        $this->importDataSetFromFixture('sys_category.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/sys_category.csv');
 
         /* @var SystemCategoryRepository $repository */
         $repository = GeneralUtility::makeInstance(SystemCategoryRepository::class);

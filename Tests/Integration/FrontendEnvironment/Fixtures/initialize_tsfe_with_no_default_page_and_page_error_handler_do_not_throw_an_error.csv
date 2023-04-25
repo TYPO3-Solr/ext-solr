@@ -1,0 +1,13 @@
+"pages",
+,"uid","pid","is_siteroot","doktype","slug","l18n_cfg","title"
+,1,0,1,1,"/",1,"disabled for default language"
+,404,1,0,1,"/404",1,"error page, required for testing"
+"sys_template",
+,"uid","pid","root","clear","sorting","config"
+,1,1,1,1,3,100,"
+page = PAGE
+page.typeNum = 0
+
+config.index_enable = 1
+plugin.tx_solr.enabled = 1
+"

@@ -67,7 +67,7 @@ class SearchControllerTest extends AbstractFrontendController
      */
     protected function bootstrapSearchResultsPluginOnPage(): void
     {
-        $this->importDataSetFromFixture('default_search_results_plugin.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/default_search_results_plugin.csv');
         $this->addTypoScriptToTemplateRecord(
             1,
             /* @lang TYPO3_TypoScript */
@@ -114,7 +114,7 @@ class SearchControllerTest extends AbstractFrontendController
      */
     public function canSearchForPrices()
     {
-        $this->importDataSetFromFixture('SearchAndSuggestControllerTest_indexing_data.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
         $this->indexPages([2, 3]);
 
         $result = (string)$this->executeFrontendSubRequest(
@@ -132,7 +132,7 @@ class SearchControllerTest extends AbstractFrontendController
      */
     public function canDoAPaginatedSearch()
     {
-        $this->importDataSetFromFixture('SearchAndSuggestControllerTest_indexing_data.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
         $this->addTypoScriptToTemplateRecord(
             1,
             /* @lang TYPO3_TypoScript */
@@ -184,7 +184,7 @@ class SearchControllerTest extends AbstractFrontendController
      */
     public function canGetADidYouMeanProposalForATypo()
     {
-        $this->importDataSetFromFixture('SearchAndSuggestControllerTest_indexing_data.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
         $this->addTypoScriptToTemplateRecord(
             1,
             /* @lang TYPO3_TypoScript */
@@ -211,7 +211,7 @@ class SearchControllerTest extends AbstractFrontendController
      */
     public function canAutoCorrectATypo()
     {
-        $this->importDataSetFromFixture('SearchAndSuggestControllerTest_indexing_data.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
         $this->addTypoScriptToTemplateRecord(
             1,
             /* @lang TYPO3_TypoScript */
@@ -242,7 +242,7 @@ class SearchControllerTest extends AbstractFrontendController
      */
     public function canRenderAFacetWithFluid()
     {
-        $this->importDataSetFromFixture('SearchAndSuggestControllerTest_indexing_data.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
 
         $this->addTypoScriptToTemplateRecord(
             1,
@@ -277,7 +277,7 @@ class SearchControllerTest extends AbstractFrontendController
      */
     public function canDoAnInitialEmptySearchWithoutResults()
     {
-        $this->importDataSetFromFixture('SearchAndSuggestControllerTest_indexing_data.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
         $this->addTypoScriptToTemplateRecord(
             1,
             /* @lang TYPO3_TypoScript */
@@ -308,7 +308,7 @@ class SearchControllerTest extends AbstractFrontendController
      */
     public function canDoAnInitialEmptySearchWithResults()
     {
-        $this->importDataSetFromFixture('SearchAndSuggestControllerTest_indexing_data.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
         $this->addTypoScriptToTemplateRecord(
             1,
             /* @lang TYPO3_TypoScript */
@@ -341,7 +341,7 @@ class SearchControllerTest extends AbstractFrontendController
     public function canDoAnInitialSearchWithoutResults()
     {
         self::markTestSkipped('Something is wrong with refactored pagination. See https://github.com/TYPO3-Solr/ext-solr/issues/3150');
-        $this->importDataSetFromFixture('SearchAndSuggestControllerTest_indexing_data.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
         $this->addTypoScriptToTemplateRecord(
             1,
             /* @lang TYPO3_TypoScript */
@@ -372,7 +372,7 @@ class SearchControllerTest extends AbstractFrontendController
      */
     public function canDoAnInitialSearchWithResults()
     {
-        $this->importDataSetFromFixture('SearchAndSuggestControllerTest_indexing_data.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
         $this->addTypoScriptToTemplateRecord(
             1,
             /* @lang TYPO3_TypoScript */
@@ -403,7 +403,7 @@ class SearchControllerTest extends AbstractFrontendController
      */
     public function removeOptionLinkWillBeShownWhenFacetWasSelected()
     {
-        $this->importDataSetFromFixture('SearchAndSuggestControllerTest_indexing_data.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
         $this->addTypoScriptToTemplateRecord(
             1,
             /* @lang TYPO3_TypoScript */
@@ -436,7 +436,7 @@ class SearchControllerTest extends AbstractFrontendController
      */
     public function removeOptionLinkWillBeShownWhenAFacetOptionLeadsToAZeroResults()
     {
-        $this->importDataSetFromFixture('SearchAndSuggestControllerTest_indexing_data.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
         $this->addTypoScriptToTemplateRecord(
             1,
             /* @lang TYPO3_TypoScript */
@@ -468,7 +468,7 @@ class SearchControllerTest extends AbstractFrontendController
      */
     public function canFilterOnPageSections()
     {
-        $this->importDataSetFromFixture('SearchAndSuggestControllerTest_indexing_data.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
         $this->addTypoScriptToTemplateRecord(
             1,
             /* @lang TYPO3_TypoScript */
@@ -499,7 +499,7 @@ class SearchControllerTest extends AbstractFrontendController
         $this->expectException(InvalidTemplateResourceException::class);
         $this->expectExceptionMessageMatches('#(.*The partial files.*NotFound.*|.*The Fluid template files .*NotFound.*)#');
 
-        $this->importDataSetFromFixture('SearchAndSuggestControllerTest_indexing_data.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
         $this->addTypoScriptToTemplateRecord(
             1,
             /* @lang TYPO3_TypoScript */
@@ -529,7 +529,7 @@ class SearchControllerTest extends AbstractFrontendController
      */
     public function canRenderAScoreAnalysisWhenBackendUserIsLoggedIn()
     {
-        $this->importDataSetFromFixture('SearchAndSuggestControllerTest_indexing_data.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
 
         $this->indexPages([1, 2]);
 
@@ -551,7 +551,7 @@ class SearchControllerTest extends AbstractFrontendController
      */
     public function canSortFacetsByLex()
     {
-        $this->importDataSetFromFixture('SearchAndSuggestControllerTest_indexing_data.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
         $this->addTypoScriptToTemplateRecord(
             1,
             /* @lang TYPO3_TypoScript */
@@ -608,7 +608,7 @@ class SearchControllerTest extends AbstractFrontendController
      */
     public function canSortFacetsByOptionCountWhenNothingIsConfigured()
     {
-        $this->importDataSetFromFixture('SearchAndSuggestControllerTest_indexing_data.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
         $this->addTypoScriptToTemplateRecord(
             1,
             /* @lang TYPO3_TypoScript */
@@ -664,7 +664,7 @@ class SearchControllerTest extends AbstractFrontendController
      */
     public function canRenderQueryGroupFacet()
     {
-        $this->importDataSetFromFixture('SearchAndSuggestControllerTest_indexing_data.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
         $this->addTypoScriptToTemplateRecord(
             1,
             /* @lang TYPO3_TypoScript */
@@ -763,7 +763,7 @@ class SearchControllerTest extends AbstractFrontendController
      */
     public function canRenderHierarchicalFacet()
     {
-        $this->importDataSetFromFixture('SearchAndSuggestControllerTest_indexing_data.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
         $this->addPageHierarchyFacetConfiguration();
         $this->indexPages([1, 2, 3, 4, 5, 6, 7, 8]);
 
@@ -785,7 +785,7 @@ class SearchControllerTest extends AbstractFrontendController
      */
     public function canFacetOnHierarchicalFacetItem()
     {
-        $this->importDataSetFromFixture('SearchAndSuggestControllerTest_indexing_data.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
         $this->addPageHierarchyFacetConfiguration();
         $this->indexPages([1, 2, 3, 4, 5, 6, 7, 8]);
 
@@ -807,7 +807,7 @@ class SearchControllerTest extends AbstractFrontendController
      */
     public function canFacetOnHierarchicalTextCategory()
     {
-        $this->importDataSetFromFixture('can_render_path_facet_with_search_controller.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/can_render_path_facet_with_search_controller.csv');
 
         $this->addTypoScriptToTemplateRecord(
             1,
@@ -859,7 +859,7 @@ class SearchControllerTest extends AbstractFrontendController
      */
     public function canDefineAManualSortOrder()
     {
-        $this->importDataSetFromFixture('SearchAndSuggestControllerTest_indexing_data.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
         $this->addTypoScriptToTemplateRecord(
             1,
             /* @lang TYPO3_TypoScript */
@@ -914,7 +914,7 @@ class SearchControllerTest extends AbstractFrontendController
      */
     public function canSeeTheParsedQueryWhenABackendUserIsLoggedIn()
     {
-        $this->importDataSetFromFixture('SearchAndSuggestControllerTest_indexing_data.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
         $this->addTypoScriptToTemplateRecord(
             1,
             /* @lang TYPO3_TypoScript */
@@ -993,7 +993,7 @@ class SearchControllerTest extends AbstractFrontendController
             'Last searches component seems to be fine, but the test does not fit that case currently.
             The last-searches component is not rendered. See: https://github.com/TYPO3-Solr/ext-solr/issues/3160'
         );
-        $this->importDataSetFromFixture('SearchAndSuggestControllerTest_indexing_data.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
         $this->addTypoScriptToTemplateRecord(
             1,
             /* @lang TYPO3_TypoScript */
@@ -1026,7 +1026,7 @@ class SearchControllerTest extends AbstractFrontendController
      */
     public function canShowLastSearchesFromDatabaseInResponse()
     {
-        $this->importDataSetFromFixture('SearchAndSuggestControllerTest_indexing_data.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
         $this->addTypoScriptToTemplateRecord(
             1,
             /* @lang TYPO3_TypoScript */
@@ -1058,7 +1058,7 @@ class SearchControllerTest extends AbstractFrontendController
      */
     public function canNotStoreQueyStringInLastSearchesWhenQueryDoesNotReturnAResult()
     {
-        $this->importDataSetFromFixture('SearchAndSuggestControllerTest_indexing_data.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
         $this->addTypoScriptToTemplateRecord(
             1,
             /* @lang TYPO3_TypoScript */
@@ -1091,8 +1091,7 @@ class SearchControllerTest extends AbstractFrontendController
      */
     public function canOverwriteAFilterWithTheFlexformSettings()
     {
-        $this->importDataSetFromFixture('SearchAndSuggestControllerTest_indexing_data.xml');
-
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
         $this->indexPages([1, 2, 3, 4, 5, 6, 7, 8]);
 
         $connection = $this->getConnectionPool()->getConnectionForTable('tt_content');
@@ -1116,7 +1115,7 @@ class SearchControllerTest extends AbstractFrontendController
      */
     public function canRenderDateRangeFacet()
     {
-        $this->importDataSetFromFixture('SearchAndSuggestControllerTest_indexing_data.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
         $this->addTypoScriptToTemplateRecord(
             1,
             /* @lang TYPO3_TypoScript */
@@ -1146,7 +1145,7 @@ class SearchControllerTest extends AbstractFrontendController
      */
     public function canRenderASecondFacetOnTheTypeField()
     {
-        $this->importDataSetFromFixture('SearchAndSuggestControllerTest_indexing_data.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
         $this->addTypoScriptToTemplateRecord(
             1,
             /* @lang TYPO3_TypoScript */
@@ -1182,8 +1181,8 @@ class SearchControllerTest extends AbstractFrontendController
      */
     public function canSortByMetric()
     {
-        $this->importDataSetFromFixture('SearchAndSuggestControllerTest_indexing_data.xml');
-        $this->importDataSetFromFixture('can_sort_by_metric.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/can_sort_by_metric.csv');
 
         $this->addTypoScriptToTemplateRecord(
             1,
@@ -1253,7 +1252,7 @@ class SearchControllerTest extends AbstractFrontendController
     public function searchingAndRenderingFrequentSearchesIsShowingTheTermAsFrequentSearch()
     {
         self::markTestIncomplete('See: https://github.com/TYPO3-Solr/ext-solr/issues/3166');
-        $this->importDataSetFromFixture('SearchAndSuggestControllerTest_indexing_data.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
         $this->indexPages([2]);
 
         $this->getConnectionPool()->getConnectionForTable('tt_content')
@@ -1277,7 +1276,7 @@ class SearchControllerTest extends AbstractFrontendController
      */
     public function canRenderDetailAction()
     {
-        $this->importDataSetFromFixture('SearchAndSuggestControllerTest_indexing_data.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/indexing_data.csv');
         $this->indexPages([2]);
 
         $resultPage = (string)$this->executeFrontendSubRequest(
