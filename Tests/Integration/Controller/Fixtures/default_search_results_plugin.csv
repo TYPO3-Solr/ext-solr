@@ -1,0 +1,6 @@
+"pages",
+,"uid","pid","is_siteroot","doktype","slug","title","subtitle"
+,2022,1,0,1,"/search","Search","Apache Solr for TYPO3 search page"
+"tt_content",
+,"uid","pid","colPos","frame_class","CType","list_type","sectionIndex"
+,2022,2022,0,"default","list","solr_pi_results",1

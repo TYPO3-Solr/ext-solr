@@ -31,12 +31,6 @@ use TYPO3\TestingFramework\Core\Exception as TestingFrameworkCoreException;
 class ApacheSolrDocumentRepositoryTest extends IntegrationTest
 {
     /**
-     * @inheritdoc
-     * @todo: Remove unnecessary fixtures and remove that property as intended.
-     */
-    protected bool $skipImportRootPagesAndTemplatesForConfiguredSites = true;
-
-    /**
      * @var Repository|null
      */
     protected ?Repository $apacheSolrDocumentRepository = null;
@@ -58,8 +52,9 @@ class ApacheSolrDocumentRepositoryTest extends IntegrationTest
         $this->writeDefaultSolrTestSiteConfiguration();
         $_SERVER['HTTP_HOST'] = 'testone.site';
         $_SERVER['REQUEST_URI'] = '/search.html';
-        // trigger a search
-        $this->indexPageIdsFromFixture('can_get_apacheSolrDocuments.xml', [1, 2, 3, 4, 5]);
+        // trigger an index
+        $this->importCSVDataSet(__DIR__ . '/../../../Controller/Fixtures/indexing_data.csv');
+        $this->indexPageIds([1, 2, 3, 4, 5]);
 
         $this->waitToBeVisibleInSolr();
 

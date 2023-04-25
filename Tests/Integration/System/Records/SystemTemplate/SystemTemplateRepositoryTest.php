@@ -31,7 +31,7 @@ class SystemTemplateRepositoryTest extends IntegrationTest
      */
     public function canFindOneClosestPageIdWithActiveTemplateByRootLine()
     {
-        $this->importDataSetFromFixture('sys_template.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/sys_template.csv');
 
         $fakeRootLine = [
             ['uid' => 100],

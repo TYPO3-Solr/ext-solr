@@ -17,7 +17,7 @@ class RootlineTest extends IntegrationTest
      */
     public function canGetAccessRootlineByPageId()
     {
-        $this->importDataSetFromFixture('user_protected_page.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/user_protected_page.csv');
         $accessRootline = Rootline::getAccessRootlineByPageId(10);
         self::assertSame('10:4711', (string)$accessRootline, 'Did not determine expected access rootline for fe_group protected page');
 

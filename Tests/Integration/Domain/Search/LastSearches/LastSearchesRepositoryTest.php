@@ -30,6 +30,7 @@ class LastSearchesRepositoryTest extends IntegrationTest
     {
         parent::setUp();
         $this->lastSearchesRepository = GeneralUtility::makeInstance(LastSearchesRepository::class);
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/last_searches.csv');
     }
 
     /**
@@ -37,7 +38,6 @@ class LastSearchesRepositoryTest extends IntegrationTest
      */
     public function canFindAllKeywords()
     {
-        $this->importDataSetFromFixture('can_find_and_add_last_searches.xml');
         $actual = $this->lastSearchesRepository->findAllKeywords(10);
         self::assertSame(['4', '3', '2', '1', '0'], $actual);
     }
@@ -47,8 +47,6 @@ class LastSearchesRepositoryTest extends IntegrationTest
      */
     public function addWillInsertNewRowIfLastSearchesLimitIsNotExceeded()
     {
-        $this->importDataSetFromFixture('can_find_and_add_last_searches.xml');
-
         $this->lastSearchesRepository->add('5', 6);
 
         $actual = $this->lastSearchesRepository->findAllKeywords(10);
@@ -60,8 +58,6 @@ class LastSearchesRepositoryTest extends IntegrationTest
      */
     public function addWillUpdateOldestRowIfLastSearchesLimitIsExceeded()
     {
-        $this->importDataSetFromFixture('can_find_and_add_last_searches.xml');
-
         $this->lastSearchesRepository->add('5', 5);
 
         $actual = $this->lastSearchesRepository->findAllKeywords();
@@ -73,8 +69,6 @@ class LastSearchesRepositoryTest extends IntegrationTest
      */
     public function lastUpdatedRowIsOnFirstPosition()
     {
-        $this->importDataSetFromFixture('can_find_and_add_last_searches.xml');
-
         $this->lastSearchesRepository->add('1', 5);
 
         $actual = $this->lastSearchesRepository->findAllKeywords();
