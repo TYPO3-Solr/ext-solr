@@ -43,3 +43,63 @@ Adds debug data to the columns `time_total`, `time_preparation` and `time_proces
 from the result of the search query.
 
 **Note**: Enabling addDebugData can have performance impact since debugMode is appended to queries.
+
+statistics.topHits.days
+-----------------------
+
+:Type: Integer
+:TS Path: plugin.tx_solr.statistics.topHits.days
+:Since: 12.0
+:Default: 30
+
+Number of days to read out the search top hits.
+
+statistics.topHits.limit
+-----------------------
+
+:Type: Integer
+:TS Path: plugin.tx_solr.statistics.topHits.limit
+:Since: 12.0
+:Default: 5
+
+Number of records to read out the search top hits.
+
+statistics.noHits.days
+-----------------------
+
+:Type: Integer
+:TS Path: plugin.tx_solr.statistics.noHits.days
+:Since: 12.0
+:Default: 30
+
+Number of days to read out non-search hits.
+
+statistics.noHits.limit
+-----------------------
+
+:Type: Integer
+:TS Path: plugin.tx_solr.statistics.noHits.limit
+:Since: 12.0
+:Default: 5
+
+Number of records to read out non-search hits.
+
+statistics.queries.days
+-----------------------
+
+:Type: Integer
+:TS Path: plugin.tx_solr.statistics.queries.days
+:Since: 12.0
+:Default: 30
+
+Number of days to read out search queries.
+
+statistics.queries.limit
+-----------------------
+
+:Type: Integer
+:TS Path: plugin.tx_solr.statistics.queries.limit
+:Since: 12.0
+:Default: 100
+
+Number of records to read out search queries.
