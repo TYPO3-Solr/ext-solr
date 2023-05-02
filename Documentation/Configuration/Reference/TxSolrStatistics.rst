@@ -55,7 +55,7 @@ statistics.topHits.days
 Number of days to read out the search top hits.
 
 statistics.topHits.limit
------------------------
+------------------------
 
 :Type: Integer
 :TS Path: plugin.tx_solr.statistics.topHits.limit
