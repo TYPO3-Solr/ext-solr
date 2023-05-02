@@ -95,7 +95,7 @@ statistics.queries.days
 Number of days to read out search queries.
 
 statistics.queries.limit
------------------------
+------------------------
 
 :Type: Integer
 :TS Path: plugin.tx_solr.statistics.queries.limit
