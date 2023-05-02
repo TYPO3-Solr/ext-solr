@@ -440,12 +440,12 @@
 				<target>기록이 없습니다. 사이트의  타이포스크립트 구성에서  &apos;plugin.tx_solr.statistics = 1&apos;을 활성화시켰습니까?</target>
 			</trans-unit>
 			<trans-unit id="solr.backend.search_statistics_module.top_search_phrases" xml:space="preserve">
-				<source>Top 5 Search Phrases</source>
-				<target>Top 5 검색 구문</target>
+				<source>Top %d Search Phrases</source>
+				<target>Top %d 검색 구문</target>
 			</trans-unit>
 			<trans-unit id="solr.backend.search_statistics_module.top_search_phrases_without_hits" xml:space="preserve">
-				<source>Top 5 Search Phrases Without Hits</source>
-				<target>Top 5 검색 구문(Hit 없음)</target>
+				<source>Top %d Search Phrases Without Hits</source>
+				<target>Top %d 검색 구문(Hit 없음)</target>
 			</trans-unit>
 			<trans-unit id="solr.backend.search_statistics_module.search_phrases_header" xml:space="preserve">
 				<source>Search Phrase Statistics</source>

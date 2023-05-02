@@ -445,12 +445,12 @@
 				<target>Nenalezeny žádné záznamy. Povolili jste 'plugin.tx_solr.statistics = 1' v konfiguraci typoscriptu vašeho webu?</target>
 			</trans-unit>
 			<trans-unit id="solr.backend.search_statistics_module.top_search_phrases" xml:space="preserve">
-				<source>Top 5 Search Phrases</source>
-				<target>Top 5 vyhledaných frází</target>
+				<source>Top %d Search Phrases</source>
+				<target>Top %d vyhledaných frází</target>
 			</trans-unit>
 			<trans-unit id="solr.backend.search_statistics_module.top_search_phrases_without_hits" xml:space="preserve">
-				<source>Top 5 Search Phrases Without Hits</source>
-				<target>Top 5 vyhledávacích frází bez hitů</target>
+				<source>Top %d Search Phrases Without Hits</source>
+				<target>Top %d vyhledávacích frází bez hitů</target>
 			</trans-unit>
 			<trans-unit id="solr.backend.search_statistics_module.search_phrases_header" xml:space="preserve">
 				<source>Search Phrase Statistics</source>

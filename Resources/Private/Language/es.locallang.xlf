@@ -443,12 +443,12 @@
 				<target>No se han encontrado registros. ¿Ha habilitado &apos;plugin.tx_solr.statistics = 1&apos; en la configuración de typoscript de su sitio?</target>
 			</trans-unit>
 			<trans-unit id="solr.backend.search_statistics_module.top_search_phrases" xml:space="preserve">
-				<source>Top 5 Search Phrases</source>
-				<target>Las 5 principales frases de búsqueda</target>
+				<source>Top %d Search Phrases</source>
+				<target>Las %d principales frases de búsqueda</target>
 			</trans-unit>
 			<trans-unit id="solr.backend.search_statistics_module.top_search_phrases_without_hits" xml:space="preserve">
-				<source>Top 5 Search Phrases Without Hits</source>
-				<target>Las 5 principales frases de búsqueda sin resultados</target>
+				<source>Top %d Search Phrases Without Hits</source>
+				<target>Las %d principales frases de búsqueda sin resultados</target>
 			</trans-unit>
 			<trans-unit id="solr.backend.search_statistics_module.search_phrases_header" xml:space="preserve">
 				<source>Search Phrase Statistics</source>
