@@ -126,7 +126,7 @@ class RepositoryTest extends SetUpUnitTestCase
         $solrConnectionManager->expects(self::any())->method('getConnectionByPageId')->willReturn($solrConnectionMock);
         $mockedSingletons = [ConnectionManager::class => $solrConnectionManager];
 
-        $search = $this->getAccessibleMock(Search::class, ['search', 'getResultDocumentsEscaped'], [], '', false);
+        $search = $this->getAccessibleMock(Search::class, ['search'], [], '', false);
 
         GeneralUtility::resetSingletonInstances($mockedSingletons);
 
@@ -144,7 +144,7 @@ class RepositoryTest extends SetUpUnitTestCase
         $queryBuilderMock = $this->getDumbMock(QueryBuilder::class);
 
         /* @var Repository $apacheSolrDocumentRepository */
-        $apacheSolrDocumentRepository = $this->getAccessibleMock(Repository::class, ['getQueryForPage', 'getSearch'], [null, null, $queryBuilderMock]);
+        $apacheSolrDocumentRepository = $this->getAccessibleMock(Repository::class, ['getSearch'], [null, null, $queryBuilderMock]);
         $apacheSolrDocumentRepository->expects(self::once())->method('getSearch')->willReturn($search);
         $queryMock = $this->getDumbMock(Query::class);
         $queryBuilderMock->expects(self::any())->method('buildPageQuery')->willReturn($queryMock);
