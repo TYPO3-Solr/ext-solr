@@ -43,7 +43,7 @@
     "phpunit/phpunit": "^9.5",
     "typo3/cms-fluid-styled-content": "*",
     "typo3/coding-standards": "~0.7.1",
-    "typo3/testing-framework": "dev-7-composerinstaller5-fix"
+    "typo3/testing-framework": "^7.0"
   },
   "replace": {
     "apache-solr-for-typo3/solrfluid": "*",
