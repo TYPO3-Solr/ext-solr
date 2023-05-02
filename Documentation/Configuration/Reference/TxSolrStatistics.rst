@@ -65,7 +65,7 @@ statistics.topHits.limit
 Number of records to read out the search top hits.
 
 statistics.noHits.days
------------------------
+----------------------
 
 :Type: Integer
 :TS Path: plugin.tx_solr.statistics.noHits.days
