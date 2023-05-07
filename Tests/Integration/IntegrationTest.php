@@ -33,6 +33,7 @@ use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Context\UserAspect;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
+use TYPO3\CMS\Core\Domain\ConsumableString;
 use TYPO3\CMS\Core\Error\Http\AbstractServerErrorException;
 use TYPO3\CMS\Core\Error\Http\InternalServerErrorException;
 use TYPO3\CMS\Core\Error\Http\ServiceUnavailableException;
@@ -347,7 +348,6 @@ abstract class IntegrationTest extends FunctionalTestCase
         $_SERVER['REQUEST_URI'] = '/search.html';
 
         $fakeTSFE = $this->getConfiguredTSFE($pageId);
-        $fakeTSFE->newCObj();
 
         $GLOBALS['TSFE'] = $fakeTSFE;
         $this->simulateFrontedUserGroups($feUserGroupArray);
@@ -362,7 +362,12 @@ abstract class IntegrationTest extends FunctionalTestCase
                 )->withAttribute(
                     'normalizedParams',
                     NormalizedParams::createFromRequest($request)
+                )
+                ->withAttribute(
+                    'nonce',
+                    new ConsumableString('empty')
                 );
+        $fakeTSFE->newCObj($request);
 
         $requestHandler = GeneralUtility::makeInstance(RequestHandler::class);
         $requestHandler->handle($request);
