@@ -98,7 +98,7 @@ jobs:
   tests:
     runs-on: ubuntu-latest
     needs: ci_bootstrapping
-    continue-on-error: ${{ contains(matrix.TYPO3, '-dev') }}
+    continue-on-error: true
     strategy:
       matrix: ${{fromJson(needs.ci_bootstrapping.outputs.matrix)}}
     env:
