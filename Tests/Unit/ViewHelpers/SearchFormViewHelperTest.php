@@ -17,11 +17,19 @@
 
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\ViewHelpers;
 
+use ApacheSolrForTypo3\Solr\Controller\SearchController;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use ApacheSolrForTypo3\Solr\ViewHelpers\SearchFormViewHelper;
 use PHPUnit\Framework\MockObject\MockObject;
+use TYPO3\CMS\Core\Http\ServerRequest;
+use TYPO3\CMS\Extbase\Mvc\ExtbaseRequestParameters;
+use TYPO3\CMS\Extbase\Mvc\Request;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
+use TYPO3\CMS\Fluid\Core\Rendering\RenderingContext;
+use TYPO3\CMS\Fluid\Core\ViewHelper\ViewHelperResolver;
+use TYPO3\CMS\Fluid\View\TemplatePaths;
+use TYPO3Fluid\Fluid\Core\Cache\FluidCacheInterface;
 use TYPO3Fluid\Fluid\Core\Variables\VariableProviderInterface;
 
 /**
@@ -52,6 +60,16 @@ class SearchFormViewHelperTest extends SetUpUnitTestCase
                 'getIsSiteManagedSite',
             ])
             ->getMock();
+        $renderingContext = new RenderingContext(
+            $this->createMock(ViewHelperResolver::class),
+            $this->createMock(FluidCacheInterface::class),
+            [],
+            [],
+            new TemplatePaths()
+        );
+        $request = new Request((new ServerRequest())->withAttribute('extbase', new ExtbaseRequestParameters(SearchController::class)));
+        $renderingContext->setRequest($request);
+        $this->viewHelper->setRenderingContext($renderingContext);
         $this->viewHelper->expects(self::any())->method('getTypoScriptConfiguration')->willReturn($this->typoScriptConfigurationMock);
         $this->viewHelper->expects(self::any())->method('getTemplateVariableContainer')->willReturn($this->getDumbMock(VariableProviderInterface::class));
         $this->viewHelper->expects(self::once())->method('renderChildren')->willReturn('');
