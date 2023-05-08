@@ -365,7 +365,6 @@ class GarbageCollectorTest extends IntegrationTest
      */
     public function canRemoveDeletedContentElementInDelayedProcessingMode(): void
     {
-        self::markTestSkipped('Skipped due to bug in TYPO3 Core 12.4.0');
         $this->extensionConfiguration->set('solr', ['monitoringType' => 1]);
         $this->prepareCanRemoveDeletedContentElement();
         $this->assertEventQueueContainsItemAmount(2);
@@ -436,7 +435,6 @@ class GarbageCollectorTest extends IntegrationTest
      */
     public function canRemoveHiddenContentElementInDelayedProcessingMode(): void
     {
-        self::markTestSkipped('Skipped due to bug in TYPO3 Core 12.4.0');
         $this->extensionConfiguration->set('solr', ['monitoringType' => 1]);
         $data = ['tt_content' => ['88' => ['hidden' => 1]]];
         $this->prepareCanRemoveContentElementTests($data, []);
@@ -484,7 +482,6 @@ class GarbageCollectorTest extends IntegrationTest
      */
     public function canRemoveContentElementWithEndTimeSetToPastInDelayedProcessingMode(): void
     {
-        self::markTestSkipped('Skipped due to bug in TYPO3 Core 12.4.0');
         $this->extensionConfiguration->set('solr', ['monitoringType' => 1]);
         $timeStampInPast = time() - (60 * 60 * 24);
         $data = ['tt_content' => ['88' => ['endtime' => $timeStampInPast]]];
@@ -532,7 +529,6 @@ class GarbageCollectorTest extends IntegrationTest
      */
     public function doesNotRemoveUpdatedContentElementWithNotSetEndTimeInDelayedProcessingMode(): void
     {
-        self::markTestSkipped('Skipped due to bug in TYPO3 Core 12.4.0');
         $this->extensionConfiguration->set('solr', ['monitoringType' => 1]);
         $data = ['tt_content' => ['88' => ['bodytext' => 'Updated! Will stay after update!' ]]];
         $this->prepareCanRemoveContentElementTests($data, [], 'does_not_remove_updated_content_element_with_not_set_endtime.xml', [2]);
@@ -580,7 +576,6 @@ class GarbageCollectorTest extends IntegrationTest
      */
     public function canRemoveContentElementWithStartDateSetToFutureInDelayedProcessingMode(): void
     {
-        self::markTestSkipped('Skipped due to bug in TYPO3 Core 12.4.0');
         $this->extensionConfiguration->set('solr', ['monitoringType' => 1]);
         $timeStampInPast = time() - (60 * 60 * 24);
         $data = ['tt_content' => ['88' => ['endtime' => $timeStampInPast]]];
@@ -846,7 +841,6 @@ class GarbageCollectorTest extends IntegrationTest
      */
     public function canTriggerHookAfterRecordDeletionInDelayedProcessingMode(): void
     {
-        self::markTestSkipped('Skipped due to bug in TYPO3 Core 12.4.0');
         /** @var TestGarbageCollectorPostProcessor $hook */
         $hook = GeneralUtility::makeInstance(TestGarbageCollectorPostProcessor::class);
 
