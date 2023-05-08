@@ -38,7 +38,7 @@ class LastSearchesRepositoryTest extends IntegrationTest
      */
     public function canFindAllKeywords()
     {
-        $actual = $this->lastSearchesRepository->findAllKeywords(10);
+        $actual = $this->lastSearchesRepository->findAllKeywords();
         self::assertSame(['4', '3', '2', '1', '0'], $actual);
     }
 
@@ -49,7 +49,7 @@ class LastSearchesRepositoryTest extends IntegrationTest
     {
         $this->lastSearchesRepository->add('5', 6);
 
-        $actual = $this->lastSearchesRepository->findAllKeywords(10);
+        $actual = $this->lastSearchesRepository->findAllKeywords();
         self::assertSame(['5', '4', '3', '2', '1', '0'], $actual);
     }
 
