@@ -26,6 +26,7 @@ use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use function str_starts_with;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /**
@@ -209,7 +210,8 @@ class FlexFormUserFunctions
             return null;
         }
 
-        $configurationManager = GeneralUtility::makeInstance(ConfigurationManagerInterface::class);
+        /** @var ConfigurationManagerInterface $configurationManager */
+        $configurationManager = GeneralUtility::makeInstance(ObjectManager::class)->get(ConfigurationManagerInterface::class);
         $typoScript = $configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT);
 
         return GeneralUtility::makeInstance(TypoScriptConfiguration::class, $typoScript);
