@@ -12,12 +12,12 @@ defined('TYPO3') or die('Access denied.');
     // Registering RecordMonitor and GarbageCollector hooks.
 
     // hooking into TCE Main to monitor record updates that may require deleting documents from the index
-    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass'][] = GarbageCollector::class;
-    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = GarbageCollector::class;
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass']['solr/garbagecollector'] = GarbageCollector::class;
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass']['solr/garbagecollector'] = GarbageCollector::class;
 
     // hooking into TCE Main to monitor record updates that may require reindexing by the index queue
-    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass'][] = RecordMonitor::class;
-    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = RecordMonitor::class;
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass']['solr/recordmonitor'] = RecordMonitor::class;
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass']['solr/recordmonitor'] = RecordMonitor::class;
 
     // ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
     // registering Index Queue page indexer helpers
