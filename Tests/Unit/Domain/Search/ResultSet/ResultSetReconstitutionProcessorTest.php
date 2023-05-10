@@ -1066,6 +1066,9 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
         $searchResultSet->getUsedSearchRequest()->expects(self::any())->method('getHasSorting')->willReturn(true);
         $searchResultSet->getUsedSearchRequest()->expects(self::any())->method('getSortingName')->willReturn('title');
         $searchResultSet->getUsedSearchRequest()->expects(self::any())->method('getSortingDirection')->willReturn('desc');
+        $searchResultSet->getUsedSearchRequest()->expects(self::any())->method('getSeperatedSortings')->willReturn(
+            ['title' => 'desc', 'relevance' => 'asc']
+        );
 
         $processor = $this->getConfiguredReconstitutionProcessor($configuration, $searchResultSet);
         $processor->process($searchResultSet);

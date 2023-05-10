@@ -96,9 +96,8 @@ class ResultSetReconstitutionProcessor implements SearchResultSetProcessor
     protected function parseSortingIntoObjects(SearchResultSet $resultSet): SearchResultSet
     {
         $configuration = $resultSet->getUsedSearchRequest()->getContextTypoScriptConfiguration();
+        $activeSortings = $resultSet->getUsedSearchRequest()->getSeperatedSortings();
         $hasSorting = $resultSet->getUsedSearchRequest()->getHasSorting();
-        $activeSortingName = $resultSet->getUsedSearchRequest()->getSortingName();
-        $activeSortingDirection = $resultSet->getUsedSearchRequest()->getSortingDirection();
 
         // no configuration available
         if (!isset($configuration)) {
@@ -116,9 +115,9 @@ class ResultSetReconstitutionProcessor implements SearchResultSetProcessor
 
             // when we have an active sorting in the request we compare the sortingName and mark is as active and
             // use the direction from the request
-            if ($hasSorting && $activeSortingName == $sortingName) {
+            if ($hasSorting && array_key_exists($sortingName, $activeSortings)) {
                 $selected = true;
-                $direction = $activeSortingDirection;
+                $direction = $activeSortings[$sortingName];
             }
 
             $field = $sortingOptions['field'];
