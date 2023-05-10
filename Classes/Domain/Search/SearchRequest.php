@@ -21,6 +21,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\UrlFacetContainer;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Util\ArrayAccessor;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * The searchRequest is used to act as an api to the arguments that have been passed
@@ -262,6 +263,22 @@ class SearchRequest
     public function getHasFacetValue(string $facetName, mixed $facetValue): bool
     {
         return $this->activeFacetContainer->hasFacetValue($facetName, $facetValue);
+    }
+
+    /**
+     * Returns all sortings in the sorting string e.g. ['title' => 'asc', 'relevance' => 'desc']
+     */
+    public function getSeperatedSortings(): array
+    {
+        $parsedSortings = [];
+        $explodedSortings = GeneralUtility::trimExplode(',', $this->getSorting(), true);
+
+        foreach ($explodedSortings as $sorting) {
+            $sortingSeperated = explode(' ', $sorting);
+            $parsedSortings[$sortingSeperated[0]] = $sortingSeperated[1];
+        }
+
+        return $parsedSortings;
     }
 
     public function getHasSorting(): bool
