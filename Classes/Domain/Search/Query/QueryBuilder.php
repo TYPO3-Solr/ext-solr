@@ -259,7 +259,7 @@ class QueryBuilder extends AbstractQueryBuilder
     public function useSiteHashFromTypoScript(int $requestedPageId): QueryBuilder
     {
         $queryConfiguration = $this->typoScriptConfiguration->getObjectByPathOrDefault('plugin.tx_solr.search.query.');
-        $allowedSites = $this->siteHashService->getAllowedSitesForPageIdAndAllowedSitesConfiguration($requestedPageId, $queryConfiguration['allowedSites']);
+        $allowedSites = $this->siteHashService->getAllowedSitesForPageIdAndAllowedSitesConfiguration($requestedPageId, $queryConfiguration['allowedSites'] ?? '');
         return $this->useSiteHashFromAllowedSites($allowedSites);
     }
 

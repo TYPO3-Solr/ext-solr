@@ -31,7 +31,7 @@ class LastSearchesComponent extends AbstractComponent
      */
     public function initializeSearchComponent(): void
     {
-        if ($this->searchConfiguration['lastSearches']) {
+        if ($this->searchConfiguration['lastSearches'] ?? false) {
             $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['afterSearch']['lastSearches'] = LastSearchesWriterProcessor::class;
         }
     }

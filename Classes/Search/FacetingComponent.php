@@ -31,7 +31,7 @@ class FacetingComponent extends AbstractComponent
      */
     public function initializeSearchComponent(): void
     {
-        if ($this->searchConfiguration['faceting']) {
+        if ($this->searchConfiguration['faceting'] ?? false) {
             $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchQuery']['faceting'] = Faceting::class;
         }
     }
