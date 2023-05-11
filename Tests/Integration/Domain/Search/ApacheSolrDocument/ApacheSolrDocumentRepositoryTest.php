@@ -18,15 +18,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Domain\Search\ApacheSolrDocu
 use ApacheSolrForTypo3\Solr\Domain\Search\ApacheSolrDocument\Repository;
 use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
-use Doctrine\DBAL\Driver\Exception as DBALDriverException;
-use Doctrine\DBAL\Exception as DBALException;
-use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
-use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
-use TYPO3\CMS\Core\Error\Http\InternalServerErrorException;
-use TYPO3\CMS\Core\Error\Http\ServiceUnavailableException;
-use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\TestingFramework\Core\Exception as TestingFrameworkCoreException;
 
 class ApacheSolrDocumentRepositoryTest extends IntegrationTest
 {
@@ -35,28 +27,14 @@ class ApacheSolrDocumentRepositoryTest extends IntegrationTest
      */
     protected ?Repository $apacheSolrDocumentRepository = null;
 
-    /**
-     * @throws AspectNotFoundException
-     * @throws DBALDriverException
-     * @throws DBALException
-     * @throws InternalServerErrorException
-     * @throws NoSuchCacheException
-     * @throws ServiceUnavailableException
-     * @throws SiteNotFoundException
-     * @throws TestingFrameworkCoreException
-     */
     protected function setUp(): void
     {
         parent::setUp();
-
         $this->writeDefaultSolrTestSiteConfiguration();
-        $_SERVER['HTTP_HOST'] = 'testone.site';
-        $_SERVER['REQUEST_URI'] = '/search.html';
         // trigger an index
         $this->importCSVDataSet(__DIR__ . '/../../../Controller/Fixtures/indexing_data.csv');
-        $this->indexPageIds([1, 2, 3, 4, 5]);
-
-        $this->waitToBeVisibleInSolr();
+        $this->addTypoScriptToTemplateRecord(1, 'config.index_enable = 1');
+        $this->indexPages([1, 2, 3, 4, 5]);
 
         /* @var Repository $apacheSolrDocumentRepository */
         $this->apacheSolrDocumentRepository = GeneralUtility::makeInstance(Repository::class);
@@ -74,8 +52,6 @@ class ApacheSolrDocumentRepositoryTest extends IntegrationTest
 
     /**
      * @test
-     *
-     * @throws DBALDriverException
      */
     public function canFindByPageIdAndByLanguageId()
     {
@@ -88,8 +64,6 @@ class ApacheSolrDocumentRepositoryTest extends IntegrationTest
 
     /**
      * @test
-     *
-     * @throws DBALDriverException
      */
     public function canReturnEmptyCollectionIfNoConnectionToSolrServerIsEstablished()
     {

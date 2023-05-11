@@ -27,7 +27,7 @@ class StatisticsRepositoryTest extends IntegrationTest
      */
     public function canGetTopKeywordsWithHits()
     {
-        $this->importDataSetFromFixture('can_get_statistics.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/statistics.csv');
         $fixtureTimestamp = 1471203378;
         $daysSinceFixture = self::getDaysSinceTimestamp($fixtureTimestamp) + 1;
 
@@ -47,7 +47,7 @@ class StatisticsRepositoryTest extends IntegrationTest
      */
     public function canGetTopKeywordsWithoutHits()
     {
-        $this->importDataSetFromFixture('can_get_statistics.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/statistics.csv');
         $fixtureTimestamp = 1471203378;
         $daysSinceFixture = self::getDaysSinceTimestamp($fixtureTimestamp) + 1;
 
@@ -67,7 +67,7 @@ class StatisticsRepositoryTest extends IntegrationTest
      */
     public function canGetTopKeywordsWithoutHitsNoResult()
     {
-        $this->importDataSetFromFixture('can_get_statistics.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/statistics.csv');
         $fixtureTimestamp = 1480000000;
         $daysSinceFixture = self::getDaysSinceTimestamp($fixtureTimestamp) + 1;
 
@@ -85,7 +85,7 @@ class StatisticsRepositoryTest extends IntegrationTest
      */
     public function canGetSearchStatisticsNoResult()
     {
-        $this->importDataSetFromFixture('can_get_statistics.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/statistics.csv');
         $fixtureTimestamp = 1480000000;
         $daysSinceFixture = self::getDaysSinceTimestamp($fixtureTimestamp) + 1;
 
@@ -103,7 +103,7 @@ class StatisticsRepositoryTest extends IntegrationTest
      */
     public function canSaveStatisticsRecord()
     {
-        $this->importDataSetFromFixture('can_save_statistics_record.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/statistics.csv');
         /* @var StatisticsRepository $repository */
         $repository = GeneralUtility::makeInstance(StatisticsRepository::class);
 
