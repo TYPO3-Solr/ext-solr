@@ -48,7 +48,7 @@ class AnalysisComponent extends AbstractComponent implements QueryAware
      */
     public function initializeSearchComponent(): void
     {
-        if ($this->searchConfiguration['results.']['showDocumentScoreAnalysis']) {
+        if ($this->searchConfiguration['results.']['showDocumentScoreAnalysis'] ?? false) {
             $this->queryBuilder->startFrom($this->query)->useDebug(true);
         }
     }
