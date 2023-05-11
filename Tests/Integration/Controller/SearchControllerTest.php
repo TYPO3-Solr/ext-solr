@@ -1108,7 +1108,7 @@ class SearchControllerTest extends IntegrationTest
         $connection = $this->getConnectionPool()->getConnectionForTable('tt_content');
         $connection->update(
             'tt_content',
-            ['pi_flexform' => $this->getFixtureContentByName('fakedFlexFormData.xml')],
+            ['pi_flexform' => file_get_contents(__DIR__ . '/Fixtures/fakedFlexFormData.xml')],
             ['uid' => 2022]
         );
 

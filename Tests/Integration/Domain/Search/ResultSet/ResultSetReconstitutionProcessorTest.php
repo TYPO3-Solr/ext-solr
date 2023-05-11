@@ -137,7 +137,7 @@ class ResultSetReconstitutionProcessorTest extends IntegrationTest
     {
         $searchRequestMock = $this->createMock(SearchRequest::class);
 
-        $fakeResponseJson = $this->getFixtureContentByName($fixtureFile);
+        $fakeResponseJson = file_get_contents(__DIR__ . '/Fixtures/' . $fixtureFile);
         $fakeResponse = new ResponseAdapter($fakeResponseJson);
 
         $searchResultSet = new SearchResultSet();

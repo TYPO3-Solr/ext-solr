@@ -17,10 +17,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Domain\Site;
 
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteHashService;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
-use Doctrine\DBAL\DBALException;
-use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\TestingFramework\Core\Exception as TestingFrameworkCoreException;
 
 /**
  * Testcase to check if the SiteHashService class works as expected.
@@ -31,11 +28,6 @@ use TYPO3\TestingFramework\Core\Exception as TestingFrameworkCoreException;
  */
 class SiteHashServiceTest extends IntegrationTest
 {
-    /**
-     * @throws NoSuchCacheException
-     * @throws TestingFrameworkCoreException
-     * @throws DBALException
-     */
     protected function setUp(): void
     {
         parent::setUp();

@@ -52,6 +52,7 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use TYPO3\CMS\Frontend\Http\RequestHandler;
 use TYPO3\TestingFramework\Core\Exception as TestingFrameworkCoreException;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
+use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequestContext;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 /**
@@ -95,8 +96,6 @@ abstract class IntegrationTest extends FunctionalTestCase
 
     /**
      * If set to true in subclasses, the import of configured root pages will be skipped.
-     *
-     * @var bool
      */
     protected bool $skipImportRootPagesAndTemplatesForConfiguredSites = false;
 
@@ -147,18 +146,6 @@ abstract class IntegrationTest extends FunctionalTestCase
     protected function getFixturePathByName($fixtureName): string
     {
         return $this->getFixtureRootPath() . $fixtureName;
-    }
-
-    /**
-     * Returns the content of a fixture file.
-     *
-     * @param string $fixtureName
-     *
-     * @return string
-     */
-    protected function getFixtureContentByName(string $fixtureName): string
-    {
-        return file_get_contents($this->getFixturePathByName($fixtureName));
     }
 
     /**
@@ -257,26 +244,6 @@ abstract class IntegrationTest extends FunctionalTestCase
         self::assertStringContainsString('"numFound":' . $documentCount, $solrContent, 'Solr contains unexpected amount of documents');
     }
 
-    /**
-     * @param string $fixture
-     * @param array $importPageIds
-     * @param array|null $feUserGroupArray
-     *
-     * @throws AbstractServerErrorException
-     * @throws AspectNotFoundException
-     * @throws DBALDriverException
-     * @throws DoctrineDBALException
-     * @throws InternalServerErrorException
-     * @throws ServiceUnavailableException
-     * @throws SiteNotFoundException
-     * @throws TestingFrameworkCoreException
-     */
-    protected function indexPageIdsFromFixture(string $fixture, array $importPageIds, ?array $feUserGroupArray = [0]): void
-    {
-        $this->importDataSetFromFixture($fixture);
-        $this->indexPageIds($importPageIds, $feUserGroupArray);
-        $this->fakeBEUser();
-    }
 
     /**
      * @param array $importPageIds
@@ -652,7 +619,7 @@ abstract class IntegrationTest extends FunctionalTestCase
     /**
      * @throws SiteNotFoundException
      */
-    protected function indexPages(array $importPageIds)
+    protected function indexPages(array $importPageIds, int $frontendUserId = null)
     {
         // Mark the pages as items to index
         $siteFinder = GeneralUtility::makeInstance(SiteFinder::class);
@@ -660,7 +627,7 @@ abstract class IntegrationTest extends FunctionalTestCase
             $site = $siteFinder->getSiteByPageId($importPageId);
             $queueItem = $this->addPageToIndex($importPageId, $site);
             $frontendUrl = $site->getRouter()->generateUri($importPageId);
-            $this->executePageIndexer($frontendUrl, $queueItem);
+            $this->executePageIndexer($frontendUrl, $queueItem, $frontendUserId);
         }
         $this->waitToBeVisibleInSolr();
     }
@@ -687,9 +654,10 @@ abstract class IntegrationTest extends FunctionalTestCase
     /**
      * Executes a Frontend request within the same PHP process to trigger the indexing of a page.
      */
-    protected function executePageIndexer(string $url, Item $item): ResponseInterface
+    protected function executePageIndexer(string $url, Item $item, int $frontendUserId = null): ResponseInterface
     {
         $request = new InternalRequest($url);
+        $requestContext = null;
 
         // Now add the headers for item to the request
         $indexerRequest = GeneralUtility::makeInstance(PageIndexerRequest::class);
@@ -702,7 +670,10 @@ abstract class IntegrationTest extends FunctionalTestCase
             [$headerName, $headerValue] = GeneralUtility::trimExplode(':', $header, true, 2);
             $request = $request->withAddedHeader($headerName, $headerValue);
         }
-        $response = $this->executeFrontendSubRequest($request);
+        if ($frontendUserId !== null) {
+            $requestContext = (new InternalRequestContext())->withFrontendUserId($frontendUserId);
+        }
+        $response = $this->executeFrontendSubRequest($request, $requestContext);
         $response->getBody()->rewind();
         return $response;
     }
