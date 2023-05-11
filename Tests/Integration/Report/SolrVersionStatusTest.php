@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -37,8 +39,6 @@ class SolrVersionStatusTest extends IntegrationTest
      */
     public function canGetAGreenSolrConfigStatusAgainstTestServer()
     {
-        $this->importDataSetFromFixture('can_check_solr_version_status.xml');
-
         /* @var SolrVersionStatus $solrVersionStatus */
         $solrVersionStatus = GeneralUtility::makeInstance(SolrVersionStatus::class);
         $violations = $solrVersionStatus->getStatus();

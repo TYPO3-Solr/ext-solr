@@ -1,0 +1,10 @@
+"pages",
+,"uid","pid","is_siteroot","doktype","slug","title"
+,1,0,1,1,"/","Hello Search Test"
+"sys_template",
+,"uid","pid","root","clear","sorting","config"
+,1,1,1,3,100,"
+page = PAGE
+page.typeNum = 0
+config.index_enable = 1
+plugin.tx_solr.enabled = 1"
