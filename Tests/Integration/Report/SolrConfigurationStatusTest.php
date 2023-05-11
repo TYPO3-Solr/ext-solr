@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -43,7 +45,7 @@ class SolrConfigurationStatusTest extends IntegrationTest
      */
     public function canGetGreenReportAgainstTestServer()
     {
-        $this->importDataSetFromFixture('can_get_green_solr_configuration_status_report.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/can_get_green_solr_configuration_status_report.csv');
 
         /* @var SolrConfigurationStatus $solrConfigurationStatus */
         $solrConfigurationStatus = GeneralUtility::makeInstance(SolrConfigurationStatus::class);
@@ -56,7 +58,7 @@ class SolrConfigurationStatusTest extends IntegrationTest
      */
     public function canDetectMissingRootPage()
     {
-        $this->importDataSetFromFixture('can_detect_missing_rootpage.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/can_detect_missing_rootpage.csv');
 
         /* @var SolrConfigurationStatus $solrConfigurationStatus */
         $solrConfigurationStatus = GeneralUtility::makeInstance(SolrConfigurationStatus::class);
@@ -73,7 +75,7 @@ class SolrConfigurationStatusTest extends IntegrationTest
      */
     public function canDetectIndexingDisabled()
     {
-        $this->importDataSetFromFixture('can_detect_indexing_disabled.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/can_detect_indexing_disabled.csv');
 
         /* @var SolrConfigurationStatus $solrConfigurationStatus   */
         $solrConfigurationStatus = GeneralUtility::makeInstance(SolrConfigurationStatus::class);
