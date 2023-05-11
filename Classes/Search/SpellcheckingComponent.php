@@ -51,7 +51,7 @@ class SpellcheckingComponent extends AbstractComponent implements QueryAware
      */
     public function initializeSearchComponent(): void
     {
-        if ($this->searchConfiguration['spellchecking']) {
+        if ($this->searchConfiguration['spellchecking'] ?? false) {
             $this->query = $this->queryBuilder->startFrom($this->query)->useSpellcheckingFromTypoScript()->getQuery();
         }
     }
