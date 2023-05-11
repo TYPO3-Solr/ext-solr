@@ -1,0 +1,6 @@
+"tx_solr_statistics",
+,"uid","pid","root_pid","tstamp","language","num_found","suggestions_shown","time_total","time_preparation","time_processing","feuser_id","cookie","ip","keywords","page","filters"
+,4,37,1,1471203378,0,7,0,29,0,29,0,"875f6aa287","192.168.144.1","content",0,"a:0:{}"
+,5,37,1,1471203378,0,3,0,69,0,29,0,"875f6aa287","192.168.144.1","content",0,"a:0:{}"
+,6,37,1,1471203378,0,6,0,89,0,23,0,"875f6aa287","192.168.144.1","typo3",0,"a:0:{}"
+,7,37,1,1471203378,0,0,0,77,0,18,0,"875f6aa287","192.168.144.1","cms",0,"a:0:{}"
