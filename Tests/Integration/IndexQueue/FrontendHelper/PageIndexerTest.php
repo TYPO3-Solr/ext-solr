@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -69,7 +71,7 @@ class PageIndexerTest extends IntegrationTest
     {
         $this->cleanUpSolrServerAndAssertEmpty();
 
-        $this->importDataSetFromFixture('can_index_into_solr.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/can_index_into_solr.csv');
 
         $this->indexQueuedPage();
 
@@ -90,7 +92,7 @@ class PageIndexerTest extends IntegrationTest
     {
         $this->cleanUpSolrServerAndAssertEmpty();
 
-        $this->importDataSetFromFixture('can_index_custom_pagetype_into_solr.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/can_index_custom_pagetype_into_solr.csv');
 
         $this->indexQueuedPage();
 
@@ -113,7 +115,7 @@ class PageIndexerTest extends IntegrationTest
         $this->cleanUpSolrServerAndAssertEmpty('core_en');
         $this->cleanUpSolrServerAndAssertEmpty('core_de');
 
-        $this->importDataSetFromFixture('can_index_page_with_relation_to_page.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/can_index_page_with_relation_to_page.csv');
 
         $this->indexQueuedPage(1, '/en/');
         $this->indexQueuedPage(1, '/de/');
@@ -143,7 +145,7 @@ class PageIndexerTest extends IntegrationTest
     {
         $this->cleanUpSolrServerAndAssertEmpty('core_en');
 
-        $this->importDataSetFromFixture('can_index_page_with_relation_to_category.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/can_index_page_with_relation_to_category.csv');
         $this->indexQueuedPage(10);
 
         $this->waitToBeVisibleInSolr('core_en');
@@ -164,7 +166,7 @@ class PageIndexerTest extends IntegrationTest
         // this needs to be unified with the PageFieldMappingIndexer registration.
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageSubstitutePageDocument']['ApacheSolrForTypo3\Solr\AdditionalFieldsIndexer'] = AdditionalFieldsIndexer::class;
 
-        $this->importDataSetFromFixture('can_index_with_additional_fields_into_solr.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/can_index_with_additional_fields_into_solr.csv');
         $this->indexQueuedPage();
 
         // we wait to make sure the document will be available in solr
@@ -187,7 +189,7 @@ class PageIndexerTest extends IntegrationTest
      */
     public function canIndexPageIntoSolrWithAdditionalFieldsFromRootLine()
     {
-        $this->importDataSetFromFixture('can_overwrite_configuration_in_rootline.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/can_overwrite_configuration_in_rootline.csv');
         $this->indexQueuedPage(2);
 
         // we wait to make sure the document will be available in solr
@@ -206,7 +208,7 @@ class PageIndexerTest extends IntegrationTest
      */
     public function canExecutePostProcessor()
     {
-        $this->importDataSetFromFixture('can_index_into_solr.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/can_index_into_solr.csv');
         $this->indexQueuedPage();
 
         // we wait to make sure the document will be available in solr
@@ -222,7 +224,7 @@ class PageIndexerTest extends IntegrationTest
      */
     public function canExecuteAdditionalPageIndexer()
     {
-        $this->importDataSetFromFixture('can_index_into_solr.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/can_index_into_solr.csv');
         $this->indexQueuedPage(1, '/en/', ['additionalTestPageIndexer' => true]);
 
         // we wait to make sure the document will be available in solr
@@ -256,7 +258,7 @@ class PageIndexerTest extends IntegrationTest
         $GLOBALS['TYPO3_CONF_VARS']['FE']['enable_mount_pids'] = 1;
 
         $this->cleanUpSolrServerAndAssertEmpty();
-        $this->importDataSetFromFixture('can_index_mounted_page.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/can_index_mounted_page.csv');
         $this->indexQueuedPage(24, '/en/', ['MP' => '24-14']);
 
         // we wait to make sure the document will be available in solr
@@ -288,7 +290,7 @@ class PageIndexerTest extends IntegrationTest
     public function canIndexMultipleMountedPage()
     {
         $this->cleanUpSolrServerAndAssertEmpty();
-        $this->importDataSetFromFixture('can_index_multiple_mounted_page.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/can_index_multiple_mounted_page.csv');
         $this->indexQueuedPage(44, '/en/', ['MP' => '44-14']);
         $this->indexQueuedPage(44, '/en/', ['MP' => '44-24']);
 
@@ -313,11 +315,10 @@ class PageIndexerTest extends IntegrationTest
     {
         // @todo: 1636120156
         self::markTestIncomplete('The behaviour since TYPO3 11 and EXT:solr 11.5 must be checked twice, to be able to finalize request properly and mark items failed.');
-        $this->applyUsingErrorControllerForCMS9andAbove();
         $this->registerShutdownFunctionToPrintExplanationOf404HandlingOnCMSIfDieIsCalled();
         $this->expectException(SiteNotFoundException::class);
 
-        $this->importDataSetFromFixture('does_not_die_if_page_not_available.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/does_not_die_if_page_not_available.csv');
         $this->indexQueuedPage(1636120156);
     }
 

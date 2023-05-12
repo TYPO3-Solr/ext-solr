@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -17,21 +19,13 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\ContentObject;
 
 use ApacheSolrForTypo3\Solr\ContentObject\Relation;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
-use Doctrine\DBAL\Driver\Exception;
-use Doctrine\DBAL\Exception as DBALException;
-use Doctrine\DBAL\Schema\SchemaException;
 use PHPUnit\Framework\MockObject\MockObject;
 use Traversable;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
-use TYPO3\CMS\Core\Database\Schema\Exception\StatementException;
-use TYPO3\CMS\Core\Database\Schema\Exception\UnexpectedSignalReturnValueTypeException;
 use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
-use TYPO3\CMS\Frontend\ContentObject\Exception\ContentRenderingException;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
-use TYPO3\TestingFramework\Core\Exception as TestingFrameworkCoreException;
 
 /**
  * Class RelationTest
@@ -44,20 +38,12 @@ class RelationTest extends IntegrationTest
     ];
 
     /**
-     * @param string $fixtureName
-     *
      * @test
      * @dataProvider fixturesProviderForFallbackToPagesTableIfPagesLanguageOverlayTCAHasNoDefinitionForLocalColumn
-     *
-     * @throws Exception
-     * @throws DBALException
-     * @throws AspectNotFoundException
-     * @throws ContentRenderingException
-     * @throws TestingFrameworkCoreException
      */
     public function canFallbackToPagesTableIfPagesLanguageOverlayTCAHasNoDefinitionForLocalColumn(string $fixtureName): void
     {
-        $this->importDataSetFromFixture($fixtureName);
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/' . $fixtureName);
         $solrRelation = $this->getSolrRelation('pages', 7);
         $actual = $solrRelation->render(['localField' => 'categories']);
 
@@ -66,36 +52,22 @@ class RelationTest extends IntegrationTest
 
     /**
      * Data provider for "canFallbackToPagesTableIfPagesLanguageOverlayTCAHasNoDefinitionForLocalColumn"
-     *
-     * @return Traversable
      */
     public function fixturesProviderForFallbackToPagesTableIfPagesLanguageOverlayTCAHasNoDefinitionForLocalColumn(): Traversable
     {
         yield 'Can fallback to pages if no TCA for local field'
-            => ['solr_relation_can_fallback_to_pages_table_if_no_tca_for_local_field.xml'];
+            => ['solr_relation_can_fallback_to_pages_table_if_no_tca_for_local_field.csv'];
         yield 'Can get related items using original uid if overlay has no TCA'
-            => ['solr_relation_can_get_related_items_using_original_uid_if_sys_lang_overlay_has_no_tca.xml'];
+            => ['solr_relation_can_get_related_items_using_original_uid_if_sys_lang_overlay_has_no_tca.csv'];
     }
 
     /**
-     * @param string $expected
-     * @param array $config
-     *
      * @test
      * @dataProvider canResolveOneToOneRelationDataProvider
-     *
-     * @throws AspectNotFoundException
-     * @throws ContentRenderingException
-     * @throws DBALException
-     * @throws Exception
-     * @throws TestingFrameworkCoreException
-     * @throws SchemaException
-     * @throws StatementException
-     * @throws UnexpectedSignalReturnValueTypeException
      */
     public function canResolveOneToOneRelation(string $expected, array $config): void
     {
-        $this->importDataSetFromFixture('solr_relation_can_resolve_one_to_one_relations.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/solr_relation_can_resolve_one_to_one_relations.csv');
 
         $solrRelation = $this->getSolrRelation('tx_fakeextension_domain_model_foo', 1);
         self::assertEquals($expected, $solrRelation->render($config));
@@ -103,8 +75,6 @@ class RelationTest extends IntegrationTest
 
     /**
      * Data provider for "canResolveOneToOneRelation"
-     *
-     * @return Traversable
      */
     public function canResolveOneToOneRelationDataProvider(): Traversable
     {
@@ -140,26 +110,12 @@ class RelationTest extends IntegrationTest
     }
 
     /**
-     * @param string $expected
-     * @param string $table
-     * @param int $recordUid
-     * @param array $config
-     *
      * @test
      * @dataProvider canResolveMToNRelationDataProvider
-     *
-     * @throws AspectNotFoundException
-     * @throws ContentRenderingException
-     * @throws DBALException
-     * @throws Exception
-     * @throws SchemaException
-     * @throws StatementException
-     * @throws TestingFrameworkCoreException
-     * @throws UnexpectedSignalReturnValueTypeException
      */
     public function canResolveMToNRelation(string $expected, string $table, int $recordUid, array $config): void
     {
-        $this->importDataSetFromFixture('solr_relation_can_resolve_m_to_n_relations.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/solr_relation_can_resolve_m_to_n_relations.csv');
 
         $solrRelation = $this->getSolrRelation($table, $recordUid);
         $result = $solrRelation->render($config);
@@ -168,8 +124,6 @@ class RelationTest extends IntegrationTest
 
     /**
      * Data provider for "canResolveMToNRelation"
-     *
-     * @return Traversable
      */
     public function canResolveMToNRelationDataProvider(): Traversable
     {
@@ -266,26 +220,12 @@ class RelationTest extends IntegrationTest
     }
 
     /**
-     * @param string $expected
-     * @param string $table
-     * @param int $recordUid
-     * @param array $config
-     *
      * @test
      * @dataProvider canResolveOneToNRelationDataProvider
-     *
-     * @throws AspectNotFoundException
-     * @throws ContentRenderingException
-     * @throws DBALException
-     * @throws Exception
-     * @throws SchemaException
-     * @throws StatementException
-     * @throws TestingFrameworkCoreException
-     * @throws UnexpectedSignalReturnValueTypeException
      */
     public function canResolveOneToNRelation(string $expected, string $table, int $recordUid, array $config): void
     {
-        $this->importDataSetFromFixture('solr_relation_can_resolve_one_to_n_relations.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/solr_relation_can_resolve_one_to_n_relations.csv');
 
         $solrRelation = $this->getSolrRelation($table, $recordUid);
         $result = $solrRelation->render($config);
@@ -294,8 +234,6 @@ class RelationTest extends IntegrationTest
 
     /**
      * Data provider for "canResolveOneToNRelation"
-     *
-     * @return Traversable
      */
     public function canResolveOneToNRelationDataProvider(): Traversable
     {
@@ -351,12 +289,6 @@ class RelationTest extends IntegrationTest
 
     /**
      * Prepares and returns the Relation to test
-     *
-     * @param string $table
-     * @param int $uid
-     * @return Relation
-     *
-     * @throws ContentRenderingException
      */
     protected function getSolrRelation(string $table, int $uid): Relation
     {

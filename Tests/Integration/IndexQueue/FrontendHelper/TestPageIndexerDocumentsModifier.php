@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\IndexQueue\FrontendHelper;
 
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
@@ -11,10 +13,7 @@ class TestPageIndexerDocumentsModifier implements PageIndexerDocumentsModifier
     /**
      * Allows Modification of the Documents before they go into index
      *
-     * @param Item $item
-     * @param int $language
      * @param Document[] $documents
-     * @return array|void
      */
     public function modifyDocuments(Item $item, int $language, array $documents): array
     {

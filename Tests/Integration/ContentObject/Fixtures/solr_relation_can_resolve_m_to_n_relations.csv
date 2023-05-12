@@ -1,0 +1,27 @@
+"pages",
+,"uid","pid","is_siteroot","doktype","hidden","slug","title"
+,1,0,1,1,0,"/","Root of Testpage testone.site aka integration_tree_one"
+"sys_category",
+,"uid","pid","title","description","sys_language_uid","parent"
+,1,1,"Category with uid 1","This is a dummy category with uid 1",0,0
+,123,1,"Main category","This is the main category",0,0
+,124,1,"Second category","This is the second category",0,123
+,125,1,"Third category","This is the third category",0,123
+"tx_fakeextension_domain_model_foo",
+,"uid","pid","title","main_category","mm_assignments"
+,1,1,"First foo record",123,1
+,2,1,"Second foo record",123,2
+,3,1,"Third foo record",123,3
+"tx_fakeextension_domain_model_bar",
+,"uid","pid","title","main_category","mm_assignments"
+,10,1,"First bar record",124,3
+,11,1,"Second bar record",125,1
+,12,1,"Third bar record",124,1
+"tx_fakeextension_foo_bar_mm",
+,"uid_local","uid_foreign","sorting","sorting_foreign"
+,1,10,1,1
+,2,10,2,2
+,2,11,1,1
+,3,10,2,2
+,3,11,1,1
+,3,12,3,3
