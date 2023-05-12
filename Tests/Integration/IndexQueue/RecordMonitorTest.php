@@ -276,7 +276,7 @@ class RecordMonitorTest extends IntegrationTest
         ];
         $this->dataHandler->substNEWwithIDs = ['NEW566a9eac309d8193936351' => 8];
 
-        $this->importDataSetFromFixture('new_non_pages_record_is_using_correct_configuration_name.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/new_non_pages_record_is_using_correct_configuration_name.csv');
         $this->addTypoScriptToTemplateRecord(
             1,
             /* @lang TYPO3_TypoScript */
@@ -341,7 +341,7 @@ class RecordMonitorTest extends IntegrationTest
      */
     protected function prepareCanQueueSubPagesWhenExtendToSubPagesWasSetAndHiddenFlagWasRemoved(): void
     {
-        $this->importDataSetFromFixture('reindex_subpages_when_extendToSubpages_set_and_hidden_removed.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/reindex_subpages_when_extendToSubpages_set_and_hidden_removed.csv');
 
         // we expect that the index queue is empty before we start
         $this->assertEmptyIndexQueue();
@@ -392,7 +392,7 @@ class RecordMonitorTest extends IntegrationTest
      */
     protected function prepareCanQueueSubPagesWhenHiddenFlagIsSetAndExtendToSubPagesFlagWasRemoved(): void
     {
-        $this->importDataSetFromFixture('reindex_subpages_when_hidden_set_and_extendToSubpage_removed.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/reindex_subpages_when_hidden_set_and_extendToSubpage_removed.csv');
 
         // we expect that the index queue is empty before we start
         $this->assertEmptyIndexQueue();
@@ -442,7 +442,7 @@ class RecordMonitorTest extends IntegrationTest
      */
     protected function prepareCanQueueSubPagesWhenHiddenAndExtendToSubPagesFlagsWereRemoved(): void
     {
-        $this->importDataSetFromFixture('reindex_subpages_when_hidden_and_extendToSubpage_flags_removed.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/reindex_subpages_when_hidden_and_extendToSubpage_flags_removed.csv');
 
         // we expect that the index queue is empty before we start
         $this->assertEmptyIndexQueue();
@@ -488,7 +488,7 @@ class RecordMonitorTest extends IntegrationTest
      */
     protected function prepareQueueIsNotFilledWhenItemIsSetToHidden(): void
     {
-        $this->importDataSetFromFixture('reindex_subpages_when_hidden_set_and_extendToSubpage_removed.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/reindex_subpages_when_hidden_set_and_extendToSubpage_removed.csv');
 
         // we expect that the index queue is empty before we start
         $this->assertEmptyIndexQueue();
@@ -548,7 +548,7 @@ class RecordMonitorTest extends IntegrationTest
             'tsstamp' => 1000000,
         ];
 
-        $this->importDataSetFromFixture('exception_is_triggered_without_pid.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/exception_is_triggered_without_pid.csv');
         $this->addTypoScriptToTemplateRecord(
             1,
             /* @lang TYPO3_TypoScript */
@@ -624,7 +624,7 @@ class RecordMonitorTest extends IntegrationTest
             'pid' => 1,
         ];
 
-        $this->importDataSetFromFixture('update_unexisting_item_will_remove_queue_entry.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/update_unexisting_item_will_remove_queue_entry.csv');
 
         // there should be one item in the queue.
         $this->assertIndexQueueContainsItemAmount(1);
@@ -643,7 +643,7 @@ class RecordMonitorTest extends IntegrationTest
      */
     public function canUseCorrectIndexingConfigurationForANewCustomPageTypeRecord(): void
     {
-        $this->importDataSetFromFixture('can_use_correct_indexing_configuration_for_a_new_custom_page_type_record.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/custom_page_doktype.csv');
         $this->addTypoScriptToTemplateRecord(
             1,
             /* @lang TYPO3_TypoScript */
@@ -762,7 +762,7 @@ class RecordMonitorTest extends IntegrationTest
      */
     protected function prepareCanQueueUpdatePagesWithCustomPageType(): void
     {
-        $this->importDataSetFromFixture('can_use_correct_indexing_configuration_for_a_new_custom_page_type_record.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/custom_page_doktype.csv');
         $this->addTypoScriptToTemplateRecord(
             1,
             /* @lang TYPO3_TypoScript */
@@ -857,7 +857,7 @@ class RecordMonitorTest extends IntegrationTest
      */
     protected function prepareMountPointIsOnlyAddedOnceForEachTree(): array
     {
-        $this->importDataSetFromFixture('mount_pages_are_added_once.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/mount_pages_are_added_once.csv');
         $this->assertEmptyIndexQueue();
 
         $data = [
@@ -933,7 +933,7 @@ class RecordMonitorTest extends IntegrationTest
      */
     protected function prepareLocalizedPageIsAddedToTheQueue(): void
     {
-        $this->importDataSetFromFixture('localized_page_is_added_to_the_queue.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/localized_page_is_added_to_the_queue.csv');
         $this->assertEmptyIndexQueue();
 
         $status = 'update';
@@ -959,7 +959,7 @@ class RecordMonitorTest extends IntegrationTest
      */
     public function queueItemStaysWhenOverlayIsSetToHidden(): void
     {
-        $this->importDataSetFromFixture('queue_entry_stays_when_overlay_set_to_hidden.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/queue_entry_stays_when_overlay_set_to_hidden.csv');
         $this->assertIndexQueueContainsItemAmount(1);
 
         $status = 'update';
@@ -992,7 +992,7 @@ class RecordMonitorTest extends IntegrationTest
      */
     public function localizedPageIsNotAddedToTheQueueWhenL10ParentIsHidden(): void
     {
-        $this->importDataSetFromFixture('localized_page_is_not_added_to_the_queue_when_parent_hidden.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/localized_page_with_hidden_parent.csv');
         $this->assertEmptyIndexQueue();
 
         $status = 'update';
@@ -1015,7 +1015,7 @@ class RecordMonitorTest extends IntegrationTest
      */
     public function pageIsQueuedWhenContentElementIsChanged(): void
     {
-        $this->importDataSetFromFixture('change_content_element.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/change_content_element.csv');
         $this->assertEmptyIndexQueue();
 
         $status = 'update';
@@ -1072,7 +1072,7 @@ class RecordMonitorTest extends IntegrationTest
      */
     protected function preparePageIsQueuedWhenTranslatedContentElementIsChanged(): void
     {
-        $this->importDataSetFromFixture('change_translated_content_element.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/change_translated_content_element.csv');
         $this->assertEmptyIndexQueue();
 
         $status = 'update';
@@ -1124,7 +1124,7 @@ class RecordMonitorTest extends IntegrationTest
      */
     protected function prepareUpdateRootPageWithRecursiveUpdateFieldsConfiguredForTitle(): void
     {
-        $this->importDataSetFromFixture('update_page_with_recursive_update_fields_configured.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/recordmonitor_subpages.csv');
         $this->addTypoScriptToTemplateRecord(
             1,
             /* @lang TYPO3_TypoScript */
@@ -1153,7 +1153,7 @@ class RecordMonitorTest extends IntegrationTest
      */
     public function updateSubChildPageWithRecursiveUpdateFieldsConfiguredForTitle(): void
     {
-        $this->importDataSetFromFixture('update_page_with_recursive_update_fields_configured.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/recordmonitor_subpages.csv');
         $this->addTypoScriptToTemplateRecord(
             1,
             /* @lang TYPO3_TypoScript */
@@ -1211,7 +1211,7 @@ class RecordMonitorTest extends IntegrationTest
      */
     protected function prepareUpdateSubSubChildPageWithRecursiveUpdateFieldsConfiguredForTitle(): void
     {
-        $this->importDataSetFromFixture('update_page_with_recursive_update_fields_configured.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/recordmonitor_subpages.csv');
         $this->addTypoScriptToTemplateRecord(
             1,
             /* @lang TYPO3_TypoScript */
@@ -1267,7 +1267,7 @@ class RecordMonitorTest extends IntegrationTest
      */
     protected function prepareUpdateRootPageWithRecursiveUpdateFieldsConfiguredForDokType(): void
     {
-        $this->importDataSetFromFixture('update_page_with_recursive_update_fields_configured.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/recordmonitor_subpages.csv');
         $this->addTypoScriptToTemplateRecord(
             1,
             /* @lang TYPO3_TypoScript */
@@ -1296,7 +1296,7 @@ class RecordMonitorTest extends IntegrationTest
      */
     public function updateSubChildPageWithRecursiveUpdateFieldsConfiguredForDokType(): void
     {
-        $this->importDataSetFromFixture('update_page_with_recursive_update_fields_configured.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/recordmonitor_subpages.csv');
         $this->addTypoScriptToTemplateRecord(
             1,
             /* @lang TYPO3_TypoScript */
@@ -1327,7 +1327,7 @@ class RecordMonitorTest extends IntegrationTest
      */
     public function updateSubSubChildPageWithRecursiveUpdateFieldsConfiguredForDokType(): void
     {
-        $this->importDataSetFromFixture('update_page_with_recursive_update_fields_configured.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/recordmonitor_subpages.csv');
         $this->addTypoScriptToTemplateRecord(
             1,
             /* @lang TYPO3_TypoScript */
@@ -1358,7 +1358,7 @@ class RecordMonitorTest extends IntegrationTest
      */
     public function updateRootPageWithoutRecursiveUpdateFieldsConfigured(): void
     {
-        $this->importDataSetFromFixture('update_page_without_recursive_update_fields_configured.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/recordmonitor_subpages.csv');
         $this->assertEmptyIndexQueue();
 
         $status = 'update';
@@ -1411,7 +1411,7 @@ class RecordMonitorTest extends IntegrationTest
      */
     protected function prepareUpdateSubChildPageWithoutRecursiveUpdateFieldsConfigured(): void
     {
-        $this->importDataSetFromFixture('update_page_without_recursive_update_fields_configured.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/recordmonitor_subpages.csv');
         $this->assertEmptyIndexQueue();
 
         $status = 'update';
@@ -1435,7 +1435,7 @@ class RecordMonitorTest extends IntegrationTest
      */
     public function updateSubSubChildPageWithoutRecursiveUpdateFieldsConfigured(): void
     {
-        $this->importDataSetFromFixture('update_page_without_recursive_update_fields_configured.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/recordmonitor_subpages.csv');
         $this->assertEmptyIndexQueue();
 
         $status = 'update';
@@ -1521,7 +1521,7 @@ class RecordMonitorTest extends IntegrationTest
      */
     protected function prepareUpdateRecordOutsideSiteRootWithAdditionalWhereClause(int $uid): void
     {
-        $this->importDataSetFromFixture('update_record_outside_siteroot_with_additionalWhereClause.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/update_record_outside_siteroot_with_additionalWhereClause.csv');
         $this->addTypoScriptToTemplateRecord(
             1,
             /* @lang TYPO3_TypoScript */
@@ -1568,7 +1568,7 @@ class RecordMonitorTest extends IntegrationTest
      */
     public function updateRecordOutsideSiteRoot(): void
     {
-        $this->importDataSetFromFixture('update_record_outside_siteroot.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/update_record_outside_siteroot.csv');
         $this->addTypoScriptToTemplateRecord(
             1,
             /* @lang TYPO3_TypoScript */
@@ -1635,7 +1635,7 @@ class RecordMonitorTest extends IntegrationTest
      */
     protected function prepareUpdateRecordOutsideSiteRootReferencedInTwoSites(): void
     {
-        $this->importDataSetFromFixture('update_record_outside_siteroot_from_two_sites.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/update_record_outside_siteroot_from_two_sites.csv');
         $this->addTypoScriptToTemplateRecord(
             1,
             /* @lang TYPO3_TypoScript */
@@ -1687,7 +1687,7 @@ class RecordMonitorTest extends IntegrationTest
      */
     public function updateRecordOutsideSiteRootLocatedInOtherSite(): void
     {
-        $this->importDataSetFromFixture('update_record_outside_siteroot_from_other_siteroot.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/update_record_outside_siteroot_from_other_siteroot.csv');
         $this->addTypoScriptToTemplateRecord(
             1,
             /* @lang TYPO3_TypoScript */
@@ -1738,7 +1738,7 @@ class RecordMonitorTest extends IntegrationTest
      */
     public function updateRecordMonitoringTablesConfiguredDefault(): void
     {
-        $this->importDataSetFromFixture('update_page_use_configuration_monitor_tables.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/recordmonitor_subpages.csv');
         $this->assertEmptyIndexQueue();
 
         $status = 'update';
@@ -1816,7 +1816,7 @@ class RecordMonitorTest extends IntegrationTest
      */
     protected function prepareUpdateRecordMonitoringTablesTests(int $monitoringType, string $useConfigurationMonitorTables): void
     {
-        $this->importDataSetFromFixture('update_page_use_configuration_monitor_tables.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/recordmonitor_subpages.csv');
         $this->assertEmptyIndexQueue();
 
         $this->extensionConfiguration->set(
@@ -1848,7 +1848,7 @@ class RecordMonitorTest extends IntegrationTest
      */
     public function canCreateSiteOneRootLevel(): void
     {
-        $this->importDataSetFromFixture('can_create_new_page.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/recordmonitor_can_create_new_page.csv');
         $this->importCSVDataSet(__DIR__ . '/../Fixtures/sites_setup_and_data_set/be_users.csv');
         $GLOBALS['BE_USER'] = $this->setUpBackendUser(1);
 
@@ -1868,7 +1868,7 @@ class RecordMonitorTest extends IntegrationTest
      */
     public function canCreateSubPageBelowSiteRoot(): void
     {
-        $this->importDataSetFromFixture('can_create_new_page.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/recordmonitor_can_create_new_page.csv');
         $this->importCSVDataSet(__DIR__ . '/../Fixtures/sites_setup_and_data_set/be_users.csv');
         $GLOBALS['BE_USER'] = $this->setUpBackendUser(1);
 
@@ -1889,7 +1889,7 @@ class RecordMonitorTest extends IntegrationTest
      */
     public function canQueueAccessRestrictedPageOnPageUpdate(): void
     {
-        $this->importDataSetFromFixture('update_access_restricted_page.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/update_access_restricted_page.csv');
         $this->assertEmptyIndexQueue();
 
         $this->recordMonitor->processDatamap_afterDatabaseOperations(

@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<dataset>
-    <tx_fakeextension_domain_model_foo>
-        <uid>111</uid>
-        <pid>1</pid>
-        <title>testnews</title>
-    </tx_fakeextension_domain_model_foo>
-
-</dataset>

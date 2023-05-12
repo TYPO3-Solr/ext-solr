@@ -16,18 +16,12 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\Domain\Index;
 
 use ApacheSolrForTypo3\Solr\Domain\Index\IndexService;
-use ApacheSolrForTypo3\Solr\Domain\Site\Exception\UnexpectedTYPO3SiteInitializationException;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\System\Environment\CliEnvironment;
-use ApacheSolrForTypo3\Solr\System\Environment\WebRootAllReadyDefinedException;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
-use Doctrine\DBAL\ConnectionException;
-use Doctrine\DBAL\Exception as DoctrineDBALException;
-use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\TestingFramework\Core\Exception as TestingFrameworkCoreException;
 
 /**
  * Testcase for the record indexer
@@ -49,10 +43,6 @@ class IndexServiceTest extends IntegrationTest
 
     protected ?Queue $indexQueue = null;
 
-    /**
-     * @throws NoSuchCacheException
-     * @throws TestingFrameworkCoreException
-     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -61,10 +51,6 @@ class IndexServiceTest extends IntegrationTest
         $this->indexQueue = GeneralUtility::makeInstance(Queue::class);
     }
 
-    /**
-     * @throws DoctrineDBALException
-     * @throws UnexpectedTYPO3SiteInitializationException
-     */
     protected function addToIndexQueue(string $table, int $uid): void
     {
         // write an index queue item
@@ -83,17 +69,6 @@ class IndexServiceTest extends IntegrationTest
 
     /**
      * @dataProvider canResolveBaseAsPrefixDataProvider
-     *
-     * @param string $absRefPrefix
-     * @param string $expectedUrl
-     *
-     *
-     * @throws ConnectionException
-     * @throws DoctrineDBALException
-     * @throws TestingFrameworkCoreException
-     * @throws UnexpectedTYPO3SiteInitializationException
-     * @throws WebRootAllReadyDefinedException
-     *
      * @test
      */
     public function canResolveBaseAsPrefix(string $absRefPrefix, string $expectedUrl)

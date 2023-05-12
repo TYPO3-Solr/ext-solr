@@ -1,0 +1,4 @@
+"tt_content",
+,"uid","pid","header","sys_language_uid","l18n_parent","t3_origuid"
+,456,1,"foo",0,0,0
+,9999,1,"foo translated",1,456,456

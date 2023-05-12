@@ -1,0 +1,7 @@
+"tt_content",
+,"uid","pid","colPos","CType","bodytext"
+,88,1,0,"text","will be removed!"
+,99,1,0,"text","will stay!"
+"tx_solr_indexqueue_item",
+,"uid","root","item_type","item_uid","indexing_configuration","changed","indexed","has_indexing_properties","indexing_priority","indexed","errors"
+,4711,1,"pages",1,"pages",1449151778,1,0,0,0,0
