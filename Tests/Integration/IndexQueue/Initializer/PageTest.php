@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -51,10 +53,8 @@ class PageTest extends IntegrationTest
 
     /**
      * Custom assertion to expect a specific amount of items in the queue.
-     *
-     * @param int $expectedAmount
      */
-    protected function assertItemsInQueue($expectedAmount)
+    protected function assertItemsInQueue(int $expectedAmount): void
     {
         $itemCount = $this->indexQueue->getAllItemsCount();
         self::assertSame($itemCount, $expectedAmount, 'Indexqueue contains unexpected amount of items. Expected amount: ' . $expectedAmount);
@@ -63,7 +63,7 @@ class PageTest extends IntegrationTest
     /**
      * Custom assertion to expect an empty queue.
      */
-    protected function assertEmptyQueue()
+    protected function assertEmptyQueue(): void
     {
         $this->assertItemsInQueue(0);
     }
@@ -103,7 +103,7 @@ class PageTest extends IntegrationTest
      */
     public function initializerIsFillingQueueWithMountPages()
     {
-        $this->importDataSetFromFixture('can_add_mount_pages.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/can_add_mount_pages.csv');
 
         $this->assertEmptyQueue();
         $this->initializeAllPageIndexQueues();
@@ -137,7 +137,7 @@ class PageTest extends IntegrationTest
      */
     public function initializerIsFillingQueueWithMountedNonRootPages()
     {
-        $this->importDataSetFromFixture('mounted_shared_non_root_page_from_different_tree_can_be_indexed.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/mounted_shared_non_root_page_from_different_tree_can_be_indexed.csv');
         $this->assertEmptyQueue();
         $this->initializeAllPageIndexQueues();
         $this->assertItemsInQueue(3); // The root page of "testtwo.site aka integration_tree_two" is included.
@@ -169,7 +169,7 @@ class PageTest extends IntegrationTest
      */
     public function initializerIsFillingQueueWithMountedRootPages()
     {
-        $this->importDataSetFromFixture('mounted_shared_root_page_from_different_tree_can_be_indexed.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/mounted_shared_root_page_from_different_tree_can_be_indexed.csv');
         $this->assertEmptyQueue();
         $this->initializeAllPageIndexQueues();
         $this->assertItemsInQueue(3); // The root page of "testtwo.site aka integration_tree_two" is included.
@@ -208,7 +208,7 @@ class PageTest extends IntegrationTest
      */
     public function initializerIsFillingQueuesWithMultipleSitesMounted()
     {
-        $this->importDataSetFromFixture('mounted_shared_page_from_multiple_trees_can_be_queued.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/mounted_shared_page_from_multiple_trees_can_be_queued.csv');
         $this->assertEmptyQueue();
         $this->initializeAllPageIndexQueues();
         $this->assertItemsInQueue(4);
@@ -241,7 +241,7 @@ class PageTest extends IntegrationTest
      */
     public function initializerAddsInfoMessagesAboutInvalidMountPages()
     {
-        $this->importDataSetFromFixture('can_add_mount_pages.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/can_add_mount_pages.csv');
 
         $this->assertEmptyQueue();
         $this->initializeAllPageIndexQueues();
@@ -272,7 +272,7 @@ class PageTest extends IntegrationTest
      */
     public function initializerDoesNotIgnoreSubPagesOfRestrictedByAdditionalWhereClauseParents()
     {
-        $this->importDataSetFromFixture('initializer_does_not_ignore_sub_pages_of_restricted_by_additionalWhereClause_parents.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/initializer_does_not_ignore_sub_pages_of_restricted_by_additionalWhereClause_parents.csv');
         $this->assertEmptyQueue();
         $this->initializeAllPageIndexQueues();
 
