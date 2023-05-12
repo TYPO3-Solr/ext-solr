@@ -244,7 +244,6 @@ abstract class IntegrationTest extends FunctionalTestCase
         self::assertStringContainsString('"numFound":' . $documentCount, $solrContent, 'Solr contains unexpected amount of documents');
     }
 
-
     /**
      * @param array $importPageIds
      * @param array|null $feUserGroupArray
