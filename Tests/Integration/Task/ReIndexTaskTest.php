@@ -22,7 +22,6 @@ use ApacheSolrForTypo3\Solr\Task\ReIndexTask;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use Exception;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
-use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
 use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -56,9 +55,6 @@ class ReIndexTaskTest extends IntegrationTest
         'scheduler',
     ];
 
-    /**
-     * @throws NoSuchCacheException
-     */
     protected function setUp(): void
     {
         parent::setUp();

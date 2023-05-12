@@ -22,10 +22,8 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
-use ReflectionException;
 use Solarium\Client;
 use Solarium\Core\Client\Adapter\Psr18Adapter;
-use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -42,9 +40,6 @@ class SolrWriteServiceTest extends IntegrationTest
      */
     protected $solrWriteService;
 
-    /**
-     * @throws NoSuchCacheException
-     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -71,7 +66,6 @@ class SolrWriteServiceTest extends IntegrationTest
 
     /**
      * @test
-     * @throws ReflectionException
      */
     public function canExtractByQuery()
     {

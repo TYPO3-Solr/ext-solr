@@ -15,35 +15,22 @@
 
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\IndexQueue;
 
-use ApacheSolrForTypo3\Solr\FrontendEnvironment\Exception\Exception as FrontendEnvironmentException;
 use ApacheSolrForTypo3\Solr\IndexQueue\AdditionalIndexQueueItemIndexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\Indexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
-use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
 use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IndexQueue\Helpers\DummyAdditionalIndexQueueItemIndexer;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IndexQueue\Helpers\DummyIndexer;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
-use Doctrine\DBAL\ConnectionException as DBALConnectionException;
-use Doctrine\DBAL\Driver\Exception as DBALDriverException;
-use Doctrine\DBAL\Exception as DBALException;
-use Doctrine\DBAL\Schema\SchemaException;
 use InvalidArgumentException;
 use Psr\Http\Server\RequestHandlerInterface;
-use ReflectionException;
-use Throwable;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
-use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
-use TYPO3\CMS\Core\Database\Schema\Exception\StatementException;
-use TYPO3\CMS\Core\Database\Schema\Exception\UnexpectedSignalReturnValueTypeException;
-use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Http\ServerRequestFactory;
 use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Middleware\NormalizedParamsAttribute;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\TestingFramework\Core\Exception as TestingFrameworkCoreException;
 use UnexpectedValueException;
 
 /**
@@ -70,10 +57,6 @@ class IndexerTest extends IntegrationTest
      */
     protected ?Indexer $indexer = null;
 
-    /**
-     * @throws TestingFrameworkCoreException
-     * @throws NoSuchCacheException
-     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -107,24 +90,11 @@ class IndexerTest extends IntegrationTest
      * This testcase should check if we can queue a custom record with MM relations.
      *
      * @test
-     *
-     * @throws DBALConnectionException
-     * @throws DBALDriverException
-     * @throws DBALException
-     * @throws FrontendEnvironmentException
-     * @throws NoSolrConnectionFoundException
-     * @throws SchemaException
-     * @throws SiteNotFoundException
-     * @throws StatementException
-     * @throws TestingFrameworkCoreException
-     * @throws Throwable
-     * @throws UnexpectedSignalReturnValueTypeException
      */
     public function canIndexItemWithMMRelation(): void
     {
         $this->cleanUpSolrServerAndAssertEmpty();
-
-        $this->importDataSetFromFixture('can_index_custom_record_with_mm_relation.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/can_index_custom_record_with_mm_relation.csv');
 
         $result = $this->addToQueueAndIndexRecord('tx_fakeextension_domain_model_bar', 88);
 
@@ -140,42 +110,25 @@ class IndexerTest extends IntegrationTest
         $this->cleanUpSolrServerAndAssertEmpty();
     }
 
-    /**
-     * @return array
-     */
     public function getTranslatedRecordDataProvider(): array
     {
         return [
-            'with_l_parameter' => ['can_index_custom_translated_record_with_l_param.xml'],
-            'without_l_parameter' => ['can_index_custom_translated_record_without_l_param.xml'],
-            'without_l_parameter_and_content_fallback' => ['can_index_custom_translated_record_without_l_param_and_content_fallback.xml'],
+            'with_l_parameter' => ['can_index_custom_translated_record_with_l_param.csv'],
+            'without_l_parameter' => ['can_index_custom_translated_record_without_l_param.csv'],
+            'without_l_parameter_and_content_fallback' => ['can_index_custom_translated_record_without_l_param_and_content_fallback.csv'],
         ];
     }
 
     /**
      * @dataProvider getTranslatedRecordDataProvider
      * @test
-     *
-     * @param $fixture
-     *
-     * @throws DBALConnectionException
-     * @throws DBALDriverException
-     * @throws DBALException
-     * @throws FrontendEnvironmentException
-     * @throws NoSolrConnectionFoundException
-     * @throws SchemaException
-     * @throws SiteNotFoundException
-     * @throws StatementException
-     * @throws TestingFrameworkCoreException
-     * @throws Throwable
-     * @throws UnexpectedSignalReturnValueTypeException
      */
-    public function testCanIndexTranslatedCustomRecord($fixture): void
+    public function testCanIndexTranslatedCustomRecord(string $fixture): void
     {
         $this->cleanUpSolrServerAndAssertEmpty();
         $this->cleanUpSolrServerAndAssertEmpty('core_de');
 
-        $this->importDataSetFromFixture($fixture);
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/' . $fixture);
 
         $result = $this->addToQueueAndIndexRecord('tx_fakeextension_domain_model_bar', 88);
         self::assertTrue($result, 'Indexing was not indicated to be successful');
@@ -195,7 +148,7 @@ class IndexerTest extends IntegrationTest
         $this->waitToBeVisibleInSolr('core_de');
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_de/select?q=*:*');
         self::assertStringContainsString('"numFound":2', $solrContent, 'Could not find translated record in solr document into solr');
-        if ($fixture === 'can_index_custom_translated_record_without_l_param_and_content_fallback.xml') {
+        if ($fixture === 'can_index_custom_translated_record_without_l_param_and_content_fallback.csv') {
             self::assertStringContainsString('"title":"original"', $solrContent, 'Could not index  translated document into solr');
             self::assertStringContainsString('"title":"original2"', $solrContent, 'Could not index  translated document into solr');
         } else {
@@ -213,23 +166,11 @@ class IndexerTest extends IntegrationTest
      * This testcase should check if we can queue a custom record with ordered MM relations.
      *
      * @test
-     *
-     * @throws DBALConnectionException
-     * @throws DBALDriverException
-     * @throws DBALException
-     * @throws FrontendEnvironmentException
-     * @throws NoSolrConnectionFoundException
-     * @throws SchemaException
-     * @throws SiteNotFoundException
-     * @throws StatementException
-     * @throws TestingFrameworkCoreException
-     * @throws Throwable
-     * @throws UnexpectedSignalReturnValueTypeException
      */
     public function canIndexItemWithMMRelationsInTheExpectedOrder(): void
     {
         $this->cleanUpSolrServerAndAssertEmpty();
-        $this->importDataSetFromFixture('can_index_custom_record_with_multiple_mm_relations.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/can_index_custom_record_with_multiple_mm_relations.csv');
 
         $result = $this->addToQueueAndIndexRecord('tx_fakeextension_domain_model_bar', 88);
 
@@ -259,24 +200,13 @@ class IndexerTest extends IntegrationTest
      * This testcase should check if we can queue a custom record with MM relations.
      *
      * @test
-     *
-     * @throws DBALConnectionException
-     * @throws DBALDriverException
-     * @throws DBALException
-     * @throws FrontendEnvironmentException
-     * @throws NoSolrConnectionFoundException
-     * @throws SchemaException
-     * @throws SiteNotFoundException
-     * @throws StatementException
-     * @throws TestingFrameworkCoreException
-     * @throws Throwable
-     * @throws UnexpectedSignalReturnValueTypeException
+     * @todo: this test might not be working as it does not check for L parameters. Should be revised
      */
     public function canIndexTranslatedItemWithMMRelation(): void
     {
         $this->cleanUpSolrServerAndAssertEmpty();
         $this->cleanUpSolrServerAndAssertEmpty('core_de');
-        $this->importDataSetFromFixture('can_index_custom_translated_record_with_mm_relation.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/can_index_custom_translated_record_with_mm_relation.csv');
 
         $result = $this->addToQueueAndIndexRecord('tx_fakeextension_domain_model_bar', 88);
         self::assertTrue($result, 'Indexing was not indicated to be successful');
@@ -297,23 +227,11 @@ class IndexerTest extends IntegrationTest
      * This testcase should check if we can queue a custom record with multiple MM relations.
      *
      * @test
-     *
-     * @throws DBALConnectionException
-     * @throws DBALDriverException
-     * @throws DBALException
-     * @throws FrontendEnvironmentException
-     * @throws NoSolrConnectionFoundException
-     * @throws SchemaException
-     * @throws SiteNotFoundException
-     * @throws StatementException
-     * @throws TestingFrameworkCoreException
-     * @throws Throwable
-     * @throws UnexpectedSignalReturnValueTypeException
      */
     public function canIndexMultipleMMRelatedItems(): void
     {
         $this->cleanUpSolrServerAndAssertEmpty();
-        $this->importDataSetFromFixture('can_index_custom_record_with_multiple_mm_relations.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/can_index_custom_record_with_multiple_mm_relations.csv');
 
         $result = $this->addToQueueAndIndexRecord('tx_fakeextension_domain_model_bar', 88);
         self::assertTrue($result, 'Indexing was not indicated to be successful');
@@ -336,23 +254,11 @@ class IndexerTest extends IntegrationTest
      * This testcase should check if we can queue a custom record with MM relations and respect the additionalWhere clause.
      *
      * @test
-     *
-     * @throws DBALConnectionException
-     * @throws DBALDriverException
-     * @throws DBALException
-     * @throws FrontendEnvironmentException
-     * @throws NoSolrConnectionFoundException
-     * @throws SchemaException
-     * @throws SiteNotFoundException
-     * @throws StatementException
-     * @throws TestingFrameworkCoreException
-     * @throws Throwable
-     * @throws UnexpectedSignalReturnValueTypeException
      */
     public function canIndexItemWithMMRelationAndAdditionalWhere(): void
     {
         $this->cleanUpSolrServerAndAssertEmpty();
-        $this->importDataSetFromFixture('can_index_custom_record_with_mm_relationAndAdditionalWhere.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/can_index_custom_record_with_mm_relationAndAdditionalWhere.csv');
 
         $result = $this->addToQueueAndIndexRecord('tx_fakeextension_domain_model_bar', 88);
         self::assertTrue($result, 'Indexing was not indicated to be successful');
@@ -371,24 +277,12 @@ class IndexerTest extends IntegrationTest
      * This testcase should check if we can queue a custom record with MM relations and respect the additionalWhere clause.
      *
      * @test
-     *
-     * @throws DBALConnectionException
-     * @throws DBALDriverException
-     * @throws DBALException
-     * @throws FrontendEnvironmentException
-     * @throws NoSolrConnectionFoundException
-     * @throws SchemaException
-     * @throws SiteNotFoundException
-     * @throws StatementException
-     * @throws TestingFrameworkCoreException
-     * @throws Throwable
-     * @throws UnexpectedSignalReturnValueTypeException
      */
     public function canIndexItemWithMMRelationToATranslatedPage(): void
     {
         $this->cleanUpSolrServerAndAssertEmpty();
         $this->cleanUpSolrServerAndAssertEmpty('core_de');
-        $this->importDataSetFromFixture('can_index_custom_translated_record_with_mm_relation_to_a_page.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/can_index_custom_translated_record_with_mm_relation_to_a_page.csv');
 
         $result = $this->addToQueueAndIndexRecord('tx_fakeextension_domain_model_bar', 88);
         self::assertTrue($result, 'Indexing was not indicated to be successful');
@@ -411,23 +305,11 @@ class IndexerTest extends IntegrationTest
      * This testcase is used to check if direct relations can be resolved with the RELATION configuration
      *
      * @test
-     *
-     * @throws DBALConnectionException
-     * @throws DBALDriverException
-     * @throws DBALException
-     * @throws FrontendEnvironmentException
-     * @throws NoSolrConnectionFoundException
-     * @throws SchemaException
-     * @throws SiteNotFoundException
-     * @throws StatementException
-     * @throws TestingFrameworkCoreException
-     * @throws Throwable
-     * @throws UnexpectedSignalReturnValueTypeException
      */
     public function canIndexItemWithDirectRelation(): void
     {
         $this->cleanUpSolrServerAndAssertEmpty();
-        $this->importDataSetFromFixture('can_index_custom_record_with_direct_relation.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/can_index_custom_record_with_direct_relation.csv');
 
         $result = $this->addToQueueAndIndexRecord('tx_fakeextension_domain_model_bar', 111);
         self::assertTrue($result, 'Indexing was not indicated to be successful');
@@ -449,23 +331,11 @@ class IndexerTest extends IntegrationTest
      * This testcase is used to check if multiple direct relations can be resolved with the RELATION configuration
      *
      * @test
-     *
-     * @throws DBALConnectionException
-     * @throws DBALDriverException
-     * @throws DBALException
-     * @throws FrontendEnvironmentException
-     * @throws NoSolrConnectionFoundException
-     * @throws SchemaException
-     * @throws SiteNotFoundException
-     * @throws StatementException
-     * @throws TestingFrameworkCoreException
-     * @throws Throwable
-     * @throws UnexpectedSignalReturnValueTypeException
      */
     public function canIndexItemWithMultipleDirectRelation(): void
     {
         $this->cleanUpSolrServerAndAssertEmpty();
-        $this->importDataSetFromFixture('can_index_custom_record_with_multiple_direct_relations.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/can_index_custom_record_with_multiple_direct_relations.csv');
 
         $result = $this->addToQueueAndIndexRecord('tx_fakeextension_domain_model_bar', 111);
         self::assertTrue($result, 'Indexing was not indicated to be successful');
@@ -499,24 +369,11 @@ class IndexerTest extends IntegrationTest
      * and could be limited with an additionalWhere clause at the same time
      *
      * @test
-     *
-     * @throws DBALConnectionException
-     * @throws DBALDriverException
-     * @throws DBALException
-     * @throws FrontendEnvironmentException
-     * @throws NoSolrConnectionFoundException
-     * @throws SchemaException
-     * @throws SiteNotFoundException
-     * @throws StatementException
-     * @throws TestingFrameworkCoreException
-     * @throws Throwable
-     * @throws UnexpectedSignalReturnValueTypeException
      */
     public function canIndexItemWithDirectRelationAndAdditionalWhere(): void
     {
         $this->cleanUpSolrServerAndAssertEmpty();
-
-        $this->importDataSetFromFixture('can_index_custom_record_with_direct_relationAndAdditionalWhere.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/can_index_custom_record_with_direct_relationAndAdditionalWhere.csv');
 
         $result = $this->addToQueueAndIndexRecord('tx_fakeextension_domain_model_bar', 111);
         self::assertTrue($result, 'Indexing was not indicated to be successful');
@@ -533,23 +390,11 @@ class IndexerTest extends IntegrationTest
 
     /**
      * @test
-     *
-     * @throws DBALConnectionException
-     * @throws DBALDriverException
-     * @throws DBALException
-     * @throws FrontendEnvironmentException
-     * @throws NoSolrConnectionFoundException
-     * @throws SchemaException
-     * @throws SiteNotFoundException
-     * @throws StatementException
-     * @throws TestingFrameworkCoreException
-     * @throws Throwable
-     * @throws UnexpectedSignalReturnValueTypeException
      */
     public function canUseConfigurationFromTemplateInRootLine(): void
     {
         $this->cleanUpSolrServerAndAssertEmpty();
-        $this->importDataSetFromFixture('can_index_custom_record_with_configuration_in_rootline.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/can_index_custom_record_with_configuration_in_rootline.csv');
 
         $result = $this->addToQueueAndIndexRecord('tx_fakeextension_domain_model_bar', 111);
         self::assertTrue($result, 'Indexing was not indicated to be successful');
@@ -566,8 +411,6 @@ class IndexerTest extends IntegrationTest
 
     /**
      * @test
-     *
-     * @throws ReflectionException
      */
     public function canGetAdditionalDocumentsInterfaceOnly(): void
     {
@@ -582,7 +425,6 @@ class IndexerTest extends IntegrationTest
 
     /**
      * @test
-     * @throws ReflectionException
      */
     public function canGetAdditionalDocumentsNotImplementingInterface(): void
     {
@@ -597,8 +439,6 @@ class IndexerTest extends IntegrationTest
 
     /**
      * @test
-     *
-     * @throws ReflectionException
      */
     public function canGetAdditionalDocumentsNonExistingClass(): void
     {
@@ -614,8 +454,6 @@ class IndexerTest extends IntegrationTest
 
     /**
      * @test
-     *
-     * @throws ReflectionException
      */
     public function canGetAdditionalDocuments(): void
     {
@@ -631,23 +469,11 @@ class IndexerTest extends IntegrationTest
 
     /**
      * @test
-     *
-     * @throws DBALConnectionException
-     * @throws DBALDriverException
-     * @throws DBALException
-     * @throws FrontendEnvironmentException
-     * @throws NoSolrConnectionFoundException
-     * @throws SchemaException
-     * @throws SiteNotFoundException
-     * @throws StatementException
-     * @throws TestingFrameworkCoreException
-     * @throws Throwable
-     * @throws UnexpectedSignalReturnValueTypeException
      */
     public function testCanIndexCustomRecordOutsideOfSiteRoot(): void
     {
         $this->cleanUpSolrServerAndAssertEmpty();
-        $this->importDataSetFromFixture('can_index_custom_record_outside_site_root.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/can_index_custom_record_outside_site_root.csv');
 
         $result = $this->addToQueueAndIndexRecord('tx_fakeextension_domain_model_bar', 111);
 
@@ -664,23 +490,11 @@ class IndexerTest extends IntegrationTest
 
     /**
      * @test
-     *
-     * @throws DBALConnectionException
-     * @throws DBALDriverException
-     * @throws DBALException
-     * @throws FrontendEnvironmentException
-     * @throws NoSolrConnectionFoundException
-     * @throws SchemaException
-     * @throws SiteNotFoundException
-     * @throws StatementException
-     * @throws TestingFrameworkCoreException
-     * @throws Throwable
-     * @throws UnexpectedSignalReturnValueTypeException
      */
     public function testCanIndexCustomRecordOutsideOfSiteRootWithTemplate(): void
     {
         $this->cleanUpSolrServerAndAssertEmpty();
-        $this->importDataSetFromFixture('can_index_custom_record_outside_site_root_with_template.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/can_index_custom_record_outside_site_root_with_template.csv');
 
         $result = $this->addToQueueAndIndexRecord('tx_fakeextension_domain_model_bar', 1);
 
@@ -697,20 +511,6 @@ class IndexerTest extends IntegrationTest
         $this->cleanUpSolrServerAndAssertEmpty();
     }
 
-    /**
-     * @param string $table
-     * @param int $uid
-     *
-     * @return bool
-     *
-     * @throws DBALConnectionException
-     * @throws DBALDriverException
-     * @throws DBALException
-     * @throws FrontendEnvironmentException
-     * @throws NoSolrConnectionFoundException
-     * @throws SiteNotFoundException
-     * @throws Throwable
-     */
     protected function addToQueueAndIndexRecord(string $table, int $uid): bool
     {
         $result = false;
@@ -728,13 +528,10 @@ class IndexerTest extends IntegrationTest
 
     /**
      * @test
-     *
-     * @throws ReflectionException
-     * @throws TestingFrameworkCoreException
      */
     public function getSolrConnectionsByItemReturnsNoDefaultConnectionIfRootPageIsHideDefaultLanguage(): void
     {
-        $this->importDataSetFromFixture('can_index_with_rootPage_set_to_hide_default_language.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/can_index_with_rootPage_set_to_hide_default_language.csv');
         $itemMetaData = [
             'uid' => 1,
             'root' => 1,
@@ -754,14 +551,11 @@ class IndexerTest extends IntegrationTest
 
     /**
      * @test
-     *
-     * @throws ReflectionException
-     * @throws TestingFrameworkCoreException
      */
     public function getSolrConnectionsByItemReturnsNoDefaultConnectionDefaultLanguageIsHiddenInSiteConfig(): void
     {
         $this->writeDefaultSolrTestSiteConfigurationForHostAndPort('http', 'localhost', 8999, true);
-        $this->importDataSetFromFixture('can_index_with_rootPage_set_to_hide_default_language.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/can_index_with_rootPage_set_to_hide_default_language.csv');
         $itemMetaData = [
             'uid' => 1,
             'root' => 1,
@@ -782,21 +576,12 @@ class IndexerTest extends IntegrationTest
 
     /**
      * @test
-     *
-     * @throws DBALConnectionException
-     * @throws DBALDriverException
-     * @throws DBALException
-     * @throws FrontendEnvironmentException
-     * @throws NoSolrConnectionFoundException
-     * @throws SiteNotFoundException
-     * @throws TestingFrameworkCoreException
-     * @throws Throwable
      */
     public function getSolrConnectionsByItemReturnsProperItemInNestedSite(): void
     {
         $this->cleanUpSolrServerAndAssertEmpty();
         $this->writeDefaultSolrTestSiteConfigurationForHostAndPort();
-        $this->importDataSetFromFixture('can_index_with_multiple_sites.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/can_index_with_multiple_sites.csv');
         $result = $this->addToQueueAndIndexRecord('pages', 1);
         self::assertTrue($result, 'Indexing was not indicated to be successful');
         $result = $this->addToQueueAndIndexRecord('pages', 111);

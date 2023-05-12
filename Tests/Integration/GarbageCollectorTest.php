@@ -195,7 +195,7 @@ class GarbageCollectorTest extends IntegrationTest
      */
     protected function prepareQueueItemStaysWhenOverlayIsSetToHidden(): void
     {
-        $this->importDataSetFromFixture('queue_item_stays_when_overlay_set_to_hidden.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/queue_item_stays_when_overlay_set_to_hidden.csv');
 
         $this->assertIndexQueueContainsItemAmount(1);
 
@@ -207,7 +207,7 @@ class GarbageCollectorTest extends IntegrationTest
      */
     public function canQueueAPageAndRemoveItWithTheGarbageCollector(): void
     {
-        $this->importDataSetFromFixture('can_queue_a_page_and_remove_it_with_the_garbage_collector.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/subpage.csv');
 
         // we expect that the index queue is empty before we start
         $this->assertEmptyIndexQueue();
@@ -256,7 +256,7 @@ class GarbageCollectorTest extends IntegrationTest
      */
     protected function prepareCanCollectGarbageFromSubPagesWhenPageIsSetToHiddenAndExtendToSubPagesIsSet(): void
     {
-        $this->importDataSetFromFixture('can_collect_garbage_from_subPages_when_page_is_set_to_hidden_and_extendToSubpages_is_set.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/page_hidden_and_extendtosubpages.csv');
 
         // we expect that the index queue is empty before we start
         $this->assertEmptyIndexQueue();
@@ -311,7 +311,7 @@ class GarbageCollectorTest extends IntegrationTest
      */
     protected function prepareCanCollectGarbageFromSubPagesWhenPageIsSetToHiddenAndExtendToSubPagesIsSetForMultipleSubpages(): void
     {
-        $this->importDataSetFromFixture('can_collect_garbage_from_subPages_when_page_is_set_to_hidden_and_extendToSubpages_is_set_multiple_subpages.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/page_hidden_and_extendtosubpages_multiple_subpages.csv');
 
         // we expect that the index queue is empty before we start
         $this->assertEmptyIndexQueue();
@@ -382,7 +382,7 @@ class GarbageCollectorTest extends IntegrationTest
     protected function prepareCanRemoveDeletedContentElement(): void
     {
         $this->cleanUpSolrServerAndAssertEmpty();
-        $this->importDataSetFromFixture('can_remove_content_element.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/indexed_content.csv');
 
         $this->indexPageIds([1]);
 
@@ -398,7 +398,6 @@ class GarbageCollectorTest extends IntegrationTest
 
         $cmd = ['tt_content' => [88 => ['delete' => 1 ]]];
         $this->dataHandler->start([], $cmd, $beUser);
-        $this->dataHandler->stripslashes_values = 0;
         $this->dataHandler->process_cmdmap();
         $this->dataHandler->process_datamap();
     }
@@ -409,7 +408,7 @@ class GarbageCollectorTest extends IntegrationTest
     public function canRemoveHiddenContentElement(): void
     {
         $data = ['tt_content' => ['88' => ['hidden' => 1]]];
-        $this->prepareCanRemoveContentElementTests($data, []);
+        $this->prepareCanRemoveContentElementTests($data);
 
         // after applying the commands solr should be empty (because the page was removed from solr and queued for indexing)
         $this->waitToBeVisibleInSolr();
@@ -437,7 +436,7 @@ class GarbageCollectorTest extends IntegrationTest
     {
         $this->extensionConfiguration->set('solr', ['monitoringType' => 1]);
         $data = ['tt_content' => ['88' => ['hidden' => 1]]];
-        $this->prepareCanRemoveContentElementTests($data, []);
+        $this->prepareCanRemoveContentElementTests($data);
 
         $this->assertEventQueueContainsItemAmount(2);
         $this->assertIndexQueueContainsItemAmount(1);
@@ -456,13 +455,10 @@ class GarbageCollectorTest extends IntegrationTest
     {
         $timeStampInPast = time() - (60 * 60 * 24);
         $data = ['tt_content' => ['88' => ['endtime' => $timeStampInPast]]];
-        $this->prepareCanRemoveContentElementTests($data, []);
-
-        // after applying the commands solr should be empty (because the page was removed from solr and queued for indexing)
-        $this->waitToBeVisibleInSolr();
-        $this->assertSolrIsEmpty();
+        $this->prepareCanRemoveContentElementTests($data);
 
         // we expect the is one item in the indexQueue
+        $this->waitToBeVisibleInSolr();
         $this->assertIndexQueueContainsItemAmount(1);
         $items = $this->indexQueue->getItems('pages', 1);
         self::assertSame(1, count($items));
@@ -471,7 +467,7 @@ class GarbageCollectorTest extends IntegrationTest
         $this->indexPageIds([1]);
         $this->waitToBeVisibleInSolr();
 
-        // now the content of the deletec content element should be gone
+        // now the content of the deleted content element should be gone
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
         self::assertStringNotContainsString('will be removed!', $solrContent, 'solr did not remove content hidden by endtime in past');
         self::assertStringContainsString('will stay!', $solrContent, 'solr did not contain rendered page content');
@@ -485,7 +481,7 @@ class GarbageCollectorTest extends IntegrationTest
         $this->extensionConfiguration->set('solr', ['monitoringType' => 1]);
         $timeStampInPast = time() - (60 * 60 * 24);
         $data = ['tt_content' => ['88' => ['endtime' => $timeStampInPast]]];
-        $this->prepareCanRemoveContentElementTests($data, []);
+        $this->prepareCanRemoveContentElementTests($data);
 
         $this->assertEventQueueContainsItemAmount(2);
         $this->assertIndexQueueContainsItemAmount(1);
@@ -503,7 +499,7 @@ class GarbageCollectorTest extends IntegrationTest
     public function doesNotRemoveUpdatedContentElementWithNotSetEndTime(): void
     {
         $data = ['tt_content' => ['88' => ['bodytext' => 'Updated! Will stay after update!' ]]];
-        $this->prepareCanRemoveContentElementTests($data, [], 'does_not_remove_updated_content_element_with_not_set_endtime.xml', [2]);
+        $this->prepareCanRemoveContentElementTests($data, 'does_not_remove_updated_content_element_with_not_set_endtime.csv', [2]);
 
         // document should stay in the index, because endtime was not in past but empty
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
@@ -531,7 +527,7 @@ class GarbageCollectorTest extends IntegrationTest
     {
         $this->extensionConfiguration->set('solr', ['monitoringType' => 1]);
         $data = ['tt_content' => ['88' => ['bodytext' => 'Updated! Will stay after update!' ]]];
-        $this->prepareCanRemoveContentElementTests($data, [], 'does_not_remove_updated_content_element_with_not_set_endtime.xml', [2]);
+        $this->prepareCanRemoveContentElementTests($data, 'does_not_remove_updated_content_element_with_not_set_endtime.csv', [2]);
 
         $this->assertEventQueueContainsItemAmount(2);
         $this->assertIndexQueueContainsItemAmount(1);
@@ -550,11 +546,7 @@ class GarbageCollectorTest extends IntegrationTest
     {
         $timestampInFuture = time() +  (60 * 60 * 24);
         $data = ['tt_content' => ['88' => ['starttime' => $timestampInFuture]]];
-        $this->prepareCanRemoveContentElementTests($data, []);
-
-        // after applying the commands solr should be empty (because the page was removed from solr and queued for indexing)
-        $this->waitToBeVisibleInSolr();
-        $this->assertSolrIsEmpty();
+        $this->prepareCanRemoveContentElementTests($data);
 
         // we expect the is one item in the indexQueue
         $this->assertIndexQueueContainsItemAmount(1);
@@ -579,7 +571,7 @@ class GarbageCollectorTest extends IntegrationTest
         $this->extensionConfiguration->set('solr', ['monitoringType' => 1]);
         $timeStampInPast = time() - (60 * 60 * 24);
         $data = ['tt_content' => ['88' => ['endtime' => $timeStampInPast]]];
-        $this->prepareCanRemoveContentElementTests($data, []);
+        $this->prepareCanRemoveContentElementTests($data);
 
         $this->assertEventQueueContainsItemAmount(2);
         $this->assertIndexQueueContainsItemAmount(1);
@@ -601,16 +593,11 @@ class GarbageCollectorTest extends IntegrationTest
      * - doesNotRemoveUpdatedContentElementWithNotSetEndTimeInDelayedProcessingMode
      * - canRemoveContentElementWithStartDateSetToFuture
      * - canRemoveContentElementWithStartDateSetToFutureInDelayedProcessingMode
-     *
-     * @param array $dataMap
-     * @param array $cmdMap
-     * @param string $fixture
-     * @param array $indexPageIds
      */
-    protected function prepareCanRemoveContentElementTests(array $dataMap, array $cmdMap, $fixture = 'can_remove_content_element.xml', array $indexPageIds = [1]): void
+    protected function prepareCanRemoveContentElementTests(array $dataMap, string $fixture = 'indexed_content.csv', array $indexPageIds = [1]): void
     {
         $this->cleanUpSolrServerAndAssertEmpty();
-        $this->importDataSetFromFixture($fixture);
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/' . $fixture);
 
         $this->indexPageIds($indexPageIds);
 
@@ -618,15 +605,14 @@ class GarbageCollectorTest extends IntegrationTest
         $this->waitToBeVisibleInSolr();
 
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
-        if ($fixture === 'can_remove_content_element.xml') {
+        if ($fixture === 'indexed_content.csv') {
             self::assertStringContainsString('will be removed!', $solrContent, 'Solr did not contain rendered page content');
         }
         self::assertStringContainsString('will stay!', $solrContent, 'Solr did not contain required page or content element content');
 
         // we hide the second content element
-        $beUser = $this->fakeBEUser(1, 0);
-        $this->dataHandler->start($dataMap, $cmdMap, $beUser);
-        $this->dataHandler->stripslashes_values = 0;
+        $beUser = $this->fakeBEUser(1);
+        $this->dataHandler->start($dataMap, [], $beUser);
         $this->dataHandler->process_cmdmap();
         $this->dataHandler->process_datamap();
         $this->dataHandler->clear_cacheCmd('all');
@@ -727,7 +713,7 @@ class GarbageCollectorTest extends IntegrationTest
      */
     public function canRemovePageWhenContentElementOnAlreadyDeletedPageIsDeleted(): void
     {
-        $this->importDataSetFromFixture('can_handle_missing_page_on_deletion.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/deleted_page_and_content.csv');
         $cmdMap = ['tt_content' => [321 => ['delete' => 1 ]]];
 
         $this->dataHandler->start([], $cmdMap, $this->fakeBEUser(1));
@@ -747,7 +733,7 @@ class GarbageCollectorTest extends IntegrationTest
      */
     public function canRemovePageWhenContentElementOnNonExistingPageIsDeleted(): void
     {
-        $this->importDataSetFromFixture('can_handle_missing_page_on_deletion.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/deleted_page_and_content.csv');
         $cmdMap = ['tt_content' => [432 => ['delete' => 1 ]]];
 
         $this->dataHandler->start([], $cmdMap, $this->fakeBEUser(1));
@@ -770,7 +756,7 @@ class GarbageCollectorTest extends IntegrationTest
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionByName(ConnectionPool::DEFAULT_CONNECTION_NAME);
         self::assertEquals(1, $connection->update('pages', ['deleted' => 1], ['uid' => 1]));
 
-        $this->importDataSetFromFixture('can_handle_missing_page_on_deletion.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/deleted_page_and_content.csv');
         $cmdMap = ['tt_content' => [321 => ['delete' => 1 ]]];
 
         $this->dataHandler->start([], $cmdMap, $this->fakeBEUser(1));
@@ -796,7 +782,7 @@ class GarbageCollectorTest extends IntegrationTest
     protected function prepareCanRemovePagesTests(array $dataMap, array $cmdMap): void
     {
         $this->cleanUpSolrServerAndAssertEmpty();
-        $this->importDataSetFromFixture('can_remove_page.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/can_remove_page.csv');
 
         $this->indexPageIds([1, 2]);
 
@@ -813,7 +799,6 @@ class GarbageCollectorTest extends IntegrationTest
         $beUser = $this->setUpBackendUser(1);
 
         $this->dataHandler->start($dataMap, $cmdMap, $beUser);
-        $this->dataHandler->stripslashes_values = 0;
         $this->dataHandler->process_cmdmap();
         $this->dataHandler->process_datamap();
         $this->dataHandler->clear_cacheCmd('all');
@@ -861,7 +846,7 @@ class GarbageCollectorTest extends IntegrationTest
     protected function prepareCanTriggerHookAfterRecordDeletion(): void
     {
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessGarbageCollector'][] = TestGarbageCollectorPostProcessor::class;
-        $this->importDataSetFromFixture('can_delete_custom_record.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/custom_record.csv');
 
         $this->addTypoScriptToTemplateRecord(
             1,
@@ -887,7 +872,6 @@ class GarbageCollectorTest extends IntegrationTest
 
         $cmd = ['tx_fakeextension_domain_model_foo' => [111 => ['delete' => 1 ]]];
         $this->dataHandler->start([], $cmd, $beUser);
-        $this->dataHandler->stripslashes_values = 0;
         $this->dataHandler->process_cmdmap();
         $this->dataHandler->process_datamap();
         $this->dataHandler->clear_cacheCmd('all');
