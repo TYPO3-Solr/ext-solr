@@ -1,0 +1,76 @@
+# There is following scenario:
+#
+#  [0]
+#   |
+#   ——[20] Shared-Pages (Folder: Not root)
+#   |   |
+#   |   ——[24] FirstShared
+#   |       |
+#   |       ——[25] first sub page from FirstShared
+#   |       |
+#   |       ——[26] second sub page from FirstShared
+#   |
+#   ——[ 1] Page (Root)
+#   |   |
+#   |   ——[14] Mount Point 1 (to [24] to show contents from)
+#   |
+#   ——[ 2] Page2 (Root)
+#       |
+#       ——[34] Mount Point 2 (to [24] to show contents from)
+"pages",
+,"uid","pid","is_siteroot","doktype","mount_pid","mount_pid_ol","slug","title"
+# Shared Pages tree
+,20,0,0,254,0,0,"/","Shared-Pages"
+,24,20,0,1,0,0,"/first-shared","FirstShared (Not root)"
+,25,24,0,1,0,0,"/first-shared/first-subpage","first sub page from FirstShared (Not root)"
+,26,24,0,1,0,0,"/first-shared/second-subpage","second sub page from FirstShared (Not root)"
+# Site tree
+,1,0,1,1,0,0,"/","Page (Root)"
+,14,1,0,7,24,1,"/mount-point-1","Mount Point 1"
+# Second Site tree
+,2,0,1,1,0,0,"/","Second Site (Root)"
+,34,2,0,7,24,1,"/mount-point-2","Mount Point 2"
+"sys_template",
+,"uid","pid","root","clear","sorting","config"
+,1,1,1,3,100,"
+page = PAGE
+page.typeNum = 0
+config.index_enable = 1
+
+plugin.tx_solr {
+    enabled = 1
+
+    index {
+        fieldProcessingInstructions {
+            changed = timestampToIsoDate
+            created = timestampToIsoDate
+            endtime = timestampToUtcIsoDate
+            rootline = pageUidToHierarchy
+        }
+
+        queue {
+            // mapping tableName.fields.SolrFieldName => TableFieldName (+ cObj processing)
+            pages = 1
+            pages {
+                initialization = ApacheSolrForTypo3\Solr\IndexQueue\Initializer\Page
+
+                // allowed page types (doktype) when indexing records from pages
+                allowedPageTypes = 1,7
+
+                indexingPriority = 0
+
+                indexer = ApacheSolrForTypo3\Solr\IndexQueue\PageIndexer
+                indexer {
+                    // add options for the indexer here
+                }
+
+                // Only index standard pages and mount points that are not overlayed.
+                additionalWhereClause = (doktype = 1 OR (doktype=7 AND mount_pid_ol=0)) AND no_search = 0
+
+                fields {
+                    sortSubTitle_stringS = subtitle
+                }
+            }
+        }
+    }
+}"

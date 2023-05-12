@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -18,10 +20,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration;
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
-use ReflectionException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-
-use function vsprintf;
 
 /**
  * This testcase can be used to check if the ConnectionManager can be used
@@ -43,10 +42,7 @@ class ConnectionManagerTest extends IntegrationTest
         $this->writeDefaultSolrTestSiteConfiguration();
     }
 
-    /**
-     * @return array
-     */
-    public function canFindSolrConnectionsByRootPageIdDataProvider()
+    public function canFindSolrConnectionsByRootPageIdDataProvider(): array
     {
         return [
             ['rootPageId' => 1, 'siteName' => 'integration_tree_one', 'expectedSolrHost' => 'solr.testone.endpoint'],
@@ -66,17 +62,11 @@ class ConnectionManagerTest extends IntegrationTest
      *
      * @test
      * @dataProvider canFindSolrConnectionsByRootPageIdDataProvider
-     *
-     * @param int $rootPageId
-     * @param string $siteName
-     * @param string $expectedSolrHost
-     * @throws NoSolrConnectionFoundException
-     * @throws ReflectionException
      */
     public function canFindSolrConnectionsByRootPageId(int $rootPageId, string $siteName, string $expectedSolrHost)
     {
         $this->mergeSiteConfiguration($siteName, ['solr_host_read' => $expectedSolrHost]);
-        $this->importDataSetFromFixture('ConnectionManagerTest_basic_connections.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/connection_basic.csv');
 
         /* @var ConnectionManager $connectionManager */
         $connectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
@@ -89,14 +79,11 @@ class ConnectionManagerTest extends IntegrationTest
         }
     }
 
-    /**
-     * @return array
-     */
-    public function canFindSolrConnectionsByPageIdDataProvider()
+    public function canFindSolrConnectionsByPageIdDataProvider(): array
     {
         return [
             ['pageId' => 11, 'siteName' => 'integration_tree_one', 'expectedSolrHost' => 'solr.testone.endpoint'],
-            ['ageId' => 21, 'siteName' => 'integration_tree_two', 'expectedSolrHost' => 'solr.testtwo.endpoint'],
+            ['pageId' => 21, 'siteName' => 'integration_tree_two', 'expectedSolrHost' => 'solr.testtwo.endpoint'],
         ];
     }
 
@@ -123,17 +110,11 @@ class ConnectionManagerTest extends IntegrationTest
      *
      * @test
      * @dataProvider canFindSolrConnectionsByPageIdDataProvider
-     *
-     * @param int $rootPageId
-     * @param string $siteName
-     * @param string $expectedSolrHost
-     * @throws NoSolrConnectionFoundException
-     * @throws ReflectionException
      */
     public function canFindSolrConnectionsByPageId(int $pageId, string $siteName, string $expectedSolrHost)
     {
         $this->mergeSiteConfiguration($siteName, ['solr_host_read' => $expectedSolrHost]);
-        $this->importDataSetFromFixture('ConnectionManagerTest_basic_connections.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/connection_basic.csv');
 
         /* @var ConnectionManager $connectionManager */
         $connectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
@@ -243,7 +224,7 @@ class ConnectionManagerTest extends IntegrationTest
      */
     public function canFindSolrConnectionForMountedPageIfMountPointIsGiven()
     {
-        $this->importDataSetFromFixture('can_find_connection_for_mouted_page.xml');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/connection_for_mounted_page.csv');
 
         /* @var ConnectionManager $connectionManager */
         $connectionManager = GeneralUtility::makeInstance(ConnectionManager::class);

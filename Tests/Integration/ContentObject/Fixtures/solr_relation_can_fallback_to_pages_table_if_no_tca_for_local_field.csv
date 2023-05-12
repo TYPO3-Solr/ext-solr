@@ -1,0 +1,10 @@
+"pages",
+,"uid","pid","is_siteroot","doktype","slug","title"
+,1,0,1,1,"/","Page"
+,7,1,0,1,"/subpage-with-category","Sub page with assigned category"
+"sys_category",
+,"uid","pid","title","sys_language_uid"
+,123,0,"Some Category",0
+"sys_category_record_mm",
+,"uid_local","uid_foreign","tablenames","fieldname","sorting","sorting_foreign"
+,123,7,"pages","categories",1,1
