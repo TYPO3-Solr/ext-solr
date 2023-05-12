@@ -15,7 +15,6 @@
 
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\Domain\Search\ResultSet;
 
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\InvalidFacetPackageException;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\Option;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\OptionsFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\ResultSetReconstitutionProcessor;
@@ -25,21 +24,11 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use PHPUnit\Framework\MockObject\MockObject;
-use TYPO3\CMS\Core\Error\Http\InternalServerErrorException;
-use TYPO3\CMS\Core\Error\Http\ServiceUnavailableException;
-use TYPO3\CMS\Core\Exception\SiteNotFoundException;
-use TYPO3\TestingFramework\Core\Exception as TestingFrameworkCoreException;
 
 class ResultSetReconstitutionProcessorTest extends IntegrationTest
 {
     /**
      * @test
-     *
-     * @throws InternalServerErrorException
-     * @throws ServiceUnavailableException
-     * @throws SiteNotFoundException
-     * @throws TestingFrameworkCoreException
-     * @throws InvalidFacetPackageException
      */
     public function canApplyRenderingInstructionsOnOptions()
     {
@@ -90,12 +79,6 @@ class ResultSetReconstitutionProcessorTest extends IntegrationTest
 
     /**
      * @test
-     *
-     * @throws InternalServerErrorException
-     * @throws InvalidFacetPackageException
-     * @throws ServiceUnavailableException
-     * @throws SiteNotFoundException
-     * @throws TestingFrameworkCoreException
      */
     public function labelCanBeUsedAsCObject()
     {
@@ -129,10 +112,6 @@ class ResultSetReconstitutionProcessorTest extends IntegrationTest
         self::assertSame('MY TYPE WITH SPECIAL RENDERING', $facet->getLabel(), 'Rendering instructions have not been applied on the facet options');
     }
 
-    /**
-     * @param string $fixtureFile
-     * @return SearchResultSet
-     */
     protected function initializeSearchResultSetFromFakeResponse(string $fixtureFile): SearchResultSet
     {
         $searchRequestMock = $this->createMock(SearchRequest::class);
@@ -147,10 +126,6 @@ class ResultSetReconstitutionProcessorTest extends IntegrationTest
         return $searchResultSet;
     }
 
-    /**
-     * @param array $facetConfiguration
-     * @return array
-     */
     protected function getConfigurationArrayFromFacetConfigurationArray(array $facetConfiguration): array
     {
         $configuration = [];
@@ -158,11 +133,6 @@ class ResultSetReconstitutionProcessorTest extends IntegrationTest
         return $configuration;
     }
 
-    /**
-     * @param array $configuration
-     * @param SearchResultSet $searchResultSet
-     * @return ResultSetReconstitutionProcessor
-     */
     protected function getConfiguredReconstitutionProcessor(array $configuration, SearchResultSet $searchResultSet): ResultSetReconstitutionProcessor
     {
         $typoScriptConfiguration = new TypoScriptConfiguration($configuration);

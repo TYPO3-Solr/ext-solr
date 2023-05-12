@@ -1,0 +1,11 @@
+"pages",
+,"uid","pid","is_siteroot","doktype","deleted","slug","title"
+,123,1,0,1,1,"/deleted","Already deleted page"
+"tt_content",
+,"uid","pid","colPos","CType","bodytext"
+,321,123,0,"text","content element on an already deleted page 123"
+,432,234,0,"text","content element on missing page 234"
+"tx_solr_indexqueue_item",
+,"uid","root","item_type","item_uid","indexing_configuration","errors","indexed","changed"
+,123,1,"pages",123,"pages","",1,1449151778
+,234,1,"pages",234,"pages","",1,1449151778
