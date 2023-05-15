@@ -27,8 +27,8 @@ use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Typo3PageIndexer;
 use Solarium\QueryType\Select\Query\Query;
-use TYPO3\CMS\Core\TimeTracker\TimeTracker;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * Test class to perform a search on a real solr server
@@ -68,9 +68,7 @@ class SearchTest extends IntegrationTest
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Search/can_search.csv');
 
-        $GLOBALS['TT'] = $this->createMock(TimeTracker::class);
         $fakeTSFE = $this->getConfiguredTSFE();
-        $GLOBALS['TSFE'] = $fakeTSFE;
 
         /* @var Typo3PageIndexer $pageIndexer */
         $pageIndexer = GeneralUtility::makeInstance(Typo3PageIndexer::class, $fakeTSFE);
@@ -437,10 +435,8 @@ class SearchTest extends IntegrationTest
 
     protected function fillIndexForPhraseSearchTests()
     {
-        $GLOBALS['TT'] = $this->createMock(TimeTracker::class);
         for ($i = 1; $i <= 15; $i++) {
             $fakeTSFE = $this->getConfiguredTSFE($i);
-            $GLOBALS['TSFE'] = $fakeTSFE;
 
             /* @var Typo3PageIndexer $pageIndexer */
             $pageIndexer = GeneralUtility::makeInstance(Typo3PageIndexer::class, $fakeTSFE);
@@ -454,9 +450,6 @@ class SearchTest extends IntegrationTest
         $this->waitToBeVisibleInSolr();
     }
 
-    /**
-     * @return Query
-     */
     protected function getSearchQueryForSolr(): Query
     {
         return $this->queryBuilder
@@ -465,10 +458,6 @@ class SearchTest extends IntegrationTest
             ->getQuery();
     }
 
-    /**
-     * @param string $feature
-     * @param int $state
-     */
     protected function switchPhraseSearchFeature(string $feature, int $state)
     {
         $overwriteConfiguration = [];
@@ -477,5 +466,15 @@ class SearchTest extends IntegrationTest
         /* @var ConfigurationManager $configurationManager */
         $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
         $configurationManager->getTypoScriptConfiguration()->mergeSolrConfiguration($overwriteConfiguration);
+    }
+
+    /**
+     * @deprecated Do not try to set up and configure TSFE in any way by self.
+     */
+    protected function getConfiguredTSFE(int $id = 1): TypoScriptFrontendController
+    {
+        /* @var TSFETestBootstrapper $bootstrapper */
+        $bootstrapper = GeneralUtility::makeInstance(TSFETestBootstrapper::class);
+        return $bootstrapper->bootstrap($id);
     }
 }

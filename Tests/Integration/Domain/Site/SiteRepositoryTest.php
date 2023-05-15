@@ -18,11 +18,8 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Domain\Site;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
-use Exception;
 use InvalidArgumentException;
-use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\TestingFramework\Core\Exception as TestingFrameworkCoreException;
 
 /**
  * Testcase to check if the SiteRepository class works as expected.
@@ -36,10 +33,6 @@ class SiteRepositoryTest extends IntegrationTest
      */
     protected $siteRepository;
 
-    /**
-     * @throws NoSuchCacheException
-     * @throws TestingFrameworkCoreException
-     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -49,7 +42,6 @@ class SiteRepositoryTest extends IntegrationTest
 
     /**
      * @test
-     * @throws Exception
      */
     public function canGetAllSites()
     {
@@ -59,7 +51,6 @@ class SiteRepositoryTest extends IntegrationTest
 
     /**
      * @test
-     * @throws Exception
      */
     public function canGetAllPagesFromSite()
     {
@@ -89,7 +80,6 @@ class SiteRepositoryTest extends IntegrationTest
 
     /**
      * @test
-     * @throws Exception
      */
     public function canGetSiteByPageIdExistingPage()
     {
@@ -100,7 +90,6 @@ class SiteRepositoryTest extends IntegrationTest
 
     /**
      * @test
-     * @throws TestingFrameworkCoreException
      */
     public function canGetSiteByPageIdNonExistingPage()
     {
@@ -111,7 +100,6 @@ class SiteRepositoryTest extends IntegrationTest
 
     /**
      * @test
-     * @throws TestingFrameworkCoreException
      */
     public function canGetSiteWithDomainFromSiteConfiguration()
     {
