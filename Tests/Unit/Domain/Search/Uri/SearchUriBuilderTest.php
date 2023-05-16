@@ -22,6 +22,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\Uri\SearchUriBuilder;
 use ApacheSolrForTypo3\Solr\Routing\RoutingService;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Component\Yaml\Yaml;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
@@ -33,26 +34,15 @@ use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
  */
 class SearchUriBuilderTest extends SetUpUnitTestCase
 {
-    /**
-     * @var SearchUriBuilder
-     */
-    protected $searchUrlBuilder;
-
-    /**
-     * @var UriBuilder
-     */
-    protected $extBaseUriBuilderMock;
-
-    /**
-     * @var RoutingService
-     */
-    protected $routingServiceMock;
+    protected SearchUriBuilder|MockObject $searchUrlBuilder;
+    protected UriBuilder|MockObject $extBaseUriBuilderMock;
+    protected RoutingService|MockObject $routingServiceMock;
 
     protected function setUp(): void
     {
-        $this->extBaseUriBuilderMock = $this->getDumbMock(UriBuilder::class);
-        $this->routingServiceMock = $this->getDumbMock(RoutingService::class);
-        $eventDispatcherMock = $this->getDumbMock(EventDispatcher::class);
+        $this->extBaseUriBuilderMock = $this->createMock(UriBuilder::class);
+        $this->routingServiceMock = $this->createMock(RoutingService::class);
+        $eventDispatcherMock = $this->createMock(EventDispatcher::class);
         $eventDispatcherMock->expects(self::any())->method('dispatch')->willReturnArgument(0);
         $this->searchUrlBuilder = new SearchUriBuilder();
         $this->searchUrlBuilder->injectUriBuilder($this->extBaseUriBuilderMock);
@@ -65,9 +55,9 @@ class SearchUriBuilderTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function addFacetLinkIsCalledWithSubstitutedArguments()
+    public function addFacetLinkIsCalledWithSubstitutedArguments(): void
     {
-        $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
+        $configurationMock = $this->createMock(TypoScriptConfiguration::class);
         $configurationMock->expects(self::any())->method('getSearchPluginNamespace')->willReturn('tx_solr');
         $configurationMock->expects(self::once())->method('getSearchFacetingFacetLinkUrlParametersAsArray')->willReturn([]);
         $configurationMock->expects(self::once())->method('getSearchTargetPage')->willReturn(1);
@@ -83,7 +73,7 @@ class SearchUriBuilderTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function addFacetLinkWillAddAdditionalConfiguredArguments()
+    public function addFacetLinkWillAddAdditionalConfiguredArguments(): void
     {
         $expectedArguments = ['tx_solr' => ['filter' => ['###tx_solr:filter:0:option###']], 'foo' => '###foo###'];
         $linkBuilderResult = '/index.php?id=1&filter=' . urlencode('###tx_solr:filter:0:option###') . '&foo=' . urlencode('###foo###');
@@ -100,8 +90,7 @@ class SearchUriBuilderTest extends SetUpUnitTestCase
             ->method('build')
             ->with()
             ->willReturn($linkBuilderResult);
-        /* @var TypoScriptConfiguration $configurationMock */
-        $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
+        $configurationMock = $this->createMock(TypoScriptConfiguration::class);
         $configurationMock->expects(self::any())
             ->method('getSearchPluginNamespace')
             ->willReturn('tx_solr');
@@ -137,9 +126,9 @@ class SearchUriBuilderTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function setArgumentsIsOnlyCalledOnceEvenWhenMultipleFacetsGetRendered()
+    public function setArgumentsIsOnlyCalledOnceEvenWhenMultipleFacetsGetRendered(): void
     {
-        $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
+        $configurationMock = $this->createMock(TypoScriptConfiguration::class);
         $configurationMock->expects(self::any())->method('getSearchPluginNamespace')->willReturn('tx_solr');
         $configurationMock->expects(self::once())->method('getSearchFacetingFacetLinkUrlParametersAsArray')->willReturn([]);
         $configurationMock->expects(self::any())->method('getSearchTargetPage')->willReturn(1);
@@ -163,12 +152,12 @@ class SearchUriBuilderTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function targetPageUidIsPassedWhenSortingIsAdded()
+    public function targetPageUidIsPassedWhenSortingIsAdded(): void
     {
         $expectedArguments = ['tx_solr' => ['sort' => '###tx_solr:sort###']];
         $linkBuilderResult = '/index.php?id=1&' . urlencode('tx_solr[sort]') . '=' . urlencode('###tx_solr:sort###');
 
-        $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
+        $configurationMock = $this->createMock(TypoScriptConfiguration::class);
         $configurationMock->expects(self::once())->method('getSearchTargetPage')->willReturn(4711);
         $configurationMock->expects(self::any())->method('getSearchPluginNamespace')->willReturn('tx_solr');
         $configurationMock->expects(self::once())->method('getSearchTargetPage')->willReturn(1);
@@ -202,9 +191,9 @@ class SearchUriBuilderTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function canGetRemoveFacetOptionUri()
+    public function canGetRemoveFacetOptionUri(): void
     {
-        $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
+        $configurationMock = $this->createMock(TypoScriptConfiguration::class);
         $configurationMock->expects(self::any())->method('getSearchPluginNamespace')->willReturn('tx_solr');
         $configurationMock->expects(self::once())->method('getSearchTargetPage')->willReturn(1);
 
@@ -231,9 +220,9 @@ class SearchUriBuilderTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function canGetRemoveFacetUri()
+    public function canGetRemoveFacetUri(): void
     {
-        $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
+        $configurationMock = $this->createMock(TypoScriptConfiguration::class);
         $configurationMock->expects(self::any())->method('getSearchPluginNamespace')->willReturn('tx_solr');
         $configurationMock->expects(self::once())->method('getSearchTargetPage')->willReturn(1);
 
@@ -264,9 +253,9 @@ class SearchUriBuilderTest extends SetUpUnitTestCase
      *
      * @test
      */
-    public function addFacetUriRemovesPreviousGroupPage()
+    public function addFacetUriRemovesPreviousGroupPage(): void
     {
-        $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
+        $configurationMock = $this->createMock(TypoScriptConfiguration::class);
         $configurationMock->expects(self::any())
             ->method('getSearchPluginNamespace')
             ->willReturn('tx_solr');
@@ -303,7 +292,7 @@ class SearchUriBuilderTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function canSetGroupPageForQueryGroup()
+    public function canSetGroupPageForQueryGroup(): void
     {
         $expectedArguments = [
             'tx_solr' => [
@@ -326,7 +315,7 @@ class SearchUriBuilderTest extends SetUpUnitTestCase
         ];
         $linkBuilderResult = '/index.php?' . http_build_query($givenTemplate);
 
-        $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
+        $configurationMock = $this->createMock(TypoScriptConfiguration::class);
         $configurationMock->expects(self::any())->method('getSearchPluginNamespace')->willReturn('tx_solr');
         $configurationMock->expects(self::once())->method('getSearchTargetPage')->willReturn(1);
 
@@ -371,10 +360,10 @@ class SearchUriBuilderTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function siteConfigurationModifyUriTest()
+    public function siteConfigurationModifyUriTest(): void
     {
         $configuration = Yaml::parse($this->getFixtureContentByName('siteConfiguration.yaml'));
-        $routingServiceMock = $this->getDumbMock(RoutingService::class);
+        $routingServiceMock = $this->createMock(RoutingService::class);
         $routingServiceMock->expects(self::any())
             ->method('fetchEnhancerByPageUid')
             ->willReturn($configuration['routeEnhancers']['example']);
@@ -409,7 +398,7 @@ class SearchUriBuilderTest extends SetUpUnitTestCase
         $linkBuilderResult = '/index.php?id=42&color=' . urlencode('green,red,yellow') .
             '&taste=' . urlencode('matcha,sour') .
             '&product=' . urlencode('candy,sweets');
-        $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
+        $configurationMock = $this->createMock(TypoScriptConfiguration::class);
         $configurationMock->expects(self::any())->method('getSearchPluginNamespace')->willReturn('tx_solr');
         $configurationMock->expects(self::once())->method('getSearchTargetPage')->willReturn(42);
 
@@ -426,10 +415,10 @@ class SearchUriBuilderTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function siteConfigurationModifyUriKeepUnmappedFilterTest()
+    public function siteConfigurationModifyUriKeepUnmappedFilterTest(): void
     {
         $configuration = Yaml::parse($this->getFixtureContentByName('siteConfiguration.yaml'));
-        $routingServiceMock = $this->getDumbMock(RoutingService::class);
+        $routingServiceMock = $this->createMock(RoutingService::class);
         $routingServiceMock->expects(self::any())
             ->method('fetchEnhancerByPageUid')
             ->willReturn($configuration['routeEnhancers']['example']);
@@ -467,7 +456,7 @@ class SearchUriBuilderTest extends SetUpUnitTestCase
             '&taste=' . urlencode('matcha,sour') .
             '&product=' . urlencode('candy,sweets') .
             '&' . urlencode('tx_solr[filter][0]') . '=' . urlencode('quantity:20');
-        $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
+        $configurationMock = $this->createMock(TypoScriptConfiguration::class);
         $configurationMock->expects(self::any())->method('getSearchPluginNamespace')->willReturn('tx_solr');
         $configurationMock->expects(self::once())->method('getSearchTargetPage')->willReturn(42);
 

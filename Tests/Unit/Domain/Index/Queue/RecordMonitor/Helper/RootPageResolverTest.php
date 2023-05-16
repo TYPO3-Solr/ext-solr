@@ -20,7 +20,6 @@ use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\Configuratio
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\RootPageResolver;
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
-use PHPUnit\Framework\MockObject\MockObject;
 
 /**
  * @author Timo Hund <timo.hund@dkd.de>
@@ -48,9 +47,8 @@ class RootPageResolverTest extends SetUpUnitTestCase
 
         $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['solr'] = [];
 
-        $this->recordServiceMock = $this->getDumbMock(ConfigurationAwareRecordService::class);
+        $this->recordServiceMock = $this->createMock(ConfigurationAwareRecordService::class);
 
-        /* @var RootPageResolver $rootPageResolver */
         $this->rootPageResolver = $this->getMockBuilder(RootPageResolver::class)
             ->setConstructorArgs([$this->recordServiceMock, $this->cacheMock])
             ->onlyMethods(['getIsRootPageId', 'getAlternativeSiteRootPagesIds', 'getRootPageIdByTableAndUid', 'getRecordPageId', 'getPageRecordByPageId'])->getMock();
@@ -96,7 +94,6 @@ class RootPageResolverTest extends SetUpUnitTestCase
      */
     public function getIsRootPageIdWithPageIdZero()
     {
-        /* @var RootPageResolver|MockObject $rootPageResolver */
         $this->rootPageResolver = $this->getMockBuilder(RootPageResolver::class)
             ->setConstructorArgs([$this->recordServiceMock, $this->cacheMock])
             ->onlyMethods([])
@@ -133,7 +130,7 @@ class RootPageResolverTest extends SetUpUnitTestCase
 
     protected function fakeDisabledCache()
     {
-        $this->cacheMock = $this->getDumbMock(TwoLevelCache::class);
+        $this->cacheMock = $this->createMock(TwoLevelCache::class);
         $this->cacheMock->method('get')->willReturn(false);
     }
 }

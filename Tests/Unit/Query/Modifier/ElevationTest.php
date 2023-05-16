@@ -33,7 +33,7 @@ class ElevationTest extends SetUpUnitTestCase
      */
     public function canModifyQuery()
     {
-        $query = $this->getDumbMock(Query::class);
+        $query = $this->createMock(Query::class);
 
         $queryBuilderMock = $this->getMockBuilder(QueryBuilder::class)
             ->setConstructorArgs([null, null, $this->createMock(SiteHashService::class)])

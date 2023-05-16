@@ -90,7 +90,7 @@ class PageIndexerRequestTest extends SetUpUnitTestCase
         $requestMock = $this->getMockedPageIndexerRequestWithUsedFakeResponse($testParameters, $fakeResponse);
 
         /* @var MockObject|Item $queueItemMock */
-        $queueItemMock = $this->getDumbMock(Item::class);
+        $queueItemMock = $this->createMock(Item::class);
         $requestMock->setIndexQueueItem($queueItemMock);
 
         $response = $requestMock->send('http://7.6.local.typo3.org/about/typo3/');
@@ -111,7 +111,7 @@ class PageIndexerRequestTest extends SetUpUnitTestCase
 
         $requestMock = $this->getMockedPageIndexerRequestWithUsedFakeResponse($testParameters, $fakeResponse);
         /* @var MockObject|Item $queueItemMock */
-        $queueItemMock = $this->getDumbMock(Item::class);
+        $queueItemMock = $this->createMock(Item::class);
 
         $requestMock->setIndexQueueItem($queueItemMock);
 
@@ -129,8 +129,8 @@ class PageIndexerRequestTest extends SetUpUnitTestCase
         $fakeResponse = 'invalidJsonString!!';
 
         $requestMock = $this->getMockedPageIndexerRequestWithUsedFakeResponse($testParameters, $fakeResponse);
-        $queueItemMock = $this->getDumbMock(Item::class);
         /* @var MockObject|Item $queueItemMock */
+        $queueItemMock = $this->createMock(Item::class);
         $requestMock->setIndexQueueItem($queueItemMock);
 
         $this->expectException(RuntimeException::class);
@@ -161,7 +161,7 @@ class PageIndexerRequestTest extends SetUpUnitTestCase
 
         $requestMock = $this->getMockedPageIndexerRequestWithUsedFakeResponse($testParameters, $fakeResponse);
         /* @var MockObject|Item $queueItemMock */
-        $queueItemMock = $this->getDumbMock(Item::class);
+        $queueItemMock = $this->createMock(Item::class);
         $requestMock->setIndexQueueItem($queueItemMock);
 
         $requestMock->send('https://7.6.local.typo3.org/about/typo3/');
@@ -173,7 +173,7 @@ class PageIndexerRequestTest extends SetUpUnitTestCase
     public function authenticationHeaderIsSetWhenUsernameAndPasswordHaveBeenPassed()
     {
         /* @var MockObject|RequestFactory $requestFactoryMock */
-        $requestFactoryMock = $this->getDumbMock(RequestFactory::class);
+        $requestFactoryMock = $this->createMock(RequestFactory::class);
         $requestFactoryMock->expects(self::once())->method('request')->willReturnCallback(function ($url, $method, $options) {
             $this->assertSame(['bob', 'topsecret'], $options['auth'], 'Authentication options have not been set');
             $this->assertSame('GET', $method, 'Unexpected http method');
@@ -182,15 +182,15 @@ class PageIndexerRequestTest extends SetUpUnitTestCase
         });
 
         /* @var MockObject|SolrLogManager $solrLogManagerMock */
-        $solrLogManagerMock = $this->getDumbMock(SolrLogManager::class);
+        $solrLogManagerMock = $this->createMock(SolrLogManager::class);
         /* @var MockObject|ExtensionConfiguration $extensionConfigurationMock */
-        $extensionConfigurationMock = $this->getDumbMock(ExtensionConfiguration::class);
+        $extensionConfigurationMock = $this->createMock(ExtensionConfiguration::class);
 
         $testParameters = json_encode(['requestId' => '581f76be71f60']);
         $pageIndexerRequest = new PageIndexerRequest($testParameters, $solrLogManagerMock, $extensionConfigurationMock, $requestFactoryMock);
 
         /* @var MockObject|Item $queueItemMock */
-        $queueItemMock = $this->getDumbMock(Item::class);
+        $queueItemMock = $this->createMock(Item::class);
         $pageIndexerRequest->setIndexQueueItem($queueItemMock);
         $pageIndexerRequest->setAuthorizationCredentials('bob', 'topsecret');
 
@@ -220,7 +220,7 @@ class PageIndexerRequestTest extends SetUpUnitTestCase
         $pageIndexerRequest = $this->getPageIndexerRequest();
 
         /* @var MockObject|Item $itemMock */
-        $itemMock = $this->getDumbMock(Item::class);
+        $itemMock = $this->createMock(Item::class);
         $pageIndexerRequest->setIndexQueueItem($itemMock);
         $headers = $pageIndexerRequest->getHeaders();
         self::assertContains('User-Agent: TYPO3', $headers, 'Header should contain a proper User-Agent');
@@ -234,10 +234,10 @@ class PageIndexerRequestTest extends SetUpUnitTestCase
     protected function getPageIndexerRequest(string $jsonEncodedParameter = null, RequestFactory $requestFactory = null): PageIndexerRequest
     {
         /* @var MockObject|SolrLogManager $solrLogManagerMock */
-        $solrLogManagerMock = $this->getDumbMock(SolrLogManager::class);
+        $solrLogManagerMock = $this->createMock(SolrLogManager::class);
         /* @var MockObject|ExtensionConfiguration $extensionConfigurationMock */
-        $extensionConfigurationMock = $this->getDumbMock(ExtensionConfiguration::class);
-        $requestFactory = $requestFactory ?? $this->getDumbMock(RequestFactory::class);
+        $extensionConfigurationMock = $this->createMock(ExtensionConfiguration::class);
+        $requestFactory = $requestFactory ?? $this->createMock(RequestFactory::class);
         return new PageIndexerRequest($jsonEncodedParameter, $solrLogManagerMock, $extensionConfigurationMock, $requestFactory);
     }
 
@@ -248,9 +248,9 @@ class PageIndexerRequestTest extends SetUpUnitTestCase
      */
     protected function getMockedPageIndexerRequestWithUsedFakeResponse($testParameters, $fakeResponse): PageIndexerRequest|MockObject
     {
-        $solrLogManagerMock = $this->getDumbMock(SolrLogManager::class);
-        $extensionConfigurationMock = $this->getDumbMock(ExtensionConfiguration::class);
-        $requestFactoryMock = $this->getDumbMock(RequestFactory::class);
+        $solrLogManagerMock = $this->createMock(SolrLogManager::class);
+        $extensionConfigurationMock = $this->createMock(ExtensionConfiguration::class);
+        $requestFactoryMock = $this->createMock(RequestFactory::class);
         /* @var MockObject|PageIndexerRequest $requestMock */
         $requestMock = $this->getMockBuilder(PageIndexerRequest::class)
             ->onlyMethods(['getUrl'])
@@ -275,11 +275,11 @@ class PageIndexerRequestTest extends SetUpUnitTestCase
      */
     protected function getFakedGuzzleResponse($fakeResponse): ResponseInterface
     {
-        $bodyStream = $this->getDumbMock(StreamInterface::class);
+        $bodyStream = $this->createMock(StreamInterface::class);
         $bodyStream->expects(self::any())->method('getContents')->willReturn($fakeResponse);
 
         /* @var MockObject|ResponseInterface $responseMock */
-        $responseMock = $this->getDumbMock(ResponseInterface::class);
+        $responseMock = $this->createMock(ResponseInterface::class);
         $responseMock->expects(self::any())->method('getBody')->willReturn($bodyStream);
         return $responseMock;
     }

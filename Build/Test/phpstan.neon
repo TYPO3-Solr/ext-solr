@@ -1,0 +1,16 @@
+includes:
+  - ../../.Build/vendor/phpstan/phpstan-phpunit/extension.neon
+
+parameters:
+  level: 3
+  treatPhpDocTypesAsCertain: false
+
+  bootstrapFiles:
+    - phpstan-constants.php
+
+  paths:
+    - %currentWorkingDirectory%/Classes
+    - %currentWorkingDirectory%/Tests
+
+  ignoreErrors:
+    - '#^Variable \$_EXTKEY might not be defined\.#'

@@ -36,7 +36,7 @@ class DateRangeTest extends SetUpUnitTestCase
     {
         $dateTime = new DateTime('2021-07-20 16:04:21.000000');
         $dateRangeOpenStart = new DateRange(
-            $this->getDumbMock(DateRangeFacet::class),
+            $this->createMock(DateRangeFacet::class),
             null,
             $dateTime,
             null,
@@ -47,7 +47,7 @@ class DateRangeTest extends SetUpUnitTestCase
             false
         );
         $dateRangeOpenEnd = new DateRange(
-            $this->getDumbMock(DateRangeFacet::class),
+            $this->createMock(DateRangeFacet::class),
             $dateTime,
             null,
             null,

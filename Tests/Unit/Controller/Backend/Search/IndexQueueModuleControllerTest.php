@@ -69,7 +69,7 @@ class IndexQueueModuleControllerTest extends AbstractModuleController
     {
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessIndexQueueUpdateItem'][] = IndexQueueTestUpdateHandler::class;
 
-        $testHandlerMock = $this->getDumbMock(IndexQueueTestUpdateHandler::class);
+        $testHandlerMock = $this->createMock(IndexQueueTestUpdateHandler::class);
         $testHandlerMock->expects(self::once())->method('postProcessIndexQueueUpdateItem');
 
         $this->indexQueueMock->expects(self::once())->method('updateOrAddItemForAllRelatedRootPages')->willReturn(0);

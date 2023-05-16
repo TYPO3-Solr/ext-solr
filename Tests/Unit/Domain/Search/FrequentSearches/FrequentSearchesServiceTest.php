@@ -52,16 +52,16 @@ class FrequentSearchesServiceTest extends SetUpUnitTestCase
 
     protected function setUp(): void
     {
-        $this->tsfeMock = $this->getDumbMock(TypoScriptFrontendController::class);
+        $this->tsfeMock = $this->createMock(TypoScriptFrontendController::class);
         $this->tsfeMock->tmpl = new \stdClass();
         $this->tsfeMock->tmpl->rootLine = [
             0 => [
                 'uid' => 4711,
             ],
         ];
-        $this->statisticsRepositoryMock = $this->getDumbMock(StatisticsRepository::class);
-        $this->cacheMock = $this->getDumbMock(AbstractFrontend::class);
-        $this->configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
+        $this->statisticsRepositoryMock = $this->createMock(StatisticsRepository::class);
+        $this->cacheMock = $this->createMock(AbstractFrontend::class);
+        $this->configurationMock = $this->createMock(TypoScriptConfiguration::class);
 
         $this->frequentSearchesService = new class ($this->configurationMock, $this->cacheMock, $this->tsfeMock, $this->statisticsRepositoryMock) extends FrequentSearchesService {
             //            protected function getCacheIdentifier(array $frequentSearchConfiguration) : string {

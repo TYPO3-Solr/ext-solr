@@ -41,7 +41,7 @@ class DefaultParserTest extends SetUpUnitTestCase
 
     protected function setUp(): void
     {
-        $this->configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
+        $this->configurationMock = $this->createMock(TypoScriptConfiguration::class);
         $this->parser = new DefaultResultParser();
         parent::setUp();
     }
@@ -96,9 +96,9 @@ class DefaultParserTest extends SetUpUnitTestCase
      */
     public function canParseReturnsFalseWhenGroupingIsEnabled()
     {
-        $requestMock = $this->getDumbMock(SearchRequest::class);
+        $requestMock = $this->createMock(SearchRequest::class);
         $requestMock->expects(self::any())->method('getContextTypoScriptConfiguration')->willReturn($this->configurationMock);
-        $fakeResultSet = $this->getDumbMock(SearchResultSet::class);
+        $fakeResultSet = $this->createMock(SearchResultSet::class);
         $fakeResultSet->expects(self::any())->method('getUsedSearchRequest')->willReturn($requestMock);
 
         $this->configurationMock->expects(self::once())->method('getIsSearchGroupingEnabled')->willReturn(true);
@@ -110,9 +110,9 @@ class DefaultParserTest extends SetUpUnitTestCase
      */
     public function canParseReturnsTrueWhenGroupingIsDisabled()
     {
-        $requestMock = $this->getDumbMock(SearchRequest::class);
+        $requestMock = $this->createMock(SearchRequest::class);
         $requestMock->expects(self::any())->method('getContextTypoScriptConfiguration')->willReturn($this->configurationMock);
-        $fakeResultSet = $this->getDumbMock(SearchResultSet::class);
+        $fakeResultSet = $this->createMock(SearchResultSet::class);
         $fakeResultSet->expects(self::any())->method('getUsedSearchRequest')->willReturn($requestMock);
 
         $this->configurationMock->expects(self::once())->method('getIsSearchGroupingEnabled')->willReturn(false);

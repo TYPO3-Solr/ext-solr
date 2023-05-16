@@ -382,7 +382,7 @@ class SearchRequestTest extends SetUpUnitTestCase
      */
     public function canGetContextTypoScriptConfigurationPassedOnCreation()
     {
-        $typoScriptConfiguration = $this->getDumbMock(TypoScriptConfiguration::class);
+        $typoScriptConfiguration = $this->createMock(TypoScriptConfiguration::class);
         $request = new SearchRequest([], 111, 4711, $typoScriptConfiguration);
 
         self::assertSame($request->getContextTypoScriptConfiguration(), $typoScriptConfiguration, 'Can get initial passed TypoScriptConfiguration');

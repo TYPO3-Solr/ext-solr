@@ -39,7 +39,7 @@ class RequirementsServiceTest extends SetUpUnitTestCase
      */
     public function getRequirementsMetReturnTrueWhenNothingConfigured()
     {
-        $facet = $this->getDumbMock(OptionsFacet::class);
+        $facet = $this->createMock(OptionsFacet::class);
         $service = new RequirementsService();
         self::assertTrue($service->getAllRequirementsMet($facet), 'Facet without any requirements should met all requirements');
     }

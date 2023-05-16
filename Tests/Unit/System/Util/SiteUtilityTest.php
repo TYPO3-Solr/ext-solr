@@ -39,10 +39,10 @@ class SiteUtilityTest extends SetUpUnitTestCase
     public function canFallbackToLanguageSpecificReadProperty()
     {
         $languageConfiguration = ['solr_core_read' => 'readcore'];
-        $languageMock = $this->getDumbMock(SiteLanguage::class);
+        $languageMock = $this->createMock(SiteLanguage::class);
         $languageMock->expects(self::any())->method('toArray')->willReturn($languageConfiguration);
 
-        $siteMock = $this->getDumbMock(Site::class);
+        $siteMock = $this->createMock(Site::class);
         $siteMock->expects(self::any())->method('getLanguageById')->willReturn($languageMock);
         $property = SiteUtility::getConnectionProperty($siteMock, 'core', 2, 'write');
 
@@ -55,11 +55,11 @@ class SiteUtilityTest extends SetUpUnitTestCase
     public function canFallbackToGlobalPropertyWhenLanguageSpecificPropertyIsNotSet()
     {
         $languageConfiguration = ['solr_core_read' => 'readcore'];
-        $languageMock = $this->getDumbMock(SiteLanguage::class);
+        $languageMock = $this->createMock(SiteLanguage::class);
         $languageMock->expects(self::any())->method('toArray')->willReturn($languageConfiguration);
 
         $globalConfiguration = ['solr_host_read' => 'readhost'];
-        $siteMock = $this->getDumbMock(Site::class);
+        $siteMock = $this->createMock(Site::class);
         $siteMock->expects(self::any())->method('getLanguageById')->willReturn($languageMock);
         $siteMock->expects(self::any())->method('getConfiguration')->willReturn($globalConfiguration);
         $property = SiteUtility::getConnectionProperty($siteMock, 'host', 2, 'read');
@@ -107,7 +107,7 @@ class SiteUtilityTest extends SetUpUnitTestCase
      */
     public function solr_use_write_connectionSiteSettingInfluencesTheWriteConnection(string $expectedSolrHost, array $expectedSiteMockConfiguration)
     {
-        $siteMock = $this->getDumbMock(Site::class);
+        $siteMock = $this->createMock(Site::class);
         $siteMock->expects(self::any())->method('getConfiguration')->willReturn($expectedSiteMockConfiguration);
         $property = SiteUtility::getConnectionProperty($siteMock, 'host', 0, 'write');
 
@@ -125,11 +125,11 @@ class SiteUtilityTest extends SetUpUnitTestCase
     public function canLanguageSpecificConfigurationOverwriteGlobalConfiguration()
     {
         $languageConfiguration = ['solr_host_read' => 'readhost.local.de'];
-        $languageMock = $this->getDumbMock(SiteLanguage::class);
+        $languageMock = $this->createMock(SiteLanguage::class);
         $languageMock->expects(self::any())->method('toArray')->willReturn($languageConfiguration);
 
         $globalConfiguration = ['solr_host_read' => 'readhost.global.de'];
-        $siteMock = $this->getDumbMock(Site::class);
+        $siteMock = $this->createMock(Site::class);
         $siteMock->expects(self::any())->method('getLanguageById')->willReturn($languageMock);
         $siteMock->expects(self::any())->method('getConfiguration')->willReturn($globalConfiguration);
         $property = SiteUtility::getConnectionProperty($siteMock, 'host', 2, 'read');
@@ -142,8 +142,8 @@ class SiteUtilityTest extends SetUpUnitTestCase
      */
     public function specifiedDefaultValueIsReturnedByGetConnectionPropertyIfPropertyIsNotDefinedInConfiguration()
     {
-        $languageMock = $this->getDumbMock(SiteLanguage::class);
-        $siteMock = $this->getDumbMock(Site::class);
+        $languageMock = $this->createMock(SiteLanguage::class);
+        $siteMock = $this->createMock(Site::class);
         $siteMock->expects(self::any())->method('getLanguageById')->willReturn($languageMock);
         $property = SiteUtility::getConnectionProperty($siteMock, 'some_property', 2, 'read', 'value-of_some_property');
 
@@ -280,7 +280,7 @@ class SiteUtilityTest extends SetUpUnitTestCase
         string $scope,
         $expectedConfigurationValue
     ) {
-        $siteMock = $this->getDumbMock(Site::class);
+        $siteMock = $this->createMock(Site::class);
         $siteMock->expects(self::any())->method('getConfiguration')->willReturn($fakeConfiguration);
         $property = SiteUtility::getConnectionProperty($siteMock, $property, 0, $scope);
 

@@ -66,17 +66,17 @@ class SolrConnectionTest extends SetUpUnitTestCase
     ): ?SolrConnection {
         try {
             return new SolrConnection(
-                $readNode ?? $this->getDumbMock(Node::class),
-                $writeNode ?? $this->getDumbMock(Node::class),
-                $configuration ?? $this->getDumbMock(TypoScriptConfiguration::class),
-                $synonymParser ?? $this->getDumbMock(SynonymParser::class),
-                $stopWordParser ?? $this->getDumbMock(StopWordParser::class),
-                $schemaParser ?? $this->getDumbMock(SchemaParser::class),
-                $logManager ?? $this->getDumbMock(SolrLogManager::class),
-                $psr7Client ?? $this->getDumbMock(ClientInterface::class),
-                $requestFactory ?? $this->getDumbMock(RequestFactoryInterface::class),
-                $streamFactory ?? $this->getDumbMock(StreamFactoryInterface::class),
-                $eventDispatcher ?? $this->getDumbMock(EventDispatcherInterface::class)
+                $readNode ?? $this->createMock(Node::class),
+                $writeNode ?? $this->createMock(Node::class),
+                $configuration ?? $this->createMock(TypoScriptConfiguration::class),
+                $synonymParser ?? $this->createMock(SynonymParser::class),
+                $stopWordParser ?? $this->createMock(StopWordParser::class),
+                $schemaParser ?? $this->createMock(SchemaParser::class),
+                $logManager ?? $this->createMock(SolrLogManager::class),
+                $psr7Client ?? $this->createMock(ClientInterface::class),
+                $requestFactory ?? $this->createMock(RequestFactoryInterface::class),
+                $streamFactory ?? $this->createMock(StreamFactoryInterface::class),
+                $eventDispatcher ?? $this->createMock(EventDispatcherInterface::class)
             );
         } catch (\Throwable $e) {
             // No exception will be ever happen, this is for saving up the lines in test cases.
@@ -89,10 +89,8 @@ class SolrConnectionTest extends SetUpUnitTestCase
      */
     public function authenticationIsNotTriggeredWithoutUsername()
     {
-        /* @var Endpoint $endpointMock */
-        $endpointMock = $this->getDumbMock(Endpoint::class);
-        /* @var Client $clientMock */
-        $clientMock = $this->getDumbMock(Client::class);
+        $endpointMock = $this->createMock(Endpoint::class);
+        $clientMock = $this->createMock(Client::class);
         $clientMock->expects(self::any())->method('getEndpoints')->willReturn([$endpointMock]);
 
         $readNode = Node::fromArray(
@@ -111,8 +109,8 @@ class SolrConnectionTest extends SetUpUnitTestCase
      */
     public function authenticationIsTriggeredWhenUsernameIsPassed()
     {
-        $endpointMock = $this->getDumbMock(Endpoint::class);
-        $clientMock = $this->getDumbMock(Client::class);
+        $endpointMock = $this->createMock(Endpoint::class);
+        $clientMock = $this->createMock(Client::class);
         $clientMock->expects(self::any())->method('getEndpoints')->willReturn([$endpointMock]);
 
         $readNode = Node::fromArray(
@@ -143,7 +141,7 @@ class SolrConnectionTest extends SetUpUnitTestCase
      */
     public function canGetCoreName($path, $expectedCoreName)
     {
-        $fakeConfiguration = $this->getDumbMock(TypoScriptConfiguration::class);
+        $fakeConfiguration = $this->createMock(TypoScriptConfiguration::class);
         $readNode = Node::fromArray(
             ['host' => 'localhost', 'port' => 8080, 'path' => $path, 'scheme' => 'http', 'username' => '', 'password' => '']
         );

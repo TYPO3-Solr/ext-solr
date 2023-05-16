@@ -33,7 +33,7 @@ class LabelFilterViewHelperTest extends SetUpUnitTestCase
      */
     public function canMakeOnlyExpectedFacetsAvailableInStaticContext()
     {
-        $facet = $this->getDumbMock(OptionsFacet::class);
+        $facet = $this->createMock(OptionsFacet::class);
 
         $roseRed = new Option($facet, 'Rose Red', 'rose_red', 14);
         $blue = new Option($facet, 'Polar Blue', 'polar_blue', 12);
@@ -49,7 +49,7 @@ class LabelFilterViewHelperTest extends SetUpUnitTestCase
         $optionCollection->add($royalGreen);
 
         $variableContainer = $this->getMockBuilder(StandardVariableProvider::class)->onlyMethods(['remove'])->getMock();
-        $renderingContextMock = $this->getDumbMock(RenderingContextInterface::class);
+        $renderingContextMock = $this->createMock(RenderingContextInterface::class);
         $renderingContextMock->expects(self::any())->method('getVariableProvider')->willReturn($variableContainer);
 
         $testArguments['options'] = $optionCollection;
@@ -69,7 +69,7 @@ class LabelFilterViewHelperTest extends SetUpUnitTestCase
      */
     public function canMakeOnlyExpectedFacetsAvailableInStaticContextWithMultiByteCharacters()
     {
-        $facet = $this->getDumbMock(OptionsFacet::class);
+        $facet = $this->createMock(OptionsFacet::class);
 
         $ben = new Option($facet, 'Ben', 'ben', 14);
         $ole = new Option($facet, 'Øle', 'ole', 12);
@@ -79,7 +79,7 @@ class LabelFilterViewHelperTest extends SetUpUnitTestCase
         $optionCollection->add($ole);
 
         $variableContainer = $this->getMockBuilder(StandardVariableProvider::class)->onlyMethods(['remove'])->getMock();
-        $renderingContextMock = $this->getDumbMock(RenderingContextInterface::class);
+        $renderingContextMock = $this->createMock(RenderingContextInterface::class);
         $renderingContextMock->expects(self::any())->method('getVariableProvider')->willReturn($variableContainer);
 
         $testArguments['options'] = $optionCollection;

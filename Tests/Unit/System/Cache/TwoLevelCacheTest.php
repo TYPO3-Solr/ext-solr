@@ -17,6 +17,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\Cache;
 
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Core\Cache\Backend\BackendInterface;
 use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
 use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
@@ -29,30 +30,16 @@ use TYPO3\CMS\Core\Cache\Frontend\VariableFrontend;
  */
 class TwoLevelCacheTest extends SetUpUnitTestCase
 {
-    /**
-     * @var TwoLevelCache
-     */
-    protected $twoLevelCache;
+    protected TwoLevelCache $twoLevelCache;
+    protected FrontendInterface|MockObject $secondLevelCacheMock;
 
-    /**
-     * @var  FrontendInterface
-     */
-    protected $secondLevelCacheMock;
-
-    /**
-     * Prepare
-     */
     protected function setUp(): void
     {
-        $this->secondLevelCacheMock = $this->getDumbMock(FrontendInterface::class);
+        $this->secondLevelCacheMock = $this->createMock(FrontendInterface::class);
         $this->twoLevelCache = new TwoLevelCache('test', $this->secondLevelCacheMock);
         parent::setUp();
     }
 
-    /**
-     * Cleanup
-     * {@inheritDoc}
-     */
     protected function tearDown(): void
     {
         $this->twoLevelCache->flush();

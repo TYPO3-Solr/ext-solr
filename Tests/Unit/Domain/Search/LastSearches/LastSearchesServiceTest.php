@@ -45,8 +45,8 @@ class LastSearchesServiceTest extends SetUpUnitTestCase
 
     protected function setUp(): void
     {
-        $this->sessionMock = $this->getDumbMock(FrontendUserSession::class);
-        $this->configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
+        $this->sessionMock = $this->createMock(FrontendUserSession::class);
+        $this->configurationMock = $this->createMock(TypoScriptConfiguration::class);
 
         $this->lastSearchesRepositoryMock = $this->getMockBuilder(LastSearchesRepository::class)
             ->onlyMethods(['getLastSearchesResultSet', 'findAllKeywords'])

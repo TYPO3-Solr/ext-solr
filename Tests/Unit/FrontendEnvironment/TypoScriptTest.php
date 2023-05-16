@@ -49,7 +49,7 @@ class TypoScriptTest extends SetUpUnitTestCase
                 ]
             )->getMock();
 
-        $this->typoScriptConfigurationDumpMock = $this->getDumbMock(TypoScriptConfiguration::class);
+        $this->typoScriptConfigurationDumpMock = $this->createMock(TypoScriptConfiguration::class);
         parent::setUp();
     }
 

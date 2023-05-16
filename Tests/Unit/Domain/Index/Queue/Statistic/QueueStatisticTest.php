@@ -29,7 +29,6 @@ class QueueStatisticTest extends SetUpUnitTestCase
      */
     public function canGetFailedPercentage()
     {
-        /* @var QueueStatistic $statistic */
         $statistic = GeneralUtility::makeInstance(QueueStatistic::class);
         $statistic->setFailedCount(2);
         $statistic->setSuccessCount(1);
@@ -45,7 +44,6 @@ class QueueStatisticTest extends SetUpUnitTestCase
      */
     public function canGetZeroPercentagesWhenEmpty()
     {
-        /* @var QueueStatistic $statistic */
         $statistic = GeneralUtility::makeInstance(QueueStatistic::class);
         self::assertSame(0.0, $statistic->getFailedPercentage(), 'Can not zero percent for empty');
     }

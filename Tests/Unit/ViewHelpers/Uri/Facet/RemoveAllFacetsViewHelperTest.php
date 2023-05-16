@@ -34,17 +34,17 @@ class RemoveAllFacetsViewHelperTest extends SetUpFacetItemViewHelper
      */
     public function setFacetItemWillUseUriBuilderAsExpected(): void
     {
-        $mockedPreviousFakedRequest = $this->getDumbMock(SearchRequest::class);
-        $mockedControllerRequest = $this->getDumbMock(Request::class);
+        $mockedPreviousFakedRequest = $this->createMock(SearchRequest::class);
+        $mockedControllerRequest = $this->createMock(Request::class);
 
-        $searchResultSetMock = $this->getDumbMock(SearchResultSet::class);
+        $searchResultSetMock = $this->createMock(SearchResultSet::class);
         $searchResultSetMock->expects(self::once())->method('getUsedSearchRequest')->willReturn($mockedPreviousFakedRequest);
 
-        $variableProvideMock = $this->getDumbMock(StandardVariableProvider::class);
+        $variableProvideMock = $this->createMock(StandardVariableProvider::class);
         $variableProvideMock->expects(self::once())->method('get')->with('resultSet')->willReturn($searchResultSetMock);
 
         /* @var MockObject|RenderingContext $renderContextMock */
-        $renderContextMock = $this->getDumbMock(RenderingContext::class);
+        $renderContextMock = $this->createMock(RenderingContext::class);
         $renderContextMock->expects(self::any())->method('getVariableProvider')->willReturn($variableProvideMock);
         $renderContextMock->expects(self::any())->method('getRequest')->willReturn($mockedControllerRequest);
 
@@ -52,7 +52,7 @@ class RemoveAllFacetsViewHelperTest extends SetUpFacetItemViewHelper
         $viewHelper->setRenderingContext($renderContextMock);
 
         /* @var MockObject|SearchUriBuilder $searchUriBuilderMock */
-        $searchUriBuilderMock = $this->getDumbMock(SearchUriBuilder::class);
+        $searchUriBuilderMock = $this->createMock(SearchUriBuilder::class);
 
         // we expected that the getRemoveAllFacetsUri will be called on the searchUriBuilder in the end.
         $searchUriBuilderMock->expects(self::once())->method('getRemoveAllFacetsUri')->with($mockedPreviousFakedRequest);

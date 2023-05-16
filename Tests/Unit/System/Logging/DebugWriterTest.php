@@ -29,7 +29,6 @@ class DebugWriterTest extends SetUpUnitTestCase
      */
     public function testDebugMessageIsWrittenForMessageFromSolr()
     {
-        /* @var DebugWriter $logWriter */
         $logWriter = $this->getMockBuilder(DebugWriter::class)->onlyMethods(['getIsAllowedByDevIPMask', 'getIsdebugOutputEnabled', 'writeDebugMessage'])->getMock();
         $logWriter->expects(self::any())->method('getIsAllowedByDevIPMask')->willReturn(true);
         $logWriter->expects(self::any())->method('getIsdebugOutputEnabled')->willReturn(true);
@@ -44,7 +43,6 @@ class DebugWriterTest extends SetUpUnitTestCase
      */
     public function testDebugMessageIsNotWrittenWhenDevIpMaskIsNotMatching()
     {
-        /* @var DebugWriter $logWriter */
         $logWriter = $this->getMockBuilder(DebugWriter::class)->onlyMethods(['getIsAllowedByDevIPMask', 'getIsdebugOutputEnabled', 'writeDebugMessage'])->getMock();
         $logWriter->expects(self::any())->method('getIsAllowedByDevIPMask')->willReturn(false);
         $logWriter->expects(self::any())->method('getIsdebugOutputEnabled')->willReturn(true);
@@ -59,7 +57,6 @@ class DebugWriterTest extends SetUpUnitTestCase
      */
     public function testDebugMessageIsNotWrittenWhenDebugOutputIsDisabled()
     {
-        /* @var DebugWriter $logWriter */
         $logWriter = $this->getMockBuilder(DebugWriter::class)->onlyMethods(['getIsAllowedByDevIPMask', 'getIsdebugOutputEnabled', 'writeDebugMessage'])->getMock();
         $logWriter->expects(self::any())->method('getIsAllowedByDevIPMask')->willReturn(true);
         $logWriter->expects(self::any())->method('getIsdebugOutputEnabled')->willReturn(false);

@@ -40,7 +40,7 @@ class OptionsFacetTest extends SetUpUnitTestCase
      */
     public function canGetTitleFromOptionsFacet()
     {
-        $resultSetMock = $this->getDumbMock(SearchResultSet::class);
+        $resultSetMock = $this->createMock(SearchResultSet::class);
         $optionsFacet = new OptionsFacet($resultSetMock, 'myFacet', 'myFacetFieldName', 'myTitle');
         self::assertSame('myTitle', $optionsFacet->getLabel(), 'Could not get title from options facet');
     }
@@ -50,7 +50,7 @@ class OptionsFacetTest extends SetUpUnitTestCase
      */
     public function canAddOptionsToFacet()
     {
-        $resultSetMock = $this->getDumbMock(SearchResultSet::class);
+        $resultSetMock = $this->createMock(SearchResultSet::class);
         $optionsFacet = new OptionsFacet($resultSetMock, 'myFacet', 'myFacetFieldName', 'myTitle');
         $option = new Option($optionsFacet);
 
@@ -69,7 +69,7 @@ class OptionsFacetTest extends SetUpUnitTestCase
      */
     public function getDefaultPartialName()
     {
-        $resultSetMock = $this->getDumbMock(SearchResultSet::class);
+        $resultSetMock = $this->createMock(SearchResultSet::class);
         $queryGroupFacet = new OptionsFacet($resultSetMock, 'myFacet', 'myFacetFieldName', 'myTitle');
 
         self::assertEquals('Options', $queryGroupFacet->getPartialName());
@@ -80,7 +80,7 @@ class OptionsFacetTest extends SetUpUnitTestCase
      */
     public function getCustomPartialName()
     {
-        $resultSetMock = $this->getDumbMock(SearchResultSet::class);
+        $resultSetMock = $this->createMock(SearchResultSet::class);
         $queryGroupFacet = new OptionsFacet($resultSetMock, 'myFacet', 'myFacetFieldName', 'myTitle', ['partialName' => 'MyPartial']);
 
         self::assertEquals('MyPartial', $queryGroupFacet->getPartialName());
@@ -91,7 +91,7 @@ class OptionsFacetTest extends SetUpUnitTestCase
      */
     public function getType()
     {
-        $resultSetMock = $this->getDumbMock(SearchResultSet::class);
+        $resultSetMock = $this->createMock(SearchResultSet::class);
         $myFacet = new OptionsFacet($resultSetMock, 'myFacet', 'myFacetFieldName', 'myTitle', ['partialName' => 'MyPartial']);
 
         self::assertEquals('options', $myFacet->getType());
@@ -119,7 +119,7 @@ class OptionsFacetTest extends SetUpUnitTestCase
      */
     public function getIncludeInAvailableFacets($includeInAvailableFacetsConfiguration, $expectedResult)
     {
-        $resultSetMock = $this->getDumbMock(SearchResultSet::class);
+        $resultSetMock = $this->createMock(SearchResultSet::class);
         $myFacet = new OptionsFacet($resultSetMock, 'myFacet', 'myFacetFieldName', 'myTitle', ['includeInAvailableFacets' => $includeInAvailableFacetsConfiguration]);
 
         self::assertSame($myFacet->getIncludeInAvailableFacets(), $expectedResult, 'Method getIncludeInAvailableFacets returns unexpected result');

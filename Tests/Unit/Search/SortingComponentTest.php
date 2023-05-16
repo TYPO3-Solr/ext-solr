@@ -23,6 +23,7 @@ use ApacheSolrForTypo3\Solr\Search\SortingComponent;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use PHPUnit\Framework\MockObject\MockObject;
 
 /**
  * Testcase for SortingComponent
@@ -31,20 +32,9 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
  */
 class SortingComponentTest extends SetUpUnitTestCase
 {
-    /**
-     * @var Query
-     */
-    protected $query;
-
-    /**
-     * @var SearchRequest
-     */
-    protected $searchRequestMock;
-
-    /**
-     * @var SortingComponent
-     */
-    protected $sortingComponent;
+    protected Query|MockObject $query;
+    protected SearchRequest|MockObject $searchRequestMock;
+    protected SortingComponent|MockObject $sortingComponent;
 
     /**
      * SortingComponentTest constructor.
@@ -53,7 +43,7 @@ class SortingComponentTest extends SetUpUnitTestCase
     {
         $this->query = new Query();
         $this->query->setQuery('');
-        $this->searchRequestMock = $this->getDumbMock(SearchRequest::class);
+        $this->searchRequestMock = $this->createMock(SearchRequest::class);
 
         $queryBuilder = new QueryBuilder(
             $this->createMock(TypoScriptConfiguration::class),
@@ -70,7 +60,7 @@ class SortingComponentTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function sortingFromUrlIsNotAppliedWhenSortingIsDisabled()
+    public function sortingFromUrlIsNotAppliedWhenSortingIsDisabled(): void
     {
         $this->searchRequestMock->expects(self::any())->method('getArguments')->willReturn(['sort' => 'title asc']);
         $this->sortingComponent->initializeSearchComponent();
@@ -80,7 +70,7 @@ class SortingComponentTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function validSortingFromUrlIsApplied()
+    public function validSortingFromUrlIsApplied(): void
     {
         $this->sortingComponent->setSearchConfiguration([
             'sorting' => 1,
@@ -100,7 +90,7 @@ class SortingComponentTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function invalidSortingFromUrlIsNotApplied()
+    public function invalidSortingFromUrlIsNotApplied(): void
     {
         $this->sortingComponent->setSearchConfiguration([
             'sorting' => 1,
@@ -120,7 +110,7 @@ class SortingComponentTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function sortByIsApplied()
+    public function sortByIsApplied(): void
     {
         $this->sortingComponent->setSearchConfiguration([
             'query.' => [
@@ -135,7 +125,7 @@ class SortingComponentTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function urlSortingHasPrioriy()
+    public function urlSortingHasPrioriy(): void
     {
         $this->sortingComponent->setSearchConfiguration([
             'query.' => [
@@ -158,7 +148,7 @@ class SortingComponentTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function querySortingHasPriorityWhenSortingIsDisabled()
+    public function querySortingHasPriorityWhenSortingIsDisabled(): void
     {
         $this->sortingComponent->setSearchConfiguration([
             'query.' => [

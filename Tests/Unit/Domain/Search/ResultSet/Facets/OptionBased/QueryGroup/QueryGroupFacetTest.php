@@ -45,7 +45,7 @@ class QueryGroupFacetTest extends SetUpUnitTestCase
      */
     public function canGetTitleFromOptionsFacet()
     {
-        $resultSetMock = $this->getDumbMock(SearchResultSet::class);
+        $resultSetMock = $this->createMock(SearchResultSet::class);
         $optionsFacet = new QueryGroupFacet($resultSetMock, 'myFacet', 'myFacetFieldName', 'myTitle');
         self::assertSame('myTitle', $optionsFacet->getLabel(), 'Could not get title from queryGroup facet');
     }
@@ -55,7 +55,7 @@ class QueryGroupFacetTest extends SetUpUnitTestCase
      */
     public function canAddOptionsToFacet()
     {
-        $resultSetMock = $this->getDumbMock(SearchResultSet::class);
+        $resultSetMock = $this->createMock(SearchResultSet::class);
         $queryGroupFacet = new QueryGroupFacet($resultSetMock, 'myFacet', 'myFacetFieldName', 'myTitle');
         $option = new Option($queryGroupFacet);
 
@@ -74,7 +74,7 @@ class QueryGroupFacetTest extends SetUpUnitTestCase
      */
     public function getDefaultPartialName()
     {
-        $resultSetMock = $this->getDumbMock(SearchResultSet::class);
+        $resultSetMock = $this->createMock(SearchResultSet::class);
         $queryGroupFacet = new QueryGroupFacet($resultSetMock, 'myFacet', 'myFacetFieldName', 'myTitle');
 
         self::assertEquals('Options', $queryGroupFacet->getPartialName());
@@ -85,7 +85,7 @@ class QueryGroupFacetTest extends SetUpUnitTestCase
      */
     public function getCustomPartialName()
     {
-        $resultSetMock = $this->getDumbMock(SearchResultSet::class);
+        $resultSetMock = $this->createMock(SearchResultSet::class);
         $queryGroupFacet = new QueryGroupFacet($resultSetMock, 'myFacet', 'myFacetFieldName', 'myTitle', ['partialName' => 'MyPartial']);
 
         self::assertEquals('MyPartial', $queryGroupFacet->getPartialName());

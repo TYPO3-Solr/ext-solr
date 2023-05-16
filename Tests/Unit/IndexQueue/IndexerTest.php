@@ -317,14 +317,6 @@ class IndexerTest extends SetUpUnitTestCase
 
     /**
      * Returns a mock builder with dump-mocked object properties.
-     *
-     * @param array $options
-     * @param PagesRepository|null $pagesRepository
-     * @param Builder|null $documentBuilder
-     * @param SolrLogManager|null $logger
-     * @param ConnectionManager|null $connectionManager
-     * @param FrontendEnvironment|null $frontendEnvironment
-     * @return MockBuilder
      */
     protected function getMockBuilderForIndexer(
         array $options = [],
@@ -336,11 +328,11 @@ class IndexerTest extends SetUpUnitTestCase
     ): MockBuilder {
         return $this->getMockBuilder(Indexer::class)->setConstructorArgs([
             $options,
-            $pagesRepository ?? $this->getDumbMock(PagesRepository::class),
-            $documentBuilder ?? $this->getDumbMock(Builder::class),
-            $logger ?? $this->getDumbMock(SolrLogManager::class),
-            $connectionManager ?? $this->getDumbMock(ConnectionManager::class),
-            $frontendEnvironment ?? $this->getDumbMock(FrontendEnvironment::class),
+            $pagesRepository ?? $this->createMock(PagesRepository::class),
+            $documentBuilder ?? $this->createMock(Builder::class),
+            $logger ?? $this->createMock(SolrLogManager::class),
+            $connectionManager ?? $this->createMock(ConnectionManager::class),
+            $frontendEnvironment ?? $this->createMock(FrontendEnvironment::class),
         ]);
     }
 }
