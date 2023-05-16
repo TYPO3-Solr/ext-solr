@@ -17,12 +17,17 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Domain\Search\ResultSet;
 
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResult;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResultCollection;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSetService;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Search;
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use ApacheSolrForTypo3\Solr\Util;
+use TYPO3\CMS\Core\Context\Context;
+use TYPO3\CMS\Core\Context\UserAspect;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 
 class SearchResultSetServiceTest extends IntegrationTest
 {
@@ -48,14 +53,13 @@ class SearchResultSetServiceTest extends IntegrationTest
     {
         // trigger a search
         $this->importCSVDataSet(__DIR__ . '/../../../Controller/Fixtures/indexing_data.csv');
-        $this->indexPageIds([1, 2, 3, 4, 5]);
-
-        $this->waitToBeVisibleInSolr();
+        $this->addSimpleFrontendRenderingToTypoScriptRendering(1);
+        $this->indexPages([1, 2, 3, 4, 5]);
 
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
         self::assertStringContainsString('002de2729efa650191f82900ea02a0a3189dfabb/pages/1/0/0/0', $solrContent);
 
-        $solrConnection = GeneralUtility::makeInstance(ConnectionManager::class)->getConnectionByPageId(1, 0, 0);
+        $solrConnection = GeneralUtility::makeInstance(ConnectionManager::class)->getConnectionByPageId(1);
 
         $typoScriptConfiguration = Util::getSolrConfiguration();
 
@@ -74,10 +78,8 @@ class SearchResultSetServiceTest extends IntegrationTest
     {
         $this->importCSVDataSet(__DIR__ . '/../../../Controller/Fixtures/indexing_data.csv');
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_get_searchResultSet.csv');
-        $this->indexPageIds([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
-
-        $this->waitToBeVisibleInSolr();
-        $solrConnection = GeneralUtility::makeInstance(ConnectionManager::class)->getConnectionByPageId(1, 0, 0);
+        $this->addSimpleFrontendRenderingToTypoScriptRendering(1);
+        $this->indexPages([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
 
         $typoScriptConfiguration = Util::getSolrConfiguration();
         $typoScriptConfiguration->mergeSolrConfiguration([
@@ -95,7 +97,7 @@ class SearchResultSetServiceTest extends IntegrationTest
         self::assertEquals('pid', $typoScriptConfiguration->getSearchVariantsField());
         self::assertEquals(11, $typoScriptConfiguration->getSearchVariantsLimit());
 
-        $searchResults = $this->doSearchWithResultSetService($solrConnection, $typoScriptConfiguration);
+        $searchResults = $this->doSearchWithResultSetService($typoScriptConfiguration);
         self::assertSame(4, count($searchResults), 'There should be three results at all');
 
         // We assume that the first result (pid=0) has no variants.
@@ -124,10 +126,8 @@ class SearchResultSetServiceTest extends IntegrationTest
     {
         $this->importCSVDataSet(__DIR__ . '/../../../Controller/Fixtures/indexing_data.csv');
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_get_searchResultSet.csv');
-        $this->indexPageIds([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]);
-
-        $this->waitToBeVisibleInSolr();
-        $solrConnection = GeneralUtility::makeInstance(ConnectionManager::class)->getConnectionByPageId(1, 0, 0);
+        $this->addSimpleFrontendRenderingToTypoScriptRendering(1);
+        $this->indexPages([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]);
 
         $typoScriptConfiguration = Util::getSolrConfiguration();
         $typoScriptConfiguration->mergeSolrConfiguration([
@@ -150,7 +150,7 @@ class SearchResultSetServiceTest extends IntegrationTest
         self::assertEquals('author', $typoScriptConfiguration->getSearchVariantsField());
         self::assertEquals(11, $typoScriptConfiguration->getSearchVariantsLimit());
 
-        $searchResults = $this->doSearchWithResultSetService($solrConnection, $typoScriptConfiguration);
+        $searchResults = $this->doSearchWithResultSetService($typoScriptConfiguration);
         self::assertSame(3, count($searchResults), 'There should be three results at all');
 
         // We assume that the first result has 6 variants.
@@ -196,9 +196,6 @@ class SearchResultSetServiceTest extends IntegrationTest
     {
         $this->importCSVDataSet(__DIR__ . '/../../../Controller/Fixtures/indexing_data.csv');
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_get_searchResultSet.csv');
-        $this->fakeTsfe(1);
-
-        $solrConnection = GeneralUtility::makeInstance(ConnectionManager::class)->getConnectionByPageId(1, 0, 0);
 
         $typoScriptConfiguration = Util::getSolrConfiguration();
         $typoScriptConfiguration->mergeSolrConfiguration([
@@ -212,7 +209,7 @@ class SearchResultSetServiceTest extends IntegrationTest
             ],
         ]);
 
-        $searchResults = $this->doSearchWithResultSetService($solrConnection, $typoScriptConfiguration, 'nomatchfound');
+        $searchResults = $this->doSearchWithResultSetService($typoScriptConfiguration, 'nomatchfound');
         self::assertSame(0, count($searchResults), 'There should zero results when the index is empty');
     }
 
@@ -221,15 +218,13 @@ class SearchResultSetServiceTest extends IntegrationTest
      */
     public function cantGetHiddenElementWithoutPermissions()
     {
-        $this->applyUsingErrorControllerForCMS9andAbove();
         $this->importFrontendRestrictedPageScenario();
 
-        $solrConnection = GeneralUtility::makeInstance(ConnectionManager::class)->getConnectionByPageId(1, 0, 0);
         $typoScriptConfiguration = Util::getSolrConfiguration();
 
         // only the default group
         $this->simulateFrontedUserGroups([0]);
-        $searchResults = $this->doSearchWithResultSetService($solrConnection, $typoScriptConfiguration);
+        $searchResults = $this->doSearchWithResultSetService($typoScriptConfiguration);
 
         self::assertSame(2, count($searchResults), 'We should only see two documents because the restricted element should be filtered out');
     }
@@ -239,15 +234,13 @@ class SearchResultSetServiceTest extends IntegrationTest
      */
     public function canGetHiddenElementWithPermissions()
     {
-        $this->applyUsingErrorControllerForCMS9andAbove();
         $this->importFrontendRestrictedPageScenario();
 
-        $solrConnection = GeneralUtility::makeInstance(ConnectionManager::class)->getConnectionByPageId(1, 0, 0);
         $typoScriptConfiguration = Util::getSolrConfiguration();
 
         // user group 0 and 1 should see all elements
         $this->simulateFrontedUserGroups([0, 1]);
-        $searchResults = $this->doSearchWithResultSetService($solrConnection, $typoScriptConfiguration);
+        $searchResults = $this->doSearchWithResultSetService($typoScriptConfiguration);
 
         self::assertSame(3, count($searchResults), 'We should see all content, because nothing should be filtered');
     }
@@ -258,40 +251,50 @@ class SearchResultSetServiceTest extends IntegrationTest
     protected function importFrontendRestrictedPageScenario()
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/fe_user_page.csv');
-        $this->indexPageIds([1, 2, 3], [1]);
-        $this->waitToBeVisibleInSolr();
+        $this->addSimpleFrontendRenderingToTypoScriptRendering(1);
+        $this->indexPages([1, 2, 3], 1);
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
         self::assertStringContainsString('"numFound":3', $solrContent);
     }
 
-    /**
-     * @param $solrConnection
-     * @param $typoScriptConfiguration
-     * @param string $queryString
-     * @return array
-     */
-    protected function doSearchWithResultSetService($solrConnection, $typoScriptConfiguration, $queryString = '*')
+    protected function doSearchWithResultSetService(TypoScriptConfiguration $typoScriptConfiguration, string $queryString = '*'): SearchResultCollection
     {
+        $solrConnection = GeneralUtility::makeInstance(ConnectionManager::class)->getConnectionByPageId(1);
         $search = GeneralUtility::makeInstance(Search::class, $solrConnection);
 
         /* @var SearchResultSetService $searchResultsSetService */
         $searchResultSetService = GeneralUtility::makeInstance(
             SearchResultSetService::class,
             $typoScriptConfiguration,
-            $search,
-            null,
-            null,
-            null
+            $search
         );
 
         /* @var SearchRequest $searchRequest */
         $searchRequest = GeneralUtility::makeInstance(SearchRequest::class, [], 0, 0, $typoScriptConfiguration);
         $searchRequest->setRawQueryString($queryString);
         $searchRequest->setResultsPerPage(10);
+        $searchRequest->setPage(1);
 
+        // Simulate something as we still have some $GLOBALS[TSFE] dependency
+        $GLOBALS['TSFE'] = new \stdClass();
+        $GLOBALS['TSFE']->id = 1;
         $searchResultSet = $searchResultSetService->search($searchRequest);
 
         $searchResults = $searchResultSet->getSearchResults();
         return $searchResults;
+    }
+
+    protected function simulateFrontedUserGroups(array $feUserGroupArray): void
+    {
+        /* @var Context $context */
+        $context = GeneralUtility::makeInstance(Context::class);
+        $userAuthentication = GeneralUtility::makeInstance(FrontendUserAuthentication::class);
+        // Simulate any user
+        $userAuthentication->user = [
+            'uid' => 1,
+            'usergroup' => implode(',', $feUserGroupArray),
+        ];
+        $userAspect = new UserAspect($userAuthentication, $feUserGroupArray);
+        $context->setAspect('frontend.user', $userAspect);
     }
 }

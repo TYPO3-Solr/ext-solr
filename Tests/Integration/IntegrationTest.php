@@ -18,38 +18,18 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration;
 use ApacheSolrForTypo3\Solr\Access\Rootline;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
-use ApacheSolrForTypo3\Solr\Typo3PageIndexer;
-use Doctrine\DBAL\Driver\Exception as DBALDriverException;
-use Doctrine\DBAL\Exception as DoctrineDBALException;
 use InvalidArgumentException;
-use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Http\Message\ResponseInterface;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionObject;
-use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
-use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
-use TYPO3\CMS\Core\Context\Context;
-use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
-use TYPO3\CMS\Core\Context\UserAspect;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\DataHandling\DataHandler;
-use TYPO3\CMS\Core\Domain\ConsumableString;
-use TYPO3\CMS\Core\Error\Http\AbstractServerErrorException;
-use TYPO3\CMS\Core\Error\Http\InternalServerErrorException;
-use TYPO3\CMS\Core\Error\Http\ServiceUnavailableException;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
-use TYPO3\CMS\Core\Http\NormalizedParams;
-use TYPO3\CMS\Core\Http\ServerRequest;
-use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Tests\Functional\SiteHandling\SiteBasedTestTrait;
-use TYPO3\CMS\Core\TimeTracker\TimeTracker;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
-use TYPO3\CMS\Frontend\Http\RequestHandler;
 use TYPO3\TestingFramework\Core\Exception as TestingFrameworkCoreException;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequestContext;
@@ -99,87 +79,13 @@ abstract class IntegrationTest extends FunctionalTestCase
      */
     protected bool $skipImportRootPagesAndTemplatesForConfiguredSites = false;
 
-    /**
-     * @throws NoSuchCacheException
-     */
     protected function setUp(): void
     {
         parent::setUp();
-
         //this is needed by the TYPO3 core.
         chdir(Environment::getPublicPath() . '/');
-
         $this->instancePath = $this->getInstancePath();
-
         $this->failWhenSolrDeprecationIsCreated();
-    }
-
-    /**
-     * Loads a Fixture from the Fixtures folder beside the current test case.
-     *
-     * @param $fixtureName
-     *
-     * @throws TestingFrameworkCoreException
-     */
-    protected function importDataSetFromFixture($fixtureName): void
-    {
-        $this->importDataSet($this->getFixturePathByName($fixtureName));
-    }
-
-    /**
-     * Returns the absolute root path to the fixtures.
-     *
-     * @return string
-     */
-    protected function getFixtureRootPath(): string
-    {
-        return $this->getRuntimeDirectory() . '/Fixtures/';
-    }
-
-    /**
-     * Returns the absolute path to a fixture file.
-     *
-     * @param $fixtureName
-     *
-     * @return string
-     */
-    protected function getFixturePathByName($fixtureName): string
-    {
-        return $this->getFixtureRootPath() . $fixtureName;
-    }
-
-    /**
-     * Returns the directory on runtime.
-     *
-     * @return string
-     */
-    protected function getRuntimeDirectory(): string
-    {
-        $rc = new ReflectionClass(static::class);
-        return dirname($rc->getFileName());
-    }
-
-    /**
-     * @param int $id
-     * @param string $MP
-     * @param int $language
-     *
-     * @return TypoScriptFrontendController
-     *
-     * @throws AbstractServerErrorException
-     * @throws InternalServerErrorException
-     * @throws ServiceUnavailableException
-     * @throws SiteNotFoundException
-     *
-     * @deprecated Do not try to set up and configure TSFE in any way by self.
-     */
-    protected function getConfiguredTSFE(int $id = 1, string $MP = '', int $language = 0): TypoScriptFrontendController
-    {
-        /* @var TSFETestBootstrapper $bootstrapper */
-        $bootstrapper = GeneralUtility::makeInstance(TSFETestBootstrapper::class);
-
-        $result = $bootstrapper->bootstrap($id, $MP, $language);
-        return $result->getTsfe();
     }
 
     /**
@@ -213,14 +119,9 @@ abstract class IntegrationTest extends FunctionalTestCase
         return get_headers($url);
     }
 
-    /**
-     * @param string $coreName
-     *
-     * @throws InvalidArgumentException
-     */
     protected function validateTestCoreName(string $coreName): void
     {
-        if (!in_array($coreName, $this->testSolrCores)) {
+        if (!in_array($coreName, $this->testSolrCores, true)) {
             throw new InvalidArgumentException('No valid test core passed');
         }
     }
@@ -235,159 +136,11 @@ abstract class IntegrationTest extends FunctionalTestCase
 
     /**
      * Assertion to check if the solr server contains an expected count of documents.
-     *
-     * @param int $documentCount
      */
     protected function assertSolrContainsDocumentCount(int $documentCount): void
     {
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
         self::assertStringContainsString('"numFound":' . $documentCount, $solrContent, 'Solr contains unexpected amount of documents');
-    }
-
-    /**
-     * @param array $importPageIds
-     * @param array|null $feUserGroupArray
-     *
-     * @throws AbstractServerErrorException
-     * @throws AspectNotFoundException
-     * @throws DBALDriverException
-     * @throws DoctrineDBALException
-     * @throws InternalServerErrorException
-     * @throws ServiceUnavailableException
-     * @throws SiteNotFoundException
-     */
-    protected function indexPageIds(array $importPageIds, ?array $feUserGroupArray = [0]): void
-    {
-        foreach ($importPageIds as $importPageId) {
-            $fakeTSFE = $this->fakeTSFE($importPageId, $feUserGroupArray);
-
-            /* @var Typo3PageIndexer $pageIndexer */
-            $pageIndexer = GeneralUtility::makeInstance(Typo3PageIndexer::class, $fakeTSFE);
-            $indexQueueItemMock = $this->createMock(Item::class);
-            $indexQueueItemMock->expects(self::any())
-                ->method('getIndexingConfigurationName')
-                ->willReturn('pages');
-            $pageIndexer->setIndexQueueItem($indexQueueItemMock);
-            $pageIndexer->setPageAccessRootline(Rootline::getAccessRootlineByPageId($importPageId));
-            $pageIndexer->indexPage();
-        }
-
-        // reset to group 0
-        $this->simulateFrontedUserGroups([0]);
-    }
-
-    /**
-     * @param int $isAdmin
-     * @param int $workspace
-     *
-     * @return BackendUserAuthentication
-     */
-    protected function fakeBEUser(int $isAdmin = 0, int $workspace = 0): BackendUserAuthentication
-    {
-        /* @var BackendUserAuthentication $beUser */
-        $beUser = GeneralUtility::makeInstance(BackendUserAuthentication::class);
-        $beUser->user['admin'] = $isAdmin;
-        $beUser->workspace = $workspace;
-        $GLOBALS['BE_USER'] = $beUser;
-
-        return $beUser;
-    }
-
-    /**
-     * @param int $pageId
-     * @param array $feUserGroupArray
-     *
-     * @return TypoScriptFrontendController
-     *
-     * @throws AbstractServerErrorException
-     * @throws InternalServerErrorException
-     * @throws ServiceUnavailableException
-     * @throws SiteNotFoundException
-     *
-     * @deprecated Do not try to set up and configure TSFE in any way by self.
-     */
-    protected function fakeTSFE(int $pageId, array $feUserGroupArray = [0]): TypoScriptFrontendController
-    {
-        $GLOBALS['TT'] = $this->createMock(TimeTracker::class);
-        $_SERVER['HTTP_HOST'] = 'test.local.typo3.org';
-        $_SERVER['REQUEST_URI'] = '/search.html';
-
-        $fakeTSFE = $this->getConfiguredTSFE($pageId);
-
-        $GLOBALS['TSFE'] = $fakeTSFE;
-        $this->simulateFrontedUserGroups($feUserGroupArray);
-
-        /* @var MockObject|ServerRequest $request */
-        $request = $GLOBALS['TYPO3_REQUEST'];
-        $request = $GLOBALS['TYPO3_REQUEST'] =
-            $request
-                ->withAttribute(
-                    'frontend.controller',
-                    $fakeTSFE
-                )->withAttribute(
-                    'normalizedParams',
-                    NormalizedParams::createFromRequest($request)
-                )
-                ->withAttribute(
-                    'nonce',
-                    new ConsumableString('empty')
-                );
-        $fakeTSFE->newCObj($request);
-
-        $requestHandler = GeneralUtility::makeInstance(RequestHandler::class);
-        $requestHandler->handle($request);
-
-        return $fakeTSFE;
-    }
-
-    /**
-     * @param array $feUserGroupArray
-     */
-    protected function simulateFrontedUserGroups(array $feUserGroupArray): void
-    {
-        /** @var  $context Context::class */
-        $context = GeneralUtility::makeInstance(Context::class);
-        $userAspect = $this->getMockBuilder(UserAspect::class)
-            ->onlyMethods([
-                'get',
-                'getGroupIds',
-            ])->getMock();
-        $userAspect->expects(self::any())->method('get')->willReturnCallback(function ($key) use ($feUserGroupArray) {
-            if ($key === 'groupIds') {
-                return $feUserGroupArray;
-            }
-
-            if ($key === 'isLoggedIn') {
-                return true;
-            }
-
-            /* @var UserAspect $originalUserAspect */
-            $originalUserAspect = GeneralUtility::makeInstance(UserAspect::class);
-            return $originalUserAspect->get($key);
-        });
-        $userAspect->expects(self::any())->method('getGroupIds')->willReturn($feUserGroupArray);
-        /* @var UserAspect $userAspect */
-        $context->setAspect('frontend.user', $userAspect);
-    }
-
-    /**
-     * Applies in CMS 9.2 introduced error handling.
-     */
-    protected function applyUsingErrorControllerForCMS9andAbove(): void
-    {
-        $GLOBALS['TYPO3_REQUEST'] = new ServerRequest();
-    }
-
-    /**
-     * Returns the data handler
-     *
-     * @return DataHandler
-     */
-    protected function getDataHandler(): DataHandler
-    {
-        $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageServiceFactory::class)->create('default');
-        /* @retrun  DataHandler */
-        return GeneralUtility::makeInstance(DataHandler::class);
     }
 
     /**
@@ -408,19 +161,8 @@ abstract class IntegrationTest extends FunctionalTestCase
         $this->writeDefaultSolrTestSiteConfigurationForHostAndPort($solrConnectionInfo['scheme'], $solrConnectionInfo['host'], $solrConnectionInfo['port']);
     }
 
-    /**
-     * @var string
-     */
     protected static string $lastSiteCreated = '';
 
-    /**
-     * @param string|null $scheme
-     * @param string|null $host
-     * @param int|null $port
-     * @param bool|null $disableDefaultLanguage
-     *
-     * @throws TestingFrameworkCoreException
-     */
     protected function writeDefaultSolrTestSiteConfigurationForHostAndPort(
         ?string $scheme = 'http',
         ?string $host = 'localhost',
@@ -495,8 +237,6 @@ abstract class IntegrationTest extends FunctionalTestCase
      * Note: This method is executed by default.
      *       The execution of this method call can be skipped for subclasses by setting
      *       {@link skipImportRootPagesAndTemplatesForConfiguredSites} property to false.
-     *
-     * @throws TestingFrameworkCoreException
      */
     private function importRootPagesAndTemplatesForConfiguredSites(): void
     {
@@ -534,8 +274,6 @@ abstract class IntegrationTest extends FunctionalTestCase
     /**
      * Returns solr connection URI authority as string as
      * scheme://host:port
-     *
-     * @return string
      */
     protected function getSolrConnectionUriAuthority(): string
     {
@@ -545,11 +283,6 @@ abstract class IntegrationTest extends FunctionalTestCase
 
     /**
      * Returns inaccessible(private/protected/etc.) property from given object.
-     *
-     * @param object $object
-     * @param string $property
-     *
-     * @return mixed
      */
     protected function getInaccessiblePropertyFromObject(object $object, string $property): mixed
     {
@@ -573,9 +306,6 @@ abstract class IntegrationTest extends FunctionalTestCase
      *
      * @param object $object The object to be invoked
      * @param string $name the name of the method to call
-     *
-     * @return mixed
-     *
      * @throws ReflectionException
      */
     protected function callInaccessibleMethod(object $object, string $name): mixed
@@ -592,11 +322,6 @@ abstract class IntegrationTest extends FunctionalTestCase
 
     /**
      * Adds TypoScript setup snippet to the existing template record
-     *
-     * @param int $pageId
-     * @param string $constants
-     *
-     * @throws DoctrineDBALException
      */
     protected function addTypoScriptConstantsToTemplateRecord(int $pageId, string $constants): void
     {
@@ -624,7 +349,7 @@ abstract class IntegrationTest extends FunctionalTestCase
         $siteFinder = GeneralUtility::makeInstance(SiteFinder::class);
         foreach ($importPageIds as $importPageId) {
             $site = $siteFinder->getSiteByPageId($importPageId);
-            $queueItem = $this->addPageToIndex($importPageId, $site);
+            $queueItem = $this->addPageToIndexQueue($importPageId, $site);
             $frontendUrl = $site->getRouter()->generateUri($importPageId);
             $this->executePageIndexer($frontendUrl, $queueItem, $frontendUserId);
         }
@@ -635,18 +360,25 @@ abstract class IntegrationTest extends FunctionalTestCase
      * Adds a page to the queue (into DB table tx_solr_indexqueue_item) so it can
      * be fetched via a frontend subrequest
      */
-    protected function addPageToIndex(int $pageId, Site $site): Item
+    protected function addPageToIndexQueue(int $pageId, Site $site): Item
     {
         $queueItem = [
             'root' => $site->getRootPageId(),
             'item_type' => 'pages',
             'item_uid' => $pageId,
             'indexing_configuration' => 'pages',
-            'errors' => '',
         ];
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_solr_indexqueue_item');
-        $connection->insert('tx_solr_indexqueue_item', $queueItem);
-        $queueItem['uid'] = (int)$connection->lastInsertId();
+        // Check if item (type + Page ID) is already in index, if so update it
+        $row = $connection->select(['*'], 'tx_solr_indexqueue_item', $queueItem)->fetchAssociative();
+        if (is_array($row)) {
+            $connection->update('tx_solr_indexqueue_item', $queueItem + ['errors' => ''], ['uid' => $row['uid']]);
+            $queueItem['uid'] = $row['uid'];
+        } else {
+            $connection->insert('tx_solr_indexqueue_item', $queueItem + ['errors' => '']);
+            $queueItem['uid'] = (int)$connection->lastInsertId();
+            $queueItem = $connection->select(['*'], 'tx_solr_indexqueue_item', ['uid' => $queueItem['uid']])->fetchAssociative();
+        }
         return new Item($queueItem);
     }
 
@@ -661,6 +393,8 @@ abstract class IntegrationTest extends FunctionalTestCase
         // Now add the headers for item to the request
         $indexerRequest = GeneralUtility::makeInstance(PageIndexerRequest::class);
         $indexerRequest->setIndexQueueItem($item);
+        $accessRootline = Rootline::getAccessRootlineByPageId($item->getRecordUid());
+        $indexerRequest->setParameter('accessRootline', (string)$accessRootline);
         $indexerRequest->setParameter('item', $item->getIndexQueueUid());
         $indexerRequest->addAction('indexPage');
         $headers = $indexerRequest->getHeaders();
@@ -675,5 +409,27 @@ abstract class IntegrationTest extends FunctionalTestCase
         $response = $this->executeFrontendSubRequest($request, $requestContext);
         $response->getBody()->rewind();
         return $response;
+    }
+
+    protected function addSimpleFrontendRenderingToTypoScriptRendering(int $templateRecord, string $additionalContent = ''): void
+    {
+        $this->addTypoScriptToTemplateRecord($templateRecord, '
+page = PAGE
+page.typeNum = 0
+config.index_enable = 1
+
+# very simple rendering
+page.10 = CONTENT
+page.10 {
+  table = tt_content
+  select.orderBy = sorting
+  select.where = colPos=0
+  renderObj = COA
+  renderObj {
+    10 = TEXT
+    10.field = bodytext
+  }
+}
+' . $additionalContent);
     }
 }

@@ -22,6 +22,7 @@ use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\IndexQueue\RecordMonitor;
 use ApacheSolrForTypo3\Solr\System\Records\Queue\EventQueueItemRepository;
 use ApacheSolrForTypo3\Solr\Task\EventQueueWorkerTask;
+use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -86,6 +87,8 @@ class GarbageCollectorTest extends IntegrationTest
      */
     protected $eventQueue;
 
+    protected BackendUserAuthentication $backendUser;
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -98,8 +101,10 @@ class GarbageCollectorTest extends IntegrationTest
         $this->extensionConfiguration = GeneralUtility::makeInstance(ExtensionConfiguration::class);
         $this->eventQueue = GeneralUtility::makeInstance(EventQueueItemRepository::class);
         $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['solr'] = [];
-        $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageServiceFactory::class)
-            ->create('default');
+        $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageServiceFactory::class)->create('default');
+        // fake that a backend user is logged in
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/sites_setup_and_data_set/be_users.csv');
+        $this->backendUser = $this->setUpBackendUser(1);
     }
 
     protected function tearDown(): void
@@ -311,6 +316,7 @@ class GarbageCollectorTest extends IntegrationTest
      */
     protected function prepareCanCollectGarbageFromSubPagesWhenPageIsSetToHiddenAndExtendToSubPagesIsSetForMultipleSubpages(): void
     {
+        $this->addSimpleFrontendRenderingToTypoScriptRendering(1);
         $this->importCSVDataSet(__DIR__ . '/Fixtures/page_hidden_and_extendtosubpages_multiple_subpages.csv');
 
         // we expect that the index queue is empty before we start
@@ -351,8 +357,7 @@ class GarbageCollectorTest extends IntegrationTest
         self::assertSame(1, count($items));
 
         // we index this item
-        $this->indexPageIds([1]);
-        $this->waitToBeVisibleInSolr();
+        $this->indexPages([1]);
 
         // now the content of the deleted content element should be gone
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
@@ -382,22 +387,19 @@ class GarbageCollectorTest extends IntegrationTest
     protected function prepareCanRemoveDeletedContentElement(): void
     {
         $this->cleanUpSolrServerAndAssertEmpty();
+        $this->addSimpleFrontendRenderingToTypoScriptRendering(1);
         $this->importCSVDataSet(__DIR__ . '/Fixtures/indexed_content.csv');
 
-        $this->indexPageIds([1]);
-
         // we index a page with two content elements and expect solr contains the content of both
-        $this->waitToBeVisibleInSolr();
+        $this->indexPages([1]);
 
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
         self::assertStringContainsString('will be removed!', $solrContent, 'solr did not contain rendered page content');
         self::assertStringContainsString('will stay!', $solrContent, 'solr did not contain rendered page content');
 
         // we delete the second content element
-        $beUser = $this->fakeBEUser(1, 0);
-
         $cmd = ['tt_content' => [88 => ['delete' => 1 ]]];
-        $this->dataHandler->start([], $cmd, $beUser);
+        $this->dataHandler->start([], $cmd, $this->backendUser);
         $this->dataHandler->process_cmdmap();
         $this->dataHandler->process_datamap();
     }
@@ -420,7 +422,7 @@ class GarbageCollectorTest extends IntegrationTest
         self::assertSame(1, count($items));
 
         // we index this item
-        $this->indexPageIds([1]);
+        $this->indexPages([1]);
         $this->waitToBeVisibleInSolr();
 
         // now the content of the deletec content element should be gone
@@ -464,8 +466,7 @@ class GarbageCollectorTest extends IntegrationTest
         self::assertSame(1, count($items));
 
         // we index this item
-        $this->indexPageIds([1]);
-        $this->waitToBeVisibleInSolr();
+        $this->indexPages([1]);
 
         // now the content of the deleted content element should be gone
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
@@ -512,8 +513,7 @@ class GarbageCollectorTest extends IntegrationTest
         self::assertSame(1, count($items));
 
         // we index this item
-        $this->indexPageIds([2]);
-        $this->waitToBeVisibleInSolr();
+        $this->indexPages([2]);
 
         // now the content of the deleted content element should be gone
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
@@ -554,8 +554,7 @@ class GarbageCollectorTest extends IntegrationTest
         self::assertSame(1, count($items));
 
         // we index this item
-        $this->indexPageIds([1]);
-        $this->waitToBeVisibleInSolr();
+        $this->indexPages([1]);
 
         // now the content of the deletec content element should be gone
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
@@ -597,11 +596,11 @@ class GarbageCollectorTest extends IntegrationTest
     protected function prepareCanRemoveContentElementTests(array $dataMap, string $fixture = 'indexed_content.csv', array $indexPageIds = [1]): void
     {
         $this->cleanUpSolrServerAndAssertEmpty();
+        $this->addSimpleFrontendRenderingToTypoScriptRendering(1);
         $this->importCSVDataSet(__DIR__ . '/Fixtures/' . $fixture);
 
-        $this->indexPageIds($indexPageIds);
-
         // we index a page with two content elements and expect solr contains the content of both
+        $this->indexPages($indexPageIds);
         $this->waitToBeVisibleInSolr();
 
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
@@ -611,8 +610,7 @@ class GarbageCollectorTest extends IntegrationTest
         self::assertStringContainsString('will stay!', $solrContent, 'Solr did not contain required page or content element content');
 
         // we hide the second content element
-        $beUser = $this->fakeBEUser(1);
-        $this->dataHandler->start($dataMap, [], $beUser);
+        $this->dataHandler->start($dataMap, [], $this->backendUser);
         $this->dataHandler->process_cmdmap();
         $this->dataHandler->process_datamap();
         $this->dataHandler->clear_cacheCmd('all');
@@ -624,7 +622,7 @@ class GarbageCollectorTest extends IntegrationTest
     public function canRemovePageWhenPageIsHidden(): void
     {
         $dataMap = ['pages' => ['2' => ['hidden' => 1]]];
-        $this->prepareCanRemovePagesTests($dataMap, []);
+        $this->prepareCanRemovePagesTests($dataMap);
 
         $this->waitToBeVisibleInSolr();
         $this->assertIndexQueueContainsItemAmount(1);
@@ -637,7 +635,7 @@ class GarbageCollectorTest extends IntegrationTest
         foreach ($items as $item) {
             $pages[] = $item->getRecordUid();
         }
-        $this->indexPageIds($pages);
+        $this->indexPages($pages);
         $this->waitToBeVisibleInSolr();
 
         // now only one document should be left with the content of the first content element
@@ -656,7 +654,7 @@ class GarbageCollectorTest extends IntegrationTest
         $dataMap = ['pages' => ['2' => ['hidden' => 1]]];
 
         $this->assertEmptyEventQueue();
-        $this->prepareCanRemovePagesTests($dataMap, []);
+        $this->prepareCanRemovePagesTests($dataMap);
         $this->assertIndexQueueContainsItemAmount(2);
         $this->processEventQueue();
         $this->assertEmptyEventQueue();
@@ -682,7 +680,7 @@ class GarbageCollectorTest extends IntegrationTest
         foreach ($items as $item) {
             $pages[] = $item->getRecordUid();
         }
-        $this->indexPageIds($pages);
+        $this->indexPages($pages);
         $this->waitToBeVisibleInSolr();
 
         // now only one document should be left with the content of the first content element
@@ -713,10 +711,11 @@ class GarbageCollectorTest extends IntegrationTest
      */
     public function canRemovePageWhenContentElementOnAlreadyDeletedPageIsDeleted(): void
     {
+        $this->addSimpleFrontendRenderingToTypoScriptRendering(1);
         $this->importCSVDataSet(__DIR__ . '/Fixtures/deleted_page_and_content.csv');
         $cmdMap = ['tt_content' => [321 => ['delete' => 1 ]]];
 
-        $this->dataHandler->start([], $cmdMap, $this->fakeBEUser(1));
+        $this->dataHandler->start([], $cmdMap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
 
         self::assertEquals(1, $this->indexQueue->getAllItemsCount(), 'Queue item count not as expected');
@@ -733,10 +732,11 @@ class GarbageCollectorTest extends IntegrationTest
      */
     public function canRemovePageWhenContentElementOnNonExistingPageIsDeleted(): void
     {
+        $this->addSimpleFrontendRenderingToTypoScriptRendering(1);
         $this->importCSVDataSet(__DIR__ . '/Fixtures/deleted_page_and_content.csv');
         $cmdMap = ['tt_content' => [432 => ['delete' => 1 ]]];
 
-        $this->dataHandler->start([], $cmdMap, $this->fakeBEUser(1));
+        $this->dataHandler->start([], $cmdMap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
 
         // check queue directly as Queue wouldn't return invalid records
@@ -759,7 +759,7 @@ class GarbageCollectorTest extends IntegrationTest
         $this->importCSVDataSet(__DIR__ . '/Fixtures/deleted_page_and_content.csv');
         $cmdMap = ['tt_content' => [321 => ['delete' => 1 ]]];
 
-        $this->dataHandler->start([], $cmdMap, $this->fakeBEUser(1));
+        $this->dataHandler->start([], $cmdMap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
 
         // check queue directly as Queue wouldn't return invalid records
@@ -775,19 +775,15 @@ class GarbageCollectorTest extends IntegrationTest
      * - canRemovePageWhenPageIsHiddenInDelayedProcessingMode
      * - canRemovePageWhenPageIsDeleted
      * - canRemovePageWhenPageIsDeletedInDelayedProcessingMode
-     *
-     * @param array $dataMap
-     * @param array $cmdMap
      */
-    protected function prepareCanRemovePagesTests(array $dataMap, array $cmdMap): void
+    protected function prepareCanRemovePagesTests(array $dataMap, array $cmdMap = []): void
     {
         $this->cleanUpSolrServerAndAssertEmpty();
+        $this->addSimpleFrontendRenderingToTypoScriptRendering(1);
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_remove_page.csv');
 
-        $this->indexPageIds([1, 2]);
-
         // we index two pages and check that both are visible
-        $this->waitToBeVisibleInSolr();
+        $this->indexPages([1, 2]);
 
         $solrContent = file_get_contents($this->getSolrConnectionUriAuthority() . '/solr/core_en/select?q=*:*');
         self::assertStringContainsString('will be removed!', $solrContent, 'solr did not contain rendered page content');
@@ -795,10 +791,7 @@ class GarbageCollectorTest extends IntegrationTest
         self::assertStringContainsString('"numFound":2', $solrContent, 'Expected to have two documents in the index');
 
         // we hide the second page
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/sites_setup_and_data_set/be_users.csv');
-        $beUser = $this->setUpBackendUser(1);
-
-        $this->dataHandler->start($dataMap, $cmdMap, $beUser);
+        $this->dataHandler->start($dataMap, $cmdMap, $this->backendUser);
         $this->dataHandler->process_cmdmap();
         $this->dataHandler->process_datamap();
         $this->dataHandler->clear_cacheCmd('all');
@@ -863,26 +856,19 @@ class GarbageCollectorTest extends IntegrationTest
 
         $this->cleanUpSolrServerAndAssertEmpty();
 
-        // we hide the seconde page
-        $beUser = $this->fakeBEUser(1, 0);
-
         $this->addToQueueAndIndexRecord('tx_fakeextension_domain_model_foo', 111);
         $this->waitToBeVisibleInSolr();
         $this->assertSolrContainsDocumentCount(1);
 
+        // we hide the second page
         $cmd = ['tx_fakeextension_domain_model_foo' => [111 => ['delete' => 1 ]]];
-        $this->dataHandler->start([], $cmd, $beUser);
+        $this->dataHandler->start([], $cmd, $this->backendUser);
         $this->dataHandler->process_cmdmap();
         $this->dataHandler->process_datamap();
         $this->dataHandler->clear_cacheCmd('all');
     }
 
-    /**
-     * @param string $table
-     * @param int $uid
-     * @return bool
-     */
-    protected function addToQueueAndIndexRecord($table, $uid): bool
+    protected function addToQueueAndIndexRecord(string $table, int $uid): bool
     {
         // write an index queue item
         $updatedItems = $this->indexQueue->updateItem($table, $uid);

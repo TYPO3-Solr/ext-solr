@@ -32,6 +32,7 @@ use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
+use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Scheduler\Scheduler;
 use TYPO3\TestingFramework\Core\Exception as TestingFrameworkCoreException;
@@ -1916,5 +1917,17 @@ class RecordMonitorTest extends IntegrationTest
         /** @var Scheduler $scheduler */
         $scheduler = GeneralUtility::makeInstance(Scheduler::class);
         $scheduler->executeTask($task);
+    }
+
+    /**
+     * Returns the data handler
+     *
+     * @return DataHandler
+     */
+    protected function getDataHandler(): DataHandler
+    {
+        $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageServiceFactory::class)->create('default');
+        /* @retrun  DataHandler */
+        return GeneralUtility::makeInstance(DataHandler::class);
     }
 }

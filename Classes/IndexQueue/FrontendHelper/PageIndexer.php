@@ -126,8 +126,6 @@ class PageIndexer extends AbstractFrontendHelper
 
                 'os' => '',
                 'exec' => '',
-
-                'classFile' => ExtensionManagementUtility::extPath('solr') . 'Classes/IndexQueue/FrontendHelper/AuthorizationService.php',
                 'className' => AuthorizationService::class,
             ]
         );

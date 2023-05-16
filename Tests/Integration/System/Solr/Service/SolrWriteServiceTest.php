@@ -69,7 +69,7 @@ class SolrWriteServiceTest extends IntegrationTest
      */
     public function canExtractByQuery()
     {
-        $testFilePath = $this->getFixturePathByName('testpdf.pdf');
+        $testFilePath = __DIR__ . '/Fixtures/testpdf.pdf';
         /* @var ExtractingQuery $extractQuery */
         $extractQuery = GeneralUtility::makeInstance(ExtractingQuery::class, $testFilePath);
         $extractQuery->setExtractOnly(true);

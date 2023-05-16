@@ -24,6 +24,7 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use PHPUnit\Framework\MockObject\MockObject;
+use TYPO3\CMS\Core\Http\ServerRequest;
 
 class ResultSetReconstitutionProcessorTest extends IntegrationTest
 {
@@ -33,7 +34,7 @@ class ResultSetReconstitutionProcessorTest extends IntegrationTest
     public function canApplyRenderingInstructionsOnOptions()
     {
         $this->writeDefaultSolrTestSiteConfiguration();
-        $this->fakeTSFE(1);
+        $GLOBALS['TYPO3_REQUEST'] = new ServerRequest('https://example.com');
 
         $searchResultSet = $this->initializeSearchResultSetFromFakeResponse('fake_solr_response_with_multiple_fields_facets.json');
 
@@ -83,7 +84,7 @@ class ResultSetReconstitutionProcessorTest extends IntegrationTest
     public function labelCanBeUsedAsCObject()
     {
         $this->writeDefaultSolrTestSiteConfiguration();
-        $this->fakeTSFE(1);
+        $GLOBALS['TYPO3_REQUEST'] = new ServerRequest('https://example.com');
         $searchResultSet = $this->initializeSearchResultSetFromFakeResponse('fake_solr_response_with_multiple_fields_facets.json');
 
         // before the reconstitution of the domain object from the response we expect that no facets

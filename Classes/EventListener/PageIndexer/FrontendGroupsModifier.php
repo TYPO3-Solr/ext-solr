@@ -84,7 +84,7 @@ class FrontendGroupsModifier
             $groupData[] = [
                 'title' => 'group_(' . $groupUid . ')',
                 'uid' => $groupUid,
-                'pig' => 0,
+                'pid' => 0,
             ];
         }
         $event->getUser()->user[$event->getUser()->username_column] = AuthorizationService::SOLR_INDEXER_USERNAME;
