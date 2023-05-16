@@ -70,7 +70,6 @@ class Search
         $this->solr = $solrConnection;
 
         if (is_null($solrConnection)) {
-            /* @var ConnectionManager $connectionManager */
             $connectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
             $this->solr = $connectionManager->getConnectionByPageId(($GLOBALS['TSFE']->id ?? 0), Util::getLanguageUid());
         }

@@ -82,7 +82,6 @@ class Util
         int $uid,
         string $additionalIdParameters = '',
     ): string {
-        /* @var SiteRepository $siteRepository */
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $site = $siteRepository->getSiteByPageId($rootPageId);
         $siteHash = $site->getSiteHash();

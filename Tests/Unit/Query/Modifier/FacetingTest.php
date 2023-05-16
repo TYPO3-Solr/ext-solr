@@ -70,10 +70,8 @@ class FacetingTest extends SetUpUnitTestCase
 
         GeneralUtility::addInstance(SiteHashService::class, $this->createMock(SiteHashService::class));
 
-        /* @var Faceting $facetModifier */
         $facetModifier = GeneralUtility::makeInstance(Faceting::class, $facetRegistry);
         $facetModifier->setSearchRequest($fakeSearchRequest);
-        /** @noinspection PhpUnhandledExceptionInspection */
         $query = $facetModifier->modifyQuery($query);
 
         $requestBuilder = new RequestBuilder();

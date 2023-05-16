@@ -31,7 +31,7 @@ class HierarchyFacetParserTest extends SetUpFacetParser
     /**
      * @test
      */
-    public function facetIsCreated()
+    public function facetIsCreated(): void
     {
         $facetConfiguration = [
             'pageHierarchy.' => [
@@ -60,10 +60,7 @@ class HierarchyFacetParserTest extends SetUpFacetParser
         self::assertSame('14', $firstNode->getKey());
     }
 
-    /**
-     * @return array
-     */
-    public function dataProviderForDeepMoreThen10DoesNotBreakHierarchyFacet()
+    public function dataProviderForDeepMoreThen10DoesNotBreakHierarchyFacet(): array
     {
         return [
             'sortByCount' => [
@@ -146,6 +143,7 @@ class HierarchyFacetParserTest extends SetUpFacetParser
 
         /* @var HierarchyFacetParser $parser */
         $parser = $this->getInitializedParser(HierarchyFacetParser::class);
+        /** @var HierarchyFacet $facet */
         $facet = $parser->parse($searchResultSet, 'categoryHierarchyByTitle', $facetConfiguration);
         // HierarchyFacetParser::getActiveFacetValuesFromRequest() must be aware about slashes in path segments
         self::assertSame(5, $facet->getAllFacetItems()->count(), 'Selected facet option is wrong parsed. The slash in Title leads to new facet option.');
@@ -168,7 +166,7 @@ class HierarchyFacetParserTest extends SetUpFacetParser
     /**
      * @test
      */
-    public function facetIsNotActive()
+    public function facetIsNotActive(): void
     {
         $facetConfiguration = [
             'pageHierarchy.' => [
@@ -191,7 +189,7 @@ class HierarchyFacetParserTest extends SetUpFacetParser
     /**
      * @test
      */
-    public function facetIsActive()
+    public function facetIsActive(): void
     {
         $facetConfiguration = [
             'pageHierarchy.' => [
@@ -209,8 +207,10 @@ class HierarchyFacetParserTest extends SetUpFacetParser
 
         /* @var HierarchyFacetParser $parser */
         $parser = $this->getInitializedParser(HierarchyFacetParser::class);
+        /** @var HierarchyFacet $facet */
         $facet = $parser->parse($searchResultSet, 'pageHierarchy', $facetConfiguration['pageHierarchy.']);
 
+        /** @var HierarchyFacet $selectedFacetByUrl */
         $selectedFacetByUrl = $facet->getChildNodes()->getByPosition(0)->getChildNodes()->getByPosition(0);
         self::assertTrue($facet->getIsUsed());
 

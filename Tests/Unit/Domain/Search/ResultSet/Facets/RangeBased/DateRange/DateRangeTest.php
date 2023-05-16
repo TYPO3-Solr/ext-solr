@@ -30,7 +30,6 @@ class DateRangeTest extends SetUpUnitTestCase
 {
     /**
      * @test
-     * @noinspection PhpParamsInspection
      */
     public function canHandleHalfOpenDateRanges()
     {

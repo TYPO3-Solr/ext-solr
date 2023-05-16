@@ -186,7 +186,7 @@ class Builder
      */
     protected function getExtractorForPageContent(string $pageContent): Typo3PageContentExtractor
     {
-        return GeneralUtility::makeInstance(Typo3PageContentExtractor::class, /** @scrutinizer ignore-type */ $pageContent);
+        return GeneralUtility::makeInstance(Typo3PageContentExtractor::class, $pageContent);
     }
 
     /**

@@ -88,7 +88,7 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
             return $handler->handle($request);
         }
 
-        /* @var SiteRouteResult $routeResult */
+        /** @var SiteRouteResult $routeResult */
         $routeResult = $this->getRoutingService()
             ->getSiteMatcher()
             ->matchRequest($request);

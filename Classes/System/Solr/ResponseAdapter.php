@@ -41,13 +41,14 @@ use stdClass;
  * @property stdClass|null $debug
  * @property stdClass|null $lucene
  * @property string $file
+ * @property bool $expanded
  * @property array $file_metadata
  *
  * Luke response
  *
  * @property stdClass $index
  * @property stdClass $fields
- * @property stdClass $$plugins
+ * @property stdClass $plugins
  */
 class ResponseAdapter implements Countable
 {

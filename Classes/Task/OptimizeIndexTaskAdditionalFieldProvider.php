@@ -168,7 +168,7 @@ class OptimizeIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldPr
         }
 
         /* @var CoreSelectorField $selectorField */
-        $selectorField = GeneralUtility::makeInstance(CoreSelectorField::class, /** @scrutinizer ignore-type */ $this->site);
+        $selectorField = GeneralUtility::makeInstance(CoreSelectorField::class, $this->site);
         $selectorField->setFormElementName('tx_scheduler[cores]');
         /* @noinspection PhpPossiblePolymorphicInvocationInspection */
         $selectorField->setSelectedValues($this->task->/** @scrutinizer ignore-call */getCoresToOptimizeIndex());
