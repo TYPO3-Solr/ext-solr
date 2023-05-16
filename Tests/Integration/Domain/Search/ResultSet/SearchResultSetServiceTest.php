@@ -286,7 +286,7 @@ class SearchResultSetServiceTest extends IntegrationTest
 
     protected function simulateFrontedUserGroups(array $feUserGroupArray): void
     {
-        /** @var  $context Context::class */
+        /* @var Context $context */
         $context = GeneralUtility::makeInstance(Context::class);
         $userAuthentication = GeneralUtility::makeInstance(FrontendUserAuthentication::class);
         // Simulate any user
