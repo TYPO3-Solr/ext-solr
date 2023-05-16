@@ -66,12 +66,10 @@ class BuilderTest extends SetUpUnitTestCase
 
     protected function setUp(): void
     {
-        /** @var $variantIdBuilderMock */
-        $this->variantIdBuilderMock = $this->getDumbMock(IdBuilder::class);
-        $this->siteMock = $this->getDumbMock(Site::class);
-        $this->typo3PageExtractorMock = $this->getDumbMock(Typo3PageContentExtractor::class);
+        $this->variantIdBuilderMock = $this->createMock(IdBuilder::class);
+        $this->siteMock = $this->createMock(Site::class);
+        $this->typo3PageExtractorMock = $this->createMock(Typo3PageContentExtractor::class);
 
-        /* @var Builder $documentBuilder */
         $this->documentBuilder = $this->getMockBuilder(Builder::class)->setConstructorArgs([$this->variantIdBuilderMock ])->onlyMethods(
             ['getExtractorForPageContent', 'getSiteByPageId', 'getPageDocumentId', 'getDocumentId']
         )->getMock();
@@ -87,8 +85,8 @@ class BuilderTest extends SetUpUnitTestCase
     public function canBuildApacheSolrDocumentFromEmptyPage()
     {
         /* @var MockObject|TypoScriptFrontendController $fakePage */
-        $fakePage = $this->getDumbMock(TypoScriptFrontendController::class);
-        $fakeRootLine = $this->getDumbMock(Rootline::class);
+        $fakePage = $this->createMock(TypoScriptFrontendController::class);
+        $fakeRootLine = $this->createMock(Rootline::class);
         $fakeRootLine->expects(self::once())->method('getGroups')->willReturn([1]);
 
         $this->fakePageDocumentId('siteHash/pages/4711');
@@ -108,8 +106,8 @@ class BuilderTest extends SetUpUnitTestCase
     public function canSetKeywordsForApacheSolrDocument()
     {
         /* @var MockObject|TypoScriptFrontendController $fakePage */
-        $fakePage = $this->getDumbMock(TypoScriptFrontendController::class);
-        $fakeRootLine = $this->getDumbMock(Rootline::class);
+        $fakePage = $this->createMock(TypoScriptFrontendController::class);
+        $fakeRootLine = $this->createMock(Rootline::class);
         $fakeRootLine->expects(self::once())->method('getGroups')->willReturn([1]);
 
         $this->fakePageDocumentId('siteHash/pages/4711');
@@ -128,8 +126,8 @@ class BuilderTest extends SetUpUnitTestCase
     public function canSetEndtimeForApacheSolrDocument()
     {
         /* @var MockObject|TypoScriptFrontendController $fakePage */
-        $fakePage = $this->getDumbMock(TypoScriptFrontendController::class);
-        $fakeRootLine = $this->getDumbMock(Rootline::class);
+        $fakePage = $this->createMock(TypoScriptFrontendController::class);
+        $fakeRootLine = $this->createMock(Rootline::class);
         $fakeRootLine->expects(self::once())->method('getGroups')->willReturn([1]);
 
         $this->fakePageDocumentId('siteHash/pages/4711');
@@ -148,8 +146,8 @@ class BuilderTest extends SetUpUnitTestCase
     public function canSetTagFieldsForApacheSolrDocument()
     {
         /* @var MockObject|TypoScriptFrontendController $fakePage */
-        $fakePage = $this->getDumbMock(TypoScriptFrontendController::class);
-        $fakeRootLine = $this->getDumbMock(Rootline::class);
+        $fakePage = $this->createMock(TypoScriptFrontendController::class);
+        $fakeRootLine = $this->createMock(Rootline::class);
         $fakeRootLine->expects(self::once())->method('getGroups')->willReturn([1]);
 
         $this->fakePageDocumentId('siteHash/pages/4711');

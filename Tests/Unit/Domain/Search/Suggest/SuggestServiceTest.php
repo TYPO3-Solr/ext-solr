@@ -74,12 +74,12 @@ class SuggestServiceTest extends SetUpUnitTestCase
 
     protected function setUp(): void
     {
-        $this->tsfeMock = $this->getDumbMock(TypoScriptFrontendController::class);
-        $this->searchResultSetServiceMock = $this->getDumbMock(SearchResultSetService::class);
-        $this->configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
-        $this->queryBuilderMock = $this->getDumbMock(QueryBuilder::class);
+        $this->tsfeMock = $this->createMock(TypoScriptFrontendController::class);
+        $this->searchResultSetServiceMock = $this->createMock(SearchResultSetService::class);
+        $this->configurationMock = $this->createMock(TypoScriptConfiguration::class);
+        $this->queryBuilderMock = $this->createMock(QueryBuilder::class);
 
-        $this->suggestQueryMock = $this->getDumbMock(SuggestQuery::class);
+        $this->suggestQueryMock = $this->createMock(SuggestQuery::class);
         $this->queryBuilderMock->expects(self::once())->method('buildSuggestQuery')->willReturn($this->suggestQueryMock);
 
         $this->suggestService = $this->getMockBuilder(SuggestService::class)
@@ -135,12 +135,12 @@ class SuggestServiceTest extends SetUpUnitTestCase
         $this->assertNoSearchWillBeTriggered();
         $fakeRequest = $this->getFakedSearchRequest('some');
 
-        $solrConnectionMock = $this->getDumbMock(SolrConnection::class);
+        $solrConnectionMock = $this->createMock(SolrConnection::class);
         $connectionManagerMock = $this->getAccessibleMock(ConnectionManager::class, ['getConnectionByPageId'], [], '', false);
         $connectionManagerMock->expects(self::any())->method('getConnectionByPageId')->willReturn($solrConnectionMock);
         GeneralUtility::setSingletonInstance(ConnectionManager::class, $connectionManagerMock);
 
-        $searchStub = new class ($this->getDumbMock(SolrConnection::class)) extends Search implements SingletonInterface {
+        $searchStub = new class ($this->createMock(SolrConnection::class)) extends Search implements SingletonInterface {
             public static $suggestServiceTest;
             public function search(Query $query, $offset = 0, $limit = 10): ?ResponseAdapter
             {
@@ -208,7 +208,7 @@ class SuggestServiceTest extends SetUpUnitTestCase
             'typo' => 5,
         ]);
 
-        $fakeTopResults = $this->getDumbMock(SearchResultSet::class);
+        $fakeTopResults = $this->createMock(SearchResultSet::class);
         $fakeResultDocuments = new SearchResultCollection(
             [
                 $this->getFakedSearchResult('http://www.typo3-solr.com/a', 'pages', 'hello solr', 'my suggestions'),
@@ -237,7 +237,7 @@ class SuggestServiceTest extends SetUpUnitTestCase
      */
     protected function getFakedSearchResult($url, $type, $title, $content)
     {
-        $result = $this->getDumbMock(SearchResult::class);
+        $result = $this->createMock(SearchResult::class);
         $result->expects(self::once())->method('getUrl')->willReturn($url);
         $result->expects(self::once())->method('getType')->willReturn($type);
         $result->expects(self::once())->method('getTitle')->willReturn($title);
@@ -257,7 +257,7 @@ class SuggestServiceTest extends SetUpUnitTestCase
      */
     protected function getFakedSearchRequest(string $queryString): SearchRequest|MockObject
     {
-        $fakeRequest = $this->getDumbMock(SearchRequest::class);
+        $fakeRequest = $this->createMock(SearchRequest::class);
         $fakeRequest->expects(self::atLeastOnce())->method('getRawUserQuery')->willReturn($queryString);
         return $fakeRequest;
     }

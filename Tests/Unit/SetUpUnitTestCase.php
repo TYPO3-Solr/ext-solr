@@ -15,7 +15,6 @@
 
 namespace ApacheSolrForTypo3\Solr\Tests\Unit;
 
-use PHPUnit\Framework\MockObject\MockObject;
 use ReflectionClass;
 use ReflectionException;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
@@ -33,18 +32,6 @@ abstract class SetUpUnitTestCase extends UnitTestCase
     {
         date_default_timezone_set('Europe/Berlin');
         parent::setUp();
-    }
-
-    /**
-     * Returns a mock class where every behaviour is mocked, just to full fill
-     * the datatype and have the possibility to mock the behaviour.
-     *
-     * @param string $className
-     * @return MockObject
-     */
-    protected function getDumbMock(string $className): MockObject
-    {
-        return $this->createMock($className);
     }
 
     /**

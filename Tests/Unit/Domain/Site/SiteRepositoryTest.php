@@ -63,10 +63,10 @@ class SiteRepositoryTest extends SetUpUnitTestCase
     protected function setUp(): void
     {
         $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['solr'] = [];
-        $this->cacheMock = $this->getDumbMock(TwoLevelCache::class);
-        $this->rootPageResolverMock = $this->getDumbMock(RootPageResolver::class);
-        $this->registryMock = $this->getDumbMock(Registry::class);
-        $this->siteFinderMock = $this->getDumbMock(SiteFinder::class);
+        $this->cacheMock = $this->createMock(TwoLevelCache::class);
+        $this->rootPageResolverMock = $this->createMock(RootPageResolver::class);
+        $this->registryMock = $this->createMock(Registry::class);
+        $this->siteFinderMock = $this->createMock(SiteFinder::class);
 
         // we mock buildSite to avoid the creation of real Site objects and pass all dependencies as mock
         $this->siteRepository = $this->getMockBuilder(SiteRepository::class)
@@ -184,7 +184,7 @@ class SiteRepositoryTest extends SetUpUnitTestCase
         $this->siteRepository->expects(self::any())->method('buildSite')->willReturnCallback(
             function ($idToUse) use ($pageIds, $fakedConnectionConfiguration) {
                 if (in_array($idToUse, $pageIds)) {
-                    $site = $this->getDumbMock(Site::class);
+                    $site = $this->createMock(Site::class);
                     $site->expects($this->any())->method('getRootPageId')->willReturn(
                         $idToUse
                     );
@@ -214,14 +214,14 @@ class SiteRepositoryTest extends SetUpUnitTestCase
     protected function getSiteMock(int $rootPageUid, array $languageUids)
     {
         /** @var CoreSite $siteMock */
-        $siteMock = $this->getDumbMock(CoreSite::class);
+        $siteMock = $this->createMock(CoreSite::class);
         $siteMock->expects(self::any())->method('getRootPageId')->willReturn($rootPageUid);
 
         $languageMocks = [];
         $defaultLanguage = null;
 
         foreach ($languageUids as $languageUid) {
-            $languageMock = $this->getDumbMock(SiteLanguage::class);
+            $languageMock = $this->createMock(SiteLanguage::class);
             $languageMock->expects(self::any())->method('getLanguageId')->willReturn($languageUid);
             $languageMocks[] = $languageMock;
         }

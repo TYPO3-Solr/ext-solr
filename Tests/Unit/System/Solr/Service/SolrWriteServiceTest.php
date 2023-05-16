@@ -17,6 +17,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\Solr\Service;
 
 use ApacheSolrForTypo3\Solr\System\Solr\Service\SolrWriteService;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use PHPUnit\Framework\MockObject\MockObject;
 use Solarium\Client;
 use Solarium\Core\Client\Response;
 use Solarium\QueryType\Update\Query\Query;
@@ -29,33 +30,18 @@ use Solarium\QueryType\Update\Result;
  */
 class SolrWriteServiceTest extends SetUpUnitTestCase
 {
-    /**
-     * @var Response
-     */
-    protected $responseMock;
-
-    /**
-     * @var Result
-     */
-    protected $resultMock;
-
-    /**
-     * @var Client
-     */
-    protected $clientMock;
-
-    /**
-     * @var SolrWriteService
-     */
-    protected $service;
+    protected Response|MockObject $responseMock;
+    protected Result|MockObject $resultMock;
+    protected Client|MockObject $clientMock;
+    protected SolrWriteService $service;
 
     protected function setUp(): void
     {
-        $this->responseMock = $this->getDumbMock(Response::class);
+        $this->responseMock = $this->createMock(Response::class);
 
-        $this->resultMock = $this->getDumbMock(Result::class);
+        $this->resultMock = $this->createMock(Result::class);
         $this->resultMock->expects(self::any())->method('getResponse')->willReturn($this->responseMock);
-        $this->clientMock = $this->getDumbMock(Client::class);
+        $this->clientMock = $this->createMock(Client::class);
 
         $this->service = new SolrWriteService($this->clientMock);
         parent::setUp();
@@ -64,10 +50,10 @@ class SolrWriteServiceTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function canRunOptimizeIndex()
+    public function canRunOptimizeIndex(): void
     {
         $this->responseMock->expects(self::once())->method('getStatusCode')->willReturn(200);
-        $this->clientMock->expects(self::once())->method('createUpdate')->willReturn($this->getDumbMock(Query::class));
+        $this->clientMock->expects(self::once())->method('createUpdate')->willReturn($this->createMock(Query::class));
         $this->clientMock->expects(self::once())->method('update')->willReturn($this->resultMock);
 
         $result = $this->service->optimizeIndex();

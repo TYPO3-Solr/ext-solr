@@ -58,14 +58,14 @@ class SiteHashServiceTest extends SetUpUnitTestCase
 
         $baseAMock = $this->createMock(UriInterface::class);
         $baseAMock->method('getHost')->willReturn('solrtesta.local');
-        $siteA = $this->getDumbMock(Site::class);
+        $siteA = $this->createMock(Site::class);
         $siteA->method('getBase')->willReturn($baseAMock);
         $siteA->method('getLanguages')->willReturn([$siteLanguageMock]);
         $siteA->method('getConfiguration')->willReturn($siteConfiguration);
 
         $baseBMock = $this->createMock(UriInterface::class);
         $baseBMock->method('getHost')->willReturn('solrtestb.local');
-        $siteB = $this->getDumbMock(Site::class);
+        $siteB = $this->createMock(Site::class);
         $siteB->method('getBase')->willReturn($baseBMock);
         $siteB->method('getLanguages')->willReturn([$siteLanguageMock]);
         $siteB->method('getConfiguration')->willReturn($siteConfiguration);

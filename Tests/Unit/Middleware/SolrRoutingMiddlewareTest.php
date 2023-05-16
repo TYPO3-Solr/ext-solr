@@ -136,7 +136,6 @@ class SolrRoutingMiddlewareTest extends SetUpUnitTestCase
             $this->responseOutputHandler
         );
         $request = $this->responseOutputHandler->getRequest();
-        /* @var Uri $uri */
         $uri = $request->getUri();
 
         self::assertEquals(

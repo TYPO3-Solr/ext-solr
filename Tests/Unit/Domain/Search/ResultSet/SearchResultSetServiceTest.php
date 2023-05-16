@@ -61,11 +61,11 @@ class SearchResultSetServiceTest extends SetUpUnitTestCase
 
     protected function setUp(): void
     {
-        $this->configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
-        $this->logManagerMock = $this->getDumbMock(SolrLogManager::class);
-        $this->searchMock = $this->getDumbMock(Search::class);
-        $this->searchResultBuilderMock = $this->getDumbMock(SearchResultBuilder::class);
-        $this->queryBuilderMock = $this->getDumbMock(QueryBuilder::class);
+        $this->configurationMock = $this->createMock(TypoScriptConfiguration::class);
+        $this->logManagerMock = $this->createMock(SolrLogManager::class);
+        $this->searchMock = $this->createMock(Search::class);
+        $this->searchResultBuilderMock = $this->createMock(SearchResultBuilder::class);
+        $this->queryBuilderMock = $this->createMock(QueryBuilder::class);
         $this->searchResultSetService = new SearchResultSetService($this->configurationMock, $this->searchMock, $this->logManagerMock, $this->searchResultBuilderMock, $this->queryBuilderMock);
         parent::setUp();
     }

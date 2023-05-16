@@ -43,13 +43,13 @@ class SearchTest extends SetUpUnitTestCase
 
     protected function setUp(): void
     {
-        //        $this->solrReadServiceMock = $this->getDumbMock(SolrReadService::class);
+        //        $this->solrReadServiceMock = $this->createMock(SolrReadService::class);
         $this->solrReadServiceMock = $this->getMockBuilder(SolrReadService::class)
             ->disableOriginalConstructor()
             ->onlyMethods(['search'])
             ->getMock();
 
-        $this->solrConnectionMock = $this->getDumbMock(SolrConnection::class);
+        $this->solrConnectionMock = $this->createMock(SolrConnection::class);
         $this->solrConnectionMock->expects(self::any())->method('getReadService')->willReturn($this->solrReadServiceMock);
         $this->search = new Search($this->solrConnectionMock);
         parent::setUp();
@@ -65,7 +65,7 @@ class SearchTest extends SetUpUnitTestCase
         $this->solrReadServiceMock->expects(self::once())->method('search')->willReturnCallback(
             function ($query) use ($limit) {
                 $this->assertSame($limit, $query->getRows(), 'Unexpected limit was passed');
-                return $this->getDumbMock(ResponseAdapter::class);
+                return $this->createMock(ResponseAdapter::class);
             }
         );
 
@@ -84,7 +84,7 @@ class SearchTest extends SetUpUnitTestCase
         $this->solrReadServiceMock->expects(self::once())->method('search')->willReturnCallback(
             function ($query) use ($limit) {
                 $this->assertSame($limit, $query->getRows(), 'Unexpected limit was passed');
-                return $this->getDumbMock(ResponseAdapter::class);
+                return $this->createMock(ResponseAdapter::class);
             }
         );
 

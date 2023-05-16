@@ -18,6 +18,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\Solr\Service;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\System\Solr\Service\SolrAdminService;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use PHPUnit\Framework\MockObject\MockObject;
 use Solarium\Client;
 use Solarium\Core\Client\Endpoint;
 use stdClass;
@@ -31,24 +32,13 @@ use function json_encode;
  */
 class SolrAdminServiceTest extends SetUpUnitTestCase
 {
-    /**
-     * @var SolrAdminService
-     */
-    protected $adminService;
-
-    /**
-     * @var Client
-     */
-    protected $clientMock;
-
-    /**
-     * @var Endpoint
-     */
-    protected $endpointMock;
+    protected SolrAdminService|MockObject $adminService;
+    protected Client|MockObject $clientMock;
+    protected Endpoint|MockObject $endpointMock;
 
     protected function setUp(): void
     {
-        $this->endpointMock = $this->getDumbMock(Endpoint::class);
+        $this->endpointMock = $this->createMock(Endpoint::class);
         $this->endpointMock->expects(self::any())->method('getScheme')->willReturn('http');
         $this->endpointMock->expects(self::any())->method('getHost')->willReturn('localhost');
         $this->endpointMock->expects(self::any())->method('getPort')->willReturn(8983);
@@ -56,7 +46,7 @@ class SolrAdminServiceTest extends SetUpUnitTestCase
         $this->endpointMock->expects(self::any())->method('getCore')->willReturn('core_en');
         $this->endpointMock->expects(self::any())->method('getCoreBaseUri')->willReturn('http://localhost:8983/solr/core_en/');
 
-        $this->clientMock = $this->getDumbMock(Client::class);
+        $this->clientMock = $this->createMock(Client::class);
         $this->clientMock->expects(self::any())->method('getEndpoint')->willReturn($this->endpointMock);
         $this->adminService = $this->getMockBuilder(SolrAdminService::class)->setConstructorArgs([$this->clientMock])->onlyMethods(['_sendRawGet'])->getMock();
         parent::setUp();
@@ -64,9 +54,9 @@ class SolrAdminServiceTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function getLukeMetaDataIsSendingRequestToExpectedUrl()
+    public function getLukeMetaDataIsSendingRequestToExpectedUrl(): void
     {
-        $fakedLukeResponse = $this->getDumbMock(ResponseAdapter::class);
+        $fakedLukeResponse = $this->createMock(ResponseAdapter::class);
         $this->assertGetRequestIsTriggered('http://localhost:8983/solr/core_en/admin/luke?numTerms=50&wt=json&fl=%2A', $fakedLukeResponse);
         $result = $this->adminService->getLukeMetaData(50);
 
@@ -76,9 +66,9 @@ class SolrAdminServiceTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function getPluginsInformation()
+    public function getPluginsInformation(): void
     {
-        $fakePluginsResponse = $this->getDumbMock(ResponseAdapter::class);
+        $fakePluginsResponse = $this->createMock(ResponseAdapter::class);
         $this->assertGetRequestIsTriggered('http://localhost:8983/solr/core_en/admin/plugins?wt=json', $fakePluginsResponse);
         $result = $this->adminService->getPluginsInformation();
         self::assertSame($fakePluginsResponse, $result, 'Could not get expected result from getPluginsInformation');
@@ -87,9 +77,9 @@ class SolrAdminServiceTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function getSystemInformation()
+    public function getSystemInformation(): void
     {
-        $fakeSystemInformationResponse = $this->getDumbMock(ResponseAdapter::class);
+        $fakeSystemInformationResponse = $this->createMock(ResponseAdapter::class);
         $this->assertGetRequestIsTriggered('http://localhost:8983/solr/core_en/admin/system?wt=json', $fakeSystemInformationResponse);
         $result = $this->adminService->getSystemInformation();
         self::assertSame($fakeSystemInformationResponse, $result, 'Could not get expected result from getSystemInformation');
@@ -98,7 +88,7 @@ class SolrAdminServiceTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function getSolrServerVersion()
+    public function getSolrServerVersion(): void
     {
         $fakeRawResponse = new stdClass();
         $fakeRawResponse->lucene = new stdClass();
@@ -115,10 +105,10 @@ class SolrAdminServiceTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function canGetSolrConfigNameFromFakedXmlResponse()
+    public function canGetSolrConfigNameFromFakedXmlResponse(): void
     {
         $fakeTestSchema = $this->getFixtureContentByName('solrconfig.xml');
-        $fakedSolrConfigResponse = $this->getDumbMock(ResponseAdapter::class);
+        $fakedSolrConfigResponse = $this->createMock(ResponseAdapter::class);
         $fakedSolrConfigResponse->expects(self::once())->method('getRawResponse')->willReturn($fakeTestSchema);
 
         $this->assertGetRequestIsTriggered('http://localhost:8983/solr/core_en/admin/file?file=solrconfig.xml', $fakedSolrConfigResponse);
@@ -126,11 +116,7 @@ class SolrAdminServiceTest extends SetUpUnitTestCase
         self::assertSame($expectedSchemaVersion, $this->adminService->getSolrconfigName(), 'SolrAdminService could not parse the solrconfig version as expected');
     }
 
-    /**
-     * @param string $url
-     * @param mixed $fakeResponse
-     */
-    protected function assertGetRequestIsTriggered(string $url, mixed $fakeResponse)
+    protected function assertGetRequestIsTriggered(string $url, mixed $fakeResponse): void
     {
         $this->adminService->expects(self::once())->method('_sendRawGet')->with($url)->willReturn($fakeResponse);
     }

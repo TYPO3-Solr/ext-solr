@@ -15,7 +15,6 @@
 
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet;
 
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\Option;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\OptionsFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\QueryGroup\QueryGroupFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\ResultSetReconstitutionProcessor;
@@ -24,6 +23,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use PHPUnit\Framework\MockObject\MockObject;
 
 /**
  * Unit test case for the ObjectReconstitutionProcessor.
@@ -33,13 +33,10 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
  */
 class ResultSetReconstitutionProcessorTest extends SetUpUnitTestCase
 {
-    /**
-     * @param $fixtureFile
-     * @return SearchResultSet
-     */
-    protected function initializeSearchResultSetFromFakeResponse($fixtureFile)
+    protected function initializeSearchResultSetFromFakeResponse(string $fixtureFile): SearchResultSet
     {
-        $searchRequestMock = $this->getDumbMock(SearchRequest::class);
+        /** @var SearchRequest|MockObject $searchRequestMock */
+        $searchRequestMock = $this->createMock(SearchRequest::class);
 
         $fakeResponseJson = $this->getFixtureContentByName($fixtureFile);
         $fakeResponse = new ResponseAdapter($fakeResponseJson);
@@ -194,11 +191,8 @@ class ResultSetReconstitutionProcessorTest extends SetUpUnitTestCase
 
         self::assertCount(1, $searchResultSet->getFacets());
 
-        /* @var OptionsFacet $optionFacet */
         $optionFacet = $searchResultSet->getFacets()->getByPosition(0);
-        // @extensionScannerIgnoreLine
         self::assertCount(1, $optionFacet->getOptions());
-        // @extensionScannerIgnoreLine
         self::assertSame('event', $optionFacet->getOptions()->getByPosition(0)->getValue(), 'Skipping configured value not working as expected');
     }
 
@@ -317,14 +311,11 @@ class ResultSetReconstitutionProcessorTest extends SetUpUnitTestCase
         $processor = $this->getConfiguredReconstitutionProcessor($configuration, $searchResultSet);
         $processor->process($searchResultSet);
 
-        /* @var OptionsFacet $optionFacet */
         $optionFacet = $searchResultSet->getFacets()->getByPosition(0);
 
-        /* @var Option $option1 */ // @extensionScannerIgnoreLine
         $option1 = $optionFacet->getOptions()->getByPosition(0);
         self::assertSame('page', $option1->getValue());
 
-        /* @var Option $option2 */ // @extensionScannerIgnoreLine
         $option2 = $optionFacet->getOptions()->getByPosition(1);
         self::assertSame('event', $option2->getValue());
     }
@@ -354,14 +345,11 @@ class ResultSetReconstitutionProcessorTest extends SetUpUnitTestCase
         $processor = $this->getConfiguredReconstitutionProcessor($configuration, $searchResultSet);
         $processor->process($searchResultSet);
 
-        /* @var OptionsFacet $optionFacet */
         $optionFacet = $searchResultSet->getFacets()->getByPosition(0);
 
-        /* @var Option $option1 */ // @extensionScannerIgnoreLine
         $option1 = $optionFacet->getOptions()->getByPosition(0);
         self::assertSame('event', $option1->getValue());
 
-        /* @var Option $option2 */ // @extensionScannerIgnoreLine
         $option2 = $optionFacet->getOptions()->getByPosition(1);
         self::assertSame('page', $option2->getValue());
     }
@@ -391,14 +379,11 @@ class ResultSetReconstitutionProcessorTest extends SetUpUnitTestCase
         $processor = $this->getConfiguredReconstitutionProcessor($configuration, $searchResultSet);
         $processor->process($searchResultSet);
 
-        /* @var OptionsFacet $optionFacet */
         $optionFacet = $searchResultSet->getFacets()->getByPosition(0);
 
-        /* @var Option $option1 */ // @extensionScannerIgnoreLine
         $option1 = $optionFacet->getOptions()->getByPosition(0);
         self::assertSame('event', $option1->getValue());
 
-        /* @var Option $option2 */ // @extensionScannerIgnoreLine
         $option2 = $optionFacet->getOptions()->getByPosition(1);
         self::assertSame('page', $option2->getValue());
     }
@@ -609,7 +594,6 @@ class ResultSetReconstitutionProcessorTest extends SetUpUnitTestCase
         /** @var OptionsFacet $facet1 */
         $facet1 = $facets->getByPosition(0);
 
-        /* @var Option $firstOption */ // @extensionScannerIgnoreLine
         $firstOption = $facet1->getOptions()->getByPosition(0);
         self::assertEquals('pages', $firstOption->getValue());
         self::assertEquals(5, $firstOption->getDocumentCount());
@@ -655,7 +639,6 @@ class ResultSetReconstitutionProcessorTest extends SetUpUnitTestCase
         /** @var OptionsFacet $facet1 */
         $facet1 = $facets->getByPosition(0);
 
-        /* @var Option $firstOption */ // @extensionScannerIgnoreLine
         $firstOption = $facet1->getOptions()->getByPosition(0);
         self::assertEquals('jpeg', $firstOption->getValue());
         self::assertEquals(1, $firstOption->getDocumentCount());
@@ -814,7 +797,6 @@ class ResultSetReconstitutionProcessorTest extends SetUpUnitTestCase
         $processor = $this->getConfiguredReconstitutionProcessor($configuration, $searchResultSet);
         $processor->process($searchResultSet);
 
-        /* @var OptionsFacet $facet */
         $facet = $searchResultSet->getFacets()->getByPosition(0);
         self::assertSame('My Type with special rendering', $facet->getLabel(), 'Could not get label for facet');
     }

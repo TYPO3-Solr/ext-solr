@@ -105,7 +105,7 @@ class AbstractIndexerTest extends SetUpUnitTestCase
     {
         $subject = new class () extends AbstractIndexer {
         };
-        $tsfe = $this->getDumbMock(TypoScriptFrontendController::class);
+        $tsfe = $this->createMock(TypoScriptFrontendController::class);
         self::assertEquals(
             $this->callInaccessibleMethod(
                 $subject,

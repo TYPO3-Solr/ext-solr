@@ -55,17 +55,17 @@ abstract class AbstractModuleController extends SetUpUnitTestCase
         string $concreteModuleControllerClass,
         array $mockMethods = ['addFlashMessage']
     ): void {
-        $this->selectedSiteMock = $this->getDumbMock(Site::class);
+        $this->selectedSiteMock = $this->createMock(Site::class);
         $this->controller = $this->getMockBuilder($concreteModuleControllerClass)
             ->setConstructorArgs(
                 [
-                    'moduleTemplateFactory' => $this->getDumbMock(ModuleTemplateFactory::class),
-                    'iconFactory' => $this->getDumbMock(IconFactory::class),
-                    'moduleDataStorageService' => $this->getDumbMock(ModuleDataStorageService::class),
-                    'siteRepository' => $this->getDumbMock(SiteRepository::class),
-                    'siteFinder' => $this->getDumbMock(SiteFinder::class),
-                    'solrConnectionManager' => $this->connectionManagerMock = $this->getDumbMock(ConnectionManager::class),
-                    'indexQueue' => $this->getDumbMock(Queue::class),
+                    'moduleTemplateFactory' => $this->createMock(ModuleTemplateFactory::class),
+                    'iconFactory' => $this->createMock(IconFactory::class),
+                    'moduleDataStorageService' => $this->createMock(ModuleDataStorageService::class),
+                    'siteRepository' => $this->createMock(SiteRepository::class),
+                    'siteFinder' => $this->createMock(SiteFinder::class),
+                    'solrConnectionManager' => $this->connectionManagerMock = $this->createMock(ConnectionManager::class),
+                    'indexQueue' => $this->createMock(Queue::class),
                 ]
             )
             ->onlyMethods($mockMethods)

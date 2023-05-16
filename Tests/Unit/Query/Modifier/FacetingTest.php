@@ -58,7 +58,7 @@ class FacetingTest extends SetUpUnitTestCase
         $facetRegistry = new FacetRegistry();
 
         /* @var SolrLogManager|MockObject $solrLogManagerMock */
-        $solrLogManagerMock = $this->getDumbMock(SolrLogManager::class);
+        $solrLogManagerMock = $this->createMock(SolrLogManager::class);
 
         /* @var Query $query */
         $queryBuilder = new QueryBuilder(
@@ -110,7 +110,7 @@ class FacetingTest extends SetUpUnitTestCase
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
 
         /* @var SearchRequest|MockObject $fakeRequest */
-        $fakeRequest = $this->getDumbMock(SearchRequest::class);
+        $fakeRequest = $this->createMock(SearchRequest::class);
         $fakeRequest->expects(self::any())->method('getContextTypoScriptConfiguration')->willReturn($fakeConfiguration);
         $fakeRequest->expects(self::once())->method('getArguments')->willReturn([]);
 
@@ -150,7 +150,7 @@ class FacetingTest extends SetUpUnitTestCase
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
 
         /* @var SearchRequest|MockObject $fakeRequest */
-        $fakeRequest = $this->getDumbMock(SearchRequest::class);
+        $fakeRequest = $this->createMock(SearchRequest::class);
         $fakeRequest->expects(self::any())->method('getContextTypoScriptConfiguration')->willReturn($fakeConfiguration);
         $fakeRequest->expects(self::once())->method('getArguments')->willReturn([]);
         $queryParameter = $this->getQueryParametersFromExecutedFacetingModifier($fakeConfiguration, $fakeRequest);
@@ -188,7 +188,7 @@ class FacetingTest extends SetUpUnitTestCase
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
 
         /* @var SearchRequest|MockObject $fakeRequest */
-        $fakeRequest = $this->getDumbMock(SearchRequest::class);
+        $fakeRequest = $this->createMock(SearchRequest::class);
         $fakeRequest->expects(self::any())->method('getContextTypoScriptConfiguration')->willReturn($fakeConfiguration);
         $fakeRequest->expects(self::once())->method('getArguments')->willReturn([]);
 
@@ -236,7 +236,7 @@ class FacetingTest extends SetUpUnitTestCase
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
 
         /* @var SearchRequest|MockObject $fakeRequest */
-        $fakeRequest = $this->getDumbMock(SearchRequest::class);
+        $fakeRequest = $this->createMock(SearchRequest::class);
         $fakeRequest->expects(self::once())->method('getArguments')->willReturn([]);
         $fakeRequest->expects(self::any())->method('getContextTypoScriptConfiguration')->willReturn($fakeConfiguration);
 
@@ -283,7 +283,7 @@ class FacetingTest extends SetUpUnitTestCase
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
 
         /* @var SearchRequest|MockObject $fakeRequest */
-        $fakeRequest = $this->getDumbMock(SearchRequest::class);
+        $fakeRequest = $this->createMock(SearchRequest::class);
         $fakeRequest->expects(self::once())->method('getArguments')->willReturn([]);
         $fakeRequest->expects(self::any())->method('getContextTypoScriptConfiguration')->willReturn($fakeConfiguration);
 
@@ -333,7 +333,7 @@ class FacetingTest extends SetUpUnitTestCase
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
 
         /* @var SearchRequest|MockObject $fakeRequest */
-        $fakeRequest = $this->getDumbMock(SearchRequest::class);
+        $fakeRequest = $this->createMock(SearchRequest::class);
         $fakeRequest->expects(self::once())->method('getArguments')->willReturn([]);
         $fakeRequest->expects(self::any())->method('getContextTypoScriptConfiguration')->willReturn($fakeConfiguration);
 
@@ -370,7 +370,7 @@ class FacetingTest extends SetUpUnitTestCase
         $fakeArguments = ['filter' => [urlencode('color:red'), urlencode('type:product')]];
 
         /* @var SearchRequest|MockObject $fakeRequest */
-        $fakeRequest = $this->getDumbMock(SearchRequest::class);
+        $fakeRequest = $this->createMock(SearchRequest::class);
         $fakeRequest->expects(self::once())->method('getArguments')->willReturn($fakeArguments);
         $fakeRequest->expects(self::any())->method('getContextTypoScriptConfiguration')->willReturn($fakeConfiguration);
 
@@ -414,7 +414,7 @@ class FacetingTest extends SetUpUnitTestCase
         $fakeArguments = ['filter' => [urlencode('color:red'), urlencode('type:product')]];
 
         /* @var SearchRequest|MockObject $fakeRequest */
-        $fakeRequest = $this->getDumbMock(SearchRequest::class);
+        $fakeRequest = $this->createMock(SearchRequest::class);
         $fakeRequest->expects(self::once())->method('getArguments')->willReturn($fakeArguments);
         $fakeRequest->expects(self::any())->method('getContextTypoScriptConfiguration')->willReturn($fakeConfiguration);
 
@@ -455,7 +455,7 @@ class FacetingTest extends SetUpUnitTestCase
         $fakeArguments = ['filter' => [urlencode('color:red'), urlencode('type:product')]];
 
         /* @var SearchRequest|MockObject $fakeRequest */
-        $fakeRequest = $this->getDumbMock(SearchRequest::class);
+        $fakeRequest = $this->createMock(SearchRequest::class);
         $fakeRequest->expects(self::once())->method('getArguments')->willReturn($fakeArguments);
         $fakeRequest->expects(self::any())->method('getContextTypoScriptConfiguration')->willReturn($fakeConfiguration);
 
@@ -492,7 +492,7 @@ class FacetingTest extends SetUpUnitTestCase
         $fakeArguments = ['filter' => [urlencode('color:red'), urlencode('type:product')]];
 
         /* @var SearchRequest|MockObject $fakeRequest */
-        $fakeRequest = $this->getDumbMock(SearchRequest::class);
+        $fakeRequest = $this->createMock(SearchRequest::class);
         $fakeRequest->expects(self::once())->method('getArguments')->willReturn($fakeArguments);
         $fakeRequest->expects(self::any())->method('getContextTypoScriptConfiguration')->willReturn($fakeConfiguration);
 
@@ -529,7 +529,7 @@ class FacetingTest extends SetUpUnitTestCase
         $fakeArguments = ['filter' => [urlencode('color:red'), urlencode('type:product')]];
 
         /* @var SearchRequest|MockObject $fakeRequest */
-        $fakeRequest = $this->getDumbMock(SearchRequest::class);
+        $fakeRequest = $this->createMock(SearchRequest::class);
         $fakeRequest->expects(self::once())->method('getArguments')->willReturn($fakeArguments);
         $fakeRequest->expects(self::any())->method('getContextTypoScriptConfiguration')->willReturn($fakeConfiguration);
 
@@ -567,7 +567,7 @@ class FacetingTest extends SetUpUnitTestCase
         $fakeArguments = ['filter' => [urlencode('type:product')]];
 
         /* @var SearchRequest|MockObject $fakeRequest */
-        $fakeRequest = $this->getDumbMock(SearchRequest::class);
+        $fakeRequest = $this->createMock(SearchRequest::class);
         $fakeRequest->expects(self::once())->method('getArguments')->willReturn($fakeArguments);
         $fakeRequest->expects(self::any())->method('getContextTypoScriptConfiguration')->willReturn($fakeConfiguration);
 
@@ -613,7 +613,7 @@ class FacetingTest extends SetUpUnitTestCase
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
 
         /* @var SearchRequest|MockObject $fakeRequest */
-        $fakeRequest = $this->getDumbMock(SearchRequest::class);
+        $fakeRequest = $this->createMock(SearchRequest::class);
         $fakeRequest->expects(self::once())->method('getArguments')->willReturn($fakeArguments);
         $fakeRequest->expects(self::any())->method('getContextTypoScriptConfiguration')->willReturn($fakeConfiguration);
 
@@ -629,20 +629,20 @@ class FacetingTest extends SetUpUnitTestCase
      */
     public function getFiltersByFacetNameCanHandleAssocUrlParameterStyle()
     {
-        $facetingModifierStub = new class ($this->getDumbMock(FacetRegistry::class)) extends Faceting {
+        $facetingModifierStub = new class ($this->createMock(FacetRegistry::class)) extends Faceting {
             public function callGetFiltersByFacetName(array $resultParameters, array $allFacets): array
             {
                 return parent::getFiltersByFacetName($resultParameters, $allFacets);
             }
         };
 
-        $typoScriptConfigurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
+        $typoScriptConfigurationMock = $this->createMock(TypoScriptConfiguration::class);
         $typoScriptConfigurationMock->expects(self::once())
             ->method('getSearchFacetingUrlParameterStyle')
             ->willReturn(UrlFacetContainer::PARAMETER_STYLE_ASSOC);
 
         /* @var SearchRequest|MockObject $searchRequestMock */
-        $searchRequestMock = $this->getDumbMock(SearchRequest::class);
+        $searchRequestMock = $this->createMock(SearchRequest::class);
         $searchRequestMock->expects(self::once())
             ->method('getContextTypoScriptConfiguration')
             ->willReturn($typoScriptConfigurationMock);

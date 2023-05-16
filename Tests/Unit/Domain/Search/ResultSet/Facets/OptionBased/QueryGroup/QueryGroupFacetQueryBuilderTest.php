@@ -51,7 +51,7 @@ class QueryGroupFacetQueryBuilderTest extends SetUpUnitTestCase
                 'month.' => ['query' => '[NOW/DAY-1MONTH TO NOW/DAY-7DAYS]'],
             ],
         ];
-        $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
+        $configurationMock = $this->createMock(TypoScriptConfiguration::class);
         $configurationMock->expects(self::once())->method('getSearchFacetingFacetByName')->with('testFacet')->willReturn(
             $fakeFacetConfiguration
         );
@@ -143,7 +143,7 @@ class QueryGroupFacetQueryBuilderTest extends SetUpUnitTestCase
                 'month.' => ['query' => '[NOW/DAY-1MONTH TO NOW/DAY-14DAYS]'],
             ],
         ];
-        $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
+        $configurationMock = $this->createMock(TypoScriptConfiguration::class);
         $configurationMock->expects(self::once())->method('getSearchFacetingFacetByName')->with('testFacet')->willReturn(
             $fakeFacetConfiguration
         );

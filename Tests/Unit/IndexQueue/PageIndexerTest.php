@@ -74,13 +74,13 @@ class PageIndexerTest extends SetUpUnitTestCase
 
     protected function setUp(): void
     {
-        $this->pagesRepositoryMock = $this->getDumbMock(PagesRepository::class);
-        $this->documentBuilderMock = $this->getDumbMock(Builder::class);
-        $this->solrLogManagerMock = $this->getDumbMock(SolrLogManager::class);
-        $this->connectionManagerMock = $this->getDumbMock(ConnectionManager::class);
-        $this->pageIndexerRequestMock = $this->getDumbMock(PageIndexerRequest::class);
-        $this->uriStrategyMock = $this->getDumbMock(AbstractUriStrategy::class);
-        $this->frontendEnvironmentMock = $this->getDumbMock(FrontendEnvironment::class);
+        $this->pagesRepositoryMock = $this->createMock(PagesRepository::class);
+        $this->documentBuilderMock = $this->createMock(Builder::class);
+        $this->solrLogManagerMock = $this->createMock(SolrLogManager::class);
+        $this->connectionManagerMock = $this->createMock(ConnectionManager::class);
+        $this->pageIndexerRequestMock = $this->createMock(PageIndexerRequest::class);
+        $this->uriStrategyMock = $this->createMock(AbstractUriStrategy::class);
+        $this->frontendEnvironmentMock = $this->createMock(FrontendEnvironment::class);
         parent::setUp();
     }
 
@@ -114,7 +114,7 @@ class PageIndexerTest extends SetUpUnitTestCase
     public function testIndexPageItemIsSendingFrontendRequestsToExpectedUrls()
     {
         $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['solr'] = [];
-        $siteMock = $this->getDumbMock(Site::class);
+        $siteMock = $this->createMock(Site::class);
         $siteMock->expects(self::once())->method('getAllSolrConnectionConfigurations')->willReturn([
             ['rootPageUid' => 88, 'language' => 0],
         ]);
@@ -126,16 +126,16 @@ class PageIndexerTest extends SetUpUnitTestCase
         $this->uriStrategyMock->expects(self::any())->method('getPageIndexingUriFromPageItemAndLanguageId')->willReturn($testUri);
 
         /* @var Item|MockObject $item */
-        $item = $this->getDumbMock(Item::class);
+        $item = $this->createMock(Item::class);
         $item->expects(self::any())->method('getRootPageUid')->willReturn(88);
         $item->expects(self::any())->method('getRecordUid')->willReturn(4711);
         $item->expects(self::any())->method('getSite')->willReturn($siteMock);
         $item->expects(self::any())->method('getIndexingConfigurationName')->willReturn('pages');
 
-        $accessGroupResponse = $this->getDumbMock(PageIndexerResponse::class);
+        $accessGroupResponse = $this->createMock(PageIndexerResponse::class);
         $accessGroupResponse->expects(self::once())->method('getActionResult')->with('findUserGroups')->willReturn([0]);
 
-        $indexResponse = $this->getDumbMock(PageIndexerResponse::class);
+        $indexResponse = $this->createMock(PageIndexerResponse::class);
         $indexResponse->expects(self::once())->method('getActionResult')->with('indexPage')->willReturn(['pageIndexed' => 'Success']);
 
         // Two requests will be send, the first one for the access groups, the second one for the indexing itself
@@ -144,7 +144,7 @@ class PageIndexerTest extends SetUpUnitTestCase
         );
 
         $pageIndexer = $this->getPageIndexerWithMockedDependencies([]);
-        $pageRootLineMock = $this->getDumbMock(Rootline::class);
+        $pageRootLineMock = $this->createMock(Rootline::class);
         $pageIndexer->expects(self::once())->method('getAccessRootlineByPageId')->willReturn($pageRootLineMock);
 
         $pageIndexer->index($item);

@@ -46,15 +46,15 @@ class IndexAdministrationModuleControllerTest extends AbstractModuleController
      */
     public function testReloadIndexConfigurationAction()
     {
-        $responseMock = $this->getDumbMock(ResponseAdapter::class);
+        $responseMock = $this->createMock(ResponseAdapter::class);
         $responseMock->expects(self::once())->method('getHttpStatus')->willReturn(200);
 
-        $writeEndpointMock = $this->getDumbMock(Endpoint::class);
-        $adminServiceMock = $this->getDumbMock(SolrAdminService::class);
+        $writeEndpointMock = $this->createMock(Endpoint::class);
+        $adminServiceMock = $this->createMock(SolrAdminService::class);
         $adminServiceMock->expects(self::once())->method('reloadCore')->willReturn($responseMock);
         $adminServiceMock->expects(self::once())->method('getPrimaryEndpoint')->willReturn($writeEndpointMock);
 
-        $solrConnection = $this->getDumbMock(SolrConnection::class);
+        $solrConnection = $this->createMock(SolrConnection::class);
         $solrConnection->expects(self::once())->method('getAdminService')->willReturn($adminServiceMock);
 
         $fakeConnections = [$solrConnection];

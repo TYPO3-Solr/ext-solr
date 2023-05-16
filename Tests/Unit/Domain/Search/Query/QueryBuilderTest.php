@@ -69,9 +69,9 @@ class QueryBuilderTest extends SetUpUnitTestCase
 
     protected function setUp(): void
     {
-        $this->configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
-        $this->loggerMock = $this->getDumbMock(SolrLogManager::class);
-        $this->siteHashServiceMock = $this->getDumbMock(SiteHashService::class);
+        $this->configurationMock = $this->createMock(TypoScriptConfiguration::class);
+        $this->loggerMock = $this->createMock(SolrLogManager::class);
+        $this->siteHashServiceMock = $this->createMock(SiteHashService::class);
         $this->builder = new QueryBuilder($this->configurationMock, $this->loggerMock, $this->siteHashServiceMock);
         parent::setUp();
     }
@@ -87,11 +87,6 @@ class QueryBuilderTest extends SetUpUnitTestCase
         return $request->getParams();
     }
 
-    /**
-     * @param string $queryString
-     * @param TypoScriptConfiguration|null $fakeConfiguration
-     * @return SearchQuery
-     */
     protected function getInitializedTestSearchQuery(string $queryString = '', TypoScriptConfiguration $fakeConfiguration = null): SearchQuery
     {
         $builder = new QueryBuilder($fakeConfiguration, $this->loggerMock, $this->siteHashServiceMock);
@@ -205,7 +200,6 @@ class QueryBuilderTest extends SetUpUnitTestCase
      */
     public function canEnableHighlighting()
     {
-        /* @var \ApacheSolrForTypo3\Solr\Domain\Search\Query\SearchQuery $query */
         $query = $this->getInitializedTestSearchQuery();
         $highlighting = new Highlighting();
         $highlighting->setIsEnabled(true);
@@ -221,7 +215,6 @@ class QueryBuilderTest extends SetUpUnitTestCase
      */
     public function canDisableHighlighting()
     {
-        /* @var \ApacheSolrForTypo3\Solr\Domain\Search\Query\SearchQuery $query */
         $query = $this->getInitializedTestSearchQuery();
         $highlighting = new Highlighting();
         $highlighting->setIsEnabled(true);
@@ -852,7 +845,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     public function noSiteHashFilterIsSetWhenWildcardIsPassed()
     {
         /* @var \ApacheSolrForTypo3\Solr\Domain\Search\Query\SearchQuery $query */
-        $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
+        $configurationMock = $this->createMock(TypoScriptConfiguration::class);
         $configurationMock->expects(self::once())->method('getObjectByPathOrDefault')->willReturn(['allowedSites' => '*']);
         $this->siteHashServiceMock->expects(self::once())->method('getAllowedSitesForPageIdAndAllowedSitesConfiguration')->willReturn('*');
 
@@ -871,7 +864,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     public function filterIsAddedWhenAllowedSiteIsPassed()
     {
         /* @var \ApacheSolrForTypo3\Solr\Domain\Search\Query\SearchQuery $query */
-        $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
+        $configurationMock = $this->createMock(TypoScriptConfiguration::class);
         $configurationMock->expects(self::once())->method('getObjectByPathOrDefault')->willReturn(['allowedSites' => 'site1.local']);
 
         $this->siteHashServiceMock->expects(self::once())->method('getAllowedSitesForPageIdAndAllowedSitesConfiguration')->willReturn('site1.local');

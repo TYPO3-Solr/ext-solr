@@ -183,7 +183,6 @@ class HierarchyFacetParserTest extends SetUpFacetParser
             $facetConfiguration
         );
 
-        /* @var HierarchyFacetParser $parser */
         $parser = $this->getInitializedParser(HierarchyFacetParser::class);
         $facet = $parser->parse($searchResultSet, 'pageHierarchy', $facetConfiguration['pageHierarchy.']);
         self::assertFalse($facet->getIsUsed());

@@ -36,7 +36,7 @@ class DateRangeFacetQueryBuilderTest extends SetUpUnitTestCase
             'keepAllOptionsOnSelection' => 1,
             'dateRange.' => ['start' => 'NOW/DAY-2YEAR', 'end' => 'NOW/DAY+2YEAR', 'gap' => '+1DAY'],
         ];
-        $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
+        $configurationMock = $this->createMock(TypoScriptConfiguration::class);
         $configurationMock->expects(self::once())->method('getSearchFacetingFacetByName')->with('testFacet')->willReturn(
             $fakeFacetConfiguration
         );

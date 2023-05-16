@@ -39,7 +39,7 @@ class OptionCollectionTest extends SetUpUnitTestCase
      */
     public function canGetManualSortedCopy()
     {
-        $searchResultSetMock = $this->getDumbMock(SearchResultSet::class);
+        $searchResultSetMock = $this->createMock(SearchResultSet::class);
         $facet = new OptionsFacet($searchResultSetMock, 'colors', 'colors_s');
 
         $red = new Option($facet, 'Rubin Red', 'red', 9);
@@ -63,7 +63,7 @@ class OptionCollectionTest extends SetUpUnitTestCase
      */
     public function canGetLabelPrefixes()
     {
-        $searchResultSetMock = $this->getDumbMock(SearchResultSet::class);
+        $searchResultSetMock = $this->createMock(SearchResultSet::class);
         $facet = new OptionsFacet($searchResultSetMock, 'colors', 'colors_s');
 
         $roseRed = new Option($facet, 'Rose Red', 'rose_red', 14);
@@ -88,7 +88,7 @@ class OptionCollectionTest extends SetUpUnitTestCase
      */
     public function canGetByLowercaseLabelPrefix()
     {
-        $searchResultSetMock = $this->getDumbMock(SearchResultSet::class);
+        $searchResultSetMock = $this->createMock(SearchResultSet::class);
         $facet = new OptionsFacet($searchResultSetMock, 'colors', 'colors_s');
 
         $roseRed = new Option($facet, 'Rose Red', 'rose_red', 14);
@@ -117,7 +117,7 @@ class OptionCollectionTest extends SetUpUnitTestCase
      */
     public function canGetByLowercaseLabelPrefixWithMultiByteCharacter()
     {
-        $searchResultSetMock = $this->getDumbMock(SearchResultSet::class);
+        $searchResultSetMock = $this->createMock(SearchResultSet::class);
         $facet = new OptionsFacet($searchResultSetMock, 'authors', 'authors_s');
 
         $ben = new Option($facet, 'Ben', 'ben', 14);
@@ -136,7 +136,7 @@ class OptionCollectionTest extends SetUpUnitTestCase
      */
     public function canGetByValueAfterManualSorting()
     {
-        $searchResultSetMock = $this->getDumbMock(SearchResultSet::class);
+        $searchResultSetMock = $this->createMock(SearchResultSet::class);
         $facet = new OptionsFacet($searchResultSetMock, 'colors', 'colors_s');
 
         $red = new Option($facet, 'Rubin Red', 'red', 9);

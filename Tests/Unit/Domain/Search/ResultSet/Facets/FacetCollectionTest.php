@@ -33,7 +33,7 @@ class FacetCollectionTest extends SetUpUnitTestCase
     public function canAddAndRetrieveFacetByKey()
     {
         $facetCollection = new FacetCollection();
-        $resultSetMock = $this->getDumbMock(SearchResultSet::class);
+        $resultSetMock = $this->createMock(SearchResultSet::class);
 
         $colorFacet = new OptionsFacet($resultSetMock, 'color', 'color_s', '', ['groupName' => 'left']);
         $brandFacet = new OptionsFacet($resultSetMock, 'brand', 'brand_s', '', ['groupName' => 'left']);
@@ -50,7 +50,7 @@ class FacetCollectionTest extends SetUpUnitTestCase
     public function canAddAndRetrieveFacetByPosition()
     {
         $facetCollection = new FacetCollection();
-        $resultSetMock = $this->getDumbMock(SearchResultSet::class);
+        $resultSetMock = $this->createMock(SearchResultSet::class);
 
         $colorFacet = new OptionsFacet($resultSetMock, 'color', 'color_s', '', ['groupName' => 'left']);
         $brandFacet = new OptionsFacet($resultSetMock, 'brand', 'brand_s', '', ['groupName' => 'left']);
@@ -67,7 +67,7 @@ class FacetCollectionTest extends SetUpUnitTestCase
     public function canRetrieveFacetOfCollectionCopyByKey()
     {
         $facetCollection = new FacetCollection();
-        $resultSetMock = $this->getDumbMock(SearchResultSet::class);
+        $resultSetMock = $this->createMock(SearchResultSet::class);
 
         $colorFacet = new OptionsFacet($resultSetMock, 'color', 'color_s', '', ['groupName' => 'top']);
         $brandFacet = new OptionsFacet($resultSetMock, 'brand', 'brand_s', '', ['groupName' => 'left']);
@@ -85,7 +85,7 @@ class FacetCollectionTest extends SetUpUnitTestCase
     public function canRetrieveFacetOfCollectionCopyByPosition()
     {
         $facetCollection = new FacetCollection();
-        $resultSetMock = $this->getDumbMock(SearchResultSet::class);
+        $resultSetMock = $this->createMock(SearchResultSet::class);
 
         $colorFacet = new OptionsFacet($resultSetMock, 'color', 'color_s', '', ['groupName' => 'top']);
         $brandFacet = new OptionsFacet($resultSetMock, 'brand', 'brand_s', '', ['groupName' => 'left']);

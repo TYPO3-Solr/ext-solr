@@ -40,7 +40,7 @@ class OptionsFacetQueryBuilderTest extends SetUpUnitTestCase
             'sortBy' => 'index',
             'sortDirection' => 'desc',
         ];
-        $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
+        $configurationMock = $this->createMock(TypoScriptConfiguration::class);
         $configurationMock->expects(self::once())->method('getSearchFacetingFacetByName')->with('category')->willReturn(
             $fakeFacetConfiguration
         );
@@ -80,7 +80,7 @@ class OptionsFacetQueryBuilderTest extends SetUpUnitTestCase
             'field' => 'category',
             'facetLimit' => 20,
         ];
-        $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
+        $configurationMock = $this->createMock(TypoScriptConfiguration::class);
         $configurationMock->expects(self::once())->method('getSearchFacetingFacetByName')->with('category')->willReturn(
             $fakeFacetConfiguration
         );
@@ -115,7 +115,7 @@ class OptionsFacetQueryBuilderTest extends SetUpUnitTestCase
         $fakeFacetConfiguration = [
             'field' => 'category',
         ];
-        $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
+        $configurationMock = $this->createMock(TypoScriptConfiguration::class);
         $configurationMock->expects(self::once())->method('getSearchFacetingFacetByName')->with('category')->willReturn(
             $fakeFacetConfiguration
         );
@@ -155,7 +155,7 @@ class OptionsFacetQueryBuilderTest extends SetUpUnitTestCase
             'field' => 'category',
             'minimumCount' => 2,
         ];
-        $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
+        $configurationMock = $this->createMock(TypoScriptConfiguration::class);
         $configurationMock->expects(self::once())->method('getSearchFacetingFacetByName')->with('category')->willReturn(
             $fakeFacetConfiguration
         );
@@ -204,7 +204,7 @@ class OptionsFacetQueryBuilderTest extends SetUpUnitTestCase
         $fakeFacetConfiguration = [
             'field' => 'category',
         ];
-        $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
+        $configurationMock = $this->createMock(TypoScriptConfiguration::class);
         $configurationMock->expects(self::once())->method('getSearchFacetingFacetByName')->with('category')->willReturn(
             $fakeFacetConfiguration
         );
@@ -248,7 +248,7 @@ class OptionsFacetQueryBuilderTest extends SetUpUnitTestCase
                 'downloads' => 'sum(downloads_intS)',
             ],
         ];
-        $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
+        $configurationMock = $this->createMock(TypoScriptConfiguration::class);
         $configurationMock->expects(self::once())->method('getSearchFacetingFacetByName')->with('category')->willReturn(
             $fakeFacetConfiguration
         );

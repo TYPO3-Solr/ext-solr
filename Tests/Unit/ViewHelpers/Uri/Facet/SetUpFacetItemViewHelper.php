@@ -44,7 +44,7 @@ abstract class SetUpFacetItemViewHelper extends SetUpUnitTestCase
     protected function getTestColorFacet()
     {
         $searchRequest = new SearchRequest();
-        $searchResultSetMock = $this->getDumbMock(SearchResultSet::class);
+        $searchResultSetMock = $this->createMock(SearchResultSet::class);
         $searchResultSetMock->expects(self::any())->method('getUsedSearchRequest')->willReturn($searchRequest);
 
         $facet = new OptionsFacet($searchResultSetMock, 'Color', 'color');

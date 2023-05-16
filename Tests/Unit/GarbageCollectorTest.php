@@ -81,7 +81,7 @@ class GarbageCollectorTest extends SetUpUnitTestCase
      */
     public function processCmdmap_preProcessUHandlesRecordDeletion(): void
     {
-        $dataHandlerMock = $this->getDumbMock(DataHandler::class);
+        $dataHandlerMock = $this->createMock(DataHandler::class);
 
         $dispatchedEvent = null;
         $this->eventDispatcherMock
@@ -102,7 +102,7 @@ class GarbageCollectorTest extends SetUpUnitTestCase
      */
     public function processCmdmap_preProcessIgnoresDraftWorkspace(): void
     {
-        $dataHandlerMock = $this->getDumbMock(DataHandler::class);
+        $dataHandlerMock = $this->createMock(DataHandler::class);
 
         $GLOBALS['BE_USER']->workspace = 1;
         $this->eventDispatcherMock
@@ -116,7 +116,7 @@ class GarbageCollectorTest extends SetUpUnitTestCase
      */
     public function processCmdmap_postProcessHandlesPageMovement(): void
     {
-        $dataHandlerMock = $this->getDumbMock(DataHandler::class);
+        $dataHandlerMock = $this->createMock(DataHandler::class);
 
         $dispatchedEvent = null;
         $this->eventDispatcherMock
@@ -138,7 +138,7 @@ class GarbageCollectorTest extends SetUpUnitTestCase
      */
     public function processCmdmap_postProcessIgnoresPageMovementInDraftWorkspace(): void
     {
-        $dataHandlerMock = $this->getDumbMock(DataHandler::class);
+        $dataHandlerMock = $this->createMock(DataHandler::class);
 
         $GLOBALS['BE_USER']->workspace = 1;
         $this->eventDispatcherMock
@@ -153,7 +153,7 @@ class GarbageCollectorTest extends SetUpUnitTestCase
      */
     public function processDatamap_preProcessFieldArrayStoresRecordData(): void
     {
-        $dataHandlerMock = $this->getDumbMock(DataHandler::class);
+        $dataHandlerMock = $this->createMock(DataHandler::class);
         $dummyRecord = [
             'uid' => 123,
             'pid' => 1,
@@ -204,7 +204,7 @@ class GarbageCollectorTest extends SetUpUnitTestCase
     public function processDatamap_afterDatabaseOperationsTriggersRecordGarbageCheck(): void
     {
         $GLOBALS['TCA']['tx_foo_bar']['ctrl']['enablecolumns']['fe_group'] = 'fe_group';
-        $dataHandlerMock = $this->getDumbMock(DataHandler::class);
+        $dataHandlerMock = $this->createMock(DataHandler::class);
         $dummyRecord = [
             'uid' => 123,
             'pid' => 1,

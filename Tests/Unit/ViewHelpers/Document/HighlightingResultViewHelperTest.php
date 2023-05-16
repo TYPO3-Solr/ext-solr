@@ -64,9 +64,9 @@ class HighlightingResultViewHelperTest extends SetUpUnitTestCase
     public function canRenderCreateHighlightSnipped(array $input, $expectedOutput, $configuredWrap)
     {
         /* @var RenderingContextInterface|MockObject $renderingContextMock */
-        $renderingContextMock = $this->getDumbMock(RenderingContextInterface::class);
+        $renderingContextMock = $this->createMock(RenderingContextInterface::class);
 
-        $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
+        $configurationMock = $this->createMock(TypoScriptConfiguration::class);
         $configurationMock->expects(self::once())->method('getSearchResultsHighlightingFragmentSeparator')->willReturn(
             '###'
         );
@@ -74,7 +74,7 @@ class HighlightingResultViewHelperTest extends SetUpUnitTestCase
             $configuredWrap
         );
 
-        $searchRequestMock = $this->getDumbMock(SearchRequest::class);
+        $searchRequestMock = $this->createMock(SearchRequest::class);
         $searchRequestMock->expects(self::any())->method('getContextTypoScriptConfiguration')->willReturn(
             $configurationMock
         );
@@ -83,12 +83,12 @@ class HighlightingResultViewHelperTest extends SetUpUnitTestCase
         $fakeHighlightedContent->foo = new stdClass();
         $fakeHighlightedContent->foo->content = $input;
 
-        $searchMock = $this->getDumbMock(Search::class);
+        $searchMock = $this->createMock(Search::class);
         $searchMock->expects(self::once())->method('getHighlightedContent')->willReturn(
             $fakeHighlightedContent
         );
 
-        $resultSetMock = $this->getDumbMock(SearchResultSet::class);
+        $resultSetMock = $this->createMock(SearchResultSet::class);
         $resultSetMock->expects(self::any())->method('getUsedSearchRequest')->willReturn(
             $searchRequestMock
         );
@@ -97,7 +97,7 @@ class HighlightingResultViewHelperTest extends SetUpUnitTestCase
             $searchMock
         );
 
-        $documentMock = $this->getDumbMock(SearchResult::class);
+        $documentMock = $this->createMock(SearchResult::class);
         $documentMock->expects(self::any())->method('getId')->willReturn('foo');
 
         $viewHelper = new HighlightResultViewHelper();

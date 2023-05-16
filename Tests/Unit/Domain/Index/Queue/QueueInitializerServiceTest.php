@@ -20,7 +20,6 @@ use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
-use PHPUnit\Framework\MockObject\MockObject;
 
 /**
  * @author Timo Hund <timo.hund@dkd.de>
@@ -32,8 +31,7 @@ class QueueInitializerServiceTest extends SetUpUnitTestCase
      */
     public function allIndexConfigurationsAreUsedWhenWildcardIsPassed()
     {
-        $queueMock = $this->getDumbMock(Queue::class);
-        /* @var QueueInitializationService|MockObject $service */
+        $queueMock = $this->createMock(Queue::class);
         $service = $this->getMockBuilder(QueueInitializationService::class)->onlyMethods(['executeInitializer'])->setConstructorArgs([$queueMock])->getMock();
 
         $fakeTs = [
@@ -65,7 +63,7 @@ class QueueInitializerServiceTest extends SetUpUnitTestCase
 
         $fakeConfiguration = new TypoScriptConfiguration($fakeTs);
 
-        $siteMock = $this->getDumbMock(Site::class);
+        $siteMock = $this->createMock(Site::class);
         $siteMock->expects(self::any())->method('getSolrConfiguration')->willReturn($fakeConfiguration);
 
         $service

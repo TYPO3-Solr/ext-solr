@@ -47,7 +47,7 @@ class GroupItemTest extends SetUpUnitTestCase
             12,
             1,
             99,
-            $this->getDumbMock(SearchRequest::class)
+            $this->createMock(SearchRequest::class)
         );
         parent::setUp();
     }
@@ -99,7 +99,7 @@ class GroupItemTest extends SetUpUnitTestCase
     {
         self::assertSame(0, $this->groupItem->getSearchResults()->getCount());
 
-        $searchResult = $this->getDumbMock(SearchResult::class);
+        $searchResult = $this->createMock(SearchResult::class);
         $this->groupItem->addSearchResult($searchResult);
 
         self::assertSame(1, $this->groupItem->getSearchResults()->getCount());

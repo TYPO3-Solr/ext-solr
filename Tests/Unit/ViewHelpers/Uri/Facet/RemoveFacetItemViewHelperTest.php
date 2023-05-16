@@ -31,11 +31,11 @@ class RemoveFacetItemViewHelperTest extends SetUpFacetItemViewHelper
     {
         $facet = $this->getTestColorFacet();
 
-        $renderContextMock = $this->getDumbMock(RenderingContextInterface::class);
+        $renderContextMock = $this->createMock(RenderingContextInterface::class);
         $viewHelper = new RemoveFacetItemViewHelper();
         $viewHelper->setRenderingContext($renderContextMock);
 
-        $searchUriBuilderMock = $this->getDumbMock(SearchUriBuilder::class);
+        $searchUriBuilderMock = $this->createMock(SearchUriBuilder::class);
 
         // we expected that the getRemoveFacetValueUri will be called on the searchUriBuilder in the end.
         $searchUriBuilderMock->expects(self::once())->method('getRemoveFacetValueUri')->with($facet->getResultSet()->getUsedSearchRequest(), 'Color', 'red');

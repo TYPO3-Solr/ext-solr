@@ -30,7 +30,6 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
-use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use UnexpectedValueException;
 
@@ -73,12 +72,12 @@ class ConnectionManagerTest extends SetUpUnitTestCase
      */
     protected function setUp(): void
     {
-        $TSFE = $this->getDumbMock(TypoScriptFrontendController::class);
+        $TSFE = $this->createMock(TypoScriptFrontendController::class);
         $GLOBALS['TSFE'] = $TSFE;
 
-        $this->logManagerMock = $this->getDumbMock(SolrLogManager::class);
-        $this->pageRepositoryMock = $this->getDumbMock(PagesRepository::class);
-        $this->siteRepositoryMock = $this->getDumbMock(SiteRepository::class);
+        $this->logManagerMock = $this->createMock(SolrLogManager::class);
+        $this->pageRepositoryMock = $this->createMock(PagesRepository::class);
+        $this->siteRepositoryMock = $this->createMock(SiteRepository::class);
 
         $this->configurationManager = new ConfigurationManager();
         $this->connectionManager = $this->getMockBuilder(ConnectionManager::class)
@@ -124,16 +123,10 @@ class ConnectionManagerTest extends SetUpUnitTestCase
             function ($readNode, $writeNode) use ($self) {
                 $readNode = Node::fromArray($readNode);
                 $writeNode = Node::fromArray($writeNode);
-                /* @var TypoScriptConfiguration $typoScriptConfigurationMock */
-                $typoScriptConfigurationMock = $self->getDumbMock(TypoScriptConfiguration::class);
-                /* @var SynonymParser $synonymsParserMock */
-                $synonymsParserMock = $self->getDumbMock(SynonymParser::class);
-                /* @var StopWordParser $stopWordParserMock */
-                $stopWordParserMock = $self->getDumbMock(StopWordParser::class);
-                /* @var SchemaParser $schemaParserMock */
-                $schemaParserMock = $self->getDumbMock(SchemaParser::class);
-                /* @var EventDispatcher $eventDispatcher */
-                $eventDispatcher = $self->getDumbMock(EventDispatcher::class);
+                $typoScriptConfigurationMock = $self->createMock(TypoScriptConfiguration::class);
+                $synonymsParserMock = $self->createMock(SynonymParser::class);
+                $stopWordParserMock = $self->createMock(StopWordParser::class);
+                $schemaParserMock = $self->createMock(SchemaParser::class);
 
                 return new SolrConnection(
                     $readNode,
@@ -143,10 +136,10 @@ class ConnectionManagerTest extends SetUpUnitTestCase
                     $stopWordParserMock,
                     $schemaParserMock,
                     $self->logManagerMock,
-                    $this->getDumbMock(ClientInterface::class),
-                    $this->getDumbMock(RequestFactoryInterface::class),
-                    $this->getDumbMock(StreamFactoryInterface::class),
-                    $this->getDumbMock(EventDispatcherInterface::class)
+                    $this->createMock(ClientInterface::class),
+                    $this->createMock(RequestFactoryInterface::class),
+                    $this->createMock(StreamFactoryInterface::class),
+                    $this->createMock(EventDispatcherInterface::class)
                 );
             }
         );

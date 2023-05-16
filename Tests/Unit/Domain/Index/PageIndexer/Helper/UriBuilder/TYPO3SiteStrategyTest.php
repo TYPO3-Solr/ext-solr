@@ -23,15 +23,13 @@ class TYPO3SiteStrategyTest extends SetUpUnitTestCase
     public function testPageIndexingUriFromPageItemAndLanguageId()
     {
         $pageRecord = ['uid' => 55];
-        $itemMock = $this->getDumbMock(Item::class);
+        $itemMock = $this->createMock(Item::class);
         $itemMock->expects(self::any())->method('getRecord')->willReturn($pageRecord);
         $itemMock->expects(self::any())->method('getRecordUid')->willReturn(55);
         $siteFinderMock = $this->getSiteFinderMock($pageRecord);
 
-        /* @var SolrLogManager $loggerMock */
-        $loggerMock = $this->getDumbMock(SolrLogManager::class);
+        $loggerMock = $this->createMock(SolrLogManager::class);
 
-        /** @var TYPO3SiteStrategy $typo3SiteStrategy */
         $typo3SiteStrategy = GeneralUtility::makeInstance(TYPO3SiteStrategy::class, $loggerMock, $siteFinderMock);
         $typo3SiteStrategy->getPageIndexingUriFromPageItemAndLanguageId($itemMock, 2, 'foo');
     }
@@ -42,15 +40,13 @@ class TYPO3SiteStrategyTest extends SetUpUnitTestCase
     public function canOverrideHost()
     {
         $pageRecord = ['uid' => 55];
-        $itemMock = $this->getDumbMock(Item::class);
+        $itemMock = $this->createMock(Item::class);
         $itemMock->expects(self::any())->method('getRecord')->willReturn($pageRecord);
         $itemMock->expects(self::any())->method('getRecordUid')->willReturn(55);
         $siteFinderMock = $this->getSiteFinderMock($pageRecord);
 
-        /* @var SolrLogManager $loggerMock */
-        $loggerMock = $this->getDumbMock(SolrLogManager::class);
+        $loggerMock = $this->createMock(SolrLogManager::class);
 
-        /** @var TYPO3SiteStrategy $strategy */
         $typo3SiteStrategy = GeneralUtility::makeInstance(TYPO3SiteStrategy::class, $loggerMock, $siteFinderMock);
         $uri = $typo3SiteStrategy->getPageIndexingUriFromPageItemAndLanguageId($itemMock, 2, 'foo', ['frontendDataHelper.' => ['host' => 'www.secondsite.de']]);
         self::assertSame('http://www.secondsite.de/en/test', $uri, 'Solr site strategy generated unexpected uri');
@@ -62,15 +58,13 @@ class TYPO3SiteStrategyTest extends SetUpUnitTestCase
     public function canOverrideScheme()
     {
         $pageRecord = ['uid' => 55];
-        $itemMock = $this->getDumbMock(Item::class);
+        $itemMock = $this->createMock(Item::class);
         $itemMock->expects(self::any())->method('getRecord')->willReturn($pageRecord);
         $itemMock->expects(self::any())->method('getRecordUid')->willReturn(55);
         $siteFinderMock = $this->getSiteFinderMock($pageRecord);
 
-        /* @var SolrLogManager $loggerMock */
-        $loggerMock = $this->getDumbMock(SolrLogManager::class);
+        $loggerMock = $this->createMock(SolrLogManager::class);
 
-        /** @var TYPO3SiteStrategy $strategy */
         $typo3SiteStrategy = GeneralUtility::makeInstance(TYPO3SiteStrategy::class, $loggerMock, $siteFinderMock);
         $uri = $typo3SiteStrategy->getPageIndexingUriFromPageItemAndLanguageId($itemMock, 2, 'foo', ['frontendDataHelper.' => ['scheme' => 'https']]);
         self::assertSame('https://www.site.de/en/test', $uri, 'Solr site strategy generated unexpected uri');
@@ -81,18 +75,17 @@ class TYPO3SiteStrategyTest extends SetUpUnitTestCase
      */
     protected function getSiteFinderMock($pageRecord = []): SiteFinder
     {
-        $uriMock = $this->getDumbMock(UriInterface::class);
+        $uriMock = $this->createMock(UriInterface::class);
         $uriMock->expects(self::any())->method('__toString')->willReturn('http://www.site.de/en/test');
 
-        $routerMock = $this->getDumbMock(RouterInterface::class);
+        $routerMock = $this->createMock(RouterInterface::class);
         $routerMock->expects(self::once())->method('generateUri')->with($pageRecord, ['_language' => 2, 'MP' => 'foo'])
             ->willReturn($uriMock);
 
-        $siteMock = $this->getDumbMock(Site::class);
+        $siteMock = $this->createMock(Site::class);
         $siteMock->expects(self::once())->method('getRouter')->willReturn($routerMock);
 
-        /** @var SiteFinder $siteFinderMock */
-        $siteFinderMock = $this->getDumbMock(SiteFinder::class);
+        $siteFinderMock = $this->createMock(SiteFinder::class);
         $siteFinderMock->expects(self::once())->method('getSiteByPageId')->willReturn($siteMock);
         return $siteFinderMock;
     }

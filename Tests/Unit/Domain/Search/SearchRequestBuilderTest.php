@@ -43,8 +43,8 @@ class SearchRequestBuilderTest extends SetUpUnitTestCase
 
     protected function setUp(): void
     {
-        $this->configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
-        $this->sessionMock = $this->getDumbMock(FrontendUserSession::class);
+        $this->configurationMock = $this->createMock(TypoScriptConfiguration::class);
+        $this->sessionMock = $this->createMock(FrontendUserSession::class);
         $this->searchRequestBuilder = new SearchRequestBuilder($this->configurationMock, $this->sessionMock);
         parent::setUp();
     }

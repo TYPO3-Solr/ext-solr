@@ -68,11 +68,11 @@ class StatisticsWriterProcessorTest extends SetUpUnitTestCase
     {
         $this->statisticsRepositoryMock = $this->getMockBuilder(StatisticsRepository::class)->onlyMethods(['saveStatisticsRecord'])->getMock();
 
-        $this->siteRepositoryMock = $this->getDumbMock(SiteRepository::class);
+        $this->siteRepositoryMock = $this->createMock(SiteRepository::class);
         $this->processor = $this->getMockBuilder(StatisticsWriterProcessor::class)->setConstructorArgs([$this->statisticsRepositoryMock, $this->siteRepositoryMock])->onlyMethods(['getTSFE', 'getTime', 'getUserIp'])->getMock();
-        $this->typoScriptConfigurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
-        $this->searchRequestMock = $this->getDumbMock(SearchRequest::class);
-        $this->queryMock = $this->getDumbMock(Query::class);
+        $this->typoScriptConfigurationMock = $this->createMock(TypoScriptConfiguration::class);
+        $this->searchRequestMock = $this->createMock(SearchRequest::class);
+        $this->queryMock = $this->createMock(Query::class);
         parent::setUp();
     }
 
@@ -81,13 +81,12 @@ class StatisticsWriterProcessorTest extends SetUpUnitTestCase
      */
     public function canWriteExpectedStatisticsData()
     {
-        /* @var TypoScriptFrontendController $fakeTSFE */
-        $fakeTSFE = $this->getDumbMock(TypoScriptFrontendController::class);
+        $fakeTSFE = $this->createMock(TypoScriptFrontendController::class);
         $fakeTSFE->id = 888;
         $fakeTime = 100;
         $fakeIP = '192.168.2.22';
 
-        $fakeSite = $this->getDumbMock(Site::class);
+        $fakeSite = $this->createMock(Site::class);
         $fakeSite->expects(self::once())->method('getRootPageId')->willReturn(4711);
         $this->siteRepositoryMock->expects(self::once())->method('getSiteByPageId')->with(888)->willReturn($fakeSite);
 
@@ -99,12 +98,11 @@ class StatisticsWriterProcessorTest extends SetUpUnitTestCase
 
         $this->queryMock->expects(self::once())->method('getQuery')->willReturn('my search');
 
-        $resultSetMock = $this->getDumbMock(SearchResultSet::class);
+        $resultSetMock = $this->createMock(SearchResultSet::class);
         $resultSetMock->expects(self::once())->method('getUsedQuery')->willReturn($this->queryMock);
         $resultSetMock->expects(self::once())->method('getUsedSearchRequest')->willReturn($this->searchRequestMock);
 
-        $self = $this;
-        $this->statisticsRepositoryMock->expects(self::any())->method('saveStatisticsRecord')->willReturnCallback(function ($statisticData) use ($self) {
+        $this->statisticsRepositoryMock->expects(self::any())->method('saveStatisticsRecord')->willReturnCallback(function ($statisticData) {
             $this->assertSame('my search', $statisticData['keywords'], 'Unexpected keywords given');
             $this->assertSame('192.168.2.22', $statisticData['ip'], 'Unexpected ip given');
             $this->assertSame(4711, $statisticData['root_pid'], 'Unexpected root pid given');
