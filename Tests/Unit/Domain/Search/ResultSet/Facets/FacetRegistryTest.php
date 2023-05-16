@@ -32,13 +32,9 @@ class FacetRegistryTest extends SetUpUnitTestCase
 {
     /**
      * Initialize a RendererRegistry and mock createRendererInstance()
-     *
-     * @param array $createsPackageInstances
-     * @return MockObject|FacetRegistry
      */
-    protected function getTestFacetPackageRegistry(array $createsPackageInstances = [])
+    protected function getTestFacetPackageRegistry(array $createsPackageInstances = []): MockObject|FacetRegistry
     {
-        /** @var $facetRegistry MockObject|FacetRegistry */
         $facetRegistry = $this->getMockBuilder(FacetRegistry::class)
             ->onlyMethods(['createInstance'])
             ->getMock();
@@ -55,7 +51,7 @@ class FacetRegistryTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function registeredPackageClassCanBeRetrievedByType()
+    public function registeredPackageClassCanBeRetrievedByType(): void
     {
         $facetType = 'myType';
         $packageObject = new TestPackage();
@@ -70,7 +66,7 @@ class FacetRegistryTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function registerParserClassThrowsExceptionIfClassDoesNotExist()
+    public function registerParserClassThrowsExceptionIfClassDoesNotExist(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionCode(1462883324);
@@ -81,7 +77,7 @@ class FacetRegistryTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function registerParserClassThrowsExceptionIfClassDoesNotImplementFacetPackageInterface()
+    public function registerParserClassThrowsExceptionIfClassDoesNotImplementFacetPackageInterface(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionCode(1462883325);
@@ -93,7 +89,7 @@ class FacetRegistryTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function registerReturnsDefaultPackageForUnknownFacetType()
+    public function registerReturnsDefaultPackageForUnknownFacetType(): void
     {
         $optionsFacetPackage = new OptionsPackage();
         $facetParserRegistry = $this->getTestFacetPackageRegistry([[OptionsPackage::class, $optionsFacetPackage]]);
@@ -103,7 +99,7 @@ class FacetRegistryTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function canRegisterDifferentDefaultPackage()
+    public function canRegisterDifferentDefaultPackage(): void
     {
         $packageObject = new TestPackage();
         $packageClass = get_class($packageObject);

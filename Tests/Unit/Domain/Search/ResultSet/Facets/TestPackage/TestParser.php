@@ -8,13 +8,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 
 class TestParser extends AbstractFacetParser
 {
-    /**
-     * @param SearchResultSet $resultSet
-     * @param string $facetName
-     * @param array $facetConfiguration
-     * @return AbstractFacet|null
-     */
-    public function parse(SearchResultSet $resultSet, string $facetName, array $facetConfiguration)
+    public function parse(SearchResultSet $resultSet, string $facetName, array $facetConfiguration): ?AbstractFacet
     {
         return new TestFacet($resultSet, $facetName, 'testField');
     }

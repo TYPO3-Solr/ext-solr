@@ -32,45 +32,14 @@ use PHPUnit\Framework\MockObject\MockObject;
 
 class PageIndexerTest extends SetUpUnitTestCase
 {
-    /**
-     * @var PageIndexer
-     */
-    protected $pageIndexer;
-
-    /**
-     * @var PagesRepository
-     */
-    protected $pagesRepositoryMock;
-
-    /**
-     * @var Builder
-     */
-    protected $documentBuilderMock;
-
-    /**
-     * @var SolrLogManager
-     */
-    protected $solrLogManagerMock;
-
-    /**
-     * @var ConnectionManager
-     */
-    protected $connectionManagerMock;
-
-    /**
-     * @var PageIndexerRequest
-     */
-    protected $pageIndexerRequestMock;
-
-    /**
-     * @var AbstractUriStrategy
-     */
-    protected $uriStrategyMock;
-
-    /**
-     * @var MockObject|FrontendEnvironment
-     */
-    protected $frontendEnvironmentMock;
+    protected PageIndexer|MockObject $pageIndexer;
+    protected PagesRepository|MockObject $pagesRepositoryMock;
+    protected Builder|MockObject $documentBuilderMock;
+    protected SolrLogManager|MockObject $solrLogManagerMock;
+    protected ConnectionManager|MockObject $connectionManagerMock;
+    protected PageIndexerRequest|MockObject $pageIndexerRequestMock;
+    protected AbstractUriStrategy|MockObject $uriStrategyMock;
+    protected MockObject|FrontendEnvironment $frontendEnvironmentMock;
 
     protected function setUp(): void
     {
@@ -84,11 +53,7 @@ class PageIndexerTest extends SetUpUnitTestCase
         parent::setUp();
     }
 
-    /**
-     * @param array $options
-     * @return PageIndexer|MockObject
-     */
-    protected function getPageIndexerWithMockedDependencies(array $options = [])
+    protected function getPageIndexerWithMockedDependencies(array $options = []): PageIndexer|MockObject
     {
         $pageIndexer = $this->getMockBuilder(PageIndexer::class)
             ->setConstructorArgs(
@@ -111,7 +76,7 @@ class PageIndexerTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function testIndexPageItemIsSendingFrontendRequestsToExpectedUrls()
+    public function testIndexPageItemIsSendingFrontendRequestsToExpectedUrls(): void
     {
         $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['solr'] = [];
         $siteMock = $this->createMock(Site::class);

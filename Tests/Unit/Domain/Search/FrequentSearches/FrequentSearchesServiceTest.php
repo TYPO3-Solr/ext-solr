@@ -25,30 +25,11 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 class FrequentSearchesServiceTest extends SetUpUnitTestCase
 {
-    /**
-     * @var FrequentSearchesService
-     */
-    protected $frequentSearchesService;
-
-    /**
-     * @var TypoScriptFrontendController
-     */
-    protected $tsfeMock;
-
-    /**
-     * @var AbstractFrontend
-     */
-    protected $cacheMock;
-
-    /**
-     * @var TypoScriptConfiguration
-     */
-    protected $configurationMock;
-
-    /**
-     * @var StatisticsRepository|MockObject
-     */
-    protected $statisticsRepositoryMock;
+    protected FrequentSearchesService|MockObject $frequentSearchesService;
+    protected TypoScriptFrontendController|MockObject $tsfeMock;
+    protected AbstractFrontend|MockObject $cacheMock;
+    protected TypoScriptConfiguration|MockObject $configurationMock;
+    protected StatisticsRepository|MockObject $statisticsRepositoryMock;
 
     protected function setUp(): void
     {
@@ -83,7 +64,7 @@ class FrequentSearchesServiceTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function cachedResultIsUsedWhenIdentifierIsPresent()
+    public function cachedResultIsUsedWhenIdentifierIsPresent(): void
     {
         $fakeConfiguration = [];
         $expectedCacheIdentifier = 'frequentSearchesTags_' . md5(serialize($fakeConfiguration));
@@ -98,7 +79,7 @@ class FrequentSearchesServiceTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function databaseResultIsUsedWhenNoCachedResultIsPresent()
+    public function databaseResultIsUsedWhenNoCachedResultIsPresent(): void
     {
         $fakeConfiguration = [
             'select.' => [
@@ -129,17 +110,13 @@ class FrequentSearchesServiceTest extends SetUpUnitTestCase
         self::assertSame($frequentTerms, ['my search' => 22], 'Could not retrieve frequent search terms');
     }
 
-    /**
-     * @param string $identifier
-     * @param array $value
-     */
-    public function fakeCacheResult($identifier, $value)
+    public function fakeCacheResult(string $identifier, array $value): void
     {
         $this->cacheMock->expects(self::once())->method('has')->with($identifier)->willReturn(true);
         $this->cacheMock->expects(self::once())->method('get')->willReturn($value);
     }
 
-    public function fakeIdentifierNotInCache()
+    public function fakeIdentifierNotInCache(): void
     {
         $this->cacheMock->expects(self::once())->method('has')->willReturn(false);
     }

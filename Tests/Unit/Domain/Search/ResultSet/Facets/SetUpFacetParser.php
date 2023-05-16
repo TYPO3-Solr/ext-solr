@@ -28,20 +28,12 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Class QueryGroupFacetParserTest
- *
  * @author Timo Hund <timo.hund@dkd.de>
  * @author Frans Saris <frans@beech.it>
  */
 abstract class SetUpFacetParser extends SetUpUnitTestCase
 {
-    /**
-     * @param string $fixtureFile
-     * @param array $facetConfiguration
-     * @param array $activeFilters
-     * @return SearchResultSet
-     */
-    protected function initializeSearchResultSetFromFakeResponse($fixtureFile, $facetConfiguration, array $activeFilters = [])
+    protected function initializeSearchResultSetFromFakeResponse(string $fixtureFile, array $facetConfiguration, array $activeFilters = []): SearchResultSet
     {
         $fakeResponseJson = $this->getFixtureContentByName($fixtureFile);
 

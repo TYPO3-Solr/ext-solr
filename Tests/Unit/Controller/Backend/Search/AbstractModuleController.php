@@ -47,9 +47,6 @@ abstract class AbstractModuleController extends SetUpUnitTestCase
 
     /**
      * Initializes the concrete backend module controller
-     *
-     * @param string $concreteModuleControllerClass
-     * @param array $mockMethods
      */
     protected function setUpConcreteModuleController(
         string $concreteModuleControllerClass,

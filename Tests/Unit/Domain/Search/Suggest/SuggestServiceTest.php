@@ -42,35 +42,12 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
  */
 class SuggestServiceTest extends SetUpUnitTestCase
 {
-    /**
-     * @var SuggestService
-     */
-    protected $suggestService;
-
-    /**
-     * @var TypoScriptFrontendController
-     */
-    protected $tsfeMock;
-
-    /**
-     * @var SearchResultSetService
-     */
-    protected $searchResultSetServiceMock;
-
-    /**
-     * @var TypoScriptConfiguration
-     */
-    protected $configurationMock;
-
-    /**
-     * @var QueryBuilder
-     */
-    protected $queryBuilderMock;
-
-    /**
-     * @var SuggestQuery
-     */
-    protected $suggestQueryMock;
+    protected SuggestService|MockObject $suggestService;
+    protected TypoScriptFrontendController|MockObject $tsfeMock;
+    protected SearchResultSetService|MockObject $searchResultSetServiceMock;
+    protected TypoScriptConfiguration|MockObject $configurationMock;
+    protected QueryBuilder|MockObject $queryBuilderMock;
+    protected SuggestQuery|MockObject $suggestQueryMock;
 
     protected function setUp(): void
     {
@@ -89,10 +66,7 @@ class SuggestServiceTest extends SetUpUnitTestCase
         parent::setUp();
     }
 
-    /**
-     * @param string $queryString
-     */
-    protected function assertSuggestQueryWithQueryStringCreated($queryString)
+    protected function assertSuggestQueryWithQueryStringCreated(string $queryString): void
     {
         $this->suggestQueryMock->expects(self::any())->method('getQuery')->willReturn($queryString);
     }
@@ -100,7 +74,7 @@ class SuggestServiceTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function canGetSuggestionsWithoutTopResults()
+    public function canGetSuggestionsWithoutTopResults(): void
     {
         // the query string is used as prefix but no real query string is passed.
         $this->assertSuggestQueryWithQueryStringCreated('');
@@ -130,7 +104,7 @@ class SuggestServiceTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function canHandleInvalidSyntaxInAdditionalFilters()
+    public function canHandleInvalidSyntaxInAdditionalFilters(): void
     {
         $this->assertNoSearchWillBeTriggered();
         $fakeRequest = $this->getFakedSearchRequest('some');
@@ -141,7 +115,7 @@ class SuggestServiceTest extends SetUpUnitTestCase
         GeneralUtility::setSingletonInstance(ConnectionManager::class, $connectionManagerMock);
 
         $searchStub = new class ($this->createMock(SolrConnection::class)) extends Search implements SingletonInterface {
-            public static $suggestServiceTest;
+            public static SuggestServiceTest $suggestServiceTest;
             public function search(Query $query, $offset = 0, $limit = 10): ?ResponseAdapter
             {
                 return self::$suggestServiceTest->getMockBuilder(ResponseAdapter::class)
@@ -176,7 +150,7 @@ class SuggestServiceTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function emptyJsonIsReturnedWhenSolrHasNoSuggestions()
+    public function emptyJsonIsReturnedWhenSolrHasNoSuggestions(): void
     {
         $this->configurationMock->expects(self::never())->method('getSuggestShowTopResults');
         $this->assertNoSearchWillBeTriggered();
@@ -193,7 +167,7 @@ class SuggestServiceTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function canGetSuggestionsWithTopResults()
+    public function canGetSuggestionsWithTopResults(): void
     {
         $this->configurationMock->expects(self::once())->method('getSuggestShowTopResults')->willReturn(true);
         $this->configurationMock->expects(self::once())->method('getSuggestNumberOfTopResults')->willReturn(2);
@@ -228,14 +202,8 @@ class SuggestServiceTest extends SetUpUnitTestCase
 
     /**
      * Builds a faked SearchResult object.
-     *
-     * @param string $url
-     * @param string $type
-     * @param string $title
-     * @param string $content
-     * @return SearchResult
      */
-    protected function getFakedSearchResult($url, $type, $title, $content)
+    protected function getFakedSearchResult(string $url, string $type, string $title, string $content): SearchResult|MockObject
     {
         $result = $this->createMock(SearchResult::class);
         $result->expects(self::once())->method('getUrl')->willReturn($url);
@@ -246,15 +214,11 @@ class SuggestServiceTest extends SetUpUnitTestCase
         return $result;
     }
 
-    protected function assertNoSearchWillBeTriggered()
+    protected function assertNoSearchWillBeTriggered(): void
     {
         $this->searchResultSetServiceMock->expects(self::never())->method('search');
     }
 
-    /**
-     * @param string $queryString
-     * @return SearchRequest|MockObject
-     */
     protected function getFakedSearchRequest(string $queryString): SearchRequest|MockObject
     {
         $fakeRequest = $this->createMock(SearchRequest::class);

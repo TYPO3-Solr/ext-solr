@@ -20,28 +20,14 @@ use ApacheSolrForTypo3\Solr\Domain\Search\LastSearches\LastSearchesService;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Session\FrontendUserSession;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use PHPUnit\Framework\MockObject\MockObject;
 
 class LastSearchesServiceTest extends SetUpUnitTestCase
 {
-    /**
-     * @var LastSearchesService
-     */
-    protected $lastSearchesService;
-
-    /**
-     * @var FrontendUserSession
-     */
-    protected $sessionMock;
-
-    /**
-     * @var TypoScriptConfiguration
-     */
-    protected $configurationMock;
-
-    /**
-     * @var LastSearchesRepository
-     */
-    protected $lastSearchesRepositoryMock;
+    protected LastSearchesService|MockObject $lastSearchesService;
+    protected FrontendUserSession|MockObject $sessionMock;
+    protected TypoScriptConfiguration|MockObject $configurationMock;
+    protected LastSearchesRepository|MockObject $lastSearchesRepositoryMock;
 
     protected function setUp(): void
     {
@@ -65,7 +51,7 @@ class LastSearchesServiceTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function canGetLastSearchesFromSessionInUserMode()
+    public function canGetLastSearchesFromSessionInUserMode(): void
     {
         $fakedLastSearchesInSession = ['first search', 'second search'];
 
@@ -84,7 +70,7 @@ class LastSearchesServiceTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function canGetLastSearchesFromDatabaseInGlobalMode()
+    public function canGetLastSearchesFromDatabaseInGlobalMode(): void
     {
         $fakedLastSearchesFromRepository = [
             'test',
@@ -101,23 +87,17 @@ class LastSearchesServiceTest extends SetUpUnitTestCase
         self::assertSame($fakedLastSearchesFromRepository, $lastSearches, 'Did not get last searches from database');
     }
 
-    /**
-     * @param string $mode
-     */
-    protected function fakeLastSearchMode($mode)
+    protected function fakeLastSearchMode(string $mode): void
     {
         $this->configurationMock->expects(self::once())->method('getSearchLastSearchesMode')->willReturn($mode);
     }
 
-    /**
-     * @param int $limit
-     */
-    protected function fakeLastSearchLimit($limit)
+    protected function fakeLastSearchLimit(int $limit): void
     {
         $this->configurationMock->expects(self::once())->method('getSearchLastSearchesLimit')->willReturn($limit);
     }
 
-    protected function assertRepositoryWillNeverBeCalled()
+    protected function assertRepositoryWillNeverBeCalled(): void
     {
         $this->lastSearchesRepositoryMock->expects(self::never())->method('findAllKeywords');
     }

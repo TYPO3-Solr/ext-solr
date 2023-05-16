@@ -31,7 +31,7 @@ class LabelFilterViewHelperTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function canMakeOnlyExpectedFacetsAvailableInStaticContext()
+    public function canMakeOnlyExpectedFacetsAvailableInStaticContext(): void
     {
         $facet = $this->createMock(OptionsFacet::class);
 
@@ -58,7 +58,7 @@ class LabelFilterViewHelperTest extends SetUpUnitTestCase
         LabelFilterViewHelper::renderStatic($testArguments, function () {}, $renderingContextMock);
         self::assertTrue($variableContainer->exists('filteredOptions'), 'Expected that filteredOptions has been set');
 
-        /** @var  $optionCollection OptionCollection */
+        /** @var OptionCollection $optionCollection */
         $optionCollection = $variableContainer->get('filteredOptions');
         self::assertSame(1, $optionCollection->getCount());
         self::assertSame('Polar Blue', $optionCollection->getByPosition(0)->getLabel(), 'Filtered option has unexpected label');
@@ -67,7 +67,7 @@ class LabelFilterViewHelperTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function canMakeOnlyExpectedFacetsAvailableInStaticContextWithMultiByteCharacters()
+    public function canMakeOnlyExpectedFacetsAvailableInStaticContextWithMultiByteCharacters(): void
     {
         $facet = $this->createMock(OptionsFacet::class);
 
@@ -88,7 +88,7 @@ class LabelFilterViewHelperTest extends SetUpUnitTestCase
         LabelFilterViewHelper::renderStatic($testArguments, function () {}, $renderingContextMock);
         self::assertTrue($variableContainer->exists('filteredOptions'), 'Expected that filteredOptions has been set');
 
-        /** @var  $optionCollection OptionCollection */
+        /** @var OptionCollection $optionCollection */
         $optionCollection = $variableContainer->get('filteredOptions');
         self::assertSame(1, $optionCollection->getCount());
         self::assertSame('Øle', $optionCollection->getByPosition(0)->getLabel(), 'Filtered option has unexpected label');
