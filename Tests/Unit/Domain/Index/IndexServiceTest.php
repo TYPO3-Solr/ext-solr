@@ -33,25 +33,10 @@ use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
  */
 class IndexServiceTest extends SetUpUnitTestCase
 {
-    /**
-     * @var Site|MockObject
-     */
-    protected $siteMock;
-
-    /**
-     * @var Queue
-     */
-    protected $queueMock;
-
-    /**
-     * @var EventDispatcher|MockObject
-     */
+    protected Site|MockObject $siteMock;
+    protected Queue|MockObject $queueMock;
     protected EventDispatcher|MockObject $eventDispatcherMock;
-
-    /**
-     * @var SolrLogManager
-     */
-    protected $logManagerMock;
+    protected SolrLogManager|MockObject $logManagerMock;
 
     protected function setUp(): void
     {
@@ -70,7 +55,7 @@ class IndexServiceTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function eventsAreTriggered()
+    public function eventsAreTriggered(): void
     {
         $fakeConfiguration = $this->createMock(TypoScriptConfiguration::class);
         $this->siteMock = $this->getMockBuilder(Site::class)
@@ -99,7 +84,7 @@ class IndexServiceTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function testConfigurationIsNotFetchedWhenProgressIsCalculated()
+    public function testConfigurationIsNotFetchedWhenProgressIsCalculated(): void
     {
         $this->siteMock->expects(self::never())->method('getSolrConfiguration');
 
@@ -119,7 +104,7 @@ class IndexServiceTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function testServerHostIsRestoredInCaseOfAnException()
+    public function testServerHostIsRestoredInCaseOfAnException(): void
     {
         $fakeConfiguration = $this->createMock(TypoScriptConfiguration::class);
         $this->siteMock = $this->getMockBuilder(Site::class)
@@ -162,7 +147,7 @@ class IndexServiceTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function testDomainIsUsedFromSiteObject()
+    public function testDomainIsUsedFromSiteObject(): void
     {
         $fakeConfiguration = $this->createMock(TypoScriptConfiguration::class);
         $this->siteMock->expects(self::once())->method('getSolrConfiguration')->willReturn($fakeConfiguration);
@@ -192,9 +177,9 @@ class IndexServiceTest extends SetUpUnitTestCase
     }
 
     /**
-     * @param $fakeItems
+     * @param array $fakeItems
      */
-    protected function fakeQueueItemContent($fakeItems)
+    protected function fakeQueueItemContent(array $fakeItems): void
     {
         $this->queueMock
             ->expects(self::once())
@@ -202,10 +187,7 @@ class IndexServiceTest extends SetUpUnitTestCase
             ->willReturn($fakeItems);
     }
 
-    /**
-     * @param int $amount
-     */
-    protected function assertEventsWillBeDispatched(int $amount = 0)
+    protected function assertEventsWillBeDispatched(int $amount = 0): void
     {
         $this->eventDispatcherMock->expects(self::exactly($amount))
             ->method('dispatch')

@@ -28,15 +28,8 @@ class TypoScriptTest extends SetUpUnitTestCase
 {
     use ProphecyTrait;
 
-    /**
-     * @var TypoScript
-     */
-    protected $typoScriptMock;
-
-    /**
-     * @var TypoScriptConfiguration|MockObject
-     */
-    protected $typoScriptConfigurationDumpMock;
+    protected TypoScript|MockObject $typoScriptMock;
+    protected TypoScriptConfiguration|MockObject $typoScriptConfigurationDumpMock;
 
     protected function setUp(): void
     {
@@ -65,7 +58,7 @@ class TypoScriptTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function getConfigurationFromPageIdReturnsCachedConfiguration()
+    public function getConfigurationFromPageIdReturnsCachedConfiguration(): void
     {
         $pageId = 12;
         $path = '';

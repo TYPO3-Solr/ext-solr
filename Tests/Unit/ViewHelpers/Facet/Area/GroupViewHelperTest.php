@@ -45,7 +45,7 @@ class GroupViewHelperTest extends SetUpUnitTestCase
         GroupViewHelper::renderStatic($testArguments, function () {}, $renderingContextMock);
         self::assertTrue($variableContainer->exists('areaFacets'), 'Expected that filteredFacets has been set');
 
-        /** @var  $facetCollection FacetCollection */
+        /** @var FacetCollection $facetCollection */
         $facetCollection = $variableContainer->get('areaFacets');
         self::assertEquals(2, $facetCollection->getCount());
 
@@ -71,7 +71,7 @@ class GroupViewHelperTest extends SetUpUnitTestCase
 
         self::assertTrue($variableContainer->exists('areaFacets'), 'Expected that filteredFacets has been set');
 
-        /** @var  $facetCollection FacetCollection */
+        /** @var FacetCollection $facetCollection */
         $facetCollection = $variableContainer->get('areaFacets');
         self::assertEquals(2, $facetCollection->getCount());
 

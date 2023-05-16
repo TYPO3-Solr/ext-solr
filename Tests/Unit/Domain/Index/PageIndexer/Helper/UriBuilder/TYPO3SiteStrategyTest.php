@@ -12,15 +12,12 @@ use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-/**
- * Class SolrSiteStrategyTest
- */
 class TYPO3SiteStrategyTest extends SetUpUnitTestCase
 {
     /**
      * @test
      */
-    public function testPageIndexingUriFromPageItemAndLanguageId()
+    public function testPageIndexingUriFromPageItemAndLanguageId(): void
     {
         $pageRecord = ['uid' => 55];
         $itemMock = $this->createMock(Item::class);
@@ -37,7 +34,7 @@ class TYPO3SiteStrategyTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function canOverrideHost()
+    public function canOverrideHost(): void
     {
         $pageRecord = ['uid' => 55];
         $itemMock = $this->createMock(Item::class);
@@ -55,7 +52,7 @@ class TYPO3SiteStrategyTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function canOverrideScheme()
+    public function canOverrideScheme(): void
     {
         $pageRecord = ['uid' => 55];
         $itemMock = $this->createMock(Item::class);
@@ -70,10 +67,7 @@ class TYPO3SiteStrategyTest extends SetUpUnitTestCase
         self::assertSame('https://www.site.de/en/test', $uri, 'Solr site strategy generated unexpected uri');
     }
 
-    /**
-     * @return array
-     */
-    protected function getSiteFinderMock($pageRecord = []): SiteFinder
+    protected function getSiteFinderMock(array $pageRecord = []): SiteFinder
     {
         $uriMock = $this->createMock(UriInterface::class);
         $uriMock->expects(self::any())->method('__toString')->willReturn('http://www.site.de/en/test');

@@ -36,10 +36,7 @@ use TYPO3\CMS\Core\Utility\RootlineUtility;
  */
 class RecordMonitorTest extends SetUpUnitTestCase
 {
-    /**
-     * @var RecordMonitor|null
-     */
-    protected ?RecordMonitor $recordMonitor;
+    protected RecordMonitor $recordMonitor;
 
     /**
      * @var EventDispatcherInterface|MockObject
@@ -214,7 +211,7 @@ class RecordMonitorTest extends SetUpUnitTestCase
             ->willReturnCallback(function () use (&$dispatchedEvent) {
                 $dispatchedEvent = func_get_arg(0);
             });
-        $this->recordMonitor->processDatamap_afterDatabaseOperations('new', 'tt_content', 4711, ['pid' => 1]);
+        $this->recordMonitor->processDatamap_afterDatabaseOperations('new', 'tt_content', 4711, ['pid' => 1], $dataHandlerMock);
 
         self::assertTrue($dispatchedEvent instanceof RecordUpdatedEvent);
         self::assertEquals('tt_content', $dispatchedEvent->getTable());

@@ -34,7 +34,7 @@ class AbstractIndexerTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function isSerializedValueCanHandleCustomContentElements()
+    public function isSerializedValueCanHandleCustomContentElements(): void
     {
         $indexingConfiguration = [
             'topic_stringM' => 'SOLR_CLASSIFICATION',
@@ -57,7 +57,7 @@ class AbstractIndexerTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function isSerializedValueCanHandleCustomInvalidSerializedValueDetector()
+    public function isSerializedValueCanHandleCustomInvalidSerializedValueDetector(): void
     {
         // register invalid detector
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['detectSerializedValue'][] = InvalidSerializedValueDetector::class;
@@ -75,7 +75,7 @@ class AbstractIndexerTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function isSerializedValueCanHandleCustomValidSerializedValueDetector()
+    public function isSerializedValueCanHandleCustomValidSerializedValueDetector(): void
     {
         // register invalid detector
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['detectSerializedValue'][] = ValidSerializedValueDetector::class;
@@ -92,8 +92,8 @@ class AbstractIndexerTest extends SetUpUnitTestCase
         self::assertTrue(AbstractIndexer::isSerializedValue($indexingConfiguration, 'topic_stringM'), 'Every value should be treated as serialized by custom detector');
         self::assertTrue(AbstractIndexer::isSerializedValue($indexingConfiguration, 'csv_stringM'), 'Every value should be treated as serialized by custom detector');
         self::assertTrue(AbstractIndexer::isSerializedValue($indexingConfiguration, 'categories_stringM'), 'Every value should be treated as serialized by custom detector');
-        self::assertTrue(AbstractIndexer::isSerializedValue($indexingConfiguration, 'category_stringM', 'Every value should be treated as serialized by custom detector'));
-        self::assertTrue(AbstractIndexer::isSerializedValue($indexingConfiguration, 'notConfigured_stringM', 'Every value should be treated as serialized by custom detector'));
+        self::assertTrue(AbstractIndexer::isSerializedValue($indexingConfiguration, 'category_stringM'), 'Every value should be treated as serialized by custom detector');
+        self::assertTrue(AbstractIndexer::isSerializedValue($indexingConfiguration, 'notConfigured_stringM'), 'Every value should be treated as serialized by custom detector');
     }
 
     /**
@@ -101,7 +101,7 @@ class AbstractIndexerTest extends SetUpUnitTestCase
      * @test
      * @dataProvider indexingDataProvider
      */
-    public function resolveFieldValue(array $indexingConfiguration, string $solrFieldName, array $data, $expectedValue)
+    public function resolveFieldValue(array $indexingConfiguration, string $solrFieldName, array $data, $expectedValue): void
     {
         $subject = new class () extends AbstractIndexer {
         };
@@ -119,7 +119,7 @@ class AbstractIndexerTest extends SetUpUnitTestCase
         );
     }
 
-    public function indexingDataProvider()
+    public function indexingDataProvider(): \Generator
     {
         yield 'solr field defined as string' => [
             ['solrFieldName_stringS' => 'solrFieldName'],

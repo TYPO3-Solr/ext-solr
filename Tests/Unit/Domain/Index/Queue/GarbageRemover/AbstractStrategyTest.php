@@ -21,7 +21,6 @@ use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\System\Solr\Service\SolrWriteService;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
-use Traversable;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\AccessibleProxyTrait;
 
@@ -113,9 +112,8 @@ abstract class AbstractStrategyTest extends SetUpUnitTestCase
 
     /**
      * Data provider for canDeleteRecordInAllSolrConnectionsDataProvider
-     * @return Traversable
      */
-    public function canDeleteRecordInAllSolrConnectionsDataProvider(): Traversable
+    public function canDeleteRecordInAllSolrConnectionsDataProvider(): \Generator
     {
         yield 'can delete and commit' => [
             'status' => 200,
