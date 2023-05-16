@@ -65,9 +65,6 @@ abstract class IntegrationTest extends FunctionalTestCase
         'core_dk',
     ];
 
-    /**
-     * @var array
-     */
     protected array $configurationToUseInTestInstance = [
        'SYS' =>  [
            'exceptionalErrors' =>  E_WARNING | E_RECOVERABLE_ERROR | E_DEPRECATED | E_USER_DEPRECATED,

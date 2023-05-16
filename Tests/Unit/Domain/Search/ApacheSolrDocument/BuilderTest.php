@@ -44,25 +44,10 @@ class BuilderTest extends SetUpUnitTestCase
         'abstract' => null,
     ];
 
-    /**
-     * @var IdBuilder
-     */
-    protected $variantIdBuilderMock;
-
-    /**
-     * @var Site
-     */
-    protected $siteMock;
-
-    /**
-     * @var Typo3PageContentExtractor
-     */
-    protected $typo3PageExtractorMock;
-
-    /**
-     * @var Builder
-     */
-    protected $documentBuilder;
+    protected IdBuilder|MockObject $variantIdBuilderMock;
+    protected Site|MockObject $siteMock;
+    protected Typo3PageContentExtractor|MockObject $typo3PageExtractorMock;
+    protected Builder|MockObject $documentBuilder;
 
     protected function setUp(): void
     {
@@ -82,9 +67,8 @@ class BuilderTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function canBuildApacheSolrDocumentFromEmptyPage()
+    public function canBuildApacheSolrDocumentFromEmptyPage(): void
     {
-        /* @var MockObject|TypoScriptFrontendController $fakePage */
         $fakePage = $this->createMock(TypoScriptFrontendController::class);
         $fakeRootLine = $this->createMock(Rootline::class);
         $fakeRootLine->expects(self::once())->method('getGroups')->willReturn([1]);
@@ -103,9 +87,8 @@ class BuilderTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function canSetKeywordsForApacheSolrDocument()
+    public function canSetKeywordsForApacheSolrDocument(): void
     {
-        /* @var MockObject|TypoScriptFrontendController $fakePage */
         $fakePage = $this->createMock(TypoScriptFrontendController::class);
         $fakeRootLine = $this->createMock(Rootline::class);
         $fakeRootLine->expects(self::once())->method('getGroups')->willReturn([1]);
@@ -123,9 +106,8 @@ class BuilderTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function canSetEndtimeForApacheSolrDocument()
+    public function canSetEndtimeForApacheSolrDocument(): void
     {
-        /* @var MockObject|TypoScriptFrontendController $fakePage */
         $fakePage = $this->createMock(TypoScriptFrontendController::class);
         $fakeRootLine = $this->createMock(Rootline::class);
         $fakeRootLine->expects(self::once())->method('getGroups')->willReturn([1]);
@@ -143,9 +125,8 @@ class BuilderTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function canSetTagFieldsForApacheSolrDocument()
+    public function canSetTagFieldsForApacheSolrDocument(): void
     {
-        /* @var MockObject|TypoScriptFrontendController $fakePage */
         $fakePage = $this->createMock(TypoScriptFrontendController::class);
         $fakeRootLine = $this->createMock(Rootline::class);
         $fakeRootLine->expects(self::once())->method('getGroups')->willReturn([1]);
@@ -163,7 +144,7 @@ class BuilderTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function canBuildFromRecord()
+    public function canBuildFromRecord(): void
     {
         $fakeRecord = ['uid' => 4711, 'pid' => 88, 'type' => 'news'];
         $type = 'news';
@@ -187,26 +168,17 @@ class BuilderTest extends SetUpUnitTestCase
         self::assertSame('EXT:solr', $document->appKey, 'appKey field was not set as expected');
     }
 
-    /**
-     * @param string $documentId
-     */
-    protected function fakePageDocumentId($documentId)
+    protected function fakePageDocumentId(string $documentId): void
     {
         $this->documentBuilder->expects(self::once())->method('getPageDocumentId')->willReturn($documentId);
     }
 
-    /**
-     * @param string $documentId
-     */
-    protected function fakeDocumentId($documentId)
+    protected function fakeDocumentId(string $documentId): void
     {
         $this->documentBuilder->expects(self::once())->method('getDocumentId')->willReturn($documentId);
     }
 
-    /**
-     * @param array $tagContent
-     */
-    protected function fakeTagContent($tagContent = [])
+    protected function fakeTagContent($tagContent = []): void
     {
         $this->typo3PageExtractorMock->expects(self::once())->method('getTagContent')->willReturn($tagContent);
     }

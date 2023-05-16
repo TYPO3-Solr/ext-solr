@@ -32,7 +32,7 @@ class PageMovedEventTest extends SetUpDataUpdateEvent
      */
     public function canInitAndReturnFields(): void
     {
-        $event = new PageMovedEvent(123, static::EVENT_TEST_TABLE, ['hidden' => 1]);
+        $event = new PageMovedEvent(123);
         self::assertEmpty($event->getFields());
     }
 
@@ -41,7 +41,7 @@ class PageMovedEventTest extends SetUpDataUpdateEvent
      */
     public function canForceTable(): void
     {
-        $event = new PageMovedEvent(123, 'tx_foo_bar');
+        $event = new PageMovedEvent(123);
         self::assertEquals('pages', $event->getTable());
     }
 

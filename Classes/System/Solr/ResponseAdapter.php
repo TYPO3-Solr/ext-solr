@@ -32,22 +32,22 @@ use stdClass;
  *
  * Search response
  *
- * @property stdClass|null facet_counts
- * @property stdClass|null facets
- * @property stdClass|null spellcheck
- * @property stdClass|null response
- * @property stdClass|null responseHeader
- * @property stdClass|null highlighting
- * @property stdClass|null debug
- * @property stdClass|null lucene
- * @property string file
- * @property array file_metadata
+ * @property stdClass|null $facet_counts
+ * @property stdClass|null $facets
+ * @property stdClass|null $spellcheck
+ * @property stdClass|null $response
+ * @property stdClass|null $responseHeader
+ * @property stdClass|null $highlighting
+ * @property stdClass|null $debug
+ * @property stdClass|null $lucene
+ * @property string $file
+ * @property array $file_metadata
  *
  * Luke response
  *
- * @property stdClass index
- * @property stdClass fields
- * @property stdClass $plugins
+ * @property stdClass $index
+ * @property stdClass $fields
+ * @property stdClass $$plugins
  */
 class ResponseAdapter implements Countable
 {

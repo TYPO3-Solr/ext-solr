@@ -38,19 +38,9 @@ class ReIndexTaskTest extends IntegrationTest
      */
     protected bool $skipImportRootPagesAndTemplatesForConfiguredSites = true;
 
-    /**
-     * @var ReIndexTask
-     */
-    protected $task;
+    protected ReIndexTask $task;
+    protected Queue $indexQueue;
 
-    /**
-     * @var Queue
-     */
-    protected $indexQueue;
-
-    /**
-     * @var array
-     */
     protected array $coreExtensionsToLoad = [
         'scheduler',
     ];

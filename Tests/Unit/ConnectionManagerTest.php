@@ -26,6 +26,7 @@ use ApacheSolrForTypo3\Solr\System\Solr\Parser\SchemaParser;
 use ApacheSolrForTypo3\Solr\System\Solr\Parser\StopWordParser;
 use ApacheSolrForTypo3\Solr\System\Solr\Parser\SynonymParser;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
+use PHPUnit\Framework\MockObject\MockObject;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
@@ -40,32 +41,11 @@ use UnexpectedValueException;
  */
 class ConnectionManagerTest extends SetUpUnitTestCase
 {
-    /**
-     * Connection manager
-     *
-     * @var ConnectionManager
-     */
-    protected $connectionManager;
-
-    /**
-     * @var SolrLogManager
-     */
-    protected $logManagerMock;
-
-    /**
-     * @var PagesRepository
-     */
-    protected $pageRepositoryMock;
-
-    /**
-     * @var SiteRepository
-     */
-    protected $siteRepositoryMock;
-
-    /**
-     * @var ConfigurationManager
-     */
-    protected $configurationManager;
+    protected ConnectionManager|MockObject $connectionManager;
+    protected SolrLogManager|MockObject $logManagerMock;
+    protected PagesRepository|MockObject $pageRepositoryMock;
+    protected SiteRepository|MockObject $siteRepositoryMock;
+    protected ConfigurationManager $configurationManager;
 
     /**
      * Set up the connection manager test
@@ -92,8 +72,6 @@ class ConnectionManagerTest extends SetUpUnitTestCase
 
     /**
      * Provides data for the connection test
-     *
-     * @return array
      */
     public function connectDataProvider(): array
     {
@@ -108,15 +86,8 @@ class ConnectionManagerTest extends SetUpUnitTestCase
      *
      * @dataProvider connectDataProvider
      * @test
-     *
-     * @param string $host
-     * @param string $port
-     * @param string $path
-     * @param string $scheme
-     * @param bool $expectsException
-     * @param string $expectedConnectionString
      */
-    public function canConnect($host, $port, $path, $scheme, $expectsException, $expectedConnectionString)
+    public function canConnect(string $host, string|int $port, string $path, string $scheme, bool $expectsException, ?string $expectedConnectionString): void
     {
         $self = $this;
         $this->connectionManager->expects(self::once())->method('getSolrConnectionForNodes')->willReturnCallback(

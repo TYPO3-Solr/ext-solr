@@ -135,7 +135,6 @@ class SearchResultTest extends SetUpUnitTestCase
      */
     public function getOnUnexistingFieldReturnsNull()
     {
-        /** @noinspection PhpUndefinedMethodInspection */
         self::assertNull(
             $this->searchResult->getUnexistingField(),
             'Calling getter for unexisting field does not return null'
