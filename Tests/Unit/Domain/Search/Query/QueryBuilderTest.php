@@ -47,25 +47,10 @@ use function str_starts_with;
  */
 class QueryBuilderTest extends SetUpUnitTestCase
 {
-    /**
-     * @var TypoScriptConfiguration|MockObject
-     */
-    protected $configurationMock;
-
-    /**
-     * @var SolrLogManager
-     */
-    protected $loggerMock;
-
-    /**
-     * @var SiteHashService
-     */
-    protected $siteHashServiceMock;
-
-    /**
-     * @var QueryBuilder
-     */
-    protected $builder;
+    protected TypoScriptConfiguration|MockObject $configurationMock;
+    protected SolrLogManager|MockObject $loggerMock;
+    protected SiteHashService|MockObject $siteHashServiceMock;
+    protected QueryBuilder|MockObject $builder;
 
     protected function setUp(): void
     {
@@ -76,11 +61,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         parent::setUp();
     }
 
-    /**
-     * @param Query $searchQuery
-     * @return array
-     */
-    protected function getAllQueryParameters(Query $searchQuery)
+    protected function getAllQueryParameters(Query $searchQuery): array
     {
         $requestBuilder = new RequestBuilder();
         $request = $requestBuilder->build($searchQuery);
@@ -96,16 +77,16 @@ class QueryBuilderTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function buildSearchQueryPassesQueryString()
+    public function buildSearchQueryPassesQueryString(): void
     {
         $query = $this->builder->buildSearchQuery('one');
-        self::assertSame('one', (string)$query, 'Query has unexpected value, when casted to string');
+        self::assertSame('one', (string)$query->getQuery(), 'Query has unexpected value, when casted to string');
     }
 
     /**
      * @test
      */
-    public function buildSearchQueryPassesDefaultPerPage()
+    public function buildSearchQueryPassesDefaultPerPage(): void
     {
         $query = $this->builder->buildSearchQuery('one');
         self::assertSame(10, $query->getRows(), 'Query was not created with default perPage value');
@@ -114,7 +95,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function buildSearchQueryPassesCustomPerPage()
+    public function buildSearchQueryPassesCustomPerPage(): void
     {
         $query = $this->builder->buildSearchQuery('one', 22);
         self::assertSame(22, $query->getRows(), 'Query was not created with default perPage value');
@@ -123,7 +104,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function buildSearchQueryInitializesQueryFieldsFromConfiguration()
+    public function buildSearchQueryInitializesQueryFieldsFromConfiguration(): void
     {
         $this->configurationMock->expects(self::once())->method('getSearchQueryQueryFields')->willReturn('title^10, content^123');
         $query = $this->builder->buildSearchQuery('foo');
@@ -133,7 +114,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function buildSearchQueryInitializesTrigramPhraseFields()
+    public function buildSearchQueryInitializesTrigramPhraseFields(): void
     {
         $this->configurationMock->expects(self::once())->method('getTrigramPhraseSearchIsEnabled')->willReturn(true);
 
@@ -145,7 +126,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function buildSearchIsSettingWildCardQueryOnInitializeWithEmptyQuery()
+    public function buildSearchIsSettingWildCardQueryOnInitializeWithEmptyQuery(): void
     {
         $this->configurationMock->expects(self::once())->method('getSearchInitializeWithEmptyQuery')->willReturn(true);
         $query = $this->builder->buildSearchQuery('initializeWithEmpty');
@@ -155,7 +136,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function buildSearchIsSettingWildCardQueryOnInitializeWithAllowEmptyQuery()
+    public function buildSearchIsSettingWildCardQueryOnInitializeWithAllowEmptyQuery(): void
     {
         $this->configurationMock->expects(self::once())->method('getSearchQueryAllowEmptyQuery')->willReturn(true);
         $query = $this->builder->buildSearchQuery('initializeWithEmpty');
@@ -165,7 +146,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function buildSearchIsSettingQuerystringForConfiguredInitialQuery()
+    public function buildSearchIsSettingQuerystringForConfiguredInitialQuery(): void
     {
         $this->configurationMock->expects(self::exactly(2))->method('getSearchInitializeWithQuery')->willReturn('myinitialsearch');
         $query = $this->builder->buildSearchQuery('initializeWithEmpty');
@@ -175,7 +156,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function buildSearchIsSettingConfiguredAdditionalFilters()
+    public function buildSearchIsSettingConfiguredAdditionalFilters(): void
     {
         $this->configurationMock->expects(self::any())->method('getSearchQueryFilterConfiguration')->willReturn(['noPage' => '-type:pages']);
         $query = $this->builder->buildSearchQuery('applies configured filters');
@@ -189,7 +170,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function buildSearchIsSettingNoAlternativeQueryByDefault()
+    public function buildSearchIsSettingNoAlternativeQueryByDefault(): void
     {
         $query = $this->builder->buildSearchQuery('initializeWithEmpty');
         self::assertArrayNotHasKey('q.alt', $this->getAllQueryParameters($query), 'The alterativeQuery is not null when nothing was set');
@@ -198,7 +179,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function canEnableHighlighting()
+    public function canEnableHighlighting(): void
     {
         $query = $this->getInitializedTestSearchQuery();
         $highlighting = new Highlighting();
@@ -213,7 +194,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function canDisableHighlighting()
+    public function canDisableHighlighting(): void
     {
         $query = $this->getInitializedTestSearchQuery();
         $highlighting = new Highlighting();
@@ -233,7 +214,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function canSetHighlightingFieldList()
+    public function canSetHighlightingFieldList(): void
     {
         $fakeConfigurationArray = [];
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['results.']['resultsHighlighting'] = 1;
@@ -254,7 +235,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function canPassCustomWrapForHighlighting()
+    public function canPassCustomWrapForHighlighting(): void
     {
         $fakeConfigurationArray = [];
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['results.']['resultsHighlighting'] = 1;
@@ -275,7 +256,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function simplePreAndPostIsUsedWhenFastVectorHighlighterCouldNotBeUsed()
+    public function simplePreAndPostIsUsedWhenFastVectorHighlighterCouldNotBeUsed(): void
     {
         $fakeConfigurationArray = [];
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['results.']['resultsHighlighting'] = 1;
@@ -300,7 +281,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function canUseFastVectorHighlighting()
+    public function canUseFastVectorHighlighting(): void
     {
         $fakeConfigurationArray = [];
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
@@ -320,7 +301,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function fastVectorHighlighterIsDisabledWhenFragSizeIsLessThen18()
+    public function fastVectorHighlighterIsDisabledWhenFragSizeIsLessThen18(): void
     {
         $fakeConfigurationArray = [];
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
@@ -340,7 +321,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function canSetQueryString()
+    public function canSetQueryString(): void
     {
         $query = $this->getInitializedTestSearchQuery('i like solr');
         self::assertSame('i like solr', $query->getQuery(), 'Can not set and get query string');
@@ -349,7 +330,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function canSetPage()
+    public function canSetPage(): void
     {
         $query = $this->getInitializedTestSearchQuery('i like solr');
         $query->setStart(10);
@@ -360,7 +341,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function noFiltersAreSetAfterInitialization()
+    public function noFiltersAreSetAfterInitialization(): void
     {
         $query = $this->getInitializedTestSearchQuery();
         $queryParameters = $this->getAllQueryParameters($query);
@@ -370,7 +351,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function addsCorrectAccessFilterForAnonymousUser()
+    public function addsCorrectAccessFilterForAnonymousUser(): void
     {
         $query = $this->getInitializedTestSearchQuery();
         $queryBuilder = new QueryBuilder($this->configurationMock, $this->loggerMock, $this->siteHashServiceMock);
@@ -382,7 +363,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function grantsAccessToGroupZeroIfNoGroupsProvided()
+    public function grantsAccessToGroupZeroIfNoGroupsProvided(): void
     {
         $query = $this->getInitializedTestSearchQuery();
         $queryBuilder = new QueryBuilder($this->configurationMock, $this->loggerMock, $this->siteHashServiceMock);
@@ -394,7 +375,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function grantsAccessToGroupZeroIfZeroNotProvided()
+    public function grantsAccessToGroupZeroIfZeroNotProvided(): void
     {
         $query = $this->getInitializedTestSearchQuery();
         $queryBuilder = new QueryBuilder($this->configurationMock, $this->loggerMock, $this->siteHashServiceMock);
@@ -406,7 +387,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function filtersDuplicateAccessGroups()
+    public function filtersDuplicateAccessGroups(): void
     {
         $query = $this->getInitializedTestSearchQuery();
         $queryBuilder = new QueryBuilder($this->configurationMock, $this->loggerMock, $this->siteHashServiceMock);
@@ -418,7 +399,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function allowsOnlyOneAccessFilter()
+    public function allowsOnlyOneAccessFilter(): void
     {
         $query = $this->getInitializedTestSearchQuery();
         $queryBuilder = new QueryBuilder($this->configurationMock, $this->loggerMock, $this->siteHashServiceMock);
@@ -435,7 +416,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function groupingIsNotActiveAfterInitialization()
+    public function groupingIsNotActiveAfterInitialization(): void
     {
         $query = $this->getInitializedTestSearchQuery();
 
@@ -475,7 +456,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
      * @test
      * @depends settingGroupingTrueActivatesGrouping
      */
-    public function settingGroupingFalseDeactivatesGrouping(SearchQuery $query)
+    public function settingGroupingFalseDeactivatesGrouping(SearchQuery $query): void
     {
         $grouping = new Grouping(false);
         $query = $this->builder->startFrom($query)->useGrouping($grouping)->getQuery();
@@ -491,7 +472,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function canSetNumberOfGroups()
+    public function canSetNumberOfGroups(): void
     {
         $query = $this->getInitializedTestSearchQuery('test');
         $query->getGrouping()->setNumberOfGroups(true);
@@ -501,7 +482,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function canAddGroupField()
+    public function canAddGroupField(): void
     {
         $query = $this->getInitializedTestSearchQuery('test');
         self::assertSame([], $query->getGrouping()->getFields(), 'Unexpected default state of groupFields');
@@ -512,7 +493,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function canGetGroupSorting()
+    public function canGetGroupSorting(): void
     {
         $query = $this->getInitializedTestSearchQuery('test');
         self::assertNull($query->getGrouping()->getSort(), 'By default getGroupSortings should return an empty array');
@@ -527,7 +508,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function canSetNumberOfResultsByGroup()
+    public function canSetNumberOfResultsByGroup(): void
     {
         $query = $this->getInitializedTestSearchQuery('group test');
         $grouping = new Grouping(true);
@@ -543,7 +524,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function canAddGroupQuery()
+    public function canAddGroupQuery(): void
     {
         $query = $this->getInitializedTestSearchQuery('group test');
         $initialGroupQueries = $query->getGrouping()->getQueries();
@@ -555,7 +536,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function canGetQueryFieldsAsStringWhenPassedFromConfiguration()
+    public function canGetQueryFieldsAsStringWhenPassedFromConfiguration(): void
     {
         $input = 'content^10, title^5';
         $fakeConfigurationArray = [];
@@ -571,7 +552,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function canReturnEmptyStringAsQueryFieldStringWhenNothingWasPassed()
+    public function canReturnEmptyStringAsQueryFieldStringWhenNothingWasPassed(): void
     {
         $fakeConfigurationArray = [];
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
@@ -586,7 +567,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function canSetMinimumMatch()
+    public function canSetMinimumMatch(): void
     {
         $query = $this->getInitializedTestSearchQuery();
         $queryParameters = $this->getAllQueryParameters($query);
@@ -605,7 +586,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function canSetBoostFunction()
+    public function canSetBoostFunction(): void
     {
         $query = $this->getInitializedTestSearchQuery();
         $queryParameters = $this->getAllQueryParameters($query);
@@ -626,7 +607,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function canSetBoostQuery()
+    public function canSetBoostQuery(): void
     {
         $query = $this->getInitializedTestSearchQuery();
         $queryParameters = $this->getAllQueryParameters($query);
@@ -643,7 +624,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function canReturnFieldListWhenConfigurationWithReturnFieldsWasPassed()
+    public function canReturnFieldListWhenConfigurationWithReturnFieldsWasPassed(): void
     {
         $input = 'abstract, price';
         $fakeConfigurationArray = [];
@@ -657,7 +638,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function canReturnDefaultFieldListWhenNoConfigurationWasPassed()
+    public function canReturnDefaultFieldListWhenNoConfigurationWasPassed(): void
     {
         $fakeConfigurationArray = [];
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
@@ -669,7 +650,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function canAddReturnField()
+    public function canAddReturnField(): void
     {
         $fakeConfigurationArray = [];
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
@@ -684,7 +665,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function canRemoveReturnField()
+    public function canRemoveReturnField(): void
     {
         $fakeConfigurationArray = [];
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
@@ -700,7 +681,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function canEnableFaceting()
+    public function canEnableFaceting(): void
     {
         /* @var \ApacheSolrForTypo3\Solr\Domain\Search\Query\SearchQuery $query */
         $query = $this->getInitializedTestSearchQuery();

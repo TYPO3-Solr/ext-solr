@@ -8,6 +8,9 @@ parameters:
   bootstrapFiles:
     - phpstan-constants.php
 
+  universalObjectCratesClasses:
+    - ApacheSolrForTypo3\Solr\System\Solr\Document\Document
+
   paths:
     - %currentWorkingDirectory%/Classes
     - %currentWorkingDirectory%/Tests

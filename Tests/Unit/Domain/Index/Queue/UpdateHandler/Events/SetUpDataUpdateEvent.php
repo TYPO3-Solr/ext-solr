@@ -28,7 +28,6 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 abstract class SetUpDataUpdateEvent extends SetUpUnitTestCase
 {
     /**
-     * @return SetUpDataUpdateEvent
      * @test
      */
     public function canInitAndReturnBasicProperties(): AbstractDataUpdateEvent
@@ -65,8 +64,8 @@ abstract class SetUpDataUpdateEvent extends SetUpUnitTestCase
      */
     public function canIndicatePageUpdate(): void
     {
-        /** @var AbstractDataUpdateEvent $event */
         $eventClass = static::EVENT_CLASS;
+        /** @var AbstractDataUpdateEvent $event */
         $event = new $eventClass(123, 'tx_foo_bar');
         self::assertFalse($event->isPageUpdate());
 
@@ -97,8 +96,8 @@ abstract class SetUpDataUpdateEvent extends SetUpUnitTestCase
      */
     public function canMarkAndIndicateStoppedProcessing(): void
     {
-        /** @var AbstractDataUpdateEvent $event */
         $eventClass = static::EVENT_CLASS;
+        /** @var AbstractDataUpdateEvent $event */
         $event = new $eventClass(123, 'tx_foo_bar');
 
         self::assertFalse($event->isPropagationStopped());

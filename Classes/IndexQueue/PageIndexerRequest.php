@@ -343,6 +343,7 @@ class PageIndexerRequest
      */
     protected function getUrl(string $url, array $headers, float $timeout): ResponseInterface
     {
+        $options = [];
         try {
             $options = $this->buildGuzzleOptions($headers, $timeout);
             $response = $this->requestFactory->request($url, 'GET', $options);
@@ -352,7 +353,6 @@ class PageIndexerRequest
                 $options['auth']['password'] = '*****';
             }
             // Log with INFO severity because this is what configured for Testing & Development contexts
-            /* @noinspection PhpUndefinedVariableInspection */
             $this->logger->log(
                 LogLevel::INFO,
                 sprintf(
