@@ -98,7 +98,7 @@ class PageIndexer extends AbstractFrontendHelper
             $stringAccessRootline = $this->request->getParameter('accessRootline');
         }
 
-        return GeneralUtility::makeInstance(Rootline::class, /** @scrutinizer ignore-type */ $stringAccessRootline);
+        return GeneralUtility::makeInstance(Rootline::class, $stringAccessRootline);
     }
 
     /**
@@ -223,7 +223,7 @@ class PageIndexer extends AbstractFrontendHelper
             $solrConnection = $this->getSolrConnection($indexQueueItem);
 
             /* @var Typo3PageIndexer $indexer */
-            $indexer = GeneralUtility::makeInstance(Typo3PageIndexer::class, /** @scrutinizer ignore-type */ $this->page);
+            $indexer = GeneralUtility::makeInstance(Typo3PageIndexer::class, $this->page);
             $indexer->setSolrConnection($solrConnection);
             $indexer->setPageAccessRootline($this->getAccessRootline());
             $indexer->setPageUrl($this->generatePageUrl());

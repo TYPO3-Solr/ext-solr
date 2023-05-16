@@ -81,15 +81,12 @@ class IndexServiceTest extends IntegrationTest
 
         $this->addToIndexQueue('tx_fakeextension_domain_model_bar', 111);
 
-        /* @var CliEnvironment $cliEnvironment */
         $cliEnvironment = GeneralUtility::makeInstance(CliEnvironment::class);
         $cliEnvironment->backup();
         $cliEnvironment->initialize(Environment::getPublicPath() . '/');
 
-        /* @var SiteRepository $siteRepository */
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $site = $siteRepository->getFirstAvailableSite();
-        /* @var IndexService $indexService */
         $indexService = GeneralUtility::makeInstance(IndexService::class, $site);
 
         // run the indexer

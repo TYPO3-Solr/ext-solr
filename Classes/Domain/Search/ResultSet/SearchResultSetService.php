@@ -73,9 +73,9 @@ class SearchResultSetService
     ) {
         $this->search = $search;
         $this->typoScriptConfiguration = $configuration;
-        $this->logger = $solrLogManager ?? GeneralUtility::makeInstance(SolrLogManager::class, /** @scrutinizer ignore-type */ __CLASS__);
+        $this->logger = $solrLogManager ?? GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
         $this->searchResultBuilder = $resultBuilder ?? GeneralUtility::makeInstance(SearchResultBuilder::class);
-        $this->queryBuilder = $queryBuilder ?? GeneralUtility::makeInstance(QueryBuilder::class, /** @scrutinizer ignore-type */ $configuration, /** @scrutinizer ignore-type */ $solrLogManager);
+        $this->queryBuilder = $queryBuilder ?? GeneralUtility::makeInstance(QueryBuilder::class, $configuration, $solrLogManager);
     }
 
     public function getIsSolrAvailable(bool $useCache = true): bool
@@ -186,7 +186,7 @@ class SearchResultSetService
     protected function getParsedSearchResults(SearchResultSet $resultSet): void
     {
         /* @var ResultParserRegistry $parserRegistry */
-        $parserRegistry = GeneralUtility::makeInstance(ResultParserRegistry::class, /** @scrutinizer ignore-type */ $this->typoScriptConfiguration);
+        $parserRegistry = GeneralUtility::makeInstance(ResultParserRegistry::class, $this->typoScriptConfiguration);
         $useRawDocuments = (bool)$this->typoScriptConfiguration->getValueByPathOrDefaultValue('plugin.tx_solr.features.useRawDocuments', false);
         $parserRegistry->getParser($resultSet)->parse($resultSet, $useRawDocuments);
     }

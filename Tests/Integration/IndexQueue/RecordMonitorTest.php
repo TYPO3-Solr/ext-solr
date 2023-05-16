@@ -44,9 +44,6 @@ use TYPO3\TestingFramework\Core\Exception as TestingFrameworkCoreException;
  */
 class RecordMonitorTest extends IntegrationTest
 {
-    /**
-     * @var array
-     */
     protected array $coreExtensionsToLoad = [
         'extensionmanager',
         'scheduler',
@@ -140,9 +137,6 @@ class RecordMonitorTest extends IntegrationTest
         self::assertEquals(0, $this->eventQueue->count(), 'Event queue is not empty as expected');
     }
 
-    /**
-     * @param int $amount
-     */
     protected function assertEventQueueContainsItemAmount(int $amount): void
     {
         $itemsInQueue = $this->eventQueue->count();
@@ -177,8 +171,7 @@ class RecordMonitorTest extends IntegrationTest
             'version',
             'pages',
             1,
-            ['action' => 'swap'],
-            $this->dataHandler
+            ['action' => 'swap']
         );
 
         $output = trim(ob_get_contents());

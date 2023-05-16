@@ -10,6 +10,7 @@ parameters:
 
   universalObjectCratesClasses:
     - ApacheSolrForTypo3\Solr\System\Solr\Document\Document
+    - ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResult
 
   paths:
     - %currentWorkingDirectory%/Classes

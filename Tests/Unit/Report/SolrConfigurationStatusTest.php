@@ -1,7 +1,5 @@
 <?php
 
-/** @noinspection PhpUnhandledExceptionInspection */
-
 /*
  * This file is part of the TYPO3 CMS project.
  *

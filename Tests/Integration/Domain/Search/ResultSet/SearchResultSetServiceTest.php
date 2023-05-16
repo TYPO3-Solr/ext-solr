@@ -64,7 +64,6 @@ class SearchResultSetServiceTest extends IntegrationTest
         $typoScriptConfiguration = Util::getSolrConfiguration();
 
         $search = GeneralUtility::makeInstance(Search::class, $solrConnection);
-        /* @var SearchResultSetService $searchResultsSetService */
         $searchResultsSetService = GeneralUtility::makeInstance(SearchResultSetService::class, $typoScriptConfiguration, $search);
         $document = $searchResultsSetService->getDocumentById('002de2729efa650191f82900ea02a0a3189dfabb/pages/1/0/0/0');
 
@@ -154,7 +153,7 @@ class SearchResultSetServiceTest extends IntegrationTest
         self::assertSame(3, count($searchResults), 'There should be three results at all');
 
         // We assume that the first result has 6 variants.
-        /* @var SearchResult $firstResult */
+        /** @var SearchResult $firstResult */
         $firstResult = $searchResults[0];
         self::assertSame(2, count($firstResult->getVariants()));
         self::assertSame('Jane Doe', $firstResult->getAuthor());
@@ -162,7 +161,7 @@ class SearchResultSetServiceTest extends IntegrationTest
         self::assertSame('Jane Doe', $firstResult->getVariantFieldValue());
 
         // We assume that the second result has 5 variants.
-        /* @var SearchResult $secondResult */
+        /** @var SearchResult $secondResult */
         $secondResult = $searchResults[1];
         self::assertSame(5, count($secondResult->getVariants()));
         self::assertSame('John Doe', $secondResult->getAuthor());

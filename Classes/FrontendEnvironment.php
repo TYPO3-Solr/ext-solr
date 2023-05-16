@@ -48,7 +48,6 @@ class FrontendEnvironment implements SingletonInterface
         ?int $language = 0,
         ?int $rootPageId = null,
     ): TypoScriptConfiguration {
-        /* @var TypoScript $typoScript */
         $typoScript = GeneralUtility::makeInstance(TypoScript::class);
         return $typoScript->getConfigurationFromPageId($pageId, $path, $language, $rootPageId);
     }

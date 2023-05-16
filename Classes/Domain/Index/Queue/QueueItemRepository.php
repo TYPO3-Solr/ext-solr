@@ -43,7 +43,6 @@ class QueueItemRepository extends AbstractRepository
     {
         $this->logger = $logManager ?? GeneralUtility::makeInstance(
             SolrLogManager::class,
-            /** @scrutinizer ignore-type */
             __CLASS__
         );
     }
@@ -60,11 +59,9 @@ class QueueItemRepository extends AbstractRepository
             ->select('uid', 'indexed')
             ->from($this->table)
             ->where(
-                /** @scrutinizer ignore-type */
                 $queryBuilder->expr()->eq('root', $rootPageId)
             )
             ->andWhere(
-                /** @scrutinizer ignore-type */
                 $queryBuilder->expr()->neq('indexed', 0)
             )
             ->orderBy('indexed', 'DESC')
@@ -85,7 +82,6 @@ class QueueItemRepository extends AbstractRepository
             ->select('uid', 'item_type', 'item_uid', 'errors')
             ->from($this->table)
             ->andWhere(
-                /** @scrutinizer ignore-type */
                 $queryBuilder->expr()->notLike('errors', $queryBuilder->createNamedParameter('')),
                 $queryBuilder->expr()->eq('root', $site->getRootPageId())
             )->executeQuery()
@@ -110,7 +106,6 @@ class QueueItemRepository extends AbstractRepository
         $queryBuilder = $this->getQueryBuilder();
         return $this->getPreparedFlushErrorQuery($queryBuilder)
             ->andWhere(
-                /** @scrutinizer ignore-type */
                 $queryBuilder->expr()->eq('root', $site->getRootPageId())
             )
             ->executeStatement();
@@ -124,7 +119,6 @@ class QueueItemRepository extends AbstractRepository
         $queryBuilder = $this->getQueryBuilder();
         return $this->getPreparedFlushErrorQuery($queryBuilder)
             ->andWhere(
-                /** @scrutinizer ignore-type */
                 $queryBuilder->expr()->eq('uid', $item->getIndexQueueUid())
             )
             ->executeStatement();
@@ -139,7 +133,6 @@ class QueueItemRepository extends AbstractRepository
             ->update($this->table)
             ->set('errors', '')
             ->where(
-                /** @scrutinizer ignore-type */
                 $queryBuilder->expr()->notLike('errors', $queryBuilder->createNamedParameter(''))
             );
     }
@@ -161,11 +154,8 @@ class QueueItemRepository extends AbstractRepository
             ->set('changed', $changedTime)
             ->set('indexing_priority', $indexingPriority)
             ->andWhere(
-                /** @scrutinizer ignore-type */
                 $queryBuilder->expr()->eq('item_type', $queryBuilder->createNamedParameter($itemType)),
-                /** @scrutinizer ignore-type */
                 $queryBuilder->expr()->eq('item_uid', $itemUid),
-                /** @scrutinizer ignore-type */
                 $queryBuilder->expr()->eq('root', $rootPageId)
             );
 
@@ -250,7 +240,6 @@ class QueueItemRepository extends AbstractRepository
             ->add('select', $queryBuilder->expr()->max('tstamp', 'changed_time'))
             ->from('tt_content')
             ->where(
-                /** @scrutinizer ignore-type */
                 $queryBuilder->expr()->eq('pid', $pageUid)
             )
             ->executeQuery()
@@ -279,7 +268,6 @@ class QueueItemRepository extends AbstractRepository
                 ->add('select', $queryBuilder->expr()->max($timeStampField, 'changed_time'))
                 ->from($itemType)
                 ->orWhere(
-                    /** @scrutinizer ignore-type */
                     $queryBuilder->expr()->eq('uid', $itemUid),
                     $queryBuilder->expr()->eq($translationOriginalPointerField, $itemUid)
                 )
@@ -297,9 +285,7 @@ class QueueItemRepository extends AbstractRepository
         $queryBuilder = $this->getQueryBuilder();
         return $queryBuilder->count('uid')->from($this->table)
             ->andWhere(
-                /** @scrutinizer ignore-type */
                 $queryBuilder->expr()->eq('item_type', $queryBuilder->createNamedParameter($itemType)),
-                /** @scrutinizer ignore-type */
                 $queryBuilder->expr()->eq('item_uid', $itemUid)
             );
     }
@@ -325,7 +311,7 @@ class QueueItemRepository extends AbstractRepository
     {
         $queryBuilder = $this->getQueryBuilderForContainsMethods($itemType, $itemUid);
         return (bool)$queryBuilder
-            ->andWhere(/** @scrutinizer ignore-type */ $queryBuilder->expr()->eq('root', $rootPageId))
+            ->andWhere($queryBuilder->expr()->eq('root', $rootPageId))
             ->executeQuery()
             ->fetchOne();
     }
@@ -339,7 +325,7 @@ class QueueItemRepository extends AbstractRepository
     {
         $queryBuilder = $this->getQueryBuilderForContainsMethods($itemType, $itemUid);
         return (bool)$queryBuilder
-            ->andWhere(/** @scrutinizer ignore-type */ $queryBuilder->expr()->gt('indexed', 0))
+            ->andWhere($queryBuilder->expr()->gt('indexed', 0))
             ->executeQuery()
             ->fetchOne();
     }
@@ -426,14 +412,12 @@ class QueueItemRepository extends AbstractRepository
     ): QueryBuilder {
         if (!empty($rootPageIds)) {
             $queryBuilderForDeletingItems->andWhere(
-                /** @scrutinizer ignore-type */
                 $queryBuilderForDeletingItems->expr()->in('root', $rootPageIds)
             );
         }
 
         if (!empty($indexQueueConfigurationList)) {
             $queryBuilderForDeletingItems->andWhere(
-                /** @scrutinizer ignore-type */
                 $queryBuilderForDeletingItems->expr()->in(
                     'indexing_configuration',
                     $queryBuilderForDeletingItems->createNamedParameter($indexQueueConfigurationList)
@@ -443,7 +427,6 @@ class QueueItemRepository extends AbstractRepository
 
         if (!empty($itemTypeList)) {
             $queryBuilderForDeletingItems->andWhere(
-                /** @scrutinizer ignore-type */
                 $queryBuilderForDeletingItems->expr()->in(
                     'item_type',
                     $queryBuilderForDeletingItems->createNamedParameter($itemTypeList)
@@ -453,7 +436,6 @@ class QueueItemRepository extends AbstractRepository
 
         if (!empty($itemUids)) {
             $queryBuilderForDeletingItems->andWhere(
-                /** @scrutinizer ignore-type */
                 $queryBuilderForDeletingItems->expr()->in('item_uid', $itemUids)
             );
         }
@@ -549,7 +531,7 @@ class QueueItemRepository extends AbstractRepository
             return null;
         }
 
-        return GeneralUtility::makeInstance(Item::class, /** @scrutinizer ignore-type */ $indexQueueItemRecord);
+        return GeneralUtility::makeInstance(Item::class, $indexQueueItemRecord);
     }
 
     /**

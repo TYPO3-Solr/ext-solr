@@ -37,7 +37,7 @@ abstract class AbstractUriStrategy
     public function __construct(
         SolrLogManager $logger = null
     ) {
-        $this->logger = $logger ?? GeneralUtility::makeInstance(SolrLogManager::class, /** @scrutinizer ignore-type */ __CLASS__);
+        $this->logger = $logger ?? GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
     }
 
     protected function applyTypoScriptOverridesOnIndexingUrl(UrlHelper $urlHelper, array $overrideConfiguration = []): UrlHelper

@@ -81,13 +81,9 @@ class SolrVersionStatus extends AbstractSolrStatus
             $report = $this->getRenderedReport('SolrVersionStatus.html', $variables);
             $status = GeneralUtility::makeInstance(
                 Status::class,
-                /** @scrutinizer ignore-type */
                 'Apache Solr Version',
-                /** @scrutinizer ignore-type */
                 'Outdated, Unsupported',
-                /** @scrutinizer ignore-type */
                 $report,
-                /** @scrutinizer ignore-type */
                 ContextualFeedbackSeverity::ERROR
             );
 

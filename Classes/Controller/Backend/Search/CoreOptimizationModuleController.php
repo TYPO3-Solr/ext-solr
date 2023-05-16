@@ -147,7 +147,7 @@ class CoreOptimizationModuleController extends AbstractModuleController
 
         $coreAdmin = $this->selectedSolrCoreConnection->getAdminService();
         foreach ($fileLines as $baseWord => $synonyms) {
-            if (!isset($baseWord) || empty($synonyms)) {
+            if (empty($synonyms)) {
                 continue;
             }
             $this->deleteExistingSynonym($overrideExisting, $deleteSynonymsBefore, $baseWord);
