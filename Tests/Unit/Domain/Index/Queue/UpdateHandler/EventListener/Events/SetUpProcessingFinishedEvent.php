@@ -15,7 +15,6 @@
 
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Index\Queue\UpdateHandler\EventListener\Events;
 
-use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\EventListener\Events\ProcessingFinishedEventInterface;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordUpdatedEvent;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 
@@ -26,6 +25,7 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
  */
 abstract class SetUpProcessingFinishedEvent extends SetUpUnitTestCase
 {
+    protected const EVENT_CLASS = 'stdClass';
     /**
      * @test
      */
@@ -33,7 +33,6 @@ abstract class SetUpProcessingFinishedEvent extends SetUpUnitTestCase
     {
         $processedEvent = new RecordUpdatedEvent(123, 'tx_foo_bar');
 
-        /** @var ProcessingFinishedEventInterface $event */
         $eventClass = static::EVENT_CLASS;
         $event = new $eventClass($processedEvent);
 

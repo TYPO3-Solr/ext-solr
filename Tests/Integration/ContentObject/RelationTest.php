@@ -301,6 +301,8 @@ class RelationTest extends IntegrationTest
             $table,
             $requestMock
         );
-        return $contentObjectRenderer->getContentObject(Relation::CONTENT_OBJECT_NAME);
+        /** @var Relation $relation */
+        $relation = $contentObjectRenderer->getContentObject(Relation::CONTENT_OBJECT_NAME);
+        return $relation;
     }
 }

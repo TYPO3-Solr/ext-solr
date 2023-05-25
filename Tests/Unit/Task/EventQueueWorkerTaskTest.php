@@ -76,6 +76,7 @@ class EventQueueWorkerTaskTest extends SetUpUnitTestCase
             ->with(99)
             ->willReturn([$queueItem]);
 
+        /** @var array<int, mixed> $dispatchedEvents */
         $dispatchedEvents = [];
         $eventDispatcherMock
             ->expects(self::exactly(2))

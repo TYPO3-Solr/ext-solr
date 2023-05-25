@@ -27,9 +27,6 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
  */
 class SearchResultTest extends SetUpUnitTestCase
 {
-    /**
-     * @var SearchResult
-     */
     protected SearchResult $searchResult;
 
     protected function setUp(): void
@@ -50,7 +47,7 @@ class SearchResultTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function canGetId()
+    public function canGetId(): void
     {
         self::assertSame(
             '4711',
@@ -62,7 +59,7 @@ class SearchResultTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function canGetScore()
+    public function canGetScore(): void
     {
         self::assertSame(
             0.55,
@@ -74,7 +71,7 @@ class SearchResultTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function canGetContent()
+    public function canGetContent(): void
     {
         self::assertSame(
             'foobar',
@@ -86,7 +83,7 @@ class SearchResultTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function canGetType()
+    public function canGetType(): void
     {
         self::assertSame(
             'pages',
@@ -98,7 +95,7 @@ class SearchResultTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function canGetTitle()
+    public function canGetTitle(): void
     {
         self::assertSame(
             'The title',
@@ -110,7 +107,7 @@ class SearchResultTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function canGetUrl()
+    public function canGetUrl(): void
     {
         self::assertSame(
             '://mytestdomain.com/test',
@@ -122,7 +119,7 @@ class SearchResultTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function canGetIsElevated()
+    public function canGetIsElevated(): void
     {
         self::assertTrue(
             $this->searchResult->getIsElevated(),
@@ -133,9 +130,10 @@ class SearchResultTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function getOnUnexistingFieldReturnsNull()
+    public function getOnUnexistingFieldReturnsNull(): void
     {
         self::assertNull(
+            /** @phpstan-ignore-next-line */
             $this->searchResult->getUnexistingField(),
             'Calling getter for unexisting field does not return null'
         );

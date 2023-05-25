@@ -245,7 +245,9 @@ class ResultSetReconstitutionProcessorTest extends SetUpUnitTestCase
     public function canSetRequirementsMetToTrueOnFacetThatFullFillsARequirement(): void
     {
         $searchResultSet = $this->initializeSearchResultSetFromFakeResponse('fake_solr_response_with_used_facet.json');
-        $searchResultSet->getUsedSearchRequest()->expects(self::any())->method('getActiveFacetValuesByName')->willReturnCallback(
+        /** @var MockObject|SearchRequest $usedSearchRequest */
+        $usedSearchRequest = $searchResultSet->getUsedSearchRequest();
+        $usedSearchRequest->expects(self::any())->method('getActiveFacetValuesByName')->willReturnCallback(
             function ($name) {
                 return $name == 'myType' ? ['pages'] : [];
             }
@@ -431,10 +433,12 @@ class ResultSetReconstitutionProcessorTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function canReconstituteUsedFacet()
+    public function canReconstituteUsedFacet(): void
     {
         $searchResultSet = $this->initializeSearchResultSetFromFakeResponse('fake_solr_response_with_used_facet.json');
-        $searchResultSet->getUsedSearchRequest()->expects(self::any())->method('getActiveFacetValuesByName')->willReturnCallback(
+        /** @var MockObject|SearchRequest $usedSearchRequest */
+        $usedSearchRequest = $searchResultSet->getUsedSearchRequest();
+        $usedSearchRequest->expects(self::any())->method('getActiveFacetValuesByName')->willReturnCallback(
             function ($name) {
                 return $name == 'type' ? ['tx_solr_file'] : [];
             }
@@ -481,10 +485,12 @@ class ResultSetReconstitutionProcessorTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function canMarkUsedOptionAsSelected()
+    public function canMarkUsedOptionAsSelected(): void
     {
         $searchResultSet = $this->initializeSearchResultSetFromFakeResponse('fake_solr_response_with_used_facet.json');
-        $searchResultSet->getUsedSearchRequest()->expects(self::any())->method('getActiveFacetValuesByName')->willReturnCallback(
+        /** @var MockObject|SearchRequest $usedSearchRequest */
+        $usedSearchRequest = $searchResultSet->getUsedSearchRequest();
+        $usedSearchRequest->expects(self::any())->method('getActiveFacetValuesByName')->willReturnCallback(
             function ($name) {
                 return $name == 'type' ? ['tx_solr_file'] : [];
             }
@@ -523,10 +529,12 @@ class ResultSetReconstitutionProcessorTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function includeIsUsedFacetsCanBeSetToFalse()
+    public function includeIsUsedFacetsCanBeSetToFalse(): void
     {
         $searchResultSet = $this->initializeSearchResultSetFromFakeResponse('fake_solr_response_with_used_facet.json');
-        $searchResultSet->getUsedSearchRequest()->expects(self::any())->method('getActiveFacetValuesByName')->willReturnCallback(
+        /** @var MockObject|SearchRequest $usedSearchRequest */
+        $usedSearchRequest = $searchResultSet->getUsedSearchRequest();
+        $usedSearchRequest->expects(self::any())->method('getActiveFacetValuesByName')->willReturnCallback(
             function ($name) {
                 return $name == 'type' ? ['tx_solr_file'] : [];
             }
@@ -560,10 +568,12 @@ class ResultSetReconstitutionProcessorTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function canGetConfiguredFacetNotInResponseAsUnavailableFacet()
+    public function canGetConfiguredFacetNotInResponseAsUnavailableFacet(): void
     {
         $searchResultSet = $this->initializeSearchResultSetFromFakeResponse('fake_solr_response_with_used_facet.json');
-        $searchResultSet->getUsedSearchRequest()->expects(self::any())->method('getActiveFacetValuesByName')->willReturnCallback(
+        /** @var MockObject|SearchRequest $usedSearchRequest */
+        $usedSearchRequest = $searchResultSet->getUsedSearchRequest();
+        $usedSearchRequest->expects(self::any())->method('getActiveFacetValuesByName')->willReturnCallback(
             function ($name) {
                 return $name == 'type' ? ['pages'] : [];
             }
@@ -602,10 +612,12 @@ class ResultSetReconstitutionProcessorTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function canGetTwoUsedFacetOptions()
+    public function canGetTwoUsedFacetOptions(): void
     {
         $searchResultSet = $this->initializeSearchResultSetFromFakeResponse('fake_solr_response_with_two_used_facets.json');
-        $searchResultSet->getUsedSearchRequest()->expects(self::any())->method('getActiveFacetValuesByName')->willReturnCallback(
+        /** @var MockObject|SearchRequest $usedSearchRequest */
+        $usedSearchRequest = $searchResultSet->getUsedSearchRequest();
+        $usedSearchRequest->expects(self::any())->method('getActiveFacetValuesByName')->willReturnCallback(
             function ($name) {
                 if ($name == 'mytitle') {
                     return ['jpeg', 'kasper"s'];
@@ -647,7 +659,7 @@ class ResultSetReconstitutionProcessorTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function emptyFacetsAreNotReconstitutedWhenDisabled()
+    public function emptyFacetsAreNotReconstitutedWhenDisabled(): void
     {
         $searchResultSet = $this->initializeSearchResultSetFromFakeResponse('fake_solr_response_with_used_facet.json');
 
@@ -681,7 +693,7 @@ class ResultSetReconstitutionProcessorTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function emptyFacetIsKeptWhenNothingIsConfiguredGloballyButKeepingIsEnabledOnFacetLevel()
+    public function emptyFacetIsKeptWhenNothingIsConfiguredGloballyButKeepingIsEnabledOnFacetLevel(): void
     {
         $searchResultSet = $this->initializeSearchResultSetFromFakeResponse('fake_solr_response_with_used_facet.json');
 
@@ -715,7 +727,7 @@ class ResultSetReconstitutionProcessorTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function includeInAvailableFacetsCanBeSetToFalse()
+    public function includeInAvailableFacetsCanBeSetToFalse(): void
     {
         $searchResultSet = $this->initializeSearchResultSetFromFakeResponse('fake_solr_response_with_used_facet.json');
 
@@ -745,7 +757,7 @@ class ResultSetReconstitutionProcessorTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function includeInAvailableFacetsCanBeSetToTrue()
+    public function includeInAvailableFacetsCanBeSetToTrue(): void
     {
         $searchResultSet = $this->initializeSearchResultSetFromFakeResponse('fake_solr_response_with_used_facet.json');
 
@@ -775,7 +787,7 @@ class ResultSetReconstitutionProcessorTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function labelCanBeConfiguredAsAPlainText()
+    public function labelCanBeConfiguredAsAPlainText(): void
     {
         $searchResultSet = $this->initializeSearchResultSetFromFakeResponse('fake_solr_response_with_multiple_fields_facets.json');
 
@@ -803,7 +815,7 @@ class ResultSetReconstitutionProcessorTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function returnsCorrectSetUpFacetTypeForAQueryGroupFacet()
+    public function returnsCorrectSetUpFacetTypeForAQueryGroupFacet(): void
     {
         $searchResultSet = $this->initializeSearchResultSetFromFakeResponse('fake_solr_response_with_query_fields_facets.json');
 
@@ -846,7 +858,7 @@ class ResultSetReconstitutionProcessorTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function canGetOptionsInExpectedOrderForQueryGroupFacet()
+    public function canGetOptionsInExpectedOrderForQueryGroupFacet(): void
     {
         $searchResultSet = $this->initializeSearchResultSetFromFakeResponse('fake_solr_response_with_query_fields_facets.json');
 
@@ -893,7 +905,7 @@ class ResultSetReconstitutionProcessorTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function canGetOptionsInExpectedOrderForQueryGroupFacetWithManualSortOrder()
+    public function canGetOptionsInExpectedOrderForQueryGroupFacetWithManualSortOrder(): void
     {
         $searchResultSet = $this->initializeSearchResultSetFromFakeResponse('fake_solr_response_with_query_fields_facets.json');
 
@@ -941,7 +953,7 @@ class ResultSetReconstitutionProcessorTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function canGetOptionsInExpectedOrderForQueryGroupFacetWithReversOrder()
+    public function canGetOptionsInExpectedOrderForQueryGroupFacetWithReversOrder(): void
     {
         $searchResultSet = $this->initializeSearchResultSetFromFakeResponse('fake_solr_response_with_query_fields_facets.json');
 
@@ -989,7 +1001,7 @@ class ResultSetReconstitutionProcessorTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function returnsResultSetWithConfiguredSortingOptions()
+    public function returnsResultSetWithConfiguredSortingOptions(): void
     {
         $searchResultSet = $this->initializeSearchResultSetFromFakeResponse('fake_solr_response_with_query_fields_facets.json');
 
@@ -1007,7 +1019,9 @@ class ResultSetReconstitutionProcessorTest extends SetUpUnitTestCase
             ],
         ];
 
-        $searchResultSet->getUsedSearchRequest()->expects(self::any())->method('getHasSorting')->willReturn(false);
+        /** @var MockObject|SearchRequest $usedSearchRequest */
+        $usedSearchRequest = $searchResultSet->getUsedSearchRequest();
+        $usedSearchRequest->expects(self::any())->method('getHasSorting')->willReturn(false);
 
         $processor = $this->getConfiguredReconstitutionProcessor($configuration, $searchResultSet);
         $processor->process($searchResultSet);
@@ -1020,7 +1034,7 @@ class ResultSetReconstitutionProcessorTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function canReturnSortingsAndMarkedSelectedAsActive()
+    public function canReturnSortingsAndMarkedSelectedAsActive(): void
     {
         $searchResultSet = $this->initializeSearchResultSetFromFakeResponse('fake_solr_response_with_query_fields_facets.json');
 
@@ -1043,9 +1057,11 @@ class ResultSetReconstitutionProcessorTest extends SetUpUnitTestCase
             ],
         ];
 
-        $searchResultSet->getUsedSearchRequest()->expects(self::any())->method('getHasSorting')->willReturn(true);
-        $searchResultSet->getUsedSearchRequest()->expects(self::any())->method('getSortingName')->willReturn('title');
-        $searchResultSet->getUsedSearchRequest()->expects(self::any())->method('getSortingDirection')->willReturn('desc');
+        /** @var MockObject|SearchRequest $usedSearchRequest */
+        $usedSearchRequest = $searchResultSet->getUsedSearchRequest();
+        $usedSearchRequest->expects(self::any())->method('getHasSorting')->willReturn(true);
+        $usedSearchRequest->expects(self::any())->method('getSortingName')->willReturn('title');
+        $usedSearchRequest->expects(self::any())->method('getSortingDirection')->willReturn('desc');
 
         $processor = $this->getConfiguredReconstitutionProcessor($configuration, $searchResultSet);
         $processor->process($searchResultSet);
@@ -1055,27 +1071,20 @@ class ResultSetReconstitutionProcessorTest extends SetUpUnitTestCase
         self::assertSame('desc', $searchResultSet->getSortings()->getSelected()->getDirection(), 'Selected sorting as unexpected direction');
     }
 
-    /**
-     * @param array $facetConfiguration
-     * @return array
-     */
-    protected function getConfigurationArrayFromFacetConfigurationArray($facetConfiguration)
+    protected function getConfigurationArrayFromFacetConfigurationArray(array $facetConfiguration): array
     {
         $configuration = [];
         $configuration['plugin.']['tx_solr.']['search.']['faceting.'] = $facetConfiguration;
         return $configuration;
     }
 
-    /**
-     * @param array $configuration
-     * @param $searchResultSet
-     * @return ResultSetReconstitutionProcessor
-     */
-    protected function getConfiguredReconstitutionProcessor($configuration, $searchResultSet): ResultSetReconstitutionProcessor
+    protected function getConfiguredReconstitutionProcessor(array $configuration, SearchResultSet $searchResultSet): ResultSetReconstitutionProcessor
     {
         $typoScriptConfiguration = new TypoScriptConfiguration($configuration);
-        $searchResultSet->getUsedSearchRequest()->expects(self::any())->method('getContextTypoScriptConfiguration')->willReturn($typoScriptConfiguration);
-        $searchResultSet->getUsedSearchRequest()->expects(self::any())->method('getActiveFacetNames')->willReturn([]);
+        /** @var MockObject|SearchRequest $usedSearchRequest */
+        $usedSearchRequest = $searchResultSet->getUsedSearchRequest();
+        $usedSearchRequest->expects(self::any())->method('getContextTypoScriptConfiguration')->willReturn($typoScriptConfiguration);
+        $usedSearchRequest->expects(self::any())->method('getActiveFacetNames')->willReturn([]);
 
         $processor = new ResultSetReconstitutionProcessor();
         return $processor;

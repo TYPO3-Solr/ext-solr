@@ -21,6 +21,7 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Core\Cache\Frontend\AbstractFrontend;
+use TYPO3\CMS\Core\TypoScript\TemplateService;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 class FrequentSearchesServiceTest extends SetUpUnitTestCase
@@ -34,7 +35,7 @@ class FrequentSearchesServiceTest extends SetUpUnitTestCase
     protected function setUp(): void
     {
         $this->tsfeMock = $this->createMock(TypoScriptFrontendController::class);
-        $this->tsfeMock->tmpl = new \stdClass();
+        $this->tsfeMock->tmpl = $this->createMock(TemplateService::class);
         $this->tsfeMock->tmpl->rootLine = [
             0 => [
                 'uid' => 4711,

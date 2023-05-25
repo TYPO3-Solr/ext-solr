@@ -68,10 +68,12 @@ class QueryBuilderTest extends SetUpUnitTestCase
         return $request->getParams();
     }
 
-    protected function getInitializedTestSearchQuery(string $queryString = '', TypoScriptConfiguration $fakeConfiguration = null): SearchQuery
+    protected function getInitializedTestSearchQuery(string $queryString = '', TypoScriptConfiguration $fakeConfiguration = null): Query
     {
         $builder = new QueryBuilder($fakeConfiguration, $this->loggerMock, $this->siteHashServiceMock);
-        return $builder->buildSearchQuery($queryString);
+        /** @var Query $query */
+        $query = $builder->buildSearchQuery($queryString);
+        return $query;
     }
 
     /**
@@ -951,6 +953,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
         $fakeConfiguration = new TypoScriptConfiguration([]);
         $query = $this->getInitializedTestSearchQuery('test', $fakeConfiguration);
 
+        $query->__toString();
         $queryToString = (string)$query;
         self::assertSame('test', $queryToString, 'Could not convert query to string');
     }

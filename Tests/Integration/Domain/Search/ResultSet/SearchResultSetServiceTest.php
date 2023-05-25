@@ -49,7 +49,7 @@ class SearchResultSetServiceTest extends IntegrationTest
     /**
      * @test
      */
-    public function canGetDocumentById()
+    public function canGetDocumentById(): void
     {
         // trigger a search
         $this->importCSVDataSet(__DIR__ . '/../../../Controller/Fixtures/indexing_data.csv');
@@ -73,7 +73,7 @@ class SearchResultSetServiceTest extends IntegrationTest
     /**
      * @test
      */
-    public function canGetVariants()
+    public function canGetVariants(): void
     {
         $this->importCSVDataSet(__DIR__ . '/../../../Controller/Fixtures/indexing_data.csv');
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_get_searchResultSet.csv');
@@ -121,7 +121,7 @@ class SearchResultSetServiceTest extends IntegrationTest
     /**
      * @test
      */
-    public function canGetCaseSensitiveVariants()
+    public function canGetCaseSensitiveVariants(): void
     {
         $this->importCSVDataSet(__DIR__ . '/../../../Controller/Fixtures/indexing_data.csv');
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_get_searchResultSet.csv');
@@ -153,7 +153,6 @@ class SearchResultSetServiceTest extends IntegrationTest
         self::assertSame(3, count($searchResults), 'There should be three results at all');
 
         // We assume that the first result has 6 variants.
-        /** @var SearchResult $firstResult */
         $firstResult = $searchResults[0];
         self::assertSame(2, count($firstResult->getVariants()));
         self::assertSame('Jane Doe', $firstResult->getAuthor());
@@ -161,7 +160,6 @@ class SearchResultSetServiceTest extends IntegrationTest
         self::assertSame('Jane Doe', $firstResult->getVariantFieldValue());
 
         // We assume that the second result has 5 variants.
-        /** @var SearchResult $secondResult */
         $secondResult = $searchResults[1];
         self::assertSame(5, count($secondResult->getVariants()));
         self::assertSame('John Doe', $secondResult->getAuthor());
@@ -191,7 +189,7 @@ class SearchResultSetServiceTest extends IntegrationTest
     /**
      * @test
      */
-    public function canGetZeroResultsWithVariantsOnEmptyIndex()
+    public function canGetZeroResultsWithVariantsOnEmptyIndex(): void
     {
         $this->importCSVDataSet(__DIR__ . '/../../../Controller/Fixtures/indexing_data.csv');
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_get_searchResultSet.csv');
@@ -215,7 +213,7 @@ class SearchResultSetServiceTest extends IntegrationTest
     /**
      * @test
      */
-    public function cantGetHiddenElementWithoutPermissions()
+    public function cantGetHiddenElementWithoutPermissions(): void
     {
         $this->importFrontendRestrictedPageScenario();
 
@@ -231,7 +229,7 @@ class SearchResultSetServiceTest extends IntegrationTest
     /**
      * @test
      */
-    public function canGetHiddenElementWithPermissions()
+    public function canGetHiddenElementWithPermissions(): void
     {
         $this->importFrontendRestrictedPageScenario();
 
@@ -247,7 +245,7 @@ class SearchResultSetServiceTest extends IntegrationTest
     /**
      * Imports a simple page with user restricted content
      */
-    protected function importFrontendRestrictedPageScenario()
+    protected function importFrontendRestrictedPageScenario(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/fe_user_page.csv');
         $this->addSimpleFrontendRenderingToTypoScriptRendering(1);

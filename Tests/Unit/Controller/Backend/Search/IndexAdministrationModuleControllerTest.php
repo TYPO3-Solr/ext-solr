@@ -15,7 +15,6 @@
 
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Controller\Backend\Search;
 
-use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\Controller\Backend\Search\IndexAdministrationModuleController;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\System\Solr\Service\SolrAdminService;
@@ -31,9 +30,9 @@ use Solarium\Core\Client\Endpoint;
 class IndexAdministrationModuleControllerTest extends AbstractModuleController
 {
     /**
-     * @var ConnectionManager|MockObject
+     * @var IndexAdministrationModuleController|MockObject
      */
-    protected $connectionManagerMock;
+    protected $controller;
 
     protected function setUp(): void
     {
@@ -44,7 +43,7 @@ class IndexAdministrationModuleControllerTest extends AbstractModuleController
     /**
      * @test
      */
-    public function testReloadIndexConfigurationAction()
+    public function testReloadIndexConfigurationAction(): void
     {
         $responseMock = $this->createMock(ResponseAdapter::class);
         $responseMock->expects(self::once())->method('getHttpStatus')->willReturn(200);
