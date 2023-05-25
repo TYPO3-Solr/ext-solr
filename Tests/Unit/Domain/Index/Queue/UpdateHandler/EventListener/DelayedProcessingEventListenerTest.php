@@ -30,6 +30,11 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class DelayedProcessingEventListenerTest extends SetUpEventListener
 {
     /**
+     * @var DelayedProcessingEventListener
+     */
+    protected AbstractBaseEventListener $listener;
+
+    /**
      * @test
      */
     public function canHandleEvents(): void
@@ -86,20 +91,13 @@ class DelayedProcessingEventListenerTest extends SetUpEventListener
         $this->listener->__invoke($event);
     }
 
-    /**
-     * Init listener
-     *
-     * @return AbstractBaseEventListener
-     */
-    protected function initListener(): AbstractBaseEventListener
+    protected function initListener(): DelayedProcessingEventListener
     {
         return new DelayedProcessingEventListener($this->extensionConfigurationMock, $this->eventDispatcherMock);
     }
 
     /**
      * Returns the current monitoring type
-     *
-     * @return int
      */
     protected function getMonitoringType(): int
     {

@@ -42,6 +42,9 @@ abstract class AbstractQueryBuilder
 {
     protected SolariumQuery|SearchQuery|SuggestQuery|null $queryToBuild;
 
+    /**
+     * @return static
+     */
     public function startFrom(SolariumQuery $query): self
     {
         $this->queryToBuild = $query;
@@ -256,6 +259,7 @@ abstract class AbstractQueryBuilder
 
     /**
      * Can be used to use a specific filter string in the solr query.
+     * @return static
      */
     public function useFilter(string $filterString, string $filterName = ''): self
     {

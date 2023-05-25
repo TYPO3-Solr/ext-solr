@@ -160,7 +160,9 @@ class HierarchyFacetParserTest extends SetUpFacetParser
         );
         $facet = $parser->parse($searchResultSet, 'categoryHierarchyByTitle', $facetConfiguration);
 
-        self::assertSame(1, $facet->getAllFacetItems()->getByValue($optionValue)->getChildNodes()->count(), 'Selected facet-option with slash in title/name breaks the Hierarchical facets.');
+        /** @var Node $facetOption */
+        $facetOption = $facet->getAllFacetItems()->getByValue($optionValue);
+        self::assertSame(1, $facetOption->getChildNodes()->count(), 'Selected facet-option with slash in title/name breaks the Hierarchical facets.');
     }
 
     /**

@@ -20,14 +20,10 @@ use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use PHPUnit\Framework\MockObject\MockObject;
-use Prophecy\PhpUnit\ProphecyTrait;
-use Prophecy\Prophecy\ObjectProphecy;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class TypoScriptTest extends SetUpUnitTestCase
 {
-    use ProphecyTrait;
-
     protected TypoScript|MockObject $typoScriptMock;
     protected TypoScriptConfiguration|MockObject $typoScriptConfigurationDumpMock;
 
@@ -46,15 +42,6 @@ class TypoScriptTest extends SetUpUnitTestCase
         parent::setUp();
     }
 
-    protected function tearDown(): void
-    {
-        GeneralUtility::resetSingletonInstances([]);
-        unset(
-            $this->typoScriptMock
-        );
-        parent::tearDown();
-    }
-
     /**
      * @test
      */
@@ -66,16 +53,14 @@ class TypoScriptTest extends SetUpUnitTestCase
         $cacheId = md5($pageId . '|' . $path . '|' . $language);
 
         // prepare first call
-        /** @var TwoLevelCache|ObjectProphecy $twoLevelCache */
-        $twoLevelCache = $this->prophesize(TwoLevelCache::class);
+        $twoLevelCache = $this->createMock(TwoLevelCache::class);
         $twoLevelCache
-            ->get($cacheId)
-            ->shouldBeCalled()
-            ->willReturn([]);
+            ->expects(self::once())
+            ->method('get')->with($cacheId)->willReturn([]);
         $twoLevelCache
-            ->set($cacheId, [])
-            ->shouldBeCalledOnce();
-        GeneralUtility::addInstance(TwoLevelCache::class, $twoLevelCache->reveal());
+            ->expects(self::once())
+            ->method('set')->with($cacheId, []);
+        GeneralUtility::addInstance(TwoLevelCache::class, $twoLevelCache);
 
         $this->typoScriptMock
             ->method('buildConfigurationArray')

@@ -31,20 +31,9 @@ abstract class SetUpEventListener extends SetUpUnitTestCase
 {
     private const MONITORING_TYPES_TO_TEST = [0, 1, 2, 99];
 
-    /**
-     * @var AbstractBaseEventListener
-     */
-    protected $listener;
-
-    /**
-     * @var MockObject|ExtensionConfiguration
-     */
-    protected $extensionConfigurationMock;
-
-    /**
-     * @var MockObject|EventDispatcherInterface
-     */
-    protected $eventDispatcherMock;
+    protected AbstractBaseEventListener $listener;
+    protected MockObject|ExtensionConfiguration $extensionConfigurationMock;
+    protected MockObject|EventDispatcherInterface $eventDispatcherMock;
 
     protected function setUp(): void
     {
@@ -62,8 +51,6 @@ abstract class SetUpEventListener extends SetUpUnitTestCase
 
     /**
      * Init listener
-     *
-     * @return AbstractBaseEventListener
      */
     abstract protected function initListener(): AbstractBaseEventListener;
 

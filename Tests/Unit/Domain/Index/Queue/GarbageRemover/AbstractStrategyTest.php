@@ -22,17 +22,14 @@ use ApacheSolrForTypo3\Solr\System\Solr\Service\SolrWriteService;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\TestingFramework\Core\AccessibleProxyTrait;
+use TYPO3\TestingFramework\Core\AccessibleObjectInterface;
 
 /**
  * Abstract strategy tests
  */
 abstract class AbstractStrategyTest extends SetUpUnitTestCase
 {
-    /**
-     * @var AbstractStrategy|AccessibleProxyTrait $subject
-     */
-    protected AbstractStrategy $subject;
+    protected AbstractStrategy|AccessibleObjectInterface $subject;
 
     protected function tearDown(): void
     {
@@ -41,9 +38,6 @@ abstract class AbstractStrategyTest extends SetUpUnitTestCase
     }
 
     /**
-     * @param int $status
-     * @param bool $commit
-     *
      * @test
      * @dataProvider canDeleteRecordInAllSolrConnectionsDataProvider
      */

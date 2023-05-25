@@ -27,6 +27,11 @@ use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordUpdate
 class NoProcessingEventListenerTest extends SetUpEventListener
 {
     /**
+     * @var NoProcessingEventListener
+     */
+    protected AbstractBaseEventListener $listener;
+
+    /**
      * @test
      */
     public function canHandleEvents(): void
@@ -56,20 +61,13 @@ class NoProcessingEventListenerTest extends SetUpEventListener
         self::assertFalse($event->isPropagationStopped());
     }
 
-    /**
-     * Init listener
-     *
-     * @return AbstractBaseEventListener
-     */
-    protected function initListener(): AbstractBaseEventListener
+    protected function initListener(): NoProcessingEventListener
     {
         return new NoProcessingEventListener($this->extensionConfigurationMock, $this->eventDispatcherMock);
     }
 
     /**
      * Returns the current monitoring type
-     *
-     * @return int
      */
     protected function getMonitoringType(): int
     {

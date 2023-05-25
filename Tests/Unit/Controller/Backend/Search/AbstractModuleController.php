@@ -35,15 +35,8 @@ abstract class AbstractModuleController extends SetUpUnitTestCase
      */
     protected $controller;
 
-    /**
-     * @var Site|MockObject
-     */
-    protected $selectedSiteMock;
-
-    /**
-     * @var ConnectionManager|MockObject
-     */
-    protected $connectionManagerMock;
+    protected Site|MockObject $selectedSiteMock;
+    protected ConnectionManager|MockObject $connectionManagerMock;
 
     /**
      * Initializes the concrete backend module controller
@@ -53,7 +46,8 @@ abstract class AbstractModuleController extends SetUpUnitTestCase
         array $mockMethods = ['addFlashMessage']
     ): void {
         $this->selectedSiteMock = $this->createMock(Site::class);
-        $this->controller = $this->getMockBuilder($concreteModuleControllerClass)
+        /** @var ModuleController|MockObject $subject */
+        $subject = $this->getMockBuilder($concreteModuleControllerClass)
             ->setConstructorArgs(
                 [
                     'moduleTemplateFactory' => $this->createMock(ModuleTemplateFactory::class),
@@ -73,7 +67,8 @@ abstract class AbstractModuleController extends SetUpUnitTestCase
         $uriBuilderMock->expects(self::any())
             ->method('uriFor')
             ->willReturn('index');
-        $this->controller->injectUriBuilder($uriBuilderMock);
-        $this->controller->setSelectedSite($this->selectedSiteMock);
+        $subject->injectUriBuilder($uriBuilderMock);
+        $subject->setSelectedSite($this->selectedSiteMock);
+        $this->controller = $subject;
     }
 }
