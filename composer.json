@@ -89,7 +89,9 @@
     ],
     "tests:setup": [
       "@tests:env",
-      "@composer req --prefer-source --update-with-all-dependencies typo3/cms-core:${TYPO3_VERSION}",
+      "@composer req --update-with-all-dependencies typo3/cms-core:${TYPO3_VERSION}",
+      "rm -Rf .Build/vendor/typo3/cms-core",
+      "@composer update --prefer-source typo3/cms-core",
       "@tests:restore-git"
     ],
     "tests:unit": [
