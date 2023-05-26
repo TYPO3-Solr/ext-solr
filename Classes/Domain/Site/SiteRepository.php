@@ -262,23 +262,14 @@ class SiteRepository
 
         return GeneralUtility::makeInstance(
             Site::class,
-            /** @scrutinizer ignore-type */
             $solrConfiguration,
-            /** @scrutinizer ignore-type */
             $rootPageRecord,
-            /** @scrutinizer ignore-type */
             $domain,
-            /** @scrutinizer ignore-type */
             $siteHash,
-            /** @scrutinizer ignore-type */
             $pageRepository,
-            /** @scrutinizer ignore-type */
             $defaultLanguage,
-            /** @scrutinizer ignore-type */
             $availableLanguageIds,
-            /** @scrutinizer ignore-type */
             $solrConnectionConfigurations,
-            /** @scrutinizer ignore-type */
             $typo3Site
         );
     }

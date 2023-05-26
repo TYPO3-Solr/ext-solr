@@ -166,9 +166,7 @@ abstract class AbstractBaseController extends ActionController
 
             $this->searchService = GeneralUtility::makeInstance(
                 SearchResultSetService::class,
-                /** @scrutinizer ignore-type */
                 $this->typoScriptConfiguration,
-                /** @scrutinizer ignore-type */
                 $search
             );
         } catch (NoSolrConnectionFoundException) {

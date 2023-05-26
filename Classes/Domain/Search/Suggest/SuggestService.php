@@ -63,7 +63,6 @@ class SuggestService
         $this->typoScriptConfiguration = $typoScriptConfiguration;
         $this->queryBuilder = $queryBuilder ?? GeneralUtility::makeInstance(
             QueryBuilder::class,
-            /** @scrutinizer ignore-type */
             $typoScriptConfiguration
         );
     }

@@ -283,7 +283,7 @@ class RoutingService implements LoggerAwareInterface
 
         if (!isset($queryParams[$this->getPluginNamespace()])) {
             $this->logger
-                ->/** @scrutinizer ignore-call */
+                ->
                 error('Mask error: Query parameters has no entry for namespace ' . $this->getPluginNamespace());
             return $queryParams;
         }
@@ -291,14 +291,14 @@ class RoutingService implements LoggerAwareInterface
         if (!isset($queryParams[$this->getPluginNamespace()]['filter']) ||
             empty($queryParams[$this->getPluginNamespace()]['filter'])) {
             $this->logger
-                ->/** @scrutinizer ignore-call */
+                ->
                 info('Mask info: Query parameters has no filter in namespace ' . $this->getPluginNamespace());
             return $queryParams;
         }
 
         if (!is_array($queryParams[$this->getPluginNamespace()]['filter'])) {
             $this->logger
-                ->/** @scrutinizer ignore-call */
+                ->
                 warning('Mask info: Filter within the Query parameters is not an array');
             return $queryParams;
         }
@@ -313,7 +313,7 @@ class RoutingService implements LoggerAwareInterface
             $keep = false;
             if (isset($queryParameterMap[$facetName]) &&
                 isset($newQueryParams[$queryParameterMap[$facetName]])) {
-                $this->logger->/** @scrutinizer ignore-call */error(
+                $this->logger->error(
                     'Mask error: Facet "' . $facetName . '" as "' . $queryParameterMap[$facetName] .
                     '" already in query!'
                 );
@@ -465,7 +465,7 @@ class RoutingService implements LoggerAwareInterface
 
         if (!is_array($queryParams[$this->getPluginNamespace()]['filter'])) {
             $this->logger
-                ->/** @scrutinizer ignore-call */
+                ->
                 warning('Mask info: Filter within the Query parameters is not an array');
             return $queryParams;
         }
@@ -549,7 +549,7 @@ class RoutingService implements LoggerAwareInterface
 
         if (!is_array($queryParams[$this->getPluginNamespace()]['filter'])) {
             $this->logger
-                ->/** @scrutinizer ignore-call */
+                ->
                 warning('Inflate query: Expected filter to be an array. Replace it with an array structure!');
             $queryParams[$this->getPluginNamespace()]['filter'] = [];
         }

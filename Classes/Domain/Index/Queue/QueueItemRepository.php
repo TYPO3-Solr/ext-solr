@@ -442,7 +442,6 @@ class QueueItemRepository extends AbstractRepository
 
         if (!empty($uids)) {
             $queryBuilderForDeletingItems->andWhere(
-                /** @scrutinizer ignore-type */
                 $queryBuilderForDeletingItems->expr()->in('uid', $uids)
             );
         }
@@ -523,7 +522,7 @@ class QueueItemRepository extends AbstractRepository
         $indexQueueItemRecord = $queryBuilder
             ->select('*')
             ->from($this->table)
-            ->where(/** @scrutinizer ignore-type */ $queryBuilder->expr()->eq('uid', $uid))
+            ->where($queryBuilder->expr()->eq('uid', $uid))
             ->executeQuery()
             ->fetchAssociative();
 
@@ -545,7 +544,6 @@ class QueueItemRepository extends AbstractRepository
     {
         $queryBuilder = $this->getQueryBuilder();
         $compositeExpression = $queryBuilder->expr()->and(
-            /** @scrutinizer ignore-type */
             $queryBuilder->expr()->eq('item_type', $queryBuilder->getConnection()->quote($itemType, PDO::PARAM_STR)),
             $queryBuilder->expr()->eq('item_uid', $itemUid)
         );
@@ -611,13 +609,9 @@ class QueueItemRepository extends AbstractRepository
             ->select('*')
             ->from($this->table)
             ->andWhere(
-                /** @scrutinizer ignore-type */
                 $queryBuilder->expr()->eq('root', $site->getRootPageId()),
-                /** @scrutinizer ignore-type */
                 $queryBuilder->expr()->gt('changed', 'indexed'),
-                /** @scrutinizer ignore-type */
                 $queryBuilder->expr()->lte('changed', time()),
-                /** @scrutinizer ignore-type */
                 $queryBuilder->expr()->eq('errors', $queryBuilder->createNamedParameter(''))
             )
             ->orderBy('indexing_priority', 'DESC')
@@ -697,7 +691,7 @@ class QueueItemRepository extends AbstractRepository
             $resultsFromRecordTable = $queryBuilderForRecordTable
                 ->select('*')
                 ->from($table)
-                ->where(/** @scrutinizer ignore-type */ $queryBuilderForRecordTable->expr()->in('uid', $uidList))
+                ->where($queryBuilderForRecordTable->expr()->in('uid', $uidList))
                 ->executeQuery();
             $records = [];
             while ($record = $resultsFromRecordTable->fetchAssociative()) {
@@ -739,9 +733,7 @@ class QueueItemRepository extends AbstractRepository
             if (isset($tableRecords[$indexQueueItemRecord['item_type']][$indexQueueItemRecord['item_uid']])) {
                 $indexQueueItems[] = GeneralUtility::makeInstance(
                     Item::class,
-                    /** @scrutinizer ignore-type */
                     $indexQueueItemRecord,
-                    /** @scrutinizer ignore-type */
                     $tableRecords[$indexQueueItemRecord['item_type']][$indexQueueItemRecord['item_uid']]
                 );
             } else {
@@ -882,7 +874,6 @@ class QueueItemRepository extends AbstractRepository
         return $queryBuilder
             ->update($this->table)
             ->where(
-                /** @scrutinizer ignore-type */
                 $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($itemUid, PDO::PARAM_INT))
             )
             ->set(

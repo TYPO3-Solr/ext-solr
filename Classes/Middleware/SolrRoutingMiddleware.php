@@ -290,7 +290,7 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
             );
             if (empty($items)) {
                 $this->logger
-                    ->/** @scrutinizer ignore-call */
+                    ->
                     error(
                         vsprintf(
                             'Could not determine page for slug "%1$s" and language "%2$s". Given path "%3$s"',
@@ -304,7 +304,7 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
                 $scan = false;
             } elseif (empty($path)) {
                 $this->logger
-                    ->/** @scrutinizer ignore-call */
+                    ->
                     error(
                         vsprintf(
                             'Could not resolve page by path "%1$s" and language "%2$s".',

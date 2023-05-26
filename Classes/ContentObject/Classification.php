@@ -95,11 +95,8 @@ class Classification extends AbstractContentObject
             $className = $class['class'];
             $classifications[] = GeneralUtility::makeInstance(
                 ClassificationItem::class,
-                /** @scrutinizer ignore-type */
                 $matchPatterns,
-                /** @scrutinizer ignore-type */
                 $unMatchPatters,
-                /** @scrutinizer ignore-type */
                 $className
             );
         }

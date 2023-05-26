@@ -164,9 +164,7 @@ class SearchResultSetService
         /* @var VariantsProcessor $variantsProcessor */
         $variantsProcessor = GeneralUtility::makeInstance(
             VariantsProcessor::class,
-            /** @scrutinizer ignore-type */
             $this->typoScriptConfiguration,
-            /** @scrutinizer ignore-type */
             $this->searchResultBuilder
         );
         $variantsProcessor->process($resultSet);

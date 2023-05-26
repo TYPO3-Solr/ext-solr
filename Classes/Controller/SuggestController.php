@@ -55,11 +55,8 @@ class SuggestController extends AbstractBaseController
             /* @var SuggestService $suggestService */
             $suggestService = GeneralUtility::makeInstance(
                 SuggestService::class,
-                /** @scrutinizer ignore-type */
                 $this->typoScriptFrontendController,
-                /** @scrutinizer ignore-type */
                 $this->searchService,
-                /** @scrutinizer ignore-type */
                 $this->typoScriptConfiguration
             );
 
