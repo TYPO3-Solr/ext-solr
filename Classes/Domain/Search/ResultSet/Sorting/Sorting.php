@@ -44,7 +44,7 @@ class Sorting
     protected bool $isResetOption = false;
 
     public function __construct(
-        SearchResultSet $resultSet,
+        public readonly SearchResultSet $resultSet,
         string $name,
         string $field,
         string $direction,

@@ -19,6 +19,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetItemCollection;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\Option;
+use ApacheSolrForTypo3\Solr\System\Data\AbstractCollection;
 
 /**
  * Collection for facet options.
@@ -44,7 +45,7 @@ class OptionCollection extends AbstractFacetItemCollection
     /**
      * Returns {@link AbstractFacetItemCollection} or {@link OptionCollection} for filtered prefix
      */
-    public function getByLowercaseLabelPrefix(string $filteredPrefix): AbstractFacetItemCollection|OptionCollection
+    public function getByLowercaseLabelPrefix(string $filteredPrefix): AbstractCollection|AbstractFacetItemCollection|OptionCollection
     {
         return $this->getFilteredCopy(function (Option $option) use ($filteredPrefix) {
             $filteredPrefixLength = mb_strlen($filteredPrefix);
@@ -61,7 +62,6 @@ class OptionCollection extends AbstractFacetItemCollection
     {
         $prefixes = [];
         foreach ($this->data as $option) {
-            /* @var Option $option */
             $prefix = mb_substr($option->getLabel(), 0, $length);
             $prefixes[$prefix] = $prefix;
         }

@@ -19,7 +19,6 @@ namespace ApacheSolrForTypo3\Solr\Query\Modifier;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
-use Solarium\QueryType\Select\Query\Query as SolariumSelectQuery;
 
 /**
  * Enables query elevation
@@ -40,7 +39,7 @@ class Elevation implements Modifier
      *
      * @param Query $query The query to modify
      */
-    public function modifyQuery(Query $query): Query|SolariumSelectQuery
+    public function modifyQuery(Query $query): Query
     {
         return $this->queryBuilder
             ->startFrom($query)
