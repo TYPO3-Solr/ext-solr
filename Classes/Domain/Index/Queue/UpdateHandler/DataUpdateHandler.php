@@ -149,7 +149,6 @@ class DataUpdateHandler extends AbstractUpdateHandler
         $this->dataHandler = $dataHandler;
         $this->logger = $solrLogManager ?? GeneralUtility::makeInstance(
             SolrLogManager::class,
-            /** @scrutinizer ignore-type */
             __CLASS__
         );
     }

@@ -93,7 +93,7 @@ class SiteRepository
         FrontendEnvironment $frontendEnvironment = null
     ) {
         $this->rootPageResolver = $rootPageResolver ?? GeneralUtility::makeInstance(RootPageResolver::class);
-        $this->runtimeCache = $twoLevelCache ?? GeneralUtility::makeInstance(TwoLevelCache::class, /** @scrutinizer ignore-type */'runtime');
+        $this->runtimeCache = $twoLevelCache ?? GeneralUtility::makeInstance(TwoLevelCache::class, 'runtime');
         $this->registry = $registry ?? GeneralUtility::makeInstance(Registry::class);
         $this->siteFinder = $siteFinder ?? GeneralUtility::makeInstance(SiteFinder::class);
         $this->extensionConfiguration = $extensionConfiguration ?? GeneralUtility::makeInstance(ExtensionConfiguration::class);
@@ -303,23 +303,14 @@ class SiteRepository
 
         return GeneralUtility::makeInstance(
             Site::class,
-            /** @scrutinizer ignore-type */
             $solrConfiguration,
-            /** @scrutinizer ignore-type */
             $rootPageRecord,
-            /** @scrutinizer ignore-type */
             $domain,
-            /** @scrutinizer ignore-type */
             $siteHash,
-            /** @scrutinizer ignore-type */
             $pageRepository,
-            /** @scrutinizer ignore-type */
             $defaultLanguage,
-            /** @scrutinizer ignore-type */
             $availableLanguageIds,
-            /** @scrutinizer ignore-type */
             $solrConnectionConfigurations,
-            /** @scrutinizer ignore-type */
             $typo3Site
         );
     }

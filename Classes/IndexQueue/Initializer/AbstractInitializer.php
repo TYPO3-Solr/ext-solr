@@ -95,7 +95,7 @@ abstract class AbstractInitializer implements IndexQueueInitializer
         QueueItemRepository $queueItemRepository = null,
         PagesRepository $pagesRepository = null
     ) {
-        $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, /** @scrutinizer ignore-type */ __CLASS__);
+        $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
         $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);
         $this->flashMessageQueue = $flashMessageService->getMessageQueueByIdentifier('solr.queue.initializer');
         $this->queueItemRepository = $queueItemRepository ?? GeneralUtility::makeInstance(QueueItemRepository::class);

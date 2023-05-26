@@ -46,7 +46,7 @@ class SiteHighlighterUrlModifier
         $searchWords = GeneralUtility::trimExplode(' ', $searchWords, true);
 
         /** @var UrlHelper $urlHelper */
-        $urlHelper = GeneralUtility::makeInstance(UrlHelper::class, /** @scrutinizer ignore-type */ $url)
+        $urlHelper = GeneralUtility::makeInstance(UrlHelper::class, $url)
             ->withQueryParameter('sword_list', $searchWords);
 
         if ($addNoCache) {

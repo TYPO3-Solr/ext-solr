@@ -136,7 +136,7 @@ class ConfigurationAwareRecordService
         int $recordUid,
         string $recordWhereClause = ''
     ): array {
-        $cache = GeneralUtility::makeInstance(TwoLevelCache::class, /** @scrutinizer ignore-type */ 'runtime');
+        $cache = GeneralUtility::makeInstance(TwoLevelCache::class, 'runtime');
         $cacheId = md5('ConfigurationAwareRecordService' . ':' . 'getRecordIfIndexConfigurationIsValid' . ':' . $recordTable . ':' . $recordUid . ':' . $recordWhereClause);
 
         $row = $cache->get($cacheId);

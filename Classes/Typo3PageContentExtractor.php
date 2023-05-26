@@ -61,7 +61,7 @@ class Typo3PageContentExtractor extends HtmlContentExtractor
 
         $indexableContent = $this->excludeContentByClass($indexableContent);
         if (empty($indexableContent) && $this->getConfiguration()->getLoggingIndexingMissingTypo3SearchMarkers()) {
-            $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, /** @scrutinizer ignore-type */ __CLASS__);
+            $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
             $this->logger->log(SolrLogManager::WARNING, 'No TYPO3SEARCH markers found.');
         }
 

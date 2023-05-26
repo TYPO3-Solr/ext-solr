@@ -96,9 +96,7 @@ class ConfigurationManager implements SingletonInterface
     {
         return GeneralUtility::makeInstance(
             TypoScriptConfiguration::class,
-            /** @scrutinizer ignore-type */
             $configurationArray,
-            /** @scrutinizer ignore-type */
             $contextPageId
         );
     }

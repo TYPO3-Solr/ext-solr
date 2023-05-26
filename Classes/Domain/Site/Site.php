@@ -131,9 +131,7 @@ class Site implements SiteInterface
             /* @var $noSolrConnectionException NoSolrConnectionFoundException */
             $noSolrConnectionException = GeneralUtility::makeInstance(
                 NoSolrConnectionFoundException::class,
-                /** @scrutinizer ignore-type */
                 'Could not find a Solr connection for root page [' . $this->getRootPageId() . '] and language [' . $language . '].',
-                /** @scrutinizer ignore-type */
                 1552491117
             );
             $noSolrConnectionException->setRootPageId($this->getRootPageId());

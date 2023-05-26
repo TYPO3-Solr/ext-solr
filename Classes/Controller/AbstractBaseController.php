@@ -232,9 +232,7 @@ abstract class AbstractBaseController extends ActionController
             /** @noinspection PhpParamsInspection */
             $this->searchService = $this->objectManager->get(
                 SearchResultSetService::class,
-                /** @scrutinizer ignore-type */
                 $this->typoScriptConfiguration,
-                /** @scrutinizer ignore-type */
                 $search
             );
         } catch (NoSolrConnectionFoundException $e) {
@@ -248,7 +246,7 @@ abstract class AbstractBaseController extends ActionController
     protected function getSearchRequestBuilder(): SearchRequestBuilder
     {
         if ($this->searchRequestBuilder === null) {
-            $this->searchRequestBuilder = GeneralUtility::makeInstance(SearchRequestBuilder::class, /** @scrutinizer ignore-type */ $this->typoScriptConfiguration);
+            $this->searchRequestBuilder = GeneralUtility::makeInstance(SearchRequestBuilder::class, $this->typoScriptConfiguration);
         }
 
         return $this->searchRequestBuilder;
@@ -261,7 +259,7 @@ abstract class AbstractBaseController extends ActionController
     {
         if ($this->typoScriptConfiguration->getLoggingExceptions()) {
             /** @var SolrLogManager $logger */
-            $logger = GeneralUtility::makeInstance(SolrLogManager::class, /** @scrutinizer ignore-type */ __CLASS__);
+            $logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
             $logger->log(SolrLogManager::ERROR, 'Solr server is not available');
         }
     }

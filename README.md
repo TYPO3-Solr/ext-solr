@@ -4,7 +4,6 @@
 [![Total Downloads](http://poser.pugx.org/apache-solr-for-typo3/solr/downloads)](https://packagist.org/packages/apache-solr-for-typo3/solr)
 [![Monthly Downloads](https://poser.pugx.org/apache-solr-for-typo3/solr/d/monthly)](https://packagist.org/packages/apache-solr-for-typo3/solr)
 [![Build Status](https://github.com/TYPO3-Solr/ext-solr/actions/workflows/ci.yml/badge.svg?branch=release-11.5.x)](https://github.com/TYPO3-Solr/ext-solr/actions?query=branch:release-11.5.x)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/TYPO3-Solr/ext-solr/badges/quality-score.png?b=release-11.5.x)](https://scrutinizer-ci.com/g/TYPO3-Solr/ext-solr/?branch=release-11.5.x)
 [![Code Coverage](https://scrutinizer-ci.com/g/TYPO3-Solr/ext-solr/badges/coverage.png?b=release-11.5.x)](https://scrutinizer-ci.com/g/TYPO3-Solr/ext-solr/?branch=release-11.5.x)
 
 # Apache Solr for TYPO3 CMS

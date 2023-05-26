@@ -84,7 +84,7 @@ class Rootline
             $rawRootlineElements = explode(self::ELEMENT_DELIMITER, $accessRootline);
             foreach ($rawRootlineElements as $rawRootlineElement) {
                 try {
-                    $this->push(GeneralUtility::makeInstance(RootlineElement::class, /** @scrutinizer ignore-type */ $rawRootlineElement));
+                    $this->push(GeneralUtility::makeInstance(RootlineElement::class, $rawRootlineElement));
                 } catch (RootlineElementFormatException $e) {
                     // just ignore the faulty element for now, might log this later
                 }
@@ -148,7 +148,6 @@ class Rootline
             ) {
                 $accessRootline->push(GeneralUtility::makeInstance(
                     RootlineElement::class,
-                    /** @scrutinizer ignore-type */
                     $pageRecord['uid'] . RootlineElement::PAGE_ID_GROUP_DELIMITER . $pageRecord['fe_group']
                 ));
             }
@@ -162,7 +161,6 @@ class Rootline
         if ($currentPageRecord['fe_group']) {
             $accessRootline->push(GeneralUtility::makeInstance(
                 RootlineElement::class,
-                /** @scrutinizer ignore-type */
                 $currentPageRecord['uid'] . RootlineElement::PAGE_ID_GROUP_DELIMITER . $currentPageRecord['fe_group']
             ));
         }

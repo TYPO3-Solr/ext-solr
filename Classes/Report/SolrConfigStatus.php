@@ -67,13 +67,9 @@ class SolrConfigStatus extends AbstractSolrStatus
                 $report = $this->getRenderedReport('SolrConfigStatus.html', $variables);
                 $status = GeneralUtility::makeInstance(
                     Status::class,
-                    /** @scrutinizer ignore-type */
                     'Solrconfig Version',
-                    /** @scrutinizer ignore-type */
                     'Unsupported solrconfig.xml',
-                    /** @scrutinizer ignore-type */
                     $report,
-                    /** @scrutinizer ignore-type */
                     Status::WARNING
                 );
 
