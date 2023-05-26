@@ -47,12 +47,10 @@ class IndexQueueIndexingPropertyRepository extends AbstractRepository
         return (int)$queryBuilder
             ->delete($this->table)
             ->where(
-                /** @scrutinizer ignore-type */
                 $queryBuilder->expr()->eq(
                     'root',
                     $queryBuilder->createNamedParameter($rootPid, PDO::PARAM_INT)
                 ),
-                /** @scrutinizer ignore-type */
                 $queryBuilder->expr()->eq(
                     'item_id',
                     $queryBuilder->createNamedParameter($indexQueueUid, PDO::PARAM_INT)
@@ -86,7 +84,6 @@ class IndexQueueIndexingPropertyRepository extends AbstractRepository
             ->select('property_key', 'property_value')
             ->from($this->table)
             ->where(
-                /** @scrutinizer ignore-type */
                 $queryBuilder->expr()->eq(
                     'item_id',
                     $queryBuilder->createNamedParameter($indexQueueUid, PDO::PARAM_INT)

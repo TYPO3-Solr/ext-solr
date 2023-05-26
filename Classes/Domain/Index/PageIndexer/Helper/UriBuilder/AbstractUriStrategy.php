@@ -41,7 +41,7 @@ abstract class AbstractUriStrategy
     public function __construct(
         SolrLogManager $logger = null
     ) {
-        $this->logger = $logger ?? GeneralUtility::makeInstance(SolrLogManager::class, /** @scrutinizer ignore-type */ __CLASS__);
+        $this->logger = $logger ?? GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
     }
 
     /**

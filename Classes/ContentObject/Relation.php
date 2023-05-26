@@ -142,11 +142,11 @@ class Relation extends AbstractContentObject
         $uid = (int)$uid;
         $field = $this->configuration['localField'];
 
-        if (!$this->tcaService->/** @scrutinizer ignore-call */ getHasConfigurationForField($table, $field)) {
+        if (!$this->tcaService->getHasConfigurationForField($table, $field)) {
             return [];
         }
 
-        $overlayUid = $this->frontendOverlayService->/** @scrutinizer ignore-call */ getUidOfOverlay($table, $field, $uid);
+        $overlayUid = $this->frontendOverlayService->getUidOfOverlay($table, $field, $uid);
         $fieldTCA = $this->tcaService->getConfigurationForField($table, $field);
 
         if (isset($fieldTCA['config']['MM']) && trim($fieldTCA['config']['MM']) !== '') {
@@ -398,7 +398,7 @@ class Relation extends AbstractContentObject
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($foreignTable);
         $queryBuilder->select('*')
             ->from($foreignTable)
-            ->where(/** @scrutinizer ignore-type */ $queryBuilder->expr()->in('uid', $uids));
+            ->where($queryBuilder->expr()->in('uid', $uids));
         if (isset($this->configuration['additionalWhereClause'])) {
             $queryBuilder->andWhere($this->configuration['additionalWhereClause']);
         }
@@ -437,7 +437,7 @@ class Relation extends AbstractContentObject
      */
     protected function getLanguageUid(): int
     {
-        return (int)$this->typoScriptFrontendController->/** @scrutinizer ignore-call */ getContext()->getPropertyFromAspect('language', 'id');
+        return (int)$this->typoScriptFrontendController->getContext()->getPropertyFromAspect('language', 'id');
     }
 
     /**

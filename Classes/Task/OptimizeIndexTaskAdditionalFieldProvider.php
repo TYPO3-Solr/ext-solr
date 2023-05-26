@@ -185,10 +185,10 @@ class OptimizeIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldPr
         }
 
         /* @var CoreSelectorField $selectorField */
-        $selectorField = GeneralUtility::makeInstance(CoreSelectorField::class, /** @scrutinizer ignore-type */ $this->site);
+        $selectorField = GeneralUtility::makeInstance(CoreSelectorField::class, $this->site);
         $selectorField->setFormElementName('tx_scheduler[cores]');
         /* @noinspection PhpPossiblePolymorphicInvocationInspection */
-        $selectorField->setSelectedValues($this->task->/** @scrutinizer ignore-call */getCoresToOptimizeIndex());
+        $selectorField->setSelectedValues($this->task->getCoresToOptimizeIndex());
         return $selectorField->render();
     }
 
@@ -244,15 +244,13 @@ class OptimizeIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldPr
             return;
         }
 
-        $task->/** @scrutinizer ignore-call */
-            setRootPageId((int)$submittedData['site']);
+        $task->setRootPageId((int)$submittedData['site']);
 
         $cores = [];
         if (!empty($submittedData['cores'])) {
             $cores = $submittedData['cores'];
         }
-        $task->/** @scrutinizer ignore-call */
-        setCoresToOptimizeIndex($cores);
+        $task->setCoresToOptimizeIndex($cores);
     }
 
     /**

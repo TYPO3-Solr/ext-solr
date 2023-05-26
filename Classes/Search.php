@@ -80,7 +80,7 @@ class Search
      */
     public function __construct(SolrConnection $solrConnection = null)
     {
-        $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, /** @scrutinizer ignore-type */ __CLASS__);
+        $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
 
         $this->solr = $solrConnection;
 

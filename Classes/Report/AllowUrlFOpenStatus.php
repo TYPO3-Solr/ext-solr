@@ -52,13 +52,9 @@ class AllowUrlFOpenStatus extends AbstractSolrStatus
 
         $reports[] = GeneralUtility::makeInstance(
             Status::class,
-            /** @scrutinizer ignore-type */
             'allow_url_fopen',
-            /** @scrutinizer ignore-type */
             $value,
-            /** @scrutinizer ignore-type */
             $message,
-            /** @scrutinizer ignore-type */
             $severity
         );
 

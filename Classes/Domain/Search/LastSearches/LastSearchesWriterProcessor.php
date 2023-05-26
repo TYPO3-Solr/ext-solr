@@ -64,7 +64,6 @@ class LastSearchesWriterProcessor implements SearchResultSetProcessor
     {
         return GeneralUtility::makeInstance(
             LastSearchesService::class,
-            /** @scrutinizer ignore-type */
             $resultSet->getUsedSearchRequest()->getContextTypoScriptConfiguration()
         );
     }

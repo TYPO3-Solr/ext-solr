@@ -82,7 +82,6 @@ class SuggestService
         $this->typoScriptConfiguration = $typoScriptConfiguration;
         $this->queryBuilder = $queryBuilder ?? GeneralUtility::makeInstance(
             QueryBuilder::class,
-            /** @scrutinizer ignore-type */
             $typoScriptConfiguration
         );
     }
@@ -177,7 +176,7 @@ class SuggestService
         $pageId = $this->tsfe->getRequestedId();
         $languageId = Util::getLanguageUid();
         $solr = GeneralUtility::makeInstance(ConnectionManager::class)->getConnectionByPageId($pageId, $languageId);
-        $search = GeneralUtility::makeInstance(Search::class, /** @scrutinizer ignore-type */ $solr);
+        $search = GeneralUtility::makeInstance(Search::class, $solr);
         $response = $search->search($suggestQuery, 0, 0);
 
         $rawResponse = $response->getRawResponse();

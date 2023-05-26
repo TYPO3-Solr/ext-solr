@@ -125,6 +125,6 @@ class FrontendGroupsModifier
         if ($pageIndexerRequestHandler->getRequest()->getParameter('accessRootline')) {
             $stringAccessRootline = $pageIndexerRequestHandler->getRequest()->getParameter('accessRootline');
         }
-        return GeneralUtility::makeInstance(Rootline::class, /** @scrutinizer ignore-type */ $stringAccessRootline);
+        return GeneralUtility::makeInstance(Rootline::class, $stringAccessRootline);
     }
 }

@@ -69,8 +69,8 @@ class Repository implements SingletonInterface
         QueryBuilder $queryBuilder = null
     ) {
         $this->typoScriptConfiguration = $typoScriptConfiguration ?? Util::getSolrConfiguration();
-        $this->documentEscapeService = $documentEscapeService ?? GeneralUtility::makeInstance(DocumentEscapeService::class, /** @scrutinizer ignore-type */ $typoScriptConfiguration);
-        $this->queryBuilder = $queryBuilder ?? GeneralUtility::makeInstance(QueryBuilder::class, /** @scrutinizer ignore-type */ $this->typoScriptConfiguration);
+        $this->documentEscapeService = $documentEscapeService ?? GeneralUtility::makeInstance(DocumentEscapeService::class, $typoScriptConfiguration);
+        $this->queryBuilder = $queryBuilder ?? GeneralUtility::makeInstance(QueryBuilder::class, $this->typoScriptConfiguration);
     }
 
     /**
@@ -160,6 +160,6 @@ class Repository implements SingletonInterface
      */
     protected function getSearch(SolrConnection $solrConnection): Search
     {
-        return  GeneralUtility::makeInstance(Search::class, /** @scrutinizer ignore-type */ $solrConnection);
+        return  GeneralUtility::makeInstance(Search::class, $solrConnection);
     }
 }

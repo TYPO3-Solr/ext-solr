@@ -64,13 +64,11 @@ class QueueStatisticsRepository extends AbstractRepository
             ->add('select', $queryBuilder->expr()->count('*', 'count'), true)
             ->from($this->table)
             ->where(
-                /** @scrutinizer ignore-type */
                 $queryBuilder->expr()->eq('root', $queryBuilder->createNamedParameter($rootPid, PDO::PARAM_INT))
             )->groupBy('pending', 'failed');
 
         if (!empty($indexingConfigurationName)) {
             $queryBuilder->andWhere(
-                /** @scrutinizer ignore-type */
                 $queryBuilder->expr()->eq('indexing_configuration', $queryBuilder->createNamedParameter($indexingConfigurationName))
             );
         }

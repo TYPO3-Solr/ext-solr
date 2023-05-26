@@ -167,13 +167,9 @@ class SearchRequestBuilder
     {
         return GeneralUtility::makeInstance(
             SearchRequest::class,
-            /** @scrutinizer ignore-type */
             $requestArguments,
-            /** @scrutinizer ignore-type */
             $pageId,
-            /** @scrutinizer ignore-type */
             $languageId,
-            /** @scrutinizer ignore-type */
             $this->typoScriptConfiguration
         );
     }

@@ -73,7 +73,7 @@ class TypoScript implements SingletonInterface
         }
 
         /* @var TwoLevelCache $cache */
-        $cache = GeneralUtility::makeInstance(TwoLevelCache::class, /** @scrutinizer ignore-type */ 'tx_solr_configuration');
+        $cache = GeneralUtility::makeInstance(TwoLevelCache::class, 'tx_solr_configuration');
         $configurationArray = $cache->get($cacheId);
 
         if (!empty($configurationArray)) {
