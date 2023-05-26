@@ -185,8 +185,6 @@ jobs:
             ${{ env.CI_BUILD_DIRECTORY }}/bin
             ${{ env.CI_BUILD_DIRECTORY }}/vendor
             ${{ env.COMPOSER_GLOBAL_REQUEREMENTS }}
-            composer.json
-            composer.lock
           key: ${{ env.CI_BUILD_CACHE_KEY }}
       -
         name: CI-Bootstrap
