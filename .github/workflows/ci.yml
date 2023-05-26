@@ -129,7 +129,7 @@ jobs:
         name: Mount RAMFS
         run: |
           mkdir -p ${{ env.CI_BUILD_DIRECTORY }}
-          sudo mount -t tmpfs -o size=3G none ${{ env.CI_BUILD_DIRECTORY }}
+          sudo mount -t tmpfs -o size=1G none ${{ env.CI_BUILD_DIRECTORY }}
           sudo mkdir -p ${{ env.CI_BUILD_DIRECTORY }}/data-{solr,mysql} \
             && sudo chown $USER ${{ env.CI_BUILD_DIRECTORY }}/data-mysql \
             && sudo chown 8983:8983 ${{ env.CI_BUILD_DIRECTORY }}/data-solr
