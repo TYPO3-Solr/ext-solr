@@ -21,7 +21,6 @@ use ApacheSolrForTypo3\Solr\Backend\CoreSelectorField;
 use ApacheSolrForTypo3\Solr\Backend\SiteSelectorField;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
-use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
 use Doctrine\DBAL\Exception as DBALException;
 use LogicException;
 use Throwable;
@@ -55,7 +54,7 @@ class OptimizeIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldPr
     /**
      * Scheduler task
      */
-    protected ?AbstractTask $task = null;
+    protected ?OptimizeIndexTask $task = null;
 
     /**
      * Scheduler Module
@@ -89,10 +88,9 @@ class OptimizeIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldPr
      */
     protected function initialize(
         SchedulerModuleController $schedulerModule,
-        AbstractTask $task = null,
+        OptimizeIndexTask $task = null,
         array $taskInfo = []
     ): void {
-        /* @var ReIndexTask $task */
         $this->task = $task;
         $this->schedulerModule = $schedulerModule;
         $this->taskInformation = $taskInfo;
@@ -109,14 +107,13 @@ class OptimizeIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldPr
      * or editing a task.
      *
      * @param array $taskInfo reference to the array containing the info used in the add/edit form
-     * @param AbstractTask $task when editing, reference to the current task object. Null when adding.
+     * @param OptimizeIndexTask $task when editing, reference to the current task object. Null when adding.
      * @param SchedulerModuleController $schedulerModule reference to the calling object (Scheduler's BE module)
      * @return array Array containing all the information pertaining to the additional fields
      *                        The array is multidimensional, keyed to the task class name and each field's id
      *                        For each field it provides an associative sub-array with the following:
      *
      * @throws BackendFormException
-     * @throws NoSolrConnectionFoundException
      * @throws Throwable
      *
      * @noinspection PhpParameterByRefIsNotUsedAsReferenceInspection
@@ -157,7 +154,6 @@ class OptimizeIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldPr
      * Returns the selector HTML element with available cores.
      *
      * @throws BackendFormException
-     * @throws NoSolrConnectionFoundException
      */
     protected function getCoreSelectorMarkup(): string
     {
@@ -170,8 +166,7 @@ class OptimizeIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldPr
         /* @var CoreSelectorField $selectorField */
         $selectorField = GeneralUtility::makeInstance(CoreSelectorField::class, $this->site);
         $selectorField->setFormElementName('tx_scheduler[cores]');
-        /* @noinspection PhpPossiblePolymorphicInvocationInspection */
-        $selectorField->setSelectedValues($this->task->/** @scrutinizer ignore-call */getCoresToOptimizeIndex());
+        $selectorField->setSelectedValues($this->task->getCoresToOptimizeIndex());
         return $selectorField->render();
     }
 
@@ -215,26 +210,23 @@ class OptimizeIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldPr
      * class matches.
      *
      * @param array $submittedData array containing the data submitted by the user
-     * @param AbstractTask $task reference to the current task object
+     * @param OptimizeIndexTask $task reference to the current task object
      */
     public function saveAdditionalFields(
         array $submittedData,
-        AbstractTask $task
+        OptimizeIndexTask|AbstractTask $task
     ): void {
-        /* @var OptimizeIndexTask $task */
         if (!$this->isTaskInstanceofOptimizeIndexTask($task)) {
             return;
         }
 
-        $task->/** @scrutinizer ignore-call */
-            setRootPageId((int)$submittedData['site']);
+        $task->setRootPageId((int)$submittedData['site']);
 
         $cores = [];
         if (!empty($submittedData['cores'])) {
             $cores = $submittedData['cores'];
         }
-        $task->/** @scrutinizer ignore-call */
-        setCoresToOptimizeIndex($cores);
+        $task->setCoresToOptimizeIndex($cores);
     }
 
     protected function getPageRenderer(): ?PageRenderer

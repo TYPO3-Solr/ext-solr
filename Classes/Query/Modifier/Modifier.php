@@ -18,7 +18,6 @@ declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\Query\Modifier;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
-use Solarium\QueryType\Select\Query\Query as SolariumSelectQuery;
 
 /**
  * QueryModifier interface, allows to modify search queries
@@ -31,7 +30,7 @@ interface Modifier
      * Modifies the given query and returns the modified query as result
      *
      * @param Query $query The query to modify
-     * @return Query|SolariumSelectQuery The modified query
+     * @return Query The modified query
      */
-    public function modifyQuery(Query $query): Query|SolariumSelectQuery;
+    public function modifyQuery(Query $query): Query;
 }
