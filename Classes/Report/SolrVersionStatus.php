@@ -56,13 +56,9 @@ class SolrVersionStatus extends AbstractSolrStatus
                 $pingFailedMsg = 'Could not ping solr server, can not check version ' . $url;
                 $status = GeneralUtility::makeInstance(
                     Status::class,
-                    /** @scrutinizer ignore-type */
                     'Apache Solr Version',
-                    /** @scrutinizer ignore-type */
                     'Not accessible',
-                    /** @scrutinizer ignore-type */
                     $pingFailedMsg,
-                    /** @scrutinizer ignore-type */
                     ContextualFeedbackSeverity::ERROR
                 );
                 $reports[] = $status;

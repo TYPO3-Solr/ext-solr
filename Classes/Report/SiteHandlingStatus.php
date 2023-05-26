@@ -72,13 +72,9 @@ class SiteHandlingStatus extends AbstractSolrStatus
             if (!($site instanceof Site)) {
                 $reports[] = GeneralUtility::makeInstance(
                     Status::class,
-                    /** @scrutinizer ignore-type */
                     self::TITLE_SITE_HANDLING_CONFIGURATION,
-                    /** @scrutinizer ignore-type */
                     'Something went wrong',
-                    /** @scrutinizer ignore-type */
                     vsprintf('The configured Site "%s" is not TYPO3 managed site. Please refer to TYPO3 site management docs and configure the site properly.', [$site->getLabel()]),
-                    /** @scrutinizer ignore-type */
                     ContextualFeedbackSeverity::ERROR
                 );
                 continue;
@@ -119,13 +115,9 @@ class SiteHandlingStatus extends AbstractSolrStatus
         /* @var Status $status */
         return GeneralUtility::makeInstance(
             Status::class,
-            /** @scrutinizer ignore-type */
             sprintf('Site Identifier: "%s"', $ypo3Site->getIdentifier()),
-            /** @scrutinizer ignore-type */
             '',
-            /** @scrutinizer ignore-type */
             $renderedReport,
-            /** @scrutinizer ignore-type */
             $globalPassedStateForThisSite ? ContextualFeedbackSeverity::OK : ContextualFeedbackSeverity::ERROR
         );
     }

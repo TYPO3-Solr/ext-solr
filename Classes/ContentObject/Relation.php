@@ -371,7 +371,7 @@ class Relation extends AbstractContentObject
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($foreignTable);
         $queryBuilder->select('*')
             ->from($foreignTable)
-            ->where(/** @scrutinizer ignore-type */ $queryBuilder->expr()->in('uid', $uids));
+            ->where($queryBuilder->expr()->in('uid', $uids));
         if (isset($this->configuration['additionalWhereClause'])) {
             $queryBuilder->andWhere($this->configuration['additionalWhereClause']);
         }
