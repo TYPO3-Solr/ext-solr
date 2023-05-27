@@ -42,7 +42,7 @@ class FrontendGroupsModifier
      */
     public function __invoke(ModifyResolvedFrontendGroupsEvent $event): void
     {
-        if ($event->getRequest() === null || !$event->getRequest()->hasHeader(PageIndexerRequest::SOLR_INDEX_HEADER)) {
+        if (!$event->getRequest()->hasHeader(PageIndexerRequest::SOLR_INDEX_HEADER)) {
             return;
         }
 

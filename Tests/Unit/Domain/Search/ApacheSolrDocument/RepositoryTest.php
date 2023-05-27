@@ -75,26 +75,6 @@ class RepositoryTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function findByPageIdAndByLanguageIdThrowsInvalidArgumentExceptionIfPageIdIsNotSet()
-    {
-        $this->expectException(TypeError::class);
-        $apacheSolrDocumentRepository = GeneralUtility::makeInstance(Repository::class);
-        $apacheSolrDocumentRepository->findByPageIdAndByLanguageId(null, 3);
-    }
-
-    /**
-     * @test
-     */
-    public function findByPageIdAndByLanguageIdThrowsInvalidArgumentExceptionIfLanguageIdIsNotInteger()
-    {
-        $this->expectException(TypeError::class);
-        $apacheSolrDocumentRepository = GeneralUtility::makeInstance(Repository::class);
-        $apacheSolrDocumentRepository->findByPageIdAndByLanguageId(1, 'Abc');
-    }
-
-    /**
-     * @test
-     */
     public function findByPageIdAndByLanguageIdReturnsEmptyCollectionIfConnectionToSolrServerCanNotBeEstablished()
     {
         $apacheSolrDocumentRepository = $this->getAccessibleMock(

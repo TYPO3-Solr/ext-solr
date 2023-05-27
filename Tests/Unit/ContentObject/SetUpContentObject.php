@@ -18,7 +18,6 @@ declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\ContentObject;
 
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
-use Prophecy\PhpUnit\ProphecyTrait;
 use Symfony\Component\DependencyInjection\Container;
 use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -32,15 +31,9 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
  */
 abstract class SetUpContentObject extends SetUpUnitTestCase
 {
-    use ProphecyTrait;
-
     protected bool $resetSingletonInstances = true;
 
-    /**
-     * @var ContentObjectRenderer
-     */
     protected ContentObjectRenderer $contentObjectRenderer;
-
     protected AbstractContentObject $testableContentObject;
 
     protected function setUp(): void

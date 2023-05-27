@@ -114,7 +114,7 @@ class CategoryUidToHierarchy extends AbstractHierarchyProcessor implements Field
         while ($parentCategory !== 0) {
             $rootlineIds[] = $parentCategory;
             $childCategory = $this->systemCategoryRepository->findOneByUid($parentCategory);
-            if ($childCategory === null) {
+            if (!is_array($childCategory)) {
                 $parentCategory = 0;
             } else {
                 $parentCategory = (int)($childCategory['parent']);

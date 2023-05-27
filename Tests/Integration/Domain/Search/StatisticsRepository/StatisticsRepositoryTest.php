@@ -135,14 +135,11 @@ class StatisticsRepositoryTest extends IntegrationTest
 
     /**
      * Helper method to calculate the number of days from now to a specific timestamp.
-     *
-     * @param $timestamp
-     * @return float
      */
-    protected static function getDaysSinceTimestamp($timestamp)
+    protected static function getDaysSinceTimestamp(int $timestamp): int
     {
         $secondsUntilNow = time() - $timestamp;
         $days = floor($secondsUntilNow / (60*60*24));
-        return $days;
+        return (int)$days;
     }
 }

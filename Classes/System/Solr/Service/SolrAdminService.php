@@ -101,7 +101,7 @@ class SolrAdminService extends AbstractSolrService
 
             /**
              * access a random property to trigger response parsing
-             * @noinspection PhpExpressionResultUnusedInspection
+             * @phpstan-ignore-next-line
              */
             $pluginsInformation->responseHeader;
             $this->pluginsData = $pluginsInformation;
@@ -150,7 +150,7 @@ class SolrAdminService extends AbstractSolrService
 
             /**
              * access a random property to trigger response parsing
-             * @noinspection PhpExpressionResultUnusedInspection
+             * @phpstan-ignore-next-line
              */
             $systemInformation->responseHeader;
             $this->systemData = $systemInformation;

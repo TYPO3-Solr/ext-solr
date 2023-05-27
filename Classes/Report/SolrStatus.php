@@ -110,6 +110,7 @@ class SolrStatus extends AbstractSolrStatus
         $configName = $this->checkSolrConfigName($solrAdmin);
         $schemaName = $this->checkSolrSchemaName($solrAdmin);
 
+        /** @phpstan-ignore-next-line */
         if ($this->responseStatus !== ContextualFeedbackSeverity::OK) {
             $header = 'Failed contacting the Solr server.';
         }
