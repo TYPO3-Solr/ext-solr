@@ -1,7 +1,5 @@
 <?php
 
-/** @noinspection PhpUnhandledExceptionInspection */
-
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -19,6 +17,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Report;
 
 use ApacheSolrForTypo3\Solr\Report\SolrConfigurationStatus;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Reports\Status;
 
@@ -29,10 +28,7 @@ use TYPO3\CMS\Reports\Status;
  */
 class SolrConfigurationStatusTest extends SetUpUnitTestCase
 {
-    /**
-     * @var SolrConfigurationStatus
-     */
-    protected SolrConfigurationStatus $report;
+    protected SolrConfigurationStatus|MockObject $report;
 
     protected function setUp(): void
     {
@@ -53,7 +49,7 @@ class SolrConfigurationStatusTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function canGetEmptyResultWhenEverythingIsOK()
+    public function canGetEmptyResultWhenEverythingIsOK(): void
     {
         $fakedRootPages =  [1 => ['uid' => 1, 'title' => 'My Siteroot']];
 
@@ -71,7 +67,7 @@ class SolrConfigurationStatusTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function canGetViolationWhenSolrIsEnabledButIndexingNot()
+    public function canGetViolationWhenSolrIsEnabledButIndexingNot(): void
     {
         $fakedRootPages =  [1 => ['uid' => 1, 'title' => 'My Siteroot']];
 

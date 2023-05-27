@@ -36,7 +36,6 @@ class ApacheSolrDocumentRepositoryTest extends IntegrationTest
         $this->addTypoScriptToTemplateRecord(1, 'config.index_enable = 1');
         $this->indexPages([1, 2, 3, 4, 5]);
 
-        /* @var Repository $apacheSolrDocumentRepository */
         $this->apacheSolrDocumentRepository = GeneralUtility::makeInstance(Repository::class);
     }
 

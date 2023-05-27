@@ -30,18 +30,16 @@ use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Http\ForwardResponse;
 use TYPO3\CMS\Fluid\View\TemplateView;
+use TYPO3Fluid\Fluid\View\AbstractTemplateView;
 use TYPO3Fluid\Fluid\View\ViewInterface;
 
 /**
  * Class SearchController
  *
- * @author Frans Saris <frans@beech.it>
- * @author Timo Hund <timo.hund@dkd.de>
+ * @property AbstractTemplateView $view {@link AbstractTemplateView} is used in this scope. Line required by PhpStan.
  */
 class SearchController extends AbstractBaseController
 {
-    protected $view;
-
     /**
      * Provide search query in extbase arguments.
      */

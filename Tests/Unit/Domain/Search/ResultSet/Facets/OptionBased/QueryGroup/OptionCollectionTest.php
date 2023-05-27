@@ -33,7 +33,7 @@ class OptionCollectionTest extends SetUpUnitTestCase
      */
     public function canGetManualSortedCopy()
     {
-        $searchResultSetMock = $this->getDumbMock(SearchResultSet::class);
+        $searchResultSetMock = $this->createMock(SearchResultSet::class);
         $facet = new QueryGroupFacet($searchResultSetMock, 'age', 'created');
 
         $week = new Option($facet, 'Last week', '1week', 9);

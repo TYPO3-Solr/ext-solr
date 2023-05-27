@@ -33,7 +33,7 @@ class Typo3PageContentExtractorTest extends SetUpUnitTestCase
 
     protected function setUp(): void
     {
-        $this->typoScripConfigurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
+        $this->typoScripConfigurationMock = $this->createMock(TypoScriptConfiguration::class);
         $this->typoScripConfigurationMock->expects(self::once())->method(
             'getIndexQueuePagesExcludeContentByClassArray'
         )->willReturn(['typo3-search-exclude']);

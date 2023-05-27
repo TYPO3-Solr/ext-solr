@@ -86,7 +86,7 @@ class IndexQueueModuleController extends AbstractModuleController
      */
     protected function getIndexQueueInitializationSelector(): string
     {
-        $selector = GeneralUtility::makeInstance(IndexingConfigurationSelectorField::class, /** @scrutinizer ignore-type */ $this->selectedSite);
+        $selector = GeneralUtility::makeInstance(IndexingConfigurationSelectorField::class, $this->selectedSite);
         $selector->setFormElementName('tx_solr-index-queue-initialization');
 
         return $selector->render();
@@ -229,7 +229,7 @@ class IndexQueueModuleController extends AbstractModuleController
     public function doIndexingRunAction(): ResponseInterface
     {
         /* @var IndexService $indexService */
-        $indexService = GeneralUtility::makeInstance(IndexService::class, /** @scrutinizer ignore-type */ $this->selectedSite);
+        $indexService = GeneralUtility::makeInstance(IndexService::class, $this->selectedSite);
         $indexWithoutErrors = $indexService->indexItems(1);
 
         $label = 'solr.backend.index_queue_module.flashmessage.success.index_manual';

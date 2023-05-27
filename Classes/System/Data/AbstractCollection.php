@@ -17,6 +17,8 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\System\Data;
 
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetItem;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Grouping\Group;
 use ArrayAccess;
 use ArrayIterator;
 use Closure;
@@ -30,7 +32,7 @@ use Traversable;
 abstract class AbstractCollection implements IteratorAggregate, Countable, ArrayAccess
 {
     /**
-     * @var AbstractCollection[]
+     * @var AbstractFacetItem[]|Group[]
      */
     protected array $data = [];
 

@@ -42,7 +42,7 @@ class ResultParserRegistryTest extends SetUpUnitTestCase
      */
     public function canRegisterAndRetrieveParserWithAHigherPriority()
     {
-        $fakeResultSet = $this->getDumbMock(SearchResultSet::class);
+        $fakeResultSet = $this->createMock(SearchResultSet::class);
         $this->registry->registerParser(TestResultParser::class, 200);
         $retrievedParser = $this->registry->getParser($fakeResultSet);
         self::assertInstanceOf(TestResultParser::class, $retrievedParser, 'Did not retrieve register custom parser with higher priority');

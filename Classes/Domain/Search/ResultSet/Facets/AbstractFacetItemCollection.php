@@ -37,7 +37,7 @@ abstract class AbstractFacetItemCollection extends AbstractCollection
         return $this;
     }
 
-    public function getByValue(string $value): ?AbstractFacetItem
+    public function getByValue(string $value): AbstractFacetItem|AbstractCollection|AbstractFacetItemCollection|null
     {
         return $this->data[$value] ?? null;
     }

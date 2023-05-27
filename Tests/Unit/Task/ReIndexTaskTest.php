@@ -30,7 +30,6 @@ class ReIndexTaskTest extends SetUpUnitTestCase
      */
     public function canGetErrorMessageInAdditionalInformationWhenSiteNotAvailable()
     {
-        /* @var ReIndexTask $indexQueuerWorker */
         $indexQueuerWorker = $this->getMockBuilder(ReIndexTask::class)
             ->disableOriginalConstructor()
             ->onlyMethods(['getSite'])

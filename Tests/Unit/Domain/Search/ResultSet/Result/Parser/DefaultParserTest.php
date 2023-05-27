@@ -21,6 +21,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use PHPUnit\Framework\MockObject\MockObject;
 
 /**
  * Unit test case for the SearchResult.
@@ -29,19 +30,12 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
  */
 class DefaultParserTest extends SetUpUnitTestCase
 {
-    /**
-     * @var TypoScriptConfiguration
-     */
-    protected $configurationMock;
-
-    /**
-     * @var DefaultResultParser
-     */
-    protected $parser;
+    protected TypoScriptConfiguration|MockObject $configurationMock;
+    protected DefaultResultParser $parser;
 
     protected function setUp(): void
     {
-        $this->configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
+        $this->configurationMock = $this->createMock(TypoScriptConfiguration::class);
         $this->parser = new DefaultResultParser();
         parent::setUp();
     }
@@ -49,7 +43,7 @@ class DefaultParserTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function parseWillCreateResultCollectionFromSolrResponse()
+    public function parseWillCreateResultCollectionFromSolrResponse(): void
     {
         $fakeResultSet = $this->getMockBuilder(SearchResultSet::class)->onlyMethods(['getResponse'])->getMock();
 
@@ -64,7 +58,7 @@ class DefaultParserTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function returnsResultSetWithResultCount()
+    public function returnsResultSetWithResultCount(): void
     {
         $fakeResultSet = $this->getMockBuilder(SearchResultSet::class)->onlyMethods(['getResponse'])->getMock();
 
@@ -79,7 +73,7 @@ class DefaultParserTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function parseWillSetMaximumScore()
+    public function parseWillSetMaximumScore(): void
     {
         $fakeResultSet = $this->getMockBuilder(SearchResultSet::class)->onlyMethods(['getResponse'])->getMock();
 
@@ -94,11 +88,11 @@ class DefaultParserTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function canParseReturnsFalseWhenGroupingIsEnabled()
+    public function canParseReturnsFalseWhenGroupingIsEnabled(): void
     {
-        $requestMock = $this->getDumbMock(SearchRequest::class);
+        $requestMock = $this->createMock(SearchRequest::class);
         $requestMock->expects(self::any())->method('getContextTypoScriptConfiguration')->willReturn($this->configurationMock);
-        $fakeResultSet = $this->getDumbMock(SearchResultSet::class);
+        $fakeResultSet = $this->createMock(SearchResultSet::class);
         $fakeResultSet->expects(self::any())->method('getUsedSearchRequest')->willReturn($requestMock);
 
         $this->configurationMock->expects(self::once())->method('getIsSearchGroupingEnabled')->willReturn(true);
@@ -108,11 +102,11 @@ class DefaultParserTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function canParseReturnsTrueWhenGroupingIsDisabled()
+    public function canParseReturnsTrueWhenGroupingIsDisabled(): void
     {
-        $requestMock = $this->getDumbMock(SearchRequest::class);
+        $requestMock = $this->createMock(SearchRequest::class);
         $requestMock->expects(self::any())->method('getContextTypoScriptConfiguration')->willReturn($this->configurationMock);
-        $fakeResultSet = $this->getDumbMock(SearchResultSet::class);
+        $fakeResultSet = $this->createMock(SearchResultSet::class);
         $fakeResultSet->expects(self::any())->method('getUsedSearchRequest')->willReturn($requestMock);
 
         $this->configurationMock->expects(self::once())->method('getIsSearchGroupingEnabled')->willReturn(false);

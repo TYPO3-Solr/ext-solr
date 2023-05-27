@@ -98,13 +98,9 @@ class SolrConfigurationStatus extends AbstractSolrStatus
         $report = $this->getRenderedReport('RootPageFlagStatus.html');
         return GeneralUtility::makeInstance(
             Status::class,
-            /** @scrutinizer ignore-type */
             'Sites',
-            /** @scrutinizer ignore-type */
             'No sites found',
-            /** @scrutinizer ignore-type */
             $report,
-            /** @scrutinizer ignore-type */
             ContextualFeedbackSeverity::ERROR
         );
     }
@@ -127,13 +123,9 @@ class SolrConfigurationStatus extends AbstractSolrStatus
         $report = $this->getRenderedReport('SolrConfigurationStatusIndexing.html', ['pages' => $rootPagesWithIndexingOff]);
         return GeneralUtility::makeInstance(
             Status::class,
-            /** @scrutinizer ignore-type */
             'Page Indexing',
-            /** @scrutinizer ignore-type */
             'Indexing is disabled',
-            /** @scrutinizer ignore-type */
             $report,
-            /** @scrutinizer ignore-type */
             ContextualFeedbackSeverity::WARNING
         );
     }

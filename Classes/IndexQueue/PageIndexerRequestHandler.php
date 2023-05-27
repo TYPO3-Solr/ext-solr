@@ -52,7 +52,7 @@ class PageIndexerRequestHandler implements SingletonInterface
     public function __construct(string $jsonEncodedParameters = null)
     {
         $this->dispatcher = GeneralUtility::makeInstance(Dispatcher::class);
-        $this->request = GeneralUtility::makeInstance(PageIndexerRequest::class, /** @scrutinizer ignore-type */ $jsonEncodedParameters);
+        $this->request = GeneralUtility::makeInstance(PageIndexerRequest::class, $jsonEncodedParameters);
         $this->response = GeneralUtility::makeInstance(PageIndexerResponse::class);
         $this->response->setRequestId($this->request->getRequestId());
     }

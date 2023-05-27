@@ -20,6 +20,7 @@ use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Core\Registry;
 use TYPO3\CMS\Core\Site\Entity\Site as CoreSite;
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
@@ -35,38 +36,19 @@ use TYPO3\CMS\Core\Site\SiteFinder;
  */
 class SiteRepositoryTest extends SetUpUnitTestCase
 {
-    /**
-     * @var TwoLevelCache
-     */
-    protected $cacheMock;
-
-    /**
-     * @var RootPageResolver
-     */
-    protected $rootPageResolverMock;
-
-    /**
-     * @var Registry
-     */
-    protected $registryMock;
-
-    /**
-     * @var SiteRepository
-     */
-    protected $siteRepository;
-
-    /**
-     * @var SiteFinder
-     */
-    protected $siteFinderMock;
+    protected TwoLevelCache|MockObject $cacheMock;
+    protected RootPageResolver|MockObject $rootPageResolverMock;
+    protected Registry|MockObject $registryMock;
+    protected SiteRepository|MockObject $siteRepository;
+    protected SiteFinder|MockObject $siteFinderMock;
 
     protected function setUp(): void
     {
         $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['solr'] = [];
-        $this->cacheMock = $this->getDumbMock(TwoLevelCache::class);
-        $this->rootPageResolverMock = $this->getDumbMock(RootPageResolver::class);
-        $this->registryMock = $this->getDumbMock(Registry::class);
-        $this->siteFinderMock = $this->getDumbMock(SiteFinder::class);
+        $this->cacheMock = $this->createMock(TwoLevelCache::class);
+        $this->rootPageResolverMock = $this->createMock(RootPageResolver::class);
+        $this->registryMock = $this->createMock(Registry::class);
+        $this->siteFinderMock = $this->createMock(SiteFinder::class);
 
         // we mock buildSite to avoid the creation of real Site objects and pass all dependencies as mock
         $this->siteRepository = $this->getMockBuilder(SiteRepository::class)
@@ -79,7 +61,7 @@ class SiteRepositoryTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function canGetSiteByRootPageId()
+    public function canGetSiteByRootPageId(): void
     {
         $this->fakeEmptyCache();
 
@@ -93,7 +75,7 @@ class SiteRepositoryTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function canGetSiteByPageId()
+    public function canGetSiteByPageId(): void
     {
         $this->fakeEmptyCache();
         $this->fakeExistingRootPage(222, 111);
@@ -108,7 +90,7 @@ class SiteRepositoryTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function canGetFirstAvailableSite()
+    public function canGetFirstAvailableSite(): void
     {
         $this->fakeEmptyCache();
 
@@ -127,7 +109,7 @@ class SiteRepositoryTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function canGetAvailableSites()
+    public function canGetAvailableSites(): void
     {
         $this->fakeEmptyCache();
         $siteMockA = $this->getSiteMock(123, [0, 1]);
@@ -144,7 +126,7 @@ class SiteRepositoryTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function canGetAllLanguages()
+    public function canGetAllLanguages(): void
     {
         $this->fakeEmptyCache();
         $siteMockA = $this->getSiteMock(123, [0, 2, 5]);
@@ -165,26 +147,22 @@ class SiteRepositoryTest extends SetUpUnitTestCase
         self::assertEquals([0, 2, 5], array_keys($connections), 'Could not get languages for site');
     }
 
-    protected function fakeEmptyCache()
+    protected function fakeEmptyCache(): void
     {
         $this->cacheMock->expects(self::any())->method('get')->willReturn(null);
     }
 
-    protected function assertCacheIsWritten()
+    protected function assertCacheIsWritten(): void
     {
         $this->cacheMock->expects(self::once())->method('set');
     }
 
-    /**
-     * @param array $pageIds
-     * @param array $fakedConnectionConfiguration
-     */
-    protected function assertThatSitesAreCreatedWithPageIds(array $pageIds, array $fakedConnectionConfiguration = [])
+    protected function assertThatSitesAreCreatedWithPageIds(array $pageIds, array $fakedConnectionConfiguration = []): void
     {
         $this->siteRepository->expects(self::any())->method('buildSite')->willReturnCallback(
             function ($idToUse) use ($pageIds, $fakedConnectionConfiguration) {
                 if (in_array($idToUse, $pageIds)) {
-                    $site = $this->getDumbMock(Site::class);
+                    $site = $this->createMock(Site::class);
                     $site->expects($this->any())->method('getRootPageId')->willReturn(
                         $idToUse
                     );
@@ -198,30 +176,23 @@ class SiteRepositoryTest extends SetUpUnitTestCase
         );
     }
 
-    /**
-     * @param int $forPageId
-     * @param int $rootPageId
-     */
-    protected function fakeExistingRootPage($forPageId, $rootPageId)
+    protected function fakeExistingRootPage(int $forPageId, int $rootPageId): void
     {
         $this->rootPageResolverMock->expects(self::any())->method('getRootPageId')->with($forPageId)->willReturn($rootPageId);
     }
 
     /**
-     * @param int $rootPageUid
-     * @return CoreSite
+     * @param array<int, int> $languageUids
      */
-    protected function getSiteMock(int $rootPageUid, array $languageUids)
+    protected function getSiteMock(int $rootPageUid, array $languageUids): CoreSite|MockObject
     {
-        /** @var CoreSite $siteMock */
-        $siteMock = $this->getDumbMock(CoreSite::class);
+        $siteMock = $this->createMock(CoreSite::class);
         $siteMock->expects(self::any())->method('getRootPageId')->willReturn($rootPageUid);
 
         $languageMocks = [];
-        $defaultLanguage = null;
 
         foreach ($languageUids as $languageUid) {
-            $languageMock = $this->getDumbMock(SiteLanguage::class);
+            $languageMock = $this->createMock(SiteLanguage::class);
             $languageMock->expects(self::any())->method('getLanguageId')->willReturn($languageUid);
             $languageMocks[] = $languageMock;
         }
@@ -235,10 +206,8 @@ class SiteRepositoryTest extends SetUpUnitTestCase
     /**
      * @param array $sitesInTYPO3
      */
-    protected function fakeSitesInTYPO3Systems(array $sitesInTYPO3)
+    protected function fakeSitesInTYPO3Systems(array $sitesInTYPO3): void
     {
-        $this->siteFinderMock->expects(self::any())->method('getAllSites')->willReturn(
-            $sitesInTYPO3
-        );
+        $this->siteFinderMock->expects(self::any())->method('getAllSites')->willReturn($sitesInTYPO3);
     }
 }

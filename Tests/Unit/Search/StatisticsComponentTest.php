@@ -43,7 +43,7 @@ class StatisticsComponentTest extends SetUpUnitTestCase
             ],
         ]);
 
-        $searchRequestMock = $this->getDumbMock(SearchRequest::class);
+        $searchRequestMock = $this->createMock(SearchRequest::class);
         $searchRequestMock->expects(self::once())->method('getContextTypoScriptConfiguration')->willReturn($typoScriptConfiguration);
 
         $statisticsComponent = new StatisticsComponent();
@@ -68,7 +68,7 @@ class StatisticsComponentTest extends SetUpUnitTestCase
             ],
         ]);
 
-        $searchRequestMock = $this->getDumbMock(SearchRequest::class);
+        $searchRequestMock = $this->createMock(SearchRequest::class);
         $searchRequestMock->expects(self::once())->method('getContextTypoScriptConfiguration')->willReturn($typoScriptConfiguration);
 
         $statisticsComponent = new StatisticsComponent();

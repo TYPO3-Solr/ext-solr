@@ -17,7 +17,6 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets\RangeBased\NumericRange;
 
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\NumericRange\NumericRangeFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\NumericRange\NumericRangeFacetParser;
 use ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets\SetUpFacetParser;
@@ -31,13 +30,8 @@ class NumericRangeFacetParserTest extends SetUpFacetParser
 {
     /**
      * Returns a basic facet configuration
-     *
-     * @param int $start
-     * @param int $end
-     * @param int $gap
-     * @return array[]
      */
-    protected function getPageIdFacetConfiguration($start = -100.0, $end = 100.0, $gap = '2'): array
+    protected function getPageIdFacetConfiguration(float|int $start = -100.0, float|int $end = 100.0, int|string $gap = '2'): array
     {
         return [
             'myPids.' => [
@@ -56,26 +50,23 @@ class NumericRangeFacetParserTest extends SetUpFacetParser
 
     /**
      * Returns the numeric range facet
-     *
-     * @param array $facetConfiguration
-     * @param array $filters
-     * @param string $facetName
-     * @return AbstractFacet|NumericRangeFacet|null
      */
     protected function getNumericRangeFacet(
         array $facetConfiguration,
         array $filters,
         string $facetName
-    ): ?AbstractFacet {
+    ): ?NumericRangeFacet {
         $searchResultSet = $this->initializeSearchResultSetFromFakeResponse(
             'fake_solr_response_with_numericRange_facet.json',
             $facetConfiguration,
             $filters
         );
 
-        /* @var NumericRangeFacetParser $parser */
+        /** @var NumericRangeFacetParser $parser */
         $parser = $this->getInitializedParser(NumericRangeFacetParser::class);
-        return $parser->parse($searchResultSet, $facetName, $facetConfiguration[$facetName . '.']);
+        /** @var NumericRangeFacet|null $facet */
+        $facet = $parser->parse($searchResultSet, $facetName, $facetConfiguration[$facetName . '.']);
+        return $facet;
     }
 
     /**
@@ -113,8 +104,6 @@ class NumericRangeFacetParserTest extends SetUpFacetParser
      * Test the parsing of the active range values
      *
      * @dataProvider canParseActiveFacetValuesProvider
-     * @param int $startRequested
-     * @param int $endRequested
      * @test
      */
     public function canParseActiveFacetValues(int $startRequested, int $endRequested): void
@@ -132,8 +121,6 @@ class NumericRangeFacetParserTest extends SetUpFacetParser
 
     /**
      * Data provider for testing the parsing of the active range values
-     *
-     * @return array
      */
     public function canParseActiveFacetValuesProvider(): array
     {

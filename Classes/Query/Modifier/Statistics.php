@@ -19,7 +19,6 @@ namespace ApacheSolrForTypo3\Solr\Query\Modifier;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
-use Solarium\QueryType\Select\Query\Query as SolariumSelectQuery;
 
 /**
  * Enables tracking of detailed statistics
@@ -39,9 +38,9 @@ class Statistics implements Modifier
      * Enables the query's debug mode to get more detailed information.
      *
      * @param Query $query The query to modify
-     * @return Query|SolariumSelectQuery The modified query with enabled debugging mode
+     * @return Query The modified query with enabled debugging mode
      */
-    public function modifyQuery(Query $query): Query|SolariumSelectQuery
+    public function modifyQuery(Query $query): Query
     {
         return $this->queryBuilder->startFrom($query)->useDebug(true)->getQuery();
     }

@@ -94,7 +94,6 @@ class SolrReadService extends AbstractSolrService
     /**
      * This method handles a failed Solr request and maps it to a meaningful exception.
      *
-     * @return ResponseAdapter $response
      * @throws SolrCommunicationException
      */
     protected function handleErrorResponse(ResponseAdapter $response): void

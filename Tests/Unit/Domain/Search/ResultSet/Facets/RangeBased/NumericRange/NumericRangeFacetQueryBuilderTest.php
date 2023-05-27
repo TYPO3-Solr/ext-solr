@@ -36,7 +36,7 @@ class NumericRangeFacetQueryBuilderTest extends SetUpUnitTestCase
             'keepAllOptionsOnSelection' => 1,
             'numericRange.' => ['start' => 1, 'end' => 100, 'gap' => 5],
         ];
-        $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
+        $configurationMock = $this->createMock(TypoScriptConfiguration::class);
         $configurationMock->expects(self::once())->method('getSearchFacetingFacetByName')->with('testFacet')->willReturn(
             $fakeFacetConfiguration
         );

@@ -125,7 +125,7 @@ abstract class AbstractStrategy
             $response = $solr->getWriteService()->deleteByQuery($query);
 
             if ($response->getHttpStatus() !== 200) {
-                $logger = GeneralUtility::makeInstance(SolrLogManager::class, /** @scrutinizer ignore-type */ __CLASS__);
+                $logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
                 $logger->log(
                     SolrLogManager::ERROR,
                     'Couldn\'t delete index document',

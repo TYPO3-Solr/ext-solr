@@ -31,17 +31,17 @@ class RelevanceViewHelperTest extends SetUpUnitTestCase
      */
     public function canCalculateRelevance()
     {
-        $resultSetMock = $this->getDumbMock(SearchResultSet::class);
+        $resultSetMock = $this->createMock(SearchResultSet::class);
         $resultSetMock->expects(self::any())->method('getMaximumScore')->willReturn(5.5);
 
-        $documentMock = $this->getDumbMock(SearchResult::class);
+        $documentMock = $this->createMock(SearchResult::class);
         $documentMock->expects(self::once())->method('getScore')->willReturn(0.55);
 
         $arguments = [
             'resultSet' => $resultSetMock,
             'document' => $documentMock,
         ];
-        $renderingContextMock = $this->getDumbMock(RenderingContextInterface::class);
+        $renderingContextMock = $this->createMock(RenderingContextInterface::class);
         $score = RelevanceViewHelper::renderStatic($arguments, function () {}, $renderingContextMock);
 
         self::assertEquals(10.0, $score, 'Unexpected score');
@@ -52,10 +52,10 @@ class RelevanceViewHelperTest extends SetUpUnitTestCase
      */
     public function canCalculateRelevanceFromPassedMaximumScore()
     {
-        $resultSetMock = $this->getDumbMock(SearchResultSet::class);
+        $resultSetMock = $this->createMock(SearchResultSet::class);
         $resultSetMock->expects(self::never())->method('getMaximumScore');
 
-        $documentMock = $this->getDumbMock(SearchResult::class);
+        $documentMock = $this->createMock(SearchResult::class);
         $documentMock->expects(self::once())->method('getScore')->willReturn(0.55);
 
         $arguments = [
@@ -63,7 +63,7 @@ class RelevanceViewHelperTest extends SetUpUnitTestCase
             'document' => $documentMock,
             'maximumScore' => 11,
         ];
-        $renderingContextMock = $this->getDumbMock(RenderingContextInterface::class);
+        $renderingContextMock = $this->createMock(RenderingContextInterface::class);
         $score = RelevanceViewHelper::renderStatic($arguments, function () {}, $renderingContextMock);
 
         self::assertEquals(5.0, $score, 'Unexpected score');

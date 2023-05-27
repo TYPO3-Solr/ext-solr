@@ -31,7 +31,6 @@ class IndexQueueWorkerTaskTest extends SetUpUnitTestCase
      */
     public function canGetWebRoot()
     {
-        /* @var IndexQueueWorkerTask $indexQueuerWorker */
         $indexQueuerWorker = $this->getMockBuilder(IndexQueueWorkerTask::class)
             ->disableOriginalConstructor()
             ->onlyMethods(['execute'])
@@ -54,7 +53,6 @@ class IndexQueueWorkerTaskTest extends SetUpUnitTestCase
      */
     public function canGetErrorMessageInAdditionalInformationWhenSiteNotAvailable()
     {
-        /* @var IndexQueueWorkerTask $indexQueuerWorker */
         $indexQueuerWorker = $this->getMockBuilder(IndexQueueWorkerTask::class)
             ->disableOriginalConstructor()
             ->onlyMethods(['getSite'])

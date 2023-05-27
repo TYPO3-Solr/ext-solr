@@ -42,44 +42,21 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
  */
 class SuggestServiceTest extends SetUpUnitTestCase
 {
-    /**
-     * @var SuggestService
-     */
-    protected $suggestService;
-
-    /**
-     * @var TypoScriptFrontendController
-     */
-    protected $tsfeMock;
-
-    /**
-     * @var SearchResultSetService
-     */
-    protected $searchResultSetServiceMock;
-
-    /**
-     * @var TypoScriptConfiguration
-     */
-    protected $configurationMock;
-
-    /**
-     * @var QueryBuilder
-     */
-    protected $queryBuilderMock;
-
-    /**
-     * @var SuggestQuery
-     */
-    protected $suggestQueryMock;
+    protected SuggestService|MockObject $suggestService;
+    protected TypoScriptFrontendController|MockObject $tsfeMock;
+    protected SearchResultSetService|MockObject $searchResultSetServiceMock;
+    protected TypoScriptConfiguration|MockObject $configurationMock;
+    protected QueryBuilder|MockObject $queryBuilderMock;
+    protected SuggestQuery|MockObject $suggestQueryMock;
 
     protected function setUp(): void
     {
-        $this->tsfeMock = $this->getDumbMock(TypoScriptFrontendController::class);
-        $this->searchResultSetServiceMock = $this->getDumbMock(SearchResultSetService::class);
-        $this->configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
-        $this->queryBuilderMock = $this->getDumbMock(QueryBuilder::class);
+        $this->tsfeMock = $this->createMock(TypoScriptFrontendController::class);
+        $this->searchResultSetServiceMock = $this->createMock(SearchResultSetService::class);
+        $this->configurationMock = $this->createMock(TypoScriptConfiguration::class);
+        $this->queryBuilderMock = $this->createMock(QueryBuilder::class);
 
-        $this->suggestQueryMock = $this->getDumbMock(SuggestQuery::class);
+        $this->suggestQueryMock = $this->createMock(SuggestQuery::class);
         $this->queryBuilderMock->expects(self::once())->method('buildSuggestQuery')->willReturn($this->suggestQueryMock);
 
         $this->suggestService = $this->getMockBuilder(SuggestService::class)
@@ -89,10 +66,7 @@ class SuggestServiceTest extends SetUpUnitTestCase
         parent::setUp();
     }
 
-    /**
-     * @param string $queryString
-     */
-    protected function assertSuggestQueryWithQueryStringCreated($queryString)
+    protected function assertSuggestQueryWithQueryStringCreated(string $queryString): void
     {
         $this->suggestQueryMock->expects(self::any())->method('getQuery')->willReturn($queryString);
     }
@@ -100,7 +74,7 @@ class SuggestServiceTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function canGetSuggestionsWithoutTopResults()
+    public function canGetSuggestionsWithoutTopResults(): void
     {
         // the query string is used as prefix but no real query string is passed.
         $this->assertSuggestQueryWithQueryStringCreated('');
@@ -130,18 +104,18 @@ class SuggestServiceTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function canHandleInvalidSyntaxInAdditionalFilters()
+    public function canHandleInvalidSyntaxInAdditionalFilters(): void
     {
         $this->assertNoSearchWillBeTriggered();
         $fakeRequest = $this->getFakedSearchRequest('some');
 
-        $solrConnectionMock = $this->getDumbMock(SolrConnection::class);
+        $solrConnectionMock = $this->createMock(SolrConnection::class);
         $connectionManagerMock = $this->getAccessibleMock(ConnectionManager::class, ['getConnectionByPageId'], [], '', false);
         $connectionManagerMock->expects(self::any())->method('getConnectionByPageId')->willReturn($solrConnectionMock);
         GeneralUtility::setSingletonInstance(ConnectionManager::class, $connectionManagerMock);
 
-        $searchStub = new class ($this->getDumbMock(SolrConnection::class)) extends Search implements SingletonInterface {
-            public static $suggestServiceTest;
+        $searchStub = new class ($this->createMock(SolrConnection::class)) extends Search implements SingletonInterface {
+            public static SuggestServiceTest $suggestServiceTest;
             public function search(Query $query, $offset = 0, $limit = 10): ?ResponseAdapter
             {
                 return self::$suggestServiceTest->getMockBuilder(ResponseAdapter::class)
@@ -176,7 +150,7 @@ class SuggestServiceTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function emptyJsonIsReturnedWhenSolrHasNoSuggestions()
+    public function emptyJsonIsReturnedWhenSolrHasNoSuggestions(): void
     {
         $this->configurationMock->expects(self::never())->method('getSuggestShowTopResults');
         $this->assertNoSearchWillBeTriggered();
@@ -193,7 +167,7 @@ class SuggestServiceTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function canGetSuggestionsWithTopResults()
+    public function canGetSuggestionsWithTopResults(): void
     {
         $this->configurationMock->expects(self::once())->method('getSuggestShowTopResults')->willReturn(true);
         $this->configurationMock->expects(self::once())->method('getSuggestNumberOfTopResults')->willReturn(2);
@@ -208,7 +182,7 @@ class SuggestServiceTest extends SetUpUnitTestCase
             'typo' => 5,
         ]);
 
-        $fakeTopResults = $this->getDumbMock(SearchResultSet::class);
+        $fakeTopResults = $this->createMock(SearchResultSet::class);
         $fakeResultDocuments = new SearchResultCollection(
             [
                 $this->getFakedSearchResult('http://www.typo3-solr.com/a', 'pages', 'hello solr', 'my suggestions'),
@@ -228,16 +202,10 @@ class SuggestServiceTest extends SetUpUnitTestCase
 
     /**
      * Builds a faked SearchResult object.
-     *
-     * @param string $url
-     * @param string $type
-     * @param string $title
-     * @param string $content
-     * @return SearchResult
      */
-    protected function getFakedSearchResult($url, $type, $title, $content)
+    protected function getFakedSearchResult(string $url, string $type, string $title, string $content): SearchResult|MockObject
     {
-        $result = $this->getDumbMock(SearchResult::class);
+        $result = $this->createMock(SearchResult::class);
         $result->expects(self::once())->method('getUrl')->willReturn($url);
         $result->expects(self::once())->method('getType')->willReturn($type);
         $result->expects(self::once())->method('getTitle')->willReturn($title);
@@ -246,18 +214,14 @@ class SuggestServiceTest extends SetUpUnitTestCase
         return $result;
     }
 
-    protected function assertNoSearchWillBeTriggered()
+    protected function assertNoSearchWillBeTriggered(): void
     {
         $this->searchResultSetServiceMock->expects(self::never())->method('search');
     }
 
-    /**
-     * @param string $queryString
-     * @return SearchRequest|MockObject
-     */
     protected function getFakedSearchRequest(string $queryString): SearchRequest|MockObject
     {
-        $fakeRequest = $this->getDumbMock(SearchRequest::class);
+        $fakeRequest = $this->createMock(SearchRequest::class);
         $fakeRequest->expects(self::atLeastOnce())->method('getRawUserQuery')->willReturn($queryString);
         return $fakeRequest;
     }

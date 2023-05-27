@@ -39,9 +39,6 @@ use TYPO3\CMS\Scheduler\Scheduler;
  */
 class GarbageCollectorTest extends IntegrationTest
 {
-    /**
-     * @var array
-     */
     protected array $coreExtensionsToLoad = [
         'extensionmanager',
         'scheduler',
@@ -870,6 +867,7 @@ class GarbageCollectorTest extends IntegrationTest
 
     protected function addToQueueAndIndexRecord(string $table, int $uid): bool
     {
+        $result = false;
         // write an index queue item
         $updatedItems = $this->indexQueue->updateItem($table, $uid);
 
@@ -892,10 +890,7 @@ class GarbageCollectorTest extends IntegrationTest
      */
     protected function processEventQueue(): void
     {
-        /** @var EventQueueWorkerTask $task */
         $task = GeneralUtility::makeInstance(EventQueueWorkerTask::class);
-
-        /** @var Scheduler $scheduler */
         $scheduler = GeneralUtility::makeInstance(Scheduler::class);
         $scheduler->executeTask($task);
     }

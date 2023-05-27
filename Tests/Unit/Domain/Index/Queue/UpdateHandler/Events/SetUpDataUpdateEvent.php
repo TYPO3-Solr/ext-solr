@@ -27,13 +27,14 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
  */
 abstract class SetUpDataUpdateEvent extends SetUpUnitTestCase
 {
+    protected const EVENT_CLASS = AbstractDataUpdateEvent::class;
+    protected const EVENT_TEST_TABLE = 'tx_foo_bar';
+
     /**
-     * @return SetUpDataUpdateEvent
      * @test
      */
     public function canInitAndReturnBasicProperties(): AbstractDataUpdateEvent
     {
-        /** @var AbstractDataUpdateEvent $event */
         $eventClass = static::EVENT_CLASS;
         $event = new $eventClass(123, static::EVENT_TEST_TABLE);
 
@@ -53,7 +54,6 @@ abstract class SetUpDataUpdateEvent extends SetUpUnitTestCase
      */
     public function canInitAndReturnFields(): void
     {
-        /** @var AbstractDataUpdateEvent $event */
         $eventClass = static::EVENT_CLASS;
         $event = new $eventClass(123, static::EVENT_TEST_TABLE, $fields = ['hidden' => 1]);
 
@@ -65,8 +65,8 @@ abstract class SetUpDataUpdateEvent extends SetUpUnitTestCase
      */
     public function canIndicatePageUpdate(): void
     {
-        /** @var AbstractDataUpdateEvent $event */
         $eventClass = static::EVENT_CLASS;
+        /** @var AbstractDataUpdateEvent $event */
         $event = new $eventClass(123, 'tx_foo_bar');
         self::assertFalse($event->isPageUpdate());
 
@@ -81,12 +81,10 @@ abstract class SetUpDataUpdateEvent extends SetUpUnitTestCase
      */
     public function canIndicateContentElementUpdate(): void
     {
-        /** @var AbstractDataUpdateEvent $event */
         $eventClass = static::EVENT_CLASS;
         $event = new $eventClass(123, 'tx_foo_bar');
         self::assertFalse($event->isContentElementUpdate());
 
-        /** @var AbstractDataUpdateEvent $event */
         $eventClass = static::EVENT_CLASS;
         $event = new $eventClass(123, 'tt_content');
         self::assertTrue($event->isContentElementUpdate());
@@ -97,7 +95,6 @@ abstract class SetUpDataUpdateEvent extends SetUpUnitTestCase
      */
     public function canMarkAndIndicateStoppedProcessing(): void
     {
-        /** @var AbstractDataUpdateEvent $event */
         $eventClass = static::EVENT_CLASS;
         $event = new $eventClass(123, 'tx_foo_bar');
 
@@ -113,7 +110,6 @@ abstract class SetUpDataUpdateEvent extends SetUpUnitTestCase
      */
     public function canMarkAndIndicateForcedProcessing(): void
     {
-        /** @var AbstractDataUpdateEvent $event */
         $eventClass = static::EVENT_CLASS;
         $event = new $eventClass(123, 'tx_foo_bar');
 
@@ -136,7 +132,6 @@ abstract class SetUpDataUpdateEvent extends SetUpUnitTestCase
             'l10n_diffsource' => 'dummy l10n_diffsource',
         ];
 
-        /** @var AbstractDataUpdateEvent $event */
         $eventClass = static::EVENT_CLASS;
         $event = new $eventClass(123, 'pages', $fields);
 

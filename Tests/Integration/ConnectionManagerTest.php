@@ -68,7 +68,6 @@ class ConnectionManagerTest extends IntegrationTest
         $this->mergeSiteConfiguration($siteName, ['solr_host_read' => $expectedSolrHost]);
         $this->importCSVDataSet(__DIR__ . '/Fixtures/connection_basic.csv');
 
-        /* @var ConnectionManager $connectionManager */
         $connectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
 
         foreach ([0, 1, 2] as $languageID) {
@@ -116,7 +115,6 @@ class ConnectionManagerTest extends IntegrationTest
         $this->mergeSiteConfiguration($siteName, ['solr_host_read' => $expectedSolrHost]);
         $this->importCSVDataSet(__DIR__ . '/Fixtures/connection_basic.csv');
 
-        /* @var ConnectionManager $connectionManager */
         $connectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
 
         foreach ([0, 1, 2] as $languageID) {
@@ -170,7 +168,6 @@ class ConnectionManagerTest extends IntegrationTest
         $this->setupNotFullyConfiguredSite();
 
         $this->expectException(NoSolrConnectionFoundException::class);
-        /* @var ConnectionManager $connectionManager */
         $connectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
         $connectionManager->getConnectionByRootPageId(3);
 
@@ -197,7 +194,6 @@ class ConnectionManagerTest extends IntegrationTest
         $this->setupNotFullyConfiguredSite();
 
         $this->expectException(NoSolrConnectionFoundException::class);
-        /* @var ConnectionManager $connectionManager */
         $connectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
         $connectionManager->getConnectionByPageId(31);
     }
@@ -226,7 +222,6 @@ class ConnectionManagerTest extends IntegrationTest
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/connection_for_mounted_page.csv');
 
-        /* @var ConnectionManager $connectionManager */
         $connectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
 
         $solrService = $connectionManager->getConnectionByPageId(24, 0, '24-14');

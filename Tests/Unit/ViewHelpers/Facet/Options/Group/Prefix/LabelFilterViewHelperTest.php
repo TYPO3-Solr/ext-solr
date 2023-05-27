@@ -31,9 +31,9 @@ class LabelFilterViewHelperTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function canMakeOnlyExpectedFacetsAvailableInStaticContext()
+    public function canMakeOnlyExpectedFacetsAvailableInStaticContext(): void
     {
-        $facet = $this->getDumbMock(OptionsFacet::class);
+        $facet = $this->createMock(OptionsFacet::class);
 
         $roseRed = new Option($facet, 'Rose Red', 'rose_red', 14);
         $blue = new Option($facet, 'Polar Blue', 'polar_blue', 12);
@@ -49,7 +49,7 @@ class LabelFilterViewHelperTest extends SetUpUnitTestCase
         $optionCollection->add($royalGreen);
 
         $variableContainer = $this->getMockBuilder(StandardVariableProvider::class)->onlyMethods(['remove'])->getMock();
-        $renderingContextMock = $this->getDumbMock(RenderingContextInterface::class);
+        $renderingContextMock = $this->createMock(RenderingContextInterface::class);
         $renderingContextMock->expects(self::any())->method('getVariableProvider')->willReturn($variableContainer);
 
         $testArguments['options'] = $optionCollection;
@@ -58,7 +58,7 @@ class LabelFilterViewHelperTest extends SetUpUnitTestCase
         LabelFilterViewHelper::renderStatic($testArguments, function () {}, $renderingContextMock);
         self::assertTrue($variableContainer->exists('filteredOptions'), 'Expected that filteredOptions has been set');
 
-        /** @var  $optionCollection OptionCollection */
+        /** @var OptionCollection $optionCollection */
         $optionCollection = $variableContainer->get('filteredOptions');
         self::assertSame(1, $optionCollection->getCount());
         self::assertSame('Polar Blue', $optionCollection->getByPosition(0)->getLabel(), 'Filtered option has unexpected label');
@@ -67,9 +67,9 @@ class LabelFilterViewHelperTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function canMakeOnlyExpectedFacetsAvailableInStaticContextWithMultiByteCharacters()
+    public function canMakeOnlyExpectedFacetsAvailableInStaticContextWithMultiByteCharacters(): void
     {
-        $facet = $this->getDumbMock(OptionsFacet::class);
+        $facet = $this->createMock(OptionsFacet::class);
 
         $ben = new Option($facet, 'Ben', 'ben', 14);
         $ole = new Option($facet, 'Øle', 'ole', 12);
@@ -79,7 +79,7 @@ class LabelFilterViewHelperTest extends SetUpUnitTestCase
         $optionCollection->add($ole);
 
         $variableContainer = $this->getMockBuilder(StandardVariableProvider::class)->onlyMethods(['remove'])->getMock();
-        $renderingContextMock = $this->getDumbMock(RenderingContextInterface::class);
+        $renderingContextMock = $this->createMock(RenderingContextInterface::class);
         $renderingContextMock->expects(self::any())->method('getVariableProvider')->willReturn($variableContainer);
 
         $testArguments['options'] = $optionCollection;
@@ -88,7 +88,7 @@ class LabelFilterViewHelperTest extends SetUpUnitTestCase
         LabelFilterViewHelper::renderStatic($testArguments, function () {}, $renderingContextMock);
         self::assertTrue($variableContainer->exists('filteredOptions'), 'Expected that filteredOptions has been set');
 
-        /** @var  $optionCollection OptionCollection */
+        /** @var OptionCollection $optionCollection */
         $optionCollection = $variableContainer->get('filteredOptions');
         self::assertSame(1, $optionCollection->getCount());
         self::assertSame('Øle', $optionCollection->getByPosition(0)->getLabel(), 'Filtered option has unexpected label');

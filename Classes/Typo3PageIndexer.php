@@ -124,7 +124,7 @@ class Typo3PageIndexer
             }
         }
 
-        $this->pageAccessRootline = GeneralUtility::makeInstance(Rootline::class, /** @scrutinizer ignore-type */ '');
+        $this->pageAccessRootline = GeneralUtility::makeInstance(Rootline::class, '');
     }
 
     public function setIndexQueueItem(Item $indexQueueItem): void

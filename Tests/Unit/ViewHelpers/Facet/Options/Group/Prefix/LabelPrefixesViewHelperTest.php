@@ -36,7 +36,7 @@ class LabelPrefixesViewHelperTest extends SetUpUnitTestCase
         $optionCollection = $this->getTestFacetOptionCollection();
 
         $variableContainer = $this->getMockBuilder(StandardVariableProvider::class)->onlyMethods(['remove'])->getMock();
-        $renderingContextMock = $this->getDumbMock(RenderingContextInterface::class);
+        $renderingContextMock = $this->createMock(RenderingContextInterface::class);
         $renderingContextMock->expects(self::any())->method('getVariableProvider')->willReturn($variableContainer);
 
         $testArguments['options'] = $optionCollection;
@@ -55,7 +55,7 @@ class LabelPrefixesViewHelperTest extends SetUpUnitTestCase
         $optionCollection = $this->getTestFacetOptionCollection();
 
         $variableContainer = $this->getMockBuilder(StandardVariableProvider::class)->onlyMethods(['remove'])->getMock();
-        $renderingContextMock = $this->getDumbMock(RenderingContextInterface::class);
+        $renderingContextMock = $this->createMock(RenderingContextInterface::class);
         $renderingContextMock->expects(self::any())->method('getVariableProvider')->willReturn($variableContainer);
 
         $testArguments['options'] = $optionCollection;
@@ -71,7 +71,7 @@ class LabelPrefixesViewHelperTest extends SetUpUnitTestCase
      */
     protected function getTestFacetOptionCollection(): OptionCollection
     {
-        $facet = $this->getDumbMock(OptionsFacet::class);
+        $facet = $this->createMock(OptionsFacet::class);
 
         $roseRed = new Option($facet, 'Rose Red', 'rose_red', 14);
         $blue = new Option($facet, 'Polar Blue', 'polar_blue', 12);

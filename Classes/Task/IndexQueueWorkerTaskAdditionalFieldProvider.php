@@ -50,7 +50,7 @@ class IndexQueueWorkerTaskAdditionalFieldProvider extends AbstractAdditionalFiel
      * items to index per run when adding or editing a task.
      *
      * @param array $taskInfo reference to the array containing the info used in the add/edit form
-     * @param AbstractTask $task when editing, reference to the current task object. Null when adding.
+     * @param IndexQueueWorkerTask $task when editing, reference to the current task object. Null when adding.
      * @param SchedulerModuleController $schedulerModule Reference to the calling object (Scheduler's BE module)
      * @return array Array containing all the information pertaining to the additional fields
      *                    The array is multidimensional, keyed to the task class name and each field's id
@@ -64,7 +64,6 @@ class IndexQueueWorkerTaskAdditionalFieldProvider extends AbstractAdditionalFiel
         $task,
         SchedulerModuleController $schedulerModule
     ): array {
-        /* @var IndexQueueWorkerTask $task */
         $additionalFields = [];
         $siteSelectorField = GeneralUtility::makeInstance(SiteSelectorField::class);
 
@@ -146,9 +145,7 @@ class IndexQueueWorkerTaskAdditionalFieldProvider extends AbstractAdditionalFiel
      * class matches.
      *
      * @param array $submittedData array containing the data submitted by the user
-     * @param AbstractTask|AbstractSolrTask|IndexQueueWorkerTask $task reference to the current task object
-     *
-     * @noinspection PhpDocSignatureInspection
+     * @param IndexQueueWorkerTask $task reference to the current task object
      */
     public function saveAdditionalFields(
         array $submittedData,

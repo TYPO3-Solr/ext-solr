@@ -1,7 +1,5 @@
 <?php
 
-/** @noinspection PhpUnhandledExceptionInspection */
-
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -43,8 +41,8 @@ class SearchFormViewHelperTest extends SetUpUnitTestCase
 
     protected function setUp(): void
     {
-        $this->uriBuilderMock = $this->getDumbMock(UriBuilder::class);
-        $this->typoScriptConfigurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
+        $this->uriBuilderMock = $this->createMock(UriBuilder::class);
+        $this->typoScriptConfigurationMock = $this->createMock(TypoScriptConfiguration::class);
 
         $this->viewHelper = $this->getMockBuilder(SearchFormViewHelper::class)
             ->setConstructorArgs(
@@ -71,7 +69,7 @@ class SearchFormViewHelperTest extends SetUpUnitTestCase
         $renderingContext->setRequest($request);
         $this->viewHelper->setRenderingContext($renderingContext);
         $this->viewHelper->expects(self::any())->method('getTypoScriptConfiguration')->willReturn($this->typoScriptConfigurationMock);
-        $this->viewHelper->expects(self::any())->method('getTemplateVariableContainer')->willReturn($this->getDumbMock(VariableProviderInterface::class));
+        $this->viewHelper->expects(self::any())->method('getTemplateVariableContainer')->willReturn($this->createMock(VariableProviderInterface::class));
         $this->viewHelper->expects(self::once())->method('renderChildren')->willReturn('');
         $this->viewHelper->expects(self::once())->method('getIsSiteManagedSite')->willReturn(false);
         parent::setUp();

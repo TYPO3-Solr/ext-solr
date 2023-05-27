@@ -21,10 +21,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class LastSearchesRepositoryTest extends IntegrationTest
 {
-    /**
-     * @var LastSearchesRepository
-     */
-    protected $lastSearchesRepository;
+    protected LastSearchesRepository $lastSearchesRepository;
 
     protected function setUp(): void
     {
@@ -36,7 +33,7 @@ class LastSearchesRepositoryTest extends IntegrationTest
     /**
      * @test
      */
-    public function canFindAllKeywords()
+    public function canFindAllKeywords(): void
     {
         $actual = $this->lastSearchesRepository->findAllKeywords();
         self::assertSame(['4', '3', '2', '1', '0'], $actual);
@@ -45,7 +42,7 @@ class LastSearchesRepositoryTest extends IntegrationTest
     /**
      * @test
      */
-    public function addWillInsertNewRowIfLastSearchesLimitIsNotExceeded()
+    public function addWillInsertNewRowIfLastSearchesLimitIsNotExceeded(): void
     {
         $this->lastSearchesRepository->add('5', 6);
 
@@ -56,7 +53,7 @@ class LastSearchesRepositoryTest extends IntegrationTest
     /**
      * @test
      */
-    public function addWillUpdateOldestRowIfLastSearchesLimitIsExceeded()
+    public function addWillUpdateOldestRowIfLastSearchesLimitIsExceeded(): void
     {
         $this->lastSearchesRepository->add('5', 5);
 
@@ -67,7 +64,7 @@ class LastSearchesRepositoryTest extends IntegrationTest
     /**
      * @test
      */
-    public function lastUpdatedRowIsOnFirstPosition()
+    public function lastUpdatedRowIsOnFirstPosition(): void
     {
         $this->lastSearchesRepository->add('1', 5);
 

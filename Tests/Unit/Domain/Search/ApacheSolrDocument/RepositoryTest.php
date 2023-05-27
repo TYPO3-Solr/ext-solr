@@ -78,7 +78,6 @@ class RepositoryTest extends SetUpUnitTestCase
     public function findByPageIdAndByLanguageIdThrowsInvalidArgumentExceptionIfPageIdIsNotSet()
     {
         $this->expectException(TypeError::class);
-        /* @var Repository $apacheSolrDocumentRepository */
         $apacheSolrDocumentRepository = GeneralUtility::makeInstance(Repository::class);
         $apacheSolrDocumentRepository->findByPageIdAndByLanguageId(null, 3);
     }
@@ -89,7 +88,6 @@ class RepositoryTest extends SetUpUnitTestCase
     public function findByPageIdAndByLanguageIdThrowsInvalidArgumentExceptionIfLanguageIdIsNotInteger()
     {
         $this->expectException(TypeError::class);
-        /* @var Repository $apacheSolrDocumentRepository */
         $apacheSolrDocumentRepository = GeneralUtility::makeInstance(Repository::class);
         $apacheSolrDocumentRepository->findByPageIdAndByLanguageId(1, 'Abc');
     }
@@ -99,7 +97,6 @@ class RepositoryTest extends SetUpUnitTestCase
      */
     public function findByPageIdAndByLanguageIdReturnsEmptyCollectionIfConnectionToSolrServerCanNotBeEstablished()
     {
-        /* @var Repository $apacheSolrDocumentRepository */
         $apacheSolrDocumentRepository = $this->getAccessibleMock(
             Repository::class,
             ['initializeSearch'],
@@ -121,7 +118,7 @@ class RepositoryTest extends SetUpUnitTestCase
      */
     public function findByPageIdAndByLanguageIdReturnsResultFromSearch()
     {
-        $solrConnectionMock = $this->getDumbMock(SolrConnection::class);
+        $solrConnectionMock = $this->createMock(SolrConnection::class);
         $solrConnectionManager = $this->getAccessibleMock(ConnectionManager::class, ['getConnectionByPageId'], [], '', false);
         $solrConnectionManager->expects(self::any())->method('getConnectionByPageId')->willReturn($solrConnectionMock);
         $mockedSingletons = [ConnectionManager::class => $solrConnectionManager];
@@ -137,16 +134,15 @@ class RepositoryTest extends SetUpUnitTestCase
         $parsedData->response = new \stdClass();
         // @extensionScannerIgnoreLine
         $parsedData->response->docs = $testDocuments;
-        $fakeResponse = $this->getDumbMock(ResponseAdapter::class);
+        $fakeResponse = $this->createMock(ResponseAdapter::class);
         $fakeResponse->expects(self::once())->method('getParsedData')->willReturn($parsedData);
         $search->expects(self::any())->method('search')->willReturn($fakeResponse);
 
-        $queryBuilderMock = $this->getDumbMock(QueryBuilder::class);
+        $queryBuilderMock = $this->createMock(QueryBuilder::class);
 
-        /* @var Repository $apacheSolrDocumentRepository */
         $apacheSolrDocumentRepository = $this->getAccessibleMock(Repository::class, ['getSearch'], [null, null, $queryBuilderMock]);
         $apacheSolrDocumentRepository->expects(self::once())->method('getSearch')->willReturn($search);
-        $queryMock = $this->getDumbMock(Query::class);
+        $queryMock = $this->createMock(Query::class);
         $queryBuilderMock->expects(self::any())->method('buildPageQuery')->willReturn($queryMock);
         $actualApacheSolrDocumentCollection = $apacheSolrDocumentRepository->findByPageIdAndByLanguageId(777, 0);
 

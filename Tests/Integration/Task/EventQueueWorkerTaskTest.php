@@ -37,15 +37,8 @@ class EventQueueWorkerTaskTest extends IntegrationTest
         'scheduler',
     ];
 
-    /**
-     * @var EventQueueItemRepository
-     */
-    protected $eventQueue;
-
-    /**
-     * @var Queue
-     */
-    protected $indexQueue;
+    protected EventQueueItemRepository $eventQueue;
+    protected Queue $indexQueue;
 
     protected function setUp(): void
     {
@@ -54,7 +47,6 @@ class EventQueueWorkerTaskTest extends IntegrationTest
         $this->indexQueue = GeneralUtility::makeInstance(Queue::class);
         $this->eventQueue = GeneralUtility::makeInstance(EventQueueItemRepository::class);
 
-        /** @var ExtensionConfiguration $task */
         $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class);
         $extConf->set('solr', ['monitoringType' => 1]);
     }
@@ -85,10 +77,7 @@ class EventQueueWorkerTaskTest extends IntegrationTest
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_handle_erroneous_event_queue_items.csv');
 
-        /** @var EventQueueWorkerTask $task */
         $task = GeneralUtility::makeInstance(EventQueueWorkerTask::class);
-
-        /** @var Scheduler $scheduler */
         $scheduler = GeneralUtility::makeInstance(Scheduler::class);
         $scheduler->executeTask($task);
 

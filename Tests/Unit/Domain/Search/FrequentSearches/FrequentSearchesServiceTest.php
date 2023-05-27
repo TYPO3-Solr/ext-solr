@@ -21,47 +21,29 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Core\Cache\Frontend\AbstractFrontend;
+use TYPO3\CMS\Core\TypoScript\TemplateService;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 class FrequentSearchesServiceTest extends SetUpUnitTestCase
 {
-    /**
-     * @var FrequentSearchesService
-     */
-    protected $frequentSearchesService;
-
-    /**
-     * @var TypoScriptFrontendController
-     */
-    protected $tsfeMock;
-
-    /**
-     * @var AbstractFrontend
-     */
-    protected $cacheMock;
-
-    /**
-     * @var TypoScriptConfiguration
-     */
-    protected $configurationMock;
-
-    /**
-     * @var StatisticsRepository|MockObject
-     */
-    protected $statisticsRepositoryMock;
+    protected FrequentSearchesService|MockObject $frequentSearchesService;
+    protected TypoScriptFrontendController|MockObject $tsfeMock;
+    protected AbstractFrontend|MockObject $cacheMock;
+    protected TypoScriptConfiguration|MockObject $configurationMock;
+    protected StatisticsRepository|MockObject $statisticsRepositoryMock;
 
     protected function setUp(): void
     {
-        $this->tsfeMock = $this->getDumbMock(TypoScriptFrontendController::class);
-        $this->tsfeMock->tmpl = new \stdClass();
+        $this->tsfeMock = $this->createMock(TypoScriptFrontendController::class);
+        $this->tsfeMock->tmpl = $this->createMock(TemplateService::class);
         $this->tsfeMock->tmpl->rootLine = [
             0 => [
                 'uid' => 4711,
             ],
         ];
-        $this->statisticsRepositoryMock = $this->getDumbMock(StatisticsRepository::class);
-        $this->cacheMock = $this->getDumbMock(AbstractFrontend::class);
-        $this->configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
+        $this->statisticsRepositoryMock = $this->createMock(StatisticsRepository::class);
+        $this->cacheMock = $this->createMock(AbstractFrontend::class);
+        $this->configurationMock = $this->createMock(TypoScriptConfiguration::class);
 
         $this->frequentSearchesService = new class ($this->configurationMock, $this->cacheMock, $this->tsfeMock, $this->statisticsRepositoryMock) extends FrequentSearchesService {
             //            protected function getCacheIdentifier(array $frequentSearchConfiguration) : string {
@@ -83,7 +65,7 @@ class FrequentSearchesServiceTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function cachedResultIsUsedWhenIdentifierIsPresent()
+    public function cachedResultIsUsedWhenIdentifierIsPresent(): void
     {
         $fakeConfiguration = [];
         $expectedCacheIdentifier = 'frequentSearchesTags_' . md5(serialize($fakeConfiguration));
@@ -98,7 +80,7 @@ class FrequentSearchesServiceTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function databaseResultIsUsedWhenNoCachedResultIsPresent()
+    public function databaseResultIsUsedWhenNoCachedResultIsPresent(): void
     {
         $fakeConfiguration = [
             'select.' => [
@@ -129,17 +111,13 @@ class FrequentSearchesServiceTest extends SetUpUnitTestCase
         self::assertSame($frequentTerms, ['my search' => 22], 'Could not retrieve frequent search terms');
     }
 
-    /**
-     * @param string $identifier
-     * @param array $value
-     */
-    public function fakeCacheResult($identifier, $value)
+    public function fakeCacheResult(string $identifier, array $value): void
     {
         $this->cacheMock->expects(self::once())->method('has')->with($identifier)->willReturn(true);
         $this->cacheMock->expects(self::once())->method('get')->willReturn($value);
     }
 
-    public function fakeIdentifierNotInCache()
+    public function fakeIdentifierNotInCache(): void
     {
         $this->cacheMock->expects(self::once())->method('has')->willReturn(false);
     }

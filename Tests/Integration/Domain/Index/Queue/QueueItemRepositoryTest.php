@@ -63,7 +63,6 @@ class QueueItemRepositoryTest extends IntegrationTest
     public function deleteItemDeletesItemForEverySite()
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/pages_and_news_queueitems.csv');
-        /* @var QueueItemRepository $queueItemRepository */
         $queueItemRepository = GeneralUtility::makeInstance(QueueItemRepository::class);
         self::assertSame(6, $queueItemRepository->count(), 'Unexpected amount of items in the index queue');
         $queueItemRepository->deleteItem('pages', 1);
@@ -77,7 +76,6 @@ class QueueItemRepositoryTest extends IntegrationTest
     public function canDeleteItemByPassingTypeOnly()
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/pages_and_news_queueitems.csv');
-        /* @var QueueItemRepository $queueItemRepository */
         $queueItemRepository = GeneralUtility::makeInstance(QueueItemRepository::class);
         self::assertSame(6, $queueItemRepository->count(), 'Unexpected amount of items in the index queue');
         $queueItemRepository->deleteItem('pages');
@@ -91,7 +89,6 @@ class QueueItemRepositoryTest extends IntegrationTest
     public function canCountItems()
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/pages_and_news_queueitems.csv');
-        /* @var QueueItemRepository $queueItemRepository */
         $queueItemRepository = GeneralUtility::makeInstance(QueueItemRepository::class);
         self::assertSame(6, $queueItemRepository->countItems(), 'Unexpected amount of items counted when no filter was passed');
         self::assertSame(3, $queueItemRepository->countItems([], ['pages']), 'Unexpected amount of counted pages');
@@ -105,7 +102,6 @@ class QueueItemRepositoryTest extends IntegrationTest
     public function canFindItems()
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/pages_and_news_queueitems.csv');
-        /* @var QueueItemRepository $queueItemRepository */
         $queueItemRepository = GeneralUtility::makeInstance(QueueItemRepository::class);
         $items = $queueItemRepository->findItems([], ['pages']);
 
@@ -122,12 +118,10 @@ class QueueItemRepositoryTest extends IntegrationTest
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_keep_indexing_properties.csv');
 
-        /** @var SiteRepository $siteRepository */
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
 
         $currentSite = $siteRepository->getSiteByPageId(4711);
 
-        /* @var QueueItemRepository $queueItemRepository */
         $queueItemRepository = GeneralUtility::makeInstance(QueueItemRepository::class);
         $queueItemRepository->add('pages', 4711, 1, 2, 'news_pages');
         $queueItemRepository->add('pages', 4711, 1, 2, 'product_pages');
@@ -163,7 +157,6 @@ class QueueItemRepositoryTest extends IntegrationTest
     public function canFlushErrorByItem()
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_flush_error_by_item.csv');
-        /* @var QueueItemRepository $queueItemRepository */
         $queueItemRepository = GeneralUtility::makeInstance(QueueItemRepository::class);
 
         $item = $queueItemRepository->findItemByUid(4714);

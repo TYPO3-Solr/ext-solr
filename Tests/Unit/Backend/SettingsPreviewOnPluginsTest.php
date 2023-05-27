@@ -72,7 +72,7 @@ class SettingsPreviewOnPluginsTest extends SetUpUnitTestCase
         array $record = [],
     ): PageContentPreviewRenderingEvent {
         /* @var PageLayoutContext|MockObject $pageLayoutContextMock */
-        $pageLayoutContextMock =  $this->getDumbMock(PageLayoutContext::class);
+        $pageLayoutContextMock =  $this->createMock(PageLayoutContext::class);
         return new PageContentPreviewRenderingEvent(
             $table,
             $record,

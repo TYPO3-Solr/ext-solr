@@ -205,12 +205,9 @@ class ConnectionManager implements SingletonInterface
      */
     protected function buildNoConnectionException(string $message): NoSolrConnectionFoundException
     {
-        /* @var NoSolrConnectionFoundException $noSolrConnectionException */
         return GeneralUtility::makeInstance(
             NoSolrConnectionFoundException::class,
-            /** @scrutinizer ignore-type */
             $message,
-            /** @scrutinizer ignore-type */
             1575396474
         );
     }

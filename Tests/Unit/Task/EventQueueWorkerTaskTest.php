@@ -33,10 +33,7 @@ use TYPO3\CMS\Scheduler\Scheduler;
  */
 class EventQueueWorkerTaskTest extends SetUpUnitTestCase
 {
-    /**
-     * @var EventQueueWorkerTask
-     */
-    protected $task;
+    protected EventQueueWorkerTask $task;
 
     protected function setUp(): void
     {
@@ -64,7 +61,6 @@ class EventQueueWorkerTaskTest extends SetUpUnitTestCase
         $eventDispatcherMock = $this->createMock(EventDispatcherInterface::class);
         GeneralUtility::addInstance(EventDispatcherInterface::class, $eventDispatcherMock);
 
-        /** @var RecordUpdatedEvent $event */
         $event = new RecordUpdatedEvent(123, 'tx_foo_bar');
         $serializedEvent = serialize($event);
         /** @var RecordUpdatedEvent $unserializedEvent */
@@ -80,6 +76,7 @@ class EventQueueWorkerTaskTest extends SetUpUnitTestCase
             ->with(99)
             ->willReturn([$queueItem]);
 
+        /** @var array<int, mixed> $dispatchedEvents */
         $dispatchedEvents = [];
         $eventDispatcherMock
             ->expects(self::exactly(2))
@@ -117,7 +114,6 @@ class EventQueueWorkerTaskTest extends SetUpUnitTestCase
         $solrLogManagerMock = $this->createMock(SolrLogManager::class);
         GeneralUtility::addInstance(SolrLogManager::class, $solrLogManagerMock);
 
-        /** @var RecordUpdatedEvent $event */
         $event = new RecordUpdatedEvent(123, 'tx_foo_bar');
         $serializedEvent = serialize($event);
         /** @var RecordUpdatedEvent $unserializedEvent */

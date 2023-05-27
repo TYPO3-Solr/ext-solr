@@ -23,49 +23,27 @@ use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use PHPUnit\Framework\MockObject\MockObject;
 
 /**
  * @author Timo Hund <timo.hund@dkd.de>
  */
 class SearchResultSetServiceTest extends SetUpUnitTestCase
 {
-    /**
-     * @var SearchResultSetService
-     */
-    protected $searchResultSetService;
-
-    /**
-     * @var TypoScriptConfiguration
-     */
-    protected $configurationMock;
-
-    /**
-     * @var Search
-     */
-    protected $searchMock;
-
-    /**
-     * @var SolrLogManager
-     */
-    protected $logManagerMock;
-
-    /**
-     * @var SearchResultBuilder
-     */
-    protected $searchResultBuilderMock;
-
-    /**
-     * @var QueryBuilder
-     */
-    protected $queryBuilderMock;
+    protected SearchResultSetService $searchResultSetService;
+    protected TypoScriptConfiguration|MockObject $configurationMock;
+    protected Search|MockObject $searchMock;
+    protected SolrLogManager|MockObject $logManagerMock;
+    protected SearchResultBuilder|MockObject $searchResultBuilderMock;
+    protected QueryBuilder|MockObject $queryBuilderMock;
 
     protected function setUp(): void
     {
-        $this->configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
-        $this->logManagerMock = $this->getDumbMock(SolrLogManager::class);
-        $this->searchMock = $this->getDumbMock(Search::class);
-        $this->searchResultBuilderMock = $this->getDumbMock(SearchResultBuilder::class);
-        $this->queryBuilderMock = $this->getDumbMock(QueryBuilder::class);
+        $this->configurationMock = $this->createMock(TypoScriptConfiguration::class);
+        $this->logManagerMock = $this->createMock(SolrLogManager::class);
+        $this->searchMock = $this->createMock(Search::class);
+        $this->searchResultBuilderMock = $this->createMock(SearchResultBuilder::class);
+        $this->queryBuilderMock = $this->createMock(QueryBuilder::class);
         $this->searchResultSetService = new SearchResultSetService($this->configurationMock, $this->searchMock, $this->logManagerMock, $this->searchResultBuilderMock, $this->queryBuilderMock);
         parent::setUp();
     }
@@ -73,7 +51,7 @@ class SearchResultSetServiceTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function searchIsNotTriggeredWhenEmptySearchDisabledAndEmptyQueryWasPassed()
+    public function searchIsNotTriggeredWhenEmptySearchDisabledAndEmptyQueryWasPassed(): void
     {
         $searchRequest = new SearchRequest();
         $searchRequest->setRawQueryString('');
@@ -85,7 +63,7 @@ class SearchResultSetServiceTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function searchIsNotTriggeredWhenEmptyQueryWasPassedAndEmptySearchWasDisabled()
+    public function searchIsNotTriggeredWhenEmptyQueryWasPassedAndEmptySearchWasDisabled(): void
     {
         $searchRequest = new SearchRequest();
         $searchRequest->setRawQueryString('');
@@ -94,7 +72,7 @@ class SearchResultSetServiceTest extends SetUpUnitTestCase
         self::assertFalse($resultSet->getHasSearched(), 'Search should not be executed when empty query string was passed');
     }
 
-    protected function assertAllInitialSearchesAreDisabled()
+    protected function assertAllInitialSearchesAreDisabled(): void
     {
         $this->configurationMock->expects(self::any())->method('getSearchInitializeWithEmptyQuery')->willReturn(false);
         $this->configurationMock->expects(self::any())->method('getSearchShowResultsOfInitialEmptyQuery')->willReturn(false);

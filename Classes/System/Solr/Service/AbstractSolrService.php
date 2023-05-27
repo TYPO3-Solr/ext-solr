@@ -46,7 +46,7 @@ abstract class AbstractSolrService
     {
         $this->client = $client;
         $this->configuration = $typoScriptConfiguration ?? Util::getSolrConfiguration();
-        $this->logger = $logManager ?? GeneralUtility::makeInstance(SolrLogManager::class, /** @scrutinizer ignore-type */ __CLASS__);
+        $this->logger = $logManager ?? GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
     }
 
     /**

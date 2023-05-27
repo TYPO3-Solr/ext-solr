@@ -35,37 +35,28 @@ abstract class AbstractModuleController extends SetUpUnitTestCase
      */
     protected $controller;
 
-    /**
-     * @var Site|MockObject
-     */
-    protected $selectedSiteMock;
-
-    /**
-     * @var ConnectionManager|MockObject
-     */
-    protected $connectionManagerMock;
+    protected Site|MockObject $selectedSiteMock;
+    protected ConnectionManager|MockObject $connectionManagerMock;
 
     /**
      * Initializes the concrete backend module controller
-     *
-     * @param string $concreteModuleControllerClass
-     * @param array $mockMethods
      */
     protected function setUpConcreteModuleController(
         string $concreteModuleControllerClass,
         array $mockMethods = ['addFlashMessage']
     ): void {
-        $this->selectedSiteMock = $this->getDumbMock(Site::class);
-        $this->controller = $this->getMockBuilder($concreteModuleControllerClass)
+        $this->selectedSiteMock = $this->createMock(Site::class);
+        /** @var ModuleController|MockObject $subject */
+        $subject = $this->getMockBuilder($concreteModuleControllerClass)
             ->setConstructorArgs(
                 [
-                    'moduleTemplateFactory' => $this->getDumbMock(ModuleTemplateFactory::class),
-                    'iconFactory' => $this->getDumbMock(IconFactory::class),
-                    'moduleDataStorageService' => $this->getDumbMock(ModuleDataStorageService::class),
-                    'siteRepository' => $this->getDumbMock(SiteRepository::class),
-                    'siteFinder' => $this->getDumbMock(SiteFinder::class),
-                    'solrConnectionManager' => $this->connectionManagerMock = $this->getDumbMock(ConnectionManager::class),
-                    'indexQueue' => $this->getDumbMock(Queue::class),
+                    'moduleTemplateFactory' => $this->createMock(ModuleTemplateFactory::class),
+                    'iconFactory' => $this->createMock(IconFactory::class),
+                    'moduleDataStorageService' => $this->createMock(ModuleDataStorageService::class),
+                    'siteRepository' => $this->createMock(SiteRepository::class),
+                    'siteFinder' => $this->createMock(SiteFinder::class),
+                    'solrConnectionManager' => $this->connectionManagerMock = $this->createMock(ConnectionManager::class),
+                    'indexQueue' => $this->createMock(Queue::class),
                 ]
             )
             ->onlyMethods($mockMethods)
@@ -76,7 +67,8 @@ abstract class AbstractModuleController extends SetUpUnitTestCase
         $uriBuilderMock->expects(self::any())
             ->method('uriFor')
             ->willReturn('index');
-        $this->controller->injectUriBuilder($uriBuilderMock);
-        $this->controller->setSelectedSite($this->selectedSiteMock);
+        $subject->injectUriBuilder($uriBuilderMock);
+        $subject->setSelectedSite($this->selectedSiteMock);
+        $this->controller = $subject;
     }
 }

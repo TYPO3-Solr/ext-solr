@@ -32,7 +32,7 @@ class ContentElementDeletedEventTest extends SetUpDataUpdateEvent
      */
     public function canInitAndReturnFields(): void
     {
-        $event = new ContentElementDeletedEvent(123, static::EVENT_TEST_TABLE, ['hidden' => 1]);
+        $event = new ContentElementDeletedEvent(123);
         self::assertEmpty($event->getFields());
     }
 
@@ -41,7 +41,7 @@ class ContentElementDeletedEventTest extends SetUpDataUpdateEvent
      */
     public function canForceTable(): void
     {
-        $event = new ContentElementDeletedEvent(123, 'tx_foo_bar');
+        $event = new ContentElementDeletedEvent(123);
         self::assertEquals('tt_content', $event->getTable());
     }
 

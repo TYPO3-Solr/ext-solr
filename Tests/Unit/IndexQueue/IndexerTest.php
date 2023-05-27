@@ -36,7 +36,6 @@ use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use ReflectionClass;
 use RuntimeException;
-use Traversable;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use UnexpectedValueException;
 
@@ -123,10 +122,8 @@ class IndexerTest extends SetUpUnitTestCase
 
     /**
      * Data provider for "canTriggerIndexingAndIndicateIndexStatus"
-     *
-     * @return Traversable
      */
-    public function canTriggerIndexingAndIndicateIndexStatusDataProvider(): Traversable
+    public function canTriggerIndexingAndIndicateIndexStatusDataProvider(): \Generator
     {
         yield 'Item could be indexed' => [
             200,
@@ -139,14 +136,10 @@ class IndexerTest extends SetUpUnitTestCase
     }
 
     /**
-     * @param string|AdditionalIndexQueueItemIndexer $class
-     * @param string|null $expectedException
-     * @param int $resultCount
-     *
      * @test
      * @dataProvider canGetAdditionalDocumentsDataProvider
      */
-    public function canGetAdditionalDocuments($class, ?string $expectedException, int $expectedResultCount): void
+    public function canGetAdditionalDocuments(\stdClass|string|AdditionalIndexQueueItemIndexer|null $class, ?string $expectedException, int $expectedResultCount): void
     {
         if ($class !== null) {
             if (is_object($class)) {
@@ -186,10 +179,8 @@ class IndexerTest extends SetUpUnitTestCase
 
     /**
      * Data provider for "canGetAdditionalDocuments"
-     *
-     * @return Traversable
      */
-    public function canGetAdditionalDocumentsDataProvider(): Traversable
+    public function canGetAdditionalDocumentsDataProvider(): \Generator
     {
         yield 'no AdditionalIndexQueueItemIndexer registered' => [
             null,
@@ -232,9 +223,6 @@ class IndexerTest extends SetUpUnitTestCase
     }
 
     /**
-     * @param object|null $modifier
-     * @param string|null $expectedException
-     *
      * @test
      * @dataProvider canCallDocumentsModifierHookDataProvider
      */
@@ -260,10 +248,8 @@ class IndexerTest extends SetUpUnitTestCase
 
     /**
      * Data provider for "canCallDocumentsModifierHook"
-     *
-     * @return Traversable
      */
-    public function canCallDocumentsModifierHookDataProvider(): Traversable
+    public function canCallDocumentsModifierHookDataProvider(): \Generator
     {
         yield 'no modifier' => [null, null];
 
@@ -280,7 +266,7 @@ class IndexerTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function indexerAlwaysInitializesTSFE()
+    public function indexerAlwaysInitializesTSFE(): void
     {
         self::markTestSkipped('API has been changed, the test case must be moved, since it is still relevant.');
         /* @var Item|ObjectProphecy $item */
@@ -317,14 +303,6 @@ class IndexerTest extends SetUpUnitTestCase
 
     /**
      * Returns a mock builder with dump-mocked object properties.
-     *
-     * @param array $options
-     * @param PagesRepository|null $pagesRepository
-     * @param Builder|null $documentBuilder
-     * @param SolrLogManager|null $logger
-     * @param ConnectionManager|null $connectionManager
-     * @param FrontendEnvironment|null $frontendEnvironment
-     * @return MockBuilder
      */
     protected function getMockBuilderForIndexer(
         array $options = [],
@@ -336,11 +314,11 @@ class IndexerTest extends SetUpUnitTestCase
     ): MockBuilder {
         return $this->getMockBuilder(Indexer::class)->setConstructorArgs([
             $options,
-            $pagesRepository ?? $this->getDumbMock(PagesRepository::class),
-            $documentBuilder ?? $this->getDumbMock(Builder::class),
-            $logger ?? $this->getDumbMock(SolrLogManager::class),
-            $connectionManager ?? $this->getDumbMock(ConnectionManager::class),
-            $frontendEnvironment ?? $this->getDumbMock(FrontendEnvironment::class),
+            $pagesRepository ?? $this->createMock(PagesRepository::class),
+            $documentBuilder ?? $this->createMock(Builder::class),
+            $logger ?? $this->createMock(SolrLogManager::class),
+            $connectionManager ?? $this->createMock(ConnectionManager::class),
+            $frontendEnvironment ?? $this->createMock(FrontendEnvironment::class),
         ]);
     }
 }

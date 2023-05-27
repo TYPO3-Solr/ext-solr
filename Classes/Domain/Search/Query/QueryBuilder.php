@@ -66,7 +66,7 @@ class QueryBuilder extends AbstractQueryBuilder
         SiteHashService $siteHashService = null,
     ) {
         $this->typoScriptConfiguration = $configuration ?? Util::getSolrConfiguration();
-        $this->logger = $solrLogManager ?? GeneralUtility::makeInstance(SolrLogManager::class, /** @scrutinizer ignore-type */ __CLASS__);
+        $this->logger = $solrLogManager ?? GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
         $this->siteHashService = $siteHashService ?? GeneralUtility::makeInstance(SiteHashService::class);
     }
 
@@ -486,6 +486,6 @@ class QueryBuilder extends AbstractQueryBuilder
 
     protected function getSuggestQueryInstance(string $rawQuery): SuggestQuery
     {
-        return GeneralUtility::makeInstance(SuggestQuery::class, /** @scrutinizer ignore-type */ $rawQuery, /** @scrutinizer ignore-type */ $this->typoScriptConfiguration);
+        return GeneralUtility::makeInstance(SuggestQuery::class, $rawQuery, $this->typoScriptConfiguration);
     }
 }

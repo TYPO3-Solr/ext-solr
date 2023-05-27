@@ -178,7 +178,7 @@ class ArrayAccessor
                 if (empty($currentElement)) {
                     unset($currentElement);
                 }
-            } else {
+            } elseif (isset($currentElement) && isset($currentElement[$pathSegment])) {
                 $currentElement = &$currentElement[$pathSegment];
             }
         }

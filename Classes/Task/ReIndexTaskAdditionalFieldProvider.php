@@ -44,7 +44,7 @@ class ReIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldProvider
     /**
      * Scheduler task
      */
-    protected ?AbstractSolrTask $task;
+    protected ?ReIndexTask $task;
 
     protected ?SchedulerModuleController $schedulerModule = null;
 
@@ -69,7 +69,7 @@ class ReIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldProvider
      */
     protected function initialize(
         array $taskInfo,
-        ?AbstractSolrTask $task,
+        ?ReIndexTask $task,
         SchedulerModuleController $schedulerModule
     ): void {
         /* ReIndexTask @var $task  */
@@ -89,7 +89,7 @@ class ReIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldProvider
      * or editing a task.
      *
      * @param array $taskInfo reference to the array containing the info used in the add/edit form
-     * @param AbstractSolrTask $task when editing, reference to the current task object. Null when adding.
+     * @param ReIndexTask $task when editing, reference to the current task object. Null when adding.
      * @param SchedulerModuleController $schedulerModule reference to the calling object (Scheduler's BE module)
      *
      * @return array Array containing all the information pertaining to the additional fields
@@ -149,7 +149,7 @@ class ReIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldProvider
             return $selectorMarkup;
         }
 
-        $selectorField = GeneralUtility::makeInstance(IndexingConfigurationSelectorField::class, /** @scrutinizer ignore-type */ $this->site);
+        $selectorField = GeneralUtility::makeInstance(IndexingConfigurationSelectorField::class, $this->site);
 
         $selectorField->setFormElementName('tx_scheduler[indexingConfigurations]');
         $selectorField->setSelectedValues($this->task->getIndexingConfigurationsToReIndex());
@@ -191,13 +191,12 @@ class ReIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldProvider
      * class matches.
      *
      * @param array $submittedData array containing the data submitted by the user
-     * @param AbstractTask $task reference to the current task object
+     * @param ReIndexTask $task reference to the current task object
      */
     public function saveAdditionalFields(
         array $submittedData,
-        AbstractTask $task
+        ReIndexTask|AbstractTask $task
     ): void {
-        /* @var ReIndexTask $task */
         if (!$this->isTaskInstanceofReIndexTask($task)) {
             return;
         }

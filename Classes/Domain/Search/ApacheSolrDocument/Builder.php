@@ -77,7 +77,7 @@ class Builder
         $variantId = $this->variantIdBuilder->buildFromTypeAndUid('pages', $page->id);
         $document->setField('variantId', $variantId);
 
-        $document->setField('typeNum', $page->type);
+        $document->setField('typeNum', (int)$page->getPageArguments()->getPageType());
         $document->setField('created', $pageRecord['crdate']);
         $document->setField('changed', $pageRecord['SYS_LASTCHANGED']);
 
@@ -161,7 +161,7 @@ class Builder
      */
     protected function getPageDocumentId(TypoScriptFrontendController $frontendController, string $accessGroups, string $mountPointParameter): string
     {
-        return Util::getPageDocumentId($frontendController->id, $frontendController->type, Util::getLanguageUid(), $accessGroups, $mountPointParameter);
+        return Util::getPageDocumentId($frontendController->id, (int)$frontendController->getPageArguments()->getPageType(), Util::getLanguageUid(), $accessGroups, $mountPointParameter);
     }
 
     /**
@@ -186,7 +186,7 @@ class Builder
      */
     protected function getExtractorForPageContent(string $pageContent): Typo3PageContentExtractor
     {
-        return GeneralUtility::makeInstance(Typo3PageContentExtractor::class, /** @scrutinizer ignore-type */ $pageContent);
+        return GeneralUtility::makeInstance(Typo3PageContentExtractor::class, $pageContent);
     }
 
     /**

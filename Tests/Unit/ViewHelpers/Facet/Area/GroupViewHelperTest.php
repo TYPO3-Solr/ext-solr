@@ -36,7 +36,7 @@ class GroupViewHelperTest extends SetUpUnitTestCase
         $facetCollection = $this->getTestFacetCollection();
 
         $variableContainer = $this->getMockBuilder(StandardVariableProvider::class)->onlyMethods(['remove'])->getMock();
-        $renderingContextMock = $this->getDumbMock(RenderingContextInterface::class);
+        $renderingContextMock = $this->createMock(RenderingContextInterface::class);
         $renderingContextMock->expects(self::any())->method('getVariableProvider')->willReturn($variableContainer);
 
         $testArguments['facets'] = $facetCollection;
@@ -45,7 +45,7 @@ class GroupViewHelperTest extends SetUpUnitTestCase
         GroupViewHelper::renderStatic($testArguments, function () {}, $renderingContextMock);
         self::assertTrue($variableContainer->exists('areaFacets'), 'Expected that filteredFacets has been set');
 
-        /** @var  $facetCollection FacetCollection */
+        /** @var FacetCollection $facetCollection */
         $facetCollection = $variableContainer->get('areaFacets');
         self::assertEquals(2, $facetCollection->getCount());
 
@@ -61,7 +61,7 @@ class GroupViewHelperTest extends SetUpUnitTestCase
         $facetCollection = $this->getTestFacetCollection();
 
         $variableContainer = $this->getMockBuilder(StandardVariableProvider::class)->onlyMethods(['remove'])->getMock();
-        $renderingContextMock = $this->getDumbMock(RenderingContextInterface::class);
+        $renderingContextMock = $this->createMock(RenderingContextInterface::class);
         $renderingContextMock->expects(self::any())->method('getVariableProvider')->willReturn($variableContainer);
 
         $viewHelper = $this->getMockBuilder(GroupViewHelper::class)->onlyMethods(['renderChildren'])->getMock();
@@ -71,7 +71,7 @@ class GroupViewHelperTest extends SetUpUnitTestCase
 
         self::assertTrue($variableContainer->exists('areaFacets'), 'Expected that filteredFacets has been set');
 
-        /** @var  $facetCollection FacetCollection */
+        /** @var FacetCollection $facetCollection */
         $facetCollection = $variableContainer->get('areaFacets');
         self::assertEquals(2, $facetCollection->getCount());
 
@@ -85,7 +85,7 @@ class GroupViewHelperTest extends SetUpUnitTestCase
     protected function getTestFacetCollection()
     {
         $facetCollection = new FacetCollection();
-        $resultSetMock = $this->getDumbMock(SearchResultSet::class);
+        $resultSetMock = $this->createMock(SearchResultSet::class);
 
         $colorFacet = new OptionsFacet($resultSetMock, 'color', 'color_s', '', ['groupName' => 'left']);
         $brandFacet = new OptionsFacet($resultSetMock, 'brand', 'brand_s', '', ['groupName' => 'left']);

@@ -33,22 +33,24 @@ use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Sortings;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Spellchecking;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\TrigramPhraseFields;
 use Closure;
-use Solarium\QueryType\Select\Query\Query as SolariumQuery;
 
 /**
  * The AbstractQueryBuilder contains all logic to initialize solr queries independent of TYPO3.
  */
 abstract class AbstractQueryBuilder
 {
-    protected SolariumQuery|SearchQuery|SuggestQuery|null $queryToBuild;
+    protected Query|SearchQuery|SuggestQuery|null $queryToBuild;
 
-    public function startFrom(SolariumQuery $query): self
+    /**
+     * @return static
+     */
+    public function startFrom(Query $query): self
     {
         $this->queryToBuild = $query;
         return $this;
     }
 
-    public function getQuery(): SolariumQuery
+    public function getQuery(): Query
     {
         return $this->queryToBuild;
     }
@@ -256,6 +258,7 @@ abstract class AbstractQueryBuilder
 
     /**
      * Can be used to use a specific filter string in the solr query.
+     * @return static
      */
     public function useFilter(string $filterString, string $filterName = ''): self
     {
@@ -414,6 +417,8 @@ abstract class AbstractQueryBuilder
         return $trigramPhraseFields->build($this);
     }
 
+    abstract public function useBoostQueriesFromTypoScript(): self;
+
     abstract public function useInitialQueryFromTypoScript(): self;
 
     abstract public function useTieParameterFromTypoScript(): self;
@@ -429,4 +434,12 @@ abstract class AbstractQueryBuilder
     abstract public function useBigramPhraseFieldsFromTypoScript(): self;
 
     abstract public function useTrigramPhraseFieldsFromTypoScript(): self;
+
+    abstract public function useReturnFieldsFromTypoScript(): self;
+
+    abstract public function useQueryFieldsFromTypoScript(): self;
+
+    abstract public function useFiltersFromTypoScript(): self;
+
+    abstract public function useHighlightingFromTypoScript(): self;
 }

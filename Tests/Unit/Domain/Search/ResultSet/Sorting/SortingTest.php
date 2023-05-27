@@ -38,7 +38,7 @@ class SortingTest extends SetUpUnitTestCase
 
     protected function setUp(): void
     {
-        $this->resultSetMock = $this->getDumbMock(SearchResultSet::class);
+        $this->resultSetMock = $this->createMock(SearchResultSet::class);
 
         $name = 'Price';
         $field = 'price_f';

@@ -28,6 +28,7 @@ use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordMovedE
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\RecordUpdatedEvent;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\Events\VersionSwappedEvent;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\UpdateHandler\GarbageHandler;
+use Psr\EventDispatcher\StoppableEventInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -37,6 +38,11 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class ImmediateProcessingEventListenerTest extends SetUpEventListener
 {
+    /**
+     * @var ImmediateProcessingEventListener
+     */
+    protected AbstractBaseEventListener $listener;
+
     protected function setUp(): void
     {
         if (!class_exists('SolrUnitTestsInvalidDataUpdateEvent')) {
@@ -49,11 +55,6 @@ class ImmediateProcessingEventListenerTest extends SetUpEventListener
     }
 
     /**
-     * @param string $eventClass
-     * @param string $handlerClass
-     * @param array $eventArguments
-     * @param bool $eventHandled
-     *
      * @test
      * @dataProvider canHandleEventsDataProvider
      */
@@ -74,11 +75,6 @@ class ImmediateProcessingEventListenerTest extends SetUpEventListener
     }
 
     /**
-     * @param string $eventClass
-     * @param string $handlerClass
-     * @param array $eventArguments
-     * @param bool $eventHandled
-     *
      * @test
      * @dataProvider canHandleEventsDataProvider
      */
@@ -101,9 +97,6 @@ class ImmediateProcessingEventListenerTest extends SetUpEventListener
 
     /**
      * Checks the event handling
-     *
-     * @param DataUpdateEventInterface $event
-     * @param bool $eventHandled
      */
     protected function checkEventHandling(
         DataUpdateEventInterface $event,
@@ -130,15 +123,15 @@ class ImmediateProcessingEventListenerTest extends SetUpEventListener
         $this->listener->__invoke($event);
         if ($eventHandled) {
             self::assertTrue($dispatchedEvent instanceof ProcessingFinishedEvent);
-            self::assertEquals($dispatchedEvent->getDataUpdateEvent(), $event);
-            self::assertTrue($dispatchedEvent->getDataUpdateEvent()->isPropagationStopped());
+            /** @var DataUpdateEventInterface|StoppableEventInterface $dataUpdateEvent */
+            $dataUpdateEvent = $dispatchedEvent->getDataUpdateEvent();
+            self::assertEquals($dataUpdateEvent, $event);
+            self::assertTrue($dataUpdateEvent->isPropagationStopped());
         }
     }
 
     /**
      * Data provider for canDispatchEvents
-     *
-     * @return array
      */
     public function canHandleEventsDataProvider(): array
     {
@@ -154,20 +147,13 @@ class ImmediateProcessingEventListenerTest extends SetUpEventListener
         ];
     }
 
-    /**
-     * Init listener
-     *
-     * @return AbstractBaseEventListener
-     */
-    protected function initListener(): AbstractBaseEventListener
+    protected function initListener(): ImmediateProcessingEventListener
     {
         return new ImmediateProcessingEventListener($this->extensionConfigurationMock, $this->eventDispatcherMock);
     }
 
     /**
      * Returns the current monitoring type
-     *
-     * @return int
      */
     protected function getMonitoringType(): int
     {

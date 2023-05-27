@@ -28,10 +28,8 @@ class UrlFacetContainerTest extends SetUpUnitTestCase
 {
     /**
      * Test data for index based url parameters
-     *
-     * @var string[][][]
      */
-    protected $indexParameters = [
+    protected array $indexParameters = [
         'tx_solr' => [
             'filter' => [
                 'type:pages',
@@ -43,10 +41,8 @@ class UrlFacetContainerTest extends SetUpUnitTestCase
     ];
     /**
      * Test data for assoc based url parameters
-     *
-     * @var string[][][]
      */
-    protected $assocParameters = [
+    protected array $assocParameters = [
         'tx_solr' => [
             'filter' => [
                 'type:pages' => 1,
