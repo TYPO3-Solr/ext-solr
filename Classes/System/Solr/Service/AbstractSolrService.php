@@ -224,10 +224,7 @@ abstract class AbstractSolrService
             return $logData;
         }
         // trigger data parsing
-        /**
-         * @noinspection PhpExpressionResultUnusedInspection
-         * @extensionScannerIgnoreLine
-         */
+        /** @phpstan-ignore-next-line */
         $solrResponse->response;
         $logData['response data'] = print_r($solrResponse, true);
         return $logData;

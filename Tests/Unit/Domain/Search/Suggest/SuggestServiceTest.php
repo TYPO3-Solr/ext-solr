@@ -133,15 +133,7 @@ class SuggestServiceTest extends SetUpUnitTestCase
             $this->queryBuilderMock
         );
 
-        try {
-            $suggestions = $suggestService->getSuggestions($fakeRequest);
-        } catch (\Error $error) {
-            self::fail(
-                'The method \ApacheSolrForTypo3\Solr\Domain\Search\Suggest\SuggestService::getSolrSuggestions() ' .
-                'can not handle Apache Solr syntax errors. The method is failing with exception from below:' . PHP_EOL . PHP_EOL .
-                $error->getMessage() . ' in ' . $error->getFile() . ':' . $error->getLine()
-            );
-        }
+        $suggestions = $suggestService->getSuggestions($fakeRequest);
 
         $expectedSuggestions = ['status' => false];
         self::assertSame($expectedSuggestions, $suggestions, 'Suggest did not return status false');

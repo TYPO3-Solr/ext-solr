@@ -101,7 +101,7 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
             $this->tag->addAttribute('data-suggest', $this->getSuggestUrl($this->arguments['additionalFilters'], $pageUid));
         }
         $this->tag->addAttribute('data-suggest-header', htmlspecialchars($this->arguments['suggestHeader'] ?? ''));
-        $this->tag->addAttribute('accept-charset', 'utf-8' ?? null);
+        $this->tag->addAttribute('accept-charset', 'utf-8');
 
         // Get search term
         // @extensionScannerIgnoreLine
@@ -189,7 +189,7 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
         if ($resultSet === null) {
             return '';
         }
-        return trim($this->getSearchResultSet()->getUsedSearchRequest()->getRawUserQuery() ?? '');
+        return trim($this->getSearchResultSet()->getUsedSearchRequest()->getRawUserQuery());
     }
 
     protected function getSuggestUrl(?array $additionalFilters, int $pageUid): string

@@ -61,6 +61,7 @@ class RootPageResolver implements SingletonInterface
      * The result is cached by the caching framework.
      *
      * @throws UnexpectedTYPO3SiteInitializationException
+     * @throws RootPageRecordNotFoundException
      */
     public function getResponsibleRootPageIds(string $table, int $uid): array
     {
@@ -163,6 +164,7 @@ class RootPageResolver implements SingletonInterface
      * if the pid is references in another site with additionalPageIds and returning those rootPageIds as well.
      *
      * @throws UnexpectedTYPO3SiteInitializationException
+     * @throws RootPageRecordNotFoundException
      */
     protected function buildResponsibleRootPageIds(string $table, int $uid): array
     {

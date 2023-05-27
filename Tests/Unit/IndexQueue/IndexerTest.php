@@ -32,8 +32,6 @@ use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use InvalidArgumentException;
 use PHPUnit\Framework\MockObject\MockBuilder;
-use Prophecy\PhpUnit\ProphecyTrait;
-use Prophecy\Prophecy\ObjectProphecy;
 use ReflectionClass;
 use RuntimeException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -44,8 +42,6 @@ use UnexpectedValueException;
  */
 class IndexerTest extends SetUpUnitTestCase
 {
-    use ProphecyTrait;
-
     protected function tearDown(): void
     {
         GeneralUtility::purgeInstances();
@@ -265,22 +261,29 @@ class IndexerTest extends SetUpUnitTestCase
 
     /**
      * @test
+     * @skip
      */
     public function indexerAlwaysInitializesTSFE(): void
     {
-        self::markTestSkipped('API has been changed, the test case must be moved, since it is still relevant.');
-        /* @var Item|ObjectProphecy $item */
-        $item =  $this->prophesize(Item::class);
-        $item->getType()->willReturn('pages');
-        $item->getRecordUid()->willReturn(12);
-        $item->getRootPageUid()->willReturn(1);
-        $item->getIndexingConfigurationName()->willReturn('fakeIndexingConfigurationName');
+        self::markTestIncomplete('API has been changed, the test case must be moved, since it is still relevant.');
+        $item =  $this->createMock(Item::class);
+        $item->expects(self::any())->method('getType')->willReturn('pages');
+        $item->expects(self::any())->method('getRecordUid')->willReturn(12);
+        $item->expects(self::any())->method('getRootPageUid')->willReturn(1);
+        $item->expects(self::any())->method('getIndexingConfigurationName')->willReturn('fakeIndexingConfigurationName');
 
-        /* @var FrontendEnvironment|ObjectProphecy $frontendEnvironment */
-        $frontendEnvironment = $this->prophesize(FrontendEnvironment::class);
-        $frontendEnvironment->getSolrConfigurationFromPageId(12, 0)->shouldBeCalled();
+        $frontendEnvironment = $this->createMock(FrontendEnvironment::class);
+        $frontendEnvironment->expects(self::atLeastOnce())->method('getSolrConfigurationFromPageId')->with(12, 0);
 
-        $indexer = $this->getMockBuilderForIndexer([], null, null, null, null, $frontendEnvironment->reveal())
+        $indexer = $this->getMockBuilder(Indexer::class)
+            ->setConstructorArgs([
+                [],
+                $this->createMock(PagesRepository::class),
+                $this->createMock(Builder::class),
+                $this->createMock(ConnectionManager::class),
+                $frontendEnvironment,
+                $this->createMock(SolrLogManager::class),
+            ])
             ->onlyMethods([
                 'getFullItemRecord',
                 'isRootPageIdPartOfRootLine',
@@ -298,27 +301,6 @@ class IndexerTest extends SetUpUnitTestCase
         $indexerReflection = new ReflectionClass($indexer);
         $itemToDocumentReflectionMethod = $indexerReflection->getMethod('itemToDocument');
         $itemToDocumentReflectionMethod->setAccessible(true);
-        $itemToDocumentReflectionMethod->invokeArgs($indexer, [$item->reveal()]);
-    }
-
-    /**
-     * Returns a mock builder with dump-mocked object properties.
-     */
-    protected function getMockBuilderForIndexer(
-        array $options = [],
-        PagesRepository $pagesRepository = null,
-        Builder $documentBuilder = null,
-        SolrLogManager $logger = null,
-        ConnectionManager $connectionManager = null,
-        FrontendEnvironment $frontendEnvironment = null
-    ): MockBuilder {
-        return $this->getMockBuilder(Indexer::class)->setConstructorArgs([
-            $options,
-            $pagesRepository ?? $this->createMock(PagesRepository::class),
-            $documentBuilder ?? $this->createMock(Builder::class),
-            $logger ?? $this->createMock(SolrLogManager::class),
-            $connectionManager ?? $this->createMock(ConnectionManager::class),
-            $frontendEnvironment ?? $this->createMock(FrontendEnvironment::class),
-        ]);
+        $itemToDocumentReflectionMethod->invokeArgs($indexer, [$item]);
     }
 }

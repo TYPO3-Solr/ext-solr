@@ -131,7 +131,7 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
         [$slug, $parameters] = $this->extractParametersFromUriPath(
             $request->getUri(),
             $enhancerConfiguration['routePath'],
-            $page['slug'] ?? ''
+            $page['slug']
         );
 
         /*
@@ -153,8 +153,7 @@ class SolrRoutingMiddleware implements MiddlewareInterface, LoggerAwareInterface
          */
         $uri = $request->getUri()->withPath(
             $this->getRoutingService()->cleanupHeadingSlash(
-                $this->language->getBase()->getPath() .
-                $page['slug'] ?? ''
+                $this->language->getBase()->getPath() . $page['slug']
             )
         );
         $request = $request->withUri($uri);

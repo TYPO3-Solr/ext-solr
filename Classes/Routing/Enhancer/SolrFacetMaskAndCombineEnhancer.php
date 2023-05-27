@@ -69,7 +69,7 @@ class SolrFacetMaskAndCombineEnhancer extends AbstractEnhancer implements Routin
         $variant->setDefaults(
             $variableProcessor->deflateKeys($this->configuration['defaults'] ?? [], $this->namespace, $arguments)
         );
-        $this->applyRouteAspects($variant, $this->aspects ?? [], $this->namespace);
+        $this->applyRouteAspects($variant, $this->aspects, $this->namespace);
         $this->applyRequirements($variant, $this->configuration['requirements'] ?? [], $this->namespace);
         return $variant;
     }
