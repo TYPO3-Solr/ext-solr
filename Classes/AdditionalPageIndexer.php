@@ -22,6 +22,7 @@ use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
  * additional documents to index for a page being indexed.
  *
  * @author Ingo Renner <ingo@typo3.org>
+ * @deprecated in favor of AddAdditionalDocumentsForPageIndexingEvent
  */
 interface AdditionalPageIndexer
 {

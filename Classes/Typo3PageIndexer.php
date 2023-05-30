@@ -19,6 +19,8 @@ namespace ApacheSolrForTypo3\Solr;
 
 use ApacheSolrForTypo3\Solr\Access\Rootline;
 use ApacheSolrForTypo3\Solr\Domain\Search\ApacheSolrDocument\Builder;
+use ApacheSolrForTypo3\Solr\Event\Indexing\AddAdditionalDocumentsForPageIndexingEvent;
+use ApacheSolrForTypo3\Solr\Event\Indexing\ModifyDocumentsBeforeIndexingEvent;
 use ApacheSolrForTypo3\Solr\FieldProcessor\Service;
 use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageFieldMappingIndexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\Indexer;
@@ -29,6 +31,7 @@ use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use Doctrine\DBAL\Exception as DBALException;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use RuntimeException;
 use Throwable;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
@@ -219,14 +222,20 @@ class Typo3PageIndexer
         $pageDocument = $this->substitutePageDocument($pageDocument);
 
         self::$pageSolrDocument = $pageDocument;
-        $documents[] = $pageDocument;
+        $eventDispatcher = GeneralUtility::makeInstance(EventDispatcherInterface::class);
+        $event = new AddAdditionalDocumentsForPageIndexingEvent($pageDocument, $this->page->getSite(), $this->page->getLanguage(), $this->indexQueueItem);
+        $event = $eventDispatcher->dispatch($event);
+        $documents = $event->getDocuments();
         $documents = $this->getAdditionalDocuments($pageDocument, $documents);
         $this->processDocuments($documents);
+        // @todo will be removed in EXT:solr v12.0
         $documents = Indexer::preAddModifyDocuments(
             $this->indexQueueItem,
             $this->page->getLanguage()->getLanguageId(),
             $documents
         );
+        $event = $eventDispatcher->dispatch(new ModifyDocumentsBeforeIndexingEvent($pageDocument, $this->page->getSite(), $this->page->getLanguage(), $this->indexQueueItem, $documents));
+        $documents = $event->getDocuments();
 
         $pageIndexed = $this->addDocumentsToSolrIndex($documents);
         $this->documentsSentToSolr = $documents;

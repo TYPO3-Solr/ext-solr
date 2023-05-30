@@ -21,6 +21,8 @@ use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\Domain\Search\ApacheSolrDocument\Builder;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
+use ApacheSolrForTypo3\Solr\Event\Indexing\AddAdditionalDocumentsForIndexingEvent;
+use ApacheSolrForTypo3\Solr\Event\Indexing\ModifyDocumentsBeforeIndexingEvent;
 use ApacheSolrForTypo3\Solr\Exception as EXTSolrException;
 use ApacheSolrForTypo3\Solr\FieldProcessor\Service;
 use ApacheSolrForTypo3\Solr\FrontendEnvironment;
@@ -35,6 +37,7 @@ use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use Doctrine\DBAL\Exception as DBALException;
 use InvalidArgumentException;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use RuntimeException;
 use Throwable;
 use TYPO3\CMS\Core\Context\LanguageAspectFactory;
@@ -149,8 +152,6 @@ class Indexer extends AbstractIndexer
      */
     protected function indexItem(Item $item, int $language = 0): bool
     {
-        $documents = [];
-
         $itemDocument = $this->itemToDocument($item, $language);
         if (is_null($itemDocument)) {
             /*
@@ -162,10 +163,17 @@ class Indexer extends AbstractIndexer
             return true;
         }
 
-        $documents[] = $itemDocument;
+        $eventDispatcher = GeneralUtility::makeInstance(EventDispatcherInterface::class);
+        $event = new AddAdditionalDocumentsForIndexingEvent($itemDocument, $item->getSite()->getTypo3SiteObject(), $item->getSite()->getTypo3SiteObject()->getLanguageById($language), $item);
+        $event = $eventDispatcher->dispatch($event);
+        $documents = $event->getDocuments();
         $documents = array_merge($documents, $this->getAdditionalDocuments($item, $language, $itemDocument));
         $documents = $this->processDocuments($item, $documents);
+
+        // will be removed in EXT:solr 12
         $documents = self::preAddModifyDocuments($item, $language, $documents);
+        $event = $eventDispatcher->dispatch(new ModifyDocumentsBeforeIndexingEvent($itemDocument, $item->getSite()->getTypo3SiteObject(), $item->getSite()->getTypo3SiteObject()->getLanguageById($language), $item, $documents));
+        $documents = $event->getDocuments();
 
         $response = $this->currentlyUsedSolrConnection->getWriteService()->addDocuments($documents);
         if ($response->getHttpStatus() !== 200) {
@@ -445,6 +453,7 @@ class Indexer extends AbstractIndexer
      * @param Document $itemDocument The document representing the item for the given language.
      *
      * @return Document[] array An array of additional Document objects to index.
+     * @deprecated in favor of AddAdditionalDocumentsForIndexingEvent
      */
     protected function getAdditionalDocuments(Item $item, int $language, Document $itemDocument): array
     {

@@ -19,6 +19,7 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
  * IndexQueuePageIndexerDocumentsModifier interface, allows to modify documents
  * before adding them to the Solr index in the index queue page indexer.
  *
+ * @deprecated in favor of ModifyDocumentsBeforeIndexingEvent
  * @author Ingo Renner <ingo@typo3.org>
  */
 interface PageIndexerDocumentsModifier
