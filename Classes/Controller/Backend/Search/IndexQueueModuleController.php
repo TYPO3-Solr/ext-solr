@@ -228,7 +228,7 @@ class IndexQueueModuleController extends AbstractModuleController
      */
     public function doIndexingRunAction(): ResponseInterface
     {
-        /* @var IndexService $indexService */
+        /** @var IndexService $indexService */
         $indexService = GeneralUtility::makeInstance(IndexService::class, $this->selectedSite);
         $indexWithoutErrors = $indexService->indexItems(1);
 

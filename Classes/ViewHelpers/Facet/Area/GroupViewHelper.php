@@ -54,7 +54,7 @@ class GroupViewHelper extends AbstractSolrFrontendViewHelper
         Closure $renderChildrenClosure,
         RenderingContextInterface $renderingContext,
     ) {
-        /* @var FacetCollection $facets */
+        /** @var FacetCollection $facets */
         $facets = $arguments['facets'];
         $requiredGroup = $arguments['groupName'] ?? 'main';
         $filtered = $facets->getByGroupName($requiredGroup);

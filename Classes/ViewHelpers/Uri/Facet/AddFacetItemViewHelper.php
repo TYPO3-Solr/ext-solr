@@ -15,7 +15,6 @@
 
 namespace ApacheSolrForTypo3\Solr\ViewHelpers\Uri\Facet;
 
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use Closure;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 
@@ -35,7 +34,6 @@ class AddFacetItemViewHelper extends AbstractValueViewHelper
         Closure $renderChildrenClosure,
         RenderingContextInterface $renderingContext,
     ) {
-        /* @var SearchResultSet $resultSet */
         $name = self::getNameFromArguments($arguments);
         $itemValue = self::getValueFromArguments($arguments);
         $resultSet = self::getResultSetFromArguments($arguments);

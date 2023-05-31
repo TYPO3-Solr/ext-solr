@@ -73,7 +73,7 @@ class IndexAdministrationModuleControllerTest extends IntegrationTest
      */
     public function testReloadIndexConfigurationAction()
     {
-        /* @var SiteRepository $siteRepository */
+        /** @var SiteRepository $siteRepository */
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $selectedSite = $siteRepository->getFirstAvailableSite();
         $controller = $this->getControllerMockObject();
@@ -89,7 +89,7 @@ class IndexAdministrationModuleControllerTest extends IntegrationTest
      */
     public function testEmptyIndexAction()
     {
-        /* @var SiteRepository $siteRepository */
+        /** @var SiteRepository $siteRepository */
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $selectedSite = $siteRepository->getFirstAvailableSite();
         $controller = $this->getControllerMockObject();

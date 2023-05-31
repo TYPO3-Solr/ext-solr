@@ -92,7 +92,7 @@ class SearchRequest
 
         // overwrite the plugin namespace and the persistentArgumentsPaths
         if (!is_null($typoScriptConfiguration)) {
-            $this->argumentNameSpace = $typoScriptConfiguration->getSearchPluginNamespace() ?? self::DEFAULT_PLUGIN_NAMESPACE;
+            $this->argumentNameSpace = $typoScriptConfiguration->getSearchPluginNamespace();
         }
 
         $this->persistentArgumentsPaths = [$this->argumentNameSpace . ':q', $this->argumentNameSpace . ':filter', $this->argumentNameSpace . ':sort', $this->argumentNameSpace . ':groupPage'];

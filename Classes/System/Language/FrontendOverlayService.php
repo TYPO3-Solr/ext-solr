@@ -47,7 +47,7 @@ class FrontendOverlayService
      */
     public function getOverlay(string $tableName, array $record): ?array
     {
-        /* @var LanguageAspect $currentLanguageAspect */
+        /** @var LanguageAspect $currentLanguageAspect */
         $currentLanguageAspect = $this->tsfe->getContext()->getAspect('language');
         //        if ($tableName === 'pages') {
         //            return $this->tsfe->sys_page->getPageOverlay($record, $currentLanguageAspect);
@@ -118,7 +118,7 @@ class FrontendOverlayService
      */
     protected function getRecord(string $localTableName, int $localRecordUid): array|false
     {
-        /* @var QueryBuilder $queryBuilder */
+        /** @var QueryBuilder $queryBuilder */
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($localTableName);
 
         return $queryBuilder

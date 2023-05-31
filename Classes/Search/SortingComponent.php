@@ -81,7 +81,7 @@ class SortingComponent extends AbstractComponent implements QueryAware, SearchRe
 
         // a passed sorting has always priority an overwrites the configured initial sorting
         $this->query->clearSorts();
-        /* @var SortingHelper $sortHelper */
+        /** @var SortingHelper $sortHelper */
         $sortHelper = GeneralUtility::makeInstance(SortingHelper::class, $this->searchConfiguration['sorting.']['options.'] ?? []);
         $sortFields = $sortHelper->getSortFieldFromUrlParameter($arguments['sort']);
         $this->queryBuilder->useSortings(Sortings::fromString($sortFields));

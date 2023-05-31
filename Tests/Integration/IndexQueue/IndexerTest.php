@@ -64,7 +64,7 @@ class IndexerTest extends IntegrationTest
         $this->indexQueue = GeneralUtility::makeInstance(Queue::class);
         $this->indexer = GeneralUtility::makeInstance(Indexer::class);
 
-        /* @var BackendUserAuthentication $beUser */
+        /** @var BackendUserAuthentication $beUser */
         $beUser = GeneralUtility::makeInstance(BackendUserAuthentication::class);
         $GLOBALS['BE_USER'] = $beUser;
         $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageServiceFactory::class)->create('default');

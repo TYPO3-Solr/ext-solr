@@ -685,7 +685,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
      */
     public function canEnableFaceting(): void
     {
-        /* @var \ApacheSolrForTypo3\Solr\Domain\Search\Query\SearchQuery $query */
+        /** @var \ApacheSolrForTypo3\Solr\Domain\Search\Query\SearchQuery $query */
         $query = $this->getInitializedTestSearchQuery();
         $faceting = new Faceting(true);
         $this->builder->startFrom($query)->useFaceting($faceting);
@@ -803,7 +803,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
      */
     public function canSetSpellChecking()
     {
-        /* @var \ApacheSolrForTypo3\Solr\Domain\Search\Query\SearchQuery $query */
+        /** @var \ApacheSolrForTypo3\Solr\Domain\Search\Query\SearchQuery $query */
         $query = $this->getInitializedTestSearchQuery();
 
         $spellchecking = Spellchecking::getEmpty();
@@ -827,7 +827,6 @@ class QueryBuilderTest extends SetUpUnitTestCase
      */
     public function noSiteHashFilterIsSetWhenWildcardIsPassed()
     {
-        /* @var \ApacheSolrForTypo3\Solr\Domain\Search\Query\SearchQuery $query */
         $configurationMock = $this->createMock(TypoScriptConfiguration::class);
         $configurationMock->expects(self::once())->method('getObjectByPathOrDefault')->willReturn(['allowedSites' => '*']);
         $this->siteHashServiceMock->expects(self::once())->method('getAllowedSitesForPageIdAndAllowedSitesConfiguration')->willReturn('*');
@@ -846,7 +845,6 @@ class QueryBuilderTest extends SetUpUnitTestCase
      */
     public function filterIsAddedWhenAllowedSiteIsPassed()
     {
-        /* @var \ApacheSolrForTypo3\Solr\Domain\Search\Query\SearchQuery $query */
         $configurationMock = $this->createMock(TypoScriptConfiguration::class);
         $configurationMock->expects(self::once())->method('getObjectByPathOrDefault')->willReturn(['allowedSites' => 'site1.local']);
 

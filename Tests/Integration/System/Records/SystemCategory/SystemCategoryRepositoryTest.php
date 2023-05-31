@@ -33,7 +33,7 @@ class SystemCategoryRepositoryTest extends IntegrationTest
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/sys_category.csv');
 
-        /* @var SystemCategoryRepository $repository */
+        /** @var SystemCategoryRepository $repository */
         $repository = GeneralUtility::makeInstance(SystemCategoryRepository::class);
         $category = $repository->findOneByUid(2);
         self::assertSame('child', $category['title'], 'Can not retrieve system category by uid');

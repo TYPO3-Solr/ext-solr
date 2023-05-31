@@ -99,7 +99,7 @@ class SearchResultSetService
         $searchComponents = $this->getRegisteredSearchComponents();
 
         foreach ($searchComponents as $searchComponent) {
-            /* @var Search\SearchComponent $searchComponent */
+            /** @var Search\SearchComponent $searchComponent */
             $searchComponent->setSearchConfiguration($this->typoScriptConfiguration->getSearchConfiguration());
 
             if ($searchComponent instanceof QueryAware) {
@@ -161,7 +161,7 @@ class SearchResultSetService
 
         $resultSet->setUsedAdditionalFilters($this->queryBuilder->getAdditionalFilters());
 
-        /* @var VariantsProcessor $variantsProcessor */
+        /** @var VariantsProcessor $variantsProcessor */
         $variantsProcessor = GeneralUtility::makeInstance(
             VariantsProcessor::class,
             $this->typoScriptConfiguration,
@@ -169,7 +169,7 @@ class SearchResultSetService
         );
         $variantsProcessor->process($resultSet);
 
-        /* @var ResultSetReconstitutionProcessor $searchResultReconstitutionProcessor */
+        /** @var ResultSetReconstitutionProcessor $searchResultReconstitutionProcessor */
         $searchResultReconstitutionProcessor = GeneralUtility::makeInstance(ResultSetReconstitutionProcessor::class);
         $searchResultReconstitutionProcessor->process($resultSet);
 
@@ -183,7 +183,7 @@ class SearchResultSetService
      */
     protected function getParsedSearchResults(SearchResultSet $resultSet): void
     {
-        /* @var ResultParserRegistry $parserRegistry */
+        /** @var ResultParserRegistry $parserRegistry */
         $parserRegistry = GeneralUtility::makeInstance(ResultParserRegistry::class, $this->typoScriptConfiguration);
         $useRawDocuments = (bool)$this->typoScriptConfiguration->getValueByPathOrDefaultValue('plugin.tx_solr.features.useRawDocuments', false);
         $parserRegistry->getParser($resultSet)->parse($resultSet, $useRawDocuments);
@@ -213,8 +213,8 @@ class SearchResultSetService
      */
     protected function getInitializedSearchResultSet(SearchRequest $searchRequest): SearchResultSet
     {
-        /* @var SearchResultSet $resultSet */
         $resultSetClass = $this->getResultSetClassName();
+        /** @var SearchResultSet $resultSet */
         $resultSet = GeneralUtility::makeInstance($resultSetClass);
 
         $resultSet->setUsedSearchRequest($searchRequest);
@@ -348,7 +348,7 @@ class SearchResultSetService
      */
     public function getDocumentById(string $documentId): SearchResult
     {
-        /* @var SearchQuery $query */
+        /** @var SearchQuery $query */
         $query = $this->queryBuilder->newSearchQuery($documentId)->useQueryFields(QueryFields::fromString('id'))->getQuery();
         $response = $this->search->search($query, 0, 1);
         $parsedData = $response->getParsedData();

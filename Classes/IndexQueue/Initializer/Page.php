@@ -236,7 +236,7 @@ class Page extends AbstractInitializer
             return;
         }
 
-        /* @var Connection $connection */
+        /** @var Connection $connection */
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_solr_indexqueue_item');
 
         $mountIdentifier = $this->getMountPointIdentifier($mountProperties);
@@ -275,7 +275,7 @@ class Page extends AbstractInitializer
         $mountPageItems = $this->queueItemRepository->findAllIndexQueueItemsByRootPidAndMountIdentifierAndMountedPids($this->site->getRootPageId(), $mountIdentifier, $mountedPages);
 
         foreach ($mountPageItems as $mountPageItemRecord) {
-            /* @var Item $mountPageItem */
+            /** @var Item $mountPageItem */
             $mountPageItem = GeneralUtility::makeInstance(Item::class, $mountPageItemRecord);
             $mountPageItem->setIndexingProperty('mountPageSource', $mountPage['mountPageSource']);
             $mountPageItem->setIndexingProperty('mountPageDestination', $mountPage['mountPageDestination']);

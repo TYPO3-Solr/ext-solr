@@ -154,7 +154,7 @@ class Queue
             return 0;
         }
 
-        /* @var SiteRepository $siteRepository */
+        /** @var SiteRepository $siteRepository */
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         foreach ($rootPageIds as $rootPageId) {
             $skipInvalidRootPage = $rootPageId === 0;

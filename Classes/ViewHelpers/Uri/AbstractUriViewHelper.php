@@ -53,6 +53,7 @@ abstract class AbstractUriViewHelper extends AbstractSolrFrontendViewHelper
 
         if ($renderingContext instanceof RenderingContext) {
             $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
+            /** @phpstan-ignore-next-line */
             $uriBuilder->reset()->setRequest($renderingContext->getRequest());
             self::$searchUriBuilder->injectUriBuilder($uriBuilder);
         }

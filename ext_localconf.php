@@ -163,7 +163,7 @@ defined('TYPO3') or die('Access denied.');
     }
 
     // ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
-    /* @var \ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration $extensionConfiguration */
+    /** @var \ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration $extensionConfiguration */
     $extensionConfiguration = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
         \ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration::class
     );

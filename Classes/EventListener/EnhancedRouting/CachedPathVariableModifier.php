@@ -59,9 +59,6 @@ class CachedPathVariableModifier
             return;
         }
 
-        // TODO: Detect multiValue? Could be removed?
-        $multiValue = false;
-
         $standardizedKeys = $variableKeys;
 
         $variableKeysCount = count($variableKeys);
@@ -70,9 +67,8 @@ class CachedPathVariableModifier
             if (!$this->containsPathVariable($standardizedKey, $pathVariables) || empty($variableValues[$standardizedKey])) {
                 continue;
             }
-            $value = '';
             // Note: Some values contain the multi value separator
-            if ($multiValue) {
+            if ($this->containsMultiValue()) {
                 // Note: if the customer configured a + as separator an additional check on the facet value is required!
                 $facets = $this->routingService->pathFacetStringToArray(
                     $this->standardizeKey((string)$variableValues[$standardizedKey])
@@ -82,11 +78,7 @@ class CachedPathVariableModifier
                 $index = 0;
                 foreach ($facets as $facet) {
                     if (str_contains($facet, ':')) {
-                        [$prefix, $value] = explode(
-                            ':',
-                            $facet,
-                            2
-                        );
+                        $value = explode(':', $facet, 2)[1];
                         $singleValues[] = $value;
                         $index++;
                     } else {
@@ -95,11 +87,11 @@ class CachedPathVariableModifier
                 }
                 $value = $this->routingService->pathFacetsToString($singleValues);
             } else {
-                [$prefix, $value] = explode(
+                $value = explode(
                     ':',
                     $this->standardizeKey((string)$variableValues[$standardizedKey]),
                     2
-                );
+                )[1];
             }
             $standardizedKeys[$i] = $standardizedKey;
             $variableValues[$standardizedKey] = $value;
@@ -152,13 +144,19 @@ class CachedPathVariableModifier
         if (in_array($variableName, $pathVariables)) {
             return true;
         }
-        foreach ($pathVariables as $keyName => $value) {
+        foreach ($pathVariables as $value) {
             $segments = explode($this->routingService->getUrlFacetPathService()->getMultiValueSeparator(), $value);
             if (in_array($variableName, $segments)) {
                 return true;
             }
         }
 
+        return false;
+    }
+
+    protected function containsMultiValue(): bool
+    {
+        // @todo: implement the check, or remove contents of if statement.
         return false;
     }
 }

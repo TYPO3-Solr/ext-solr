@@ -55,7 +55,7 @@ class IndexQueueWorkerTaskTest extends IntegrationTest
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_trigger_frontend_calls_for_page_index.csv');
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $site = $siteRepository->getFirstAvailableSite();
-        /* @var IndexQueueWorkerTask $indexQueueQueueWorkerTask */
+        /** @var IndexQueueWorkerTask $indexQueueQueueWorkerTask */
         $indexQueueQueueWorkerTask = GeneralUtility::makeInstance(IndexQueueWorkerTask::class);
         $indexQueueQueueWorkerTask->setDocumentsToIndexLimit(1);
         $indexQueueQueueWorkerTask->setRootPageId($site->getRootPageId());

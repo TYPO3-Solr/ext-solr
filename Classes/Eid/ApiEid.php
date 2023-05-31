@@ -66,7 +66,7 @@ class ApiEid
     {
         $domain = $request->getQueryParams()['domain'];
 
-        /* @var SiteHashService $siteHashService */
+        /** @var SiteHashService $siteHashService */
         $siteHashService = GeneralUtility::makeInstance(SiteHashService::class);
         $siteHash = $siteHashService->getSiteHashForDomain($domain);
         return new JsonResponse(
@@ -132,7 +132,7 @@ class ApiEid
         foreach ($apiMethodDefinitions as $apiMethodName => $apiMethodDefinition) {
             $apiMethodDefinitions[$apiMethodName]['params']['required'] = array_merge(
                 self::REQUIRED_PARAMS_GLOBAL,
-                $apiMethodDefinition['params']['required'] ?? []
+                $apiMethodDefinition['params']['required']
             );
         }
         return $apiMethodDefinitions;

@@ -94,7 +94,7 @@ abstract class AbstractStrategy
         foreach ($indexQueueItems as $indexQueueItem) {
             try {
                 $site = $indexQueueItem->getSite();
-            } catch (InvalidArgumentException $e) {
+            } catch (InvalidArgumentException) {
                 $this->queue->deleteItem($indexQueueItem->getType(), $indexQueueItem->getIndexQueueUid());
                 continue;
             }
@@ -125,6 +125,7 @@ abstract class AbstractStrategy
             $response = $solr->getWriteService()->deleteByQuery($query);
 
             if ($response->getHttpStatus() !== 200) {
+                /** @var SolrLogManager $logger */
                 $logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
                 $logger->log(
                     SolrLogManager::ERROR,

@@ -38,7 +38,6 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\Util;
 use Doctrine\DBAL\Exception as DBALException;
-use Solarium\QueryType\Select\Query\Query as SolariumSelectQuery;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
@@ -90,7 +89,7 @@ class QueryBuilder extends AbstractQueryBuilder
         string $rawQuery = '',
         int $resultsPerPage = 10,
         array $additionalFiltersFromRequest = []
-    ): SolariumSelectQuery {
+    ): Query {
         if ($this->typoScriptConfiguration->getLoggingQuerySearchWords()) {
             $this->logger->log(SolrLogManager::INFO, 'Received search query', [$rawQuery]);
         }
@@ -141,7 +140,7 @@ class QueryBuilder extends AbstractQueryBuilder
      *
      * @throws DBALException
      */
-    public function buildPageQuery(int $pageId): SolariumSelectQuery
+    public function buildPageQuery(int $pageId): Query
     {
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $site = $siteRepository->getSiteByPageId($pageId);
@@ -161,7 +160,7 @@ class QueryBuilder extends AbstractQueryBuilder
      *
      * @throws DBALException
      */
-    public function buildRecordQuery(string $type, int $uid, int $pageId): SolariumSelectQuery
+    public function buildRecordQuery(string $type, int $uid, int $pageId): Query
     {
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $site = $siteRepository->getSiteByPageId($pageId);
@@ -400,7 +399,7 @@ class QueryBuilder extends AbstractQueryBuilder
     {
         $filters = [];
 
-        /* @var PageUidToHierarchy $processor */
+        /** @var PageUidToHierarchy $processor */
         $processor = GeneralUtility::makeInstance(PageUidToHierarchy::class);
         $hierarchies = $processor->process($pageIds);
 

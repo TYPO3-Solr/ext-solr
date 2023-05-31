@@ -132,7 +132,7 @@ class PageIndexerRequest
      */
     public function send(string $url): PageIndexerResponse
     {
-        /* @var PageIndexerResponse $response */
+        /** @var PageIndexerResponse $response */
         $response = GeneralUtility::makeInstance(PageIndexerResponse::class);
         $decodedResponse = $this->getUrlAndDecodeResponse($url, $response);
 

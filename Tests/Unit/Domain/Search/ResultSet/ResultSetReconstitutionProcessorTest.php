@@ -122,7 +122,7 @@ class ResultSetReconstitutionProcessorTest extends SetUpUnitTestCase
         // after the reconstitution they should be 1 facet present
         self::assertCount(1, $searchResultSet->getFacets());
 
-        /* @var OptionsFacet $optionFacet */
+        /** @var OptionsFacet $optionFacet */
         $optionFacet = $searchResultSet->getFacets()->getByPosition(0);
         // @extensionScannerIgnoreLine
         self::assertSame('tx_myext_domain_model_mytype', $optionFacet->getOptions()->getByPosition(0)->getValue(), 'Custom type facet not found');

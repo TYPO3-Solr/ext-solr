@@ -63,7 +63,7 @@ class HighlightingResultViewHelperTest extends SetUpUnitTestCase
      */
     public function canRenderCreateHighlightSnipped(array $input, $expectedOutput, $configuredWrap)
     {
-        /* @var RenderingContextInterface|MockObject $renderingContextMock */
+        /** @var RenderingContextInterface|MockObject $renderingContextMock */
         $renderingContextMock = $this->createMock(RenderingContextInterface::class);
 
         $configurationMock = $this->createMock(TypoScriptConfiguration::class);

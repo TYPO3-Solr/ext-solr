@@ -127,7 +127,7 @@ class SearchController extends AbstractBaseController
             $pagination = GeneralUtility::makeInstance(ResultsPagination::class, $paginator);
             $pagination->setMaxPageNumbers($this->typoScriptConfiguration->getMaxPaginatorLinks());
 
-            /* @var AfterSearchEvent $afterSearchEvent */
+            /** @var AfterSearchEvent $afterSearchEvent */
             $afterSearchEvent = $this->eventDispatcher->dispatch(
                 new AfterSearchEvent(
                     $searchResultSet,
@@ -166,7 +166,7 @@ class SearchController extends AbstractBaseController
             return $this->handleSolrUnavailable();
         }
 
-        /* @var FormEvent $formEvent */
+        /** @var FormEvent $formEvent */
         $formEvent = $this->eventDispatcher->dispatch(
             new FormEvent(
                 $this->searchService->getSearch(),
@@ -193,7 +193,7 @@ class SearchController extends AbstractBaseController
      */
     public function frequentlySearchedAction(): ResponseInterface
     {
-        /* @var SearchResultSet $searchResultSet */
+        /** @var SearchResultSet $searchResultSet */
         $searchResultSet = GeneralUtility::makeInstance(SearchResultSet::class);
 
         $pageId = $this->typoScriptFrontendController->getRequestedId();
@@ -203,7 +203,7 @@ class SearchController extends AbstractBaseController
 
         $this->view->getRenderingContext()->getVariableProvider()->add('searchResultSet', $searchResultSet);
 
-        /* @var AfterFrequentlySearchedEvent $afterFrequentlySearchedEvent*/
+        /** @var AfterFrequentlySearchedEvent $afterFrequentlySearchedEvent*/
         $afterFrequentlySearchedEvent = $this->eventDispatcher->dispatch(
             new AfterFrequentlySearchedEvent(
                 $searchResultSet,

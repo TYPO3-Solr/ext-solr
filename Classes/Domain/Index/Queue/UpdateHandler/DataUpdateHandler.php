@@ -128,6 +128,7 @@ class DataUpdateHandler extends AbstractUpdateHandler
      *
      * @throws DBALException
      * @throws UnexpectedTYPO3SiteInitializationException
+     * @throws RootPageRecordNotFoundException
      */
     public function handleContentElementUpdate(int $uid, array $updatedFields = []): void
     {
@@ -164,6 +165,7 @@ class DataUpdateHandler extends AbstractUpdateHandler
      *
      * @throws DBALException
      * @throws UnexpectedTYPO3SiteInitializationException
+     * @throws RootPageRecordNotFoundException
      */
     public function handlePageUpdate(int $uid, array $updatedFields = []): void
     {
@@ -352,6 +354,7 @@ class DataUpdateHandler extends AbstractUpdateHandler
      *
      * @throws DBALException
      * @throws UnexpectedTYPO3SiteInitializationException
+     * @throws RootPageRecordNotFoundException
      */
     protected function processPageRecord(int $uid, int $pid, array $updatedFields = []): void
     {
@@ -437,6 +440,7 @@ class DataUpdateHandler extends AbstractUpdateHandler
      * This method is used to determine the pageId that should be used to retrieve the index queue configuration.
      *
      * @throws UnexpectedTYPO3SiteInitializationException
+     * @throws RootPageRecordNotFoundException
      */
     protected function getConfigurationPageId(string $recordTable, int $recordPageId, int $recordUid): int
     {

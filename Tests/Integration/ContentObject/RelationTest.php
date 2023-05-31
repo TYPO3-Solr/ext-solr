@@ -294,7 +294,7 @@ class RelationTest extends IntegrationTest
     {
         $tsfeMock = $this->createMock(TypoScriptFrontendController::class);
         $contentObjectRenderer = GeneralUtility::makeInstance(ContentObjectRenderer::class, $tsfeMock);
-        /* @var MockObject|ServerRequest $requestMock */
+        /** @var MockObject|ServerRequest $requestMock */
         $requestMock = $this->createMock(ServerRequest::class);
         $contentObjectRenderer->start(
             BackendUtility::getRecord($table, $uid),

@@ -26,7 +26,6 @@ use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
-use TypeError;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -68,7 +67,7 @@ class RepositoryTest extends SetUpUnitTestCase
             ->method('findByPageIdAndByLanguageId')
             ->willReturn($apacheSolrDocumentCollection);
 
-        /* @var Repository $apacheSolrDocumentRepository */
+        /** @var Repository $apacheSolrDocumentRepository */
         self::assertSame($apacheSolrDocumentCollection[0], $apacheSolrDocumentRepository->findOneByPageIdAndByLanguageId(0, 0));
     }
 

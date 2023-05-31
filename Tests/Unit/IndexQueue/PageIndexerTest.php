@@ -90,7 +90,7 @@ class PageIndexerTest extends SetUpUnitTestCase
         $testUri = 'http://myfrontendurl.de/index.php?id=4711&L=0';
         $this->uriStrategyMock->expects(self::any())->method('getPageIndexingUriFromPageItemAndLanguageId')->willReturn($testUri);
 
-        /* @var Item|MockObject $item */
+        /** @var Item|MockObject $item */
         $item = $this->createMock(Item::class);
         $item->expects(self::any())->method('getRootPageUid')->willReturn(88);
         $item->expects(self::any())->method('getRecordUid')->willReturn(4711);

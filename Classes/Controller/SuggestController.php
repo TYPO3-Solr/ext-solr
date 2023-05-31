@@ -20,6 +20,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\Suggest\SuggestService;
 use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrUnavailableException;
 use ApacheSolrForTypo3\Solr\Util;
+use Doctrine\DBAL\Exception as DBALException;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -37,6 +38,7 @@ class SuggestController extends AbstractBaseController
      * This method creates a suggest json response that can be used in a suggest layer.
      *
      * @throws AspectNotFoundException
+     * @throws DBALException
      * @throws InvalidFacetPackageException
      * @throws NoSolrConnectionFoundException
      *
@@ -52,7 +54,7 @@ class SuggestController extends AbstractBaseController
         }
 
         try {
-            /* @var SuggestService $suggestService */
+            /** @var SuggestService $suggestService */
             $suggestService = GeneralUtility::makeInstance(
                 SuggestService::class,
                 $this->typoScriptFrontendController,

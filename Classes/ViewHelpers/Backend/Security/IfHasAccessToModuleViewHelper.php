@@ -61,7 +61,7 @@ class IfHasAccessToModuleViewHelper extends AbstractConditionViewHelper
      */
     protected static function evaluateCondition($arguments = null)
     {
-        /* @var BackendUserAuthentication $beUser */
+        /** @var BackendUserAuthentication $beUser */
         $beUser = $GLOBALS['BE_USER'];
         try {
             $hasAccessToModule = $beUser->modAccess(

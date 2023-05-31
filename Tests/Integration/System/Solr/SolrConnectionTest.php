@@ -57,7 +57,7 @@ class SolrConnectionTest extends IntegrationTest
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/slim_basic_sites.csv');
 
-        /* @var ConnectionManager $connectionManager */
+        /** @var ConnectionManager $connectionManager */
         $connectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
 
         $messageOnNoSolrConnectionFoundException = vsprintf(

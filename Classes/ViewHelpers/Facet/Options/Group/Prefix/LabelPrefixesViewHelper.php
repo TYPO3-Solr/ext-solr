@@ -53,7 +53,7 @@ class LabelPrefixesViewHelper extends AbstractSolrFrontendViewHelper
         Closure $renderChildrenClosure,
         RenderingContextInterface $renderingContext
     ) {
-        /* @var OptionCollection $options */
+        /** @var OptionCollection $options */
         $options = $arguments['options'];
         $length = $arguments['length'] ?? 1;
         $sortBy = $arguments['sortBy'] ?? 'count';

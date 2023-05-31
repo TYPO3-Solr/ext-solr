@@ -40,7 +40,7 @@ class SolrFacetMaskAndCombineEnhancer extends AbstractEnhancer implements Routin
      */
     public function enhanceForMatching(RouteCollection $collection): void
     {
-        /* @var Route $defaultPageRoute */
+        /** @var Route $defaultPageRoute */
         $defaultPageRoute = $collection->get('default');
         $variant = $this->getVariant($defaultPageRoute, $this->configuration);
         $collection->add(
@@ -83,7 +83,7 @@ class SolrFacetMaskAndCombineEnhancer extends AbstractEnhancer implements Routin
         if (!is_array($parameters[$this->namespace] ?? null)) {
             return;
         }
-        /* @var Route $defaultPageRoute */
+        /** @var Route $defaultPageRoute */
         $defaultPageRoute = $collection->get('default');
         $variant = $this->getVariant($defaultPageRoute, $this->configuration);
         $compiledRoute = $variant->compile();
@@ -295,7 +295,7 @@ class SolrFacetMaskAndCombineEnhancer extends AbstractEnhancer implements Routin
      */
     protected function getRoutingService(): RoutingService
     {
-        /* @var RoutingService $routingService */
+        /** @var RoutingService $routingService */
         $routingService = GeneralUtility::makeInstance(
             RoutingService::class,
             $this->configuration['solr'],

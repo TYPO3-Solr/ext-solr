@@ -45,7 +45,7 @@ class DateRangeFacetParserTest extends SetUpFacetParser
             ['myCreated:201506020000-201706020000']
         );
 
-        /* @var DateRangeFacetParser $parser */
+        /** @var DateRangeFacetParser $parser */
         $parser = $this->getInitializedParser(DateRangeFacetParser::class);
 
         $facet = $parser->parse($searchResultSet, 'myCreated', $facetConfiguration['myCreated.']);

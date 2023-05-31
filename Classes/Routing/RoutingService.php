@@ -815,7 +815,6 @@ class RoutingService implements LoggerAwareInterface
     public function convertStringIntoUri(string $base): ?UriInterface
     {
         try {
-            /* @var Uri $uri */
             return GeneralUtility::makeInstance(
                 Uri::class,
                 $base

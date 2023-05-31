@@ -63,7 +63,7 @@ abstract class AbstractFacetItemCollection extends AbstractCollection
     /**
      * Returns the manually sorted copy of given facet items.
      */
-    public function getManualSortedCopy(array $manualSorting): AbstractFacetItemCollection
+    public function getManualSortedCopy(array $manualSorting): static
     {
         $result = clone $this;
         $copiedItems = $result->data;
@@ -84,7 +84,7 @@ abstract class AbstractFacetItemCollection extends AbstractCollection
     /**
      * Returns the manually reverse ordered copy of available facet items.
      */
-    public function getReversedOrderCopy(): AbstractFacetItemCollection
+    public function getReversedOrderCopy(): static
     {
         $result = clone $this;
         $result->data = array_reverse($result->data, true);

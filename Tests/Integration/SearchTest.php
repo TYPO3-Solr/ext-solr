@@ -366,7 +366,7 @@ class SearchTest extends IntegrationTest
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Search/phrase_search.csv');
         $this->fillIndexForPhraseSearchTests();
 
-        /* @var \ApacheSolrForTypo3\Solr\Search $searchInstance */
+        /** @var \ApacheSolrForTypo3\Solr\Search $searchInstance */
         $searchInstance = GeneralUtility::makeInstance(Search::class);
 
         $query = $this->getSearchQueryForSolr();

@@ -54,7 +54,7 @@ class SiteSelectorField
                 $selectedAttribute = ' selected="selected"';
             }
 
-            $selector .= '<option value="' . htmlspecialchars($site->getRootPageId()) . '"' . $selectedAttribute . '>'
+            $selector .= '<option value="' . htmlspecialchars((string)$site->getRootPageId()) . '"' . $selectedAttribute . '>'
                 . htmlspecialchars($site->getLabel())
                 . '</option>';
         }

@@ -45,7 +45,7 @@ class RemoveFacetViewHelper extends AbstractUriViewHelper
         Closure $renderChildrenClosure,
         RenderingContextInterface $renderingContext,
     ) {
-        /* @var AbstractFacet $facet */
+        /** @var AbstractFacet $facet */
         $facet = $arguments['facet'];
         $previousRequest = $facet->getResultSet()->getUsedSearchRequest();
 

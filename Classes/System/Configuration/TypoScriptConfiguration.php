@@ -15,6 +15,7 @@
 
 namespace ApacheSolrForTypo3\Solr\System\Configuration;
 
+use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\IndexQueue\Indexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\Initializer\Record;
 use ApacheSolrForTypo3\Solr\System\ContentObject\ContentObjectService;
@@ -1733,7 +1734,7 @@ class TypoScriptConfiguration
      *
      * plugin.tx_solr.view.pluginNamespace
      */
-    public function getSearchPluginNamespace(string $defaultIfEmpty = 'tx_solr'): string
+    public function getSearchPluginNamespace(string $defaultIfEmpty = SearchRequest::DEFAULT_PLUGIN_NAMESPACE): string
     {
         return (string)$this->getValueByPathOrDefaultValue('plugin.tx_solr.view.pluginNamespace', $defaultIfEmpty);
     }

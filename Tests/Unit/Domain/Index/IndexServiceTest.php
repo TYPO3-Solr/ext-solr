@@ -114,7 +114,7 @@ class IndexServiceTest extends SetUpUnitTestCase
         $this->siteMock->expects(self::any())->method('getSolrConfiguration')->willReturn($fakeConfiguration);
         $this->siteMock->expects(self::any())->method('getDomain')->willReturn('www.indextest.local');
 
-        /* @var IndexService|MockObject $indexService */
+        /** @var IndexService|MockObject $indexService */
         $indexService = $this->getMockBuilder(IndexService::class)
             ->setConstructorArgs([$this->siteMock, $this->queueMock, $this->eventDispatcherMock, $this->logManagerMock])
             ->onlyMethods(['getIndexerByItem', 'restoreOriginalHttpHost'])
@@ -153,7 +153,7 @@ class IndexServiceTest extends SetUpUnitTestCase
         $this->siteMock->expects(self::once())->method('getSolrConfiguration')->willReturn($fakeConfiguration);
         $this->siteMock->expects(self::any())->method('getDomain')->willReturn('www.indextest.local');
 
-        /* @var IndexService|MockObject $indexService  */
+        /** @var IndexService|MockObject $indexService  */
         $indexService = $this->getMockBuilder(IndexService::class)
             ->setConstructorArgs([$this->siteMock, $this->queueMock, $this->eventDispatcherMock, $this->logManagerMock])
             ->onlyMethods(['getIndexerByItem'])

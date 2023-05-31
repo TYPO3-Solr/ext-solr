@@ -46,7 +46,7 @@ class HierarchyFacetParserTest extends SetUpFacetParser
             $facetConfiguration
         );
 
-        /* @var HierarchyFacetParser $parser */
+        /** @var HierarchyFacetParser $parser */
         $parser = $this->getInitializedParser(HierarchyFacetParser::class);
         $facet = $parser->parse($searchResultSet, 'pageHierarchy', $facetConfiguration['pageHierarchy.']);
         self::assertInstanceOf(HierarchyFacet::class, $facet);
@@ -99,7 +99,7 @@ class HierarchyFacetParserTest extends SetUpFacetParser
             $facetConfiguration
         );
 
-        /* @var HierarchyFacetParser $parser */
+        /** @var HierarchyFacetParser $parser */
         $parser = $this->getInitializedParser(HierarchyFacetParser::class);
         $facet = $parser->parse($searchResultSet, 'pageHierarchy', $facetConfiguration['pageHierarchy.']);
 
@@ -141,7 +141,7 @@ class HierarchyFacetParserTest extends SetUpFacetParser
             ['categoryHierarchyByTitle:/folder2\/level1\//folder2\/level2\//']
         );
 
-        /* @var HierarchyFacetParser $parser */
+        /** @var HierarchyFacetParser $parser */
         $parser = $this->getInitializedParser(HierarchyFacetParser::class);
         /** @var HierarchyFacet $facet */
         $facet = $parser->parse($searchResultSet, 'categoryHierarchyByTitle', $facetConfiguration);
@@ -207,7 +207,7 @@ class HierarchyFacetParserTest extends SetUpFacetParser
             ['pageHierarchy:/1/14/']
         );
 
-        /* @var HierarchyFacetParser $parser */
+        /** @var HierarchyFacetParser $parser */
         $parser = $this->getInitializedParser(HierarchyFacetParser::class);
         /** @var HierarchyFacet $facet */
         $facet = $parser->parse($searchResultSet, 'pageHierarchy', $facetConfiguration['pageHierarchy.']);

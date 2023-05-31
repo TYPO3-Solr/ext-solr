@@ -164,7 +164,7 @@ abstract class AbstractSolrService
      */
     protected function reviseUrl(string $url): string
     {
-        /* @var Uri $uri */
+        /** @var Uri $uri */
         $uri = GeneralUtility::makeInstance(Uri::class, $url);
 
         if ($uri->getPath() === '') {
@@ -224,6 +224,7 @@ abstract class AbstractSolrService
             return $logData;
         }
         // trigger data parsing
+        /** @noinspectionPhpExpressionResultUnusedInspection */
         /** @phpstan-ignore-next-line */
         $solrResponse->response;
         $logData['response data'] = print_r($solrResponse, true);

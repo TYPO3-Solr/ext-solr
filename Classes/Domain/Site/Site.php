@@ -90,7 +90,7 @@ class Site implements SiteInterface
     public function getSolrConnectionConfiguration(int $language = 0): array
     {
         if (!is_array($this->solrConnectionConfigurations[$language] ?? null)) {
-            /* @var NoSolrConnectionFoundException $noSolrConnectionException */
+            /** @var NoSolrConnectionFoundException $noSolrConnectionException */
             $noSolrConnectionException = GeneralUtility::makeInstance(
                 NoSolrConnectionFoundException::class,
                 'Could not find a Solr connection for root page [' . $this->getRootPageId() . '] and language [' . $language . '].',

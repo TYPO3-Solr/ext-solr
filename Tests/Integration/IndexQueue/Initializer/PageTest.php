@@ -74,7 +74,7 @@ class PageTest extends IntegrationTest
     protected function initializeAllPageIndexQueues()
     {
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
-        /* @var SiteRepository $siteRepository */
+        /** @var SiteRepository $siteRepository */
         $sites = $siteRepository->getAvailableSites();
 
         foreach ($sites as $site) {

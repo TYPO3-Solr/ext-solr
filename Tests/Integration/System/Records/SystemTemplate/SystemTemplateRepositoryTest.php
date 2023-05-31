@@ -37,7 +37,7 @@ class SystemTemplateRepositoryTest extends IntegrationTest
             ['uid' => 8657],
         ];
 
-        /* @var SystemTemplateRepository $repository */
+        /** @var SystemTemplateRepository $repository */
         $repository = GeneralUtility::makeInstance(SystemTemplateRepository::class);
         $closestPageIdWithActiveTemplate = $repository->findOneClosestPageIdWithActiveTemplateByRootLine($fakeRootLine);
         self::assertEquals(33, $closestPageIdWithActiveTemplate, 'Can not find closest page id with active template.');

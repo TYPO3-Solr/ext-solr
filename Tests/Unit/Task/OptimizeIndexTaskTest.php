@@ -30,7 +30,7 @@ class OptimizeIndexTaskTest extends SetUpUnitTestCase
      */
     public function canGetErrorMessageInAdditionalInformationWhenSiteNotAvailable()
     {
-        /* @var OptimizeIndexTask $indexQueuerWorker */
+        /** @var OptimizeIndexTask $indexQueuerWorker */
         $indexQueuerWorker = $this->getMockBuilder(OptimizeIndexTask::class)
             ->disableOriginalConstructor()
             ->onlyMethods(['getSite'])

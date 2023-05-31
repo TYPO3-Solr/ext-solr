@@ -166,7 +166,7 @@ class SearchResultSetServiceTest extends IntegrationTest
         self::assertSame(5, $secondResult->getVariantsNumFound());
 
         // We assume that the third result has no variants.
-        /* @var SearchResult $secondResult */
+        /** @var SearchResult $secondResult */
         $thirdResult = $searchResults[2];
         self::assertSame(0, count($thirdResult->getVariants()));
         self::assertSame('Baby Doe', $thirdResult->getAuthor());
@@ -259,14 +259,14 @@ class SearchResultSetServiceTest extends IntegrationTest
         $solrConnection = GeneralUtility::makeInstance(ConnectionManager::class)->getConnectionByPageId(1);
         $search = GeneralUtility::makeInstance(Search::class, $solrConnection);
 
-        /* @var SearchResultSetService $searchResultsSetService */
+        /** @var SearchResultSetService $searchResultSetService */
         $searchResultSetService = GeneralUtility::makeInstance(
             SearchResultSetService::class,
             $typoScriptConfiguration,
             $search
         );
 
-        /* @var SearchRequest $searchRequest */
+        /** @var SearchRequest $searchRequest */
         $searchRequest = GeneralUtility::makeInstance(SearchRequest::class, [], 0, 0, $typoScriptConfiguration);
         $searchRequest->setRawQueryString($queryString);
         $searchRequest->setResultsPerPage(10);
@@ -283,7 +283,7 @@ class SearchResultSetServiceTest extends IntegrationTest
 
     protected function simulateFrontedUserGroups(array $feUserGroupArray): void
     {
-        /* @var Context $context */
+        /** @var Context $context */
         $context = GeneralUtility::makeInstance(Context::class);
         $userAuthentication = GeneralUtility::makeInstance(FrontendUserAuthentication::class);
         // Simulate any user

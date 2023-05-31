@@ -79,6 +79,8 @@ class RootPageResolver implements SingletonInterface
 
     /**
      * Checks if the passed pageId is a root page.
+     *
+     * @throws RootPageRecordNotFoundException
      */
     public function getIsRootPageId(int $pageId): bool
     {
@@ -136,7 +138,7 @@ class RootPageResolver implements SingletonInterface
             return 0;
         }
 
-        /* @var Rootline $rootLine */
+        /** @var Rootline $rootLine */
         $rootLine = GeneralUtility::makeInstance(Rootline::class);
 
         // frontend
@@ -146,7 +148,7 @@ class RootPageResolver implements SingletonInterface
 
         // fallback, backend
         if ($forceFallback || !$rootLine->getHasRootPage()) {
-            /* @var RootlineUtility $rootlineUtility */
+            /** @var RootlineUtility $rootlineUtility */
             $rootlineUtility = GeneralUtility::makeInstance(RootlineUtility::class, $pageId, $mountPointIdentifier);
             try {
                 $rootLineArray = $rootlineUtility->get();

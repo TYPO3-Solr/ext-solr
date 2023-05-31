@@ -30,11 +30,7 @@ class SortingExpression
      */
     public function getForFacet(string|int|bool $sorting): string
     {
-        $noSortingSet = empty($sorting) && (int)$sorting !== 0 && (bool)$sorting !== false;
         $sortingIsCount = $sorting === 'count' || $sorting === 1 || $sorting === '1' || $sorting === true || $sorting === 'true';
-        if ($noSortingSet) {
-            return '';
-        }
         if ($sortingIsCount) {
             return 'count';
         }

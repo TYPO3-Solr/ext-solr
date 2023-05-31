@@ -190,11 +190,11 @@ class SearchUriBuilder
 
     public function getNewSearchUri(SearchRequest $previousSearchRequest, $queryString): string
     {
-        /* @var SearchRequest $request */
         $contextConfiguration = $previousSearchRequest->getContextTypoScriptConfiguration();
         $contextSystemLanguage = $previousSearchRequest->getContextSystemLanguageUid();
         $contextPageUid = $previousSearchRequest->getContextPageUid();
 
+        /** @var SearchRequest $request */
         $request = GeneralUtility::makeInstance(
             SearchRequest::class,
             [],
@@ -279,7 +279,7 @@ class SearchUriBuilder
             $this->uriBuilder->reset()->setTargetPageUid($pageUid);
             $uriCacheTemplate = $this->uriBuilder->setArguments($structure)->build();
 
-            /* @var UrlHelper $urlHelper */
+            /** @var UrlHelper $urlHelper */
             $urlHelper = GeneralUtility::makeInstance(UrlHelper::class, $uriCacheTemplate);
             self::$preCompiledLinks[$hash] = (string)$urlHelper;
         }
@@ -299,14 +299,14 @@ class SearchUriBuilder
             $this->routingService->fromRoutingConfiguration($routingConfigurations[0]);
         }
 
-        /* @var Uri $uri */
+        /** @var Uri $uri */
         $uri = GeneralUtility::makeInstance(
             Uri::class,
             $uriCacheTemplate
         );
 
         $urlEvent = new BeforeReplaceVariableInCachedUrlEvent($uri, $enhancedRouting);
-        /* @var BeforeReplaceVariableInCachedUrlEvent $urlEvent */
+        /** @var BeforeReplaceVariableInCachedUrlEvent $urlEvent */
         $urlEvent = $this->eventDispatcher->dispatch($urlEvent);
         $uriCacheTemplate = (string)$urlEvent->getUri();
 

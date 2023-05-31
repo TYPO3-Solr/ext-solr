@@ -179,7 +179,7 @@ class RecordMonitor
      */
     protected function skipRecordByRootlineConfiguration(int $pid): bool
     {
-        /* @var RootlineUtility $rootlineUtility */
+        /** @var RootlineUtility $rootlineUtility */
         $rootlineUtility = GeneralUtility::makeInstance(RootlineUtility::class, $pid);
         try {
             $rootline = $rootlineUtility->get();

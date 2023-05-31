@@ -92,7 +92,7 @@ class AuthorizationService extends AbstractAuthenticationService
     ): array {
         $groupData = [];
 
-        /* @var PageIndexerRequestHandler $requestHandler */
+        /** @var PageIndexerRequestHandler $requestHandler */
         $requestHandler = GeneralUtility::makeInstance(PageIndexerRequestHandler::class);
         $accessRootline = $requestHandler->getRequest()->getParameter('accessRootline');
 

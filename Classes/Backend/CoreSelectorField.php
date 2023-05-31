@@ -161,7 +161,7 @@ class CoreSelectorField
             'fieldTSConfig' => ['noMatchingValue_label' => ''],
         ];
 
-        /* @var NodeFactory $nodeFactory */
+        /** @var NodeFactory $nodeFactory */
         $nodeFactory = GeneralUtility::makeInstance(NodeFactory::class);
         $options = [
             'renderType' => 'selectCheckBox',

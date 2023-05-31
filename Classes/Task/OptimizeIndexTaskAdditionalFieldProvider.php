@@ -163,7 +163,7 @@ class OptimizeIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldPr
             return $selectorMarkup;
         }
 
-        /* @var CoreSelectorField $selectorField */
+        /** @var CoreSelectorField $selectorField */
         $selectorField = GeneralUtility::makeInstance(CoreSelectorField::class, $this->site);
         $selectorField->setFormElementName('tx_scheduler[cores]');
         $selectorField->setSelectedValues($this->task->getCoresToOptimizeIndex());

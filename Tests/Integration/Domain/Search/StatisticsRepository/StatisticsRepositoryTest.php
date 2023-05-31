@@ -31,7 +31,7 @@ class StatisticsRepositoryTest extends IntegrationTest
         $fixtureTimestamp = 1471203378;
         $daysSinceFixture = self::getDaysSinceTimestamp($fixtureTimestamp) + 1;
 
-        /* @var StatisticsRepository $repository */
+        /** @var StatisticsRepository $repository */
         $repository = GeneralUtility::makeInstance(StatisticsRepository::class);
         $topHits = $repository->getTopKeyWordsWithHits(1, $daysSinceFixture);
         $expectedResult = [
@@ -51,7 +51,7 @@ class StatisticsRepositoryTest extends IntegrationTest
         $fixtureTimestamp = 1471203378;
         $daysSinceFixture = self::getDaysSinceTimestamp($fixtureTimestamp) + 1;
 
-        /* @var StatisticsRepository $repository */
+        /** @var StatisticsRepository $repository */
         $repository = GeneralUtility::makeInstance(StatisticsRepository::class);
         $topHits = $repository->getTopKeyWordsWithoutHits(1, $daysSinceFixture);
 
@@ -71,7 +71,7 @@ class StatisticsRepositoryTest extends IntegrationTest
         $fixtureTimestamp = 1480000000;
         $daysSinceFixture = self::getDaysSinceTimestamp($fixtureTimestamp) + 1;
 
-        /* @var StatisticsRepository $repository */
+        /** @var StatisticsRepository $repository */
         $repository = GeneralUtility::makeInstance(StatisticsRepository::class);
         $topHits = $repository->getTopKeyWordsWithoutHits(1, $daysSinceFixture);
 
@@ -89,7 +89,7 @@ class StatisticsRepositoryTest extends IntegrationTest
         $fixtureTimestamp = 1480000000;
         $daysSinceFixture = self::getDaysSinceTimestamp($fixtureTimestamp) + 1;
 
-        /* @var StatisticsRepository $repository */
+        /** @var StatisticsRepository $repository */
         $repository = GeneralUtility::makeInstance(StatisticsRepository::class);
         $topHits = $repository->getSearchStatistics(37, $daysSinceFixture);
 
@@ -104,7 +104,7 @@ class StatisticsRepositoryTest extends IntegrationTest
     public function canSaveStatisticsRecord()
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/statistics.csv');
-        /* @var StatisticsRepository $repository */
+        /** @var StatisticsRepository $repository */
         $repository = GeneralUtility::makeInstance(StatisticsRepository::class);
 
         self::assertEquals(4, $repository->countByRootPageId(1), 'Does not contain all statistics records from fixtures.');

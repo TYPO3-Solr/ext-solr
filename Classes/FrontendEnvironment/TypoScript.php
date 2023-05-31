@@ -69,7 +69,7 @@ class TypoScript implements SingletonInterface
             return $this->configurationObjectCache[$cacheId] = $this->buildTypoScriptConfigurationFromArray([], $pageId, $language, $path);
         }
 
-        /* @var TwoLevelCache $cache */
+        /** @var TwoLevelCache $cache */
         $cache = GeneralUtility::makeInstance(TwoLevelCache::class, 'tx_solr_configuration');
         $configurationArray = $cache->get($cacheId);
 
@@ -93,7 +93,7 @@ class TypoScript implements SingletonInterface
      */
     protected function buildConfigurationArray(int $pageId, string $path, int $language): array
     {
-        /* @var Tsfe $tsfeManager */
+        /** @var Tsfe $tsfeManager */
         $tsfeManager = GeneralUtility::makeInstance(Tsfe::class);
         try {
             $tsfe = $tsfeManager->getTsfeByPageIdAndLanguageId($pageId, $language);

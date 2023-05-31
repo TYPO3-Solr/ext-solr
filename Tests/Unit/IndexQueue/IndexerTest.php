@@ -31,7 +31,6 @@ use ApacheSolrForTypo3\Solr\System\Solr\Service\SolrWriteService;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use InvalidArgumentException;
-use PHPUnit\Framework\MockObject\MockBuilder;
 use ReflectionClass;
 use RuntimeException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;

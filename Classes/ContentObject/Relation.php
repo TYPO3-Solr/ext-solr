@@ -247,7 +247,7 @@ class Relation extends AbstractContentObject
         $foreignTableLabelField = $this->resolveForeignTableLabelField($foreignTableTca);
         $localField = $this->configuration['localField'];
 
-        /* @var RelationHandler $relationHandler */
+        /** @var RelationHandler $relationHandler */
         $relationHandler = GeneralUtility::makeInstance(RelationHandler::class);
         if (!empty($localFieldTca['config']['MM'] ?? '')) {
             $relationHandler->start(
@@ -367,7 +367,7 @@ class Relation extends AbstractContentObject
      */
     protected function getRelatedRecords(string $foreignTable, int ...$uids): array
     {
-        /* @var QueryBuilder $queryBuilder */
+        /** @var QueryBuilder $queryBuilder */
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($foreignTable);
         $queryBuilder->select('*')
             ->from($foreignTable)

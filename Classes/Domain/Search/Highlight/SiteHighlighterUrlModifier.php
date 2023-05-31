@@ -38,7 +38,7 @@ class SiteHighlighterUrlModifier
         $searchWords = str_replace('&quot;', '', $searchWords);
         $searchWords = GeneralUtility::trimExplode(' ', $searchWords, true);
 
-        /* @var UrlHelper $urlHelper */
+        /** @var UrlHelper $urlHelper */
         $urlHelper = GeneralUtility::makeInstance(UrlHelper::class, $url)
             ->withQueryParameter('sword_list', $searchWords);
 

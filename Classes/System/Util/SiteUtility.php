@@ -45,7 +45,7 @@ class SiteUtility
     {
         $siteFinder = GeneralUtility::makeInstance(SiteFinder::class);
         try {
-            /* @var SiteFinder $siteFinder */
+            /** @var SiteFinder $siteFinder */
             return $siteFinder->getSiteByPageId($pageId) instanceof Site;
         } catch (SiteNotFoundException) {
         }

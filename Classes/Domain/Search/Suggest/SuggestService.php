@@ -128,10 +128,13 @@ class SuggestService
         $bestSuggestionRequest->setAdditionalFilters($additionalFilters);
 
         // No results found, use first proposed suggestion to perform the search
-        if (count($documents) === 0 && !empty($suggestions) && ($searchResultSet = $this->doASearch($bestSuggestionRequest)) && count($searchResultSet->getSearchResults()) > 0) {
-            $didASecondSearch = true;
-            $documentsToAdd = $searchResultSet->getSearchResults();
-            $documents = $this->addDocumentsWhenLimitNotReached($documents, $documentsToAdd, $maxDocuments);
+        if (count($documents) === 0 && !empty($suggestions)) {
+            $searchResultSetForSuggestions = $this->doASearch($bestSuggestionRequest);
+            if (count($searchResultSetForSuggestions->getSearchResults()) > 0) {
+                $didASecondSearch = true;
+                $documentsToAdd = $searchResultSetForSuggestions->getSearchResults();
+                $documents = $this->addDocumentsWhenLimitNotReached($documents, $documentsToAdd, $maxDocuments);
+            }
         }
 
         return $this->getResultArray($searchRequest, $suggestions, $documents, $didASecondSearch);
@@ -194,7 +197,7 @@ class SuggestService
         int $maxDocuments,
     ): array {
         $additionalTopResultsFields = $this->typoScriptConfiguration->getSuggestAdditionalTopResultsFields();
-        /* @var SearchResult $document */
+        /** @var SearchResult $document */
         foreach ($documentsToAdd as $document) {
             $documents[] = $this->getDocumentAsArray($document, $additionalTopResultsFields);
             if (count($documents) >= $maxDocuments) {

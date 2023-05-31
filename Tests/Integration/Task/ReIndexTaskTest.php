@@ -135,7 +135,7 @@ class ReIndexTaskTest extends IntegrationTest
         $site = $siteRepository->getFirstAvailableSite();
         $this->indexQueue->updateItem('pages', 1);
         $items = $this->indexQueue->getItems('pages', 1);
-        /* @var Indexer $indexer */
+        /** @var Indexer $indexer */
         $indexer = GeneralUtility::makeInstance(Indexer::class);
         $indexer->index($items[0]);
         $this->waitToBeVisibleInSolr();

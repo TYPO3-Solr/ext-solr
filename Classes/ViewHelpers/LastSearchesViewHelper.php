@@ -45,7 +45,7 @@ class LastSearchesViewHelper extends AbstractSolrViewHelper
         Closure $renderChildrenClosure,
         RenderingContextInterface $renderingContext,
     ) {
-        /* @var ConfigurationManager $configurationManager */
+        /** @var ConfigurationManager $configurationManager */
         $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
         $typoScriptConfiguration = $configurationManager->getTypoScriptConfiguration();
         $lastSearchesService = GeneralUtility::makeInstance(

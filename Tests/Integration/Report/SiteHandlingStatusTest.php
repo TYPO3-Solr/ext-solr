@@ -36,12 +36,12 @@ class SiteHandlingStatusTest extends IntegrationTest
     {
         $this->writeDefaultSolrTestSiteConfiguration();
 
-        /* @var SiteHandlingStatus $siteHandlingStatus */
+        /** @var SiteHandlingStatus $siteHandlingStatus */
         $siteHandlingStatus = GeneralUtility::makeInstance(SiteHandlingStatus::class);
         $statusCollection = $siteHandlingStatus->getStatus();
 
         foreach ($statusCollection as $status) {
-            /* @var Status $status */
+            /** @var Status $status */
             self::assertSame(ContextualFeedbackSeverity::OK, $status->getSeverity(), 'Expected that all status checks for site handling configuration of first test site should be ok');
         }
     }
@@ -59,12 +59,12 @@ class SiteHandlingStatusTest extends IntegrationTest
             'base' => 'authorityOnly.two.example.com',
         ]);
 
-        /* @var SiteHandlingStatus $siteHandlingStatus */
+        /** @var SiteHandlingStatus $siteHandlingStatus */
         $siteHandlingStatus = GeneralUtility::makeInstance(SiteHandlingStatus::class);
         $statusCollection = $siteHandlingStatus->getStatus();
 
         foreach ($statusCollection as $status) {
-            /* @var Status $status */
+            /** @var Status $status */
             self::assertSame(ContextualFeedbackSeverity::ERROR, $status->getSeverity(), 'Expected that status checks for site handling configuration should indicate an error if scheme in "Entry Point[base]" is not defined.');
             self::assertMatchesRegularExpression('~.*are empty or invalid: &quot;scheme&quot;~', $status->getMessage());
         }
@@ -83,12 +83,12 @@ class SiteHandlingStatusTest extends IntegrationTest
             'base' => '/',
         ]);
 
-        /* @var SiteHandlingStatus $siteHandlingStatus */
+        /** @var SiteHandlingStatus $siteHandlingStatus */
         $siteHandlingStatus = GeneralUtility::makeInstance(SiteHandlingStatus::class);
         $statusCollection = $siteHandlingStatus->getStatus();
 
         foreach ($statusCollection as $status) {
-            /* @var Status $status  */
+            /** @var Status $status  */
             self::assertSame(ContextualFeedbackSeverity::ERROR, $status->getSeverity(), 'Expected that status checks for site handling configuration should indicate an error if authority in "Entry Point[base]" is not defined.');
             self::assertMatchesRegularExpression('~.*are empty or invalid: &quot;scheme, host&quot;~', $status->getMessage());
         }
@@ -114,12 +114,12 @@ class SiteHandlingStatusTest extends IntegrationTest
 
         $this->mergeSiteConfiguration('integration_tree_two', $configuration2);
 
-        /* @var SiteHandlingStatus $siteHandlingStatus */
+        /** @var SiteHandlingStatus $siteHandlingStatus */
         $siteHandlingStatus = GeneralUtility::makeInstance(SiteHandlingStatus::class);
         $statusCollection = $siteHandlingStatus->getStatus();
 
         foreach ($statusCollection as $status) {
-            /* @var Status $status */
+            /** @var Status $status */
             self::assertSame(ContextualFeedbackSeverity::ERROR, $status->getSeverity(), 'Expected that status checks for site handling configuration should indicate an error if authority in "Entry Point[base]" is not defined.');
             self::assertMatchesRegularExpression('~.*is not valid URL\. Following parts of defined URL are empty or invalid: &quot;scheme&quot;~', $status->getMessage());
         }

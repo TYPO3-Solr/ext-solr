@@ -67,27 +67,27 @@ class Service
 
                 switch ($instruction) {
                     case 'timestampToUtcIsoDate':
-                        /* @var TimestampToUtcIsoDate $processor */
+                        /** @var TimestampToUtcIsoDate $processor */
                         $processor = GeneralUtility::makeInstance(TimestampToUtcIsoDate::class);
                         $fieldValue = $processor->process($fieldValue);
                         break;
                     case 'timestampToIsoDate':
-                        /* @var TimestampToIsoDate $processor */
+                        /** @var TimestampToIsoDate $processor */
                         $processor = GeneralUtility::makeInstance(TimestampToIsoDate::class);
                         $fieldValue = $processor->process($fieldValue);
                         break;
                     case 'pathToHierarchy':
-                        /* @var PathToHierarchy $processor */
+                        /** @var PathToHierarchy $processor */
                         $processor = GeneralUtility::makeInstance(PathToHierarchy::class);
                         $fieldValue = $processor->process($fieldValue);
                         break;
                     case 'pageUidToHierarchy':
-                        /* @var PageUidToHierarchy $processor */
+                        /** @var PageUidToHierarchy $processor */
                         $processor = GeneralUtility::makeInstance(PageUidToHierarchy::class);
                         $fieldValue = $processor->process($fieldValue);
                         break;
                     case 'categoryUidToHierarchy':
-                        /* @var CategoryUidToHierarchy $processor */
+                        /** @var CategoryUidToHierarchy $processor */
                         $processor = GeneralUtility::makeInstance(CategoryUidToHierarchy::class);
                         $fieldValue = $processor->process($fieldValue);
                         break;

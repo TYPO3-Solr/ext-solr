@@ -99,7 +99,7 @@ abstract class AbstractBaseController extends ActionController
         if ($this->resetConfigurationBeforeInitialize) {
             $this->solrConfigurationManager->reset();
         }
-        /* @var TypoScriptService $typoScriptService */
+        /** @var TypoScriptService $typoScriptService */
         $typoScriptService = GeneralUtility::makeInstance(TypoScriptService::class);
 
         // Merge settings done by typoscript with solrConfiguration plugin.tx_solr (obsolete when part of ext:solr)
@@ -189,7 +189,7 @@ abstract class AbstractBaseController extends ActionController
     protected function logSolrUnavailable(): void
     {
         if ($this->typoScriptConfiguration->getLoggingExceptions()) {
-            /* @var SolrLogManager $logger */
+            /** @var SolrLogManager $logger */
             $logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
             $logger->log(SolrLogManager::ERROR, 'Solr server is not available');
         }

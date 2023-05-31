@@ -86,7 +86,7 @@ class SolrConfigurationStatusTest extends SetUpUnitTestCase
 
         self::assertCount(1, $states, 'Expected to have one violation');
 
-        /* @var Status $firstState */
+        /** @var Status $firstState */
         $firstState = $states[0];
         self::assertSame(ContextualFeedbackSeverity::WARNING, $firstState->getSeverity(), 'Expected to have one violation');
     }
