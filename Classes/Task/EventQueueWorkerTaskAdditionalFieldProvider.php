@@ -45,7 +45,7 @@ class EventQueueWorkerTaskAdditionalFieldProvider extends AbstractAdditionalFiel
         $task,
         SchedulerModuleController $schedulerModule
     ): array {
-        /* @var EventQueueWorkerTask $task */
+        /** @var EventQueueWorkerTask $task */
         $additionalFields = [];
 
         if (!$task instanceof EventQueueWorkerTask) {

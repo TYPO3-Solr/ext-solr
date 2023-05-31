@@ -73,7 +73,7 @@ class Node extends AbstractOptionFacetItem
 
     public function getHasChildNodeSelected(): bool
     {
-        /* @var Node $childNode */
+        /** @var Node $childNode */
         foreach ($this->childNodes as $childNode) {
             if ($childNode->getSelected()) {
                 return true;

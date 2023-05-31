@@ -37,7 +37,6 @@ abstract class AbstractFacetParser implements FacetParserInterface
      */
     protected function getReusableContentObject(): ContentObjectRenderer
     {
-        /* @var ContentObjectRenderer $contentObject */
         if (self::$reUseAbleContentObject !== null) {
             return self::$reUseAbleContentObject;
         }

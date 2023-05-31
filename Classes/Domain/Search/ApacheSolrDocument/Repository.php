@@ -59,6 +59,8 @@ class Repository implements SingletonInterface
 
     /**
      * Returns firs found {@link Document} for current page by given language id.
+     *
+     * @throws DBALException
      */
     public function findOneByPageIdAndByLanguageId($pageId, $languageId): Document|false
     {

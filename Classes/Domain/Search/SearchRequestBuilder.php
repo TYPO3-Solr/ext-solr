@@ -43,7 +43,6 @@ class SearchRequestBuilder
     {
         $controllerArguments = $this->adjustPageArgumentToPositiveInteger($controllerArguments);
 
-        /* @var SearchRequest $searchRequest */
         $argumentsNamespace = $this->typoScriptConfiguration->getSearchPluginNamespace();
         $searchRequest = $this->getRequest([$argumentsNamespace => $controllerArguments], $pageId, $languageId);
         return $this->applyPassedResultsPerPage($searchRequest);
@@ -101,7 +100,6 @@ class SearchRequestBuilder
      */
     public function buildForFrequentSearches(int $pageId, int $languageId): SearchRequest
     {
-        /* @var SearchRequest $searchRequest */
         return $this->getRequest([], $pageId, $languageId);
     }
 

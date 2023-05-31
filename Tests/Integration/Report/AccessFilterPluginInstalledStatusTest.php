@@ -39,7 +39,7 @@ class AccessFilterPluginInstalledStatusTest extends IntegrationTest
      */
     public function canGetGreenAccessFilterStatus()
     {
-        /* @var AccessFilterPluginInstalledStatus $accessFilterStatus */
+        /** @var AccessFilterPluginInstalledStatus $accessFilterStatus */
         $accessFilterStatus = GeneralUtility::makeInstance(AccessFilterPluginInstalledStatus::class);
         $violations = $accessFilterStatus->getStatus();
         self::assertEmpty($violations, 'We expect to get no violations against the test solr server ');

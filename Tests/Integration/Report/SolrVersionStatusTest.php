@@ -39,7 +39,7 @@ class SolrVersionStatusTest extends IntegrationTest
      */
     public function canGetAGreenSolrConfigStatusAgainstTestServer()
     {
-        /* @var SolrVersionStatus $solrVersionStatus */
+        /** @var SolrVersionStatus $solrVersionStatus */
         $solrVersionStatus = GeneralUtility::makeInstance(SolrVersionStatus::class);
         $violations = $solrVersionStatus->getStatus();
         self::assertEmpty($violations, 'We expect to get no violations against the test solr server');

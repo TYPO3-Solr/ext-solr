@@ -123,7 +123,7 @@ class UserGroupDetector extends AbstractFrontendHelper implements
         PageRepository $parentObject
     ) {
         $disableGroupAccessCheck = true;
-        // @todo: Check if reseting "where_groupAccess" really wanted. Most probably the core aspect 'frontend.user' must be used instead.
+        // @todo: Check if reset "where_groupAccess" really wanted. Most probably the core aspect 'frontend.user' must be used instead.
         $parentObject->where_groupAccess = ''; // just to be on the safe side
     }
 

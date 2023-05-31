@@ -87,6 +87,7 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
      */
     public function render()
     {
+        /** @phpstan-ignore-next-line */
         $this->uriBuilder->setRequest($this->renderingContext->getRequest());
         $pageUid = $this->arguments['pageUid'] ?? null;
         if ($pageUid === null && !empty($this->getTypoScriptConfiguration()->getSearchTargetPage())) {
@@ -202,7 +203,7 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
             ->setArguments([$pluginNamespace => ['additionalFilters' => $additionalFilters]])
             ->build();
 
-        /* @var UrlHelper $urlService */
+        /** @var UrlHelper $urlService */
         $urlService = GeneralUtility::makeInstance(UrlHelper::class, $suggestUrl);
         return $urlService->withoutQueryParameter('cHash')->__toString();
     }

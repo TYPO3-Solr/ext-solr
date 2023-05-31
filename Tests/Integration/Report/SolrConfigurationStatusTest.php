@@ -47,7 +47,7 @@ class SolrConfigurationStatusTest extends IntegrationTest
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_get_green_solr_configuration_status_report.csv');
 
-        /* @var SolrConfigurationStatus $solrConfigurationStatus */
+        /** @var SolrConfigurationStatus $solrConfigurationStatus */
         $solrConfigurationStatus = GeneralUtility::makeInstance(SolrConfigurationStatus::class);
         $violations = $solrConfigurationStatus->getStatus();
         self::assertEmpty($violations, 'We did not get an empty response from the solr configuration status report! Something is wrong');
@@ -60,7 +60,7 @@ class SolrConfigurationStatusTest extends IntegrationTest
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_detect_missing_rootpage.csv');
 
-        /* @var SolrConfigurationStatus $solrConfigurationStatus */
+        /** @var SolrConfigurationStatus $solrConfigurationStatus */
         $solrConfigurationStatus = GeneralUtility::makeInstance(SolrConfigurationStatus::class);
         $violations = $solrConfigurationStatus->getStatus();
 
@@ -77,7 +77,7 @@ class SolrConfigurationStatusTest extends IntegrationTest
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_detect_indexing_disabled.csv');
 
-        /* @var SolrConfigurationStatus $solrConfigurationStatus   */
+        /** @var SolrConfigurationStatus $solrConfigurationStatus   */
         $solrConfigurationStatus = GeneralUtility::makeInstance(SolrConfigurationStatus::class);
         $violations = $solrConfigurationStatus->getStatus();
 

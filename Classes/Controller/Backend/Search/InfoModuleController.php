@@ -72,6 +72,7 @@ class InfoModuleController extends AbstractModuleController
      * Renders the details of Apache Solr documents
      *
      * @noinspection PhpUnused
+     * @throws DBALException
      */
     public function documentsDetailsAction(string $type, int $uid, int $pageId, int $languageUid): ResponseInterface
     {
@@ -90,7 +91,7 @@ class InfoModuleController extends AbstractModuleController
         $missingHosts = [];
         $invalidPaths = [];
 
-        /* @var Path $path */
+        /** @var Path $path */
         $path = GeneralUtility::makeInstance(Path::class);
         $connections = $this->solrConnectionManager->getConnectionsBySite($this->selectedSite);
 
@@ -142,7 +143,7 @@ class InfoModuleController extends AbstractModuleController
         $queriesDays = (int)($statisticsConfig['queries.']['days'] ?? 30);
 
         $siteRootPageId = $this->selectedSite->getRootPageId();
-        /* @var StatisticsRepository $statisticsRepository */
+        /** @var StatisticsRepository $statisticsRepository */
         $statisticsRepository = GeneralUtility::makeInstance(StatisticsRepository::class);
 
         $this->view->assign(
@@ -207,7 +208,7 @@ class InfoModuleController extends AbstractModuleController
             if ($coreAdmin->ping()) {
                 $lukeData = $coreAdmin->getLukeMetaData();
 
-                /* @var Registry $registry */
+                /** @var Registry $registry */
                 $registry = GeneralUtility::makeInstance(Registry::class);
                 $limit = $registry->get('tx_solr', 'luke.limit', 20000);
                 $limitNote = '';
@@ -243,6 +244,8 @@ class InfoModuleController extends AbstractModuleController
 
     /**
      * Retrieves the information for the index inspector.
+     *
+     * @throws DBALException
      */
     protected function collectIndexInspectorInfo(): void
     {

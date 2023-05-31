@@ -48,7 +48,7 @@ abstract class AbstractValueViewHelper extends AbstractUriViewHelper
     protected static function getValueFromArguments(array $arguments = []): string
     {
         if (isset($arguments['facetItem'])) {
-            /* @var AbstractFacetItem $facetItem */
+            /** @var AbstractFacetItem $facetItem */
             $facetItem = $arguments['facetItem'];
             $facetValue = $facetItem->getUriValue();
         } elseif (isset($arguments['facetItemValue'])) {
@@ -66,7 +66,7 @@ abstract class AbstractValueViewHelper extends AbstractUriViewHelper
     protected static function getNameFromArguments(array $arguments = []): string
     {
         if (isset($arguments['facet'])) {
-            /* @var AbstractFacet $facet */
+            /** @var AbstractFacet $facet */
             $facet = $arguments['facet'];
             $facetName = $facet->getName();
         } elseif (isset($arguments['facetName'])) {
@@ -84,7 +84,7 @@ abstract class AbstractValueViewHelper extends AbstractUriViewHelper
     protected static function getResultSetFromArguments(array $arguments = []): SearchResultSet
     {
         if (isset($arguments['facet'])) {
-            /* @var AbstractFacet $facet */
+            /** @var AbstractFacet $facet */
             $facet = $arguments['facet'];
             $resultSet = $facet->getResultSet();
         } elseif (isset($arguments['facetName'])) {

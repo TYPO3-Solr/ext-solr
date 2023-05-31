@@ -58,7 +58,7 @@ class SettingsPreviewOnPlugins
     {
         $this->collectSummary();
 
-        /* @var StandaloneView $standaloneView */
+        /** @var StandaloneView $standaloneView */
         $standaloneView = GeneralUtility::makeInstance(StandaloneView::class);
         $standaloneView->setTemplatePathAndFilename(
             GeneralUtility::getFileAbsFileName('EXT:solr/Resources/Private/Templates/Backend/PageModule/Summary.html')

@@ -36,7 +36,7 @@ class PageIndexerFinisher implements MiddlewareInterface
     {
         $response = $handler->handle($request);
         if ($request->hasHeader(PageIndexerRequest::SOLR_INDEX_HEADER)) {
-            /* @var PageIndexerRequestHandler $pageIndexerRequestHandler */
+            /** @var PageIndexerRequestHandler $pageIndexerRequestHandler */
             $pageIndexerRequestHandler = GeneralUtility::makeInstance(PageIndexerRequestHandler::class);
             $pageIndexerRequestHandler->shutdown();
             $pageIndexResponse = $pageIndexerRequestHandler->getResponse();

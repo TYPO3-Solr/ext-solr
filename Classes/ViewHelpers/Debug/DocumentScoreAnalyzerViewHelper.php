@@ -69,7 +69,7 @@ class DocumentScoreAnalyzerViewHelper extends AbstractSolrFrontendViewHelper
 
         $document = $arguments['document'];
 
-        /* @var SearchResultSet $resultSet */
+        /** @var SearchResultSet $resultSet */
         $resultSet = self::getUsedSearchResultSetFromRenderingContext($renderingContext);
         $debugData = '';
         if (

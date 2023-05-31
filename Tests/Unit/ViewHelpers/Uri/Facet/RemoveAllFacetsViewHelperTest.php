@@ -43,7 +43,7 @@ class RemoveAllFacetsViewHelperTest extends SetUpFacetItemViewHelper
         $variableProvideMock = $this->createMock(StandardVariableProvider::class);
         $variableProvideMock->expects(self::once())->method('get')->with('resultSet')->willReturn($searchResultSetMock);
 
-        /* @var MockObject|RenderingContext $renderContextMock */
+        /** @var MockObject|RenderingContext $renderContextMock */
         $renderContextMock = $this->createMock(RenderingContext::class);
         $renderContextMock->expects(self::any())->method('getVariableProvider')->willReturn($variableProvideMock);
         $renderContextMock->expects(self::any())->method('getRequest')->willReturn($mockedControllerRequest);
@@ -51,7 +51,7 @@ class RemoveAllFacetsViewHelperTest extends SetUpFacetItemViewHelper
         $viewHelper = new RemoveAllFacetsViewHelper();
         $viewHelper->setRenderingContext($renderContextMock);
 
-        /* @var MockObject|SearchUriBuilder $searchUriBuilderMock */
+        /** @var MockObject|SearchUriBuilder $searchUriBuilderMock */
         $searchUriBuilderMock = $this->createMock(SearchUriBuilder::class);
 
         // we expected that the getRemoveAllFacetsUri will be called on the searchUriBuilder in the end.

@@ -62,7 +62,7 @@ class VariantsProcessor implements SearchResultSetProcessor
 
         $variantsField = $this->typoScriptConfiguration->getSearchVariantsField();
         foreach ($resultSet->getSearchResults() as $resultDocument) {
-            /* @var SearchResult $resultDocument */
+            /** @var SearchResult $resultDocument */
             $variantId = $resultDocument[$variantsField] ?? null;
 
             // when there is no value in the collapsing field, we can return

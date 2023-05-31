@@ -47,11 +47,11 @@ class FrontendGroupsModifier
         }
 
         $jsonEncodedParameters = $event->getRequest()->getHeader(PageIndexerRequest::SOLR_INDEX_HEADER)[0];
-        /* @var PageIndexerRequestHandler $pageIndexerRequestHandler */
+        /** @var PageIndexerRequestHandler $pageIndexerRequestHandler */
         $pageIndexerRequestHandler = GeneralUtility::makeInstance(PageIndexerRequestHandler::class, $jsonEncodedParameters);
 
         if (!$pageIndexerRequestHandler->getRequest()->isAuthenticated()) {
-            /* @var SolrLogManager $logger */
+            /** @var SolrLogManager $logger */
             $logger = GeneralUtility::makeInstance(SolrLogManager::class, self::class);
             $logger->log(
                 SolrLogManager::ERROR,
@@ -112,7 +112,7 @@ class FrontendGroupsModifier
         $stringAccessRootline = '';
 
         $jsonEncodedParameters = $request->getHeader(PageIndexerRequest::SOLR_INDEX_HEADER)[0];
-        /* @var PageIndexerRequestHandler $pageIndexerRequestHandler */
+        /** @var PageIndexerRequestHandler $pageIndexerRequestHandler */
         $pageIndexerRequestHandler = GeneralUtility::makeInstance(PageIndexerRequestHandler::class, $jsonEncodedParameters);
 
         if ($pageIndexerRequestHandler->getRequest()->getParameter('accessRootline')) {

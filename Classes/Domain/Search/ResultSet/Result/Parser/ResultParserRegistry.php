@@ -106,7 +106,7 @@ class ResultParserRegistry implements SingletonInterface
      */
     public function getParser(SearchResultSet $resultSet): ?AbstractResultParser
     {
-        /* @var AbstractResultParser $parser */
+        /** @var AbstractResultParser $parser */
         foreach ($this->getParserInstances() as $parser) {
             if ($parser->canParse($resultSet)) {
                 return $parser;

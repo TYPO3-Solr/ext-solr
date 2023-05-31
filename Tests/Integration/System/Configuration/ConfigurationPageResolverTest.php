@@ -31,7 +31,7 @@ class ConfigurationPageResolverTest extends IntegrationTest
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_get_closest_template_page_id.csv');
 
-        /* @var ConfigurationPageResolver $configurationPageIdResolver */
+        /** @var ConfigurationPageResolver $configurationPageIdResolver */
         $configurationPageIdResolver = GeneralUtility::makeInstance(ConfigurationPageResolver::class);
 
         $pageIdWithActiveTypoScriptConfiguration = $configurationPageIdResolver->getClosestPageIdWithActiveTemplate(4);

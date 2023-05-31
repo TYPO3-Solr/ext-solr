@@ -28,7 +28,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\UrlFacetContainer;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequestAware;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
-use TYPO3\CMS\Core\Log\Logger;
+use Psr\Log\LoggerInterface;
 use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -189,7 +189,7 @@ class Faceting implements Modifier, SearchRequestAware
             if (($facetConfiguration['field'] ?? '') !== '' && $filterValue !== '') {
                 $filterParts[] = $facetConfiguration['field'] . ':' . $filterValue;
             } else {
-                /* @var $logger Logger */
+                /** @var LoggerInterface $logger */
                 $logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
                 $logger->warning('Invalid filter options found, skipping.', ['facet' => $facetName, 'configuration' => $facetConfiguration]);
             }

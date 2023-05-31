@@ -50,7 +50,7 @@ class SolrVersionStatus extends AbstractSolrStatus
 
         foreach ($solrConnections as $solrConnection) {
             $coreAdmin = $solrConnection->getAdminService();
-            /* @var SolrConnection $solrConnection */
+            /** @var SolrConnection $solrConnection */
             if (!$coreAdmin->ping()) {
                 $url = $coreAdmin->__toString();
                 $pingFailedMsg = 'Could not ping solr server, can not check version ' . $url;

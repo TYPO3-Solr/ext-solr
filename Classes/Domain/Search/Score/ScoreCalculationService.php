@@ -44,7 +44,7 @@ class ScoreCalculationService
         $totalScore = 0;
 
         foreach ($highScores as $highScore) {
-            /* @var Score $highScore */
+            /** @var Score $highScore */
             $scores[] =
                 '<td>+ ' . htmlspecialchars(number_format($highScore->getScore(), 9)) . '</td>'
                 . '<td>' . htmlspecialchars($highScore->getFieldName()) . '</td>'
@@ -91,7 +91,7 @@ class ScoreCalculationService
             $scoreWasSetForFieldBefore = isset($highScores[$field]);
             $scoreIsHigher = false;
             if ($scoreWasSetForFieldBefore) {
-                /* @var Score $previousScore */
+                /** @var Score $previousScore */
                 $previousScore = $highScores[$field];
                 $scoreIsHigher = $previousScore->getScore() < $currentScoreValue;
             }

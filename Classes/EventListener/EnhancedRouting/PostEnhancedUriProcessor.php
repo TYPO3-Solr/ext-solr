@@ -35,7 +35,7 @@ class PostEnhancedUriProcessor
         }
         $configuration = $event->getRouterConfiguration();
 
-        /* @var RoutingService $routingService */
+        /** @var RoutingService $routingService */
         $routingService = GeneralUtility::makeInstance(
             RoutingService::class,
             $configuration['solr'],

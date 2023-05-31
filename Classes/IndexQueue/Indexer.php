@@ -104,6 +104,7 @@ class Indexer extends AbstractIndexer
      * @throws FrontendEnvironmentException
      * @throws NoSolrConnectionFoundException
      * @throws SiteNotFoundException
+     * @throws IndexingException
      */
     public function index(Item $item): bool
     {
@@ -322,7 +323,7 @@ class Indexer extends AbstractIndexer
     {
         $rootPageId = (int)$item->getRootPageUid();
         $buildRootlineWithPid = $this->getPageIdOfItem($item);
-        /* @var RootlineUtility $rootlineUtility */
+        /** @var RootlineUtility $rootlineUtility */
         $rootlineUtility = GeneralUtility::makeInstance(RootlineUtility::class, $buildRootlineWithPid);
         $rootline = $rootlineUtility->get();
 

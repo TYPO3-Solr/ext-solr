@@ -61,7 +61,7 @@ class MountPagesUpdater
             return;
         }
 
-        /* @var Rootline $rootLine */
+        /** @var Rootline $rootLine */
         $rootLine = GeneralUtility::makeInstance(Rootline::class, $rootLineArray);
         $rootLineParentPageIds = array_map('intval', $rootLine->getParentPageIds());
         $destinationMountProperties = $this->pagesRepository->findMountPointPropertiesByPageIdOrByRootLineParentPageIds($currentPageUid, $rootLineParentPageIds);
@@ -88,7 +88,7 @@ class MountPagesUpdater
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $mountingSite = $siteRepository->getSiteByPageId($mountProperties['mountPageDestination']);
 
-        /* @var Page $pageInitializer */
+        /** @var Page $pageInitializer */
         $pageInitializer = GeneralUtility::makeInstance(Page::class);
         $pageInitializer->setSite($mountingSite);
         $pageInitializer->setIndexingConfigurationName('pages');

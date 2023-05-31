@@ -127,7 +127,7 @@ class Rootline
         int $pageId,
         string $mountPointParameter = ''
     ): Rootline {
-        /* @var Rootline $accessRootline */
+        /** @var Rootline $accessRootline */
         $accessRootline = GeneralUtility::makeInstance(Rootline::class);
         $rootlineUtility = GeneralUtility::makeInstance(RootlineUtility::class, $pageId, $mountPointParameter);
         try {
@@ -149,7 +149,7 @@ class Rootline
             }
         }
 
-        /* @var PageRepository $pageSelector */
+        /** @var PageRepository $pageSelector */
         $pageSelector = GeneralUtility::makeInstance(PageRepository::class);
 
         // current page

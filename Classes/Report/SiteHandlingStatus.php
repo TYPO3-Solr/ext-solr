@@ -67,7 +67,7 @@ class SiteHandlingStatus extends AbstractSolrStatus
     {
         $reports = [];
 
-        /* @var Site $site */
+        /** @var Site $site */
         foreach ($this->siteRepository->getAvailableSites() as $site) {
             if (!($site instanceof Site)) {
                 $reports[] = GeneralUtility::makeInstance(
@@ -112,7 +112,6 @@ class SiteHandlingStatus extends AbstractSolrStatus
         }
 
         $renderedReport = $this->getRenderedReport('SiteHandlingStatus.html', $variables);
-        /* @var Status $status */
         return GeneralUtility::makeInstance(
             Status::class,
             sprintf('Site Identifier: "%s"', $ypo3Site->getIdentifier()),

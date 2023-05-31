@@ -74,6 +74,7 @@ class SiteRepository
      * Gets the Site for a specific page ID.
      *
      * @throws DBALException
+     * @throws InvalidArgumentException
      */
     public function getSiteByPageId(int $pageId, string $mountPointIdentifier = ''): ?Site
     {
@@ -85,6 +86,7 @@ class SiteRepository
      * Gets the Site for a specific root page-id.
      *
      * @throws DBALException
+     * @throws InvalidArgumentException
      */
     public function getSiteByRootPageId(int $rootPageId): ?Site
     {
@@ -173,6 +175,7 @@ class SiteRepository
      * Creates an instance of the Site object.
      *
      * @throws DBALException
+     * @throws InvalidArgumentException
      */
     protected function buildSite(int $rootPageId): ?Site
     {
@@ -194,7 +197,7 @@ class SiteRepository
      */
     protected function getSiteHashForDomain(string $domain): string
     {
-        /* @var SiteHashService $siteHashService */
+        /** @var SiteHashService $siteHashService */
         $siteHashService = GeneralUtility::makeInstance(SiteHashService::class);
         return $siteHashService->getSiteHashForDomain($domain);
     }

@@ -145,7 +145,7 @@ class IndexingConfigurationSelectorField
     protected function buildSelectorItems(array $tablesToIndex): array
     {
         $selectorItems = [];
-        /* @var IconRegistry $iconRegistry */
+        /** @var IconRegistry $iconRegistry */
         $iconRegistry = GeneralUtility::makeInstance(IconRegistry::class);
         $iconFactory = GeneralUtility::makeInstance(IconFactory::class);
         $defaultIcon = 'mimetypes-other-other';
@@ -189,7 +189,7 @@ class IndexingConfigurationSelectorField
             'fieldTSConfig' => ['noMatchingValue_label' => ''],
         ];
 
-        /* @var NodeFactory $nodeFactory */
+        /** @var NodeFactory $nodeFactory */
         $nodeFactory = GeneralUtility::makeInstance(NodeFactory::class);
         $options = [
             'type' => 'select', 'renderType' => 'selectCheckBox',

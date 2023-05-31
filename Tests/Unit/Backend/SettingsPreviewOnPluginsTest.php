@@ -71,7 +71,7 @@ class SettingsPreviewOnPluginsTest extends SetUpUnitTestCase
         string $table = 'tt_content',
         array $record = [],
     ): PageContentPreviewRenderingEvent {
-        /* @var PageLayoutContext|MockObject $pageLayoutContextMock */
+        /** @var PageLayoutContext|MockObject $pageLayoutContextMock */
         $pageLayoutContextMock =  $this->createMock(PageLayoutContext::class);
         return new PageContentPreviewRenderingEvent(
             $table,

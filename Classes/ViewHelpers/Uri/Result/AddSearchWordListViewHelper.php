@@ -64,7 +64,7 @@ class AddSearchWordListViewHelper extends AbstractSolrFrontendViewHelper
         $addNoCache = $arguments['addNoCache'];
         $keepCHash = $arguments['keepCHash'];
 
-        /* @var SiteHighlighterUrlModifier $siteHighlighterUrlModifier */
+        /** @var SiteHighlighterUrlModifier $siteHighlighterUrlModifier */
         $siteHighlighterUrlModifier = GeneralUtility::makeInstance(SiteHighlighterUrlModifier::class);
 
         return $siteHighlighterUrlModifier->modify($url, $searchWords, $addNoCache, $keepCHash);

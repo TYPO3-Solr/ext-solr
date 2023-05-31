@@ -221,7 +221,7 @@ class ResultSetReconstitutionProcessor implements SearchResultSetProcessor
         $requirementsService = $this->getRequirementsService();
         $facets = $resultSet->getFacets();
         foreach ($facets as $facet) {
-            /* @var AbstractFacet $facet */
+            /** @var AbstractFacet $facet */
             $requirementsMet = $requirementsService->getAllRequirementsMet($facet);
             $facet->setAllRequirementsMet($requirementsMet);
         }

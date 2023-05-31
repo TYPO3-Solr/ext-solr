@@ -73,7 +73,7 @@ class QueueInitializationService
     {
         $initializationStatesBySiteId = [];
         foreach ($sites as $site) {
-            /* @var Site $site */
+            /** @var Site $site */
             $initializationResult = $this->initializeBySiteAndIndexConfigurations($site, $indexingConfigurationNames);
             $initializationStatesBySiteId[$site->getRootPageId()] = $initializationResult;
         }
@@ -147,7 +147,7 @@ class QueueInitializationService
         array $indexConfiguration
     ): bool {
         $initializer = GeneralUtility::makeInstance($initializerClass);
-        /* @var AbstractInitializer $initializer */
+        /** @var AbstractInitializer $initializer */
         $initializer->setSite($site);
         $initializer->setType($type);
         $initializer->setIndexingConfigurationName($indexingConfigurationName);

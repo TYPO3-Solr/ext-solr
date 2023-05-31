@@ -55,7 +55,7 @@ class Builder
         Rootline $pageAccessRootline,
         string $mountPointParameter = '',
     ): Document {
-        /* @var Document $document */
+        /** @var Document $document */
         $document = GeneralUtility::makeInstance(Document::class);
         $site = $this->getSiteByPageId($page->id);
         $pageRecord = $page->page;
@@ -113,7 +113,7 @@ class Builder
      */
     public function fromRecord(array $itemRecord, string $type, int $rootPageUid, string $accessRootLine): Document
     {
-        /* @var Document $document */
+        /** @var Document $document */
         $document = GeneralUtility::makeInstance(Document::class);
 
         $site = $this->getSiteByPageId($rootPageUid);
@@ -158,6 +158,7 @@ class Builder
 
     /**
      * @throws AspectNotFoundException
+     * @throws DBALException
      */
     protected function getPageDocumentId(TypoScriptFrontendController $frontendController, string $accessGroups, string $mountPointParameter): string
     {

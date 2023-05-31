@@ -57,7 +57,7 @@ class OptionsFacetParser extends AbstractFacetParser
             return null;
         }
 
-        /* @var OptionsFacet $facet */
+        /** @var OptionsFacet $facet */
         $facet = GeneralUtility::makeInstance(
             OptionsFacet::class,
             $resultSet,
@@ -99,7 +99,7 @@ class OptionsFacetParser extends AbstractFacetParser
         $this->applyReverseOrder($facet, $facetConfiguration);
 
         if (isset($this->eventDispatcher)) {
-            /* @var AfterFacetParsedEvent $afterFacetParsedEvent */
+            /** @var AfterFacetParsedEvent $afterFacetParsedEvent */
             $afterFacetParsedEvent = $this->eventDispatcher
                 ->dispatch(new AfterFacetParsedEvent($facet, $facetConfiguration));
             $facet = $afterFacetParsedEvent->getFacet();

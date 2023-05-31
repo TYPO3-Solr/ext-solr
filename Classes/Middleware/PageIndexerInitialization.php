@@ -38,12 +38,12 @@ class PageIndexerInitialization implements MiddlewareInterface
             // disable TSFE cache for TYPO3 v10
             $request = $request->withAttribute('noCache', true);
             $jsonEncodedParameters = $request->getHeader(PageIndexerRequest::SOLR_INDEX_HEADER)[0];
-            /* @var PageIndexerRequestHandler $pageIndexerRequestHandler */
+            /** @var PageIndexerRequestHandler $pageIndexerRequestHandler */
             $pageIndexerRequestHandler = GeneralUtility::makeInstance(PageIndexerRequestHandler::class, $jsonEncodedParameters);
 
             $pageIndexerRequest = $pageIndexerRequestHandler->getRequest();
             if (!$pageIndexerRequest->isAuthenticated()) {
-                /* @var SolrLogManager $logger */
+                /** @var SolrLogManager $logger */
                 $logger = GeneralUtility::makeInstance(SolrLogManager::class, self::class);
                 $logger->log(
                     SolrLogManager::ERROR,

@@ -146,14 +146,17 @@ class SolrConfigurationStatus extends AbstractSolrStatus
                 if ($solrIsEnabledAndIndexingDisabled) {
                     $rootPagesWithIndexingOff[] = $rootPage;
                 }
+                /** @phpstan-ignore-next-line */
             } catch (RuntimeException) {
                 $rootPagesWithIndexingOff[] = $rootPage;
+                /** @phpstan-ignore-next-line */
             } catch (ServiceUnavailableException $sue) {
                 if ($sue->getCode() == 1294587218) {
                     //  No TypoScript template found, continue with next site
                     $rootPagesWithIndexingOff[] = $rootPage;
                     continue;
                 }
+                /** @phpstan-ignore-next-line */
             } catch (SiteNotFoundException $sue) {
                 if ($sue->getCode() == 1521716622) {
                     //  No site found, continue with next site

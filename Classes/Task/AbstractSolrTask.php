@@ -63,7 +63,7 @@ abstract class AbstractSolrTask extends AbstractTask
         }
 
         try {
-            /* @var SiteRepository $siteRepository */
+            /** @var SiteRepository $siteRepository */
             $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
             $this->site = $siteRepository->getSiteByRootPageId((int)$this->rootPageId);
         } catch (InvalidArgumentException) {

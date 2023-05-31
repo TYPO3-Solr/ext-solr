@@ -50,7 +50,7 @@ class LabelFilterViewHelper extends AbstractSolrFrontendViewHelper
         Closure $renderChildrenClosure,
         RenderingContextInterface $renderingContext,
     ) {
-        /* @var OptionCollection $options */
+        /** @var OptionCollection $options */
         $options = $arguments['options'];
         $requiredPrefix = mb_strtolower($arguments['prefix'] ?? '');
         $filtered = $options->getByLowercaseLabelPrefix($requiredPrefix);

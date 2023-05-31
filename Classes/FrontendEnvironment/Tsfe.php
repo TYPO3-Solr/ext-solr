@@ -96,7 +96,7 @@ class Tsfe implements SingletonInterface
             return;
         }
 
-        /* @var Context $context */
+        /** @var Context $context */
         $context = clone GeneralUtility::makeInstance(Context::class);
         $site = $this->siteFinder->getSiteByPageId($pageId);
         // $siteLanguage and $languageAspect takes the language id into account.
@@ -134,7 +134,7 @@ class Tsfe implements SingletonInterface
                 )
             );
 
-            /* @var FrontendUserAuthentication $feUser */
+            /** @var FrontendUserAuthentication $feUser */
             $feUser = GeneralUtility::makeInstance(FrontendUserAuthentication::class);
             // for certain situations we need to trick TSFE into granting us
             // access to the page in any case to make getPageAndRootline() work
@@ -149,10 +149,10 @@ class Tsfe implements SingletonInterface
             $feUser->fetchGroupData($serverRequest);
             $context->setAspect('frontend.user', GeneralUtility::makeInstance(UserAspect::class, $feUser, $userGroups));
 
-            /* @var PageArguments $pageArguments */
+            /** @var PageArguments $pageArguments */
             $pageArguments = GeneralUtility::makeInstance(PageArguments::class, $pageId, '0', []);
 
-            /* @var TypoScriptFrontendController $tsfe */
+            /** @var TypoScriptFrontendController $tsfe */
             $tsfe = GeneralUtility::makeInstance(TypoScriptFrontendController::class, $context, $site, $siteLanguage, $pageArguments, $feUser);
 
             // @extensionScannerIgnoreLine
@@ -329,7 +329,7 @@ class Tsfe implements SingletonInterface
         if ($isSpacerOrSysfolder === false) {
             return $pidToUse;
         }
-        /* @var ConfigurationPageResolver $configurationPageResolve */
+        /** @var ConfigurationPageResolver $configurationPageResolver */
         $configurationPageResolver = GeneralUtility::makeInstance(ConfigurationPageResolver::class);
         $askedPid = $pidToUse;
         $pidToUse = $configurationPageResolver->getClosestPageIdWithActiveTemplate($pidToUse);

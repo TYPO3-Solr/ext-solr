@@ -56,13 +56,13 @@ class FrequentlySearchedViewHelper extends AbstractSolrViewHelper
      */
     public static function renderStatic(array $arguments, Closure $renderChildrenClosure, RenderingContextInterface $renderingContext)
     {
-        /* @var TypoScriptFrontendController $tsfe */
+        /** @var TypoScriptFrontendController $tsfe */
         $tsfe = $GLOBALS['TSFE'];
         $cache = self::getInitializedCache();
-        /* @var ConfigurationManager $configurationManager */
+        /** @var ConfigurationManager $configurationManager */
         $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
         $typoScriptConfiguration = $configurationManager->getTypoScriptConfiguration();
-        /* @var FrequentSearchesService $frequentSearchesService */
+        /** @var FrequentSearchesService $frequentSearchesService */
         $frequentSearchesService = GeneralUtility::makeInstance(
             FrequentSearchesService::class,
             $typoScriptConfiguration,
@@ -87,8 +87,8 @@ class FrequentlySearchedViewHelper extends AbstractSolrViewHelper
     protected static function getInitializedCache(): ?FrontendInterface
     {
         $cacheIdentifier = 'tx_solr';
-        /* @var FrontendInterface $cacheInstance */
         try {
+            /** @var FrontendInterface $cacheInstance */
             $cacheInstance = GeneralUtility::makeInstance(CacheManager::class)->getCache($cacheIdentifier);
         } catch (NoSuchCacheException) {
             return null;

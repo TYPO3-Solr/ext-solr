@@ -166,7 +166,7 @@ abstract class AbstractModuleController extends ActionController
             return;
         }
 
-        /* @var BackendUserAuthentication $beUser */
+        /** @var BackendUserAuthentication $beUser */
         $beUser = $GLOBALS['BE_USER'];
         $permissionClause = $beUser->getPagePermsClause(1);
         $pageRecord = BackendUtility::readPageAccess($this->selectedSite->getRootPageId(), $permissionClause);

@@ -452,7 +452,7 @@ class QueueTest extends IntegrationTest
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_flush_errors.csv');
         $this->assertItemsInQueue(4);
 
-        /* @var SiteRepository $siteRepository */
+        /** @var SiteRepository $siteRepository */
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $firstSite = $siteRepository->getFirstAvailableSite();
 
@@ -477,7 +477,7 @@ class QueueTest extends IntegrationTest
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_flush_errors.csv');
         $this->assertItemsInQueue(4);
 
-        /* @var SiteRepository $siteRepository */
+        /** @var SiteRepository $siteRepository */
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $firstSite = $siteRepository->getFirstAvailableSite();
 
@@ -502,7 +502,7 @@ class QueueTest extends IntegrationTest
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_flush_errors.csv');
         $this->assertItemsInQueue(4);
 
-        /* @var SiteRepository $siteRepository */
+        /** @var SiteRepository $siteRepository */
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $firstSite = $siteRepository->getFirstAvailableSite();
 

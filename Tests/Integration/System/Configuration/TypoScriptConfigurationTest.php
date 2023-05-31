@@ -28,7 +28,7 @@ class TypoScriptConfigurationTest extends IntegrationTest
 {
     protected function setUp(): void
     {
-        /* @var TypoScriptFrontendController|MockObject $tsfe */
+        /** @var TypoScriptFrontendController|MockObject $tsfe */
         $tsfe = $this->getMockBuilder(TypoScriptFrontendController::class)
             ->onlyMethods([])
             ->disableOriginalConstructor()
@@ -52,7 +52,7 @@ class TypoScriptConfigurationTest extends IntegrationTest
             ],
         ];
 
-        /* @var TypoScriptConfiguration $typoScriptConfiguration */
+        /** @var TypoScriptConfiguration $typoScriptConfiguration */
         $typoScriptConfiguration = GeneralUtility::makeInstance(TypoScriptConfiguration::class, $configuration, 0);
         $sorting = $typoScriptConfiguration->getSearchSorting();
         self::assertTrue($sorting, 'Can not get sorting configuration from typoscript');

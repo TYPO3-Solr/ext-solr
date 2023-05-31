@@ -166,7 +166,7 @@ class PageIndexer extends AbstractFrontendHelper
             return $this->request->getParameter('overridePageUrl');
         }
 
-        /* @var ContentObjectRenderer $contentObject */
+        /** @var ContentObjectRenderer $contentObject */
         $contentObject = GeneralUtility::makeInstance(ContentObjectRenderer::class);
 
         $typolinkConfiguration = [
@@ -222,7 +222,7 @@ class PageIndexer extends AbstractFrontendHelper
 
             $solrConnection = $this->getSolrConnection($indexQueueItem);
 
-            /* @var Typo3PageIndexer $indexer */
+            /** @var Typo3PageIndexer $indexer */
             $indexer = GeneralUtility::makeInstance(Typo3PageIndexer::class, $this->page);
             $indexer->setSolrConnection($solrConnection);
             $indexer->setPageAccessRootline($this->getAccessRootline());
@@ -277,7 +277,7 @@ class PageIndexer extends AbstractFrontendHelper
      */
     protected function getSolrConnection(Item $indexQueueItem): SolrConnection
     {
-        /* @var ConnectionManager $connectionManager */
+        /** @var ConnectionManager $connectionManager */
         $connectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
 
         return $connectionManager->getConnectionByRootPageId(
@@ -293,7 +293,7 @@ class PageIndexer extends AbstractFrontendHelper
      */
     protected function getIndexQueueItem(): ?Item
     {
-        /* @var Queue $indexQueue */
+        /** @var Queue $indexQueue */
         $indexQueue = GeneralUtility::makeInstance(Queue::class);
         return $indexQueue->getItem($this->request->getParameter('item'));
     }

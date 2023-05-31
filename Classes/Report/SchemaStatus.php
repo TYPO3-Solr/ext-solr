@@ -53,13 +53,13 @@ class SchemaStatus extends AbstractSolrStatus
     public function getStatus(): array
     {
         $reports = [];
-        /* @var ConnectionManager $connectionManager */
+        /** @var ConnectionManager $connectionManager */
         $connectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
         $solrConnections = $connectionManager->getAllConnections();
 
         foreach ($solrConnections as $solrConnection) {
             $adminService = $solrConnection->getAdminService();
-            /* @var SolrConnection $solrConnection */
+            /** @var SolrConnection $solrConnection */
             if (!$adminService->ping()) {
                 $url = $adminService->__toString();
                 $pingFailedMsg = 'Could not ping solr server, can not check version ' . $url;

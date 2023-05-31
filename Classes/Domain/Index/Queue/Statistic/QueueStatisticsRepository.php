@@ -75,7 +75,7 @@ class QueueStatisticsRepository extends AbstractRepository
      */
     protected function buildQueueStatisticFromResultSet(array $indexQueueStatisticResultSet): QueueStatistic
     {
-        /* @var QueueStatistic $statistic */
+        /** @var QueueStatistic $statistic */
         $statistic = GeneralUtility::makeInstance(QueueStatistic::class);
         foreach ($indexQueueStatisticResultSet as $row) {
             if ($row['failed'] == 1) {

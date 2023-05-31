@@ -131,7 +131,7 @@ abstract class AbstractInitializer implements IndexQueueInitializer
      */
     public function initialize(): bool
     {
-        /* @var ConnectionPool $connectionPool */
+        /** @var ConnectionPool $connectionPool */
         $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
 
         $fetchItemsQuery = $this->buildSelectStatement() . ', "" as errors '

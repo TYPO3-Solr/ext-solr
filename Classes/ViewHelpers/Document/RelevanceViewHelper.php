@@ -56,10 +56,10 @@ class RelevanceViewHelper extends AbstractSolrFrontendViewHelper
         Closure $renderChildrenClosure,
         RenderingContextInterface $renderingContext,
     ) {
-        /* @var SearchResult $document */
+        /** @var SearchResult $document */
         $document = $arguments['document'];
 
-        /* @var SearchResultSet $resultSet */
+        /** @var SearchResultSet $resultSet */
         $resultSet = $arguments['resultSet'];
 
         $maximumScore = $arguments['maximumScore'] ?? $resultSet->getMaximumScore();

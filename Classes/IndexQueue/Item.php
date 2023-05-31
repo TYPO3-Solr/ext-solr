@@ -201,6 +201,7 @@ class Item
      * Gets the site the item belongs to.
      *
      * @throws DBALException
+     * @throws InvalidArgumentException
      */
     public function getSite(): ?Site
     {

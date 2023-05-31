@@ -40,7 +40,7 @@ class TimestampToUtcIsoDate implements FieldProcessor
     public function process(array $values): array
     {
         $results = [];
-        /* @var FormatService $formatService */
+        /** @var FormatService $formatService */
         $formatService = GeneralUtility::makeInstance(FormatService::class);
 
         foreach ($values as $timestamp) {

@@ -37,7 +37,7 @@ class SolrAdminServiceTest extends IntegrationTest
     protected function setUp(): void
     {
         parent::setUp();
-        /* @var EventDispatcher $eventDispatcher */
+        /** @var EventDispatcher $eventDispatcher */
         $eventDispatcher = $this->createMock(EventDispatcher::class);
         $adapter = new Curl();
         $client = new Client(
@@ -196,7 +196,7 @@ class SolrAdminServiceTest extends IntegrationTest
      */
     public function canParseLanguageFromSchema()
     {
-        /* @var EventDispatcher $eventDispatcher */
+        /** @var EventDispatcher $eventDispatcher */
         $eventDispatcher = $this->createMock(EventDispatcher::class);
         $adapter = new Curl();
         $client = new Client(

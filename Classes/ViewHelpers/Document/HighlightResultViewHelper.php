@@ -53,7 +53,7 @@ class HighlightResultViewHelper extends AbstractSolrFrontendViewHelper
         Closure $renderChildrenClosure,
         RenderingContextInterface $renderingContext
     ): string {
-        /* @var SearchResultSet $resultSet */
+        /** @var SearchResultSet $resultSet */
         $resultSet = $arguments['resultSet'];
         $fieldName = $arguments['fieldName'];
         $document = $arguments['document'];

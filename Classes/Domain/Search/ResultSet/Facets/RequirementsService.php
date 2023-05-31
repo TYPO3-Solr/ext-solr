@@ -77,7 +77,7 @@ class RequirementsService
     /**
      * Returns the active item values of a facet
      *
-     * @return AbstractFacetItem[]
+     * @return string[]|int[]
      */
     protected function getSelectedItemValues(AbstractFacet $facet, string $facetNameToCheckRequirementsOn): array
     {
@@ -94,7 +94,7 @@ class RequirementsService
         $itemValues = [];
         $activeFacetItems = $facetToCheckRequirements->getAllFacetItems();
         foreach ($activeFacetItems as $item) {
-            /* @var AbstractFacetItem $item */
+            /** @var AbstractFacetItem $item */
             if ($item->getSelected()) {
                 $itemValues[] = $item->getUriValue();
             }
@@ -108,7 +108,7 @@ class RequirementsService
      */
     protected function getNegationWhenConfigured(bool $value, array $configuration = null): bool
     {
-        if (!is_array($configuration) || empty($configuration['negate']) || (bool)$configuration['negate'] === false) {
+        if (!is_array($configuration) || empty($configuration['negate'])) {
             return $value;
         }
 

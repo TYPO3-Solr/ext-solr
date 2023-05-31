@@ -57,7 +57,6 @@ abstract class AbstractRepository
      */
     protected function getQueryBuilder(): QueryBuilder
     {
-        /* @var QueryBuilder $queryBuilder */
         return GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($this->table);
     }
 
@@ -104,7 +103,7 @@ abstract class AbstractRepository
      */
     protected function isConnectionForAllTablesTheSame(string ...$tableNames): bool
     {
-        /* @var ConnectionPool $connectionPool */
+        /** @var ConnectionPool $connectionPool */
         $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
         $connection = $connectionPool->getConnectionForTable(array_shift($tableNames));
         foreach ($tableNames as $tableName) {
