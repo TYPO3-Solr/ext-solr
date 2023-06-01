@@ -15,23 +15,18 @@
 
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\IndexQueue;
 
-use ApacheSolrForTypo3\Solr\IndexQueue\AdditionalIndexQueueItemIndexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\Indexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
-use ApacheSolrForTypo3\Solr\Tests\Integration\IndexQueue\Helpers\DummyAdditionalIndexQueueItemIndexer;
-use ApacheSolrForTypo3\Solr\Tests\Integration\IndexQueue\Helpers\DummyIndexer;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
-use InvalidArgumentException;
 use Psr\Http\Server\RequestHandlerInterface;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Http\ServerRequestFactory;
 use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Middleware\NormalizedParamsAttribute;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use UnexpectedValueException;
 
 /**
  * Testcase for the record indexer
@@ -412,59 +407,20 @@ class IndexerTest extends IntegrationTest
     /**
      * @test
      */
-    public function canGetAdditionalDocumentsInterfaceOnly(): void
+    public function canGetAdditionalDocumentsViaPsr14EventListener(): void
     {
-        $this->expectException(InvalidArgumentException::class);
-        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['indexItemAddDocuments'][] = AdditionalIndexQueueItemIndexer::class;
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/sites_setup_and_data_set/01_integration_tree_one.csv');
         $document = new Document();
-        $metaData = ['item_type' => 'pages'];
-        $record = [];
-        $item = GeneralUtility::makeInstance(Item::class, $metaData, $record);
-        $this->callInaccessibleMethod($this->indexer, 'getAdditionalDocuments', $item, 0, $document);
-    }
+        $document->setField('original-document', true);
+        $metaData = ['item_type' => 'pages', 'root' => 1];
+        $record = ['uid' => 1, 'pid' => 0, 'activate-event-listener' => true];
+        $item = new Item($metaData, $record);
 
-    /**
-     * @test
-     */
-    public function canGetAdditionalDocumentsNotImplementingInterface(): void
-    {
-        $this->expectException(UnexpectedValueException::class);
-        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['indexItemAddDocuments'][] = DummyIndexer::class;
-        $document = new Document();
-        $metaData = ['item_type' => 'pages'];
-        $record = [];
-        $item = GeneralUtility::makeInstance(Item::class, $metaData, $record);
-        $this->callInaccessibleMethod($this->indexer, 'getAdditionalDocuments', $item, 0, $document);
-    }
-
-    /**
-     * @test
-     */
-    public function canGetAdditionalDocumentsNonExistingClass(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['indexItemAddDocuments'][] = 'NonExistingClass';
-        $document = new Document();
-        $metaData = ['item_type' => 'pages'];
-        $record = [];
-        $item = GeneralUtility::makeInstance(Item::class, $metaData, $record);
-
-        $this->callInaccessibleMethod($this->indexer, 'getAdditionalDocuments', $item, 0, $document);
-    }
-
-    /**
-     * @test
-     */
-    public function canGetAdditionalDocuments(): void
-    {
-        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['indexItemAddDocuments'][] = DummyAdditionalIndexQueueItemIndexer::class;
-        $document = new Document();
-        $metaData = ['item_type' => 'pages'];
-        $record = [];
-        $item = GeneralUtility::makeInstance(Item::class, $metaData, $record);
-
-        $result = $this->callInaccessibleMethod($this->indexer, 'getAdditionalDocuments', $item, 0, $document);
-        self::assertSame([], $result);
+        $result = $this->callInaccessibleMethod($this->indexer, 'getAdditionalDocuments', $document, $item, 0);
+        // Result contains two documents, one from the event listener and the original one above
+        self::assertCount(2, $result);
+        self::assertSame($document, $result[0]);
+        self::assertEquals(['can-be-an-alternative-record' => 'additional-test-document'], $result[1]->getFields());
     }
 
     /**

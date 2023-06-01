@@ -36,7 +36,7 @@ use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use Doctrine\DBAL\Exception as DBALException;
-use InvalidArgumentException;
+use PhpParser\Comment\Doc;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use RuntimeException;
 use Throwable;
@@ -45,13 +45,12 @@ use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\RootlineUtility;
-use UnexpectedValueException;
 
 /**
  * A general purpose indexer to be used for indexing of any kind of regular
- * records like tt_news, tt_address, and so on.
+ * records like news records, tt_address, and so on.
  * Specialized indexers can extend this class to handle advanced stuff like
- * category resolution in tt_news or file indexing.
+ * category resolution in news records or file indexing.
  *
  * @author Ingo Renner <ingo@typo3.org>
  * @copyright  (c) 2009-2015 Ingo Renner <ingo@typo3.org>
@@ -82,6 +81,7 @@ class Indexer extends AbstractIndexer
     protected bool $loggingEnabled = false;
 
     protected SolrLogManager $logger;
+    protected EventDispatcherInterface $eventDispatcher;
 
     public function __construct(
         array $options = [],
@@ -90,6 +90,7 @@ class Indexer extends AbstractIndexer
         ConnectionManager $connectionManager = null,
         FrontendEnvironment $frontendEnvironment = null,
         SolrLogManager $logger = null,
+        EventDispatcherInterface $eventDispatcher = null,
     ) {
         $this->options = $options;
         $this->pagesRepository = $pagesRepository ?? GeneralUtility::makeInstance(PagesRepository::class);
@@ -97,6 +98,7 @@ class Indexer extends AbstractIndexer
         $this->connectionManager = $connectionManager ?? GeneralUtility::makeInstance(ConnectionManager::class);
         $this->frontendEnvironment = $frontendEnvironment ?? GeneralUtility::makeInstance(FrontendEnvironment::class);
         $this->logger = $logger ?? GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
+        $this->eventDispatcher = $eventDispatcher ?? GeneralUtility::makeInstance(EventDispatcherInterface::class);
     }
 
     /**
@@ -163,16 +165,12 @@ class Indexer extends AbstractIndexer
             return true;
         }
 
-        $eventDispatcher = GeneralUtility::makeInstance(EventDispatcherInterface::class);
-        $event = new AddAdditionalDocumentsForIndexingEvent($itemDocument, $item->getSite()->getTypo3SiteObject(), $item->getSite()->getTypo3SiteObject()->getLanguageById($language), $item);
-        $event = $eventDispatcher->dispatch($event);
-        $documents = $event->getDocuments();
-        $documents = array_merge($documents, $this->getAdditionalDocuments($item, $language, $itemDocument));
+        $documents = $this->getAdditionalDocuments($itemDocument, $item, $language);
+
         $documents = $this->processDocuments($item, $documents);
 
-        // will be removed in EXT:solr 12
-        $documents = self::preAddModifyDocuments($item, $language, $documents);
-        $event = $eventDispatcher->dispatch(new ModifyDocumentsBeforeIndexingEvent($itemDocument, $item->getSite()->getTypo3SiteObject(), $item->getSite()->getTypo3SiteObject()->getLanguageById($language), $item, $documents));
+        $event = new ModifyDocumentsBeforeIndexingEvent($itemDocument, $item->getSite()->getTypo3SiteObject(), $item->getSite()->getTypo3SiteObject()->getLanguageById($language), $item, $documents);
+        $event = $this->eventDispatcher->dispatch($event);
         $documents = $event->getDocuments();
 
         $response = $this->currentlyUsedSolrConnection->getWriteService()->addDocuments($documents);
@@ -415,6 +413,24 @@ class Indexer extends AbstractIndexer
     }
 
     /**
+     * Adds the document to the list of all documents (done in the event constructor),
+     * and allows to add more documents before processing all of them.
+     *
+     * @return Document[]
+     */
+    protected function getAdditionalDocuments(Document $itemDocument, Item $item, int $language): array
+    {
+        $event = new AddAdditionalDocumentsForIndexingEvent(
+            $itemDocument,
+            $item->getSite()->getTypo3SiteObject(),
+            $item->getSite()->getTypo3SiteObject()->getLanguageById($language),
+            $item
+        );
+        $event = $this->eventDispatcher->dispatch($event);
+        return $event->getDocuments();
+    }
+
+    /**
      * Sends the documents to the field processing service which takes care of
      * manipulating fields as defined in the field's configuration.
      *
@@ -439,80 +455,6 @@ class Indexer extends AbstractIndexer
         if (is_array($fieldProcessingInstructions)) {
             $service = GeneralUtility::makeInstance(Service::class);
             $service->processDocuments($documents, $fieldProcessingInstructions);
-        }
-
-        return $documents;
-    }
-
-    /**
-     * Allows third party extensions to provide additional documents which
-     * should be indexed for the current item.
-     *
-     * @param Item $item The item currently being indexed.
-     * @param int $language The language uid currently being indexed.
-     * @param Document $itemDocument The document representing the item for the given language.
-     *
-     * @return Document[] array An array of additional Document objects to index.
-     * @deprecated in favor of AddAdditionalDocumentsForIndexingEvent
-     */
-    protected function getAdditionalDocuments(Item $item, int $language, Document $itemDocument): array
-    {
-        $documents = [];
-
-        if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['indexItemAddDocuments'] ?? null)) {
-            foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['indexItemAddDocuments'] as $classReference) {
-                if (!class_exists($classReference)) {
-                    throw new InvalidArgumentException('Class does not exits' . $classReference, 1490363487);
-                }
-                $additionalIndexer = GeneralUtility::makeInstance($classReference);
-                if ($additionalIndexer instanceof AdditionalIndexQueueItemIndexer) {
-                    $additionalDocuments = $additionalIndexer->getAdditionalItemDocuments($item, $language, $itemDocument);
-
-                    if (is_array($additionalDocuments)) {
-                        $documents = array_merge(
-                            $documents,
-                            $additionalDocuments
-                        );
-                    }
-                } else {
-                    throw new UnexpectedValueException(
-                        get_class($additionalIndexer) . ' must implement interface ' . AdditionalIndexQueueItemIndexer::class,
-                        1326284551
-                    );
-                }
-            }
-        }
-        return $documents;
-    }
-
-    /**
-     * Provides a hook to manipulate documents right before they get added to
-     * the Solr index.
-     *
-     * @param Item $item The item currently being indexed.
-     * @param int $language The language uid of the documents
-     * @param array $documents An array of documents to be indexed
-     *
-     * @return array An array of modified documents
-     */
-    public static function preAddModifyDocuments(Item $item, int $language, array $documents): array
-    {
-        if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['preAddModifyDocuments'] ?? null)) {
-            foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['preAddModifyDocuments'] as $classReference) {
-                $documentsModifier = GeneralUtility::makeInstance($classReference);
-
-                if ($documentsModifier instanceof PageIndexerDocumentsModifier) {
-                    $documents = $documentsModifier->modifyDocuments($item, $language, $documents);
-                } else {
-                    throw new RuntimeException(
-                        'The class "' . get_class($documentsModifier)
-                        . '" registered as document modifier in hook
-							preAddModifyDocuments must implement interface
-							ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerDocumentsModifier',
-                        1309522677
-                    );
-                }
-            }
         }
 
         return $documents;
@@ -692,7 +634,7 @@ class Indexer extends AbstractIndexer
      * Logs the item and what document was created from it
      *
      * @param Item $item The item that is being indexed.
-     * @param array $itemDocuments An array of Solr documents created from the item's data
+     * @param Document[] $itemDocuments An array of Solr documents created from the item's data
      * @param ResponseAdapter $response The Solr response for the particular index document
      */
     protected function log(Item $item, array $itemDocuments, ResponseAdapter $response): void

@@ -23,7 +23,8 @@ use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 
 /**
- * Allows to add more documents to the Solr index.
+ * Allows third party extensions to provide additional documents which
+ * should be indexed for the current item.
  *
  * Previously used with
  * $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['indexItemAddDocuments']

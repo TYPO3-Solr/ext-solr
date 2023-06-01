@@ -4,20 +4,43 @@
 Indexing
 ========
 
-In this section i describe the possibilities to extend page indexing in EXT:solr with custom code.
+In this section i describe the possibilities to extend page indexing in EXT:solr with custom code
+via TYPO3 Hooks or PSR-14 events.
 
 Page Indexing
 =============
 
 There are several points to extend the Typo3PageIndexer class and register own classes that are used during the indexing.
 
-indexPageAddDocuments
----------------------
+AddAdditionalDocumentsForPageIndexingEvent
+------------------------------------------
 
-Registered classes can be used to add additional documents to solr when a page get's indexed.
+Registered Event Listeners can be used to add additional documents to solr when a page gets indexed.
 
-Registration with: $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageAddDocuments']
-Required Interface: AdditionalPageIndexer
+Registration of an event listener in your extension's :file:`Services.yaml`:
+
+..  code-block:: yaml
+
+    MyVendor\MyPackage\EventListeners\MyEventListener:
+      tags:
+        - name: event.listener
+          identifier: 'my-package/modify-documents'
+
+The corresponding event listener class:
+
+..  code-block:: php
+
+    use ApacheSolrForTypo3\Solr\Event\Indexing\AddAdditionalDocumentsForPageIndexingEvent;
+    use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
+
+    class MyEventListener {
+
+        public function __invoke(AddAdditionalDocumentsForPageIndexingEvent $event): void
+        {
+            $additionalDocument = new Document();
+            $event->addDocument($additionalDocument);
+        }
+    }
 
 
 indexPageSubstitutePageDocument
@@ -30,13 +53,35 @@ Registration with: $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['in
 Required Interface: SubstitutePageIndexer
 
 
-preAddModifyDocuments
----------------------
+ModifyDocumentsBeforeIndexingEvent
+----------------------------------
 
-Registered classes can be used to process Solr documents (pages and records) before they are added to index.
+Registered Event Listeners can be used to process Solr documents (pages and records) before they are added to index.
 
-Registration with: $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['preAddModifyDocuments']
-Required Interface: PageIndexerDocumentsModifier
+Registration of an event listener in your extension's :file:`Services.yaml`:
+
+..  code-block:: yaml
+
+    MyVendor\MyPackage\EventListeners\MyEventListener:
+      tags:
+        - name: event.listener
+          identifier: 'my-package/modify-documents'
+
+The corresponding event listener class:
+
+..  code-block:: php
+
+    use ApacheSolrForTypo3\Solr\Event\Indexing\ModifyDocumentsBeforeIndexingEvent;
+
+    class MyEventListener {
+
+        public function __invoke(ModifyDocumentsBeforeIndexingEvent $event): void
+        {
+            foreach ($event->getDocuments() as $document) {
+               $document->addField('my_custom_field', 'my_custom_value');
+            }
+        }
+    }
 
 
 Independent indexer
@@ -59,8 +104,7 @@ If external data should be indexed or the RecordIndexer is not required, it is p
    class Indexer
    {
 
-       /** @var ConnectionManager */
-       protected $connectionManager;
+       protected ConnectionManager $connectionManager;
 
        public function __construct()
        {
@@ -96,7 +140,7 @@ If external data should be indexed or the RecordIndexer is not required, it is p
            $connections = $this->connectionManager->getAllConnections();
            foreach ($connections as $connectionLanguage => $connection) {
                /** @var SolrConnection */
-               $connection->getWriteService()->deleteByType('cutom_type');
+               $connection->getWriteService()->deleteByType('custom_type');
            }
        }
 
@@ -148,9 +192,9 @@ If external data should be indexed or the RecordIndexer is not required, it is p
            $document = GeneralUtility::makeInstance(Document::class);
 
            // required fields
-           $document->setField('id', 'cutom_type_' . $itemRecord['uid']);
-           $document->setField('variantId', 'cutom_type' . $itemRecord['uid']);
-           $document->setField('type', 'cutom_type');
+           $document->setField('id', 'custom_type_' . $itemRecord['uid']);
+           $document->setField('variantId', 'custom_type' . $itemRecord['uid']);
+           $document->setField('type', 'custom_type');
            $document->setField('appKey', 'EXT:solr');
            $document->setField('access', ['r:0']);
 

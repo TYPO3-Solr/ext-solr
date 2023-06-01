@@ -16,13 +16,15 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\IndexQueue;
 
 use ApacheSolrForTypo3\Solr\ConnectionManager;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\IndexQueueIndexingPropertyRepository;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\QueueItemRepository;
 use ApacheSolrForTypo3\Solr\Domain\Search\ApacheSolrDocument\Builder;
+use ApacheSolrForTypo3\Solr\Domain\Site\Site;
+use ApacheSolrForTypo3\Solr\Event\Indexing\AddAdditionalDocumentsForIndexingEvent;
 use ApacheSolrForTypo3\Solr\FrontendEnvironment;
-use ApacheSolrForTypo3\Solr\IndexQueue\AdditionalIndexQueueItemIndexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\Exception\IndexingException;
 use ApacheSolrForTypo3\Solr\IndexQueue\Indexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
-use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerDocumentsModifier;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
 use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
@@ -30,11 +32,10 @@ use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\System\Solr\Service\SolrWriteService;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
-use InvalidArgumentException;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use ReflectionClass;
-use RuntimeException;
+use TYPO3\CMS\Core\Tests\Unit\Fixtures\EventDispatcher\MockEventDispatcher;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use UnexpectedValueException;
 
 /**
  * Class IndexerTest
@@ -62,11 +63,14 @@ class IndexerTest extends SetUpUnitTestCase
 
         $indexer = $this->getAccessibleMock(
             Indexer::class,
-            ['itemToDocument', 'processDocuments', 'getAdditionalDocuments'],
+            ['itemToDocument', 'processDocuments'],
             [],
             '',
             false
         );
+        $eventDispatcher = $this->createMock(EventDispatcherInterface::class);
+        $eventDispatcher->expects(self::any())->method('dispatch')->willReturnArgument(0);
+        $indexer->_set('eventDispatcher', $eventDispatcher);
 
         $solrConnectionMock = $this->createMock(SolrConnection::class);
         $solrConnectionMock
@@ -75,19 +79,15 @@ class IndexerTest extends SetUpUnitTestCase
             ->willReturn($writeServiceMock);
         $indexer->_set('currentlyUsedSolrConnection', $solrConnectionMock);
 
+        $siteMock = $this->createMock(Site::class);
         $itemMock = $this->createMock(Item::class);
+        $itemMock->expects(self::any())->method('getSite')->willReturn($siteMock);
         $itemDocumentMock = $this->createMock(Document::class);
         $indexer
             ->expects(self::once())
             ->method('itemToDocument')
             ->with($itemMock, 0)
             ->willReturn($itemDocumentMock);
-
-        $indexer
-            ->expects(self::once())
-            ->method('getAdditionalDocuments')
-            ->with($itemMock, 0, $itemDocumentMock)
-            ->willReturn([]);
 
         $indexer
             ->expects(self::once())
@@ -134,20 +134,8 @@ class IndexerTest extends SetUpUnitTestCase
      * @test
      * @dataProvider canGetAdditionalDocumentsDataProvider
      */
-    public function canGetAdditionalDocuments(\stdClass|string|AdditionalIndexQueueItemIndexer|null $class, ?string $expectedException, int $expectedResultCount): void
+    public function canGetAdditionalDocuments(\Closure|null $listener, ?string $expectedException, int $expectedResultCount): void
     {
-        if ($class !== null) {
-            if (is_object($class)) {
-                $classReference = get_class($class);
-                GeneralUtility::addInstance($classReference, $class);
-            } else {
-                $classReference = $class;
-            }
-            $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['indexItemAddDocuments'] = [
-                $classReference,
-            ];
-        }
-
         $indexer = $this->getAccessibleMock(
             Indexer::class,
             null,
@@ -156,17 +144,37 @@ class IndexerTest extends SetUpUnitTestCase
             false
         );
 
+        $eventDispatcher = new MockEventDispatcher();
+        if ($listener) {
+            $eventDispatcher->addListener($listener);
+        }
+        $indexer->_set('eventDispatcher', $eventDispatcher);
+
         if ($expectedException !== null) {
             self::expectException($expectedException);
         }
 
+        $itemMock = new class([], [], $this->createMock(IndexQueueIndexingPropertyRepository::class), $this->createMock(QueueItemRepository::class)) extends Item {
+            protected $site;
+            public function setSite(Site $site): void
+            {
+                $this->site = $site;
+            }
+            public function getSite(): ?Site
+            {
+                return $this->site;
+            }
+        };
+        $itemMock->setSite($this->createMock(Site::class));
+
+        // new $itemMock()
         $documents = $indexer->_call(
             'getAdditionalDocuments',
-            $this->createMock(Item::class),
+            new Document(),
+            $itemMock,
             0,
-            $this->createMock(Document::class)
         );
-        self::assertEquals($expectedResultCount, count($documents));
+        self::assertCount($expectedResultCount, $documents);
         foreach ($documents as $document) {
             self::assertTrue($document instanceof Document);
         }
@@ -177,85 +185,26 @@ class IndexerTest extends SetUpUnitTestCase
      */
     public function canGetAdditionalDocumentsDataProvider(): \Generator
     {
-        yield 'no AdditionalIndexQueueItemIndexer registered' => [
+        yield 'no listener registered' => [
             null,
-            null,
-            0,
-        ];
-
-        yield 'unknown class as AdditionalIndexQueueItemIndexer registered' => [
-            'invalidClass',
-            InvalidArgumentException::class,
-            0,
-        ];
-
-        yield 'invalid AdditionalIndexQueueItemIndexer registered' => [
-            new \stdClass(),
-            UnexpectedValueException::class,
-            0,
-        ];
-
-        $indexerMock = $this->createMock(AdditionalIndexQueueItemIndexer::class);
-        $indexerMock
-            ->expects(self::once())
-            ->method('getAdditionalItemDocuments');
-        yield 'valid AdditionalIndexQueueItemIndexer, no additional documents' => [
-            $indexerMock,
-            null,
-            0,
-        ];
-
-        $indexerMock = $this->createMock(AdditionalIndexQueueItemIndexer::class);
-        $indexerMock
-            ->expects(self::once())
-            ->method('getAdditionalItemDocuments')
-            ->willReturn([$this->createMock(Document::class)]);
-        yield 'valid AdditionalIndexQueueItemIndexer, one additional documents' => [
-            $indexerMock,
             null,
             1,
         ];
-    }
 
-    /**
-     * @test
-     * @dataProvider canCallDocumentsModifierHookDataProvider
-     */
-    public function canCallDocumentsModifierHook(?object $modifier, ?string $expectedException): void
-    {
-        $itemMock = $this->createMock(Item::class);
-        if ($modifier !== null) {
-            $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['preAddModifyDocuments'] = [
-                get_class($modifier),
-            ];
-        } else {
-            $modifier = $this->createMock(PageIndexerDocumentsModifier::class);
-            $modifier->expects(self::never())->method('modifyDocuments');
-        }
-        GeneralUtility::addInstance(get_class($modifier), $modifier);
-
-        if ($expectedException !== null) {
-            self::expectException($expectedException);
-        }
-
-        Indexer::preAddModifyDocuments($itemMock, 0, []);
-    }
-
-    /**
-     * Data provider for "canCallDocumentsModifierHook"
-     */
-    public function canCallDocumentsModifierHookDataProvider(): \Generator
-    {
-        yield 'no modifier' => [null, null];
-
-        yield 'invalid modifier' => [new \stdClass(), RuntimeException::class];
-
-        $modifierMock = $this->createMock(PageIndexerDocumentsModifier::class);
-        $modifierMock
-            ->expects(self::once())
-            ->method('modifyDocuments')
-            ->willReturn([]);
-        yield 'valid modifier' => [$modifierMock, null];
+        yield 'valid listener, no additional documents' => [
+            function(AddAdditionalDocumentsForIndexingEvent $event) {
+                // Does nothing
+            },
+            null,
+            1,
+        ];
+        yield 'valid listener, adds an additional document' => [
+            function(AddAdditionalDocumentsForIndexingEvent $event) {
+                $event->addDocuments([new Document()]);
+            },
+            null,
+            2,
+        ];
     }
 
     /**

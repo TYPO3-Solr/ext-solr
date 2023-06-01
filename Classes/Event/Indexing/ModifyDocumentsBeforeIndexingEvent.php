@@ -23,7 +23,7 @@ use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 
 /**
- * Allows to modify documents before adding them the Solr index.
+ * An event to manipulate documents right before they get added to the Solr index.
  *
  * Previously used with
  * $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['preAddModifyDocuments']

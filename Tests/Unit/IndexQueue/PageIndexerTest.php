@@ -29,6 +29,7 @@ use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use PHPUnit\Framework\MockObject\MockObject;
+use Psr\EventDispatcher\EventDispatcherInterface;
 
 class PageIndexerTest extends SetUpUnitTestCase
 {
@@ -64,6 +65,7 @@ class PageIndexerTest extends SetUpUnitTestCase
                     $this->connectionManagerMock,
                     $this->frontendEnvironmentMock,
                     $this->solrLogManagerMock,
+                    $this->createMock(EventDispatcherInterface::class)
                 ]
             )
             ->onlyMethods(['getPageIndexerRequest', 'getAccessRootlineByPageId', 'getUriStrategy'])

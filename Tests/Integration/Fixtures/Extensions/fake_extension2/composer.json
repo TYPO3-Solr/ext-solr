@@ -3,6 +3,14 @@
   "type": "typo3-cms-extension",
   "description": "Fake Extension 2",
   "license": "GPL-2.0-or-later",
+  "require": {
+    "typo3/cms-core": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "ApacheSolrForTypo3\\SolrFakeExtension2\\": "Classes/"
+    }
+  },
   "extra": {
     "typo3/cms": {
       "extension-key": "fake_extension2"
