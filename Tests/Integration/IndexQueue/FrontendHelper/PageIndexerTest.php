@@ -17,7 +17,6 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\IndexQueue\FrontendHelper;
 
-use ApacheSolrForTypo3\Solr\AdditionalFieldsIndexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use Psr\Http\Message\ResponseInterface;
@@ -158,10 +157,6 @@ class PageIndexerTest extends IntegrationTest
      */
     public function canIndexPageIntoSolrWithAdditionalFields()
     {
-        //@todo additional fields indexer requires the hook to be activated which is normally done in ext_localconf.php
-        // this needs to be unified with the PageFieldMappingIndexer registration.
-        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageSubstitutePageDocument']['ApacheSolrForTypo3\Solr\AdditionalFieldsIndexer'] = AdditionalFieldsIndexer::class;
-
         $this->importCSVDataSet(__DIR__ . '/Fixtures/can_index_with_additional_fields_into_solr.csv');
         $this->indexQueuedPage();
 

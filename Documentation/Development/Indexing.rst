@@ -4,12 +4,12 @@
 Indexing
 ========
 
-In this section i describe the possibilities to extend page indexing in EXT:solr with custom code via TYPO3 Hooks or PSR-14 events.
+This section describes the possibilities to extend page indexing in EXT:solr with custom code via PSR-14 events.
 
 Page Indexing
 =============
 
-There are several points to extend the Typo3PageIndexer class and register own classes that are used during the indexing.
+There are several points to extend the Page Indexer class and register own classes that are used during the indexing.
 
 BeforePageDocumentIsProcessedForIndexingEvent
 ---------------------------------------------
@@ -43,14 +43,34 @@ The corresponding event listener class:
 
 For other records than pages, the PSR-14 Event :php:class:`ApacheSolrForTypo3\Solr\Event\Indexing\BeforeDocumentIsProcessedForIndexingEvent` can be used.
 
-indexPageSubstitutePageDocument
--------------------------------
+AfterPageDocumentIsCreatedForIndexingEvent
+------------------------------------------
 
-Registered classes can be used to replace/substitute a Solr document of a page.
+Registered event listeners can be used to replace/substitute a Solr document of a page.
 
+Registration of an event listener in your extension's :file:`Services.yaml`:
 
-Registration with: $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageSubstitutePageDocument']
-Required Interface: SubstitutePageIndexer
+..  code-block:: yaml
+
+    MyVendor\MyPackage\EventListeners\MyEventListener:
+      tags:
+        - name: event.listener
+          identifier: 'my-package/modify-page'
+
+The corresponding event listener class:
+
+..  code-block:: php
+
+    use ApacheSolrForTypo3\Solr\Event\Indexing\AfterPageDocumentIsCreatedForIndexingEvent;
+
+    class MyEventListener {
+
+        public function __invoke(AfterPageDocumentIsCreatedForIndexingEvent $event): void
+        {
+            $event->setDocument($myCustomDocument);
+        }
+    }
+
 
 
 BeforeDocumentsAreIndexedEvent

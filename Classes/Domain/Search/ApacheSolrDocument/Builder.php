@@ -25,7 +25,6 @@ use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use ApacheSolrForTypo3\Solr\Typo3PageContentExtractor;
 use ApacheSolrForTypo3\Solr\Util;
 use Doctrine\DBAL\Exception as DBALException;
-use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
@@ -45,9 +44,6 @@ class Builder
 
     /**
      * This method can be used to build a Document from a TYPO3 page.
-     *
-     * @throws AspectNotFoundException
-     * @throws DBALException
      */
     public function fromPage(
         TypoScriptFrontendController $page,
@@ -55,10 +51,11 @@ class Builder
         Rootline $pageAccessRootline,
         string $mountPointParameter = '',
     ): Document {
-        /** @var Document $document */
-        $document = GeneralUtility::makeInstance(Document::class);
-        $site = $this->getSiteByPageId($page->id);
+        $pageId = $page->id;
         $pageRecord = $page->page;
+
+        $document = GeneralUtility::makeInstance(Document::class);
+        $site = $this->getSiteByPageId($pageId);
 
         $accessGroups = $this->getDocumentIdGroups($pageAccessRootline);
         $documentId = $this->getPageDocumentId($page, $accessGroups, $mountPointParameter);
@@ -70,18 +67,18 @@ class Builder
         $document->setField('type', 'pages');
 
         // system fields
-        $document->setField('uid', $page->id);
+        $document->setField('uid', $pageId);
         $document->setField('pid', $pageRecord['pid']);
 
         // variantId
-        $variantId = $this->variantIdBuilder->buildFromTypeAndUid('pages', $page->id);
+        $variantId = $this->variantIdBuilder->buildFromTypeAndUid('pages', $pageId);
         $document->setField('variantId', $variantId);
 
         $document->setField('typeNum', (int)$page->getPageArguments()->getPageType());
         $document->setField('created', $pageRecord['crdate']);
         $document->setField('changed', $pageRecord['SYS_LASTCHANGED']);
 
-        $rootline = $this->getRootLineFieldValue($page->id, $mountPointParameter);
+        $rootline = $this->getRootLineFieldValue($pageId, $mountPointParameter);
         $document->setField('rootline', $rootline);
 
         // access
@@ -157,12 +154,11 @@ class Builder
     }
 
     /**
-     * @throws AspectNotFoundException
      * @throws DBALException
      */
     protected function getPageDocumentId(TypoScriptFrontendController $frontendController, string $accessGroups, string $mountPointParameter): string
     {
-        return Util::getPageDocumentId($frontendController->id, (int)$frontendController->getPageArguments()->getPageType(), Util::getLanguageUid(), $accessGroups, $mountPointParameter);
+        return Util::getPageDocumentId($frontendController->id, (int)$frontendController->getPageArguments()->getPageType(), $frontendController->getLanguage()->getLanguageId(), $accessGroups, $mountPointParameter);
     }
 
     /**

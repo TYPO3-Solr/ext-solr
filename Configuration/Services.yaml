@@ -195,15 +195,28 @@ services:
 
   ### Indexing
   ApacheSolrForTypo3\Solr\EventListener\PageIndexer\FrontendGroupsModifier:
+    autowire: true
     tags:
       - name: event.listener
         identifier: 'solr.index.PageIndexer.FrontendUserAuthenticator'
-        event: TYPO3\CMS\Frontend\Authentication\ModifyResolvedFrontendGroupsEvent
+
   ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageIndexer:
+    autowire: true
     tags:
       - name: event.listener
         identifier: 'solr.index.FrontendHelper.PageIndexer.indexPageContentAfterCacheableContentIsGenerated'
-        event: TYPO3\CMS\Frontend\Event\AfterCacheableContentIsGeneratedEvent
+
+  ApacheSolrForTypo3\Solr\EventListener\PageIndexer\AdditionalFieldsForPageIndexing:
+    autowire: true
+    tags:
+      - name: event.listener
+        identifier: 'solr.index.AdditionalFieldsForPageIndexing'
+
+  ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageFieldMappingIndexer:
+    autowire: true
+    tags:
+      - name: event.listener
+        identifier: 'solr.index.PageFieldMappingIndexer'
 
   ###  EXT:solr content objects
   ApacheSolrForTypo3\Solr\ContentObject\Classification:
