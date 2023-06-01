@@ -82,6 +82,11 @@ class FieldCollapsing extends AbstractDeactivatable implements ParameterBuilderI
             return new FieldCollapsing(false);
         }
 
+        // Deactivate collapsing/variants feature if grouping feature is enabled
+        if ($solrConfiguration->getIsSearchGroupingEnabled()) {
+            return new FieldCollapsing(false);
+        }
+
         $collapseField = $solrConfiguration->getSearchVariantsField();
         $expand = $solrConfiguration->getSearchVariantsExpand();
         $expandRows = $solrConfiguration->getSearchVariantsLimit();

@@ -1423,14 +1423,25 @@ If enabled, elevated results are marked with CSS class "results-elevated".
 variants
 --------
 
-By using variants you can shrink down multiple documents with the same value in one field into one document and make similar documents available in the variants property.
-By default the field variantId is used as Solr collapsing criteria. This can be used e.g. as one approach of deduplication to group similar documents into on "root" SearchResult.
+By using variants you can shrink down multiple documents with the same value
+in one field into one document and make similar documents available in
+the variants property.
+By default the field variantId is used as Solr collapsing criteria.
+This can be used e.g. as one approach of deduplication to group similar
+documents into on "root" SearchResult.
 
-To use the different variants of the documents you can access "document.variants" to access the expanded documents.
+To use the different variants of the documents you can
+access "document.variants" to access the expanded documents.
 
-This can be used for example for de-duplication to list variants of the same document below a certain document.
+This can be used for example for de-duplication to list variants of
+the same document below a certain document.
 
 Note: Internally this is implemented with Solr field collapsing
+
+..  warning::
+
+    If you're additionally using the `grouping` feature, the `variants`
+    feature will be deactivated completely.
 
 :Type: Boolean
 :TS Path: plugin.tx_solr.search.variants
@@ -1455,7 +1466,8 @@ variants.variantField
 
 Used to expand the document variants to the document.variants property.
 
-**Note:**: The field must be a numeric field or a string field! Not a text field!
+**Note:**: The field must be a numeric field or a string field! Not a
+text field!
 
 :Type: String
 :TS Path: plugin.tx_solr.search.variants.variantField
@@ -1467,9 +1479,118 @@ variants.limit
 
 Limit of expanded documents.
 
-Though this setting limits the returned variants, you still can get the number of existing variants, it's set in "document.variantsNumFound" (since EXT:solr 10)
+Though this setting limits the returned variants, you still can get the number
+of existing variants, it's set in "document.variantsNumFound" (since
+EXT:solr 10)
 
 :Type: Integer
 :TS Path: plugin.tx_solr.search.variants.limit
 :Since: 6.0
 :Default: 10
+
+grouping
+--------
+
+The solr grouping feature can be used to group documents based on a solr field
+or a set of solr queries.
+
+..  note::
+
+    The `grouping` feature has a higher value than the `collapsing/variant`
+    feature. So if you use the `grouping` feature, the `variant` feature
+    is deactivated.
+
+The following example shows how to group documents based on the "type" field:
+
+..  code-block:: typoscript
+
+    plugin.tx_solr {
+        search {
+            grouping = 1
+            grouping {
+                numberOfGroups = 5
+                numberOfResultsPerGroup = 5
+                allowGetParameterSwitch = 0
+                groups {
+                    typeGroup {
+                        field = type
+                    }
+                }
+            }
+        }
+    }
+
+
+The next example shows how to group documents based on queries:
+
+..  code-block:: typoscript
+
+    plugin.tx_solr {
+        search {
+            grouping = 1
+            grouping {
+                numberOfGroups = 5
+                numberOfResultsPerGroup = 5
+                allowGetParameterSwitch = 0
+                groups {
+                    pidQuery {
+                        queries {
+                            lessThenTen = pid:[0 TO 10]
+                            lessThen30 = pid:[11 TO 30]
+                            rest = pid:[30 TO *]
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+grouping.numberOfGroups
+~~~~~~~~~~~~~~~~~~~~~~~
+
+:Type: Integer
+:TS Path: plugin.tx_solr.search.grouping.numberOfGroups
+:Default: 5
+:Since: 1.0
+
+grouping.numberOfResultsPerGroup
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+:Type: Integer
+:TS Path: plugin.tx_solr.search.grouping.numberOfResultsPerGroup
+:Default: 5
+:Since: 1.0
+
+grouping.allowGetParameterSwitch
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+:Type: Boolean
+:TS Path: plugin.tx_solr.search.grouping.allowGetParameterSwitch
+:Default: 0
+:Since: 1.0
+
+grouping.groups.[groupName].field
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+:Type: String
+:TS Path: plugin.tx_solr.search.grouping.[groupName].field
+:Default: empty
+:Since: 1.0
+
+Defines the solr field where a group should be build on.
+
+Note: Use either field or queries no mix. Groups with field are field groups,
+groups with queries are query groups.
+
+grouping.groups.[groupName].queries
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+:Type: Array
+:TS Path: plugin.tx_solr.search.grouping.[groupName].queries
+:Default: empty
+:Since: 1.0
+
+Defines an array of queries to group the results in.
+
+Note: Use either field or queries no mix. Groups with field are field groups,
+groups with queries are query groups.

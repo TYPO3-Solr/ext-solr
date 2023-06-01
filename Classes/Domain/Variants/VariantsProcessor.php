@@ -60,6 +60,11 @@ class VariantsProcessor implements SearchResultSetProcessor
             return $resultSet;
         }
 
+        // Return unmodified ResultSet if grouping feature is enabled
+        if ($this->typoScriptConfiguration->getIsSearchGroupingEnabled()) {
+            return $resultSet;
+        }
+
         $variantsField = $this->typoScriptConfiguration->getSearchVariantsField();
         foreach ($resultSet->getSearchResults() as $resultDocument) {
             /** @var SearchResult $resultDocument */

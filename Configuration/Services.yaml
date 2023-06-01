@@ -211,6 +211,11 @@ services:
     tags:
       - name: event.listener
         identifier: 'solr.search-component.elevation'
+  ApacheSolrForTypo3\Solr\Search\GroupingComponent:
+    autowire: true
+    tags:
+      - name: event.listener
+        identifier: 'solr.search-component.grouping'
   ApacheSolrForTypo3\Solr\Search\FacetingComponent:
     autowire: true
     tags:
