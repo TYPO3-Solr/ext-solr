@@ -49,7 +49,7 @@ services:
         event: TYPO3\CMS\Backend\View\Event\PageContentPreviewRenderingEvent
   # END: BE modules
 
-  viewhelper_backend:
+  viewhelpers_backend:
     namespace: ApacheSolrForTypo3\Solr\ViewHelpers\Backend\
     resource: '../Classes/ViewHelpers/Backend/*'
     public: true
@@ -267,6 +267,10 @@ services:
     tags:
       - name: event.listener
         identifier: 'solr.index.FrontendHelper.PageIndexer.indexPageContentAfterCacheableContentIsGenerated'
+  ApacheSolrForTypo3\Solr\Task\IndexQueueWorkerTaskAdditionalFieldProvider:
+    public: true
+    arguments:
+      $siteRepository: '@ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository'
 
   ApacheSolrForTypo3\Solr\EventListener\PageIndexer\AdditionalFieldsForPageIndexing:
     autowire: true
