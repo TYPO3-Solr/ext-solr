@@ -17,12 +17,12 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\SolrFakeExtension2\EventListeners;
 
-use ApacheSolrForTypo3\Solr\Event\Indexing\AddAdditionalDocumentsForIndexingEvent;
+use ApacheSolrForTypo3\Solr\Event\Indexing\BeforeDocumentIsProcessedForIndexingEvent;
 use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 
 final class AddAdditionalTestDocumentsToIndexer
 {
-    public function __invoke(AddAdditionalDocumentsForIndexingEvent $event): void
+    public function __invoke(BeforeDocumentIsProcessedForIndexingEvent $event): void
     {
         if (($event->getIndexQueueItem()->getRecord()['activate-event-listener'] ?? '') === true) {
             $event->addDocuments([new Document(['can-be-an-alternative-record' => 'additional-test-document'])]);

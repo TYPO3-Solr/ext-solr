@@ -17,14 +17,14 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\SolrFakeExtension3\EventListeners;
 
-use ApacheSolrForTypo3\Solr\Event\Indexing\AddAdditionalDocumentsForPageIndexingEvent;
+use ApacheSolrForTypo3\Solr\Event\Indexing\BeforePageDocumentIsProcessedForIndexingEvent;
 
 final class AddExampleDocumentsBeforePageIndexing
 {
     /**
      * Provides additional documents that should be indexed together with a page.
      */
-    public function __invoke(AddAdditionalDocumentsForPageIndexingEvent $event): void
+    public function __invoke(BeforePageDocumentIsProcessedForIndexingEvent $event): void
     {
         if (!($_GET['additionalTestPageIndexer'] ?? false)) {
             return;

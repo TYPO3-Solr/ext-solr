@@ -23,26 +23,21 @@ use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 
 /**
- * Allows third party extensions to provide additional documents which
- * should be indexed for the current item.
+ * An event to manipulate documents right before they get added to the Solr index.
  *
  * Previously used with
- * $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['indexItemAddDocuments']
+ * $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['preAddModifyDocuments']
  */
-class AddAdditionalDocumentsForIndexingEvent
+class BeforeDocumentsAreIndexedEvent
 {
-    /**
-     * @var Document[]
-     */
-    private array $documents = [];
-
     public function __construct(
         private readonly Document $document,
         private readonly Site $site,
         private readonly SiteLanguage $siteLanguage,
-        private readonly Item $indexQueueItem
+        private readonly Item $indexQueueItem,
+        /**  @var Document[] */
+        private array $documents,
     ) {
-        $this->documents[] = $this->document;
     }
 
     public function getSite(): Site

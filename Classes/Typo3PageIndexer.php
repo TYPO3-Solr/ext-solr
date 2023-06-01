@@ -19,8 +19,8 @@ namespace ApacheSolrForTypo3\Solr;
 
 use ApacheSolrForTypo3\Solr\Access\Rootline;
 use ApacheSolrForTypo3\Solr\Domain\Search\ApacheSolrDocument\Builder;
-use ApacheSolrForTypo3\Solr\Event\Indexing\AddAdditionalDocumentsForPageIndexingEvent;
-use ApacheSolrForTypo3\Solr\Event\Indexing\ModifyDocumentsBeforeIndexingEvent;
+use ApacheSolrForTypo3\Solr\Event\Indexing\BeforeDocumentsAreIndexedEvent;
+use ApacheSolrForTypo3\Solr\Event\Indexing\BeforePageDocumentIsProcessedForIndexingEvent;
 use ApacheSolrForTypo3\Solr\FieldProcessor\Service;
 use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageFieldMappingIndexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
@@ -219,13 +219,13 @@ class Typo3PageIndexer
         $pageDocument = $this->substitutePageDocument($pageDocument);
 
         self::$pageSolrDocument = $pageDocument;
-        $event = new AddAdditionalDocumentsForPageIndexingEvent($pageDocument, $this->page->getSite(), $this->page->getLanguage(), $this->indexQueueItem);
+        $event = new BeforePageDocumentIsProcessedForIndexingEvent($pageDocument, $this->page->getSite(), $this->page->getLanguage(), $this->indexQueueItem);
         $event = $this->getEventDispatcher()->dispatch($event);
         $documents = $event->getDocuments();
 
         $this->processDocuments($documents);
 
-        $event = new ModifyDocumentsBeforeIndexingEvent($pageDocument, $this->page->getSite(), $this->page->getLanguage(), $this->indexQueueItem, $documents);
+        $event = new BeforeDocumentsAreIndexedEvent($pageDocument, $this->page->getSite(), $this->page->getLanguage(), $this->indexQueueItem, $documents);
         $event = $this->getEventDispatcher()->dispatch($event);
         $documents = $event->getDocuments();
 

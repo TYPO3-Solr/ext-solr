@@ -28,7 +28,7 @@ use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
  * Previously used with
  * $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageAddDocuments']
  */
-class AddAdditionalDocumentsForPageIndexingEvent
+class BeforePageDocumentIsProcessedForIndexingEvent
 {
     /**
      * @var Document[]

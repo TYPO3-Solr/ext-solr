@@ -4,16 +4,15 @@
 Indexing
 ========
 
-In this section i describe the possibilities to extend page indexing in EXT:solr with custom code
-via TYPO3 Hooks or PSR-14 events.
+In this section i describe the possibilities to extend page indexing in EXT:solr with custom code via TYPO3 Hooks or PSR-14 events.
 
 Page Indexing
 =============
 
 There are several points to extend the Typo3PageIndexer class and register own classes that are used during the indexing.
 
-AddAdditionalDocumentsForPageIndexingEvent
-------------------------------------------
+BeforePageDocumentIsProcessedForIndexingEvent
+---------------------------------------------
 
 Registered Event Listeners can be used to add additional documents to solr when a page gets indexed.
 
@@ -30,18 +29,19 @@ The corresponding event listener class:
 
 ..  code-block:: php
 
-    use ApacheSolrForTypo3\Solr\Event\Indexing\AddAdditionalDocumentsForPageIndexingEvent;
+    use ApacheSolrForTypo3\Solr\Event\Indexing\BeforePageDocumentIsProcessedForIndexingEvent;
     use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 
     class MyEventListener {
 
-        public function __invoke(AddAdditionalDocumentsForPageIndexingEvent $event): void
+        public function __invoke(BeforePageDocumentIsProcessedForIndexingEvent $event): void
         {
             $additionalDocument = new Document();
-            $event->addDocument($additionalDocument);
+            $event->addDocuments([$additionalDocument]);
         }
     }
 
+For other records than pages, the PSR-14 Event :php:class:`ApacheSolrForTypo3\Solr\Event\Indexing\BeforeDocumentIsProcessedForIndexingEvent` can be used.
 
 indexPageSubstitutePageDocument
 -------------------------------
@@ -53,8 +53,8 @@ Registration with: $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['in
 Required Interface: SubstitutePageIndexer
 
 
-ModifyDocumentsBeforeIndexingEvent
-----------------------------------
+BeforeDocumentsAreIndexedEvent
+------------------------------
 
 Registered Event Listeners can be used to process Solr documents (pages and records) before they are added to index.
 
@@ -71,11 +71,11 @@ The corresponding event listener class:
 
 ..  code-block:: php
 
-    use ApacheSolrForTypo3\Solr\Event\Indexing\ModifyDocumentsBeforeIndexingEvent;
+    use ApacheSolrForTypo3\Solr\Event\Indexing\BeforeDocumentsAreIndexedEvent;
 
     class MyEventListener {
 
-        public function __invoke(ModifyDocumentsBeforeIndexingEvent $event): void
+        public function __invoke(BeforeDocumentsAreIndexedEvent $event): void
         {
             foreach ($event->getDocuments() as $document) {
                $document->addField('my_custom_field', 'my_custom_value');

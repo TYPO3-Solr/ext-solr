@@ -17,14 +17,14 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\SolrFakeExtension3\EventListeners;
 
-use ApacheSolrForTypo3\Solr\Event\Indexing\ModifyDocumentsBeforeIndexingEvent;
+use ApacheSolrForTypo3\Solr\Event\Indexing\BeforeDocumentsAreIndexedEvent;
 
 final class TestModificationOfDocuments
 {
     /**
      * Allows Modification of the Documents before they go into index
      */
-    public function __invoke(ModifyDocumentsBeforeIndexingEvent $event): void
+    public function __invoke(BeforeDocumentsAreIndexedEvent $event): void
     {
         foreach ($event->getDocuments() as $document) {
             $document->addField('postProcessorField_stringS', 'postprocessed');

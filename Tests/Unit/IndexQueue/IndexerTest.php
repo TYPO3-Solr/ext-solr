@@ -20,7 +20,7 @@ use ApacheSolrForTypo3\Solr\Domain\Index\Queue\IndexQueueIndexingPropertyReposit
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\QueueItemRepository;
 use ApacheSolrForTypo3\Solr\Domain\Search\ApacheSolrDocument\Builder;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
-use ApacheSolrForTypo3\Solr\Event\Indexing\AddAdditionalDocumentsForIndexingEvent;
+use ApacheSolrForTypo3\Solr\Event\Indexing\BeforeDocumentIsProcessedForIndexingEvent;
 use ApacheSolrForTypo3\Solr\FrontendEnvironment;
 use ApacheSolrForTypo3\Solr\IndexQueue\Exception\IndexingException;
 use ApacheSolrForTypo3\Solr\IndexQueue\Indexer;
@@ -154,7 +154,7 @@ class IndexerTest extends SetUpUnitTestCase
             self::expectException($expectedException);
         }
 
-        $itemMock = new class([], [], $this->createMock(IndexQueueIndexingPropertyRepository::class), $this->createMock(QueueItemRepository::class)) extends Item {
+        $itemMock = new class ([], [], $this->createMock(IndexQueueIndexingPropertyRepository::class), $this->createMock(QueueItemRepository::class)) extends Item {
             protected $site;
             public function setSite(Site $site): void
             {
@@ -192,14 +192,14 @@ class IndexerTest extends SetUpUnitTestCase
         ];
 
         yield 'valid listener, no additional documents' => [
-            function(AddAdditionalDocumentsForIndexingEvent $event) {
+            function (BeforeDocumentIsProcessedForIndexingEvent $event) {
                 // Does nothing
             },
             null,
             1,
         ];
         yield 'valid listener, adds an additional document' => [
-            function(AddAdditionalDocumentsForIndexingEvent $event) {
+            function (BeforeDocumentIsProcessedForIndexingEvent $event) {
                 $event->addDocuments([new Document()]);
             },
             null,

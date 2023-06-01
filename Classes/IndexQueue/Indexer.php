@@ -21,8 +21,8 @@ use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\Domain\Search\ApacheSolrDocument\Builder;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
-use ApacheSolrForTypo3\Solr\Event\Indexing\AddAdditionalDocumentsForIndexingEvent;
-use ApacheSolrForTypo3\Solr\Event\Indexing\ModifyDocumentsBeforeIndexingEvent;
+use ApacheSolrForTypo3\Solr\Event\Indexing\BeforeDocumentIsProcessedForIndexingEvent;
+use ApacheSolrForTypo3\Solr\Event\Indexing\BeforeDocumentsAreIndexedEvent;
 use ApacheSolrForTypo3\Solr\Exception as EXTSolrException;
 use ApacheSolrForTypo3\Solr\FieldProcessor\Service;
 use ApacheSolrForTypo3\Solr\FrontendEnvironment;
@@ -36,7 +36,6 @@ use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use Doctrine\DBAL\Exception as DBALException;
-use PhpParser\Comment\Doc;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use RuntimeException;
 use Throwable;
@@ -169,7 +168,7 @@ class Indexer extends AbstractIndexer
 
         $documents = $this->processDocuments($item, $documents);
 
-        $event = new ModifyDocumentsBeforeIndexingEvent($itemDocument, $item->getSite()->getTypo3SiteObject(), $item->getSite()->getTypo3SiteObject()->getLanguageById($language), $item, $documents);
+        $event = new BeforeDocumentsAreIndexedEvent($itemDocument, $item->getSite()->getTypo3SiteObject(), $item->getSite()->getTypo3SiteObject()->getLanguageById($language), $item, $documents);
         $event = $this->eventDispatcher->dispatch($event);
         $documents = $event->getDocuments();
 
@@ -420,7 +419,7 @@ class Indexer extends AbstractIndexer
      */
     protected function getAdditionalDocuments(Document $itemDocument, Item $item, int $language): array
     {
-        $event = new AddAdditionalDocumentsForIndexingEvent(
+        $event = new BeforeDocumentIsProcessedForIndexingEvent(
             $itemDocument,
             $item->getSite()->getTypo3SiteObject(),
             $item->getSite()->getTypo3SiteObject()->getLanguageById($language),
