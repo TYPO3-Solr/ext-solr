@@ -123,15 +123,11 @@ class ReIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldProvider
                 $this->site
             ),
             'label' => 'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:field_site',
-            'cshKey' => '',
-            'cshLabel' => '',
         ];
 
         $additionalFields['indexingConfigurations'] = [
             'code' => $this->getIndexingConfigurationSelector(),
             'label' => 'Index Queue configurations to re-index',
-            'cshKey' => '',
-            'cshLabel' => '',
         ];
 
         return $additionalFields;
