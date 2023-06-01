@@ -227,30 +227,6 @@ services:
 
 
   # Reports: Status
-  ApacheSolrForTypo3\Solr\Report\SiteHandlingStatus:
-    tags:
-      - name: reports.status
-  ApacheSolrForTypo3\Solr\Report\SchemaStatus:
-    tags:
-      - name: reports.status
-  ApacheSolrForTypo3\Solr\Report\SolrConfigStatus:
-    tags:
-      - name: reports.status
-  ApacheSolrForTypo3\Solr\Report\SolrConfigurationStatus:
-    tags:
-      - name: reports.status
-  ApacheSolrForTypo3\Solr\Report\SolrStatus:
-    tags:
-      - name: reports.status
-  ApacheSolrForTypo3\Solr\Report\SolrVersionStatus:
-    tags:
-      - name: reports.status
-  ApacheSolrForTypo3\Solr\Report\AccessFilterPluginInstalledStatus:
-    tags:
-      - name: reports.status
-  ApacheSolrForTypo3\Solr\Report\AllowUrlFOpenStatus:
-    tags:
-      - name: reports.status
-  ApacheSolrForTypo3\Solr\Report\FilterVarStatus:
-    tags:
-      - name: reports.status
+  ApacheSolrForTypo3\Solr\Report\:
+    resource: '../Classes/Report/*'
+    autoconfigure: true
