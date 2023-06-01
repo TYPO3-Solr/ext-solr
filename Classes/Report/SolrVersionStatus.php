@@ -53,7 +53,7 @@ class SolrVersionStatus extends AbstractSolrStatus
             /** @var SolrConnection $solrConnection */
             if (!$coreAdmin->ping()) {
                 $url = $coreAdmin->__toString();
-                $pingFailedMsg = 'Could not ping solr server, can not check version ' . $url;
+                $pingFailedMsg = 'Could not ping Solr server, can not check version ' . $url;
                 $status = GeneralUtility::makeInstance(
                     Status::class,
                     'Apache Solr Version',
@@ -69,6 +69,13 @@ class SolrVersionStatus extends AbstractSolrStatus
             $isOutdatedVersion = version_compare($this->getCleanSolrVersion($solrVersion), self::REQUIRED_SOLR_VERSION, '<');
 
             if (!$isOutdatedVersion) {
+                $reports[] = GeneralUtility::makeInstance(
+                    Status::class,
+                    'Apache Solr Version',
+                    'OK',
+                    'Version of ' . $coreAdmin->__toString() . ' is ok: ' . $solrVersion,
+                    ContextualFeedbackSeverity::OK
+                );
                 continue;
             }
 
@@ -94,7 +101,7 @@ class SolrVersionStatus extends AbstractSolrStatus
      */
     public function getLabel(): string
     {
-        return 'solr/version';
+        return 'LLL:EXT:solr/Resources/Private/Language/locallang_reports.xlf:status_solr_solrversion';
     }
 
     /**

@@ -19,6 +19,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Report;
 
 use ApacheSolrForTypo3\Solr\Report\SolrConfigStatus;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -37,11 +38,16 @@ class SolrConfigStatusTest extends IntegrationTest
     /**
      * @test
      */
-    public function canGetAGreenSolrConfigStatusAgainstTestServer()
+    public function canGetAGreenSolrConfigStatusAgainstTestServer(): void
     {
         /** @var SolrConfigStatus $schemaStatus */
         $schemaStatus = GeneralUtility::makeInstance(SolrConfigStatus::class);
-        $violations = $schemaStatus->getStatus();
-        self::assertEmpty($violations, 'We expect to get no violations against the test solr server');
+        $results = $schemaStatus->getStatus();
+        self::assertCount(1, $results);
+        self::assertEquals(
+            $results[0]->getSeverity(),
+            ContextualFeedbackSeverity::OK,
+            'We expect to get no violations against the test Solr server'
+        );
     }
 }

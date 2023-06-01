@@ -72,6 +72,16 @@ class AccessFilterPluginInstalledStatus extends AbstractSolrStatus
             }
         }
 
+        if (empty($reports)) {
+            $reports[] = GeneralUtility::makeInstance(
+                Status::class,
+                'Solr Access Filter Plugin',
+                'OK',
+                'Solr Access Filter Plugin is installed in at least version ' . self::RECOMMENDED_PLUGIN_VERSION,
+                ContextualFeedbackSeverity::OK
+            );
+        }
+
         return $reports;
     }
 
@@ -80,7 +90,7 @@ class AccessFilterPluginInstalledStatus extends AbstractSolrStatus
      */
     public function getLabel(): string
     {
-        return 'solr/access-filter';
+        return 'LLL:EXT:solr/Resources/Private/Language/locallang_reports.xlf:status_solr_access-filter';
     }
 
     /**
@@ -97,7 +107,7 @@ class AccessFilterPluginInstalledStatus extends AbstractSolrStatus
         $report = $this->getRenderedReport('AccessFilterPluginInstalledStatusNotInstalled.html', $variables);
         return GeneralUtility::makeInstance(
             Status::class,
-            'Access Filter Plugin',
+            'Solr Access Filter Plugin',
             'Not Installed',
             $report,
             ContextualFeedbackSeverity::WARNING
@@ -119,7 +129,7 @@ class AccessFilterPluginInstalledStatus extends AbstractSolrStatus
 
         return GeneralUtility::makeInstance(
             Status::class,
-            'Access Filter Plugin',
+            'Solr Access Filter Plugin',
             'Outdated',
             $report,
             ContextualFeedbackSeverity::WARNING

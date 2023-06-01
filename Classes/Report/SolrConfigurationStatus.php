@@ -55,22 +55,15 @@ class SolrConfigurationStatus extends AbstractSolrStatus
      */
     public function getStatus(): array
     {
-        $reports = [];
-
         $rootPageFlagStatus = $this->getRootPageFlagStatus();
-        if (!is_null($rootPageFlagStatus)) {
-            $reports[] = $rootPageFlagStatus;
-
-            // intended early return, no sense in going on if there are no root pages
-            return $reports;
+        if ($rootPageFlagStatus->getSeverity() !== ContextualFeedbackSeverity::OK) {
+            return [$rootPageFlagStatus];
         }
 
-        $configIndexEnableStatus = $this->getConfigIndexEnableStatus();
-        if (!is_null($configIndexEnableStatus)) {
-            $reports[] = $configIndexEnableStatus;
-        }
-
-        return $reports;
+        return [
+            $rootPageFlagStatus,
+            $this->getConfigIndexEnableStatus(),
+        ];
     }
 
     /**
@@ -78,21 +71,27 @@ class SolrConfigurationStatus extends AbstractSolrStatus
      */
     public function getLabel(): string
     {
-        return 'solr/configuration';
+        return 'LLL:EXT:solr/Resources/Private/Language/locallang_reports.xlf:status_solr_configuration';
     }
 
     /**
      * Checks whether the "Use as Root Page" page property has been set for any site.
      *
-     * @return Status|null An error status is returned if no root pages were found.
+     * @return Status An error status is returned if no root pages were found.
      *
      * @throws DBALException
      */
-    protected function getRootPageFlagStatus(): ?Status
+    protected function getRootPageFlagStatus(): Status
     {
         $rootPages = $this->getRootPages();
         if (!empty($rootPages)) {
-            return null;
+            return GeneralUtility::makeInstance(
+                Status::class,
+                'Sites',
+                'OK',
+                '',
+                ContextualFeedbackSeverity::OK
+            );
         }
 
         $report = $this->getRenderedReport('RootPageFlagStatus.html');
@@ -109,15 +108,21 @@ class SolrConfigurationStatus extends AbstractSolrStatus
      * Checks whether config.index_enable is set to 1, otherwise indexing will
      * not work.
      *
-     * @return Status|null An error status is returned for each site root page config.index_enable = 0.
+     * @return Status An error status is returned for each site root page config.index_enable = 0.
      *
      * @throws DBALException
      */
-    protected function getConfigIndexEnableStatus(): ?Status
+    protected function getConfigIndexEnableStatus(): Status
     {
         $rootPagesWithIndexingOff = $this->getRootPagesWithIndexingOff();
         if (empty($rootPagesWithIndexingOff)) {
-            return null;
+            return GeneralUtility::makeInstance(
+                Status::class,
+                'Page Indexing',
+                'OK',
+                '',
+                ContextualFeedbackSeverity::OK
+            );
         }
 
         $report = $this->getRenderedReport('SolrConfigurationStatusIndexing.html', ['pages' => $rootPagesWithIndexingOff]);

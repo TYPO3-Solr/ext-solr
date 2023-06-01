@@ -57,6 +57,18 @@ class SchemaStatus extends AbstractSolrStatus
         $connectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
         $solrConnections = $connectionManager->getAllConnections();
 
+        if (empty($solrConnections)) {
+            $reports[] = GeneralUtility::makeInstance(
+                Status::class,
+                'Apache Solr Version / Schema Version',
+                'No Solr connections configured',
+                '',
+                ContextualFeedbackSeverity::WARNING
+            );
+
+            return $reports;
+        }
+
         foreach ($solrConnections as $solrConnection) {
             $adminService = $solrConnection->getAdminService();
             /** @var SolrConnection $solrConnection */
@@ -89,6 +101,16 @@ class SchemaStatus extends AbstractSolrStatus
             }
         }
 
+        if (empty($reports)) {
+            $reports[] = GeneralUtility::makeInstance(
+                Status::class,
+                'Apache Solr Version / Schema Version',
+                'OK',
+                '',
+                ContextualFeedbackSeverity::OK
+            );
+        }
+
         return $reports;
     }
 
@@ -97,6 +119,6 @@ class SchemaStatus extends AbstractSolrStatus
      */
     public function getLabel(): string
     {
-        return 'solr/schema';
+        return 'LLL:EXT:solr/Resources/Private/Language/locallang_reports.xlf:status_solr_schema';
     }
 }

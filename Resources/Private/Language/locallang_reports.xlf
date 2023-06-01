@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+	<file source-language="en" datatype="plaintext" original="EXT:solr/Resources/Private/Language/locallang_reports.xlf" date="2023-06-01T10:07:00Z" product-name="solr">
+		<header/>
+		<body>
+			<trans-unit id="status_solr_access-filter" resname="status_solr_access-filter">
+				<source>Solr Access Filter Plugin</source>
+			</trans-unit>
+			<trans-unit id="status_solr_allow-url-open" resname="status_solr_allow-url-open">
+				<source>URL-aware fopen wrappers</source>
+			</trans-unit>
+			<trans-unit id="status_solr_connectionstatus" resname="status_solr_connectionstatus">
+				<source>Solr Connection Status</source>
+			</trans-unit>
+			<trans-unit id="status_solr_configuration" resname="status_solr_configuration">
+				<source>Solr Configuration</source>
+			</trans-unit>
+			<trans-unit id="status_solr_schema" resname="status_solr_schema">
+				<source>Solr Schema Version</source>
+			</trans-unit>
+			<trans-unit id="status_solr_site-handling" resname="status_solr_site-handling">
+				<source>Solr Site Handling Status</source>
+			</trans-unit>
+			<trans-unit id="status_solr_solrconfig" resname="status_solr_solrconfig">
+				<source>Solrconfig Version</source>
+			</trans-unit>
+			<trans-unit id="status_solr_solrversion" resname="status_solr_solrversion">
+				<source>Solr Version</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

@@ -19,6 +19,7 @@ namespace ApacheSolrForTypo3\Solr\Report;
 
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\Domain\Site\Exception\UnexpectedTYPO3SiteInitializationException;
+use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Reports\Status;
@@ -53,11 +54,34 @@ class SolrConfigStatus extends AbstractSolrStatus
     {
         $reports = [];
         $solrConnections = GeneralUtility::makeInstance(ConnectionManager::class)->getAllConnections();
+        if (empty($solrConnections)) {
+            $reports[] = GeneralUtility::makeInstance(
+                Status::class,
+                'Solrconfig Version',
+                'No Solr connections configured',
+                '',
+                ContextualFeedbackSeverity::WARNING
+            );
 
+            return $reports;
+        }
+
+        /** @var SolrConnection $solrConnection */
         foreach ($solrConnections as $solrConnection) {
             $adminService = $solrConnection->getAdminService();
+            if (!$adminService->ping()) {
+                $reports[] = GeneralUtility::makeInstance(
+                    Status::class,
+                    'Solrconfig Version',
+                    'Couldn\'t connect to ' . $adminService->__toString(),
+                    '',
+                    ContextualFeedbackSeverity::WARNING
+                );
 
-            if ($adminService->ping() && $adminService->getSolrconfigName() != self::RECOMMENDED_SOLRCONFIG_VERSION) {
+                continue;
+            }
+
+            if ($adminService->getSolrconfigName() != self::RECOMMENDED_SOLRCONFIG_VERSION) {
                 $variables = ['solr' => $adminService, 'recommendedVersion' => self::RECOMMENDED_SOLRCONFIG_VERSION];
                 $report = $this->getRenderedReport('SolrConfigStatus.html', $variables);
                 $status = GeneralUtility::makeInstance(
@@ -72,6 +96,16 @@ class SolrConfigStatus extends AbstractSolrStatus
             }
         }
 
+        if (empty($reports)) {
+            $reports[] = GeneralUtility::makeInstance(
+                Status::class,
+                'Solrconfig Version',
+                'OK',
+                '',
+                ContextualFeedbackSeverity::OK
+            );
+        }
+
         return $reports;
     }
 
@@ -80,6 +114,6 @@ class SolrConfigStatus extends AbstractSolrStatus
      */
     public function getLabel(): string
     {
-        return 'solr/config';
+        return 'LLL:EXT:solr/Resources/Private/Language/locallang_reports.xlf:status_solr_solrconfig';
     }
 }

@@ -23,7 +23,7 @@ use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Integration test for the solr status report
+ * Integration test for the Solr status report
  *
  * @author Timo Hund
  */
@@ -32,7 +32,7 @@ class SolrStatusTest extends IntegrationTest
     /**
      * @test
      */
-    public function allStatusChecksShouldBeOkForValidSolrConnection()
+    public function allStatusChecksShouldBeOkForValidSolrConnection(): void
     {
         $this->writeDefaultSolrTestSiteConfiguration();
 
@@ -47,7 +47,7 @@ class SolrStatusTest extends IntegrationTest
     /**
      * @test
      */
-    public function allStatusChecksShouldFailForInvalidSolrConnection()
+    public function allStatusChecksShouldFailForInvalidSolrConnection(): void
     {
         $this->writeDefaultSolrTestSiteConfigurationForHostAndPort(null, 'invalid', 4711);
 
