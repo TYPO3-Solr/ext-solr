@@ -66,9 +66,21 @@ class SiteHandlingStatus extends AbstractSolrStatus
     public function getStatus(): array
     {
         $reports = [];
+        $sites = $this->siteRepository->getAvailableSites();
+        if (empty($sites)) {
+            $reports[] = GeneralUtility::makeInstance(
+                Status::class,
+                self::TITLE_SITE_HANDLING_CONFIGURATION,
+                'No sites found',
+                '',
+                ContextualFeedbackSeverity::WARNING
+            );
+
+            return $reports;
+        }
 
         /** @var Site $site */
-        foreach ($this->siteRepository->getAvailableSites() as $site) {
+        foreach ($sites as $site) {
             if (!($site instanceof Site)) {
                 $reports[] = GeneralUtility::makeInstance(
                     Status::class,
@@ -126,7 +138,7 @@ class SiteHandlingStatus extends AbstractSolrStatus
      */
     public function getLabel(): string
     {
-        return 'solr/site-handling';
+        return 'LLL:EXT:solr/Resources/Private/Language/locallang_reports.xlf:status_solr_site-handling';
     }
 
     /**

@@ -84,10 +84,21 @@ class SolrConfigurationStatusTest extends SetUpUnitTestCase
 
         $states = $this->report->getStatus();
 
-        self::assertCount(1, $states, 'Expected to have one violation');
+        self::assertCount(2, $states, 'Expected to have two status reports');
 
         /** @var Status $firstState */
         $firstState = $states[0];
-        self::assertSame(ContextualFeedbackSeverity::WARNING, $firstState->getSeverity(), 'Expected to have one violation');
+        self::assertSame(
+            ContextualFeedbackSeverity::OK,
+            $firstState->getSeverity(),
+            'Expected to have no violation concerning root pages.'
+        );
+
+        $secondState = $states[1];
+        self::assertSame(
+            ContextualFeedbackSeverity::WARNING,
+            $secondState->getSeverity(),
+            'Expected to have one violation concerning page indexing flag.'
+        );
     }
 }

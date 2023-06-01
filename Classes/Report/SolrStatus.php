@@ -19,6 +19,7 @@ namespace ApacheSolrForTypo3\Solr\Report;
 
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\Domain\Site\Exception\UnexpectedTYPO3SiteInitializationException;
+use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\PingFailedException;
 use ApacheSolrForTypo3\Solr\System\Solr\Service\SolrAdminService;
@@ -74,8 +75,18 @@ class SolrStatus extends AbstractSolrStatus
         $reports = [];
         foreach ($this->siteRepository->getAvailableSites() as $site) {
             foreach ($site->getAllSolrConnectionConfigurations() as $solrConfiguration) {
-                $reports[] = $this->getConnectionStatus($solrConfiguration);
+                $reports[] = $this->getConnectionStatus($site, $solrConfiguration);
             }
+        }
+
+        if (empty($reports)) {
+            $reports[] = GeneralUtility::makeInstance(
+                Status::class,
+                'Apache Solr connection',
+                'No Apache Solr connection configured',
+                '',
+                ContextualFeedbackSeverity::WARNING
+            );
         }
 
         return $reports;
@@ -86,16 +97,17 @@ class SolrStatus extends AbstractSolrStatus
      */
     public function getLabel(): string
     {
-        return 'solr/status';
+        return 'LLL:EXT:solr/Resources/Private/Language/locallang_reports.xlf:status_solr_connectionstatus';
     }
 
     /**
      * Checks whether a Solr server is available and provides some information.
      *
+     * @param Site $site
      * @param array $solrConnection Solr connection parameters
      * @return Status Status of the Solr connection
      */
-    protected function getConnectionStatus(array $solrConnection): Status
+    protected function getConnectionStatus(Site $site, array $solrConnection): Status
     {
         $header = 'Your site has contacted the Apache Solr server.';
         $this->responseStatus = ContextualFeedbackSeverity::OK;
@@ -116,7 +128,8 @@ class SolrStatus extends AbstractSolrStatus
         }
 
         $variables = [
-            'header' => $header,
+            'site' => $site->getLabel(),
+            'siteLanguage' => $site->getTypo3SiteObject()->getLanguageById($solrConnection['language']),
             'connection' => $solrConnection,
             'solr' => $solrAdmin,
             'solrVersion' => $solrVersion,
@@ -129,8 +142,8 @@ class SolrStatus extends AbstractSolrStatus
         $report = $this->getRenderedReport('SolrStatus.html', $variables);
         return GeneralUtility::makeInstance(
             Status::class,
-            'Apache Solr',
-            '',
+            'Apache Solr Connection',
+            $header,
             $report,
             $this->responseStatus
         );

@@ -19,8 +19,8 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Report;
 
 use ApacheSolrForTypo3\Solr\Report\SchemaStatus;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Reports\Status;
 
 /**
  * Integration test for the schema status report
@@ -38,12 +38,17 @@ class SchemaStatusTest extends IntegrationTest
     /**
      * @test
      */
-    public function canGetAGrennSchemaStatusAgainstTestServer()
+    public function canGetAGreenSchemaStatusAgainstTestServer(): void
     {
         /** @var SchemaStatus $schemaStatus */
         $schemaStatus = GeneralUtility::makeInstance(SchemaStatus::class);
-        $violations = $schemaStatus->getStatus();
+        $results = $schemaStatus->getStatus();
 
-        self::assertEmpty($violations, 'We expect to get no violations against the test solr server');
+        self::assertCount(1, $results);
+        self::assertEquals(
+            $results[0]->getSeverity(),
+            ContextualFeedbackSeverity::OK,
+            'We expect to get no violations against the test Solr server '
+        );
     }
 }
