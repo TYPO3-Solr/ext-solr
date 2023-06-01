@@ -18,6 +18,28 @@ Support of TYPO3 12 LTS
 
 With EXT:solr 12.0 we provide the support of TYPO3 12 LTS.
 
+Hooks replaced by PSR-14 events
+-------------------------------
+
+The previously available hooks and their respective interfaces have been removed from EXT:solr.
+
+The hook :php:`$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageAddDocuments']` and its
+interface :php:`ApacheSolrForTypo3\Solr\AdditionalPageIndexer` are now superseded
+by the PSR-14 event :php:`ApacheSolrForTypo3\Solr\Event\Indexing\BeforePageDocumentIsProcessedForIndexingEvent`.
+
+The hook :php:`$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['preAddModifyDocuments']` and its
+interface :php:`ApacheSolrForTypo3\Solr\PageIndexerDocumentsModifier` are now superseded
+by the PSR-14 event :php:`ApacheSolrForTypo3\Solr\Event\Indexing\BeforeDocumentIsProcessedForIndexingEvent`.
+
+The hook :php:`$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['indexItemAddDocuments']` and its
+interface :php:`ApacheSolrForTypo3\Solr\AdditionalIndexQueueItemIndexer` are now superseded
+by the PSR-14 event :php:`ApacheSolrForTypo3\Solr\Event\Indexing\BeforeDocumentsAreIndexedEvent`.
+
+The hook :php:`$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageSubstitutePageDocument']` and its
+interface :php:`ApacheSolrForTypo3\Solr\SubstitutePageIndexer` are now superseded
+by the PSR-14 event :php:`ApacheSolrForTypo3\Solr\Event\Indexing\AfterPageDocumentIsCreatedForIndexingEvent`.
+
+
 Contributors
 ============
 

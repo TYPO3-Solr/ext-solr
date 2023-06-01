@@ -15,11 +15,10 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace ApacheSolrForTypo3\Solr;
+namespace ApacheSolrForTypo3\Solr\EventListener\PageIndexer;
 
-use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use ApacheSolrForTypo3\Solr\Event\Indexing\AfterPageDocumentIsCreatedForIndexingEvent;
 use ApacheSolrForTypo3\Solr\System\ContentObject\ContentObjectService;
-use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -32,31 +31,28 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author Ingo Renner <ingo@typo3.org>
  */
-class AdditionalFieldsIndexer implements SubstitutePageIndexer
+class AdditionalFieldsForPageIndexing
 {
-    protected TypoScriptConfiguration $configuration;
-
     protected array $additionalIndexingFields = [];
 
     protected array $additionalFieldNames = [];
 
     protected ContentObjectService $contentObjectService;
 
-    public function __construct(
-        TypoScriptConfiguration $configuration = null,
-        ContentObjectService $contentObjectService = null
-    ) {
-        $this->configuration = $configuration ?? Util::getSolrConfiguration();
-        $this->additionalIndexingFields = $this->configuration->getIndexAdditionalFieldsConfiguration();
-        $this->additionalFieldNames = $this->configuration->getIndexMappedAdditionalFieldNames();
+    public function __construct(ContentObjectService $contentObjectService = null)
+    {
         $this->contentObjectService = $contentObjectService ?? GeneralUtility::makeInstance(ContentObjectService::class);
     }
 
     /**
      * Returns a substituted document for the currently being indexed page.
      */
-    public function getPageDocument(Document $originalPageDocument): Document
+    public function __invoke(AfterPageDocumentIsCreatedForIndexingEvent $event): void
     {
+        $this->additionalIndexingFields = $event->getConfiguration()->getIndexAdditionalFieldsConfiguration();
+        $this->additionalFieldNames = $event->getConfiguration()->getIndexMappedAdditionalFieldNames();
+
+        $originalPageDocument = $event->getDocument();
         $substitutePageDocument = clone $originalPageDocument;
         $additionalFields = $this->getAdditionalFields();
 
@@ -66,8 +62,7 @@ class AdditionalFieldsIndexer implements SubstitutePageIndexer
                 $substitutePageDocument->setField($fieldName, $fieldValue);
             }
         }
-
-        return $substitutePageDocument;
+        $event->overrideDocument($substitutePageDocument);
     }
 
     /**

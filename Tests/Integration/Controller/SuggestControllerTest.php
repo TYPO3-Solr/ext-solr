@@ -16,7 +16,6 @@
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\Controller;
 
 use ApacheSolrForTypo3\Solr\Controller\SuggestController;
-use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageFieldMappingIndexer;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use TYPO3\CMS\Core\Http\Response;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
@@ -29,18 +28,6 @@ use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
  */
 class SuggestControllerTest extends IntegrationTest
 {
-    protected array $configurationToUseInTestInstance = [
-        'EXTCONF' => [
-            'solr' => [
-                'Indexer' => [
-                    'indexPageSubstitutePageDocument' => [
-                        PageFieldMappingIndexer::class => PageFieldMappingIndexer::class,
-                    ],
-                ],
-            ],
-        ],
-    ];
-
     protected function setUp(): void
     {
         parent::setUp();

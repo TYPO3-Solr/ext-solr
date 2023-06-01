@@ -37,6 +37,7 @@ class TSFETestBootstrapper
         $TSFE->determineId($request);
         $GLOBALS['TYPO3_REQUEST'] = $TSFE->getFromCache($request);
         $TSFE->releaseLocks();
+        $TSFE->newCObj($GLOBALS['TYPO3_REQUEST']);
         return $TSFE;
     }
 }
