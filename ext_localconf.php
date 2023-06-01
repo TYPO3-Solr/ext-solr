@@ -1,9 +1,12 @@
 <?php
 
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Grouping\Parser\GroupedResultParser;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\Parser\ResultParserRegistry;
 use ApacheSolrForTypo3\Solr\GarbageCollector;
 use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\AuthorizationService;
 use ApacheSolrForTypo3\Solr\IndexQueue\RecordMonitor;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 defined('TYPO3') or die('Access denied.');
 
@@ -105,7 +108,7 @@ defined('TYPO3') or die('Access denied.');
 
     // ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
     /** @var \ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration $extensionConfiguration */
-    $extensionConfiguration = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+    $extensionConfiguration = GeneralUtility::makeInstance(
         \ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration::class
     );
 
@@ -229,6 +232,14 @@ defined('TYPO3') or die('Access denied.');
             'className' => AuthorizationService::class,
         ]
     );
+
+    // ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
+
+    // Register Solr Grouping feature
+    $parserRegistry = GeneralUtility::makeInstance(ResultParserRegistry::class);
+    if (!$parserRegistry->hasParser(GroupedResultParser::class, 200)) {
+        $parserRegistry->registerParser(GroupedResultParser::class, 200);
+    }
 })();
 
 $isComposerMode = defined('TYPO3_COMPOSER_MODE') && TYPO3_COMPOSER_MODE;
