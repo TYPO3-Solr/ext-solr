@@ -18,7 +18,6 @@ declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\Controller;
 
 use ApacheSolrForTypo3\Solr\Controller\SearchController;
-use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageFieldMappingIndexer;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use DOMDocument;
 use TYPO3\CMS\Core\Http\Response;
@@ -44,18 +43,6 @@ class SearchControllerTest extends IntegrationTest
      * @var Response
      */
     protected $searchResponse;
-
-    protected array $configurationToUseInTestInstance = [
-        'EXTCONF' => [
-            'solr' => [
-                'Indexer' => [
-                    'indexPageSubstitutePageDocument' => [
-                        PageFieldMappingIndexer::class => PageFieldMappingIndexer::class,
-                    ],
-                ],
-            ],
-        ],
-    ];
 
     protected function setUp(): void
     {

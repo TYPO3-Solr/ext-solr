@@ -22,11 +22,11 @@ use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Slops;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\TrigramPhraseFields;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
+use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageIndexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
-use ApacheSolrForTypo3\Solr\Typo3PageIndexer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
@@ -64,15 +64,12 @@ class SearchTest extends IntegrationTest
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Search/can_search.csv');
 
-        $fakeTSFE = $this->getConfiguredTSFE();
-
-        $pageIndexer = GeneralUtility::makeInstance(Typo3PageIndexer::class, $fakeTSFE);
-        $indexQueueItemMock = $this->createMock(Item::class);
-        $indexQueueItemMock->expects(self::any())
-            ->method('getIndexingConfigurationName')
-            ->willReturn('pages');
-        $pageIndexer->setIndexQueueItem($indexQueueItemMock);
-        $pageIndexer->indexPage();
+        $tsfe = $this->getConfiguredTSFE();
+        $pageIndexer = GeneralUtility::makeInstance(PageIndexer::class);
+        $indexQueueItem = new Item(['root' => 1, 'indexing_configuration' => 'pages', 'item_type' => 'pages']);
+        $indexQueueItem->setRecord(['uid' => 1]);
+        $pageIndexer->setupConfiguration();
+        $pageIndexer->index($indexQueueItem, $tsfe);
 
         $this->waitToBeVisibleInSolr();
 
@@ -425,15 +422,12 @@ class SearchTest extends IntegrationTest
     protected function fillIndexForPhraseSearchTests(): void
     {
         for ($i = 1; $i <= 15; $i++) {
-            $fakeTSFE = $this->getConfiguredTSFE($i);
-
-            $pageIndexer = GeneralUtility::makeInstance(Typo3PageIndexer::class, $fakeTSFE);
-            $indexQueueItemMock = $this->createMock(Item::class);
-            $indexQueueItemMock->expects(self::any())
-                ->method('getIndexingConfigurationName')
-                ->willReturn('pages');
-            $pageIndexer->setIndexQueueItem($indexQueueItemMock);
-            $pageIndexer->indexPage();
+            $tsfe = $this->getConfiguredTSFE($i);
+            $pageIndexer = GeneralUtility::makeInstance(PageIndexer::class);
+            $indexQueueItem = new Item(['root' => 1, 'indexing_configuration' => 'pages', 'item_type' => 'pages']);
+            $indexQueueItem->setRecord(['uid' => $i]);
+            $pageIndexer->setupConfiguration();
+            $pageIndexer->index($indexQueueItem, $tsfe);
         }
         $this->waitToBeVisibleInSolr();
     }
