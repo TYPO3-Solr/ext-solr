@@ -94,11 +94,11 @@
       "@tests:restore-git"
     ],
     "tests:unit": [
-      "phpunit --colors --config=Build/Test/UnitTests.xml --bootstrap=Build/Test/UnitTestsBootstrap.php"
+      "phpunit --config=Build/Test/UnitTests.xml"
     ],
     "tests:integration": [
       "Composer\\Config::disableProcessTimeout",
-      "phpunit --colors --config=Build/Test/IntegrationTests.xml --bootstrap=Build/Test/IntegrationTestsBootstrap.php"
+      "phpunit --config=Build/Test/IntegrationTests.xml"
     ],
     "tests:phpstan": [
       "phpstan analyze -c Build/Test/phpstan.neon"
