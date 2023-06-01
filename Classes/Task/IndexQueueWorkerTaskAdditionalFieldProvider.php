@@ -35,14 +35,9 @@ use TYPO3\CMS\Scheduler\Task\Enumeration\Action;
  */
 class IndexQueueWorkerTaskAdditionalFieldProvider extends AbstractAdditionalFieldProvider
 {
-    /**
-     * SiteRepository
-     */
-    protected SiteRepository $siteRepository;
-
-    public function __construct()
-    {
-        $this->siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
+    public function __construct(
+        protected readonly SiteRepository $siteRepository
+    ) {
     }
 
     /**
