@@ -20,8 +20,6 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers\Backend\Security;
 use InvalidArgumentException;
 use RuntimeException;
 use TYPO3\CMS\Backend\Module\ModuleProvider;
-use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
-use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractConditionViewHelper;
 
