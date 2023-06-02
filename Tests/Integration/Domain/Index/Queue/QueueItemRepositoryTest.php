@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -17,8 +19,10 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Domain\Index\Queue;
 
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\QueueItemRepository;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
+use ApacheSolrForTypo3\Solr\Event\IndexQueue\AfterRecordsForIndexQueueItemsHaveBeenRetrievedEvent;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
+use TYPO3\CMS\Core\Tests\Unit\Fixtures\EventDispatcher\MockEventDispatcher;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -109,6 +113,31 @@ class QueueItemRepositoryTest extends IntegrationTest
         $firstItem = $items[0];
         self::assertSame(2, count($items));
         self::assertSame('pages', $firstItem->getType(), 'First item has unexpected type');
+    }
+
+    /**
+     * @test
+     */
+    public function canFindItemsAndModifyViaEventListener(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/pages_and_news_queueitems.csv');
+        $eventDispatcher = new MockEventDispatcher();
+        $queueItemRepository = GeneralUtility::makeInstance(QueueItemRepository::class, null, $eventDispatcher);
+        $items = $queueItemRepository->findItems([], ['pages']);
+
+        /** @var Item $firstItem */
+        $firstItem = $items[0];
+        self::assertSame(2, count($items));
+        self::assertSame('pages', $firstItem->getType(), 'First item has unexpected type');
+
+        $eventDispatcher->addListener(function (AfterRecordsForIndexQueueItemsHaveBeenRetrievedEvent $event): void {
+            if ($event->getTable() === 'pages') {
+                $event->setRecords([]);
+            }
+        });
+
+        $items = $queueItemRepository->findItems([], ['pages']);
+        self::assertCount(0, $items);
     }
 
     /**
