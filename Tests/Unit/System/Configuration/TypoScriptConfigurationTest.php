@@ -842,6 +842,32 @@ class TypoScriptConfigurationTest extends SetUpUnitTestCase
     /**
      * @test
      */
+    public function canGetGroupingAllowGetParameterSwitch()
+    {
+        $fakeConfigurationArray = [
+            'plugin.' => [
+                'tx_solr.' => [
+                    'search.' => [
+                        'grouping' => 1,
+                        'grouping.' => [
+                            'allowGetParameterSwitch' => 0,
+                        ],
+                    ],
+                ],
+            ],
+        ];
+
+        $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
+        self::assertFalse($configuration->getIsGroupingGetParameterSwitchEnabled(), 'Expected allowGetParameterSwitch to be disabled');
+
+        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['grouping.']['allowGetParameterSwitch'] = 1;
+        $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
+        self::assertTrue($configuration->getIsGroupingGetParameterSwitchEnabled(), 'Expected allowGetParameterSwitch to be enabled');
+    }
+
+    /**
+     * @test
+     */
     public function getSearchAdditionalPersistentArgumentNamesReturnsEmptyArrayWhenNothingIsConfigured()
     {
         $configuration = new TypoScriptConfiguration([]);

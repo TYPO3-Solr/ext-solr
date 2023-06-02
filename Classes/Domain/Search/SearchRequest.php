@@ -47,6 +47,7 @@ class SearchRequest
         'tx_solr:q',
         'tx_solr:filter',
         'tx_solr:sort',
+        'tx_solr:groupPage',
     ];
 
     protected bool $stateChanged = false;
@@ -95,7 +96,7 @@ class SearchRequest
             $this->argumentNameSpace = $typoScriptConfiguration->getSearchPluginNamespace();
         }
 
-        $this->persistentArgumentsPaths = [$this->argumentNameSpace . ':q', $this->argumentNameSpace . ':filter', $this->argumentNameSpace . ':sort', $this->argumentNameSpace . ':groupPage'];
+        $this->persistentArgumentsPaths = [$this->argumentNameSpace . ':q', $this->argumentNameSpace . ':filter', $this->argumentNameSpace . ':sort', $this->argumentNameSpace . ':grouping', $this->argumentNameSpace . ':groupPage'];
 
         if (!is_null($typoScriptConfiguration)) {
             $additionalPersistentArgumentsNames = $typoScriptConfiguration->getSearchAdditionalPersistentArgumentNames();

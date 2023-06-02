@@ -1,6 +1,6 @@
 <?php
 
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Grouping\Parser\GroupedResultParser;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\Parser\GroupedResultParser;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\Parser\ResultParserRegistry;
 use ApacheSolrForTypo3\Solr\GarbageCollector;
 use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\AuthorizationService;

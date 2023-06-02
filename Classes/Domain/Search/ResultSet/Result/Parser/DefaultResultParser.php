@@ -65,9 +65,14 @@ class DefaultResultParser extends AbstractResultParser
      */
     public function canParse(SearchResultSet $resultSet): bool
     {
-        // These parsers should not be used when grouping is enabled
         $configuration = $resultSet->getUsedSearchRequest()->getContextTypoScriptConfiguration();
+        if ($resultSet->getUsedQuery()->getComponent('grouping') !== null
+            && $configuration instanceof TypoScriptConfiguration
+            && $configuration->getIsSearchGroupingEnabled()
+        ) {
+            return false;
+        }
 
-        return !($configuration instanceof TypoScriptConfiguration && $configuration->getIsSearchGroupingEnabled());
+        return true;
     }
 }

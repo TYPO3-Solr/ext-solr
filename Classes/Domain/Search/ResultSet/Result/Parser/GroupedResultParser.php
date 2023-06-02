@@ -15,13 +15,12 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Grouping\Parser;
+namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\Parser;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Grouping\Group;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Grouping\GroupCollection;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Grouping\GroupItem;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Grouping\GroupItemCollection;
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\Parser\AbstractResultParser;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResultCollection;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
@@ -248,14 +247,17 @@ class GroupedResultParser extends AbstractResultParser
     }
 
     /**
-     * Returns true when GroupingIsEnabled.
+     * Returns true when GroupingIsEnabled and grouping component is loaded
      */
     public function canParse(SearchResultSet $resultSet): bool
     {
         $configuration = $resultSet->getUsedSearchRequest()->getContextTypoScriptConfiguration();
         $groupsConfiguration = $configuration->getSearchGroupingGroupsConfiguration();
         $groupingEnabled = $configuration->getIsSearchGroupingEnabled();
-        return $groupingEnabled && (count($groupsConfiguration) > 0);
+
+        return $groupingEnabled
+            && $resultSet->getUsedQuery()->getComponent('grouping') !== null
+            && (count($groupsConfiguration) > 0);
     }
 
     /**

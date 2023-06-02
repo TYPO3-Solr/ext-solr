@@ -15,9 +15,10 @@
 
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet;
 
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Grouping\Group;
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Grouping\Parser\GroupedResultParser;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\Parser\GroupedResultParser;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\Parser\ResultParserRegistry;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResultBuilder;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
@@ -30,6 +31,7 @@ use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use Solarium\Component\Grouping;
 use TYPO3\CMS\Core\Tests\Unit\Fixtures\EventDispatcher\MockEventDispatcher;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -154,6 +156,11 @@ class SearchResultSetServiceTest extends SetUpUnitTestCase
         $parserRegistry = GeneralUtility::makeInstance(ResultParserRegistry::class, $typoScriptConfiguration);
         $parserRegistry->registerParser(GroupedResultParser::class, 300);
 
+        $queryMock= $this->createMock(Query::class);
+        $queryMock->expects(self::once())->method('getComponent')->willReturn($this->createMock(Grouping::class));
+        $queryBuilderMock = $this->createMock(QueryBuilder::class);
+        $queryBuilderMock->expects(self::once())->method('buildSearchQuery')->willReturn($queryMock);
+
         /* @var SearchResultSetService|MockObject $searchResultSetService */
         $searchResultSetService = $this->getMockBuilder(SearchResultSetService::class)
             ->onlyMethods(['doASearch'])
@@ -162,8 +169,8 @@ class SearchResultSetServiceTest extends SetUpUnitTestCase
                 $searchMock,
                 $this->createMock(SolrLogManager::class),
                 $this->createMock(SearchResultBuilder::class),
-                $this->createMock(QueryBuilder::class),
-                $this->eventDispatcher
+                $queryBuilderMock,
+                $this->eventDispatcher,
             ])->getMock();
 
         $searchResultSet =  new SearchResultSet();
