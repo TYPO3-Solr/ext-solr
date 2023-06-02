@@ -61,9 +61,4 @@ plugin.tx_solr {
             }
         }
     }
-}
-
-[globalVar = GP:L = 1]
-    plugin.tx_solr.solr.path = /solr/core_de/
-    config.sys_language_uid = 1
-[end]"
+}"

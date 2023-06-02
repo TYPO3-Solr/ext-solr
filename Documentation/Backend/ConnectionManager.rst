@@ -49,7 +49,7 @@ Example:
         hreflang: en-US
         direction: ''
         flag: global
-        solr_host_read: solr_node_1
+        solr_host_read: solr-host-1
         solr_core_read: core_en
         languageId: '0'
       -
@@ -63,13 +63,13 @@ Example:
         hreflang: de-DE
         direction: ''
         flag: global
-        solr_host_read: solr_node_2
+        solr_host_read: solr-host-2
         solr_core_read: core_de
         languageId: '1'
     rootPageId: 3
     routes: {  }
     solr_enabled_read: true
-    solr_path_read: /solr/
+    solr_path_read: /
     solr_port_read: 8983
     solr_scheme_read: http
     solr_use_write_connection: false

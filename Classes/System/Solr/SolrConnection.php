@@ -34,6 +34,7 @@ use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Solarium\Client;
 use Solarium\Core\Client\Adapter\Psr18Adapter;
+use Solarium\Core\Client\Endpoint;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -58,9 +59,9 @@ class SolrConnection
     protected ?SchemaParser $schemaParser = null;
 
     /**
-     * @var Node[]
+     * @var Endpoint[]
      */
-    protected array $nodes = [];
+    protected array $endpoints = [];
 
     protected ?SolrLogManager $logger = null;
 
@@ -83,8 +84,8 @@ class SolrConnection
      * @throws NotFoundExceptionInterface
      */
     public function __construct(
-        Node $readNode,
-        Node $writeNode,
+        Endpoint $readEndpoint,
+        Endpoint $writeEndpoint,
         TypoScriptConfiguration $configuration = null,
         SynonymParser $synonymParser = null,
         StopWordParser $stopWordParser = null,
@@ -95,9 +96,9 @@ class SolrConnection
         StreamFactoryInterface $streamFactory = null,
         EventDispatcherInterface $eventDispatcher = null,
     ) {
-        $this->nodes['read'] = $readNode;
-        $this->nodes['write'] = $writeNode;
-        $this->nodes['admin'] = $writeNode;
+        $this->endpoints['read'] = $readEndpoint;
+        $this->endpoints['write'] = $writeEndpoint;
+        $this->endpoints['admin'] = $writeEndpoint;
         $this->configuration = $configuration ?? Util::getSolrConfiguration();
         $this->synonymParser = $synonymParser;
         $this->stopWordParser = $stopWordParser;
@@ -112,9 +113,9 @@ class SolrConnection
     /**
      * Returns Endpoint by key
      */
-    public function getNode(string $key): Node
+    public function getEndpoint(string $key): Endpoint
     {
-        return $this->nodes[$key];
+        return $this->endpoints[$key];
     }
 
     /**
@@ -200,13 +201,12 @@ class SolrConnection
      */
     protected function initializeClient(Client $client, string $endpointKey): Client
     {
-        if (trim($this->getNode($endpointKey)->getUsername()) === '') {
+        $authentication = $this->getEndpoint($endpointKey)->getAuthentication();
+        if (trim($authentication['username'] ?? '') === '') {
             return $client;
         }
 
-        $username = $this->getNode($endpointKey)->getUsername();
-        $password = $this->getNode($endpointKey)->getPassword();
-        $this->setAuthenticationOnAllEndpoints($client, $username, $password);
+        $this->setAuthenticationOnAllEndpoints($client, $authentication['username'], $authentication['password']);
 
         return $client;
     }
@@ -236,7 +236,7 @@ class SolrConnection
         $client->getPlugin('postbigrequest');
         $client->clearEndpoints();
 
-        $newEndpointOptions = $this->getNode($endpointKey)->getSolariumClientOptions();
+        $newEndpointOptions = $this->getEndpoint($endpointKey)->getOptions();
         $newEndpointOptions['key'] = $endpointKey;
         $client->createEndpoint($newEndpointOptions, true);
 

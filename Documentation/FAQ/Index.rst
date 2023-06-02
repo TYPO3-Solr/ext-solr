@@ -97,39 +97,6 @@ Did you configure the search markers ( "<!-- TYPO3SEARCH_begin -->" and "<!-- TY
 
 |
 
-**I have languages in TYPO3 that are not relevant for the search. How can i exclude them?**
-
-You need to enable the search just for the relevant languages.
-
-Example:
-
-|
-
-.. code-block:: typoscript
-
-    plugin.tx_solr.enabled = 0
-
-    [globalVar = GP:L = 0]
-        plugin.tx_solr {
-            enabled = 1
-            solr.path = /solr/core_de/
-        }
-    [globalVar = GP:L = 8|9]
-        plugin.tx_solr {
-            enabled = 1
-            solr.path = /solr/core_en/
-        }
-    [END]
-
-|
-
-
-**The extension is indexing into the wrong core for multi-language sites. What's wrong?**
-
-When indexing pages the page indexer retrieves the core from the TypoScript configuration. That configuration is determined by the language (GET L parameter). However, when the indexer tries to index a page that has not been translated TYPO3 will by default still render the page but falling back to the default language page. By that TYPO3 will also use the TypoScript configuration for the default language which usually points to a different Solr core.
-
-Solution: Make sure you have configured config.sys_language_mode to use content_fallback. This way TYPO3 will fall back to the configured language's content, but will use the TypoScript configuration for the requested language.
-
 **When i change a record, no update is detected. What's wrong?**
 
 Are your records inside of your site root? EXT:solr record monitor processes records that belong to your site, which means they need to be below your site root.
@@ -601,7 +568,7 @@ Be aware, that this will allow all accesses by given IP.
 While you could use TypoScript conditions to change the configuration for different project evironments in the past, you can now use environment variables in the config.yaml like shown below.
 
 In your sites config.yaml:
-::
+::::::::::::::::::::::::::
 
 	solr_host_read: '%env(SOLR_HOST)%'
 	solr_port_read: '%env(SOLR_PORT)%'

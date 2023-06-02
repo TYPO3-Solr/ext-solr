@@ -60,7 +60,7 @@ $GLOBALS['SiteConfiguration']['site']['columns']['solr_port_read'] = [
 
 $GLOBALS['SiteConfiguration']['site']['columns']['solr_path_read'] = [
     'label' => 'URL path to Apache Solr server',
-    'description' => 'I.e. if you use Hosted-Solr.com the path inside the admin panel. Should not contain "/solr/".',
+    'description' => 'Must not contain "/solr/"! Unlesss you have an additional "solr" segment in your path like "http://localhost:8983/solr/solr/core_en".',
     'config' => [
         'type' => 'input',
         'eval' => 'trim',
