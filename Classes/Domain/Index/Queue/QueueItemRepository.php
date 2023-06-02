@@ -18,12 +18,14 @@ declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue;
 
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
+use ApacheSolrForTypo3\Solr\Event\IndexQueue\AfterRecordsForIndexQueueItemsHaveBeenRetrievedEvent;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Records\AbstractRepository;
 use ApacheSolrForTypo3\Solr\System\Util\SiteUtility;
 use Doctrine\DBAL\Exception as DBALException;
 use PDO;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Expression\CompositeExpression;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
@@ -38,13 +40,15 @@ class QueueItemRepository extends AbstractRepository
     protected string $table = 'tx_solr_indexqueue_item';
 
     protected SolrLogManager $logger;
+    protected EventDispatcherInterface $eventDispatcher;
 
-    public function __construct(SolrLogManager $logManager = null)
+    public function __construct(SolrLogManager $logManager = null, EventDispatcherInterface $eventDispatcher = null)
     {
         $this->logger = $logManager ?? GeneralUtility::makeInstance(
             SolrLogManager::class,
             __CLASS__
         );
+        $this->eventDispatcher = $eventDispatcher ?? GeneralUtility::makeInstance(EventDispatcherInterface::class);
     }
 
     /**
@@ -699,24 +703,11 @@ class QueueItemRepository extends AbstractRepository
             }
 
             $tableRecords[$table] = $records;
-            $this->hookPostProcessFetchRecordsForIndexQueueItem($table, $uids, $tableRecords);
+            $event = $this->eventDispatcher->dispatch(new AfterRecordsForIndexQueueItemsHaveBeenRetrievedEvent($table, $uids, $records));
+            $tableRecords[$table] = $event->getRecords();
         }
 
         return $tableRecords;
-    }
-
-    /**
-     * Calls defined in postProcessFetchRecordsForIndexQueueItem hook method.
-     */
-    protected function hookPostProcessFetchRecordsForIndexQueueItem(string $table, array $uids, array &$tableRecords): void
-    {
-        if (!is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessFetchRecordsForIndexQueueItem'] ?? null)) {
-            return;
-        }
-        $params = ['table' => $table, 'uids' => $uids, 'tableRecords' => &$tableRecords];
-        foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessFetchRecordsForIndexQueueItem'] as $reference) {
-            GeneralUtility::callUserFunction($reference, $params, $this);
-        }
     }
 
     /**
