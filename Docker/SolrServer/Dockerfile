@@ -1,13 +1,9 @@
-FROM solr:8.11.3
+FROM solr:9.2.1
 MAINTAINER dkd Internet Service GmbH <solr-eb-support@dkd.de>
 ENV TERM linux
 
 USER root
-RUN rm -fR /opt/solr/server/solr/* \
-  && echo '# EXT:solr relevant changes: ' >> /etc/default/solr.in.sh \
-    && echo 'SOLR_OPTS="$SOLR_OPTS -Dsolr.enableRemoteStreaming=true -Dsolr.enableStreamBody=true"' >> /etc/default/solr.in.sh \
-    && echo '# END: EXT:solr' >> /etc/default/solr.in.sh
-
+RUN rm -fR /opt/solr/server/solr/*
 USER solr
 
 COPY --chown=solr:solr Resources/Private/Solr/ /var/solr/data
