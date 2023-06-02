@@ -27,7 +27,7 @@ If applicable, add screenshots to help explain your problem.
  - TYPO3 Version: [e.g. 11.5.36]
  - Browser: [e.g. chrome, safari]
  - EXT:solr Version: [e.g. 11.6.0]
- - Used Apache Solr Version: [e.g. 8.11.3]
+ - Used Apache Solr Version: [e.g. 9.2.1]
  - PHP Version: [e.g. 8.2.0]
  - MySQL Version: [e.g. 8.0.0]
 

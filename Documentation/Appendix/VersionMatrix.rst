@@ -20,12 +20,7 @@ Requirements for EXT:solr* 11.6 stack
 ------------------------------- ---------------------------------------------- --------------------------------------------- ---------------------------------
 TYPO3     EXT: solr  EXT:tika   EXT:solrfal EXT:solrconsole EXT:solrdebugtools EXT:solrfluidgrouping         EXT:solrmlt     Apache Solr     Configset
 ========= ========== ========== =========== =============== ================== ============================= =============== =============== =================
-11.5      11.6       11.0       11.0        11.0            11.0               11.0                          11.0 (Ø)        8.11.3¹         ext_solr_11_6_0
+11.5      11.6       11.0       11.0        11.0            11.0               11.0                          11.0 (Ø)        9.2.1¹         ext_solr_11_6_0
 ========= ========== ========== =========== =============== ================== ============================= =============== =============== =================
 
-| ¹ - recommended Apache Solr version, check version matrix in composer.json (composer info:solr-versions) for full list
-
-..  warning::
-   Apache Solr 8.11.3 contains a breaking change, see security fix "SOLR-14853: Make enableRemoteStreaming option global; not configSet". EXT:solr relies on stream bodies
-   which aren't enabled by default since 8.11.3. EXT:solr 11.5.6 contains all required settings, but if you're updating and not using our Docker image, you have to
-   set `solr.enableRemoteStreaming=true` and `solr.enableStreamBody=true`. TYPO3 reports module will print a warning if you have to reconfigure.
+| ¹ - recommended Apache Solr version, check version matrix in composer.json (`composer info:solr-versions`) for full list
