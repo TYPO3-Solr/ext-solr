@@ -104,10 +104,8 @@ class SiteUtility
                 'scheme' => self::getConnectionProperty($typo3Site, 'scheme', $languageUid, 'read', 'http'),
                 'host' => self::getConnectionProperty($typo3Site, 'host', $languageUid, 'read', 'localhost'),
                 'port' => (int)self::getConnectionProperty($typo3Site, 'port', $languageUid, 'read', 8983),
-                // @todo: transform core to path
-                'path' =>
-                self::getConnectionProperty($typo3Site, 'path', $languageUid, 'read', '/solr/') .
-                $solrReadCore . '/' ,
+                'path' => self::getConnectionProperty($typo3Site, 'path', $languageUid, 'read', ''),
+                'core' => $solrReadCore,
                 'username' => self::getConnectionProperty($typo3Site, 'username', $languageUid, 'read', ''),
                 'password' => self::getConnectionProperty($typo3Site, 'password', $languageUid, 'read', ''),
             ],
@@ -115,10 +113,8 @@ class SiteUtility
                 'scheme' => self::getConnectionProperty($typo3Site, 'scheme', $languageUid, 'write', 'http'),
                 'host' => self::getConnectionProperty($typo3Site, 'host', $languageUid, 'write', 'localhost'),
                 'port' => (int)self::getConnectionProperty($typo3Site, 'port', $languageUid, 'write', 8983),
-                // @todo: transform core to path
-                'path' =>
-                self::getConnectionProperty($typo3Site, 'path', $languageUid, 'write', '/solr/') .
-                $solrWriteCore . '/' ,
+                'path' => self::getConnectionProperty($typo3Site, 'path', $languageUid, 'write', ''),
+                'core' => $solrWriteCore,
                 'username' => self::getConnectionProperty($typo3Site, 'username', $languageUid, 'write', ''),
                 'password' => self::getConnectionProperty($typo3Site, 'password', $languageUid, 'write', ''),
             ],

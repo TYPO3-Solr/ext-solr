@@ -202,7 +202,7 @@ class PageIndexer implements FrontendHelper, SingletonInterface
         $this->responseData['solrConnection'] = [
             'rootPage' => $indexQueueItem->getRootPageUid(),
             'sys_language_uid' => $tsfe->getLanguage()->getLanguageId(),
-            'solr' => (string)$this->solrConnection->getNode('write'),
+            'solr' => $this->solrConnection->getEndpoint('write')->getCoreBaseUri(),
         ];
 
         foreach ($this->documentsSentToSolr as $document) {

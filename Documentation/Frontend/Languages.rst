@@ -44,27 +44,4 @@ We recommend to create one Solr core per language. The shipped Solr example conf
 * Turkish (core_tr)
 * Ukrainian (core_uk)
 
-The configuration of the connection between Solr cores and sites is done in TypoScript.
-
-The following TypoScript snipped shows an example how to configure multiple languages for the introduction package (EN, DE and DA):
-
-
-.. code-block:: typoscript
-
-    plugin.tx_solr.solr {
-       scheme = http
-       port   = 8082
-       path   = /solr/core_en/
-       host   = localhost
-    }
-
-    [globalVar = GP:L = 1]
-    plugin.tx_solr.solr.path = /solr/core_de/
-    [end]
-
-    [globalVar = GP:L = 2]
-    plugin.tx_solr.solr.path = /solr/core_da/
-    [end]
-
-
-After setting up the languages with TypoScript you need to initialize the Solr connections with the connection manager (:ref:`connection-manager`).
+The configuration of the connection between Solr cores and sites is done in the site configuration.

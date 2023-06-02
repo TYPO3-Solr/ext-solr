@@ -17,22 +17,19 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit;
 
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
+use ApacheSolrForTypo3\Solr\Exception\InvalidConnectionException;
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
-use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
-use ApacheSolrForTypo3\Solr\System\Solr\Node;
-use ApacheSolrForTypo3\Solr\System\Solr\Parser\SchemaParser;
-use ApacheSolrForTypo3\Solr\System\Solr\Parser\StopWordParser;
-use ApacheSolrForTypo3\Solr\System\Solr\Parser\SynonymParser;
-use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
+use Symfony\Component\DependencyInjection\Container;
+use Traversable;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
-use UnexpectedValueException;
 
 /**
  * PHP Unit test for connection manager
@@ -60,24 +57,64 @@ class ConnectionManagerTest extends SetUpUnitTestCase
         $this->siteRepositoryMock = $this->createMock(SiteRepository::class);
 
         $this->configurationManager = new ConfigurationManager();
-        $this->connectionManager = $this->getMockBuilder(ConnectionManager::class)
-            ->setConstructorArgs([
-                $this->pageRepositoryMock,
-                $this->siteRepositoryMock,
-            ])
-            ->onlyMethods(['getSolrConnectionForNodes'])
-            ->getMock();
+        $this->connectionManager = new ConnectionManager(
+            $this->pageRepositoryMock,
+            $this->siteRepositoryMock
+        );
+
+        $container = new Container();
+        $container->set(ClientInterface::class, $this->createMock(ClientInterface::class));
+        $container->set(RequestFactoryInterface::class, $this->createMock(RequestFactoryInterface::class));
+        $container->set(StreamFactoryInterface::class, $this->createMock(StreamFactoryInterface::class));
+        $container->set(EventDispatcherInterface::class, $this->createMock(EventDispatcherInterface::class));
+        GeneralUtility::setContainer($container);
+
         parent::setUp();
     }
 
     /**
      * Provides data for the connection test
      */
-    public function connectDataProvider(): array
+    public function connectDataProvider(): Traversable
     {
-        return [
-            ['host' => 'localhost', 'port' => '', 'path' => '', 'scheme' => '', 'expectsException' => true, 'expectedConnectionString' => null],
-            ['host' => '127.0.0.1', 'port' => 8181, 'path' => '/solr/core_de/', 'scheme' => 'https', 'expectsException' => false, 'expectedConnectionString' => 'https://127.0.0.1:8181/solr/core_de/'],
+        yield 'invalid' => [
+            'scheme' => '',
+            'host' => 'localhost',
+            'port' => null,
+            'path' => '',
+            'core' => 'core_de',
+            'expectsException' => true,
+            'expectedConnectionString' => null,
+        ];
+
+        yield 'valid without path' => [
+            'scheme' => 'https',
+            'host' => '127.0.0.1',
+            'port' => 8181,
+            'path' => '' ,
+            'core' => 'core_de',
+            'expectsException' => false,
+            'expectedConnectionString' => 'https://127.0.0.1:8181/solr/core_de/',
+        ];
+
+        yield 'valid with slash in path' => [
+            'scheme' => 'https',
+            'host' => '127.0.0.1',
+            'port' => 8181,
+            'path' => '/' ,
+            'core' => 'core_de',
+            'expectsException' => false,
+            'expectedConnectionString' => 'https://127.0.0.1:8181/solr/core_de/',
+        ];
+
+        yield 'valid connection with path' => [
+            'scheme' => 'https',
+            'host' => '127.0.0.1',
+            'port' => 8181,
+            'path' => '/production/' ,
+            'core' => 'core_de',
+            'expectsException' => false,
+            'expectedConnectionString' => 'https://127.0.0.1:8181/production/solr/core_de/',
         ];
     }
 
@@ -87,42 +124,25 @@ class ConnectionManagerTest extends SetUpUnitTestCase
      * @dataProvider connectDataProvider
      * @test
      */
-    public function canConnect(string $host, string|int $port, string $path, string $scheme, bool $expectsException, ?string $expectedConnectionString): void
-    {
-        $self = $this;
-        $this->connectionManager->expects(self::once())->method('getSolrConnectionForNodes')->willReturnCallback(
-            function ($readNode, $writeNode) use ($self) {
-                $readNode = Node::fromArray($readNode);
-                $writeNode = Node::fromArray($writeNode);
-                $typoScriptConfigurationMock = $self->createMock(TypoScriptConfiguration::class);
-                $synonymsParserMock = $self->createMock(SynonymParser::class);
-                $stopWordParserMock = $self->createMock(StopWordParser::class);
-                $schemaParserMock = $self->createMock(SchemaParser::class);
-
-                return new SolrConnection(
-                    $readNode,
-                    $writeNode,
-                    $typoScriptConfigurationMock,
-                    $synonymsParserMock,
-                    $stopWordParserMock,
-                    $schemaParserMock,
-                    $self->logManagerMock,
-                    $this->createMock(ClientInterface::class),
-                    $this->createMock(RequestFactoryInterface::class),
-                    $this->createMock(StreamFactoryInterface::class),
-                    $this->createMock(EventDispatcherInterface::class)
-                );
-            }
-        );
+    public function canConnect(
+        string $scheme,
+        string $host,
+        ?int $port,
+        string $path,
+        string $core,
+        bool $expectsException,
+        ?string $expectedConnectionString
+    ): void {
         $exceptionOccurred = false;
         try {
-            $readNode = ['host' => $host, 'port' => $port, 'path' => $path, 'scheme' => $scheme];
-            $configuration['read'] = $readNode;
-            $configuration['write'] = $readNode;
+            $configuration = [
+                'read' => ['scheme' => $scheme, 'host' => $host, 'port' => $port, 'path' => $path, 'core' => $core],
+            ];
+            $configuration['write'] = $configuration['read'];
 
             $solrService = $this->connectionManager->getConnectionFromConfiguration($configuration);
             self::assertEquals($expectedConnectionString, $solrService->getReadService()->__toString());
-        } catch (UnexpectedValueException $exception) {
+        } catch (InvalidConnectionException $exception) {
             $exceptionOccurred = true;
         }
         self::assertEquals($expectsException, $exceptionOccurred);

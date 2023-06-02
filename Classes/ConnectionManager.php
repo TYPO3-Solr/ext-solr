@@ -21,13 +21,15 @@ use ApacheSolrForTypo3\Solr\Domain\Site\Exception\UnexpectedTYPO3SiteInitializat
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\Exception\InvalidArgumentException;
+use ApacheSolrForTypo3\Solr\Exception\InvalidConnectionException;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository as PagesRepositoryAtExtSolr;
-use ApacheSolrForTypo3\Solr\System\Solr\Node;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use ApacheSolrForTypo3\Solr\System\Util\SiteUtility;
 use Doctrine\DBAL\Exception as DBALException;
+use Solarium\Core\Client\Endpoint;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Site\Entity\Site as Typo3Site;
+
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 use function json_encode;
@@ -57,17 +59,40 @@ class ConnectionManager implements SingletonInterface
     }
 
     /**
-     * Creates a solr connection for read and write endpoints
+     * Creates a Solr connection for read and write endpoints
+     *
+     * @throw InvalidConnectionException
      */
-    public function getSolrConnectionForNodes(array $readNodeConfiguration, array $writeNodeConfiguration): SolrConnection
+    public function getSolrConnectionForEndpoints(array $readEndpointConfiguration, array $writeEndpointConfiguration): SolrConnection
     {
-        $connectionHash = md5(json_encode($readNodeConfiguration) . json_encode($writeNodeConfiguration));
+        $connectionHash = md5(json_encode($readEndpointConfiguration) . json_encode($writeEndpointConfiguration));
         if (!isset(self::$connections[$connectionHash])) {
-            $readNode = Node::fromArray($readNodeConfiguration);
-            $writeNode = Node::fromArray($writeNodeConfiguration);
-            self::$connections[$connectionHash] = GeneralUtility::makeInstance(SolrConnection::class, $readNode, $writeNode);
+            $readEndpoint = new Endpoint($readEndpointConfiguration);
+            if (!$this->isValidEndpoint($readEndpoint)) {
+                throw new InvalidConnectionException('Invalid read endpoint');
+            }
+
+            $writeEndpoint = new Endpoint($writeEndpointConfiguration);
+            if (!$this->isValidEndpoint($writeEndpoint)) {
+                throw new InvalidConnectionException('Invalid write endpoint');
+            }
+
+            self::$connections[$connectionHash] = GeneralUtility::makeInstance(SolrConnection::class, $readEndpoint, $writeEndpoint);
         }
+
         return self::$connections[$connectionHash];
+    }
+
+    /**
+     * Checks if endpoint is valid
+     */
+    protected function isValidEndpoint(Endpoint $endpoint): bool
+    {
+        return
+            !empty($endpoint->getHost())
+            && !empty($endpoint->getPort())
+            && !empty($endpoint->getCore())
+        ;
     }
 
     /**
@@ -75,7 +100,7 @@ class ConnectionManager implements SingletonInterface
      */
     public function getConnectionFromConfiguration(array $solrConfiguration): SolrConnection
     {
-        return $this->getSolrConnectionForNodes($solrConfiguration['read'], $solrConfiguration['write']);
+        return $this->getSolrConnectionForEndpoints($solrConfiguration['read'], $solrConfiguration['write']);
     }
 
     /**

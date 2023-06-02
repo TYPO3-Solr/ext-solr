@@ -139,11 +139,25 @@ Previous PSR-14 events have been renamed to be consistent with other PSR-14 Even
 * :php:`ApacheSolrForTypo3\Solr\Event\Routing\BeforeReplaceVariableInCachedUrlEvent` is now named :php:`ApacheSolrForTypo3\Solr\Event\Routing\BeforeVariableInCachedUrlAreReplacedEvent`
 
 !!! Shortcut pages not indexed anymore
-----------------------------------
+--------------------------------------
 
 Currently there is no important reason to index the shortcut pages,
 because the target pages are indexed as expected and the shortcuts are 307-redirected to their targets.
 So contents can be found in search results as expected.
+
+!!! Deprecated Node class removed
+---------------------------------
+
+Former EXT:solr versions used an own node implementation for Solr endpoints, this implementation (\ApacheSolrForTypo3\Solr\System\Solr\Node) is now removed in favor of the Endpoint implementation of Solarium.
+
+If you've used this class or the SolrConnection directly, you have to adapt your PHP code:
+- use \Solarium\Core\Client\Endpoint instead of \ApacheSolrForTypo3\Solr\System\Solr\Node
+- call \ApacheSolrForTypo3\Solr\System\Solr\SolrConnection->getEndpoint() instead of \ApacheSolrForTypo3\Solr\System\Solr\SolrConnection\getNode(),
+  method will return Solarium Endpoint
+- Node could be converted to string to get the core base URI, getCoreBaseUri() can be used instead. 
+
+Note: With dropping the Node implementation we also dropped the backwards compatibility that allows to define the Solr path segment "/solr" within "solr_path_read" or "solr_path_write". Be sure your configuration doesn't contain this path segment!
+
 
 Frontend Helper Changes
 -----------------------

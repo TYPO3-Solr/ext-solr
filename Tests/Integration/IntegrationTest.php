@@ -213,7 +213,7 @@ abstract class IntegrationTest extends FunctionalTestCase
             'solr_host_read' => $host,
             'solr_port_read' => $port,
             'solr_timeout_read' => 20,
-            'solr_path_read' => '/solr/',
+            'solr_path_read' => '/',
             'solr_use_write_connection' => false,
         ];
         $this->mergeSiteConfiguration('integration_tree_one', $globalSolrSettings);
