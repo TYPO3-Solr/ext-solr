@@ -60,9 +60,6 @@ class SearchControllerTest extends IntegrationTest
         parent::tearDown();
     }
 
-    /**
-     * @throws TestingFrameworkCoreException
-     */
     protected function bootstrapSearchResultsPluginOnPage(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/default_search_results_plugin.csv');
@@ -88,7 +85,7 @@ class SearchControllerTest extends IntegrationTest
      * @test
      * @group frontend
      */
-    public function canShowSearchFormViaPlugin()
+    public function canShowSearchFormViaPlugin(): void
     {
         $response = $this->executeFrontendSubRequest($this->getPreparedRequest(2022));
         $content = (string)$response->getBody();

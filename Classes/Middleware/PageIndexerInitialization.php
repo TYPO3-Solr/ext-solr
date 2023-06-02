@@ -56,8 +56,8 @@ class PageIndexerInitialization implements MiddlewareInterface
                 );
                 return new JsonResponse(['error' => ['code' => 403, 'message' => 'Invalid Index Queue Request.']], 403);
             }
+            $request = $request->withAttribute('solr.pageIndexingInstructions', $pageIndexerRequest);
             $pageIndexerRequestHandler = GeneralUtility::makeInstance(PageIndexerRequestHandler::class);
-            $request = $request->withAttribute('solr.pageIndexingInstructions', $pageIndexerRequestHandler);
             $pageIndexerRequestHandler->initialize($pageIndexerRequest);
         }
 
