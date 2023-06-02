@@ -24,6 +24,8 @@ use ApacheSolrForTypo3\Solr\Event\Indexing\BeforePageDocumentIsProcessedForIndex
 use ApacheSolrForTypo3\Solr\Exception;
 use ApacheSolrForTypo3\Solr\FieldProcessor\Service;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
+use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
+use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerResponse;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
@@ -35,6 +37,7 @@ use ApacheSolrForTypo3\Solr\Util;
 use Doctrine\DBAL\Exception as DBALException;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Throwable;
+use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
@@ -52,12 +55,17 @@ use UnexpectedValueException;
  *
  * @author Ingo Renner <ingo@typo3.org>
  */
-class PageIndexer extends AbstractFrontendHelper
+class PageIndexer implements FrontendHelper, SingletonInterface
 {
     /**
      * This frontend helper's executed action.
      */
     protected string $action = 'indexPage';
+
+    /**
+     * Index Queue page indexer request.
+     */
+    protected ?PageIndexerRequest $request = null;
 
     /**
      * Response data
@@ -76,6 +84,8 @@ class PageIndexer extends AbstractFrontendHelper
 
     protected ?TypoScriptConfiguration $configuration = null;
 
+    protected ?SolrLogManager $logger = null;
+
     /**
      * Activates a frontend helper by registering for hooks and other
      * resources required by the frontend helper to work.
@@ -84,19 +94,8 @@ class PageIndexer extends AbstractFrontendHelper
      */
     public function activate(): void
     {
-        $this->isActivated = true;
+        $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
         $this->registerAuthorizationService();
-    }
-
-    /**
-     * Returns the status of whether a page was indexed.
-     *
-     * @return array Page indexed status.
-     * @noinspection PhpUnused
-     */
-    public function getData(): array
-    {
-        return $this->responseData;
     }
 
     /**
@@ -132,7 +131,7 @@ class PageIndexer extends AbstractFrontendHelper
                 'title' => 'Solr Indexer Authorization',
                 'description' => 'Authorizes the Solr Index Queue indexer to access protected pages.',
 
-                'subtype' => 'getUserFE,authUserFE,getGroupsFE',
+                'subtype' => 'getUserFE,authUserFE',
 
                 'available' => true,
                 'priority' => $overrulingPriority,
@@ -196,7 +195,8 @@ class PageIndexer extends AbstractFrontendHelper
      */
     public function __invoke(AfterCacheableContentIsGeneratedEvent $event): void
     {
-        if (!$this->isActivated) {
+        $this->request = $event->getRequest()->getAttribute('solr.pageIndexingInstructions');
+        if (!$this->request) {
             return;
         }
         $this->setupConfiguration();
@@ -436,5 +436,13 @@ class PageIndexer extends AbstractFrontendHelper
     protected function getEventDispatcher(): EventDispatcherInterface
     {
         return GeneralUtility::makeInstance(EventDispatcherInterface::class);
+    }
+
+    /**
+     * Adds the status of whether a page was indexed to the pageIndexer Response.
+     */
+    public function deactivate(PageIndexerResponse $response): void
+    {
+        $response->addActionResult($this->action, $this->responseData);
     }
 }

@@ -17,10 +17,7 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper;
 
-use ApacheSolrForTypo3\Solr\Access\Rootline;
-use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequestHandler;
 use TYPO3\CMS\Core\Authentication\AbstractAuthenticationService;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Authentication service to authorize the Index Queue page indexer to access
@@ -62,7 +59,7 @@ class AuthorizationService extends AbstractAuthenticationService
      *
      * @param array $user Array of user data
      * @return int Returns 200 to grant access for the page indexer.
-     *@see \TYPO3\CMS\Core\Authentication\AbstractUserAuthentication::checkAuthentication()
+     * @see \TYPO3\CMS\Core\Authentication\AbstractUserAuthentication::checkAuthentication()
      */
     public function authUser(array $user): int
     {
@@ -75,42 +72,5 @@ class AuthorizationService extends AbstractAuthenticationService
         }
 
         return $authenticationLevel;
-    }
-
-    /**
-     * Creates user group records so that the page indexer is granted access to
-     * protected pages.
-     *
-     * @param array $user Data of user.
-     * @param array $knownGroups Group data array of already known groups. This is handy if you want select other related groups. Keys in this array are unique IDs of those groups.
-     * @return array Groups array, keys = uid which must be unique
-     */
-    public function getGroups(
-        array $user,
-        /** @noinspection PhpUnusedParameterInspection */
-        array $knownGroups = []
-    ): array {
-        $groupData = [];
-
-        /** @var PageIndexerRequestHandler $requestHandler */
-        $requestHandler = GeneralUtility::makeInstance(PageIndexerRequestHandler::class);
-        $accessRootline = $requestHandler->getRequest()->getParameter('accessRootline');
-
-        if ($user['username'] == self::SOLR_INDEXER_USERNAME && !empty($accessRootline)) {
-            $accessRootline = GeneralUtility::makeInstance(Rootline::class, $accessRootline);
-            $groups = $accessRootline->getGroups();
-
-            foreach ($groups as $groupId) {
-                // faking a user group record
-                $groupData[] = [
-                    'uid' => $groupId,
-                    'pid' => 0,
-                    'title' => '__SolrIndexerGroup__',
-                    'TSconfig' => '',
-                ];
-            }
-        }
-
-        return $groupData;
     }
 }

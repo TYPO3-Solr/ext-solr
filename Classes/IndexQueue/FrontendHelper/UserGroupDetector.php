@@ -17,10 +17,13 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper;
 
+use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
+use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerResponse;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use TYPO3\CMS\Core\Domain\Repository\PageRepository;
 use TYPO3\CMS\Core\Domain\Repository\PageRepositoryGetPageHookInterface;
 use TYPO3\CMS\Core\Domain\Repository\PageRepositoryGetPageOverlayHookInterface;
+use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectPostInitHookInterface;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
@@ -31,11 +34,18 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
  *
  * @author Ingo Renner <ingo@typo3.org>
  */
-class UserGroupDetector extends AbstractFrontendHelper implements
+class UserGroupDetector implements
+    FrontendHelper,
+    SingletonInterface,
     ContentObjectPostInitHookInterface,
     PageRepositoryGetPageHookInterface,
     PageRepositoryGetPageOverlayHookInterface
 {
+    /**
+     * Index Queue page indexer request.
+     */
+    protected ?PageIndexerRequest $request = null;
+
     /**
      * This frontend helper's executed action.
      */
@@ -51,6 +61,7 @@ class UserGroupDetector extends AbstractFrontendHelper implements
      */
     protected array $frontendGroups = [];
 
+    protected ?SolrLogManager $logger = null;
     // activation
 
     /**
@@ -59,8 +70,6 @@ class UserGroupDetector extends AbstractFrontendHelper implements
      */
     public function activate(): void
     {
-        $this->isActivated = true;
-
         $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['configArrayPostProc'][__CLASS__] = UserGroupDetector::class . '->deactivateTcaFrontendGroupEnableFields';
         $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['hook_checkEnableFields'][__CLASS__] = UserGroupDetector::class . '->checkEnableFields';
 
@@ -68,6 +77,7 @@ class UserGroupDetector extends AbstractFrontendHelper implements
         $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_page.php']['getPageOverlay'][__CLASS__] = UserGroupDetector::class;
 
         $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_content.php']['postInit'][__CLASS__] = UserGroupDetector::class;
+        $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
     }
 
     /**
@@ -159,6 +169,7 @@ class UserGroupDetector extends AbstractFrontendHelper implements
      */
     public function postProcessContentObjectInitialization(ContentObjectRenderer &$parentObject)
     {
+        $this->request = $parentObject->getRequest()->getAttribute('solr.pageIndexingInstructions');
         if (!empty($parentObject->currentRecord)) {
             [$table] = explode(':', $parentObject->currentRecord);
 
@@ -225,10 +236,10 @@ class UserGroupDetector extends AbstractFrontendHelper implements
     }
 
     /**
-     * Returns the user groups found.
+     * Adds the user groups found to the PageIndexerResponse
      */
-    public function getData(): array
+    public function deactivate(PageIndexerResponse $response): void
     {
-        return $this->getFrontendGroups();
+        $response->addActionResult($this->action, $this->getFrontendGroups());
     }
 }

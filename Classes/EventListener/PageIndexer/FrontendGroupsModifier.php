@@ -20,10 +20,7 @@ namespace ApacheSolrForTypo3\Solr\EventListener\PageIndexer;
 use ApacheSolrForTypo3\Solr\Access\Rootline;
 use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\AuthorizationService;
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
-use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequestHandler;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
-use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Http\JsonResponse;
 use TYPO3\CMS\Core\Http\PropagateResponseException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -42,23 +39,19 @@ class FrontendGroupsModifier
      */
     public function __invoke(ModifyResolvedFrontendGroupsEvent $event): void
     {
-        if (!$event->getRequest()->hasHeader(PageIndexerRequest::SOLR_INDEX_HEADER)) {
+        $pageIndexerRequest = $event->getRequest()->getAttribute('solr.pageIndexingInstructions');
+        if (!$pageIndexerRequest instanceof PageIndexerRequest) {
             return;
         }
-
-        $jsonEncodedParameters = $event->getRequest()->getHeader(PageIndexerRequest::SOLR_INDEX_HEADER)[0];
-        /** @var PageIndexerRequestHandler $pageIndexerRequestHandler */
-        $pageIndexerRequestHandler = GeneralUtility::makeInstance(PageIndexerRequestHandler::class, $jsonEncodedParameters);
-
-        if (!$pageIndexerRequestHandler->getRequest()->isAuthenticated()) {
+        if (!$pageIndexerRequest->isAuthenticated()) {
             /** @var SolrLogManager $logger */
             $logger = GeneralUtility::makeInstance(SolrLogManager::class, self::class);
             $logger->log(
                 SolrLogManager::ERROR,
                 'Invalid Index Queue Frontend Request detected!',
                 [
-                    'page indexer request' => (array)$pageIndexerRequestHandler->getRequest(),
-                    'index queue header' => $jsonEncodedParameters,
+                    'page indexer request' => (array)$pageIndexerRequest,
+                    'index queue header' => $event->getRequest()->getHeader(PageIndexerRequest::SOLR_INDEX_HEADER)[0],
                 ]
             );
             throw new PropagateResponseException(
@@ -75,7 +68,7 @@ class FrontendGroupsModifier
             );
         }
 
-        $groups = $this->resolveFrontendUserGroups($event->getRequest());
+        $groups = $this->resolveFrontendUserGroups($pageIndexerRequest);
         $groupData = [];
         foreach ($groups as $groupUid) {
             if (in_array($groupUid, [-2, -1])) {
@@ -94,9 +87,9 @@ class FrontendGroupsModifier
     /**
      * Resolves a logged in fe_groups to retrieve access restricted content.
      */
-    protected function resolveFrontendUserGroups(ServerRequestInterface $request): array
+    protected function resolveFrontendUserGroups(PageIndexerRequest $pageIndexerRequest): array
     {
-        $accessRootline = $this->getAccessRootline($request);
+        $accessRootline = $this->getAccessRootline($pageIndexerRequest);
         $stringAccessRootline = (string)$accessRootline;
         if (empty($stringAccessRootline)) {
             return [];
@@ -107,16 +100,11 @@ class FrontendGroupsModifier
     /**
      * Gets the access rootline as defined by the request.
      */
-    protected function getAccessRootline(RequestInterface $request): Rootline
+    protected function getAccessRootline(PageIndexerRequest $pageIndexerRequest): Rootline
     {
         $stringAccessRootline = '';
-
-        $jsonEncodedParameters = $request->getHeader(PageIndexerRequest::SOLR_INDEX_HEADER)[0];
-        /** @var PageIndexerRequestHandler $pageIndexerRequestHandler */
-        $pageIndexerRequestHandler = GeneralUtility::makeInstance(PageIndexerRequestHandler::class, $jsonEncodedParameters);
-
-        if ($pageIndexerRequestHandler->getRequest()->getParameter('accessRootline')) {
-            $stringAccessRootline = $pageIndexerRequestHandler->getRequest()->getParameter('accessRootline');
+        if ($pageIndexerRequest->getParameter('accessRootline')) {
+            $stringAccessRootline = $pageIndexerRequest->getParameter('accessRootline');
         }
         return GeneralUtility::makeInstance(Rootline::class, $stringAccessRootline);
     }
