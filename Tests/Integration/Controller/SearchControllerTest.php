@@ -21,7 +21,6 @@ use ApacheSolrForTypo3\Solr\Controller\SearchController;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use DOMDocument;
 use TYPO3\CMS\Core\Http\Response;
-use TYPO3\TestingFramework\Core\Exception as TestingFrameworkCoreException;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequestContext;
 use TYPO3Fluid\Fluid\View\Exception\InvalidTemplateResourceException;

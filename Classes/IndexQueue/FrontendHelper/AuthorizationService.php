@@ -37,10 +37,13 @@ class AuthorizationService extends AbstractAuthenticationService
     /**
      * Gets a fake frontend user record to allow access to protected pages.
      *
-     * @return array An array representing a frontend user.
+     * @return ?array An array representing a frontend user if a authenticated solr request is available.
      */
-    public function getUser(): array
+    public function getUser(): ?array
     {
+        if (!$this->authInfo['request']->getAttribute('solr.pageIndexingInstructions')) {
+            return null;
+        }
         return [
             'uid' => 0,
             'username' => self::SOLR_INDEXER_USERNAME,
@@ -63,6 +66,9 @@ class AuthorizationService extends AbstractAuthenticationService
      */
     public function authUser(array $user): int
     {
+        if (!$this->authInfo['request']->getAttribute('solr.pageIndexingInstructions')) {
+            return 100;
+        }
         // shouldn't happen, but in case we get a regular user we just
         // pass it on to another (regular) auth service
         $authenticationLevel = 100;

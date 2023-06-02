@@ -30,7 +30,6 @@ use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Tests\Functional\SiteHandling\SiteBasedTestTrait;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\TestingFramework\Core\Exception as TestingFrameworkCoreException;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequestContext;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
@@ -149,8 +148,6 @@ abstract class IntegrationTest extends FunctionalTestCase
      * To add or override TypoScript setting please use following typo3/testing-framework methods:
      * * {@link addTypoScriptToTemplateRecord()}
      * * {@link setUpFrontendRootPage()}
-     *
-     * @throws TestingFrameworkCoreException
      */
     protected function writeDefaultSolrTestSiteConfiguration(): void
     {
