@@ -13,3 +13,8 @@ services:
     tags:
       - name: event.listener
         identifier: 'fake-extension3/test-modification-of-documents'
+
+  ApacheSolrForTypo3\SolrFakeExtension3\EventListeners\TestPageUriModification:
+    tags:
+      - name: event.listener
+        identifier: 'fake-extension3/test-page-uri-modification'

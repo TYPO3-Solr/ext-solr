@@ -1,18 +1,21 @@
 <?php
 
-namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Index\PageIndexer\Helper\UriBuilder;
+declare(strict_types=1);
 
-use ApacheSolrForTypo3\Solr\Domain\Index\PageIndexer\Helper\UriBuilder\TYPO3SiteStrategy;
+namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Index\PageIndexer;
+
+use ApacheSolrForTypo3\Solr\Domain\Index\PageIndexer\PageUriBuilder;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
-use Psr\Http\Message\UriInterface;
+use TYPO3\CMS\Core\EventDispatcher\NoopEventDispatcher;
+use TYPO3\CMS\Core\Http\Uri;
 use TYPO3\CMS\Core\Routing\RouterInterface;
 use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-class TYPO3SiteStrategyTest extends SetUpUnitTestCase
+class PageUriBuilderTest extends SetUpUnitTestCase
 {
     /**
      * @test
@@ -27,8 +30,8 @@ class TYPO3SiteStrategyTest extends SetUpUnitTestCase
 
         $loggerMock = $this->createMock(SolrLogManager::class);
 
-        $typo3SiteStrategy = GeneralUtility::makeInstance(TYPO3SiteStrategy::class, $loggerMock, $siteFinderMock);
-        $typo3SiteStrategy->getPageIndexingUriFromPageItemAndLanguageId($itemMock, 2, 'foo');
+        $uriBuilder = GeneralUtility::makeInstance(PageUriBuilder::class, $loggerMock, $siteFinderMock, new NoopEventDispatcher());
+        $uriBuilder->getPageIndexingUriFromPageItemAndLanguageId($itemMock, 2, 'foo');
     }
 
     /**
@@ -44,8 +47,8 @@ class TYPO3SiteStrategyTest extends SetUpUnitTestCase
 
         $loggerMock = $this->createMock(SolrLogManager::class);
 
-        $typo3SiteStrategy = GeneralUtility::makeInstance(TYPO3SiteStrategy::class, $loggerMock, $siteFinderMock);
-        $uri = $typo3SiteStrategy->getPageIndexingUriFromPageItemAndLanguageId($itemMock, 2, 'foo', ['frontendDataHelper.' => ['host' => 'www.secondsite.de']]);
+        $uriBuilder = GeneralUtility::makeInstance(PageUriBuilder::class, $loggerMock, $siteFinderMock, new NoopEventDispatcher());
+        $uri = $uriBuilder->getPageIndexingUriFromPageItemAndLanguageId($itemMock, 2, 'foo', ['frontendDataHelper.' => ['host' => 'www.secondsite.de']]);
         self::assertSame('http://www.secondsite.de/en/test', $uri, 'Solr site strategy generated unexpected uri');
     }
 
@@ -62,19 +65,18 @@ class TYPO3SiteStrategyTest extends SetUpUnitTestCase
 
         $loggerMock = $this->createMock(SolrLogManager::class);
 
-        $typo3SiteStrategy = GeneralUtility::makeInstance(TYPO3SiteStrategy::class, $loggerMock, $siteFinderMock);
-        $uri = $typo3SiteStrategy->getPageIndexingUriFromPageItemAndLanguageId($itemMock, 2, 'foo', ['frontendDataHelper.' => ['scheme' => 'https']]);
+        $uriBuilder = GeneralUtility::makeInstance(PageUriBuilder::class, $loggerMock, $siteFinderMock, new NoopEventDispatcher());
+        $uri = $uriBuilder->getPageIndexingUriFromPageItemAndLanguageId($itemMock, 2, 'foo', ['frontendDataHelper.' => ['scheme' => 'https']]);
         self::assertSame('https://www.site.de/en/test', $uri, 'Solr site strategy generated unexpected uri');
     }
 
     protected function getSiteFinderMock(array $pageRecord = []): SiteFinder
     {
-        $uriMock = $this->createMock(UriInterface::class);
-        $uriMock->expects(self::any())->method('__toString')->willReturn('http://www.site.de/en/test');
+        $uri = new Uri('http://www.site.de/en/test');
 
         $routerMock = $this->createMock(RouterInterface::class);
         $routerMock->expects(self::once())->method('generateUri')->with($pageRecord, ['_language' => 2, 'MP' => 'foo'])
-            ->willReturn($uriMock);
+            ->willReturn($uri);
 
         $siteMock = $this->createMock(Site::class);
         $siteMock->expects(self::once())->method('getRouter')->willReturn($routerMock);
