@@ -54,6 +54,9 @@ The hook :php:`$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueuePageInd
 and the according interface :php:`ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerDataUrlModifier`
 is now superseded by the PSR-14 event :php:`ApacheSolrForTypo3\Solr\Event\Indexing\AfterFrontendPageUriForIndexingHasBeenGeneratedEvent`
 
+The hook :php:`$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessIndexQueueUpdateItem']`
+is now superseded by the PSR-14 event :php:`ApacheSolrForTypo3\Solr\Event\Indexing\AfterIndexQueueItemHasBeenMarkedForReindexingEvent`
+
 Contributors
 ============
 

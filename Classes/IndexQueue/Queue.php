@@ -27,10 +27,12 @@ use ApacheSolrForTypo3\Solr\Domain\Index\Queue\Statistic\QueueStatisticsReposito
 use ApacheSolrForTypo3\Solr\Domain\Site\Exception\UnexpectedTYPO3SiteInitializationException;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
+use ApacheSolrForTypo3\Solr\Event\IndexQueue\AfterIndexQueueItemHasBeenMarkedForReindexingEvent;
 use ApacheSolrForTypo3\Solr\FrontendEnvironment;
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use Doctrine\DBAL\Exception as DBALException;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -55,13 +57,16 @@ class Queue
 
     protected FrontendEnvironment $frontendEnvironment;
 
+    protected EventDispatcherInterface $eventDispatcher;
+
     public function __construct(
         RootPageResolver $rootPageResolver = null,
         ConfigurationAwareRecordService $recordService = null,
         QueueItemRepository $queueItemRepository = null,
         QueueStatisticsRepository $queueStatisticsRepository = null,
         QueueInitializationService $queueInitializationService = null,
-        FrontendEnvironment $frontendEnvironment = null
+        FrontendEnvironment $frontendEnvironment = null,
+        EventDispatcherInterface $eventDispatcher = null,
     ) {
         $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
         $this->rootPageResolver = $rootPageResolver ?? GeneralUtility::makeInstance(RootPageResolver::class);
@@ -70,6 +75,7 @@ class Queue
         $this->queueStatisticsRepository = $queueStatisticsRepository ??  GeneralUtility::makeInstance(QueueStatisticsRepository::class);
         $this->queueInitializationService = $queueInitializationService ?? GeneralUtility::makeInstance(QueueInitializationService::class, $this);
         $this->frontendEnvironment = $frontendEnvironment ?? GeneralUtility::makeInstance(FrontendEnvironment::class);
+        $this->eventDispatcher = $eventDispatcher ?? GeneralUtility::makeInstance(EventDispatcherInterface::class);
     }
 
     /**
@@ -132,7 +138,9 @@ class Queue
         int $forcedChangeTime = 0,
     ): int {
         $updateCount = $this->updateOrAddItemForAllRelatedRootPages($itemType, $itemUid, $forcedChangeTime);
-        return $this->postProcessIndexQueueUpdateItem($itemType, $itemUid, $updateCount, $forcedChangeTime);
+        $event = new AfterIndexQueueItemHasBeenMarkedForReindexingEvent($itemType, $itemUid, $forcedChangeTime, $updateCount);
+        $event = $this->eventDispatcher->dispatch($event);
+        return $event->getUpdateCount();
     }
 
     /**
@@ -187,35 +195,6 @@ class Queue
         }
 
         return $updateCount;
-    }
-
-    /**
-     * Executes the updateItem post-processing hook.
-     */
-    protected function postProcessIndexQueueUpdateItem(
-        string $itemType,
-        int|string $itemUid,
-        int $updateCount,
-        int $forcedChangeTime = 0
-    ): int {
-        if (!is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessIndexQueueUpdateItem'] ?? null)) {
-            return $updateCount;
-        }
-
-        foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessIndexQueueUpdateItem'] as $classReference) {
-            $updateHandler = $this->getHookImplementation($classReference);
-            $updateCount = $updateHandler->postProcessIndexQueueUpdateItem($itemType, $itemUid, $updateCount, $forcedChangeTime);
-        }
-
-        return $updateCount;
-    }
-
-    /**
-     * Returns the hook implementation for given class.
-     */
-    protected function getHookImplementation(string $classReference): object
-    {
-        return GeneralUtility::makeInstance($classReference);
     }
 
     /**
