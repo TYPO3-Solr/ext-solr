@@ -201,12 +201,12 @@ class SolrConnection
      */
     protected function initializeClient(Client $client, string $endpointKey): Client
     {
-        if (trim($this->getNode($endpointKey)->getUsername()) === '') {
+        if (trim($this->getNode($endpointKey)->getOption('username')) === '') {
             return $client;
         }
 
-        $username = $this->getNode($endpointKey)->getUsername();
-        $password = $this->getNode($endpointKey)->getPassword();
+        $username = $this->getNode($endpointKey)->getOption('username');
+        $password = $this->getNode($endpointKey)->getOption('password');
         $this->setAuthenticationOnAllEndpoints($client, $username, $password);
 
         return $client;
@@ -237,7 +237,7 @@ class SolrConnection
         $client->getPlugin('postbigrequest');
         $client->clearEndpoints();
 
-        $newEndpointOptions = $this->getNode($endpointKey)->getSolariumClientOptions();
+        $newEndpointOptions = $this->getNode($endpointKey)->getOptions();
         $newEndpointOptions['key'] = $endpointKey;
         $client->createEndpoint($newEndpointOptions, true);
 
