@@ -21,11 +21,11 @@ use ApacheSolrForTypo3\Solr\Domain\Site\Exception\UnexpectedTYPO3SiteInitializat
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository as PagesRepositoryAtExtSolr;
-use ApacheSolrForTypo3\Solr\System\Solr\Node;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use ApacheSolrForTypo3\Solr\System\Util\SiteUtility;
 use Doctrine\DBAL\Exception as DBALException;
 use InvalidArgumentException;
+use Solarium\Core\Client\Endpoint;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Site\Entity\Site as Typo3Site;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -63,8 +63,8 @@ class ConnectionManager implements SingletonInterface
     {
         $connectionHash = md5(json_encode($readNodeConfiguration) . json_encode($writeNodeConfiguration));
         if (!isset(self::$connections[$connectionHash])) {
-            $readNode = Node::fromArray($readNodeConfiguration);
-            $writeNode = Node::fromArray($writeNodeConfiguration);
+            $readNode = new Endpoint($readNodeConfiguration);
+            $writeNode = new Endpoint($writeNodeConfiguration);
             self::$connections[$connectionHash] = GeneralUtility::makeInstance(SolrConnection::class, $readNode, $writeNode);
         }
         return self::$connections[$connectionHash];

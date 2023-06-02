@@ -21,7 +21,6 @@ use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
-use ApacheSolrForTypo3\Solr\System\Solr\Node;
 use ApacheSolrForTypo3\Solr\System\Solr\Parser\SchemaParser;
 use ApacheSolrForTypo3\Solr\System\Solr\Parser\StopWordParser;
 use ApacheSolrForTypo3\Solr\System\Solr\Parser\SynonymParser;
@@ -31,6 +30,7 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
+use Solarium\Core\Client\Endpoint;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use UnexpectedValueException;
 
@@ -92,8 +92,8 @@ class ConnectionManagerTest extends SetUpUnitTestCase
         $self = $this;
         $this->connectionManager->expects(self::once())->method('getSolrConnectionForNodes')->willReturnCallback(
             function ($readNode, $writeNode) use ($self) {
-                $readNode = Node::fromArray($readNode);
-                $writeNode = Node::fromArray($writeNode);
+                $readNode = new Endpoint($readNode);
+                $writeNode = new Endpoint($writeNode);
                 $typoScriptConfigurationMock = $self->createMock(TypoScriptConfiguration::class);
                 $synonymsParserMock = $self->createMock(SynonymParser::class);
                 $stopWordParserMock = $self->createMock(StopWordParser::class);

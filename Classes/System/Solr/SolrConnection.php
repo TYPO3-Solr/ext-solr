@@ -34,6 +34,7 @@ use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Solarium\Client;
 use Solarium\Core\Client\Adapter\Psr18Adapter;
+use Solarium\Core\Client\Endpoint;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -58,7 +59,7 @@ class SolrConnection
     protected ?SchemaParser $schemaParser = null;
 
     /**
-     * @var Node[]
+     * @var Endpoint[]
      */
     protected array $nodes = [];
 
@@ -83,8 +84,8 @@ class SolrConnection
      * @throws NotFoundExceptionInterface
      */
     public function __construct(
-        Node $readNode,
-        Node $writeNode,
+        Endpoint $readNode,
+        Endpoint $writeNode,
         TypoScriptConfiguration $configuration = null,
         SynonymParser $synonymParser = null,
         StopWordParser $stopWordParser = null,
@@ -112,7 +113,7 @@ class SolrConnection
     /**
      * Returns Endpoint by key
      */
-    public function getNode(string $key): Node
+    public function getNode(string $key): Endpoint
     {
         return $this->nodes[$key];
     }

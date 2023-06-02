@@ -17,7 +17,6 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\Solr;
 
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
-use ApacheSolrForTypo3\Solr\System\Solr\Node;
 use ApacheSolrForTypo3\Solr\System\Solr\Parser\SchemaParser;
 use ApacheSolrForTypo3\Solr\System\Solr\Parser\StopWordParser;
 use ApacheSolrForTypo3\Solr\System\Solr\Parser\SynonymParser;
@@ -38,8 +37,8 @@ use Solarium\Core\Client\Endpoint;
 class SolrConnectionTest extends SetUpUnitTestCase
 {
     /**
-     * @param Node|null $readNode
-     * @param Node|null $writeNode
+     * @param Endpoint|null $readNode
+     * @param Endpoint|null $writeNode
      * @param TypoScriptConfiguration|null $configuration
      * @param SynonymParser|null $synonymParser
      * @param StopWordParser|null $stopWordParser
@@ -49,11 +48,11 @@ class SolrConnectionTest extends SetUpUnitTestCase
      * @param RequestFactoryInterface|null $requestFactory
      * @param StreamFactoryInterface|null $streamFactory
      * @param EventDispatcherInterface|null $eventDispatcher
-     * @return SolrConnection
+     * @return SolrConnection|null
      */
     protected function getSolrConnectionWithDummyConstructorArgs(
-        Node $readNode = null,
-        Node $writeNode = null,
+        Endpoint $readNode = null,
+        Endpoint $writeNode = null,
         TypoScriptConfiguration $configuration = null,
         SynonymParser $synonymParser = null,
         StopWordParser $stopWordParser = null,
@@ -66,8 +65,8 @@ class SolrConnectionTest extends SetUpUnitTestCase
     ): ?SolrConnection {
         try {
             return new SolrConnection(
-                $readNode ?? $this->createMock(Node::class),
-                $writeNode ?? $this->createMock(Node::class),
+                $readNode ?? $this->createMock(Endpoint::class),
+                $writeNode ?? $this->createMock(Endpoint::class),
                 $configuration ?? $this->createMock(TypoScriptConfiguration::class),
                 $synonymParser ?? $this->createMock(SynonymParser::class),
                 $stopWordParser ?? $this->createMock(StopWordParser::class),
@@ -93,7 +92,7 @@ class SolrConnectionTest extends SetUpUnitTestCase
         $clientMock = $this->createMock(Client::class);
         $clientMock->expects(self::any())->method('getEndpoints')->willReturn([$endpointMock]);
 
-        $readNode = Node::fromArray(
+        $readNode = new Endpoint(
             ['host' => 'localhost', 'port' => 8080, 'path' => '/solr/core_en/', 'scheme' => 'https', 'username' => '', 'password' => '']
         );
         $writeNode = $readNode;
@@ -113,7 +112,7 @@ class SolrConnectionTest extends SetUpUnitTestCase
         $clientMock = $this->createMock(Client::class);
         $clientMock->expects(self::any())->method('getEndpoints')->willReturn([$endpointMock]);
 
-        $readNode = Node::fromArray(
+        $readNode = new Endpoint(
             ['host' => 'localhost', 'port' => 8080, 'path' => '/solr/core_en/', 'scheme' => 'https', 'username' => 'foo', 'password' => 'bar']
         );
         $writeNode = $readNode;
@@ -142,7 +141,7 @@ class SolrConnectionTest extends SetUpUnitTestCase
     public function canGetCoreName($path, $expectedCoreName)
     {
         $fakeConfiguration = $this->createMock(TypoScriptConfiguration::class);
-        $readNode = Node::fromArray(
+        $readNode = new Endpoint(
             ['host' => 'localhost', 'port' => 8080, 'path' => $path, 'scheme' => 'http', 'username' => '', 'password' => '']
         );
         $writeNode = $readNode;
@@ -167,7 +166,7 @@ class SolrConnectionTest extends SetUpUnitTestCase
      */
     public function canGetCoreBasePath($path, $expectedCoreBasePath)
     {
-        $readNode = Node::fromArray(
+        $readNode = new Endpoint(
             ['host' => 'localhost', 'port' => 8080, 'path' => $path, 'scheme' => 'http', 'username' => '', 'password' => '']
         );
         $writeNode = $readNode;
@@ -180,7 +179,7 @@ class SolrConnectionTest extends SetUpUnitTestCase
      */
     public function toStringContainsAllSegments()
     {
-        $readNode = Node::fromArray(
+        $readNode = new Endpoint(
             ['host' => 'localhost', 'port' => 8080, 'path' => '/core_de/', 'scheme' => 'http', 'username' => '', 'password' => '']
         );
         $writeNode = $readNode;
