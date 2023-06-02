@@ -42,7 +42,7 @@
     "phpunit/phpunit": "^9.5",
     "typo3/cms-fluid-styled-content": "*",
     "typo3/coding-standards": "~0.7.1",
-    "typo3/testing-framework": "^7.0",
+    "typo3/testing-framework": "^7.0.2",
     "phpstan/phpstan": "^1.10",
     "phpstan/phpstan-phpunit": "^1.3"
   },
@@ -59,6 +59,8 @@
   "autoload-dev": {
     "psr-4": {
       "ApacheSolrForTypo3\\Solr\\Tests\\": "Tests/",
+      "ApacheSolrForTypo3\\SolrFakeExtension2\\": "Tests/Integration/Fixtures/Extensions/fake_extension2/Classes/",
+      "ApacheSolrForTypo3\\SolrFakeExtension3\\": "Tests/Integration/Fixtures/Extensions/fake_extension3/Classes/",
       "TYPO3\\CMS\\Core\\Tests\\": ".Build/vendor/typo3/cms-core/Tests/"
     }
   },

@@ -19,9 +19,10 @@ namespace ApacheSolrForTypo3\Solr;
 
 use ApacheSolrForTypo3\Solr\Access\Rootline;
 use ApacheSolrForTypo3\Solr\Domain\Search\ApacheSolrDocument\Builder;
+use ApacheSolrForTypo3\Solr\Event\Indexing\BeforeDocumentsAreIndexedEvent;
+use ApacheSolrForTypo3\Solr\Event\Indexing\BeforePageDocumentIsProcessedForIndexingEvent;
 use ApacheSolrForTypo3\Solr\FieldProcessor\Service;
 use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageFieldMappingIndexer;
-use ApacheSolrForTypo3\Solr\IndexQueue\Indexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\DebugWriter;
@@ -29,6 +30,7 @@ use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use Doctrine\DBAL\Exception as DBALException;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use RuntimeException;
 use Throwable;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
@@ -205,8 +207,6 @@ class Typo3PageIndexer
      */
     public function indexPage(): bool
     {
-        $documents = []; // this will become useful as soon as when starting to index individual records instead of whole pages
-
         if (is_null($this->solrConnection)) {
             // intended early return as it doesn't make sense to continue
             // and waste processing time if the solr server isn't available
@@ -219,14 +219,15 @@ class Typo3PageIndexer
         $pageDocument = $this->substitutePageDocument($pageDocument);
 
         self::$pageSolrDocument = $pageDocument;
-        $documents[] = $pageDocument;
-        $documents = $this->getAdditionalDocuments($pageDocument, $documents);
+        $event = new BeforePageDocumentIsProcessedForIndexingEvent($pageDocument, $this->page->getSite(), $this->page->getLanguage(), $this->indexQueueItem);
+        $event = $this->getEventDispatcher()->dispatch($event);
+        $documents = $event->getDocuments();
+
         $this->processDocuments($documents);
-        $documents = Indexer::preAddModifyDocuments(
-            $this->indexQueueItem,
-            $this->page->getLanguage()->getLanguageId(),
-            $documents
-        );
+
+        $event = new BeforeDocumentsAreIndexedEvent($pageDocument, $this->page->getSite(), $this->page->getLanguage(), $this->indexQueueItem, $documents);
+        $event = $this->getEventDispatcher()->dispatch($event);
+        $documents = $event->getDocuments();
 
         $pageIndexed = $this->addDocumentsToSolrIndex($documents);
         $this->documentsSentToSolr = $documents;
@@ -296,8 +297,7 @@ class Typo3PageIndexer
                 $substituteIndexer->setPageIndexingConfigurationName($indexConfigurationName);
             }
 
-            $substituteDocument = $substituteIndexer->getPageDocument($pageDocument);
-            $pageDocument = $substituteDocument;
+            $pageDocument = $substituteIndexer->getPageDocument($pageDocument);
         }
 
         return $pageDocument;
@@ -312,43 +312,10 @@ class Typo3PageIndexer
     }
 
     /**
-     * Allows third party extensions to provide additional documents which
-     * should be indexed for the current page.
-     *
-     * @param Document $pageDocument The main document representing this page.
-     * @param Document[] $existingDocuments An array of documents already created for this page.
-     * @return array An array of additional Document objects to index
-     */
-    protected function getAdditionalDocuments(Document $pageDocument, array $existingDocuments): array
-    {
-        $documents = $existingDocuments;
-
-        if (!is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageAddDocuments'] ?? null)) {
-            return $documents;
-        }
-
-        foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageAddDocuments'] as $classReference) {
-            $additionalIndexer = GeneralUtility::makeInstance($classReference);
-
-            if (!$additionalIndexer instanceof AdditionalPageIndexer) {
-                $message = get_class($additionalIndexer) . ' must implement interface ' . AdditionalPageIndexer::class;
-                throw new UnexpectedValueException($message, 1310491024);
-            }
-
-            $additionalDocuments = $additionalIndexer->getAdditionalPageDocuments($pageDocument, $documents);
-            if (!empty($additionalDocuments)) {
-                $documents = array_merge($documents, $additionalDocuments);
-            }
-        }
-
-        return $documents;
-    }
-
-    /**
      * Sends the given documents to the field processing service which takes
      * care of manipulating fields as defined in the field's configuration.
      *
-     * @param array $documents An array of documents to manipulate
+     * @param Document[] $documents An array of documents to manipulate
      * @throws DBALException
      * @throws Exception
      */
@@ -364,7 +331,7 @@ class Typo3PageIndexer
     /**
      * Adds the collected documents to the Solr index.
      *
-     * @param array $documents An array of Document objects.
+     * @param Document[] $documents An array of Document objects.
      * @return bool TRUE if documents were added successfully, FALSE otherwise
      */
     protected function addDocumentsToSolrIndex(array $documents): bool
@@ -442,10 +409,15 @@ class Typo3PageIndexer
     /**
      * Gets the documents that have been sent to Solr
      *
-     * @return array An array of Document objects
+     * @return Document[] An array of Document objects
      */
     public function getDocumentsSentToSolr(): array
     {
         return $this->documentsSentToSolr;
+    }
+
+    protected function getEventDispatcher(): EventDispatcherInterface
+    {
+        return GeneralUtility::makeInstance(EventDispatcherInterface::class);
     }
 }

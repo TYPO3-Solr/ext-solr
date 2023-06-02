@@ -15,25 +15,21 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace ApacheSolrForTypo3\Solr\Tests\Integration\IndexQueue\FrontendHelper;
+namespace ApacheSolrForTypo3\SolrFakeExtension3\EventListeners;
 
-use ApacheSolrForTypo3\Solr\AdditionalPageIndexer;
-use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
+use ApacheSolrForTypo3\Solr\Event\Indexing\BeforePageDocumentIsProcessedForIndexingEvent;
 
-class TestAdditionalPageIndexer implements AdditionalPageIndexer
+final class AddExampleDocumentsBeforePageIndexing
 {
     /**
      * Provides additional documents that should be indexed together with a page.
-     *
-     * @param Document $pageDocument The original page document.
-     * @param array $allDocuments An array containing all the documents collected until here, including the page document
-     * @return Document[] array An array of additional Document objects
      */
-    public function getAdditionalPageDocuments(Document $pageDocument, array $allDocuments): array
+    public function __invoke(BeforePageDocumentIsProcessedForIndexingEvent $event): void
     {
         if (!($_GET['additionalTestPageIndexer'] ?? false)) {
-            return [];
+            return;
         }
+        $pageDocument = $event->getDocument();
         $secondDocument = clone $pageDocument;
 
         $id = $pageDocument['id'];
@@ -41,6 +37,6 @@ class TestAdditionalPageIndexer implements AdditionalPageIndexer
 
         $secondDocument->setField('id', $copyId);
         $secondDocument->setField('custom_stringS', 'additional text');
-        return [$secondDocument];
+        $event->addDocuments([$secondDocument]);
     }
 }

@@ -1,0 +1,15 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  ApacheSolrForTypo3\SolrFakeExtension3\EventListeners\AddExampleDocumentsBeforePageIndexing:
+    tags:
+      - name: event.listener
+        identifier: 'fake-extension3/example-documents-before-page-indexing'
+
+  ApacheSolrForTypo3\SolrFakeExtension3\EventListeners\TestModificationOfDocuments:
+    tags:
+      - name: event.listener
+        identifier: 'fake-extension3/test-modification-of-documents'
