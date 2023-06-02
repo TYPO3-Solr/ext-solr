@@ -90,22 +90,16 @@ class IndexQueueWorkerTaskAdditionalFieldProvider extends AbstractAdditionalFiel
                 $taskInfo['site']
             ),
             'label' => 'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:field_site',
-            'cshKey' => '',
-            'cshLabel' => '',
         ];
 
         $additionalFields['documentsToIndexLimit'] = [
             'code' => '<input type="number" class="form-control" name="tx_scheduler[documentsToIndexLimit]" value="' . htmlspecialchars((string)$taskInfo['documentsToIndexLimit']) . '" />',
             'label' => 'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:indexqueueworker_field_documentsToIndexLimit',
-            'cshKey' => '',
-            'cshLabel' => '',
         ];
 
         $additionalFields['forcedWebRoot'] = [
             'code' => '<input type="text" class="form-control" name="tx_scheduler[forcedWebRoot]" value="' . htmlspecialchars($taskInfo['forcedWebRoot']) . '" />',
             'label' => 'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:indexqueueworker_field_forcedWebRoot',
-            'cshKey' => '',
-            'cshLabel' => '',
         ];
 
         return $additionalFields;
