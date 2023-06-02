@@ -136,15 +136,11 @@ class OptimizeIndexTaskAdditionalFieldProvider extends AbstractAdditionalFieldPr
         $additionalFields['site'] = [
             'code' => $siteSelectorField->getAvailableSitesSelector('tx_scheduler[site]', $this->site),
             'label' => $this->languageFile . ':field_site',
-            'cshKey' => '',
-            'cshLabel' => '',
         ];
 
         $additionalFields['cores'] = [
             'code' => $this->getCoreSelectorMarkup(),
             'label' => $this->languageFile . ':field_cores',
-            'cshKey' => '',
-            'cshLabel' => '',
         ];
 
         return $additionalFields;
