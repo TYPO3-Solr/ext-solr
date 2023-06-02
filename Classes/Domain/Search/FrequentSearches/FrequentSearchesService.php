@@ -19,7 +19,6 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\FrequentSearches;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Statistics\StatisticsRepository;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
-use ApacheSolrForTypo3\Solr\Util;
 use Doctrine\DBAL\Exception as DBALException;
 use TYPO3\CMS\Core\Cache\Frontend\AbstractFrontend;
 use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
@@ -98,7 +97,6 @@ class FrequentSearchesService
     /**
      * Gets frequent search terms from the statistics tracking table.
      *
-     * @throws AspectNotFoundException
      * @throws DBALException
      */
     protected function getFrequentSearchTermsFromStatistics(array $frequentSearchConfiguration = []): array
@@ -111,7 +109,7 @@ class FrequentSearchesService
             $checkRootPidWhere = '1';
         }
         if ($frequentSearchConfiguration['select.']['checkLanguage']) {
-            $checkLanguageWhere = ' AND language =' . Util::getLanguageUid();
+            $checkLanguageWhere = ' AND language =' . $this->tsfe->getLanguage()->getLanguageId();
         } else {
             $checkLanguageWhere = '';
         }
@@ -133,8 +131,6 @@ class FrequentSearchesService
 
     /**
      * Returns cache identifier for given $frequentSearchConfiguration
-     *
-     * @throws AspectNotFoundException
      */
     protected function getCacheIdentifier(array $frequentSearchConfiguration): string
     {
@@ -145,7 +141,7 @@ class FrequentSearchesService
             $identifier .= '_RP' . (int)$this->tsfe->tmpl->rootLine[0]['uid'];
         }
         if (isset($frequentSearchConfiguration['select.']['checkLanguage']) && $frequentSearchConfiguration['select.']['checkLanguage']) {
-            $identifier .= '_L' . Util::getLanguageUid();
+            $identifier .= '_L' . $this->tsfe->getLanguage()->getLanguageId();
         }
 
         $identifier .= '_' . md5(serialize($frequentSearchConfiguration));

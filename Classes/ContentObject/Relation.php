@@ -19,7 +19,6 @@ use ApacheSolrForTypo3\Solr\System\Language\FrontendOverlayService;
 use ApacheSolrForTypo3\Solr\System\TCA\TCAService;
 use Doctrine\DBAL\Exception as DBALException;
 use Doctrine\DBAL\Result;
-use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Database\RelationHandler;
@@ -69,7 +68,6 @@ class Relation extends AbstractContentObject
      * TYPO3-style m:n relations.
      * May resolve single value and multi value relations.
      *
-     * @throws AspectNotFoundException
      * @throws ContentRenderingException
      * @throws DBALException
      *
@@ -104,7 +102,6 @@ class Relation extends AbstractContentObject
      *
      * @return array Array of related items, values already resolved from related records
      *
-     * @throws AspectNotFoundException
      * @throws ContentRenderingException
      * @throws DBALException
      */
@@ -139,7 +136,6 @@ class Relation extends AbstractContentObject
      *
      * @return array Array of related items, values already resolved from related records
      *
-     * @throws AspectNotFoundException
      * @throws ContentRenderingException
      * @throws DBALException
      */
@@ -231,7 +227,6 @@ class Relation extends AbstractContentObject
      *
      * @return array Array of related items, values already resolved from related records
      *
-     * @throws AspectNotFoundException
      * @throws ContentRenderingException
      * @throws DBALException
      */
@@ -298,7 +293,6 @@ class Relation extends AbstractContentObject
      * @param ContentObjectRenderer $parentContentObject cObject
      * @param string $foreignTableName Related record table name
      *
-     * @throws AspectNotFoundException
      * @throws DBALException
      * @throws ContentRenderingException
      */
@@ -399,16 +393,13 @@ class Relation extends AbstractContentObject
     }
 
     /**
-     * Returns current language id fetched from object properties chain TSFE->context->language aspect->id.
+     * Returns current language id fetched from the SiteLanguage
      *
-     * @throws AspectNotFoundException
      * @throws ContentRenderingException
      */
     protected function getLanguageUid(): int
     {
-        return (int)$this->getTypoScriptFrontendController()
-            ->getContext()
-            ->getPropertyFromAspect('language', 'id');
+        return $this->getTypoScriptFrontendController()->getLanguage()->getLanguageId();
     }
 
     /**

@@ -24,9 +24,7 @@ use ApacheSolrForTypo3\Solr\Mvc\Variable\SolrVariableProvider;
 use ApacheSolrForTypo3\Solr\Pagination\ResultsPagination;
 use ApacheSolrForTypo3\Solr\Pagination\ResultsPaginator;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrUnavailableException;
-use ApacheSolrForTypo3\Solr\Util;
 use Psr\Http\Message\ResponseInterface;
-use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Http\ForwardResponse;
 use TYPO3\CMS\Fluid\View\TemplateView;
@@ -92,7 +90,6 @@ class SearchController extends AbstractBaseController
     /**
      * Results
      *
-     * @throws AspectNotFoundException
      * @throws InvalidFacetPackageException
      *
      * @noinspection PhpUnused Is used by plugin.
@@ -106,7 +103,7 @@ class SearchController extends AbstractBaseController
         try {
             $arguments = $this->request->getArguments();
             $pageId = $this->typoScriptFrontendController->getRequestedId();
-            $languageId = Util::getLanguageUid();
+            $languageId = $this->typoScriptFrontendController->getLanguage()->getLanguageId();
             $searchRequest = $this->getSearchRequestBuilder()->buildForSearch($arguments, $pageId, $languageId);
 
             $searchResultSet = $this->searchService->search($searchRequest);
@@ -187,8 +184,6 @@ class SearchController extends AbstractBaseController
     /**
      * Frequently Searched
      *
-     * @throws AspectNotFoundException
-     *
      * @noinspection PhpUnused Is used by plugin.
      */
     public function frequentlySearchedAction(): ResponseInterface
@@ -197,7 +192,7 @@ class SearchController extends AbstractBaseController
         $searchResultSet = GeneralUtility::makeInstance(SearchResultSet::class);
 
         $pageId = $this->typoScriptFrontendController->getRequestedId();
-        $languageId = Util::getLanguageUid();
+        $languageId = $this->typoScriptFrontendController->getLanguage()->getLanguageId();
         $searchRequest = $this->getSearchRequestBuilder()->buildForFrequentSearches($pageId, $languageId);
         $searchResultSet->setUsedSearchRequest($searchRequest);
 
