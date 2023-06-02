@@ -19,7 +19,7 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers\Backend\Security;
 
 use InvalidArgumentException;
 use RuntimeException;
-use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
+use TYPO3\CMS\Backend\Module\ModuleProvider;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractConditionViewHelper;
 
@@ -61,24 +61,16 @@ class IfHasAccessToModuleViewHelper extends AbstractConditionViewHelper
      */
     protected static function evaluateCondition($arguments = null)
     {
-        /** @var BackendUserAuthentication $beUser */
-        $beUser = $GLOBALS['BE_USER'];
         try {
-            $hasAccessToModule = $beUser->modAccess(
-                self::getModuleConfiguration(self::getModuleSignatureFromArguments($arguments))
+            $hasAccessToModule = self::getModuleProvider()->accessGranted(
+                self::getModuleSignatureFromArguments($arguments),
+                $GLOBALS['BE_USER']
             );
         } catch (RuntimeException $exception) {
             return false;
         }
-        return $hasAccessToModule;
-    }
 
-    /**
-     * Returns the backend module configuration
-     */
-    protected static function getModuleConfiguration(string $moduleSignature)
-    {
-        return $GLOBALS['TBE_MODULES']['_configuration'][$moduleSignature];
+        return $hasAccessToModule;
     }
 
     /**
@@ -92,14 +84,18 @@ class IfHasAccessToModuleViewHelper extends AbstractConditionViewHelper
         $possibleErrorCode = 1496311009;
         if (!is_string($moduleSignature)) {
             $moduleSignature = $arguments['main'];
-            $subModuleName = $arguments['extension'] . GeneralUtility::underscoredToUpperCamelCase($arguments['sub']);
+            $subModuleName = GeneralUtility::underscoredToUpperCamelCase($arguments['sub']);
             $moduleSignature .= '_' . $subModuleName;
             $possibleErrorMessageAppendix = vsprintf(self::ERROR_APPENDIX_FOR_SIGNATURE_RESOLUTION, [$arguments['extension'], $arguments['main'], $arguments['sub']]);
             $possibleErrorCode = 1496311010;
         }
-        if (!isset($GLOBALS['TBE_MODULES']['_configuration'][$moduleSignature])) {
+
+        $moduleSignature = strtolower($moduleSignature);
+
+        if (!self::getModuleProvider()->isModuleRegistered($moduleSignature)) {
             throw new RuntimeException(vsprintf('Module with signature "%s" is not configured or couldn\'t be resolved. ' . $possibleErrorMessageAppendix, [$moduleSignature]), $possibleErrorCode);
         }
+
         return $moduleSignature;
     }
 
@@ -119,5 +115,10 @@ class IfHasAccessToModuleViewHelper extends AbstractConditionViewHelper
         ) {
             throw new InvalidArgumentException('ifHasAccessToModule view helper requires either "signature" or all three other arguments: "extension", "main" and "sub". Please set arguments properly.', 1496314352);
         }
+    }
+
+    protected static function getModuleProvider(): ModuleProvider
+    {
+        return GeneralUtility::makeInstance(ModuleProvider::class);
     }
 }
