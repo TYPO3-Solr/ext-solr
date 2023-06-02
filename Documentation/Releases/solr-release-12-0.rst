@@ -27,6 +27,10 @@ The hook :php:`$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexP
 interface :php:`ApacheSolrForTypo3\Solr\AdditionalPageIndexer` are now superseded
 by the PSR-14 event :php:`ApacheSolrForTypo3\Solr\Event\Indexing\BeforePageDocumentIsProcessedForIndexingEvent`.
 
+The hook :php:`$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyVariantId']` and its
+interface :php:`ApacheSolrForTypo3\Solr\Variants\IdModifier` are now superseded
+by the PSR-14 event :php:`ApacheSolrForTypo3\Solr\Event\Variants\AfterVariantIdWasBuiltEvent`.
+
 The hook :php:`$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['preAddModifyDocuments']` and its
 interface :php:`ApacheSolrForTypo3\Solr\PageIndexerDocumentsModifier` are now superseded
 by the PSR-14 event :php:`ApacheSolrForTypo3\Solr\Event\Indexing\BeforeDocumentIsProcessedForIndexingEvent`.

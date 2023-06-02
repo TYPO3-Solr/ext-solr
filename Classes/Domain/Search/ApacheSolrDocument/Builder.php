@@ -71,7 +71,7 @@ class Builder
         $document->setField('pid', $pageRecord['pid']);
 
         // variantId
-        $variantId = $this->variantIdBuilder->buildFromTypeAndUid('pages', $pageId);
+        $variantId = $this->variantIdBuilder->buildFromTypeAndUid('pages', $pageId, $pageRecord, $site, $document);
         $document->setField('variantId', $variantId);
 
         $document->setField('typeNum', (int)$page->getPageArguments()->getPageType());
@@ -131,7 +131,7 @@ class Builder
         $document->setField('pid', $itemRecord['pid']);
 
         // variantId
-        $variantId = $this->variantIdBuilder->buildFromTypeAndUid($type, $itemRecord['uid']);
+        $variantId = $this->variantIdBuilder->buildFromTypeAndUid($type, $itemRecord['uid'], $itemRecord, $site, $document);
         $document->setField('variantId', $variantId);
 
         // created, changed
