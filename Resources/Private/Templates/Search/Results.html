@@ -123,14 +123,15 @@
 									<f:render partial="Result/PerPage" section="PerPage" arguments="{resultSet: resultSet}" />
 								</div>
 							</div>
+
+							<div data-start="{pagination.startRecordNumber}" class="results-list list-group">
+								<f:for each="{resultSet.searchResults}" as="document">
+									<f:render partial="Result/Document" section="Document" arguments="{resultSet: resultSet, document: document}" />
+								</f:for>
+							</div>
+							<f:render partial="Result/Pagination" section="Pagination" arguments="{resultSet: resultSet, pagination: pagination, currentPage: currentPage}"/>
 						</f:else>
 					</f:if>
-					<div data-start="{pagination.startRecordNumber}" class="results-list list-group">
-						<f:for each="{resultSet.searchResults}" as="document">
-							<f:render partial="Result/Document" section="Document" arguments="{resultSet: resultSet, document: document}" />
-						</f:for>
-					</div>
-					<f:render partial="Result/Pagination" section="Pagination" arguments="{resultSet: resultSet, pagination: pagination, currentPage: currentPage}"/>
 				</f:if>
 			</div>
 		</div>
