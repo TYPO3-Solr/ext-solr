@@ -19,7 +19,6 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers;
 
 use ApacheSolrForTypo3\Solr\System\Url\UrlHelper;
 use ApacheSolrForTypo3\Solr\System\Util\SiteUtility;
-use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
@@ -110,7 +109,7 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
         // @extensionScannerIgnoreLine
         $this->getTemplateVariableContainer()->add('pageUid', $pageUid);
         // @extensionScannerIgnoreLine
-        $this->getTemplateVariableContainer()->add('languageUid', Util::getLanguageUid());
+        $this->getTemplateVariableContainer()->add('languageUid', ($GLOBALS['TSFE']?->getLanguage()->getLanguageId() ?? 0));
         // @extensionScannerIgnoreLine
         $this->getTemplateVariableContainer()->add('existingParameters', $this->getExistingSearchParameters());
         // @extensionScannerIgnoreLine

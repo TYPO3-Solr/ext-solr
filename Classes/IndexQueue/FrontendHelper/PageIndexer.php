@@ -35,7 +35,6 @@ use ApacheSolrForTypo3\Solr\Util;
 use Doctrine\DBAL\Exception as DBALException;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Throwable;
-use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
@@ -336,9 +335,6 @@ class PageIndexer extends AbstractFrontendHelper
      * Builds the Solr document for the current page.
      *
      * @return Document A document representing the page
-     *
-     * @throws AspectNotFoundException
-     * @throws DBALException
      */
     protected function getPageDocument(TypoScriptFrontendController $tsfe, string $url, Rootline $pageAccessRootline, string $mountPointParameter): Document
     {
@@ -351,7 +347,6 @@ class PageIndexer extends AbstractFrontendHelper
      *
      * @return bool TRUE after successfully indexing the page, FALSE on error
      *
-     * @throws AspectNotFoundException
      * @throws DBALException
      * @throws Exception
      */

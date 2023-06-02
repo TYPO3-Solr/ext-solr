@@ -119,12 +119,12 @@ class QueryBuilder extends AbstractQueryBuilder
         string $queryString,
         array $additionalFilters,
         int $requestedPageId,
-        string $groupList,
+        array $frontendUserGroupIds,
     ): SuggestQuery {
         $this->newSuggestQuery($queryString)
             ->useFiltersFromTypoScript()
             ->useSiteHashFromTypoScript($requestedPageId)
-            ->useUserAccessGroups(explode(',', $groupList))
+            ->useUserAccessGroups($frontendUserGroupIds)
             ->useOmitHeader();
 
         if (!empty($additionalFilters)) {

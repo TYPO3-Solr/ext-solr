@@ -158,25 +158,6 @@ class Util
     }
 
     /**
-     * Returns the current language ID from the active context.
-     *
-     * @throws AspectNotFoundException
-     * @todo: Remove all usages of this method for all usages in isolated/capsuled TSFE approach.
-     */
-    public static function getLanguageUid(): int
-    {
-        return (int)self::getTYPO3CoreContext()->getPropertyFromAspect('language', 'id');
-    }
-
-    /**
-     * @throws AspectNotFoundException
-     */
-    public static function getFrontendUserGroupsList(): string
-    {
-        return implode(',', self::getFrontendUserGroups());
-    }
-
-    /**
      * @throws AspectNotFoundException
      */
     public static function getFrontendUserGroups(): array

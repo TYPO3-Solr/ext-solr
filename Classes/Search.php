@@ -27,7 +27,6 @@ use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use Doctrine\DBAL\Exception as DBALException;
 use stdClass;
 use Throwable;
-use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -59,7 +58,6 @@ class Search
     /**
      * Search constructor
      *
-     * @throws AspectNotFoundException
      * @throws DBALException
      * @throws NoSolrConnectionFoundException
      */
@@ -71,7 +69,7 @@ class Search
 
         if (is_null($solrConnection)) {
             $connectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
-            $this->solr = $connectionManager->getConnectionByPageId(($GLOBALS['TSFE']->id ?? 0), Util::getLanguageUid());
+            $this->solr = $connectionManager->getConnectionByPageId(($GLOBALS['TSFE']->id ?? 0), ($GLOBALS['TSFE']?->getLanguage()->getLanguageId() ?? 0));
         }
 
         $this->configuration = Util::getSolrConfiguration();

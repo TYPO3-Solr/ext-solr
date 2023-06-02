@@ -1592,7 +1592,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
             ->onlyMethods(['useSiteHashFromTypoScript'])
             ->getMock();
 
-        $suggestQuery = $this->builder->buildSuggestQuery('foo', [], 3232, '');
+        $suggestQuery = $this->builder->buildSuggestQuery('foo', [], 3232, []);
         $queryParameters = $this->getAllQueryParameters($suggestQuery);
         self::assertSame('foo', $queryParameters['facet.prefix'], 'Passed query string is not used as facet.prefix argument');
     }
@@ -1614,7 +1614,7 @@ class QueryBuilderTest extends SetUpUnitTestCase
                                 ->onlyMethods(['useSiteHashFromTypoScript'])
                                 ->getMock();
 
-        $suggestQuery = $this->builder->buildSuggestQuery('bar', [], 3232, '');
+        $suggestQuery = $this->builder->buildSuggestQuery('bar', [], 3232, []);
         $queryParameters = $this->getAllQueryParameters($suggestQuery);
         self::assertSame('*:*', $queryParameters['q.alt'], 'Alterntive query is not set to wildcard query by default');
     }

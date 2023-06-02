@@ -20,7 +20,6 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSetProcessor;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\HtmlContentExtractor;
-use ApacheSolrForTypo3\Solr\Util;
 use Doctrine\DBAL\Exception as DBALException;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
@@ -78,7 +77,7 @@ class StatisticsWriterProcessor implements SearchResultSetProcessor
             'pid' => $TSFE->id,
             'root_pid' => $root_pid,
             'tstamp' => $this->getTime(),
-            'language' => Util::getLanguageUid(),
+            'language' => $TSFE->getLanguage()->getLanguageId(),
             // @extensionScannerIgnoreLine
             'num_found' => $resultSet->getAllResultCount(),
             'suggestions_shown' => is_object($response->spellcheck->suggestions ?? null) ? (int)get_object_vars($response->spellcheck->suggestions) : 0,

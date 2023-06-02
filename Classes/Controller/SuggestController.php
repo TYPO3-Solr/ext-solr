@@ -19,10 +19,8 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\InvalidFacetPackageEx
 use ApacheSolrForTypo3\Solr\Domain\Search\Suggest\SuggestService;
 use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrUnavailableException;
-use ApacheSolrForTypo3\Solr\Util;
 use Doctrine\DBAL\Exception as DBALException;
 use Psr\Http\Message\ResponseInterface;
-use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -37,7 +35,6 @@ class SuggestController extends AbstractBaseController
     /**
      * This method creates a suggest json response that can be used in a suggest layer.
      *
-     * @throws AspectNotFoundException
      * @throws DBALException
      * @throws InvalidFacetPackageException
      * @throws NoSolrConnectionFoundException
@@ -64,7 +61,7 @@ class SuggestController extends AbstractBaseController
 
             $additionalFilters = is_array($additionalFilters) ? array_map('htmlspecialchars', $additionalFilters) : [];
             $pageId = $this->typoScriptFrontendController->getRequestedId();
-            $languageId = Util::getLanguageUid();
+            $languageId = $this->typoScriptFrontendController->getLanguage()->getLanguageId();
             $arguments = $this->request->getArguments();
 
             $searchRequest = $this->getSearchRequestBuilder()->buildForSuggest($arguments, $rawQuery, $pageId, $languageId);

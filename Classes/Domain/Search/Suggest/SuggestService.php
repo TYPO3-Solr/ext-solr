@@ -78,9 +78,9 @@ class SuggestService
     public function getSuggestions(SearchRequest $searchRequest, array $additionalFilters = []): array
     {
         $requestId = $this->tsfe->getRequestedId();
-        $groupList = Util::getFrontendUserGroupsList();
+        $frontendUserGroupIds = Util::getFrontendUserGroups();
 
-        $suggestQuery = $this->queryBuilder->buildSuggestQuery($searchRequest->getRawUserQuery(), $additionalFilters, $requestId, $groupList);
+        $suggestQuery = $this->queryBuilder->buildSuggestQuery($searchRequest->getRawUserQuery(), $additionalFilters, $requestId, $frontendUserGroupIds);
         $solrSuggestions = $this->getSolrSuggestions($suggestQuery);
 
         if ($solrSuggestions === []) {
@@ -144,13 +144,12 @@ class SuggestService
      * Retrieves the suggestions from the solr server.
      *
      * @throws NoSolrConnectionFoundException
-     * @throws AspectNotFoundException
      * @throws DBALException
      */
     protected function getSolrSuggestions(SuggestQuery $suggestQuery): array
     {
         $pageId = $this->tsfe->getRequestedId();
-        $languageId = Util::getLanguageUid();
+        $languageId = $this->tsfe->getLanguage()->getLanguageId();
         $solr = GeneralUtility::makeInstance(ConnectionManager::class)->getConnectionByPageId($pageId, $languageId);
         $search = GeneralUtility::makeInstance(Search::class, $solr);
         $response = $search->search($suggestQuery, 0, 0);
