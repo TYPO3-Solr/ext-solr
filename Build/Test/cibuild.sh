@@ -33,26 +33,18 @@ else
   echo "No syntax errors! Great job!"
 fi
 
-echo "Check compliance against TYPO3 Coding Standards"
-if ! .Build/bin/php-cs-fixer --version > /dev/null 2>&1
+
+echo "TYPO3 Coding Standards compliance: See https://github.com/TYPO3/coding-standards"
+if ! composer t3:standards:fix -- --diff --verbose --dry-run && rm .php-cs-fixer.cache
 then
-  echo "TYPO3 https://github.com/TYPO3/coding-standards is not set properly."
-  echo "Please fix that asap to avoid unwanted changes in the future."
-  EXIT_CODE=2
+  echo "Some files are not compliant to TYPO3 Coding Standards"
+  echo "Please fix the files listed above."
+  echo "Tip for auto fix: "
+  echo "  TYPO3_VERSION="${TYPO3_VERSION}" composer tests:setup && composer t3:standards:fix"
+  EXIT_CODE=3
   #exit 1
 else
-  echo "TYPO3 Coding Standards compliance: See https://github.com/TYPO3/coding-standards"
-  if ! composer t3:standards:fix -- --diff --verbose --dry-run && rm .php-cs-fixer.cache
-  then
-    echo "Some files are not compliant to TYPO3 Coding Standards"
-    echo "Please fix the files listed above."
-    echo "Tip for auto fix: "
-    echo "  TYPO3_VERSION="${TYPO3_VERSION}" composer tests:setup && composer t3:standards:fix"
-    EXIT_CODE=3
-    #exit 1
-  else
-    echo "The code is TYPO3 Coding Standards compliant! Great job!"
-  fi
+  echo "The code is TYPO3 Coding Standards compliant! Great job!"
 fi
 echo -e "\n\n"
 
@@ -83,8 +75,7 @@ fi
 
 echo -e "\n\n"
 echo "Run unit tests"
-UNIT_BOOTSTRAP="Build/Test/UnitTestsBootstrap.php"
-if ! .Build/bin/phpunit --colors -c Build/Test/UnitTests.xml --bootstrap=$UNIT_BOOTSTRAP --coverage-clover=coverage.unit.clover
+if ! composer tests:unit -- --coverage-clover=coverage.unit.clover
 then
   echo "Error during running the unit tests please check and fix them"
   EXIT_CODE=5
@@ -125,8 +116,7 @@ fi
 
 echo -e "\n\n"
 echo "Run integration tests"
-INTEGRATION_BOOTSTRAP="Build/Test/IntegrationTestsBootstrap.php"
-if ! .Build/bin/phpunit --colors -c Build/Test/IntegrationTests.xml --bootstrap=$INTEGRATION_BOOTSTRAP --coverage-clover=coverage.integration.clover
+if ! composer tests:integration -- --coverage-clover=coverage.integration.clover
 then
   echo "Error during running the integration tests please check and fix them"
   EXIT_CODE=6
