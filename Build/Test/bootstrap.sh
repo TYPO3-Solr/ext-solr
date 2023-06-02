@@ -95,5 +95,3 @@ then
   "The test environment could not be installed by composer as expected. Please fix this issue."
   exit 1
 fi
-
-mkdir -p $TYPO3_PATH_WEB/uploads $TYPO3_PATH_WEB/typo3temp
