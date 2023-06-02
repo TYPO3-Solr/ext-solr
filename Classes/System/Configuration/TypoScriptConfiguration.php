@@ -1761,6 +1761,17 @@ class TypoScriptConfiguration
     }
 
     /**
+     * Method to check if grouping get parameter switch is enabled
+     *
+     * plugin.tx_solr.search.grouping
+     */
+    public function getIsGroupingGetParameterSwitchEnabled(bool $defaultIfEmpty = false): bool
+    {
+        $groupingGetParameterSwitchEnabled = $this->getValueByPathOrDefaultValue('plugin.tx_solr.search.grouping.allowGetParameterSwitch', $defaultIfEmpty);
+        return $this->getBool($groupingGetParameterSwitchEnabled);
+    }
+
+    /**
      * Returns the configured numberOfGroups.
      *
      * plugin.tx_solr.search.grouping.numberOfGroups
