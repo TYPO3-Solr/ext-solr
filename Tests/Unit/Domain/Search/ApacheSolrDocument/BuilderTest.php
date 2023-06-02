@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -153,7 +155,7 @@ class BuilderTest extends SetUpUnitTestCase
         $this->siteMock->expects(self::any())->method('getRootPageId')->willReturn(99);
         $this->siteMock->expects(self::once())->method('getDomain')->willReturn('test.typo3.org');
         $this->siteMock->expects(self::any())->method('getSiteHash')->willReturn('testSiteHash');
-        $this->variantIdBuilderMock->expects(self::once())->method('buildFromTypeAndUid')->with('news', 4711)->willReturn('testVariantId');
+        $this->variantIdBuilderMock->expects(self::once())->method('buildFromTypeAndUid')->with($type, 4711, $fakeRecord, $this->siteMock)->willReturn('testVariantId');
 
         $document = $this->documentBuilder->fromRecord($fakeRecord, $type, 99, 'r:0');
 

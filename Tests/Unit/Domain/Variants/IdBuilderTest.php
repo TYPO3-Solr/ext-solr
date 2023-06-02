@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -15,8 +17,13 @@
 
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Variants;
 
+use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\Domain\Variants\IdBuilder;
+use ApacheSolrForTypo3\Solr\Event\Variants\AfterVariantIdWasBuiltEvent;
+use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use TYPO3\CMS\Core\EventDispatcher\NoopEventDispatcher;
+use TYPO3\CMS\Core\Tests\Unit\Fixtures\EventDispatcher\MockEventDispatcher;
 
 /**
  * Testcase to check if the IdBuilder can be used to build proper variantIds.
@@ -25,10 +32,7 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
  */
 class IdBuilderTest extends SetUpUnitTestCase
 {
-    /**
-     * @var string
-     */
-    protected $oldEncryptionKey;
+    protected string $oldEncryptionKey;
 
     protected function setUp(): void
     {
@@ -46,26 +50,26 @@ class IdBuilderTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function canBuildVariantId()
+    public function canBuildVariantId(): void
     {
-        $build = new IdBuilder();
-        $variantId = $build->buildFromTypeAndUid('pages', 4711);
+        $build = new IdBuilder(new NoopEventDispatcher());
+        $variantId = $build->buildFromTypeAndUid('pages', 4711, [], $this->createMock(Site::class), new Document());
         self::assertSame('e99b3552a0451f1a2e7aca4ac06ccaba063393de/pages/4711', $variantId);
     }
 
     /**
      * @test
      */
-    public function canRegisterCustomHook()
+    public function canUseCustomEventListener(): void
     {
-        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyVariantId']['test'] = CustomIdModifier::class;
-
-        $build = new IdBuilder();
-        $variantId = $build->buildFromTypeAndUid('pages', 4711);
+        $eventDispatcher = new MockEventDispatcher();
+        $eventDispatcher->addListener(function (AfterVariantIdWasBuiltEvent $event) {
+            $event->setVariantId('mycustomid');
+        });
+        $build = new IdBuilder($eventDispatcher);
+        $variantId = $build->buildFromTypeAndUid('pages', 4711, [], $this->createMock(Site::class), new Document());
 
         // the variantId should be overwritten by the custom modifier
         self::assertSame('mycustomid', $variantId);
-
-        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyVariantId'] = [];
     }
 }
