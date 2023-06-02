@@ -168,10 +168,7 @@
         "ext-solrfluidgrouping": "^11.0",
         "ext-solrmlt": "^11.0",
         "Apache-Solr": [
-          "8.11.4",
-          "8.11.3",
-          "8.11.2",
-          "8.11.1"
+          "9.2.1"
         ],
         "configset": "ext_solr_11_6_0"
       },
