@@ -33,10 +33,9 @@ use TYPO3\CMS\Reports\Status;
 class SolrVersionStatus extends AbstractSolrStatus
 {
     /**
-     * Required Solr version. The version that gets installed when using the
-     * provided install-script EXT:solr/Resources/Private/Install/install-solr.sh
+     * Required Solr version. The version that gets installed when using the provided Docker image.
      */
-    public const REQUIRED_SOLR_VERSION = '8.11.1';
+    public const REQUIRED_SOLR_VERSION = '9.2.1';
 
     /**
      * Compiles a version check against each configured Solr server.

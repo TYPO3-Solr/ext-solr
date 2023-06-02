@@ -148,28 +148,10 @@ The following example shows how you can run our configuration with the official 
     sudo chown -R 8983:8983 ~/mysolr
     docker run -d -p 8983:8983 -v ~/mysolr:/var/solr/data solr:8.5
 
-
-Shipped install script (Not recommended)
-----------------------------------------
-
-With the extension we ship and install script that can be used for a **development** context or as inspiration for own deployments. It creates a solr server with a core for all languages.
-This script is located in "Resources/Private/Install" an it installs a configured solr server that is usable with EXT:solr.
-
-By default this script is not executable and you need to add the execute permissions to your user to run it.
-
-The example below shows how to install a solr server to /home/developer
-
-.. code-block:: bash
-
-    chmod u+x ./Resources/Private/Install/install-solr.sh
-    ./Resources/Private/Install/install-solr.sh -d /home/developer
-
-After running the script you are able to open a solr server with over the loopback address. Which means, when you want to access it from outside, you need to create an ssh tunnel.
-
 Other Setup
 -----------
 
-Beside the install script and Docker there are various possibilities to setup solr. All of these possibilities are not
+Beside the Docker there are various possibilities to setup solr. All of these possibilities are not
 officially supported, but the simplify the setup i want to mention them shortly here and summarize the needed steps.
 
 Known Installers
