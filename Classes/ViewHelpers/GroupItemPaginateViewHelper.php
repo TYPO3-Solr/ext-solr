@@ -92,26 +92,29 @@ class GroupItemPaginateViewHelper extends AbstractSolrViewHelper
 
     protected function getTemplateObject(): StandaloneView
     {
-        $setup = $this->getConfigurationManager()->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT);
+        /** @var SearchResultSet $resultSet */
+        $resultSet = $this->arguments['resultSet'];
+        $configuration = $resultSet->getUsedSearchRequest()->getContextTypoScriptConfiguration();
+        $viewConfiguration = $configuration->getValueByPath('plugin.tx_solr.view.');
 
         $layoutRootPaths = [];
         $layoutRootPaths[] = GeneralUtility::getFileAbsFileName('EXT:solr/Resources/Private/Layouts/ViewHelpers/');
-        if (isset($setup['plugin.']['tx_solr.']['view.']['layoutRootPaths.'])) {
-            foreach ($setup['plugin.']['tx_solr.']['view.']['layoutRootPaths.'] as $layoutRootPath) {
+        if (isset($viewConfiguration['layoutRootPaths.'])) {
+            foreach ($viewConfiguration['layoutRootPaths.'] as $layoutRootPath) {
                 $layoutRootPaths[] = GeneralUtility::getFileAbsFileName(rtrim($layoutRootPath, '/') . '/ViewHelpers/');
             }
         }
         $partialRootPaths = [];
         $partialRootPaths[] = GeneralUtility::getFileAbsFileName('EXT:solr/Resources/Private/Partials/ViewHelpers/');
-        if (isset($setup['plugin.']['tx_solr.']['view.']['partialRootPaths.'])) {
-            foreach ($setup['plugin.']['tx_solr.']['view.']['partialRootPaths.'] as $partialRootPath) {
+        if (isset($viewConfiguration['partialRootPaths.'])) {
+            foreach ($viewConfiguration['partialRootPaths.'] as $partialRootPath) {
                 $partialRootPaths[] = GeneralUtility::getFileAbsFileName(rtrim($partialRootPath, '/') . '/ViewHelpers/');
             }
         }
         $templateRootPaths = [];
         $templateRootPaths[] = GeneralUtility::getFileAbsFileName('EXT:solr/Resources/Private/Templates/ViewHelpers/');
-        if (isset($setup['plugin.']['tx_solr.']['view.']['templateRootPaths.'])) {
-            foreach ($setup['plugin.']['tx_solr.']['view.']['templateRootPaths.'] as $templateRootPath) {
+        if (isset($viewConfiguration['templateRootPaths.'])) {
+            foreach ($viewConfiguration['templateRootPaths.'] as $templateRootPath) {
                 $templateRootPaths[] = GeneralUtility::getFileAbsFileName(rtrim($templateRootPath, '/') . '/ViewHelpers/');
             }
         }
@@ -127,6 +130,7 @@ class GroupItemPaginateViewHelper extends AbstractSolrViewHelper
 
         return $view;
     }
+
     /**
      * Determines the number of results per page. When nothing is configured 10 will be returned.
      */
