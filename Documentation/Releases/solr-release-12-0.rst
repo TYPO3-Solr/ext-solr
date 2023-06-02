@@ -39,6 +39,16 @@ The hook :php:`$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexP
 interface :php:`ApacheSolrForTypo3\Solr\SubstitutePageIndexer` are now superseded
 by the PSR-14 event :php:`ApacheSolrForTypo3\Solr\Event\Indexing\AfterPageDocumentIsCreatedForIndexingEvent`.
 
+The hook :php:`$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessIndexQueueInitialization']` and its
+interface :php:`ApacheSolrForTypo3\Solr\IndexQueue\InitializationPostProcessor` are now superseded
+by the PSR-14 event :php:`ApacheSolrForTypo3\Solr\Event\IndexQueue\AfterIndexQueueHasBeenInitializedEvent`
+
+The hook :php:`$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessFetchRecordsForIndexQueueItem']` is now superseded
+by the PSR-14 event :php:`ApacheSolrForTypo3\Solr\Event\IndexQueue\AfterRecordsForIndexQueueItemsHaveBeenRetrievedEvent`
+
+The hook :php:`$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueuePageIndexer']['dataUrlModifier']`
+and the according interface :php:`ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerDataUrlModifier`
+is now superseded by the PSR-14 event :php:`ApacheSolrForTypo3\Solr\Event\Indexing\AfterFrontendPageUriForIndexingHasBeenGeneratedEvent`
 
 Contributors
 ============

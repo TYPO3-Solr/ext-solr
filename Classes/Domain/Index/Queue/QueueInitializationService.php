@@ -18,13 +18,13 @@ declare(strict_types=1);
 namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue;
 
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
-use ApacheSolrForTypo3\Solr\IndexQueue\InitializationPostProcessor;
+use ApacheSolrForTypo3\Solr\Event\IndexQueue\AfterIndexQueueHasBeenInitializedEvent;
 use ApacheSolrForTypo3\Solr\IndexQueue\Initializer\AbstractInitializer;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use Doctrine\DBAL\ConnectionException;
 use Doctrine\DBAL\Exception as DBALException;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use UnexpectedValueException;
 
 /**
  * The queue initialization service is responsible to run the initialization of the index queue for a combination of sites
@@ -36,10 +36,12 @@ use UnexpectedValueException;
 class QueueInitializationService
 {
     protected Queue $queue;
+    protected EventDispatcherInterface $eventDispatcher;
 
-    public function __construct(Queue $queue)
+    public function __construct(Queue $queue, EventDispatcherInterface $eventDispatcher = null)
     {
         $this->queue = $queue;
+        $this->eventDispatcher = $eventDispatcher ?? GeneralUtility::makeInstance(EventDispatcherInterface::class);
     }
 
     /**
@@ -85,6 +87,8 @@ class QueueInitializationService
      * Initializes a set of index configurations for a given site.
      * If one of the indexing configuration names is a * (wildcard) all configurations are used,
      *
+     * @param array<int, string> $indexingConfigurationNames
+     * @return array<string, bool>
      * @throws ConnectionException
      * @throws DBALException
      */
@@ -97,20 +101,6 @@ class QueueInitializationService
         foreach ($indexingConfigurationNames as $indexingConfigurationName) {
             $initializationStatus[$indexingConfigurationName] = $this->applyInitialization($site, (string)$indexingConfigurationName);
         }
-
-        if (!isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessIndexQueueInitialization'])) {
-            return $initializationStatus;
-        }
-
-        foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessIndexQueueInitialization'] as $classReference) {
-            $indexQueueInitializationPostProcessor = GeneralUtility::makeInstance($classReference);
-            if ($indexQueueInitializationPostProcessor instanceof InitializationPostProcessor) {
-                $indexQueueInitializationPostProcessor->postProcessIndexQueueInitialization($site, $indexingConfigurationNames, $initializationStatus);
-            } else {
-                throw new UnexpectedValueException(get_class($indexQueueInitializationPostProcessor) . ' must implement interface ' . InitializationPostProcessor::class, 1345815561);
-            }
-        }
-
         return $initializationStatus;
     }
 
@@ -136,8 +126,6 @@ class QueueInitializationService
 
     /**
      * Executes desired initializer
-     *
-     * @throws DBALException
      */
     protected function executeInitializer(
         Site $site,
@@ -153,6 +141,9 @@ class QueueInitializationService
         $initializer->setIndexingConfigurationName($indexingConfigurationName);
         $initializer->setIndexingConfiguration($indexConfiguration);
 
-        return $initializer->initialize();
+        $isInitialized = $initializer->initialize();
+        $event = new AfterIndexQueueHasBeenInitializedEvent($initializer, $site, $indexingConfigurationName, $type, $indexConfiguration, $isInitialized);
+        $event = $this->eventDispatcher->dispatch($event);
+        return $event->isInitialized();
     }
 }
