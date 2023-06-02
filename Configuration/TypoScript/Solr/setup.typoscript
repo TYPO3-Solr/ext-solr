@@ -162,6 +162,14 @@ plugin.tx_solr {
       }
     }
 
+    grouping = 0
+    grouping {
+      numberOfGroups = 5
+      numberOfResultsPerGroup = 3
+      groups {
+      }
+    }
+
     results {
       resultsHighlighting = 0
       resultsHighlighting {
