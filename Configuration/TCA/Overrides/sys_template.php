@@ -131,9 +131,3 @@ defined('TYPO3') or die('Access denied.');
     'Configuration/TypoScript/Examples/PidQueryGroup/',
     'Search - (Example) Querygroup on pid field'
 );
-
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile(
-    'solr',
-    'Configuration/TypoScript/Examples/GroupedSuggest/',
-    'Search - (Example) Suggest with grouped results'
-);
