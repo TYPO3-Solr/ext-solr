@@ -347,25 +347,6 @@ class TypoScriptConfiguration
     }
 
     /**
-     * Returns the configured database table for an indexing queue configuration or
-     * the configurationName itself that is used by convention as tableName when no
-     * other table name is present.
-     *
-     * plugin.tx_solr.index.queue.<configurationName>.table or configurationName
-     *
-     * @deprecated queue.[indexConfig].table is deprecated and will be removed in v13. Use plugin.tx_solr.index.queue.[indexConfig].type instead
-     */
-    public function getIndexQueueTableNameOrFallbackToConfigurationName(string $configurationName = ''): string
-    {
-        trigger_error(
-            'queue.[indexConfig].table is deprecated and will be removed in v13. Use plugin.tx_solr.index.queue.[indexConfig].type instead.',
-            E_USER_DEPRECATED
-        );
-
-        return $this->getIndexQueueTypeOrFallbackToConfigurationName($configurationName);
-    }
-
-    /**
      * Returns the configured type for an indexing queue configuration (usually a db table) or
      * the configurationName itself that is used by convention as type when no
      * other type is present.

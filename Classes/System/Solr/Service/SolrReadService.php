@@ -23,7 +23,6 @@ use ApacheSolrForTypo3\Solr\System\Solr\SolrCommunicationException;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrInternalServerErrorException;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrUnavailableException;
 use RuntimeException;
-use Solarium\Exception\HttpException;
 
 /**
  * Class SolrReadService
@@ -72,23 +71,6 @@ class SolrReadService extends AbstractSolrService
     public function getResponse(): ?ResponseAdapter
     {
         return $this->responseCache;
-    }
-
-    /**
-     * This method maps the failed solr requests to a meaningful exception.
-     *
-     * @throws SolrCommunicationException
-     * @deprecated handleErrorResponses is deprecated and will be removed in v12, use handleErrorResponse() instead
-     */
-    protected function handleErrorResponses(HttpException $exception)
-    {
-        trigger_error(
-            'handleErrorResponses() is deprecated and will be removed in v12, use handleErrorResponse() instead',
-            E_USER_DEPRECATED
-        );
-
-        $solrResponse = new ResponseAdapter($exception->getBody(), $exception->getCode(), $exception->getStatusMessage());
-        $this->handleErrorResponse($solrResponse);
     }
 
     /**

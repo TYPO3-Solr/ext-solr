@@ -22,7 +22,7 @@ use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\Configuratio
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\MountPagesUpdater;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\RootPageResolver;
 use ApacheSolrForTypo3\Solr\Domain\Site\Exception\UnexpectedTYPO3SiteInitializationException;
-use ApacheSolrForTypo3\Solr\Domain\Site\SiteInterface;
+use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\FrontendEnvironment;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
@@ -392,7 +392,7 @@ class DataUpdateHandler extends AbstractUpdateHandler
 
         foreach ($rootPageIds as $configurationPageId) {
             $site = $this->getSiteRepository()->getSiteByPageId($configurationPageId);
-            if (!$site instanceof SiteInterface) {
+            if (!$site instanceof Site) {
                 continue;
             }
             $solrConfiguration = $site->getSolrConfiguration();

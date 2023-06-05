@@ -131,13 +131,9 @@ class TypoScriptConfigurationTest extends SetUpUnitTestCase
 
         $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
 
-        $customTableExpected = @$configuration->getIndexQueueTableNameOrFallbackToConfigurationName('pages');
-        self::assertSame($customTableExpected, 'pages', 'Can not fallback to configurationName');
         $customTableExpected = $configuration->getIndexQueueTypeOrFallbackToConfigurationName('pages');
         self::assertSame($customTableExpected, 'pages', 'Can not fallback to configurationName');
 
-        $customTableExpected = @$configuration->getIndexQueueTableNameOrFallbackToConfigurationName('custom');
-        self::assertSame($customTableExpected, 'tx_model_custom', 'Usage of custom table tx_model_custom was expected');
         $customTableExpected = @$configuration->getIndexQueueTypeOrFallbackToConfigurationName('custom');
         self::assertSame($customTableExpected, 'tx_model_custom', 'Usage of custom table tx_model_custom was expected');
     }
