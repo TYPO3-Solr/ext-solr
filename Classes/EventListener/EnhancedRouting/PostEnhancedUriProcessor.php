@@ -17,7 +17,7 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\EventListener\EnhancedRouting;
 
-use ApacheSolrForTypo3\Solr\Event\Routing\PostProcessUriEvent;
+use ApacheSolrForTypo3\Solr\Event\Routing\AfterUriIsProcessedEvent;
 use ApacheSolrForTypo3\Solr\Routing\RoutingService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -28,7 +28,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class PostEnhancedUriProcessor
 {
-    public function __invoke(PostProcessUriEvent $event): void
+    public function __invoke(AfterUriIsProcessedEvent $event): void
     {
         if (!$event->hasRouting()) {
             return;

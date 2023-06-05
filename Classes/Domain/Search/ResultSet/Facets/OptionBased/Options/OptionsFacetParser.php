@@ -20,7 +20,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Opt
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetParser;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
-use ApacheSolrForTypo3\Solr\Event\Parser\AfterFacetParsedEvent;
+use ApacheSolrForTypo3\Solr\Event\Parser\AfterFacetIsParsedEvent;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -99,9 +99,9 @@ class OptionsFacetParser extends AbstractFacetParser
         $this->applyReverseOrder($facet, $facetConfiguration);
 
         if (isset($this->eventDispatcher)) {
-            /** @var AfterFacetParsedEvent $afterFacetParsedEvent */
+            /** @var AfterFacetIsParsedEvent $afterFacetParsedEvent */
             $afterFacetParsedEvent = $this->eventDispatcher
-                ->dispatch(new AfterFacetParsedEvent($facet, $facetConfiguration));
+                ->dispatch(new AfterFacetIsParsedEvent($facet, $facetConfiguration));
             $facet = $afterFacetParsedEvent->getFacet();
         }
 

@@ -25,7 +25,7 @@ use ApacheSolrForTypo3\Solr\Task\IndexQueueWorkerTask;
  *
  * @author Lars Tode <lars.tode@dkd.de>
  */
-final class BeforeIndexItemEvent
+final class BeforeItemIsIndexedEvent
 {
     private Item $item;
 

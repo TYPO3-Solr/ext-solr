@@ -50,6 +50,30 @@ Related hooks around this system have been moved to PSR-14 events as well:
   been replaced by :php:`ApacheSolrForTypo3\Solr\Event\Search\AfterSearchHasBeenExecutedEvent`
 
 
+SignalSlots replaced by PSR-14 events
+-------------------------------------
+
+The previously available Extbase Signals have been removed from EXT:solr in favor of PSR-14 Events.
+
+* The signal :php:`ApacheSolrForTypo3\Solr\Domain\Index\IndexService::beforeIndexItems`
+  has been replaced by :php:`ApacheSolrForTypo3\Solr\Event\Indexing\BeforeItemsAreIndexedEvent`
+* The signal :php:`ApacheSolrForTypo3\Solr\Domain\Index\IndexService::beforeIndexItem`
+  has been replaced by :php:`ApacheSolrForTypo3\Solr\Event\Indexing\BeforeItemIsIndexedEvent`
+* The signal :php:`ApacheSolrForTypo3\Solr\Domain\Index\IndexService::afterIndexItem`
+  has been replaced by :php:`ApacheSolrForTypo3\Solr\Event\Indexing\AfterItemHasBeenIndexedEvent`
+* The signal :php:`ApacheSolrForTypo3\Solr\Domain\Index\IndexService::afterIndexItems`
+  has been replaced by :php:`ApacheSolrForTypo3\Solr\Event\Indexing\AfterItemsHaveBeenIndexedEvent`
+* The signal :php:`ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\OptionFacetParser::optionsParsed`
+  has been replaced by :php:`ApacheSolrForTypo3\Solr\Event\Parser\AfterFacetIsParsedEvent`
+* The signal :php:`ApacheSolrForTypo3\Solr\Controller\SearchController::resultsAction`
+  has been replaced by :php:`ApacheSolrForTypo3\Solr\Event\Search\BeforeSearchResultIsShownEvent`
+* The signal :php:`ApacheSolrForTypo3\Solr\Controller\SearchController::formAction`
+  has been replaced by :php:`ApacheSolrForTypo3\Solr\Event\Search\BeforeSearchFormIsShownEvent`
+* The signal :php:`ApacheSolrForTypo3\Solr\Controller\SearchController::frequentlySearchedAction`
+  has been replaced by :php:`ApacheSolrForTypo3\Solr\Event\Search\AfterFrequentlySearchHasBeenExecutedEvent`
+* The signal :php:`ApacheSolrForTypo3\Solr\Controller\SearchController::beforeSearch`
+  has been removed (see the new PSR-14 events below)
+
 Hooks replaced by PSR-14 events
 -------------------------------
 
@@ -89,6 +113,14 @@ is now superseded by the PSR-14 event :php:`ApacheSolrForTypo3\Solr\Event\Indexi
 The hook :php:`$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessIndexQueueUpdateItem']`
 is now superseded by the PSR-14 event :php:`ApacheSolrForTypo3\Solr\Event\Indexing\AfterIndexQueueItemHasBeenMarkedForReindexingEvent`
 
+PSR-14 events renamed
+---------------------
+
+Previous PSR-14 events have been renamed to be consistent with other PSR-14 Events in EXT:solr.
+
+* :php:`ApacheSolrForTypo3\Solr\Event\Routing\PostProcessUriEvent` is now named :php:`ApacheSolrForTypo3\Solr\Event\Routing\AfterUriIsProcessedEvent`
+* :php:`ApacheSolrForTypo3\Solr\Event\Routing\BeforeProcessCachedVariablesEvent` is now named :php:`ApacheSolrForTypo3\Solr\Event\Routing\BeforeCachedVariablesAreProcessedEvent`
+* :php:`ApacheSolrForTypo3\Solr\Event\Routing\BeforeReplaceVariableInCachedUrlEvent` is now named :php:`ApacheSolrForTypo3\Solr\Event\Routing\BeforeVariableInCachedUrlAreReplacedEvent`
 
 Frontend Helper Changes
 -----------------------

@@ -21,11 +21,11 @@ use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\Task\IndexQueueWorkerTask;
 
 /**
- * This event is dispatched after the indexing of items ends
+ * This event is dispatched before the indexing of items starts
  *
  * @author Lars Tode <lars.tode@dkd.de>
  */
-final class AfterIndexItemsEvent
+final class BeforeItemsAreIndexedEvent
 {
     /**
      * @var array<Item>

@@ -24,7 +24,7 @@ use Psr\Http\Message\UriInterface;
  *
  * @author Lars Tode <lars.tode@dkd.de>
  */
-class BeforeProcessCachedVariablesEvent
+class BeforeCachedVariablesAreProcessedEvent
 {
     /**
      * The uri, used to identify, what placeholder is part of the path and which one is part of the query

@@ -24,7 +24,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacet;
  *
  * @author Lars Tode <lars.tode@dkd.de>
  */
-final class AfterFacetParsedEvent
+final class AfterFacetIsParsedEvent
 {
     /**
      * The facet that was processed

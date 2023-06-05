@@ -21,42 +21,28 @@ use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\Task\IndexQueueWorkerTask;
 
 /**
- * This event is dispatched before the indexing of items starts
+ * This event is dispatched after the indexing of an item
  *
  * @author Lars Tode <lars.tode@dkd.de>
  */
-final class BeforeIndexItemsEvent
+final class AfterItemHasBeenIndexedEvent
 {
-    /**
-     * @var array<Item>
-     */
-    private array $items;
+    private Item $item;
 
     private ?IndexQueueWorkerTask $task;
 
     private string $runId;
 
-    public function __construct(array $items, ?IndexQueueWorkerTask $task, string $runId)
+    public function __construct(Item $item, ?IndexQueueWorkerTask $task, string $runId)
     {
-        $this->items = $items;
+        $this->item = $item;
         $this->task = $task;
         $this->runId = $runId;
     }
 
-    /**
-     * @return array<Item>
-     */
-    public function getItems(): array
+    public function getItem(): Item
     {
-        return $this->items;
-    }
-
-    /**
-     * @param array<Item> $items
-     */
-    public function setItems(array $items): void
-    {
-        $this->items = $items;
+        return $this->item;
     }
 
     public function getTask(): ?IndexQueueWorkerTask
