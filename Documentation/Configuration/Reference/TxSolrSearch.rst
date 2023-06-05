@@ -846,7 +846,7 @@ The following example shows how to keep all options of all facets by keeping the
 plugin.tx_solr.search.faceting.keepAllFacetsOnSelection = 1
 plugin.tx_solr.search.faceting.countAllFacetsForSelection = 1
 plugin.tx_solr.search.faceting.minimumCount = 0
-```
+```````````````````````````````````````````````
 
 faceting.showAllLink.wrap
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -884,7 +884,7 @@ Index style: tx_solr[filter][0]=type:pages
 Associative style: tx_solr[filter][type:pages]=1
 
 faceting.urlParameterSort
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 :Type: Boolean
 :TS Path: plugin.tx_solr.search.faceting.urlParameterSort
@@ -1491,8 +1491,8 @@ EXT:solr 10)
 grouping
 --------
 
-The solr grouping feature can be used to group documents based on a solr field
-or a set of solr queries.
+The solr grouping feature can be used to group documents based on a Solr field
+or a set of Solr queries.
 
 ..  note::
 
@@ -1551,7 +1551,7 @@ grouping.numberOfGroups
 :Type: Integer
 :TS Path: plugin.tx_solr.search.grouping.numberOfGroups
 :Default: 5
-:Since: 1.0
+:Since: 12.0
 
 grouping.numberOfResultsPerGroup
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1559,7 +1559,7 @@ grouping.numberOfResultsPerGroup
 :Type: Integer
 :TS Path: plugin.tx_solr.search.grouping.numberOfResultsPerGroup
 :Default: 5
-:Since: 1.0
+:Since: 12.0
 
 grouping.allowGetParameterSwitch
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1567,7 +1567,9 @@ grouping.allowGetParameterSwitch
 :Type: Boolean
 :TS Path: plugin.tx_solr.search.grouping.allowGetParameterSwitch
 :Default: 0
-:Since: 1.0
+:Since: 12.0
+
+If set, grouping can be disabled via "tx_solr[grouping]=off"
 
 grouping.groups.[groupName].field
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1575,9 +1577,9 @@ grouping.groups.[groupName].field
 :Type: String
 :TS Path: plugin.tx_solr.search.grouping.[groupName].field
 :Default: empty
-:Since: 1.0
+:Since: 12.0
 
-Defines the solr field where a group should be build on.
+Defines the Solr field where a group should be build on.
 
 Note: Use either field or queries no mix. Groups with field are field groups,
 groups with queries are query groups.
@@ -1588,7 +1590,7 @@ grouping.groups.[groupName].queries
 :Type: Array
 :TS Path: plugin.tx_solr.search.grouping.[groupName].queries
 :Default: empty
-:Since: 1.0
+:Since: 12.0
 
 Defines an array of queries to group the results in.
 
