@@ -20,17 +20,17 @@ namespace ApacheSolrForTypo3\Solr\Domain\Site;
 use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
-use Doctrine\DBAL\Exception as DBALException;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Site\Entity\Site as Typo3Site;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Class
+ * Represents all information for EXT:solr of a given TYPO3 Site to retrieve
+ * configuration and setup from a page.
  *
  * (c) 2011-2015 Ingo Renner <ingo@typo3.org>
  */
-class Site implements SiteInterface
+class Site
 {
     protected TypoScriptConfiguration $configuration;
 
@@ -196,9 +196,18 @@ class Site implements SiteInterface
     }
 
     /**
-     * @inheritDoc
+     * Generates a list of page IDs in this site and returns it.
      *
-     * @throws DBALException
+     * Attentions:
+     * * This includes all page types!
+     * * Deleted pages are not included.
+     * * Uses the root page, if $pageId is not given
+     * * Includes the given $pageId
+     *
+     * @param int|null $pageId Page ID from where to start collection sub-pages. Uses and includes the root page if none given.
+     * @param string|null $indexQueueConfigurationName The name of index queue.
+     *
+     * @return array Array of pages (IDs) in this site
      */
     public function getPages(
         ?int $pageId = null,
@@ -216,7 +225,11 @@ class Site implements SiteInterface
     }
 
     /**
-     * @inheritDoc
+     * Generates the site's unique Site Hash.
+     *
+     * The Site Hash is build from the site's main domain, the system encryption
+     * key, and the extension "tx_solr". These components are concatenated and
+     * sha1-hashed.
      */
     public function getSiteHash(): string
     {
@@ -224,7 +237,9 @@ class Site implements SiteInterface
     }
 
     /**
-     * @inheritDoc
+     * Gets the site's main domain.
+     *
+     * @return string The site's main domain.
      */
     public function getDomain(): string
     {
@@ -232,7 +247,9 @@ class Site implements SiteInterface
     }
 
     /**
-     * @inheritDoc
+     * Gets the site's root page record.
+     *
+     * @return array The site's root page.
      */
     public function getRootPageRecord(): array
     {
@@ -240,7 +257,9 @@ class Site implements SiteInterface
     }
 
     /**
-     * @inheritDoc
+     * Gets the site's root page's title.
+     *
+     * @return string The site's root page's title
      */
     public function getTitle(): string
     {
@@ -248,7 +267,7 @@ class Site implements SiteInterface
     }
 
     /**
-     * @inheritDoc
+     * Returns all Solr connection configurations.
      */
     public function getAllSolrConnectionConfigurations(): array
     {
@@ -263,7 +282,7 @@ class Site implements SiteInterface
     }
 
     /**
-     * @inheritDoc
+     * Returns the EXT:solr state configured in site.
      */
     public function isEnabled(): bool
     {
