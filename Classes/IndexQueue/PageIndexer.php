@@ -21,11 +21,11 @@ use ApacheSolrForTypo3\Solr\Access\Rootline;
 use ApacheSolrForTypo3\Solr\Access\RootlineElement;
 use ApacheSolrForTypo3\Solr\Domain\Index\PageIndexer\PageUriBuilder;
 use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
-use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use ApacheSolrForTypo3\Solr\System\Util\SiteUtility;
 use Doctrine\DBAL\Exception as DBALException;
 use Exception;
+use Psr\Log\LogLevel;
 use TYPO3\CMS\Core\Type\Bitmask\PageTranslationVisibility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -173,8 +173,7 @@ class PageIndexer extends Indexer
             }
 
             if ($this->loggingEnabled) {
-                $this->logger->log(
-                    SolrLogManager::INFO,
+                $this->logger->info(
                     'Page Access Groups',
                     [
                         'item' => (array)$item,
@@ -307,10 +306,10 @@ class PageIndexer extends Indexer
         $indexActionResult = $response->getActionResult('indexPage');
 
         if ($this->loggingEnabled) {
-            $logSeverity = SolrLogManager::INFO;
+            $logSeverity = LogLevel::INFO;
             $logStatus = 'Info';
             if (!empty($indexActionResult['pageIndexed'])) {
-                $logSeverity = SolrLogManager::NOTICE;
+                $logSeverity = LogLevel::NOTICE;
                 $logStatus = 'Success';
             }
 

@@ -189,9 +189,8 @@ abstract class AbstractBaseController extends ActionController
     protected function logSolrUnavailable(): void
     {
         if ($this->typoScriptConfiguration->getLoggingExceptions()) {
-            /** @var SolrLogManager $logger */
             $logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
-            $logger->log(SolrLogManager::ERROR, 'Solr server is not available');
+            $logger->error('Solr server is not available');
         }
     }
 }

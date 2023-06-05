@@ -77,9 +77,8 @@ abstract class AbstractStrategyTest extends SetUpUnitTestCase
         if ($status !== 200) {
             $solrLogManagerMock
                 ->expects(self::once())
-                ->method('log')
+                ->method('error')
                 ->with(
-                    SolrLogManager::ERROR,
                     'Couldn\'t delete index document',
                     [
                         'status' => $status,

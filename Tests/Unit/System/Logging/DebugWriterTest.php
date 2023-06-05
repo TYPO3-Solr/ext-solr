@@ -15,8 +15,8 @@
 
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\Logging;
 
+use _PHPStan_a3459023a\Psr\Log\LogLevel;
 use ApacheSolrForTypo3\Solr\System\Logging\DebugWriter;
-use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 
 /**
@@ -35,7 +35,7 @@ class DebugWriterTest extends SetUpUnitTestCase
 
         //we have a matching devIpMask and the debugOutput of log messages is enabled => debug should be written
         $logWriter->expects(self::once())->method('writeDebugMessage');
-        $logWriter->write(SolrLogManager::INFO, 'test');
+        $logWriter->write(LogLevel::INFO, 'test');
     }
 
     /**
@@ -49,7 +49,7 @@ class DebugWriterTest extends SetUpUnitTestCase
 
         //we have a matching devIpMask and the debugOutput of log messages is enabled => debug should be written
         $logWriter->expects(self::never())->method('writeDebugMessage');
-        $logWriter->write(SolrLogManager::INFO, 'test');
+        $logWriter->write(LogLevel::INFO, 'test');
     }
 
     /**
@@ -63,6 +63,6 @@ class DebugWriterTest extends SetUpUnitTestCase
 
         //we have a matching devIpMask and the debugOutput of log messages is enabled => debug should be written
         $logWriter->expects(self::never())->method('writeDebugMessage');
-        $logWriter->write(SolrLogManager::INFO, 'test');
+        $logWriter->write(LogLevel::INFO, 'test');
     }
 }

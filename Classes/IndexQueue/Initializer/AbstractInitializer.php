@@ -22,6 +22,7 @@ use ApacheSolrForTypo3\Solr\Domain\Site\Site;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
 use Doctrine\DBAL\Exception as DBALException;
+use Psr\Log\LogLevel;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Messaging\FlashMessageQueue;
@@ -384,7 +385,7 @@ abstract class AbstractInitializer implements IndexQueueInitializer
             return;
         }
 
-        $logSeverity = isset($logData['error']) ? SolrLogManager::ERROR : SolrLogManager::NOTICE;
+        $logSeverity = isset($logData['error']) ? LogLevel::ERROR : LogLevel::NOTICE;
         $logData = array_merge($logData, [
             'site' => $this->site->getLabel(),
             'indexing configuration name' => $this->indexingConfigurationName,

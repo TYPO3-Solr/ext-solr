@@ -29,6 +29,7 @@ use ApacheSolrForTypo3\Solr\System\Records\Queue\EventQueueItemRepository;
 use ApacheSolrForTypo3\Solr\System\TCA\TCAService;
 use ApacheSolrForTypo3\Solr\Task\EventQueueWorkerTask;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
+use Psr\Log\LogLevel;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
@@ -508,7 +509,7 @@ class RecordMonitorTest extends IntegrationTest
             ->disableOriginalConstructor()
             ->getMock();
 
-        $expectedSeverity = SolrLogManager::WARNING;
+        $expectedSeverity = LogLevel::WARNING;
         $expectedMessage = 'Record without valid pid was processed tt_content:123';
         $loggerMock->expects(self::once())->method('log')->with($expectedSeverity, $expectedMessage);
 

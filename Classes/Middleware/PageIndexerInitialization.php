@@ -44,10 +44,8 @@ class PageIndexerInitialization implements MiddlewareInterface
             $jsonEncodedParameters = $request->getHeader(PageIndexerRequest::SOLR_INDEX_HEADER)[0];
             $pageIndexerRequest = GeneralUtility::makeInstance(PageIndexerRequest::class, $jsonEncodedParameters);
             if (!$pageIndexerRequest->isAuthenticated()) {
-                /** @var SolrLogManager $logger */
                 $logger = GeneralUtility::makeInstance(SolrLogManager::class, self::class);
-                $logger->log(
-                    SolrLogManager::ERROR,
+                $logger->error(
                     'Invalid Index Queue Frontend Request detected!',
                     [
                         'page indexer request' => (array)$pageIndexerRequest,

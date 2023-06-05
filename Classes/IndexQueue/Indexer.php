@@ -37,6 +37,7 @@ use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use Doctrine\DBAL\Exception as DBALException;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use Psr\Log\LogLevel;
 use RuntimeException;
 use Throwable;
 use TYPO3\CMS\Core\Context\LanguageAspectFactory;
@@ -653,10 +654,10 @@ class Indexer extends AbstractIndexer
         $logData = ['item' => (array)$item, 'documents' => $documents, 'response' => (array)$response];
 
         if ($response->getHttpStatus() == 200) {
-            $severity = SolrLogManager::NOTICE;
+            $severity = LogLevel::NOTICE;
             $message .= 'Success';
         } else {
-            $severity = SolrLogManager::ERROR;
+            $severity = LogLevel::ERROR;
             $message .= 'Failure';
 
             $logData['status'] = $response->getHttpStatus();

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -35,11 +37,11 @@ class DebugWriter
      * When the feature is enabled with: plugin.tx_solr.logging.debugOutput the log writer uses the extbase
      * debug functionality in the frontend, or the console in the backend to display the devlog messages.
      *
-     * @param int|string $level Log level. Value according to \TYPO3\CMS\Core\Log\LogLevel. Alternatively accepts a string.
+     * @param mixed $level Log level. Value according to \Psr\Log\LogLevel.
      * @param string $message Log message.
      * @param array $data Additional data to log
      */
-    public function write(int|string $level, string $message, array $data = []): void
+    public function write(mixed $level, string $message, array $data = []): void
     {
         $debugAllowedForIp = $this->getIsAllowedByDevIPMask();
         if (!$debugAllowedForIp) {
@@ -83,11 +85,11 @@ class DebugWriter
     /**
      * Writes the debug to the output buffer.
      *
-     * @param int|string $level Log level. Value according to \TYPO3\CMS\Core\Log\LogLevel. Alternatively accepts a string.
+     * @param mixed $level Log level. Value according to \Psr\Log\LogLevel.
      * @param string $message Log message.
      * @param array $data Additional data to log
      */
-    protected function writeDebugMessage(int|string $level, string $message = '', array $data = []): void
+    protected function writeDebugMessage(mixed $level, string $message = '', array $data = []): void
     {
         $parameters = [
             'extKey' => 'solr',

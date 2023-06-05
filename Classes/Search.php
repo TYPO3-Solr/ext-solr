@@ -119,8 +119,7 @@ class Search
         try {
             $response = $this->solr->getReadService()->search($query);
             if ($this->configuration->getLoggingQueryQueryString()) {
-                $this->logger->log(
-                    SolrLogManager::INFO,
+                $this->logger->info(
                     'Querying Solr, getting result',
                     [
                         'query string' => $query->getQuery(),
@@ -131,8 +130,7 @@ class Search
             }
         } catch (SolrCommunicationException $e) {
             if ($this->configuration->getLoggingExceptions()) {
-                $this->logger->log(
-                    SolrLogManager::ERROR,
+                $this->logger->error(
                     'Exception while querying Solr',
                     [
                         'exception' => $e->__toString(),
@@ -166,8 +164,7 @@ class Search
             $solrAvailable = true;
         } catch (Throwable $e) {
             if ($this->configuration->getLoggingExceptions()) {
-                $this->logger->log(
-                    SolrLogManager::ERROR,
+                $this->logger->error(
                     'Exception while trying to ping the solr server',
                     [
                         $e->__toString(),

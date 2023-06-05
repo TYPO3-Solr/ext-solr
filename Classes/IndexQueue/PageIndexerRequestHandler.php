@@ -65,8 +65,7 @@ class PageIndexerRequestHandler
 
             if ($request->getParameter('loggingEnabled')) {
                 $logger = GeneralUtility::makeInstance(SolrLogManager::class, get_class($frontendHelper));
-                $logger->log(
-                    SolrLogManager::INFO,
+                $logger->info(
                     'Page indexer request received',
                     [
                         'request' => (array)$request,

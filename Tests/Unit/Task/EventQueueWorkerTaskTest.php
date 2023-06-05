@@ -136,8 +136,8 @@ class EventQueueWorkerTaskTest extends SetUpUnitTestCase
 
         $solrLogManagerMock
             ->expects(self::once())
-            ->method('log')
-            ->with(SolrLogManager::ERROR, self::anything(), self::anything());
+            ->method('error')
+            ->with(self::anything(), self::anything());
 
         $eventQueueItemRepositoryMock
             ->expects(self::once())

@@ -17,7 +17,6 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\System\Solr\Service;
 
-use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use Solarium\QueryType\Extract\Query;
 use Solarium\QueryType\Update\Result;
@@ -45,8 +44,7 @@ class SolrWriteService extends AbstractSolrService
             return [$response->file, $response->file_metadata];
         } catch (Throwable $e) {
             $param = $query->getRequestBuilder()->build($query)->getParams();
-            $this->logger->log(
-                SolrLogManager::ERROR,
+            $this->logger->error(
                 'Extracting text and meta data through Solr Cell over HTTP POST',
                 [
                     'query' => (array)$query,

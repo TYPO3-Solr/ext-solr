@@ -110,8 +110,7 @@ class PageUriBuilder
         $pageIndexUri = $this->applyTypoScriptOverridesOnIndexingUrl($pageIndexUri, $overrideConfiguration);
 
         if (!GeneralUtility::isValidUrl((string)$pageIndexUri)) {
-            $this->logger->log(
-                SolrLogManager::ERROR,
+            $this->logger->error(
                 'Could not create a valid URL to get frontend data while trying to index a page.',
                 [
                     'item' => (array)$item,

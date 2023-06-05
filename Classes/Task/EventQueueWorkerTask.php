@@ -89,8 +89,7 @@ final class EventQueueWorkerTask extends AbstractTask
                     new DelayedProcessingFinishedEvent($event)
                 );
             } catch (Throwable $e) {
-                $this->getSolrLogManager()->log(
-                    SolrLogManager::ERROR,
+                $this->getSolrLogManager()->error(
                     'Couldn\'t process queued event',
                     [
                         'eventQueueItemUid' => $queueItem['uid'],
