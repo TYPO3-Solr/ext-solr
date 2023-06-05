@@ -17,9 +17,9 @@ namespace ApacheSolrForTypo3\Solr\Controller;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\InvalidFacetPackageException;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
-use ApacheSolrForTypo3\Solr\Event\Search\AfterFrequentlySearchedEvent;
-use ApacheSolrForTypo3\Solr\Event\Search\AfterSearchEvent;
-use ApacheSolrForTypo3\Solr\Event\Search\FormEvent;
+use ApacheSolrForTypo3\Solr\Event\Search\AfterFrequentlySearchHasBeenExecutedEvent;
+use ApacheSolrForTypo3\Solr\Event\Search\BeforeSearchFormIsShownEvent;
+use ApacheSolrForTypo3\Solr\Event\Search\BeforeSearchResultIsShownEvent;
 use ApacheSolrForTypo3\Solr\Mvc\Variable\SolrVariableProvider;
 use ApacheSolrForTypo3\Solr\Pagination\ResultsPagination;
 use ApacheSolrForTypo3\Solr\Pagination\ResultsPaginator;
@@ -124,9 +124,9 @@ class SearchController extends AbstractBaseController
             $pagination = GeneralUtility::makeInstance(ResultsPagination::class, $paginator);
             $pagination->setMaxPageNumbers($this->typoScriptConfiguration->getMaxPaginatorLinks());
 
-            /** @var AfterSearchEvent $afterSearchEvent */
+            /** @var BeforeSearchResultIsShownEvent $afterSearchEvent */
             $afterSearchEvent = $this->eventDispatcher->dispatch(
-                new AfterSearchEvent(
+                new BeforeSearchResultIsShownEvent(
                     $searchResultSet,
                     $this->getAdditionalFilters(),
                     $this->typoScriptConfiguration->getSearchPluginNamespace(),
@@ -163,9 +163,9 @@ class SearchController extends AbstractBaseController
             return $this->handleSolrUnavailable();
         }
 
-        /** @var FormEvent $formEvent */
+        /** @var BeforeSearchFormIsShownEvent $formEvent */
         $formEvent = $this->eventDispatcher->dispatch(
-            new FormEvent(
+            new BeforeSearchFormIsShownEvent(
                 $this->searchService->getSearch(),
                 $this->getAdditionalFilters(),
                 $this->typoScriptConfiguration->getSearchPluginNamespace()
@@ -198,9 +198,9 @@ class SearchController extends AbstractBaseController
 
         $this->view->getRenderingContext()->getVariableProvider()->add('searchResultSet', $searchResultSet);
 
-        /** @var AfterFrequentlySearchedEvent $afterFrequentlySearchedEvent*/
+        /** @var AfterFrequentlySearchHasBeenExecutedEvent $afterFrequentlySearchedEvent*/
         $afterFrequentlySearchedEvent = $this->eventDispatcher->dispatch(
-            new AfterFrequentlySearchedEvent(
+            new AfterFrequentlySearchHasBeenExecutedEvent(
                 $searchResultSet,
                 $this->getAdditionalFilters()
             )

@@ -24,7 +24,7 @@ use Psr\Http\Message\UriInterface;
  *
  * @author Lars Tode <lars.tode@dkd.de>
  */
-class PostProcessUriEvent
+class AfterUriIsProcessedEvent
 {
     /**
      * The router configuration

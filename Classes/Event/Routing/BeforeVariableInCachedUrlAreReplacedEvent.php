@@ -24,7 +24,7 @@ use Psr\Http\Message\UriInterface;
  *
  * @author Lars Tode <lars.tode@dkd.de>
  */
-class BeforeReplaceVariableInCachedUrlEvent
+class BeforeVariableInCachedUrlAreReplacedEvent
 {
     protected UriInterface $uri;
 

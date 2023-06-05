@@ -25,7 +25,7 @@ use ApacheSolrForTypo3\Solr\Pagination\ResultsPagination;
  *
  * @author Lars Tode <lars.tode@dkd.de>
  */
-final class AfterSearchEvent
+final class BeforeSearchResultIsShownEvent
 {
     private SearchResultSet $resultSet;
     private array $additionalFilters;

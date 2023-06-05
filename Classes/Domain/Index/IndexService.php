@@ -17,10 +17,10 @@ namespace ApacheSolrForTypo3\Solr\Domain\Index;
 
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\Domain\Site\Site;
-use ApacheSolrForTypo3\Solr\Event\Indexing\AfterIndexItemEvent;
-use ApacheSolrForTypo3\Solr\Event\Indexing\AfterIndexItemsEvent;
-use ApacheSolrForTypo3\Solr\Event\Indexing\BeforeIndexItemEvent;
-use ApacheSolrForTypo3\Solr\Event\Indexing\BeforeIndexItemsEvent;
+use ApacheSolrForTypo3\Solr\Event\Indexing\AfterItemHasBeenIndexedEvent;
+use ApacheSolrForTypo3\Solr\Event\Indexing\AfterItemsHaveBeenIndexedEvent;
+use ApacheSolrForTypo3\Solr\Event\Indexing\BeforeItemIsIndexedEvent;
+use ApacheSolrForTypo3\Solr\Event\Indexing\BeforeItemsAreIndexedEvent;
 use ApacheSolrForTypo3\Solr\IndexQueue\Indexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
@@ -89,18 +89,18 @@ class IndexService
         // get items to index
         $itemsToIndex = $this->indexQueue->getItemsToIndex($this->site, $limit);
 
-        $beforeIndexItemsEvent = new BeforeIndexItemsEvent($itemsToIndex, $this->getContextTask(), $indexRunId);
+        $beforeIndexItemsEvent = new BeforeItemsAreIndexedEvent($itemsToIndex, $this->getContextTask(), $indexRunId);
         $beforeIndexItemsEvent = $this->eventDispatcher->dispatch($beforeIndexItemsEvent);
         $itemsToIndex = $beforeIndexItemsEvent->getItems();
 
         foreach ($itemsToIndex as $itemToIndex) {
             try {
                 // try indexing
-                $beforeIndexItemEvent = new BeforeIndexItemEvent($itemToIndex, $this->getContextTask(), $indexRunId);
+                $beforeIndexItemEvent = new BeforeItemIsIndexedEvent($itemToIndex, $this->getContextTask(), $indexRunId);
                 $beforeIndexItemEvent = $this->eventDispatcher->dispatch($beforeIndexItemEvent);
                 $itemToIndex = $beforeIndexItemEvent->getItem();
                 $this->indexItem($itemToIndex, $configurationToUse);
-                $afterIndexItemEvent = new AfterIndexItemEvent($itemToIndex, $this->getContextTask(), $indexRunId);
+                $afterIndexItemEvent = new AfterItemHasBeenIndexedEvent($itemToIndex, $this->getContextTask(), $indexRunId);
                 $this->eventDispatcher->dispatch($afterIndexItemEvent);
             } catch (Throwable $e) {
                 $errors++;
@@ -109,7 +109,7 @@ class IndexService
             }
         }
 
-        $afterIndexItemsEvent = new AfterIndexItemsEvent($itemsToIndex, $this->getContextTask(), $indexRunId);
+        $afterIndexItemsEvent = new AfterItemsHaveBeenIndexedEvent($itemsToIndex, $this->getContextTask(), $indexRunId);
         $this->eventDispatcher->dispatch($afterIndexItemsEvent);
 
         if ($enableCommitsSetting && count($itemsToIndex) > 0) {

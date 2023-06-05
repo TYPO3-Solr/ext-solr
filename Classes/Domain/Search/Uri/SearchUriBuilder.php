@@ -19,9 +19,9 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Uri;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Grouping\GroupItem;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
-use ApacheSolrForTypo3\Solr\Event\Routing\BeforeProcessCachedVariablesEvent;
-use ApacheSolrForTypo3\Solr\Event\Routing\BeforeReplaceVariableInCachedUrlEvent;
-use ApacheSolrForTypo3\Solr\Event\Routing\PostProcessUriEvent;
+use ApacheSolrForTypo3\Solr\Event\Routing\AfterUriIsProcessedEvent;
+use ApacheSolrForTypo3\Solr\Event\Routing\BeforeCachedVariablesAreProcessedEvent;
+use ApacheSolrForTypo3\Solr\Event\Routing\BeforeVariableInCachedUrlAreReplacedEvent;
 use ApacheSolrForTypo3\Solr\Routing\RoutingService;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Url\UrlHelper;
@@ -305,12 +305,12 @@ class SearchUriBuilder
             $uriCacheTemplate
         );
 
-        $urlEvent = new BeforeReplaceVariableInCachedUrlEvent($uri, $enhancedRouting);
-        /** @var BeforeReplaceVariableInCachedUrlEvent $urlEvent */
+        $urlEvent = new BeforeVariableInCachedUrlAreReplacedEvent($uri, $enhancedRouting);
+        /** @var BeforeVariableInCachedUrlAreReplacedEvent $urlEvent */
         $urlEvent = $this->eventDispatcher->dispatch($urlEvent);
         $uriCacheTemplate = (string)$urlEvent->getUri();
 
-        $variableEvent = new BeforeProcessCachedVariablesEvent(
+        $variableEvent = new BeforeCachedVariablesAreProcessedEvent(
             $uri,
             $routingConfigurations,
             $keys,
@@ -332,7 +332,7 @@ class SearchUriBuilder
             Uri::class,
             $uri
         );
-        $uriEvent = new PostProcessUriEvent($uri, $routingConfigurations);
+        $uriEvent = new AfterUriIsProcessedEvent($uri, $routingConfigurations);
         $this->eventDispatcher->dispatch($uriEvent);
         $uri = $uriEvent->getUri();
         return (string)$uri;

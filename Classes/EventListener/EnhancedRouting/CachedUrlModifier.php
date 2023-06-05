@@ -17,7 +17,7 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\EventListener\EnhancedRouting;
 
-use ApacheSolrForTypo3\Solr\Event\Routing\BeforeReplaceVariableInCachedUrlEvent;
+use ApacheSolrForTypo3\Solr\Event\Routing\BeforeVariableInCachedUrlAreReplacedEvent;
 
 /**
  * This modifier is in use if the URL processed by a route enhancer
@@ -28,7 +28,7 @@ use ApacheSolrForTypo3\Solr\Event\Routing\BeforeReplaceVariableInCachedUrlEvent;
  */
 class CachedUrlModifier
 {
-    public function __invoke(BeforeReplaceVariableInCachedUrlEvent $event): void
+    public function __invoke(BeforeVariableInCachedUrlAreReplacedEvent $event): void
     {
         // Do not react on routing events
         if (!$event->hasRouting()) {

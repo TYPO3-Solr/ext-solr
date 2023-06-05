@@ -17,32 +17,38 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\Event\Search;
 
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
+use ApacheSolrForTypo3\Solr\Search;
 
 /**
- * This event is dispatched after the frequently searched was executed.
- * It contains the result of that search request.
+ * This event is triggered before setting the form values
  *
  * @author Lars Tode <lars.tode@dkd.de>
  */
-final class AfterFrequentlySearchedEvent
+final class BeforeSearchFormIsShownEvent
 {
-    private SearchResultSet $resultSet;
+    private Search $search;
     private array $additionalFilters;
+    private string $pluginNamespace;
 
-    public function __construct(SearchResultSet $resultSet, array $additionalFilters)
+    public function __construct(Search $search, array $additionalFilters, string $pluginNamespace)
     {
-        $this->resultSet = $resultSet;
+        $this->search = $search;
         $this->additionalFilters = $additionalFilters;
+        $this->pluginNamespace = $pluginNamespace;
     }
 
-    public function getResultSet(): SearchResultSet
+    public function getSearch(): Search
     {
-        return $this->resultSet;
+        return $this->search;
     }
 
     public function getAdditionalFilters(): array
     {
         return $this->additionalFilters;
+    }
+
+    public function getPluginNamespace(): string
+    {
+        return $this->pluginNamespace;
     }
 }
