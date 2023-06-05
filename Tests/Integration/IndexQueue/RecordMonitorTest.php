@@ -35,7 +35,6 @@ use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Scheduler\Scheduler;
-use TYPO3\TestingFramework\Core\Exception as TestingFrameworkCoreException;
 
 /**
  * Testcase for the record monitor
@@ -1838,7 +1837,6 @@ class RecordMonitorTest extends IntegrationTest
      * This testcase checks if we can create a new testpage on the root level without any errors.
      *
      * @test
-     * @throws TestingFrameworkCoreException
      */
     public function canCreateSiteOneRootLevel(): void
     {

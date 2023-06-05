@@ -1,7 +1,9 @@
 <?php
 
 use ApacheSolrForTypo3\Solr\GarbageCollector;
+use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\AuthorizationService;
 use ApacheSolrForTypo3\Solr\IndexQueue\RecordMonitor;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 
 defined('TYPO3') or die('Access denied.');
 
@@ -264,6 +266,28 @@ defined('TYPO3') or die('Access denied.');
     } else {
         $GLOBALS['TYPO3_CONF_VARS']['FE']['addRootLineFields'] .= ',no_search_sub_entries';
     }
+
+    /**
+     * Registers an authentication service to authorize / grant the indexer to
+     * access protected pages.
+     */
+    ExtensionManagementUtility::addService(
+        'solr',
+        'auth',
+        AuthorizationService::class,
+        [// service meta data
+            'title' => 'Solr Indexer Authorization',
+            'description' => 'Authorizes the Solr Index Queue indexer to access protected pages.',
+            'subtype' => 'getUserFE,authUserFE',
+            'available' => true,
+            'priority' => 100,
+            'quality' => 100,
+
+            'os' => '',
+            'exec' => '',
+            'className' => AuthorizationService::class,
+        ]
+    );
 })();
 
 $isComposerMode = defined('TYPO3_COMPOSER_MODE') && TYPO3_COMPOSER_MODE;

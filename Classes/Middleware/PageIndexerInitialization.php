@@ -25,6 +25,8 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use TYPO3\CMS\Core\Http\JsonResponse;
+use TYPO3\CMS\Core\Http\Response;
+use TYPO3\CMS\Core\Http\Stream;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -34,14 +36,13 @@ class PageIndexerInitialization implements MiddlewareInterface
 {
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
+        $pageIndexerRequestHandler = null;
+        $pageIndexerRequest = null;
         if ($request->hasHeader(PageIndexerRequest::SOLR_INDEX_HEADER)) {
             // disable TSFE cache for TYPO3 v10
             $request = $request->withAttribute('noCache', true);
             $jsonEncodedParameters = $request->getHeader(PageIndexerRequest::SOLR_INDEX_HEADER)[0];
-            /** @var PageIndexerRequestHandler $pageIndexerRequestHandler */
-            $pageIndexerRequestHandler = GeneralUtility::makeInstance(PageIndexerRequestHandler::class, $jsonEncodedParameters);
-
-            $pageIndexerRequest = $pageIndexerRequestHandler->getRequest();
+            $pageIndexerRequest = GeneralUtility::makeInstance(PageIndexerRequest::class, $jsonEncodedParameters);
             if (!$pageIndexerRequest->isAuthenticated()) {
                 /** @var SolrLogManager $logger */
                 $logger = GeneralUtility::makeInstance(SolrLogManager::class, self::class);
@@ -55,9 +56,23 @@ class PageIndexerInitialization implements MiddlewareInterface
                 );
                 return new JsonResponse(['error' => ['code' => 403, 'message' => 'Invalid Index Queue Request.']], 403);
             }
-            $pageIndexerRequestHandler->run();
+            $request = $request->withAttribute('solr.pageIndexingInstructions', $pageIndexerRequest);
+            $pageIndexerRequestHandler = GeneralUtility::makeInstance(PageIndexerRequestHandler::class);
+            $pageIndexerRequestHandler->initialize($pageIndexerRequest);
         }
 
-        return $handler->handle($request);
+        $response = $handler->handle($request);
+        if ($pageIndexerRequestHandler instanceof PageIndexerRequestHandler && $pageIndexerRequest instanceof PageIndexerRequest) {
+            $pageIndexResponse = $pageIndexerRequestHandler->shutdown($pageIndexerRequest);
+
+            $body = new Stream('php://temp', 'rw');
+            $content = $pageIndexResponse->getContent();
+            $body->write($content);
+            return (new Response())
+                ->withBody($body)
+                ->withHeader('Content-Length', (string)strlen($content))
+                ->withHeader('Content-Type', 'application/json');
+        }
+        return $response;
     }
 }

@@ -21,7 +21,6 @@ use ApacheSolrForTypo3\Solr\Controller\SearchController;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use DOMDocument;
 use TYPO3\CMS\Core\Http\Response;
-use TYPO3\TestingFramework\Core\Exception as TestingFrameworkCoreException;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequestContext;
 use TYPO3Fluid\Fluid\View\Exception\InvalidTemplateResourceException;
@@ -60,9 +59,6 @@ class SearchControllerTest extends IntegrationTest
         parent::tearDown();
     }
 
-    /**
-     * @throws TestingFrameworkCoreException
-     */
     protected function bootstrapSearchResultsPluginOnPage(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/default_search_results_plugin.csv');
@@ -88,7 +84,7 @@ class SearchControllerTest extends IntegrationTest
      * @test
      * @group frontend
      */
-    public function canShowSearchFormViaPlugin()
+    public function canShowSearchFormViaPlugin(): void
     {
         $response = $this->executeFrontendSubRequest($this->getPreparedRequest(2022));
         $content = (string)$response->getBody();

@@ -18,7 +18,7 @@ Support of TYPO3 12 LTS
 
 With EXT:solr 12.0 we provide the support of TYPO3 12 LTS.
 
-Hooks replaced by PSR-14 events
+Hooks replaced by PSR-14 Events
 -------------------------------
 
 The previously available hooks and their respective interfaces have been removed from EXT:solr.
@@ -56,6 +56,19 @@ is now superseded by the PSR-14 event :php:`ApacheSolrForTypo3\Solr\Event\Indexi
 
 The hook :php:`$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessIndexQueueUpdateItem']`
 is now superseded by the PSR-14 event :php:`ApacheSolrForTypo3\Solr\Event\Indexing\AfterIndexQueueItemHasBeenMarkedForReindexingEvent`
+
+
+Frontend Helper Changes
+-----------------------
+
+The FrontendHelper logic revolving around PageIndexer has been reduced to
+a minimum by only having two methods available:
+
+* :php:`ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\FrontendHelper::activate()` - used to register hooks and PSR-14 event listeners
+* :php:`ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\FrontendHelper::deactivate(PageIndexerResponse $response)` - used to populate data into the PageIndexerResponse object
+
+The actual PageIndexerRequest object is now available as a property of TYPO3's
+Request object as attribute named "solr.pageIndexingInstructions".
 
 Contributors
 ============

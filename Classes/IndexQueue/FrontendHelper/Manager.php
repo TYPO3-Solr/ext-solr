@@ -74,7 +74,7 @@ class Manager
     /**
      * Gets an array with references to activated frontend helpers.
      *
-     * @return array Array of references to activated frontend helpers.
+     * @return FrontendHelper[] Array of references to activated frontend helpers.
      */
     public function getActivatedFrontendHelpers(): array
     {

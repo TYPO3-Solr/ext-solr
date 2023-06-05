@@ -17,78 +17,76 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\IndexQueue;
 
-use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\Dispatcher;
-use TYPO3\CMS\Core\SingletonInterface;
+use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\FrontendHelper;
+use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\Manager;
+use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Checks for Index Queue page indexer requests and handles the actions
  * requested by them.
  *
+ * This is added in the PSR-7 Frontend Request as "solr.pageIndexingInstructions" attribute
+ *
  * @author Ingo Renner <ingo@typo3.org>
  */
-class PageIndexerRequestHandler implements SingletonInterface
+class PageIndexerRequestHandler
 {
     /**
      * Index Queue page indexer request.
      */
     protected PageIndexerRequest $request;
 
-    /**
-     * Index Queue page indexer response.
-     */
-    protected PageIndexerResponse $response;
+    protected Manager $frontendHelperManager;
 
     /**
-     * Index Queue page indexer frontend helper dispatcher.
+     * @var FrontendHelper[]
      */
-    protected Dispatcher $dispatcher;
+    protected array $frontendHelpers = [];
 
-    /**
-     * Constructor.
-     *
-     * Initializes request, response, and dispatcher.
-     */
-    public function __construct(string $jsonEncodedParameters = null)
+    public function __construct(Manager $manager)
     {
-        $this->dispatcher = GeneralUtility::makeInstance(Dispatcher::class);
-        $this->request = GeneralUtility::makeInstance(PageIndexerRequest::class, $jsonEncodedParameters);
-        $this->response = GeneralUtility::makeInstance(PageIndexerResponse::class);
-        $this->response->setRequestId($this->request->getRequestId());
+        $this->frontendHelperManager = $manager;
     }
 
     /**
      * Authenticates the request, runs the frontend helpers defined by the
-     * request, and registers its own shutdown() method for execution at
-     * hook_eofe in tslib/class.tslib_fe.php.
+     * request, and registers its own shutdown() method for execution at a later stage
+     * when the response is available.
      */
-    public function run(): void
+    public function initialize(PageIndexerRequest $request): void
     {
-        $this->dispatcher->dispatch($this->request, $this->response);
+        $actions = $request->getActions();
+
+        foreach ($actions as $action) {
+            $frontendHelper = $this->frontendHelperManager->resolveAction($action);
+            $frontendHelper->activate();
+            $this->frontendHelpers[] = $frontendHelper;
+
+            if ($request->getParameter('loggingEnabled')) {
+                $logger = GeneralUtility::makeInstance(SolrLogManager::class, get_class($frontendHelper));
+                $logger->log(
+                    SolrLogManager::INFO,
+                    'Page indexer request received',
+                    [
+                        'request' => (array)$request,
+                    ]
+                );
+            }
+        }
     }
 
     /**
      * Completes the Index Queue page indexer request and returns the response
      * with the collected results.
      */
-    public function shutdown(): void
+    public function shutdown(PageIndexerRequest $request): PageIndexerResponse
     {
-        $this->dispatcher->shutdown();
-    }
-
-    /**
-     * Gets the Index Queue page indexer request.
-     */
-    public function getRequest(): PageIndexerRequest
-    {
-        return $this->request;
-    }
-
-    /**
-     * Gets the Index Queue page indexer response.
-     */
-    public function getResponse(): PageIndexerResponse
-    {
-        return $this->response;
+        $indexerResponse = GeneralUtility::makeInstance(PageIndexerResponse::class);
+        $indexerResponse->setRequestId($request->getRequestId());
+        foreach ($this->frontendHelpers as $frontendHelper) {
+            $frontendHelper->deactivate($indexerResponse);
+        }
+        return $indexerResponse;
     }
 }

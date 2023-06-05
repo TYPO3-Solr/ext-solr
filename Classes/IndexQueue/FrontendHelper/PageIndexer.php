@@ -24,20 +24,20 @@ use ApacheSolrForTypo3\Solr\Event\Indexing\BeforePageDocumentIsProcessedForIndex
 use ApacheSolrForTypo3\Solr\Exception;
 use ApacheSolrForTypo3\Solr\FieldProcessor\Service;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
+use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
+use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerResponse;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
-use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\DebugWriter;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use ApacheSolrForTypo3\Solr\Util;
-use Doctrine\DBAL\Exception as DBALException;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Throwable;
+use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
-use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
@@ -52,12 +52,17 @@ use UnexpectedValueException;
  *
  * @author Ingo Renner <ingo@typo3.org>
  */
-class PageIndexer extends AbstractFrontendHelper
+class PageIndexer implements FrontendHelper, SingletonInterface
 {
     /**
      * This frontend helper's executed action.
      */
     protected string $action = 'indexPage';
+
+    /**
+     * Index Queue page indexer request.
+     */
+    protected ?PageIndexerRequest $request = null;
 
     /**
      * Response data
@@ -76,6 +81,8 @@ class PageIndexer extends AbstractFrontendHelper
 
     protected ?TypoScriptConfiguration $configuration = null;
 
+    protected ?SolrLogManager $logger = null;
+
     /**
      * Activates a frontend helper by registering for hooks and other
      * resources required by the frontend helper to work.
@@ -84,19 +91,7 @@ class PageIndexer extends AbstractFrontendHelper
      */
     public function activate(): void
     {
-        $this->isActivated = true;
-        $this->registerAuthorizationService();
-    }
-
-    /**
-     * Returns the status of whether a page was indexed.
-     *
-     * @return array Page indexed status.
-     * @noinspection PhpUnused
-     */
-    public function getData(): array
-    {
-        return $this->responseData;
+        $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
     }
 
     /**
@@ -113,57 +108,6 @@ class PageIndexer extends AbstractFrontendHelper
         }
 
         return GeneralUtility::makeInstance(Rootline::class, $stringAccessRootline);
-    }
-
-    /**
-     * Registers an authentication service to authorize / grant the indexer to
-     * access protected pages.
-     */
-    protected function registerAuthorizationService(): void
-    {
-        $overrulingPriority = $this->getHighestAuthenticationServicePriority() + 1;
-
-        ExtensionManagementUtility::addService(
-            'solr', // extension key
-            'auth', // service type
-            AuthorizationService::class,
-            // service key
-            [// service meta data
-                'title' => 'Solr Indexer Authorization',
-                'description' => 'Authorizes the Solr Index Queue indexer to access protected pages.',
-
-                'subtype' => 'getUserFE,authUserFE,getGroupsFE',
-
-                'available' => true,
-                'priority' => $overrulingPriority,
-                'quality' => 100,
-
-                'os' => '',
-                'exec' => '',
-                'className' => AuthorizationService::class,
-            ]
-        );
-    }
-
-    /**
-     * Determines the highest priority of all registered authentication
-     * services.
-     *
-     * @return int Highest priority of all registered authentication service
-     */
-    protected function getHighestAuthenticationServicePriority(): int
-    {
-        $highestPriority = 0;
-
-        if (is_array($GLOBALS['T3_SERVICES']['auth'] ?? null)) {
-            foreach ($GLOBALS['T3_SERVICES']['auth'] as $service) {
-                if ($service['priority'] > $highestPriority) {
-                    $highestPriority = $service['priority'];
-                }
-            }
-        }
-
-        return $highestPriority;
     }
 
     //
@@ -196,7 +140,8 @@ class PageIndexer extends AbstractFrontendHelper
      */
     public function __invoke(AfterCacheableContentIsGeneratedEvent $event): void
     {
-        if (!$this->isActivated) {
+        $this->request = $event->getRequest()->getAttribute('solr.pageIndexingInstructions');
+        if (!$this->request) {
             return;
         }
         $this->setupConfiguration();
@@ -270,9 +215,6 @@ class PageIndexer extends AbstractFrontendHelper
     /**
      * Gets the solr connection to use for indexing the page based on the
      * Index Queue item's properties.
-     *
-     * @throws NoSolrConnectionFoundException
-     * @throws DBALException
      */
     protected function getSolrConnection(Item $indexQueueItem, SiteLanguage $siteLanguage, bool $logExceptions): SolrConnection
     {
@@ -308,8 +250,6 @@ class PageIndexer extends AbstractFrontendHelper
 
     /**
      * This method retrieves the item from the index queue, that is indexed in this request.
-     *
-     * @throws DBALException
      */
     protected function getIndexQueueItem(): ?Item
     {
@@ -346,9 +286,6 @@ class PageIndexer extends AbstractFrontendHelper
      * Indexes a page.
      *
      * @return bool TRUE after successfully indexing the page, FALSE on error
-     *
-     * @throws DBALException
-     * @throws Exception
      */
     public function indexPage(Document $pageDocument, Item $indexQueueItem, Site $site, SiteLanguage $siteLanguage): bool
     {
@@ -373,8 +310,6 @@ class PageIndexer extends AbstractFrontendHelper
      * care of manipulating fields as defined in the field's configuration.
      *
      * @param Document[] $documents An array of documents to manipulate
-     * @throws DBALException
-     * @throws Exception
      */
     protected function processDocuments(array $documents): void
     {
@@ -436,5 +371,13 @@ class PageIndexer extends AbstractFrontendHelper
     protected function getEventDispatcher(): EventDispatcherInterface
     {
         return GeneralUtility::makeInstance(EventDispatcherInterface::class);
+    }
+
+    /**
+     * Adds the status of whether a page was indexed to the pageIndexer Response.
+     */
+    public function deactivate(PageIndexerResponse $response): void
+    {
+        $response->addActionResult($this->action, $this->responseData);
     }
 }

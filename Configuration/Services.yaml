@@ -85,6 +85,10 @@ services:
     public: true
     autowire: true
 
+  ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequestHandler:
+    public: true
+    autowire: true
+
   ApacheSolrForTypo3\Solr\EventListener\EnhancedRouting\CachedUrlModifier:
     tags:
       - name: event.listener
