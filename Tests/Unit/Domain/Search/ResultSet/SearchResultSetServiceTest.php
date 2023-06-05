@@ -24,6 +24,8 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 use PHPUnit\Framework\MockObject\MockObject;
+use Psr\EventDispatcher\EventDispatcherInterface;
+use TYPO3\CMS\Core\Tests\Unit\Fixtures\EventDispatcher\MockEventDispatcher;
 
 /**
  * @author Timo Hund <timo.hund@dkd.de>
@@ -36,6 +38,7 @@ class SearchResultSetServiceTest extends SetUpUnitTestCase
     protected SolrLogManager|MockObject $logManagerMock;
     protected SearchResultBuilder|MockObject $searchResultBuilderMock;
     protected QueryBuilder|MockObject $queryBuilderMock;
+    protected EventDispatcherInterface $eventDispatcher;
 
     protected function setUp(): void
     {
@@ -44,7 +47,8 @@ class SearchResultSetServiceTest extends SetUpUnitTestCase
         $this->searchMock = $this->createMock(Search::class);
         $this->searchResultBuilderMock = $this->createMock(SearchResultBuilder::class);
         $this->queryBuilderMock = $this->createMock(QueryBuilder::class);
-        $this->searchResultSetService = new SearchResultSetService($this->configurationMock, $this->searchMock, $this->logManagerMock, $this->searchResultBuilderMock, $this->queryBuilderMock);
+        $this->eventDispatcher = new MockEventDispatcher();
+        $this->searchResultSetService = new SearchResultSetService($this->configurationMock, $this->searchMock, $this->logManagerMock, $this->searchResultBuilderMock, $this->queryBuilderMock, $this->eventDispatcher);
         parent::setUp();
     }
 

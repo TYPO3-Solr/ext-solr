@@ -13,12 +13,16 @@
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace ApacheSolrForTypo3\Solr\Tests\Unit\Query\Modifier;
+namespace ApacheSolrForTypo3\Solr\Tests\Unit\Search;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
+use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteHashService;
-use ApacheSolrForTypo3\Solr\Query\Modifier\Elevation;
+use ApacheSolrForTypo3\Solr\Event\Search\AfterSearchQueryHasBeenPreparedEvent;
+use ApacheSolrForTypo3\Solr\Search;
+use ApacheSolrForTypo3\Solr\Search\ElevationComponent;
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
 
 /**
@@ -26,12 +30,12 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
  *
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class ElevationTest extends SetUpUnitTestCase
+class ElevationComponentTest extends SetUpUnitTestCase
 {
     /**
      * @test
      */
-    public function canModifyQuery()
+    public function canModifyQuery(): void
     {
         $query = $this->createMock(Query::class);
 
@@ -43,7 +47,9 @@ class ElevationTest extends SetUpUnitTestCase
         $queryBuilderMock->expects(self::once())->method('useElevationFromTypoScript')->willReturn($queryBuilderMock);
         $queryBuilderMock->expects(self::once())->method('getQuery')->willReturn($query);
 
-        $modifier = new Elevation($queryBuilderMock);
-        $modifier->modifyQuery($query);
+        $modifier = new ElevationComponent($queryBuilderMock);
+        $modifier->__invoke(
+            new AfterSearchQueryHasBeenPreparedEvent($query, $this->createMock(SearchRequest::class), $this->createMock(Search::class), $this->createMock(TypoScriptConfiguration::class))
+        );
     }
 }

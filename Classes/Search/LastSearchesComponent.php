@@ -17,22 +17,48 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\Search;
 
-use ApacheSolrForTypo3\Solr\Domain\Search\LastSearches\LastSearchesWriterProcessor;
+use ApacheSolrForTypo3\Solr\Domain\Search\LastSearches\LastSearchesService;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
+use ApacheSolrForTypo3\Solr\Event\Search\AfterSearchHasBeenExecutedEvent;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Last searches search component
+ * Writes the last searches
  *
  * @author Ingo Renner <ingo@typo3.org>
  */
-class LastSearchesComponent extends AbstractComponent
+class LastSearchesComponent
 {
     /**
-     * Initializes the search component.
+     * Processes and returns {@link SearchResultSet} for last searches
      */
-    public function initializeSearchComponent(): void
+    public function __invoke(AfterSearchHasBeenExecutedEvent $event): void
     {
-        if ($this->searchConfiguration['lastSearches'] ?? false) {
-            $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['afterSearch']['lastSearches'] = LastSearchesWriterProcessor::class;
+        $resultSet = $event->getSearchResultSet();
+        if ($resultSet->getAllResultCount() === 0) {
+            // when the search does not produce a result we do not store the last searches
+            return;
         }
+
+        if (!isset($GLOBALS['TSFE'])) {
+            return;
+        }
+
+        $query = $resultSet->getUsedSearchRequest()->getRawUserQuery();
+
+        if (!empty($query)) {
+            $lastSearchesService = $this->getLastSearchesService($resultSet);
+            $lastSearchesService->addToLastSearches($query);
+        }
+
+        $event->setSearchResultSet($resultSet);
+    }
+
+    protected function getLastSearchesService(SearchResultSet $resultSet): LastSearchesService
+    {
+        return GeneralUtility::makeInstance(
+            LastSearchesService::class,
+            $resultSet->getUsedSearchRequest()->getContextTypoScriptConfiguration()
+        );
     }
 }

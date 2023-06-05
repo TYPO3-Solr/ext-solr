@@ -17,7 +17,6 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Statistics;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSetProcessor;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\HtmlContentExtractor;
 use Doctrine\DBAL\Exception as DBALException;
@@ -34,7 +33,7 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
  * @author Dimitri Ebert <dimitri.ebert@dkd.de>
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class StatisticsWriterProcessor implements SearchResultSetProcessor
+class StatisticsWriterProcessor
 {
     protected StatisticsRepository $statisticsRepository;
 

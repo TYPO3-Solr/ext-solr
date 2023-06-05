@@ -259,14 +259,12 @@ class SearchResultSetServiceTest extends IntegrationTest
         $solrConnection = GeneralUtility::makeInstance(ConnectionManager::class)->getConnectionByPageId(1);
         $search = GeneralUtility::makeInstance(Search::class, $solrConnection);
 
-        /** @var SearchResultSetService $searchResultSetService */
         $searchResultSetService = GeneralUtility::makeInstance(
             SearchResultSetService::class,
             $typoScriptConfiguration,
             $search
         );
 
-        /** @var SearchRequest $searchRequest */
         $searchRequest = GeneralUtility::makeInstance(SearchRequest::class, [], 0, 0, $typoScriptConfiguration);
         $searchRequest->setRawQueryString($queryString);
         $searchRequest->setResultsPerPage(10);
@@ -275,6 +273,9 @@ class SearchResultSetServiceTest extends IntegrationTest
         // Simulate something as we still have some $GLOBALS[TSFE] dependency
         $GLOBALS['TSFE'] = new \stdClass();
         $GLOBALS['TSFE']->id = 1;
+        $GLOBALS['TSFE']->fe_user = new FrontendUserAuthentication();
+        $GLOBALS['TSFE']->fe_user->initializeUserSessionManager();
+        $GLOBALS['TSFE']->fe_user->createUserSession([]);
         $searchResultSet = $searchResultSetService->search($searchRequest);
 
         $searchResults = $searchResultSet->getSearchResults();

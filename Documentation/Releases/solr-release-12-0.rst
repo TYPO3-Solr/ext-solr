@@ -18,7 +18,39 @@ Support of TYPO3 12 LTS
 
 With EXT:solr 12.0 we provide the support of TYPO3 12 LTS.
 
-Hooks replaced by PSR-14 Events
+Reworked Search Query Component System
+--------------------------------------
+
+The Search Component system, which is used to enrich the search query (e.g.
+by faceting, boosting, debug analysis), has been completely reworked by
+utilizing the PSR-14 event system.
+
+At the same time the Search Query Modifiers have been merged into the
+Query Component systems.
+
+All built-in components are now reworked and utilize the
+:php:`ApacheSolrForTypo3\Solr\Event\Search\AfterSearchQueryHasBeenPreparedEvent`
+PSR-14 event.
+
+The interface :php:`ApacheSolrForTypo3\Solr\Domain\Search\SearchRequestAware` has been removed.
+
+The hook :php:`$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchQuery']`
+and the interfaces :php:`ApacheSolrForTypo3\Solr\Query\Modifier` as well
+as :php:`ApacheSolrForTypo3\Solr\Search\QueryAware` and :php:`ApacheSolrForTypo3\Solr\Search\SearchAware`
+have been removed. The modifiers have been merged into Components.
+
+Registration does not happen in `ext_localconf.php` anymore via `ApacheSolrForTypo3\Solr\Search\SearchComponentManager`
+which has been removed, but now happens in :file:`Configuration/Services.yaml`
+as documented in TYPO3 Core's PSR-14 Registration API.
+
+Related hooks around this system have been moved to PSR-14 events as well:
+* :php:`$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['beforeSearch']` has
+  been replaced by :php:`ApacheSolrForTypo3\Solr\Event\Search\AfterInitialSearchResultSetHasBeenCreatedEvent`
+* :php:`$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['afterSearch']` has been
+  been replaced by :php:`ApacheSolrForTypo3\Solr\Event\Search\AfterSearchHasBeenExecutedEvent`
+
+
+Hooks replaced by PSR-14 events
 -------------------------------
 
 The previously available hooks and their respective interfaces have been removed from EXT:solr.

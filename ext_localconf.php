@@ -35,65 +35,6 @@ defined('TYPO3') or die('Access denied.');
 
     // ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
-    // register search components
-
-    \ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
-        'access',
-        \ApacheSolrForTypo3\Solr\Search\AccessComponent::class
-    );
-
-    \ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
-        'relevance',
-        \ApacheSolrForTypo3\Solr\Search\RelevanceComponent::class
-    );
-
-    \ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
-        'sorting',
-        \ApacheSolrForTypo3\Solr\Search\SortingComponent::class
-    );
-
-    \ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
-        'debug',
-        \ApacheSolrForTypo3\Solr\Search\DebugComponent::class
-    );
-
-    \ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
-        'analysis',
-        \ApacheSolrForTypo3\Solr\Search\AnalysisComponent::class
-    );
-
-    \ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
-        'highlighting',
-        \ApacheSolrForTypo3\Solr\Search\HighlightingComponent::class
-    );
-
-    \ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
-        'spellchecking',
-        \ApacheSolrForTypo3\Solr\Search\SpellcheckingComponent::class
-    );
-
-    \ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
-        'faceting',
-        \ApacheSolrForTypo3\Solr\Search\FacetingComponent::class
-    );
-
-    \ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
-        'statistics',
-        \ApacheSolrForTypo3\Solr\Search\StatisticsComponent::class
-    );
-
-    \ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
-        'lastSearches',
-        \ApacheSolrForTypo3\Solr\Search\LastSearchesComponent::class
-    );
-
-    \ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
-        'elevation',
-        \ApacheSolrForTypo3\Solr\Search\ElevationComponent::class
-    );
-
-    // ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
-
     // adding scheduler tasks
 
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][\ApacheSolrForTypo3\Solr\Task\OptimizeIndexTask::class] = [

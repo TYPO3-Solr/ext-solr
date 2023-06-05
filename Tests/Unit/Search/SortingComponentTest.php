@@ -19,6 +19,8 @@ use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteHashService;
+use ApacheSolrForTypo3\Solr\Event\Search\AfterSearchQueryHasBeenPreparedEvent;
+use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\Search\SortingComponent;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
@@ -52,8 +54,6 @@ class SortingComponentTest extends SetUpUnitTestCase
         );
 
         $this->sortingComponent = new SortingComponent($queryBuilder);
-        $this->sortingComponent->setQuery($this->query);
-        $this->sortingComponent->setSearchRequest($this->searchRequestMock);
         parent::setUp();
     }
 
@@ -62,9 +62,10 @@ class SortingComponentTest extends SetUpUnitTestCase
      */
     public function sortingFromUrlIsNotAppliedWhenSortingIsDisabled(): void
     {
+        $event = new AfterSearchQueryHasBeenPreparedEvent($this->query, $this->searchRequestMock, $this->createMock(Search::class), $this->createMock(TypoScriptConfiguration::class));
         $this->searchRequestMock->expects(self::any())->method('getArguments')->willReturn(['sort' => 'title asc']);
-        $this->sortingComponent->initializeSearchComponent();
-        self::assertSame([], $this->query->getSorts(), 'No sorting should be present in query');
+        $this->sortingComponent->__invoke($event);
+        self::assertSame([], $event->getQuery()->getSorts(), 'No sorting should be present in query');
     }
 
     /**
@@ -72,7 +73,8 @@ class SortingComponentTest extends SetUpUnitTestCase
      */
     public function validSortingFromUrlIsApplied(): void
     {
-        $this->sortingComponent->setSearchConfiguration([
+        $configuration = $this->createMock(TypoScriptConfiguration::class);
+        $configuration->method('getSearchConfiguration')->willReturn([
             'sorting' => 1,
             'sorting.' => [
                 'options.' => [
@@ -82,8 +84,9 @@ class SortingComponentTest extends SetUpUnitTestCase
                 ],
             ],
         ]);
+        $event = new AfterSearchQueryHasBeenPreparedEvent($this->query, $this->searchRequestMock, $this->createMock(Search::class), $configuration);
         $this->searchRequestMock->expects(self::any())->method('getArguments')->willReturn(['sort' => 'title asc']);
-        $this->sortingComponent->initializeSearchComponent();
+        $this->sortingComponent->__invoke($event);
         self::assertSame(['sortTitle' => 'asc'], $this->query->getSorts(), 'Sorting was not applied in the query as expected');
     }
 
@@ -92,7 +95,8 @@ class SortingComponentTest extends SetUpUnitTestCase
      */
     public function invalidSortingFromUrlIsNotApplied(): void
     {
-        $this->sortingComponent->setSearchConfiguration([
+        $configuration = $this->createMock(TypoScriptConfiguration::class);
+        $configuration->method('getSearchConfiguration')->willReturn([
             'sorting' => 1,
             'sorting.' => [
                 'options.' => [
@@ -102,8 +106,9 @@ class SortingComponentTest extends SetUpUnitTestCase
                 ],
             ],
         ]);
+        $event = new AfterSearchQueryHasBeenPreparedEvent($this->query, $this->searchRequestMock, $this->createMock(Search::class), $configuration);
         $this->searchRequestMock->expects(self::any())->method('getArguments')->willReturn(['sort' => 'title INVALID']);
-        $this->sortingComponent->initializeSearchComponent();
+        $this->sortingComponent->__invoke($event);
         self::assertSame([], $this->query->getSorts(), 'No sorting should be present in query');
     }
 
@@ -112,13 +117,15 @@ class SortingComponentTest extends SetUpUnitTestCase
      */
     public function sortByIsApplied(): void
     {
-        $this->sortingComponent->setSearchConfiguration([
+        $configuration = $this->createMock(TypoScriptConfiguration::class);
+        $configuration->method('getSearchConfiguration')->willReturn([
             'query.' => [
                 'sortBy' => 'price desc',
             ],
         ]);
         $this->searchRequestMock->expects(self::any())->method('getArguments')->willReturn([]);
-        $this->sortingComponent->initializeSearchComponent();
+        $event = new AfterSearchQueryHasBeenPreparedEvent($this->query, $this->searchRequestMock, $this->createMock(Search::class), $configuration);
+        $this->sortingComponent->__invoke($event);
         self::assertSame(['price' => 'desc'], $this->query->getSorts(), 'No sorting should be present in query');
     }
 
@@ -127,7 +134,8 @@ class SortingComponentTest extends SetUpUnitTestCase
      */
     public function urlSortingHasPrioriy(): void
     {
-        $this->sortingComponent->setSearchConfiguration([
+        $configuration = $this->createMock(TypoScriptConfiguration::class);
+        $configuration->method('getSearchConfiguration')->willReturn([
             'query.' => [
                 'sortBy' => 'price desc',
             ],
@@ -141,7 +149,8 @@ class SortingComponentTest extends SetUpUnitTestCase
             ],
         ]);
         $this->searchRequestMock->expects(self::any())->method('getArguments')->willReturn(['sort' => 'title asc']);
-        $this->sortingComponent->initializeSearchComponent();
+        $event = new AfterSearchQueryHasBeenPreparedEvent($this->query, $this->searchRequestMock, $this->createMock(Search::class), $configuration);
+        $this->sortingComponent->__invoke($event);
         self::assertSame(['sortTitle' =>  'asc'], $this->query->getSorts(), 'No sorting should be present in query');
     }
 
@@ -150,7 +159,8 @@ class SortingComponentTest extends SetUpUnitTestCase
      */
     public function querySortingHasPriorityWhenSortingIsDisabled(): void
     {
-        $this->sortingComponent->setSearchConfiguration([
+        $configuration = $this->createMock(TypoScriptConfiguration::class);
+        $configuration->method('getSearchConfiguration')->willReturn([
             'query.' => [
                 'sortBy' => 'price desc',
             ],
@@ -164,7 +174,8 @@ class SortingComponentTest extends SetUpUnitTestCase
             ],
         ]);
         $this->searchRequestMock->expects(self::any())->method('getArguments')->willReturn(['sort' => 'title asc']);
-        $this->sortingComponent->initializeSearchComponent();
+        $event = new AfterSearchQueryHasBeenPreparedEvent($this->query, $this->searchRequestMock, $this->createMock(Search::class), $configuration);
+        $this->sortingComponent->__invoke($event);
         self::assertSame(['price' => 'desc'], $this->query->getSorts(), 'No sorting should be present in query');
     }
 }
