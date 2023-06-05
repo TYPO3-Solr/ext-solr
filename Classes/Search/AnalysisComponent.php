@@ -17,49 +17,27 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\Search;
 
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use ApacheSolrForTypo3\Solr\Event\Search\AfterSearchQueryHasBeenPreparedEvent;
 
 /**
  * Analysis search component
  *
  * @author Ingo Renner <ingo@typo3.org>
  */
-class AnalysisComponent extends AbstractComponent implements QueryAware
+class AnalysisComponent
 {
-    /**
-     * Solr query
-     */
-    protected ?Query $query = null;
-
-    protected QueryBuilder $queryBuilder;
-
-    /**
-     * AccessComponent constructor.
-     */
-    public function __construct(QueryBuilder $queryBuilder = null)
+    public function __construct(protected readonly QueryBuilder $queryBuilder)
     {
-        $this->queryBuilder = $queryBuilder ?? GeneralUtility::makeInstance(QueryBuilder::class);
     }
 
     /**
      * Initializes the search component.
      */
-    public function initializeSearchComponent(): void
+    public function __invoke(AfterSearchQueryHasBeenPreparedEvent $event): void
     {
-        if ($this->searchConfiguration['results.']['showDocumentScoreAnalysis'] ?? false) {
-            $this->queryBuilder->startFrom($this->query)->useDebug(true);
+        if ($event->getTypoScriptConfiguration()->getSearchConfiguration()['results.']['showDocumentScoreAnalysis'] ?? false) {
+            $this->queryBuilder->startFrom($event->getQuery())->useDebug(true);
         }
-    }
-
-    /**
-     * Provides the extension component with an instance of the current query.
-     *
-     * @param Query $query Current query
-     */
-    public function setQuery(Query $query): void
-    {
-        $this->query = $query;
     }
 }

@@ -17,52 +17,28 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\Search;
 
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use ApacheSolrForTypo3\Solr\Event\Search\AfterSearchQueryHasBeenPreparedEvent;
 
 /**
  * Spellchecking search component
  *
  * @author Ingo Renner <ingo@typo3.org>
  */
-class SpellcheckingComponent extends AbstractComponent implements QueryAware
+class SpellcheckingComponent
 {
-    /**
-     * Solr query
-     */
-    protected ?Query $query = null;
-
-    /**
-     * QueryBuilder
-     */
-    protected QueryBuilder $queryBuilder;
-
-    /**
-     * AccessComponent constructor.
-     */
-    public function __construct(QueryBuilder $queryBuilder = null)
+    public function __construct(protected readonly QueryBuilder $queryBuilder)
     {
-        $this->queryBuilder = $queryBuilder ?? GeneralUtility::makeInstance(QueryBuilder::class);
     }
 
     /**
      * Initializes the search component.
      */
-    public function initializeSearchComponent(): void
+    public function __invoke(AfterSearchQueryHasBeenPreparedEvent $event): void
     {
-        if ($this->searchConfiguration['spellchecking'] ?? false) {
-            $this->query = $this->queryBuilder->startFrom($this->query)->useSpellcheckingFromTypoScript()->getQuery();
+        if ($event->getTypoScriptConfiguration()->getSearchConfiguration()['spellchecking'] ?? false) {
+            $query = $this->queryBuilder->startFrom($event->getQuery())->useSpellcheckingFromTypoScript()->getQuery();
+            $event->setQuery($query);
         }
-    }
-
-    /**
-     * Provides the extension component with an instance of the current query.
-     *
-     * @param Query $query Current query
-     */
-    public function setQuery(Query $query): void
-    {
-        $this->query = $query;
     }
 }

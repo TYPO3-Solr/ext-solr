@@ -15,18 +15,16 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace ApacheSolrForTypo3\Solr\Tests\Unit\Query\Modifier;
+namespace ApacheSolrForTypo3\Solr\Tests\Unit\Search;
 
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\FacetRegistry;
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\InvalidFacetPackageException;
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\InvalidQueryBuilderException;
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\InvalidUrlDecoderException;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\UrlFacetContainer;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteHashService;
-use ApacheSolrForTypo3\Solr\Query\Modifier\Faceting;
+use ApacheSolrForTypo3\Solr\Event\Search\AfterSearchQueryHasBeenPreparedEvent;
+use ApacheSolrForTypo3\Solr\Search;
+use ApacheSolrForTypo3\Solr\Search\FacetingComponent;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
@@ -34,23 +32,13 @@ use PHPUnit\Framework\MockObject\MockObject;
 use Solarium\QueryType\Select\RequestBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-use function json_decode;
-
 /**
  * Tests the ApacheSolrForTypo3\Solr\Query\Modifier\Faceting class
  *
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class FacetingTest extends SetUpUnitTestCase
+class FacetingComponentTest extends SetUpUnitTestCase
 {
-    /**
-     * @param TypoScriptConfiguration $fakeConfiguration
-     * @param SearchRequest $fakeSearchRequest
-     * @return array
-     * @throws InvalidFacetPackageException
-     * @throws InvalidQueryBuilderException
-     * @throws InvalidUrlDecoderException
-     */
     private function getQueryParametersFromExecutedFacetingModifier(
         TypoScriptConfiguration $fakeConfiguration,
         SearchRequest $fakeSearchRequest
@@ -69,14 +57,17 @@ class FacetingTest extends SetUpUnitTestCase
 
         GeneralUtility::addInstance(SiteHashService::class, $this->createMock(SiteHashService::class));
 
-        $facetModifier = GeneralUtility::makeInstance(Faceting::class, $facetRegistry);
-        $facetModifier->setSearchRequest($fakeSearchRequest);
-        $query = $facetModifier->modifyQuery($query);
-
+        $event = new AfterSearchQueryHasBeenPreparedEvent(
+            $query,
+            $fakeSearchRequest,
+            $this->createMock(Search::class),
+            $fakeConfiguration
+        );
+        $subject = new FacetingComponent($facetRegistry);
+        $subject->__invoke($event);
+        $query = $event->getQuery();
         $requestBuilder = new RequestBuilder();
-
         $request = $requestBuilder->build($query);
-
         return $request->getParams();
     }
 
@@ -90,12 +81,8 @@ class FacetingTest extends SetUpUnitTestCase
      *  }
      *
      * @test
-     *
-     * @throws InvalidFacetPackageException
-     * @throws InvalidQueryBuilderException
-     * @throws InvalidUrlDecoderException
      */
-    public function testCanAddASimpleFacet()
+    public function testCanAddASimpleFacet(): void
     {
         $fakeConfigurationArray = [];
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting'] = 1;
@@ -129,12 +116,8 @@ class FacetingTest extends SetUpUnitTestCase
      *  }
      *
      * @test
-     *
-     * @throws InvalidFacetPackageException
-     * @throws InvalidQueryBuilderException
-     * @throws InvalidUrlDecoderException
      */
-    public function testCanAddSortByIndexArgument()
+    public function testCanAddSortByIndexArgument(): void
     {
         $fakeConfigurationArray = [];
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting'] = 1;
@@ -167,12 +150,8 @@ class FacetingTest extends SetUpUnitTestCase
      *  }
      *
      * @test
-     *
-     * @throws InvalidFacetPackageException
-     * @throws InvalidQueryBuilderException
-     * @throws InvalidUrlDecoderException
      */
-    public function testCanAddSortByCountArgument()
+    public function testCanAddSortByCountArgument(): void
     {
         $fakeConfigurationArray = [];
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting'] = 1;
@@ -212,12 +191,8 @@ class FacetingTest extends SetUpUnitTestCase
      * }
      *
      * @test
-     *
-     * @throws InvalidFacetPackageException
-     * @throws InvalidQueryBuilderException
-     * @throws InvalidUrlDecoderException
      */
-    public function testCanHandleKeepAllFacetsOnSelectionOnAllFacetWhenGloballyConfigured()
+    public function testCanHandleKeepAllFacetsOnSelectionOnAllFacetWhenGloballyConfigured(): void
     {
         $fakeConfigurationArray = [];
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting'] = 1;
@@ -260,12 +235,8 @@ class FacetingTest extends SetUpUnitTestCase
      * }
      *
      * @test
-     *
-     * @throws InvalidFacetPackageException
-     * @throws InvalidQueryBuilderException
-     * @throws InvalidUrlDecoderException
      */
-    public function testExcludeTagsAreEmptyWhenKeepAllFacetsOnSelectionIsNotSet()
+    public function testExcludeTagsAreEmptyWhenKeepAllFacetsOnSelectionIsNotSet(): void
     {
         $fakeConfigurationArray = [];
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting'] = 1;
@@ -309,12 +280,8 @@ class FacetingTest extends SetUpUnitTestCase
      * }
      *
      * @test
-     *
-     * @throws InvalidFacetPackageException
-     * @throws InvalidQueryBuilderException
-     * @throws InvalidUrlDecoderException
      */
-    public function testCanHandleKeepAllOptionsOnSelectionForASingleFacet()
+    public function testCanHandleKeepAllOptionsOnSelectionForASingleFacet(): void
     {
         $fakeConfigurationArray = [];
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting'] = 1;
@@ -343,12 +310,8 @@ class FacetingTest extends SetUpUnitTestCase
 
     /**
      * @test
-     *
-     * @throws InvalidFacetPackageException
-     * @throws InvalidQueryBuilderException
-     * @throws InvalidUrlDecoderException
      */
-    public function testCanHandleCombinationOfKeepAllFacetsOnSelectionAndKeepAllOptionsOnSelection()
+    public function testCanHandleCombinationOfKeepAllFacetsOnSelectionAndKeepAllOptionsOnSelection(): void
     {
         $fakeConfigurationArray = [];
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting'] = 1;
@@ -368,7 +331,7 @@ class FacetingTest extends SetUpUnitTestCase
 
         /** @var SearchRequest|MockObject $fakeRequest */
         $fakeRequest = $this->createMock(SearchRequest::class);
-        $fakeRequest->expects(self::once())->method('getArguments')->willReturn($fakeArguments);
+        $fakeRequest->expects(self::exactly(2))->method('getArguments')->willReturn($fakeArguments);
         $fakeRequest->expects(self::any())->method('getContextTypoScriptConfiguration')->willReturn($fakeConfiguration);
 
         $queryParameter = $this->getQueryParametersFromExecutedFacetingModifier($fakeConfiguration, $fakeRequest);
@@ -385,12 +348,8 @@ class FacetingTest extends SetUpUnitTestCase
 
     /**
      * @test
-     *
-     * @throws InvalidFacetPackageException
-     * @throws InvalidQueryBuilderException
-     * @throws InvalidUrlDecoderException
      */
-    public function testCanHandleCombinationOfKeepAllFacetsOnSelectionAndKeepAllOptionsOnSelectionAndCountAllFacetsForSelection()
+    public function testCanHandleCombinationOfKeepAllFacetsOnSelectionAndKeepAllOptionsOnSelectionAndCountAllFacetsForSelection(): void
     {
         $fakeConfigurationArray = [];
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting'] = 1;
@@ -412,7 +371,7 @@ class FacetingTest extends SetUpUnitTestCase
 
         /** @var SearchRequest|MockObject $fakeRequest */
         $fakeRequest = $this->createMock(SearchRequest::class);
-        $fakeRequest->expects(self::once())->method('getArguments')->willReturn($fakeArguments);
+        $fakeRequest->expects(self::exactly(2))->method('getArguments')->willReturn($fakeArguments);
         $fakeRequest->expects(self::any())->method('getContextTypoScriptConfiguration')->willReturn($fakeConfiguration);
 
         $queryParameter = $this->getQueryParametersFromExecutedFacetingModifier($fakeConfiguration, $fakeRequest);
@@ -429,12 +388,8 @@ class FacetingTest extends SetUpUnitTestCase
 
     /**
      * @test
-     *
-     * @throws InvalidFacetPackageException
-     * @throws InvalidQueryBuilderException
-     * @throws InvalidUrlDecoderException
      */
-    public function testCanAddQueryFilters()
+    public function testCanAddQueryFilters(): void
     {
         $fakeConfigurationArray = [];
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting'] = 1;
@@ -453,7 +408,7 @@ class FacetingTest extends SetUpUnitTestCase
 
         /** @var SearchRequest|MockObject $fakeRequest */
         $fakeRequest = $this->createMock(SearchRequest::class);
-        $fakeRequest->expects(self::once())->method('getArguments')->willReturn($fakeArguments);
+        $fakeRequest->expects(self::exactly(2))->method('getArguments')->willReturn($fakeArguments);
         $fakeRequest->expects(self::any())->method('getContextTypoScriptConfiguration')->willReturn($fakeConfiguration);
 
         $queryParameter = $this->getQueryParametersFromExecutedFacetingModifier($fakeConfiguration, $fakeRequest);
@@ -466,12 +421,8 @@ class FacetingTest extends SetUpUnitTestCase
 
     /**
      * @test
-     *
-     * @throws InvalidFacetPackageException
-     * @throws InvalidQueryBuilderException
-     * @throws InvalidUrlDecoderException
      */
-    public function testCanAddQueryFiltersWithKeepAllOptionsOnSelectionFacet()
+    public function testCanAddQueryFiltersWithKeepAllOptionsOnSelectionFacet(): void
     {
         $fakeConfigurationArray = [];
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting'] = 1;
@@ -490,7 +441,7 @@ class FacetingTest extends SetUpUnitTestCase
 
         /** @var SearchRequest|MockObject $fakeRequest */
         $fakeRequest = $this->createMock(SearchRequest::class);
-        $fakeRequest->expects(self::once())->method('getArguments')->willReturn($fakeArguments);
+        $fakeRequest->expects(self::exactly(2))->method('getArguments')->willReturn($fakeArguments);
         $fakeRequest->expects(self::any())->method('getContextTypoScriptConfiguration')->willReturn($fakeConfiguration);
 
         $queryParameter = $this->getQueryParametersFromExecutedFacetingModifier($fakeConfiguration, $fakeRequest);
@@ -503,12 +454,8 @@ class FacetingTest extends SetUpUnitTestCase
 
     /**
      * @test
-     *
-     * @throws InvalidFacetPackageException
-     * @throws InvalidQueryBuilderException
-     * @throws InvalidUrlDecoderException
      */
-    public function testCanAddQueryFiltersWithGlobalKeepAllOptionsOnSelection()
+    public function testCanAddQueryFiltersWithGlobalKeepAllOptionsOnSelection(): void
     {
         $fakeConfigurationArray = [];
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting'] = 1;
@@ -527,7 +474,7 @@ class FacetingTest extends SetUpUnitTestCase
 
         /** @var SearchRequest|MockObject $fakeRequest */
         $fakeRequest = $this->createMock(SearchRequest::class);
-        $fakeRequest->expects(self::once())->method('getArguments')->willReturn($fakeArguments);
+        $fakeRequest->expects(self::exactly(2))->method('getArguments')->willReturn($fakeArguments);
         $fakeRequest->expects(self::any())->method('getContextTypoScriptConfiguration')->willReturn($fakeConfiguration);
 
         $queryParameter = $this->getQueryParametersFromExecutedFacetingModifier($fakeConfiguration, $fakeRequest);
@@ -540,12 +487,8 @@ class FacetingTest extends SetUpUnitTestCase
 
     /**
      * @test
-     *
-     * @throws InvalidFacetPackageException
-     * @throws InvalidQueryBuilderException
-     * @throws InvalidUrlDecoderException
      */
-    public function testCanAddExcludeTagWithAdditionalExcludeTagConfiguration()
+    public function testCanAddExcludeTagWithAdditionalExcludeTagConfiguration(): void
     {
         $fakeConfigurationArray = [];
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting'] = 1;
@@ -565,7 +508,7 @@ class FacetingTest extends SetUpUnitTestCase
 
         /** @var SearchRequest|MockObject $fakeRequest */
         $fakeRequest = $this->createMock(SearchRequest::class);
-        $fakeRequest->expects(self::once())->method('getArguments')->willReturn($fakeArguments);
+        $fakeRequest->expects(self::exactly(2))->method('getArguments')->willReturn($fakeArguments);
         $fakeRequest->expects(self::any())->method('getContextTypoScriptConfiguration')->willReturn($fakeConfiguration);
 
         $queryParameter = $this->getQueryParametersFromExecutedFacetingModifier($fakeConfiguration, $fakeRequest);
@@ -578,12 +521,8 @@ class FacetingTest extends SetUpUnitTestCase
 
     /**
      * @test
-     *
-     * @throws InvalidFacetPackageException
-     * @throws InvalidQueryBuilderException
-     * @throws InvalidUrlDecoderException
      */
-    public function testCanAddQueryFiltersContainingPlusSign()
+    public function testCanAddQueryFiltersContainingPlusSign(): void
     {
         $fakeArguments = [
             'filter' => [
@@ -611,7 +550,7 @@ class FacetingTest extends SetUpUnitTestCase
 
         /** @var SearchRequest|MockObject $fakeRequest */
         $fakeRequest = $this->createMock(SearchRequest::class);
-        $fakeRequest->expects(self::once())->method('getArguments')->willReturn($fakeArguments);
+        $fakeRequest->expects(self::exactly(2))->method('getArguments')->willReturn($fakeArguments);
         $fakeRequest->expects(self::any())->method('getContextTypoScriptConfiguration')->willReturn($fakeConfiguration);
 
         $queryParameter = $this->getQueryParametersFromExecutedFacetingModifier($fakeConfiguration, $fakeRequest);
@@ -624,12 +563,12 @@ class FacetingTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function getFiltersByFacetNameCanHandleAssocUrlParameterStyle()
+    public function getFiltersByFacetNameCanHandleAssocUrlParameterStyle(): void
     {
-        $facetingModifierStub = new class ($this->createMock(FacetRegistry::class)) extends Faceting {
-            public function callGetFiltersByFacetName(array $resultParameters, array $allFacets): array
+        $facetingModifierStub = new class ($this->createMock(FacetRegistry::class)) extends FacetingComponent {
+            public function callGetFiltersByFacetName(SearchRequest $searchRequest, array $allFacets): array
             {
-                return parent::getFiltersByFacetName($resultParameters, $allFacets);
+                return parent::getFiltersByFacetName($searchRequest, $allFacets);
             }
         };
 
@@ -640,11 +579,15 @@ class FacetingTest extends SetUpUnitTestCase
 
         /** @var SearchRequest|MockObject $searchRequestMock */
         $searchRequestMock = $this->createMock(SearchRequest::class);
+        $searchRequestMock->expects(self::once())->method('getArguments')->willReturn([
+            'filter' => [
+                'age:week' => '1',
+                'type:tx_news_domain_model_news' => '1',
+            ],
+        ]);
         $searchRequestMock->expects(self::once())
             ->method('getContextTypoScriptConfiguration')
             ->willReturn($typoScriptConfigurationMock);
-
-        $facetingModifierStub->setSearchRequest($searchRequestMock);
 
         self::assertEquals(
             [
@@ -652,12 +595,7 @@ class FacetingTest extends SetUpUnitTestCase
                 'type' => [0 => 'tx_news_domain_model_news'],
             ],
             $facetingModifierStub->callGetFiltersByFacetName(
-                [
-                    'filter' => [
-                        'age:week' => '1',
-                        'type:tx_news_domain_model_news' => '1',
-                    ],
-                ],
+                $searchRequestMock,
                 [
                     'type.' => [
                         'label' => 'Content Type',

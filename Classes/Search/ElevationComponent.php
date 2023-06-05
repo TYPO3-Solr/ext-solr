@@ -17,20 +17,29 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\Search;
 
-use ApacheSolrForTypo3\Solr\Query\Modifier\Elevation;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
+use ApacheSolrForTypo3\Solr\Event\Search\AfterSearchQueryHasBeenPreparedEvent;
 
 /**
  * Elevation search component
  *
  * @author Ingo Renner <ingo@typo3.org>
  */
-class ElevationComponent extends AbstractComponent
+class ElevationComponent
 {
-    /**
-     * Initializes the search component.
-     */
-    public function initializeSearchComponent(): void
+    public function __construct(protected readonly QueryBuilder $queryBuilder)
     {
-        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchQuery']['elevation'] = Elevation::class;
+    }
+
+    /**
+     * Enables the query's elevation mode.
+     */
+    public function __invoke(AfterSearchQueryHasBeenPreparedEvent $event): void
+    {
+        $query = $this->queryBuilder
+            ->startFrom($event->getQuery())
+            ->useElevationFromTypoScript()
+            ->getQuery();
+        $event->setQuery($query);
     }
 }

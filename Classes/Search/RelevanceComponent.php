@@ -17,59 +17,34 @@ declare(strict_types=1);
 
 namespace ApacheSolrForTypo3\Solr\Search;
 
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\Query;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use ApacheSolrForTypo3\Solr\Event\Search\AfterSearchQueryHasBeenPreparedEvent;
 
 /**
  * Boosting search component
  *
  * @author Ingo Renner <ingo@typo3.org>
  */
-class RelevanceComponent extends AbstractComponent implements QueryAware
+class RelevanceComponent
 {
-    /**
-     * Solr query
-     */
-    protected ?Query $query = null;
-
-    /**
-     * QueryBuilder
-     */
-    protected QueryBuilder $queryBuilder;
-
-    /**
-     * AccessComponent constructor.
-     */
-    public function __construct(QueryBuilder $queryBuilder = null)
-    {
-        $this->queryBuilder = $queryBuilder ?? GeneralUtility::makeInstance(QueryBuilder::class);
+    public function __construct(
+        protected readonly QueryBuilder $queryBuilder
+    ) {
     }
 
     /**
-     * Initializes the search component.
-     *
      * Sets minimum match, boost function, boost query and tie-breaker.
      */
-    public function initializeSearchComponent(): void
+    public function __invoke(AfterSearchQueryHasBeenPreparedEvent $event): void
     {
-        $this->query = $this->queryBuilder
-            ->startFrom($this->query)
+        $query = $this->queryBuilder
+            ->startFrom($event->getQuery())
             ->useMinimumMatchFromTypoScript()
             ->useBoostFunctionFromTypoScript()
             ->useSlopsFromTypoScript()
             ->useBoostQueriesFromTypoScript()
             ->useTieParameterFromTypoScript()
             ->getQuery();
-    }
-
-    /**
-     * Provides the extension component with an instance of the current query.
-     *
-     * @param Query $query Current query
-     */
-    public function setQuery(Query $query): void
-    {
-        $this->query = $query;
+        $event->setQuery($query);
     }
 }
