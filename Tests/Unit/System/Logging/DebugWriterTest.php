@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -15,9 +17,9 @@
 
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\Logging;
 
-use _PHPStan_a3459023a\Psr\Log\LogLevel;
 use ApacheSolrForTypo3\Solr\System\Logging\DebugWriter;
 use ApacheSolrForTypo3\Solr\Tests\Unit\SetUpUnitTestCase;
+use Psr\Log\LogLevel;
 
 /**
  * @author Timo Hund <timo.hund@dkd.de>
@@ -27,7 +29,7 @@ class DebugWriterTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function testDebugMessageIsWrittenForMessageFromSolr()
+    public function testDebugMessageIsWrittenForMessageFromSolr(): void
     {
         $logWriter = $this->getMockBuilder(DebugWriter::class)->onlyMethods(['getIsAllowedByDevIPMask', 'getIsdebugOutputEnabled', 'writeDebugMessage'])->getMock();
         $logWriter->expects(self::any())->method('getIsAllowedByDevIPMask')->willReturn(true);
@@ -41,7 +43,7 @@ class DebugWriterTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function testDebugMessageIsNotWrittenWhenDevIpMaskIsNotMatching()
+    public function testDebugMessageIsNotWrittenWhenDevIpMaskIsNotMatching(): void
     {
         $logWriter = $this->getMockBuilder(DebugWriter::class)->onlyMethods(['getIsAllowedByDevIPMask', 'getIsdebugOutputEnabled', 'writeDebugMessage'])->getMock();
         $logWriter->expects(self::any())->method('getIsAllowedByDevIPMask')->willReturn(false);
@@ -55,7 +57,7 @@ class DebugWriterTest extends SetUpUnitTestCase
     /**
      * @test
      */
-    public function testDebugMessageIsNotWrittenWhenDebugOutputIsDisabled()
+    public function testDebugMessageIsNotWrittenWhenDebugOutputIsDisabled(): void
     {
         $logWriter = $this->getMockBuilder(DebugWriter::class)->onlyMethods(['getIsAllowedByDevIPMask', 'getIsdebugOutputEnabled', 'writeDebugMessage'])->getMock();
         $logWriter->expects(self::any())->method('getIsAllowedByDevIPMask')->willReturn(true);
