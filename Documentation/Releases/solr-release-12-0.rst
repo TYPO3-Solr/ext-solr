@@ -122,6 +122,13 @@ Previous PSR-14 events have been renamed to be consistent with other PSR-14 Even
 * :php:`ApacheSolrForTypo3\Solr\Event\Routing\BeforeProcessCachedVariablesEvent` is now named :php:`ApacheSolrForTypo3\Solr\Event\Routing\BeforeCachedVariablesAreProcessedEvent`
 * :php:`ApacheSolrForTypo3\Solr\Event\Routing\BeforeReplaceVariableInCachedUrlEvent` is now named :php:`ApacheSolrForTypo3\Solr\Event\Routing\BeforeVariableInCachedUrlAreReplacedEvent`
 
+!!! Shortcut pages not indexed anymore
+----------------------------------
+
+Currently there is no important reason to index the shortcut pages,
+because the target pages are indexed as expected and the shortcuts are 307-redirected to their targets.
+So contents can be found in search results as expected.
+
 Frontend Helper Changes
 -----------------------
 
