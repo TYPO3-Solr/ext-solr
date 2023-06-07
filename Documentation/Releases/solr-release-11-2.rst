@@ -107,7 +107,7 @@ Beside the major changes we did several small improvements and bugfixes:
 - [TASK] Setup Dependabot to watch "solarium/solarium" .. __: https://github.com/TYPO3-Solr/ext-solr/commit/561815044e3651a0aaa8fa2ad4de5e2c3ccf4e3e
 - [BUGFIX] Filter within route enhancers .. __: https://github.com/TYPO3-Solr/ext-solr/issues/3054
 - [BUGFIX] Fix NON-Composer mod libs composer.json for composer v2 .. __: https://github.com/TYPO3-Solr/ext-solr/issues/3053
-- ... See older commits, which are a part of previous releases: https://github.com/TYPO3-Solr/ext-solr/commits/master?after=d3f9a919d44f8a72b982bdde131408b571ff02c8+139&branch=release-11-2
+- ... See older commits, which are a part of previous releases: https://github.com/TYPO3-Solr/ext-solr/commits/main?after=d3f9a919d44f8a72b982bdde131408b571ff02c8+139&branch=release-11-2
 
 
 Contributors
