@@ -148,6 +148,11 @@ The following example shows how you can run our configuration with the official 
     sudo chown -R 8983:8983 ~/mysolr
     docker run -d -p 8983:8983 -v ~/mysolr:/var/solr/data solr:8.5
 
+Advanced settings and tweaks
+----------------------------
+
+For more settings and tweak possibilities for our Docker image, please refer to the :ref:`appendix-docker-tweaks`.
+
 Other Setup
 -----------
 
