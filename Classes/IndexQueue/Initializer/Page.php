@@ -18,7 +18,6 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue\Initializer;
 use ApacheSolrForTypo3\Solr\Domain\Site\Exception\UnexpectedTYPO3SiteInitializationException;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
-use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use Doctrine\DBAL\ConnectionException;
 use Doctrine\DBAL\Exception as DBALException;
 use PDO;
@@ -145,8 +144,7 @@ class Page extends AbstractInitializer
             } catch (Throwable $e) {
                 $databaseConnection->rollBack();
 
-                $this->logger->log(
-                    SolrLogManager::ERROR,
+                $this->logger->error(
                     'Index Queue initialization failed for mount pages',
                     [
                         $e->__toString(),

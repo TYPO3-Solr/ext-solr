@@ -133,11 +133,7 @@ class IndexService
         $message = 'Failed indexing Index Queue item ' . $itemToIndex->getIndexQueueUid();
         $data = ['code' => $e->getCode(), 'message' => $e->getMessage(), 'trace' => $e->getTraceAsString(), 'item' => (array)$itemToIndex];
 
-        $this->logger->log(
-            SolrLogManager::ERROR,
-            $message,
-            $data
-        );
+        $this->logger->error($message, $data);
     }
 
     /**

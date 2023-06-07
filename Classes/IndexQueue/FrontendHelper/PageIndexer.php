@@ -34,6 +34,7 @@ use ApacheSolrForTypo3\Solr\System\Solr\Document\Document;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use ApacheSolrForTypo3\Solr\Util;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use Psr\Log\LogLevel;
 use Throwable;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Site\Entity\Site;
@@ -150,8 +151,7 @@ class PageIndexer implements FrontendHelper, SingletonInterface
         $logPageIndexed = $this->configuration->getLoggingIndexingPageIndexed();
         if (!($tsfe->config['config']['index_enable'] ?? false)) {
             if ($logPageIndexed) {
-                $this->logger->log(
-                    SolrLogManager::ERROR,
+                $this->logger->error(
                     'Indexing is disabled. Set config.index_enable = 1 .'
                 );
             }
@@ -167,8 +167,7 @@ class PageIndexer implements FrontendHelper, SingletonInterface
         } catch (Throwable $e) {
             $this->responseData['pageIndexed'] = false;
             if ($this->configuration->getLoggingExceptions()) {
-                $this->logger->log(
-                    SolrLogManager::ERROR,
+                $this->logger->error(
                     'Exception while trying to index page ' . $tsfe->id,
                     [
                         $e->__toString(),
@@ -179,7 +178,7 @@ class PageIndexer implements FrontendHelper, SingletonInterface
 
         if ($logPageIndexed) {
             $success = $this->responseData['pageIndexed'] ? 'Success' : 'Failed';
-            $severity = $this->responseData['pageIndexed'] ? SolrLogManager::NOTICE : SolrLogManager::ERROR;
+            $severity = $this->responseData['pageIndexed'] ? LogLevel::NOTICE : LogLevel::ERROR;
 
             $this->logger->log(
                 $severity,
@@ -229,15 +228,13 @@ class PageIndexer implements FrontendHelper, SingletonInterface
             }
             return $solrConnection;
         } catch (Throwable $e) {
-            $this->logger->log(
-                SolrLogManager::ERROR,
+            $this->logger->error(
                 $e->getMessage() . ' Error code: ' . $e->getCode()
             );
 
             // TODO extract to a class "ExceptionLogger"
             if ($logExceptions) {
-                $this->logger->log(
-                    SolrLogManager::ERROR,
+                $this->logger->error(
                     'Exception while trying to index a page',
                     [
                         $e->__toString(),
@@ -335,7 +332,7 @@ class PageIndexer implements FrontendHelper, SingletonInterface
         }
 
         try {
-            $this->logger->log(SolrLogManager::INFO, 'Adding ' . count($documents) . ' documents.', $documents);
+            $this->logger->info('Adding ' . count($documents) . ' documents.', $documents);
 
             // chunk adds by 20
             $documentChunks = array_chunk($documents, 20);
@@ -348,10 +345,10 @@ class PageIndexer implements FrontendHelper, SingletonInterface
 
             $documentsAdded = true;
         } catch (Throwable $e) {
-            $this->logger->log(SolrLogManager::ERROR, $e->getMessage() . ' Error code: ' . $e->getCode());
+            $this->logger->error($e->getMessage() . ' Error code: ' . $e->getCode());
 
             if ($this->configuration->getLoggingExceptions()) {
-                $this->logger->log(SolrLogManager::ERROR, 'Exception while adding documents', [$e->__toString()]);
+                $this->logger->error('Exception while adding documents', [$e->__toString()]);
             }
         }
 

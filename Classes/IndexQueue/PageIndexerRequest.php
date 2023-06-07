@@ -170,8 +170,7 @@ class PageIndexerRequest
         $decodedResponse = $response->getResultsFromJson($rawResponse->getBody()->getContents());
 
         if ($decodedResponse === null) {
-            $this->logger->log(
-                SolrLogManager::ERROR,
+            $this->logger->error(
                 'Failed to execute Page Indexer Request. Request ID: ' . $this->requestId,
                 [
                     'request ID' => $this->requestId,

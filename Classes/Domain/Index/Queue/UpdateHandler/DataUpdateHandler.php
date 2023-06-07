@@ -510,7 +510,7 @@ class DataUpdateHandler extends AbstractUpdateHandler
         $pid = $this->dataHandler->getPID($table, $uid);
         if ($pid === false) {
             $message = 'Record without valid pid was processed ' . $table . ':' . $uid;
-            $this->logger->log(SolrLogManager::WARNING, $message);
+            $this->logger->warning($message);
             return null;
         }
 

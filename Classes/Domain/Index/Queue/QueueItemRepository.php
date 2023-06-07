@@ -728,8 +728,7 @@ class QueueItemRepository extends AbstractRepository
                     $tableRecords[$indexQueueItemRecord['item_type']][$indexQueueItemRecord['item_uid']]
                 );
             } else {
-                $this->logger->log(
-                    SolrLogManager::ERROR,
+                $this->logger->error(
                     'Record missing for Index Queue item. Item removed.',
                     [
                         $indexQueueItemRecord,

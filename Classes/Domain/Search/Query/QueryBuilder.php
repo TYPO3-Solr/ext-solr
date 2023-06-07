@@ -91,7 +91,7 @@ class QueryBuilder extends AbstractQueryBuilder
         array $additionalFiltersFromRequest = []
     ): Query {
         if ($this->typoScriptConfiguration->getLoggingQuerySearchWords()) {
-            $this->logger->log(SolrLogManager::INFO, 'Received search query', [$rawQuery]);
+            $this->logger->info('Received search query', [$rawQuery]);
         }
 
         return $this->newSearchQuery($rawQuery)

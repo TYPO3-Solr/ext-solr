@@ -194,8 +194,7 @@ class UserGroupDetector implements
                 // default = public access
                 $frontendGroups = 0;
             } elseif ($this->request->getParameter('loggingEnabled')) {
-                $this->logger->log(
-                    SolrLogManager::INFO,
+                $this->logger->info(
                     'Access restriction found',
                     [
                         'groups' => $frontendGroups,

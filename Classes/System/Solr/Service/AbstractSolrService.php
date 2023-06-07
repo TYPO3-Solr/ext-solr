@@ -23,6 +23,7 @@ use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Solr\ResponseAdapter;
 use ApacheSolrForTypo3\Solr\Util;
 use Closure;
+use Psr\Log\LogLevel;
 use Solarium\Client;
 use Solarium\Core\Client\Endpoint;
 use Solarium\Core\Client\Request;
@@ -136,7 +137,7 @@ abstract class AbstractSolrService
         string $body = '',
         Closure $initializeRequest = null
     ): ResponseAdapter {
-        $logSeverity = SolrLogManager::INFO;
+        $logSeverity = LogLevel::INFO;
         $exception = null;
         $url = $this->reviseUrl($url);
         try {
@@ -146,7 +147,7 @@ abstract class AbstractSolrService
             }
             $response = $this->executeRequest($request);
         } catch (HttpException $exception) {
-            $logSeverity = SolrLogManager::ERROR;
+            $logSeverity = LogLevel::ERROR;
             $response = new ResponseAdapter($exception->getBody(), $exception->getCode(), $exception->getMessage());
         }
 

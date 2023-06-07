@@ -44,10 +44,8 @@ class FrontendGroupsModifier
             return;
         }
         if (!$pageIndexerRequest->isAuthenticated()) {
-            /** @var SolrLogManager $logger */
             $logger = GeneralUtility::makeInstance(SolrLogManager::class, self::class);
-            $logger->log(
-                SolrLogManager::ERROR,
+            $logger->error(
                 'Invalid Index Queue Frontend Request detected!',
                 [
                     'page indexer request' => (array)$pageIndexerRequest,
