@@ -7,13 +7,21 @@
 Apache Solr for TYPO3 11.2
 ==========================
 
-Apache Solr for TYPO3 11.2.2 - Last non ELTS release
+Apache Solr for TYPO3 11.2.3 - Last non ELTS release
 ====================================================
 
 This is a maintenance release for TYPO3 10.4 and the last non ELTS release, as TYPO3 10 LTS reaches the ELTS phase on April 30, 2023.
 
 EXT:solr release-11.2.x will not be maintained in `TYPO3-Solr/ext-solr <https://github.com/TYPO3-Solr/ext-solr/>`__ repository any more. The maintenance and builds will be moved to a private
-repository and ELTS versions, EXT:solr 11.2.3+ for TYPO3 10 ELTS versions, can be obtained through the `dkd EB program <https://shop.dkd.de/Produkte/Apache-Solr-fuer-TYPO3/>`__.
+repository and ELTS versions, EXT:solr 11.2.4+ for TYPO3 10 ELTS versions, can be obtained through the `dkd EB program <https://shop.dkd.de/Produkte/Apache-Solr-fuer-TYPO3/>`__.
+
+This release contains:
+
+- [BUGFIX:P:11.2] make CE search form in backend editable again by @dkd-kaehm in `#3640 <https://github.com/TYPO3-Solr/ext-solr/pull/3640>`__
+* [DOC] Fix wrong type for boostQuery in the docs and example by @rr-it  and @dkd-kaehm in `a997a2f4 <https://github.com/TYPO3-Solr/ext-solr/commit/a997a2f464462bc998aa755215f765e5efc6f172>`__
+
+Apache Solr for TYPO3 11.2.2
+============================
 
 This release contains:
 
