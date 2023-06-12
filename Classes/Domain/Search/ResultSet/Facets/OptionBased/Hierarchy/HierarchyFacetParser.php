@@ -128,7 +128,7 @@ class HierarchyFacetParser extends AbstractFacetParser
 
         foreach ($values as $valueFromRequest) {
             // Attach the 'depth' param again to the value
-            if (!str_contains($valueFromRequest, '-')) {
+            if (preg_match('/^[0-9]+-/', $valueFromRequest)) {
                 $valueFromRequest = HierarchyTool::substituteSlashes($valueFromRequest);
                 $valueFromRequest = trim($valueFromRequest, '/');
                 $valueFromRequest = (count(explode('/', $valueFromRequest)) - 1) . '-' . $valueFromRequest . '/';
